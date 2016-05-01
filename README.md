@@ -1,4 +1,5 @@
 # QUANTAXIS
+```
 classdef QUANTAXIS<handle
     % QUANTAXIS 2.0 alpha
     % by yutiansut
@@ -824,3 +825,4 @@ sendmail(TargetAddress, subject, content);
 
 
 end
+```
