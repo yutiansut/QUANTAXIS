@@ -2,10 +2,10 @@
 
 ![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXIS.jpg)
 
-【版本】：2.5.1<br>
-【作者】：yutiansut<br>
-【网站】：www.yutiansut.com | www.yutiansut.com/quantaxis<br>
-【联系方式】：QQ 279336410<br>
+[Version]:2.5.1<br>
+[Author]:yutiansut<br>
+[Website]:www.yutiansut.com | www.yutiansut.com/quantaxis<br>
+[Contact]:QQ 279336410<br>
 
 
 QUANTAXIS是一个量化平台，使用matlab对象化编程写出  主要对接的数据接口是wind数据库
