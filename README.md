@@ -1,4 +1,4 @@
-<font size='50'><bold>QUANTAXIS</bold> </font>
+# QUANTAXIS
 
 ![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXIS.jpg)
 
