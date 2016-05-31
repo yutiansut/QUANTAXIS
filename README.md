@@ -1,7 +1,7 @@
 <font size='50'><bold>QUANTAXIS</bold> </font>
-<div  align="left"> 
+
 ![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXIS.jpg)
-</div>
+
 【版本】：2.5.1<br>
 【作者】：yutiansut<br>
 【网站】：www.yutiansut.com | www.yutiansut.com/quantaxis<br>
