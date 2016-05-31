@@ -1,9 +1,9 @@
 <font size='50'><bold>QUANTAXIS</bold> </font>
 
-【版本】：2.5.1
-【作者】：yutiansut
-【网站】：www.yutiansut.com | www.yutiansut.com/quantaxis
-【联系方式】：QQ 279336410
+【版本】：2.5.1<br>
+【作者】：yutiansut<br>
+【网站】：www.yutiansut.com | www.yutiansut.com/quantaxis<br>
+【联系方式】：QQ 279336410<br>
 
 
 quantaxis是一个量化平台，使用matlab对象化编程写出  主要对接的数据接口是wind数据库
