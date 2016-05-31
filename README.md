@@ -10,7 +10,9 @@
 
 QUANTAXIS是一个量化平台，使用matlab对象化编程写出  主要对接的数据接口是wind数据库
 
+## QUANTAXIS
 
+主函数 主要是一个量化平台，负责策略实现
 
 
 ## QUANTAXIS FREEMARKETS
