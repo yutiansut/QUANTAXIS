@@ -30,12 +30,12 @@ classdef FreeMarkets<handle
             addlistener(FM,'reply',@REPLY);
             addlistener(FM,'price',@PRICE);
             addlistener(FM,'listen',@LISTEN);
-            FM.Initial;
+            FM.Init;
             FM.BidPool.id=1;
             FM.Price.temp=50;
             
         end
-        function FM=Initial(FM,varargin)
+        function FM=Init(FM,varargin)
             for i=1:FM.Member
                 Name=['FM.User.Strategy',num2str(i)];
                 eval([Name,'=[]']);
