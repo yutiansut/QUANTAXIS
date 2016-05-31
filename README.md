@@ -6,7 +6,7 @@
 【联系方式】：QQ 279336410<br>
 
 
-quantaxis是一个量化平台，使用matlab对象化编程写出  主要对接的数据接口是wind数据库
+QUANTAXIS是一个量化平台，使用matlab对象化编程写出  主要对接的数据接口是wind数据库
 
 
 
