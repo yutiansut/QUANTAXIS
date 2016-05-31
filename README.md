@@ -1,5 +1,5 @@
 -----------------
-<big> QUANTAXIS </big>
+<font-size 50><bold>QUANTAXIS</bold> </font>
 
 
 
