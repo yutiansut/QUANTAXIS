@@ -6,7 +6,9 @@ classdef DealerStrategy < Handle
     
     end
     events
+    
     end
     methods
+    
     end
 end
