@@ -1,8 +1,4 @@
------------------
 <font size='50'><bold>QUANTAXIS</bold> </font>
-
-<br>
-<br><br>
 
 【版本】：2.5.1
 
