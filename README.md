@@ -19,6 +19,7 @@ $matlabroot/java/jar/toolbox/mysql-connector-java-5.1.7-bin.jar
 调用类 classdef [xx] < QUANTAXIS
 ----
 主函数 主要是一个量化平台，负责策略实现和数据更新
+类似的平台 如python下的[easytrader](https://github.com/shidenggui/easytrader)
 ```
 QA=QUANTAXIS;
 QA.Init()   初始化平台（数据库连接设置等）
