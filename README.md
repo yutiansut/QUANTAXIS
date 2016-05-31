@@ -8,7 +8,8 @@
 [Contact]:QQ 279336410<br>
 
 
-QUANTAXIS是一个量化平台，使用matlab对象化编程写出  主要对接的数据接口是wind数据库
+QUANTAXIS是一个量化平台，使用matlab对象化编程写出  主要对接的数据接口是wind数据库<br>
+*<big>[Attention]</big>*:QUANTAXIS在使用之前需要安装Wind大奖章免费应用 以及 Mysql 5.6以上版本+JDBC-MYSQL的数据库
 
 ## [QUANTAXIS](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXIS.m)
 调用类 classdef [xx] < QUANTAXIS
