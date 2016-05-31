@@ -4,7 +4,7 @@
 
 [Version]:2.5.1<br>
 [Author]:yutiansut<br>
-[Website]:www.yutiansut.com | quantaxis.yutiansut.com<br>
+[Website]:www.yutiansut.com | http://quantaxis.yutiansut.com<br>
 [Contact]:QQ 279336410<br>
 
 
