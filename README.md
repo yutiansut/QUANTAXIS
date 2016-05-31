@@ -12,7 +12,7 @@ QUANTAXIS是一个量化平台，使用matlab对象化编程写出  主要对接
 
 ## [QUANTAXIS](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXIS.m)
 调用类 classdef [xx] < QUANTAXIS
-=====
+----
 主函数 主要是一个量化平台，负责策略实现和数据更新
 ```
 QA=QUANTAXIS;
@@ -23,7 +23,7 @@ QA.Start()  策略回测平台
 
 ## [QUANTAXIS FREEMARKETS](https://github.com/yutiansut/QUANTAXIS/blob/master/%2BFreeMarkets/%2BMultiDealer/FreeMarkets.m)
 调用类 classdef [xx] < FreeMarkets.MultiDealer.FreeMarkets
-=====
+----
 ```
 FM=FreeMarkets;
 FM.Try();  一个随机策略的金融市场
