@@ -1,4 +1,4 @@
-classdef TestMarkets< QUANTAXIS & FreeMarkets.MultiDealer.FreeMarkets
+classdef TestMarkets< QUANTAXIS & FreeMarkets.MultiDealer.FreeMarkets & FreeMarkets.MultiDealer.DealerStrategy
     properties
         
     end
