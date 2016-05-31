@@ -11,13 +11,24 @@
 QUANTAXIS是一个量化平台，使用matlab对象化编程写出  主要对接的数据接口是wind数据库
 
 ## QUANTAXIS
-
-主函数 主要是一个量化平台，负责策略实现
-
+=====
+主函数 主要是一个量化平台，负责策略实现和数据更新
+```
+QA=QUANTAXIS;
+QA.Init()   初始化平台（数据库连接设置等）
+QA.Fetch()  数据更新平台
+QA.Start()  策略回测平台
+```
 
 ## QUANTAXIS FREEMARKETS
+=====
+```
+FM=FreeMarkets;
+FM.Try();  一个随机策略的金融市场
+>数据将在FM.Price.History 中呈现</br>
+>FM.BidPool中是报价池
 
-
+```
 
 
 <big>关于quantaxis-FreeMarkets</big>
