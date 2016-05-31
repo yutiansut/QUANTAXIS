@@ -11,6 +11,7 @@
 QUANTAXIS是一个量化平台，使用matlab对象化编程写出  主要对接的数据接口是wind数据库
 
 ## [QUANTAXIS](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXIS.m)
+调用类 classdef [xx] < QUANTAXIS
 =====
 主函数 主要是一个量化平台，负责策略实现和数据更新
 ```
@@ -21,6 +22,7 @@ QA.Start()  策略回测平台
 ```
 
 ## [QUANTAXIS FREEMARKETS](https://github.com/yutiansut/QUANTAXIS/blob/master/%2BFreeMarkets/%2BMultiDealer/FreeMarkets.m)
+调用类 classdef [xx] < FreeMarkets.MultiDealer.FreeMarkets
 =====
 ```
 FM=FreeMarkets;
