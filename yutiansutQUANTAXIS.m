@@ -1,48 +1,48 @@
 classdef yutiansutQUANTAXIS < handle
-    %yutiansutQUANTAXIS OOP´úÂëÖØ¹¹°æ±¾
-    %by yutiansut & ChenDie
+    %yutiansutQUANTAXIS OOPï¿½ï¿½ï¿½ï¿½ï¿½Ø¹ï¿½ï¿½æ±¾
+    %by yutiansut 
     %www.yutiansut.com
-    %2016/2/26-2016/2/28  1.2°æ±¾
-    %2016/2/6  1.1 °æ±¾
-    % ¼àÌýº¯ÊýÁÐ±í
+    %2016/2/26-2016/2/28  1.2ï¿½æ±¾
+    %2016/2/6  1.1 ï¿½æ±¾
+    % ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½
     %     FetchState
     %     AnalysisState
     %     FilingState
-    %     MessageUpdate  %%ÓÃÓÚ¼àÌýmessageÊýÁ¿
+    %     MessageUpdate  %%ï¿½ï¿½ï¿½Ú¼ï¿½ï¿½ï¿½messageï¿½ï¿½ï¿½ï¿½
     
     properties
-       %% ³õÊ¼µÇÂ¼ Login_
+       %% ï¿½ï¿½Ê¼ï¿½ï¿½Â¼ Login_
         LoginName;
         LoginPassword;
         LoginResult;
         realpassword;
         LoginCompare;
-       %% È«¾Ö±äÁ¿ £¨¹ÉÆ±£©
-        StockCode;%¹ÉÆ±´úÂë
+       %% È«ï¿½Ö±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ±ï¿½ï¿½
+        StockCode;%ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½
         BeginDate='20040101';%
         EndDate='20160228';
         SaveFlag;
-        Component;%³É·Ö¹É
+        Component;%ï¿½É·Ö¹ï¿½
         
         Data;
-        %%  Êý¾Ý»ñÈ¡api
+        %%  ï¿½ï¿½ï¿½Ý»ï¿½È¡api
         StockDataDouble;
         NoticeType;
         URLchar;
         NoticeTypeWord;
         RunIndex;
-        %%  Êý¾ÝÇåÏ´api
+        %%  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´api
         StockID=2;
         StockCodeOut;
-        Result;   %Êý¾ÝÇåÏ´¸ñÊ½
-        Result_XRD1;  %Êý¾ÝÇåÏ´ Ç°¸´È¨-»ùÓÚ¸´È¨Òò×Ó
-        Result_XRD2;  %Êý¾ÝÇåÏ´ Ç°¸´È¨-¾­µäËã·¨
+        Result;   %ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½Ê½
+        Result_XRD1;  %ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ Ç°ï¿½ï¿½È¨-ï¿½ï¿½ï¿½Ú¸ï¿½È¨ï¿½ï¿½ï¿½ï¿½
+        Result_XRD2;  %ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ Ç°ï¿½ï¿½È¨-ï¿½ï¿½ï¿½ï¿½ï¿½ã·¨
         Volum;
-        %%  ÏûÏ¢¼ÇÂ¼api  MES_
+        %%  ï¿½ï¿½Ï¢ï¿½ï¿½Â¼api  MES_
         MessageHistory={};
-        str;  %ÏûÏ¢ÏµÍ³
-        MessageID=1;    %ÏûÏ¢ÏµÍ³
-        %%  ½»Ò×ÏµÍ³api  TRA_
+        str;  %ï¿½ï¿½Ï¢ÏµÍ³
+        MessageID=1;    %ï¿½ï¿½Ï¢ÏµÍ³
+        %%  ï¿½ï¿½ï¿½ï¿½ÏµÍ³api  TRA_
         TRA=struct;
         TRA_Id;
         TRA_Time;
@@ -53,12 +53,12 @@ classdef yutiansutQUANTAXIS < handle
         TRA_Vol;
         TRA_Tax;
         TRA_Bid;
-        %%  ÕË»§ÏµÍ³api  ACC_
+        %%  ï¿½Ë»ï¿½ÏµÍ³api  ACC_
         ACC=struct;
         ACC_TotalAssest=1000000;
-        ACC_Cash=1000000;  %ÕË»§ÖÐµÄÏÖ½ð
-        ACC_Position;  %ÕË»§ÖÐµÄ¹ÉÆ±
-        ACC_Portfolio=0; %¹ÉÆ±µÄ×ÜÖµ
+        ACC_Cash=1000000;  %ï¿½Ë»ï¿½ï¿½Ðµï¿½ï¿½Ö½ï¿½
+        ACC_Position;  %ï¿½Ë»ï¿½ï¿½ÐµÄ¹ï¿½Æ±
+        ACC_Portfolio=0; %ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½Öµ
         ACC_Trade;
         ACC_Trade_id=2;
         ACC_accumulate;
@@ -67,95 +67,95 @@ classdef yutiansutQUANTAXIS < handle
         ACC_Amount=0;
         ACC_Account;
         ACC_Account_id=1;
-        %%  ÆÀ¹ÀÏµÍ³api  VAL_
+        %%  ï¿½ï¿½ï¿½ï¿½ÏµÍ³api  VAL_
         EVA=struct;
         EVA_Case;
         EVA_Price;
         EVA_Vol;
         EVA_Win;
-        %% ÏµÍ³³ÐÔØ  Êý¾Ý»ñÈ¡ºó×Ô¶¯·Å¹ýÀ´ -MYSQLÁ¬½Ó
+        %% ÏµÍ³ï¿½ï¿½ï¿½ï¿½  ï¿½ï¿½ï¿½Ý»ï¿½È¡ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½Å¹ï¿½ï¿½ï¿½ -MYSQLï¿½ï¿½ï¿½ï¿½
         SYS=struct;
         SYS_TS;
         SYS_TICK;
       
-        %% ½»»¥ÏµÍ³£¨ÓÊ¼þ SQL£©Interaction ITA_
-        ConnLocal;  %½»»¥ÏµÍ³-±¾»úÊý¾Ý¿â
+        %% ï¿½ï¿½ï¿½ï¿½ÏµÍ³ï¿½ï¿½ï¿½Ê¼ï¿½ SQLï¿½ï¿½Interaction ITA_
+        ConnLocal;  %ï¿½ï¿½ï¿½ï¿½ÏµÍ³-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½
         ITA_Database;
-        ConnCloud;  %½»»¥ÏµÍ³-ÔÆ¶ËÊý¾Ý¿â
-        SendMail=0;   %½»»¥ÏµÍ³-ÓÊ¼þÏµÍ³
-        % 1 ·¢ËÍÓÊ¼þ
-        % 0 ²»·¢ËÍÓÊ¼þ
-        TargetAddress='yutiansut@qq.com';  %½»»¥ÏµÍ³
+        ConnCloud;  %ï¿½ï¿½ï¿½ï¿½ÏµÍ³-ï¿½Æ¶ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½
+        SendMail=0;   %ï¿½ï¿½ï¿½ï¿½ÏµÍ³-ï¿½Ê¼ï¿½ÏµÍ³
+        % 1 ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½
+        % 0 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½
+        TargetAddress='yutiansut@qq.com';  %ï¿½ï¿½ï¿½ï¿½ÏµÍ³
         StatusCode='000'; 
-        %%×´Ì¬²ÎÊý
-        % 000 ³õÊ¼»¯×´Ì¬
-        % 10x ÍøÂçÁ¬½Ó
-        % 	101 URLÖÐÎÞ·µ»ØÊý¾Ý
-        % 	102 MYSQLÖÐÎÞÏà¹ØÊý¾Ý
-        % 20x ±¾µØÊý¾Ý
-        % 	201 ±¾µØÊý¾ÝÎÄ¼þ¶ªÊ§
-        % 	202 ±¾µØÒÑÓÐÊý¾ÝÎÄ¼þ ÐèÒª¸üÐÂ
-        % 	203 ±¾µØÒÑÓÐÊý¾ÝÎÄ¼þ ÎÞÐè¸üÐÂ
-        % 30x ³É¹¦Á¬½ÓÍøÂç
-        % 	301 ÏÂÔØÊý¾ÝÎª¿Õ
-        % 	302 ³É¹¦ÏÂÔØÊý¾Ý µ«±¾µØÎÞ·¨±£´æ
-        % 	303 ³É¹¦ÏÂÔØÊý¾Ý²¢±£´æ
-        % 40x ÓÊ¼þÎÊÌâ
-        % 	401 ÓÊ¼þ³É¹¦·¢ËÍ
-        % 	402 ÓÊ¼þ·þÎñÆ÷³ö´í
-        % 5xx Êý¾ÝÇåÏ´Óë»·¾³×¼±¸
-        %   51x StockTickÊý¾Ý
-        %       510 TickÊý¾Ý»ñÈ¡³É¹¦
-        %       511 TickÊý¾Ý»ñÈ¡³É¹¦£¬ÇÒ·ûºÏÊý¾ÝÇåÏ´ÒªÇó
-        %       512 TickÊý¾Ý»ñÈ¡³É¹¦£¬µ«³¤¶È²»·ûºÏÇåÏ´ÒªÇó
-        %   52x StockTsdayÊý¾Ý
-        %       520 TsdayÊý¾Ý»ñÈ¡³É¹¦
-        %       521 TsdayÊý¾Ý»ñÈ¡³É¹¦£¬ÇÒ·ûºÏÊý¾ÝÇåÏ´ÒªÇó
-        %       522 TsdayÊý¾Ý»ñÈ¡³É¹¦£¬µ«³¤¶È²»·ûºÏÇåÏ´ÒªÇó
-        %   53x StockNoticeÊý¾Ý
-        % 60x Êý¾Ý·ÖÎö
+        %%×´Ì¬ï¿½ï¿½ï¿½ï¿½
+        % 000 ï¿½ï¿½Ê¼ï¿½ï¿½×´Ì¬
+        % 10x ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        % 	101 URLï¿½ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        % 	102 MYSQLï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        % 20x ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        % 	201 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Ê§
+        % 	202 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½
+        % 	203 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        % 30x ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        % 	301 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½
+        % 	302 ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½
+        % 	303 ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý²ï¿½ï¿½ï¿½ï¿½ï¿½
+        % 40x ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½
+        % 	401 ï¿½Ê¼ï¿½ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½
+        % 	402 ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        % 5xx ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ë»·ï¿½ï¿½×¼ï¿½ï¿½
+        %   51x StockTickï¿½ï¿½ï¿½ï¿½
+        %       510 Tickï¿½ï¿½ï¿½Ý»ï¿½È¡ï¿½É¹ï¿½
+        %       511 Tickï¿½ï¿½ï¿½Ý»ï¿½È¡ï¿½É¹ï¿½ï¿½ï¿½ï¿½Ò·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´Òªï¿½ï¿½
+        %       512 Tickï¿½ï¿½ï¿½Ý»ï¿½È¡ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´Òªï¿½ï¿½
+        %   52x StockTsdayï¿½ï¿½ï¿½ï¿½
+        %       520 Tsdayï¿½ï¿½ï¿½Ý»ï¿½È¡ï¿½É¹ï¿½
+        %       521 Tsdayï¿½ï¿½ï¿½Ý»ï¿½È¡ï¿½É¹ï¿½ï¿½ï¿½ï¿½Ò·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´Òªï¿½ï¿½
+        %       522 Tsdayï¿½ï¿½ï¿½Ý»ï¿½È¡ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´Òªï¿½ï¿½
+        %   53x StockNoticeï¿½ï¿½ï¿½ï¿½
+        % 60x ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½
         
-        Filing=1;         %Êý¾ÝÇåÏ´ÏµÍ³
+        Filing=1;         %ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ÏµÍ³
         
         Analysis=struct;
         
       
         
         
-        %% ²ßÂÔA
+        %% ï¿½ï¿½ï¿½ï¿½A
         profitOut;
         portValue;
         myTrades;
         
-        %% ²ßÂÔB
+        %% ï¿½ï¿½ï¿½ï¿½B
         tmun=2800;
         datatempid;
         BatNum;
-        BESTYFIT; %SVMÓÅ»¯IMFµÄ¸÷ÏîBESTYFIT
+        BESTYFIT; %SVMï¿½Å»ï¿½IMFï¿½Ä¸ï¿½ï¿½ï¿½BESTYFIT
         BESTYFIT_depth2;
-        HURST; %hurst CEEMDAN·Ö½âºóµÄÖ¸Êý
+        HURST; %hurst CEEMDANï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
         HURST_depth2;
-        besthursti; %CEEMDAN·Ö½âºóµÄhurst=0.5µÄÁÙ½çÖµµÄÎ»ÖÃ
+        besthursti; %CEEMDANï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½hurst=0.5ï¿½ï¿½ï¿½Ù½ï¿½Öµï¿½ï¿½Î»ï¿½ï¿½
         besthursti_depth2;
-        ORGY;  %ÐèÒªÔ¤²âµÄÔ­ÐòÁÐÖµ £¨¿Û¼õµôÖÍºó½×Êý£©
+        ORGY;  %ï¿½ï¿½ÒªÔ¤ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½Öµ ï¿½ï¿½ï¿½Û¼ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         ORGY_depth2;
-        CEEMDAN_ID %CEEMDANÐèÒª·Ö½âµÄ¹ÉÆ±¸öÊý
+        CEEMDAN_ID %CEEMDANï¿½ï¿½Òªï¿½Ö½ï¿½ï¿½Ä¹ï¿½Æ±ï¿½ï¿½ï¿½ï¿½
         
-        BESTYFITANDY;%%µÚÒ»ÁÐ FIT µÚ¶þÁÐ Y
+        BESTYFITANDY;%%ï¿½ï¿½Ò»ï¿½ï¿½ FIT ï¿½Ú¶ï¿½ï¿½ï¿½ Y
         BESTYFITANDY_depth2;
-        MODES; %%%CEEMDANµÄÊä³ö  Ê¹ÓÃµÄÊ±ºòÒª×ªÖÃ
+        MODES; %%%CEEMDANï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  Ê¹ï¿½Ãµï¿½Ê±ï¿½ï¿½Òª×ªï¿½ï¿½
         MODES_depth2;
-        ITS;  %%CEEMDANµÄÊä³ö
+        ITS;  %%CEEMDANï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         ITS_depth2;
         KernelType='rbf';
-        SVRt;%%%SVRµÄÖÍºó½×ÊýÑ¡Ôñ
+        SVRt;%%%SVRï¿½ï¿½ï¿½Íºï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½
         BESTYFITANDY_Poly;
     end
-    events  %Éè¶¨Ò»¸ö¼àÌý µ±
+    events  %ï¿½è¶¨Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
         FetchState
         AnalysisState
         FilingState
-        MessageUpdate  %%ÓÃÓÚ¼àÌýmessageÊýÁ¿
+        MessageUpdate  %%ï¿½ï¿½ï¿½Ú¼ï¿½ï¿½ï¿½messageï¿½ï¿½ï¿½ï¿½
         Mail
         StrategyA
         Account;
@@ -164,21 +164,21 @@ classdef yutiansutQUANTAXIS < handle
     end
     
     methods %%For API
-        %%Ö÷º¯Êý
+        %%ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         function obj=yutiansutQUANTAXIS()
-            disp('===»¶Ó­Ê¹ÓÃQUANTAXIS 1.2 beta ===')
-            disp('==========QUANTAXISÌåÑé°æ ÏÞÁ¿×¢²áÖÐ==========')
-            disp('===¸ü¶àÐÅÏ¢ Çë·ÃÎÊhttp://www.yutiansut.com===')
-            disp('==×÷Õß ÓàÌì & ³Âµþ °æ±¾ 1.2 beta ¸üÐÂÈÕÆÚ 2016/2/28==')
+            disp('===ï¿½ï¿½Ó­Ê¹ï¿½ï¿½QUANTAXIS 1.2 beta ===')
+            disp('==========QUANTAXISï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½×¢ï¿½ï¿½ï¿½ï¿½==========')
+            disp('===ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½http://www.yutiansut.com===')
+            disp('==ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ & ï¿½Âµï¿½ ï¿½æ±¾ 1.2 beta ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 2016/2/28==')
             [~, obj.ConnLocal]=ConnectMysqlLocal;
             [~,obj.ConnCloud]=ConnectMysqlCloud;
             conn=obj.ConnLocal;
             
           login(obj.ConnCloud)
             %%
-            addlistener(obj,'FetchState',@DFetch); %%listenerA1 ×´Ì¬¸Ä±äºÍÓÊ¼þ¼àÌý
-            addlistener(obj,'FilingState',@DFiling); %%½øÐÐÊý¾ÝÇåÏ´
-            addlistener(obj,'AnalysisState',@DAnalysis);%%½øÐÐÊý¾ÝÇåÏ´
+            addlistener(obj,'FetchState',@DFetch); %%listenerA1 ×´Ì¬ï¿½Ä±ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½
+            addlistener(obj,'FilingState',@DFiling); %%ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´
+            addlistener(obj,'AnalysisState',@DAnalysis);%%ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´
             addlistener(obj,'MessageUpdate',@MUpdate);
             addlistener(obj,'Mail',@QUANTMail);
             addlistener(obj,'StrategyA',@DStrategyA);
@@ -205,15 +205,15 @@ classdef yutiansutQUANTAXIS < handle
         
   
         function [StockTick,Header,StatusStr] = StockTick(obj)
-            % »ñÈ¡Ä³Ö»¹ÉÆ±Ä³ÈÕ½»Ò×Ã÷Ï¸Êý¾Ý
+            % ï¿½ï¿½È¡Ä³Ö»ï¿½ï¿½Æ±Ä³ï¿½Õ½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½
             
-            % StockCode:×Ö·ûÕóÁÐÐÍ£¬±íÊ¾Ö¤È¯´úÂë£¬Èç'sh600000'
-            % BeginDate:×Ö·ûÕóÁÐÐÍ£¬±íÊ¾Ï£Íû»ñÈ¡¹ÉÆ±Êý¾ÝËùÔÚÊ±¶ÎµÄ¿ªÊ¼ÈÕÆÚ£¬Èç'2014-12-05'
+            % StockCode:ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½Ê¾Ö¤È¯ï¿½ï¿½ï¿½ë£¬ï¿½ï¿½'sh600000'
+            % BeginDate:ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½Ê¾Ï£ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ÎµÄ¿ï¿½Ê¼ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½'2014-12-05'
             % http://vip.stock.finance.sina.com.cn/quotes_service/view/vMS_tradehistory.php?symbol=sh600000&date=2006-03-05
             % http://market.finance.sina.com.cn/downxls.php?date=2014-12-05&symbol=sh600000
-            %% ÊäÈëÊä³öÔ¤´¦Àí
+            %% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½
             
-            % ¹ÉÆ±´úÂëÔ¤´¦Àí£¬Ä¿±ê´úÂëdemo 'sh600588'
+            % ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½demo 'sh600588'
             if obj.StockCode(1,1) == '6'
                 obj.StockCode = ['sh',obj.StockCode];
             end
@@ -228,8 +228,8 @@ classdef yutiansutQUANTAXIS < handle
             end
             StatusStr = [];
             StockTick = [];
-            Header = {'³É½»Ê±¼ä','³É½»¼Û','¼Û¸ñ±ä¶¯','³É½»Á¿-ÊÖ','³É½»¶î-Ôª','ÐÔÖÊ'};
-            %% ÏÈ¼ì²é±¾µØÊÇ·ñÒÑ¾­´æÔÚ¸ÃÊý¾Ý
+            Header = {'ï¿½É½ï¿½Ê±ï¿½ï¿½','ï¿½É½ï¿½ï¿½ï¿½','ï¿½Û¸ï¿½ï¿½ä¶¯','ï¿½É½ï¿½ï¿½ï¿½-ï¿½ï¿½','ï¿½É½ï¿½ï¿½ï¿½-Ôª','ï¿½ï¿½ï¿½ï¿½'};
+            %% ï¿½È¼ï¿½ï¿½é±¾ï¿½ï¿½ï¿½Ç·ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ï¿½ï¿½
             FolderStr = ['./DataBase/Stock/Tick_mat/',obj.StockCode,'_Tick'];
             FileString = [FolderStr,'/',obj.StockCode,'_Tick_',obj.BeginDate,'.mat'];
             FileExist = 0;
@@ -254,18 +254,18 @@ classdef yutiansutQUANTAXIS < handle
             end
             
             if status == 0
-                obj.str = ['urlread error:Êý¾Ý»ñÈ¡Ê§°Ü£¡Çë¼ì²éÍøÂçÁ¬½ÓÇé¿ö»òÊäÈëµÄ²ÎÊý£¡'];
+                obj.str = ['urlread error:ï¿½ï¿½ï¿½Ý»ï¿½È¡Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½'];
                 disp(obj.str);
                 notify(obj,'MessageUpdate')
                 StatusStr = obj.str;
                 return;
             end
             
-            expr = ['µ±ÌìÃ»ÓÐÊý¾Ý'];
+            expr = ['ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'];
             [matchstart,matchend,tokenindices,matchstring] = regexpi(obj.URLchar, expr);
             
             if ~isempty(matchstring)
-                obj.str = ['µ±ÌìÃ»ÓÐÊý¾Ý£¡Çë¼ì²éÊäÈëµÄ²ÎÊý£¡'];
+                obj.str = ['ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½'];
                 disp(obj.str);
                 notify(obj,'MessageUpdate')
                 StatusStr = obj.str;
@@ -273,7 +273,7 @@ classdef yutiansutQUANTAXIS < handle
             end
             
             URLString = java.lang.String(obj.URLchar);
-            %% Êý¾Ý´¦Àí
+            %% ï¿½ï¿½ï¿½Ý´ï¿½ï¿½ï¿½
             delimiter = obj.URLchar(6);
             
             % Result = textscan(URLchar, '%s %s %s %s %s %s', 'delimiter', '	','BufSize',4095*3);
@@ -281,7 +281,7 @@ classdef yutiansutQUANTAXIS < handle
             
             temp = Result{1,1};
             if size(temp, 1) == 1
-                obj.str = ['Êý¾Ý»ñÈ¡Ê§°Ü£¡¿ÉÄÜÊý¾ÝÎª¿Õ»ò¼ì²éÊäÈëµÄ²ÎÊý£¡'];
+                obj.str = ['ï¿½ï¿½ï¿½Ý»ï¿½È¡Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½Õ»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½'];
                 disp(obj.str);
                 notify(obj,'MessageUpdate')
                 StatusStr = obj.str;
@@ -320,7 +320,7 @@ classdef yutiansutQUANTAXIS < handle
             for i = 1:Len
                 
                 tempT = DtimeStr{i};
-                % control characters¼ì²échar(0:20)
+                % control charactersï¿½ï¿½ï¿½ï¿½char(0:20)
                 category = 'cntrl';
                 tf = isstrprop(tempT, category);
                 ind = find( tf==1 )';
@@ -346,7 +346,7 @@ classdef yutiansutQUANTAXIS < handle
                 end
                 
                 temp = Price{i};
-                % control characters¼ì²échar(0:20)
+                % control charactersï¿½ï¿½ï¿½ï¿½char(0:20)
                 category = 'cntrl';
                 tf = isstrprop(temp, category);
                 ind = find( tf==1 )';
@@ -362,7 +362,7 @@ classdef yutiansutQUANTAXIS < handle
                 end
                 
                 temp = PriceChg{i};
-                % control characters¼ì²échar(0:20)
+                % control charactersï¿½ï¿½ï¿½ï¿½char(0:20)
                 category = 'cntrl';
                 tf = isstrprop(temp, category);
                 ind = find( tf==1 )';
@@ -378,7 +378,7 @@ classdef yutiansutQUANTAXIS < handle
                 end
                 
                 temp = Vol{i};
-                % control characters¼ì²échar(0:20)
+                % control charactersï¿½ï¿½ï¿½ï¿½char(0:20)
                 category = 'cntrl';
                 tf = isstrprop(temp, category);
                 ind = find( tf==1 )';
@@ -394,7 +394,7 @@ classdef yutiansutQUANTAXIS < handle
                 end
                 
                 temp = Amt{i};
-                % control characters¼ì²échar(0:20)
+                % control charactersï¿½ï¿½ï¿½ï¿½char(0:20)
                 category = 'cntrl';
                 tf = isstrprop(temp, category);
                 ind = find( tf==1 )';
@@ -411,19 +411,19 @@ classdef yutiansutQUANTAXIS < handle
                 
                 temp = SellBuyFlag{i};
                 ind = 6;
-                if strcmpi(temp,'ÂòÅÌ')
+                if strcmpi(temp,'ï¿½ï¿½ï¿½ï¿½')
                     StockTick(i,ind) = 1;
                 end
-                if strcmpi(temp,'ÂôÅÌ')
+                if strcmpi(temp,'ï¿½ï¿½ï¿½ï¿½')
                     StockTick(i,ind) = -1;
                 end
-                if strcmpi(temp,'ÖÐÐÔÅÌ')
+                if strcmpi(temp,'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½')
                     StockTick(i,ind) = 0;
                 end
             end
             
             % StockTick = StockTick(end:(-1):1,:);
-            %% ´æ´¢Êý¾Ý
+            %% ï¿½æ´¢ï¿½ï¿½ï¿½ï¿½
             if 1 == obj.SaveFlag && ~isempty( StockTick )
                 try
                     if ~isdir( FolderStr )
@@ -432,17 +432,17 @@ classdef yutiansutQUANTAXIS < handle
                     save(FileString,'StockTick','Header','-v7.3');
                     
                 catch err
-                    obj.str = ['ÈÕÆÚÊ±¼ä£º',datestr(now),' Êý¾Ý±£´æÊ§°Ü£º',err.message];
+                    obj.str = ['ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ä£º',datestr(now),' ï¿½ï¿½ï¿½Ý±ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½',err.message];
                     fprintf('%s\n',obj.str);
                     for i = 1:size(err.stack,1)
-                        obj.str = ['FunName£º',err.stack(i).name,' Line£º',num2str(err.stack(i).line)];
+                        obj.str = ['FunNameï¿½ï¿½',err.stack(i).name,' Lineï¿½ï¿½',num2str(err.stack(i).line)];
                         fprintf('%s\n',obj.str);
                     end
                 end
             end
             
             if isempty( StockTick )==0
-                obj.str='Êý¾Ý»ñÈ¡³É¹¦ ³¢ÊÔÆô¶¯trigger';
+                obj.str='ï¿½ï¿½ï¿½Ý»ï¿½È¡ï¿½É¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½trigger';
                 disp(obj.str)
                 notify(obj,'MessageUpdate')
                 notify(obj,'FetchState');
@@ -455,29 +455,29 @@ classdef yutiansutQUANTAXIS < handle
         function obj=StockTSDay(obj)
             
             % Input:
-            % StockCode:×Ö·ûÕóÁÐÐÍ£¬±íÊ¾Ö¤È¯´úÂë£¬Èçsh600000
-            % BeginDate:×Ö·ûÕóÁÐÐÍ£¬±íÊ¾Ï£Íû»ñÈ¡¹ÉÆ±Êý¾ÝËùÔÚÊ±¶ÎµÄ¿ªÊ¼ÈÕÆÚ£¬Èç20140101
-            % EndDate:×Ö·ûÕóÁÐÐÍ£¬±íÊ¾Ï£Íû»ñÈ¡¹ÉÆ±Êý¾ÝËùÔÚÊ±¶ÎµÄ½áÊøÈÕÆÚ£¬Èç20150101
+            % StockCode:ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½Ê¾Ö¤È¯ï¿½ï¿½ï¿½ë£¬ï¿½ï¿½sh600000
+            % BeginDate:ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½Ê¾Ï£ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ÎµÄ¿ï¿½Ê¼ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½20140101
+            % EndDate:ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½Ê¾Ï£ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ÎµÄ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½20150101
             % Output:
-            % StockDataDouble: ÈÕÆÚ ¿ª ¸ß µÍ ÊÕ Á¿(¹É) ¶î(Ôª) ¸´È¨Òò×Ó£¨ºó¸´È¨Òò×Ó£©
-            % Ç°¸´È¨Òò×Ó µÈÓÚ ºó¸´È¨Òò×Ó µÄµ¹ÐòÅÅÁÐ
-            % ÕÇµø·ù¸´È¨·½Ê½
-            % ºó¸´È¨¼Û¸ñ = ½»Ò×¼Û*ºó¸´È¨Òò×Ó
-            % Ç°¸´È¨¼Û¸ñ = ½»Ò×¼Û/Ç°¸´È¨Òò×Ó
+            % StockDataDouble: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½(ï¿½ï¿½) ï¿½ï¿½(Ôª) ï¿½ï¿½È¨ï¿½ï¿½ï¿½Ó£ï¿½ï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½ï¿½Ó£ï¿½
+            % Ç°ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½ ï¿½Äµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            % ï¿½Çµï¿½ï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½Ê½
+            % ï¿½ï¿½ï¿½ï¿½È¨ï¿½Û¸ï¿½ = ï¿½ï¿½ï¿½×¼ï¿½*ï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½
+            % Ç°ï¿½ï¿½È¨ï¿½Û¸ï¿½ = ï¿½ï¿½ï¿½×¼ï¿½/Ç°ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½
             
-            % »ñÈ¡Êý¾ÝËùÊ¹ÓÃµÄURL
+            % ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ãµï¿½URL
             % http://vip.stock.finance.sina.com.cn/corp/go.php/vMS_MarketHistory/stockid/000562.phtml?year=1994&jidu=1
             % http://vip.stock.finance.sina.com.cn/corp/go.php/vMS_FuQuanMarketHistory/stockid/000562.phtml?year=1995&jidu=4
             % http://biz.finance.sina.com.cn/stock/flash_hq/kline_data.php?symbol=sz000562&end_date=20150101&begin_date=19940101
             
             
-            %  Ê¹ÓÃÈçÏÂURL»ñÈ¡Êý¾Ý£¬¿ÉÒÔ»ñÈ¡×ÔÉÏÊÐÈÕ¿ªÊ¼µÄ×óÓÒÊý¾ÝºÍ¸´È¨Òò×Ó 19900101 ²¿·ÖÊý¾ÝÒ²ÓÐÈ±Ê§
+            %  Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½URLï¿½ï¿½È¡ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½ï¿½Ô»ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¿ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÝºÍ¸ï¿½È¨ï¿½ï¿½ï¿½ï¿½ 19900101 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò²ï¿½ï¿½È±Ê§
             % http://vip.stock.finance.sina.com.cn/corp/go.php/vMS_FuQuanMarketHistory/stockid/000562.phtml?year=1995&jidu=4
-            % ÀàËÆµÄËùÓÐÀ´×ÔÐÂÀËµÄÊý¾ÝÔ´¶¼»áÓÐ²¿·ÖÊý¾ÝÈ±Ê§
+            % ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½Ð²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È±Ê§
             
             
             
-            % ¹ÉÆ±´úÂëÔ¤´¦Àí£¬Ä¿±ê´úÂëdemo '600588'
+            % ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½demo '600588'
             
             obj.StockCode(obj.StockCode=='.') = [];
             if strcmpi(obj.StockCode(1),'s')
@@ -488,7 +488,7 @@ classdef yutiansutQUANTAXIS < handle
             end
             
             
-            % ÊäÈëÈÕÆÚÔ¤´¦Àí
+            % ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½
             if ~ischar( obj.BeginDate )
                 obj.BeginDate = num2str(obj.BeginDate);
             end
@@ -549,7 +549,7 @@ classdef yutiansutQUANTAXIS < handle
                         FIndCell = [];
                     end
                     
-                    % ÈÕÆÚ ¿ª ¸ß ÊÕ µÍ Á¿ ¶î ¸´È¨Òò×Ó
+                    % ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½
                     FIndCell = FIndCell(3:end,:);
                     FIndCell = FIndCell(end:(-1):1,:);
                     
@@ -562,13 +562,13 @@ classdef yutiansutQUANTAXIS < handle
                 end
             end
             DTemp(rLen:end,:) = [];
-            % ÓÉÓÚÐÂ¹É¸ÕÉÏÊÐ»òÍøÂçµÈÔ­Òò£¬DTempÎª¿Õ
+            % ï¿½ï¿½ï¿½ï¿½ï¿½Â¹É¸ï¿½ï¿½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½DTempÎªï¿½ï¿½
             if isempty(DTemp)
                 return;
             end
-            % ÈÕÆÚ ¿ª ¸ß ÊÕ µÍ Á¿ ¶î ¸´È¨Òò×Ó
-            % µ÷Õû³É
-            % ÈÕÆÚ ¿ª ¸ß µÍ ÊÕ Á¿ ¶î ¸´È¨Òò×Ó
+            % ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½
+            % ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            % ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½
             Low = DTemp(:,5);
             Close = DTemp(:,4);
             DTemp = [ DTemp(:,1:3),Low,Close,DTemp(:,6:end) ];
@@ -580,7 +580,7 @@ classdef yutiansutQUANTAXIS < handle
             Temp = DTemp(:,2:end);
             Data = cellfun(@str2double,Temp);
             
-            % ÓÉºó¸´È¨Êý¾Ý·´ÏòÉú³É ³ýÈ¨³ýÏ¢Êý¾Ý
+            % ï¿½Éºï¿½ï¿½ï¿½È¨ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¨ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½
             for i = 1:4
                 Data(:,i) = Data(:,i)./Data(:,7);
             end
@@ -598,7 +598,7 @@ classdef yutiansutQUANTAXIS < handle
             obj.StockDataDouble = DTemp(sInd:eInd,:);
             adjfactor = obj.StockDataDouble(:,end);
             if isempty( obj.StockDataDouble )==0
-                obj.str='Êý¾Ý»ñÈ¡³É¹¦ ³¢ÊÔÆô¶¯trigger';
+                obj.str='ï¿½ï¿½ï¿½Ý»ï¿½È¡ï¿½É¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½trigger';
                 disp(obj.str)
                 notify(obj,'MessageUpdate')
                 notify(obj,'FetchState');
@@ -608,18 +608,18 @@ classdef yutiansutQUANTAXIS < handle
         function [OutputData,dStr] = GetCons(obj,varargin )
             OutputData = [];
             dStr = [];
-            % %===ÊäÈë²ÎÊý¼ì²é ¿ªÊ¼===
+            % %===ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ê¼===
             %            Flag=1;
             %             if 0 == Flag
-            %                 str = ['Çë¼ì²éÊäÈë²ÎÊýÊÇ·ñÕýÈ·£¡'];
+            %                 str = ['ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½È·ï¿½ï¿½'];
             %                 disp(str)
             %                 return;
             %             end
             %
-            %             % %===ÊäÈë²ÎÊý¼ì²é Íê±Ï===
+            %             % %===ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½===
             %
-            %             % 399704ÉîÖ¤ÉÏÓÎ 399705ÉîÖ¤ÖÐÓÎ 399706ÉîÖ¤ÏÂÓÎ
-            %             % 399701ÉîÖ¤F60 399702ÉîÖ¤F120 399703ÉîÖ¤F200
+            %             % 399704ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½ 399705ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½ 399706ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½
+            %             % 399701ï¿½ï¿½Ö¤F60 399702ï¿½ï¿½Ö¤F120 399703ï¿½ï¿½Ö¤F200
             %             SpecialList = {'399704';'399705';'399706';'399701';'399702';'399703';};
             %
             %             CustomList = {};
@@ -629,7 +629,7 @@ classdef yutiansutQUANTAXIS < handle
                 mkdir( FolderStr );
             end
             
-            FileName = [obj.StockCode,'³É·Ö¹É'];
+            FileName = [obj.StockCode,'ï¿½É·Ö¹ï¿½'];
             FileString = [FolderStr,'/',FileName,'.xls'];
             FileExist = 0;
             if exist(FileString, 'file') == 2
@@ -646,7 +646,7 @@ classdef yutiansutQUANTAXIS < handle
             %                 try
             %                     outfilename = websave(FileString,URL);
             %                 catch
-            %                     str = ['Êý¾Ý»ñÈ¡Ê§°Ü£¬Çë¼ì²éÊäÈëµÄÖ¸Êý´úÂë£¡',obj.StockCode];
+            %                     str = ['ï¿½ï¿½ï¿½Ý»ï¿½È¡Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ë£¡',obj.StockCode];
             %                     disp(str);
             %                     return;
             %                 end
@@ -666,13 +666,13 @@ classdef yutiansutQUANTAXIS < handle
             try
                 outfilename = websave(FileString,URL);
             catch
-                obj.str = ['Êý¾Ý»ñÈ¡Ê§°Ü£¬Çë¼ì²éÊäÈëµÄÖ¸Êý´úÂë£¡',obj.StockCode];
+                obj.str = ['ï¿½ï¿½ï¿½Ý»ï¿½È¡Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ë£¡',obj.StockCode];
                 disp(obj.str);
                 return;
             end
             
             [~,sheets] = xlsfinfo(outfilename);
-            dStr = ['¸üÐÂÊ±¼ä£º',sheets{1,1}];
+            dStr = ['ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ä£º',sheets{1,1}];
             
             [~,~,raw] = xlsread(outfilename);
             
@@ -688,16 +688,16 @@ classdef yutiansutQUANTAXIS < handle
         function [obj,InitialDate] = Index(obj)
             
             % Input:
-            % StockCode:×Ö·ûÕóÁÐÐÍ£¬±íÊ¾Ö¤È¯´úÂë£¬Èçsh000001
-            % BeginDate:×Ö·ûÕóÁÐÐÍ£¬±íÊ¾Ï£Íû»ñÈ¡¹ÉÆ±Êý¾ÝËùÔÚÊ±¶ÎµÄ¿ªÊ¼ÈÕÆÚ£¬Èç20140101
-            % EndDate:×Ö·ûÕóÁÐÐÍ£¬±íÊ¾Ï£Íû»ñÈ¡¹ÉÆ±Êý¾ÝËùÔÚÊ±¶ÎµÄ½áÊøÈÕÆÚ£¬Èç20150101
+            % StockCode:ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½Ê¾Ö¤È¯ï¿½ï¿½ï¿½ë£¬ï¿½ï¿½sh000001
+            % BeginDate:ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½Ê¾Ï£ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ÎµÄ¿ï¿½Ê¼ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½20140101
+            % EndDate:ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½Ê¾Ï£ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ÎµÄ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½20150101
             % Output:
-            % Data: ÈÕÆÚ ¿ª ¸ß µÍ ÊÕ Á¿(¹É) ¶î(Ôª)
+            % Data: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½(ï¿½ï¿½) ï¿½ï¿½(Ôª)
             
-            % »ñÈ¡Êý¾ÝËùÊ¹ÓÃµÄURL
+            % ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ãµï¿½URL
             % http://vip.stock.finance.sina.com.cn/corp/go.php/vMS_MarketHistory/stockid/000001/type/S.phtml?year=1990&jidu=4
             % http://vip.stock.finance.sina.com.cn/corp/go.php/vMS_MarketHistory/stockid/000300/type/S.phtml?year=2014&jidu=4
-            %% ÊäÈëÊä³öÔ¤´¦Àí
+            %% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½
             
             GetInitialDateFlag = 0;
             
@@ -711,7 +711,7 @@ classdef yutiansutQUANTAXIS < handle
                 obj.StockCode = '600300';
             end
             
-            % ´úÂëÔ¤´¦Àí£¬Ä¿±ê´úÂëdemo '000001'
+            % ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½demo '000001'
             if strcmpi(obj.StockCode(1),'s')
                 obj.StockCode = obj.StockCode(3:end);
             end
@@ -719,7 +719,7 @@ classdef yutiansutQUANTAXIS < handle
                 obj.StockCode = obj.StockCode(1:end-2);
             end
             
-            % ÈÕÆÚÊ±¼äÔ¤´¦Àí£¬Ä¿±êÐÎÊ½ '20140101'
+            % ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½Ê½ '20140101'
             obj.BeginDate(obj.BeginDate == '-') = [];
             obj.EndDate(obj.EndDate == '-') = [];
             
@@ -727,7 +727,7 @@ classdef yutiansutQUANTAXIS < handle
             InitialDate = '19900101';
             
             charset = 'gb2312';
-            %% »ñÈ¡³õÊ¼ÈÕÆÚ
+            %% ï¿½ï¿½È¡ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
             if 1 == GetInitialDateFlag
                 URL = ...
                     ['http://vip.stock.finance.sina.com.cn/corp/go.php/vMS_MarketHistory/stockid/' ...
@@ -739,7 +739,7 @@ classdef yutiansutQUANTAXIS < handle
                     [URLchar, status] = urlread(URL, 'Charset', charset, 'TimeOut', 60);
                 end
                 if status == 0
-                    obj.str = ['urlread error:ÍøÒ³¶ÁÈ¡Ê§°Ü£¡Çë¼ì²éÊäÈëµÄÍøÖ·»òÍøÂçÁ¬½ÓÇé¿ö£¡'];
+                    obj.str = ['urlread error:ï¿½ï¿½Ò³ï¿½ï¿½È¡Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'];
                     disp(obj.str);
                     return;
                 end
@@ -811,7 +811,7 @@ classdef yutiansutQUANTAXIS < handle
                         FIndCell = [];
                     end
                     
-                    % ÈÕÆÚ ¿ª ¸ß ÊÕ µÍ Á¿ ¶î
+                    % ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½
                     FIndCell = FIndCell(3:end,:);
                     FIndCell = FIndCell(end:(-1):1,:);
                     
@@ -824,13 +824,13 @@ classdef yutiansutQUANTAXIS < handle
                 end
             end
             DTemp(rLen:end,:) = [];
-            % ÓÉÓÚÐÂÉÏÊÐ»òÍøÂçµÈÔ­Òò£¬DTempÎª¿Õ
+            % ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½DTempÎªï¿½ï¿½
             if isempty(DTemp)
                 return;
             end
-            % ÈÕÆÚ ¿ª ¸ß ÊÕ µÍ Á¿ ¶î
-            % µ÷Õû³É
-            % ÈÕÆÚ ¿ª ¸ß µÍ ÊÕ Á¿ ¶î
+            % ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½
+            % ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            % ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½
             Low = DTemp(:,5);
             Close = DTemp(:,4);
             DTemp = [ DTemp(:,1:3),Low,Close,DTemp(:,6:end) ];
@@ -862,11 +862,11 @@ orderby=date11
 &startTime=2005-01-01&endTime=2014-12-31
 &stockCode=600588&pageNo=1
             %}
-            %% ÊäÈëÊä³öÔ¤´¦Àí
+            %% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½
             Charset = 'gb2312';
             
             
-            % ¹ÉÆ±´úÂëÔ¤´¦Àí£¬Ä¿±ê´úÂëdemo '600588'
+            % ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½demo '600588'
             if strcmpi(obj.StockCode(1),'s')
                 obj.StockCode = obj.StockCode(3:end);
             end
@@ -874,7 +874,7 @@ orderby=date11
                 obj.StockCode = obj.StockCode(1:end-2);
             end
             
-            % ÈÕÆÚÔ¤´¦Àí£¬Ä¿±êÐÎÊ½2014-12-29
+            % ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½Ê½2014-12-29
             ind = find( obj.BeginDate == '-',1 );
             if isempty(ind)
                 obj.BeginDate = [obj.BeginDate(1:4),'-',obj.BeginDate(5:6),'-',obj.BeginDate(7:end)];
@@ -887,26 +887,26 @@ orderby=date11
             NoticeDataCell = [];
             %% NoticeTypeCell
             
-            NoticeTypeCell = {'010301','Äê¶È±¨¸æ'; ...
-                '010303','°ëÄê¶È±¨¸æ'; ...
-                '010305','Ò»¼¾¶È±¨¸æ'; ...
-                '010307','Èý¼¾¶È±¨¸æ'; ...
-                '0102','Ê×´Î¹«¿ª·¢ÐÐ¼°ÉÏÊÐ'; ...
-                '0105','Åä¹É'; ...
-                '0107','Ôö·¢'; ...
-                '0109','¿É×ª»»Õ®È¯'; ...
-                '0110','È¨Ö¤Ïà¹Ø¹«¸æ'; ...
-                '0111','ÆäËüÈÚ×Ê'; ...
-                '0113','È¨Òæ¼°ÏÞÖÆ³öÊÛ¹É·Ý'; ...
-                '0115','¹ÉÈ¨±ä¶¯'; ...
-                '0117','½»Ò×'; ...
-                '0119','¹É¶«´ó»á'; ...
-                '0121','³ÎÇå¡¢·çÏÕ¡¢Òµ¼¨Ô¤¸æ'; ...
-                '0125','ÌØ±ð´¦ÀíºÍÍËÊÐ'; ...
-                '0127','²¹³ä¼°¸üÕý'; ...
-                '0129','ÖÐ½é»ú¹¹±¨¸æ'; ...
-                '0131','ÉÏÊÐ¹«Ë¾ÖÆ¶È'; ...
-                '0123','ÆäËüÖØ´óÊÂÏî'; ...
+            NoticeTypeCell = {'010301','ï¿½ï¿½ï¿½È±ï¿½ï¿½ï¿½'; ...
+                '010303','ï¿½ï¿½ï¿½ï¿½ï¿½È±ï¿½ï¿½ï¿½'; ...
+                '010305','Ò»ï¿½ï¿½ï¿½È±ï¿½ï¿½ï¿½'; ...
+                '010307','ï¿½ï¿½ï¿½ï¿½ï¿½È±ï¿½ï¿½ï¿½'; ...
+                '0102','ï¿½×´Î¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¼ï¿½ï¿½ï¿½ï¿½ï¿½'; ...
+                '0105','ï¿½ï¿½ï¿½ï¿½'; ...
+                '0107','ï¿½ï¿½ï¿½ï¿½'; ...
+                '0109','ï¿½ï¿½×ªï¿½ï¿½Õ®È¯'; ...
+                '0110','È¨Ö¤ï¿½ï¿½ï¿½Ø¹ï¿½ï¿½ï¿½'; ...
+                '0111','ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'; ...
+                '0113','È¨ï¿½æ¼°ï¿½ï¿½ï¿½Æ³ï¿½ï¿½Û¹É·ï¿½'; ...
+                '0115','ï¿½ï¿½È¨ï¿½ä¶¯'; ...
+                '0117','ï¿½ï¿½ï¿½ï¿½'; ...
+                '0119','ï¿½É¶ï¿½ï¿½ï¿½ï¿½ï¿½'; ...
+                '0121','ï¿½ï¿½ï¿½å¡¢ï¿½ï¿½ï¿½Õ¡ï¿½Òµï¿½ï¿½Ô¤ï¿½ï¿½'; ...
+                '0125','ï¿½Ø±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'; ...
+                '0127','ï¿½ï¿½ï¿½ä¼°ï¿½ï¿½ï¿½ï¿½'; ...
+                '0129','ï¿½Ð½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'; ...
+                '0131','ï¿½ï¿½ï¿½Ð¹ï¿½Ë¾ï¿½Æ¶ï¿½'; ...
+                '0123','ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½ï¿½ï¿½ï¿½ï¿½'; ...
                 };
             %% NoticeDataCell
             
@@ -934,26 +934,26 @@ orderby=date11
                 end
                 
                 Head = {'StockCode','DateTime','Title','NoticeType','FileURL','FileSize'};
-                NoticeTypeCell = {'010301','Äê¶È±¨¸æ'; ...
-                    '010303','°ëÄê¶È±¨¸æ'; ...
-                    '010305','Ò»¼¾¶È±¨¸æ'; ...
-                    '010307','Èý¼¾¶È±¨¸æ'; ...
-                    '0102','Ê×´Î¹«¿ª·¢ÐÐ¼°ÉÏÊÐ'; ...
-                    '0105','Åä¹É'; ...
-                    '0107','Ôö·¢'; ...
-                    '0109','¿É×ª»»Õ®È¯'; ...
-                    '0110','È¨Ö¤Ïà¹Ø¹«¸æ'; ...
-                    '0111','ÆäËüÈÚ×Ê'; ...
-                    '0113','È¨Òæ¼°ÏÞÖÆ³öÊÛ¹É·Ý'; ...
-                    '0115','¹ÉÈ¨±ä¶¯'; ...
-                    '0117','½»Ò×'; ...
-                    '0119','¹É¶«´ó»á'; ...
-                    '0121','³ÎÇå¡¢·çÏÕ¡¢Òµ¼¨Ô¤¸æ'; ...
-                    '0125','ÌØ±ð´¦ÀíºÍÍËÊÐ'; ...
-                    '0127','²¹³ä¼°¸üÕý'; ...
-                    '0129','ÖÐ½é»ú¹¹±¨¸æ'; ...
-                    '0131','ÉÏÊÐ¹«Ë¾ÖÆ¶È'; ...
-                    '0123','ÆäËüÖØ´óÊÂÏî'; ...
+                NoticeTypeCell = {'010301','ï¿½ï¿½ï¿½È±ï¿½ï¿½ï¿½'; ...
+                    '010303','ï¿½ï¿½ï¿½ï¿½ï¿½È±ï¿½ï¿½ï¿½'; ...
+                    '010305','Ò»ï¿½ï¿½ï¿½È±ï¿½ï¿½ï¿½'; ...
+                    '010307','ï¿½ï¿½ï¿½ï¿½ï¿½È±ï¿½ï¿½ï¿½'; ...
+                    '0102','ï¿½×´Î¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¼ï¿½ï¿½ï¿½ï¿½ï¿½'; ...
+                    '0105','ï¿½ï¿½ï¿½ï¿½'; ...
+                    '0107','ï¿½ï¿½ï¿½ï¿½'; ...
+                    '0109','ï¿½ï¿½×ªï¿½ï¿½Õ®È¯'; ...
+                    '0110','È¨Ö¤ï¿½ï¿½ï¿½Ø¹ï¿½ï¿½ï¿½'; ...
+                    '0111','ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'; ...
+                    '0113','È¨ï¿½æ¼°ï¿½ï¿½ï¿½Æ³ï¿½ï¿½Û¹É·ï¿½'; ...
+                    '0115','ï¿½ï¿½È¨ï¿½ä¶¯'; ...
+                    '0117','ï¿½ï¿½ï¿½ï¿½'; ...
+                    '0119','ï¿½É¶ï¿½ï¿½ï¿½ï¿½ï¿½'; ...
+                    '0121','ï¿½ï¿½ï¿½å¡¢ï¿½ï¿½ï¿½Õ¡ï¿½Òµï¿½ï¿½Ô¤ï¿½ï¿½'; ...
+                    '0125','ï¿½Ø±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'; ...
+                    '0127','ï¿½ï¿½ï¿½ä¼°ï¿½ï¿½ï¿½ï¿½'; ...
+                    '0129','ï¿½Ð½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'; ...
+                    '0131','ï¿½ï¿½ï¿½Ð¹ï¿½Ë¾ï¿½Æ¶ï¿½'; ...
+                    '0123','ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½ï¿½ï¿½ï¿½ï¿½'; ...
                     };
                 if ~isempty(obj.NoticeType)
                     Temp = cellfun(@(x)strcmpi(x,obj.NoticeType),NoticeTypeCell(:,1));
@@ -961,7 +961,7 @@ orderby=date11
                 else
                     obj.NoticeTypeWord = [];
                 end
-                %% URLÉú³É
+                %% URLï¿½ï¿½ï¿½ï¿½
                 
                 %{
                     http://www.cninfo.com.cn/search/stockfulltext.jsp?
@@ -977,7 +977,7 @@ orderby=date11
                     '&startTime=',obj.BeginDate,'&endTime=',obj.EndDate,'&stockCode=',obj.StockCode, ...
                     '&pageNo=1'];
                 
-                %% Êý¾Ý»ñÈ¡
+                %% ï¿½ï¿½ï¿½Ý»ï¿½È¡
                 Charset = 'gb2312';
                 if verLessThan('matlab', '8.3')
                     [obj.URLchar, status] = urlread_General(URL, 'Charset', Charset, 'TimeOut', 60);
@@ -985,7 +985,7 @@ orderby=date11
                     [obj.URLchar, status] = urlread(URL, 'Charset', Charset, 'TimeOut', 60);
                 end
                 if status == 0
-                    obj.str = ['urlread error:ÍøÒ³¶ÁÈ¡Ê§°Ü£¡Çë¼ì²éÊäÈëµÄÍøÖ·»òÍøÂçÁ¬½ÓÇé¿ö£¡'];
+                    obj.str = ['urlread error:ï¿½ï¿½Ò³ï¿½ï¿½È¡Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'];
                     disp(obj.str);
                     notify(obj,'MessageUpdate')
                     return;
@@ -998,8 +998,8 @@ orderby=date11
                 Temp = regexpi(obj.URLchar, expr,'match');
                 Temp = Temp{1};
                 
-                expr = ['¹²','.*?', ...
-                    'Ìõ'];
+                expr = ['ï¿½ï¿½','.*?', ...
+                    'ï¿½ï¿½'];
                 Temp = regexpi(obj.URLchar, expr,'match');
                 Temp = Temp{1};
                 Temp = Temp(2:end-1);
@@ -1007,9 +1007,9 @@ orderby=date11
                 if Temp == 0
                     return;
                 end
-                %% ÕýÔò´¦Àí
+                %% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 
-                %% ÊäÈëÊä³öÔ¤´¦Àí
+                %% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½
                 if isempty( obj.URLchar )
                     DataCell = [];
                     return;
@@ -1048,7 +1048,7 @@ orderby=date11
                             out = regexpi(TitleURL, expr,'match');
                             out = out{1};
                             temp = out(2:end-length('</a>'));
-                            % % % ¼òÒ×Ô¤´¦ÀíÇåÏ´£¬ÌÞ³ý<em> </em>
+                            % % % ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½Þ³ï¿½<em> </em>
                             expr = ['<.*?em>'];
                             replace = '';
                             temp = regexprep(temp,expr,replace);
@@ -1109,7 +1109,7 @@ orderby=date11
                     
                 end
                 
-                %% »ñÈ¡ÆäËûÒ³ÂëµÄËÑË÷½á¹û
+                %% ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½Ò³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 
                 DCell = [];
                 
@@ -1149,14 +1149,14 @@ orderby=date11
                         end
                         
                         if status == 0
-                            obj.str = ['urlread error:ÍøÒ³¶ÁÈ¡Ê§°Ü£¡Çë¼ì²éÊäÈëµÄÍøÖ·»òÍøÂçÁ¬½ÓÇé¿ö£¡'];
+                            obj.str = ['urlread error:ï¿½ï¿½Ò³ï¿½ï¿½È¡Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'];
                             disp(obj.str);
                             notify(obj,'MessageUpdate')
                             obj.URLchar = [];
                         end
                         
                         
-                        %% ÊäÈëÊä³öÔ¤´¦Àí
+                        %% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½
                         if isempty( obj.URLchar )
                             tData = [];
                             return;
@@ -1195,7 +1195,7 @@ orderby=date11
                                     out = regexpi(TitleURL, expr,'match');
                                     out = out{1};
                                     temp = out(2:end-length('</a>'));
-                                    % % % ¼òÒ×Ô¤´¦ÀíÇåÏ´£¬ÌÞ³ý<em> </em>
+                                    % % % ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½Þ³ï¿½<em> </em>
                                     expr = ['<.*?em>'];
                                     replace = '';
                                     temp = regexprep(temp,expr,replace);
@@ -1259,7 +1259,7 @@ orderby=date11
                     end
                 end
                 
-                %% Êä³ö
+                %% ï¿½ï¿½ï¿½ï¿½
                 
                 tCell = [DataCell;DCell];
                 
@@ -1279,7 +1279,7 @@ orderby=date11
                 NoticeDataCell = [];
                 return;
             end
-            %%  NoticeDataCell°´ÕÕÊ±¼ä½øÐÐÅÅÐò
+            %%  NoticeDataCellï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             tH = NoticeDataCell(1,:);
             tD = NoticeDataCell(2:end,:);
             
@@ -1299,9 +1299,9 @@ orderby=date11
             % by LiYang_faruto
             % Email:farutoliyang@foxmail.com
             % 2014/12/12
-            % AdjFlag 0:³ýÈ¨Ê±ÐòÊý¾Ý 1:Ç°¸´È¨Ê±ÐòÊý¾Ý 2:ºó¸´È¨Ê±ÐòÊý¾Ý
-            % XRDFlag 0:²»»ñÈ¡³ýÈ¨³ýÏ¢ÐÅÏ¢ 1:»ñÈ¡³ýÈ¨³ýÏ¢ÐÅÏ¢
-            %% ÊäÈëÊä³öÔ¤´¦Àí
+            % AdjFlag 0:ï¿½ï¿½È¨Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 1:Ç°ï¿½ï¿½È¨Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 2:ï¿½ï¿½ï¿½ï¿½È¨Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            % XRDFlag 0:ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½È¨ï¿½ï¿½Ï¢ï¿½ï¿½Ï¢ 1:ï¿½ï¿½È¡ï¿½ï¿½È¨ï¿½ï¿½Ï¢ï¿½ï¿½Ï¢
+            %% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½
             XRDFlag = 1;
             AdjFlag = 0;
             SaveLog = [];
@@ -1320,7 +1320,7 @@ orderby=date11
             end
             Date_G = '19900101';
             %%
-            % ³ýÈ¨Ê±ÐòÊý¾Ý
+            % ï¿½ï¿½È¨Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             if 0 == AdjFlag
                 FolderStr = ['./DataBase/Stock/Day_ExDividend_mat'];
                 if ~isdir( FolderStr )
@@ -1355,7 +1355,7 @@ orderby=date11
                         FileExist = 1;
                     end
                     
-                    % ±¾µØÊý¾Ý´æÔÚ£¬½øÐÐÎ²²¿¸üÐÂÌí¼Ó
+                    % ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý´ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½Î²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                     if 1 == FileExist
                         try
                             
@@ -1376,7 +1376,7 @@ orderby=date11
                                 
                                 StockDataDouble = GetStockTSDay_Web(StockCodeInput,obj.BeginDate,obj.EndDate);
                                 if isempty(StockDataDouble)
-                                    obj.str = [ obj.StockCode{i},'-',StockName{i}, ' Êý¾Ý»ñÈ¡Ê§°Ü£¬Çë¼ì²é£¡' ];
+                                    obj.str = [ obj.StockCode{i},'-',StockName{i}, ' ï¿½ï¿½ï¿½Ý»ï¿½È¡Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é£¡' ];
                                     disp(obj.str);
                                     notify(obj,'FetchState');
                                     LenTemp = size( ProbList,1 )+1;
@@ -1388,12 +1388,12 @@ orderby=date11
                                 MatObj.StockData = ...
                                     [MatObj.StockData(1:nrows-OffSet-1,:);StockDataDouble];
                                 
-                            else % % ±¾µØÊý¾Ý´æÔÚ£¬µ«Îª¿Õ
+                            else % % ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý´ï¿½ï¿½Ú£ï¿½ï¿½ï¿½Îªï¿½ï¿½
                                 LenTemp = size( NewList,1 )+1;
                                 
                                 NewList{LenTemp,1} = Scode;
                                 
-                                % »ñÈ¡ÉÏÊÐÈÕÆÚ
+                                % ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                                 StockCodeInput = Scode;
                                 IPOdate = GetBasicInfo_Mat(StockCodeInput,[],[],'Stock','IPOdate');
                                 if ~isempty(IPOdate)
@@ -1409,7 +1409,7 @@ orderby=date11
                                 
                                 StockDataDouble = GetStockTSDay_Web(StockCodeInput,obj.BeginDate,obj.EndDate);
                                 if isempty(StockDataDouble)
-                                    obj.str = [ obj.StockCode{i},'-',StockName{i}, ' Êý¾Ý»ñÈ¡Ê§°Ü£¬Çë¼ì²é£¡' ];
+                                    obj.str = [ obj.StockCode{i},'-',StockName{i}, ' ï¿½ï¿½ï¿½Ý»ï¿½È¡Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é£¡' ];
                                     disp(obj.str);
                                     notify(obj,'FetchState');
                                     LenTemp = size( ProbList,1 )+1;
@@ -1425,20 +1425,20 @@ orderby=date11
                                 
                             end
                         catch
-                            obj.str = [ obj.StockCode{i},'-',StockName{i}, ' Êý¾ÝÔØÈëÊ§°Ü»òÆäËûÔ­ÒòÊý¾Ý¸üÐÂÊ§°Ü£¬½«ÖØÐÂÏÂÔØÊý¾Ý£¡' ];
+                            obj.str = [ obj.StockCode{i},'-',StockName{i}, ' ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü»ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½ï¿½Ý¸ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½' ];
                             disp(obj.str);
                             notify(obj,'FetchState');
                             FileExist = 0;
                         end
                     end
                     
-                    % ±¾µØÊý¾Ý²»´æÔÚ
+                    % ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý²ï¿½ï¿½ï¿½ï¿½ï¿½
                     if 0 == FileExist
                         LenTemp = size( NewList,1 )+1;
                         
                         NewList{LenTemp,1} = Scode;
                         
-                        % »ñÈ¡ÉÏÊÐÈÕÆÚ
+                        % ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                         StockCodeInput = Scode;
                         IPOdate = GetBasicInfo_Mat(StockCodeInput,[],[],'Stock','IPOdate');
                         if ~isempty(IPOdate)
@@ -1454,7 +1454,7 @@ orderby=date11
                         
                         StockDataDouble = GetStockTSDay_Web(StockCodeInput,obj.BeginDate,obj.EndDate);
                         if isempty(StockDataDouble)
-                            obj.str = [ obj.StockCode{i},'-',StockName{i}, ' Êý¾Ý»ñÈ¡Ê§°Ü£¬Çë¼ì²é£¡' ];
+                            obj.str = [ obj.StockCode{i},'-',StockName{i}, ' ï¿½ï¿½ï¿½Ý»ï¿½È¡Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é£¡' ];
                             disp(obj.str);
                             LenTemp = size( ProbList,1 )+1;
                             
@@ -1472,7 +1472,7 @@ orderby=date11
                     ProbListLen = size(ProbList,1)
                     
                     elapsedTimeTemp = toc(ticID);
-                    obj.str = [ 'Ñ­»·ÒÑ¾­ÀÛ¼ÆºÄÊ±', num2str(elapsedTimeTemp), ' seconds(',num2str(elapsedTimeTemp/60), ' minutes)',...
+                    obj.str = [ 'Ñ­ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½Û¼Æºï¿½Ê±', num2str(elapsedTimeTemp), ' seconds(',num2str(elapsedTimeTemp/60), ' minutes)',...
                         '(',num2str(elapsedTimeTemp/60/60), ' hours)',];
                     disp(obj.str);
                     notify(obj,'FetchState');
@@ -1482,7 +1482,7 @@ orderby=date11
                 end
                 
             end
-            %% Ç°¸´È¨Ê±ÐòÊý¾Ý
+            %% Ç°ï¿½ï¿½È¨Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             %             if 1 == AdjFlag
             %                 FolderStrD_Ex = ['./DataBase/Stock/Day_ExDividend_mat'];
             %                 FolderStr = ['./DataBase/Stock/Day_ForwardAdj_mat'];
@@ -1512,7 +1512,7 @@ orderby=date11
             %                         FileExist = 1;
             %                     end
             %
-            %                     % % ±¾µØÊý¾Ý´æÔÚ£¬½øÐÐÎ²²¿¸üÐÂÌí¼Ó
+            %                     % % ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý´ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½Î²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             %                     if 1 == FileExist
             %                         try
             %                             str = ['load ',FileStringD_Ex];
@@ -1527,7 +1527,7 @@ orderby=date11
             %                                 save(FileString,'StockData', '-v7.3');
             %                             end
             %                         catch
-            %                             obj.str = [ StockCode{i},'-',StockName{i}, ' Êý¾ÝÔØÈëÊ§°Ü»òÆäËûÔ­ÒòÊý¾Ý¸üÐÂÊ§°Ü' ];
+            %                             obj.str = [ StockCode{i},'-',StockName{i}, ' ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü»ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½ï¿½Ý¸ï¿½ï¿½ï¿½Ê§ï¿½ï¿½' ];
             %                             disp(obj.str);
             %                             notify(obj,'FetchState')
             %                             FileExist = 0;
@@ -1538,7 +1538,7 @@ orderby=date11
             %                     ProbListLen = size(ProbList,1)
             %
             %                     elapsedTimeTemp = toc(ticID);
-            %                     str = [ 'Ñ­»·ÒÑ¾­ÀÛ¼ÆºÄÊ±', num2str(elapsedTimeTemp), ' seconds(',num2str(elapsedTimeTemp/60), ' minutes)',...
+            %                     str = [ 'Ñ­ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½Û¼Æºï¿½Ê±', num2str(elapsedTimeTemp), ' seconds(',num2str(elapsedTimeTemp/60), ' minutes)',...
             %                         '(',num2str(elapsedTimeTemp/60/60), ' hours)',];
             %                     disp(str);
             %                     str = ['Now Time:',datestr(now,'yyyy-mm-dd HH:MM:SS')];
@@ -1546,7 +1546,7 @@ orderby=date11
             %                 end
             %             end
             %%
-            %             %% ºó¸´È¨Ê±ÐòÊý¾Ý
+            %             %% ï¿½ï¿½ï¿½ï¿½È¨Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             %             if 2 == AdjFlag
             %                 FolderStrD_Ex = ['./DataBase/Stock/Day_ExDividend_mat'];
             %                 FolderStr = ['./DataBase/Stock/Day_BackwardAdj_mat'];
@@ -1570,7 +1570,7 @@ orderby=date11
             %                         FileExist = 1;
             %                     end
             %
-            %                     % % ±¾µØÊý¾Ý´æÔÚ£¬½øÐÐÎ²²¿¸üÐÂÌí¼Ó
+            %                     % % ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý´ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½Î²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             %                     if 1 == FileExist
             %                         try
             %                             str = ['load ',FileStringD_Ex];
@@ -1585,7 +1585,7 @@ orderby=date11
             %                                 save(FileString,'StockData', '-v7.3');
             %                             end
             %                         catch
-            %                             str = [ StockCode{i},'-',StockName{i}, ' Êý¾ÝÔØÈëÊ§°Ü»òÆäËûÔ­ÒòÊý¾Ý¸üÐÂÊ§°Ü' ];
+            %                             str = [ StockCode{i},'-',StockName{i}, ' ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü»ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½ï¿½Ý¸ï¿½ï¿½ï¿½Ê§ï¿½ï¿½' ];
             %                             disp(str);
             %                             FileExist = 0;
             %                         end
@@ -1595,14 +1595,14 @@ orderby=date11
             %                     ProbListLen = size(ProbList,1)
             %
             %                     elapsedTimeTemp = toc(ticID);
-            %                     str = [ 'Ñ­»·ÒÑ¾­ÀÛ¼ÆºÄÊ±', num2str(elapsedTimeTemp), ' seconds(',num2str(elapsedTimeTemp/60), ' minutes)',...
+            %                     str = [ 'Ñ­ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½Û¼Æºï¿½Ê±', num2str(elapsedTimeTemp), ' seconds(',num2str(elapsedTimeTemp/60), ' minutes)',...
             %                         '(',num2str(elapsedTimeTemp/60/60), ' hours)',];
             %                     disp(str);
             %                     str = ['Now Time:',datestr(now,'yyyy-mm-dd HH:MM:SS')];
             %                     disp(str);
             %                 end
             %             end
-            %% »ñÈ¡³ýÈ¨³ýÏ¢ÐÅÏ¢
+            %% ï¿½ï¿½È¡ï¿½ï¿½È¨ï¿½ï¿½Ï¢ï¿½ï¿½Ï¢
             if 1 == XRDFlag
                 FolderStr = ['./DataBase/Stock/XRDdata_mat'];
                 if ~isdir( FolderStr )
@@ -1627,7 +1627,7 @@ orderby=date11
                     [ Web_XRD_Data , Web_XRD_Cell_1 , Web_XRD_Cell_2 ] = GetStockXRD_Web(StockCodeInput);
                     
                     if isempty(Web_XRD_Data)
-                        str = [ StockCode{i},'-',StockName{i}, ' Êý¾Ý»ñÈ¡Ê§°Ü»ò¸Ã¹ÉÆ±ÎÞ³ýÈ¨³ýÏ¢ÐÅÏ¢£¬Çë¼ì²é£¡' ];
+                        str = [ StockCode{i},'-',StockName{i}, ' ï¿½ï¿½ï¿½Ý»ï¿½È¡Ê§ï¿½Ü»ï¿½ï¿½Ã¹ï¿½Æ±ï¿½Þ³ï¿½È¨ï¿½ï¿½Ï¢ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é£¡' ];
                         disp(str);
                         LenTemp = size( ProbList,1 )+1;
                         
@@ -1640,48 +1640,48 @@ orderby=date11
                     ProbListLen = size(ProbList,1)
                     
                     elapsedTimeTemp = toc(ticID);
-                    obj.str = [ 'Ñ­»·ÒÑ¾­ÀÛ¼ÆºÄÊ±', num2str(elapsedTimeTemp), ' seconds(',num2str(elapsedTimeTemp/60), ' minutes)',...
+                    obj.str = [ 'Ñ­ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½Û¼Æºï¿½Ê±', num2str(elapsedTimeTemp), ' seconds(',num2str(elapsedTimeTemp/60), ' minutes)',...
                         '(',num2str(elapsedTimeTemp/60/60), ' hours)',];
                     disp(obj.str);
                     notify(obj,'FetchState');
                 end
             end
-            %% ·¢ËÍÓÊ¼þÍ¨Öª
+            %% ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½Í¨Öª
             
             % str = datestr(now,'yyyy-mm-dd HH:MM:SS');
             % if AdjFlag == 1
-            %     subject = [str,' ¹ÉÆ±ÈÕÏßÊý¾Ý£¨Ç°¸´È¨£©¸üÐÂÍê±Ï'];
+            %     subject = [str,' ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½Ç°ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'];
             % else
-            %     subject = [str,' ¹ÉÆ±ÈÕÏßÊý¾Ý£¨²»¸´È¨£©¸üÐÂÍê±Ï'];
+            %     subject = [str,' ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'];
             % end
             %
             % content = [];
-            % content{1,1} = [str,' ¹ÉÆ±ÈÕÏßÊý¾Ý¸üÐÂÍê±Ï'];
+            % content{1,1} = [str,' ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'];
             %
             % Temp = StockD.DataCell;
             % Temp = Temp(end,1);
             % if iscell(Temp)
             %     Temp = Temp{1};
             % end
-            % str = [ '¹ÉÆ±ÈÕÏßÊý¾ÝÒÑ¸üÐÂÖÁ', num2str(Temp) ];
+            % str = [ 'ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¸ï¿½ï¿½ï¿½ï¿½ï¿½', num2str(Temp) ];
             % content{length(content)+1,1} = str;
             % if ~isempty(IndNew)
-            %     content{length(content)+1,1} = 'ÐÂÔö¼Ó¸ö¹É£º';
+            %     content{length(content)+1,1} = 'ï¿½ï¿½ï¿½ï¿½ï¿½Ó¸ï¿½ï¿½É£ï¿½';
             %     for i = 1: length(IndNew);
             %         content{length(content)+1,1} = cell2mat( StockList(IndNew(i),:) );
             %     end
             % end
-            % str = [ '¹²ºÄÊ±', num2str(elapsedTime), ' seconds(',num2str(elapsedTime/60), ' minutes)', ...
+            % str = [ 'ï¿½ï¿½ï¿½ï¿½Ê±', num2str(elapsedTime), ' seconds(',num2str(elapsedTime/60), ' minutes)', ...
             %        '(',num2str(elapsedTime/60/60), ' hours)'];
             % content{length(content)+1,1} = str;
-            % str = [ '¸ö¹ÉÊýÁ¿Îª', num2str(length(StockList)) ];
+            % str = [ 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª', num2str(length(StockList)) ];
             % content{length(content)+1,1} = str;
             %
-            % TargetAddress = 'faruto@foxmail.com'; %Ä¿±êÓÊÏäµØÖ·
+            % TargetAddress = 'faruto@foxmail.com'; %Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
             % MatlabSentMail(subject, content, TargetAddress);
         end
     end
-    methods %%For ¼¯³ÉÊ½Êý¾ÝÇåÏ´
+    methods %%For ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´
         function obj=Bat(obj,varigin)
             setdbprefs('DataReturnFormat', 'cellarray');
             setdbprefs('NullNumberRead', 'NaN');
@@ -1715,7 +1715,7 @@ orderby=date11
                 
                 obj.StockDataDouble = GetStockTSDay_Web(StockCodeInput,obj.BeginDate,obj.EndDate);
                 if isempty(obj.StockDataDouble)
-                    obj.str = [ obj.StockCode,'-', ' Êý¾Ý»ñÈ¡Ê§°Ü£¬Çë¼ì²é£¡' ];
+                    obj.str = [ obj.StockCode,'-', ' ï¿½ï¿½ï¿½Ý»ï¿½È¡Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é£¡' ];
                     disp(obj.str);
                     notify(obj,'MessageUpdate')
                     
@@ -1729,27 +1729,27 @@ orderby=date11
             end
         end
     end
-    methods %%For ³õÊ¼»¯
+    methods %%For ï¿½ï¿½Ê¼ï¿½ï¿½
         function obj=inital_Mysql(obj)
             databasename = 'quantbox';
             username = 'root';
             password = '940809';
             driver = 'com.mysql.jdbc.Driver';
             databaseurl = 'jdbc:mysql://localhost:3306/quantbox';
-            %% ½¨Á¢ SQL Á¬½Ó
+            %% ï¿½ï¿½ï¿½ï¿½ SQL ï¿½ï¿½ï¿½ï¿½
             conn = database(databasename, username, password, driver, databaseurl);
             status=isopen(conn);
-            %% Á¬½ÓÅÐ¶¨£º1 ÒÑÁ¬½Ó | 0 Î´Á¬½Ó
+            %% ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½1 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ | 0 Î´ï¿½ï¿½ï¿½ï¿½
             if isopen(conn)==1
-                str='±¾µØ·þÎñÆ÷Á¬½Ó³É¹¦';
+                str='ï¿½ï¿½ï¿½Ø·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó³É¹ï¿½';
                 disp(str)
             else
-                str='±¾µØ·þÎñÆ÷Á¬½ÓÊ§°Ü ÇëÁªÏµQQ279336410';
+                str='ï¿½ï¿½ï¿½Ø·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ÏµQQ279336410';
                 disp(str)
                 
             end
-            %% É¾³ýÕâ¸öÊý¾Ý¿â
-            %% ÐÂ½¨Êý¾Ý¿â
+            %% É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½
+            %% ï¿½Â½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½
             load('StockList.mat')
             sqlquery=['CREATE TABLE `QUANTBOX`.`', 'StockList','` (`Name` TEXT NULL COMMENT '''',`FullID` TEXT NULL COMMENT '''',`DoubleID` DOUBLE NULL COMMENT '''');'];
             cusor=exec(conn,sqlquery);
@@ -1817,7 +1817,7 @@ orderby=date11
             obj.str='Data Fetch Finished';
             disp(obj.str)
             notify(obj,'MessageUpdate')
-            fprintf('\nÊý¾ÝAPIS: \n 1.obj.StockCodeOut  \n ¸ñÊ½£ºID-TSDay-Mean-Volum-StockTick-XRD1-MeanXRD1-XRD2-MeanXRD2-Date \n')
+            fprintf('\nï¿½ï¿½ï¿½ï¿½APIS: \n 1.obj.StockCodeOut  \n ï¿½ï¿½Ê½ï¿½ï¿½ID-TSDay-Mean-Volum-StockTick-XRD1-MeanXRD1-XRD2-MeanXRD2-Date \n')
             if obj.Filing==1
                 notify(obj,'FilingState')
             end
@@ -1827,8 +1827,8 @@ orderby=date11
             obj.str='Start DataFiling';
             disp(obj.str)
             notify(obj,'MessageUpdate')
-            %%½øÐÐÊý¾ÝÇåÏ´
-            %%Step1 ÈÕÆÚ¹æÕû ËùÓÐ½»Ò×ÈÕÍ³Ò»
+            %%ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´
+            %%Step1 ï¿½ï¿½ï¿½Ú¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ð½ï¿½ï¿½ï¿½ï¿½ï¿½Í³Ò»
             obj.datatempid=size(obj.StockCodeOut,1);
             x=zeros(obj.datatempid-1,obj.tmun);
             y=zeros(obj.datatempid-1,obj.tmun);
@@ -1853,7 +1853,7 @@ orderby=date11
             obj.str='DataFiling Finished ';
             disp(obj.str)
             notify(obj,'MessageUpdate')
-            fprintf('Êý¾ÝAPIS: \n 1.obj.Result ³ýÈ¨Êý¾Ý\n 2.obj.Result_XRD1 Ç°¸´È¨Êý¾Ý »ùÓÚ¸´È¨Òò×Ó \n 3.obj.Result_XRD2 Ç°¸´È¨Êý¾Ý »ùÓÚ¾­µäËã·¨ \n')
+            fprintf('ï¿½ï¿½ï¿½ï¿½APIS: \n 1.obj.Result ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½\n 2.obj.Result_XRD1 Ç°ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¸ï¿½È¨ï¿½ï¿½ï¿½ï¿½ \n 3.obj.Result_XRD2 Ç°ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¾ï¿½ï¿½ï¿½ï¿½ã·¨ \n')
             if obj.Analysis.id==1
                 notify(obj,'AnalysisState')
             end
@@ -1939,7 +1939,7 @@ orderby=date11
             obj.BESTYFITANDY{jj+1,12}=l1x;
             obj.BESTYFITANDY{jj+1,13}=l2x;
             obj.StockID=obj.StockCodeOut(jj+1,1);
-            figure  %»­Í¼
+            figure  %ï¿½ï¿½Í¼
             subplot(2,1,1);
             plot(l1x)
             hold on
@@ -2010,7 +2010,7 @@ orderby=date11
             %     l2x_depth2=l2x_depth2(obj.SVRt+1:end,:);
             %     obj.BESTYFITANDY_depth2{jj+1,12}=l1x_depth2;
             %     obj.BESTYFITANDY_depth2{jj+1,13}=l2x_depth2;
-            %     obj.StockID=obj.StockCodeOut(jj+1,1); figure  %»­Í¼
+            %     obj.StockID=obj.StockCodeOut(jj+1,1); figure  %ï¿½ï¿½Í¼
             %     subplot(2,1,1); plot(l1x_depth2) hold on plot(l1_depth2)
             %     legend('Original Data','Process with SVR')
             %     titletext=[char(obj.StockID),'--Hurst< 0.5-depth2'];
@@ -2018,7 +2018,7 @@ orderby=date11
             %     plot(l2_depth2) titletext=[char(obj.StockID),'--Hurst>
             %     0.5-depth2']; title(titletext) %%
             %
-            %     figure  %»­Í¼
+            %     figure  %ï¿½ï¿½Í¼
             %     subplot(3,2,1);
             %     plot(modes')
             %     title('CEEMDAN-Depth=1')
@@ -2063,11 +2063,11 @@ orderby=date11
         function obj=ACCOUNT(obj,varargin)
             obj.ACC_Cash=obj.ACC_Cash+obj.TRA.status*obj.TRA.Bid*obj.TRA.Amount;
             
-            obj.ACC_Trade{1,1}='½»Ò×Æ·ÖÖ´úÂë';
-            obj.ACC_Trade{1,2}='½»Ò×ÈÕÆÚ';
-            obj.ACC_Trade{1,3}='³É½»¼Û¸ñ';
-            obj.ACC_Trade{1,4}='½»Ò×ÊýÁ¿';
-            obj.ACC_Trade{1,5}='·½Ïò';
+            obj.ACC_Trade{1,1}='ï¿½ï¿½ï¿½ï¿½Æ·ï¿½Ö´ï¿½ï¿½ï¿½';
+            obj.ACC_Trade{1,2}='ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½';
+            obj.ACC_Trade{1,3}='ï¿½É½ï¿½ï¿½Û¸ï¿½';
+            obj.ACC_Trade{1,4}='ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½';
+            obj.ACC_Trade{1,5}='ï¿½ï¿½ï¿½ï¿½';
             obj.ACC_Trade{obj.ACC_Trade_id,1}=obj.TRA.id;
             obj.ACC_Trade{obj.ACC_Trade_id,2}=obj.TRA.Date;
             obj.ACC_Trade{obj.ACC_Trade_id,3}=obj.TRA.Bid;
@@ -2105,15 +2105,15 @@ orderby=date11
             obj.TRA_Price=obj.TRA_Price_Total(index_date,2:5);
             obj.TRA_Bid=obj.ACC.Bid;
             if obj.TRA_Bid<=obj.TRA_Price(1,2) &&obj.TRA_Bid>=obj.TRA_Price(1,3)
-                disp('³É½»')
+                disp('ï¿½É½ï¿½')
                 obj.TRA.status=obj.ACC_Position;  %-1buy 1sell
                 if obj.TRA.status==-1
-                    obj.TRA.Status='ÂòÈë';
+                    obj.TRA.Status='ï¿½ï¿½ï¿½ï¿½';
                 end
                 if obj.TRA.status==1
-                    obj.TRA.Status='Âô³ö';
+                    obj.TRA.Status='ï¿½ï¿½ï¿½ï¿½';
                 end
-                obj.str=['½»Ò×Æ·ÖÖ´úÂë:',obj.TRA.id,',½»Ò×ÈÕÆÚÊÇ:',num2str(obj.TRA.Date),',½»Ò×¼Û¸ñ:',num2str(obj.TRA.Bid),',½»Ò×Á¿:',num2str(obj.TRA.Amount),',½»Ò×·½Ïò£º',obj.TRA.Status];
+                obj.str=['ï¿½ï¿½ï¿½ï¿½Æ·ï¿½Ö´ï¿½ï¿½ï¿½:',obj.TRA.id,',ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:',num2str(obj.TRA.Date),',ï¿½ï¿½ï¿½×¼Û¸ï¿½:',num2str(obj.TRA.Bid),',ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:',num2str(obj.TRA.Amount),',ï¿½ï¿½ï¿½×·ï¿½ï¿½ï¿½ï¿½ï¿½',obj.TRA.Status];
                 disp(obj.str)
             
             end
@@ -2129,7 +2129,7 @@ orderby=date11
     end
     
 end
-%% ¸¨Öúº¯Êý
+%% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 function [TableTotalNum,TableCell] = GetTableFromWeb(URL,CharsetString)
 
 %
@@ -2227,7 +2227,7 @@ function [TableTotalNum,TableCell] = GetTableFromWeb(URL,CharsetString)
 % getting the data from a table it can identify which table you have
 % chosen.
 % Copyright 2008 - 2010 The MathWorks, Inc.
-%% ÊäÈëÊä³öÔ¤´¦Àí
+%% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½
 if nargin<2 || isempty( CharsetString )
     CharsetString = 'gb2312';
 end
@@ -2264,7 +2264,7 @@ else
     [URLchar, status] = urlread(URL, 'Charset', CharsetString, 'TimeOut', 60);
 end
 if status == 0
-    str = 'urlread error:ÍøÒ³¶ÁÈ¡Ê§°Ü£¡Çë¼ì²éÊäÈëµÄÍøÖ·»òÍøÂçÁ¬½ÓÇé¿ö£¡';
+    str = 'urlread error:ï¿½ï¿½Ò³ï¿½ï¿½È¡Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½';
     disp(str);
     
     return;
@@ -2333,7 +2333,7 @@ function out = getHTMLTable(tableID, pageString)
 
 % Pattern for finding MATLAB hooks
 %pattern = ['<a href="matlab:getTableFromWeb\(' num2str(tableID) '\)'];
-%% ³õÊ¼»¯
+%% ï¿½ï¿½Ê¼ï¿½ï¿½
 out = [];
 %% Modifction
 pattern = ['<a href="matlab:GetTableFromWeb\(' num2str(tableID) '\)'];
@@ -2413,8 +2413,8 @@ catch err
 end
 end
 function [Chinese] = isChinese(ch)
-% ¶ÔÓÚGB2312µÄ×Ö·û£¨¾ÍÊÇÎÒÃÇÆ½Ê±ËùËµµÄÇøÎ»£©£¬Ò»¸öºº×Ö¶ÔÓ¦ÓÚÁ½¸ö×Ö½Ú¡£ Ã¿¸ö×Ö½Ú¶¼ÊÇ´óÓÚA0£¨Ê®Áù½øÖÆ,¼´160£©£¬
-% ÌÈÈô£¬µÚÒ»¸ö×Ö½Ú´óÓÚA0£¬¶øµÚ¶þ¸ö×Ö½ÚÐ¡ÓÚA0£¬ÄÇÃ´ËüÓ¦µ±²»ÊÇºº×Ö£¨½ö½ö¶ÔÓÚGB2312)
+% ï¿½ï¿½ï¿½ï¿½GB2312ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ½Ê±ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Ö¶ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö½Ú¡ï¿½ Ã¿ï¿½ï¿½ï¿½Ö½Ú¶ï¿½ï¿½Ç´ï¿½ï¿½ï¿½A0ï¿½ï¿½Ê®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½160ï¿½ï¿½ï¿½ï¿½
+% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö½Ú´ï¿½ï¿½ï¿½A0ï¿½ï¿½ï¿½ï¿½ï¿½Ú¶ï¿½ï¿½ï¿½ï¿½Ö½ï¿½Ð¡ï¿½ï¿½A0ï¿½ï¿½ï¿½ï¿½Ã´ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½Çºï¿½ï¿½Ö£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½GB2312)
 info = unicode2native(ch,'GB2312');
 bytes = size(info,2);
 Chinese = 0;
@@ -2502,16 +2502,16 @@ function URLHexCode = Unicode2URLHexCode(unicodestr,encoding)
 % by LiYang_faruto
 % Email:farutoliyang@foxmail.com
 % 2014/01/01
-%% ÊäÈëÊä³öÔ¤´¦Àí
+%% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½
 if nargin < 2
     encoding = 'GB2312';
 end
 if nargin < 1
-    unicodestr = '°Ù¶ÈÒ»ÏÂ';
+    unicodestr = 'ï¿½Ù¶ï¿½Ò»ï¿½ï¿½';
 end
 
 URLHexCode = [];
-%% ×ª»»
+%% ×ªï¿½ï¿½
 
 temp = unicode2native(unicodestr,encoding);
 
@@ -2526,16 +2526,16 @@ end
 URLHexCode = StrTemp;
 end
 function URLHexCode = Unicode2URLHexCode_Ch(InputString,encoding)
-% ½ö½«ÊäÈëµÄ×Ö·û´®ÖÐµÄÖÐÎÄ×Ö·û×ª»»³ÉGB2312±àÂë
+% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½×ªï¿½ï¿½ï¿½ï¿½GB2312ï¿½ï¿½ï¿½ï¿½
 % by LiYang_faruto
 % Email:farutoliyang@foxmail.com
 % 2014/12/12
-%% ÊäÈëÊä³öÔ¤´¦Àí
+%% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½
 if nargin < 2
     encoding = 'GB2312';
 end
 if nargin < 1
-    InputString = 'BD°Ù¶ÈTtÒ»ÏÂSS';
+    InputString = 'BDï¿½Ù¶ï¿½TtÒ»ï¿½ï¿½SS';
 end
 if isempty(InputString)
     URLHexCode = [];
@@ -2543,7 +2543,7 @@ if isempty(InputString)
 end
 
 URLHexCode = [];
-%% ×ª»»
+%% ×ªï¿½ï¿½
 Len = length(InputString);
 isFlag = isChineseChar(InputString,encoding);
 for i = 1:Len
@@ -2570,7 +2570,7 @@ function DataCell = URLcharParse(URLchar)
 % by LiYang_faruto
 % Email:farutoliyang@foxmail.com
 % 2015/01/01
-%% ÊäÈëÊä³öÔ¤´¦Àí
+%% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½
 if isempty( URLchar )
     DataCell = [];
     return;
@@ -2598,7 +2598,7 @@ if Len>=1
         out = regexpi(TitleURL, expr,'match');
         out = out{1};
         temp = out(2:end-4);
-        % % % ¼òÒ×Ô¤´¦ÀíÇåÏ´£¬ÌÞ³ý<em> </em>
+        % % % ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½Þ³ï¿½<em> </em>
         expr = ['<.*?em>'];
         replace = '';
         temp = regexprep(temp,expr,replace);
@@ -2626,13 +2626,13 @@ if Len>=1
         expr = ['&nbsp;&nbsp;'];
         out = regexpi(temp, expr,'split');
         if numel(out) == 2
-            %¡¡Author Source
+            %ï¿½ï¿½Author Source
             DataCell{i,3} = out{1};
             % DateTime
             DataCell{i,1} = out{2};
         else
-            % ÓÐµÄ¿ÉÄÜÃ»ÓÐAuthor i.e. ÍøÕ¾Ãû³Æ£¨×÷ÕßÃû³Æ£©Ã»ÓÐ
-            %¡¡Author Source
+            % ï¿½ÐµÄ¿ï¿½ï¿½ï¿½Ã»ï¿½ï¿½Author i.e. ï¿½ï¿½Õ¾ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Ã»ï¿½ï¿½
+            %ï¿½ï¿½Author Source
             DataCell{i,3} = [];
             % DateTime
             DataCell{i,1} = out{1};
@@ -2647,22 +2647,22 @@ end
 function [ Web_XRD_Data , Web_XRD_Cell_1 , Web_XRD_Cell_2 ] = GetStockXRD_Web(StockCode)
 % Modified by LiYang_faruto
 % based on Chandeman
-%% µ÷ÓÃ¸ñÊ½£º
+%% ï¿½ï¿½ï¿½Ã¸ï¿½Ê½ï¿½ï¿½
 %       [ Web_XRD_Data , Web_XRD_Cell_1 , Web_XRD_Cell_2 ] = F_Stock_XRD_DataImport(StockCode,Stock_Name)
-% ÊäÈë£º StockCode ¡ú ¹ÉÆ±´úÂë StockCode = '600001';
-%        Stock_Name ¡ú ¹ÉÆ±Ãû³Æ
-% Êä³ö:  Web_XRD_Data ¡ú ³ýÈ¨³ýÏ¦ÊýÖµÐÍÊý¾Ý
-%        Web_XRD_Cell_1 ¡ú ·ÖºìËÍ¹ÉÎÄ±¾ÐÍÊý¾Ý
-%        Web_XRD_Cell_2 ¡ú Åä¹ÉÎÄ±¾ÐÍÊý¾Ý
+% ï¿½ï¿½ï¿½ë£º StockCode ï¿½ï¿½ ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½ StockCode = '600001';
+%        Stock_Name ï¿½ï¿½ ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½
+% ï¿½ï¿½ï¿½ï¿½:  Web_XRD_Data ï¿½ï¿½ ï¿½ï¿½È¨ï¿½ï¿½Ï¦ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+%        Web_XRD_Cell_1 ï¿½ï¿½ ï¿½Öºï¿½ï¿½Í¹ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+%        Web_XRD_Cell_2 ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 % http://vip.stock.finance.sina.com.cn/corp/go.php/vISSUE_ShareBonus/stockid/600083.phtml
 % http://stockdata.stock.hexun.com/2009_fhzzgb_600588.shtml
 %
-%% ÊäÈëÊä³öÔ¤´¦Àí
+%% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½
 if nargin < 1 || isempty(StockCode)
     StockCode = '600588';
 end
 
-% ¹ÉÆ±´úÂëÔ¤´¦Àí£¬Ä¿±ê´úÂëdemo '600588'
+% ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½demo '600588'
 if strcmpi(StockCode(1),'s')
     StockCode = StockCode(3:end);
 end
@@ -2673,7 +2673,7 @@ end
 Web_XRD_Data = [];
 Web_XRD_Cell_1 = [];
 Web_XRD_Cell_2 = [];
-%% ÍøÒ³¶ÁÈ¡
+%% ï¿½ï¿½Ò³ï¿½ï¿½È¡
 URL = ['http://vip.stock.finance.sina.com.cn/corp/'...
     'go.php/vISSUE_ShareBonus/stockid/'...
     StockCode ,'.phtml'];
@@ -2683,7 +2683,7 @@ else
     [Web_Url_Countent, status] = urlread(URL, 'TimeOut', 60,'Charset', 'gb2312');
 end
 if status == 0
-    str = ['urlread error:ÍøÒ³¶ÁÈ¡Ê§°Ü£¡Çë¼ì²éÊäÈëµÄÍøÖ·»òÍøÂçÁ¬½ÓÇé¿ö£¡'];
+    str = ['urlread error:ï¿½ï¿½Ò³ï¿½ï¿½È¡Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'];
     disp(str);
     return;
 end
@@ -2692,26 +2692,26 @@ Web_Url_Expression = '<tbody>.*</a></td>';
 [~,Web_Url_Matches] = ...
     regexp(Web_Url_Countent,Web_Url_Expression,'tokens','match');
 
-%% Êý¾ÝÌáÈ¡
+%% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡
 
 Web_Ori_Countent = char(Web_Url_Matches);
 Web_Ori_Expression = '>';
 [~,Web_Ori_Matches] = regexp(Web_Ori_Countent,Web_Ori_Expression,'match','split');
 
-%% Êý¾ÝÕûÀí
+%% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 Web_Ori_Matches_length = length(Web_Ori_Matches);
 Intermediate_variable_k = Web_Ori_Matches_length;
 Intermediate_variable_Matches = char(Web_Ori_Matches);
 if isempty(Intermediate_variable_Matches)
-    fprintf([StockCode,'¡úÔÝÎÞ³ýÈ¨³ýÏ¢Êý¾Ý\n'])
+    fprintf([StockCode,'ï¿½ï¿½ï¿½ï¿½ï¿½Þ³ï¿½È¨ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½\n'])
     Web_XRD_Data = [];
     Web_XRD_Cell_1 = [];
     Web_XRD_Cell_2 = [];
     return;
 end
 
-% ÕÒ³ö·ÖºìÔö¹É&Åä¹ÉÁÙ½çÎ»ÖÃ
+% ï¿½Ò³ï¿½ï¿½Öºï¿½ï¿½ï¿½ï¿½ï¿½&ï¿½ï¿½ï¿½ï¿½ï¿½Ù½ï¿½Î»ï¿½ï¿½
 
 for Intermediate_variable_i = 1 : length(Intermediate_variable_Matches(:,1))
     if strcmp(Intermediate_variable_Matches(Web_Ori_Matches_length + 1 - Intermediate_variable_i,1:7) , '<strong')
@@ -2720,7 +2720,7 @@ for Intermediate_variable_i = 1 : length(Intermediate_variable_Matches(:,1))
     end
 end
 
-% ·Öºì
+% ï¿½Öºï¿½
 
 Intermediate_variable_j = 1;
 Intermediate_variable_q1 = repmat(1:7,1,ceil(Web_Ori_Matches_length/7))';
@@ -2732,27 +2732,27 @@ for Intermediate_variable_i = 1 : Intermediate_variable_k
     end
 end
 
-Web_XRD_Cell_1 = [{'¹«¸æÈÕÆÚ','ËÍ¹É£¨¹É£©','×ªÔö£¨¹É£©','ÅÉÏ¢£¨Ë°Ç°£©£¨Ôª£©',...
-    '³ýÈ¨³ýÏ¢ÈÕ', '¹ÉÈ¨µÇ¼ÇÈÕ','ºì¹ÉÉÏÊÐÈÕ'};Web_XRD_Cell_1];
+Web_XRD_Cell_1 = [{'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½','ï¿½Í¹É£ï¿½ï¿½É£ï¿½','×ªï¿½ï¿½ï¿½ï¿½ï¿½É£ï¿½','ï¿½ï¿½Ï¢ï¿½ï¿½Ë°Ç°ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½',...
+    'ï¿½ï¿½È¨ï¿½ï¿½Ï¢ï¿½ï¿½', 'ï¿½ï¿½È¨ï¿½Ç¼ï¿½ï¿½ï¿½','ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'};Web_XRD_Cell_1];
 
-% ÕÒ³öÎÞÐ§Êý¾Ý
+% ï¿½Ò³ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ï¿½ï¿½
 
 [Web_XRD_Cell_1_Row_1,Web_XRD_Cell_1_Column_1] = size(Web_XRD_Cell_1);
 Intermediate_variable_j = 0;
 Intermediate_variable_l = ones(Web_XRD_Cell_1_Row_1,1);
 for Intermediate_variable_i = 1 : Web_XRD_Cell_1_Row_1
     if strcmp(Web_XRD_Cell_1(Intermediate_variable_i,5),'--') || ...
-            strcmp(Web_XRD_Cell_1(Intermediate_variable_i,5),'³ýÈ¨³ýÏ¢ÈÕ')
+            strcmp(Web_XRD_Cell_1(Intermediate_variable_i,5),'ï¿½ï¿½È¨ï¿½ï¿½Ï¢ï¿½ï¿½')
         Intermediate_variable_l(Intermediate_variable_i,1) = 0;
         Intermediate_variable_j = Intermediate_variable_j + 1;
     end
 end
 
-% ½«·ÖºìÔö¹ÉÎÄ±¾Êý¾Ý×ª³ÉÊýÖµÐÍÊý¾Ý
+% ï¿½ï¿½ï¿½Öºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 temp = Web_XRD_Cell_1(Intermediate_variable_l==1,5);
 if isempty( temp )
-    fprintf([StockCode,'¡úÔÝÎÞ³ýÈ¨³ýÏ¢Êý¾Ý\n'])
+    fprintf([StockCode,'ï¿½ï¿½ï¿½ï¿½ï¿½Þ³ï¿½È¨ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½\n'])
     Web_XRD_Data = [];
     Web_XRD_Cell_1 = [];
     Web_XRD_Cell_2 = [];
@@ -2760,31 +2760,31 @@ if isempty( temp )
 end
 
 Web_XRD_Data = zeros(Web_XRD_Cell_1_Row_1 - Intermediate_variable_j ,6);
-Web_XRD_Data(:,1)  = datenum(Web_XRD_Cell_1(Intermediate_variable_l==1,5));          % ³ýÈ¨³ýÏ¢ÈÕ
+Web_XRD_Data(:,1)  = datenum(Web_XRD_Cell_1(Intermediate_variable_l==1,5));          % ï¿½ï¿½È¨ï¿½ï¿½Ï¢ï¿½ï¿½
 
-Web_XRD_Data(:,2)  = cellfun(@str2num,Web_XRD_Cell_1(Intermediate_variable_l==1,2)); % ËÍ¹É
-Web_XRD_Data(:,3)  = cellfun(@str2num,Web_XRD_Cell_1(Intermediate_variable_l==1,3)); % ×ªÔö
-Web_XRD_Data(:,4)  = cellfun(@str2num,Web_XRD_Cell_1(Intermediate_variable_l==1,4)); % ÅÉÏ¢
+Web_XRD_Data(:,2)  = cellfun(@str2num,Web_XRD_Cell_1(Intermediate_variable_l==1,2)); % ï¿½Í¹ï¿½
+Web_XRD_Data(:,3)  = cellfun(@str2num,Web_XRD_Cell_1(Intermediate_variable_l==1,3)); % ×ªï¿½ï¿½
+Web_XRD_Data(:,4)  = cellfun(@str2num,Web_XRD_Cell_1(Intermediate_variable_l==1,4)); % ï¿½ï¿½Ï¢
 
-%% Åä¹ÉÊý¾Ý´¦Àí
+%% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý´ï¿½ï¿½ï¿½
 
-% Åä¹É
+% ï¿½ï¿½ï¿½ï¿½
 [~,TableCell] = GetTableFromWeb(URL);
 
 TableInd = 20;
 TempCell = TableCell{TableInd};
 TempCell = TempCell(3,:);
 
-if size(TempCell,2) == 1 || strcmpi(TempCell{1,1},'ÔÝÊ±Ã»ÓÐÊý¾Ý£¡')
+if size(TempCell,2) == 1 || strcmpi(TempCell{1,1},'ï¿½ï¿½Ê±Ã»ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½')
     Web_XRD_Cell_2 = [];
 else
     TempCell = TempCell(:,1:9);
     
-    Web_XRD_Cell_2 = [{'¹«¸æÈÕÆÚ','Åä¹É·½°¸£¨Ã¿10¹ÉÅä¹É¹ÉÊý£©','Åä¹É¼Û¸ñ£¨Ôª£©',...
-        '»ù×¼¹É±¾£¨Íò¹É£©','³ýÈ¨³ýÏ¢ÈÕ','¹ÉÈ¨µÇ¼ÇÈÕ','½É¿îÆðÊ¼ÈÕ','½É¿îÖÕÖ¹ÈÕ',...
-        'Åä¹ÉÉÏÊÐÈÕ'};TempCell];
+    Web_XRD_Cell_2 = [{'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½','ï¿½ï¿½ï¿½É·ï¿½ï¿½ï¿½ï¿½ï¿½Ã¿10ï¿½ï¿½ï¿½ï¿½ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½','ï¿½ï¿½ï¿½É¼Û¸ï¿½ï¿½ï¿½Ôªï¿½ï¿½',...
+        'ï¿½ï¿½×¼ï¿½É±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É£ï¿½','ï¿½ï¿½È¨ï¿½ï¿½Ï¢ï¿½ï¿½','ï¿½ï¿½È¨ï¿½Ç¼ï¿½ï¿½ï¿½','ï¿½É¿ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½','ï¿½É¿ï¿½ï¿½ï¿½Ö¹ï¿½ï¿½',...
+        'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'};TempCell];
     
-    % ºÏ²¢·ÖºìÔö¹ÉÓëÅä¹ÉÊý¾Ý
+    % ï¿½Ï²ï¿½ï¿½Öºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     
     [Web_XRD_Cell_2_Row,Web_XRD_Cell_2_Column_2] = size(Web_XRD_Cell_2);
     Intermediate_variable_XRDCell2 = zeros(Web_XRD_Cell_2_Row-1,3);
@@ -2818,11 +2818,11 @@ end
 %         end
 %     end
 %
-%     Web_XRD_Cell_2 = [{'¹«¸æÈÕÆÚ','Åä¹É·½°¸£¨Ã¿10¹ÉÅä¹É¹ÉÊý£©','Åä¹É¼Û¸ñ£¨Ôª£©',...
-%         '»ù×¼¹É±¾£¨Íò¹É£©','³ýÈ¨³ýÏ¢ÈÕ','¹ÉÈ¨µÇ¼ÇÈÕ','½É¿îÆðÊ¼ÈÕ','½É¿îÖÕÖ¹ÈÕ',...
-%         'Åä¹ÉÉÏÊÐÈÕ'};Web_XRD_Cell_2];
+%     Web_XRD_Cell_2 = [{'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½','ï¿½ï¿½ï¿½É·ï¿½ï¿½ï¿½ï¿½ï¿½Ã¿10ï¿½ï¿½ï¿½ï¿½ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½','ï¿½ï¿½ï¿½É¼Û¸ï¿½ï¿½ï¿½Ôªï¿½ï¿½',...
+%         'ï¿½ï¿½×¼ï¿½É±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É£ï¿½','ï¿½ï¿½È¨ï¿½ï¿½Ï¢ï¿½ï¿½','ï¿½ï¿½È¨ï¿½Ç¼ï¿½ï¿½ï¿½','ï¿½É¿ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½','ï¿½É¿ï¿½ï¿½ï¿½Ö¹ï¿½ï¿½',...
+%         'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'};Web_XRD_Cell_2];
 %
-%     % ºÏ²¢·ÖºìÔö¹ÉÓëÅä¹ÉÊý¾Ý
+%     % ï¿½Ï²ï¿½ï¿½Öºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 %
 %     [Web_XRD_Cell_2_Row,Web_XRD_Cell_2_Column_2] = size(Web_XRD_Cell_2);
 %     Intermediate_variable_XRDCell2 = zeros(Web_XRD_Cell_2_Row-1,3);
@@ -3242,15 +3242,15 @@ username = 'root';
 password = '940809';
 driver = 'com.mysql.jdbc.Driver';
 databaseurl = 'jdbc:mysql://localhost:3306/quantbox';
-%% ½¨Á¢ SQL Á¬½Ó
+%% ï¿½ï¿½ï¿½ï¿½ SQL ï¿½ï¿½ï¿½ï¿½
 conn = database(databasename, username, password, driver, databaseurl);
 status=isopen(conn);
-%% Á¬½ÓÅÐ¶¨£º1 ÒÑÁ¬½Ó | 0 Î´Á¬½Ó
+%% ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½1 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ | 0 Î´ï¿½ï¿½ï¿½ï¿½
 if isopen(conn)==1
-    str='±¾µØ·þÎñÆ÷Á¬½Ó³É¹¦';
+    str='ï¿½ï¿½ï¿½Ø·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó³É¹ï¿½';
     disp(str)
 else
-    str='±¾µØ·þÎñÆ÷Á¬½ÓÊ§°Ü ÇëÁªÏµQQ279336410';
+    str='ï¿½ï¿½ï¿½Ø·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ÏµQQ279336410';
     disp(str)
     
 end
@@ -3261,15 +3261,15 @@ username = 'root';
 password = 'KlLn0NBkKn';
 driver = 'com.mysql.jdbc.Driver';
 databaseurl = 'jdbc:mysql://112.74.111.65:3306/QUANTBOX';
-%% ½¨Á¢ SQL Á¬½Ó
+%% ï¿½ï¿½ï¿½ï¿½ SQL ï¿½ï¿½ï¿½ï¿½
 conn = database(databasename, username, password, driver, databaseurl);
 status=isopen(conn);
-%% Á¬½ÓÅÐ¶¨£º1 ÒÑÁ¬½Ó | 0 Î´Á¬½Ó
+%% ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½1 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ | 0 Î´ï¿½ï¿½ï¿½ï¿½
 if isopen(conn)==1
-    str='Ô¶³Ì·þÎñÆ÷Á¬½Ó³É¹¦';
+    str='Ô¶ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó³É¹ï¿½';
     disp(str)
 else
-    str='Ô¶³Ì·þÎñÆ÷Á¬½ÓÊ§°Ü ÇëÁªÏµQQ279336410';
+    str='Ô¶ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ÏµQQ279336410';
     disp(str)
 end
 end
@@ -3286,11 +3286,11 @@ ind = find( SourceAddress == '@', 1);
 temp = SourceAddress(ind+1:end);
 FieldName = temp;
 SMTP_Server = ['smtp.',FieldName];
-str='ÓÊ¼þÕýÔÚ·¢ËÍÖÐ!';
+str='ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Ú·ï¿½ï¿½ï¿½ï¿½ï¿½!';
 disp(str);
 
 %%
-setpref('Internet','SMTP_Server',SMTP_Server);%SMTP·þÎñÆ÷£¬¼Ç×¡Òª¸Ä³É×Ô¼ºÓÊÏäµÄsmtp£¨°Ù¶ÈÒ»ÏÂ¾ÍÐÐÁË£©
+setpref('Internet','SMTP_Server',SMTP_Server);%SMTPï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¡Òªï¿½Ä³ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½smtpï¿½ï¿½ï¿½Ù¶ï¿½Ò»ï¿½Â¾ï¿½ï¿½ï¿½ï¿½Ë£ï¿½
 setpref('Internet','E_mail',SourceAddress);
 setpref('Internet','SMTP_Username',SourceAddress);
 setpref('Internet','SMTP_Password',password);
@@ -3302,20 +3302,20 @@ sendmail(TargetAddress, 'Message from QUANTAXIS by yutiansut', content);
 end
 %% GET DATA SUBFUNCTION
 function [DataOutput, Status] = GetBasicInfo_Mat(Code,BeginDate,EndDate,Type,Field)
-% »ñÈ¡»ù±¾ÐÅÏ¢ ±ÈÈçIPOdate
+% ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ ï¿½ï¿½ï¿½ï¿½IPOdate
 % by LiYang_faruto
 % Email:farutoliyang@foxmail.com
 % 2015/03/01
 % % Input:
 %
 % Type
-% Stock£º»ñÈ¡¹ÉÆ±Êý¾Ý Future:»ñÈ¡ÆÚ»õÊý¾Ý
-% StockIndex£º»ñÈ¡¹ÉÆ±Ïà¹ØÖ¸ÊýÊý¾Ý
-% FutureIndex£º»ñÈ¡ÆÚ»õÏà¹ØÖ¸ÊýÊý¾Ý
+% Stockï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½ Future:ï¿½ï¿½È¡ï¿½Ú»ï¿½ï¿½ï¿½ï¿½ï¿½
+% StockIndexï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+% FutureIndexï¿½ï¿½ï¿½ï¿½È¡ï¿½Ú»ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 % Field
 % IPOdate
 % Name
-%% ÊäÈëÊä³öÔ¤´¦Àí
+%% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½
 DataOutput = [];
 Status = [];
 Status = 0;
@@ -3338,7 +3338,7 @@ end
 
 if strcmpi(Type,'Stock') || strcmpi(Type,'gp') ...
         || strcmpi(Type,'gupiao') || strcmpi(Type,'s')
-    % ´úÂëÔ¤´¦Àí£¬Ä¿±ê´úÂëdemo 'sh600588'
+    % ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½demo 'sh600588'
     if Code(1,1) == '6'
         Code = ['sh',Code];
     end
@@ -3348,24 +3348,24 @@ if strcmpi(Type,'Stock') || strcmpi(Type,'gp') ...
     
 end
 
-% ÈÕÆÚÊ±¼äÔ¤´¦Àí£¬Ä¿±êÐÎÊ½ '20140101'
+% ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½Ê½ '20140101'
 BeginDate(BeginDate == '-') = [];
 EndDate(EndDate == '-') = [];
 
 BeginDate = str2double(BeginDate);
 EndDate = str2double(EndDate);
 if BeginDate>EndDate
-    str = ['¿ªÊ¼ÈÕÆÚÐèÒªÐ¡ÓÚµÈÓÚ½áÊøÈÕÆÚ£¬Çë¼ì²éÊäÈë²ÎÊý£¡'];
+    str = ['ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÒªÐ¡ï¿½Úµï¿½ï¿½Ú½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'];
     disp(str);
     return;
 end
-%% »ñÈ¡¹ÉÆ±Êý¾Ý
+%% ï¿½ï¿½È¡ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½
 if strcmpi(Type,'Stock') || strcmpi(Type,'gp') ...
         || strcmpi(Type,'gupiao') || strcmpi(Type,'s')
     
     CodeInput = Code;
     
-    % % »ñÈ¡ÉÏÊÐÈÕÆÚ
+    % % ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     if strcmpi(Field, 'IPOdate')
         
         IPOdate = [];
@@ -3382,7 +3382,7 @@ if strcmpi(Type,'Stock') || strcmpi(Type,'gp') ...
         DataOutput = IPOdate;
     end
     
-    % % »ñÈ¡¹ÉÆ±Ãû³Æ
+    % % ï¿½ï¿½È¡ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½
     if strcmpi(Field, 'Name')
         FileString = 'StockList.mat';
         MatObj = matfile(FileString,'Writable',true);
@@ -3413,30 +3413,30 @@ function [StockDataDouble,adjfactor] = GetStockTSDay_Web(StockCode,BeginDate,End
 % Email:farutoliyang@foxmail.com
 % 2014/12/12
 % Input:
-% StockCode:×Ö·ûÕóÁÐÐÍ£¬±íÊ¾Ö¤È¯´úÂë£¬Èçsh600000
-% BeginDate:×Ö·ûÕóÁÐÐÍ£¬±íÊ¾Ï£Íû»ñÈ¡¹ÉÆ±Êý¾ÝËùÔÚÊ±¶ÎµÄ¿ªÊ¼ÈÕÆÚ£¬Èç20140101
-% EndDate:×Ö·ûÕóÁÐÐÍ£¬±íÊ¾Ï£Íû»ñÈ¡¹ÉÆ±Êý¾ÝËùÔÚÊ±¶ÎµÄ½áÊøÈÕÆÚ£¬Èç20150101
+% StockCode:ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½Ê¾Ö¤È¯ï¿½ï¿½ï¿½ë£¬ï¿½ï¿½sh600000
+% BeginDate:ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½Ê¾Ï£ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ÎµÄ¿ï¿½Ê¼ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½20140101
+% EndDate:ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½Ê¾Ï£ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ÎµÄ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½20150101
 % Output:
-% StockDataDouble: ÈÕÆÚ ¿ª ¸ß µÍ ÊÕ Á¿(¹É) ¶î(Ôª) ¸´È¨Òò×Ó£¨ºó¸´È¨Òò×Ó£©
-% Ç°¸´È¨Òò×Ó µÈÓÚ ºó¸´È¨Òò×Ó µÄµ¹ÐòÅÅÁÐ
-% ÕÇµø·ù¸´È¨·½Ê½
-% ºó¸´È¨¼Û¸ñ = ½»Ò×¼Û*ºó¸´È¨Òò×Ó
-% Ç°¸´È¨¼Û¸ñ = ½»Ò×¼Û/Ç°¸´È¨Òò×Ó
+% StockDataDouble: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½(ï¿½ï¿½) ï¿½ï¿½(Ôª) ï¿½ï¿½È¨ï¿½ï¿½ï¿½Ó£ï¿½ï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½ï¿½Ó£ï¿½
+% Ç°ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½ ï¿½Äµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+% ï¿½Çµï¿½ï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½Ê½
+% ï¿½ï¿½ï¿½ï¿½È¨ï¿½Û¸ï¿½ = ï¿½ï¿½ï¿½×¼ï¿½*ï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½
+% Ç°ï¿½ï¿½È¨ï¿½Û¸ï¿½ = ï¿½ï¿½ï¿½×¼ï¿½/Ç°ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½
 
-% »ñÈ¡Êý¾ÝËùÊ¹ÓÃµÄURL
+% ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ãµï¿½URL
 % http://vip.stock.finance.sina.com.cn/corp/go.php/vMS_MarketHistory/stockid/000562.phtml?year=1994&jidu=1
 % http://vip.stock.finance.sina.com.cn/corp/go.php/vMS_FuQuanMarketHistory/stockid/000562.phtml?year=1995&jidu=4
 % http://biz.finance.sina.com.cn/stock/flash_hq/kline_data.php?symbol=sz000562&end_date=20150101&begin_date=19940101
-%% URLÑ¡ÔñÉè¶¨
+%% URLÑ¡ï¿½ï¿½ï¿½è¶¨
 
 URLflag = 2;
 
-% 1 Ê¹ÓÃÈçÏÂURL»ñÈ¡Êý¾Ý£¬µ«×î¶àÖ»ÄÜ»ñÈ¡µ½20000101Ö®ºóµÄÊý¾Ý£¬ÇÒÎÞ·¨»ñÈ¡³É½»¶îºÍ¸´È¨Òò×Ó£¬ÇÒÊý¾ÝÓÐÈ±Ê§
+% 1 Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½URLï¿½ï¿½È¡ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½Ü»ï¿½È¡ï¿½ï¿½20000101Ö®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½ï¿½Þ·ï¿½ï¿½ï¿½È¡ï¿½É½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½È¨ï¿½ï¿½ï¿½Ó£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È±Ê§
 % http://biz.finance.sina.com.cn/stock/flash_hq/kline_data.php?symbol=sz000562&end_date=20150101&begin_date=19940101
-% 2 Ê¹ÓÃÈçÏÂURL»ñÈ¡Êý¾Ý£¬¿ÉÒÔ»ñÈ¡×ÔÉÏÊÐÈÕ¿ªÊ¼µÄ×óÓÒÊý¾ÝºÍ¸´È¨Òò×Ó 19900101 ²¿·ÖÊý¾ÝÒ²ÓÐÈ±Ê§
+% 2 Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½URLï¿½ï¿½È¡ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½ï¿½Ô»ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¿ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÝºÍ¸ï¿½È¨ï¿½ï¿½ï¿½ï¿½ 19900101 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò²ï¿½ï¿½È±Ê§
 % http://vip.stock.finance.sina.com.cn/corp/go.php/vMS_FuQuanMarketHistory/stockid/000562.phtml?year=1995&jidu=4
-% ÀàËÆµÄËùÓÐÀ´×ÔÐÂÀËµÄÊý¾ÝÔ´¶¼»áÓÐ²¿·ÖÊý¾ÝÈ±Ê§
-%% ÊäÈëÊä³öÔ¤´¦Àí
+% ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½Ð²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È±Ê§
+%% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½
 if nargin < 3 || isempty(EndDate)
     EndDate = '20150101';
 end
@@ -3447,7 +3447,7 @@ if nargin < 1 || isempty(StockCode)
     StockCode = 'sh600588';
 end
 
-% ¹ÉÆ±´úÂëÔ¤´¦Àí£¬Ä¿±ê´úÂëdemo 'sh600588'
+% ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½demo 'sh600588'
 if 1 == URLflag
     if StockCode(1,1) == '6'
         StockCode = ['sh',StockCode];
@@ -3457,7 +3457,7 @@ if 1 == URLflag
     end
 end
 
-% ¹ÉÆ±´úÂëÔ¤´¦Àí£¬Ä¿±ê´úÂëdemo '600588'
+% ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½demo '600588'
 if 2 == URLflag
     StockCode(StockCode=='.') = [];
     if strcmpi(StockCode(1),'s')
@@ -3468,7 +3468,7 @@ if 2 == URLflag
     end
 end
 
-% ÊäÈëÈÕÆÚÔ¤´¦Àí
+% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½
 if ~ischar( BeginDate )
     BeginDate = num2str(BeginDate);
 end
@@ -3527,7 +3527,7 @@ if 2 == URLflag
                 FIndCell = [];
             end
             
-            % ÈÕÆÚ ¿ª ¸ß ÊÕ µÍ Á¿ ¶î ¸´È¨Òò×Ó
+            % ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½
             FIndCell = FIndCell(3:end,:);
             FIndCell = FIndCell(end:(-1):1,:);
             
@@ -3540,13 +3540,13 @@ if 2 == URLflag
         end
     end
     DTemp(rLen:end,:) = [];
-    % ÓÉÓÚÐÂ¹É¸ÕÉÏÊÐ»òÍøÂçµÈÔ­Òò£¬DTempÎª¿Õ
+    % ï¿½ï¿½ï¿½ï¿½ï¿½Â¹É¸ï¿½ï¿½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½DTempÎªï¿½ï¿½
     if isempty(DTemp)
         return;
     end
-    % ÈÕÆÚ ¿ª ¸ß ÊÕ µÍ Á¿ ¶î ¸´È¨Òò×Ó
-    % µ÷Õû³É
-    % ÈÕÆÚ ¿ª ¸ß µÍ ÊÕ Á¿ ¶î ¸´È¨Òò×Ó
+    % ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½
+    % ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    % ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½
     Low = DTemp(:,5);
     Close = DTemp(:,4);
     DTemp = [ DTemp(:,1:3),Low,Close,DTemp(:,6:end) ];
@@ -3558,7 +3558,7 @@ if 2 == URLflag
     Temp = DTemp(:,2:end);
     Data = cellfun(@str2double,Temp);
     
-    % ÓÉºó¸´È¨Êý¾Ý·´ÏòÉú³É ³ýÈ¨³ýÏ¢Êý¾Ý
+    % ï¿½Éºï¿½ï¿½ï¿½È¨ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¨ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½
     for i = 1:4
         Data(:,i) = Data(:,i)./Data(:,7);
     end
@@ -3582,7 +3582,7 @@ if 1 == URLflag
     
     [URLchar, status] = urlread(URL,'TimeOut', 60);
     if status == 0
-        str = ['urlread error:ÍøÒ³¶ÁÈ¡Ê§°Ü£¡Çë¼ì²éÊäÈëµÄÍøÖ·»òÍøÂçÁ¬½ÓÇé¿ö£¡'];
+        str = ['urlread error:ï¿½ï¿½Ò³ï¿½ï¿½È¡Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'];
         disp(str);
         return;
     end
@@ -3629,16 +3629,16 @@ function [Data,InitialDate] = GetIndexTSDay_Web(StockCode,BeginDate,EndDate,GetI
 % Email:farutoliyang@foxmail.com
 % 2015/01/01
 % Input:
-% StockCode:×Ö·ûÕóÁÐÐÍ£¬±íÊ¾Ö¤È¯´úÂë£¬Èçsh000001
-% BeginDate:×Ö·ûÕóÁÐÐÍ£¬±íÊ¾Ï£Íû»ñÈ¡¹ÉÆ±Êý¾ÝËùÔÚÊ±¶ÎµÄ¿ªÊ¼ÈÕÆÚ£¬Èç20140101
-% EndDate:×Ö·ûÕóÁÐÐÍ£¬±íÊ¾Ï£Íû»ñÈ¡¹ÉÆ±Êý¾ÝËùÔÚÊ±¶ÎµÄ½áÊøÈÕÆÚ£¬Èç20150101
+% StockCode:ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½Ê¾Ö¤È¯ï¿½ï¿½ï¿½ë£¬ï¿½ï¿½sh000001
+% BeginDate:ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½Ê¾Ï£ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ÎµÄ¿ï¿½Ê¼ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½20140101
+% EndDate:ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½Ê¾Ï£ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Æ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ÎµÄ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½20150101
 % Output:
-% Data: ÈÕÆÚ ¿ª ¸ß µÍ ÊÕ Á¿(¹É) ¶î(Ôª)
+% Data: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½(ï¿½ï¿½) ï¿½ï¿½(Ôª)
 
-% »ñÈ¡Êý¾ÝËùÊ¹ÓÃµÄURL
+% ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ãµï¿½URL
 % http://vip.stock.finance.sina.com.cn/corp/go.php/vMS_MarketHistory/stockid/000001/type/S.phtml?year=1990&jidu=4
 % http://vip.stock.finance.sina.com.cn/corp/go.php/vMS_MarketHistory/stockid/000300/type/S.phtml?year=2014&jidu=4
-%% ÊäÈëÊä³öÔ¤´¦Àí
+%% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½
 if nargin < 4 || isempty(GetInitialDateFlag)
     GetInitialDateFlag = 0;
 end
@@ -3652,7 +3652,7 @@ if nargin < 1 || isempty(StockCode)
     StockCode = 'sh000001';
 end
 
-% ´úÂëÔ¤´¦Àí£¬Ä¿±ê´úÂëdemo '000001'
+% ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½demo '000001'
 if strcmpi(StockCode(1),'s')
     StockCode = StockCode(3:end);
 end
@@ -3660,7 +3660,7 @@ if strcmpi(StockCode(end),'h') ||  strcmpi(StockCode(end),'z')
     StockCode = StockCode(1:end-2);
 end
 
-% ÈÕÆÚÊ±¼äÔ¤´¦Àí£¬Ä¿±êÐÎÊ½ '20140101'
+% ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½Ê½ '20140101'
 BeginDate(BeginDate == '-') = [];
 EndDate(EndDate == '-') = [];
 
@@ -3668,7 +3668,7 @@ Data = [];
 InitialDate = '19900101';
 
 charset = 'gb2312';
-%% »ñÈ¡³õÊ¼ÈÕÆÚ
+%% ï¿½ï¿½È¡ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
 if 1 == GetInitialDateFlag
     URL = ...
         ['http://vip.stock.finance.sina.com.cn/corp/go.php/vMS_MarketHistory/stockid/' ...
@@ -3680,7 +3680,7 @@ if 1 == GetInitialDateFlag
         [URLchar, status] = urlread(URL, 'Charset', charset, 'TimeOut', 60);
     end
     if status == 0
-        str = ['urlread error:ÍøÒ³¶ÁÈ¡Ê§°Ü£¡Çë¼ì²éÊäÈëµÄÍøÖ·»òÍøÂçÁ¬½ÓÇé¿ö£¡'];
+        str = ['urlread error:ï¿½ï¿½Ò³ï¿½ï¿½È¡Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'];
         disp(str);
         return;
     end
@@ -3752,7 +3752,7 @@ for i = sYear:eYear
             FIndCell = [];
         end
         
-        % ÈÕÆÚ ¿ª ¸ß ÊÕ µÍ Á¿ ¶î
+        % ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½
         FIndCell = FIndCell(3:end,:);
         FIndCell = FIndCell(end:(-1):1,:);
         
@@ -3765,13 +3765,13 @@ for i = sYear:eYear
     end
 end
 DTemp(rLen:end,:) = [];
-% ÓÉÓÚÐÂÉÏÊÐ»òÍøÂçµÈÔ­Òò£¬DTempÎª¿Õ
+% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½DTempÎªï¿½ï¿½
 if isempty(DTemp)
     return;
 end
-% ÈÕÆÚ ¿ª ¸ß ÊÕ µÍ Á¿ ¶î
-% µ÷Õû³É
-% ÈÕÆÚ ¿ª ¸ß µÍ ÊÕ Á¿ ¶î
+% ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½
+% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+% ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½
 Low = DTemp(:,5);
 Close = DTemp(:,4);
 DTemp = [ DTemp(:,1:3),Low,Close,DTemp(:,6:end) ];
@@ -3794,14 +3794,14 @@ eDate = str2double(EndDate);
 
 Data = DTemp(sInd:eInd,:);
 end
-%% ±àÒëPÎÄ¼þ
+%% ï¿½ï¿½ï¿½ï¿½Pï¿½Ä¼ï¿½
 %fun = fullfile('yuiansutQUANTAXIS.m');
 %pcode(fun);
 %%
-%%³õÊ¼»¯Êý¾Ý¿â USERLIST
+%%ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½ USERLIST
 
-%% ²ßÂÔÓÃ
-%% ²ßÂÔA
+%% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+%% ï¿½ï¿½ï¿½ï¿½A
 function [n]=trades(x)
 
 [n1,n2]=size(x);
@@ -4188,7 +4188,7 @@ portValue.nDays.anyPos=sum(sum(anyPos,2)~=0);
 
 portValue.nTrades=nTrades;
 end
-%% ²ßÂÔB  EMD EEMD CEEMDAN & HURST
+%% ï¿½ï¿½ï¿½ï¿½B  EMD EEMD CEEMDAN & HURST
 function [hurst] = EstimateHurst(data0)   % data set
 
 data=data0;         % make a local copy
@@ -5130,7 +5130,7 @@ end
 %%
 function [lvar,leastvar,lstd,leaststd,BESTYFit,ORGY,id]=findleastvarl(s,t)
 
-%t½×ÖÍºó±äÁ¿SVM ÇóYFIT ²¢ÕÒ³ö×îºÃµÄÄÇ¸öYFit
+%tï¿½ï¿½ï¿½Íºï¿½ï¿½ï¿½ï¿½ï¿½SVM ï¿½ï¿½YFIT ï¿½ï¿½ï¿½Ò³ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½Ç¸ï¿½YFit
 %%size(StockCodeDouble,1)
 % 	StockCode_G = StockCodeDouble(k,1);
 % 	StockCode = num2str(StockCode_G);
@@ -5148,10 +5148,10 @@ function [lvar,leastvar,lstd,leaststd,BESTYFit,ORGY,id]=findleastvarl(s,t)
 
 % totalvar=ones(ll,t);
 
-% if ((~isempty(StockData)) && (size(StockData,1)>t))%%%stockDataµ¥ÁÐÊý¾Ý
+% if ((~isempty(StockData)) && (size(StockData,1)>t))%%%stockDataï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 
-le=length(s);%%Çó³ö³¤¶È
+le=length(s);%%ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 %%% Data Structured
 lengthtemp=size(s,1);
@@ -5195,7 +5195,7 @@ end
 % 		save(LSTDNAME,'lstd', '-v7.3');
 %%%plot
 %     h=figure;
-%     plottitle=['Results by SVM ÂË²¨Ð§¹û'];
+%     plottitle=['Results by SVM ï¿½Ë²ï¿½Ð§ï¿½ï¿½'];
 %     subplot(611);
 %     plot(Y);
 %     title(plottitle)
@@ -5245,12 +5245,12 @@ ORGY=Y;
 end
 function [StockDataXRD] = CalculateStockXRD(StockData, XRD_Data, AdjFlag, AlgoFlag)
 
-% ³ýÈ¨¼Û=(³ýÈ¨Ç°Ò»ÈÕÊÕÅÌ¼Û+Åä¹É¼ÛXÅä¹É±ÈÂÊ-Ã¿¹ÉÅÉÏ¢)/(1+Åä¹É±ÈÂÊ+ËÍ¹É±ÈÂÊ)
-% ³ýÈ¨Òò×Ó=³ýÈ¨Ç°Ò»ÈÕÊÕÅÌ¼Û/³ýÈ¨¼Û
-% AlgoFlag Èç¹û 1 == AlgoFlag ´ËÊ±ÒªÇóÊäÈëµÄStockDataµÄ×îºóÒ»ÁÐÎª¸´È¨Òò×Ó
-% 1 ÕÇµø·ùÇ°ºó¸´È¨Ëã·¨
-% 2 ¾­µäÇ°ºó¸´È¨Ëã·¨
-%% ÊäÈëÊä³öÔ¤´¦Àí
+% ï¿½ï¿½È¨ï¿½ï¿½=(ï¿½ï¿½È¨Ç°Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Ì¼ï¿½+ï¿½ï¿½ï¿½É¼ï¿½Xï¿½ï¿½ï¿½É±ï¿½ï¿½ï¿½-Ã¿ï¿½ï¿½ï¿½ï¿½Ï¢)/(1+ï¿½ï¿½ï¿½É±ï¿½ï¿½ï¿½+ï¿½Í¹É±ï¿½ï¿½ï¿½)
+% ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½=ï¿½ï¿½È¨Ç°Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Ì¼ï¿½/ï¿½ï¿½È¨ï¿½ï¿½
+% AlgoFlag ï¿½ï¿½ï¿½ï¿½ 1 == AlgoFlag ï¿½ï¿½Ê±Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½StockDataï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Îªï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½
+% 1 ï¿½Çµï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½È¨ï¿½ã·¨
+% 2 ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½È¨ï¿½ã·¨
+%% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½
 if nargin < 4 || isempty(AlgoFlag)
     AlgoFlag = 1;
 end
@@ -5265,10 +5265,10 @@ StockDataXRD = [];
 
 StockDataXRD = StockData;
 StockDataXRD(:,1) = StockData(:,1);
-%% Ç°¸´È¨¼Û¸ñÉú³É
+%% Ç°ï¿½ï¿½È¨ï¿½Û¸ï¿½ï¿½ï¿½ï¿½ï¿½
 if 1 == AdjFlag
-    % ÕÇµø·ùÇ°ºó¸´È¨Ëã·¨
-    % % ´ÎÊýÊäÈëµÄStockDataµÄÊý¾Ý×îºÃ´ÓÉÏÊÐÈÕ¿ªÊ¼
+    % ï¿½Çµï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½È¨ï¿½ã·¨
+    % % ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½StockDataï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¿ï¿½Ê¼
     if 1 == AlgoFlag
         if size(StockData,2) > 5
             BackwardAdjFactor = StockData(:,end);
@@ -5278,13 +5278,13 @@ if 1 == AdjFlag
                 StockDataXRD(:,i) = StockData(:,i).*ForwardAdjFactor;
             end
         else
-            str = ['ÊäÈëµÄStockDataÊý¾ÝÁÐÊý²»¹»£¬ÖÁÉÙÓ¦¸ÃÎªÈÕÆÚ¡¢¿ª¡¢¸ß¡¢µÍ¡¢ÊÕ¡¢¸´È¨Òò×Ó'];
+            str = ['ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½StockDataï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½Îªï¿½ï¿½ï¿½Ú¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß¡ï¿½ï¿½Í¡ï¿½ï¿½Õ¡ï¿½ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½'];
             disp(str);
         end
     end
     
     
-    % ¾­µäÇ°ºó¸´È¨Ëã·¨   
+    % ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½È¨ï¿½ã·¨   
     if 2 == AlgoFlag
         for i = 2:5
             Web_XRD_Data = XRD_Data;
@@ -5295,19 +5295,19 @@ if 1 == AdjFlag
         end
     end
 end
-%% ºó¸´È¨¼Û¸ñÉú³É
+%% ï¿½ï¿½ï¿½ï¿½È¨ï¿½Û¸ï¿½ï¿½ï¿½ï¿½ï¿½
 
 
 end
 function [ XRD_Close ] = F_Stock_XRD_Processing(Web_XRD_Data,Stock_Data_Date,Stock_Data_Close)
-%% µ÷ÓÃ¸ñÊ½:
+%% ï¿½ï¿½ï¿½Ã¸ï¿½Ê½:
 %      [ XRD_Close ] = F_Stock_XRD_Processing(Web_XRD_Data,Stock_Data_Date,Stock_Data_Close)
-% ÊäÈë: Web_XRD_Data ¡ú ³ýÈ¨³ýÏ¢Êý¾Ý
-%       Stock_Data_Date ¡ú ÈÕÆÚÊý¾Ý
-%       Stock_Data_Close ¡ú ¼Û¸ñ£¨ÊÕÅÌ¼Û£©Êý¾Ý
-% Êä³ö: XRD_Close ¡ú Ç°¸´È¨Êý¾Ý
+% ï¿½ï¿½ï¿½ï¿½: Web_XRD_Data ï¿½ï¿½ ï¿½ï¿½È¨ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½
+%       Stock_Data_Date ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+%       Stock_Data_Close ï¿½ï¿½ ï¿½Û¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¼Û£ï¿½ï¿½ï¿½ï¿½ï¿½
+% ï¿½ï¿½ï¿½ï¿½: XRD_Close ï¿½ï¿½ Ç°ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½
 
-%% ÕÒ³ö³ýÈ¨³ýÏ¦ÈÕÆÚµÄÎ»ÖÃ
+%% ï¿½Ò³ï¿½ï¿½ï¿½È¨ï¿½ï¿½Ï¦ï¿½ï¿½ï¿½Úµï¿½Î»ï¿½ï¿½
 
 if ~isempty(Web_XRD_Data)
     
@@ -5326,7 +5326,7 @@ if ~isempty(Web_XRD_Data)
     
     XRD_Time = XRD_Time(~isnan(XRD_Time));
     
-    %% Ç°¸´È¨´¦Àí
+    %% Ç°ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½
     
     XRD_Close = nan(length(Stock_Data_Close),1);
     
@@ -5370,13 +5370,13 @@ end
 XRD_Close = round(XRD_Close*100)/100;
 end
 function login(conn)
-register=input('ÏÞÁ¿×¢²áÖÐ  ÊÇ·ñ×¢²á Y-×¢²á N-Ö±½ÓµÇÂ¼(Y/N): ','s');
+register=input('ï¿½ï¿½ï¿½ï¿½×¢ï¿½ï¿½ï¿½ï¿½  ï¿½Ç·ï¿½×¢ï¿½ï¿½ Y-×¢ï¿½ï¿½ N-Ö±ï¿½Óµï¿½Â¼(Y/N): ','s');
 
-%ÐèÒª×¢ÊÍµô
+%ï¿½ï¿½Òª×¢ï¿½Íµï¿½
 % sqlquery=['CREATE TABLE `QUANTBOX`.`', 'UserList','` (`Name` TEXT NULL COMMENT '''',`PassWord` TEXT NULL COMMENT '''');'];
 %  cusorx=exec(obj.ConnCloud,sqlquery);
 if strcmpi(register,'Y')||strcmpi(register,'y')
-    disp('========×¢²á========')
+    disp('========×¢ï¿½ï¿½========')
     obj.LoginName=input('--UserName--','s');
     str=['your input user name is:   ',obj.LoginName];
     disp(str)
@@ -5385,8 +5385,8 @@ if strcmpi(register,'Y')||strcmpi(register,'y')
     cursor=fetch(cursor);
     obj.LoginResult=cursor.Data;
     if strcmpi(obj.LoginResult,'No Data')==0
-        disp('¸ÃÓÃ»§ÃûÒÑ¾­±»×¢²á£¡ÇëÖØÐÂÔËÐÐ')
-        XXXX=input('ÇëÊäÈëÈÎÒâ¼ü °´EnterÍË³öQunatBox');
+        disp('ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½×¢ï¿½á£¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½')
+        XXXX=input('ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Enterï¿½Ë³ï¿½QunatBox');
         clear all
         clc
     else
@@ -5406,9 +5406,9 @@ if strcmpi(register,'Y')||strcmpi(register,'y')
     cursor=fetch(cursor);
     obj.LoginResult=cursor.Data;
     if strcmpi(obj.LoginResult,'No Data')==1
-        disp('×¢²áÊ§°Ü£¡')
-        disp('ÏµÍ³¼´½«ÍË³ö');
-        XXXX=input('ÇëÊäÈëÈÎÒâ¼ü °´EnterÍË³öQunatBox');
+        disp('×¢ï¿½ï¿½Ê§ï¿½Ü£ï¿½')
+        disp('ÏµÍ³ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½');
+        XXXX=input('ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Enterï¿½Ë³ï¿½QunatBox');
         clear all
         clc
     end
@@ -5416,23 +5416,23 @@ if strcmpi(register,'Y')||strcmpi(register,'y')
     obj.realpassword=obj.LoginResult(:,2);
     
     if strcmpi(obj.realpassword,obj.LoginPassword)==1
-        disp('ÓÃ»§×¢²á³É¹¦£¡¸ÐÐ»ÄúÊ¹ÓÃQUANTAXIS ÈçÓÐÒâ¼û ÇëÁªÏµ QQ279336410');
-        disp('Email yutiansut@qq.com ÍøÕ¾ www.yutiansut.com')
-        disp('ÇëÖØÐÂµÇÂ¼£¬ÏµÍ³¼´½«ÍË³ö');
-        XXXX=input('ÇëÊäÈëÈÎÒâ¼ü °´EnterÍË³öQunatBox');
+        disp('ï¿½Ã»ï¿½×¢ï¿½ï¿½ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½Ð»ï¿½ï¿½Ê¹ï¿½ï¿½QUANTAXIS ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ïµ QQ279336410');
+        disp('Email yutiansut@qq.com ï¿½ï¿½Õ¾ www.yutiansut.com')
+        disp('ï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½Â¼ï¿½ï¿½ÏµÍ³ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½');
+        XXXX=input('ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Enterï¿½Ë³ï¿½QunatBox');
         clear all
         clc
         
     else
-        disp('×¢²áÊ§°Ü£¡ÇëÁªÏµ QQ 279336410')
-        disp('ÏµÍ³¼´½«ÍË³ö');
-        XXXX=input('ÇëÊäÈëÈÎÒâ¼ü °´EnterÍË³öQunatBox');
+        disp('×¢ï¿½ï¿½Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½Ïµ QQ 279336410')
+        disp('ÏµÍ³ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½');
+        XXXX=input('ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Enterï¿½Ë³ï¿½QunatBox');
         clc
         clear all
         
     end
 else
-    disp('========µÇÂ¼========')
+    disp('========ï¿½ï¿½Â¼========')
     obj.LoginName=input('--UserName--','s');
     str=['your input user name is:   ',obj.LoginName];
     disp(str)
@@ -5445,9 +5445,9 @@ else
     cursor=fetch(cursor);
     obj.LoginResult=cursor.Data;
     if strcmpi(obj.LoginResult,'No Data')==1
-        disp('Êý¾Ý¿âÖÐ²»´æÔÚ´ËÓÃ»§ µÇÂ¼Ê§°Ü£¡')
-        disp('ÏµÍ³¼´½«ÍË³ö');
-        XXXX=input('ÇëÊäÈëÈÎÒâ¼ü °´EnterÍË³öQunatBox');
+        disp('ï¿½ï¿½ï¿½Ý¿ï¿½ï¿½Ð²ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½Ã»ï¿½ ï¿½ï¿½Â¼Ê§ï¿½Ü£ï¿½')
+        disp('ÏµÍ³ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½');
+        XXXX=input('ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Enterï¿½Ë³ï¿½QunatBox');
         clear all
         clc
     end
@@ -5455,24 +5455,24 @@ else
     obj.realpassword=obj.LoginResult(:,2);
     obj.LoginCompare=strcmpi(obj.realpassword,obj.LoginPassword);
     if obj.LoginCompare(1,:)==1
-        disp('ÓÃ»§ÑéÖ¤³É¹¦£¡¸ÐÐ»ÄúÊ¹ÓÃQUANTAXIS ÈçÓÐÒâ¼û ÇëÁªÏµ QQ279336410');
-        disp('Email yutiansut@qq.com ÍøÕ¾ www.yutiansut.com')
+        disp('ï¿½Ã»ï¿½ï¿½ï¿½Ö¤ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½Ð»ï¿½ï¿½Ê¹ï¿½ï¿½QUANTAXIS ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ïµ QQ279336410');
+        disp('Email yutiansut@qq.com ï¿½ï¿½Õ¾ www.yutiansut.com')
     else
-        disp('µÇÂ¼ÃÜÂë´íÎó ÇëÖØÐÂÊäÈë...')
-        disp('Äú»¹ÓÐ1´Î»ú»á')
-        obj.LoginPassword=input('ÇëÊäÈëÄúµÄÃÜÂë  ','s');
+        disp('ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½...')
+        disp('ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½Î»ï¿½ï¿½ï¿½')
+        obj.LoginPassword=input('ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  ','s');
         sqlquery=['select * from userlist where Name="',obj.LoginName,'"'];
         cursor=exec(conn,sqlquery);
         cursor=fetch(cursor);
         obj.LoginResult=cursor.Data;
         if obj.LoginCompare==0
-            disp('ÃÜÂëÊäÈë´íÎó ÏµÍ³¼´½«ÍË³ö£¡')
-            XXXX=input('ÇëÊäÈëÈÎÒâ¼ü °´EnterÍË³öQunatBox');
+            disp('ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ÏµÍ³ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½ï¿½ï¿½')
+            XXXX=input('ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Enterï¿½Ë³ï¿½QunatBox');
             clear all
             clc
         else
-            disp('ÓÃ»§ÑéÖ¤³É¹¦£¡¸ÐÐ»ÄúÊ¹ÓÃQUANTAXIS ÈçÓÐÒâ¼û ÇëÁªÏµ QQ279336410');
-            disp('Email yutiansut@qq.com ÍøÕ¾ www.yutiansut.com')
+            disp('ï¿½Ã»ï¿½ï¿½ï¿½Ö¤ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½Ð»ï¿½ï¿½Ê¹ï¿½ï¿½QUANTAXIS ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ïµ QQ279336410');
+            disp('Email yutiansut@qq.com ï¿½ï¿½Õ¾ www.yutiansut.com')
             
         end
     end
