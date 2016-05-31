@@ -1,4 +1,5 @@
 <font size='50'><bold>QUANTAXIS</bold> </font>
+![quantaxis](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXIS.jpg)
 
 【版本】：2.5.1<br>
 【作者】：yutiansut<br>
