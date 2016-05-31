@@ -1,6 +1,6 @@
 <font size='50'><bold>QUANTAXIS</bold> </font>
 <div  align="left"> 
-![quantaxis 3.0 beta](http://7xrn7f.com1.z0.glb.clouddn.com/16-5-31/4024791.jpg)
+![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXIS.jpg)
 </div>
 【版本】：2.5.1<br>
 【作者】：yutiansut<br>
