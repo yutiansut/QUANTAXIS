@@ -25,7 +25,7 @@ QA.Start()  策略回测平台
 ```
 FM=FreeMarkets;
 FM.Try();  一个随机策略的金融市场
->数据将在FM.Price.History 中呈现</br>
+>数据将在FM.Price.History 中呈现
 >FM.BidPool中是报价池
 
 ```
