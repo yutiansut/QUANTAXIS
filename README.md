@@ -22,7 +22,7 @@
 
 ![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/3.0/Picture/QA3.0.png)
 
-
+![quantaxis datacenter](https://github.com/yutiansut/QUANTAXIS/blob/3.0/Picture/QADC.gif)
 
 ----
 >QUANTAXIS本身是作者在大四时，学习量化交易以及策略实现的时候，发现matlab上面并没有称心如意的量化平台，而主流的量化平台则基于python和java，于是萌生了自己写一个量化工具箱的想法
