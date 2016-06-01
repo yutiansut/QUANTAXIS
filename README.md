@@ -34,7 +34,7 @@
 
 
 ```
-*<big>[Attention]</big>*:QUANTAXIS在使用之前需要安装Wind大奖章免费应用 以及 Mysql 5.6以上版本+JDBC-MYSQL的数据库
+[Attention]:QUANTAXIS在使用之前需要安装Wind大奖章免费应用 以及 Mysql 5.6以上版本+JDBC-MYSQL的数据库
 以上两个的安装文件都在QUANTAXIS/Auxiliary中 clone到本地后打开link.md下载安装即可
 
 JDBC添加完成后需要在Classpath文件中增加
