@@ -9,7 +9,13 @@
 [Contact]:QQ 279336410<br>
 
 
-QUANTAXIS是一个量化平台，使用matlab对象化编程写出  主要对接的数据接口是wind数据库<br>
+>QUANTAXIS是一个量化平台，使用matlab对象化编程写出  主要对接的数据接口是wind数据库<br>
+>QUANTAXIS本身是作者在大四时，学习量化交易以及策略实现的时候，发现matlab上面并没有称心如意的量化平台，而主流的量化平台则基于python和java，于是萌生了自己写一个量化工具箱的想法
+QUANTAXIS 1.0版本写的非常艰难，尤其是当时matlab都不是很会用，1.0版本使用的主要是新浪网的数据。1.5版本是在了解了对象化编程OOP以后对于平台做的改进
+2.0版本主要是对于数据源进行了更换，并重新写了数据库连接和调用函数，从2.0起，quantaxis使用wind服务商提供的量化交易数据并选择mysql作为数据存储方式。
+QUANTAXIS 2.5版本则主要增加了交易内核 QUANTCORE 1.0 QC1.0还是一个静态的交易系统，成交的判断方式是以策略报价和历史成交价区间的比较进行判定。
+
+
 *<big>[Attention]</big>*:QUANTAXIS在使用之前需要安装Wind大奖章免费应用 以及 Mysql 5.6以上版本+JDBC-MYSQL的数据库
 JDBC添加完成后需要在Classpath文件中增加
 ```
