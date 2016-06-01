@@ -1,94 +1,111 @@
-html
+doctype html
+html(lang='en')
   head
+    //
+      Basic Page Needs
+      ––––––––––––––––––––––––––––––––––––––––––––––––––
     meta(charset='utf-8')
-    |     
-    script(type='text/javascript', src='http://libs.baidu.com/jquery/2.1.4/jquery.min.js')
+    |   
+    title QUANTAXIS DC
+    |   
+    meta(name='description', content='The next generation of the Plotly Web App is now available for Pro users.')
+    |   
+    meta(name='author', content='yutiansut')
+    //
+      Mobile Specific Metas
+      ––––––––––––––––––––––––––––––––––––––––––––––––––
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    //
+      FONT
+      ––––––––––––––––––––––––––––––––––––––––––––––––––
+    link(href='https://fonts.useso.com/css?family=Open+Sans:400,300', rel='stylesheet', type='text/css')
+    //
+      CSS
+      ––––––––––––––––––––––––––––––––––––––––––––––––––
+    link(rel='stylesheet', href='homepage/normalize.css')
+    |   
+    link(rel='stylesheet', href='homepage/skeleton.css')
+    |   
+    link(rel='stylesheet', href='homepage/custom.css')
+    //
+      Scripts
+      ––––––––––––––––––––––––––––––––––––––––––––––––––
+    script(src='homepage/particleground.min.js')
+    //
+      Favicon
+      ––––––––––––––––––––––––––––––––––––––––––––––––––
+    //
+      <link rel="icon" type="https://jackparmer.github.io/plotly2/image/png" href="https://jackparmer.github.io/plotly2/images/favicon.png">
+  |   
   body
-    #myDiv
-      h2 ajax
-    |     
-    button#b01(type='button') testajax
-    |     
-    table#tsTable
-      thead
-        tr
-          th(data-options="field:'DATE',width:180,align:'center'") DATE/时间
-          |                 
-          th(data-options="field:'PRE_CLOSE',width:180,align:'center'") PRE_CLOSE前收盘价
-          |                 
-          th(data-options="field:'OPEN',width:180,align:'center'") OPEN
-          |                 
-          th(data-options="field:'HIGH',width:180,align:'center'") HIGH
-          |                 
-          th(data-options="field:'LOW',width:180,align:'center'") LOW
-          |                 
-          th(data-options="field:'CLOSE',width:180,align:'center'") CLOSE
-          |                 
-          th(data-options="field:'VOL',width:180,align:'center'") VOL
-    
-    tbody
-        tr#content(target='sid_user', rel='1')
-          td(width='80')
-          |                   
-          td#DATE(width='80') 2
-          |                   
-          td#PRE_CLOSE(width='120') 2
-          |                   
-          td#OPEN(width='120') 2
-          |                   
-          td#HIGH(width='100') 2
-          |                   
-          td#LOW(width='150') 2
-          |                   
-          td#CLOSE(width='80', align='center') 2
-          |                   
-          td#VOL(width='80') 2   
+    //
+      Primary Page Layout
+      ––––––––––––––––––––––––––––––––––––––––––––––––––
+    #particles
+    |   
+    .section.hero
+      .container
+        .row
+          .full-column
+            h1(style='color: #560e00;') QUANTAXIS DC
+            |           
+            h4.hero-heading &#x4EA4;&#x4E92;&#x5F0F;&#x6570;&#x636E;&#x5C55;&#x793A;&#x89E3;&#x51B3;&#x65B9;&#x6848;
+            |           
+            h4.hero-heading SAME DATA, DIFFERENT VIEWS
+            |           
+            a.button.button-primary(target='_blank', href='http://www.yutiansut.com', style='background-color:#560e00;') Learn More
+            |           
+            br
+    |   
+    |   
+    .section.values
+      .container
+        .row
+          .one-third.column.value
+            h2.value-multiplier &#x4EA4;&#x4E92;
+            |           
+            h5.value-heading JavaScript &amp; JQuery
+            |           
+            p.value-description Using JavaScript and JQuery for the interactive data presentation engine
+          |         
+          .one-third.column.value
+            h2.value-multiplier &#x52A8;&#x6001;
+            |           
+            h5.value-heading AJAX &amp; Async
+            |           
+            p.value-description AJAX for refreshing the page locally and displaying the content dynamicly
+          |         
+          .one-third.column.value
+            h2.value-multiplier &#x540C;&#x6B65;
+            |           
+            h5.value-heading Mysql &amp; JSON
+            |           
+            p.value-description The data will be saved in Mysql and passing to the front end with json format
+        |       
+        .row
+          .one-third.column.value
+            h2.value-multiplier &#x5E94;&#x7528;
+            |           
+            h5.value-heading Matlab &amp; Python
+            |           
+            p.value-description Using Matlab or Python to make the algorithm under your personal account
+          |         
+          .one-third.column.value
+            h2.value-multiplier &#x573A;&#x666F;
+            |           
+            h5.value-heading Adaptive &amp; Responsive
+            |           
+            p.value-description You can access this by iphone, ipad, or PC whatever you like
+          |         
+          .one-third.column.value
+            h2.value-multiplier &#x4F53;&#x9A8C;
+            |           
+            h5.value-heading Multi-Dimension 
+            |           
+            p.value-description
+              | Look at the results in multi-level  and make a totally differnce experience of your strategy
+    //
+      End Document
+      ––––––––––––––––––––––––––––––––––––––––––––––––––
     script.
-      function changeToButton(id){
-      var btn = document.getElementById(id);
-      btn.onclick= function(){
-      $.ajax({
-      url: "http://localhost:3030/querybyid",    //请求的url地址
-      dataType: "json",   //返回格式为json
-      async: true, //请求是否异步，默认为异步，这也是ajax重要特性
-      data: { "name": "600005_ts" },    //参数值
-      type: "GET",   //请求方式
-      beforeSend: function() {
-      //请求前的处理
-      //alert('before');
-      },
-      success: function(data,textStatus){
-
-        alert('textStatus---'+textStatus)
-        alert(JSON.stringify(data));
-        var append=JSON.stringify(data);
-        //$('#myDiv').prepend(append);
-        alert(JSON.parse(append)[0].OPEN)
-        var table = $('#tsTable');
-        var html = '<tr>';
-      //  var list = data.list;
-        alert(JSON.parse(append).length)
-        var dats=JSON.parse(append);
-        var html = '<tr>'
-        for (var i = 0, len = dats.length; i < len; i++) {
-          
-          html += '<td>'+dats[i].DATE+dats[i].PRE_CLOSE+dats[i].OPEN+dats[i].HIGH+dats[i].LOW+dats[i].CLOSE+dats[i].VOLUME+'</tr>'; 
-        }
-        html += '</tr>';
-       
-        html.appendTo($('#tsTable'));
-      },
-      complete: function() {
-      //请求完成的处理
-      alert('complete');
-      },
-      error: function() {
-      //请求出错处理
-      alert('error');
-      }
-      });
-      }
-      }
-      window.onload = function() {
-      changeToButton("b01");
-      }
+      particleground(document.getElementById('particles'));
