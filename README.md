@@ -1,4 +1,5 @@
-# QUANTAXIS
+# QUANTAXIS 量化金融工具箱
+
 
 ![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXIS.jpg)
 
