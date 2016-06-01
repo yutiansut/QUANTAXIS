@@ -14,7 +14,7 @@
 [Contact]:QQ 279336410<br>
 
 
-## 更新日志 QA3.0  新增数据中心 DATACENTER 主要负责数据可视化
+## 更新日志 QA3.0  新增数据中心 [DATACENTER 主要负责数据可视化](https://github.com/yutiansut/QUANTAXIS/blob/master/DataCenter/readme.md)
 ----
 将matlab的及时数据以json格式保存到状态空间或者mysql中
 
