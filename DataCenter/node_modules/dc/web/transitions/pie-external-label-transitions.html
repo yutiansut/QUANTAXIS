@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>dc.js - Pie Chart Transition Tester</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/dc.css"/>
+  </head>
+  <body>
+
+    <div id="test"></div>
+    <button onclick="transitionTest.stop()">stop</button>
+    <button onclick="button1()">little</button>
+    <button onclick="button2()">keep 2</button>
+    <button onclick="button3()">keep 4</button>
+
+
+    <script type="text/javascript" src="../js/d3.js"></script>
+    <script type="text/javascript" src="../js/crossfilter.js"></script>
+    <script type="text/javascript" src="../js/dc.js"></script>
+    <script type="text/javascript" src="transition-test.js"></script>
+    <script type="text/javascript">
+
+      var chart = dc.pieChart("#test");
+      var stop, button1, button2, button3;
+      d3.csv("../examples/morley.csv", function(error, experiments) {
+
+          var ndx           = crossfilter(experiments),
+              runDimension  = ndx.dimension(function(d) {return "run-"+d.Run;}),
+              speedSumGroup = runDimension.group().reduceSum(function(d) {return d.Speed * d.Run;});
+
+          chart
+              .transitionDuration(transitionTest.duration)
+              .width(768)
+              .height(480)
+              .slicesCap(4)
+              .innerRadius(100)
+              .externalLabels(50)
+              .externalRadiusPadding(50)
+              .drawPaths(true)
+              .dimension(runDimension)
+              .group(speedSumGroup)
+              .legend(dc.legend());
+
+          chart.render();
+          var expDim = ndx.dimension(function(d) { return d.Expt; });
+          var run2 = ndx.dimension(function(d) { return "run-"+d.Run;});
+          window.button1 = transitionTest.oscillate(function() {
+              expDim.filter(2);
+          }, function() {
+              expDim.filter();
+          });
+          window.button2 = transitionTest.oscillate(function() {
+              run2.filterFunction(function(d) {
+                  return ["run-19", "run-2"].indexOf(d) != -1;
+              });
+          }, function() {
+              run2.filter();
+          });
+          window.button3 = transitionTest.oscillate(function() {
+              run2.filterFunction(function(d) {
+                  return ["run-3", "run-5", "run-7", "run-9"].indexOf(d) != -1;
+              });
+          }, function() {
+              run2.filter();
+          });
+      });
+
+    </script>
+
+  </body>
+</html>

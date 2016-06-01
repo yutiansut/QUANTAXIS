@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>dc.js - Line Chart Example</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/dc.css"/>
+</head>
+<body>
+
+<div id="test"></div>
+
+<script type="text/javascript" src="../js/d3.js"></script>
+<script type="text/javascript" src="../js/crossfilter.js"></script>
+<script type="text/javascript" src="../js/dc.js"></script>
+<script type="text/javascript">
+
+var chart = dc.lineChart("#test");
+d3.csv("morley.csv", function(error, experiments) {
+
+  experiments.forEach(function(x) {
+    x.Speed = +x.Speed;
+  });
+
+  var ndx                 = crossfilter(experiments),
+      runDimension        = ndx.dimension(function(d) {return +d.Run;}),
+      speedSumGroup       = runDimension.group().reduceSum(function(d) {return d.Speed * d.Run / 1000;});
+
+  chart
+    .width(768)
+    .height(480)
+    .x(d3.scale.linear().domain([0,20]))
+    .interpolate('step-before')
+    .renderArea(true)
+    .brushOn(false)
+    .renderDataPoints(true)
+    .clipPadding(10)
+    .yAxisLabel("This is the Y Axis!")
+    .dimension(runDimension)
+    .group(speedSumGroup);
+
+  chart.render();
+
+});
+
+</script>
+
+</body>
+</html>

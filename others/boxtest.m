@@ -24,5 +24,4 @@ obj.GetCons();
 obj.Bat();
 
 
-%%策略文件以调用非类文件中的函数
 toc;

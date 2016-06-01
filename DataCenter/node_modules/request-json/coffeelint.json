@@ -1,0 +1,9 @@
+{
+  "indentation" : {
+    "value" : 4,
+    "level" : "error"
+  },
+  "no_empty_param_list": {
+    "level": "warn"
+  }
+}

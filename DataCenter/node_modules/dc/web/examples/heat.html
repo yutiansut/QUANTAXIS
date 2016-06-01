@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>dc.js - Heatmap Example</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/dc.css"/>
+    <style>
+      .heat-box {
+        stroke: #E6E6E6;
+        stroke-width: 2px;
+      }
+    </style>
+</head>
+<body>
+<h2>Michelson–Morley experiment</h2>
+<div id="test"></div>
+
+<script type="text/javascript" src="../js/d3.js"></script>
+<script type="text/javascript" src="../js/crossfilter.js"></script>
+<script type="text/javascript" src="../js/dc.js"></script>
+<script type="text/javascript">
+
+var chart = dc.heatMap("#test");
+d3.csv("morley.csv", function(error, experiments) {
+
+  var ndx    = crossfilter(experiments),
+      runDim = ndx.dimension(function(d) { return [+d.Run, +d.Expt]; }),
+      runGroup = runDim.group().reduceSum(function(d) { return +d.Speed; });
+
+  chart
+    .width(45 * 20 + 80)
+    .height(45 * 5 + 40)
+    .dimension(runDim)
+    .group(runGroup)
+    .keyAccessor(function(d) { return +d.key[0]; })
+    .valueAccessor(function(d) { return +d.key[1]; })
+    .colorAccessor(function(d) { return +d.value; })
+    .title(function(d) {
+        return "Run:   " + d.key[0] + "\n" +
+               "Expt:  " + d.key[1] + "\n" +
+               "Speed: " + (299000 + d.value) + " km/s";})
+    .colors(["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"])
+    .calculateColorDomain();
+
+  chart.render();
+});
+
+</script>
+
+</body>
+</html>

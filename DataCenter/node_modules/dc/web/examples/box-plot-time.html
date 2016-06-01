@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>dc.js - Box-Plot Example</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/dc.css"/>
+</head>
+<body>
+
+<div id="box-test"></div>
+<div id="pie-chart"></div>
+
+<script type="text/javascript" src="../js/d3.js"></script>
+<script type="text/javascript" src="../js/crossfilter.js"></script>
+<script type="text/javascript" src="../js/dc.js"></script>
+<script type="text/javascript">
+
+var chart = dc.boxPlot("#box-test"),
+    pie = dc.pieChart("#pie-chart");
+
+d3.csv("monthly-move.csv", function(error, data) {
+
+  data.forEach(function(x) {
+    x.close = +x.close;
+  });
+
+  data = data.slice(0, 200);
+
+  var ndx             = crossfilter(data),
+      openDimension   = ndx.dimension(function(d) {return parseInt(d.open/10)*10;}),
+      openGroup       = openDimension.group(),
+      monthDimension  = ndx.dimension(function(d) {return new Date(new Date(d.date).setDate(1));}),
+      closeGroup      = monthDimension.group().reduce(
+        function(p,v) {
+          p.push(v.close);
+          return p;
+        },
+        function(p,v) {
+          p.splice(p.indexOf(v.close), 1);
+          return p;
+        },
+        function() {
+          return [];
+        }
+      );
+
+  chart
+    .width(768)
+    .height(480)
+    .margins({top: 10, right: 50, bottom: 30, left: 50})
+    .dimension(monthDimension)
+    .group(closeGroup)
+    .x(d3.time.scale().domain([new Date("11/01/1985"), new Date("6/01/1986")]))
+    .round(d3.time.month.round)
+    .xUnits(d3.time.months)
+    .elasticY(true);
+
+  pie
+    .width(140)
+    .height(140)
+    .radius(70)
+    .dimension(openDimension)
+    .group(openGroup);
+
+  dc.renderAll();
+});
+
+</script>
+
+</body>
+</html>

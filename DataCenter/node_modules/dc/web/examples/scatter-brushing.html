@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>dc.js - Scatter Plot Brushing Example</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/dc.css"/>
+</head>
+<body>
+  <p>Brush on one chart to see the points filtered on the other.</p>
+
+  <div id="test1"></div>
+  <div id="test2"></div>
+
+  <script type="text/javascript" src="../js/d3.js"></script>
+  <script type="text/javascript" src="../js/crossfilter.js"></script>
+  <script type="text/javascript" src="../js/dc.js"></script>
+  <script type="text/javascript">
+
+var chart1 = dc.scatterPlot("#test1");
+var chart2 = dc.scatterPlot("#test2");
+var data = "x,y,z\n" +
+    "1,1,3\n" +
+    "5,2,11\n" +
+    "13,13,13\n"+
+    "5,3,20\n"+
+    "12,12,10\n"+
+    "3,6,8\n"+
+    "15,2,9\n"+
+    "8,6,14\n"+
+    "1,4,9\n"+
+    "8,8,12\n";
+var data = d3.csv.parse(data);
+
+data.forEach(function (x) {
+    x.x = +x.x;
+    x.y = +x.y;
+    x.z = +x.z;
+});
+
+var ndx = crossfilter(data),
+    dim1 = ndx.dimension(function (d) {
+        return [+d.x, +d.y];
+    }),
+    dim2 = ndx.dimension(function (d) {
+        return [+d.y, +d.z];
+    }),
+    group1 = dim1.group(),
+    group2 = dim2.group();
+
+chart1.width(300)
+    .height(300)
+    .x(d3.scale.linear().domain([0, 20]))
+    .yAxisLabel("y")
+    .xAxisLabel("x")
+    .clipPadding(10)
+    .dimension(dim1)
+    .excludedOpacity(0.5)
+    .group(group1);
+
+chart2.width(300)
+    .height(300)
+    .x(d3.scale.linear().domain([0, 20]))
+    .yAxisLabel("z")
+    .xAxisLabel("y")
+    .clipPadding(10)
+    .dimension(dim2)
+    .excludedColor('#ddd')
+    .group(group2);
+
+dc.renderAll();
+
+  </script>
+
+</body>
+</html>

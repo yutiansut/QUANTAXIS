@@ -1,20 +1,30 @@
 # QUANTAXIS 量化金融工具箱
 ![AppVeyor branch](https://img.shields.io/appveyor/ci/gruntjs/grunt/master.svg?maxAge=2592000)
-![download](https://img.shields.io/badge/download-34Mb-green.svg)
-![version](https://img.shields.io/badge/version-%202.5.1-orange.svg)
+![download](https://img.shields.io/badge/Download-47~140Mb-green.svg)
+![version](https://img.shields.io/badge/Version-%203.0.0%20beta-orange.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
-![website](https://img.shields.io/badge/website-%20www.yutiansut.com-lightgrey.svg)
-![language](https://img.shields.io/badge/Language-%20matlab-blue.svg)
-![license](https://img.shields.io/badge/license-%20MIT-brightgreen.svg)
+![website](https://img.shields.io/badge/Website-%20www.yutiansut.com-lightgrey.svg)
+![language](https://img.shields.io/badge/%20%20%20Language%20%20%20-%20%20%20Matlab%2FPython%2FJS%20%20-lightgrey.svg)
+![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
 
-![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXIS.jpg)
+![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/3.0/Picture/QUANTAXIS.jpg)
 
-[Version]:2.5.1<br>
-[Author]:yutiansut<br>
+
 [Website]:www.yutiansut.com | http://quantaxis.yutiansut.com<br>
 [Contact]:QQ 279336410<br>
 
 
+## 更新日志 QA3.0  新增数据中心 DATACENTER 主要负责数据可视化
+----
+将matlab的及时数据以json格式保存到状态空间或者mysql中
+
+使用ajax技术对于mysql数据进行抽取，使用dc.js等可视化javascript将数据展示在页面上，形成交互式的数据可视化方案
+
+![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/3.0/Picture/QA3.0.png)
+
+![quantaxis datacenter](https://github.com/yutiansut/QUANTAXIS/blob/3.0/Picture/QADC.gif)
+
+----
 >QUANTAXIS本身是作者在大四时，学习量化交易以及策略实现的时候，发现matlab上面并没有称心如意的量化平台，而主流的量化平台则基于python和java，于是萌生了自己写一个量化工具箱的想法
 
 ## [Version History](https://github.com/yutiansut/QUANTAXIS/releases)

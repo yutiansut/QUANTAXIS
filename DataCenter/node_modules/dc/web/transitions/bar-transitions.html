@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>dc.js - Bar Chart Transition Tester</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/dc.css"/>
+  </head>
+  <body>
+
+    <div id="test"></div>
+    <button onclick="transitionTest.stop()">stop</button>
+    <button onclick="button1()">left</button>
+    <button onclick="button2()">right</button>
+    <button onclick="button3()">middle</button>
+
+    <script type="text/javascript" src="../js/d3.js"></script>
+    <script type="text/javascript" src="../js/crossfilter.js"></script>
+    <script type="text/javascript" src="../js/dc.js"></script>
+    <script type="text/javascript" src="transition-test.js"></script>
+    <script type="text/javascript">
+
+      var chart = dc.barChart("#test");
+      d3.csv("../examples/morley.csv", function(error, experiments) {
+
+          experiments.forEach(function(x) {
+              x.Speed = +x.Speed;
+          });
+
+          var ndx                 = crossfilter(experiments),
+              runDimension        = ndx.dimension(function(d) {return +d.Run;}),
+              speedSumGroup       = runDimension.group().reduceSum(function(d) {return d.Speed * d.Run / 1000;});
+
+          chart
+              .transitionDuration(transitionTest.duration)
+              .width(768)
+              .height(480)
+              .x(d3.scale.linear().domain([0,20]))
+              .brushOn(false)
+              .yAxisLabel("This is the Y Axis!")
+              .dimension(runDimension)
+              .group(speedSumGroup)
+              .on("renderlet", function(chart) {
+                  chart.selectAll('rect').on("click", function(d) {
+                      console.log("click!", d);
+                  });
+              });
+          chart.render();
+
+          var reset = function() {
+              chart.x().domain([0,20]);
+          }
+          window.button1 = transitionTest.oscillate(function() {
+              chart.x().domain([0,10]);
+          }, reset);
+          window.button2 = transitionTest.oscillate(function() {
+              chart.x().domain([16,20]);
+          }, reset);
+          window.button3 = transitionTest.oscillate(function() {
+              chart.x().domain([6,14]);
+          }, reset);
+      });
+
+    </script>
+
+  </body>
+</html>

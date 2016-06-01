@@ -1,0 +1,61 @@
+html
+  head
+    meta(charset='utf-8')
+    |     
+    script(type='text/javascript', src='javascripts/jquery-1.4.4.min.js')
+  body
+    #myDiv
+      h2 ajax
+    |     
+    button#b01(type='button') testajax
+    |     
+    table#tsTable
+      thead
+        tr
+          th(data-options="field:'OrderNo',width:80,align:'center'") &#x65F6;&#x95F4;
+          |                 
+          th(data-options="field:'Name',width:100,align:'center'") &#x524D;&#x6536;&#x76D8;&#x4EF7;
+          |                 
+          th(data-options="field:'Type',width:80,align:'center'") &#x5F00;&#x76D8;&#x4EF7;
+          |                 
+          th(data-options="field:'Type',width:80,align:'center'") &#x6536;&#x76D8;&#x4EF7;
+          |                 
+          th(data-options="field:'Type',width:80,align:'center'") &#x6700;&#x9AD8;&#x4EF7;
+          |                 
+          th(data-options="field:'Type',width:80,align:'center'") &#x6700;&#x4F4E;&#x4EF7;
+          |                 
+          th(data-options="field:'Type',width:80,align:'center'") &#x6536;&#x76D8;&#x4EF7;
+    |     
+    script.
+      function changeToButton(id){
+      var btn = document.getElementById(id);
+      btn.onclick= function(){
+      $.ajax({
+      url: "http://localhost:3030/querybyid",    //请求的url地址
+      dataType: "json",   //返回格式为json
+      async: true, //请求是否异步，默认为异步，这也是ajax重要特性
+      // data: { "name": "600005_ts" },    //参数值
+      type: "GET",   //请求方式
+      beforeSend: function() {
+      //请求前的处理
+      alert('before');
+      },
+      success: function(data) {
+      //请求成功时处理
+      alert('success');
+      res.JSON(data);
+      },
+      complete: function() {
+      //请求完成的处理
+      alert('complete');
+      },
+      error: function() {
+      //请求出错处理
+      alert('error');
+      }
+      });
+      }
+      }
+      window.onload = function() {
+      changeToButton("b01");
+      }

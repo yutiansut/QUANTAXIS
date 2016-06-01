@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>dc.js - Dimensional Charting Javascript Library</title>
+
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/dc.css"/>
+    <link rel="icon" type="image/x-icon" href="dc.logo.png"/>
+
+    <style>
+        #monthly-volume-chart g.y {
+            display: none;
+        }
+        #logo {
+            margin-right: 2em;
+            margin-top: 2em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+<img id="logo" src="dc.logo.png" style="float:left" width=125 height=125></img>
+<h2>dc.js - Dimensional Charting Javascript Library</h2>
+
+
+<p>
+    dc.js is a javascript charting library with native <a href="http://square.github.com/crossfilter/">crossfilter</a>
+    support and allowing highly efficient exploration on large multi-dimensional dataset (inspired by crossfilter's
+    demo). It leverages <a href="http://d3js.org/">d3</a> engine to render charts in css friendly svg format. Charts
+    rendered using dc.js are naturally data driven and reactive therefore providing instant feedback on user's
+    interaction. The main objective of this project is to provide an easy yet powerful javascript library which can be
+    utilized to perform data visualization and analysis in browser as well as on mobile device.
+</p>
+
+<h4>Version Status</h4>
+<p>This page is running version: v<span id="version"></span>. The latest stable version is v<span id="latest"></span>.</p>
+
+<h4>Getting Started</h4>
+<p>
+    Take a look at the <a href="docs/stock.html">annotated source</a> to the Nasdaq Example that is shown below.
+</p>
+
+<h4>For more information and assistance</h4>
+<ul>
+  <li><a href="http://github.com/dc-js/dc.js/releases/">Release Notes</a></li>
+  <li><a href="https://github.com/dc-js/dc.js/wiki">Wiki</a> - Additional examples</li>
+  <li><a href="https://github.com/dc-js/dc.js/wiki/Roadmap">Roadmap</a> - Future Plans</li>
+  <li><a href="https://github.com/dc-js/dc.js/blob/master/web/docs/api-1.6.0.md">Stable API</a> - Documentation</li>
+  <li><a href="https://github.com/dc-js/dc.js/blob/master/web/docs/api-latest.md">Master API</a> - Bleeding Edge</li>
+  <li><a href="https://groups.google.com/forum/?fromgroups#!forum/dc-js-user-group">Mailing List</a> - The users group and best place to post support questions.</li>
+  <li><a href="https://github.com/dc-js/dc.js/issues">Issues</a> - Please post any issues you have found or enhancements you would like to see. Usage questions should be directed to the mailing list</li>
+</ul>
+
+<p>
+    Fork me @ <a href="https://github.com/dc-js/dc.js">https://github.com/dc-js/dc.js</a> and also feel free
+    to report any issue or request a new type of chart to be included in the next release.
+</p>
+
+<h3>Examples</h3>
+
+<p>
+    The following charts provide a live example of dc.js used against Nasdaq 100 index for the last 27 years. (You
+    can run this example completely off-line). Although it is just an example, using it you can
+    already ask some quite interesting questions. If I am going to gamble whether Nasdaq 100 will gain or lose
+    tomorrow what is my chance? Is Friday or Monday the most unlucky day for investors? Is spring better than winter to
+    invest? Can you find the outliers? When did the outliers occur?
+
+    Public data source: <a href="http://pitrading.com/free_market_data.htm" target="_blank">PiTrading.com</a>.
+</p>
+
+<p>
+    Try it out or check out these other examples.
+</p>
+<ul>
+    <li><a href="vc/index.html">US Venture Capital Landscape 2011 (choropleth chart, bubble chart)</a></li>
+    <li><a href="crime/index.html">Major Canadian City Crime Stats 1998-2011 (bubble overlay, bar chart, line chart)</a></li>
+    <li><a href="https://github.com/dc-js/dc.js/wiki#examples-contributed-by-community">List of Community Contributed Examples</a></li>
+    <li><a href="./examples">Simple, Specific Chart Examples</a> (<a href="https://github.com/dc-js/dc.js/tree/master/web/examples">source</a>)</li>
+</ul>
+
+<h2>Nasdaq 100 Index 1985/11/01-2012/06/29</h2>
+
+<div class="row">
+    <div id="yearly-bubble-chart" class="dc-chart">
+        <strong>Yearly Performance</strong> (radius: fluctuation/index ratio, color: gain/loss)
+        <a class="reset" href="javascript:yearlyBubbleChart.filterAll();dc.redrawAll();"
+           style="display: none;">reset</a>
+
+        <div class="clearfix"></div>
+    </div>
+</div>
+
+<div class="row">
+    <div id="gain-loss-chart">
+        <strong>Days by Gain/Loss</strong>
+        <a class="reset" href="javascript:gainOrLossChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+
+        <div class="clearfix"></div>
+    </div>
+
+    <div id="quarter-chart">
+        <strong>Quarters</strong>
+        <a class="reset" href="javascript:quarterChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+
+        <div class="clearfix"></div>
+    </div>
+
+    <div id="day-of-week-chart">
+        <strong>Day of Week</strong>
+        <a class="reset" href="javascript:dayOfWeekChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+
+        <div class="clearfix"></div>
+    </div>
+
+    <div id="fluctuation-chart">
+        <strong>Days by Fluctuation(%)</strong>
+        <span class="reset" style="display: none;">range: <span class="filter"></span></span>
+        <a class="reset" href="javascript:fluctuationChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+
+        <div class="clearfix"></div>
+    </div>
+</div>
+
+<div class="row">
+    <div id="monthly-move-chart">
+        <strong>Monthly Index Abs Move & Volume/500,000 Chart</strong>
+        <span class="reset" style="display: none;">range: <span class="filter"></span></span>
+        <a class="reset" href="javascript:moveChart.filterAll();volumeChart.filterAll();dc.redrawAll();"
+           style="display: none;">reset</a>
+
+        <div class="clearfix"></div>
+    </div>
+</div>
+
+<div class="row">
+    <div id="monthly-volume-chart">
+    </div>
+    <p class="muted pull-right" style="margin-right: 15px;">select a time range to zoom in</p>
+</div>
+
+<div class="row">
+    <div>
+        <div class="dc-data-count">
+            <span class="filter-count"></span> selected out of <span class="total-count"></span> records | <a
+                href="javascript:dc.filterAll(); dc.renderAll();">Reset All</a>
+        </div>
+    </div>
+    <table class="table table-hover dc-data-table">
+    </table>
+</div>
+
+<div class="clearfix"></div>
+
+<a href="https://github.com/dc-js/dc.js"><img style="position: absolute; top: 0; right: 0; border: 0;"
+                                                  src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"
+                                                  alt="Fork me on GitHub"></a>
+</div>
+
+</div>
+
+<script type="text/javascript" src="js/d3.js"></script>
+<script type="text/javascript" src="js/crossfilter.js"></script>
+<script type="text/javascript" src="js/dc.js"></script>
+<script type="text/javascript" src="js/colorbrewer.js"></script>
+
+<script type="text/javascript" src="stock.js"></script>
+
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-33628816-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function () {
+        var ga = document.createElement('script');
+        ga.type = 'text/javascript';
+        ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+    })();
+</script>
+
+</body>
+</html>

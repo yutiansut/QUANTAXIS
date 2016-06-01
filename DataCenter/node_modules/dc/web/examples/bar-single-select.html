@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>dc.js - Bar Chart Example</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/dc.css"/>
+</head>
+<body>
+
+<p>Frequently asked question: how to enable single-select on an ordinal chart?</p>
+
+<div id="test">
+  <a class="reset" style="display: none" href="javascript:chart.filter(null).redrawGroup()">reset</a>
+</div>
+
+<script type="text/javascript" src="../js/d3.js"></script>
+<script type="text/javascript" src="../js/crossfilter.js"></script>
+<script type="text/javascript" src="../js/dc.js"></script>
+<script type="text/javascript">
+
+var chart = dc.barChart("#test");
+d3.csv("morley.csv", function(error, experiments) {
+
+  experiments.forEach(function(x) {
+    x.Speed = +x.Speed;
+  });
+
+  var ndx                 = crossfilter(experiments),
+      runDimension        = ndx.dimension(function(d) {return +d.Run;}),
+      speedSumGroup       = runDimension.group().reduceSum(function(d) {return d.Speed * d.Run / 1000;});
+
+  chart
+    .width(768)
+    .height(480)
+    .x(d3.scale.ordinal())
+    .xUnits(dc.units.ordinal)
+    .brushOn(true)
+    .yAxisLabel("This is the Y Axis!")
+    .dimension(runDimension)
+    .group(speedSumGroup)
+    .on('pretransition', function(chart) {
+        chart.selectAll("rect.bar").on("click", function (d) {
+            console.log('click');
+            chart.filter(null)
+                .filter(d.data.key)
+                .redrawGroup();
+        });
+    });
+    chart.render();
+});
+
+</script>
+
+</body>
+</html>

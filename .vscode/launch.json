@@ -1,0 +1,37 @@
+{
+    "version": "3.0.0",
+    "configurations": [
+        {
+            "name": "QUANTAXIS DC",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceRoot}/DataCenter/bin/www.js",
+            "stopOnEntry": false,
+            "args": [],
+            "cwd": "${workspaceRoot}",
+            "preLaunchTask": null,
+            "runtimeExecutable": null,
+            "runtimeArgs": [
+                "--nolazy"
+            ],
+            "env": {
+                "NODE_ENV": "development"
+            },
+            "externalConsole": false,
+            "sourceMaps": false,
+            "outDir": null
+        },
+        {
+            "name": "附加",
+            "type": "node",
+            "request": "attach",
+            "port": 5858,
+            "address": "localhost",
+            "restart": true,
+            "sourceMaps": true,
+            "outDir": null,
+            "localRoot": "${workspaceRoot}/DataCenter/",
+            "remoteRoot": null
+        }
+    ]
+}

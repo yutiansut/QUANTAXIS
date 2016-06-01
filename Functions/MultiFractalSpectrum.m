@@ -1,6 +1,5 @@
 function MultiFractalSpectrum(data,dimension)
-%原始数据可以是1维或者2维
-%如果是2维,矩形区域,取最大的边为尺度,划分出一个正方形,作为场
+
    if dimension==2
        sizes=size(data);
        maxsz=max(sizes);
@@ -17,7 +16,7 @@ function MultiFractalSpectrum(data,dimension)
    probmlevels={};
    layer=4;
    
-   %将场进行不同分辨率的划分,成为boxsz*boxsz的小区域，最后probmlevels是在不同分辨率下存储的各个小区域的总概率
+   %锟斤拷锟斤拷锟斤拷锟叫诧拷同锟街憋拷锟绞的伙拷锟斤拷,锟斤拷为boxsz*boxsz锟斤拷小锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷probmlevels锟斤拷锟节诧拷同锟街憋拷锟斤拷锟铰存储锟侥革拷锟斤拷小锟斤拷锟斤拷锟斤拷锟杰革拷锟斤拷
    for layer=1:maxboxsz
        boxsz=2.^layer;
        coordinates=0:boxsz:maxsz-boxsz;
@@ -39,7 +38,7 @@ function MultiFractalSpectrum(data,dimension)
        probmlevels={probmlevels{:},totalfields./sum(totalfields)};
    end
    
-   %计算多重分形谱，alpha(q)和f(q)，qran为q的范围，qres为q的分辨率
+   %锟斤拷锟斤拷锟斤拷锟截凤拷锟斤拷锟阶ｏ拷alpha(q)锟斤拷f(q)锟斤拷qran为q锟侥凤拷围锟斤拷qres为q锟侥分憋拷锟斤拷
    qran=10;qres=0.1;
    qq=-qran:qres:qran;
    fqss=[];
@@ -62,7 +61,7 @@ function MultiFractalSpectrum(data,dimension)
        alphaqss=[alphaqss,line1(1)];
        fqss=[fqss,line2(1)];
    end
-   %绘制多重分形谱的图
+   %锟斤拷锟狡讹拷锟截凤拷锟斤拷锟阶碉拷图
    figure;plot(qq,alphaqss,'r:o',qq,fqss,'g:o');
    h = legend('alpha(q)','f(q)','Location','NorthEast'); 
    xlabel('q','FontSize',14);

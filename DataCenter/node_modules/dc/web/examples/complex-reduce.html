@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>dc.js - Complex Reductions Example</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/dc.css"/>
+</head>
+<body>
+
+  <p>Frequently asked question: how to show the minimum/maximum of some value in the rows?</p>
+
+  <p>Some kinds of reductions require the entire set of values at every step: median, mode, minimum,
+  maximum. (It is almost by accident that you can get away with calculating the mean without looking
+  at all the rows.) This example shows how to keep the set of
+  values. <a href="http://github.com/dc-js/dc.js/tree/develop/web/examples/complex-reduce.html">See
+  the source</a> for details.</p>
+
+  <div id="select-operation">
+    <input type=radio name="operation" value="median" checked="true">median
+    <input type=radio name="operation" value="min">min
+    <input type=radio name="operation" value="max">max
+  </div>
+  <div id="test-run">
+    <h4>Run</h4>
+    <div class="reset" style="visibility: hidden;">selected: <span class="filter"></span>
+      <a href="javascript:runChart.filterAll().redrawGroup();">reset</a>
+    </div>
+  </div>
+  <div id="test-expt">
+    <h4>Experiment</h4>
+    <div class="reset" style="visibility: hidden;">selected: <span class="filter"></span>
+      <a href="javascript:exptChart.filterAll().redrawGroup();">reset</a>
+    </div>
+  </div>
+
+<script type="text/javascript" src="../js/d3.js"></script>
+<script type="text/javascript" src="../js/crossfilter.js"></script>
+<script type="text/javascript" src="../js/dc.js"></script>
+<script type="text/javascript">
+
+  // reduction functions that keep a sorted array of rows. the rows must either have a unique key,
+  // or it must not matter if the same row is removed as was added previously
+
+  // instead of calculating the desired metric on every change, which is slow, we'll just maintain
+  // these arrays of rows and calculate the metrics when needed in the accessor
+  function groupArrayAdd(keyfn) {
+      var bisect = d3.bisector(keyfn);
+      return function(elements, item) {
+          var pos = bisect.right(elements, keyfn(item));
+          elements.splice(pos, 0, item);
+          return elements;
+      };
+  }
+
+  function groupArrayRemove(keyfn) {
+      var bisect = d3.bisector(keyfn);
+      return function(elements, item) {
+          var pos = bisect.left(elements, keyfn(item));
+          if(keyfn(elements[pos])===keyfn(item))
+              elements.splice(pos, 1);
+          return elements;
+      };
+  }
+
+  function groupArrayInit() {
+      return [];
+  }
+
+
+  var runChart = dc.barChart("#test-run"), exptChart = dc.barChart("#test-expt");
+  d3.csv("morley.csv", function(error, experiments) {
+      experiments.forEach(function(x) {
+          x.Speed = +x.Speed;
+      });
+
+      var ndx = crossfilter(experiments),
+          runKey = function(d) {return +d.Run;},
+          exptKey = function(d) {return +d.Expt;},
+          speedValue = function(d) {return d.Speed;},
+          runDimension = ndx.dimension(runKey),
+          exptDimension = ndx.dimension(exptKey),
+          runAvgGroup = runDimension.group().reduce(groupArrayAdd(exptKey), groupArrayRemove(exptKey), groupArrayInit),
+          exptAvgGroup = exptDimension.group().reduce(groupArrayAdd(runKey), groupArrayRemove(runKey), groupArrayInit);
+
+      function medianSpeed(kv) {
+          return d3.median(kv.value, speedValue);
+      }
+      function minSpeed(kv) {
+          return d3.min(kv.value, speedValue);
+      }
+      function maxSpeed(kv) {
+          return d3.max(kv.value, speedValue);
+      }
+      var accessors = {
+          median: medianSpeed,
+          min: minSpeed,
+          max: maxSpeed
+      };
+
+      d3.selectAll('#select-operation input')
+          .on('click', function() {
+              runChart.valueAccessor(accessors[this.value]);
+              exptChart.valueAccessor(accessors[this.value]);
+              dc.redrawAll();
+          });
+
+      runChart
+          .width(768)
+          .height(480)
+          .x(d3.scale.ordinal())
+          .xUnits(dc.units.ordinal)
+          .valueAccessor(medianSpeed)
+          .elasticY(true)
+          .brushOn(true)
+          .controlsUseVisibility(true)
+          .dimension(runDimension)
+          .group(runAvgGroup);
+
+      exptChart
+          .width(768)
+          .height(480)
+          .x(d3.scale.ordinal())
+          .xUnits(dc.units.ordinal)
+          .valueAccessor(medianSpeed)
+          .elasticY(true)
+          .brushOn(true)
+          .controlsUseVisibility(true)
+          .dimension(exptDimension)
+          .group(exptAvgGroup);
+
+      runChart.margins().left = exptChart.margins().left = 35;
+
+      dc.renderAll();
+  });
+
+</script>
+
+</body>
+</html>
