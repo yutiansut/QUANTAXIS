@@ -7,7 +7,7 @@
 ![language](https://img.shields.io/badge/Language-%20matlab-blue.svg)
 ![license](https://img.shields.io/badge/license-%20MIT-brightgreen.svg)
 
-![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/3.0/QUANTAXIS.jpg)
+![quantaxis 3.0 beta](picture/QUANTAXIS.jpg)
 
 
 [Website]:www.yutiansut.com | http://quantaxis.yutiansut.com<br>
@@ -20,7 +20,7 @@
 
 使用ajax技术对于mysql数据进行抽取，使用dc.js等可视化javascript将数据展示在页面上，形成交互式的数据可视化方案
 
-
+![quantaxis 3.0 beta](picture/QA3.0.png)
 
 
 
