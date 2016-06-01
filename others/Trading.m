@@ -1,28 +1,28 @@
 classdef Trading < handle
     properties
-        %% account system ¸ñÊ½ ACC_
+        %% account system ï¿½ï¿½Ê½ ACC_
         ACC_TotalAssest=1000000;
         ACC_Cash;
         ACC_Position
-        ACC_Portfolio%³Ö²Ö×éºÏ
-        %% System ÏµÍ³Êý¾Ý ´ÓquantaxisÊý¾Ý»ñÈ¡À´ ¸ñÊ½ SYS_
+        ACC_Portfolio%ï¿½Ö²ï¿½ï¿½ï¿½ï¿½ï¿½
+        %% System ÏµÍ³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½quantaxisï¿½ï¿½ï¿½Ý»ï¿½È¡ï¿½ï¿½ ï¿½ï¿½Ê½ SYS_
         SYS_Date
-        SYS_Price  %°´ÁÐÀ´  ¿ªÅÌ ×î¸ß ×îµÍ ÊÕÅÌ
+        SYS_Price  %ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         SYS_Volum
         
-        %% trade system  ¸ñÊ½ TRA_
+        %% trade system  ï¿½ï¿½Ê½ TRA_
         TRA_Time
         TRA_StockID
         TRA_Towards
         TRA_Price %
         TRA_Vol
         TRA_Tax
-        %% message system  ¸ñÊ½ MES_
+        %% message system  ï¿½ï¿½Ê½ MES_
         MES_Time
         MES_Type
         MES_Text
 
-        %% evaluation system ¸ñÊ½ EVA_
+        %% evaluation system ï¿½ï¿½Ê½ EVA_
         EVA_Case
         EVA_Price
         EVA_Vol
@@ -37,7 +37,7 @@ classdef Trading < handle
     end
     methods
         function tra=Trading()
-            disp('===Welcome to QUANTAXIS-Trading BOX by yutiansut & chendie===')
+            disp('===Welcome to QUANTAXIS-Trading BOX by yutiansut ===')
             addlistener(tra,'Account',@ACCOUNT);
             addlistener(tra,'Trade',@TRADE);
             addlistener(tra,'Message',@MESSAGE);
@@ -59,7 +59,7 @@ classdef Trading < handle
         
         function tra=ACCOUNT(tra,varargin)
             disp('account')
-            %% ÕË»§±í´ïÏµÍ³
+            %% ï¿½Ë»ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÍ³
             
             
             
