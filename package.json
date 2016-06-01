@@ -1,8 +1,8 @@
 {
   "name": "quantaxis",
-  "version": "2.5.1",
+  "version": "3.0.0",
   "description": "quantbox for matlab",
-  "main": "QUANTAXIS.m",
+  "main": "DataCenter/bin/www.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
