@@ -27,10 +27,10 @@
             "request": "attach",
             "port": 5858,
             "address": "localhost",
-            "restart": false,
-            "sourceMaps": false,
+            "restart": true,
+            "sourceMaps": true,
             "outDir": null,
-            "localRoot": "${workspaceRoot}",
+            "localRoot": "${workspaceRoot}/DataCenter/",
             "remoteRoot": null
         }
     ]
