@@ -9,12 +9,22 @@
 
 ![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXIS.jpg)
 
-[Version]:2.5.1 <br>
-[Author]:yutiansut<br>
+
 [Website]:www.yutiansut.com | http://quantaxis.yutiansut.com<br>
 [Contact]:QQ 279336410<br>
 
 
+## 更新日志 QA3.0  新增数据中心 DATACENTER 主要负责数据可视化
+----
+将matlab的及时数据以json格式保存到状态空间或者mysql中
+
+使用ajax技术对于mysql数据进行抽取，使用dc.js等可视化javascript将数据展示在页面上，形成交互式的数据可视化方案
+
+
+
+
+
+----
 >QUANTAXIS本身是作者在大四时，学习量化交易以及策略实现的时候，发现matlab上面并没有称心如意的量化平台，而主流的量化平台则基于python和java，于是萌生了自己写一个量化工具箱的想法
 
 ## [Version History](https://github.com/yutiansut/QUANTAXIS/releases)
