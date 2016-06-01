@@ -1,11 +1,11 @@
 # QUANTAXIS 量化金融工具箱
 ![AppVeyor branch](https://img.shields.io/appveyor/ci/gruntjs/grunt/master.svg?maxAge=2592000)
-![download](https://img.shields.io/badge/download-34Mb-green.svg)
-![version](https://img.shields.io/badge/version-%202.5.1-orange.svg)
+![download](https://img.shields.io/badge/Download-47~140Mb-green.svg)
+![version](https://img.shields.io/badge/Version-%203.0.0%20beta-orange.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
-![website](https://img.shields.io/badge/website-%20www.yutiansut.com-lightgrey.svg)
-![language](https://img.shields.io/badge/Language-%20matlab-blue.svg)
-![license](https://img.shields.io/badge/license-%20MIT-brightgreen.svg)
+![website](https://img.shields.io/badge/Website-%20www.yutiansut.com-lightgrey.svg)
+![language](https://img.shields.io/badge/%20%20%20Language%20%20%20-%20%20%20Matlab%2FPython%2FJS%20%20-lightgrey.svg)
+![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
 
 ![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/3.0/Picture/QUANTAXIS.jpg)
 
