@@ -7,7 +7,7 @@
 ![language](https://img.shields.io/badge/Language-%20matlab-blue.svg)
 ![license](https://img.shields.io/badge/license-%20MIT-brightgreen.svg)
 
-![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXIS.jpg)
+![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/3.0/QUANTAXIS.jpg)
 
 
 [Website]:www.yutiansut.com | http://quantaxis.yutiansut.com<br>
