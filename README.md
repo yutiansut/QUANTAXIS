@@ -124,8 +124,9 @@ round控制
 如果出现可以对冲的报价就进行对冲并回调价格
 
 
-## [QUANTAXIS-TEST](https://github.com/yutiansut/QUANTAXIS/blob/master/TestMarkets.m)
+## [QUANTAXIS-TEST 函数接口测试](https://github.com/yutiansut/QUANTAXIS/blob/master/TestMarkets.m)
 测试类
 ```
 TM=TestMarkets;  %初始化测试
 ```
+集成类以后可以使用继承类的接口，同时，在使用了包package以后，不能直接调用FreeMarkets.m的函数
