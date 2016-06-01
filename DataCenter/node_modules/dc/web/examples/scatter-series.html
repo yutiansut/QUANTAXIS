@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>dc.js - Series Example</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/dc.css"/>
+</head>
+<body>
+
+<div id="test"></div>
+
+<script type="text/javascript" src="../js/d3.js"></script>
+<script type="text/javascript" src="../js/crossfilter.js"></script>
+<script type="text/javascript" src="../js/dc.js"></script>
+<script type="text/javascript">
+
+var chart = dc.seriesChart("#test");
+var ndx, runDimension, runGroup;
+
+d3.csv("morley.csv", function(error, experiments) {
+
+  ndx = crossfilter(experiments);
+  runDimension = ndx.dimension(function(d) {return [+d.Expt, +d.Run]; });
+  runGroup = runDimension.group().reduceSum(function(d) { return +d.Speed; });
+
+  var symbolScale = d3.scale.ordinal().range(d3.svg.symbolTypes);
+  var symbolAccessor = function(d) { return symbolScale(d.key[0]); };
+  var subChart = function(c) {
+    return dc.scatterPlot(c)
+        .symbol(symbolAccessor)
+        .symbolSize(8)
+        .highlightedSize(10)
+  };
+
+  chart
+    .width(768)
+    .height(480)
+    .chart(subChart)
+    .x(d3.scale.linear().domain([0,20]))
+    .brushOn(false)
+    .yAxisLabel("Measured Speed km/s")
+    .xAxisLabel("Run")
+    .clipPadding(10)
+    .elasticY(true)
+    .dimension(runDimension)
+    .group(runGroup)
+    .mouseZoomable(true)
+    .seriesAccessor(function(d) {return "Expt: " + d.key[0];})
+    .keyAccessor(function(d) {return +d.key[1];})
+    .valueAccessor(function(d) {return +d.value - 500;})
+    .legend(dc.legend().x(350).y(350).itemHeight(13).gap(5).horizontal(1).legendWidth(140).itemWidth(70));
+  chart.yAxis().tickFormat(function(d) {return d3.format(',d')(d+299500);});
+  chart.margins().left += 40;
+
+  dc.renderAll();
+
+});
+
+</script>
+</body>
+</html>

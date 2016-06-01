@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>dc.js - Pie Chart Example</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/dc.css"/>
+</head>
+<body>
+
+<div id="test"></div>
+
+<script type="text/javascript" src="../js/d3.js"></script>
+<script type="text/javascript" src="../js/crossfilter.js"></script>
+<script type="text/javascript" src="../js/dc.js"></script>
+<script type="text/javascript">
+
+var chart = dc.pieChart("#test");
+d3.csv("morley.csv", function(error, experiments) {
+
+  var ndx           = crossfilter(experiments),
+      runDimension  = ndx.dimension(function(d) {return "run-"+d.Run;})
+      speedSumGroup = runDimension.group().reduceSum(function(d) {return d.Speed * d.Run;});
+
+  chart
+    .width(768)
+    .height(480)
+    .slicesCap(4)
+    .innerRadius(100)
+    .dimension(runDimension)
+    .group(speedSumGroup)
+    .legend(dc.legend())
+    // workaround for #703: not enough data is accessible through .label() to display percentages
+    .on('pretransition', function(chart) {
+        chart.selectAll('text.pie-slice').text(function(d) {
+            return d.data.key + ' ' + dc.utils.printSingleValue((d.endAngle - d.startAngle) / (2*Math.PI) * 100) + '%';
+        })
+    });
+
+  chart.render();
+});
+
+</script>
+
+</body>
+</html>

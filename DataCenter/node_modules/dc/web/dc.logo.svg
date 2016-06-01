@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="152px" height="152px" viewBox="0 0 152 152" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.3.3 (12081) - http://www.bohemiancoding.com/sketch -->
+    <title>152 - iPad App Icon 7 - single 2 Copy</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="62.5109161%" y2="84.1255759%" id="linearGradient-1">
+            <stop stop-color="#BE554A" offset="0%"></stop>
+            <stop stop-color="#CA6148" offset="100%"></stop>
+        </linearGradient>
+        <path id="path-2" d="M0,1.88737914e-15 L0,119 L152,119 L152,50 L0,1.88737914e-15 Z"></path>
+        <path id="path-4" d="M0,0 L0,119 L152,119 L152,50 L0,0 Z"></path>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-6">
+            <stop stop-color="#BE544A" offset="0%"></stop>
+            <stop stop-color="#E47A45" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="152---iPad-App-Icon-7---single-2-Copy" sketch:type="MSArtboardGroup">
+            <g id="Rectangle-20-+-dc" sketch:type="MSLayerGroup" fill="#2D2B30">
+                <rect id="Rectangle-20" sketch:type="MSShapeGroup" x="0" y="0" width="152" height="152"></rect>
+            </g>
+            <path d="M15,125 L15,12 L31,12 L31,125 L140,125 L140,141 L31,141 L31,152 L15,152 L15,141 L0,141 L0,125 L15,125 Z" id="Rectangle-7" fill="url(#linearGradient-1)" sketch:type="MSShapeGroup"></path>
+            <g id="Rectangle-11-+-Rectangle-12" sketch:type="MSLayerGroup" transform="translate(0.000000, 33.000000)">
+                <mask id="mask-3" sketch:name="Rectangle 12" fill="white">
+                    <use xlink:href="#path-2"></use>
+                </mask>
+                <use id="Rectangle-12" sketch:type="MSShapeGroup" xlink:href="#path-2"></use>
+                <path d="M15,92 L15,-21 L31,-21 L31,92 L140,92 L140,108 L31,108 L31,119 L15,119 L15,108 L0,108 L0,92 L15,92 Z" id="Rectangle-11" fill="#F69837" sketch:type="MSShapeGroup" mask="url(#mask-3)"></path>
+            </g>
+            <g id="Rectangle-13-+-dc-bk-2" sketch:type="MSLayerGroup" transform="translate(0.000000, 33.000000)">
+                <mask id="mask-5" sketch:name="Rectangle 13" fill="white">
+                    <use xlink:href="#path-4"></use>
+                </mask>
+                <use id="Rectangle-13" sketch:type="MSShapeGroup" xlink:href="#path-4"></use>
+            </g>
+            <g id="dc-bk-+-dc-2-copy" sketch:type="MSLayerGroup" transform="translate(17.000000, 41.000000)">
+                <path d="M73.886,59.694 L73.886,5 L63.39,5 L63.39,25.172 C60.274,21.154 55.846,19.104 51.172,19.104 C41.086,19.104 33.624,26.976 33.624,39.932 C33.624,53.134 41.168,60.678 51.172,60.678 C55.928,60.678 60.274,58.546 63.39,54.61 L63.39,59.694 L73.886,59.694 Z M54.37,51.412 C48.466,51.412 44.366,46.738 44.366,39.932 C44.366,33.044 48.466,28.37 54.37,28.37 C57.896,28.37 61.668,30.256 63.39,32.88 L63.39,46.902 C61.668,49.526 57.896,51.412 54.37,51.412 Z M102.668,60.678 C110.786,60.678 115.706,57.152 118.33,53.462 L111.524,47.148 C109.638,49.772 106.768,51.412 103.16,51.412 C96.846,51.412 92.418,46.738 92.418,39.85 C92.418,32.962 96.846,28.37 103.16,28.37 C106.768,28.37 109.638,29.846 111.524,32.634 L118.33,26.238 C115.706,22.63 110.786,19.104 102.668,19.104 C90.45,19.104 81.676,27.714 81.676,39.85 C81.676,52.068 90.45,60.678 102.668,60.678 Z" id="dc-bk" fill="url(#linearGradient-6)" sketch:type="MSShapeGroup"></path>
+                <path d="M73.886,23.8284371 L73.886,59.694 L63.39,59.694 L63.39,54.61 C60.274,58.546 55.928,60.678 51.172,60.678 C41.168,60.678 33.624,53.134 33.624,39.932 C33.624,26.976 41.086,19.104 51.172,19.104 C55.846,19.104 60.274,21.154 63.39,25.172 L63.39,20.3529404 L73.886,23.8284371 Z M95.8489789,31.1009466 C93.6925039,33.1200801 92.418,36.1546131 92.418,39.85 C92.418,46.738 96.846,51.412 103.16,51.412 C106.768,51.412 109.638,49.772 111.524,47.148 L118.33,53.462 C115.706,57.152 110.786,60.678 102.668,60.678 C90.45,60.678 81.676,52.068 81.676,39.85 C81.676,35.1426907 82.9960548,30.9658707 85.3251227,27.616226 L95.8489789,31.1009466 Z M54.37,51.412 C48.466,51.412 44.366,46.738 44.366,39.932 C44.366,33.044 48.466,28.37 54.37,28.37 C57.896,28.37 61.668,30.256 63.39,32.88 L63.39,46.902 C61.668,49.526 57.896,51.412 54.37,51.412 Z" id="dc-2-copy" fill="#F69837" sketch:type="MSShapeGroup"></path>
+            </g>
+        </g>
+    </g>
+</svg>

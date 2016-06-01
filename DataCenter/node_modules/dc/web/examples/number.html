@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>dc.js - Number Display Example</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/dc.css"/>
+    <style>
+      #number-box {
+        background: orange;
+        width: 200px;
+        font-size: 64px;
+        text-align: center;
+        padding-top: 63px;
+        padding-bottom: 63px;
+        height: 74px;
+      }
+    </style>
+</head>
+<body>
+
+<div id="test">
+  Inline Number Display. We have <span class="number-display"></span> Jumping on the bed.
+</div>
+
+<br />
+
+<p>
+We have seen a mean of <span id="mean"></span> over <span id="expn"></span> experiments!
+</p>
+
+<br />
+
+<div id="number-box"></div>
+
+
+<script type="text/javascript" src="../js/d3.js"></script>
+<script type="text/javascript" src="../js/crossfilter.js"></script>
+<script type="text/javascript" src="../js/dc.js"></script>
+<script type="text/javascript">
+
+var inlineND = dc.numberDisplay("#test"),
+    boxND    = dc.numberDisplay("#number-box"),
+    meanND   = dc.numberDisplay("#mean"),
+    expnND   = dc.numberDisplay("#expn");
+d3.csv("morley.csv", function(error, experiments) {
+
+  experiments.forEach(function(x) {
+    x.Speed = +x.Speed * 1000;
+  });
+
+  var ndx            = crossfilter(experiments),
+      runDimension   = ndx.dimension(function(d) {return +d.Run;})
+      meanSpeedGroup = ndx.groupAll().reduce(
+          function (p, v) {
+              ++p.n;
+              p.tot += v.Speed;
+              return p;
+          },
+          function (p, v) {
+              --p.n;
+              p.tot -= v.Speed;
+              return p;
+          },
+          function () { return {n:0,tot:0}; }
+      );
+  var average = function(d) {
+      return d.n ? d.tot / d.n : 0;
+  };
+  var expCount = function(d) {
+      return d.n;
+  };
+
+  inlineND
+      .valueAccessor(average)
+      .html({
+        one:"<span style=\"color:steelblue; font-size: 26px;\">%number</span> Monkey",
+        some:"<span style=\"color:steelblue; font-size: 26px;\">%number</span> Total Monkeys",
+        none:"<span style=\"color:steelblue; font-size: 26px;\">No</span> Monkeys"
+      })
+      .group(meanSpeedGroup);
+  boxND
+      .formatNumber(d3.format(".3s"))
+      .valueAccessor(average)
+      .group(meanSpeedGroup);
+
+  meanND.group(meanSpeedGroup).valueAccessor(average).formatNumber(d3.format(".3g"));
+  expnND.group(meanSpeedGroup).valueAccessor(expCount);
+
+  var i=18;
+  setInterval(function() {
+      runDimension.filter(i++ % 20);
+      dc.redrawAll();
+  }, 3000);
+
+  dc.renderAll();
+});
+
+</script>
+
+</body>
+</html>

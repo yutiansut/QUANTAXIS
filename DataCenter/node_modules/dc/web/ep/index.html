@@ -1,0 +1,242 @@
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>dc.js - data grid example</title>
+<link rel="stylesheet" type="text/css" href="../css/dc.css"/>
+</head>
+<body>
+
+<script type="text/javascript" src="../js/d3.js"></script>
+<script type="text/javascript" src="../js/crossfilter.js"></script>
+<script type="text/javascript" src="../js/dc.js"></script>
+
+<script type="text/javascript" src="http://underscorejs.org/underscore-min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
+
+<script>
+
+var tpl = _.template("<h2 title='MEP from <%= country %> in <%= eugroup %>'> <%= first_name %> <%= last_name %></h2><img class='lazy-load' dsrc='blank.gif' data-original='http://ep.ngo.im/mepphoto/<%= epid %>.jpg' alt='<%= last_name %>, <%= first_name %> member of <%= eugroup %>' title='MEP from <%= country %> in <%= eugroup %>' width=170 height=216 />");
+
+function grid (selector,data) {
+  var ndx = crossfilter(data),
+      all = ndx.groupAll();
+
+  function adjust (data) {
+    //calculate age
+    var dateFormat = d3.time.format("%Y-%m-%d");
+    var now = Date.now();
+    var birthdate=null;
+
+    data.forEach(function (e) {
+      birthdate = dateFormat.parse(e.birthdate);
+      e.age= ~~((now - birthdate) / (31557600000));// 24 * 3600 * 365.25 * 1000
+    });
+  }
+
+  adjust (data);
+
+  var pie_group = dc.pieChart(selector +  " .group").innerRadius(20).radius(70);
+  var group = ndx.dimension(function(d) {
+      if (typeof d.eugroup == "undefined") return "";
+      return d.eugroup;
+      });
+  var groupGroup   = group.group().reduceSum(function(d) {   return 1; });
+
+  //var chart_age = dc.barChart(selector + " .age");
+  var chart_age = dc.lineChart(selector + " .age");
+
+  var age = ndx.dimension(function(d) {
+      if (typeof d.age == "undefined") return "";
+      return d.age;
+      });
+
+  var ageGroup   = age.group().reduceSum(function(d) {   return 1; });
+    //.x(d3.scale.ordinal())
+  chart_age
+    .width(444)
+    .height(200)
+    .margins({top: 0, right: 0, bottom: 95, left: 30})
+    .x(d3.scale.linear().domain([20,100]))
+    .brushOn(true)
+    .renderArea(true)
+    .elasticY(true)
+    .yAxisLabel("#MEPs")
+    .dimension(age)
+    .group(ageGroup)
+    .on('renderlet', function (chart) {
+      if (!console || !console.log) return;
+      var d = chart.dimension().top(Number.POSITIVE_INFINITY);
+      var total = nb = 0;
+      d.forEach (function (a) {
+        ++nb;
+        total += a.age;
+      }); 
+      var avg= total/nb;
+      console.log ("average:" + avg);
+    });
+
+  var pie_gender = dc.pieChart(selector +  " .gender").radius(70);
+  var gender = ndx.dimension(function(d) {
+      if (typeof d.gender == "undefined") return "";
+      return d.gender;
+      });
+
+  var groupGender   = gender.group().reduceSum(function(d) {   return 1; });
+
+  var bar_country = dc.barChart(selector + " .country");
+  var country = ndx.dimension(function(d) {
+      if (typeof d.country == "undefined") return "";
+      return d.country;
+      });
+  var countryGroup   = country.group().reduceSum(function(d) { return 1; });
+
+  var NameGender= {"M":"Male","F":"Female","":"missing data"};
+  var SymbolGender= {"M":"\u2642","F":"\u2640","":""};
+
+  pie_gender
+    .width(200)
+    .height(200)
+    .dimension(gender)
+    .label(function (d){
+       return SymbolGender[d.key];
+    })
+    .title(function (d){
+       return NameGender[d.key] +": "+d.value;
+    })
+    .group(groupGender);
+
+  pie_group
+    .width(200)
+    .height(200)
+    .dimension(group)
+    .colors(d3.scale.category10())
+    .group(groupGroup)
+    .on('renderlet', function (chart) {
+        });
+
+  bar_country
+    .width(444)
+    .height(200)
+    .outerPadding(0)
+    .gap(1)
+    .margins({top: 0, right: 0, bottom: 95, left: 30})
+    .x(d3.scale.ordinal())
+    .xUnits(dc.units.ordinal)
+    .brushOn(false)
+    .elasticY(true)
+    .yAxisLabel("#MEPs")
+    .dimension(country)
+    .group(countryGroup);
+
+  bar_country.on("postRender", function(c) {rotateBarChartLabels();} );
+
+
+  function rotateBarChartLabels() {
+    d3.selectAll(selector+ ' .country .axis.x text')
+      .style("text-anchor", "end" )
+      .attr("transform", function(d) { return "rotate(-90, -4, 9) "; });
+  }
+
+  dc.dataCount(".dc-data-count")
+    .dimension(ndx)
+    .group(all);
+
+  dc.dataGrid(".dc-data-grid")
+    .dimension(country)
+    .group(function (d) {
+        return d.country;
+        })
+  .size(1000)
+    .html (function(d) { return tpl(d);})
+    .sortBy(function (d) {
+        return d.last_name;
+        })
+  .order(d3.ascending)
+  .on('renderlet', function (grid) {
+        $("img.lazy-load").lazyload ({
+effect : "fadeIn"
+})
+        .removeClass("lazy-load");
+        });
+dc.renderAll();
+}
+
+</script>
+
+<h1 class="page-header">Members of the European parliament</h1>
+<p><b>Click on the graphs to filter the Members of the European parliament by country or party</b></p>
+
+
+<div id="ep2014list">
+<div class="group"></div>
+<div class="country"></div>
+<div class="gender"></div>
+<div class="age"></div>
+<div class="list"></div>
+<div style="clear:both;">
+<div class="dc-data-count">
+<span class="filter-count"></span> selected out of <span class="total-count"></span> MEPs | <a
+href="javascript:dc.filterAll(); dc.renderAll();">Reset All</a>
+</div>
+</div>
+<div class="dc-data-grid">
+</div>
+
+</div>
+
+<script>
+$(function() {
+    d3.csv("mep.csv", function(d) {return d;}
+      ,function(error, rows) {
+      grid ("#ep2014list",rows);
+      });      
+    });      
+</script>
+
+<style>
+
+#ep2014list table, .dc-data-grid {clear:both;}
+.dc-table-label {background: #F5F5F5; font-weight:bold; }
+.x line {stroke:none;}
+
+body {font-family: arial, helvetica, sans-serif;}
+
+.dc-data-grid, .dc-grid-group {clear:both}
+.dc-data-count {clear:both;}
+.dc-grid-group {
+  background-color: #F5F5F5;
+border: 1px solid #E3E3E3;
+        border-radius: 4px;
+
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05) inset;
+        margin-bottom: 20px;
+        min-height: 20px;
+padding: 10px;
+}
+
+.dc-grid-item {
+float:left;
+margin:0 10px 10px 0;
+padding:5px;
+width:200px;
+      background-color: #F8F8F8;
+      border-color: #E7E7E7;
+      border-radius: 4px;
+      text-align:center;
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05) inset;
+}
+.dc-grid-item img {width:170px;height:215px}
+.dc-grid-top h1 {font-size:22px;}
+.dc-grid-top h2 {font-size:14px;}
+</style>
+</div>
+
+
+</div>
+</div>
+
+</body>
+</html>

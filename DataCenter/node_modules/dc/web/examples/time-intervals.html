@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>dc.js - Time Intervals Example</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/dc.css"/>
+</head>
+<body>
+
+  <div id="month">
+    <div class="reset" style="visibility: hidden;">selected: <span class="filter"></span>
+      <a href="javascript:monthChart.filterAll().redrawGroup();">reset</a>
+    </div>
+  </div>
+  <div id="cost">
+    <div class="reset" style="visibility: hidden;">selected: <span class="filter"></span>
+      <a href="javascript:costChart.filterAll().redrawGroup();">reset</a>
+    </div>
+  </div>
+
+<script type="text/javascript" src="../js/d3.js"></script>
+<script type="text/javascript" src="../js/crossfilter.js"></script>
+<script type="text/javascript" src="../js/dc.js"></script>
+<script type="text/javascript" src="lysenko-interval-tree.js"></script>
+<script type="text/javascript">
+
+  function intervalTreeGroup(tree, firstDate, lastDate) {
+      return {
+          all: function() {
+              var begin = d3.time.month(firstDate), end = d3.time.month(lastDate);
+              var i = new Date(begin);
+              var ret = [], count;
+              do {
+                  next = new Date(i);
+                  next.setMonth(next.getMonth()+1);
+                  count = 0;
+                  tree.queryInterval(i.getTime(), next.getTime(), function() {
+                      ++count;
+                  });
+                  ret.push({key: i, value: count});
+                  i = next;
+                  if(ret.length > 100)
+                      throw new Error('uh oh');
+              }
+              while(i.getTime() <= end.getTime());
+              return ret;
+          }
+      };
+  }
+  var timeFormat = d3.time.format('%x');
+  var monthChart = dc.barChart("#month");
+  var costChart = dc.barChart("#cost");
+  // data from http://stackoverflow.com/questions/22603788/crossfilter-how-to-extract-time-information-from-start-date-and-end-date-column
+  d3.csv("intervals.csv", function(error, projects) {
+
+      projects.forEach(function(x) {
+          x['Start Date'] = timeFormat.parse(x['Start Date']);
+          x['End Date'] = timeFormat.parse(x['End Date']);
+          // the library uses object identity so we have to cache the interval arrays
+          x.interval = [x['Start Date'].getTime(), x['End Date'].getTime()];
+          x.Cost = +x.Cost;
+      });
+      // the interval tree library doesn't seem to provide start/end info
+      var firstDate = d3.min(projects, function(x) { return x['Start Date']; }),
+          lastDate = d3.max(projects, function(x) { return x['End Date']; });
+
+      var ndx = crossfilter(projects),
+          intervalDimension = ndx.dimension(function(d) {return d.interval;}),
+          projectsPerMonthTree = ndx.groupAll().reduce(
+              function(v, d) {
+                  v.insert(d.interval);
+                  return v;
+              },
+              function(v, d) {
+                  v.remove(d.interval);
+                  return v;
+              },
+              function() {
+                  return lysenkoIntervalTree(null);
+              }
+          ),
+          projectsPerMonthGroup = intervalTreeGroup(projectsPerMonthTree.value(), firstDate, lastDate),
+          projectCostDimension = ndx.dimension(function(d) { return d.Cost; }),
+          projectCostGroup = projectCostDimension.group();
+
+      monthChart
+          .width(768)
+          .height(480)
+          .x(d3.time.scale())
+          .y(d3.scale.linear().domain([0,25]))
+          .xUnits(d3.time.months)
+          .gap(5)
+          .elasticX(true)
+          .brushOn(true)
+          .yAxisLabel("Number of Projects")
+          .xAxisLabel("Month")
+          .dimension(intervalDimension)
+          .group(projectsPerMonthGroup)
+          .controlsUseVisibility(true);
+
+      monthChart.filterHandler(function(dim, filters) {
+          if(filters && filters.length) {
+              if(filters.length !== 1)
+                  throw new Error('not expecting more than one range filter');
+              var range = filters[0];
+              dim.filterFunction(function(i) {
+                  return !(i[1] < range[0].getTime() || i[0] > range[1].getTime());
+              })
+          }
+          else dim.filterAll();
+          return filters;
+      });
+
+
+      costChart
+          .width(768)
+          .height(480)
+          .x(d3.scale.linear().domain([0,24]))
+          .y(d3.scale.linear().domain([0,25]))
+          .brushOn(true)
+          .yAxisLabel("Number of Projects")
+          .xAxisLabel("Cost")
+          .dimension(projectCostDimension)
+          .group(projectCostGroup)
+          .controlsUseVisibility(true);
+
+      dc.renderAll();
+  });
+
+</script>
+
+</body>
+</html>

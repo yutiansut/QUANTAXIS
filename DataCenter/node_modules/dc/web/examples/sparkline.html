@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>dc.js - Sparkline Example</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/dc.css"/>
+</head>
+<body style="margin: 1in">
+
+  <h3>Sparklines</h3>
+ <p>A sparkline <span id="bartest"></span> is just a tiny chart that fits in to the flow of text. We can achieve this by using a <code>span</code> instead of a <code>div</code>, and making the dimensions really small. They will work well for any chart with a large x:y aspect ratio, like a line chart <span id="linetest"></span> or a bar chart but other kinds of charts probably won't work so well. We'll also use a little bit of custom CSS to hide the axes (see <a href="https://github.com/dc-js/dc.js/blob/develop/web/examples/sparkline.html">the source</a> for details).</p>
+
+<script type="text/javascript" src="../js/d3.js"></script>
+<script type="text/javascript" src="../js/crossfilter.js"></script>
+<script type="text/javascript" src="../js/dc.js"></script>
+<style>
+  .dc-chart .axis {
+    display: none;
+  }
+</style>
+<script type="text/javascript">
+
+  var barChart = dc.barChart("#bartest");
+  var lineChart = dc.lineChart("#linetest");
+  d3.csv("morley.csv", function(error, experiments) {
+
+      experiments.forEach(function(x) {
+          x.Speed = +x.Speed;
+      });
+
+      var ndx                 = crossfilter(experiments),
+          runDimension        = ndx.dimension(function(d) {return +d.Run;}),
+          runDimension2        = ndx.dimension(function(d) {return +d.Run;}),
+          speedSumGroup       = runDimension.group().reduceSum(function(d) {return d.Speed * d.Run / 1000;}),
+          speedSumGroup2       = runDimension2.group().reduceSum(function(d) {return d.Speed * d.Run / 1000;});
+
+      barChart
+          .width(100)
+          .height(20)
+          .margins({left: 0, top: 0, right: 0, bottom: 0})
+          .x(d3.scale.linear().domain([6,20]))
+          .brushOn(true)
+          .dimension(runDimension)
+          .group(speedSumGroup);
+      lineChart
+          .width(100)
+          .height(20)
+          .margins({left: 0, top: 0, right: 0, bottom: 0})
+          .x(d3.scale.linear().domain([6,20]))
+          .brushOn(true)
+          .dimension(runDimension2)
+          .group(speedSumGroup2);
+      dc.renderAll();
+  });
+
+</script>
+
+</body>
+</html>

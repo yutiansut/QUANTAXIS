@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>dc.js - Table of Aggregated Data</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/dc.css"/>
+</head>
+<body>
+
+  <table id="test"></table>
+  <div id="paging">
+    Showing <span id="begin"></span>-<span id="end"></span> of <span id="size"></span>.
+    <input id="last" type="Button" value="Last" onclick="javascript:last()" />
+    <input id="next" type="button" value="Next" onclick="javascript:next()"/>
+  </div>
+
+<script type="text/javascript" src="../js/d3.js"></script>
+<script type="text/javascript" src="../js/crossfilter.js"></script>
+<script type="text/javascript" src="../js/dc.js"></script>
+<script type="text/javascript">
+
+  var chart = dc.dataTable("#test");
+  var ndx;
+d3.csv("morley.csv", function(error, experiments) {
+    ndx              = crossfilter(experiments);
+    var fmt = d3.format('02d');
+    var runDimension    = ndx.dimension(function(d) {return [fmt(+d.Expt),fmt(+d.Run)];}),
+        grouping = function (d) { return d.Expt;};
+
+    chart
+        .width(768)
+        .height(480)
+        .dimension(runDimension)
+        .group(grouping)
+        .size(Infinity)
+        .columns(['Run', 'Speed'])
+        .sortBy(function (d) { return [fmt(+d.Expt),fmt(+d.Run)]; })
+        .order(d3.ascending);
+
+    update();
+    chart.render();
+  });
+  // use odd page size to show the effect better
+  var ofs = 0, pag = 17;
+  function display() {
+      d3.select('#begin')
+          .text(ofs);
+      d3.select('#end')
+          .text(ofs+pag-1);
+      d3.select('#last')
+          .attr('disabled', ofs-pag<0 ? 'true' : null);
+      d3.select('#next')
+          .attr('disabled', ofs+pag>=ndx.size() ? 'true' : null);
+      d3.select('#size').text(ndx.size());
+  }
+  function update() {
+      chart.beginSlice(ofs);
+      chart.endSlice(ofs+pag);
+      display();
+  }
+  function next() {
+      ofs += pag;
+      update();
+      chart.redraw();
+  }
+  function last() {
+      ofs -= pag;
+      update();
+      chart.redraw();
+  }
+
+</script>
+
+</body>
+</html>

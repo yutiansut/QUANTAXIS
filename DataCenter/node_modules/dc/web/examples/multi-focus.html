@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>dc.js - Filter Group Example</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/dc.css"/>
+</head>
+<body>
+
+<div id="test1"></div>
+<div id="test2"></div>
+<div id="test3"></div>
+<div id="test4"></div>
+
+<script type="text/javascript" src="../js/d3.js"></script>
+<script type="text/javascript" src="../js/crossfilter.js"></script>
+<script type="text/javascript" src="../js/dc.js"></script>
+<script type="text/javascript">
+
+var chart1 = dc.barChart("#test1");
+var chart2 = dc.barChart("#test2");
+var chart3 = dc.barChart("#test3");
+var chart4 = dc.barChart("#test4");
+
+d3.csv("morley.csv", function(error, experiments) {
+
+    experiments.forEach(function(x) {
+        x.Speed = +x.Speed;
+    });
+
+    var ndx                 = crossfilter(experiments),
+        runDimension        = ndx.dimension(function(d) {return +d.Run;}),
+        speedSumGroup       = runDimension.group().reduceSum(function(d) {return d.Speed * d.Run / 1000;});
+
+
+    function bar_chart(chart) {
+        chart
+            .width(400)
+            .height(300)
+            .x(d3.scale.linear().domain([6,20]))
+            .brushOn(true)
+            .yAxisLabel("This is the Y Axis!")
+            .dimension(runDimension)
+            .group(speedSumGroup);
+        chart.render();
+    }
+
+    bar_chart(chart1);
+    bar_chart(chart2);
+    bar_chart(chart3);
+    bar_chart(chart4);
+
+    // this example was inspired by this Stack Overflow question:
+    // http://stackoverflow.com/questions/27445259/dc-js-applying-range-chart-to-multiple-graphs
+
+    // it would be nice to include the functionality in dc.js proper, but we'd have to deal with the
+    // complementary part of having each focus chart change the range chart when it is zoomed
+    // and that requires more thinking: https://github.com/dc-js/dc.js/issues/820
+
+    // we need to this helper function out of coordinateGridMixin
+    function rangesEqual(range1, range2) {
+        if (!range1 && !range2) {
+            return true;
+        }
+        else if (!range1 || !range2) {
+            return false;
+        }
+        else if (range1.length === 0 && range2.length === 0) {
+            return true;
+        }
+        else if (range1[0].valueOf() === range2[0].valueOf() &&
+            range1[1].valueOf() === range2[1].valueOf()) {
+            return true;
+        }
+        return false;
+    }
+
+    // monkey-patch the first chart with a new function
+    // technically we don't even need to do this, we could just change the 'filtered'
+    // event externally, but this is a bit nicer and could be added to dc.js core someday
+    chart1.focusCharts = function (chartlist) {
+        if (!arguments.length) {
+            return this._focusCharts;
+        }
+        this._focusCharts = chartlist; // only needed to support the getter above
+        this.on('filtered', function (range_chart) {
+            if (!range_chart.filter()) {
+                dc.events.trigger(function () {
+                    chartlist.forEach(function(focus_chart) {
+                        focus_chart.x().domain(focus_chart.xOriginalDomain());
+                    });
+                });
+            } else chartlist.forEach(function(focus_chart) {
+                if (!rangesEqual(range_chart.filter(), focus_chart.filter())) {
+                    dc.events.trigger(function () {
+                        focus_chart.focus(range_chart.filter());
+                    });
+                }
+            });
+        });
+        return this;
+    };
+
+    chart1.focusCharts([chart2,chart3,chart4]);
+});
+
+</script>
+
+</body>
+</html>

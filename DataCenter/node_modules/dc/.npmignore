@@ -1,0 +1,38 @@
+# tmp files
+*.log
+*~
+
+# local files
+node_modules
+bower_components
+
+# ide files
+*.iml
+.idea
+.project
+
+# vim files
+.*.swp
+
+# mac
+.DS_Store
+
+# ctag
+.tags
+
+# files for gh-pages and grunt-contrib-jasmine
+.grunt
+
+# jasmine spec runners
+spec/*.html
+
+# coverage reports
+coverage
+
+# browserify bundle & test
+bundle.js
+spec/index-browserify.html
+
+# font noise from some doc tool
+web/docs/public
+

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>dc.js - Table of Aggregated Data</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/dc.css"/>
+</head>
+<body>
+
+  <table id="test">
+        <thead>
+            <tr>
+              <th>Expt</th>
+              <th>#Run</th>
+              <th>Avg(Speed)</th>
+            </tr>
+        </thead>
+   </table>
+
+<script type="text/javascript" src="../js/d3.js"></script>
+<script type="text/javascript" src="../js/crossfilter.js"></script>
+<script type="text/javascript" src="../js/dc.js"></script>
+<script type="text/javascript">
+
+var chart = dc.dataTable("#test");
+d3.csv("morley.csv", function(error, experiments) {
+  /* We will create a table that sorts the experiments
+     from the one that has the highest average speed
+     to the one that has the lowest average speed
+  */
+  /* To do so, we need:
+     - that the .group() is defined, and returns the same value for all elements
+     - the .order() is defined & defined to something else than the default value which seems to
+       be either d3.ascending or descending. (a method that is undefined for .reduce()-d
+       dimension groups is called else).
+
+     This demonstrates that a crossfilter group can (oddly, but usefully) be passed
+     as the dimension for a dc.dataTable, because it's just using `dimension.all()`.
+  */
+  var ndx              = crossfilter(experiments),
+      exptDimension    = ndx.dimension(function(d) {return +d.Expt;}),
+      groupedDimension = exptDimension.group().reduce(
+          function (p, v) {
+              ++p.number;
+              p.total += +v.Speed;
+              p.avg = Math.round(p.total / p.number);
+              return p;
+          },
+          function (p, v) {
+              --p.number;
+              p.total -= +v.Speed;
+              p.avg = (p.number == 0) ? 0 : Math.round(p.total / p.number);
+              return p;
+          },
+          function () {
+              return {number: 0, total: 0, avg: 0}
+      }),
+      rank = function (p) { return "rank" };
+
+  chart
+    .width(768)
+    .height(480)
+    .dimension(groupedDimension)
+    .group(rank)
+    .columns([function (d) { return d.key },
+              function (d) { return d.value.number },
+              function (d) { return d.value.avg }])
+    .sortBy(function (d) { return d.value.avg })
+    .order(d3.descending)
+    chart.render();
+});
+
+</script>
+
+</body>
+</html>

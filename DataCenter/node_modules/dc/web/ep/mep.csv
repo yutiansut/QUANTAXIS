@@ -1,0 +1,773 @@
+epid,country,first_name,last_name,birthdate,gender,eugroup,party
+119436,HR,Ivana,MALETIĆ,1973-10-12,F,PPE,Hrvatska demokratska zajednica
+96798,GB,John,BUFTON,1962-08-31,M,EFD,United Kingdom Independence Party
+96717,CZ,Robert,DUŠEK,1967-03-14,M,S&D,Česká strana sociálně demokratická
+97058,BE,Guy,VERHOFSTADT,1953-04-11,M,ALDE,Open Vlaamse Liberalen en Democraten
+96897,GB,John Stuart,AGNEW,1949-08-30,M,EFD,United Kingdom Independence Party
+96976,PT,Luís Paulo,ALVES,1961-09-19,M,S&D,Partido Socialista
+96808,ES,Pablo,ARIAS ECHEVERRÍA,1970-06-30,M,PPE,Partido Popular
+5956,PT,Regina,BASTOS,1960-11-04,F,PPE,Partido Social Democrata
+96955,GB,Catherine,BEARDER,1949-01-14,F,ALDE,Liberal Democrats Party
+96738,FR,Sandrine,BÉLIER,1973-09-02,F,Verts/ALE,Europe Écologie
+96705,DK,Bendt,BENDTSEN,1954-03-25,M,PPE,Det Konservative Folkeparti
+96922,ES,Izaskun,BILBAO BARANDICA,1961-03-27,F,ALDE,Partido Nacionalista Vasco
+97198,IT,Mara,BIZZOTTO,1972-06-03,F,EFD,Lega Nord
+96681,LT,Vilija,BLINKEVIČIŪTĖ,1960-03-03,F,S&D,Lietuvos socialdemokratų partija
+96799,PL,Piotr,BORYS,1976-01-11,M,PPE,Platforma Obywatelska
+96719,CZ,Andrea,ČEŠKOVÁ,1971-10-18,F,ECR,Občanská demokratická strana
+96603,IE,Nessa,CHILDERS,1956-10-09,F,Array,Labour Party
+28493,GB,Derek Roland,CLARK,1933-10-10,M,EFD,United Kingdom Independence Party
+96915,IT,Sergio Gaetano,COFFERATI,1948-01-30,M,S&D,Partito Democratico
+96975,PT,António Fernando,CORREIA DE CAMPOS,1942-12-14,M,S&D,Parti socialiste
+96917,IT,Silvia,COSTA,1949-06-12,F,S&D,Partito Democratico
+96951,GB,Diane,DODDS,1958-08-16,F,Array,Democratic Unionist Party (Northern Ireland)
+96888,IT,Leonardo,DOMENICI,1955-07-12,M,S&D,Partito Democratico
+96692,LT,Leonidas,DONSKIS,1962-08-13,M,ALDE,Lietuvos Respublikos liberalų sąjūdis
+96787,IT,Herbert,DORFMANN,1969-03-04,M,PPE,Südtiroler Volkspartei (Partito popolare sudtirolese)
+39769,AT,Martin,EHRENHAUSER,1978-09-18,M,Array,-
+96682,FI,Sari,ESSAYAH,1967-02-21,F,PPE,Suomen kristillisdemokraatit
+96811,ES,Rosa,ESTARÀS FERRAGUT,1965-10-21,F,PPE,Partido Popular
+96977,PT,Diogo,FEIO,1970-10-06,M,PPE,Partido Popular
+96899,PT,José Manuel,FERNANDES,1967-07-26,M,PPE,Partido Social Democrata
+96833,DE,Jens,GEIER,1961-06-22,M,S&D,Sozialdemokratische Partei Deutschlands
+96730,DE,Sven,GIEGOLD,1969-11-17,M,Verts/ALE,Bündnis 90/Die Grünen
+97004,LV,Ivars,GODMANIS,1951-11-27,M,ALDE,Latvijas Pirmā Partija/Latvijas Ceļš
+97137,FR,Sylvie,GOULARD,1964-12-06,F,ALDE,Mouvement Démocrate
+96753,PL,Jolanta Emilia,HIBNER,1951-01-26,F,PPE,Platforma Obywatelska
+96950,FR,Liem,HOANG NGOC,1964-12-11,M,S&D,Parti socialiste
+34235,BG,Stanimir,ILCHEV,1953-07-31,M,ALDE,National Movement for Stability and Progress
+105192,ES,María,IRIGOYEN PÉREZ,1952-10-01,F,S&D,Partido Socialista Obrero Español
+28424,EE,Tunne,KELAM,1936-07-10,M,PPE,Erakond Isamaa ja Res Publica Liit
+96668,IE,Seán,KELLY,1952-04-26,M,PPE,Fine Gael Party
+96769,DE,Jürgen,KLUTE,1953-10-13,M,GUE/NGL,DIE LINKE.
+102887,HU,Béla,KOVÁCS,1960-02-25,M,Array,Jobbik Magyarországért Mozgalom
+96651,SK,Eduard,KUKAN,1939-12-26,M,PPE,Slovenská demokratická a kresťanská únia - Demokratická strana
+96765,ES,Verónica,LOPE FONTAGNÉ,1952-02-01,F,PPE,Partido Popular
+96854,DE,Sabine,LÖSING,1955-11-30,F,GUE/NGL,DIE LINKE.
+96675,SE,Isabella,LÖVIN,1963-02-03,F,Verts/ALE,Miljöpartiet de gröna
+96673,SE,Olle,LUDVIGSSON,1948-10-28,M,S&D,Arbetarepartiet- Socialdemokraterna
+96792,PL,Bogdan Kazimierz,MARCINKIEWICZ,1966-03-21,M,PPE,Platforma Obywatelska
+96652,SK,Alajos,MÉSZÁROS,1952-06-18,M,PPE,Strana mad'arskej komunity- Magyar Közösség Pártja
+28255,AT,Andreas,MÖLZER,1952-12-02,M,Array,Freiheitliche Partei Österreichs
+96695,LT,Radvilė,MORKŪNAITĖ-MIKULĖNIENĖ,1984-01-02,F,PPE,Tėvynės sąjunga - Lietuvos krikščionys demokratai
+96760,IT,Tiziano,MOTTI,1966-02-07,M,PPE,Unione dei Democratici cristiani e dei Democratici di Centro
+96701,ES,María,MUÑIZ DE URQUIZA,1962-08-05,F,S&D,Partido Socialista Obrero Español
+96844,DE,Norbert,NEUSER,1949-03-22,M,S&D,Sozialdemokratische Partei Deutschlands
+96861,BG,Nadezhda,NEYNSKY,1962-08-09,F,PPE,Blue Coalition
+111024,SE,Jens,NILSSON,1948-09-25,M,S&D,Arbetarepartiet- Socialdemokraterna
+96805,GB,Paul,NUTTALL,1976-11-30,M,EFD,United Kingdom Independence Party
+40599,FI,Sirpa,PIETIKÄINEN,1959-04-19,F,PPE,Kansallinen Kokoomus
+96715,CZ,Pavel,POC,1964-05-26,M,S&D,Česká strana sociálně demokratická
+96931,FR,Maurice,PONGA,1947-06-05,M,PPE,Union pour un Mouvement Populaire
+96801,PL,Tomasz Piotr,PORĘBA,1973-03-31,M,ECR,Prawo i Sprawiedliwość
+96838,RO,Cristian Dan,PREDA,1966-10-26,M,PPE,-
+107386,IE,Phil,PRENDERGAST,1959-09-20,F,S&D,Labour Party
+108080,FR,Franck,PROUST,1963-05-02,M,PPE,Union pour un Mouvement Populaire
+96903,PT,Paulo,RANGEL,1968-02-18,M,PPE,Partido Social Democrata
+96686,FI,Mitro,REPO,1958-09-03,M,S&D,Suomen Sosialidemokraattinen Puolue/Finlands Socialdemokratiska Parti
+97022,FR,Robert,ROCHEFORT,1955-09-19,M,ALDE,Mouvement Démocrate
+96746,FR,Marie-Thérèse,SANCHEZ-SCHMID,1957-11-15,F,PPE,Union pour un Mouvement Populaire
+96676,SE,Christian,ENGSTRÖM,1960-02-09,M,Verts/ALE,Piratpartiet
+112611,FI,Petri,SARVAMAA,1960-09-15,M,PPE,Kansallinen Kokoomus
+30482,FR,Younous,OMARJEE,1969-09-30,M,GUE/NGL,"Liste ""Alliance des Outre-Mers"""
+111068,FR,Jean,ROATTA,1941-12-13,M,PPE,Union pour un Mouvement Populaire
+96992,IT,Magdi Cristiano,ALLAM,1952-04-22,M,EFD,"""Io amo l'Italia"""
+111496,ES,María Auxiliadora,CORREA ZAMORA,1972-05-24,F,PPE,Partido Popular
+112788,DE,Birgit,COLLIN-LANGEN,1956-09-04,F,PPE,Christlich Demokratische Union Deutschlands
+96744,FR,José,BOVÉ,1953-06-11,M,Verts/ALE,Europe Écologie
+114279,FR,Isabelle,THOMAS,1961-11-26,F,S&D,Parti socialiste
+113890,FR,Karim,ZÉRIBI,1966-09-25,M,Verts/ALE,Europe Écologie
+113597,RO,Minodora,CLIVETI,1955-10-24,F,S&D,Partidul Social Democrat
+113883,HU,Erik,BÁNKI,1970-05-26,M,PPE,Fidesz-Magyar Polgári Szövetség-Keresztény Demokrata Néppárt
+113892,FR,Eric,ANDRIEU,1960-04-14,M,S&D,Parti socialiste
+96947,FR,Nora,BERRA,1963-01-21,F,PPE,Union pour un Mouvement Populaire
+113891,FR,Jean-Jacob,BICEP,1965-06-23,M,Verts/ALE,Europe Écologie
+114268,FI,Nils,TORVALDS,1945-08-07,M,ALDE,Svenska folkpartiet
+114873,CZ,Vojtěch,MYNÁŘ,1944-05-04,M,S&D,Česká strana sociálně demokratická
+96959,GB,George,LYON,1956-07-16,M,ALDE,Liberal Democrats Party
+116663,BG,Monika,PANAYOTOVA,1983-08-19,F,PPE,Citizens for European Development of Bulgaria
+99419,GR,Charalampos,ANGOURAKIS,1951-01-19,M,GUE/NGL,Communist Party of Greece
+115868,NL,Patricia van der,KAMMEN,1972-04-08,F,Array,Partij voor de Vrijheid
+111017,ES,Dolores,GARCÍA-HIERRO CARABALLO,1958-05-16,F,S&D,Partido Socialista Obrero Español
+96860,FR,Michèle,STRIFFLER,1957-08-23,F,PPE,Parti Radical / Union des Démocrates et Indépendants
+116823,IT,Francesca,BARRACCIU,1966-06-11,F,S&D,Partito Democratico
+113959,GB,Martina,ANDERSON,1962-04-16,F,GUE/NGL,Sinn Féin
+96702,RO,Elena Oana,ANTONESCU,1979-12-30,F,PPE,Partidul Democrat-Liberal
+116816,BG,Preslav,BORISSOV,1977-03-07,M,PPE,Citizens for European Development of Bulgaria
+94283,GB,Trevor,COLMAN,1941-08-27,M,Array,United Kingdom Independence Party
+96726,NL,Marije,CORNELISSEN,1974-03-09,F,Verts/ALE,GroenLinks
+96868,FR,Karima,DELLI,1979-03-04,F,Verts/ALE,Europe Écologie
+117477,BE,Mark,DEMESMAEKER,1958-09-12,M,Verts/ALE,Nieuw-Vlaamse Alliantie
+96725,NL,Bas,EICKHOUT,1976-10-08,M,Verts/ALE,GroenLinks
+96745,FR,Catherine,GRÈZE,1960-04-15,F,Verts/ALE,Europe Écologie
+96648,BE,Philippe,LAMBERTS,1963-03-14,M,Verts/ALE,Ecologistes Confédérés pour l'Organisation de Luttes Originales
+118144,CY,Andreas,PITSILLIDES,1977-06-09,M,PPE,Democratic Rally
+113487,PT,Alda,SOUSA,1953-08-04,F,GUE/NGL,Bloco de Esquerda
+118710,IT,Franco,BONANINI,1952-11-07,M,Array,Indipendente
+111014,AT,Josef,WEIDENHOLZER,1950-03-06,M,S&D,Sozialdemokratische Partei Österreichs
+118708,IT,Susy,DE MARTINI,1952-06-17,F,ECR,Forza Italia
+103246,NL,Auke,ZIJLSTRA,1964-11-01,M,Array,Partij voor de Vrijheid
+119439,HR,Marino,BALDINI,1963-07-12,M,S&D,Socijaldemokratska partija Hrvatske
+28497,GB,Gerard,BATTEN,1954-03-27,M,EFD,United Kingdom Independence Party
+28336,CZ,Věra,FLASAROVÁ,1952-12-19,F,GUE/NGL,Komunistická strana Čech a Moravy
+37448,RO,Eduard-Raul,HELLVIG,1974-10-27,M,ALDE,Partidul Naţional Liberal
+96704,CZ,Edvard,KOŽUŠNÍK,1971-01-30,M,ECR,Občanská demokratická strana
+119441,HR,Sandra,PETROVIĆ JAKOVINA,1985-03-21,F,S&D,Socijaldemokratska partija Hrvatske
+33991,RO,Ovidiu Ioan,SILAGHI,1962-12-12,M,ALDE,Partidul Naţional Liberal
+4293,DE,Gabriele,STAUNER,1948-04-22,F,PPE,Christlich-Soziale Union in Bayern e.V.
+119440,HR,Oleg,VALJALO,1970-11-19,M,S&D,Socijaldemokratska partija Hrvatske
+96944,GB,Marina,YANNAKOUDAKIS,1956-04-16,F,ECR,Conservative Party
+117119,RO,Dan Dumitru,ZAMFIRESCU,1953-11-01,M,Array,Partidul România Mare
+118709,IT,Fabrizio,BERTOT,1967-02-23,M,PPE,Forza Italia
+96815,NL,Judith,SARGENTINI,1974-03-13,F,Verts/ALE,GroenLinks
+96696,LT,Algirdas,SAUDARGAS,1948-04-17,M,PPE,Tėvynės sąjunga - Lietuvos krikščionys demokratai
+96945,NL,Marietje,SCHAAKE,1978-10-28,F,ALDE,Democraten 66
+96827,DE,Birgit,SCHNIEBER-JASTRAM,1946-07-04,F,PPE,Christlich Demokratische Union Deutschlands
+96731,DE,Werner,SCHULZ,1950-01-22,M,Verts/ALE,Bündnis 90/Die Grünen
+96836,DE,Peter,SIMON,1967-04-04,M,S&D,Sozialdemokratische Partei Deutschlands
+96655,SK,Monika,SMOLKOVÁ,1956-10-06,F,S&D,SMER-Sociálna demokracia
+96678,SE,Alf,SVENSSON,1938-10-01,M,PPE,Kristdemokraterna
+96920,GB,Kay,SWINBURNE,1967-06-08,F,ECR,Conservative Party
+96847,RO,Claudiu Ciprian,TĂNĂSESCU,1965-07-19,M,S&D,Partidul Social Democrat
+97136,EE,Indrek,TARAND,1964-02-03,M,Verts/ALE,Sõltumatu
+96974,PT,Nuno,TEIXEIRA,1973-01-13,M,PPE,Partido Social Democrata
+96776,PL,Róża Gräfin von,THUN UND HOHENSTEIN,1954-04-13,F,PPE,Platforma Obywatelska
+97026,FR,Patrice,TIROLIEN,1946-03-17,M,S&D,Parti socialiste
+96756,DE,Sabine,VERHEYEN,1964-10-24,F,PPE,Christlich Demokratische Union Deutschlands
+96839,DE,Kerstin,WESTPHAL,1962-09-11,F,S&D,Sozialdemokratische Partei Deutschlands
+96741,DE,Sabine,WILS,1959-05-31,F,GUE/NGL,DIE LINKE.
+96764,DE,Hermann,WINKLER,1963-04-22,M,PPE,Christlich Demokratische Union Deutschlands
+39725,RO,Iuliu,WINKLER,1964-03-14,M,PPE,Uniunea Democrată Maghiară din România
+96656,SK,Boris,ZALA,1954-12-09,M,S&D,SMER-Sociálna demokracia
+96795,PL,Jacek Olgierd,KURSKI,1966-02-22,M,EFD,Solidarna Polska
+97344,IE,Paul,MURPHY,1983-04-13,M,GUE/NGL,Socialist Party
+96900,GR,Georgios,PAPANIKOLAOU,1977-08-15,M,PPE,Nea Demokratia
+96758,DE,Gerald,HÄFNER,1956-11-03,M,Verts/ALE,Bündnis 90/Die Grünen
+96872,DE,Nadja,HIRSCH,1978-07-13,F,ALDE,Freie Demokratische Partei
+96693,LT,Juozas,IMBRASAS,1941-01-08,M,EFD,Partija Tvarka ir teisingumas
+96812,ES,Juan Fernando,LÓPEZ AGUILAR,1961-06-10,M,S&D,Partido Socialista Obrero Español
+34234,BG,Antonyia,PARVANOVA,1962-04-26,F,ALDE,National Movement for Stability and Progress
+96658,GR,Konstantinos,POUPAKIS,1951-01-18,M,PPE,Nea Demokratia
+108570,SE,Amelia,ANDERSDOTTER,1987-08-30,F,Verts/ALE,Piratpartiet
+97193,IT,Antonello,ANTINORO,1960-08-03,M,PPE,Unione dei Democratici cristiani e dei Democratici di Centro
+97009,GR,Kriton,ARSENIS,1977-08-03,M,S&D,-
+96732,FR,Malika,BENARAB-ATTOU,1963-03-25,F,Verts/ALE,Europe Écologie
+96912,GB,David,CAMPBELL BANNERMAN,1960-05-28,M,ECR,Conservative Party
+96866,IT,Salvatore,CARONNA,1964-03-05,M,S&D,Partito Democratico
+26851,GR,Nikolaos,CHOUNTIS,1953-09-17,M,GUE/NGL,Coalition of the Radical Left
+111823,GR,Nikos,CHRYSOGELOS,1959-05-13,M,Verts/ALE,Ecologist Greens
+96775,IT,Lara,COMI,1983-02-18,F,PPE,Forza Italia
+96786,PL,Tadeusz,CYMAŃSKI,1955-06-06,M,EFD,Solidarna Polska
+96747,FR,Arnaud,DANJEAN,1971-02-11,M,PPE,Union pour un Mouvement Populaire
+109337,BE,Philippe,DE BACKER,1978-12-04,M,ALDE,Open Vlaamse Liberalen en Democraten
+28256,BE,Jean-Luc,DEHAENE,1940-08-07,M,PPE,Christen-Democratisch & Vlaams
+96914,BE,Anne,DELVAUX,1970-10-20,F,PPE,Centre Démocrate Humaniste
+107977,GR,Dimitrios,DROUTSAS,1968-08-05,M,S&D,Panhellenic Socialist Movement
+23840,CZ,Richard,FALBR,1940-09-29,M,S&D,Česká strana sociálně demokratická
+28126,SE,Christofer,FJELLNER,1976-12-13,M,PPE,Moderata Samlingspartiet
+96993,IT,Lorenzo,FONTANA,1980-04-10,M,EFD,Lega Nord
+96949,GB,Vicky,FORD,1967-09-21,F,ECR,Conservative Party
+96957,GB,Ashley,FOX,1969-11-15,M,ECR,Conservative Party
+96940,NL,Gerben-Jan,GERBRANDY,1967-06-28,M,ALDE,Democraten 66
+96956,GB,Julie,GIRLING,1956-12-21,F,ECR,Conservative Party
+96790,PL,Marek Józef,GRÓBARCZYK,1968-03-13,M,ECR,Prawo i Sprawiedliwość
+96768,ES,Enrique,GUERRERO SALOM,1948-08-28,M,S&D,Partido Socialista Obrero Español
+96952,FR,Sylvie,GUILLAUME,1962-06-11,F,S&D,Parti socialiste
+109649,SE,Mikael,GUSTAFSSON,1966-03-06,M,GUE/NGL,Vänsterpartiet
+96907,CY,Takis,HADJIGEORGIOU,1956-12-11,M,GUE/NGL,Progressive Party of Working People - Left - New Forces
+28233,DE,Rebecca,HARMS,1956-12-07,F,Verts/ALE,Bündnis 90/Die Grünen
+28321,FI,Satu,HASSI,1951-06-03,F,Verts/ALE,Vihreä liitto
+110365,SE,Kent,JOHANSSON,1951-12-27,M,ALDE,Centerpartiet
+96883,FR,Eva,JOLY,1943-12-05,F,Verts/ALE,Europe Écologie
+28280,PL,Filip,KACZMAREK,1966-11-22,M,PPE,Platforma Obywatelska
+96807,BG,Ivailo,KALFIN,1964-05-30,M,S&D,Coalition for Bulgaria
+96901,LV,Krišjānis,KARIŅŠ,1964-12-13,M,PPE,Vienotība
+96734,DE,Franziska,KELLER,1981-11-22,F,Verts/ALE,Bündnis 90/Die Grünen
+97011,GR,Georgios,KOUMOUTSAKOS,1961-09-17,M,PPE,Nea Demokratia
+97968,BG,Andrey,KOVATCHEV,1967-12-13,M,PPE,Citizens for European Development of Bulgaria
+96820,PT,Marisa,MATIAS,1976-02-20,F,GUE/NGL,Bloco de Esquerda
+96936,ES,Gabriel,MATO ADROVER,1961-04-29,M,PPE,Partido Popular
+96663,DK,Morten,MESSERSCHMIDT,1980-11-13,M,EFD,Dansk Folkeparti
+97020,IT,Guido,MILANA,1954-03-02,M,S&D,Partito Democratico
+97280,IT,Claudio,MORGANTI,1973-04-14,M,EFD,Indipendente
+28288,PL,Jan,OLBRYCHT,1952-09-21,M,PPE,Platforma Obywatelska
+96783,PL,Wojciech Michał,OLEJNICZAK,1974-04-10,M,S&D,Sojusz Lewicy Demokratycznej
+97007,GR,Chrysoula,PALIADELI,1947-07-08,F,S&D,Panhellenic Socialist Movement
+97050,CY,Antigoni,PAPADOPOULOU,1954-07-08,F,S&D,Democratic Party
+33984,RO,Ioan Mircea,PAŞCU,1949-02-17,M,S&D,Partidul Social Democrat
+96989,ES,Andrés,PERELLÓ RODRÍGUEZ,1957-07-01,M,S&D,Partido Socialista Obrero Español
+96925,GR,Sylvana,RAPTI,1958-11-10,F,S&D,Panhellenic Socialist Movement
+96885,FR,Dominique,RIQUET,1946-09-18,M,PPE,Parti Radical
+96710,DK,Jens,ROHDE,1970-04-18,M,ALDE,"Venstre, Danmarks Liberale Parti"
+96819,IT,Licia,RONZULLI,1975-09-14,F,PPE,Forza Italia
+99416,GR,Nikolaos,SALAVRAKOS,1946-02-15,M,EFD,Popular Orthodox Rally - G. Karatzaferis
+96770,PL,Joanna Katarzyna,SKRZYDLEWSKA,1977-02-17,F,PPE,Platforma Obywatelska
+97018,GR,Theodoros,SKYLAKAKIS,1959-10-18,M,ALDE,Drassi
+97008,GR,Georgios,STAVRAKAKIS,1954-10-13,M,S&D,Panhellenic Socialist Movement
+39721,RO,Theodor Dumitru,STOLOJAN,1943-10-24,M,PPE,Partidul Democrat-Liberal
+28320,CZ,Ivo,STREJČEK,1962-01-11,M,ECR,Občanská demokratická strana
+96703,DK,Emilie,TURUNEN,1984-05-13,F,S&D,Socialdemokratiet
+96660,GR,Niki,TZAVELA,1947-06-30,F,EFD,Popular Orthodox Rally - G. Karatzaferis
+97131,IT,Giommaria,UGGIAS,1961-03-29,M,ALDE,Italia dei Valori - Lista Di Pietro
+28221,DE,Thomas,ULMER,1956-07-25,M,PPE,Christlich Demokratische Union Deutschlands
+96858,FR,Marie-Christine,VERGIAT,1956-09-23,F,GUE/NGL,Front de gauche pour changer d’Europe
+96774,PL,Jarosław Leszek,WAŁĘSA,1976-09-13,M,PPE,Platforma Obywatelska
+96763,ES,Pablo,ZALBA BIDEGAIN,1975-01-28,M,PPE,Partido Popular
+96777,PL,Paweł,ZALEWSKI,1964-09-25,M,PPE,Platforma Obywatelska
+108329,IT,Andrea,ZANONI,1965-08-26,M,ALDE,-
+96933,SI,Milan,ZVER,1962-05-25,M,PPE,Slovenska demokratska stranka
+96814,RO,Elena,BĂSESCU,1980-04-24,F,PPE,Partidul Democrat-Liberal
+96878,HU,Lajos,BOKROS,1954-06-26,M,ECR,Modern Magyarország Mozgalom
+96739,DE,Reinhard,BÜTIKOFER,1953-01-26,M,Verts/ALE,Bündnis 90/Die Grünen
+99325,GR,Spyros,DANELLIS,1955-01-28,M,S&D,Panhellenic Socialist Movement
+96859,RO,Ioan,ENCIU,1953-04-14,M,S&D,Partidul Social Democrat
+96852,DE,Cornelia,ERNST,1956-11-30,F,GUE/NGL,DIE LINKE.
+39321,ES,Vicente Miguel,GARCÉS RAMÓN,1946-11-10,M,S&D,Partido Socialista Obrero Español
+96991,ES,Eider,GARDIAZÁBAL RUBIAL,1975-07-12,F,S&D,Partido Socialista Obrero Español
+28266,NL,Sophia in 't,VELD,1963-09-13,F,ALDE,Democraten 66
+28314,FI,Anneli,JÄÄTTEENMÄKI,1955-02-11,F,ALDE,Suomen Keskusta
+105849,FR,Agnès,LE BRUN,1961-12-28,F,PPE,Union pour un Mouvement Populaire
+96709,DK,Morten,LØKKEGAARD,1964-12-20,M,ALDE,"Venstre, Danmarks Liberale Parti"
+96825,RO,Norica,NICOLAI,1958-01-27,F,ALDE,Partidul Naţional Liberal
+97229,IT,Niccolò,RINALDI,1962-12-03,M,ALDE,Italia dei Valori - Lista Di Pietro
+111018,ES,Salvador,SEDÓ i ALABART,1969-04-03,M,PPE,Unió Democràtica de Catalunya
+97019,SI,Ivo,VAJGL,1943-03-03,M,ALDE,ZARES-Nova Politika
+111589,PT,Inês Cristina,ZUBER,1980-03-11,F,GUE/NGL,Partido Comunista Português
+96803,PL,Zbigniew,ZIOBRO,1970-08-18,M,EFD,Solidarna Polska
+111019,ES,Eva,ORTIZ VILELLA,1975-10-16,F,PPE,Partido Popular
+111026,AT,Ewald,STADLER,1961-05-21,M,Array,Bündnis Zukunft Österreich
+112620,GB,Rebecca,TAYLOR,1975-08-10,F,ALDE,Liberal Democrats Party
+96908,FR,Gaston,FRANCO,1944-02-04,M,PPE,Union pour un Mouvement Populaire
+23785,PL,Andrzej,GRZYB,1956-08-23,M,PPE,Polskie Stronnictwo Ludowe
+96813,IT,Barbara,MATERA,1981-12-09,F,PPE,Forza Italia
+96997,DE,Burkhard,BALZ,1969-07-24,M,PPE,Christlich Demokratische Union Deutschlands
+96779,PL,Danuta Maria,HÜBNER,1948-04-08,F,PPE,Platforma Obywatelska
+96871,DE,Michael,THEURER,1967-01-12,M,ALDE,Freie Demokratische Partei
+33997,RO,Corina,CREŢU,1967-06-24,F,S&D,Partidul Social Democrat
+97296,FR,Michel,DANTIN,1960-01-15,M,PPE,Union pour un Mouvement Populaire
+96998,AT,Evelyn,REGNER,1966-01-24,F,S&D,Sozialdemokratische Partei Österreichs
+96843,IT,Marco,SCURRIA,1967-05-18,M,PPE,Fratelli d'Italia - Centrodestra Nazionale
+101580,FR,Constance,LE GRIP,1960-11-14,F,PPE,Union pour un Mouvement Populaire
+105624,FR,Philippe,BOULLAND,1955-08-18,M,PPE,Union pour un Mouvement Populaire
+28324,CZ,Milan,CABRNOCH,1962-08-06,M,ECR,Občanská demokratická strana
+96826,HU,Tamás,DEUTSCH,1966-07-27,M,PPE,Fidesz-Magyar Polgári Szövetség-Keresztény Demokrata Néppárt
+96896,FR,Marielle,GALLO,1949-05-19,F,PPE,Union des Démocrates et Indépendants
+96684,FI,Liisa,JAAKONSAARI,1945-09-02,F,S&D,Suomen Sosialidemokraattinen Puolue/Finlands Socialdemokratiska Parti
+4246,AT,Othmar,KARAS,1957-12-24,M,PPE,Österreichische Volkspartei
+96800,PL,Marek Henryk,MIGALSKI,1969-01-14,M,ECR,Polska Razem Jarosława Gowina
+96889,IT,Potito,SALATTO,1942-01-22,M,PPE,Popolari per l’Europa
+96918,GB,Derek,VAUGHAN,1961-05-02,M,S&D,Labour Party
+112071,IE,Emer,COSTELLO,1962-09-03,F,S&D,Labour Party
+111027,BG,Svetoslav Hristov,MALINOV,1968-01-19,M,PPE,Blue Coalition
+96749,GB,Andrew Henry William,BRONS,1947-06-16,M,Array,British Democratic Party
+4553,GB,Jacqueline,FOSTER,1947-12-30,F,ECR,Conservative Party
+96735,FR,Patrick,LE HYARIC,1957-02-04,M,GUE/NGL,Front de gauche pour changer d’Europe
+96831,DE,Jutta,STEINRUCK,1962-09-01,F,S&D,Sozialdemokratische Partei Deutschlands
+4462,IT,Clemente,MASTELLA,1947-02-05,M,PPE,Unione Democratici per l'Europa
+96999,LV,Alexander,MIRSKY,1964-03-20,M,S&D,"Politiskā Partija ""Alternative"""
+96875,DE,Britta,REIMERS,1971-07-27,F,ALDE,Freie Demokratische Partei
+96685,FI,Riikka,PAKARINEN,1981-08-24,F,ALDE,Suomen Keskusta
+4556,GB,Nirj,DEVA,1948-05-11,M,ECR,Conservative Party
+96780,DE,Monika,HOHLMEIER,1962-07-02,F,PPE,Christlich-Soziale Union in Bayern e.V.
+28171,NL,Emine,BOZKURT,1967-08-09,F,S&D,Partij van de Arbeid
+28311,PT,Luis Manuel,CAPOULAS SANTOS,1951-08-22,M,S&D,Partido Socialista
+96848,BG,Mariya,GABRIEL,1979-05-20,F,PPE,Citizens for European Development of Bulgaria
+28177,FR,Bernadette,VERGNAUD,1950-09-16,F,S&D,Parti socialiste
+96874,DE,Alexandra,THEIN,1963-10-05,F,ALDE,Freie Demokratische Partei
+41007,IT,Iva,ZANICCHI,1940-01-18,F,PPE,Forza Italia
+96802,PL,Jacek,WŁOSOWICZ,1966-01-25,M,EFD,Solidarna Polska
+97086,IT,Sonia,ALFANO,1971-10-15,F,ALDE,Italia dei Valori - Lista Di Pietro
+96892,IT,Roberto,GUALTIERI,1966-07-19,M,S&D,Partito Democratico
+96862,FR,Sophie,AUCONIE,1963-08-19,F,PPE,Union des Démocrates et Indépendants
+96736,DE,Jan Philipp,ALBRECHT,1982-12-20,M,Verts/ALE,Bündnis 90/Die Grünen
+96750,FR,François,ALFONSI,1953-09-14,M,Verts/ALE,Partitu di a Nazione Corsa
+28246,DE,Alexander,ALVARO,1975-05-26,M,ALDE,Freie Demokratische Partei
+96954,GB,Marta,ANDREASEN,1954-11-26,F,ECR,-
+96986,ES,Josefa,ANDRÉS BAREA,1958-02-17,F,S&D,Partido Socialista Obrero Español
+28276,LT,Laima Liucija,ANDRIKIENĖ,1958-01-01,F,PPE,Tėvynės sąjunga - Lietuvos krikščionys demokratai
+1941,IT,Roberta,ANGELILLI,1965-02-01,F,PPE,Nuovo Centrodestra
+28422,IT,Alfredo,ANTONIOZZI,1956-03-18,M,PPE,Nuovo Centrodestra
+97228,IT,Pino,ARLACCHI,1951-02-21,M,S&D,Partito Democratico
+28132,GB,Richard,ASHWORTH,1947-09-17,M,ECR,Conservative Party
+4537,GB,Sir Robert,ATKINS,1946-02-05,M,ECR,Conservative Party
+23938,MT,John,ATTARD-MONTALTO,1953-02-07,M,S&D,Partit Laburista
+33775,FR,Jean-Pierre,AUDY,1952-06-12,M,PPE,Union pour un Mouvement Populaire
+28161,DK,Margrete,AUKEN,1945-01-06,F,Verts/ALE,Socialistisk Folkeparti
+28292,ES,Inés,AYALA SENDER,1957-03-28,F,S&D,Partido Socialista Obrero Español
+28114,IE,Liam,AYLWARD,1952-09-27,M,ALDE,Fianna Fáil Party
+4319,ES,Pilar,AYUSO,1942-06-16,F,PPE,Partido Popular
+96937,NL,Johannes Cornelis van,BAALEN,1960-06-17,M,ALDE,Volkspartij voor Vrijheid en Democratie
+97293,LU,Georges,BACH,1955-06-12,M,PPE,Parti chrétien social luxembourgeois
+28342,ES,Maria,BADIA i CUTCHET,1947-05-13,F,S&D,Partit dels Socialistes de Catalunya
+23813,HU,Zoltán,BAGÓ,1975-01-10,M,PPE,Fidesz-Magyar Polgári Szövetség-Keresztény Demokrata Néppárt
+96680,LT,Zigmantas,BALČYTIS,1953-11-16,M,S&D,Lietuvos socialdemokratų partija
+96757,IT,Raffaele,BALDASSARRE,1956-09-23,M,PPE,Forza Italia
+96979,IT,Francesca,BALZANI,1966-10-31,F,S&D,Partito Democratico
+21818,IT,Paolo,BARTOLOZZI,1957-09-12,M,PPE,Forza Italia
+23866,SK,Edit,BAUER,1946-08-30,F,PPE,Strana mad'arskej komunity- Magyar Közösség Pártja
+4507,NL,Bastiaan,BELDER,1946-10-25,M,EFD,Staatkundig Gereformeerde Partij
+28257,BE,Ivo,BELET,1959-06-07,M,PPE,Christen-Democratisch & Vlaams
+28214,FR,Jean-Luc,BENNAHMIAS,1954-12-02,M,ALDE,Mouvement Démocrate
+1985,FR,Pervenche,BERÈS,1957-03-10,F,S&D,Parti socialiste
+4746,IT,Sergio,BERLATO,1959-07-27,M,PPE,Forza Italia
+97156,IT,Luigi,BERLINGUER,1932-07-25,M,S&D,Partito Democratico
+28174,NL,Thijs,BERMAN,1957-09-26,M,S&D,Partij van de Arbeid
+23788,PL,Adam,BIELAN,1974-09-12,M,ECR,Polska Razem Jarosława Gowina
+38610,BG,Slavi,BINEV,1965-12-10,M,EFD,"People for Real, Open and United Democracy / Conservative Party for Democracy and Success"
+28513,GB,Godfrey,BLOOM,1949-11-22,M,Array,United Kingdom Independence Party
+39722,RO,Sebastian Valentin,BODU,1970-12-07,M,PPE,Partidul Democrat-Liberal
+1037,DE,Reimer,BÖGE,1951-12-18,M,PPE,Christlich Demokratische Union Deutschlands
+29074,IT,Vito,BONSIGNORE,1943-07-03,M,PPE,Nuovo Centrodestra
+21817,IT,Mario,BORGHEZIO,1947-12-03,M,Array,Lega Nord
+96916,IT,Rita,BORSELLINO,1945-06-02,F,S&D,Partito Democratico
+39711,RO,Victor,BOŞTINARU,1952-05-17,M,S&D,Partidul Social Democrat
+33570,GB,Sharon,BOWLES,1953-06-12,F,ALDE,Liberal Democrats Party
+4540,GB,Philip,BRADBOURN,1951-08-09,M,ECR,Conservative Party
+111126,PL,Arkadiusz Tomasz,BRATKOWSKI,1959-05-13,M,PPE,Polskie Stronnictwo Ludowe
+28354,CZ,Jan,BŘEZINA,1954-04-14,M,PPE,-
+1263,DE,Elmar,BROK,1946-05-14,M,PPE,Christlich Demokratische Union Deutschlands
+96716,CZ,Zuzana,BRZOBOHATÁ,1962-07-11,F,S&D,Česká strana sociálně demokratická
+4267,DE,Udo,BULLMANN,1956-06-08,M,S&D,Sozialdemokratische Partei Deutschlands
+28269,PL,Jerzy,BUZEK,1940-07-03,M,PPE,Platforma Obywatelska
+96849,FR,Alain,CADEC,1953-06-21,M,PPE,Union pour un Mouvement Populaire
+4536,GB,Martin,CALLANAN,1961-08-08,M,ECR,Conservative Party
+96754,NL,Wim van de,CAMP,1953-07-27,M,PPE,Christen Democratisch Appèl
+96733,IT,Antonio,CANCIAN,1951-07-02,M,PPE,Nuovo Centrodestra
+96867,PT,Maria Da Graça,CARVALHO,1955-04-09,F,PPE,Partido Social Democrata
+28122,MT,David,CASA,1968-11-16,M,PPE,Partit Nazzjonalista
+4532,GB,Michael,CASHMAN,1950-12-17,M,S&D,Labour Party
+988,IT,Carlo,CASINI,1935-03-04,M,PPE,Unione dei Democratici cristiani e dei Democratici di Centro
+28219,DE,Daniel,CASPARY,1976-04-04,M,PPE,Christlich Demokratische Union Deutschlands
+28148,FR,Françoise,CASTEX,1956-02-07,F,S&D,Parti socialiste
+28206,FR,Jean-Marie,CAVADA,1940-02-24,M,PPE,Nouveau Centre
+4337,ES,Alejandro,CERCAS,1949-05-25,M,S&D,Partido Socialista Obrero Español
+28243,DE,Jorgo,CHATZIMARKAKIS,1966-04-21,M,ALDE,Freie Demokratische Partei
+2097,GB,Giles,CHICHESTER,1946-07-29,M,ECR,Conservative Party
+28154,DK,Ole,CHRISTENSEN,1955-05-07,M,S&D,Socialdemokratiet
+24030,BE,Philip,CLAEYS,1965-05-24,M,Array,Vlaams Belang
+1202,FR,Yves,COCHET,1946-02-15,M,Verts/ALE,Europe Écologie
+1892,PT,Carlos,COELHO,1960-05-20,M,PPE,Partido Social Democrata
+1934,FR,Daniel,COHN-BENDIT,1945-04-04,M,Verts/ALE,Europe Écologie
+2315,FR,Jean Louis,COTTIGNY,1950-09-12,M,S&D,Parti socialiste
+96880,IT,Andrea,COZZOLINO,1962-08-03,M,S&D,Partito Democratico
+28238,DE,Michael,CRAMER,1949-06-16,M,Verts/ALE,Bündnis 90/Die Grünen
+96873,DE,Jürgen,CREUTZMANN,1945-10-04,M,ALDE,Freie Demokratische Partei
+2109,IE,Brian,CROWLEY,1964-03-04,M,ALDE,Fianna Fáil Party
+96856,RO,George Sabin,CUTAŞ,1968-02-23,M,S&D,Partidul Social Democrat + Partidul Conservator
+97125,BE,Frédéric,DAERDEN,1970-01-11,M,S&D,Parti Socialiste
+96809,NL,Peter van,DALEN,1958-09-03,M,ECR,ChristenUnie
+95281,RO,Vasilica Viorica,DĂNCILĂ,1963-12-16,F,S&D,Partidul Social Democrat
+4342,FR,Joseph,DAUL,1947-04-13,M,PPE,Union pour un Mouvement Populaire
+96973,PT,Mário,DAVID,1953-08-20,M,PPE,Partido Social Democrata
+4554,GB,Chris,DAVIES,1954-07-07,M,ALDE,Liberal Democrats Party
+96887,IT,Francesco,DE ANGELIS,1959-10-04,M,S&D,Partito Democratico
+96891,IT,Paolo,DE CASTRO,1958-02-02,M,S&D,Partito Democratico
+22097,BE,Véronique,DE KEYSER,1945-03-23,F,S&D,Parti Socialiste
+1746,IT,Luigi Ciriaco,DE MITA,1928-02-02,M,PPE,Unione dei Democratici cristiani e dei Democratici di Centro
+4335,FR,Marielle de,SARNEZ,1951-03-27,F,ALDE,Mouvement Démocrate
+4318,FR,Harlem,DÉSIR,1959-11-25,M,S&D,Parti socialiste
+28228,DE,Albert,DESS,1947-04-17,M,PPE,Christlich-Soziale Union in Bayern e.V.
+4347,FR,Christine,DE VEYRAC,1959-11-06,F,PPE,Union des Démocrates et Indépendants
+28397,ES,Agustín,DÍAZ DE MERA GARCÍA CONSUEGRA,1947-09-27,M,PPE,Partido Popular
+4514,GB,Andrew,DUFF,1950-12-25,M,ALDE,Liberal Democrats Party
+96639,BE,Isabelle,DURANT,1954-09-04,F,Verts/ALE,Ecologistes Confédérés pour l'Organisation de Luttes Originales
+28226,DE,Christian,EHLER,1963-08-17,M,PPE,Christlich Demokratische Union Deutschlands
+25718,BE,Saïd,EL KHADRAOUI,1975-04-09,M,S&D,Socialistische Partij.Anders
+1419,GB,James,ELLES,1949-09-03,M,ECR,Conservative Party
+96876,LU,Frank,ENGEL,1975-05-10,M,PPE,Parti chrétien social luxembourgeois
+97133,BE,Derk Jan,EPPINK,1958-11-07,M,ECR,Lijst Dedecker
+28310,PT,Edite,ESTRELA,1949-10-28,F,S&D,Partido Socialista
+4550,GB,Jill,EVANS,1959-05-08,F,Verts/ALE,Plaid Cymru - Party of Wales
+23695,CZ,Hynek,FAJMON,1968-05-17,M,ECR,Občanská demokratická strana
+96911,SI,Tanja,FAJON,1971-05-09,F,S&D,Socialni demokrati
+4525,GB,Nigel,FARAGE,1964-04-03,M,EFD,United Kingdom Independence Party
+4265,SE,Göran,FÄRM,1949-10-17,M,S&D,Arbetarepartiet- Socialdemokraterna
+1917,DE,Markus,FERBER,1965-01-15,M,PPE,Christlich-Soziale Union in Bayern e.V.
+28308,PT,Elisa,FERREIRA,1955-10-17,F,S&D,Partido Socialista
+96706,PT,João,FERREIRA,1978-11-20,M,GUE/NGL,Partido Comunista Português
+96810,IT,Carlo,FIDANZA,1976-09-21,M,PPE,Fratelli d'Italia - Centrodestra Nazionale
+96729,ES,Santiago,FISAS AYXELA,1948-08-29,M,PPE,Partido Popular
+23868,SK,Monika,FLAŠÍKOVÁ BEŇOVÁ,1968-08-15,F,S&D,SMER-Sociálna demokracia
+4385,FR,Hélène,FLAUTRE,1958-07-29,F,Verts/ALE,Europe Écologie
+96840,DE,Knut,FLECKENSTEIN,1953-12-20,M,S&D,Sozialdemokratische Partei Deutschlands
+1038,DE,Karl-Heinz,FLORENZ,1947-10-22,M,PPE,Christlich Demokratische Union Deutschlands
+1993,ES,Carmen,FRAGA ESTÉVEZ,1948-10-19,F,PPE,Partido Popular
+2341,DE,Michael,GAHLER,1960-04-22,M,PPE,Christlich Demokratische Union Deutschlands
+2125,IE,Pat the Cope,GALLAGHER,1948-03-10,M,ALDE,Fianna Fáil Party
+102886,HU,Ildikó,GÁLL-PELCZ,1962-05-02,F,PPE,Fidesz-Magyar Polgári Szövetség-Keresztény Demokrata Néppárt
+28298,ES,Iratxe,GARCÍA PÉREZ,1974-10-07,F,S&D,Partido Socialista Obrero Español
+4562,IT,Giuseppe,GARGANI,1935-04-23,M,PPE,Popolari per l’Europa
+1665,ES,Salvador,GARRIGA POLLEDO,1957-08-06,M,PPE,Partido Popular
+28193,FR,Jean-Paul,GAUZÈS,1947-10-01,M,PPE,Union pour un Mouvement Populaire
+1913,DE,Evelyne,GEBHARDT,1954-01-19,F,S&D,Sozialdemokratische Partei Deutschlands
+28377,PL,Lidia Joanna,GERINGER de OEDENBERG,1957-09-12,F,S&D,Sojusz Lewicy Demokratycznej
+1431,GR,Marietta,GIANNAKOU,1951-06-05,F,PPE,Nea Demokratia
+28379,PL,Adam,GIEREK,1938-04-17,M,S&D,Unia Pracy
+1902,DE,Norbert,GLANTE,1952-08-08,M,S&D,Sozialdemokratische Partei Deutschlands
+28145,HU,Béla,GLATTFELDER,1967-05-04,M,PPE,Fidesz-Magyar Polgári Szövetség-Keresztény Demokrata Néppárt
+4429,LU,Robert,GOEBBELS,1944-04-03,M,S&D,Parti ouvrier socialiste luxembourgeois
+840,LU,Charles,GOERENS,1952-02-06,M,ALDE,Parti démocratique
+1164,FR,Bruno,GOLLNISCH,1950-01-28,M,Array,Front national
+28306,PT,Ana,GOMES,1954-02-09,F,S&D,Partido Socialista
+96832,HU,Kinga,GÖNCZ,1947-11-08,F,S&D,Magyar Szocialista Párt
+28393,ES,Luis de,GRANDES PASCUAL,1945-01-27,M,PPE,Partido Popular
+28220,DE,Ingeborg,GRÄSSLE,1961-03-02,F,PPE,Christlich Demokratische Union Deutschlands
+28208,FR,Nathalie,GRIESBECK,1956-05-24,F,ALDE,Mouvement Démocrate
+96751,GB,Nick,GRIFFIN,1959-03-01,M,Array,British National Party
+34728,DE,Matthias,GROOTE,1973-10-21,M,S&D,Sozialdemokratische Partei Deutschlands
+2247,BE,Mathieu,GROSCH,1950-09-14,M,PPE,Christlich Soziale Partei
+2025,FR,Françoise,GROSSETÊTE,1946-05-17,F,PPE,Union pour un Mouvement Populaire
+4326,ES,Cristina,GUTIÉRREZ-CORTINES,1939-12-17,F,PPE,Partido Popular
+23816,HU,András,GYÜRK,1972-12-02,M,PPE,Fidesz-Magyar Polgári Szövetség-Keresztény Demokrata Néppárt
+28477,GB,Fiona,HALL,1955-07-15,F,ALDE,Liberal Democrats Party
+96851,DE,Thomas,HÄNDEL,1953-08-27,M,GUE/NGL,DIE LINKE.
+28275,PL,Małgorzata,HANDZLIK,1965-01-01,F,PPE,Platforma Obywatelska
+96707,HU,Ágnes,HANKISS,1950-03-07,F,PPE,Fidesz-Magyar Polgári Szövetség-Keresztény Demokrata Néppárt
+4555,GB,Daniel,HANNAN,1971-09-01,M,ECR,Conservative Party
+4538,GB,Malcolm,HARBOUR,1947-02-19,M,ECR,Conservative Party
+28116,IE,Marian,HARKIN,1953-11-26,F,ALDE,-
+103132,NL,Lucas,HARTONG,1963-05-24,M,Array,Partij voor de Vrijheid
+1914,DE,Jutta,HAUG,1951-10-08,F,S&D,Sozialdemokratische Partei Deutschlands
+96752,DE,Martin,HÄUSLING,1961-03-26,M,Verts/ALE,Bündnis 90/Die Grünen
+28131,SE,Anna,HEDH,1967-03-18,F,S&D,Arbetarepartiet- Socialdemokraterna
+4516,GB,Roger,HELMER,1944-01-25,M,EFD,United Kingdom Independence Party
+28155,HU,Edit,HERCZOG,1961-05-05,F,S&D,Magyar Szocialista Párt
+22418,ES,Esther,HERRANZ GARCÍA,1969-07-03,F,PPE,Partido Popular
+28117,IE,Jim,HIGGINS,1945-05-04,M,PPE,Fine Gael Party
+28124,SE,Gunnar,HÖKMARK,1952-09-19,M,PPE,Moderata Samlingspartiet
+5846,GB,Mary,HONEYBALL,1952-11-12,F,S&D,Labour Party
+5565,FR,Brice,HORTEFEUX,1958-05-11,M,PPE,Union pour un Mouvement Populaire
+2073,GB,Richard,HOWITT,1961-04-05,M,S&D,Labour Party
+2338,GB,Ian,HUDGHTON,1951-09-19,M,Verts/ALE,Scottish National Party
+1407,GB,Stephen,HUGHES,1952-08-19,M,S&D,Labour Party
+34249,BG,Filiz Hakaeva,HYUSMENOVA,1966-06-10,F,ALDE,Movement for Rights and Freedoms
+28125,SE,Anna,IBRISAGIC,1967-05-23,F,PPE,Moderata Samlingspartiet
+38605,BG,Iliana Malinova,IOTOVA,1964-10-24,F,S&D,Coalition for Bulgaria
+97130,IT,Vincenzo,IOVINE,1955-12-28,M,S&D,Partito Democratico
+28398,ES,Carlos José,ITURGAIZ ANGULO,1965-10-20,M,PPE,Partido Popular
+96857,RO,Cătălin Sorin,IVAN,1978-12-23,M,S&D,Partidul Social Democrat
+96740,FR,Yannick,JADOT,1967-07-27,M,Verts/ALE,Europe Écologie
+96772,DE,Peter,JAHR,1959-04-24,M,PPE,Christlich Demokratische Union Deutschlands
+96806,ES,Teresa,JIMÉNEZ-BECERRIL BARRIO,1961-07-24,F,PPE,Partido Popular
+96837,DE,Petra,KAMMEREVERT,1966-06-01,F,S&D,Sozialdemokratische Partei Deutschlands
+28506,GB,Mike,NATTRASS,1945-12-14,M,Array,An Independence Party
+28295,ES,Antolín,SÁNCHEZ PRESEDO,1955-04-05,M,S&D,Partido Socialista Obrero Español
+114840,CY,Sophocles,SOPHOCLEOUS,1962-08-07,M,S&D,Movement for Social Democracy EDEK
+96855,HU,Csanád,SZEGEDI,1982-09-22,M,Array,Jobbik Magyarországért Mozgalom
+96958,GB,William (The Earl of),DARTMOUTH,1949-09-23,M,EFD,United Kingdom Independence Party
+30475,LT,Justina,VITKAUSKAITE BERNARD,1978-01-11,F,ALDE,Darbo partija
+112014,GB,Phil,BENNION,1954-10-07,M,ALDE,Liberal Democrats Party
+96674,SE,Anna Maria,CORAZZA BILDT,1963-03-10,F,PPE,Moderata Samlingspartiet
+37524,BG,Marusya,LYUBCHEVA,1949-07-20,F,S&D,Coalition for Bulgaria
+119435,HR,Davor Ivo,STIER,1972-01-06,M,PPE,Hrvatska demokratska zajednica
+118999,IT,Franco,FRIGO,1950-08-13,M,S&D,Partito Democratico
+110984,MT,Joseph,CUSCHIERI,1968-02-20,M,S&D,Partit Laburista
+96699,FR,Jean-Paul,BESSET,1946-08-17,M,Verts/ALE,Europe Écologie
+28372,PL,Ryszard,CZARNECKI,1963-01-25,M,ECR,Prawo i Sprawiedliwość
+28150,HU,Kinga,GÁL,1970-09-06,F,PPE,Fidesz-Magyar Polgári Szövetség-Keresztény Demokrata Néppárt
+103488,ES,Sergio,GUTIÉRREZ PRIETO,1982-07-11,M,S&D,Partido Socialista Obrero Español
+119875,ES,Iñaki,IRAZABALBEITIA FERNÁNDEZ,1957-08-01,M,Verts/ALE,Aralar
+28291,SI,Romana,JORDAN,1966-01-08,F,PPE,Slovenska demokratska stranka
+38613,BG,Metin,KAZAK,1972-07-29,M,ALDE,Movement for Rights and Freedoms
+96882,AT,Elisabeth,KÖSTINGER,1978-11-22,F,PPE,Österreichische Volkspartei
+122404,DK,Claus,LARSEN-JENSEN,1953-05-09,M,S&D,Socialdemokratiet
+120478,DE,Martina,MICHELS,1955-12-01,F,GUE/NGL,DIE LINKE.
+118858,MT,Marlene,MIZZI,1954-12-24,F,S&D,Partit Laburista
+112744,HR,Tonino,PICULA,1961-08-31,M,S&D,Socijaldemokratska partija Hrvatske
+28404,IT,Matteo,SALVINI,1973-03-09,M,EFD,Lega Nord
+96718,CZ,Olga,SEHNALOVÁ,1968-10-25,F,S&D,Česká strana sociálně demokratická
+122317,PL,Tadeusz,ROSS,1938-03-14,M,PPE,Platforma Obywatelska
+118860,MT,Claudette,ABELA BALDACCHINO,1973-02-17,F,S&D,Partit Laburista
+122885,DK,Rina Ronja,KARI,1985-02-15,F,GUE/NGL,Folkebevægelsen mod EU
+28141,HU,Lívia,JÁRÓKA,1974-10-06,F,PPE,Fidesz-Magyar Polgári Szövetség-Keresztény Demokrata Néppárt
+96782,PL,Sidonia Elżbieta,JĘDRZEJEWSKA,1975-11-05,F,PPE,Platforma Obywatelska
+4271,DE,Elisabeth,JEGGLE,1947-07-21,F,PPE,Christlich Demokratische Union Deutschlands
+4440,DK,Anne,E. JENSEN,1951-08-17,F,ALDE,"Venstre, Danmarks Liberale Parti"
+96748,NL,Cornelis de,JONG,1955-05-22,M,GUE/NGL,Socialistische Partij
+28156,DK,Dan,JØRGENSEN,1975-06-12,M,S&D,Socialdemokratiet
+96884,FR,Philippe,JUVIN,1964-02-01,M,PPE,Union pour un Mouvement Populaire
+23691,SI,Jelko,KACIN,1955-11-26,M,ALDE,Liberalna Demokracija Slovenije
+97014,AT,Karin,KADENBACH,1958-04-19,F,S&D,Sozialdemokratische Partei Österreichs
+96771,PL,Jarosław,KALINOWSKI,1962-04-12,M,PPE,Polskie Stronnictwo Ludowe
+96934,LV,Sandra,KALNIETE,1952-12-22,F,PPE,Vienotība
+33569,GB,Syed,KAMALL,1967-02-15,M,ECR,Conservative Party
+23792,PL,Michał Tomasz,KAMIŃSKI,1972-03-28,M,ECR,Niezależny
+28481,GB,Sajjad,KARIM,1970-07-11,M,ECR,Conservative Party
+25919,DE,Martin,KASTLER,1974-06-18,M,PPE,Christlich-Soziale Union in Bayern e.V.
+96737,FR,Nicole,KIIL-NIELSEN,1949-08-21,F,Verts/ALE,Europe Écologie
+34231,BG,Evgeni,KIRILOV,1945-01-26,M,S&D,Coalition for Bulgaria
+4542,GB,Timothy,KIRKHOPE,1945-04-29,M,ECR,Conservative Party
+1929,DE,Christa,KLASS,1951-11-07,F,PPE,Christlich Demokratische Union Deutschlands
+23413,SI,Mojca,KLEVA KEKUŠ,1976-03-30,F,S&D,Socialni demokrati
+28244,DE,Wolf,KLINZ,1941-09-13,M,ALDE,Freie Demokratische Partei
+1852,DE,Dieter-Lebrecht,KOCH,1953-01-07,M,PPE,Christlich Demokratische Union Deutschlands
+28241,DE,Silvana,KOCH-MEHRIN,1970-11-17,F,ALDE,Freie Demokratische Partei
+28331,CZ,Jaromír,KOHLÍČEK,1953-02-23,M,GUE/NGL,Komunistická strana Čech a Moravy
+96785,PL,Lena,KOLARSKA-BOBIŃSKA,1947-12-03,F,PPE,Platforma Obywatelska
+39319,GR,Maria Eleni,KOPPA,1963-03-01,F,S&D,Panhellenic Socialist Movement
+4260,FI,Eija-Riitta,KORHOLA,1959-06-15,F,PPE,Kansallinen Kokoomus
+96829,HU,Ádám,KÓSA,1975-07-01,M,PPE,Fidesz-Magyar Polgári Szövetség-Keresztény Demokrata Néppárt
+96793,PL,Paweł Robert,KOWAL,1975-07-22,M,ECR,Polska Razem Jarosława Gowina
+23873,SK,Sergej,KOZLÍK,1950-07-27,M,ALDE,Ľudová strana - Hnutie za demokratické Slovensko
+101954,PL,Jan,KOZŁOWSKI,1946-01-01,M,PPE,Platforma Obywatelska
+28247,DE,Holger,KRAHMER,1970-10-16,M,ALDE,Freie Demokratische Partei
+4482,GR,Rodi,KRATSA-TSAGAROPOULOU,1953-04-15,F,PPE,Nea Demokratia
+1854,DE,Constanze Angela,KREHL,1956-10-14,F,S&D,Sozialdemokratische Partei Deutschlands
+1935,DE,Wolfgang,KREISSL-DÖRFLER,1950-12-01,M,S&D,Sozialdemokratische Partei Deutschlands
+96767,DE,Werner,KUHN,1955-05-19,M,PPE,Christlich Demokratische Union Deutschlands
+1204,FR,Alain,LAMASSOURE,1944-02-10,M,PPE,Union pour un Mouvement Populaire
+4531,GB,Jean,LAMBERT,1950-06-01,F,Verts/ALE,Green Party
+28242,DE,Alexander Graf,LAMBSDORFF,1966-11-05,M,ALDE,Freie Demokratische Partei
+23746,LT,Vytautas,LANDSBERGIS,1932-10-18,M,PPE,Tėvynės sąjunga - Lietuvos krikščionys demokratai
+1909,DE,Bernd,LANGE,1955-11-14,M,S&D,Sozialdemokratische Partei Deutschlands
+38398,NL,Esther de,LANGE,1975-02-19,F,PPE,Christen Democratisch Appèl
+1928,DE,Werner,LANGEN,1949-11-27,M,PPE,Christlich Demokratische Union Deutschlands
+96816,IT,Giovanni,LA VIA,1963-06-28,M,PPE,Nuovo Centrodestra
+96796,PL,Ryszard Antoni,LEGUTKO,1949-12-24,M,ECR,Prawo i Sprawiedliwość
+2224,DE,Klaus-Heiner,LEHNE,1957-10-28,M,PPE,Christlich Demokratische Union Deutschlands
+28251,AT,Jörg,LEICHTFRIED,1967-06-18,M,S&D,Sozialdemokratische Partei Österreichs
+4262,DE,Jo,LEINEN,1948-04-06,M,S&D,Sozialdemokratische Partei Deutschlands
+97076,FR,Corinne,LEPAGE,1951-05-11,F,ALDE,Citoyenneté Action Participation pour le 21ème siècle
+1023,FR,Jean-Marie,LE PEN,1928-06-20,M,Array,Front national
+28210,FR,Marine,LE PEN,1968-08-05,F,Array,Front national
+23768,PL,Bogusław,LIBERADZKI,1948-09-12,M,S&D,Sojusz Lewicy Demokratycznej
+28253,AT,Eva,LICHTENBERGER,1954-07-01,F,Verts/ALE,Die Grünen - Die Grüne Alternative
+1927,DE,Peter,LIESE,1965-05-20,M,PPE,Christlich Demokratische Union Deutschlands
+28182,NL,Kartika Tamara,LIOTARD,1971-06-26,F,GUE/NGL,Onafhankelijk lid
+96788,PL,Krzysztof,LISEK,1967-05-28,M,PPE,Platforma Obywatelska
+96728,DE,Barbara,LOCHBIHLER,1959-05-20,F,Verts/ALE,Bündnis 90/Die Grünen
+28399,ES,Antonio,LÓPEZ-ISTÚRIZ WHITE,1970-04-01,M,PPE,Partido Popular
+4529,GB,Baroness Sarah,LUDFORD,1951-03-14,F,ALDE,Liberal Democrats Party
+96791,PL,Elżbieta Katarzyna,ŁUKACIJEWSKA,1966-11-25,F,PPE,Platforma Obywatelska
+1186,LU,Astrid,LULLING,1929-06-11,F,PPE,Parti chrétien social luxembourgeois
+2327,GB,Linda,McAVAN,1962-12-02,F,S&D,Labour Party
+2173,GB,Arlene,McCARTHY,1960-10-10,F,S&D,Labour Party
+96919,GB,Emma,McCLARKIN,1978-10-09,F,ECR,Conservative Party
+28115,IE,Mairead,McGUINNESS,1959-06-13,F,PPE,Fine Gael Party
+1405,GB,Edward,McMILLAN-SCOTT,1949-08-15,M,ALDE,Liberal Democrats Party
+4560,NL,Toine,MANDERS,1956-03-14,M,ALDE,Volkspartij voor Vrijheid en Democratie
+28192,SK,Vladimír,MAŇKA,1959-09-19,M,S&D,SMER-Sociálna demokracia
+1922,DE,Thomas,MANN,1946-01-28,M,PPE,Christlich Demokratische Union Deutschlands
+33982,RO,Marian-Jean,MARINESCU,1952-08-11,M,PPE,Partidul Democrat-Liberal
+1403,GB,David,MARTIN,1954-08-26,M,S&D,Labour Party
+4238,AT,Hans-Peter,MARTIN,1957-08-11,M,Array,"Liste ""Dr. Martin - für Demokratie, Kontrolle, Gerechtigkeit"""
+4346,ES,Miguel Angel,MARTÍNEZ MARTÍNEZ,1940-01-30,M,S&D,Partido Socialista Obrero Español
+28338,ES,Antonio,MASIP HIDALGO,1946-05-03,M,S&D,Partido Socialista Obrero Español
+23704,CZ,Jiří,MAŠTÁLKA,1956-01-03,M,GUE/NGL,Komunistická strana Čech a Moravy
+4412,FR,Véronique,MATHIEU HOUILLON,1955-10-28,F,PPE,Union pour un Mouvement Populaire
+95017,RO,Iosif,MATULA,1958-08-23,M,PPE,Partidul Democrat-Liberal
+4275,DE,Hans-Peter,MAYER,1944-05-05,M,PPE,Christlich Demokratische Union Deutschlands
+28362,ES,Jaime,MAYOR OREJA,1951-07-12,M,PPE,Partido Popular
+39916,SI,Zofija,MAZEJ KUKOVIČ,1955-05-14,F,PPE,Slovenska demokratska stranka
+96817,IT,Erminia,MAZZONI,1965-04-28,F,PPE,Nuovo Centrodestra
+96870,DE,Gesine,MEISSNER,1952-02-22,F,ALDE,Freie Demokratische Partei
+96742,FR,Jean-Luc,MÉLENCHON,1951-08-19,M,GUE/NGL,Front de gauche pour changer d’Europe
+96978,PT,Nuno,MELO,1966-03-18,M,PPE,Partido Popular
+4348,ES,Emilio,MENÉNDEZ del VALLE,1945-06-20,M,S&D,Partido Socialista Obrero Español
+96910,NL,Judith,A. MERKIES,1966-09-28,F,S&D,Partij van de Arbeid
+28407,ES,Willy,MEYER,1952-08-19,M,GUE/NGL,Izquierda Unida
+96670,BE,Louis,MICHEL,1947-09-02,M,ALDE,Mouvement Réformateur
+28178,SK,Miroslav,MIKOLÁŠIK,1952-09-11,M,PPE,Kresťanskodemokratické hnutie
+28400,ES,Francisco José,MILLÁN MON,1955-03-08,M,PPE,Partido Popular
+28112,IE,Gay,MITCHELL,1951-12-30,M,PPE,Fine Gael Party
+4519,GB,Claude,MORAES,1965-10-22,M,S&D,Labour Party
+96930,PT,Vital,MOREIRA,1944-11-08,M,S&D,Partido Socialista
+38596,FR,Elisabeth,MORIN-CHARTIER,1947-10-10,F,PPE,Union pour un Mouvement Populaire
+96661,HU,Krisztina,MORVAI,1963-06-22,F,Array,Jobbik Magyarországért Mozgalom
+1965,NL,Jan,MULDER,1943-10-03,M,ALDE,Volkspartij voor Vrijheid en Democratie
+1073,IT,Cristiana,MUSCARDINI,1948-11-06,F,ECR,Conservatori e Social Riformatori
+5537,ES,Juan Andrés,NARANJO ESCOBAR,1952-01-04,M,PPE,Partido Popular
+96653,SK,Katarína,NEVEĎALOVÁ,1982-11-10,F,S&D,SMER-Sociálna demokracia
+1394,GB,Bill,NEWTON DUNN,1941-10-03,M,ALDE,Liberal Democrats Party
+1946,BE,Annemie,NEYTS-UYTTEBROECK,1944-06-17,F,ALDE,Open Vlaamse Liberalen en Democraten
+1318,GB,James,NICHOLSON,1945-01-29,M,ECR,Ulster Conservatives and Unionists-New Force
+39714,RO,Rareş-Lucian,NICULESCU,1976-08-29,M,PPE,Partidul Democrat-Liberal
+4289,DE,Angelika,NIEBLER,1963-02-18,F,PPE,Christlich-Soziale Union in Bayern e.V.
+28165,NL,Lambert van,NISTELROOIJ,1953-03-05,M,PPE,Christen Democratisch Appèl
+96794,PL,Sławomir,NITRAS,1973-04-26,M,PPE,Platforma Obywatelska
+96981,AT,Franz,OBERMAYR,1952-05-25,M,Array,Freiheitliche Partei Österreichs
+4328,ES,Raimon,OBIOLS,1940-08-05,M,S&D,Partit dels Socialistes de Catalunya
+97230,EE,Kristiina,OJULAND,1966-12-17,F,ALDE,Sõltumatu
+1122,NL,Ria,OOMEN-RUIJTEN,1950-09-06,F,PPE,Christen Democratisch Appèl
+23819,HU,Csaba,ŐRY,1952-05-12,M,PPE,Fidesz-Magyar Polgári Szövetség-Keresztény Demokrata Néppárt
+23705,CZ,Miroslav,OUZKÝ,1958-08-18,M,ECR,Občanská demokratická strana
+26829,EE,Siiri,OVIIR,1947-11-03,F,ALDE,Sõltumatu
+1191,DE,Doris,PACK,1942-03-18,F,PPE,Christlich Demokratische Union Deutschlands
+97025,EE,Ivari,PADAR,1965-03-12,M,S&D,Sotsiaaldemokraatlik Erakond
+96694,LT,Rolandas,PAKSAS,1956-06-10,M,EFD,Partija Tvarka ir teisingumas
+28279,LT,Justas Vincas,PALECKIS,1942-01-01,M,S&D,Lietuvos socialdemokratų partija
+97197,IT,Alfredo,PALLONE,1947-09-13,M,PPE,Nuovo Centrodestra
+38602,BG,Vladko Todorov,PANAYOTOV,1950-05-07,M,ALDE,Movement for Rights and Freedoms
+28365,IT,Pier Antonio,PANZERI,1955-06-06,M,S&D,Partito Democratico
+28572,GR,Georgios,PAPASTAMKOS,1955-03-05,M,PPE,Nea Demokratia
+96948,FR,Gilles,PARGNEAUX,1957-03-24,M,S&D,Parti socialiste
+96654,SK,Jaroslav,PAŠKA,1954-06-20,M,EFD,Slovenská národná strana
+96902,PT,Maria do Céu,PATRÃO NEVES,1959-04-26,F,PPE,Partido Social Democrata
+36392,IT,Aldo,PATRICIELLO,1957-09-27,M,PPE,Forza Italia
+4270,SE,Marit,PAULSEN,1939-11-24,F,ALDE,Folkpartiet liberalerna
+23693,SI,Alojz,PETERLE,1948-07-05,M,PPE,Nova Slovenija - Krščanska ljudska stranka
+28341,PL,Mirosław,PIOTROWSKI,1966-01-09,M,ECR,Prawo i Sprawiedliwość
+2307,AT,Hubert,PIRKER,1948-10-03,M,PPE,Österreichische Volkspartei
+4436,IT,Gianni,PITTELLA,1958-11-19,M,S&D,Partito Democratico
+39317,GR,Anni,PODIMATA,1962-10-08,F,S&D,Panhellenic Socialist Movement
+2229,DE,Bernd,POSSELT,1956-06-04,M,PPE,Christlich-Soziale Union in Bayern e.V.
+1253,DE,Hans-Gert,PÖTTERING,1945-09-15,M,PPE,Christlich Demokratische Union Deutschlands
+28370,IT,Vittorio,PRODI,1937-05-19,M,S&D,Partito Democratico
+23782,PL,Jacek,PROTASIEWICZ,1967-06-05,M,PPE,Platforma Obywatelska
+96994,IT,Fiorello,PROVERA,1946-03-31,M,EFD,Lega Nord
+1055,DE,Godelieve,QUISTHOUDT-ROWOHL,1947-06-18,F,PPE,Christlich Demokratische Union Deutschlands
+23706,CZ,Miloslav,RANSDORF,1953-02-15,M,GUE/NGL,Komunistická strana Čech a Moravy
+1906,DE,Bernhard,RAPKAY,1951-01-08,M,S&D,Sozialdemokratische Partei Deutschlands
+28330,CZ,Vladimír,REMEK,1948-09-26,M,GUE/NGL,Komunistická strana Čech a Moravy
+28225,DE,Herbert,REUL,1952-08-31,M,PPE,Christlich Demokratische Union Deutschlands
+28349,ES,Teresa,RIERA MADURELL,1950-10-13,F,S&D,Partido Socialista Obrero Español
+4253,BE,Frédérique,RIES,1959-05-14,F,ALDE,Mouvement Réformateur
+96743,FR,Michèle,RIVASI,1953-02-09,F,Verts/ALE,Europe Écologie
+97199,IT,Crescenzio,RIVELLINI,1955-07-09,M,PPE,Forza Italia
+93624,DE,Ulrike,RODUST,1949-06-04,F,S&D,Sozialdemokratische Partei Deutschlands
+28352,CZ,Zuzana,ROITHOVÁ,1953-01-30,F,PPE,Křesťanská a demokratická unie - Československá strana lidová
+96990,ES,Carmen,ROMERO LÓPEZ,1946-11-15,F,S&D,Partido Socialista Obrero Español
+28409,ES,Raül,ROMEVA i RUEDA,1971-03-12,M,Verts/ALE,Iniciativa per Catalunya Verds
+96664,DK,Anna,ROSBACH,1947-02-02,F,ECR,Løsgænger
+97196,IT,Oreste,ROSSI,1964-03-24,M,PPE,-
+1183,DE,Dagmar,ROTH-BEHRENDT,1953-02-21,F,S&D,Sozialdemokratische Partei Deutschlands
+23707,CZ,Libor,ROUČEK,1954-09-04,M,S&D,Česká strana sociálně demokratická
+2278,AT,Paul,RÜBIG,1953-05-06,M,PPE,Österreichische Volkspartei
+96988,LV,Alfreds,RUBIKS,1935-09-24,M,GUE/NGL,"Politisko partiju apvienība ""Saskaņas centrs"""
+4294,DE,Heide,RÜHLE,1948-11-05,F,Verts/ALE,Bündnis 90/Die Grünen
+4345,FR,Tokia,SAÏFI,1959-07-11,F,PPE,Union pour un Mouvement Populaire
+2002,ES,José Ignacio,SALAFRANCA SÁNCHEZ-NEYRA,1955-05-31,M,PPE,Partido Popular
+33989,RO,Daciana Octavia,SÂRBU,1977-01-15,F,S&D,Partidul Social Democrat
+4423,IT,Amalia,SARTORI,1947-08-02,F,PPE,Forza Italia
+28297,PL,Jacek,SARYUSZ-WOLSKI,1948-09-19,M,PPE,Platforma Obywatelska
+96864,IT,David-Maria,SASSOLI,1956-05-30,M,S&D,Partito Democratico
+37312,DK,Christel,SCHALDEMOSE,1967-08-04,F,S&D,Socialdemokratiet
+28139,SE,Carl,SCHLYTER,1968-01-07,M,Verts/ALE,Miljöpartiet de gröna
+4274,SE,Olle,SCHMIDT,1949-07-22,M,ALDE,Folkpartiet liberalerna
+1930,DE,Horst,SCHNELLHARDT,1946-05-12,M,PPE,Christlich Demokratische Union Deutschlands
+96646,DE,Helmut,SCHOLZ,1954-06-21,M,GUE/NGL,DIE LINKE.
+28135,HU,György,SCHÖPFLIN,1939-11-24,M,PPE,Fidesz-Magyar Polgári Szövetség-Keresztény Demokrata Néppárt
+1933,DE,Elisabeth,SCHROEDTER,1959-03-11,F,Verts/ALE,Bündnis 90/Die Grünen
+1911,DE,Martin,SCHULZ,1955-12-20,M,S&D,Sozialdemokratische Partei Deutschlands
+28223,DE,Andreas,SCHWAB,1973-04-09,M,PPE,Christlich Demokratische Union Deutschlands
+96996,IT,Giancarlo,SCOTTÀ,1953-04-11,M,EFD,Lega Nord
+28252,AT,Richard,SEEBER,1962-01-15,M,PPE,Österreichische Volkspartei
+96789,PL,Joanna,SENYSZYN,1949-02-01,F,S&D,Sojusz Lewicy Demokratycznej
+33990,RO,Adrian,SEVERIN,1954-03-28,M,Array,Partidul Social Democrat
+23787,PL,Czesław Adam,SIEKIERSKI,1952-10-08,M,PPE,Polskie Stronnictwo Ludowe
+96755,IT,Sergio Paolo Francesco,SILVESTRIS,1973-12-22,M,PPE,Forza Italia
+1309,GB,Brian,SIMPSON,1953-02-06,M,S&D,Labour Party
+96960,GB,Nicole,SINCLAIRE,1968-07-26,F,Array,We Demand a Referendum
+96932,DE,Birgit,SIPPEL,1960-01-29,F,S&D,Sozialdemokratische Partei Deutschlands
+28380,PL,Marek,SIWIEC,1955-03-13,M,S&D,-
+2081,GB,Peter,SKINNER,1959-06-01,M,S&D,Labour Party
+28508,GB,Alyn,SMITH,1973-09-15,M,Verts/ALE,Scottish National Party
+39724,RO,Csaba,SÓGOR,1964-05-12,M,PPE,Uniunea Democrată Maghiară din România
+4282,DE,Renate,SOMMER,1958-09-10,F,PPE,Christlich Demokratische Union Deutschlands
+37676,DK,Søren Bo,SØNDERGAARD,1955-08-16,M,GUE/NGL,Folkebevægelsen mod EU
+28299,PL,Bogusław,SONIK,1953-12-03,M,PPE,Platforma Obywatelska
+97170,ES,Francisco,SOSA WAGNER,1946-06-10,M,Array,"Unión, Progreso y Democracia"
+997,IT,Francesco Enrico,SPERONI,1946-10-04,M,EFD,Lega Nord
+4751,BE,Bart,STAES,1958-08-07,M,Verts/ALE,Groen
+96905,NL,Laurence,J.A.J. STASSEN,1971-02-08,F,Array,Partij voor de Vrijheid
+28170,SK,Peter,ŠŤASTNÝ,1956-09-18,M,PPE,Slovenská demokratická a kresťanská únia - Demokratická strana
+4546,GB,Struan,STEVENSON,1948-04-04,M,ECR,Conservative Party
+4545,GB,Catherine,STIHLER,1973-07-30,F,S&D,Labour Party
+96946,NL,Daniël van der,STOEP,1980-09-12,M,Array,Artikel 50
+34254,BG,Dimitar,STOYANOV,1983-05-17,M,Array,National-Democratic Party
+2037,GB,Robert,STURDY,1944-06-22,M,ECR,Conservative Party
+23820,HU,László,SURJÁN,1941-09-07,M,PPE,Fidesz-Magyar Polgári Szövetség-Keresztény Demokrata Néppárt
+2295,AT,Hannes,SWOBODA,1946-11-10,M,S&D,Sozialdemokratische Partei Österreichs
+23821,HU,József,SZÁJER,1961-09-07,M,PPE,Fidesz-Magyar Polgári Szövetség-Keresztény Demokrata Néppárt
+28358,PL,Konrad,SZYMAŃSKI,1969-12-06,M,ECR,Prawo i Sprawiedliwość
+23808,HU,Csaba Sándor,TABAJDI,1952-06-26,M,S&D,Magyar Szocialista Párt
+28316,FI,Hannu,TAKKULA,1963-11-20,M,ALDE,Suomen Keskusta
+4521,GB,Charles,TANNOCK,1957-09-25,M,ECR,Conservative Party
+29579,BE,Marc,TARABELLA,1963-03-11,M,S&D,Parti Socialiste
+1945,IT,Salvatore,TATARELLA,1947-10-11,M,PPE,Futuro e Libertà per l'Italia
+96821,PT,Rui,TAVARES,1972-07-29,M,Verts/ALE,Independente
+102931,GB,Keith,TAYLOR,1953-08-01,M,Verts/ALE,Green Party
+107385,FI,Sampo,TERHO,1977-09-20,M,EFD,Perussuomalaiset
+25704,CY,Eleni,THEOCHAROUS,1953-06-24,F,PPE,Democratic Rally
+28153,DK,Britta,THOMSEN,1954-01-23,F,S&D,Socialdemokratiet
+1832,BE,Marianne,THYSSEN,1956-07-24,F,PPE,Christen-Democratisch & Vlaams
+36281,RO,Silvia-Adriana,ŢICĂU,1970-11-14,F,S&D,Partidul Social Democrat
+28340,IT,Patrizia,TOIA,1950-03-17,F,S&D,Partito Democratico
+39726,RO,László,TŐKÉS,1952-04-01,M,PPE,-
+96697,LT,Valdemar,TOMAŠEVSKI,1965-03-03,M,ECR,Lietuvos lenkų rinkimų akcija
+96713,CZ,Evžen,TOŠENOVSKÝ,1956-02-26,M,ECR,Občanská demokratická strana
+28584,GR,Georgios,TOUSSAS,1954-09-08,M,GUE/NGL,Communist Party of Greece
+1129,FR,Catherine,TRAUTMANN,1951-01-15,F,S&D,Parti socialiste
+110987,IT,Gino,TREMATERRA,1940-09-03,M,PPE,Unione dei Democratici cristiani e dei Democratici di Centro
+97203,ES,Ramon,TREMOSA i BALCELLS,1965-06-30,M,ALDE,Convergència Democràtica de Catalunya
+28514,CY,Kyriacos,TRIANTAPHYLLIDES,1944-09-03,M,GUE/NGL,Progressive Party of Working People - Left - New Forces
+28240,DE,Helga,TRÜPEL,1958-07-21,F,Verts/ALE,Bündnis 90/Die Grünen
+96773,PL,Rafał,TRZASKOWSKI,1972-01-17,M,PPE,Platforma Obywatelska
+96898,GR,Ioannis,A. TSOUKALAS,1941-07-03,M,PPE,Nea Demokratia
+4432,LU,Claude,TURMES,1960-11-26,M,Verts/ALE,Déi Gréng - Les Verts
+96672,SE,Marita,ULVSKOG,1951-09-04,F,S&D,Arbetarepartiet- Socialdemokraterna
+96835,RO,Traian,UNGUREANU,1958-03-01,M,PPE,Partidul Democrat-Liberal
+38601,BG,Vladimir,URUTCHEV,1954-10-01,M,PPE,Citizens for European Development of Bulgaria
+96845,RO,Corneliu,VADIM TUDOR,1949-11-28,M,Array,Partidul România Mare
+28617,LV,Inese,VAIDERE,1952-09-03,F,PPE,Vienotība
+37324,RO,Adina-Ioana,VĂLEAN,1968-02-16,F,ALDE,Partidul Naţional Liberal
+5729,BE,Kathleen,VAN BREMPT,1969-11-18,F,S&D,Socialistische Partij.Anders
+1956,BE,Frank,VANHECKE,1959-05-30,M,EFD,Onafhankelijk
+4513,GB,Geoffrey,VAN ORDEN,1945-04-10,M,ECR,Conservative Party
+4398,IT,Gianni,VATTIMO,1936-01-04,M,ALDE,Italia dei Valori - Lista Di Pietro (Indipendente)
+4308,ES,Alejo,VIDAL-QUADRAS,1945-05-20,M,PPE,Partido Popular
+2212,FR,Philippe de,VILLIERS,1949-03-25,M,EFD,Mouvement pour la France
+28323,CZ,Oldřich,VLASÁK,1955-11-26,M,ECR,Občanská demokratická strana
+5737,FR,Dominique,VLASTO,1946-08-14,F,PPE,Union pour un Mouvement Populaire
+96761,DE,Axel,VOSS,1963-04-07,M,PPE,Christlich Demokratische Union Deutschlands
+2155,GB,Sir Graham,WATSON,1956-03-23,M,ALDE,Liberal Democrats Party
+2319,FR,Henri,WEBER,1944-06-24,M,S&D,Parti socialiste
+28229,DE,Manfred,WEBER,1972-07-14,M,PPE,Christlich-Soziale Union in Bayern e.V.
+39713,RO,Renate,WEBER,1955-08-03,F,ALDE,Partidul Naţional Liberal
+1907,DE,Barbara,WEILER,1946-09-17,F,S&D,Sozialdemokratische Partei Deutschlands
+97016,AT,Angelika,WERTHMANN,1963-11-07,F,ALDE,-
+28130,SE,Åsa,WESTLUND,1976-05-19,F,S&D,Arbetarepartiet- Socialdemokraterna
+2323,DE,Rainer,WIELAND,1957-02-19,M,PPE,Christlich Demokratische Union Deutschlands
+96677,SE,Cecilia,WIKSTRÖM,1965-10-17,F,ALDE,Folkpartiet liberalerna
+35743,GB,Glenis,WILLMOTT,1951-03-04,F,S&D,Labour Party
+23784,PL,Janusz,WOJCIECHOWSKI,1954-12-06,M,ECR,Prawo i Sprawiedliwość
+28167,NL,Corien,WORTMANN-KOOL,1959-06-27,F,PPE,Christen Democratisch Appèl
+28278,ES,Luis,YÁÑEZ-BARNUEVO GARCÍA,1943-04-12,M,S&D,Partido Socialista Obrero Español
+23894,SK,Anna,ZÁBORSKÁ,1948-06-07,F,PPE,Kresťanskodemokratické hnutie
+23712,CZ,Jan,ZAHRADIL,1963-03-20,M,ECR,Občanská demokratická strana
+96778,PL,Artur,ZASADA,1969-06-05,M,ECR,Polska Razem Jarosława Gowina
+28619,LV,Tatjana,ŽDANOKA,1950-05-08,F,Verts/ALE,Par cilvēka tiesībām vienotā Latvijā
+96762,DE,Joachim,ZELLER,1952-07-01,M,PPE,Christlich Demokratische Union Deutschlands
+96784,PL,Janusz Władysław,ZEMKE,1949-02-24,M,S&D,Sojusz Lewicy Demokratycznej
+28615,LV,Roberts,ZĪLE,1958-06-20,M,ECR,Tēvzemei un Brīvībai/LNNK
+28248,DE,Gabriele,ZIMMER,1955-05-07,F,GUE/NGL,DIE LINKE.
+28301,PL,Tadeusz,ZWIEFKA,1954-12-28,M,PPE,Platforma Obywatelska
+72775,FR,Rachida,DATI,1965-11-27,F,PPE,Union pour un Mouvement Populaire
+28215,FR,Jacky,HÉNIN,1960-11-12,M,GUE/NGL,Front de gauche pour changer d’Europe
+111011,GB,Anthea,McINTYRE,1954-06-29,F,ECR,Conservative Party
+28224,DE,Markus,PIEPER,1963-05-15,M,PPE,Christlich Demokratische Union Deutschlands
+111033,LV,Kārlis,ŠADURSKIS,1959-10-11,M,PPE,Vienotība
+97308,EE,Vilja,SAVISAAR-TOOMAST,1962-08-15,F,ALDE,Eesti Reformierakond
+96824,RO,Monica Luisa,MACOVEI,1959-02-04,F,PPE,Partidul Democrat-Liberal
+58758,IT,Elisabetta,GARDINI,1956-06-03,F,PPE,Forza Italia
+97017,AT,Ulrike,LUNACEK,1957-05-26,F,Verts/ALE,Die Grünen - Die Grüne Alternative
+1059,DE,Hiltrud,BREYER,1957-08-22,F,Verts/ALE,Bündnis 90/Die Grünen
+23805,HU,Zita,GURMAI,1965-06-01,F,S&D,Magyar Szocialista Párt
+96728,DE,Barbara,LOCHBIHLER,1959-05-20,F,Verts/ALE,Bündnis 90/Die Grünen
+112748,HR,Biljana,BORZAN,1971-11-29,F,S&D,Socijaldemokratska partija Hrvatske
+107973,FI,Tarja,CRONBERG,1943-06-29,F,Verts/ALE,Vihreä liitto
+119438,HR,Zdravka,BUŠIĆ,1950-09-06,F,PPE,Hrvatska demokratska zajednica
+112755,HR,Andrej,PLENKOVIĆ,1970-04-08,M,PPE,Hrvatska demokratska zajednica
+119434,HR,Dubravka,ŠUICA,1957-05-20,F,PPE,Hrvatska demokratska zajednica
+119431,HR,Ruža,TOMAŠIĆ,1958-05-10,F,ECR,Hrvatska stranka prave dr. Ante Starčević
+112760,HR,Nikola,VULJANIĆ,1949-06-25,M,GUE/NGL,Hrvatski laburisti - stranka rada
+28390,ES,Pilar del,CASTILLO VERA,1952-07-31,F,PPE,Partido Popular
+96987,ES,Ricardo,CORTÉS LASTRA,1969-09-23,M,S&D,Partido Socialista Obrero Español
+107041,AT,Heinz,K. BECKER,1950-06-29,M,PPE,Österreichische Volkspartei
+96842,DE,Ismail,ERTUG,1975-12-05,M,S&D,Sozialdemokratische Partei Deutschlands
+96818,IT,Salvatore,IACOLINO,1963-11-18,M,PPE,Forza Italia
+96781,PL,Danuta,JAZŁOWIECKA,1957-05-19,F,PPE,Platforma Obywatelska
+96823,RO,Petru Constantin,LUHAN,1977-03-19,M,PPE,Partidul Democrat-Liberal
+118859,MT,Roberta,METSOLA,1979-01-18,F,PPE,Partit Nazzjonalista
+96890,IT,Mario,PIRILLO,1945-09-11,M,S&D,Partito Democratico
+28300,PL,Zbigniew,ZALESKI,1947-04-29,M,PPE,Platforma Obywatelska
