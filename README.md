@@ -9,7 +9,7 @@
 
 ![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXIS.jpg)
 
-[Version]:2.5.1<br>
+[Version]:2.5.1 <br>
 [Author]:yutiansut<br>
 [Website]:www.yutiansut.com | http://quantaxis.yutiansut.com<br>
 [Contact]:QQ 279336410<br>
