@@ -67,7 +67,7 @@ classdef FreeMarkets<handle
             end
             
         end
-        function FM=ASK(FM,varargin)  %ѯ�ۺ���  ���뱨�۵�
+        function FM=ASK(FM,varargin)  %
             FM.BidPool.id=FM.BidPool.id+1;
             FM.BidPool.Board{1,1}='BidPrice';
             FM.BidPool.Board{1,2}='Amount';
