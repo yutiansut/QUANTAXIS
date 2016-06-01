@@ -1,0 +1,411 @@
+.body{
+  font-family: 'Open-sans', Helvetica, sans-serif;
+  font-weight: 300;
+}
+
+/* Shared
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.button {
+  border-radius: 1px;
+}
+
+/* Sections
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.section {
+  padding: 8rem 0 7rem;
+  text-align: center;
+}
+.section-heading,
+.section-description {
+  margin-bottom: 1.2rem;
+}
+
+/* Hero
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.phones {
+  position: relative;
+}
+.phone {
+  position: relative;
+  max-width: 80%;
+  margin: 3rem auto -12rem;
+}
+.phone + .phone {
+  display: none;
+}
+
+/* Values
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.values {
+  background: #240000; /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #240000 , #380000); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #240000 , #380000); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-size: cover;
+  color: #fff;
+  padding-bottom: 5rem;
+}
+.value-multiplier {
+  margin-bottom: .5rem;
+  color: #dd7e6b;
+}
+.value-heading {
+  margin-bottom: .3rem;
+}
+.value-description {
+  opacity: .8;
+  font-weight: 300;
+}
+
+/* Help
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.get-help {
+  border-bottom: 1px solid #ddd;
+  background: white;
+}
+
+/* Categories
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.categories {
+  background: #240000; /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #240000 , #380000); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #240000 , #380000); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-size: cover;
+  color: #fff;
+}
+.categories .section-description {
+  margin-bottom: 4rem;
+}
+
+/* Bigger than 550 */
+@media (min-width: 550px) {
+  .section {
+    padding: 12rem 0 11rem;
+  }
+  .hero {
+    padding-bottom: 12rem;
+    text-align: left;
+    height: 165px;
+  }
+  .phone {
+    position: absolute;
+    top: -7rem;
+    right: 3rem;
+    max-height: 362px;
+    z-index: 3;
+  }
+  .phone + .phone {
+    top: -6rem;
+    display: block;
+    max-width: 73.8%;
+    right: 0;
+    z-index: 2;
+    max-height: 338px;
+  }
+  .hero-heading {
+    font-size: 2.4rem;
+  }
+}
+
+/* Bigger than 750 */
+@media (min-width: 750px) {
+  .hero {
+    height: 190px;
+  }
+  .hero-heading {
+    font-size: 2.6rem;
+  }
+  .section {
+    padding: 14rem 0 15rem;
+  }
+  .hero {
+    padding: 16rem 0 14rem;
+  }
+  .section-description {
+    max-width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .phone {
+    top: -14rem;
+    right: 5rem;
+    max-height: 510px;
+  }
+  .phone + .phone {
+    top: -12rem;
+    max-height: 472px;
+  }
+  .categories {
+    padding: 15rem 0 8rem;
+  }
+}
+
+/* Bigger than 1000 */
+@media (min-width: 1000px) {
+  .section {
+    padding: 20rem 0 19rem;
+  }
+  .hero {
+    padding: 22rem 0;
+  }
+  .hero-heading {
+    font-size: 3.0rem;
+  }
+  .phone {
+    top: -16rem;
+    max-height: 615px;
+  }
+  .phone + .phone {
+    top: -14rem;
+    max-height: 570px;
+  }
+}
+
+#wrap {
+  margin-top: 20px;
+  margin-left: 28.5%;
+}
+
+.phone {
+  height: 435px;
+  width: 230px;
+  border: 2px solid #781400;
+  border-radius: 50px;
+  margin-left: 60px;
+  margin-right: 60px;
+  display: inline-block;
+  background: white;
+}
+
+.speaker {
+  height: 7px;
+  width: 45px;
+  border-radius: 30px;
+  border: 2px solid #781400;
+  margin-top: 7%;
+  margin-left: 38.5%;
+  display: inline-block;
+}
+
+.camera {
+  height: 7px;
+  width: 7px;
+  border-radius: 50%;
+  border: 2px solid #781400;
+  margin-top: 7%;
+  margin-left: 12%;
+  display: inline-block;
+}
+
+.screen {
+  height: 76%;
+  width: 88%;
+  border: 2px solid #781400;
+  margin-top: 9%;
+  margin-bottom: 10.5%;
+  margin-left: auto;
+  margin-right: auto;
+  background:url(../images/phone-screen-contour.gif) no-repeat center center;
+}
+
+.btn {
+  height: 5%;
+  width: 25%;
+  border-radius: 30px;
+  border: 2px solid #781400;
+  margin-top: -5.5%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#iphone .speaker {
+  height: 7px;
+  width: 45px;
+  border-radius: 30px;
+  border: 2px solid #781400;
+  margin-top: 10%;
+  margin-left: 2%;
+  display: inline-block;
+}
+
+#iphone .camera {
+  height: 7px;
+  width: 7px;
+  border-radius: 50%;
+  border: 2px solid #781400;
+  margin-top: 10%;
+  margin-left: 31%;
+  display: inline-block;
+}
+
+#iphone .screen {
+  height: 73%;
+  width: 88%;
+  border: 2px solid #781400;
+  margin-top: 9%;
+  margin-bottom: 10.5%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#iphone .btn {
+  height: 35px;
+  width: 35px;
+  border-radius: 50%;
+  border: 2px solid #781400;
+  margin-top: -7%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#credit {
+  position: absolute;
+  font-family: sans-serif;
+  font-size: 12px;
+  color: #781400;
+  margin-top: 70px;
+  left: 20px;
+}
+
+a,
+a:visited {
+  text-decoration: none;
+  color: #781400;
+}
+
+a:focus,
+a:hover {
+  color: #256097;
+}
+
+body{
+  font-family: 'Open Sans', Helvetica, sans-serif;
+  font-weight: 300 !important;
+}
+
+#particles{
+  position:absolute;
+  width:100%;
+  height: 100%;
+  max-height:700px;
+  top:0;
+  z-index: -99 !important;
+}
+
+.wrapper {
+    width: 100%;
+    margin: 50px auto;
+    padding-left: 0;
+    padding-right: 0;
+    overflow: hidden;
+    height: 200px;
+}
+
+.screenshot-main {
+    display: block;
+    height: 600px;
+    width: 100%;
+    max-width: 860px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+    border-radius: 5px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    margin-top: -150px;
+    z-index: 99;
+}
+
+.breather{
+    margin: 200px 0;
+}
+
+@keyframes moving-rectangle {
+    0%   {background-color: white; left:0px;}
+    25%  {background-color: yellow; left:200px;}
+    50%  {background-color: blue; left:400px;}
+    75%  {background-color: green; left:200px;}
+    100% {background-color: white; left:0px;}
+}
+
+/* The element to apply the animation to */
+#moving-rectangle {
+    width: 50px;
+    height: 200px;
+    position: absolute;
+    background-color: white;
+    animation-name: moving-rectangle;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+    opacity: 0.5;
+}
+
+th, td{
+    border: 1px solid white;
+}
+
+th:first-child, td:first-child{
+    padding: 12px 15px;
+}
+
+.blur{
+    -webkit-filter: brightness(3);
+    filter: brightness(3);
+}
+
+img.pulse {
+    -webkit-animation: blur 3s infinite;
+}
+
+@-webkit-keyframes blur {
+    0%, 100%  { -webkit-filter: brightness(5); }
+    50% { -webkit-filter: brightness(0.8); }
+}
+
+/* Browser mockup code
+ * Contribute: https://gist.github.com/jarthod/8719db9fef8deb937f4f
+ * Live example: https://updown.io
+ */
+
+.browser-mockup {
+  border-top: 2em solid rgba(230, 230, 230, 0.7);
+  box-shadow: 0 0.1em 1em 0 rgba(0, 0, 0, 0.4);
+  position: relative;
+  border-radius: 3px 3px 0 0
+}
+
+.browser-mockup:before {
+  display: block;
+  position: absolute;
+  content: '';
+  top: -1.25em;
+  left: 1em;
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background-color: #f44;
+  box-shadow: 0 0 0 0px #f44, 1.5em 0 0 0px #9b3, 3em 0 0 0px #fb5;
+}
+
+.browser-mockup > * {
+  display: block;
+}
+
+img#large-contour{
+  width: 100%;
+  background: white;
+}
+
+#formula{
+  white-space: nowrap;
+  overflow: hidden;
+  width: 5em;
+  margin: 0;
+  animation: type 4s steps(8, end);
+  animation-iteration-count: infinite;
+}
+
+@keyframes type{
+  from { width: 0; }
+}
