@@ -1,6 +1,7 @@
 # QUANTAXIS 量化金融工具箱
 ![AppVeyor branch](https://img.shields.io/appveyor/ci/gruntjs/grunt/master.svg?maxAge=2592000)
 ![download](https://img.shields.io/badge/download-34Mb-green.svg)
+![version](https://img.shields.io/badge/version-%202.5.1-orange.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
 ![website](https://img.shields.io/badge/website-%20www.yutiansut.com-lightgrey.svg)
 ![language](https://img.shields.io/badge/Language-%20matlab-blue.svg)
@@ -16,7 +17,8 @@
 
 >QUANTAXIS本身是作者在大四时，学习量化交易以及策略实现的时候，发现matlab上面并没有称心如意的量化平台，而主流的量化平台则基于python和java，于是萌生了自己写一个量化工具箱的想法
 
-<br><big>*版本历史*</big><br>1.0版本使用的主要是新浪网的数据。<br>1.5版本是在了解了对象化编程OOP以后对于平台做的改进
+## Version History
+1.0版本使用的主要是新浪网的数据。<br>1.5版本是在了解了对象化编程OOP以后对于平台做的改进
 <br>2.0版本主要是对于数据源进行了更换，并重新写了数据库连接和调用函数。从2.0起，quantaxis使用wind服务商提供的量化交易数据并选择mysql作为数据存储方式。
 <br>2.5版本则主要增加了交易内核 QUANTCORE 1.0 QC1.0还是一个静态的交易系统，成交的判断方式是以策略报价和历史成交价区间的比较进行判定。
 
@@ -110,3 +112,10 @@ round控制
 
 系统根据用户的不同的报价，记录到报价池并动态匹配报价和量
 如果出现可以对冲的报价就进行对冲并回调价格
+
+
+## QUANTAXIS-TEST
+测试类
+```
+TM=TestMarkets;  %初始化测试
+```
