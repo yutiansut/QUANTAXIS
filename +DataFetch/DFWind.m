@@ -1,9 +1,13 @@
 classdef DFWind < handle
-
-    properities
+    
+    properties
+        wm
     end
     events
     end
-    function 
+    methods
+        function DW=DFWind()
+            DW.wm=windmatlab;
+        end
     end
 end
