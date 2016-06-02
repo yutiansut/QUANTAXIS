@@ -1,5 +1,5 @@
 # QUANTAXIS 量化金融工具箱
-![AppVeyor branch](https://img.shields.io/appveyor/ci/gruntjs/grunt/master.svg?maxAge=2592000)
+![AppVeyor branch](https://img.shields.io/badge/Build-passing-green.svg)
 ![download](https://img.shields.io/badge/Download-47~140Mb-green.svg)
 ![version](https://img.shields.io/badge/Version-%203.0.0%20beta-orange.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
@@ -13,6 +13,19 @@
 [Website]:www.yutiansut.com | http://quantaxis.yutiansut.com<br>
 [Contact]:QQ 279336410<br>
 
+## 更新日志 QA3.2  模块化编程
+----
+将class重新改包，定义功能化模块，方便调用并增加生命周期
+
+```
+>QUANTAXIS.m
+classdef QUANTAXIS < QAClassPackage
+end
+>QAClassPackage.m
+classdef QAClassPackage < DataFetch.DFWind & DataStorage.DSMysql & FreeMarkets.MultiDealer.FreeMarkets & Strategy.STBase
+end
+% 在一个classpackage中写好从属类，然后让quantaxis映射过去
+```
 
 ## 更新日志 QA3.0  新增数据中心 [DATACENTER 主要负责数据可视化](https://github.com/yutiansut/QUANTAXIS/blob/master/DataCenter/readme.md)
 ----
