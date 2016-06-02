@@ -30,10 +30,10 @@ classdef QAMysql<handle
             end
         end
         function QM=QAMysqlConfig(QM,varargin)
-            QM.MYSQL.Databasename='quantaxis';
-            QM.MYSQL.Username='root';
-            QM.MYSQL.Password='940809';
-            QM.MYSQL.Url='localhost';
+            QM.Mysql.Database='quantaxis';
+            QM.Mysql.UserName='root';
+            QM.Mysql.Password='940809';
+            QM.Mysql.Ur
             
         end
     end
