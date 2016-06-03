@@ -18,6 +18,7 @@ this is the simplest way to using this, however, if you want to call it, you can
 then you can use the following code to using this:
 ```
 QA=QUANTAXIS();
+QA.DSMysqlInit;
 QA.DSMysqlConfig;
 QA.DSMysqlConnection;
 ```
