@@ -1,5 +1,8 @@
 # QUANTAXIS 量化金融工具箱
-![AppVeyor branch](https://img.shields.io/badge/Build-passing-green.svg)
+<style type="text/css"> 
+
+</style>
+![build](https://img.shields.io/badge/Build-passing-green.svg)
 ![download](https://img.shields.io/badge/Download-47~140Mb-green.svg)
 ![version](https://img.shields.io/badge/Version-%203.2.0%20alpha-orange.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
@@ -58,7 +61,17 @@ Copy-Item ('F:\QUANTAXIS\QUANTAXIS\Auxiliary\JDBC\mysql-connector-java-5.1.7-bin
 通过V2.0,V3.0和V3.2.0 3个版本的升级以后，QUANTAXIS逐步发展成一个代码模块化和数据交互可视化的量化工具系统。
 ### QUANTAXIS 模块化编程
 QUANTAXIS致力于代码的功能分离和生命周期延长。在quantaxis中，所有的代码都被分成了不同的功能模块，通过类包(class package)的从属调用，来定义不同的功能块。
+
 #### QUANTAXIS 模块命名规则
+模块的命名首先考虑母目录
+如
+>+DataStorage<br>
+ ++DSMysql.m
+
+首先采用母目录的两个英文大写缩写 如DataStorage--DS，再加上本身代码名称。
+
+   
+
 ### QUANTAXIS 数据可视化
 
 
