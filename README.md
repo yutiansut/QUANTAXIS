@@ -19,7 +19,7 @@
 * [1.QUANTAXIS 简介](https://github.com/yutiansut/QUANTAXIS#quantaxis-简介) 
 * [2. QUANTAXIS 特性](#quantaxis-特性)
 * [2.1 QUANTAXIS 模块化编程](#quantaxis-模块化编程)
-* [2.1.1 QUANTAXIS 的模块命名规则](#quantaxis-的模块命名规则)
+* [2.1.1 QUANTAXIS 的模块命名规则](#quantaxis-模块命名规则)
 * [2.1.2 QUANTAXIS]()
 * [2.2 QUANTAXIS 数据可视化](#quantaxis-数据可视化)
 
@@ -55,8 +55,8 @@ Copy-Item ('F:\QUANTAXIS\QUANTAXIS\Auxiliary\JDBC\mysql-connector-java-5.1.7-bin
 
 ```
 ## QUANTAXIS 特性
-### QUANTAXIS 的模块化编程
-### QUANTAXIS 的数据可视化
+### QUANTAXIS 模块化编程
+### QUANTAXIS 数据可视化
 
 
 
