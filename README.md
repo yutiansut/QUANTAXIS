@@ -28,7 +28,7 @@
 
 2.2 QUANTAXIS 数据可视化
 
-## QUANTAXIS 简介
+## 1. QUANTAXIS 简介
 QUANTAXIS 使用模块化对象化编程，使用matlab进行快速回测，mysql作为数据中心，nodejs建站，使用javascript作为前端交互式展示
 核心组件均可独立调用
 
@@ -57,12 +57,12 @@ Copy-Item ('F:\QUANTAXIS\QUANTAXIS\Auxiliary\JDBC\mysql-connector-java-5.1.7-bin
 
 
 ```
-## QUANTAXIS 特性
+## 2. QUANTAXIS 特性
 通过V2.0,V3.0和V3.2.0 3个版本的升级以后，QUANTAXIS逐步发展成一个代码模块化和数据交互可视化的量化工具系统。
-### QUANTAXIS 模块化编程
+### 2.1 QUANTAXIS 模块化编程
 QUANTAXIS致力于代码的功能分离和生命周期延长。在quantaxis中，所有的代码都被分成了不同的功能模块，通过类包(class package)的从属调用，来定义不同的功能块。
 
-#### QUANTAXIS 模块命名规则
+#### 2.1.1 QUANTAXIS 模块命名规则
 
 1. 模块的命名
 模块的命名首先考虑母目录
@@ -81,7 +81,7 @@ QUANTAXIS致力于代码的功能分离和生命周期延长。在quantaxis中�
 
    
 
-### QUANTAXIS 数据可视化
+### 2.2 QUANTAXIS 数据可视化
 
 
 
