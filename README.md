@@ -13,6 +13,61 @@
 [Website]:www.yutiansut.com | http://quantaxis.yutiansut.com<br>
 [Contact]:QQ 279336410<br>
 
+
+## QUANTAXIS 简介
+QUANTAXIS 使用模块化对象化编程，使用matlab进行快速回测，mysql作为数据中心，nodejs建站，使用javascript作为前端交互式展示
+核心组件均可独立调用
+
+```
+SYSTEM REQUIREMENTS
+====================
+MATLAB 2014a +    [best recommends]:MATLAB R2015b,R2016a
+NODEJS 4.4 +      [best recommends]:NODEJS V5.9.1
+JAVASCRIPT  JQUERY V1.4.4+
+MYSQL  5.6 +      [best recommends]:MYSQL 5.7
+Wind Personal API V2.0.0+
+JDBC CONNECTOR  5.1.7bin +
+```
+快速搭建一个QUANTAXIS实例
+```
+win+R--cmd/powershell
+cd D:
+mkdir quantaxis
+git clone https://github.com/yutiansut/quantaxis
+····waiting····
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## 更新日志 QA3.2  模块化编程
 ----
 将class重新改包，定义功能化模块，方便调用并增加生命周期
