@@ -15,8 +15,8 @@
 
 ## Content
 * [1.QUANTAXIS 简介](https://github.com/yutiansut/QUANTAXIS#quantaxis-简介) 
-QUANTAXIS 简介
-2. QUANTAXIS 特性
+
+* [2. QUANTAXIS 特性](#quantaxis-的模块化编程)
 * QUANTAXIS 模块化编程
   QUANTAXIS 的模块命名规则
 
