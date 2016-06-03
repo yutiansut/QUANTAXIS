@@ -23,7 +23,7 @@
 * [2. QUANTAXIS 特性](#2-quantaxis-特性)
 * [2.1 QUANTAXIS 模块化编程](#21-quantaxis-模块化编程)
 * [2.1.1 QUANTAXIS 模块命名规则](#211-quantaxis-模块命名规则)
-* [2.1.2 QUANTAXIS]()
+* [2.1.2 QUANTAXIS 模块调用](#212-quantaxis-模块调用)
 * [2.2 QUANTAXIS 数据可视化](#22-quantaxis-数据可视化)
 
 2.2 QUANTAXIS 数据可视化
@@ -79,7 +79,7 @@ QUANTAXIS致力于代码的功能分离和生命周期延长。在quantaxis中�
 3. 类属性的命名
 类属性的命名需要对比给出的api中已有类属性后进行确定
 
-   
+#### 2.1.2 QUANTAXIS 模块调用   
 
 ### 2.2 QUANTAXIS 数据可视化
 
