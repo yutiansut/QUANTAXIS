@@ -28,13 +28,18 @@ MYSQL  5.6 +      [best recommends]:MYSQL 5.7
 Wind Personal API V2.0.0+
 JDBC CONNECTOR  5.1.7bin +
 ```
-快速搭建一个QUANTAXIS实例
+快速搭建一个QUANTAXIS实例(todo list: shell语言自动部署)
 ```
 win+R--cmd/powershell
 cd D:
 mkdir quantaxis
+cd quantaxis
 git clone https://github.com/yutiansut/quantaxis
 ····waiting····
+
+cd quantaxis
+
+
 
 ```
 
