@@ -37,7 +37,8 @@ cd quantaxis
 git clone https://github.com/yutiansut/quantaxis
 ····waiting····
 
-cd quantaxis
+cd quantaxis  (if powershell)
+Copy-Item ('F:\QUANTAXIS\QUANTAXIS\Auxiliary\JDBC\mysql-connector-java-5.1.7-bin.jar')  ('C:\Program Files\MATLAB\R2016a\java\jar\toolbox')
 
 
 
