@@ -18,7 +18,7 @@
 
 ## Content
 
->=================================
+>+---++---++---++---++---++---+
 * [1.QUANTAXIS 简介](https://github.com/yutiansut/QUANTAXIS#1-quantaxis-简介)
 * [2. QUANTAXIS 特性](#2-quantaxis-特性)
 * &emsp;[2.1 QUANTAXIS 模块化编程](#21-quantaxis-模块化编程)
@@ -26,7 +26,9 @@
 * &emsp;&emsp;[2.1.2 QUANTAXIS 模块调用](#212-quantaxis-模块调用)
 * &emsp;[2.2 QUANTAXIS 数据可视化](#22-quantaxis-数据可视化)
 
-2.2 QUANTAXIS 数据可视化
+>+---++---++---++---++---++---+
+
+=========================
 
 ## 1. QUANTAXIS 简介
 QUANTAXIS 使用模块化对象化编程，使用matlab进行快速回测，mysql作为数据中心，nodejs建站，使用javascript作为前端交互式展示
