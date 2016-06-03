@@ -19,7 +19,7 @@
 * [1.QUANTAXIS 简介](https://github.com/yutiansut/QUANTAXIS#quantaxis-简介) 
 * [2. QUANTAXIS 特性](#quantaxis-特性)
 * [2.1 QUANTAXIS 模块化编程](#quantaxis-模块化编程)
-* [2.1.1 QUANTAXIS 的模块命名规则](#quantaxis-模块命名规则)
+* [2.1.1 QUANTAXIS 模块命名规则](#quantaxis-模块命名规则)
 * [2.1.2 QUANTAXIS]()
 * [2.2 QUANTAXIS 数据可视化](#quantaxis-数据可视化)
 
@@ -55,7 +55,10 @@ Copy-Item ('F:\QUANTAXIS\QUANTAXIS\Auxiliary\JDBC\mysql-connector-java-5.1.7-bin
 
 ```
 ## QUANTAXIS 特性
+通过V2.0,V3.0和V3.2.0 3个版本的升级以后，QUANTAXIS逐步发展成一个代码模块化和数据交互可视化的量化工具系统。
 ### QUANTAXIS 模块化编程
+QUANTAXIS致力于代码的功能分离和生命周期延长。在quantaxis中，所有的代码都被分成了不同的功能模块，通过类包(class package)的从属调用，来定义不同的功能块。
+#### QUANTAXIS 模块命名规则
 ### QUANTAXIS 数据可视化
 
 
