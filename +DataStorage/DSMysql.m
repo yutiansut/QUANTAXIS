@@ -47,7 +47,7 @@ classdef DSMysql<handle
         end
     end
     methods(Access = 'public')
-        function DM=CreateTable(DM,varargin)
+        function DM=DSMysqlCreateTable(DM,varargin)
             if isempty(DM.MYSQL.DatabaseName)
                 DM.MYSQL.DatabaseName=input('Database(example:quantaxis)\n DatabBase:  ','s');
             end

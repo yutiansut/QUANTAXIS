@@ -63,12 +63,21 @@ Copy-Item ('F:\QUANTAXIS\QUANTAXIS\Auxiliary\JDBC\mysql-connector-java-5.1.7-bin
 QUANTAXIS致力于代码的功能分离和生命周期延长。在quantaxis中，所有的代码都被分成了不同的功能模块，通过类包(class package)的从属调用，来定义不同的功能块。
 
 #### QUANTAXIS 模块命名规则
+
+1. 模块的命名
 模块的命名首先考虑母目录
 如
 >+DataStorage<br>
  ++DSMysql.m
-
 首先采用母目录的两个英文大写缩写 如DataStorage--DS，再加上本身代码名称。
+
+2. 函数的命名
+而对于模块内的函数命名，考虑到不同函数的重叠问题，主要以模块名+函数名,如
+>DSMysqlInit();<br>
+>DSMysqlCreateTable();
+
+3. 类属性的命名
+类属性的命名需要对比给出的api中已有类属性后进行确定
 
    
 
