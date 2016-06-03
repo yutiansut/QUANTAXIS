@@ -25,6 +25,10 @@
 * &emsp;&emsp;[2.1.1 QUANTAXIS 模块命名规则](#211-quantaxis-模块命名规则)
 * &emsp;&emsp;[2.1.2 QUANTAXIS 模块调用](#212-quantaxis-模块调用)
 * &emsp;[2.2 QUANTAXIS 数据可视化](#22-quantaxis-数据可视化)
+* &emsp;&emsp;[2.2.1 数据可视化方法](#221-数据可视化方法)
+* &emsp;&emsp;[2.2.2 运行NODEJS服务](#222-运行NODEJS服务)
+* &emsp;&emsp;[2.2.3 后台管理，中间件，路由跳转，mysql连接，AJAX等]()
+* &emsp;&emsp;[2.2.4 前端脚本](#224-前端脚本)
 
 >+---++---++---++---++---++---+
 
@@ -60,7 +64,7 @@ Copy-Item ('F:\QUANTAXIS\QUANTAXIS\Auxiliary\JDBC\mysql-connector-java-5.1.7-bin
 
 ```
 ## 2. QUANTAXIS 特性
-通过V2.0,V3.0和V3.2.0 3个版本的升级以后，QUANTAXIS逐步发展成一个代码模块化和数据交互可视化的量化工具系统。
+通过[V2.0](https://github.com/yutiansut/QUANTAXIS/tree/v2.0),[V3.0](https://github.com/yutiansut/QUANTAXIS/tree/v3.0)和[V3.2.0](https://github.com/yutiansut/QUANTAXIS/tree/v3.0) 3个版本的升级以后，QUANTAXIS逐步发展成一个代码模块化和数据交互可视化的量化工具系统。
 ### 2.1 QUANTAXIS 模块化编程
 QUANTAXIS致力于代码的功能分离和生命周期延长。在quantaxis中，所有的代码都被分成了不同的功能模块，通过类包(class package)的从属调用，来定义不同的功能块。
 
@@ -81,9 +85,25 @@ QUANTAXIS致力于代码的功能分离和生命周期延长。在quantaxis中�
 3. 类属性的命名
 类属性的命名需要对比给出的api中已有类属性后进行确定
 
-#### 2.1.2 QUANTAXIS 模块调用   
+#### 2.1.2 QUANTAXIS 模块调用
+对于类模块的调用，我们需要首先编辑类模块
+```
+>QAClassPackage.m
+classdef QAClassPackage < DataFetch.DFWind & DataStorage.DSMysql & FreeMarkets.MultiDealer.FreeMarkets & Strategy.STBase
+end
+% 在一个classpackage中写好从属类，然后让quantaxis映射过去
+
+>QUANTAXIS.m
+classdef QUANTAXIS < QAClassPackage
+end
+```
+当我们需要什么功能的时候，就调用什么功能模块即可。
 
 ### 2.2 QUANTAXIS 数据可视化
+#### 2.2.1 数据可视化方法
+#### 2.2.2 运行NODEJS服务
+#### 2.2.3 后台管理，中间件，路由跳转，mysql连接，AJAX等
+#### 2.2.4 前端脚本
 
 
 
@@ -117,15 +137,7 @@ QUANTAXIS致力于代码的功能分离和生命周期延长。在quantaxis中�
 ----
 将class重新改包，定义功能化模块，方便调用并增加生命周期
 
-```
->QUANTAXIS.m
-classdef QUANTAXIS < QAClassPackage
-end
->QAClassPackage.m
-classdef QAClassPackage < DataFetch.DFWind & DataStorage.DSMysql & FreeMarkets.MultiDealer.FreeMarkets & Strategy.STBase
-end
-% 在一个classpackage中写好从属类，然后让quantaxis映射过去
-```
+
 
 ## 更新日志 QA3.0  新增数据中心 [DATACENTER 主要负责数据可视化](https://github.com/yutiansut/QUANTAXIS/blob/master/DataCenter/readme.md)
 ----
