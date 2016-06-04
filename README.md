@@ -101,11 +101,27 @@ end
 #### 2.2.1 数据可视化方法
 虽然matlab中也能够画图，如plot(); histfit();等等，但是图片不够美观，且不能交互式的动态展示，于是我们将
 #### 2.2.2 运行NODEJS服务
+```
+cd quantaxis
+node datacenter/bin/www.js
+```
+打开浏览器 默认端口是3030
 #### 2.2.3 后台管理，中间件，路由跳转，mysql连接，AJAX等
+DataCenter/mysql --- 数据库组件
+--conn.js 数据库连接函数
+--sqlmapping.js 数据库脚本
+--sqlexec.js  数据库执行
+
+DataCenter/routes  --- 路由跳转组件
+--index.js 主路由
+data.js user.js 都可以在DataCenter/app.js中重新定义
+
+
 #### 2.2.4 前端脚本
+DataCenter/views  --jade页面文件
+DataCenter/public  --资源文件  css样表，javascript，图片等等
 
-
-
+## 3. QUANTAXIS 功能介绍
 
 
 
@@ -179,7 +195,7 @@ QA.Start()  策略回测平台
 ```
 
 ## [QUANTAXIS FREEMARKETS](https://github.com/yutiansut/QUANTAXIS/blob/master/%2BFreeMarkets/%2BMultiDealer/FreeMarkets.m)
-调用类 classdef [xx] < FreeMarkets.MultiDealer.FreeMarkets
+修改调用类 classdef QUANTAXIS < FreeMarkets.MultiDealer.FreeMarkets
 ----
 ```
 FM=FreeMarkets;
