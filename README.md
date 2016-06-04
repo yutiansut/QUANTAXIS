@@ -1,7 +1,5 @@
 # QUANTAXIS 量化金融工具箱
-<style type="text/css"> 
 
-</style>
 ![build](https://img.shields.io/badge/Build-passing-green.svg)
 ![download](https://img.shields.io/badge/Download-47~140Mb-green.svg)
 ![version](https://img.shields.io/badge/Version-%203.2.0%20alpha-orange.svg)
