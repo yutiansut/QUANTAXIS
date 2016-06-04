@@ -123,8 +123,11 @@ DataCenter/public  --资源文件  css样表，javascript，图片等等
 
 ## 3. QUANTAXIS 功能介绍
 
-
-
+### 3.1 数据获取  DF类 Data Fetch
+### 3.2 数据存贮  DS类 Data Storage
+### 3.3 数据分析  DA类 Data Analysis
+### 3.4 数据交互  DI类 Data Intergration
+### 3.5 消息存贮  SI类 System Message
 
 
 
