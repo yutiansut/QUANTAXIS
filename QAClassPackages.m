@@ -10,7 +10,10 @@ classdef QAClassPackages < DataFetch.DFMain
         
         
         function QACP=QACPInit(QACP)
-            fprintf('[QACP]:===Initial the QUANTAXIS Class Package!===\n');
+            QACP.MES.Str='[QACP]:===Initial the QUANTAXIS Class Package!===\n';
+            fprintf(QACP.MES.Str);
+            notify(QACP,'QAMessage');
+            notify(QACP,'QAMessage');
         end
     end
 end

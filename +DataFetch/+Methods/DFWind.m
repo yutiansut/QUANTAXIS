@@ -1,4 +1,4 @@
-classdef DFWind < DataFetch.Methods.Core.DFCore
+classdef DFWind < DataFetch.Methods.Core.DFCore & Message.QMMes
     % by yutiansut
     % 2016/6/5
     
@@ -16,7 +16,9 @@ classdef DFWind < DataFetch.Methods.Core.DFCore
             
         end
         function DW=DFWindInit(DW)
-            fprintf('[DFWind]:Initializating DFWind!\n');
+            DW.MES.Str='[DFWind]:Initializating DFWind!\n';
+            fprintf(DW.MES.Str);
+            notify(DW,'QAMessage')
             addlistener(DW,'DFwindhistory',@DFWindHistory);
 
         end

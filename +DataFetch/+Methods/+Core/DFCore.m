@@ -1,4 +1,4 @@
-classdef DFCore < handle
+classdef DFCore < Message.QMMes & handle
     % this function only be used to set the properties
     % by yutiansut
     % 2016/6/5
