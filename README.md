@@ -14,7 +14,6 @@
 [Website]:www.yutiansut.com | http://quantaxis.yutiansut.com<br>
 [Contact]:QQ 279336410<br>
 
-![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/3.0/Picture/QA3.0.png)
 
 ## Content 目录
 
@@ -62,6 +61,7 @@
 ## 1. QUANTAXIS 简介
 QUANTAXIS 使用模块化对象化编程，使用matlab进行快速回测，mysql作为数据中心，nodejs建站，使用javascript作为前端交互式展示
 核心组件均可独立调用
+![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/3.0/Picture/QA3.0.png)
 
 ```
 SYSTEM REQUIREMENTS
