@@ -14,6 +14,8 @@
 [Website]:www.yutiansut.com | http://quantaxis.yutiansut.com<br>
 [Contact]:QQ 279336410<br>
 
+![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/3.0/Picture/QA3.0.png)
+
 ## Content 目录
 
 >+---++---++---++---++---++---+
@@ -85,6 +87,9 @@ Copy-Item ('F:\QUANTAXIS\QUANTAXIS\Auxiliary\JDBC\mysql-connector-java-5.1.7-bin
 
 
 ```
+
+![quantaxis datacenter](https://github.com/yutiansut/QUANTAXIS/blob/3.0/Picture/QADC.gif)
+
 ## 2. QUANTAXIS 特性
 通过[V2.0](https://github.com/yutiansut/QUANTAXIS/tree/v2.0),[V3.0](https://github.com/yutiansut/QUANTAXIS/tree/v3.0)和[V3.2.0](https://github.com/yutiansut/QUANTAXIS/tree/v3.0) 3个版本的升级以后，QUANTAXIS逐步发展成一个代码模块化和数据交互可视化的量化工具系统。
 ### 2.1 QUANTAXIS 模块化编程
@@ -124,6 +129,7 @@ end
 ### 2.2 QUANTAXIS 数据可视化
 #### 2.2.1 数据可视化方法
 虽然matlab中也能够画图，如plot(); histfit();等等，但是图片不够美观，且不能交互式的动态展示，于是我们将
+
 #### 2.2.2 运行NODEJS服务
 ```
 cd quantaxis
@@ -194,7 +200,7 @@ end
 #### 3.5.2 APIS
 
 
-
+## 4. 版本历史
 
 
 
@@ -227,13 +233,6 @@ end
 
 使用ajax技术对于mysql数据进行抽取，使用dc.js等可视化javascript将数据展示在页面上，形成交互式的数据可视化方案
 
-![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/3.0/Picture/QA3.0.png)
-
-![quantaxis datacenter](https://github.com/yutiansut/QUANTAXIS/blob/3.0/Picture/QADC.gif)
-
-----
->QUANTAXIS本身是作者在大四时，学习量化交易以及策略实现的时候，发现matlab上面并没有称心如意的量化平台，而主流的量化平台则基于python和java，于是萌生了自己写一个量化工具箱的想法
-
 ## [Version History](https://github.com/yutiansut/QUANTAXIS/releases)
 1.0版本使用的主要是新浪网的数据。<br>1.5版本是在了解了对象化编程OOP以后对于平台做的改进
 <br>2.0版本主要是对于数据源进行了更换，并重新写了数据库连接和调用函数。从2.0起，quantaxis使用wind服务商提供的量化交易数据并选择mysql作为数据存储方式。
@@ -254,12 +253,7 @@ JDBC添加完成后需要在Classpath文件中增加
 ----
 主函数 主要是一个量化平台，负责策略实现和数据更新
 类似的平台 如python下的[easytrader](https://github.com/shidenggui/easytrader)
-```
-QA=QUANTAXIS;
-QA.Init()   初始化平台（数据库连接设置等）
-QA.Fetch()  数据更新平台
-QA.Start()  策略回测平台
-```
+
 
 ## [QUANTAXIS FREEMARKETS](https://github.com/yutiansut/QUANTAXIS/blob/master/%2BFreeMarkets/%2BMultiDealer/FreeMarkets.m)
 修改调用类 classdef QUANTAXIS < FreeMarkets.MultiDealer.FreeMarkets
@@ -331,10 +325,3 @@ round控制
 系统根据用户的不同的报价，记录到报价池并动态匹配报价和量
 如果出现可以对冲的报价就进行对冲并回调价格
 
-
-## [QUANTAXIS-TEST 函数接口测试](https://github.com/yutiansut/QUANTAXIS/blob/master/TestMarkets.m)
-测试类
-```
-TM=TestMarkets;  %初始化测试
-```
-集成类以后可以使用继承类的接口，同时，在使用了包package以后，不能直接调用FreeMarkets.m的函数
