@@ -18,7 +18,7 @@
 'mysql'
 'cookie-parser'
 'ajax'
-'redis'
+'redis' 
 ```
     $todo list
     1. 建立一个nodejs网站
