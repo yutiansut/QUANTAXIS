@@ -124,6 +124,13 @@ DataCenter/public  --资源文件  css样表，javascript，图片等等
 ## 3. QUANTAXIS 功能介绍
 
 ### 3.1 数据获取  DF类 Data Fetch
+传送门--[关于Data Fetch 类](https://github.com/yutiansut/QUANTAXIS/blob/master/%2BDataFetch/README.md)
+#### 3.1.1 核心函数
+>[DataFetch]<br>DFMain.m (类包函数，同时兼具初始化的任务)
+>>[+Methods]工具函数<br> DFSina.m (新浪接口)<br> DFTushare.m (Python tushare接口)<br> DFWind.m (Wind 接口)<br> DFYahoo.m (Yahoo 接口)
+>>>[+Core]<br> DFCore.m (核心包函数，指定该类的属性 FET 以及消息响应控制 MES族)
+
+#### 3.1.2 调用方式：
 ```
 classdef QAClassPackage< DataFetch.DFMain 
 end
@@ -131,9 +138,13 @@ end
 classdef QUANTAXIS < QAClassPackage
 end
 ```
+#### 3.1.3 APIS
+所有被获取到的数据都在QA.FET族中<br>
+如果从wind获取数据，数据在QA.FET.Data中<br>
+具体参见 [关于Data Fetch 类](https://github.com/yutiansut/QUANTAXIS/blob/master/%2BDataFetch/README.md)
 
-QA.Fetch
 ### 3.2 数据存贮  DS类 Data Storage
+传送门--[关于DataStorage 类](https://github.com/yutiansut/QUANTAXIS/blob/master/%2BDataStorage/README.md)
 ### 3.3 数据分析  DA类 Data Analysis
 ### 3.4 数据交互  DI类 Data Intergration
 ### 3.5 消息存贮  SI类 System Message
