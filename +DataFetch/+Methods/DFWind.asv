@@ -7,7 +7,7 @@ classdef DFWind < DataFetch.Methods.Core.DFCore
     end
     events
         DFwindhistory
-
+        DFwindhelp
     end
     methods
         function DW=DFWind()
@@ -38,10 +38,10 @@ classdef DFWind < DataFetch.Methods.Core.DFCore
         % help
         function DW=DFWindHELP(DW)
             fprintf('[DFWINDHELP]:This is HELP Documents \n ')
-            DW.FET.HELPOption=input('SELECT the one you interested:\n 1.WindHistory\n==:','s');
+            DW.FET.HELPOpition=input('SELECT the one you interested:\n 1.WindHistory\n','s');
             switch DW.FET.HELPOption
                 case {'1'}
-                    fprintf('API ==WindHistory\n');
+                    fprintf('API ==WindHistory');
             end
         end
     end

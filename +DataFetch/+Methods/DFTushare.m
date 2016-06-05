@@ -1,5 +1,5 @@
-classdef DFTushare < handle
-    properities
+classdef DFTushare < DataFetch.Methods.Core.DFCore
+    properties
     end
     events
     end

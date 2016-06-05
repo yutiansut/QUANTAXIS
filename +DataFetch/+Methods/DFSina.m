@@ -1,5 +1,5 @@
-classdef DFSina < handle
-    properities
+classdef DFSina < DataFetch.Methods.Core.DFCore
+    properties
     end
     events
     end

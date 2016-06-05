@@ -1,5 +1,5 @@
-classdef DFMain < Methods.DFWind & Methods.DFSina & Methods.DFYahoo & Methods.DFTushare
-    properities
+classdef DFMain < DataFetch.Methods.DFWind & DataFetch.Methods.DFSina & DataFetch.Methods.DFYahoo & DataFetch.Methods.DFTushare
+    properties
     end
     events
     end

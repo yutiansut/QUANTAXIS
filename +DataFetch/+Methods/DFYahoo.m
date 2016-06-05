@@ -1,5 +1,5 @@
-classdef DFYahoo < handle
-    properities
+classdef DFYahoo < DataFetch.Methods.Core.DFCore
+    properties
     end
     events
     end
