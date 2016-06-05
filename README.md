@@ -201,8 +201,8 @@ end
 #### 3.5.2 APIS
 
 
-## 4. 版本历史
-参见 [版本历史](https://github.com/yutiansut/QUANTAXIS/releases)
+## 4. [版本历史](https://github.com/yutiansut/QUANTAXIS/releases)
+
 
 1.0版本使用的主要是新浪网的数据。<br>1.5版本是在了解了对象化编程OOP以后对于平台做的改进
 <br>2.0版本主要是对于数据源进行了更换，并重新写了数据库连接和调用函数。从2.0起，quantaxis使用wind服务商提供的量化交易数据并选择mysql作为数据存储方式。
