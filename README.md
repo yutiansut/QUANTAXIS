@@ -53,6 +53,7 @@
 * &emsp;[3.5 消息存贮 SM类 System Message](#35-消息存贮--sm类-system-message)
 * &emsp;&emsp;[3.5.1 MES方式](#351-mes方式)
 * &emsp;&emsp;[3.5.2 APIS](#352-apis)
+* [4. 版本历史](#4-版本历史)
 
 >+---++---++---++---++---++---+
 
@@ -201,53 +202,17 @@ end
 
 
 ## 4. 版本历史
+参见 [版本历史](https://github.com/yutiansut/QUANTAXIS/releases)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## 更新日志 QA3.2  模块化编程
-----
-将class重新改包，定义功能化模块，方便调用并增加生命周期
-
-
-
-## 更新日志 QA3.0  新增数据中心 [DATACENTER 主要负责数据可视化](https://github.com/yutiansut/QUANTAXIS/blob/master/DataCenter/readme.md)
-----
-将matlab的及时数据以json格式保存到状态空间或者mysql中
-
-使用ajax技术对于mysql数据进行抽取，使用dc.js等可视化javascript将数据展示在页面上，形成交互式的数据可视化方案
-
-## [Version History](https://github.com/yutiansut/QUANTAXIS/releases)
 1.0版本使用的主要是新浪网的数据。<br>1.5版本是在了解了对象化编程OOP以后对于平台做的改进
 <br>2.0版本主要是对于数据源进行了更换，并重新写了数据库连接和调用函数。从2.0起，quantaxis使用wind服务商提供的量化交易数据并选择mysql作为数据存储方式。
 <br>2.5版本则主要增加了交易内核 QUANTCORE 1.0 QC1.0还是一个静态的交易系统，成交的判断方式是以策略报价和历史成交价区间的比较进行判定。
+<br>3.0版本将matlab的及时数据以json格式保存到状态空间或者mysql中，使用ajax技术对于mysql数据进行抽取，使用dc.js等可视化javascript将数据展示在页面上，形成交互式的数据可视化方案
+<br>3.2 模块化编程 将class重新改包，定义功能化模块，方便调用并增加生命周期
 
 
-```
-[Attention]:QUANTAXIS在使用之前需要安装Wind大奖章免费应用 以及 Mysql 5.6以上版本+JDBC-MYSQL的数据库
-以上两个的安装文件都在QUANTAXIS/Auxiliary中 clone到本地后打开link.md下载安装即可
 
-JDBC添加完成后需要在Classpath文件中增加
 
->  $matlabroot/java/jar/toolbox/mysql-connector-java-5.1.7-bin.jar
-
-```
 ## [QUANTAXIS](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXIS.m)
 调用类 classdef [xx] < QUANTAXIS
 ----
