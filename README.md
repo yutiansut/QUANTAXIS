@@ -27,6 +27,13 @@
 * &emsp;&emsp;[2.2.2 运行NODEJS服务](#222-运行NODEJS服务)
 * &emsp;&emsp;[2.2.3 后台管理，中间件，路由跳转，mysql连接，AJAX等](#223-后台管理中间件路由跳转mysql连接ajax等)
 * &emsp;&emsp;[2.2.4 前端脚本](#224-前端脚本)
+* [3. QUANTAXIS 功能介绍](#3-quantaxis-功能介绍)
+* &emsp;[3.1 数据获取  DF类 Data Fetch](#31-数据获取--df类-data-fetch)
+* &emsp;&emsp;[3.1.1 Data Fetch 核心函数](#311-核心函数)
+* &emsp;[3.2 数据存贮 DS类 Data Storage](#32-数据存贮--ds类-data-storage)
+* &emsp;[3.3 数据分析 DA类 Data Analysis](#33-数据分析--da类-data-analysis)
+* &emsp;[3.4 数据交互 DI类 Data Intergration](#34-数据交互--di类-data-intergration)
+* &emsp;[3.5 消息存贮 SM类 System Message](#35-消息存贮--sm类-system-message)
 
 >+---++---++---++---++---++---+
 
