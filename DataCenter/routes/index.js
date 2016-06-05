@@ -21,9 +21,6 @@ router.get('/querybyid',function(req,res,next){
   console.log('querybyid methods');
   
   sqlexec.queryTableById(req, res, next);
-  fs.writeFile("aa.json", res, function (err) {
-        if (err) throw err;
-        console.log("File Saved !"); //文件被保存
-    });
+ 
 });
 module.exports = router;

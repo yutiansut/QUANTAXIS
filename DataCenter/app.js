@@ -27,6 +27,12 @@ app.use('/', routes);
 app.use('/users', users);
 app.use('/data', data);
 
+var fs = require('fs');
+var logger = require('morgan');
+var accessLogStream = fs.createWriteStream(__dirname + '/access.log', {flags: 'a'})
+app.use(logger('combined', {stream: accessLogStream}));
+
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
