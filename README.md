@@ -31,7 +31,16 @@
 * &emsp;[3.1 数据获取  DF类 Data Fetch](#31-数据获取--df类-data-fetch)
 * &emsp;&emsp;[3.1.1 Data Fetch 核心函数](#311-核心函数)
 * &emsp;[3.2 数据存贮 DS类 Data Storage](#32-数据存贮--ds类-data-storage)
+* &emsp;&emsp;[3.2.1 数据存储]
+* &emsp;&emsp;[3.2.2 涉及到数据库的操作]
+* &emsp;&emsp;[3.2.3 安装前的准备]
+* &emsp;&emsp;[3.2.4 APIS]
 * &emsp;[3.3 数据分析 DA类 Data Analysis](#33-数据分析--da类-data-analysis)
+* &emsp;&emsp;
+* &emsp;&emsp;
+* &emsp;&emsp;
+* &emsp;&emsp;
+* &emsp;&emsp;
 * &emsp;[3.4 数据交互 DI类 Data Intergration](#34-数据交互--di类-data-intergration)
 * &emsp;[3.5 消息存贮 SM类 System Message](#35-消息存贮--sm类-system-message)
 
@@ -152,12 +161,29 @@ end
 
 ### 3.2 数据存贮  DS类 Data Storage
 传送门--[关于DataStorage 类](https://github.com/yutiansut/QUANTAXIS/blob/master/%2BDataStorage/README.md)
-
+#### 3.2.1 数据存储
+我们在考虑和比较了各种数据存储的方便性易用度以后，选择了使用MySQL作为QUANTAXIS的数据库。
+如果需要，也可以自行开发SQLSERVER, MongoDB, db2, Oracle等等。
+#### 3.2.2 涉及到数据库的操作
+#### 3.2.3 安装前的准备
+#### 3.2.4 APIS
 
 ### 3.3 数据分析  DA类 Data Analysis
+#### 3.3.1 数据分析常用内置工具箱
+#### 3.3.2 策略回测
+#### 3.3.3 交易内核
+#### 3.3.4 指标分析
+#### 3.3.5 APIS
 ### 3.4 数据交互  DI类 Data Intergration
+#### 3.4.1 JSON/Matlab
+#### 3.4.2 NODEJS
+#### 3.4.3 NODEJS/MYSQL
+#### 3.4.4 AJAX
+#### 3.4.5 dc.js
+#### 3.4.6 APIS
 ### 3.5 消息存贮  SM类 System Message
-
+#### 3.5.1 MES方式
+#### 3.5.2 APIS
 
 
 
