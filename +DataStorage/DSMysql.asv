@@ -68,13 +68,8 @@ classdef DSMysql<handle
         %% create/insert/delete/update/query
         function DM=DSMysqlQuery(DM,varargin)
             if isempty(DM.MYSQL.Sqlquery)
-                DM.MYSQL.Sqlquery=input('DM.MYSQL.Sqlquery:','s');
-            end
              disp(DM.MYSQL.Sqlquery);
              exec(DM.MYSQL.Conn,DM.MYSQL.Sqlquery);
-             DM.MYSQL.Curs = fetch(exec(DM.MYSQL.Conn,DM.MYSQL.Sqlquery));
-             DM.MYSQL.Result=DM.MYSQL.Curs.Data;
-             DM.MYSQL.Result
         end
         
     end
