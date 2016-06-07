@@ -5,8 +5,11 @@ classdef DINodeJS <handle & Message.QMMes
     methods
         function DN=DINodeJS()
         end
-        function DN=DINodeJSStart(DN)
-            [status, results]=system('node DataCenter/bin/www.js','-echo');
+        function DN=DINodeJsStart(DN)
+            
+            [status, DN.MES.Str]=system('node DataCenter/bin/www.js','-echo');
+            notify(DN,'QAMessage');
+                
         end
     end
 end

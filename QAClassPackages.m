@@ -1,4 +1,5 @@
-classdef QAClassPackages < DataFetch.DFMain 
+classdef QAClassPackages < DataFetch.DFMain & DataIntegration.DINodeJS & ...
+        DataStorage.DSMysql
     properties
     end
     events
@@ -12,8 +13,7 @@ classdef QAClassPackages < DataFetch.DFMain
         function QACP=QACPInit(QACP)
             QACP.MES.Str='[QACP]:===Initial the QUANTAXIS Class Package!===\n';
             fprintf(QACP.MES.Str);
-            notify(QACP,'QAMessage');
-            notify(QACP,'QAMessage');
+
         end
     end
 end

@@ -1,12 +1,15 @@
-classdef DSMysql<handle
+classdef DSMysql<handle & Message.QMMes
     properties
         MYSQL
         
     end
+    events
+        mysqlexec
+    end
     methods
         function DM=DSMysql()
             DM.DSMysqlInit();
-            
+            addlistener(DM,'mysqlexec',@DSMYSQLEXEC);
         end
         function DM=DSMysqlInit(DM)
             DM.MYSQL.DatabaseName=[];
@@ -18,6 +21,8 @@ classdef DSMysql<handle
             DM.MYSQL.Sqlquery=[];
             DM.MYSQL.Driver = 'com.mysql.jMCc.Driver';
         end
+    end
+    methods
         function DM=DSMysqlConnect(DM,varargin)
             if isempty(DM.MYSQL.DatabaseName)
                 DM.MYSQL.DatabaseName=input('Database(example:quantaxis)\n DatabBase:  ','s');
@@ -40,6 +45,8 @@ classdef DSMysql<handle
             end
         end
         function DM=DSMysqlConfig(DM,varargin)
+            switch DM.MYSQL.c
+                case
             DM.MYSQL.DatabaseName='quantaxis';
             DM.MYSQL.User='root';
             DM.MYSQL.Password='940809';
@@ -60,16 +67,27 @@ classdef DSMysql<handle
             end
             DM.MYSQL.Sqlquery=['CREATE TABLE if not exists `',DM.MYSQL.DatabaseName,'`.`',DM.MYSQL.TableName,'` ', DM.MYSQL.Describe,';'];
             disp(DM.MYSQL.Sqlquery);
+            DM.MES.Str=['your sql query is:',DM.MYSQL.Sqlquery];
+            notify(DM,'QAMessage');
             exec(DM.MYSQL.Conn,DM.MYSQL.Sqlquery);
             %CREATE [TEMPORARY] TABLE [IF NOT EXISTS] tbl_name [(create_definition,...)][table_options] [select_statement]
             
         end
-        
-        %% create/insert/delete/update/query
-        function DM=DSMysqlQuery(DM,varargin)
+    end
+    methods
+        % core
+        function DM=DSMYSQLEXEC(DM,varargin)
             if isempty(DM.MYSQL.Sqlquery)
+                DM.MYSQL.Sqlquery=input('DM.MYSQL.Sqlquery:','s');
+            end
              disp(DM.MYSQL.Sqlquery);
+             
              exec(DM.MYSQL.Conn,DM.MYSQL.Sqlquery);
+             DM.MYSQL.Curs = fetch(exec(DM.MYSQL.Conn,DM.MYSQL.Sqlquery));
+             DM.MYSQL.Result=DM.MYSQL.Curs.Data;
+             DM.MYSQL.Result
+             DM.MES.Str=['your sql query is:',DM.MYSQL.Result];
+            notify(DM,'QAMessage');
         end
         
     end

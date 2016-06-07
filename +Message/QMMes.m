@@ -15,6 +15,7 @@ classdef QMMes< handle
     end
     methods
         function QM=QMMesInit(QM)
+         
             QM.ID=1;
             QM.MES.History=[];
         end
@@ -26,6 +27,7 @@ classdef QMMes< handle
             QM.MES.History{QM.ID,1}=datestr(now);
             QM.MES.History{QM.ID,2}=QM.MES.Str;
             QM.ID=QM.ID+1;
+             disp('[SYSTEM MESSAGE]:Message Record !')
         end
     end
 end
