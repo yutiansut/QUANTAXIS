@@ -95,7 +95,35 @@ Copy-Item ('F:\QUANTAXIS\QUANTAXIS\Auxiliary\JDBC\mysql-connector-java-5.1.7-bin
 通过[V2.0](https://github.com/yutiansut/QUANTAXIS/tree/v2.0),[V3.0](https://github.com/yutiansut/QUANTAXIS/tree/v3.0)和[V3.2.0](https://github.com/yutiansut/QUANTAXIS/tree/v3.0) 3个版本的升级以后，QUANTAXIS逐步发展成一个代码模块化和数据交互可视化的量化工具系统。
 ### 2.1 QUANTAXIS 模块化编程
 QUANTAXIS致力于代码的功能分离和生命周期延长。在quantaxis中，所有的代码都被分成了不同的功能模块，通过类包(class package)的从属调用，来定义不同的功能块。
+类的模板与继承如下
+```
+类 TESTQUANTAXIS 的属性:
 
+    w
+    FET
+    MES
+    ID
+    ING
+    MYSQL
+
+
+类 TESTQUANTAXIS 的事件:
+
+    DFwindhistory
+    QAMessage
+    ObjectBeingDestroyed
+    mysqlexec
+
+
+ans = 
+
+    'w  % Inherited from DataFetch.Methods.DFWind'
+    'FET  % Inherited from DataFetch.Methods.Core.DFCore'
+    'MES  % Inherited from Message.QMMes'
+    'ID  % Inherited from Message.QMMes'
+    'ING  % Inherited from DataIntegration.DINodeJS'
+    'MYSQL  % Inherited from DataStorage.DSMysql'
+```
 #### 2.1.1 QUANTAXIS 模块命名规则
 
 1. 模块的命名
