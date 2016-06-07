@@ -6,7 +6,7 @@ classdef DINodeJS <handle & Message.QMMes
         function DN=DINodeJS()
         end
         function DN=DINodeJSStart(DN)
-            [status, results]=system('node DataCenter/bin/www.js','-echo')
+            [status, results]=system('node DataCenter/bin/www.js','-echo');
         end
     end
 end
