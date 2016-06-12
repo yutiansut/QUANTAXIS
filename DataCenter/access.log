@@ -1,3 +1,6 @@
 ::1 - - [06/Jun/2016:11:02:47 +0000] "GET /favicon.ico HTTP/1.1" 404 1357 "http://localhost:3030/testajax" "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.154 Safari/537.36 LBBROWSER"
 ::1 - - [06/Jun/2016:16:55:43 +0000] "GET /favicon.ico HTTP/1.1" 404 1357 "http://localhost:3030/testajax" "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.154 Safari/537.36 LBBROWSER"
 ::1 - - [07/Jun/2016:08:50:32 +0000] "GET /favicon.ico HTTP/1.1" 404 1357 "http://localhost:3030/testajax" "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.154 Safari/537.36 LBBROWSER"
+::1 - - [12/Jun/2016:14:30:26 +0000] "GET /favicon.ico HTTP/1.1" 404 1117 "-" "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.154 Safari/537.36 LBBROWSER"
+::1 - - [12/Jun/2016:14:30:26 +0000] "GET /favicon.ico HTTP/1.1" 404 1117 "http://localhost:3030/" "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.154 Safari/537.36 LBBROWSER"
+::1 - - [12/Jun/2016:14:32:06 +0000] "GET /favicon.ico HTTP/1.1" 404 1117 "http://localhost:3030/testajax" "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.154 Safari/537.36 LBBROWSER"
