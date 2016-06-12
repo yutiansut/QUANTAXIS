@@ -224,7 +224,7 @@ $matlabroot/java/jar/toolbox/mysql-connector-java-5.1.7-bin.jar
 #### 3.3.1 数据分析常用内置工具箱
 #### 3.3.2 策略回测
 QUANTAXIS提供了一种快速的回测方式，通过简单的价格判断来形成对于策略报价的成交判断。
-
+![data](https://github.com/yutiansut/QUANTAXIS/blob/master/Picture/DAExample.png)
 #### 3.3.3 交易内核
 #### 3.3.4 指标分析
 #### 3.3.5 APIS
