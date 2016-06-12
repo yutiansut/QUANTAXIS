@@ -13,7 +13,9 @@ classdef QAClassPackages < DataFetch.DFMain & DataIntegration.DINodeJS & ...
         function QACP=QACPInit(QACP)
             QACP.MES.Str='[QACP]:===Initial the QUANTAXIS Class Package!===\n';
             fprintf(QACP.MES.Str);
-
+            properties(QACP)
+            events(QACP)
+            fieldnames(QACP,'-full')
         end
     end
 end
