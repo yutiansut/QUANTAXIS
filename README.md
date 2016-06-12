@@ -237,8 +237,22 @@ QUANTAXIS提供了一种快速的回测方式，通过简单的价格判断来�
 #### 3.4.6 APIS
 ### 3.5 消息存贮  SM类 System Message
 #### 3.5.1 MES方式
+在程序中，我们设置了监听及系统日志，如果需要查看记录的消息，可以点击当前类下的
+MES类
+在MES.History中，你可以看到记录的消息日志
+
+如果需要另外响应消息，请参见3.5.2的APIS
 #### 3.5.2 APIS
 
+```
+# 首先加入MES类包
+classdef QA < Message.QMMes
+end
+
+QA.MES.Str='';
+notify(QA,'QAMessage')
+
+```
 
 ## 4. [版本历史](https://github.com/yutiansut/QUANTAXIS/releases)
 
