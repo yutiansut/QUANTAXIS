@@ -440,7 +440,7 @@ classdef QUANTAXIS<handle
                 QA.ACC_User.LoginResult=cursor.Data;
                 
                 if strcmpi(QA.ACC_User.LoginResult,'No Data')==0  %% NAME unique
-                    QA.MES_Str='The User name is existed��Run Again';
+                    QA.MES_Str='The User name is existed! Please Run Again';
                     disp(QA.MES.Str)
                     notify(QA,'MESSAGE')
                     QA.Login();
