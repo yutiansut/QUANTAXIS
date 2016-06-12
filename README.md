@@ -180,7 +180,16 @@ end
 我们在考虑和比较了各种数据存储的方便性易用度以后，选择了使用MySQL作为QUANTAXIS的数据库。
 如果需要，也可以自行开发SQLSERVER, MongoDB, db2, Oracle等等。
 #### 3.2.2 涉及到数据库的操作
+
 #### 3.2.3 安装前的准备
+> Attention
+1.将quantaxis/auxiliary/JDBC中的jar文件复制到  .\MATLAB\R2015a\java\jar\toolbox
+2.打开C:\Program Files\MATLAB\MATLAB Production Server\R2015a\toolbox\local下的classpath.txt文件，在最末加入
+$matlabroot/java/jar/toolbox/mysql-connector-java-5.1.7-bin.jar
+
+如果不添加JDBC数据库，matlab会报错：
+“未定义与 'struct' 类型的输入参数相对应的函数 'fetch'。
+
 #### 3.2.4 APIS
 
 ### 3.3 数据分析  DA类 Data Analysis
