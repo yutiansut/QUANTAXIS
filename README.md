@@ -83,7 +83,7 @@ git clone https://github.com/yutiansut/quantaxis
 ····waiting····
 
 cd quantaxis  (if powershell)
-Copy-Item ('F:\QUANTAXIS\QUANTAXIS\Auxiliary\JDBC\mysql-connector-java-5.1.7-bin.jar')  ('C:\Program Files\MATLAB\R2016a\java\jar\toolbox')
+Copy-Item ('D:\QUANTAXIS\QUANTAXIS\Auxiliary\JDBC\mysql-connector-java-5.1.7-bin.jar')  ('C:\Program Files\MATLAB\R2016a\java\jar\toolbox')
 
 
 
@@ -186,6 +186,8 @@ end
 ### 3.3 数据分析  DA类 Data Analysis
 #### 3.3.1 数据分析常用内置工具箱
 #### 3.3.2 策略回测
+QUANTAXIS提供了一种快速的回测方式，通过简单的价格判断来形成对于策略报价的成交判断。
+
 #### 3.3.3 交易内核
 #### 3.3.4 指标分析
 #### 3.3.5 APIS
