@@ -459,7 +459,7 @@ classdef QUANTAXIS<handle
                     disp('QUANTAXIS CODE Sending....')
                     QA.ACC_User.UniqueNameinput=input('Please Input the Code��  ','s');
                     if strcmpi(QA.ACC_User.UniqueName,QA.ACC_User.UniqueNameinput)==1
-                        QA.MES.Str='Code is right��';
+                        QA.MES.Str='Code is right!';
                         disp(QA.MES.Str)
                         notify(QA,'MESSAGE')
                         QA.ACC_User.LoginPassword=input('Please Input the Password:   ','s');
@@ -492,7 +492,7 @@ classdef QUANTAXIS<handle
                     cursor=fetch(cursor);
                     QA.ACC_User.LoginResult=cursor.Data;
                     if strcmpi(QA.ACC_User.LoginResult,'No Data')==1
-                        disp('Registion Failed��')
+                        disp('Registion Failed!')
                         disp('Run Again');
                         QA.Login();
                     end
@@ -509,7 +509,7 @@ classdef QUANTAXIS<handle
                         clc
                         
                     else
-                        disp('Registion Failed��Contact QQ 279336410')
+                        disp('Registion Failed! Contact QQ 279336410')
                         disp('System Run again');
                         QA.Login();
                     end
@@ -529,7 +529,7 @@ classdef QUANTAXIS<handle
                 cursor=fetch(cursor);
                 QA.ACC_User.LoginResult=cursor.Data;
                 if strcmpi(QA.ACC_User.LoginResult,'No Data')==1
-                    disp('No User Name in the Database��')
+                    disp('No User Name in the Database!')
                     QA.Login();
                 end
                 

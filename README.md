@@ -208,7 +208,10 @@ end
 我们在考虑和比较了各种数据存储的方便性易用度以后，选择了使用MySQL作为QUANTAXIS的数据库。
 如果需要，也可以自行开发SQLSERVER, MongoDB, db2, Oracle等等。
 #### 3.2.2 涉及到数据库的操作
-
+QA.Fetch
+数据获取
+数据更新
+![](https://github.com/yutiansut/QUANTAXIS/blob/master/Picture/DatabaseUpdate.png)
 #### 3.2.3 安装前的准备
 > Attention
 1.将quantaxis/auxiliary/JDBC中的jar文件复制到  .\MATLAB\R2015a\java\jar\toolbox
@@ -225,6 +228,8 @@ $matlabroot/java/jar/toolbox/mysql-connector-java-5.1.7-bin.jar
 #### 3.3.2 策略回测
 QUANTAXIS提供了一种快速的回测方式，通过简单的价格判断来形成对于策略报价的成交判断。
 ![data](https://github.com/yutiansut/QUANTAXIS/blob/master/Picture/DAExample.png)
+回测后的数据会自动以策略的形式存入mysql
+![](https://github.com/yutiansut/QUANTAXIS/blob/master/Picture/StrategyMysql.png)
 #### 3.3.3 交易内核
 #### 3.3.4 指标分析
 #### 3.3.5 APIS
