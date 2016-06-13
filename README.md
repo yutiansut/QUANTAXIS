@@ -210,7 +210,7 @@ end
 #### 3.2.2 涉及到数据库的操作
 QA.Fetch
 数据获取
-数据更新
+数据更新<br>
 ![](https://github.com/yutiansut/QUANTAXIS/blob/master/Picture/DatabaseUpdate.png)
 #### 3.2.3 安装前的准备
 > Attention
