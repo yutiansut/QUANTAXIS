@@ -457,7 +457,7 @@ classdef QUANTAXIS<handle
                     QA.INT_Mail.subject='QUANTAXIS Code';
                     QAInterface_Mail(QA.ACC_User.MailAddress,QA.INT_Mail.subject,QA.ACC_User.UniqueName);
                     disp('QUANTAXIS CODE Sending....')
-                    QA.ACC_User.UniqueNameinput=input('Please Input the Code��  ','s');
+                    QA.ACC_User.UniqueNameinput=input('Please Input the Code  ','s');
                     if strcmpi(QA.ACC_User.UniqueName,QA.ACC_User.UniqueNameinput)==1
                         QA.MES.Str='Code is right!';
                         disp(QA.MES.Str)
