@@ -67,6 +67,7 @@ QUANTAXIS 使用模块化对象化编程，使用matlab进行快速回测，mysq
 SYSTEM REQUIREMENTS
 ====================
 MATLAB 2014a +    [best recommends]:MATLAB R2015b,R2016a
+                  (如果使用的是2015b以下版本 将isopen语句全部替换成isconnection语句)
 NODEJS 4.4 +      [best recommends]:NODEJS V5.9.1
 JAVASCRIPT  JQUERY V1.4.4+
 MYSQL  5.6 +      [best recommends]:MYSQL 5.7
@@ -232,9 +233,13 @@ QUANTAXIS提供了一种快速的回测方式，通过简单的价格判断来�
 ![](https://github.com/yutiansut/QUANTAXIS/blob/master/Picture/StrategyMysql.png)
 #### 3.3.3 交易内核
 #### 3.3.4 指标分析
+ROC曲线分析
+盈利分析
 #### 3.3.5 APIS
 ### 3.4 数据交互  DI类 Data Intergration
 #### 3.4.1 JSON/Matlab
+将matlab转化为JSON
+
 #### 3.4.2 NODEJS
 #### 3.4.3 NODEJS/MYSQL
 #### 3.4.4 AJAX
