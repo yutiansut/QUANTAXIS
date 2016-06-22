@@ -7,7 +7,7 @@
 ![website](https://img.shields.io/badge/Website-%20www.yutiansut.com-lightgrey.svg)
 ![language](https://img.shields.io/badge/%20%20%20Language%20%20%20-%20%20%20Matlab%2FPython%2FJS%20%20-lightgrey.svg)
 ![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
-
+![Attention](https://img.shields.io/badge/Attention!-%20作者考研%20暂停维护半年-red.svg)
 ![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/3.0/Picture/QUANTAXIS.jpg)
 
 
