@@ -12,8 +12,13 @@
 ![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/3.0/Picture/QUANTAXIS.jpg)
 
 
-[Website]:www.yutiansut.com | http://quantaxis.yutiansut.com<br>
+
 [Contact]:QQ 279336410<br>
+
+
+## 写在前面
+
+  QUANTAXIS 致力于快速策略测试,轻量化实盘部署和交互式数据分析的三者有机统一.通过有机结合MATLAB,MYSQL,Python,Javascript,NODEJS和Wind,实现一套完整的自动化量化平台.
 
 
 ## Content 目录
