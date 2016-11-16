@@ -247,7 +247,8 @@ ROC曲线分析
 将matlab转化为JSON
 
 #### 3.4.2 NODEJS
-#### 3.4.3 NODEJS/MYSQL
+#### 3.4.3 数据库(主数据库和缓存数据库)
+数据展示,用户策略等数据存在MYSQL数据库中, 使用felixge/node-mysql的 sql 接口进行传值与数据交互
 #### 3.4.4 AJAX
 #### 3.4.5 dc.js
 #### 3.4.6 APIS
