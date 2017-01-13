@@ -1,5 +1,5 @@
 # QUANTAXIS 量化金融工具箱
-# 注意：因为作者考研 暂停维护至2016.12.26日 谢谢
+
 
 ![build](https://img.shields.io/badge/Build-passing-green.svg)
 ![download](https://img.shields.io/badge/Download-47~140Mb-green.svg)
