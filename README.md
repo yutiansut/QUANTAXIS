@@ -64,7 +64,7 @@
 =========================
 
 ## 1. QUANTAXIS 简介
-QUANTAXIS 使用模块化对象化编程，使用matlab进行快速回测，mysql作为数据中心，nodejs建站，使用javascript作为前端交互式展示
+QUANTAXIS 使用python进行数据挖掘和自然语言处理，使用matlab进行快速回测，mysql作为数据中心，nodejs建站，使用javascript作为前端交互式展示
 核心组件均可独立调用
 ![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/3.0/Picture/QA3.0.png)
 
@@ -78,6 +78,8 @@ JAVASCRIPT  JQUERY V1.4.4+
 MYSQL  5.6 +      [best recommends]:MYSQL 5.7
 Wind Personal API V2.0.0+
 JDBC CONNECTOR  5.1.7bin +
+Python 2.7.x
+MongoDB 
 ```
 快速搭建一个QUANTAXIS实例(todo list: shell语言自动部署)
 ```
