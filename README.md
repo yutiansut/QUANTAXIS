@@ -73,13 +73,21 @@ SYSTEM REQUIREMENTS
 ====================
 MATLAB 2014a +    [best recommends]:MATLAB R2015b,R2016a
                   (如果使用的是2015b以下版本 将isopen语句全部替换成isconnection语句)
-NODEJS 4.4 +      [best recommends]:NODEJS V5.9.1
+NODEJS 4.4 +      [best recommends]:NODEJS V6.9.2
 JAVASCRIPT  JQUERY V1.4.4+
 MYSQL  5.6 +      [best recommends]:MYSQL 5.7
 Wind Personal API V2.0.0+
 JDBC CONNECTOR  5.1.7bin +
 Python 2.7.x
 MongoDB 
+Redis
+Scrapy
+Pheantomjs
+Pymonogo
+Matlab-Mongodb-Connecter
+
+
+
 ```
 快速搭建一个QUANTAXIS实例(todo list: shell语言自动部署)
 ```
