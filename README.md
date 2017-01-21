@@ -2,19 +2,41 @@
 
 
 ![build](https://img.shields.io/badge/Build-passing-green.svg)
-![download](https://img.shields.io/badge/Download-47~140Mb-green.svg)
-![version](https://img.shields.io/badge/Version-%203.2.0%20alpha-orange.svg)
+![version](https://img.shields.io/badge/Version-%203.5.0%20alpha-orange.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
 ![website](https://img.shields.io/badge/Website-%20www.yutiansut.com-lightgrey.svg)
 ![language](https://img.shields.io/badge/%20%20%20Language%20%20%20-%20%20%20Matlab%2FPython%2FJS%20%20-lightgrey.svg)
 ![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
-![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/3.0/Picture/QUANTAXIS.jpg)
+ 
+
+
+##重新定义的量化金融工具箱
+
+```
+考虑的核心有三个
+1. 部署,运行的 易用性,鲁棒性,稳健性
+2. 运行速度与效率
+3. 数据来源的多样性
+```
+
+纵观QA3.0系列,核心使命是matlab的平台下的快速回测和数据可视化,作为对于QA2.0的改进,对象化编程无疑让事件响应和调用效率大大提升,而3.2开始的数据可视化和交互系列,让数据的表达能力更加的多样化.
+然而3.0最大的问题在于,matlab的linux部署问题,对于内存的大量消耗,以及matlab对于并行运算的低支持度.同时,对于matlab而言,不同版本号之间大量更换的函数名称使得程序的bug出现的猝不及防.
+
+一个量化工具箱需要更多的考虑到程序的易用性,程序的快速部署和最佳性价比的效率优化.我开始的对于整个量化金融工具箱的逻辑重构和代码优化.
+
+1.爬虫部分 采用python的Scrapy+Phantomjs+selenium构架,使用redis(coookies/cache)+Mongodb(data)架构
+2.数据清洗部分 python+matlab
+3.数据库 主数据库Mysql  爬虫数据库 Mongodb  性能数据库  redis
+4.数据可视化  nodejs+vue+d3.js
+5.统计学部分  增加传统金融的统计学函数,以及机器学习部分的函数
+
+V3.5是一个重构版本,会有很多混乱的部分和逻辑需要重新梳理,3.5版本后应该会发布pre4.0
 
 
 
-[Contact]:QQ 279336410<br>
 
 
+```
 ## 写在前面
 
   QUANTAXIS 致力于快速策略测试,轻量化实盘部署和交互式数据分析的三者有机统一.通过有机结合MATLAB,MYSQL,Python,Javascript,NODEJS和Wind,实现一套完整的自动化量化平台.
