@@ -27,10 +27,11 @@
 1.爬虫部分 采用python的Scrapy+Phantomjs+selenium构架,使用redis(coookies/cache)+Mongodb(data)架构
 2.数据清洗部分 python+matlab
 3.数据库 主数据库Mysql  爬虫数据库 Mongodb  性能数据库  redis
-4.数据可视化  nodejs+vue+d3.js
+4.数据可视化  nodejs+vue.js+d3.js
 5.统计学部分  增加传统金融的统计学函数,以及机器学习部分的函数
 
 V3.5是一个重构版本,会有很多混乱的部分和逻辑需要重新梳理,3.5版本后应该会发布pre4.0
+同时 DATACENTER数据可视化中心 在3.5中被单独抽出来,作为可视化组件单独成立,负责对于爬虫的数据可视化和量化策略和业绩的可视化部门
 
 
 
