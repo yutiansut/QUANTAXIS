@@ -52,6 +52,18 @@ QA4.0 会将这几部分重新打包
 QASpider 部署在linux服务器上,负责数据的爬取,包括且不限于股票日线/tick/公司信息/分析师推荐/各大财经网站信息/微信公众号信息
 爬取的数据在服务器的Mongodb上,通过QUANTAXIS Storage转入 MYSQL
 ### QUANTAXIS.STORAGE
-负责 管理redis,Mongodb与MySQL的同步
+负责  管理redis,Mongodb与MySQL的同步
+      策略代码的回测API
+      用户策略,文章等
 ### QUANTAXIS.DATACENTER
+负责  数据可视化,提供交互式的策略展示
+
+### QUANTAXIS.TEST
+负责  部署测试
+      压力测试
+      策略性能测试
+### QUANTAXIS.TRADE
+负责  模拟交易(本地)
+      网上平台的模拟交易API
+
 
