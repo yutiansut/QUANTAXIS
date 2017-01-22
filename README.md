@@ -4,13 +4,13 @@
 ![build](https://img.shields.io/badge/Build-passing-green.svg)
 ![version](https://img.shields.io/badge/Version-%203.5.0%20alpha-orange.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
-![website](https://img.shields.io/badge/Website-%20www.yutiansut.com-lightgrey.svg)
+![website](https://img.shields.io/badge/Website-%20www.yutiansut.com-grey.svg)
 ![language](https://img.shields.io/badge/%20%20%20Language%20%20%20-%20%20%20Matlab%2FPython%2FJS%20%20-lightgrey.svg)
 ![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
  
 
 
-##重新定义的量化金融工具箱
+## 重新定义的量化金融工具箱
 
 ```
 考虑的核心有三个
@@ -32,5 +32,19 @@
 
 V3.5是一个重构版本,会有很多混乱的部分和逻辑需要重新梳理,3.5版本后应该会发布pre4.0
 同时 DATACENTER数据可视化中心 在3.5中被单独抽出来,作为可视化组件单独成立,负责对于爬虫的数据可视化和量化策略和业绩的可视化部门
+
+
+QUANTAXIS 将在3.5.x 系列中被拆分成
+```
+QUANTAXIS                       using matlab/python
+QUANTAXIS Spider                using python/javascript
+QUANTAXIS Storage               using poweshell/bash
+QUANTAXIS DATACENTER            using nodejs/vue.js/dc.js/d3.js
+```
+QA4.0 会将这几部分重新打包
+
+
+## 逻辑框架
+
 
 
