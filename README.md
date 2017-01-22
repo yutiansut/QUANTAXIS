@@ -37,14 +37,21 @@ V3.5是一个重构版本,会有很多混乱的部分和逻辑需要重新梳理
 QUANTAXIS 将在3.5.x 系列中被拆分成
 ```
 QUANTAXIS                       using matlab/python
-QUANTAXIS Spider                using python/javascript
-QUANTAXIS Storage               using poweshell/bash
+QUANTAXIS SPIDER                using python/javascript
+QUANTAXIS STORAGE               using poweshell/bash
 QUANTAXIS DATACENTER            using nodejs/vue.js/dc.js/d3.js
+QUANTAXIS TEST                  using matlab/grunt/Phantomjs
+QUANTAXIS TRADE                 using matlab/python
 ```
 QA4.0 会将这几部分重新打包
 
 
 ## 逻辑框架
 
-
+### QUANTAXIS.SPIDER
+QASpider 部署在linux服务器上,负责数据的爬取,包括且不限于股票日线/tick/公司信息/分析师推荐/各大财经网站信息/微信公众号信息
+爬取的数据在服务器的Mongodb上,通过QUANTAXIS Storage转入 MYSQL
+### QUANTAXIS.STORAGE
+负责 管理redis,Mongodb与MySQL的同步
+### QUANTAXIS.DATACENTER
 
