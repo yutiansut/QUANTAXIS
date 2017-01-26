@@ -9,7 +9,7 @@
 ![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
  
 
-![quantaxis 3.5 logic](https://github.com/yutiansut/QUANTAXIS/blob/v3.5/Picture/QA3.5.png)
+
 ## 重新定义的量化金融工具箱
 
 ```
@@ -18,7 +18,7 @@
 2. 运行速度与效率
 3. 数据来源的多样性
 ```
-
+![quantaxis 3.5 logic](https://github.com/yutiansut/QUANTAXIS/blob/v3.5/Picture/QA3.5.png)
 纵观QA3.0系列,核心使命是matlab的平台下的快速回测和数据可视化,作为对于QA2.0的改进,对象化编程无疑让事件响应和调用效率大大提升,而3.2开始的数据可视化和交互系列,让数据的表达能力更加的多样化.
 然而3.0最大的问题在于,matlab的linux部署问题,对于内存的大量消耗,以及matlab对于并行运算的低支持度.同时,对于matlab而言,不同版本号之间大量更换的函数名称使得程序的bug出现的猝不及防.
 
