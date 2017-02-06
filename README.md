@@ -1,7 +1,7 @@
 # QUANTAXIS 量化金融工具箱
 
 
-![build](https://img.shields.io/badge/Build-passing-green.svg)
+
 ![version](https://img.shields.io/badge/Version-%203.5.0%20alpha-orange.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
 ![website](https://img.shields.io/badge/Website-%20www.yutiansut.com-grey.svg)
@@ -30,16 +30,16 @@
 4.数据可视化  nodejs+vue.js+d3.js
 5.统计学部分  增加传统金融的统计学函数,以及机器学习部分的函数
 
-V3.5是一个重构版本,会有很多混乱的部分和逻辑需要重新梳理,3.5版本后应该会发布pre4.0
+V3.6是在V3.5上进行了优化,会有很多混乱的部分和逻辑需要重新梳理,3.5版本后应该会发布pre4.0
 同时 DATACENTER数据可视化中心 在3.5中被单独抽出来,作为可视化组件单独成立,负责对于爬虫的数据可视化和量化策略和业绩的可视化部门
 
 
-QUANTAXIS 将在3.5.x 系列中被拆分成
+QUANTAXIS 将在3.6.x 系列中被拆分成
 ```
 QUANTAXIS                       using matlab/python
-QUANTAXIS SPIDER                using python/javascript
+QUANTAXIS SPIDER                using python/nodejs
 QUANTAXIS STORAGE               using poweshell/bash
-QUANTAXIS DATACENTER            using nodejs/vue.js/dc.js/d3.js
+QUANTAXIS VISUALIZATION           using nodejs/vue.js/dc.js/d3.js
 QUANTAXIS TEST                  using matlab/grunt/Phantomjs
 QUANTAXIS TRADE                 using matlab/python
 ```
@@ -48,16 +48,16 @@ QA4.0 会将这几部分重新打包
 
 ## 逻辑框架
 
-### QUANTAXIS.SPIDER
+### [QUANTAXIS.SPIDER](https://github.com/yutiansut/QUANTAXIS_SPIDER)
 QASpider 部署在linux服务器上,负责数据的爬取,包括且不限于股票日线/tick/公司信息/分析师推荐/各大财经网站信息/微信公众号信息
 爬取的数据在服务器的Mongodb上,通过QUANTAXIS Storage转入 MYSQL
-### QUANTAXIS.STORAGE
+### [QUANTAXIS.STORAGE](https://github.com/yutiansut/QUANTAXIS_STORAGE)
 负责  管理redis,Mongodb与MySQL的同步
       策略代码的回测API
       用户策略,文章等
-### QUANTAXIS.DATACENTER
+### [QUANTAXIS.VISUALIZATION](https://github.com/yutiansut/QUANTAXIS_VISUALIZATION)
 负责  数据可视化,提供交互式的策略展示
-
+负责 后端数据API打包
 ### QUANTAXIS.TEST
 负责  部署测试
       压力测试
@@ -76,4 +76,6 @@ QASpider 部署在linux服务器上,负责数据的爬取,包括且不限于股�
 3.0版本将matlab的及时数据以json格式保存到状态空间或者mysql中，使用ajax技术对于mysql数据进行抽取，使用dc.js等可视化javascript将数据展示在页面上，形成交互式的数据可视化方案 
 3.2 模块化编程 将class重新改包，定义功能化模块，方便调用并增加生命周期
 3.5 重构版本 重新定义前后端以及数据块逻辑.
+3.6 重构版本 关于SPIDER和VIUSALIZATION的重大更改,去除DATACENTER模块
 ```
+
