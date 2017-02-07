@@ -402,6 +402,12 @@ classdef QUANTAXIS<handle
             
             
         end
+
+        
+        
+        
+        
+        
         function Interface_Mysql_Initial(QA)
             %Initial database
             %create table A.userlist 2.DataList
@@ -434,7 +440,7 @@ classdef QUANTAXIS<handle
                 QA.ACC_User.LoginResult=cursor.Data;
                 
                 if strcmpi(QA.ACC_User.LoginResult,'No Data')==0  %% NAME unique
-                    QA.MES_Str='The User name is existed��Run Again';
+                    QA.MES_Str='The User name is existed! Please Run Again';
                     disp(QA.MES.Str)
                     notify(QA,'MESSAGE')
                     QA.Login();
@@ -451,9 +457,9 @@ classdef QUANTAXIS<handle
                     QA.INT_Mail.subject='QUANTAXIS Code';
                     QAInterface_Mail(QA.ACC_User.MailAddress,QA.INT_Mail.subject,QA.ACC_User.UniqueName);
                     disp('QUANTAXIS CODE Sending....')
-                    QA.ACC_User.UniqueNameinput=input('Please Input the Code��  ','s');
+                    QA.ACC_User.UniqueNameinput=input('Please Input the Code  ','s');
                     if strcmpi(QA.ACC_User.UniqueName,QA.ACC_User.UniqueNameinput)==1
-                        QA.MES.Str='Code is right��';
+                        QA.MES.Str='Code is right!';
                         disp(QA.MES.Str)
                         notify(QA,'MESSAGE')
                         QA.ACC_User.LoginPassword=input('Please Input the Password:   ','s');
@@ -486,7 +492,7 @@ classdef QUANTAXIS<handle
                     cursor=fetch(cursor);
                     QA.ACC_User.LoginResult=cursor.Data;
                     if strcmpi(QA.ACC_User.LoginResult,'No Data')==1
-                        disp('Registion Failed��')
+                        disp('Registion Failed!')
                         disp('Run Again');
                         QA.Login();
                     end
@@ -503,7 +509,7 @@ classdef QUANTAXIS<handle
                         clc
                         
                     else
-                        disp('Registion Failed��Contact QQ 279336410')
+                        disp('Registion Failed! Contact QQ 279336410')
                         disp('System Run again');
                         QA.Login();
                     end
@@ -523,7 +529,7 @@ classdef QUANTAXIS<handle
                 cursor=fetch(cursor);
                 QA.ACC_User.LoginResult=cursor.Data;
                 if strcmpi(QA.ACC_User.LoginResult,'No Data')==1
-                    disp('No User Name in the Database��')
+                    disp('No User Name in the Database!')
                     QA.Login();
                 end
                 

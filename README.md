@@ -1,146 +1,81 @@
 # QUANTAXIS 量化金融工具箱
-![AppVeyor branch](https://img.shields.io/badge/Build-passing-green.svg)
-![download](https://img.shields.io/badge/Download-47~140Mb-green.svg)
-![version](https://img.shields.io/badge/Version-%203.0.0%20beta-orange.svg)
+
+
+
+![version](https://img.shields.io/badge/Version-%203.5.0%20alpha-orange.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
-![website](https://img.shields.io/badge/Website-%20www.yutiansut.com-lightgrey.svg)
+![website](https://img.shields.io/badge/Website-%20www.yutiansut.com-grey.svg)
 ![language](https://img.shields.io/badge/%20%20%20Language%20%20%20-%20%20%20Matlab%2FPython%2FJS%20%20-lightgrey.svg)
 ![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
+ 
 
-![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/3.0/Picture/QUANTAXIS.jpg)
 
-
-[Website]:www.yutiansut.com | http://quantaxis.yutiansut.com<br>
-[Contact]:QQ 279336410<br>
-
-## 更新日志 QA3.2  模块化编程
-----
-将class重新改包，定义功能化模块，方便调用并增加生命周期
+## 重新定义的量化金融工具箱
 
 ```
->QUANTAXIS.m
-classdef QUANTAXIS < QAClassPackage
-end
->QAClassPackage.m
-classdef QAClassPackage < DataFetch.DFWind & DataStorage.DSMysql & FreeMarkets.MultiDealer.FreeMarkets & Strategy.STBase
-end
-% 在一个classpackage中写好从属类，然后让quantaxis映射过去
+考虑的核心有三个
+1. 部署,运行的 易用性,鲁棒性,稳健性
+2. 运行速度与效率
+3. 数据来源的多样性
+```
+![quantaxis 3.5 logic](https://github.com/yutiansut/QUANTAXIS/blob/v3.5/Picture/QA3.5.png)
+纵观QA3.0系列,核心使命是matlab的平台下的快速回测和数据可视化,作为对于QA2.0的改进,对象化编程无疑让事件响应和调用效率大大提升,而3.2开始的数据可视化和交互系列,让数据的表达能力更加的多样化.
+然而3.0最大的问题在于,matlab的linux部署问题,对于内存的大量消耗,以及matlab对于并行运算的低支持度.同时,对于matlab而言,不同版本号之间大量更换的函数名称使得程序的bug出现的猝不及防.
+
+一个量化工具箱需要更多的考虑到程序的易用性,程序的快速部署和最佳性价比的效率优化.我开始的对于整个量化金融工具箱的逻辑重构和代码优化.
+
+1.爬虫部分 采用python的Scrapy+Phantomjs+selenium构架,使用redis(coookies/cache)+Mongodb(data)架构
+2.数据清洗部分 python+matlab
+3.数据库 主数据库Mysql  爬虫数据库 Mongodb  性能数据库  redis
+4.数据可视化  nodejs+vue.js+d3.js
+5.统计学部分  增加传统金融的统计学函数,以及机器学习部分的函数
+
+V3.6是在V3.5上进行了优化,会有很多混乱的部分和逻辑需要重新梳理,3.5版本后应该会发布pre4.0
+同时 DATACENTER数据可视化中心 在3.5中被单独抽出来,作为可视化组件单独成立,负责对于爬虫的数据可视化和量化策略和业绩的可视化部门
+
+
+QUANTAXIS 将在3.6.x 系列中被拆分成
+```
+QUANTAXIS                       using matlab/python
+QUANTAXIS SPIDER                using python/nodejs
+QUANTAXIS STORAGE               using poweshell/bash
+QUANTAXIS VISUALIZATION           using nodejs/vue.js/dc.js/d3.js
+QUANTAXIS TEST                  using matlab/grunt/Phantomjs
+QUANTAXIS TRADE                 using matlab/python
+```
+QA4.0 会将这几部分重新打包
+
+
+## 逻辑框架
+
+### [QUANTAXIS.SPIDER](https://github.com/yutiansut/QUANTAXIS_SPIDER)
+QASpider 部署在linux服务器上,负责数据的爬取,包括且不限于股票日线/tick/公司信息/分析师推荐/各大财经网站信息/微信公众号信息
+爬取的数据在服务器的Mongodb上,通过QUANTAXIS Storage转入 MYSQL
+### [QUANTAXIS.STORAGE](https://github.com/yutiansut/QUANTAXIS_STORAGE)
+负责  管理redis,Mongodb与MySQL的同步
+      策略代码的回测API
+      用户策略,文章等
+### [QUANTAXIS.VISUALIZATION](https://github.com/yutiansut/QUANTAXIS_VISUALIZATION)
+负责  数据可视化,提供交互式的策略展示
+负责 后端数据API打包
+### QUANTAXIS.TEST
+负责  部署测试
+      压力测试
+      策略性能测试
+### QUANTAXIS.TRADE
+负责  模拟交易(本地)
+      网上平台的模拟交易API
+
+
+## 版本历史
+```
+1.0版本使用的主要是新浪网的数据。
+1.5版本是在了解了对象化编程OOP以后对于平台做的改进 
+2.0版本主要是对于数据源进行了更换，并重新写了数据库连接和调用函数。从2.0起，quantaxis使用wind服务商提供的量化交易数据并选择mysql作为数据存储方式。 
+2.5版本则主要增加了交易内核 QUANTCORE 1.0 QC1.0还是一个静态的交易系统，成交的判断方式是以策略报价和历史成交价区间的比较进行判定。 
+3.0版本将matlab的及时数据以json格式保存到状态空间或者mysql中，使用ajax技术对于mysql数据进行抽取，使用dc.js等可视化javascript将数据展示在页面上，形成交互式的数据可视化方案 
+3.2 模块化编程 将class重新改包，定义功能化模块，方便调用并增加生命周期
+3.5 重构版本 重新定义前后端以及数据块逻辑.
+3.6 重构版本 关于SPIDER和VIUSALIZATION的重大更改,去除DATACENTER模块
 ```
 
-## 更新日志 QA3.0  新增数据中心 [DATACENTER 主要负责数据可视化](https://github.com/yutiansut/QUANTAXIS/blob/master/DataCenter/readme.md)
-----
-将matlab的及时数据以json格式保存到状态空间或者mysql中
-
-使用ajax技术对于mysql数据进行抽取，使用dc.js等可视化javascript将数据展示在页面上，形成交互式的数据可视化方案
-
-![quantaxis 3.0 beta](https://github.com/yutiansut/QUANTAXIS/blob/3.0/Picture/QA3.0.png)
-
-![quantaxis datacenter](https://github.com/yutiansut/QUANTAXIS/blob/3.0/Picture/QADC.gif)
-
-----
->QUANTAXIS本身是作者在大四时，学习量化交易以及策略实现的时候，发现matlab上面并没有称心如意的量化平台，而主流的量化平台则基于python和java，于是萌生了自己写一个量化工具箱的想法
-
-## [Version History](https://github.com/yutiansut/QUANTAXIS/releases)
-1.0版本使用的主要是新浪网的数据。<br>1.5版本是在了解了对象化编程OOP以后对于平台做的改进
-<br>2.0版本主要是对于数据源进行了更换，并重新写了数据库连接和调用函数。从2.0起，quantaxis使用wind服务商提供的量化交易数据并选择mysql作为数据存储方式。
-<br>2.5版本则主要增加了交易内核 QUANTCORE 1.0 QC1.0还是一个静态的交易系统，成交的判断方式是以策略报价和历史成交价区间的比较进行判定。
-
-
-```
-[Attention]:QUANTAXIS在使用之前需要安装Wind大奖章免费应用 以及 Mysql 5.6以上版本+JDBC-MYSQL的数据库
-以上两个的安装文件都在QUANTAXIS/Auxiliary中 clone到本地后打开link.md下载安装即可
-
-JDBC添加完成后需要在Classpath文件中增加
-
->  $matlabroot/java/jar/toolbox/mysql-connector-java-5.1.7-bin.jar
-
-```
-## [QUANTAXIS](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXIS.m)
-调用类 classdef [xx] < QUANTAXIS
-----
-主函数 主要是一个量化平台，负责策略实现和数据更新
-类似的平台 如python下的[easytrader](https://github.com/shidenggui/easytrader)
-```
-QA=QUANTAXIS;
-QA.Init()   初始化平台（数据库连接设置等）
-QA.Fetch()  数据更新平台
-QA.Start()  策略回测平台
-```
-
-## [QUANTAXIS FREEMARKETS](https://github.com/yutiansut/QUANTAXIS/blob/master/%2BFreeMarkets/%2BMultiDealer/FreeMarkets.m)
-调用类 classdef [xx] < FreeMarkets.MultiDealer.FreeMarkets
-----
-```
-FM=FreeMarkets;
-FM.Try();  一个随机策略的金融市场
->数据将在FM.Price.History 中呈现
->FM.BidPool中是报价池
-
-```
-
-
-<big>关于quantaxis-FreeMarkets</big>
-### 动态匹配交易池系统和自衍生随机策略系统
-
--------
-
-主要考虑的问题在于这个是一个闭环的复合机制
-
-首先 价格会导致市场上所有的交易者的预期改变，交易者的预期改变会改变他们的报价
-他们的报价改变会影响成交价和成交量
-
-而成交价和量的改变会进一步形成新的市场价格进行下一个循环
-
-
-使用id去控制每一步 或者说过程的每一步
-
--------
->循环
-
-询价阶段
-按照round
-每一个[Memeber]进行报价,以一个对象的形式按包表达出来 
-结构是  Strategy-BID[id]-Price-Amount
-并回调给系统
-
-系统会以这种形式接收
-[Price-Amount-Date-Varities-StrategyID-SystemTime] 并记录到[FM.BidPool.Board]中
-
-系统在记录了报价单并形成报价池之后，会进行下一步的回调
-
-将报价单中的数据交给一个交易函数  并形成价格
-`````
-notify(FM,'transaction')
-`````
-
-FM.transaction 函数对于报价池中的报价按量进行对冲并形成价格
-
-
->>To Do List
-需要对于撤单以及相关的功能进一步完善
-
-几个函数的主要功能
-
-### FM.TSBoard 价格形成函数
-
-得到回调的价格并记录相关
-改变当前系统价格
-
-
-### FM.REPLY 客户端策略函数
-
-不同的策略会根据价格的变化改变预期（报价），并将修改后的报价提交给系统
-round控制
-
-### FM.ASK 询价函数
-
-系统根据用户的不同的报价，记录到报价池并动态匹配报价和量
-如果出现可以对冲的报价就进行对冲并回调价格
-
-
-## [QUANTAXIS-TEST 函数接口测试](https://github.com/yutiansut/QUANTAXIS/blob/master/TestMarkets.m)
-测试类
-```
-TM=TestMarkets;  %初始化测试
-```
-集成类以后可以使用继承类的接口，同时，在使用了包package以后，不能直接调用FreeMarkets.m的函数
