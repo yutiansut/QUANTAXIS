@@ -79,3 +79,7 @@ QASpider 部署在linux服务器上,负责数据的爬取,包括且不限于股�
 3.6 重构版本 关于SPIDER和VIUSALIZATION的重大更改,去除DATACENTER模块
 ```
 
+## QUANTAXIS 4.0 is coming soon.....
+![quantaxis 4.0 logic](https://github.com/yutiansut/QUANTAXIS/blob/V3.6/Picture/QA4.0.png)
+
+In quantaxis4.0 version, we try to merge these components back together and rebuild and redefind a completely logic.
