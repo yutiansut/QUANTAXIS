@@ -2,7 +2,7 @@
 
 
 
-![version](https://img.shields.io/badge/Version-%203.5.0%20alpha-orange.svg)
+![version](https://img.shields.io/badge/Version-%203.6.0%20alpha-orange.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
 ![website](https://img.shields.io/badge/Website-%20www.yutiansut.com-grey.svg)
 ![language](https://img.shields.io/badge/%20%20%20Language%20%20%20-%20%20%20Matlab%2FPython%2FJS%20%20-lightgrey.svg)
