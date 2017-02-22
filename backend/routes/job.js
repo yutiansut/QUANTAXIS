@@ -22,7 +22,7 @@ router.get('/python/getfuture',function(req,res,next){
 });
 
 router.get('/python/spider',function(req,res,next){
-    var cmd = 'cd C:/quantaxis/data/spider/wallstreetcn | scrapy crawl wsc';
+    var cmd = 'python C:/quantaxis/data/spider/wallstreetcn/begin.py';
     exec(cmd, function callback(error, stdout, stderr) {
         console.log(stdout);
         res.send(stdout)
