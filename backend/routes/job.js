@@ -20,4 +20,12 @@ router.get('/python/getfuture',function(req,res,next){
         res.send(stdout)
     });
 });
+
+router.get('/python/spider',function(req,res,next){
+    var cmd = 'cd C:/quantaxis/data/spider/wallstreetcn | scrapy crawl wsc';
+    exec(cmd, function callback(error, stdout, stderr) {
+        console.log(stdout);
+        res.send(stdout)
+    });
+});
 module.exports = router;
