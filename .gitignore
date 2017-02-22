@@ -2,9 +2,10 @@ node_module/
 *.pyc
 node_modules/
 .vscode/
-*.pyc
+.pyc
 quantaxisback/
 *.7z
 .idea/
 *.log
 fetch/
+.vscode/
