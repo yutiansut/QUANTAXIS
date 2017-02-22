@@ -66,6 +66,6 @@ QASpider 部署在linux服务器上,负责数据的爬取,包括且不限于股�
 ```
 
 ## QUANTAXIS 4.0 is coming soon.....
-![quantaxis 4.0 logic](https://github.com/yutiansut/QUANTAXIS/blob/V3.6/Picture/QA4.0.png)
+![quantaxis 4.0 logic](https://github.com/yutiansut/QUANTAXIS/blob/V3.6/doc/pics/QA4.0.png)
 
 In quantaxis4.0 version, we try to merge these components back together and rebuild and redefind a completely logic.
