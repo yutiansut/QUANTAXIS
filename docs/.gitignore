@@ -1,0 +1,8 @@
+node_modules/
+.vscode/
+*.pyc
+quantaxisback/
+*.7z
+.idea/
+*.log
+fetch/

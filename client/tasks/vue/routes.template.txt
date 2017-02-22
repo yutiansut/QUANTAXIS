@@ -1,0 +1,4 @@
+  '/': {
+    component: require('./components/View'),
+    name: ''
+  }
