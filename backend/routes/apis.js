@@ -11,12 +11,8 @@ router.get('*', function(req, res, next) {
     res.header("Content-Type", "application/json;charset=utf-8");
     next();
 });
-router.get('/', function(req, res, next) {
-  res.render('apis/index', { title: 'APIS' });
-}); 
-router.get('/json', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+
+
 router.get('/queryContentbyName', function(req, res, next) {
     console.log('get data');
     console.log(req.query.name);

@@ -13,23 +13,13 @@
 
 Python作为胶水语言,贯穿项目的始终.
 
+Python-Celery 作为任务调度+redis
+
 Nodejs-Express作为后端部分,提供api分发和部分的爬虫
 
 Nodejs-Vue 作为前端,提供前端和客户端框架
 
 Matlab 作为一个回测中心,提供快速的原型实现
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 1.爬虫部分 采用python的Scrapy+Phantomjs+selenium构架,使用redis(coookies/cache)+Mongodb(data)架构
@@ -40,24 +30,23 @@ Matlab 作为一个回测中心,提供快速的原型实现
 
 
 
-
 ## 逻辑框架
 
-### [QUANTAXIS.SPIDER](https://github.com/yutiansut/QUANTAXIS_SPIDER)
+### Backend/  & Data/
 QASpider 部署在linux服务器上,负责数据的爬取,包括且不限于股票日线/tick/公司信息/分析师推荐/各大财经网站信息/微信公众号信息
 爬取的数据在服务器的Mongodb上,通过QUANTAXIS Storage转入 MYSQL
-### [QUANTAXIS.STORAGE](https://github.com/yutiansut/QUANTAXIS_STORAGE)
+### Storage/
 负责  管理redis,Mongodb与MySQL的同步
       策略代码的回测API
       用户策略,文章等
-### [QUANTAXIS.VISUALIZATION](https://github.com/yutiansut/QUANTAXIS_VISUALIZATION)
+### Client/ & web/
 负责  数据可视化,提供交互式的策略展示
 负责 后端数据API打包
-### QUANTAXIS.TEST
+### Test/
 负责  部署测试
       压力测试
       策略性能测试
-### QUANTAXIS.TRADE
+### Analysis
 负责  模拟交易(本地)
       网上平台的模拟交易API
 
