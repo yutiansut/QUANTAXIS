@@ -8,8 +8,5 @@ import talib
 #先搞上期
 #数据库
 
-Date=("date=%s;sectorId=a599010201000000")%s 
+data=w.wsd("AU1703.SHF", "pre_close,open,high,low,close,adjfactor,mf_vol,mf_amt_ratio,mf_vol_ratio,theoryvalue,delta,gamma,vega,theta,rho", "2017-01-23", "2017-02-22", "TradingCalendar=SHFE;Fill=Previous")
 print data.Data
-
-
-
