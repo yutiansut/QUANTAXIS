@@ -1,0 +1,24 @@
+<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+<script>
+var socket = io('https://websocket.btcchina.com/'); 
+socket.emit('subscribe', 'marketdata_cnybtc');
+socket.emit('subscribe', 'marketdata_cnyltc');
+socket.emit('subscribe', 'grouporder_cnybtc');
+socket.emit('subscribe', 'grouporder_cnyltc');
+socket.on('connect', function(){
+socket.on('trade', function (data) {
+console.log(data);
+});
+socket.on('ticker', function (data) {
+console.log(data);
+});
+socket.on('grouporder', function (data) {
+console.log(data.grouporder.ask[0].price);
+console.log(data.grouporder.ask[1]);
+console.log(data.grouporder.ask[2]);
+console.log(data.grouporder.ask[3]);
+
+});
+});
+</script>
+
