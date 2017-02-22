@@ -33,6 +33,7 @@ classdef QUANTAXIS<handle
         Custom;
         %  Message&Logs MES_
         MES
+        MES_Str
         %  Evaluation EVA_
         EVA
         %  TRADING CORE TRA_
@@ -228,7 +229,7 @@ classdef QUANTAXIS<handle
                         case {'cash'}
                             for batid=613:size(QA.FET_BAT.LIST,1)
                                 QA.FET.StockId=QA.FET_BAT.LIST(batid);
-                                [QA.FET.Data,QA.FET.Codes,QA.FET.Fields,QA.FET.Times,QA.FET.Error,QA.FET.Reqid]=QA.w.wsd(QA.FET.StockId,'mf_amt,mf_vol,mf_amt_ratio,mf_vol_ratio,mf_amt_close,mf_amt_open','2000-01-01','2016-3-14','Fill=Previous','PriceAdj=F');
+                                [QA.FET.Data,QA.FET.Codes,QA.FET.Fields,QA.FET.Times,QA.FET.Error,QA.FET.Reqid]=QA.w.wsd(QA.FET.StockId,'mf_amt,mf_vol,mf_amt_ratio,mf_vol_ratio,mf_amt_close,mf_amt_open','2000-01-01','2017-02-22','Fill=Previous','PriceAdj=F');
                                 if  QA.INT_MYSQL.Status==1
                                     QA.MES.Str='SQL Connection Success, Start Saving';
                                     disp(QA.MES.Str);
@@ -264,7 +265,7 @@ classdef QUANTAXIS<handle
                             if today>QA.FET.Date{end,1}
                                 QA.FET.Datestart=datestr(QA.FET.Date{end,1}+1,'yyyy-mm-dd');
                                 QA.FET.Dateend=datestr(today,'yyyy-mm-dd');
-                                [QA.FET.Data,~,QA.FET.Fields,~,QA.FET.Error,QA.FET.Reqid]=QA.w.wset('SectorConstituent','date=20160304;sectorId=a001010100000000');
+                                [QA.FET.Data,~,QA.FET.Fields,~,QA.FET.Error,QA.FET.Reqid]=QA.w.wset('SectorConstituent','date=20170222;sectorId=a001010100000000');
                                 QA.MES.Str='Get Stock List';
                                 disp(QA.MES.Str);
                                 notify(QA,'MESSAGE');
