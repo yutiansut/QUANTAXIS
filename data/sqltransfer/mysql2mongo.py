@@ -30,9 +30,11 @@ for item in result:
     resultsx = cursorsx.fetchall()
     
     for items in resultsx:
-        coll.insert({"code":code,"name":codename,"date":tradeday[i],"pre_close":items[1],"open":items[2],"high":items[3],"low":items[4],"close":items[5],"volume":items[6],"amt":items[7],"chg":items[8],"pct_chg":items[9],"swing":items[10],"vwap":items[11],"turn":items[12],"rel_ipo_chg":items[13],"rel_ipo_pct_chg":items[14]})
+
+        
+        coll.insert({"code":code,"name":codename,"date":tradeday[0][i].strftime('%Y-%m-%d'),"pre_close":items[1],"open":items[2],"high":items[3],"low":items[4],"close":items[5],"volume":items[6],"amt":items[7],"chg":items[8],"pct_chg":items[9],"swing":items[10],"vwap":items[11],"turn":items[12],"rel_ipo_chg":items[13],"rel_ipo_pct_chg":items[14]})
         i=i+1
-        print i
+        
 conn.commit()
 cursor.close()
 conn.close()

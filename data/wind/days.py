@@ -11,6 +11,7 @@ coll = db.days
 w.start()
 
 days=w.tdays("2000-01-01", "2017-02-22", "")
-tradeday=days.Data
+tradeday=days.Data[0]
 for item in tradeday:
-    coll.insert({"date":item})
+    items=item.strftime('%Y-%m-%d')
+    coll.insert({"date":items})
