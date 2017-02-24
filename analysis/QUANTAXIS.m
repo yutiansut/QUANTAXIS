@@ -176,7 +176,7 @@ classdef QUANTAXIS<handle
                             end
                     end
                 case {'2'}
-                    [QA.FET.Data,~,QA.FET.Fields,~,QA.FET.Error,QA.FET.Reqid]=QA.w.wset('SectorConstituent','date=20160304;sectorId=a001010100000000');
+                    [QA.FET.Data,~,QA.FET.Fields,~,QA.FET.Error,QA.FET.Reqid]=QA.w.wset('SectorConstituent','date=20170222;sectorId=a001010100000000');
                     QA.MES.Str='Get Stock List';
                     disp(QA.MES.Str);
                     notify(QA,'MESSAGE');
@@ -198,7 +198,7 @@ classdef QUANTAXIS<handle
                         case {'ts'}
                             for batid=1:size(QA.FET_BAT.LIST,1)
                                 QA.FET.StockId=QA.FET_BAT.LIST(batid);
-                                [QA.FET.Data,QA.FET.Codes,QA.FET.Fields,QA.FET.Times,QA.FET.Error,QA.FET.Reqid]=QA.w.wsd(QA.FET.StockId,'pre_close,open,high,low,close,volume,amt,chg,pct_chg,swing,vwap,turn,rel_ipo_chg,rel_ipo_pct_chg','2016-03-07','2016-03-09','Fill=Previous','Currency=CNY','PriceAdj=F');
+                                [QA.FET.Data,QA.FET.Codes,QA.FET.Fields,QA.FET.Times,QA.FET.Error,QA.FET.Reqid]=QA.w.wsd(QA.FET.StockId,'pre_close,open,high,low,close,volume,amt,chg,pct_chg,swing,vwap,turn,rel_ipo_chg,rel_ipo_pct_chg','2001-01-01',datestr(today,'yyyy-mm-dd'),'Fill=Previous','Currency=CNY','PriceAdj=F');
                                 QA.MES.Str=['Finish get the data of',QA.FET.StockId];
                                 disp(QA.MES.Str);
                                 notify(QA,'MESSAGE');
