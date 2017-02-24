@@ -10,7 +10,7 @@ import pymongo
 # 如果已经退市,直接存入mongodb
 
 #退市合约
-data=w.wset("SectorConstituent","date=20170124;sectorId=1000009644000000")
+data=w.wset("SectorConstituent","date=20170224;sectorId=1000013989000000")
 list=data.Data
 
 client =pymongo.MongoClient('localhost', 27017)  
@@ -20,8 +20,8 @@ coll = db.futureList
 for i in range(0,len(list[0])):
     date=list[0][i]
     code=list[1][i]
-    if (coll.find({"ListName":code}).count()==0):  
-        coll.insert({"ListName":code})
+    name=list[2][i]
+    if (coll.find({"Code":code}).count()==0):  
+        coll.insert({"Code":code,"Name":name})
     else:
         print "already in"
-    
