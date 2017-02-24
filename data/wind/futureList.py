@@ -17,8 +17,11 @@ client =pymongo.MongoClient('localhost', 27017)
 db = client.wind
 coll = db.futureList
 
-
 for i in range(0,len(list[0])):
     date=list[0][i]
     code=list[1][i]
-    db.futureList.insert({"ListName":code})
+    if (coll.find({"ListName":code}).count()==0):  
+        coll.insert({"ListName":code})
+    else:
+        print "already in"
+    
