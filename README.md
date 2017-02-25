@@ -19,6 +19,7 @@ Nodejs-Vue 作为前端,提供前端和客户端框架
 
 Matlab 作为一个回测中心,提供快速的原型实现
 
+R语言作为数据分析的选项,并不是一定使用
 
 1.爬虫部分 采用python的Scrapy+Phantomjs+selenium构架,使用redis(coookies/cache)+Mongodb(data)架构
 2.数据清洗部分 python+matlab
