@@ -9,5 +9,7 @@ client =pymongo.MongoClient('localhost', 27017)
 db = client.wind
 coll = db.futureList
 w.start()
-for item in coll.find("Code":re.compile('SHF')):
-    print item
+
+for item in coll.find({"Code":re.compile('AG12')}):
+    print item["Code"]+item[""]
+    
