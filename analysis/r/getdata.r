@@ -1,0 +1,2 @@
+library("rJava")
+library("RMongo")
