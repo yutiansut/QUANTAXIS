@@ -10,6 +10,8 @@ var users = require('./routes/users');
 var stock = require('./routes/stock');
 var apis = require('./routes/apis');
 var job = require('./routes/job');
+var backtest = require('./routes/backtest');
+var trade = require('./routes/trade');
 var app = express();
 
 // view engine setup
@@ -29,8 +31,8 @@ app.use('/users', users);
 app.use('/stock', stock);
 app.use('/apis', apis);
 app.use('/job', job);
-
-
+app.use('/trade', trade);
+app.use('/backtest', backtest);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

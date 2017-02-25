@@ -29,7 +29,7 @@ for item in coll.find():
         ltdated=data.Data[11][0]
         ftmargins=data.Data[12][0]
         trade_hiscode=data.Data[13][0]
-        coll.update({"Code":codes} , { "$set" : {"lasttrade_date": lasttrade_date]}});
+        coll.update({"Code":codes} , { "$set" : {"lasttrade_date": lasttrade_date}});
         coll.update({"Code":codes} , { "$set" : {"lastdelivery_date":lastdelivery_date}});
         coll.update({"Code":codes} , { "$set" : {"dlmonth":dlmonth}});
         coll.update({"Code":codes} , { "$set" : {"lprice":lprice}});
