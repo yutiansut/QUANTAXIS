@@ -8,7 +8,7 @@ client =pymongo.MongoClient('localhost', 27017)
 db = client.wind
 coll = db.futureList
 w.start()
-for item in coll.find():
+for item in coll.find().sort("Code",pymongo.DESCENDING):
     print item["Code"]
     codes=item["Code"]
     data=w.wsd(item["Code"], "lasttrade_date,lastdelivery_date,dlmonth,lprice,sccode,margin,changelt,punit,mfprice,contractmultiplier,cdmonths,thours,ltdated,ftmargins,trade_hiscode", "2017-01-25", "2017-01-26", "Fill=Previous")
