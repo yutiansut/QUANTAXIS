@@ -10,6 +10,12 @@ db = client.wind
 coll = db.futureList
 w.start()
 
-for item in coll.find({"Code":re.compile('AG12')}):
-    print item["Code"]+item[""]
+for item in coll.find({"Code":re.compile('IC.CFE')}):
+    print item["Code"]
+    target=item["Code"]
+    result=w.wsd(target,"lasttrade_date,lastdelivery_date,thours", "2000-01-01", "2017-02-25", "Fill=Previous")
+    coll2 = db.futureData
+    
+    for items in result[0]
+    coll2.insert({"code":target,"lasttrade_date"})
     

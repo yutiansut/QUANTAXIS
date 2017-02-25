@@ -2,7 +2,7 @@
 import datetime
 from gmsdk import md,to_dict
 import pandas as pd
-md.init('username','pwd')
+md.init('13382753152','940809')
 CFFEX = ['IF','IH','IC','T','TF']
 CZCE =['CF','FG','MA','RM','SR','TA','ZC']
 SHFE = ['AL','BU','CU','HC','NI','RB','RU','SN','ZN']
