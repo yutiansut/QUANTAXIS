@@ -4,5 +4,3 @@ stock.getTodayAll().then(({ data }) => {
   console.log(data);
 });
 
-
-
