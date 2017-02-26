@@ -19,14 +19,15 @@ router.get("/init",function(req,res,next){
   var account=req.query.account;
 
   var querys="name="+username+"&password="+password;
+  
   superagent.get("")
   request
-    .post('/users/login')
+    .get('localhost:3000/users/login')
     .send({ name: username, password: password })
     .set('Accept', 'application/json')
     .end(function(err, res){
-
-      if(res.body=="success"){
+      console.log(res.text)
+      if(res.text=="success"){
          console.log("success")
         
       }
