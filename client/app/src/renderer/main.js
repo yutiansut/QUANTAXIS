@@ -8,12 +8,15 @@ import routes from './routes'
 import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
 import './theme-carbon.css'
+import echarts from 'echarts'
+
 
 Vue.use(Electron)
 Vue.use(Resource)
 Vue.use(Router)
 Vue.config.debug = true
 Vue.use(MuseUI)
+Vue.use(echarts)
 
 const router = new Router({
   scrollBehavior: () => ({ y: 0 }),
