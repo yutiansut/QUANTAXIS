@@ -21,7 +21,8 @@ export default [
     children:[
       {'path': '/personal/index',component: require('components/Personal/index')},
       {'path': '/personal/notebook',component: require('components/Personal/notebook')},
-      {'path': '/personal/axios',component: require('components/Personal/axios')}
+      {'path': '/personal/axios',component: require('components/Personal/axios')},
+      {'path': '/personal/visual',component: require('components/Personal/visual')}
     ]
   },
   {
