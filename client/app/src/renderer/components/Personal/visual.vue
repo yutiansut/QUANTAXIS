@@ -1,6 +1,6 @@
 <template>
     <div class="main_content">
-        <h1>可视化页面</h1>
+        <h1>上证指数</h1>
         <div id="main"></div>
         
     </div>
