@@ -41,7 +41,7 @@ QASpider 部署在linux服务器上,负责数据的爬取,包括且不限于股�
 ### Client/ & web/
 负责  数据可视化,提供交互式的策略展示
 负责 后端数据API打包
-![quantaxis client](https://github.com/yutiansut/QUANTAXIS/blob/V3.7/docs/pics/visual.png)
+![quantaxis client](https://github.com/yutiansut/QUANTAXIS/blob/V3.7/docs/pic/visual.png)
 ### Test/
 负责  部署测试
       压力测试
