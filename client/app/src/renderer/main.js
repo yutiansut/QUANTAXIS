@@ -16,7 +16,7 @@ Vue.use(Resource)
 Vue.use(Router)
 Vue.config.debug = true
 Vue.use(MuseUI)
-Vue.use(echarts)
+
 
 const router = new Router({
   scrollBehavior: () => ({ y: 0 }),
