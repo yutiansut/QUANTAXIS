@@ -23,9 +23,7 @@
 </template>
 
 <script>
-  import store from 'renderer/vuex/store'
   export default {
-    store,
     data () {
     return {
       open: false
@@ -36,21 +34,17 @@
       this.open = !this.open
     }
   }
-
   }
 </script>
 
 <style>
   @import url(https://fonts.googleapis.com/css?family=Lato:300);
-
   * {
     margin: 0;
     padding: 0;
   }
-
   html,
   body { height: 100%; }
-
   body {
     background:
       radial-gradient(
@@ -64,7 +58,6 @@
     justify-content: center;
     text-align: center;
   }
-
 span.mu-flat-button-label{
   font-size: 28px;
 }
@@ -74,11 +67,9 @@ span.mu-flat-button-label{
   color: #2c3e50;
   width:100%;
 }
-
 h1, h2 {
   font-weight: normal;
 }
-
 .appbar-search-field{
   color: #FFF;
   margin-bottom: 0;
@@ -95,7 +86,6 @@ h1, h2 {
     background-color: #FFF;
   }
 }
-
 .mu-raised-button{
   background-color: red;
   color:#FFF;

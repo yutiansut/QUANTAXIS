@@ -11,6 +11,7 @@
   "dependencies": {
     "axios": "^0.15.3",
     "bootstrap": "^3.3.7",
+    "echarts": "^3.4.0",
     "element-ui": "^1.1.6",
     "keycode": "^2.1.8",
     "less": "^2.7.2",
