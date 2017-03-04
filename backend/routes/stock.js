@@ -2,6 +2,14 @@ var express = require('express');
 var router = express.Router();
 var stock = require('../methods/stock/index').stock;
 /* GET users listing. */
+router.get('*', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
+    res.header("X-Powered-By",' 3.2.1')
+    res.header("Content-Type", "application/json;charset=utf-8");
+    next();
+});
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
@@ -12,7 +20,7 @@ router.get('/history/all', function(req, res, next) {
   var code=req.query.code;
   var options={};
   if (req.query.feq){
-    var ktype=req.query.ktype;
+    var ktype=req.query.feq;
     options={
     code: code,
     ktype: ktype,

@@ -50,7 +50,7 @@ var getHistory = exports.getHistory = function getHistory() {
 
   var symbol = (0, _util.codeToSymbol)(options.code);
   var url = (0, _urls.priceUrl)(options.ktype, symbol);
-  console.log(url)
+
   return fetch(url).then(_util.checkStatus).then(function (res) {
     return res.json();
   }).then(function (json) {

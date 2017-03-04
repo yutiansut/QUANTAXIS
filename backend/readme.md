@@ -8,6 +8,7 @@ localhost:3000/stock
 ### /stock/index/
 ### /stock/live?code=xxx
 ### /stock/quota/lhb?
+### /stock/quota/lhb?
 
 
 localhost:3000/backtest
