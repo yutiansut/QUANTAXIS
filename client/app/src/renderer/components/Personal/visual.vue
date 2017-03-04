@@ -1,14 +1,14 @@
 <template>
     <div class="main_content">
         <h1>上证指数</h1>
-        <li><input v-on:keyup.enter="query()"></li>
+        <li><input v-on:keyup.enter="query($event.currentTarget.value)"></li>
         <div id="main"></div>
         
     </div>
 </template>
 <script>
 import axios from 'axios'
-var 
+var data0={};
 axios.get('http://localhost:3000/stock/history/all?code=600010&feq=day')
     .then(function (response) {
 
@@ -37,10 +37,10 @@ axios.get('http://localhost:3000/stock/history/all?code=600010&feq=day')
     }
 
     
-    var data0={};
+    
     data0.values=values;
     data0.categoryData=categoryData;
-    return data0
+
     
     })
     .catch(function (error) {
@@ -55,16 +55,7 @@ export default {
     data(){
         return{
             chart:null,
-            data0:this.splitData([
-                ['2013/1/24', 2320.26,2320.26,2287.3,2362.94],
-                ['2013/1/25', 2300,2291.3,2288.26,2308.38],
-                ['2013/1/28', 2295.35,2346.5,2295.35,2346.92],
-                ['2013/1/29', 2347.22,2358.98,2337.35,2363.8],
-                ['2013/1/30', 2360.75,2382.48,2347.89,2383.76],
-                ['2013/1/31', 2383.43,2385.42,2371.23,2391.82],
-                ['2013/2/1', 2377.41,2419.02,2369.57,2421.15],
-                ['2013/2/4', 2425.92,2428.15,2417.58,2440.38],
-                ['2013/2/5', 2411,2433.13,2403.3,2437.42]])
+            data0:data0
         }
     },
     methods:{
@@ -157,92 +148,92 @@ export default {
                             type: 'average',
                             valueDim: 'close'
                         }
-                    ],
-                    tooltip: {
-                        formatter: function (param) {
-                            return param.name + '<br>' + (param.data.coord || '');
-                        }
-                    }
-                },
-                markLine: {
-                    symbol: ['none', 'none'],
-                    data: [
-                        [
-                            {
-                                name: 'from lowest to highest',
-                                type: 'min',
-                                valueDim: 'lowest',
-                                symbol: 'circle',
-                                symbolSize: 10,
-                                label: {
-                                    normal: {show: false},
-                                    emphasis: {show: false}
-                                }
-                            },
-                            {
-                                type: 'max',
-                                valueDim: 'highest',
-                                symbol: 'circle',
-                                symbolSize: 10,
-                                label: {
-                                    normal: {show: false},
-                                    emphasis: {show: false}
-                                }
-                            }
                         ],
-                        {
-                            name: 'min line on close',
-                            type: 'min',
-                            valueDim: 'close'
+                        tooltip: {
+                            formatter: function (param) {
+                                return param.name + '<br>' + (param.data.coord || '');
+                            }
+                        }
+                        },
+                        markLine: {
+                            symbol: ['none', 'none'],
+                            data: [
+                                [
+                                    {
+                                        name: 'from lowest to highest',
+                                        type: 'min',
+                                        valueDim: 'lowest',
+                                        symbol: 'circle',
+                                        symbolSize: 10,
+                                        label: {
+                                            normal: {show: false},
+                                            emphasis: {show: false}
+                                        }
+                                    },
+                                    {
+                                        type: 'max',
+                                        valueDim: 'highest',
+                                        symbol: 'circle',
+                                        symbolSize: 10,
+                                        label: {
+                                            normal: {show: false},
+                                            emphasis: {show: false}
+                                        }
+                                    }
+                                ],
+                                {
+                                    name: 'min line on close',
+                                    type: 'min',
+                                    valueDim: 'close'
+                                },
+                                {
+                                    name: 'max line on close',
+                                    type: 'max',
+                                    valueDim: 'close'
+                                }
+                                ]
+                            }
                         },
                         {
-                            name: 'max line on close',
-                            type: 'max',
-                            valueDim: 'close'
-                        }
-                    ]
-                }
-            },
-            {
-                name: 'MA5',
-                type: 'line',
-                data: this.calculateMA(5),
-                smooth: true,
-                lineStyle: {
-                    normal: {opacity: 0.5}
-                }
-            },
-            {
-                name: 'MA10',
-                type: 'line',
-                data: this.calculateMA(10),
-                smooth: true,
-                lineStyle: {
-                    normal: {opacity: 0.5}
-                }
-            },
-            {
-                name: 'MA20',
-                type: 'line',
-                data: this.calculateMA(20),
-                smooth: true,
-                lineStyle: {
-                    normal: {opacity: 0.5}
-                }
-            },
-            {
-                name: 'MA30',
-                type: 'line',
-                data: this.calculateMA(30),
-                smooth: true,
-                lineStyle: {
-                    normal: {opacity: 0.5}
-                }
-            },
+                            name: 'MA5',
+                            type: 'line',
+                            data: this.calculateMA(5),
+                            smooth: true,
+                            lineStyle: {
+                                normal: {opacity: 0.5}
+                            }
+                        },
+                        {
+                            name: 'MA10',
+                            type: 'line',
+                            data: this.calculateMA(10),
+                            smooth: true,
+                            lineStyle: {
+                                normal: {opacity: 0.5}
+                            }
+                        },
+                        {
+                            name: 'MA20',
+                            type: 'line',
+                            data: this.calculateMA(20),
+                            smooth: true,
+                            lineStyle: {
+                                normal: {opacity: 0.5}
+                            }
+                        },
+                        {
+                            name: 'MA30',
+                            type: 'line',
+                            data: this.calculateMA(30),
+                            smooth: true,
+                            lineStyle: {
+                                normal: {opacity: 0.5}
+                            }
+                        },
 
-        ]
-                })
-                
+                        ]
+                    })
+                    
 
         },
         splitData(rawData) {
@@ -275,46 +266,46 @@ export default {
             }
             return result;
         },
-        query(){
-            axios.get('http://localhost:3000/stock/history/all?code=600010&feq=day')
+        query(code){
+
+            var queryline='http://localhost:3000/stock/history/all?code='+code+'&feq=day'
+            axios.get(queryline)
                 .then(function (response) {
 
                     var dt=response.data;
                     
                     var rawData=[];
-                for (var j=0; j<dt.length;j++){
-                    rawData.push(dt[j].slice(0,5));
-                }
-                
-                var categoryData = [];
-                var values = [];
-                for (var i = 0; i < rawData.length; i++) {
-
-                    categoryData.push(rawData[i].splice(0, 1)[0]);
-                    var temp=new Array()
+                    for (var j=0; j<dt.length;j++){
+                        rawData.push(dt[j].slice(0,5));
+                    }
                     
-                    temp[0]=Number(rawData[i][0]);
-                    temp[1]=Number(rawData[i][1]);
-                    temp[2]=Number(rawData[i][2]);
-                    temp[3]=Number(rawData[i][3]);
+                    var categoryData = [];
+                    var values = [];
+                    for (var i = 0; i < rawData.length; i++) {
+
+                        categoryData.push(rawData[i].splice(0, 1)[0]);
+                        var temp=new Array()
+                        
+                        temp[0]=Number(rawData[i][0]);
+                        temp[1]=Number(rawData[i][1]);
+                        temp[2]=Number(rawData[i][2]);
+                        temp[3]=Number(rawData[i][3]);
 
 
-                    values.push(temp)
+                        values.push(temp)
 
-                }
-                console.log(categoryData)
-                console.log(values) 
+                    }
+
                 
-
-                this.data0.values=values;
-                this.data0.categoryData=categoryData;
-                console.log(this.data0)
-                
-                })
-            .catch(function (error) {
-                console.log(error);
-                });
-             
+                    data0.values=values;
+                    data0.categoryData=categoryData;
+                    console.log(this.data0)    
+                    this.drawKline('main')
+                    })
+                .catch(function (error) {
+                    console.log(error);
+                    });
+    
         }
     },
     mounted() {
