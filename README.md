@@ -34,6 +34,31 @@ R语言作为数据分析的选项,并不是一定使用
 ### Backend/  & Data/
 QASpider 部署在linux服务器上,负责数据的爬取,包括且不限于股票日线/tick/公司信息/分析师推荐/各大财经网站信息/微信公众号信息
 爬取的数据在服务器的Mongodb上,通过QUANTAXIS Storage转入 MYSQL
+```
+localhost:3000/stock
+### /stock/history/all?code=xxx&feq=xxx
+### /stock/history/time?code=xxx&start=(yyyy-mm-dd)&end=(yyyy-mm-dd)
+### /stock/index/
+### /stock/live?code=xxx
+### /stock/quota/lhb?
+### /stock/quota/lhb?
+
+
+localhost:3000/backtest
+### /ts?bidCode=000001&bidTime=2001-01-04&bidPrice=4.08
+返回Success  则成交 返回failed 则不成交
+一定要给报价
+
+
+localhost:3000/users
+### /signup?username=xxx&password=xxx
+### /login?username=xxx&password=xxx
+
+localhost:3000/apis 
+### /queryContentbyName
+### /queryTitlebyName
+### /queryContentbyTitle
+```
 ### Storage/
 负责  管理redis,Mongodb与MySQL的同步
       策略代码的回测API
@@ -46,6 +71,8 @@ QASpider 部署在linux服务器上,负责数据的爬取,包括且不限于股�
 ### Analysis/  & Strategy/
 负责  模拟交易(本地),(多语言)回测
       网上平台的模拟交易API
+
+回测的主要思想是--交易api给出是否成交的判断,其余逻辑在各自语言框架内执行
 ### Docs/
 文档部分
 ### Tasks/
