@@ -42,12 +42,9 @@ QASpider 部署在linux服务器上,负责数据的爬取,包括且不限于股�
 负责  数据可视化,提供交互式的策略展示
 负责 后端数据API打包
 ![quantaxis client](http://p1.bpimg.com/567571/1faef074efcdf485.png)
-### Test/
-负责  部署测试
-      压力测试
-      策略性能测试
+
 ### Analysis/  & Strategy/
-负责  模拟交易(本地)
+负责  模拟交易(本地),(多语言)回测
       网上平台的模拟交易API
 ### Docs/
 文档部分
