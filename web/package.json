@@ -1,5 +1,5 @@
 {
-  "name": "quantaxisspider",
+  "name": "quantaxiswebclient",
   "description": "A Vue.js project",
   "version": "1.0.0",
   "author": "yutiansut <yutiansut@qq.com>",
@@ -26,7 +26,7 @@
     "vue-awesome-swiper": "^2.3.1",
     "vue-resource": "^1.1.2",
     "vue-router": "^2.2.0",
-    "vuex": "^2.1.1"
+    "vuex": "^2.2.1"
   },
   "devDependencies": {
     "babel-core": "^6.0.0",

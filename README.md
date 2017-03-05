@@ -41,7 +41,7 @@ QASpider 部署在linux服务器上,负责数据的爬取,包括且不限于股�
 ### Client/ & web/
 负责  数据可视化,提供交互式的策略展示
 负责 后端数据API打包
-![quantaxis client](https://github.com/yutiansut/QUANTAXIS/blob/V3.7/docs/pic/visual.png)
+![quantaxis client](http://p1.bpimg.com/567571/1faef074efcdf485.png)
 ### Test/
 负责  部署测试
       压力测试
@@ -68,6 +68,6 @@ QASpider 部署在linux服务器上,负责数据的爬取,包括且不限于股�
 ```
 
 ## QUANTAXIS 4.0 is coming soon.....
-![quantaxis 4.0 logic](https://github.com/yutiansut/QUANTAXIS/blob/V3.6/docs/pics/QA4.0.png)
+![quantaxis 4.0 logic](http://i1.piimg.com/1949/74a05d72d94b86c3.png)
 
 In quantaxis4.0 version, we try to merge these components back together and rebuild and redefind a completely logic.
