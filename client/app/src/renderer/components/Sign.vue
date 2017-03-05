@@ -107,6 +107,8 @@ export default {
       .then( response => {
         console.log(response.data)
         if (response.data==='success'){
+            sessionStorage.user=name
+            sessionStorage.password=password
           this.$router.push('/personal/index');
         }
         })

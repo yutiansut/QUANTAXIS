@@ -2,9 +2,8 @@
     <div id="index">
         <div id="logo">
             <mu-list>
-            <mu-list-item title="yutiansut" disabled >
-                {{items.user}}
-                <mu-avatar slot="left" :src="myron" />
+            <mu-list-item  disabled >
+               HI!  {{items.user}}
             </mu-list-item>
             </mu-list>
         </div>
@@ -61,7 +60,7 @@ export default {
   data () {
     return {
         items:{
-            user:1
+            user:sessionStorage.user
         },
       myron
     }

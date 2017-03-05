@@ -23,6 +23,24 @@ const router = new Router({
   routes
 })
 
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(r => r.meta.requireAuth)) {
+        if (sessionStorage.user) {
+          console.log(sessionStorage.user)
+            next();
+        }
+        else {
+            next({
+                path: '/sign',
+                query: {redirect: to.fullPath}
+            })
+        }
+    }
+    else {
+        next();
+    }
+})
+
 /* eslint-disable no-new */
 new Vue({
   router,
