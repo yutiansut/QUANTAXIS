@@ -13,54 +13,18 @@ import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
 import './assets/theme-carbon.css'
 import echarts from 'echarts'
-import store from "../vuex/store"
+import store from "./vuex/store"
+import axios from "axios"
 
-Vue.use(VueRouter)
+// 将axios挂载到prototype上，在组件中可以直接使用this.axios访问
+Vue.prototype.axios = axios;
+
+
 Vue.use(VueResource)
 Vue.use(MuseUI)
 Vue.use(VueAwesomeSwiper)
 
 Vue.config.devtools = true;
-const routes = [ {
-    path: '/',
-    name: 'homePage',
-    component: require('./components/HomePage.vue')
-  },
-   {
-    path: '/todo',
-    name: 'todoPage',
-    component: require('./components/todo.vue')
-  },
-   {
-    path: '/sign',
-    name: 'signPage',
-    component: require('./components/Sign.vue')
-  },
-   {
-    path: '/personal',
-    name: 'personal',
-    component: require('./components/Personal.vue'),
-    children:[
-      {'path': '/personal/index',component: require('./components/Personal/index.vue')},
-      {'path': '/personal/notebook',component: require('./components/Personal/notebook.vue')},
-      {'path': '/personal/axios',component: require('./components/Personal/axios.vue')},
-      {'path': '/personal/visual',component: require('./components/Personal/visual.vue')}
-    ]
-  },
-  {
-    path: '/start',
-    name: 'startPage',
-    component: require('./components/Start.vue')
-  },
-  {
-    path: '*',
-    redirect: '/'
-  }];
-
-
-const router = new VueRouter({
-  routes
-});
 
 
 new Vue({
@@ -70,6 +34,7 @@ new Vue({
   //这里的el 绑定的是index.html下的div节点,id是app el :"#app"
   //我们也可以把他改了 在index.html里把他写成class='app',el就绑'.app'
   router,
+  axios,
   store,
   render: h => h(App)  //用h是jsx里面的通用的作为createELement的简写
   //这里的render是为了把虚拟的dom 渲染进来,这个dom就是从'./app.vue'里面渲染进来的
@@ -77,4 +42,4 @@ new Vue({
   //render: function (createElement) {
   //return createElement(App)
   //}
-});
+}).$mount('#app');
