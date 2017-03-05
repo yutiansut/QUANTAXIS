@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import store from "./store/"
 Vue.use(VueRouter)
-Vue.use(Vuex)
+
 
 const routes = [ {
     path: '/',
@@ -22,9 +21,6 @@ const routes = [ {
    {
     path: '/personal',
     name: 'personal',
-    meta: {
-      requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-    },
     component: require('./components/Personal.vue'),
     children:[
       {'path': '/personal/index',component: require('./components/Personal/index.vue')},
@@ -49,14 +45,5 @@ const router = new VueRouter({
     routes
 });
 
-router.beforeEach(({meta, path}, from, next) => {
-    var { auth = true } = meta
-    var isLogin = Boolean(store.state.user.name) //true用户已登录， false用户未登录
-
-    if (auth && !isLogin && path !== '/sign') {
-        return next({ path: '/sign' })
-    }
-    next()
-})
 
 export default router;

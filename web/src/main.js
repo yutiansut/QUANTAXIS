@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import router from './routes.js'
 import VueResource from 'vue-resource'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
-import Vuex from 'Vuex'
+
 import App from './App.vue'
 import Todo from './components/todo.vue'
 import HomePage from './components/HomePage.vue'
@@ -13,7 +13,7 @@ import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
 import './assets/theme-carbon.css'
 import echarts from 'echarts'
-import store from "./store/"
+
 import axios from "axios"
 
 // 将axios挂载到prototype上，在组件中可以直接使用this.axios访问
@@ -23,7 +23,7 @@ Vue.prototype.axios = axios;
 Vue.use(VueResource)
 Vue.use(MuseUI)
 Vue.use(VueAwesomeSwiper)
-Vue.use(Vuex)
+
 Vue.config.devtools = true;
 
 
@@ -35,7 +35,6 @@ new Vue({
   //我们也可以把他改了 在index.html里把他写成class='app',el就绑'.app'
   router,
   axios,
-  store,
   render: h => h(App)  //用h是jsx里面的通用的作为createELement的简写
   //这里的render是为了把虚拟的dom 渲染进来,这个dom就是从'./app.vue'里面渲染进来的
   //我们也可以这么写
