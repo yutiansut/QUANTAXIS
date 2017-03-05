@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
+import router from './routes.js'
 import VueResource from 'vue-resource'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
-
+import Vuex from 'Vuex'
 import App from './App.vue'
 import Todo from './components/todo.vue'
 import HomePage from './components/HomePage.vue'
@@ -13,7 +13,7 @@ import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
 import './assets/theme-carbon.css'
 import echarts from 'echarts'
-import store from "./vuex/store"
+import store from "./store/"
 import axios from "axios"
 
 // 将axios挂载到prototype上，在组件中可以直接使用this.axios访问
@@ -23,7 +23,7 @@ Vue.prototype.axios = axios;
 Vue.use(VueResource)
 Vue.use(MuseUI)
 Vue.use(VueAwesomeSwiper)
-
+Vue.use(Vuex)
 Vue.config.devtools = true;
 
 
@@ -42,4 +42,4 @@ new Vue({
   //render: function (createElement) {
   //return createElement(App)
   //}
-}).$mount('#app');
+})

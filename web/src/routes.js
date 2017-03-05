@@ -1,9 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import store from './vuex/store.js'
-import * as types from './vuex/types.js'
+import store from "./store/"
 Vue.use(VueRouter)
-
+Vue.use(Vuex)
 
 const routes = [ {
     path: '/',
@@ -46,30 +45,18 @@ const routes = [ {
 
 
 
-// 页面刷新时，重新赋值token
-if (window.localStorage.getItem('token')) {
-    store.commit(types.LOGIN, window.localStorage.getItem('token'))
-}
-
 const router = new VueRouter({
     routes
 });
 
-router.beforeEach((to, from, next) => {
-    if (to.matched.some(r => r.meta.requireAuth)) {
-        if (store.state.token) {
-            next();
-        }
-        else {
-            next({
-                path: '/sign',
-                query: {redirect: to.fullPath}
-            })
-        }
+router.beforeEach(({meta, path}, from, next) => {
+    var { auth = true } = meta
+    var isLogin = Boolean(store.state.user.name) //true用户已登录， false用户未登录
+
+    if (auth && !isLogin && path !== '/sign') {
+        return next({ path: '/sign' })
     }
-    else {
-        next();
-    }
+    next()
 })
 
 export default router;

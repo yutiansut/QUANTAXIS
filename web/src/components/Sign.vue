@@ -61,6 +61,9 @@
 </style>
 <script>
 import axios from 'axios'
+import { mapActions } from 'Vuex'
+import { USER_SIGNIN } from '../store/user.js'
+
 export default {
   data () {
     return {
@@ -70,6 +73,7 @@ export default {
     }
   },
   methods: {
+    
     handleChange (value) {
       this.value = value
     },
@@ -98,6 +102,7 @@ export default {
           console.log(error);
           });
     },
+    ...mapActions([USER_SIGNIN]),
     login(){
       var name=document.getElementsByClassName('mu-text-field-input')[0].value
       var password=document.getElementsByClassName('mu-text-field-input')[1].value
@@ -107,6 +112,7 @@ export default {
         .then( response => {
           console.log(response.data)
           if (response.data==='success'){
+            this.USER_SIGNIN(this.name)
             this.$router.push('/personal/index');
           }
           })
