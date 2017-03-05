@@ -10,3 +10,5 @@ quantaxisback/
 fetch/
 .vscode/
 *.pdf
+*.gitconfig
+.gitconfig
