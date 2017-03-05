@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import router from './routes.js'
+
 import VueResource from 'vue-resource'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 
@@ -14,17 +14,73 @@ import 'muse-ui/dist/muse-ui.css'
 import './assets/theme-carbon.css'
 import echarts from 'echarts'
 
-import axios from "axios"
 
-// 将axios挂载到prototype上，在组件中可以直接使用this.axios访问
-Vue.prototype.axios = axios;
-
-
+Vue.use(VueRouter)
 Vue.use(VueResource)
 Vue.use(MuseUI)
 Vue.use(VueAwesomeSwiper)
 
 Vue.config.devtools = true;
+const routes = [ {
+    path: '/',
+    name: 'homePage',
+    component: require('./components/HomePage.vue')
+  },
+   {
+    path: '/todo',
+    name: 'todoPage',
+    component: require('./components/todo.vue')
+  },
+   {
+    path: '/sign',
+    name: 'signPage',
+    component: require('./components/Sign.vue')
+  },
+   {
+    path: '/personal',
+    name: 'personal',
+    meta: {
+      requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+    },
+    component: require('./components/Personal.vue'),
+    children:[
+      {'path': '/personal/index',component: require('./components/Personal/index.vue')},
+      {'path': '/personal/notebook',component: require('./components/Personal/notebook.vue')},
+      {'path': '/personal/axios',component: require('./components/Personal/axios.vue')},
+      {'path': '/personal/visual',component: require('./components/Personal/visual.vue')}
+    ]
+  },
+  {
+    path: '/start',
+    name: 'startPage',
+    component: require('./components/Start.vue')
+  },
+  {
+    path: '*',
+    redirect: '/'
+  }];
+
+
+const router = new VueRouter({
+  routes
+});
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(r => r.meta.requireAuth)) {
+        if (sessionStorage.user) {
+          console.log(sessionStorage.user)
+            next();
+        }
+        else {
+            next({
+                path: '/sign',
+                query: {redirect: to.fullPath}
+            })
+        }
+    }
+    else {
+        next();
+    }
+})
 
 
 new Vue({
@@ -34,11 +90,10 @@ new Vue({
   //这里的el 绑定的是index.html下的div节点,id是app el :"#app"
   //我们也可以把他改了 在index.html里把他写成class='app',el就绑'.app'
   router,
-  axios,
   render: h => h(App)  //用h是jsx里面的通用的作为createELement的简写
   //这里的render是为了把虚拟的dom 渲染进来,这个dom就是从'./app.vue'里面渲染进来的
   //我们也可以这么写
   //render: function (createElement) {
   //return createElement(App)
   //}
-})
+});
