@@ -9,10 +9,3 @@ QUANTAXIS-trade3
 localhost:3000/trade?
 开出api,同时允许跨域请求
 
-参数
-user='x'
-password='xx'
-(这里之所以把请求的验证放在路由里面而不是放在auth里面,是为了之后应用间调用的方便)
-
-
-问题很大  我应该用socket.io去推送数据的

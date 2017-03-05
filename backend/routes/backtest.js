@@ -54,8 +54,7 @@ router.get("/tick",function(req,res,next){
   var bidCode=req.query.bidCode;
   var bidPrice=req.query.bidPrice;
   var bidTime=req.query.bidTime;
-  var bidAmount=req.query.bidAmount;
-  var bidTowards=req.query.bidTowards;
+
 
   
 
