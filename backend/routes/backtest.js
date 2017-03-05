@@ -54,14 +54,17 @@ router.get("/tick",function(req,res,next){
   var bidCode=req.query.bidCode;
   var bidPrice=req.query.bidPrice;
   var bidTime=req.query.bidTime;
-
-
-  
-
-
 });
 
-
+router.get("/save",function(req,res,next){
+  var username=req.query.username;
+  var password=req.query.password;
+  var db= mongoose.createConnection('localhost','backtest');
+  db.on('error',console.error.bind(console,'连接错误:'));
+  var tsModel=new mongoose.Schema({
+    
+  });
+});
 
 module.exports = router;
  
