@@ -2,9 +2,10 @@ import json
 import urllib
 import sys
 import pymongo
+import talib
 
 
-fund=100000;
+initFund=100000;
 
 
 
