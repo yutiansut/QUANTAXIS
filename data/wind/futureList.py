@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 from WindPy import *
-w.start()   
+w.start()
 from datetime import datetime
 import pymongo
 
