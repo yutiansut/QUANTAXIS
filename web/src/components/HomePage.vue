@@ -1,7 +1,7 @@
 <template>
     <div id="title">
         <h1>#QUANTAXIS</h1>
-        <h2>Intergrated Quantative System | Matlab/Python/JavaScript</h2>   
+        <h2>Intergrated Quantitative System | Matlab/Python/JavaScript</h2>   
     </div>
 </template>
 <script> 
