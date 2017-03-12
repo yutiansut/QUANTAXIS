@@ -16,6 +16,7 @@
                     <router-link to="/personal/index"><mu-list-item title="账户设置"></mu-list-item></router-link>
                     <router-link to="/personal/index"><mu-list-item title="APIS"></mu-list-item></router-link>
                     <mu-divider/>
+                     </mu-list>
         </div>
     <div id="view">
         <router-view></router-view>

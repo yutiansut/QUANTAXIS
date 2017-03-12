@@ -23,8 +23,9 @@
              </mu-table>
               <mu-pagination :total="total" :showSizeChanger="showSizeChanger" :pageSizeOption="pageSizeOption" @pageSizeChange="handleClick">
               </mu-pagination>
+              </ul>
             </div>
-          </ul>
+          
         </div>  
     </div>
 </template>
