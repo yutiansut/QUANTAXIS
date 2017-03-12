@@ -12,3 +12,5 @@ fetch/
 *.pdf
 *.gitconfig
 .gitconfig
+.rqalpha/
+*.psd
