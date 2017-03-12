@@ -6,6 +6,12 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测框架.
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
 ![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
 
+
+
+![Markdown](http://i1.piimg.com/1949/00bdd221c45f06ab.png)
+
+
+
 | 测试系统               | 语言环境                                 | 实现功能          |
 | :----------------- | :----------------------------------- | :------------ |
 | Ubuntu 16.04 AMD64 | Python 2.7.6,2.7.11; 3.5,3.6         | 股票/期货回测       |
