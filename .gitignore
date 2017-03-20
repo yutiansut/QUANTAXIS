@@ -15,3 +15,5 @@ fetch/
 .rqalpha/
 *.psd
 *.rdb
+.ipython/
+.matplotlib/
