@@ -5,7 +5,7 @@ import pymongo
 import talib
 
 
-initFund=100000;
+initFund=100000
 
 
 
