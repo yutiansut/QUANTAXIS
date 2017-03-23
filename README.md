@@ -19,22 +19,86 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测框架.
 |                    | Vue 2.0                              | 纯本地框架 免去策略保密等问题 |
 |                    | MongoDB 3.2 / MySQL 5.7 /Redis 3.0.6 |                 |
 
-| Test System           | Language Environment                       | Functions            |
-| :----------------- | :----------------------------------- | :-------------- |
-| Ubuntu 16.04 AMD64 | Python 2.7.6,2.7.11; 3.5,3.6         | CN Stock/Future Backtest         |
-| Windows 10         | Matlab 2016a                         | Visualization           |
-|                    | R 3.3                                | Win/Linux/Mac Client   |
-| Mac      unknown   | Nodejs 7.7.1 npm4.3.0                | Crawler           |
+| Test System        | Language Environment                 | Functions                   |
+| :----------------- | :----------------------------------- | :-------------------------- |
+| Ubuntu 16.04 AMD64 | Python 2.7.6,2.7.11; 3.5,3.6         | CN Stock/Future Backtest    |
+| Windows 10         | Matlab 2016a                         | Visualization               |
+|                    | R 3.3                                | Win/Linux/Mac Client        |
+| Mac      unknown   | Nodejs 7.7.1 npm4.3.0                | Crawler                     |
 |                    | Vue 2.0                              | Local Framework with Safety |
-|                    | MongoDB 3.2 / MySQL 5.7 /Redis 3.0.6 |                 |
+|                    | MongoDB 3.2 / MySQL 5.7 /Redis 3.0.6 |                             |
 
+========
 
+## 部署| How To Setup
+
+- 环境
+
+  - Python(2.7/3.6)  (necessary)
+  - Nodejs  (necessary)
+  - MongoDB (necessary)
+  - Matlab (optional)
+  - R(optional)
+  - MySQL(optional)
+  - Redis(optional)
+  - Wind 万德数据库  财经学子版/大奖章免费版/机构版(optional)
+
+  ```
+  [python]: https://www.python.org/downloads/	"Python"
+
+  [nodejs]: https://nodejs.org/en/download/	"NodeJS"    
+
+  [MongoDB]: https://www.mongodb.com/download-center   "MongoDB"
+
+  [Wind DataBases]  (非必须)
+
+  - 大奖章版本 免费 注册可用  日线数据质量较好 其他基本不稳定
+
+  - 财经学子版 需要学生证认证 申请地址(http://xz.wind.com.cn/university/home/index.html)
+
+  - 机构版  
+
+  ```
+
+- ​部署
+
+  ```
+  git clone https://github.com/yutiansut/quantaxis
+  cd quantaxis
+
+  ===  以下步骤是为了启动后台,如果你不需要这些功能,可以不安装
+  ===  根据你的网络速度不同,安装需要一定的时间
+  cd backend
+  npm install
+  cd ../web
+  cd npm install
+  cd ../client
+  npm install
+  cd app
+  npm install
+  ```
+  ```
+  (后台的作用主要是为了给回测提供API,同时给两个前端提供调用,如果只需要爬虫等,也不需要启动)
+  [新建一个命令行窗口](启动后台)[确保localhost:3000端口是空着的]
+  cd backend | npm start
+  (如果不需要网站,下面的步骤可以省略)
+  [再新建一个命令行窗口](启动前端网站的后台)[确保localhost:8080端口是空着的]
+  cd web | npm run dev
+  (如果不需要启动客户端,下面的步骤可以省略)
+  [再新建一个命令行窗口](启动客户端的后台)[确保localhost:9080端口是空着的]
+  cd client | npm run dev
+  ```
+
+注意:
+
+  1. windows用户还面临MongoDB的注册服务问题,百度即可
+  2. Mysql在Matlab回测时会用到,到QUANTAXIS 3.9版本 会增加Matlab-MongoDB支持
 
 =========
 
 Python作为胶水语言,贯穿项目的始终.
 
-Python-Celery 作为任务调度+redis
+(*)Python-Celery 作为任务调度+redis
 
 Nodejs-Express作为后端部分,提供api分发和部分的爬虫
 
