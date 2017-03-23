@@ -213,6 +213,8 @@ else :
     # do another thing
 ```
 
+Strategy 部分是一些策略,有md文件,也有对应代码.策略才是最核心的东西
+
 ### Docs/
 文档部分
 ### Tasks/
