@@ -1,8 +1,9 @@
 # QUANTAXIS 量化金融工具箱
-
+  
 QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过分布式爬虫进行数据抓取,构建了响应式的数据清洗和行情推送引擎.搭建了支持多语言的开放式回测框架.并构建了交互可视化的客户端和网站.
 
 [V3.7版本是之前几个功能分支合并而来的开发版本,4.0版本会是完整逻辑的稳定版本]
+
 [QUANTAXIS推荐在局域网内或者单机使用,适用于中小型团队的回测情景:服务器+N个客户端,客户端--AJAX请求--服务器]
 
 ![version](https://img.shields.io/badge/Version-%203.7.0-orange.svg)
@@ -18,6 +19,10 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过
 - [QUANTAXIS 量化金融工具箱](#quantaxis-量化金融工具箱)
     - [概览|Intro](#概览intro)
     - [部署| How To Setup](#部署-how-to-setup)
+        - [环境](#环境)
+        - [​部署](#​部署)
+        - [适用场景](#适用场景)
+        - [注意](#注意)
     - [逻辑框架|Logic](#逻辑框架logic)
     - [组件|Component](#组件component)
         - [Backend/  & Data/](#backend---data)
@@ -55,7 +60,7 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过
 
 ## 部署| How To Setup
 
-- 环境
+### 环境
 
   - Python(2.7/3.6)  (necessary)
   - Nodejs  (necessary)
@@ -83,7 +88,7 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过
 
   ```
 
-- ​部署
+### ​部署
 
   ```
   git clone https://github.com/yutiansut/quantaxis
@@ -111,8 +116,13 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过
   [再新建一个命令行窗口](启动客户端的后台)[确保localhost:9080端口是空着的]
   cd client | npm run dev
   ```
+### 适用场景
 
-- 注意:
+QUANTAXIS推荐在局域网内或者单机使用,适用于中小型团队的回测情景:服务器+N个客户端,客户端--AJAX请求--服务器
+
+![适用场景](http://i2.buimg.com/567571/e2e7b31b1f9a4307.png)
+
+### 注意
 
   1. windows用户还面临MongoDB的注册服务问题,百度即可
   2. Mysql在Matlab回测时会用到,到QUANTAXIS 3.9版本 会增加Matlab-MongoDB支持
