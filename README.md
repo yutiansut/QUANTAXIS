@@ -205,6 +205,14 @@ for item in lists:
 
 ```
 回测的主要思想是--交易api给出是否成交的判断,其余逻辑在各自语言框架内执行
+```python
+trade=requests.get("http://localhost:3000/backtest/ts?bidCode=000001&bidTime=2001-01-04&bidPrice=4.08")
+if (trade.text == "success"):
+    # do something
+else :
+    # do another thing
+```
+
 ### Docs/
 文档部分
 ### Tasks/
