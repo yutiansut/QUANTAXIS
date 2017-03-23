@@ -4,12 +4,13 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过
 
 [V3.7版本是之前几个功能分支合并而来的开发版本,4.0版本会是完整逻辑的稳定版本]
 
-[QUANTAXIS推荐在局域网内或者单机使用,适用于中小型团队的回测情景:服务器+N个客户端,客户端--AJAX请求--服务器]
 
 ![version](https://img.shields.io/badge/Version-%203.7.0-orange.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
 ![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
-
+![QQ group](https://img.shields.io/badge/QQGroup-%20563280067-yellow.svg)
+![WebSite](https://img.shields.io/badge/Website-%20www.yutiansut.com-brown.svg)
+![QQ ](https://img.shields.io/badge/AutherQQ-%20279336410-blue.svg)
 
 
 ![QUANTAXIS LOGO](http://i1.piimg.com/1949/62c510db7915837a.png)
