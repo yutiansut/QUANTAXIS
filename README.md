@@ -2,6 +2,9 @@
 
 QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过分布式爬虫进行数据抓取,构建了响应式的数据清洗和行情推送引擎.搭建了支持多语言的开放式回测框架.并构建了交互可视化的客户端和网站.
 
+[V3.7版本是之前几个功能分支合并而来的开发版本,4.0版本会是完整逻辑的稳定版本]
+
+
 ![version](https://img.shields.io/badge/Version-%203.7.0-orange.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
 ![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
