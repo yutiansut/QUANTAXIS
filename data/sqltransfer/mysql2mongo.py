@@ -11,7 +11,7 @@ coll = db.ts
 
 w.start()
 
-conn=pymysql.connect(host='127.0.0.1',port=3306,user='root',passwd='940809',db='quantaxis',charset='utf8')
+conn=pymysql.connect(host='127.0.0.1',port=3306,user='root',passwd='xxx',db='quantaxis',charset='utf8')
 cursor=conn.cursor()
 cursor.execute("select * from stocklist")
 result = cursor.fetchall()
@@ -22,10 +22,10 @@ for item in result:
     code = item[0][0:6]
     codename=item[1]
     strs = code+'_ts'
-    print strs
+    print (strs)
     cursorsx=conn.cursor()
     sqlquery="select * from "+strs
-    print sqlquery
+    print (sqlquery)
     cursorsx.execute(sqlquery) 
     resultsx = cursorsx.fetchall()
     
