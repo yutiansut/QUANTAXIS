@@ -17,3 +17,8 @@ fetch/
 *.rdb
 .ipython/
 .matplotlib/
+.log
+*.log
+.ssh/
+
+

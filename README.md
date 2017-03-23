@@ -1,6 +1,6 @@
 # QUANTAXIS 量化金融工具箱
 
-QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测框架.通过分布式爬虫进行数据抓取,构建了响应式的数据清洗和行情推送引擎.搭建了支持多语言的开放式回测框架.并构建了交互可视化的客户端和网站.
+QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过分布式爬虫进行数据抓取,构建了响应式的数据清洗和行情推送引擎.搭建了支持多语言的开放式回测框架.并构建了交互可视化的客户端和网站.
 
 ![version](https://img.shields.io/badge/Version-%203.7.0-orange.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
