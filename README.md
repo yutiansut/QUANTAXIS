@@ -119,6 +119,7 @@ R语言作为数据分析的选项,并不是一定使用
 ## 逻辑框架
 
 ### Backend/  & Data/
+![前后端分离](https://github.com/yutiansut/QUANTAXIS_Visualization/blob/dev-front-back/pic/data.png)
 QASpider 部署在linux服务器上,负责数据的爬取,包括且不限于股票日线/tick/公司信息/分析师推荐/各大财经网站信息/微信公众号信息
 爬取的数据在服务器的Mongodb上,通过QUANTAXIS Storage转入 MYSQL
 ```
