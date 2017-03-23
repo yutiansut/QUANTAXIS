@@ -13,6 +13,26 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过
 
 ![QUANTAXIS LOGO](http://i1.piimg.com/1949/62c510db7915837a.png)
 
+<!-- TOC -->
+
+- [QUANTAXIS 量化金融工具箱](#quantaxis-量化金融工具箱)
+    - [概览|Intro](#概览intro)
+    - [部署| How To Setup](#部署-how-to-setup)
+    - [逻辑框架|Logic](#逻辑框架logic)
+    - [组件|Component](#组件component)
+        - [Backend/  & Data/](#backend---data)
+        - [Storage/](#storage)
+        - [Client/ & web/](#client--web)
+        - [Analysis/  & Strategy/](#analysis---strategy)
+        - [Docs/](#docs)
+        - [Tasks/](#tasks)
+    - [版本历史|History](#版本历史history)
+    - [QUANTAXIS 4.0 is coming soon.....](#quantaxis-40-is-coming-soon)
+
+<!-- /TOC -->
+
+## 概览|Intro
+
 | 测试系统               | 语言环境                                 | 实现功能            |
 | :----------------- | :----------------------------------- | :-------------- |
 | Ubuntu 16.04 AMD64 | Python 2.7.6,2.7.11; 3.5,3.6         | 股票/期货回测         |
@@ -98,9 +118,9 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过
   2. Mysql在Matlab回测时会用到,到QUANTAXIS 3.9版本 会增加Matlab-MongoDB支持
   3. 其他的问题 可以开issue
 
-=========
+## 逻辑框架|Logic
 
-Python作为胶水语言,贯穿项目的始终.
+Python作为胶水语言,贯穿项目的始终.Nodejs作为后台语言,为所有语言提供Api,并作为一个任务中转
 
 (*)Python-Celery 作为任务调度+redis
 
@@ -112,15 +132,19 @@ Matlab 作为一个回测中心,提供快速的原型实现
 
 R语言作为数据分析的选项,并不是一定使用
 
-1.爬虫部分 采用python的Scrapy+Phantomjs+selenium构架,使用redis(coookies/cache)+Mongodb(data)架构
-2.数据清洗部分 python+matlab
-3.数据库 主数据库Mysql  爬虫数据库 Mongodb  性能数据库  redis
-4.数据可视化  nodejs+vue.js+d3.js
-5.统计学部分  增加传统金融的统计学函数,以及机器学习部分的函数
+1. 爬虫部分 采用python的Scrapy+Phantomjs+selenium构架,使用redis(coookies/cache)+Mongodb(data)架构
+
+2. 数据清洗部分 python+matlab
+
+3. 数据库 主数据库Mysql  爬虫数据库 Mongodb  性能数据库  redis
+
+4. 数据可视化  nodejs+vue.js+d3.js
+
+5. 统计学部分  增加传统金融的统计学函数,以及机器学习部分的函数
 
 
 
-## 逻辑框架
+## 组件|Component
 
 ### Backend/  & Data/
 ![前后端分离](https://github.com/yutiansut/QUANTAXIS_Visualization/blob/dev-front-back/pic/data.png)
@@ -220,7 +244,7 @@ Strategy 部分是一些策略,有md文件,也有对应代码.策略才是最核
 ### Tasks/
 异步任务
 
-## 版本历史
+## 版本历史|History
 ```
 1.0版本使用的主要是新浪网的数据。
 1.5版本是在了解了对象化编程OOP以后对于平台做的改进 
