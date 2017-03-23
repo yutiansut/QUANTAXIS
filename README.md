@@ -92,10 +92,11 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过
   cd client | npm run dev
   ```
 
-注意:
+- 注意:
 
   1. windows用户还面临MongoDB的注册服务问题,百度即可
   2. Mysql在Matlab回测时会用到,到QUANTAXIS 3.9版本 会增加Matlab-MongoDB支持
+  3. 其他的问题 可以开issue
 
 =========
 

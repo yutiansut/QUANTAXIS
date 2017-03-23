@@ -1,3 +1,5 @@
+#coding:utf-8
+
 # MACD
 def MACD(security_list, fastperiod=12, slowperiod=26, signalperiod=9):
     # 修复传入为单只股票的情况
