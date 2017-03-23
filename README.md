@@ -19,13 +19,13 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测框架.
 |                    | Vue 2.0                              | 纯本地框架 免去策略保密等问题 |
 |                    | MongoDB 3.2 / MySQL 5.7 /Redis 3.0.6 |                 |
 
-| Test System           | 语言环境                                 | 实现功能            |
+| Test System           | Language Environment                       | Functions            |
 | :----------------- | :----------------------------------- | :-------------- |
-| Ubuntu 16.04 AMD64 | Python 2.7.6,2.7.11; 3.5,3.6         | 股票/期货回测         |
-| Windows 10         | Matlab 2016a                         | 可视化界面           |
-|                    | R 3.3                                | 全平台（W/L/M)客户端   |
-| Mac 平台未测试          | Nodejs 7.7.1 npm4.3.0                | 定制化爬虫           |
-|                    | Vue 2.0                              | 纯本地框架 免去策略保密等问题 |
+| Ubuntu 16.04 AMD64 | Python 2.7.6,2.7.11; 3.5,3.6         | CN Stock/Future Backtest         |
+| Windows 10         | Matlab 2016a                         | Visualization           |
+|                    | R 3.3                                | Win/Linux/Mac Client   |
+| Mac      unknown   | Nodejs 7.7.1 npm4.3.0                | Crawler           |
+|                    | Vue 2.0                              | Local Framework with Safety |
 |                    | MongoDB 3.2 / MySQL 5.7 /Redis 3.0.6 |                 |
 
 
