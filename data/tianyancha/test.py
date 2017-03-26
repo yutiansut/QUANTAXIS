@@ -12,7 +12,7 @@ def search(keyword):
     keyword = keyword.encode("utf-8")
     url_keyword = urllib2.quote(keyword)
     url =  "http://www.tianyancha.com/search?key=%s&checkFrom=searchBox" % url_keyword
-    print url
+    print (url)
     # print(url)
     driver.get(url)
 
@@ -22,10 +22,10 @@ def search(keyword):
 
     for s in soup:
         # 输出文本的内容
-        print s.get_text()
+        print (s.get_text())
 
 if __name__ == "__main__":
     while True:
         x = raw_input("str")
-        x = unicode(x, 'gbk')  
+        x =unicode(x, 'gbk')  
         search(x)
