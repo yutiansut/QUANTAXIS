@@ -189,5 +189,3 @@ def get_last_n_dailybars(symbol, n):
         var.append(VAR[z-1-i])
     ret = bar_topd(var,'date')
     return ret
-
-

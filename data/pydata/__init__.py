@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-import tquant.getdata as gt
-import tquant.myquant as mt
+import pydata.getdata as gt
+import pydata.gmdata as mt
 
 def get_financial(symbol):#3大财报
     return gt.get_financial(symbol)
