@@ -117,40 +117,51 @@ N个分钟K ：分钟K也是历史K，不包含最后一根没有成型的K。
 N个日线K： 属于历史数据
 NOTE 蓝色接口代码链接的是数据样本，由 pandas.DataFrame.to_html 对象生成。 生成样本数据的示例代码
 
-Fomula----公式
-
-公式不采用TALIB，PANDAS的公式编制非常简单，跟股票软件写法类似，FOMULA文件中提供了基础的函数（MA，SMA，EMA，IF，MAX，MIN，REF，SUM，HHV，LLV，ABS，STD等），需要明白的是公式是数组的运算，单值运算可以自己写。我从通达信抄了一部分指标，全部抄过来是没有必要的，按照我的写法，你可以自己写指标。
-
-公式函数	说明
-MA(DF, N)	var =pd.read_pickle('600100') #K线数据赋值,C= var['close']#声明C是‘close’收盘价，切片，MA30 = MA(C,30)
-EMA(DF, N)	同上
-SMA(DF,N,M)	pandas 没有提供SMA算法，这个函数是就是自己写的。
-ATR(DF,N)	。。。。。。
-HHV(DF,N)	。。。。。。
-LLV(DF,N)	。。。。。。
-SUM (DF,N)	。。。。。。
-ABS (DF)	。。。。。。
-MAX (A,B)	。。。。。。
-IF (COND,V1,V2)	。。。。。。
-REF(DF,N)	。。。。。。
-STD(DF,N)	。。。。。。
-MACD(DF,FAST,SLOW,MID)	。。。。。。
-KDJ(DF,N,M1,M2)	。。。。。。
-OSC(DF,N,M):	#变动速率线
-BBI(DF,N1,N2,N3,N4)	#多空指标
-BBIBOLL(DF,N1,N2,N3,N4,N,M)	#多空布林线
-PBX(DF,N1,N2,N3,N4,N5,N6)	#瀑布线
-BOLL(DF,N)	#布林线
-ROC(DF,N,M)	#变动率指标
-MTM(DF,N,M)	#动量线
-MFI(DF,N)	#资金指标
-SKDJ(DF,N,M):	。。。。。。
-WR(DF,N,N1)	#威廉指标
-BIAS(DF,N1,N2,N3)	#乖离率
-RSI(DF,N1,N2,N3)	#相对强弱指标
-ADTM(DF,N,M)	#动态买卖气指标
-DDI(DF,N,N1,M,M1):	#方向标准离差指数
-注意事项（公式引用 ----from tquant.Formula import MA）：
+# Formula
+## MA(DF, N)	
+var =pd.read_pickle('600100') #K线数据赋值,C= var['close']#声明C是‘close’收盘价，切片，MA30 = MA(C,30)
+## EMA(DF, N)	
+同上
+## SMA(DF,N,M)	
+pandas 没有提供SMA算法，这个函数是就是自己写的。
+## ATR(DF,N)	
+## HHV(DF,N)
+## LLV(DF,N)
+## SUM (DF,N)
+## ABS (DF)
+## MAX (A,B)
+## IF (COND,V1,V2)
+## REF(DF,N)
+## STD(DF,N)
+## MACD(DF,FAST,SLOW,MID)
+## KDJ(DF,N,M1,M2)
+## OSC(DF,N,M):	
+变动速率线
+## BBI(DF,N1,N2,N3,N4)
+多空指标
+## BBIBOLL(DF,N1,N2,N3,N4,N,M)
+多空布林线
+## PBX(DF,N1,N2,N3,N4,N5,N6)
+瀑布线
+## BOLL(DF,N)
+布林线
+## ROC(DF,N,M)
+变动率指标
+## MTM(DF,N,M)	
+动量线
+## MFI(DF,N)	
+资金指标
+## SKDJ(DF,N,M):
+## WR(DF,N,N1)	
+威廉指标
+## BIAS(DF,N1,N2,N3)	
+乖离率
+## RSI(DF,N1,N2,N3)	
+相对强弱指标
+## ADTM(DF,N,M)	
+动态买卖气指标
+## DDI(DF,N,N1,M,M1):	
+方向标准离差指数
 
 以上公式都是数组运算，计算最后一个BAR的指标可以换个方法。
 
