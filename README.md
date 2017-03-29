@@ -1,23 +1,33 @@
-# QUANTAXIS 量化金融工具箱
+# QUANTAXIS 量化金融策略框架
   
 QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过分布式爬虫进行数据抓取,构建了响应式的数据清洗和行情推送引擎.搭建了支持多语言的开放式回测框架.并构建了交互可视化的客户端和网站.
 
 [V3.7版本是之前几个功能分支合并而来的开发版本,4.0版本会是完整逻辑的稳定版本]
-
 
 ![version](https://img.shields.io/badge/Version-%203.7.0-orange.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
 ![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
 ![QQ group](https://img.shields.io/badge/QQGroup-%20563280067-yellow.svg)
 ![WebSite](https://img.shields.io/badge/Website-%20www.yutiansut.com-brown.svg)
-![QQ ](https://img.shields.io/badge/AutherQQ-%20279336410-blue.svg)
+![QQ](https://img.shields.io/badge/AutherQQ-%20279336410-blue.svg)
+
+## 写在前面 | Written Before
+
+考虑到这样的一个业务情景,一个机构的策略团队一般由CS+Finance组成,Finance的同学们非常擅长数据分析,策略等,但却不是很了解代码的底层架构,代码风格和标准都各有差异.而CS出身的同学们虽然对于代码和框架了如指掌,但却对枯燥空洞的金融理论一脸懵逼.而目前国内对于量化的服务支持并不能解决这个常见的场景痛点,要么是针对金融的同学的易于操作的分析系统,但对于IT而言缺少可定制化的部分;要么是针对IT的底层数据和交易接口,而对于金融的同学想从底层接口封装出来一套能用的有效率的框架简直难如登天.
+
+QUNATAXIS致力于解决这一场景痛点,我们通过建立一个前后端分离的,基于RESTful的局域网内的标准化框架来解决这一问题.同时我们希望我们的框架是高扩展和易于接入的,以方便各个公司的各个策略团队的个性化需求(这个是最关键的,基本上每个公司都会有自己的数据,自己的交易接口,自己的特定功能目标),所以我们希望构建的是一个标准化的,高扩展性的,易于部署的脚手架,而不是一个完整的难以定制的解决方案.
+
+QUANTAXIS的前后端完全分离,高度拆分,各个组件依赖RESTful标准的URI来进行通信,这也给了我们开放式框架的无限可能,完全可以实现Matlab,r,python,JavaScript,C,C++,rust等各个用户的和谐共处,而不是增加大家学习成本的去学习一门共用语言.同时,只要一个公网IP和服务器,你也可以超越局域网的限制,实现异地的团队的需求.
+
+
 
 
 ![QUANTAXIS LOGO](http://i1.piimg.com/1949/62c510db7915837a.png)
 
 <!-- TOC -->
 
-- [QUANTAXIS 量化金融工具箱](#quantaxis-量化金融工具箱)
+- [QUANTAXIS 量化金融策略框架](#quantaxis-量化金融策略框架)
+    - [写在前面 | Written Before](#写在前面--written-before)
     - [概览|Intro](#概览intro)
     - [部署| How To Setup](#部署-how-to-setup)
         - [环境](#环境)
@@ -158,7 +168,7 @@ R语言作为数据分析的选项,并不是一定使用
 ## 组件|Component
 
 ### Backend/  & Data/
-![前后端分离](https://github.com/yutiansut/QUANTAXIS_Visualization/blob/dev-front-back/pic/data.png)
+![前后端分离](http://i1.piimg.com/567571/41fa8b9c16122bfd.png)
 QASpider 部署在linux服务器上,负责数据的爬取,包括且不限于股票日线/tick/公司信息/分析师推荐/各大财经网站信息/微信公众号信息
 爬取的数据在服务器的Mongodb上,通过QUANTAXIS Storage转入 MYSQL
 ```
