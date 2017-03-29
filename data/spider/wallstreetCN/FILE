@@ -1,0 +1,2 @@
+2017-01-30 01:04:09 [scrapy.utils.log] INFO: Scrapy 1.3.0 started (bot: wallstreetCN)
+2017-01-30 01:04:09 [scrapy.utils.log] INFO: Overridden settings: {'BOT_NAME': 'wallstreetCN', 'NEWSPIDER_MODULE': 'wallstreetCN.spiders', 'SPIDER_MODULES': ['wallstreetCN.spiders'], 'LOG_FILE': 'FILE'}

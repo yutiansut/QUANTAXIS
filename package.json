@@ -1,11 +1,8 @@
 {
   "name": "quantaxis",
-  "version": "3.0.0",
-  "description": "quantbox for matlab",
-  "main": "DataCenter/bin/www.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "version": "3.7.0",
+  "description": " Integrated Quantitative Toolbox",
+  "website":"http://www.yutiansut.com",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yutiansut/QUANTAXIS.git"
