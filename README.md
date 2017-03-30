@@ -106,6 +106,7 @@ QUANTAXIS的前后端完全分离,高度拆分,各个组件依赖RESTful标准�
   cd quantaxis
   npm run quantaxis
   ```
+  ![一键启动](http://i2.muimg.com/567571/e897132507ad736a.png)
   
   ===  以下步骤是为了启动后台,如果你不需要这些功能,可以不安装
   
@@ -115,7 +116,7 @@ QUANTAXIS的前后端完全分离,高度拆分,各个组件依赖RESTful标准�
   npm run install
   一键启动所有服务:
   npm run all
-
+ 
   安装后台
   npm run install-backend
   安装web
@@ -139,6 +140,7 @@ QUANTAXIS的前后端完全分离,高度拆分,各个组件依赖RESTful标准�
   只启动客户端Client
   npm run client
   ```
+   ![一键部署](http://i1.piimg.com/567571/4301c3d7faaf13fe.png)
   ```
   (后台的作用主要是为了给回测提供API,同时给两个前端提供调用,如果只需要爬虫等,也不需要启动)
   [新建一个命令行窗口](启动后台)[确保localhost:3000端口是空着的]
