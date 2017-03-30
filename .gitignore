@@ -21,5 +21,6 @@ fetch/
 *.log
 .ssh/
 tushare/
-
+*.exe
+.exe
 

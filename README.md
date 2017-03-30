@@ -138,7 +138,7 @@ QUANTAXIS的前后端完全分离,高度拆分,各个组件依赖RESTful标准�
   只启动客户端Client
   npm run client
   ```
-   ![一键部署](http://i1.piimg.com/567571/4301c3d7faaf13fe.png)
+
   ```
   (后台的作用主要是为了给回测提供API,同时给两个前端提供调用,如果只需要爬虫等,也不需要启动)
   [新建一个命令行窗口](启动后台)[确保localhost:3000端口是空着的]
