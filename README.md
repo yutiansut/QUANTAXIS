@@ -20,8 +20,6 @@ QUNATAXIS致力于解决这一场景痛点,我们通过建立一个前后端分�
 QUANTAXIS的前后端完全分离,高度拆分,各个组件依赖RESTful标准的URI来进行通信,这也给了我们开放式框架的无限可能,完全可以实现Matlab,r,python,JavaScript,C,C++,rust等各个用户的和谐共处,而不是增加大家学习成本的去学习一门共用语言.同时,只要一个公网IP和服务器,你也可以超越局域网的限制,实现异地的团队的需求.
 
 
-
-
 ![QUANTAXIS LOGO](http://i1.piimg.com/1949/62c510db7915837a.png)
 
 <!-- TOC -->

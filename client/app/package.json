@@ -1,7 +1,7 @@
 {
-  "name": "quantaxis",
-  "version": "0.0.0",
-  "description": "An electron-vue project",
+  "name": "quantaxisClient",
+  "version": "0.3.8",
+  "description": "quantaxis client app",
   "main": "./dist/main.js",
   "dependencies": {
     "axios": "^0.15.3",
