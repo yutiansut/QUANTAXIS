@@ -1,0 +1,96 @@
+============================================================================
+
+   JSONlab - a toolbox to encode/decode JSON/UBJSON files in MATLAB/Octave
+
+----------------------------------------------------------------------------
+
+JSONlab ChangeLog (key features marked by *):
+
+== JSONlab 1.2 (codename: Optimus - Update 2), FangQ <fangq (at) nmr.mgh.harvard.edu> ==
+
+ 2015/12/16  replacing string concatenation by str cells to gain 2x speed in savejson (Issue#17)
+ 2015/12/11  fix FileName option case bug (SVN rev#495)
+ 2015/12/11  add SingletCell option, add SingletArray to replace NoRowBracket (Issue#15,#8)
+ 2015/11/10  fix bug for inerpreting file names as JSON string - by Mykhailo Bratukha (Pull#14)
+ 2015/10/16  fix bug for cell with transposed data - by Insik Kim (Pull#12)
+ 2015/09/25  support exporting matlab object to JSON - by Sertan Senturk (Pull#10, #11)
+
+== JSONlab 1.1 (codename: Optimus - Update 1), FangQ <fangq (at) nmr.mgh.harvard.edu> ==
+
+ 2015/05/05 *massively accelerating loadjson for parsing large collection of unstructured small objects
+ 2015/05/05  force array bracket in 1x1 struct to maintain depth (Issue#1)
+ 2015/05/05  parse logicals in loadjson
+ 2015/05/05  make options case insensitive
+ 2015/05/01  reading unicode encoded json files (thanks to Sertan Senturk,Issue#3)
+ 2015/04/30  allow \uXXXX to represent a unicode in a string (Issue#2)
+ 2015/03/30  save a 0x0 solid real empty array as null and handel empty struct array
+ 2015/03/30  properly handle escape characters in a string
+ 2015/01/24 *implement the UBJSON Draft12 new name format
+ 2015/01/13  correct cell array indentation inconsistency
+
+== JSONlab 1.0 (codename: Optimus - Final), FangQ <fangq (at) nmr.mgh.harvard.edu> ==
+
+ 2015/01/02  polish help info for all major functions, update examples, finalize 1.0
+ 2014/12/19  fix a bug to strictly respect NoRowBracket in savejson
+
+== JSONlab 1.0.0-RC2 (codename: Optimus - RC2), FangQ <fangq (at) nmr.mgh.harvard.edu> ==
+
+ 2014/11/22  show progress bar in loadjson ('ShowProgress') 
+ 2014/11/17 *add Compact option in savejson to output compact JSON format ('Compact')
+ 2014/11/17  add FastArrayParser in loadjson to specify fast parser applicable levels
+ 2014/09/18 *start official github mirror: https://github.com/fangq/jsonlab
+
+== JSONlab 1.0.0-RC1 (codename: Optimus - RC1), FangQ <fangq (at) nmr.mgh.harvard.edu> ==
+
+ 2014/09/17  fix several compatibility issues when running on octave versions 3.2-3.8
+ 2014/09/17 *support 2D cell and struct arrays in both savejson and saveubjson
+ 2014/08/04  escape special characters in a JSON string
+ 2014/02/16  fix a bug when saving ubjson files
+
+== JSONlab 0.9.9 (codename: Optimus - beta), FangQ <fangq (at) nmr.mgh.harvard.edu> ==
+
+ 2014/01/22  use binary read and write in saveubjson and loadubjson
+
+== JSONlab 0.9.8-1 (codename: Optimus - alpha update 1), FangQ <fangq (at) nmr.mgh.harvard.edu> ==
+
+ 2013/10/07  better round-trip conservation for empty arrays and structs (patch submitted by Yul Kang)
+
+== JSONlab 0.9.8 (codename: Optimus - alpha), FangQ <fangq (at) nmr.mgh.harvard.edu> ==
+ 2013/08/23 *universal Binary JSON (UBJSON) support, including both saveubjson and loadubjson
+
+== JSONlab 0.9.1 (codename: Rodimus, update 1), FangQ <fangq (at) nmr.mgh.harvard.edu> ==
+ 2012/12/18 *handling of various empty and sparse matrices (fixes submitted by Niclas Borlin)
+
+== JSONlab 0.9.0 (codename: Rodimus), FangQ <fangq (at) nmr.mgh.harvard.edu> ==
+
+ 2012/06/17 *new format for an invalid leading char, unpacking hex code in savejson
+ 2012/06/01  support JSONP in savejson
+ 2012/05/25  fix the empty cell bug (reported by Cyril Davin)
+ 2012/04/05  savejson can save to a file (suggested by Patrick Rapin)
+
+== JSONlab 0.8.1 (codename: Sentiel, Update 1), FangQ <fangq (at) nmr.mgh.harvard.edu> ==
+
+ 2012/02/28  loadjson quotation mark escape bug, see http://bit.ly/yyk1nS
+ 2012/01/25  patch to handle root-less objects, contributed by Blake Johnson
+
+== JSONlab 0.8.0 (codename: Sentiel), FangQ <fangq (at) nmr.mgh.harvard.edu> ==
+
+ 2012/01/13 *speed up loadjson by 20 fold when parsing large data arrays in matlab
+ 2012/01/11  remove row bracket if an array has 1 element, suggested by Mykel Kochenderfer
+ 2011/12/22 *accept sequence of 'param',value input in savejson and loadjson
+ 2011/11/18  fix struct array bug reported by Mykel Kochenderfer
+
+== JSONlab 0.5.1 (codename: Nexus Update 1), FangQ <fangq (at) nmr.mgh.harvard.edu> ==
+
+ 2011/10/21  fix a bug in loadjson, previous code does not use any of the acceleration
+ 2011/10/20  loadjson supports JSON collections - concatenated JSON objects
+
+== JSONlab 0.5.0 (codename: Nexus), FangQ <fangq (at) nmr.mgh.harvard.edu> ==
+
+ 2011/10/16  package and release jsonlab 0.5.0
+ 2011/10/15 *add json demo and regression test, support cpx numbers, fix double quote bug
+ 2011/10/11 *speed up readjson dramatically, interpret _Array* tags, show data in root level
+ 2011/10/10  create jsonlab project, start jsonlab website, add online documentation
+ 2011/10/07 *speed up savejson by 25x using sprintf instead of mat2str, add options support
+ 2011/10/06 *savejson works for structs, cells and arrays
+ 2011/09/09  derive loadjson from JSON parser from MATLAB Central, draft savejson.m

@@ -1,0 +1,67 @@
+
+
+sqlquery='select `wind_code` from `stocklist`';
+cursor=fetch(exec(QA.INT_MYSQL.Conn,sqlquery));
+QA.Custom.Fetch.Stocklist.data=cursor.Data;
+QA.Custom.Fetch.Stocklist.length=size(QA.Custom.Fetch.Stocklist.data,1);
+
+sqlquery='select `DATE` from `000001_ts`';
+cursor=fetch(exec(QA.INT_MYSQL.Conn,sqlquery));
+QA.Custom.Fetch.Date.data=cursor.Data;
+QA.Custom.Fetch.Date.length=size(QA.Custom.Fetch.Date.data,1);
+QA.Custom.Strategy.corraccumulate=zeros(QA.Custom.Fetch.Stocklist.length,QA.Custom.Fetch.Stocklist.length);
+for k=1:15
+	QA.Custom.Strategy.dateinit(:,k)=unidrnd(QA.Custom.Fetch.Date.length-101);
+     QA.Custom.Strategy.dateinitx=QA.Custom.Fetch.Date.data{QA.Custom.Strategy.dateinit,1};
+	sqlquery='SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = "quantaxis" and TABLE_NAME like "%ts"';
+	curs=fetch(exec(QA.INT_MYSQL.Conn,sqlquery));
+	QA.Custom.Fetch.tstable=curs.Data;
+
+	for i=1:size(QA.Custom.Fetch.tstable,1)
+		QA.Custom.Fetch.tstablename=QA.Custom.Fetch.tstable{i,1};
+		sqlquery=['SELECT CLOSE FROM ',QA.Custom.Fetch.tstablename,' where DATE>',num2str(QA.Custom.Strategy.dateinit),' LIMIT 0,500'];
+		curs=fetch(exec(QA.INT_MYSQL.Conn,sqlquery));  %%
+		QA.Custom.Strategy.data100(:,i)=curs.Data;
+	end
+
+	QA.Custom.Strategy.corrcoef{k,1}=corrcoef(cell2mat(QA.Custom.Strategy.data100));
+	
+    %%
+    x=QA.Custom.Strategy.corrcoef{k,1};
+    for i=1:2817
+        for j=1:2817
+            if i==j
+                x(i,j)=0;
+            end
+        end
+    end
+   
+    
+    for j=1:550
+        [a b]=find(x==max(max(x)))
+        QA.Custom.BestPotiflo(2*k-1,j)=a(1);
+        QA.Custom.BestPotiflo(2*k,j)=b(1);
+        QA.Custom.BestPotiflox(k,j)=x(a(1),b(1));
+        x(a(1),b(1))
+        for i=1:length(a)
+            x(a(i),b(i))=0;
+            x(b(i),a(i))=0;
+        end
+        
+    end
+end
+
+figure
+surf(QA.Custom.Strategy.corraccumulate);
+
+
+for i=1:QA.Custom.Fetch.Stocklist.length
+	QA.Custom.Fetch.StockId=QA.Custom.Fetch.Stocklist.data(batid); %like 000001.
+	QA.ACC.StockId=QA.Custom.Fetch.StockId;
+	QA.ACC_ID=1;
+	notify(QA,'SQL');
+	QA.Custom.Fetch.Data=QA.ACC.UseData{QA.ACC_ID,2}  %%
+	sqlquery='SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = "quantaxis" and TABLE_NAME like `%ts`';
+	curs=fetch(exec(QA.INT_MYSQL.Conn,sqlquery));
+end
+	
