@@ -1,11 +1,17 @@
 {
   "name": "quantaxis",
   "version": "3.7.0",
-  "description": " Integrated Quantitative Toolbox",
+  "description": " Integrated Quantitative Framework",
   "website":"http://www.yutiansut.com",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yutiansut/QUANTAXIS.git"
+  },
+  "scripts": {
+    "backend": "node ./backend/bin/www",
+    "website":" cd ./web/ | cross-env NODE_ENV=development webpack-dev-server --open --inline --hot",
+    "client": "cd ./client | npm run dev"
+
   },
   "keywords": [
     "quant;matlab;wind;mysql"
