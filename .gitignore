@@ -20,5 +20,6 @@ fetch/
 .log
 *.log
 .ssh/
+tushare/
 
 
