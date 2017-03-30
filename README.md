@@ -184,8 +184,9 @@ localhost:3000/backtest
 ### /ts?bidCode=000001&bidTime=2001-01-04&bidPrice=4.08
 返回Success  则成交 返回failed 则不成交
 一定要给报价
-
-
+```
+![回测框架](http://i1.piimg.com/567571/151a21b61f4d6d63.png)
+```
 localhost:3000/users
 ### /signup?username=xxx&password=xxx
 ### /login?username=xxx&password=xxx
