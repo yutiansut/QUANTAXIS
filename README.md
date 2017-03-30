@@ -104,17 +104,40 @@ QUANTAXIS的前后端完全分离,高度拆分,各个组件依赖RESTful标准�
   ```
   git clone https://github.com/yutiansut/quantaxis
   cd quantaxis
-
+  npm run quantaxis
+  ```
+  
   ===  以下步骤是为了启动后台,如果你不需要这些功能,可以不安装
+  
   ===  根据你的网络速度不同,安装需要一定的时间
-  cd backend
-  npm install
-  cd ../web
-  cd npm install
-  cd ../client
-  npm install
-  cd app
-  npm install
+  ```
+  一键安装
+  npm run install
+  一键启动所有服务:
+  npm run all
+
+  安装后台
+  npm run install-backend
+  安装web
+  npm run install-web
+  安装client
+  npm run install-client
+  
+
+  一键启动web+后台
+  npm run Xweb
+
+  一键启动Client+后台
+  npm run Xclient
+  
+  只启动backend (后台)
+  npm run backend
+
+  只启动前端web
+  npm run website
+
+  只启动客户端Client
+  npm run client
   ```
   ```
   (后台的作用主要是为了给回测提供API,同时给两个前端提供调用,如果只需要爬虫等,也不需要启动)
