@@ -41,7 +41,6 @@ QUANTAXIS的前后端完全分离,高度拆分,各个组件依赖RESTful标准�
         - [Docs/](#docs)
         - [Tasks/](#tasks)
     - [版本历史|History](#版本历史history)
-    - [QUANTAXIS 4.0 is coming soon.....](#quantaxis-40-is-coming-soon)
 
 <!-- /TOC -->
 
@@ -300,9 +299,5 @@ Strategy 部分是一些策略,有md文件,也有对应代码.策略才是最核
 3.5 重构版本 重新定义前后端以及数据块逻辑.
 3.6 重构版本 关于SPIDER和VIUSALIZATION的重大更改,去除DATACENTER模块
 3.7 合并版本 同时增加期货部分(目前只支持国内期货市场),加入R语言支持
+0.3.8 alpha  切换成小版本 大版本号废弃,重写data逻辑
 ```
-
-## QUANTAXIS 4.0 is coming soon.....
-![quantaxis 4.0 logic](http://i1.piimg.com/1949/74a05d72d94b86c3.png)
-
-In quantaxis4.0 version, we try to merge these components back together and rebuild and redefind a completely logic.
