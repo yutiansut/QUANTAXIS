@@ -26,7 +26,7 @@ class WallstreetcnPipeline(object):
         self.title= db['title']
 
     def process_item(self, item, spider):
-        print 'get data'
+        print ('get data')
         if isinstance(item, WallstreetcnItem):
             try:
                 self.articles.insert(dict(item))
