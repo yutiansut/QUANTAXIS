@@ -148,7 +148,7 @@ ADTM动态买卖气指标,ATR真实波幅,BBI多空指数,BBIBOLL多空布林线
 
 
 ### QAStandard-103 爬虫
-
+QAS103主要规范了爬虫的命名标准，UserAgent设置，cookie，session等规范。
 ### QAStandard-104 自定义数据
 自定义数据需要按照分类标准引入数据库,如果是QAS101时间序列行情数据,QAS102文本信息数据,可以定制性的更新数据库(使用高级字段AdvanceName)
 
@@ -200,5 +200,10 @@ save_all
 ```
 
 #### QAS-501-2 Market
+QAS-501-2 主要规定了市场交易的调用接口规范，包括数据返回和响应状态码[遵循QAS-401](#qastandard-401-状态码)
+
+
 #### QAS-501-3 Account
+
+
 ### QAStandard-502 Http API/RESTFul
