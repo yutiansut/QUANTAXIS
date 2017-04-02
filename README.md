@@ -4,7 +4,7 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过
 
 > 0.3.8 版本将对于一体化和模块化流程进行进一步的优化
 
-![version](https://img.shields.io/badge/Version-%200.3.8alpha-orange.svg)
+![version](https://img.shields.io/badge/Version-%200.3.8dev/fetch-orange.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
 ![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
 ![QQ group](https://img.shields.io/badge/QQGroup-%20563280067-yellow.svg)
@@ -33,13 +33,12 @@ QUANTAXIS的前后端完全分离,高度拆分,各个组件依赖RESTful标准�
         - [适用场景](#适用场景)
         - [注意](#注意)
     - [逻辑框架|Logic](#逻辑框架logic)
+    - [协议| Protocol](#协议-protocol)
     - [组件|Component](#组件component)
         - [Backend/  & Data/](#backend---data)
         - [Storage/](#storage)
         - [Client/ & web/](#client--web)
         - [Analysis/  & Strategy/](#analysis---strategy)
-        - [Docs/](#docs)
-        - [Tasks/](#tasks)
     - [版本历史|History](#版本历史history)
 
 <!-- /TOC -->
@@ -185,7 +184,9 @@ R语言作为数据分析的选项,并不是一定使用
 
 5. 统计学部分  增加传统金融的统计学函数,以及机器学习部分的函数
 
-
+## 协议| Protocol
+QUANTAXIS 在0.3.8-dev-fetch 分支内引入了标准化协议QAS,未来协议QAF
+详细参见 [QUANTAXIS-Protocol](https://github.com/yutiansut/QUANTAXIS/blob/0.3.8-dev-fetch/docs/readme.md)
 
 ## 组件|Component
 
@@ -283,10 +284,7 @@ else :
 
 Strategy 部分是一些策略,有md文件,也有对应代码.策略才是最核心的东西
 
-### Docs/
-文档部分
-### Tasks/
-异步任务
+
 
 ## 版本历史|History
 ```
