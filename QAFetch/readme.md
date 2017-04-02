@@ -19,7 +19,50 @@ QAFetch 参考了[quotation](https://github.com/Cuizi7/quotation)的思想,主�
 
 - 自定义的导入格式（尤其是各个策略团队的tick和ms级别的数据）
 
-
 ## 数据导入标准
 
+### Stock 行情数据
+[QAStandard-101] 行情数据格式
+- Client: QUANTAXIS
+- DataBase: Stock
+- Collections: day,min
+- collname: 
+
+examples
+```python
+import pymongo
+coll= pymongo.MongoClient(localhost,27017).QUANTAXIS.Stock.day
+coll.find({}) # 查询数据
+coll.find_one({}) # 查询一条
+coll.insert({}) # 插入数据
+coll.update({}) # 更新数据
+```
+
+### Future 行情数据
+[QAStandard-201] 行情数据格式
+- Client: QUANTAXIS
+- DataBase: Future
+- Collections: day,min,ms
+- collname: 
+
+examples
+```python
+import pymongo
+coll= pymongo.MongoClient(localhost,27017).QUANTAXIS.Future.day
+coll.find({}) # 查询数据
+coll.find_one({}) # 查询一条
+coll.insert({}) # 插入数据
+coll.update({}) # 
+### Options 行情数据
+### 舆情信息
+### 财务指标数据
+### 指标数据
 ## 数据库
+
+### MongoDB
+
+
+### 其他
+- MySQL
+- PostgreSQL
+- MSSQL SERVER
