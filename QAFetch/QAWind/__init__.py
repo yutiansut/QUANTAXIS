@@ -7,3 +7,38 @@ from . import stock
 def get_stock_Info(name,startDate,endDate):
     return stock.getStock_Info(name,startDate,endDate)
 
+def get_stock_day(name,startDate,endDate):
+    return stock.getStock_Day(name,startDate,endDate)
+
+
+
+def get_stock_min():
+    pass
+def get_stock_tick():
+    pass
+def get_stock_indicator():
+    pass
+def get_future_day():
+    pass
+def get_future_min():
+    pass
+def get_future_tick():
+    pass
+def get_future_info():
+    pass
+def get_options_day():
+    pass
+def get_options_min():
+    pass
+def get_options_tick():
+    pass
+def get_options_info():
+    pass
+def save_stock():
+    pass
+def save_future():
+    pass
+def save_options():
+    pass
+def save_all():
+    pass

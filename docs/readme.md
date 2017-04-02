@@ -8,8 +8,8 @@ QUANTAXIS-Protocol
     - [QUANTAXIS Standard Protocol  [QAS]](#quantaxis-standard-protocol--qas)
     - [QUANTAXIS Future Protocol  [QAF]](#quantaxis-future-protocol--qaf)
 - [QAStandard-00x QUANTAXIS](#qastandard-00x-quantaxis)
-    - [QUANTAXIS-001 品牌](#quantaxis-001-品牌)
-    - [QUANTAXIS-002 开源协议](#quantaxis-002-开源协议)
+    - [QAStandard-001 品牌](#qastandard-001-品牌)
+    - [QAStandard-002 开源协议](#qastandard-002-开源协议)
 - [QAStandard-10x 数据](#qastandard-10x-数据)
     - [QAStandard-101 行情数据](#qastandard-101-行情数据)
         - [QAS-101-1 Stock](#qas-101-1-stock)
@@ -37,6 +37,7 @@ QUANTAXIS-Protocol
         - [QAS-501-1 Fetch](#qas-501-1-fetch)
         - [QAS-501-2 Market](#qas-501-2-market)
         - [QAS-501-3 Account](#qas-501-3-account)
+        - [QAS-501-4 Databases](#qas-501-4-databases)
     - [QAStandard-502 Http API/RESTFul](#qastandard-502-http-apirestful)
 
 <!-- /TOC -->
@@ -47,13 +48,13 @@ QUANTAXISStandard是目前的协议标准,简称**QAS**
 ### QUANTAXIS Future Protocol  [QAF]
 QUANTAXISFuture 是未来即将添加的或是在测试版中的功能标准,简称**QAF**
 ## QAStandard-00x QUANTAXIS
-### QUANTAXIS-001 品牌
+### QAStandard-001 品牌
 QUANTAXIS的Logo需要遵循docs/logo标准下的logo,有两种形式的logo
 
 <img width="150" height="150" src="http://i4.buimg.com/567571/62c510db7915837a.png"/>
 <img width="150" height="150" src="http://i4.buimg.com/567571/2120bbe28a4a9a4b.png"/>
 
-### QUANTAXIS-002 开源协议
+### QAStandard-002 开源协议
 QUANTAXIS 基于MIT开源协议
 ```
 The MIT License (MIT)
@@ -88,12 +89,13 @@ SOFTWARE.
 
 ```
 ## QAStandard-10x 数据
+QAS-10x需要遵循[QAS-501-4](#qas-501-4-databases)规范
 ### QAStandard-101 行情数据
 #### QAS-101-1 Stock
 - Client: QUANTAXIS
 - DataBase: Stock
 - Collections: day,min
-- BasicalName: VarietyName,DateTime,Open,High,Low,Close,Volume  
+- BasicalName: varietyName,dateTime,open,high,low,close,volume 
 - AdvanceName: 
 
 **Basical**指的是存入数据库/更新数据时必须要有的字段
@@ -104,7 +106,7 @@ SOFTWARE.
 - Client: QUANTAXIS
 - DataBase: Future
 - Collections: day,min,ms
-- BasicalName: VarietyName,DateTime,Open,High,Low,Close,Volume 
+- BasicalName: varietyName,dateTime,open,high,low,close,volume
 - AdvanceName: 
 
 **Basical**指的是存入数据库/更新数据时必须要有的字段
@@ -115,7 +117,7 @@ SOFTWARE.
 - Client: QUANTAXIS
 - DataBase: Options
 - Collections: day,min,ms
-- BasicalName: VarietyName,DateTime,Open,High,Low,Close,Volume 
+- BasicalName: varietyName,dateTime,open,high,low,close,volume 
 - AdvanceName: 
 
 **Basical**指的是存入数据库/更新数据时必须要有的字段
@@ -139,8 +141,8 @@ ADTM动态买卖气指标,ATR真实波幅,BBI多空指数,BBIBOLL多空布林线
 - Client: QUANTAXIS
 - DataBase: Info
 - Collections: news/opinion
-- BasicalName: title,datetime,content,author,refence
-- AdvanceName: comments,likenum
+- BasicalName: title,datetime,content,author,reference
+- AdvanceName: comments,likeNum
 
 #### QAS-102-2 财务
 - Client: QUANTAXIS
@@ -159,6 +161,17 @@ QAS103主要规范了爬虫的命名标准，UserAgent设置，cookie，session�
 #### QAS-201-1 交易日
 分市场的交易日存储,属于行情序列,但是是分片数据[不遵循QAS101]
 按时间序列存储当日交易的所有股票,期货名称
+
+- Client: QUANTAXIS
+- DataBase: Days
+- Collections: days
+- BasicalName: varietyName,datetime,exchange
+
+```python
+coll=pymongo.MongoClient().Days.days
+coll.find({"varietyName":self.varietyName,"datetime":self.datetime}).count()
+```
+
 #### QAS-201-2 交易量
 交易量从[QAS-101](#qastandard-101-行情数据)的数据格式规范中获取,此处的规范主要针对撮合机制,当策略的请求交易量大于当日真实成交量的1/8,则判断无法成交.
 ### QAStandard-202 撮合机制
@@ -187,7 +200,7 @@ get_future_day
 get_future_min
 get_future_tick
 get_future_info
-get_future_day
+get_options_day
 get_options_min
 get_options_tick
 get_options_info
@@ -206,5 +219,14 @@ QAS-501-2 主要规定了市场交易的调用接口规范，包括数据返回�
 
 #### QAS-501-3 Account
 
-
+#### QAS-501-4 Databases
+QAS-501-4 主要规定了数据库存储和调用时的命名规范,采用驼峰法则去定义
+常见的Name定义
+- varietyName
+- datetime(timestamp)
+- open(double)
+- high(double)
+- low(double)
+- close(double)
+- volume(double)
 ### QAStandard-502 Http API/RESTFul
