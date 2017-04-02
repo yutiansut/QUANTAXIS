@@ -175,6 +175,30 @@ ADTM动态买卖气指标,ATR真实波幅,BBI多空指数,BBIBOLL多空布林线
 ## QAStandard-50x API
 ### QAStandard-501 内部API
 #### QAS-501-1 Fetch
+QAS501-1主要规定了数据获取的打包规范,遵循此规范,可以进行API二次打包
+```python
+get_stock_day
+get_stock_min
+get_stock_tick
+get_stock_info
+get_stock_indicator
+get_future_day
+get_future_min
+get_future_tick
+get_future_info
+get_future_day
+get_options_min
+get_options_tick
+get_options_info
+
+
+save_stock
+save_future
+save_options
+save_all
+
+```
+
 #### QAS-501-2 Market
 #### QAS-501-3 Account
 ### QAStandard-502 Http API/RESTFul
