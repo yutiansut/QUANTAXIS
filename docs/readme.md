@@ -92,9 +92,9 @@ SOFTWARE.
 QAS-10x需要遵循[QAS-501-4](#qas-501-4-databases)规范
 ### QAStandard-101 行情数据
 #### QAS-101-1 Stock
-- Client: QUANTAXIS
-- DataBase: Stock
-- Collections: day,min
+
+- DataBase: quantaxis
+- Collections: stock_day,stock_min
 - BasicalName: varietyName,dateTime,open,high,low,close,volume 
 - AdvanceName: 
 
@@ -103,9 +103,9 @@ QAS-10x需要遵循[QAS-501-4](#qas-501-4-databases)规范
 **Advance**指的是存入数据库/更新数据时定制的字段,非必须
 
 #### QAS-101-2 Future
-- Client: QUANTAXIS
-- DataBase: Future
-- Collections: day,min,ms
+
+- DataBase: quantaxis
+- Collections: future_day,future_min,future_ms
 - BasicalName: varietyName,dateTime,open,high,low,close,volume
 - AdvanceName: 
 
@@ -114,9 +114,9 @@ QAS-10x需要遵循[QAS-501-4](#qas-501-4-databases)规范
 **Advance**指的是存入数据库/更新数据时定制的字段,非必须
 
 #### QAS-101-3 Options
-- Client: QUANTAXIS
-- DataBase: Options
-- Collections: day,min,ms
+
+- DataBase: quantaxis
+- Collections: options_day,options_min,options_ms
 - BasicalName: varietyName,dateTime,open,high,low,close,volume 
 - AdvanceName: 
 
@@ -125,9 +125,9 @@ QAS-10x需要遵循[QAS-501-4](#qas-501-4-databases)规范
 **Advance**指的是存入数据库/更新数据时定制的字段,非必须
 
 #### QAS-101-4 Indicator
-- Client: QUANTAXIS
-- DataBase: Indicator
-- Collections: day,min,ms
+
+- DataBase: quantaxis
+- Collections: indicator_day,indicator_min,indicator_ms
 - BasicalName:
 - AdvanceName:
 
@@ -138,16 +138,16 @@ ADTM动态买卖气指标,ATR真实波幅,BBI多空指数,BBIBOLL多空布林线
 ```
 ### QAStandard-102 文本信息数据
 #### QAS-102-1 舆情
-- Client: QUANTAXIS
-- DataBase: Info
-- Collections: news/opinion
+
+- DataBase: quantaxis
+- Collections: news
 - BasicalName: title,datetime,content,author,reference
 - AdvanceName: comments,likeNum
 
 #### QAS-102-2 财务
-- Client: QUANTAXIS
-- DataBase: Financial
-- Collections: info,balance,profit,cash
+
+- DataBase: quantaxis
+- Collections: finance_info,finance_balance,finance_profit,finance_cash
 
 
 ### QAStandard-103 爬虫
@@ -162,13 +162,13 @@ QAS103主要规范了爬虫的命名标准，UserAgent设置，cookie，session�
 分市场的交易日存储,属于行情序列,但是是分片数据[不遵循QAS101]
 按时间序列存储当日交易的所有股票,期货名称
 
-- Client: QUANTAXIS
-- DataBase: Days
-- Collections: days
+
+- DataBase: quantaxis
+- Collections: dates
 - BasicalName: varietyName,datetime,exchange
 
 ```python
-coll=pymongo.MongoClient().Days.days
+coll=pymongo.MongoClient().quantaxis.dates
 coll.find({"varietyName":self.varietyName,"datetime":self.datetime}).count()
 ```
 
