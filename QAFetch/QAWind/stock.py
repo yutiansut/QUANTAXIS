@@ -20,16 +20,17 @@ def getStock_Info(startDate,endDate,name):
         #print(data)
         if (data.ErrorCode!=0):
             print ("Connent to Wind successfully")
-    return data.Data
+            return data.Data
 def getStock_Day(startDate,endDate,name):
     if(is_valid_date(endDate)==False):
         print ("wrong date")
     else :
         data=w.wsd(name,"sec_name,pre_close,open,high,close,volume,amt,dealnum,chg,pct_chg,swing,vwap,adjfactor,turn,free_turn,lastradeday_s,last_trade_day,rel_ipo_chg,rel_ipo_pct_chg,trade_status,susp_days,susp_reason,maxupordown,open3,high3,low3,close3",startDate,endDate, "Fill=Previous;PriceAdj=F")
-        print(data)
+        #data=w.wsd("000002.SZ", "open,high,low,close,volume", "2017-03-03", "2017-04-01", "PriceAdj=B")
+        #print(data)
         if (data.ErrorCode==0):
             print ("Connent to Wind successfully")
-    return data.Data
+            return data.Data
 def getStock_Indicator(startDate,endDate,name):
     if(is_valid_date(endDate)==False):
         print ("wrong date")

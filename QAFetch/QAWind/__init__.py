@@ -5,10 +5,10 @@ from . import stock,tradeday
 # 二次封装基于[QAS-501-1](https://github.com/yutiansut/QUANTAXIS/tree/0.3.8-dev-fetch/docs#qas-501-1-fetch)
 
 def get_stock_Info(name,startDate,endDate):
-    return stock.getStock_Info(name,startDate,endDate)
+    return stock.getStock_Info(startDate,endDate,name)
 
 def get_stock_day(name,startDate,endDate):
-    return stock.getStock_Day(name,startDate,endDate)
+    return stock.getStock_Day(startDate,endDate,name)
 
 def get_trade_date(endDate,exchange):
     return tradeday.get_trade_date(endDate,exchange)
