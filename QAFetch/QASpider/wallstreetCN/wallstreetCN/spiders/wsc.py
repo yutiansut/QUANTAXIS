@@ -124,7 +124,7 @@ class WscSpider(scrapy.Spider):
             news_url = news_data.get("url", None)
             query = querylist()
             count =query.queryMongodbSame('title','news_url',news_url)
-            print count
+            print (count)
             if count == 0:
                 item["title"]=news_data.get("title", None)
                 item["comment_num"]=news_data.get("commentCount", None)
@@ -137,9 +137,9 @@ class WscSpider(scrapy.Spider):
                 yield item
                 yield articlePool
                 countx = query.queryMongodbSame('articles','url',news_url)
-                print 'articles url'
-                print news_url
-                print countx
+                print ('articles url')
+                print (news_url)
+                print (countx)
                 if countx == 0:
                     yield scrapy.Request(news_url,self.parse_article)
                 else:
@@ -147,10 +147,10 @@ class WscSpider(scrapy.Spider):
                     continue
             else:
                 countx = query.queryMongodbSame('articles','url',news_url)
-                print countx
+                print (countx)
                 if countx == 0:
                     print ('artiles will be insert to database')
-                    print news_url
+                    print (news_url)
                     yield scrapy.Request(news_url,self.parse_article)
                 else:
                     print ('articles are already in database')

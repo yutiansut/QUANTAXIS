@@ -3,7 +3,6 @@
 import sys
 sys.path.append('c:\\quantaxis')
 import QAFetch
-import typing
 import unittest
 
 
