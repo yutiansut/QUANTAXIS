@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-import pydata.getdata as gt
-import pydata.gmdata as mt
+import QACrawlData.getdata as gt
+
 
 def get_financial(symbol):#3大财报
     return gt.get_financial(symbol)
@@ -71,54 +71,3 @@ def get_calendar(starttime,endtime):#交易日历
     return  gt.get_calendar(starttime,endtime)
 def get_future_tick(symbol):#期货TICK数据
     return gt.get_future_tick(symbol)
-###############################################
-#myquant接口
-def get_shse():
-    return mt.get_shse()
-def get_szse():
-    return mt.get_szse()
-def get_dce():
-    return mt.get_dce()
-def get_czce():
-    return mt.get_czce()
-def get_shfe():
-    return mt.get_shfe()
-def get_cffex():
-    return mt.get_cffex()
-def get_index():#证券指数
-    return mt.get_index()
-def get_constituents(index_symbol):#指数权重
-    return mt.get_constituents(index_symbol)#指数权重
-def get_etf():#期权
-    return mt.get_etf()
-def get_fund():
-    return mt.get_fund()
-def get_instruments_by_name(name):#期货接口----这里注意代码大小写，大写是连续合约，小写是具体的合约
-    return mt.get_instruments_by_name(name)
-def get_financial_index(symbol, t_begin, t_end):
-    return mt.get_financial_index(symbol, t_begin, t_end)
-def get_last_financial_index(symbol_list):
-    return mt.get_last_financial_index(symbol_list)
-def get_share_index(symbol_list):
-    return mt.get_share_index(symbol_list)
-def get_market_index(symbol_list):
-    return mt.get_market_index(symbol_list)
-def get_ticks(symbol, begin_time, end_time):
-    return mt.get_ticks(symbol, begin_time, end_time)#tick
-def get_last_ticks(symbol_list):
-    return mt.get_last_ticks(symbol_list)
-def get_last_n_ticks(symbol, n):
-    return mt.get_last_n_ticks(symbol, n)#n tick 
-def get_bars(symbol, bar_type, begin_time, end_time):#分钟K
-    return mt.get_bars(symbol, bar_type, begin_time, end_time)
-def get_last_bars(symbol_list, bar_type):#最后一个分钟K
-    return mt.get_last_bars(symbol_list, bar_type)
-def get_last_n_bars(symbol, bar_type, n):#N个分钟K
-    return mt.get_last_n_bars(symbol, bar_type, n)
-def get_dailybars(symbol, begin_time, end_time):#日线BAR
-    return mt.get_dailybars(symbol, begin_time, end_time)
-def get_last_dailybars(symbol_list):#最后
-    return mt.get_last_dailybars(symbol_list)
-def get_last_n_dailybars(symbol, n):#N个日线K
-    return mt.get_last_n_dailybars(symbol, n)
-

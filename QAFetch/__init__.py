@@ -2,8 +2,8 @@
 
 import QAFetch.QAWind as QAWind
 import QAFetch.QATushare as QATushare
-import QAFetch.QAGmsdk as QAGmsdk
-import QAFetch.QACrawlData as QACD
+#import QAFetch.QAGmsdk as QAGmsdk
+#import QAFetch.QACrawlData as QACD
 
 """
 author yutiansut

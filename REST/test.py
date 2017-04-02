@@ -1,13 +1,10 @@
 from flask import Flask, url_for
-from REST.Data import  *
-from REST.Markets import stockMarkets
-from REST.Tasks import *
-from REST.Profolio import *
-from REST.Risk import *
+import sys
+sys.path.append('c:\\quantaxis')
 import QAFetch
 app = Flask(__name__)
 
-def __main__():
+ef __main__():
     
     @app.route('/')
     def api_root():
