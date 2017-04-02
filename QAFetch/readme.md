@@ -2,6 +2,7 @@
 数据获取部分
 QAFetch 参考了[quotation](https://github.com/Cuizi7/quotation)的思想,主要是将各种数据获取的途径标准化
 
+QAFetch 遵循[QAStandard-10x]协议标准,如果需要自定义高级数据,需要遵循[QAS-104]
 
 ## 数据获取路径
 ### 免费的数据获取路径
@@ -18,6 +19,7 @@ QAFetch 参考了[quotation](https://github.com/Cuizi7/quotation)的思想,主�
 ### 自定义的数据导入
 
 - 自定义的导入格式（尤其是各个策略团队的tick和ms级别的数据）
+[QAS-104]
 
 ## 数据导入标准
 

@@ -65,7 +65,7 @@ def getStock_Xueqiu(startDate,endDate,name):
             print ("Connent to Wind successfully")
     return data.Data
 def getStock_Financial(startDate,endDate,name):
-    
+    pass
 def is_valid_date(str):
     try:
         time.strptime(str, "%Y-%m-%d")
