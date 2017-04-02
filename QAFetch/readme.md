@@ -27,15 +27,15 @@ QAFetch 遵循[QAStandard-10x]协议标准,如果需要自定义高级数据,需
 
 ### Stock 行情数据
 [QAStandard-101-1] 行情数据格式-股票
-- Client: QUANTAXIS
-- DataBase: Stock
-- Collections: day,min
+
+- DataBase: quantaxis
+- Collections: stock_day,stock_min
 - collname: 
 
 examples
 ```python
 import pymongo
-coll= pymongo.MongoClient(localhost,27017).QUANTAXIS.Stock.day
+coll= pymongo.MongoClient(localhost,27017).quantaxis.stock_day
 coll.find({}) # 查询数据
 coll.find_one({}) # 查询一条
 coll.insert({}) # 插入数据
@@ -44,15 +44,15 @@ coll.update({}) # 更新数据
 
 ### Future 行情数据
 [QAStandard-101-2] 行情数据格式-期货
-- Client: QUANTAXIS
-- DataBase: Future
-- Collections: day,min,ms
+
+- DataBase: quantaxis
+- Collections: future_day,future_min,future_ms
 - collname: 
 
 examples
 ```python
 import pymongo
-coll= pymongo.MongoClient(localhost,27017).QUANTAXIS.Future.day
+coll= pymongo.MongoClient(localhost,27017).quantaxis.future_day
 coll.find({}) # 查询数据
 coll.find_one({}) # 查询一条
 coll.insert({}) # 插入数据
@@ -60,15 +60,15 @@ coll.update({}) #
 ```
 ### Options 行情数据
 [QAStandard-101-3] 行情数据格式-期权
-- Client: QUANTAXIS
-- DataBase: Future
-- Collections: day,min,ms
+
+- DataBase: quantaxis
+- Collections: options_day,options_min,options_ms
 - collname: 
 
 examples
 ```python
 import pymongo
-coll= pymongo.MongoClient(localhost,27017).QUANTAXIS.Future.day
+coll= pymongo.MongoClient(localhost,27017).quantaxis.options_day
 coll.find({}) # 查询数据
 coll.find_one({}) # 查询一条
 coll.insert({}) # 插入数据
