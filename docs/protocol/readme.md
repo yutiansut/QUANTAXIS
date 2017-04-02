@@ -1,10 +1,6 @@
 QUANTAXIS-Protocol
 ------
 
-## 简介
-QAProtocol是为了规范化和标准化QUANTAXIS的数据获取,数据存储,模拟市场交易,以及标准化输出而建立的协议.
-### a. QUANTAXISStandard
-### b. QUANTAXISFuture
 <!-- TOC -->
 
 - [简介](#简介)
@@ -26,7 +22,12 @@ QAProtocol是为了规范化和标准化QUANTAXIS的数据获取,数据存储,�
     - [QAStandard-401 状态码](#qastandard-401-状态码)
 
 <!-- /TOC -->
-
+## 简介
+QAProtocol是为了规范化和标准化QUANTAXIS的数据获取,数据存储,模拟市场交易,以及标准化输出而建立的协议.
+### a. QUANTAXISStandard
+QUANTAXISStandard是目前的协议标准
+### b. QUANTAXISFuture
+QUANTAXISFuture 是未来即将添加的或是在测试版中的功能标准
 ## QAStandard-10x 数据
 ### QAStandard-101 行情数据
 ### QAStandard-102 文本信息数据
