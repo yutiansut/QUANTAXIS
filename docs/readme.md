@@ -1,12 +1,12 @@
 QUANTAXIS-Protocol
-QUANTAXIS 标准化协议QAS/未来协议QAF
+标准化协议QAS/未来协议QAF
 ------
 
 <!-- TOC -->
 
-- [简介](#简介)
-    - [a. QUANTAXISStandard](#a-quantaxisstandard)
-    - [b. QUANTAXISFuture](#b-quantaxisfuture)
+- [简介 Intro](#简介-intro)
+    - [QUANTAXIS Standard Protocol  [QAS]](#quantaxis-standard-protocol--qas)
+    - [QUANTAXIS Future Protocol  [QAF]](#quantaxis-future-protocol--qaf)
 - [QAStandard-00x QUANTAXIS](#qastandard-00x-quantaxis)
     - [QUANTAXIS-001 品牌](#quantaxis-001-品牌)
     - [QUANTAXIS-002 开源协议](#quantaxis-002-开源协议)
@@ -40,11 +40,11 @@ QUANTAXIS 标准化协议QAS/未来协议QAF
     - [QAStandard-502 Http API/RESTFul](#qastandard-502-http-apirestful)
 
 <!-- /TOC -->
-## 简介
+## 简介 Intro
 QAProtocol是为了规范化和标准化QUANTAXIS的数据获取,数据存储,模拟市场交易,以及标准化输出而建立的协议.
-### a. QUANTAXISStandard
+### QUANTAXIS Standard Protocol  [QAS]
 QUANTAXISStandard是目前的协议标准,简称**QAS**
-### b. QUANTAXISFuture
+### QUANTAXIS Future Protocol  [QAF]
 QUANTAXISFuture 是未来即将添加的或是在测试版中的功能标准,简称**QAF**
 ## QAStandard-00x QUANTAXIS
 ### QUANTAXIS-001 品牌
