@@ -8,13 +8,18 @@ import QAFetch.QATushare as QATushare
 """
 author yutiansut
 """
+def use(package):
+    if package in ['wind']:
+        return QAWind
+    elif package in ['tushare','ts']:
+        return QATushare
 
-def get_stock_day(name,startDate,endDate):
-    try:
-        return QAWind.get_stock_day(name,startDate,endDate)
-    except:
-        return QATushare.get_stock_day(name,startDate,endDate)
+def get_stock_day(package,name,startDate,endDate):
+    Engine=use(package)
+    return Engine.get_stock_day(name,startDate,endDate)
+
     
-def get_trade_date(endDate,exchange):
-    return QAWind.get_trade_date(endDate,exchange)
+def get_trade_date(package,endDate,exchange):
+    Engine=use(package)
+    return Engine.get_trade_date(endDate,exchange)
 

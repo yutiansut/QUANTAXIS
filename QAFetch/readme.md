@@ -2,6 +2,8 @@
 数据获取部分
 QAFetch 参考了[quotation](https://github.com/Cuizi7/quotation)的思想,主要是将各种数据获取的途径标准化
 
+QAFetch 同时也参考了[easyquotation](https://github.com/shidenggui/easyquotation)的'use'思想,通过use来引入模块包
+
 QAFetch 遵循[QAStandard-10x]协议标准,如果需要自定义高级数据,需要遵循[QAS-104]
 
 ## 数据获取路径
