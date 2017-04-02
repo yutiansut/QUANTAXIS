@@ -17,6 +17,7 @@ class market():
     def market_make_deal(self):
         
         self.coll=self.db.stock
+        
         item=self.coll.find_one({"variety_name":self.bid_variety,"datetime":self.bid_time})
         print(item["high"])
         print(item["low"])
