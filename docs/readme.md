@@ -15,11 +15,15 @@ QUANTAXIS-Protocol
         - [QAS-101-2 Future](#qas-101-2-future)
         - [QAS-101-3 Options](#qas-101-3-options)
     - [QAStandard-102 文本信息数据](#qastandard-102-文本信息数据)
+        - [QAS-102-1 舆情](#qas-102-1-舆情)
+        - [QAS-102-2 财务](#qas-102-2-财务)
     - [QAStandard-103 爬虫](#qastandard-103-爬虫)
     - [QAStandard-104 自定义数据](#qastandard-104-自定义数据)
 - [QAStandard-20x 市场](#qastandard-20x-市场)
     - [QAStandard-201 交易](#qastandard-201-交易)
-    - [QAStandard-202](#qastandard-202)
+        - [QAS-201-1 交易日](#qas-201-1-交易日)
+        - [QAS-201-2 交易量](#qas-201-2-交易量)
+    - [QAStandard-202 撮合机制](#qastandard-202-撮合机制)
 - [QAStandard-30x 用户](#qastandard-30x-用户)
     - [QAStandard-301 账户状态](#qastandard-301-账户状态)
     - [QAStandard-302 账户策略](#qastandard-302-账户策略)
@@ -31,9 +35,9 @@ QUANTAXIS-Protocol
 ## 简介
 QAProtocol是为了规范化和标准化QUANTAXIS的数据获取,数据存储,模拟市场交易,以及标准化输出而建立的协议.
 ### a. QUANTAXISStandard
-QUANTAXISStandard是目前的协议标准
+QUANTAXISStandard是目前的协议标准,简称**QAS**
 ### b. QUANTAXISFuture
-QUANTAXISFuture 是未来即将添加的或是在测试版中的功能标准
+QUANTAXISFuture 是未来即将添加的或是在测试版中的功能标准,简称**QAF**
 ## QAStandard-00x QUANTAXIS
 ### QUANTAXIS-001 品牌
 QUANTAXIS的Logo需要遵循docs/logo标准下的logo,有两种形式的logo
@@ -81,7 +85,7 @@ SOFTWARE.
 - Client: QUANTAXIS
 - DataBase: Stock
 - Collections: day,min
-- BasicalName: VarietyName,DateTime,Open,High,Low,Close 
+- BasicalName: VarietyName,DateTime,Open,High,Low,Close,Volume  
 - AdvanceName: 
 
 **Basical**指的是存入数据库/更新数据时必须要有的字段
@@ -92,17 +96,41 @@ SOFTWARE.
 - Client: QUANTAXIS
 - DataBase: Future
 - Collections: day,min,ms
+- BasicalName: VarietyName,DateTime,Open,High,Low,Close,Volume 
+- AdvanceName: 
+
+**Basical**指的是存入数据库/更新数据时必须要有的字段
+
+**Advance**指的是存入数据库/更新数据时定制的字段,非必须
+
 #### QAS-101-3 Options
 - Client: QUANTAXIS
 - DataBase: Options
 - Collections: day,min,ms
+- BasicalName: VarietyName,DateTime,Open,High,Low,Close,Volume 
+- AdvanceName: 
+
+**Basical**指的是存入数据库/更新数据时必须要有的字段
+
+**Advance**指的是存入数据库/更新数据时定制的字段,非必须
 ### QAStandard-102 文本信息数据
+#### QAS-102-1 舆情
+
+#### QAS-102-2 财务
 ### QAStandard-103 爬虫
+
 ### QAStandard-104 自定义数据
+自定义数据需要按照分类标准引入数据库,如果是QAS101时间序列行情数据,QAS102文本信息数据,可以定制性的更新数据库(使用高级字段AdvanceName)
+
+
 ## QAStandard-20x 市场
 ### QAStandard-201 交易
-
-### QAStandard-202 
+#### QAS-201-1 交易日
+分市场的交易日存储,属于行情序列,但是是分片数据[不遵循QAS101]
+按时间序列存储当日交易的所有股票,期货名称
+#### QAS-201-2 交易量
+交易量从[QAS-101](#qastandard-101-行情数据)的数据格式规范中获取,此处的规范主要针对撮合机制,当策略的请求交易量大于当日真实成交量的1/8,则判断无法成交.
+### QAStandard-202 撮合机制
 ## QAStandard-30x 用户
 ### QAStandard-301 账户状态
 ### QAStandard-302 账户策略
