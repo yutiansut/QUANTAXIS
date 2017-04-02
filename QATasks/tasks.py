@@ -10,5 +10,5 @@ def update_data():
   pass
 def update_spider(name):
   pass
-def update_all_spider():
+def update_all_spiders():
   pass
