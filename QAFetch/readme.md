@@ -22,7 +22,7 @@ QAFetch 参考了[quotation](https://github.com/Cuizi7/quotation)的思想,主�
 ## 数据导入标准
 
 ### Stock 行情数据
-[QAStandard-101] 行情数据格式
+[QAStandard-101-1] 行情数据格式-股票
 - Client: QUANTAXIS
 - DataBase: Stock
 - Collections: day,min
@@ -39,7 +39,7 @@ coll.update({}) # 更新数据
 ```
 
 ### Future 行情数据
-[QAStandard-201] 行情数据格式
+[QAStandard-101-2] 行情数据格式-期货
 - Client: QUANTAXIS
 - DataBase: Future
 - Collections: day,min,ms
@@ -53,14 +53,33 @@ coll.find({}) # 查询数据
 coll.find_one({}) # 查询一条
 coll.insert({}) # 插入数据
 coll.update({}) # 
+```
 ### Options 行情数据
+[QAStandard-101-3] 行情数据格式-期权
+- Client: QUANTAXIS
+- DataBase: Future
+- Collections: day,min,ms
+- collname: 
+
+examples
+```python
+import pymongo
+coll= pymongo.MongoClient(localhost,27017).QUANTAXIS.Future.day
+coll.find({}) # 查询数据
+coll.find_one({}) # 查询一条
+coll.insert({}) # 插入数据
+coll.update({}) # 
+```
 ### 舆情信息
+[QAStandard-102-1] 文本信息格式-舆情
 ### 财务指标数据
+[QAStandard-102-2] 文本信息格式-财务
+
 ### 指标数据
+[QAStandard-101-4] 行情数据格式-指标
 ## 数据库
 
 ### MongoDB
-
 
 ### 其他
 - MySQL
