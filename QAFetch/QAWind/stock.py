@@ -73,8 +73,3 @@ def is_valid_date(str):
     except:
         return False
         
-def test():
-    #a=getStockInfo("2000-01-01","2017-03-29","000001.SZ")
-    a=getStockData_day("2000-01-01","2015-03-29","000001.SZ")
-    print (a)
-test()
