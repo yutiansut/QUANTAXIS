@@ -4,9 +4,9 @@ import os
 import sys
  
 try:
-    from setuptools import setup
+    from setuptools  import setup
 except:
-    from distutils.core import setup
+    from  distutils.core import setup
 """
 打包的用的setup必须引入，
 """
@@ -46,7 +46,7 @@ AUTHOR_EMAIL = "yutiansut@qq.com"
  
 URL = "http://www.yutiansut.com"
 
-VERSION = "0.3.8-beta"
+VERSION = "0.3.8beta"
 
  
 LICENSE = "MIT"
