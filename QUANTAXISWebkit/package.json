@@ -1,6 +1,6 @@
 {
-  "name": "quantaxis",
-  "version": "0.3.8-dev-fetch",
+  "name": "quantaxiswebkit",
+  "version": "0.3.8-dev-alpha-packages",
   "description": " Integrated Quantitative Framework",
   "website":"http://www.yutiansut.com",
   "repository": {
