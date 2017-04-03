@@ -5,6 +5,8 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过
 > 0.3.8 版本将对于一体化和模块化流程进行进一步的优化
 
 ![version](https://img.shields.io/badge/Version-%200.3.8dev/alpha/packages-orange.svg)
+![Pypi](https://img.shields.io/badge/Pypi-%200.3.8-blue.svg)
+![Npm](https://img.shields.io/badge/Npm-%200.3.8-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
 ![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
 ![QQ group](https://img.shields.io/badge/QQGroup-%20563280067-yellow.svg)
@@ -19,3 +21,5 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过
 该版本将几个语言包分别合并封装,以python为目前quantaxis的主语言，负责数据获取，封装，数据库维护，回测等一系列工作。同时将nodejs(javascript)变为2级语言，成为quantaxis的插件一样的存在，你可以引入也可以选择不引入，因此，此时的nodejs以及庞大的node_modules可以无视。matlab，r的支持放在QUANTAXISAnalysis中，也是可选项。
 
 通过这个改动，方便了用户的下载部署过程，也减少了上手难度曲线
+
+>pip install quantaxis
