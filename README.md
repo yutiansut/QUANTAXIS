@@ -30,6 +30,8 @@ python setup.py install
 ```
 
 ### quantaxis-webkit
+> 为了防止手残党打错代码,我把NPM下的quantaxis词条也注册了，因此支持npm install quantaxis  和npm install quantaxiswebkit是一个效果
+
 ``` nodejs
 mkdir web && cd web
 npm install quantaxiswebkit
