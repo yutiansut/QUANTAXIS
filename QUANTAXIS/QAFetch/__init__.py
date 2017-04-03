@@ -1,12 +1,12 @@
 #coding:utf-8
 
-import QAFetch.QAWind as QAWind
-import QAFetch.QATushare as QATushare
+import QAWind as QAWind
+import QATushare as QATushare
 #import QAFetch.QAGmsdk as QAGmsdk
 #import QAFetch.QACrawlData as QACD
 import pymongo
 
-__author__:'yutiansut'
+
 """
 author yutiansut
 """

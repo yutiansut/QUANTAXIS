@@ -24,6 +24,8 @@ tushare/
 *.exe
 .exe
 .pypirc
+build/
+builds/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
