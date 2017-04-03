@@ -4,11 +4,12 @@ import time
 import datetime,re
 import pymongo
 from WindPy import w
-w.start()
+#w.start()
 
 
 #Stock
-def getStock_Info(startDate,endDate,name):
+def get_stock_info(name,startDate,endDate):
+    w.start()
     #get the all stock list on the endDate
     # judge the vaild date
     if(is_valid_date(endDate)==False):
@@ -21,7 +22,8 @@ def getStock_Info(startDate,endDate,name):
         if (data.ErrorCode!=0):
             print ("Connent to Wind successfully")
             return data.Data
-def getStock_Day(startDate,endDate,name):
+def get_stock_day(name,startDate,endDate):
+    w.start()
     if(is_valid_date(endDate)==False):
         print ("wrong date")
     else :
@@ -31,7 +33,8 @@ def getStock_Day(startDate,endDate,name):
         if (data.ErrorCode==0):
             print ("Connent to Wind successfully")
             return data.Data
-def getStock_Indicator(startDate,endDate,name):
+def get_stock_indicator(name,startDate,endDate):
+    w.start()
     if(is_valid_date(endDate)==False):
         print ("wrong date")
     else :
@@ -40,7 +43,8 @@ def getStock_Indicator(startDate,endDate,name):
         if (data.ErrorCode==0):
             print ("Connent to Wind successfully")
     return data.Data
-def getStock_Shape(startDate,endDate,name):
+def get_stock_shape(name,startDate,endDate):
+    w.start()
     if(is_valid_date(endDate)==False):
         print ("wrong date")
     else :
@@ -49,7 +53,8 @@ def getStock_Shape(startDate,endDate,name):
         if (data.ErrorCode==0):
             print ("Connent to Wind successfully")
     return data.Data
-def getStock_Risk(startDate,endDate,name):
+def get_stock_risk(name,startDate,endDate):
+    w.start()
     if(is_valid_date(endDate)==False):
         print ("wrong date")
     else :
@@ -57,7 +62,8 @@ def getStock_Risk(startDate,endDate,name):
         if (data.ErrorCode==0):
             print ("Connent to Wind successfully")
     return data.Data
-def getStock_Xueqiu(startDate,endDate,name):
+def get_stock_xueqiu(name,startDate,endDate):
+    w.start()
     if(is_valid_date(endDate)==False):
         print ("wrong date")
     else :
@@ -65,7 +71,8 @@ def getStock_Xueqiu(startDate,endDate,name):
         if (data.ErrorCode==0):
             print ("Connent to Wind successfully")
     return data.Data
-def getStock_Financial(startDate,endDate,name):
+def get_stock_financial(name,startDate,endDate):
+    w.start()
     pass
 def is_valid_date(str):
     try:
@@ -75,7 +82,7 @@ def is_valid_date(str):
         return False
         
 def get_trade_date(endDate,exchange):
-    
+    w.start()
     supportExchanges=["SSE","SZSE","CFFEX","SHFE","DCE","CZCE"]
     if (exchange in supportExchanges):
     #"SSE","SZSE","CFFEX","SHFE","DCE","CZCE"

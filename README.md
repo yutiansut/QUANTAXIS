@@ -36,3 +36,9 @@ npm install quantaxiswebkit
 cd node_modules/quantaxiswebkit
 npm run all
 ```
+## 使用示例
+```python
+import QUANTAXIS as QA
+print(QA.get_stock_day("ts","000001.SZ","2000-01-01","2017-04-01"))
+print(QA.get_stock_day("wind","000001.SZ","2000-01-01","2017-04-01"))
+```
