@@ -22,16 +22,43 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过
 
 通过这个改动，方便了用户的下载部署过程，也减少了上手难度曲线
 
-### quantaxis
-```bash
-pip install quantaxis
 
-git clone https://github.com/yutiansut/quantaxis
-cd quantaxis
-python setup.py install
+``` nodejs
+mkdir web && cd web
+npm install cnpm -g
+cnpm install quantaxiswebkit
+cd node_modules/quantaxiswebkit
+npm run all
 ```
 
-### quantaxis-webkit
-``` nodejs
-npm install quantaxiswebkit
+
+
+```
+一键安装
+npm run install
+一键启动所有服务:
+npm run all
+
+安装后台
+npm run install-backend
+安装web
+npm run install-web
+安装client
+npm run install-client
+
+
+一键启动web+后台
+npm run Xweb
+
+一键启动Client+后台
+npm run Xclient
+
+只启动backend (后台)
+npm run backend
+
+只启动前端web
+npm run website
+
+只启动客户端Client
+npm run client
 ```

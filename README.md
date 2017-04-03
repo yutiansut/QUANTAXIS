@@ -33,5 +33,8 @@ python setup.py install
 
 ### quantaxis-webkit
 ``` nodejs
+mkdir web && cd web
 npm install quantaxiswebkit
+cd node_modules/quantaxiswebkit
+npm run all
 ```
