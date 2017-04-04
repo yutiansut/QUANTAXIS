@@ -2,6 +2,10 @@ QUANTAXIS-Protocol
 标准化协议QAS/未来协议QAF
 ------
 
+- 当前版本:0.0.1  
+- 协议最后修改日期:2017-04-04
+- 项目版本:QUANTAXIS 0.3.8-dev-beta(pypi)
+
 <!-- TOC -->
 
 - [简介 Intro](#简介-intro)
@@ -24,7 +28,8 @@ QUANTAXIS-Protocol
 - [QAStandard-20x 市场](#qastandard-20x-市场)
     - [QAStandard-201 交易](#qastandard-201-交易)
         - [QAS-201-1 交易日](#qas-201-1-交易日)
-        - [QAS-201-2 交易量](#qas-201-2-交易量)
+        - [QAS-201-2 交易列表](#qas-201-2-交易列表)
+        - [QAS-201-3 交易量](#qas-201-3-交易量)
     - [QAStandard-202 撮合机制](#qastandard-202-撮合机制)
 - [QAStandard-30x 用户](#qastandard-30x-用户)
     - [QAStandard-301 账户状态](#qastandard-301-账户状态)
@@ -39,6 +44,7 @@ QUANTAXIS-Protocol
         - [QAS-501-3 Account](#qas-501-3-account)
         - [QAS-501-4 Databases](#qas-501-4-databases)
     - [QAStandard-502 Http API/RESTFul](#qastandard-502-http-apirestful)
+- [QAStandard-60x Util](#qastandard-60x-util)
 
 <!-- /TOC -->
 ## 简介 Intro
@@ -95,7 +101,7 @@ QAS-10x需要遵循[QAS-501-4](#qas-501-4-databases)规范
 
 - DataBase: quantaxis
 - Collections: stock_day,stock_min
-- BasicalName: varietyName,dateTime,open,high,low,close,volume 
+- BasicalName: code,name,timestamp,open,high,low,close,volume 
 - AdvanceName: 
 
 **Basical**指的是存入数据库/更新数据时必须要有的字段
@@ -106,7 +112,7 @@ QAS-10x需要遵循[QAS-501-4](#qas-501-4-databases)规范
 
 - DataBase: quantaxis
 - Collections: future_day,future_min,future_ms
-- BasicalName: varietyName,dateTime,open,high,low,close,volume
+- BasicalName: code,name,open,high,low,close,volume
 - AdvanceName: 
 
 **Basical**指的是存入数据库/更新数据时必须要有的字段
@@ -117,7 +123,7 @@ QAS-10x需要遵循[QAS-501-4](#qas-501-4-databases)规范
 
 - DataBase: quantaxis
 - Collections: options_day,options_min,options_ms
-- BasicalName: varietyName,dateTime,open,high,low,close,volume 
+- BasicalName: code,name,open,high,low,close,volume 
 - AdvanceName: 
 
 **Basical**指的是存入数据库/更新数据时必须要有的字段
@@ -164,15 +170,16 @@ QAS103主要规范了爬虫的命名标准，UserAgent设置，cookie，session�
 
 
 - DataBase: quantaxis
-- Collections: dates
-- BasicalName: varietyName,datetime,exchange
+- Collections: trade_date
+- BasicalName: date,datestamp,exchangeName
 
-```python
-coll=pymongo.MongoClient().quantaxis.dates
-coll.find({"varietyName":self.varietyName,"datetime":self.datetime}).count()
-```
 
-#### QAS-201-2 交易量
+#### QAS-201-2 交易列表
+- DataBase: quantaxis
+- Collections: stock_list
+- BasicalName: date,datestamp,stock[code,name]
+
+#### QAS-201-3 交易量
 交易量从[QAS-101](#qastandard-101-行情数据)的数据格式规范中获取,此处的规范主要针对撮合机制,当策略的请求交易量大于当日真实成交量的1/8,则判断无法成交.
 ### QAStandard-202 撮合机制
 简单的行情判断机制是报价在[low,high]区间内,同时bid_amount小于真实交易量的1/8
@@ -222,11 +229,13 @@ QAS-501-2 主要规定了市场交易的调用接口规范，包括数据返回�
 #### QAS-501-4 Databases
 QAS-501-4 主要规定了数据库存储和调用时的命名规范,采用驼峰法则去定义
 常见的Name定义
-- varietyName
-- datetime(timestamp)
+- code
+- name
 - open(double)
 - high(double)
 - low(double)
 - close(double)
 - volume(double)
 ### QAStandard-502 Http API/RESTFul
+
+## QAStandard-60x Util

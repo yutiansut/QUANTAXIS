@@ -15,12 +15,16 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过
 
 
 ![QUANTAXIS LOGO](http://i1.piimg.com/1949/62c510db7915837a.png)
-
+## QUANTAXIS-Stardand-Protocol
+QUANTAXIS 标准化协议和未来协议
+QUANTAXIS-Stardand-Protocol 版本号0.0.1
+详情参见  [QUANATXISProtocol](https://github.com/yutiansut/QUANTAXIS/tree/0.3.8-dev-beta-pypi/QUANTAXISProtocol)
 ## 0.3.8-dev-beta(pypi)版本说明
 
 0.3.8-dev-beta(pypi)是在dev-alpha(packages)上的bug修改版本，主要修复pip的问题
 > attention: 最好有wind的包,免费/机构版都可以
-
+> pypi version: 0.3.8-b0
+[为了保证最新更新，请使用git clone的方式安装]
 ### quantaxis
 ```bash
 pip install quantaxis
@@ -39,12 +43,27 @@ npm install quantaxiswebkit
 cd node_modules/quantaxiswebkit
 npm run all
 ```
+
+
 ## 使用示例
 ```python
 import QUANTAXIS as QA
+
+# get data
 print(QA.get_stock_day("ts","000001.SZ","2000-01-01","2017-04-01"))
 print(QA.get_stock_day("wind","000001.SZ","2000-01-01","2017-04-01"))
 print(QA.QAWind.get_stock_list('2017-04-04'))
+print(QA.QAWind.get_stock_indicator(name,startDate,endDate))
+print(QA.QAWind.get_stock_shape(name,startDate,endDate))
+
+# save data
+QA.QAUpdate.windsave.save_trade_date()
+QA.QAUpdate.windsave.save_stock_list()
+QA.QAUpdate.windsave.save_stock_day(name,startDate,endDate)
+#trade
+
+# utils
+print(QA.QAUtil.util_date_stamp('2017-01-01'))
 ```
 ```mongodb
 ```
