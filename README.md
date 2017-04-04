@@ -20,7 +20,7 @@ QUANTAXIS 标准化协议和未来协议
 
 QUANTAXIS-Stardand-Protocol 版本号0.0.2
 
-详情参见  [QUANATXISProtocol](https://github.com/yutiansut/QUANTAXIS/tree/0.3.8-dev-beta-pypi/QUANTAXISProtocol)
+详情参见  [QUANATXISProtocol](https://github.com/yutiansut/QUANTAXIS/tree/0.3.8-dev-gamma-deal/QUANTAXISProtocol)
 
 
 ## 0.3.8-dev-gamma(deal)版本说明

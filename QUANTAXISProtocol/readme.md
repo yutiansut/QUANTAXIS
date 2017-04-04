@@ -4,7 +4,7 @@ QUANTAXIS-Protocol
 
 - 当前版本:0.0.2
 - 协议最后修改日期:2017-04-05
-- 项目版本:QUANTAXIS 0.3.8-dev-beta(pypi)
+- 项目版本:QUANTAXIS 0.3.8-dev-gamma(deal)
 
 <!-- TOC -->
 
