@@ -63,6 +63,7 @@ setup(
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
     ],
+    install_requires = ['pymongo==3.5.0.dev0','celery==4.0.2','tushare==0.7.4','scrapy==1.3.3','selenium==3.3.1','easyquotation==0.5.1','lxml==3.7.3','pandas==0.19.2','matplotlib==2.0.0'],
     keywords = KEYWORDS,
     author = AUTHOR,
     author_email = AUTHOR_EMAIL,
