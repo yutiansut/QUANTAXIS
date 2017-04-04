@@ -4,8 +4,9 @@ import time
 import datetime,re
 import pymongo
 from WindPy import w
-#w.start()
 w.start()
+
+#w.start()
 
 #Stock
 def get_stock_info(name,startDate,endDate):
@@ -23,7 +24,7 @@ def get_stock_info(name,startDate,endDate):
             print ("Connent to Wind successfully")
             return data.Data
 def get_stock_day(name,startDate,endDate):
-    w.start()
+    #w.start()
     
     if(is_valid_date(endDate)==False):
         print ("wrong date")
