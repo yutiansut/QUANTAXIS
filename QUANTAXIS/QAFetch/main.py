@@ -6,7 +6,9 @@ from . import QATushare as QATushare
 #import QAFetch.QACrawlData as QACD
 import pymongo
 
-
+from WindPy import w
+#w.start()
+w.start()
 """
 author yutiansut
 """
