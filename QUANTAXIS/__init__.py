@@ -12,3 +12,6 @@ from QUANTAXIS.QAMarket import (deal)
 from QUANTAXIS.QASpider import (select_spider,start_spider,end_spider)
 from QUANTAXIS.QATasks import (tasks,control)
 from QUANTAXIS.QAUpdate.windsave import (save_stock_list)
+from QUANTAXIS.QAUtil import (util_date_stamp,util_time_stamp,util_ms_stamp)
+
+print('Welcome to QUANTAXIS, the Version is 0.3.8-beta')
