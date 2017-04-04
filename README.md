@@ -4,6 +4,7 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过
 
 > 0.3.8 版本将对于一体化和模块化流程进行进一步的优化
 
+
 ![version](https://img.shields.io/badge/Version-%200.3.8dev/gamma/deal-orange.svg)
 ![Pypi](https://img.shields.io/badge/Pypi-%200.3.8b2-blue.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.3.8-yellow.svg)
@@ -24,6 +25,7 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.2
 
 
 ## 0.3.8-dev-gamma(deal)版本说明
+![](http://i4.buimg.com/567571/7d0cb26c994e90b7.png)
 0.3.8-dev-gamma(deal)是在0.3.8-dev-beta(pypi)的修改版本，主要重构模拟交易部分
 
 > 0.3.8-dev-beta使命已经完成，pip包修复，pypi版本更新到0.3.8-b0
