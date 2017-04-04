@@ -5,7 +5,7 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过
 > 0.3.8 版本将对于一体化和模块化流程进行进一步的优化
 
 ![version](https://img.shields.io/badge/Version-%200.3.8dev/gamma/deal-orange.svg)
-![Pypi](https://img.shields.io/badge/Pypi-%200.3.8b0-blue.svg)
+![Pypi](https://img.shields.io/badge/Pypi-%200.3.8b1-blue.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.3.8-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
 ![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
@@ -29,6 +29,7 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.2
 > 0.3.8-dev-beta使命已经完成，pip包修复，pypi版本更新到0.3.8-b0
 
 - 当前QUANTAXIS Standard Protocol 版本号 0.0.2
+- 当前QUANTAXIS Pypi 版本 0.3.8b1
 - 当前QUANTAXIS-WebKit 版本 0.3.8 beta
 
 模拟交易部分正在重构

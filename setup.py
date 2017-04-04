@@ -45,7 +45,7 @@ AUTHOR_EMAIL = "yutiansut@qq.com"
  
 URL = "http://www.yutiansut.com"
 
-VERSION = "0.3.8b0"
+VERSION = "0.3.8b1"
 
  
 LICENSE = "MIT"
