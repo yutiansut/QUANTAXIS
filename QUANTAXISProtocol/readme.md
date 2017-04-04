@@ -226,10 +226,7 @@ QA_fetch_get_options_tick
 QA_fetch_get_options_info
 
 
-save_stock
-save_future
-save_options
-save_all
+
 
 ```
 

@@ -68,21 +68,29 @@ npm run all
 ```python
 import QUANTAXIS as QA
 
+# QUANTAXIS 的API协议遵循QAS(#0.0.2)[501-0] QA_名词_动词
+# 方便在写代码的时候 QA_ +tab查找你所需要的所有API
+# 具体参见 QAS#0.0.2[501-0]
+
 # get data
-print(QA.get_stock_day("ts","000001.SZ","2000-01-01","2017-04-01"))
-print(QA.get_stock_day("wind","000001.SZ","2000-01-01","2017-04-01"))
-print(QA.QAWind.get_stock_list('2017-04-04'))
-print(QA.QAWind.get_stock_indicator(name,startDate,endDate))
-print(QA.QAWind.get_stock_shape(name,startDate,endDate))
+print(QA.QA_fetch_get_stock_day("ts","000001.SZ","2000-01-01","2017-04-01"))
+print(QA.QA_fetch_get_stock_day("wind","000001.SZ","2000-01-01","2017-04-01"))
+print(QA.QAWind.QA_fetch_get_stock_list('2017-04-04'))
+print(QA.QAWind.QA_fetch_get_stock_indicator(name,startDate,endDate))
+print(QA.QAWind.QA_fetch_get_stock_shape(name,startDate,endDate))
 
 # save data
-QA.QAUpdate.windsave.save_trade_date()
-QA.QAUpdate.windsave.save_stock_list()
-QA.QAUpdate.windsave.save_stock_day(name,startDate,endDate)
+QA.QASU.QA_SU_save_trade_date()
+QA.QASU.QA_SU_save_stock_list()
+QA.QASU.QA_SU_save_stock_day(name,startDate,endDate)
 #trade
 
 # utils
-print(QA.QAUtil.util_date_stamp('2017-01-01'))
+print(QA.QAUtil.QA_util_date_stamp('2017-01-01'))
+QA.QA_util__sql_mongo_setting
+QA.QA_util_log_info()
+QA.QA_util_log_debug()
+QA.QA_util_log_exception()
 ```
 
 初始化脚本/数据存储样式
