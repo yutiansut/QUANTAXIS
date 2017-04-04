@@ -72,10 +72,10 @@ QA.QAUpdate.windsave.save_stock_day(name,startDate,endDate)
 print(QA.QAUtil.util_date_stamp('2017-01-01'))
 ```
 
-初始化脚本
+初始化脚本/数据存储样式
 
 ![init](http://i4.buimg.com/567571/a3ae817d47d4529e.png)
-
+![数据库](http://i2.muimg.com/567571/e8cb7c190b624f83.png)
 ```mongodb
 ```
 
