@@ -19,6 +19,7 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过
 ## 0.3.8-dev-beta(pypi)版本说明
 
 0.3.8-dev-beta(pypi)是在dev-alpha(packages)上的bug修改版本，主要修复pip的问题
+> attention: 最好有wind的包,免费/机构版都可以
 
 ### quantaxis
 ```bash
@@ -43,4 +44,7 @@ npm run all
 import QUANTAXIS as QA
 print(QA.get_stock_day("ts","000001.SZ","2000-01-01","2017-04-01"))
 print(QA.get_stock_day("wind","000001.SZ","2000-01-01","2017-04-01"))
+print(QA.QAWind.get_stock_list('2017-04-04'))
+```
+```mongodb
 ```

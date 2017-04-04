@@ -22,7 +22,7 @@ NAME = "quantaxis"
 名字，一般放你包的名字即可
 """
  
-PACKAGES = ["QUANTAXIS", "QUANTAXIS.QAFetch", "QUANTAXIS.QAMarket", "QUANTAXIS.QAStrategy", "QUANTAXIS.QATasks",  "QUANTAXIS.QASpider"]
+PACKAGES = ["QUANTAXIS", "QUANTAXIS.QAFetch", "QUANTAXIS.QAMarket", "QUANTAXIS.QAStrategy", "QUANTAXIS.QATasks",  "QUANTAXIS.QASpider","QUANTAXIS.QAUpdate"]
 """
 包含的包，可以多个，这是一个列表
 """
@@ -46,7 +46,7 @@ AUTHOR_EMAIL = "yutiansut@qq.com"
  
 URL = "http://www.yutiansut.com"
 
-VERSION = "0.3.8beta"
+VERSION = "0.3.8b0"
 
  
 LICENSE = "MIT"
