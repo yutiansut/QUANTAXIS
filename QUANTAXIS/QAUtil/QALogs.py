@@ -17,9 +17,9 @@ logging.getLogger('').addHandler(console)
 
 logging.info('start QUANTAXIS')
 
-def QA_log_debug(logs):
+def QA_util_log_debug(logs):
     logging.debug(logs)
-def QA_log_info(logs):
+def QA_util_log_info(logs):
     logging.info(logs)
-def QA_log_expection(logs):
+def QA_util_log_expection(logs):
     logging.exception(logs)

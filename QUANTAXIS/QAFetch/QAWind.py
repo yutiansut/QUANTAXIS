@@ -9,7 +9,7 @@ w.start()
 #w.start()
 
 #Stock
-def get_stock_info(name,startDate,endDate):
+def QA_fetch_get_stock_info(name, startDate, endDate):
     #w.start()
     #get the all stock list on the endDate
     # judge the vaild date
@@ -23,7 +23,7 @@ def get_stock_info(name,startDate,endDate):
         if (data.ErrorCode!=0):
             print ("Connent to Wind successfully")
             return data.Data
-def get_stock_day(name,startDate,endDate):
+def QA_fetch_get_stock_day(name, startDate, endDate):
     #w.start()
     
     if(is_valid_date(endDate)==False):
@@ -35,7 +35,7 @@ def get_stock_day(name,startDate,endDate):
         if (data.ErrorCode==0):
             print ("Connent to Wind successfully")
             return data.Data
-def get_stock_indicator(name,startDate,endDate):
+def QA_fetch_get_stock_indicator(name, startDate, endDate):
     #w.start()
     if(is_valid_date(endDate)==False):
         print ("wrong date")
@@ -45,7 +45,7 @@ def get_stock_indicator(name,startDate,endDate):
         if (data.ErrorCode==0):
             print ("Connent to Wind successfully")
     return data.Data
-def get_stock_shape(name,startDate,endDate):
+def QA_fetch_get_stock_shape(name, startDate, endDate):
     #w.start()
     if(is_valid_date(endDate)==False):
         print ("wrong date")
@@ -55,7 +55,7 @@ def get_stock_shape(name,startDate,endDate):
         if (data.ErrorCode==0):
             print ("Connent to Wind successfully")
     return data.Data
-def get_stock_risk(name,startDate,endDate):
+def QA_fetch_get_stock_risk(name, startDate, endDate):
     
     if(is_valid_date(endDate)==False):
         print ("wrong date")
@@ -64,7 +64,7 @@ def get_stock_risk(name,startDate,endDate):
         if (data.ErrorCode==0):
             print ("Connent to Wind successfully")
     return data.Data
-def get_stock_xueqiu(name,startDate,endDate):
+def QA_fetch_get_stock_xueqiu(name, startDate, endDate):
     #w.start()
     if(is_valid_date(endDate)==False):
         print ("wrong date")
@@ -73,7 +73,7 @@ def get_stock_xueqiu(name,startDate,endDate):
         if (data.ErrorCode==0):
             print ("Connent to Wind successfully")
     return data.Data
-def get_stock_financial(name,startDate,endDate):
+def QA_fetch_get_stock_financial(name, startDate, endDate):
     #w.start()
     pass
 def is_valid_date(str):
@@ -83,7 +83,7 @@ def is_valid_date(str):
     except:
         return False
         
-def get_trade_date(endDate,exchange):
+def QA_fetch_get_trade_date(endDate, exchange):
     #w.start()
     supportExchanges=["SSE","SZSE","CFFEX","SHFE","DCE","CZCE"]
     if (exchange in supportExchanges):
@@ -98,7 +98,7 @@ def get_trade_date(endDate,exchange):
     return dates
 
 
-def get_stock_list(date):
+def QA_fetch_get_stock_list(date):
     #w.start()
     if(is_valid_date(date)==False):
         print ("wrong date")

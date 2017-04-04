@@ -1,7 +1,7 @@
-def select_spider():
+def QA_spider_select_spider():
     pass
 
-def start_spider():
+def QA_spider_start_spider():
     pass
-def end_spider():
+def QA_spider_end_spider():
     pass

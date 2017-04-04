@@ -3,17 +3,17 @@
 import tushare as QATs
 
 
-def get_stock_day(name,startDate,endDate):
+def QA_fetch_get_stock_day(name,startDate,endDate):
     if (len(name)!=6):
         name=str(name)[0:6]
     return QATs.get_k_data(name,startDate,endDate,ktype='D')
 
-def get_stock_info(name):
+def QA_fetch_get_stock_info(name):
     if (len(name)!=6):
         name=str(name)[0:6]
     return QATs.get_stock_basics()
 
-def get_stock_tick(name,date):
+def QA_fetch_get_stock_tick(name,date):
     if (len(name)!=6):
         name=str(name)[0:6]
     return QATs.get_tick_data(name,date)
