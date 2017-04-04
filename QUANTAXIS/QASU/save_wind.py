@@ -1,9 +1,11 @@
 from ..QAFetch import QAWind
-from ..QAUtil import util_date_stamp,util_time_stamp,QA_util_log_info
+from ..QAUtil import QA_util_date_stamp,QA_util_time_stamp,QA_util_log_info
 import pymongo
 import datetime
 import re
 import time
+
+
 # get all stock data,save
 # under QUANTAXIS_Standard_501[QAS 501]
 def QA_SU_save_stock_list():
@@ -22,8 +24,8 @@ def QA_SU_save_trade_date():
 def QA_SU_save_stock_day(name,startDate,endDate):
     coll=pymongo.MongoClient().quantaxis.stock_day
     #find if have the same
-    start_date_stamp=util_date_stamp(startDate)
-    end_date_stamp=util_date_stamp(endDate)
+    start_date_stamp=QA_util_date_stamp(startDate)
+    end_date_stamp=QA_util_date_stamp(endDate)
     if (coll.find({"code":name,"last_trade_day":{"$gte":int(end_date_stamp),"$lte":int(start_date_stamp)}}).count()==0):
         QA_util_log_info(str(name)+'--'+str(startDate)+'--'+str(endDate))
         data=QAWind.QA_fetch_get_stock_day(name,startDate,endDate)

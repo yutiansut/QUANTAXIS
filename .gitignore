@@ -51,6 +51,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+*.lnk
 manifest
 
 # PyInstaller
