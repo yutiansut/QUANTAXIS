@@ -2,8 +2,6 @@ import datetime
 import time
 import re
 
-
-
 def QA_util_date_stamp(date):
     #封装的日期函数
     datestr=str(date)[0:10]

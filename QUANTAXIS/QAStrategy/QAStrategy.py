@@ -1,8 +1,8 @@
-def import_strategy():
+def QA_strategy_import():
     pass
-def choice_strategy():
+def QA_strategy_choice():
     pass
-def start_strategy():
+def QA_strategy_start():
     pass
-def analysis_strategy():
+def QA_strategy_analysis():
     pass

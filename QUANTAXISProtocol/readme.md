@@ -2,8 +2,8 @@ QUANTAXIS-Protocol
 标准化协议QAS/未来协议QAF
 ------
 
-- 当前版本:0.0.1  
-- 协议最后修改日期:2017-04-04
+- 当前版本:0.0.2
+- 协议最后修改日期:2017-04-05
 - 项目版本:QUANTAXIS 0.3.8-dev-beta(pypi)
 
 <!-- TOC -->
@@ -39,6 +39,7 @@ QUANTAXIS-Protocol
     - [QAStandard-401 状态码](#qastandard-401-状态码)
 - [QAStandard-50x API](#qastandard-50x-api)
     - [QAStandard-501 内部API](#qastandard-501-内部api)
+        - [QAS_501_0 总规则](#qas_501_0-总规则)
         - [QAS-501-1 Fetch](#qas-501-1-fetch)
         - [QAS-501-2 Market](#qas-501-2-market)
         - [QAS-501-3 Account](#qas-501-3-account)
@@ -195,22 +196,34 @@ QAS103主要规范了爬虫的命名标准，UserAgent设置，cookie，session�
 
 ## QAStandard-50x API
 ### QAStandard-501 内部API
+#### QAS_501_0 总规则
+QA_(n.)_(verb)
+n. 名词,一般是小类的名字
+verb 动词，一般是这个小类的动作
+
+```
+QA_Spider_start
+QA_Strategy_import
+QA_util_log_info
+```
+
 #### QAS-501-1 Fetch
 QAS501-1主要规定了数据获取的打包规范,遵循此规范,可以进行API二次打包
+
 ```python
-get_stock_day
-get_stock_min
-get_stock_tick
-get_stock_info
-get_stock_indicator
-get_future_day
-get_future_min
-get_future_tick
-get_future_info
-get_options_day
-get_options_min
-get_options_tick
-get_options_info
+QA_fetch_get_stock_day
+QA_fetch_get_stock_min
+QA_fetch_get_stock_tick
+QA_fetch_get_stock_info
+QA_fetch_get_stock_indicator
+QA_fetch_get_future_day
+QA_fetch_et_future_min
+QA_fetch_get_future_tick
+QA_fetch_get_future_info
+QA_fetch_get_options_day
+QA_fetch_get_options_min
+QA_fetch_get_options_tick
+QA_fetch_get_options_info
 
 
 save_stock
@@ -236,6 +249,8 @@ QAS-501-4 主要规定了数据库存储和调用时的命名规范,采用驼峰
 - low(double)
 - close(double)
 - volume(double)
+
+
 ### QAStandard-502 Http API/RESTFul
 
 ## QAStandard-60x Util
