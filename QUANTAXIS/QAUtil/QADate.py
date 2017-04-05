@@ -13,3 +13,10 @@ def QA_util_time_stamp(time):
     return time
 def QA_util_ms_stamp(ms):
     return ms
+
+def QA_util_date_valid(date):
+    try:
+        time.strptime(date, "%Y-%m-%d")
+        return True
+    except:
+        return False
