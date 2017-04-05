@@ -2,8 +2,11 @@
 
 """
 QUANTAXIS
+
 Quantitative Financial Strategy Framework
+
 by yutiansut
+
 2017/4/3 
 """
 
@@ -38,3 +41,7 @@ def QA_start_initial():
 
 def QA_close():
     pass
+def QA_help_fetch():
+    QA_util_log_info('QA_fetch_get_stock_day,QA_fetch_get_trade_date,QA_fetch_get_stock_indicator')
+def QA_help_su():
+    QA_util_log_info('QA_SU_save_stock_list, QA_SU_save_stock_day,QA_SU_save_stock_day_init, QA_SU_save_trade_date')

@@ -45,7 +45,7 @@ AUTHOR_EMAIL = "yutiansut@qq.com"
  
 URL = "http://www.yutiansut.com"
 
-VERSION = "0.3.8b2"
+VERSION = "0.3.8b4"
 
  
 LICENSE = "MIT"
@@ -62,7 +62,7 @@ setup(
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
     ],
-    install_requires = ['pymongo==3.5.0.dev0','celery==4.0.2','tushare==0.7.4','scrapy==1.3.3','selenium==3.3.1','easyquotation==0.5.1','lxml==3.7.3','pandas==0.19.2','matplotlib==2.0.0'],
+    install_requires = ['tushare==0.7.4'],
     keywords = KEYWORDS,
     author = AUTHOR,
     author_email = AUTHOR_EMAIL,

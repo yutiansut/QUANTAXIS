@@ -1,8 +1,19 @@
 #coding:utf-8
+"""
+QAWind
 
+QAWind is a data fetch module just for WIND Institution Version
+
+QAWind is under the [QAStandard#0.0.2 @101-1],[QAStandard#0.0.2 @501-0] protocol
+
+@author: yutiansut
+
+@last modified:2017/4/5
+"""
 import time
 import datetime,re
 import pymongo
+from . import data_list as data_list
 from WindPy import w
 w.start()
 
@@ -106,3 +117,17 @@ def QA_fetch_get_stock_list(date):
         awgs='date='+date+';sectorid=a001010100000000'
         data=w.wset("sectorconstituent",awgs)
         return data.Data
+
+def QA_fetch_get_stock_list_special(date,id):
+        #w.start()
+    if(is_valid_date(date)==False):
+        print ("wrong date")
+    else :
+        # 0201e20000000000 融资融券标的 1000009226000000 转融券标的 a001050100000000 ST股
+        #
+        if id in data_list.wind_stock_list_special_id:
+            awgs='date='+date+';sectorid=a001010100000000'
+            data=w.wset("sectorconstituent",awgs)
+            return data.Data
+
+        

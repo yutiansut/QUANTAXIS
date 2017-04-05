@@ -1,5 +1,10 @@
 #coding:utf-8
+"""
+QA_Fetch main entry
+with QAWind/QATushare
 
+@author yutiansut
+"""
 from . import QAWind as QAWind
 from . import QATushare as QATushare
 #import QAFetch.QAGmsdk as QAGmsdk
@@ -9,9 +14,7 @@ import pymongo
 from WindPy import w
 #w.start()
 w.start()
-"""
-author yutiansut
-"""
+
 def use(package):
     if package in ['wind']:
         return QAWind
