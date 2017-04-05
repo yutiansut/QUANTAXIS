@@ -123,11 +123,12 @@ def QA_fetch_get_stock_list_special(date,id):
     if(is_valid_date(date)==False):
         print ("wrong date")
     else :
-        # 0201e20000000000 融资融券标的 1000009226000000 转融券标的 a001050100000000 ST股
+        # 
         #
-        if id in data_list.wind_stock_list_special_id:
-            awgs='date='+date+';sectorid=a001010100000000'
+        if id in ['big','small','cixin','yujing','rzrq','rq','yj','st','sst']:
+            awgs='date='+date+';sectorid='+data_list.wind_stock_list_special_id[id]
             data=w.wset("sectorconstituent",awgs)
             return data.Data
+
 
         
