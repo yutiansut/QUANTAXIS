@@ -25,6 +25,7 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.2
 
 
 ## 0.3.8-dev-gamma(deal)版本说明
+![](http://i1.piimg.com/567571/dc3c811a5afcb4fb.png)
 ![](http://i4.buimg.com/567571/7d0cb26c994e90b7.png)
 
 0.3.8-dev-gamma(deal)是在0.3.8-dev-beta(pypi)的修改版本，主要重构模拟交易部分
@@ -124,5 +125,5 @@ QUANTAXIS的前后端完全分离,高度拆分,各个组件依赖RESTful标准�
 ## 回测框架
 
 正在重构 QAF#01
-
+![](http://i1.piimg.com/567571/dc3c811a5afcb4fb.png)
 ![回测框架](http://i1.piimg.com/567571/151a21b61f4d6d63.png)
