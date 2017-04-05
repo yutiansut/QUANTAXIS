@@ -1,6 +1,6 @@
 #coding : utf-8
 
 import pymongo
-from .deal import market
+from .QAMarket_core import QA_market
 import datetime
-from .QABid import bid
+from .QABid import QA_QAMarket_bid

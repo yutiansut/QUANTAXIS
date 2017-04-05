@@ -6,7 +6,7 @@ from ..QASignal import (QA_signal_resend,QA_signal_send)
 
 from ..QAARP import (QAAccount,QAPortfolio,QARisk)
 
-from ..QAMarket import deal
+from ..QAMarket import QABid,QAMarket_core,QA_QAMarket_bid
 
 from ..QAUtil import QA_util_log_info, QA_util_log_expection
 

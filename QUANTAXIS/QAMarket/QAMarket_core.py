@@ -3,10 +3,10 @@
 from QUANTAXIS.QAUtil import QA_util_sql_mongo_setting,QA_util_log_info
 from QUANTAXIS.QAUtil import QA_Setting
 from QUANTAXIS.QASignal import QA_signal_send
-from .QABid import bid
+from .QABid import QA_QAMarket_bid
 import datetime
 
-class market():
+class QA_market():
 
     client=QA_Setting.client
     # client=QA.QA_util_sql_mongo_setting()

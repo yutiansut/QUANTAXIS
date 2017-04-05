@@ -1,5 +1,5 @@
 from ..QAFetch import QAWind
-from ..QAMarket import deal
+from ..QAMarket import QAMarket_core,QABid
 from ..QAARP import QAAccount,QAPortfolio,QARisk
 from QUANTAXIS.QAUtil import QA_util_log_info,QA_Setting,QA_util_sql_mongo_setting
 import time,datetime,re

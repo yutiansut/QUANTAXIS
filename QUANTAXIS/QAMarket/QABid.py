@@ -1,7 +1,7 @@
 import datetime
 
 
-class bid():
+class QA_QAMarket_bid():
     
     price=4.5
     time='2000-01-17'

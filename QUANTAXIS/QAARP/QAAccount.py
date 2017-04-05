@@ -1,6 +1,6 @@
 #coding :utf-8
 from ..QAUtil import QALogs
-from ..QAMarket import deal
+from ..QAMarket import QAMarket_core,QABid
 
 class account:
     def __init__(self):
