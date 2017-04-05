@@ -53,6 +53,8 @@ var/
 *.egg
 *.lnk
 manifest
+transfer.py
+testQ/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

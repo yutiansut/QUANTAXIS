@@ -27,9 +27,11 @@ from QUANTAXIS.QAStrategy import (QA_strategy_analysis,QA_strategy_choice,QA_str
 from QUANTAXIS.QASU.save_wind import ( QA_SU_save_stock_list, QA_SU_save_stock_day,
                                     QA_SU_save_stock_day_init,QA_SU_save_stock_day_init_simple, QA_SU_save_trade_date)
 
-from QUANTAXIS.QAUtil import (QA_util_sql_mongo_setting,
+from QUANTAXIS.QAUtil import (QA_util_sql_mongo_setting,QA_util_cfg_initial,
                                 QA_util_date_stamp, QA_util_time_stamp, QA_util_ms_stamp,
                                 QA_util_log_debug,QA_util_log_expection,QA_util_log_info)
+
+import QUANTAXIS.QACmd
 
 QA_util_log_info('Welcome to QUANTAXIS, the Version is 0.3.8-beta')
 
@@ -38,9 +40,11 @@ def QA_start_first_run():
     QA_util_log_info('first_run_quantaxis')
     pass
 
-def QA_start_initial():
-    pass
-
+def QA_start_initial(file):
+    QA_inital_setting=QA_util_cfg_initial(file)
+    QA_sql_mongo_client=QA_util_sql_mongo_setting(QA_inital_setting[0],int(QA_inital_setting[1]))
+    #QA_util_log_info('Data Enging'+str(QA_inital_setting[2]))
+    return QA_sql_mongo_client
 def QA_close():
     pass
 def QA_help_fetch():

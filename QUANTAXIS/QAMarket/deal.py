@@ -1,6 +1,6 @@
 # coding :utf-8
 
-import pymongo
+from ..QAUtil import QA_util_sql_mongo_setting
 import datetime
 
 class market():
@@ -17,7 +17,7 @@ class market():
     def market_make_deal(self):
         
         self.coll=self.db.stock
-        
+        db=QA_util_sql_mongo_setting.quantaxis
         item=self.coll.find_one({"variety_name":self.bid_variety,"datetime":self.bid_time})
         print(item["high"])
         print(item["low"])
