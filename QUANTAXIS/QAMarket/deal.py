@@ -1,6 +1,6 @@
 # coding :utf-8
 
-from ..QAUtil import QA_util_sql_mongo_setting
+from QUANTAXIS import QA_util_sql_mongo_setting
 import datetime
 
 class market():
@@ -11,8 +11,9 @@ class market():
         self.bid_amount=0
         self.bid_towards=0
         self.bid_variety=str()
-        self.client=pymongo.MongoClient("127.0.0.1",27017)
-        self.db=self.client.market
+
+        #self.client=QA.QA_util_sql_mongo_setting()
+        #self.db=self.client.market
         
     def market_make_deal(self):
         
