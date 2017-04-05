@@ -36,8 +36,26 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.2
 - 当前QUANTAXIS Pypi 版本 0.3.8b2
 - 当前QUANTAXIS-WebKit 版本 0.3.8 beta
 
-模拟交易部分正在重构
+模拟交易部分正在重构,响应式框架完成
+```python
+import QUANTAXIS as QA
+#QA.QA_Setting.client=QA.QAUtil.QA_util_sql_mongo_setting(QA.QA_Setting.QA_util_sql_mongo_ip,QA.QA_Setting.QA_util_sql_mongo_port)
+market=QA.deal.market()
+bid=QA.deal.bid
+market.market_make_deal(bid,QA.QA_Setting.client)
 
+
+```
+```bash
+root        : INFO     deal success
+root        : INFO     [from]: market  [to]:  strategy [message]: {'trade_status': 'success', 'price': '4.5', 'code': '000001.SZ', 'amount': '10', 'time': '2000-01-17', 'towards': '1'}
+
+{
+    "_id" : ObjectId("58e5389239064139208d8261"),
+    "time" : ISODate("2017-04-06T02:33:54.317Z"),
+    "message" : "[from]: market  [to]:  strategy [message]: {'trade_status': 'success', 'price': '4.5', 'code': '000001.SZ', 'amount': '10', 'time': '2000-01-17', 'towards': '1'}"
+}
+```
 
 ## 0.3.8-dev-beta(pypi)版本说明
 
