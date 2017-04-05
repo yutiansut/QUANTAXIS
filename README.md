@@ -6,7 +6,7 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过
 
 
 ![version](https://img.shields.io/badge/Version-%200.3.8dev/gamma/deal-orange.svg)
-![Pypi](https://img.shields.io/badge/Pypi-%200.3.8b2-blue.svg)
+![Pypi](https://img.shields.io/badge/Pypi-%200.3.8b4-blue.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.3.8-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
 ![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
@@ -19,7 +19,7 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过
 ## QUANTAXIS-Stardand-Protocol
 QUANTAXIS 标准化协议和未来协议
 
-QUANTAXIS-Stardand-Protocol 版本号0.0.2
+QUANTAXIS-Stardand-Protocol 版本号0.0.3
 
 详情参见  [QUANATXISProtocol](https://github.com/yutiansut/QUANTAXIS/tree/0.3.8-dev-gamma-deal/QUANTAXISProtocol)
 

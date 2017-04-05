@@ -2,9 +2,9 @@ QUANTAXIS-Protocol
 标准化协议QAS/未来协议QAF
 ------
 
-- 当前版本:0.0.2
+- 当前版本:0.0.3
 - 协议最后修改日期:2017-04-05
-- 项目版本:QUANTAXIS 0.3.8-dev-gamma(deal)
+- 项目版本:QUANTAXIS 0.3.8-dev-RC(ARP)
 
 <!-- TOC -->
 
