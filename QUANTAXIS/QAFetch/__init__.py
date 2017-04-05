@@ -16,12 +16,13 @@ import pymongo
 
 from WindPy import w
 #w.start()
-w.start()
+
 """
 author yutiansut
 """
 def use(package):
     if package in ['wind']:
+        w.start()
         return QAWind
     elif package in ['tushare','ts']:
         return QATushare

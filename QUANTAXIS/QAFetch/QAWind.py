@@ -22,6 +22,8 @@ w.start()
 #Stock
 def QA_fetch_get_stock_info(name, startDate, endDate):
     #w.start()
+    w.start()
+    w.isconnected()
     #get the all stock list on the endDate
     # judge the vaild date
     if(is_valid_date(endDate)==False):
@@ -35,12 +37,32 @@ def QA_fetch_get_stock_info(name, startDate, endDate):
             print ("Connent to Wind successfully")
             return data.Data
 def QA_fetch_get_stock_day(name, startDate, endDate):
-    #w.start()
-    
+    #w.start
+    w.start()
+    w.isconnected()
     if(is_valid_date(endDate)==False):
         print ("wrong date")
     else :
-        data=w.wsd(name,"sec_name,pre_close,open,high,close,volume,amt,dealnum,chg,pct_chg,swing,vwap,adjfactor,turn,free_turn,lastradeday_s,last_trade_day,rel_ipo_chg,rel_ipo_pct_chg,trade_status,susp_days,susp_reason,maxupordown,open3,high3,low3,close3",startDate,endDate, "Fill=Previous;PriceAdj=F")
+        print (w.isconnected())
+        w.close()
+        print (w.isconnected())
+        w.start()
+        print (w.isconnected())
+        data=w.wsd(name,"sec_name,pre_close,open,high,low,close,volume,amt,dealnum,chg,pct_chg,swing,vwap,adjfactor,turn,free_turn,lastradeday_s,last_trade_day,rel_ipo_chg,rel_ipo_pct_chg,trade_status,susp_days,susp_reason,maxupordown,open3,high3,low3,close3",startDate,endDate, "Fill=Previous;PriceAdj=F")
+        #data=w.wsd("000002.SZ", "open,high,low,close,volume", "2017-03-03", "2017-04-01", "PriceAdj=B")
+        print(data.ErrorCode)
+        if (data.ErrorCode==0):
+            print ("Connent to Wind successfully")
+            return data.Data
+
+def QA_fetch_get_stock_day_simple(name, startDate, endDate):
+    #w.start
+    w.start()
+    w.isconnected()
+    if(is_valid_date(endDate)==False):
+        print ("wrong date")
+    else :
+        data=w.wsd(name,"sec_name,preclose,open,high,low,close,volume",startDate,endDate, "Fill=Previous;PriceAdj=F")
         #data=w.wsd("000002.SZ", "open,high,low,close,volume", "2017-03-03", "2017-04-01", "PriceAdj=B")
         print(data.ErrorCode)
         if (data.ErrorCode==0):
@@ -48,6 +70,8 @@ def QA_fetch_get_stock_day(name, startDate, endDate):
             return data.Data
 def QA_fetch_get_stock_indicator(name, startDate, endDate):
     #w.start()
+    w.start()
+    w.isconnected()
     if(is_valid_date(endDate)==False):
         print ("wrong date")
     else :
@@ -58,6 +82,8 @@ def QA_fetch_get_stock_indicator(name, startDate, endDate):
     return data.Data
 def QA_fetch_get_stock_shape(name, startDate, endDate):
     #w.start()
+    w.start()
+    w.isconnected()
     if(is_valid_date(endDate)==False):
         print ("wrong date")
     else :
@@ -67,7 +93,8 @@ def QA_fetch_get_stock_shape(name, startDate, endDate):
             print ("Connent to Wind successfully")
     return data.Data
 def QA_fetch_get_stock_risk(name, startDate, endDate):
-    
+    w.start()
+    w.isconnected()
     if(is_valid_date(endDate)==False):
         print ("wrong date")
     else :
@@ -77,6 +104,8 @@ def QA_fetch_get_stock_risk(name, startDate, endDate):
     return data.Data
 def QA_fetch_get_stock_xueqiu(name, startDate, endDate):
     #w.start()
+    w.start()
+    w.isconnected()
     if(is_valid_date(endDate)==False):
         print ("wrong date")
     else :
@@ -86,6 +115,8 @@ def QA_fetch_get_stock_xueqiu(name, startDate, endDate):
     return data.Data
 def QA_fetch_get_stock_financial(name, startDate, endDate):
     #w.start()
+    w.start()
+    w.isconnected()
     pass
 def is_valid_date(str):
     try:
@@ -96,6 +127,8 @@ def is_valid_date(str):
         
 def QA_fetch_get_trade_date(endDate, exchange):
     #w.start()
+    w.start()
+    w.isconnected()
     supportExchanges=["SSE","SZSE","CFFEX","SHFE","DCE","CZCE"]
     if (exchange in supportExchanges):
     #"SSE","SZSE","CFFEX","SHFE","DCE","CZCE"
@@ -111,6 +144,8 @@ def QA_fetch_get_trade_date(endDate, exchange):
 
 def QA_fetch_get_stock_list(date):
     #w.start()
+    w.start()
+    w.isconnected()
     if(is_valid_date(date)==False):
         print ("wrong date")
     else :
@@ -120,6 +155,8 @@ def QA_fetch_get_stock_list(date):
 
 def QA_fetch_get_stock_list_special(date,id):
         #w.start()
+    w.start()
+    w.isconnected()
     if(is_valid_date(date)==False):
         print ("wrong date")
     else :
