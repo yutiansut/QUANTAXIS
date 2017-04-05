@@ -30,23 +30,18 @@ from QUANTAXIS.QASU.save_wind import ( QA_SU_save_stock_list, QA_SU_save_stock_d
 from QUANTAXIS.QAUtil import (QA_util_sql_mongo_setting,QA_util_cfg_initial,
                                 QA_util_date_stamp, QA_util_time_stamp, QA_util_ms_stamp,
                                 QA_util_log_debug,QA_util_log_expection,QA_util_log_info,
-                                QA_start_initial)
+                                QA_start_initial,QA_Setting)
 
 import QUANTAXIS.QACmd
 QA_util_log_info('Welcome to QUANTAXIS, the Version is 0.3.8-beta')
-class QA_Setting():
-    def __init__(self):
-        self.QA_util_sql_mongo_ip='127.0.0.1'
-        self.QA_util_sql_mongo_port='3306'
-        QA_util_log_info('Welcome to QUANTAXIS, the Version is 0.3.8-beta')
-        self.client=QA_util_sql_mongo_setting(self.QA_util_sql_mongo_ip,self.QA_util_sql_mongo_port)
-    def QA_start_first_run(self):
-        QA_SU_save_stock_day_init_simple()
-        QA_util_log_info('first_run_quantaxis')
-        pass
-    def QA_close(self):
-        pass
-    def QA_help_fetch(self):
-        QA_util_log_info('QA_fetch_get_stock_day,QA_fetch_get_trade_date,QA_fetch_get_stock_indicator')
-    def QA_help_su(self):
-        QA_util_log_info('QA_SU_save_stock_list, QA_SU_save_stock_day,QA_SU_save_stock_day_init, QA_SU_save_trade_date')
+
+def QA_start_first_run(self):
+    QA_SU_save_stock_day_init_simple()
+    QA_util_log_info('first_run_quantaxis')
+    pass
+def QA_close(self):
+    pass
+def QA_help_fetch(self):
+    QA_util_log_info('QA_fetch_get_stock_day,QA_fetch_get_trade_date,QA_fetch_get_stock_indicator')
+def QA_help_su(self):
+    QA_util_log_info('QA_SU_save_stock_list, QA_SU_save_stock_day,QA_SU_save_stock_day_init, QA_SU_save_trade_date')
