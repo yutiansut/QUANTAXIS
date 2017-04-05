@@ -30,8 +30,8 @@ class CLI(cmd.Cmd):
         print ("-- terminates the application")
 
     # 定义quit的快捷方式
-    do_q = do_quit
+
 
 # 创建CLI实例并运行
-cli = CLI()
-cli.cmdloop()
+#cli = CLI()
+#cli.cmdloop()
