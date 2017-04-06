@@ -15,7 +15,7 @@ from . import QATushare as QATushare
 #import QAFetch.QACrawlData as QACD
 import pymongo
 
-from WindPy import w
+#from WindPy import w
 #w.start()
 
 """
@@ -23,6 +23,7 @@ author yutiansut
 """
 def use(package):
     if package in ['wind']:
+        from WindPy import w
         w.start()
         return QAWind
     elif package in ['tushare','ts']:

@@ -11,9 +11,9 @@ from . import QATushare as QATushare
 #import QAFetch.QACrawlData as QACD
 import pymongo
 
-from WindPy import w
+#from WindPy import w
 #w.start()
-w.start()
+#w.start()
 
 def use(package):
     if package in ['wind']:

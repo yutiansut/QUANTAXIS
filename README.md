@@ -56,32 +56,36 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.3
 
 ### QACMD 改进
 QACMD改进,增加makeExample,一键生成策略模板
-![](http://i4.buimg.com/567571/f579375cd257fe54.png)
-```python
-import QUANTAXIS as QA
-from QUANTAXIS.QACmd import CLI
+```powershell
+PS D:\Projects\strategy> dir
 
-cli=CLI()
-cli.cmdloop()
-```
-```bash
+
+    Directory: D:\Projects\strategy
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+-a----         4/7/2017  12:20 AM            342 quantaxis.log
+
+
+PS D:\Projects\strategy> python -m QUANTAXIS
 root        : INFO     start QUANTAXIS
 root        : INFO     Welcome to QUANTAXIS, the Version is 0.3.8-beta
 root        : INFO     ip:127.0.0.1   port:27017
 root        : INFO     Welcome to QUANTAXIS, the Version is 0.3.8-beta
 QUANTAXIS> makeExamples
-D:\New folder
-C:\ProgramData\Anaconda3\lib\site-packages\QUANTAXIS\QACmd\strategy_sample_simple.py
-QUANTAXIS> quit
-PS D:\New folder> ls
-    Directory: D:\New folder
+root        : INFO     successfully generate a example strategy inD:\Projects\strategy
+QUANTAXIS> quit()
+PS D:\Projects\strategy> dir
+
+
+    Directory: D:\Projects\strategy
 
 
 Mode                LastWriteTime         Length Name
 ----                -------------         ------ ----
--a----         4/6/2017  11:38 PM            342 quantaxis.log
--a----         4/6/2017  11:38 PM           1528 strategy_sample_simple.py
-PS D:\New folder>
+-a----         4/7/2017  12:21 AM            457 quantaxis.log
+-a----         4/7/2017  12:21 AM           1528 strategy_sample_simple.py
 ```
 ### QASignal 改进
 响应式构架完成，纯事件监听-事件驱动重构

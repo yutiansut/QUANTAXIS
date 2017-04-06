@@ -19,9 +19,10 @@ class CLI(cmd.Cmd):
         now_path=os.getcwd()
         project_dir = os.path.dirname(os.path.abspath(__file__))
         file_dir=project_dir+'\strategy_sample_simple.py'
-        print(now_path)
-        print(file_dir)
+        #print(now_path)
+        #print(file_dir)
         shutil.copy(file_dir,now_path)
+        QA_util_log_info('successfully generate a example strategy in'+now_path)
 
     def do_hello(self, arg):   # 定义hello命令所执行的操作
         QA_util_log_info ("hello "+ arg+ "!")
@@ -58,5 +59,7 @@ def sourcecpy(src, des):
             shutil.copytree(source, des)  #第一个参数是目录，第二个参数也是目录
 
 # 创建CLI实例并运行
-#cli = CLI()
-#cli.cmdloop()
+
+def QA_cmd():
+    cli = CLI()
+    cli.cmdloop()

@@ -14,13 +14,14 @@ import time
 import datetime,re
 import pymongo
 from . import data_list as data_list
-from WindPy import w
-w.start()
+
+#w.start()
 
 #w.start()
 
 #Stock
 def QA_fetch_get_stock_info(name, startDate, endDate):
+    from WindPy import w
     #w.start()
     w.start()
     w.isconnected()
@@ -37,6 +38,7 @@ def QA_fetch_get_stock_info(name, startDate, endDate):
             print ("Connent to Wind successfully")
             return data.Data
 def QA_fetch_get_stock_day(name, startDate, endDate):
+    from WindPy import w
     #w.start
     w.start()
     w.isconnected()
@@ -56,6 +58,7 @@ def QA_fetch_get_stock_day(name, startDate, endDate):
             return data.Data
 
 def QA_fetch_get_stock_day_simple(name, startDate, endDate):
+    from WindPy import w
     #w.start
     w.start()
     w.isconnected()
@@ -69,6 +72,7 @@ def QA_fetch_get_stock_day_simple(name, startDate, endDate):
             print ("Connent to Wind successfully")
             return data.Data
 def QA_fetch_get_stock_indicator(name, startDate, endDate):
+    from WindPy import w
     #w.start()
     w.start()
     w.isconnected()
@@ -81,6 +85,7 @@ def QA_fetch_get_stock_indicator(name, startDate, endDate):
             print ("Connent to Wind successfully")
     return data.Data
 def QA_fetch_get_stock_shape(name, startDate, endDate):
+    from WindPy import w
     #w.start()
     w.start()
     w.isconnected()
@@ -93,6 +98,7 @@ def QA_fetch_get_stock_shape(name, startDate, endDate):
             print ("Connent to Wind successfully")
     return data.Data
 def QA_fetch_get_stock_risk(name, startDate, endDate):
+    from WindPy import w
     w.start()
     w.isconnected()
     if(is_valid_date(endDate)==False):
@@ -103,6 +109,7 @@ def QA_fetch_get_stock_risk(name, startDate, endDate):
             print ("Connent to Wind successfully")
     return data.Data
 def QA_fetch_get_stock_xueqiu(name, startDate, endDate):
+    from WindPy import w
     #w.start()
     w.start()
     w.isconnected()
@@ -114,6 +121,7 @@ def QA_fetch_get_stock_xueqiu(name, startDate, endDate):
             print ("Connent to Wind successfully")
     return data.Data
 def QA_fetch_get_stock_financial(name, startDate, endDate):
+    from WindPy import w
     #w.start()
     w.start()
     w.isconnected()
@@ -126,6 +134,7 @@ def is_valid_date(str):
         return False
         
 def QA_fetch_get_trade_date(endDate, exchange):
+    from WindPy import w
     #w.start()
     w.start()
     w.isconnected()
@@ -143,6 +152,7 @@ def QA_fetch_get_trade_date(endDate, exchange):
 
 
 def QA_fetch_get_stock_list(date):
+    from WindPy import w
     #w.start()
     w.start()
     w.isconnected()
@@ -154,6 +164,7 @@ def QA_fetch_get_stock_list(date):
         return data.Data
 
 def QA_fetch_get_stock_list_special(date,id):
+    from WindPy import w
         #w.start()
     w.start()
     w.isconnected()
