@@ -1,6 +1,6 @@
 
 # start_strategy
-from .start_strategy import(QA_strategy_import,QA_strategy_choice,QA_strategy_start,QA_strategy_analysis)
+from .start_strategy import QA_Strategy
 
 from ..QASignal import (QA_signal_resend,QA_signal_send)
 

@@ -22,7 +22,8 @@ from QUANTAXIS.QASpider import (QA_spider_select_spider,QA_spider_start_spider,
 from QUANTAXIS.QATasks import (tasks,control)
 from QUANTAXIS.QAARP import (QAAccount,QAPortfolio,QARisk)
 from QUANTAXIS.QASignal import (QA_signal_resend,QA_signal_send)
-from QUANTAXIS.QAStrategy import (QA_strategy_analysis,QA_strategy_choice,QA_strategy_import,QA_strategy_start)
+from QUANTAXIS.QAStrategy.start_strategy import (QA_Strategy)
+from QUANTAXIS.QAStrategy.strategy_signal import QA_Strategy_signal
 #from QUANTAXIS.QAStrategy import (start_strategy,import_strategy,analysis_strategy,c)
 
 from QUANTAXIS.QASU.save_wind import ( QA_SU_save_stock_list, QA_SU_save_stock_day,

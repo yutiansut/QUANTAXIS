@@ -1,12 +1,19 @@
-def QA_strategy_import():
-    
-    pass
-def QA_strategy_choice():
-    pass
-def QA_strategy_start():
-    pass
-def QA_strategy_analysis():
-    pass
+from QUANTAXIS.QAStrategy.strategy_signal  import QA_Strategy_signal
 
-def QA_strategy_renew():
-    pass
+class QA_Strategy():
+    
+    
+
+
+    def QA_strategy_import(self):
+        
+        pass
+    def QA_strategy_choice(self):
+        pass
+    def QA_strategy_start(self):
+        pass
+    def QA_strategy_analysis(self):
+        pass
+
+    def QA_strategy_renew(self):
+        pass
