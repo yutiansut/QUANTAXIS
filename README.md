@@ -24,6 +24,28 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.3
 
 详情参见  [QUANATXISProtocol](https://github.com/yutiansut/QUANTAXIS/tree/0.3.8-dev-gamma-deal/QUANTAXISProtocol)
 
+## 0.3.8-dev-RC(ARP)版本说明
+0.3.8-dev-RC 将重点对于ARP进行改进优化，主要侧重事件响应流程和风险控制，组合管理
+
+- 当前QUANTAXIS Standard Protocol 版本号 0.0.3
+- 当前QUANTAXIS Pypi 版本 0.3.8b4
+- 当前QUANTAXIS-WebKit 版本 0.3.8 beta
+
+响应式构架完成，纯事件监听-事件驱动重构
+
+```log
+Thu, 06 Apr 2017 17:53:11 QALogs.py[line:26] INFO start QUANTAXIS
+Thu, 06 Apr 2017 17:53:11 QALogs.py[line:43] INFO Welcome to QUANTAXIS, the Version is 0.3.8-beta
+Thu, 06 Apr 2017 17:53:11 QALogs.py[line:43] INFO ip:127.0.0.1   port:27017
+Thu, 06 Apr 2017 17:53:13 QALogs.py[line:43] INFO Welcome to QUANTAXIS, the Version is 0.3.8-beta
+Thu, 06 Apr 2017 17:53:14 QALogs.py[line:43] INFO send a message
+Thu, 06 Apr 2017 17:53:14 QALogs.py[line:43] INFO receive change
+Thu, 06 Apr 2017 17:53:14 QALogs.py[line:43] INFO test receive this message
+Thu, 06 Apr 2017 17:53:14 QALogs.py[line:43] INFO receive change
+Thu, 06 Apr 2017 17:53:14 QALogs.py[line:43] INFO market receive this message
+Thu, 06 Apr 2017 17:53:14 QALogs.py[line:43] INFO receive change
+Thu, 06 Apr 2017 17:53:14 QALogs.py[line:43] INFO system receive this message
+```
 
 ## 0.3.8-dev-gamma(deal)版本说明
 ![](http://i1.piimg.com/567571/dc3c811a5afcb4fb.png)

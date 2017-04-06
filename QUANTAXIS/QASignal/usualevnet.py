@@ -4,7 +4,7 @@ from datetime import datetime
 from threading import *
 from .EventManager import *
 from QUANTAXIS.QASignal import QA_Signal_eventManager,QA_Signal_events
-
+from QUANTAXIS.QAUtil import QA_util_log_info
 
 # this is a standard module of writing signal
 
@@ -23,48 +23,54 @@ class PublicAccounts:
         #event.dict["Signal"] = u'如何写出更优雅的代码\n'
         #发送事件
         self.eventManager.SendEvent(event)
-        print ('aaa')
+        QA_util_log_info('send a message')
+
     def QA_signal_send_account_change(self):
         #事件对象，账户改变
         event = QA_Signal_events(type_=Signal)
         #event.dict["Signal"] = u'如何写出更优雅的代码\n'
         #发送事件
         self.eventManager.SendEvent(event)
-        print ('aaa')
+        QA_util_log_info('send a message')
+
     def QA_signal_send_risk_finish(self):
         #事件对象，风险评估完成
         event = QA_Signal_events(type_=Signal)
        # event.dict["Signal"] = u'如何写出更优雅的代码\n'
         #发送事件
         self.eventManager.SendEvent(event)
-        print ('aaa')
+        QA_util_log_info('send a message')
+
     def QA_signal_send_portfolio_finish(self):
         #事件对象，组合控制完成
         event = QA_Signal_events(type_=Signal)
         #event.dict["Signal"] = u'如何写出更优雅的代码\n'
         #发送事件
         self.eventManager.SendEvent(event)
-        print ('aaa')
+        QA_util_log_info('send a message')
+
     def QA_signal_send_strategy_update(self):
         #事件对象，策略数据更新
         event = QA_Signal_events(type_=Signal)
         #event.dict["Signal"] = u'如何写出更优雅的代码\n'
         #发送事件
         self.eventManager.SendEvent(event)
-        print ('aaa')
+        QA_util_log_info('send a message')
+
     def QA_signal_send_multi_strategy_change(self):
         #事件对象，多策略更新
         event = QA_Signal_events(type_=Signal)
         event.dict["Signal"] = 'change'
         #发送事件
         self.eventManager.SendEvent(event)
-        print ('send event')
+        QA_util_log_info('send a message')
+
     def QA_signal_send_event(self):
         event = QA_Signal_events(type_=Signal)
         event.dict["Signal"] = 'change'
         #发送事件
         self.eventManager.SendEvent(event)
-
+        QA_util_log_info('send a message')
 
 
 #监听器 订阅者
@@ -75,26 +81,26 @@ class Listener:
     #监听器的处理函数 
 
     def QA_signal_receive_market(self,event):
-        print('receive deal')
-        print(u'%s 收到了这个消息' % self.username)
+        QA_util_log_info('receive change')
+        print(u'%s receive this message' % self.username)
     def QA_signal_receive_account(self,event):
-        print('receive change')
-        print(u'%s 收到了这个消息' % self.username)
+        QA_util_log_info('receive change')
+        print(u'%s receive this message' % self.username)
     def QA_signal_receive_risk(self,event):
-        print('receive change')
-        print(u'%s 收到了这个消息' % self.username)
+        QA_util_log_info('receive change')
+        print(u'%s receive this message' % self.username)
     def QA_signal_receive_portfolio(self,event):
-        print('receive change')
-        print(u'%s 收到了这个消息' % self.username)
+        QA_util_log_info('receive change')
+        print(u'%s receive this message' % self.username)
     def QA_signal_receive_strategy(self,event):
-        print('receive change')
-        print(u'%s 收到了这个消息' % self.username)
+        QA_util_log_info('receive change')
+        print(u'%s receive this message' % self.username)
     def QA_signal_receive_multi(self,event):
-        print('receive change')
-        print(u'%s 收到了这个消息' % self.username)
+        QA_util_log_info('receive change')
+        print(u'%s receive this message' % self.username)
     def QA_signal_receive_event(self,event):
-        print('receive change')
-        print(u'%s 收到了这个消息' % self.username)
+        QA_util_log_info('receive change')
+        print(u'%s receive this message' % self.username)
 """测试函数"""
 #--------------------------------------------------------------------
 def QA_signal_usual_model():

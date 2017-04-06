@@ -28,7 +28,7 @@ def QA_signal_resend(name,QA_signal_send_event,QA_signal_receive_event,listener)
 def QA_signal_test(name,QA_signal_send_event,QA_signal_receive_event,listen_name):
     eventManager = QA_Signal_eventManager()
     for item in range(0,len(listen_name),1):
-        listner = Listener(listen_name) #订阅
+        listner = Listener(listen_name[item]) #订阅
         eventManager.AddEventListener(name,listner.QA_signal_receive_event)
 
     #绑定事件和监听器响应函数
