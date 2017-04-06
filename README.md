@@ -35,6 +35,11 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.3
 定义一个响应式的函数体
 
 ```python
+# QA_Signal_eventManager,QA_Signal_events 深度定制引入这两个模块
+# QA_Signal_Listener,QA_Signal_Sender 浅层定制引入这两个
+
+from QUANTAXIS.QASignal import (QA_Signal_eventManager,QA_Signal_events,
+                                QA_Signal_Listener,QA_Signal_Sender)
 listener_name=['market','account','system']
 #listener_name可以是一个list,代表一个事件的接受者
 
