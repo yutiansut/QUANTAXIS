@@ -16,4 +16,5 @@ class QA_Account:
     def QA_account_receive_deal(self,message):
         pass
     def QA_account_renew(self):
+        #未来发送给R,P的
         pass
