@@ -23,7 +23,11 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过
 - [QUANTAXIS 量化金融策略框架](#quantaxis-量化金融策略框架)
     - [QUANTAXIS-Stardand-Protocol](#quantaxis-stardand-protocol)
     - [0.3.8-dev-RC(ARP)版本说明](#038-dev-rcarp版本说明)
+        - [QACMD 改进](#qacmd-改进)
+        - [QASignal 改进](#qasignal-改进)
+        - [函数族改进](#函数族改进)
     - [0.3.8-dev-gamma(deal)版本说明](#038-dev-gammadeal版本说明)
+        - [QAMarket 模拟交易部分改进](#qamarket-模拟交易部分改进)
     - [0.3.8-dev-beta(pypi)版本说明](#038-dev-betapypi版本说明)
         - [quantaxis](#quantaxis)
         - [quantaxis-webkit](#quantaxis-webkit)
@@ -50,6 +54,36 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.3
 - 当前QUANTAXIS Pypi 版本 0.3.8b4
 - 当前QUANTAXIS-WebKit 版本 0.3.8 beta
 
+### QACMD 改进
+QACMD改进,增加makeExample,一键生成策略模板
+![](http://i4.buimg.com/567571/f579375cd257fe54.png)
+```python
+import QUANTAXIS as QA
+from QUANTAXIS.QACmd import CLI
+
+cli=CLI()
+cli.cmdloop()
+```
+```bash
+root        : INFO     start QUANTAXIS
+root        : INFO     Welcome to QUANTAXIS, the Version is 0.3.8-beta
+root        : INFO     ip:127.0.0.1   port:27017
+root        : INFO     Welcome to QUANTAXIS, the Version is 0.3.8-beta
+QUANTAXIS> makeExamples
+D:\New folder
+C:\ProgramData\Anaconda3\lib\site-packages\QUANTAXIS\QACmd\strategy_sample_simple.py
+QUANTAXIS> quit
+PS D:\New folder> ls
+    Directory: D:\New folder
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+-a----         4/6/2017  11:38 PM            342 quantaxis.log
+-a----         4/6/2017  11:38 PM           1528 strategy_sample_simple.py
+PS D:\New folder>
+```
+### QASignal 改进
 响应式构架完成，纯事件监听-事件驱动重构
 定义一个响应式的函数体
 
@@ -99,7 +133,7 @@ Thu, 06 Apr 2017 17:53:14 QALogs.py[line:43] INFO market receive this message
 Thu, 06 Apr 2017 17:53:14 QALogs.py[line:43] INFO receive change
 Thu, 06 Apr 2017 17:53:14 QALogs.py[line:43] INFO system receive this message
 ```
-目前的函数族有
+### 函数族改进
 
 ```python
 # 获取函数
@@ -156,7 +190,7 @@ import QUANTAXIS.QACmd
 - 当前QUANTAXIS Pypi 版本 0.3.8b2
 - 当前QUANTAXIS-WebKit 版本 0.3.8 beta
 
-模拟交易部分正在重构,响应式框架完成
+### QAMarket 模拟交易部分改进
 ```python
 import QUANTAXIS as QA
 #QA.QA_Setting.client=QA.QAUtil.QA_util_sql_mongo_setting(QA.QA_Setting.QA_util_sql_mongo_ip,QA.QA_Setting.QA_util_sql_mongo_port)
