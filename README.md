@@ -32,6 +32,35 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.3
 - 当前QUANTAXIS-WebKit 版本 0.3.8 beta
 
 响应式构架完成，纯事件监听-事件驱动重构
+定义一个响应式的函数体
+
+```python
+listener_name=['market','account','system']
+#listener_name可以是一个list,代表一个事件的接受者
+
+def message_center(listener_name):
+    class QASS(QA_Signal_Sender):
+        def QAS_send(self):
+            #发送的消息/执行函数
+            pass
+    class QASL(QA_Signal_Listener):
+        def QA_receive(self,event):
+            #接受的消息
+            pass
+    eventManager = QA_Signal_eventManager()
+    for item in range(0,len(listener_name),1):
+        listner = QASL(listener_name[item]) #订阅
+        eventManager.AddEventListener(name,listner.QA_receive)
+
+    #绑定事件和监听器响应函数
+    eventManager.Start()
+    publicAcc = QASS(eventManager)
+    timer = Timer(1, publicAcc.QAS_send)
+    timer.start()
+```
+
+
+类似结果如下：
 
 ```log
 Thu, 06 Apr 2017 17:53:11 QALogs.py[line:26] INFO start QUANTAXIS

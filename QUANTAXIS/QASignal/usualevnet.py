@@ -13,7 +13,7 @@ from QUANTAXIS.QAUtil import QA_util_log_info
 Signal = "Signal"
 
 #事件源 
-class PublicAccounts:
+class QA_Signal_Sender:
     def __init__(self,eventManager):
         self.eventManager = eventManager
 
@@ -74,7 +74,7 @@ class PublicAccounts:
 
 
 #监听器 订阅者
-class Listener:
+class QA_Signal_Listener:
     def __init__(self,username):
         self.username = username
 
@@ -104,9 +104,9 @@ class Listener:
 """测试函数"""
 #--------------------------------------------------------------------
 def QA_signal_usual_model():
-    listner1 = Listener("market") #订阅者1
-    listner2 = Listener("account")#订阅者2
-    listner3 = Listener("strategy")#订阅者2
+    listner1 = QA_Signal_Listener("market") #订阅者1
+    listner2 = QA_Signal_Listener("account")#订阅者2
+    listner3 = QA_Signal_Listener("strategy")#订阅者2
 
 
     eventManager = QA_Signal_eventManager()
@@ -121,7 +121,7 @@ def QA_signal_usual_model():
     eventManager.AddEventListener(Signal, listner3.QA_signal_receive_account)
     eventManager.Start()
 
-    publicAcc = PublicAccounts(eventManager)
+    publicAcc = QA_Signal_Sender(eventManager)
     
     for i in range(1,10,1):
         timer = Timer(2, publicAcc.QA_signal_send_account_change)
