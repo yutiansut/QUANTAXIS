@@ -7,7 +7,7 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过
 
 ![version](https://img.shields.io/badge/Version-%200.3.8dev/RC/ARP-orange.svg)
 ![QAS](https://img.shields.io/badge/QUANTAXISStandardProtocol-%200.0.3-brown.svg)
-![Pypi](https://img.shields.io/badge/Pypi-%200.3.8b4-blue.svg)
+![Pypi](https://img.shields.io/badge/Pypi-%200.3.8b5-blue.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.3.8-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
 ![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
@@ -59,14 +59,11 @@ QACMD改进,增加makeExample,一键生成策略模板
 ```powershell
 PS D:\Projects\strategy> dir
 
-
     Directory: D:\Projects\strategy
-
 
 Mode                LastWriteTime         Length Name
 ----                -------------         ------ ----
 -a----         4/7/2017  12:20 AM            342 quantaxis.log
-
 
 PS D:\Projects\strategy> python -m QUANTAXIS
 root        : INFO     start QUANTAXIS
@@ -78,9 +75,7 @@ root        : INFO     successfully generate a example strategy inD:\Projects\st
 QUANTAXIS> quit()
 PS D:\Projects\strategy> dir
 
-
     Directory: D:\Projects\strategy
-
 
 Mode                LastWriteTime         Length Name
 ----                -------------         ------ ----
