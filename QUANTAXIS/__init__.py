@@ -21,6 +21,7 @@ from QUANTAXIS.QASpider import (QA_spider_select_spider,QA_spider_start_spider,
 
 from QUANTAXIS.QATasks import (tasks,control)
 from QUANTAXIS.QAARP import (QAAccount,QAPortfolio,QARisk)
+from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QASignal import (QA_signal_resend, QA_signal_send, QA_Signal_eventManager,
                                 QA_Signal_events, QA_Signal_Sender, QA_Signal_Listener,QA_signal_usual_model)
 from QUANTAXIS.QAStrategy.start_strategy import (QA_Strategy)
