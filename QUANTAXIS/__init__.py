@@ -51,7 +51,7 @@ from QUANTAXIS.QAUtil import (QA_util_sql_mongo_setting,QA_util_cfg_initial,
 import QUANTAXIS.QACmd
 
 from QUANTAXIS.QACmd import QA_cmd
-
+import argparse
 QA_util_log_info('Welcome to QUANTAXIS, the Version is 0.3.8-beta')
 
 def QA_start_first_run(self):
@@ -65,4 +65,4 @@ def QA_help_fetch(self):
 def QA_help_su(self):
     QA_util_log_info('QA_SU_save_stock_list, QA_SU_save_stock_day,QA_SU_save_stock_day_init, QA_SU_save_trade_date')
 def main():
-    QACmd.QA_cmd()
+    QA_cmd()

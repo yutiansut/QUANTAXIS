@@ -20,7 +20,7 @@ class strategy(QA_Strategy):
     def signal_handle(self):
         pass
     
-    def message_center(self,listener_name):
+    def message_center(self,name,listener_name):
         class QASS(QA_Signal_Sender):
             def QAS_send(self):
                 pass
