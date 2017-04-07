@@ -3,7 +3,7 @@ from QUANTAXIS.QAFetch.QAQuery import QA_fetch_data
 from pymongo import  MongoClient
 from QUANTAXIS.QAUtil import QA_util_date_stamp,QA_util_log_info
 from QUANTAXIS.QAMarket import QA_QAMarket_bid,QA_market
-from QUANTAXIS import QA_Strategy,QA_Setting,QA_Strategy_signal
+from QUANTAXIS.QABacktest import QA_Backtest
 from QUANTAXIS.QAARP import QAAccount,QAPortfolio,QARisk
 from QUANTAXIS.QASignal import QA_signal_send
 from QUANTAXIS.QASignal import (QA_Signal_eventManager,QA_Signal_events,
@@ -12,10 +12,10 @@ import pandas
 from threading import *
 
 
-class strategy(QA_Strategy):
-    def strategy_init(self):
+class backtest(QA_Backtest):
+    def QA_backtest_init(self):
         pass
-    def strategy_start(self):
+    def QA_backtest_start(self):
         pass
     def signal_handle(self):
         pass
@@ -40,6 +40,6 @@ class strategy(QA_Strategy):
 
 
 ###运行
-strategy=strategy()
-strategy.strategy_init()
-strategy.strategy_start()
+backtest=backtest()
+backtest.QA_backtest_init()
+backtest.QA_backtest_start()
