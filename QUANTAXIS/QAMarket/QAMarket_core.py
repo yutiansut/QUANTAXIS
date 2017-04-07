@@ -17,7 +17,7 @@ class QA_market():
         item= coll.find_one({"code":str(bid.code)[0:6],"date": str(bid.time)[0:10]})
         print(item["high"])
         print(item["low"])
-        if ( bid.price<item["high"] and  bid.price>item["low"]):
+        if ( bid.price< item["high"] and  bid.price >item["low"] or bid.price ==item["low"] or bid.price==item['high']):
             QA_util_log_info("deal success")
             QA_signal_message={'trade_status':'success','price':str(bid.price),
             'code':str( bid.code),'amount':str( bid.amount),'time':str( bid.time),
