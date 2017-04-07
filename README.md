@@ -23,6 +23,7 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过
 - [QUANTAXIS 量化金融策略框架](#quantaxis-量化金融策略框架)
     - [QUANTAXIS-Stardand-Protocol](#quantaxis-stardand-protocol)
     - [0.3.8-dev-RC(ARP)版本说明](#038-dev-rcarp版本说明)
+        - [示例回测即将加入](#示例回测即将加入)
         - [QACMD 改进](#qacmd-改进)
         - [QASignal 改进](#qasignal-改进)
         - [函数族改进](#函数族改进)
@@ -53,7 +54,8 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.3
 - 当前QUANTAXIS Standard Protocol 版本号 0.0.3
 - 当前QUANTAXIS Pypi 版本 0.3.8b4
 - 当前QUANTAXIS-WebKit 版本 0.3.8 beta
-
+### 示例回测即将加入
+![](http://i4.buimg.com/567571/b3d0d61d310b5022.png)
 ### QACMD 改进
 QACMD改进,增加makeExample,一键生成策略模板
 ```powershell

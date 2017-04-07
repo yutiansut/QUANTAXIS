@@ -14,7 +14,7 @@ class QA_market():
     def market_make_deal(self,bid, client):
         db=client.quantaxis
         coll= db.stock_day
-        item= coll.find_one({"code":str(bid.code)[0:6],"date": str(bid.time)})
+        item= coll.find_one({"code":str(bid.code)[0:6],"date": str(bid.time)[0:10]})
         print(item["high"])
         print(item["low"])
         if ( bid.price<item["high"] and  bid.price>item["low"]):

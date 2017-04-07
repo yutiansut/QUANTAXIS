@@ -30,7 +30,7 @@ class QA_Account:
         if update_message['update']==True:
             new_id=update_message['id']
             new_amount=update_message['amount']
-            new_trade_date=update_message['trade_date']
+            new_trade_date=update_message['date']
             new_towards=update_message['towards']
             new_price=update_message['price']
             
