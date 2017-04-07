@@ -10,7 +10,8 @@ import numpy
 
 """
 def QA_fetch_data(variety,level,id,startDate,endDate):
-
+    startDate=str(startDate)[0:10]
+    endDate=str(endDate)[0:10]
     client=QA_Setting.client
     db=client.quantaxis
     if variety in ['stock','future','options']:
@@ -32,4 +33,6 @@ def QA_fetch_data(variety,level,id,startDate,endDate):
                     list_a[6].append(item['date'])
                 data=DataFrame(list_a).transpose()
                 return data
+            else:
+                QA_util_log_info('something wrong with date')
                     
