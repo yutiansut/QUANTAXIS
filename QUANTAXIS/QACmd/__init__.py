@@ -1,7 +1,6 @@
 import cmd
 import string, sys
 import os,shutil
-from .QACommand import QA_Command_make_cfg
 from QUANTAXIS.QAUtil import QA_util_log_info
 from . import strategy_sample_simple
 class CLI(cmd.Cmd):

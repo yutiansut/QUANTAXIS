@@ -7,7 +7,7 @@ Quantitative Financial Strategy Framework
 
 by yutiansut
 
-2017/4/5
+2017/4/8
 """
 # 获取函数
 
@@ -35,12 +35,10 @@ from QUANTAXIS.QAMarket import (QABid,QAMarket_core)
 # 账户，组合，风控函数
 from QUANTAXIS.QAARP import (QAAccount,QAPortfolio,QARisk)
 from QUANTAXIS.QAARP.QAAccount import QA_Account
-# 策略函数                                
-from QUANTAXIS.QAStrategy.start_strategy import (QA_Strategy)
-from QUANTAXIS.QAStrategy.strategy_signal import QA_Strategy_signal
-
-
-#from QUANTAXIS.QAStrategy import (start_strategy,import_strategy,analysis_strategy,c)
+from QUANTAXIS.QAARP.QARisk import QA_Risk
+from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
+# 回测母类
+from QUANTAXIS.QABacktest import QA_Backtest                   
 
 # 工具函数
 from QUANTAXIS.QAUtil import (QA_util_sql_mongo_setting,QA_util_cfg_initial,

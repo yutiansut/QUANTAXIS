@@ -1,7 +1,7 @@
 # coding :utf-8 
 
-from ..QAFetch import QATushare
-from ..QAUtil import util_date_stamp,util_time_stamp
+from QUANTAXIS.QAFetch import QATushare
+from QUANTAXIS.QAUtil import QA_util_date_stamp,QA_util_time_stamp
 import pymongo
 import datetime
 import re

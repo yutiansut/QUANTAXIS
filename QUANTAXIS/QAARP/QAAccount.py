@@ -1,6 +1,5 @@
 #coding :utf-8
 from QUANTAXIS.QAUtil import QA_util_log_info
-from ..QAMarket import QAMarket_core,QABid
 import random
 class QA_Account:
     def __init__(self):

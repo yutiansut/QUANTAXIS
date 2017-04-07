@@ -24,18 +24,6 @@ def QA_signal_resend(name,QA_signal_send_event,QA_signal_receive_event,listener)
     pass
 
 
-def QA_signal_test(name,QA_signal_send_event,QA_signal_receive_event,send_name,listen_name):
-    
-    eventManager = QA_Signal_eventManager()
-    for item in range(0,len(listen_name),1):
-        listner = QA_Signal_Listener(listen_name[item]) #订阅
-        eventManager.AddEventListener(name,listner.QA_signal_receive_event)
-
-    #绑定事件和监听器响应函数
-    eventManager.Start()
-    publicAcc = QA_Signal_Sender(eventManager)
-    timer = Timer(1, publicAcc.QA_signal_send_event)
-    timer.start()
 
 
 
