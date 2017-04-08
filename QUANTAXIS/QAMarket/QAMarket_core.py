@@ -6,7 +6,7 @@ from QUANTAXIS.QASignal import QA_signal_send
 from .QABid import QA_QAMarket_bid
 import datetime
 
-class QA_market():
+class QA_Market():
 
     client=QA_Setting.client
     # client=QA.QA_util_sql_mongo_setting()

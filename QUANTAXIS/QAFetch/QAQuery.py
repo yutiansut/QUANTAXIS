@@ -22,7 +22,7 @@ def QA_fetch_data(variety,level,id,startDate,endDate):
 
                 list_a=[[],[],[],[],[],[],[]]
 
-                for item in coll.find({'code':str(id)[0:6],"time_stamp":{"$lte":QA_util_date_stamp(endDate),"$gte":QA_util_date_stamp(startDate)}}):
+                for item in coll.find({'code':str(id)[0:6],"date_stamp":{"$lte":QA_util_date_stamp(endDate),"$gte":QA_util_date_stamp(startDate)}}):
                     #print(item['code'])
                     list_a[0].append(item['code'])
                     list_a[1].append(item['high'])

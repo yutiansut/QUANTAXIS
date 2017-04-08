@@ -19,9 +19,10 @@ QUANTAXIS-Protocol
         - [QAS-002-3 Mod 插件模块](#qas-002-3-mod-插件模块)
     - [QAS-003 Criterion 规范](#qas-003-criterion-规范)
         - [QAS-003-1 模块命名方式](#qas-003-1-模块命名方式)
-        - [QAS-003-2 函数命名方式](#qas-003-2-函数命名方式)
-        - [QAS-003-3 数据库命名方式](#qas-003-3-数据库命名方式)
-        - [QAS-003-4 RESTful 通信命名方式](#qas-003-4-restful-通信命名方式)
+        - [QAS-003-2 类命名方式](#qas-003-2-类命名方式)
+        - [QAS-003-3 函数命名方式](#qas-003-3-函数命名方式)
+        - [QAS-003-4 数据库/表命名方式](#qas-003-4-数据库表命名方式)
+        - [QAS-003-5 RESTful 通信命名方式](#qas-003-5-restful-通信命名方式)
 - [QAS-10x QAFetch 数据获取类](#qas-10x-qafetch-数据获取类)
 - [QAS-20x QASU(save/update)数据存储/更新类](#qas-20x-qasusaveupdate数据存储更新类)
 - [QAS-30x QAMarket 市场机制类](#qas-30x-qamarket-市场机制类)
@@ -74,18 +75,83 @@ QAFetch 主要是从固定的API获取数据,包括且不限于(Tushare,Wind,Gms
 模块的命名 
 
 - QA+首字母大写的方法(QASpider/QAFetch/QAMarket/QASignal/QATask/QAUtil)
-- QA+纯大写字母的缩写
-### QAS-003-2 函数命名方式
-### QAS-003-3 数据库命名方式
-### QAS-003-4 RESTful 通信命名方式
+- QA+纯大写字母的缩写(QASU,QAARP)
+
+>一般而言,模块是不修改的,当然,如果你需要深度定制你的模块名,则不仅需要遵守QAS#003-1协议,还需要修改"__init__.py",才能使你的模块生效
+ 
+### QAS-003-2 类命名方式
+类的命名
+
+- QA+ _大写字母类+_小写字母 ( QA_Account,QA_Risk,QA_Market,QA_QAMarket_bid,QA_Backtest )
+### QAS-003-3 函数命名方式
+函数的命名
+
+- QA_模块名_小写字母的函数 (QA_util_date_stamp)
+
+函数的命名除了QA,后面的模块已经函数全部小写,同时,以简单易懂,名词-动词形式为主
+
+主要是为了区分和类的关系
+ 
+> 但如果模块是缩写形式,则缩写部分还是大写,如 QA_SU_save_stock_day
+
+```
+QA_QAMarket_bid  这个是类
+QA_util_time_stamp 这个是函数
+```
+### QAS-003-4 数据库/表命名方式
+由于多数据源的问题,我们规定了基础指标和扩展指标,方便用户的不同权限的自定义需求
+
+比如说,如果你只有免费的数据源通道,那么你可以选择基础的指标(tushare,wind大奖章)
+
+如果你具有wind机构版权限,那么你可以在免费的指标上扩展你的指标,但仍然保持原有的基础指标名不变
+
+```
+Client: ip:port
+DataBase: quantaxis
+Collections:
+- trade_date,stock_list,options_list
+- stock_day,future_day,options_day
+- stock_tick,future_tick,options_tick
+- log_signal
+- user_setting,user_trade_history
+
+Basical Key:
+- date
+- date_stamp
+- open *stock
+- high *stock
+- low  *stock
+- close *stock
+- code
+- name
+```
+
+### QAS-003-5 RESTful 通信命名方式
 
 # QAS-10x QAFetch 数据获取类
+QAFetch
+- QA_fetch_get_
+- QA_fetch_data
+
 # QAS-20x QASU(save/update)数据存储/更新类 
+- QA_SU_save_
+- QA_SU_update_
+
 # QAS-30x QAMarket 市场机制类 
+- QA_Market
+- QA_QAMarket_bid
 # QAS-40x QABacktest 回测类
+- QA_Backtest
 # QAS-50x QAARP(account/risk/portfolio)账户/风险/组合管理类
+- QA_Account
+- QA_Risk
+- QA_Portfolio
 # QAS-60x QAUtil 工具类
+- QA_util_
+
 # QAS-70x QASpider 爬虫类
 # QAS-80x QASignal 信号/事件驱动类
+
 # QAS-90x QATask 任务机制/异步类
+
 # QAS-100x QACmd 命令行扩展类

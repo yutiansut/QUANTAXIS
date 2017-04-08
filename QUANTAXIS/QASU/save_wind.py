@@ -13,14 +13,14 @@ def QA_SU_save_stock_list():
     data=QAWind.QA_fetch_get_stock_list(datestr)
     #QA_util_log_info(stocklist)
     coll=pymongo.MongoClient().quantaxis.stock_list
-    coll.insert({'date':data[0][0],'datestamp':data[0][0].timestamp(),"stock":{'code':data[1],'name':data[2]}})
+    coll.insert({'date':data[0][0],'date_stamp':data[0][0].date_stamp(),"stock":{'code':data[1],'name':data[2]}})
 def QA_SU_save_trade_date():
     datestr=datetime.datetime.now().strftime("%Y-%m-%d")
     data=QAWind.QA_fetch_get_trade_date(datestr,'SSE')
     coll=pymongo.MongoClient().quantaxis.trade_date
     #QA_util_log_info(stocklist)
     for i in range(0,len(data[0]),1):
-        coll.insert({'date':data[0][i],'datestamp':data[0][i].timestamp(),'exchangeName':'SSE'})
+        coll.insert({'date':data[0][i],'date_stamp':data[0][i].date_stamp(),'exchangeName':'SSE'})
 def QA_SU_save_stock_day(name,startDate,endDate):
     coll=pymongo.MongoClient().quantaxis.stock_day
     #find if have the same
@@ -55,7 +55,7 @@ def QA_SU_save_stock_day_simple(name,startDate,endDate):
 def QA_SU_save_stock_day_init():
     #just for first using
     coll_get=pymongo.MongoClient().quantaxis.stock_list
-    item=coll_get.find_one({"datestamp":{"$gte":1483200000.0}})
+    item=coll_get.find_one({"date_stamp":{"$gte":1483200000.0}})
     for stock_name in item['stock']['code']:
         QA_util_log_info('now init the stock_day of---'+str(stock_name))
 
@@ -63,7 +63,7 @@ def QA_SU_save_stock_day_init():
 def QA_SU_save_stock_day_init_simple():
     #just for first using
     coll_get=pymongo.MongoClient().quantaxis.stock_list
-    item=coll_get.find_one({"datestamp":{"$gte":1483200000.0}})
+    item=coll_get.find_one({"date_stamp":{"$gte":1483200000.0}})
     for stock_name in item['stock']['code']:
         QA_util_log_info('now init the stock_day of---'+str(stock_name))
 

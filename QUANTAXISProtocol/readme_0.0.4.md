@@ -104,7 +104,7 @@ QAS-10x需要遵循[QAS-501-4](#qas-501-4-databases)规范
 
 - DataBase: quantaxis
 - Collections: stock_day,stock_min
-- BasicalName: code,name,timestamp,open,high,low,close,volume 
+- BasicalName: code,name,date_stamp,open,high,low,close,volume 
 - AdvanceName: 
 
 **Basical**指的是存入数据库/更新数据时必须要有的字段
@@ -174,13 +174,13 @@ QAS103主要规范了爬虫的命名标准，UserAgent设置，cookie，session�
 
 - DataBase: quantaxis
 - Collections: trade_date
-- BasicalName: date,datestamp,exchangeName
+- BasicalName: date,date_stamp,exchangeName
 
 
 #### QAS-201-2 交易列表
 - DataBase: quantaxis
 - Collections: stock_list
-- BasicalName: date,datestamp,stock[code,name]
+- BasicalName: date,date_stamp,stock[code,name]
 
 #### QAS-201-3 交易量
 交易量从[QAS-101](#qastandard-101-行情数据)的数据格式规范中获取,此处的规范主要针对撮合机制,当策略的请求交易量大于当日真实成交量的1/8,则判断无法成交.

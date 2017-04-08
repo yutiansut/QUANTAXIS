@@ -73,7 +73,7 @@ QAS-10x is required to follow the [QAS-501-4] (# qas-501-4-databases) specificat
 
 - DataBase: quantaxis
 - Collections: stock_day, stock_min
-- BasicalName: code, name, timestamp, open, high, low, close, volume
+- BasicalName: code, name, date_stamp, open, high, low, close, volume
 - AdvanceName:
 
 ** Basical ** refers to the fields that must be stored when storing the database / update data
@@ -143,13 +143,13 @@ Store all stock and futures names on the day of trading by time series
 
 - DataBase: quantaxis
 - Collections: trade_date
-- BasicalName: date, datestamp, exchangeName
+- BasicalName: date, date_stamp, exchangeName
 
 
 #### QAS-201-2 transaction list
 - DataBase: quantaxis
 - Collections: stock_list
-- BasicalName: date, datestamp, stock [code, name]
+- BasicalName: date, date_stamp, stock [code, name]
 
 #### QAS-201-3 trading volume
 The transaction volume is obtained from the data format specification of [QAS-101] (# qastandard-101- quot; market data). The specification here is mainly for the matching mechanism. When the requested transaction volume of the strategy is greater than 1/8 of the true volume of the day, Judgment can not be traded.
