@@ -1,5 +1,6 @@
 from ..QAFetch import QAWind
 from ..QAUtil import QA_util_date_stamp,QA_util_time_stamp,QA_util_log_info
+from QUANTAXIS.QAUtil import QA_Setting
 import pymongo
 import datetime
 import re
