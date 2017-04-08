@@ -50,7 +50,7 @@ import QUANTAXIS.QACmd
 
 from QUANTAXIS.QACmd import QA_cmd
 import argparse
-QA_util_log_info('Welcome to QUANTAXIS, the Version is 0.3.8-beta')
+QA_util_log_info('Welcome to QUANTAXIS, the Version is 0.3.8-dev-RC-ARP')
 
 def QA_start_first_run(self):
     QA_SU_save_stock_day_init_simple()
