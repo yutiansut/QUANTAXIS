@@ -1,12 +1,14 @@
 # QUANTAXIS 量化金融策略框架
-  
-QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过分布式爬虫进行数据抓取,构建了响应式的数据清洗和行情推送引擎.搭建了支持多语言的开放式回测框架.并构建了交互可视化的客户端和网站.
+
+QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化分析解决方案. 我们通过高度解耦的模块化以及标准化协议,可以快速的实现面向场景的定制化解决方案.QUANTAXIS是一个渐进式的开放式框架,你可以根据自己的需要,引入自己的数据,分析方案,可视化过程等,也可以通过RESTful接口,快速实现多人局域网/广域网内的协作.
+
+QUANTAXIS实现了股票和期货市场的全品种回测.通过分布式爬虫进行数据抓取,构建了响应式的数据清洗和行情推送引擎.搭建了支持多语言的开放式回测框架.并构建了交互可视化的客户端和网站.
 
 > 0.3.8 版本将对于一体化和模块化流程进行进一步的优化
 
 
-![version](https://img.shields.io/badge/Version-%200.3.8BETA-orange.svg)
-![QAS](https://img.shields.io/badge/QUANTAXISStandardProtocol-%200.0.3-brown.svg)
+![version](https://img.shields.io/badge/Version-%200.3.8RC/ARP-orange.svg)
+![QAS](https://img.shields.io/badge/QUANTAXISStandardProtocol-%200.0.5-brown.svg)
 ![Pypi](https://img.shields.io/badge/Pypi-%200.3.8RC-blue.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.3.8-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
@@ -44,15 +46,15 @@ QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过
 ## QUANTAXIS-Stardand-Protocol
 QUANTAXIS 标准化协议和未来协议
 
-QUANTAXIS-Stardand-Protocol 版本号0.0.3
+QUANTAXIS-Stardand-Protocol 版本号0.0.5
 
-详情参见  [QUANATXISProtocol](https://github.com/yutiansut/QUANTAXIS/tree/0.3.8-dev-gamma-deal/QUANTAXISProtocol)
+详情参见  [QUANATXISProtocol](https://github.com/yutiansut/QUANTAXIS/tree/0.3.8-RC-ARP/QUANTAXISProtocol)
 
 ## 0.3.8-dev-RC(ARP)版本说明
 0.3.8-dev-RC 将重点对于ARP进行改进优化，主要侧重事件响应流程和风险控制，组合管理
 
-- 当前QUANTAXIS Standard Protocol 版本号 0.0.3
-- 当前QUANTAXIS Pypi 版本 0.3.8b4
+- 当前QUANTAXIS Standard Protocol 版本号 0.0.5
+- 当前QUANTAXIS Pypi 版本 0.3.8rc
 - 当前QUANTAXIS-WebKit 版本 0.3.8 beta
 ### 示例回测即将加入
 ![](http://i4.buimg.com/567571/b3d0d61d310b5022.png)
