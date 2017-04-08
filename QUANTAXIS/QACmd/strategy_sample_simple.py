@@ -2,7 +2,7 @@ import QUANTAXIS as QA
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_data
 from pymongo import  MongoClient
 from QUANTAXIS.QAUtil import QA_util_date_stamp,QA_util_log_info
-from QUANTAXIS.QAMarket import QA_QAMarket_bid,QA_market
+from QUANTAXIS.QAMarket import QA_QAMarket_bid,QA_Market
 from QUANTAXIS.QABacktest import QA_Backtest
 from QUANTAXIS.QAARP import QAAccount,QAPortfolio,QARisk
 from QUANTAXIS.QASignal import QA_signal_send

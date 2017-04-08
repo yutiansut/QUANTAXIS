@@ -30,7 +30,7 @@ from QUANTAXIS.QASignal import (QA_signal_resend, QA_signal_send, QA_Signal_even
                                 QA_Signal_events, QA_Signal_Sender, QA_Signal_Listener,QA_signal_usual_model)
 # 市场函数
 
-from QUANTAXIS.QAMarket import (QABid,QAMarket_core)
+from QUANTAXIS.QAMarket import (QA_QAMarket_bid,QA_Market)
 
 # 账户，组合，风控函数
 from QUANTAXIS.QAARP import (QAAccount,QAPortfolio,QARisk)
@@ -62,5 +62,7 @@ def QA_help_fetch(self):
     QA_util_log_info('QA_fetch_get_stock_day,QA_fetch_get_trade_date,QA_fetch_get_stock_indicator')
 def QA_help_su(self):
     QA_util_log_info('QA_SU_save_stock_list, QA_SU_save_stock_day,QA_SU_save_stock_day_init, QA_SU_save_trade_date')
+
+
 def main():
     QA_cmd()

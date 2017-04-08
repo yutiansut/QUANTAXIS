@@ -1,3 +1,6 @@
+from QUANTAXIS import QA_Account
+
+
 class QA_Backtest():
     def QA_backtest_init(self):
         pass
