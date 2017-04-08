@@ -16,20 +16,8 @@ QUANTAXIS-Protocol
         - [QAS-001-3 关于QUANTAXIS-Future-Protocol](#qas-001-3-关于quantaxis-future-protocol)
     - [QAS-002 Module 模块](#qas-002-module-模块)
         - [QAS-002-1 Basical Module 基础模块](#qas-002-1-basical-module-基础模块)
-            - [QAS-002-1-1 数据获取类 QAFetch](#qas-002-1-1-数据获取类-qafetch)
-            - [QAS-002-1-2 数据存储/更新类 QASU](#qas-002-1-2-数据存储更新类-qasu)
-            - [QAS-002-1-3 市场机制类 QAMarket](#qas-002-1-3-市场机制类-qamarket)
-            - [QAS-002-1-4 回测类 QABacktest](#qas-002-1-4-回测类-qabacktest)
-            - [QAS-002-1-5 账户/风险/组合管理类 QAARP](#qas-002-1-5-账户风险组合管理类-qaarp)
-            - [QAS-002-1-6 工具类 QAUtil](#qas-002-1-6-工具类-qautil)
         - [QAS-002-2 Extension Module 扩展模块](#qas-002-2-extension-module-扩展模块)
-            - [QAS-002-2-1 爬虫类 QASpider](#qas-002-2-1-爬虫类-qaspider)
-            - [QAS-002-2-2 信号/事件驱动类 QASignal](#qas-002-2-2-信号事件驱动类-qasignal)
-            - [QAS-002-2-3 任务机制/异步类 QATasks](#qas-002-2-3-任务机制异步类-qatasks)
-            - [QAS-002-2-4 命令行扩展类 QACmd](#qas-002-2-4-命令行扩展类-qacmd)
         - [QAS-002-3 Mod 插件模块](#qas-002-3-mod-插件模块)
-            - [QAS-002-3-1 QUANTAXIS-Webkit 插件](#qas-002-3-1-quantaxis-webkit-插件)
-            - [QAS-002-3-2 QUANTAXIS-OpenCenter 插件](#qas-002-3-2-quantaxis-opencenter-插件)
     - [QAS-003 Criterion 规范](#qas-003-criterion-规范)
         - [QAS-003-1 模块命名方式](#qas-003-1-模块命名方式)
         - [QAS-003-2 函数命名方式](#qas-003-2-函数命名方式)
@@ -64,20 +52,23 @@ QUANTAXIS-Future-Protocol(下称QAF)是一些目前尚未实现或未添加的�
 ## QAS-002 Module 模块
 QUANTAXIS是一个渐进式框架,所以会有基础模块和扩展模块之分
 ### QAS-002-1 Basical Module 基础模块
-#### QAS-002-1-1 数据获取类 QAFetch
-#### QAS-002-1-2 数据存储/更新类 QASU
-#### QAS-002-1-3 市场机制类 QAMarket
-#### QAS-002-1-4 回测类 QABacktest
-#### QAS-002-1-5 账户/风险/组合管理类 QAARP
-#### QAS-002-1-6 工具类 QAUtil
+- [数据获取类 QAFetch](#qas-10x-qafetch-数据获取类)
+QAFetch 主要是从固定的API获取数据,包括且不限于(Tushare,Wind,Gmsdk)等等,你也可以引入自己的数据模块接口.
+
+
+- [数据存储/更新类 QASU](#qas-20x-qasusaveupdate数据存储更新类)
+- [市场机制类 QAMarket](#qas-30x-qamarket-市场机制类)
+- [回测类 QABacktest](#qas-40x-qabacktest-回测类)
+- [账户/风险/组合管理类 QAARP](#qas-50x-qaarpaccountriskportfolio账户风险组合管理类)
+- [工具类 QAUtil](#qas-60x-qautil-工具类)
 ### QAS-002-2 Extension Module 扩展模块
-#### QAS-002-2-1 爬虫类 QASpider
-#### QAS-002-2-2 信号/事件驱动类 QASignal
-#### QAS-002-2-3 任务机制/异步类 QATasks
-#### QAS-002-2-4 命令行扩展类 QACmd
+- [爬虫类 QASpider](#qas-70x-qaspider-爬虫类)
+- [信号/事件驱动类 QASignal](#qas-80x-qasignal-信号事件驱动类)
+- [任务机制/异步类 QATasks](#qas-90x-qatasks-任务机制异步类)
+- [命令行扩展类 QACmd](#qas-100x-qacmd-命令行扩展类)
 ### QAS-002-3 Mod 插件模块
-#### QAS-002-3-1 QUANTAXIS-Webkit 插件
-#### QAS-002-3-2 QUANTAXIS-OpenCenter 插件
+- [QUANTAXIS-Webkit 插件](https://github.com/yutiansut/QUANTAXIS_Webkit)
+- [QUANTAXIS-OpenCenter 插件](https://github.com/yutiansut/QUANTAXIS_OpenCenter)
 
 ## QAS-003 Criterion 规范
 ### QAS-003-1 模块命名方式
