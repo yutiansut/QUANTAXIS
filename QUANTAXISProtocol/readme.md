@@ -1,7 +1,6 @@
 QUANTAXIS-Protocol
 标准化协议QAS/未来协议QAF
-
-------
+------------
 
 - 当前版本:0.0.5
 - 协议最后修改日期:2017-04-09
@@ -31,7 +30,7 @@ QUANTAXIS-Protocol
 - [QAS-60x QAUtil 工具类](#qas-60x-qautil-工具类)
 - [QAS-70x QASpider 爬虫类](#qas-70x-qaspider-爬虫类)
 - [QAS-80x QASignal 信号/事件驱动类](#qas-80x-qasignal-信号事件驱动类)
-- [QAS-90x QATasks 任务机制/异步类](#qas-90x-qatasks-任务机制异步类)
+- [QAS-90x QATask 任务机制/异步类](#qas-90x-qatask-任务机制异步类)
 - [QAS-100x QACmd 命令行扩展类](#qas-100x-qacmd-命令行扩展类)
 
 <!-- /TOC -->
@@ -64,7 +63,7 @@ QAFetch 主要是从固定的API获取数据,包括且不限于(Tushare,Wind,Gms
 ### QAS-002-2 Extension Module 扩展模块
 - [爬虫类 QASpider](#qas-70x-qaspider-爬虫类)
 - [信号/事件驱动类 QASignal](#qas-80x-qasignal-信号事件驱动类)
-- [任务机制/异步类 QATasks](#qas-90x-qatasks-任务机制异步类)
+- [任务机制/异步类 QATask](#qas-90x-qatask-任务机制异步类)
 - [命令行扩展类 QACmd](#qas-100x-qacmd-命令行扩展类)
 ### QAS-002-3 Mod 插件模块
 - [QUANTAXIS-Webkit 插件](https://github.com/yutiansut/QUANTAXIS_Webkit)
@@ -72,6 +71,10 @@ QAFetch 主要是从固定的API获取数据,包括且不限于(Tushare,Wind,Gms
 
 ## QAS-003 Criterion 规范
 ### QAS-003-1 模块命名方式
+模块的命名 
+
+- QA+首字母大写的方法(QASpider/QAFetch/QAMarket/QASignal/QATask/QAUtil)
+- QA+纯大写字母的缩写
 ### QAS-003-2 函数命名方式
 ### QAS-003-3 数据库命名方式
 ### QAS-003-4 RESTful 通信命名方式
@@ -84,5 +87,5 @@ QAFetch 主要是从固定的API获取数据,包括且不限于(Tushare,Wind,Gms
 # QAS-60x QAUtil 工具类
 # QAS-70x QASpider 爬虫类
 # QAS-80x QASignal 信号/事件驱动类
-# QAS-90x QATasks 任务机制/异步类
+# QAS-90x QATask 任务机制/异步类
 # QAS-100x QACmd 命令行扩展类

@@ -48,7 +48,7 @@ QUANTAXIS 标准化协议和未来协议
 
 QUANTAXIS-Stardand-Protocol 版本号0.0.5
 
-详情参见  [QUANATXISProtocol](https://github.com/yutiansut/QUANTAXIS/tree/0.3.8-RC-ARP/QUANTAXISProtocol)
+详情参见  [QUANATXISProtocol](https://github.com/yutiansut/QUANTAXIS/tree/0.3.8-dev-RC-ARP/QUANTAXISProtocol)
 
 ## 0.3.8-dev-RC(ARP)版本说明
 0.3.8-dev-RC 将重点对于ARP进行改进优化，主要侧重事件响应流程和风险控制，组合管理
@@ -149,7 +149,7 @@ from QUANTAXIS.QASpider import (QA_spider_select_spider,QA_spider_start_spider,
                                 QA_spider_end_spider)
 
 # 任务中心
-from QUANTAXIS.QATasks import (tasks,control)
+from QUANTAXIS.QATask import (tasks,control)
 
 # 存储函数
 from QUANTAXIS.QASU.save_wind import ( QA_SU_save_stock_list, QA_SU_save_stock_day,

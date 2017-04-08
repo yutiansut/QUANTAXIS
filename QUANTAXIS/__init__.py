@@ -19,7 +19,7 @@ from QUANTAXIS.QASpider import (QA_spider_select_spider,QA_spider_start_spider,
                                 QA_spider_end_spider)
 
 # 任务中心
-from QUANTAXIS.QATasks import (tasks,control)
+from QUANTAXIS.QATask import (tasks,control)
 
 # 存储函数
 from QUANTAXIS.QASU.save_wind import ( QA_SU_save_stock_list, QA_SU_save_stock_day,
