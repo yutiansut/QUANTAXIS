@@ -24,7 +24,7 @@ from QUANTAXIS.QATask import (tasks,control)
 # 存储函数
 from QUANTAXIS.QASU.save_wind import ( QA_SU_save_stock_list, QA_SU_save_stock_day,
                                     QA_SU_save_stock_day_init, QA_SU_save_stock_day_init_simple, QA_SU_save_trade_date)
-
+from QUANTAXIS.QASU.user import (QA_user_sign_in,QA_user_sign_up)
 # 事件驱动
 from QUANTAXIS.QASignal import (QA_signal_resend, QA_signal_send, QA_Signal_eventManager,
                                 QA_Signal_events, QA_Signal_Sender, QA_Signal_Listener,QA_signal_usual_model)
