@@ -1,15 +1,13 @@
 var express = require('express');
 var router = express.Router();
-var mongoose = require('mongoose');
-var db = mongoose.createConnection('localhost', 'quantaxis');
-db.on('error', console.error.bind(console, '连接错误:'));
-var UserSchema = new mongoose.Schema({
-  username: String,
-  password: String,
-  Email: String
-});
 
-var User = db.model('user_list', UserSchema);
+var mongodb= require('mongodb')
+
+/**
+
+*/
+
+//var User = db.model('user_list', UserSchema);
 router.get('*', function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -60,26 +58,26 @@ router.get('/signup', function (req, res, next) {
     }
   }
 
-
-
 });
 router.get('/login', function (req, res, next) {
   if (req.query.name) {
     var name = req.query.name;
-    User.findOne({
-      username: name
-    }, function (err, doc) {
-      if (req.query.password) {
-        var uPassword = req.query.password;
-        console.log(uPassword)
-        if (doc.password) {
-          console.log(doc.password)
-          if (uPassword === doc.password) {
-            res.send('success')
-            console.log('success')
-          } else res.send('wrong password')
-        }
-      } else res.send('no password')
+    mongodb.connect('mongodb://localhost:27017/quantaxis', function(err, conn){
+         conn.collection('user_list', function(err, coll){ 
+              coll.find({'username':name}).toArray(function(err,docs){
+                  var password=docs.password
+                  console.log(password)
+                  if (req.query.password){
+                    if (password==req.query.password){
+                      res.send('success')
+                    }else {
+                      res.send('wrong password')
+                      console.log('wrong password')
+                  }
+                }else res.send('no password')
+                 
+         })
+        })
     })
   } else res.send('no user name')
 });
