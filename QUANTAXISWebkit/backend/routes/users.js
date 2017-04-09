@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-var db = mongoose.createConnection('localhost', 'quantaxisUser');
+var db = mongoose.createConnection('localhost', 'quantaxis');
 db.on('error', console.error.bind(console, '连接错误:'));
 var UserSchema = new mongoose.Schema({
   username: String,
@@ -9,7 +9,7 @@ var UserSchema = new mongoose.Schema({
   Email: String
 });
 
-var User = db.model('users', UserSchema);
+var User = db.model('user_list', UserSchema);
 router.get('*', function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
