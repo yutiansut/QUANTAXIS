@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-var mongodb= require('mongodb')
-var assert =require('assert')
+var mongodb = require('mongodb')
+var assert = require('assert')
 /**
 
 */
@@ -30,20 +30,21 @@ router.get('/signup', function (req, res, next) {
     if (req.query.password) {
       var password = req.query.password;
       console.log(password)
-       mongodb.connect('mongodb://localhost:27017/quantaxis', function(err, conn){
-         conn.collection('user_list', function(err, coll){  
-             coll.find({'username':name}).toArray(function(err,docs){
-                if (docs.password==null){
-                  console.log('none username')
-                  coll.insert({'username':name,'password':password},function(err,docs){
-                    console.log(docs)
-                      mongodb.close();
+      mongodb.connect('mongodb://localhost:27017/quantaxis', function (err, conn) {
+        conn.collection('user_list', function (err, coll) {
+          coll.find({ 'username': name }).toArray(function (err, docs) {
+            console.log(docs[0])
+            if (docs[0].password == null) {
+              console.log('none username')
+              coll.insert({ 'username': name, 'password': password }, function (err, docs) {
+                console.log(docs)
 
-                  })
-                }
-             })
-         })
-       })
+
+              })
+            }
+          })
+        })
+      })
     }
   }
 
@@ -51,23 +52,24 @@ router.get('/signup', function (req, res, next) {
 router.get('/login', function (req, res, next) {
   if (req.query.name) {
     var name = req.query.name;
-    mongodb.connect('mongodb://localhost:27017/quantaxis', function(err, conn){
-         conn.collection('user_list', function(err, coll){ 
-              coll.find({'username':name}).toArray(function(err,docs){
-                  var password=docs.password
-                  mongodb.close()
-                  console.log(password)
-                  if (req.query.password){
-                    if (password==req.query.password){
-                      res.send('success')
-                    }else {
-                      res.send('wrong password')
-                      console.log('wrong password')
-                  }
-                }else res.send('no password')
-                 
-         })
+    mongodb.connect('mongodb://localhost:27017/quantaxis', function (err, conn) {
+      conn.collection('user_list', function (err, coll) {
+        coll.find({ 'username': name }).toArray(function (err, docs) {
+          console.log(docs[0])
+          var password = docs[0].password
+          console.log(req.query.password)
+          console.log(password)
+          if (req.query.password) {
+            if (password == req.query.password) {
+              res.send('success')
+            } else {
+              res.send('wrong password')
+              console.log('wrong password')
+            }
+          } else res.send('no password')
+
         })
+      })
     })
   } else res.send('no user name')
 });
