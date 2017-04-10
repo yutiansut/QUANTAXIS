@@ -10,6 +10,7 @@ QUANTAXIS实现了股票和期货市场的全品种回测.通过分布式爬虫�
 ![version](https://img.shields.io/badge/Version-%200.3.8RC/ARP-orange.svg)
 ![QAS](https://img.shields.io/badge/QUANTAXISStandardProtocol-%200.0.5-brown.svg)
 ![Pypi](https://img.shields.io/badge/Pypi-%200.3.8RC-blue.svg)
+![python](https://img.shields.io/badge/python-%202.7/3.5/3.6/win/ubuntu-darkgrey.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.3.8-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
 ![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
