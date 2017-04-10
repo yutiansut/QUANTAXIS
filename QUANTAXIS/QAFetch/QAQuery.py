@@ -4,12 +4,14 @@ from QUANTAXIS.QAUtil import QA_util_date_valid,QA_util_date_stamp
 from pandas import DataFrame
 from bson.objectid import ObjectId
 import numpy
+import datetime
 
 """
 按要求从数据库取数据，并转换成dataframe结构
 
 """
 def QA_fetch_data(code,startDate,endDate,collections):
+    print(datetime.datetime.now())
     startDate=str(startDate)[0:10]
     endDate=str(endDate)[0:10]
 
@@ -27,7 +29,9 @@ def QA_fetch_data(code,startDate,endDate,collections):
             list_a[4].append(item['close'])
             list_a[5].append(item['volume'])
             list_a[6].append(item['date'])
+            print(datetime.datetime.now())
         data=DataFrame(list_a).transpose()
+        print(datetime.datetime.now())
         return data
     else:
         QA_util_log_info('something wrong with date')
