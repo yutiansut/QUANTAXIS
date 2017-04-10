@@ -11,7 +11,7 @@ import datetime
 
 """
 def QA_fetch_data(code,startDate,endDate,collections):
-    print(datetime.datetime.now())
+    #print(datetime.datetime.now())
     startDate=str(startDate)[0:10]
     endDate=str(endDate)[0:10]
 
@@ -30,8 +30,9 @@ def QA_fetch_data(code,startDate,endDate,collections):
             list_a[5].append(item['volume'])
             list_a[6].append(item['date'])
             print(datetime.datetime.now())
-        data=DataFrame(list_a).transpose()
-        print(datetime.datetime.now())
+        data=numpy.asarray(list_a).transpose()
+        #data=DataFrame(list_a).transpose()
+        #print(datetime.datetime.now())
         return data
     else:
         QA_util_log_info('something wrong with date')

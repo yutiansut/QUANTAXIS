@@ -47,7 +47,7 @@ class QA_Account:
                 self.portfolio['price']=''
                 self.portfolio['id']=''
                 self.portfolio['amount']=''
-                self.portfolio['time']=''
+                
 
             self.history_trade.append(appending_list)
 
