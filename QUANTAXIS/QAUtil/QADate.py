@@ -3,7 +3,7 @@ import time
 import re
 
 def QA_util_date_stamp(date):
-    #封装的日期函数
+    #date function
     datestr=str(date)[0:10]
     date=time.mktime(time.strptime(datestr,'%Y-%m-%d'))
     return date

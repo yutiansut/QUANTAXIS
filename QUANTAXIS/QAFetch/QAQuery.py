@@ -1,4 +1,4 @@
-#coding:utf-8
+# encoding: UTF-8
 from QUANTAXIS.QAUtil import QA_util_log_info
 from QUANTAXIS.QAUtil import QA_util_date_valid,QA_util_date_stamp
 from pandas import DataFrame

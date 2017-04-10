@@ -1,4 +1,4 @@
-#coding :utf-8
+# encoding: UTF-8
 from QUANTAXIS.QAUtil import QA_util_log_info
 import random
 class QA_Account:

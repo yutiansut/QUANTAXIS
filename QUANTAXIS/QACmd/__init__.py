@@ -1,3 +1,4 @@
+# encoding: UTF-8
 import cmd
 import string, sys
 import os,shutil

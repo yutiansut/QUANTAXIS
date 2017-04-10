@@ -1,7 +1,7 @@
 # encoding: UTF-8
 # 系统模块
 from QUANTAXIS.QAUtil import QA_util_log_info
-from queue import Queue, Empty
+from Queue import Queue, Empty
 from threading import *
 ########################################################################
 class QA_Signal_eventManager:

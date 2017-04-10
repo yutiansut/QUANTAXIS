@@ -1,3 +1,4 @@
+# encoding: UTF-8
 import QUANTAXIS as QA
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_data
 from pymongo import  MongoClient
