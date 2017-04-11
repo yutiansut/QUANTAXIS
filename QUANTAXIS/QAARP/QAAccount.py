@@ -6,7 +6,7 @@ class QA_Account:
     def __init__(self):
         self.assets=0
         self.portfolio={'date':'', 'id':'',' price':'', 'amount':''}
-
+        self.cash=self.assets
         self.history_trade=[['date', 'id',' price', 'amount',' towards']]
 
         #date, id, price, amount, towards
@@ -23,10 +23,17 @@ class QA_Account:
         return self.history_trade
     def QA_Account_get_cookie(self):
         return self.account_cookie
-    def QA_account_receive_deal(self,message):
-        pass
+    def QA_account_receive_deal(self,message,client):
+        self.account.QA_account_update({
+            'update':True,
+            'price':message['bid']['price'],
+            'id':message['bid']['code'],
+            'amount':message['bid']['amount'],
+            'towards':message['bid']['towards'],
+            'date':message['bid']['time']
+            })
 
-    def QA_account_update(self,update_message):
+    def QA_account_update(self,update_message,client):
         if update_message['update']==True:
             new_id=update_message['id']
             new_amount=update_message['amount']
@@ -63,7 +70,7 @@ class QA_Account:
                 }
                 
             }
-            QA_signal_send(message)
+            QA_signal_send(message,client)
     def QA_account_renew(self):
         #未来发送给R,P的
         pass

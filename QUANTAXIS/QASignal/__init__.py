@@ -1,6 +1,7 @@
 #Encoding:utf-8
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting, QA_util_sql_mongo_setting
 from QUANTAXIS.QABacktest.QABacktest_standard import QA_backtest_standard_record_account,QA_backtest_standard_record_market
+from QUANTAXIS.QAARP.QAAccount import QA_Account
 from .EventManager import QA_Signal_events, QA_Signal_eventManager
 from .usualevnet import QA_Signal_Sender, QA_Signal_Listener, QA_signal_usual_model
 from threading import *
@@ -40,6 +41,9 @@ def QA_signal_send(message,client):
 
             
         """
+        
+        account=QA_Account()
+        account.QA_account_receive_deal(message,client)
         QA_backtest_standard_record_market(message,client)
     elif message['header'] in ['account','Account','acc','ACC','ACCOUNT']:
         # account message

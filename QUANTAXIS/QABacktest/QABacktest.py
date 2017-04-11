@@ -4,6 +4,7 @@ from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAUtil import QA_Setting
 from QUANTAXIS.QAUtil import QA_util_log_info
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_data
+
 import random
 class QA_Backtest():
     
@@ -13,10 +14,18 @@ class QA_Backtest():
     setting=QA_Setting()
     client=setting.client
     user=setting.QA_setting_user_name
-
+    def QA_backtest_init(self):
+        pass
 
     def QA_backtest_start(self):
         QA_util_log_info('backtest start')
+
+
+    def QA_backtest_day_start(self):
+        pass
+    def QA_backtest_day_end(self):
+        pass
+
     def QA_get_data(self):
         self.QA_get_data_from_market()
         self.QA_get_data_from_ARP()
@@ -31,9 +40,3 @@ class QA_Backtest():
     def QA_strategy_analysis(self):
         pass
 
-
-def QA_backtest_get_client(QA_Backtest):
-    return QA_Backtest.setting.client
-    
-def QA_backtest_get_setting(self):
-    return QA_Backtest.setting

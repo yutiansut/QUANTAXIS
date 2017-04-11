@@ -1,5 +1,6 @@
 #Encoding:utf-8
 from QUANTAXIS.QAUtil import QA_util_log_info,QA_Setting
+
 import datetime,time
 """
 标准化输出结果,并且给QAAnalysis喂食QAQ
@@ -33,6 +34,7 @@ def QA_backtest_standard_record_market(message,client):
         'bid':message['body']['bid'],
         'market':message['body']['market']
         })  
+    
 def QA_backtest_standard_record_account(message):
     return message
 
