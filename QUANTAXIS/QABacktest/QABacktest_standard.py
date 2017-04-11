@@ -22,7 +22,7 @@ def QA_backtest_standard_record_market(message,client):
         'high':item['high'],
         'low':item['low'],
         'close':item['close'],
-        'amount':item['amount'],
+        'volume':item['volume'],
         'code':item['code']}
     """
     coll.insert({
