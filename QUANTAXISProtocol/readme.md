@@ -31,6 +31,8 @@ QUANTAXIS-Protocol
     - [QAS-_202-x QA_SU_update_](#qas-_202-x-qa_su_update_)
     - [QAS-203-x QA_SU_user](#qas-203-x-qa_su_user)
 - [QAS-30x QAMarket 市场机制类](#qas-30x-qamarket-市场机制类)
+    - [QAS-301-x QA_Market](#qas-301-x-qa_market)
+    - [QAS-302-x QA_QAMarket_bid](#qas-302-x-qa_qamarket_bid)
 - [QAS-40x QABacktest 回测类](#qas-40x-qabacktest-回测类)
 - [QAS-50x QAARP(account/risk/portfolio)账户/风险/组合管理类](#qas-50x-qaarpaccountriskportfolio账户风险组合管理类)
 - [QAS-60x QAUtil 工具类](#qas-60x-qautil-工具类)
@@ -149,8 +151,20 @@ Basical Key:
 ## QAS-203-x QA_SU_user
 
 # QAS-30x QAMarket 市场机制类 
-- QA_Market
-- QA_QAMarket_bid
+## QAS-301-x QA_Market
+## QAS-302-x QA_QAMarket_bid
+bid是一个标准报价包
+```python
+
+    price=4.5
+    time='2000-01-17'
+    amount=10
+    towards=1
+    code=str('000001.SZ')
+    user='root'
+    strategy='root01'
+```
+
 # QAS-40x QABacktest 回测类
 - QA_Backtest
 # QAS-50x QAARP(account/risk/portfolio)账户/风险/组合管理类
@@ -169,7 +183,11 @@ Basical Key:
 message={
     'header':{
         'source':source_name,
-        'cookie',xxxx
+        'cookie':xxxx,
+        'session':{
+            'user':xxx,
+            'strategy':xxxx
+        }
         
     },
     'body':{
