@@ -43,7 +43,7 @@ class QA_Market():
                         'high':item['high'],
                         'low':item['low'],
                         'close':item['close'],
-                        'amount':item['amount'],
+                        'volume':item['volume'],
                         'code':item['code']
                         }
                     }

@@ -30,10 +30,8 @@ def QA_backtest_standard_record_market(message,client):
         'strategy_name':message['header']['session']['strategy'],
         'time':datetime.datetime.now(),
         'date_stamp':str(datetime.datetime.now().timestamp()),
-        'history':{
-            'bid':message['body']['bid'],
-            'market':message['body']['market']
-        }
+        'bid':message['body']['bid'],
+        'market':message['body']['market']
         })  
 def QA_backtest_standard_record_account(message):
     return message
