@@ -5,13 +5,14 @@ import random
 class QA_Account:
     def __init__(self):
         self.assets=0
-        self.portfolio={'date':'', 'id':'',' price':'', 'amount':''}
+        self.portfolio={'date':'', 'id':'N',' price':'', 'amount':''}
         self.cash=self.assets
         self.history_trade=[['date', 'id',' price', 'amount',' towards']]
 
         #date, id, price, amount, towards
         self.account_cookie=str(random.random())
-        
+        self.portfit=0
+        self.hold=0
 
     def QA_account_get_cash(self):
         return self.assets
@@ -32,6 +33,7 @@ class QA_Account:
             'towards':message['bid']['towards'],
             'date':message['bid']['time']
             })
+        
 
     def QA_account_update(self,update_message,client):
         if update_message['update']==True:
@@ -53,11 +55,12 @@ class QA_Account:
             else:
                 self.portfolio['date']=''
                 self.portfolio['price']=''
-                self.portfolio['id']=''
+                self.portfolio['id']='N'
                 self.portfolio['amount']=''
             
 
             self.history_trade.append(appending_list)
+            self.QA_account_calc_profit()
             message={
                 'header':{
                     'source':'account',
@@ -74,3 +77,26 @@ class QA_Account:
     def QA_account_renew(self):
         #未来发送给R,P的
         pass
+    def QA_account_calc_profit(self):
+        profit=0
+        for item in range(1,len(self.history),1):
+        # history:
+        # date, id, price, amount, towards
+            profit=profit-self.account.history_trade[item][2]*self.account.history_trade[item][3]*self.account.history_trade[item][4]
+        if str(self.portfolio['id'])[0]=='N' :
+            self.hold=0
+        else :self.hold=1
+        # calc
+        if (self.hold==1):
+            QA_util_log_info('hold-=========================================')
+            now_price=float(dataA[-1][3])
+            #（当前价-买入价）*量
+            profit=profit+(now_price-self.portfolio['price'])*self.portfolio['amount']+self.account.history_trade[-1][2]*self.account.history_trade[-1][3]*self.account.history_trade[-1][4]
+            print(now_price)
+            print(self.portfolio['price'])
+            cur_profit=(now_price-self.portfolio['price'])/(self.portfolio['price'])
+        else: 
+            QA_util_log_info('No hold-=========================================')
+            profit=profit
+            cur_profit=0
+        
