@@ -8,16 +8,18 @@ import datetime
 
 class QA_Market():
 
-    client=QA_Setting.client
+    #client=QA_Setting.client
     # client=QA.QA_util_sql_mongo_setting()
     # db= client.market
     def market_make_deal(self,bid, client):
-        db=client.quantaxis
-        coll= db.stock_day
+        coll=client.quantaxis.stock_day
         item= coll.find_one({"code":str(bid.code)[0:6],"date": str(bid.time)[0:10]})
-        print(item["high"])
-        print(item["low"])
-        if ( bid.price< item["high"] and  bid.price >item["low"] or bid.price ==item["low"] or bid.price==item['high']):
+        QA_util_log_info('==== Market Board ====')
+        QA_util_log_info('day High'+str(item["high"]))
+        QA_util_log_info('your bid price'+str(bid.price))
+        QA_util_log_info('day Low'+str(item["low"]))
+        QA_util_log_info('==== Market Board ====')
+        if ( float(bid.price)< float(item["high"]) and  float(bid.price) >float(item["low"]) or float(bid.price) ==float(item["low"]) or float(bid.price)==float(item['high'])):
             QA_util_log_info("deal success")
             QA_signal_message={'trade_status':'success','price':str(bid.price),
             'code':str( bid.code),'amount':str( bid.amount),'time':str( bid.time),
