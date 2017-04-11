@@ -3,34 +3,42 @@ QUANTAXIS-Protocol
 ------------
 
 - 当前版本:0.0.5
-- 协议最后修改日期:2017-04-09
+- 协议最后修改日期:2017-04-11
 - 项目版本:QUANTAXIS 0.3.8-dev-RC(ARP)
 
 <!-- TOC -->
 
 - [QAS-00x Intro  简介](#qas-00x-intro--简介)
-    - [QAS-001 About](#qas-001-about)
+    - [QAS-001-x  About](#qas-001-x--about)
         - [QAS-001-1 关于QUANTAXIS](#qas-001-1-关于quantaxis)
         - [QAS-001-2 关于QUANTAXIS-Standard-Protocol](#qas-001-2-关于quantaxis-standard-protocol)
         - [QAS-001-3 关于QUANTAXIS-Future-Protocol](#qas-001-3-关于quantaxis-future-protocol)
-    - [QAS-002 Module 模块](#qas-002-module-模块)
+    - [QAS-002-x Module 模块](#qas-002-x-module-模块)
         - [QAS-002-1 Basical Module 基础模块](#qas-002-1-basical-module-基础模块)
         - [QAS-002-2 Extension Module 扩展模块](#qas-002-2-extension-module-扩展模块)
         - [QAS-002-3 Mod 插件模块](#qas-002-3-mod-插件模块)
-    - [QAS-003 Criterion 规范](#qas-003-criterion-规范)
+    - [QAS-003-x Criterion 规范](#qas-003-x-criterion-规范)
         - [QAS-003-1 模块命名方式](#qas-003-1-模块命名方式)
         - [QAS-003-2 类命名方式](#qas-003-2-类命名方式)
         - [QAS-003-3 函数命名方式](#qas-003-3-函数命名方式)
         - [QAS-003-4 数据库/表命名方式](#qas-003-4-数据库表命名方式)
         - [QAS-003-5 RESTful 通信命名方式](#qas-003-5-restful-通信命名方式)
 - [QAS-10x QAFetch 数据获取类](#qas-10x-qafetch-数据获取类)
-- [QAS-20x QASU(save/update)数据存储/更新类](#qas-20x-qasusaveupdate数据存储更新类)
+    - [QAS-101-x QA_fetch_get_](#qas-101-x-qa_fetch_get_)
+    - [QAS-102x-x QAS_fetch_data](#qas-102x-x-qas_fetch_data)
+- [QAS-20x QASU(save/update)数据存储/更新](#qas-20x-qasusaveupdate数据存储更新)
+    - [QAS-201-x QA_SU_save_](#qas-201-x-qa_su_save_)
+    - [QAS-_202-x QA_SU_update_](#qas-_202-x-qa_su_update_)
+    - [QAS-203-x QA_SU_user](#qas-203-x-qa_su_user)
 - [QAS-30x QAMarket 市场机制类](#qas-30x-qamarket-市场机制类)
 - [QAS-40x QABacktest 回测类](#qas-40x-qabacktest-回测类)
 - [QAS-50x QAARP(account/risk/portfolio)账户/风险/组合管理类](#qas-50x-qaarpaccountriskportfolio账户风险组合管理类)
 - [QAS-60x QAUtil 工具类](#qas-60x-qautil-工具类)
 - [QAS-70x QASpider 爬虫类](#qas-70x-qaspider-爬虫类)
 - [QAS-80x QASignal 信号/事件驱动类](#qas-80x-qasignal-信号事件驱动类)
+    - [QAS-801-x QA_signal_](#qas-801-x-qa_signal_)
+        - [QAS-801-1 QA_signal_send 协议](#qas-801-1-qa_signal_send-协议)
+        - [QAS-801-1 QA_signal_resend 协议](#qas-801-1-qa_signal_resend-协议)
 - [QAS-90x QATask 任务机制/异步类](#qas-90x-qatask-任务机制异步类)
 - [QAS-100x QACmd 命令行扩展类](#qas-100x-qacmd-命令行扩展类)
 
@@ -154,7 +162,22 @@ Basical Key:
 
 # QAS-70x QASpider 爬虫类
 # QAS-80x QASignal 信号/事件驱动类
-
+## QAS-801-x QA_signal_
+### QAS-801-1 QA_signal_send 协议
+打包出标准化协议,模仿http协议
+```python
+message={
+    'header':{
+        'source':source_name,
+        'cookie',xxxx
+        
+    },
+    'body':{
+        
+    }
+}
+```
+###  QAS-801-1 QA_signal_resend 协议
 # QAS-90x QATask 任务机制/异步类
 
 # QAS-100x QACmd 命令行扩展类

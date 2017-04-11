@@ -1,5 +1,6 @@
 # encoding: UTF-8
 from QUANTAXIS.QAUtil import QA_util_log_info
+from QUANTAXIS.QASignal import QA_signal_send
 import random
 class QA_Account:
     def __init__(self):
@@ -34,7 +35,7 @@ class QA_Account:
             new_price=update_message['price']
             
 
-            appending_list=[new_trade_date,new_id,new_price,new_amount,new_towards]
+            appending_list=[new_trade_date, new_id, new_price, new_amount, new_towards]
             if new_towards>0:
                 
                 self.portfolio['date']=new_trade_date
@@ -47,11 +48,22 @@ class QA_Account:
                 self.portfolio['price']=''
                 self.portfolio['id']=''
                 self.portfolio['amount']=''
-                
+            
 
             self.history_trade.append(appending_list)
-
-
+            message={
+                'header':{
+                    'source':'account',
+                    'cookie':self.account_cookie
+                    },
+                'body':{
+                    'init_assest':self.assets,
+                    'portfolio':self.portfolio,
+                    'history':self.history_trade
+                }
+                
+            }
+            QA_signal_send(message)
     def QA_account_renew(self):
         #未来发送给R,P的
         pass
