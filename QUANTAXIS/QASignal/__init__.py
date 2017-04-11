@@ -44,7 +44,7 @@ def QA_signal_send(message,client):
         
         account=QA_Account()
         account.QA_account_receive_deal(message,client)
-        QA_backtest_standard_record_market(message,client)
+        #QA_backtest_standard_record_market(message,client)
     elif message['header'] in ['account','Account','acc','ACC','ACCOUNT']:
         # account message
         """
@@ -62,7 +62,7 @@ def QA_signal_send(message,client):
             
         }
         """
-        QA_backtest_standard_record_account(message,client)
+        QA_backtest_standard_record_account(message, client)
 
     elif message['header'] in ['risk','RISK','QA_RISK']:
         pass

@@ -35,6 +35,46 @@ def QA_backtest_standard_record_market(message,client):
         'market':message['body']['market']
         })  
     
-def QA_backtest_standard_record_account(message):
-    return message
+    
+def QA_backtest_standard_record_account(message,client):
+    coll=client.quantaxis.market_history
+    coll.insert({
+        'user':message['header']['session']['user'],
+        'strategy_name':message['header']['session']['strategy'],
+        'time':datetime.datetime.now(),
+        'date_stamp':str(datetime.datetime.now().timestamp()),
+        'bid':message['body']['bid'],
+        'market':message['body']['market'],
+        'account':message['body']['account'],
+        'cookie':message['header']['coookie']
+        })  
+    
 
+
+"""
+               'header':{
+                    'source':'account',
+                    'cookie':self.account_cookie,
+                    'session':{
+                        'user':update_message['user'],
+                        'strategy':update_message['strategy']
+                    }
+                    
+                    },
+                'body':{
+                    'account':{
+                        'init_assest':self.assets,
+                        'portfolio':self.portfolio,
+                        'history':self.history_trade,
+                        'assest_now':self.assets,
+                        'assest_history':self.total_assest,
+                        'assest_free':self.assets_free,
+                        'assest_fix':self.assets_market_hold_value,
+                        'profit':self.portfit,
+                        'cur_profit':self.cur_profit
+                    },
+                    'bid':update_message['bid'],
+                    'market':update_message['market'],
+                    'time':datetime.datetime.now(),
+                    'date_stamp':str(datetime.datetime.now().timestamp())
+"""
