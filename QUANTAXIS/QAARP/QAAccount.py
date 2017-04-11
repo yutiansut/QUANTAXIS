@@ -6,13 +6,13 @@ class QA_Account:
     def __init__(self):
         self.assets=1000
         self.portfolio={'date':'', 'id':'N',' price':'', 'amount':''}
-        self.cash=self.assets
+        
         self.history_trade=[['date', 'id',' price', 'amount',' towards']]
         self.total_assest=[].append(self.assets)
         self.total_profit=[].append('0')
         self.total_cur_profit=[].append('0')
         self.assets_market_hold_value=0
-        self.assets_free=1000
+        self.assets_free=self.assets
         self.cur_profit
         #date, id, price, amount, towards
         self.account_cookie=str(random.random())
