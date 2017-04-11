@@ -49,7 +49,7 @@ class QA_Market():
                     }
                 }
 
-            QA_signal_send(message)
+            QA_signal_send(message,client)
             return True
         else:
             QA_util_log_info('not success')

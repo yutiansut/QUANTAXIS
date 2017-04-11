@@ -1,11 +1,12 @@
-from .EventManager import QA_Signal_events,QA_Signal_eventManager
-from .usualevnet import QA_Signal_Sender, QA_Signal_Listener, QA_signal_usual_model
-from QUANTAXIS.QAUtil import QA_util_log_info,QA_Setting,QA_util_sql_mongo_setting
+#Encoding:utf-8
+from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting, QA_util_sql_mongo_setting
 from QUANTAXIS.QABacktest.QABacktest_standard import QA_backtest_standard_record_account,QA_backtest_standard_record_market
+from .EventManager import QA_Signal_events, QA_Signal_eventManager
+from .usualevnet import QA_Signal_Sender, QA_Signal_Listener, QA_signal_usual_model
 from threading import *
 import time,datetime,re
 
-def QA_signal_send(message):
+def QA_signal_send(message,client):
     # dispackage the message
     QA_util_log_info(message)
     if message['header']['source'] in ['market','Market']:
@@ -39,7 +40,7 @@ def QA_signal_send(message):
 
             
         """
-        QA_backtest_standard_record_market(message)
+        QA_backtest_standard_record_market(message,client)
     elif message['header'] in ['account','Account','acc','ACC','ACCOUNT']:
         # account message
         """
@@ -57,7 +58,7 @@ def QA_signal_send(message):
             
         }
         """
-        QA_backtest_standard_record_account(message)
+        QA_backtest_standard_record_account(message,client)
 
     elif message['header'] in ['risk','RISK','QA_RISK']:
         pass

@@ -38,7 +38,8 @@ from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAARP.QARisk import QA_Risk
 from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
 # Backtest
-from QUANTAXIS.QABacktest import QA_Backtest                   
+from QUANTAXIS.QABacktest.QABacktest import QA_Backtest
+from QUANTAXIS.QABacktest.QABacktest_standard import QA_backtest_standard_record_account,QA_backtest_standard_record_market                   
 
 # Util
 from QUANTAXIS.QAUtil import (QA_util_sql_mongo_setting,QA_util_cfg_initial,
