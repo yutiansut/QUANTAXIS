@@ -29,7 +29,7 @@ def QA_fetch_data(code,startDate,endDate,collections):
             list_a[4].append(item['close'])
             list_a[5].append(item['volume'])
             list_a[6].append(item['date'])
-            print(datetime.datetime.now())
+            #print(datetime.datetime.now())
         data=numpy.asarray(list_a).transpose()
         #data=DataFrame(list_a).transpose()
         #print(datetime.datetime.now())

@@ -7,7 +7,7 @@ from .usualevnet import QA_Signal_Sender, QA_Signal_Listener, QA_signal_usual_mo
 from threading import *
 import time,datetime,re
 
-def QA_signal_send(message,client):
+def QA_signal_send(message, client,to_module):
     # dispackage the message
     QA_util_log_info(message)
     if message['header']['source'] in ['market','Market']:
@@ -42,8 +42,8 @@ def QA_signal_send(message,client):
             
         """
         
-        account=QA_Account()
-        account.QA_account_receive_deal(message,client)
+        #account=QA_Account()
+        #account.QA_account_receive_deal(message, client,to_module)
         #QA_backtest_standard_record_market(message,client)
     elif message['header'] in ['account','Account','acc','ACC','ACCOUNT']:
         # account message
