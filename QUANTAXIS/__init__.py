@@ -53,12 +53,7 @@ from QUANTAXIS.QACmd import QA_cmd
 import argparse
 QA_util_log_info('Welcome to QUANTAXIS, the Version is 0.3.8-dev-RC-ARP')
 
-def QA_start_first_run(self):
-    QA_SU_save_stock_day_init_simple()
-    QA_util_log_info('first_run_quantaxis')
-    pass
-def QA_close(self):
-    pass
+
 def QA_help_fetch(self):
     QA_util_log_info('QA_fetch_get_stock_day,QA_fetch_get_trade_date,QA_fetch_get_stock_indicator')
 def QA_help_su(self):

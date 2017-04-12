@@ -40,6 +40,7 @@ class backtest(QA.QA_Backtest):
         self.strategy_start_date='2001-01-01'
         print(self.strategy_start_date)
         print('==make a bid==')
+        self.bid.bid['amount']=100
         message=self.market.market_make_deal(self.bid.bid,self.setting.client)
         print('==market responds')
         print(message)
