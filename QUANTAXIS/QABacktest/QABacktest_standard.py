@@ -43,6 +43,7 @@ def QA_backtest_standard_record_account(message,client):
         'strategy_name':message['header']['session']['strategy'],
         'time':datetime.datetime.now(),
         'date_stamp':str(datetime.datetime.now().timestamp()),
+        'bid_date':message['body']['bid']['time'],
         'bid':message['body']['bid'],
         'market':message['body']['market'],
         'account':message['body']['account'],

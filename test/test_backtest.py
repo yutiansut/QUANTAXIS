@@ -3,19 +3,10 @@ import QUANTAXIS as QA
 class backtest(QA.QA_Backtest):
 
     def start(self):
-        
-        self.QA_backtest_init()
-        #引入4个类  account,market,setting,bid
-
-        self.settings()
-
-        #数据库的查询示例
-        #print(self.setting.client.quantaxis.stock_day.find_one({}))
-
-        self.QA_backtest_start()
-
-        self.get_data_from_market()
-
+        self.account.__init__()
+        print(self.account.account_cookie)
+        print(self.account.assets)
+        print(self.clients)
     def get_data_from_market(self):
         self.coll=self.setting.client.quantaxis.stock_day
         data=QA.QA_fetch_data('000001','2005-05-01','2006-05-04',self.coll)

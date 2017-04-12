@@ -4,7 +4,13 @@ Analysis Center for Backtest
 we will give some function
 """
 
-def QA_backtest_calc_alpha():
+def QA_backtest_analysis_start():
+    pass
+
+def QA_backtest_result_check(datelist,message):
+     #list(set(datelist).difference(set(trade_list)))
+    print(message['body']['account']['history']['date'])
+def QA_backtest_calc_alpha(check,message):
     pass
 def QA_backtest_calc_beta():
     pass
@@ -24,3 +30,14 @@ def QA_backtest_calc_drowback_max():
 
 def QA_backtest_calc_sharpe():
     pass
+
+
+def QA_backtest_calc_trade_time():
+    pass
+def QA_backtest_calc_trade_time_profit():
+    pass
+def QA_backtest_calc_trade_time_loss():
+    pass
+def QA_backtest_calc_win_rate():
+    pass
+

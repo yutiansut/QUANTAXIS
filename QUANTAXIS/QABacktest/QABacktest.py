@@ -12,7 +12,7 @@ class QA_Backtest():
     market=QA_Market()
     bid=QA_QAMarket_bid()
     setting=QA_Setting()
-    client=setting.client
+    clients=setting.client
     user=setting.QA_setting_user_name
     def QA_backtest_init(self):
         pass
@@ -23,6 +23,10 @@ class QA_Backtest():
 
     def QA_backtest_day_start(self):
         pass
+
+    def QA_backtest_handle(self):
+        pass
+
     def QA_backtest_day_end(self):
         pass
 
@@ -31,12 +35,11 @@ class QA_Backtest():
         self.QA_get_data_from_ARP()
     
     def QA_get_data_from_market(self):
-        db=self.setting.client.quantaxis
+        db=self.clients.quantaxis
         
     def QA_get_data_from_ARP(self):
         pass
     def QA_strategy_update(self):
         pass
-    def QA_strategy_analysis(self):
-        pass
+
 

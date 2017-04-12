@@ -1,6 +1,7 @@
 # encoding: UTF-8
 from QUANTAXIS.QAUtil import QA_util_log_info
-from QUANTAXIS.QASignal import QA_signal_send
+from QUANTAXIS.QABacktest.QABacktest_standard import QA_backtest_standard_record_account,QA_backtest_standard_record_market
+from QUANTAXIS.QABacktest import QAAnalysis as Ana
 import random
 class QA_Account:
     def __init__(self):
@@ -13,11 +14,13 @@ class QA_Account:
         self.total_cur_profit=[].append('0')
         self.assets_market_hold_value=0
         self.assets_free=self.assets
-        self.cur_profit
+        self.cur_profit=0
         #date, id, price, amount, towards
         self.account_cookie=str(random.random())
         self.portfit=0
         self.hold=0
+        self.message={}
+        
 
     def QA_account_get_cash(self):
         return self.assets
@@ -30,6 +33,8 @@ class QA_Account:
     def QA_Account_get_cookie(self):
         return self.account_cookie
     def QA_account_receive_deal(self,message,client):
+        
+
         self.account.QA_account_update({
             'update':True,
             'price':message['bid']['price'],
@@ -102,7 +107,41 @@ class QA_Account:
 
                 }
             }
-            QA_signal_send(message,client)
+            
+        else:
+            message={
+                'header':{
+                    'source':'account',
+                    'cookie':self.account_cookie,
+                    'session':{
+                        'user':update_message['user'],
+                        'strategy':update_message['strategy']
+                    }
+                    
+                    },
+                'body':{
+                    'account':{
+                        'init_assest':self.assets,
+                        'portfolio':self.portfolio,
+                        'history':self.history_trade,
+                        'assest_now':self.assets,
+                        'assest_history':self.total_assest,
+                        'assest_free':self.assets_free,
+                        'assest_fix':self.assets_market_hold_value,
+                        'profit':self.portfit,
+                        'cur_profit':self.cur_profit
+                    },
+                    'bid':update_message['bid'],
+                    'market':update_message['market'],
+                    'time':datetime.datetime.now(),
+                    'date_stamp':str(datetime.datetime.now().timestamp())
+
+
+                }
+            }
+            #属于不更新history和portfolio,但是要继续增加账户和日期的
+        self.message=message
+        
     def QA_account_renew(self):
         #未来发送给R,P的
         pass
@@ -134,3 +173,7 @@ class QA_Account:
         self.assets=float(self.assets_free)+float(self.assets_market_hold_value)
         self.total_assest.append(str(self.assets))
         self.total_cur_profit.append(self.cur_profit)
+    def QA_account_analysis(self):
+        pass
+    def QA_Account_get_message(self):
+        return self.message
