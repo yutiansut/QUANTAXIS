@@ -3,7 +3,7 @@
 import scrapy
 import re
 import json
-from mongodbQuery import querylist
+from .mongodbQuery import querylist
 from wallstreetCN.items import WallstreetcnItem,articlePool
 from wallstreetCN.phantomjs import selenium_request
 from scrapy.spiders import Spider  

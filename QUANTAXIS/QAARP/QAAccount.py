@@ -70,6 +70,7 @@ class QA_Account:
 
 
     def QA_account_update(self,update_message,client):
+        print(update_message)
         if update_message['update']==True:
             new_id=update_message['id']
             new_amount=update_message['amount']
@@ -88,14 +89,14 @@ class QA_Account:
                 
             else:
                 self.portfolio['date']=''
-                self.portfolio['price']=''
+                self.portfolio['price']=0
                 self.portfolio['id']='N'
-                self.portfolio['amount']=''
+                self.portfolio['amount']=0
             print(self.total_assest)
-            print(float(new_amount))
+            print(int(new_amount))
             print(float(new_price))
             print(int(new_towards))
-            self.assets_free=float(self.total_assest[-1])-float(new_amount)*float(new_price)*int(new_towards)
+            self.assets_free=float(self.total_assest[-1])-int(new_amount)*float(new_price)*int(new_towards)
 
             self.history_trade.append(appending_list)
             self.QA_account_calc_profit(update_message)
@@ -152,7 +153,8 @@ class QA_Account:
                         'assest_free':self.assets_free,
                         'assest_fix':self.assets_market_hold_value,
                         'profit':self.portfit,
-                        'cur_profit_present':self.cur_profit_present
+                        'cur_profit_present':self.cur_profit_present,
+                        'hold':self.hold
                     },
                     'bid':update_message['bid'],
                     'market':update_message['market'],
@@ -169,6 +171,7 @@ class QA_Account:
         #未来发送给R,P的
         pass
     def QA_account_calc_profit(self,update_message):
+       # print(update_message)
         profit=0
         for item in range(1,len(self.history_trade),1):
         # history:
@@ -183,17 +186,20 @@ class QA_Account:
                 QA_util_log_info('hold-=========================================')
                 
                 #（当前价-买入价）*量
-                profit=profit+(now_price-float(self.portfolio['price']))*float(self.portfolio['amount'])+float(self.history_trade[-1][2])*float(self.history_trade[-1][3])*float(self.history_trade[-1][4])
+                profit=profit+(now_price-float(self.portfolio['price']))*int(self.portfolio['amount'])+float(self.history_trade[-1][2])*float(self.history_trade[-1][3])*float(self.history_trade[-1][4])
                 print(now_price)
                 print(self.portfolio['price'])
                 self.cur_profit_present=(now_price-float(self.portfolio['price']))/(float(self.portfolio['price']))
-                self.assets_market_hold_value=float(now_price)*float(self.portfolio['amount'])
+                self.assets_market_hold_value=float(now_price)*int(self.portfolio['amount'])
                 self.assets=float(self.assets_free)+float(self.assets_market_hold_value)
             else: 
                 QA_util_log_info('No hold-=========================================')
                 profit=profit
                 self.cur_profit_present=0
-        self.assets_market_hold_value=float(now_price)*float(self.portfolio['amount'])
+        print('---risk--')
+        #print(now_price)
+        #print(self.portfolio['amount'])
+        self.assets_market_hold_value=float(now_price)*int(self.portfolio['amount'])
         self.assets=float(self.assets_free)+float(self.assets_market_hold_value)
         self.total_assest.append(str(self.assets))
         self.total_cur_profit_present.append(self.cur_profit_present)

@@ -36,7 +36,7 @@ class QA_Market():
                     'bid':{
                         'price':str(bid['price']),
                         'code':str(bid['code']),
-                        'amount':str(bid['amount']),
+                        'amount':int(bid['amount']),
                         'time':str(bid['time']),
                         'towards':bid['towards']
                         },
@@ -52,6 +52,7 @@ class QA_Market():
                 }
 
             #QA_signal_send(message,client)
+            print(message['body']['bid']['amount'])
             return message
         else:
             QA_util_log_info('not success')
@@ -63,6 +64,24 @@ class QA_Market():
                         'user':str(bid['user']),
                         'strategy':str(bid['strategy'])
                         }
+                    },
+                'body':{
+                    'bid':{
+                        'price':str(bid['price']),
+                        'code':str(bid['code']),
+                        'amount':int(bid['amount']),
+                        'time':str(bid['time']),
+                        'towards':bid['towards']
+                        },
+                    'market':{
+                        'open':item['open'],
+                        'high':item['high'],
+                        'low':item['low'],
+                        'close':item['close'],
+                        'volume':item['volume'],
+                        'code':item['code']
+                        }
                     }
                 }
+            print(message['body']['bid']['amount'])
             return message
