@@ -10,7 +10,7 @@ class QA_Account:
     portfolio={'date':'', 'id':'N',' price':'', 'amount':''}
     
     history_trade=[['date', 'id',' price', 'amount',' towards']]
-    total_assest=[assets]
+    
     total_profit=[0]
     total_cur_profit_present=[0]
     assets_market_hold_value=0
@@ -20,7 +20,41 @@ class QA_Account:
     account_cookie=str(random.random())
     portfit=0
     hold=0
-    message={}
+    def init(self):
+        self.total_assest=[self.assets]
+        self.assets_free=self.total_assest[-1]
+
+        self.message={
+                'header':{
+                    'source':'account',
+                    'cookie':'',
+                    'session':{
+                        'user':'',
+                        'strategy':''
+                    }
+                    
+                    },
+                'body':{
+                    'account':{
+                        'init_assest':self.assets,
+                        'portfolio':self.portfolio,
+                        'history':self.history_trade,
+                        'assest_now':self.assets,
+                        'assest_history':self.total_assest,
+                        'assest_free':self.assets_free,
+                        'assest_fix':self.assets_market_hold_value,
+                        'profit':self.portfit,
+                        'cur_profit_present':self.cur_profit_present,
+                        'hold':self.hold
+                    },
+                    'bid':{},
+                    'market':{},
+                    'time':datetime.datetime.now(),
+                    'date_stamp':str(datetime.datetime.now().timestamp())
+
+
+                }
+            }
         
 
     def QA_account_get_cash(self):
@@ -85,7 +119,8 @@ class QA_Account:
                         'assest_free':self.assets_free,
                         'assest_fix':self.assets_market_hold_value,
                         'profit':self.portfit,
-                        'cur_profit_present':self.cur_profit_present
+                        'cur_profit_present':self.cur_profit_present,
+                        'hold':self.hold
                     },
                     'bid':update_message['bid'],
                     'market':update_message['market'],
@@ -139,24 +174,25 @@ class QA_Account:
         # history:
         # date, id, price, amount, towards
             profit=profit-float(self.history_trade[item][2])*float(self.history_trade[item][3])*float(self.history_trade[item][4])
-        if str(self.portfolio['id'])[0]=='N' :
-            self.hold=0
-        else :self.hold=1
-        # calc
-        if (int(self.hold==1)):
-            QA_util_log_info('hold-=========================================')
+            if str(self.portfolio['id'])[0]=='N' :
+                self.hold=0
+            else :self.hold=1
+            # calc
             now_price=float(update_message['market']['close'])
-            #（当前价-买入价）*量
-            profit=profit+(now_price-float(self.portfolio['price']))*float(self.portfolio['amount'])+float(self.history_trade[-1][2])*float(self.history_trade[-1][3])*float(self.history_trade[-1][4])
-            print(now_price)
-            print(self.portfolio['price'])
-            self.cur_profit_present=(now_price-float(self.portfolio['price']))/(float(self.portfolio['price']))
-            self.assets_market_hold_value=float(now_price)*float(self.portfolio['amount'])
-            self.assets=float(self.assets_free)+float(self.assets_market_hold_value)
-        else: 
-            QA_util_log_info('No hold-=========================================')
-            profit=profit
-            self.cur_profit_present=0
+            if (int(self.hold==1)):
+                QA_util_log_info('hold-=========================================')
+                
+                #（当前价-买入价）*量
+                profit=profit+(now_price-float(self.portfolio['price']))*float(self.portfolio['amount'])+float(self.history_trade[-1][2])*float(self.history_trade[-1][3])*float(self.history_trade[-1][4])
+                print(now_price)
+                print(self.portfolio['price'])
+                self.cur_profit_present=(now_price-float(self.portfolio['price']))/(float(self.portfolio['price']))
+                self.assets_market_hold_value=float(now_price)*float(self.portfolio['amount'])
+                self.assets=float(self.assets_free)+float(self.assets_market_hold_value)
+            else: 
+                QA_util_log_info('No hold-=========================================')
+                profit=profit
+                self.cur_profit_present=0
         self.assets_market_hold_value=float(now_price)*float(self.portfolio['amount'])
         self.assets=float(self.assets_free)+float(self.assets_market_hold_value)
         self.total_assest.append(str(self.assets))

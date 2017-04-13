@@ -7,6 +7,7 @@ class backtest(QA.QA_Backtest):
         #首先测试能拿到的数据
         # 首先测试账户的初始化
         print('===test account init===')
+        self.account.init()
         print(self.account.account_cookie)
         print(self.account.assets)
         print(self.account.portfolio)

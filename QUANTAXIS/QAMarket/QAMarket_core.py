@@ -18,6 +18,8 @@ class QA_Market():
         QA_util_log_info('day High'+str(item["high"]))
         QA_util_log_info('your bid price'+str(bid['price']))
         QA_util_log_info('day Low'+str(item["low"]))
+        QA_util_log_info('amount'+str(bid["amount"]))
+        QA_util_log_info('towards'+str(bid["towards"]))
         QA_util_log_info('==== Market Board ====')
         if float(bid['price']) < float(item["high"]) and  float(bid['price']) > float(item["low"]) or float(bid['price']) == float(item["low"]) or float(bid['price']) == float(item['high']):
             QA_util_log_info("deal success")
@@ -36,7 +38,7 @@ class QA_Market():
                         'code':str(bid['code']),
                         'amount':str(bid['amount']),
                         'time':str(bid['time']),
-                        'towards':str(bid['towards'])
+                        'towards':bid['towards']
                         },
                     'market':{
                         'open':item['open'],

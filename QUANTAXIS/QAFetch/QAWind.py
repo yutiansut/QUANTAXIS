@@ -14,7 +14,7 @@ import time
 import datetime,re
 import pymongo
 from . import data_list as data_list
-
+from WindPy import w
 #w.start()
 
 #w.start()
@@ -152,7 +152,7 @@ def QA_fetch_get_trade_date(endDate, exchange):
 
 
 def QA_fetch_get_stock_list(date):
-    from WindPy import w
+    
     #w.start()
     w.start()
     w.isconnected()

@@ -21,3 +21,10 @@ def QA_util_date_valid(date):
         return True
     except:
         return False
+def QA_util_realtime(strtime,client):
+    time_stamp=QA_util_date_stamp(strtime)
+    coll=client.quantaxis.trade_date
+    temp_str=coll.find_one({'date_stamp':{"$gte":time_stamp}})
+    time_real=temp_str['date']
+    time_id=temp_str['num']
+    return {'time_real':time_real,'id':time_id}
