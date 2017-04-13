@@ -44,6 +44,7 @@ class QA_Account:
                         'assest_free':self.assets_free,
                         'assest_fix':self.assets_market_hold_value,
                         'profit':self.portfit,
+                        'total_profit':self.total_profit,
                         'cur_profit_present':0,
                         'hold':self.hold
                     },
@@ -120,6 +121,7 @@ class QA_Account:
                         'assest_free':self.assets_free,
                         'assest_fix':self.assets_market_hold_value,
                         'profit':self.portfit,
+                        'total_profit':self.total_profit,
                         'cur_profit_present':self.cur_profit_present,
                         'hold':self.hold
                     },
@@ -153,6 +155,7 @@ class QA_Account:
                         'assest_free':self.assets_free,
                         'assest_fix':self.assets_market_hold_value,
                         'profit':self.portfit,
+                        'total_profit':self.total_profit,
                         'cur_profit_present':self.cur_profit_present,
                         'hold':self.hold
                     },
@@ -172,6 +175,23 @@ class QA_Account:
         pass
     def QA_account_calc_profit(self,update_message):
        # print(update_message)
+        if update_message['update']==True and update_message['towards']==1:
+            
+            pass
+           #success trade, buy
+        elif update_message['update']==True and update_message['towards']==0:
+            #success trade,sell
+            pass
+        elif update_message['update']==False :
+            # hold
+            pass
+            
+            
+        
+           
+"""
+
+
         profit=0
         for item in range(1,len(self.history_trade),1):
         # history:
@@ -200,10 +220,12 @@ class QA_Account:
         #print(profit)
         #print(now_price)
         #print(self.portfolio['amount'])
+        self.total_profit.append(profit)
         self.assets_market_hold_value=float(now_price)*int(self.portfolio['amount'])
         self.assets=float(self.assets_free)+float(self.assets_market_hold_value)
         self.total_assest.append(str(self.assets))
         self.total_cur_profit_present.append(self.cur_profit_present)
+        """
     def QA_account_analysis(self):
         pass
     def QA_Account_get_message(self):
