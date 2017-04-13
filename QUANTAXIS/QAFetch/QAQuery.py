@@ -23,9 +23,9 @@ def QA_fetch_data(code,startDate,endDate,collections):
         for item in coll.find({'code':str(code)[0:6],"date_stamp":{"$lte":QA_util_date_stamp(endDate),"$gte":QA_util_date_stamp(startDate)}}):
             #print(item['code'])
             list_a[0].append(item['code'])
-            list_a[1].append(item['high'])
-            list_a[2].append(item['low'])
-            list_a[3].append(item['open'])
+            list_a[1].append(item['open'])
+            list_a[2].append(item['high'])
+            list_a[3].append(item['low'])
             list_a[4].append(item['close'])
             list_a[5].append(item['volume'])
             list_a[6].append(item['date'])

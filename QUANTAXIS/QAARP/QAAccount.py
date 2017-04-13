@@ -44,7 +44,7 @@ class QA_Account:
                         'assest_free':self.assets_free,
                         'assest_fix':self.assets_market_hold_value,
                         'profit':self.portfit,
-                        'cur_profit_present':self.cur_profit_present,
+                        'cur_profit_present':0,
                         'hold':self.hold
                     },
                     'bid':{},
@@ -70,7 +70,7 @@ class QA_Account:
 
 
     def QA_account_update(self,update_message,client):
-        print(update_message)
+        #print(update_message)
         if update_message['update']==True:
             new_id=update_message['id']
             new_amount=update_message['amount']
@@ -92,10 +92,10 @@ class QA_Account:
                 self.portfolio['price']=0
                 self.portfolio['id']='N'
                 self.portfolio['amount']=0
-            print(self.total_assest)
-            print(int(new_amount))
-            print(float(new_price))
-            print(int(new_towards))
+            #print(self.total_assest)
+            #print(int(new_amount))
+            #print(float(new_price))
+            #print(int(new_towards))
             self.assets_free=float(self.total_assest[-1])-int(new_amount)*float(new_price)*int(new_towards)
 
             self.history_trade.append(appending_list)
@@ -165,7 +165,7 @@ class QA_Account:
                 }
             }
             #属于不更新history和portfolio,但是要继续增加账户和日期的
-        self.message=message
+        return message
         
     def QA_account_renew(self):
         #未来发送给R,P的
@@ -183,20 +183,21 @@ class QA_Account:
             # calc
             now_price=float(update_message['market']['close'])
             if (int(self.hold==1)):
-                QA_util_log_info('hold-=========================================')
+                #QA_util_log_info('hold-=========================================')
                 
                 #（当前价-买入价）*量
                 profit=profit+(now_price-float(self.portfolio['price']))*int(self.portfolio['amount'])+float(self.history_trade[-1][2])*float(self.history_trade[-1][3])*float(self.history_trade[-1][4])
-                print(now_price)
-                print(self.portfolio['price'])
+                #print(now_price)
+                #print(self.portfolio['price'])
                 self.cur_profit_present=(now_price-float(self.portfolio['price']))/(float(self.portfolio['price']))
                 self.assets_market_hold_value=float(now_price)*int(self.portfolio['amount'])
                 self.assets=float(self.assets_free)+float(self.assets_market_hold_value)
             else: 
-                QA_util_log_info('No hold-=========================================')
+                #QA_util_log_info('No hold-=========================================')
                 profit=profit
                 self.cur_profit_present=0
-        print('---risk--')
+        #print('---profit--')
+        #print(profit)
         #print(now_price)
         #print(self.portfolio['amount'])
         self.assets_market_hold_value=float(now_price)*int(self.portfolio['amount'])
@@ -211,7 +212,7 @@ class QA_Account:
     def QA_account_receive_deal(self,message,client):
         
 
-        self.QA_account_update({
+        messages=self.QA_account_update({
             'update':message['header']['status'],
             'price':message['body']['bid']['price'],
             'id':message['body']['bid']['code'],
@@ -225,4 +226,4 @@ class QA_Account:
             'bid':message['body']['bid'],
             'market':message['body']['market']
             },client)
-        
+        return messages
