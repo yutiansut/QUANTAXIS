@@ -38,10 +38,13 @@ class backtest(QA.QA_Backtest):
         print('==check the account==')
         print(self.account.assets_free)
         print('==set the date==')
-        self.strategy_start_date='2001-01-01'
+        self.strategy_start_date='2000-01-01'
         print(self.strategy_start_date)
         print('==make a bid==')
+        self.bid.bid['price']=4.4
+        self.bid.bid['time']='2000-01-04'
         self.bid.bid['amount']=100
+        print(self.bid.bid)
         message=self.market.market_make_deal(self.bid.bid,self.setting.client)
         print('==market responds')
         print(message)
@@ -49,6 +52,26 @@ class backtest(QA.QA_Backtest):
         self.account.QA_account_receive_deal(message,self.setting.client)
         print('==at the end of day')
         print(self.account.message)
+
+
+        print('===next Day===')
+
+        print('==make a bid==')
+        self.bid.bid['price']=4.6
+        self.bid.bid['time']='2000-01-05'
+        self.bid.bid['amount']=100
+        self.bid.bid['towards']=-1
+        print(self.bid.bid)
+        message=self.market.market_make_deal(self.bid.bid,self.setting.client)
+        print('==market responds')
+        print(message)
+        print('==update account==')
+        self.account.QA_account_receive_deal(message,self.setting.client)
+        print('==at the end of day')
+        print(self.account.message)
+
+
+
         print('===at the end of strategy===')
         
     def get_data_from_market(self):

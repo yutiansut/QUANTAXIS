@@ -28,7 +28,7 @@ class QA_Account:
         self.message={
                 'header':{
                     'source':'account',
-                    'cookie':'',
+                    'cookie':self.account_cookie,
                     'session':{
                         'user':'',
                         'strategy':''
@@ -40,9 +40,11 @@ class QA_Account:
                         'init_assest':self.assets,
                         'portfolio':self.portfolio,
                         'history':self.history_trade,
-                        'assest_now':self.assets,
+                        'assest_now':self.total_assest[-1],
                         'assest_history':self.total_assest,
                         'assest_free':self.assets_free,
+                        'total_assest_free':self.total_assest_free,
+
                         'assest_fix':self.assets_market_hold_value,
                         'profit':self.portfit,
                         'total_profit':self.total_profit,
@@ -110,15 +112,7 @@ class QA_Account:
 
                 #这里是不需要插入到历史记录里面的
 
-            #print(self.total_assest)
-            #print(int(new_amount))
-            #print(float(new_price))
-            #print(int(new_towards))
-            
-
-            
-            
-            message={
+            self.message={
                 'header':{
                     'source':'account',
                     'cookie':self.account_cookie,
@@ -133,11 +127,12 @@ class QA_Account:
                         'init_assest':self.total_assest[0],
                         'portfolio':self.portfolio,
                         'history':self.history_trade,
-                        'assest_now':self.assets,
+                        'assest_now':self.total_assest[-1],
                         'assest_history':self.total_assest,
                         'assest_free':self.assets_free,
+                        'total_assest_free':self.total_assest_free,
                         'assest_fix':self.assets_market_hold_value,
-                        'profit':self.portfit,
+                        'profit':self.total_profit[-1],
                         'total_profit':self.total_profit,
                         'cur_profit_present':self.cur_profit_present,
                         'hold':self.hold
@@ -191,7 +186,7 @@ class QA_Account:
             #属于不更新history和portfolio,但是要继续增加账户和日期的
         elif update_message['status']==402:
             QA_util_log_info('bid not success')
-        return message
+        return self.message
         
     def QA_account_renew(self):
         #未来发送给R,P的
@@ -200,22 +195,57 @@ class QA_Account:
        # print(update_message)
       
         if update_message['status']==200 and update_message['towards']==1:
-            now_price=float(update_message['market']['close'])
-            profit=self.total_profit[-1]+(now_price-float(update_message['price']))*int(update_message['amount'])
-            self.total_profit.append(profit)
+            # 买入/
+            # 证券价值=买入的证券价值+持有到结算(收盘价)的价值
+            now_price=float(update_message['market']['close'])  #收盘价
+            # 买入的部分在update_message
+            buy_price=update_message['price']
+            #可用资金=上一期可用资金-买入的资金
+            self.assets_free=float(self.total_assest_free[-1])-float(update_message['price'])*float(update_message['amount'])*update_message['towards']
+            #更新可用资金历史
+            self.total_assest_free.append(self.assets_free)
+            
+            #证券价值
+            self.assets_market_hold_value=update_message['amount']*now_price
+            self.assets=self.assets_free+self.assets_market_hold_value
+            self.total_assest.append(self.assets)
+            self.profit=(self.total_assest[-1]-self.total_assest[0])/self.total_assest[0]
+            self.total_profit.append(self.profit)
             self.cur_profit_present=(now_price-float(update_message['price']))/(float(update_message['price']))
                 #print(now_price)
                 #print(self.portfolio['price'])
-            self.assets_market_hold_value=float(now_price)*int(self.portfolio['amount'])
-            self.assets=float(self.assets_free)+float(self.assets_market_hold_value)
-            self.total_assest.append(str(self.assets))
+            #self.assets_market_hold_value=float(now_price)*int(self.portfolio['amount'])
+            
+            
             self.total_cur_profit_present.append(self.cur_profit_present)
-            self.assets_free=self.total_assest_free[-1]
-            self.total_assest_free.append(self.assets_free)
+            
+            
            #success trade, buy
-        elif update_message['status']==200 and update_message['towards']==0:
+        elif update_message['status']==200 and update_message['towards']==-1:
             #success trade,sell
-             self.assets_free=float(self.total_assest[-1])-int(new_amount)*float(new_price)*int(new_towards)
+           
+            
+            # 证券价值=买入的证券价值+持有到结算(收盘价)的价值
+            now_price=float(update_message['market']['close'])  #收盘价
+            # 买入的部分在update_message
+            buy_price=update_message['price']
+            #卖出的时候,towards=-1,所以是加上卖出的资产
+            #可用资金=上一期可用资金+卖出的资金
+            self.assets_free=float(self.total_assest_free[-1])-float(update_message['price'])*float(update_message['amount'])*update_message['towards']
+            #更新可用资金历史
+            self.total_assest_free.append(self.assets_free)
+
+
+            self.assets_market_hold_value=(self.portfolio['amount']-update_message['amount'])*now_price
+            self.assets=self.assets_free+self.assets_market_hold_value
+            self.total_assest.append(self.assets)
+            self.profit=(self.total_assest[-1]-self.total_assest[0])/self.total_assest[0]
+            self.total_profit.append(self.profit)
+            # 单笔交易利润是买入价
+            self.cur_profit_present=(float(update_message['price'])-float(self.portfolio['price']))/(float(update_message['price']))
+
+
+
 
         elif update_message['update']==401 :
             # hold
