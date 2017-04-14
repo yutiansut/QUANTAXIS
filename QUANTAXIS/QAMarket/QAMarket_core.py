@@ -26,7 +26,7 @@ class QA_Market():
             message = {
                 'header':{
                     'source':'market',
-                    'status':True,
+                    'status':200,
                     'session':{
                         'user':str(bid['user']),
                         'strategy':str(bid['strategy'])
@@ -52,14 +52,18 @@ class QA_Market():
                 }
 
             #QA_signal_send(message,client)
-            print(message['body']['bid']['amount'])
+           # print(message['body']['bid']['amount'])
             return message
         else:
             QA_util_log_info('not success')
+            if int(bid['price'])==0:
+                status_mes=401
+            else: status_mes=402
+
             message = {
                 'header':{
                     'source':'market',
-                    'status':False,
+                    'status':status_mes,
                     'session':{
                         'user':str(bid['user']),
                         'strategy':str(bid['strategy'])
@@ -83,5 +87,5 @@ class QA_Market():
                         }
                     }
                 }
-            print(message['body']['bid']['amount'])
+           # print(message['body']['bid']['amount'])
             return message
