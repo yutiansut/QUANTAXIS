@@ -41,3 +41,5 @@ def QA_backtest_calc_trade_time_loss():
 def QA_backtest_calc_win_rate():
     pass
 
+def QA_backtest_plot_assest():
+    pass
