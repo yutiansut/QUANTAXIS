@@ -97,6 +97,7 @@ class QA_Account:
                 self.portfolio['price']=new_price
                 self.portfolio['id']=new_id
                 self.portfolio['amount']=new_amount
+                self.hold=1
                 # 将交易记录插入历史交易记录
                 appending_list=[new_trade_date, new_id, new_price, new_amount, new_towards]
                 self.history_trade.append(appending_list)
@@ -106,6 +107,7 @@ class QA_Account:
                 self.portfolio['price']=0
                 self.portfolio['id']='N'
                 self.portfolio['amount']=0
+                self.hold=0
                 # 将交易记录插入历史交易记录
                 appending_list=[new_trade_date, new_id, new_price, new_amount, new_towards]
                 self.history_trade.append(appending_list)
