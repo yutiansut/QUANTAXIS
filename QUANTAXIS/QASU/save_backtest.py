@@ -61,3 +61,14 @@ def QA_SU_save_account_message(message, client):
         'bid':message['body']['bid'],
         'market':message['body']['market']
     })
+def QA_SU_save_backtest_message(message,client):
+    coll=client.quantaxis.backtest_info
+    coll.insert({
+        'user':1,
+        'strategy':1,
+        'start_time':1,
+        'end_time':1,
+        'account_cookie':1,
+        'profit':1,
+        'performance':1
+    })
