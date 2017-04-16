@@ -69,6 +69,7 @@ def QA_SU_save_backtest_message(message,client):
         'strategy':message['strategy'],
         'start_time':message['start_time'],
         'end_time':message['end_time'],
+        'stock_list':message['stock_list'],
         'account_cookie':message['account_cookie'],
         'profit':message['profit'],
         'performance':message['performance']
