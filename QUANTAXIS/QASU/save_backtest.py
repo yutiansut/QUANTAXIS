@@ -57,6 +57,7 @@ def QA_SU_save_account_message(message, client):
         'profit':message['body']['account']['profit'],
         'total_profit':message['body']['account']['total_profit'],
         'cur_profit_present':message['body']['account']['cur_profit_present'],
+        'cur_profit_present_total':message['body']['account']['cur_profit_present_total'],
         'hold':message['body']['account']['hold'],
         'bid':message['body']['bid'],
         'market':message['body']['market']
@@ -64,11 +65,11 @@ def QA_SU_save_account_message(message, client):
 def QA_SU_save_backtest_message(message,client):
     coll=client.quantaxis.backtest_info
     coll.insert({
-        'user':1,
-        'strategy':1,
-        'start_time':1,
-        'end_time':1,
-        'account_cookie':1,
-        'profit':1,
-        'performance':1
+        'user':message['user'],
+        'strategy':message['strategy'],
+        'start_time':message['start_time'],
+        'end_time':message['end_time'],
+        'account_cookie':message['account_cookie'],
+        'profit':message['profit'],
+        'performance':message['performance']
     })

@@ -14,8 +14,8 @@ class QA_Account:
     total_profit=[0]
     total_cur_profit_present=[0]
     assets_market_hold_value=0
-
-    
+    assets_profit_total=[0]
+    cur_profit_present_total=[0]
     cur_profit_present=0
     #date, id, price, amount, towards
     account_cookie=str(random.random())
@@ -44,11 +44,11 @@ class QA_Account:
                         'assest_history':self.total_assest,
                         'assest_free':self.assets_free,
                         'total_assest_free':self.total_assest_free,
-
                         'assest_fix':self.assets_market_hold_value,
                         'profit':self.portfit,
                         'total_profit':self.total_profit,
                         'cur_profit_present':0,
+                        'cur_profit_present_total':self.cur_profit_present_total,
                         'hold':self.hold
                     },
                     'bid':{},
@@ -135,8 +135,11 @@ class QA_Account:
                         'total_assest_free':self.total_assest_free,
                         'assest_fix':self.assets_market_hold_value,
                         'profit':self.total_profit[-1],
+                        'assets_profit_day':0,
+                        'assets_profit_total':[0],
                         'total_profit':self.total_profit,
                         'cur_profit_present':self.cur_profit_present,
+                        'cur_profit_present_total':self.cur_profit_present_total,
                         'hold':self.hold
                     },
                     'bid':update_message['bid'],
@@ -175,6 +178,7 @@ class QA_Account:
                         'profit':self.portfit,
                         'total_profit':self.total_profit,
                         'cur_profit_present':self.cur_profit_present,
+                        'cur_profit_present_total':self.cur_profit_present_total,
                         'hold':self.hold
                     },
                     'bid':update_message['bid'],
@@ -210,7 +214,9 @@ class QA_Account:
             #证券价值
             self.assets_market_hold_value=update_message['amount']*now_price
             self.assets=self.assets_free+self.assets_market_hold_value
+            
             self.total_assest.append(self.assets)
+
             self.profit=(self.total_assest[-1]-self.total_assest[0])/self.total_assest[0]
             self.total_profit.append(self.profit)
             self.cur_profit_present=(now_price-float(update_message['price']))/(float(update_message['price']))
@@ -219,7 +225,7 @@ class QA_Account:
             #self.assets_market_hold_value=float(now_price)*int(self.portfolio['amount'])
             
             
-            self.total_cur_profit_present.append(self.cur_profit_present)
+           
             
             
            #success trade, buy
@@ -240,11 +246,14 @@ class QA_Account:
 
             self.assets_market_hold_value=(self.portfolio['amount']-update_message['amount'])*now_price
             self.assets=self.assets_free+self.assets_market_hold_value
+
             self.total_assest.append(self.assets)
+           
             self.profit=(self.total_assest[-1]-self.total_assest[0])/self.total_assest[0]
             self.total_profit.append(self.profit)
             # 单笔交易利润是买入价
             self.cur_profit_present=(float(update_message['price'])-float(self.portfolio['price']))/(float(update_message['price']))
+            self.cur_profit_present_total.append(self.cur_profit_present)
 
 
 
