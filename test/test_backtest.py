@@ -79,7 +79,7 @@ class backtest(QA.QA_Backtest):
         data=QA.QA_fetch_data('000001','2005-05-01','2006-05-04',self.coll)
         print(data)
     def get_data_from_ARP(self):
-        pass
+        return self.account.QA_Account_get_message()
     def settings(self):
         # 设置数据库位置,用户名
         self.setting.QA_util_sql_mongo_ip='127.0.0.1'
