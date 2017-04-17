@@ -14,14 +14,14 @@ def QA_SU_save_stock_list(client):
     data=QAWind.QA_fetch_get_stock_list(datestr)
     #QA_util_log_info(stocklist)
     coll=client.quantaxis.stock_list
-    coll.insert({'date':data[0][0],'date_stamp':data[0][0].date_stamp(),"stock":{'code':data[1],'name':data[2]}})
+    coll.insert({'date':data[0][0],'date_stamp':data[0][0].timestamp(),"stock":{'code':data[1],'name':data[2]}})
 def QA_SU_save_trade_date(client):
     datestr=datetime.datetime.now().strftime("%Y-%m-%d")
     data=QAWind.QA_fetch_get_trade_date(datestr,'SSE')
     coll=client.quantaxis.trade_date
     #QA_util_log_info(stocklist)
     for i in range(0,len(data[0]),1):
-        coll.insert({'date':data[0][i],'date_stamp':data[0][i].date_stamp(),'exchangeName':'SSE'})
+        coll.insert({'date':data[0][i],'date_stamp':data[0][i].timestamp(),'exchangeName':'SSE'})
 def QA_SU_save_stock_day(name,startDate,endDate,client):
     coll=client.quantaxis.stock_day
     #find if have the same
