@@ -18,10 +18,25 @@ class QA_Account:
     cur_profit_present_total=[0]
     cur_profit_present=0
     #date, id, price, amount, towards
-    account_cookie=str(random.random())
+    #account_cookie=str(random.random())
     portfit=0
     hold=0
     def init(self):
+        #assets=1000
+        portfolio={'date':'', 'id':'N',' price':'', 'amount':0}
+        
+        history_trade=[['date', 'id',' price', 'amount',' towards']]
+        
+        total_profit=[0]
+        total_cur_profit_present=[0]
+        assets_market_hold_value=0
+        assets_profit_total=[0]
+        cur_profit_present_total=[0]
+        cur_profit_present=0
+        #date, id, price, amount, towards
+        account_cookie=str(random.random())
+        portfit=0
+        hold=0
         self.total_assest=[self.assets]
         self.assets_free=self.total_assest[-1]
         self.total_assest_free=[self.assets_free]
@@ -38,17 +53,17 @@ class QA_Account:
                 'body':{
                     'account':{
                         'init_assest':self.assets,
-                        'portfolio':self.portfolio,
-                        'history':self.history_trade,
+                        'portfolio':{'date':'', 'id':'N',' price':'', 'amount':0},
+                        'history':[['date', 'id',' price', 'amount',' towards']],
                         'assest_now':self.total_assest[-1],
                         'assest_history':self.total_assest,
                         'assest_free':self.assets_free,
                         'total_assest_free':self.total_assest_free,
                         'assest_fix':self.assets_market_hold_value,
                         'profit':self.portfit,
-                        'total_profit':self.total_profit,
+                        'total_profit':[0],
                         'cur_profit_present':0,
-                        'cur_profit_present_total':self.cur_profit_present_total,
+                        'cur_profit_present_total':[0],
                         'hold':self.hold
                     },
                     'bid':{},
