@@ -44,10 +44,10 @@ import axios from 'axios'
 export default {
   data:function () {
     return {
-        height: '300px',
+        height: '450px',
         multiSelectable: true,
         enableSelectAll: false,
-        message: 1,
+        message: 'input the strategy owners name',
         items: ['1', '2'],
         total: 130,
         current: 1,

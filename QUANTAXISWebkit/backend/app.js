@@ -25,7 +25,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(favicon(__dirname + '/public/favicon.ico'))//__dirname代表该执行文件的父目录，注意是双下划线，否则会爆出错误
 app.use('/', index);
 app.use('/users', users);
 app.use('/stock', stock);
