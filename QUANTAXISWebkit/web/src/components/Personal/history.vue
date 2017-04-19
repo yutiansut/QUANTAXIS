@@ -1,6 +1,6 @@
 <template>
     <div>
-        <li v-on:click="query(this.message)">{{this.message}}</li>
+        <li v-on:click="query()">{{this.message}}</li>
         <mu-table :height="height">
             <mu-thead>
                 <mu-tr>
@@ -36,7 +36,7 @@ export default {
         }
     },
     methods: {
-        query(cookie) {
+        query() {
             console.log(this.message)
             let val =this.message
             console.log(val)
