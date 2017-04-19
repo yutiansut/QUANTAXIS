@@ -1,56 +1,65 @@
 <template>
     <div id="index">
 
-        <div id="personal-content">
-            <ul>
-                <li>策略收益</li>
-                    <mu-table>
-                        <mu-thead>
-                            <mu-tr>
-                                <mu-th>ID</mu-th>
-                                <mu-th>策略</mu-th>
-                                <mu-th>用户</mu-th>
-                                <mu-th>开始</mu-th>
-                                <mu-th>结束</mu-th>
-                                <mu-th>总利润</mu-th>
-                                <mu-th>年收益</mu-th>
-                                <mu-th>胜率</mu-th>
-                                <mu-th>最大回撤</mu-th>
-                                <mu-th>Vol</mu-th>
-                            </mu-tr>
-                        </mu-thead>
-                        <mu-tbody>
-                            <mu-tr>
-                                <mu-td>z</mu-td>
-                                <mu-td>BLEX</mu-td>
-                                <mu-td>yutiansut</mu-td>
-                                <mu-td>2010/01/01</mu-td>
-                                <mu-td>2015/01/28</mu-td>
-                                <mu-td>40%</mu-td>
-                                <mu-td>20%</mu-td>
-                                <mu-td>1.13</mu-td>
-                                <mu-td>13.6%</mu-td>
-                                <mu-td>0.005</mu-td>
-                            </mu-tr>
+    <li><input v-model="message" v-on:keyup.enter="info($event.currentTarget.value)" placeholder="edit me" lazy></li>
+        <li>
+          <p>owner is: {{ message }}</p>
+        </li>
+        <mu-table :height="height" :enableSelectAll="enableSelectAll">
+          <mu-thead>
+            <mu-tr>
+              <mu-th>title</mu-th>
+            </mu-tr>
+          </mu-thead>
+          <template v-for="item in items">
 
-                        </mu-tbody>
-                    </mu-table>
+            <mu-tbody>
+              <mu-tr>
+                <mu-td>{{ item['user']}}</mu-td>
+                <mu-td>{{ item['strategy']}}</mu-td>
+                <mu-td>{{ item['account_cookie']}}</mu-td>
+                <mu-td>{{ item['start_time']}}</mu-td>
+                <mu-td>{{ item['end_time']}}</mu-td>
+                <mu-td>{{ item['profit']}}</mu-td>
+                
+              </mu-tr>
+            </mu-tbody>
+          </template>
 
-            </ul>
-        </div>
+        </mu-table>
     </div>
 </template>
 <script>
 import myron from '../assets/QUANTAXIS.jpg'
 import axios from 'axios'
 export default {
-  data () {
+  data:function () {
     return {
-        items:{
-            user:sessionStorage.user
-        },
-      myron
+        height: '300px',
+        multiSelectable: true,
+        enableSelectAll: false,
+        message: 1,
+        items: ['1', '2'],
+        total: 130,
+        current: 1,
+        showSizeChanger: true,
+        pageSizeOption: [10, 20, 30, 40]
     }
+  },
+  methods:{
+        info(message) {
+        let val = message
+        console.log(val)
+        axios.get('http://localhost:3000/backtest/info?name=' + val)
+          .then(response => {
+            this.items = response.data;
+            this.length = this.items.length;
+            console.log(response.data[0]['start_time'])
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      }
   }
 }
 </script>
