@@ -8,7 +8,12 @@
         <mu-table :height="height" :enableSelectAll="enableSelectAll">
           <mu-thead>
             <mu-tr>
-              <mu-th>title</mu-th>
+              <mu-th>user</mu-th>
+              <mu-th>strategy</mu-th>
+              <mu-th>cookie</mu-th>
+              <mu-th>start_time</mu-th>
+              <mu-th>end_time</mu-th>
+              <mu-th>profit</mu-th>
             </mu-tr>
           </mu-thead>
           <template v-for="item in items">
