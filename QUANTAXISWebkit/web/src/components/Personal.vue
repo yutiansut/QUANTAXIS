@@ -20,7 +20,7 @@
                      </mu-list>
         </div>
     <div id="view">
-        <router-view></router-view>
+        <router-view  ></router-view>
     </div>
     </div>
 </template>

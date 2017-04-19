@@ -1,4 +1,12 @@
-<template></template>
+<template>
+<li>11</li>
+</template>
 <script>
-console.log(this.$route.query.cookie)
+
+export default{
+ ready: function(){
+        console.log('deviceid: ' + this.$route.query.cookie);
+
+    }
+}
 </script>

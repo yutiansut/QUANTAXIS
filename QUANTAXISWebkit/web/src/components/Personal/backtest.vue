@@ -2,9 +2,6 @@
     <div id="index">
 
     <li><input v-model="message" v-on:keyup.enter="info($event.currentTarget.value)" placeholder="edit me" lazy></li>
-        <li>
-          <p>owner is: {{ message }}</p>
-        </li>
         <mu-table :height="height" >
           <mu-thead>
             <mu-tr>
@@ -29,9 +26,11 @@
                 <mu-td>{{ item['end_time']}}</mu-td>
                 <mu-td>{{ item['profit']}}</mu-td>
                 <mu-td>{{ item['performace']}}</mu-td>
-                <router-link to="{path:'/personal/history',query:{cookie:item['account_cookie']}}"><mu-td >{{ item['account_cookie']}}</mu-td></router-link >
+                
+                <router-link to='peronal/history'><mu-td>{{ item['account_cookie']}}</mu-td></router-link>
               </mu-tr>
             </mu-tbody>
+           
           </template>
 
         </mu-table>
