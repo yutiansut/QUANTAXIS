@@ -11,9 +11,11 @@
               <mu-th>user</mu-th>
               <mu-th>strategy</mu-th>
               <mu-th>cookie</mu-th>
+              <mu-th>stock_list</mu-th>
               <mu-th>start_time</mu-th>
               <mu-th>end_time</mu-th>
               <mu-th>profit</mu-th>
+              <mu-th>performaces</mu-th>
             </mu-tr>
           </mu-thead>
           <template v-for="item in items">
@@ -23,9 +25,11 @@
                 <mu-td>{{ item['user']}}</mu-td>
                 <mu-td>{{ item['strategy']}}</mu-td>
                 <mu-td>{{ item['account_cookie']}}</mu-td>
+                <mu-td>{{ item['stock_list']}}</mu-td>
                 <mu-td>{{ item['start_time']}}</mu-td>
                 <mu-td>{{ item['end_time']}}</mu-td>
                 <mu-td>{{ item['profit']}}</mu-td>
+                <mu-td>{{ item['performace']}}</mu-td>
                 
               </mu-tr>
             </mu-tbody>
