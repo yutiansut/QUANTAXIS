@@ -10,11 +10,11 @@
             <mu-tr>
               <mu-th>user</mu-th>
               <mu-th>strategy</mu-th>
-              <mu-th>stock_list</mu-th>
-              <mu-th>start_time</mu-th>
-              <mu-th>end_time</mu-th>
+              <mu-th>code</mu-th>
+              <mu-th>start</mu-th>
+              <mu-th>end</mu-th>
               <mu-th>profit</mu-th>
-              <mu-th>performance</mu-th>
+              <mu-th>per</mu-th>
               <mu-th>cookie</mu-th>
             </mu-tr>
           </mu-thead>
@@ -23,14 +23,13 @@
             <mu-tbody>
               <mu-tr>
                 <mu-td>{{ item['user']}}</mu-td>
-                <mu-td>{{ item['strategy']}}</mu-td>
-               
+                <mu-td >{{ item['strategy']}}</mu-td>
                 <mu-td>{{ item['stock_list']}}</mu-td>
-                <mu-td>{{ item['start_time']}}</mu-td>
+                <mu-td >{{ item['start_time']}}</mu-td>
                 <mu-td>{{ item['end_time']}}</mu-td>
                 <mu-td>{{ item['profit']}}</mu-td>
                 <mu-td>{{ item['performace']}}</mu-td>
-                <mu-td>{{ item['account_cookie']}}</mu-td>
+                <router-link to="{path:'/personal/history',query:{cookie:item['account_cookie']}}"><mu-td >{{ item['account_cookie']}}</mu-td></router-link >
               </mu-tr>
             </mu-tbody>
           </template>
@@ -49,10 +48,9 @@ export default {
         enableSelectAll: false,
         message: 'yutiansut',
         items: [''],
-        total: 130,
+        total: 180,
         current: 1,
-        showSizeChanger: true,
-        pageSizeOption: [10, 20, 30, 40]
+        showSizeChanger: true
     }
   },
   methods:{
@@ -68,6 +66,21 @@ export default {
           .catch(function (error) {
             console.log(error);
           });
+      },
+      history(cookie){
+         let val = cookie
+         console.log(val)
+        axios.get('http://localhost:3000/backtest/history?cookie=' + val)
+          .then(response => {
+            this.items = response.data;
+            this.length = this.items.length;
+            console.log(response.data[0]['start_time'])
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+
+
       }
   }
 }
