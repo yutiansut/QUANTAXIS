@@ -3,7 +3,7 @@
 <div class="demo-step-container">
     <div id="title">
         <h1>#Start</h1>
-        <h2>Only Three Steps,Start your QA.Spider</h2>
+        <h2>Only Three Steps,Start your QUANTAXIS</h2>
     </div>
     <div id="content">
     <mu-stepper :activeStep="activeStep" orientation="vertical">
@@ -24,7 +24,7 @@
             </mu-step-label>
             <mu-step-content>
                 <p>
-                    npm install & python -m pip install
+                    npm run install | npm run Xweb
                 </p>
                 <mu-raised-button label="NEXT" class="demo-step-button" @click="handleNext" primary/>
                 <mu-flat-button label="BACK" class="demo-step-button" @click="handlePrev" />
@@ -32,11 +32,11 @@
         </mu-step>
         <mu-step>
             <mu-step-label>
-                启动爬虫和可视化网站|Start Journey
+                启动可视化网站|Start Journey
             </mu-step-label>
             <mu-step-content>
                 <p>
-                    npm run dev & scrapy crawl xxx
+                    npm run all | npm run Xweb
                 </p>
                 <mu-raised-button label="Finish" class="demo-step-button" @click="handleNext" primary/>
                 <mu-flat-button label="BACK" class="demo-step-button" @click="handlePrev" />

@@ -11,6 +11,9 @@
   "dependencies": {
     "axios": "^0.15.3",
     "bootstrap": "^3.3.7",
+    "chart": "^0.1.2",
+    "chart.js": "^2.5.0",
+    "chartjs": "^0.3.24",
     "css-loader": "^0.25.0",
     "echarts": "^3.4.0",
     "element-ui": "^1.1.6",
@@ -27,6 +30,7 @@
     "style-loader": "^0.13.1",
     "vue": "^2.2.6",
     "vue-awesome-swiper": "^2.3.1",
+    "vue-chartjs": "^2.6.0",
     "vue-resource": "^1.1.2",
     "vue-router": "^2.2.0",
     "vuex": "^2.2.1"
