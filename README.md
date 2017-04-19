@@ -27,6 +27,7 @@ QUANTAXIS与国内很多优秀的量化平台的区别在于,QA更多关注的�
     - [关键词: 局域网协作/开放式渐进框架/高度自定义](#关键词-局域网协作开放式渐进框架高度自定义)
     - [说明文档 (Updating)](#说明文档-updating)
     - [QUANTAXIS-Stardand-Protocol](#quantaxis-stardand-protocol)
+    - [部署问题:](#部署问题)
     - [适用场景](#适用场景)
     - [Webkit大礼包](#webkit大礼包)
 
@@ -40,6 +41,14 @@ QUANTAXIS 标准化协议和未来协议
 QUANTAXIS-Stardand-Protocol 版本号0.0.5
 
 详情参见  [QUANATXISProtocol](https://github.com/yutiansut/QUANTAXIS/tree/0.3.8-dev-RC-ARP/QUANTAXISProtocol)
+
+## 部署问题:
+
+- Windows/Linux(ubuntu) 已测试通过
+- python3.6优先(开发环境)  python2系列要改个Queue的名字
+- nodejs 需要安装>7的版本,来支持es6语法
+- mongodb是必须要装的
+- Wind万得数据库  机构版/免费(大奖章版)
 
 
 ## 适用场景
