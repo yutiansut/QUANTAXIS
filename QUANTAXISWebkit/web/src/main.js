@@ -48,6 +48,7 @@ const routes = [ {
       {'path': '/personal/notebook',component: require('./components/Personal/notebook.vue')},
       {'path': '/personal/axios',component: require('./components/Personal/axios.vue')},
       {'path': '/personal/markdown',component: require('./components/Personal/markdown.vue')},
+      {'path': '/personal/backtest',component: require('./components/Personal/backtest.vue')},
       {'path': '/personal/visual',component: require('./components/Personal/visual.vue')}
     ]
   },
