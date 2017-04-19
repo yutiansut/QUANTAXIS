@@ -19,7 +19,7 @@
 
             <mu-tbody>
               <mu-tr>
-                <mu-td>{{ item['user']}}</mu-td>
+                <router-link :to="{ name:'history',params: {id:item['account_cookie']}}"><mu-td>{{ item['user']}}</mu-td>
                 <mu-td >{{ item['strategy']}}</mu-td>
                 <mu-td>{{ item['stock_list']}}</mu-td>
                 <mu-td >{{ item['start_time']}}</mu-td>
@@ -27,7 +27,7 @@
                 <mu-td>{{ item['profit']}}</mu-td>
                 <mu-td>{{ item['performace']}}</mu-td>
                 
-                <router-link to='peronal/history'><mu-td>{{ item['account_cookie']}}</mu-td></router-link>
+                <mu-td >{{ item['account_cookie']}}</mu-td></router-link>
               </mu-tr>
             </mu-tbody>
            
@@ -73,7 +73,7 @@ export default {
           .then(response => {
             this.items = response.data;
             this.length = this.items.length;
-            console.log(response.data[0]['start_time'])
+            
           })
           .catch(function (error) {
             console.log(error);

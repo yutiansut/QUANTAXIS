@@ -42,10 +42,10 @@ router.get('/info',function(req, res, next) {
 router.get('/history',function(req, res, next) {
   console.log('backtest')
   cookie=req.query.cookie
-  console.log(req.query.name)
+  console.log(cookie)
   mongodb.connect('mongodb://localhost:27017/quantaxis', function (err, conn) {
         conn.collection('backtest_history', function (err, coll) {
-          coll.find({'cookie':cookie }).toArray(function (err, docs) {
+          coll.find({'account_cookie':cookie }).toArray(function (err, docs) {
             res.send(docs)
           
         })
