@@ -5,17 +5,17 @@
         <li>
           <p>owner is: {{ message }}</p>
         </li>
-        <mu-table :height="height" :enableSelectAll="enableSelectAll">
+        <mu-table :height="height" >
           <mu-thead>
             <mu-tr>
               <mu-th>user</mu-th>
               <mu-th>strategy</mu-th>
-              <mu-th>cookie</mu-th>
               <mu-th>stock_list</mu-th>
               <mu-th>start_time</mu-th>
               <mu-th>end_time</mu-th>
               <mu-th>profit</mu-th>
-              <mu-th>performaces</mu-th>
+              <mu-th>performance</mu-th>
+              <mu-th>cookie</mu-th>
             </mu-tr>
           </mu-thead>
           <template v-for="item in items">
@@ -24,13 +24,13 @@
               <mu-tr>
                 <mu-td>{{ item['user']}}</mu-td>
                 <mu-td>{{ item['strategy']}}</mu-td>
-                <mu-td>{{ item['account_cookie']}}</mu-td>
+               
                 <mu-td>{{ item['stock_list']}}</mu-td>
                 <mu-td>{{ item['start_time']}}</mu-td>
                 <mu-td>{{ item['end_time']}}</mu-td>
                 <mu-td>{{ item['profit']}}</mu-td>
                 <mu-td>{{ item['performace']}}</mu-td>
-                
+                <mu-td>{{ item['account_cookie']}}</mu-td>
               </mu-tr>
             </mu-tbody>
           </template>
@@ -39,7 +39,7 @@
     </div>
 </template>
 <script>
-import myron from '../assets/QUANTAXIS.jpg'
+
 import axios from 'axios'
 export default {
   data:function () {
@@ -47,8 +47,8 @@ export default {
         height: '450px',
         multiSelectable: true,
         enableSelectAll: false,
-        message: 'input the strategy owners name',
-        items: ['1', '2'],
+        message: 'yutiansut',
+        items: [''],
         total: 130,
         current: 1,
         showSizeChanger: true,
