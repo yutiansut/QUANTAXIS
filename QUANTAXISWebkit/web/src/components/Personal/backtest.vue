@@ -11,7 +11,7 @@
               <mu-th>start</mu-th>
               <mu-th>end</mu-th>
               <mu-th>profit</mu-th>
-
+              <mu-th>performance</mu-th>
             </mu-tr>
           </mu-thead>
           <template v-for="item in items">
@@ -24,6 +24,8 @@
                 <mu-td >{{ item['start_time']}}</mu-td>
                 <mu-td>{{ item['end_time']}}</mu-td>
                 <mu-td>{{ item['profit']}}</mu-td>
+                <mu-td>{{ item['performance']}}</mu-td>
+
                 </router-link>
               </mu-tr>
             </mu-tbody>
@@ -56,8 +58,10 @@ export default {
         axios.get('http://localhost:3000/backtest/info?name=' + val)
           .then(response => {
             this.items = response.data;
+            console.log(this.items)
             this.length = this.items.length;
-            console.log(response.data[0]['start_time'])
+            var performance=response.data[0]['performance'];
+            console.log(performance)
           })
           .catch(function (error) {
             console.log(error);
