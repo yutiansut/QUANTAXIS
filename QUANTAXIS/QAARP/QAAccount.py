@@ -23,20 +23,20 @@ class QA_Account:
     hold=0
     def init(self):
         #assets=1000
-        portfolio={'date':'', 'id':'N',' price':'', 'amount':0}
+        self.portfolio={'date':'', 'id':'N',' price':'', 'amount':0}
         
-        history_trade=[['date', 'id',' price', 'amount',' towards']]
+        self.history_trade=[['date', 'id',' price', 'amount',' towards']]
         
-        total_profit=[0]
-        total_cur_profit_present=[0]
-        assets_market_hold_value=0
-        assets_profit_total=[0]
-        cur_profit_present_total=[0]
-        cur_profit_present=0
+        self.total_profit=[0]
+        self.total_cur_profit_present=[0]
+        self.assets_market_hold_value=0
+        self.assets_profit_total=[0]
+        self.cur_profit_present_total=[0]
+        self.cur_profit_present=0
         #date, id, price, amount, towards
-        account_cookie=str(random.random())
-        portfit=0
-        hold=0
+        self.account_cookie=str(random.random())
+        self.portfit=0
+        self.hold=0
         self.total_assest=[self.assets]
         self.assets_free=self.total_assest[-1]
         self.total_assest_free=[self.assets_free]
