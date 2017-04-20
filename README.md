@@ -28,6 +28,7 @@ QUANTAXIS与国内很多优秀的量化平台的区别在于,QA更多关注的�
     - [说明文档 (Updating)](#说明文档-updating)
     - [QUANTAXIS-Stardand-Protocol](#quantaxis-stardand-protocol)
     - [部署问题:](#部署问题)
+    - [回测Webkit更新回测状况](#回测webkit更新回测状况)
     - [适用场景](#适用场景)
     - [Webkit大礼包](#webkit大礼包)
 
@@ -50,6 +51,10 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.5
 - mongodb是必须要装的
 - Wind万得数据库  机构版/免费(大奖章版)
 
+## 回测Webkit更新回测状况
+![](http://i1.piimg.com/567571/053ac3e3850f8f60.png)
+![](http://i4.buimg.com/567571/5f42c20efde5bb5e.png)
+![](http://i2.muimg.com/567571/3f1945554c067a6c.png)
 
 ## 适用场景
 ![适用场景](http://i2.buimg.com/567571/e2e7b31b1f9a4307.png)

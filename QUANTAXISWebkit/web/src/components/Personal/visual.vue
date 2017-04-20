@@ -1,105 +1,98 @@
 <template>
   <div class="main_content">
-    <div id="bedroom"></div>
+    <button id='but' v-on:click='query()'>refresh</button>
+    <div id="main"></div>
   </div>
 </template>
 <script>
-  import echarts from 'echarts'
-  export default {
-    data() {
-      return {
-        chart: null,
-        opinion: ['学习氛围差', '学习氛围一般', '学习氛围很好'],
-        opinionData: [
-          {value:26, name:'学习氛围差'},
-          {value:31, name:'学习氛围一般'},
-          {value:8, name:'学习氛围很好'}
-        ]
-      }
+import echarts from 'echarts'
+// 基于准备好的dom，初始化echarts实例
+import axios from 'axios'
+// 绘制图表
+export default {
+    data(){
+        return{
+            chart:null,
+            data0:this.$route.params.id
+        }
     },
-    methods: {
-      drawPie (id) {
+    methods:{
+      drawline(id){
         this.chart = echarts.init(document.getElementById(id))
         this.chart.setOption({
-          title: {
-            text: '寝室学习氛围情况调查',
-            left: 'center',
-            top: 10,
-            textStyle: {
-              fontSize: 24,
-              fontFamily: 'Helvetica',
-              fontWeight: 400
-            }
+          title: { text: this.data0},
+          tooltip: {},
+          xAxis: {
+            data:[]
           },
-          tooltip: {
-            trigger: 'item',
-            formatte: "{b}: {c} ({d}%)"
+          yAxis: {
+           
           },
-          toolbox: {
-            feature: {
-              saveAsImage: {},
-              dataView: {}
-            },
-            right: 15,
-            top: 10
-          },
-          legend: {
-              orient: 'vertical',
-              left: 5,
-              top: 10,
-              data: this.opinion,
-          },
-          series: [
-            {
-              name: '寝室学习氛围',
-              type: 'pie',
-              radius: ['50%', '70%'],
-              center: ['50%', '60%'],
-              avoidLabelOverlap: false,
-              label: {
-                emphasis: {
-                  show: true,
-                  textStyle: {
-                    fontSize: '24',
-                    fontWeight: 'bold'
-                  }
-                }
-              },
-              labelLine: {
-                normal: {
-                  show: false
-                }
-              },
-              data: this.opinionData,
-              itemStyle: {
-                emphasis: {
-                  shadowBlur: 10,
-                  shadowOffset: 0,
-                  shadowColor: 'rgba(0, 0, 0, 0.5)'
-                }
-              }
-            }
-          ]
+          series: [{
+              name: 'acc',
+              type: 'line',
+              data:[]
+          }]
         })
-      }
+      },
+      query() {
+            console.log(this.data0)
+            let val =this.data0
+            console.log(val)
+            axios.get('http://localhost:3000/backtest/history?cookie='+val)
+                    .then(response => {
+                        this.items = response.data['history'];
+                        this.acc=response.data['assest_history'];
+                        var code=response.data['bid']['code'];
+                        console.log(code)
+                        //console.log(this.acc)
+                        this.length = this.acc.length;
+                        var time =[]
+                        for (var i=1;i<this.items.length;i++){
+                          //console.log(this.items[i][0])
+                          time.push(this.items[i][0])
+                          //this.chart.setOption
+                        }
+                        //console.log(time)
+                        this.chart.setOption({
+                          title:{text:code},
+                          series:[{data:this.acc}],
+                          xAxis: {
+                            data:time
+                          }
+                        })
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                  
+
+        }
     },
-    mounted() {
+        mounted() {
       this.$nextTick(function() {
-        this.drawPie('bedroom')
+          this.drawline('main')
+        
       })
     }
   }
+
+
+
 </script>
-<style scoped>
-#bedroom {
+<style>
+
+#main {
   position: relative;
-  left: 50%;
-  margin-left: -400px;
-  margin-bottom: 70px;
+  left: 0;
+  margin-left: 0px;
+  margin-bottom: 0px;
   width: 800px;
   height: 600px;
-  border: solid #D01257 1px;
-  box-shadow: 0 0 8px #FB90B7;
   border-radius: 10px;
 }   
+#but{
+    width:100px;
+    height:50px;
+}
 </style>

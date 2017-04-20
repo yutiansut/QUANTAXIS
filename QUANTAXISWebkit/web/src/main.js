@@ -50,7 +50,7 @@ const routes = [ {
       {'path': '/personal/markdown',component: require('./components/Personal/markdown.vue')},
       {'path': '/personal/history/:id',name:'history',component: require('./components/Personal/history.vue')},
       {'path': '/personal/backtest',component: require('./components/Personal/backtest.vue')},
-      {'path': '/personal/visual',component: require('./components/Personal/visual.vue')}
+      {'path': '/personal/visual/:id',name:'visual',component: require('./components/Personal/visual.vue')}
     ]
   },
   {

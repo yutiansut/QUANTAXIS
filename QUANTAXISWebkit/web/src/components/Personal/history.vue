@@ -1,5 +1,6 @@
 <template>
     <div>
+        <router-link :to="{ name:'visual',params: {id:this.message}}"><button id='but'>show charts</button></router-link>   
         <li v-on:click="query()">Account Cookie is {{this.message}}</li>
         <mu-table :height="height">
             <mu-thead>
@@ -20,8 +21,9 @@
                 </mu-tbody>
             </template>
         </mu-table>
-    
+    <textarea>{{acc}}</textarea>
     </div>
+    
 </template>
 <script>
 
@@ -49,7 +51,7 @@ export default {
             axios.get('http://localhost:3000/backtest/history?cookie='+val)
                     .then(response => {
                         this.items = response.data['history'];
-                        this.acc=response.data['assest_history']
+                        this.acc=response.data;
                         //console.log(this.items)
                         //this.length = this.items.length;
                         
@@ -64,3 +66,10 @@ export default {
 
 
 </script>
+<style>
+
+#but{
+    width:100px;
+    height:50px;
+}
+</style>
