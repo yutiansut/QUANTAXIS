@@ -14,7 +14,7 @@ import time
 import datetime,re
 import pymongo
 from . import data_list as data_list
-from WindPy import w
+#from WindPy import w
 #w.start()
 
 #w.start()
