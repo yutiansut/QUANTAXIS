@@ -1,6 +1,6 @@
 <template>
     <div>
-        <li v-on:click="query()">{{this.message}}</li>
+        <li v-on:click="query()">Account Cookie is {{this.message}}</li>
         <mu-table :height="height">
             <mu-thead>
                 <mu-tr>
@@ -10,8 +10,11 @@
             <template v-for="item in items">
                 <mu-tbody>
                     <mu-tr>
-                        <mu-td>{{item['assest_history']}}</mu-td>
-                        <mu-td>{{item['history']}}</mu-td>
+                        <mu-td>{{item[0]}}</mu-td>
+                        <mu-td>{{item[1]}}</mu-td>
+                        <mu-td>{{item[2]}}</mu-td>
+                        <mu-td>{{item[3]}}</mu-td>
+                        <mu-td>{{item[4]}}</mu-td>
                     </mu-tr>
                 </mu-tbody>
             </template>
@@ -43,8 +46,8 @@ export default {
             console.log(val)
             axios.get('http://localhost:3000/backtest/history?cookie='+val)
                     .then(response => {
-                        this.items = response.data;
-                        console.log(this.items['assest_history'])
+                        this.items = response.data['history'];
+                        console.log(this.items)
                         this.length = this.items.length;
                         
                     })
