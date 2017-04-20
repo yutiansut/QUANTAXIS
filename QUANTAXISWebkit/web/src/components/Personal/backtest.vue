@@ -11,8 +11,7 @@
               <mu-th>start</mu-th>
               <mu-th>end</mu-th>
               <mu-th>profit</mu-th>
-              <mu-th>per</mu-th>
-              <mu-th>cookie</mu-th>
+
             </mu-tr>
           </mu-thead>
           <template v-for="item in items">
@@ -25,9 +24,7 @@
                 <mu-td >{{ item['start_time']}}</mu-td>
                 <mu-td>{{ item['end_time']}}</mu-td>
                 <mu-td>{{ item['profit']}}</mu-td>
-                <mu-td>{{ item['performace']}}</mu-td>
-                
-                <mu-td >{{ item['account_cookie']}}</mu-td></router-link>
+                </router-link>
               </mu-tr>
             </mu-tbody>
            
