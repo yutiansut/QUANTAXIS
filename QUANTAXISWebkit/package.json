@@ -16,7 +16,7 @@
     "backend": "node ./backend/bin/www",
     "website":" cd ./web && npm run dev",
     "client": "cd ./client && npm run dev",
-    "Xweb":"npm run backend | npm run website",
+    "Xweb":" npm run website | npm run backend",
     "Xclient":"npm run backend | npm run client",
     "all":" npm run Xweb | npm run client"
   },

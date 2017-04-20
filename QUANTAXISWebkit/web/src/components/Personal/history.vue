@@ -10,7 +10,8 @@
             <template v-for="item in items">
                 <mu-tbody>
                     <mu-tr>
-                        <mu-td>{{item}}</mu-td>
+                        <mu-td>{{item['assest_history']}}</mu-td>
+                        <mu-td>{{item['history']}}</mu-td>
                     </mu-tr>
                 </mu-tbody>
             </template>
@@ -43,6 +44,7 @@ export default {
             axios.get('http://localhost:3000/backtest/history?cookie='+val)
                     .then(response => {
                         this.items = response.data;
+                        console.log(this.items['assest_history'])
                         this.length = this.items.length;
                         
                     })
