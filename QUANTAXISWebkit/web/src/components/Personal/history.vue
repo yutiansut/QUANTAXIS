@@ -1,7 +1,10 @@
 <template>
     <div>
-        <router-link :to="{ name:'visual',params: {id:this.message}}"><button id='but'>show charts</button></router-link>   
-        <li v-on:click="query()">Account Cookie is {{this.message}}</li>
+        <div class="container">
+            <router-link :to="{ name:'visual',params: {id:this.message}}"><mu-raised-button  label="账户表现" class="demo-raised-button"secondary/></router-link>   
+            <mu-raised-button v-on:click='query()' label="成交明细" class="demo-raised-button"/>
+        <mu-divider />
+        </div>
         <mu-table :height="height">
             <mu-thead>
                 <mu-tr>
@@ -21,7 +24,6 @@
                 </mu-tbody>
             </template>
         </mu-table>
-    <textarea>{{acc}}</textarea>
     </div>
     
 </template>
@@ -68,8 +70,8 @@ export default {
 </script>
 <style>
 
-#but{
-    width:100px;
-    height:50px;
+.container{
+  display: flex;
+  flex-wrap: wrap;
 }
 </style>

@@ -54,4 +54,28 @@ router.get('/history',function(req, res, next) {
 
 })
 });
+
+
+router.get('/market',function(req, res, next) {
+  
+  cookie=req.query.cookie
+  console.log(cookie)
+  mongodb.connect('mongodb://localhost:27017/quantaxis', function (err, conn) {
+        conn.collection('backtest_history', function (err, coll) {
+          coll.find({'cookie':cookie}).toArray(function (err, docs) {
+            //console.log(docs.length)
+            data=[]
+            for (id in docs){
+              data.push(docs[id]['market'])
+            }
+            res.send(data)
+          
+        })
+      })
+
+})
+});
+
+
+
 module.exports = router;
