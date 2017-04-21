@@ -36,4 +36,3 @@ def QA_fetch_data(code,startDate,endDate,collections):
         return data
     else:
         QA_util_log_info('something wrong with date')
-            

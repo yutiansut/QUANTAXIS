@@ -19,10 +19,10 @@ def QA_fetch_get_stock_tick(name,date):
     return QATs.get_tick_data(name,date)
     
 
-def QA_fetch_get_stock_day_all(name):
-    if (len(name)!=6):
-        name=str(name)[0:6]
-    return QATs.get_h_data(name,start='1990-01-01')
+def QA_fetch_get_stock_list():
+    df=QATs.get_stock_basics()
+    return list(df.index)
+
 #test
 
 #print(get_stock_day("000001",'2001-01-01','2010-01-01'))
