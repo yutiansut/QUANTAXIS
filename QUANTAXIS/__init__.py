@@ -14,7 +14,7 @@ by yutiansut
 from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day,QA_fetch_get_trade_date,
                                 QA_fetch_get_stock_indicator)
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_data
-
+from QUANTAXIS.QAFetch.QATushare import QA_fetch_get_stock_day_all
 from QUANTAXIS.QASpider import (QA_spider_select_spider,QA_spider_start_spider,
                                 QA_spider_end_spider)
 
