@@ -10,15 +10,20 @@ import time
 import pymongo
 
 def QA_save_stock_day_all():
-    dfs = ts.get_stock_basics()
-
-    
+    df= ts.get_stock_basics()
     for i in df.index:  
-        print(i)
-        data=ts.get_hist_data(i)
+        print(i)    
         try:
+            data=ts.get_k_data(i)
             data_json=json.loads(data.to_json(orient='records'))
             coll=pymongo.MongoClient().quantaxis.stock_day
             coll.insert_many(data_json)
         except:
             print('none data')
+
+def QA_save_stock_list():
+    data=QATushare.QA_fetch_get_stock_list()
+    date=str(datetime.date.today())
+    date_stamp=QA_util_date_stamp(date)
+    coll=pymongo.MongoClient().quantaxis.stock_list
+    coll.insert({'date':date,'date_stamp':date_stamp,'stock':{'code':data}})
