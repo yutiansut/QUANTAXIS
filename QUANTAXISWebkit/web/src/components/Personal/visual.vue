@@ -30,33 +30,42 @@ export default {
           xAxis: {
             data:[]
           },
-          yAxis: [
+          yAxis: [{
+            name:'account',
+            max:'dataMax',
+            min:'dataMin'
+
+          },{
+            name:'market',
+            max:'dataMax',
+            min:'dataMin'
+          }],
+          legend: {
+              data:['account','market'],
+              x: 'right'
+          },
+          dataZoom: [
               {
-                type: 'value',
-                scale: true,
-                name: '账户',
-                max: 30000,
-                min: 0,
-                //boundaryGap: [0.2, 0.2]
-            },{
-                type: 'value',
-                scale: true,
-                name: '市场',
-                max: 100,
-                min: 0,
-                // boundaryGap: [0.2, 0.2]
-            }
+                  show: true,
+                  realtime: true,
+                  start: 65,
+                  end: 85
+              },
+              {
+                  type: 'inside',
+                  realtime: true,
+                  start: 65,
+                  end: 85
+              }
           ],
           series: [{
               name: 'account',
               type: 'line',
-              data:[],
-              yAxisIndex:1
+              data:[]
           },{
             name:'market',
-            type:'line',
-            data:[],
-            yAxisIndex:2
+            type:'candlestick',
+            data:[]
           }]
         })
       },
@@ -71,7 +80,7 @@ export default {
                         var code=response.data['bid']['code'];
                         var strategy_name=response.data['strategy']
                         //console.log(code)
-                        console.log(this.acc)
+                       // console.log(this.acc)
                         this.length = this.acc.length;
                         var time =[]
                         for (var i=1;i<this.items.length;i++){
@@ -82,7 +91,7 @@ export default {
                         //console.log(time)
                         this.chart.setOption({
                           title:{text:code+'--'+strategy_name},
-                          series:[{name:'account',data:this.acc}],
+                          series:[{name:'account',data:this.acc,yAxisIndex:0}],
                           xAxis: {
                             data:time
                           }
@@ -102,13 +111,20 @@ export default {
                     .then(response => {
                       var market = response.data;
                       //console.log(market)
-                      var open =[]
+                      var value=[];
                       for (var i=0;i<market.length;i++){
                         //console.log(this.items[i][0])
-                        open.push(market[i]['open'])}
-                      console.log(open)
+                        value.push([market[i]['market']['open'],market[i]['market']['high'],market[i]['market']['low'],market[i]['market']['close']])
+
+                        }
+                      //console.log(open)
                       this.chart.setOption({
-                        series:[{name:'market',data:open}]
+                        series:{
+                          name:'market',
+                          type:'candlestick',
+                          data:value,
+                          yAxisIndex:1
+                      }
                       })
                           //this.chart.setOption
                     })

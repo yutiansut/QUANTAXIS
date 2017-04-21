@@ -66,7 +66,7 @@ router.get('/market',function(req, res, next) {
             //console.log(docs.length)
             data=[]
             for (id in docs){
-              data.push(docs[id]['market'])
+              data.push({'market':docs[id]['market'],'bid':docs[id]['bid']})
             }
             res.send(data)
           

@@ -52,8 +52,8 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.5
 - Wind万得数据库  机构版/免费(大奖章版)
 
 ## 回测Webkit更新回测状况
-![](http://i1.piimg.com/567571/053ac3e3850f8f60.png)
-![](http://i4.buimg.com/567571/5f42c20efde5bb5e.png)
+![](http://i4.buimg.com/567571/25288e7b5c7a6b99.png)
+![](http://i1.piimg.com/567571/09bd05c3698f2d38.png)
 ![](http://i2.muimg.com/567571/3f1945554c067a6c.png)
 
 ## 适用场景

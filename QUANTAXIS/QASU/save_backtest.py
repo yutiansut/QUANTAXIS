@@ -41,6 +41,7 @@ def QA_SU_save_account_message(message, client):
     header=message['header']
     body=message['body']
     coll=client.quantaxis.backtest_history
+    print(message)
     coll.insert({
         'time':message['body']['time'],
         'time_stamp':message['body']['date_stamp'],
