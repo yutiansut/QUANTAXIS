@@ -44,6 +44,7 @@ export default {
                         this.items = response.data['history'];
                         this.acc=response.data['assest_history'];
                         var code=response.data['bid']['code'];
+                        var strategy_name=response.data['strategy']
                         console.log(code)
                         //console.log(this.acc)
                         this.length = this.acc.length;
@@ -55,7 +56,7 @@ export default {
                         }
                         //console.log(time)
                         this.chart.setOption({
-                          title:{text:code},
+                          title:{text:code+'-    -'+strategy_name},
                           series:[{data:this.acc}],
                           xAxis: {
                             data:time

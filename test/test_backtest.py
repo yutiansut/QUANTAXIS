@@ -27,7 +27,8 @@ class backtest(QA.QA_Backtest):
         self.setting.QA_setting_user_name='yutiansut'
         self.setting.QA_setting_user_password='yutiansut'
         print(self.setting.QA_setting_login())
-        self.setting.QA_util_sql_mongo_ip='192.168.4.189'
+        #self.setting.QA_util_sql_mongo_ip='192.168.4.189'
+        self.setting.QA_util_sql_mongo_ip='127.0.0.1'
         self.setting.QA_setting_init()
         print(self.setting.client)
         print('===finish test init===')
@@ -38,11 +39,11 @@ class backtest(QA.QA_Backtest):
         print('==check the account==')
         print(self.account.assets_free)
         print('==set the date==')
-        self.strategy_start_date='2000-01-01'
+        self.strategy_start_date='2015-01-01'
         print(self.strategy_start_date)
         print('==make a bid==')
-        self.bid.bid['price']=4.4
-        self.bid.bid['time']='2000-01-04'
+        self.bid.bid['price']=10.846
+        self.bid.bid['time']='2015-01-05'
         self.bid.bid['amount']=100
         print(self.bid.bid)
         message=self.market.market_make_deal(self.bid.bid,self.setting.client)
@@ -57,8 +58,8 @@ class backtest(QA.QA_Backtest):
         print('===next Day===')
 
         print('==make a bid==')
-        self.bid.bid['price']=4.6
-        self.bid.bid['time']='2000-01-05'
+        self.bid.bid['price']=10.751
+        self.bid.bid['time']='2015-01-06'
         self.bid.bid['amount']=100
         self.bid.bid['towards']=-1
         print(self.bid.bid)
@@ -76,7 +77,7 @@ class backtest(QA.QA_Backtest):
         
     def get_data_from_market(self):
         self.coll=self.setting.client.quantaxis.stock_day
-        data=QA.QA_fetch_data('000001','2005-05-01','2006-05-04',self.coll)
+        data=QA.QA_fetch_data('000001','2015-05-01','2016-05-04',self.coll)
         print(data)
     def get_data_from_ARP(self):
         return self.account.QA_Account_get_message()
