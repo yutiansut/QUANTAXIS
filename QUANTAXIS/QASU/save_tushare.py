@@ -21,7 +21,7 @@ def QA_save_stock_day_all():
         except:
             print('none data')
 
-def QA_save_stock_list():
+def QA_SU_save_stock_list():
     data=QATushare.QA_fetch_get_stock_list()
     date=str(datetime.date.today())
     date_stamp=QA_util_date_stamp(date)
