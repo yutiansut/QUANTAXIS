@@ -6,3 +6,4 @@ import pymongo
 QA.QA_save_stock_day_all()
 QA.QA_update_standard_sql()
 QA.QA_SU_save_stock_list('ts',pymongo.MongoClient())
+QA.QA_SU_save_trade_date_all()

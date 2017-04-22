@@ -1,6 +1,7 @@
 # coding: utf-8
 
 import tushare as QATs
+from QUANTAXIS.QAUtil import QA_util_date_stamp
 
 
 def QA_fetch_get_stock_day(name,startDate,endDate):
@@ -23,6 +24,20 @@ def QA_fetch_get_stock_list():
     df=QATs.get_stock_basics()
     return list(df.index)
 
+def QA_fetch_get_trade_date(endDate, exchange):
+    data=QATs.trade_cal()
+    da=data[ data.isOpen>0 ]
+    data_json=json.loads(da.to_json(orient='records'))
+    message=[]
+    for i in range(0,len(data_json)-1,1):
+        date=item['calendarDate']
+        num=i+1
+        exchangeName='SSE'
+        data_stamp=QA_util_date_stamp(date)
+        mes={'date':date,'num':num,'exchangeName':exchangeName,'data_stamp':data_stamp}
+        message.append(mes)
+    return message
+    
 #test
 
 #print(get_stock_day("000001",'2001-01-01','2010-01-01'))
