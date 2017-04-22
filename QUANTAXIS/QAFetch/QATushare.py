@@ -35,7 +35,7 @@ def QA_fetch_get_trade_date(endDate, exchange):
         num=i+1
         exchangeName='SSE'
         data_stamp=QA_util_date_stamp(date)
-        mes={'date':date,'num':num,'exchangeName':exchangeName,'data_stamp':data_stamp}
+        mes={'date':date,'num':num,'exchangeName':exchangeName,'date_stamp':data_stamp}
         message.append(mes)
     return message
 
