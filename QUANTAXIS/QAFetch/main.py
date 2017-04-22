@@ -34,14 +34,3 @@ def QA_fetch_get_trade_date(package,endDate,exchange):
     Engine=use(package)
     return Engine.QA_fetch_get_trade_date(endDate,exchange)
 
-
-def QA_fetch_save_stock_day(package,startDate,endDate):
-    Engine=use(package)
-    client=pymongo.MongoClient()
-    db=client.quantaxis
-    collSelect=db.dates
-    coll=db.stock_day
-    for item in collSelect.find({"exchange":'SSE'}):
-        name=item['varietyName']
-        Engine.QA_fetch_get_stock_day(name,'2000-01-01','2017-04-01')
-

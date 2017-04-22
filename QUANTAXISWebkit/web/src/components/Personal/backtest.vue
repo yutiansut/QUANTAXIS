@@ -41,7 +41,7 @@ import axios from 'axios'
 export default {
   data:function () {
     return {
-        height: '450px',
+        height: '500px',
         multiSelectable: true,
         enableSelectAll: false,
         message: 'yutiansut',
