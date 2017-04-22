@@ -31,7 +31,7 @@ def QA_fetch_get_trade_date(endDate, exchange):
     data_json=json.loads(da.to_json(orient='records'))
     message=[]
     for i in range(0,len(data_json)-1,1):
-        date=item['calendarDate']
+        date=data_json[i]['calendarDate']
         num=i+1
         exchangeName='SSE'
         data_stamp=QA_util_date_stamp(date)
