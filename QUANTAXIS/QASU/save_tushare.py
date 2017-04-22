@@ -21,11 +21,11 @@ def QA_save_stock_day_all():
         except:
             print('none data')
 
-def QA_SU_save_stock_list():
+def QA_SU_save_stock_list(client):
     data=QATushare.QA_fetch_get_stock_list()
     date=str(datetime.date.today())
     date_stamp=QA_util_date_stamp(date)
-    coll=pymongo.MongoClient().quantaxis.stock_list
+    coll=client.quantaxis.stock_list
     coll.insert({'date':date,'date_stamp':date_stamp,'stock':{'code':data}})
 def QA_SU_save_trade_date_all():
     data=QATushare.QA_fetch_get_trade_date('','')
