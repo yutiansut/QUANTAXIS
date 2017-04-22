@@ -12,7 +12,7 @@ import pymongo
 def QA_save_stock_day_all():
     df= ts.get_stock_basics()
     for i in df.index:  
-        print('正在保存 %f' %(i) )    
+        print('正在保存 %s' %(i) )    
         try:
             data=ts.get_k_data(i)
             data_json=json.loads(data.to_json(orient='records'))
