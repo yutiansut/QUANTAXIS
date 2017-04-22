@@ -51,6 +51,22 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.5
 - mongodb是必须要装的
 - Wind万得数据库  机构版/免费(大奖章版)
 
+一个简易demo(需要先安装并启动mongodb,python版本需要大于3)
+```
+git clone https://github.com/yutiansut/quantaxis
+cd quantaxis 
+python setup.py install
+python easy_start_tushare.py(会存全市场的数据,较慢)
+python test_strategy.py(一个简单的策略)
+```
+启动网络插件(nodejs 版本号需要大于6,最好是7)
+```
+cd QUANTAXISWebkit
+npm run install
+npm run Xweb
+```
+会自动启动localhost:8080网页端口,用账户名admin,密码admin登录
+
 ## 回测Webkit更新回测状况
 ![](http://i4.buimg.com/567571/25288e7b5c7a6b99.png)
 ![](http://i1.piimg.com/567571/09bd05c3698f2d38.png)
