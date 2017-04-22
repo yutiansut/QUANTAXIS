@@ -1,6 +1,7 @@
 # coding: utf-8
 
 import tushare as QATs
+import json
 from QUANTAXIS.QAUtil import QA_util_date_stamp
 
 
@@ -37,7 +38,7 @@ def QA_fetch_get_trade_date(endDate, exchange):
         mes={'date':date,'num':num,'exchangeName':exchangeName,'data_stamp':data_stamp}
         message.append(mes)
     return message
-    
+
 #test
 
 #print(get_stock_day("000001",'2001-01-01','2010-01-01'))
