@@ -29,5 +29,5 @@ def QA_SU_save_stock_list():
     coll.insert({'date':date,'date_stamp':date_stamp,'stock':{'code':data}})
 def QA_SU_save_trade_date_all():
     data=QATushare.QA_fetch_get_trade_date('','')
-    coll=pymongo.MongoClient().quantaxis.trade_date()
+    coll=pymongo.MongoClient().quantaxis.trade_date
     coll.insert_many(data)
