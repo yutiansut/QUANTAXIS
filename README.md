@@ -9,7 +9,7 @@ QUANTAXIS与国内很多优秀的量化平台的区别在于,QA更多关注的�
 
 ![version](https://img.shields.io/badge/Version-%200.3.8-orange.svg)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.5-brown.svg)
-![Pypi](https://img.shields.io/badge/Pypi-%200.3.8RC3-blue.svg)
+![Pypi](https://img.shields.io/badge/Pypi-%200.3.8-blue.svg)
 ![python](https://img.shields.io/badge/python-%203.5/3.6/win/ubuntu-darkgrey.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.3.8-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
