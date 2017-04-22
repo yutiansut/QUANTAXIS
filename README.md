@@ -28,7 +28,7 @@ QUANTAXIS与国内很多优秀的量化平台的区别在于,QA更多关注的�
     - [说明文档 (Updating)](#说明文档-updating)
     - [QUANTAXIS-Stardand-Protocol](#quantaxis-stardand-protocol)
     - [部署问题:](#部署问题)
-    - [回测Webkit更新回测状况](#回测webkit更新回测状况)
+    - [回测Webkit插件概览](#回测webkit插件概览)
     - [适用场景](#适用场景)
     - [Webkit大礼包](#webkit大礼包)
 
@@ -52,22 +52,22 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.5
 - Wind万得数据库  机构版/免费(大奖章版)
 
 一个简易demo(需要先安装并启动mongodb,python版本需要大于3)
-```
+```shell
 git clone https://github.com/yutiansut/quantaxis
 cd quantaxis 
-python setup.py install
+(sudo) python setup.py install
 python easy_start_tushare.py(会存全市场的数据,较慢)
 python test_strategy.py(一个简单的策略)
 ```
 启动网络插件(nodejs 版本号需要大于6,最好是7)
-```
+```shell
 cd QUANTAXISWebkit
-npm run install
-npm run Xweb
+(sudo) npm run install
+(sudo) npm run Xweb
 ```
 会自动启动localhost:8080网页端口,用账户名admin,密码admin登录
 
-## 回测Webkit更新回测状况
+## 回测Webkit插件概览
 ![](http://i4.buimg.com/567571/25288e7b5c7a6b99.png)
 ![](http://i1.piimg.com/567571/09bd05c3698f2d38.png)
 ![](http://i1.piimg.com/567571/053ac3e3850f8f60.png)
