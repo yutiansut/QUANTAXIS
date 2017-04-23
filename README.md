@@ -69,7 +69,7 @@ cd QUANTAXISWebkit
 会自动启动localhost:8080网页端口,用账户名admin,密码admin登录
 
 ## 回测Webkit插件概览
-![](http://i4.buimg.com/567571/25288e7b5c7a6b99.png)
+![](http://i4.buimg.com/567571/e268a538fe0069ce.png)
 ![](http://i1.piimg.com/567571/09bd05c3698f2d38.png)
 ![](http://i1.piimg.com/567571/053ac3e3850f8f60.png)
 

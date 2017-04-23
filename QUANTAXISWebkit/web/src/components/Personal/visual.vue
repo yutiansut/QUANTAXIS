@@ -39,9 +39,14 @@ export default {
             name:'market',
             max:'dataMax',
             min:'dataMin'
-          }],
+          },{
+            name:'bid',
+            max:'dataMax',
+            min:'dataMin'
+          }
+          ],
           legend: {
-              data:['account','market'],
+              data:['account','market','bid'],
               x: 'right'
           },
           dataZoom: [
@@ -66,7 +71,12 @@ export default {
             name:'market',
             type:'candlestick',
             data:[]
-          }]
+          },{
+            name:'bid',
+            type:'line',
+            data:[]
+          }
+          ]
         })
       },
       query() {
@@ -112,19 +122,25 @@ export default {
                       var market = response.data;
                       //console.log(market)
                       var value=[];
+                      var bid=[];
                       for (var i=0;i<market.length;i++){
                         //console.log(this.items[i][0])
                         value.push([market[i]['market']['open'],market[i]['market']['high'],market[i]['market']['low'],market[i]['market']['close']])
-
+                        bid.push(market[i]['bid']['price'])
                         }
                       //console.log(open)
                       this.chart.setOption({
-                        series:{
+                        series:[{
                           name:'market',
                           type:'candlestick',
                           data:value,
                           yAxisIndex:1
-                      }
+                      },{
+                          name:'bid',
+                          type:'line',
+                          data:bid,
+                          yAxisIndex:1
+                      }]
                       })
                           //this.chart.setOption
                     })
