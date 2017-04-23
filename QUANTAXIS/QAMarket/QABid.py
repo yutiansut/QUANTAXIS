@@ -9,5 +9,6 @@ class QA_QAMarket_bid():
         'towards':int(1),
         'code':str('000001.SZ'),
         'user':str('root'),
-        'strategy':str('example01')
+        'strategy':str('example01'),
+        'status':'0x01'
         }
