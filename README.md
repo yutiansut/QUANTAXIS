@@ -29,6 +29,8 @@ QUANTAXIS与国内很多优秀的量化平台的区别在于,QA更多关注的�
     - [QUANTAXIS-Stardand-Protocol](#quantaxis-stardand-protocol)
     - [部署问题:](#部署问题)
     - [回测Webkit插件概览](#回测webkit插件概览)
+        - [Web版](#web版)
+        - [Client版](#client版)
     - [适用场景](#适用场景)
     - [todo list](#todo-list)
     - [Webkit大礼包](#webkit大礼包)
@@ -69,10 +71,12 @@ cd QUANTAXISWebkit
 会自动启动localhost:8080网页端口,用账户名admin,密码admin登录
 
 ## 回测Webkit插件概览
+### Web版
 ![](http://i4.buimg.com/567571/e268a538fe0069ce.png)
 ![](http://i1.piimg.com/567571/09bd05c3698f2d38.png)
 ![](http://i1.piimg.com/567571/053ac3e3850f8f60.png)
-
+### Client版
+![](http://i4.buimg.com/567571/5d522fdede54a715.png)
 ## 适用场景
 ![适用场景](http://i2.buimg.com/567571/e2e7b31b1f9a4307.png)
 

@@ -1,411 +1,162 @@
 <template>
-    <div class="main_content">
-        <h1>上证指数</h1>
-        <li><input v-on:keyup.enter="query($event.currentTarget.value)"></li>
-        <div id="main"></div>
-        
+  <div class="main_content">
+    <div class="container">
+    <router-link :to="{ name:'history',params: {id:this.data0}}"><mu-raised-button v-on:click='query()' label="成交明细" class="demo-raised-button" primary/></router-link>
+    <mu-raised-button v-on:click='query_market()' label="行情数据" class="demo-raised-button"secondary/>
+    <mu-raised-button v-on:click='query()' label="刷新图像" class="demo-raised-button"/>
+     <mu-divider />
     </div>
+    <div id="main"></div>
+  </div>
 </template>
 <script>
-import axios from 'axios'
-var data0={};
-axios.get('http://localhost:3000/stock/history/all?code=600010&feq=day')
-    .then(function (response) {
-
-        var dt=response.data;
-        
-        var rawData=[];
-    for (var j=0; j<dt.length;j++){
-        rawData.push(dt[j].slice(0,5));
-    }
-    
-    var categoryData = [];
-    var values = [];
-    for (var i = 0; i < rawData.length; i++) {
-
-        categoryData.push(rawData[i].splice(0, 1)[0]);
-        var temp=new Array()
-        
-        temp[0]=Number(rawData[i][0]);
-        temp[1]=Number(rawData[i][1]);
-        temp[2]=Number(rawData[i][2]);
-        temp[3]=Number(rawData[i][3]);
-
-
-        values.push(temp)
-
-    }
-
-    
-    
-    data0.values=values;
-    data0.categoryData=categoryData;
-
-    
-    })
-    .catch(function (error) {
-    console.log(error);
-    });
-             
-
-
 import echarts from 'echarts'
-
+// 基于准备好的dom，初始化echarts实例
+import axios from 'axios'
+// 绘制图表
 export default {
     data(){
         return{
             chart:null,
-            data0:data0,
-            titled:'上证指数'
+            data0:this.$route.params.id
         }
     },
     methods:{
-        drawKline(id){
-            console.log(this.data0)
-                this.chart = echarts.init(document.getElementById(id))
-                this.chart.setOption({
-                    title: {
-                        text: this.titled,
-                        left: 0
-                    },
-                    tooltip: {
-                        trigger: 'axis',
-                        axisPointer: {
-                            type: 'line'
-                        }
-                    },
-                    legend: {
-                        data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30']
-                    },
-                    grid: {
-                        left: '10%',
-                        right: '10%',
-                        bottom: '15%'
-                    },
-                    xAxis: {
-                        type: 'category',
-                        data: this.data0.categoryData,
-                        scale: true,
-                        boundaryGap : false,
-                        axisLine: {onZero: false},
-                        splitLine: {show: false},
-                        splitNumber: 20,
-                        min: 'dataMin',
-                        max: 'dataMax'
-                    },
-                    yAxis: {
-                        scale: true,
-                        splitArea: {
-                            show: true
-                        }
-                    },
-                    dataZoom: [
-                        {
-                            type: 'inside',
-                            start: 50,
-                            end: 100
-                        },
-                        {
-                            show: true,
-                            type: 'slider',
-                            y: '90%',
-                            start: 50,
-                            end: 100
-                        }
-                    ],
-                    series: [
-            {
-                name: '日K',
-                type: 'candlestick',
-                data: this.data0.values,
-                markPoint: {
-                    label: {
-                        normal: {
-                            formatter: function (param) {
-                                return param != null ? Math.round(param.value) : '';
-                            }
-                        }
-                    },
-                    data: [
-                        {
-                            name: 'XX标点',
-                            coord: ['2013/5/31', 2300],
-                            value: 2300,
-                            itemStyle: {
-                                normal: {color: 'rgb(41,60,85)'}
-                            }
-                        },
-                        {
-                            name: 'highest value',
-                            type: 'max',
-                            valueDim: 'highest'
-                        },
-                        {
-                            name: 'lowest value',
-                            type: 'min',
-                            valueDim: 'lowest'
-                        },
-                        {
-                            name: 'average value on close',
-                            type: 'average',
-                            valueDim: 'close'
-                        }
-                        ],
-                        tooltip: {
-                            formatter: function (param) {
-                                return param.name + '<br>' + (param.data.coord || '');
-                            }
-                        }
-                        },
-                        markLine: {
-                            symbol: ['none', 'none'],
-                            data: [
-                                [
-                                    {
-                                        name: 'from lowest to highest',
-                                        type: 'min',
-                                        valueDim: 'lowest',
-                                        symbol: 'circle',
-                                        symbolSize: 10,
-                                        label: {
-                                            normal: {show: false},
-                                            emphasis: {show: false}
-                                        }
-                                    },
-                                    {
-                                        type: 'max',
-                                        valueDim: 'highest',
-                                        symbol: 'circle',
-                                        symbolSize: 10,
-                                        label: {
-                                            normal: {show: false},
-                                            emphasis: {show: false}
-                                        }
-                                    }
-                                ],
-                                {
-                                    name: 'min line on close',
-                                    type: 'min',
-                                    valueDim: 'close'
-                                },
-                                {
-                                    name: 'max line on close',
-                                    type: 'max',
-                                    valueDim: 'close'
-                                }
-                                ]
-                            }
-                        },
-                        {
-                            name: 'MA5',
-                            type: 'line',
-                            data: this.calculateMA(5),
-                            smooth: true,
-                            lineStyle: {
-                                normal: {opacity: 0.5}
-                            }
-                        },
-                        {
-                            name: 'MA10',
-                            type: 'line',
-                            data: this.calculateMA(10),
-                            smooth: true,
-                            lineStyle: {
-                                normal: {opacity: 0.5}
-                            }
-                        },
-                        {
-                            name: 'MA20',
-                            type: 'line',
-                            data: this.calculateMA(20),
-                            smooth: true,
-                            lineStyle: {
-                                normal: {opacity: 0.5}
-                            }
-                        },
-                        {
-                            name: 'MA30',
-                            type: 'line',
-                            data: this.calculateMA(30),
-                            smooth: true,
-                            lineStyle: {
-                                normal: {opacity: 0.5}
-                            }
-                        },
-
-                        ]
-                    })
-                    
-
-        },
-        splitData(rawData) {
-            var categoryData = [];
-            var values = []
-            for (var i = 0; i < rawData.length; i++) {
-
-                categoryData.push(rawData[i].splice(0, 1)[0]);
-                values.push(rawData[i])
-
-            }
-            return {
-                categoryData: categoryData,
-                values: values
-                
-            };
-        },
-        calculateMA(dayCount) {
-            var result = [];
-            for (var i = 0, len = this.data0.values.length; i < len; i++) {
-                if (i < dayCount) {
-                    result.push('-');
-                    continue;
-                }
-                var sum = 0;
-                for (var j = 0; j < dayCount; j++) {
-                    sum += this.data0.values[i - j][1];
-                }
-                result.push(sum / dayCount);
-            }
-            return result;
-        },
-        query(code){
-
-            var queryline='http://localhost:3000/stock/history/all?code='+code+'&feq=day'
-            axios.get(queryline)
-                .then(function (response) {
-
-                    var dt=response.data;
-                    
-                    var rawData=[];
-                    for (var j=0; j<dt.length;j++){
-                        rawData.push(dt[j].slice(0,5));
-                    }
-                    
-                    var categoryData = [];
-                    var values = [];
-                    for (var i = 0; i < rawData.length; i++) {
-
-                        categoryData.push(rawData[i].splice(0, 1)[0]);
-                        var temp=new Array()
-                        
-                        temp[0]=Number(rawData[i][0]);
-                        temp[1]=Number(rawData[i][1]);
-                        temp[2]=Number(rawData[i][2]);
-                        temp[3]=Number(rawData[i][3]);
-
-
-                        values.push(temp)
-
-                    }
-
-                    console.log(data0)
-
-                    data0.values=values;
-                    data0.categoryData=categoryData;
-                    console.log(data0)
-                    
-                    })
-                .catch(function (error) {
-                    console.log(error);
-                    });
-            this.drawKline('main')
-        }
-    },
-    mounted() {
-      this.$nextTick(function() {
-          this.drawKline('main')
-        
-      })
-    }
-}
-/**
-import echarts from 'echarts'
-  export default {
-    data() {
-      return {
-        chart: null,
-        opinion: ['学习氛围差', '学习氛围一般', '学习氛围很好'],
-        opinionData: [
-          {value:26, name:'学习氛围差'},
-          {value:31, name:'学习氛围一般'},
-          {value:8, name:'学习氛围很好'}
-        ]
-      }
-    },
-    methods: {
-      drawPie (id) {
+      drawline(id){
         this.chart = echarts.init(document.getElementById(id))
         this.chart.setOption({
-          title: {
-            text: 'id',
-            left: 'center',
-            top: 10,
-            textStyle: {
-              fontSize: 24,
-              fontFamily: 'Helvetica',
-              fontWeight: 400
-            }
+          title: { text: this.data0},
+          tooltip: {},
+          xAxis: {
+            data:[]
           },
-          tooltip: {
-            trigger: 'item',
-            formatte: "{b}: {c} ({d}%)"
-          },
-          toolbox: {
-            feature: {
-              saveAsImage: {},
-              dataView: {}
-            },
-            right: 15,
-            top: 10
-          },
+          yAxis: [{
+            name:'account',
+            max:'dataMax',
+            min:'dataMin'
+
+          },{
+            name:'market',
+            max:'dataMax',
+            min:'dataMin'
+          },{
+            name:'bid',
+            max:'dataMax',
+            min:'dataMin'
+          }
+          ],
           legend: {
-              orient: 'vertical',
-              left: 5,
-              top: 10,
-              data: this.opinion,
+              data:['account','market','bid'],
+              x: 'right'
           },
-          series: [
-            {
-              name: '寝室学习氛围',
-              type: 'pie',
-              radius: ['50%', '70%'],
-              center: ['50%', '60%'],
-              avoidLabelOverlap: false,
-              label: {
-                emphasis: {
+          dataZoom: [
+              {
                   show: true,
-                  textStyle: {
-                    fontSize: '24',
-                    fontWeight: 'bold'
-                  }
-                }
+                  realtime: true,
+                  start: 65,
+                  end: 85
               },
-              labelLine: {
-                normal: {
-                  show: false
-                }
-              },
-              data: this.opinionData,
-              itemStyle: {
-                emphasis: {
-                  shadowBlur: 10,
-                  shadowOffset: 0,
-                  shadowColor: 'rgba(0, 0, 0, 0.5)'
-                }
+              {
+                  type: 'inside',
+                  realtime: true,
+                  start: 65,
+                  end: 85
               }
-            }
+          ],
+          series: [{
+              name: 'account',
+              type: 'line',
+              data:[]
+          },{
+            name:'market',
+            type:'candlestick',
+            data:[]
+          },{
+            name:'bid',
+            type:'line',
+            data:[]
+          }
           ]
         })
-      }
+      },
+      query() {
+            console.log(this.data0)
+            let val =this.data0
+            console.log(val)
+            axios.get('http://localhost:3000/backtest/history?cookie='+val)
+                    .then(response => {
+                        this.items = response.data['history'];
+                        this.acc=response.data['assest_history'];
+                        var code=response.data['bid']['code'];
+                        var strategy_name=response.data['strategy']
+                        //console.log(code)
+                       // console.log(this.acc)
+                        this.length = this.acc.length;
+                        var time =[]
+                        for (var i=1;i<this.items.length;i++){
+                          //console.log(this.items[i][0])
+                          time.push(this.items[i][0])
+                          //this.chart.setOption
+                        }
+                        //console.log(time)
+                        this.chart.setOption({
+                          title:{text:code+'--'+strategy_name},
+                          series:[{name:'account',data:this.acc,yAxisIndex:0}],
+                          xAxis: {
+                            data:time
+                          }
+                        })
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                  
+
+        },
+        query_market(){
+            //console.log(this.data0)
+            let val =this.data0
+            //console.log(val)
+            axios.get('http://localhost:3000/backtest/market?cookie='+val)
+                    .then(response => {
+                      var market = response.data;
+                      //console.log(market)
+                      var value=[];
+                      var bid=[];
+                      for (var i=0;i<market.length;i++){
+                        //console.log(this.items[i][0])
+                        value.push([market[i]['market']['open'],market[i]['market']['high'],market[i]['market']['low'],market[i]['market']['close']])
+                        bid.push(market[i]['bid']['price'])
+                        }
+                      //console.log(open)
+                      this.chart.setOption({
+                        series:[{
+                          name:'market',
+                          type:'candlestick',
+                          data:value,
+                          yAxisIndex:1
+                      },{
+                          name:'bid',
+                          type:'line',
+                          data:bid,
+                          yAxisIndex:1
+                      }]
+                      })
+                          //this.chart.setOption
+                    })
+        }
+        
     },
-    mounted() {
+        mounted() {
       this.$nextTick(function() {
-          this.drawPie('main')
+          this.drawline('main')
         
       })
     }
   }
-   */
+
+
+
 </script>
 <style>
 
@@ -418,4 +169,12 @@ import echarts from 'echarts'
   height: 600px;
   border-radius: 10px;
 }   
+#but{
+    width:100px;
+    height:50px;
+}
+.container{
+  display: flex;
+  flex-wrap: wrap;
+}
 </style>

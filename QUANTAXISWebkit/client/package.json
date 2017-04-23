@@ -52,6 +52,7 @@
     "webpack-dev-server": "^2.2.0"
   },
   "dependencies": {
-    "devtron": "^1.4.0"
+    "devtron": "^1.4.0",
+    "electron": "^1.6.5"
   }
 }

@@ -61,6 +61,8 @@
 </style>
 <script>
 import axios from 'axios'
+
+
 export default {
   data () {
     return {
@@ -70,6 +72,7 @@ export default {
     }
   },
   methods: {
+    
     handleChange (value) {
       this.value = value
     },
@@ -85,36 +88,37 @@ export default {
       let val='name='+name+'&password='+password
       console.log(val)
       axios.get('http://localhost:3000/users/signup?'+val)
-      .then( response => {
-        console.log(response.data)
-        if (response.data==='success'){
-          this.open('top')
-        }
-        else {
-          alert(response.data)
-        }
-        })
-    .catch(function (error) {
-      console.log(error);
-      });
+        .then( response => {
+          console.log(response.data)
+          if (response.data==='success'){
+            this.open('top')
+          }
+          else {
+            alert(response.data)
+          }
+          })
+        .catch(function (error) {
+          console.log(error);
+          });
     },
+
     login(){
       var name=document.getElementsByClassName('mu-text-field-input')[0].value
       var password=document.getElementsByClassName('mu-text-field-input')[1].value
       let val='name='+name+'&password='+password
       console.log(val)
       axios.get('http://localhost:3000/users/login?'+val)
-      .then( response => {
-        console.log(response.data)
-        if (response.data==='success'){
+        .then( response => {
+          console.log(response.data)
+          if (response.data==='success'){ 
             sessionStorage.user=name
             sessionStorage.password=password
-          this.$router.push('/personal/index');
-        }
-        })
-    .catch(function (error) {
-      console.log(error);
-      });
+            this.$router.push('/personal/index');
+          }
+          })
+        .catch(function (error) {
+          console.log(error);
+          });
     }
   },
   watch: {

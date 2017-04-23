@@ -10,6 +10,7 @@
     "keycode": "^2.1.8",
     "muse-ui": "^2.0.0-rc.5",
     "vue": "^2.1.10",
+    "vue-awesome-swiper": "^2.4.0",
     "vue-electron": "^1.0.6",
     "vue-resource": "^1.0.3",
     "vue-router": "^2.1.2",

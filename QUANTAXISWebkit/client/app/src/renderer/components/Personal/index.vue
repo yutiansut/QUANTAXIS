@@ -3,7 +3,7 @@
         <div id="logo">
             <mu-list>
             <mu-list-item  disabled >
-               HI!  {{items.user}}
+                Hi! {{items.user}}
             </mu-list-item>
             </mu-list>
         </div>
@@ -71,6 +71,9 @@ export default {
     #logo{
         width:20%;
         height: 20%;
+    }
+    .mu-item{
+        font-size:30px;
     }
     #personal-content{
         margin-top: 2%;
