@@ -78,7 +78,7 @@ router.get('/history/time', function(req, res, next) {
   console.log(end_stamp)
   mongodb.connect('mongodb://localhost:27017/quantaxis', function (err, conn) {
         conn.collection('stock_day', function (err, coll) {
-          coll.find({"code":code,"date_stamp":{$gte:start_stamp/1000,$lte:end_stamp/1000}}).toArray(function (err, docs) {
+          coll.find({"code":code,"date_stamp":{$gte:start_stamp/1000-50,$lte:end_stamp/1000}}).toArray(function (err, docs) {
             //console.log(err)
             //console.log(docs)
             data=[]

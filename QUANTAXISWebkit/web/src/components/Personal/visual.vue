@@ -34,7 +34,7 @@ export default {
               }
           },
           xAxis: [{
-            data:[],
+            data:this.time,
             scale:true
           },{
             data:[],
@@ -54,14 +54,10 @@ export default {
             },{
               name:'bid_sell',
 
-            },{
-              name:'kline',
-              max:'dataMax',
-              min:'dataMin'
             }
           ],
           legend: {
-              data:['account','market','bid_sell','bid_buy','kline'],
+              data:['account','market','bid_sell','bid_buy'],
               x: 'right'
           },
           dataZoom: [
@@ -94,10 +90,6 @@ export default {
             name:'bid_sell',
             type:'scatter',
             data:[]
-          },{
-            name:'kline',
-            type:'candlestick',
-            data:[]
           }
           ]
         })
@@ -115,10 +107,10 @@ export default {
                         //console.log(code)
                        // console.log(this.acc)
                         this.length = this.acc.length;
-                        
+                        var market_time=[];
                         for (var i=1;i<this.items.length;i++){
                           //console.log(this.items[i][0])
-                          this.time.push(this.items[i][0])
+                          market_time.push(this.items[i][0])
                           //this.chart.setOption
                         }
                         //console.log(time)
@@ -126,8 +118,9 @@ export default {
                           title:{text:code+'--'+strategy_name},
                           series:[{name:'account',data:this.acc,yAxisIndex:0}],
                           xAxis: {
-                            data:this.time,
-                            zlevel:1
+                            data:market_time,
+                            zlevel:1,
+                            type:'category'
                           }
                         })
                     })
@@ -150,7 +143,7 @@ export default {
                       var bid_sell=[];
                       var bid_buy_date=[];
                       var bid_sell_date=[];
-                      var kline=[];
+                      /**var kline=[];
                       var kline_date=[];
                       var start_time=market[0]['bid']['time'];
                       var end_time=market[market.length-1]['bid']['time']
@@ -170,6 +163,7 @@ export default {
                                 
                                 kline.push(temp);
                              }
+                             this.time=kline_date
                              console.log(kline_date)
                               console.log(kline)
                                this.chart.setOption({
@@ -178,14 +172,18 @@ export default {
                                       type:'candlestick',
                                       data:kline,
                                       xAxis:{
+                                        name:'xxx',
                                         data:kline_date,
-                                        zlevel:0
+                                        zlevel:0,
+                                        type:'time'
+                                        
                                       },
+                                      xAxisIndex:0,
                                       yAxisIndex:4
                                   }
                           })
                            }) 
-                      
+                      */
                       for (var i=0;i<market.length-1;i++){
                         //console.log(this.items[i][0])
                         value.push([market[i]['market']['open'],market[i]['market']['high'],market[i]['market']['low'],market[i]['market']['close']])
@@ -214,15 +212,15 @@ export default {
                           name:'bid_buy',
                           type:'scatter',
                           data:bid_buy,
-                          xAxis:{data:bid_buy_date,zlevel:2},
-                          yAxisIndex:4
+                          xAxis:{data:bid_buy_date,zlevel:2, type:'category'},
+                          yAxisIndex:2
 
                       },{
                           name:'bid_sell',
                           type:'scatter',
                           data:bid_sell,
-                          xAxis:{data:bid_sell_date,zlevel:2},
-                          yAxisIndex:4
+                          xAxis:{data:bid_sell_date,zlevel:2, type:'category'},
+                          yAxisIndex:2
                       }
                       ]
                       })
