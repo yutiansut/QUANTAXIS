@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var stock = require('../methods/stock/index').stock;
+var mongodb =require('mongodb')
 /* GET users listing. */
 router.get('*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -36,6 +37,31 @@ router.get('/history/all', function(req, res, next) {
   });
 });
 
+
+
+router.get('/market',function(req, res, next) {
+  
+  cookie=req.query.cookie
+  console.log(cookie)
+  mongodb.connect('mongodb://localhost:27017/quantaxis', function (err, conn) {
+        conn.collection('backtest_history', function (err, coll) {
+          coll.find({'cookie':cookie}).toArray(function (err, docs) {
+            //console.log(docs.length)
+            data=[]
+            for (id in docs){
+              data.push({'market':docs[id]['market'],'bid':docs[id]['bid']})
+            }
+            res.send(data)
+          
+        })
+      })
+
+})
+});
+
+
+
+
 router.get('/history/time', function(req, res, next) {
 
   var code=req.query.code;
@@ -44,35 +70,27 @@ router.get('/history/time', function(req, res, next) {
   };
   var start=req.query.start;
   var end=req.query.end;
-  console.log(options)
-  stock.getHistory(options).then(({ data }) => {
-    var datas=data.record;
-    console.log(end)
-    var datas=data.record;
-    function getid(date){
-    for(i=0;i<datas.length;i++){
-      if (datas[i][0]==date){
-        console.log('i'+i)
-        return i
-      }
-    }
-    }
-    var sId=getid(start);
-    console.log('sId'+sId);
-    var eId=getid(end);
-    console.log('eId'+eId);
-    if (sId=='undefined'){
-      res.send("Wrong Date or No data")
-    }
-    else if (eId=='undefined'){
-      res.send("Wrong Date or No data")
-    }
-    else{
-      var newarray=datas.slice(sId,eId+1)
-      res.send(newarray)
-    }
-    
-  });
+  var start_stamp=new Date(start).getTime();
+  var end_stamp=new Date(end).getTime();
+  console.log(start_stamp)
+  1420416000000
+  1422288000
+  console.log(end_stamp)
+  mongodb.connect('mongodb://localhost:27017/quantaxis', function (err, conn) {
+        conn.collection('stock_day', function (err, coll) {
+          coll.find({"code":code,"date_stamp":{$gte:start_stamp/1000,$lte:end_stamp/1000}}).toArray(function (err, docs) {
+            //console.log(err)
+            //console.log(docs)
+            data=[]
+            for (id in docs){
+              data.push(docs[id])
+            }
+            res.send(data)
+          
+        })
+      })
+
+})
 });
 
 router.get('/index', function(req, res, next) {

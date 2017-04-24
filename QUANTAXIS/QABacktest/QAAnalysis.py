@@ -32,7 +32,8 @@ Information Ratio：信息比率。衡量超额风险带来的超额收益。
 Max Drawdown：最大回撤。描述策略可能出现的最糟糕的情况。
 具体计算方法为 max(1 - 策略当日价值 / 当日之前虚拟账户最高价值)
     """
-
+    # 计算一个benchmark
+    # 这个benchmark是和第一次bid买入报价同时买入,然后一直持仓,计算账户价值
 
     profit_year=(message['body']['account']['assest_history'][-1]/message['body']['account']['assest_history'][1]-1)/days*250
 

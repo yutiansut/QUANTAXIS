@@ -18,7 +18,8 @@ export default {
     data(){
         return{
             chart:null,
-            data0:this.$route.params.id
+            data0:this.$route.params.id,
+            time:[]
         }
     },
     methods:{
@@ -26,27 +27,41 @@ export default {
         this.chart = echarts.init(document.getElementById(id))
         this.chart.setOption({
           title: { text: this.data0},
-          tooltip: {},
-          xAxis: {
-            data:[]
+          tooltip: {
+              trigger: 'axis',
+              axisPointer: {
+                  type: 'cross'
+              }
           },
+          xAxis: [{
+            data:[],
+            scale:true
+          },{
+            data:[],
+            scale:true
+          }],
           yAxis: [{
-            name:'account',
-            max:'dataMax',
-            min:'dataMin'
+              name:'account',
+              max:'dataMax',
+              min:'dataMin'
 
-          },{
-            name:'market',
-            max:'dataMax',
-            min:'dataMin'
-          },{
-            name:'bid',
-            max:'dataMax',
-            min:'dataMin'
-          }
+            },{
+              name:'market',
+
+            },{
+              name:'bid_buy',
+
+            },{
+              name:'bid_sell',
+
+            },{
+              name:'kline',
+              max:'dataMax',
+              min:'dataMin'
+            }
           ],
           legend: {
-              data:['account','market','bid'],
+              data:['account','market','bid_sell','bid_buy','kline'],
               x: 'right'
           },
           dataZoom: [
@@ -72,8 +87,16 @@ export default {
             type:'candlestick',
             data:[]
           },{
-            name:'bid',
-            type:'line',
+            name:'bid_buy',
+            type:'scatter',
+            data:[]
+          },{
+            name:'bid_sell',
+            type:'scatter',
+            data:[]
+          },{
+            name:'kline',
+            type:'candlestick',
             data:[]
           }
           ]
@@ -92,10 +115,10 @@ export default {
                         //console.log(code)
                        // console.log(this.acc)
                         this.length = this.acc.length;
-                        var time =[]
+                        
                         for (var i=1;i<this.items.length;i++){
                           //console.log(this.items[i][0])
-                          time.push(this.items[i][0])
+                          this.time.push(this.items[i][0])
                           //this.chart.setOption
                         }
                         //console.log(time)
@@ -103,7 +126,8 @@ export default {
                           title:{text:code+'--'+strategy_name},
                           series:[{name:'account',data:this.acc,yAxisIndex:0}],
                           xAxis: {
-                            data:time
+                            data:this.time,
+                            zlevel:1
                           }
                         })
                     })
@@ -122,25 +146,85 @@ export default {
                       var market = response.data;
                       //console.log(market)
                       var value=[];
-                      var bid=[];
-                      for (var i=0;i<market.length;i++){
+                      var bid_buy=[];
+                      var bid_sell=[];
+                      var bid_buy_date=[];
+                      var bid_sell_date=[];
+                      var kline=[];
+                      var kline_date=[];
+                      var start_time=market[0]['bid']['time'];
+                      var end_time=market[market.length-1]['bid']['time']
+                      var val=market[0]['bid']['code']+'&start='+start_time+'&end='+end_time
+                      console.log(val)
+                      //http://localhost:3000/stock/history/time?code=600010&feq=day&start=2015-01-05&end=2015-01-29
+                      axios.get('http://localhost:3000/stock/history/time?code='+val)
+                          .then(response => {
+                            var history_data = response.data;
+                             for (var i=0;i<history_data.length-1;i++){
+                                kline_date.push(history_data[i]['date']);
+                                var temp=[];
+                                temp.push(history_data[i]['open'])
+                                temp.push(history_data[i]['high'])
+                                temp.push(history_data[i]['low'])
+                                temp.push(history_data[i]['close'])
+                                
+                                kline.push(temp);
+                             }
+                             console.log(kline_date)
+                              console.log(kline)
+                               this.chart.setOption({
+                                    series:{
+                                      name:'kline',
+                                      type:'candlestick',
+                                      data:kline,
+                                      xAxis:{
+                                        data:kline_date,
+                                        zlevel:0
+                                      },
+                                      yAxisIndex:4
+                                  }
+                          })
+                           }) 
+                      
+                      for (var i=0;i<market.length-1;i++){
                         //console.log(this.items[i][0])
                         value.push([market[i]['market']['open'],market[i]['market']['high'],market[i]['market']['low'],market[i]['market']['close']])
-                        bid.push(market[i]['bid']['price'])
+                        if (market[i]['bid']['towards']==1){
+                          bid_buy.push(market[i]['bid']['price']);
+                          bid_buy_date.push(market[i]['bid']['time']);
+                          bid_sell.push('');
+                          bid_sell_date.push('');
+                          }
+                        else{
+                          bid_buy.push('');
+                          bid_buy_date.push('');
+                          bid_sell.push(market[i]['bid']['price']);
+                          bid_sell_date.push(market[i]['bid']['time']);
                         }
-                      //console.log(open)
+                        
+                        }
+                      //console.log(bid_buy_date)
                       this.chart.setOption({
                         series:[{
                           name:'market',
                           type:'candlestick',
                           data:value,
-                          yAxisIndex:1
+                          yAxisIndex:4
                       },{
-                          name:'bid',
-                          type:'line',
-                          data:bid,
-                          yAxisIndex:1
-                      }]
+                          name:'bid_buy',
+                          type:'scatter',
+                          data:bid_buy,
+                          xAxis:{data:bid_buy_date,zlevel:2},
+                          yAxisIndex:4
+
+                      },{
+                          name:'bid_sell',
+                          type:'scatter',
+                          data:bid_sell,
+                          xAxis:{data:bid_sell_date,zlevel:2},
+                          yAxisIndex:4
+                      }
+                      ]
                       })
                           //this.chart.setOption
                     })
