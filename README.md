@@ -73,11 +73,11 @@ cd QUANTAXISWebkit
 
 ## 回测Webkit插件概览
 ### Web版
-![](http://i4.buimg.com/567571/e268a538fe0069ce.png)
+![](http://i4.buimg.com/567571/b2f7df1632aa525a.png)
 ![](http://i1.piimg.com/567571/09bd05c3698f2d38.png)
 ![](http://i1.piimg.com/567571/053ac3e3850f8f60.png)
 ### Client版
-![](http://i4.buimg.com/567571/5d522fdede54a715.png)
+![](http://i2.muimg.com/567571/25f8b959d5c6f794.png)
 ## 适用场景
 ![适用场景](http://i2.buimg.com/567571/e2e7b31b1f9a4307.png)
 
