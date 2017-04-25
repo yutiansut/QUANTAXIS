@@ -65,17 +65,12 @@ router.get('/market',function(req, res, next) {
 router.get('/history/time', function(req, res, next) {
 
   var code=req.query.code;
-  var options={
-    code:code
-  };
+  var code=code.slice(0,6)
   var start=req.query.start;
   var end=req.query.end;
   var start_stamp=new Date(start).getTime();
   var end_stamp=new Date(end).getTime();
-  console.log(start_stamp)
-  1420416000000
-  1422288000
-  console.log(end_stamp)
+  console.log(code)
   mongodb.connect('mongodb://localhost:27017/quantaxis', function (err, conn) {
         conn.collection('stock_day', function (err, coll) {
           coll.find({"code":code,"date_stamp":{$gte:start_stamp/1000-50,$lte:end_stamp/1000}}).toArray(function (err, docs) {

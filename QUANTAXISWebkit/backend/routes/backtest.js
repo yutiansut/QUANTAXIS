@@ -38,6 +38,21 @@ router.get('/info',function(req, res, next) {
 
 })
 });
+router.get('/info_code',function(req, res, next) {
+  console.log('backtest')
+  
+  var code=new RegExp(req.query.code);
+  console.log(code)
+  mongodb.connect('mongodb://localhost:27017/quantaxis', function (err, conn) {
+        conn.collection('backtest_info', function (err, coll) {
+          coll.find({'stock_list': code }).toArray(function (err, docs) {
+            res.send(docs)
+          
+        })
+      })
+
+})
+});
 
 
 router.get('/info_cookie',function(req, res, next) {

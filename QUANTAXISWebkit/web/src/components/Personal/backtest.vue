@@ -1,12 +1,13 @@
 <template>
     <div id="index">
 
-    <li><input v-model="message" v-on:keyup.enter="info($event.currentTarget.value)" placeholder="edit me" lazy></li>
+    <li><input v-model="message" v-on:keyup.enter="info($event.currentTarget.value)" placeholder="edit me" lazy>
+    <input v-model="messages" v-on:keyup.enter="code($event.currentTarget.value)" placeholder="edit me" lazy></li>
         <mu-table :height="height" >
           <mu-thead>
             <mu-tr>
               <mu-th>user</mu-th>
-              <mu-th>strategy</mu-th>
+              <mu-th >strategy</mu-th>
               <mu-th>code</mu-th>
               <mu-th>start</mu-th>
               <mu-th>end</mu-th>
@@ -45,6 +46,7 @@ export default {
         multiSelectable: true,
         enableSelectAll: false,
         message: 'yutiansut',
+        messages:'code',
         items: [''],
         total: 180,
         current: 1,
@@ -67,21 +69,22 @@ export default {
             console.log(error);
           });
       },
-      history(cookie){
-         let val = cookie
-         console.log(val)
-        axios.get('http://localhost:3000/backtest/history?cookie=' + val)
+      code(message) {
+        let val = message
+        console.log(val)
+        axios.get('http://localhost:3000/backtest/info_code?code=' + val)
           .then(response => {
             this.items = response.data;
+            console.log(this.items)
             this.length = this.items.length;
-            
+            var performance=response.data[0]['performance'];
+            console.log(performance)
           })
           .catch(function (error) {
             console.log(error);
           });
-
-
       }
+
   }
 }
 </script>
