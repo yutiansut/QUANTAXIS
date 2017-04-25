@@ -73,7 +73,7 @@ cd QUANTAXISWebkit
 
 ## 回测Webkit插件概览
 ### Web版
-![](http://i4.buimg.com/567571/b2f7df1632aa525a.png)
+![](http://i2.muimg.com/567571/a62d9c9c4b65dd46.png)
 
 ![](http://i1.piimg.com/567571/09bd05c3698f2d38.png)
 ![](http://i1.piimg.com/567571/053ac3e3850f8f60.png)
