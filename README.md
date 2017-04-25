@@ -78,7 +78,7 @@ cd QUANTAXISWebkit
 ![](http://i1.piimg.com/567571/09bd05c3698f2d38.png)
 ![](http://i1.piimg.com/567571/053ac3e3850f8f60.png)
 ### Client版
-![](http://i2.muimg.com/567571/25f8b959d5c6f794.png)
+![](http://i2.muimg.com/4851/25f8b959d5c6f794.png)
 ## 适用场景
 ![适用场景](http://i2.buimg.com/567571/e2e7b31b1f9a4307.png)
 
