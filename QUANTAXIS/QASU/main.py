@@ -1,0 +1,30 @@
+from . import save_tushare as sts
+from . import save_wind as sw
+from . import update_tushare as uts
+from . import update_wind as uw
+
+
+def QA_SU_save_stock_list(engine,client):
+    engine=select_engine(engine)
+    engine.QA_SU_save_stock_list(client)
+
+def QA_SU_save_trade_date(engine,client):
+    engine=select_engine(engine)
+    engine.QA_SU_save_trade_date(client)
+
+def QA_SU_save_stock_day(name, startDate, endDate, engine, client):
+    engine=select_engine(engine)
+    engine.QA_SU_save_stock_day(name, startDate, endDate, client)
+
+def QA_SU_save_stock_day_init(startDate,engine,client):
+    engine=select_engine(engine)
+    engine.QA_SU_save_stock_day_init(startDate,client)
+
+
+def QA_SU_update_stock_day(name, startDate, endDate, engine, client):
+    pass
+def select_engine(engine):
+    if engine in ['wind','Wind','WIND']:
+       return sw
+    elif engine in ['tushare','ts','Tushare']:
+       return sts
