@@ -39,6 +39,23 @@ router.get('/info',function(req, res, next) {
 })
 });
 
+
+router.get('/info_cookie',function(req, res, next) {
+  console.log('backtest')
+  cookie=req.query.cookie
+  console.log(req.query.cookie)
+  mongodb.connect('mongodb://localhost:27017/quantaxis', function (err, conn) {
+        conn.collection('backtest_info', function (err, coll) {
+          coll.find({'account_cookie': cookie }).toArray(function (err, docs) {
+            res.send(docs[0])
+          
+        })
+      })
+
+})
+});
+
+
 router.get('/history',function(req, res, next) {
   
   cookie=req.query.cookie

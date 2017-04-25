@@ -27,7 +27,7 @@ def QA_fetch_get_stock_list():
 
 def QA_fetch_get_trade_date(endDate, exchange):
     data=QATs.trade_cal()
-    da=data[ data.isOpen>0 ]
+    da=data[ data.isOpen>0 ]    
     data_json=json.loads(da.to_json(orient='records'))
     message=[]
     for i in range(0,len(data_json)-1,1):

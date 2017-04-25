@@ -34,7 +34,7 @@ import axios from 'axios'
 export default {
     data: function () {
         return {
-            
+            height:'800px',
             multiSelectable: true,
             enableSelectAll: false,
             message: this.$route.params.id,

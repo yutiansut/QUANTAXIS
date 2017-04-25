@@ -39,6 +39,7 @@ QUANTAXIS与国内很多优秀的量化平台的区别在于,QA更多关注的�
 
 ## 说明文档 (Updating)
 [地址](https://yutiansut.gitbooks.io/quantaxis/)
+![](http://i1.piimg.com/567571/dc3c811a5afcb4fb.png)
 ## QUANTAXIS-Stardand-Protocol
 QUANTAXIS 标准化协议和未来协议
 

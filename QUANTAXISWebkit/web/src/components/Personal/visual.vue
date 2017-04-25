@@ -2,8 +2,8 @@
   <div class="main_content">
     <div class="container">
     <router-link :to="{ name:'history',params: {id:this.data0}}"><mu-raised-button v-on:click='query()' label="成交明细" class="demo-raised-button" primary/></router-link>
-    <mu-raised-button v-on:click='query_market()' label="行情数据" class="demo-raised-button"secondary/>
-    <mu-raised-button v-on:click='query()' label="刷新图像" class="demo-raised-button"/>
+    <mu-raised-button v-on:click='ready()' label="行情数据" class="demo-raised-button"secondary/>
+    <mu-raised-button v-on:click='query_market();query()' label="刷新图像" class="demo-raised-button"/>
      <mu-divider />
     </div>
     <div id="main"></div>
@@ -25,6 +25,7 @@ export default {
     methods:{
       drawline(id){
         this.chart = echarts.init(document.getElementById(id))
+        this.chart.showLoading();
         this.chart.setOption({
           title: { text: this.data0},
           tooltip: {
@@ -34,30 +35,31 @@ export default {
               }
           },
           xAxis: [{
-            data:this.time,
+            
+            data:[],
             scale:true
           },{
             data:[],
-            scale:true
+            scale:true,
+            
+            
+            //boundaryGap : false,
+            //axisLine: {onZero: true}
           }],
           yAxis: [{
+              name:'price',
+              max:'dataMax',
+              min:'dataMin'
+            },{
               name:'account',
               max:'dataMax',
               min:'dataMin'
 
-            },{
-              name:'market',
-
-            },{
-              name:'bid_buy',
-
-            },{
-              name:'bid_sell',
-
             }
           ],
           legend: {
-              data:['account','market','bid_sell','bid_buy'],
+              data:['k_line','account','market','bid_sell','bid_buy'],
+              //data:['k_line'],
               x: 'right'
           },
           dataZoom: [
@@ -78,28 +80,97 @@ export default {
               name: 'account',
               type: 'line',
               data:[]
-          },{
+              
+            },{
             name:'market',
             type:'candlestick',
             data:[]
-          },{
+            },{
             name:'bid_buy',
             type:'scatter',
-            data:[]
-          },{
+            data:[],
+            itemStyle:{
+              normal:{
+                color:"#980000"
+              }
+            }
+            
+            },{
             name:'bid_sell',
             type:'scatter',
+            data:[],
+            itemStyle:{
+              normal:{
+                color:"#2f4554"
+              }
+            }
+            
+            },{
+            name:'k_line',
+            type:'candlestick',
             data:[]
           }
-          ]
+          ],
+          color:'#2f4554'
         })
       },
+      ready(){
+        //先从ready拿到信息数据
+        let val =this.data0
+        axios.get('http://localhost:3000/backtest/info_cookie?cookie='+val)
+              .then(response => {
+                var data=response.data;
+                var start_time=data['start_time']
+                var end_time=data['end_time']
+                var profit=data['profit']
+                var max_drop=data['performance']['max_drop ']
+                var code=data['stock_list'][0]
+                var val=code+'&start='+start_time+'&end='+end_time
+                //console.log(val)
+                var kline=[];
+                var kline_date=[];
+                //http://localhost:3000/stock/history/time?code=600010&feq=day&start=2015-01-05&end=2015-01-29
+                axios.get('http://localhost:3000/stock/history/time?code='+val)
+                    .then(response => {
+                      
+                      var history_data = response.data;
+                        for (var i=0;i<history_data.length-1;i++){
+                          kline_date.push(history_data[i]['date']);
+                          var temp=[];
+                          temp.push(history_data[i]['open'])
+                          temp.push(history_data[i]['high'])
+                          temp.push(history_data[i]['low'])
+                          temp.push(history_data[i]['close'])
+                          
+                          kline.push(temp);
+                        }
+                        this.time=kline_date
+                        //console.log(kline_date)
+                        //console.log(kline)
+                          this.chart.setOption({
+                              title:{text:code},
+                              series:{
+                                name:'k_line',
+                                type:'candlestick',
+                                data:kline,
+                               
+                            },
+                             xAxis:{
+                                  name:'k_line',
+                                  data:kline_date,
+                                },
+                                yAxisIndex:0
+                    })
+                      }) 
+              })
+      },
       query() {
-            console.log(this.data0)
+            //console.log(this.data0)
             let val =this.data0
-            console.log(val)
+            //console.log(val)
             axios.get('http://localhost:3000/backtest/history?cookie='+val)
                     .then(response => {
+                        
                         this.items = response.data['history'];
                         this.acc=response.data['assest_history'];
                         var code=response.data['bid']['code'];
@@ -113,14 +184,29 @@ export default {
                           market_time.push(this.items[i][0])
                           //this.chart.setOption
                         }
-                        //console.log(time)
+
+                        //console.log(this.time)
+                        for (var i=0;i<this.time.length;i++){
+                          if (market_time.indexOf(this.time[i])==-1){
+                            market_time.splice(i,0,this.time[i])
+                            this.acc.splice(i,0,this.acc[i-1])
+                            //console.log()
+                          }
+                         
+                        }
+                        //console.log(this.acc)
+                        //console.log(market_time)
                         this.chart.setOption({
                           title:{text:code+'--'+strategy_name},
-                          series:[{name:'account',data:this.acc,yAxisIndex:0}],
+                          series:[{
+                            name:'account',
+                            type:'line',
+                            data:this.acc,yAxisIndex:1
+                          }],
                           xAxis: {
                             data:market_time,
                             zlevel:1,
-                            type:'category'
+                            gridIndex: 0,
                           }
                         })
                     })
@@ -129,13 +215,14 @@ export default {
                     });
                   
 
-        },
-        query_market(){
+          },
+      query_market(){
             //console.log(this.data0)
             let val =this.data0
             //console.log(val)
             axios.get('http://localhost:3000/backtest/market?cookie='+val)
                     .then(response => {
+                      this.chart.hideLoading();
                       var market = response.data;
                       //console.log(market)
                       var value=[];
@@ -143,47 +230,11 @@ export default {
                       var bid_sell=[];
                       var bid_buy_date=[];
                       var bid_sell_date=[];
-                      /**var kline=[];
-                      var kline_date=[];
+                     
                       var start_time=market[0]['bid']['time'];
                       var end_time=market[market.length-1]['bid']['time']
-                      var val=market[0]['bid']['code']+'&start='+start_time+'&end='+end_time
-                      console.log(val)
-                      //http://localhost:3000/stock/history/time?code=600010&feq=day&start=2015-01-05&end=2015-01-29
-                      axios.get('http://localhost:3000/stock/history/time?code='+val)
-                          .then(response => {
-                            var history_data = response.data;
-                             for (var i=0;i<history_data.length-1;i++){
-                                kline_date.push(history_data[i]['date']);
-                                var temp=[];
-                                temp.push(history_data[i]['open'])
-                                temp.push(history_data[i]['high'])
-                                temp.push(history_data[i]['low'])
-                                temp.push(history_data[i]['close'])
-                                
-                                kline.push(temp);
-                             }
-                             this.time=kline_date
-                             console.log(kline_date)
-                              console.log(kline)
-                               this.chart.setOption({
-                                    series:{
-                                      name:'kline',
-                                      type:'candlestick',
-                                      data:kline,
-                                      xAxis:{
-                                        name:'xxx',
-                                        data:kline_date,
-                                        zlevel:0,
-                                        type:'time'
-                                        
-                                      },
-                                      xAxisIndex:0,
-                                      yAxisIndex:4
-                                  }
-                          })
-                           }) 
-                      */
+                      
+                      
                       for (var i=0;i<market.length-1;i++){
                         //console.log(this.items[i][0])
                         value.push([market[i]['market']['open'],market[i]['market']['high'],market[i]['market']['low'],market[i]['market']['close']])
@@ -200,27 +251,42 @@ export default {
                           bid_sell_date.push(market[i]['bid']['time']);
                         }
                         
+                      }
+                      for (var i=0;i<this.time.length;i++){
+                          if (bid_buy_date.indexOf(this.time[i])==-1 && bid_sell_date.indexOf(this.time[i])==-1){
+                            bid_buy_date.splice(i,0,'')
+                            bid_buy.splice(i,0,'')
+                            bid_sell_date.splice(i,0,'')
+                            bid_sell.splice(i,0,'')
+                            value.splice(i,0,'')
+                            //console.log()
+                          }
+                         
                         }
-                      //console.log(bid_buy_date)
+                      //console.log(value)
                       this.chart.setOption({
                         series:[{
                           name:'market',
                           type:'candlestick',
                           data:value,
-                          yAxisIndex:4
+                          yAxisIndex:0,
+                          gridIndex: 0
                       },{
                           name:'bid_buy',
                           type:'scatter',
                           data:bid_buy,
                           xAxis:{data:bid_buy_date,zlevel:2, type:'category'},
-                          yAxisIndex:2
+                          yAxisIndex:0,
+                          gridIndex: 0
 
                       },{
                           name:'bid_sell',
                           type:'scatter',
                           data:bid_sell,
                           xAxis:{data:bid_sell_date,zlevel:2, type:'category'},
-                          yAxisIndex:2
+                          yAxisIndex:0,
+                          gridIndex: 0,
+                          
                       }
                       ]
                       })
@@ -228,11 +294,13 @@ export default {
                     })
         }
         
-    },
+        },
         mounted() {
       this.$nextTick(function() {
-          this.drawline('main')
-        
+          this.drawline('main');
+          this.ready();
+          this.query();
+          this.query_market();
       })
     }
   }

@@ -65,13 +65,4 @@ def QA_SU_save_account_message(message, client):
     })
 def QA_SU_save_backtest_message(message,client):
     coll=client.quantaxis.backtest_info
-    coll.insert({
-        'user':message['user'],
-        'strategy':message['strategy'],
-        'start_time':message['start_time'],
-        'end_time':message['end_time'],
-        'stock_list':message['stock_list'],
-        'account_cookie':message['account_cookie'],
-        'profit':message['profit'],
-        'performance':message['performance']
-    })
+    coll.insert(message)
