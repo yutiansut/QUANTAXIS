@@ -4,7 +4,7 @@
 
                         <mu-list>
                                 <template v-for="item in list">
-                                        <mu-list-item :title="item[0]" v-on:click='ready(item);query(item);query_market(item)' />
+                                        <mu-list-item :title="item[0]" v-on:click='ready(item);query(item);query_market(item);get_info(item)' />
                                         <mu-divider/>
                                 </template>
                         </mu-list>
@@ -16,7 +16,23 @@
                         <mu-table :height='height' :selectable="selectable" :showCheckbox="showCheckbox">
                                 <mu-thead>
                                         <mu-tr>
-                                               <th>交易历史</th>
+                                                <th>回测概览</th>
+                                        </mu-tr>
+                                </mu-thead>
+
+                                <mu-tbody>
+                                        <mu-tr>
+                                                <mu-td>{{ itemss['start_time']}}</mu-td>
+                                                <mu-td>{{ itemss['end_time']}}</mu-td>
+                                                <mu-td>{{ itemss['profit']}}</mu-td>
+
+
+                                        </mu-tr>
+
+                                </mu-tbody>
+                                <mu-thead>
+                                        <mu-tr>
+                                                <th>交易历史</th>
                                         </mu-tr>
                                 </mu-thead>
                                 <template v-for="item in items">
@@ -31,6 +47,7 @@
                                                 </mu-tr>
                                         </mu-tbody>
                                 </template>
+
                         </mu-table>
                 </div>
                 <div id='main'></div>
@@ -56,6 +73,7 @@
                                 showCheckbox: false,
                                 selectable: false,
                                 items: [],
+                                itemss: [],
                                 num: 10,
                                 loading: false,
                                 scroller: null
@@ -382,15 +400,14 @@
                                         })
                         },
                         get_info(message) {
-                                let val=message[1]
-                                axios.get('http://localhost:3000/backtest/info?name=' + val)
+                                let val = message[1]
+                                axios.get('http://localhost:3000/backtest/info_cookie?cookie=' + val)
                                         .then(response => {
-                                                this.items = response.data;
-                                                console.log(this.items)
-                                                this.length = this.items.length;
-                                                //var performance = response.data[0]['performance'];
-                                                console.log(performance)
+                                                this.itemss = response.data;
+                                                console.log(this.itemss)
+
                                         })
+
                         }
 
 
