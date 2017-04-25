@@ -23,6 +23,9 @@ router.get('*', function(req, res, next) {
     next();
 });
 
+
+
+
 //http://localhost:3000/backtest/info?name=yutiansut
 router.get('/info',function(req, res, next) {
   console.log('backtest')
@@ -31,6 +34,19 @@ router.get('/info',function(req, res, next) {
   mongodb.connect('mongodb://localhost:27017/quantaxis', function (err, conn) {
         conn.collection('backtest_info', function (err, coll) {
           coll.find({'user': name }).toArray(function (err, docs) {
+            res.send(docs)
+          
+        })
+      })
+
+})
+});
+router.get('/info_all',function(req, res, next) {
+  console.log('backtest')
+
+  mongodb.connect('mongodb://localhost:27017/quantaxis', function (err, conn) {
+        conn.collection('backtest_info', function (err, coll) {
+          coll.find({}).toArray(function (err, docs) {
             res.send(docs)
           
         })

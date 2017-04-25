@@ -1,7 +1,7 @@
 <template>
   <div class="main_content">
     <div class="container">
-    <router-link :to="{ name:'history',params: {id:this.data0}}"><mu-raised-button v-on:click='query()' label="成交明细" class="demo-raised-button" primary/></router-link>
+    <router-link :to="{name:'history',params: {id:this.data0}}"><mu-raised-button v-on:click='query()' label="成交明细" class="demo-raised-button" primary/></router-link>
     <mu-raised-button v-on:click='ready()' label="行情数据" class="demo-raised-button"secondary/>
     <mu-raised-button v-on:click='query_market();query()' label="刷新图像" class="demo-raised-button"/>
      <mu-divider />
@@ -295,7 +295,7 @@ export default {
         }
         
         },
-        mounted() {
+    mounted() {
       this.$nextTick(function() {
           this.drawline('main');
           this.ready();
