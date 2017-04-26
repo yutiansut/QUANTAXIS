@@ -1,4 +1,4 @@
-# coding :utf-8 
+#coding:utf-8 
 
 from QUANTAXIS.QAFetch import QATushare
 import tushare as ts
@@ -12,7 +12,7 @@ import pymongo
 def QA_save_stock_day_all():
     df= ts.get_stock_basics()
     for i in df.index:  
-        print('正在保存 %s' %(i) )    
+        print('Now Saving %s' %(i) )    
         try:
             data=ts.get_k_data(i)
             data_json=json.loads(data.to_json(orient='records'))
