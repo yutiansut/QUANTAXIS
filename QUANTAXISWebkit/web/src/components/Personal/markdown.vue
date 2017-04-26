@@ -263,7 +263,7 @@
                                         .then(response => {
 
                                                 this.items = response.data['history'];
-                                                this.acc = response.data['assest_history'];
+                                                this.acc = response.data['assest_history'].slice(1);
                                                 var code = response.data['bid']['code'];
                                                 var strategy_name = response.data['strategy']
                                                 //console.log(code)
