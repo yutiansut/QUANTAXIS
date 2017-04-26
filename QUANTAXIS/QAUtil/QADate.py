@@ -28,3 +28,18 @@ def QA_util_realtime(strtime,client):
     time_real=temp_str['date']
     time_id=temp_str['num']
     return {'time_real':time_real,'id':time_id}
+
+def QA_util_id2date(id,client):
+    coll=client.quantaxis.trade_date
+    temp_str=coll.find_one({'num':id})
+    return temp_str['date']
+
+def QA_util_is_trade(date,code,client):
+    coll=client.quantaxis.trade_date
+    QA_util_date_valid(date)
+    is_trade=coll.find_one({'code':code,'date':'date'})
+    try:
+        len(is_trade)
+        return True
+    except:
+        return False

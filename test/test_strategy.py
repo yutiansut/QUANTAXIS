@@ -17,12 +17,12 @@ class backtest(QA.QA_Backtest):
         #初始化一个cookie
         self.account.account_cookie=str(random.random())
         #设置回测的开始结束时间
-        self.strategy_start_date='2015-01-10'
-        self.strategy_end_date='2017-1-28'
+        self.strategy_start_date='2016-04-09'
+        self.strategy_end_date='2016-04-25'
         #设置回测标的,是一个list对象,不过建议只用一个标的
         self.strategy_stock_list=['600592.SZ']
         #gap是回测时,每日获取数据的前推日期(交易日)
-        self.strategy_gap=90
+        self.strategy_gap=60
 
         #设置全局的数据库地址,回测用户名,密码
         self.setting.QA_util_sql_mongo_ip='127.0.0.1'
@@ -54,6 +54,7 @@ class backtest(QA.QA_Backtest):
         end_date=str(end['date'])[0:10]
         self.coll2=self.setting.client.quantaxis.stock_day
         data=QA.QA_fetch_data(self.strategy_stock_list[0],start_date,end_date,self.coll2)
+        print(data)
         return data
     #从账户中更新数据
     def BT_get_data_from_ARP(self):
@@ -71,104 +72,112 @@ class backtest(QA.QA_Backtest):
         QA.QA_util_log_info(self.account.message['body'])
         #策略的交易日循环
         for i in range(int(self.start_mes['id']),int(self.end_mes['id']),1):
+            
             QA.QA_util_log_info('===day start===')
             #从组合出来的数据中拿数据
-            data=self.BT_data_handle(i)
-            #print(data)
-            #print(data['market'])
-            #print(data['account']['body']['account']['profit'])
-            #print(data['account']['body']['account']['hold'])
-            #print(data['account']['body']['account']['cur_profit_present'])
-            #print(data['market'][-1][6])
+            running_date=QA.QA_util_id2date(i,self.setting.client)
+            QA.QA_util_log_info(running_date)
+            is_trade=QA.QA_util_is_trade(running_date,self.strategy_stock_list[0],self.setting.client)
+            if is_trade==False:
+                QA.QA_util_log_info('停牌中')
+            else:
+                data=self.BT_data_handle(i)
+                #print(data)
+                #print(data['market'])
+                #print(data['account']['body']['account']['profit'])
+                #print(data['account']['body']['account']['hold'])
+                #print(data['account']['body']['account']['cur_profit_present'])
+                #print(data['market'][-1][6])
 
 
 
-            # 这里是你的策略,你的策略拿到数据后进行买卖判断,再返还回来(示例代码只是返还买卖与否,你可以将其改造成dict格式,返还买卖点等
-            # 如 
-            # result={
-            #    'ifbuy':1,
-            #    'price'=9.2,
-            #    'amount'=10000
-            # }
-            result=predict(data['market'],data['account']['body']['account']['profit']*100,data['account']['body']['account']['hold'],data['account']['body']['account']['cur_profit_present']*100)
-            # print(result)
+                # 这里是你的策略,你的策略拿到数据后进行买卖判断,再返还回来(示例代码只是返还买卖与否,你可以将其改造成dict格式,返还买卖点等
+                # 如 
+                # result={
+                #    'ifbuy':1,
+                #    'price'=9.2,
+                #    'amount'=10000
+                # }
+                result=predict(data['market'],data['account']['body']['account']['profit']*100,data['account']['body']['account']['hold'],data['account']['body']['account']['cur_profit_present']*100)
+                # print(result)
 
 
-            # 以下都是基于策略返还回来的结果,进行报价准备
-            print(data['account']['body']['account']['hold'])
-            if result==1 and int(data['account']['body']['account']['hold'])==0:
-                #print(data['account']['body']['account']['assest_free'])
-                #print(data['market'][-1][4])
-                #self.bid.bid['amount']=int(float(data['account']['body']['account']['assest_free'])/float(data['market'][-1][4]))
+                # 以下都是基于策略返还回来的结果,进行报价准备
+                print(data['account']['body']['account']['hold'])
+                if result==1 and int(data['account']['body']['account']['hold'])==0:
+                    #print(data['account']['body']['account']['assest_free'])
+                    #print(data['market'][-1][4])
+                    #self.bid.bid['amount']=int(float(data['account']['body']['account']['assest_free'])/float(data['market'][-1][4]))
 
 
-                #报价准备
-                self.bid.bid['amount']=float(data['account']['body']['account']['assest_free'])/float(data['market'][-1][4])
-                #self.bid.bid['amount']=1000
-                #print(self.bid.bid['amount'])
-                self.bid.bid['price']=float(data['market'][-1][4])
-                self.bid.bid['code']=str(self.strategy_stock_list[0])[0:6]
-                self.bid.bid['time']=data['market'][-1][6]
-                self.bid.bid['towards']=1
-                self.bid.bid['user']=self.setting.QA_setting_user_name
-                self.bid.bid['strategy']=self.strategy_name
+                    #报价准备
+                    self.bid.bid['amount']=float(data['account']['body']['account']['assest_free'])/float(data['market'][-1][4])
+                    #self.bid.bid['amount']=1000
+                    #print(self.bid.bid['amount'])
+                    self.bid.bid['price']=float(data['market'][-1][4])
+                    self.bid.bid['code']=str(self.strategy_stock_list[0])[0:6]
+                    self.bid.bid['time']=data['market'][-1][6]
+                    self.bid.bid['towards']=1
+                    self.bid.bid['user']=self.setting.QA_setting_user_name
+                    self.bid.bid['strategy']=self.strategy_name
 
 
-                #报价被发送到市场撮合引擎,撮合引擎会返还一个协议格式,具体参见QASprotocol
-                message=self.market.market_make_deal(self.bid.bid,self.setting.client)
-                #直接把这个返回的协议发送给账户,进行处理,账户也会返还一个协议格式,具体参见QASprotocol
-                message=self.account.QA_account_receive_deal(message,self.setting.client)
-                self.backtest_message=message
+                    #报价被发送到市场撮合引擎,撮合引擎会返还一个协议格式,具体参见QASprotocol
+                    message=self.market.market_make_deal(self.bid.bid,self.setting.client)
+                    #直接把这个返回的协议发送给账户,进行处理,账户也会返还一个协议格式,具体参见QASprotocol
+                    message=self.account.QA_account_receive_deal(message,self.setting.client)
+                    self.backtest_message=message
 
-                #存贮判断
-                QA.QA_SU_save_account_message(message,self.setting.client)
-                #print('buy----------------------------------------------')
-                #QA.QA_util_log_info(message)
-                #input()
-            elif result==1 and int(data['account']['body']['account']['hold'])==1:
-                QA.QA_util_log_info('Hold and Watch!!!!!!!!!!!!')
-                ##
-                self.bid.bid['amount']=int(data['account']['body']['account']['portfolio']['amount'])
-                self.bid.bid['price']=0
-                self.bid.bid['code']=str(self.strategy_stock_list[0])[0:6]
-                self.bid.bid['time']=data['market'][-1][6]
-                self.bid.bid['towards']=1
-                self.bid.bid['user']=self.setting.QA_setting_user_name
-                self.bid.bid['strategy']=self.strategy_name
-                message=self.market.market_make_deal(self.bid.bid,self.setting.client)
-                message=self.account.QA_account_receive_deal(message,self.setting.client)
+                    #存贮判断
+                    QA.QA_SU_save_account_message(message,self.setting.client)
+                    #print('buy----------------------------------------------')
+                    #QA.QA_util_log_info(message)
+                    #input()
+                elif result==1 and int(data['account']['body']['account']['hold'])==1:
+                    QA.QA_util_log_info('Hold and Watch!!!!!!!!!!!!')
+                    ##
+                    self.bid.bid['amount']=int(data['account']['body']['account']['portfolio']['amount'])
+                    self.bid.bid['price']=0
+                    self.bid.bid['code']=str(self.strategy_stock_list[0])[0:6]
+                    self.bid.bid['time']=data['market'][-1][6]
+                    self.bid.bid['towards']=1
+                    self.bid.bid['user']=self.setting.QA_setting_user_name
+                    self.bid.bid['strategy']=self.strategy_name
+                    message=self.market.market_make_deal(self.bid.bid,self.setting.client)
+                    message=self.account.QA_account_receive_deal(message,self.setting.client)
 
-                # todo  hold profit change
-            elif result==0 and int(data['account']['body']['account']['hold'])==0:
-                QA.QA_util_log_info('ZERO and Watch!!!!!!!!!!!!')
-            elif result==0 and int(data['account']['body']['account']['hold'])==1:
-                self.bid.bid['amount']=int(data['account']['body']['account']['portfolio']['amount'])
-                self.bid.bid['price']=float(data['market'][-1][4])
-                self.bid.bid['code']=str(self.strategy_stock_list[0])[0:6]
-                self.bid.bid['time']=data['market'][-1][6]
-                self.bid.bid['towards']=-1
-                self.bid.bid['user']=self.setting.QA_setting_user_name
-                self.bid.bid['strategy']=self.strategy_name
+                    # todo  hold profit change
+                elif result==0 and int(data['account']['body']['account']['hold'])==0:
+                    QA.QA_util_log_info('ZERO and Watch!!!!!!!!!!!!')
+                elif result==0 and int(data['account']['body']['account']['hold'])==1:
+                    self.bid.bid['amount']=int(data['account']['body']['account']['portfolio']['amount'])
+                    self.bid.bid['price']=float(data['market'][-1][4])
+                    self.bid.bid['code']=str(self.strategy_stock_list[0])[0:6]
+                    self.bid.bid['time']=data['market'][-1][6]
+                    self.bid.bid['towards']=-1
+                    self.bid.bid['user']=self.setting.QA_setting_user_name
+                    self.bid.bid['strategy']=self.strategy_name
 
-                message=self.market.market_make_deal(self.bid.bid,self.setting.client)
-                print('=================sell start')
-                print(message)
-                print('sell end==============')
-                message=self.account.QA_account_receive_deal(message,self.setting.client)
-                self.backtest_message=message
-                QA.QA_SU_save_account_message(message,self.setting.client)
-                #print('sell----------------------------------------------')
-                #QA.QA_util_log_info(message) 
-                #input()
-                #print(message)
-                #QA.QA_SU_save_account_message(message,self.setting.client)
-                #self.backtest_message=message
-               # input()
-            else:print('not enough data')
+                    message=self.market.market_make_deal(self.bid.bid,self.setting.client)
+                    print('=================sell start')
+                    print(message)
+                    print('sell end==============')
+                    message=self.account.QA_account_receive_deal(message,self.setting.client)
+                    self.backtest_message=message
+                    QA.QA_SU_save_account_message(message,self.setting.client)
+                    #print('sell----------------------------------------------')
+                    #QA.QA_util_log_info(message) 
+                    #input()
+                    #print(message)
+                    #QA.QA_SU_save_account_message(message,self.setting.client)
+                    #self.backtest_message=message
+                # input()
+                else:print('not enough data')
         
-        # 性能分析
-        exist_time=int(self.end_mes['id'])-int(self.start_mes['id'])+1
-        print(self.backtest_message)
+            # 性能分析
+            exist_time=int(self.end_mes['id'])-int(
+                self.start_mes['id'])+1
+        #print(self.backtest_message)
 
         #把这个协议发送给分析引擎,进行分析
         performace=QA.QABacktest.QAAnalysis.QA_backtest_analysis_start(self.backtest_message,exist_time)

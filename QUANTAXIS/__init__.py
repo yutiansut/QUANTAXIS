@@ -46,7 +46,7 @@ from QUANTAXIS.QABacktest.QABacktest import QA_Backtest
 from QUANTAXIS.QABacktest.QABacktest_standard import QA_backtest_standard_record_account,QA_backtest_standard_record_market                   
 
 # Util
-from QUANTAXIS.QAUtil import (QA_util_sql_mongo_setting, QA_util_cfg_initial, QA_util_realtime,
+from QUANTAXIS.QAUtil import (QA_util_sql_mongo_setting, QA_util_cfg_initial, QA_util_realtime,QA_util_id2date,QA_util_is_trade,
                                 QA_util_date_stamp, QA_util_time_stamp, QA_util_ms_stamp,
                                 QA_util_log_debug, QA_util_log_expection, QA_util_log_info,
                                 QA_start_initial,QA_Setting)
@@ -55,7 +55,7 @@ import QUANTAXIS.QACmd
 
 from QUANTAXIS.QACmd import QA_cmd
 import argparse
-QA_util_log_info('Welcome to QUANTAXIS, the Version is 0.3.8-dev-RC-ARP')
+QA_util_log_info('Welcome to QUANTAXIS, the Version is 0.3.8')
 
 
 def QA_help_fetch(self):
