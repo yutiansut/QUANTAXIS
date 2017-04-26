@@ -4,11 +4,11 @@
 
                         <mu-list>
                                 <template v-for="item in list">
-                                        <mu-list-item :title="item[0]" v-on:click='ready(item);query(item);query_market(item);get_info(item)' />
+                                        <mu-list-item :title="item[0]" v-on:click='ready(item);get_info(item)' />
                                         <mu-divider/>
                                 </template>
                         </mu-list>
-                        <mu-infinite-scroll :scroller="scroller" :loading="loading" @load="query" />
+                        <mu-infinite-scroll :scroller="scroller" :loading="loading" @load="querys()" />
 
 
                 </div>
@@ -104,9 +104,6 @@
                                 this.chart = echarts.init(document.getElementById(id))
                                 this.chart.showLoading();
                                 this.chart.setOption({
-                                        title: {
-                                                text: this.data0
-                                        },
                                         tooltip: {
                                                 trigger: 'axis',
                                                 axisPointer: {
@@ -135,13 +132,7 @@
                                                 min: 'dataMin'
 
                                         }],
-                                        legend: {
-                                                data: ['k_line', 'account', 'market', 'bid_sell',
-                                                        'bid_buy'
-                                                ],
-                                                //data:['k_line'],
-                                                x: 'right'
-                                        },
+
                                         dataZoom: [{
                                                         show: true,
                                                         realtime: true,
@@ -155,110 +146,83 @@
                                                         end: 85
                                                 }
                                         ],
-                                        series: [{
-                                                name: 'account',
-                                                type: 'line',
-                                                data: []
 
-                                        }, {
-                                                name: 'market',
-                                                type: 'candlestick',
-                                                data: []
-                                        }, {
-                                                name: 'bid_buy',
-                                                type: 'scatter',
-                                                data: [],
-                                                itemStyle: {
-                                                        normal: {
-                                                                color: "#980000"
-                                                        }
-                                                }
-
-                                        }, {
-                                                name: 'bid_sell',
-                                                type: 'scatter',
-                                                data: [],
-                                                itemStyle: {
-                                                        normal: {
-                                                                color: "#2f4554"
-                                                        }
-                                                }
-
-                                        }, {
-                                                name: 'k_line',
-                                                type: 'candlestick',
-                                                data: []
-                                        }],
                                         color: '#2f4554'
                                 })
                         },
                         ready(message) {
                                 //先从ready拿到信息数据
                                 let val = message[1]
+                                legend = {
+                                        data: ['k_line', 'account', 'market', 'bid_sell',
+                                                'bid_buy'
+                                        ],
+                                        //data:['k_line'],
+                                        x: 'right'
+                                }
+                                var info_data = {}
                                 axios.get('http://localhost:3000/backtest/info_cookie?cookie=' + val)
                                         .then(response => {
                                                 var data = response.data;
-                                                var start_time = data['start_time']
-                                                var end_time = data['end_time']
-                                                var profit = data['profit']
-                                                var max_drop = data['performance']['max_drop ']
-                                                var code = data['stock_list'][0]
-                                                var val = code + '&start=' + start_time + '&end=' + end_time
-                                                //console.log(val)
-                                                var kline = [];
-                                                var kline_date = [];
-                                                //http://localhost:3000/stock/history/time?code=600010&feq=day&start=2015-01-05&end=2015-01-29
-                                                axios.get('http://localhost:3000/stock/history/time?code=' +
-                                                                val)
-                                                        .then(response => {
+                                                this.info_data = data
 
-                                                                var history_data = response.data;
-                                                                for (var i = 0; i < history_data.length -
-                                                                        1; i++) {
-                                                                        kline_date.push(history_data[i]
-                                                                                ['date']);
-                                                                        var temp = [];
-                                                                        temp.push(history_data[i][
-                                                                                'open'
-                                                                        ])
-                                                                        temp.push(history_data[i][
-                                                                                'high'
-                                                                        ])
-                                                                        temp.push(history_data[i]['low'])
-                                                                        temp.push(history_data[i][
-                                                                                'close'
-                                                                        ])
-
-                                                                        kline.push(temp);
-                                                                }
-                                                                this.time = kline_date
-                                                                //console.log(kline_date)
-                                                                //console.log(kline)
-                                                                this.chart.setOption({
-                                                                        title: {
-                                                                                text: code
-                                                                        },
-                                                                        series: {
-                                                                                name: 'k_line',
-                                                                                type: 'candlestick',
-                                                                                data: kline,
-
-                                                                        },
-                                                                        xAxis: {
-                                                                                name: 'k_line',
-                                                                                data: kline_date,
-                                                                        },
-                                                                        yAxisIndex: 0
-                                                                })
-                                                        })
                                         })
-                                this.query(message)
-                                this.query_market(message)
-                        },
-                        query(message) {
-                                //console.log(this.data0)
-                                let val = message[1]
+                                console.log('info_data')
+                                console.log(info_data)
+                                var data = info_data
+                                var start_time = data['start_time']
+                                var end_time = data['end_time']
+                                var profit = data['profit']
+                                var max_drop = data['performance']['max_drop ']
+                                var code = data['stock_list'][0]
+                                var vals = code + '&start=' + start_time + '&end=' + end_time
                                 //console.log(val)
+                                var kline = [];
+                                var kline_date = [];
+                                //http://localhost:3000/stock/history/time?code=600010&feq=day&start=2015-01-05&end=2015-01-29
+                                axios.get('http://localhost:3000/stock/history/time?code=' +
+                                                vals)
+                                        .then(response => {
+
+                                                var history_data = response.data;
+                                                for (var i = 0; i < history_data.length -
+                                                        1; i++) {
+                                                        kline_date.push(history_data[i]
+                                                                ['date']);
+                                                        var temp = [];
+                                                        temp.push(history_data[i][
+                                                                'open'
+                                                        ])
+                                                        temp.push(history_data[i][
+                                                                'high'
+                                                        ])
+                                                        temp.push(history_data[i]['low'])
+                                                        temp.push(history_data[i][
+                                                                'close'
+                                                        ])
+
+                                                        kline.push(temp);
+                                                }
+                                                this.time = kline_date
+                                                //console.log(kline_date)
+                                                //console.log(kline)
+                                                this.chart.setOption({
+                                                        title: {
+                                                                text: code
+                                                        },
+                                                        series: {
+                                                                name: 'k_line',
+                                                                type: 'candlestick',
+                                                                data: kline,
+
+                                                        },
+                                                        xAxis: {
+                                                                name: 'k_line',
+                                                                data: kline_date,
+                                                        },
+                                                        yAxisIndex: 0
+                                                })
+                                        })
                                 axios.get('http://localhost:3000/backtest/history?cookie=' + val)
                                         .then(response => {
 
@@ -309,11 +273,6 @@
                                                 console.log(error);
                                         });
 
-
-                        },
-                        query_market(message) {
-                                //console.log(this.data0)
-                                let val = message[1]
                                 //console.log(val)
                                 axios.get('http://localhost:3000/backtest/market?cookie=' + val)
                                         .then(response => {

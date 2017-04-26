@@ -1,7 +1,7 @@
 {
   "name": "quantaxiswebclient",
   "description": "A Vue.js project",
-  "version": "0.3.8",
+  "version": "0.3.9",
   "author": "yutiansut <yutiansut@qq.com>",
   "private": true,
   "scripts": {
