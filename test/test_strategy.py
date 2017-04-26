@@ -18,7 +18,7 @@ class backtest(QA.QA_Backtest):
         self.account.account_cookie=str(random.random())
         #设置回测的开始结束时间
         self.strategy_start_date='2016-04-09'
-        self.strategy_end_date='2016-04-25'
+        self.strategy_end_date='2017-04-01'
         #设置回测标的,是一个list对象,不过建议只用一个标的
         self.strategy_stock_list=['600592.SZ']
         #gap是回测时,每日获取数据的前推日期(交易日)

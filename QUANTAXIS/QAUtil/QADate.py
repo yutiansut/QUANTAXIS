@@ -35,9 +35,9 @@ def QA_util_id2date(id,client):
     return temp_str['date']
 
 def QA_util_is_trade(date,code,client):
-    coll=client.quantaxis.trade_date
-    QA_util_date_valid(date)
-    is_trade=coll.find_one({'code':code,'date':'date'})
+    coll=client.quantaxis.stock_day
+    date=str(date)[0:10]
+    is_trade=coll.find_one({'code':code,'date':date})
     try:
         len(is_trade)
         return True
