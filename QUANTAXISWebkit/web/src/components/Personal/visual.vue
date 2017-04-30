@@ -8,6 +8,41 @@
       <mu-raised-button v-on:click='query_market();query()' label="刷新图像" class="demo-raised-button" />
       <mu-divider />
     </div>
+    <div>
+      <mu-table>
+        <mu-th>code</mu-th>
+        <mu-th>alpha</mu-th>
+        <mu-th>beta</mu-th>
+        <mu-th>sharpe</mu-th>
+        <mu-th>最大回撤</mu-th> 
+        <mu-th>持续期</mu-th>
+        <mu-tbody>
+          <mu-td>{{info['code']}}</mu-td>
+          <mu-td>{{info['alpha']}}</mu-td>
+          <mu-td>{{info['beta']}}</mu-td>
+          <mu-td></mu-td>
+          <mu-td>{{info['max_drop']}}</mu-td>
+          <mu-td>{{info['exist']}}</mu-td>
+        </mu-tbody>
+      </mu-table>
+      <mu-table>
+        <mu-th>年化收益</mu-th>
+        <mu-th>波动率</mu-th>
+        <mu-th>Benchmark年化收益</mu-th>
+        <mu-th>Benchmark波动率</mu-th>
+        <mu-th>总收益</mu-th>
+        <mu-tbody>
+          <mu-td>{{info['annualized_returns']}}</mu-td>
+          <mu-td>{{info['vol']}}</mu-td>
+          <mu-td>{{info['benchmark_annualized_returns']}}</mu-td>
+          <mu-td>{{info['benchmark_vol']}}</mu-td>
+          <mu-td>{{info['total_returns']}}</mu-td>
+
+        </mu-tbody>
+        
+      </mu-table>
+      
+    </div>
     <div id="main"></div>
   </div>
 </template>
@@ -21,7 +56,8 @@
       return {
         chart: null,
         data0: this.$route.params.id,
-        time: []
+        time: [],
+        info:{}
       }
     },
     methods: {
@@ -123,8 +159,18 @@
             var data = response.data;
             var start_time = data['start_time']
             var end_time = data['end_time']
-            var profit = data['profit']
-            var max_drop = data['performance']['max_drop ']
+            var profit = data['total_returns']
+            this.info['alpha']=data['alpha'].toFixed(3)
+            this.info['beta']=data['beta'].toFixed(4)
+            this.info['max_drop']=data['max_drop'].toFixed(3)
+            this.info['code']=data['stock_list'][0]
+            this.info['sharpe']=data['sharpe'].toFixed(3)
+            this.info['vol']=data['vol'].toFixed(3)
+            this.info['annualized_returns']=data['annualized_returns'].toFixed(3)
+            this.info['benchmark_annualized_returns']=data['benchmark_annualized_returns'].toFixed(3)
+            this.info['benchmark_vol']=data['benchmark_vol'].toFixed(3)
+            this.info['exist']=data['exist']
+            this.info['total_returns']=data['total_returns'].toFixed(2)
             var code = data['stock_list'][0]
             var val = code + '&start=' + start_time + '&end=' + end_time
             //console.log(val)

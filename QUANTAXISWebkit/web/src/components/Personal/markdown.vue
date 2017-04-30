@@ -174,8 +174,8 @@ export default {
 
                                         var start_time = data['start_time']
                                         var end_time = data['end_time']
-                                        var profit = data['profit']
-                                        var max_drop = data['performance']['max_drop ']
+                                        
+                                        
                                         var code = data['stock_list'][0]
                                         var vals = code + '&start=' + start_time + '&end=' + end_time
                                         //console.log(val)

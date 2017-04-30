@@ -74,7 +74,7 @@ def QA_backtest_analysis_start(message,days):
         'benchmark_assest':benchmark_assest,
         'vol':volatility_year,
         'benchmark_vol':benchmark_volatility_year,
-        'sharp':sharpe,
+        'sharpe':sharpe,
         'alpha':alpha,
         'beta':beta,
         'max_drop':max_drop,
@@ -126,12 +126,13 @@ def QA_backtest_calc_profit_matrix(assest_history):
     return assest_profit
 def QA_backtest_calc_volatility(assest_profit):
     #策略每日收益的年化标准差
+    print(assest_profit)
     assest_profit=assest_profit[::2]
 
-    var=numpy.var(assest_profit)
-    print(var)
-    volatility_day=math.sqrt(var)
-    print(volatility_day)
+    volatility_day=numpy.std(assest_profit)
+    #print(var)
+   
+    #print(volatility_day)
     volatility_year=volatility_day*math.sqrt(250)
     return volatility_year
 
