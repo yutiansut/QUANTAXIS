@@ -13,7 +13,7 @@
           <mu-th>end</mu-th>
           <mu-th>profit</mu-th>
           <mu-th>alpha</mu-th>
-          <muth>annualized_returns</muth>
+          <mu-th>annualized_returns</mu-th>
         </mu-tr>
       </mu-thead>
       <template v-for="item in items">

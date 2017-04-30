@@ -20,7 +20,7 @@
           <mu-td>{{info['code']}}</mu-td>
           <mu-td>{{info['alpha']}}</mu-td>
           <mu-td>{{info['beta']}}</mu-td>
-          <mu-td></mu-td>
+          <mu-td>{{info['sharpe']}}</mu-td>
           <mu-td>{{info['max_drop']}}</mu-td>
           <mu-td>{{info['exist']}}</mu-td>
         </mu-tbody>
@@ -171,6 +171,7 @@
             this.info['benchmark_vol']=data['benchmark_vol'].toFixed(3)
             this.info['exist']=data['exist']
             this.info['total_returns']=data['total_returns'].toFixed(2)
+            console.log(this.info)
             var code = data['stock_list'][0]
             var val = code + '&start=' + start_time + '&end=' + end_time
             //console.log(val)

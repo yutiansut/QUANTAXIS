@@ -16,6 +16,7 @@ class QA_Market():
         try:
             item= coll.find_one({"code":str(bid['code'])[0:6], "date": str(bid['time'])[0:10]})
             QA_util_log_info('==== Market Board ====')
+            QA_util_log_info('date'+str(bid['time']))
             QA_util_log_info('day High'+str(item["high"]))
             QA_util_log_info('your bid price'+str(bid['price']))
             QA_util_log_info('day Low'+str(item["low"]))

@@ -207,6 +207,9 @@ class QA_Account:
             #属于不更新history和portfolio,但是要继续增加账户和日期的
         elif update_message['status']==402:
             QA_util_log_info('bid not success')
+
+
+            
         return self.message
         
     def QA_account_renew(self):
