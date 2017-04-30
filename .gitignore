@@ -3,6 +3,7 @@ node_module/
 node_modules/
 .vscode/
 .pyc
+QUANTAXISTaskServer/
 quantaxisback/
 *.7z
 .idea/

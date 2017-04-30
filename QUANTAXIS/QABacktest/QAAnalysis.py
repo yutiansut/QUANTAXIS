@@ -34,18 +34,81 @@ Max Drawdown：最大回撤。描述策略可能出现的最糟糕的情况。
     """
     # 计算一个benchmark
     # 这个benchmark是和第一次bid买入报价同时买入,然后一直持仓,计算账户价值
+    trade_history=message['body']['account']['history']
+    benchmark_assert=QA_backtest_calc_benchmark(trade_history)
 
-    profit_year=(message['body']['account']['assest_history'][-1]/message['body']['account']['assest_history'][1]-1)/days*250
+    assert_history=message['body']['account']['assert_history']
+    days=len(assert_history)-1
+    profit_year=QA_backtest_calc_profit_per_year(assert_history)
 
     profit_day=message['body']['account']['cur_profit_present_total']
+    win_rate=QA_backtest_calc_win_rate(profit_day)
+    Var=QA_backtest_calc_volatility(profit_day)
 
+    historys=message['body']['account']['assest_history']
+    max_drops=QA_backtest_calc_dropback_max(historys)
+   
+
+
+    return {'annualized_returns':profit_year,'vol':var,'max_drop':max_drop,'win_rate':win_rate}
+
+
+def QA_backtest_result_check(datelist,message):
+     #list(set(datelist).difference(set(trade_list)))
+    print(message['body']['account']['history']['date'])
+
+
+def QA_backtest_calc_benchmark(history):
+    print(history)
+    benchmark_assest=[]
+    for i in range(1,len(history)-1,1):
+        assest=history[i][2]*history[1][3]
+        benchmark_assest.append(assest)
+    return benchmark_assest
+def QA_backtest_calc_alpha(assert_history,benchmark_history,):
+    pass
+def QA_backtest_calc_beta():
+    pass
+
+def QA_backtest_calc_profit(assert_history):
+    return (assert_history[-1]/assert_history[1])-1
+def QA_backtest_calc_profit_per_year(assert_history):
+    
+    return (assert_history[-1]/assert_history[1]-1)/(len(assert_history)-1)*250
+
+def QA_backtest_calc_profit_per_trade():
+    pass
+def QA_backtest_calc_volatility(profit_day):
     narray=numpy.array(profit_day)
     sum1=narray.sum()
     narray2=narray*narray
     sum2=narray2.sum()
     mean=sum1/days
-    var=sum2/days-mean**2
+    Var=sum2/days-mean**2
+    return Var
 
+def QA_backtest_calc_dropback_max(history):
+    drops=[]
+    for i in range(1,len(history),1):
+        #print(historys[i-1])
+        maxs=max(history[:i])
+        cur=history[i-1]
+        drop=1-cur/maxs
+        drops.append(drop)
+    max_drop=max(drops)
+    return max_drop
+
+def QA_backtest_calc_sharpe():
+    pass
+
+
+def QA_backtest_calc_trade_time():
+    pass
+def QA_backtest_calc_trade_time_profit():
+    pass
+def QA_backtest_calc_trade_time_loss():
+    pass
+def QA_backtest_calc_win_rate(profit_day):
     # 大于0的次数
     abovez=0
     belowz=0
@@ -58,53 +121,7 @@ Max Drawdown：最大回撤。描述策略可能出现的最糟糕的情况。
     if belowz==0:
         belowz=1
     win_rate=abovez/belowz
-
-    historys=message['body']['account']['assest_history']
-    drops=[]
-    for i in range(1,len(historys),1):
-        #print(historys[i-1])
-        maxs=max(historys[:i])
-        cur=historys[i-1]
-        drop=1-cur/maxs
-        drops.append(drop)
-    max_drop=max(drops)
-
-    return {'profit_year':profit_year,'vol':var,'max_drop':max_drop,'win_rate':win_rate}
-
-
-def QA_backtest_result_check(datelist,message):
-     #list(set(datelist).difference(set(trade_list)))
-    print(message['body']['account']['history']['date'])
-def QA_backtest_calc_alpha(check,message):
-    pass
-def QA_backtest_calc_beta():
-    pass
-
-def QA_backtest_calc_profit():
-    pass
-def QA_backtest_calc_profit_per_year():
-    pass
-def QA_backtest_calc_profit_per_trade():
-    pass
-def QA_backtest_calc_volatility():
-    pass
-def QA_backtest_calc_drowback():
-    pass
-def QA_backtest_calc_drowback_max():
-    pass
-
-def QA_backtest_calc_sharpe():
-    pass
-
-
-def QA_backtest_calc_trade_time():
-    pass
-def QA_backtest_calc_trade_time_profit():
-    pass
-def QA_backtest_calc_trade_time_loss():
-    pass
-def QA_backtest_calc_win_rate():
-    pass
+    return win_rate
 
 def QA_backtest_plot_assest():
     pass
