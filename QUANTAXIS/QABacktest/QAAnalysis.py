@@ -6,7 +6,7 @@ we will give some function
 import  numpy
 import math
 
-def QA_backtest_analysis_start(message):
+def QA_backtest_analysis_start(message,days):
     # 主要要从message_history分析
     # 1.收益率
     # 2.胜率
@@ -39,12 +39,12 @@ def QA_backtest_analysis_start(message):
     #benchmark资产
     benchmark_assest=QA_backtest_calc_benchmark(trade_history)
     #benchmark年化收益
-    benchmark_annualized_returns=QA_backtest_calc_profit_per_year(benchmark_assest)
+    benchmark_annualized_returns=QA_backtest_calc_profit_per_year(benchmark_assest,days)
 
     assest_history=message['body']['account']['assest_history'][1::]
-    days=len(assest_history)-1
+    #days=len(assest_history)-1
     #策略年化收益
-    annualized_returns=QA_backtest_calc_profit_per_year(assest_history)
+    annualized_returns=QA_backtest_calc_profit_per_year(assest_history,days)
     
     #收益矩阵
     assest_profit=QA_backtest_calc_profit_matrix(assest_history)
@@ -114,15 +114,15 @@ def QA_backtest_calc_beta(assest_profit,benchmark_profit,benchmark_volatility_ye
     return beta
 def QA_backtest_calc_profit(assest_history):
     return (assest_history[-1]/assest_history[1])-1
-def QA_backtest_calc_profit_per_year(assest_history):
+def QA_backtest_calc_profit_per_year(assest_history,days):
 
-    return float(float(assest_history[-1])/float(assest_history[0])-1)/int(len(assest_history))*250
+    return float(float(assest_history[-1])/float(assest_history[0])-1)/int(days)*250
 
 def QA_backtest_calc_profit_matrix(assest_history):
     assest_profit=[]
     #print(assest_history)
     for i in range(0,len(assest_history)-2,1):
-        assest_profit.append(float(assest_history[i+1])/float(assest_history[i]))
+        assest_profit.append(float(assest_history[i+1])/float(assest_history[i])-1)
     return assest_profit
 def QA_backtest_calc_volatility(assest_profit):
     #策略每日收益的年化标准差
