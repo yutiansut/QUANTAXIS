@@ -5,7 +5,7 @@
         <mu-raised-button v-on:click='query()' label="成交明细" class="demo-raised-button" primary/>
       </router-link>
       <mu-raised-button v-on:click='ready()' label="行情数据" class="demo-raised-button" secondary/>
-      <mu-raised-button v-on:click='query_market();query()' label="刷新图像" class="demo-raised-button" />
+      <mu-raised-button v-on:click='query_market();query();info()' label="刷新图像" class="demo-raised-button" />
       <mu-divider />
     </div>
     <div>
@@ -16,14 +16,16 @@
         <mu-th>sharpe</mu-th>
         <mu-th>最大回撤</mu-th> 
         <mu-th>持续期</mu-th>
-        <mu-tbody>
-          <mu-td>{{info['code']}}</mu-td>
-          <mu-td>{{info['alpha']}}</mu-td>
-          <mu-td>{{info['beta']}}</mu-td>
-          <mu-td>{{info['sharpe']}}</mu-td>
-          <mu-td>{{info['max_drop']}}</mu-td>
-          <mu-td>{{info['exist']}}</mu-td>
+        <template v-for="item in items">
+        <mu-tbody >
+          <mu-td>{{item["code"]}}</mu-td>
+          <mu-td>{{item['alpha']}}</mu-td>
+          <mu-td>{{item['beta']}}</mu-td>
+          <mu-td>{{item['sharpe']}}</mu-td>
+          <mu-td>{{item['max_drop']}}</mu-td>
+          <mu-td>{{item['exist']}}</mu-td>
         </mu-tbody>
+        </template>
       </mu-table>
       <mu-table>
         <mu-th>年化收益</mu-th>
@@ -31,15 +33,16 @@
         <mu-th>Benchmark年化收益</mu-th>
         <mu-th>Benchmark波动率</mu-th>
         <mu-th>总收益</mu-th>
-        <mu-tbody>
-          <mu-td>{{info['annualized_returns']}}</mu-td>
-          <mu-td>{{info['vol']}}</mu-td>
-          <mu-td>{{info['benchmark_annualized_returns']}}</mu-td>
-          <mu-td>{{info['benchmark_vol']}}</mu-td>
-          <mu-td>{{info['total_returns']}}</mu-td>
+        <template v-for="item in items">
+        <mu-tbody >
+          <mu-td>{{item['annualized_returns']}}</mu-td>
+          <mu-td>{{item['vol']}}</mu-td>
+          <mu-td>{{item['benchmark_annualized_returns']}}</mu-td>
+          <mu-td>{{item['benchmark_vol']}}</mu-td>
+          <mu-td>{{item['total_returns']}}</mu-td>
 
         </mu-tbody>
-        
+        </template>
       </mu-table>
       
     </div>
@@ -57,7 +60,7 @@
         chart: null,
         data0: this.$route.params.id,
         time: [],
-        info:{}
+        items:[{'code':'600010'},{}]
       }
     },
     methods: {
@@ -160,18 +163,21 @@
             var start_time = data['start_time']
             var end_time = data['end_time']
             var profit = data['total_returns']
-            this.info['alpha']=data['alpha'].toFixed(3)
-            this.info['beta']=data['beta'].toFixed(4)
-            this.info['max_drop']=data['max_drop'].toFixed(3)
-            this.info['code']=data['stock_list'][0]
-            this.info['sharpe']=data['sharpe'].toFixed(3)
-            this.info['vol']=data['vol'].toFixed(3)
-            this.info['annualized_returns']=data['annualized_returns'].toFixed(3)
-            this.info['benchmark_annualized_returns']=data['benchmark_annualized_returns'].toFixed(3)
-            this.info['benchmark_vol']=data['benchmark_vol'].toFixed(3)
-            this.info['exist']=data['exist']
-            this.info['total_returns']=data['total_returns'].toFixed(2)
-            console.log(this.info)
+
+            console.log(data)
+
+            this.items[0]['alpha']=data['alpha'].toFixed(3)
+            this.items[0]['beta']=data['beta'].toFixed(4)
+            this.items[0]['max_drop']=data['max_drop'].toFixed(3)
+            this.items[0]['code']=data['stock_list'][0]
+            this.items[0]['sharpe']=data['sharpe'].toFixed(3)
+            this.items[0]['vol']=data['vol'].toFixed(3)
+            this.items[0]['annualized_returns']=data['annualized_returns'].toFixed(3)
+            this.items[0]['benchmark_annualized_returns']=data['benchmark_annualized_returns'].toFixed(3)
+            this.items[0]['benchmark_vol']=data['benchmark_vol'].toFixed(3)
+            this.items[0]['exist']=data['exist']
+            this.items[0]['total_returns']=data['total_returns'].toFixed(2)
+            console.log(this.items)
             var code = data['stock_list'][0]
             var val = code + '&start=' + start_time + '&end=' + end_time
             //console.log(val)
@@ -221,7 +227,7 @@
         axios.get('http://localhost:3000/backtest/history?cookie=' + val)
           .then(response => {
 
-            this.items = response.data['history'];
+            var history= response.data['history'];
             this.acc = response.data['assest_history'].slice(1);
             var code = response.data['bid']['code'];
             var strategy_name = response.data['strategy']
@@ -229,9 +235,9 @@
             // console.log(this.acc)
             this.length = this.acc.length;
             var market_time = [];
-            for (var i = 1; i < this.items.length; i++) {
+            for (var i = 1; i < history.length; i++) {
               //console.log(this.items[i][0])
-              market_time.push(this.items[i][0])
+              market_time.push(history[i][0])
               //this.chart.setOption
             }
 
@@ -353,7 +359,26 @@
             })
             //this.chart.setOption
           })
-      }
+      },
+      info(){
+        axios.get('http://localhost:3000/backtest/info_cookie?cookie=' + val)
+          .then(response => {
+            var data = response.data;
+
+            console.log(data)
+
+            this.items[0]['alpha']=data['alpha'].toFixed(3)
+            this.items[0]['beta']=data['beta'].toFixed(4)
+            this.items[0]['max_drop']=data['max_drop'].toFixed(3)
+            this.items[0]['code']=data['stock_list'][0]
+            this.items[0]['sharpe']=data['sharpe'].toFixed(3)
+            this.items[0]['vol']=data['vol'].toFixed(3)
+            this.items[0]['annualized_returns']=data['annualized_returns'].toFixed(3)
+            this.items[0]['benchmark_annualized_returns']=data['benchmark_annualized_returns'].toFixed(3)
+            this.items[0]['benchmark_vol']=data['benchmark_vol'].toFixed(3)
+            this.items[0]['exist']=data['exist']
+            this.items[0]['total_returns']=data['total_returns'].toFixed(2)
+      })}
 
     },
     mounted() {

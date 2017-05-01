@@ -94,12 +94,13 @@ class backtest(QA.QA_Backtest):
                     self.bid.bid['strategy']=self.strategy_name
                     message=self.market.market_make_deal(self.bid.bid,self.setting.client)
                     QA.QA_util_log_info(message)
-                    message=self.account.QA_account_receive_deal(message,self.setting.client)
-                    self.backtest_message=message
-                    QA.QA_SU_save_account_message(message,self.setting.client)
+                    if str(message['header']['status'])[0]=='2':
+                        message=self.account.QA_account_receive_deal(message,self.setting.client)
+                        self.backtest_message=message
+                        QA.QA_SU_save_account_message(message,self.setting.client)
                     #print('buy----------------------------------------------')
                     #QA.QA_util_log_info(message)
-                    input()
+                    #input()
                 elif result==1 and int(data['account']['body']['account']['hold'])==1:
                     QA.QA_util_log_info('Hold and Watch!!!!!!!!!!!!')
                     ##
@@ -127,15 +128,16 @@ class backtest(QA.QA_Backtest):
 
                     message=self.market.market_make_deal(self.bid.bid,self.setting.client)
                     QA.QA_util_log_info(message)
-                    print('=================sell start')
-                    print(message)
-                    print('sell end==============')
-                    message=self.account.QA_account_receive_deal(message,self.setting.client)
-                    self.backtest_message=message
-                    QA.QA_SU_save_account_message(message,self.setting.client)
+                    if str(message['header']['status'])[0]=='2':
+                        print('=================sell start')
+                        print(message)
+                        print('sell end==============')
+                        message=self.account.QA_account_receive_deal(message,self.setting.client)
+                        self.backtest_message=message
+                        QA.QA_SU_save_account_message(message,self.setting.client)
                     #print('sell----------------------------------------------')
                     #QA.QA_util_log_info(message) 
-                    input()
+                    #input()
                     #print(message)
                     #QA.QA_SU_save_account_message(message,self.setting.client)
                     #self.backtest_message=message
