@@ -231,11 +231,11 @@ export default {
                                                                         'open'
                                                                 ])
                                                                 temp.push(history_data[i][
-                                                                        'high'
+                                                                        'close'
                                                                 ])
                                                                 temp.push(history_data[i]['low'])
                                                                 temp.push(history_data[i][
-                                                                        'close'
+                                                                        'high'
                                                                 ])
 
                                                                 kline.push(temp);
