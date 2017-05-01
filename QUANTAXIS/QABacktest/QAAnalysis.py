@@ -6,7 +6,7 @@ we will give some function
 import  numpy
 import math
 
-def QA_backtest_analysis_start(message,days):
+def QA_backtest_analysis_start(message):
     # 主要要从message_history分析
     # 1.收益率
     # 2.胜率
