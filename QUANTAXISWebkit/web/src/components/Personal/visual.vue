@@ -71,6 +71,25 @@
           title: {
             text: this.data0
           },
+          grid:{
+                x:'5%',
+                y:'15%',
+               // x2:300,
+               // y2:400,
+                borderWidth:1
+            },
+          toolbox: {
+              show: true,
+              feature: {
+                  dataZoom: {
+                      yAxisIndex: 'none'
+                  },
+                  dataView: {readOnly: false},
+                  magicType: {type: ['line', 'bar']},
+                  restore: {},
+                  saveAsImage: {}
+              }
+          },
           tooltip: {
             trigger: 'axis',
             axisPointer: {
@@ -100,9 +119,22 @@
 
           }],
           legend: {
-            data: ['k_line', 'account', 'market', 'bid_sell', 'bid_buy'],
+            data: [
+              {
+              name:'k_line'
+            }, {
+              name:'account',
+              textStyle:{
+                color:'#c23531'
+              }
+              }, 'market', 'bid_sell', 'bid_buy',{
+                name:'benchmark',
+                textStyle:{
+                  color:'#2f4554'
+              }}],
             //data:['k_line'],
-            x: 'right'
+            x: 'left',
+            top:'5%'
           },
           dataZoom: [{
               show: true,
@@ -120,9 +152,37 @@
           series: [{
             name: 'account',
             type: 'line',
-            data: []
+            data: [],
+            lineStyle:{
+              normal:{
+                color:'#c23531'
+              }
+            },
+            areaStyle:{
+              normal:{
+                color:'#c23531',
+                opacity:0.3
+              }
+            }
 
-          }, {
+          },{
+            name: 'benchmark',
+            type: 'line',
+            data: [],
+            lineStyle:{
+              normal:{
+                color:'#2f4554'
+              }
+            },
+            areaStyle:{
+              normal:{
+                color:'#2f4554',
+                opacity:0.3
+              }
+            }
+
+          },
+           {
             name: 'market',
             type: 'candlestick',
             data: []
@@ -150,8 +210,7 @@
             name: 'k_line',
             type: 'candlestick',
             data: []
-          }],
-          color: '#2f4554'
+          }]
         })
       },
       ready() {
@@ -164,20 +223,20 @@
             var end_time = data['end_time']
             var profit = data['total_returns']
 
-            console.log(data)
+            //console.log(data)
 
             this.items[0]['alpha']=data['alpha'].toFixed(3)
             this.items[0]['beta']=data['beta'].toFixed(4)
             this.items[0]['max_drop']=data['max_drop'].toFixed(3)
             this.items[0]['code']=data['stock_list'][0]
             this.items[0]['sharpe']=data['sharpe'].toFixed(3)
-            this.items[0]['vol']=data['vol'].toFixed(3)
+            this.items[0]['vol']=data['vol'].toFixed(5)
             this.items[0]['annualized_returns']=data['annualized_returns'].toFixed(3)
             this.items[0]['benchmark_annualized_returns']=data['benchmark_annualized_returns'].toFixed(3)
-            this.items[0]['benchmark_vol']=data['benchmark_vol'].toFixed(3)
+            this.items[0]['benchmark_vol']=data['benchmark_vol'].toFixed(5)
             this.items[0]['exist']=data['exist']
             this.items[0]['total_returns']=data['total_returns'].toFixed(2)
-            console.log(this.items)
+            //console.log(this.items)
             var code = data['stock_list'][0]
             var val = code + '&start=' + start_time + '&end=' + end_time
             //console.log(val)
@@ -260,7 +319,18 @@
                 name: 'account',
                 type: 'line',
                 data: this.acc,
-                yAxisIndex: 1
+                yAxisIndex: 1,
+                lineStyle:{
+                  normal:{
+                    color:'#c23531'
+                  }
+                },
+                areaStyle:{
+                  normal:{
+                    color:'#c23531',
+                    opacity:0.3
+                  }
+                }
               }],
               xAxis: {
                 data: market_time,
@@ -273,7 +343,8 @@
             console.log(error);
           });
 
-
+     
+      
       },
       query_market() {
         //console.log(this.data0)
@@ -366,19 +437,57 @@
           .then(response => {
             var data = response.data;
 
-            console.log(data)
+            //console.log(data)
 
             this.items[0]['alpha']=data['alpha'].toFixed(3)
             this.items[0]['beta']=data['beta'].toFixed(4)
             this.items[0]['max_drop']=data['max_drop'].toFixed(3)
             this.items[0]['code']=data['stock_list'][0]
             this.items[0]['sharpe']=data['sharpe'].toFixed(3)
-            this.items[0]['vol']=data['vol'].toFixed(3)
+            this.items[0]['vol']=data['vol'].toFixed(5)
             this.items[0]['annualized_returns']=data['annualized_returns'].toFixed(3)
-            this.items[0]['benchmark_annualized_returns']=data['benchmark_annualized_returns'].toFixed(3)
+            this.items[0]['benchmark_annualized_returns']=data['benchmark_annualized_returns'].toFixed(5)
             this.items[0]['benchmark_vol']=data['benchmark_vol'].toFixed(3)
             this.items[0]['exist']=data['exist']
             this.items[0]['total_returns']=data['total_returns'].toFixed(2)
+
+            var  benchmark_history = data['benchmark_assest']
+            var market_time=data['trade_date']
+
+
+            for (var i = 0; i < this.time.length; i++) {
+              if (market_time.indexOf(this.time[i]) == -1) {
+                market_time.splice(i, 0, this.time[i])
+                benchmark_history.splice(i, 0, this.acc[i - 1])
+                //console.log()
+              }
+
+            }
+            //console.log(benchmark_history)
+            this.chart.setOption({
+              series: [{
+                name: 'benchmark',
+                type: 'line',
+                data:benchmark_history,
+                yAxisIndex: 1,
+                lineStyle:{
+                  normal:{
+                    color:'#2f4554'
+                  }
+                },
+                areaStyle:{
+                  normal:{
+                    color:'#2f4554',
+                    opacity:0.3
+                  }
+                }
+              }],
+              xAxis: {
+                data: market_time,
+                zlevel: 1,
+                gridIndex: 0,
+              }
+            })
       })}
 
     },
@@ -386,8 +495,10 @@
       this.$nextTick(function () {
         this.drawline('main');
         this.ready();
+
         this.query();
         this.query_market();
+        this.info();
       })
     }
   }
