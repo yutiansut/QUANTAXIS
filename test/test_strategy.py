@@ -39,6 +39,7 @@ class backtest(QA.QA_Backtest):
         #根据回测设置计算真实交易的开始和结束时间
         self.start_mes=QA.QA_util_realtime(self.strategy_start_date,self.setting.client)
         self.end_mes=QA.QA_util_realtime(self.strategy_end_date,self.setting.client)
+        
     #从市场中获取数据(基于gap),你也可以不急于gap去自定义自己的获取数据的代码
     #调用的数据接口是
     #data=QA.QA_fetch_data(回测标的代码,开始时间,结束时间,数据库client)
@@ -148,7 +149,7 @@ class backtest(QA.QA_Backtest):
         exist_time=int(self.end_mes['id'])-int(self.start_mes['id'])+1
         #print(self.backtest_message)
         #把这个协议发送给分析引擎,进行分析
-        performace=QA.QABacktest.QAAnalysis.QA_backtest_analysis_start(self.backtest_message)
+        performace=QA.QABacktest.QAAnalysis.QA_backtest_analysis_start(self.backtest_message,exist_time)
         backtest_mes={
             'user':self.setting.QA_setting_user_name,
             'strategy':self.strategy_name,

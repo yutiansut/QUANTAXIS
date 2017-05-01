@@ -361,6 +361,7 @@
           })
       },
       info(){
+        let val = this.data0
         axios.get('http://localhost:3000/backtest/info_cookie?cookie=' + val)
           .then(response => {
             var data = response.data;

@@ -24,11 +24,11 @@ from QUANTAXIS.QAUtil import QA_util_log_info,QA_util_log_expection
 风险性主要包括胜率、平均盈亏比、最大回撤比例、最大连续亏损次数、最大连续盈利次数、持仓时间占比、贝塔。
 
 综合性指标主要包括风险收益比，夏普比例，波动率，VAR，偏度，峰度等"""
-def QA_risk_eva_account(message):
+def QA_risk_eva_account(message,days):
     cookie=message['header']['cookie']
     account=message['body']['account']
     #绩效表现指标分析
-    performance= QAAnalysis.QA_backtest_analysis_start(message)
+    performance= QAAnalysis.QA_backtest_analysis_start(message,days)
     """ 
     message= {
             'annualized_returns':annualized_returns,
