@@ -90,3 +90,5 @@ def QA_risk_account_freeCash_frozenAssest(freeCash,frozenAssest):
 
 
 
+class QA_Risk():
+    pass

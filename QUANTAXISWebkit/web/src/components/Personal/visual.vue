@@ -186,9 +186,9 @@
                   kline_date.push(history_data[i]['date']);
                   var temp = [];
                   temp.push(history_data[i]['open'])
-                  temp.push(history_data[i]['high'])
-                  temp.push(history_data[i]['low'])
                   temp.push(history_data[i]['close'])
+                  temp.push(history_data[i]['low'])
+                  temp.push(history_data[i]['high'])
 
                   kline.push(temp);
                 }

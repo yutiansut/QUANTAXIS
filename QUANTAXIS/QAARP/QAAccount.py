@@ -208,7 +208,39 @@ class QA_Account:
             #属于不更新history和portfolio,但是要继续增加账户和日期的
         elif update_message['status']==402:
             QA_util_log_info('bid not success')
+            message={
+                'header':{
+                    'source':'account',
+                    'cookie':self.account_cookie,
+                    'session':{
+                        'user':update_message['user'],
+                        'strategy':update_message['strategy']
+                    }
+                    
+                    },
+                'body':{
+                    'account':{
+                        'init_assest':self.assets,
+                        'portfolio':self.portfolio,
+                        'history':self.history_trade,
+                        'assest_now':self.assets,
+                        'assest_history':self.total_assest,
+                        'assest_free':self.assets_free,
+                        'assest_fix':self.assets_market_hold_value,
+                        'profit':self.portfit,
+                        'total_profit':self.total_profit,
+                        'cur_profit_present':self.cur_profit_present,
+                        'cur_profit_present_total':self.cur_profit_present_total,
+                        'hold':self.hold
+                    },
+                    'bid':update_message['bid'],
+                    'market':update_message['market'],
+                    'time':datetime.datetime.now(),
+                    'date_stamp':str(datetime.datetime.now().timestamp())
 
+
+                }
+            }
 
             
         return self.message
