@@ -1,6 +1,6 @@
 {
   "name": "quantaxisbackend",
-  "version": "0.0.1",
+  "version": "0.3.9",
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
