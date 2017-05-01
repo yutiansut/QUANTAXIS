@@ -161,6 +161,7 @@ class backtest(QA.QA_Backtest):
             'annualized_returns':performace['annualized_returns'],
             'benchmark_annualized_returns':performace['benchmark_annualized_returns'],
             'benchmark_assest':performace['benchmark_assest'],
+            'trade_date':performace['trade_date'],
             'win_rate':performace['win_rate'],
             'alpha':performace['alpha'],
             'beta':performace['beta'],

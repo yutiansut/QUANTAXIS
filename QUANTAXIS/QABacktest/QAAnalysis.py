@@ -35,7 +35,11 @@ def QA_backtest_analysis_start(message,days):
     """
     # 计算一个benchmark
     # 这个benchmark是和第一次bid买入报价同时买入,然后一直持仓,计算账户价值
+
     trade_history=message['body']['account']['history']
+    #计算交易日
+    trade_date=QA_backtest_calc_trade_date(trade_history)
+    
     #benchmark资产
     benchmark_assest=QA_backtest_calc_benchmark(trade_history)
     #benchmark年化收益
@@ -77,6 +81,7 @@ def QA_backtest_analysis_start(message,days):
         'sharpe':sharpe,
         'alpha':alpha,
         'beta':beta,
+        'trade_date':trade_date,
         'max_drop':max_drop,
         'win_rate':win_rate}
     return message
@@ -124,11 +129,11 @@ def QA_backtest_calc_profit_matrix(assest_history):
     for i in range(0,len(assest_history)-2,1):
         assest_profit.append(float(assest_history[i+1])/float(assest_history[i])-1)
     return assest_profit
-def QA_backtest_calc_volatility(assest_profit):
+def QA_backtest_calc_volatility(assest_profit_matrix):
     #策略每日收益的年化标准差
+    #print(assest_profit_matrix)
+    assest_profit=assest_profit_matrix[::2]
     print(assest_profit)
-    assest_profit=assest_profit[::2]
-
     volatility_day=numpy.std(assest_profit)
     #print(var)
    
@@ -151,8 +156,11 @@ def QA_backtest_calc_sharpe(annualized_returns,benchmark_annualized_returns,vola
     return (annualized_returns-benchmark_annualized_returns)/volatility_year
 
 
-def QA_backtest_calc_trade_time():
-    pass
+def QA_backtest_calc_trade_date(history):
+    trade_date=[]
+    for i in range(1,len(history)-1,1):
+        trade_date.append(history[i][0])
+    return trade_date
 def QA_backtest_calc_trade_time_profit():
     pass
 def QA_backtest_calc_trade_time_loss():
