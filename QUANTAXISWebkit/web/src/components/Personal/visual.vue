@@ -71,6 +71,13 @@
           title: {
             text: this.data0
           },
+          grid:{
+                x:'5%',
+                y:'15%',
+               // x2:300,
+               // y2:400,
+                borderWidth:1
+            },
           toolbox: {
               show: true,
               feature: {
@@ -112,10 +119,22 @@
 
           }],
           legend: {
-            data: ['k_line', 'account', 'market', 'bid_sell', 'bid_buy','benchmark'],
+            data: [
+              {
+              name:'k_line'
+            }, {
+              name:'account',
+              textStyle:{
+                color:'#c23531'
+              }
+              }, 'market', 'bid_sell', 'bid_buy',{
+                name:'benchmark',
+                textStyle:{
+                  color:'#2f4554'
+              }}],
             //data:['k_line'],
             x: 'left',
-            top:'10%'
+            top:'5%'
           },
           dataZoom: [{
               show: true,
@@ -191,8 +210,7 @@
             name: 'k_line',
             type: 'candlestick',
             data: []
-          }],
-          color: '#2f4554'
+          }]
         })
       },
       ready() {
