@@ -60,7 +60,7 @@
         chart: null,
         data0: this.$route.params.id,
         time: [],
-        items:[{'code':'600010'},{}]
+        items:[{'code':'600010'}]
       }
     },
     methods: {
