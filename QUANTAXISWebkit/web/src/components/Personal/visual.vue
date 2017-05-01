@@ -296,8 +296,8 @@
 
             for (var i = 0; i < market.length - 1; i++) {
               //console.log(this.items[i][0])
-              value.push([market[i]['market']['open'], market[i]['market']['high'], market[i]['market']['low'],
-                market[i]['market']['close']
+              value.push([market[i]['market']['open'], market[i]['market']['close'], market[i]['market']['low'],
+                market[i]['market']['high']
               ])
               if (market[i]['bid']['towards'] == 1) {
                 bid_buy.push(market[i]['bid']['price']);
