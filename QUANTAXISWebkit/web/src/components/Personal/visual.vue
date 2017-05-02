@@ -465,6 +465,7 @@
               }
 
             }
+            //console.log(market_time)
             //console.log(benchmark_history)
             this.chart.setOption({
               series: [{

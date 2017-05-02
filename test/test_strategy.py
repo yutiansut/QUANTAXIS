@@ -43,6 +43,7 @@ class backtest(QA.QA_Backtest):
     #从市场中获取数据(基于gap),你也可以不急于gap去自定义自己的获取数据的代码
     #调用的数据接口是
     #data=QA.QA_fetch_data(回测标的代码,开始时间,结束时间,数据库client)
+
     def BT_get_data_from_market(self,id):
         self.coll=self.setting.client.quantaxis.trade_date
         start=self.coll.find_one({'num':int(id)-int(self.strategy_gap)})
@@ -51,6 +52,25 @@ class backtest(QA.QA_Backtest):
         end_date=str(end['date'])[0:10]
         self.coll2=self.setting.client.quantaxis.stock_day
         data=QA.QA_fetch_data(self.strategy_stock_list[0],start_date,end_date,self.coll2)
+        i=2
+        while len(data)<self.strategy_gap:
+
+            #print(-int(self.strategy_gap)*2+len(data))
+            start=self.coll.find_one({'num':int(id)-int(self.strategy_gap)*i+len(data)+1})
+
+            start_date=str(start['date'])[0:10]
+            #print(self.strategy_gap)
+            
+            print(start_date)
+            data=QA.QA_fetch_data(self.strategy_stock_list[0],start_date,end_date,self.coll2)
+            #print(len(data))
+            i=i+1
+            #input()
+        if len(data)>self.strategy_gap:
+            data=data[len(data)-self.strategy_gap:]
+        #print('end')
+        #print(len(data))
+        #input()
         return data
      #从账户中更新数据
     def BT_get_data_from_ARP(self):
