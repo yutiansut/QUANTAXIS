@@ -146,34 +146,37 @@ class backtest(QA.QA_Backtest):
                 else:print('not enough data')
         
         # 性能分析
-        exist_time=int(self.end_mes['id'])-int(self.start_mes['id'])+1
-        #print(self.backtest_message)
-        #把这个协议发送给分析引擎,进行分析
-        performace=QA.QABacktest.QAAnalysis.QA_backtest_analysis_start(self.backtest_message,exist_time)
-        backtest_mes={
-            'user':self.setting.QA_setting_user_name,
-            'strategy':self.strategy_name,
-            'stock_list': self.strategy_stock_list,
-            'start_time':self.strategy_start_date,
-            'end_time':self.strategy_end_date,
-            'account_cookie':self.account.account_cookie,
-            'total_returns':self.backtest_message['body']['account']['profit'],
-            'annualized_returns':performace['annualized_returns'],
-            'benchmark_annualized_returns':performace['benchmark_annualized_returns'],
-            'benchmark_assest':performace['benchmark_assest'],
-            'trade_date':performace['trade_date'],
-            'win_rate':performace['win_rate'],
-            'alpha':performace['alpha'],
-            'beta':performace['beta'],
-            'sharpe':performace['sharpe'],
-            'vol':performace['vol'],
-            'benchmark_vol':performace['benchmark_vol'],
-            'max_drop':performace['max_drop'],
-            'exist':exist_time
-        }
+        try:
+            exist_time=int(self.end_mes['id'])-int(self.start_mes['id'])+1
+            #print(self.backtest_message)
+            #把这个协议发送给分析引擎,进行分析
+            performace=QA.QABacktest.QAAnalysis.QA_backtest_analysis_start(self.backtest_message,exist_time)
+            backtest_mes={
+                'user':self.setting.QA_setting_user_name,
+                'strategy':self.strategy_name,
+                'stock_list': self.strategy_stock_list,
+                'start_time':self.strategy_start_date,
+                'end_time':self.strategy_end_date,
+                'account_cookie':self.account.account_cookie,
+                'total_returns':self.backtest_message['body']['account']['profit'],
+                'annualized_returns':performace['annualized_returns'],
+                'benchmark_annualized_returns':performace['benchmark_annualized_returns'],
+                'benchmark_assest':performace['benchmark_assest'],
+                'trade_date':performace['trade_date'],
+                'win_rate':performace['win_rate'],
+                'alpha':performace['alpha'],
+                'beta':performace['beta'],
+                'sharpe':performace['sharpe'],
+                'vol':performace['vol'],
+                'benchmark_vol':performace['benchmark_vol'],
+                'max_drop':performace['max_drop'],
+                'exist':exist_time
+            }
 
-        # 策略的汇总存储(会存在backtest_info下)
-        QA.QA_SU_save_backtest_message(backtest_mes,self.setting.client)
+            # 策略的汇总存储(会存在backtest_info下)
+            QA.QA_SU_save_backtest_message(backtest_mes,self.setting.client)
+        except:
+            QA.QA_util_log_expection('wrong with performance analysis')
 
 #stock_list=['600592','600538','603588','000001','000002','601801','600613','002138','600010']
 
