@@ -12,7 +12,7 @@ def QA_backtest_analysis_start(client,message,days):
     # 1.收益率
     # 2.胜率
     # 3.回撤
-    print(message)
+    #print(message)
     """
         Annualized Returns: 策略年化收益率。表示投资期限为一年的预期收益率。
         具体计算方式为 (策略最终价值 / 策略初始价值 - 1) / 回测交易日数量 × 250
@@ -89,7 +89,7 @@ def QA_backtest_analysis_start(client,message,days):
         'trade_date':trade_date,
         'max_drop':max_drop,
         'win_rate':win_rate}
-    print(message)
+    #print(message)
     return message
 
 
@@ -101,7 +101,7 @@ def QA_backtest_result_check(datelist,message):
 def QA_backtest_calc_benchmark(code,date,history,coll):
     
     data=QA_fetch_data(code,date[0],date[-1],coll)
-    print(data)
+    #print(data)
     benchmark_assest=[]
     for i in range(0,len(data),1):
         assest=float(data[i][4])*float(history[1][3])
@@ -110,7 +110,7 @@ def QA_backtest_calc_benchmark(code,date,history,coll):
     #print(history)
     #print('===benchmark===')
     
-    print(benchmark_assest)
+    #print(benchmark_assest)
     return benchmark_assest
 
 def QA_backtest_calc_alpha(annualized_returns,benchmark_annualized_returns,beta,r):
@@ -118,8 +118,14 @@ def QA_backtest_calc_alpha(annualized_returns,benchmark_annualized_returns,beta,
     alpha=(annualized_returns-r)-(beta)*(benchmark_annualized_returns-r)
     return alpha
 def QA_backtest_calc_beta(assest_profit,benchmark_profit,benchmark_volatility_year):
-    assest_profit=assest_profit[::2]
-    benchmark_profit=benchmark_profit[::2]
+    if len(assest_profit)<len(benchmark_profit):
+        for i in range(0,len(benchmark_profit)-len(assest_profit),1):
+            assest_profit.append(0)
+    elif len(assest_profit)>len(benchmark_profit):
+         for i in range(0,len(assest_profit)-len(benchmark_profit),1):
+            assest_profit.append(0)
+
+
     #print(assest_profit)
     #print(benchmark_profit)
     calc_cov=numpy.cov(assest_profit,benchmark_profit)[0,1]
@@ -140,8 +146,9 @@ def QA_backtest_calc_profit_matrix(assest_history):
 def QA_backtest_calc_volatility(assest_profit_matrix):
     #策略每日收益的年化标准差
     #print(assest_profit_matrix)
-    assest_profit=assest_profit_matrix[::2]
-    print(assest_profit)
+    assest_profit=assest_profit_matrix
+    #print(assest_profit)
+    #print(len(assest_profit))
     volatility_day=numpy.std(assest_profit)
     #print(var)
    

@@ -254,7 +254,7 @@ class QA_Account:
                 }
             }
 
-        print(self.message)
+        #print(self.message)
         return self.message
         
     def QA_account_renew(self):
