@@ -139,13 +139,13 @@
           dataZoom: [{
               show: true,
               realtime: true,
-              start: 65,
+              start: 0,
               end: 85
             },
             {
               type: 'inside',
               realtime: true,
-              start: 65,
+              start: 0,
               end: 85
             }
           ],
