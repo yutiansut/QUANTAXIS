@@ -33,6 +33,7 @@
         <mu-th>Benchmark年化收益</mu-th>
         <mu-th>Benchmark波动率</mu-th>
         <mu-th>总收益</mu-th>
+        <mu-th>胜率</mu-th>
         <template v-for="item in items">
         <mu-tbody >
           <mu-td>{{item['annualized_returns']}}</mu-td>
@@ -40,7 +41,7 @@
           <mu-td>{{item['benchmark_annualized_returns']}}</mu-td>
           <mu-td>{{item['benchmark_vol']}}</mu-td>
           <mu-td>{{item['total_returns']}}</mu-td>
-
+          <mu-td>{{item['win_rate']}}</mu-td>
         </mu-tbody>
         </template>
       </mu-table>
@@ -236,6 +237,7 @@
             this.items[0]['benchmark_vol']=data['benchmark_vol'].toFixed(5)
             this.items[0]['exist']=data['exist']
             this.items[0]['total_returns']=data['total_returns'].toFixed(2)
+            this.items[0]['win_rate']=data['win_rate'].toFixed(3)
             //console.log(this.items)
             var code = data['stock_list'][0]
             var val = code + '&start=' + start_time + '&end=' + end_time
