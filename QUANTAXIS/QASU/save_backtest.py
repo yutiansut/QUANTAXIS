@@ -44,6 +44,7 @@ def QA_SU_save_account_message(message, client):
     print(message)
     coll.insert({
         'time':message['body']['time'],
+        'total_date':message['body']['account']['total_date'],
         'time_stamp':message['body']['date_stamp'],
         "cookie":message['header']['cookie'],
         'user':message['header']['session']['user'],

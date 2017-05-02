@@ -5,12 +5,14 @@ we will give some function
 """
 import  numpy
 import math
+from QUANTAXIS.QAFetch.QAQuery import QA_fetch_data
 
-def QA_backtest_analysis_start(message,days):
+def QA_backtest_analysis_start(client,message,days):
     # 主要要从message_history分析
     # 1.收益率
     # 2.胜率
     # 3.回撤
+    print(message)
     """
         Annualized Returns: 策略年化收益率。表示投资期限为一年的预期收益率。
         具体计算方式为 (策略最终价值 / 策略初始价值 - 1) / 回测交易日数量 × 250
@@ -39,9 +41,10 @@ def QA_backtest_analysis_start(message,days):
     trade_history=message['body']['account']['history']
     #计算交易日
     trade_date=QA_backtest_calc_trade_date(trade_history)
+    total_date=message['body']['account']['total_date']
     
     #benchmark资产
-    benchmark_assest=QA_backtest_calc_benchmark(trade_history)
+    benchmark_assest=QA_backtest_calc_benchmark(message['header']['session']['code'],total_date,trade_history,client.quantaxis.stock_day)
     #benchmark年化收益
     benchmark_annualized_returns=QA_backtest_calc_profit_per_year(benchmark_assest,days)
 
@@ -73,6 +76,7 @@ def QA_backtest_analysis_start(message,days):
     #计算Alpha
     alpha=QA_backtest_calc_alpha(annualized_returns,benchmark_annualized_returns,beta,0.05)
     message= {
+        'code':message['header']['session']['code'],
         'annualized_returns':annualized_returns,
         'benchmark_annualized_returns':benchmark_annualized_returns,
         'benchmark_assest':benchmark_assest,
@@ -81,9 +85,11 @@ def QA_backtest_analysis_start(message,days):
         'sharpe':sharpe,
         'alpha':alpha,
         'beta':beta,
+        'total_date':total_date,
         'trade_date':trade_date,
         'max_drop':max_drop,
         'win_rate':win_rate}
+    print(message)
     return message
 
 
@@ -92,17 +98,19 @@ def QA_backtest_result_check(datelist,message):
     #print(message['body']['account']['history']['date'])
     pass
 
-def QA_backtest_calc_benchmark(history):
+def QA_backtest_calc_benchmark(code,date,history,coll):
     
+    data=QA_fetch_data(code,date[0],date[-1],coll)
+    print(data)
     benchmark_assest=[]
-    for i in range(1,len(history),1):
-        assest=float(history[i][2])*float(history[1][3])
+    for i in range(0,len(data),1):
+        assest=float(data[i][4])*float(history[1][3])
         benchmark_assest.append(assest)
     #print('===history===')
     #print(history)
     #print('===benchmark===')
     
-    #print(benchmark_assest)
+    print(benchmark_assest)
     return benchmark_assest
 
 def QA_backtest_calc_alpha(annualized_returns,benchmark_annualized_returns,beta,r):

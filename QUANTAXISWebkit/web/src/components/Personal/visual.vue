@@ -295,12 +295,7 @@
             //console.log(code)
             // console.log(this.acc)
             this.length = this.acc.length;
-            var market_time = [];
-            for (var i = 1; i < history.length; i++) {
-              //console.log(this.items[i][0])
-              market_time.push(history[i][0])
-              //this.chart.setOption
-            }
+            var market_time = response.data['total_date']
 
             //console.log(this.time)
             for (var i = 0; i < this.time.length; i++) {
@@ -355,7 +350,7 @@
         axios.get('http://localhost:3000/backtest/market?cookie=' + val)
           .then(response => {
             this.chart.hideLoading();
-            var market = response.data;
+            var market_data = response.data;
             //console.log(market)
             var value = [];
             var bid_buy = [];
@@ -363,10 +358,15 @@
             var bid_buy_date = [];
             var bid_sell_date = [];
 
-            var start_time = market[0]['bid']['time'];
-            var end_time = market[market.length - 1]['bid']['time']
-
-
+            var start_time = market_data[0]['bid']['time'];
+            var end_time = market_data[market_data.length - 1]['bid']['time']
+            var market=[]
+            for (var i = 1; i < market_data.length - 1; i++) {
+              if (market_data[i]['bid']['time']!=market_data[i-1]['bid']['time']){
+                market.push(market_data[i])
+              }
+            }
+            console.log(market)
             for (var i = 0; i < market.length - 1; i++) {
               //console.log(this.items[i][0])
               value.push([market[i]['market']['open'], market[i]['market']['close'], market[i]['market']['low'],
@@ -454,13 +454,13 @@
             this.items[0]['total_returns']=data['total_returns'].toFixed(2)
 
             var  benchmark_history = data['benchmark_assest']
-            var market_time=data['trade_date']
+            var market_time=data['total_date']
 
 
             for (var i = 0; i < this.time.length; i++) {
               if (market_time.indexOf(this.time[i]) == -1) {
                 market_time.splice(i, 0, this.time[i])
-                benchmark_history.splice(i, 0, this.acc[i - 1])
+                benchmark_history.splice(i, 0, benchmark_history[i - 1])
                 //console.log()
               }
 
