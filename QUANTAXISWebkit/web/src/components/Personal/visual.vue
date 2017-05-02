@@ -295,7 +295,7 @@
             //console.log(code)
             // console.log(this.acc)
             this.length = this.acc.length;
-            var market_time = response.data['total_date']
+            var market_time = response.data['account_date']
 
             //console.log(this.time)
             for (var i = 0; i < this.time.length; i++) {

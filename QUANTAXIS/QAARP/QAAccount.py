@@ -37,6 +37,7 @@ class QA_Account:
         #date, id, price, amount, towards
         self.account_cookie=str(random.random())
         self.portfit=0
+        self.account_date=[]
         self.hold=0
         self.total_date=[]
         self.total_assest=[self.assets]
@@ -62,6 +63,7 @@ class QA_Account:
                         'assest_free':self.assets_free,
                         'total_assest_free':self.total_assest_free,
                         'assest_fix':self.assets_market_hold_value,
+                        'account_date':self.account_date,
                         'total_date':self.total_date,
                         'profit':self.portfit,
                         'total_profit':[0],
@@ -99,6 +101,7 @@ class QA_Account:
             # towards>1 买入成功
             # towards<1 卖出成功
             # 拿到新的交易的价格等
+            self.account_date.append(update_message['date'])
             QA_util_log_info('Success')
             new_id=update_message['id']
             new_amount=update_message['amount']
@@ -155,6 +158,7 @@ class QA_Account:
                         'total_assest_free':self.total_assest_free,
                         'assest_fix':self.assets_market_hold_value,
                         'profit':self.total_profit[-1],
+                        'account_date':self.account_date,
                         'assets_profit_day':0,
                         'assets_profit_total':[0],
                         'total_profit':self.total_profit,
@@ -178,7 +182,7 @@ class QA_Account:
             # 2.买卖没有成功
 
             self.QA_account_calc_profit(update_message)
-
+            self.account_date.append(update_message['date'])
             QA_util_log_info('hold without bid')
             message={
                 'header':{
@@ -201,6 +205,7 @@ class QA_Account:
                         'assest_free':self.assets_free,
                         'assest_fix':self.assets_market_hold_value,
                         'profit':self.portfit,
+                        'account_date':self.account_date,
                         'total_profit':self.total_profit,
                         'total_date':self.total_date,
                         'cur_profit_present':self.cur_profit_present,
@@ -240,6 +245,7 @@ class QA_Account:
                         'assest_fix':self.assets_market_hold_value,
                         'profit':self.portfit,
                         'total_profit':self.total_profit,
+                        'account_date':self.account_date,
                         'total_date':self.total_date,
                         'cur_profit_present':self.cur_profit_present,
                         'cur_profit_present_total':self.cur_profit_present_total,

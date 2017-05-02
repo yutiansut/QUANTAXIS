@@ -54,6 +54,7 @@ def QA_SU_save_account_message(message, client):
         'history':message['body']['account']['history'],
         'assest_now':message['body']['account']['assest_now'],
         'assest_history':message['body']['account']['assest_history'],
+        'account_date':message['body']['account']['account_date'],
         'assest_free':message['body']['account']['assest_free'],
         'assest_fix':message['body']['account']['assest_fix'],
         'profit':message['body']['account']['profit'],
