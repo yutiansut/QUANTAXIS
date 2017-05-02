@@ -12,7 +12,8 @@
           <mu-th>start</mu-th>
           <mu-th>end</mu-th>
           <mu-th>profit</mu-th>
-          <mu-th>performance</mu-th>
+          <mu-th>alpha</mu-th>
+          <mu-th>annualized_returns</mu-th>
         </mu-tr>
       </mu-thead>
       <template v-for="item in items">
@@ -26,8 +27,8 @@
               <mu-td>{{ item['start_time']}}</mu-td>
               <mu-td>{{ item['end_time']}}</mu-td>
               <mu-td>{{ item['profit']}}</mu-td>
-              <mu-td>{{ item['performance']}}</mu-td>
-
+              <mu-td>{{ item['alpha']}}</mu-td>
+              <mu-td>{{ item['annualized_returns']}}</mu-td>
             </router-link>
           </mu-tr>
         </mu-tbody>
