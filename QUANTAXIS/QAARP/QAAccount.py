@@ -37,7 +37,9 @@ class QA_Account:
         #date, id, price, amount, towards
         self.account_cookie=str(random.random())
         self.portfit=0
+        self.account_date=[]
         self.hold=0
+        self.total_date=[]
         self.total_assest=[self.assets]
         self.assets_free=self.total_assest[-1]
         self.total_assest_free=[self.assets_free]
@@ -61,6 +63,8 @@ class QA_Account:
                         'assest_free':self.assets_free,
                         'total_assest_free':self.total_assest_free,
                         'assest_fix':self.assets_market_hold_value,
+                        'account_date':self.account_date,
+                        'total_date':self.total_date,
                         'profit':self.portfit,
                         'total_profit':[0],
                         'cur_profit_present':0,
@@ -91,11 +95,13 @@ class QA_Account:
 
     def QA_account_update(self,update_message,client):
         #print(update_message)
+        self.total_date.append(update_message['date'])
         if str(update_message['status'])[0]=='2':
             #这里就是买卖成功的情况
             # towards>1 买入成功
             # towards<1 卖出成功
             # 拿到新的交易的价格等
+            self.account_date.append(update_message['date'])
             QA_util_log_info('Success')
             new_id=update_message['id']
             new_amount=update_message['amount']
@@ -136,7 +142,8 @@ class QA_Account:
                     'cookie':self.account_cookie,
                     'session':{
                         'user':update_message['user'],
-                        'strategy':update_message['strategy']
+                        'strategy':update_message['strategy'],
+                        'code':update_message['bid']['code']
                     }
                     
                     },
@@ -151,9 +158,11 @@ class QA_Account:
                         'total_assest_free':self.total_assest_free,
                         'assest_fix':self.assets_market_hold_value,
                         'profit':self.total_profit[-1],
+                        'account_date':self.account_date,
                         'assets_profit_day':0,
                         'assets_profit_total':[0],
                         'total_profit':self.total_profit,
+                        'total_date':self.total_date,
                         'cur_profit_present':self.cur_profit_present,
                         'cur_profit_present_total':self.cur_profit_present_total,
                         'hold':self.hold
@@ -171,6 +180,9 @@ class QA_Account:
             # 这里就是没有交易成功的情况 
             # 1.空单 401
             # 2.买卖没有成功
+
+            self.QA_account_calc_profit(update_message)
+            self.account_date.append(update_message['date'])
             QA_util_log_info('hold without bid')
             message={
                 'header':{
@@ -178,7 +190,8 @@ class QA_Account:
                     'cookie':self.account_cookie,
                     'session':{
                         'user':update_message['user'],
-                        'strategy':update_message['strategy']
+                        'strategy':update_message['strategy'],
+                        'code':update_message['bid']['code']
                     }
                     
                     },
@@ -192,7 +205,9 @@ class QA_Account:
                         'assest_free':self.assets_free,
                         'assest_fix':self.assets_market_hold_value,
                         'profit':self.portfit,
+                        'account_date':self.account_date,
                         'total_profit':self.total_profit,
+                        'total_date':self.total_date,
                         'cur_profit_present':self.cur_profit_present,
                         'cur_profit_present_total':self.cur_profit_present_total,
                         'hold':self.hold
@@ -214,7 +229,8 @@ class QA_Account:
                     'cookie':self.account_cookie,
                     'session':{
                         'user':update_message['user'],
-                        'strategy':update_message['strategy']
+                        'strategy':update_message['strategy'],
+                        'code':update_message['bid']['code']
                     }
                     
                     },
@@ -229,6 +245,8 @@ class QA_Account:
                         'assest_fix':self.assets_market_hold_value,
                         'profit':self.portfit,
                         'total_profit':self.total_profit,
+                        'account_date':self.account_date,
+                        'total_date':self.total_date,
                         'cur_profit_present':self.cur_profit_present,
                         'cur_profit_present_total':self.cur_profit_present_total,
                         'hold':self.hold
@@ -242,7 +260,7 @@ class QA_Account:
                 }
             }
 
-            
+        #print(self.message)
         return self.message
         
     def QA_account_renew(self):
@@ -303,15 +321,35 @@ class QA_Account:
             self.profit=(self.total_assest[-1]-self.total_assest[0])/self.total_assest[0]
             self.total_profit.append(self.profit)
             # 单笔交易利润是买入价
-            self.cur_profit_present=(float(update_message['price'])-float(self.portfolio['price']))/(float(update_message['price']))
+            self.cur_profit_present=(float(update_message['price'])-float(self.portfolio['price']))/float((self.portfolio['price']))
             self.cur_profit_present_total.append(self.cur_profit_present)
 
 
 
 
-        elif update_message['update']==401 :
+        elif update_message['status']==401  :
             # hold
-            pass
+            if (self.portfolio['amount']==0):
+                self.total_assest_free.append(self.assets_free)
+                #self.assets=self.assets_free+self.assets_market_hold_value
+                self.total_assest.append(self.assets)
+                self.profit=0
+                self.total_profit.append(self.profit)
+                self.cur_profit_present=0
+                self.cur_profit_present_total.append(self.cur_profit_present)
+            else:
+                now_price=float(update_message['market']['close'])
+                self.total_assest_free.append(self.assets_free)
+                self.assets_market_hold_value=self.portfolio['amount']*now_price
+                self.assets=self.assets_free+self.assets_market_hold_value
+                self.total_assest.append(self.assets)
+                self.profit=(self.total_assest[-1]-self.total_assest[0])/self.total_assest[0]
+                self.total_profit.append(self.profit)
+                self.cur_profit_present=(float(now_price)-float(self.portfolio['price']))/(float(self.portfolio['price']))
+                self.cur_profit_present_total.append(self.cur_profit_present)
+                
+            
+
         elif update_message['update']==402 :
             pass
 
