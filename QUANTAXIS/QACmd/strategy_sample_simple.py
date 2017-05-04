@@ -10,7 +10,7 @@ class backtest(QA.QA_Backtest):
         #设置初始账户资产
         self.account.assets=100000
         #设置回测的开始结束时间
-        self.strategy_start_date='2015-01-01'
+        self.strategy_start_date='2016-01-01'
         self.strategy_end_date='2017-04-01'
         #设置回测标的,是一个list对象,不过建议只用一个标的
         self.strategy_stock_list=['600592.SZ']
@@ -205,7 +205,7 @@ class backtest(QA.QA_Backtest):
             QA.QA_SU_save_backtest_message(backtest_mes,self.setting.client)
         except:
             QA.QA_util_log_expection('wrong with performance')
-
+"""
 #stock_list=['600592','600538','603588','000001','000002','601801','600613','002138','600010']
 stock_list=['000001']
 for item in stock_list:
@@ -215,3 +215,4 @@ for item in stock_list:
     BT.strategy_stock_list=[item]
     BT.handle_data()
 
+"""

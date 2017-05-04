@@ -62,7 +62,7 @@ setup(
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
     ],
-    install_requires = ['tushare==0.7.4','pymongo>=3.4','celery>=4.0.0'],
+    install_requires = ['tushare>=0.7.4','pymongo>=3.4','celery>=4.0.0'],
     keywords = KEYWORDS,
     author = AUTHOR,
     author_email = AUTHOR_EMAIL,
