@@ -15,7 +15,7 @@ class CLI(cmd.Cmd):
     def help_version(self):
         print ("syntax: version [message]",)
         print ("-- prints a version message")
-    def do_makeExamples(self,arg):
+    def do_example(self,arg):
         now_path=os.getcwd()
         project_dir = os.path.dirname(os.path.abspath(__file__))
         file_dir=project_dir+'\strategy_sample_simple.py'
