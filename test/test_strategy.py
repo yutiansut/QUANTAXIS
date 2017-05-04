@@ -20,10 +20,10 @@ class backtest(QA.QA_Backtest):
         self.account.account_cookie=str(random.random())
         #设置全局的数据库地址,回测用户名,密码
         self.setting.QA_util_sql_mongo_ip='127.0.0.1'
-        self.setting.QA_setting_user_name='yutiansut'
-        self.setting.QA_setting_user_password='yutiansut'
+        self.setting.QA_setting_user_name='admin'
+        self.setting.QA_setting_user_password='admin'
         #回测的名字
-        self.strategy_name='CLBS-01-90days-ANN'
+        self.strategy_name='test-simple'
         #进行全局初始化和账户初始化
         self.setting.QA_setting_init()
         self.account.init()
@@ -205,6 +205,15 @@ class backtest(QA.QA_Backtest):
             QA.QA_SU_save_backtest_message(backtest_mes,self.setting.client)
         except:
             QA.QA_util_log_expection('wrong with performance')
+
+#这里就是我们的假策略,你也可以从外部引入
+def predict(market,account_profit,if_hold,profit_per_trade):
+    #简单的策略 示例就是如果持有就买入,空仓就卖出
+    if if_hold==0:
+        return 1
+    else:
+        return 0
+
 
 #stock_list=['600592','600538','603588','000001','000002','601801','600613','002138','600010']
 stock_list=['000001']
