@@ -170,7 +170,7 @@ class backtest(QA.QA_Backtest):
             exist_time=int(self.end_mes['id'])-int(self.start_mes['id'])+1
             #print(self.backtest_message)
             #把这个协议发送给分析引擎,进行分析
-            performace=QA.QABacktest.QAAnalysis.QA_backtest_analysis_start(self.backtest_message,exist_time)
+            performace=QA.QABacktest.QAAnalysis.QA_backtest_analysis_start(self.setting.client,self.backtest_message,exist_time)
             backtest_mes={
                 'user':self.setting.QA_setting_user_name,
                 'strategy':self.strategy_name,
