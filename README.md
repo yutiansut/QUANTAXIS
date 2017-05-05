@@ -5,7 +5,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 QUANTAXIS与国内很多优秀的量化平台的区别在于,QA更多关注的是用户体验和实际情景,对于用户需求会有较多的优化.所以会更加注重开放性,引入自定义的便捷性,以及团队协作的细节处理.好比如自定义的数据引入,自定义的策略图表对比,自定义的风险和策略组合管理等等.
 
 ## 关键词: 局域网协作/开放式渐进框架/高度自定义
-
+<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=7c4d853fe1f1d8f5a2c03867706ce5bd7fcaa18b95c7bd029ac4e7c899994dc2"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="QUANTAXIS" title="QUANTAXIS"></a>
 
 ![version](https://img.shields.io/badge/Version-%200.3.9/dev/alpha-orange.svg)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.5-brown.svg)
