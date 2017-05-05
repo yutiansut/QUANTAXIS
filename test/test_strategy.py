@@ -25,8 +25,8 @@ class backtest(QA.QA_Backtest):
         self.account.account_cookie=str(random.random())
         #设置全局的数据库地址,回测用户名,密码
         self.setting.QA_util_sql_mongo_ip='127.0.0.1'
-        self.setting.QA_setting_user_name='yutiansut'
-        self.setting.QA_setting_user_password='yutiansut'
+        self.setting.QA_setting_user_name='admin'
+        self.setting.QA_setting_user_password='admin'
         #回测的名字
         self.strategy_name='CLBS-01-90days-ANN'
         #进行全局初始化和账户初始化
