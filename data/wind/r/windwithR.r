@@ -1,2 +1,0 @@
-library("WindR")
-w.start()
