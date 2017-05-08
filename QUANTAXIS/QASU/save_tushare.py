@@ -16,6 +16,8 @@ def QA_save_stock_day_all():
         try:
             data=ts.get_k_data(i)
             data_json=json.loads(data.to_json(orient='records'))
+            for item in data_json:
+                item['date_stamp']=QA_util_date_stamp(item['date'])
             coll=pymongo.MongoClient().quantaxis.stock_day
             coll.insert_many(data_json)
         except:
