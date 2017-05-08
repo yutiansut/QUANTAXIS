@@ -8,7 +8,7 @@
                     <router-link to="/personal/axios"><mu-list-item title="爬虫部署"></mu-list-item></router-link>
                     
                     <router-link to="/personal/markdown"><mu-list-item title="策略面板"></mu-list-item></router-link>
-                    <router-link to="/personal/multiplot"><mu-list-item title="多策略可视化"></mu-list-item></router-link>
+                    <router-link to="/personal/multiplot"><mu-list-item title="实盘易"></mu-list-item></router-link>
                 </mu-list>
                   <mu-divider/>
                   <mu-list>

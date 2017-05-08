@@ -11,7 +11,9 @@ def QA_SU_save_stock_list(engine,client):
 def QA_SU_save_trade_date(engine,client):
     engine=select_engine(engine)
     engine.QA_SU_save_trade_date(client)
-
+def QA_SU_save_stock_info(engine,client):
+    engine=select_engine(engine)
+    engine.QA_SU_save_stock_info(client)
 def QA_SU_save_stock_day(name, startDate, endDate, engine, client):
     engine=select_engine(engine)
     engine.QA_SU_save_stock_day(name, startDate, endDate, client)
@@ -23,8 +25,10 @@ def QA_SU_save_stock_day_init(startDate,engine,client):
 
 def QA_SU_update_stock_day(name, startDate, endDate, engine, client):
     pass
+
 def select_engine(engine):
     if engine in ['wind','Wind','WIND']:
        return sw
     elif engine in ['tushare','ts','Tushare']:
        return sts
+
