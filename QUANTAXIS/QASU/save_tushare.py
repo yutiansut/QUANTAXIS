@@ -33,3 +33,8 @@ def QA_SU_save_trade_date_all():
     data=QATushare.QA_fetch_get_trade_date('','')
     coll=pymongo.MongoClient().quantaxis.trade_date
     coll.insert_many(data)
+
+def QA_SU_save_stock_info(client):
+    data=QATushare.QA_fetch_get_stock_info('all')
+    coll=client.quantaxis.stock_info
+    coll.insert_many(data)

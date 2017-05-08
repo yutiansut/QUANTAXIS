@@ -120,3 +120,12 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# csv,excel,spss
+*.sav
+
+*.csv
+
+*.xls
+
+*.xlsx
