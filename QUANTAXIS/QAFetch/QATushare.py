@@ -16,9 +16,12 @@ def QA_fetch_get_stock_day(name,startDate,endDate):
 
 
 def QA_fetch_get_stock_info(name):
-    if (len(name)!=6):
-        name=str(name)[0:6]
-    return QATs.get_stock_basics()
+    data=QATs.get_stock_basics()
+    data_json=json.loads(data.to_json(orient='records'))
+
+    for i in range(0,len(data_json)-1,1):
+        data_json[i]['code']=data.index[i]
+    return data_json
 
 def QA_fetch_get_stock_tick(name,date):
     if (len(name)!=6):

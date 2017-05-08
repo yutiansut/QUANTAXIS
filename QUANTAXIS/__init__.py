@@ -21,7 +21,7 @@ from QUANTAXIS.QASpider import (QA_spider_select_spider,QA_spider_start_spider,
 from QUANTAXIS.QATask import (tasks,control)
 
 # save
-from QUANTAXIS.QASU.main import ( QA_SU_save_stock_list, QA_SU_save_stock_day,
+from QUANTAXIS.QASU.main import ( QA_SU_save_stock_list, QA_SU_save_stock_day,QA_SU_save_stock_info,
                                     QA_SU_save_stock_day_init,  QA_SU_save_trade_date)
 from QUANTAXIS.QASU.save_backtest import (QA_SU_save_account_message,QA_SU_save_backtest_message)   
 from QUANTAXIS.QASU.update_tushare import (QA_update_standard_sql)
