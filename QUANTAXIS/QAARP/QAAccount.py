@@ -1,6 +1,5 @@
 # encoding: UTF-8
 from QUANTAXIS.QAUtil import QA_util_log_info
-from QUANTAXIS.QABacktest.QABacktest_standard import QA_backtest_standard_record_account,QA_backtest_standard_record_market
 from QUANTAXIS.QABacktest import QAAnalysis as Ana
 from .QARisk import *
 import random

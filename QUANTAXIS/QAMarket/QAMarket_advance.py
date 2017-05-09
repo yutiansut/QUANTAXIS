@@ -8,12 +8,20 @@ from .QABid import QA_QAMarket_bid
 import datetime
 
 class QA_Market():
+    #基础设置
+    def init(self):
+        self.type='2x'
+        self.tick='day'
+        self.slipper='0.0005'
 
     #client=QA_Setting.client
     # client=QA.QA_util_sql_mongo_setting()
     # db= client.market
     def market_make_deal(self, bid, client):
-        coll=client.quantaxis.stock_day
+        if self.type=='2x' and self.tick=='day':
+            coll=client.quantaxis.stock_day
+        elif self.type=='3x' and self.tick=='500ms':
+            coll=client.quantaxis.future_ms
         try:
             item= coll.find_one({"code":str(bid['code'])[0:6], "date": str(bid['time'])[0:10]})
             QA_util_log_info('==== Market Board ====')
