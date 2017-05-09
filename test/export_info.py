@@ -1,4 +1,5 @@
 #coding:utf-8
+import sys
 import pymongo
 import csv
 coll=pymongo.MongoClient().quantaxis.backtest_info
@@ -14,4 +15,6 @@ with open('info.csv','w',newline='') as f:
             totals=data['totals']
             csvwriter.writerow([item['strategy'],'c'+str(item['stock_list'][0]),item['start_time'],item['end_time'],item['account_cookie'],item['total_returns'],item['annualized_returns'],item['benchmark_annualized_returns'],item['win_rate'],item['alpha'],item['beta'],item['sharpe'],item['vol'],item['benchmark_vol'],item['max_drop'],item['exist'],outstanding,totals])
         except:
+            info=sys.exc_info()  
+            print(info[0],":",info[1])
             print(code)
