@@ -1,4 +1,4 @@
-# coding :utf-8 
+# coding:utf-8 
 
 from QUANTAXIS.QAFetch import QATushare
 from QUANTAXIS.QAUtil import QA_util_date_stamp,QA_Setting,QA_util_date_valid

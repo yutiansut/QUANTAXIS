@@ -1,3 +1,4 @@
+#coding:utf-8
 from .QAAccount import QA_Account
 from .QARisk import QA_Risk
 
