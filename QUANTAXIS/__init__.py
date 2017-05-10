@@ -40,7 +40,7 @@ from QUANTAXIS.QAMarket import (QA_QAMarket_bid,QA_Market)
 from QUANTAXIS.QAARP import QA_Account,QA_Portfolio,QA_Risk
 # Backtest
 from QUANTAXIS.QABacktest.QABacktest import QA_Backtest
-             
+from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start    
 
 # Util
 from QUANTAXIS.QAUtil import (QA_util_sql_mongo_setting, QA_util_cfg_initial, QA_util_realtime,QA_util_id2date,QA_util_is_trade,
