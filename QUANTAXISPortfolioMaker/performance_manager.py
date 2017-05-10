@@ -56,5 +56,5 @@ message={
         'date_stamp':trade['time_stamp']
     }
 }
-print(QA.QABacktest.QAAnalysis.QA_backtest_analysis_start(client,message,days))
+print(QA.QA_backtest_analysis_start(client,message,days))
 
