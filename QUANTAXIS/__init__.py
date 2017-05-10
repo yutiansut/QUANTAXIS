@@ -52,7 +52,7 @@ import QUANTAXIS.QACmd
 
 from QUANTAXIS.QACmd import QA_cmd
 import argparse
-QA_util_log_info('Welcome to QUANTAXIS, the Version is 0.3.9-beta')
+QA_util_log_info('Welcome to QUANTAXIS, the Version is 0.3.9-beta-dev11')
 
 
 def QA_help_fetch(self):
