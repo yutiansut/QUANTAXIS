@@ -50,9 +50,10 @@ def make_portfolio(stock_list,unit_strategy_name):
     for item in portfolio_data:
         for items in item[1::]:
             l.append(items)
+    #按时间序列组合交易历史记录
     l.sort()
 
-
+    #新增一列 计算资金占用
     l[0].append(float(l[0][2])*float(l[0][3])*int(l[0][4]))
     for i in range(1,len(l)-1,1):
         l[i].append(l[i-1][5]+float(l[i][2])*float(l[i][3])*int(l[i][4]))
