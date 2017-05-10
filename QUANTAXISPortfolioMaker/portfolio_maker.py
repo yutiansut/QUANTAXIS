@@ -44,7 +44,7 @@ def make_portfolio(stock_list,unit_strategy_name):
         except:
             print('wrong')
     #print(portfolio_data)
-    # 计算和和并交易队列
+    # 计算和合并交易队列
     # [date,code,price,amount,towards]
     l=[]
     for item in portfolio_data:
