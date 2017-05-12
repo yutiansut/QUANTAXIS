@@ -14,38 +14,37 @@ class QA_Portfolio():
 
     """
     def init(self):
-        portfolio_code=['']
-        portfolio_account=[]
-        for i in range(0,len(portfolio_code)-1,1):
-            portfolio_account[i]=QA_Account()
+        self.portfolio_code=['']
+        self.portfolio_account=[]
+        for i in range(0,len(self.portfolio_code)-1,1):
+            self.portfolio_account[i]=QA_Account()
     
     def QA_portfolio_get_portfolio(self):
-        QA_util_log_info(self.portfolio_account)
-        
+        #QA_util_log_info(self.portfolio_account)
+        return self.portfolio_account
 
     def QA_portfolio_calc(self):
         {
-        'init_assest':self.total_assest[0],
-        'portfolio':self.portfolio,
-        'history':self.history_trade,
-        'assest_now':self.total_assest[-1],
-        'assest_history':self.total_assest,
-        'assest_free':self.assets_free,
-        'total_assest_free':self.total_assest_free,
-        'assest_fix':self.assets_market_hold_value,
-        'profit':self.total_profit[-1],
-        'account_date':self.account_date,
+        'init_assest':'self.total_assest[0]',
+        'portfolio':'self.portfolio',
+        'history':'history_trade',
+        'assest_now':'total_assest[-1]',
+        'assest_history':'self.total_assest',
+        'assest_free':'self.assets_free',
+        'total_assest_free':'self.total_assest_free',
+        'assest_fix':'self.assets_market_hold_value',
+        'profit':'self.total_profit[-1]',
+        'account_date':'self.account_date',
         'assets_profit_day':0,
         'assets_profit_total':[0],
-        'total_profit':self.total_profit,
-        'total_date':self.total_date,
-        'cur_profit_present':self.cur_profit_present,
-        'cur_profit_present_total':self.cur_profit_present_total,
-        'hold':self.hold}
+        'total_profit':'self.total_profit',
+        'total_date':'self.total_date',
+        'cur_profit_present':'self.cur_profit_present',
+        'cur_profit_present_total':'self.cur_profit_present_total',
+        'hold':'hold'}
         pass
 
     def cookie_mangement(self):
-        
         pass
     def QA_portfolio_get_free_cash(self):
         pass

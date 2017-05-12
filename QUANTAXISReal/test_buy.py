@@ -8,5 +8,5 @@ import redis
 import celery
 import typing
 requests.post('http://192.168.4.189:8888/orders',{
-
+    
 })

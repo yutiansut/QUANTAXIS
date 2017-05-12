@@ -18,3 +18,5 @@ with open('info.csv','w',newline='') as f:
             info=sys.exc_info()  
             print(info[0],":",info[1])
             print(code)
+
+            
