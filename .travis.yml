@@ -10,15 +10,15 @@ branches:
  
 # Use this to prepare the system to install prerequisites or dependencies
 
-before_install: "pip install -r requirements.txt   "
+
 # command to install dependencies
-install: "python setup.py install"
+install: "pip install -r requirements.txt   "
  
 # command to build
-script: python -m QUANTAXIS
+script: "python setup.py install"
  
 after_success:
-    "examples"
+    "python easy_start_tushare.py"
 
 
   
