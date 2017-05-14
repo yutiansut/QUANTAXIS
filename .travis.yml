@@ -1,6 +1,6 @@
 language: python
 python:
-  - "3.4"
+  - "3.5.2"
  
 os: "ubuntu"
 # whitelist
