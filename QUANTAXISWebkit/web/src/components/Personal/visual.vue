@@ -5,7 +5,7 @@
         <mu-raised-button v-on:click='query()' label="成交明细" class="demo-raised-button" primary/>
       </router-link>
       <mu-raised-button v-on:click='ready()' label="行情数据" class="demo-raised-button" secondary/>
-      <mu-raised-button v-on:click='query_market();query();info()' label="刷新图像" class="demo-raised-button" />
+      <mu-raised-button v-on:click='query_market();query();info();ready()' label="刷新图像" class="demo-raised-button" />
       <mu-divider />
     </div>
     <div>
@@ -141,13 +141,13 @@
               show: true,
               realtime: true,
               start: 0,
-              end: 85
+              end: 100
             },
             {
               type: 'inside',
               realtime: true,
               start: 0,
-              end: 85
+              end: 100
             }
           ],
           series: [{
