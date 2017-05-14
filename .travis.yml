@@ -1,6 +1,21 @@
-{
-  "language": "python",
-  "group": "stable",
-  "dist": "precise",
-  "os": "windows"
-}
+language: python
+python:
+  - "3.6"
+ 
+
+# whitelist
+branches:
+  only:
+    - 0.3.9-beta
+ 
+# Use this to prepare the system to install prerequisites or dependencies
+before_install: "sudo apt-get update"
+ 
+# command to install dependencies
+install: "pip install -q -r requirements.txt --use-mirrors"
+ 
+# command to build
+script: python -m QUANTAXIS
+ 
+after_success:
+    "examples"
