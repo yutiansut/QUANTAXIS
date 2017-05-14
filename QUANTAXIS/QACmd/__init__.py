@@ -40,7 +40,7 @@ class CLI(cmd.Cmd):
     def help_quit(self):        # 定义quit命令的帮助输出
         print ("syntax: quit",)
         print ("-- terminates the application")
-    def do_export(self):
+    def do_export(self,arg):
         coll=pymongo.MongoClient().quantaxis.backtest_info
         coll2=pymongo.MongoClient().quantaxis.stock_info
         with open('info.csv','w',newline='') as f:
