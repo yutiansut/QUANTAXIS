@@ -3,4 +3,7 @@ celery
 pandas
 lxml
 requests
+numpy 
+scipy 
+pytesseract
 
