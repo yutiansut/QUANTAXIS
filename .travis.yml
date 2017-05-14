@@ -1,0 +1,22 @@
+language: python
+python:
+  - "3.5.2"
+ 
+os: "ubuntu"
+# whitelist
+
+ 
+# Use this to prepare the system to install prerequisites or dependencies
+
+
+# command to install dependencies
+install: "pip install -r requirements.txt   "
+ 
+# command to build
+script: "python setup.py install"
+ 
+#after_success:
+    #"python easy_start_tushare.py"
+
+
+  

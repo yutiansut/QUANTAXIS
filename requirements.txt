@@ -1,10 +1,9 @@
 pymongo
 celery
-tushare
-scrapy
-selenium
-easyquotation
-lxml
-socket
 pandas
-matplotlib
+lxml
+requests
+numpy 
+scipy 
+pytesseract
+

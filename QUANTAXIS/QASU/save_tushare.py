@@ -16,6 +16,8 @@ def QA_save_stock_day_all():
         try:
             data=ts.get_k_data(i)
             data_json=json.loads(data.to_json(orient='records'))
+            for item in data_json:
+                item['date_stamp']=QA_util_date_stamp(item['date'])
             coll=pymongo.MongoClient().quantaxis.stock_day
             coll.insert_many(data_json)
         except:
@@ -30,4 +32,9 @@ def QA_SU_save_stock_list(client):
 def QA_SU_save_trade_date_all():
     data=QATushare.QA_fetch_get_trade_date('','')
     coll=pymongo.MongoClient().quantaxis.trade_date
+    coll.insert_many(data)
+
+def QA_SU_save_stock_info(client):
+    data=QATushare.QA_fetch_get_stock_info('all')
+    coll=client.quantaxis.stock_info
     coll.insert_many(data)

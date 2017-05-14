@@ -24,8 +24,8 @@ class backtest(QA.QA_Backtest):
         print('===test setting ===')
         print(self.clients)
         print(self.setting.QA_setting_user_name)
-        self.setting.QA_setting_user_name='yutiansut'
-        self.setting.QA_setting_user_password='yutiansut'
+        self.setting.QA_setting_user_name='admin'
+        self.setting.QA_setting_user_password='admin'
         print(self.setting.QA_setting_login())
         #self.setting.QA_util_sql_mongo_ip='192.168.4.189'
         self.setting.QA_util_sql_mongo_ip='127.0.0.1'
