@@ -10,7 +10,7 @@ branches:
  
 # Use this to prepare the system to install prerequisites or dependencies
 before_script:
-  - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy scipy pandas matplotlib lxml pytesseract
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy scipy pandas matplotlib lxml pytesseract requests
   - python setup.py install
 before_install: "pip install -r requirements.txt   "
 # command to install dependencies
