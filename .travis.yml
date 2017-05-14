@@ -2,7 +2,7 @@ language: python
 python:
   - "3.4"
  
-os: "windows"
+os: "ubuntu"
 # whitelist
 branches:
   only:
