@@ -2,5 +2,5 @@ pymongo
 celery
 pandas
 lxml
-tushare
+
 
