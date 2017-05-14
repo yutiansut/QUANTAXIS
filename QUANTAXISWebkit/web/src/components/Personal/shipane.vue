@@ -1,7 +1,10 @@
 <template>
-    <h1>实盘易</h1>
+    <div>
+          <h1>实盘易</h1>
     <mu-table >手动下单</mu-table>
         <mu-th>s</mu-th>
+    </div>
+
 </template>
 
 <script>        

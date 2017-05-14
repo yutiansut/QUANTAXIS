@@ -16,6 +16,7 @@ class QA_Market():
         coll=client.quantaxis.stock_day
         try:
             item= coll.find_one({"code":str(bid['code'])[0:6], "date": str(bid['time'])[0:10]})
+            """
             QA_util_log_info('==== Market Board ====')
             QA_util_log_info('date'+str(bid['time']))
             QA_util_log_info('day High'+str(item["high"]))
@@ -24,8 +25,9 @@ class QA_Market():
             QA_util_log_info('amount'+str(bid["amount"]))
             QA_util_log_info('towards'+str(bid["towards"]))
             QA_util_log_info('==== Market Board ====')
+            """
             if (float(bid['price']) < float(item["high"]) and  float(bid['price']) > float(item["low"]) or float(bid['price']) == float(item["low"]) or float(bid['price']) == float(item['high'])) and float(bid['amount'])<float(item['volume'])/8:
-                QA_util_log_info("deal success")
+                #QA_util_log_info("deal success")
                 message = {
                     'header':{
                         'source':'market',
@@ -58,7 +60,7 @@ class QA_Market():
             # print(message['body']['bid']['amount'])
                 return message
             else:
-                QA_util_log_info('not success')
+               # QA_util_log_info('not success')
                 if int(bid['price'])==0:
                     status_mes=401
                 else: status_mes=402
@@ -93,7 +95,7 @@ class QA_Market():
             # print(message['body']['bid']['amount'])
                 return message
         except:
-            QA_util_log_info('no market data')
+            ##QA_util_log_info('no market data')
             message = {
                     'header':{
                         'source':'market',

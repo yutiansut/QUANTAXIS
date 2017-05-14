@@ -2,6 +2,14 @@
 import QUANTAXIS as QA
 import random
 import pymongo
+import datetime,time
+
+from multiprocessing import Pool
+from multiprocessing.dummy import Pool as ThreadPool
+from six.moves import queue
+import threading
+
+time1=datetime.datetime.now().timestamp()
 class backtest(QA.QA_Backtest):
     #对回测过程进行初始化
     def init(self):
@@ -10,7 +18,7 @@ class backtest(QA.QA_Backtest):
         #设置初始账户资产
         self.account.assets=100000
         #设置回测的开始结束时间
-        self.strategy_start_date='2015-01-01'
+        self.strategy_start_date='2015-05-01'
         self.strategy_end_date='2017-04-01'
         #设置回测标的,是一个list对象,不过建议只用一个标的
         self.strategy_stock_list=['600592.SZ']
@@ -30,7 +38,7 @@ class backtest(QA.QA_Backtest):
         #print(self.account.history_trade)
         #input()
         #在log中记录数据库信息
-        QA.QA_util_log_info(self.setting.client)
+       # QA.QA_util_log_info(self.setting.client)
         #根据回测设置计算真实交易的开始和结束时间
         self.start_mes=QA.QA_util_realtime(self.strategy_start_date,self.setting.client)
         self.end_mes=QA.QA_util_realtime(self.strategy_end_date,self.setting.client)
@@ -54,7 +62,7 @@ class backtest(QA.QA_Backtest):
             start_date=str(start['date'])[0:10]
             #print(self.strategy_gap)
             
-            print(start_date)
+            #print(start_date)
             data=QA.QA_fetch_data(self.strategy_stock_list[0],start_date,end_date,self.coll2)
             #print(len(data))
             i=i+1
@@ -76,15 +84,17 @@ class backtest(QA.QA_Backtest):
     #把从账户,市场的数据组合起来,你也可以自定义自己的指标,数据源,以dict的形式插入进来  
     #策略开始
     def handle_data(self):
-        QA.QA_util_log_info(self.account.message['body'])
+        backtest_history=[]
+        #QA.QA_util_log_info(self.account.message['body'])
         #策略的交易日循环
         for i in range(int(self.start_mes['id']),int(self.end_mes['id']),1):
-            QA.QA_util_log_info('===day start===')
+            #QA.QA_util_log_info('===day start===')
             running_date=QA.QA_util_id2date(i,self.setting.client)
-            QA.QA_util_log_info(running_date)
+            #QA.QA_util_log_info(running_date)
             is_trade=QA.QA_util_is_trade(running_date,self.strategy_stock_list[0],self.setting.client)
             if is_trade==False:
-                QA.QA_util_log_info('停牌中')
+                #QA.QA_util_log_info('停牌中')
+                pass
             else:
                 data=self.BT_data_handle(i)
             
@@ -92,7 +102,7 @@ class backtest(QA.QA_Backtest):
                 result=predict(data['market'],data['account']['body']['account']['profit']*100,data['account']['body']['account']['hold'],data['account']['body']['account']['cur_profit_present']*100)
                 # print(result)
 
-                print(data['account']['body']['account']['hold'])
+               # print(data['account']['body']['account']['hold'])
                 if result==1 and int(data['account']['body']['account']['hold'])==0:
                     #print(data['account']['body']['account']['assest_free'])
                     #print(data['market'][-1][4])
@@ -107,16 +117,17 @@ class backtest(QA.QA_Backtest):
                     self.bid.bid['user']=self.setting.QA_setting_user_name
                     self.bid.bid['strategy']=self.strategy_name
                     message=self.market.market_make_deal(self.bid.bid,self.setting.client)
-                    QA.QA_util_log_info(message)
+                   # QA.QA_util_log_info(message)
                     
                     message=self.account.QA_account_receive_deal(message,self.setting.client)
                     self.backtest_message=message
-                    QA.QA_SU_save_account_message(message,self.setting.client)
+                    backtest_history.append(message)
+                  #  QA.QA_SU_save_account_message(message,self.setting.client)
                     #print('buy----------------------------------------------')
                     #QA.QA_util_log_info(message)
                     #input()
                 elif result==1 and int(data['account']['body']['account']['hold'])==1:
-                    QA.QA_util_log_info('Hold and Watch!!!!!!!!!!!!')
+                    #QA.QA_util_log_info('Hold and Watch!!!!!!!!!!!!')
                     ##
                     self.bid.bid['amount']=int(data['account']['body']['account']['portfolio']['amount'])
                     self.bid.bid['price']=0
@@ -128,11 +139,12 @@ class backtest(QA.QA_Backtest):
                     message=self.market.market_make_deal(self.bid.bid,self.setting.client)
                     message=self.account.QA_account_receive_deal(message,self.setting.client)
                     self.backtest_message=message
-                    QA.QA_SU_save_account_message(message,self.setting.client)
+                    backtest_history.append(message)
+                  #  QA.QA_SU_save_account_message(message,self.setting.client)
 
                     # todo  hold profit change
                 elif result==0 and int(data['account']['body']['account']['hold'])==0:
-                    QA.QA_util_log_info('ZERO and Watch!!!!!!!!!!!!')
+                   # QA.QA_util_log_info('ZERO and Watch!!!!!!!!!!!!')
                     self.bid.bid['amount']=int(data['account']['body']['account']['portfolio']['amount'])
                     self.bid.bid['price']=0
                     self.bid.bid['code']=str(self.strategy_stock_list[0])[0:6]
@@ -143,7 +155,8 @@ class backtest(QA.QA_Backtest):
                     message=self.market.market_make_deal(self.bid.bid,self.setting.client)
                     message=self.account.QA_account_receive_deal(message,self.setting.client)
                     self.backtest_message=message
-                    QA.QA_SU_save_account_message(message,self.setting.client)
+                    backtest_history.append(message)
+                    #QA.QA_SU_save_account_message(message,self.setting.client)
                 elif result==0 and int(data['account']['body']['account']['hold'])==1:
                     self.bid.bid['amount']=int(data['account']['body']['account']['portfolio']['amount'])
                     self.bid.bid['price']=float(data['market'][-1][4])
@@ -155,13 +168,14 @@ class backtest(QA.QA_Backtest):
 
                     message=self.market.market_make_deal(self.bid.bid,self.setting.client)
 
-                    QA.QA_util_log_info(message)
-                    print('=================sell start')
-                    print(message)
-                    print('sell end==============')
+                   # QA.QA_util_log_info(message)
+                    #print('=================sell start')
+                   # print(message)
+                   # print('sell end==============')
                     message=self.account.QA_account_receive_deal(message,self.setting.client)
+                    backtest_history.append(message)
                     self.backtest_message=message
-                    QA.QA_SU_save_account_message(message,self.setting.client)
+                   # QA.QA_SU_save_account_message(message,self.setting.client)
                     #print('sell----------------------------------------------')
                     #QA.QA_util_log_info(message) 
                     #input()
@@ -177,6 +191,7 @@ class backtest(QA.QA_Backtest):
             exist_time=int(self.end_mes['id'])-int(self.start_mes['id'])+1
             #print(self.backtest_message)
             #把这个协议发送给分析引擎,进行分析
+            QA.QA_SU_save_account_message_many(backtest_history,self.setting.client)
             performace=QA.QABacktest.QAAnalysis.QA_backtest_analysis_start(self.setting.client,self.backtest_message,exist_time)
             backtest_mes={
                 'user':self.setting.QA_setting_user_name,
@@ -215,12 +230,42 @@ def predict(market,account_profit,if_hold,profit_per_trade):
         return 0
 
 
-#stock_list=['600592','600538','603588','000001','000002','601801','600613','002138','600010']
-stock_list=['000001']
-for item in stock_list:
-        
-    BT=backtest()
-    BT.init()
-    BT.strategy_stock_list=[item]
-    BT.handle_data()
 
+
+if __name__ == '__main__':
+    stock_list=['600592','600538','603588','000001','000002','601801','600613','002138','600010']
+    #stock_list=['600538','603588','600613']
+
+    """
+    for item in stock_list:
+        try:
+                
+            BT=backtest()
+            BT.init()
+            BT.strategy_stock_list=[item]
+            BT.handle_data()
+        except:
+            pass
+
+    """
+    #pool=Pool(2)
+    pool = ThreadPool(140) # Sets the pool size to 4
+    def start_unit(item):
+
+        try:
+            BT=backtest()
+            BT.init()
+            BT.strategy_stock_list=[item]
+            BT.handle_data()
+        except:
+            #QA.QA_util_log_expection('wrong')
+        # QA.QA_util_log_expection('item')
+            pass
+    
+    pool.map(start_unit,stock_list)
+    pool.close()
+    pool.join()
+    time2=datetime.datetime.now().timestamp()
+    time_x=float(time2)-float(time1)
+
+    print(time_x)

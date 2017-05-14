@@ -61,7 +61,7 @@
         chart: null,
         data0: this.$route.params.id,
         time: [],
-        items:[{'code':'600010'}]
+        items:[{'code':'test'}]
       }
     },
     methods: {
@@ -238,7 +238,8 @@
             this.items[0]['exist']=data['exist']
             this.items[0]['total_returns']=data['total_returns'].toFixed(2)
             this.items[0]['win_rate']=data['win_rate'].toFixed(3)
-            //console.log(this.items)
+            
+            console.log(this.items)
             var code = data['stock_list'][0]
             var val = code + '&start=' + start_time + '&end=' + end_time
             //console.log(val)
@@ -366,7 +367,7 @@
                 market.push(market_data[i])
               }
             }
-            console.log(market)
+            //console.log(market)
             for (var i = 0; i < market.length - 1; i++) {
               //console.log(this.items[i][0])
               value.push([market[i]['market']['open'], market[i]['market']['close'], market[i]['market']['low'],

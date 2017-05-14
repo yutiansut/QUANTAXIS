@@ -101,7 +101,7 @@ class QA_Account:
             # towards<1 卖出成功
             # 拿到新的交易的价格等
             self.account_date.append(update_message['date'])
-            QA_util_log_info('Success')
+           # QA_util_log_info('Success')
             new_id=update_message['id']
             new_amount=update_message['amount']
             new_trade_date=update_message['date']
@@ -182,7 +182,7 @@ class QA_Account:
 
             self.QA_account_calc_profit(update_message)
             self.account_date.append(update_message['date'])
-            QA_util_log_info('hold without bid')
+            #QA_util_log_info('hold without bid')
             message={
                 'header':{
                     'source':'account',
@@ -222,7 +222,7 @@ class QA_Account:
             }
             #属于不更新history和portfolio,但是要继续增加账户和日期的
         elif update_message['status']==402:
-            QA_util_log_info('bid not success')
+            #QA_util_log_info('bid not success')
             message={
                 'header':{
                     'source':'account',
