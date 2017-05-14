@@ -13,7 +13,7 @@ by yutiansut
 
 from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day,QA_fetch_get_trade_date,
                                 QA_fetch_get_stock_indicator)
-from QUANTAXIS.QAFetch.QAQuery import QA_fetch_data,QA_fetch_trade_date
+from QUANTAXIS.QAFetch.QAQuery import QA_fetch_data,QA_fetch_trade_date,QA_fetch_stock_day
 from QUANTAXIS.QASpider import (QA_spider_select_spider,QA_spider_start_spider,
                                 QA_spider_end_spider)
 
@@ -52,7 +52,7 @@ import QUANTAXIS.QACmd
 
 from QUANTAXIS.QACmd import QA_cmd
 import argparse
-QA_util_log_info('Welcome to QUANTAXIS, the Version is 0.3.9-beta-dev13')
+QA_util_log_info('Welcome to QUANTAXIS, the Version is 0.3.9-beta-dev14')
 
 
 def QA_help_fetch(self):
