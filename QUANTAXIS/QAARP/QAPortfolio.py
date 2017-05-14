@@ -24,6 +24,7 @@ class QA_Portfolio():
         return self.portfolio_account
 
     def QA_portfolio_calc(self):
+        """
         {
         'init_assest':'self.total_assest[0]',
         'portfolio':'self.portfolio',
@@ -42,9 +43,11 @@ class QA_Portfolio():
         'cur_profit_present':'self.cur_profit_present',
         'cur_profit_present_total':'self.cur_profit_present_total',
         'hold':'hold'}
+        """
         pass
 
     def cookie_mangement(self):
         pass
+        
     def QA_portfolio_get_free_cash(self):
         pass
