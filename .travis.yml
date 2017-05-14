@@ -2,14 +2,14 @@ language: python
 python:
   - "3.6"
  
-
+os: "windows"
 # whitelist
 branches:
   only:
     - 0.3.9-beta
  
 # Use this to prepare the system to install prerequisites or dependencies
-before_install: "pip install  -r requirements.txt "
+#before_install: "pip install  -r requirements.txt "
  
 # command to install dependencies
 install: "python setup.py install"
@@ -19,3 +19,6 @@ script: python -m QUANTAXIS
  
 after_success:
     "examples"
+
+
+  
