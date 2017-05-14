@@ -10,7 +10,7 @@ branches:
  
 # Use this to prepare the system to install prerequisites or dependencies
 before_install: "pip install  lxml -i http://mirrors.aliyun.com/pypi/simple/  "
- 
+before_install: "pip install  pandas -i http://mirrors.aliyun.com/pypi/simple/  "
 # command to install dependencies
 install: "python setup.py install"
  
