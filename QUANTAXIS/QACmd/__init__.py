@@ -95,6 +95,8 @@ class CLI(cmd.Cmd):
                 'date_stamp':trade['time_stamp']
             }
         }
+        QA_util_log_info(message)
+        QA_util_log_info('***'*10)
         QA_util_log_info(QA_backtest_analysis_start(client,message,days))
 
     def help_performance(self):
