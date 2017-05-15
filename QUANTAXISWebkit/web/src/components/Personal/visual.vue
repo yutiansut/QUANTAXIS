@@ -307,7 +307,7 @@
               }
 
             }
-            console.log(this.acc)
+            //console.log(this.acc)
             //console.log(market_time)
             this.chart.setOption({
               title: {
