@@ -4,6 +4,7 @@ import string, sys
 import os,shutil
 import pymongo,csv
 from QUANTAXIS.QAUtil import QA_util_log_info
+from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
 from . import strategy_sample_simple
 class CLI(cmd.Cmd):
     
@@ -94,7 +95,7 @@ class CLI(cmd.Cmd):
                 'date_stamp':trade['time_stamp']
             }
         }
-        QA_util_log_info(QA.QA_backtest_analysis_start(client,message,days))
+        QA_util_log_info(QA_backtest_analysis_start(client,message,days))
 
     def help_performance(self):
         print('this is a performance management which you can restart a performance test again')
