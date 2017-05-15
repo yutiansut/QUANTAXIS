@@ -5,9 +5,9 @@ import QUANTAXIS as QA
 import json,datetime,time
 
 # setting config
-unit_strategy='Choice-1.2*6'
+unit_strategy=input('strategy_name:   ')
 unit_cookie=''
-unit_code='000001'
+unit_code=input('code name:  ')
 
 # client setting
 client=pymongo.MongoClient()
