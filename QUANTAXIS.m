@@ -63,7 +63,7 @@ classdef QUANTAXIS<handle
     end
     methods %Total
         function QA=QUANTAXIS()
-            fprintf(' Welcome to QUANTAXIS 2.0 Alpha\n CopyRight(c) 2016 yutiansut \n More Info http://quantaxis.yutiansut.com \n')
+            fprintf(' Welcome to QUANTAXIS 0.3.9 Beta\n CopyRight(c) 2017 yutiansut \n More Info http://www.yutiansut.com \n')
             addlistener(QA,'MESSAGE',@MESSAGEUPDATE);
             addlistener(QA,'SQL',@SQLSTATEMENT);
             addlistener(QA,'TRADE',@TRADECORE);
@@ -335,7 +335,7 @@ classdef QUANTAXIS<handle
     end
     methods %Interface Function
         function Interface_Mysql_Conn(QA)
-            QA.INT_MYSQL.Choice=input('DataBase:\n1- Local \n2-Shenzhen Cloud \n3-Qingdao Cloud \n4-Custom \n Choose a DataBase:  ','s');
+            QA.INT_MYSQL.Choice=input('DataBase:\n1- Local  \n2-Custom \n Choose a DataBase:  ','s');
             QA.MES.Str=['MYSQL.Choice',QA.INT_MYSQL.Choice];
             disp(QA.MES.Str);
             notify(QA,'MESSAGE');
@@ -354,37 +354,9 @@ classdef QUANTAXIS<handle
                         notify(QA,'MESSAGE');
                         QA.INT_MYSQL_LOCAL=QA.INT_MYSQL;
                     end
-                case {'2'}
-                    QA.INT_MYSQL.Databasename='quantaxis';
-                    QA.INT_MYSQL.Username='root';
-                    QA.INT_MYSQL.Password ='KlLn0NBkKn';
-                    QA.INT_MYSQL.Driver = 'com.mysql.jdbc.Driver';
-                    QA.INT_MYSQL.Databaseurl = ['jdbc:mysql://112.74.111.65:3306/',QA.INT_MYSQL.Databasename];
-                    QA.INT_MYSQL.Conn = database(QA.INT_MYSQL.Databasename,QA.INT_MYSQL.Username,QA.INT_MYSQL.Password,QA.INT_MYSQL.Driver,QA.INT_MYSQL.Databaseurl);
-                    QA.INT_MYSQL.Status=isopen(QA.INT_MYSQL.Conn);
-                    if QA.INT_MYSQL.Status==1
-                        QA.MES.Str='Shenzhen Cloud Mysql Connection Success';
-                        disp(QA.MES.Str);
-                        notify(QA,'MESSAGE');
-                        QA.INT_MYSQL_CLOUD_SZ=QA.INT_MYSQL;
-                    end
+           
                     
-                case {'3'}
-                    QA.INT_MYSQL.Databasename='quantaxis';
-                    QA.INT_MYSQL.Username='root';
-                    QA.INT_MYSQL.Password ='940809';
-                    QA.INT_MYSQL.Driver = 'com.mysql.jdbc.Driver';
-                    QA.INT_MYSQL.Databaseurl = ['jdbc:mysql://121.42.215.235:3306/',QA.INT_MYSQL.Databasename];
-                    QA.INT_MYSQL.Conn = database(QA.INT_MYSQL.Databasename,QA.INT_MYSQL.Username,QA.INT_MYSQL.Password,QA.INT_MYSQL.Driver,QA.INT_MYSQL.Databaseurl);
-                    QA.INT_MYSQL.Status=isopen(QA.INT_MYSQL.Conn);
-                    if QA.INT_MYSQL.Status==1
-                        QA.MES.Str='Qingdao Cloud Mysql Connection Success';
-                        disp(QA.MES.Str);
-                        notify(QA,'MESSAGE');
-                        QA.INT_MYSQL_CLOUD_QD=QA.INT_MYSQL;
-                    end
-                    
-                case{'4'}
+                case{'2'}
                     QA.INT_MYSQL.Databasename=input('Database:  ','s');
                     QA.INT_MYSQL.Username=input('UserName(example:root) \nName:  ','s');
                     QA.INT_MYSQL.Password =input('Password:  ','s');
@@ -504,7 +476,7 @@ classdef QUANTAXIS<handle
                         QA.MES.Str='Login Successful ! Any Question please turn to QQ279336410';
                         disp(QA.MES.Str)
                         notify(QA,'MESSAGE')
-                        disp('[Email yutiansut@qq.com] [Website www.yutiansut.com] [QuantAxis Project quantaxis.yutiansut.com]')
+                        disp('[Email yutiansut@qq.com] [Website www.yutiansut.com] [QUANTAXIS Project quantaxis.yutiansut.com]')
                         disp('Please Login');
                         QA.Login();
                         clc
@@ -541,7 +513,7 @@ classdef QUANTAXIS<handle
                     QA.MES.Str='Login Successful ! Any Question please turn to QQ279336410';
                     disp(QA.MES.Str)
                     notify(QA,'MESSAGE')
-                    disp('[Email yutiansut@qq.com] [Website www.yutiansut.com] [QuantAxis Project quantaxis.yutiansut.com]')
+                    disp('[Email yutiansut@qq.com] [Website www.yutiansut.com] [QUANTAXIS Project quantaxis.yutiansut.com]')
                 else
                     disp('PassWord is Wrong...')
                     disp('You Still have one chance')
@@ -807,8 +779,8 @@ end
 function QAInterface_Mail(TargetAddress, subject, content)
 
 
-SourceAddress='postmaster@yutiansut.com';
-password='Yutiansut940809';
+SourceAddress='';
+password='';
 
 %% SMTP_Server Get
 %ind = find( SourceAddress == '@', 1);
