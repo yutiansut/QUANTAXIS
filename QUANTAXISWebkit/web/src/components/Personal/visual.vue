@@ -302,7 +302,7 @@
             for (var i = 0; i < this.time.length; i++) {
               if (market_time.indexOf(this.time[i]) == -1) {
                 market_time.splice(i, 0, this.time[i])
-                this.acc.splice(i, 0, this.acc[i - 1])
+                this.acc.splice(i, 0, this.acc[i - 2])
                 //console.log()
               }
 
@@ -363,16 +363,15 @@
             var end_time = market_data[market_data.length - 1]['bid']['time']
             var market=[]
             for (var i = 1; i < market_data.length - 1; i++) {
-              if (market_data[i]['bid']['time']!=market_data[i-1]['bid']['time']){
+              if (market_data[i]['bid']['time']!=market_data[i-1]['bid']['time'] && market_data[i]['bid']['time']!=''){
                 market.push(market_data[i])
               }
             }
             //console.log(market)
-            for (var i = 0; i < market.length - 1; i++) {
+            for (var i = 0; i < market.length ; i++) {
               //console.log(this.items[i][0])
               value.push([market[i]['market']['open'], market[i]['market']['close'], market[i]['market']['low'],
-                market[i]['market']['high']
-              ])
+                market[i]['market']['high']])
               if (market[i]['bid']['towards'] == 1) {
                 bid_buy.push(market[i]['bid']['price']);
                 bid_buy_date.push(market[i]['bid']['time']);
@@ -386,6 +385,7 @@
               }
 
             }
+            //console.log(bid_sell_date)
             for (var i = 0; i < this.time.length; i++) {
               if (bid_buy_date.indexOf(this.time[i]) == -1 && bid_sell_date.indexOf(this.time[i]) == -1) {
                 bid_buy_date.splice(i, 0, '')
