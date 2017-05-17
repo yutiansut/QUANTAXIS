@@ -10,3 +10,10 @@ filter_db = filter_db
 db = Base('dummy', save_to_file=False)
 db.create('name', 'age', 'size')
 db.insert(name='homer', age=23, size=1.84)
+
+
+print(db.get_unique_ids('name'))
+print(db.get_unique_ids('age'))
+print(db.get_group_count('name'))
+print(db.mode)
+print(db.get_indices())
