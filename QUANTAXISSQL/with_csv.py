@@ -3,16 +3,11 @@
 
 import os
 
-import .qasql
+import QASQL.qasql as qasql
 
 
 def to_csv(pdl, out=None, write_field_names=True):
-    """Conversion from the PyDbLite Base instance pdl to the file object out
-    open for writing in binary mode
-    If out is not specified, the field name is the same as the PyDbLite
-    file with extension .csv
-    If write_field_names is True, field names are written at the top
-    of the CSV file"""
+
     import csv
     if out is None:
         file_name = os.path.splitext(pdl.name)[0] + ".csv"
@@ -28,20 +23,7 @@ def to_csv(pdl, out=None, write_field_names=True):
 
 
 def from_csv(csvfile, out=None, fieldnames=None, fmtparams=None, conv_func={}, empty_to_none=[]):
-    """Conversion from CSV to PyDbLite
-    csvfile : name of the CSV file in the file system
-    out : path for the new PyDbLite base in the file system
-    fieldnames : list of field names. If set to None, the field names must
-    be present in the first line of the CSV file
-    fmtparams : the format parameters for the CSV file, as described in
-    the csv module of the standard distribution
-    conv_func is a dictionary mapping a field name to the function used to
-    convert the string read in the CSV to the appropriate Python type. For
-    instance if field "age" must be converted to an integer :
-    conv_func["age"] = int
-    empty_to_none is a list of the fields such that when the value read in
-    the CSV file is the empty string, the field value is set to None
-    """
+
     import csv
     import time
     import datetime
@@ -57,7 +39,7 @@ def from_csv(csvfile, out=None, fieldnames=None, fmtparams=None, conv_func={}, e
     reader = csv.DictReader(open(csvfile), fieldnames, fmtparams)
     reader.next()  # skip first line
 
-    db = pydblite.Base(out)
+    db = qasql.Base(out)
 
     conv_func.update({"__id__": int})
     auto_id = "__id__" not in fieldnames
