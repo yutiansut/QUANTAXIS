@@ -3,7 +3,7 @@
 
 import os
 
-import pydblite
+import .qasql
 
 
 def to_csv(pdl, out=None, write_field_names=True):
@@ -103,7 +103,7 @@ def from_csv(csvfile, out=None, fieldnames=None, fmtparams=None, conv_func={}, e
 
 if __name__ == "__main__":
     os.chdir(os.path.join(os.getcwd(), 'test'))
-    pdl = pydblite.Base("test.pdl").open()
+    pdl = qasql.Base("test.pdl").open()
     csvfile = to_csv(pdl)
     db = from_csv(csvfile, out="test_copy.pdl")
 
