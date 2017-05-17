@@ -1,4 +1,4 @@
-from .qasql import Base
+from QASQL.qasql import Base
 test_db_name = 'test_database'
 def setUp(self):  # NOQA
     self.first_record_id = 0
