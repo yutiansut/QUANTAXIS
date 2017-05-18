@@ -2,6 +2,7 @@
 import easyquotation
 import redis
 import datetime
+
 quotation = easyquotation.use('sina')  
 r = redis.Redis(host='localhost', port=6379, db=0)
 code=['000002','600538','601801']
