@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" c rel="stylesheet">
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<style>
+	* {
+		margin: 0;
+		padding: 0;
+		border: 0;
+	}
+
+	html, body {
+		height: 100%;
+	} /* 同时设置html是为了兼容FF */
+	.money, .quantity {
+		align : right
+	}
+</style>
+<script>
+	window.addEventListener('orientationchange', function(event) {
+		if (window.orientation == 180 || window.orientation == 0) {
+			// alert("竖屏"); 
+		}
+		if (window.orientation == 90 || window.orientation == -90) {
+			// alert("横屏"); 
+		}
+	});
+</script>
+</head>
+<body>
+	<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+	<div>
+		<div>
+			<div>
+				<div></div>
+				<div></div>
+			</div>
+			<div >
+				<table width="100%" cellspacing="10px" cellpadding="0">
+				   <tbody>
+					  <tr><td>卖5</td><td><span >--</span></td><td><span>--</span></td></tr>
+					  <tr><td>卖4</td><td><span>--</span></td><td><span>--</span></td></tr>
+					  <tr><td>卖3</td><td><span>--</span></td><td><span>--</span></td></tr>
+					  <tr><td>卖2</td><td><span>--</span></td><td><span>--</span></td></tr>
+					  <tr><td>卖1</td><td><span>--</span></td><td><span>--</span></td></tr>
+					  <tr><td>买1</td><td><span>--</span></td><td><span>--</span></td></tr>
+					  <tr><td>买2</td><td><span>--</span></td><td><span>--</span></td></tr>
+					  <tr><td>买3</td><td><span>--</span></td><td><span>--</span></td></tr>
+					  <tr><td>买4</td><td><span>--</span></td><td><span>--</span></td></tr>
+					  <tr><td>买5</td><td><span>--</span></td><td><span>--</span></td></tr>
+				   </tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		function addZero(val, len, top)
+		{
+			if (!arguments[1]) len = 2;
+			if (!arguments[2]) top = true;
+
+			if (val.toString().length < len) 
+			{
+				while (len != val.toString().length)
+				{
+					if (top) val = "0" + val.toString();
+					else val = val.toString() + "0";
+				}
+			}
+			return val.toString();
+		}
+		function getCurDate()
+		{
+			return [new Date().getFullYear(), addZero(new Date().getMonth()+1), addZero(new Date().getDate())].join("");
+		}
+
+		var STOCK_CODE = "601099";
+		var START_ID = getCurDate() + "0925";
+		var END_ID = getCurDate() + "1500";
+		var short_date = getCurDate();
+		var short_id = "0925";
+		var time_pos = "09:25";
+
+		// 基于准备好的dom，初始化echarts实例
+		var myChart1 = echarts.init(document.getElementById('main1'));
+		// 基于准备好的dom，初始化echarts实例
+		var myChart2 = echarts.init(document.getElementById('main2'));
+
+
+		//***************************************************************//
+		// 初始化 x轴 
+		//***************************************************************//
+		var dtCurDate = new Date();
+		var arrCurTime = [];
+		//arrCurTime.push(new Date(dtCurDate.getFullYear(), dtCurDate.getMonth(), dtCurDate.getDate(), 9, 25, 0, 0));
+		arrCurTime.push("09:25");
+		arrCurTime.push("09:26");
+		arrCurTime.push("09:27");
+		arrCurTime.push("09:28");
+		arrCurTime.push("09:29");
+		var dtTimeAM = new Date(dtCurDate.getFullYear(), dtCurDate.getMonth(), dtCurDate.getDate(), 9, 30, 0, 0)
+		
+		for (var i=0; i<=120; i++)
+		{
+			arrCurTime.push([addZero(dtTimeAM.getHours()), addZero(dtTimeAM.getMinutes())].join(":"));
+			dtTimeAM = new Date(dtTimeAM.getTime() + 60*1000);
+		}
+		var dtTimePM = new Date(dtCurDate.getFullYear(), dtCurDate.getMonth(), dtCurDate.getDate(), 13, 0, 0, 0)
+		for (var i=0; i<=120; i++)
+		{
+			arrCurTime.push([addZero(dtTimePM.getHours()), addZero(dtTimePM.getMinutes())].join(":"));
+			dtTimePM = new Date(dtTimePM.getTime() + 60*1000);
+		}
+		//***************************************************************//
+
+		var line_data = [];
+		for (var i=0; i<arrCurTime.length; i++)
+		{
+			line_data.push( {name: arrCurTime[i], value: "-"} );
+		}
+		var bar_data = [];
+		for (var i=0; i<arrCurTime.length; i++)
+		{
+			bar_data.push( {name: arrCurTime[i], value: "-"} );
+		}
+		function getDataPos(time)
+		{
+			for (var i=0; i<line_data.length; i++)
+			{
+				if (time == line_data[i].name) return i;
+			}
+		}
+
+		option1 = {
+			title : {
+			},
+			tooltip : {
+				trigger : 'axis',
+				axisPointer : {
+					type : 'line'
+				},
+				position : 'top'
+			},
+			grid : {
+				top : '2%',
+				left : '8%',
+				right : '3%',
+				bottom : '8%'
+			},
+			xAxis : {
+				boundaryGap : false,
+				type : 'category',
+				splitLine : {
+					show : true,
+					interval : function (index, value) {
+						if (value == "09:15" 
+							|| value == "09:30"
+							|| value == "10:30"
+							|| value == "11:30"
+							|| value == "14:00"
+							|| value == "15:00") {
+							return true;
+						}
+						else return false;
+					}
+				},
+				data: arrCurTime,
+				scale: true,
+				axisTick : {
+					show : true,
+					interval : function (index, value) {
+						if (value == "09:15" 
+							|| value == "09:30"
+							|| value == "10:30"
+							|| value == "11:30"
+							|| value == "14:00"
+							|| value == "15:00") {
+							return true;
+						}
+						else return false;
+					}
+				},
+				axisLabel : {
+					show : true,
+					interval : 0,
+					formatter: function (value, index) {
+						if (value == "09:15" 
+							|| value == "09:30"
+							|| value == "10:30"
+							|| value == "11:30"
+							|| value == "14:00"
+							|| value == "15:00") {
+							return value;
+						} else {
+							return "";
+						}
+					}
+				},
+			},
+			yAxis : [ {
+				scale : true,
+				splitArea : {
+					show : true
+				}
+			}],
+			series : [ {
+				name : '当前价格',
+				type:'line',
+	            itemStyle: {
+	                normal: {
+	                    color: 'rgb(255, 70, 131)'
+	                }
+	            },
+				data : line_data
+			}]
+		};
+
+		option2 = {
+			title : {
+			},
+			tooltip : {
+				trigger : 'axis',
+				axisPointer : {
+					type : 'line'
+				},
+				position : 'top'
+			},
+			grid : {
+				top : '5%',
+				left : '8%',
+				right : '3%',
+				bottom : '10%'
+			},
+			xAxis : {
+				boundaryGap : false,
+				type : 'category',
+				splitLine : {
+					show : true,
+					interval : function (index, value) {
+						if (value == "09:15" 
+							|| value == "09:30"
+							|| value == "10:30"
+							|| value == "11:30"
+							|| value == "14:00"
+							|| value == "15:00") {
+							return true;
+						}
+						else return false;
+					}
+				},
+				data: arrCurTime,
+				scale: true,
+				axisTick : {
+					show : true,
+					interval : function (index, value) {
+						if (value == "09:15" 
+							|| value == "09:30"
+							|| value == "10:30"
+							|| value == "11:30"
+							|| value == "14:00"
+							|| value == "15:00") {
+							return true;
+						}
+						else return false;
+					}
+				},
+				axisLabel : {
+					show : true,
+					interval : 0,
+					formatter: function (value, index) {
+						if (value == "09:15" 
+							|| value == "09:30"
+							|| value == "10:30"
+							|| value == "11:30"
+							|| value == "14:00"
+							|| value == "15:00") {
+							return value;
+						} else {
+							return "";
+						}
+					}
+				},
+			},
+			yAxis : [ {
+				scale : true,
+				splitArea : {
+					show : true
+				}
+			}],
+			series : [ {
+				name : '成交量',
+				type:'bar',
+	            itemStyle: {
+	                normal: {
+	                    color: 'rgb(255, 70, 131)'
+	                }
+	            },
+				data : bar_data
+			}]
+		};
+
+		// 使用刚指定的配置项和数据显示图表。
+		myChart1.setOption(option1);
+		myChart2.setOption(option2);
+		
+		var app = {};
+		app.timeTicket = setInterval(function () {
+			if (parseInt(short_date + short_id) < parseInt(END_ID))
+			{
+				// line_data.push(randomData(arrCurTime[pos]));
+				// line_data.splice(pos, 1, randomData(arrCurTime[pos]));
+				getLineData();
+			}
+			else if (parseInt(short_date+short_id) == parseInt(END_ID))
+			{
+				// getLineData();
+				clearInterval(app.timeTicket);
+			}
+		}, 1000);
+		
+		echarts.connect([myChart1, myChart2]);
+		window.onresize = function(){
+			// alert("asdfasdfasdf");
+			myChart1.resize();
+			myChart2.resize();
+		};
+		
+		var before_quantity = 0;
+		var cur_quantity = 0;
+		var befor_hm = "";
+		function getLineData()
+		{
+			// if (!arguments[0]) id = INIT_ID;
+			// var fullId = [new Date().getFullYear(), addZero(new Date().getMonth()), addZero(new Date().getDate())].join("") + id.split(":").join("");
+			//var fullId = getCurDate() + short_id.split(":").join("");
+			var fullId = getCurDate() + short_id;
+			$.get("line.php?code=" + STOCK_CODE + "&id=" + fullId,
+				function(data, status){
+					if (status == 'success')
+					{
+						var json_data = JSON.parse(data);
+						var tempTimePos;
+						for (var key in json_data)
+						{
+							$("#bq1").html(Math.round(json_data[key][10]/100));
+							$("#bq2").html(Math.round(json_data[key][12]/100));
+							$("#bq3").html(Math.round(json_data[key][14]/100));
+							$("#bq4").html(Math.round(json_data[key][16]/100));
+							$("#bq5").html(Math.round(json_data[key][18]/100));
+							$("#b1").html(json_data[key][11]);
+							$("#b2").html(json_data[key][13]);
+							$("#b3").html(json_data[key][15]);
+							$("#b4").html(json_data[key][17]);
+							$("#b5").html(json_data[key][19]);
+
+							$("#sq1").html(Math.round(json_data[key][20]/100));
+							$("#sq2").html(Math.round(json_data[key][22]/100));
+							$("#sq3").html(Math.round(json_data[key][24]/100));
+							$("#sq4").html(Math.round(json_data[key][26]/100));
+							$("#sq5").html(Math.round(json_data[key][28]/100));
+							$("#s1").html(json_data[key][21]);
+							$("#s2").html(json_data[key][23]);
+							$("#s3").html(json_data[key][25]);
+							$("#s4").html(json_data[key][27]);
+							$("#s5").html(json_data[key][29]);
+
+							time_pos = json_data[key][31].substring(0, 5);
+							short_id = json_data[key][31].split(":").join("").substring(0, 4);
+							short_date = json_data[key][30].split("-").join("").substring(0, 8);
+							// 如果为取到对应的点，说明不在有效时间，继续
+							var pos = getDataPos(time_pos);
+							if (pos == undefined) continue;
+							// 替换数组对应点
+							line_data.splice(pos, 1, {name: json_data[key][31].substring(0, 5), value: json_data[key][3]});
+							//
+							if (parseInt(befor_hm) != parseInt(short_id))
+							{
+								before_quantity = cur_quantity;
+								befor_hm = short_id;
+							}
+							cur_quantity = json_data[key][8];
+							bar_data.splice(pos, 1, {name: json_data[key][31].substring(0, 5), value: Math.round((parseInt(cur_quantity)-parseInt(before_quantity))/100)});
+							
+							myChart1.setOption({
+								series: [{
+									data : line_data
+								}]
+							});
+
+							myChart2.setOption({
+								series: [{
+									data : bar_data
+								}]
+							});
+
+						}
+					}
+				}
+			);
+		}
+	</script>
+</body>
+</html>
+
