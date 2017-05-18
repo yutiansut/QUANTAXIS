@@ -89,9 +89,9 @@ cd QUANTAXISWebkit
 
 ## todo list
 
-- 基于RabbitMQ的消息队列,nodejs和python进程通信
+- 基于ZEROMQ的消息队列,nodejs和python进程通信
 - 期货回测
-- Portfolio和Risk支持
+- Portfolio和Risk支持  [yes]
 
 ## Webkit大礼包
 
