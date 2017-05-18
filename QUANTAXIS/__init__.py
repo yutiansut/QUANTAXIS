@@ -43,6 +43,7 @@ from QUANTAXIS.QABacktest.QABacktest import QA_Backtest
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start    
 
 # Util
+from QUANTAXIS.QAUtil.QAType import (QA_util_ensure_date,QA_util_ensure_dict,QA_util_ensure_ms,QA_util_ensure_timeSerires)
 from QUANTAXIS.QAUtil import (QA_util_sql_mongo_setting, QA_util_cfg_initial, QA_util_realtime,QA_util_id2date,QA_util_is_trade,
                                 QA_util_date_stamp, QA_util_time_stamp, QA_util_ms_stamp,
                                 QA_util_log_debug, QA_util_log_expection, QA_util_log_info,
