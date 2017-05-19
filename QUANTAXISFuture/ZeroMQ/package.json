@@ -7,6 +7,7 @@
     "_bindings@1.2.1@bindings": "^1.2.1",
     "_nan@2.3.5@nan": "^2.3.5",
     "_zmq@2.15.3@zmq": "^2.15.3",
+    "http-proxy": "^1.16.2",
     "zmq": "^2.15.3"
   },
   "devDependencies": {},
