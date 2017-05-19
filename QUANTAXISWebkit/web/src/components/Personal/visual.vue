@@ -297,18 +297,18 @@
             // console.log(this.acc)
             this.length = this.acc.length;
             var market_time = response.data['account_date']
-
-            //console.log(this.time)
+            console.log(market_time)
+            console.log(this.time)
             for (var i = 0; i < this.time.length; i++) {
               if (market_time.indexOf(this.time[i]) == -1) {
                 market_time.splice(i, 0, this.time[i])
-                this.acc.splice(i, 0, this.acc[i - 2])
+                this.acc.splice(i, 0, this.acc[i - 1])
                 //console.log()
               }
 
             }
-            //console.log(this.acc)
-            //console.log(market_time)
+            console.log(this.acc)
+            console.log(market_time)
             this.chart.setOption({
               title: {
                 text: code + '--' + strategy_name

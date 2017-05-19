@@ -249,7 +249,7 @@ if __name__ == '__main__':
 
     """
     #pool=Pool(2)
-    pool = ThreadPool(140) # Sets the pool size to 4
+    pool = ThreadPool(4) # Sets the pool size to 4
     def start_unit(item):
 
         try:
