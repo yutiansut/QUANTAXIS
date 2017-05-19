@@ -89,10 +89,17 @@ cd QUANTAXISWebkit
 
 ## todo list
 
-- 基于ZEROMQ的消息队列,nodejs和python进程通信
-- 期货回测
-- Portfolio和Risk支持  [yes]
+- QUANTAXISMemoryBasedDB-- 一个简易的内存数据库
 
+- QUANTAXISTaskServer--  任务队列机制
+
+- QUANTAXISMessageQueue -- 一个消息队列和跨进程通信功能模组
+
+- QUANTAXSISpider --爬虫部分
+
+- QUANTAXISReal  --实盘部分
+
+- QUANTAXISQuotation  --数据源中间件
 ## Webkit大礼包
 
 
