@@ -10,6 +10,7 @@ var users = require('./routes/users');
 var stock = require('./routes/stock');
 var apis = require('./routes/apis');
 var job = require('./routes/job');
+var monitor =require('./routes/monitor')
 var backtest = require('./routes/backtest');
 var trade = require('./routes/trade');
 var app = express();
@@ -33,6 +34,7 @@ app.use('/apis', apis);
 app.use('/job', job);
 app.use('/trade', trade);
 app.use('/backtest', backtest);
+app.use('/monitor',monitor);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
