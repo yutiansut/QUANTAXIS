@@ -262,7 +262,7 @@
                 }
                 this.time = kline_date
                 //console.log(kline_date)
-                //console.log(kline)
+                console.log(kline)
                 this.chart.setOption({
                   title: {
                     text: code

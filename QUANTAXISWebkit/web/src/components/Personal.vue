@@ -7,7 +7,7 @@
                     <router-link to="/personal/backtest"><mu-list-item title="模拟回测"></mu-list-item></router-link>
                     <router-link to="/personal/axios"><mu-list-item title="爬虫部署"></mu-list-item></router-link>
                     
-                    <router-link to="/personal/markdown"><mu-list-item title="策略面板"></mu-list-item></router-link>
+                    <router-link to="/personal/monitor"><mu-list-item title="实盘监控"></mu-list-item></router-link>
                     <router-link to="/personal/multiplot"><mu-list-item title="实盘易"></mu-list-item></router-link>
                 </mu-list>
                   <mu-divider/>
