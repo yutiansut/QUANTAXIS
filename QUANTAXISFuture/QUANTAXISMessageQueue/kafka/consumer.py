@@ -1,9 +1,4 @@
-from kafka import KafkaClient, SimpleProducer, SimpleConsumer
-kafka = KafkaClient("localhost:2181")
-consumer = SimpleConsumer(kafka,"python","test")
-
+from kafka import KafkaConsumer
+consumer = KafkaConsumer('my_favorite_topic')
 for msg in consumer:
-
-    print(msg)
-kafka.close()
-
+    print (msg)
