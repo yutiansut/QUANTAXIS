@@ -1,10 +1,15 @@
+#coding:utf-8
+
 from kafka import SimpleProducer, SimpleClient
 import logging
+
+# 需要保留几个字段 9092端口
+
 # To send messages asynchronously
 client = SimpleClient('localhost:9092')
 producer = SimpleProducer(client, async=True)
 producer.send_messages('my-topic', b'async message')
-
+input()
 # To send messages in batch. You can use any of the available
 # producers for doing this. The following producer will collect
 # messages in batch and send them to Kafka after 20 messages are
