@@ -18,4 +18,3 @@ QA.QA_SU_save_stock_info('ts',pymongo.MongoClient())
 #仅仅是为了初始化才在这里插入用户,如果想要注册用户,要到webkit底下注册
 pymongo.MongoClient().quantaxis.user_list.insert({'username':'admin','password':'admin'})
 
-

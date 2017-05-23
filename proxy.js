@@ -1,5 +1,5 @@
 var proxy = require('http-proxy').createProxyServer({
-  target: {host: 'localhost', port: 9000}
+  target: {host: '192.168.4.198', port: 8080}
 }).on('error', function(err, req, res) {
   console.log('[ERROR] %s', err);
   res.end();
@@ -33,4 +33,7 @@ function print_body(header, body) {
     if (character_code == 65533) break;
   }
 }
-server.listen(8000);
+server.listen(8080);
+
+
+//proxy文件
