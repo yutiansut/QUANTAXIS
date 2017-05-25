@@ -78,6 +78,7 @@ def QA_SU_save_account_message_many(message, client):
     for item in message:
         messages.append({
             'time': item['body']['time'],
+            'code':item['header']['session']['code'],
             'total_date': item['body']['account']['total_date'],
             'time_stamp': item['body']['date_stamp'],
             "cookie": item['header']['cookie'],

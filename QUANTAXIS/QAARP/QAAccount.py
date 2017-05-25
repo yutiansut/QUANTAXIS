@@ -397,6 +397,7 @@ class QA_Account:
         
 
         messages=self.QA_account_update({
+            'code':message['header']['code'],
             'status':message['header']['status'],
             'price':message['body']['bid']['price'],
             'id':message['body']['bid']['code'],

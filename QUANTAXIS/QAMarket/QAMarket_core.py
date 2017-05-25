@@ -32,6 +32,7 @@ class QA_Market():
                     'header':{
                         'source':'market',
                         'status':200,
+                        'code':str(bid['code']),
                         'session':{
                             'user':str(bid['user']),
                             'strategy':str(bid['strategy'])
@@ -69,6 +70,7 @@ class QA_Market():
                     'header':{
                         'source':'market',
                         'status':status_mes,
+                        'code':str(bid['code']),
                         'session':{
                             'user':str(bid['user']),
                             'strategy':str(bid['strategy'])
@@ -100,6 +102,7 @@ class QA_Market():
                     'header':{
                         'source':'market',
                         'status':500,
+                        'code':str(bid['code']),
                         'session':{
                             'user':str(bid['user']),
                             'strategy':str(bid['strategy'])
