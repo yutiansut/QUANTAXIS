@@ -73,6 +73,7 @@ def QA_SU_save_backtest_message(message, client):
 
 
 def QA_SU_save_account_message_many(message, client):
+    
     messages = []
     for item in message:
         messages.append({
@@ -98,5 +99,6 @@ def QA_SU_save_account_message_many(message, client):
             'bid': item['body']['bid'],
             'market': item['body']['market']
         })
+    print(messages)
     coll = client.quantaxis.backtest_history
     coll.insert_many(messages)

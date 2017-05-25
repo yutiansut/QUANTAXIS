@@ -261,7 +261,8 @@
                   kline.push(temp);
                 }
                 this.time = kline_date
-                //console.log(kline_date)
+                console.log('all date')
+                console.log(kline_date)
                 console.log(kline)
                 this.chart.setOption({
                   title: {
@@ -297,9 +298,11 @@
             // console.log(this.acc)
             this.length = this.acc.length;
             var market_time = response.data['account_date']
+            console.log('market account time')
             console.log(market_time)
-            console.log(this.time)
+           // console.log(this.time)
             for (var i = 0; i < this.time.length; i++) {
+              console.log(market_time[i])
               if (market_time.indexOf(this.time[i]) == -1) {
                 market_time.splice(i, 0, this.time[i])
                 this.acc.splice(i, 0, this.acc[i - 1])
