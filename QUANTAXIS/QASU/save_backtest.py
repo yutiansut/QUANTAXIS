@@ -43,7 +43,7 @@ def QA_SU_save_account_message(message, client):
     coll = client.quantaxis.backtest_history
     # print(message)
     coll.insert({
-        'time': message['body']['time'],
+        #'time': message['body']['time'],
         'total_date': message['body']['account']['total_date'],
         'time_stamp': message['body']['date_stamp'],
         "cookie": message['header']['cookie'],
@@ -73,11 +73,12 @@ def QA_SU_save_backtest_message(message, client):
 
 
 def QA_SU_save_account_message_many(message, client):
-    
+    #print(message)
     messages = []
     for item in message:
+        #print(item['body']['account']['total_date'])
         messages.append({
-            'time': item['body']['time'],
+            #'time': item['body']['time'],
             #'code':item['header']['session']['code'],
             'total_date': item['body']['account']['total_date'],
             'time_stamp': item['body']['date_stamp'],

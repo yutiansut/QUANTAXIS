@@ -78,7 +78,7 @@ class QA_Market():
                         },
                     'body':{
                         'bid':{
-                            'price':str(bid['price']),
+                            'price':'',
                             'code':str(bid['code']),
                             'amount':int(bid['amount']),
                             'time':str(bid['time']),

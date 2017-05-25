@@ -72,7 +72,7 @@ class QA_Account:
                     },
                     'bid':{},
                     'market':{},
-                    'time':datetime.datetime.now(),
+                    #'time':datetime.datetime.now(),
                     'date_stamp':str(datetime.datetime.now().timestamp())
 
 
@@ -183,6 +183,7 @@ class QA_Account:
             self.QA_account_calc_profit(update_message)
             self.account_date.append(update_message['date'])
             #QA_util_log_info('hold without bid')
+            #print(update_message['user'])
             message={
                 'header':{
                     'source':'account',
@@ -214,12 +215,14 @@ class QA_Account:
                     },
                     'bid':update_message['bid'],
                     'market':update_message['market'],
-                    'time':datetime.datetime.now(),
+                    #'time':datetime.datetime.now(),
                     'date_stamp':str(datetime.datetime.now().timestamp())
 
 
                 }
             }
+            self.message=message
+            #print(message)
             #属于不更新history和portfolio,但是要继续增加账户和日期的
         elif update_message['status']==402:
             #QA_util_log_info('bid not success')
@@ -254,13 +257,13 @@ class QA_Account:
                     },
                     'bid':update_message['bid'],
                     'market':update_message['market'],
-                    'time':datetime.datetime.now(),
+                    #'time':datetime.datetime.now(),
                     'date_stamp':str(datetime.datetime.now().timestamp())
 
 
                 }
             }
-
+            self.message=message
         #print(self.message)
         return self.message
         
@@ -394,7 +397,7 @@ class QA_Account:
         return self.message
 
     def QA_account_receive_deal(self,message,client):
-        
+        #print(message)
 
         messages=self.QA_account_update({
             'code':message['header']['code'],
