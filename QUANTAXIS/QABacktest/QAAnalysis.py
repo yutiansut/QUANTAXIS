@@ -51,7 +51,7 @@ def QA_backtest_analysis_start(client,message,days):
     #benchmark年化收益
     benchmark_annualized_returns=QA_backtest_calc_profit_per_year(benchmark_assest,days)
 
-    assest_history=message['body']['account']['assest_history'][1:]
+    assest_history=message['body']['account']['assest_history']
     #days=len(assest_history)-1
     #策略年化收益
     annualized_returns=QA_backtest_calc_profit_per_year(assest_history,days)
