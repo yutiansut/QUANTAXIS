@@ -8,3 +8,7 @@ MessageQueue有很多种实现方式,ZeroMQ,kafka,RabbitMQ,以及简单的socket
 /kafka  是关于kafka的代码文件
 
 /socket 是关于socket服务器建立的部分
+
+/zmq
+
+/celery
