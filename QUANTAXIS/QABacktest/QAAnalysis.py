@@ -8,7 +8,7 @@ import math
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_data
 from QUANTAXIS.QAUtil import QA_util_log_info
 def QA_backtest_analysis_start(client,message,days):
-    print('start analysis')
+    #print('start analysis')
     #print(message)
     #input()
     # 主要要从message_history分析
@@ -137,8 +137,8 @@ def QA_backtest_calc_beta(assest_profit,benchmark_profit,benchmark_volatility_ye
 def QA_backtest_calc_profit(assest_history):
     return (assest_history[-1]/assest_history[1])-1
 def QA_backtest_calc_profit_per_year(assest_history,days):
-    QA_util_log_info(assest_history)
-    QA_util_log_info(days)
+    #QA_util_log_info(assest_history)
+    #QA_util_log_info(days)
     return float(float(assest_history[-1])/float(assest_history[0])-1)/int(days)*250
 
 def QA_backtest_calc_profit_matrix(assest_history):
@@ -196,7 +196,9 @@ def QA_backtest_calc_win_rate(profit_day):
             belowz=belowz+1
     if belowz==0:
         belowz=1
-    win_rate=abovez/len(profit_day)
+    if abovez==0:
+        abovez=1
+    win_rate=abovez/(abovez+belowz)
     return win_rate
 
 def QA_backtest_plot_assest():
