@@ -1,4 +1,4 @@
-# QUANTAXIS Real
+# QUANTAXIS Trade
 实盘模块
 
 - 实盘监控,动态增量可视化显示 (基于Webkit)

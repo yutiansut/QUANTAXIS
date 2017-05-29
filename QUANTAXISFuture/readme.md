@@ -2,6 +2,8 @@
 
 > 一些未来功能的测试的地方
 
+- QUANTAXISMultiLanguages-- 基于protobuf的多语言协议
+
 - QUANTAXISMemoryBasedDB-- 一个简易的内存数据库
 
 - QUANTAXISTaskServer--  任务队列机制
@@ -10,6 +12,6 @@
 
 - QUANTAXSISpider --爬虫部分
 
-- QUANTAXISReal  --实盘部分
+- QUANTAXISTrade  --实盘部分
 
 - QUANTAXISQuotation  --数据源中间件
