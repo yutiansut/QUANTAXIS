@@ -1,0 +1,9 @@
+[trade]
+host=
+port = 7708
+version = ""
+branchID =	1
+accountNo = ""
+tradeAccountNo = ""
+password = ""
+txPassword = ""
