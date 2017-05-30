@@ -22,6 +22,7 @@ class QA_trade():
 
 	def login(self):
 		try:
+			
 			self.client = TradeX.Logon(self.sHost, self.nPort, self.sVersion, self.sBranchID, self.sAccountNo,self.sTradeAccountNo, self.sPassword, self.sTxPassword)
 		except TradeX.error as e:
 			print ("error: " + e.message)
