@@ -1,4 +1,5 @@
-#coding:utf-8
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import msvcrt
 import sys
@@ -9,7 +10,7 @@ TradeX.OpenTdx()
 
 
 class QA_Trade_stock():
-    def __init__(self):
+    def get_config(self):
         config=ConfigParser.ConfigParser()
         try:
             with open("setting.cfg","rw") as cfgfile: 
