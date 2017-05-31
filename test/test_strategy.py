@@ -3,8 +3,6 @@ import QUANTAXIS as QA
 import random
 import pymongo
 import datetime
-from multiprocessing import Pool
-from multiprocessing.dummy import Pool as ThreadPool
 from strategy import predict
 
 # 2个地方进行了优化:
@@ -230,56 +228,53 @@ class backtest(QA.QA_Backtest):
         # 把这个协议发送给分析引擎,进行分析
         # 只有当交易历史大于1,才有存储的价值
         if len(self.trade_history) > 1:
-            QA.QA_util_log_info('start analysis'+str(self.strategy_stock_list[0]))
-            exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
-            QA.QA_SU_save_account_message_many(
-                self.trade_history, self.setting.client)
-            #print(self.trade_history[-1])
+            try:
+                QA.QA_util_log_info('start analysis===='+str(self.strategy_stock_list[0]))
+                exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
+                QA.QA_SU_save_account_message_many(
+                    self.trade_history, self.setting.client)
+                #print(self.trade_history[-1])
 
-            performace = QA.QABacktest.QAAnalysis.QA_backtest_analysis_start(
-                self.setting.client, self.backtest_message, exist_time)
-            #print(performace)
+                performace = QA.QABacktest.QAAnalysis.QA_backtest_analysis_start(
+                    self.setting.client, self.backtest_message, exist_time)
+                #print(performace)
 
-            backtest_mes = {
-                'user': self.setting.QA_setting_user_name,
-                'strategy': self.strategy_name,
-                'stock_list': self.strategy_stock_list,
-                'start_time': self.strategy_start_date,
-                'end_time': self.strategy_end_date,
-                'account_cookie': self.account.account_cookie,
-                'total_returns': self.backtest_message['body']['account']['profit'],
-                'annualized_returns': performace['annualized_returns'],
-                'benchmark_annualized_returns': performace['benchmark_annualized_returns'],
-                'benchmark_assest': performace['benchmark_assest'],
-                'trade_date': performace['trade_date'],
-                'total_date': performace['total_date'],
-                'win_rate': performace['win_rate'],
-                'alpha': performace['alpha'],
-                'beta': performace['beta'],
-                'sharpe': performace['sharpe'],
-                'vol': performace['vol'],
-                'benchmark_vol': performace['benchmark_vol'],
-                'max_drop': performace['max_drop'],
-                'exist': exist_time
-            }
+                backtest_mes = {
+                    'user': self.setting.QA_setting_user_name,
+                    'strategy': self.strategy_name,
+                    'stock_list': self.strategy_stock_list,
+                    'start_time': self.strategy_start_date, 
+                    'end_time': self.strategy_end_date,
+                    'account_cookie': self.account.account_cookie,
+                    'total_returns': self.backtest_message['body']['account']['profit'],
+                    'annualized_returns': performace['annualized_returns'],
+                    'benchmark_annualized_returns': performace['benchmark_annualized_returns'],
+                    'benchmark_assest': performace['benchmark_assest'],
+                    'trade_date': performace['trade_date'],
+                    'total_date': performace['total_date'],
+                    'win_rate': performace['win_rate'],
+                    'alpha': performace['alpha'],
+                    'beta': performace['beta'],
+                    'sharpe': performace['sharpe'],
+                    'vol': performace['vol'],
+                    'benchmark_vol': performace['benchmark_vol'],
+                    'max_drop': performace['max_drop'],
+                    'exist': exist_time
+                }
 
-            # 策略的汇总存储(会存在backtest_info下)
-            QA.QA_SU_save_backtest_message(backtest_mes, self.setting.client)
-            #self.setting.client.close()
+                # 策略的汇总存储(会存在backtest_info下)
+                QA.QA_SU_save_backtest_message(backtest_mes, self.setting.client)
+                #self.setting.client.close()
+            except:
+                QA.QA_util_log_info(self.strategy_stock_list[0])
+                QA.QA_util_log_info('wrong')
 
 
-"""
-#stock_list=['600592','600538','603588','000001','000002','601801','600613','002138','600010']
 
 
-"""
-
-# 巨化股份巨化股份，葛洲坝，大族激光，北新建材，国药股份，中工国际，华侨城A，峨眉山，新城控股
-# stock_list=['600160','600068','002008','000786','600511','002051','000069','000888','601155']
 stock_lists = pymongo.MongoClient().quantaxis.stock_list.find_one()
 stock_list = stock_lists['stock']['code']
 
-#pool = ThreadPool(4)  # Sets the pool size to 4
 BT = backtest()
 BT.init()
 def start_unit(item):
@@ -294,8 +289,3 @@ def start_unit(item):
 for item in stock_list:
     start_unit(item)
 
-
-# start_unit('600160')
-#pool.map(start_unit, stock_list)
-#pool.close()
-#pool.join()

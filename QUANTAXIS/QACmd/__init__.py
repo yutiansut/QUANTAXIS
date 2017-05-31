@@ -13,7 +13,7 @@ class CLI(cmd.Cmd):
         self.prompt = 'QUANTAXIS> '    # 定义命令行提示符
         
     def do_version(self,arg):
-        QA_util_log_info('QUANTAXIS Version 0.3.9-beta-dev14')
+        QA_util_log_info('QUANTAXIS Version 0.3.9-beta-dev19')
     def help_version(self):
         print ("syntax: version [message]",)
         print ("-- prints a version message")
