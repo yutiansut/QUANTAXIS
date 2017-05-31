@@ -1,0 +1,27 @@
+syntax="proto2";
+package stock;
+message stock_min {
+    required float high = 1;
+    required float low =2 ;
+    required float open =3;
+    required float close =4;
+    required float volume=5;
+    required string bartime=6;
+    required string barendtime=7;
+    required float turnover=8;
+    required string day=9;
+}
+enum market_id{
+    sh=0;
+    sz=1;
+}
+
+message stock_info{
+    required market_id type=1 [default=sh];
+
+
+
+
+}
+
+
