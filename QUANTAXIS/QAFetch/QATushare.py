@@ -14,7 +14,10 @@ def QA_fetch_get_stock_day(name,startDate,endDate):
         item['date_stamp']=QA_util_date_stamp(item['date'])
     return data_json
 
-
+def QA_fetch_get_stock_realtime():
+    data=QATs.get_today_all()
+    data_json=json.loads(data.to_json(orient='records'))
+    return data_json
 def QA_fetch_get_stock_info(name):
     data=QATs.get_stock_basics()
     data_json=json.loads(data.to_json(orient='records'))

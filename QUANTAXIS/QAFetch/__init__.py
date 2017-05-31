@@ -33,6 +33,9 @@ def QA_fetch_get_stock_day(package,name,startDate,endDate):
     Engine=use(package)
     return Engine.QA_fetch_get_stock_day(name,startDate,endDate)
 
+def QA_fetch_get_stock_realtime(package):
+    Engine=use(package)
+    return Engine.QA_fetch_get_stock_realtime()
 
 def QA_fetch_get_stock_indicator(package,name,startDate,endDate):
     Engine=use(package)

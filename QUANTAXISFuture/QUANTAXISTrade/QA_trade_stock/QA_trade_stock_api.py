@@ -210,6 +210,15 @@ class QA_Stock():
         else:
             print (result)
             return (result)
+
+
+    def QA_trade_stock_get_quote(self,client,stock):
+        errinfo, self.result = client.GetQuote(str(stock),)
+        if errinfo != "":
+            print (errinfo)
+        else:
+            print (self.result)
+            return self.result
     def QA_trade_stock_get_quotes(self,client,stock_list):
         res = client.GetQuotes(('000001', '600600'))
         for elem in res:
@@ -219,6 +228,9 @@ class QA_Stock():
             else:
                 print (self.result)
                 return self.result
+    def QA_trade_stock_get_stockbars(self,client):
+        pass
+        #GetSecurityBars(nCategory, nMarket, sStockCode, nStart, nCount)
 if __name__ == "__main__":
     st = QA_Stock()
     st.get_config()
