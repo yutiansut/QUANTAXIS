@@ -5,8 +5,9 @@ import msvcrt
 import sys
 import configparser
 import os
-#sys.path.append(os.path.realpath('.'))
-
+#print (os.path.dirname(os.path.realpath(__file__)))
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+#input()
 import TradeX
 
 TradeX.OpenTdx()
@@ -17,7 +18,8 @@ class QA_Stock():
     def get_config(self):
         config = configparser.ConfigParser()
         try:
-            config.read('setting.ini')
+            #print(str(os.path.dirname(os.path.realpath(__file__)))+'setting.ini')
+            config.read(str(os.path.dirname(os.path.realpath(__file__)))+'\setting.ini')
             self.sHost = config['trade']['host']
             self.nPort = config['trade']['port']
             self.sVersion = config['trade']['version']
