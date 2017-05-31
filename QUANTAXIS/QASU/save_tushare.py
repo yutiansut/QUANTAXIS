@@ -8,11 +8,11 @@ import datetime,json
 import re
 import time
 import pymongo
-
+from multiprocessing.dummy import Pool as ThreadPool
 
 def QA_save_stock_day_all():
     df= ts.get_stock_basics()
-    for i in df.index:  
+    def saving_work(i):
         print('Now Saving %s' %(i) )    
         try:
             data=ts.get_hist_data(str(i))
@@ -23,12 +23,19 @@ def QA_save_stock_day_all():
             for i in range(0,len(data_json),1):
                 data_json[i]['date_stamp']=QA_util_date_stamp(list(data.index)[i])
                 data_json[i]['date']=list(data.index)[i]
-           
+                data_json[i]['code']=str(i)
+            
             
             coll=pymongo.MongoClient().quantaxis.stock_day
             coll.insert_many(data_json)
         except:
             print('error in saving'+str(i))
+
+    pool=ThreadPool(4)
+    pool.map(saving_work,df.index)
+    pool.close()
+    pool.join()
+
 
 def QA_SU_save_stock_list(client):
     data=QATushare.QA_fetch_get_stock_list()
