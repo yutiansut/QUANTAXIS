@@ -19,9 +19,6 @@ enum market_id{
 message stock_info{
     required market_id type=1 [default=sh];
 
-
-
-
 }
 
 
