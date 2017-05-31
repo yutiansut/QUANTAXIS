@@ -7,7 +7,7 @@ import numpy
 import datetime
 
 """
-按要求从数据库取数据，并转换成dataframe结构
+按要求从数据库取数据，并转换成numpy结构
 
 """
 def QA_fetch_data(code,startDate,endDate,collections):
@@ -29,22 +29,26 @@ def QA_fetch_data(code,startDate,endDate,collections):
             list_a[4].append(item['close'])
             list_a[5].append(item['volume'])
             list_a[6].append(item['date'])
-            #print(datetime.datetime.now())
+            
         data=numpy.asarray(list_a).transpose()
-        #data=DataFrame(list_a).transpose()
-        #print(datetime.datetime.now())
+
         return data
     else:
         QA_util_log_info('something wrong with date')
 
 
 def QA_fetch_trade_date(collections):
-    return collections.find()
+    data=[]
+    for item in collections.find({}):
+
+        data.append(item['date'])
+    print(len(data))
+    return data
 def QA_fetch_stock_day(code,collections):
     list_a=[[],[],[],[],[],[],[]]
     
     for item in collections.find({'code':str(code)[0:6]}):
-        #print(item['code'])
+
         list_a[0].append(item['code'])
         list_a[1].append(item['open'])
         list_a[2].append(item['high'])
@@ -52,7 +56,6 @@ def QA_fetch_stock_day(code,collections):
         list_a[4].append(item['close'])
         list_a[5].append(item['volume'])
         list_a[6].append(item['date'])
-        #print(datetime.datetime.now())
     data=numpy.asarray(list_a).transpose()
     return data
 def QA_fetch_stock_info(code,collections):
