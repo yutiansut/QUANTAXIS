@@ -1,1 +1,5 @@
 *.css linguist-language=C++
+*.pb.cc linguist-language=C++
+*.pb.h linguist-language=C++
+*.h linguist-language=C++
+*.cc linguist-language=C++
