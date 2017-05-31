@@ -20,10 +20,10 @@ def QA_save_stock_day_all():
             data_json=json.loads(data.to_json(orient='records'))
             
             
-            for i in range(0,len(data_json),1):
-                data_json[i]['date_stamp']=QA_util_date_stamp(list(data.index)[i])
-                data_json[i]['date']=list(data.index)[i]
-                data_json[i]['code']=str(i)
+            for j in range(0,len(data_json),1):
+                data_json[j]['date_stamp']=QA_util_date_stamp(list(data.index)[j])
+                data_json[j]['date']=list(data.index)[j]
+                data_json[j]['code']=str(i)
             
             
             coll=pymongo.MongoClient().quantaxis.stock_day

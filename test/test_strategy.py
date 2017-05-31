@@ -42,41 +42,43 @@ class backtest(QA.QA_Backtest):
         # 回测的名字
         self.strategy_name = 'example-strategy'
 
-       # 股票的交易日历
+       # 股票的交易日历,真实回测的交易周期,和交易周期在交易日历中的id
         self.trade_list = QA.QA_fetch_trade_date(
             QA.QA_Setting().client.quantaxis.trade_date)
+        """
+        这里会涉及一个区间的问题,开始时间是要向后推,而结束时间是要向前推,1代表向后推,-1代表向前推
+        """
+        self.start_real_date = QA.QA_util_get_real_date(
+            self.strategy_start_date, self.trade_list,1)
+        self.start_real_id = self.trade_list.index(self.start_real_date)
+        self.end_real_date = QA.QA_util_get_real_date(
+            self.strategy_end_date, self.trade_list,-1)
+        self.end_real_id = self.trade_list.index(self.end_real_date)
+
 
         # 进行全局初始化和账户初始化 
         self.setting.QA_setting_init()
         self.account.init()
+        
         # 获取数据的初始化
 
     def init_stock(self):
         """
         线程内设置,局部的
         """
-
         # 重新初始账户资产
         self.account.assets = 25000
-
+        self.trade_history=[]
         # 重新初始化账户的cookie
         self.account.account_cookie = str(random.random())
 
         # 初始化单个股票标的单元的市场数据
         self.market_data = QA.QA_fetch_stock_day(
             self.strategy_stock_list[0], self.setting.client.quantaxis.stock_day)
+        print(self.market_data)
+        input()
 
-        # 初始化股票的真实交易周期
-        self.start_real_date = QA.QA_util_get_real_date(
-            self.strategy_start_date, self.trade_list,1)
-        print(self.start_real_date)
-        self.start_real_id = self.trade_list.index(self.start_real_date)
-        self.end_real_date = QA.QA_util_get_real_date(
-            self.strategy_end_date, self.trade_list,-1)
-        print(self.end_real_date)
-        self.end_real_id = self.trade_list.index(self.end_real_date)
 
-        input() 
     # 从市场中获取数据(基于gap),你也可以不急于gap去自定义自己的获取数据的代码
     # 调用的数据接口是
     # data=QA.QA_fetch_data(回测标的代码,开始时间,结束时间,数据库client)
@@ -102,13 +104,13 @@ class backtest(QA.QA_Backtest):
 
     def handle_data(self):
         # QA.QA_util_log_info(self.account.message['body'])
-        trade_history = []
+       
         self.stop = [0, 0]
         # 策略的交易日循环
         for i in range(int(self.start_real_id), int(self.end_real_id), 1):
-           # QA.QA_util_log_info('===day start===')
+            # 正在进行的交易日期
             running_date = self.trade_list[i]
-            # QA.QA_util_log_info(running_date)
+
             if running_date in [l[6] for l in self.market_data]:
 
                 data = self.BT_data_handle(
@@ -116,6 +118,10 @@ class backtest(QA.QA_Backtest):
 
                 result = predict(data['market'], data['account']['body']['account']['total_profit'], data['account']
                                  ['body']['account']['hold'], data['account']['body']['account']['cur_profit_present'] * 100, self.stop)
+
+
+                print(result)
+                input()
                 if result['if_buy'] == 1 and int(data['account']['body']['account']['hold']) == 0:
                     self.stop = [result['stop_high'], result['stop_low']]
                     self.bid.bid['amount'] = float(
@@ -138,7 +144,7 @@ class backtest(QA.QA_Backtest):
                     # print(message)
                     # input()
                     # QA.QA_SU_save_account_message(message,self.setting.client)
-                    trade_history.append(message)
+                    self.trade_history.append(message)
                     # print('buy----------------------------------------------')
                     # QA.QA_util_log_info(message)
                     # input()
@@ -163,7 +169,7 @@ class backtest(QA.QA_Backtest):
                     # print(message)
                     # input()
                    # QA.QA_SU_save_account_message(message,self.setting.client)
-                    trade_history.append(message)
+                    self.trade_history.append(message)
                     # todo  hold profit change
                 elif result['if_buy'] == 0 and int(data['account']['body']['account']['hold']) == 0:
                     #QA.QA_util_log_info('ZERO and Watch!!!!!!!!!!!!')
@@ -186,7 +192,7 @@ class backtest(QA.QA_Backtest):
                     # print(message)
                     # input()
                     # QA.QA_SU_save_account_message(message,self.setting.client)
-                    trade_history.append(message)
+                    self.trade_history.append(message)
                 elif result['if_buy'] == 0 and int(data['account']['body']['account']['hold']) == 1:
                     self.bid.bid['amount'] = int(
                         data['account']['body']['account']['portfolio']['amount'])
@@ -207,7 +213,7 @@ class backtest(QA.QA_Backtest):
                     #print('sell end==============')
                     message = self.account.QA_account_receive_deal(
                         message, self.setting.client)
-                    trade_history.append(message)
+                    self.trade_history.append(message)
                     self.backtest_message = message
                     # print('*'*6+'sell'+'*'*6)
                     # print(message)
@@ -223,13 +229,13 @@ class backtest(QA.QA_Backtest):
                     # pass
                     print('not enough data')
 
-    # 性能分析
+        # 性能分析
 
         exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
 
         # 把这个协议发送给分析引擎,进行分析
 
-        QA.QA_SU_save_account_message_many(trade_history, self.setting.client)
+        QA.QA_SU_save_account_message_many(self.trade_history, self.setting.client)
 
         if len(self.backtest_message['body']['account']['history']) > 1:
             performace = QA.QABacktest.QAAnalysis.QA_backtest_analysis_start(
@@ -284,10 +290,12 @@ def start_unit(item):
     try:
         BT.strategy_stock_list = [item]
         BT.init_stock()
+        BT.handle_data()
 
     except:
 
         QA.QA_util_log_expection('wrong')
+        input()
 
     QA.QA_util_log_info(
         float(datetime.datetime.now().timestamp()) - float(ti1))
