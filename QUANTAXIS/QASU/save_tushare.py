@@ -16,7 +16,7 @@ def QA_save_stock_day_all():
     def saving_work(i):
         print('Now Saving %s' %(i) )    
         try:
-            data=ts.get_hist_data(str(i))
+            data=ts.get_hist_data(str(i)).sort_index()
             
             data_json=json.loads(data.to_json(orient='records'))
             
