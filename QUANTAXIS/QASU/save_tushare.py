@@ -8,10 +8,11 @@ import datetime,json
 import re
 import time
 import pymongo
-from multiprocessing.dummy import Pool as ThreadPool
 
 def QA_save_stock_day_all():
     df= ts.get_stock_basics()
+
+    
     def saving_work(i):
         print('Now Saving %s' %(i) )    
         try:
@@ -30,11 +31,9 @@ def QA_save_stock_day_all():
             coll.insert_many(data_json)
         except:
             print('error in saving'+str(i))
+    for item in df.index:
+        saving_work(item)
 
-    pool=ThreadPool(4)
-    pool.map(saving_work,df.index)
-    pool.close()
-    pool.join()
 
 
 def QA_SU_save_stock_list(client):
