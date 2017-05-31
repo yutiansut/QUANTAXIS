@@ -25,9 +25,12 @@ def QA_get_now_data(client,st,code):
 
     data=st.QA_trade_stock_get_quote(client,code)
     print(data.split('\n')[1].split('\t')[5])
-def QA_conbind_data(code,gap):
+def QA_combind_data(code,gap):
     data1=QA_get_hist_data('603999',[str(datetime.date.today()-datetime.timedelta(days=20)),str(datetime.date.today())])
     data2=QA_get_realtime_data()
+    for item in data2:
+        if item['code']=='603999':
+            print(item)
 def QA_get_account_assest():
     pass
 def QA_risk_analysis():
@@ -40,9 +43,7 @@ if __name__=='__main__':
     client = st.QA_trade_stock_login()
     QA_get_hist_data('603999',[str(datetime.date.today()-datetime.timedelta(days=20)),str(datetime.date.today())])
     data=QA_get_realtime_data()
-    for item in data:
-        if item['code']=='603999':
-            print(item)
+
 
 
     

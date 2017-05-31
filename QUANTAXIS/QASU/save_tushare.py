@@ -9,19 +9,26 @@ import re
 import time
 import pymongo
 
+
 def QA_save_stock_day_all():
     df= ts.get_stock_basics()
     for i in df.index:  
         print('Now Saving %s' %(i) )    
         try:
-            data=ts.get_k_data(i)
+            data=ts.get_hist_data(str(i))
+            
             data_json=json.loads(data.to_json(orient='records'))
-            for item in data_json:
-                item['date_stamp']=QA_util_date_stamp(item['date'])
+            
+            
+            for i in range(0,len(data_json),1):
+                data_json[i]['date_stamp']=QA_util_date_stamp(list(data.index)[i])
+                data_json[i]['date']=list(data.index)[i]
+           
+            
             coll=pymongo.MongoClient().quantaxis.stock_day
             coll.insert_many(data_json)
         except:
-            print('none data')
+            print('error in saving'+str(i))
 
 def QA_SU_save_stock_list(client):
     data=QATushare.QA_fetch_get_stock_list()
