@@ -283,22 +283,22 @@ class backtest(QA.QA_Backtest):
                 QA.QA_util_log_info('wrong')
 
 
+if __name__=='__main__':
 
+    stock_lists = pymongo.MongoClient().quantaxis.stock_list.find_one()
+    stock_list = stock_lists['stock']['code']
 
-stock_lists = pymongo.MongoClient().quantaxis.stock_list.find_one()
-stock_list = stock_lists['stock']['code']
+    BT = backtest()
+    BT.init()
+    def start_unit(item):
+        ti1 = datetime.datetime.now().timestamp()
+        BT.strategy_stock_list = [item]
+        BT.init_stock()
+        BT.handle_data()
 
-BT = backtest()
-BT.init()
-def start_unit(item):
-    ti1 = datetime.datetime.now().timestamp()
-    BT.strategy_stock_list = [item]
-    BT.init_stock()
-    BT.handle_data()
+        QA.QA_util_log_info(
+            float(datetime.datetime.now().timestamp()) - float(ti1))
 
-    QA.QA_util_log_info(
-        float(datetime.datetime.now().timestamp()) - float(ti1))
-
-for item in stock_list:
-    start_unit(item)
+    for item in stock_list:
+        start_unit(item)
 
