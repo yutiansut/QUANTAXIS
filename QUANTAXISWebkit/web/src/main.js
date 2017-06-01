@@ -12,6 +12,24 @@ import echarts from 'echarts'
 Vue.config.productionTip = false
 Vue.use(MuseUI)
 /* eslint-disable no-new */
+
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(r => r.meta.requireAuth)) {
+        if (sessionStorage.user) {
+          console.log(sessionStorage.user)
+            next();
+        }
+        else {
+            next({
+                path: '/sign',
+                query: {redirect: to.fullPath}
+            })
+        }
+    }
+    else {
+        next();
+    }
+})
 new Vue({
   el: '#app',
   router,
