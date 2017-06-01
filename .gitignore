@@ -104,6 +104,8 @@ target/
 build/bdist.win32/
 build/bdist.win-amd64/
 build/lib/
+build/bdist.linux-x86_64/
+build/lib.linux-x86_64-2.7/
 
 # IPython Notebook
 .ipynb_checkpoints
