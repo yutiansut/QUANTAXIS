@@ -5,7 +5,6 @@
                     <router-link to="/personal/index"><mu-list-item title="个人中心"></mu-list-item></router-link>
                     <router-link to="/personal/notebook"><mu-list-item title="NOTEBOOK"></mu-list-item></router-link>
                     <router-link to="/personal/backtest"><mu-list-item title="模拟回测"></mu-list-item></router-link>
-                    <router-link to="/personal/axios"><mu-list-item title="爬虫部署"></mu-list-item></router-link>
                     
                     <router-link to="/personal/monitor"><mu-list-item title="实盘监控"></mu-list-item></router-link>
                     <router-link to="/personal/trade"><mu-list-item title="实盘状况"></mu-list-item></router-link>

@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Hello from '@/components/Hello'
 import Homepage from '@/components/HomePage'
 import Personal from '@/components/Personal'
 import Sign from '@/components/Sign'
@@ -31,7 +30,6 @@ export default new Router({
       children: [
         { 'path': '/personal/index', component: require('@/components/Personal/index.vue') },
         { 'path': '/personal/notebook', component: require('@/components/Personal/notebook.vue') },
-        { 'path': '/personal/axios', component: require('@/components/Personal/axios.vue') },
         { 'path': '/personal/markdown', component: require('@/components/Personal/markdown.vue') },
         { 'path': '/personal/monitor', component: require('@/components/Personal/monitor.vue') },
         { 'path': '/personal/history/:id', name: 'history', component: require('@/components/Personal/history.vue') },

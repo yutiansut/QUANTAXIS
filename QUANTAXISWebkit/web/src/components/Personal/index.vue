@@ -54,7 +54,7 @@
     </div>
 </template>
 <script>
-import myron from '@/assets/logo.jpg'
+
 import axios from 'axios'
 export default {
   data () {
@@ -62,7 +62,7 @@ export default {
         items:{
             user:sessionStorage.user
         },
-      myron
+     
     }
   }
 }
@@ -77,5 +77,8 @@ export default {
     }
     #personal-content{
         margin-top: 2%;
+    }
+    li{
+        float: left;
     }
 </style>
