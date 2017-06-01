@@ -54,7 +54,7 @@
     </div>
 </template>
 <script>
-import myron from '@/assets/logo.jpg'
+import myron from '../assets/QUANTAXIS.jpg'
 import axios from 'axios'
 export default {
   data () {
