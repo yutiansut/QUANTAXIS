@@ -20,14 +20,14 @@ class QA_Stock():
         try:
             #print(str(os.path.dirname(os.path.realpath(__file__)))+'setting.ini')
             config.read(str(os.path.dirname(os.path.realpath(__file__)))+'\setting.ini')
-            self.sHost = config['trade']['host']
-            self.nPort = config['trade']['port']
-            self.sVersion = config['trade']['version']
-            self.sBranchID = config['trade']['branchID']
-            self.sAccountNo = config['trade']['accountNo']
-            self.sTradeAccountNo =config['trade']['tradeAccountNo']
-            self.sPassword = int(config['trade']['password'])
-            self.sTxPassword = int(config['trade']['txPassword'])
+            self.sHost = config['trade-mock']['host']
+            self.nPort = config['trade-mock']['port']
+            self.sVersion = config['trade-mock']['version']
+            self.sBranchID = config['trade-mock']['branchID']
+            self.sAccountNo = config['trade-mock']['accountNo']
+            self.sTradeAccountNo =config['trade-mock']['tradeAccountNo']
+            self.sPassword = int(config['trade-mock']['password'])
+            self.sTxPassword = int(config['trade-mock']['txPassword'])
 
             
         except:
@@ -70,7 +70,7 @@ class QA_Stock():
         if errinfo != "":
             print(errinfo)
         else:
-            print(self.result)
+            #print(self.result)
             return self.result
     def QA_trade_stock_get_stock(self, client):
         #股份
@@ -80,7 +80,7 @@ class QA_Stock():
         if errinfo != "":
             print(errinfo)
         else:
-            print(self.result)
+            #print(self.result)
             return self.result
 
     

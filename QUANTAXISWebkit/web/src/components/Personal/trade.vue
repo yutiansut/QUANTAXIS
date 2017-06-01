@@ -43,10 +43,8 @@
           <mu-th> 成本价</mu-th>
           <mu-th>浮动盈亏 </mu-th>
           <mu-th>盈亏比例(%) </mu-th>
+          <mu-th>昨日价格 </mu-th>
           
-          <mu-th>帐号类别 </mu-th>
-          <mu-th> 资金帐号</mu-th>
-          <mu-th>股东代码</mu-th>
         </mu-tr>
         <template v-for="item in items">
 
@@ -55,7 +53,7 @@
               <!--
 
         temp['exchange']=stocks[i].split('\t')[13]
-        temp['trade_mark']=stocks[i].split('\t')[14]
+        temp['']=stocks[i].split('\t')[14]
         temp['insure_mark']=stocks[i].split('\t')[15]
         temp['buy_today']=stocks[i].split('\t')[16]
         temp['sell_today']=stocks[i].split('\t')[17]
@@ -72,30 +70,16 @@
               <mu-td>{{ item['price_buy']}}</mu-td>
               <mu-td>{{ item['pnl_float']}}</mu-td>
               <mu-td>{{ item['pnl_ratio']}}</mu-td>
-              <mu-td>{{ item['account_type']}}</mu-td>
-              <mu-td>{{ item['account_id']}}</mu-td>
-              <mu-td>{{ item['shareholder']}}</mu-td>
+              <mu-td>{{ item['price_yesterday']}}</mu-td>
+              
+
 
             </mu-tr>
           </mu-tbody>
 
         </template>
 
-        <mu-tr>
 
-          <mu-th>交易所名称</mu-th>
-          <mu-th>买卖标志 </mu-th>
-          <mu-th>投保标志</mu-th>
-          <mu-th>浮动盈亏 </mu-th>
-          <mu-th>今买数量 </mu-th>
-          <mu-th> 今卖数量</mu-th>
-          <mu-th> 买持仓</mu-th>
-          <mu-th>卖持仓</mu-th>
-          <mu-th>昨日结算价 </mu-th>
-          <mu-th>保证金 </mu-th>
-
-
-        </mu-tr>
 
 
 
