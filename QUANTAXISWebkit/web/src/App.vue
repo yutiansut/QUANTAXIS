@@ -16,9 +16,7 @@
           <router-link to='/start'>
             <mu-list-item title="START" />
           </router-link>
-          <router-link to='/todo'>
-            <mu-list-item title="TODO" />
-          </router-link>
+
           <mu-list-item @click.native="open = false" title="Close" />
         </mu-list>
       </mu-drawer>

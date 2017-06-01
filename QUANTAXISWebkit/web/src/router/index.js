@@ -17,11 +17,6 @@ export default new Router({
       component: require('@/components/HomePage.vue')
     },
     {
-      path: '/todo',
-      name: 'todoPage',
-      component: require('@/components/todo.vue')
-    },
-    {
       path: '/sign',
       name: 'signPage',
       component: require('@/components/Sign.vue')
