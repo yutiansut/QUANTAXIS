@@ -74,7 +74,7 @@
     }
 
     .mu-item {
-        font-size: 30px;
+        font-size: 2em;
     }
 
     #personal-content {

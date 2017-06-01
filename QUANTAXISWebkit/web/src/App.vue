@@ -1,7 +1,7 @@
 <template>
   <div id="app">
       <mu-appbar title="Title">
-      <mu-flat-button color="white" label="QUANTAXIS" style="-webkit-app-region: drag" disable slot="left" />
+      <mu-flat-button class="quantaxislogo" color="white"  style="-webkit-app-region: drag" disable slot="left" >QUANTAXIS</mu-flat-button>
       <mu-raised-button label="MENU" slot="right" @click="toggle()" />
       <mu-drawer right :open="open" @close="toggle()">
         <mu-appbar title="MENU" />
@@ -48,6 +48,10 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+
+.mu-flat-button-wrapper{
+  font-size: 1.8em;
 }
 
 </style>
