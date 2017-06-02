@@ -1,8 +1,8 @@
 <template>
   <div id="index">
     <h1>实盘监控</h1>
-    
-    
+     
+    <h3>最新时间 {{this.time['date']}}</h3>
     <mu-table :height="height" :showCheckbox=false>
       <mu-thead>
         <mu-tr>
@@ -98,6 +98,7 @@
       return {
         height: '500px',
         items: [],
+        time:{},
         cash: {},
 
       }
@@ -109,7 +110,7 @@
             var data = response.data;
             this.cash = data['cash'];
             var stock = data['stock'];
-            var time = data['time'];
+            this.time = data['time'];
             this.items = stock;
             //console.log(this.cash['account_id'])
             //this.items = cash;
