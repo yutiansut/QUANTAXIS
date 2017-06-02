@@ -1,7 +1,8 @@
 <template>
   <div id="index">
 
-    <li><input v-model="message" v-on:keyup.enter="info($event.currentTarget.value)" placeholder="edit me" lazy>
+    <li class="input">
+      <input v-model="message" v-on:keyup.enter="info($event.currentTarget.value)" placeholder="edit me" lazy>
       <input v-model="messages" v-on:keyup.enter="code($event.currentTarget.value)" placeholder="edit me" lazy></li>
     <mu-table :height="height">
       <mu-thead>
@@ -88,6 +89,7 @@
 
     }
   }
+
 </script>
 <style lang="css">
   .mu-item {
@@ -96,5 +98,8 @@
 
   #personal-content {
     margin-top: 2%;
+  }
+  .input{
+    float: left;
   }
 </style>

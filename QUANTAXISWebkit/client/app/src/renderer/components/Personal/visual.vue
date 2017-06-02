@@ -5,7 +5,7 @@
         <mu-raised-button v-on:click='query()' label="成交明细" class="demo-raised-button" primary/>
       </router-link>
       <mu-raised-button v-on:click='ready()' label="行情数据" class="demo-raised-button" secondary/>
-      <mu-raised-button v-on:click='query_market();query();info()' label="刷新图像" class="demo-raised-button" />
+      <mu-raised-button v-on:click='query_market();query();info();ready()' label="刷新图像" class="demo-raised-button" />
       <mu-divider />
     </div>
     <div>
@@ -61,7 +61,7 @@
         chart: null,
         data0: this.$route.params.id,
         time: [],
-        items:[{'code':'600010'}]
+        items:[{'code':'test'}]
       }
     },
     methods: {
@@ -141,13 +141,13 @@
               show: true,
               realtime: true,
               start: 0,
-              end: 85
+              end: 100
             },
             {
               type: 'inside',
               realtime: true,
               start: 0,
-              end: 85
+              end: 100
             }
           ],
           series: [{
@@ -238,7 +238,8 @@
             this.items[0]['exist']=data['exist']
             this.items[0]['total_returns']=data['total_returns'].toFixed(2)
             this.items[0]['win_rate']=data['win_rate'].toFixed(3)
-            //console.log(this.items)
+            
+            console.log(this.items)
             var code = data['stock_list'][0]
             var val = code + '&start=' + start_time + '&end=' + end_time
             //console.log(val)
@@ -260,8 +261,9 @@
                   kline.push(temp);
                 }
                 this.time = kline_date
-                //console.log(kline_date)
-                //console.log(kline)
+                console.log('all date')
+                console.log(kline_date)
+                console.log(kline)
                 this.chart.setOption({
                   title: {
                     text: code
@@ -295,15 +297,12 @@
             //console.log(code)
             // console.log(this.acc)
             this.length = this.acc.length;
-            var market_time = [];
-            for (var i = 1; i < history.length; i++) {
-              //console.log(this.items[i][0])
-              market_time.push(history[i][0])
-              //this.chart.setOption
-            }
-
-            //console.log(this.time)
+            var market_time = response.data['account_date']
+            console.log('market account time')
+            console.log(market_time)
+           // console.log(this.time)
             for (var i = 0; i < this.time.length; i++) {
+              console.log(market_time[i])
               if (market_time.indexOf(this.time[i]) == -1) {
                 market_time.splice(i, 0, this.time[i])
                 this.acc.splice(i, 0, this.acc[i - 1])
@@ -312,7 +311,7 @@
 
             }
             console.log(this.acc)
-            //console.log(market_time)
+            console.log(market_time)
             this.chart.setOption({
               title: {
                 text: code + '--' + strategy_name
@@ -355,7 +354,7 @@
         axios.get('http://localhost:3000/backtest/market?cookie=' + val)
           .then(response => {
             this.chart.hideLoading();
-            var market = response.data;
+            var market_data = response.data;
             //console.log(market)
             var value = [];
             var bid_buy = [];
@@ -363,15 +362,19 @@
             var bid_buy_date = [];
             var bid_sell_date = [];
 
-            var start_time = market[0]['bid']['time'];
-            var end_time = market[market.length - 1]['bid']['time']
-
-
-            for (var i = 0; i < market.length - 1; i++) {
+            var start_time = market_data[0]['bid']['time'];
+            var end_time = market_data[market_data.length - 1]['bid']['time']
+            var market=[]
+            for (var i = 1; i < market_data.length - 1; i++) {
+              if (market_data[i]['bid']['time']!=market_data[i-1]['bid']['time'] && market_data[i]['bid']['time']!=''){
+                market.push(market_data[i])
+              }
+            }
+            //console.log(market)
+            for (var i = 0; i < market.length ; i++) {
               //console.log(this.items[i][0])
               value.push([market[i]['market']['open'], market[i]['market']['close'], market[i]['market']['low'],
-                market[i]['market']['high']
-              ])
+                market[i]['market']['high']])
               if (market[i]['bid']['towards'] == 1) {
                 bid_buy.push(market[i]['bid']['price']);
                 bid_buy_date.push(market[i]['bid']['time']);
@@ -385,6 +388,7 @@
               }
 
             }
+            //console.log(bid_sell_date)
             for (var i = 0; i < this.time.length; i++) {
               if (bid_buy_date.indexOf(this.time[i]) == -1 && bid_sell_date.indexOf(this.time[i]) == -1) {
                 bid_buy_date.splice(i, 0, '')
@@ -454,17 +458,18 @@
             this.items[0]['total_returns']=data['total_returns'].toFixed(2)
 
             var  benchmark_history = data['benchmark_assest']
-            var market_time=data['trade_date']
+            var market_time=data['total_date']
 
 
             for (var i = 0; i < this.time.length; i++) {
               if (market_time.indexOf(this.time[i]) == -1) {
                 market_time.splice(i, 0, this.time[i])
-                benchmark_history.splice(i, 0, this.acc[i - 1])
+                benchmark_history.splice(i, 0, benchmark_history[i - 1])
                 //console.log()
               }
 
             }
+            //console.log(market_time)
             //console.log(benchmark_history)
             this.chart.setOption({
               series: [{
