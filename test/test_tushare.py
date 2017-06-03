@@ -1,7 +1,7 @@
 import json
 import pymongo
 import tushare as ts
-dfs = ts.get_stock_basics()
+df = ts.get_stock_basics()
 
 for i in df.index:  
     print(i)

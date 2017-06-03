@@ -2,7 +2,7 @@
 
     <div>
         <h1>实盘监控</h1>
-        <li><input  v-on:keyup.enter="querybyname($event.currentTarget.value)" placeholder="需要监控的股票代码:" lazy></input></li>
+        <li><input  v-on:keyup.enter="querybyname($event.currentTarget.value)" placeholder="需要监控的股票代码:" lazy/></input></li>
         <div id="main"></div>
     </div>
 </template>

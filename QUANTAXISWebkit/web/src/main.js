@@ -7,6 +7,7 @@ import router from './router'
 import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
 import 'muse-ui/dist/theme-carbon.css' 
+// import './carbon.css'
 import echarts from 'echarts'
 
 Vue.config.productionTip = false
