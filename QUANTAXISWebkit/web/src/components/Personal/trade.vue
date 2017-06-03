@@ -2,7 +2,7 @@
   <div id="index">
     <h1>实盘监控</h1>
      
-    <h3>最新时间 {{this.time['date']}}</h3>
+    <h3>最新时间 {{this.time['date']}}  {{this.time['time']}}</h3>
     <mu-table :height="height" :showCheckbox=false>
       <mu-thead>
         <mu-tr>
@@ -105,7 +105,7 @@
     },
     methods: {
       query_positions() {
-        axios.get('http://localhost:3000/trade/lastest')
+        axios.get('http://localhost:5000/trade/query/assests')
           .then(response => {
             var data = response.data;
             this.cash = data['cash'];
