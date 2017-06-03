@@ -1,4 +1,4 @@
-# weba
+# quantaxisweb
 
 > A Vue.js project
 
@@ -17,5 +17,6 @@ npm run build
 # build for production and view the bundle analyzer report
 npm run build --report
 ```
+## 展望
 
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+需要有一个setting表去配合

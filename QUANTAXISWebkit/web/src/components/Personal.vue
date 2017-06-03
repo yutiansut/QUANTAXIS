@@ -11,12 +11,12 @@
                 </mu-list>
                   <mu-divider/>
                   <mu-list>
-                    <router-link to="/personal/index"><mu-list-item title="任务列表"></mu-list-item></router-link>
-                    <router-link to="/personal/index"><mu-list-item title="好友"></mu-list-item></router-link>
+                    <router-link to="/personal/analysis"><mu-list-item title="复盘分析"></mu-list-item></router-link>
+                    <router-link to="/personal/stocklist"><mu-list-item title="股票池"></mu-list-item></router-link>
                     
-                    <router-link to="/personal/index"><mu-list-item title="我喜欢的策略"></mu-list-item></router-link>
-                    <router-link to="/personal/index"><mu-list-item title="账户设置"></mu-list-item></router-link>
-                    <router-link to="/personal/index"><mu-list-item title="APIS"></mu-list-item></router-link>
+                    <router-link to="/personal/capital"><mu-list-item title="资金曲线"></mu-list-item></router-link>
+                    <router-link to="/personal/setting"><mu-list-item title="账户设置"></mu-list-item></router-link>
+                    <router-link to="/personal/api"><mu-list-item title="APIS"></mu-list-item></router-link>
                     <mu-divider/>
                      </mu-list>
         </div>

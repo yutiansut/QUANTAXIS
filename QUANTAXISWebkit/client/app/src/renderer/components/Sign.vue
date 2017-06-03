@@ -6,9 +6,7 @@
         </div>
         <div id='textbox'>
                 <div>
-                    <mu-dropDown-menu :value="value" @change="handleChange">
-                    <mu-menu-item value="1" title="注册"/>
-                    <mu-menu-item value="2" title="登录"/>
+
                 </mu-dropDown-menu>
                 </div>
 
