@@ -20,7 +20,7 @@ QUANTAXIS与国内很多优秀的量化平台的区别在于,QA更多关注的�
 ![WebSite](https://img.shields.io/badge/Website-%20www.yutiansut.com-brown.svg)
 ![QQ](https://img.shields.io/badge/AutherQQ-%20279336410-blue.svg)
 
-
+## [点此加入QQ群](http://shang.qq.com/wpa/qunwpa?idkey=914ffce1f90728d30586141477740c43bdfcb25938ecb83bd234ac05a091125f)
 ![QUANTAXIS LOGO](http://i1.piimg.com/1949/62c510db7915837a.png)
 
 <!-- TOC -->
