@@ -19,7 +19,8 @@ class QA_Account:
     # 报单日期,报单股票,报单价格,报单数量,报单状态(限价/市价),info
     bid = [['date', 'id', ' price', 'amount', 'status']]
     # 可用资金记录表
-    cash = []
+    init_assest = 1000000
+    cash=[]
     assets=[]
 
 
@@ -28,7 +29,7 @@ class QA_Account:
         self.history=[]
         self.profit = []
         self.account_cookie = str(random.random())
-        self.cash = []
+        self.cash = [self.init_assest]
         self.message = {
             'header': {
                 'source': 'account',
@@ -87,8 +88,7 @@ class QA_Account:
                                 new_amount=0
                                 break 
                             elif new_amount==self.portfolio[i][3]:
-                                print(i)
-                                print('=')
+                                
                                 new_amount=0
                                 self.portfolio.pop(i)
                                 break

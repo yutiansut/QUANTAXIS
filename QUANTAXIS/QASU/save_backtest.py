@@ -16,7 +16,7 @@ def QA_SU_save_account_message(message, client):
         'cash': message['body']['account']['cash'],
         'portfolio': message['body']['account']['portfolio'],
         'history': message['body']['account']['history'],
-        'bid': message['body']['account']['bid']
+        'assets': message['body']['account']['assets']
     })
 
 
