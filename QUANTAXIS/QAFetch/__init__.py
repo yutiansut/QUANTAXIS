@@ -10,7 +10,7 @@ QAFetch is Under [QAStandard#0.0.2@10x] Protocol
 """
 from . import QAWind as QAWind
 from . import QATushare as QATushare
-from .QAQuery import QA_fetch_data
+from .QAQuery import QA_fetch_stock_day,QA_feth_stocklist_day
 #import QAFetch.QAGmsdk as QAGmsdk
 #import QAFetch.QACrawlData as QACD
 import pymongo

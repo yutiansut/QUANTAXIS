@@ -32,13 +32,11 @@ class QA_Backtest():
 
     def QA_get_data(self):
         self.QA_get_data_from_market()
-        self.QA_get_data_from_ARP()
     
     def QA_get_data_from_market(self):
         db=self.clients.quantaxis
         
-    def QA_get_data_from_ARP(self):
-        pass
+
     def QA_strategy_update(self):
         pass
 

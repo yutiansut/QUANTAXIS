@@ -10,7 +10,7 @@ import datetime
 按要求从数据库取数据，并转换成numpy结构
 
 """
-def QA_fetch_data(code,startDate,endDate,collections):
+def QA_fetch_stock_day(code,startDate,endDate,collections):
     #print(datetime.datetime.now())
     startDate=str(startDate)[0:10]
     endDate=str(endDate)[0:10]
@@ -44,19 +44,12 @@ def QA_fetch_trade_date(collections):
         data.append(item['date'])
     print(len(data))
     return data
-def QA_fetch_stock_day(code,collections):
-    list_a=[[],[],[],[],[],[],[]]
-    
-    for item in collections.find({'code':str(code)[0:6]}):
 
-        list_a[0].append(item['code'])
-        list_a[1].append(item['open'])
-        list_a[2].append(item['high'])
-        list_a[3].append(item['low'])
-        list_a[4].append(item['close'])
-        list_a[5].append(item['volume'])
-        list_a[6].append(item['date'])
-    data=numpy.asarray(list_a).transpose()
-    return data
 def QA_fetch_stock_info(code,collections):
     pass
+
+def QA_feth_stocklist_day(stock_list,collections,date_range):
+    data=[]
+    for item in stock_list:
+        data.append(QA_fetch_stock_day(item,date_range[0],date_range[-1],collections))
+    return data

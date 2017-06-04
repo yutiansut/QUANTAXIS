@@ -24,11 +24,10 @@ class QA_Account:
 
     def init(self):
         self.portfolio = [['date', 'id', ' price', 'amount', 'status']]
-        self.trade_history = [['date', 'id', ' price', 'amount', ' towards']]
+        self.history=[]
         self.profit = []
         self.account_cookie = str(random.random())
         self.cash = []
-        self.bid = []
         self.message = {
             'header': {
                 'source': 'account',
@@ -41,9 +40,8 @@ class QA_Account:
             'body': {
                 'account': {
                     'portfolio': self.portfolio,
-                    'history': self.trade_history,
                     'cash': self.cash,
-                    'bid': self.bid
+                    'history': self.history
                 },
                 #'time':datetime.datetime.now(),
                 'date_stamp': str(datetime.datetime.now().timestamp())
@@ -61,7 +59,7 @@ class QA_Account:
             new_trade_date = update_message['bid']['time']
             new_towards = update_message['bid']['towards']
             new_price = update_message['bid']['price']
-            self.bid.append(update_message['bid'])
+            self.history.append(update_message['bid'])
             # 先计算收益和利润
             self.QA_account_calc_profit(update_message)
             # 修改持仓表
@@ -88,11 +86,6 @@ class QA_Account:
 
                 
             # 将交易记录插入历史交易记录
-            appending_list = [new_trade_date, new_code,
-                                new_price, new_amount, new_towards]
-            self.trade_history.append(appending_list)
-
-                # 这里是不需要插入到历史记录里面的
 
 
         else:
@@ -111,9 +104,8 @@ class QA_Account:
                 'body': {
                     'account': {
                         'portfolio': self.portfolio,
-                        'history': self.trade_history,
-                        'cash': self.cash,
-                        'bid':self.bid
+                        'history': self.history,
+                        'cash': self.cash
                     },
                     'time': datetime.datetime.now(),
                     'date_stamp': str(datetime.datetime.now().timestamp())
