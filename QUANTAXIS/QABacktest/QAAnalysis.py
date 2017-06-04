@@ -5,7 +5,7 @@ we will give some function
 """
 import numpy
 import math
-from QUANTAXIS.QAFetch.QAQuery import QA_fetch_data
+from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day
 from QUANTAXIS.QAUtil import QA_util_log_info
 
 
@@ -103,7 +103,7 @@ def QA_backtest_result_check(datelist, message):
 
 def QA_backtest_calc_benchmark(code, date, history, coll):
 
-    data = QA_fetch_data(code, date[0], date[-1], coll)
+    data = QA_fetch_stock_day(code, date[0], date[-1], coll)
     benchmark_assest = []
     for i in range(0, len(data), 1):
         assest = float(data[i][4]) * float(history[1][3])
