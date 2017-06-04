@@ -40,9 +40,11 @@ def QA_backtest_analysis_start(client, message, days, market_data):
     # 这个benchmark是和第一次bid买入报价同时买入,然后一直持仓,计算账户价值
 
     trade_history = message['body']['account']['history']
+    cash=message['body']['account']['cash']
     # 计算交易日
     trade_date = QA_backtest_calc_trade_date(trade_history)
-
+    account_asset=QA_backtest_calc_asset(trade_history,cash,trade_date)
+    #account_profit=
     # benchmark资产
     benchmark_assest = QA_backtest_calc_benchmark(
         message['header']['session']['code'], days, trade_history, client.quantaxis.stock_day)
@@ -96,7 +98,26 @@ def QA_backtest_analysis_start(client, message, days, market_data):
         'win_rate': win_rate}
     return message
 
-
+def QA_backtest_calc_asset(trade_history,cash):
+    
+    stock_value=0
+    assets=[]
+    for i in range(0,len(trade_history)):
+        if trade_history[i]['towards']<0:
+            stock_value=stock_value+float(trade_history[i]['price'])*float(trade_history[i]['amount'])
+            assets.append(stock_value+cash[i+1])
+        else:
+            assets.append(cash[i+1])
+    trade_date = []
+    for i in range(1, len(trade_history), 1):
+        if trade_history[i]['time'] not in trade_date:
+            trade_date.append(trade_history[i]['time'])
+        else:
+            assets.pop(i)
+           
+    return trade_date
+        
+        
 def QA_backtest_result_check(datelist, message):
     pass
 
@@ -173,8 +194,9 @@ def QA_backtest_calc_sharpe(annualized_returns, benchmark_annualized_returns, vo
 
 def QA_backtest_calc_trade_date(history):
     trade_date = []
-    for i in range(1, len(history) - 1, 1):
-        trade_date.append(history[i][0])
+    for i in range(1, len(history), 1):
+        if history[i]['time'] not in trade_date:
+            trade_date.append(history[i]['time'])
     return trade_date
 
 

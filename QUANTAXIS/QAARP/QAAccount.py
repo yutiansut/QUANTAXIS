@@ -20,6 +20,7 @@ class QA_Account:
     bid = [['date', 'id', ' price', 'amount', 'status']]
     # 可用资金记录表
     cash = []
+    assets=[]
 
 
     def init(self):
@@ -41,6 +42,7 @@ class QA_Account:
                 'account': {
                     'portfolio': self.portfolio,
                     'cash': self.cash,
+                    'assets':self.cash,
                     'history': self.history
                 },
                 #'time':datetime.datetime.now(),
@@ -61,7 +63,7 @@ class QA_Account:
             new_price = update_message['bid']['price']
             self.history.append(update_message['bid'])
             # 先计算收益和利润
-            self.QA_account_calc_profit(update_message)
+           
             # 修改持仓表
             if int(new_towards) > 0:
 
@@ -72,15 +74,24 @@ class QA_Account:
             else:
                 #更新账户
 
-                while new_amount!=0:
-                    for i in range(0,len(self.portfolio)):
+                while new_amount>0:
+                    for i in range(1,len(self.portfolio)):
                         if new_code in self.portfolio[i]:
-                            if new_amount>=self.portfolio[i][3]:
+                            if new_amount>self.portfolio[i][3]:
+
                                 new_amount=new_amount-self.portfolio[i][3]
                                 self.portfolio.pop(i)
-                            else:
+                                
+                            elif new_amount<self.portfolio[i][3]:
                                 self.portfolio[i][3]=self.portfolio[i][3]-new_amount
                                 new_amount=0
+                                break 
+                            elif new_amount==self.portfolio[i][3]:
+                                print(i)
+                                print('=')
+                                new_amount=0
+                                self.portfolio.pop(i)
+                                break
                         else:
                             QA_util_log_info('no code in portfolio')
 
@@ -90,6 +101,7 @@ class QA_Account:
 
         else:
             pass
+        self.QA_account_calc_profit(update_message)
         self.message = {
                 'header': {
                     'source': 'account',
@@ -105,7 +117,8 @@ class QA_Account:
                     'account': {
                         'portfolio': self.portfolio,
                         'history': self.history,
-                        'cash': self.cash
+                        'cash': self.cash,
+                        'assets': self.assets,
                     },
                     'time': datetime.datetime.now(),
                     'date_stamp': str(datetime.datetime.now().timestamp())
@@ -120,7 +133,7 @@ class QA_Account:
             # 证券价值=买入的证券价值+持有到结算(收盘价)的价值
            
             # 买入的部分在update_message
-            buy_price = update_message['bid']['price']
+            
             # 可用资金=上一期可用资金-买入的资金
             self.cash.append(float(self.cash[-1]) - float(
                 update_message['bid']['price']) * float(update_message['bid']['amount']) * update_message['bid']['towards'])
@@ -129,16 +142,20 @@ class QA_Account:
             # success trade,sell
             # 证券价值=买入的证券价值+持有到结算(收盘价)的价值
             # 买入的部分在update_message
-            buy_price = update_message['bid']['price']
+            
             # 卖出的时候,towards=-1,所以是加上卖出的资产
             # 可用资金=上一期可用资金+卖出的资金
             self.cash.append(float(self.cash[-1]) - float(
                 update_message['bid']['price']) * float(update_message['bid']['amount']) * update_message['bid']['towards'])
+            
             # 更新可用资金历史
            
-        else:
+        
             # hold
-            pass
+        market_value=0
+        for i in range(1,len(self.portfolio)):
+            market_value=market_value+float(self.portfolio[i][1])*float(self.portfolio[i][3])
+        self.assets.append(self.cash[-1]+market_value)
 
     def QA_account_receive_deal(self, message):
         # 主要是把从market拿到的数据进行解包,一个一个发送给账户进行更新,再把最后的结果反回
