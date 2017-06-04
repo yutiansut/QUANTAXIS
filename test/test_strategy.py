@@ -66,7 +66,7 @@ class backtest(QA.QA_Backtest):
         self.account.init()
 
         # 重新初始账户资产
-        self.account.assets = 25000
+        self.account.cash = 25000
         self.trade_history = []
         # 重新初始化账户的cookie
         self.account.account_cookie = str(random.random())

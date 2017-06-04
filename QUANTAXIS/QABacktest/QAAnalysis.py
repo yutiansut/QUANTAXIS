@@ -44,7 +44,7 @@ def QA_backtest_analysis_start(client,message,days):
     trade_history=message['body']['account']['history']
     #计算交易日
     trade_date=QA_backtest_calc_trade_date(trade_history)
-    total_date=message['body']['account']['total_date']
+
     
     #benchmark资产
     benchmark_assest=QA_backtest_calc_benchmark(message['header']['session']['code'],total_date,trade_history,client.quantaxis.stock_day)

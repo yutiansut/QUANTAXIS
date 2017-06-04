@@ -3,7 +3,7 @@ import datetime
 
 class QA_QAMarket_bid():
     bid={
-        'price':float(10.846),
+        'price':float(16),
         'time':str('2015-01-05'),
         'amount':int(10),
         'towards':int(1),
