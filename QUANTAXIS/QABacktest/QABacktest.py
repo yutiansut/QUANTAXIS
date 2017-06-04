@@ -3,7 +3,7 @@ from QUANTAXIS import  QA_Market, QA_Portfolio, QA_Risk, QA_QAMarket_bid
 from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAUtil import QA_Setting
 from QUANTAXIS.QAUtil import QA_util_log_info
-from QUANTAXIS.QAFetch.QAQuery import QA_fetch_data
+from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day
 
 import random
 class QA_Backtest():

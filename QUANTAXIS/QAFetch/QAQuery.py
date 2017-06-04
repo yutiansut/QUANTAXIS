@@ -48,7 +48,7 @@ def QA_fetch_trade_date(collections):
 def QA_fetch_stock_info(code,collections):
     pass
 
-def QA_feth_stocklist_day(stock_list,collections,date_range):
+def QA_fetch_stocklist_day(stock_list,collections,date_range):
     data=[]
     for item in stock_list:
         data.append(QA_fetch_stock_day(item,date_range[0],date_range[-1],collections))

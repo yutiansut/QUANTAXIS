@@ -13,7 +13,7 @@ by yutiansut
 
 from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day,QA_fetch_get_trade_date,
                                 QA_fetch_get_stock_indicator,QA_fetch_get_stock_realtime)
-from QUANTAXIS.QAFetch.QAQuery import QA_fetch_trade_date,QA_fetch_stock_day,QA_feth_stocklist_day
+from QUANTAXIS.QAFetch.QAQuery import QA_fetch_trade_date,QA_fetch_stock_day,QA_fetch_stocklist_day
 from QUANTAXIS.QASpider import (QA_spider_select_spider,QA_spider_start_spider,
                                 QA_spider_end_spider)
 
