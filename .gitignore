@@ -25,7 +25,7 @@ tushare/
 *.exe
 .exe
 .pypirc
-
+private/
 
 
 # Byte-compiled / optimized / DLL files
