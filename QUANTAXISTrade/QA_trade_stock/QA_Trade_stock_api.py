@@ -309,6 +309,7 @@ class QA_Stock():
                 print (errinfo)
             else:
                 print (result)
+                return result
 
 
     def QA_trade_stock_get_stockbars(self, client):
