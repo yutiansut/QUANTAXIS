@@ -302,14 +302,14 @@ class QA_Stock():
             return self.result
 
     def QA_trade_stock_get_quotes(self, client, stock_list):
-        res = client.GetQuotes(('000001', '600600'))
+        res = client.GetQuotes(tuple(stock_list))
         for elem in res:
-            errinfo, self.result = elem
+            errinfo, result = elem
             if errinfo != "":
-                print(errinfo)
+                print (errinfo)
             else:
-                #print (self.result)
-                return self.result
+                print (result)
+
 
     def QA_trade_stock_get_stockbars(self, client):
         pass

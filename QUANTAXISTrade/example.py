@@ -37,10 +37,9 @@ hold_list=[l['code'] for l in account['stock']]
 
 #卖出
 for item in hold_list:
-    
-    try:
+    if str(item)[6]=='0':
         st.QA_trade_stock_post_order(client,[1, 4, holder[0],item, 0, 100])
-    except:
+    else:
         st.QA_trade_stock_post_order(client,[1, 4, holder[1],item, 0, 100])
 
 
