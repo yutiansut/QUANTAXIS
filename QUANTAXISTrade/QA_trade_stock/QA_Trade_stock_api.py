@@ -308,7 +308,6 @@ class QA_Stock():
             if errinfo != "":
                 print (errinfo)
             else:
-                print (result)
                 return result
 
 
@@ -325,6 +324,6 @@ if __name__ == "__main__":
     st.QA_trade_stock_get_stock(client)
     st.QA_trade_stock_get_orders(client)
     holder = st.QA_trade_stock_get_holder(client)
-    st.QA_trade_stock_get_quotes(client, ['000001', '601988'])
+    print(st.QA_trade_stock_get_quotes(client, ['000001', '601988']))
     #st.QA_trade_stock_delete_order(client,[0,'2 '])
     #st.QA_trade_stock_post_order(client,[0, 4, holder[0], "601988", 0, 100])
