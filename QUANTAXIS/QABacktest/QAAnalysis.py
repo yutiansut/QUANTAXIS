@@ -9,7 +9,7 @@ from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day
 from QUANTAXIS.QAUtil import QA_util_log_info
 
 
-def QA_backtest_analysis_start(client, message, days, market_data):
+def QA_backtest_analysis_start(client, message,total_date, market_data):
     # 主要要从message_history分析
     # 1.收益率
     # 2.胜率
@@ -37,30 +37,30 @@ def QA_backtest_analysis_start(client, message, days, market_data):
     具体计算方法为 max(1 - 策略当日价值 / 当日之前虚拟账户最高价值)
     """
     # 计算一个benchmark
-    # 这个benchmark是和第一次bid买入报价同时买入,然后一直持仓,计算账户价值
+    # 这个benchmark 是在开始的那天 市价买入和策略所选标的一致的所有股票,然后一直持仓
 
     trade_history = message['body']['account']['history']
     cash=message['body']['account']['cash']
+    assets=message['body']['account']['assets']
     # 计算交易日
     trade_date = QA_backtest_calc_trade_date(trade_history)
-    account_asset=QA_backtest_calc_asset(trade_history,cash,trade_date)
+    account_asset_d=QA_backtest_calc_asset(trade_history,assets)
     #account_profit=
     # benchmark资产
-    benchmark_assest = QA_backtest_calc_benchmark(
-        message['header']['session']['code'], days, trade_history, client.quantaxis.stock_day)
+    benchmark_assets = QA_backtest_calc_benchmark(market_data,total_date,assets)
     # benchmark年化收益
     benchmark_annualized_returns = QA_backtest_calc_profit_per_year(
-        benchmark_assest, days)
+        benchmark_assets, len(total_date))
     # 计算账户的收益
 
-    assest_history = message['body']['account']['assest_history']
+    
     # days=len(assest_history)-1
     # 策略年化收益
-    annualized_returns = QA_backtest_calc_profit_per_year(assest_history, days)
+    annualized_returns = QA_backtest_calc_profit_per_year(assets, len(total_date))
 
     # 收益矩阵
-    assest_profit = QA_backtest_calc_profit_matrix(assest_history)
-    benchmark_profit = QA_backtest_calc_profit_matrix(benchmark_assest)
+    assest_profit = QA_backtest_calc_profit_matrix(assets)
+    benchmark_profit = QA_backtest_calc_profit_matrix(benchmark_assets)
 
     # 策略日收益
     profit_day = message['body']['account']['cur_profit_present_total']
@@ -86,7 +86,7 @@ def QA_backtest_analysis_start(client, message, days, market_data):
         'code': message['header']['session']['code'],
         'annualized_returns': annualized_returns,
         'benchmark_annualized_returns': benchmark_annualized_returns,
-        'benchmark_assest': benchmark_assest,
+        'benchmark_assets': benchmark_assets,
         'vol': volatility_year,
         'benchmark_vol': benchmark_volatility_year,
         'sharpe': sharpe,
@@ -98,37 +98,47 @@ def QA_backtest_analysis_start(client, message, days, market_data):
         'win_rate': win_rate}
     return message
 
-def QA_backtest_calc_asset(trade_history,cash):
+def QA_backtest_calc_asset(trade_history,assets):
     
-    stock_value=0
-    assets=[]
-    for i in range(0,len(trade_history)):
-        if trade_history[i]['towards']<0:
-            stock_value=stock_value+float(trade_history[i]['price'])*float(trade_history[i]['amount'])
-            assets.append(stock_value+cash[i+1])
-        else:
-            assets.append(cash[i+1])
+    assets_d=[]
     trade_date = []
-    for i in range(1, len(trade_history), 1):
-        if trade_history[i]['time'] not in trade_date:
-            trade_date.append(trade_history[i]['time'])
+    for i in range(0, len(trade_history), 1):
+        if trade_history[i][2] not in trade_date:
+            trade_date.append(trade_history[i][2])
+            assets_d.append(assets)
         else:
-            assets.pop(i)
+            assets_d.pop(-1)
+            assets_d.append(assets)
            
-    return trade_date
+    return assets_d
         
         
 def QA_backtest_result_check(datelist, message):
     pass
 
 
-def QA_backtest_calc_benchmark(code, date, history, coll):
+def QA_backtest_calc_benchmark(market,date_list,assets):    
+    benchmark_assest =[float(assets[0])]
+    #buy
+    buy_date=date_list[0]
+    hold_list=[]
 
-    data = QA_fetch_stock_day(code, date[0], date[-1], coll)
-    benchmark_assest = []
-    for i in range(0, len(data), 1):
-        assest = float(data[i][4]) * float(history[1][3])
-        benchmark_assest.append(assest)
+    
+
+
+    for item in len(market):
+        for items in market[item]:
+            if buy_date in items:
+                open_price=items[1]
+        hold_list.append((benchmark_assest/float(len(market)))/float(open_price))
+    for i in range(1, len(date_list), 1):
+        temp_assets=0
+        for item in len(market):
+            for items in market[item]:
+                if date_list[i] in items:
+                    temp_assets += (float(item[1])*float(hold_list[item]))
+        benchmark_assest.append(temp_assets)
+        
 
     return benchmark_assest
 
@@ -194,9 +204,9 @@ def QA_backtest_calc_sharpe(annualized_returns, benchmark_annualized_returns, vo
 
 def QA_backtest_calc_trade_date(history):
     trade_date = []
-    for i in range(1, len(history), 1):
-        if history[i]['time'] not in trade_date:
-            trade_date.append(history[i]['time'])
+    for i in range(0, len(history), 1):
+        if history[i][2] not in trade_date:
+            trade_date.append(history[i][2])
     return trade_date
 
 
@@ -224,6 +234,3 @@ def QA_backtest_calc_win_rate(profit_day):
     win_rate = abovez / (abovez + belowz)
     return win_rate
 
-
-def QA_backtest_plot_assest():
-    pass

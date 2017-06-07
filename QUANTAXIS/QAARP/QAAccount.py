@@ -10,10 +10,8 @@ import datetime
 """
 # 2017/6/4修改: 去除总资产的动态权益计算
 class QA_Account:
-    # 一个portfolio改成list模式
-    portfolio = [['date', 'id', ' price', 'amount', 'status']]
-    # 历史交易记录
-    trade_history = [['date', 'id', ' price', 'amount', ' towards']]
+    # 一个hold改成list模式
+    hold = [['date', 'id', ' price', 'amount', 'status']]
     # 历史报单记录
     # 报单和真实情况去匹配:
     # 报单日期,报单股票,报单价格,报单数量,报单状态(限价/市价),info
@@ -25,7 +23,7 @@ class QA_Account:
 
 
     def init(self):
-        self.portfolio = [['date', 'id', ' price', 'amount', 'status']]
+        self.hold = [['date', 'id', ' price', 'amount', 'status']]
         self.history=[]
         self.profit = []
         self.account_cookie = str(random.random())
@@ -41,7 +39,7 @@ class QA_Account:
             },
             'body': {
                 'account': {
-                    'portfolio': self.portfolio,
+                    'hold': self.hold,
                     'cash': self.cash,
                     'assets':self.cash,
                     'history': self.history
@@ -62,14 +60,14 @@ class QA_Account:
             new_trade_date = update_message['bid']['date']
             new_towards = update_message['bid']['towards']
             new_price = update_message['bid']['price']
-            self.history.append(update_message['bid'])
+            self.history.append([new_trade_date,new_price,new_code,new_amount])
             # 先计算收益和利润
             
            
             # 修改持仓表
             if int(new_towards) > 0:
 
-                self.portfolio.append([new_trade_date,new_price,new_code,new_amount])
+                self.hold.append([new_trade_date,new_price,new_code,new_amount])
                 # 将交易记录插入历史交易记录
 
 
@@ -78,29 +76,29 @@ class QA_Account:
                 pop_list=[]
                 while new_amount>0:
                     
-                    if len(self.portfolio)>1:
-                        for i in range(0,len(self.portfolio)):
+                    if len(self.hold)>1:
+                        for i in range(0,len(self.hold)):
 
                             
-                            if new_code in self.portfolio[i]:
-                                if new_amount>self.portfolio[i][3]:
+                            if new_code in self.hold[i]:
+                                if new_amount>self.hold[i][3]:
 
-                                    new_amount=new_amount-self.portfolio[i][3]
-                                    print(new_amount)
+                                    new_amount=new_amount-self.hold[i][3]
+                                   
                                     pop_list.append(i)
 
-                                elif new_amount<self.portfolio[i][3]:
-                                    self.portfolio[i][3]=self.portfolio[i][3]-new_amount
+                                elif new_amount<self.hold[i][3]:
+                                    self.hold[i][3]=self.hold[i][3]-new_amount
                                     new_amount=0
-                                elif new_amount==self.portfolio[i][3]:
+                                elif new_amount==self.hold[i][3]:
                                     
                                     new_amount=0
                                     pop_list.append(i)
-                print(pop_list)
+                
                 pop_list.sort()
                 pop_list.reverse()
                 for id in pop_list:
-                    self.portfolio.pop(id)
+                    self.hold.pop(id)
 
                 
             # 将交易记录插入历史交易记录
@@ -122,7 +120,7 @@ class QA_Account:
                 },
                 'body': {
                     'account': {
-                        'portfolio': self.portfolio,
+                        'hold': self.hold,
                         'history': self.history,
                         'cash': self.cash,
                         'assets': self.assets,
@@ -160,8 +158,8 @@ class QA_Account:
         
             # hold
         market_value=0
-        for i in range(1,len(self.portfolio)):
-            market_value=market_value+float(self.portfolio[i][1])*float(self.portfolio[i][3])
+        for i in range(1,len(self.hold)):
+            market_value=market_value+float(self.hold[i][1])*float(self.hold[i][3])
         self.assets.append(self.cash[-1]+market_value)
 
     def QA_account_receive_deal(self, message):
