@@ -75,38 +75,32 @@ class QA_Account:
 
             else:
                 #更新账户
-
+                pop_list=[]
                 while new_amount>0:
-                    print(self.portfolio)
+                    
                     if len(self.portfolio)>1:
                         for i in range(0,len(self.portfolio)):
-                            print('===i')
-                            print(i)
-                            print('===portfolio')
-                            print(self.portfolio)
-                            print('===portfolio i')
-                            print(self.portfolio[i])
+
+                            
                             if new_code in self.portfolio[i]:
                                 if new_amount>self.portfolio[i][3]:
 
                                     new_amount=new_amount-self.portfolio[i][3]
                                     print(new_amount)
-                                    self.portfolio.pop(i)
-                                    if new_amount>0:
-                                        continue
-                                    else:
-                                        break
+                                    pop_list.append(i)
+
                                 elif new_amount<self.portfolio[i][3]:
                                     self.portfolio[i][3]=self.portfolio[i][3]-new_amount
                                     new_amount=0
-                                    break 
                                 elif new_amount==self.portfolio[i][3]:
                                     
                                     new_amount=0
-                                    self.portfolio.pop(i)
-                                    break
-                            else:
-                                QA_util_log_info('no code in portfolio')
+                                    pop_list.append(i)
+                print(pop_list)
+                pop_list.sort()
+                pop_list.reverse()
+                for id in pop_list:
+                    self.portfolio.pop(id)
 
                 
             # 将交易记录插入历史交易记录

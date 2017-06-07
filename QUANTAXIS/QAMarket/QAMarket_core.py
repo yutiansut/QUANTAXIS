@@ -18,16 +18,7 @@ class QA_Market():
         try:
             item = coll.find_one(
                 {"code": str(bid['code'])[0:6], "date": str(bid['date'])[0:10]})
-            """
-            QA_util_log_info('==== Market Board ====')
-            QA_util_log_info('date'+str(bid['date']))
-            QA_util_log_info('day High'+str(item["high"]))
-            QA_util_log_info('your bid price'+str(bid['price']))
-            QA_util_log_info('day Low'+str(item["low"]))
-            QA_util_log_info('amount'+str(bid["amount"]))
-            QA_util_log_info('towards'+str(bid["towards"]))
-            QA_util_log_info('==== Market Board ====')
-            """
+
             if (float(bid['price']) < float(item["high"]) and float(bid['price']) > float(item["low"]) or float(bid['price']) == float(item["low"]) or float(bid['price']) == float(item['high'])) and float(bid['amount']) < float(item['volume']) / 8:
                 #QA_util_log_info("deal success")
                 message = {
