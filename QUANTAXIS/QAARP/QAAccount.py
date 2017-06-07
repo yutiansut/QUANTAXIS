@@ -59,11 +59,12 @@ class QA_Account:
 
             new_code = update_message['bid']['code']
             new_amount = update_message['bid']['amount']
-            new_trade_date = update_message['bid']['time']
+            new_trade_date = update_message['bid']['date']
             new_towards = update_message['bid']['towards']
             new_price = update_message['bid']['price']
             self.history.append(update_message['bid'])
             # 先计算收益和利润
+            
            
             # 修改持仓表
             if int(new_towards) > 0:
@@ -76,24 +77,36 @@ class QA_Account:
                 #更新账户
 
                 while new_amount>0:
-                    for i in range(1,len(self.portfolio)):
-                        if new_code in self.portfolio[i]:
-                            if new_amount>self.portfolio[i][3]:
+                    print(self.portfolio)
+                    if len(self.portfolio)>1:
+                        for i in range(0,len(self.portfolio)):
+                            print('===i')
+                            print(i)
+                            print('===portfolio')
+                            print(self.portfolio)
+                            print('===portfolio i')
+                            print(self.portfolio[i])
+                            if new_code in self.portfolio[i]:
+                                if new_amount>self.portfolio[i][3]:
 
-                                new_amount=new_amount-self.portfolio[i][3]
-                                self.portfolio.pop(i)
-                                
-                            elif new_amount<self.portfolio[i][3]:
-                                self.portfolio[i][3]=self.portfolio[i][3]-new_amount
-                                new_amount=0
-                                break 
-                            elif new_amount==self.portfolio[i][3]:
-                                
-                                new_amount=0
-                                self.portfolio.pop(i)
-                                break
-                        else:
-                            QA_util_log_info('no code in portfolio')
+                                    new_amount=new_amount-self.portfolio[i][3]
+                                    print(new_amount)
+                                    self.portfolio.pop(i)
+                                    if new_amount>0:
+                                        continue
+                                    else:
+                                        break
+                                elif new_amount<self.portfolio[i][3]:
+                                    self.portfolio[i][3]=self.portfolio[i][3]-new_amount
+                                    new_amount=0
+                                    break 
+                                elif new_amount==self.portfolio[i][3]:
+                                    
+                                    new_amount=0
+                                    self.portfolio.pop(i)
+                                    break
+                            else:
+                                QA_util_log_info('no code in portfolio')
 
                 
             # 将交易记录插入历史交易记录
@@ -166,7 +179,6 @@ class QA_Account:
             'status': message['header']['status'],
             'user': message['header']['session']['user'],
             'strategy': message['header']['session']['strategy'],
-            'time': datetime.datetime.now(),
             'date_stamp': str(datetime.datetime.now().timestamp()),
             'bid': message['body']['bid'],
             'market': message['body']['market']

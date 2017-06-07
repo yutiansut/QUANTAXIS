@@ -4,10 +4,10 @@ import datetime
 class QA_QAMarket_bid():
     bid={
         'price':float(16),
-        'time':str('2015-01-05'),
+        'date':str('2015-01-05'),
         'amount':int(10),
         'towards':int(1),
-        'code':str('000001.SZ'),
+        'code':str('000001'),
         'user':str('root'),
         'strategy':str('example01'),
         'status':'0x01'

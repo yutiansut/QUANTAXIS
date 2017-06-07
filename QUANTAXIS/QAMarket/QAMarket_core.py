@@ -17,10 +17,10 @@ class QA_Market():
         coll = client.quantaxis.stock_day
         try:
             item = coll.find_one(
-                {"code": str(bid['code'])[0:6], "date": str(bid['time'])[0:10]})
+                {"code": str(bid['code'])[0:6], "date": str(bid['date'])[0:10]})
             """
             QA_util_log_info('==== Market Board ====')
-            QA_util_log_info('date'+str(bid['time']))
+            QA_util_log_info('date'+str(bid['date']))
             QA_util_log_info('day High'+str(item["high"]))
             QA_util_log_info('your bid price'+str(bid['price']))
             QA_util_log_info('day Low'+str(item["low"]))
@@ -45,7 +45,7 @@ class QA_Market():
                             'price': str(bid['price']),
                             'code': str(bid['code']),
                             'amount': int(bid['amount']),
-                            'time': str(bid['time']),
+                            'date': str(bid['date']),
                             'towards': bid['towards']
                         },
                         'market': {
@@ -87,7 +87,7 @@ class QA_Market():
                             'price': '',
                             'code': str(bid['code']),
                             'amount': int(bid['amount']),
-                            'time': str(bid['time']),
+                            'date': str(bid['date']),
                             'towards': bid['towards']
                         },
                         'market': {
@@ -119,7 +119,7 @@ class QA_Market():
                         'price': str(bid['price']),
                         'code': str(bid['code']),
                         'amount': int(bid['amount']),
-                        'time': str(bid['time']),
+                        'date': str(bid['date']),
                         'towards': bid['towards']
                     },
                     'market': {
