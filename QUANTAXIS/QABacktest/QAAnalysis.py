@@ -44,7 +44,7 @@ def QA_backtest_analysis_start(client, message,total_date, market_data):
     assets=message['body']['account']['assets']
     # 计算交易日
     trade_date = QA_backtest_calc_trade_date(trade_history)
-    account_asset_d=QA_backtest_calc_asset(trade_history,assets)
+    assets_d=QA_backtest_calc_asset(trade_history,assets)
     #account_profit=
     # benchmark资产
     benchmark_assets = QA_backtest_calc_benchmark(market_data,total_date,assets)
@@ -63,7 +63,7 @@ def QA_backtest_analysis_start(client, message,total_date, market_data):
     benchmark_profit = QA_backtest_calc_profit_matrix(benchmark_assets)
 
     # 策略日收益
-    profit_day = message['body']['account']['cur_profit_present_total']
+    profit_day = QA_backtest_calc_profit_matrix(assets_d)
     # 胜率
     win_rate = QA_backtest_calc_win_rate(profit_day)
     # 年化波动率
@@ -72,9 +72,9 @@ def QA_backtest_analysis_start(client, message,total_date, market_data):
     # 夏普比率
     sharpe = QA_backtest_calc_sharpe(
         annualized_returns, benchmark_annualized_returns, volatility_year)
-    historys = message['body']['account']['assest_history']
+    
     # 最大回撤
-    max_drop = QA_backtest_calc_dropback_max(historys)
+    max_drop = QA_backtest_calc_dropback_max(assets_d)
 
     # 计算beta
     beta = QA_backtest_calc_beta(
@@ -99,17 +99,17 @@ def QA_backtest_analysis_start(client, message,total_date, market_data):
     return message
 
 def QA_backtest_calc_asset(trade_history,assets):
-    
     assets_d=[]
     trade_date = []
     for i in range(0, len(trade_history), 1):
-        if trade_history[i][2] not in trade_date:
-            trade_date.append(trade_history[i][2])
-            assets_d.append(assets)
+        print(trade_date)
+        if trade_history[i][0] not in trade_date:
+            trade_date.append(trade_history[i][0])
+            assets_d.append(assets[i])
         else:
             assets_d.pop(-1)
-            assets_d.append(assets)
-           
+            assets_d.append(assets[i])
+    
     return assets_d
         
         
@@ -121,25 +121,29 @@ def QA_backtest_calc_benchmark(market,date_list,assets):
     benchmark_assest =[float(assets[0])]
     #buy
     buy_date=date_list[0]
-    hold_list=[]
-
-    
-
-
-    for item in len(market):
-        for items in market[item]:
-            if buy_date in items:
-                open_price=items[1]
-        hold_list.append((benchmark_assest/float(len(market)))/float(open_price))
-    for i in range(1, len(date_list), 1):
-        temp_assets=0
-        for item in len(market):
-            for items in market[item]:
-                if date_list[i] in items:
-                    temp_assets += (float(item[1])*float(hold_list[item]))
+    hold_list=[0,0,0,0]
+      
+    for i in range(0, len(date_list), 1):
+        
+        for j in range(0,len(market)):
+            temp_assets=0
+            for items in market[j]:
+                if date_list[i] == items[6]:
+                    if hold_list[j]>0:
+                        temp_assets += (float(items[1])*float(hold_list[j]))
+                    else :
+                        hold_list[j]=(benchmark_assest[0]/len(market))/float(items[1])
+                        temp_assets +=benchmark_assest[0]/len(market)
+                else:
+                    temp_assets +=benchmark_assest[0]/len(market)
+                print (hold_list)
+                print(temp_assets)
+                input()
+            print (temp_assets)
+            input()
         benchmark_assest.append(temp_assets)
         
-
+    print(benchmark_assest)
     return benchmark_assest
 
 
@@ -189,6 +193,7 @@ def QA_backtest_calc_volatility(assest_profit_matrix):
 
 def QA_backtest_calc_dropback_max(history):
     drops = []
+    print(history)
     for i in range(1, len(history), 1):
         maxs = max(history[:i])
         cur = history[i - 1]
@@ -205,8 +210,8 @@ def QA_backtest_calc_sharpe(annualized_returns, benchmark_annualized_returns, vo
 def QA_backtest_calc_trade_date(history):
     trade_date = []
     for i in range(0, len(history), 1):
-        if history[i][2] not in trade_date:
-            trade_date.append(history[i][2])
+        if history[i][0] not in trade_date:
+            trade_date.append(history[i][0])
     return trade_date
 
 

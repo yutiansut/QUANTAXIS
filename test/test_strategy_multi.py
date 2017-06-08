@@ -53,7 +53,7 @@ class backtest(QA.QA_Backtest):
         self.end_real_date = QA.QA_util_get_real_date(
             self.strategy_end_date, self.trade_list, -1)
         self.end_real_id = self.trade_list.index(self.end_real_date)
-
+        
         
 
 
@@ -110,13 +110,14 @@ class backtest(QA.QA_Backtest):
                     data = self.BT_data_handle(
                         [l[6] for l in self.market_data[j]].index(running_date),j)
                     amount=0
-                    for item in data['account']['body']['account']['portfolio']:
+                    for item in data['account']['body']['account']['hold']:
                         
                         if self.strategy_stock_list[j] in  item:
                             amount=amount+item[3]
                     if amount>0:
                         hold=1
                     else : hold=0
+                    
                     result = predict(data['market'],0,hold, 0,self.stop)
 
 
@@ -127,14 +128,13 @@ class backtest(QA.QA_Backtest):
                         self.bid.bid['price'] = float(data['market'][-1][4])
                         self.bid.bid['code'] = str(
                             self.strategy_stock_list[j])[0:6]
-                        self.bid.bid['time'] = data['market'][-1][6]
+                        self.bid.bid['date'] = data['market'][-1][6]
                         self.bid.bid['towards'] = 1
                         self.bid.bid['user'] = self.setting.QA_setting_user_name
                         self.bid.bid['strategy'] = self.strategy_name
+                        print(self.bid.bid)
                         message = self.market.market_make_deal(
                             self.bid.bid, self.setting.client)
-                        # QA.QA_util_log_info(message)
-
                         messages = self.account.QA_account_receive_deal(message)
 
                     elif result['if_buy'] == 0 and hold == 0:
@@ -144,7 +144,7 @@ class backtest(QA.QA_Backtest):
                         self.bid.bid['price'] = float(data['market'][-1][4])
                         self.bid.bid['code'] = str(
                             self.strategy_stock_list[j])[0:6]
-                        self.bid.bid['time'] = data['market'][-1][6]
+                        self.bid.bid['date'] = data['market'][-1][6]
                         self.bid.bid['towards'] = -1
                         self.bid.bid['user'] = self.setting.QA_setting_user_name
                         self.bid.bid['strategy'] = self.strategy_name
@@ -163,17 +163,14 @@ class backtest(QA.QA_Backtest):
 
         # 把这个协议发送给分析引擎,进行分析
         # 只有当交易历史大于1,才有存储的价值
-        try:
-            QA.QA_util_log_info('start analysis===='+str(self.strategy_stock_list[0]))
-            exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
-            print(messages)
-            QA.QA_SU_save_account_message(
-                messages, self.setting.client)
 
-            
-        except:
-            
-            QA.QA_util_log_info('wrong')
+        QA.QA_util_log_info('start analysis===='+str(self.strategy_stock_list))
+        exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
+        
+        QA.QA_SU_save_account_message(
+            messages, self.setting.client)
+        print(QA.QA_backtest_analysis_start(self.setting.client,messages,self.trade_list[self.start_real_id:self.end_real_id],self.market_data))
+        
 
 
 

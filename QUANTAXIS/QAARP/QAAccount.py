@@ -60,7 +60,7 @@ class QA_Account:
             new_trade_date = update_message['bid']['date']
             new_towards = update_message['bid']['towards']
             new_price = update_message['bid']['price']
-            self.history.append([new_trade_date,new_price,new_code,new_amount])
+            self.history.append([new_trade_date,new_price,new_code,new_towards,new_amount])
             # 先计算收益和利润
             
            

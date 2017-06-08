@@ -14,7 +14,7 @@ def QA_SU_save_account_message(message, client):
         'user': message['header']['session']['user'],
         'strategy': message['header']['session']['strategy'],
         'cash': message['body']['account']['cash'],
-        'portfolio': message['body']['account']['portfolio'],
+        'hold': message['body']['account']['hold'],
         'history': message['body']['account']['history'],
         'assets': message['body']['account']['assets']
     })
@@ -23,3 +23,4 @@ def QA_SU_save_account_message(message, client):
 def QA_SU_save_backtest_message(message, client):
     coll = client.quantaxis.backtest_info
     coll.insert(message)
+    
