@@ -124,23 +124,25 @@ def QA_backtest_calc_benchmark(market,date_list,assets):
     hold_list=[0,0,0,0]
       
     for i in range(0, len(date_list), 1):
-        
+        temp_assets=0
+        temp_assets_t=0
         for j in range(0,len(market)):
-            temp_assets=0
+            print(hold_list)
             for items in market[j]:
+                print(i)
+                print(date_list[i])
+                print(items[6])
+                print(items[0])
                 if date_list[i] == items[6]:
                     if hold_list[j]>0:
-                        temp_assets += (float(items[1])*float(hold_list[j]))
+                        temp_assets_t = (float(items[1])*float(hold_list[j]))
                     else :
                         hold_list[j]=(benchmark_assest[0]/len(market))/float(items[1])
-                        temp_assets +=benchmark_assest[0]/len(market)
+                        temp_assets_t =benchmark_assest[0]/len(market)
                 else:
-                    temp_assets +=benchmark_assest[0]/len(market)
-                print (hold_list)
-                print(temp_assets)
-                input()
-            print (temp_assets)
-            input()
+                   temp_assets_t =benchmark_assest[0]/len(market)
+
+            temp_assets+=temp_assets_t
         benchmark_assest.append(temp_assets)
         
     print(benchmark_assest)
