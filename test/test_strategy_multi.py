@@ -18,7 +18,6 @@ class backtest(QA.QA_Backtest):
         """
         线程间参数设置,全局的
         """
-
         # 对账户进行初始化
         self.account = QA.QA_Account()
 
@@ -53,10 +52,6 @@ class backtest(QA.QA_Backtest):
         self.end_real_date = QA.QA_util_get_real_date(
             self.strategy_end_date, self.trade_list, -1)
         self.end_real_id = self.trade_list.index(self.end_real_date)
-        
-        
-
-
     def init_stock(self):
         """
         线程内设置,局部
@@ -95,8 +90,6 @@ class backtest(QA.QA_Backtest):
     # 策略开始
 
     def handle_data(self):
-        # QA.QA_util_log_info(self.account.message['body'])
-
         # 首先判断是否能满足回测的要求
 
         self.stop = [0, 0]
@@ -121,8 +114,6 @@ class backtest(QA.QA_Backtest):
 
 
                     if result['if_buy'] == 1 :
-                        #self.stop = [result['stop_high'], result['stop_low']]
-                        
                         self.bid.bid['amount'] =250
                         self.bid.bid['price'] = float(data['market'][-1][4])
                         self.bid.bid['code'] = str(
@@ -166,9 +157,8 @@ class backtest(QA.QA_Backtest):
         self.benchmark_data=QA.QA_fetch_stock_day('hs300',self.start_real_date,self.end_real_date,self.setting.client.quantaxis.stock_day)
         QA.QA_SU_save_account_message(
             messages, self.setting.client)
-        print(QA.QA_backtest_analysis_start(self.setting.client,self.strategy_stock_list,messages,self.trade_list[self.start_real_id:self.end_real_id],self.market_data,self.benchmark_data))
-        
-
+        analysis_message=QA.QA_backtest_analysis_start(self.setting.client,self.strategy_stock_list,messages,self.trade_list[self.start_real_id:self.end_real_id],self.market_data,self.benchmark_data)
+        QA.QA_SU_save_backtest_message(analysis_message,self.setting.client)
 
 
 
@@ -182,9 +172,4 @@ ti1 = datetime.datetime.now().timestamp()
 BT.strategy_stock_list = stock_list
 BT.init_stock()
 BT.handle_data()
-
-QA.QA_util_log_info(
-    float(datetime.datetime.now().timestamp()) - float(ti1))
-
-
 
