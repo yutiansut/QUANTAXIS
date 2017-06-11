@@ -5,7 +5,7 @@ QUANTAXIS
 
 Quantitative Financial Strategy Framework
 
-by yutiansut
+by yutiansut    
 
 2017/4/8
 """
