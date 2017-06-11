@@ -49,7 +49,6 @@ from QUANTAXIS.QAUtil import (QA_util_sql_mongo_setting, QA_util_cfg_initial, QA
                                 QA_util_log_debug, QA_util_log_expection, QA_util_log_info,
                                 QA_start_initial,QA_Setting,QA_util_get_date_index,QA_util_get_index_date,QA_util_get_real_date)
 
-from QUANTAXIS.QAMath import *
 from QUANTAXIS.QAIndicator import *
 from QUANTAXIS.QASQL import qasql,qacold
 # CMD and Cli
