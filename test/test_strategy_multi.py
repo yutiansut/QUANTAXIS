@@ -117,8 +117,7 @@ class backtest(QA.QA_Backtest):
                     if amount>0:
                         hold=1
                     else : hold=0
-                    
-                    result = predict(data['market'],0,hold, 0,self.stop)
+                    result = predict(data['market'],hold)
 
 
                     if result['if_buy'] == 1 :
@@ -132,7 +131,6 @@ class backtest(QA.QA_Backtest):
                         self.bid.bid['towards'] = 1
                         self.bid.bid['user'] = self.setting.QA_setting_user_name
                         self.bid.bid['strategy'] = self.strategy_name
-                        print(self.bid.bid)
                         message = self.market.market_make_deal(
                             self.bid.bid, self.setting.client)
                         messages = self.account.QA_account_receive_deal(message)
@@ -148,7 +146,6 @@ class backtest(QA.QA_Backtest):
                         self.bid.bid['towards'] = -1
                         self.bid.bid['user'] = self.setting.QA_setting_user_name
                         self.bid.bid['strategy'] = self.strategy_name
-
                         message = self.market.market_make_deal(
                             self.bid.bid, self.setting.client)
 
@@ -166,10 +163,10 @@ class backtest(QA.QA_Backtest):
 
         QA.QA_util_log_info('start analysis===='+str(self.strategy_stock_list))
         exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
-        
+        self.benchmark_data=QA.QA_fetch_stock_day('hs300',self.start_real_date,self.end_real_date,self.setting.client.quantaxis.stock_day)
         QA.QA_SU_save_account_message(
             messages, self.setting.client)
-        print(QA.QA_backtest_analysis_start(self.setting.client,messages,self.trade_list[self.start_real_id:self.end_real_id],self.market_data))
+        print(QA.QA_backtest_analysis_start(self.setting.client,self.strategy_stock_list,messages,self.trade_list[self.start_real_id:self.end_real_id],self.market_data,self.benchmark_data))
         
 
 

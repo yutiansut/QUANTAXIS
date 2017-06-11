@@ -60,11 +60,5 @@ import argparse
 QA_util_log_info('Welcome to QUANTAXIS, the Version is 0.3.9-beta-dev20')
 
 
-def QA_help_fetch(self):
-    QA_util_log_info('QA_fetch_get_stock_day,QA_fetch_get_trade_date,QA_fetch_get_stock_indicator')
-def QA_help_su(self):
-    QA_util_log_info('QA_SU_save_stock_list, QA_SU_save_stock_day,QA_SU_save_stock_day_init, QA_SU_save_trade_date')
-
-
 def main():
     QA_cmd()

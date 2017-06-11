@@ -1,5 +1,5 @@
 #coding:utf-8
-def predict(market,profit,hold,cur_profit_present,stop):
+def predict(market,hold):
     """
     一个极其简单的示例策略,如果空仓则买入,如果有仓位就卖出
     """

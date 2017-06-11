@@ -9,7 +9,7 @@ from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day
 from QUANTAXIS.QAUtil import QA_util_log_info
 
 
-def QA_backtest_analysis_start(client, message,total_date, market_data):
+def QA_backtest_analysis_start(client, code_list,message, total_date, market_data,benchmark_data):
     # 主要要从message_history分析
     # 1.收益率
     # 2.胜率
@@ -38,25 +38,26 @@ def QA_backtest_analysis_start(client, message,total_date, market_data):
     """
     # 计算一个benchmark
     # 这个benchmark 是在开始的那天 市价买入和策略所选标的一致的所有股票,然后一直持仓
-
+    
     trade_history = message['body']['account']['history']
-    cash=message['body']['account']['cash']
-    assets=message['body']['account']['assets']
-    # 计算交易日
+    cash = message['body']['account']['cash']
+    assets = message['body']['account']['assets']
+    print(assets)
+    # 计算交易日 
     trade_date = QA_backtest_calc_trade_date(trade_history)
-    assets_d=QA_backtest_calc_asset(trade_history,assets)
-    #account_profit=
+    assets_d = QA_backtest_calc_asset(trade_history, assets)
     # benchmark资产
-    benchmark_assets = QA_backtest_calc_benchmark(market_data,total_date,assets)
+    benchmark_assets = QA_backtest_calc_benchmark(
+        benchmark_data,assets[0])
     # benchmark年化收益
     benchmark_annualized_returns = QA_backtest_calc_profit_per_year(
         benchmark_assets, len(total_date))
     # 计算账户的收益
 
-    
     # days=len(assest_history)-1
     # 策略年化收益
-    annualized_returns = QA_backtest_calc_profit_per_year(assets, len(total_date))
+    annualized_returns = QA_backtest_calc_profit_per_year(
+        assets, len(total_date))
 
     # 收益矩阵
     assest_profit = QA_backtest_calc_profit_matrix(assets)
@@ -72,7 +73,7 @@ def QA_backtest_analysis_start(client, message,total_date, market_data):
     # 夏普比率
     sharpe = QA_backtest_calc_sharpe(
         annualized_returns, benchmark_annualized_returns, volatility_year)
-    
+
     # 最大回撤
     max_drop = QA_backtest_calc_dropback_max(assets_d)
 
@@ -83,7 +84,7 @@ def QA_backtest_analysis_start(client, message,total_date, market_data):
     alpha = QA_backtest_calc_alpha(
         annualized_returns, benchmark_annualized_returns, beta, 0.05)
     message = {
-        'code': message['header']['session']['code'],
+        'code':code_list,
         'annualized_returns': annualized_returns,
         'benchmark_annualized_returns': benchmark_annualized_returns,
         'benchmark_assets': benchmark_assets,
@@ -98,56 +99,30 @@ def QA_backtest_analysis_start(client, message,total_date, market_data):
         'win_rate': win_rate}
     return message
 
-def QA_backtest_calc_asset(trade_history,assets):
-    assets_d=[]
+
+def QA_backtest_calc_asset(trade_history, assets):
+    assets_d = []
     trade_date = []
     for i in range(0, len(trade_history), 1):
-        print(trade_date)
         if trade_history[i][0] not in trade_date:
             trade_date.append(trade_history[i][0])
             assets_d.append(assets[i])
         else:
             assets_d.pop(-1)
             assets_d.append(assets[i])
-    
+
     return assets_d
-        
-        
+
+
 def QA_backtest_result_check(datelist, message):
     pass
 
 
-def QA_backtest_calc_benchmark(market,date_list,assets):    
-    benchmark_assest =[float(assets[0])]
-    #buy
-    buy_date=date_list[0]
-    hold_list=[0,0,0,0]
-      
-    for i in range(0, len(date_list), 1):
-        temp_assets=0
-        temp_assets_t=0
-        for j in range(0,len(market)):
-            print(hold_list)
-            for items in market[j]:
-                print(i)
-                print(date_list[i])
-                print(items[6])
-                print(items[0])
-                if date_list[i] == items[6]:
-                    if hold_list[j]>0:
-                        temp_assets_t = (float(items[1])*float(hold_list[j]))
-                    else :
-                        hold_list[j]=(benchmark_assest[0]/len(market))/float(items[1])
-                        temp_assets_t =benchmark_assest[0]/len(market)
-                else:
-                   temp_assets_t =benchmark_assest[0]/len(market)
-
-            temp_assets+=temp_assets_t
-        benchmark_assest.append(temp_assets)
-        
-    print(benchmark_assest)
-    return benchmark_assest
-
+def QA_backtest_calc_benchmark(benchmark_data,init_assets):
+    assets=[]
+    for item in benchmark_data:
+        assets.append(float(item[1])/float(benchmark_data[0][1])*float(init_assets))
+    return assets
 
 def QA_backtest_calc_alpha(annualized_returns, benchmark_annualized_returns, beta, r):
 
@@ -195,7 +170,7 @@ def QA_backtest_calc_volatility(assest_profit_matrix):
 
 def QA_backtest_calc_dropback_max(history):
     drops = []
-    print(history)
+    
     for i in range(1, len(history), 1):
         maxs = max(history[:i])
         cur = history[i - 1]
@@ -240,4 +215,3 @@ def QA_backtest_calc_win_rate(profit_day):
         abovez = 1
     win_rate = abovez / (abovez + belowz)
     return win_rate
-
