@@ -25,7 +25,7 @@ class backtest(QA.QA_Backtest):
         self.strategy_start_date = '2017-03-01'
         self.strategy_end_date = '2017-05-01'
 
-        # 设置回测标的,是一个list对象,不过建议只用一个标的
+        # 设置回测标的,是一个list对象,不过建议只用一个标的 
         self.strategy_stock_list = ['603588.SZ']
 
         # gap是回测时,每日获取数据的前推日期(交易日)
@@ -180,16 +180,15 @@ class backtest(QA.QA_Backtest):
         #print(json.dumps(analysis_message,indent=2))
         QA.QA_SU_save_backtest_message(analysis_message,self.setting.client)
 
+if __name__=='__main__':
+    stock_lists = pymongo.MongoClient().quantaxis.stock_list.find_one()
+    stock_list = stock_lists['stock']['code'][1:20]
 
+    BT = backtest()
+    BT.init()
 
-stock_lists = pymongo.MongoClient().quantaxis.stock_list.find_one()
-stock_list = stock_lists['stock']['code'][1:20]
-
-BT = backtest()
-BT.init()
-
-ti1 = datetime.datetime.now().timestamp()
-BT.strategy_stock_list = stock_list
-BT.init_stock()
-BT.handle_data()
+    ti1 = datetime.datetime.now().timestamp()
+    BT.strategy_stock_list = stock_list
+    BT.init_stock()
+    BT.handle_data()
 
