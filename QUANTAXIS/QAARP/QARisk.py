@@ -1,24 +1,7 @@
 # coding:utf-8
 from QUANTAXIS.QABacktest import QAAnalysis
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_log_expection
-"""message['body']['account']
-'account':{
-            'init_assest':self.total_assest[0],
-            'portfolio':self.portfolio,
-            'history':self.history_trade,
-            'assest_now':self.total_assest[-1],
-            'assest_history':self.total_assest,
-            'assest_free':self.assets_free,
-            'total_assest_free':self.total_assest_free,
-            'assest_fix':self.assets_market_hold_value,
-            'profit':self.total_profit[-1],
-            'assets_profit_day':0,
-            'assets_profit_total':[0],
-            'total_profit':self.total_profit,
-            'cur_profit_present':self.cur_profit_present,
-            'cur_profit_present_total':self.cur_profit_present_total,
-            'hold':self.hold}
-"""
+
 """收益性的包括年化收益率、净利润、总盈利、总亏损、有效年化收益率、资金使用率。
 
 风险性主要包括胜率、平均盈亏比、最大回撤比例、最大连续亏损次数、最大连续盈利次数、持仓时间占比、贝塔。

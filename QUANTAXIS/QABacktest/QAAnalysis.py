@@ -42,10 +42,11 @@ def QA_backtest_analysis_start(client, code_list,message, total_date, market_dat
     trade_history = message['body']['account']['history']
     cash = message['body']['account']['cash']
     assets = message['body']['account']['assets']
-    print(assets)
+    
     # 计算交易日 
     trade_date = QA_backtest_calc_trade_date(trade_history)
     assets_d = QA_backtest_calc_asset(trade_history, assets)
+    
     # benchmark资产
     benchmark_assets = QA_backtest_calc_benchmark(
         benchmark_data,assets[0])

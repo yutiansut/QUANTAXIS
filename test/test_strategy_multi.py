@@ -1,8 +1,9 @@
 # coding:utf-8
 import QUANTAXIS as QA
 import random
-import pymongo
+import pymongo,json
 import datetime
+from tabulate import tabulate
 from strategy import predict
 
 # 2个地方进行了优化:
@@ -94,9 +95,13 @@ class backtest(QA.QA_Backtest):
 
         self.stop = [0, 0]
         # 策略的交易日循环
-        for i in range(int(self.start_real_id), int(self.end_real_id), 1):
+        for i in range(int(self.start_real_id), int(self.end_real_id)-1, 1):
             # 正在进行的交易日期
             running_date = self.trade_list[i]
+            print('=================daily hold list====================')
+            print('in the begining of '+ running_date)
+            print(tabulate(self.account.message['body']['account']['hold']))
+            
             for j in range(0,len(self.strategy_stock_list)):
                 if running_date in [l[6] for l in self.market_data[j]] and [l[6] for l in self.market_data[j]].index(running_date) > self.strategy_gap + 1:
 
@@ -111,8 +116,6 @@ class backtest(QA.QA_Backtest):
                         hold=1
                     else : hold=0
                     result = predict(data['market'],hold)
-
-
                     if result['if_buy'] == 1 :
                         self.bid.bid['amount'] =250
                         self.bid.bid['price'] = float(data['market'][-1][4])
@@ -120,16 +123,17 @@ class backtest(QA.QA_Backtest):
                             self.strategy_stock_list[j])[0:6]
                         self.bid.bid['date'] = data['market'][-1][6]
                         self.bid.bid['towards'] = 1
+                        self.bid.bid['order_id']=str(random.random())
                         self.bid.bid['user'] = self.setting.QA_setting_user_name
                         self.bid.bid['strategy'] = self.strategy_name
                         message = self.market.market_make_deal(
                             self.bid.bid, self.setting.client)
                         messages = self.account.QA_account_receive_deal(message)
-
                     elif result['if_buy'] == 0 and hold == 0:
                         pass
                     elif result['if_buy'] == 0 and hold == 1:
                         self.bid.bid['amount'] = int(amount)
+                        self.bid.bid['order_id']=str(random.random())
                         self.bid.bid['price'] = float(data['market'][-1][4])
                         self.bid.bid['code'] = str(
                             self.strategy_stock_list[j])[0:6]
@@ -139,31 +143,48 @@ class backtest(QA.QA_Backtest):
                         self.bid.bid['strategy'] = self.strategy_name
                         message = self.market.market_make_deal(
                             self.bid.bid, self.setting.client)
-
-
                         messages = self.account.QA_account_receive_deal(
                             message)
-
-
-           
                 else:
                     pass
 
-        # 把这个协议发送给分析引擎,进行分析
-        # 只有当交易历史大于1,才有存储的价值
 
+        # 在回测的最后一天,平掉所有仓位(回测的最后一天是不买入的)
+        while len(self.account.hold)>1:
+            __hold_list=self.account.hold[1::]
+            
+            for item in __hold_list:
+                self.bid.bid['amount'] = int(item[3])
+                self.bid.bid['order_id'] = str(random.random())
+                self.bid.bid['price'] = 'market_price'
+                self.bid.bid['code'] = str(item[1])
+                self.bid.bid['date'] = self.trade_list[self.end_real_id]
+                self.bid.bid['towards'] = -1
+                self.bid.bid['user'] = self.setting.QA_setting_user_name
+                self.bid.bid['strategy'] = self.strategy_name
+                message = self.market.market_make_deal(
+                            self.bid.bid, self.setting.client)
+                
+                messages = self.account.QA_account_receive_deal(
+                            message)
+
+
+        # 开始分析
         QA.QA_util_log_info('start analysis===='+str(self.strategy_stock_list))
+        
         exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
         self.benchmark_data=QA.QA_fetch_stock_day('hs300',self.start_real_date,self.end_real_date,self.setting.client.quantaxis.stock_day)
+        #print(json.dumps(messages,indent=2))
         QA.QA_SU_save_account_message(
             messages, self.setting.client)
         analysis_message=QA.QA_backtest_analysis_start(self.setting.client,self.strategy_stock_list,messages,self.trade_list[self.start_real_id:self.end_real_id],self.market_data,self.benchmark_data)
+        #print(json.dumps(analysis_message,indent=2))
         QA.QA_SU_save_backtest_message(analysis_message,self.setting.client)
 
 
 
 stock_lists = pymongo.MongoClient().quantaxis.stock_list.find_one()
-stock_list = stock_lists['stock']['code'][1:5]
+stock_list = stock_lists['stock']['code'][1:20]
 
 BT = backtest()
 BT.init()

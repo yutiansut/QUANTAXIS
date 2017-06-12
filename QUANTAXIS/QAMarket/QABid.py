@@ -1,5 +1,5 @@
 import datetime
-
+import random
 
 class QA_QAMarket_bid():
     bid={
@@ -10,7 +10,8 @@ class QA_QAMarket_bid():
         'code':str('000001'),
         'user':str('root'),
         'strategy':str('example01'),
-        'status':'0x01'
+        'status':'0x01',
+        'order_id':str(random.random())
         }
     bid_list=[]
     #报价队列  插入/取出/查询
