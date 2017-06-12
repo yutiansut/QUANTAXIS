@@ -1,7 +1,7 @@
 # coding:utf-8
 import QUANTAXIS as QA
 import random
-import pymongo,json
+import pymongo,json,pprint
 import datetime
 from tabulate import tabulate
 from strategy import predict
