@@ -5,7 +5,8 @@ from QUANTAXIS.QAUtil import QA_Setting
 from QUANTAXIS.QASignal import QA_signal_send
 from .QABid import QA_QAMarket_bid
 #from .market_config import stock_market,future_market,HK_stock_market,US_stock_market
-import datetime,random
+import datetime
+import random
 
 
 class QA_Market():
@@ -18,9 +19,9 @@ class QA_Market():
         try:
             item = coll.find_one(
                 {"code": str(bid['code'])[0:6], "date": str(bid['date'])[0:10]})
-            if bid['price']=='market_price':
-                bid['price']=(float(item["high"])+float(item["low"]))*0.5
-                return self.market_make_deal(bid,client)
+            if bid['price'] == 'market_price':
+                bid['price'] = (float(item["high"]) + float(item["low"])) * 0.5
+                return self.market_make_deal(bid, client)
             elif (float(bid['price']) < float(item["high"]) and float(bid['price']) > float(item["low"]) or float(bid['price']) == float(item["low"]) or float(bid['price']) == float(item['high'])) and float(bid['amount']) < float(item['volume']) / 8:
                 #QA_util_log_info("deal success")
                 message = {
@@ -32,8 +33,8 @@ class QA_Market():
                             'user': str(bid['user']),
                             'strategy': str(bid['strategy'])
                         },
-                        'order_id':str(bid['order_id']),
-                        'trade_id':str(random.random())
+                        'order_id': str(bid['order_id']),
+                        'trade_id': str(random.random())
                     },
                     'body': {
                         'bid': {
@@ -76,8 +77,8 @@ class QA_Market():
                             'user': str(bid['user']),
                             'strategy': str(bid['strategy'])
                         },
-                        'order_id':str(bid['order_id']),
-                        'trade_id':str(random.random())
+                        'order_id': str(bid['order_id']),
+                        'trade_id': str(random.random())
                     },
                     'body': {
                         'bid': {
@@ -110,8 +111,8 @@ class QA_Market():
                         'user': str(bid['user']),
                         'strategy': str(bid['strategy'])
                     },
-                    'order_id':str(bid['order_id']),
-                    'trade_id':str(random.random())
+                    'order_id': str(bid['order_id']),
+                    'trade_id': str(random.random())
                 },
                 'body': {
                     'bid': {
