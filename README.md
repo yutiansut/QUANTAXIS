@@ -63,6 +63,8 @@ cd quantaxis
 python easy_start_tushare.py(会存全市场的数据,较慢)
 python test_strategy_multi.py(一个简单的策略)
 ```
+![简易策略](http://i1.buimg.com/1949/44f692d0c9d6fed2.png)
+
 启动网络插件(nodejs 版本号需要大于6,最好是7)
 ```shell
 cd QUANTAXISWebkit
