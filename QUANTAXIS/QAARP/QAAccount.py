@@ -20,6 +20,7 @@ class QA_Account:
     # 可用资金记录表
     init_assest = 1000000
     cash = []
+    detail=[]
     assets = []
 
     def init(self):
@@ -43,7 +44,8 @@ class QA_Account:
                     'hold': self.hold,
                     'cash': self.cash,
                     'assets': self.cash,
-                    'history': self.history
+                    'history': self.history,
+                    'detail':self.detail
                 },
                 #'time':datetime.datetime.now(),
                 'date_stamp': str(datetime.datetime.now().timestamp())
@@ -72,6 +74,7 @@ class QA_Account:
 
                 self.hold.append(
                     [__new_trade_date, __new_code, __new_price, __new_amount,__new_order_id,__new_trade_id])
+                self.detail.append([__new_trade_date, __new_code, __new_price, __new_amount,__new_order_id,__new_trade_id,[],[]])
                 # 将交易记录插入历史交易记录
             else:
                 # 更新账户
@@ -91,6 +94,11 @@ class QA_Account:
                                 elif __new_amount < self.hold[i][3]:
                                     self.hold[i][3] = self.hold[i][3] - \
                                         __new_amount
+                                    
+                                    for item_detail in self.detail:
+                                        if item_detail[5]==self.hold[i][5] and __new_trade_id not in item_detail[7]:
+                                            item_detail[6].append(__new_order_id)
+                                            item_detail[7].append(__new_trade_id)
                                     __new_amount = 0
                                 elif __new_amount == self.hold[i][3]:
 
@@ -99,8 +107,13 @@ class QA_Account:
 
                 __pop_list.sort()
                 __pop_list.reverse()
-                for id in __pop_list:
-                    self.hold.pop(id)
+                for __id in __pop_list:
+                    
+                    for item_detail in self.detail:
+                        if item_detail[5]==self.hold[__id][5] and __new_trade_id not in item_detail[7]:
+                            item_detail[6].append(__new_order_id)
+                            item_detail[7].append(__new_trade_id)
+                    self.hold.pop(__id)
             # 将交易记录插入历史交易记录
         else:
             pass
@@ -122,6 +135,7 @@ class QA_Account:
                     'history': self.history,
                     'cash': self.cash,
                     'assets': self.assets,
+                    'detail':self.detail
                 },
                 'time':str(datetime.datetime.now()),
                 'date_stamp': str(datetime.datetime.now().timestamp())

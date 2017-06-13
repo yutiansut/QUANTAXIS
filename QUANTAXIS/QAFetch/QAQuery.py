@@ -15,12 +15,12 @@ def QA_fetch_stock_day(code,startDate,endDate,collections):
     startDate=str(startDate)[0:10]
     endDate=str(endDate)[0:10]
 
-    coll=collections
+
     if QA_util_date_valid(endDate)==True:
 
         list_a=[[],[],[],[],[],[],[]]
 
-        for item in coll.find({'code':str(code)[0:6],"date_stamp":{"$lte":QA_util_date_stamp(endDate),"$gte":QA_util_date_stamp(startDate)}}):
+        for item in collections.find({'code':str(code)[0:6],"date_stamp":{"$lte":QA_util_date_stamp(endDate),"$gte":QA_util_date_stamp(startDate)}}):
             #print(item['code'])
             list_a[0].append(item['code'])
             list_a[1].append(item['open'])
