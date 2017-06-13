@@ -12,7 +12,7 @@ def QA_update_stock_day(name,startDate,endDate):
     data=QATushare.QA_fetch_get_stock_day(name,startDate,endDate)
     
     
-def QA_update_stock_day_all(code,client):
+def QA_update_stock_day_all(client):
     coll_stocklist=client.quantaxis.stock_list
     stock_list=coll_stocklist.find_one()['stock']['code']
     coll_stock_day=client.quantaxis.stock_day
@@ -30,11 +30,6 @@ def QA_update_standard_sql():
     print('正在整理和更新数据,请稍等.....')
     coll=pymongo.MongoClient().quantaxis.stock_day
     coll.ensure_index('code')
-    """
-    for item in coll.find():
-        date=item['date']
-        date_stamp=QA_util_date_stamp(date)
-        coll.update({"_id":item['_id']},{'$set':{'date_stamp':date_stamp}})
-    """
+
 
 
