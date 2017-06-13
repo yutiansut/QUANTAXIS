@@ -74,7 +74,7 @@ class QA_Account:
 
                 self.hold.append(
                     [__new_trade_date, __new_code, __new_price, __new_amount,__new_order_id,__new_trade_id])
-                self.detail.append([__new_trade_date, __new_code, __new_price, __new_amount,__new_order_id,__new_trade_id,[],[]])
+                self.detail.append([__new_trade_date, __new_code, __new_price, __new_amount,__new_order_id,__new_trade_id,[],[],[],[]])
                 # 将交易记录插入历史交易记录
             else:
                 # 更新账户
@@ -97,8 +97,10 @@ class QA_Account:
                                     
                                     for item_detail in self.detail:
                                         if item_detail[5]==self.hold[i][5] and __new_trade_id not in item_detail[7]:
-                                            item_detail[6].append(__new_order_id)
-                                            item_detail[7].append(__new_trade_id)
+                                            item_detail[6].append(__new_price)
+                                            item_detail[7].append(__new_order_id)
+                                            item_detail[8].append(__new_trade_id)
+                                            item_detail[9].append(__new_trade_date)
                                     __new_amount = 0
                                 elif __new_amount == self.hold[i][3]:
 
@@ -111,8 +113,10 @@ class QA_Account:
                     
                     for item_detail in self.detail:
                         if item_detail[5]==self.hold[__id][5] and __new_trade_id not in item_detail[7]:
-                            item_detail[6].append(__new_order_id)
-                            item_detail[7].append(__new_trade_id)
+                            item_detail[6].append(__new_price)
+                            item_detail[7].append(__new_order_id)
+                            item_detail[8].append(__new_trade_id)
+                            item_detail[9].append(__new_trade_date)
                     self.hold.pop(__id)
             # 将交易记录插入历史交易记录
         else:
