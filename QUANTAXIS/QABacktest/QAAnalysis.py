@@ -122,7 +122,7 @@ def QA_backtest_result_check(datelist, message):
 def QA_backtest_calc_benchmark(benchmark_data,init_assets):
     assets=[]
     for item in benchmark_data:
-        assets.append(float(item[1])/float(benchmark_data[0][1])*float(init_assets))
+        assets.append(float(item[1])/float(benchmark_data[1][1])*float(init_assets))
     return assets
 
 def QA_backtest_calc_alpha(annualized_returns, benchmark_annualized_returns, beta, r):
