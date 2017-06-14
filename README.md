@@ -53,7 +53,7 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.5
 - python3.6优先(开发环境) python2 回测框架兼容
 - nodejs 需要安装>7的版本,来支持es6语法
 - mongodb是必须要装的
-- Wind万得数据库  机构版/免费(大奖章版)
+
 
 一个简易demo(需要先安装并启动mongodb,python版本需要大于3)
 ```shell

@@ -37,7 +37,7 @@ class backtest(QA.QA_Backtest):
         self.strategy_gap = 6
 
         # 设置全局的数据库地址,回测用户名,密码,并初始化
-        self.setting.QA_util_sql_mongo_ip = '192.168.4.189'
+        self.setting.QA_util_sql_mongo_ip = '127.0.0.1'
         self.setting.QA_setting_user_name = 'admin'
         self.setting.QA_setting_user_password = 'admin'
         self.setting.QA_setting_init()
