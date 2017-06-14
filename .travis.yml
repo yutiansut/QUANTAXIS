@@ -27,7 +27,7 @@ install:
 
 
 # command to install dependencies
-- "pip install -r requirements.txt "
+  - "pip install -r requirements.txt "
  
 # command to build
 script: "python setup.py install"
