@@ -11,8 +11,16 @@
   },
   "dependencies": {
     "axios": "^0.16.1",
+    "buffer-shims": "^1.0.0",
+    "caniuse-lite": "^1.0.30000684",
     "echarts": "^3.6.1",
+    "fs": "0.0.1-security",
+    "fs.realpath": "^1.0.0",
+    "highlight.js": "^9.12.0",
     "muse-ui": "^2.0.3",
+    "process-nextick-args": "^1.0.7",
+    "simplemde": "^1.11.2",
+    "util-deprecate": "^1.0.2",
     "vue": "^2.3.3",
     "vue-router": "^2.3.1"
   },
