@@ -39,7 +39,7 @@ from QUANTAXIS.QAMarket import (QA_QAMarket_bid,QA_Market)
 
 from QUANTAXIS.QAARP import QA_Account,QA_Portfolio,QA_Risk
 # Backtest
-from QUANTAXIS.QABacktest.QABacktest import QA_Backtest
+from QUANTAXIS.QABacktest.QABacktest import QA_Backtest,QA_Backtest_simple
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start    
 
 # Util
