@@ -1,7 +1,7 @@
 # encoding: UTF-8
 from QUANTAXIS.QAUtil import QA_util_log_info
 import random
-import datetime
+import datetime,time
 
 """
 账户类:    
@@ -48,7 +48,7 @@ class QA_Account:
                     'detail':self.detail
                 },
                 #'time':datetime.datetime.now(),
-                'date_stamp': str(datetime.datetime.now().timestamp())
+                'date_stamp': str(time.mktime(datetime.datetime.now().timetuple()))
             }
         }
 
@@ -142,7 +142,7 @@ class QA_Account:
                     'detail':self.detail
                 },
                 'time':str(datetime.datetime.now()),
-                'date_stamp': str(datetime.datetime.now().timestamp())
+                'date_stamp':str(time.mktime(datetime.datetime.now().timetuple()))
             }
         }
 
@@ -186,7 +186,7 @@ class QA_Account:
             'strategy': __message['header']['session']['strategy'],
             'trade_id':__message['header']['trade_id'],
             'order_id':__message['header']['order_id'],
-            'date_stamp': str(datetime.datetime.now().timestamp()),
+            'date_stamp': str(time.mktime(datetime.datetime.now().timetuple())),
             'bid': __message['body']['bid'],
             'market': __message['body']['market']
         })

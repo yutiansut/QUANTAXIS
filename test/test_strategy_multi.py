@@ -37,7 +37,7 @@ class backtest(QA.QA_Backtest):
         self.strategy_gap = 6
 
         # 设置全局的数据库地址,回测用户名,密码,并初始化
-        self.setting.QA_util_sql_mongo_ip = '127.0.0.1'
+        self.setting.QA_util_sql_mongo_ip = '192.168.4.189'
         self.setting.QA_setting_user_name = 'admin'
         self.setting.QA_setting_user_password = 'admin'
         self.setting.QA_setting_init()
@@ -47,7 +47,7 @@ class backtest(QA.QA_Backtest):
 
        # 股票的交易日历,真实回测的交易周期,和交易周期在交易日历中的id
         self.trade_list = QA.QA_fetch_trade_date(
-            QA.QA_Setting().client.quantaxis.trade_date)
+            self.setting.client.quantaxis.trade_date)
         """
         这里会涉及一个区间的问题,开始时间是要向后推,而结束时间是要向前推,1代表向后推,-1代表向前推
         """
@@ -198,7 +198,7 @@ class backtest(QA.QA_Backtest):
         print(tabulate(self.account.detail, headers=('date', 'code', 'price',
                                                      'amounts', 'order_id', 'trade_id', 'sell_order_id', 'sell_trade_id')))
         exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
-        self.benchmark_data = QA.QA_fetch_stock_day(
+        self.benchmark_data = QA.QA_fetch_index_day(
             'hs300', self.start_real_date, self.end_real_date, self.setting.client.quantaxis.stock_day)
         # print(json.dumps(messages,indent=2))
         # QA.QA_SU_save_account_message(
@@ -228,13 +228,12 @@ def predict(market, hold):
             return {'if_buy': 0}
 
 
-stock_lists = pymongo.MongoClient().quantaxis.stock_list.find_one()
+stock_lists = pymongo.MongoClient('192.168.4.189',27017).quantaxis.stock_list.find_one()
 stock_list = stock_lists['stock']['code'][0:3]
 
 BT = backtest()
 BT.init()
 
-ti1 = datetime.datetime.now().timestamp()
 BT.strategy_stock_list = stock_list
 BT.init_stock()
 BT.handle_data()
