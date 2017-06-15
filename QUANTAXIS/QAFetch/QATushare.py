@@ -22,8 +22,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import tushare as QATs
 import json
+
+import tushare as QATs
+
 from QUANTAXIS.QAUtil import QA_util_date_stamp
 
 

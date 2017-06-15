@@ -27,8 +27,10 @@
 Analysis Center for Backtest
 we will give some function
 """
-import numpy
 import math
+
+import numpy
+
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day
 from QUANTAXIS.QAUtil import QA_util_log_info
 

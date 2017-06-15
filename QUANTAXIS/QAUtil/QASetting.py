@@ -21,8 +21,9 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from QUANTAXIS.QAUtil import QA_util_log_info,QA_util_sql_mongo_setting
-from QUANTAXIS.QASU.user import QA_user_sign_in,QA_user_sign_up
+from QUANTAXIS.QASU.user import QA_user_sign_in, QA_user_sign_up
+from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_sql_mongo_setting
+
 
 class QA_Setting():
     

@@ -23,12 +23,20 @@
 # SOFTWARE.
 
 import cmd
-import string, sys
-import os,shutil
-import pymongo,csv
-from QUANTAXIS.QAUtil import QA_util_log_info
+import csv
+import os
+import shutil
+import string
+import sys
+
+import pymongo
+
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
+from QUANTAXIS.QAUtil import QA_util_log_info
+
 from . import strategy_sample_simple
+
+
 class CLI(cmd.Cmd):
     
     def __init__(self):

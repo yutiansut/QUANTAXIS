@@ -22,10 +22,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from QUANTAXIS.QAUtil import QA_util_log_info
-import random
 import datetime
+import random
 import time
+
+from tabulate import tabulate
+
+from QUANTAXIS.QAUtil import QA_util_log_info
+
 
 """
 账户类:    
@@ -99,7 +103,7 @@ class QA_Account:
                 self.hold.append(
                     [__new_trade_date, __new_code, __new_price, __new_amount, __new_order_id, __new_trade_id])
                 self.detail.append([__new_trade_date, __new_code, __new_price,
-                                    __new_amount, __new_order_id, __new_trade_id, [], [], [], []])
+                                    __new_amount, __new_order_id, __new_trade_id, [], [], [], [], __new_amount])
                 # 将交易记录插入历史交易记录
             else:
                 # 更新账户
@@ -130,6 +134,8 @@ class QA_Account:
                                                 __new_trade_id)
                                             item_detail[9].append(
                                                 __new_trade_date)
+                                            item_detail[10] = self.hold[i][3] - \
+                                                __new_amount
                                     __new_amount = 0
                                 elif __new_amount == self.hold[i][3]:
 
@@ -146,6 +152,7 @@ class QA_Account:
                             item_detail[7].append(__new_order_id)
                             item_detail[8].append(__new_trade_id)
                             item_detail[9].append(__new_trade_date)
+                            item_detail[10] = 0
                     self.hold.pop(__id)
             # 将交易记录插入历史交易记录
         else:
@@ -168,7 +175,8 @@ class QA_Account:
                     'history': self.history,
                     'cash': self.cash,
                     'assets': self.assets,
-                    'detail': self.detail
+                    'detail': tabulate(self.detail, headers=('date', 'code', 'price',
+                                                             'amounts', 'sell_price','order_id', 'trade_id', 'sell_order_id', 'sell_trade_id', 'left_amount'))
                 },
                 'time': str(datetime.datetime.now()),
                 'date_stamp': str(time.mktime(datetime.datetime.now().timetuple()))

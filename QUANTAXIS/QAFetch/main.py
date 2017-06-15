@@ -29,11 +29,13 @@ with QAWind/QATushare
 
 @author yutiansut
 """
-from . import QAWind as QAWind
-from . import QATushare as QATushare
 #import QAFetch.QAGmsdk as QAGmsdk
 #import QAFetch.QACrawlData as QACD
 import pymongo
+
+from . import QATushare as QATushare
+from . import QAWind as QAWind
+
 
 #from WindPy import w
 #w.start()
@@ -57,4 +59,3 @@ def QA_fetch_get_stock_indicator(package,name,startDate,endDate):
 def QA_fetch_get_trade_date(package,endDate,exchange):
     Engine=use(package)
     return Engine.QA_fetch_get_trade_date(endDate,exchange)
-

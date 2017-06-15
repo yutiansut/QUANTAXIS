@@ -22,10 +22,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import threading
+
+from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_valid,
+                              QA_util_log_info)
+
 from .QAAccount import QA_Account
 from .QARisk import QA_Risk
-from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_date_stamp, QA_util_date_valid
-import threading
 
 
 class QA_Portfolio():

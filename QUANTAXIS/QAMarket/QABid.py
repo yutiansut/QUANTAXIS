@@ -25,6 +25,7 @@
 import datetime
 import random
 
+
 class QA_QAMarket_bid():
     bid={
         'price':float(16),

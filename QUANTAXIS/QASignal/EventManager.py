@@ -23,10 +23,13 @@
 # SOFTWARE.
 
 
+from threading import *
+
 # 系统模块
 from QUANTAXIS.QAUtil import QA_util_log_info
-from six.moves.queue  import Queue, Empty
-from threading import *
+from six.moves.queue import Empty, Queue
+
+
 ########################################################################
 class QA_Signal_eventManager:
     #----------------------------------------------------------------------

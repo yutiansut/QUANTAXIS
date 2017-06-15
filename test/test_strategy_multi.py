@@ -1,13 +1,17 @@
 # coding:utf-8
-import QUANTAXIS as QA
-import random
-import pymongo
-import json
-import pprint
-import sys
-import os
 import datetime
+import json
+import os
+import pprint
+import random
+import sys
+
+import pymongo
 from tabulate import tabulate
+
+import QUANTAXIS as QA
+
+
 #from strategy import predict
 
 # 2个地方进行了优化:
@@ -126,7 +130,7 @@ class backtest(QA.QA_Backtest):
                     result = predict(data['market'], hold)
                     if result['if_buy'] == 1:
                         self.bid.bid['amount'] = 250
-                        self.bid.bid['price'] = float(data['market'][-1][4])
+                        self.bid.bid['price'] =  'market_price'
                         self.bid.bid['code'] = str(
                             self.strategy_stock_list[j])[0:6]
                         self.bid.bid['date'] = data['market'][-1][6]
@@ -141,9 +145,9 @@ class backtest(QA.QA_Backtest):
                     elif result['if_buy'] == 0 and hold == 0:
                         pass
                     elif result['if_buy'] == 0 and hold == 1:
-                        self.bid.bid['amount'] = int(amount) / 2
+                        self.bid.bid['amount'] = int(amount)*0.5
                         self.bid.bid['order_id'] = str(random.random())
-                        self.bid.bid['price'] = float(data['market'][-1][4])
+                        self.bid.bid['price'] =  'market_price'
                         self.bid.bid['code'] = str(
                             self.strategy_stock_list[j])[0:6]
                         self.bid.bid['date'] = data['market'][-1][6]
@@ -161,8 +165,7 @@ class backtest(QA.QA_Backtest):
             print(tabulate(self.account.history, headers=('date', 'code',
                                                           'price', 'towards', 'amounts', 'order_id', 'trade_id')))
 
-            print(tabulate(self.account.detail, headers=('date', 'code', 'price',
-                                                         'amounts', 'order_id', 'trade_id', 'sell_order_id', 'sell_trade_id')))
+            QA.QA_util_log_info(self.account.detail)
 
         print('=================daily hold list====================')
         print('in the begining of ' + self.trade_list[self.end_real_id])
@@ -195,8 +198,8 @@ class backtest(QA.QA_Backtest):
                                                       'price', 'towards', 'amounts', 'order_id', 'trade_id')))
         QA.QA_util_log_info('start analysis====' +
                             str(self.strategy_stock_list))
-        print(tabulate(self.account.detail, headers=('date', 'code', 'price',
-                                                     'amounts', 'order_id', 'trade_id', 'sell_order_id', 'sell_trade_id')))
+        QA.QA_util_log_info( tabulate(self.account.detail, headers=('date', 'code', 'price',
+                                                             'amounts', 'order_id', 'trade_id', 'sell_price','sell_order_id', 'sell_trade_id', 'left_amount')))
         exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
         self.benchmark_data = QA.QA_fetch_index_day(
             'hs300', self.start_real_date, self.end_real_date, self.setting.client.quantaxis.stock_day)

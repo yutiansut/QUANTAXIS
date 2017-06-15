@@ -23,12 +23,15 @@
 # SOFTWARE.
 
 
-from QUANTAXIS.QAUtil import QA_util_log_info
-from QUANTAXIS.QAUtil import QA_util_date_valid, QA_util_date_stamp
-from pandas import DataFrame
-from bson.objectid import ObjectId
-import numpy
 import datetime
+
+import numpy
+from bson.objectid import ObjectId
+from pandas import DataFrame
+
+from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_valid,
+                              QA_util_log_info)
+
 
 """
 按要求从数据库取数据，并转换成numpy结构

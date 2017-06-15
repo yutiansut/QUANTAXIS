@@ -22,11 +22,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import QUANTAXIS as QA
-import random
-import pymongo,json,pprint
 import datetime
+import json
+import pprint
+import random
+
+import pymongo
 from tabulate import tabulate
+
+import QUANTAXIS as QA
+
 
 # 2个地方进行了优化:
 """
@@ -214,4 +219,3 @@ if __name__=='__main__':
     BT.strategy_stock_list = stock_list
     BT.init_stock()
     BT.handle_data()
-

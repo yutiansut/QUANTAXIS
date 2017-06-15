@@ -63,4 +63,3 @@ def select_update_engine(engine):
        return uw
     elif engine in ['tushare','ts','Tushare']:
        return uts
-

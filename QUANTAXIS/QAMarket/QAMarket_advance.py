@@ -22,12 +22,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from QUANTAXIS.QAUtil import QA_util_sql_mongo_setting,QA_util_log_info
-from QUANTAXIS.QAUtil import QA_Setting
-from QUANTAXIS.QASignal import QA_signal_send
-from .QABid import QA_QAMarket_bid
 #from .market_config import stock_market,future_market,HK_stock_market,US_stock_market
 import datetime
+
+from QUANTAXIS.QASignal import QA_signal_send
+from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
+                              QA_util_sql_mongo_setting)
+
+from .QABid import QA_QAMarket_bid
+
 
 class QA_Market():
     #基础设置

@@ -25,8 +25,10 @@
 import sys
 from datetime import datetime
 from threading import *
-from .EventManager import *
+
 from QUANTAXIS.QAUtil import QA_util_log_info
+
+from .EventManager import *
 
 # this is a standard module of writing signal
 
@@ -153,5 +155,3 @@ def QA_signal_usual_model():
         timer = Timer(2, publicAcc.QA_signal_send_risk_finish)
         timer = Timer(2, publicAcc.QA_signal_send_strategy_update)
         timer.start()
-
-

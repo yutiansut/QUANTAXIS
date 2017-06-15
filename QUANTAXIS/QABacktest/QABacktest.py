@@ -22,14 +22,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from QUANTAXIS import  QA_Market, QA_Portfolio, QA_Risk, QA_QAMarket_bid
-from QUANTAXIS.QAARP.QAAccount import QA_Account
-from QUANTAXIS.QAUtil import QA_Setting
-from QUANTAXIS.QAUtil import QA_util_log_info
-from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day
+import random
+
 import pymongo
 
-import random
+from QUANTAXIS import QA_Market, QA_Portfolio, QA_QAMarket_bid, QA_Risk
+from QUANTAXIS.QAARP.QAAccount import QA_Account
+from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day
+from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info
+
+
 class QA_Backtest():
     
     account=QA_Account()
@@ -277,4 +279,3 @@ class QA_Backtest_simple(QA_Backtest):
             self.setting.client, self.strategy_stock_list, messages, self.trade_list[self.start_real_id:self.end_real_id], self.market_data, self.benchmark_data)
         #print(json.dumps(analysis_message,indent=2))
         QA.QA_SU_save_backtest_message(analysis_message, self.setting.client)
-

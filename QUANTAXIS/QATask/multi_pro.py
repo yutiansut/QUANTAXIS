@@ -22,12 +22,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 # %%
+import datetime
+import json
 import multiprocessing
+import sys
 import threading
-import time,sys,datetime,json
-import pymongo
-from six.moves import queue 
+import time
 
+import pymongo
+
+from six.moves import queue
 
 # %%
 que=queue.Queue()
