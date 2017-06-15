@@ -48,9 +48,9 @@ def QA_SU_save_stock_day_init(startDate,engine,client):
     engine.QA_SU_save_stock_day_init(startDate,client)
 
 
-def QA_SU_update_stock_day( engine, client):
+def QA_SU_update_stock_day(engine, client):
     engine=select_update_engine(engine)
-    engine.QA_update_stock_day_all('code',client)
+    engine.QA_update_stock_day_all(client)
 
 def select_engine(engine):
     if engine in ['wind','Wind','WIND']:

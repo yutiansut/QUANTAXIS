@@ -23,7 +23,7 @@
 # SOFTWARE.
 
 from QUANTAXIS.QAFetch import QATushare
-from QUANTAXIS.QAUtil import QA_util_date_stamp,QA_Setting,QA_util_date_valid
+from QUANTAXIS.QAUtil import QA_util_date_stamp,QA_Setting,QA_util_date_valid,QA_util_log_info
 import json
 import pymongo
 import datetime
@@ -40,12 +40,19 @@ def QA_update_stock_day_all(client):
     coll_stock_day=client.quantaxis.stock_day
 
     for item in stock_list:
+        QA_util_log_info('updating stock data -- %s'%item)
         #coll.find({'code':str(item)[0:6]}).count()
         #先拿到最后一个记录的交易日期
-        start_date=coll_stock_day.find({'code':str(item)[0:6]})[coll_stock_day.find({'code':str(item)[0:6]}).count()-1]['date']
+        start_date=str(coll_stock_day.find({'code':str(item)[0:6]})[coll_stock_day.find({'code':str(item)[0:6]}).count()-1]['date'])
         end_date=str(datetime.date.today())
+
+        QA_util_log_info('updating from %s to %s' %(start_date,end_date))
         data=QATushare.QA_fetch_get_stock_day(str(item)[0:6],start_date,end_date)[1::]
-        coll_stock_day.insert_many(data)
+        try:
+            coll_stock_day.insert_many(data)
+        except:
+            QA_util_log_info('error in updating--- %s'%item)
+            
 
 
 def QA_update_standard_sql():

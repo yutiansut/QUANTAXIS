@@ -9,6 +9,7 @@
 ## 新的功能:
 
 ### 1.1 组合回测支持
+2017/6/13
 在之前的版本里,quantaxis是通过穿透性测试去做unit测试.然后对于unit结果进行组合.这种构建组合的方式虽然行之有效,但是在一些情境下会比较笨重.
 
 好比如,你只是想对于特定的股票(如小市值股票)的一些方法进行回测分析,由于这些股票组合是固定的,所以本来只需要进行一次回测,但是在穿透性测试下要进行n次回测并重新组合
@@ -17,15 +18,34 @@
 
 
 ### 1.2 多种交易状态支持
-
+2017/6/14
 之前的版本中,quantaxis只支持单次持仓,及(不能进行买入-继续买入的状态)
 
 0.3.9-gamma进行了一定的修改和优化,目前支持了多次连续买入和卖出的交易状态,并通过order_id和trade_id来锁定买卖的对应关系
 
 
 ### 1.3 实盘交易的支持
-
+2017/6/14
 通过tradex的接口,quantaxis实现了一套实盘的解决方案,在quantaxistrade文件夹下,具体详见quantaxis_trade
+
+
+### 1.4 更加方便的数据更新接口
+2017/6/15
+
+"""python
+import QUANTAXIS as QA
+QA.QA_SU_update_stock_day(client=QA.QA_Setting.client,engine='ts')
+"""
+
+### 1.5 QUANTAXIS-Log 优化
+2017/6/15
+
+"""shell
+In [1]: import QUANTAXIS as QA
+QUANTAXIS>> start QUANTAXIS
+QUANTAXIS>> ip:127.0.0.1   port:27017
+QUANTAXIS>> Welcome to QUANTAXIS, the Version is 0.3.9-beta-dev20
+"""
 
 ## 巨大改动/重构
 
