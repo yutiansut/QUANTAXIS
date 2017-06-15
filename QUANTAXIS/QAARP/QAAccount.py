@@ -24,7 +24,8 @@
 
 from QUANTAXIS.QAUtil import QA_util_log_info
 import random
-import datetime,time
+import datetime
+import time
 
 """
 账户类:    
@@ -43,7 +44,7 @@ class QA_Account:
     # 可用资金记录表
     init_assest = 1000000
     cash = []
-    detail=[]
+    detail = []
     assets = []
 
     def init(self):
@@ -68,7 +69,7 @@ class QA_Account:
                     'cash': self.cash,
                     'assets': self.cash,
                     'history': self.history,
-                    'detail':self.detail
+                    'detail': self.detail
                 },
                 #'time':datetime.datetime.now(),
                 'date_stamp': str(time.mktime(datetime.datetime.now().timetuple()))
@@ -89,15 +90,16 @@ class QA_Account:
             __new_order_id = __update_message['order_id']
             __new_trade_id = __update_message['trade_id']
             self.history.append(
-                [__new_trade_date, __new_code, __new_price, __new_towards, __new_amount,__new_order_id,__new_trade_id])
+                [__new_trade_date, __new_code, __new_price, __new_towards, __new_amount, __new_order_id, __new_trade_id])
             # 先计算收益和利润
 
             # 修改持仓表
             if int(__new_towards) > 0:
 
                 self.hold.append(
-                    [__new_trade_date, __new_code, __new_price, __new_amount,__new_order_id,__new_trade_id])
-                self.detail.append([__new_trade_date, __new_code, __new_price, __new_amount,__new_order_id,__new_trade_id,[],[],[],[]])
+                    [__new_trade_date, __new_code, __new_price, __new_amount, __new_order_id, __new_trade_id])
+                self.detail.append([__new_trade_date, __new_code, __new_price,
+                                    __new_amount, __new_order_id, __new_trade_id, [], [], [], []])
                 # 将交易记录插入历史交易记录
             else:
                 # 更新账户
@@ -110,20 +112,24 @@ class QA_Account:
                             if __new_code in self.hold[i]:
                                 if __new_amount > self.hold[i][3]:
 
-                                    __new_amount = __new_amount - self.hold[i][3]
+                                    __new_amount = __new_amount - \
+                                        self.hold[i][3]
 
                                     __pop_list.append(i)
 
                                 elif __new_amount < self.hold[i][3]:
                                     self.hold[i][3] = self.hold[i][3] - \
                                         __new_amount
-                                    
+
                                     for item_detail in self.detail:
-                                        if item_detail[5]==self.hold[i][5] and __new_trade_id not in item_detail[7]:
+                                        if item_detail[5] == self.hold[i][5] and __new_trade_id not in item_detail[7]:
                                             item_detail[6].append(__new_price)
-                                            item_detail[7].append(__new_order_id)
-                                            item_detail[8].append(__new_trade_id)
-                                            item_detail[9].append(__new_trade_date)
+                                            item_detail[7].append(
+                                                __new_order_id)
+                                            item_detail[8].append(
+                                                __new_trade_id)
+                                            item_detail[9].append(
+                                                __new_trade_date)
                                     __new_amount = 0
                                 elif __new_amount == self.hold[i][3]:
 
@@ -133,9 +139,9 @@ class QA_Account:
                 __pop_list.sort()
                 __pop_list.reverse()
                 for __id in __pop_list:
-                    
+
                     for item_detail in self.detail:
-                        if item_detail[5]==self.hold[__id][5] and __new_trade_id not in item_detail[7]:
+                        if item_detail[5] == self.hold[__id][5] and __new_trade_id not in item_detail[7]:
                             item_detail[6].append(__new_price)
                             item_detail[7].append(__new_order_id)
                             item_detail[8].append(__new_trade_id)
@@ -162,10 +168,10 @@ class QA_Account:
                     'history': self.history,
                     'cash': self.cash,
                     'assets': self.assets,
-                    'detail':self.detail
+                    'detail': self.detail
                 },
-                'time':str(datetime.datetime.now()),
-                'date_stamp':str(time.mktime(datetime.datetime.now().timetuple()))
+                'time': str(datetime.datetime.now()),
+                'date_stamp': str(time.mktime(datetime.datetime.now().timetuple()))
             }
         }
 
@@ -197,7 +203,7 @@ class QA_Account:
             # hold
         market_value = 0
         for i in range(1, len(self.hold)):
-            market_value +=(float(self.hold[i][2]) * float(self.hold[i][3]))
+            market_value += (float(self.hold[i][2]) * float(self.hold[i][3]))
         self.assets.append(self.cash[-1] + market_value)
 
     def QA_account_receive_deal(self, __message):
@@ -207,8 +213,8 @@ class QA_Account:
             'status': __message['header']['status'],
             'user': __message['header']['session']['user'],
             'strategy': __message['header']['session']['strategy'],
-            'trade_id':__message['header']['trade_id'],
-            'order_id':__message['header']['order_id'],
+            'trade_id': __message['header']['trade_id'],
+            'order_id': __message['header']['order_id'],
             'date_stamp': str(time.mktime(datetime.datetime.now().timetuple())),
             'bid': __message['body']['bid'],
             'market': __message['body']['market']
