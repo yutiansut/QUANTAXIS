@@ -2,9 +2,9 @@ QUANTAXIS-Protocol
 标准化协议QAS/未来协议QAF
 ------------
 
-- 当前版本:0.0.6
-- 协议最后修改日期:2017-04-11
-- 项目版本:QUANTAXIS 0.3.8
+- 当前版本:0.0.7
+- 协议最后修改日期:2017-06-15
+- 项目版本:QUANTAXIS 0.3.9-gamma
 
 <!-- TOC -->
 
@@ -156,21 +156,35 @@ Basical Key:
 bid是一个标准报价包
 ```python
 
-    price=4.5
-    time='2000-01-17'
-    amount=10
-    towards=1
-    code=str('000001.SZ')
-    user='root'
-    strategy='root01'
+    bid={
+        'price':float(16),
+        'date':str('2015-01-05'),
+        'amount':int(10),
+        'towards':int(1),
+        'code':str('000001'),
+        'user':str('root'),
+        'strategy':str('example01'),
+        'status':'0x01',
+        'order_id':str(random.random())
+        }
 ```
 
 # QAS-40x QABacktest 回测类
 - QA_Backtest
+QA_Backtest 里面有4个抽象类:
+```python
+account=QA_Account()
+market=QA_Market()
+bid=QA_QAMarket_bid()
+setting=QA_Setting()
+```
 # QAS-50x QAARP(account/risk/portfolio)账户/风险/组合管理类
 - QA_Account
 - QA_Risk
 - QA_Portfolio
+## QAS-501-x QA_Account
+## QAS-501-x QA_Risk
+## QAS-501-x QA_Portfolio
 # QAS-60x QAUtil 工具类
 - QA_util_
 
