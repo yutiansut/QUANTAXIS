@@ -26,7 +26,8 @@
 import datetime
 import random
 
-from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info)
+from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info
+
 
 def market_stock_day_engine(__bid, client):
     coll = client.quantaxis.stock_day
@@ -173,3 +174,4 @@ def market_future_day_engine(__bid,client):
 def market_future_min_engine(__bid,client):
     pass
 def market_future_tick_engine(__bid,client):
+    pass

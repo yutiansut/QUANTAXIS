@@ -29,7 +29,11 @@ import random
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
                               QA_util_sql_mongo_setting)
 
-from .QAMarket_engine import market_future_day_engine,market_future_min_engine,market_future_tick_engine,market_stock_day_engine,market_stock_min_engine
+from .QAMarket_engine import (market_future_day_engine,
+                              market_future_min_engine,
+                              market_future_tick_engine,
+                              market_stock_day_engine, market_stock_min_engine)
+
 
 class QA_Market():
 
@@ -44,6 +48,7 @@ class QA_Market():
         get the bid and choice which market to trade
 
         """
+
         def __confirm_bid(self, __bid):
             assert type(__bid) == dict
 
@@ -52,12 +57,18 @@ class QA_Market():
             elif type(__bid['price']) == float:
                 pass
 
-                
         @staticmethod
-        def _choice_trading_market(__bid):
-            pass
-        
-
+        def _choice_trading_market(__bid, client):
+            if __bid['status'] == '0x01':
+                return market_stock_day_engine(__bid, client)
+            elif __bid['status'] == '0x02':
+                return market_stock_min_engine(__bid, client)
+            elif __bid['status'] == '1x01':
+                return market_future_day_engine(__bid, client)
+            elif __bid['status'] == '1x02':
+                return market_future_min_engine(__bid, client)
+            elif __bid['status'] == '1x03':
+                return market_future_tick_engine(__bid, client)
 
     def trading_engine(self):
         pass
