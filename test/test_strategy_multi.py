@@ -145,7 +145,7 @@ class backtest(QA.QA_Backtest):
                     elif result['if_buy'] == 0 and hold == 0:
                         pass
                     elif result['if_buy'] == 0 and hold == 1:
-                        self.bid.bid['amount'] = int(amount)*0.5
+                        self.bid.bid['amount'] = int(amount)
                         self.bid.bid['order_id'] = str(random.random())
                         self.bid.bid['price'] =  'market_price'
                         self.bid.bid['code'] = str(

@@ -1,4 +1,4 @@
-# encoding: UTF-8
+# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -28,28 +28,28 @@ import time
 
 from tabulate import tabulate
 
-from QUANTAXIS.QAUtil import QA_util_log_info
-
-
-"""
-账户类:    
-记录回测的时候的账户情况(持仓列表,交易历史,利润,报单,可用资金)
-
-"""
 # 2017/6/4修改: 去除总资产的动态权益计算
 
 
 class QA_Account:
+    """
+    账户类:    
+    记录回测的时候的账户情况(持仓列表,交易历史,利润,报单,可用资金)
+    """
     # 一个hold改成list模式
-    hold = [['date', 'code', ' price', 'amount', 'order_id', 'trade_id']]
-    # 历史报单记录
-    # 报单和真实情况去匹配:
-    # 报单日期,报单股票,报单价格,报单数量,报单状态(限价/市价),info
-    # 可用资金记录表
-    init_assest = 1000000
-    cash = []
-    detail = []
-    assets = []
+
+    def __init__(self):
+
+        self.hold = [['date', 'code', ' price',
+                      'amount', 'order_id', 'trade_id']]
+        self.init_assest = 1000000
+        self.cash = []
+        self.history = []
+        self.detail = []
+        self.assets = []
+        self.profit = []
+        self.account_cookie = str()
+        self.message = {}
 
     def init(self):
         self.hold = [['date', 'code', ' price',
@@ -94,16 +94,19 @@ class QA_Account:
             __new_order_id = __update_message['order_id']
             __new_trade_id = __update_message['trade_id']
             self.history.append(
-                [__new_trade_date, __new_code, __new_price, __new_towards, __new_amount, __new_order_id, __new_trade_id])
+                [__new_trade_date, __new_code, __new_price, __new_towards,
+                 __new_amount, __new_order_id, __new_trade_id])
             # 先计算收益和利润
 
             # 修改持仓表
             if int(__new_towards) > 0:
 
                 self.hold.append(
-                    [__new_trade_date, __new_code, __new_price, __new_amount, __new_order_id, __new_trade_id])
+                    [__new_trade_date, __new_code, __new_price, __new_amount,
+                     __new_order_id, __new_trade_id])
                 self.detail.append([__new_trade_date, __new_code, __new_price,
-                                    __new_amount, __new_order_id, __new_trade_id, [], [], [], [], __new_amount])
+                                    __new_amount, __new_order_id, __new_trade_id,
+                                    [], [], [], [], __new_amount])
                 # 将交易记录插入历史交易记录
             else:
                 # 更新账户
@@ -126,7 +129,8 @@ class QA_Account:
                                         __new_amount
 
                                     for item_detail in self.detail:
-                                        if item_detail[5] == self.hold[i][5] and __new_trade_id not in item_detail[7]:
+                                        if item_detail[5] == self.hold[i][5] and \
+                                                __new_trade_id not in item_detail[7]:
                                             item_detail[6].append(__new_price)
                                             item_detail[7].append(
                                                 __new_order_id)
@@ -147,7 +151,8 @@ class QA_Account:
                 for __id in __pop_list:
 
                     for item_detail in self.detail:
-                        if item_detail[5] == self.hold[__id][5] and __new_trade_id not in item_detail[7]:
+                        if item_detail[5] == self.hold[__id][5] and \
+                                __new_trade_id not in item_detail[7]:
                             item_detail[6].append(__new_price)
                             item_detail[7].append(__new_order_id)
                             item_detail[8].append(__new_trade_id)
@@ -176,7 +181,8 @@ class QA_Account:
                     'cash': self.cash,
                     'assets': self.assets,
                     'detail': tabulate(self.detail, headers=('date', 'code', 'price',
-                                                             'amounts', 'sell_price','order_id', 'trade_id', 'sell_order_id', 'sell_trade_id', 'left_amount'))
+                                                             'amounts', 'sell_price', 'order_id', 'trade_id',
+                                                             'sell_order_id', 'sell_trade_id', 'left_amount'))
                 },
                 'time': str(datetime.datetime.now()),
                 'date_stamp': str(time.mktime(datetime.datetime.now().timetuple()))
@@ -194,7 +200,8 @@ class QA_Account:
 
             # 可用资金=上一期可用资金-买入的资金
             self.cash.append(float(self.cash[-1]) - float(
-                __update_message['bid']['price']) * float(__update_message['bid']['amount']) * __update_message['bid']['towards'])
+                __update_message['bid']['price']) * float(
+                    __update_message['bid']['amount']) * __update_message['bid']['towards'])
 
         elif __update_message['status'] == 200 and __update_message['bid']['towards'] == -1:
             # success trade,sell
@@ -204,7 +211,8 @@ class QA_Account:
             # 卖出的时候,towards=-1,所以是加上卖出的资产
             # 可用资金=上一期可用资金+卖出的资金
             self.cash.append(float(self.cash[-1]) - float(
-                __update_message['bid']['price']) * float(__update_message['bid']['amount']) * __update_message['bid']['towards'])
+                __update_message['bid']['price']) * float(
+                    __update_message['bid']['amount']) * __update_message['bid']['towards'])
 
             # 更新可用资金历史
 
