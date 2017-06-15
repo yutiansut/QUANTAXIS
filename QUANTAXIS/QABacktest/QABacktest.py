@@ -22,9 +22,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import datetime
 import random
+import re
+import time
 
 import pymongo
+from tabulate import tabulate
 
 from QUANTAXIS import QA_Market, QA_Portfolio, QA_QAMarket_bid, QA_Risk
 from QUANTAXIS.QAARP.QAAccount import QA_Account
@@ -70,17 +74,17 @@ class QA_Backtest():
 
 
 class QA_Backtest_simple(QA_Backtest):
-        # 继承回测类
+    # 继承回测类
     def init(self):
         """
         线程间参数设置,全局的
         """
         # 对账户进行初始化
-        self.account = QA.QA_Account()
+        
 
         # 设置回测的开始结束时间
-        self.strategy_start_date = '2017-01-01'
-        self.strategy_end_date = '2017-06-01'
+        self.strategy_start_date = '2017-03-01'
+        self.strategy_end_date = '2017-03-11'
 
         # 设置回测标的,是一个list对象,不过建议只用一个标的
         self.strategy_stock_list = ['603588.SZ']
@@ -99,7 +103,7 @@ class QA_Backtest_simple(QA_Backtest):
 
        # 股票的交易日历,真实回测的交易周期,和交易周期在交易日历中的id
         self.trade_list = QA.QA_fetch_trade_date(
-            QA.QA_Setting().client.quantaxis.trade_date)
+            self.setting.client.quantaxis.trade_date)
         """
         这里会涉及一个区间的问题,开始时间是要向后推,而结束时间是要向前推,1代表向后推,-1代表向前推
         """
@@ -123,27 +127,10 @@ class QA_Backtest_simple(QA_Backtest):
         # 重新初始化账户的cookie
         self.account.account_cookie = str(random.random())
         # print(self.strategy_stock_list)
-
-        self.market_data_preprocessing = QA.QA_fetch_stocklist_day(
-        self.strategy_stock_list, self.setting.client.quantaxis.stock_day, [self.trade_list[self.start_real_id - 80], self.trade_list[self.start_real_id]])
-        del_list=[]
-        for i in range(0,len(self.market_data_preprocessing)):
-            if len(self.market_data_preprocessing[i])<10:
-                del_list.append(i)
-        del_list.sort()
-        del_list.reverse()
-        for item in del_list:
-            print('delete the code %s' %self.strategy_stock_list[item])
-            self.strategy_stock_list.pop(item)
-        print('now left stock_list %s' %self.strategy_stock_list)
-        self.market_data_preprocessing = QA.QA_fetch_stocklist_day(
-        self.strategy_stock_list, self.setting.client.quantaxis.stock_day, [self.trade_list[self.start_real_id - 80], self.trade_list[self.start_real_id]])
-        self.small_data=strategy.secret_small(self.market_data_preprocessing)
         # 初始化股票池的市场数据
-
         self.market_data = QA.QA_fetch_stocklist_day(
             self.strategy_stock_list, self.setting.client.quantaxis.stock_day, [self.trade_list[self.start_real_id - self.strategy_gap], self.trade_list[self.end_real_id]])
-        #print(self.market_data)
+        # print(self.market_data)
     # 从市场中获取数据(基于gap),你也可以不急于gap去自定义自己的获取数据的代码
     # 调用的数据接口是
     # data=QA.QA_fetch_data(回测标的代码,开始时间,结束时间,数据库client)
@@ -169,22 +156,13 @@ class QA_Backtest_simple(QA_Backtest):
         # 首先判断是否能满足回测的要求
 
         self.stop = [0, 0]
-
-        # 处理一些交易前的准备:
-        """
-        主要负责处理在周期性交易之前的一套参数
-        
-        """
-
-
-
         # 策略的交易日循环
         for i in range(int(self.start_real_id), int(self.end_real_id) - 1, 1):
             # 正在进行的交易日期
             running_date = self.trade_list[i]
             print('=================daily hold list====================')
             print('in the begining of ' + running_date)
-            #print(tabulate(self.account.message['body']['account']['hold']))
+            print(tabulate(self.account.message['body']['account']['hold']))
 
             for j in range(0, len(self.strategy_stock_list)):
                 if running_date in [l[6] for l in self.market_data[j]] and [l[6] for l in self.market_data[j]].index(running_date) > self.strategy_gap + 1:
@@ -201,11 +179,10 @@ class QA_Backtest_simple(QA_Backtest):
                     else:
                         hold = 0
 
-                    result = strategy.predict(data['market'], hold,self.small_data[j])
-                    
+                    result = predict(data['market'], hold)
                     if result['if_buy'] == 1:
                         self.bid.bid['amount'] = 250
-                        self.bid.bid['price'] = float(data['market'][-1][4])
+                        self.bid.bid['price'] = 'market_price'
                         self.bid.bid['code'] = str(
                             self.strategy_stock_list[j])[0:6]
                         self.bid.bid['date'] = data['market'][-1][6]
@@ -213,8 +190,6 @@ class QA_Backtest_simple(QA_Backtest):
                         self.bid.bid['order_id'] = str(random.random())
                         self.bid.bid['user'] = self.setting.QA_setting_user_name
                         self.bid.bid['strategy'] = self.strategy_name
-
-                      
                         message = self.market.market_make_deal(
                             self.bid.bid, self.setting.client)
                         messages = self.account.QA_account_receive_deal(
@@ -224,7 +199,7 @@ class QA_Backtest_simple(QA_Backtest):
                     elif result['if_buy'] == 0 and hold == 1:
                         self.bid.bid['amount'] = int(amount)
                         self.bid.bid['order_id'] = str(random.random())
-                        self.bid.bid['price'] = float(data['market'][-1][4])
+                        self.bid.bid['price'] = 'market_price'
                         self.bid.bid['code'] = str(
                             self.strategy_stock_list[j])[0:6]
                         self.bid.bid['date'] = data['market'][-1][6]
@@ -235,13 +210,18 @@ class QA_Backtest_simple(QA_Backtest):
                             self.bid.bid, self.setting.client)
                         messages = self.account.QA_account_receive_deal(
                             message)
-                    
+
                 else:
                     pass
-                
-        QA.QA_util_log_info('=================daily hold list====================')
-        QA.QA_util_log_info('**Last Day** SELL ALL ***in the begining of ' + self.trade_list[self.end_real_id])
-        QA.QA_util_log_info(tabulate(self.account.message['body']['account']['hold']))
+            print('=' * 10 + 'Trade History' + '=' * 10)
+            print(tabulate(self.account.history, headers=('date', 'code',
+                                                          'price', 'towards', 'amounts', 'order_id', 'trade_id')))
+
+            QA.QA_util_log_info(self.account.detail)
+
+        print('=================daily hold list====================')
+        print('in the begining of ' + self.trade_list[self.end_real_id])
+        print(tabulate(self.account.message['body']['account']['hold']))
 
         # 在回测的最后一天,平掉所有仓位(回测的最后一天是不买入的)
         while len(self.account.hold) > 1:
@@ -265,17 +245,20 @@ class QA_Backtest_simple(QA_Backtest):
         # 开始分析
         QA.QA_util_log_info('start analysis====' +
                             str(self.strategy_stock_list))
-        QA.QA_util_log_info('='*10+'Trade History'+'='*10)
-        QA.QA_util_log_info(tabulate(self.account.history,headers=('date','code','price','towards','amounts','order_id','trade_id')))
-        QA.QA_util_log_info(tabulate(self.account.detail,headers=('date','code','price','amounts','order_id','trade_id','sell_price','sell_order_id','sell_trade_id','sell_date')))
+        print('=' * 10 + 'Trade History' + '=' * 10)
+        print(tabulate(self.account.history, headers=('date', 'code',
+                                                      'price', 'towards', 'amounts', 'order_id', 'trade_id')))
+        QA.QA_util_log_info('start analysis====' +
+                            str(self.strategy_stock_list))
+        QA.QA_util_log_info(tabulate(self.account.detail, headers=('date', 'code', 'price',
+                                                                   'amounts', 'order_id', 'trade_id', 'sell_price', 'sell_order_id', 'sell_trade_id', 'left_amount')))
         exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
         self.benchmark_data = QA.QA_fetch_index_day(
             'hs300', self.start_real_date, self.end_real_date, self.setting.client.quantaxis.stock_day)
         # print(json.dumps(messages,indent=2))
-        QA.QA_SU_save_account_message(
-            messages, self.setting.client)
-        
+        # QA.QA_SU_save_account_message(
+        # messages, self.setting.client)
         analysis_message = QA.QA_backtest_analysis_start(
             self.setting.client, self.strategy_stock_list, messages, self.trade_list[self.start_real_id:self.end_real_id], self.market_data, self.benchmark_data)
-        #print(json.dumps(analysis_message,indent=2))
-        QA.QA_SU_save_backtest_message(analysis_message, self.setting.client)
+        # print(json.dumps(analysis_message,indent=2))
+        #QA.QA_SU_save_backtest_message(analysis_message, self.setting.client)

@@ -1,0 +1,31 @@
+environment:
+  matrix:
+  - PYTHON: C:\Python27\python.exe
+    platform: Any CPU
+  - PYTHON: C:\Python33\python.exe
+    platform: Any CPU
+  - PYTHON: C:\Python34\python.exe
+    platform: Any CPU
+  - PYTHON: C:\Python35\python.exe
+    platform: Any CPU
+
+before_build:
+  - "%PYTHON% -m pip install virtualenv"
+  - "%PYTHON% -m virtualenv venv"
+  - venv\Scripts\activate.bat
+
+build_script:
+  - pip install -U pip
+  - python setup.py develop
+
+before_test:
+  - pip install -r test_requirements.txt
+  - 'git clone https://github.com/yutiansut/quantaxis'
+  - cd quantaxis
+  - git checkout -qf 0.3.9-gamma
+
+test_script:
+  - python setup.py install
+
+#on_success:
+#  - coveralls

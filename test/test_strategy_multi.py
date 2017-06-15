@@ -28,7 +28,6 @@ class backtest(QA.QA_Backtest):
         线程间参数设置,全局的
         """
         # 对账户进行初始化
-        self.account = QA.QA_Account()
 
         # 设置回测的开始结束时间
         self.strategy_start_date = '2017-03-01'
@@ -81,7 +80,7 @@ class backtest(QA.QA_Backtest):
         # print(self.market_data)
     # 从市场中获取数据(基于gap),你也可以不急于gap去自定义自己的获取数据的代码
     # 调用的数据接口是
-    # data=QA.QA_fetch_data(回测标的代码,开始时间,结束时间,数据库client)
+    # __data=QA.QA_fetch_data(回测标的代码,开始时间,结束时间,数据库client)
 
     def BT_get_data_from_market(self, id, stock_id):
         # x=[x[6] for x in self.market_data]
@@ -107,57 +106,61 @@ class backtest(QA.QA_Backtest):
         # 策略的交易日循环
         for i in range(int(self.start_real_id), int(self.end_real_id) - 1, 1):
             # 正在进行的交易日期
-            running_date = self.trade_list[i]
+            __running_date = self.trade_list[i]
             print('=================daily hold list====================')
-            print('in the begining of ' + running_date)
+            print('in the begining of ' + __running_date)
             print(tabulate(self.account.message['body']['account']['hold']))
 
-            for j in range(0, len(self.strategy_stock_list)):
-                if running_date in [l[6] for l in self.market_data[j]] and [l[6] for l in self.market_data[j]].index(running_date) > self.strategy_gap + 1:
+            for __j in range(0, len(self.strategy_stock_list)):
+                if __running_date in [l[6] for l in self.market_data[__j]] and \
+                        [l[6] for l in self.market_data[__j]].index(__running_date) > self.strategy_gap + 1:
 
-                    data = self.BT_data_handle(
-                        [l[6] for l in self.market_data[j]].index(running_date), j)
-                    amount = 0
-                    for item in data['account']['body']['account']['hold']:
+                    __data = self.BT_data_handle(
+                        [__l[6] for __l in self.market_data[__j]].index(__running_date), __j)
+                    __amount = 0
+                    for item in __data['account']['body']['account']['hold']:
 
-                        if self.strategy_stock_list[j] in item:
-                            amount = amount + item[3]
-                    if amount > 0:
-                        hold = 1
+                        if self.strategy_stock_list[__j] in item:
+                            __amount = __amount + item[3]
+                    if __amount > 0:
+                        __hold = 1
                     else:
-                        hold = 0
+                        __hold = 0
 
-                    result = predict(data['market'], hold)
-                    if result['if_buy'] == 1:
-                        self.bid.bid['amount'] = 250
-                        self.bid.bid['price'] =  'market_price'
+                    __result = predict(__data['market'], __hold)
+                    if __result['if_buy'] == 1:
+                        self.bid.bid['amount'] = int((
+                            float(self.account.cash[-1]) / float(__data['market'][-1][4])) / 100)*100
+                        self.bid.bid['price'] = str('market_price')
                         self.bid.bid['code'] = str(
-                            self.strategy_stock_list[j])[0:6]
-                        self.bid.bid['date'] = data['market'][-1][6]
+                            self.strategy_stock_list[__j])[0:6]
+                        self.bid.bid['date'] = __data['market'][-1][6]
                         self.bid.bid['towards'] = 1
                         self.bid.bid['order_id'] = str(random.random())
                         self.bid.bid['user'] = self.setting.QA_setting_user_name
                         self.bid.bid['strategy'] = self.strategy_name
-                        message = self.market.market_make_deal(
+                        print(self.bid.bid)
+                        __message = self.market.market_make_deal(
                             self.bid.bid, self.setting.client)
-                        messages = self.account.QA_account_receive_deal(
-                            message)
-                    elif result['if_buy'] == 0 and hold == 0:
+                        print(__message)
+                        __messages = self.account.QA_account_receive_deal(
+                            __message)
+                    elif __result['if_buy'] == 0 and __hold == 0:
                         pass
-                    elif result['if_buy'] == 0 and hold == 1:
-                        self.bid.bid['amount'] = int(amount)
+                    elif __result['if_buy'] == 0 and __hold == 1:
+                        self.bid.bid['amount'] = int(__amount)
                         self.bid.bid['order_id'] = str(random.random())
-                        self.bid.bid['price'] =  'market_price'
+                        self.bid.bid['price'] = 'market_price'
                         self.bid.bid['code'] = str(
-                            self.strategy_stock_list[j])[0:6]
-                        self.bid.bid['date'] = data['market'][-1][6]
+                            self.strategy_stock_list[__j])[0:6]
+                        self.bid.bid['date'] = __data['market'][-1][6]
                         self.bid.bid['towards'] = -1
                         self.bid.bid['user'] = self.setting.QA_setting_user_name
                         self.bid.bid['strategy'] = self.strategy_name
-                        message = self.market.market_make_deal(
+                        __message = self.market.market_make_deal(
                             self.bid.bid, self.setting.client)
-                        messages = self.account.QA_account_receive_deal(
-                            message)
+                        __messages = self.account.QA_account_receive_deal(
+                            __message)
 
                 else:
                     pass
@@ -184,11 +187,11 @@ class backtest(QA.QA_Backtest):
                 self.bid.bid['towards'] = -1
                 self.bid.bid['user'] = self.setting.QA_setting_user_name
                 self.bid.bid['strategy'] = self.strategy_name
-                message = self.market.market_make_deal(
+                __message = self.market.market_make_deal(
                     self.bid.bid, self.setting.client)
 
-                messages = self.account.QA_account_receive_deal(
-                    message)
+                __messages = self.account.QA_account_receive_deal(
+                    __message)
 
         # 开始分析
         QA.QA_util_log_info('start analysis====' +
@@ -198,17 +201,18 @@ class backtest(QA.QA_Backtest):
                                                       'price', 'towards', 'amounts', 'order_id', 'trade_id')))
         QA.QA_util_log_info('start analysis====' +
                             str(self.strategy_stock_list))
-        QA.QA_util_log_info( tabulate(self.account.detail, headers=('date', 'code', 'price',
-                                                             'amounts', 'order_id', 'trade_id', 'sell_price','sell_order_id', 'sell_trade_id', 'left_amount')))
-        exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
+        QA.QA_util_log_info(tabulate(self.account.detail, headers=('date', 'code', 'price',
+                                                                   'amounts', 'order_id', 'trade_id', 'sell_price', 'sell_order_id', 'sell_trade_id', 'left_amount')))
+        __exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
         self.benchmark_data = QA.QA_fetch_index_day(
             'hs300', self.start_real_date, self.end_real_date, self.setting.client.quantaxis.stock_day)
         # print(json.dumps(messages,indent=2))
         # QA.QA_SU_save_account_message(
         # messages, self.setting.client)
         analysis_message = QA.QA_backtest_analysis_start(
-            self.setting.client, self.strategy_stock_list, messages, self.trade_list[self.start_real_id:self.end_real_id], self.market_data, self.benchmark_data)
-        # print(json.dumps(analysis_message,indent=2))
+            self.setting.client, self.strategy_stock_list, __messages, self.trade_list[self.start_real_id:self.end_real_id], self.market_data, self.benchmark_data)
+        QA.QA_util_log_info(json.dumps(analysis_message, indent=2))
+        QA.QA_util_log_info(json.dumps(__messages, indent=2))
         #QA.QA_SU_save_backtest_message(analysis_message, self.setting.client)
 
 
@@ -217,26 +221,27 @@ def predict(market, hold):
     一个极其简单的示例策略,随机 随机真的随机
     """
     if hold == 0:
-        dat = random.random()
-        if dat > 0.5:
+        __dat = random.random()
+        if __dat > 0.5:
 
             return {'if_buy': 1}
         else:
             return {'if_buy': 0}
     else:
-        dat = random.random()
-        if dat > 0.5:
+        __dat = random.random()
+        if __dat > 0.5:
             return {'if_buy': 1}
         else:
             return {'if_buy': 0}
 
 
-stock_lists = pymongo.MongoClient('192.168.4.189',27017).quantaxis.stock_list.find_one()
-stock_list = stock_lists['stock']['code'][0:3]
+__stock_lists = pymongo.MongoClient(
+    '192.168.4.189', 27017).quantaxis.stock_list.find_one()
+__stock_list = __stock_lists['stock']['code'][0:3]
 
 BT = backtest()
 BT.init()
 
-BT.strategy_stock_list = stock_list
+BT.strategy_stock_list = __stock_list
 BT.init_stock()
 BT.handle_data()
