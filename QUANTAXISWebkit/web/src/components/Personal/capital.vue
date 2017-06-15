@@ -1,3 +1,4 @@
 <template>
-    <div>capital</div>
+    <div>
+        capital</div>
 </template>

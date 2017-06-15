@@ -17,7 +17,11 @@ var _charset = require('../utils/charset');
 
 require('../utils/fetch');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
 
 /**
  * getSinaIndustryClassified: 获取新浪行业板块数据
@@ -59,11 +63,17 @@ var getSinaIndustryClassified = exports.getSinaIndustryClassified = function get
         leadingName: industryArr[12]
       });
     });
-    return { data: result };
+    return {
+      data: result
+    };
   };
 
-  return fetch(url, { disableDecoding: true }).then(_util.checkStatus).then((0, _charset.charset)('GBK')).then(mapData).catch(function (error) {
-    return { error: error };
+  return fetch(url, {
+    disableDecoding: true
+  }).then(_util.checkStatus).then((0, _charset.charset)('GBK')).then(mapData).catch(function (error) {
+    return {
+      error: error
+    };
   });
 };
 
@@ -96,7 +106,8 @@ var getSinaClassifyDetails = exports.getSinaClassifyDetails = function getSinaCl
   var query = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
   var defaults = {
-    tag: 'new_jrhy' };
+    tag: 'new_jrhy'
+  };
   var options = Object.assign({}, defaults, query);
   var url = (0, _urls.sinaClassifyDetailUrl)(options.tag);
   var mapData = function mapData(data) {
@@ -119,11 +130,17 @@ var getSinaClassifyDetails = exports.getSinaClassifyDetails = function getSinaCl
         };
       });
     }
-    return { data: result };
+    return {
+      data: result
+    };
   };
 
-  return fetch(url, { disableDecoding: true }).then(_util.checkStatus).then((0, _charset.charset)('GBK')).then(mapData).catch(function (error) {
-    return { error: error };
+  return fetch(url, {
+    disableDecoding: true
+  }).then(_util.checkStatus).then((0, _charset.charset)('GBK')).then(mapData).catch(function (error) {
+    return {
+      error: error
+    };
   });
 };
 
@@ -168,11 +185,15 @@ var getSinaConceptsClassified = exports.getSinaConceptsClassified = function get
         leadingName: conceptsArr[12]
       };
     });
-    return { data: result };
+    return {
+      data: result
+    };
   };
 
   return fetch(url).then(_util.checkStatus).then((0, _charset.charset)('GBK')).then(mapData).catch(function (error) {
-    return { error: error };
+    return {
+      error: error
+    };
   });
 };
 
@@ -207,9 +228,13 @@ var getAllStocks = exports.getAllStocks = function getAllStocks() {
   var url = (0, _urls.allStockUrl)();
 
   return fetch(url).then(_util.checkStatus).then((0, _charset.charset)('GBK')).then(function (data) {
-    return { data: (0, _util.csvToObject)(data) };
+    return {
+      data: (0, _util.csvToObject)(data)
+    };
   }).catch(function (error) {
-    return { error: error };
+    return {
+      error: error
+    };
   });
 };
 
@@ -247,9 +272,13 @@ var getHS300 = exports.getHS300 = function getHS300() {
   return fetch(url).then(_util.checkStatus).then(function (res) {
     return res.json();
   }).then(function (json) {
-    return { data: (0, _util.arrayObjectMapping)(json[0].fields, json[0].items) };
+    return {
+      data: (0, _util.arrayObjectMapping)(json[0].fields, json[0].items)
+    };
   }).catch(function (error) {
-    return { error: error };
+    return {
+      error: error
+    };
   });
 };
 
@@ -287,8 +316,12 @@ var getSZ50 = exports.getSZ50 = function getSZ50() {
   return fetch(url).then(_util.checkStatus).then(function (res) {
     return res.json();
   }).then(function (json) {
-    return { data: (0, _util.arrayObjectMapping)(json[0].fields, json[0].items) };
+    return {
+      data: (0, _util.arrayObjectMapping)(json[0].fields, json[0].items)
+    };
   }).catch(function (error) {
-    return { error: error };
+    return {
+      error: error
+    };
   });
 };

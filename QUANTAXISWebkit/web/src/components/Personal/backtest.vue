@@ -1,9 +1,10 @@
 <template>
   <div id="index">
-
+  
     <li class="input">
       <input v-model="message" v-on:keyup.enter="info($event.currentTarget.value)" placeholder="edit me" lazy>
-      <input v-model="messages" v-on:keyup.enter="code($event.currentTarget.value)" placeholder="edit me" lazy></li>
+      <input v-model="messages" v-on:keyup.enter="code($event.currentTarget.value)" placeholder="edit me" lazy>
+    </li>
     <mu-table :height="height">
       <mu-thead>
         <mu-tr>
@@ -18,7 +19,7 @@
         </mu-tr>
       </mu-thead>
       <template v-for="item in items">
-
+  
         <mu-tbody>
           <mu-tr>
             <router-link :to="{ name:'history',params: {id:item['account_cookie']}}">
@@ -33,73 +34,74 @@
             </router-link>
           </mu-tr>
         </mu-tbody>
-
+  
       </template>
-
+  
     </mu-table>
   </div>
 </template>
 <script>
-  import axios from 'axios'
-  export default {
-    data: function () {
-      return {
-        height: '500px',
-        multiSelectable: true,
-        enableSelectAll: false,
-        message: 'yutiansut',
-        messages: 'code',
-        items: [''],
-        total: 180,
-        current: 1,
-        showSizeChanger: true
-      }
-    },
-    methods: {
-      info(message) {
-        let val = message
-        console.log(val)
-        axios.get('http://localhost:3000/backtest/info?name=' + val)
-          .then(response => {
-            this.items = response.data;
-            console.log(this.items)
-            this.length = this.items.length;
-            var performance = response.data[0]['performance'];
-            console.log(performance)
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      },
-      code(message) {
-        let val = message
-        console.log(val)
-        axios.get('http://localhost:3000/backtest/info_code?code=' + val)
-          .then(response => {
-            this.items = response.data;
-            console.log(this.items)
-            this.length = this.items.length;
-            var performance = response.data[0]['performance'];
-            console.log(performance)
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      }
-
+import axios from 'axios'
+export default {
+  data: function () {
+    return {
+      height: '500px',
+      multiSelectable: true,
+      enableSelectAll: false,
+      message: 'yutiansut',
+      messages: 'code',
+      items: [''],
+      total: 180,
+      current: 1,
+      showSizeChanger: true
     }
+  },
+  methods: {
+    info(message) {
+      let val = message
+      console.log(val)
+      axios.get('http://localhost:3000/backtest/info?name=' + val)
+        .then(response => {
+          this.items = response.data;
+          console.log(this.items)
+          this.length = this.items.length;
+          var performance = response.data[0]['performance'];
+          console.log(performance)
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    code(message) {
+      let val = message
+      console.log(val)
+      axios.get('http://localhost:3000/backtest/info_code?code=' + val)
+        .then(response => {
+          this.items = response.data;
+          console.log(this.items)
+          this.length = this.items.length;
+          var performance = response.data[0]['performance'];
+          console.log(performance)
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+
   }
+}
 
 </script>
 <style lang="css">
-  .mu-item {
-    font-size: 10px;
-  }
+.mu-item {
+  font-size: 10px;
+}
 
-  #personal-content {
-    margin-top: 2%;
-  }
-  .input{
-    float: left;
-  }
+#personal-content {
+  margin-top: 2%;
+}
+
+.input {
+  float: left;
+}
 </style>
