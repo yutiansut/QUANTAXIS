@@ -130,7 +130,7 @@ class backtest(QA.QA_Backtest):
                     __result = predict(__data['market'], __hold)
                     if __result['if_buy'] == 1:
                         self.bid.bid['amount'] = int((
-                            float(self.account.cash[-1]) / float(__data['market'][-1][4])) / 100)*100
+                            float(self.account.cash[-1]) / float(__data['market'][-1][4])) / 1000)*100
                         self.bid.bid['price'] = str('market_price')
                         self.bid.bid['code'] = str(
                             self.strategy_stock_list[__j])[0:6]
@@ -139,10 +139,9 @@ class backtest(QA.QA_Backtest):
                         self.bid.bid['order_id'] = str(random.random())
                         self.bid.bid['user'] = self.setting.QA_setting_user_name
                         self.bid.bid['strategy'] = self.strategy_name
-                        print(self.bid.bid)
-                        __message = self.market.market_make_deal(
+                        __message = self.market.receive_bid(
                             self.bid.bid, self.setting.client)
-                        print(__message)
+                        #print(__message)
                         __messages = self.account.QA_account_receive_deal(
                             __message)
                     elif __result['if_buy'] == 0 and __hold == 0:
@@ -157,7 +156,7 @@ class backtest(QA.QA_Backtest):
                         self.bid.bid['towards'] = -1
                         self.bid.bid['user'] = self.setting.QA_setting_user_name
                         self.bid.bid['strategy'] = self.strategy_name
-                        __message = self.market.market_make_deal(
+                        __message = self.market.receive_bid(
                             self.bid.bid, self.setting.client)
                         __messages = self.account.QA_account_receive_deal(
                             __message)
@@ -187,7 +186,7 @@ class backtest(QA.QA_Backtest):
                 self.bid.bid['towards'] = -1
                 self.bid.bid['user'] = self.setting.QA_setting_user_name
                 self.bid.bid['strategy'] = self.strategy_name
-                __message = self.market.market_make_deal(
+                __message = self.market.receive_bid(
                     self.bid.bid, self.setting.client)
 
                 __messages = self.account.QA_account_receive_deal(

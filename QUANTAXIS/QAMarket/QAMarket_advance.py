@@ -42,7 +42,7 @@ class QA_Market():
     # client=QA_Setting.client
     # client=QA.QA_util_sql_mongo_setting()
     # db= client.market
-    def market_make_deal(self, bid, client):
+    def receive_bid(self, bid, client):
         if self.type == '2x' and self.tick == 'day':
             coll = client.quantaxis.stock_day
         elif self.type == '3x' and self.tick == '500ms':

@@ -190,7 +190,7 @@ class QA_Backtest_simple(QA_Backtest):
                         self.bid.bid['order_id'] = str(random.random())
                         self.bid.bid['user'] = self.setting.QA_setting_user_name
                         self.bid.bid['strategy'] = self.strategy_name
-                        message = self.market.market_make_deal(
+                        message = self.market.receive_bid(
                             self.bid.bid, self.setting.client)
                         messages = self.account.QA_account_receive_deal(
                             message)
@@ -206,7 +206,7 @@ class QA_Backtest_simple(QA_Backtest):
                         self.bid.bid['towards'] = -1
                         self.bid.bid['user'] = self.setting.QA_setting_user_name
                         self.bid.bid['strategy'] = self.strategy_name
-                        message = self.market.market_make_deal(
+                        message = self.market.receive_bid(
                             self.bid.bid, self.setting.client)
                         messages = self.account.QA_account_receive_deal(
                             message)
@@ -236,7 +236,7 @@ class QA_Backtest_simple(QA_Backtest):
                 self.bid.bid['towards'] = -1
                 self.bid.bid['user'] = self.setting.QA_setting_user_name
                 self.bid.bid['strategy'] = self.strategy_name
-                message = self.market.market_make_deal(
+                message = self.market.receive_bid(
                     self.bid.bid, self.setting.client)
 
                 messages = self.account.QA_account_receive_deal(

@@ -43,32 +43,31 @@ class QA_Market():
     def __init__(self):
         self.message = {}
 
-    def receive_bid(self):
+    def _choice_trading_market(self, __bid, client):
+        if __bid['status'] == '0x01':
+            return market_stock_day_engine(__bid, client)
+        elif __bid['status'] == '0x02':
+            return market_stock_min_engine(__bid, client)
+        elif __bid['status'] == '1x01':
+            return market_future_day_engine(__bid, client)
+        elif __bid['status'] == '1x02':
+            return market_future_min_engine(__bid, client)
+        elif __bid['status'] == '1x03':
+            return market_future_tick_engine(__bid, client)
+
+    def receive_bid(self, __bid, client):
         """
         get the bid and choice which market to trade
 
         """
-
-        def __confirm_bid(self, __bid):
-            assert type(__bid) == dict
-
-            if type(__bid['price']) == str():
-                pass
-            elif type(__bid['price']) == float:
-                pass
-
-        @staticmethod
-        def _choice_trading_market(__bid, client):
-            if __bid['status'] == '0x01':
-                return market_stock_day_engine(__bid, client)
-            elif __bid['status'] == '0x02':
-                return market_stock_min_engine(__bid, client)
-            elif __bid['status'] == '1x01':
-                return market_future_day_engine(__bid, client)
-            elif __bid['status'] == '1x02':
-                return market_future_min_engine(__bid, client)
-            elif __bid['status'] == '1x03':
-                return market_future_tick_engine(__bid, client)
+        def __confirm_bid(__bid):
+            assert isinstance(__bid, dict)
+            if isinstance(__bid['price'], str):
+                if __bid['price'] == 'market_price':
+                    return __bid
+            else:
+                return __bid
+        return self._choice_trading_market(__confirm_bid(__bid), client)
 
     def trading_engine(self):
         pass

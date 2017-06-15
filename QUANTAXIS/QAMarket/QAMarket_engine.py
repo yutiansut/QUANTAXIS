@@ -30,27 +30,98 @@ from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info
 
 
 def market_stock_day_engine(__bid, client):
-    coll = client.quantaxis.stock_day
-    print(__bid)
-    try:
-        item = coll.find_one(
-            {"code": str(__bid['code'])[0:6], "date": str(__bid['date'])[0:10]})
-        if __bid['price'] == 'market_price':
-            input()
-            __bid_t = __bid
-            __bid_t['price'] = (float(item["high"]) +
-                                float(item["low"])) * 0.5
-            return market_stock_day_engine(__bid_t, client)
-        elif (float(__bid['price']) < float(item["high"]) and
-                float(__bid['price']) > float(item["low"]) or
-                float(__bid['price']) == float(item["low"]) or
-                float(__bid['price']) == float(item['high'])) and \
-                float(__bid['amount']) < float(item['volume']) / 8:
-            #QA_util_log_info("deal success")
-            message = {
+    __coll = client.quantaxis.stock_day
+    __item = __coll.find_one(
+        {"code": str(__bid['code'])[0:6], "date": str(__bid['date'])[0:10]})
+
+    def __trading(__bid, __item):
+        try:
+            if __bid['price'] == 'market_price':
+                __bid_t = __bid
+                __bid_t['price'] = (float(__item["high"]) +
+                                    float(__item["low"])) * 0.5
+                return __trading(__bid_t, __item)
+            else:
+                if ((float(__bid['price']) < float(__item["high"]) and float(__bid['price']) > float(__item["low"])) or
+                        float(__bid['price']) == float(__item["low"]) or float(__bid['price']) == float(__item['high'])) and \
+                        float(__bid['amount']) < float(__item['volume']) * 100 / 8:
+
+                    return {
+                        'header': {
+                            'source': 'market',
+                            'status': 200,
+                            'code': str(__bid['code']),
+                            'session': {
+                                'user': str(__bid['user']),
+                                'strategy': str(__bid['strategy'])
+                            },
+                            'order_id': str(__bid['order_id']),
+                            'trade_id': str(random.random())
+                        },
+                        'body': {
+                            'bid': {
+                                'price': str(__bid['price']),
+                                'code': str(__bid['code']),
+                                'amount': int(__bid['amount']),
+                                'date': str(__bid['date']),
+                                'towards': __bid['towards']
+                            },
+                            'market': {
+                                'open': __item['open'],
+                                'high': __item['high'],
+                                'low': __item['low'],
+                                'close': __item['close'],
+                                'volume': __item['volume'],
+                                'code': __item['code']
+                            },
+                            'fee': {
+                                'commission': 0.002 * float(__bid['price']) * float(__bid['amount'])
+                            }
+                        }
+                    }
+                else:
+                    if int(__bid['price']) == 0:
+                        __status_mes = 401
+                    else:
+                        __status_mes = 402
+                        print(__bid['price'])
+
+                    return {
+                        'header': {
+                            'source': 'market',
+                            'status': __status_mes,
+                            'code': str(__bid['code']),
+                            'session': {
+                                'user': str(__bid['user']),
+                                'strategy': str(__bid['strategy'])
+                            },
+                            'order_id': str(__bid['order_id']),
+                            'trade_id': str(random.random())
+                        },
+                        'body': {
+                            'bid': {
+                                'price': '',
+                                'code': str(__bid['code']),
+                                'amount': int(__bid['amount']),
+                                'date': str(__bid['date']),
+                                'towards': __bid['towards']
+                            },
+                            'market': {
+                                'open': __item['open'],
+                                'high': __item['high'],
+                                'low': __item['low'],
+                                'close': __item['close'],
+                                'volume': __item['volume'],
+                                'code': __item['code']
+                            }
+                        }
+                    }
+        except:
+            ##QA_util_log_info('no market data')
+            return {
                 'header': {
                     'source': 'market',
-                    'status': 200,
+                    'status': 500,
                     'code': str(__bid['code']),
                     'session': {
                         'user': str(__bid['user']),
@@ -60,7 +131,7 @@ def market_stock_day_engine(__bid, client):
                     'trade_id': str(random.random())
                 },
                 'body': {
-                    'bid': {
+                    '__bid': {
                         'price': str(__bid['price']),
                         'code': str(__bid['code']),
                         'amount': int(__bid['amount']),
@@ -68,94 +139,16 @@ def market_stock_day_engine(__bid, client):
                         'towards': __bid['towards']
                     },
                     'market': {
-                        'open': item['open'],
-                        'high': item['high'],
-                        'low': item['low'],
-                        'close': item['close'],
-                        'volume': item['volume'],
-                        'code': item['code']
-                    },
-                    'fee': {
-                        'commission': 0.002 * float(__bid['price']) * float(__bid['amount'])
+                        'open': 0,
+                        'high': 0,
+                        'low': 0,
+                        'close': 0,
+                        'volume': 0,
+                        'code': 0
                     }
                 }
             }
-
-            # QA_signal_send(message,client)
-        # print(message['body']['__bid']['amount'])
-            return message
-        else:
-            # QA_util_log_info('not success')
-            if int(__bid['price']) == 0:
-                __status_mes = 401
-            else:
-                __status_mes = 402
-
-            message = {
-                'header': {
-                    'source': 'market',
-                    'status': __status_mes,
-                    'code': str(__bid['code']),
-                    'session': {
-                        'user': str(__bid['user']),
-                        'strategy': str(__bid['strategy'])
-                    },
-                    'order_id': str(__bid['order_id']),
-                    'trade_id': str(random.random())
-                },
-                'body': {
-                    'bid': {
-                        'price': '',
-                        'code': str(__bid['code']),
-                        'amount': int(__bid['amount']),
-                        'date': str(__bid['date']),
-                        'towards': __bid['towards']
-                    },
-                    'market': {
-                        'open': item['open'],
-                        'high': item['high'],
-                        'low': item['low'],
-                        'close': item['close'],
-                        'volume': item['volume'],
-                        'code': item['code']
-                    }
-                }
-            }
-        # print(message['body']['__bid']['amount'])
-            return message
-    except:
-        ##QA_util_log_info('no market data')
-        message = {
-            'header': {
-                'source': 'market',
-                'status': 500,
-                'code': str(__bid['code']),
-                'session': {
-                    'user': str(__bid['user']),
-                    'strategy': str(__bid['strategy'])
-                },
-                'order_id': str(__bid['order_id']),
-                'trade_id': str(random.random())
-            },
-            'body': {
-                '__bid': {
-                    'price': str(__bid['price']),
-                    'code': str(__bid['code']),
-                    'amount': int(__bid['amount']),
-                    'date': str(__bid['date']),
-                    'towards': __bid['towards']
-                },
-                'market': {
-                    'open': 0,
-                    'high': 0,
-                    'low': 0,
-                    'close': 0,
-                    'volume': 0,
-                    'code': 0
-                }
-            }
-        }
-        return message
+    return __trading(__bid, __item)
 
 
 def market_stock_min_engine(__bid, client):
@@ -164,14 +157,18 @@ def market_stock_min_engine(__bid, client):
     """
     pass
 
-def market_future_day_engine(__bid,client):
+
+def market_future_day_engine(__bid, client):
     """
     future market daily trading engine
     """
 
     pass
 
-def market_future_min_engine(__bid,client):
+
+def market_future_min_engine(__bid, client):
     pass
-def market_future_tick_engine(__bid,client):
+
+
+def market_future_tick_engine(__bid, client):
     pass
