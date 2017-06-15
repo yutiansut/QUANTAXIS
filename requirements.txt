@@ -7,5 +7,5 @@ requests
 numpy 
 scipy 
 pytesseract
-tushare
+tushare==0.7.5
 
