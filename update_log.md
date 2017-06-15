@@ -32,20 +32,28 @@
 ### 1.4 更加方便的数据更新接口
 2017/6/15
 
-"""python
+```python
+
 import QUANTAXIS as QA
+
 QA.QA_SU_update_stock_day(client=QA.QA_Setting.client,engine='ts')
-"""
+```
 
 ### 1.5 QUANTAXIS-Log 优化
 2017/6/15
 
-"""shell
+```shell
+
+ipython
+
 In [1]: import QUANTAXIS as QA
+
 QUANTAXIS>> start QUANTAXIS
+
 QUANTAXIS>> ip:127.0.0.1   port:27017
+
 QUANTAXIS>> Welcome to QUANTAXIS, the Version is 0.3.9-beta-dev20
-"""
+```
 
 ## 巨大改动/重构
 
