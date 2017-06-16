@@ -6,7 +6,8 @@
 10:06:03 QUANTAXIS>>> success login! your username is:admin
 10:06:04 QUANTAXIS>>> start analysis====['000720', '600652', '600821']
 10:06:04 QUANTAXIS>>> ==========Trade History==========
-10:06:04 QUANTAXIS>>> date          code    price    towards    amounts    order_id    trade_id    commission
+10:06:04 QUANTAXIS>>> 
+date          code    price    towards    amounts    order_id    trade_id    commission
 ----------  ------  -------  ---------  ---------  ----------  ----------  ------------
 2017-03-03  000720    6.43           1      38700   0.0616281   0.142641          0
 2017-03-03  600652   12.21           1      18400   0.605866    0.228483          0
@@ -22,7 +23,8 @@
 2017-03-10  600652   12.17          -1      20500   0.385516    0.277837        124.743
 2017-03-10  600821   11.145         -1      19900   0.71713     0.0439256       110.893
 10:06:04 QUANTAXIS>>> start analysis====['000720', '600652', '600821']
-10:06:04 QUANTAXIS>>>               date    code    price    amounts    order_id  trade_id    sell_price             sell_order_id          sell_trade_id      left_amount    commission
+10:06:04 QUANTAXIS>>>        
+      date    code    price    amounts    order_id  trade_id    sell_price             sell_order_id          sell_trade_id      left_amount    commission
 ----------  ------  ------  -------  ---------  ----------  ----------  ---------------------  ---------------------  ---------------  -------------  ------------
 2017-03-03  000720   6.43     38700  0.0616281    0.142641  [6.545]     [0.5446899254149448]   [0.23790343768885946]  ['2017-03-08']               0       300.743
 2017-03-03  600652  12.21     18400  0.605866     0.228483  [12.28]     [0.07219756926945997]  [0.40329282239124453]  ['2017-03-07']               0       194.638
