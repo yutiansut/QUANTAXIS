@@ -33,7 +33,7 @@ import time
 def QA_save_stock_day_all():
     df= ts.get_stock_basics()
     def saving_work(i):
-        print('Now Saving %s' %(i) )    
+        print('Now Saving ==== %s' %(i) )    
         try:
             data_json=QATushare.QA_fetch_get_stock_day(i)
             coll=QA_Setting.client.quantaxis.stock_day

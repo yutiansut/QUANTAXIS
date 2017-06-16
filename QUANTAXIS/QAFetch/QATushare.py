@@ -32,17 +32,17 @@ from QUANTAXIS.QAUtil import QA_util_date_stamp
 def QA_fetch_get_stock_day(name, startDate=None, endDate=None):
     if (len(name) != 6):
         name = str(name)[0:6]
-        data = QATs.get_hist_data(str(name), startDate, endDate).sort_index()
+    data = QATs.get_hist_data(str(name), startDate, endDate).sort_index()
 
-        data_json = json.loads(data.to_json(orient='records'))
+    data_json = json.loads(data.to_json(orient='records'))
 
-        for j in range(0, len(data_json), 1):
-            data_json[j]['date_stamp'] = QA_util_date_stamp(
-                list(data.index)[j])
-            data_json[j]['date'] = list(data.index)[j]
-            data_json[j]['code'] = str(name)
+    for j in range(0, len(data_json), 1):
+        data_json[j]['date_stamp'] = QA_util_date_stamp(
+            list(data.index)[j])
+        data_json[j]['date'] = list(data.index)[j]
+        data_json[j]['code'] = str(name)
 
-        return data_json
+    return data_json
 
 
 def QA_fetch_get_stock_realtime():
