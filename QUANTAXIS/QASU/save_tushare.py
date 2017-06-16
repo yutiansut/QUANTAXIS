@@ -1,4 +1,4 @@
-#coding:utf-8 
+# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -22,44 +22,53 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from QUANTAXIS.QAFetch import QATushare
-import tushare as ts
-from QUANTAXIS.QAUtil import QA_util_date_stamp,QA_util_time_stamp
-from QUANTAXIS.QAUtil import QA_Setting
-import datetime,json
+import datetime
+import json
 import re
 import time
 
+import tushare as ts
+
+from QUANTAXIS.QAFetch import QATushare
+from QUANTAXIS.QAUtil import QA_Setting, QA_util_date_stamp, QA_util_time_stamp
+
+
 def QA_save_stock_day_all():
-    df= ts.get_stock_basics()
-    __coll=QA_Setting.client.quantaxis.stock_day
+    df = ts.get_stock_basics()
+    __coll = QA_Setting.client.quantaxis.stock_day
     __coll.ensure_index('code')
+
     def saving_work(i):
-        print('Now Saving ==== %s' %(i) )    
+        print('Now Saving ==== %s' % (i))
         try:
-            data_json=QATushare.QA_fetch_get_stock_day(i)
+            data_json = QATushare.QA_fetch_get_stock_day(i)
 
             __coll.insert_many(data_json)
         except:
-            print('error in saving'+str(i))
+            print('error in saving ==== %s' % str(i))
     for item in df.index:
         saving_work(item)
 
     saving_work('hs300')
     saving_work('sz50')
 
+
 def QA_SU_save_stock_list(client):
-    data=QATushare.QA_fetch_get_stock_list()
-    date=str(datetime.date.today())
-    date_stamp=QA_util_date_stamp(date)
-    coll=client.quantaxis.stock_list
-    coll.insert({'date':date,'date_stamp':date_stamp,'stock':{'code':data}})
+    data = QATushare.QA_fetch_get_stock_list()
+    date = str(datetime.date.today())
+    date_stamp = QA_util_date_stamp(date)
+    coll = client.quantaxis.stock_list
+    coll.insert({'date': date, 'date_stamp': date_stamp,
+                 'stock': {'code': data}})
+
+
 def QA_SU_save_trade_date_all():
-    data=QATushare.QA_fetch_get_trade_date('','')
-    coll=QA_Setting.client.quantaxis.trade_date
+    data = QATushare.QA_fetch_get_trade_date('', '')
+    coll = QA_Setting.client.quantaxis.trade_date
     coll.insert_many(data)
 
+
 def QA_SU_save_stock_info(client):
-    data=QATushare.QA_fetch_get_stock_info('all')
-    coll=client.quantaxis.stock_info
+    data = QATushare.QA_fetch_get_stock_info('all')
+    coll = client.quantaxis.stock_info
     coll.insert_many(data)
