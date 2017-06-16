@@ -118,14 +118,14 @@ class QA_Account:
                         for i in range(0, len(self.hold)):
 
                             if __new_code in self.hold[i]:
-                                if __new_amount > self.hold[i][3]:
+                                if float(__new_amount) > (self.hold[i][3]):
 
                                     __new_amount = __new_amount - \
                                         self.hold[i][3]
 
                                     __pop_list.append(i)
 
-                                elif __new_amount < self.hold[i][3]:
+                                elif float(__new_amount) < float(self.hold[i][3]):
                                     self.hold[i][3] = self.hold[i][3] - \
                                         __new_amount
 
@@ -144,7 +144,7 @@ class QA_Account:
                                                 __new_amount
                                             __item_detail[11] += __new_trade_fee
                                     __new_amount = 0
-                                elif __new_amount == self.hold[i][3]:
+                                elif float(__new_amount) == float(self.hold[i][3]):
 
                                     __new_amount = 0
                                     __pop_list.append(i)
@@ -162,7 +162,19 @@ class QA_Account:
                             __item_detail[9].append(__new_trade_date)
                             __item_detail[10] = 0
                             __item_detail[11] += __new_trade_fee
+
                     self.hold.pop(__id)
+                __del_id=[]
+                for __hold_id in range(1,len(self.hold)):
+                    if int(self.hold[__hold_id][3])==0:
+                        __del_id.append(__hold_id)
+                __del_id.sort()
+                __del_id.reverse()
+
+                for __item in __del_id:
+                    self.hold.pop(__item)
+
+                    
             # 将交易记录插入历史交易记录
         else:
             pass
