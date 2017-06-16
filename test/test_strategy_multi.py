@@ -196,7 +196,7 @@ class backtest(QA.QA_Backtest):
         QA.QA_util_log_info('start analysis====' +
                             str(self.strategy_stock_list))
         QA.QA_util_log_info(tabulate(self.account.detail, headers=('date', 'code', 'price',
-                                                                   'amounts', 'order_id', 'trade_id', 'sell_price', 'sell_order_id', 'sell_trade_id', 'left_amount','commission')))
+                                                                   'amounts', 'order_id', 'trade_id', 'sell_price', 'sell_order_id', 'sell_trade_id','sell_date','left_amount','commission')))
         __exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
         self.benchmark_data = QA.QA_fetch_index_day(
             'hs300', self.start_real_date, self.end_real_date, self.setting.client.quantaxis.stock_day)
