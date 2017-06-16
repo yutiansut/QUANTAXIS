@@ -82,6 +82,8 @@ def market_stock_day_engine(__bid, client):
                     else:
                         __commission_fee = 0.0005 * \
                             float(__deal_price) * float(__bid['amount'])
+                        if __commission_fee < 5:
+                            __commission_fee = 5
 
                     return {
                         'header': {
@@ -131,10 +133,10 @@ def market_stock_day_engine(__bid, client):
                     'trade_id': str(random.random())
                 },
                 'body': {
-                    '__bid': {
-                        'price': str(__bid['price']),
+                    'bid': {
+                        'price': 0,
                         'code': str(__bid['code']),
-                        'amount': int(__bid['amount']),
+                        'amount': 0,
                         'date': str(__bid['date']),
                         'towards': __bid['towards']
                     },
@@ -145,6 +147,9 @@ def market_stock_day_engine(__bid, client):
                         'close': 0,
                         'volume': 0,
                         'code': 0
+                    },
+                    'fee':{
+                        'commission':0
                     }
                 }
             }
