@@ -130,7 +130,7 @@ class backtest(QA.QA_Backtest):
                     __result = predict(__data['market'], __hold)
                     if __result['if_buy'] == 1:
                         self.bid.bid['amount'] = int((
-                            float(self.account.cash[-1]) / float(__data['market'][-1][4])) / 1000)*100
+                            float(self.account.cash[-1]) / float(__data['market'][-1][4])) / 1000) * 100
                         self.bid.bid['price'] = str('market_price')
                         self.bid.bid['code'] = str(
                             self.strategy_stock_list[__j])[0:6]
@@ -141,7 +141,7 @@ class backtest(QA.QA_Backtest):
                         self.bid.bid['strategy'] = self.strategy_name
                         __message = self.market.receive_bid(
                             self.bid.bid, self.setting.client)
-                        #print(__message)
+                        # print(__message)
                         __messages = self.account.QA_account_receive_deal(
                             __message)
                     elif __result['if_buy'] == 0 and __hold == 0:
@@ -163,11 +163,6 @@ class backtest(QA.QA_Backtest):
 
                 else:
                     pass
-            print('=' * 10 + 'Trade History' + '=' * 10)
-            print(tabulate(self.account.history, headers=('date', 'code',
-                                                          'price', 'towards', 'amounts', 'order_id', 'trade_id')))
-
-            QA.QA_util_log_info(self.account.detail)
 
         print('=================daily hold list====================')
         print('in the begining of ' + self.trade_list[self.end_real_id])
@@ -195,13 +190,13 @@ class backtest(QA.QA_Backtest):
         # 开始分析
         QA.QA_util_log_info('start analysis====' +
                             str(self.strategy_stock_list))
-        print('=' * 10 + 'Trade History' + '=' * 10)
-        print(tabulate(self.account.history, headers=('date', 'code',
-                                                      'price', 'towards', 'amounts', 'order_id', 'trade_id')))
+        QA.QA_util_log_info('=' * 10 + 'Trade History' + '=' * 10)
+        QA.QA_util_log_info(tabulate(self.account.history, headers=('date', 'code',
+                                                      'price', 'towards', 'amounts', 'order_id', 'trade_id','commission')))
         QA.QA_util_log_info('start analysis====' +
                             str(self.strategy_stock_list))
         QA.QA_util_log_info(tabulate(self.account.detail, headers=('date', 'code', 'price',
-                                                                   'amounts', 'order_id', 'trade_id', 'sell_price', 'sell_order_id', 'sell_trade_id', 'left_amount')))
+                                                                   'amounts', 'order_id', 'trade_id', 'sell_price', 'sell_order_id', 'sell_trade_id', 'left_amount','commission')))
         __exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
         self.benchmark_data = QA.QA_fetch_index_day(
             'hs300', self.start_real_date, self.end_real_date, self.setting.client.quantaxis.stock_day)

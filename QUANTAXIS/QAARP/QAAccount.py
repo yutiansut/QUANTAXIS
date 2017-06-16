@@ -86,16 +86,17 @@ class QA_Account:
             # towards>1 买入成功
             # towards<1 卖出成功
 
-            __new_code = __update_message['bid']['code']
-            __new_amount = __update_message['bid']['amount']
-            __new_trade_date = __update_message['bid']['date']
-            __new_towards = __update_message['bid']['towards']
-            __new_price = __update_message['bid']['price']
-            __new_order_id = __update_message['order_id']
-            __new_trade_id = __update_message['trade_id']
+            __new_code = str(__update_message['bid']['code'])
+            __new_amount = float(__update_message['bid']['amount'])
+            __new_trade_date = str(__update_message['bid']['date'])
+            __new_towards = int(__update_message['bid']['towards'])
+            __new_price = float(__update_message['bid']['price'])
+            __new_order_id = float(__update_message['order_id'])
+            __new_trade_id = float(__update_message['trade_id'])
+            __new_trade_fee = float(__update_message['fee']['commission'])
             self.history.append(
                 [__new_trade_date, __new_code, __new_price, __new_towards,
-                 __new_amount, __new_order_id, __new_trade_id])
+                 __new_amount, __new_order_id, __new_trade_id, __new_trade_fee])
             # 先计算收益和利润
 
             # 修改持仓表
@@ -106,7 +107,7 @@ class QA_Account:
                      __new_order_id, __new_trade_id])
                 self.detail.append([__new_trade_date, __new_code, __new_price,
                                     __new_amount, __new_order_id, __new_trade_id,
-                                    [], [], [], [], __new_amount])
+                                    [], [], [], [], __new_amount, __new_trade_fee])
                 # 将交易记录插入历史交易记录
             else:
                 # 更新账户
@@ -128,18 +129,20 @@ class QA_Account:
                                     self.hold[i][3] = self.hold[i][3] - \
                                         __new_amount
 
-                                    for item_detail in self.detail:
-                                        if item_detail[5] == self.hold[i][5] and \
-                                                __new_trade_id not in item_detail[7]:
-                                            item_detail[6].append(__new_price)
-                                            item_detail[7].append(
+                                    for __item_detail in self.detail:
+                                        if __item_detail[5] == self.hold[i][5] and \
+                                                __new_trade_id not in __item_detail[7]:
+                                            __item_detail[6].append(
+                                                __new_price)
+                                            __item_detail[7].append(
                                                 __new_order_id)
-                                            item_detail[8].append(
+                                            __item_detail[8].append(
                                                 __new_trade_id)
-                                            item_detail[9].append(
+                                            __item_detail[9].append(
                                                 __new_trade_date)
-                                            item_detail[10] = self.hold[i][3] - \
+                                            __item_detail[10] = self.hold[i][3] - \
                                                 __new_amount
+                                            __item_detail[11] += __new_trade_fee
                                     __new_amount = 0
                                 elif __new_amount == self.hold[i][3]:
 
@@ -150,14 +153,15 @@ class QA_Account:
                 __pop_list.reverse()
                 for __id in __pop_list:
 
-                    for item_detail in self.detail:
-                        if item_detail[5] == self.hold[__id][5] and \
-                                __new_trade_id not in item_detail[7]:
-                            item_detail[6].append(__new_price)
-                            item_detail[7].append(__new_order_id)
-                            item_detail[8].append(__new_trade_id)
-                            item_detail[9].append(__new_trade_date)
-                            item_detail[10] = 0
+                    for __item_detail in self.detail:
+                        if __item_detail[5] == self.hold[__id][5] and \
+                                __new_trade_id not in __item_detail[7]:
+                            __item_detail[6].append(__new_price)
+                            __item_detail[7].append(__new_order_id)
+                            __item_detail[8].append(__new_trade_id)
+                            __item_detail[9].append(__new_trade_date)
+                            __item_detail[10] = 0
+                            __item_detail[11] += __new_trade_fee
                     self.hold.pop(__id)
             # 将交易记录插入历史交易记录
         else:
@@ -182,7 +186,7 @@ class QA_Account:
                     'assets': self.assets,
                     'detail': tabulate(self.detail, headers=('date', 'code', 'price',
                                                              'amounts', 'sell_price', 'order_id', 'trade_id',
-                                                             'sell_order_id', 'sell_trade_id', 'left_amount'))
+                                                             'sell_order_id', 'sell_trade_id', 'left_amount', 'commission'))
                 },
                 'time': str(datetime.datetime.now()),
                 'date_stamp': str(time.mktime(datetime.datetime.now().timetuple()))
@@ -201,7 +205,7 @@ class QA_Account:
             # 可用资金=上一期可用资金-买入的资金
             self.cash.append(float(self.cash[-1]) - float(
                 __update_message['bid']['price']) * float(
-                    __update_message['bid']['amount']) * __update_message['bid']['towards'])
+                    __update_message['bid']['amount']) * __update_message['bid']['towards'] - float(__update_message['fee']['commission']))
 
         elif __update_message['status'] == 200 and __update_message['bid']['towards'] == -1:
             # success trade,sell
@@ -212,7 +216,7 @@ class QA_Account:
             # 可用资金=上一期可用资金+卖出的资金
             self.cash.append(float(self.cash[-1]) - float(
                 __update_message['bid']['price']) * float(
-                    __update_message['bid']['amount']) * __update_message['bid']['towards'])
+                    __update_message['bid']['amount']) * __update_message['bid']['towards'] - float(__update_message['fee']['commission']))
 
             # 更新可用资金历史
 
@@ -233,6 +237,7 @@ class QA_Account:
             'order_id': __message['header']['order_id'],
             'date_stamp': str(time.mktime(datetime.datetime.now().timetuple())),
             'bid': __message['body']['bid'],
-            'market': __message['body']['market']
+            'market': __message['body']['market'],
+            'fee': __message['body']['fee'],
         })
         return __data

@@ -32,7 +32,9 @@ from QUANTAXIS.QAUtil import QA_util_log_expection, QA_util_log_info
 
 综合性指标主要包括风险收益比，夏普比例，波动率，VAR，偏度，峰度等"""
 
-
+"""
+the account datastruct should be a standard struct which can be directly sended to another function
+"""
 def QA_risk_eva_account(client, message, days):
     cookie = message['header']['cookie']
     account = message['body']['account']
