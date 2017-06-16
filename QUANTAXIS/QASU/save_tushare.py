@@ -32,12 +32,14 @@ import time
 
 def QA_save_stock_day_all():
     df= ts.get_stock_basics()
+    __coll=QA_Setting.client.quantaxis.stock_day
+    __coll.ensure_index('code')
     def saving_work(i):
         print('Now Saving ==== %s' %(i) )    
         try:
             data_json=QATushare.QA_fetch_get_stock_day(i)
-            coll=QA_Setting.client.quantaxis.stock_day
-            coll.insert_many(data_json)
+
+            __coll.insert_many(data_json)
         except:
             print('error in saving'+str(i))
     for item in df.index:

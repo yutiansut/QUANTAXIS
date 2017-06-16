@@ -47,7 +47,6 @@ from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_day, QA
                                  QA_SU_save_stock_day_init,  QA_SU_save_trade_date, QA_SU_update_stock_day)
 from QUANTAXIS.QASU.save_backtest import (
     QA_SU_save_account_message, QA_SU_save_backtest_message)
-from QUANTAXIS.QASU.update_tushare import (QA_update_standard_sql)
 from QUANTAXIS.QASU.save_tushare import (
     QA_save_stock_day_all, QA_SU_save_trade_date_all)
 

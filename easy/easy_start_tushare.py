@@ -5,8 +5,7 @@ import QUANTAXIS as QA
 
 # 1. 全市场股票日线数据存储
 QA.QA_save_stock_day_all()
-# 2. 更新数据库,建立索引
-QA.QA_update_standard_sql()
+
 # 3. 股票列表存储
 QA.QA_SU_save_stock_list('ts', QA.QA_Setting.client)
 # 4. 交易日期存储
