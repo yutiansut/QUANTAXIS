@@ -1,9 +1,11 @@
 # coding:utf-8
-import sys
-import pymongo
 import csv
-coll = pymongo.MongoClient().quantaxis.backtest_info
-coll2 = pymongo.MongoClient().quantaxis.stock_info
+import sys
+
+import QUANTAXIS as QA
+
+coll = QA.QA_Setting.client.quantaxis.backtest_info
+coll2 = QA.QA_Setting.client.quantaxis.stock_info
 with open('info.csv', 'w', newline='') as f:
     csvwriter = csv.writer(f)
     csvwriter.writerow(['strategy', 'stock_list', 'start_time', 'end_time', 'account_cookie', 'total_returns', 'annualized_returns',

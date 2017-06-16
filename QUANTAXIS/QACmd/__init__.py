@@ -29,10 +29,10 @@ import shutil
 import string
 import sys
 
-import pymongo
+
 
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
-from QUANTAXIS.QAUtil import QA_util_log_info
+from QUANTAXIS.QAUtil import QA_util_log_info,QA_Setting
 
 from . import strategy_sample_simple
 
@@ -44,7 +44,7 @@ class CLI(cmd.Cmd):
         self.prompt = 'QUANTAXIS> '    # 定义命令行提示符
         
     def do_version(self,arg):
-        QA_util_log_info('QUANTAXIS Version 0.3.9-beta-dev19')
+        QA_util_log_info('QUANTAXIS Version 0.3.9-beta2-dev20')
     def help_version(self):
         print ("syntax: version [message]",)
         print ("-- prints a version message")
@@ -80,7 +80,7 @@ class CLI(cmd.Cmd):
         unit_code=input('code name:  ')
 
         # client setting
-        client=pymongo.MongoClient()
+        client=QA_Setting.client
         db=client.quantaxis
         coll_info=db.backtest_info
         coll_history=db.backtest_history
@@ -134,8 +134,8 @@ class CLI(cmd.Cmd):
     def help_performance(self):
         print('this is a performance management which you can restart a performance test again')
     def do_export(self,arg):
-        coll=pymongo.MongoClient().quantaxis.backtest_info
-        coll2=pymongo.MongoClient().quantaxis.stock_info
+        coll=QA_Setting.client.quantaxis.backtest_info
+        coll2=QA_Setting.client.quantaxis.stock_info
         with open('info.csv','w',newline='') as f:
             csvwriter=csv.writer(f)
             csvwriter.writerow(['strategy','stock_list','start_time','end_time','account_cookie','total_returns','annualized_returns','benchmark_annualized_returns','win_rate','alpha','beta','sharpe','vol','benchmark_vol','max_drop','exist','outstanding','totals'])

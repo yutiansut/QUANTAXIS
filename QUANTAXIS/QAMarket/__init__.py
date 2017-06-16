@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import pymongo
+
 from .QAMarket_core import QA_Market
 import datetime
 from .QABid import QA_QAMarket_bid
