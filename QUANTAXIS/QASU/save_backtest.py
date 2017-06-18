@@ -49,4 +49,6 @@ def QA_SU_save_account_message(message, client):
 
 
 def QA_SU_save_backtest_message(message, client):
-    coll = client.quantaxis.backtest_info
+    __coll = client.quantaxis.backtest_info
+
+    __coll.insert(message)

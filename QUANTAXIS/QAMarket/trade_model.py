@@ -23,10 +23,16 @@
 # SOFTWARE.
 
 
-
 class QA_Market_Trade_model():
 
     def __init__(self):
-        
 
         pass
+
+
+def modify_commission():
+    pass
+
+
+def modify_slipper():
+    pass

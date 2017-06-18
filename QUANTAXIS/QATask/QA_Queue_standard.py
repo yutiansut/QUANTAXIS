@@ -1,4 +1,3 @@
-# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -21,22 +20,30 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-# %%
-import datetime
-import json
-import multiprocessing
-import sys
-import threading
-import time
 
-import pymongo
-
+from threading import Thread
 from six.moves import queue
+"""
+标准化的QUANATAXIS队列,可以快速引入和复用
+"""
 
-# %%
-que=queue.Queue()
-que.put(19)
-que.put(23)
 
-# %% 
-que.get()
+class QA_Queue():
+    def __init__(self):
+        pass
+    def __QA_queue_distribute(self):
+        pass
+    def __QA_queue_job_register(self):
+        pass
+    def __QA_queue_put(self):
+        pass
+
+    def __QA_queue_pop(self):
+        pass
+
+    def __QA_queue_status(self):
+        pass
+
+
+class example_bid_queue(QA_Queue):
+    pass

@@ -39,8 +39,7 @@ from QUANTAXIS.QAFetch.QAQuery import QA_fetch_trade_date, QA_fetch_stock_day, Q
 from QUANTAXIS.QASpider import (QA_spider_select_spider, QA_spider_start_spider,
                                 QA_spider_end_spider)
 
-# job center
-from QUANTAXIS.QATask import (tasks, control)
+
 
 # save
 from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_day, QA_SU_save_stock_info,

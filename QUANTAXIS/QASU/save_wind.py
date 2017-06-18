@@ -22,13 +22,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from ..QAFetch import QAWind
-from ..QAUtil import QA_util_date_stamp,QA_util_time_stamp,QA_util_log_info
-from QUANTAXIS.QAUtil import QA_Setting
-import pymongo
 import datetime
 import re
 import time
+
+import pymongo
+
+from QUANTAXIS.QAUtil import QA_Setting
+
+from ..QAFetch import QAWind
+from ..QAUtil import QA_util_date_stamp, QA_util_log_info, QA_util_time_stamp
 
 
 # get all stock data,save

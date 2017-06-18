@@ -1,4 +1,4 @@
-#coding:utf-8
+# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -28,6 +28,7 @@ from enum import Enum
 def enum(*sequential, **named):
     enums = dict(zip(sequential, range(len(sequential))), **named)
     return type('Enum', (), enums)
+
 
 try:
     strinstance = basestring
@@ -121,7 +122,8 @@ class ExpressionGroup(object):
         else:
             group1_str, group1_values = self.exp_group1.filter()
             group2_str, group2_values = self.exp_group2.filter()
-            filter_str = "((%s) %s (%s))" % (group1_str, self.exp_operator, group2_str)
+            filter_str = "((%s) %s (%s))" % (
+                group1_str, self.exp_operator, group2_str)
             return filter_str, group1_values + group2_values
 
     def filter_string(self):

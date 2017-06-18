@@ -25,11 +25,7 @@
 #from .market_config import stock_market,future_market,HK_stock_market,US_stock_market
 import datetime
 
-from QUANTAXIS.QASignal import QA_signal_send
-from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
-                              QA_util_sql_mongo_setting)
-
-from .QABid import QA_QAMarket_bid
+from QUANTAXIS.QAUtil import QA_util_log_info
 
 
 class QA_Market():
@@ -58,7 +54,11 @@ class QA_Market():
             QA_util_log_info('amount' + str(bid["amount"]))
             QA_util_log_info('towards' + str(bid["towards"]))
             QA_util_log_info('==== Market Board ====')
-            if (float(bid['price']) < float(item["high"]) and float(bid['price']) > float(item["low"]) or float(bid['price']) == float(item["low"]) or float(bid['price']) == float(item['high'])) and float(bid['amount']) < float(item['volume']) / 8:
+            if (float(bid['price']) < float(item["high"]) and
+                    float(bid['price']) > float(item["low"]) or
+                    float(bid['price']) == float(item["low"]) or
+                    float(bid['price']) == float(item['high'])) and \
+                    float(bid['amount']) < float(item['volume']) / 8:
                 QA_util_log_info("deal success")
                 message = {
                     'header': {
