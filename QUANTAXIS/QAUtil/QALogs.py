@@ -32,12 +32,14 @@ QA_util_log_debug()
 QA_util_log_expection()
 """
 
+import datetime
 import logging
+import time
 
 logging.basicConfig(level=logging.DEBUG,
                 format='%(asctime)s QUANTAXIS>>> %(message)s',
                 datefmt='%H:%M:%S',
-                filename='quantaxis.log',
+                filename='quantaxis-'+str(datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S'))+'-.log',
                 filemode='w')
 console = logging.StreamHandler()
 console.setLevel(logging.INFO)

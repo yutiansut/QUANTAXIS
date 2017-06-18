@@ -22,26 +22,31 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from QUANTAXIS.QAUtil import QA_util_log_expection
+
+
 def QA_SU_save_account_message(message, client):
     #header = message['header']
     #body = message['body']
     coll = client.quantaxis.backtest_history
+    try:
+        coll.insert({
+            #'time': message['body']['time'],
+
+            'time_stamp': message['body']['date_stamp'],
+            "cookie": message['header']['cookie'],
+            'user': message['header']['session']['user'],
+            'strategy': message['header']['session']['strategy'],
+            'cash': message['body']['account']['cash'],
+            'hold': message['body']['account']['hold'],
+            'history': message['body']['account']['history'],
+            'assets': message['body']['account']['assets'],
+            'detail': message['body']['account']['detail']
+        })
+    except:
+        QA_util_log_expection('error in saving backtest account')
     # print(message)
-    coll.insert({
-        #'time': message['body']['time'],
-        
-        'time_stamp': message['body']['date_stamp'],
-        "cookie": message['header']['cookie'],
-        'user': message['header']['session']['user'],
-        'strategy': message['header']['session']['strategy'],
-        'cash': message['body']['account']['cash'],
-        'hold': message['body']['account']['hold'],
-        'history': message['body']['account']['history'],
-        'assets': message['body']['account']['assets']
-    })
 
 
 def QA_SU_save_backtest_message(message, client):
     coll = client.quantaxis.backtest_info
-    coll.insert(message)
-    
