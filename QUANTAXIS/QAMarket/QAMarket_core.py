@@ -44,6 +44,7 @@ class QA_Market():
         self.message = {}
 
     def _choice_trading_market(self, __bid, client):
+        assert isinstance(__bid['status'],str)
         if __bid['status'] == '0x01':
             return market_stock_day_engine(__bid, client)
         elif __bid['status'] == '0x02':
@@ -62,8 +63,14 @@ class QA_Market():
         """
         def __confirm_bid(__bid):
             assert isinstance(__bid, dict)
+            
             if isinstance(__bid['price'], str):
                 if __bid['price'] == 'market_price':
+                    return __bid
+                elif __bid['price'] == 'close_price':
+                    return __bid
+                else :
+                    QA_util_log_info('unsupport type:'+__bid['price'])
                     return __bid
             else:
                 return __bid

@@ -37,6 +37,7 @@ from tabulate import tabulate
 import configparser
 from QUANTAXIS import *
 from QUANTAXIS import QA_Market, QA_Portfolio, QA_QAMarket_bid, QA_Risk
+from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
 from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_index_day, QA_fetch_stock_day,
                                        QA_fetch_stock_info,
@@ -268,6 +269,7 @@ class QA_Backtest():
 
     def handle_data(self, strategy_fp):
         # 首先判断是否能满足回测的要求
+        __messages={}
         self.__init_cash_per_stock = int(
             float(self.account.init_assest) / len(self.strategy_stock_list))
         # 策略的交易日循环
@@ -307,18 +309,24 @@ class QA_Backtest():
         # 在回测的最后一天,平掉所有仓位(回测的最后一天是不买入的)
         while len(self.account.hold) > 1:
             __hold_list = self.account.hold[1::]
-
+            input()
             for item in __hold_list:
-                self.bid.bid['amount'] = int(item[3])
-                self.bid.bid['order_id'] = str(random.random())
-                self.bid.bid['price'] = 'close_price'
-                self.bid.bid['code'] = str(item[1])
-                self.bid.bid['date'] = self.trade_list[self.end_real_id]
-                self.bid.bid['towards'] = -1
-                self.bid.bid['user'] = self.setting.QA_setting_user_name
-                self.bid.bid['strategy'] = self.strategy_name
+
+                __last_bid=self.bid.bid
+                __last_bid['amount'] = int(item[3])
+                __last_bid['order_id'] = str(random.random())
+                __last_bid['price'] = 'close_price'
+                __last_bid['code'] = str(item[1])
+                __last_bid['date'] = self.trade_list[self.end_real_id]
+                __last_bid['towards'] = -1
+                __last_bid['user'] = self.setting.QA_setting_user_name
+                __last_bid['strategy'] = self.strategy_name
+                __last_bid['bid_model'] = 'auto'
+                __last_bid['status'] = '0x01'
+                __last_bid['amount_model'] = 'amount'
+                print(__last_bid)
                 __message = self.market.receive_bid(
-                    self.bid.bid, self.setting.client)
+                    __last_bid, self.setting.client)
 
                 __messages = self.account.QA_account_receive_deal(
                     __message)
@@ -339,9 +347,8 @@ class QA_Backtest():
         self.__benchmark_data = QA_fetch_index_day(
             self.benchmark_code, self.start_real_date,
             self.end_real_date, self.setting.client.quantaxis.stock_day)
-        # QA.QA_SU_save_account_message(
-        # messages, self.setting.client)
-        analysis_message = QA.QA_backtest_analysis_start(
+
+        analysis_message = QA_backtest_analysis_start(
             self.setting.client, self.strategy_stock_list, __messages,
             self.trade_list[self.start_real_id:self.end_real_id],
             self.__market_data, self.__benchmark_data)
@@ -365,33 +372,35 @@ class QA_Backtest():
         __bid['code'] = __code
         __bid['date'] = __date
         __bid['price'] = __bid_price
-        __bid['amount'] = self.__QA_bid_amount(__result['amount'], __amount)[0]
-        __bid['amount_model'] = self.__QA_bid_amount(
-            __result['amount'], __amount)[1]
-        if __result['if_buy'] == 1:
-            __bid['towards'] = 1
-            __message = self.market.receive_bid(
-                __bid, self.setting.client)
+        __bid['amount'], __bid['amount_model'] = self.__QA_bid_amount(
+            __result['amount'], __amount)
+        try:
+            if __result['if_buy'] == 1:
+                __bid['towards'] = 1
+                __message = self.market.receive_bid(
+                    __bid, self.setting.client)
 
-            self.account.QA_account_receive_deal(
-                __message)
-        elif __result['if_buy'] == 0 and __hold == 0:
-            pass
-        elif __result['if_buy'] == 0 and __hold == 1:
-            __bid['towards'] = -1
-            __message = self.market.receive_bid(
-                __bid, self.setting.client)
+                self.account.QA_account_receive_deal(
+                    __message)
+            elif __result['if_buy'] == 0 and __hold == 0:
+                pass
+            elif __result['if_buy'] == 0 and __hold == 1:
+                __bid['towards'] = -1
+                __message = self.market.receive_bid(
+                    __bid, self.setting.client)
 
-            self.account.QA_account_receive_deal(
-                __message)
+                self.account.QA_account_receive_deal(
+                    __message)
+        except:
+            QA_util_log_info(__bid)
 
     def __QA_bid_amount(self, __strategy_amount, __amount):
         if __strategy_amount == 'mean':
-            return [self.__init_cash_per_stock, 'price']
+            return self.__init_cash_per_stock, 'price'
         elif __strategy_amount == 'half':
-            return [__amount * 0.5, 'amount']
+            return __amount * 0.5, 'amount'
         elif __strategy_amount == 'all':
-            return [__amount, 'amount']
+            return __amount, 'amount'
 
     def __QA_get_data_from_market(self, __id, stock_id):
         # x=[x[6] for x in self.__market_data]
