@@ -26,7 +26,6 @@ import datetime
 import random
 import time
 
-from tabulate import tabulate
 
 # 2017/6/4修改: 去除总资产的动态权益计算
 
@@ -196,9 +195,7 @@ class QA_Account:
                     'history': self.history,
                     'cash': self.cash,
                     'assets': self.assets,
-                    'detail': tabulate(self.detail, headers=('date', 'code', 'price',
-                                                             'amounts', 'sell_price', 'order_id', 'trade_id',
-                                                             'sell_order_id', 'sell_trade_id', 'left_amount', 'commission'))
+                    'detail': self.detail
                 },
                 'time': str(datetime.datetime.now()),
                 'date_stamp': str(time.mktime(datetime.datetime.now().timetuple()))

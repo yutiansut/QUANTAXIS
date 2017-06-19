@@ -44,9 +44,12 @@ class QA_QAMarket_bid():
             'user': str('root'),
             'strategy': str('example01'),
             'status': '0x01',
+            'bid_model':'strategy',
+            'amount_model':'amount',
             'order_id': str(random.random())
         }
         self.bid_list = [self.bid]
+        
     # 报价队列  插入/取出/查询
 
     def QA_bid_insert(self):

@@ -46,14 +46,23 @@ def market_stock_day_engine(__bid, client):
                 __bid_t['price'] = (float(__item["high"]) +
                                     float(__item["low"])) * 0.5
                 return __trading(__bid_t, __item)
+
+            elif __bid['price'] == 'close_price':
+                __bid_t = __bid
+                __bid_t['price'] = float(__item["close"])
+                return __trading(__bid_t, __item)
             else:
-                if ((float(__bid['price']) < float(__item["high"]) and
-                     float(__bid['price']) > float(__item["low"])) or
-                        float(__bid['price']) == float(__item["low"]) or
-                        float(__bid['price']) == float(__item['high'])):
-
+                if __bid['amount_model'] == 'price':
+                    __bid_s = __bid
+                    __bid_s['amount'] = int(
+                        __bid['amount'] / (__bid['price'] * 100)) * 100
+                    __bid_s['amount_model'] = 'amount'
+                    return __trading(__bid_s, __item)
+                elif ((float(__bid['price']) < float(__item["high"]) and
+                       float(__bid['price']) > float(__item["low"])) or
+                      float(__bid['price']) == float(__item["low"]) or
+                      float(__bid['price']) == float(__item['high'])):
                     if float(__bid['amount']) < float(__item['volume']) * 100 / 16:
-
                         __deal_price = __bid['price']
                     elif float(__bid['amount']) >= float(__item['volume']) * 100 / 16 and \
                             float(__bid['amount']) < float(__item['volume']) * 100 / 8:
@@ -84,7 +93,6 @@ def market_stock_day_engine(__bid, client):
                             float(__deal_price) * float(__bid['amount'])
                         if __commission_fee < 5:
                             __commission_fee = 5
-
                     return {
                         'header': {
                             'source': 'market',
@@ -148,8 +156,8 @@ def market_stock_day_engine(__bid, client):
                         'volume': 0,
                         'code': 0
                     },
-                    'fee':{
-                        'commission':0
+                    'fee': {
+                        'commission': 0
                     }
                 }
             }
