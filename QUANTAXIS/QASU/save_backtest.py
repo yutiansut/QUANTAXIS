@@ -22,6 +22,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import csv
+import os
+import sys
+
 from QUANTAXIS.QAUtil import QA_util_log_expection
 
 
@@ -52,3 +56,43 @@ def QA_SU_save_backtest_message(message, client):
     __coll = client.quantaxis.backtest_info
 
     __coll.insert(message)
+
+
+def QA_SU_save_account_to_csv(message):
+    __now_path = os.getcwd()
+    __file_name_1 = 'backtest-ca--' + str(message['header']['cookie']) + '.csv'
+    with open(__file_name_1, 'w', newline='') as C:
+        csvwriter = csv.writer(C)
+        csvwriter.writerow(['user:', message['header']['session']['user']])
+        csvwriter.writerow(
+            ['strategy', message['header']['session']['strategy']])
+        for i in range(0, max(len(message['body']['account']['cash']), len(message['body']['account']['assets']))):
+            csvwriter.writerow(
+                message['body']['account']['cash'][i], message['body']['account']['assets'][i])
+    __file_name_2 = 'backtest-detail--' + \
+        str(message['header']['cookie']) + '.csv'
+    with open(__file_name_2, 'w', newline='') as E:
+        csvwriter_1 = csv.writer(E)
+        csvwriter_1.writerow(['user:', message['header']['session']['user']])
+        csvwriter_1.writerow(
+            ['strategy', message['header']['session']['strategy']])
+    for item in message['body']['account']['detail']:
+        csvwriter_1.writerow(item)
+
+    __file_name_3 = 'backtest-history--' + \
+        str(message['header']['cookie']) + '.csv'
+
+    with open(__file_name_3, 'w', newline='') as F:
+        csvwriter_2 = csv.writer(F)
+        csvwriter_2.writerow(['user:', message['header']['session']['user']])
+        csvwriter_2.writerow(
+            ['strategy', message['header']['session']['strategy']])
+    for item in message['body']['account']['history']:
+        csvwriter_2.writerow(item)
+    """
+            'cash': message['body']['account']['cash'],
+            'hold': message['body']['account']['hold'],
+            'history': message['body']['account']['history'],
+            'assets': message['body']['account']['assets'],
+            'detail': message['body']['account']['detail']
+"""
