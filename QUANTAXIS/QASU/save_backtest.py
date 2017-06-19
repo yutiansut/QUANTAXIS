@@ -26,7 +26,7 @@ import csv
 import os
 import sys
 
-from QUANTAXIS.QAUtil import QA_util_log_expection
+from QUANTAXIS.QAUtil import QA_util_log_expection,QA_Setting
 
 
 def QA_SU_save_account_message(message, client):

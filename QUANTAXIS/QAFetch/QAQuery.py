@@ -48,9 +48,12 @@ def QA_fetch_stock_day(code, startDate, endDate, collections):
 
         list_a = [[], [], [], [], [], [], [], []]
 
-        for item in collections.find({'code': str(code)[0:6], "date_stamp": {"$lte": QA_util_date_stamp(endDate), "$gte": QA_util_date_stamp(startDate)}}):
+        for item in collections.find({
+            'code': str(code)[0:6], "date_stamp": {
+                "$lte": QA_util_date_stamp(endDate), 
+                "$gte": QA_util_date_stamp(startDate)}}):
             # print(item['code'])
-           
+
             list_a[0].append(item['code'])
             list_a[1].append(item['open'])
             list_a[2].append(item['high'])
@@ -95,9 +98,14 @@ def QA_fetch_index_day(code, startDate, endDate, collections):
 
         list_a = [[], [], [], [], [], [], []]
 
-        for item in collections.find({'code': str(code), "date_stamp": {"$lte": QA_util_date_stamp(endDate), "$gte": QA_util_date_stamp(startDate)}}):
+        for item in collections.find({
+            'code': str(code), "date_stamp": {
+                "$lte": QA_util_date_stamp(endDate),
+                "$gte": QA_util_date_stamp(startDate)
+            }
+        }):
             # print(item['code'])
-            
+
             list_a[0].append(item['code'])
             list_a[1].append(item['open'])
             list_a[2].append(item['high'])

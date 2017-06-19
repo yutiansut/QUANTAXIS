@@ -21,11 +21,3 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
-
-from .main import (QA_SU_save_stock_day, QA_SU_save_stock_day_init,
-                   QA_SU_save_stock_info, QA_SU_save_stock_list,
-                   QA_SU_save_trade_date, QA_SU_update_stock_day)
-from .save_backtest import (QA_SU_save_account_message,
-                            QA_SU_save_account_to_csv,
-                            QA_SU_save_backtest_message)

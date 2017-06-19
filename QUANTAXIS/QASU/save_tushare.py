@@ -30,12 +30,14 @@ import time
 import tushare as ts
 
 from QUANTAXIS.QAFetch import QATushare
-from QUANTAXIS.QAUtil import QA_Setting, QA_util_date_stamp, QA_util_time_stamp
+from QUANTAXIS.QAUtil import QA_util_date_stamp, QA_util_time_stamp
+from QUANTAXIS.QAUtil.QASetting import QA_Setting
 
 
 def QA_save_stock_day_all():
     df = ts.get_stock_basics()
-    __coll = QA_Setting.client.quantaxis.stock_day
+    __setting = QA_Setting()
+    __coll = __setting.client.quantaxis.stock_day
     __coll.ensure_index('code')
 
     def saving_work(i):
@@ -64,7 +66,8 @@ def QA_SU_save_stock_list(client):
 
 def QA_SU_save_trade_date_all():
     data = QATushare.QA_fetch_get_trade_date('', '')
-    coll = QA_Setting.client.quantaxis.trade_date
+    __setting = QA_Setting()
+    coll = __setting.client.quantaxis.trade_date
     coll.insert_many(data)
 
 
