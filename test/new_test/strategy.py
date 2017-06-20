@@ -35,6 +35,6 @@ class strategy:
 
 
 d = QA.QA_Backtest()
-
+#d.QA_backtest_import_setting()
 d.QA_backtest_init()
 d.QA_backtest_start(strategy())

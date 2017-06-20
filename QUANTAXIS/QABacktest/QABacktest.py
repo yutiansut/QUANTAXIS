@@ -163,7 +163,16 @@ class QA_Backtest():
                         return "wrong with csv file in current dir, \
                         the name should be \\stock_list.json"
         elif __t_strategy_stock_list[0] == 'mongo':
-            pass
+            try:
+                import pymongo
+
+                coll = pymongo.MongoClient().__t_strategy_stock_list[1].split(
+                    '-')[0].__t_strategy_stock_list[1].split['-'][1]
+                assert isinstance(__t_strategy_stock_list[2], str)
+                return coll.find(__t_strategy_stock_list[2])
+            except:
+                QA_util_log_info(
+                    'something wrong with import stock_list from mongodb')
         elif __t_strategy_stock_list[0] == 'data':
             if __t_strategy_stock_list[1] == 'list':
                 self.strategy_stock_list = __t_strategy_stock_list[2]
@@ -269,7 +278,7 @@ class QA_Backtest():
 
     def handle_data(self, strategy_fp):
         # 首先判断是否能满足回测的要求
-        __messages={}
+        __messages = {}
         self.__init_cash_per_stock = int(
             float(self.account.init_assest) / len(self.strategy_stock_list))
         # 策略的交易日循环
@@ -312,7 +321,7 @@ class QA_Backtest():
             input()
             for item in __hold_list:
 
-                __last_bid=self.bid.bid
+                __last_bid = self.bid.bid
                 __last_bid['amount'] = int(item[3])
                 __last_bid['order_id'] = str(random.random())
                 __last_bid['price'] = 'close_price'
