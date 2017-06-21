@@ -31,41 +31,43 @@ from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info
 """stock market trading engine"""
 
 
-def market_stock_day_engine(__bid, client):
+def market_stock_day_engine(__bid, client, model=None):
+    # data mod
     __coll = client.quantaxis.stock_day
-    __item = __coll.find_one(
+    __data = __coll.find_one(
         {"code": str(__bid['code'])[0:6], "date": str(__bid['date'])[0:10]})
+    # trade mod
 
-    def __trading(__bid, __item):
+    def __trading(__bid, __data):
         """
         trading system
         """
         try:
             if __bid['price'] == 'market_price':
                 __bid_t = __bid
-                __bid_t['price'] = (float(__item["high"]) +
-                                    float(__item["low"])) * 0.5
-                return __trading(__bid_t, __item)
+                __bid_t['price'] = (float(__data["high"]) +
+                                    float(__data["low"])) * 0.5
+                return __trading(__bid_t, __data)
 
             elif __bid['price'] == 'close_price':
                 __bid_t = __bid
-                __bid_t['price'] = float(__item["close"])
-                return __trading(__bid_t, __item)
+                __bid_t['price'] = float(__data["close"])
+                return __trading(__bid_t, __data)
             else:
                 if __bid['amount_model'] == 'price':
                     __bid_s = __bid
                     __bid_s['amount'] = int(
                         __bid['amount'] / (__bid['price'] * 100)) * 100
                     __bid_s['amount_model'] = 'amount'
-                    return __trading(__bid_s, __item)
-                elif ((float(__bid['price']) < float(__item["high"]) and
-                       float(__bid['price']) > float(__item["low"])) or
-                      float(__bid['price']) == float(__item["low"]) or
-                      float(__bid['price']) == float(__item['high'])):
-                    if float(__bid['amount']) < float(__item['volume']) * 100 / 16:
+                    return __trading(__bid_s, __data)
+                elif ((float(__bid['price']) < float(__data["high"]) and
+                       float(__bid['price']) > float(__data["low"])) or
+                      float(__bid['price']) == float(__data["low"]) or
+                      float(__bid['price']) == float(__data['high'])):
+                    if float(__bid['amount']) < float(__data['volume']) * 100 / 16:
                         __deal_price = __bid['price']
-                    elif float(__bid['amount']) >= float(__item['volume']) * 100 / 16 and \
-                            float(__bid['amount']) < float(__item['volume']) * 100 / 8:
+                    elif float(__bid['amount']) >= float(__data['volume']) * 100 / 16 and \
+                            float(__bid['amount']) < float(__data['volume']) * 100 / 8:
                         """
                         add some slippers
 
@@ -73,18 +75,18 @@ def market_stock_day_engine(__bid, client):
                         sell_price=mean(min{open,close},low)
                         """
                         if int(__bid['towards']) > 0:
-                            __deal_price = (max(float(__item['open']), float(
-                                __item['close'])) + float(__item['high'])) * 0.5
+                            __deal_price = (max(float(__data['open']), float(
+                                __data['close'])) + float(__data['high'])) * 0.5
                         else:
-                            __deal_price = (min(float(__item['open']), float(
-                                __item['close'])) + float(__item['low'])) * 0.5
+                            __deal_price = (min(float(__data['open']), float(
+                                __data['close'])) + float(__data['low'])) * 0.5
 
                     else:
-                        __bid['amount'] = float(__item['volume']) / 8
+                        __bid['amount'] = float(__data['volume']) / 8
                         if int(__bid['towards']) > 0:
-                            __deal_price = float(__item['high'])
+                            __deal_price = float(__data['high'])
                         else:
-                            __deal_price = float(__item['low'])
+                            __deal_price = float(__data['low'])
 
                     if int(__bid['towards']) > 0:
                         __commission_fee = 0
@@ -114,12 +116,12 @@ def market_stock_day_engine(__bid, client):
                                 'towards': int(__bid['towards'])
                             },
                             'market': {
-                                'open': __item['open'],
-                                'high': __item['high'],
-                                'low': __item['low'],
-                                'close': __item['close'],
-                                'volume': __item['volume'],
-                                'code': __item['code']
+                                'open': __data['open'],
+                                'high': __data['high'],
+                                'low': __data['low'],
+                                'close': __data['close'],
+                                'volume': __data['volume'],
+                                'code': __data['code']
                             },
                             'fee': {
                                 'commission': float(__commission_fee)
@@ -161,27 +163,35 @@ def market_stock_day_engine(__bid, client):
                     }
                 }
             }
-    return __trading(__bid, __item)
+    return __trading(__bid, __data)
 
 
-def market_stock_min_engine(__bid, client):
+def market_stock_min_engine(__bid, client, model=None):
     """
     time-delay stock trading engine
     """
     pass
 
 
-def market_future_day_engine(__bid, client):
+def market_future_day_engine(__bid, client, model=None):
     """
     future market daily trading engine
     """
-
     pass
 
 
-def market_future_min_engine(__bid, client):
+def market_future_min_engine(__bid, client, model=None):
     pass
 
 
-def market_future_tick_engine(__bid, client):
+def market_future_tick_engine(__bid, client, model=None):
     pass
+
+
+def __select_engine_model(model, client):
+    if model == 'function':
+        return client
+    elif model == 'mongo' or model == None:
+        return client
+    else:
+        QA_util_log_info('unsupported market_engine')

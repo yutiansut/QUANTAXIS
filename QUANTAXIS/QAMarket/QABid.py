@@ -32,6 +32,8 @@ import time
 
 
 """
+
+
 class QA_QAMarket_bid():
     def __init__(self):
         self.bid = {
@@ -44,12 +46,20 @@ class QA_QAMarket_bid():
             'user': str('root'),
             'strategy': str('example01'),
             'status': '0x01',
-            'bid_model':'strategy',
-            'amount_model':'amount',
+            'bid_model': 'strategy',
+            'amount_model': 'amount',
             'order_id': str(random.random())
         }
+
+        self.bid_future_day = {
+
+        }
+        self.bid_future_min = {
+
+        }
+        self.bid_future_tick = {}
         self.bid_list = [self.bid]
-        
+
     # 报价队列  插入/取出/查询
 
     def QA_bid_insert(self):
@@ -60,4 +70,4 @@ class QA_QAMarket_bid():
 
     def QA_bid_status(self):
         lens = len(self.bid_list)
-        return {'status': lens}
+        return {'status': lens} 
