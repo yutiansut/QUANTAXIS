@@ -277,7 +277,15 @@ class QA_Backtest():
         self.handle_data(strategy_fp)
 
     def handle_data(self, strategy_fp):
-        # 首先判断是否能满足回测的要求
+        # 首先判断是否能满足回测的要求`
+
+
+
+
+
+
+
+        
         __messages = {}
         self.__init_cash_per_stock = int(
             float(self.account.init_assest) / len(self.strategy_stock_list))
