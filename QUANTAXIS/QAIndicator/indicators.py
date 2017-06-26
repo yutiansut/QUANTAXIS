@@ -37,9 +37,16 @@ QUANTAXIS  指标计算
 
 
 """趋势类"""
-
+import numpy as np
+import pandas as pd
 
 def QA_indicator_dma(data):
+    """
+    平行线差指标
+    中短期指标/趋势指标
+    通过计算两条基准周期不同的移动平均线的差值,来判断当前买入卖出能量的大小和未来价格走势的趋势
+    
+    """
     pass
 
 
