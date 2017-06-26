@@ -68,69 +68,21 @@ class CLI(cmd.Cmd):
 
     def do_quit(self, arg):     # 定义quit命令所执行的操作
         sys.exit(1)
+    
 
     def help_quit(self):        # 定义quit命令的帮助输出
         print ("syntax: quit",)
         print ("-- terminates the application")
+    def do_exit(self, arg):     # 定义quit命令所执行的操作
+        sys.exit(1)
+    def help_exit(self):
+        print('syntax: exit')
+        print ("-- terminates the application")
     def do_performance(self,arg):
         # coding:utf-8
         # setting config
-        unit_strategy=input('strategy_name:   ')
-        unit_cookie=''
-        unit_code=input('code name:  ')
-
-        # client setting
-        client=QA_Setting.client
-        db=client.quantaxis
-        coll_info=db.backtest_info
-        coll_history=db.backtest_history
-
-        # get cookie and history
-        info=coll_info.find_one({'stock_list':unit_code,'strategy':unit_strategy})
-        cookie=info['account_cookie']
-        days=info['exist']
-        if coll_history.find({'cookie':cookie}).count()>0:
-            trade=coll_history.find({'cookie':cookie})[coll_history.find({'cookie':cookie}).count()-1]
-            # reappeared the performance
-            message={
-                'header':{
-                    'source':'account',
-                    'cookie':trade['cookie'],
-                    'session':{
-                        'user':trade['user'],
-                        'strategy':trade['strategy'],
-                        'code':trade['bid']['code']
-                    }
-                    
-                    },
-                'body':{
-                    'account':{
-                        'init_assest':trade['init_assest'],
-                        'portfolio':trade['portfolio'],
-                        'history':trade['history'],
-                        'assest_now':trade['assest_now'],
-                        'assest_history':trade['assest_history'],
-                        'assest_free':trade['assest_free'],
-                        #'total_assest_free':trade['total_assest_free'],
-                        'assest_fix':trade['assest_fix'],
-                        'profit':trade['profit'],
-                        'account_date':trade['account_date'],
-                        'total_profit':trade['total_profit'],
-                        'total_date':trade['total_date'],
-                        'cur_profit_present':trade['cur_profit_present'],
-                        'cur_profit_present_total':trade['cur_profit_present_total'],
-                        'hold':trade['hold']
-                    },
-                    'bid':trade['bid'],
-                    'market':trade['market'],
-                    'time':trade['time'],
-                    'date_stamp':trade['time_stamp']
-                }
-            }
-            QA_util_log_info(message)
-            QA_util_log_info('***'*10)
-            QA_util_log_info(QA_backtest_analysis_start(client,message,days))
-
+        print('now updating')
+        pass
     def help_performance(self):
         print('this is a performance management which you can restart a performance test again')
     def do_export(self,arg):

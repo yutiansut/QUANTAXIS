@@ -65,6 +65,11 @@ setup(
         'Operating System :: OS Independent',
     ],
     install_requires = ['pandas>=0.20','numpy>=1.12.0','tushare==0.7.5','pymongo>=3.4','celery>=4.0.0','six>=1.10.0','tabulate>=0.7.7'],
+    entry_points={
+          'console_scripts': [
+              'quantaxis=QUANTAXIS:main'
+          ]
+      },
     keywords = KEYWORDS,
     author = AUTHOR,
     author_email = AUTHOR_EMAIL,
@@ -76,3 +81,4 @@ setup(
 )
  
 ## 把上面的变量填入了一个setup()中即可。
+
