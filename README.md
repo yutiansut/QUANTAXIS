@@ -62,14 +62,14 @@ QUANTAXIS与国内很多优秀的量化平台的区别在于,QA更多关注的�
 ## QUANTAXIS-Stardand-Protocol
 QUANTAXIS 标准化协议和未来协议
 
-QUANTAXIS-Stardand-Protocol 版本号0.0.5
+QUANTAXIS-Stardand-Protocol 版本号0.0.7
 
 详情参见  [QUANATXISProtocol](https://github.com/yutiansut/QUANTAXIS/tree/0.3.8-dev-RC-ARP/QUANTAXISProtocol)
 
 ## 部署问题:
 
 - Windows/Linux(ubuntu) 已测试通过
-- python3.6优先(开发环境) python2 回测框架兼容
+- python3.6优先(开发环境) python2 回测框架兼容   [*] 如果需要交易,请下载32位的python3.6
 - nodejs 需要安装>7的版本,来支持es6语法
 - mongodb是必须要装的
 
@@ -79,8 +79,8 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.5
 git clone https://github.com/yutiansut/quantaxis
 cd quantaxis 
 (sudo) python setup.py install
-python easy_start_tushare.py(会存全市场的数据,较慢)
-python test_strategy_multi.py(一个简单的策略)
+python easy/easy_start_tushare.py(会存全市场的数据,较慢)
+python test/new test/strategy.py(一个简单的策略)
 ```
 ![简易策略](http://i1.buimg.com/1949/44f692d0c9d6fed2.png)
 
