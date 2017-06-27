@@ -2,7 +2,7 @@
 
 最新版本 :0.3.9-gamma
 
-最后修改日期: 2017-06-14
+最后修改日期: 2017-06-27
 
 作者: yutiansut
 
@@ -87,11 +87,13 @@ QUANTAXIS>> Welcome to QUANTAXIS, the Version is 0.3.9-beta-dev20
 
 
 ### 1.8 对于QACMD进行改进
+2017/6/26
 
 对于QACMD的模式进行了修改,现在直接在命令行中输入quantaxis即可进入quantaxis的交互式界面进行操作
 
 
 ### 1.9 新增QADataStruct模块
+2017/6/27
 
 datastruct将在未来对于不同的场景下的数据进行重构和规范化处理,目前新增了基础数据类,机器学习类,ohlc价格序列类等
 
@@ -112,7 +114,7 @@ datastruct将在未来对于不同的场景下的数据进行重构和规范化�
 
 
 新版的quantaxis并不在回测框架中定义利润的计算以及其他的逻辑,这些在backtest_analysis中会涉及计算,当然也可以自己定义利润的计算方法
-### 2.2 QA.QABacktest.Backtest_anlysis
+### 2.2 QA.QABacktest.Backtest_analysis
 
 对于quantaxis_backtest_analysis进行了巨大的修改,现在的backtest_analysis的接口调用函数有了一定程度的修改.
 
