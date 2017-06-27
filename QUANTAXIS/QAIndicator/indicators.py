@@ -40,14 +40,15 @@ QUANTAXIS  指标计算
 import numpy as np
 import pandas as pd
 
-def QA_indicator_dma(data):
+
+
+def QA_indicator_dma(data, f, s, N):
     """
     平行线差指标
     中短期指标/趋势指标
     通过计算两条基准周期不同的移动平均线的差值,来判断当前买入卖出能量的大小和未来价格走势的趋势
-    
     """
-    pass
+    
 
 
 def QA_indicator_dmi(data):
@@ -293,42 +294,76 @@ def QA_indicator_cr(data):
 def QA_indicator_mass(data):
     pass
 
+
 def QA_indicator_wad(data):
     pass
+
+
 def QA_indicator_pcnt(data):
     pass
+
+
 def QA_indicator_cyr(data):
     pass
 
+
 """通道型指标"""
+
+
 def QA_indicator_boll(data):
     pass
+
+
 def QA_indicator_pbx(data):
     pass
+
+
 def QA_indicator_ene(data):
     pass
+
+
 def QA_indicator_mike(data):
     pass
+
+
 def QA_indicator_xs(data):
     pass
+
+
 def QA_indicator_xt(data):
     pass
 
+
 """大盘指标"""
+
+
 def QA_indicator_adl(data):
     pass
+
+
 def QA_indicator_adr(data):
     pass
+
+
 def QA_indicator_arms(data):
     pass
 
+
 def QA_indicator_abi(data):
     pass
+
+
 def QA_indicator_bti(data):
     pass
+
+
 def QA_indicator_mcl(data):
     pass
+
+
 def QA_indicator_obos(data):
     pass
+
+
 def QA_indicator_stix(data):
     pass
