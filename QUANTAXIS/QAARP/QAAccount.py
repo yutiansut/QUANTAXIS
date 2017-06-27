@@ -1,417 +1,252 @@
-# encoding: UTF-8
-from QUANTAXIS.QAUtil import QA_util_log_info
-from QUANTAXIS.QABacktest import QAAnalysis as Ana
-from .QARisk import *
-import random
+# coding:utf-8
+#
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 import datetime
+import random
+import time
+
+
+# 2017/6/4修改: 去除总资产的动态权益计算
+
+
 class QA_Account:
-    
-    assets=1000
-    portfolio={'date':'', 'id':'N',' price':'', 'amount':0}
-    
-    history_trade=[['date', 'id',' price', 'amount',' towards']]
-    
-    total_profit=[0]
-    total_cur_profit_present=[0]
-    assets_market_hold_value=0
-    assets_profit_total=[0]
-    cur_profit_present_total=[0]
-    cur_profit_present=0
-    #date, id, price, amount, towards
-    #account_cookie=str(random.random())
-    portfit=0
-    hold=0
+    """
+    账户类:    
+    记录回测的时候的账户情况(持仓列表,交易历史,利润,报单,可用资金)
+    """
+    # 一个hold改成list模式
+
+    def __init__(self):
+
+        self.hold = [['date', 'code', ' price',
+                      'amount', 'order_id', 'trade_id']]
+        self.init_assest = 1000000
+        self.cash = []
+        self.history = []
+        self.detail = []
+        self.assets = []
+        self.profit = []
+        self.account_cookie = str()
+        self.message = {}
+
     def init(self):
-        #assets=1000
-        self.portfolio={'date':'', 'id':'N',' price':'', 'amount':0}
-        
-        self.history_trade=[['date', 'id',' price', 'amount',' towards']]
-        
-        self.total_profit=[0]
-        self.total_cur_profit_present=[0]
-        self.assets_market_hold_value=0
-        self.assets_profit_total=[0]
-        self.cur_profit_present_total=[0]
-        self.cur_profit_present=0
-        #date, id, price, amount, towards
-        self.account_cookie=str(random.random())
-        self.portfit=0
-        self.account_date=[]
-        self.hold=0
-        self.total_date=[]
-        self.total_assest=[self.assets]
-        self.assets_free=self.total_assest[-1]
-        self.total_assest_free=[self.assets_free]
-        self.message={
-                'header':{
-                    'source':'account',
-                    'cookie':self.account_cookie,
-                    'session':{
-                        'user':'',
-                        'strategy':''
-                    }
-                    
-                    },
-                'body':{
-                    'account':{
-                        'init_assest':self.assets,
-                        'portfolio':{'date':'', 'id':'N',' price':'', 'amount':0},
-                        'history':[['date', 'id',' price', 'amount',' towards']],
-                        'assest_now':self.total_assest[-1],
-                        'assest_history':self.total_assest,
-                        'assest_free':self.assets_free,
-                        'total_assest_free':self.total_assest_free,
-                        'assest_fix':self.assets_market_hold_value,
-                        'account_date':self.account_date,
-                        'total_date':self.total_date,
-                        'profit':self.portfit,
-                        'total_profit':[0],
-                        'cur_profit_present':0,
-                        'cur_profit_present_total':[0],
-                        'hold':self.hold
-                    },
-                    'bid':{},
-                    'market':{},
-                    #'time':datetime.datetime.now(),
-                    'date_stamp':str(datetime.datetime.now().timestamp())
-
-
+        self.hold = [['date', 'code', ' price',
+                      'amount', 'order_id', 'trade_id']]
+        self.history = []
+        self.profit = []
+        self.account_cookie = str(random.random())
+        self.cash = [self.init_assest]
+        self.message = {
+            'header': {
+                'source': 'account',
+                'cookie': self.account_cookie,
+                'session': {
+                    'user': '',
+                    'strategy': ''
                 }
+            },
+            'body': {
+                'account': {
+                    'hold': self.hold,
+                    'cash': self.cash,
+                    'assets': self.cash,
+                    'history': self.history,
+                    'detail': self.detail
+                },
+                #'time':datetime.datetime.now(),
+                'date_stamp': str(time.mktime(datetime.datetime.now().timetuple()))
             }
-        
+        }
 
-    def QA_account_get_cash(self):
-        return self.assets
-    def QA_account_get_portfolio(self):
-        return self.portfolio
-    def QA_account_get_amount(self):
-        pass
-    def QA_account_get_history(self):
-        return self.history_trade
-    def QA_Account_get_cookie(self):
-        return self.account_cookie
-
-
-    def QA_account_update(self,update_message,client):
-        #print(update_message)
-        self.total_date.append(update_message['date'])
-        if str(update_message['status'])[0]=='2':
-            #这里就是买卖成功的情况
+    def QA_account_update(self, __update_message):
+        if str(__update_message['status'])[0] == '2':
+            # 这里就是买卖成功的情况
             # towards>1 买入成功
             # towards<1 卖出成功
-            # 拿到新的交易的价格等
-            self.account_date.append(update_message['date'])
-           # QA_util_log_info('Success')
-            new_id=update_message['id']
-            new_amount=update_message['amount']
-            new_trade_date=update_message['date']
-            new_towards=update_message['towards']
-            new_price=update_message['price']
-            
 
+            __new_code = str(__update_message['bid']['code'])
+            __new_amount = float(__update_message['bid']['amount'])
+            __new_trade_date = str(__update_message['bid']['date'])
+            __new_towards = int(__update_message['bid']['towards'])
+            __new_price = float(__update_message['bid']['price'])
+            __new_order_id = float(__update_message['order_id'])
+            __new_trade_id = float(__update_message['trade_id'])
+            __new_trade_fee = float(__update_message['fee']['commission'])
+            self.history.append(
+                [__new_trade_date, __new_code, __new_price, __new_towards,
+                 __new_amount, __new_order_id, __new_trade_id, __new_trade_fee])
             # 先计算收益和利润
-            self.QA_account_calc_profit(update_message)
 
-            if int(new_towards)>0:
-                
-                self.portfolio['date']=new_trade_date
-                self.portfolio['price']=new_price
-                self.portfolio['id']=new_id
-                self.portfolio['amount']=new_amount
-                self.hold=1
+            # 修改持仓表
+            if int(__new_towards) > 0:
+
+                self.hold.append(
+                    [__new_trade_date, __new_code, __new_price, __new_amount,
+                     __new_order_id, __new_trade_id])
+                self.detail.append([__new_trade_date, __new_code, __new_price,
+                                    __new_amount, __new_order_id, __new_trade_id,
+                                    [], [], [], [], __new_amount, __new_trade_fee])
                 # 将交易记录插入历史交易记录
-                appending_list=[new_trade_date, new_id, new_price, new_amount, new_towards]
-                self.history_trade.append(appending_list)
+            else:
+                # 更新账户
+                __pop_list = []
+                while __new_amount > 0:
 
-            else :
-                self.portfolio['date']=''
-                self.portfolio['price']=0
-                self.portfolio['id']='N'
-                self.portfolio['amount']=0
-                self.hold=0
-                # 将交易记录插入历史交易记录
-                appending_list=[new_trade_date, new_id, new_price, new_amount, new_towards]
-                self.history_trade.append(appending_list)
+                    if len(self.hold) > 1:
+                        for i in range(0, len(self.hold)):
 
-                #这里是不需要插入到历史记录里面的
+                            if __new_code in self.hold[i]:
+                                if float(__new_amount) > (self.hold[i][3]):
 
-            self.message={
-                'header':{
-                    'source':'account',
-                    'cookie':self.account_cookie,
-                    'session':{
-                        'user':update_message['user'],
-                        'strategy':update_message['strategy'],
-                        'code':update_message['bid']['code']
-                    }
+                                    __new_amount = __new_amount - \
+                                        self.hold[i][3]
+
+                                    __pop_list.append(i)
+
+                                elif float(__new_amount) < float(self.hold[i][3]):
+                                    self.hold[i][3] = self.hold[i][3] - \
+                                        __new_amount
+
+                                    for __item_detail in self.detail:
+                                        if __item_detail[5] == self.hold[i][5] and \
+                                                __new_trade_id not in __item_detail[7]:
+                                            __item_detail[6].append(
+                                                __new_price)
+                                            __item_detail[7].append(
+                                                __new_order_id)
+                                            __item_detail[8].append(
+                                                __new_trade_id)
+                                            __item_detail[9].append(
+                                                __new_trade_date)
+                                            __item_detail[10] = self.hold[i][3] - \
+                                                __new_amount
+                                            __item_detail[11] += __new_trade_fee
+                                    __new_amount = 0
+                                elif float(__new_amount) == float(self.hold[i][3]):
+
+                                    __new_amount = 0
+                                    __pop_list.append(i)
+
+                __pop_list.sort()
+                __pop_list.reverse()
+                for __id in __pop_list:
+
+                    for __item_detail in self.detail:
+                        if __item_detail[5] == self.hold[__id][5] and \
+                                __new_trade_id not in __item_detail[7]:
+                            __item_detail[6].append(__new_price)
+                            __item_detail[7].append(__new_order_id)
+                            __item_detail[8].append(__new_trade_id)
+                            __item_detail[9].append(__new_trade_date)
+                            __item_detail[10] = 0
+                            __item_detail[11] += __new_trade_fee
+
+                    self.hold.pop(__id)
+                __del_id=[]
+                for __hold_id in range(1,len(self.hold)):
+                    if int(self.hold[__hold_id][3])==0:
+                        __del_id.append(__hold_id)
+                __del_id.sort()
+                __del_id.reverse()
+
+                for __item in __del_id:
+                    self.hold.pop(__item)
+
                     
-                    },
-                'body':{
-                    'account':{
-                        'init_assest':self.total_assest[0],
-                        'portfolio':self.portfolio,
-                        'history':self.history_trade,
-                        'assest_now':self.total_assest[-1],
-                        'assest_history':self.total_assest,
-                        'assest_free':self.assets_free,
-                        'total_assest_free':self.total_assest_free,
-                        'assest_fix':self.assets_market_hold_value,
-                        'profit':self.total_profit[-1],
-                        'account_date':self.account_date,
-                        'assets_profit_day':0,
-                        'assets_profit_total':[0],
-                        'total_profit':self.total_profit,
-                        'total_date':self.total_date,
-                        'cur_profit_present':self.cur_profit_present,
-                        'cur_profit_present_total':self.cur_profit_present_total,
-                        'hold':self.hold
-                    },
-                    'bid':update_message['bid'],
-                    'market':update_message['market'],
-                    'time':datetime.datetime.now(),
-                    'date_stamp':str(datetime.datetime.now().timestamp())
-
-
+            # 将交易记录插入历史交易记录
+        else:
+            pass
+        self.QA_account_calc_profit(__update_message)
+        self.message = {
+            'header': {
+                'source': 'account',
+                'cookie': self.account_cookie,
+                'session': {
+                    'user': __update_message['user'],
+                    'strategy': __update_message['strategy'],
+                    'code': __update_message['bid']['code']
                 }
+
+            },
+            'body': {
+                'account': {
+                    'hold': self.hold,
+                    'history': self.history,
+                    'cash': self.cash,
+                    'assets': self.assets,
+                    'detail': self.detail
+                },
+                'time': str(datetime.datetime.now()),
+                'date_stamp': str(time.mktime(datetime.datetime.now().timetuple()))
             }
-            
-        elif update_message['status']==401:
-            # 这里就是没有交易成功的情况 
-            # 1.空单 401
-            # 2.买卖没有成功
+        }
 
-            self.QA_account_calc_profit(update_message)
-            self.account_date.append(update_message['date'])
-            #QA_util_log_info('hold without bid')
-            #print(update_message['user'])
-            message={
-                'header':{
-                    'source':'account',
-                    'cookie':self.account_cookie,
-                    'session':{
-                        'user':update_message['user'],
-                        'strategy':update_message['strategy'],
-                        'code':update_message['bid']['code']
-                    }
-                    
-                    },
-                'body':{
-                    'account':{
-                        'init_assest':self.assets,
-                        'portfolio':self.portfolio,
-                        'history':self.history_trade,
-                        'assest_now':self.assets,
-                        'assest_history':self.total_assest,
-                        'assest_free':self.assets_free,
-                        'total_assest_free':self.total_assest_free,
-                        'assest_fix':self.assets_market_hold_value,
-                        'profit':self.portfit,
-                        'account_date':self.account_date,
-                        'total_profit':self.total_profit,
-                        'total_date':self.total_date,
-                        'cur_profit_present':self.cur_profit_present,
-                        'cur_profit_present_total':self.cur_profit_present_total,
-                        'hold':self.hold
-                    },
-                    'bid':update_message['bid'],
-                    'market':update_message['market'],
-                    #'time':datetime.datetime.now(),
-                    'date_stamp':str(datetime.datetime.now().timestamp())
-
-
-                }
-            }
-            self.message=message
-            #print(message)
-            #属于不更新history和portfolio,但是要继续增加账户和日期的
-        elif update_message['status']==402:
-            #QA_util_log_info('bid not success')
-            message={
-                'header':{
-                    'source':'account',
-                    'cookie':self.account_cookie,
-                    'session':{
-                        'user':update_message['user'],
-                        'strategy':update_message['strategy'],
-                        'code':update_message['bid']['code']
-                    }
-                    
-                    },
-                'body':{
-                    'account':{
-                        'init_assest':self.assets,
-                        'portfolio':self.portfolio,
-                        'history':self.history_trade,
-                        'assest_now':self.assets,
-                        'assest_history':self.total_assest,
-                        'total_assest_free':self.total_assest_free,
-                        'assest_free':self.assets_free,
-                        'assest_fix':self.assets_market_hold_value,
-                        'profit':self.portfit,
-                        'total_profit':self.total_profit,
-                        'account_date':self.account_date,
-                        'total_date':self.total_date,
-                        'cur_profit_present':self.cur_profit_present,
-                        'cur_profit_present_total':self.cur_profit_present_total,
-                        'hold':self.hold
-                    },
-                    'bid':update_message['bid'],
-                    'market':update_message['market'],
-                    #'time':datetime.datetime.now(),
-                    'date_stamp':str(datetime.datetime.now().timestamp())
-
-
-                }
-            }
-            self.message=message
-        #print(self.message)
         return self.message
-        
-    def QA_account_renew(self):
-        #未来发送给R,P的
-        pass
-    def QA_account_calc_profit(self,update_message):
-       # print(update_message)
-      
-        if update_message['status']==200 and update_message['towards']==1:
+
+    def QA_account_calc_profit(self, __update_message):
+        if __update_message['status'] == 200 and __update_message['bid']['towards'] == 1:
             # 买入/
             # 证券价值=买入的证券价值+持有到结算(收盘价)的价值
-            now_price=float(update_message['market']['close'])  #收盘价
-            # 买入的部分在update_message
-            buy_price=update_message['price']
-            #可用资金=上一期可用资金-买入的资金
-            self.assets_free=float(self.total_assest_free[-1])-float(update_message['price'])*float(update_message['amount'])*update_message['towards']
-            #更新可用资金历史
-            self.total_assest_free.append(self.assets_free)
-            
-            #证券价值
-            self.assets_market_hold_value=update_message['amount']*now_price
-            self.assets=self.assets_free+self.assets_market_hold_value
-            
-            self.total_assest.append(self.assets)
 
-            self.profit=(self.total_assest[-1]-self.total_assest[0])/self.total_assest[0]
-            self.total_profit.append(self.profit)
-            self.cur_profit_present=(now_price-float(update_message['price']))/(float(update_message['price']))
-                #print(now_price)
-                #print(self.portfolio['price'])
-            #self.assets_market_hold_value=float(now_price)*int(self.portfolio['amount'])
-            
-            
-           
-            
-            
-           #success trade, buy
-        elif update_message['status']==200 and update_message['towards']==-1:
-            #success trade,sell
-           
-            
+            # 买入的部分在update_message
+
+            # 可用资金=上一期可用资金-买入的资金
+            self.cash.append(float(self.cash[-1]) - float(
+                __update_message['bid']['price']) * float(
+                    __update_message['bid']['amount']) * __update_message['bid']['towards'] - float(__update_message['fee']['commission']))
+
+        elif __update_message['status'] == 200 and __update_message['bid']['towards'] == -1:
+            # success trade,sell
             # 证券价值=买入的证券价值+持有到结算(收盘价)的价值
-            now_price=float(update_message['market']['close'])  #收盘价
             # 买入的部分在update_message
-            buy_price=update_message['price']
-            #卖出的时候,towards=-1,所以是加上卖出的资产
-            #可用资金=上一期可用资金+卖出的资金
-            self.assets_free=float(self.total_assest_free[-1])-float(update_message['price'])*float(update_message['amount'])*update_message['towards']
-            #更新可用资金历史
-            self.total_assest_free.append(self.assets_free)
 
+            # 卖出的时候,towards=-1,所以是加上卖出的资产
+            # 可用资金=上一期可用资金+卖出的资金
+            self.cash.append(float(self.cash[-1]) - float(
+                __update_message['bid']['price']) * float(
+                    __update_message['bid']['amount']) * __update_message['bid']['towards'] - float(__update_message['fee']['commission']))
 
-            self.assets_market_hold_value=(self.portfolio['amount']-update_message['amount'])*now_price
-            self.assets=self.assets_free+self.assets_market_hold_value
+            # 更新可用资金历史
 
-            self.total_assest.append(self.assets)
-           
-            self.profit=(self.total_assest[-1]-self.total_assest[0])/self.total_assest[0]
-            self.total_profit.append(self.profit)
-            # 单笔交易利润是买入价
-            self.cur_profit_present=(float(update_message['price'])-float(self.portfolio['price']))/float((self.portfolio['price']))
-            self.cur_profit_present_total.append(self.cur_profit_present)
-
-
-
-
-        elif update_message['status']==401  :
             # hold
-            if (self.portfolio['amount']==0):
-                self.total_assest_free.append(self.assets_free)
-                #self.assets=self.assets_free+self.assets_market_hold_value
-                self.total_assest.append(self.assets)
-                self.profit=0
-                self.total_profit.append(self.profit)
-                self.cur_profit_present=0
-                self.cur_profit_present_total.append(self.cur_profit_present)
-            else:
-                now_price=float(update_message['market']['close'])
-                self.total_assest_free.append(self.assets_free)
-                self.assets_market_hold_value=self.portfolio['amount']*now_price
-                self.assets=self.assets_free+self.assets_market_hold_value
-                self.total_assest.append(self.assets)
-                self.profit=(self.total_assest[-1]-self.total_assest[0])/self.total_assest[0]
-                self.total_profit.append(self.profit)
-                self.cur_profit_present=(float(now_price)-float(self.portfolio['price']))/(float(self.portfolio['price']))
-                self.cur_profit_present_total.append(self.cur_profit_present)
-                
-            
+        market_value = 0
+        for i in range(1, len(self.hold)):
+            market_value += (float(self.hold[i][2]) * float(self.hold[i][3]))
+        self.assets.append(self.cash[-1] + market_value)
 
-        elif update_message['update']==402 :
-            pass
-
-        """
-
-
-        profit=0
-        for item in range(1,len(self.history_trade),1):
-        # history:
-        # date, id, price, amount, towards
-            profit=profit-float(self.history_trade[item][2])*float(self.history_trade[item][3])*float(self.history_trade[item][4])
-            if str(self.portfolio['id'])[0]=='N' :
-                self.hold=0
-            else :self.hold=1
-            # calc
-            now_price=float(update_message['market']['close'])
-            if (int(self.hold==1)):
-                #QA_util_log_info('hold-=========================================')
-                
-                #（当前价-买入价）*量
-                profit=profit+(now_price-float(self.portfolio['price']))*int(self.portfolio['amount'])+float(self.history_trade[-1][2])*float(self.history_trade[-1][3])*float(self.history_trade[-1][4])
-                #print(now_price)
-                #print(self.portfolio['price'])
-                self.cur_profit_present=(now_price-float(self.portfolio['price']))/(float(self.portfolio['price']))
-                self.assets_market_hold_value=float(now_price)*int(self.portfolio['amount'])
-                self.assets=float(self.assets_free)+float(self.assets_market_hold_value)
-            else: 
-                #QA_util_log_info('No hold-=========================================')
-                profit=profit
-                self.cur_profit_present=0
-        #print('---profit--')
-        #print(profit)
-        #print(now_price)
-        #print(self.portfolio['amount'])
-
-        """
-
-    def QA_account_analysis(self):
-        pass
-    def QA_Account_get_message(self):
-        return self.message
-
-    def QA_account_receive_deal(self,message,client):
-        #print(message)
-
-        messages=self.QA_account_update({
-            'code':message['header']['code'],
-            'status':message['header']['status'],
-            'price':message['body']['bid']['price'],
-            'id':message['body']['bid']['code'],
-            'amount':message['body']['bid']['amount'],
-            'towards':message['body']['bid']['towards'],
-            'date':message['body']['bid']['time'],
-            'user':message['header']['session']['user'],
-            'strategy':message['header']['session']['strategy'],
-            'time':datetime.datetime.now(),
-            'date_stamp':str(datetime.datetime.now().timestamp()),
-            'bid':message['body']['bid'],
-            'market':message['body']['market']
-            },client)
-        return messages
+    def QA_account_receive_deal(self, __message):
+        # 主要是把从market拿到的数据进行解包,一个一个发送给账户进行更新,再把最后的结果反回
+        __data = self.QA_account_update({
+            'code': __message['header']['code'],
+            'status': __message['header']['status'],
+            'user': __message['header']['session']['user'],
+            'strategy': __message['header']['session']['strategy'],
+            'trade_id': __message['header']['trade_id'],
+            'order_id': __message['header']['order_id'],
+            'date_stamp': str(time.mktime(datetime.datetime.now().timetuple())),
+            'bid': __message['body']['bid'],
+            'market': __message['body']['market'],
+            'fee': __message['body']['fee'],
+        })
+        return __data

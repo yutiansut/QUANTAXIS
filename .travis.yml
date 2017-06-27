@@ -5,15 +5,21 @@ python:
 os: "ubuntu"
 # whitelist
 
- 
-# Use this to prepare the system to install prerequisites or dependencies
+  
+install:
+- sudo apt-get update
+- git clone https://github.com/yutiansut/quantaxis
+- cd quantaxis
+- git checkout 0.3.9-gamma
 
 
+before_script:
 # command to install dependencies
-install: "pip install -r requirements.txt   "
+- pip install -r requirements.txt
  
 # command to build
-script: "python setup.py install"
+script: 
+- python setup.py install
  
 #after_success:
     #"python easy_start_tushare.py"

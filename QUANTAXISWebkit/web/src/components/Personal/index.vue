@@ -54,34 +54,34 @@
     </div>
 </template>
 <script>
-    import axios from 'axios'
-    export default {
-        data() {
-            return {
-                items: {
-                    user: sessionStorage.user
-                },
+import axios from 'axios'
+export default {
+    data() {
+        return {
+            items: {
+                user: sessionStorage.user
+            },
 
-            }
         }
     }
+}
 
 </script>
 <style lang="css">
-    #logo {
-        width: 20%;
-        height: 20%;
-    }
+#logo {
+    width: 20%;
+    height: 20%;
+}
 
-    .mu-item {
-        font-size: 2em;
-    }
+.mu-item {
+    font-size: 2em;
+}
 
-    #personal-content {
-        margin-top: 2%;
-    }
+#personal-content {
+    margin-top: 2%;
+}
 
-    li {
-        float: left;
-    }
+li {
+    float: left;
+}
 </style>

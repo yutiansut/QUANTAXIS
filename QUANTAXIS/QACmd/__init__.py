@@ -1,11 +1,42 @@
 # encoding: UTF-8
+#
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 import cmd
-import string, sys
-import os,shutil
-import pymongo,csv
-from QUANTAXIS.QAUtil import QA_util_log_info
+import csv
+import os
+import shutil
+import string
+import sys
+
+
+
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
+from QUANTAXIS.QAUtil import QA_util_log_info,QA_Setting
+
 from . import strategy_sample_simple
+
+
 class CLI(cmd.Cmd):
     
     def __init__(self):
@@ -13,7 +44,7 @@ class CLI(cmd.Cmd):
         self.prompt = 'QUANTAXIS> '    # 定义命令行提示符
         
     def do_version(self,arg):
-        QA_util_log_info('QUANTAXIS Version 0.3.9-beta-dev19')
+        QA_util_log_info('QUANTAXIS Version 0.3.9-beta2-dev20')
     def help_version(self):
         print ("syntax: version [message]",)
         print ("-- prints a version message")
@@ -49,7 +80,7 @@ class CLI(cmd.Cmd):
         unit_code=input('code name:  ')
 
         # client setting
-        client=pymongo.MongoClient()
+        client=QA_Setting.client
         db=client.quantaxis
         coll_info=db.backtest_info
         coll_history=db.backtest_history
@@ -103,8 +134,8 @@ class CLI(cmd.Cmd):
     def help_performance(self):
         print('this is a performance management which you can restart a performance test again')
     def do_export(self,arg):
-        coll=pymongo.MongoClient().quantaxis.backtest_info
-        coll2=pymongo.MongoClient().quantaxis.stock_info
+        coll=QA_Setting.client.quantaxis.backtest_info
+        coll2=QA_Setting.client.quantaxis.stock_info
         with open('info.csv','w',newline='') as f:
             csvwriter=csv.writer(f)
             csvwriter.writerow(['strategy','stock_list','start_time','end_time','account_cookie','total_returns','annualized_returns','benchmark_annualized_returns','win_rate','alpha','beta','sharpe','vol','benchmark_vol','max_drop','exist','outstanding','totals'])

@@ -56,13 +56,17 @@ var lhb = exports.lhb = function lhb() {
         amount: item.VATURNOVER * 100
       };
     });
-    return { data: result };
+    return {
+      data: result
+    };
   };
 
   return fetch(url).then(_util.checkStatus).then(function (res) {
     return res.json();
   }).then(mapData).catch(function (error) {
-    return { error: error };
+    return {
+      error: error
+    };
   });
 };
 
@@ -114,13 +118,17 @@ var blockTrade = exports.blockTrade = function blockTrade() {
         dopRate: item.DZJY55
       };
     });
-    return { data: result };
+    return {
+      data: result
+    };
   };
 
   return fetch(url).then(_util.checkStatus).then(function (res) {
     return res.json();
   }).then(mapData).catch(function (error) {
-    return { error: error };
+    return {
+      error: error
+    };
   });
 };
 
@@ -171,12 +179,16 @@ var longPeriodRank = exports.longPeriodRank = function longPeriodRank() {
         yearPercent: item['LONG_PERIOD_RANK']['YEAR_PERCENT']
       };
     });
-    return { data: result };
+    return {
+      data: result
+    };
   };
 
   return fetch(url).then(_util.checkStatus).then(function (res) {
     return res.json();
   }).then(mapData).catch(function (error) {
-    return { error: error };
+    return {
+      error: error
+    };
   });
 };

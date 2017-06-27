@@ -1,4 +1,5 @@
 pymongo
+bs4
 celery
 pandas
 lxml
@@ -6,4 +7,5 @@ requests
 numpy 
 scipy 
 pytesseract
+tushare==0.7.5
 

@@ -1,39 +1,40 @@
 <template>
-    <div>
-          <h1>实盘易</h1>
-    <mu-table >手动下单</mu-table>
-        <mu-th>s</mu-th>
-    </div>
-
+  <div>
+    <h1>实盘易</h1>
+    <mu-table>手动下单</mu-table>
+    <mu-th>s</mu-th>
+  </div>
 </template>
 
 <script>        
 import axios from 'axios'
 
 export default {
-name: 'shipan-e',
-data: function () {
-    return { 
-      positions:[]
-        
-    }},
-methods:{
-  query_positions(){
-    axios.get('http://localhost:8888/positions')
-      .then(function (response) {
-         var data1 = response.data;
-         console.log(data1)
-          })
-  }
+  name: 'shipan-e',
+  data: function () {
+    return {
+      positions: []
 
-    },
-     mounted() {
-      this.$nextTick(function () {
-        this.query_positions()
-      })
-    
-    
-    }}
+    }
+  },
+  methods: {
+    query_positions() {
+      axios.get('http://localhost:8888/positions')
+        .then(function (response) {
+          var data1 = response.data;
+          console.log(data1)
+        })
+    }
+
+  },
+  mounted() {
+    this.$nextTick(function () {
+      this.query_positions()
+    })
+
+
+  }
+}
 /**
  * 查询账号
 GET http://localhost:8888/accounts

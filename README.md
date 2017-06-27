@@ -26,19 +26,18 @@ QUANTAXIS与国内很多优秀的量化平台的区别在于,QA更多关注的�
 
 
 
-![version](https://img.shields.io/badge/Version-%200.3.9/beta-orange.svg)
+![version](https://img.shields.io/badge/Version-%200.3.9/gamma-orange.svg)
 ![build](https://travis-ci.org/yutiansut/QUANTAXIS.svg?branch=0.3.9-beta)
+[![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.5-brown.svg)
-![Pypi](https://img.shields.io/badge/Pypi-%200.3.9B-blue.svg)
+![Pypi](https://img.shields.io/badge/Pypi-%200.3.9G-blue.svg)
 ![python](https://img.shields.io/badge/python-%203.5/3.6/win/ubuntu-darkgrey.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.3.8-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
 ![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
-![QQ group](https://img.shields.io/badge/QQGroup-%20563280067-yellow.svg)
-![WebSite](https://img.shields.io/badge/Website-%20www.yutiansut.com-brown.svg)
-![QQ](https://img.shields.io/badge/AutherQQ-%20279336410-blue.svg)
 
-## [点此加入QQ群](http://shang.qq.com/wpa/qunwpa?idkey=914ffce1f90728d30586141477740c43bdfcb25938ecb83bd234ac05a091125f)
+
+
 ![QUANTAXIS LOGO](http://i1.piimg.com/1949/62c510db7915837a.png)
 
 <!-- TOC -->
@@ -70,10 +69,10 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.5
 ## 部署问题:
 
 - Windows/Linux(ubuntu) 已测试通过
-- python3.6优先(开发环境)  python2系列要改个Queue的名字
+- python3.6优先(开发环境) python2 回测框架兼容
 - nodejs 需要安装>7的版本,来支持es6语法
 - mongodb是必须要装的
-- Wind万得数据库  机构版/免费(大奖章版)
+
 
 一个简易demo(需要先安装并启动mongodb,python版本需要大于3)
 ```shell
@@ -81,8 +80,10 @@ git clone https://github.com/yutiansut/quantaxis
 cd quantaxis 
 (sudo) python setup.py install
 python easy_start_tushare.py(会存全市场的数据,较慢)
-python test_strategy.py(一个简单的策略)
+python test_strategy_multi.py(一个简单的策略)
 ```
+![简易策略](http://i1.buimg.com/1949/44f692d0c9d6fed2.png)
+
 启动网络插件(nodejs 版本号需要大于6,最好是7)
 ```shell
 cd QUANTAXISWebkit

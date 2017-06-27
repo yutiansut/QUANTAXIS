@@ -1,4 +1,4 @@
 <template>
-    <div>stocklist</div>
-    
+    <div>
+        stocklist</div>
 </template>
