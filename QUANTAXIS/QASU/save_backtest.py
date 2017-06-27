@@ -26,7 +26,7 @@ import csv
 import os
 import sys
 
-from QUANTAXIS.QAUtil import QA_util_log_expection,QA_Setting
+from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_expection
 
 
 def QA_SU_save_account_message(message, client):
@@ -67,8 +67,11 @@ def QA_SU_save_account_to_csv(message):
         csvwriter.writerow(
             ['strategy', message['header']['session']['strategy']])
         for i in range(0, max(len(message['body']['account']['cash']), len(message['body']['account']['assets']))):
-            csvwriter.writerow(
-                message['body']['account']['cash'][i], message['body']['account']['assets'][i])
+            try:
+                csvwriter.writerow([
+                    message['body']['account']['cash'][i], message['body']['account']['assets'][i]])
+            except:
+                pass
     __file_name_2 = 'backtest-detail--' + \
         str(message['header']['cookie']) + '.csv'
     with open(__file_name_2, 'w', newline='') as E:
@@ -76,8 +79,8 @@ def QA_SU_save_account_to_csv(message):
         csvwriter_1.writerow(['user:', message['header']['session']['user']])
         csvwriter_1.writerow(
             ['strategy', message['header']['session']['strategy']])
-    for item in message['body']['account']['detail']:
-        csvwriter_1.writerow(item)
+        for item in message['body']['account']['detail']:
+            csvwriter_1.writerow(item)
 
     __file_name_3 = 'backtest-history--' + \
         str(message['header']['cookie']) + '.csv'
@@ -87,8 +90,8 @@ def QA_SU_save_account_to_csv(message):
         csvwriter_2.writerow(['user:', message['header']['session']['user']])
         csvwriter_2.writerow(
             ['strategy', message['header']['session']['strategy']])
-    for item in message['body']['account']['history']:
-        csvwriter_2.writerow(item)
+        for item in message['body']['account']['history']:
+            csvwriter_2.writerow(item)
     """
             'cash': message['body']['account']['cash'],
             'hold': message['body']['account']['hold'],
