@@ -60,16 +60,19 @@ def QA_SU_save_backtest_message(message, client):
 
 def QA_SU_save_account_to_csv(message):
     __now_path = os.getcwd()
-    __file_name_1 = 'backtest-ca--' + str(message['header']['cookie']) + '.csv'
+    __file_name_1 = 'backtest-ca&history--' + \
+        str(message['header']['cookie']) + '.csv'
     with open(__file_name_1, 'w', newline='') as C:
         csvwriter = csv.writer(C)
-        csvwriter.writerow(['user:', message['header']['session']['user']])
-        csvwriter.writerow(
-            ['strategy', message['header']['session']['strategy']])
+        csvwriter.writerow(['date', 'code', 'price', 'towards', 'amount',
+                            'order_id', 'trade_id', 'commission_fee', 'cash', 'assets'])
         for i in range(0, max(len(message['body']['account']['cash']), len(message['body']['account']['assets']))):
             try:
-                csvwriter.writerow([
-                    message['body']['account']['cash'][i], message['body']['account']['assets'][i]])
+                message['body']['account']['history'][i].append(
+                    message['body']['account']['cash'][i])
+                message['body']['account']['history'][i].append(
+                    message['body']['account']['assets'][i])
+                csvwriter.writerow(message['body']['account']['history'][i])
             except:
                 pass
     __file_name_2 = 'backtest-detail--' + \
@@ -82,16 +85,6 @@ def QA_SU_save_account_to_csv(message):
         for item in message['body']['account']['detail']:
             csvwriter_1.writerow(item)
 
-    __file_name_3 = 'backtest-history--' + \
-        str(message['header']['cookie']) + '.csv'
-
-    with open(__file_name_3, 'w', newline='') as F:
-        csvwriter_2 = csv.writer(F)
-        csvwriter_2.writerow(['user:', message['header']['session']['user']])
-        csvwriter_2.writerow(
-            ['strategy', message['header']['session']['strategy']])
-        for item in message['body']['account']['history']:
-            csvwriter_2.writerow(item)
     """
             'cash': message['body']['account']['cash'],
             'hold': message['body']['account']['hold'],

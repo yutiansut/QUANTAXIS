@@ -347,7 +347,7 @@ class QA_Backtest():
                 __last_bid['bid_model'] = 'auto'
                 __last_bid['status'] = '0x01'
                 __last_bid['amount_model'] = 'amount'
-                print(__last_bid)
+                
                 __message = self.market.receive_bid(
                     __last_bid, self.setting.client)
 
@@ -406,15 +406,14 @@ class QA_Backtest():
             if float(self.account.message['body']['account']['cash'][-1]) > \
                 float(__message['body']['bid']['price']) * float(
                     __message['body']['bid']['amount']):
-
-                self.account.QA_account_receive_deal(__message)
+                pass
             else:
                 __message['body']['bid']['amount'] = int(float(
                     self.account.message['body']['account']['cash'][-1]) / float(
                         __message['body']['bid']['price'] * 100)) * 100
 
-                if __message['body']['bid']['amount'] > 0:
-                    self.account.QA_account_receive_deal(__message)
+            if __message['body']['bid']['amount'] > 0:
+                self.account.QA_account_receive_deal(__message)
 
         elif __result['if_buy'] == 0 and __hold == 0:
             pass
