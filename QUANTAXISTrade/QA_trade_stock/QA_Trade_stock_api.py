@@ -193,48 +193,49 @@ class QA_Stock():
 
             return [self.result.split('\n')[1].split('\t')[0], self.result.split('\n')[2].split('\t')[0]]
 
-    """
-    nCategory - 委托业务的种类
-        0 买入
-        1 卖出
-        2 融资买入
-        3 融券卖出
-        4 买券还券
-        5 卖券还款
-        6 现券还券
-    nOrderType - 委托报价方式
-        0 限价委托； 上海限价委托/ 深圳限价委托
-        1 市价委托(深圳对方最优价格)
-        2 市价委托(深圳本方最优价格)
-        3 市价委托(深圳即时成交剩余撤销)
-        4 市价委托(上海五档即成剩撤/ 深圳五档即成剩撤)
-        5 市价委托(深圳全额成交或撤销)
-        6 市价委托(上海五档即成转限价)
-    sAccount - 股东代码
-    sStockCode - 证券代码
-    sPrice - 价格
-    sVolume - 委托证券的股数
-    返回值：
-    errinfo - 出错时函数抛出的异常信息；
-    result - 查询到的数据。
+            """
+            nCategory - 委托业务的种类
+                0 买入
+                1 卖出
+                2 融资买入
+                3 融券卖出
+                4 买券还券
+                5 卖券还款
+                6 现券还券
+            nOrderType - 委托报价方式
+                0 限价委托； 上海限价委托/ 深圳限价委托
+                1 市价委托(深圳对方最优价格)
+                2 市价委托(深圳本方最优价格)
+                3 市价委托(深圳即时成交剩余撤销)
+                4 市价委托(上海五档即成剩撤/ 深圳五档即成剩撤)
+                5 市价委托(深圳全额成交或撤销)
+                6 市价委托(上海五档即成转限价)
+            sAccount - 股东代码
+            sStockCode - 证券代码
+            sPrice - 价格
+            sVolume - 委托证券的股数
+            返回值：
+            errinfo - 出错时函数抛出的异常信息；
+            result - 查询到的数据。
 
 
-    nCategory = 0
-    nOrderType = 4
-    sInvestorAccount = "p001001001005793"
-    sStockCode = "601988"
-    sPrice = 0
-    sVolume = 100
-    """
+            nCategory = 0
+            nOrderType = 4
+            sInvestorAccount = "p001001001005793"
+            sStockCode = "601988"
+            sPrice = 0
+            sVolume = 100
+            """
 
     def QA_trade_stock_post_order(self, client, order):
-
-        errinfo, self.result = client.SendOrder(
-            order[0], order[1], order[2], order[3], order[4], order[5])
-        if errinfo != "":
-            print(errinfo)
-        else:
-            print(self.result)
+        
+        if len(order)==6:
+            
+            errinfo, self.result = client.SendOrder(order[0],order[1],order[2],order[3],order[4],order[5])
+            if errinfo != "":
+                print(errinfo)
+            else:
+                print(self.result)
 
     def QA_trade_stock_post_orders(self, orderLists):
 
@@ -302,14 +303,13 @@ class QA_Stock():
             return self.result
 
     def QA_trade_stock_get_quotes(self, client, stock_list):
-        res = client.GetQuotes(('000001', '600600'))
+        res = client.GetQuotes(tuple(stock_list))
         for elem in res:
-            errinfo, self.result = elem
+            errinfo, result = elem
             if errinfo != "":
-                print(errinfo)
+                print (errinfo)
             else:
-                #print (self.result)
-                return self.result
+                print (result)
 
     def QA_trade_stock_get_stockbars(self, client):
         pass

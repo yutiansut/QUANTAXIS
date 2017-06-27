@@ -11,10 +11,8 @@ class backtest(QA.QA_Backtest):
         print(self.account.account_cookie)
         print(self.account.assets)
         print(self.account.portfolio)
-        print(self.account.total_assest)
-        print(self.account.message)
-        print(self.account.assets_free)
-        print(self.account.total_assest)
+        print(self.account.cash)
+        print(self.account.bid)
         print('===test market init===')
         print(self.bid)
         print(self.bid.bid['code'])
@@ -54,7 +52,7 @@ class backtest(QA.QA_Backtest):
         print('==at the end of day')
         print(self.account.message)
 
-
+        
         print('===next Day===')
 
         print('==make a bid==')

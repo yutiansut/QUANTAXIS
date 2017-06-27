@@ -34,7 +34,8 @@ def QA_save_stock_day_all():
     for item in df.index:
         saving_work(item)
 
-
+    saving_work('hs300')
+    saving_work('sz50')
 
 def QA_SU_save_stock_list(client):
     data=QATushare.QA_fetch_get_stock_list()
