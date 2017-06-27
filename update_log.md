@@ -60,7 +60,7 @@ QA.QA_SU_update_stock_day(client=QA.QA_Setting.client,engine='ts')
 
 
 
-### 1.5 QUANTAXIS-Log 优化
+### 1.6 QUANTAXIS-Log 优化
 2017/6/15
 
 ```shell
@@ -76,9 +76,29 @@ QUANTAXIS>> ip:127.0.0.1   port:27017
 QUANTAXIS>> Welcome to QUANTAXIS, the Version is 0.3.9-beta-dev20
 ```
 
+
+
+### 1.7 重构了回测流程,简化回测设置步骤
+2017/6/21
+
+在quantaxis的backtest的基础上,对于回测的流程和模式进行了重构,通过ini的读取以及函数式编程的方法,把回测简化到一个ini+策略即可进行回测的步骤
+
+具体参见 test/new test 文件夹
+
+
+### 1.8 对于QACMD进行改进
+
+对于QACMD的模式进行了修改,现在直接在命令行中输入quantaxis即可进入quantaxis的交互式界面进行操作
+
+
+### 1.9 新增QADataStruct模块
+
+datastruct将在未来对于不同的场景下的数据进行重构和规范化处理,目前新增了基础数据类,机器学习类,ohlc价格序列类等
+
+
 ## 巨大改动/重构
 
-#### 2.1 QA.QAARP.QAAccount
+### 2.1 QA.QAARP.QAAccount
 在0.3.9-gamma中,quantaxis对于account账户方法进行了重构.优化了回测逻辑以及数组的存储方式.
 
 现在的account只有如下几个变量:
@@ -92,7 +112,7 @@ QUANTAXIS>> Welcome to QUANTAXIS, the Version is 0.3.9-beta-dev20
 
 
 新版的quantaxis并不在回测框架中定义利润的计算以及其他的逻辑,这些在backtest_analysis中会涉及计算,当然也可以自己定义利润的计算方法
-#### 2.2 QA.QABacktest.Backtest_anlysis
+### 2.2 QA.QABacktest.Backtest_anlysis
 
 对于quantaxis_backtest_analysis进行了巨大的修改,现在的backtest_analysis的接口调用函数有了一定程度的修改.
 
@@ -100,9 +120,11 @@ QUANTAXIS>> Welcome to QUANTAXIS, the Version is 0.3.9-beta-dev20
 
 增加了可以自己选定组合的benchmark标的
 
+### 2.3 QA.QABacktest.QABacktest
 
+对于QABacktest进行了彻底的重构,重新写入了读取数据方法和函数句柄的接受方法,具体参见test/new test
 
-### 3. 重新定义回测流程,减少数据库IO压力
+## 重要性能优化  重新定义回测流程,减少数据库IO压力
 
 在新的回测框架中,大幅优化了数据的读取方式,通过大量的内存结构来进行数据缓存,之后的数据调用请求都通过内存中的数据接口来获得,这样大大减少了数据库IO
 
