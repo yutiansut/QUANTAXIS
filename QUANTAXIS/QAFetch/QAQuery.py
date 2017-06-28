@@ -50,7 +50,7 @@ def QA_fetch_stock_day(code, startDate, endDate, collections):
 
         for item in collections.find({
             'code': str(code)[0:6], "date_stamp": {
-                "$lte": QA_util_date_stamp(endDate), 
+                "$lte": QA_util_date_stamp(endDate),
                 "$gte": QA_util_date_stamp(startDate)}}):
             # print(item['code'])
 
@@ -119,3 +119,17 @@ def QA_fetch_index_day(code, startDate, endDate, collections):
         return data
     else:
         QA_util_log_info('something wrong with date')
+
+def QA_fetch_stock_min():
+    pass
+
+def QA_fetch_future_day():
+    pass
+
+
+def QA_fetch_future_min():
+    pass
+
+
+def QA_fetch_future_tick():
+    pass

@@ -21,7 +21,6 @@ class strategy:
         if hold == 0:
             __dat = random.random()
             if __dat > 0.5:
-                
                 return {'if_buy': 1, 'amount':'mean'}
             else:
                 return {'if_buy': 0,'amount': 'mean'}

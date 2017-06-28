@@ -28,15 +28,30 @@ import random
 
 from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info
 
-"""stock market trading engine"""
+"""stock market trading engine
+
+renew in 2017/6/28
+
+停止使用数据库的模式,隔离数据库和引擎,尽量使用函数句柄来替代
+
+"""
 
 
-def market_stock_day_engine(__bid, client, model=None):
+def market_stock_day_engine(__bid, fp=None):
     # data mod
-    __coll = client.quantaxis.stock_day
-    __data = __coll.find_one(
-        {"code": str(__bid['code'])[0:6], "date": str(__bid['date'])[0:10]})
+    # inside function
+    def __get_data(__bid):
+
+        __coll = QA_Setting.client.quantaxis.stock_day
+        __data = __coll.find_one(
+            {"code": str(__bid['code'])[0:6], "date": str(__bid['date'])[0:10]})
+        return __data
     # trade mod
+
+    if fp == None:
+        __data = __get_data(__bid)
+    else:
+        __data = fp(__bid)
 
     def __trading(__bid, __data):
         """
@@ -166,32 +181,23 @@ def market_stock_day_engine(__bid, client, model=None):
     return __trading(__bid, __data)
 
 
-def market_stock_min_engine(__bid, client, model=None):
+def market_stock_min_engine(__bid,fp=None):
     """
     time-delay stock trading engine
     """
     pass
 
 
-def market_future_day_engine(__bid, client, model=None):
+def market_future_day_engine(__bid, fp=None):
     """
     future market daily trading engine
     """
     pass
 
 
-def market_future_min_engine(__bid, client, model=None):
+def market_future_min_engine(__bid, fp=None):
     pass
 
 
-def market_future_tick_engine(__bid, client, model=None):
+def market_future_tick_engine(__bid,fp=None):
     pass
-
-
-def __select_engine_model(model, client):
-    if model == 'function':
-        return client
-    elif model == 'mongo' or model == None:
-        return client
-    else:
-        QA_util_log_info('unsupported market_engine')

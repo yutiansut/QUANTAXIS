@@ -26,6 +26,11 @@
 import datetime
 import random
 
+from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_future_day,
+                                       QA_fetch_future_min,
+                                       QA_fetch_future_tick,
+                                       QA_fetch_index_day, QA_fetch_stock_day,
+                                       QA_fetch_stock_min)
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
                               QA_util_sql_mongo_setting)
 
@@ -41,12 +46,13 @@ class QA_Market():
     # client=QA.QA_util_sql_mongo_setting()
     # db= client.market
     def __init__(self):
-        self.message = {}
+        self.engine = {'stock_day': QA_fetch_stock_day, 'stock_min': QA_fetch_stock_min,
+                       'future_day': QA_fetch_future_day, 'future_min': QA_fetch_future_min, 'future_tick': QA_fetch_future_tick}
 
     def _choice_trading_market(self, __bid, client):
-        assert isinstance(__bid['status'],str)
+        assert isinstance(__bid['status'], str)
         if __bid['status'] == '0x01':
-            return market_stock_day_engine(__bid, client)
+            return market_stock_day_engine(__bid, fp=None)
         elif __bid['status'] == '0x02':
             return market_stock_min_engine(__bid, client)
         elif __bid['status'] == '1x01':
@@ -68,8 +74,8 @@ class QA_Market():
                     return __bid
                 elif __bid['price'] == 'close_price':
                     return __bid
-                else :
-                    QA_util_log_info('unsupport type:'+__bid['price'])
+                else:
+                    QA_util_log_info('unsupport type:' + __bid['price'])
                     return __bid
             else:
                 return __bid

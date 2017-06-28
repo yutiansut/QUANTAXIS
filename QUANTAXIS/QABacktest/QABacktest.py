@@ -450,5 +450,5 @@ class QA_Backtest():
         return {'market': __market_data, 'account': __message}
 
 
-class QA_Backtest_simple(QA_Backtest):
+class QA_Backtest_min(QA_Backtest):
     pass

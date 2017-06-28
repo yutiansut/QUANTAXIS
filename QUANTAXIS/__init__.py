@@ -35,17 +35,17 @@ by yutiansut
 
 from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day, QA_fetch_get_trade_date,
                                QA_fetch_get_stock_indicator, QA_fetch_get_stock_realtime)
-from QUANTAXIS.QAFetch.QAQuery import QA_fetch_trade_date, QA_fetch_stock_day, QA_fetch_stocklist_day, QA_fetch_index_day
+from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_trade_date, QA_fetch_stock_day, QA_fetch_stocklist_day, QA_fetch_index_day,
+                                       QA_fetch_stock_min, QA_fetch_future_min, QA_fetch_future_day, QA_fetch_future_tick)
 from QUANTAXIS.QASpider import (QA_spider_select_spider, QA_spider_start_spider,
                                 QA_spider_end_spider)
-
 
 
 # save
 from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_day, QA_SU_save_stock_info,
                                  QA_SU_save_stock_day_init,  QA_SU_save_trade_date, QA_SU_update_stock_day)
 from QUANTAXIS.QASU.save_backtest import (
-    QA_SU_save_account_message, QA_SU_save_backtest_message,QA_SU_save_account_to_csv)
+    QA_SU_save_account_message, QA_SU_save_backtest_message, QA_SU_save_account_to_csv)
 from QUANTAXIS.QASU.save_tushare import (
     QA_save_stock_day_all, QA_SU_save_trade_date_all)
 
@@ -61,7 +61,7 @@ from QUANTAXIS.QAMarket import (QA_QAMarket_bid, QA_Market)
 
 from QUANTAXIS.QAARP import QA_Account, QA_Portfolio, QA_Risk
 # Backtest
-from QUANTAXIS.QABacktest.QABacktest import QA_Backtest, QA_Backtest_simple
+from QUANTAXIS.QABacktest.QABacktest import QA_Backtest, QA_Backtest_min
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
 
 # Util
@@ -82,9 +82,9 @@ import argparse
 QA_util_log_info('Welcome to QUANTAXIS, the Version is 0.3.9-beta-dev20')
 QA_util_log_info(' \n \
 `````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
- ``########`````##````````##``````````##`````````####````````##```##########```````##``````##``````###```##`````######`` \n \
- `##``````## ```##````````##`````````####````````##`##```````##```````##``````````###```````##````##`````##```##`````##` \n \
- ##````````##```##````````##````````##`##````````##``##``````##```````##`````````####````````#```##``````##```##``````## \n \
+ ``########`````##````````##``````````##`````````####````````##```##########````````#``````##``````###```##`````######`` \n \
+ `##``````## ```##````````##`````````####````````##`##```````##```````##```````````###``````##````##`````##```##`````##` \n \
+ ##````````##```##````````##````````##`##````````##``##``````##```````##``````````####```````#```##``````##```##``````## \n \
  ##````````##```##````````##```````##```##```````##```##`````##```````##`````````##`##```````##`##```````##````##``````` \n \
  ##````````##```##````````##``````##`````##``````##````##````##```````##````````##``###```````###````````##`````##`````` \n \
  ##````````##```##````````##``````##``````##`````##`````##```##```````##```````##````##```````###````````##``````###```` \n \
@@ -99,6 +99,7 @@ QA_util_log_info(' \n \
  ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
 ````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n ')
+
 
 def main():
     QA_cmd()

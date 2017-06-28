@@ -250,3 +250,9 @@ class QA_Account:
             'fee': __message['body']['fee'],
         })
         return __data
+
+
+
+
+class QA_Account_min(QA_Account):
+    pass
