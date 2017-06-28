@@ -26,6 +26,9 @@ import datetime
 import random
 import time
 
+from six.moves import queue
+
+
 """
 重新定义bid模式
 
@@ -51,23 +54,15 @@ class QA_QAMarket_bid():
             'order_id': str(random.random())
         }
 
-        self.bid_future_day = {
+        # 报价队列  插入/取出/查询
+        self.bid_queue = queue.Queue(maxsize=20)
 
-        }
-        self.bid_future_min = {
-
-        }
-        self.bid_future_tick = {}
-        self.bid_list = [self.bid]
-
-    # 报价队列  插入/取出/查询
-
-    def QA_bid_insert(self):
-        self.bid_list.append(self.bid)
+    def QA_bid_insert(self, __bid):
+        self.bid_queue.put(__bid)
 
     def QA_bid_pop(self):
-        self.bid_list.pop()
+        return self.bid_queue.get()
 
     def QA_bid_status(self):
-        lens = len(self.bid_list)
-        return {'status': lens} 
+        lens = len(self.bid_queue)
+        return {'status': lens}
