@@ -281,6 +281,8 @@ class QA_Backtest():
         QA_util_log_info('Stock_List: \n' +
                          tabulate([self.strategy_stock_list]))
         self.__QA_backtest_set_bid_model()
+
+        #self.bid.QA_bid_insert()
         self.handle_data(strategy_fp)
 
     def handle_data(self, strategy_fp):

@@ -24,6 +24,7 @@
 
 import datetime
 import random
+import threading
 import time
 
 from six.moves import queue
@@ -66,3 +67,20 @@ class QA_QAMarket_bid():
     def QA_bid_status(self):
         lens = len(self.bid_queue)
         return {'status': lens}
+
+
+class bid_server(QA_QAMarket_bid):
+
+    def dispath_center(self):
+        l=threading.Thread(target=self.do_job)
+        l.start()
+        l.join()
+    def do_job(self):
+
+
+        while self.bid_queue.empty():
+            print(self.bid_queue.queue)
+
+
+if __name__ == '__main__':
+    pass
