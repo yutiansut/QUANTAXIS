@@ -6,11 +6,42 @@ import random
 from tabulate import tabulate
 import pprint
 import datetime
-
+from QUANTAXIS.QAUtil import QA_util_log_info
 a = queue.Queue()
 
 
-def exec():
+class QA_Task_Thread(threading.Thread, queue.Queue):
+
+    def __init__(self, func, args, name=''):
+        threading.Thread.__init__(self)
+        queue.Queue().__init__(self)
+        self.name = name
+        self.func = func
+        self.args = args
+        self.queue=queue.Queue()
+        self.__start=True
+
+    def run(self):
+        exec(self.pop)
+
+    def insert(self,__task):
+        self.queue.put_nowait(__task)
+
+    def pop(self):
+        assert self.queue.empty()==False
+        return self.queue.get()
+
+    def register(self):
+        pass
+    def unregister(self):
+        pass
+    def close(self):
+        self.__start=False
+    def start(self):
+        assert self.__start==True
+        self.run()
+
+def engine():
     if a.empty():
         print('FROM ENGINE====all-been-finished')
 
@@ -28,10 +59,9 @@ def exec():
             time.sleep(0.02)
         print('FROM ENGINE====' + task + 'has been done!')
 
-        exec()
-        global l
-        l = threading.Timer(0.5, exec)
-        l.start()
+        engine()
+        time.sleep(0.5)
+        engine()
 
 
 def insert(a, msg):
@@ -40,9 +70,11 @@ def insert(a, msg):
     print(msg)
 
 
-l = threading.Timer(0.5, exec)
-l.start()
 ls = 0.1
+
+thread = []
+l1 = threading.Thread(target=engine, args=())
+thread.append(l1)
 for i in range(100):
     i = str(random.random())[3:6]
     t = ['bid', 'market', 'fetch-spider', 'update', 'backtest-id']
@@ -53,9 +85,16 @@ for i in range(100):
     ls = ls + 0.1
     time.sleep(ls)
     print('FROM EVENT====' + str(datetime.datetime.now()))
+    thread.append(l2)
     print(threading.enumerate())
+for i in thread:
+    i.start()
 
-l1 = threading.Thread(target=exec())
-l1.setDaemon(True)
-l1.start()
-l2.start()
+
+
+
+if __name__=='__main__':
+    l1.start()
+
+    l2.start()
+    l1.join()
