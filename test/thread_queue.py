@@ -4,7 +4,6 @@ from six.moves import queue
 import time
 
 
-
 """
 多线程的队列模式,vnpy里面说是事件驱动模型,其实本质还是一个生产者消费者模型,然后使用python的dict队列来分发函数
 
@@ -13,7 +12,6 @@ import time
 
 队列在不同线程上分别启动生产任务和消费任务,然后依据dict来分发不同函数句柄,实现这个所谓的事件驱动引擎
 """
-
 
 
 class worker(threading.Thread):

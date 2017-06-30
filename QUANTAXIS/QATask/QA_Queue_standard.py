@@ -103,23 +103,22 @@ if __name__ == '__main__':
     # QA_util_log_info(datetime.datetime.now())
     q.put(["Backtest-id=6012457", 1], block=False, timeout=None)  # 产生任务消息
 
-    
     QA_util_log_info(datetime.datetime.now())
     q.put(["Update-Stock-day-2017-06-30", 2], block=False, timeout=None)
-    #time.sleep(2)
+    # time.sleep(2)
    # QA_util_log_info(datetime.datetime.now())
     q.put(["Start the QASpider", 3], block=False, timeout=None)
-    #time.sleep(3)
-    #time.sleep(1)
+    # time.sleep(3)
+    # time.sleep(1)
     # QA_util_log_info(datetime.datetime.now())
     q.put(["Start the monitor", 4], block=False, timeout=None)
-    #time.sleep(4)
+    # time.sleep(4)
    # QA_util_log_info(datetime.datetime.now())
     q.put(["Backtest-id=80127839", 5], block=False, timeout=None)
-    #time.sleep(6)
+    # time.sleep(6)
     #QA_util_log_info("***************leader:wait for finish!")
     # q.join()  # 等待所有任务完成
-    
+
     QA_util_log_info("***************leader:all task finished!")
 
     QA_util_log_info('===now we will sleep 20 sec, and wait for the response')
