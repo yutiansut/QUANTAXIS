@@ -50,7 +50,7 @@ class QA_Queue(threading.Thread):
     def __QA_queue_distribute(self):
         pass
 
-    def __QA_queue_job_register(self, __job: dict):
+    def QA_queue_job_register(self, __job: dict):
         assert type(__job) == dict
         assert type(__job['type']) == str
         '首先对于任务进行类型判断,输入的job的类型一定是一个dict模式的,同时需要含有一个type的K-V对'
@@ -72,9 +72,9 @@ class QA_Queue(threading.Thread):
 
             try: 
                 task = self.__QA_queue_pop()  # 接收消息
-
-                print(task)
-                QA_util_log_info(datetime.datetime.now())
+                assert isinstance(task,dict)
+                eval(task['fn'])
+                QA_util_log_info('From Engine==='+str(datetime.datetime.now()))
                 # QA_util_log_info(self.__QA_queue_status())
 
             except:
@@ -98,20 +98,20 @@ if __name__ == '__main__':
     worker = QA_Queue(q)
     worker.start()
     # QA_util_log_info(datetime.datetime.now())
-    q.put(["Backtest-id=6012457", 1], block=False, timeout=None)  # 产生任务消息
+    #q.put(["Backtest-id=6012457", 1], block=False, timeout=None)  # 产生任务消息
 
-    QA_util_log_info(datetime.datetime.now())
-    q.put(["Update-Stock-day-2017-06-30", 2], block=False, timeout=None)
+    #QA_util_log_info(datetime.datetime.now())
+    q.put({'type':'1x00','subtype':'1x01','fn':print('aa')}, block=False, timeout=None)
     # time.sleep(2)
    # QA_util_log_info(datetime.datetime.now())
-    q.put(["Start the QASpider", 3], block=False, timeout=None)
+    #q.put(["Start the QASpider", 3], block=False, timeout=None)
     # time.sleep(3)
     # time.sleep(1)
     # QA_util_log_info(datetime.datetime.now())
-    q.put(["Start the monitor", 4], block=False, timeout=None)
+    #q.put(["Start the monitor", 4], block=False, timeout=None)
     # time.sleep(4)
    # QA_util_log_info(datetime.datetime.now())
-    q.put(["Backtest-id=80127839", 5], block=False, timeout=None)
+    #q.put(["Backtest-id=80127839", 5], block=False, timeout=None)
     # time.sleep(6)
     #QA_util_log_info("***************leader:wait for finish!")
     # q.join()  # 等待所有任务完成
@@ -121,9 +121,9 @@ if __name__ == '__main__':
     QA_util_log_info('===now we will sleep 20 sec, and wait for the response')
     time.sleep(20)
     QA_util_log_info(datetime.datetime.now())
-    q.put(["produce one bag!", 5], block=True, timeout=None)
+    q.put({'type':'1x00','subtype':'1x01','fn':print('vv')}, block=False, timeout=None)
     QA_util_log_info(datetime.datetime.now())
 
-    time.sleep(20)
-    QA_util_log_info(datetime.datetime.now())
-    q.put(["produce one apple!", 3], block=True, timeout=None)
+    #time.sleep(20)
+    #QA_util_log_info(datetime.datetime.now())
+    #q.put(["produce one apple!", 3], block=True, timeout=None)
