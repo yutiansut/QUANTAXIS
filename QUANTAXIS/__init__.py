@@ -64,6 +64,9 @@ from QUANTAXIS.QAARP import QA_Account, QA_Portfolio, QA_Risk
 from QUANTAXIS.QABacktest.QABacktest import QA_Backtest, QA_Backtest_min
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
 
+# task
+from QUANTAXIS.QATask import QA_Queue
+
 # Util
 from QUANTAXIS.QAUtil.QAType import (
     QA_util_ensure_date, QA_util_ensure_dict, QA_util_ensure_ms, QA_util_ensure_timeSerires)
