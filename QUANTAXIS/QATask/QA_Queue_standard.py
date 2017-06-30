@@ -23,6 +23,7 @@
 import threading
 from threading import Thread
 from six.moves import queue
+from QUANTAXIS.QASignal.QA_Event import event_engine,event_type,event_proto
 """
 标准化的QUANATAXIS队列,可以快速引入和复用
 """
@@ -37,8 +38,13 @@ class QA_Queue(threading.Thread):
         self.__type:dict
     def __QA_queue_distribute(self):
         pass
-    def __QA_queue_job_register(self):
-        pass
+    def __QA_queue_job_register(self,__job:dict):
+        assert type(__job)==dict
+        assert type(__job['type'])==str
+
+        '首先对于任务进行类型判断,输入的job的类型一定是一个dict模式的,同时需要含有一个type的K-V对'
+        
+
     def __QA_queue_put(self,args):
         return self.queue.put()
 
@@ -69,3 +75,17 @@ class QA_Queue(threading.Thread):
     def stop(self):
         self.thread_stop = True
 
+
+
+if __name__=='__main__':
+    q = queue.Queue()
+    worker = worker(q)
+    worker.start()
+    q.put(["produce one cup!", 1], block=True, timeout=None)  # 产生任务消息
+    q.put(["produce one desk!", 2], block=True, timeout=None)
+    q.put(["produce one apple!", 3], block=True, timeout=None)
+    q.put(["produce one banana!", 4], block=True, timeout=None)
+    q.put(["produce one bag!", 5], block=True, timeout=None)
+    print("***************leader:wait for finish!")
+    q.join()  # 等待所有任务完成
+    print("***************leader:all task finished!")
