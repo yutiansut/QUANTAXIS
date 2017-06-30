@@ -69,6 +69,7 @@ class QA_Queue(threading.Thread):
             QA_util_log_info("thread%d %s: waiting for task" %
                              (self.ident, self.name))
             '这是一个阻塞的队列,避免出现消息的遗漏'
+            
             if self.__QA_queue_status() > 0:
                 task = self.__QA_queue_pop()  # 接收消息
 
