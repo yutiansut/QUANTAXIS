@@ -70,14 +70,14 @@ class QA_Queue(threading.Thread):
                             # (self.ident, self.name))
             '这是一个阻塞的队列,避免出现消息的遗漏'
 
-            if self.queue.qsize() > 0:
+            try: 
                 task = self.__QA_queue_pop()  # 接收消息
 
                 print(task)
                 QA_util_log_info(datetime.datetime.now())
                 # QA_util_log_info(self.__QA_queue_status())
 
-            else:
+            except:
                 QA_util_log_info("Task has been finished!")
                 self.thread_stop = True
                 break
