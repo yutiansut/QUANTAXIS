@@ -66,11 +66,11 @@ class QA_Queue(threading.Thread):
 
     def run(self):
         while not self.thread_stop:
-            QA_util_log_info("thread%d %s: waiting for task" %
-                             (self.ident, self.name))
+            #QA_util_log_info("thread%d %s: waiting for task" %
+                            # (self.ident, self.name))
             '这是一个阻塞的队列,避免出现消息的遗漏'
-            
-            if self.__QA_queue_status() > 0:
+
+            if self.queue.qsize() > 0:
                 task = self.__QA_queue_pop()  # 接收消息
 
                 print(task)
@@ -81,10 +81,6 @@ class QA_Queue(threading.Thread):
                 QA_util_log_info("Task has been finished!")
                 self.thread_stop = True
                 break
-            QA_util_log_info(datetime.datetime.now())
-            QA_util_log_info("task recv:%s ,task No:%d" % (task[0], task[1]))
-
-            QA_util_log_info("work finished!")
             self.queue.task_done()  # 完成一个任务
             res = self.__QA_queue_status()  # 判断消息队列大小
             if res > 0:
