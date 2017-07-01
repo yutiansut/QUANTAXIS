@@ -27,7 +27,7 @@ import threading
 import time
 from threading import Thread
 
-from QUANTAXIS.QASignal.QA_Event import event_engine, event_proto, event_type
+
 from QUANTAXIS.QAUtil import (QA_util_log_debug, QA_util_log_expection,
                               QA_util_log_info)
 from six.moves import queue
@@ -51,9 +51,10 @@ class QA_Queue(threading.Thread):
         pass
 
     def QA_queue_job_register(self, __job: dict):
+        '首先对于任务进行类型判断,输入的job的类型一定是一个dict模式的,同时需要含有一个type的K-V对'
         assert type(__job) == dict
         assert type(__job['type']) == str
-        '首先对于任务进行类型判断,输入的job的类型一定是一个dict模式的,同时需要含有一个type的K-V对'
+        
 
     def __QA_queue_put(self, args):
         return self.queue.put()
@@ -97,24 +98,8 @@ if __name__ == '__main__':
     q = queue.Queue()
     worker = QA_Queue(q)
     worker.start()
-    # QA_util_log_info(datetime.datetime.now())
-    #q.put(["Backtest-id=6012457", 1], block=False, timeout=None)  # 产生任务消息
 
-    #QA_util_log_info(datetime.datetime.now())
     q.put({'type':'1x00','subtype':'1x01','fn':print('aa')}, block=False, timeout=None)
-    # time.sleep(2)
-   # QA_util_log_info(datetime.datetime.now())
-    #q.put(["Start the QASpider", 3], block=False, timeout=None)
-    # time.sleep(3)
-    # time.sleep(1)
-    # QA_util_log_info(datetime.datetime.now())
-    #q.put(["Start the monitor", 4], block=False, timeout=None)
-    # time.sleep(4)
-   # QA_util_log_info(datetime.datetime.now())
-    #q.put(["Backtest-id=80127839", 5], block=False, timeout=None)
-    # time.sleep(6)
-    #QA_util_log_info("***************leader:wait for finish!")
-    # q.join()  # 等待所有任务完成
 
     QA_util_log_info("***************leader:all task finished!")
 
@@ -123,7 +108,3 @@ if __name__ == '__main__':
     QA_util_log_info(datetime.datetime.now())
     q.put({'type':'1x00','subtype':'1x01','fn':print('vv')}, block=False, timeout=None)
     QA_util_log_info(datetime.datetime.now())
-
-    #time.sleep(20)
-    #QA_util_log_info(datetime.datetime.now())
-    #q.put(["produce one apple!", 3], block=True, timeout=None)
