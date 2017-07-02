@@ -67,8 +67,6 @@ class QA_Queue(threading.Thread):
 
     def run(self):
         while not self.thread_stop:
-            #QA_util_log_info("thread%d %s: waiting for task" %
-                            # (self.ident, self.name))
             '这是一个阻塞的队列,避免出现消息的遗漏'
 
             try: 
@@ -76,7 +74,6 @@ class QA_Queue(threading.Thread):
                 assert isinstance(task,dict)
                 eval(task['fn'])
                 QA_util_log_info('From Engine==='+str(datetime.datetime.now()))
-                # QA_util_log_info(self.__QA_queue_status())
 
             except:
                 QA_util_log_info("Task has been finished!")
@@ -98,11 +95,8 @@ if __name__ == '__main__':
     q = queue.Queue()
     worker = QA_Queue(q)
     worker.start()
-
     q.put({'type':'1x00','subtype':'1x01','fn':print('aa')}, block=False, timeout=None)
-
     QA_util_log_info("***************leader:all task finished!")
-
     QA_util_log_info('===now we will sleep 20 sec, and wait for the response')
     time.sleep(20)
     QA_util_log_info(datetime.datetime.now())

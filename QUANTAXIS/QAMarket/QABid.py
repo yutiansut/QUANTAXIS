@@ -28,6 +28,7 @@ import threading
 import time
 
 from six.moves import queue
+from QUANTAXIS.QATask import QA_Queue
 
 
 """
@@ -69,14 +70,14 @@ class QA_QAMarket_bid():
         return {'status': lens}
 
 
-class bid_server(QA_QAMarket_bid):
+class bid_server(QA_Queue):
+    def __init__(self, queue):
+        super().__init__()
+        self.queue = queue
 
-    def dispath_center(self):
-        l=threading.Thread(target=self.do_job)
-        l.start()
-        l.join()
-    def do_job(self):
-
+    def select_market(self,bid):
+        pass
+    def push_bid(self):
 
         while self.bid_queue.empty():
             print(self.bid_queue.queue)

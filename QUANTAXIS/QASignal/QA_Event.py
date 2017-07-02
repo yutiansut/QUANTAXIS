@@ -11,7 +11,7 @@ from six.moves import queue
 from QUANTAXIS.QAUtil import QA_util_log_info
 
 
-class event_type():
+class QA_event_type():
     QA_Bid = '1x00'
     QA_Market = '2x00'
     QA_Fetch = '3x00'
@@ -96,34 +96,3 @@ class QA_Market_event():
         pass
 
 
-class event_proto:
-    """
-    a least-feature-event_msg should only have type message and args, where we can give the function to them
-    """
-
-    def __init__(self,
-                 __type_: str,
-                 __sub_type: str,
-                 __args: list,
-                 __fn: str):
-        
-        pass
-
-    def repackage(self, event):
-        pass
-
-
-class event_engine():
-    def __init__(self):
-        self.__queue = queue.Queue()
-        self.thread = threading.Thread()
-        self.timer = threading.Timer
-
-    def __insert(self, __event):
-
-        self.__queue.put_nowait(__event)
-
-    def __exec(self):
-        while self.__queue.empty():
-            __exec_event = self.__queue.get_nowait()
-            eval(__exec_event['fn'])(__exec_event['args'])

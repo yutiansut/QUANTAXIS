@@ -23,6 +23,8 @@
 
 from zmq import zmq
 from celery import Celery
-"""
+from socket import *
 
+"""
+拓展用的事件方法
 """
