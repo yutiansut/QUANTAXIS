@@ -20,7 +20,36 @@
 ```
 最新版本 :0.3.9
 
-最后修改日期: 2017-07-03
+<!-- TOC -->
+
+- [升级日志](#升级日志)
+    - [新的功能:](#新的功能)
+        - [1.1 组合回测支持](#11-组合回测支持)
+        - [1.2 多种交易状态支持](#12-多种交易状态支持)
+        - [1.3 实盘交易的支持](#13-实盘交易的支持)
+        - [1.4 更加方便的数据更新接口](#14-更加方便的数据更新接口)
+        - [1.5 手续费/滑点](#15-手续费滑点)
+        - [1.6 QUANTAXIS-Log 优化](#16-quantaxis-log-优化)
+        - [1.7 重构了回测流程,简化回测设置步骤](#17-重构了回测流程简化回测设置步骤)
+        - [1.8 对于QACMD进行改进](#18-对于qacmd进行改进)
+        - [1.9 新增QADataStruct模块](#19-新增qadatastruct模块)
+        - [1.10 对于backtest的一个bug修改:](#110-对于backtest的一个bug修改)
+        - [1.11 对于SU中心的修改](#111-对于su中心的修改)
+        - [1.12 增加了界面的logo以及log的logo](#112-增加了界面的logo以及log的logo)
+        - [1.13 增加一个标准化的QUANTAXIS事件队列(0.3.9)](#113-增加一个标准化的quantaxis事件队列039)
+        - [1.14 增加了两个时间选择的api(0.3.9)](#114-增加了两个时间选择的api039)
+        - [1.15 增加了一个事件订阅的方式QA.QA_Event(0.3.9):](#115-增加了一个事件订阅的方式qaqa_event039)
+        - [1.16 修改了CLI中的创建example内容(0.3.9):](#116-修改了cli中的创建example内容039)
+    - [巨大改动/重构](#巨大改动重构)
+        - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
+        - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
+        - [2.3 QA.QABacktest.QABacktest](#23-qaqabacktestqabacktest)
+        - [2.4 QA.QA_Queue](#24-qaqa_queue)
+    - [重要性能优化  重新定义回测流程,减少数据库IO压力](#重要性能优化--重新定义回测流程减少数据库io压力)
+    - [废弃的接口](#废弃的接口)
+    - [to do list](#to-do-list)
+
+<!-- /TOC -->
 
 作者: yutiansut
 
