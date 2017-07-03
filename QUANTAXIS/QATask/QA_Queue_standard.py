@@ -1,4 +1,5 @@
-#
+#coding:utf-8
+
 # The MIT License (MIT)
 #
 # Copyright (c) 2016-2017 yutiansut/QUANTAXIS
@@ -35,7 +36,6 @@ from six.moves import queue
 
 """
 标准化的QUANATAXIS事件分发,可以快速引入和复用
-
 每个事件需要携带一个方法,并且是需要立即被执行的时间才能使用这个事件方法
 """
 
