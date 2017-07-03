@@ -1,4 +1,4 @@
-#coding:utf-8
+# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -22,14 +22,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from QUANTAXIS.QAUtil.QADate import QA_util_date_valid
+
+
 def QA_util_ensure_timeSerires(data):
     pass
 
 
 def QA_util_ensure_dict(data):
     pass
+
+
 def QA_util_ensure_date(data):
-    
+
     return QA_util_date_valid(data)
+
+
 def QA_util_ensure_ms(data):
     pass

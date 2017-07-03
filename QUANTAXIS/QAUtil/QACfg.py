@@ -3,7 +3,6 @@ import sys
 
 from configparser import ConfigParser
 
-
 def QA_util_cfg_initial(CONFIG_FILE):
 
     pass

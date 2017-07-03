@@ -38,10 +38,12 @@ import time
 from zenlog import log, logging
 
 logging.basicConfig(level=logging.DEBUG,
-                format='%(asctime)s QUANTAXIS>>> %(message)s',
-                datefmt='%H:%M:%S',
-                filename='quantaxis-'+str(datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S'))+'-.log',
-                filemode='w')
+                    format='%(asctime)s QUANTAXIS>>> %(message)s',
+                    datefmt='%H:%M:%S',
+                    filename='quantaxis-' +
+                    str(datetime.datetime.now().strftime(
+                        '%Y-%m-%d-%H-%M-%S')) + '-.log',
+                    filemode='w')
 console = logging.StreamHandler()
 console.setLevel(logging.INFO)
 formatter = logging.Formatter('QUANTAXIS>> %(message)s')
@@ -51,6 +53,7 @@ logging.getLogger('').addHandler(console)
 
 logging.info('start QUANTAXIS')
 
+
 def QA_util_log_debug(logs):
     """
     QUANTAXIS Log Module
@@ -59,6 +62,8 @@ def QA_util_log_debug(logs):
     QA_util_log_x is under [QAStandard#0.0.2@602-x] Protocol
     """
     logging.debug(logs)
+
+
 def QA_util_log_info(logs):
     """
     QUANTAXIS Log Module
@@ -67,6 +72,8 @@ def QA_util_log_info(logs):
     QA_util_log_x is under [QAStandard#0.0.2@602-x] Protocol
     """
     logging.info(logs)
+
+
 def QA_util_log_expection(logs):
     """
     QUANTAXIS Log Module
