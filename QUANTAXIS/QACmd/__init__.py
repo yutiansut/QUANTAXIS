@@ -33,7 +33,6 @@ import sys
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting
 
-from . import strategy_sample_simple
 
 
 class CLI(cmd.Cmd):
@@ -43,7 +42,7 @@ class CLI(cmd.Cmd):
         self.prompt = 'QUANTAXIS> '    # 定义命令行提示符
 
     def do_version(self, arg):
-        QA_util_log_info('QUANTAXIS Version 0.3.9-beta2-dev27')
+        QA_util_log_info('QUANTAXIS Version 0.3.9-beta2-dev30')
 
     def help_version(self):
         print("syntax: version [message]",)
@@ -53,10 +52,43 @@ class CLI(cmd.Cmd):
         QA_util_log_info('QUANTAXIS example')
         now_path = os.getcwd()
         project_dir = os.path.dirname(os.path.abspath(__file__))
-        file_dir = project_dir + '\strategy_sample_simple.py'
+        #file_dir = project_dir + '\\backtest_setting.ini'
+        # print(now_path)
+        # print(file_dir)
+        #shutil.copy(file_dir, now_path)
+        file_dir = project_dir + '\\backtest.py'
         # print(now_path)
         # print(file_dir)
         shutil.copy(file_dir, now_path)
+
+        import configparser
+        config = configparser.ConfigParser()
+        # set a number of parameters
+
+        config.add_section("backtest")
+        config.set("backtest", "strategy_start_date", "2017-01-01")
+        config.set("backtest", "strategy_end_date", "2017-06-15")
+        config.set("backtest", "strategy_gap", "6")
+        config.set("backtest", "database_ip", "127.0.0.1")
+        config.set("backtest", "username", "admin")
+        config.set("backtest", "password", "admin")
+        config.set("backtest", "strategy_name", "test_strategy")
+        config.set("backtest", "benchmark_code", "hs300")
+        config.set("backtest", "database_ip", "127.0.0.1")
+        config.set("backtest", "database_ip", "127.0.0.1")
+        config.add_section("account")
+        config.set("account", "account_assets", "2500000")
+        config.set("account", "stock_list", "file:csv:local")
+        config.add_section("bid")
+        config.set("bid", "bid_model",'market_price')
+        config.add_section("strategy")
+        config.set("strategy", "file_path",'file:py:local')
+
+        
+        # write to file
+        config.write(open('backtest.ini', "w"))
+
+
         QA_util_log_info(
             'successfully generate a example strategy in' + now_path)
 
