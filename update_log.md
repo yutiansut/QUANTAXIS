@@ -163,10 +163,15 @@ qa.put({'type':'xxx','fn':'func'})
 ### 1.14 增加了两个时间选择的api:
 2017/7/3
 
-QUANTAXIS.QAUtil.QADate.QA_select_hours
-QUANTAXIS.QAUtil.QADate.QA_select_min
+- QUANTAXIS.QAUtil.QADate.QA_select_hours
 
+- QUANTAXIS.QAUtil.QADate.QA_select_min
 
+引入方式
+
+```python
+from QUANTAXIS.QAUtil import QA_select_hours,QA_select_min
+```
 
 ## 巨大改动/重构
 
