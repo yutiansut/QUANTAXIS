@@ -21,22 +21,37 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-""""
-yutiansut
-util tool
-"""
 
 
-from .QADate import(QA_util_date_stamp, QA_util_time_stamp, QA_util_ms_stamp, QA_util_date_valid,
-                    QA_util_realtime, QA_util_id2date, QA_util_is_trade, QA_util_get_date_index,
-                    QA_util_get_index_date, QA_util_get_real_date, QA_util_select_hours,
-                    QA_util_select_min)
-from .QASql import (QA_util_sql_mongo_setting)
-from .QALogs import (
-    QA_util_log_debug, QA_util_log_expection, QA_util_log_info)
-from .QACfg import (QA_util_cfg_initial, QA_util_get_cfg)
-from .QASetting import QA_Setting
+import datetime
+import os
+import sched
+import time
+from threading import Timer
+
+from QUANTAXIS.QAUtil import (QA_util_log_debug, QA_util_log_expection,
+                              QA_util_log_info)
+
+from .QA_Queue_standard import QA_Queue
 
 
-def QA_start_initial(files):
-    pass
+schedule = sched.scheduler(time.time, time.sleep)
+
+
+# 被周期性调度触发的函数
+def __execute_command(cmd, inc):
+    '终端上显示当前计算机的连接情况 '
+    os.system(cmd)
+    schedule.enter(inc, 0, __execute_command, (cmd, inc))
+
+
+def QA_schedule(cmd, inc=60):
+    # enter四个参数分别为：间隔事件、优先级（用于同时间到达的两个事件同时执行时定序）、被调用触发的函数，
+    # 给该触发函数的参数（tuple形式）
+    schedule.enter(0, 0, __execute_command, (cmd, inc))
+    schedule.run()
+
+
+# 每60秒查看下网络连接情况
+if __name__ == '__main__':
+    QA_schedule("netstat -an", 60)

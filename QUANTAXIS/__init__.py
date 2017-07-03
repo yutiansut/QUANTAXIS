@@ -70,10 +70,13 @@ from QUANTAXIS.QATask import QA_Queue
 # Util
 from QUANTAXIS.QAUtil.QAType import (
     QA_util_ensure_date, QA_util_ensure_dict, QA_util_ensure_ms, QA_util_ensure_timeSerires)
-from QUANTAXIS.QAUtil import (QA_util_sql_mongo_setting, QA_util_cfg_initial, QA_util_realtime, QA_util_id2date, QA_util_is_trade,
+from QUANTAXIS.QAUtil import (QA_util_sql_mongo_setting, QA_util_cfg_initial, QA_util_realtime,
+                              QA_util_id2date, QA_util_is_trade,
                               QA_util_date_stamp, QA_util_time_stamp, QA_util_ms_stamp,
                               QA_util_log_debug, QA_util_log_expection, QA_util_log_info,
-                              QA_start_initial, QA_Setting, QA_util_get_date_index, QA_util_get_index_date, QA_util_get_real_date)
+                              QA_start_initial, QA_Setting, QA_util_get_date_index,
+                              QA_util_get_index_date, QA_util_get_real_date, QA_util_select_hours,
+                              QA_util_select_min)
 
 from QUANTAXIS.QAIndicator import *
 from QUANTAXIS.QASQL import qasql, qacold
@@ -82,7 +85,7 @@ import QUANTAXIS.QACmd
 
 from QUANTAXIS.QACmd import QA_cmd
 import argparse
-QA_util_log_info('Welcome to QUANTAXIS, the Version is 0.3.9-beta-dev25')
+QA_util_log_info('Welcome to QUANTAXIS, the Version is 0.3.9-beta-dev26')
 QA_util_log_info(' \n \
 `````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
  ``########`````##````````##``````````##`````````####````````##```##########````````#``````##``````###```##`````######`` \n \
@@ -108,5 +111,5 @@ def main():
     QA_cmd()
 
 
-if __name__=='__main__':
-    __version__=' 0.3.9-beta-dev22'
+if __name__ == '__main__':
+    __version__ = ' 0.3.9-beta-dev22'

@@ -131,6 +131,43 @@ datastruct将在未来对于不同的场景下的数据进行重构和规范化�
 ![Markdown](http://i2.kiimg.com/1949/4123de6743af4810.png)
 ![Markdown](http://i2.kiimg.com/1949/ce8c3ee69f64976e.png)
 
+### 1.13 增加一个标准化的QUANTAXIS事件队列
+2017/6/30-2017/7/2
+
+引入方式:
+```python
+from QUANTAXIS import QA_Queue
+```
+
+使用方式:
+
+首先需要引入一个标准化的队列:
+
+``` python
+from six.moves import queue
+import queue # python3
+import Queue # python2 
+
+qa=queue.Queue()# 你可以自定义队列的大小
+#启动一个事件队列:
+qa_event=QA_Queue(qa)
+# 往事件引擎里发事件,需要有函数
+"""
+标准的事件是:
+{'type':'xxx','fn':'func'}
+"""
+qa.put({'type':'xxx','fn':'func'})
+
+事件引擎会默认一直监听这个队列
+```
+### 1.14 增加了两个时间选择的api:
+2017/7/3
+
+QUANTAXIS.QAUtil.QADate.QA_select_hours
+QUANTAXIS.QAUtil.QADate.QA_select_min
+
+
+
 ## 巨大改动/重构
 
 ### 2.1 QA.QAARP.QAAccount
