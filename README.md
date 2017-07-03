@@ -78,7 +78,7 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.7
 ```shell
 git clone https://github.com/yutiansut/quantaxis
 cd quantaxis 
-(sudo) python setup.py install
+(sudo) pip install . # 一定要用这种方法,python setup.py install方法无法解压
 python easy/easy_start_tushare.py(会存全市场的数据,较慢)
 python test/new test/strategy.py(一个简单的策略)
 ```
