@@ -213,7 +213,7 @@ from QUANTAXIS.QAUtil import QA_select_hours,QA_select_min
 同时,通过对于Account账户的修改,大幅优化了回测数据的存储方式,以及存储的的模式,大大减少了回测数据存储的数量
 
 
-## 废弃的代码
+## 废弃的接口
 
 
 ## to do list
