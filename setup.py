@@ -47,7 +47,7 @@ AUTHOR_EMAIL = "yutiansut@qq.com"
 
 URL = "http://www.yutiansut.com"
 
-VERSION = "0.3.9b2.dev30"
+VERSION = "0.3.9b2.dev34"
 
 
 LICENSE = "MIT"
@@ -69,7 +69,7 @@ setup(
                       'docopt>=0.6.2', 'zenlog>=1.1', 'delegator.py>=0.0.12'],
     entry_points={
         'console_scripts': [
-            'quantaxis=QUANTAXIS:main'
+            'quantaxis=QUANTAXIS.QACmd:QA_cmd'
         ]
     },
     keywords=KEYWORDS,

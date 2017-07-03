@@ -21,6 +21,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import QUANTAXIS 
+from QUANTAXIS.QACmd import QA_cmd
 
-QUANTAXIS.main()
+
+if __name__=='__main__':
+    QA_cmd()
+
