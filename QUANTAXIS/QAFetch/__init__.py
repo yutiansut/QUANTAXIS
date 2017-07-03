@@ -20,7 +20,7 @@
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
+# SOFTWARE. 
 
 """
 QA fetch module
@@ -36,7 +36,7 @@ from . import QATushare as QATushare
 from .QAQuery import QA_fetch_stock_day,QA_fetch_stocklist_day,QA_fetch_index_day
 #import QAFetch.QAGmsdk as QAGmsdk
 #import QAFetch.QACrawlData as QACD
-import pymongo
+
 
 #from WindPy import w
 #w.start()
@@ -69,13 +69,4 @@ def QA_fetch_get_trade_date(package,endDate,exchange):
     return Engine.QA_fetch_get_trade_date(endDate,exchange)
 
 
-def QA_fetch_save_stock_day(package,startDate,endDate):
-    Engine=use(package)
-    client=pymongo.MongoClient()
-    db=client.quantaxis
-    collSelect=db.dates
-    coll=db.stock_day
-    for item in collSelect.find({"exchange":'SSE'}):
-        name=item['varietyName']
-        Engine.QA_fetch_get_stock_day(name,'2000-01-01','2017-04-01')
 
