@@ -39,6 +39,10 @@ from six.moves import queue
 每个事件需要携带一个方法,并且是需要立即被执行的时间才能使用这个事件方法
 """
 
+def now_time(func):
+    QA_util_log_info('From Engine==='+str(datetime.datetime.now()))
+    QA_util_log_info('FROM QUANTAXIS SYS== now running '+str(len(threading.enumerate()))+' threads')
+    func
 
 class QA_Queue(threading.Thread):
     '这个是一个能够复用的多功能生产者消费者模型'
@@ -60,31 +64,37 @@ class QA_Queue(threading.Thread):
 
     def __QA_queue_put(self, args):
         return self.queue.put()
-
+        
+    @now_time
     def __QA_queue_pop(self, block=True, timeout=20):
+
         return self.queue.get()
 
     def __QA_queue_status(self):
         return self.queue.qsize()
 
+    
     def run(self):
         while not self.thread_stop:
             '这是一个阻塞的队列,避免出现消息的遗漏'
 
             try: 
-                task = self.__QA_queue_pop()  # 接收消息
-                assert isinstance(task,dict)
-                eval(task['fn'])
-                QA_util_log_info('From Engine==='+str(datetime.datetime.now()))
+                if self.queue.empty() is False:
+                    task = self.__QA_queue_pop()  # 接收消息
+                    assert isinstance(task,dict)
+                    eval(task['fn'])
+                else:
+                    QA_util_log_info("From Engine %s"%str(threading.current_thread())+"Task has been finished! " )
+                    QA_util_log_info("From Engine %s"%str(threading.current_thread())+"Engine will waiting for new task ...")
 
             except:
-                QA_util_log_info("Task has been finished!")
-                self.thread_stop = True
+                QA_util_log_info("From Engine %s"%str(threading.current_thread())+"Task has been finished!")
+                #self.thread_stop = True
                 break
             self.queue.task_done()  # 完成一个任务
             res = self.__QA_queue_status()  # 判断消息队列大小
             if res > 0:
-                QA_util_log_info("There are still %d tasks to do" % (res))
+                QA_util_log_info("From Engine %s: There are still %d tasks to do" % (str(threading.current_thread()),res))
 
     def stop(self):
         self.thread_stop = True
@@ -98,9 +108,8 @@ if __name__ == '__main__':
     worker = QA_Queue(q)
     worker.start()
     q.put({'type':'1x00','subtype':'1x01','fn':print('aa')}, block=False, timeout=None)
-    QA_util_log_info("***************leader:all task finished!")
     QA_util_log_info('===now we will sleep 20 sec, and wait for the response')
-    time.sleep(20)
     QA_util_log_info(datetime.datetime.now())
+    time.sleep(20)
     q.put({'type':'1x00','subtype':'1x01','fn':print('vv')}, block=False, timeout=None)
     QA_util_log_info(datetime.datetime.now())
