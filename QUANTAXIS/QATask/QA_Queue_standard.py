@@ -40,7 +40,7 @@ from six.moves import queue
 """
 
 def now_time(func):
-    QA_util_log_info('From Engine==='+str(datetime.datetime.now()))
+    QA_util_log_info("From Engine %s"%str(threading.current_thread())+str(datetime.datetime.now()))
     QA_util_log_info('FROM QUANTAXIS SYS== now running '+str(len(threading.enumerate()))+' threads')
     func
 
