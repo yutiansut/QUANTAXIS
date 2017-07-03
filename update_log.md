@@ -173,6 +173,56 @@ qa.put({'type':'xxx','fn':'func'})
 from QUANTAXIS.QAUtil import QA_select_hours,QA_select_min
 ```
 
+### 1.15 增加了一个事件订阅的方式QA.QA_Event(0.3.9):
+2017/7/3
+```python
+
+from QUANTAXIS.QATask import QA_Event
+
+class MyEvent(QA_Event):
+    ASK = "askMyEvent"
+    RESPOND = "respondMyEvent"
+
+class WhoAsk(object):
+    def __init__(self, event_dispatcher):
+        self.event_dispatcher = event_dispatcher
+        self.event_dispatcher.add_event_listener(
+            MyEvent.RESPOND, self.on_answer_event
+        )
+
+    def ask(self):
+        print("who are listener to me?")
+        self.event_dispatcher.dispatch_event(MyEvent(MyEvent.ASK, self))
+
+    def on_answer_event(self, event):
+        print("receive event %s", event.data)
+
+class WhoRespond(object):
+    def __init__(self, event_dispatcher):
+        self.event_dispatcher = event_dispatcher
+        self.event_dispatcher.add_event_listener(
+            MyEvent.ASK, self.on_ask_event)
+
+    def on_ask_event(self, event):
+        self.event_dispatcher.dispatch_event(
+            MyEvent(MyEvent.RESPOND, self))
+
+dispatcher = QA_EventDispatcher()
+who_ask = WhoAsk(dispatcher)
+who_responde1 = WhoRespond(dispatcher)
+who_responde2 = WhoRespond(dispatcher)
+
+# WhoAsk ask
+who_ask.ask()
+```
+
+result:
+```shell
+who are listener to me?
+receive event %s <__main__.WhoRespond object at 0x02361D50>
+receive event %s <__main__.WhoRespond object at 0x02361DB0>
+```
+
 ## 巨大改动/重构
 
 ### 2.1 QA.QAARP.QAAccount

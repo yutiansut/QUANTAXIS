@@ -65,7 +65,7 @@ from QUANTAXIS.QABacktest.QABacktest import QA_Backtest, QA_Backtest_min
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
 
 # task
-from QUANTAXIS.QATask import QA_Queue
+from QUANTAXIS.QATask import QA_Queue,QA_Event
 
 # Util
 from QUANTAXIS.QAUtil.QAType import (
@@ -85,7 +85,7 @@ import QUANTAXIS.QACmd
 
 from QUANTAXIS.QACmd import QA_cmd
 import argparse
-QA_util_log_info('Welcome to QUANTAXIS, the Version is 0.3.9-beta-dev26')
+QA_util_log_info('Welcome to QUANTAXIS, the Version is 0.3.9-beta-dev27')
 QA_util_log_info(' \n \
 `````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
  ``########`````##````````##``````````##`````````####````````##```##########````````#``````##``````###```##`````######`` \n \

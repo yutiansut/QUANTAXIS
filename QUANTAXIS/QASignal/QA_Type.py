@@ -34,7 +34,7 @@ from six.moves import queue
 from QUANTAXIS.QAUtil import QA_util_log_info
 
 
-class QA_event_type():
+class QA_Type_standard():
     QA_Bid = '1x00'
     QA_Market = '2x00'
     QA_Fetch = '3x00'

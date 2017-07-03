@@ -23,3 +23,4 @@
 
 
 from .QA_Queue_standard import QA_Queue
+from .QA_Event import QA_Event
