@@ -223,6 +223,40 @@ receive event %s <__main__.WhoRespond object at 0x02361D50>
 receive event %s <__main__.WhoRespond object at 0x02361DB0>
 ```
 
+
+
+### 1.16 修改了CLI中的创建example内容(0.3.9):
+2017/7/3
+
+现在在命令行中输入QUANTAXIS:
+```shell
+λ  quantaxis
+QUANTAXIS>> start QUANTAXIS
+QUANTAXIS>> ip:127.0.0.1   port:27017
+QUANTAXIS>> From Engine <_MainThread(MainThread, started 19040)>2017-07-03 14:22:08.218800
+QUANTAXIS>> FROM QUANTAXIS SYS== now running 3 threads
+QUANTAXIS>> Welcome to QUANTAXIS, the Version is 0.3.9-beta-dev29
+
+
+QUANTAXIS> examples
+QUANTAXIS>> QUANTAXIS example
+QUANTAXIS>> successfully generate a example strategy inC:\Users\yutiansut\strategy\A05-CCI
+QUANTAXIS> exit
+
+λ  ls
+
+
+    目录: C:\Users\yutiansut\strategy\A05-CCI
+
+
+Mode                LastWriteTime     Length Name
+----                -------------     ------ ----
+-a---          2017/7/3     14:22        358 backtest.ini
+-a---          2017/7/3     14:22        905 backtest.py
+-a---          2017/7/3     14:22       2738 quantaxis-2017-07-03-14-22-08-.log
+
+```
+
 ## 巨大改动/重构
 
 ### 2.1 QA.QAARP.QAAccount
