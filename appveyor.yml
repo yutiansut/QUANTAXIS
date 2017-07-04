@@ -11,7 +11,7 @@ environment:
 before_build:
   - "%PYTHON% -m pip install virtualenv"
   - "%PYTHON% -m virtualenv venv"
-  - venv\Scripts\activate.bat
+
 
 build_script:
   - pip install -U pip
