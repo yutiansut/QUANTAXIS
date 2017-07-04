@@ -11,17 +11,15 @@ environment:
 before_build:
   - "%PYTHON% -m pip install virtualenv"
   - "%PYTHON% -m virtualenv venv"
-  - cd quantaxis
-  - "%PYTHON% -m pip install requirements.txt"
+  - dir
+  - "%PYTHON% -m pip install pymongo,celery,pandas,lxml,requests,numpy,scipy,pytesseract"
 
 
 build_script:
   - pip install -U pip
+
   - python setup.py develop
 
-before_test:
-  - dir
-  - pip install requirements.txt
 
 test_script:
   - "%PYTHON% setup.py install"
