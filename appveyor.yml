@@ -11,7 +11,7 @@ environment:
 before_build:
   - "%PYTHON% -m pip install virtualenv"
   - "%PYTHON% -m virtualenv venv"
-
+  - cd quantaxis
   - "%PYTHON% -m pip install requirements.txt"
 
 
@@ -20,7 +20,7 @@ build_script:
   - python setup.py develop
 
 before_test:
-
+  - dir
   - pip install requirements.txt
 
 test_script:
