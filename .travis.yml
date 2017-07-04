@@ -30,7 +30,7 @@ before_script:
 - conda update -q conda
   # Useful for debugging any issues with conda
 - conda info -a
-- conda install --yes python=$TRAVIS_PYTHON_VERSION numpy scipy pandas matplotlib lxml pytesseract
+- conda install --yes python=$TRAVIS_PYTHON_VERSION numpy scipy pandas matplotlib lxml pytest
 - git clone https://github.com/waditu/tushare
 - cd tushare
 - python setup.py install
@@ -44,8 +44,7 @@ script:
 - git checkout 0.3.9
 - python setup.py install
  
-#after_success:
-    #"python easy_start_tushare.py"
+after_success:
+- quantaxis
 
 
-  
