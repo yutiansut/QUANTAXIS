@@ -2,7 +2,7 @@ language: python
 python:
   - "3.5.2"
  
-os: "ubuntu"
+os: "windows"
 # whitelist
 
   
@@ -13,7 +13,6 @@ install:
 - cd quantaxis
 - git checkout 0.3.9
 - pip install .
-# command to build
 
 script: 
 - quantaxis
