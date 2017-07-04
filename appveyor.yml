@@ -11,8 +11,9 @@ before_build:
 
 
 build_script:
-  - pip install -U pip
 
+  - pip install -U pip
+  - pip install tushare
   - python setup.py develop
 
 
