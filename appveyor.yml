@@ -1,9 +1,5 @@
 environment:
   matrix:
-  - PYTHON: C:\Python33\python.exe
-    platform: Any CPU
-  - PYTHON: C:\Python34\python.exe
-    platform: Any CPU
   - PYTHON: C:\Python35\python.exe
     platform: Any CPU
   - PYTHON: C:\Python36\python.exe
