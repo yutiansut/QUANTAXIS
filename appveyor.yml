@@ -11,8 +11,7 @@ environment:
 before_build:
   - "%PYTHON% -m pip install virtualenv"
   - "%PYTHON% -m virtualenv venv"
-  - dir
-  - "%PYTHON% -m pip install pymongo,celery,pandas,lxml,requests,numpy,scipy,pytesseract"
+  - "%PYTHON% -m pip install -r ./requirements.txt"
 
 
 build_script:
