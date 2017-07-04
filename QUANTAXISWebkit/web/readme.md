@@ -1,22 +1,30 @@
-# quantaxisweb
+## quantaxisweb ![NPM version](https://img.shields.io/npm/v/quantaxisweb.svg?style=flat)
 
-> A Vue.js project
+A Vue.js project
 
-## Build Setup
-
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
+### Installation
+```bash
+$ npm install quantaxisweb
 ```
-## 展望
 
-需要有一个setting表去配合
+### Example
+```js
+var quantaxisweb = require('quantaxisweb');
+```
+
+### API
+check this file: ``
+
+### Contributing
+- Fork this Repo first
+- Clone your Repo
+- Install dependencies by `$ npm install`
+- Checkout a feature branch
+- Feel free to add your features
+- Make sure your features are fully tested
+- Publish your local branch, Open a pull request
+- Enjoy hacking <3
+
+---
+![docor]()
+built upon love by [docor](git+https://github.com/turingou/docor.git) v0.3.0

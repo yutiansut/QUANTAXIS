@@ -1,27 +1,127 @@
-BACKEND
+## quantaxisbackend ![NPM version](https://img.shields.io/npm/v/quantaxisbackend.svg?style=flat)
 
-## APIS
+a nodejs version of quantaxis spider
 
-localhost:3000/stock
-### /stock/history/all?code=xxx&feq=xxx
-### /stock/history/time?code=xxx&start=(yyyy-mm-dd)&end=(yyyy-mm-dd)
-### /stock/index/
-### /stock/live?code=xxx
-### /stock/quota/lhb?
-### /stock/quota/lhb?
+### Installation
+```bash
+$ npm install quantaxisbackend
+```
 
+### Example
+```js
+var quantaxisbackend = require('quantaxisbackend');
+```
 
-localhost:3000/backtest
-### /ts?bidCode=000001&bidTime=2001-01-04&bidPrice=4.08
-返回Success  则成交 返回failed 则不成交
-一定要给报价
+### API
 
+- quantaxisbackend.domain()
+- quantaxisbackend._events()
+- quantaxisbackend._maxListeners()
+- quantaxisbackend.setMaxListeners()
+- quantaxisbackend.getMaxListeners()
+- quantaxisbackend.emit()
+- quantaxisbackend.addListener()
+- quantaxisbackend.on()
+- quantaxisbackend.prependListener()
+- quantaxisbackend.once()
+- quantaxisbackend.prependOnceListener()
+- quantaxisbackend.removeListener()
+- quantaxisbackend.removeAllListeners()
+- quantaxisbackend.listeners()
+- quantaxisbackend.listenerCount()
+- quantaxisbackend.eventNames()
+- quantaxisbackend.init()
+- quantaxisbackend.defaultConfiguration()
+- quantaxisbackend.lazyrouter()
+- quantaxisbackend.handle()
+- quantaxisbackend.use()
+- quantaxisbackend.route()
+- quantaxisbackend.engine()
+- quantaxisbackend.param()
+- quantaxisbackend.set()
+- quantaxisbackend.path()
+- quantaxisbackend.enabled()
+- quantaxisbackend.disabled()
+- quantaxisbackend.enable()
+- quantaxisbackend.disable()
+- quantaxisbackend.acl()
+- quantaxisbackend.bind()
+- quantaxisbackend.checkout()
+- quantaxisbackend.connect()
+- quantaxisbackend.copy()
+- quantaxisbackend.delete()
+- quantaxisbackend.get()
+- quantaxisbackend.head()
+- quantaxisbackend.link()
+- quantaxisbackend.lock()
+- quantaxisbackend.m-search()
+- quantaxisbackend.merge()
+- quantaxisbackend.mkactivity()
+- quantaxisbackend.mkcalendar()
+- quantaxisbackend.mkcol()
+- quantaxisbackend.move()
+- quantaxisbackend.notify()
+- quantaxisbackend.options()
+- quantaxisbackend.patch()
+- quantaxisbackend.post()
+- quantaxisbackend.propfind()
+- quantaxisbackend.proppatch()
+- quantaxisbackend.purge()
+- quantaxisbackend.put()
+- quantaxisbackend.rebind()
+- quantaxisbackend.report()
+- quantaxisbackend.search()
+- quantaxisbackend.subscribe()
+- quantaxisbackend.trace()
+- quantaxisbackend.unbind()
+- quantaxisbackend.unlink()
+- quantaxisbackend.unlock()
+- quantaxisbackend.unsubscribe()
+- quantaxisbackend.all()
+- quantaxisbackend.del()
+- quantaxisbackend.render()
+- quantaxisbackend.listen()
+- quantaxisbackend.request()
+- quantaxisbackend.response()
+- quantaxisbackend.cache()
+- quantaxisbackend.engines()
+- quantaxisbackend.settings()
+- quantaxisbackend._eventsCount()
+- quantaxisbackend.locals()
+- quantaxisbackend.mountpath()
+- quantaxisbackend._router()
 
-localhost:3000/users
-### /signup?username=xxx&password=xxx
-### /login?username=xxx&password=xxx
+### Contributing
+- Fork this Repo first
+- Clone your Repo
+- Install dependencies by `$ npm install`
+- Checkout a feature branch
+- Feel free to add your features
+- Make sure your features are fully tested
+- Publish your local branch, Open a pull request
+- Enjoy hacking <3
 
-localhost:3000/apis 
-### /queryContentbyName
-### /queryTitlebyName
-### /queryContentbyTitle
+### MIT license
+Copyright (c) 2017 yutianut (yutiansut@qq.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+---
+![docor]()
+built upon love by [docor](git+https://github.com/turingou/docor.git) v0.3.0
