@@ -8,6 +8,7 @@ os: "ubuntu"
   
 install:
 - sudo apt-get update
+- pip install git+https://github.com/yutiansut/tushare
 - git clone https://github.com/yutiansut/quantaxis
 - cd quantaxis
 - git checkout 0.3.9
