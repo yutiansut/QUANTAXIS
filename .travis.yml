@@ -1,18 +1,20 @@
+
 language: python
 python:
   - "3.5.2"
  
-os: "windows"
+os: "ubuntu"
 # whitelist
 
-  
-install:
-- sudo apt-get update
-- pip install git+https://github.com/yutiansut/tushare
-- git clone https://github.com/yutiansut/quantaxis
-- cd quantaxis
-- git checkout 0.3.9
-- pip install .
+ 
+# Use this to prepare the system to install prerequisites or dependencies
 
-script: 
-- quantaxis
+
+# command to install dependencies
+install: "pip install -r requirements.txt   "
+ 
+# command to build
+script: "python setup.py install"
+ 
+#after_success:
+    #"python easy_start_tushare.py"
