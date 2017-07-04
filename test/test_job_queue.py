@@ -4,25 +4,12 @@ from six.moves import queue
 import time
 import QUANTAXIS as QA
 
-bid_queue = queue.Queue()
-bid_server = QA.QA_Queue(bid_queue)
-bid_server.setName('bid-server')
-bid_server.start()
 
-
-market_queue = queue.Queue()
-market_server = QA.QA_Queue(market_queue)
-market_server.setName('market-server')
-market_server.start()
-
-
-task_queue=queue.Queue()
-task_server= QA.QA_Queue(task_queue)
-task_server.setName('task-server')
-task_server.start()
-
-
-print(threading.enumerate())
-
-
-task_queue.put({'fn':bid_queue.put({'fn':print('aaa')})})
+"我们需要测试两个:\
+    事件队列\
+    事件分发"
+event_queue=queue.Queue()
+event_engine=QA.QA_Queue(event_queue)
+event_engine.setName('EVENT ENGINE')
+event_engine.start()
+event_engine.ident()
