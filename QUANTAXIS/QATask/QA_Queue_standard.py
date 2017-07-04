@@ -61,8 +61,6 @@ class QA_Queue(threading.Thread):
         self.__running = threading.Event()      # 用于停止线程的标识
         self.__running.set()      # 将running设置为True
 
-    def __QA_queue_distribute(self):
-        pass
 
     def QA_queue_job_register(self, __job: dict):
         '首先对于任务进行类型判断,输入的job的类型一定是一个dict模式的,同时需要含有一个type的K-V对'
@@ -91,12 +89,12 @@ class QA_Queue(threading.Thread):
 
                 try:
                     if self.queue.empty() is False:
-                        task = self.queue.get()  # 接收消息
-                        assert isinstance(task, dict)
-                        if task['fn']!=None:
+                        __task = self.queue.get()  # 接收消息
+                        assert isinstance(__task, dict)
+                        if __task['fn']!=None:
 
-                            eval(task['fn'])
-                            self.queue.task_done()  # 完成一个任务
+                            eval(__task['fn'])
+                            self.queue.__task_done()  # 完成一个任务
                         else :
                             pass
                     else:
@@ -106,18 +104,18 @@ class QA_Queue(threading.Thread):
                 except:
                     time.sleep(1)
                     self.run()
-                res = self.__QA_queue_status()  # 判断消息队列大小
-                if res > 0:
+                __res = self.__QA_queue_status()  # 判断消息队列大小
+                if __res > 0:
                     QA_util_log_info("From Engine %s: There are still %d tasks to do" % (
-                        str(threading.current_thread()), res))
+                        str(threading.current_thread()), __res))
                 threading.Timer(0.05,self.run)
     def pause(self):
         self.__flag.clear()   
     def resume(self):
         self.__flag.set()    # 设置为True, 让线程停止阻塞
     def stop(self):
-            self.__flag.set()       # 将线程从暂停状态恢复, 如何已经暂停的话
-            self.__running.clear()        # 设置为False    
+        self.__flag.set()       # 将线程从暂停状态恢复, 如何已经暂停的话
+        self.__running.clear()        # 设置为False    
 
     def __start(self):
         self.queue.start()
