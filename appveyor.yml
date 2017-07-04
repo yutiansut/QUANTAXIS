@@ -21,10 +21,10 @@ before_test:
   - 'git clone https://github.com/yutiansut/quantaxis'
   - cd quantaxis
   - git checkout -qf 0.3.9
-  - "%PYTHON%" -m pip install requirements.txt
+  - "%PYTHON% -m pip install requirements.txt"
 
 test_script:
-  - "%PYTHON%" setup.py install
+  - "%PYTHON% setup.py install"
 
 #on_success:
 #  - coveralls
