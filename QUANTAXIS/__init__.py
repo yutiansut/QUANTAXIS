@@ -85,7 +85,7 @@ import QUANTAXIS.QACmd
 
 from QUANTAXIS.QACmd import QA_cmd
 import argparse
-QA_util_log_info('Welcome to QUANTAXIS, the Version is 0.3.9-beta-dev37')
+QA_util_log_info('Welcome to QUANTAXIS, the Version is 0.3.9-beta-dev53')
 QA_util_log_info(' \n \
 `````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
  ``########`````##````````##``````````##`````````####````````##```##########````````#``````##``````###```##`````######`` \n \
@@ -109,4 +109,4 @@ QA_util_log_info(' \n \
 
 
 if __name__ == '__main__':
-    __version__ = ' 0.3.9-beta-dev37'
+    __version__ = ' 0.3.9-beta-dev53'

@@ -42,7 +42,7 @@ class CLI(cmd.Cmd):
         self.prompt = 'QUANTAXIS> '    # 定义命令行提示符
 
     def do_version(self, arg):
-        QA_util_log_info('QUANTAXIS Version 0.3.9-beta2-dev37')
+        QA_util_log_info('QUANTAXIS Version 0.3.9-beta2-dev53')
 
     def help_version(self):
         print("syntax: version [message]",)
@@ -77,7 +77,7 @@ class CLI(cmd.Cmd):
         config.set("backtest", "database_ip", "127.0.0.1")
         config.set("backtest", "database_ip", "127.0.0.1")
         config.add_section("account")
-        config.set("account", "account_assets", "2500000")
+        config.set("account", "account_assets", "2530000")
         config.set("account", "stock_list", "file:csv:local")
         config.add_section("bid")
         config.set("bid", "bid_model",'market_price')

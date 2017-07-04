@@ -40,6 +40,7 @@
         - [1.14 增加了两个时间选择的api(0.3.9)](#114-增加了两个时间选择的api039)
         - [1.15 增加了一个事件订阅的方式QA.QA_Event(0.3.9):](#115-增加了一个事件订阅的方式qaqa_event039)
         - [1.16 修改了CLI中的创建example内容(0.3.9):](#116-修改了cli中的创建example内容039)
+        - [1.17 增加了一个带参数的延时装饰器](#117-增加了一个带参数的延时装饰器)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -161,7 +162,7 @@ datastruct将在未来对于不同的场景下的数据进行重构和规范化�
 ![Markdown](http://i2.kiimg.com/1949/ce8c3ee69f64976e.png)
 
 ### 1.13 增加一个标准化的QUANTAXIS事件队列(0.3.9)
-2017/6/30-2017/7/2
+2017/6/30-2017/7/2,2017/7/4
 
 引入方式:
 ```python
@@ -186,9 +187,56 @@ qa_event=QA_Queue(qa)
 {'type':'xxx','fn':'func'}
 """
 qa.put({'type':'xxx','fn':'func'})
-
-事件引擎会默认一直监听这个队列
 ```
+事件引擎会默认一直监听这个队列
+2017/7/4 update  重新优化了这个事件引擎 参见test/test_job_queue.py
+```shell
+13:35:45 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>Engine will waiting for new task ...
+13:35:45 QUANTAXIS>>> job--id:0
+13:35:46 QUANTAXIS>>> job--id:1
+13:35:46 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>: There are still 2 tasks to do
+13:35:46 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>: There are still 1 tasks to do
+13:35:46 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>Engine will waiting for new task ...
+13:35:47 QUANTAXIS>>> job--id:2
+13:35:47 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>: There are still 1 tasks to do
+13:35:47 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>Engine will waiting for new task ...
+13:35:47 QUANTAXIS>>> job--id:3
+13:35:48 QUANTAXIS>>> job--id:4
+13:35:48 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>: There are still 2 tasks to do
+13:35:48 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>: There are still 1 tasks to do
+13:35:48 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>Engine will waiting for new task ...
+13:35:49 QUANTAXIS>>> job--id:5
+13:35:49 QUANTAXIS>>> job--id:6
+13:35:49 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>: There are still 2 tasks to do
+13:35:49 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>: There are still 1 tasks to do
+13:35:49 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>Engine will waiting for new task ...
+13:35:50 QUANTAXIS>>> job--id:7
+13:35:50 QUANTAXIS>>> job--id:8
+13:35:50 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>: There are still 2 tasks to do
+13:35:50 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>: There are still 1 tasks to do
+13:35:50 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>Engine will waiting for new task ...
+13:35:51 QUANTAXIS>>> job--id:9
+13:35:51 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>: There are still 1 tasks to do
+13:35:51 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>Engine will waiting for new task ...
+13:35:52 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>Engine will waiting for new task ...
+13:35:53 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>Engine will waiting for new task ...
+13:35:54 QUANTAXIS>>> job--id:1
+13:35:54 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>: There are still 1 tasks to do
+13:35:54 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>Engine will waiting for new task ...
+13:35:55 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>Engine will waiting for new task ...
+13:35:56 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>Engine will waiting for new task ...
+13:35:57 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>Engine will waiting for new task ...
+13:35:58 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>Engine will waiting for new task ...
+13:35:59 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>Engine will waiting for new task ...
+13:36:00 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>Engine will waiting for new task ...
+13:36:01 QUANTAXIS>>> From Engine <QA_Queue(EVENT ENGINE, started 12488)>Engine will waiting for new task ...
+
+
+```
+
+
+
+
 ### 1.14 增加了两个时间选择的api(0.3.9)
 2017/7/3
 
@@ -285,7 +333,24 @@ Mode                LastWriteTime     Length Name
 -a---          2017/7/3     14:22       2738 quantaxis-2017-07-03-14-22-08-.log
 
 ```
+### 1.17 增加了一个带参数的延时装饰器
+2017/7/4
 
+QUANTAXIS.QAUtil.QADate.QA_util_time_delay()
+
+使用方式
+
+```python
+from QUANTAXIS import QA_util_time_dalay
+
+
+@QA_util_time_dalay(2)
+#延时2秒
+def pp():
+    print(1)
+
+
+```
 ## 巨大改动/重构
 
 ### 2.1 QA.QAARP.QAAccount

@@ -204,6 +204,11 @@ def QA_util_select_min(time=None, gt=None, lt=None, gte=None, lte=None):
 
 
 
-def QA_util_time_delay(time_,func):
-    '这是一个用于复用/比如说@装饰符的延时函数,使用threading里面的延时,为了是不阻塞进程,有时候,同时发进去两个函数,第一个函数需要延时,第二个不需要的话,用sleep就会阻塞掉第二个进程'
-    return threading.Timer(time_,func)
+def QA_util_time_delay(time_=0):
+    '这是一个用于复用/比如说@装饰器的延时函数\
+    使用threading里面的延时,为了是不阻塞进程\
+    有时候,同时发进去两个函数,第一个函数需要延时\
+    第二个不需要的话,用sleep就会阻塞掉第二个进程'
+    def _exec(func):
+        threading.Timer(time_,func)
+    return _exec
