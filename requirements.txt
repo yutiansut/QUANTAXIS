@@ -5,3 +5,4 @@ lxml
 requests
 numpy 
 pytesseract
+tushare
