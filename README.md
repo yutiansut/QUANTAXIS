@@ -30,7 +30,7 @@ QUANTAXIS与国内很多优秀的量化平台的区别在于,QA更多关注的�
 ![build](https://travis-ci.org/yutiansut/QUANTAXIS.svg?branch=0.3.9-beta)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.8-brown.svg)
-![Pypi](https://img.shields.io/badge/Pypi-%200.3.9-blue.svg)
+![Pypi](https://img.shields.io/badge/Pypi-%200.4.0-blue.svg)
 ![python](https://img.shields.io/badge/python-%203.5/3.6/win/ubuntu-darkgrey.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.3.8-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
@@ -62,14 +62,14 @@ QUANTAXIS与国内很多优秀的量化平台的区别在于,QA更多关注的�
 ## QUANTAXIS-Stardand-Protocol
 QUANTAXIS 标准化协议和未来协议
 
-QUANTAXIS-Stardand-Protocol 版本号0.0.7
+QUANTAXIS-Stardand-Protocol 版本号0.0.8
 
 详情参见  [QUANATXISProtocol](https://github.com/yutiansut/QUANTAXIS/tree/0.3.8-dev-RC-ARP/QUANTAXISProtocol)
 
 ## 部署问题:
 
 - Windows/Linux(ubuntu) 已测试通过
-- python3.6优先(开发环境) python2 回测框架兼容   [*] 如果需要交易,请下载32位的python3.6
+- python3.6优先(开发环境) python2 回测框架不兼容(attention! 之后会逐步用更多高级语法)   [*] 如果需要交易,请下载32位的python3.6
 - nodejs 需要安装>7的版本,来支持es6语法
 - mongodb是必须要装的
 
@@ -78,7 +78,7 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.7
 ```shell
 git clone https://github.com/yutiansut/quantaxis
 cd quantaxis 
-(sudo) pip install . # 一定要用这种方法,python setup.py install方法无法解压
+(sudo) pip install -e . # 一定要用这种方法,python setup.py install方法无法解压 安装在本目录下的开发模式
 python easy/easy_start_tushare.py(会存全市场的数据,较慢)
 python test/new test/strategy.py(一个简单的策略)
 ```
