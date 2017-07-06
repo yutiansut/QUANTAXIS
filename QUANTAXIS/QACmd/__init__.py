@@ -42,7 +42,7 @@ class CLI(cmd.Cmd):
         self.prompt = 'QUANTAXIS> '    # 定义命令行提示符
 
     def do_version(self, arg):
-        QA_util_log_info('QUANTAXIS Version 0.4.0-alpha-dev01')
+        QA_util_log_info('QUANTAXIS Version 0.4.0-alpha-dev02')
 
     def help_version(self):
         print("syntax: version [message]",)

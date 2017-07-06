@@ -36,7 +36,7 @@ from .QALogs import (
     QA_util_log_debug, QA_util_log_expection, QA_util_log_info)
 from .QACfg import (QA_util_cfg_initial, QA_util_get_cfg)
 from .QASetting import QA_Setting
-
+from .QAWeb import QA_util_web_ping
 
 def QA_start_initial(files):
     pass
