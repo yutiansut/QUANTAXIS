@@ -24,32 +24,6 @@
 
 import numpy as np
 import pandas as pd
-' QAMath 主要是数学方法,一些对于队列,时间序列的包装'
 
 
-class QA_Math():
-    pass
-
-
-def QA_math_list_diff(seq: list):
-    assert isinstance(seq, list)
-
-
-def QA_math_list_sum(seq: list):
-    pass
-
-
-def QA_math_list_average(seq: list):
-    pass
-
-
-def QA_math_list_tran(seq: list):
-    pass
-
-
-def QA_math_list_print(seq: list):
-    pass
-
-
-def QA_math_series_sum(seq:pd.Series):
-    pass
+'QA_Static主要是一些统计学方法的包装'
