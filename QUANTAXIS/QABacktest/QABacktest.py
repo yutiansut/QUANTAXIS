@@ -277,7 +277,7 @@ class QA_Backtest():
 
         QA_util_log_info('QUANTAXIS Backtest Engine Initial Successfully')
         QA_util_log_info('Basical Info: \n' + tabulate(
-            [['0.3.9-gamma-dev20', str(self.strategy_name)]], headers=('Version', 'Strategy_name')))
+            [['0.4.0-alpha-dev02', str(self.strategy_name)]], headers=('Version', 'Strategy_name')))
         QA_util_log_info('Stock_List: \n' +
                          tabulate([self.strategy_stock_list]))
         self.__QA_backtest_set_bid_model()

@@ -76,6 +76,17 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.8
 
 一个简易demo(需要先安装并启动mongodb,python版本需要大于3)
 ```shell
+
+#install python3.6 in linux
+sudo add-apt-repository ppa:jonathonf/python-3.6
+sudo apt-get update
+sudo apt-get install python3.6
+wget https://bootstrap.pypa.io/get-pip.py
+sudo -H python3.6 get-pip.py
+#
+
+
+
 git clone https://github.com/yutiansut/quantaxis
 cd quantaxis 
 (sudo) pip install -e . # 一定要用这种方法,python setup.py install方法无法解压 安装在本目录下的开发模式

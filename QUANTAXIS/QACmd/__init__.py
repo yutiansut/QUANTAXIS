@@ -86,7 +86,7 @@ class CLI(cmd.Cmd):
 
         
         # write to file
-        config.write(open('backtest.ini', "w"))
+        config.write(open('backtest_setting.ini', "w"))
 
 
         QA_util_log_info(
