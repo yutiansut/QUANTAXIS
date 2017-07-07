@@ -32,7 +32,7 @@ import sys
 
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting
-
+from QUANTAXIS import __version__
 
 
 class CLI(cmd.Cmd):
@@ -42,7 +42,7 @@ class CLI(cmd.Cmd):
         self.prompt = 'QUANTAXIS> '    # 定义命令行提示符
 
     def do_version(self, arg):
-        QA_util_log_info('QUANTAXIS Version 0.4.0-alpha-dev02')
+        QA_util_log_info(__version__)
 
     def help_version(self):
         print("syntax: version [message]",)

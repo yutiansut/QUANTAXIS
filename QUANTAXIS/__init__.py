@@ -31,6 +31,11 @@ by yutiansut
 
 2017/4/8
 """
+
+
+__version__ = ' 0.4.0-alpha-dev02'
+__author__ = 'yutiansut'
+
 # fetch methods
 
 from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day, QA_fetch_get_trade_date,
@@ -65,7 +70,7 @@ from QUANTAXIS.QABacktest.QABacktest import QA_Backtest, QA_Backtest_min
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
 
 # task
-from QUANTAXIS.QATask import QA_Queue,QA_Event
+from QUANTAXIS.QATask import QA_Queue, QA_Event
 
 # Util
 from QUANTAXIS.QAUtil.QAType import (
@@ -76,7 +81,7 @@ from QUANTAXIS.QAUtil import (QA_util_sql_mongo_setting, QA_util_cfg_initial, QA
                               QA_util_log_debug, QA_util_log_expection, QA_util_log_info,
                               QA_start_initial, QA_Setting, QA_util_get_date_index,
                               QA_util_get_index_date, QA_util_get_real_date, QA_util_select_hours,
-                              QA_util_select_min,QA_util_time_delay)
+                              QA_util_select_min, QA_util_time_delay)
 
 from QUANTAXIS.QAIndicator import *
 from QUANTAXIS.QASQL import qasql, qacold
@@ -85,7 +90,7 @@ import QUANTAXIS.QACmd
 
 from QUANTAXIS.QACmd import QA_cmd
 import argparse
-QA_util_log_info('Welcome to QUANTAXIS, the Version is 0.4.0-alpha-dev02')
+QA_util_log_info('Welcome to QUANTAXIS, the Version is '+__version__)
 QA_util_log_info(' \n \
 `````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
  ``########`````##````````##``````````##`````````####````````##```##########````````#``````##``````###```##`````######`` \n \
@@ -105,8 +110,3 @@ QA_util_log_info(' \n \
  ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
 ````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n ')
-
-
-
-if __name__ == '__main__':
-    __version__ = ' 0.4.0-alpha-dev02'
