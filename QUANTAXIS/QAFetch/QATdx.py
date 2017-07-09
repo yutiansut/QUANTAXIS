@@ -97,9 +97,18 @@ from Pytdx/api-main
 
         api.disconnect()
 """
-def QA_fetch_get_stock_day(code, date):
-    with api.connect('119.147.212.81', 7709):
-        data = api.get_security_bars(9, 0, '000001', 0, 10)  # 返回普通list
+def QA_fetch_get_stock_day(code, date,ip='119.147.212.81',port=7709):
+    with api.connect(ip, port):
+        data = api.get_security_bars(9, 0, code, 0, 10)  # 返回普通list
         data = api.to_df(api.get_security_bars(
             9, 0, '000001', 0, 10))  # 返回DataFrame
     return data
+def QA_fetch_get_stock_list(code, date,ip='119.147.212.81',port=7709):
+    with api.connect(ip, port):
+        stocks = api.get_security_list(1, 255)
+        return stocks
+def QA_fetch_get_stock_realtime(code, date,ip='119.147.212.81',port=7709):
+    with api.connect(ip, port):
+        stocks = api.get_security_quotes([(0, "000001")])
+        return stocks
+    
