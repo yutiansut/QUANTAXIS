@@ -112,3 +112,8 @@ def QA_fetch_get_stock_realtime(code, date,ip='119.147.212.81',port=7709):
         stocks = api.get_security_quotes([(0, "000001")])
         return stocks
     
+def QA_fetch_get_index_day(code, date,ip='119.147.212.81',port=7709):
+    with api.connect(ip, port):
+        stocks = api.get_index_bars(9,1, '000001', 1, 2)
+    return stocks
+ 
