@@ -13,7 +13,7 @@
                 </router-link>
     
                 <router-link to="/personal/monitor">
-                    <mu-list-item title="实盘监控"></mu-list-item>
+                    <mu-list-item title="日线数据"></mu-list-item>
                 </router-link>
                 <router-link to="/personal/trade">
                     <mu-list-item title="实盘状况"></mu-list-item>

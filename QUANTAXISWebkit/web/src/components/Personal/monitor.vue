@@ -1,7 +1,7 @@
 <template>
     <div>
-        <h1>实盘监控</h1>
-        <input v-on:keyup.enter="querybyname($event.currentTarget.value)" placeholder="需要监控的股票代码:" lazy/>
+        <h2 align='left'>> 日线数据查看</h2>
+        <input v-on:keyup.enter="querybyname($event.currentTarget.value)" placeholder="股票代码:" lazy/>
         <div id="main"></div>
     </div>
 </template>
@@ -94,6 +94,7 @@ export default {
             axios.get(val)
                 .then(response => {
                     this.chart.hideLoading();
+                    this.data0 = code
                     //console.log(response.data['record'][0]);
                     var data1 = response.data['record'];
                     var kline = []
@@ -109,10 +110,11 @@ export default {
                     }
 
 
-                    //console.log(kline)
-
 
                     this.chart.setOption({
+                        title: {
+                            text: this.data0
+                        },
 
                         series: {
                             name: 'market',
