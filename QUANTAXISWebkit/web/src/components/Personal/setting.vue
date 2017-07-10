@@ -20,5 +20,6 @@
 .demo-menu-divider {
     display: inline-block;
     width: 10em;
+    float:left;
 }
 </style>

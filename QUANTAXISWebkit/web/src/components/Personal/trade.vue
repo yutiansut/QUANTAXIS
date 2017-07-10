@@ -1,8 +1,8 @@
 <template>
   <div id="index">
-    <h1>实盘监控</h1>
+    <h2 align='left'>> 实盘监控</h2>
   
-    <h3>最新时间 {{this.time['date']}} {{this.time['time']}}</h3>
+    <h3 align='left'>最新时间 {{this.time['date']}} {{this.time['time']}}</h3>
     <mu-table :height="height" :showCheckbox=false>
       <mu-thead>
         <mu-tr>
