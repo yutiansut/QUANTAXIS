@@ -5,12 +5,12 @@
         <mu-raised-button v-on:click='query()' label="成交明细" class="demo-raised-button" primary/>
       </router-link>
       <mu-raised-button v-on:click='ready()' label="行情数据" class="demo-raised-button" secondary/>
-      <mu-raised-button v-on:click='query_market();query();info();ready()' label="刷新图像" class="demo-raised-button" />
+      <mu-raised-button v-on:click='ready()' label="刷新图像" class="demo-raised-button" />
       <mu-divider />
     </div>
     <div>
       <mu-table>
-        <mu-th>code</mu-th>
+
         <mu-th>alpha</mu-th>
         <mu-th>beta</mu-th>
         <mu-th>sharpe</mu-th>
@@ -18,7 +18,7 @@
         <mu-th>持续期</mu-th>
         <template v-for="item in items">
           <mu-tbody>
-            <mu-td>{{item["code"]}}</mu-td>
+
             <mu-td>{{item['alpha']}}</mu-td>
             <mu-td>{{item['beta']}}</mu-td>
             <mu-td>{{item['sharpe']}}</mu-td>
@@ -32,15 +32,14 @@
         <mu-th>波动率</mu-th>
         <mu-th>Benchmark年化收益</mu-th>
         <mu-th>Benchmark波动率</mu-th>
-        <mu-th>总收益</mu-th>
         <mu-th>胜率</mu-th>
+  
         <template v-for="item in items">
           <mu-tbody>
             <mu-td>{{item['annualized_returns']}}</mu-td>
             <mu-td>{{item['vol']}}</mu-td>
             <mu-td>{{item['benchmark_annualized_returns']}}</mu-td>
             <mu-td>{{item['benchmark_vol']}}</mu-td>
-            <mu-td>{{item['total_returns']}}</mu-td>
             <mu-td>{{item['win_rate']}}</mu-td>
           </mu-tbody>
         </template>
@@ -61,13 +60,13 @@ export default {
       chart: null,
       data0: this.$route.params.id,
       time: [],
-      items: [{ 'code': 'test' }]
+      items: [{ 'code': 'loading..' }]
     }
   },
   methods: {
     drawline(id) {
       this.chart = echarts.init(document.getElementById(id))
-      this.chart.showLoading();
+
       this.chart.setOption({
         title: {
           text: this.data0
@@ -110,29 +109,21 @@ export default {
           //axisLine: {onZero: true}
         }],
         yAxis: [{
-          name: 'price',
-          max: 'dataMax',
-          min: 'dataMin'
-        }, {
+
+        },{
           name: 'account',
           max: 'dataMax',
-          min: 'dataMin'
+          min: 0
 
         }],
         legend: {
           data: [
             {
-              name: 'k_line'
+              name: 'assets',
+
             }, {
-              name: 'account',
-              textStyle: {
-                color: '#c23531'
-              }
-            }, 'market', 'bid_sell', 'bid_buy', {
               name: 'benchmark',
-              textStyle: {
-                color: '#2f4554'
-              }
+
             }],
           //data:['k_line'],
           x: 'left',
@@ -144,15 +135,10 @@ export default {
           start: 0,
           end: 100
         },
-        {
-          type: 'inside',
-          realtime: true,
-          start: 0,
-          end: 100
-        }
+
         ],
         series: [{
-          name: 'account',
+          name: 'assets',
           type: 'line',
           data: [],
           lineStyle: {
@@ -165,7 +151,8 @@ export default {
               color: '#c23531',
               opacity: 0.3
             }
-          }
+          },
+          yAxisIndex:1
 
         }, {
           name: 'benchmark',
@@ -181,38 +168,11 @@ export default {
               color: '#2f4554',
               opacity: 0.3
             }
-          }
+          },
+            yAxisIndex:1
 
-        },
-        {
-          name: 'market',
-          type: 'candlestick',
-          data: []
-        }, {
-          name: 'bid_buy',
-          type: 'scatter',
-          data: [],
-          itemStyle: {
-            normal: {
-              color: "#980000"
-            }
-          }
-
-        }, {
-          name: 'bid_sell',
-          type: 'scatter',
-          data: [],
-          itemStyle: {
-            normal: {
-              color: "#2f4554"
-            }
-          }
-
-        }, {
-          name: 'k_line',
-          type: 'candlestick',
-          data: []
-        }]
+        }
+        ]
       })
     },
     ready() {
@@ -230,98 +190,58 @@ export default {
           this.items[0]['alpha'] = data['alpha'].toFixed(3)
           this.items[0]['beta'] = data['beta'].toFixed(4)
           this.items[0]['max_drop'] = data['max_drop'].toFixed(3)
-          this.items[0]['code'] = data['stock_list'][0]
+          this.items[0]['code'] = data['stock_list']
           this.items[0]['sharpe'] = data['sharpe'].toFixed(3)
           this.items[0]['vol'] = data['vol'].toFixed(5)
           this.items[0]['annualized_returns'] = data['annualized_returns'].toFixed(3)
           this.items[0]['benchmark_annualized_returns'] = data['benchmark_annualized_returns'].toFixed(3)
           this.items[0]['benchmark_vol'] = data['benchmark_vol'].toFixed(5)
           this.items[0]['exist'] = data['exist']
-          this.items[0]['total_returns'] = data['total_returns'].toFixed(2)
           this.items[0]['win_rate'] = data['win_rate'].toFixed(3)
 
-          console.log(this.items)
-          var code = data['stock_list'][0]
-          var val = code + '&start=' + start_time + '&end=' + end_time
-          //console.log(val)
-          var kline = [];
-          var kline_date = [];
-          //http://localhost:3000/stock/history/time?code=600010&feq=day&start=2015-01-05&end=2015-01-29
-          axios.get('http://localhost:3000/stock/history/time?code=' + val)
-            .then(response => {
 
-              var history_data = response.data;
-              for (var i = 0; i < history_data.length - 1; i++) {
-                kline_date.push(history_data[i]['date']);
-                var temp = [];
-                temp.push(history_data[i]['open'])
-                temp.push(history_data[i]['close'])
-                temp.push(history_data[i]['low'])
-                temp.push(history_data[i]['high'])
 
-                kline.push(temp);
-              }
-              this.time = kline_date
-              console.log('all date')
-              console.log(kline_date)
-              console.log(kline)
-              this.chart.setOption({
-                title: {
-                  text: code
-                },
-                series: {
-                  name: 'k_line',
-                  type: 'candlestick',
-                  data: kline,
+          this.chart.setOption({
+            title: {
+              text: data['strategy']
+            }
+          })
 
-                },
-                xAxis: {
-                  name: 'k_line',
-                  data: kline_date,
-                },
-                yAxisIndex: 0
-              })
-            })
-        })
-    },
-    query() {
-      //console.log(this.data0)
-      let val = this.data0
-      //console.log(val)
-      axios.get('http://localhost:3000/backtest/history?cookie=' + val)
-        .then(response => {
+          var benchmark_history = data['benchmark_assets']
+          var market_time = data['total_date']
+          var trade_date = data['trade_date']
+          var assets = data['assets']
 
-          var history = response.data['history'];
-          this.acc = response.data['assest_history'].slice(1);
-          var code = response.data['bid']['code'];
-          var strategy_name = response.data['strategy']
-          //console.log(code)
-          // console.log(this.acc)
-          this.length = this.acc.length;
-          var market_time = response.data['account_date']
-          console.log('market account time')
-          console.log(market_time)
-          // console.log(this.time)
-          for (var i = 0; i < this.time.length; i++) {
-            console.log(market_time[i])
-            if (market_time.indexOf(this.time[i]) == -1) {
-              market_time.splice(i, 0, this.time[i])
-              this.acc.splice(i, 0, this.acc[i - 1])
+          for (var i = 0; i < market_time.length; i++) {
+            if (trade_date.indexOf(market_time[i]) == -1) {
+              trade_date.splice(i, 0, market_time[i])
+              assets.splice(i, 0, assets[i - 1])
               //console.log()
             }
 
           }
-          console.log(this.acc)
-          console.log(market_time)
+          //console.log(market_time)
+          //console.log(benchmark_history)
           this.chart.setOption({
-            title: {
-              text: code + '--' + strategy_name
-            },
             series: [{
-              name: 'account',
+              name: 'benchmark',
               type: 'line',
-              data: this.acc,
-              yAxisIndex: 1,
+              data: benchmark_history,
+              lineStyle: {
+                normal: {
+                  color: '#2f4554'
+                }
+              },
+              areaStyle: {
+                normal: {
+                  color: '#2f4554',
+                  opacity: 0.3
+                }
+              }
+            }, {
+              name: 'assets',
+              type: 'line',
+              data: assets,
               lineStyle: {
                 normal: {
                   color: '#c23531'
@@ -341,162 +261,6 @@ export default {
             }
           })
         })
-        .catch(function (error) {
-          console.log(error);
-        });
-
-
-
-    },
-    query_market() {
-      //console.log(this.data0)
-      let val = this.data0
-      //console.log(val)
-      axios.get('http://localhost:3000/backtest/market?cookie=' + val)
-        .then(response => {
-          this.chart.hideLoading();
-          var market_data = response.data;
-          //console.log(market)
-          var value = [];
-          var bid_buy = [];
-          var bid_sell = [];
-          var bid_buy_date = [];
-          var bid_sell_date = [];
-
-          var start_time = market_data[0]['bid']['time'];
-          var end_time = market_data[market_data.length - 1]['bid']['time']
-          var market = []
-          for (var i = 1; i < market_data.length - 1; i++) {
-            if (market_data[i]['bid']['time'] != market_data[i - 1]['bid']['time'] && market_data[i]['bid']['time'] != '') {
-              market.push(market_data[i])
-            }
-          }
-          //console.log(market)
-          for (var i = 0; i < market.length; i++) {
-            //console.log(this.items[i][0])
-            value.push([market[i]['market']['open'], market[i]['market']['close'], market[i]['market']['low'],
-            market[i]['market']['high']])
-            if (market[i]['bid']['towards'] == 1) {
-              bid_buy.push(market[i]['bid']['price']);
-              bid_buy_date.push(market[i]['bid']['time']);
-              bid_sell.push('');
-              bid_sell_date.push('');
-            } else {
-              bid_buy.push('');
-              bid_buy_date.push('');
-              bid_sell.push(market[i]['bid']['price']);
-              bid_sell_date.push(market[i]['bid']['time']);
-            }
-
-          }
-          //console.log(bid_sell_date)
-          for (var i = 0; i < this.time.length; i++) {
-            if (bid_buy_date.indexOf(this.time[i]) == -1 && bid_sell_date.indexOf(this.time[i]) == -1) {
-              bid_buy_date.splice(i, 0, '')
-              bid_buy.splice(i, 0, '')
-              bid_sell_date.splice(i, 0, '')
-              bid_sell.splice(i, 0, '')
-              value.splice(i, 0, '')
-              //console.log()
-            }
-
-          }
-          //console.log(value)
-          this.chart.setOption({
-            series: [{
-              name: 'market',
-              type: 'candlestick',
-              data: value,
-              yAxisIndex: 0,
-              gridIndex: 0
-            }, {
-              name: 'bid_buy',
-              type: 'scatter',
-              data: bid_buy,
-              xAxis: {
-                data: bid_buy_date,
-                zlevel: 2,
-                type: 'category'
-              },
-              yAxisIndex: 0,
-              gridIndex: 0
-
-            }, {
-              name: 'bid_sell',
-              type: 'scatter',
-              data: bid_sell,
-              xAxis: {
-                data: bid_sell_date,
-                zlevel: 2,
-                type: 'category'
-              },
-              yAxisIndex: 0,
-              gridIndex: 0,
-
-            }]
-          })
-          //this.chart.setOption
-        })
-    },
-    info() {
-      let val = this.data0
-      axios.get('http://localhost:3000/backtest/info_cookie?cookie=' + val)
-        .then(response => {
-          var data = response.data;
-
-          //console.log(data)
-
-          this.items[0]['alpha'] = data['alpha'].toFixed(3)
-          this.items[0]['beta'] = data['beta'].toFixed(4)
-          this.items[0]['max_drop'] = data['max_drop'].toFixed(3)
-          this.items[0]['code'] = data['stock_list'][0]
-          this.items[0]['sharpe'] = data['sharpe'].toFixed(3)
-          this.items[0]['vol'] = data['vol'].toFixed(5)
-          this.items[0]['annualized_returns'] = data['annualized_returns'].toFixed(3)
-          this.items[0]['benchmark_annualized_returns'] = data['benchmark_annualized_returns'].toFixed(5)
-          this.items[0]['benchmark_vol'] = data['benchmark_vol'].toFixed(3)
-          this.items[0]['exist'] = data['exist']
-          this.items[0]['total_returns'] = data['total_returns'].toFixed(2)
-
-          var benchmark_history = data['benchmark_assest']
-          var market_time = data['total_date']
-
-
-          for (var i = 0; i < this.time.length; i++) {
-            if (market_time.indexOf(this.time[i]) == -1) {
-              market_time.splice(i, 0, this.time[i])
-              benchmark_history.splice(i, 0, benchmark_history[i - 1])
-              //console.log()
-            }
-
-          }
-          //console.log(market_time)
-          //console.log(benchmark_history)
-          this.chart.setOption({
-            series: [{
-              name: 'benchmark',
-              type: 'line',
-              data: benchmark_history,
-              yAxisIndex: 1,
-              lineStyle: {
-                normal: {
-                  color: '#2f4554'
-                }
-              },
-              areaStyle: {
-                normal: {
-                  color: '#2f4554',
-                  opacity: 0.3
-                }
-              }
-            }],
-            xAxis: {
-              data: market_time,
-              zlevel: 1,
-              gridIndex: 0,
-            }
-          })
-        })
     }
 
   },
@@ -505,9 +269,6 @@ export default {
       this.drawline('main');
       this.ready();
 
-      this.query();
-      this.query_market();
-      this.info();
     })
   }
 }
