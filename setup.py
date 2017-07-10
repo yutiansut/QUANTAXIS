@@ -63,7 +63,7 @@ setup(
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
     ],
-    install_requires=['pandas>=0.20', 'numpy>=1.12.0', 'tushare==0.7.4',
+    install_requires=['pandas>=0.20', 'numpy==1.12.0', 'tushare==0.7.4',
                       'pymongo>=3.4', 'celery>=4.0.0', 'six>=1.10.0', 'tabulate>=0.7.7',
                       'docopt>=0.6.2', 'zenlog>=1.1', 'delegator.py>=0.0.12'],
     entry_points={
