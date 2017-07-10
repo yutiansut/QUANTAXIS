@@ -1,6 +1,6 @@
 {
   "name": "quantaxis",
-  "version": "0.3.8-dev-fetch",
+  "version": "0.4.0-alpha",
   "description": "An electron-vue project",
   "scripts": {
     "build": "node tasks/release.js",
