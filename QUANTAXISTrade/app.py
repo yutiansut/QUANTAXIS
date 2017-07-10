@@ -49,8 +49,8 @@ def get_account_stock():
     client = st.QA_trade_stock_login()
     data = st.QA_trade_stock_get_stock(client)
     return jsonify(data)
-@app.route('/trade/query/assests', methods=['GET'])
-def get_account_assests():
+@app.route('/trade/query/assets', methods=['GET'])
+def get_account_assets():
     st = QA_Trade_stock_api.QA_Stock()
     st.get_config()
     client = st.QA_trade_stock_login()
