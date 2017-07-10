@@ -292,8 +292,6 @@ class QA_Backtest():
         self.__init_cash_per_stock = int(
             float(self.account.init_assest) / len(self.strategy_stock_list))
 
-        print(self.account.init_assest)
-        input()
         # 策略的交易日循环
         for i in range(int(self.start_real_id), int(self.end_real_id) - 1, 1):
             # 正在进行的交易日期
@@ -375,7 +373,7 @@ class QA_Backtest():
 
         performace= QA_backtest_analysis_start(
             self.setting.client, self.strategy_stock_list, __messages,
-            self.trade_list[self.start_real_id:self.end_real_id],
+            self.trade_list[self.start_real_id:self.end_real_id+1],
             self.__market_data, self.__benchmark_data)
         _backtest_mes = {
                     'user': self.setting.QA_setting_user_name,
@@ -386,6 +384,7 @@ class QA_Backtest():
                     'account_cookie': self.account.account_cookie,
                     'annualized_returns': performace['annualized_returns'],
                     'benchmark_annualized_returns': performace['benchmark_annualized_returns'],
+                    'assets': performace['assets'],
                     'benchmark_assets': performace['benchmark_assets'],
                     'trade_date': performace['trade_date'],
                     'total_date': performace['total_date'],

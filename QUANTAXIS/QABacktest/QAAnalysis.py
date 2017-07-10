@@ -114,6 +114,7 @@ def QA_backtest_analysis_start(client, code_list, message, total_date, market_da
         'code': code_list,
         'annualized_returns': annualized_returns,
         'benchmark_annualized_returns': benchmark_annualized_returns,
+        'assets':assets_d,
         'benchmark_assets': benchmark_assets,
         'vol': volatility_year,
         'benchmark_vol': benchmark_volatility_year,

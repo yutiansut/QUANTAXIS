@@ -40,33 +40,6 @@ router.get('/history/all', function (req, res, next) {
 
 
 
-router.get('/market', function (req, res, next) {
-
-  cookie = req.query.cookie
-  console.log(cookie)
-  mongodb.connect('mongodb://localhost:27017/quantaxis', function (err, conn) {
-    conn.collection('backtest_history', function (err, coll) {
-      coll.find({
-        'cookie': cookie
-      }).toArray(function (err, docs) {
-        //console.log(docs.length)
-        data = []
-        for (id in docs) {
-          data.push({
-            'market': docs[id]['market'],
-            'bid': docs[id]['bid']
-          })
-        }
-        res.send(data)
-
-      })
-    })
-
-  })
-});
-
-
-
 
 router.get('/history/time', function (req, res, next) {
 

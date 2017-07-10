@@ -2,7 +2,7 @@
 import codecs
 import os
 import sys
-
+import QUANTAXIS
 try:
     from setuptools import setup
 except:
@@ -41,13 +41,12 @@ KEYWORDS = ["quantaxis", "quant", "finance"]
 关于当前包的一些关键字，方便PyPI进行分类。
 """
 
-AUTHOR = "yutiansut"
-
+AUTHOR = QUANTAXIS.__author__
 AUTHOR_EMAIL = "yutiansut@qq.com"
 
 URL = "http://www.yutiansut.com"
 
-VERSION = "0.4.0.alpha.dev03"
+VERSION = QUANTAXIS.__version__
 
 
 LICENSE = "MIT"

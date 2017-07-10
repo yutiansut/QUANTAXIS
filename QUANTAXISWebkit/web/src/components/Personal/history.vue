@@ -10,17 +10,29 @@
         <mu-table :height="height">
             <mu-thead>
                 <mu-tr>
-                    <mu-th>backtest history</mu-th>
+                    <mu-th>BACKTEST HISTORY</mu-th>
                 </mu-tr>
             </mu-thead>
             <template v-for="item in items">
+                 <mu-tr>
+                        <mu-td> </mu-td>
+                        <mu-td>date</mu-td>
+                        <mu-td>code</mu-td>
+                        <mu-td>price</mu-td>
+                        <mu-td>towards</mu-td>
+                        <mu-td>amounts</mu-td>
+                        <mu-td>commission</mu-td>
+                    </mu-tr>
                 <mu-tbody>
+                   
                     <mu-tr>
+                        
                         <mu-td>{{item[0]}}</mu-td>
                         <mu-td>{{item[1]}}</mu-td>
                         <mu-td>{{item[2]}}</mu-td>
                         <mu-td>{{item[3]}}</mu-td>
                         <mu-td>{{item[4]}}</mu-td>
+                        <mu-td>{{item[7]}}</mu-td>
     
                     </mu-tr>
                 </mu-tbody>
@@ -52,11 +64,9 @@ export default {
             console.log(val)
             axios.get('http://localhost:3000/backtest/history?cookie=' + val)
                 .then(response => {
-                    this.items = response.data['history'];
+                    this.items = response.data[0]['history'];
                     this.acc = response.data;
                     //console.log(this.items)
-                    //this.length = this.items.length;
-
                 })
                 .catch(function (error) {
                     console.log(error);
