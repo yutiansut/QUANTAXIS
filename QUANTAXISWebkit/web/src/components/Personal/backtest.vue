@@ -2,8 +2,8 @@
   <div id="index">
   
     <li class="input">
-      <input v-model="message" v-on:keyup.enter="info($event.currentTarget.value)" placeholder="edit me" lazy>
-      <input v-model="messages" v-on:keyup.enter="code($event.currentTarget.value)" placeholder="edit me" lazy>
+      <input v-model="message" v-on:keyup.enter="info($event.currentTarget.value)" placeholder="在此输入策略的用户名" lazy>
+      <input v-model="messages" v-on:keyup.enter="code($event.currentTarget.value)" placeholder="在此输入策略涉及的股票代码" lazy>
     </li>
     <mu-table :height="height">
       <mu-thead>
@@ -48,8 +48,8 @@ export default {
       height: '500px',
       multiSelectable: true,
       enableSelectAll: false,
-      message: 'yutiansut',
-      messages: 'code',
+      message: '',
+      messages: '',
       items: [''],
       total: 180,
       current: 1,

@@ -17,7 +17,7 @@
     "fs": "0.0.1-security",
     "fs.realpath": "^1.0.0",
     "highlight.js": "^9.12.0",
-    "muse-ui": "^2.0.3",
+    "muse-ui": "^2.1.0",
     "process-nextick-args": "^1.0.7",
     "simplemde": "^1.11.2",
     "util-deprecate": "^1.0.2",
