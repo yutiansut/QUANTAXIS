@@ -48,7 +48,7 @@ from QUANTAXIS.QASU.save_backtest import (QA_SU_save_account_message,
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_get_real_date,
                               QA_util_log_info)
 
-
+from QUANTAXIS import __version__
 class QA_Backtest():
 
     account = QA_Account()
@@ -373,12 +373,37 @@ class QA_Backtest():
             self.benchmark_code, self.start_real_date,
             self.end_real_date, self.setting.client.quantaxis.stock_day)
 
-        analysis_message = QA_backtest_analysis_start(
+        performace= QA_backtest_analysis_start(
             self.setting.client, self.strategy_stock_list, __messages,
             self.trade_list[self.start_real_id:self.end_real_id],
             self.__market_data, self.__benchmark_data)
-        QA_util_log_info(json.dumps(analysis_message, indent=2))
-        QA_util_log_info(json.dumps(__messages, indent=2))
+        _backtest_mes = {
+                    'user': self.setting.QA_setting_user_name,
+                    'strategy': self.strategy_name,
+                    'stock_list': performace['code'],
+                    'start_time': self.strategy_start_date, 
+                    'end_time': self.strategy_end_date,
+                    'account_cookie': self.account.account_cookie,
+                    'annualized_returns': performace['annualized_returns'],
+                    'benchmark_annualized_returns': performace['benchmark_annualized_returns'],
+                    'benchmark_assets': performace['benchmark_assets'],
+                    'trade_date': performace['trade_date'],
+                    'total_date': performace['total_date'],
+                    'win_rate': performace['win_rate'],
+                    'alpha': performace['alpha'],
+                    'beta': performace['beta'],
+                    'sharpe': performace['sharpe'],
+                    'vol': performace['vol'],
+                    'benchmark_vol': performace['benchmark_vol'],
+                    'max_drop': performace['max_drop'],
+                    'exist': __exist_time 
+                }
+
+
+        QA_SU_save_backtest_message(_backtest_mes, self.setting.client)
+        QA_SU_save_account_message( __messages,self.setting.client)
+        #QA_util_log_info(json.dumps(analysis_message, indent=2))
+        #QA_util_log_info(json.dumps(__messages, indent=2))
         QA_SU_save_account_to_csv(__messages)
         # QA.QA_SU_save_backtest_message(analysis_message, self.setting.client)
 
