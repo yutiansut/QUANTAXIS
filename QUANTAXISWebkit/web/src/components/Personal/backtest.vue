@@ -59,7 +59,7 @@ export default {
   methods: {
     info(message) {
       let val = message
-      console.log(val)
+      //console.log(val)
       axios.get('http://localhost:3000/backtest/info?name=' + val)
         .then(response => {
           this.items = response.data;
@@ -74,7 +74,7 @@ export default {
     },
     code(message) {
       let val = message
-      console.log(val)
+      //console.log(val)
       axios.get('http://localhost:3000/backtest/info_code?code=' + val)
         .then(response => {
           this.items = response.data;
