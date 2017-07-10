@@ -1,11 +1,15 @@
 <template>
   <div class="main_content">
+    <div>
+      <h2 align="left">> 业绩表现</h2>
+    </div>
     <div class="container">
+
+
       <router-link :to="{name:'history',params: {id:this.data0}}">
-        <mu-raised-button v-on:click='query()' label="成交明细" class="demo-raised-button" primary/>
+        <mu-raised-button label="成交明细" class="demo-raised-button" primary/>
       </router-link>
       <mu-raised-button v-on:click='ready()' label="行情数据" class="demo-raised-button" secondary/>
-      <mu-raised-button v-on:click='ready()' label="刷新图像" class="demo-raised-button" />
       <mu-divider />
     </div>
     <div>
@@ -46,6 +50,9 @@
       </mu-table>
   
     </div>
+    <div>
+      <h2 align="left">> 资金曲线</h2>
+    </div>
     <div id="main"></div>
   </div>
 </template>
@@ -60,7 +67,7 @@ export default {
       chart: null,
       data0: this.$route.params.id,
       time: [],
-      items: [{ 'code': 'loading..' }]
+      items: [{ 'alpha': 'loading..' }]
     }
   },
   methods: {
@@ -190,7 +197,6 @@ export default {
           this.items[0]['alpha'] = data['alpha'].toFixed(3)
           this.items[0]['beta'] = data['beta'].toFixed(4)
           this.items[0]['max_drop'] = data['max_drop'].toFixed(3)
-          this.items[0]['code'] = data['stock_list']
           this.items[0]['sharpe'] = data['sharpe'].toFixed(3)
           this.items[0]['vol'] = data['vol'].toFixed(5)
           this.items[0]['annualized_returns'] = data['annualized_returns'].toFixed(3)
@@ -198,7 +204,7 @@ export default {
           this.items[0]['benchmark_vol'] = data['benchmark_vol'].toFixed(5)
           this.items[0]['exist'] = data['exist']
           this.items[0]['win_rate'] = data['win_rate'].toFixed(3)
-
+          console.log(this.items)
 
 
           this.chart.setOption({
@@ -274,6 +280,7 @@ export default {
 }
 </script>
 <style>
+
 #main {
   position: relative;
   left: 0;
@@ -283,6 +290,8 @@ export default {
   height: 600px;
   border-radius: 10px;
 }
+
+
 
 #but {
   width: 100px;
