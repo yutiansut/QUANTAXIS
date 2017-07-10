@@ -13,11 +13,9 @@
                             <mu-thead>
                                 <mu-tr>
                                     <mu-th>strategy</mu-th>
-    
                                     <mu-th>start</mu-th>
                                     <mu-th>end</mu-th>
                                     <mu-th>annualized_returns</mu-th>
-    
                                 </mu-tr>
                             </mu-thead>
                         <mu-tbody>
@@ -26,7 +24,6 @@
                                 <router-link :to="{ name:'history',params: {id:item['account_cookie']}}">
                                    
                                     <mu-td>{{ item['strategy']}}</mu-td>
-    
                                     <mu-td>{{ item['start_time']}}</mu-td>
                                     <mu-td>{{ item['end_time']}}</mu-td>
                                     <mu-td>{{ item['annualized_returns']}}</mu-td>
