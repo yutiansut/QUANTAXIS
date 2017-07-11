@@ -410,7 +410,8 @@ class QA_Backtest():
                     'vol': performace['vol'],
                     'benchmark_vol': performace['benchmark_vol'],
                     'max_drop': performace['max_drop'],
-                    'exist': __exist_time 
+                    'exist': __exist_time,
+                    'time':datetime.datetime.now()
                 }
 
 
