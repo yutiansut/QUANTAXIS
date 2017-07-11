@@ -41,6 +41,7 @@
         - [1.16 修改了CLI中的创建example内容(0.3.9):](#116-修改了cli中的创建example内容039)
         - [1.17 增加了一个带参数的延时装饰器](#117-增加了一个带参数的延时装饰器)
         - [1.18 web 部分的改进](#118-web-部分的改进)
+        - [1.19 回测部分的最后一天停牌情况的处理](#119-回测部分的最后一天停牌情况的处理)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -362,6 +363,30 @@ web部分,修改了页面布局和回测的显示方式
 去除了之前单个股票和行情的对比
 
 改成了资金曲线和组合分析的方式
+
+
+### 1.19 回测部分的最后一天停牌情况的处理
+2017/7/10
+
+
+```python
+_remains_day=0
+while __message['header']['status']==500:
+    #停牌状态,这个时候按停牌的最后一天计算价值(假设平仓)
+    
+    __last_bid['date'] = self.trade_list[self.end_real_id-_remains_day]
+    _remains_day+=1
+    __message = self.market.receive_bid(__last_bid, self.setting.client)
+
+    #直到市场不是为0状态位置,停止前推日期
+```
+在原来的代码里,组合的最后一天需要被平仓,而如果恰巧这一天停牌:(600127,601001 在2017/6/30都是停牌状态)
+
+那么就会一直陷入市场返回500错误,而回测框架一直在组装报价,来回轮询,陷入死循环
+
+现在加入了对于市场的数据的检测,如果是500状态,则会将交易日向前递推一天,重新组装报价,直到停牌的最后一天为止
+
+
 ## 巨大改动/重构
 
 ### 2.1 QA.QAARP.QAAccount

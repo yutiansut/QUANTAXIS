@@ -64,7 +64,7 @@ def QA_backtest_analysis_start(client, code_list, message, total_date, market_da
     """
     # 计算一个benchmark
     # 这个benchmark 是在开始的那天 市价买入和策略所选标的一致的所有股票,然后一直持仓
-
+    
     trade_history = message['body']['account']['history']
     cash = message['body']['account']['cash']
     assets = message['body']['account']['assets']
