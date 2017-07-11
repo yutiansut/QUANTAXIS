@@ -26,13 +26,13 @@ QUANTAXIS与国内很多优秀的量化平台的区别在于,QA更多关注的�
 
 
 
-![version](https://img.shields.io/badge/Version-%200.3.9/gamma-orange.svg)
-![build](https://travis-ci.org/yutiansut/QUANTAXIS.svg?branch=0.3.9-beta)
+![version](https://img.shields.io/badge/Version-%200.4.0/alpha-orange.svg)
+![build](https://travis-ci.org/yutiansut/QUANTAXIS.svg?branch=0.4.0-alpha)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.8-brown.svg)
 ![Pypi](https://img.shields.io/badge/Pypi-%200.4.0-blue.svg)
 ![python](https://img.shields.io/badge/python-%203.5/3.6/win/ubuntu-darkgrey.svg)
-![Npm](https://img.shields.io/badge/Npm-%200.3.8-yellow.svg)
+![Npm](https://img.shields.io/badge/Npm-%200.4.0-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
 ![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
 
@@ -49,7 +49,6 @@ QUANTAXIS与国内很多优秀的量化平台的区别在于,QA更多关注的�
     - [部署问题:](#部署问题)
     - [回测Webkit插件概览](#回测webkit插件概览)
         - [Web版](#web版)
-        - [Client版](#client版)
     - [适用场景](#适用场景)
     - [todo list](#todo-list)
     - [Webkit大礼包](#webkit大礼包)
@@ -110,8 +109,7 @@ cd QUANTAXISWebkit
 ![](http://i1.piimg.com/1949/7b6e2fc347220f7b.png)
 ![](http://i1.piimg.com/567571/09bd05c3698f2d38.png)
 ![](http://i1.piimg.com/567571/053ac3e3850f8f60.png)
-### Client版
-![](http://i2.muimg.com/4851/25f8b959d5c6f794.png)
+
 ## 适用场景
 ![适用场景](http://i2.buimg.com/567571/e2e7b31b1f9a4307.png)
 
