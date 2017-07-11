@@ -27,6 +27,11 @@ import re
 import time
 import threading
 
+
+def QA_util_time_now():
+    return datetime.datetime.now()
+
+
 def QA_util_date_stamp(date):
     # date function
     datestr = str(date)[0:10]

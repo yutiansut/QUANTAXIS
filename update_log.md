@@ -42,6 +42,8 @@
         - [1.17 增加了一个带参数的延时装饰器](#117-增加了一个带参数的延时装饰器)
         - [1.18 web 部分的改进](#118-web-部分的改进)
         - [1.19 回测部分的最后一天停牌情况的处理](#119-回测部分的最后一天停牌情况的处理)
+        - [1.20 新增一个时间接口 QA_util_time_now()](#120-新增一个时间接口-qa_util_time_now)
+        - [1.21 新增一个QAWeb的接口](#121-新增一个qaweb的接口)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -385,6 +387,14 @@ while __message['header']['status']==500:
 那么就会一直陷入市场返回500错误,而回测框架一直在组装报价,来回轮询,陷入死循环
 
 现在加入了对于市场的数据的检测,如果是500状态,则会将交易日向前递推一天,重新组装报价,直到停牌的最后一天为止
+
+### 1.20 新增一个时间接口 QA_util_time_now()
+
+返回的就是datetime.datetime.now()的结果
+
+### 1.21 新增一个QAWeb的接口
+
+可以在命令行直接输入 quantaxis_web 来启动这个服务器
 
 
 ## 巨大改动/重构
