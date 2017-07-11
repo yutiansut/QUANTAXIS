@@ -136,7 +136,7 @@ export default {
         }, {
           name: 'account',
           max: 'dataMax',
-          min: 0
+          min: 'dataMin'
 
         }],
         legend: {
