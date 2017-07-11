@@ -396,7 +396,7 @@ while __message['header']['status']==500:
 ### 1.21 新增一个QAWeb的接口
 2017/7/10
 
-可以在命令行直接输入 quantaxis_web 来启动这个服务器,端口在5000
+可以在命令行直接输入 quantaxis_web 来启动这个服务器,端口在5050(带socket)
 
 
 ## 巨大改动/重构

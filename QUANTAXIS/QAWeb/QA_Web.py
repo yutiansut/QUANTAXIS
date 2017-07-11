@@ -41,5 +41,5 @@ def query_backtest_by_id(cookie_id):
 def main():
     from gevent import pywsgi
     from geventwebsocket.handler import WebSocketHandler
-    server = pywsgi.WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
+    server = pywsgi.WSGIServer(('', 5050), app, handler_class=WebSocketHandler)
     server.serve_forever()
