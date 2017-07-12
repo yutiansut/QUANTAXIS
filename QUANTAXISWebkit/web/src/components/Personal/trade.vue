@@ -104,7 +104,7 @@ export default {
           this.items = stock;
           //console.log(this.cash['account_id'])
           //this.items = cash;
-
+          this.query_positions()
         })
         .catch(function (error) {
           console.log(error);
