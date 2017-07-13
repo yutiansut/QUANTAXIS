@@ -44,6 +44,8 @@
         - [1.19 回测部分的最后一天停牌情况的处理](#119-回测部分的最后一天停牌情况的处理)
         - [1.20 新增一个时间接口 QA_util_time_now()](#120-新增一个时间接口-qa_util_time_now)
         - [1.21 新增一个QAWeb的接口](#121-新增一个qaweb的接口)
+        - [1.22 新增一个QACSV的接口](#122-新增一个qacsv的接口)
+        - [1.23 新增一个交易时间的变量](#123-新增一个交易时间的变量)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -397,6 +399,30 @@ while __message['header']['status']==500:
 2017/7/10
 
 可以在命令行直接输入 quantaxis_web 来启动这个服务器,端口在5050(带socket)
+
+### 1.22 新增一个QACSV的接口
+
+2017/7/13
+
+现在可以便捷的吧数据存成csv格式:
+
+```python
+import QUANTAXIS as QA
+
+data=['1',2,'x','t']
+QA.QA_util_save_csv(data,'test')
+
+```
+
+
+### 1.23 新增一个交易时间的变量
+2017/7/13
+
+```python
+from QUANTAXIS import trade_date_sse
+
+print(trade_date_sse)
+```
 
 
 ## 巨大改动/重构
