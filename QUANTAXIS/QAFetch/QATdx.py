@@ -26,7 +26,7 @@ import pandas as pd
 from pytdx.hq import TdxHq_API
 from QUANTAXIS.QAUtil import (QA_util_date_valid, QA_util_log_info,
                               QA_util_web_ping, trade_date_sse)
-
+import datetime
 # 基于Pytdx的数据接口,好处是可以在linux/mac上联入通达信行情
 # 具体参见rainx的pytdx(https://github.com/rainx/pytdx)
 #
@@ -119,11 +119,20 @@ from Pytdx/api-main
 
         api.disconnect()
 """
-def QA_fetch_get_stock_day(code, date,ip='119.147.212.81',port=7709):
+def QA_fetch_get_stock_day(code, start_date,end_date,ip='119.147.212.81',port=7709):
     with api.connect(ip, port):
-        data = api.get_security_bars(9, 0, code, 0, 10)  # 返回普通list
-        data = api.to_df(api.get_security_bars(
-            9, 0, '000001', 0, 10))  # 返回DataFrame
+
+        # 判断end_date在哪个位置
+        index_0=str(datetime.date.today())
+        index_of_index_0=trade_date_sse.index(index_0)
+        index_of_index_end=trade_date_sse.index(end_date)
+        index_of_index_start=trade_date_sse.index(start_date)
+        
+        index_of_end=index_of_index_0-index_of_index_end
+        index_length=index_of_index_end+1-index_of_index_start
+        data = api.get_security_bars(9, 0, code,index_of_end, index_length)  # 返回普通list
+        #data = api.to_df(api.get_security_bars(
+        #    9, 0, '000001', 0, 10))  # 返回DataFrame
     return data
 def QA_fetch_get_stock_list(code, date,ip='119.147.212.81',port=7709):
     with api.connect(ip, port):
@@ -138,3 +147,7 @@ def QA_fetch_get_index_day(code, date,ip='119.147.212.81',port=7709):
     with api.connect(ip, port):
         stocks = api.get_index_bars(9,1, '000001', 1, 2)
     return stocks
+
+
+if __name__=='__main__':
+    print(QA_fetch_get_stock_day('000001','2017-07-03','2017-07-10'))
