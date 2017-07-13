@@ -120,12 +120,12 @@ from Pytdx/api-main
         api.disconnect()
 """
 def QA_fetch_get_stock_day(code, start_date,end_date,ip='119.147.212.81',port=7709):
-    if str(code)[1]==6:
+    if str(code)[0]=='6':
         #0 - 深圳， 1 - 上海
         market_code=1
     else:
         market_code=0
-        
+
     start_date=QA_util_get_real_date(start_date,trade_date_sse,1)
     end_date=QA_util_get_real_date(end_date,trade_date_sse,-1)
     with api.connect(ip, port):
@@ -138,8 +138,8 @@ def QA_fetch_get_stock_day(code, start_date,end_date,ip='119.147.212.81',port=77
         
         index_of_end=index_of_index_0-index_of_index_end
         index_length=index_of_index_end+1-index_of_index_start
-        data = api.get_security_bars(9, 0, code,index_of_end, index_length)  # 返回普通list
-        data = api.to_df(api.get_security_bars(9, 0, code,index_of_end, index_length))  # 返回DataFrame
+        #data = api.get_security_bars(9, market_code, code,index_of_end, index_length)  # 返回普通list
+        data = api.to_df(api.get_security_bars(9, market_code, code,index_of_end, index_length))  # 返回DataFrame
     return data
 def QA_fetch_get_stock_list(code, date,ip='119.147.212.81',port=7709):
     with api.connect(ip, port):
