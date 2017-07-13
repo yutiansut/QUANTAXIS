@@ -33,6 +33,7 @@ QAFetch is Under [QAStandard#0.0.2@10x] Protocol
 """
 from . import QAWind as QAWind
 from . import QATushare as QATushare
+from . import QATdx as QATdx
 from .QAQuery import QA_fetch_stock_day,QA_fetch_stocklist_day,QA_fetch_index_day
 #import QAFetch.QAGmsdk as QAGmsdk
 #import QAFetch.QACrawlData as QACD
@@ -51,6 +52,8 @@ def use(package):
         return QAWind
     elif package in ['tushare','ts']:
         return QATushare
+    elif package in ['tdx','pytdx']:
+        return QATdx
 
 def QA_fetch_get_stock_day(package,name,startDate,endDate):
     Engine=use(package)

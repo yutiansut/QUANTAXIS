@@ -85,7 +85,13 @@ def QA_util_is_trade(date, code, client):
 
 
 def QA_util_get_real_date(date, trade_list, towards):
-        #print(date in trade_list)
+    """
+    获取真实的交易日期,其中,第三个参数towards是表示向前/向后推
+    towards=1 日期向后迭代
+    towards=-1 日期向前迭代
+    @ yutiansut
+    
+    """
     if towards == 1:
         while date not in trade_list:
             date = str(datetime.datetime.strptime(

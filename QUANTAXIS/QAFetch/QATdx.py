@@ -24,7 +24,7 @@
 import numpy as np
 import pandas as pd
 from pytdx.hq import TdxHq_API
-from QUANTAXIS.QAUtil import (QA_util_date_valid, QA_util_log_info,
+from QUANTAXIS.QAUtil import (QA_util_date_valid, QA_util_log_info,QA_util_get_real_date,
                               QA_util_web_ping, trade_date_sse)
 import datetime
 # 基于Pytdx的数据接口,好处是可以在linux/mac上联入通达信行情
@@ -120,6 +120,14 @@ from Pytdx/api-main
         api.disconnect()
 """
 def QA_fetch_get_stock_day(code, start_date,end_date,ip='119.147.212.81',port=7709):
+    if str(code)[1]==6:
+        #0 - 深圳， 1 - 上海
+        market_code=1
+    else:
+        market_code=0
+        
+    start_date=QA_util_get_real_date(start_date,trade_date_sse,1)
+    end_date=QA_util_get_real_date(end_date,trade_date_sse,-1)
     with api.connect(ip, port):
 
         # 判断end_date在哪个位置
@@ -150,3 +158,4 @@ def QA_fetch_get_index_day(code, date,ip='119.147.212.81',port=7709):
 
 if __name__=='__main__':
     print(QA_fetch_get_stock_day('000001','2017-07-03','2017-07-10'))
+    print(QA_fetch_get_stock_day('000001','2017-07-01','2017-07-09'))
