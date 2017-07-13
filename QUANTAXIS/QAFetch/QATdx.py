@@ -1,9 +1,31 @@
 # coding:utf-8
-
-from pytdx.hq import TdxHq_API
-import pandas as pd
+#
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 import numpy as np
-from QUANTAXIS.QAUtil import QA_util_date_valid, QA_util_log_info,QA_util_web_ping
+import pandas as pd
+from pytdx.hq import TdxHq_API
+from QUANTAXIS.QAUtil import (QA_util_date_valid, QA_util_log_info,
+                              QA_util_web_ping, trade_date_sse)
 
 # 基于Pytdx的数据接口,好处是可以在linux/mac上联入通达信行情
 # 具体参见rainx的pytdx(https://github.com/rainx/pytdx)
@@ -116,4 +138,3 @@ def QA_fetch_get_index_day(code, date,ip='119.147.212.81',port=7709):
     with api.connect(ip, port):
         stocks = api.get_index_bars(9,1, '000001', 1, 2)
     return stocks
- 
