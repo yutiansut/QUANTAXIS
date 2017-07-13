@@ -33,7 +33,7 @@ by yutiansut
 """
 
 
-__version__ = ' 0.4.0-alpha-dev07'
+__version__ = ' 0.4.0-alpha-dev08'
 __author__ = 'yutiansut'
 
 # fetch methods
@@ -76,7 +76,7 @@ from QUANTAXIS.QATask import QA_Queue, QA_Event
 from QUANTAXIS.QAUtil.QAType import (
     QA_util_ensure_date, QA_util_ensure_dict, QA_util_ensure_ms, QA_util_ensure_timeSerires)
 from QUANTAXIS.QAUtil import (QA_util_sql_mongo_setting, QA_util_cfg_initial, QA_util_realtime,
-                              QA_util_id2date, QA_util_is_trade,
+                              QA_util_id2date, QA_util_is_trade,trade_date_sse,
                               QA_util_date_stamp, QA_util_time_stamp, QA_util_ms_stamp,
                               QA_util_log_debug, QA_util_log_expection, QA_util_log_info,
                               QA_start_initial, QA_Setting, QA_util_get_date_index,

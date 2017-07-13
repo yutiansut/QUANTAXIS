@@ -27,7 +27,6 @@ def test_message(message):
     emit('my response', {'data': 'got it!'})
 
 
-
 @app.route("/")
 def hello():
     return "Hello World!"
