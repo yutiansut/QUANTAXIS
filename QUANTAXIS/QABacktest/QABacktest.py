@@ -287,7 +287,7 @@ class QA_Backtest():
 
     def handle_data(self, strategy_fp):
         # 首先判断是否能满足回测的要求`
-
+        _info={}
         __messages = {}
         self.__init_cash_per_stock = int(
             float(self.account.init_assest) / len(self.strategy_stock_list))
@@ -318,7 +318,7 @@ class QA_Backtest():
                     else:
                         __hold = 0
                     __result = strategy_fp.predict(
-                        __data['market'], __data['account'], __hold)
+                        __data['market'], __data['account'], __hold,_info)
 
                     if float(self.account.message['body']['account']['cash'][-1]) > 0:
 

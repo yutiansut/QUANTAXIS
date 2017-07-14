@@ -13,7 +13,7 @@ class strategy:
         pass
 
     @classmethod
-    def predict(self, market, account, hold):
+    def predict(self, market, account, hold,info):
         """
         一个极其简单的示例策略,随机 随机真的随机
         """
