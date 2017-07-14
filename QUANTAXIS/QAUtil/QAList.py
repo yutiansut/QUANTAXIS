@@ -21,24 +21,11 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-""""
-yutiansut
-util tool
-"""
 
-
-from .QADate import(QA_util_date_stamp, QA_util_time_stamp, QA_util_ms_stamp, QA_util_date_valid,
-                    QA_util_realtime, QA_util_id2date, QA_util_is_trade, QA_util_get_date_index,
-                    QA_util_get_index_date, QA_util_get_real_date, QA_util_select_hours,
-                    QA_util_select_min,QA_util_time_delay,QA_util_time_now)
-from .QASql import (QA_util_sql_mongo_setting)
-from .QALogs import (
-    QA_util_log_debug, QA_util_log_expection, QA_util_log_info)
-from .QACfg import (QA_util_cfg_initial, QA_util_get_cfg)
-from .QASetting import QA_Setting
-from .QAWeb import QA_util_web_ping
-from .QADate_trade import trade_date_sse
-from .QACsv import QA_util_save_csv
-from .QAList import QA_util_multi_demension_list
-def QA_start_initial(files):
-    pass
+def QA_util_multi_demension_list(row_,col_):
+    # row_ 是行, col_ 是列
+    """
+    如果需要创建一个[[],[]], 那就用 row_=2,col=0
+    其他时候,返回的都是[[None]]
+    """
+    return  [[None for col in range(col_)] for row in range(row_)]

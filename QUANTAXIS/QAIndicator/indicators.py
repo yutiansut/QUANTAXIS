@@ -40,7 +40,8 @@ QUANTAXIS  指标计算
 import numpy as np
 import pandas as pd
 
-
+#TODO
+#基于无状态的pd结构的指标
 
 def QA_indicator_dma(data, f, s, N):
     """

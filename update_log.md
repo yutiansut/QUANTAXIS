@@ -48,6 +48,7 @@
         - [1.23 新增一个交易时间的变量](#123-新增一个交易时间的变量)
         - [1.24 新增一个k线接口(通达信)](#124-新增一个k线接口通达信)
         - [1.25 在回测的时候,增加一个回测内全局变量](#125-在回测的时候增加一个回测内全局变量)
+        - [1.26 新增一个创建多维list的函数](#126-新增一个创建多维list的函数)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -575,6 +576,27 @@ Out[3]:
 
 
 在quantaxis/test/new test的strategy里面可以看到改动
+
+
+### 1.26 新增一个创建多维list的函数
+2017/7/14
+
+在QUANTAXIS.QAUtil中, 接口的名称是  QA_util_multi_demension_list(row_,col_)
+
+如果需要创建一个[[],[]], 那就用 row_=2,col=0
+其他时候,返回的都是[[None]]
+
+```python
+import QUANTAXIS as QA
+QA.QAUtil.QA_util_multi_demension_list(3,0)
+QA.QAUtil.QA_util_multi_demension_list(3,3)
+
+```
+```shell
+
+[[], [], []]
+[[None, None, None], [None, None, None], [None, None, None]]
+```
 
 ## 巨大改动/重构
 
