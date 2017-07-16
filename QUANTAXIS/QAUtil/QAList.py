@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-def QA_util_multi_demension_list(row_,col_):
+def QA_util_multi_demension_list(row_,col_=0):
     # row_ 是行, col_ 是列
     """
     如果需要创建一个[[],[]], 那就用 row_=2,col=0
