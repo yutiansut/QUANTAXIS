@@ -35,7 +35,6 @@
     "passport-github": "^1.1.0",
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
-    "phantom": "^4.0.0",
     "pug": "^2.0.0-beta11",
     "request": "^2.79.0",
     "selenium-webdriver": "^3.0.1",

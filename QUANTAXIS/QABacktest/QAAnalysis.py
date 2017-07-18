@@ -6,8 +6,11 @@ we will give some function
 import  numpy
 import math
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_data
-
+from QUANTAXIS.QAUtil import QA_util_log_info
 def QA_backtest_analysis_start(client,message,days):
+    #print('start analysis')
+    #print(message)
+    #input()
     # 主要要从message_history分析
     # 1.收益率
     # 2.胜率
@@ -48,7 +51,7 @@ def QA_backtest_analysis_start(client,message,days):
     #benchmark年化收益
     benchmark_annualized_returns=QA_backtest_calc_profit_per_year(benchmark_assest,days)
 
-    assest_history=message['body']['account']['assest_history'][1::]
+    assest_history=message['body']['account']['assest_history']
     #days=len(assest_history)-1
     #策略年化收益
     annualized_returns=QA_backtest_calc_profit_per_year(assest_history,days)
@@ -123,8 +126,8 @@ def QA_backtest_calc_beta(assest_profit,benchmark_profit,benchmark_volatility_ye
             assest_profit.append(0)
     elif len(assest_profit)>len(benchmark_profit):
          for i in range(0,len(assest_profit)-len(benchmark_profit),1):
-            assest_profit.append(0)
-
+            benchmark_profit.append(0)
+   #assest_profit
 
     #print(assest_profit)
     #print(benchmark_profit)
@@ -134,7 +137,8 @@ def QA_backtest_calc_beta(assest_profit,benchmark_profit,benchmark_volatility_ye
 def QA_backtest_calc_profit(assest_history):
     return (assest_history[-1]/assest_history[1])-1
 def QA_backtest_calc_profit_per_year(assest_history,days):
-
+    #QA_util_log_info(assest_history)
+    #QA_util_log_info(days)
     return float(float(assest_history[-1])/float(assest_history[0])-1)/int(days)*250
 
 def QA_backtest_calc_profit_matrix(assest_history):
@@ -192,7 +196,9 @@ def QA_backtest_calc_win_rate(profit_day):
             belowz=belowz+1
     if belowz==0:
         belowz=1
-    win_rate=abovez/len(profit_day)
+    if abovez==0:
+        abovez=1
+    win_rate=abovez/(abovez+belowz)
     return win_rate
 
 def QA_backtest_plot_assest():

@@ -3,7 +3,6 @@ import sys
 from datetime import datetime
 from threading import *
 from .EventManager import *
-from QUANTAXIS.QASignal import QA_Signal_eventManager,QA_Signal_events
 from QUANTAXIS.QAUtil import QA_util_log_info
 
 # this is a standard module of writing signal

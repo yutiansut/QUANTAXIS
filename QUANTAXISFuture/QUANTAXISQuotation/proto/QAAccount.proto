@@ -1,0 +1,48 @@
+syntax="proto2";
+package QAAccount;
+message QA_Account_setting_trade {
+    required string host= 1;
+    required int port = 2;
+    required string version =3;
+    required int branchID =4;
+    required string accountNo =5;
+    required string tradeAccountNo = 6;
+    required string password =7;
+    required string txPassword = 8;
+
+};
+
+message QA_Account_setting_l1 {
+    required string host= 1;
+    required int port = 2;
+    required string version =3;
+    required int branchID =4;
+    required string accountNo =5;
+    required string tradeAccountNo = 6;
+    required string password =7;
+    required string txPassword = 8;
+
+};
+message QA_Account_setting_l2 {
+    required string host= 1;
+    required int port = 2;
+    required string version =3;
+    required int branchID =4;
+    required string accountNo =5;
+    required string tradeAccountNo = 6;
+    required string password =7;
+    required string txPassword = 8;
+
+};
+
+message QA_Account_setting_other {
+    required string host= 1;
+    required int port = 2;
+    required string version =3;
+    required int branchID =4;
+    required string accountNo =5;
+    required string tradeAccountNo = 6;
+    required string password =7;
+    required string txPassword = 8;
+
+};

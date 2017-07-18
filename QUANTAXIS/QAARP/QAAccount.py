@@ -1,6 +1,5 @@
 # encoding: UTF-8
 from QUANTAXIS.QAUtil import QA_util_log_info
-from QUANTAXIS.QABacktest.QABacktest_standard import QA_backtest_standard_record_account,QA_backtest_standard_record_market
 from QUANTAXIS.QABacktest import QAAnalysis as Ana
 from .QARisk import *
 import random
@@ -73,7 +72,7 @@ class QA_Account:
                     },
                     'bid':{},
                     'market':{},
-                    'time':datetime.datetime.now(),
+                    #'time':datetime.datetime.now(),
                     'date_stamp':str(datetime.datetime.now().timestamp())
 
 
@@ -102,7 +101,7 @@ class QA_Account:
             # towards<1 卖出成功
             # 拿到新的交易的价格等
             self.account_date.append(update_message['date'])
-            QA_util_log_info('Success')
+           # QA_util_log_info('Success')
             new_id=update_message['id']
             new_amount=update_message['amount']
             new_trade_date=update_message['date']
@@ -183,7 +182,8 @@ class QA_Account:
 
             self.QA_account_calc_profit(update_message)
             self.account_date.append(update_message['date'])
-            QA_util_log_info('hold without bid')
+            #QA_util_log_info('hold without bid')
+            #print(update_message['user'])
             message={
                 'header':{
                     'source':'account',
@@ -203,6 +203,7 @@ class QA_Account:
                         'assest_now':self.assets,
                         'assest_history':self.total_assest,
                         'assest_free':self.assets_free,
+                        'total_assest_free':self.total_assest_free,
                         'assest_fix':self.assets_market_hold_value,
                         'profit':self.portfit,
                         'account_date':self.account_date,
@@ -214,15 +215,17 @@ class QA_Account:
                     },
                     'bid':update_message['bid'],
                     'market':update_message['market'],
-                    'time':datetime.datetime.now(),
+                    #'time':datetime.datetime.now(),
                     'date_stamp':str(datetime.datetime.now().timestamp())
 
 
                 }
             }
+            self.message=message
+            #print(message)
             #属于不更新history和portfolio,但是要继续增加账户和日期的
         elif update_message['status']==402:
-            QA_util_log_info('bid not success')
+            #QA_util_log_info('bid not success')
             message={
                 'header':{
                     'source':'account',
@@ -241,6 +244,7 @@ class QA_Account:
                         'history':self.history_trade,
                         'assest_now':self.assets,
                         'assest_history':self.total_assest,
+                        'total_assest_free':self.total_assest_free,
                         'assest_free':self.assets_free,
                         'assest_fix':self.assets_market_hold_value,
                         'profit':self.portfit,
@@ -253,13 +257,13 @@ class QA_Account:
                     },
                     'bid':update_message['bid'],
                     'market':update_message['market'],
-                    'time':datetime.datetime.now(),
+                    #'time':datetime.datetime.now(),
                     'date_stamp':str(datetime.datetime.now().timestamp())
 
 
                 }
             }
-
+            self.message=message
         #print(self.message)
         return self.message
         
@@ -393,9 +397,10 @@ class QA_Account:
         return self.message
 
     def QA_account_receive_deal(self,message,client):
-        
+        #print(message)
 
         messages=self.QA_account_update({
+            'code':message['header']['code'],
             'status':message['header']['status'],
             'price':message['body']['bid']['price'],
             'id':message['body']['bid']['code'],

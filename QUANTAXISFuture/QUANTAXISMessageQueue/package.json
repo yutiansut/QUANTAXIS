@@ -1,0 +1,22 @@
+{
+  "name": "quantaxismessagequeue",
+  "version": "1.0.0",
+  "description": "",
+  "main": "client.js",
+  "dependencies": {
+    "_bindings@1.2.1@bindings": "^1.2.1",
+    "_nan@2.3.5@nan": "^2.3.5",
+    "_zmq@2.15.3@zmq": "^2.15.3",
+    "events": "^1.1.1",
+    "http-proxy": "^1.16.2",
+    "kafka-node": "^1.6.2",
+    "zeromq": "^4.2.1",
+    "zmq": "^2.15.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

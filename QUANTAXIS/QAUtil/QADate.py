@@ -43,3 +43,22 @@ def QA_util_is_trade(date,code,client):
         return True
     except:
         return False
+
+
+
+def QA_util_get_real_date(date,trade_list,towards):
+        #print(date in trade_list)
+        if towards==1:
+            while date not in trade_list:
+                date= str(datetime.datetime.strptime(date, '%Y-%m-%d')  + datetime.timedelta(days = 1))[0:10]
+            else: 
+                return date
+        elif towards==-1:
+            while date not in trade_list:
+                date= str(datetime.datetime.strptime(date, '%Y-%m-%d')  - datetime.timedelta(days = 1))[0:10]
+            else: 
+                return date
+def QA_util_get_date_index(date,trade_list):
+    return trade_list.index(date)
+def QA_util_get_index_date(id,trade_list):
+    return trade_list[id]
