@@ -21,9 +21,22 @@ var _charset = require('../utils/charset');
 
 require('../utils/fetch');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+function _toConsumableArray(arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
+      arr2[i] = arr[i];
+    }
+    return arr2;
+  } else {
+    return Array.from(arr);
+  }
+}
 
 /**
  * getHistory: 获取个股历史数据
@@ -54,9 +67,13 @@ var getHistory = exports.getHistory = function getHistory() {
   return fetch(url).then(_util.checkStatus).then(function (res) {
     return res.json();
   }).then(function (json) {
-    return { data: json };
+    return {
+      data: json
+    };
   }).catch(function (error) {
-    return { error: error };
+    return {
+      error: error
+    };
   });
 };
 
@@ -88,11 +105,15 @@ var getTick = exports.getTick = function getTick() {
         result.push(line.split('\t'));
       }
     });
-    return { data: result };
+    return {
+      data: result
+    };
   };
 
   return fetch(url).then(_util.checkStatus).then((0, _charset.charset)('GBK')).then(mapData).catch(function (error) {
-    return { error: error };
+    return {
+      error: error
+    };
   });
 };
 
@@ -120,9 +141,13 @@ var getTodayAll = exports.getTodayAll = function getTodayAll() {
   return fetch(url).then(_util.checkStatus).then(function (res) {
     return res.text();
   }).then(function (data) {
-    return { data: eval(data) };
+    return {
+      data: eval(data)
+    };
   }).catch(function (error) {
-    return { error: error };
+    return {
+      error: error
+    };
   });
 };
 
@@ -164,7 +189,9 @@ var getTodayAll = exports.getTodayAll = function getTodayAll() {
 var getLiveData = exports.getLiveData = function getLiveData() {
   var query = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-  var defaults = { codes: ['600000'] };
+  var defaults = {
+    codes: ['600000']
+  };
   var options = Object.assign({}, defaults, query);
   var codes = options.codes.map(function (code) {
     return (0, _util.codeToSymbol)(code);
@@ -180,11 +207,15 @@ var getLiveData = exports.getLiveData = function getLiveData() {
       return [symbol].concat(_toConsumableArray(records));
     });
 
-    return { data: result };
+    return {
+      data: result
+    };
   };
 
   return fetch(url).then(_util.checkStatus).then((0, _charset.charset)('GBK')).then(mapData).catch(function (error) {
-    return { error: error };
+    return {
+      error: error
+    };
   });
 };
 
@@ -226,9 +257,13 @@ var getTodayTick = exports.getTodayTick = function getTodayTick() {
   return fetch(url).then(_util.checkStatus).then(function (res) {
     return res.json();
   }).then(function (json) {
-    return { data: json };
+    return {
+      data: json
+    };
   }).catch(function (error) {
-    return { error: error };
+    return {
+      error: error
+    };
   });
 };
 
@@ -253,11 +288,15 @@ var getIndex = exports.getIndex = function getIndex() {
         amount: records[9]
       };
     });
-    return { data: result };
+    return {
+      data: result
+    };
   };
 
   return fetch(url).then(_util.checkStatus).then((0, _charset.charset)('GBK')).then(mapData).catch(function (error) {
-    return { error: error };
+    return {
+      error: error
+    };
   });
 };
 
@@ -308,10 +347,14 @@ var getSinaDD = exports.getSinaDD = function getSinaDD() {
         type: ddArr[6]
       };
     });
-    return { data: result };
+    return {
+      data: result
+    };
   };
 
   return fetch(url).then(_util.checkStatus).then((0, _charset.charset)('GBK')).then(mapData).catch(function (error) {
-    return { error: error };
+    return {
+      error: error
+    };
   });
 };

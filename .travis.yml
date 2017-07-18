@@ -1,3 +1,4 @@
+
 language: python
 python:
   - "3.5.2"
@@ -17,6 +18,3 @@ script: "python setup.py install"
  
 #after_success:
     #"python easy_start_tushare.py"
-
-
-  

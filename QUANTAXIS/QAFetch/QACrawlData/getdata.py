@@ -1,14 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import urllib.request
-import json
 import datetime
+import json
+import socket
 import time
+import urllib.request
+from multiprocessing.dummy import Pool
+
+import lxml
 import pandas as pd
 from bs4 import *
-import lxml
-from multiprocessing.dummy import Pool
-import socket
 
 
 def _get_data(url):
@@ -1228,4 +1229,3 @@ def get_future_tick(symbol):
     TICK = pd.DataFrame(TICK)
     TICK = TICK.set_index('date')
     return TICK
-

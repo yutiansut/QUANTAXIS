@@ -3,7 +3,8 @@ celery
 pandas
 lxml
 requests
-numpy 
-scipy 
+numpy==1.12.0
 pytesseract
-
+flask_socketio
+flask-sockets==0.2.1 
+gevent-websocket==0.10.1

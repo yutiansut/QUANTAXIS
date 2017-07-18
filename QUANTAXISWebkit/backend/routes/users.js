@@ -28,13 +28,18 @@ router.get('/signup', function (req, res, next) {
     if (req.query.password) {
       var password = req.query.password;
       console.log(password)
-      
+
       mongodb.connect('mongodb://localhost:27017/quantaxis', function (err, conn) {
         conn.collection('user_list', function (err, coll) {
-          coll.find({ 'username': name }).toArray(function (err, docs) {
-            if (docs[0]==undefined) {
+          coll.find({
+            'username': name
+          }).toArray(function (err, docs) {
+            if (docs[0] == undefined) {
               console.log('none username')
-              coll.insert({ 'username': name, 'password': password }, function (err, docs) {
+              coll.insert({
+                'username': name,
+                'password': password
+              }, function (err, docs) {
                 console.log(docs)
                 res.send('success')
 
@@ -52,20 +57,22 @@ router.get('/login', function (req, res, next) {
     var name = req.query.name;
     mongodb.connect('mongodb://localhost:27017/quantaxis', function (err, conn) {
       conn.collection('user_list', function (err, coll) {
-        coll.find({ 'username': name }).toArray(function (err, docs) {
+        coll.find({
+          'username': name
+        }).toArray(function (err, docs) {
           console.log(docs[0])
-          if (docs[0]!=undefined){
-              var password = docs[0].password
-              console.log(req.query.password)
-              console.log(password)
-              if (req.query.password) {
-                if (password == req.query.password) {
-                  res.send('success')
-                } else {
-                  res.send('wrong password')
-                  console.log('wrong password')
-                }
-              } else res.send('no password')
+          if (docs[0] != undefined) {
+            var password = docs[0].password
+            console.log(req.query.password)
+            console.log(password)
+            if (req.query.password) {
+              if (password == req.query.password) {
+                res.send('success')
+              } else {
+                res.send('wrong password')
+                console.log('wrong password')
+              }
+            } else res.send('no password')
 
 
           }

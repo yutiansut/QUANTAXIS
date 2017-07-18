@@ -1,68 +1,51 @@
-# QUANTAXIS 量化金融策略框架
-  
-QUANTAXIS量化工具箱,实现了股票和期货市场的全品种回测.通过分布式爬虫进行数据抓取,构建了响应式的数据清洗和行情推送引擎.搭建了支持多语言的开放式回测框架.并构建了交互可视化的客户端和网站.
+## quantaxis ![NPM version](https://img.shields.io/npm/v/quantaxis.svg?style=flat)
 
-> 0.3.9 版本将对于一体化和模块化流程进行进一步的优化
+ Integrated Quantitative Framework
 
-![version](https://img.shields.io/badge/Version-%200.3.9dev/alpha-orange.svg)
-![Pypi](https://img.shields.io/badge/Pypi-%200.3.9-blue.svg)
-![Npm](https://img.shields.io/badge/Npm-%200.3.9-yellow.svg)
-![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
-![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
-![QQ group](https://img.shields.io/badge/QQGroup-%20563280067-yellow.svg)
-![WebSite](https://img.shields.io/badge/Website-%20www.yutiansut.com-brown.svg)
-![QQ](https://img.shields.io/badge/AutherQQ-%20279336410-blue.svg)
-
-
-![QUANTAXIS LOGO](http://i1.piimg.com/1949/62c510db7915837a.png)
-
-
-
-``` nodejs
-mkdir web && cd web
-npm install cnpm -g
-cnpm install quantaxiswebkit
-cd node_modules/quantaxiswebkit
-npm run all
+### Installation
+```bash
+$ npm install quantaxis
 ```
 
-
-
+### Example
+```js
+var quantaxis = require('quantaxis');
 ```
-一键安装
-npm run install
-一键启动所有服务:
-npm run all
 
-安装后台
-npm run install-backend
-安装web
-npm run install-web
-安装client
-npm run install-client
+### API
+check this file: ``
 
+### Contributing
+- Fork this Repo first
+- Clone your Repo
+- Install dependencies by `$ npm install`
+- Checkout a feature branch
+- Feel free to add your features
+- Make sure your features are fully tested
+- Publish your local branch, Open a pull request
+- Enjoy hacking <3
 
-一键启动web+后台
-npm run Xweb
+### MIT license
+Copyright (c) 2017 yutiansut
 
-一键启动Client+后台
-npm run Xclient
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-只启动backend (后台)
-npm run backend
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-只启动前端web
-npm run website
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 
-只启动客户端Client
-npm run client
-```
-## 回测Webkit插件概览
-### Web版
-![](http://i1.piimg.com/567571/1b8ace2f83859112.png)
-
-![](http://i2.muimg.com/567571/5079341ad1461a91.png)
-![](http://i1.piimg.com/567571/09bd05c3698f2d38.png)
-![](http://i1.piimg.com/567571/053ac3e3850f8f60.png)
-### Client版
-![](http://i2.muimg.com/4851/25f8b959d5c6f794.png)
+---
+![docor]()
+built upon love by [docor](git+https://github.com/turingou/docor.git) v0.3.0
