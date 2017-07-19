@@ -33,7 +33,7 @@ by yutiansut
 """
 
 
-__version__ = ' 0.4.0-alpha-dev11'
+__version__ = ' 0.4.0-alpha-dev12'
 __author__ = 'yutiansut'
 
 # fetch methods

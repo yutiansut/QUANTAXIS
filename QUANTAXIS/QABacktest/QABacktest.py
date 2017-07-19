@@ -49,6 +49,8 @@ from QUANTAXIS.QAUtil import (QA_Setting, QA_util_get_real_date,
                               QA_util_log_info)
 
 from QUANTAXIS import __version__
+
+
 class QA_Backtest():
 
     account = QA_Account()
@@ -282,13 +284,13 @@ class QA_Backtest():
                          tabulate([self.strategy_stock_list]))
         self.__QA_backtest_set_bid_model()
 
-        #self.bid.QA_bid_insert()
+        # self.bid.QA_bid_insert()
         self.handle_data(strategy_fp)
 
     def handle_data(self, strategy_fp):
         # 首先判断是否能满足回测的要求`
-        _info={}
-        _info['stock_list']=self.strategy_stock_list
+        _info = {}
+        _info['stock_list'] = self.strategy_stock_list
         __messages = {}
         self.__init_cash_per_stock = int(
             float(self.account.init_assest) / len(self.strategy_stock_list))
@@ -318,9 +320,9 @@ class QA_Backtest():
                         __hold = 1
                     else:
                         __hold = 0
-                    
+
                     __result = strategy_fp.predict(
-                        __data['market'], __data['account'], __hold,_info)
+                        __data['market'], __data['account'], __hold, _info)
 
                     if float(self.account.message['body']['account']['cash'][-1]) > 0:
 
@@ -335,9 +337,9 @@ class QA_Backtest():
         # 在回测的最后一天,平掉所有仓位(回测的最后一天是不买入的)
         while len(self.account.hold) > 1:
             __hold_list = self.account.hold[1::]
-            pre_del_id=[]
-            for item_ in range(0,len(__hold_list)):
-                if __hold_list[item_][3]>0:
+            pre_del_id = []
+            for item_ in range(0, len(__hold_list)):
+                if __hold_list[item_][3] > 0:
                     __last_bid = self.bid.bid
                     __last_bid['amount'] = int(__hold_list[item_][3])
                     __last_bid['order_id'] = str(random.random())
@@ -351,16 +353,18 @@ class QA_Backtest():
                     __last_bid['status'] = '0x01'
                     __last_bid['amount_model'] = 'amount'
 
-                    __message = self.market.receive_bid(__last_bid, self.setting.client)
-                    _remains_day=0
-                    while __message['header']['status']==500:
-                        #停牌状态,这个时候按停牌的最后一天计算价值(假设平仓)
-                        
-                        __last_bid['date'] = self.trade_list[self.end_real_id-_remains_day]
-                        _remains_day+=1
-                        __message = self.market.receive_bid(__last_bid, self.setting.client)
+                    __message = self.market.receive_bid(
+                        __last_bid, self.setting.client)
+                    _remains_day = 0
+                    while __message['header']['status'] == 500:
+                        # 停牌状态,这个时候按停牌的最后一天计算价值(假设平仓)
 
-                        #直到市场不是为0状态位置,停止前推日期
+                        __last_bid['date'] = self.trade_list[self.end_real_id - _remains_day]
+                        _remains_day += 1
+                        __message = self.market.receive_bid(
+                            __last_bid, self.setting.client)
+
+                        # 直到市场不是为0状态位置,停止前推日期
 
                     __messages = self.account.QA_account_receive_deal(
                         __message)
@@ -371,6 +375,12 @@ class QA_Backtest():
             for item_x in pre_del_id:
                 __hold_list.pop(item_x)
 
+        try:
+            # 在末尾增加一个回调给策略
+            strategy_fp.on_end(
+                __data['market'], __data['account'], __hold, _info)
+        except:
+            pass
         # 开始分析
         QA_util_log_info('start analysis====\n' +
                          str(self.strategy_stock_list))
@@ -388,43 +398,59 @@ class QA_Backtest():
             self.benchmark_code, self.start_real_date,
             self.end_real_date, self.setting.client.quantaxis.stock_day)
 
-        performace= QA_backtest_analysis_start(
+        performace = QA_backtest_analysis_start(
             self.setting.client, self.strategy_stock_list, __messages,
-            self.trade_list[self.start_real_id:self.end_real_id+1],
+            self.trade_list[self.start_real_id:self.end_real_id + 1],
             self.__market_data, self.__benchmark_data)
         _backtest_mes = {
-                    'user': self.setting.QA_setting_user_name,
-                    'strategy': self.strategy_name,
-                    'stock_list': performace['code'],
-                    'start_time': self.strategy_start_date, 
-                    'end_time': self.strategy_end_date,
-                    'account_cookie': self.account.account_cookie,
-                    'annualized_returns': performace['annualized_returns'],
-                    'benchmark_annualized_returns': performace['benchmark_annualized_returns'],
-                    'assets': performace['assets'],
-                    'benchmark_assets': performace['benchmark_assets'],
-                    'trade_date': performace['trade_date'],
-                    'total_date': performace['total_date'],
-                    'win_rate': performace['win_rate'],
-                    'alpha': performace['alpha'],
-                    'beta': performace['beta'],
-                    'sharpe': performace['sharpe'],
-                    'vol': performace['vol'],
-                    'benchmark_vol': performace['benchmark_vol'],
-                    'max_drop': performace['max_drop'],
-                    'exist': __exist_time,
-                    'time':datetime.datetime.now()
-                }
-
+            'user': self.setting.QA_setting_user_name,
+            'strategy': self.strategy_name,
+            'stock_list': performace['code'],
+            'start_time': self.strategy_start_date,
+            'end_time': self.strategy_end_date,
+            'account_cookie': self.account.account_cookie,
+            'annualized_returns': performace['annualized_returns'],
+            'benchmark_annualized_returns': performace['benchmark_annualized_returns'],
+            'assets': performace['assets'],
+            'benchmark_assets': performace['benchmark_assets'],
+            'trade_date': performace['trade_date'],
+            'total_date': performace['total_date'],
+            'win_rate': performace['win_rate'],
+            'alpha': performace['alpha'],
+            'beta': performace['beta'],
+            'sharpe': performace['sharpe'],
+            'vol': performace['vol'],
+            'benchmark_vol': performace['benchmark_vol'],
+            'max_drop': performace['max_drop'],
+            'exist': __exist_time,
+            'time': datetime.datetime.now()
+        }
 
         QA_SU_save_backtest_message(_backtest_mes, self.setting.client)
-        QA_SU_save_account_message( __messages,self.setting.client)
-        #QA_util_log_info(json.dumps(analysis_message, indent=2))
-        #QA_util_log_info(json.dumps(__messages, indent=2))
+        QA_SU_save_account_message(__messages, self.setting.client)
         QA_SU_save_account_to_csv(__messages)
         # QA.QA_SU_save_backtest_message(analysis_message, self.setting.client)
 
     def __QA_backtest_excute_bid(self, __result,  __date, __hold, __code, __amount):
+        """
+        这里是处理报价的逻辑部分
+        2017/7/19 修改
+
+        __result传进来的变量重新区分: 现在需要有 if_buy, if_sell
+        因为需要对于: 持仓状态下继续购买进行进一步的支持*简单的情形就是  浮盈加仓
+
+        if_buy, if_sell都需要传入
+
+        现在的 买卖状态 和 持仓状态 是解耦的
+        """
+
+        # 为了兼容性考虑,我们会在开始的时候检查是否有这些变量
+        if 'if_buy' not in list(__result.keys()):
+            __result['if_buy'] = 0
+
+        if 'if_sell' not in list(__result.keys()):
+            __result['if_sell'] = 0
+
         self.__QA_backtest_set_bid_model()
         if self.bid.bid['bid_model'] == 'strategy':
             __bid_price = __result['price']
@@ -443,6 +469,7 @@ class QA_Backtest():
             __result['amount'], __amount)
 
         if __result['if_buy'] == 1:
+            # 这是买入的情况
             __bid['towards'] = 1
             __message = self.market.receive_bid(
                 __bid, self.setting.client)
@@ -450,18 +477,28 @@ class QA_Backtest():
             if float(self.account.message['body']['account']['cash'][-1]) > \
                     float(__message['body']['bid']['price']) * \
                     float(__message['body']['bid']['amount']):
+                    # 这里是买入资金充足的情况
+                    # 不去考虑
                 pass
             else:
+                # 如果买入资金不充足,则按照可用资金去买入
                 __message['body']['bid']['amount'] = int(float(
                     self.account.message['body']['account']['cash'][-1]) / float(
-                        __message['body']['bid']['price'] * 100)) * 100
+                        float(str(__message['body']['bid']['price'])[0:5]) * 100)) * 100
 
             if __message['body']['bid']['amount'] > 0:
+                # 这个判断是为了 如果买入资金不充足,所以买入报了一个0量单的情况
+                #如果买入量>0, 才判断为成功交易
                 self.account.QA_account_receive_deal(__message)
 
-        elif __result['if_buy'] == 0 and __hold == 0:
+        elif __result['if_buy'] == 0:
+            # 如果买入状态为0,则不进行任何买入操作
             pass
-        elif __result['if_buy'] == 0 and __hold == 1:
+
+        # 下面是卖出操作,这里在卖出前需要考虑一个是否有仓位的问题:
+        # 因为在股票中是不允许卖空操作的,所以这里是股票的交易引擎和期货的交易引擎的不同所在
+
+        if __result['if_sell'] == 1 and __hold == 1:
             __bid['towards'] = -1
             __message = self.market.receive_bid(
                 __bid, self.setting.client)

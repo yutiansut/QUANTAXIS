@@ -49,6 +49,7 @@
         - [1.24 新增一个k线接口(通达信)](#124-新增一个k线接口通达信)
         - [1.25 在回测的时候,增加一个回测内全局变量](#125-在回测的时候增加一个回测内全局变量)
         - [1.26 新增一个创建多维list的函数](#126-新增一个创建多维list的函数)
+        - [1.27 修改了一个QABacktest的传参, 现在在策略中,需要指定买卖状态](#127-修改了一个qabacktest的传参-现在在策略中需要指定买卖状态)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -597,6 +598,109 @@ QA.QAUtil.QA_util_multi_demension_list(3,3)
 [[], [], []]
 [[None, None, None], [None, None, None], [None, None, None]]
 ```
+
+
+### 1.27 修改了一个QABacktest的传参, 现在在策略中,需要指定买卖状态
+2017/7/19
+
+现在 QUANTAXIS在接受策略的传参的时候,需要指定买卖状态
+
+在开始的时候,quantaxis使用的是if_buy和账户状态来判断是否买卖的
+
+- 账户持仓, if_buy=1 视为卖出
+- 账户空仓, if_buy=1 视为买入
+
+买卖行为和账户状态相关联对于买卖的行为有很大的限制,现在对于这个行为和账户持仓状态进行了解耦
+
+同时,为了兼容性,如果策略并没有给出if_buy或者if_sell,则会将其初始化为0,及不操作
+
+
+
+
+
+以下是改动后的源代码
+
+```python
+    def __QA_backtest_excute_bid(self, __result,  __date, __hold, __code, __amount):
+        """
+        这里是处理报价的逻辑部分
+        2017/7/19 修改
+
+        __result传进来的变量重新区分: 现在需要有 if_buy, if_sell
+        因为需要对于: 持仓状态下继续购买进行进一步的支持*简单的情形就是  浮盈加仓
+
+        if_buy, if_sell都需要传入
+
+        现在的 买卖状态 和 持仓状态 是解耦的
+        """
+
+        # 为了兼容性考虑,我们会在开始的时候检查是否有这些变量
+        if 'if_buy' not in list(__result.keys()):
+            __result['if_buy'] = 0
+
+        if 'if_sell' not in list(__result.keys()):
+            __result['if_sell'] = 0
+
+        self.__QA_backtest_set_bid_model()
+        if self.bid.bid['bid_model'] == 'strategy':
+            __bid_price = __result['price']
+        else:
+            __bid_price = self.bid.bid['price']
+
+        __bid = self.bid.bid
+
+        __bid['order_id'] = str(random.random())
+        __bid['user'] = self.setting.QA_setting_user_name
+        __bid['strategy'] = self.strategy_name
+        __bid['code'] = __code
+        __bid['date'] = __date
+        __bid['price'] = __bid_price
+        __bid['amount'], __bid['amount_model'] = self.__QA_bid_amount(
+            __result['amount'], __amount)
+
+        if __result['if_buy'] == 1:
+            # 这是买入的情况
+            __bid['towards'] = 1
+            __message = self.market.receive_bid(
+                __bid, self.setting.client)
+
+            if float(self.account.message['body']['account']['cash'][-1]) > \
+                    float(__message['body']['bid']['price']) * \
+                    float(__message['body']['bid']['amount']):
+                    # 这里是买入资金充足的情况
+                    # 不去考虑
+                pass
+            else:
+                # 如果买入资金不充足,则按照可用资金去买入
+                __message['body']['bid']['amount'] = int(float(
+                    self.account.message['body']['account']['cash'][-1]) / float(
+                        float(str(__message['body']['bid']['price'])[0:5]) * 100)) * 100
+
+            if __message['body']['bid']['amount'] > 0:
+                # 这个判断是为了 如果买入资金不充足,所以买入报了一个0量单的情况
+                #如果买入量>0, 才判断为成功交易
+                self.account.QA_account_receive_deal(__message)
+
+        elif __result['if_buy'] == 0:
+            # 如果买入状态为0,则不进行任何买入操作
+            pass
+
+        # 下面是卖出操作,这里在卖出前需要考虑一个是否有仓位的问题:
+        # 因为在股票中是不允许卖空操作的,所以这里是股票的交易引擎和期货的交易引擎的不同所在
+
+        if __result['if_sell'] == 1 and __hold == 1:
+            __bid['towards'] = -1
+            __message = self.market.receive_bid(
+                __bid, self.setting.client)
+
+            self.account.QA_account_receive_deal(
+                __message)
+```
+
+
+
+
+
 
 ## 巨大改动/重构
 

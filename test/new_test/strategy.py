@@ -13,7 +13,7 @@ class strategy:
         pass
 
     @classmethod
-    def predict(self, market, account, hold,info):
+    def predict(self, market, account, hold, info):
         """
         一个极其简单的示例策略,随机 随机真的随机
         """
@@ -21,19 +21,19 @@ class strategy:
         if hold == 0:
             __dat = random.random()
             if __dat > 0.5:
-                return {'if_buy': 1, 'amount':'mean'}
+                return {'if_buy': 1, 'if_sell': 0, 'amount': 'mean'}
             else:
-                return {'if_buy': 0,'amount': 'mean'}
+                return {'if_buy': 0, 'if_sell': 1, 'amount': 'mean'}
         else:
             __dat = random.random()
             if __dat > 0.5:
-                return {'if_buy': 1,'amount': 'mean'}
+                return {'if_buy': 1, 'if_sell': 0, 'amount': 'mean'}
             else:
-                
-                return {'if_buy': 0,'amount': 'all'}
+
+                return {'if_buy': 0, 'if_sell': 1, 'amount': 'all'}
 
 
 d = QA.QA_Backtest()
-#d.QA_backtest_import_setting()
+# d.QA_backtest_import_setting()
 d.QA_backtest_init()
 d.QA_backtest_start(strategy())
