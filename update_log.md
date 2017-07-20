@@ -50,6 +50,7 @@
         - [1.25 在回测的时候,增加一个回测内全局变量](#125-在回测的时候增加一个回测内全局变量)
         - [1.26 新增一个创建多维list的函数](#126-新增一个创建多维list的函数)
         - [1.27 修改了一个QABacktest的传参, 现在在策略中,需要指定买卖状态](#127-修改了一个qabacktest的传参-现在在策略中需要指定买卖状态)
+        - [1.28 对于backtest的加载的外部函数的接口进行修改](#128-对于backtest的加载的外部函数的接口进行修改)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -698,8 +699,16 @@ QA.QAUtil.QA_util_multi_demension_list(3,3)
 ```
 
 
+### 1.28 对于backtest的加载的外部函数的接口进行修改
+2017/7/20
 
+对于backtest的加载的外部策略,现在暂时有以下三个句柄
 
+- on_start
+- strategy
+- on_end
+
+其中,on_start/on_end这两个句柄可有可无, strategy句柄是必须要有的
 
 
 ## 巨大改动/重构

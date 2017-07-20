@@ -297,7 +297,11 @@ class QA_Backtest():
 
         # 初始化报价模式
         self.__QA_backtest_set_bid_model()
-
+        try:
+            # 在末尾增加一个回调给策略
+            outside_handle.on_start(self)
+        except:
+            pass
         # 加载外部策略
         self.__QA_backest_handle_data(outside_handle)
 
