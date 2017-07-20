@@ -43,20 +43,42 @@ import pandas as pd
 #TODO
 #基于无状态的pd结构的指标
 
-def QA_indicator_dma(data, f, s, N):
+def QA_indicator_dma(data, f=10, s=50, N=10):
     """
     平行线差指标
     中短期指标/趋势指标
     通过计算两条基准周期不同的移动平均线的差值,来判断当前买入卖出能量的大小和未来价格走势的趋势
     """
-    
+    _dma=pd.Series(data).rolling(f).mean()-pd.Series(data).rolling(s).mean()
+    _ama=pd.Series(_dma).rolling(N).mean()
 
+    return _dma,_ama
 
 def QA_indicator_dmi(data):
+    """
+    趋向指标
+    中长期指标
+    用于判断多空力量由于受到价格波动的影响而发生的由均衡到失衡的过程
+
+    """
     pass
 
 
 def QA_indicator_dpo(data):
+    """
+    区间振荡
+    数个短周波的组合，构成一个长周波。观察短周波的运动规律，可以估计长周波峰谷出现的时机。
+    例如：
+    四个短期循环底部，构成一个长期循环底部。
+    因此，DPO指标刻意忽略较长周期的波动，一方面可以减少周期干扰的混淆，一方面可以凸显个别周期的波动。
+
+    
+    一段周期的移动平均线，其周期的二分之一处，是价格重心的聚集点。
+    以20天的周期为例，第10天是整段周期的重心平衡点。
+    移动平均线的形状，很像一条波浪状扭曲的绳子，股价在这条绳子的周围，上下来回穿梭。
+    如果消除扭曲的波动，将这条绳子拉平，重心平衡点视为图表上的0轴。把当日价格与重心平衡点间的差距，绘制于0轴的上下方。
+    如此一来，可以更清楚的显现出短周期的高、低点。
+    """
     pass
 
 
@@ -370,3 +392,8 @@ def QA_indicator_stix(data):
     pass
 
 
+if __name__=='__main__':
+    import QUANTAXIS as QA
+    import pymongo
+    data=QA.QA_fetch_stock_day('600016','2017-01-01','2017-07-01').T[1].astype(float)
+    print(QA_indicator_dma(data))
