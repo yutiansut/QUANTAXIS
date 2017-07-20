@@ -64,7 +64,7 @@ def QA_indicator_dmi(data):
     pass
 
 
-def QA_indicator_dpo(data):
+def QA_indicator_dpo(data,N=20,M=6):
     """
     区间振荡
     数个短周波的组合，构成一个长周波。观察短周波的运动规律，可以估计长周波峰谷出现的时机。
@@ -72,19 +72,29 @@ def QA_indicator_dpo(data):
     四个短期循环底部，构成一个长期循环底部。
     因此，DPO指标刻意忽略较长周期的波动，一方面可以减少周期干扰的混淆，一方面可以凸显个别周期的波动。
 
-    
+
     一段周期的移动平均线，其周期的二分之一处，是价格重心的聚集点。
     以20天的周期为例，第10天是整段周期的重心平衡点。
     移动平均线的形状，很像一条波浪状扭曲的绳子，股价在这条绳子的周围，上下来回穿梭。
     如果消除扭曲的波动，将这条绳子拉平，重心平衡点视为图表上的0轴。把当日价格与重心平衡点间的差距，绘制于0轴的上下方。
     如此一来，可以更清楚的显现出短周期的高、低点。
     """
-    pass
+    _dpo=pd.Series(data)-pd.Series(data).rolling(N/2+1).mean()
+    _madpo=pd.Series(_dpo).rolling(M).mean()
+    return _dpo,_madpo
 
-
-def QA_indicator_jlhb(data):
-    pass
-
+def QA_indicator_jlhb(data,N=7,M=5):
+    """
+    绝路航标
+    滞后指标,灵敏性很差,容易出假信号
+    N:=7;M:=5;
+    VAR1:=(CLOSE-LLV(LOW,60))/(HHV(HIGH,60)-LLV(LOW,60))*80;
+    B:SMA(VAR1,N,1);
+    VAR2:SMA(B,M,1);
+    绝路航标:IF(CROSS(B,VAR2) AND B<40,38,0),COLORYELLOW,LINETHICK2;
+    DRAWICON( 绝路航标>0,38,1 );
+    """
+    
 
 def QA_indicator_cho(data):
     pass
