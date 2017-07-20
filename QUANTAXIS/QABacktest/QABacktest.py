@@ -268,27 +268,34 @@ class QA_Backtest():
 
         self.account.init_assest = self.__backtest_setting['account']['account_assets']
 
-    def QA_backtest_init_ma(self):
-
-        self.account.init()
-
+    def __QA_backtest_init_inside(self):
+        """
+        这是模型内部的 初始化,主要是初始化一些账户和市场资产
+        写成了私有函数
+        @yutiansut
+        2017/7/20
+        """
+        
         # 重新初始账户资产
-
+        self.account.init()
         # 重新初始化账户的cookie
         self.account.account_cookie = str(random.random())
-        # print(self.strategy_stock_list)
         # 初始化股票池的市场数据
         self.__market_data = QA_fetch_stocklist_day(
             self.strategy_stock_list, self.setting.client.quantaxis.stock_day,
             [self.trade_list[self.start_real_id - int(self.strategy_gap)],
              self.trade_list[self.end_real_id]])
 
-    def QA_backtest_start(self, outside_handle):
+    def QA_backtest_start(self, outside_handle,*args,**kwargs):
+        """
+        这个是回测流程开始的入口
+        
+        """
         assert len(self.strategy_stock_list) > 0
         assert len(self.trade_list) > 0
         assert isinstance(self.start_real_date, str)
         assert isinstance(self.end_real_date, str)
-        self.QA_backtest_init_ma()
+        self.__QA_backtest_init_inside()
 
         assert len(self.__market_data) == len(self.strategy_stock_list)
 
@@ -297,9 +304,11 @@ class QA_Backtest():
             [[str(__version__), str(self.strategy_name)]], headers=('Version', 'Strategy_name')))
         QA_util_log_info('Stock_List: \n' +
                          tabulate([self.strategy_stock_list]))
+
+        # 初始化报价模式
         self.__QA_backtest_set_bid_model()
 
-        # self.bid.QA_bid_insert()
+        # 加载外部策略
         self.__QA_backest_handle_data(outside_handle)
 
     def __QA_backest_handle_data(self, outside_handle):
