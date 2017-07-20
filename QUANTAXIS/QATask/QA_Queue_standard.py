@@ -100,7 +100,7 @@ class QA_Queue(threading.Thread):
                     else:
                         QA_util_log_info("From Engine %s" % str(threading.current_thread()) 
                          + "Engine will waiting for new task ...")
-                        time.sleep(1)
+                        time.sleep(5)
                 except:
                     time.sleep(1)
                     self.run()
@@ -108,7 +108,8 @@ class QA_Queue(threading.Thread):
                 if __res > 0:
                     QA_util_log_info("From Engine %s: There are still %d tasks to do" % (
                         str(threading.current_thread()), __res))
-                threading.Timer(0.05,self.run)
+                #input()
+                threading.Timer(0.005,self.run)
     def pause(self):
         self.__flag.clear()   
     def resume(self):

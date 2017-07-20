@@ -64,16 +64,7 @@ class QA_Backtest():
     clients = setting.client
     user = setting.QA_setting_user_name
 
-    # 引入几个treading
-    engine_bid = queue.Queue()
-    engine_market = queue.Queue()
-    engine_account = queue.Queue()
-    engine_task = queue.Queue()
-    engine_main = queue.Queue()
-    bid_engine = QA_Queue(engine_bid)
-    market_engine = QA_Queue(engine_market)
-    bid_engine.setName('bid')
-    market_engine.setName('market')
+
     """
     backtest 类不应该只是一个简单的构造函数,他应该包含一个回测框架常用的方法和一些定制化的需求实现
     @yutiansut
@@ -274,7 +265,7 @@ class QA_Backtest():
         @yutiansut
         2017/7/20
         """
-        
+
         # 重新初始账户资产
         self.account.init()
         # 重新初始化账户的cookie
@@ -285,10 +276,10 @@ class QA_Backtest():
             [self.trade_list[self.start_real_id - int(self.strategy_gap)],
              self.trade_list[self.end_real_id]])
 
-    def QA_backtest_start(self, outside_handle,*args,**kwargs):
+    def QA_backtest_start(self, outside_handle, *args, **kwargs):
         """
         这个是回测流程开始的入口
-        
+
         """
         assert len(self.strategy_stock_list) > 0
         assert len(self.trade_list) > 0
@@ -350,10 +341,10 @@ class QA_Backtest():
                         __data['market'], __data['account'], __hold, _info)
 
                     if float(self.account.message['body']['account']['cash'][-1]) > 0:
-
                         self.__QA_backtest_excute_bid(
                             __result, __running_date, __hold,
                             str(self.strategy_stock_list[__j])[0:6], __amount)
+
                     else:
                         QA_util_log_info('not enough free money')
                 else:
@@ -515,7 +506,6 @@ class QA_Backtest():
                 # 这个判断是为了 如果买入资金不充足,所以买入报了一个0量单的情况
                 #如果买入量>0, 才判断为成功交易
                 self.account.QA_account_receive_deal(__message)
-
         elif __result['if_buy'] == 0:
             # 如果买入状态为0,则不进行任何买入操作
             pass
@@ -528,8 +518,7 @@ class QA_Backtest():
             __message = self.market.receive_bid(
                 __bid, self.setting.client)
 
-            self.account.QA_account_receive_deal(
-                __message)
+            self.account.QA_account_receive_deal(__message)
 
     def __QA_bid_amount(self, __strategy_amount, __amount):
         if __strategy_amount == 'mean':
@@ -556,10 +545,10 @@ class QA_Backtest():
         return {'market': __market_data, 'account': __message}
 
 
-
 class QA_Backtest_min():
     pass
 
+
 if __name__ == '__main__':
     backtest = QA_Backtest()
-    #backtest.bid_engine.start()
+    # backtest.bid_engine.start()

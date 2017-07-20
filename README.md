@@ -31,7 +31,7 @@ QUANTAXIS与国内很多优秀的量化平台的区别在于,QA更多关注的�
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.8-brown.svg)
 ![Pypi](https://img.shields.io/badge/Pypi-%200.4.0-blue.svg)
-![python](https://img.shields.io/badge/python-%203.5/3.6/win/ubuntu-darkgrey.svg)
+![python](https://img.shields.io/badge/python-%203.6/win/ubuntu-darkgrey.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.4.0-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
 ![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
@@ -68,7 +68,7 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.8
 ## 部署问题:
 
 - Windows/Linux(ubuntu) 已测试通过
-- python3.6优先(开发环境) python2 回测框架不兼容(attention! 之后会逐步用更多高级语法)   [*] 如果需要交易,请下载32位的python3.6
+- python3.6(开发环境) python2 回测框架不兼容(attention! 之后会逐步用更多高级语法)   [*] 如果需要交易,请下载32位的python3.6
 - nodejs 需要安装>7的版本,来支持es6语法
 - mongodb是必须要装的
 
