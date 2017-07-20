@@ -31,12 +31,13 @@ import re
 import sys
 import time
 
+import apscheduler
+import numpy as np
+import pandas as pd
 import pymongo
-from tabulate import tabulate
-
-import configparser
 from QUANTAXIS import *
-from QUANTAXIS import QA_Market, QA_Portfolio, QA_QAMarket_bid, QA_Risk
+from QUANTAXIS import (QA_Market, QA_Portfolio, QA_QAMarket_bid, QA_Risk,
+                       __version__)
 from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_index_day, QA_fetch_stock_day,
@@ -48,7 +49,11 @@ from QUANTAXIS.QASU.save_backtest import (QA_SU_save_account_message,
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_get_real_date,
                               QA_util_log_info)
 
-from QUANTAXIS import __version__
+from QUANTAXIS.QATask import QA_Queue
+from tabulate import tabulate
+
+import configparser
+import queue
 
 
 class QA_Backtest():
@@ -60,6 +65,16 @@ class QA_Backtest():
     clients = setting.client
     user = setting.QA_setting_user_name
 
+    # 引入几个treading
+    engine_bid = queue.Queue()
+    engine_market = queue.Queue()
+    engine_account = queue.Queue()
+    engine_task = queue.Queue()
+    engine_main = queue.Queue()
+    bid_engine = QA_Queue(engine_bid)
+    market_engine = QA_Queue(engine_market)
+    bid_engine.setName('bid')
+    market_engine.setName('market')
     """
     backtest 类不应该只是一个简单的构造函数,他应该包含一个回测框架常用的方法和一些定制化的需求实现
     @yutiansut
@@ -268,7 +283,7 @@ class QA_Backtest():
             [self.trade_list[self.start_real_id - int(self.strategy_gap)],
              self.trade_list[self.end_real_id]])
 
-    def QA_backtest_start(self, strategy_fp):
+    def QA_backtest_start(self, outside_handle):
         assert len(self.strategy_stock_list) > 0
         assert len(self.trade_list) > 0
         assert isinstance(self.start_real_date, str)
@@ -285,9 +300,11 @@ class QA_Backtest():
         self.__QA_backtest_set_bid_model()
 
         # self.bid.QA_bid_insert()
-        self.handle_data(strategy_fp)
+        self.__QA_backest_handle_data(outside_handle)
 
-    def handle_data(self, strategy_fp):
+    def __QA_backest_handle_data(self, outside_handle):
+        '这个outside_handle就是一个外部的注入函数'
+
         # 首先判断是否能满足回测的要求`
         _info = {}
         _info['stock_list'] = self.strategy_stock_list
@@ -321,7 +338,7 @@ class QA_Backtest():
                     else:
                         __hold = 0
 
-                    __result = strategy_fp.predict(
+                    __result = outside_handle.predict(
                         __data['market'], __data['account'], __hold, _info)
 
                     if float(self.account.message['body']['account']['cash'][-1]) > 0:
@@ -377,7 +394,7 @@ class QA_Backtest():
 
         try:
             # 在末尾增加一个回调给策略
-            strategy_fp.on_end(
+            outside_handle.on_end(
                 __data['market'], __data['account'], __hold, _info)
         except:
             pass
@@ -531,5 +548,10 @@ class QA_Backtest():
         return {'market': __market_data, 'account': __message}
 
 
-class QA_Backtest_min(QA_Backtest):
+
+class QA_Backtest_min():
     pass
+
+if __name__ == '__main__':
+    backtest = QA_Backtest()
+    #backtest.bid_engine.start()
