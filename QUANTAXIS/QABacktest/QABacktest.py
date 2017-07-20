@@ -57,7 +57,6 @@ import queue
 
 
 class QA_Backtest():
-
     account = QA_Account()
     market = QA_Market()
     bid = QA_QAMarket_bid()

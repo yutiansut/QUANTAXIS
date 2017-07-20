@@ -33,7 +33,7 @@ by yutiansut
 """
 
 
-__version__ = ' 0.4.0-alpha-dev12'
+__version__ = ' 0.4.0-alpha-dev13'
 __author__ = 'yutiansut'
 
 # fetch methods
@@ -76,13 +76,13 @@ from QUANTAXIS.QATask import QA_Queue, QA_Event
 from QUANTAXIS.QAUtil.QAType import (
     QA_util_ensure_date, QA_util_ensure_dict, QA_util_ensure_ms, QA_util_ensure_timeSerires)
 from QUANTAXIS.QAUtil import (QA_util_sql_mongo_setting, QA_util_cfg_initial, QA_util_realtime,
-                              QA_util_id2date, QA_util_is_trade,trade_date_sse,
+                              QA_util_id2date, QA_util_is_trade, trade_date_sse,
                               QA_util_date_stamp, QA_util_time_stamp, QA_util_ms_stamp,
                               QA_util_log_debug, QA_util_log_expection, QA_util_log_info,
                               QA_start_initial, QA_Setting, QA_util_get_date_index,
                               QA_util_get_index_date, QA_util_get_real_date, QA_util_select_hours,
-                              QA_util_select_min, QA_util_time_delay,QA_util_time_now,
-                              QA_util_save_csv,QA_util_multi_demension_list)
+                              QA_util_select_min, QA_util_time_delay, QA_util_time_now,
+                              QA_util_save_csv, QA_util_multi_demension_list)
 
 from QUANTAXIS.QAIndicator import *
 from QUANTAXIS.QASQL import qasql, qacold
@@ -92,7 +92,17 @@ import QUANTAXIS.QACmd
 
 from QUANTAXIS.QACmd import QA_cmd
 import argparse
-QA_util_log_info('Welcome to QUANTAXIS, the Version is '+__version__)
+
+
+# 检查python版本:
+# 检查python版本
+import sys
+if sys.version_info.major != 3 or sys.version_info.minor != 6:
+    print('wrong version, should be 3.6 version')
+    sys.exit()
+
+
+QA_util_log_info('Welcome to QUANTAXIS, the Version is ' + __version__)
 QA_util_log_info(' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
  ``########`````##````````##``````````##`````````####````````##```##########````````#``````##``````###```##`````######`` \n \
