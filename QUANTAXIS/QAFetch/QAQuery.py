@@ -60,7 +60,7 @@ def QA_fetch_stock_day(code, startDate, endDate, collections=QA_Setting.client.q
         elif type_ == 'list':
             data = list_a
         elif type_ == 'pandas':
-            data = DataFrame(list_a, index=[
+            data = DataFrame(list_a, columns=[
                              'code', 'open', 'high', 'low', 'close', 'volume', 'date', 'turnover'])
         return data
     else:

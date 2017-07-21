@@ -51,6 +51,7 @@
         - [1.26 新增一个创建多维list的函数](#126-新增一个创建多维list的函数)
         - [1.27 修改了一个QABacktest的传参, 现在在策略中,需要指定买卖状态](#127-修改了一个qabacktest的传参-现在在策略中需要指定买卖状态)
         - [1.28 对于backtest的加载的外部函数的接口进行修改](#128-对于backtest的加载的外部函数的接口进行修改)
+        - [1.29 修改了QA_Query 里返回的数组格式](#129-修改了qa_query-里返回的数组格式)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -710,7 +711,39 @@ QA.QAUtil.QA_util_multi_demension_list(3,3)
 
 其中,on_start/on_end这两个句柄可有可无, strategy句柄是必须要有的
 
+### 1.29 修改了QA_Query 里返回的数组格式
+2017/7/21
 
+```python
+def QA_fetch_stock_day(code, startDate, endDate, collections=QA_Setting.client.quantaxis.stock_day, type_='numpy'):
+    # print(datetime.datetime.now())
+    startDate = str(startDate)[0:10]
+    endDate = str(endDate)[0:10]
+
+    if QA_util_date_valid(endDate) == True:
+
+        list_a = []
+
+        for item in collections.find({
+            'code': str(code)[0:6], "date_stamp": {
+                "$lte": QA_util_date_stamp(endDate),
+                "$gte": QA_util_date_stamp(startDate)}}):
+            list_a.append([str(item['code']), float(item['open']), float(item['high']), float(
+                item['low']), float(item['close']), float(item['volume']), item['date'], float(item['turnover'])])
+        ## 多种数据格式
+        if type_ == 'numpy':
+            data = numpy.asarray(list_a)
+        elif type_ == 'list':
+            data = list_a
+        elif type_ == 'pandas':
+            data = DataFrame(list_a, columns=[
+                             'code', 'open', 'high', 'low', 'close', 'volume', 'date', 'turnover'])
+        return data
+    else:
+        QA_util_log_info('something wrong with date')
+
+```
+现在可以通过QA_fetch_stock_day里面选择是返回list,numpy还是dataframe. 为了兼容性考虑,默认依然是numpy
 ## 巨大改动/重构
 
 ### 2.1 QA.QAARP.QAAccount
