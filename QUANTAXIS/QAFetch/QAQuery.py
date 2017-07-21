@@ -39,7 +39,7 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_valid,
 """
 
 
-def QA_fetch_stock_day(code, startDate, endDate, collections=QA_Setting.client.quantaxis.stock_day, type_='numpy'):
+def QA_fetch_stock_day(code, startDate, endDate, type_='numpy', collections=QA_Setting.client.quantaxis.stock_day,):
     # print(datetime.datetime.now())
     startDate = str(startDate)[0:10]
     endDate = str(endDate)[0:10]
@@ -54,7 +54,7 @@ def QA_fetch_stock_day(code, startDate, endDate, collections=QA_Setting.client.q
                 "$gte": QA_util_date_stamp(startDate)}}):
             list_a.append([str(item['code']), float(item['open']), float(item['high']), float(
                 item['low']), float(item['close']), float(item['volume']), item['date'], float(item['turnover'])])
-        ## 多种数据格式
+        # 多种数据格式
         if type_ == 'numpy':
             data = numpy.asarray(list_a)
         elif type_ == 'list':
