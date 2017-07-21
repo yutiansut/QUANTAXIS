@@ -28,6 +28,7 @@ import datetime
 import numpy
 from bson.objectid import ObjectId
 from pandas import DataFrame
+import pandas as pd
 
 from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_valid,
                               QA_util_log_info, QA_Setting)
@@ -38,7 +39,7 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_valid,
 """
 
 
-def QA_fetch_stock_day(code, startDate, endDate, collections=QA_Setting.client.quantaxis.stock_day):
+def QA_fetch_stock_day(code, startDate, endDate, collections=QA_Setting.client.quantaxis.stock_day, type_='numpy'):
     # print(datetime.datetime.now())
     startDate = str(startDate)[0:10]
     endDate = str(endDate)[0:10]
@@ -53,8 +54,14 @@ def QA_fetch_stock_day(code, startDate, endDate, collections=QA_Setting.client.q
                 "$gte": QA_util_date_stamp(startDate)}}):
             list_a.append([str(item['code']), float(item['open']), float(item['high']), float(
                 item['low']), float(item['close']), float(item['volume']), item['date'], float(item['turnover'])])
-
-        data = numpy.asarray(list_a)
+        ## 多种数据格式
+        if type_ == 'numpy':
+            data = numpy.asarray(list_a)
+        elif type_ == 'list':
+            data = list_a
+        elif type_ == 'pandas':
+            data = DataFrame(list_a, index=[
+                             'code', 'open', 'high', 'low', 'close', 'volume', 'date', 'turnover'])
         return data
     else:
         QA_util_log_info('something wrong with date')

@@ -111,7 +111,11 @@ def QA_fetch_get_stock_indicator(name, startDate, endDate):
     if(is_valid_date(endDate) == False):
         print("wrong date")
     else:
-        # ADTM动态买卖气指标,ATR真实波幅,BBI多空指数,BBIBOLL多空布林线,BIAS乖离率,BOLL布林带,CCI顺势指标,CDP逆势操作,DMA平均线差,DMI趋向标准,DPO区间震荡线,ENV,EXPMA指数平滑移动平均,KDJ随机指标,slowKD慢速kd,MA简单移动平均,MACD指数平滑移动平均,MIKE麦克指数,MTM动力指标,PRICEOSC价格震荡指标,PVT量价趋势指标,RC变化率指数,ROC变动速率,RSI相对强弱指标,SAR抛物转向,SI摆动指标,SOBV能量潮,SRMI MI修正指标,STD 标准差,TAPI 加权指数成交值,TRIX 三重指数平滑平均,VHF纵横指标,VMA量简单移动平均,VMACD量指数平滑移动平均,VOSC成交量震荡,WVAD威廉变异离散量,vol_ratio量比
+        # ADTM动态买卖气指标,ATR真实波幅,BBI多空指数,BBIBOLL多空布林线,BIAS乖离率,BOLL布林带,CCI顺势指标,CDP逆势操作,DMA平均线差,
+        # DMI趋向标准,DPO区间震荡线,ENV,EXPMA指数平滑移动平均,KDJ随机指标,slowKD慢速kd,MA简单移动平均,MACD指数平滑移动平均,MIKE麦克指数,
+        # MTM动力指标,PRICEOSC价格震荡指标,PVT量价趋势指标,RC变化率指数,ROC变动速率,RSI相对强弱指标,SAR抛物转向,SI摆动指标,SOBV能量潮,
+        # SRMI MI修正指标,STD 标准差,TAPI 加权指数成交值,TRIX 三重指数平滑平均,VHF纵横指标,VMA量简单移动平均,VMACD量指数平滑移动平均,
+        # VOSC成交量震荡,WVAD威廉变异离散量,vol_ratio量比
         data = w.wsd(name, "ADTM,ATR,BBI,BBIBOLL,BIAS,BOLL,CCI,CDP,DMA,DMI,DPO,ENV,EXPMA,KDJ,slowKD,MA,MACD,MIKE,MTM,PRICEOSC,PVT,RC,ROC,RSI,SAR,SI,SOBV,SRMI,STD,TAPI,TRIX,VHF,VMA,VMACD,VOSC,WVAD,vol_ratio", startDate, endDate,
                      "ADTM_N1=23;ADTM_N2=8;ADTM_IO=1;ATR_N=14;ATR_IO=1;BBI_N1=3;BBI_N2=6;BBI_N3=12;BBI_N4=24;BBIBOLL_N=10;BBIBOLL_Width=3;BBIBOLL_IO=1;BIAS_N=12;BOLL_N=26;BOLL_Width=2;BOLL_IO=1;CCI_N=14;CDP_IO=1;DMA_S=10;DMA_L=50;DMA_N=10;DMA_IO=1;DMI_N=14;DMI_N1=6;DMI_IO=1;DPO_N=20;DPO_M=6;DPO_IO=1;ENV_N=14;ENV_IO=1;EXPMA_N=12;KDJ_N=9;KDJ_M1=3;KDJ_M2=3;KDJ_IO=1;SlowKD_N1=9;SlowKD_N2=3;SlowKD_N3=3;SlowKD_N4=5;SlowKD_IO=1;MA_N=5;MACD_L=26;MACD_S=12;MACD_N=9;MACD_IO=1;MIKE_N=12;MIKE_IO=1;MTM_interDay=6;MTM_N=6;MTM_IO=1;PRICEOSC_L=26;PRICEOSC_S=12;RC_N=50;ROC_interDay=12;ROC_N=6;ROC_IO=1;RSI_N=6;SAR_N=4;SAR_SP=2;SAR_MP=20;SR    MI_N=9;STD_N=26;TAPI_N=6;TAPI_IO=1;TRIX_N1=12;TRIX_N2=20;TRIX_IO=1;VHF_N=28;VMA_N=5;VMACD_S=12;VMACD_L=26;VMACD_N=9;VMACD_IO=1;VOSC_S=12;VOSC_L=26;WVAD_N1=24;WVAD_N2=6;WVAD_IO=1;VolumeRatio_N=5")
         if (data.ErrorCode == 0):
