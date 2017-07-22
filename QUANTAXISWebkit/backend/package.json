@@ -12,6 +12,7 @@
     "axios": "^0.15.3",
     "bluebird": "^3.4.7",
     "body-parser": "~1.16.0",
+    "bson": "^1.0.4",
     "cheerio": "^0.22.0",
     "child-process": "^1.0.2",
     "cookie-parser": "~1.4.3",
