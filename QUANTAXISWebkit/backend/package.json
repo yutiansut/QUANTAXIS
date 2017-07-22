@@ -36,6 +36,7 @@
     "path": "^0.12.7",
     "pug": "^2.0.0-beta11",
     "request": "^2.79.0",
+    "require_optional": "^1.0.1",
     "serve-favicon": "~2.3.2",
     "socket.io": "^1.7.3",
     "superagent": "^3.5.2",
