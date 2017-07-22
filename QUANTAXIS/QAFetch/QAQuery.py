@@ -82,7 +82,7 @@ def QA_fetch_stocklist_day(stock_list, collections, date_range):
     data = []
     for item in stock_list:
         data.append(QA_fetch_stock_day(
-            item, date_range[0], date_range[-1], collections))
+            item, date_range[0], date_range[-1], 'numpy', collections))
     return data
 
 
