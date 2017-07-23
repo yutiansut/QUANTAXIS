@@ -828,7 +828,35 @@ QA.QA_SU_save_stock_min_5('你解压好的目录')
 
 #例如 QA.QA_SU_save_stock_min_5('C:\\users\\yutiansut\\desktop\\sh5fz')
 ```
+```bash
 
+In [2]: QA.QA_SU_save_stock_min_5('C:\\users\\yutiansut\\desktop\\sz5fz')
+QUANTAXIS>> Now_saving 000001's 5 min tick
+QUANTAXIS>> Now_saving 000002's 5 min tick
+QUANTAXIS>> Now_saving 000004's 5 min tick
+QUANTAXIS>> Now_saving 000005's 5 min tick
+QUANTAXIS>> Now_saving 000006's 5 min tick
+QUANTAXIS>> Now_saving 000007's 5 min tick
+QUANTAXIS>> Now_saving 000008's 5 min tick
+QUANTAXIS>> Now_saving 000009's 5 min tick
+QUANTAXIS>> Now_saving 000010's 5 min tick
+QUANTAXIS>> Now_saving 000011's 5 min tick
+QUANTAXIS>> Now_saving 000012's 5 min tick
+QUANTAXIS>> Now_saving 000014's 5 min tick
+QUANTAXIS>> Now_saving 000016's 5 min tick
+QUANTAXIS>> Now_saving 000017's 5 min tick
+QUANTAXIS>> Now_saving 000018's 5 min tick
+QUANTAXIS>> Now_saving 000019's 5 min tick
+QUANTAXIS>> Now_saving 000020's 5 min tick
+QUANTAXIS>> Now_saving 000021's 5 min tick
+QUANTAXIS>> Now_saving 000022's 5 min tick
+QUANTAXIS>> Now_saving 000023's 5 min tick
+QUANTAXIS>> Now_saving 000024's 5 min tick
+QUANTAXIS>> Now_saving 000025's 5 min tick
+QUANTAXIS>> Now_saving 000026's 5 min tick
+QUANTAXIS>> Now_saving 000027's 5 min tick
+QUANTAXIS>> Now_saving 000028's 5 min tick
+```
 
 ## 巨大改动/重构
 
