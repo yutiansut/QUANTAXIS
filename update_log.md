@@ -53,6 +53,7 @@
         - [1.28 对于backtest的加载的外部函数的接口进行修改](#128-对于backtest的加载的外部函数的接口进行修改)
         - [1.29 修改了QA_Query 里返回的数组格式](#129-修改了qa_query-里返回的数组格式)
         - [1.30 修改了QA_util_save_csv的模式](#130-修改了qa_util_save_csv的模式)
+        - [1.31 通达信5分钟线解析保存](#131-通达信5分钟线解析保存)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -803,6 +804,31 @@ QA.QA_util_save_csv(QA.QA_fetch_stock_day('000001','2017-01-01','2017-07-01','li
 000001,9.31,9.32,9.27,9.3,396884.97,2017-02-07,0.23
 ...........
 ```
+### 1.31 通达信5分钟线解析保存
+2017/7/23
+
+首先要下载:
+
+- 深圳5分钟线
+
+http://www.tdx.com.cn/products/data/data/vipdoc/sz5fz.zip
+
+- 上证5分钟线
+
+http://www.tdx.com.cn/products/data/data/vipdoc/sh5fz.zip
+
+然后解压到一个目录里
+
+```python
+
+import QUANTAXIS as QA
+
+QA.QA_SU_save_stock_min_5('你解压好的目录')
+
+
+#例如 QA.QA_SU_save_stock_min_5('C:\\users\\yutiansut\\desktop\\sh5fz')
+```
+
 
 ## 巨大改动/重构
 

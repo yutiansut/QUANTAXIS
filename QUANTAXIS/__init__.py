@@ -33,7 +33,7 @@ by yutiansut
 """
 
 
-__version__ = ' 0.4.0-alpha-dev16'
+__version__ = ' 0.4.0-alpha-dev17'
 __author__ = 'yutiansut'
 
 # fetch methods
@@ -47,7 +47,7 @@ from QUANTAXIS.QASpider import (QA_spider_select_spider, QA_spider_start_spider,
 
 
 # save
-from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_day, QA_SU_save_stock_info,
+from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_day, QA_SU_save_stock_info, QA_SU_save_stock_min_5,
                                  QA_SU_save_stock_day_init,  QA_SU_save_trade_date, QA_SU_update_stock_day)
 from QUANTAXIS.QASU.save_backtest import (
     QA_SU_save_account_message, QA_SU_save_backtest_message, QA_SU_save_account_to_csv)
