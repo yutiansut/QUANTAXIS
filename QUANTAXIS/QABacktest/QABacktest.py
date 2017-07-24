@@ -416,7 +416,7 @@ class QA_Backtest():
         __exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
         self.__benchmark_data = QA_fetch_index_day(
             self.benchmark_code, self.start_real_date,
-            self.end_real_date, self.setting.client.quantaxis.stock_day)
+            self.end_real_date)
 
         performace = QA_backtest_analysis_start(
             self.setting.client, self.strategy_stock_list, __messages,

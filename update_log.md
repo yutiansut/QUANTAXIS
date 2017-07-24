@@ -54,6 +54,8 @@
         - [1.29 修改了QA_Query 里返回的数组格式](#129-修改了qa_query-里返回的数组格式)
         - [1.30 修改了QA_util_save_csv的模式](#130-修改了qa_util_save_csv的模式)
         - [1.31 通达信5分钟线解析保存](#131-通达信5分钟线解析保存)
+        - [1.32 获取指数k线的api更新](#132-获取指数k线的api更新)
+        - [1.33 QA_util更新 QA_util_time_stamp](#133-qa_util更新-qa_util_time_stamp)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -856,6 +858,27 @@ QUANTAXIS>> Now_saving 000025's 5 min tick
 QUANTAXIS>> Now_saving 000026's 5 min tick
 QUANTAXIS>> Now_saving 000027's 5 min tick
 QUANTAXIS>> Now_saving 000028's 5 min tick
+```
+
+### 1.32 获取指数k线的api更新
+2017/7/24
+
+```python
+QA_fetch_index_day(code, startDate, endDate,type_='numpy' ,collections=QA_Setting.client.quantaxis.stock_day)
+
+```
+
+一般而言,直接使用QA_fetch_index_day(code, startDate, endDate)就可以了
+
+### 1.33 QA_util更新 QA_util_time_stamp
+2017/7/24
+
+QA_util_time_stamp用于将时间转化成时间戳
+
+```python
+import QUANTAXIS as QA
+QA.QA_util_time_stamp('2017-01-01 10:25:08')
+
 ```
 
 ## 巨大改动/重构

@@ -86,7 +86,7 @@ def QA_fetch_stocklist_day(stock_list, collections, date_range):
     return data
 
 
-def QA_fetch_index_day(code, startDate, endDate, collections):
+def QA_fetch_index_day(code, startDate, endDate,type_='numpy' ,collections=QA_Setting.client.quantaxis.stock_day):
     # print(datetime.datetime.now())
     startDate = str(startDate)[0:10]
     endDate = str(endDate)[0:10]

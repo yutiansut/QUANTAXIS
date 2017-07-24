@@ -221,7 +221,7 @@ class backtest(QA.QA_Backtest):
                                                                    'amounts', 'order_id', 'trade_id', 'sell_price', 'sell_order_id', 'sell_trade_id','sell_date','left_amount','commission')))
         __exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
         self.benchmark_data = QA.QA_fetch_index_day(
-            'hs300', self.start_real_date, self.end_real_date, self.setting.client.quantaxis.stock_day)
+            'hs300', self.start_real_date, self.end_real_date)
         # print(json.dumps(messages,indent=2))
         # QA.QA_SU_save_account_message(
         # messages, self.setting.client)
