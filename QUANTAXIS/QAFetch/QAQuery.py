@@ -93,7 +93,7 @@ def QA_fetch_index_day(code, startDate, endDate,type_='numpy' ,collections=QA_Se
 
     if QA_util_date_valid(endDate) == True:
 
-        list_a = [[], [], [], [], [], [], []]
+        list_a = []
 
         for item in collections.find({
             'code': str(code), "date_stamp": {
@@ -104,16 +104,16 @@ def QA_fetch_index_day(code, startDate, endDate,type_='numpy' ,collections=QA_Se
             # print(item['code'])
 
             list_a.append([str(item['code']), float(item['open']), float(item['high']), float(
-                item['low']), float(item['close']), float(item['volume']), item['date'], float(item['turnover'])])
-                
+                item['low']), float(item['close']), float(item['volume']), item['date']])
         if type_ == 'numpy':
             data = numpy.asarray(list_a)
         elif type_ == 'list':
             data = list_a
         elif type_ == 'pandas':
             data = DataFrame(list_a, columns=[
-                             'code', 'open', 'high', 'low', 'close', 'volume', 'date', 'turnover'])
-        
+                             'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
+
+
         return data
     else:
         QA_util_log_info('something wrong with date')
