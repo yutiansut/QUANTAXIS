@@ -103,16 +103,17 @@ def QA_fetch_index_day(code, startDate, endDate,type_='numpy' ,collections=QA_Se
         }):
             # print(item['code'])
 
-            list_a[0].append(item['code'])
-            list_a[1].append(item['open'])
-            list_a[2].append(item['high'])
-            list_a[3].append(item['low'])
-            list_a[4].append(item['close'])
-            list_a[5].append(item['volume'])
-            list_a[6].append(item['date'])
-
-        data = numpy.asarray(list_a).transpose()
-
+            list_a.append([str(item['code']), float(item['open']), float(item['high']), float(
+                item['low']), float(item['close']), float(item['volume']), item['date'], float(item['turnover'])])
+                
+        if type_ == 'numpy':
+            data = numpy.asarray(list_a)
+        elif type_ == 'list':
+            data = list_a
+        elif type_ == 'pandas':
+            data = DataFrame(list_a, columns=[
+                             'code', 'open', 'high', 'low', 'close', 'volume', 'date', 'turnover'])
+        
         return data
     else:
         QA_util_log_info('something wrong with date')
