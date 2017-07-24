@@ -119,8 +119,29 @@ def QA_fetch_index_day(code, startDate, endDate,type_='numpy' ,collections=QA_Se
         QA_util_log_info('something wrong with date')
 
 
-def QA_fetch_stock_min():
-    pass
+def QA_fetch_stock_min(code, startTime, endTime,type_='numpy' ,collections=QA_Setting.client.quantaxis.stock_min_five):
+    list_a = []
+
+    for item in collections.find({
+        'code': str(code), "datetime": {
+            "$lte": QA_util_time_stamp(startTime),
+            "$gte": QA_util_time_stamp(endTime)
+        }
+    }):
+        # print(item['code'])
+
+    list_a.append([str(item['code']), float(item['open']), float(item['high']), float(
+            item['low']), float(item['close']), float(item['volume']), item['date']])
+    if type_ == 'numpy':
+        data = numpy.asarray(list_a)
+    elif type_ == 'list':
+        data = list_a
+    elif type_ == 'pandas':
+        data = DataFrame(list_a, columns=[
+                            'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
+
+
+    return data
 
 
 def QA_fetch_future_day():
