@@ -30,7 +30,7 @@ from bson.objectid import ObjectId
 from pandas import DataFrame
 import pandas as pd
 
-from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_valid,
+from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_valid,QA_util_time_stamp,
                               QA_util_log_info, QA_Setting)
 
 """
@@ -86,7 +86,7 @@ def QA_fetch_stocklist_day(stock_list, collections, date_range):
     return data
 
 
-def QA_fetch_index_day(code, startDate, endDate,type_='numpy' ,collections=QA_Setting.client.quantaxis.stock_day):
+def QA_fetch_index_day(code, startDate, endDate, type_='numpy', collections=QA_Setting.client.quantaxis.stock_day):
     # print(datetime.datetime.now())
     startDate = str(startDate)[0:10]
     endDate = str(endDate)[0:10]
@@ -113,13 +113,12 @@ def QA_fetch_index_day(code, startDate, endDate,type_='numpy' ,collections=QA_Se
             data = DataFrame(list_a, columns=[
                              'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
 
-
         return data
     else:
         QA_util_log_info('something wrong with date')
 
 
-def QA_fetch_stock_min(code, startTime, endTime,type_='numpy' ,collections=QA_Setting.client.quantaxis.stock_min_five):
+def QA_fetch_stock_min(code, startTime, endTime, type_='numpy', collections=QA_Setting.client.quantaxis.stock_min_five):
     list_a = []
 
     for item in collections.find({
@@ -130,7 +129,7 @@ def QA_fetch_stock_min(code, startTime, endTime,type_='numpy' ,collections=QA_Se
     }):
         # print(item['code'])
 
-    list_a.append([str(item['code']), float(item['open']), float(item['high']), float(
+        list_a.append([str(item['code']), float(item['open']), float(item['high']), float(
             item['low']), float(item['close']), float(item['volume']), item['date']])
     if type_ == 'numpy':
         data = numpy.asarray(list_a)
@@ -138,8 +137,7 @@ def QA_fetch_stock_min(code, startTime, endTime,type_='numpy' ,collections=QA_Se
         data = list_a
     elif type_ == 'pandas':
         data = DataFrame(list_a, columns=[
-                            'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
-
+            'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
 
     return data
 
