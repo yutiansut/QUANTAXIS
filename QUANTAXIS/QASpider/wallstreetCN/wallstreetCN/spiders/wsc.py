@@ -18,7 +18,7 @@ class WscSpider(scrapy.Spider):
      #       link = 'http://wallstreetcn.com/news'
      #       yield scrapy.Request(link,self.parse_url_list)
      #   elif models ==2:
-        for i in range(1,15):
+        for i in range(5000):
             api ='https://api.wallstreetcn.com/v2/pcarticles?page=%s&limit=100' %i
             yield scrapy.Request(api,self.parse_json_list)
      #   elif models == 3:

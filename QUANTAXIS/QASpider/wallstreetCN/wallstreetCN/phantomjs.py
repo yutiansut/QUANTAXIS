@@ -83,7 +83,7 @@ def selenium_request(url):
     dcap["phantomjs.page.settings.userAgent"] = choice(ua_list)
     # driver = webdriver.PhantomJS(executable_path='/home/icgoo/pywork/spider/phantomjs',desired_capabilities=dcap)
     # driver = webdriver.PhantomJS(executable_path=u'/home/fank/pywork/spider/phantomjs',desired_capabilities=dcap)
-    driver = webdriver.PhantomJS(executable_path='../../../phantomjs.exe',desired_capabilities=dcap)
+    driver = webdriver.PhantomJS(executable_path='../../phantomjs.exe',desired_capabilities=dcap)
     # driver = webdriver.Firefox()
     driver.get(url)
     driver.implicitly_wait(3)

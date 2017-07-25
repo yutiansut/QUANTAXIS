@@ -39,9 +39,11 @@ QUANTAXIS  指标计算
 """趋势类"""
 import numpy as np
 import pandas as pd
+from .formula import SMA
+from funcat import LLV
+# TODO
+# 基于无状态的pd结构的指标
 
-#TODO
-#基于无状态的pd结构的指标
 
 def QA_indicator_dma(data, f=10, s=50, N=10):
     """
@@ -49,10 +51,12 @@ def QA_indicator_dma(data, f=10, s=50, N=10):
     中短期指标/趋势指标
     通过计算两条基准周期不同的移动平均线的差值,来判断当前买入卖出能量的大小和未来价格走势的趋势
     """
-    _dma=pd.Series(data).rolling(f).mean()-pd.Series(data).rolling(s).mean()
-    _ama=pd.Series(_dma).rolling(N).mean()
+    _dma = pd.Series(data).rolling(f).mean() - \
+        pd.Series(data).rolling(s).mean()
+    _ama = pd.Series(_dma).rolling(N).mean()
 
-    return _dma,_ama
+    return _dma, _ama
+
 
 def QA_indicator_dmi(data):
     """
@@ -64,7 +68,7 @@ def QA_indicator_dmi(data):
     pass
 
 
-def QA_indicator_dpo(data,N=20,M=6):
+def QA_indicator_dpo(data, N=20, M=6):
     """
     区间振荡
     数个短周波的组合，构成一个长周波。观察短周波的运动规律，可以估计长周波峰谷出现的时机。
@@ -79,11 +83,12 @@ def QA_indicator_dpo(data,N=20,M=6):
     如果消除扭曲的波动，将这条绳子拉平，重心平衡点视为图表上的0轴。把当日价格与重心平衡点间的差距，绘制于0轴的上下方。
     如此一来，可以更清楚的显现出短周期的高、低点。
     """
-    _dpo=pd.Series(data)-pd.Series(data).rolling(N/2+1).mean()
-    _madpo=pd.Series(_dpo).rolling(M).mean()
-    return _dpo,_madpo
+    _dpo = pd.Series(data) - pd.Series(data).rolling(N / 2 + 1).mean()
+    _madpo = pd.Series(_dpo).rolling(M).mean()
+    return _dpo, _madpo
 
-def QA_indicator_jlhb(data,N=7,M=5):
+
+def QA_indicator_jlhb(high, low, close, N=7, M=5):
     """
     绝路航标
     滞后指标,灵敏性很差,容易出假信号
@@ -94,7 +99,8 @@ def QA_indicator_jlhb(data,N=7,M=5):
     绝路航标:IF(CROSS(B,VAR2) AND B<40,38,0),COLORYELLOW,LINETHICK2;
     DRAWICON( 绝路航标>0,38,1 );
     """
-    
+    _var_1 = pd.Series(low)-
+
 
 def QA_indicator_cho(data):
     pass
@@ -402,8 +408,9 @@ def QA_indicator_stix(data):
     pass
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     import QUANTAXIS as QA
     import pymongo
-    data=QA.QA_fetch_stock_day('600016','2017-01-01','2017-07-01').T[1].astype(float)
+    data = QA.QA_fetch_stock_day(
+        '600016', '2017-01-01', '2017-07-01').T[1].astype(float)
     print(QA_indicator_dma(data))
