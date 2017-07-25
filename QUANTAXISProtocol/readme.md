@@ -2,10 +2,9 @@ QUANTAXIS-Protocol
 标准化协议QAS/未来协议QAF
 ------------
 
-- 当前版本:0.0.6
-- 协议最后修改日期:2017-04-11
-- 项目版本:QUANTAXIS 0.3.8
-
+- 当前版本:0.0.8
+- 协议最后修改日期:2017-07-04
+- 项目版本:QUANTAXIS 0.3.9
 <!-- TOC -->
 
 - [QAS-00x Intro  简介](#qas-00x-intro--简介)
@@ -25,7 +24,7 @@ QUANTAXIS-Protocol
         - [QAS-003-5 RESTful 通信命名方式](#qas-003-5-restful-通信命名方式)
 - [QAS-10x QAFetch 数据获取类](#qas-10x-qafetch-数据获取类)
     - [QAS-101-x QA_fetch_get_](#qas-101-x-qa_fetch_get_)
-    - [QAS-102x-x QAS_fetch_data](#qas-102x-x-qas_fetch_data)
+    - [QAS-102x-x QAS_fetch_](#qas-102x-x-qas_fetch_)
 - [QAS-20x QASU(save/update)数据存储/更新](#qas-20x-qasusaveupdate数据存储更新)
     - [QAS-201-x QA_SU_save_](#qas-201-x-qa_su_save_)
     - [QAS-_202-x QA_SU_update_](#qas-_202-x-qa_su_update_)
@@ -35,13 +34,18 @@ QUANTAXIS-Protocol
     - [QAS-302-x QA_QAMarket_bid](#qas-302-x-qa_qamarket_bid)
 - [QAS-40x QABacktest 回测类](#qas-40x-qabacktest-回测类)
 - [QAS-50x QAARP(account/risk/portfolio)账户/风险/组合管理类](#qas-50x-qaarpaccountriskportfolio账户风险组合管理类)
+    - [QAS-501-x QA_Account](#qas-501-x-qa_account)
+    - [QAS-501-x QA_Risk](#qas-501-x-qa_risk)
+    - [QAS-501-x QA_Portfolio](#qas-501-x-qa_portfolio)
 - [QAS-60x QAUtil 工具类](#qas-60x-qautil-工具类)
 - [QAS-70x QASpider 爬虫类](#qas-70x-qaspider-爬虫类)
 - [QAS-80x QASignal 信号/事件驱动类](#qas-80x-qasignal-信号事件驱动类)
-    - [QAS-801-x QA_signal_](#qas-801-x-qa_signal_)
-        - [QAS-801-1 QA_signal_send 协议](#qas-801-1-qa_signal_send-协议)
-        - [QAS-801-1 QA_signal_resend 协议](#qas-801-1-qa_signal_resend-协议)
-- [QAS-90x QATask 任务机制/异步类](#qas-90x-qatask-任务机制异步类)
+- [QAS-90x QATask 任务/事件队列](#qas-90x-qatask-任务事件队列)
+    - [QAS-901 QA_Event](#qas-901-qa_event)
+    - [QAS-902 QA_Queue](#qas-902-qa_queue)
+    - [QAS-903 QA_Task_Center](#qas-903-qa_task_center)
+    - [QAS-904 QA_MultiProcessing](#qas-904-qa_multiprocessing)
+    - [QAS-905 QA_schedule](#qas-905-qa_schedule)
 - [QAS-100x QACmd 命令行扩展类](#qas-100x-qacmd-命令行扩展类)
 
 <!-- /TOC -->
@@ -140,11 +144,51 @@ Basical Key:
 
 # QAS-10x QAFetch 数据获取类
 ## QAS-101-x QA_fetch_get_
+QA_fetch_get 系列是数据从外部获取的方法,一般而言,这个系列的函数方法封装的都是api
 
-## QAS-102x-x QAS_fetch_data
+在使用这个fetch_get系列的时候,一般要指定数据源,比如是wind,或者tushare,或者Gmsdk等等
+
+
+在QUANTAXIS.QAFetch 可以直接用的
+```python
+from QUANTAXIS.QAFetch import *
+```
+- QA_fetch_get_stock_day
+- QA_fetch_get_stock_realtime
+- QA_fetch_get_stock_indicator
+- QA_fetch_get_trade_date
+
+在QUANTAXIS.QAFetch.QATushare中可以用的
+``` python
+from QUANTAXIS.QAFetch.QATushare import *
+```
+- QA_fetch_get_stock_day
+- QA_fetch_get_stock_realtime
+- QA_fetch_get_stock_info
+- QA_fetch_get_stock_tick
+- QA_fetch_get_stock_list
+- QA_fetch_get_trade_date
+
+
+## QAS-102x-x QAS_fetch_
+这个没有get_头的,是从本地数据库中获取数据
+
+一般是本地的交易回测引擎和策略会使用这个api
+
+```python
+from QUANTAXIS.QAFetch.QAQuery import *
+```
+- QA_fetch_stock_day
+- QA_fetch_trade_date
+- QA_fetch_stock_info
+- QA_fetch_stocklist_day
+- QA_fetch_index_day
+
 
 # QAS-20x QASU(save/update)数据存储/更新 
 ## QAS-201-x QA_SU_save_
+
+这个系列是QUANTAXIS的存储数据的api方法,使用的数据库是mongodb
 
 ## QAS-_202-x QA_SU_update_
 
@@ -156,46 +200,61 @@ Basical Key:
 bid是一个标准报价包
 ```python
 
-    price=4.5
-    time='2000-01-17'
-    amount=10
-    towards=1
-    code=str('000001.SZ')
-    user='root'
-    strategy='root01'
+    bid={
+        'price':float(16),
+        'date':str('2015-01-05'),
+        'amount':int(10),
+        'towards':int(1),
+        'code':str('000001'),
+        'user':str('root'),
+        'strategy':str('example01'),
+        'status':'0x01',
+        'order_id':str(random.random())
+        }
 ```
 
 # QAS-40x QABacktest 回测类
 - QA_Backtest
+QA_Backtest 里面有4个抽象类:
+```python
+account=QA_Account()
+market=QA_Market()
+bid=QA_QAMarket_bid()
+setting=QA_Setting()
+```
 # QAS-50x QAARP(account/risk/portfolio)账户/风险/组合管理类
 - QA_Account
 - QA_Risk
 - QA_Portfolio
+## QAS-501-x QA_Account
+## QAS-501-x QA_Risk
+## QAS-501-x QA_Portfolio
 # QAS-60x QAUtil 工具类
 - QA_util_
 
 # QAS-70x QASpider 爬虫类
 # QAS-80x QASignal 信号/事件驱动类
-## QAS-801-x QA_signal_
-### QAS-801-1 QA_signal_send 协议
-打包出标准化协议,模仿http协议
-```python
-message={
-    'header':{
-        'source':source_name,
-        'cookie':xxxx,
-        'session':{
-            'user':xxx,
-            'strategy':xxxx
-        }
-        
-    },
-    'body':{
-        
-    }
-}
-```
-###  QAS-801-1 QA_signal_resend 协议
-# QAS-90x QATask 任务机制/异步类
+
+# QAS-90x QATask 任务/事件队列
+
+QATASK 给了5种不同场景下的解决方案:
+
+- QA_Event  主要负责的是事件的一对多的分发和订阅
+
+- QA_Queue  主要负责的是维护一个函数句柄队列,可以理解为一个生产者消费者模型
+
+- QA_Task_Center  主要负责的是一个对外的兼容接口,无论是socket,还是zeromq,celery,rabbitmq,redis等等
+
+- QA_Multi_Processing  主要是一个多线程和多进程的
+
+- QA_Schedule 主要是一个定时/延时任务机制
+
+
+## QAS-901 QA_Event
+## QAS-902 QA_Queue
+## QAS-903 QA_Task_Center
+## QAS-904 QA_MultiProcessing
+## QAS-905 QA_schedule
+
 
 # QAS-100x QACmd 命令行扩展类

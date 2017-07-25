@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-      <mu-appbar title="Title">
-      <mu-flat-button class="quantaxislogo" color="white"  style="-webkit-app-region: drag" disable slot="left" >QUANTAXIS</mu-flat-button>
+    <mu-appbar title="Title">
+      <mu-flat-button class="quantaxislogo" color="white" style="-webkit-app-region: drag" disable slot="left">QUANTAXIS</mu-flat-button>
       <mu-raised-button label="MENU" slot="right" @click="toggle()" />
       <mu-drawer right :open="open" @close="toggle()">
         <mu-appbar title="MENU" />
@@ -12,11 +12,11 @@
           <router-link to='/'>
             <mu-list-item title="HOME" />
           </router-link>
-
+  
           <router-link to='/start'>
             <mu-list-item title="START" />
           </router-link>
-
+  
           <mu-list-item @click.native="open = false" title="Close" />
         </mu-list>
       </mu-drawer>
@@ -27,18 +27,18 @@
 
 <script>
 export default {
-    name: 'app',
-    data() {
-      return {
-        open: false
-      }
-    },
-    methods: {
-      toggle() {
-        this.open = !this.open
-      }
+  name: 'app',
+  data() {
+    return {
+      open: false
+    }
+  },
+  methods: {
+    toggle() {
+      this.open = !this.open
     }
   }
+}
 </script>
 
 <style>
@@ -50,8 +50,7 @@ export default {
   color: #2c3e50;
 }
 
-.mu-flat-button-wrapper{
+.mu-flat-button-wrapper {
   font-size: 1.8em;
 }
-
 </style>
