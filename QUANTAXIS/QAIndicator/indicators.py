@@ -99,7 +99,8 @@ def QA_indicator_jlhb(high, low, close, N=7, M=5):
     绝路航标:IF(CROSS(B,VAR2) AND B<40,38,0),COLORYELLOW,LINETHICK2;
     DRAWICON( 绝路航标>0,38,1 );
     """
-    _var_1 = pd.Series(low)-
+   # _var_1 = pd.Series(low)-
+   pass
 
 
 def QA_indicator_cho(data):
