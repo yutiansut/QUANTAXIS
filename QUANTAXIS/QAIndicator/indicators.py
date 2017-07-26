@@ -40,7 +40,7 @@ QUANTAXIS  指标计算
 import numpy as np
 import pandas as pd
 from .formula import SMA
-from funcat import LLV
+
 # TODO
 # 基于无状态的pd结构的指标
 
