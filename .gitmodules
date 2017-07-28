@@ -4,3 +4,6 @@
 [submodule "QUANTAXIS_Webkit"]
 	path = QUANTAXIS_Webkit
 	url = https://github.com/yutiansut/QUANTAXIS_Webkit
+[submodule "QUANTAXIS_Trade"]
+	path = QUANTAXIS_Trade
+	url = https://github.com/yutiansut/QUANTAXIS_Trade
