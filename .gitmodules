@@ -1,3 +1,6 @@
 [submodule "QUANTAXISDataTool"]
 	path = QUANTAXISDataTool
 	url = https://github.com/yutiansut/QUANTAXISDataTool.git
+[submodule "QUANTAXIS_Webkit"]
+	path = QUANTAXIS_Webkit
+	url = https://github.com/yutiansut/QUANTAXIS_Webkit
