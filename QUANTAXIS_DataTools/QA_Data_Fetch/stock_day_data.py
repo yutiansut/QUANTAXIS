@@ -20,7 +20,7 @@ except:
 
 try:
     import gmsdk
-except:Exception:
+except:
     sys.exit()
 
 
@@ -47,5 +47,6 @@ def gmsdk_methods(code,start, end, method='pre'):
     '掘金的日线获取方式'
     try:
         import gmsdk
-    else:
+    except:
+        print(Exception)
         print('no gmsdk modules find!')
