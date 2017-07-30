@@ -3,8 +3,7 @@ import os
 
 #
 try:
-    os.popen("git add .")
-    os.popen('git commit -m "push by python code" ')
+
     os.popen('git push origin')
 
 
