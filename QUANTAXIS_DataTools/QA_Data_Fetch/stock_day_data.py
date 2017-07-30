@@ -42,8 +42,9 @@ def tushare_methods(code, start, end, method='pre'):
     elif method == 'bfq' or 'normal':
         return ts.get_k_data(code, start, end, 'D', 'None')
 
+
 @get_stock_day_k
-def gmsdk_methods(code,start, end, method='pre'):
+def gmsdk_methods(code, start, end, method='pre'):
     '掘金的日线获取方式'
     try:
         import gmsdk
