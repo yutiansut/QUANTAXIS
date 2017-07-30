@@ -38,20 +38,45 @@ import queue
 
 
 
-@staticmethod
 def strategy(func,*a,**b):
-    def before_day()
-        print()
+    def before_day(): 
+        print('before of day in strategy')
     def end_day():
-        print
+        print('end of day in strategy')
     def deoc(*a,**b):
         before_day()
         func(*a,**b)
         end_day()
+    return deoc
 
+def backtest(func,*a,**b):
+    def before_backtest():
+        print('before backtest')
+
+    def end_backtest():
+        print('end_backtest')
+
+    def inside_backtest(*a,**b):
+        before_backtest()
+        func(*a,**b)
+        end_backtest()
+    return inside_backtest
+
+@backtest
 @strategy
-def backtest():
-    pass
+def exec_bid():
+    print('exec bid market and account')
 
 
+"""
+before backtest
+before of day in strategy
+exec bid market and account
+end of day in strategy
+end_backtest
+"""
 
+if __name__=='__main__':
+    exec_bid()
+
+    
