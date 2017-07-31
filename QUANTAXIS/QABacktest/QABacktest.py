@@ -54,7 +54,7 @@ from tabulate import tabulate
 
 import configparser
 import queue
-
+from functools import wraps,update_wrapper
 
 class QA_Backtest():
     account = QA_Account()
@@ -559,12 +559,14 @@ class QA_Backtest_stock_day(QA_Backtest):
         self.clients = self.setting.client
         self.user = self.setting.QA_setting_user_name
 
-    @classmethod
-    def backtest_init__(backtest, func, *a, **b):
-        # yield backtest.cash
-        QA_backtest_init()
-        return func(backtest, *a, **b)
-    
+    @staticmethod
+    def backtest_init(backtest, func, *a, **b):
+        @wraps(func)
+        def init_backtest(*a, **b):
+        
+            QA_backtest_init()
+            return func(backtest, *a, **b)
+        return init_backtest
 
     @classmethod
     def before_backtest(backtest, func, *a, **b):
