@@ -64,7 +64,6 @@ class QA_Backtest():
     clients = setting.client
     user = setting.QA_setting_user_name
 
-
     """
     backtest 类不应该只是一个简单的构造函数,他应该包含一个回测框架常用的方法和一些定制化的需求实现
     @yutiansut
@@ -551,9 +550,8 @@ class QA_Backtest():
 
 class QA_Backtest_stock_day(QA_Backtest):
 
-
     def __init__(self,):
-        
+
         self.account = QA_Account()
         self.market = QA_Market()
         self.bid = QA_QAMarket_bid()
@@ -561,126 +559,37 @@ class QA_Backtest_stock_day(QA_Backtest):
         self.clients = self.setting.client
         self.user = self.setting.QA_setting_user_name
 
+    @classmethod
+    def backtest_init__(backtest, func, *a, **b):
+        # yield backtest.cash
+        QA_backtest_init()
+        return func(backtest, *a, **b)
+    
 
-        """
-        需要做一个之后用于集成的日线回测
-        """
-    """
-    def QA_backtest_load_strategy(self,):
-        __f_strategy_path = self.__backtest_setting['strategy']['file_path']
-        __f_strategy_path = __f_strategy_path.split(':')
-        if __f_strategy_path[0] == 'file' and __f_strategy_path[1] == 'py':
-            if __f_strategy_path[2] == 'local':
+    @classmethod
+    def before_backtest(backtest, func, *a, **b):
+        # yield backtest.cash
+        return func(backtest, *a, **b)
 
-                __current_dir = os.getcwd()
-                try:
-                    if os.path.exists(os.path.exists(
-                            str(__current_dir) + '\\backtest_strategy.py')):
-                        __file_path = os.path.exists(
-                            str(__current_dir) + '\\backtest_strategy.py')
+    @classmethod
+    def before_trading(backtest, func, *a, **b):
+        # yield backtest.cash
+        return func(backtest, *a, **b)
 
-                except:
-                    return "wrong with strategy file in current dir"
+    @classmethod
+    def strategy(backtest, func, *a, **b):
 
-            elif os.path.exists(__f_strategy_path[2]):
-                __file_path = __f_strategy_path[2]
-            else:
-                QA_util_log_info('error with loading strategy file')
-                sys.exit()
+        return func(backtest, *a, **b)
 
-        try:
-            import __file_path as QUANTAXIS_Strategy
-            QA_util_log_info(dir(QUANTAXIS_Strategy))
-        except:
-            QA_util_log_info('wrong with loading strategy')
+    @classmethod
+    def end_trading(backtest, func, *a, **b):
+        # yield backtest.cash
+        return func(backtest, *a, **b)
+    @classmethod
+    def end_backtest(backtest, func, *a, **b):
+        # yield backtest.cash
+        return func(backtest, *a, **b)
 
-    def QA_backtest_import_setting(self, __setting_file_path='10x'):
-
-        if __setting_file_path == '10x':
-            __current_dir = os.getcwd()
-            try:
-                if os.path.exists(os.path.exists(str(__current_dir) + '\\backtest_setting.ini')):
-                    __file_path = str(__current_dir) + '\\backtest_setting.ini'
-
-            except:
-                return "wrong with config file in current dir"
-
-        elif os.path.exists(__setting_file_path):
-            __file_path = os.path.exists(
-                str(__current_dir) + '\\backtest_setting.ini')
-
-        self.__backtest_setting = configparser.ConfigParser()
-        self.__backtest_setting.read(__file_path)
-
-    def __QA_backtest_set_stock_list(self):
-        self.strategy_stock_list = []
-        __t_strategy_stock_list = self.__backtest_setting['account']['stock_list']
-        __t_strategy_stock_list = __t_strategy_stock_list.split(':')
-        if __t_strategy_stock_list[0] == 'file':
-            if __t_strategy_stock_list[1] == 'csv':
-                if __t_strategy_stock_list[2] == 'local':
-                    __current_dir = os.getcwd()
-                    try:
-                        if os.path.exists(os.path.exists(str(__current_dir) + '\\stock_list.csv')):
-                            __stock_list_file_path = str(__current_dir) + \
-                                '\\stock_list.csv'
-                        else:
-                            QA_util_log_info("wrong with csv file in current dir, \
-                                    the name should be \\stock_list.csv")
-                    except:
-                        QA_util_log_info("wrong with csv file in current dir, \
-                                    the name should be \\stock_list.csv")
-                else:
-                    try:
-                        if os.path.exists(__t_strategy_stock_list[2]):
-                            __stock_list_file_path = __t_strategy_stock_list[2]
-                        else:
-                            QA_util_log_info("wrong with csv file in current dir, \
-                                    the name should be \\stock_list.csv")
-                    except:
-                        QA_util_log_info("wrong with csv file in current dir, \
-                                    the name should be \\stock_list.csv")
-                with open(__stock_list_file_path, 'r') as csv_file:
-                    __data = csv.reader(csv_file)
-
-                    for item in __data:
-                        self.strategy_stock_list.append(item[0])
-            elif __t_strategy_stock_list[1] == 'json':
-                if __t_strategy_stock_list[2] == 'local':
-                    __current_dir = os.getcwd()
-                    try:
-                        if os.path.exists(os.path.exists(str(__current_dir) + '\\stock_list.json')):
-                            __stock_list_file_path = str(__current_dir) + \
-                                '\\stock_list.json'
-
-                    except:
-                        return "wrong with csv file in current dir, \
-                        the name should be \\stock_list.json"
-                else:
-                    try:
-                        if os.path.exists(__t_strategy_stock_list[2]):
-                            __stock_list_file_path = __t_strategy_stock_list[2]
-                        else:
-                            return "wrong with csv file in current dir, \
-                            the name should be \\stock_list.json"
-                    except:
-                        return "wrong with csv file in current dir, \
-                        the name should be \\stock_list.json"
-        elif __t_strategy_stock_list[0] == 'mongo':
-            try:
-                import pymongo
-
-                coll = pymongo.MongoClient().__t_strategy_stock_list[1].split(
-                    '-')[0].__t_strategy_stock_list[1].split['-'][1]
-                assert isinstance(__t_strategy_stock_list[2], str)
-                return coll.find(__t_strategy_stock_list[2])
-            except:
-                QA_util_log_info(
-                    'something wrong with import stock_list from mongodb')
-        elif __t_strategy_stock_list[0] == 'data':
-            if __t_strategy_stock_list[1] == 'list':
-                self.strategy_stock_list = __t_strategy_stock_list[2]
-    """
     def __QA_backtest_set_bid_model(self):
         if self.__backtest_setting['bid']['bid_model'] == 'market_price':
             self.bid.bid['price'] = 'market_price'
@@ -700,14 +609,9 @@ class QA_Backtest_stock_day(QA_Backtest):
 
     def QA_backtest_init(self):
         # 设置回测的开始结束时间
-        #print(set(self))
-        print(dir(self))
+        # print(set(self))
+        #print(dir(self))
         #
-
-
-
-
-
 
         self.strategy_start_date = str(
             self.__backtest_setting['backtest']['strategy_start_date'])
@@ -1040,7 +944,6 @@ class QA_Backtest_stock_day(QA_Backtest):
         __message = self.account.message
 
         return {'market': __market_data, 'account': __message}
-
 
 
 class QA_Backtest_min():

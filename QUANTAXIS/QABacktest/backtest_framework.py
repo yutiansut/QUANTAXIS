@@ -47,12 +47,12 @@ except:
 def strategy_dec(func, *a, **b):
 
     def deoc(*a, **b):
-        @classmethod
+
         before_trading()
-        @classmethod
+
         handle_bar()
         func(*a, **b)
-        @classmethod
+
         end_trading()
     return deoc
 
