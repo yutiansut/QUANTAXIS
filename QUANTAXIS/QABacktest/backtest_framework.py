@@ -1,5 +1,4 @@
-#coding:utf-8
-
+# coding:utf-8
 
 
 import csv
@@ -36,47 +35,45 @@ import configparser
 import queue
 
 
+try:
+    sys.path.append(os.getcwd())
+    #QA_util_log_info('loading strategy from'+ os.getcwd())
+    import user_strategy
+    from user_strategy import before_backtest, before_trading, handle_bar, end_trading, end_backtest
+except:
+    QA_util_log_info(Exception)
 
 
-def strategy(func,*a,**b):
-    def before_day(): 
-        print('before of day in strategy')
-    def end_day():
-        print('end of day in strategy')
-    def deoc(*a,**b):
-        before_day()
-        func(*a,**b)
-        end_day()
+def strategy_dec(func, *a, **b):
+
+    def deoc(*a, **b):
+        @classmethod
+        before_trading()
+        @classmethod
+        handle_bar()
+        func(*a, **b)
+        @classmethod
+        end_trading()
     return deoc
 
-def backtest(func,*a,**b):
-    def before_backtest():
-        print('before backtest')
 
-    def end_backtest():
-        print('end_backtest')
+def backtest_dec(func, *a, **b):
 
-    def inside_backtest(*a,**b):
+    def inside_backtest(*a, **b):
         before_backtest()
-        func(*a,**b)
+        func(*a, **b)
         end_backtest()
     return inside_backtest
 
-@backtest
-@strategy
-def exec_bid():
-    print('exec bid market and account')
+
+class backtest():
+
+    @backtest_dec
+    @strategy_dec
+    def exec_bid(self):
+        QA_util_log_info(
+            'from backtest_framework: exec bid market and account')
 
 
-"""
-before backtest
-before of day in strategy
-exec bid market and account
-end of day in strategy
-end_backtest
-"""
-
-if __name__=='__main__':
-    exec_bid()
-
-    
+if __name__ == '__main__':
+    backtest().exec_bid()

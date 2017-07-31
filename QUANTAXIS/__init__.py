@@ -68,7 +68,7 @@ from QUANTAXIS.QAARP import QA_Account, QA_Portfolio, QA_Risk
 # Backtest
 from QUANTAXIS.QABacktest.QABacktest import QA_Backtest, QA_Backtest_min
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
-
+from QUANTAXIS.QABacktest.backtest_framework import backtest
 # task
 from QUANTAXIS.QATask import QA_Queue, QA_Event
 
