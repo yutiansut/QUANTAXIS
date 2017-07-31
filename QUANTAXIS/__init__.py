@@ -33,8 +33,6 @@ by yutiansut
 """
 
 
-__version__ = ' 0.4.0-alpha-dev19'
-__author__ = 'yutiansut'
 
 # fetch methods
 
@@ -94,6 +92,8 @@ from QUANTAXIS.QACmd import QA_cmd
 import argparse
 
 
+__version__ = '0.4.0-alpha-dev23'
+__author__ = 'yutiansut'
 # 检查python版本:
 # 检查python版本
 import sys
