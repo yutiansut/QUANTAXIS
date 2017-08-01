@@ -576,34 +576,34 @@ class QA_Backtest_stock_day():
         def __init_backtest(__backtest_cls,*a, **b):
 
             __backtest_cls.QA_backtest_init(__backtest_cls)
-            func(__backtest_cls, *a, **b)
+            func( *a, **b)
             __backtest_cls.__QA_backtest_init_inside(__backtest_cls)
         return __init_backtest(__backtest_cls)
 
     @classmethod
     def before_backtest(__backtest_cls, func, *a, **b):
         # yield __backtest_cls.cash
-        func(__backtest_cls, *a, **b)
+        func( *a, **b)
         __backtest_cls.QA_backtest_start()
 
     @classmethod
     def before_trading(__backtest_cls, func, *a, **b):
         # yield __backtest_cls.cash
-        return func(__backtest_cls, *a, **b)
+        return func( *a, **b)
 
     @classmethod
     def strategy(__backtest_cls, func, *a, **b):
 
-        return func(__backtest_cls, *a, **b)
+        return func( *a, **b)
 
     @classmethod
     def end_trading(__backtest_cls, func, *a, **b):
         # yield __backtest_cls.cash
-        return func(__backtest_cls, *a, **b)
+        return func( *a, **b)
     @classmethod
     def end_backtest(__backtest_cls, func, *a, **b):
         # yield __backtest_cls.cash
-        return func(__backtest_cls, *a, **b)
+        return func( *a, **b)
 
     def __QA_backtest_set_bid_model(self):
         if self.__backtest_setting['bid']['bid_model'] == 'market_price':
@@ -967,25 +967,26 @@ class QA_Backtest_min():
 if __name__ == '__main__':
 
     @QA_Backtest_stock_day.backtest_init
-    def init(QA_Backtest_stock_day):
+
+    def init():
+        #
         QA_Backtest_stock_day.setting.QA_util_sql_mongo_ip='192.168.4.189'
         QA_Backtest_stock_day.account.init_assest=250000
-        a=1
+        QA_Backtest_stock_day.strategy_start_date='2017-03-01'
 
     @QA_Backtest_stock_day.before_backtest
-    def before_backtest(QA_Backtest_stock_day):
-
+    def before_backtest():
         global risk_position
         QA_util_log_info(QA_Backtest_stock_day.account.message)
         
 
     # 这里是每天回测之前的  比如9:00时候的系统状态
     @QA_Backtest_stock_day.before_trading
-    def before_trading(QA_Backtest_stock_day):
+    def before_trading():
         pass
 
     @QA_Backtest_stock_day.strategy
-    def xxx():
+    def data_handle():
         pass
 
 

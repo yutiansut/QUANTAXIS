@@ -56,12 +56,14 @@
         - [1.31 通达信5分钟线解析保存](#131-通达信5分钟线解析保存)
         - [1.32 获取指数k线的api更新](#132-获取指数k线的api更新)
         - [1.33 QA_util更新 QA_util_time_stamp](#133-qa_util更新-qa_util_time_stamp)
+        - [1.34  QABACKTEST回测引擎更新](#134--qabacktest回测引擎更新)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
         - [2.3 QA.QABacktest.QABacktest](#23-qaqabacktestqabacktest)
         - [2.4 QA.QA_Queue](#24-qaqa_queue)
         - [2.5 彻底放弃QUANTAXIS-WEBKIT-CLIENT](#25-彻底放弃quantaxis-webkit-client)
+        - [2.6 更换QABACKTEST的回测模式](#26-更换qabacktest的回测模式)
     - [重要性能优化  重新定义回测流程,减少数据库IO压力](#重要性能优化--重新定义回测流程减少数据库io压力)
     - [废弃的接口](#废弃的接口)
     - [to do list](#to-do-list)
@@ -881,6 +883,53 @@ QA.QA_util_time_stamp('2017-01-01 10:25:08')
 
 ```
 
+### 1.34  QABACKTEST回测引擎更新  
+2017/8/1
+
+
+
+重大更新:
+现在大量使用@装饰器来扩展回测引擎的能力
+
+```python
+
+    from QUANTAXIS.QABacktest import QA_Backtest_stock_day
+
+    @QA_Backtest_stock_day.backtest_init
+
+    def init():
+        #
+        QA_Backtest_stock_day.setting.QA_util_sql_mongo_ip='192.168.4.189'
+        QA_Backtest_stock_day.account.init_assest=250000
+        QA_Backtest_stock_day.strategy_start_date='2017-03-01'
+
+    @QA_Backtest_stock_day.before_backtest
+    def before_backtest():
+        global risk_position
+        QA_util_log_info(QA_Backtest_stock_day.account.message)
+        
+
+    # 这里是每天回测之前的  比如9:00时候的系统状态
+    @QA_Backtest_stock_day.before_trading
+    def before_trading():
+        pass
+
+    @QA_Backtest_stock_day.strategy
+    def data_handle():
+        pass
+
+
+    @QA_Backtest_stock_day.end_trading
+    def end_trading():
+        pass
+
+    @QA_Backtest_stock_day.end_backtest
+    def end_backtest():
+        pass
+```
+
+
+
 ## 巨大改动/重构
 
 ### 2.1 QA.QAARP.QAAccount
@@ -920,6 +969,11 @@ QA.QA_util_time_stamp('2017-01-01 10:25:08')
 webkit/client 是一个基于electronic的客户端,但是其功能本质上和网页版并无区别,且缺乏维护
 
 0.4.0-alpha中将其去除,之后也不会再维护
+
+
+### 2.6 更换QABACKTEST的回测模式
+
+参见 ###1.34
 
 ## 重要性能优化  重新定义回测流程,减少数据库IO压力
 
