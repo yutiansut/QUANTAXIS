@@ -548,9 +548,20 @@ class QA_Backtest():
         return {'market': __market_data, 'account': __message}
 
 
-class QA_Backtest_stock_day(QA_Backtest):
+class QA_Backtest_stock_day():
+    
+    account = QA_Account()
+    market = QA_Market()
+    bid = QA_QAMarket_bid()
+    setting = QA_Setting()
+    clients = setting.client
+    user = setting.QA_setting_user_name
 
-    def __init__(self,):
+
+
+
+
+    def __init__(self):
 
         self.account = QA_Account()
         self.market = QA_Market()
@@ -559,38 +570,39 @@ class QA_Backtest_stock_day(QA_Backtest):
         self.clients = self.setting.client
         self.user = self.setting.QA_setting_user_name
 
-    @staticmethod
-    def backtest_init(backtest, func, *a, **b):
-        @wraps(func)
-        def init_backtest(*a, **b):
-        
-            QA_backtest_init()
-            return func(backtest, *a, **b)
-        return init_backtest
+    @classmethod
+    def backtest_init(__backtest_cls, func, *a, **b):
+
+        def __init_backtest(__backtest_cls,*a, **b):
+
+            __backtest_cls.QA_backtest_init(__backtest_cls)
+            func(__backtest_cls, *a, **b)
+            __backtest_cls.__QA_backtest_init_inside(__backtest_cls)
+        return __init_backtest(__backtest_cls)
 
     @classmethod
-    def before_backtest(backtest, func, *a, **b):
-        # yield backtest.cash
-        return func(backtest, *a, **b)
+    def before_backtest(__backtest_cls, func, *a, **b):
+        # yield __backtest_cls.cash
+        return func(__backtest_cls, *a, **b)
 
     @classmethod
-    def before_trading(backtest, func, *a, **b):
-        # yield backtest.cash
-        return func(backtest, *a, **b)
+    def before_trading(__backtest_cls, func, *a, **b):
+        # yield __backtest_cls.cash
+        return func(__backtest_cls, *a, **b)
 
     @classmethod
-    def strategy(backtest, func, *a, **b):
+    def strategy(__backtest_cls, func, *a, **b):
 
-        return func(backtest, *a, **b)
+        return func(__backtest_cls, *a, **b)
 
     @classmethod
-    def end_trading(backtest, func, *a, **b):
-        # yield backtest.cash
-        return func(backtest, *a, **b)
+    def end_trading(__backtest_cls, func, *a, **b):
+        # yield __backtest_cls.cash
+        return func(__backtest_cls, *a, **b)
     @classmethod
-    def end_backtest(backtest, func, *a, **b):
-        # yield backtest.cash
-        return func(backtest, *a, **b)
+    def end_backtest(__backtest_cls, func, *a, **b):
+        # yield __backtest_cls.cash
+        return func(__backtest_cls, *a, **b)
 
     def __QA_backtest_set_bid_model(self):
         if self.__backtest_setting['bid']['bid_model'] == 'market_price':
@@ -610,39 +622,32 @@ class QA_Backtest_stock_day(QA_Backtest):
         pass
 
     def QA_backtest_init(self):
-        # 设置回测的开始结束时间
-        # print(set(self))
-        #print(dir(self))
-        #
 
-        self.strategy_start_date = str(
-            self.__backtest_setting['backtest']['strategy_start_date'])
-        self.strategy_end_date = str(
-            self.__backtest_setting['backtest']['strategy_end_date'])
+        """既然是被当做装饰器使用,就需要把变量设置放在装饰函数的前面,把函数放在装饰函数的后面"""
+
+        # 设置回测的开始结束时间
+
+        self.strategy_start_date = str('2017-01-05')
+        self.strategy_end_date = str('2017-07-01')
 
         # 设置回测标的,是一个list对象,不过建议只用一个标的
         # gap是回测时,每日获取数据的前推日期(交易日)
-        self.strategy_gap = int(
-            self.__backtest_setting['backtest']['strategy_gap'])
+        self.strategy_gap = int(60)
 
         # 设置全局的数据库地址,回测用户名,密码,并初始化
-        self.setting.QA_util_sql_mongo_ip = str(
-            self.__backtest_setting['backtest']['database_ip'])
-        self.setting.QA_setting_user_name = str(
-            self.__backtest_setting['backtest']['username'])
-        self.setting.QA_setting_user_password = str(
-            self.__backtest_setting['backtest']['password'])
+        self.setting.QA_util_sql_mongo_ip = str('127.0.0.1')
+        self.setting.QA_setting_user_name = str('admin')
+        self.setting.QA_setting_user_password = str('admin')
         self.setting.QA_setting_init()
 
         # 回测的名字
-        self.strategy_name = str(
-            self.__backtest_setting['backtest']['strategy_name'])
+        self.strategy_name = str('example')
 
        # 股票的交易日历,真实回测的交易周期,和交易周期在交易日历中的id
         self.trade_list = QA_fetch_trade_date(
             self.setting.client.quantaxis.trade_date)
 
-        self.benchmark_code = self.__backtest_setting['backtest']['benchmark_code']
+        self.benchmark_code = 'hs300'
         """
         这里会涉及一个区间的问题,开始时间是要向后推,而结束时间是要向前推,1代表向后推,-1代表向前推
         """
@@ -653,9 +658,9 @@ class QA_Backtest_stock_day(QA_Backtest):
             self.strategy_end_date, self.trade_list, -1)
         self.end_real_id = self.trade_list.index(self.end_real_date)
 
-        self.__QA_backtest_set_stock_list()
+        self.strategy_stock_list=['000001','000002','000004']
 
-        self.account.init_assest = self.__backtest_setting['account']['account_assets']
+        self.account.init_assest = 1000000
 
     def __QA_backtest_init_inside(self):
         """
@@ -666,6 +671,9 @@ class QA_Backtest_stock_day(QA_Backtest):
         """
 
         # 重新初始账户资产
+
+
+        self.setting.QA_setting_init()
         self.account.init()
         # 重新初始化账户的cookie
         self.account.account_cookie = str(random.random())
@@ -953,6 +961,23 @@ class QA_Backtest_min():
 
 
 if __name__ == '__main__':
-    backtest = QA_Backtest_stock_day()
-    backtest.QA_backtest_init()
-    # backtest.bid_engine.start()
+
+    @QA_Backtest_stock_day.backtest_init
+    def init(QA_Backtest_stock_day):
+        QA_Backtest_stock_day.setting.QA_util_sql_mongo_ip='192.168.4.189'
+        QA_Backtest_stock_day.account.init_assest=250000
+    
+
+    @QA_Backtest_stock_day.before_backtest
+    def before_backtest(QA_Backtest_stock_day):
+        QA_util_log_info(QA_Backtest_stock_day.account.message)
+
+
+    # 这里是每天回测之前的  比如9:00时候的系统状态
+    @QA_Backtest_stock_day.before_trading
+    def before_trading(QA_Backtest_stock_day):
+        pass
+
+    @QA_Backtest_stock_day.strategy
+    def xxx():
+        pass
