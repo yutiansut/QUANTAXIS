@@ -549,7 +549,28 @@ class QA_Backtest():
 
 
 class QA_Backtest_stock_day():
-    
+        
+    try:
+        sys.path.append(os.getcwd())
+        #QA_util_log_info('loading strategy from'+ os.getcwd())
+        import user_strategy
+        if 'before_trading' not in dir(user_strategy):
+            def before_trading():
+                pass
+        elif 'handle_bar' not in dir(user_strategy):
+            def handle_bar():
+            QA_util_log_info('nothing in handle bar')
+        elif 'end_trading' not in dir(user_strategy)
+            def end_trading():
+                pass
+    except:
+        # 如果找不到这三个函数 就在回测框架内部去定义它
+        def before_trading():
+            pass
+        def handle_bar():
+            QA_util_log_info('nothing in handle bar')
+        def end_trading():
+            pass
     account = QA_Account()
     market = QA_Market()
     bid = QA_QAMarket_bid()

@@ -78,6 +78,12 @@ def QA_fetch_stock_info(code, collections):
     pass
 
 
+
+
+def QA_fetch_stock_table_by_day(stock_list,date_range):
+    """用于获取股票面数据"""
+    pass
+
 def QA_fetch_stocklist_day(stock_list, collections, date_range):
     data = []
     for item in stock_list:
