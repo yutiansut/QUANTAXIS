@@ -557,10 +557,6 @@ class QA_Backtest_stock_day():
     clients = setting.client
     user = setting.QA_setting_user_name
 
-
-
-
-
     def __init__(self):
 
         self.account = QA_Account()
@@ -571,39 +567,39 @@ class QA_Backtest_stock_day():
         self.user = self.setting.QA_setting_user_name
 
     @classmethod
-    def backtest_init(__backtest_cls, func, *a, **b):
+    def backtest_init(__backtest_cls, func, *arg, *kwargs):
 
-        def __init_backtest(__backtest_cls,*a, **b):
+        def __init_backtest(__backtest_cls,*arg, *kwargs):
 
             __backtest_cls.QA_backtest_init(__backtest_cls)
-            func( *a, **b)
+            func( *arg, *kwargs)
             __backtest_cls.__QA_backtest_init_inside(__backtest_cls)
         return __init_backtest(__backtest_cls)
 
     @classmethod
-    def before_backtest(__backtest_cls, func, *a, **b):
+    def before_backtest(__backtest_cls, func, *arg, *kwargs):
         # yield __backtest_cls.cash
-        func( *a, **b)
-        __backtest_cls.QA_backtest_start()
+        func( *arg, *kwargs)
+        __backtest_cls.QA_backtest_start(__backtest_cls)
 
     @classmethod
-    def before_trading(__backtest_cls, func, *a, **b):
+    def before_trading(__backtest_cls, func, *arg, *kwargs):
         # yield __backtest_cls.cash
-        return func( *a, **b)
+        return func( *arg, *kwargs)
 
     @classmethod
-    def strategy(__backtest_cls, func, *a, **b):
-
-        return func( *a, **b)
+    def strategy(__backtest_cls, func, *arg, *kwargs):
+        __backtest_cls.__QA_backest_handle_data(__backtest_cls,func,*arg,*kwargs)
+        #return func( *arg, *kwargs)
 
     @classmethod
-    def end_trading(__backtest_cls, func, *a, **b):
+    def end_trading(__backtest_cls, func, *arg, *kwargs):
         # yield __backtest_cls.cash
-        return func( *a, **b)
+        return func( *arg, *kwargs)
     @classmethod
-    def end_backtest(__backtest_cls, func, *a, **b):
+    def end_backtest(__backtest_cls, func, *arg, *kwargs):
         # yield __backtest_cls.cash
-        return func( *a, **b)
+        return func( *arg, *kwargs)
 
     def __QA_backtest_set_bid_model(self):
         if self.__backtest_setting['bid']['bid_model'] == 'market_price':
@@ -684,7 +680,7 @@ class QA_Backtest_stock_day():
             [self.trade_list[self.start_real_id - int(self.strategy_gap)],
              self.trade_list[self.end_real_id]])
 
-    def QA_backtest_start(self, outside_handle, *args, **kwargs):
+    def QA_backtest_start(self, *args, **kwargs):
         """
         这个是回测流程开始的入口
 
@@ -693,7 +689,7 @@ class QA_Backtest_stock_day():
         assert len(self.trade_list) > 0
         assert isinstance(self.start_real_date, str)
         assert isinstance(self.end_real_date, str)
-        self.__QA_backtest_init_inside()
+        #self.__QA_backtest_init_inside()
 
         assert len(self.__market_data) == len(self.strategy_stock_list)
 
@@ -707,7 +703,7 @@ class QA_Backtest_stock_day():
         self.__QA_backtest_set_bid_model()
 
 
-
+        """
         try:
             # 在末尾增加一个回调给策略
             outside_handle.on_start(self)
@@ -716,7 +712,9 @@ class QA_Backtest_stock_day():
         # 加载外部策略
         self.__QA_backest_handle_data(outside_handle)
 
-    def __QA_backest_handle_data(self, outside_handle):
+        """
+
+    def __QA_backest_handle_data(self,func,*arg,**kwargs):
         '这个outside_handle就是一个外部的注入函数'
 
         # 首先判断是否能满足回测的要求`
@@ -728,43 +726,60 @@ class QA_Backtest_stock_day():
 
         # 策略的交易日循环
         for i in range(int(self.start_real_id), int(self.end_real_id) - 1, 1):
-            # 正在进行的交易日期
-            __running_date = self.trade_list[i]
-            QA_util_log_info(
-                '=================daily hold list====================')
-            QA_util_log_info('in the begining of ' + __running_date)
-            QA_util_log_info(
-                tabulate(self.account.message['body']['account']['hold']))
-            for __j in range(0, len(self.strategy_stock_list)):
-                if __running_date in [l[6] for l in self.__market_data[__j]] and \
-                        [l[6] for l in self.__market_data[__j]].index(__running_date) \
-                        > self.strategy_gap + 1:
+            self.__start_of_every_day(func,*arg,**kwargs)
+            self.__backtest_every_day_trading(i,func,*arg,**kwargs)
+            self.__end_of_every_day(func,*arg,**kwargs)
 
-                    __data = self.__QA_data_handle(
-                        [__l[6] for __l in self.__market_data[__j]].index(__running_date), __j)
-                    __amount = 0
-                    for item in __data['account']['body']['account']['hold']:
+        self.__end_of_backtest(func,*arg,**kwargs)
 
-                        if self.strategy_stock_list[__j] in item:
-                            __amount = __amount + item[3]
-                    if __amount > 0:
-                        __hold = 1
-                    else:
-                        __hold = 0
 
-                    __result = outside_handle.predict(
-                        __data['market'], __data['account'], __hold, _info)
+    def __start_of_every_day(self,func,*arg,**kwargs):
+        func(self,*arg,**kwargs)
 
-                    if float(self.account.message['body']['account']['cash'][-1]) > 0:
-                        self.__QA_backtest_excute_bid(
-                            __result, __running_date, __hold,
-                            str(self.strategy_stock_list[__j])[0:6], __amount)
+    def __end_of_every_day(self,func,*arg,**kwargs):
+        func(self,*arg,**kwargs)
 
-                    else:
-                        QA_util_log_info('not enough free money')
+    def __backtest_every_day_trading(self,i,func,*arg,**kwargs):
+        
+        # 正在进行的交易日期
+        __running_date = self.trade_list[i]
+        QA_util_log_info(
+            '=================daily hold list====================')
+        QA_util_log_info('in the begining of ' + __running_date)
+        QA_util_log_info(
+            tabulate(self.account.message['body']['account']['hold']))
+        for __j in range(0, len(self.strategy_stock_list)):
+            if __running_date in [l[6] for l in self.__market_data[__j]] and \
+                    [l[6] for l in self.__market_data[__j]].index(__running_date) \
+                    > self.strategy_gap + 1:
+
+                __data = self.__QA_data_handle(
+                    [__l[6] for __l in self.__market_data[__j]].index(__running_date), __j)
+                __amount = 0
+                for item in __data['account']['body']['account']['hold']:
+
+                    if self.strategy_stock_list[__j] in item:
+                        __amount = __amount + item[3]
+                if __amount > 0:
+                    __hold = 1
                 else:
-                    pass
+                    __hold = 0
 
+                __result = func(self,*arg,**kwargs)
+
+                if float(self.account.message['body']['account']['cash'][-1]) > 0:
+                    self.__QA_backtest_excute_bid(
+                        __result, __running_date, __hold,
+                        str(self.strategy_stock_list[__j])[0:6], __amount)
+
+                else:
+                    QA_util_log_info('not enough free money')
+            else:
+                pass
+
+
+
+    def __end_of_trading(self,func,*arg,*kwargs):
         # 在回测的最后一天,平掉所有仓位(回测的最后一天是不买入的)
         while len(self.account.hold) > 1:
             __hold_list = self.account.hold[1::]
@@ -812,6 +827,10 @@ class QA_Backtest_stock_day():
                 __data['market'], __data['account'], __hold, _info)
         except:
             pass
+
+
+    def __end_of_backtest(self,func,*arg,**kwargs):
+        
         # 开始分析
         QA_util_log_info('start analysis====\n' +
                          str(self.strategy_stock_list))
@@ -856,7 +875,7 @@ class QA_Backtest_stock_day():
             'exist': __exist_time,
             'time': datetime.datetime.now()
         }
-
+        func(self,*arg,**kwargs)
         QA_SU_save_backtest_message(_backtest_mes, self.setting.client)
         QA_SU_save_account_message(__messages, self.setting.client)
         QA_SU_save_account_to_csv(__messages)
