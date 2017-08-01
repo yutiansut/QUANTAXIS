@@ -583,7 +583,8 @@ class QA_Backtest_stock_day():
     @classmethod
     def before_backtest(__backtest_cls, func, *a, **b):
         # yield __backtest_cls.cash
-        return func(__backtest_cls, *a, **b)
+        func(__backtest_cls, *a, **b)
+        __backtest_cls.QA_backtest_start()
 
     @classmethod
     def before_trading(__backtest_cls, func, *a, **b):
@@ -704,6 +705,9 @@ class QA_Backtest_stock_day():
 
         # 初始化报价模式
         self.__QA_backtest_set_bid_model()
+
+
+
         try:
             # 在末尾增加一个回调给策略
             outside_handle.on_start(self)
@@ -966,12 +970,14 @@ if __name__ == '__main__':
     def init(QA_Backtest_stock_day):
         QA_Backtest_stock_day.setting.QA_util_sql_mongo_ip='192.168.4.189'
         QA_Backtest_stock_day.account.init_assest=250000
-    
+        a=1
 
     @QA_Backtest_stock_day.before_backtest
     def before_backtest(QA_Backtest_stock_day):
-        QA_util_log_info(QA_Backtest_stock_day.account.message)
 
+        global risk_position
+        QA_util_log_info(QA_Backtest_stock_day.account.message)
+        
 
     # 这里是每天回测之前的  比如9:00时候的系统状态
     @QA_Backtest_stock_day.before_trading
@@ -980,4 +986,13 @@ if __name__ == '__main__':
 
     @QA_Backtest_stock_day.strategy
     def xxx():
+        pass
+
+
+    @QA_Backtest_stock_day.end_trading
+    def end_trading():
+        pass
+
+    @QA_Backtest_stock_day.end_backtest
+    def end_backtest():
         pass
