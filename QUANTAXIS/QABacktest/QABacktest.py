@@ -559,8 +559,8 @@ class QA_Backtest_stock_day():
                 pass
         elif 'handle_bar' not in dir(user_strategy):
             def handle_bar():
-            QA_util_log_info('nothing in handle bar')
-        elif 'end_trading' not in dir(user_strategy)
+                QA_util_log_info('nothing in handle bar')
+        elif 'end_trading' not in dir(user_strategy):
             def end_trading():
                 pass
     except:
