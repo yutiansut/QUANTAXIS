@@ -588,39 +588,39 @@ class QA_Backtest_stock_day():
         self.user = self.setting.QA_setting_user_name
 
     @classmethod
-    def backtest_init(__backtest_cls, func, *arg, *kwargs):
+    def backtest_init(__backtest_cls, func, *arg, **kwargs):
 
-        def __init_backtest(__backtest_cls,*arg, *kwargs):
+        def __init_backtest(__backtest_cls,*arg, **kwargs):
 
             __backtest_cls.QA_backtest_init(__backtest_cls)
-            func( *arg, *kwargs)
+            func( *arg, **kwargs)
             __backtest_cls.__QA_backtest_init_inside(__backtest_cls)
         return __init_backtest(__backtest_cls)
 
     @classmethod
-    def before_backtest(__backtest_cls, func, *arg, *kwargs):
+    def before_backtest(__backtest_cls, func, *arg, **kwargs):
         # yield __backtest_cls.cash
-        func( *arg, *kwargs)
+        func( *arg, **kwargs)
         __backtest_cls.QA_backtest_start(__backtest_cls)
 
     @classmethod
-    def before_trading(__backtest_cls, func, *arg, *kwargs):
+    def before_trading(__backtest_cls, func, *arg, **kwargs):
         # yield __backtest_cls.cash
-        return func( *arg, *kwargs)
+        return func( *arg, **kwargs)
 
     @classmethod
-    def strategy(__backtest_cls, func, *arg, *kwargs):
-        __backtest_cls.__QA_backest_handle_data(__backtest_cls,func,*arg,*kwargs)
-        #return func( *arg, *kwargs)
+    def strategy(__backtest_cls, func, *arg, **kwargs):
+        __backtest_cls.__QA_backest_handle_data(__backtest_cls,func,*arg,**kwargs)
+        #return func( *arg, **kwargs)
 
     @classmethod
-    def end_trading(__backtest_cls, func, *arg, *kwargs):
+    def end_trading(__backtest_cls, func, *arg, **kwargs):
         # yield __backtest_cls.cash
-        return func( *arg, *kwargs)
+        return func( *arg, **kwargs)
     @classmethod
-    def end_backtest(__backtest_cls, func, *arg, *kwargs):
+    def end_backtest(__backtest_cls, func, *arg, **kwargs):
         # yield __backtest_cls.cash
-        return func( *arg, *kwargs)
+        return func( *arg, **kwargs)
 
     def __QA_backtest_set_bid_model(self):
         if self.__backtest_setting['bid']['bid_model'] == 'market_price':
@@ -800,7 +800,7 @@ class QA_Backtest_stock_day():
 
 
 
-    def __end_of_trading(self,func,*arg,*kwargs):
+    def __end_of_trading(self,func,*arg,**kwargs):
         # 在回测的最后一天,平掉所有仓位(回测的最后一天是不买入的)
         while len(self.account.hold) > 1:
             __hold_list = self.account.hold[1::]

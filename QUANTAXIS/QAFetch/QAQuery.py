@@ -72,7 +72,13 @@ def QA_fetch_trade_date(collections):
     for item in collections.find({}):
         data.append(item['date'])
     return data
+def QA_fetch_stock_list(collections=QA_Setting.client.quantaxis.stock_list):
+    data=[]
+    for item in collections.find_one()['stock']['code']:
+        data.append(item)
 
+
+    return data
 
 def QA_fetch_stock_info(code, collections):
     pass

@@ -57,6 +57,7 @@
         - [1.32 获取指数k线的api更新](#132-获取指数k线的api更新)
         - [1.33 QA_util更新 QA_util_time_stamp](#133-qa_util更新-qa_util_time_stamp)
         - [1.34  QABACKTEST回测引擎更新](#134--qabacktest回测引擎更新)
+        - [1.35 QA_fetch_stock_list 函数更新](#135-qa_fetch_stock_list-函数更新)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -927,7 +928,21 @@ QA.QA_util_time_stamp('2017-01-01 10:25:08')
     def end_backtest():
         pass
 ```
+### 1.35 QA_fetch_stock_list 函数更新
 
+一个获取股票代码的函数
+
+```python
+
+import QUANTAXIS as QA
+QA.QA_fetch_stock_list()
+
+
+# 自定义数据库的模式
+import pymongo
+QA.QA_fetch_stock_list(pymongo.MongoClient(ip='192.168.4.189',port=27017).quantaxis.stock_list)
+
+```
 
 
 ## 巨大改动/重构

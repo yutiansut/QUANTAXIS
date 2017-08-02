@@ -34,7 +34,7 @@ from tabulate import tabulate
 import configparser
 import queue
 
-
+"""
 try:
     sys.path.append(os.getcwd())
     #QA_util_log_info('loading strategy from'+ os.getcwd())
@@ -43,7 +43,7 @@ try:
 except:
     QA_util_log_info(Exception)
 
-
+"""
 def strategy_dec(func, *a, **b):
 
     def deoc(*a, **b):
