@@ -21,7 +21,7 @@ def before_backtest():
     
 @QB.load_strategy
 def strategy():
-    print(QB.account)
+    print(QB.account.message)
     print(QB.market_data)
     
 @QB.end_backtest
