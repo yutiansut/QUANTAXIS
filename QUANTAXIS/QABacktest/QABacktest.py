@@ -876,20 +876,54 @@ class QA_Backtest_stock_day():
         这里是处理报价的逻辑部分
         2017/7/19 修改
 
-        __result传进来的变量重新区分: 现在需要有 if_buy, if_sell
-        因为需要对于: 持仓状态下继续购买进行进一步的支持*简单的情形就是  浮盈加仓
+        """
+        """
+        2017/8/4再次修改:
+        我们需要的是一个简化的报单api
 
-        if_buy, if_sell都需要传入
 
-        现在的 买卖状态 和 持仓状态 是解耦的
+        买入/卖出
+        股票代码
+        买入/卖出数量
+        
+        参考实盘的下单接口:
+        tradex:
+        nCategory - 委托业务的种类
+            0 买入
+            1 卖出
+            2 融资买入
+            3 融券卖出
+            4 买券还券
+            5 卖券还款
+            6 现券还券
+        nOrderType - 委托报价方式
+            0 限价委托； 上海限价委托/ 深圳限价委托
+            1 市价委托(深圳对方最优价格)
+            2 市价委托(深圳本方最优价格)
+            3 市价委托(深圳即时成交剩余撤销)
+            4 市价委托(上海五档即成剩撤/ 深圳五档即成剩撤)
+            5 市价委托(深圳全额成交或撤销)
+            6 市价委托(上海五档即成转限价)
+        sAccount - 股东代码
+        sStockCode - 证券代码
+        sPrice - 价格
+        sVolume - 委托证券的股数
+        返回值：
+        errinfo - 出错时函数抛出的异常信息；
+        result - 查询到的数据。
+
+
+        然后去检查
+        1.当前账户是否持仓该股票
+        2.当前账户现金是否足以支持购买该股票
+        返回
+        3.是否委托(委托id)
+        4.是否成交(成交id)
+        5.成交笔数
+
+
         """
 
-        # 为了兼容性考虑,我们会在开始的时候检查是否有这些变量
-        if 'if_buy' not in list(__result.keys()):
-            __result['if_buy'] = 0
-
-        if 'if_sell' not in list(__result.keys()):
-            __result['if_sell'] = 0
 
         self.__QA_backtest_set_bid_model()
         if self.bid.bid['bid_model'] == 'strategy':
@@ -967,6 +1001,15 @@ class QA_Backtest_stock_day():
         __message = self.account.message
 
         return {'market': market_data, 'account': __message}
+
+
+
+
+
+
+
+
+
 
 
 class QA_Backtest_min():
