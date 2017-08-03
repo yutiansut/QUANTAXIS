@@ -8,6 +8,7 @@ def init():
     QB.setting.QA_util_sql_mongo_ip='192.168.4.189'
     QB.account.init_assest=250000
     QB.strategy_start_date='2017-03-01'
+    QB.strategy_end_date='2017-07-01'
     QB.backtest_bid_model='market_price'
     
 
