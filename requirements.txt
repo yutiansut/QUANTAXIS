@@ -1,6 +1,7 @@
 pymongo
 celery
 bs4
+tabulate
 pandas
 lxml
 requests
