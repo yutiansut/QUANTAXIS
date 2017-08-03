@@ -98,9 +98,130 @@ def QA_indicator_jlhb(high, low, close, N=7, M=5):
     VAR2:SMA(B,M,1);
     绝路航标:IF(CROSS(B,VAR2) AND B<40,38,0),COLORYELLOW,LINETHICK2;
     DRAWICON( 绝路航标>0,38,1 );
+
+    计算公式：
+    VAR1:=(CLOSE-LLV(LOW,60))/(HHV(HIGH,60)-LLV(LOW,60))*80;
+    B:SMA(VAR1,N,1);
+    VAR2:SMA(B,M,1);
+    绝路航标:IF(CROSS(B,VAR2) AND B<40,50,0);
+
+    VAR1赋值:(收盘价-60日内最低价的最低值)/(60日内最高价的最高值-60日内最低价的最低值)*80
+    输出 B:VAR1的N日[1日权重]移动平均
+    输出 VAR2:B的M日[1日权重]移动平均
+    输出 绝路航标:如果B上穿VAR2 AND B<40,返回50,否则返回0
+    输入：
+        security_list:股票列表
+        check_date：要查询数据的日期
+        N：统计的天数 N
+        M：统计的天数 M
+    输出：
+        B, VAR2和绝路航标 的值。
+    输出结果类型：
+        字典(dict)：键(key)为股票代码，值(value)为数据。
     """
-   # _var_1 = pd.Series(low)-
-    pass
+    def JLHB(security_list, check_date, N = 7, M = 5):
+            '''
+
+        '''
+        import talib
+        import numpy as np
+
+        # 计算SMA(X, N, M)， 即X的N日移动平均，M为权重, 若Y=SMA(X,N,M) 则 Y = (M*X+(N-M)*Y')/N, 其中Y'表示上一周期Y值,N必须大于M。返回一个列表
+        def SMA(X, N, M=1):
+            ret = []
+            i = 1
+            length = len(X)
+            # 跳过X中前面几个 nan 值
+            while i < length:
+                if np.isnan(X[i]):
+                    i += 1
+                else:
+                    break
+            preY = X[i] # Y'
+            ret.append(preY)
+            while i < length:
+                Y = (M * X[i] + (N-M) * preY) / float(N)
+                ret.append(Y)
+                preY = Y
+                i += 1
+            return ret
+
+        # VAR1:=(CLOSE-LLV(LOW,N))/(HHV(HIGH,N)-LLV(LOW,N))*80;
+        # 返回一个列表
+        # 功能等效于talib.STOCHF返回的第一个值
+        def STOCHF(high, low, close, N=60):
+            VAR = []
+            len_total = len(high)
+            i = -len_total
+            # 在N-1天之前，取不到LLV(LOW, N)和(HHV(HIGH,N)，所以VAR的值为nan
+            while i < -(len_total-N + 1):
+                t = np.nan
+                VAR.append(t)
+                i += 1
+            # 终于有了LLV和HHV
+            while i < -1:
+                # 虽然都是+1，但意义不同，一个是弥补-N，一个是因为Python切片只能取到第二个参数所指的数的前一个
+                llv = min(low[i-N+1 : i+1])
+                hhv = max(high[i-N+1 : i+1])
+                t = (close[i]-llv) / (hhv-llv) * 80
+                VAR.append(t)
+                i += 1
+            # 因为low[-x: 0]取不到数值，所以low/high/close中的最后N个要单独处理
+            llv = min(low[i-N+1 :])
+            hhv = max(high[i-N+1 :])
+            t = (close[i]-llv) / (hhv-llv) * 80
+            VAR.append(t)
+            return VAR
+
+        # 计算 JLHB
+        jlhb_b = {} 
+        jlhb_var2 = {}
+        jlhb_jlhb = {}
+        # 修复传入为单只股票的情况
+        if isinstance(security_list, (str,unicode)):
+            security_list = [security_list]
+        for stock in security_list:
+            security_data = get_price(stock, end_date = check_date, frequency = '1d', fields = ['low', 'high', 'close'] , skip_paused = True, count = N * 20)
+            nan_count = list(np.isnan(security_data['close'])).count(True)
+            if nan_count == len(security_data['close']):
+                log.info("股票 %s 输入数据全是 NaN，该股票可能已退市或刚上市，返回 NaN 值数据。" % stock)
+                jlhb_b[stock] = np.nan
+                jlhb_var2[stock] = np.nan
+                jlhb_jlhb[stock] = np.nan
+            else:
+                close_JLHB = security_data['close']
+                high_JLHB = security_data['high']
+                low_JLHB = security_data['low']
+
+                close = np.array(close_JLHB)
+                high = np.array(high_JLHB)
+                low = np.array(low_JLHB)
+
+                # 计算VAR1值
+                var1 = STOCHF(high, low, close)
+                # 计算 B 值
+                b = SMA(var1, N, 1)
+                # 计算 var2 值
+                var2 = SMA(b, M, 1)
+                # 计算 绝路航标
+                jlhb = 0
+                cross = 0
+                if b[-2] < var2[-2] and b[-1] > var2[-1]:
+                    cross = 1
+                if  cross == 1 and b[-1] < 40:
+                    jlhb = 50
+
+                jlhb_b[stock] = b[-1]
+                jlhb_var2[stock] = var2[-1]
+                jlhb_jlhb[stock] = jlhb
+        return jlhb_b, jlhb_var2, jlhb_jlhb
+
+
+
+
+
+    # _var_1 = pd.Series(low)-
+        pass
 
 
 def QA_indicator_cho(data):
