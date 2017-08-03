@@ -65,7 +65,7 @@ from QUANTAXIS.QAMarket import (QA_QAMarket_bid, QA_Market)
 
 from QUANTAXIS.QAARP import QA_Account, QA_Portfolio, QA_Risk
 # Backtest
-from QUANTAXIS.QABacktest.QABacktest import QA_Backtest, QA_Backtest_min
+from QUANTAXIS.QABacktest.QABacktest import QA_Backtest, QA_Backtest_min,QA_Backtest_stock_day
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
 from QUANTAXIS.QABacktest.backtest_framework import backtest
 # task

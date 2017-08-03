@@ -270,7 +270,7 @@ class QA_Backtest():
         # 重新初始化账户的cookie
         self.account.account_cookie = str(random.random())
         # 初始化股票池的市场数据
-        self.__market_data = QA_fetch_stocklist_day(
+        self.market_data = QA_fetch_stocklist_day(
             self.strategy_stock_list, self.setting.client.quantaxis.stock_day,
             [self.trade_list[self.start_real_id - int(self.strategy_gap)],
              self.trade_list[self.end_real_id]])
@@ -286,7 +286,7 @@ class QA_Backtest():
         assert isinstance(self.end_real_date, str)
         self.__QA_backtest_init_inside()
 
-        assert len(self.__market_data) == len(self.strategy_stock_list)
+        assert len(self.market_data) == len(self.strategy_stock_list)
 
         QA_util_log_info('QUANTAXIS Backtest Engine Initial Successfully')
         QA_util_log_info('Basical Info: \n' + tabulate(
@@ -324,12 +324,12 @@ class QA_Backtest():
             QA_util_log_info(
                 tabulate(self.account.message['body']['account']['hold']))
             for __j in range(0, len(self.strategy_stock_list)):
-                if __running_date in [l[6] for l in self.__market_data[__j]] and \
-                        [l[6] for l in self.__market_data[__j]].index(__running_date) \
+                if __running_date in [l[6] for l in self.market_data[__j]] and \
+                        [l[6] for l in self.market_data[__j]].index(__running_date) \
                         > self.strategy_gap + 1:
 
                     __data = self.__QA_data_handle(
-                        [__l[6] for __l in self.__market_data[__j]].index(__running_date), __j)
+                        [__l[6] for __l in self.market_data[__j]].index(__running_date), __j)
                     __amount = 0
                     for item in __data['account']['body']['account']['hold']:
 
@@ -420,7 +420,7 @@ class QA_Backtest():
         performace = QA_backtest_analysis_start(
             self.setting.client, self.strategy_stock_list, __messages,
             self.trade_list[self.start_real_id:self.end_real_id + 1],
-            self.__market_data, self.__benchmark_data)
+            self.market_data, self.__benchmark_data)
         _backtest_mes = {
             'user': self.setting.QA_setting_user_name,
             'strategy': self.strategy_name,
@@ -533,19 +533,19 @@ class QA_Backtest():
             return __amount, 'amount'
 
     def __QA_get_data_from_market(self, __id, stock_id):
-        # x=[x[6] for x in self.__market_data]
+        # x=[x[6] for x in self.market_data]
         if __id > self.strategy_gap + 1:
             index_of_day = __id
             index_of_start = index_of_day - self.strategy_gap + 1
-            return self.__market_data[stock_id][index_of_start:index_of_day + 1]
+            return self.market_data[stock_id][index_of_start:index_of_day + 1]
 
          # 从账户中更新数据
 
     def __QA_data_handle(self, __id, __stock_id):
-        __market_data = self.__QA_get_data_from_market(__id, __stock_id)
+        market_data = self.__QA_get_data_from_market(__id, __stock_id)
         __message = self.account.message
 
-        return {'market': __market_data, 'account': __message}
+        return {'market': market_data, 'account': __message}
 
 
 class QA_Backtest_stock_day():
@@ -604,32 +604,21 @@ class QA_Backtest_stock_day():
         __backtest_cls.QA_backtest_start(__backtest_cls)
 
     @classmethod
-    def before_trading(__backtest_cls, func, *arg, **kwargs):
-        # yield __backtest_cls.cash
-        return func( *arg, **kwargs)
-
-    @classmethod
-    def strategy(__backtest_cls, func, *arg, **kwargs):
-        __backtest_cls.__QA_backest_handle_data(__backtest_cls,func,*arg,**kwargs)
-        #return func( *arg, **kwargs)
-
-    @classmethod
-    def end_trading(__backtest_cls, func, *arg, **kwargs):
-        # yield __backtest_cls.cash
-        return func( *arg, **kwargs)
-    @classmethod
     def end_backtest(__backtest_cls, func, *arg, **kwargs):
         # yield __backtest_cls.cash
+        __backtest_cls.__end_of_backtest(__backtest_cls,func,*arg,**kwargs)
         return func( *arg, **kwargs)
 
     def __QA_backtest_set_bid_model(self):
-        if self.__backtest_setting['bid']['bid_model'] == 'market_price':
+        
+
+        if self.backtest_bid_model == 'market_price':
             self.bid.bid['price'] = 'market_price'
             self.bid.bid['bid_model'] = 'auto'
-        elif self.__backtest_setting['bid']['bid_model'] == 'close_price':
+        elif self.backtest_bid_model == 'close_price':
             self.bid.bid['price'] = 'close_price'
             self.bid.bid['bid_model'] = 'auto'
-        elif self.__backtest_setting['bid']['bid_model'] == 'strategy':
+        elif self.backtest_bid_model == 'strategy':
             self.bid.bid['price'] = 0
             self.bid.bid['bid_model'] = 'strategy'
         else:
@@ -679,7 +668,7 @@ class QA_Backtest_stock_day():
         self.strategy_stock_list=['000001','000002','000004']
 
         self.account.init_assest = 1000000
-
+        self.backtest_bid_model = 'market_price'
     def __QA_backtest_init_inside(self):
         """
         这是模型内部的 初始化,主要是初始化一些账户和市场资产
@@ -696,7 +685,7 @@ class QA_Backtest_stock_day():
         # 重新初始化账户的cookie
         self.account.account_cookie = str(random.random())
         # 初始化股票池的市场数据
-        self.__market_data = QA_fetch_stocklist_day(
+        self.market_data = QA_fetch_stocklist_day(
             self.strategy_stock_list, self.setting.client.quantaxis.stock_day,
             [self.trade_list[self.start_real_id - int(self.strategy_gap)],
              self.trade_list[self.end_real_id]])
@@ -712,7 +701,7 @@ class QA_Backtest_stock_day():
         assert isinstance(self.end_real_date, str)
         #self.__QA_backtest_init_inside()
 
-        assert len(self.__market_data) == len(self.strategy_stock_list)
+        assert len(self.market_data) == len(self.strategy_stock_list)
 
         QA_util_log_info('QUANTAXIS Backtest Engine Initial Successfully')
         QA_util_log_info('Basical Info: \n' + tabulate(
@@ -721,7 +710,7 @@ class QA_Backtest_stock_day():
                          tabulate([self.strategy_stock_list]))
 
         # 初始化报价模式
-        self.__QA_backtest_set_bid_model()
+        self.__QA_backtest_set_bid_model(self)
 
 
         """
@@ -734,24 +723,25 @@ class QA_Backtest_stock_day():
         self.__QA_backest_handle_data(outside_handle)
 
         """
-
-    def __QA_backest_handle_data(self,func,*arg,**kwargs):
-        '这个outside_handle就是一个外部的注入函数'
+    @classmethod
+    def load_strategy(__backtest_cls,func,*arg,**kwargs):
+        '策略加载函数'
 
         # 首先判断是否能满足回测的要求`
         _info = {}
-        _info['stock_list'] = self.strategy_stock_list
+        _info['stock_list'] =__backtest_cls.strategy_stock_list
         __messages = {}
-        self.__init_cash_per_stock = int(
-            float(self.account.init_assest) / len(self.strategy_stock_list))
+        __backtest_cls.__init_cash_per_stock = int(
+            float(__backtest_cls.account.init_assest) / len(__backtest_cls.strategy_stock_list))
 
         # 策略的交易日循环
-        for i in range(int(self.start_real_id), int(self.end_real_id) - 1, 1):
-            self.__start_of_every_day(func,*arg,**kwargs)
-            self.__backtest_every_day_trading(i,func,*arg,**kwargs)
-            self.__end_of_every_day(func,*arg,**kwargs)
+        for i in range(int(__backtest_cls.start_real_id), int(__backtest_cls.end_real_id) - 1, 1):
+            func(*arg,**kwargs)
 
-        self.__end_of_backtest(func,*arg,**kwargs)
+
+        #最后一天
+        __backtest_cls.__end_of_trading(__backtest_cls)
+        
 
 
     def __start_of_every_day(self,func,*arg,**kwargs):
@@ -770,12 +760,12 @@ class QA_Backtest_stock_day():
         QA_util_log_info(
             tabulate(self.account.message['body']['account']['hold']))
         for __j in range(0, len(self.strategy_stock_list)):
-            if __running_date in [l[6] for l in self.__market_data[__j]] and \
-                    [l[6] for l in self.__market_data[__j]].index(__running_date) \
+            if __running_date in [l[6] for l in self.market_data[__j]] and \
+                    [l[6] for l in self.market_data[__j]].index(__running_date) \
                     > self.strategy_gap + 1:
 
                 __data = self.__QA_data_handle(
-                    [__l[6] for __l in self.__market_data[__j]].index(__running_date), __j)
+                    [__l[6] for __l in self.market_data[__j]].index(__running_date), __j)
                 __amount = 0
                 for item in __data['account']['body']['account']['hold']:
 
@@ -800,7 +790,7 @@ class QA_Backtest_stock_day():
 
 
 
-    def __end_of_trading(self,func,*arg,**kwargs):
+    def __end_of_trading(self,*arg,**kwargs):
         # 在回测的最后一天,平掉所有仓位(回测的最后一天是不买入的)
         while len(self.account.hold) > 1:
             __hold_list = self.account.hold[1::]
@@ -842,15 +832,8 @@ class QA_Backtest_stock_day():
             for item_x in pre_del_id:
                 __hold_list.pop(item_x)
 
-        try:
-            # 在末尾增加一个回调给策略
-            outside_handle.on_end(
-                __data['market'], __data['account'], __hold, _info)
-        except:
-            pass
 
-
-    def __end_of_backtest(self,func,*arg,**kwargs):
+    def __end_of_backtest(self,*arg,**kwargs):
         
         # 开始分析
         QA_util_log_info('start analysis====\n' +
@@ -872,7 +855,7 @@ class QA_Backtest_stock_day():
         performace = QA_backtest_analysis_start(
             self.setting.client, self.strategy_stock_list, __messages,
             self.trade_list[self.start_real_id:self.end_real_id + 1],
-            self.__market_data, self.__benchmark_data)
+            self.market_data, self.__benchmark_data)
         _backtest_mes = {
             'user': self.setting.QA_setting_user_name,
             'strategy': self.strategy_name,
@@ -896,13 +879,12 @@ class QA_Backtest_stock_day():
             'exist': __exist_time,
             'time': datetime.datetime.now()
         }
-        func(self,*arg,**kwargs)
         QA_SU_save_backtest_message(_backtest_mes, self.setting.client)
         QA_SU_save_account_message(__messages, self.setting.client)
         QA_SU_save_account_to_csv(__messages)
         # QA.QA_SU_save_backtest_message(analysis_message, self.setting.client)
 
-    def __QA_backtest_excute_bid(self, __result,  __date, __hold, __code, __amount):
+    def QA_backtest_excute_bid(self, __result,  __date, __hold, __code, __amount):
         """
         这里是处理报价的逻辑部分
         2017/7/19 修改
@@ -985,19 +967,19 @@ class QA_Backtest_stock_day():
             return __amount, 'amount'
 
     def __QA_get_data_from_market(self, __id, stock_id):
-        # x=[x[6] for x in self.__market_data]
+        # x=[x[6] for x in self.market_data]
         if __id > self.strategy_gap + 1:
             index_of_day = __id
             index_of_start = index_of_day - self.strategy_gap + 1
-            return self.__market_data[stock_id][index_of_start:index_of_day + 1]
+            return self.market_data[stock_id][index_of_start:index_of_day + 1]
 
          # 从账户中更新数据
 
     def __QA_data_handle(self, __id, __stock_id):
-        __market_data = self.__QA_get_data_from_market(__id, __stock_id)
+        market_data = self.__QA_get_data_from_market(__id, __stock_id)
         __message = self.account.message
 
-        return {'market': __market_data, 'account': __message}
+        return {'market': market_data, 'account': __message}
 
 
 class QA_Backtest_min():

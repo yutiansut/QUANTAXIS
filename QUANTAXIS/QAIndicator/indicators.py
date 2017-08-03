@@ -122,7 +122,7 @@ def QA_indicator_jlhb(high, low, close, N=7, M=5):
     def JLHB(security_list, check_date, N = 7, M = 5):
             '''
 
-        '''
+        
         import talib
         import numpy as np
 
@@ -221,7 +221,9 @@ def QA_indicator_jlhb(high, low, close, N=7, M=5):
 
 
     # _var_1 = pd.Series(low)-
-        pass
+
+    '''
+    pass
 
 
 def QA_indicator_cho(data):
