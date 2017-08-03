@@ -30,7 +30,7 @@ import time
 import tushare as ts
 
 from QUANTAXIS.QAFetch import QATushare
-from QUANTAXIS.QAUtil import QA_util_date_stamp, QA_util_time_stamp
+from QUANTAXIS.QAUtil import QA_util_date_stamp, QA_util_time_stamp,QA_util_log_info
 from QUANTAXIS.QAUtil.QASetting import QA_Setting
 
 
@@ -41,13 +41,13 @@ def QA_save_stock_day_all():
     __coll.ensure_index('code')
 
     def saving_work(i):
-        print('Now Saving ==== %s' % (i))
+        QA_util_log_info('Now Saving ==== %s' % (i))
         try:
             data_json = QATushare.QA_fetch_get_stock_day(i)
 
             __coll.insert_many(data_json)
         except:
-            print('error in saving ==== %s' % str(i))
+            QA_util_log_info('error in saving ==== %s' % str(i))
     for item in df.index:
         saving_work(item)
 
