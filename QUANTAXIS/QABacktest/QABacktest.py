@@ -577,7 +577,7 @@ class QA_Backtest_stock_day():
     setting = QA_Setting()
     clients = setting.client
     user = setting.QA_setting_user_name
-
+    market_data =[]
     def __init__(self):
 
         self.account = QA_Account()
@@ -586,6 +586,7 @@ class QA_Backtest_stock_day():
         self.setting = QA_Setting()
         self.clients = self.setting.client
         self.user = self.setting.QA_setting_user_name
+
 
     @classmethod
     def backtest_init(__backtest_cls, func, *arg, **kwargs):
@@ -711,7 +712,7 @@ class QA_Backtest_stock_day():
 
         # 初始化报价模式
         self.__QA_backtest_set_bid_model(self)
-
+        self.__messages=[]
 
         """
         try:
@@ -785,7 +786,7 @@ class QA_Backtest_stock_day():
                 __result = func(self,*arg,**kwargs)
 
                 if float(self.account.message['body']['account']['cash'][-1]) > 0:
-                    self.__QA_backtest_excute_bid(
+                    self.QA_backtest_excute_bid(
                         __result, __running_date, __hold,
                         str(self.strategy_stock_list[__j])[0:6], __amount)
 
@@ -829,7 +830,7 @@ class QA_Backtest_stock_day():
 
                         # 直到市场不是为0状态位置,停止前推日期
 
-                    __messages = self.account.QA_account_receive_deal(
+                    self.__messages = self.account.QA_account_receive_deal(
                         __message)
                 else:
                     pre_del_id.append(item_)
@@ -857,37 +858,37 @@ class QA_Backtest_stock_day():
         self.__benchmark_data = QA_fetch_index_day(
             self.benchmark_code, self.start_real_date,
             self.end_real_date)
-
-        performace = QA_backtest_analysis_start(
-            self.setting.client, self.strategy_stock_list, __messages,
-            self.trade_list[self.start_real_id:self.end_real_id + 1],
-            self.market_data, self.__benchmark_data)
-        _backtest_mes = {
-            'user': self.setting.QA_setting_user_name,
-            'strategy': self.strategy_name,
-            'stock_list': performace['code'],
-            'start_time': self.strategy_start_date,
-            'end_time': self.strategy_end_date,
-            'account_cookie': self.account.account_cookie,
-            'annualized_returns': performace['annualized_returns'],
-            'benchmark_annualized_returns': performace['benchmark_annualized_returns'],
-            'assets': performace['assets'],
-            'benchmark_assets': performace['benchmark_assets'],
-            'trade_date': performace['trade_date'],
-            'total_date': performace['total_date'],
-            'win_rate': performace['win_rate'],
-            'alpha': performace['alpha'],
-            'beta': performace['beta'],
-            'sharpe': performace['sharpe'],
-            'vol': performace['vol'],
-            'benchmark_vol': performace['benchmark_vol'],
-            'max_drop': performace['max_drop'],
-            'exist': __exist_time,
-            'time': datetime.datetime.now()
-        }
-        QA_SU_save_backtest_message(_backtest_mes, self.setting.client)
-        QA_SU_save_account_message(__messages, self.setting.client)
-        QA_SU_save_account_to_csv(__messages)
+        if len(self.__messages)>1:
+            performace = QA_backtest_analysis_start(
+                self.setting.client, self.strategy_stock_list,self.__messages,
+                self.trade_list[self.start_real_id:self.end_real_id + 1],
+                self.market_data, self.__benchmark_data)
+            _backtest_mes = {
+                'user': self.setting.QA_setting_user_name,
+                'strategy': self.strategy_name,
+                'stock_list': performace['code'],
+                'start_time': self.strategy_start_date,
+                'end_time': self.strategy_end_date,
+                'account_cookie': self.account.account_cookie,
+                'annualized_returns': performace['annualized_returns'],
+                'benchmark_annualized_returns': performace['benchmark_annualized_returns'],
+                'assets': performace['assets'],
+                'benchmark_assets': performace['benchmark_assets'],
+                'trade_date': performace['trade_date'],
+                'total_date': performace['total_date'],
+                'win_rate': performace['win_rate'],
+                'alpha': performace['alpha'],
+                'beta': performace['beta'],
+                'sharpe': performace['sharpe'],
+                'vol': performace['vol'],
+                'benchmark_vol': performace['benchmark_vol'],
+                'max_drop': performace['max_drop'],
+                'exist': __exist_time,
+                'time': datetime.datetime.now()
+            }
+            QA_SU_save_backtest_message(_backtest_mes, self.setting.client)
+            QA_SU_save_account_message(self.__messages, self.setting.client)
+            QA_SU_save_account_to_csv(self.__messages)
         # QA.QA_SU_save_backtest_message(analysis_message, self.setting.client)
 
     def QA_backtest_excute_bid(self, __result,  __date, __hold, __code, __amount):
