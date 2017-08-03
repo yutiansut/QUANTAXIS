@@ -1,4 +1,4 @@
-#coding:utf-8
+# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -24,17 +24,24 @@
 import csv
 
 
-def QA_util_save_csv(data:list,name:str,location=None):
-    assert isinstance(data,list)
-    if location==None:
-        path='./'+str(name)+'.csv'
+def QA_util_save_csv(data: list, name: str, column=None, location=None):
+    # 重写了一下保存的模式
+
+    assert isinstance(data, list)
+    if location is None:
+        path = './' + str(name) + '.csv'
     else:
-        path=location+str(name)+'.csv'
-    with open(path,'w',newline='') as f:
-        csvwriter=csv.writer(f)
+        path = location + str(name) + '.csv'
+    with open(path, 'w', newline='') as f:
+        csvwriter = csv.writer(f)
+        if column is None:
+            pass
+        else:
+            csvwriter.writerow(column)
+
         for item in data:
-            csvwriter.writerow([item])
+            csvwriter.writerow(item)
 
 
-if __name__=='__main__':
-    QA_util_save_csv(['a','v',2,3],'test')
+if __name__ == '__main__':
+    QA_util_save_csv(['a', 'v', 2, 3], 'test')

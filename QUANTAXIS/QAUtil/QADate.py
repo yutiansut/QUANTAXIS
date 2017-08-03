@@ -38,11 +38,19 @@ def QA_util_date_stamp(date):
     date = time.mktime(time.strptime(datestr, '%Y-%m-%d'))
     return date
 
+ 
+def QA_util_time_stamp(time_):
+    '''
+    数据格式需要是%Y-%m-%d %H:%M:%S 中间要有空格
+    '''
 
-def QA_util_time_stamp(time):
-    time = str(time)[0:10]
+    try:
+        timestr = str(time_)[0:19]
+        time__ = time.mktime(time.strptime(timestr, '%Y-%m-%d %H:%M:%S'))
+        return time__
 
-    return time
+    except:
+        return QA_util_date_stamp('1900-01-01')
 
 
 def QA_util_ms_stamp(ms):
@@ -223,3 +231,7 @@ def QA_util_time_delay(time_=0):
     def _exec(func):
         threading.Timer(time_,func)
     return _exec
+
+
+if __name__=='__main__':
+    print(QA_util_time_stamp('2017-01-01 10:25:08'))

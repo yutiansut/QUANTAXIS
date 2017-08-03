@@ -149,3 +149,8 @@ thought/
 #jupyter
 
 *.ipynb
+
+
+# jupyter-kernel
+
+kernel*.json

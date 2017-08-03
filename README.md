@@ -22,6 +22,13 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 QUANTAXIS与国内很多优秀的量化平台的区别在于,QA更多关注的是用户体验和实际情景,对于用户需求会有较多的优化.所以会更加注重开放性,引入自定义的便捷性,以及团队协作的细节处理.好比如自定义的数据引入,自定义的策略图表对比,自定义的风险和策略组合管理等等.
 
+> 欢迎加群讨论: [群链接](https://jq.qq.com/?_wv=1027&k=4CEKGzn) 
+
+> 更新内容详见: https://github.com/yutiansut/QUANTAXIS/blob/0.4.0-alpha/update_log.md
+
+> 如有问题,可以在github上发[issue](https://github.com/yutiansut/QUANTAXIS/issues), 也可以QQ 279336410,QQ群 563280067联系我
+
+
 ## 关键词: 局域网协作/开放式渐进框架/高度自定义
 
 
@@ -31,7 +38,7 @@ QUANTAXIS与国内很多优秀的量化平台的区别在于,QA更多关注的�
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.8-brown.svg)
 ![Pypi](https://img.shields.io/badge/Pypi-%200.4.0-blue.svg)
-![python](https://img.shields.io/badge/python-%203.5/3.6/win/ubuntu-darkgrey.svg)
+![python](https://img.shields.io/badge/python-%203.6/win/ubuntu-darkgrey.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.4.0-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
 ![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
@@ -58,6 +65,7 @@ QUANTAXIS与国内很多优秀的量化平台的区别在于,QA更多关注的�
 ## 说明文档 (Updating)
 [地址](https://yutiansut.gitbooks.io/quantaxis/)
 ![](http://i1.piimg.com/567571/dc3c811a5afcb4fb.png)
+![新的回测框架](http://osnhakmay.bkt.clouddn.com/quantaxis_new_backtest_engine.png)
 ## QUANTAXIS-Stardand-Protocol
 QUANTAXIS 标准化协议和未来协议
 
@@ -68,7 +76,7 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.8
 ## 部署问题:
 
 - Windows/Linux(ubuntu) 已测试通过
-- python3.6优先(开发环境) python2 回测框架不兼容(attention! 之后会逐步用更多高级语法)   [*] 如果需要交易,请下载32位的python3.6
+- python3.6(开发环境) python2 回测框架不兼容(attention! 之后会逐步用更多高级语法)   [*] 如果需要交易,请下载32位的python3.6
 - nodejs 需要安装>7的版本,来支持es6语法
 - mongodb是必须要装的
 

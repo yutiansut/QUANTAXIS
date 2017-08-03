@@ -1,4 +1,26 @@
 # coding:utf-8
+#
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 import datetime
 import json
 import os
@@ -199,7 +221,7 @@ class backtest(QA.QA_Backtest):
                                                                    'amounts', 'order_id', 'trade_id', 'sell_price', 'sell_order_id', 'sell_trade_id','sell_date','left_amount','commission')))
         __exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
         self.benchmark_data = QA.QA_fetch_index_day(
-            'hs300', self.start_real_date, self.end_real_date, self.setting.client.quantaxis.stock_day)
+            'hs300', self.start_real_date, self.end_real_date)
         # print(json.dumps(messages,indent=2))
         # QA.QA_SU_save_account_message(
         # messages, self.setting.client)
