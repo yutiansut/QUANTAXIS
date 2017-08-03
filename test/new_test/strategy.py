@@ -24,8 +24,6 @@
 import random
 
 import QUANTAXIS as QA
-
-
 class strategy:
     """
     携带一个函数句柄
