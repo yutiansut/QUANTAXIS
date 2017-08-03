@@ -736,6 +736,12 @@ class QA_Backtest_stock_day():
 
         # 策略的交易日循环
         for i in range(int(__backtest_cls.start_real_id), int(__backtest_cls.end_real_id) - 1, 1):
+            __backtest_cls.running_date=__backtest_cls.trade_list[i]
+            QA_util_log_info(
+            '=================daily hold list====================')
+            QA_util_log_info('in the begining of ' + __backtest_cls.running_date)
+            QA_util_log_info(
+            tabulate(__backtest_cls.account.message['body']['account']['hold']))
             func(*arg,**kwargs)
 
 
