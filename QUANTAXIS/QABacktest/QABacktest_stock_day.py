@@ -187,7 +187,7 @@ class QA_Backtest_stock_day():
             index_of_start = index_of_day - self.strategy_gap + 1
             return self.market_data[stock_id][index_of_start:index_of_day + 1]
         else:
-            return 'not_enough_data'
+            return self.market_data[stock_id][0:__id + 1]
 
     def __QA_data_handle(self, __id, __stock_id):
         "已经废弃"
@@ -331,6 +331,7 @@ class QA_Backtest_stock_day():
 
     def QA_backtest_get_market_data(self, code, date):
         '这个函数封装了关于获取的方式'
+        index_of_date=0
         index_of_code = self.strategy_stock_list.index(code)
         if date in [l[6] for l in self.market_data[index_of_code]]:
             index_of_date = [l[6]
