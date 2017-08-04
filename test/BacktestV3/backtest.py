@@ -110,7 +110,7 @@ def strategy():
 
     
         else:
-            print(QB.QA_backtest_hold_amount(QB,item))
+            #print(QB.QA_backtest_hold_amount(QB,item))
             QB.QA_backtest_send_order(QB,item,10000,-1,{'bid_model':'Market'})
     
 @QB.end_backtest
