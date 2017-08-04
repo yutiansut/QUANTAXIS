@@ -53,58 +53,16 @@ class CLI(cmd.Cmd):
         QA_util_log_info('QUANTAXIS example')
         now_path = os.getcwd()
         project_dir = os.path.dirname(os.path.abspath(__file__))
-        #file_dir = project_dir + '\\backtest_setting.ini'
-        # print(now_path)
-        # print(file_dir)
-        #shutil.copy(file_dir, now_path)
+
         file_dir = project_dir + '\\backtest.py'
-        # print(now_path)
-        # print(file_dir)
+
         shutil.copy(file_dir, now_path)
-
-        import configparser
-        config = configparser.ConfigParser()
-        # set a number of parameters
-
-        config.add_section("backtest")
-        config.set("backtest", "strategy_start_date", "2017-01-01")
-        config.set("backtest", "strategy_end_date", "2017-06-15")
-        config.set("backtest", "strategy_gap", "6")
-        config.set("backtest", "database_ip", "127.0.0.1")
-        config.set("backtest", "username", "admin")
-        config.set("backtest", "password", "admin")
-        config.set("backtest", "strategy_name", "test_strategy")
-        config.set("backtest", "benchmark_code", "hs300")
-        config.set("backtest", "database_ip", "127.0.0.1")
-        config.set("backtest", "database_ip", "127.0.0.1")
-        config.add_section("account")
-        config.set("account", "account_assets", "2530000")
-        config.set("account", "stock_list", "file:csv:local")
-        config.add_section("bid")
-        config.set("bid", "bid_model",'market_price')
-        config.add_section("strategy")
-        config.set("strategy", "file_path",'file:py:local')
-
-        
-        # write to file
-        config.write(open('backtest_setting.ini', "w"))
-
 
         QA_util_log_info(
             'successfully generate a example strategy in' + now_path)
 
     def help_examples(self):
         print('make a sample backtest framework')
-    def do_backtest(self,arg):
-        backtest().exec_bid()
-    def help_backtest(self):
-        print('next generation backtest')
-    def do_hello(self, arg):   # 定义hello命令所执行的操作
-        QA_util_log_info("hello " + arg + "!")
-
-    def help_hello(self):        # 定义hello命令的帮助输出
-        print("syntax: hello [message]",)
-        print("-- prints a hello message")
 
     def do_quit(self, arg):     # 定义quit命令所执行的操作
         sys.exit(1)
@@ -120,39 +78,7 @@ class CLI(cmd.Cmd):
         print('syntax: exit')
         print("-- terminates the application")
 
-    def do_performance(self, arg):
-        # coding:utf-8
-        # setting config
-        print('now updating')
-        pass
 
-    def help_performance(self):
-        print('this is a performance management which you can restart a performance test again')
-
-    def do_export(self, arg):
-        coll = QA_Setting.client.quantaxis.backtest_info
-        coll2 = QA_Setting.client.quantaxis.stock_info
-        with open('info.csv', 'w', newline='') as f:
-            csvwriter = csv.writer(f)
-            csvwriter.writerow(['strategy', 'stock_list', 'start_time', 'end_time', 'account_cookie', 'total_returns', 'annualized_returns',
-                                'benchmark_annualized_returns', 'win_rate', 'alpha', 'beta', 'sharpe', 'vol', 'benchmark_vol', 'max_drop', 'exist', 'outstanding', 'totals'])
-            for item in coll.find():
-                code = item['stock_list'][0]
-                try:
-                    data = coll2.find_one({'code': code})
-                    outstanding = data['outstanding']
-                    totals = data['totals']
-                    csvwriter.writerow([item['strategy'], 'c' + str(item['stock_list'][0]), item['start_time'], item['end_time'], item['account_cookie'], item['total_returns'], item['annualized_returns'],
-                                        item['benchmark_annualized_returns'], item['win_rate'], item['alpha'], item['beta'], item['sharpe'], item['vol'], item['benchmark_vol'], item['max_drop'], item['exist'], outstanding, totals])
-                except:
-                    info = sys.exc_info()
-                    print(info[0], ":", info[1])
-                    print(code)
-
-    def help_export(self):
-        print('export the backtest info to info.csv')
-
-    # 定义quit的快捷方式
 
 
 def sourcecpy(src, des):
