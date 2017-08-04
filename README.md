@@ -24,7 +24,7 @@ QUANTAXIS与国内很多优秀的量化平台的区别在于,QA更多关注的�
 
 > 欢迎加群讨论: [群链接](https://jq.qq.com/?_wv=1027&k=4CEKGzn) 
 
-> 更新内容详见: https://github.com/yutiansut/QUANTAXIS/blob/0.4.0-alpha/update_log.md
+> 更新内容详见: https://github.com/yutiansut/QUANTAXIS/blob/0.4.0-beta/update_log.md
 
 > 如有问题,可以在github上发[issue](https://github.com/yutiansut/QUANTAXIS/issues), 也可以QQ 279336410,QQ群 563280067联系我
 
@@ -98,7 +98,16 @@ git clone https://github.com/yutiansut/quantaxis
 cd quantaxis 
 (sudo) pip install -e . # 一定要用这种方法,python setup.py install方法无法解压 安装在本目录下的开发模式
 python easy/easy_start_tushare.py(会存全市场的数据,较慢)
-python test/new test/strategy.py(一个简单的策略)
+
+随意新建一个目录:
+
+在命令行输入 quantaxis 进去quantaxis CLI
+
+输入examples 在目录下生成一个示例策略
+
+
+python  backtest.py
+
 ```
 ![简易策略](http://i1.buimg.com/1949/44f692d0c9d6fed2.png)
 

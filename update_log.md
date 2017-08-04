@@ -885,7 +885,7 @@ QA.QA_util_time_stamp('2017-01-01 10:25:08')
 ```
 
 ### 1.34  QABACKTEST回测引擎更新  
-2017/8/1
+2017/8/1-8/4
 
 
 
@@ -894,39 +894,99 @@ QA.QA_util_time_stamp('2017-01-01 10:25:08')
 
 ```python
 
-    from QUANTAXIS.QABacktest import QA_Backtest_stock_day
-
-    @QA_Backtest_stock_day.backtest_init
-
-    def init():
-        #
-        QA_Backtest_stock_day.setting.QA_util_sql_mongo_ip='192.168.4.189'
-        QA_Backtest_stock_day.account.init_assest=250000
-        QA_Backtest_stock_day.strategy_start_date='2017-03-01'
-
-    @QA_Backtest_stock_day.before_backtest
-    def before_backtest():
-        global risk_position
-        QA_util_log_info(QA_Backtest_stock_day.account.message)
-        
-
-    # 这里是每天回测之前的  比如9:00时候的系统状态
-    @QA_Backtest_stock_day.before_trading
-    def before_trading():
-        pass
-
-    @QA_Backtest_stock_day.strategy
-    def data_handle():
-        pass
+import QUANTAXIS as QA
+from QUANTAXIS import QA_Backtest_stock_day as QB
 
 
-    @QA_Backtest_stock_day.end_trading
-    def end_trading():
-        pass
+"""
+写在前面:
+===============QUANTAXIS BACKTEST STOCK_DAY中的变量
+常量:
+QB.account.message  当前账户消息
+QB.account.cash  当前可用资金
+QB.account.hold  当前账户持仓
+QB.account.history  当前账户的历史交易记录
+QB.account.assets 当前账户总资产
+QB.account.detail 当前账户的交易对账单
+QB.account.init_assest 账户的最初资金
 
-    @QA_Backtest_stock_day.end_backtest
-    def end_backtest():
-        pass
+
+
+QB.strategy_stock_list 回测初始化的时候  输入的一个回测标的
+QB.strategy_start_date 回测的开始时间
+QB.strategy_end_date  回测的结束时间
+
+
+QB.today  在策略里面代表策略执行时的日期
+
+QB.benchmark_code  策略业绩评价的对照行情
+
+
+
+
+函数:
+获取市场(基于gap)行情:
+QB.QA_backtest_get_market_data(QB,code,QB.today)
+获取市场自定义时间段行情:
+QA.QA_fetch_stock_day(code,start,end,model)
+
+
+报单:
+QB.QA_backtest_send_order(QB, code,amount,towards,order: dict)
+
+order有三种方式:
+1.限价成交 order['bid_model']=0或者l,L
+  注意: 限价成交需要给出价格:
+  order['price']=xxxx
+
+2.市价成交 order['bid_model']=1或者m,M,market,Market
+3.严格成交模式 order['bid_model']=2或者s,S
+    及 买入按bar的最高价成交 卖出按bar的最低价成交
+
+查询当前一只股票的持仓量
+QB.QA_backtest_hold_amount(QB,code)
+
+
+"""
+
+
+@QB.backtest_init
+def init():
+    #
+    QB.setting.QA_util_sql_mongo_ip='192.168.4.189'
+
+    QB.account.init_assest=2500000
+    QB.benchmark_code='hs300'
+
+    QB.strategy_stock_list=['000001','000002','600010','601801','603111']
+    QB.strategy_start_date='2017-03-01'
+    QB.strategy_end_date='2017-07-01'
+
+@QB.before_backtest
+def before_backtest():
+    global risk_position
+    QA.QA_util_log_info(QB.account.message)
+    
+    
+    
+@QB.load_strategy
+def strategy():
+    print(QB.account.message)
+    print(QB.account.cash)
+    input()
+    for item in QB.strategy_stock_list:
+        if QB.QA_backtest_hold_amount(QB,item)==0:
+        #获取数据的第一种办法[这个是根据回测时制定的股票列表初始化的数据]
+            QB.QA_backtest_send_order(QB,item,10000,1,{'bid_model':'Market'})
+
+    
+        else:
+            print(QB.QA_backtest_hold_amount(QB,item))
+            QB.QA_backtest_send_order(QB,item,10000,-1,{'bid_model':'Market'})
+    
+@QB.end_backtest
+def after_backtest():
+    pass
 ```
 ### 1.35 QA_fetch_stock_list 函数更新
 
@@ -989,7 +1049,102 @@ webkit/client 是一个基于electronic的客户端,但是其功能本质上和�
 ### 2.6 更换QABACKTEST的回测模式
 
 参见 ###1.34
+```python
+import QUANTAXIS as QA
+from QUANTAXIS import QA_Backtest_stock_day as QB
 
+
+"""
+写在前面:
+===============QUANTAXIS BACKTEST STOCK_DAY中的变量
+常量:
+QB.account.message  当前账户消息
+QB.account.cash  当前可用资金
+QB.account.hold  当前账户持仓
+QB.account.history  当前账户的历史交易记录
+QB.account.assets 当前账户总资产
+QB.account.detail 当前账户的交易对账单
+QB.account.init_assest 账户的最初资金
+
+
+
+QB.strategy_stock_list 回测初始化的时候  输入的一个回测标的
+QB.strategy_start_date 回测的开始时间
+QB.strategy_end_date  回测的结束时间
+
+
+QB.today  在策略里面代表策略执行时的日期
+
+QB.benchmark_code  策略业绩评价的对照行情
+
+
+
+
+函数:
+获取市场(基于gap)行情:
+QB.QA_backtest_get_market_data(QB,code,QB.today)
+获取市场自定义时间段行情:
+QA.QA_fetch_stock_day(code,start,end,model)
+
+
+报单:
+QB.QA_backtest_send_order(QB, code,amount,towards,order: dict)
+
+order有三种方式:
+1.限价成交 order['bid_model']=0或者l,L
+  注意: 限价成交需要给出价格:
+  order['price']=xxxx
+
+2.市价成交 order['bid_model']=1或者m,M,market,Market
+3.严格成交模式 order['bid_model']=2或者s,S
+    及 买入按bar的最高价成交 卖出按bar的最低价成交
+
+查询当前一只股票的持仓量
+QB.QA_backtest_hold_amount(QB,code)
+
+
+"""
+
+
+@QB.backtest_init
+def init():
+    #
+    QB.setting.QA_util_sql_mongo_ip='192.168.4.189'
+
+    QB.account.init_assest=2500000
+    QB.benchmark_code='hs300'
+
+    QB.strategy_stock_list=['000001','000002','600010','601801','603111']
+    QB.strategy_start_date='2017-03-01'
+    QB.strategy_end_date='2017-07-01'
+
+@QB.before_backtest
+def before_backtest():
+    global risk_position
+    QA.QA_util_log_info(QB.account.message)
+    
+    
+    
+@QB.load_strategy
+def strategy():
+    print(QB.account.message)
+    print(QB.account.cash)
+    input()
+    for item in QB.strategy_stock_list:
+        if QB.QA_backtest_hold_amount(QB,item)==0:
+        #获取数据的第一种办法[这个是根据回测时制定的股票列表初始化的数据]
+            QB.QA_backtest_send_order(QB,item,10000,1,{'bid_model':'Market'})
+
+    
+        else:
+            print(QB.QA_backtest_hold_amount(QB,item))
+            QB.QA_backtest_send_order(QB,item,10000,-1,{'bid_model':'Market'})
+    
+@QB.end_backtest
+def after_backtest():
+    pass
+
+```
 ## 重要性能优化  重新定义回测流程,减少数据库IO压力
 
 在新的回测框架中,大幅优化了数据的读取方式,通过大量的内存结构来进行数据缓存,之后的数据调用请求都通过内存中的数据接口来获得,这样大大减少了数据库IO
