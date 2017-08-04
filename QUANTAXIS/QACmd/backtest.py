@@ -100,9 +100,9 @@ def before_backtest():
     
 @QB.load_strategy
 def strategy():
-    print(QB.account.message)
-    print(QB.account.cash)
-    input()
+    #print(QB.account.message)
+    #print(QB.account.cash)
+    #input()
     for item in QB.strategy_stock_list:
         if QB.QA_backtest_hold_amount(QB,item)==0:
         #获取数据的第一种办法[这个是根据回测时制定的股票列表初始化的数据]
