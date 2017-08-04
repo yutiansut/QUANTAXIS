@@ -1,5 +1,5 @@
 import QUANTAXIS as QA
-from QUANTAXIS import QA_Backtest_stock_day
+from QUANTAXIS import QA_Backtest_stock_day as QB
 
 
 """
@@ -15,7 +15,7 @@ from QUANTAXIS import QA_Backtest_stock_day
 
 
 
-QB=QA_Backtest_stock_day()
+
 @QB.backtest_init
 def init():
     #
@@ -42,7 +42,7 @@ def strategy():
     print(QB.account.message)
 
     #获取数据的第一种办法[这个是根据回测时制定的股票列表初始化的数据]
-    print(QB.market_data)
+    print(QB.QA_backtest_get_data_from_market(QB,'000001',QB.today))
     #获取数据的第二种办法[这个是直接从数据库里面拉数据]
     print(QA.QA_fetch_stock_day('000001','2017-03-05','2017-03-08'))
     
