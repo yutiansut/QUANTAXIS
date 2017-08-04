@@ -82,7 +82,7 @@ QB.QA_backtest_hold_amount(QB,code)
 @QB.backtest_init
 def init():
     #
-    QB.setting.QA_util_sql_mongo_ip='192.168.4.189'
+    QB.setting.QA_util_sql_mongo_ip='127.0.0.1'
 
     QB.account.init_assest=2500000
     QB.benchmark_code='hs300'
@@ -103,9 +103,10 @@ def strategy():
     #print(QB.account.message)
     #print(QB.account.cash)
     #input()
+    
     for item in QB.strategy_stock_list:
+        QA.QA_util_log_info(QB.QA_backtest_get_market_data(QB,item,QB.today))
         if QB.QA_backtest_hold_amount(QB,item)==0:
-        #获取数据的第一种办法[这个是根据回测时制定的股票列表初始化的数据]
             QB.QA_backtest_send_order(QB,item,10000,1,{'bid_model':'Market'})
 
     
