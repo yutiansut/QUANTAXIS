@@ -48,8 +48,11 @@ def QA_save_stock_day_all():
             __coll.insert_many(data_json)
         except:
             QA_util_log_info('error in saving ==== %s' % str(i))
-    for item in df.index:
-        saving_work(item)
+
+    for i_ in range(len(df.index)):
+        QA_util_log_info('The %s of Total %s' %(i_,len(df.index)))
+        QA_util_log_info('DOWNLOAD PROGRESS %s ' %str(float(i_/len(df.index)*100))[0:4]+'%')
+        saving_work(df.index[i_])
 
     saving_work('hs300')
     saving_work('sz50')
