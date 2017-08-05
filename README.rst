@@ -7,14 +7,15 @@ QUANTAXIS quantitative framework to achieve the stock and futures market, the wh
 0.4.0-beta Release Note
 ---------------------------------
 
+QUANTAXIS Quantitative Financial Strategy Framework is a quantitative analysis solution for small and medium-sized strategy teams.We can quickly implement scene-oriented customization solutions with highly decoupled modularity and standardized protocols. QUANTAXIS is a progressive open Framework, you can according to their own needs, the introduction of their own data, analysis programs, visualization process, you can also RESTful interface, the rapid realization of multi-LAN / WAN collaboration.
 
-Taking into account such a scenario, an organization's strategy team is generally composed of CS + Finance, Finance students are very good at data analysis, strategy, but not very understanding of the underlying structure of the code, code style and standards are different While CS students are well aware of the code and framework, they are struggling with the financial theory of boring holes, and the current domestic support for quantitative services can not solve this common scene pain points, or for financial students Easy to operate the analysis system, but for IT in terms of the lack of customizable part; either for the underlying IT data and transaction interface, and for financial students want to package out from the underlying interface, a set of available efficient framework It is difficult to ascend to heaven.
+QUANTAXIS and many excellent domestic quantitative platform is the difference, QA more concerned about the user experience and the actual situation, for the user needs will be more optimized, so will pay more attention to openness, the introduction of custom convenience, and the team Collaborative details are handled, such as custom data introductions, custom policy chart comparison, custom risk and policy portfolio management, and so on.
 
-QUNATAXIS is committed to solving this problem, and we solve this problem by creating a standard framework within a RESTful-based LAN that is separated from front and back, and we hope that our framework is highly scalable and easy to access The company's individual strategy team's individual needs (this is the most critical, basically every company will have its own data, their own trading interface, their own specific functional goals), so we want to build a standardized, high Scalable, easy to deploy scaffolding, rather than a complete hard to customize solution.
+> Welcome group discussion: [group link] (https://jq.qq.com/?_wv=1027&k=4CEKGzn)
 
-QUANTAXIS front and back completely separated, highly split, each component relies on RESTful standard URI to communicate, which also gives us an open framework of infinite possibilities, can achieve Matlab, r, python, javascript, C, C + +, rust And other users of the harmonious coexistence, rather than increase the cost of learning to learn a common language.At the same time, as long as a public network IP and server, you can also go beyond the LAN restrictions, to achieve the needs of remote teams.
+> For more information, see https://github.com/yutiansut/QUANTAXIS/blob/0.4-beta/update_log.md
 
-
+> If you have any questions, you can send [issue] (https://github.com/yutiansut/QUANTAXIS/issues) on github, or contact us at QQ 279336410, QQ group 563280067
 =============
 
 More info on https://github.com/yutiansut/quantaxis
