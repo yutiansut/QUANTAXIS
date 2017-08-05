@@ -30,7 +30,8 @@ util tool
 from .QADate import(QA_util_date_stamp, QA_util_time_stamp, QA_util_ms_stamp, QA_util_date_valid,
                     QA_util_realtime, QA_util_id2date, QA_util_is_trade, QA_util_get_date_index,
                     QA_util_get_index_date, QA_util_get_real_date, QA_util_select_hours,
-                    QA_util_select_min,QA_util_time_delay,QA_util_time_now)
+                    QA_util_select_min,QA_util_time_delay,QA_util_time_now,QA_util_date_str2int,
+                    QA_util_date_int2str)
 from .QASql import (QA_util_sql_mongo_setting)
 from .QALogs import (
     QA_util_log_debug, QA_util_log_expection, QA_util_log_info)

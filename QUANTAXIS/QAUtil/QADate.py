@@ -31,6 +31,12 @@ import threading
 def QA_util_time_now():
     return datetime.datetime.now()
 
+def QA_util_date_str2int(date):
+    return int(str(date)[0:4]+str(date)[5:7]+str(date)[8:10])
+
+def QA_util_date_int2str(date):
+    return str(str(date)[0:4]+'-'+str(date)[4:6]+'-'+str(date)[6:8])
+
 
 def QA_util_date_stamp(date):
     # date function
@@ -38,7 +44,10 @@ def QA_util_date_stamp(date):
     date = time.mktime(time.strptime(datestr, '%Y-%m-%d'))
     return date
 
- 
+
+
+
+
 def QA_util_time_stamp(time_):
     '''
     数据格式需要是%Y-%m-%d %H:%M:%S 中间要有空格
