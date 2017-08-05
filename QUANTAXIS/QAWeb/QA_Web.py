@@ -25,26 +25,24 @@
 import csv
 import json
 import os
+import queue
 import sys
 import threading
-
 
 import numpy as np
 import pandas as pd
 import pymongo
 import QUANTAXIS as QA
 import requests
-from flask import Flask, render_template,jsonify
+import tushare as ts
+from flask import Flask, jsonify, render_template
 from flask_socketio import SocketIO, emit
 from tabulate import tabulate
-import tushare as ts
-import queue
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
-
 
 
 @socketio.on('my event')
@@ -59,8 +57,8 @@ def hello():
 
 @app.route('/query_k/<code>')
 def query_k(code):
-    data=json.loads(ts.get_k_data(code).to_json(orient='records'))
-    
+    data = json.loads(ts.get_k_data(code).to_json(orient='records'))
+
     return jsonify(data)
 
 
@@ -68,7 +66,7 @@ def query_k(code):
 def query_backtest_by_id(cookie_id):
     pass
 
-  
+
 def main():
     from gevent import pywsgi
     from geventwebsocket.handler import WebSocketHandler
