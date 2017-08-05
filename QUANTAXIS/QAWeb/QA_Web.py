@@ -34,10 +34,10 @@ import pandas as pd
 import pymongo
 import QUANTAXIS as QA
 import requests
-from flask import Flask, render_template
+from flask import Flask, render_template,jsonify
 from flask_socketio import SocketIO, emit
 from tabulate import tabulate
-
+import tushare as ts
 import queue
 
 app = Flask(__name__)
@@ -55,6 +55,13 @@ def test_message(message):
 @app.route("/")
 def hello():
     return "Hello World!"
+
+
+@app.route('/query_k/<code>')
+def query_k(code):
+    data=json.loads(ts.get_k_data(code).to_json(orient='records'))
+    
+    return jsonify(data)
 
 
 @app.route('/backtest/[cookie_id]')
