@@ -23,7 +23,7 @@ More info on https://github.com/yutiansut/quantaxis
 
 An EXAMPLE of QUANTAXIS BACKTEST like that below:
 
-.. code-block:: python
+.. code:: python
 
     
     import QUANTAXIS as QA
@@ -31,51 +31,52 @@ An EXAMPLE of QUANTAXIS BACKTEST like that below:
 
 
     """
-    写在前面:
-    ===============QUANTAXIS BACKTEST STOCK_DAY中的变量
-    常量:
-    QB.account.message  当前账户消息
-    QB.account.cash  当前可用资金
-    QB.account.hold  当前账户持仓
-    QB.account.history  当前账户的历史交易记录
-    QB.account.assets 当前账户总资产
-    QB.account.detail 当前账户的交易对账单
-    QB.account.init_assest 账户的最初资金
+    Written Before:
+    ===============QUANTAXIS BACKTEST STOCK_DAY's Constant
+    Constant:
+    QB.account.message  
+    QB.account.cash  
+    QB.account.hold  
+    QB.account.history  
+    QB.account.assets 
+    QB.account.detail 
+    QB.account.init_assest 
 
 
 
-    QB.strategy_stock_list 回测初始化的时候  输入的一个回测标的
-    QB.strategy_start_date 回测的开始时间
-    QB.strategy_end_date  回测的结束时间
+    QB.strategy_stock_list 
+    QB.strategy_start_date 
+    QB.strategy_end_date  
 
 
-    QB.today  在策略里面代表策略执行时的日期
+    QB.today  
 
-    QB.benchmark_code  策略业绩评价的对照行情
-
-
+    QB.benchmark_code  
 
 
-    函数:
-    获取市场(基于gap)行情:
+
+
+    Function:
+    get the market data (based on gap):
     QB.QA_backtest_get_market_data(QB,code,QB.today)
-    获取市场自定义时间段行情:
+    get the market data as you want:
     QA.QA_fetch_stock_day(code,start,end,model)
 
 
-    报单:
+    Order :
     QB.QA_backtest_send_order(QB, code,amount,towards,order: dict)
 
-    order有三种方式:
-    1.限价成交 order['bid_model']=0或者l,L
-    注意: 限价成交需要给出价格:
+    order has three model:
+    1.Limited order order['bid_model']=0 or l,L
+    attention: this model should have a order['price'] key
     order['price']=xxxx
 
-    2.市价成交 order['bid_model']=1或者m,M,market,Market
-    3.严格成交模式 order['bid_model']=2或者s,S
-        及 买入按bar的最高价成交 卖出按bar的最低价成交
+    2.Market order order['bid_model']=1 or m,M,market,Market
+    3.Strict model order['bid_model']=2 or s,S
+        which is buy in the highest price or sell in the lowest price
 
-    查询当前一只股票的持仓量
+    Query the hold amount
+
     QB.QA_backtest_hold_amount(QB,code)
 
 
