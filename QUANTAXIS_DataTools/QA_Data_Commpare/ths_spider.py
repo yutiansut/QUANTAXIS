@@ -18,3 +18,4 @@ def get_k_data_year(code,year,if_fq):
 
 if __name__=='__main__':
     print(get_k_data_year('000001','2016','01'))
+    print(get_k_data_year(600010,2016,'01'))
