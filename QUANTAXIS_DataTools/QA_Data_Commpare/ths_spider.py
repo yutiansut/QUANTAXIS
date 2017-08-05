@@ -10,6 +10,9 @@ def get_k_data_year(code,year,if_fq):
     data_=[]
     url='http://d.10jqka.com.cn/v2/line/hs_%s/%s/%s.js'%(code,if_fq,year)
     for item in requests.get(url).text.split('\"')[3].split(';'):
-        data_.append(item.split(',')
-
+        data_.append(item.split(','))
     return pd.DataFrame(data_,index=list(np.asarray(data_).T[0]),columns=['date','open','high','low','close','volume','amount','factor'])
+
+
+if __name__=='__main__':
+    print(get_k_data_year('000001','2016','01'))
