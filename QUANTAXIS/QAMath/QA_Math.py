@@ -33,7 +33,7 @@ class QA_Math():
 
 def QA_math_list_diff(seq: list):
     assert isinstance(seq, list)
-
+    
 
 def QA_math_list_sum(seq: list):
     pass

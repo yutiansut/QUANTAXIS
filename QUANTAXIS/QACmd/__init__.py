@@ -32,6 +32,7 @@ import sys
 
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting
+from QUANTAXIS.QABacktest.backtest_framework import backtest
 from QUANTAXIS import __version__
 
 
@@ -94,7 +95,10 @@ class CLI(cmd.Cmd):
 
     def help_examples(self):
         print('make a sample backtest framework')
-
+    def do_backtest(self,arg):
+        backtest().exec_bid()
+    def help_backtest(self):
+        print('next generation backtest')
     def do_hello(self, arg):   # 定义hello命令所执行的操作
         QA_util_log_info("hello " + arg + "!")
 

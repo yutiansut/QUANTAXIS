@@ -192,3 +192,10 @@ def get_last_n_dailybars(symbol, n):
         var.append(VAR[z-1-i])
     ret = bar_topd(var,'date')
     return ret
+
+
+if __name__=='__main__':
+    print(mtsymbol_list(['IF','IH','IC','T','TF']))
+    print(get_shse())
+    print(get_ticks('SZSE.000001','2017-01-24 9:00:00','2017-07-24 11:00:00' ))
+    gmskd.get_stock_adj(symbol, start_time, end_time)
