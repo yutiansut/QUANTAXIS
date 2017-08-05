@@ -11,11 +11,11 @@ QUANTAXIS Quantitative Financial Strategy Framework is a quantitative analysis s
 
 QUANTAXIS and many excellent domestic quantitative platform is the difference, QA more concerned about the user experience and the actual situation, for the user needs will be more optimized, so will pay more attention to openness, the introduction of custom convenience, and the team Collaborative details are handled, such as custom data introductions, custom policy chart comparison, custom risk and policy portfolio management, and so on.
 
-> Welcome group discussion: [group link] (https://jq.qq.com/?_wv=1027&k=4CEKGzn)
+**  Welcome group discussion: [group link] (https://jq.qq.com/?_wv=1027&k=4CEKGzn)
 
-> For more information, see https://github.com/yutiansut/QUANTAXIS/blob/0.4-beta/update_log.md
+** For more information, see https://github.com/yutiansut/QUANTAXIS/blob/0.4-beta/update_log.md
 
-> If you have any questions, you can send [issue] (https://github.com/yutiansut/QUANTAXIS/issues) on github, or contact us at QQ 279336410, QQ group 563280067
+** If you have any questions, you can send [issue] (https://github.com/yutiansut/QUANTAXIS/issues) on github, or contact us at QQ 279336410, QQ group 563280067
 =============
 
 More info on https://github.com/yutiansut/quantaxis
