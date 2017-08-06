@@ -59,6 +59,7 @@
         - [1.34  QABACKTEST回测引擎更新](#134--qabacktest回测引擎更新)
         - [1.35 QA_fetch_stock_list 函数更新](#135-qa_fetch_stock_list-函数更新)
         - [1.36 回测框架新增一个一键平仓函数](#136-回测框架新增一个一键平仓函数)
+        - [1.37 回测框架的报价函数增加回调](#137-回测框架的报价函数增加回调)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -1011,6 +1012,12 @@ QA.QA_fetch_stock_list(pymongo.MongoClient(ip='192.168.4.189',port=27017).quanta
 
 一键平仓:
 QB.QA_backtest_sell_all(QB)
+
+
+### 1.37 回测框架的报价函数增加回调
+2017/8/6
+
+现在回测的报价函数增加了回调
 
 ## 巨大改动/重构
 

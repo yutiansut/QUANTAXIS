@@ -415,14 +415,18 @@ class QA_Backtest_stock_day():
                 pass
             else:
                 # 如果买入资金不充足,则按照可用资金去买入
+                # 这里可以这样做的原因是在买入的时候 手续费为0
                 __message['body']['bid']['amount'] = int(float(
                     self.account.message['body']['account']['cash'][-1]) / float(
                         float(str(__message['body']['bid']['price'])[0:5]) * 100)) * 100
+
+                        
 
             if __message['body']['bid']['amount'] > 0:
                 # 这个判断是为了 如果买入资金不充足,所以买入报了一个0量单的情况
                 #如果买入量>0, 才判断为成功交易
                 self.account.QA_account_receive_deal(__message)
+                return __message
 
         # 下面是卖出操作,这里在卖出前需要考虑一个是否有仓位的问题:
         # 因为在股票中是不允许卖空操作的,所以这里是股票的交易引擎和期货的交易引擎的不同所在
@@ -441,11 +445,19 @@ class QA_Backtest_stock_day():
                 __message = self.market.receive_bid(
                     __bid, self.setting.client)
                 self.account.QA_account_receive_deal(__message)
+
+                return __message
             else:
                 err_info = 'Error: Not Enough amount for code %s in hold list' % str(
                     __code)
                 QA_util_log_expection(err_info)
                 return err_info
+
+
+        else:
+            return "Error: No buy/sell towards"
+
+        
     def QA_backtest_sell_all(self):
         while len(self.account.hold) > 1:
             __hold_list = self.account.hold[1::]
