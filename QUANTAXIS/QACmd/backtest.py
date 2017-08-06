@@ -59,6 +59,8 @@ QB.QA_backtest_get_market_data(QB,code,QB.today)
 获取市场自定义时间段行情:
 QA.QA_fetch_stock_day(code,start,end,model)
 
+一键平仓:
+QB.QA_backtest_sell_all(QB)
 
 报单:
 QB.QA_backtest_send_order(QB, code,amount,towards,order: dict)

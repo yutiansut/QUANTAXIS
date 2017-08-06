@@ -52,7 +52,7 @@ def test_message(message):
 
 @app.route("/")
 def hello():
-    return "Hello World!"
+    return "QUANTAXIS SOCKET SERVER"
 
 
 @app.route('/query_k/<code>')

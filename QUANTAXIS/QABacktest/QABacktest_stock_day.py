@@ -446,7 +446,46 @@ class QA_Backtest_stock_day():
                     __code)
                 QA_util_log_expection(err_info)
                 return err_info
+    def QA_backtest_sell_all(self):
+        while len(self.account.hold) > 1:
+            __hold_list = self.account.hold[1::]
+            pre_del_id = []
+            for item_ in range(0, len(__hold_list)):
+                if __hold_list[item_][3] > 0:
+                    __last_bid = self.bid.bid
+                    __last_bid['amount'] = int(__hold_list[item_][3])
+                    __last_bid['order_id'] = str(random.random())
+                    __last_bid['price'] = 'close_price'
+                    __last_bid['code'] = str(__hold_list[item_][1])
+                    __last_bid['date'] = self.today
+                    __last_bid['towards'] = -1
+                    __last_bid['user'] = self.setting.QA_setting_user_name
+                    __last_bid['strategy'] = self.strategy_name
+                    __last_bid['bid_model'] = 'auto'
+                    __last_bid['status'] = '0x01'
+                    __last_bid['amount_model'] = 'amount'
 
+                    __message = self.market.receive_bid(
+                        __last_bid, self.setting.client)
+                    _remains_day = 0
+                    while __message['header']['status'] == 500:
+                        # 停牌状态,这个时候按停牌的最后一天计算价值(假设平仓)
+
+                        __last_bid['date'] = self.trade_list[self.end_real_id - _remains_day]
+                        _remains_day += 1
+                        __message = self.market.receive_bid(
+                            __last_bid, self.setting.client)
+
+                        # 直到市场不是为0状态位置,停止前推日期
+
+                    self.__messages = self.account.QA_account_receive_deal(
+                        __message)
+                else:
+                    pre_del_id.append(item_)
+            pre_del_id.sort()
+            pre_del_id.reverse()
+            for item_x in pre_del_id:
+                __hold_list.pop(item_x)
     @classmethod
     def load_strategy(__backtest_cls, func, *arg, **kwargs):
         '策略加载函数'
