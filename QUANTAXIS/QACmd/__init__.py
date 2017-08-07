@@ -106,6 +106,8 @@ class CLI(cmd.Cmd):
 
     def do_update(self,arg):
         QA_SU_update_stock_day('ts', QA_Setting.client)
+    def help_update(self):
+        QA_util_log_info('Update the stock data')
 
 def sourcecpy(src, des):
     src = os.path.normpath(src)
