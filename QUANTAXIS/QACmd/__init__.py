@@ -34,6 +34,9 @@ import platform
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting
 from QUANTAXIS.QABacktest.backtest_framework import backtest
+from QUANTAXIS import (QA_SU_save_stock_info,QA_SU_save_stock_list,
+                            QA_SU_save_trade_date_all,QA_save_stock_day_all,
+                            QA_SU_update_stock_day)
 from QUANTAXIS import __version__
 
 
@@ -82,8 +85,27 @@ class CLI(cmd.Cmd):
         print('syntax: exit')
         print("-- terminates the application")
 
+    def do_save(self,arg):
+        QA_save_stock_day_all()
+
+        # 3. 股票列表存储
+        QA_SU_save_stock_list('ts', QA_Setting.client)
+        # 4. 交易日期存储
+        QA_SU_save_trade_date_all()
+        # 5. 股票基本面信息存储
+        QA_SU_save_stock_info('ts', QA_Setting.client)
 
 
+        # 仅仅是为了初始化才在这里插入用户,如果想要注册用户,要到webkit底下注册
+        QA_Setting.client.quantaxis.user_list.insert(
+            {'username': 'admin', 'password': 'admin'})
+
+    def help_save(self):
+        QA_util_log_info('Save all the stock data from tushare')
+
+
+    def do_update(self,arg):
+        QA_SU_update_stock_day('ts', QA_Setting.client)
 
 def sourcecpy(src, des):
     src = os.path.normpath(src)

@@ -97,11 +97,13 @@ sudo -H python3.6 get-pip.py
 git clone https://github.com/yutiansut/quantaxis
 cd quantaxis 
 (sudo) pip install -e . # 一定要用这种方法,python setup.py install方法无法解压 安装在本目录下的开发模式
-python easy/easy_start_tushare.py(会存全市场的数据,较慢)
+在命令行输入 quantaxis 进去quantaxis CLI
+quantaxis> save
 
 随意新建一个目录:
 
 在命令行输入 quantaxis 进去quantaxis CLI
+
 
 输入examples 在目录下生成一个示例策略
 

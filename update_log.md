@@ -60,6 +60,7 @@
         - [1.35 QA_fetch_stock_list 函数更新](#135-qa_fetch_stock_list-函数更新)
         - [1.36 回测框架新增一个一键平仓函数](#136-回测框架新增一个一键平仓函数)
         - [1.37 回测框架的报价函数增加回调](#137-回测框架的报价函数增加回调)
+        - [1.38 更新了save/update的方式](#138-更新了saveupdate的方式)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -1019,6 +1020,17 @@ QB.QA_backtest_sell_all(QB)
 
 现在回测的报价函数增加了回调
 
+###1.38 更新了save/update的方式
+2017/8/7-2017/8/8
+
+1. update的时候之前出现了 如果该股票尚未上市,数据库无数据的时候 出现负索引的问题 已经解决
+2. 把之前写在easy里面的代码 写进了quantaxis cli中
+
+```bash
+quantaxis> save
+
+quantaxis> update
+```
 ## 巨大改动/重构
 
 ### 2.1 QA.QAARP.QAAccount
