@@ -33,7 +33,7 @@ QUANTAXIS与国内很多优秀的量化平台的区别在于,QA更多关注的�
 
 
 
-![version](https://img.shields.io/badge/Version-%200.4.0/alpha-orange.svg)
+![version](https://img.shields.io/badge/Version-%200.4.0/beta-orange.svg)
 ![build](https://travis-ci.org/yutiansut/QUANTAXIS.svg?branch=0.4.0-alpha)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.8-brown.svg)
