@@ -34,42 +34,6 @@ import datetime
 api = TdxHq_API()
 
 
-def __select_best_ip():
-    ip_list = [
-        '119.147.212.81:7709',
-        '221.231.141.60:7709',
-        '101.227.73.20:7709',
-        '101.227.77.254:7709',
-        '14.215.128.18:7709'
-        '59.173.18.140:7709',
-        '58.23.131.163:7709',
-        '218.6.170.47:7709',
-        '123.125.108.14:7709',
-        '60.28.23.80:7709',
-        '218.60.29.136:7709',
-        '218.85.139.19:7709',
-        '218.85.139.20:7709',
-        '122.192.35.44:7709',
-        '122.192.35.44:7709'
-    ]
-
-
-
-    ip_addr=[]
-    for item in ip_list:
-        ip_addr.append(item.split(':')[0])
-
-
-
-    def select_best(url_list):
-        ms_list=[]
-        for item in url_list:
-            ms_list.append(QA_util_web_ping(item))
-        return url_list[ms_list.index(min(ms_list))]
-
-    #ip_job.put({'fn':print(select_best(ip_addr))})
-
-
 
 
 
