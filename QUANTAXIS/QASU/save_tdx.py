@@ -30,6 +30,62 @@ def get_stock_1_min(api,code):
             print(len(data))
     return api.to_df(data)
             
+
+
+
+def get_stock_5_min(api,code):
+    data=[]
+    if str(code)[0]=='6':
+        index_code=1
+    else:
+        index_code=0
+    with api.connect():
+        for i in range(51):
+            data+=api.get_security_bars(0,index_code,code,(50-i)*800+1,800)
+            print(len(data))
+    return api.to_df(data)
+
+def get_stock_15_min(api,code):
+    data=[]
+    if str(code)[0]=='6':
+        index_code=1
+    else:
+        index_code=0
+    with api.connect():
+        for i in range(51):
+            data+=api.get_security_bars(1,index_code,code,(50-i)*800+1,800)
+            print(len(data))
+    return api.to_df(data)
+def get_stock_30_min(api,code):
+    data=[]
+    if str(code)[0]=='6':
+        index_code=1
+    else:
+        index_code=0
+    with api.connect():
+        for i in range(51):
+            data+=api.get_security_bars(2,index_code,code,(50-i)*800+1,800)
+            print(len(data))
+    return api.to_df(data)
+            
+def get_stock_1_hour(api,code):           
+    data=[]
+    if str(code)[0]=='6':
+        index_code=1
+    else:
+        index_code=0
+    with api.connect():
+        for i in range(51):
+            data+=api.get_security_bars(2,index_code,code,(50-i)*800+1,800)
+            print(len(data))
+    return api.to_df(data)
+
+
+
+
+
+
+
 if __name__=='__main__':
     from pytdx.hq import TdxHq_API
     api=TdxHq_API()
