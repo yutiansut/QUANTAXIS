@@ -61,16 +61,7 @@
         - [1.36 回测框架新增一个一键平仓函数](#136-回测框架新增一个一键平仓函数)
         - [1.37 回测框架的报价函数增加回调](#137-回测框架的报价函数增加回调)
         - [1.38 更新了save/update的方式](#138-更新了saveupdate的方式)
-    - [巨大改动/重构](#巨大改动重构)
-        - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
-        - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
-        - [2.3 QA.QABacktest.QABacktest](#23-qaqabacktestqabacktest)
-        - [2.4 QA.QA_Queue](#24-qaqa_queue)
-        - [2.5 彻底放弃QUANTAXIS-WEBKIT-CLIENT](#25-彻底放弃quantaxis-webkit-client)
-        - [2.6 更换QABACKTEST的回测模式](#26-更换qabacktest的回测模式)
-    - [重要性能优化  重新定义回测流程,减少数据库IO压力](#重要性能优化--重新定义回测流程减少数据库io压力)
-    - [废弃的接口](#废弃的接口)
-    - [to do list](#to-do-list)
+        - [1.39 QUANTAXIS CLI 增加一个选项 CLEAN](#139-quantaxis-cli-增加一个选项-clean)
 
 <!-- /TOC -->
 
@@ -1031,6 +1022,17 @@ quantaxis> save
 
 quantaxis> update
 ```
+
+
+### 1.39 QUANTAXIS CLI 增加一个选项 CLEAN
+2017/8/9
+
+删除旧的回测报告和log文件
+```bash
+QUANTAXIS
+
+quantaxis> clean
+
 ## 巨大改动/重构
 
 ### 2.1 QA.QAARP.QAAccount
