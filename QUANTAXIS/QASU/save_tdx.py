@@ -35,7 +35,7 @@ def get_stock_day(api,code):
 
     with api.connect():
         for i in range(11):
-            data+=api.get_security_bars(9,index_code,code,(10-i)*800+1,800)
+            data+=api.get_security_bars(9,index_code,code,(10-i)*800,800)
     return api.to_df(data)
 
 def get_stock_1_min(api,code):
@@ -46,7 +46,7 @@ def get_stock_1_min(api,code):
         index_code=0
     with api.connect():
         for i in range(51):
-            data+=api.get_security_bars(8,index_code,code,(50-i)*800+1,800)
+            data+=api.get_security_bars(8,index_code,code,(50-i)*800,800)
             #print(len(data))
     return api.to_df(data)
             
@@ -61,7 +61,7 @@ def get_stock_5_min(api,code):
         index_code=0
     with api.connect():
         for i in range(51):
-            data+=api.get_security_bars(0,index_code,code,(50-i)*800+1,800)
+            data+=api.get_security_bars(0,index_code,code,(50-i)*800,800)
             #print(len(data))
     return api.to_df(data)
 
@@ -73,7 +73,7 @@ def get_stock_15_min(api,code):
         index_code=0
     with api.connect():
         for i in range(51):
-            data+=api.get_security_bars(1,index_code,code,(50-i)*800+1,800)
+            data+=api.get_security_bars(1,index_code,code,(50-i)*800,800)
             #print(len(data))
     return api.to_df(data)
 def get_stock_30_min(api,code):
@@ -84,7 +84,7 @@ def get_stock_30_min(api,code):
         index_code=0
     with api.connect():
         for i in range(51):
-            data+=api.get_security_bars(2,index_code,code,(50-i)*800+1,800)
+            data+=api.get_security_bars(2,index_code,code,(50-i)*800,800)
             #print(len(data))
     return api.to_df(data)
             
@@ -96,11 +96,21 @@ def get_stock_1_hour(api,code):
         index_code=0
     with api.connect():
         for i in range(51):
-            data+=api.get_security_bars(2,index_code,code,(50-i)*800+1,800)
+            data+=api.get_security_bars(3,index_code,code,(50-i)*800,800)
             #print(len(data))
     return api.to_df(data)
 
-
+def get_stock_transaction(api,code,date):
+    if str(code)[0]=='6':
+        index_code=1
+    else:
+        index_code=0
+    with api.connect():
+        for i in range(11):
+            data+=api.get_history_transaction_data(index_code, '000001', (10-i)*2000, 2000, date)
+            #print(len(data))
+    return api.to_df(data)
+    
 
 
 
