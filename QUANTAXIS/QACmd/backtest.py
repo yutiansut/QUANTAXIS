@@ -56,6 +56,10 @@ QB.benchmark_code  策略业绩评价的对照行情
 函数:
 获取市场(基于gap)行情:
 QB.QA_backtest_get_market_data(QB,code,QB.today)
+
+拿到开高收低量
+Open,High,Low,Close,Volume=QB.QA_backtest_get_OHLCV(QB,QB.QA_backtest_get_market_data(QB,item,QB.today))
+
 获取市场自定义时间段行情:
 QA.QA_fetch_stock_day(code,start,end,model)
 

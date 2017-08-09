@@ -1056,8 +1056,11 @@ quantaxis> clean
 
 一个快速拿到OHLCV的函数
 
+拿到开高收低量
+```python
+Open,High,Low,Close,Volume=QB.QA_backtest_get_OHLCV(QB,QB.QA_backtest_get_market_data(QB,item,QB.today))
 
-
+```
 ## 巨大改动/重构
 
 ### 2.1 QA.QAARP.QAAccount
