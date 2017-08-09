@@ -31,7 +31,9 @@ QUANTAXIS与国内很多优秀的量化平台的区别在于,QA更多关注的�
 
 ## 关键词: 局域网协作/开放式渐进框架/高度自定义
 
-
+[![Github workers](https://img.shields.io/github/watchers/yutiansut/quantaxis.svg?style=social&label=Watchers&)](https://github.com/yutiansut/quantaxis/watchers)
+[![GitHub stars](https://img.shields.io/github/stars/yutiansut/quantaxis.svg?style=social&label=Star&)](https://github.com/yutiansut/quantaxis/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/yutiansut/quantaxis.svg?style=social&label=Fork&)](https://github.com/yutiansut/quantaxis/fork)
 
 ![version](https://img.shields.io/badge/Version-%200.4.0/beta-orange.svg)
 ![build](https://travis-ci.org/yutiansut/QUANTAXIS.svg?branch=0.4.0-alpha)
