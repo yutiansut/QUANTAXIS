@@ -107,7 +107,7 @@ def get_stock_transaction(api,code,date):
         index_code=0
     with api.connect():
         for i in range(11):
-            data+=api.get_history_transaction_data(index_code, '000001', (10-i)*2000, 2000, date)
+            data+=api.get_history_transaction_data(index_code, code, (10-i)*2000, 2000, date)
             #print(len(data))
     return api.to_df(data)
     
