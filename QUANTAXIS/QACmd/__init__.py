@@ -77,7 +77,20 @@ class CLI(cmd.Cmd):
     def help_quit(self):        # 定义quit命令的帮助输出
         print("syntax: quit",)
         print("-- terminates the application")
+    def do_clean(self,arg):
+        try:
+            if platform.system()=='Windows':
+                os.popen('del back*csv')
+                os.popen('del *log')
+            else:
+                os.popen('rm -rf back*csv')
+                os.popen('rm -rf  *log')
 
+        except:
+            pass
+        
+    def help_clean(self):
+        QA_util_log_info('Clean the old backtest reports and logs')
     def do_exit(self, arg):     # 定义quit命令所执行的操作
         sys.exit(1)
 
