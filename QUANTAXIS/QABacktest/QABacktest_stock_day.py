@@ -102,12 +102,7 @@ class QA_Backtest_stock_day():
         """
         这里会涉及一个区间的问题,开始时间是要向后推,而结束时间是要向前推,1代表向后推,-1代表向前推
         """
-        self.start_real_date = QA_util_get_real_date(
-            self.strategy_start_date, self.trade_list, 1)
-        self.start_real_id = self.trade_list.index(self.start_real_date)
-        self.end_real_date = QA_util_get_real_date(
-            self.strategy_end_date, self.trade_list, -1)
-        self.end_real_id = self.trade_list.index(self.end_real_date)
+
         self.strategy_stock_list = ['000001', '000002', '000004']
         self.account.init_assest = 1000000
         self.backtest_bid_model = 'market_price'
@@ -124,7 +119,12 @@ class QA_Backtest_stock_day():
 
         self.setting.QA_setting_init()
         self.account.init()
-
+        self.start_real_date = QA_util_get_real_date(
+            self.strategy_start_date, self.trade_list, 1)
+        self.start_real_id = self.trade_list.index(self.start_real_date)
+        self.end_real_date = QA_util_get_real_date(
+            self.strategy_end_date, self.trade_list, -1)
+        self.end_real_id = self.trade_list.index(self.end_real_date)
         # 重新初始化账户的cookie
         self.account.account_cookie = str(random.random())
         # 初始化股票池的市场数据
