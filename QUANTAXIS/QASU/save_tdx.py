@@ -47,7 +47,7 @@ def get_stock_1_min(api,code):
     with api.connect():
         for i in range(51):
             data+=api.get_security_bars(8,index_code,code,(50-i)*800+1,800)
-            print(len(data))
+            #print(len(data))
     return api.to_df(data)
             
 
@@ -62,7 +62,7 @@ def get_stock_5_min(api,code):
     with api.connect():
         for i in range(51):
             data+=api.get_security_bars(0,index_code,code,(50-i)*800+1,800)
-            print(len(data))
+            #print(len(data))
     return api.to_df(data)
 
 def get_stock_15_min(api,code):
@@ -74,7 +74,7 @@ def get_stock_15_min(api,code):
     with api.connect():
         for i in range(51):
             data+=api.get_security_bars(1,index_code,code,(50-i)*800+1,800)
-            print(len(data))
+            #print(len(data))
     return api.to_df(data)
 def get_stock_30_min(api,code):
     data=[]
@@ -85,7 +85,7 @@ def get_stock_30_min(api,code):
     with api.connect():
         for i in range(51):
             data+=api.get_security_bars(2,index_code,code,(50-i)*800+1,800)
-            print(len(data))
+            #print(len(data))
     return api.to_df(data)
             
 def get_stock_1_hour(api,code):           
@@ -97,7 +97,7 @@ def get_stock_1_hour(api,code):
     with api.connect():
         for i in range(51):
             data+=api.get_security_bars(2,index_code,code,(50-i)*800+1,800)
-            print(len(data))
+            #print(len(data))
     return api.to_df(data)
 
 
