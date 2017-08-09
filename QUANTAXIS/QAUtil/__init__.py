@@ -32,6 +32,9 @@ from .QADate import(QA_util_date_stamp, QA_util_time_stamp, QA_util_ms_stamp, QA
                     QA_util_get_index_date, QA_util_get_real_date, QA_util_select_hours,
                     QA_util_select_min,QA_util_time_delay,QA_util_time_now,QA_util_date_str2int,
                     QA_util_date_int2str)
+
+
+
 from .QASql import (QA_util_sql_mongo_setting)
 from .QALogs import (
     QA_util_log_debug, QA_util_log_expection, QA_util_log_info)
@@ -40,6 +43,6 @@ from .QASetting import QA_Setting
 from .QAWeb import QA_util_web_ping
 from .QADate_trade import trade_date_sse
 from .QACsv import QA_util_save_csv
-from .QAList import QA_util_multi_demension_list
+from .QAList import QA_util_multi_demension_list,QA_util_diff_list
 def QA_start_initial(files):
     pass

@@ -47,7 +47,7 @@ from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_index_day, QA_fetch_stock_day,
 from QUANTAXIS.QASU.save_backtest import (QA_SU_save_account_message,
                                           QA_SU_save_account_to_csv)
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_get_real_date,
-                              QA_util_log_info,QA_util_log_expection)
+                              QA_util_log_info, QA_util_log_expection)
 
 from QUANTAXIS.QATask import QA_Queue
 from tabulate import tabulate
@@ -331,7 +331,7 @@ class QA_Backtest_stock_day():
 
     def QA_backtest_get_market_data(self, code, date):
         '这个函数封装了关于获取的方式'
-        index_of_date=0
+        index_of_date = 0
         index_of_code = self.strategy_stock_list.index(code)
         if date in [l[6] for l in self.market_data[index_of_code]]:
             index_of_date = [l[6]
@@ -345,6 +345,12 @@ class QA_Backtest_stock_day():
             if __code in item:
                 __amount_hold += item[3]
         return __amount_hold
+
+    def QA_backtest_get_OHLCV(self, __data):
+        '快速返回 OHLCV格式'
+        return (__data.T[1].astype(float).tolist(), __data.T[2].astype(float).tolist(), \
+                __data.T[3].astype(float).tolist(), __data.T[4].astype(float).tolist(), \
+                __data.T[5].astype(float).tolist())
 
     def QA_backtest_send_order(self, __code: str, __amount: int, __towards: int, __order: dict):
         """
@@ -420,8 +426,6 @@ class QA_Backtest_stock_day():
                     self.account.message['body']['account']['cash'][-1]) / float(
                         float(str(__message['body']['bid']['price'])[0:5]) * 100)) * 100
 
-                        
-
             if __message['body']['bid']['amount'] > 0:
                 # 这个判断是为了 如果买入资金不充足,所以买入报了一个0量单的情况
                 #如果买入量>0, 才判断为成功交易
@@ -435,7 +439,7 @@ class QA_Backtest_stock_day():
             # 如果是卖出操作 检查是否有持仓
             # 股票中不允许有卖空操作
             # 检查持仓面板
-            __amount_hold = self.QA_backtest_hold_amount(self,__code)
+            __amount_hold = self.QA_backtest_hold_amount(self, __code)
             if __amount_hold > 0:
                 __bid['towards'] = -1
                 if __amount_hold >= __amount:
@@ -453,11 +457,9 @@ class QA_Backtest_stock_day():
                 QA_util_log_expection(err_info)
                 return err_info
 
-
         else:
             return "Error: No buy/sell towards"
 
-        
     def QA_backtest_sell_all(self):
         while len(self.account.hold) > 1:
             __hold_list = self.account.hold[1::]
@@ -498,6 +500,7 @@ class QA_Backtest_stock_day():
             pre_del_id.reverse()
             for item_x in pre_del_id:
                 __hold_list.pop(item_x)
+
     @classmethod
     def load_strategy(__backtest_cls, func, *arg, **kwargs):
         '策略加载函数'

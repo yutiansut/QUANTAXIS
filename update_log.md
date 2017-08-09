@@ -62,6 +62,18 @@
         - [1.37 回测框架的报价函数增加回调](#137-回测框架的报价函数增加回调)
         - [1.38 更新了save/update的方式](#138-更新了saveupdate的方式)
         - [1.39 QUANTAXIS CLI 增加一个选项 CLEAN](#139-quantaxis-cli-增加一个选项-clean)
+        - [1.40 QA_util_diff_list](#140-qa_util_diff_list)
+        - [1.41 QUANTAXIS.QABACKTEST.QABACKTEST_STOCKDAY.QA_backtest_get_OHLCV](#141-quantaxisqabacktestqabacktest_stockdayqa_backtest_get_ohlcv)
+    - [巨大改动/重构](#巨大改动重构)
+        - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
+        - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
+        - [2.3 QA.QABacktest.QABacktest](#23-qaqabacktestqabacktest)
+        - [2.4 QA.QA_Queue](#24-qaqa_queue)
+        - [2.5 彻底放弃QUANTAXIS-WEBKIT-CLIENT](#25-彻底放弃quantaxis-webkit-client)
+        - [2.6 更换QABACKTEST的回测模式](#26-更换qabacktest的回测模式)
+    - [重要性能优化  重新定义回测流程,减少数据库IO压力](#重要性能优化--重新定义回测流程减少数据库io压力)
+    - [废弃的接口](#废弃的接口)
+    - [to do list](#to-do-list)
 
 <!-- /TOC -->
 
@@ -1032,6 +1044,19 @@ quantaxis> update
 QUANTAXIS
 
 quantaxis> clean
+```
+
+### 1.40 QA_util_diff_list
+2017/8/9
+
+一个快速返回前后相减的list函数
+
+### 1.41 QUANTAXIS.QABACKTEST.QABACKTEST_STOCKDAY.QA_backtest_get_OHLCV
+2017/8/9
+
+一个快速拿到OHLCV的函数
+
+
 
 ## 巨大改动/重构
 
