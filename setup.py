@@ -97,7 +97,7 @@ setup(
     entry_points={
         'console_scripts': [
             'quantaxis=QUANTAXIS.QACmd:QA_cmd',
-            'quantaxis_web=QUANTAXIS.QAWeb.QA_Web:main'
+            'quantaxisd=QUANTAXIS.QAWeb.QA_Web:main'
         ]
     },
     keywords=KEYWORDS,
