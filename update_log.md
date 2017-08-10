@@ -70,6 +70,7 @@
         - [1.40 QA_util_diff_list](#140-qa_util_diff_list)
         - [1.41 QUANTAXIS.QABACKTEST.QABACKTEST_STOCKDAY.QA_backtest_get_OHLCV](#141-quantaxisqabacktestqabacktest_stockdayqa_backtest_get_ohlcv)
         - [1.42 QUANTAXIS MARKET ENGINE修改](#142-quantaxis-market-engine修改)
+        - [1.43 QA_util_get_real_datelist](#143-qa_util_get_real_datelist)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -1074,6 +1075,12 @@ Open,High,Low,Close,Volume=QB.QA_backtest_get_OHLCV(QB,QB.QA_backtest_get_market
 
 增加了一个严格模式的委托方式
 增加了收盘价委托的模式
+
+
+### 1.43 QA_util_get_real_datelist 
+2017/8/10
+
+一个直接拿到真实的交易区间的list
 
 ## 巨大改动/重构
 
