@@ -69,6 +69,7 @@
         - [1.39 QUANTAXIS CLI 增加一个选项 CLEAN](#139-quantaxis-cli-增加一个选项-clean)
         - [1.40 QA_util_diff_list](#140-qa_util_diff_list)
         - [1.41 QUANTAXIS.QABACKTEST.QABACKTEST_STOCKDAY.QA_backtest_get_OHLCV](#141-quantaxisqabacktestqabacktest_stockdayqa_backtest_get_ohlcv)
+        - [1.42 QUANTAXIS MARKET ENGINE修改](#142-quantaxis-market-engine修改)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -1066,6 +1067,13 @@ quantaxis> clean
 Open,High,Low,Close,Volume=QB.QA_backtest_get_OHLCV(QB,QB.QA_backtest_get_market_data(QB,item,QB.today))
 
 ```
+
+
+### 1.42 QUANTAXIS MARKET ENGINE修改
+2017/8/10
+
+增加了一个严格模式的委托方式
+
 ## 巨大改动/重构
 
 ### 2.1 QA.QAARP.QAAccount
