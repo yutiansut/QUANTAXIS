@@ -26,6 +26,7 @@ import csv
 
 def QA_util_save_csv(data: list, name: str, column=None, location=None):
     # 重写了一下保存的模式
+    # 增加了对于可迭代对象的判断 2017/8/10
 
     assert isinstance(data, list)
     if location is None:
@@ -40,8 +41,13 @@ def QA_util_save_csv(data: list, name: str, column=None, location=None):
             csvwriter.writerow(column)
 
         for item in data:
-            csvwriter.writerow(item)
+            
+            if isinstance(item,list):
+                csvwriter.writerow(item)
+            else:
+                csvwriter.writerow([item])
 
 
 if __name__ == '__main__':
     QA_util_save_csv(['a', 'v', 2, 3], 'test')
+    QA_util_save_csv([['a', 'v', 2, 3]], 'test2')
