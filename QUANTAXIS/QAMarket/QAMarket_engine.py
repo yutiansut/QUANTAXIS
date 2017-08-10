@@ -117,7 +117,7 @@ def market_stock_day_engine(__bid, fp=None):
                     if int(__bid['towards']) > 0:
                         __commission_fee = 0
                     else:
-                        __commission_fee = 0.0005 * \
+                        __commission_fee = 0.0015 * \
                             float(__deal_price) * float(__bid['amount'])
                         if __commission_fee < 5:
                             __commission_fee = 5
