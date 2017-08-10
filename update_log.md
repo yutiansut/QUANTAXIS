@@ -1073,6 +1073,7 @@ Open,High,Low,Close,Volume=QB.QA_backtest_get_OHLCV(QB,QB.QA_backtest_get_market
 2017/8/10
 
 增加了一个严格模式的委托方式
+增加了收盘价委托的模式
 
 ## 巨大改动/重构
 

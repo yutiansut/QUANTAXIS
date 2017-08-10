@@ -392,8 +392,9 @@ class QA_Backtest_stock_day():
         elif __order['bid_model'] in ['Market', 'market', 'MARKET', 'm', 'M', 1, '1']:
             __bid_price = 'market_price'
         elif __order['bid_model'] in ['strict', 'Strict', 's', 'S', '2', 2]:
-            __bid_price = 'strict'
-
+            __bid_price = 'strict_price'
+        elif __order['bid_model'] in ['close', 'close_price', 'c', 'C', '3', 3]:
+            __bid_price = 'close_price'
         __bid = self.bid.bid
 
         __bid['order_id'] = str(random.random())

@@ -77,6 +77,7 @@ order有三种方式:
 2.市价成交 order['bid_model']=1或者m,M,market,Market
 3.严格成交模式 order['bid_model']=2或者s,S
     及 买入按bar的最高价成交 卖出按bar的最低价成交
+3.收盘价成交模式 order['bid_model']=3或者c,C
 
 查询当前一只股票的持仓量
 QB.QA_backtest_hold_amount(QB,code)
