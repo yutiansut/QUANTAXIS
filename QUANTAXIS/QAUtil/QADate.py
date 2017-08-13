@@ -26,10 +26,16 @@ import datetime
 import re
 import time
 import threading
-
+from .QADate_trade import trade_date_sse
 
 def QA_util_time_now():
     return datetime.datetime.now()
+
+def QA_util_date_str2int(date):
+    return int(str(date)[0:4]+str(date)[5:7]+str(date)[8:10])
+
+def QA_util_date_int2str(date):
+    return str(str(date)[0:4]+'-'+str(date)[4:6]+'-'+str(date)[6:8])
 
 
 def QA_util_date_stamp(date):
@@ -38,7 +44,10 @@ def QA_util_date_stamp(date):
     date = time.mktime(time.strptime(datestr, '%Y-%m-%d'))
     return date
 
- 
+
+
+
+
 def QA_util_time_stamp(time_):
     '''
     数据格式需要是%Y-%m-%d %H:%M:%S 中间要有空格
@@ -113,6 +122,16 @@ def QA_util_get_real_date(date, trade_list, towards):
         else:
             return date
 
+
+def QA_util_get_real_datelist(start,end):
+    """
+    取数据的真实区间,返回的时候用 start,end=QA_util_get_real_datelist
+    @yutiansut
+    2017/8/10
+    """
+    real_start=QA_util_get_real_date(start,trade_date_sse,1)
+    real_end=QA_util_get_real_date(end,trade_date_sse,-1)
+    return (real_start,real_end)
 
 def QA_util_get_date_index(date, trade_list):
     return trade_list.index(date)

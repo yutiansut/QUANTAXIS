@@ -1,4 +1,4 @@
-#coding:utf-8
+# coding=utf-8
 #
 # The MIT License (MIT)
 #
@@ -21,15 +21,3 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-#%%
-
-import QUANTAXIS as QA
-
-bid=QA.QA_QAMarket_bid()
-bid_stock_min=bid.bid
-bid_stock_min['date']='2017-01-04'
-bid_stock_min['time']=QA.QA_util_time_stamp('2017-01-04 10:25:05')
-bid_stock_min['status']='0x02'
-bid_stock_min['price']=1
-print(bid_stock_min)

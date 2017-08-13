@@ -24,16 +24,18 @@ QUANTAXIS与国内很多优秀的量化平台的区别在于,QA更多关注的�
 
 > 欢迎加群讨论: [群链接](https://jq.qq.com/?_wv=1027&k=4CEKGzn) 
 
-> 更新内容详见: https://github.com/yutiansut/QUANTAXIS/blob/0.4.0-alpha/update_log.md
+> 更新内容详见: https://github.com/yutiansut/QUANTAXIS/blob/0.4.0-beta/update_log.md
 
 > 如有问题,可以在github上发[issue](https://github.com/yutiansut/QUANTAXIS/issues), 也可以QQ 279336410,QQ群 563280067联系我
 
 
 ## 关键词: 局域网协作/开放式渐进框架/高度自定义
 
+[![Github workers](https://img.shields.io/github/watchers/yutiansut/quantaxis.svg?style=social&label=Watchers&)](https://github.com/yutiansut/quantaxis/watchers)
+[![GitHub stars](https://img.shields.io/github/stars/yutiansut/quantaxis.svg?style=social&label=Star&)](https://github.com/yutiansut/quantaxis/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/yutiansut/quantaxis.svg?style=social&label=Fork&)](https://github.com/yutiansut/quantaxis/fork)
 
-
-![version](https://img.shields.io/badge/Version-%200.4.0/alpha-orange.svg)
+![version](https://img.shields.io/badge/Version-%200.4.0/beta-orange.svg)
 ![build](https://travis-ci.org/yutiansut/QUANTAXIS.svg?branch=0.4.0-alpha)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.8-brown.svg)
@@ -97,8 +99,19 @@ sudo -H python3.6 get-pip.py
 git clone https://github.com/yutiansut/quantaxis
 cd quantaxis 
 (sudo) pip install -e . # 一定要用这种方法,python setup.py install方法无法解压 安装在本目录下的开发模式
-python easy/easy_start_tushare.py(会存全市场的数据,较慢)
-python test/new test/strategy.py(一个简单的策略)
+在命令行输入 quantaxis 进去quantaxis CLI
+quantaxis> save
+
+随意新建一个目录:
+
+在命令行输入 quantaxis 进去quantaxis CLI
+
+
+输入examples 在目录下生成一个示例策略
+
+
+python  backtest.py
+
 ```
 ![简易策略](http://i1.buimg.com/1949/44f692d0c9d6fed2.png)
 

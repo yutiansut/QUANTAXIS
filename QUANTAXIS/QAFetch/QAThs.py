@@ -1,4 +1,4 @@
-# coding:utf-8
+#coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -21,39 +21,30 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import random
 
-import QUANTAXIS as QA
-class strategy:
-    """
-    携带一个函数句柄
-    """
-    @classmethod
-    def setting(self):
-        pass
-
-    @classmethod
-    def predict(self, market, account, hold, info):
-        """
-        一个极其简单的示例策略,随机 随机真的随机
-        """
-
-        if hold == 0:
-            __dat = random.random()
-            if __dat > 0.5:
-                return {'if_buy': 1, 'if_sell': 0, 'amount': 'mean'}
-            else:
-                return {'if_buy': 0, 'if_sell': 1, 'amount': 'mean'}
-        else:
-            __dat = random.random()
-            if __dat > 0.5:
-                return {'if_buy': 1, 'if_sell': 0, 'amount': 'mean'}
-            else:
-
-                return {'if_buy': 0, 'if_sell': 1, 'amount': 'all'}
+import requests
+import pandas as pd
+import numpy as np
+from QUANTAXIS.QAUtil import trade_date_sse
 
 
-d = QA.QA_Backtest()
-# d.QA_backtest_import_setting()
-d.QA_backtest_init()
-d.QA_backtest_start(strategy())
+def get_k_data_year(code,year,if_fq):
+    data_=[]
+
+
+    url='http://d.10jqka.com.cn/v2/line/hs_%s/%s/%s.js'%(str(code),str(if_fq),str(year))
+    for item in requests.get(url).text.split('\"')[3].split(';'):
+        data_.append(item.split(','))
+    return pd.DataFrame(data_,index=list(np.asarray(data_).T[0]),columns=['date','open','high','low','close','volume','amount','factor'])
+
+
+
+def get_k_data(code,start,end,if_fq):
+    pass
+
+
+
+
+if __name__=='__main__':
+    print(get_k_data_year('000001','2016','01'))
+    print(get_k_data_year(600010,2016,'01'))

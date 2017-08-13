@@ -59,6 +59,7 @@ def market_stock_day_engine(__bid, fp=None):
         """
         try:
             if __bid['price'] == 'market_price':
+                
                 __bid_t = __bid
                 __bid_t['price'] = (float(__data["high"]) +
                                     float(__data["low"])) * 0.5
@@ -67,6 +68,16 @@ def market_stock_day_engine(__bid, fp=None):
             elif __bid['price'] == 'close_price':
                 __bid_t = __bid
                 __bid_t['price'] = float(__data["close"])
+                return __trading(__bid_t, __data)
+            elif __bid['price'] == 'strict_price':
+                '加入严格模式'
+                __bid_t = __bid
+                if __bid_t['towards']==1:
+                    
+                    __bid_t['price'] = float(__data["high"])
+                else:
+                    __bid_t['price'] = float(__data["low"])
+
                 return __trading(__bid_t, __data)
             else:
                 if __bid['amount_model'] == 'price':
@@ -106,7 +117,7 @@ def market_stock_day_engine(__bid, fp=None):
                     if int(__bid['towards']) > 0:
                         __commission_fee = 0
                     else:
-                        __commission_fee = 0.0005 * \
+                        __commission_fee = 0.0015 * \
                             float(__deal_price) * float(__bid['amount'])
                         if __commission_fee < 5:
                             __commission_fee = 5

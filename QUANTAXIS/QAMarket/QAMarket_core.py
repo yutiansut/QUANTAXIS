@@ -74,6 +74,9 @@ class QA_Market():
                     return __bid
                 elif __bid['price'] == 'close_price':
                     return __bid
+                elif __bid['price'] == 'strict' or 'strict_model' or 'strict_price':
+                    __bid['price']='strict_price'
+                    return __bid
                 else:
                     QA_util_log_info('unsupport type:' + __bid['price'])
                     return __bid
