@@ -101,7 +101,20 @@ def QA_fetch_get_stock_day(code, start_date,end_date,ip='119.147.212.81',port=77
         index_of_index_start=trade_date_sse.index(start_date)
         
         index_of_end=index_of_index_0-index_of_index_end
+        #data = api.to_df(api.get_security_bars(9, market_code, code,index_of_end, 1))
+        date=str(list(api.to_df(api.get_security_bars(9, market_code, code,index_of_end, 1))['datetime'])[0])[0:10]
+        def judge_date(date,index_of_end):
+            print(abs(trade_date_sse.index(end_date)-trade_date_sse.index(date)))
+            print(date)
+            if abs(trade_date_sse.index(end_date)-trade_date_sse.index(date))!=0:
+                #print(date)
+                index_of_end-=index_of_index_end-trade_date_sse.index(date)# 这个是实际拿到的时间的位置
+                date=str(list(api.to_df(api.get_security_bars(9, market_code, code,index_of_end, 1))['datetime'])[0])[0:10]
+                judge_date(date,index_of_end)
+        judge_date(date,index_of_end)
+        print(api.to_df(api.get_security_bars(9, market_code, code,index_of_end, 1)))
         index_length=index_of_index_end+1-index_of_index_start
+
         #data = api.get_security_bars(9, market_code, code,index_of_end, index_length)  # 返回普通list
         data = api.to_df(api.get_security_bars(9, market_code, code,index_of_end, index_length))  # 返回DataFrame
     return data
@@ -121,5 +134,5 @@ def QA_fetch_get_index_day(code, date,ip='119.147.212.81',port=7709):
 
 
 if __name__=='__main__':
-    print(QA_fetch_get_stock_day('000001','2017-07-03','2017-07-10'))
-    print(QA_fetch_get_stock_day('000001','2017-07-01','2017-07-09'))
+    #print(QA_fetch_get_stock_day('000001','2017-07-03','2017-07-10'))
+    print(QA_fetch_get_stock_day('000001','2013-07-01','2013-07-09'))

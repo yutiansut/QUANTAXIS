@@ -79,3 +79,27 @@ def QA_SU_save_stock_info(client):
     coll = client.quantaxis.stock_info
     coll.insert_many(data)
 
+
+
+def QA_save_stock_day_all_bfq():
+    df = ts.get_stock_basics()
+    __setting = QA_Setting()
+    __coll = __setting.client.quantaxis.stock_day_bfq
+    __coll.ensure_index('code')
+
+    def saving_work(i):
+        QA_util_log_info('Now Saving ==== %s' % (i))
+        try:
+            data_json = QATushare.QA_fetch_get_stock_day(i,startDate='1990-01-01',if_fq='00')
+
+            __coll.insert_many(data_json)
+        except:
+            QA_util_log_info('error in saving ==== %s' % str(i))
+
+    for i_ in range(len(df.index)):
+        QA_util_log_info('The %s of Total %s' %(i_,len(df.index)))
+        QA_util_log_info('DOWNLOAD PROGRESS %s ' %str(float(i_/len(df.index)*100))[0:4]+'%')
+        saving_work(df.index[i_])
+
+    saving_work('hs300')
+    saving_work('sz50')
