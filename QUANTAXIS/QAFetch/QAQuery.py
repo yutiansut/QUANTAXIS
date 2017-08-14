@@ -80,15 +80,42 @@ def QA_fetch_stock_list(collections=QA_Setting.client.quantaxis.stock_list):
 
     return data
 
+
+def QA_fetch_stock_full(date_,type_='numpy',collections=QA_Setting.client.quantaxis.stock_day):
+    #startDate = str(startDate)[0:10]
+    Date = str(date_)[0:10]
+    if QA_util_date_valid(Date) == True:
+    
+        list_a = []
+
+        for item in collections.find({
+            "date_stamp": {
+                "$lte": QA_util_date_stamp(Date),
+                "$gte": QA_util_date_stamp(Date)}}):
+            list_a.append([str(item['code']), float(item['open']), float(item['high']), float(
+                item['low']), float(item['close']), float(item['volume']), item['date']])
+        # 多种数据格式
+        if type_ in ['n','N','numpy']:
+            data = numpy.asarray(list_a)
+        elif type_ in  ['list','l','L']:
+            data = list_a
+        elif type_ in ['P','p','pandas']:
+            data_ = numpy.asarray(list_a)
+
+            data = DataFrame(list_a, columns=[
+                             'code', 'open', 'high', 'low', 'close', 'volume','date'],index=data_.T[6])
+            data=data[['code', 'open', 'high', 'low', 'close', 'volume']]
+        return data
+    else:
+        QA_util_log_info('something wrong with date')
+
 def QA_fetch_stock_info(code, collections):
     pass
 
 
 
 
-def QA_fetch_stock_table_by_day(stock_list,date_range):
-    """用于获取股票面数据"""
-    pass
+
 
 def QA_fetch_stocklist_day(stock_list, collections, date_range):
     data = []
