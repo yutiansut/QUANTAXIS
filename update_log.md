@@ -71,8 +71,9 @@
         - [1.41 QUANTAXIS.QABACKTEST.QABACKTEST_STOCKDAY.QA_backtest_get_OHLCV](#141-quantaxisqabacktestqabacktest_stockdayqa_backtest_get_ohlcv)
         - [1.42 QUANTAXIS MARKET ENGINE修改](#142-quantaxis-market-engine修改)
         - [1.43 QA_util_get_real_datelist](#143-qa_util_get_real_datelist)
-        - [1.44 QA_fetch_stock_full('date',type)](#144-qa_fetch_stock_fulldatetype)
-        - [1.45 同花顺日线爬虫可用](#145-同花顺日线爬虫可用)
+        - [1.44 QA_fetch_stock_full('date',type)(0.4.0-beta-dev28)](#144-qa_fetch_stock_fulldatetype040-beta-dev28)
+        - [1.45 同花顺日线爬虫可用(0.4.0-beta-dev29)](#145-同花顺日线爬虫可用040-beta-dev29)
+        - [1.46 数据源更换 QA_fetch_get_stock_day('ts')(0.4.0-beta-dev30)](#146-数据源更换-qa_fetch_get_stock_dayts040-beta-dev30)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -80,6 +81,7 @@
         - [2.4 QA.QA_Queue](#24-qaqa_queue)
         - [2.5 彻底放弃QUANTAXIS-WEBKIT-CLIENT](#25-彻底放弃quantaxis-webkit-client)
         - [2.6 更换QABACKTEST的回测模式](#26-更换qabacktest的回测模式)
+        - [2.7 数据源更换(0.4.0-beta-dev30)](#27-数据源更换040-beta-dev30)
     - [重要性能优化  重新定义回测流程,减少数据库IO压力](#重要性能优化--重新定义回测流程减少数据库io压力)
     - [废弃的接口](#废弃的接口)
     - [to do list](#to-do-list)
@@ -1086,7 +1088,7 @@ Open,High,Low,Close,Volume=QB.QA_backtest_get_OHLCV(QB,QB.QA_backtest_get_market
 
 
 
-### 1.44 QA_fetch_stock_full('date',type)
+### 1.44 QA_fetch_stock_full('date',type)(0.4.0-beta-dev28)
 2017/8/14
 
 一个获取某一天全市场数据的接口 type有三种 
@@ -1182,7 +1184,7 @@ Out[3]:
 
 [3053 rows x 6 columns]
 ```
-### 1.45 同花顺日线爬虫可用
+### 1.45 同花顺日线爬虫可用(0.4.0-beta-dev29)
 2017/8/14
 
 ```python
@@ -1263,6 +1265,12 @@ date
 
 [629 rows x 7 columns]
 ```
+
+
+### 1.46 数据源更换 QA_fetch_get_stock_day('ts')(0.4.0-beta-dev30)
+2017/8/14
+
+把tushare的数据源更换成腾讯网的
 
 ## 巨大改动/重构
 
@@ -1404,6 +1412,55 @@ def after_backtest():
     pass
 
 ```
+
+
+### 2.7 数据源更换(0.4.0-beta-dev30)
+
+对比了通达信,同花顺,ifeng,腾讯财经的数据源
+前复权:
+```bash
+====================腾讯======================
+600340
+2009-09-02
+http://web.ifzq.gtimg.cn/appstock/app/fqkline/get?_var=kline_dayqfq2009&param=sh600340,day,2009-01-01,2010-12-31,640,qfq&r=0.18617627655340497
+[{'date': '2009-09-02', 'open': 1.264, 'close': 1.293, 'high': 1.303, 'low': 1.264, 'volume': 30684.29, 'code': '600340', 'date_stamp': 1251820800.0, 'fqtype': 'qfq'}, {'date': '2009-09-03', 'open': 1.307, 'close': 1.357, 'high': 1.357, 'low': 1.307, 'volume': 40504.84, 'code': '600340', 'date_stamp': 1251907200.0, 'fqtype': 'qfq'}, {'date': '2009-09-04', 'open': 1.423, 'close': 1.425, 'high': 1.425, 'low': 1.386, 'volume': 52082.41, 'code': '600340', 'date_stamp': 1251993600.0, 'fqtype': 'qfq'}, {'date': '2009-09-07', 'open': 1.462, 'close': 1.471, 'high': 1.497, 'low': 1.425, 'volume': 69120.01, 'code': '600340', 'date_stamp': 1252252800.0, 'fqtype': 'qfq'}, {'date': '2009-09-09', 'open': 1.544, 'close': 1.544, 'high': 1.544, 'low': 1.544, 'volume': 2528.08, 'code': '600340', 'date_stamp': 1252425600.0, 'fqtype': 'qfq'}, {'date': '2009-09-10', 'open': 1.621, 'close': 1.621, 'high': 1.621, 'low': 1.592, 'volume': 65376.57, 'code': '600340', 'date_stamp': 1252512000.0, 'fqtype': 'qfq'}, {'date': '2009-09-11', 'open': 1.694, 'close': 1.633, 'high': 1.694, 'low': 1.615, 'volume': 105574.09, 'code': '600340', 'date_stamp': 1252598400.0, 'fqtype': 'qfq'}, {'date': '2009-09-14', 'open': 1.619, 'close': 1.715, 'high': 1.715, 'low': 1.593, 'volume': 90609.98, 'code': '600340', 'date_stamp': 1252857600.0, 'fqtype': 'qfq'}, {'date': '2009-09-15', 'open': 1.743, 'close': 1.73, 'high': 1.782, 'low': 1.707, 'volume': 45260.01, 'code': '600340', 'date_stamp': 1252944000.0, 'fqtype': 'qfq'}, {'date': '2009-09-16', 'open': 1.702, 'close': 1.733, 'high': 1.747, 'low': 1.662, 'volume': 48149.54, 'code': '600340', 'date_stamp': 1253030400.0, 'fqtype': 'qfq'}]
+====================ths同花顺======================
+600340
+2009-09-02
+             open   high    low  close    volume        amount  factor
+date
+2009-09-02  -0.48  -0.44  -0.48  -0.45   3068429   30789151.00  15.202
+2009-09-03  -0.43  -0.38  -0.43  -0.38   4050484   42518565.00  20.068
+2009-09-04  -0.31  -0.30  -0.35  -0.30   5208241   57345823.00  25.804
+2009-09-07  -0.26  -0.23  -0.30  -0.25   6912001   79692366.00  34.245
+2009-09-09  -0.18  -0.18  -0.18  -0.18    252808    3041280.00   1.253
+2009-09-10  -0.09  -0.09  -0.12  -0.09   6537657   82537179.00  32.390
+2009-09-11  -0.01  -0.01  -0.10  -0.08  10557409  135804180.00  52.306
+2009-09-14  -0.10   0.01  -0.12   0.01   9060998  117785149.00  44.892
+2009-09-15   0.04   0.08   0.00   0.03   4526001   61421440.00  22.424
+2009-09-16  -0.00   0.04  -0.05   0.03   4814954   63716609.00  23.855
+In [3]: =======凤凰网=====
+ts.get_h_data('600340','2009-09-02','2009-09-16',autype='qfq')
+[Getting data:]Out[3]:
+             open   high  close    low      volume       amount
+date
+2009-09-16  39.29  40.33  40.00  38.37   4814954.0   63716608.0
+2009-09-15  40.24  41.13  39.94  39.41   4526001.0   61421440.0
+2009-09-14  37.37  39.59  39.59  36.77   9060998.0  117785152.0
+2009-09-11  39.11  39.11  37.69  37.28  10557409.0  135804192.0
+2009-09-10  37.43  37.43  37.43  36.74   6537657.0   82537176.0
+2009-09-09  35.65  35.65  35.65  35.65    252808.0    3041280.0
+2009-09-07  33.75  34.55  33.96  32.89   6912001.0   79692368.0
+2009-09-04  32.86  32.89  32.89  32.00   5208241.0   57345824.0
+2009-09-03  30.17  31.32  31.32  30.17   4050484.0   42518564.0
+2009-09-02  29.19  30.08  29.84  29.19   3068429.0   30789152.0
+```
+
+对比发现,ifeng,同花顺,通达信(软件)的复权方法有问题,最终采用wind/腾讯的数据作为数据源
+
+缺点是这样没有turnover数据
+
+
 ## 重要性能优化  重新定义回测流程,减少数据库IO压力
 
 在新的回测框架中,大幅优化了数据的读取方式,通过大量的内存结构来进行数据缓存,之后的数据调用请求都通过内存中的数据接口来获得,这样大大减少了数据库IO

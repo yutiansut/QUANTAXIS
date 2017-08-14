@@ -27,7 +27,7 @@ for i in range(10):
         print(QA.trade_date_sse[ran_id_for_start])
 
 
-        data_x=QA.QA_fetch_get_stock_day(item,stock_list[ran_id],QA.trade_date_sse[ran_id_for_start],QA.trade_date_sse[ran_id_for_start+10],'00')
+        data_x=QA.QA_fetch_get_stock_day(item,stock_list[ran_id],QA.trade_date_sse[ran_id_for_start],QA.trade_date_sse[ran_id_for_start+10],'01')
 
 
         print(data_x)
