@@ -1,4 +1,4 @@
-# coding:utf-8
+#coding=utf-8
 #
 # The MIT License (MIT)
 #
@@ -21,29 +21,21 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-""""
-yutiansut
-util tool
-"""
 
 
-from .QADate import(QA_util_date_stamp, QA_util_time_stamp, QA_util_ms_stamp, QA_util_date_valid,
-                    QA_util_realtime, QA_util_id2date, QA_util_is_trade, QA_util_get_date_index,
-                    QA_util_get_index_date, QA_util_get_real_date, QA_util_select_hours,
-                    QA_util_select_min,QA_util_time_delay,QA_util_time_now,QA_util_date_str2int,
-                    QA_util_date_int2str,QA_util_get_real_datelist)
+import pymongo
+
+def QA_util_mongo_initial(db=pymongo.MongoClient().quantaxis):
+    
+    db.drop_collection('stock_day')
+    db.drop_collection('stock_list')
+    db.drop_collection('stock_info')
+    db.drop_collection('trade_date')
 
 
-
-from .QASql import (QA_util_sql_mongo_setting)
-from .QALogs import (
-    QA_util_log_debug, QA_util_log_expection, QA_util_log_info)
-from .QACfg import (QA_util_cfg_initial, QA_util_get_cfg)
-from .QASetting import QA_Setting
-from .QAWeb import QA_util_web_ping
-from .QADate_trade import trade_date_sse
-from .QACsv import QA_util_save_csv
-from .QAList import QA_util_multi_demension_list,QA_util_diff_list
-from .QAMongo import QA_util_mongo_initial,QA_util_mongo_make_index
-def QA_start_initial(files):
-    pass
+def QA_util_mongo_make_index(db=pymongo.MongoClient().quantaxis):
+    try:
+        db.stock_day.ensure_index('code')
+        db.stock_min_five.ensure_index('code')
+    except:
+        pass

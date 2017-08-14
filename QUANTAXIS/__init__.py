@@ -31,7 +31,7 @@ by yutiansut
 
 2017/4/8
 """
-__version__ = '0.4.0-b-dev32'
+__version__ = '0.4.0-b-dev33'
 __author__ = 'yutiansut'
 
 # fetch methods
@@ -86,7 +86,8 @@ from QUANTAXIS.QAUtil import (QA_util_sql_mongo_setting, QA_util_cfg_initial, QA
                               QA_start_initial, QA_Setting, QA_util_get_date_index,
                               QA_util_get_index_date, QA_util_get_real_date, QA_util_select_hours,
                               QA_util_select_min, QA_util_time_delay, QA_util_time_now,
-                              QA_util_save_csv, QA_util_multi_demension_list,QA_util_diff_list)
+                              QA_util_save_csv, QA_util_multi_demension_list,QA_util_diff_list,
+                              QA_util_mongo_initial,QA_util_mongo_make_index)
 
 from QUANTAXIS.QAIndicator import *
 from QUANTAXIS.QASQL import qasql, qacold

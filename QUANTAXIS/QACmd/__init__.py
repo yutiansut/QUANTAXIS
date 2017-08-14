@@ -32,7 +32,7 @@ import platform
 
 
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
-from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting
+from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting,QA_util_mongo_initial,QA_util_mongo_make_index
 from QUANTAXIS.QABacktest.backtest_framework import backtest
 from QUANTAXIS import (QA_SU_save_stock_info,QA_SU_save_stock_list,
                             QA_SU_save_trade_date_all,QA_save_stock_day_all,
@@ -70,7 +70,17 @@ class CLI(cmd.Cmd):
 
     def help_examples(self):
         print('make a sample backtest framework')
+    def do_drop_database(self,arg):
+        QA_util_mongo_initial()
+    def help_drop_database(self):
+        print('drop quantaxis\'s databases')
 
+
+    def do_make_index(self,arg):
+        QA_util_mongo_make_index()
+
+    def help_make_index(self):
+        print('make index for quantaxis databases')
     def do_quit(self, arg):     # 定义quit命令所执行的操作
         sys.exit(1)
 

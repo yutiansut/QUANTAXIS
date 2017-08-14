@@ -74,6 +74,7 @@
         - [1.44 QA_fetch_stock_full('date',type)(0.4.0-beta-dev28)](#144-qa_fetch_stock_fulldatetype040-beta-dev28)
         - [1.45 同花顺日线爬虫可用(0.4.0-beta-dev29)](#145-同花顺日线爬虫可用040-beta-dev29)
         - [1.46 数据源更换 QA_fetch_get_stock_day('ts')(0.4.0-beta-dev30,dev31,dev32)](#146-数据源更换-qa_fetch_get_stock_dayts040-beta-dev30dev31dev32)
+        - [1.47 新增数据库api QA_util_mongo_initial,QA_util_mongo_make_index(0.4.0-beta-dev33)](#147-新增数据库api-qa_util_mongo_initialqa_util_mongo_make_index040-beta-dev33)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -1275,6 +1276,22 @@ date
 dev31 更新 增加retry次数,增加暂停时间到0.005秒
 
 dev32 更新 retry200次
+
+### 1.47 新增数据库api QA_util_mongo_initial,QA_util_mongo_make_index(0.4.0-beta-dev33)
+2017/8/14
+
+QA_util_mongo_initial()
+删除数据库数据文件
+
+
+QA_util_mongo_make_index()
+对于日线和分钟线建立索引
+
+
+也可以在quantaxis cli中使用
+
+QUANTAXIS> drop_database
+QUANATXIS> make_index
 
 ## 巨大改动/重构
 
