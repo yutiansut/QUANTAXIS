@@ -96,28 +96,31 @@ def QA_fetch_get_stock_day(code, start_date,end_date,ip='119.147.212.81',port=77
 
         # 判断end_date在哪个位置
         index_0=str(datetime.date.today())
-        index_of_index_0=trade_date_sse.index(index_0)
-        index_of_index_end=trade_date_sse.index(end_date)
+        index_of_index_0=trade_date_sse.index(index_0)  
+        index_of_index_end=trade_date_sse.index(end_date)  # 这是我们想要的date 在那个trade_date里的位置
         index_of_index_start=trade_date_sse.index(start_date)
         
         index_of_end=index_of_index_0-index_of_index_end
         #data = api.to_df(api.get_security_bars(9, market_code, code,index_of_end, 1))
+        print(index_of_end)
+        # 这是拿到的真实的date
         date=str(list(api.to_df(api.get_security_bars(9, market_code, code,index_of_end, 1))['datetime'])[0])[0:10]
-        def judge_date(date,index_of_end):
-            print(abs(trade_date_sse.index(end_date)-trade_date_sse.index(date)))
-            print(date)
-            if abs(trade_date_sse.index(end_date)-trade_date_sse.index(date))!=0:
-                #print(date)
+        def judge_date(date,index_of_index_end,index_of_end):
+            while abs(index_of_index_end-trade_date_sse.index(date))!=0:
                 index_of_end-=index_of_index_end-trade_date_sse.index(date)# 这个是实际拿到的时间的位置
                 date=str(list(api.to_df(api.get_security_bars(9, market_code, code,index_of_end, 1))['datetime'])[0])[0:10]
-                judge_date(date,index_of_end)
-        judge_date(date,index_of_end)
-        print(api.to_df(api.get_security_bars(9, market_code, code,index_of_end, 1)))
-        index_length=index_of_index_end+1-index_of_index_start
+                return index_of_end
+        
+        index_of_end=judge_date(date,index_of_index_end,index_of_end)
+        index_length=index_of_index_end+1-index_of_index_start+20
 
         #data = api.get_security_bars(9, market_code, code,index_of_end, index_length)  # 返回普通list
         data = api.to_df(api.get_security_bars(9, market_code, code,index_of_end, index_length))  # 返回DataFrame
-    return data
+        data['date']=data['datetime'].apply(lambda x:x[0:10])
+        data = data.set_index('date')
+        data = data.drop(['year','month','day','hour','minute','datetime'],axis=1)
+        
+    return data[start_date:end_date]
 def QA_fetch_get_stock_list(code, date,ip='119.147.212.81',port=7709):
     with api.connect(ip, port):
         stocks = api.get_security_list(1, 255)
