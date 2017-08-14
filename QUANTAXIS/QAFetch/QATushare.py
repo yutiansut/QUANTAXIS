@@ -29,7 +29,7 @@ import tushare as QATs
 from QUANTAXIS.QAUtil import QA_util_date_stamp, QA_util_log_info
 
 
-def QA_fetch_get_stock_day(name, startDate=None, endDate=None, if_fq='01'):
+def QA_fetch_get_stock_day(name, startDate='', endDate='', if_fq='01'):
     if (len(name) != 6):
         name = str(name)[0:6]
 
