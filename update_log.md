@@ -1281,16 +1281,19 @@ dev32 更新 retry200次
 2017/8/14
 
 QA_util_mongo_initial()
+
 删除数据库数据文件
 
 
 QA_util_mongo_make_index()
+
 对于日线和分钟线建立索引
 
 
 也可以在quantaxis cli中使用
 
 QUANTAXIS> drop_database
+
 QUANATXIS> make_index
 
 ## 巨大改动/重构
