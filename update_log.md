@@ -73,7 +73,7 @@
         - [1.43 QA_util_get_real_datelist](#143-qa_util_get_real_datelist)
         - [1.44 QA_fetch_stock_full('date',type)(0.4.0-beta-dev28)](#144-qa_fetch_stock_fulldatetype040-beta-dev28)
         - [1.45 同花顺日线爬虫可用(0.4.0-beta-dev29)](#145-同花顺日线爬虫可用040-beta-dev29)
-        - [1.46 数据源更换 QA_fetch_get_stock_day('ts')(0.4.0-beta-dev30)](#146-数据源更换-qa_fetch_get_stock_dayts040-beta-dev30)
+        - [1.46 数据源更换 QA_fetch_get_stock_day('ts')(0.4.0-beta-dev30,dev31,dev32)](#146-数据源更换-qa_fetch_get_stock_dayts040-beta-dev30dev31dev32)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -1267,10 +1267,14 @@ date
 ```
 
 
-### 1.46 数据源更换 QA_fetch_get_stock_day('ts')(0.4.0-beta-dev30)
+### 1.46 数据源更换 QA_fetch_get_stock_day('ts')(0.4.0-beta-dev30,dev31,dev32)
 2017/8/14
 
 把tushare的数据源更换成腾讯网的
+
+dev31 更新 增加retry次数,增加暂停时间到0.005秒
+
+dev32 更新 retry200次
 
 ## 巨大改动/重构
 
