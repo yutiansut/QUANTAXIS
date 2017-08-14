@@ -102,7 +102,6 @@ def QA_fetch_get_stock_day(code, start_date,end_date,ip='119.147.212.81',port=77
         
         index_of_end=index_of_index_0-index_of_index_end
         #data = api.to_df(api.get_security_bars(9, market_code, code,index_of_end, 1))
-        print(index_of_end)
         # 这是拿到的真实的date
         date=str(list(api.to_df(api.get_security_bars(9, market_code, code,index_of_end, 1))['datetime'])[0])[0:10]
         def judge_date(date,index_of_index_end,index_of_end):
