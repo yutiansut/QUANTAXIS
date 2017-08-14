@@ -42,14 +42,14 @@ def QA_fetch_get_stock_day(name, startDate='', endDate='', if_fq='01'):
     else:
         QA_util_log_info('wrong with fq_factor! using qfq')
     data = QATs.get_k_data(str(name), startDate, endDate,
-                           ktype='D', autype=if_fq).sort_index()
+                           ktype='D', autype=if_fq, retry_count=20,pause=0.005).sort_index()
 
     data_json = json.loads(data.to_json(orient='records'))
 
     for j in range(0, len(data_json), 1):
         data_json[j]['date_stamp'] = QA_util_date_stamp(
             list(data['date'])[j])
-        data_json[j]['fqtype']=if_fq
+        data_json[j]['fqtype'] = if_fq
     return data_json
 
     """
