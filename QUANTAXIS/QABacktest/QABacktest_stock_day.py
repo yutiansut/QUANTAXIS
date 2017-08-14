@@ -348,9 +348,10 @@ class QA_Backtest_stock_day():
 
     def QA_backtest_get_OHLCV(self, __data):
         '快速返回 OHLCV格式'
-        return (__data.T[1].astype(float).tolist(), __data.T[2].astype(float).tolist(), \
-                __data.T[3].astype(float).tolist(), __data.T[4].astype(float).tolist(), \
-                __data.T[5].astype(float).tolist())
+        return (__data.T[1].astype(float).tolist(), __data.T[2].astype(float).tolist(),
+                __data.T[3].astype(float).tolist(
+        ), __data.T[4].astype(float).tolist(),
+            __data.T[5].astype(float).tolist())
 
     def QA_backtest_send_order(self, __code: str, __amount: int, __towards: int, __order: dict):
         """
@@ -449,8 +450,8 @@ class QA_Backtest_stock_day():
                     __bid['amount'] = __amount_hold
                 __message = self.market.receive_bid(
                     __bid, self.setting.client)
-                self.account.QA_account_receive_deal(__message)
 
+                self.account.QA_account_receive_deal(__message)
                 return __message
             else:
                 err_info = 'Error: Not Enough amount for code %s in hold list' % str(
