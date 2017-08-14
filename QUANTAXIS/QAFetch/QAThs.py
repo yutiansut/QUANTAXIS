@@ -1,4 +1,4 @@
-#coding:utf-8
+# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -22,29 +22,43 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import requests
-import pandas as pd
 import numpy as np
+import pandas as pd
+import requests
 from QUANTAXIS.QAUtil import trade_date_sse
 
 
-def get_k_data_year(code,year,if_fq):
-    data_=[]
+def QA_fetch_get_stock_day_in_year(code, year, if_fq='00'):
+    data_ = []
+    url = 'http://d.10jqka.com.cn/v2/line/hs_%s/%s/%s.js' % (
+        str(code), str(if_fq), str(year))
+    try:
+        for item in requests.get(url).text.split('\"')[3].split(';'):
+            data_.append(item.split(','))
+
+        data = pd.DataFrame(data_, index=list(np.asarray(data_).T[0]), columns=[
+                            'date', 'open', 'high', 'low', 'close', 'volume', 'amount', 'factor'])
+        data['date'] = pd.to_datetime(data['date'])
+        data = data.set_index('date')
+        return data
+    except:
+        pass
 
 
-    url='http://d.10jqka.com.cn/v2/line/hs_%s/%s/%s.js'%(str(code),str(if_fq),str(year))
-    for item in requests.get(url).text.split('\"')[3].split(';'):
-        data_.append(item.split(','))
-    return pd.DataFrame(data_,index=list(np.asarray(data_).T[0]),columns=['date','open','high','low','close','volume','amount','factor'])
+def QA_fetch_get_stock_day(code, start, end, if_fq='00'):
+    start_year = int(str(start)[0:4])
+    end_year = int(str(end)[0:4])
+    data = QA_fetch_get_stock_day_in_year(code, start_year, if_fq)
+    if start_year < end_year:
+        for i_ in range(start_year + 1, end_year + 1):
+            data = pd.concat(
+                [data, QA_fetch_get_stock_day_in_year(code, i_, if_fq)], axis=0)
+    else:
+        pass
+    return data[start:end]
 
 
-
-def get_k_data(code,start,end,if_fq):
-    pass
-
-
-
-
-if __name__=='__main__':
-    print(get_k_data_year('000001','2016','01'))
-    print(get_k_data_year(600010,2016,'01'))
+if __name__ == '__main__':
+    # print(get_k_data_year('000001','2016','01'))
+    # print(get_k_data_year(600010,2016,'01'))
+    print(QA_fetch_get_stock_day('000001', '2016-05-01', '2017-07-01', '01'))

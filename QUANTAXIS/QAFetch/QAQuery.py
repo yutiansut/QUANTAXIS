@@ -62,6 +62,9 @@ def QA_fetch_stock_day(code, startDate, endDate, type_='numpy', collections=QA_S
         elif type_ == 'pandas':
             data = DataFrame(list_a, columns=[
                              'code', 'open', 'high', 'low', 'close', 'volume', 'date', 'turnover'])
+
+            data['date'] = pd.to_datetime(data['date'])
+            data = data.set_index('date')
         return data
     else:
         QA_util_log_info('something wrong with date')
@@ -103,7 +106,10 @@ def QA_fetch_stock_full(date_,type_='numpy',collections=QA_Setting.client.quanta
             data_ = numpy.asarray(list_a)
 
             data = DataFrame(list_a, columns=[
-                             'code', 'open', 'high', 'low', 'close', 'volume','date'],index=data_.T[6])
+                             'code', 'open', 'high', 'low', 'close', 'volume','date'])
+
+            data['date'] = pd.to_datetime(data['date'])
+            data = data.set_index('date')
             data=data[['code', 'open', 'high', 'low', 'close', 'volume']]
         return data
     else:
@@ -151,6 +157,8 @@ def QA_fetch_index_day(code, startDate, endDate, type_='numpy', collections=QA_S
         elif type_ == 'pandas':
             data = DataFrame(list_a, columns=[
                              'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
+            data['date'] = pd.to_datetime(data['date'])
+            data = data.set_index('date')
 
         return data
     else:

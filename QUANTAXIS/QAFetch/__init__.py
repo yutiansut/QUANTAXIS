@@ -35,6 +35,7 @@ from . import QAWind as QAWind
 from . import QATushare as QATushare
 from . import QATdx as QATdx
 from .QAQuery import QA_fetch_stock_day,QA_fetch_stocklist_day,QA_fetch_index_day
+from . import QAThs as QAThs
 #import QAFetch.QAGmsdk as QAGmsdk
 #import QAFetch.QACrawlData as QACD
 
@@ -54,18 +55,25 @@ def use(package):
         return QATushare
     elif package in ['tdx','pytdx']:
         return QATdx
+    elif package in ['ths','THS']:
+        return QAThs
 
-def QA_fetch_get_stock_day(package,name,startDate,endDate):
+
+def QA_fetch_get_stock_day(package,code,startDate,endDate,if_fq='01'):
     Engine=use(package)
-    return Engine.QA_fetch_get_stock_day(name,startDate,endDate)
+    if package in ['ths','THS']:
+        return Engine.QA_fetch_get_stock_day(code,startDate,endDate,if_fq)
+    else:
+        return Engine.QA_fetch_get_stock_day(code,startDate,endDate)
+
 
 def QA_fetch_get_stock_realtime(package):
     Engine=use(package)
     return Engine.QA_fetch_get_stock_realtime()
 
-def QA_fetch_get_stock_indicator(package,name,startDate,endDate):
+def QA_fetch_get_stock_indicator(package,code,startDate,endDate):
     Engine=use(package)
-    return Engine.QA_fetch_get_stock_indicator(name,startDate,endDate)
+    return Engine.QA_fetch_get_stock_indicator(code,startDate,endDate)
     
 def QA_fetch_get_trade_date(package,endDate,exchange):
     Engine=use(package)
