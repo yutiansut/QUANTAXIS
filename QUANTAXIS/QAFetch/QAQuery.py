@@ -53,7 +53,7 @@ def QA_fetch_stock_day(code, startDate, endDate, type_='numpy', collections=QA_S
                 "$lte": QA_util_date_stamp(endDate),
                 "$gte": QA_util_date_stamp(startDate)}}):
             list_a.append([str(item['code']), float(item['open']), float(item['high']), float(
-                item['low']), float(item['close']), float(item['volume']), item['date'], float(item['turnover'])])
+                item['low']), float(item['close']), float(item['volume']), item['date']])
         # 多种数据格式
         if type_ == 'numpy':
             data = numpy.asarray(list_a)
@@ -61,7 +61,7 @@ def QA_fetch_stock_day(code, startDate, endDate, type_='numpy', collections=QA_S
             data = list_a
         elif type_ == 'pandas':
             data = DataFrame(list_a, columns=[
-                             'code', 'open', 'high', 'low', 'close', 'volume', 'date', 'turnover'])
+                             'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
 
             data['date'] = pd.to_datetime(data['date'])
             data = data.set_index('date')

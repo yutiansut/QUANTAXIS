@@ -55,7 +55,10 @@ def QA_fetch_get_stock_day(code, start, end, if_fq='00'):
                 [data, QA_fetch_get_stock_day_in_year(code, i_, if_fq)], axis=0)
     else:
         pass
-    return data[start:end]
+    if data is None:
+        return pd.DataFrame()
+    else:
+        return data[start:end]
 
 
 if __name__ == '__main__':

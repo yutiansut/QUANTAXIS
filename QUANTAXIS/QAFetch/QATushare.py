@@ -26,10 +26,33 @@ import json
 
 import tushare as QATs
 
-from QUANTAXIS.QAUtil import QA_util_date_stamp
+from QUANTAXIS.QAUtil import QA_util_date_stamp, QA_util_log_info
 
 
-def QA_fetch_get_stock_day(name, startDate=None, endDate=None):
+def QA_fetch_get_stock_day(name, startDate=None, endDate=None, if_fq='01'):
+    if (len(name) != 6):
+        name = str(name)[0:6]
+
+    if if_fq in ['qfq', '01']:
+        if_fq = 'qfq'
+    elif if_fq in ['hfq', '02']:
+        if_fq = 'hfq'
+    elif if_fq in ['bfq', '00']:
+        if_fq = 'bfq'
+    else:
+        QA_util_log_info('wrong with fq_factor! using qfq')
+    data = QATs.get_k_data(str(name), startDate, endDate,
+                           ktype='D', autype=if_fq).sort_index()
+
+    data_json = json.loads(data.to_json(orient='records'))
+
+    for j in range(0, len(data_json), 1):
+        data_json[j]['date_stamp'] = QA_util_date_stamp(
+            list(data['date'])[j])
+        data_json[j]['fqtype']=if_fq
+    return data_json
+
+    """
     if (len(name) != 6):
         name = str(name)[0:6]
     data = QATs.get_hist_data(str(name), startDate, endDate).sort_index()
@@ -43,6 +66,7 @@ def QA_fetch_get_stock_day(name, startDate=None, endDate=None):
         data_json[j]['code'] = str(name)
 
     return data_json
+    """
 
 
 def QA_fetch_get_stock_realtime():
