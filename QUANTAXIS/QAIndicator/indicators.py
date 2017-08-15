@@ -120,7 +120,7 @@ def QA_indicator_jlhb(high, low, close, N=7, M=5):
         字典(dict)：键(key)为股票代码，值(value)为数据。
     """
     def JLHB(security_list, check_date, N = 7, M = 5):
-            '''
+        '''
 
         
         import talib

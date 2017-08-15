@@ -1,4 +1,4 @@
-#coding:utf-8
+# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -22,8 +22,4 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import QUANTAXIS as QA
-
-
-collection=QA.QA_Setting.client.quantaxis.backtest_history
-collection.ensure_index('cookie')
+from .fq_factor import QA_data_fq_factor

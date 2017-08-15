@@ -59,6 +59,7 @@ def market_stock_day_engine(__bid, fp=None):
         """
         try:
             if __bid['price'] == 'market_price':
+
                 __bid_t = __bid
                 __bid_t['price'] = (float(__data["high"]) +
                                     float(__data["low"])) * 0.5
@@ -68,17 +69,30 @@ def market_stock_day_engine(__bid, fp=None):
                 __bid_t = __bid
                 __bid_t['price'] = float(__data["close"])
                 return __trading(__bid_t, __data)
+            elif __bid['price'] == 'strict_price':
+                '加入严格模式'
+                __bid_t = __bid
+                if __bid_t['towards'] == 1:
+
+                    __bid_t['price'] = float(__data["high"])
+                else:
+                    __bid_t['price'] = float(__data["low"])
+
+                return __trading(__bid_t, __data)
             else:
+
                 if __bid['amount_model'] == 'price':
                     __bid_s = __bid
                     __bid_s['amount'] = int(
                         __bid['amount'] / (__bid['price'] * 100)) * 100
                     __bid_s['amount_model'] = 'amount'
                     return __trading(__bid_s, __data)
-                elif ((float(__bid['price']) < float(__data["high"]) and
-                       float(__bid['price']) > float(__data["low"])) or
-                      float(__bid['price']) == float(__data["low"]) or
-                      float(__bid['price']) == float(__data['high'])):
+
+                if ((float(__bid['price']) < float(__data["high"]) and
+                     float(__bid['price']) > float(__data["low"])) or
+                    float(__bid['price']) == float(__data["low"]) or
+                        float(__bid['price']) == float(__data['high'])):
+
                     if float(__bid['amount']) < float(__data['volume']) * 100 / 16:
                         __deal_price = __bid['price']
                     elif float(__bid['amount']) >= float(__data['volume']) * 100 / 16 and \
@@ -106,10 +120,11 @@ def market_stock_day_engine(__bid, fp=None):
                     if int(__bid['towards']) > 0:
                         __commission_fee = 0
                     else:
-                        __commission_fee = 0.0005 * \
+                        __commission_fee = 0.0015 * \
                             float(__deal_price) * float(__bid['amount'])
                         if __commission_fee < 5:
                             __commission_fee = 5
+
                     return {
                         'header': {
                             'source': 'market',
@@ -143,8 +158,43 @@ def market_stock_day_engine(__bid, fp=None):
                             }
                         }
                     }
+                else:
+                    return {
+                        'header': {
+                            'source': 'market',
+                            'status': 400,
+                            'code': str(__bid['code']),
+                            'session': {
+                                'user': str(__bid['user']),
+                                'strategy': str(__bid['strategy'])
+                            },
+                            'order_id': str(__bid['order_id']),
+                            'trade_id': str(random.random())
+                        },
+                        'body': {
+                            'bid': {
+                                'price': 0,
+                                'code': str(__bid['code']),
+                                'amount': 0,
+                                'date': str(__bid['date']),
+                                'towards': __bid['towards']
+                            },
+                            'market': {
+                                'open': __data['open'],
+                                'high': __data['high'],
+                                'low': __data['low'],
+                                'close': __data['close'],
+                                'volume': __data['volume'],
+                                'code': __data['code']
+                            },
+                            'fee': {
+                                'commission': 0
+                            }
+                        }
+                    }
 
         except:
+
             return {
                 'header': {
                     'source': 'market',

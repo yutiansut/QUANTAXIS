@@ -34,42 +34,6 @@ import datetime
 api = TdxHq_API()
 
 
-def __select_best_ip():
-    ip_list = [
-        '119.147.212.81:7709',
-        '221.231.141.60:7709',
-        '101.227.73.20:7709',
-        '101.227.77.254:7709',
-        '14.215.128.18:7709'
-        '59.173.18.140:7709',
-        '58.23.131.163:7709',
-        '218.6.170.47:7709',
-        '123.125.108.14:7709',
-        '60.28.23.80:7709',
-        '218.60.29.136:7709',
-        '218.85.139.19:7709',
-        '218.85.139.20:7709',
-        '122.192.35.44:7709',
-        '122.192.35.44:7709'
-    ]
-
-
-
-    ip_addr=[]
-    for item in ip_list:
-        ip_addr.append(item.split(':')[0])
-
-
-
-    def select_best(url_list):
-        ms_list=[]
-        for item in url_list:
-            ms_list.append(QA_util_web_ping(item))
-        return url_list[ms_list.index(min(ms_list))]
-
-    #ip_job.put({'fn':print(select_best(ip_addr))})
-
-
 
 
 
@@ -120,6 +84,9 @@ from Pytdx/api-main
         api.disconnect()
 """
 def QA_fetch_get_stock_day(code, start_date,end_date,ip='119.147.212.81',port=7709):
+    
+    api = TdxHq_API()
+
     if str(code)[0]=='6':
         #0 - 深圳， 1 - 上海
         market_code=1
@@ -129,18 +96,16 @@ def QA_fetch_get_stock_day(code, start_date,end_date,ip='119.147.212.81',port=77
     start_date=QA_util_get_real_date(start_date,trade_date_sse,1)
     end_date=QA_util_get_real_date(end_date,trade_date_sse,-1)
     with api.connect(ip, port):
-
-        # 判断end_date在哪个位置
-        index_0=str(datetime.date.today())
-        index_of_index_0=trade_date_sse.index(index_0)
-        index_of_index_end=trade_date_sse.index(end_date)
-        index_of_index_start=trade_date_sse.index(start_date)
+        data=[]
+        for i in range(10):
+            data+=api.get_security_bars(9,market_code,code,(9-i)*800,800)
+        data=api.to_df(data)
+        data['date']=data['datetime'].apply(lambda x:x[0:10])
+        data['date']=pd.to_datetime(data['date'])
+        data = data.set_index('date')
+        data = data.drop(['year','month','day','hour','minute','datetime'],axis=1)
         
-        index_of_end=index_of_index_0-index_of_index_end
-        index_length=index_of_index_end+1-index_of_index_start
-        #data = api.get_security_bars(9, market_code, code,index_of_end, index_length)  # 返回普通list
-        data = api.to_df(api.get_security_bars(9, market_code, code,index_of_end, index_length))  # 返回DataFrame
-    return data
+        return data[start_date:end_date]
 def QA_fetch_get_stock_list(code, date,ip='119.147.212.81',port=7709):
     with api.connect(ip, port):
         stocks = api.get_security_list(1, 255)
@@ -157,5 +122,5 @@ def QA_fetch_get_index_day(code, date,ip='119.147.212.81',port=7709):
 
 
 if __name__=='__main__':
-    print(QA_fetch_get_stock_day('000001','2017-07-03','2017-07-10'))
-    print(QA_fetch_get_stock_day('000001','2017-07-01','2017-07-09'))
+    #print(QA_fetch_get_stock_day('000001','2017-07-03','2017-07-10'))
+    print(QA_fetch_get_stock_day('000001','2013-07-01','2013-07-09'))
