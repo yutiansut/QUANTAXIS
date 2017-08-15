@@ -31,7 +31,7 @@ by yutiansut
 
 2017/4/8
 """
-__version__ = '0.4.0-b-dev36'
+__version__ = '0.4.0-b-dev37'
 __author__ = 'yutiansut'
 
 # fetch methods
@@ -71,7 +71,6 @@ from QUANTAXIS.QAARP.QARisk import (QA_risk_account_freeCash_currentAssest,
 from QUANTAXIS.QABacktest.QABacktest import QA_Backtest, QA_Backtest_min
 from QUANTAXIS.QABacktest.QABacktest_stock_day import QA_Backtest_stock_day
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
-from QUANTAXIS.QABacktest.backtest_framework import backtest
 # task
 from QUANTAXIS.QATask import QA_Queue, QA_Event
 

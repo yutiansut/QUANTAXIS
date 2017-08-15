@@ -36,10 +36,10 @@
 
 
 from QUANTAXIS.QAUtil import QA_Setting
-from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_list,QA_fetch_stock_table_by_day
+from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_list,QA_fetch_stock_table_by_day,QA_fetch_stock_full
 
 #
-def select_by_func(func,*arg,**kwargs):
+def QA_select_by_func(func,*arg,**kwargs):
     func(*arg,**kwargs)
 
 

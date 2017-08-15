@@ -33,7 +33,6 @@ import platform
 
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting,QA_util_mongo_initial,QA_util_mongo_make_index
-from QUANTAXIS.QABacktest.backtest_framework import backtest
 from QUANTAXIS import (QA_SU_save_stock_info,QA_SU_save_stock_list,
                             QA_SU_save_trade_date_all,QA_save_stock_day_all,
                             QA_SU_update_stock_day)
