@@ -180,7 +180,13 @@ python  backtest.py
 ```shell
 cd QUANTAXISWebkit
 (sudo) npm run install
-(sudo) npm run Xweb
+
+(sudo) npm install forever -g
+cd backend
+(sudo) forever start bin/www
+cd ..
+cd web
+(sudo) npm run dev
 ```
 会自动启动localhost:8080网页端口,用账户名admin,密码admin登录
 
