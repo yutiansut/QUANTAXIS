@@ -60,8 +60,9 @@ class CLI(cmd.Cmd):
 
         if platform.system()=='Windows':
             file_dir = project_dir + '\\backtest.py'
-        elif platform.system()=='Linux':
+        elif platform.system() in ['Linux','Darwin']:
             file_dir= project_dir + '/backtest.py'
+        
         shutil.copy(file_dir, now_path)
 
         QA_util_log_info(
