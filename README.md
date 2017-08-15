@@ -113,6 +113,7 @@ QUANTAXIS与国内很多优秀的量化平台的区别在于,QA更多关注的�
         - [1.49 修复了pytdx的get_k_data api(0.4.0-beta-dev35)](#149-修复了pytdx的get_k_data-api040-beta-dev35)
         - [1.50 修复了一个因为市场返回400状态导致账户数据溢出的bug(0.4.0-beta-dev36,37)](#150-修复了一个因为市场返回400状态导致账户数据溢出的bug040-beta-dev3637)
         - [1.51 QA_data_fq_factor获取从1990年以来的前后复权因子,QA_fetch_get_stock_day 兼容性改动(0.4.0-beta-dev38)](#151-qa_data_fq_factor获取从1990年以来的前后复权因子qa_fetch_get_stock_day-兼容性改动040-beta-dev38)
+        - [1.52 QATDX改动(0.4.0-b-dev39)](#152-qatdx改动040-b-dev39)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -1560,6 +1561,17 @@ qfq=QA_fetch_get_stock_day('ts',code,'1991-01-01','','01','pd/json')
 hfq=QA_fetch_get_stock_day('ts',code,'1991-01-01','','02','pd/json')
 ```
 
+### 1.52 QATDX改动(0.4.0-b-dev39)
+2017/8/15
+
+QATDX之前在获取日线的时候,虽然修复了时间索引 但是没有考虑到800条数据上限的问题
+
+现在进行了修复
+
+```python
+
+QA.QA.QA_fetch_get_stock_day('tdx','000001','1990-01-01','2017-08-01')
+```
 ## 巨大改动/重构
 
 ### 2.1 QA.QAARP.QAAccount
