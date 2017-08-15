@@ -30,35 +30,36 @@ import time
 import tushare as ts
 
 from QUANTAXIS.QAFetch import QATushare
-from QUANTAXIS.QAUtil import QA_util_date_stamp, QA_util_time_stamp,QA_util_log_info,trade_date_sse
+from QUANTAXIS.QAUtil import QA_util_date_stamp, QA_util_time_stamp, QA_util_log_info, trade_date_sse
 from QUANTAXIS.QAUtil.QASetting import QA_Setting
 
 
-def QA_save_stock_day_all():
+def QA_save_stock_day_all(client=QA_Setting.client):
     df = ts.get_stock_basics()
-    __setting = QA_Setting()
-    __coll = __setting.client.quantaxis.stock_day
+    __coll = client.quantaxis.stock_day
     __coll.ensure_index('code')
 
     def saving_work(i):
         QA_util_log_info('Now Saving ==== %s' % (i))
         try:
-            data_json = QATushare.QA_fetch_get_stock_day(i,startDate='1990-01-01')
+            data_json = QATushare.QA_fetch_get_stock_day(
+                i, startDate='1990-01-01')
 
             __coll.insert_many(data_json)
         except:
             QA_util_log_info('error in saving ==== %s' % str(i))
 
     for i_ in range(len(df.index)):
-        QA_util_log_info('The %s of Total %s' %(i_,len(df.index)))
-        QA_util_log_info('DOWNLOAD PROGRESS %s ' %str(float(i_/len(df.index)*100))[0:4]+'%')
+        QA_util_log_info('The %s of Total %s' % (i_, len(df.index)))
+        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
+            float(i_ / len(df.index) * 100))[0:4] + '%')
         saving_work(df.index[i_])
 
     saving_work('hs300')
     saving_work('sz50')
 
 
-def QA_SU_save_stock_list(client):
+def QA_SU_save_stock_list(client=QA_Setting.client):
     data = QATushare.QA_fetch_get_stock_list()
     date = str(datetime.date.today())
     date_stamp = QA_util_date_stamp(date)
@@ -67,38 +68,38 @@ def QA_SU_save_stock_list(client):
                  'stock': {'code': data}})
 
 
-def QA_SU_save_trade_date_all():
+def QA_SU_save_trade_date_all(client=QA_Setting.client):
     data = QATushare.QA_fetch_get_trade_date('', '')
-    __setting = QA_Setting()
-    coll = __setting.client.quantaxis.trade_date
+    coll = client.quantaxis.trade_date
     coll.insert_many(data)
 
 
-def QA_SU_save_stock_info(client):
+def QA_SU_save_stock_info(client=QA_Setting.client):
     data = QATushare.QA_fetch_get_stock_info('all')
     coll = client.quantaxis.stock_info
     coll.insert_many(data)
 
 
-
-def QA_save_stock_day_all_bfq():
+def QA_save_stock_day_all_bfq(client=QA_Setting.client):
     df = ts.get_stock_basics()
-    __setting = QA_Setting()
-    __coll = __setting.client.quantaxis.stock_day_bfq
+
+    __coll = client.quantaxis.stock_day_bfq
     __coll.ensure_index('code')
 
     def saving_work(i):
         QA_util_log_info('Now Saving ==== %s' % (i))
         try:
-            data_json = QATushare.QA_fetch_get_stock_day(i,startDate='1990-01-01',if_fq='00')
+            data_json = QATushare.QA_fetch_get_stock_day(
+                i, startDate='1990-01-01', if_fq='00')
 
             __coll.insert_many(data_json)
         except:
             QA_util_log_info('error in saving ==== %s' % str(i))
 
     for i_ in range(len(df.index)):
-        QA_util_log_info('The %s of Total %s' %(i_,len(df.index)))
-        QA_util_log_info('DOWNLOAD PROGRESS %s ' %str(float(i_/len(df.index)*100))[0:4]+'%')
+        QA_util_log_info('The %s of Total %s' % (i_, len(df.index)))
+        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
+            float(i_ / len(df.index) * 100))[0:4] + '%')
         saving_work(df.index[i_])
 
     saving_work('hs300')
