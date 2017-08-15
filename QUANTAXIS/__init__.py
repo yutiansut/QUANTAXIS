@@ -31,7 +31,7 @@ by yutiansut
 
 2017/4/8
 """
-__version__ = '0.4.0-b-dev37'
+__version__ = '0.4.0-b-dev38'
 __author__ = 'yutiansut'
 
 # fetch methods
@@ -73,6 +73,10 @@ from QUANTAXIS.QABacktest.QABacktest_stock_day import QA_Backtest_stock_day
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
 # task
 from QUANTAXIS.QATask import QA_Queue, QA_Event
+
+# Data
+from QUANTAXIS.QAData import QA_data_fq_factor
+
 
 # Util
 from QUANTAXIS.QAUtil.QAType import (

@@ -25,32 +25,36 @@
 import json
 
 import tushare as QATs
-
+import pandas as pd
 from QUANTAXIS.QAUtil import QA_util_date_stamp, QA_util_log_info
 
 
-def QA_fetch_get_stock_day(name, startDate='', endDate='', if_fq='01'):
+def QA_fetch_get_stock_day(name, startDate='', endDate='', if_fq='01', type_='json'):
     if (len(name) != 6):
         name = str(name)[0:6]
 
-    if if_fq in ['qfq', '01']:
+    if str(if_fq) in ['qfq', '01']:
         if_fq = 'qfq'
-    elif if_fq in ['hfq', '02']:
+    elif str(if_fq) in ['hfq', '02']:
         if_fq = 'hfq'
-    elif if_fq in ['bfq', '00']:
+    elif str(if_fq) in ['bfq', '00']:
         if_fq = 'bfq'
     else:
         QA_util_log_info('wrong with fq_factor! using qfq')
+        if_fq = 'qfq'
+
     data = QATs.get_k_data(str(name), startDate, endDate,
-                           ktype='D', autype=if_fq, retry_count=200,pause=0.005).sort_index()
-
+                           ktype='D', autype=if_fq, retry_count=200, pause=0.005).sort_index()
+    data['date_stamp'] = data['date'].apply(lambda x: QA_util_date_stamp(x))
+    data['fqtype'] = if_fq
     data_json = json.loads(data.to_json(orient='records'))
-
-    for j in range(0, len(data_json), 1):
-        data_json[j]['date_stamp'] = QA_util_date_stamp(
-            list(data['date'])[j])
-        data_json[j]['fqtype'] = if_fq
-    return data_json
+    
+    if type_ in ['json']:
+        return data_json
+    elif type_ in ['pd','pandas','p']:
+        data['date']=pd.to_datetime(data['date'])
+        data = data.set_index('date')
+        return data
 
     """
     if (len(name) != 6):
