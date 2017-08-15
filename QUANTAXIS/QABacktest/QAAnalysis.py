@@ -32,7 +32,7 @@ import math
 import numpy
 
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day
-from QUANTAXIS.QAUtil import QA_util_log_info
+from QUANTAXIS.QAUtil import QA_util_log_info,trade_date_sse
 
 
 def QA_backtest_analysis_start(client, code_list, message, total_date, market_data, benchmark_data):
@@ -71,7 +71,7 @@ def QA_backtest_analysis_start(client, code_list, message, total_date, market_da
 
     # 计算交易日
     trade_date = QA_backtest_calc_trade_date(trade_history)
-    assets_d = QA_backtest_calc_asset(trade_history, assets)
+    assets_d = QA_backtest_calc_assets(trade_history, assets)
 
     # benchmark资产
     benchmark_assets = QA_backtest_calc_benchmark(
@@ -128,7 +128,7 @@ def QA_backtest_analysis_start(client, code_list, message, total_date, market_da
     return message
 
 
-def QA_backtest_calc_asset(trade_history, assets):
+def QA_backtest_calc_assets(trade_history, assets):
     assets_d = []
     trade_date = []
     for i in range(0, len(trade_history), 1):
@@ -216,6 +216,8 @@ def QA_backtest_calc_sharpe(annualized_returns, benchmark_annualized_returns, vo
 
 def QA_backtest_calc_trade_date(history):
     trade_date = []
+
+    #trade_date_sse.index(history[-1][0])-trade_date_sse.index(history[0][0])
     for i in range(0, len(history), 1):
         if history[i][0] not in trade_date:
             trade_date.append(history[i][0])

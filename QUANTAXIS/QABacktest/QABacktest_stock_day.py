@@ -450,8 +450,8 @@ class QA_Backtest_stock_day():
                     __bid['amount'] = __amount_hold
                 __message = self.market.receive_bid(
                     __bid, self.setting.client)
-
-                self.account.QA_account_receive_deal(__message)
+                if __message['header']['status']==200:
+                    self.account.QA_account_receive_deal(__message)
                 return __message
             else:
                 err_info = 'Error: Not Enough amount for code %s in hold list' % str(

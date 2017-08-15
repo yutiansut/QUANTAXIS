@@ -77,6 +77,7 @@
         - [1.47 新增数据库api QA_util_mongo_initial,QA_util_mongo_make_index(0.4.0-beta-dev33)](#147-新增数据库api-qa_util_mongo_initialqa_util_mongo_make_index040-beta-dev33)
         - [1.48 修复一个委托单超过市场上下限 返回none的bug(0.4.0-beta-dev34)](#148-修复一个委托单超过市场上下限-返回none的bug040-beta-dev34)
         - [1.49 修复了pytdx的get_k_data api(0.4.0-beta-dev35)](#149-修复了pytdx的get_k_data-api040-beta-dev35)
+        - [1.50 修复了一个因为市场返回400状态导致账户数据溢出的bug](#150-修复了一个因为市场返回400状态导致账户数据溢出的bug)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -1353,6 +1354,12 @@ date
 1997-03-20  23.51  23.18  24.24  23.00  318485.0  7.548200e+08
 1997-03-21  23.01  24.40  24.45  23.01  333392.0  7.951931e+08
 ```
+
+
+### 1.50 修复了一个因为市场返回400状态导致账户数据溢出的bug
+2017/8/15
+
+现在只有成功交易的委托单才能被计入账户的修改
 
 ## 巨大改动/重构
 
