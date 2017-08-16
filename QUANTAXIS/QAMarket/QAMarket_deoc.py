@@ -23,16 +23,9 @@
 # SOFTWARE.
 
 
-class QA_Market_Trade_model():
-
-    def __init__(self):
-
-        pass
+def QA_market_deoc(func,*arg,**kwargs):
+    
+    return func(*arg,**kwargs)
 
 
-def modify_commission():
-    pass
 
-
-def modify_slipper():
-    pass
