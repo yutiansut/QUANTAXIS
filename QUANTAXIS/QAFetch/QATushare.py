@@ -26,7 +26,7 @@ import json
 
 import tushare as QATs
 import pandas as pd
-from QUANTAXIS.QAUtil import QA_util_date_stamp, QA_util_log_info,QA_util_to_json_from_pandas
+from QUANTAXIS.QAUtil import QA_util_date_stamp, QA_util_log_info, QA_util_to_json_from_pandas
 
 
 def QA_fetch_get_stock_day(name, startDate='', endDate='', if_fq='01', type_='json'):
@@ -48,11 +48,11 @@ def QA_fetch_get_stock_day(name, startDate='', endDate='', if_fq='01', type_='js
     data['date_stamp'] = data['date'].apply(lambda x: QA_util_date_stamp(x))
     data['fqtype'] = if_fq
     data_json = QA_util_to_json_from_pandas(data)
-    
+
     if type_ in ['json']:
         return data_json
-    elif type_ in ['pd','pandas','p']:
-        data['date']=pd.to_datetime(data['date'])
+    elif type_ in ['pd', 'pandas', 'p']:
+        data['date'] = pd.to_datetime(data['date'])
         data = data.set_index('date')
         return data
 

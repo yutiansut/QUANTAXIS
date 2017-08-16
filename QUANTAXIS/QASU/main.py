@@ -23,36 +23,38 @@
 # SOFTWARE.
 
 
+from QUANTAXIS.QAUtil import QA_Setting
+
+from . import fqfactor as fq
+from . import save_tdx_file as tdx_file
 from . import save_tushare as sts
 from . import save_wind as sw
 from . import update_tushare as uts
 from . import update_wind as uw
-from . import save_tdx_file as tdx_file
-from QUANTAXIS.QAUtil import QA_Setting
 
 
 def QA_SU_save_stock_list(engine, client=QA_Setting.client):
-    engine = select_engine(engine)
+    engine = select_save_engine(engine)
     engine.QA_SU_save_stock_list(client)
 
 
 def QA_SU_save_trade_date(engine, client=QA_Setting.client):
-    engine = select_engine(engine)
+    engine = select_save_engine(engine)
     engine.QA_SU_save_trade_date(client)
 
 
 def QA_SU_save_stock_info(engine, client=QA_Setting.client):
-    engine = select_engine(engine)
+    engine = select_save_engine(engine)
     engine.QA_SU_save_stock_info(client)
 
 
 def QA_SU_save_stock_day(name, startDate, endDate, engine, client=QA_Setting.client):
-    engine = select_engine(engine)
+    engine = select_save_engine(engine)
     engine.QA_SU_save_stock_day(name, startDate, endDate, client)
 
 
 def QA_SU_save_stock_day_init(startDate, engine, client=QA_Setting.client):
-    engine = select_engine(engine)
+    engine = select_save_engine(engine)
     engine.QA_SU_save_stock_day_init(startDate, client)
 
 
@@ -61,7 +63,11 @@ def QA_SU_update_stock_day(engine, client=QA_Setting.client):
     engine.QA_update_stock_day_all(client)
 
 
-def select_engine(engine):
+def QA_SU_save_stock_fqfactor(engine='', client=QA_Setting.client):
+    fq.QA_save_fq_factor(client)
+
+
+def select_save_engine(engine):
     if engine in ['wind', 'Wind', 'WIND']:
         return sw
     elif engine in ['tushare', 'ts', 'Tushare']:
