@@ -82,6 +82,7 @@
         - [1.52 QATDX改动(0.4.0-b-dev39)](#152-qatdx改动040-b-dev39)
         - [1.53 Darwin平台的quantaxis 生成路径问题(0.4.0-b-dev40)](#153-darwin平台的quantaxis-生成路径问题040-b-dev40)
         - [1.54 支持下载时候 遇到网络问题 断点续传(0.4.0-beta-dev41)](#154-支持下载时候-遇到网络问题-断点续传040-beta-dev41)
+        - [1.55 分钟线获取接口(0.4.0-beta-dev42)](#155-分钟线获取接口040-beta-dev42)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -1469,6 +1470,26 @@ QA.QA.QA_fetch_get_stock_day('tdx','000001','1990-01-01','2017-08-01')
 2017/8/15
 
 QUANTAXIS> update
+
+### 1.55 分钟线获取接口(0.4.0-beta-dev42)
+
+2017/08/16
+
+
+```python
+import QUANTAXIS as QA
+QA.QA_fetch_get_stock_min('tdx','000002','2017-07-11 09:30:00','2017-08-01 10:00:00','1')
+
+```
+
+QA.QA_fetch_get_stock_min('tdx',code,start,end,type)
+
+type:
+- 1,1m,1min
+- 5,5m,5min
+- 15,15m,15min
+- 30,30m,30min
+- 60,60m,60min
 
 ## 巨大改动/重构
 

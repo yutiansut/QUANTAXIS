@@ -166,26 +166,26 @@ def QA_fetch_index_day(code, startDate, endDate, type_='numpy', collections=QA_S
 
 
 def QA_fetch_stock_min(code, startTime, endTime, type_='numpy', collections=QA_Setting.client.quantaxis.stock_min_five):
-    list_a = []
+    data = []
 
     for item in collections.find({
-        'code': str(code), "datetime": {
-            "$lte": QA_util_time_stamp(startTime),
+        'code': str(code), "time_stamp": {
+            "$gte": QA_util_time_stamp(startTime),
             "$gte": QA_util_time_stamp(endTime)
         }
     }):
-        # print(item['code'])
 
-        list_a.append([str(item['code']), float(item['open']), float(item['high']), float(
-            item['low']), float(item['close']), float(item['volume']), item['date']])
-    if type_ == 'numpy':
-        data = numpy.asarray(list_a)
-    elif type_ == 'list':
-        data = list_a
-    elif type_ == 'pandas':
-        data = DataFrame(list_a, columns=[
-            'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
 
+        data.append([str(item['code']), float(item['open']), float(item['high']), float(
+            item['low']), float(item['close']), float(item['volume']),item['datetime'],item['time_stamp'], item['date']])
+    if type_ in ['numpy','np','n']:
+        data = numpy.asarray(data)
+    elif type_ in ['list','l']:
+        pass
+    elif type_ in ['pandas','pd','p']:
+        data = DataFrame(data, columns=[
+            'code', 'open', 'high', 'low', 'close', 'volume','datetime','time_stamp','date'])
+        data.set_index('datetime')
     return data
 
 
