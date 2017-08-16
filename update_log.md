@@ -83,6 +83,7 @@
         - [1.53 Darwin平台的quantaxis 生成路径问题(0.4.0-b-dev40)](#153-darwin平台的quantaxis-生成路径问题040-b-dev40)
         - [1.54 支持下载时候 遇到网络问题 断点续传(0.4.0-beta-dev41)](#154-支持下载时候-遇到网络问题-断点续传040-beta-dev41)
         - [1.55 分钟线获取接口(0.4.0-beta-dev42 43)](#155-分钟线获取接口040-beta-dev42-43)
+        - [1.56 QA_Util 新增格式转换 (0.4.0-beta-dev44)](#156-qa_util-新增格式转换-040-beta-dev44)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -1490,6 +1491,16 @@ type:
 - 15,15m,15min
 - 30,30m,30min
 - 60,60m,60min
+
+
+
+### 1.56 QA_Util 新增格式转换 (0.4.0-beta-dev44)
+2017/08/16
+
+```python
+import QUANTAXIS as QA
+QA.QA_util_to_json_from_pandas(DataFrame)
+```
 
 ## 巨大改动/重构
 

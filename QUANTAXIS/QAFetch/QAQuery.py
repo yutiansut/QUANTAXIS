@@ -85,6 +85,7 @@ def QA_fetch_stock_list(collections=QA_Setting.client.quantaxis.stock_list):
 
 
 def QA_fetch_stock_full(date_,type_='numpy',collections=QA_Setting.client.quantaxis.stock_day):
+    '获取全市场的某一日的数据'
     #startDate = str(startDate)[0:10]
     Date = str(date_)[0:10]
     if QA_util_date_valid(Date) == True:

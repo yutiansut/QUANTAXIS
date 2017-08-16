@@ -21,30 +21,18 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-""""
-yutiansut
-util tool
-"""
 
 
-from .QADate import(QA_util_date_stamp, QA_util_time_stamp, QA_util_ms_stamp, QA_util_date_valid,
-                    QA_util_realtime, QA_util_id2date, QA_util_is_trade, QA_util_get_date_index,
-                    QA_util_get_index_date, QA_util_get_real_date, QA_util_select_hours,
-                    QA_util_select_min,QA_util_time_delay,QA_util_time_now,QA_util_date_str2int,
-                    QA_util_date_int2str,QA_util_get_real_datelist)
+from QUANTAXIS.QAData import QA_data_fq_factor
+import json
+from QUANTAXIS.QAUtil import QA_Setting,QA_util_log_info
+from QUANTAXIS.QAFetch.QATushare import QA_fetch_get_stock_list
+def QA_save_fq_factor(client=QA_Setting.client):
+    _coll=client.quantaxis
 
+    _stock_list=QA_fetch_get_stock_list()
+    for _item in _stock_list:
+        
+        data=QA_data_fq_factor(_item)
 
-
-from .QASql import (QA_util_sql_mongo_setting)
-from .QALogs import (
-    QA_util_log_debug, QA_util_log_expection, QA_util_log_info)
-from .QACfg import (QA_util_cfg_initial, QA_util_get_cfg)
-from .QASetting import QA_Setting
-from .QAWeb import QA_util_web_ping
-from .QADate_trade import trade_date_sse
-from .QACsv import QA_util_save_csv
-from .QAList import QA_util_multi_demension_list,QA_util_diff_list
-from .QATransform import (QA_util_to_json_from_pandas,QA_util_to_list_from_numpy,QA_util_to_list_from_pandas)
-from .QAMongo import QA_util_mongo_initial,QA_util_mongo_make_index
-def QA_start_initial(files):
-    pass
+    

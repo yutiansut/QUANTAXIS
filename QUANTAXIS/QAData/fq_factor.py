@@ -35,5 +35,5 @@ def QA_data_fq_factor(code):
     factor_frame=pd.DataFrame()
     factor_frame['qfqfactor']=qfq['open']/bfq['open']
     factor_frame['hfqfactor']=hfq['open']/bfq['open']
-    factor_frame['bfqfactor']=bfq['open']/bfq['open']
+    #factor_frame['bfqfactor']=bfq['open']/bfq['open']
     return factor_frame
