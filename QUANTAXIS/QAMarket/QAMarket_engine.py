@@ -91,7 +91,7 @@ def market_stock_day_engine(__bid, __data=None):
                     __bid_s['amount_model'] = 'amount'
                     return __trading(__bid_s, __data)
                 else:
-                    if float(__data['open']) == float(__data['high']) or float(__data['open']) == float(__data['low']):
+                    if float(__data['open']) == float(__data['high']) == float(__data['close']) == float(__data['low']) :
                         return {
                             'header': {
                                 'source': 'market',
