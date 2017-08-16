@@ -156,7 +156,7 @@ def QA_fetch_get_stock_min(code,start,end,level,ip='119.147.212.81',port=7709):
         level=3
     with api.connect(ip, port):
         data=[]
-        for i in range(25):
+        for i in range(26):
             data+=api.get_security_bars(level,market_code,code,(25-i)*800,800)
         data=api.to_df(data)
         
