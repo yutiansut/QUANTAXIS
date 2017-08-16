@@ -31,7 +31,7 @@ by yutiansut
 
 2017/4/8
 """
-__version__ = '0.4.0-b-dev44'
+__version__ = '0.4.0-b-dev45'
 __author__ = 'yutiansut'
 
 # fetch methods
@@ -41,8 +41,6 @@ from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day, QA_fetch_get_trade_date, 
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_trade_date, QA_fetch_stock_day, QA_fetch_stocklist_day, QA_fetch_index_day,
                                        QA_fetch_stock_min, QA_fetch_future_min, QA_fetch_future_day, QA_fetch_future_tick,
                                        QA_fetch_stock_list, QA_fetch_stock_full)
-from QUANTAXIS.QASpider import (QA_spider_select_spider, QA_spider_start_spider,
-                                QA_spider_end_spider)
 
 
 # save
