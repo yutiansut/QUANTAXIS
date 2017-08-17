@@ -119,8 +119,51 @@ def QA_fetch_get_index_day(code, date,ip='119.147.212.81',port=7709):
     with api.connect(ip, port):
         stocks = api.get_index_bars(9,1, '000001', 1, 2)
     return stocks
-
-
+def QA_fetch_get_stock_min(code,start,end,level,ip='119.147.212.81',port=7709):
+    api = TdxHq_API()
+    if str(code)[0]=='6':
+            #0 - 深圳， 1 - 上海
+        market_code=1
+    else:
+        market_code=0
+    
+    with api.connect(ip, port):
+        data=[]
+        for i in range(25):
+            data+=api.get_security_bars(8,market_code,code,(25-i)*800,800)
+        data=api.to_df(data)
+        
+        data['datetime']=pd.to_datetime(data['datetime'])
+        data = data.set_index('datetime')
+        
+    return data[start:end]
+def QA_fetch_get_stock_min(code,start,end,level,ip='119.147.212.81',port=7709):
+    api = TdxHq_API()
+    if str(code)[0]=='6':
+            #0 - 深圳， 1 - 上海
+        market_code=1
+    else:
+        market_code=0
+    if str(level) in ['5','5m','5min','five']:
+        level=0
+    elif str(level) in ['1','1m','1min','one']:
+        level=8
+    elif str(level) in ['15','15m','15min','fifteen']:
+        level=1
+    elif str(level) in ['30','30m','30min','half']:
+        level=2
+    elif str(level) in ['60','60m','60min','1h']:
+        level=3
+    with api.connect(ip, port):
+        data=[]
+        for i in range(26):
+            data+=api.get_security_bars(level,market_code,code,(25-i)*800,800)
+        data=api.to_df(data)
+        
+        data['datetime']=pd.to_datetime(data['datetime'])
+        data = data.set_index('datetime')
+        
+    return data[start:end]
 if __name__=='__main__':
     #print(QA_fetch_get_stock_day('000001','2017-07-03','2017-07-10'))
     print(QA_fetch_get_stock_day('000001','2013-07-01','2013-07-09'))

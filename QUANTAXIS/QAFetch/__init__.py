@@ -84,3 +84,12 @@ def QA_fetch_get_stock_indicator(package, code, startDate, endDate):
 def QA_fetch_get_trade_date(package, endDate, exchange):
     Engine = use(package)
     return Engine.QA_fetch_get_trade_date(endDate, exchange)
+
+
+
+def QA_fetch_get_stock_min(package,code,start,end,type_):
+    Engine = use(package)
+    if package in ['tdx','pytdx']:
+        return Engine.QA_fetch_get_stock_min(code,start,end,type_)
+    else:
+        pass

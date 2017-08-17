@@ -26,7 +26,7 @@ import json
 
 import tushare as QATs
 import pandas as pd
-from QUANTAXIS.QAUtil import QA_util_date_stamp, QA_util_log_info
+from QUANTAXIS.QAUtil import QA_util_date_stamp, QA_util_log_info, QA_util_to_json_from_pandas
 
 
 def QA_fetch_get_stock_day(name, startDate='', endDate='', if_fq='01', type_='json'):
@@ -47,12 +47,12 @@ def QA_fetch_get_stock_day(name, startDate='', endDate='', if_fq='01', type_='js
                            ktype='D', autype=if_fq, retry_count=200, pause=0.005).sort_index()
     data['date_stamp'] = data['date'].apply(lambda x: QA_util_date_stamp(x))
     data['fqtype'] = if_fq
-    data_json = json.loads(data.to_json(orient='records'))
-    
+    data_json = QA_util_to_json_from_pandas(data)
+
     if type_ in ['json']:
         return data_json
-    elif type_ in ['pd','pandas','p']:
-        data['date']=pd.to_datetime(data['date'])
+    elif type_ in ['pd', 'pandas', 'p']:
+        data['date'] = pd.to_datetime(data['date'])
         data = data.set_index('date')
         return data
 
@@ -75,13 +75,13 @@ def QA_fetch_get_stock_day(name, startDate='', endDate='', if_fq='01', type_='js
 
 def QA_fetch_get_stock_realtime():
     data = QATs.get_today_all()
-    data_json = json.loads(data.to_json(orient='records'))
+    data_json = QA_util_to_json_from_pandas(data)
     return data_json
 
 
 def QA_fetch_get_stock_info(name):
     data = QATs.get_stock_basics()
-    data_json = json.loads(data.to_json(orient='records'))
+    data_json = QA_util_to_json_from_pandas(data)
 
     for i in range(0, len(data_json) - 1, 1):
         data_json[i]['code'] = data.index[i]
@@ -102,7 +102,7 @@ def QA_fetch_get_stock_list():
 def QA_fetch_get_trade_date(endDate, exchange):
     data = QATs.trade_cal()
     da = data[data.isOpen > 0]
-    data_json = json.loads(da.to_json(orient='records'))
+    data_json = QA_util_to_json_from_pandas(data)
     message = []
     for i in range(0, len(data_json) - 1, 1):
         date = data_json[i]['calendarDate']

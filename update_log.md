@@ -82,6 +82,10 @@
         - [1.52 QATDX改动(0.4.0-b-dev39)](#152-qatdx改动040-b-dev39)
         - [1.53 Darwin平台的quantaxis 生成路径问题(0.4.0-b-dev40)](#153-darwin平台的quantaxis-生成路径问题040-b-dev40)
         - [1.54 支持下载时候 遇到网络问题 断点续传(0.4.0-beta-dev41)](#154-支持下载时候-遇到网络问题-断点续传040-beta-dev41)
+        - [1.55 分钟线获取接口(0.4.0-beta-dev42 43)](#155-分钟线获取接口040-beta-dev42-43)
+        - [1.56 QA_Util 新增格式转换 (0.4.0-beta-dev44)](#156-qa_util-新增格式转换-040-beta-dev44)
+        - [1.57 QA_SU 新增复权因子的保存(0.4.0-beta-dev44)](#157-qa_su-新增复权因子的保存040-beta-dev44)
+        - [1.58 优化QA_QAQuery 和QAMarket_engine的代码(0.4.0-beta-dev44,45,46,47)](#158-优化qa_qaquery-和qamarket_engine的代码040-beta-dev44454647)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -1469,6 +1473,57 @@ QA.QA.QA_fetch_get_stock_day('tdx','000001','1990-01-01','2017-08-01')
 2017/8/15
 
 QUANTAXIS> update
+
+### 1.55 分钟线获取接口(0.4.0-beta-dev42 43)
+
+2017/08/16
+
+
+```python
+import QUANTAXIS as QA
+QA.QA_fetch_get_stock_min('tdx','000002','2017-07-11 09:30:00','2017-08-01 10:00:00','1')
+
+```
+
+QA.QA_fetch_get_stock_min('tdx',code,start,end,type)
+
+type:
+- 1,1m,1min
+- 5,5m,5min
+- 15,15m,15min
+- 30,30m,30min
+- 60,60m,60min
+
+
+
+### 1.56 QA_Util 新增格式转换 (0.4.0-beta-dev44)
+2017/08/16
+
+```python
+import QUANTAXIS as QA
+QA.QA_util_to_json_from_pandas(DataFrame)
+```
+
+
+### 1.57 QA_SU 新增复权因子的保存(0.4.0-beta-dev44)
+
+2017/08/16
+
+```python
+import QUANTAXIS as QA
+QA.QA_SU_save_stock_fqfactor()
+```
+### 1.58 优化QA_QAQuery 和QAMarket_engine的代码(0.4.0-beta-dev44,45,46,47)
+
+- QA_Query 代码清洗
+
+- QAMarket_engine 数据库隔离
+
+- 日线交易引擎成交价优化
+
+- 日线交易引擎的显示更新
+
+- 回测和交易委托的api修改
 
 ## 巨大改动/重构
 

@@ -203,8 +203,8 @@ class QA_Backtest_stock_day():
         QA_util_log_info(
             '=================daily hold list====================')
         QA_util_log_info('in the begining of ' + __running_date)
-        QA_util_log_info(
-            tabulate(self.account.message['body']['account']['hold']))
+        QA_util_log_info('\n' +
+                         tabulate(self.account.message['body']['account']['hold']))
         for __j in range(0, len(self.strategy_stock_list)):
             if __running_date in [l[6] for l in self.market_data[__j]] and \
                     [l[6] for l in self.market_data[__j]].index(__running_date) \
@@ -257,7 +257,7 @@ class QA_Backtest_stock_day():
                     __last_bid['amount_model'] = 'amount'
 
                     __message = self.market.receive_bid(
-                        __last_bid, self.setting.client)
+                        __last_bid)
                     _remains_day = 0
                     while __message['header']['status'] == 500:
                         # 停牌状态,这个时候按停牌的最后一天计算价值(假设平仓)
@@ -265,7 +265,7 @@ class QA_Backtest_stock_day():
                         __last_bid['date'] = self.trade_list[self.end_real_id - _remains_day]
                         _remains_day += 1
                         __message = self.market.receive_bid(
-                            __last_bid, self.setting.client)
+                            __last_bid)
 
                         # 直到市场不是为0状态位置,停止前推日期
 
@@ -287,11 +287,11 @@ class QA_Backtest_stock_day():
         QA_util_log_info('\n' + tabulate(self.account.history,
                                          headers=('date', 'code', 'price', 'towards',
                                                   'amounts', 'order_id', 'trade_id', 'commission')))
-        QA_util_log_info(tabulate(self.account.detail,
-                                  headers=('date', 'code', 'price', 'amounts', 'order_id',
-                                           'trade_id', 'sell_price', 'sell_order_id',
-                                           'sell_trade_id', 'sell_date', 'left_amount',
-                                           'commission')))
+        QA_util_log_info('\n' + tabulate(self.account.detail,
+                                         headers=('date', 'code', 'price', 'amounts', 'order_id',
+                                                  'trade_id', 'sell_price', 'sell_order_id',
+                                                  'sell_trade_id', 'sell_date', 'left_amount',
+                                                  'commission')))
         __exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
         self.__benchmark_data = QA_fetch_index_day(
             self.benchmark_code, self.start_real_date,
@@ -411,7 +411,7 @@ class QA_Backtest_stock_day():
 
             __bid['towards'] = 1
             __message = self.market.receive_bid(
-                __bid, self.setting.client)
+                __bid)
 
             # 先扔进去买入,再通过返回的值来判定是否成功
 
@@ -449,8 +449,8 @@ class QA_Backtest_stock_day():
                 else:
                     __bid['amount'] = __amount_hold
                 __message = self.market.receive_bid(
-                    __bid, self.setting.client)
-                if __message['header']['status']==200:
+                    __bid)
+                if __message['header']['status'] == 200:
                     self.account.QA_account_receive_deal(__message)
                 return __message
             else:
@@ -482,7 +482,7 @@ class QA_Backtest_stock_day():
                     __last_bid['amount_model'] = 'amount'
 
                     __message = self.market.receive_bid(
-                        __last_bid, self.setting.client)
+                        __last_bid)
                     _remains_day = 0
                     while __message['header']['status'] == 500:
                         # 停牌状态,这个时候按停牌的最后一天计算价值(假设平仓)
@@ -490,7 +490,7 @@ class QA_Backtest_stock_day():
                         __last_bid['date'] = self.trade_list[self.end_real_id - _remains_day]
                         _remains_day += 1
                         __message = self.market.receive_bid(
-                            __last_bid, self.setting.client)
+                            __last_bid)
 
                         # 直到市场不是为0状态位置,停止前推日期
 

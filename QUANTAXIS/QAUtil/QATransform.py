@@ -22,17 +22,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
-class QA_Market_Trade_model():
-
-    def __init__(self):
-
-        pass
+import json
+import pandas as pd
+import numpy as np
+import csv
 
 
-def modify_commission():
+def QA_util_to_json_from_pandas(data):
+    return json.loads(data.to_json(orient='records'))
+
+
+def QA_util_to_json_from_numpy(data):
     pass
 
 
-def modify_slipper():
+def QA_util_to_json_from_list(data):
     pass
+
+
+def QA_util_to_list_from_pandas(data):
+    return np.asarray(data).tolist()
+
+
+def QA_util_to_list_from_numpy(data):
+    return data.tolist()

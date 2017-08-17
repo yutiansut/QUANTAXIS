@@ -49,20 +49,20 @@ class QA_Market():
         self.engine = {'stock_day': QA_fetch_stock_day, 'stock_min': QA_fetch_stock_min,
                        'future_day': QA_fetch_future_day, 'future_min': QA_fetch_future_min, 'future_tick': QA_fetch_future_tick}
 
-    def _choice_trading_market(self, __bid, client):
+    def _choice_trading_market(self, __bid, __data=None):
         assert isinstance(__bid['status'], str)
         if __bid['status'] == '0x01':
-            return market_stock_day_engine(__bid, fp=None)
+            return market_stock_day_engine(__bid, __data)
         elif __bid['status'] == '0x02':
-            return market_stock_min_engine(__bid, client)
+            return market_stock_min_engine(__bid, __data)
         elif __bid['status'] == '1x01':
-            return market_future_day_engine(__bid, client)
+            return market_future_day_engine(__bid,__data)
         elif __bid['status'] == '1x02':
-            return market_future_min_engine(__bid, client)
+            return market_future_min_engine(__bid, __data)
         elif __bid['status'] == '1x03':
-            return market_future_tick_engine(__bid, client)
+            return market_future_tick_engine(__bid,__data)
 
-    def receive_bid(self, __bid, client):
+    def receive_bid(self, __bid, __data=None):
         """
         get the bid and choice which market to trade
 
@@ -82,7 +82,7 @@ class QA_Market():
                     return __bid
             else:
                 return __bid
-        return self._choice_trading_market(__confirm_bid(__bid), client)
+        return self._choice_trading_market(__confirm_bid(__bid), __data)
 
     def trading_engine(self):
         pass

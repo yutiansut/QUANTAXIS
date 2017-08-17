@@ -26,33 +26,37 @@
 import datetime
 import random
 
-from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info
+from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info,QA_util_to_json_from_pandas
+from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day, QA_fetch_stock_min
 
 """stock market trading engine
 
 renew in 2017/6/28
 
-停止使用数据库的模式,隔离数据库和引擎,尽量使用函数句柄来替代
+一个自带查询句柄的交易引擎
+
+可以被装饰器包装,实现二次封装
 
 """
 
 
-def market_stock_day_engine(__bid, fp=None):
+def market_stock_day_engine(__bid, __data=None):
     # data mod
     # inside function
     def __get_data(__bid):
-
-        __coll = QA_Setting.client.quantaxis.stock_day
-        __data = __coll.find_one(
-            {"code": str(__bid['code'])[0:6], "date": str(__bid['date'])[0:10]})
+        '隔离掉引擎查询数据库的行为'
+        __data=QA_util_to_json_from_pandas(QA_fetch_stock_day(str(__bid['code'])[0:6], str(__bid['date'])[0:10], str(__bid['date'])[0:10], 'pd'))
+        if len(__data)==0:
+            pass
+        else:
+            __data=__data[0]
         return __data
     # trade mod
 
-    if fp == None:
+    if __data is None:
         __data = __get_data(__bid)
     else:
-        __data = fp(__bid)
-
+        pass
     def __trading(__bid, __data):
         """
         trading system
@@ -80,121 +84,154 @@ def market_stock_day_engine(__bid, fp=None):
 
                 return __trading(__bid_t, __data)
             else:
-
                 if __bid['amount_model'] == 'price':
                     __bid_s = __bid
                     __bid_s['amount'] = int(
                         __bid['amount'] / (__bid['price'] * 100)) * 100
                     __bid_s['amount_model'] = 'amount'
                     return __trading(__bid_s, __data)
-
-                if ((float(__bid['price']) < float(__data["high"]) and
-                     float(__bid['price']) > float(__data["low"])) or
-                    float(__bid['price']) == float(__data["low"]) or
-                        float(__bid['price']) == float(__data['high'])):
-
-                    if float(__bid['amount']) < float(__data['volume']) * 100 / 16:
-                        __deal_price = __bid['price']
-                    elif float(__bid['amount']) >= float(__data['volume']) * 100 / 16 and \
-                            float(__bid['amount']) < float(__data['volume']) * 100 / 8:
-                        """
-                        add some slippers
-
-                        buy_price=mean(max{open,close},high)
-                        sell_price=mean(min{open,close},low)
-                        """
-                        if int(__bid['towards']) > 0:
-                            __deal_price = (max(float(__data['open']), float(
-                                __data['close'])) + float(__data['high'])) * 0.5
-                        else:
-                            __deal_price = (min(float(__data['open']), float(
-                                __data['close'])) + float(__data['low'])) * 0.5
-
-                    else:
-                        __bid['amount'] = float(__data['volume']) / 8
-                        if int(__bid['towards']) > 0:
-                            __deal_price = float(__data['high'])
-                        else:
-                            __deal_price = float(__data['low'])
-
-                    if int(__bid['towards']) > 0:
-                        __commission_fee = 0
-                    else:
-                        __commission_fee = 0.0015 * \
-                            float(__deal_price) * float(__bid['amount'])
-                        if __commission_fee < 5:
-                            __commission_fee = 5
-
-                    return {
-                        'header': {
-                            'source': 'market',
-                            'status': 200,
-                            'code': str(__bid['code']),
-                            'session': {
-                                'user': str(__bid['user']),
-                                'strategy': str(__bid['strategy'])
-                            },
-                            'order_id': str(__bid['order_id']),
-                            'trade_id': str(random.random())
-                        },
-                        'body': {
-                            'bid': {
-                                'price': str(__deal_price),
-                                'code': str(__bid['code']),
-                                'amount': int(__bid['amount']),
-                                'date': str(__bid['date']),
-                                'towards': int(__bid['towards'])
-                            },
-                            'market': {
-                                'open': __data['open'],
-                                'high': __data['high'],
-                                'low': __data['low'],
-                                'close': __data['close'],
-                                'volume': __data['volume'],
-                                'code': __data['code']
-                            },
-                            'fee': {
-                                'commission': float(__commission_fee)
-                            }
-                        }
-                    }
                 else:
-                    return {
-                        'header': {
-                            'source': 'market',
-                            'status': 400,
-                            'code': str(__bid['code']),
-                            'session': {
-                                'user': str(__bid['user']),
-                                'strategy': str(__bid['strategy'])
-                            },
-                            'order_id': str(__bid['order_id']),
-                            'trade_id': str(random.random())
-                        },
-                        'body': {
-                            'bid': {
-                                'price': 0,
+                    if float(__data['open']) == float(__data['high']) == float(__data['close']) == float(__data['low']):
+                        return {
+                            'header': {
+                                'source': 'market',
+                                'status': 203,
+                                'reason': '开盘涨跌停 封版',
                                 'code': str(__bid['code']),
-                                'amount': 0,
-                                'date': str(__bid['date']),
-                                'towards': __bid['towards']
+                                'session': {
+                                    'user': str(__bid['user']),
+                                    'strategy': str(__bid['strategy'])
+                                },
+                                'order_id': str(__bid['order_id']),
+                                'trade_id': str(random.random())
                             },
-                            'market': {
-                                'open': __data['open'],
-                                'high': __data['high'],
-                                'low': __data['low'],
-                                'close': __data['close'],
-                                'volume': __data['volume'],
-                                'code': __data['code']
-                            },
-                            'fee': {
-                                'commission': 0
+                            'body': {
+                                'bid': {
+                                    'price': 0,
+                                    'code': str(__bid['code']),
+                                    'amount': 0,
+                                    'date': str(__bid['date']),
+                                    'towards': __bid['towards']
+                                },
+                                'market': {
+                                    'open': __data['open'],
+                                    'high': __data['high'],
+                                    'low': __data['low'],
+                                    'close': __data['close'],
+                                    'volume': __data['volume'],
+                                    'code': __data['code']
+                                },
+                                'fee': {
+                                    'commission': 0
+                                }
                             }
                         }
-                    }
+                    elif ((float(__bid['price']) < float(__data["high"]) and
+                           float(__bid['price']) > float(__data["low"])) or
+                          float(__bid['price']) == float(__data["low"]) or
+                            float(__bid['price']) == float(__data['high'])):
+                        '能成功交易的情况'
+                        if float(__bid['amount']) < float(__data['volume']) * 100 / 16:
+                            __deal_price = __bid['price']
+                        elif float(__bid['amount']) >= float(__data['volume']) * 100 / 16 and \
+                                float(__bid['amount']) < float(__data['volume']) * 100 / 8:
+                            """
+                            add some slippers
+
+                            buy_price=mean(max{open,close},high)
+                            sell_price=mean(min{open,close},low)
+                            """
+                            if int(__bid['towards']) > 0:
+                                __deal_price = (max(float(__data['open']), float(
+                                    __data['close'])) + float(__data['high'])) * 0.5
+                            else:
+                                __deal_price = (min(float(__data['open']), float(
+                                    __data['close'])) + float(__data['low'])) * 0.5
+
+                        else:
+                            __bid['amount'] = float(__data['volume']) / 8
+                            if int(__bid['towards']) > 0:
+                                __deal_price = float(__data['high'])
+                            else:
+                                __deal_price = float(__data['low'])
+
+                        if int(__bid['towards']) > 0:
+                            __commission_fee = 0
+                        else:
+                            __commission_fee = 0.0015 * \
+                                float(__deal_price) * float(__bid['amount'])
+                            if __commission_fee < 5:
+                                __commission_fee = 5
+
+                        return {
+                            'header': {
+                                'source': 'market',
+                                'status': 200,
+                                'code': str(__bid['code']),
+                                'session': {
+                                    'user': str(__bid['user']),
+                                    'strategy': str(__bid['strategy'])
+                                },
+                                'order_id': str(__bid['order_id']),
+                                'trade_id': str(random.random())
+                            },
+                            'body': {
+                                'bid': {
+                                    'price': float("%.2f" %float(str(__deal_price))),
+                                    'code': str(__bid['code']),
+                                    'amount': int(__bid['amount']),
+                                    'date': str(__bid['date']),
+                                    'towards': int(__bid['towards'])
+                                },
+                                'market': {
+                                    'open': __data['open'],
+                                    'high': __data['high'],
+                                    'low': __data['low'],
+                                    'close': __data['close'],
+                                    'volume': __data['volume'],
+                                    'code': __data['code']
+                                },
+                                'fee': {
+                                    'commission': float(__commission_fee)
+                                }
+                            }
+                        }
+                    else:
+                        return {
+                            'header': {
+                                'source': 'market',
+                                'status': 400,
+                                'code': str(__bid['code']),
+                                'session': {
+                                    'user': str(__bid['user']),
+                                    'strategy': str(__bid['strategy'])
+                                },
+                                'order_id': str(__bid['order_id']),
+                                'trade_id': str(random.random())
+                            },
+                            'body': {
+                                'bid': {
+                                    'price': 0,
+                                    'code': str(__bid['code']),
+                                    'amount': 0,
+                                    'date': str(__bid['date']),
+                                    'towards': __bid['towards']
+                                },
+                                'market': {
+                                    'open': __data['open'],
+                                    'high': __data['high'],
+                                    'low': __data['low'],
+                                    'close': __data['close'],
+                                    'volume': __data['volume'],
+                                    'code': __data['code']
+                                },
+                                'fee': {
+                                    'commission': 0
+                                }
+                            }
+                        }
 
         except:
-
             return {
                 'header': {
                     'source': 'market',
@@ -231,7 +268,7 @@ def market_stock_day_engine(__bid, fp=None):
     return __trading(__bid, __data)
 
 
-def market_stock_min_engine(__bid, fp=None):
+def market_stock_min_engine(__bid, __data=None):
     """
     time-delay stock trading engine
 
@@ -253,10 +290,10 @@ def market_stock_min_engine(__bid, fp=None):
         return __data
     # trade mod
 
-    if fp == None:
+    if __data == None:
         __data = __get_data(__bid)
     else:
-        __data = fp(__bid)
+        __data = __data
 
     def __trading(__bid, __data):
         """
@@ -280,60 +317,63 @@ def market_stock_min_engine(__bid, fp=None):
                         __bid['amount'] / (__bid['price'] * 100)) * 100
                     __bid_s['amount_model'] = 'amount'
                     return __trading(__bid_s, __data)
-                elif ((float(__bid['price']) < float(__data["high"]) and
-                       float(__bid['price']) > float(__data["low"])) or
-                      float(__bid['price']) == float(__data["low"]) or
-                      float(__bid['price']) == float(__data['high'])):
-                    if float(__bid['amount']) < float(__data['volume']) / 4:
-                        __deal_price = __bid['price']
 
-                    else:
-                        __bid['amount'] = float(__data['volume']) / 4
-                        if int(__bid['towards']) > 0:
-                            __deal_price = float(__data['high'])
+                else:
+
+                    if ((float(__bid['price']) < float(__data["high"]) and
+                         float(__bid['price']) > float(__data["low"])) or
+                        float(__bid['price']) == float(__data["low"]) or
+                            float(__bid['price']) == float(__data['high'])):
+                        if float(__bid['amount']) < float(__data['volume']) / 4:
+                            __deal_price = __bid['price']
+
                         else:
-                            __deal_price = float(__data['low'])
+                            __bid['amount'] = float(__data['volume']) / 4
+                            if int(__bid['towards']) > 0:
+                                __deal_price = float(__data['high'])
+                            else:
+                                __deal_price = float(__data['low'])
 
-                    if int(__bid['towards']) > 0:
-                        __commission_fee = 0
-                    else:
-                        __commission_fee = 0.0005 * \
-                            float(__deal_price) * float(__bid['amount'])
-                        if __commission_fee < 5:
-                            __commission_fee = 5
-                    return {
-                        'header': {
-                            'source': 'market',
-                            'status': 200,
-                            'code': str(__bid['code']),
-                            'session': {
-                                'user': str(__bid['user']),
-                                'strategy': str(__bid['strategy'])
-                            },
-                            'order_id': str(__bid['order_id']),
-                            'trade_id': str(random.random())
-                        },
-                        'body': {
-                            'bid': {
-                                'price': str(__deal_price),
+                        if int(__bid['towards']) > 0:
+                            __commission_fee = 0
+                        else:
+                            __commission_fee = 0.0005 * \
+                                float(__deal_price) * float(__bid['amount'])
+                            if __commission_fee < 5:
+                                __commission_fee = 5
+                        return {
+                            'header': {
+                                'source': 'market',
+                                'status': 200,
                                 'code': str(__bid['code']),
-                                'amount': int(__bid['amount']),
-                                'date': str(__bid['date']),
-                                'towards': int(__bid['towards'])
+                                'session': {
+                                    'user': str(__bid['user']),
+                                    'strategy': str(__bid['strategy'])
+                                },
+                                'order_id': str(__bid['order_id']),
+                                'trade_id': str(random.random())
                             },
-                            'market': {
-                                'open': __data['open'],
-                                'high': __data['high'],
-                                'low': __data['low'],
-                                'close': __data['close'],
-                                'volume': __data['volume'],
-                                'code': __data['code']
-                            },
-                            'fee': {
-                                'commission': float(__commission_fee)
+                            'body': {
+                                'bid': {
+                                    'price': str(__deal_price),
+                                    'code': str(__bid['code']),
+                                    'amount': int(__bid['amount']),
+                                    'date': str(__bid['date']),
+                                    'towards': int(__bid['towards'])
+                                },
+                                'market': {
+                                    'open': __data['open'],
+                                    'high': __data['high'],
+                                    'low': __data['low'],
+                                    'close': __data['close'],
+                                    'volume': __data['volume'],
+                                    'code': __data['code']
+                                },
+                                'fee': {
+                                    'commission': float(__commission_fee)
+                                }
                             }
                         }
-                    }
 
         except:
             return {
@@ -372,16 +412,16 @@ def market_stock_min_engine(__bid, fp=None):
     return __trading(__bid, __data)
 
 
-def market_future_day_engine(__bid, fp=None):
+def market_future_day_engine(__bid, __data=None):
     """
     future market daily trading engine
     """
     pass
 
 
-def market_future_min_engine(__bid, fp=None):
+def market_future_min_engine(__bid, __data=None):
     pass
 
 
-def market_future_tick_engine(__bid, fp=None):
+def market_future_tick_engine(__bid, __data=None):
     pass
