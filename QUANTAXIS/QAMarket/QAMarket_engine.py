@@ -27,7 +27,7 @@ import datetime
 import random
 
 from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info
-
+from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day, QA_fetch_stock_min
 
 """stock market trading engine
 
@@ -42,20 +42,17 @@ renew in 2017/6/28
 
 def market_stock_day_engine(__bid, __data=None):
     # data mod
+    
     # inside function
     def __get_data(__bid):
-
-        __coll = QA_Setting.client.quantaxis.stock_day
-        __data = __coll.find_one(
-            {"code": str(__bid['code'])[0:6], "date": str(__bid['date'])[0:10]})
-
-        return __data
+        '隔离掉引擎查询数据库的行为'
+        return QA_fetch_stock_day(str(__bid['code'])[0:6], str(__bid['date'])[0:10], str(__bid['date'])[0:10], 'l')
     # trade mod
 
     if __data == None:
         __data = __get_data(__bid)
     else:
-        __data = __data
+        pass
 
     def __trading(__bid, __data):
         """
@@ -91,7 +88,7 @@ def market_stock_day_engine(__bid, __data=None):
                     __bid_s['amount_model'] = 'amount'
                     return __trading(__bid_s, __data)
                 else:
-                    if float(__data['open']) == float(__data['high']) == float(__data['close']) == float(__data['low']) :
+                    if float(__data['open']) == float(__data['high']) == float(__data['close']) == float(__data['low']):
                         return {
                             'header': {
                                 'source': 'market',
