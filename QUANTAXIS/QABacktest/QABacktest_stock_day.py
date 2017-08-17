@@ -203,7 +203,7 @@ class QA_Backtest_stock_day():
         QA_util_log_info(
             '=================daily hold list====================')
         QA_util_log_info('in the begining of ' + __running_date)
-        QA_util_log_info(
+        QA_util_log_info('\n' +
             tabulate(self.account.message['body']['account']['hold']))
         for __j in range(0, len(self.strategy_stock_list)):
             if __running_date in [l[6] for l in self.market_data[__j]] and \
@@ -287,7 +287,7 @@ class QA_Backtest_stock_day():
         QA_util_log_info('\n' + tabulate(self.account.history,
                                          headers=('date', 'code', 'price', 'towards',
                                                   'amounts', 'order_id', 'trade_id', 'commission')))
-        QA_util_log_info(tabulate(self.account.detail,
+        QA_util_log_info('\n' +tabulate(self.account.detail,
                                   headers=('date', 'code', 'price', 'amounts', 'order_id',
                                            'trade_id', 'sell_price', 'sell_order_id',
                                            'sell_trade_id', 'sell_date', 'left_amount',
