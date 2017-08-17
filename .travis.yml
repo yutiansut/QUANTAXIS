@@ -11,8 +11,9 @@ os: "ubuntu"
 
 
 # command to install dependencies
-install: "pip install -r requirements.txt   "
- 
+install: 
+- "pip install -r requirements.txt"
+- "pip install tushare"
 # command to build
 script: "python setup.py install"
  
