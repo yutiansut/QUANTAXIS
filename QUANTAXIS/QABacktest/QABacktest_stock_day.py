@@ -204,7 +204,7 @@ class QA_Backtest_stock_day():
             '=================daily hold list====================')
         QA_util_log_info('in the begining of ' + __running_date)
         QA_util_log_info('\n' +
-            tabulate(self.account.message['body']['account']['hold']))
+                         tabulate(self.account.message['body']['account']['hold']))
         for __j in range(0, len(self.strategy_stock_list)):
             if __running_date in [l[6] for l in self.market_data[__j]] and \
                     [l[6] for l in self.market_data[__j]].index(__running_date) \
@@ -287,11 +287,11 @@ class QA_Backtest_stock_day():
         QA_util_log_info('\n' + tabulate(self.account.history,
                                          headers=('date', 'code', 'price', 'towards',
                                                   'amounts', 'order_id', 'trade_id', 'commission')))
-        QA_util_log_info('\n' +tabulate(self.account.detail,
-                                  headers=('date', 'code', 'price', 'amounts', 'order_id',
-                                           'trade_id', 'sell_price', 'sell_order_id',
-                                           'sell_trade_id', 'sell_date', 'left_amount',
-                                           'commission')))
+        QA_util_log_info('\n' + tabulate(self.account.detail,
+                                         headers=('date', 'code', 'price', 'amounts', 'order_id',
+                                                  'trade_id', 'sell_price', 'sell_order_id',
+                                                  'sell_trade_id', 'sell_date', 'left_amount',
+                                                  'commission')))
         __exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
         self.__benchmark_data = QA_fetch_index_day(
             self.benchmark_code, self.start_real_date,
@@ -450,7 +450,7 @@ class QA_Backtest_stock_day():
                     __bid['amount'] = __amount_hold
                 __message = self.market.receive_bid(
                     __bid)
-                if __message['header']['status']==200:
+                if __message['header']['status'] == 200:
                     self.account.QA_account_receive_deal(__message)
                 return __message
             else:
