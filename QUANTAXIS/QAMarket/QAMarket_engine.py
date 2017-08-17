@@ -26,7 +26,7 @@
 import datetime
 import random
 
-from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info
+from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info,QA_util_to_json_from_pandas
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day, QA_fetch_stock_min
 
 """stock market trading engine
@@ -42,18 +42,21 @@ renew in 2017/6/28
 
 def market_stock_day_engine(__bid, __data=None):
     # data mod
-    
     # inside function
     def __get_data(__bid):
         '隔离掉引擎查询数据库的行为'
-        return QA_fetch_stock_day(str(__bid['code'])[0:6], str(__bid['date'])[0:10], str(__bid['date'])[0:10], 'l')
+        __data=QA_util_to_json_from_pandas(QA_fetch_stock_day(str(__bid['code'])[0:6], str(__bid['date'])[0:10], str(__bid['date'])[0:10], 'pd'))
+        if len(__data)==0:
+            pass
+        else:
+            __data=__data[0]
+        return __data
     # trade mod
 
-    if __data == None:
+    if __data is None:
         __data = __get_data(__bid)
     else:
         pass
-
     def __trading(__bid, __data):
         """
         trading system
