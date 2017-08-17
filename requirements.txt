@@ -12,7 +12,6 @@ flask-sockets>=0.2.1
 gevent-websocket>=0.10.1
 apscheduler>=3.3.1
 zenlog
-tushare
 pytdx
 flask-socketio 
 flask
