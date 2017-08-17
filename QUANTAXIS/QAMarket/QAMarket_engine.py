@@ -177,7 +177,7 @@ def market_stock_day_engine(__bid, __data=None):
                             },
                             'body': {
                                 'bid': {
-                                    'price': str(__deal_price),
+                                    'price': float("%.2f" %float(str(__deal_price))),
                                     'code': str(__bid['code']),
                                     'amount': int(__bid['amount']),
                                     'date': str(__bid['date']),
