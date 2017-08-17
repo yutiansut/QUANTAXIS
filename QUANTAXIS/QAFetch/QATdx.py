@@ -25,7 +25,7 @@ import numpy as np
 import pandas as pd
 from pytdx.hq import TdxHq_API
 from QUANTAXIS.QAUtil import (QA_util_date_valid, QA_util_log_info, QA_util_get_real_date,
-                              QA_util_web_ping, trade_date_sse, QA_util_get_real_datelist)
+                              QA_util_web_ping, trade_date_sse, QA_util_get_real_datelist,QA_util_date_str2int)
 import datetime
 # 基于Pytdx的数据接口,好处是可以在linux/mac上联入通达信行情
 # 具体参见rainx的pytdx(https://github.com/rainx/pytdx)
@@ -129,30 +129,31 @@ def QA_fetch_get_stock_min(code, start, end, level, ip='119.147.212.81', port=77
     return data[start:end]
 
 
-def QA_fetch_get_stock_transaction(code, start, end, ip='119.147.212.81', port=7709):
+def QA_fetch_get_stock_transaction(code, start, end, ip='221.231.141.60', port=7709):
     api = TdxHq_API()
     market_code = __select_market_code(code)
 
     real_start, real_end = QA_util_get_real_datelist(start, end)
     real_id_range = []
-    with api.connect(ip, port):
+    with api.connect():
         data = pd.DataFrame()
-
         for index_ in range(trade_date_sse.index(real_start), trade_date_sse.index(real_end) + 1):
             data_ = []
-            print(trade_date_sse[index_])
-            for i in range(25):
-                data_ += api.to_df(api.get_history_transaction_data(market_code,
-                                                                    code, (25 - i) * 800, 800, trade_date_sse[index_]))
+            for i in range(10):
+                #print(api.get_history_transaction_data(market_code, code, (10 - i) * 800, 800, QA_util_date_str2int(trade_date_sse[index_])))
+                data_ += api.get_history_transaction_data(market_code, code, (10 - i) * 800, 800, QA_util_date_str2int(trade_date_sse[index_]))
             data_ = api.to_df(data_)
             data_['date'] = trade_date_sse[index_]
+            data_['code'] = str(code)
+            data_['order'] = range(len(data_.index))
+            data_ = data_.set_index('date',drop=False)
 
-            #data_['datetime'] = pd.to_datetime(data_['datetime'])
-            data_ = data_.set_index('date')
-            data.append(data_)
-    return data
+            #print(data_)
+            data=data.append(data_)
+        return data
 
 
 if __name__ == '__main__':
     # print(QA_fetch_get_stock_day('000001','2017-07-03','2017-07-10'))
     #print(QA_fetch_get_stock_day('000001', '2013-07-01', '2013-07-09'))
+    print(QA_fetch_get_stock_transaction('000001','2017-07-03','2017-07-10'))
