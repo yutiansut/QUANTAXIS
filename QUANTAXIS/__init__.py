@@ -104,7 +104,7 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms
 
 from QUANTAXIS.QAIndicator import *
 from QUANTAXIS.QASQL import qasql, qacold
-from QUANTAXIS.QAWeb import QA_Web
+#from QUANTAXIS.QAWeb import QA_Web
 # CMD and Cli
 import QUANTAXIS.QACmd
 
