@@ -1326,8 +1326,8 @@ date
 - QA_util_make_1min_bar(day)
 - QA_util_make_5min_bar(day)
 - QA_util_make_30min_bar(day)
-- QA_util_make_bar(尚未完成)
-
+- QA_util_make_bar(type, start, end=None)  [跨日期的获取,如果没有end,就是单日的获取]
+[ QA_util_make_bar  会自动给出交易段的bar  交易日+交易时间  type可选择 1m,5m,15m,30m,60m,1h]
 
 ```python
                                                 
