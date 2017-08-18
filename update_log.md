@@ -1607,6 +1607,12 @@ date
 ### 1.60 新增多个QAUtil的api (0.4.0-beta-dev50)
 - QA_util_if_trade(day) 是否交易函数
 - QA_util_get_trade_range(start,end) 根据开始,结束日期 给出交易日列表
+
+> QA_util_make_ 系列:
+
+1. 要求day一定要是交易日
+2. 给出的分钟线数据都是标准的交易格式 9:31-11:30 1:00-3:00
+
 - QA_util_make_15min_bar(day)
 - QA_util_make_1h_bar(day)
 - QA_util_make_1min_bar(day)
