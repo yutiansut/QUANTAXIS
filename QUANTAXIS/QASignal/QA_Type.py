@@ -117,5 +117,3 @@ class QA_Market_event():
 
     def check_(self, __event):
         pass
-
-

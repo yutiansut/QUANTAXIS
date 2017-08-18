@@ -41,7 +41,7 @@ def market_engine_base(__bid, fp=None):
             """
 
             if __bid['price'] == 'market_price':
-                
+
                 __bid_t = __bid
                 __bid_t['price'] = (float(__data["high"]) +
                                     float(__data["low"])) * 0.5
@@ -54,8 +54,8 @@ def market_engine_base(__bid, fp=None):
             elif __bid['price'] == 'strict_price':
                 '加入严格模式'
                 __bid_t = __bid
-                if __bid_t['towards']==1:
-                    
+                if __bid_t['towards'] == 1:
+
                     __bid_t['price'] = float(__data["high"])
                 else:
                     __bid_t['price'] = float(__data["low"])

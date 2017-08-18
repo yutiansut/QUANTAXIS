@@ -138,8 +138,8 @@ def __QA_fetch_get_stock_transaction(code, day, retry, api):
             market_code, code, (20 - i) * 800, 800, QA_util_date_str2int(day))
     data_ = api.to_df(data_)
     data_['date'] = day
-    data_['datetime']=data_['time'].apply(lambda x: str(day)+' '+x)
-    data_['datetime']=pd.to_datetime(data_['datetime'])
+    data_['datetime'] = data_['time'].apply(lambda x: str(day) + ' ' + x)
+    data_['datetime'] = pd.to_datetime(data_['datetime'])
     data_['code'] = str(code)
     data_['order'] = range(len(data_.index))
     data_ = data_.set_index('datetime', drop=True)

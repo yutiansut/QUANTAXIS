@@ -75,8 +75,9 @@ class bid_server(QA_Queue):
         super().__init__()
         self.queue = queue
 
-    def select_market(self,bid):
+    def select_market(self, bid):
         pass
+
     def push_bid(self):
 
         while self.bid_queue.empty():

@@ -61,12 +61,12 @@ def use(package):
         return QAThs
 
 
-def QA_fetch_get_stock_day(package, code, startDate, endDate, if_fq='01',type_='json'):
+def QA_fetch_get_stock_day(package, code, startDate, endDate, if_fq='01', type_='json'):
     Engine = use(package)
     if package in ['ths', 'THS']:
         return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq)
-    elif package in ['ts','tushare']:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq,type_)
+    elif package in ['ts', 'tushare']:
+        return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq, type_)
     else:
         return Engine.QA_fetch_get_stock_day(code, startDate, endDate)
 
@@ -86,17 +86,17 @@ def QA_fetch_get_trade_date(package, endDate, exchange):
     return Engine.QA_fetch_get_trade_date(endDate, exchange)
 
 
-
-def QA_fetch_get_stock_min(package,code,start,end,type_):
+def QA_fetch_get_stock_min(package, code, start, end, type_):
     Engine = use(package)
-    if package in ['tdx','pytdx']:
-        return Engine.QA_fetch_get_stock_min(code,start,end,type_)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_stock_min(code, start, end, type_)
     else:
         return 'Unsupport packages'
 
-def QA_fetch_get_stock_transaction(package,code,start,end,retry=2):
+
+def QA_fetch_get_stock_transaction(package, code, start, end, retry=2):
     Engine = use(package)
-    if package in ['tdx','pytdx']:
-        return Engine.QA_fetch_get_stock_transaction(code,start,end,retry)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_stock_transaction(code, start, end, retry)
     else:
         return 'Unsupport packages'

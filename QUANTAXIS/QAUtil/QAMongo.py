@@ -1,4 +1,4 @@
-#coding=utf-8
+# coding=utf-8
 #
 # The MIT License (MIT)
 #
@@ -25,8 +25,9 @@
 
 import pymongo
 
+
 def QA_util_mongo_initial(db=pymongo.MongoClient().quantaxis):
-    
+
     db.drop_collection('stock_day')
     db.drop_collection('stock_list')
     db.drop_collection('stock_info')

@@ -47,7 +47,10 @@ def QA_save_fq_factor(client=QA_Setting.client):
         data_json = QA_util_to_json_from_pandas(data)
         _coll.insert_many(data_json)
 
+
 def QA_update_fq_factor(client=QA_Setting.client):
     pass
+
+
 if __name__ == '__main__':
     QA_save_fq_factor()

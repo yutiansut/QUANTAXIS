@@ -163,9 +163,9 @@ class QA_Account:
                             __item_detail[11] += __new_trade_fee
 
                     self.hold.pop(__id)
-                __del_id=[]
-                for __hold_id in range(1,len(self.hold)):
-                    if int(self.hold[__hold_id][3])==0:
+                __del_id = []
+                for __hold_id in range(1, len(self.hold)):
+                    if int(self.hold[__hold_id][3]) == 0:
                         __del_id.append(__hold_id)
                 __del_id.sort()
                 __del_id.reverse()
@@ -173,7 +173,6 @@ class QA_Account:
                 for __item in __del_id:
                     self.hold.pop(__item)
 
-                    
             # 将交易记录插入历史交易记录
         else:
             pass
@@ -250,8 +249,6 @@ class QA_Account:
             'fee': __message['body']['fee'],
         })
         return __data
-
-
 
 
 class QA_Account_min(QA_Account):

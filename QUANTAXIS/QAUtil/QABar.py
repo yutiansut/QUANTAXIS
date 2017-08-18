@@ -48,19 +48,19 @@ def QA_util_make_bar(type, start, end=None):
     else:
         start, end = QA_util_get_real_datelist(start, end)
         range_ = QA_util_get_trade_range(start, end)
-        #print(range_)
+        # print(range_)
         data = pd.DataFrame()
         for item in range_:
             if str(type) in ['1min', '1m']:
-                data=data.append(QA_util_make_1min_bar(item))
+                data = data.append(QA_util_make_1min_bar(item))
             elif str(type) in ['5min', '5m']:
-                data=data.append(QA_util_make_5min_bar(item))
+                data = data.append(QA_util_make_5min_bar(item))
             elif str(type) in ['15min', '15m']:
-                data=data.append(QA_util_make_15min_bar(item))
+                data = data.append(QA_util_make_15min_bar(item))
             elif str(type) in ['30min', '30m']:
-                data=data.append(QA_util_make_30min_bar(item))
+                data = data.append(QA_util_make_30min_bar(item))
             elif str(type) in ['1h', '60min', '60m']:
-                data=data.append(QA_util_make_30min_bar(item))
+                data = data.append(QA_util_make_30min_bar(item))
         return data
 
         # date range

@@ -23,7 +23,7 @@
 # SOFTWARE.
 
 import datetime
-from subprocess import Popen,PIPE
+from subprocess import Popen, PIPE
 
 
 def QA_util_web_ping(url):
@@ -33,14 +33,13 @@ def QA_util_web_ping(url):
               shell=True)
     out = p.stdout.read()
     list_ = str(out).split('=')
-    #print(list)
+    # print(list)
     for item in list_:
         if 'ms' in item:
             ms_list.append(int(item.split('ms')[0]))
-            
-        
-    if len(ms_list)<1:
-        #Bad Request:
+
+    if len(ms_list) < 1:
+        # Bad Request:
         ms_list.append(9999999)
     return ms_list[-1]
 

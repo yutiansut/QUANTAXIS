@@ -45,7 +45,7 @@ def QA_update_stock_day_all(client=QA_Setting.client):
     client.quantaxis.drop_collection('stock_list')
     client.quantaxis.drop_collection('trade_date')
     client.quantaxis.drop_collection('stock_info')
-    #client.quantaxis.user_list.insert(
+    # client.quantaxis.user_list.insert(
     #{'username': 'admin', 'password': 'admin'})
     QA_SU_save_stock_info()
     QA_SU_save_stock_list()

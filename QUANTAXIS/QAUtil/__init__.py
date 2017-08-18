@@ -30,10 +30,8 @@ util tool
 # 日期相关
 from .QADate import(QA_util_date_stamp, QA_util_time_stamp, QA_util_ms_stamp, QA_util_date_valid,
                     QA_util_realtime, QA_util_id2date, QA_util_is_trade, QA_util_get_date_index,
-                    QA_util_get_index_date, QA_util_select_hours,
-                    QA_util_select_min, QA_util_time_delay, QA_util_time_now, QA_util_date_str2int,
-                    QA_util_date_int2str)
-
+                    QA_util_get_index_date, QA_util_select_hours,QA_util_date_int2str,
+                    QA_util_select_min, QA_util_time_delay, QA_util_time_now, QA_util_date_str2int)
 # sql设置
 from .QASql import (QA_util_sql_mongo_setting)
 # log 文件相关
@@ -54,7 +52,6 @@ from .QACsv import QA_util_save_csv
 # list格式相关
 from .QAList import QA_util_multi_demension_list, QA_util_diff_list
 # 格式转换相关
-
 from .QATransform import (QA_util_to_json_from_pandas,
                           QA_util_to_list_from_numpy, QA_util_to_list_from_pandas)
 # MongoDB相关

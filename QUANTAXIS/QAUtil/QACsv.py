@@ -41,8 +41,8 @@ def QA_util_save_csv(data: list, name: str, column=None, location=None):
             csvwriter.writerow(column)
 
         for item in data:
-            
-            if isinstance(item,list):
+
+            if isinstance(item, list):
                 csvwriter.writerow(item)
             else:
                 csvwriter.writerow([item])
