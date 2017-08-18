@@ -1,4 +1,4 @@
-#coding:utf-8
+# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -23,3 +23,22 @@
 # SOFTWARE.
 
 from QUANTAXIS.QAUtil import QA_util_make_bar
+from QUANTAXIS.QAFetch import QA_fetch_get_stock_transaction
+from datetime import time
+
+
+def QA_data_tick_resample(tick,type='1min'):
+    
+    data_ = QA_util_make_bar('1min', str(tick.index[0])[
+                             0:10], str(tick.index[-1])[0:10])
+    data = tick['price'].resample('1min', label='right').ohlc()
+    data['volume'] = tick['vol'].resample('1min', label='right').sum()
+
+    data = data.reindex(data_.index)
+    return data
+
+
+if __name__ == '__main__':
+    tick = QA_fetch_get_stock_transaction(
+        'tdx', '000001', '2017-01-03', '2017-01-05')
+    print(QA_data_tick_resample(tick))

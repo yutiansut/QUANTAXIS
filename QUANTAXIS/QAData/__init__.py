@@ -23,3 +23,4 @@
 # SOFTWARE.
 
 from .fq_factor import QA_data_fq_factor
+from .make_bar import QA_data_tick_resample
