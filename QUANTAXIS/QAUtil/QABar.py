@@ -73,7 +73,7 @@ def QA_util_make_1min_bar(day):
                                 pd.date_range(str(day) + ' 13:01:00', str(day) + ' 15:00:00', freq='1min')),
                             columns=['open', 'high', 'low', 'close', 'volume'])
     else:
-        return pd.DataFrame('No trade')
+        return pd.DataFrame(['No trade'])
 
 
 def QA_util_make_5min_bar(day):
@@ -83,7 +83,7 @@ def QA_util_make_5min_bar(day):
                                 pd.date_range(str(day) + ' 13:05:00', str(day) + ' 15:00:00', freq='5min')),
                             columns=['open', 'high', 'low', 'close', 'volume'])
     else:
-        return pd.DataFrame('No trade')
+        return pd.DataFrame(['No trade'])
 
 
 def QA_util_make_15min_bar(day):
@@ -93,7 +93,7 @@ def QA_util_make_15min_bar(day):
                                 pd.date_range(str(day) + ' 13:15:00', str(day) + ' 15:00:00', freq='15min')),
                             columns=['open', 'high', 'low', 'close', 'volume'])
     else:
-        return pd.DataFrame('No trade')
+        return pd.DataFrame(['No trade'])
 
 
 def QA_util_make_30min_bar(day):
@@ -103,7 +103,7 @@ def QA_util_make_30min_bar(day):
                                 pd.date_range(str(day) + ' 13:30:00', str(day) + ' 15:00:00', freq='30min')),
                             columns=['open', 'high', 'low', 'close', 'volume'])
     else:
-        return pd.DataFrame('No trade')
+        return pd.DataFrame(['No trade'])
 
 
 def QA_util_make_1h_bar(day):
@@ -113,7 +113,7 @@ def QA_util_make_1h_bar(day):
                                 pd.date_range(str(day) + ' 14:00:00', str(day) + ' 15:00:00', freq='1h')),
                             columns=['open', 'high', 'low', 'close', 'volume'])
     else:
-        return pd.DataFrame('No trade')
+        return pd.DataFrame(['No trade'])
 
 
 if __name__ == '__main__':
