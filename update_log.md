@@ -87,6 +87,7 @@
         - [1.57 QA_SU 新增复权因子的保存(0.4.0-beta-dev44)](#157-qa_su-新增复权因子的保存040-beta-dev44)
         - [1.58 优化QA_QAQuery 和QAMarket_engine的代码(0.4.0-beta-dev44,45,46,47)](#158-优化qa_qaquery-和qamarket_engine的代码040-beta-dev44454647)
         - [1.59 QA_fetch_get_stock_transaction('tdx',code,start,end,retry,ip,port)(0.4.0-beta-dev48,49)](#159-qa_fetch_get_stock_transactiontdxcodestartendretryipport040-beta-dev4849)
+        - [1.60 新增多个QAUtil的api (0.4.0-beta-dev50)](#160-新增多个qautil的api-040-beta-dev50)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -1603,8 +1604,15 @@ date
 
 [36119 rows x 7 columns]
 ```
-
-
+### 1.60 新增多个QAUtil的api (0.4.0-beta-dev50)
+- QA_util_if_trade(day) 是否交易函数
+- QA_util_get_trade_range(start,end) 根据开始,结束日期 给出交易日列表
+- QA_util_make_15min_bar(day)
+- QA_util_make_1h_bar(day)
+- QA_util_make_1min_bar(day)
+- QA_util_make_5min_bar(day)
+- QA_util_make_30min_bar(day)
+- QA_util_make_bar(尚未完成)
 ## 巨大改动/重构
 
 ### 2.1 QA.QAARP.QAAccount
