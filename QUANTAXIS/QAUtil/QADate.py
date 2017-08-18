@@ -28,14 +28,17 @@ import time
 import threading
 from .QADate_trade import trade_date_sse
 
+
 def QA_util_time_now():
     return datetime.datetime.now()
 
+
 def QA_util_date_str2int(date):
-    return int(str(date)[0:4]+str(date)[5:7]+str(date)[8:10])
+    return int(str(date)[0:4] + str(date)[5:7] + str(date)[8:10])
+
 
 def QA_util_date_int2str(date):
-    return str(str(date)[0:4]+'-'+str(date)[4:6]+'-'+str(date)[6:8])
+    return str(str(date)[0:4] + '-' + str(date)[4:6] + '-' + str(date)[6:8])
 
 
 def QA_util_date_stamp(date):
@@ -43,9 +46,6 @@ def QA_util_date_stamp(date):
     datestr = str(date)[0:10]
     date = time.mktime(time.strptime(datestr, '%Y-%m-%d'))
     return date
-
-
-
 
 
 def QA_util_time_stamp(time_):
@@ -99,8 +99,6 @@ def QA_util_is_trade(date, code, client):
         return True
     except:
         return False
-
-
 
 
 def QA_util_get_date_index(date, trade_list):
@@ -211,16 +209,15 @@ def QA_util_select_min(time=None, gt=None, lt=None, gte=None, lte=None):
         return True
 
 
-
 def QA_util_time_delay(time_=0):
     '这是一个用于复用/比如说@装饰器的延时函数\
     使用threading里面的延时,为了是不阻塞进程\
     有时候,同时发进去两个函数,第一个函数需要延时\
     第二个不需要的话,用sleep就会阻塞掉第二个进程'
     def _exec(func):
-        threading.Timer(time_,func)
+        threading.Timer(time_, func)
     return _exec
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     print(QA_util_time_stamp('2017-01-01 10:25:08'))
