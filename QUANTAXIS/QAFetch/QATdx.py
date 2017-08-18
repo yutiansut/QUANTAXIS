@@ -128,28 +128,50 @@ def QA_fetch_get_stock_min(code, start, end, level, ip='119.147.212.81', port=77
 
     return data[start:end]
 
-
-def QA_fetch_get_stock_transaction(code, start, end, ip='221.231.141.60', port=7709):
-    api = TdxHq_API()
+def __QA_fetch_get_stock_transaction(code,day,retry,api):
     market_code = __select_market_code(code)
+    data_ = []
+    #QA_util_log_info('Now Getting %s history transaction data in day %s'%(code,trade_date_sse[index_]))
+    for i in range(10):
+        data_ += api.get_history_transaction_data(market_code, code, (10 - i) * 800, 800, QA_util_date_str2int(day))
+    data_ = api.to_df(data_)
+    data_['date'] = day
+    data_['code'] = str(code)
+    data_['order'] = range(len(data_.index))
+    data_ = data_.set_index('date',drop=False)
+
+    for _ in range(retry):
+        if len(data_)<2:
+            return __QA_fetch_get_stock_transaction(code,day,1,api)
+        else:
+            return data_
+def QA_fetch_get_stock_transaction(code, start, end,retry=10, ip='221.231.141.60', port=7709):
+    api = TdxHq_API()
+    
 
     real_start, real_end = QA_util_get_real_datelist(start, end)
     real_id_range = []
     with api.connect():
         data = pd.DataFrame()
+        
         for index_ in range(trade_date_sse.index(real_start), trade_date_sse.index(real_end) + 1):
-            data_ = []
-            for i in range(10):
-                #print(api.get_history_transaction_data(market_code, code, (10 - i) * 800, 800, QA_util_date_str2int(trade_date_sse[index_])))
-                data_ += api.get_history_transaction_data(market_code, code, (10 - i) * 800, 800, QA_util_date_str2int(trade_date_sse[index_]))
-            data_ = api.to_df(data_)
-            data_['date'] = trade_date_sse[index_]
-            data_['code'] = str(code)
-            data_['order'] = range(len(data_.index))
-            data_ = data_.set_index('date',drop=False)
+        
+            try:
+                data_=__QA_fetch_get_stock_transaction(code,trade_date_sse[index_],retry,api)
+                if len(data_)<1:
+                    
+                    return None
+                    #QA_util_log_info('Success in Getting %s history transaction data in day %s'%(code,trade_date_sse[index_]))
+            except:
+                QA_util_log_info('Wrong in Getting %s history transaction data in day %s'%(code,trade_date_sse[index_]))
+                    
+            else:
+                QA_util_log_info('Successfully Getting %s history transaction data in day %s'%(code,trade_date_sse[index_]))
+                data=data.append(data_)
 
+            #yield data_
             #print(data_)
-            data=data.append(data_)
+            
         return data
 
 
