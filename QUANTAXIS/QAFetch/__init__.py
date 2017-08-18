@@ -92,4 +92,11 @@ def QA_fetch_get_stock_min(package,code,start,end,type_):
     if package in ['tdx','pytdx']:
         return Engine.QA_fetch_get_stock_min(code,start,end,type_)
     else:
-        pass
+        return 'Unsupport packages'
+
+def QA_fetch_get_stock_transaction(package,code,start,end,retry=2):
+    Engine = use(package)
+    if package in ['tdx','pytdx']:
+        return Engine.QA_fetch_get_stock_transaction(code,start,end,retry)
+    else:
+        return 'Unsupport packages'
