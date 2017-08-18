@@ -29,10 +29,11 @@ from datetime import time
 
 def QA_data_tick_resample(tick,type='1min'):
     
-    data_ = QA_util_make_bar('1min', str(tick.index[0])[
+
+    data_ = QA_util_make_bar(type, str(tick.index[0])[
                              0:10], str(tick.index[-1])[0:10])
-    data = tick['price'].resample('1min', label='right').ohlc()
-    data['volume'] = tick['vol'].resample('1min', label='right').sum()
+    data = tick['price'].resample(type, label='right').ohlc()
+    data['volume'] = tick['vol'].resample(type, label='right').sum()
 
     data = data.reindex(data_.index)
     return data
