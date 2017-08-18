@@ -133,9 +133,9 @@ def __QA_fetch_get_stock_transaction(code, day, retry, api):
     market_code = __select_market_code(code)
     data_ = []
     #QA_util_log_info('Now Getting %s history transaction data in day %s'%(code,trade_date_sse[index_]))
-    for i in range(10):
+    for i in range(21):
         data_ += api.get_history_transaction_data(
-            market_code, code, (10 - i) * 800, 800, QA_util_date_str2int(day))
+            market_code, code, (20 - i) * 800, 800, QA_util_date_str2int(day))
     data_ = api.to_df(data_)
     data_['date'] = day
     data_['code'] = str(code)
