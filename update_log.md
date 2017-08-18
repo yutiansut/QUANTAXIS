@@ -1613,6 +1613,79 @@ date
 - QA_util_make_5min_bar(day)
 - QA_util_make_30min_bar(day)
 - QA_util_make_bar(尚未完成)
+
+
+```python
+                                                
+In [2]: QA.QA_util_make_1min_bar('2017-08-17')  
+```
+```
+Out[2]:                                         
+                    open high  low close volume 
+2017-08-17 09:31:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:32:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:33:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:34:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:35:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:36:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:37:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:38:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:39:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:40:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:41:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:42:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:43:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:44:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:45:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:46:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:47:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:48:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:49:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:50:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:51:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:52:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:53:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:54:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:55:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:56:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:57:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:58:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 09:59:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 10:00:00  NaN  NaN  NaN   NaN    NaN 
+...                  ...  ...  ...   ...    ... 
+2017-08-17 14:31:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:32:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:33:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:34:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:35:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:36:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:37:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:38:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:39:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:40:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:41:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:42:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:43:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:44:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:45:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:46:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:47:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:48:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:49:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:50:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:51:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:52:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:53:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:54:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:55:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:56:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:57:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:58:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 14:59:00  NaN  NaN  NaN   NaN    NaN 
+2017-08-17 15:00:00  NaN  NaN  NaN   NaN    NaN 
+                                                
+[240 rows x 5 columns]                          
+```
 ## 巨大改动/重构
 
 ### 2.1 QA.QAARP.QAAccount
