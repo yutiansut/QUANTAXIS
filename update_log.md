@@ -86,7 +86,7 @@
         - [1.56 QA_Util 新增格式转换 (0.4.0-beta-dev44)](#156-qa_util-新增格式转换-040-beta-dev44)
         - [1.57 QA_SU 新增复权因子的保存(0.4.0-beta-dev44)](#157-qa_su-新增复权因子的保存040-beta-dev44)
         - [1.58 优化QA_QAQuery 和QAMarket_engine的代码(0.4.0-beta-dev44,45,46,47)](#158-优化qa_qaquery-和qamarket_engine的代码040-beta-dev44454647)
-        - [1.59 QA_fetch_get_stock_transaction('tdx',code,start,end,retry,ip,port)](#159-qa_fetch_get_stock_transactiontdxcodestartendretryipport)
+        - [1.59 QA_fetch_get_stock_transaction('tdx',code,start,end,retry,ip,port)(0.4.0-beta-dev48,49)](#159-qa_fetch_get_stock_transactiontdxcodestartendretryipport040-beta-dev4849)
     - [巨大改动/重构](#巨大改动重构)
         - [2.1 QA.QAARP.QAAccount](#21-qaqaarpqaaccount)
         - [2.2 QA.QABacktest.Backtest_analysis](#22-qaqabacktestbacktest_analysis)
@@ -1529,7 +1529,7 @@ QA.QA_SU_save_stock_fqfactor()
 - 回测和交易委托的api修改
 
 
-### 1.59 QA_fetch_get_stock_transaction('tdx',code,start,end,retry,ip,port)
+### 1.59 QA_fetch_get_stock_transaction('tdx',code,start,end,retry,ip,port)(0.4.0-beta-dev48,49)
 2017/8/18
 
 历史分笔数据获取端口
