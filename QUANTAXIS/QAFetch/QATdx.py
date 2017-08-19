@@ -46,11 +46,8 @@ def __select_market_code(code):
 
 
 def QA_fetch_get_stock_day(code, start_date, end_date, ip='119.147.212.81', port=7709):
-
     api = TdxHq_API()
-
     market_code = __select_market_code(code)
-
     start_date = QA_util_get_real_date(start_date, trade_date_sse, 1)
     end_date = QA_util_get_real_date(end_date, trade_date_sse, -1)
     with api.connect(ip, port):
@@ -64,7 +61,6 @@ def QA_fetch_get_stock_day(code, start_date, end_date, ip='119.147.212.81', port
         data = data.set_index('date')
         data = data.drop(['year', 'month', 'day', 'hour',
                           'minute', 'datetime'], axis=1)
-
         return data[start_date:end_date]
 
 
@@ -82,7 +78,7 @@ def QA_fetch_get_stock_realtime(code, ip='119.147.212.81', port=7709):
         return stocks
 
 
-def QA_fetch_get_index_day(code, start_date,end_date, ip='119.147.212.81', port=7709):
+def QA_fetch_get_index_day(code, start_date, end_date, ip='119.147.212.81', port=7709):
     api = TdxHq_API()
     start_date = QA_util_get_real_date(start_date, trade_date_sse, 1)
     end_date = QA_util_get_real_date(end_date, trade_date_sse, -1)
@@ -179,6 +175,6 @@ def QA_fetch_get_stock_info():
 if __name__ == '__main__':
     # print(QA_fetch_get_stock_day('000001','2017-07-03','2017-07-10'))
     #print(QA_fetch_get_stock_day('000001', '2013-07-01', '2013-07-09'))
-    #print(QA_fetch_get_stock_realtime('000001'))
-    print(QA_fetch_get_index_day('000001','2017-01-01','2017-07-01'))
+    # print(QA_fetch_get_stock_realtime('000001'))
+    print(QA_fetch_get_index_day('000001', '2017-01-01', '2017-07-01'))
     #print(QA_fetch_get_stock_transaction('000001', '2017-07-03', '2017-07-10'))
