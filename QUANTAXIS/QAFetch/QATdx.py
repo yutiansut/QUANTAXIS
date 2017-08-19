@@ -74,33 +74,30 @@ def QA_fetch_get_stock_list(code, date, ip='119.147.212.81', port=7709):
         return stocks
 
 
-def QA_fetch_get_stock_realtime(code, date, ip='119.147.212.81', port=7709):
+def QA_fetch_get_stock_realtime(code, ip='119.147.212.81', port=7709):
+    api = TdxHq_API()
+    market_code = __select_market_code(code)
     with api.connect(ip, port):
-        stocks = api.get_security_quotes([(0, "000001")])
+        stocks = api.to_df(api.get_security_quotes([(market_code, code)]))
         return stocks
 
 
-def QA_fetch_get_index_day(code, date, ip='119.147.212.81', port=7709):
-    with api.connect(ip, port):
-        stocks = api.get_index_bars(9, 1, '000001', 1, 2)
-    return stocks
-
-
-def QA_fetch_get_stock_min(code, start, end, level, ip='119.147.212.81', port=7709):
+def QA_fetch_get_index_day(code, start_date,end_date, ip='119.147.212.81', port=7709):
     api = TdxHq_API()
-    market_code = __select_market_code(code)
-
+    start_date = QA_util_get_real_date(start_date, trade_date_sse, 1)
+    end_date = QA_util_get_real_date(end_date, trade_date_sse, -1)
     with api.connect(ip, port):
         data = []
-        for i in range(25):
-            data += api.get_security_bars(8, market_code,
-                                          code, (25 - i) * 800, 800)
+        for i in range(10):
+            data += api.get_index_bars(9, 1, code, (9 - i) * 800, 800)
         data = api.to_df(data)
+        data['date'] = data['datetime'].apply(lambda x: x[0:10])
+        data['date'] = pd.to_datetime(data['date'])
+        data = data.set_index('date')
+        data = data.drop(['year', 'month', 'day', 'hour',
+                          'minute', 'datetime'], axis=1)
 
-        data['datetime'] = pd.to_datetime(data['datetime'])
-        data = data.set_index('datetime')
-
-    return data[start:end]
+        return data[start_date:end_date]
 
 
 def QA_fetch_get_stock_min(code, start, end, level, ip='119.147.212.81', port=7709):
@@ -132,7 +129,6 @@ def QA_fetch_get_stock_min(code, start, end, level, ip='119.147.212.81', port=77
 def __QA_fetch_get_stock_transaction(code, day, retry, api):
     market_code = __select_market_code(code)
     data_ = []
-    #QA_util_log_info('Now Getting %s history transaction data in day %s'%(code,trade_date_sse[index_]))
     for i in range(21):
         data_ += api.get_history_transaction_data(
             market_code, code, (20 - i) * 800, 800, QA_util_date_str2int(day))
@@ -158,16 +154,13 @@ def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip='221.231.141.60
     real_id_range = []
     with api.connect():
         data = pd.DataFrame()
-
         for index_ in range(trade_date_sse.index(real_start), trade_date_sse.index(real_end) + 1):
 
             try:
                 data_ = __QA_fetch_get_stock_transaction(
                     code, trade_date_sse[index_], retry, api)
                 if len(data_) < 1:
-
                     return None
-                    #QA_util_log_info('Success in Getting %s history transaction data in day %s'%(code,trade_date_sse[index_]))
             except:
                 QA_util_log_info('Wrong in Getting %s history transaction data in day %s' % (
                     code, trade_date_sse[index_]))
@@ -176,13 +169,16 @@ def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip='221.231.141.60
                     code, trade_date_sse[index_]))
                 data = data.append(data_)
 
-            # yield data_
-            # print(data_)
-
         return data
+
+
+def QA_fetch_get_stock_info():
+    pass
 
 
 if __name__ == '__main__':
     # print(QA_fetch_get_stock_day('000001','2017-07-03','2017-07-10'))
     #print(QA_fetch_get_stock_day('000001', '2013-07-01', '2013-07-09'))
-    print(QA_fetch_get_stock_transaction('000001', '2017-07-03', '2017-07-10'))
+    #print(QA_fetch_get_stock_realtime('000001'))
+    print(QA_fetch_get_index_day('000001','2017-01-01','2017-07-01'))
+    #print(QA_fetch_get_stock_transaction('000001', '2017-07-03', '2017-07-10'))

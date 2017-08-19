@@ -108,10 +108,8 @@ def QA_fetch_stock_full(date_, type_='numpy', collections=QA_Setting.client.quan
         elif type_ in ['P', 'p', 'pandas', 'pd']:
             __data = DataFrame(__data, columns=[
                 'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
-
             __data['date'] = pd.to_datetime(__data['date'])
-            __data = __data.set_index('date')
-            __data = __data[['code', 'open', 'high', 'low', 'close', 'volume']]
+            __data = __data.set_index('date',drop=True)
         return __data
     else:
         QA_util_log_info('something wrong with date')
