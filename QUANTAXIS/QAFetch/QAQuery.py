@@ -111,7 +111,7 @@ def QA_fetch_stock_full(date_, type_='numpy', collections=QA_Setting.client.quan
             __data = DataFrame(__data, columns=[
                 'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
             __data['date'] = pd.to_datetime(__data['date'])
-            __data = __data.set_index('date',drop=True)
+            __data = __data.set_index('date', drop=True)
         return __data
     else:
         QA_util_log_info('something wrong with date')
@@ -169,11 +169,10 @@ def QA_fetch_index_day(code, __start, __end, type_='numpy', collections=QA_Setti
 def QA_fetch_stock_min(code, startTime, endTime, type_='numpy', collections=QA_Setting.client.quantaxis.stock_min_five):
     '获取股票分钟线'
     __data = []
-    print(QA_util_time_stamp(startTime))
     for item in collections.find({
         'code': str(code), "time_stamp": {
             "$gte": QA_util_time_stamp(startTime),
-            "$gte": QA_util_time_stamp(endTime)
+            "$lte": QA_util_time_stamp(endTime)
         }
     }):
 
@@ -185,10 +184,11 @@ def QA_fetch_stock_min(code, startTime, endTime, type_='numpy', collections=QA_S
     elif type_ in ['list', 'l', 'L']:
         return __data
     elif type_ in ['P', 'p', 'pandas', 'pd']:
-        __data= DataFrame(__data, columns=[
+        __data = DataFrame(__data, columns=[
             'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'time_stamp', 'date'])
         __data.set_index('datetime')
         return __data
+
 
 def QA_fetch_future_day():
     pass
