@@ -50,16 +50,17 @@ def QA_util_date_stamp(date):
 
 def QA_util_time_stamp(time_):
     '''
-    数据格式需要是%Y-%m-%d %H:%M:%S 中间要有空格
+    数据格式最好是%Y-%m-%d %H:%M:%S 中间要有空格 
     '''
-
-    try:
+    if len(str(time_)) == 10:
+        # yyyy-mm-dd格式
+        return time.mktime(time.strptime(time_, '%Y-%m-%d'))
+    elif len(str(time_)) == 16:
+            # yyyy-mm-dd hh:mm格式
+        return time.mktime(time.strptime(time_, '%Y-%m-%d %H:%M'))
+    else:
         timestr = str(time_)[0:19]
-        time__ = time.mktime(time.strptime(timestr, '%Y-%m-%d %H:%M:%S'))
-        return time__
-
-    except:
-        return QA_util_date_stamp('1900-01-01')
+        return time.mktime(time.strptime(timestr, '%Y-%m-%d %H:%M:%S'))
 
 
 def QA_util_ms_stamp(ms):

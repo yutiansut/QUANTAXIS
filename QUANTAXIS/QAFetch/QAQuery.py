@@ -40,8 +40,8 @@ from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
 """
 
 
-def QA_fetch_stock_day(code, __start, __end, type_='numpy', collections=QA_Setting.client.quantaxis.stock_day,):
-    # print(datetime.datetime.now())
+def QA_fetch_stock_day(code, __start, __end, type_='numpy', collections=QA_Setting.client.quantaxis.stock_day):
+    '获取股票日线'
     __start = str(__start)[0:10]
     __end = str(__end)[0:10]
 
@@ -72,6 +72,7 @@ def QA_fetch_stock_day(code, __start, __end, type_='numpy', collections=QA_Setti
 
 
 def QA_fetch_trade_date(collections):
+    '获取交易日期'
     __data = []
     for item in collections.find({}):
         __data.append(item['date'])
@@ -79,6 +80,7 @@ def QA_fetch_trade_date(collections):
 
 
 def QA_fetch_stock_list(collections=QA_Setting.client.quantaxis.stock_list):
+    '获取股票列表'
     __data = []
     for item in collections.find_one()['stock']['code']:
         __data.append(item)
@@ -116,10 +118,12 @@ def QA_fetch_stock_full(date_, type_='numpy', collections=QA_Setting.client.quan
 
 
 def QA_fetch_stock_info(code, collections):
+    '获取股票信息'
     pass
 
 
 def QA_fetch_stocklist_day(stock_list, collections, date_range):
+    '获取多个股票的日线'
     __data = []
     for item in stock_list:
         __data.append(QA_fetch_stock_day(
@@ -128,6 +132,7 @@ def QA_fetch_stocklist_day(stock_list, collections, date_range):
 
 
 def QA_fetch_index_day(code, __start, __end, type_='numpy', collections=QA_Setting.client.quantaxis.stock_day):
+    '获取指数日线'
     # print(datetime.datetime.now())
     __start = str(__start)[0:10]
     __end = str(__end)[0:10]
@@ -162,8 +167,9 @@ def QA_fetch_index_day(code, __start, __end, type_='numpy', collections=QA_Setti
 
 
 def QA_fetch_stock_min(code, startTime, endTime, type_='numpy', collections=QA_Setting.client.quantaxis.stock_min_five):
+    '获取股票分钟线'
     __data = []
-
+    print(QA_util_time_stamp(startTime))
     for item in collections.find({
         'code': str(code), "time_stamp": {
             "$gte": QA_util_time_stamp(startTime),
@@ -173,16 +179,16 @@ def QA_fetch_stock_min(code, startTime, endTime, type_='numpy', collections=QA_S
 
         __data.append([str(item['code']), float(item['open']), float(item['high']), float(
             item['low']), float(item['close']), float(item['volume']), item['datetime'], item['time_stamp'], item['date']])
+    print(__data)
     if type_ in ['numpy', 'np', 'n']:
-        __data = numpy.asarray(__data)
+        return numpy.asarray(__data)
     elif type_ in ['list', 'l', 'L']:
-        pass
+        return __data
     elif type_ in ['P', 'p', 'pandas', 'pd']:
-        __data = DataFrame(__data, columns=[
+        __data= DataFrame(__data, columns=[
             'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'time_stamp', 'date'])
         __data.set_index('datetime')
-    return __data
-
+        return __data
 
 def QA_fetch_future_day():
     pass
