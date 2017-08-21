@@ -169,6 +169,7 @@ def QA_fetch_index_day(code, __start, __end, type_='numpy', collections=QA_Setti
 def QA_fetch_stock_min(code, startTime, endTime, type_='numpy', collections=QA_Setting.client.quantaxis.stock_min_five):
     '获取股票分钟线'
     __data = []
+    __data_fq = []
     for item in collections.find({
         'code': str(code), "time_stamp": {
             "$gte": QA_util_time_stamp(startTime),
@@ -178,7 +179,18 @@ def QA_fetch_stock_min(code, startTime, endTime, type_='numpy', collections=QA_S
 
         __data.append([str(item['code']), float(item['open']), float(item['high']), float(
             item['low']), float(item['close']), float(item['volume']), item['datetime'], item['time_stamp'], item['date']])
-    print(__data)
+
+    
+    for item in QA_Setting.client.quantaxis.stock_day.find({
+        'code': str(code), "time_stamp": {
+            "$gte": QA_util_time_stamp(startTime),
+            "$lte": QA_util_time_stamp(endTime)
+        }
+    }):
+        __data_fq.append([str(item['code']), float(item['open']), float(item['high']), float(
+                item['low']), float(item['close']), float(item['volume']), item['date']])
+
+    
     if type_ in ['numpy', 'np', 'n']:
         return numpy.asarray(__data)
     elif type_ in ['list', 'l', 'L']:
@@ -188,6 +200,8 @@ def QA_fetch_stock_min(code, startTime, endTime, type_='numpy', collections=QA_S
             'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'time_stamp', 'date'])
         __data.set_index('datetime')
         return __data
+
+
 
 
 def QA_fetch_future_day():

@@ -53,7 +53,8 @@ def QA_fetch_get_stock_day(name, startDate='', endDate='', if_fq='01', type_='js
         return data_json
     elif type_ in ['pd', 'pandas', 'p']:
         data['date'] = pd.to_datetime(data['date'])
-        data = data.set_index('date')
+        data = data.set_index('date',drop=False)
+        data['date'] = data['date'].apply(lambda x: str(x)[0:10])
         return data
 
 def QA_fetch_get_stock_realtime():
