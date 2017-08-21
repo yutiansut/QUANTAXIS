@@ -36,14 +36,7 @@ api = TdxHq_API()
 
 def __select_market_code(code):
 
-    market_code = 0
-
-    if str(code)[0] == '6':
-        # 0 - 深圳， 1 - 上海
-        return 1
-    else:
-        return 0
-
+    market_code = 1 if str(code)[0] == '6' else 0
 
 def QA_fetch_get_stock_day(code, start_date, end_date, ip='119.147.212.81', port=7709):
     api = TdxHq_API()
@@ -171,6 +164,12 @@ def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip='221.231.141.60
 def QA_fetch_get_stock_info():
     pass
 
+
+def QA_fetch_get_stock_xdxr(code,ip='221.231.141.60', port=7709):
+    api = TdxHq_API()
+    market_code=__select_market_code(code)
+    with api.connect():
+        return api.to_df(api.get_xdxr_info(market_code,code))
 
 if __name__ == '__main__':
     # print(QA_fetch_get_stock_day('000001','2017-07-03','2017-07-10'))
