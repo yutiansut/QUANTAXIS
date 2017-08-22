@@ -284,10 +284,7 @@ def market_stock_min_engine(__bid, __data=None):
     # data mod
     # inside function
     def __get_data(__bid):
-
-        __coll = QA_Setting.client.quantaxis.stock_min_5
-        __data = __coll.find_one(
-            {"code": str(__bid['code'])[0:6], "datetime": {'$gte': float(__bid['time'])}})
+        __data=QA_util_to_json_from_pandas(QA_fetch_stock_min(str(__bid['code'])[0:6],__bid['time'],__bid['time'],'pd'))
         # 我们只需要找到这个时间点下一条数据就行
         return __data
     # trade mod

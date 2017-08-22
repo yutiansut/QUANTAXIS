@@ -189,7 +189,7 @@ def QA_fetch_stock_min(code, startTime, endTime, type_='numpy', collections=QA_S
         'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'time_stamp', 'date'])
 
     __data['datetime'] = pd.to_datetime(__data['datetime'])
-    __data = __data.set_index('datetime', drop=True)
+    __data = __data.set_index('datetime', drop=False)
 
     res = QA_fetch_stock_to_fq(__data)
     if type_ in ['numpy', 'np', 'n']:
