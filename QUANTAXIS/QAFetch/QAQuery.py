@@ -33,7 +33,6 @@ from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
                               QA_util_date_valid, QA_util_log_info,
                               QA_util_time_stamp)
 
-
 """
 按要求从数据库取数据，并转换成numpy结构
 
@@ -191,15 +190,8 @@ def QA_fetch_stock_min(code, startTime, endTime, type_='numpy', collections=QA_S
 
     __data['datetime'] = pd.to_datetime(__data['datetime'])
     __data = __data.set_index('datetime', drop=True)
-    __data_fq = QA_fetch_stock_day(
-        code, startTime, endTime, 'pd', drop_factor=False)
-    __data_fq = __data_fq['qfqfactor'].resample('1min').ffill()
 
-    res = pd.concat([__data, __data_fq], axis=1, join='inner')
-    res['open'] = res['open'] * res['qfqfactor']
-    res['high'] = res['high'] * res['qfqfactor']
-    res['low'] = res['low'] * res['qfqfactor']
-    res['close'] = res['close'] * res['qfqfactor']
+    res = QA_fetch_stock_to_fq(__data)
     if type_ in ['numpy', 'np', 'n']:
         return numpy.asarray(res)
     elif type_ in ['list', 'l', 'L']:
@@ -210,6 +202,17 @@ def QA_fetch_stock_min(code, startTime, endTime, type_='numpy', collections=QA_S
 
 def QA_fetch_future_day():
     pass
+def QA_fetch_stock_to_fq(__data):
+    __data_fq = QA_fetch_stock_day(
+        __data['code'][0], str(__data.index[0])[0:10], str(__data.index[-1])[0:10], 'pd', drop_factor=False)
+    __data_fq = __data_fq['qfqfactor'].resample('1min').ffill()
+
+    res = pd.concat([__data, __data_fq], axis=1, join='inner')
+    res['open'] = res['open'] * res['qfqfactor']
+    res['high'] = res['high'] * res['qfqfactor']
+    res['low'] = res['low'] * res['qfqfactor']
+    res['close'] = res['close'] * res['qfqfactor']
+    return res
 
 
 def QA_fetch_future_min():
