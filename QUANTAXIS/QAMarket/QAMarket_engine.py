@@ -424,3 +424,10 @@ def market_future_min_engine(__bid, __data=None):
 
 def market_future_tick_engine(__bid, __data=None):
     pass
+
+
+if __name__=='__main__':
+    print('test stock day')
+
+    print('stock_min')
+    
