@@ -24,7 +24,7 @@
 
 from QUANTAXIS.QAFetch import QATushare
 from QUANTAXIS.QAUtil import QA_util_date_stamp, QA_Setting, QA_util_date_valid, QA_util_log_info
-from .save_tushare import QA_SU_save_stock_info, QA_SU_save_stock_list, QA_SU_save_trade_date_all
+from .save_tushare import QA_SU_save_stock_info, QA_SU_save_stock_list, QA_SU_save_trade_date_all,QA_save_stock_day_with_fqfactor
 import json
 import pymongo
 import datetime
@@ -45,18 +45,24 @@ def QA_update_stock_day_all(client=QA_Setting.client):
     client.quantaxis.drop_collection('stock_list')
     client.quantaxis.drop_collection('trade_date')
     client.quantaxis.drop_collection('stock_info')
+    client.quantaxis.drop_collection('stock_day')
     # client.quantaxis.user_list.insert(
     #{'username': 'admin', 'password': 'admin'})
     QA_SU_save_stock_info()
     QA_SU_save_stock_list()
     QA_SU_save_trade_date_all()
-
+    QA_save_stock_day_with_fqfactor()
+    """
     coll_stocklist = client.quantaxis.stock_list
     # 使用find_one
     stock_list = coll_stocklist.find_one()['stock']['code']
     coll_stock_day = client.quantaxis.stock_day
     stock_list.append('sz50')
     stock_list.append('hs300')
+
+    
+
+
     for item in stock_list:
         QA_util_log_info('updating stock data -- %s' % item)
         # coll.find({'code':str(item)[0:6]}).count()
@@ -81,3 +87,4 @@ def QA_update_stock_day_all(client=QA_Setting.client):
             coll_stock_day.insert_many(data)
         except:
             QA_util_log_info('error in updating--- %s' % item)
+    """

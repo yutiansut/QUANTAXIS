@@ -92,7 +92,6 @@ def QA_fetch_get_index_day(code, start_date, end_date, ip='119.147.212.81', port
 def QA_fetch_get_stock_min(code, start, end, level, ip='221.231.141.60', port=7709):
     api = TdxHq_API()
     market_code = __select_market_code(code)
-    print(market_code)
     if str(level) in ['5', '5m', '5min', 'five']:
         level = 0
     elif str(level) in ['1', '1m', '1min', 'one']:
@@ -109,6 +108,7 @@ def QA_fetch_get_stock_min(code, start, end, level, ip='221.231.141.60', port=77
             data += api.get_security_bars(level,market_code, code, (25 - i) * 800, 800)
         data = api.to_df(data)
         data['datetime'] = pd.to_datetime(data['datetime'])
+        data['code']=code
         data = data.set_index('datetime')
 
     return data[start:end]  
