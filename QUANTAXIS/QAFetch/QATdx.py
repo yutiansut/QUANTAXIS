@@ -36,7 +36,7 @@ api = TdxHq_API()
 
 def __select_market_code(code):
 
-    market_code = 1 if str(code)[0] == '6' else 0
+    return  1 if str(code)[0] == '6' else 0
 
 def QA_fetch_get_stock_day(code, start_date, end_date, ip='119.147.212.81', port=7709):
     api = TdxHq_API()
@@ -89,9 +89,10 @@ def QA_fetch_get_index_day(code, start_date, end_date, ip='119.147.212.81', port
         return data[start_date:end_date]
 
 
-def QA_fetch_get_stock_min(code, start, end, level, ip='119.147.212.81', port=7709):
+def QA_fetch_get_stock_min(code, start, end, level, ip='221.231.141.60', port=7709):
     api = TdxHq_API()
     market_code = __select_market_code(code)
+    print(market_code)
     if str(level) in ['5', '5m', '5min', 'five']:
         level = 0
     elif str(level) in ['1', '1m', '1min', 'one']:
@@ -105,14 +106,12 @@ def QA_fetch_get_stock_min(code, start, end, level, ip='119.147.212.81', port=77
     with api.connect(ip, port):
         data = []
         for i in range(26):
-            data += api.get_security_bars(level,
-                                          market_code, code, (25 - i) * 800, 800)
+            data += api.get_security_bars(level,market_code, code, (25 - i) * 800, 800)
         data = api.to_df(data)
-
         data['datetime'] = pd.to_datetime(data['datetime'])
         data = data.set_index('datetime')
 
-    return data[start:end]
+    return data[start:end]  
 
 
 def __QA_fetch_get_stock_transaction(code, day, retry, api):
