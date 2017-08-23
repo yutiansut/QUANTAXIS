@@ -58,7 +58,7 @@ from functools import wraps, update_wrapper, reduce
 
 
 class QA_Backtest():
-    '因为涉及很多不继承类的情况,所以先单列出来'
+    '最终目的还是实现一个通用的回测类'
     account = QA_Account()
     market = QA_Market()
     bid = QA_QAMarket_bid()
@@ -66,7 +66,7 @@ class QA_Backtest():
     clients = setting.client
     user = setting.QA_setting_user_name
     market_data = []
-    today = ''
+    now = ''
 
     def __init__(self):
 
@@ -77,7 +77,7 @@ class QA_Backtest():
         self.clients = self.setting.client
         self.user = self.setting.QA_setting_user_name
         self.market_data = []
-        self.today = ''
+        self.now = ''
 
     def __QA_backtest_init(self):
         """既然是被当做装饰器使用,就需要把变量设置放在装饰函数的前面,把函数放在装饰函数的后面"""
@@ -94,7 +94,7 @@ class QA_Backtest():
         self.setting.QA_setting_user_password = str('admin')
         self.setting.QA_setting_init()
         # 回测的名字
-        self.strategy_name = str('example')
+        self.strategy_name = str('example_min')
        # 股票的交易日历,真实回测的交易周期,和交易周期在交易日历中的id
         self.trade_list = QA_fetch_trade_date(
             self.setting.client.quantaxis.trade_date)
@@ -438,7 +438,7 @@ class QA_Backtest():
                     __last_bid.order_id = str(random.random())
                     __last_bid.price = 'close_price'
                     __last_bid.code = str(__hold_list[id_][1])
-                    __last_bid.date = self.today
+                    __last_bid.date = self.now
                     __last_bid.towards = -1
                     __last_bid.user = self.setting.QA_setting_user_name
                     __last_bid.strategy = self.strategy_name
@@ -492,7 +492,7 @@ class QA_Backtest():
                              __backtest_cls.running_date)
             QA_util_log_info(
                 tabulate(__backtest_cls.account.message['body']['account']['hold']))
-            __backtest_cls.today = __backtest_cls.running_date
+            __backtest_cls.now = __backtest_cls.running_date
 
             func(*arg, **kwargs)
 
