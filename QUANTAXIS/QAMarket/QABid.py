@@ -66,6 +66,9 @@ class QA_QAMarket_bid():
     def future_day(self):
         self.status = '1x01'
 
+    def show(self):
+        return vars(self)
+
 
 if __name__ == '__main__':
     ax = QA_QAMarket_bid()

@@ -348,11 +348,13 @@ class QA_Backtest_stock_day():
             __bid_price = 'close_price'
         __bid = self.bid
 
-        __bidorder_id = str(random.random())
+        __bid.order_id = str(random.random())
         __bid.user = self.setting.QA_setting_user_name
         __bid.strategy = self.strategy_name
         __bid.code = __code
         __bid.date = self.running_date
+        __bid.datetime = self.running_date
+        __bid.sending_time = self.running_date
         __bid.price = __bid_price
         __bid.amount = __amount
 
