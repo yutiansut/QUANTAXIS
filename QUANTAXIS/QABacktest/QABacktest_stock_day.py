@@ -157,14 +157,14 @@ class QA_Backtest_stock_day():
     def __QA_backtest_set_bid_model(self):
 
         if self.backtest_bid_model == 'market_price':
-            self.bid.bid['price'] = 'market_price'
-            self.bid.bid['bid_model'] = 'auto'
+            self.bid.price = 'market_price'
+            self.bid.bid_model = 'auto'
         elif self.backtest_bid_model == 'close_price':
-            self.bid.bid['price'] = 'close_price'
-            self.bid.bid['bid_model'] = 'auto'
+            self.bid.price = 'close_price'
+            self.bid.bid_model = 'auto'
         elif self.backtest_bid_model == 'strategy':
-            self.bid.bid['price'] = 0
-            self.bid.bid['bid_model'] = 'strategy'
+            self.bid.price = 0
+            self.bid.bid_model = 'strategy'
         else:
             QA_util_log_info('support bid model')
             sys.exit()
@@ -198,18 +198,18 @@ class QA_Backtest_stock_day():
             pre_del_id = []
             for item_ in range(0, len(__hold_list)):
                 if __hold_list[item_][3] > 0:
-                    __last_bid = self.bid.bid
-                    __last_bid['amount'] = int(__hold_list[item_][3])
-                    __last_bid['order_id'] = str(random.random())
-                    __last_bid['price'] = 'close_price'
-                    __last_bid['code'] = str(__hold_list[item_][1])
-                    __last_bid['date'] = self.trade_list[self.end_real_id]
-                    __last_bid['towards'] = -1
-                    __last_bid['user'] = self.setting.QA_setting_user_name
-                    __last_bid['strategy'] = self.strategy_name
-                    __last_bid['bid_model'] = 'auto'
-                    __last_bid['status'] = '0x01'
-                    __last_bid['amount_model'] = 'amount'
+                    __last_bid = self.bid
+                    __last_bid.amount = int(__hold_list[item_][3])
+                    __last_bid.order_id = str(random.random())
+                    __last_bid.price = 'close_price'
+                    __last_bid.code = str(__hold_list[item_][1])
+                    __last_bid.date = self.trade_list[self.end_real_id]
+                    __last_bid.towards = -1
+                    __last_bid.user = self.setting.QA_setting_user_name
+                    __last_bid.strategy = self.strategy_name
+                    __last_bid.bid_model = 'auto'
+                    __last_bid.status = '0x01'
+                    __last_bid.amount_model = 'amount'
 
                     __message = self.market.receive_bid(
                         __last_bid)

@@ -198,7 +198,13 @@ def QA_fetch_stock_min(code, startTime, endTime, type_='numpy', collections=QA_S
         return numpy.asarray(res).tolist()
     elif type_ in ['P', 'p', 'pandas', 'pd']:
         return res
-
+def QA_fetch_stocklist_min(stock_list, date_range, collections=QA_Setting.client.quantaxis.stock_min_five):
+    '获取前复权股票分钟线'
+    __data = []
+    for item in stock_list:
+        __data.append(QA_fetch_stock_min(
+            item, date_range[0], date_range[-1], 'numpy', collections))
+    return __data
 
 def QA_fetch_future_day():
     pass
