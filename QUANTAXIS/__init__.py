@@ -66,7 +66,7 @@ from QUANTAXIS.QAARP.QARisk import (QA_risk_account_freeCash_currentAssest,
                                     QA_risk_account_freeCash_frozenAssest,
                                     QA_risk_account_freeCash_initAssest, QA_risk_eva_account)
 # Backtest
-from QUANTAXIS.QABacktest.QABacktest import QA_Backtest, QA_Backtest_min
+from QUANTAXIS.QABacktest.QABacktest import QA_Backtest
 from QUANTAXIS.QABacktest.QABacktest_stock_day import QA_Backtest_stock_day
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
 # task
