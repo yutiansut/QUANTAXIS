@@ -37,6 +37,36 @@ from QUANTAXIS.QATask import QA_Queue
 
 
 """
+class QA_QAMarket_order():
+    
+    def __init__(self):
+        self.strategy_id = ''                 ## 策略ID
+        self.account_id = ''                  ## 交易账号
+
+        self.cl_ord_id = ''                   ## 客户端订单ID
+        self.order_id = ''                    ## 柜台订单ID
+        self.ex_ord_id = ''                   ## 交易所订单ID
+
+        self.exchange = ''                    ## 交易所代码
+        self.sec_id = ''                      ## 证券ID
+
+        self.position_effect = 0              ## 开平标志
+        self.side = 0                         ## 买卖方向
+        self.order_type = 0                   ## 订单类型
+        self.order_src = 0                    ## 订单来源
+        self.status = 0                       ## 订单状
+        self.ord_rej_reason = 0               ## 订单拒绝原因
+        self.ord_rej_reason_detail = ''       ## 订单拒绝原因描述
+
+        self.price = 0.0                      ## 委托价
+        self.stop_price = 0.0;                ## 止损价
+        self.volume = 0.0                     ## 委托量
+        self.filled_volume = 0.0              ## 已成交量
+        self.filled_vwap = 0.0                ## 已成交均价
+        self.filled_amount = 0.0              ## 已成交额
+
+        self.sending_time = 0.0               ## 委托下单时间
+        self.transact_time = 0.0              ## 最新一次成交时间
 
 
 class QA_QAMarket_bid():
@@ -55,7 +85,7 @@ class QA_QAMarket_bid():
             'amount_model': 'amount',
             'order_id': str(random.random())
         }
-
+        
         # 报价队列  插入/取出/查询
         self.bid_queue = queue.Queue(maxsize=20)
 
@@ -75,8 +105,9 @@ class bid_server(QA_Queue):
         super().__init__()
         self.queue = queue
 
-    def select_market(self,bid):
+    def select_market(self, bid):
         pass
+
     def push_bid(self):
 
         while self.bid_queue.empty():

@@ -36,12 +36,13 @@
 
 
 from QUANTAXIS.QAUtil import QA_Setting
-from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_list,QA_fetch_stock_full
+from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_list, QA_fetch_stock_full
 
 #
-def QA_select_by_func(func,*arg,**kwargs):
-    func(*arg,**kwargs)
 
+
+def QA_select_by_func(func, *arg, **kwargs):
+    func(*arg, **kwargs)
 
 
 # 需要一个能够加载

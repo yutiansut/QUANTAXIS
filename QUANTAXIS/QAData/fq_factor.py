@@ -1,4 +1,4 @@
-#coding:utf-8
+# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -27,17 +27,11 @@ from QUANTAXIS.QAFetch import QA_fetch_get_stock_day
 import pandas as pd
 
 
-def QA_data_fq_factor(code,start='1991-01-01',end=''):
-    bfq=QA_fetch_get_stock_day('ts',code,start,end,'00','pd')
-    #qfq=QA_fetch_get_stock_day('ts',code,'1991-01-01','','01','pd')
-    hfq=QA_fetch_get_stock_day('ts',code,start,end,'02','pd')
-
-    factor_frame=pd.DataFrame()
-    #factor_frame['qfqfactor']=qfq['open']/bfq['open']
-    factor_frame['hfqfactor']=hfq['open']/bfq['open']
-    
-    #factor_frame['bfqfactor']=bfq['open']/bfq['open']
+def QA_data_fq_factor(code, start='1991-01-01', end=''):
+    bfq = QA_fetch_get_stock_day('ts', code, start, end, '00', 'pd')
+    qfq = QA_fetch_get_stock_day('ts', code, '1991-01-01', '', '01', 'pd')
+    factor_frame = pd.DataFrame()
+    factor_frame['qfqfactor'] = qfq['open'] / bfq['open']
     return factor_frame
 
-def QA_data_fq_calc_qfq(hfq_factor):
-    pass
+

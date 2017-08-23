@@ -32,10 +32,10 @@ import platform
 
 
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
-from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting,QA_util_mongo_initial,QA_util_mongo_make_index
-from QUANTAXIS import (QA_SU_save_stock_info,QA_SU_save_stock_list,
-                            QA_SU_save_trade_date_all,QA_save_stock_day_all,
-                            QA_SU_update_stock_day)
+from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting, QA_util_mongo_initial, QA_util_mongo_make_index
+from QUANTAXIS import (QA_SU_save_stock_info, QA_SU_save_stock_list,
+                       QA_SU_save_trade_date_all, QA_save_stock_day_all,
+                       QA_SU_update_stock_day, QA_save_stock_day_with_fqfactor)
 from QUANTAXIS import __version__
 
 
@@ -56,13 +56,13 @@ class CLI(cmd.Cmd):
         QA_util_log_info('QUANTAXIS example')
         now_path = os.getcwd()
         project_dir = os.path.dirname(os.path.abspath(__file__))
-        file_dir=''
+        file_dir = ''
 
-        if platform.system()=='Windows':
+        if platform.system() == 'Windows':
             file_dir = project_dir + '\\backtest.py'
-        elif platform.system() in ['Linux','Darwin']:
-            file_dir= project_dir + '/backtest.py'
-        
+        elif platform.system() in ['Linux', 'Darwin']:
+            file_dir = project_dir + '/backtest.py'
+
         shutil.copy(file_dir, now_path)
 
         QA_util_log_info(
@@ -70,26 +70,29 @@ class CLI(cmd.Cmd):
 
     def help_examples(self):
         print('make a sample backtest framework')
-    def do_drop_database(self,arg):
+
+    def do_drop_database(self, arg):
         QA_util_mongo_initial()
+
     def help_drop_database(self):
         print('drop quantaxis\'s databases')
 
-
-    def do_make_index(self,arg):
+    def do_make_index(self, arg):
         QA_util_mongo_make_index()
 
     def help_make_index(self):
         print('make index for quantaxis databases')
+
     def do_quit(self, arg):     # 定义quit命令所执行的操作
         sys.exit(1)
 
     def help_quit(self):        # 定义quit命令的帮助输出
         print("syntax: quit",)
         print("-- terminates the application")
-    def do_clean(self,arg):
+
+    def do_clean(self, arg):
         try:
-            if platform.system()=='Windows':
+            if platform.system() == 'Windows':
                 os.popen('del back*csv')
                 os.popen('del *log')
             else:
@@ -98,9 +101,10 @@ class CLI(cmd.Cmd):
 
         except:
             pass
-        
+
     def help_clean(self):
         QA_util_log_info('Clean the old backtest reports and logs')
+
     def do_exit(self, arg):     # 定义quit命令所执行的操作
         sys.exit(1)
 
@@ -108,7 +112,7 @@ class CLI(cmd.Cmd):
         print('syntax: exit')
         print("-- terminates the application")
 
-    def do_save(self,arg):
+    def do_save(self, arg):
         # 仅仅是为了初始化才在这里插入用户,如果想要注册用户,要到webkit底下注册
         QA_Setting.client.quantaxis.user_list.insert(
             {'username': 'admin', 'password': 'admin'})
@@ -119,21 +123,17 @@ class CLI(cmd.Cmd):
         # 5. 股票基本面信息存储
         QA_SU_save_stock_info('ts', QA_Setting.client)
 
-        QA_save_stock_day_all()
-
-
-
-
-
+        QA_save_stock_day_with_fqfactor()
 
     def help_save(self):
         QA_util_log_info('Save all the stock data from tushare')
 
-
-    def do_update(self,arg):
+    def do_update(self, arg):
         QA_SU_update_stock_day('ts', QA_Setting.client)
+
     def help_update(self):
         QA_util_log_info('Update the stock data')
+
 
 def sourcecpy(src, des):
     src = os.path.normpath(src)

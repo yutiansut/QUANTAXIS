@@ -26,7 +26,7 @@
 import datetime
 import random
 
-from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info,QA_util_to_json_from_pandas
+from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info, QA_util_to_json_from_pandas
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day, QA_fetch_stock_min
 
 """stock market trading engine
@@ -45,11 +45,12 @@ def market_stock_day_engine(__bid, __data=None):
     # inside function
     def __get_data(__bid):
         '隔离掉引擎查询数据库的行为'
-        __data=QA_util_to_json_from_pandas(QA_fetch_stock_day(str(__bid['code'])[0:6], str(__bid['date'])[0:10], str(__bid['date'])[0:10], 'pd'))
-        if len(__data)==0:
+        __data = QA_util_to_json_from_pandas(QA_fetch_stock_day(str(
+            __bid['code'])[0:6], str(__bid['date'])[0:10], str(__bid['date'])[0:10], 'pd'))
+        if len(__data) == 0:
             pass
         else:
-            __data=__data[0]
+            __data = __data[0]
         return __data
     # trade mod
 
@@ -57,6 +58,7 @@ def market_stock_day_engine(__bid, __data=None):
         __data = __get_data(__bid)
     else:
         pass
+
     def __trading(__bid, __data):
         """
         trading system
@@ -177,7 +179,7 @@ def market_stock_day_engine(__bid, __data=None):
                             },
                             'body': {
                                 'bid': {
-                                    'price': float("%.2f" %float(str(__deal_price))),
+                                    'price': float("%.2f" % float(str(__deal_price))),
                                     'code': str(__bid['code']),
                                     'amount': int(__bid['amount']),
                                     'date': str(__bid['date']),
@@ -282,10 +284,7 @@ def market_stock_min_engine(__bid, __data=None):
     # data mod
     # inside function
     def __get_data(__bid):
-
-        __coll = QA_Setting.client.quantaxis.stock_min_5
-        __data = __coll.find_one(
-            {"code": str(__bid['code'])[0:6], "datetime": {'$gte': float(__bid['time'])}})
+        __data=QA_util_to_json_from_pandas(QA_fetch_stock_min(str(__bid['code'])[0:6],__bid['time'],__bid['time'],'pd'))
         # 我们只需要找到这个时间点下一条数据就行
         return __data
     # trade mod
@@ -425,3 +424,10 @@ def market_future_min_engine(__bid, __data=None):
 
 def market_future_tick_engine(__bid, __data=None):
     pass
+
+
+if __name__=='__main__':
+    print('test stock day')
+
+    print('stock_min')
+    

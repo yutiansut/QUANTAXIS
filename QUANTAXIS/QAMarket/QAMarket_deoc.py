@@ -23,9 +23,6 @@
 # SOFTWARE.
 
 
-def QA_market_deoc(func,*arg,**kwargs):
-    
-    return func(*arg,**kwargs)
+def QA_market_deoc(func, *arg, **kwargs):
 
-
-
+    return func(*arg, **kwargs)

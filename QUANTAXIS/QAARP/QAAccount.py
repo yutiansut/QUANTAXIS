@@ -30,7 +30,7 @@ import time
 # 2017/6/4修改: 去除总资产的动态权益计算
 
 
-class QA_Account:
+class QA_Account():
     """
     账户类:    
     记录回测的时候的账户情况(持仓列表,交易历史,利润,报单,可用资金)
@@ -57,6 +57,7 @@ class QA_Account:
         self.profit = []
         self.account_cookie = str(random.random())
         self.cash = [self.init_assest]
+        self.cash_pending = 0  # 在途资金
         self.message = {
             'header': {
                 'source': 'account',
@@ -81,18 +82,20 @@ class QA_Account:
 
     def QA_account_update(self, __update_message):
         if str(__update_message['status'])[0] == '2':
-            # 这里就是买卖成功的情况
+
             # towards>1 买入成功
             # towards<1 卖出成功
 
-            __new_code = str(__update_message['bid']['code'])
-            __new_amount = float(__update_message['bid']['amount'])
-            __new_trade_date = str(__update_message['bid']['date'])
-            __new_towards = int(__update_message['bid']['towards'])
-            __new_price = float(__update_message['bid']['price'])
-            __new_order_id = float(__update_message['order_id'])
-            __new_trade_id = float(__update_message['trade_id'])
-            __new_trade_fee = float(__update_message['fee']['commission'])
+            (__new_code, __new_amount, __new_trade_date, __new_towards,
+                __new_price, __new_order_id,
+                __new_trade_id, __new_trade_fee) = (str(__update_message['bid']['code']),
+                                                    float(__update_message['bid']['amount']), str(
+                                                        __update_message['bid']['date']),
+                                                    int(__update_message['bid']['towards']), float(
+                                                        __update_message['bid']['price']),
+                                                    float(__update_message['order_id']), float(
+                                                        __update_message['trade_id']),
+                                                    float(__update_message['fee']['commission']))
             self.history.append(
                 [__new_trade_date, __new_code, __new_price, __new_towards,
                  __new_amount, __new_order_id, __new_trade_id, __new_trade_fee])
@@ -163,9 +166,9 @@ class QA_Account:
                             __item_detail[11] += __new_trade_fee
 
                     self.hold.pop(__id)
-                __del_id=[]
-                for __hold_id in range(1,len(self.hold)):
-                    if int(self.hold[__hold_id][3])==0:
+                __del_id = []
+                for __hold_id in range(1, len(self.hold)):
+                    if int(self.hold[__hold_id][3]) == 0:
                         __del_id.append(__hold_id)
                 __del_id.sort()
                 __del_id.reverse()
@@ -173,7 +176,6 @@ class QA_Account:
                 for __item in __del_id:
                     self.hold.pop(__item)
 
-                    
             # 将交易记录插入历史交易记录
         else:
             pass
@@ -250,8 +252,6 @@ class QA_Account:
             'fee': __message['body']['fee'],
         })
         return __data
-
-
 
 
 class QA_Account_min(QA_Account):

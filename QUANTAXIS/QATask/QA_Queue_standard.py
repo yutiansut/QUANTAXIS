@@ -1,4 +1,4 @@
-#coding:utf-8
+# coding:utf-8
 
 # The MIT License (MIT)
 #
@@ -61,7 +61,6 @@ class QA_Queue(threading.Thread):
         self.__running = threading.Event()      # 用于停止线程的标识
         self.__running.set()      # 将running设置为True
 
-
     def QA_queue_job_register(self, __job: dict):
         '首先对于任务进行类型判断,输入的job的类型一定是一个dict模式的,同时需要含有一个type的K-V对'
         assert type(__job) == dict
@@ -70,11 +69,10 @@ class QA_Queue(threading.Thread):
     def __QA_queue_put(self, args):
         return self.queue.put()
 
-    
     def __QA_queue_pop(self, block=True, timeout=20):
 
         print(self.queue.queue)
-        _l=self.queue.get()
+        _l = self.queue.get()
         print(self.queue.queue)
         return _l
 
@@ -83,7 +81,7 @@ class QA_Queue(threading.Thread):
 
     def run(self):
         while self.__running.isSet():
-            self.__flag.wait() 
+            self.__flag.wait()
             while not self.thread_stop:
                 '这是一个阻塞的队列,避免出现消息的遗漏'
 
@@ -91,15 +89,15 @@ class QA_Queue(threading.Thread):
                     if self.queue.empty() is False:
                         __task = self.queue.get()  # 接收消息
                         assert isinstance(__task, dict)
-                        if __task['fn']!=None:
+                        if __task['fn'] != None:
 
                             eval(__task['fn'])
                             self.queue.__task_done()  # 完成一个任务
-                        else :
+                        else:
                             pass
                     else:
-                        QA_util_log_info("From Engine %s" % str(threading.current_thread()) 
-                         + "Engine will waiting for new task ...")
+                        QA_util_log_info("From Engine %s" % str(threading.current_thread())
+                                         + "Engine will waiting for new task ...")
                         time.sleep(5)
                 except:
                     time.sleep(1)
@@ -108,15 +106,18 @@ class QA_Queue(threading.Thread):
                 if __res > 0:
                     QA_util_log_info("From Engine %s: There are still %d tasks to do" % (
                         str(threading.current_thread()), __res))
-                #input()
-                threading.Timer(0.005,self.run)
+                # input()
+                threading.Timer(0.005, self.run)
+
     def pause(self):
-        self.__flag.clear()   
+        self.__flag.clear()
+
     def resume(self):
         self.__flag.set()    # 设置为True, 让线程停止阻塞
+
     def stop(self):
         self.__flag.set()       # 将线程从暂停状态恢复, 如何已经暂停的话
-        self.__running.clear()        # 设置为False    
+        self.__running.clear()        # 设置为False
 
     def __start(self):
         self.queue.start()
@@ -128,7 +129,7 @@ if __name__ == '__main__':
     worker.start()
     q.put({'type': '1x00', 'subtype': '1x01', 'fn': print('aa')},
           block=False, timeout=None)
-    print('*'*10)
+    print('*' * 10)
     print(worker.queue.queue)
     input()
     QA_util_log_info('===now we will sleep 20 sec, and wait for the response')

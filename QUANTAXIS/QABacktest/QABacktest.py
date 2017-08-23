@@ -54,7 +54,8 @@ from tabulate import tabulate
 
 import configparser
 import queue
-from functools import wraps,update_wrapper
+from functools import wraps, update_wrapper
+
 
 class QA_Backtest():
     account = QA_Account()
@@ -73,6 +74,11 @@ class QA_Backtest():
     需要做一个内部的setting表,以dict格式,value是函数名
     @yutiansut
     2017/6/27
+
+
+    之后需要的是一个通用的回测框架
+    @yutiansut
+    2017/8/23
     """
 
     def QA_backtest_load_strategy(self,):
@@ -548,8 +554,6 @@ class QA_Backtest():
         return {'market': market_data, 'account': __message}
 
 
-
-
 class QA_Backtest_min():
     pass
 
@@ -557,18 +561,16 @@ class QA_Backtest_min():
 if __name__ == '__main__':
 
     @QA_Backtest_stock_day.backtest_init
-
     def init():
         #
-        QA_Backtest_stock_day.setting.QA_util_sql_mongo_ip='192.168.4.189'
-        QA_Backtest_stock_day.account.init_assest=250000
-        QA_Backtest_stock_day.strategy_start_date='2017-03-01'
+        QA_Backtest_stock_day.setting.QA_util_sql_mongo_ip = '192.168.4.189'
+        QA_Backtest_stock_day.account.init_assest = 250000
+        QA_Backtest_stock_day.strategy_start_date = '2017-03-01'
 
     @QA_Backtest_stock_day.before_backtest
     def before_backtest():
         global risk_position
         QA_util_log_info(QA_Backtest_stock_day.account.message)
-        
 
     # 这里是每天回测之前的  比如9:00时候的系统状态
     @QA_Backtest_stock_day.before_trading
@@ -578,7 +580,6 @@ if __name__ == '__main__':
     @QA_Backtest_stock_day.strategy
     def data_handle():
         pass
-
 
     @QA_Backtest_stock_day.end_trading
     def end_trading():

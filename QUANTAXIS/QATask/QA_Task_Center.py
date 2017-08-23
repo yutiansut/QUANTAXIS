@@ -25,9 +25,9 @@
 import threading
 
 from six.moves import queue
-from QUANTAXIS.QAUtil import QA_util_log_info,QA_Setting
-from QA_Event import QA_Event, QA_EventDispatcher
-from QA_Queue_standard import QA_Queue
+from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting
+from .QA_Event import QA_Event, QA_EventDispatcher
+from .QA_Queue_standard import QA_Queue
 
 
 """
@@ -36,7 +36,7 @@ from QA_Queue_standard import QA_Queue
 
 
 class QA_Task():
-    def __init__(self, Job:queue.Queue,  Event_: QA_Event, Dispatcher_: QA_EventDispatcher):
+    def __init__(self, Job: queue.Queue,  Event_: QA_Event, Dispatcher_: QA_EventDispatcher):
         self.Job = Job
         self.Task = QA_Queue(self.Job)
 
@@ -46,9 +46,9 @@ class QA_Task():
 
 
 if __name__ == '__main__':
-    x1=queue.Queue()
-    #X1=QA_Queue(x1)
-    E1=QA_Event('x1')
-    D1=QA_EventDispatcher()
-    QA_Task(x1,E1,D1).start_task('xx')
-    x1.put({'fn':print(x1)})
+    x1 = queue.Queue()
+    # X1=QA_Queue(x1)
+    E1 = QA_Event('x1')
+    D1 = QA_EventDispatcher()
+    QA_Task(x1, E1, D1).start_task('xx')
+    x1.put({'fn': print(x1)})

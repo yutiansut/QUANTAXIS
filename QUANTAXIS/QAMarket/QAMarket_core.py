@@ -56,11 +56,11 @@ class QA_Market():
         elif __bid['status'] == '0x02':
             return market_stock_min_engine(__bid, __data)
         elif __bid['status'] == '1x01':
-            return market_future_day_engine(__bid,__data)
+            return market_future_day_engine(__bid, __data)
         elif __bid['status'] == '1x02':
             return market_future_min_engine(__bid, __data)
         elif __bid['status'] == '1x03':
-            return market_future_tick_engine(__bid,__data)
+            return market_future_tick_engine(__bid, __data)
 
     def receive_bid(self, __bid, __data=None):
         """
@@ -75,7 +75,7 @@ class QA_Market():
                 elif __bid['price'] == 'close_price':
                     return __bid
                 elif __bid['price'] == 'strict' or 'strict_model' or 'strict_price':
-                    __bid['price']='strict_price'
+                    __bid['price'] = 'strict_price'
                     return __bid
                 else:
                     QA_util_log_info('unsupport type:' + __bid['price'])
