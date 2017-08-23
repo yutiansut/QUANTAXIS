@@ -84,7 +84,6 @@ class QA_Market():
 
         """
         def __confirm_bid(__bid):
-            assert isinstance(__bid, dict)
             if isinstance(__bid.price, str):
                 if __bid.price == 'market_price':
                     return __bid

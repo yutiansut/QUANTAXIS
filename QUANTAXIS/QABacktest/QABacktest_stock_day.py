@@ -346,20 +346,20 @@ class QA_Backtest_stock_day():
             __bid_price = 'strict_price'
         elif __order['bid_model'] in ['close', 'close_price', 'c', 'C', '3', 3]:
             __bid_price = 'close_price'
-        __bid = self.bid.bid
+        __bid = self.bid
 
-        __bid['order_id'] = str(random.random())
-        __bid['user'] = self.setting.QA_setting_user_name
-        __bid['strategy'] = self.strategy_name
-        __bid['code'] = __code
-        __bid['date'] = self.running_date
-        __bid['price'] = __bid_price
-        __bid['amount'] = __amount
+        __bidorder_id = str(random.random())
+        __bid.user = self.setting.QA_setting_user_name
+        __bid.strategy = self.strategy_name
+        __bid.code = __code
+        __bid.date = self.running_date
+        __bid.price = __bid_price
+        __bid.amount = __amount
 
         if __towards == 1:
             # 这是买入的情况 买入的时候主要考虑的是能不能/有没有足够的钱来买入
 
-            __bid['towards'] = 1
+            __bid.towards = 1
             __message = self.market.receive_bid(
                 __bid)
 
@@ -393,8 +393,8 @@ class QA_Backtest_stock_day():
             # 检查持仓面板
             __amount_hold = self.QA_backtest_hold_amount(self, __code)
             if __amount_hold > 0:
-                __bid['towards'] = -1
-                __bid['amount'] = __amount_hold if __amount_hold < __amount else __bid['amount']
+                __bid.towards = -1
+                __bid.amount = __amount_hold if __amount_hold < __amount else __bid.amount
                 __message = self.market.receive_bid(
                     __bid)
                 if __message['header']['status'] == 200:
@@ -429,18 +429,18 @@ class QA_Backtest_stock_day():
             pre_del_id = []
             def __sell(id_):
                 if __hold_list[item_][3] > 0:
-                    __last_bid = self.bid.bid
-                    __last_bid['amount'] = int(__hold_list[id_][3])
-                    __last_bid['order_id'] = str(random.random())
-                    __last_bid['price'] = 'close_price'
-                    __last_bid['code'] = str(__hold_list[id_][1])
-                    __last_bid['date'] = self.today
-                    __last_bid['towards'] = -1
-                    __last_bid['user'] = self.setting.QA_setting_user_name
-                    __last_bid['strategy'] = self.strategy_name
-                    __last_bid['bid_model'] = 'auto'
-                    __last_bid['status'] = '0x01'
-                    __last_bid['amount_model'] = 'amount'
+                    __last_bid = self.bid
+                    __last_bid.amount = int(__hold_list[id_][3])
+                    __last_bid.order_id = str(random.random())
+                    __last_bid.price = 'close_price'
+                    __last_bid.code = str(__hold_list[id_][1])
+                    __last_bid.date = self.today
+                    __last_bid.towards = -1
+                    __last_bid.user = self.setting.QA_setting_user_name
+                    __last_bid.strategy = self.strategy_name
+                    __last_bid.bid_model = 'auto'
+                    __last_bid.status = '0x01'
+                    __last_bid.amount_model = 'amount'
 
                     __message = self.market.receive_bid(
                         __last_bid)
