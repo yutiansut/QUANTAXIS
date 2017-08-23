@@ -30,7 +30,7 @@ import random
 import re
 import sys
 import time
-from functools import *
+
 import apscheduler
 import numpy as np
 import pandas as pd
@@ -57,7 +57,21 @@ import queue
 from functools import wraps, update_wrapper
 
 
-class QA_Backtest_stock_day():
+
+"""
+stock_min  需要考虑一个问题
+
+
+1.在途资金的问题
+2.交易所待成交队列
+
+
+"""
+
+
+
+
+class QA_Backtest_stock_min():
     '因为涉及很多不继承类的情况,所以先单列出来'
     account = QA_Account()
     market = QA_Market()
@@ -188,6 +202,51 @@ class QA_Backtest_stock_day():
             return self.market_data[stock_id][index_of_start:index_of_day + 1]
         else:
             return self.market_data[stock_id][0:__id + 1]
+
+    def __QA_data_handle(self, __id, __stock_id):
+        "已经废弃"
+        market_data = self.__QA_get_data_from_market(__id, __stock_id)
+        __message = self.account.message
+
+        return {'market': market_data, 'account': __message}
+
+    def __backtest_every_day_trading(self, i, func, *arg, **kwargs):
+
+        # 正在进行的交易日期
+        __running_date = self.trade_list[i]
+        QA_util_log_info(
+            '=================daily hold list====================')
+        QA_util_log_info('in the begining of ' + __running_date)
+        QA_util_log_info('\n' +
+                         tabulate(self.account.message['body']['account']['hold']))
+        for __j in range(0, len(self.strategy_stock_list)):
+            if __running_date in [l[6] for l in self.market_data[__j]] and \
+                    [l[6] for l in self.market_data[__j]].index(__running_date) \
+                    > self.strategy_gap + 1:
+
+                __data = self.__QA_data_handle(
+                    [__l[6] for __l in self.market_data[__j]].index(__running_date), __j)
+                __amount = 0
+                for item in __data['account']['body']['account']['hold']:
+
+                    if self.strategy_stock_list[__j] in item:
+                        __amount = __amount + item[3]
+                if __amount > 0:
+                    __hold = 1
+                else:
+                    __hold = 0
+
+                __result = func(self, *arg, **kwargs)
+
+                if float(self.account.message['body']['account']['cash'][-1]) > 0:
+                    self.QA_backtest_excute_bid(
+                        __result, __running_date, __hold,
+                        str(self.strategy_stock_list[__j])[0:6], __amount)
+
+                else:
+                    QA_util_log_info('not enough free money')
+            else:
+                pass
 
     def __end_of_trading(self, *arg, **kwargs):
         # 在回测的最后一天,平掉所有仓位(回测的最后一天是不买入的)
@@ -416,32 +475,18 @@ class QA_Backtest_stock_day():
 
         else:
             return "Error: No buy/sell towards"
-    def QA_backtest_check_order(self,order):
-        '用于检查委托单的状态'
-        """
-        委托单被报入交易所会有一个回报,回报状态就是交易所返回的字段:
-        字段目前 2xx 是成功  4xx是失败 5xx是交易所无数据(停牌)
-
-        随着回测框架的不断升级,会有更多状态需要被管理:
-
-
-        200 委托成功,交易成功
-        203 委托成功,待成交
-        20
-        """
-        pass
 
     def QA_backtest_sell_all(self):
         while len(self.account.hold) > 1:
             __hold_list = self.account.hold[1::]
             pre_del_id = []
-            def __sell(id_):
+            for item_ in range(0, len(__hold_list)):
                 if __hold_list[item_][3] > 0:
                     __last_bid = self.bid.bid
-                    __last_bid['amount'] = int(__hold_list[id_][3])
+                    __last_bid['amount'] = int(__hold_list[item_][3])
                     __last_bid['order_id'] = str(random.random())
                     __last_bid['price'] = 'close_price'
-                    __last_bid['code'] = str(__hold_list[id_][1])
+                    __last_bid['code'] = str(__hold_list[item_][1])
                     __last_bid['date'] = self.today
                     __last_bid['towards'] = -1
                     __last_bid['user'] = self.setting.QA_setting_user_name
@@ -466,11 +511,7 @@ class QA_Backtest_stock_day():
                     self.__messages = self.account.QA_account_receive_deal(
                         __message)
                 else:
-                    pre_del_id.append(id_)
-                return pre_del_id
-            
-            
-            pre_del_id=reduce(lambda _, x:__sell(x),range(0, len(__hold_list)))  
+                    pre_del_id.append(item_)
             pre_del_id.sort()
             pre_del_id.reverse()
             for item_x in pre_del_id:

@@ -24,9 +24,9 @@
 
 
 import pymongo
+from QUANTAXIS.QAUtil import QA_Setting
 
-
-def QA_util_mongo_initial(db=pymongo.MongoClient().quantaxis):
+def QA_util_mongo_initial(db=QA_Setting.client.quantaxis):
 
     db.drop_collection('stock_day')
     db.drop_collection('stock_list')
@@ -34,9 +34,14 @@ def QA_util_mongo_initial(db=pymongo.MongoClient().quantaxis):
     db.drop_collection('trade_date')
 
 
-def QA_util_mongo_make_index(db=pymongo.MongoClient().quantaxis):
+def QA_util_mongo_make_index(db=QA_Setting.client.quantaxis):
     try:
         db.stock_day.ensure_index('code')
         db.stock_min_five.ensure_index('code')
     except:
         pass
+
+
+
+def QA_util_mongo_status(db=QA_Setting.client.quantaxis):
+    pass
