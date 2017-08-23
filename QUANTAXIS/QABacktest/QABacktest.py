@@ -74,6 +74,11 @@ class QA_Backtest():
     需要做一个内部的setting表,以dict格式,value是函数名
     @yutiansut
     2017/6/27
+
+
+    之后需要的是一个通用的回测框架
+    @yutiansut
+    2017/8/23
     """
 
     def QA_backtest_load_strategy(self,):

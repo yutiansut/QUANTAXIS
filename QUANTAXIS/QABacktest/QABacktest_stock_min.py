@@ -68,9 +68,6 @@ stock_min  需要考虑一个问题
 
 """
 
-
-
-
 class QA_Backtest_stock_min():
     '因为涉及很多不继承类的情况,所以先单列出来'
     account = QA_Account()
@@ -80,8 +77,8 @@ class QA_Backtest_stock_min():
     clients = setting.client
     user = setting.QA_setting_user_name
     market_data = []
-    today = ''
-
+    today = '' #之后会被废弃 统一用now
+    now = ''
     def __init__(self):
 
         self.account = QA_Account()
@@ -92,6 +89,7 @@ class QA_Backtest_stock_min():
         self.user = self.setting.QA_setting_user_name
         self.market_data = []
         self.today = ''
+        self.now = ''
 
     def __QA_backtest_init(self):
         """既然是被当做装饰器使用,就需要把变量设置放在装饰函数的前面,把函数放在装饰函数的后面"""

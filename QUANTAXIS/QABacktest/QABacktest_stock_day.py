@@ -294,12 +294,7 @@ class QA_Backtest_stock_day():
         return self.__QA_get_data_from_market(self, index_of_date, index_of_code)
 
     def QA_backtest_hold_amount(self, __code):
-        __amount_hold = 0
-        for item in self.account.hold:
-
-            if __code in item:
-                __amount_hold += item[3]
-        return __amount_hold
+        return sum(list(map(lambda item:item[3] if __code in item else 0,self.account.hold)))
 
     def QA_backtest_get_OHLCV(self, __data):
         '快速返回 OHLCV格式'
@@ -470,7 +465,7 @@ class QA_Backtest_stock_day():
                 return pre_del_id
             
             
-            pre_del_id=reduce(lambda _, x:__sell(x),range(0, len(__hold_list)))  
+            pre_del_id=reduce(lambda _, x:__sell(x),range(len(__hold_list)))  
             pre_del_id.sort()
             pre_del_id.reverse()
             for item_x in pre_del_id:
