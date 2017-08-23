@@ -217,7 +217,7 @@ class QA_Backtest_stock_day():
                     while __message['header']['status'] == 500:
                         # 停牌状态,这个时候按停牌的最后一天计算价值(假设平仓)
 
-                        __last_bid['date'] = self.trade_list[self.end_real_id - _remains_day]
+                        __last_bid.date = self.trade_list[self.end_real_id - _remains_day]
                         _remains_day += 1
                         __message = self.market.receive_bid(
                             __last_bid)
@@ -448,7 +448,7 @@ class QA_Backtest_stock_day():
                     while __message['header']['status'] == 500:
                         # 停牌状态,这个时候按停牌的最后一天计算价值(假设平仓)
 
-                        __last_bid['date'] = self.trade_list[self.end_real_id - _remains_day]
+                        __last_bid.date = self.trade_list[self.end_real_id - _remains_day]
                         _remains_day += 1
                         __message = self.market.receive_bid(
                             __last_bid)

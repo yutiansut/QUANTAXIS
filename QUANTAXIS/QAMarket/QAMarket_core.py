@@ -50,6 +50,7 @@ class QA_Market():
     def _choice_trading_market(self, __bid, __data=None):
         assert isinstance(__bid.status, str)
         if __bid.status == '0x01':
+            __data=self.__get_stock_day_data(__bid)
             return market_stock_day_engine(__bid, __data)
         elif __bid.status == '0x02':
             # 获取股票引擎

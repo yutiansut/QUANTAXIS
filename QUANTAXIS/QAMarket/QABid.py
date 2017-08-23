@@ -43,7 +43,7 @@ class QA_QAMarket_bid():
     def __init__(self):
         self.price = 16
         self.date = '2015-01-05'
-        self.time = '2015-01-05 09:01:00'
+        self.datetime = '2015-01-05 09:01:00'
         self.sending_time = '2015-01-05 09:01:00'  # 下单时间
         self.transact_time = ''
         self.amount = 10
