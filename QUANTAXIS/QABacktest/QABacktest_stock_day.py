@@ -394,10 +394,7 @@ class QA_Backtest_stock_day():
             __amount_hold = self.QA_backtest_hold_amount(self, __code)
             if __amount_hold > 0:
                 __bid['towards'] = -1
-                if __amount_hold >= __amount:
-                    pass
-                else:
-                    __bid['amount'] = __amount_hold
+                __bid['amount'] = __amount_hold if __amount_hold < __amount else __bid['amount']
                 __message = self.market.receive_bid(
                     __bid)
                 if __message['header']['status'] == 200:
