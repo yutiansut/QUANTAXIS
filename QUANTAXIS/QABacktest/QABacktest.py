@@ -160,23 +160,7 @@ class QA_Backtest():
                          tabulate([self.strategy_stock_list]))
 
         # 初始化报价模式
-        self.__QA_backtest_set_bid_model(self)
         self.__messages = []
-
-    def __QA_backtest_set_bid_model(self):
-
-        if self.backtest_bid_model == 'market_price':
-            self.bid.price = 'market_price'
-            self.bid.bid_model = 'auto'
-        elif self.backtest_bid_model == 'close_price':
-            self.bid.price = 'close_price'
-            self.bid.bid_model = 'auto'
-        elif self.backtest_bid_model == 'strategy':
-            self.bid.price = 0
-            self.bid.bid_model = 'strategy'
-        else:
-            QA_util_log_info('support bid model')
-            sys.exit()
 
     def __check_state(self, bid_price, bid_amount):
         pass
@@ -234,6 +218,26 @@ class QA_Backtest():
             for item_x in pre_del_id:
                 __hold_list.pop(item_x)
 
+    def __warp_bid(self, __bid, __order):
+        __market_data_for_backtest = self.QA_backtest_get_market_data(
+            self, __bid.code, __bid.date, 'np', 1)
+        __O, __H, __L, __C, __V = self.QA_backtest_get_OHLCV(
+            self, __market_data_for_backtest)
+        if __order['bid_model'] in ['limit', 'Limit', 'Limited', 'limited', 'l', 'L', 0, '0']:
+                # 限价委托模式
+            __bid.price = __order['price']
+        elif __order['bid_model'] in ['Market', 'market', 'MARKET', 'm', 'M', 1, '1']:
+            __bid.price = 0.5 * (float(__O[0]) + float(__C[0]))
+        elif __order['bid_model'] in ['strict', 'Strict', 's', 'S', '2', 2]:
+            __bid.price = float(
+                __H[0]) if __bid.towards == 1 else float(__L[0])
+        elif __order['bid_model'] in ['close', 'close_price', 'c', 'C', '3', 3]:
+            __bid.price = float(__C[0])
+
+        __bid.price = float('%.2f' % __bid.price)
+
+        return __bid
+
     def __end_of_backtest(self, *arg, **kwargs):
 
         # 开始分析
@@ -285,10 +289,11 @@ class QA_Backtest():
             QA_SU_save_account_to_csv(self.__messages)
         # QA.QA_SU_save_backtest_message(analysis_message, self.setting.client)
 
-    def QA_backtest_get_market_data(self, code, date, type_='numpy'):
+    def QA_backtest_get_market_data(self, code, date, type_='numpy', gap_=None):
         '这个函数封装了关于获取的方式'
+        gap_ = self.strategy_gap if gap_ is None else gap_
         index_of_code = self.strategy_stock_list.index(code)
-        __res = self.market_data[index_of_code][:date].tail(self.strategy_gap)
+        __res = self.market_data[index_of_code][:date].tail(gap_)
         if type_ in ['l', 'list', 'L']:
             return np.asarray(__res).tolist()
         elif type_ in ['pd', 'pandas', 'p']:
@@ -321,98 +326,96 @@ class QA_Backtest():
             0 限价委托 LIMIT ORDER
             1 市价委托 MARKET ORDER
             2 严格模式(买入按最高价 卖出按最低价) STRICT ORDER
-
-
-        输出
-        =============
-        返回: 
-
-        委托状态/委托id
-
-        成交状态/成交id/成交量/成交价
-
-        错误/错误id/
-
-        return bid_status,trade_status,error
         """
 
         # 必须是100股的倍数
         __amount = int(__amount / 100) * 100
 
         # self.__QA_backtest_set_bid_model()
-        if __order['bid_model'] in ['limit', 'Limit', 'Limited', 'limited', 'l', 'L', 0, '0']:
-            # 限价委托模式
-            __bid_price = __order['price']
-        elif __order['bid_model'] in ['Market', 'market', 'MARKET', 'm', 'M', 1, '1']:
-            __bid_price = 'market_price'
-        elif __order['bid_model'] in ['strict', 'Strict', 's', 'S', '2', 2]:
-            __bid_price = 'strict_price'
-        elif __order['bid_model'] in ['close', 'close_price', 'c', 'C', '3', 3]:
-            __bid_price = 'close_price'
+
         __bid = self.bid
 
-        __bid.order_id = str(random.random())
-        __bid.user = self.setting.QA_setting_user_name
-        __bid.strategy = self.strategy_name
-        __bid.code = __code
-        __bid.date = self.running_date
-        __bid.datetime = self.running_date
-        __bid.sending_time = self.running_date
-        __bid.price = __bid_price
-        __bid.amount = __amount
-
-        if __towards == 1:
-            # 这是买入的情况 买入的时候主要考虑的是能不能/有没有足够的钱来买入
-
-            __bid.towards = 1
-            __message = self.market.receive_bid(
-                __bid)
-
-            # 先扔进去买入,再通过返回的值来判定是否成功
-
-            if float(self.account.message['body']['account']['cash'][-1]) > \
-                    float(__message['body']['bid']['price']) * \
-                    float(__message['body']['bid']['amount']):
-                    # 这里是买入资金充足的情况
-                    # 不去考虑
-                pass
-            else:
-                # 如果买入资金不充足,则按照可用资金去买入
-                # 这里可以这样做的原因是在买入的时候 手续费为0
-                __message['body']['bid']['amount'] = int(float(
-                    self.account.message['body']['account']['cash'][-1]) / float(
-                        float(str(__message['body']['bid']['price'])[0:5]) * 100)) * 100
-
-            if __message['body']['bid']['amount'] > 0:
-                # 这个判断是为了 如果买入资金不充足,所以买入报了一个0量单的情况
-                #如果买入量>0, 才判断为成功交易
-                self.account.QA_account_receive_deal(__message)
-                return __message
-
-        # 下面是卖出操作,这里在卖出前需要考虑一个是否有仓位的问题:
-        # 因为在股票中是不允许卖空操作的,所以这里是股票的交易引擎和期货的交易引擎的不同所在
-
-        elif __towards == -1:
-            # 如果是卖出操作 检查是否有持仓
-            # 股票中不允许有卖空操作
-            # 检查持仓面板
-            __amount_hold = self.QA_backtest_hold_amount(self, __code)
-            if __amount_hold > 0:
-                __bid.towards = -1
-                __bid.amount = __amount_hold if __amount_hold < __amount else __bid.amount
-                __message = self.market.receive_bid(
-                    __bid)
-                if __message['header']['status'] == 200:
-                    self.account.QA_account_receive_deal(__message)
-                return __message
-            else:
-                err_info = 'Error: Not Enough amount for code %s in hold list' % str(
-                    __code)
-                QA_util_log_expection(err_info)
-                return err_info
-
+        (__bid.order_id, __bid.user, __bid.strategy,
+         __bid.code, __bid.date, __bid.datetime,
+         __bid.sending_time,
+         __bid.amount, __bid.towards) = (str(random.random()),
+                                         self.setting.QA_setting_user_name, self.strategy_name,
+                                         __code, self.running_date, self.running_date,
+                                         self.running_date, __amount, __towards)
+        __bid = self.__warp_bid(self, __bid, __order)
+        # 先进行处理:
+        if __bid.towards == 1:
+            # 扣费以下这个订单时的bar的open扣费
+            self.account.cash_available -= (__bid.price * __bid.amount)
         else:
-            return "Error: No buy/sell towards"
+
+            self.account.hold_available[__bid.code] = self.account.hold_available[__bid.code] - self.bid.amount
+        self.account.order_queue.append(__bid)
+        # TODO 到这里 bid已经封装好了
+        return 'Order has been send!'
+
+    def QA_backtest_deal(self):
+        '基于bid的撮合成交'
+        __failed_bid = []
+        print(self.account.order_queue)
+        for __bid in self.account.order_queue:
+            print(__bid)
+            if __bid.towards == 1:
+                # 这是买入的情况 买入的时候主要考虑的是能不能/有没有足够的钱来买入
+                __message = self.market.receive_bid(__bid)
+
+                # 先扔进去买入,再通过返回的值来判定是否成功
+
+                if float(self.account.message['body']['account']['cash'][-1]) > \
+                        float(__message['body']['bid']['price']) * \
+                        float(__message['body']['bid']['amount']):
+                        # 这里是买入资金充足的情况
+                        # 不去考虑
+                    pass
+                else:
+                    # 如果买入资金不充足,则按照可用资金去买入
+                    # 这里可以这样做的原因是在买入的时候 手续费为0
+                    __message['body']['bid']['amount'] = int(float(
+                        self.account.message['body']['account']['cash'][-1]) / float(
+                            float(str(__message['body']['bid']['price'])[0:5]) * 100)) * 100
+
+                if __message['body']['bid']['amount'] > 0:
+                    # 这个判断是为了 如果买入资金不充足,所以买入报了一个0量单的情况
+                    # 如果买入量>0, 才判断为成功交易
+                    self.account.QA_account_receive_deal(__message)
+                    yield __message
+                else:
+                    __failed_bid.append(__bid)
+
+            # 下面是卖出操作,这里在卖出前需要考虑一个是否有仓位的问题:
+            # 因为在股票中是不允许卖空操作的,所以这里是股票的交易引擎和期货的交易引擎的不同所在
+
+            elif __bid.towards == -1:
+                # 如果是卖出操作 检查是否有持仓
+                # 股票中不允许有卖空操作
+                # 检查持仓面板
+                __amount_hold = self.QA_backtest_hold_amount(self, __bid.code)
+                if __amount_hold > 0:
+
+                    __bid.amount = __amount_hold if __amount_hold < __bid.amount else __bid.amount
+                    __message = self.market.receive_bid(
+                        __bid)
+                    if __message['header']['status'] == 200:
+                        self.account.QA_account_receive_deal(__message)
+                    else:
+                        __failed_bid.append(__bid)
+                    yield __message
+
+                else:
+                    __failed_bid.append(__bid)
+                    err_info = 'Error: Not Enough amount for code %s in hold list' % str(
+                        __bid.code)
+                    QA_util_log_expection(err_info)
+                    yield err_info
+
+            else:
+                yield "Error: No buy/sell towards"
+            self.account.order_queue = __failed_bid
 
     def QA_backtest_check_order(self, order):
         '用于检查委托单的状态'
@@ -495,7 +498,20 @@ class QA_Backtest():
                 tabulate(__backtest_cls.account.message['body']['account']['hold']))
             __backtest_cls.now = __backtest_cls.running_date
             __backtest_cls.today = __backtest_cls.running_date
-            func(*arg, **kwargs)
+            # 交易前同步持仓状态
+            __backtest_cls.account.cash_available = __backtest_cls.account.cash[-1]
+            __temp_hold = pd.DataFrame(
+                __backtest_cls.account.hold[1::], columns=__backtest_cls.account.hold[0])
+            __temp_hold = __temp_hold.set_index('code', drop=False)
+            __backtest_cls.account.hold_available = __temp_hold['amount'].groupby(
+                'code').sum()
+            if __backtest_cls.backtest_type in ['day', 'd']:
+                func(*arg, **kwargs)  # 发委托单
+                __backtest_cls.QA_backtest_deal(__backtest_cls)
+            elif __backtest_cls.backtest_type in ['min', 'm']:
+
+                func(*arg, **kwargs)  # 发委托单
+            # 队列循环批量发单
 
         # 最后一天
         __backtest_cls.__end_of_trading(__backtest_cls)

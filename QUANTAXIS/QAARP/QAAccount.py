@@ -25,7 +25,8 @@
 import datetime
 import random
 import time
-
+import pandas as pd
+import numpy as np
 
 # 2017/6/4修改: 去除总资产的动态权益计算
 
@@ -44,11 +45,12 @@ class QA_Account():
 
         self.hold = [['date', 'code', ' price',
                       'amount', 'order_id', 'trade_id']]
+        self.hold_available=[['date', 'code', ' price',
+                      'amount', 'order_id', 'trade_id']]
         self.init_assest = 1000000
-        self.cash = []
-        self.cash_onway = []  # 在途资金
-        self.order_queue = [['date', 'code', ' price',
-                              'amount', 'order_id', 'trade_id']] #已委托待成交队列
+        self.cash = [self.init_assest]
+        self.cash_available = self.cash[-1]  # 可用资金
+        self.order_queue = []  # 已委托待成交队列
         self.history = []
         self.detail = []
         self.assets = []
@@ -59,11 +61,14 @@ class QA_Account():
     def init(self):
         self.hold = [['date', 'code', ' price',
                       'amount', 'order_id', 'trade_id']]
+        self.hold_available=[['date', 'code', ' price',
+                      'amount', 'order_id', 'trade_id']]
         self.history = []
         self.profit = []
         self.account_cookie = str(random.random())
         self.cash = [self.init_assest]
-        self.cash_pending = 0  # 在途资金
+        self.cash_available = self.cash[-1]  # 在途资金
+        self.order_queue = []  # 已委托待成交队列
         self.message = {
             'header': {
                 'source': 'account',
@@ -102,34 +107,34 @@ class QA_Account():
                                                     float(__update_message['order_id']), float(
                                                         __update_message['trade_id']),
                                                     float(__update_message['fee']['commission']))
-            if int(__update_message['status'])==203:
-                '委托成功 待交易'  
+            if int(__update_message['status']) == 203:
+                '委托成功 待交易'
                 self.order_queue.append(
-                        [__new_trade_date, __new_code, __new_price, __new_amount,
-                        __new_order_id, __new_trade_id])
+                    [__new_trade_date, __new_code, __new_price, __new_amount,
+                     __new_order_id, __new_trade_id])
 
                 # 如果是买入的waiting  那么要减少可用资金,增加在途资金
                 # 如果是卖出的waiting 则减少hold_list
                 input()
-            elif int(__update_message['status'])==200:
-                '交易成功的处理'                      
+            elif int(__update_message['status']) == 200:
+                '交易成功的处理'
                 self.history.append(
                     [__new_trade_date, __new_code, __new_price, __new_towards,
-                    __new_amount, __new_order_id, __new_trade_id, __new_trade_fee])
+                     __new_amount, __new_order_id, __new_trade_id, __new_trade_fee])
                 # 先计算收益和利润
 
                 # 修改持仓表
                 if int(__new_towards) > 0:
-
+                    # 买入
                     self.hold.append(
                         [__new_trade_date, __new_code, __new_price, __new_amount,
-                        __new_order_id, __new_trade_id])
+                         __new_order_id, __new_trade_id])
                     self.detail.append([__new_trade_date, __new_code, __new_price,
                                         __new_amount, __new_order_id, __new_trade_id,
                                         [], [], [], [], __new_amount, __new_trade_fee])
                 # 将交易记录插入历史交易记录
                 else:
-                    # 更新账户
+                    # 卖出
                     __pop_list = []
                     while __new_amount > 0:
 
@@ -255,6 +260,22 @@ class QA_Account():
         self.assets.append(self.cash[-1] + market_value)
 
     def QA_account_receive_deal(self, __message):
+        # 主要是把从market拿到的数据进行解包,一个一个发送给账户进行更新,再把最后的结果反回
+        __data = self.QA_account_update({
+            'code': __message['header']['code'],
+            'status': __message['header']['status'],
+            'user': __message['header']['session']['user'],
+            'strategy': __message['header']['session']['strategy'],
+            'trade_id': __message['header']['trade_id'],
+            'order_id': __message['header']['order_id'],
+            'date_stamp': str(time.mktime(datetime.datetime.now().timetuple())),
+            'bid': __message['body']['bid'],
+            'market': __message['body']['market'],
+            'fee': __message['body']['fee'],
+        })
+        return __data
+
+    def QA_account_receive_order(self, __message):
         # 主要是把从market拿到的数据进行解包,一个一个发送给账户进行更新,再把最后的结果反回
         __data = self.QA_account_update({
             'code': __message['header']['code'],
