@@ -22,6 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+
 import csv
 import datetime
 import json
@@ -30,7 +31,6 @@ import random
 import re
 import sys
 import time
-from functools import *
 import apscheduler
 import numpy as np
 import pandas as pd
@@ -54,11 +54,12 @@ from tabulate import tabulate
 
 import configparser
 import queue
-from functools import wraps, update_wrapper
+from functools import wraps, update_wrapper, reduce
 
 
-class QA_Backtest_stock_day():
-    '因为涉及很多不继承类的情况,所以先单列出来'
+class QA_Backtest():
+    '最终目的还是实现一个通用的回测类'
+    backtest_type = 'day'
     account = QA_Account()
     market = QA_Market()
     bid = QA_QAMarket_bid()
@@ -66,10 +67,11 @@ class QA_Backtest_stock_day():
     clients = setting.client
     user = setting.QA_setting_user_name
     market_data = []
+    now = ''
     today = ''
 
     def __init__(self):
-
+        self.backtest_type = 'day'
         self.account = QA_Account()
         self.market = QA_Market()
         self.bid = QA_QAMarket_bid()
@@ -77,6 +79,7 @@ class QA_Backtest_stock_day():
         self.clients = self.setting.client
         self.user = self.setting.QA_setting_user_name
         self.market_data = []
+        self.now = ''
         self.today = ''
 
     def __QA_backtest_init(self):
@@ -94,7 +97,7 @@ class QA_Backtest_stock_day():
         self.setting.QA_setting_user_password = str('admin')
         self.setting.QA_setting_init()
         # 回测的名字
-        self.strategy_name = str('example')
+        self.strategy_name = str('example_min')
        # 股票的交易日历,真实回测的交易周期,和交易周期在交易日历中的id
         self.trade_list = QA_fetch_trade_date(
             self.setting.client.quantaxis.trade_date)
@@ -107,7 +110,7 @@ class QA_Backtest_stock_day():
         self.account.init_assest = 1000000
         self.backtest_bid_model = 'market_price'
 
-    def __QA_backtest_init_class(self):
+    def __QA_backtest_prepare(self):
         """
         这是模型内部的 初始化,主要是初始化一些账户和市场资产
         写成了私有函数
@@ -128,10 +131,17 @@ class QA_Backtest_stock_day():
         # 重新初始化账户的cookie
         self.account.account_cookie = str(random.random())
         # 初始化股票池的市场数据
-        self.market_data = QA_fetch_stocklist_day(
-            self.strategy_stock_list, self.setting.client.quantaxis.stock_day,
-            [self.trade_list[self.start_real_id - int(self.strategy_gap)],
-             self.trade_list[self.end_real_id]])
+
+        if self.backtest_type in ['day', 'd', '0x00']:
+            self.market_data = QA_fetch_stocklist_day(
+                self.strategy_stock_list,
+                [self.trade_list[self.start_real_id - int(self.strategy_gap)],
+                 self.trade_list[self.end_real_id]])
+        elif self.backtest_type in ['min', 'm', '0x01']:
+            self.market_data = QA_fetch_stocklist_min(
+                self.strategy_stock_list, [self.trade_list[
+                    self.start_real_id - int(self.strategy_gap)],
+                    self.trade_list[self.end_real_id]])
 
     def __QA_backtest_start(self, *args, **kwargs):
         """
@@ -141,7 +151,6 @@ class QA_Backtest_stock_day():
         assert len(self.trade_list) > 0
         assert isinstance(self.start_real_date, str)
         assert isinstance(self.end_real_date, str)
-
         assert len(self.market_data) == len(self.strategy_stock_list)
 
         QA_util_log_info('QUANTAXIS Backtest Engine Initial Successfully')
@@ -180,14 +189,6 @@ class QA_Backtest_stock_day():
             return __amount * 0.5, 'amount'
         elif __strategy_amount == 'all':
             return __amount, 'amount'
-
-    def __QA_get_data_from_market(self, __id, stock_id):
-        if __id > self.strategy_gap + 1:
-            index_of_day = __id
-            index_of_start = index_of_day - self.strategy_gap + 1
-            return self.market_data[stock_id][index_of_start:index_of_day + 1]
-        else:
-            return self.market_data[stock_id][0:__id + 1]
 
     def __end_of_trading(self, *arg, **kwargs):
         # 在回测的最后一天,平掉所有仓位(回测的最后一天是不买入的)
@@ -284,17 +285,19 @@ class QA_Backtest_stock_day():
             QA_SU_save_account_to_csv(self.__messages)
         # QA.QA_SU_save_backtest_message(analysis_message, self.setting.client)
 
-    def QA_backtest_get_market_data(self, code, date):
+    def QA_backtest_get_market_data(self, code, date, type_='numpy'):
         '这个函数封装了关于获取的方式'
-        index_of_date = 0
         index_of_code = self.strategy_stock_list.index(code)
-        if date in [l[6] for l in self.market_data[index_of_code]]:
-            index_of_date = [l[6]
-                             for l in self.market_data[index_of_code]].index(date)
-        return self.__QA_get_data_from_market(self, index_of_date, index_of_code)
+        __res = self.market_data[index_of_code][:date].tail(self.strategy_gap)
+        if type_ in ['l', 'list', 'L']:
+            return np.asarray(__res).tolist()
+        elif type_ in ['pd', 'pandas', 'p']:
+            return res
+        else:
+            return np.asarray(__res)
 
     def QA_backtest_hold_amount(self, __code):
-        return sum(list(map(lambda item:item[3] if __code in item else 0,self.account.hold)))
+        return sum(list(map(lambda item: item[3] if __code in item else 0, self.account.hold)))
 
     def QA_backtest_get_OHLCV(self, __data):
         '快速返回 OHLCV格式'
@@ -410,7 +413,8 @@ class QA_Backtest_stock_day():
 
         else:
             return "Error: No buy/sell towards"
-    def QA_backtest_check_order(self,order):
+
+    def QA_backtest_check_order(self, order):
         '用于检查委托单的状态'
         """
         委托单被报入交易所会有一个回报,回报状态就是交易所返回的字段:
@@ -429,6 +433,7 @@ class QA_Backtest_stock_day():
         while len(self.account.hold) > 1:
             __hold_list = self.account.hold[1::]
             pre_del_id = []
+
             def __sell(id_):
                 if __hold_list[item_][3] > 0:
                     __last_bid = self.bid
@@ -436,7 +441,7 @@ class QA_Backtest_stock_day():
                     __last_bid.order_id = str(random.random())
                     __last_bid.price = 'close_price'
                     __last_bid.code = str(__hold_list[id_][1])
-                    __last_bid.date = self.today
+                    __last_bid.date = self.now
                     __last_bid.towards = -1
                     __last_bid.user = self.setting.QA_setting_user_name
                     __last_bid.strategy = self.strategy_name
@@ -462,9 +467,9 @@ class QA_Backtest_stock_day():
                 else:
                     pre_del_id.append(id_)
                 return pre_del_id
-            
-            
-            pre_del_id=reduce(lambda _, x:__sell(x),range(len(__hold_list)))  
+
+            pre_del_id = reduce(lambda _, x: __sell(x),
+                                range(len(__hold_list)))
             pre_del_id.sort()
             pre_del_id.reverse()
             for item_x in pre_del_id:
@@ -475,8 +480,6 @@ class QA_Backtest_stock_day():
         '策略加载函数'
 
         # 首先判断是否能满足回测的要求`
-        _info = {}
-        _info['stock_list'] = __backtest_cls.strategy_stock_list
         __messages = {}
         __backtest_cls.__init_cash_per_stock = int(
             float(__backtest_cls.account.init_assest) / len(__backtest_cls.strategy_stock_list))
@@ -490,8 +493,8 @@ class QA_Backtest_stock_day():
                              __backtest_cls.running_date)
             QA_util_log_info(
                 tabulate(__backtest_cls.account.message['body']['account']['hold']))
+            __backtest_cls.now = __backtest_cls.running_date
             __backtest_cls.today = __backtest_cls.running_date
-
             func(*arg, **kwargs)
 
         # 最后一天
@@ -502,7 +505,7 @@ class QA_Backtest_stock_day():
         def __init_backtest(__backtest_cls, *arg, **kwargs):
             __backtest_cls.__QA_backtest_init(__backtest_cls)
             func(*arg, **kwargs)
-            __backtest_cls.__QA_backtest_init_class(__backtest_cls)
+            __backtest_cls.__QA_backtest_prepare(__backtest_cls)
         return __init_backtest(__backtest_cls)
 
     @classmethod
@@ -515,3 +518,8 @@ class QA_Backtest_stock_day():
         # yield __backtest_cls.cash
         __backtest_cls.__end_of_backtest(__backtest_cls, func, *arg, **kwargs)
         return func(*arg, **kwargs)
+
+
+if __name__ == '__main__':
+
+    pass

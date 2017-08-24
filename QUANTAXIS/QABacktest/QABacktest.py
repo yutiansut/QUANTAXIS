@@ -494,7 +494,7 @@ class QA_Backtest():
             QA_util_log_info(
                 tabulate(__backtest_cls.account.message['body']['account']['hold']))
             __backtest_cls.now = __backtest_cls.running_date
-
+            __backtest_cls.today = __backtest_cls.running_date
             func(*arg, **kwargs)
 
         # 最后一天
