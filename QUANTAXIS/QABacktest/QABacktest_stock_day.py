@@ -57,7 +57,7 @@ import queue
 from functools import wraps, update_wrapper, reduce
 
 
-class QA_Backtest():
+class QA_Backtest_stock_day():
     '最终目的还是实现一个通用的回测类'
     backtest_type = 'day'
     account = QA_Account()
