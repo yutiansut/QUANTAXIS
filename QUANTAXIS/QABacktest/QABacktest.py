@@ -287,7 +287,7 @@ class QA_Backtest():
             QA_SU_save_backtest_message(_backtest_mes, self.setting.client)
             QA_SU_save_account_message(self.__messages, self.setting.client)
             QA_SU_save_account_to_csv(self.__messages)
-        # QA.QA_SU_save_backtest_message(analysis_message, self.setting.client)
+
 
     def QA_backtest_get_market_data(self, code, date, type_='numpy', gap_=None):
         '这个函数封装了关于获取的方式'
@@ -302,7 +302,11 @@ class QA_Backtest():
             return np.asarray(__res)
 
     def QA_backtest_hold_amount(self, __code):
-        return sum(list(map(lambda item: item[3] if __code in item else 0, self.account.hold)))
+        # return sum(list(map(lambda item: item[3] if __code in item else 0, self.account.hold)))
+        try:
+            return self.account.hold_available[__code]
+        except:
+            return 0
 
     def QA_backtest_get_OHLCV(self, __data):
         '快速返回 OHLCV格式'
@@ -344,14 +348,15 @@ class QA_Backtest():
                                          __code, self.running_date, self.running_date,
                                          self.running_date, __amount, __towards)
         __bid = self.__warp_bid(self, __bid, __order)
-        return self.__QA_backtest_send_bid(self,__bid)
+        return self.__QA_backtest_send_bid(self, __bid)
         # 先进行处理:
-    def __QA_backtest_send_bid(self,__bid):
+
+    def __QA_backtest_send_bid(self, __bid):
         if __bid.towards == 1:
             # 扣费以下这个订单时的bar的open扣费
-            
-            if self.account.cash_available>(__bid.price * __bid.amount):
-            # 这是买入的情况 买入的时候主要考虑的是能不能/有没有足够的钱来买入
+
+            if self.account.cash_available > (__bid.price * __bid.amount):
+                # 这是买入的情况 买入的时候主要考虑的是能不能/有没有足够的钱来买入
                 __message = self.market.receive_bid(__bid)
                 self.account.cash_available -= (__bid.price * __bid.amount)
                 # 先扔进去买入,再通过返回的值来判定是否成功
@@ -362,7 +367,8 @@ class QA_Backtest():
                     self.account.QA_account_receive_deal(__message)
                     return __message
                 else:
-                    #self.account.cash_available += (__bid.price * __bid.amount) #报单还挂着 不能恢复
+
+                    # self.account.cash_available += (__bid.price * __bid.amount) #报单还挂着 不能恢复
                     self.account.order_queue.append(__bid)
 
         # 下面是卖出操作,这里在卖出前需要考虑一个是否有仓位的问题:
@@ -373,17 +379,20 @@ class QA_Backtest():
             # 股票中不允许有卖空操作
             # 检查持仓面板
             __amount_hold = self.QA_backtest_hold_amount(self, __bid.code)
-            
+
             if __amount_hold > 0:
-                
+
                 __bid.amount = __amount_hold if __amount_hold < __bid.amount else __bid.amount
-                self.account.hold_available[__bid.code] -=__bid.amount
+                self.account.hold_available[__bid.code] -= __bid.amount
                 __message = self.market.receive_bid(__bid)
+
+                print(__message)
                 if __message['header']['status'] == 200:
                     self.account.QA_account_receive_deal(__message)
+                    return __message
                 else:
                     self.account.order_queue.append(__bid)
-                return __message
+                    return __message
 
             else:
                 err_info = 'Error: Not Enough amount for code %s in hold list' % str(
@@ -483,9 +492,13 @@ class QA_Backtest():
             __backtest_cls.account.hold_available = __temp_hold['amount'].groupby(
                 'code').sum()
             if __backtest_cls.backtest_type in ['day', 'd']:
-                func(*arg, **kwargs)  # 发委托单
                 for item in __backtest_cls.account.order_queue:
-                    x = __backtest_cls.__QA_backtest_send_bid(__backtest_cls, item)
+
+                    item.date, item.datetime = (
+                        __backtest_cls.today, __backtest_cls.now)
+                    __backtest_cls.__QA_backtest_send_bid(__backtest_cls, item)
+                    # input()
+                func(*arg, **kwargs)  # 发委托单
 
             elif __backtest_cls.backtest_type in ['min', 'm']:
                 func(*arg, **kwargs)  # 发委托单

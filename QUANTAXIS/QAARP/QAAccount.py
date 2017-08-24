@@ -86,7 +86,6 @@ class QA_Account():
                     'history': self.history,
                     'detail': self.detail
                 },
-                #'time':datetime.datetime.now(),
                 'date_stamp': str(time.mktime(datetime.datetime.now().timetuple()))
             }
         }
