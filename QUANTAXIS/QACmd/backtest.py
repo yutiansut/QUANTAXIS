@@ -31,6 +31,7 @@ from QUANTAXIS import QA_Backtest_stock_day as QB
 写在前面:
 ===============QUANTAXIS BACKTEST STOCK_DAY中的变量
 常量:
+QB.backtest_type 回测类型 'day','min'
 QB.account.message  当前账户消息
 QB.account.cash  当前可用资金
 QB.account.hold  当前账户持仓
@@ -47,7 +48,7 @@ QB.strategy_end_date  回测的结束时间
 
 
 QB.today  在策略里面代表策略执行时的日期
-
+QB.now  在策略里面代表策略执行时的时间
 QB.benchmark_code  策略业绩评价的对照行情
 
 
@@ -88,7 +89,7 @@ QB.QA_backtest_hold_amount(QB,code)
 
 @QB.backtest_init
 def init():
-    #
+    QB.backtest_type='day'
     QB.setting.QA_util_sql_mongo_ip='127.0.0.1'
 
     QB.account.init_assest=2500000
