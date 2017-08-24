@@ -70,7 +70,7 @@ def QA_fetch_stock_day(code, __start, __end, type_='numpy', collections=QA_Setti
                 'code', 'open', 'high', 'low', 'close', 'volume', 'date', 'qfqfactor'])
 
             __data['date'] = pd.to_datetime(__data['date'])
-            __data = __data.set_index('date')
+            __data = __data.set_index('date',drop=False)
         return __data
     else:
         QA_util_log_info('something wrong with date')
@@ -100,7 +100,6 @@ def QA_fetch_stock_full(date_, type_='numpy', collections=QA_Setting.client.quan
     if QA_util_date_valid(Date) == True:
 
         __data = []
-
         for item in collections.find({
             "date_stamp": {
                 "$lte": QA_util_date_stamp(Date),
@@ -127,12 +126,12 @@ def QA_fetch_stock_info(code, collections):
     pass
 
 
-def QA_fetch_stocklist_day(stock_list, collections, date_range):
+def QA_fetch_stocklist_day(stock_list, date_range,collections=QA_Setting.client.quantaxis.stock_day):
     '获取多个股票的日线'
     __data = []
     for item in stock_list:
         __data.append(QA_fetch_stock_day(
-            item, date_range[0], date_range[-1], 'numpy', collections))
+            item, date_range[0], date_range[-1], 'pd', collections))
     return __data
 
 
@@ -203,7 +202,7 @@ def QA_fetch_stocklist_min(stock_list, date_range, collections=QA_Setting.client
     __data = []
     for item in stock_list:
         __data.append(QA_fetch_stock_min(
-            item, date_range[0], date_range[-1], 'numpy', collections))
+            item, date_range[0], date_range[-1], 'pd', collections))
     return __data
 
 def QA_fetch_future_day():
