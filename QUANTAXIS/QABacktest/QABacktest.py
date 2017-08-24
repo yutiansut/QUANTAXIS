@@ -344,7 +344,9 @@ class QA_Backtest():
                                          __code, self.running_date, self.running_date,
                                          self.running_date, __amount, __towards)
         __bid = self.__warp_bid(self, __bid, __order)
+        return self.__QA_backtest_send_bid(self,__bid)
         # 先进行处理:
+    def __QA_backtest_send_bid(self,__bid):
         if __bid.towards == 1:
             # 扣费以下这个订单时的bar的open扣费
             
@@ -371,19 +373,19 @@ class QA_Backtest():
             # 股票中不允许有卖空操作
             # 检查持仓面板
             __amount_hold = self.QA_backtest_hold_amount(self, __bid.code)
+            
             if __amount_hold > 0:
-
+                
                 __bid.amount = __amount_hold if __amount_hold < __bid.amount else __bid.amount
-                __message = self.market.receive_bid(
-                    __bid)
+                self.account.hold_available[__bid.code] -=__bid.amount
+                __message = self.market.receive_bid(__bid)
                 if __message['header']['status'] == 200:
                     self.account.QA_account_receive_deal(__message)
                 else:
-                    __failed_bid.append(__bid)
+                    self.account.order_queue.append(__bid)
                 return __message
 
             else:
-                __failed_bid.append(__bid)
                 err_info = 'Error: Not Enough amount for code %s in hold list' % str(
                     __bid.code)
                 QA_util_log_expection(err_info)
@@ -482,14 +484,9 @@ class QA_Backtest():
                 'code').sum()
             if __backtest_cls.backtest_type in ['day', 'd']:
                 func(*arg, **kwargs)  # 发委托单
-
-                print([vars(item)
-                       for item in __backtest_cls.account.order_queue])
                 for item in __backtest_cls.account.order_queue:
-                    x = __backtest_cls.__QA_backtest_deal(__backtest_cls, item)
+                    x = __backtest_cls.__QA_backtest_send_bid(__backtest_cls, item)
 
-                    # print(__backtest_cls.account.message)
-                sys.exit()
             elif __backtest_cls.backtest_type in ['min', 'm']:
                 func(*arg, **kwargs)  # 发委托单
 
