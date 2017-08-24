@@ -327,6 +327,7 @@ class QA_Backtest():
             1 市价委托 MARKET ORDER
             2 严格模式(买入按最高价 卖出按最低价) STRICT ORDER
         """
+        # 只需要维护未成交队列即可,无非是一个可用资金和可卖股票数量的调整
 
         # 必须是100股的倍数
         __amount = int(__amount / 100) * 100
@@ -348,74 +349,67 @@ class QA_Backtest():
             # 扣费以下这个订单时的bar的open扣费
             self.account.cash_available -= (__bid.price * __bid.amount)
         else:
-
             self.account.hold_available[__bid.code] = self.account.hold_available[__bid.code] - self.bid.amount
-        self.account.order_queue.append(__bid)
-        # TODO 到这里 bid已经封装好了
-        return 'Order has been send!'
 
-    def QA_backtest_deal(self):
+    def __QA_backtest_deal(self, __bid):
         '基于bid的撮合成交'
         __failed_bid = []
-        print(self.account.order_queue)
-        for __bid in self.account.order_queue:
-            print(__bid)
-            if __bid.towards == 1:
-                # 这是买入的情况 买入的时候主要考虑的是能不能/有没有足够的钱来买入
-                __message = self.market.receive_bid(__bid)
 
-                # 先扔进去买入,再通过返回的值来判定是否成功
+        if __bid.towards == 1:
+            # 这是买入的情况 买入的时候主要考虑的是能不能/有没有足够的钱来买入
+            __message = self.market.receive_bid(__bid)
+            # 先扔进去买入,再通过返回的值来判定是否成功
+            print(__message)
+            if float(self.account.message['body']['account']['cash'][-1]) > \
+                    float(__message['body']['bid']['price']) * \
+                    float(__message['body']['bid']['amount']):
+                    # 这里是买入资金充足的情况
+                    # 不去考虑
+                pass
+            else:
+                # 如果买入资金不充足,则按照可用资金去买入
+                # 这里可以这样做的原因是在买入的时候 手续费为0
+                __message['body']['bid']['amount'] = int(float(
+                    self.account.message['body']['account']['cash'][-1]) / float(
+                        float(str(__message['body']['bid']['price'])[0:5]) * 100)) * 100
 
-                if float(self.account.message['body']['account']['cash'][-1]) > \
-                        float(__message['body']['bid']['price']) * \
-                        float(__message['body']['bid']['amount']):
-                        # 这里是买入资金充足的情况
-                        # 不去考虑
-                    pass
-                else:
-                    # 如果买入资金不充足,则按照可用资金去买入
-                    # 这里可以这样做的原因是在买入的时候 手续费为0
-                    __message['body']['bid']['amount'] = int(float(
-                        self.account.message['body']['account']['cash'][-1]) / float(
-                            float(str(__message['body']['bid']['price'])[0:5]) * 100)) * 100
+            if __message['body']['bid']['amount'] > 0:
+                # 这个判断是为了 如果买入资金不充足,所以买入报了一个0量单的情况
+                # 如果买入量>0, 才判断为成功交易
 
-                if __message['body']['bid']['amount'] > 0:
-                    # 这个判断是为了 如果买入资金不充足,所以买入报了一个0量单的情况
-                    # 如果买入量>0, 才判断为成功交易
+                self.account.QA_account_receive_deal(__message)
+                return __message
+            else:
+                __failed_bid.append(__bid)
+
+        # 下面是卖出操作,这里在卖出前需要考虑一个是否有仓位的问题:
+        # 因为在股票中是不允许卖空操作的,所以这里是股票的交易引擎和期货的交易引擎的不同所在
+
+        elif __bid.towards == -1:
+            # 如果是卖出操作 检查是否有持仓
+            # 股票中不允许有卖空操作
+            # 检查持仓面板
+            __amount_hold = self.QA_backtest_hold_amount(self, __bid.code)
+            if __amount_hold > 0:
+
+                __bid.amount = __amount_hold if __amount_hold < __bid.amount else __bid.amount
+                __message = self.market.receive_bid(
+                    __bid)
+                if __message['header']['status'] == 200:
                     self.account.QA_account_receive_deal(__message)
-                    yield __message
                 else:
                     __failed_bid.append(__bid)
-
-            # 下面是卖出操作,这里在卖出前需要考虑一个是否有仓位的问题:
-            # 因为在股票中是不允许卖空操作的,所以这里是股票的交易引擎和期货的交易引擎的不同所在
-
-            elif __bid.towards == -1:
-                # 如果是卖出操作 检查是否有持仓
-                # 股票中不允许有卖空操作
-                # 检查持仓面板
-                __amount_hold = self.QA_backtest_hold_amount(self, __bid.code)
-                if __amount_hold > 0:
-
-                    __bid.amount = __amount_hold if __amount_hold < __bid.amount else __bid.amount
-                    __message = self.market.receive_bid(
-                        __bid)
-                    if __message['header']['status'] == 200:
-                        self.account.QA_account_receive_deal(__message)
-                    else:
-                        __failed_bid.append(__bid)
-                    yield __message
-
-                else:
-                    __failed_bid.append(__bid)
-                    err_info = 'Error: Not Enough amount for code %s in hold list' % str(
-                        __bid.code)
-                    QA_util_log_expection(err_info)
-                    yield err_info
+                return __message
 
             else:
-                yield "Error: No buy/sell towards"
-            self.account.order_queue = __failed_bid
+                __failed_bid.append(__bid)
+                err_info = 'Error: Not Enough amount for code %s in hold list' % str(
+                    __bid.code)
+                QA_util_log_expection(err_info)
+                return err_info
+
+        else:
+            return "Error: No buy/sell towards"
 
     def QA_backtest_check_order(self, order):
         '用于检查委托单的状态'
@@ -507,10 +501,17 @@ class QA_Backtest():
                 'code').sum()
             if __backtest_cls.backtest_type in ['day', 'd']:
                 func(*arg, **kwargs)  # 发委托单
-                __backtest_cls.QA_backtest_deal(__backtest_cls)
-            elif __backtest_cls.backtest_type in ['min', 'm']:
 
+                print([vars(item)
+                       for item in __backtest_cls.account.order_queue])
+                for item in __backtest_cls.account.order_queue:
+                    x = __backtest_cls.__QA_backtest_deal(__backtest_cls, item)
+
+                    # print(__backtest_cls.account.message)
+                sys.exit()
+            elif __backtest_cls.backtest_type in ['min', 'm']:
                 func(*arg, **kwargs)  # 发委托单
+
             # 队列循环批量发单
 
         # 最后一天
