@@ -157,14 +157,14 @@ class QA_Backtest_stock_day():
     def __QA_backtest_set_bid_model(self):
 
         if self.backtest_bid_model == 'market_price':
-            self.bid.bid['price'] = 'market_price'
-            self.bid.bid['bid_model'] = 'auto'
+            self.bid.price = 'market_price'
+            self.bid.bid_model = 'auto'
         elif self.backtest_bid_model == 'close_price':
-            self.bid.bid['price'] = 'close_price'
-            self.bid.bid['bid_model'] = 'auto'
+            self.bid.price = 'close_price'
+            self.bid.bid_model = 'auto'
         elif self.backtest_bid_model == 'strategy':
-            self.bid.bid['price'] = 0
-            self.bid.bid['bid_model'] = 'strategy'
+            self.bid.price = 0
+            self.bid.bid_model = 'strategy'
         else:
             QA_util_log_info('support bid model')
             sys.exit()
@@ -198,18 +198,18 @@ class QA_Backtest_stock_day():
             pre_del_id = []
             for item_ in range(0, len(__hold_list)):
                 if __hold_list[item_][3] > 0:
-                    __last_bid = self.bid.bid
-                    __last_bid['amount'] = int(__hold_list[item_][3])
-                    __last_bid['order_id'] = str(random.random())
-                    __last_bid['price'] = 'close_price'
-                    __last_bid['code'] = str(__hold_list[item_][1])
-                    __last_bid['date'] = self.trade_list[self.end_real_id]
-                    __last_bid['towards'] = -1
-                    __last_bid['user'] = self.setting.QA_setting_user_name
-                    __last_bid['strategy'] = self.strategy_name
-                    __last_bid['bid_model'] = 'auto'
-                    __last_bid['status'] = '0x01'
-                    __last_bid['amount_model'] = 'amount'
+                    __last_bid = self.bid
+                    __last_bid.amount = int(__hold_list[item_][3])
+                    __last_bid.order_id = str(random.random())
+                    __last_bid.price = 'close_price'
+                    __last_bid.code = str(__hold_list[item_][1])
+                    __last_bid.date = self.trade_list[self.end_real_id]
+                    __last_bid.towards = -1
+                    __last_bid.user = self.setting.QA_setting_user_name
+                    __last_bid.strategy = self.strategy_name
+                    __last_bid.bid_model = 'auto'
+                    __last_bid.status = '0x01'
+                    __last_bid.amount_model = 'amount'
 
                     __message = self.market.receive_bid(
                         __last_bid)
@@ -217,7 +217,7 @@ class QA_Backtest_stock_day():
                     while __message['header']['status'] == 500:
                         # 停牌状态,这个时候按停牌的最后一天计算价值(假设平仓)
 
-                        __last_bid['date'] = self.trade_list[self.end_real_id - _remains_day]
+                        __last_bid.date = self.trade_list[self.end_real_id - _remains_day]
                         _remains_day += 1
                         __message = self.market.receive_bid(
                             __last_bid)
@@ -346,20 +346,22 @@ class QA_Backtest_stock_day():
             __bid_price = 'strict_price'
         elif __order['bid_model'] in ['close', 'close_price', 'c', 'C', '3', 3]:
             __bid_price = 'close_price'
-        __bid = self.bid.bid
+        __bid = self.bid
 
-        __bid['order_id'] = str(random.random())
-        __bid['user'] = self.setting.QA_setting_user_name
-        __bid['strategy'] = self.strategy_name
-        __bid['code'] = __code
-        __bid['date'] = self.running_date
-        __bid['price'] = __bid_price
-        __bid['amount'] = __amount
+        __bid.order_id = str(random.random())
+        __bid.user = self.setting.QA_setting_user_name
+        __bid.strategy = self.strategy_name
+        __bid.code = __code
+        __bid.date = self.running_date
+        __bid.datetime = self.running_date
+        __bid.sending_time = self.running_date
+        __bid.price = __bid_price
+        __bid.amount = __amount
 
         if __towards == 1:
             # 这是买入的情况 买入的时候主要考虑的是能不能/有没有足够的钱来买入
 
-            __bid['towards'] = 1
+            __bid.towards = 1
             __message = self.market.receive_bid(
                 __bid)
 
@@ -393,8 +395,8 @@ class QA_Backtest_stock_day():
             # 检查持仓面板
             __amount_hold = self.QA_backtest_hold_amount(self, __code)
             if __amount_hold > 0:
-                __bid['towards'] = -1
-                __bid['amount'] = __amount_hold if __amount_hold < __amount else __bid['amount']
+                __bid.towards = -1
+                __bid.amount = __amount_hold if __amount_hold < __amount else __bid.amount
                 __message = self.market.receive_bid(
                     __bid)
                 if __message['header']['status'] == 200:
@@ -429,18 +431,18 @@ class QA_Backtest_stock_day():
             pre_del_id = []
             def __sell(id_):
                 if __hold_list[item_][3] > 0:
-                    __last_bid = self.bid.bid
-                    __last_bid['amount'] = int(__hold_list[id_][3])
-                    __last_bid['order_id'] = str(random.random())
-                    __last_bid['price'] = 'close_price'
-                    __last_bid['code'] = str(__hold_list[id_][1])
-                    __last_bid['date'] = self.today
-                    __last_bid['towards'] = -1
-                    __last_bid['user'] = self.setting.QA_setting_user_name
-                    __last_bid['strategy'] = self.strategy_name
-                    __last_bid['bid_model'] = 'auto'
-                    __last_bid['status'] = '0x01'
-                    __last_bid['amount_model'] = 'amount'
+                    __last_bid = self.bid
+                    __last_bid.amount = int(__hold_list[id_][3])
+                    __last_bid.order_id = str(random.random())
+                    __last_bid.price = 'close_price'
+                    __last_bid.code = str(__hold_list[id_][1])
+                    __last_bid.date = self.today
+                    __last_bid.towards = -1
+                    __last_bid.user = self.setting.QA_setting_user_name
+                    __last_bid.strategy = self.strategy_name
+                    __last_bid.bid_model = 'auto'
+                    __last_bid.status = '0x01'
+                    __last_bid.amount_model = 'amount'
 
                     __message = self.market.receive_bid(
                         __last_bid)
@@ -448,7 +450,7 @@ class QA_Backtest_stock_day():
                     while __message['header']['status'] == 500:
                         # 停牌状态,这个时候按停牌的最后一天计算价值(假设平仓)
 
-                        __last_bid['date'] = self.trade_list[self.end_real_id - _remains_day]
+                        __last_bid.date = self.trade_list[self.end_real_id - _remains_day]
                         _remains_day += 1
                         __message = self.market.receive_bid(
                             __last_bid)
