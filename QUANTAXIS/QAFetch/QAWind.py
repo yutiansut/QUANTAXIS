@@ -33,11 +33,16 @@ QAWind is under the [QAStandard#0.0.2 @101-1],[QAStandard#0.0.2 @501-0] protocol
 
 @last modified:2017/4/5
 """
-import time
 import datetime
 import re
+import time
+
+import numpy as np
+import pandas as pd
 import pymongo
+
 from . import data_list as data_list
+
 #from WindPy import w
 # w.start()
 
@@ -70,20 +75,18 @@ def QA_fetch_get_stock_day(name, startDate, endDate):
     # w.start
     w.start()
     w.isconnected()
+
     if(is_valid_date(endDate) == False):
         print("wrong date")
     else:
-        print(w.isconnected())
-        w.close()
-        print(w.isconnected())
-        w.start()
-        print(w.isconnected())
-        data = w.wsd(name, "sec_name,pre_close,open,high,low,close,volume,amt,dealnum,chg,pct_chg,swing,vwap,adjfactor,turn,free_turn,lastradeday_s,last_trade_day,rel_ipo_chg,rel_ipo_pct_chg,trade_status,susp_days,susp_reason,maxupordown,open3,high3,low3,close3", startDate, endDate, "Fill=Previous;PriceAdj=F")
-        #data=w.wsd("000002.SZ", "open,high,low,close,volume", "2017-03-03", "2017-04-01", "PriceAdj=B")
-        print(data.ErrorCode)
+        if w.isconnected() is False:
+            w.start()
+        data = w.wsd(name, "sec_name,pre_close,open,high,low,close,volume",
+                     startDate, endDate, "PriceAdj=F")
         if (data.ErrorCode == 0):
             print("Connent to Wind successfully")
-            return data.Data
+
+            return pd.DataFrame(np.asarray(data.Data).T, columns=data.Fields, index=data.Times)
 
 
 def QA_fetch_get_stock_day_simple(name, startDate, endDate):
@@ -120,8 +123,7 @@ def QA_fetch_get_stock_indicator(name, startDate, endDate):
                      "ADTM_N1=23;ADTM_N2=8;ADTM_IO=1;ATR_N=14;ATR_IO=1;BBI_N1=3;BBI_N2=6;BBI_N3=12;BBI_N4=24;BBIBOLL_N=10;BBIBOLL_Width=3;BBIBOLL_IO=1;BIAS_N=12;BOLL_N=26;BOLL_Width=2;BOLL_IO=1;CCI_N=14;CDP_IO=1;DMA_S=10;DMA_L=50;DMA_N=10;DMA_IO=1;DMI_N=14;DMI_N1=6;DMI_IO=1;DPO_N=20;DPO_M=6;DPO_IO=1;ENV_N=14;ENV_IO=1;EXPMA_N=12;KDJ_N=9;KDJ_M1=3;KDJ_M2=3;KDJ_IO=1;SlowKD_N1=9;SlowKD_N2=3;SlowKD_N3=3;SlowKD_N4=5;SlowKD_IO=1;MA_N=5;MACD_L=26;MACD_S=12;MACD_N=9;MACD_IO=1;MIKE_N=12;MIKE_IO=1;MTM_interDay=6;MTM_N=6;MTM_IO=1;PRICEOSC_L=26;PRICEOSC_S=12;RC_N=50;ROC_interDay=12;ROC_N=6;ROC_IO=1;RSI_N=6;SAR_N=4;SAR_SP=2;SAR_MP=20;SR    MI_N=9;STD_N=26;TAPI_N=6;TAPI_IO=1;TRIX_N1=12;TRIX_N2=20;TRIX_IO=1;VHF_N=28;VMA_N=5;VMACD_S=12;VMACD_L=26;VMACD_N=9;VMACD_IO=1;VOSC_S=12;VOSC_L=26;WVAD_N1=24;WVAD_N2=6;WVAD_IO=1;VolumeRatio_N=5")
         if (data.ErrorCode == 0):
             print("Connent to Wind successfully")
-    return data.Data
-
+    return pd.DataFrame(np.asarray(data.Data).T, columns=data.Fields, index=data.Times)
 
 def QA_fetch_get_stock_shape(name, startDate, endDate):
     from WindPy import w
@@ -136,8 +138,7 @@ def QA_fetch_get_stock_shape(name, startDate, endDate):
                      startDate, endDate, "n=3;m=60;meanLine=60;N1=5;N2=10;N3=20;N4=30;upOrLow=1")
         if (data.ErrorCode == 0):
             print("Connent to Wind successfully")
-    return data.Data
-
+    return pd.DataFrame(np.asarray(data.Data).T, columns=data.Fields, index=data.Times)
 
 def QA_fetch_get_stock_risk(name, startDate, endDate):
     from WindPy import w
@@ -150,7 +151,7 @@ def QA_fetch_get_stock_risk(name, startDate, endDate):
                      startDate, endDate, "period=2;returnType=1;index=000001.SH;yield=1")
         if (data.ErrorCode == 0):
             print("Connent to Wind successfully")
-    return data.Data
+    return pd.DataFrame(np.asarray(data.Data).T, columns=data.Fields, index=data.Times)
 
 
 def QA_fetch_get_stock_xueqiu(name, startDate, endDate):
@@ -164,7 +165,7 @@ def QA_fetch_get_stock_xueqiu(name, startDate, endDate):
         data = w.wsd(name, "xq_accmfocus,xq_accmcomments,xq_accmshares,xq_focusadded,xq_commentsadded,xq_sharesadded,xq_WOW_focus,xq_WOW_comments,xq_WOW_shares", startDate, endDate, "")
         if (data.ErrorCode == 0):
             print("Connent to Wind successfully")
-    return data.Data
+    return pd.DataFrame(np.asarray(data.Data).T, columns=data.Fields, index=data.Times)
 
 
 def QA_fetch_get_stock_financial(name, startDate, endDate):
@@ -195,13 +196,14 @@ def QA_fetch_get_trade_date(endDate, exchange):
         exchanges = "TradingCalendar=" + exchange
         data = w.tdays("1990-01-01", endDate, exchanges)
         # print(data.Data)
-        dates = data.Data
+        dates = pd.DataFrame(np.asarray(data.Data).T, columns=data.Fields, index=data.Times)
     else:
         print("exchange name problem")
     return dates
 
 
 def QA_fetch_get_stock_list(date):
+    from WindPy import w
     w.start()
     w.isconnected()
     if(is_valid_date(date) == False):
@@ -209,7 +211,7 @@ def QA_fetch_get_stock_list(date):
     else:
         awgs = 'date=' + date + ';sectorid=a001010100000000'
         data = w.wset("sectorconstituent", awgs)
-        return data.Data
+        return pd.DataFrame(np.asarray(data.Data).T, columns=data.Fields, index=data.Times)
 
 
 def QA_fetch_get_stock_list_special(date, id):
@@ -220,10 +222,8 @@ def QA_fetch_get_stock_list_special(date, id):
     if(is_valid_date(date) == False):
         print("wrong date")
     else:
-        #
-        #
         if id in ['big', 'small', 'cixin', 'yujing', 'rzrq', 'rq', 'yj', 'st', 'sst']:
             awgs = 'date=' + date + ';sectorid=' + \
                 data_list.wind_stock_list_special_id[id]
             data = w.wset("sectorconstituent", awgs)
-            return data.Data
+            return pd.DataFrame(np.asarray(data.Data).T, columns=data.Fields, index=data.Times)

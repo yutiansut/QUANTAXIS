@@ -32,16 +32,14 @@ from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_future_day,
                                        QA_fetch_index_day, QA_fetch_stock_day,
                                        QA_fetch_stock_min)
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
-                              QA_util_sql_mongo_setting)
+                              QA_util_sql_mongo_setting,QA_util_to_json_from_pandas)
 
-from .QAMarket_engine import (market_future_day_engine,
-                              market_future_min_engine,
-                              market_future_tick_engine,
-                              market_stock_day_engine, market_stock_min_engine)
+from .QAMarket_engine import (market_future_engine, market_stock_engine,
+                              market_stock_day_engine)
 
 
 class QA_Market():
-
+    '在这里加载数据'
     # client=QA_Setting.client
     # client=QA.QA_util_sql_mongo_setting()
     # db= client.market
@@ -50,35 +48,53 @@ class QA_Market():
                        'future_day': QA_fetch_future_day, 'future_min': QA_fetch_future_min, 'future_tick': QA_fetch_future_tick}
 
     def _choice_trading_market(self, __bid, __data=None):
-        assert isinstance(__bid['status'], str)
-        if __bid['status'] == '0x01':
+        assert isinstance(__bid.status, str)
+        if __bid.status == '0x01':
+            __data=self.__get_stock_day_data(__bid)
             return market_stock_day_engine(__bid, __data)
-        elif __bid['status'] == '0x02':
-            return market_stock_min_engine(__bid, __data)
-        elif __bid['status'] == '1x01':
-            return market_future_day_engine(__bid, __data)
-        elif __bid['status'] == '1x02':
-            return market_future_min_engine(__bid, __data)
-        elif __bid['status'] == '1x03':
-            return market_future_tick_engine(__bid, __data)
+        elif __bid.status == '0x02':
+            # 获取股票引擎
+            __data=self.__get_stock_min_data(__bid)
+            return market_stock_engine(__bid, __data)
+        elif __bid.status == '1x01':
+            return market_future_engine(__bid, __data)
+        elif __bid.status == '1x02':
+            return market_future_engine(__bid, __data)
+        elif __bid.status == '1x03':
+            return market_future_engine(__bid, __data)
+    def __get_stock_min_data(self,__bid):
+        __data = QA_util_to_json_from_pandas(QA_fetch_stock_min(str(
+            __bid.code)[0:6], str(__bid.datetime)[0:19], str(__bid.datetime)[0:10], 'pd'))
+        if len(__data) == 0:
+            pass
+        else:
+            __data = __data[0]
+        return __data
 
+    def __get_stock_day_data(self,__bid):
+        __data = QA_util_to_json_from_pandas(QA_fetch_stock_day(str(
+            __bid.code)[0:6], str(__bid.datetime)[0:10], str(__bid.datetime)[0:10], 'pd'))
+        if len(__data) == 0:
+            pass
+        else:
+            __data = __data[0]
+        return __data
     def receive_bid(self, __bid, __data=None):
         """
         get the bid and choice which market to trade
 
         """
         def __confirm_bid(__bid):
-            assert isinstance(__bid, dict)
-            if isinstance(__bid['price'], str):
-                if __bid['price'] == 'market_price':
+            if isinstance(__bid.price, str):
+                if __bid.price == 'market_price':
                     return __bid
-                elif __bid['price'] == 'close_price':
+                elif __bid.price == 'close_price':
                     return __bid
-                elif __bid['price'] == 'strict' or 'strict_model' or 'strict_price':
-                    __bid['price'] = 'strict_price'
+                elif __bid.price == 'strict' or 'strict_model' or 'strict_price':
+                    __bid.price = 'strict_price'
                     return __bid
                 else:
-                    QA_util_log_info('unsupport type:' + __bid['price'])
+                    QA_util_log_info('unsupport type:' + __bid.price)
                     return __bid
             else:
                 return __bid
