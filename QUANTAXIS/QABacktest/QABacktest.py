@@ -347,40 +347,21 @@ class QA_Backtest():
         # 先进行处理:
         if __bid.towards == 1:
             # 扣费以下这个订单时的bar的open扣费
-            self.account.cash_available -= (__bid.price * __bid.amount)
-        else:
-            self.account.hold_available[__bid.code] = self.account.hold_available[__bid.code] - self.bid.amount
-
-    def __QA_backtest_deal(self, __bid):
-        '基于bid的撮合成交'
-        __failed_bid = []
-
-        if __bid.towards == 1:
+            
+            if self.account.cash_available>(__bid.price * __bid.amount):
             # 这是买入的情况 买入的时候主要考虑的是能不能/有没有足够的钱来买入
-            __message = self.market.receive_bid(__bid)
-            # 先扔进去买入,再通过返回的值来判定是否成功
-            print(__message)
-            if float(self.account.message['body']['account']['cash'][-1]) > \
-                    float(__message['body']['bid']['price']) * \
-                    float(__message['body']['bid']['amount']):
-                    # 这里是买入资金充足的情况
-                    # 不去考虑
-                pass
-            else:
-                # 如果买入资金不充足,则按照可用资金去买入
-                # 这里可以这样做的原因是在买入的时候 手续费为0
-                __message['body']['bid']['amount'] = int(float(
-                    self.account.message['body']['account']['cash'][-1]) / float(
-                        float(str(__message['body']['bid']['price'])[0:5]) * 100)) * 100
+                __message = self.market.receive_bid(__bid)
+                self.account.cash_available -= (__bid.price * __bid.amount)
+                # 先扔进去买入,再通过返回的值来判定是否成功
+                if __message['header']['status'] == 200 and __message['body']['bid']['amount'] > 0:
+                    # 这个判断是为了 如果买入资金不充足,所以买入报了一个0量单的情况
+                    # 如果买入量>0, 才判断为成功交易
 
-            if __message['body']['bid']['amount'] > 0:
-                # 这个判断是为了 如果买入资金不充足,所以买入报了一个0量单的情况
-                # 如果买入量>0, 才判断为成功交易
-
-                self.account.QA_account_receive_deal(__message)
-                return __message
-            else:
-                __failed_bid.append(__bid)
+                    self.account.QA_account_receive_deal(__message)
+                    return __message
+                else:
+                    #self.account.cash_available += (__bid.price * __bid.amount) #报单还挂着 不能恢复
+                    self.account.order_queue.append(__bid)
 
         # 下面是卖出操作,这里在卖出前需要考虑一个是否有仓位的问题:
         # 因为在股票中是不允许卖空操作的,所以这里是股票的交易引擎和期货的交易引擎的不同所在
