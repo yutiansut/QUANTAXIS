@@ -199,7 +199,7 @@ export default {
     ready() {
       //先从ready拿到信息数据
       let val = this.data0
-      axios.get('http://localhost:3000/backtest/info_cookie?cookie=' + val)
+      axios.get('/api:3000/backtest/info_cookie?cookie=' + val)
         .then(response => {
           var data = response.data;
           var start_time = data['start_time']

@@ -88,7 +88,7 @@ export default {
       var password = document.getElementsByClassName('mu-text-field-input')[1].value
       let val = 'name=' + name + '&password=' + password
       console.log(val)
-      axios.get('http://localhost:3000/users/signup?' + val)
+      axios.get('/api:3000/users/signup?' + val)
         .then(response => {
           console.log(response.data)
           if (response.data === 'success') {
@@ -108,7 +108,7 @@ export default {
       var password = document.getElementsByClassName('mu-text-field-input')[1].value
       let val = 'name=' + name + '&password=' + password
       console.log(val)
-      axios.get('http://localhost:3000/users/login?' + val)
+      axios.get('/api:3000/users/login?' + val)
         .then(response => {
           console.log(response.data)
           if (response.data === 'success') {

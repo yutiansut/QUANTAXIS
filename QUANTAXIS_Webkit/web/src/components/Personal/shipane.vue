@@ -19,7 +19,7 @@ export default {
   },
   methods: {
     query_positions() {
-      axios.get('http://localhost:8888/positions')
+      axios.get('/api:8888/positions')
         .then(function (response) {
           var data1 = response.data;
           console.log(data1)
@@ -37,22 +37,22 @@ export default {
 }
 /**
  * 查询账号
-GET http://localhost:8888/accounts
+GET /api:8888/accounts
 
 查询资金股份
-GET http://localhost:8888/positions
+GET /api:8888/positions
 
 查询当日委托
-GET http://localhost:8888/orders
+GET /api:8888/orders
 
 查询撤单
-GET http://localhost:8888/orders?status=open
+GET /api:8888/orders?status=open
 
 查询当日成交
-GET http://localhost:8888/orders?status=filled
+GET /api:8888/orders?status=filled
 
 买入
-POST http://localhost:8888/orders
+POST /api:8888/orders
 Content-Type: application/json
 
 {
@@ -88,7 +88,7 @@ amountProportion 可选择：ALL, 1/2, 1/3, 1/4, 1/5
 以上参数设置也适用于"卖出"
 
 卖出
-POST http://localhost:8888/orders
+POST /api:8888/orders
 Content-Type: application/json
 
 {
@@ -101,23 +101,23 @@ Content-Type: application/json
 }
 
 撤单
-DELETE http://localhost:8888/orders/O1234
+DELETE /api:8888/orders/O1234
 （注：上面 URL 中的 O1234 应替换为相应的委托编号）
 
 撤单全部
-DELETE http://localhost:8888/orders
+DELETE /api:8888/orders
 
 查询其他
-GET http://localhost:8888?navigation=查询>当日委托
+GET /api:8888?navigation=查询>当日委托
 
 查询状态
-GET http://localhost:8888/statuses
+GET /api:8888/statuses
 
 启动并自动登录通达信
-PUT http://localhost:8888/clients
+PUT /api:8888/clients
 
 关闭所有通达信
-DELETE http://localhost:8888/clients
+DELETE /api:8888/clients
                 
 */
 </script>

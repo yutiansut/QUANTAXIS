@@ -90,7 +90,7 @@ export default {
             })
         },
         querybyname(code) {
-            let val = 'http://localhost:3000/monitor/code?name=' + code
+            let val = '/api:3000/monitor/code?name=' + code
             axios.get(val)
                 .then(response => {
                     this.chart.hideLoading();
