@@ -193,7 +193,7 @@ class QA_Backtest():
                     __last_bid.user = self.setting.QA_setting_user_name
                     __last_bid.strategy = self.strategy_name
                     __last_bid.bid_model = 'auto'
-                    __last_bid.status = '0x01'
+                    __last_bid.type = '0x01'
                     __last_bid.amount_model = 'amount'
 
                     __message = self.market.receive_bid(
@@ -435,7 +435,7 @@ class QA_Backtest():
                     __last_bid.user = self.setting.QA_setting_user_name
                     __last_bid.strategy = self.strategy_name
                     __last_bid.bid_model = 'auto'
-                    __last_bid.status = '0x01'
+                    __last_bid.type = '0x01'
                     __last_bid.amount_model = 'amount'
 
                     __message = self.market.receive_bid(
