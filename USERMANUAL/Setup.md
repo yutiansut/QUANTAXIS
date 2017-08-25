@@ -52,7 +52,26 @@ cd C:\Program Files\MongoDB\Server\3.4\bin
 # 启动mongodb服务
 net start MongoDB
 ```
+> linux
+- Ubuntu
 
+```shell
+#  添加源
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
+# Ubuntu 12.04
+echo "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu precise/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+# Ubuntu 14.04
+echo "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+# Ubuntu 16.04
+echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+# 更新源
+sudo apt-get update
+# 安装MongoDB
+sudo apt-get install -y mongodb-org
+# 开启MongoDB服务
+sudo service mongod start
+
+```
 ### Nodejs
 > windows
 
@@ -67,7 +86,7 @@ net start MongoDB
 ```shell
 sudo apt-get install npm
 sudo npm install n -g
-n lastest
+n latest
 ```
 
 linux/mac下的nodejs有一个版本管理包 叫n 需要全局安装 -g
