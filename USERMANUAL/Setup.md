@@ -86,7 +86,8 @@ sudo service mongod start
 ```shell
 sudo apt-get install npm
 sudo npm install n -g
-n latest
+sudo n latest
+sudo npm install npm -g #更新npm
 ```
 
 linux/mac下的nodejs有一个版本管理包 叫n 需要全局安装 -g
