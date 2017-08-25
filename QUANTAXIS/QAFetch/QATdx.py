@@ -66,19 +66,24 @@ def QA_fetch_get_stock_day(code, start_date, end_date, ip='119.147.212.81', port
         return data[start_date:end_date]
 
 
-def QAt_stock_list(code, date, ip='119.147.212.81', port=7709):
-    with api.co_fetch_gennect(ip, port):
+def QA_fetch_get_stock_list(code, date, ip='119.147.212.81', port=7709):
+    with api.connect(ip, port):
         stocks = api.get_security_list(1, 255)
         return stocks
 
 
-def QA_fetch_get_stock_realtime(code, ip='119.147.212.81', port=7709):
+def QA_fetch_get_stock_realtime(code=['000001','000002'], ip='119.147.212.81', port=7709):
     api = TdxHq_API()
-    market_code = __select_market_code(code)
+    __data=pd.DataFrame()
     with api.connect(ip, port):
-        __data = api.to_df(api.get_security_quotes([(market_code, code)]))
-        data = __data[['code', 'open', 'high', 'low', 'price']]
-        data = data.rename(columns={'price': 'close'}, inplace=True)
+        code=[code] if type(code) is str else code
+        for id_ in range(int(len(code)/80)+1):
+            __data = __data.append(api.to_df(api.get_security_quotes(
+                [(__select_market_code(x),x) for x in code[80*id_:80*(id_+1)]])))
+            __data['datetime']=datetime.datetime.now()
+        data = __data[['datetime','code', 'open', 'high', 'low', 'price']]
+        data = data.set_index('code',drop=False)
+        
         return data
 
 
