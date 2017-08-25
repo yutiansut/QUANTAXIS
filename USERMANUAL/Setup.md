@@ -1,5 +1,14 @@
 # QUANTAXIS 安装说明
+<!-- TOC -->
 
+- [QUANTAXIS 安装说明](#quantaxis-安装说明)
+    - [安装须知](#安装须知)
+    - [安装各个依赖项的步骤:](#安装各个依赖项的步骤)
+        - [git](#git)
+        - [MongoDB](#mongodb)
+        - [Nodejs](#nodejs)
+
+<!-- /TOC -->
 ## 安装须知
 
 QUANTAXIS 使用到了一些3.6以上才支持的新语法,因此只支持3.6以上的python版本
