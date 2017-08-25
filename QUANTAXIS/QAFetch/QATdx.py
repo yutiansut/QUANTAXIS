@@ -21,12 +21,17 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import datetime
+
 import numpy as np
 import pandas as pd
 from pytdx.hq import TdxHq_API
-from QUANTAXIS.QAUtil import (QA_util_date_valid, QA_util_log_info, QA_util_get_real_date,
-                              QA_util_web_ping, trade_date_sse, QA_util_get_real_datelist, QA_util_date_str2int)
-import datetime
+from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_str2int,
+                              QA_util_date_valid, QA_util_get_real_date,
+                              QA_util_get_real_datelist, QA_util_log_info,
+                              QA_util_time_stamp, QA_util_web_ping,
+                              trade_date_sse)
+
 # 基于Pytdx的数据接口,好处是可以在linux/mac上联入通达信行情
 # 具体参见rainx的pytdx(https://github.com/rainx/pytdx)
 #
@@ -36,7 +41,8 @@ api = TdxHq_API()
 
 def __select_market_code(code):
 
-    return  1 if str(code)[0] == '6' else 0
+    return 1 if str(code)[0] == '6' else 0
+
 
 def QA_fetch_get_stock_day(code, start_date, end_date, ip='119.147.212.81', port=7709):
     api = TdxHq_API()
@@ -50,8 +56,11 @@ def QA_fetch_get_stock_day(code, start_date, end_date, ip='119.147.212.81', port
                                           market_code, code, (9 - i) * 800, 800)
         data = api.to_df(data)
         data['date'] = data['datetime'].apply(lambda x: x[0:10])
+        data['date_stamp'] = data['date'].apply(
+            lambda x: QA_util_date_stamp(x))
         data['date'] = pd.to_datetime(data['date'])
-        data = data.set_index('date')
+        data = data.set_index('date', drop=False)
+        data['date'] = data['date'].apply(lambda x: str(x)[0:10])
         data = data.drop(['year', 'month', 'day', 'hour',
                           'minute', 'datetime'], axis=1)
         return data[start_date:end_date]
@@ -82,7 +91,7 @@ def QA_fetch_get_index_day(code, start_date, end_date, ip='119.147.212.81', port
         data = api.to_df(data)
         data['date'] = data['datetime'].apply(lambda x: x[0:10])
         data['date'] = pd.to_datetime(data['date'])
-        data = data.set_index('date')
+        data = data.set_index('date', drop=False)
         data = data.drop(['year', 'month', 'day', 'hour',
                           'minute', 'datetime'], axis=1)
 
@@ -105,13 +114,21 @@ def QA_fetch_get_stock_min(code, start, end, level, ip='221.231.141.60', port=77
     with api.connect(ip, port):
         data = []
         for i in range(26):
-            data += api.get_security_bars(level,market_code, code, (25 - i) * 800, 800)
+            data += api.get_security_bars(level,
+                                          market_code, code, (25 - i) * 800, 800)
         data = api.to_df(data)
         data['datetime'] = pd.to_datetime(data['datetime'])
-        data['code']=code
-        data = data.set_index('datetime')
-
-    return data[start:end]  
+        data['code'] = code
+        data = data.set_index('datetime', drop=False)
+        data = data.drop(['year', 'month', 'day', 'hour',
+                          'minute'], axis=1)
+        data['datetime'] = data['datetime'].apply(lambda x: str(x)[0:19])
+        data['date'] = data['datetime'].apply(lambda x: str(x)[0:10])
+        data['date_stamp'] = data['date'].apply(
+            lambda x: QA_util_date_stamp(x))
+        data['time_stamp'] = data['datetime'].apply(
+            lambda x: QA_util_time_stamp(x))
+    return data[start:end]
 
 
 def __QA_fetch_get_stock_transaction(code, day, retry, api):
@@ -164,11 +181,12 @@ def QA_fetch_get_stock_info():
     pass
 
 
-def QA_fetch_get_stock_xdxr(code,ip='221.231.141.60', port=7709):
+def QA_fetch_get_stock_xdxr(code, ip='221.231.141.60', port=7709):
     api = TdxHq_API()
-    market_code=__select_market_code(code)
+    market_code = __select_market_code(code)
     with api.connect():
-        return api.to_df(api.get_xdxr_info(market_code,code))
+        return api.to_df(api.get_xdxr_info(market_code, code))
+
 
 if __name__ == '__main__':
     # print(QA_fetch_get_stock_day('000001','2017-07-03','2017-07-10'))
