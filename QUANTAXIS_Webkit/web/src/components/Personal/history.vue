@@ -62,7 +62,7 @@ export default {
             console.log(this.message)
             let val = this.message
             console.log(val)
-            axios.get('http://[::1]:3000/backtest/history?cookie=' + val)
+            axios.get('http://localhost:3000/backtest/history?cookie=' + val)
                 .then(response => {
                     this.items = response.data[0]['history'];
                     this.acc = response.data;

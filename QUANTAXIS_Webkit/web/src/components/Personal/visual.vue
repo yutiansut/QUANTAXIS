@@ -11,7 +11,7 @@
       </router-link>
       <mu-raised-button v-on:click='ready()' label="行情数据" class="demo-raised-button" secondary/>
       <mu-raised-button label="说明" class="demo-raised-button" @click="showToast" />
-      <mu-toast v-if="toast" message="此版本仅适用于0.4.0-alpha/beta的回测演示" @close="hideToast" />
+      <mu-toast v-if="toast" message="此版本仅适用于0.4.0-alpha的回测演示" @close="hideToast" />
       <mu-divider />
     </div>
     <div>
@@ -199,7 +199,7 @@ export default {
     ready() {
       //先从ready拿到信息数据
       let val = this.data0
-      axios.get('http://[::1]:3000/backtest/info_cookie?cookie=' + val)
+      axios.get('http://localhost:3000/backtest/info_cookie?cookie=' + val)
         .then(response => {
           var data = response.data;
           var start_time = data['start_time']

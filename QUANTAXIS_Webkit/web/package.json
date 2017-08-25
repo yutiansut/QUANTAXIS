@@ -1,7 +1,7 @@
 {
   "name": "quantaxisweb",
-  "version": "0.4.1",
-  "description": "quantaxis web",
+  "version": "0.4.0-alpha",
+  "description": "A Vue.js project",
   "author": "yutiansut <yutiansut@qq.com>",
   "private": true,
   "scripts": {
