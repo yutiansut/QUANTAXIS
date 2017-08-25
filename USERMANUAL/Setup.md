@@ -52,3 +52,24 @@ cd C:\Program Files\MongoDB\Server\3.4\bin
 # 启动mongodb服务
 net start MongoDB
 ```
+
+### Nodejs
+> windows
+
+官网链接: https://nodejs.org/zh-cn/download/current/
+
+直接下载exe 按要求安装即可 最新版本 8.2.1
+
+> Linux
+
+- Ubuntu
+
+```shell
+sudo apt-get install npm
+sudo npm install n -g
+n lastest
+```
+
+linux/mac下的nodejs有一个版本管理包 叫n 需要全局安装 -g
+
+所以无论装了什么版本的nodejs  只需要npm install n -g  就行  
