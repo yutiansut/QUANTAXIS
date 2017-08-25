@@ -12,11 +12,20 @@ QUANTAXIS 使用到了一些3.6以上才支持的新语法,因此只支持3.6以
 QUANTAXIS的运行依赖以下环境:
 
 1. 64位的电脑(64位系统)
+2. git 用于不断更新代码
 2. 64位的MongoDB(32位的mongo只支持最大2G的数据存储,如果需要存分钟线数据,是不够的)
 3. Python3.6+环境
 4. Nodejs 7+ 环境 推荐Nodejs 8 速度更快
 
 ## 安装各个依赖项的步骤:
+### git
+>windows
+
+百度搜索:git 下载--exe安装
+
+>linux
+
+自带 无需安装
 
 ### MongoDB 
 > Windows
