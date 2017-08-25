@@ -23,3 +23,23 @@ QUANTAXIS的运行依赖以下环境:
 
 - 下载地址 MongoDB 64位 3.4.7:[下载链接](https://www.mongodb.com/dr/fastdl.mongodb.org/win32/mongodb-win32-x86_64-2008plus-ssl-3.4.7-signed.msi)
 
+- 可以使用迅雷下载加速
+
+- 下载完毕以后双击MSI文件安装,一般会安装到C:\Program Files\MongoDB\Server\3.4\bin
+
+* MongoDB需要一个data目录一个logo目录,一般我们会在D:中新建一个data目录
+```powershell
+# 打开Powershell(Win键+R 在运行中输入Powershell)
+cd D:
+md data
+# 然后在data目录下 新建一个data目录用于存放mongo的数据,log目录用于存放log
+cd data
+md data
+md log
+# 到Mongo的程序文件夹下,使用命令
+cd C:\Program Files\MongoDB\Server\3.4\bin
+# 用mongod 命令安装
+.\mongod.exe --dbpath  D:\data\data  --logpath D:\data\log\mongo.log --httpinterface --rest --serviceName 'MongoDB' --install
+# 启动mongodb服务
+net start MongoDB
+```
