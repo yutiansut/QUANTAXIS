@@ -72,18 +72,18 @@ def QA_fetch_get_stock_list(code, date, ip='119.147.212.81', port=7709):
         return stocks
 
 
-def QA_fetch_get_stock_realtime(code=['000001','000002'], ip='119.147.212.81', port=7709):
+def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip='119.147.212.81', port=7709):
     api = TdxHq_API()
-    __data=pd.DataFrame()
+    __data = pd.DataFrame()
     with api.connect(ip, port):
-        code=[code] if type(code) is str else code
-        for id_ in range(int(len(code)/80)+1):
+        code = [code] if type(code) is str else code
+        for id_ in range(int(len(code) / 80) + 1):
             __data = __data.append(api.to_df(api.get_security_quotes(
-                [(__select_market_code(x),x) for x in code[80*id_:80*(id_+1)]])))
-            __data['datetime']=datetime.datetime.now()
-        data = __data[['datetime','code', 'open', 'high', 'low', 'price']]
-        data = data.set_index('code',drop=False)
-        
+                [(__select_market_code(x), x) for x in code[80 * id_:80 * (id_ + 1)]])))
+            __data['datetime'] = datetime.datetime.now()
+        data = __data[['datetime', 'code', 'open', 'high', 'low', 'price']]
+        data = data.set_index('code', drop=False)
+
         return data
 
 
@@ -208,12 +208,16 @@ def QA_fetch_get_stock_xdxr(code, ip='221.231.141.60', port=7709):
         13 送认购权证 600008 2006-04-19
         14 送认沽权证 000932 2006-03-01
         """
-        data=api.to_df(api.get_xdxr_info(market_code, code))
-        data['date']=pd.to_datetime(data[['year', 'month', 'day']])
-        data=data.drop(['year','month','day'],axis=1)
-        data['code']=code
-        data=data.set_index('date',drop=False)
-
+        category = {
+            '1': '除权除息', '2': '送配股上市', '3': '非流通股上市', '4': '未知股本变动', '5': '股本变化',
+            '6': '增发新股', '7': '股份回购', '8': '增发新股上市', '9': '转配股上市', '10': '可转债上市',
+            '11': '扩缩股', '12': '非流通股缩股', '13':  '送认购权证', '14': '送认沽权证'}
+        data = api.to_df(api.get_xdxr_info(market_code, code))
+        data['date'] = pd.to_datetime(data[['year', 'month', 'day']])
+        data = data.drop(['year', 'month', 'day'], axis=1)
+        data['category_meaning']=data['category'].apply(lambda x: category[str(x)])
+        data['code'] = code
+        data = data.set_index('date', drop=False)
         return data
 
 
@@ -223,4 +227,3 @@ if __name__ == '__main__':
     # print(QA_fetch_get_stock_realtime('000001'))
     print(QA_fetch_get_index_day('000001', '2017-01-01', '2017-07-01'))
     #print(QA_fetch_get_stock_transaction('000001', '2017-07-03', '2017-07-10'))
-
