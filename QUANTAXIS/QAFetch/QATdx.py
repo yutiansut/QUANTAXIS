@@ -192,7 +192,29 @@ def QA_fetch_get_stock_xdxr(code, ip='221.231.141.60', port=7709):
     api = TdxHq_API()
     market_code = __select_market_code(code)
     with api.connect():
-        return api.to_df(api.get_xdxr_info(market_code, code))
+        """
+        1 除权除息 002175 2008-05-29
+        2 送配股上市  000656 2015-04-29
+        3 非流通股上市 000656 2010-02-10
+        4 未知股本变动 600642 1993-07-19
+        5 股本变化 000656 2017-06-30
+        6 增发新股 600887 2002-08-20
+        7 股份回购  600619 2000-09-08
+        8 增发新股上市 600186 2001-02-14
+        9 转配股上市 600811 2017-07-25
+        10 可转债上市 600418 2006-07-07
+        11 扩缩股  600381 2014-06-27
+        12 非流通股缩股 600339 2006-04-10
+        13 送认购权证 600008 2006-04-19
+        14 送认沽权证 000932 2006-03-01
+        """
+        data=api.to_df(api.get_xdxr_info(market_code, code))
+        data['date']=pd.to_datetime(data[['year', 'month', 'day']])
+        data=data.drop(['year','month','day'],axis=1)
+        data['code']=code
+        data=data.set_index('date',drop=False)
+
+        return data
 
 
 if __name__ == '__main__':
@@ -201,3 +223,4 @@ if __name__ == '__main__':
     # print(QA_fetch_get_stock_realtime('000001'))
     print(QA_fetch_get_index_day('000001', '2017-01-01', '2017-07-01'))
     #print(QA_fetch_get_stock_transaction('000001', '2017-07-03', '2017-07-10'))
+

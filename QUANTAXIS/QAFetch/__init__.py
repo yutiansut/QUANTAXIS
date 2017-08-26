@@ -100,3 +100,9 @@ def QA_fetch_get_stock_transaction(package, code, start, end, retry=2):
         return Engine.QA_fetch_get_stock_transaction(code, start, end, retry)
     else:
         return 'Unsupport packages'
+def QA_fetch_get_stock_xdxr(package, code):
+    Engine=use(package)
+    if package in ['tdx', 'pytdx']:
+            return Engine.QA_fetch_get_stock_xdxr( code)
+    else:
+        return 'Unsupport packages'
