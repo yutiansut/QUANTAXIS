@@ -115,12 +115,9 @@ def QA_save_stock_day_with_fqfactor(client=QA_Setting.client):
     def saving_work(i):
         QA_util_log_info('Now Saving ==== %s' % (i))
         try:
-            data_bfq = QATushare.QA_fetch_get_stock_day(
-                i, startDate='1990-01-01', if_fq='00',type_='pd')
-            data_qfq = QATushare.QA_fetch_get_stock_day(
-                i, startDate='1990-01-01', if_fq='01',type_='pd')
-            data_qfq['qfqfactor']=data_qfq['open']/data_bfq['open']
-            data_json=QA_util_to_json_from_pandas(data_qfq)
+            data_hfq = QATushare.QA_fetch_get_stock_day(
+                i, startDate='1990-01-01', if_fq='02',type_='pd')
+            data_json=QA_util_to_json_from_pandas(data_hfq)
             __coll.insert_many(data_json)
         except:
             QA_util_log_info('error in saving ==== %s' % str(i))

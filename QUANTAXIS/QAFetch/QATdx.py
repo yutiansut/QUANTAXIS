@@ -39,12 +39,30 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_str2int,
 api = TdxHq_API()
 
 
+def ping(ip):
+    __time1 = datetime.datetime.now()
+    api = TdxHq_API()
+    try:
+        with api.connect(ip, 7709):
+            api.get_security_bars(9, 0, '000001', 0, 1)
+        return float(datetime.datetime.now() - x1)
+    except:
+        return datetime.timedelta(9, 9, 0)
+
+
+def select_best_ip():
+    listx = ['180.153.18.170', '180.153.18.171', '202.108.253.130', '202.108.253.131', '60.191.117.167', '115.238.56.198', '218.75.126.9', '115.238.90.165',
+             '124.160.88.183', '60.12.136.250', '218.108.98.244', '218.108.47.69', '14.17.75.71', '180.153.39.51']
+    data = [ping(x) for x in listx]
+    return listx[data.index(min(data))]
+
+
 def __select_market_code(code):
 
     return 1 if str(code)[0] == '6' else 0
 
 
-def QA_fetch_get_stock_day(code, start_date, end_date, ip='119.147.212.81', port=7709):
+def QA_fetch_get_stock_day(code, start_date, end_date, ip=select_best_ip(), port=7709):
     api = TdxHq_API()
     market_code = __select_market_code(code)
     start_date = QA_util_get_real_date(start_date, trade_date_sse, 1)
@@ -66,13 +84,36 @@ def QA_fetch_get_stock_day(code, start_date, end_date, ip='119.147.212.81', port
         return data[start_date:end_date]
 
 
-def QA_fetch_get_stock_list(code, date, ip='119.147.212.81', port=7709):
+def QA_fetch_get_stock_latest(code, ip=select_best_ip(), port=7709):
+    code = [code] if isinstance(code, str) else code
+    api = TdxHq_API(multithread=True)
+    with api.connect(ip, port):
+        data = pd.DataFrame()
+        for item in code:
+            market_code = __select_market_code(item)
+            __data = api.to_df(api.get_security_bars(
+                9, market_code, item, 0, 1))
+            __data['code'] = item
+            print(item)
+            data = data.append(__data)
+        data['date'] = data['datetime'].apply(lambda x: x[0:10])
+        data['date_stamp'] = data['date'].apply(
+            lambda x: QA_util_date_stamp(x))
+        data['date'] = pd.to_datetime(data['date'])
+        data = data.set_index('date', drop=False)
+        data['date'] = data['date'].apply(lambda x: str(x)[0:10])
+        data = data.drop(['year', 'month', 'day', 'hour',
+                          'minute', 'datetime'], axis=1)
+        return data
+
+
+def QA_fetch_get_stock_list(code, date, ip=select_best_ip(), port=7709):
     with api.connect(ip, port):
         stocks = api.get_security_list(1, 255)
         return stocks
 
 
-def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip='119.147.212.81', port=7709):
+def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=select_best_ip(), port=7709):
     api = TdxHq_API()
     __data = pd.DataFrame()
     with api.connect(ip, port):
@@ -87,7 +128,7 @@ def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip='119.147.212.81', 
         return data
 
 
-def QA_fetch_get_index_day(code, start_date, end_date, ip='119.147.212.81', port=7709):
+def QA_fetch_get_index_day(code, start_date, end_date, ip=select_best_ip(), port=7709):
     api = TdxHq_API()
     start_date = QA_util_get_real_date(start_date, trade_date_sse, 1)
     end_date = QA_util_get_real_date(end_date, trade_date_sse, -1)
@@ -105,7 +146,7 @@ def QA_fetch_get_index_day(code, start_date, end_date, ip='119.147.212.81', port
         return data[start_date:end_date]
 
 
-def QA_fetch_get_stock_min(code, start, end, level, ip='221.231.141.60', port=7709):
+def QA_fetch_get_stock_min(code, start, end, level, ip=select_best_ip(), port=7709):
     api = TdxHq_API()
     market_code = __select_market_code(code)
     if str(level) in ['5', '5m', '5min', 'five']:
@@ -159,7 +200,7 @@ def __QA_fetch_get_stock_transaction(code, day, retry, api):
             return data_
 
 
-def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip='221.231.141.60', port=7709):
+def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=select_best_ip(), port=7709):
     api = TdxHq_API()
 
     real_start, real_end = QA_util_get_real_datelist(start, end)
@@ -188,7 +229,7 @@ def QA_fetch_get_stock_info():
     pass
 
 
-def QA_fetch_get_stock_xdxr(code, ip='221.231.141.60', port=7709):
+def QA_fetch_get_stock_xdxr(code, ip=select_best_ip(), port=7709):
     api = TdxHq_API()
     market_code = __select_market_code(code)
     with api.connect():
@@ -215,7 +256,8 @@ def QA_fetch_get_stock_xdxr(code, ip='221.231.141.60', port=7709):
         data = api.to_df(api.get_xdxr_info(market_code, code))
         data['date'] = pd.to_datetime(data[['year', 'month', 'day']])
         data = data.drop(['year', 'month', 'day'], axis=1)
-        data['category_meaning']=data['category'].apply(lambda x: category[str(x)])
+        data['category_meaning'] = data['category'].apply(
+            lambda x: category[str(x)])
         data['code'] = code
         data = data.set_index('date', drop=False)
         return data
