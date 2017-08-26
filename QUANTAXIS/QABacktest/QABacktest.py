@@ -369,8 +369,6 @@ class QA_Backtest():
         # 先进行处理:
     def __sync_assets_status(self):
         '交易前需要同步持仓状态/现金'
-        #self.account.hold_available
-        #self.account.order_queue
         self.account.cash_available =self.account.cash[-1]
         __temp_hold = pd.DataFrame(
             self.account.hold[1::], columns=self.account.hold[0])
@@ -381,8 +379,6 @@ class QA_Backtest():
         __wait_for_deal=self.account.order_queue[self.account.order_queue['status']!=200] if len(self.account.order_queue)>0 else pd.DataFrame()
         __wait_for_deal= __wait_for_deal['amount'].groupby(
             'code').sum() if len(__wait_for_deal)>0 else pd.DataFrame()
-
-        print(self.account.hold_available-__wait_for_deal)
     def __QA_backtest_send_bid(self, __bid):
         if __bid.towards == 1:
             # 扣费以下这个订单时的bar的open扣费
@@ -395,7 +391,7 @@ class QA_Backtest():
                 if __message['header']['status'] == 200 and __message['body']['bid']['amount'] > 0:
                     # 这个判断是为了 如果买入资金不充足,所以买入报了一个0量单的情况
                     # 如果买入量>0, 才判断为成功交易
-
+                    QA_util_log_info('BUY %s Price %s Date %s Amount %s'%(__bid.code,__bid.price,__bid.datetime,__bid.amount))
                     self.account.QA_account_receive_deal(__message)
                     return __message
                 else:
@@ -416,6 +412,7 @@ class QA_Backtest():
                 __message = self.market.receive_bid(__bid)
                 if __message['header']['status'] == 200:
                     self.account.QA_account_receive_deal(__message)
+                    QA_util_log_info('SELL %s Price %s Date %s Amount %s'%(__bid.code,__bid.price,__bid.datetime,__bid.amount))
                     return __message
                 else:
                     #self.account.order_queue=self.account.order_queue.append(__bid.to_df())
@@ -518,16 +515,8 @@ class QA_Backtest():
 
             
             if __backtest_cls.backtest_type in ['day', 'd']:
-                """
-                for item in __backtest_cls.account.order_queue:
-
-                    item.date, item.datetime = (
-                        __backtest_cls.today, __backtest_cls.now)
-                    __backtest_cls.__QA_backtest_send_bid(__backtest_cls, item)
-                """
                 __backtest_cls.__sync_assets_status(__backtest_cls)
                 func(*arg, **kwargs)  # 发委托单
-                QA_util_log_info(__backtest_cls.account.order_queue)
                 __backtest_cls.account.order_queue=__backtest_cls.__sell_from_order_queue(__backtest_cls)
 
             elif __backtest_cls.backtest_type in ['min', 'm']:

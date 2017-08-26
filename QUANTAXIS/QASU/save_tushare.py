@@ -133,6 +133,8 @@ def QA_save_stock_day_with_fqfactor(client=QA_Setting.client):
     saving_work('hs300')
     saving_work('sz50')
 
+    QA_util_log_info('Saving Process has been done !')
+    return 0
 
 if __name__=='__main__':
     QA_save_stock_day_with_fqfactor()
