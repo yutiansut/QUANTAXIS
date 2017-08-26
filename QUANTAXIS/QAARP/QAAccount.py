@@ -50,7 +50,7 @@ class QA_Account():
         self.init_assest = 1000000
         self.cash = [self.init_assest]
         self.cash_available = self.cash[-1]  # 可用资金
-        self.order_queue = []  # 已委托待成交队列
+        self.order_queue = pd.DataFrame()  # 已委托待成交队列
         self.history = []
         self.detail = []
         self.assets = []
@@ -68,7 +68,7 @@ class QA_Account():
         self.account_cookie = str(random.random())
         self.cash = [self.init_assest]
         self.cash_available = self.cash[-1]  # 在途资金
-        self.order_queue = []  # 已委托待成交队列
+        self.order_queue = pd.DataFrame()   # 已委托待成交队列
         self.message = {
             'header': {
                 'source': 'account',

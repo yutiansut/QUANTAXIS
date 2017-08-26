@@ -156,6 +156,7 @@ class QA_Backtest_stock_day():
         QA_util_log_info('QUANTAXIS Backtest Engine Initial Successfully')
         QA_util_log_info('Basical Info: \n' + tabulate(
             [[str(__version__), str(self.strategy_name)]], headers=('Version', 'Strategy_name')))
+        QA_util_log_info('BACKTEST Cookie_ID is:  '+str(self.account.account_cookie))
         QA_util_log_info('Stock_List: \n' +
                          tabulate([self.strategy_stock_list]))
 

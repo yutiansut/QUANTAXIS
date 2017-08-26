@@ -97,7 +97,13 @@ class QA_QAMarket_bid():
         for item in QA_util_to_json_from_pandas(dataframe):
             bid_list.append(self.from_dict(item))
         return bid_list
-
+class QA_QAMarket_bid_list():
+    def __init__(self):
+        self.list=[]
+    def from_dataframe(self,dataframe):
+        for item in QA_util_to_json_from_pandas(dataframe):
+            self.list.append(QA_QAMarket_bid().from_dict(item))
+        return self.list
 
 if __name__ == '__main__':
     ax = QA_QAMarket_bid()
