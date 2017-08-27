@@ -51,7 +51,7 @@ author yutiansut
 def use(package):
     if package in ['wind']:
         from WindPy import w
-        w.start()
+        #w.start()
         return QAWind
     elif package in ['tushare', 'ts']:
         return QATushare

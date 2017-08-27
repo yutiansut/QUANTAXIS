@@ -65,8 +65,8 @@ def __select_market_code(code):
 def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=select_best_ip(), port=7709):
     api = TdxHq_API()
     market_code = __select_market_code(code)
-    start_date = QA_util_get_real_date(start_date, trade_date_sse, 1)
-    end_date = QA_util_get_real_date(end_date, trade_date_sse, -1)
+    #start_date = QA_util_get_real_date(start_date, trade_date_sse, 1)
+    #end_date = QA_util_get_real_date(end_date, trade_date_sse, -1)
     if if_fq in ['00', 'bfq']:
         with api.connect(ip, port):
             data = []
@@ -84,7 +84,7 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=select_bes
                               'minute', 'datetime'], axis=1)
             return data[data['open'] != 0][start_date:end_date]
     elif if_fq in ['01', 'qfq']:
-        xdxr_data = QA_fetch_get_stock_xdxr('tdx', code)
+        xdxr_data = QA_fetch_get_stock_xdxr(code)
         info = xdxr_data[xdxr_data['category'] == 1]
 
         with api.connect(ip, port):
@@ -101,13 +101,10 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=select_bes
             data['date'] = data['date'].apply(lambda x: str(x)[0:10])
             data = data.drop(['year', 'month', 'day', 'hour',
                               'minute', 'datetime'], axis=1)
-
             data = pd.concat([data, info[['fenhong', 'peigu', 'peigujia',
                                           'songzhuangu']][data.index[0]:]], axis=1).fillna(0)
             data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
                                 * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
-            data['adjx'] = (data['preclose'].shift(-1) /
-                            data['close']).fillna(1)
             data['adj'] = (data['preclose'].shift(-1) /
                            data['close']).fillna(1)[::-1].cumprod()
             data['open'] = data['open'] * data['adj']
@@ -115,9 +112,9 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=select_bes
             data['low'] = data['low'] * data['adj']
             data['close'] = data['close'] * data['adj']
             data['preclose'] = data['preclose'] * data['adj']
-            return data[data['open'] != 0][start:end]
+            return data[data['open'] != 0][start_date:end_date]
     elif if_fq in ['02', 'hfq']:
-        xdxr_data = QA_fetch_get_stock_xdxr('tdx', code)
+        xdxr_data = QA_fetch_get_stock_xdxr(code)
         info = xdxr_data[xdxr_data['category'] == 1]
 
         with api.connect(ip, port):
@@ -139,8 +136,6 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=select_bes
                                           'songzhuangu']][data.index[0]:]], axis=1).fillna(0)
             data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
                                 * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
-            data['adjx'] = (data['preclose'].shift(-1) /
-                            data['close']).fillna(1)
             data['adj'] = (data['preclose'].shift(-1) /
                            data['close']).fillna(1).cumprod()
             data['open'] = data['open'] / data['adj']
@@ -148,7 +143,7 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=select_bes
             data['low'] = data['low'] / data['adj']
             data['close'] = data['close'] / data['adj']
             data['preclose'] = data['preclose'] / data['adj']
-            return data[data['open'] != 0][start:end]
+            return data[data['open'] != 0][start_date:end_date]
 
 
 def QA_fetch_get_stock_latest(code, ip=select_best_ip(), port=7709):
