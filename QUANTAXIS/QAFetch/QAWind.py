@@ -66,19 +66,17 @@ def QA_fetch_get_stock_info(name, startDate, endDate):
 
 
 def QA_fetch_get_stock_day(name, startDate, endDate):
-    with w.start():
+    w.start()
 
-        if(QA_util_date_valid(endDate) == False):
-            QA_util_log_info("wrong date")
-        else:
-            if w.isconnected() is False:
-                w.start()
-            data = w.wsd(name, "sec_name,pre_close,open,high,low,close,volume",
-                        startDate, endDate, "PriceAdj=F")
-            if (data.ErrorCode == 0):
-                QA_util_log_info("Connent to Wind successfully")
+    if(QA_util_date_valid(endDate) == False):
+        QA_util_log_info("wrong date")
+    else:
+        data = w.wsd(name, "sec_name,pre_close,open,high,low,close,volume",
+                    startDate, endDate, "PriceAdj=F")
+        if (data.ErrorCode == 0):
+            QA_util_log_info("Connent to Wind successfully")
 
-                return pd.DataFrame(np.asarray(data.Data).T, columns=data.Fields, index=data.Times)
+            return pd.DataFrame(np.asarray(data.Data).T, columns=data.Fields, index=data.Times)
 
 
 def QA_fetch_get_stock_day_simple(name, startDate, endDate):
