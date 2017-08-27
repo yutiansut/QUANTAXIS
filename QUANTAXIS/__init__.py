@@ -54,7 +54,7 @@ logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n '
 # fetch methods
 
-from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day, QA_fetch_get_trade_date, QA_fetch_get_stock_min,QA_fetch_get_stock_xdxr,
+from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day, QA_fetch_get_trade_date, QA_fetch_get_stock_min, QA_fetch_get_stock_xdxr,
                                QA_fetch_get_stock_indicator, QA_fetch_get_stock_realtime, QA_fetch_get_stock_transaction)
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_trade_date, QA_fetch_stock_day, QA_fetch_stocklist_day, QA_fetch_index_day,
                                        QA_fetch_stock_min, QA_fetch_stocklist_min, QA_fetch_future_min, QA_fetch_future_day,
@@ -91,7 +91,7 @@ from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
 from QUANTAXIS.QATask import QA_Queue, QA_Event
 
 # Data
-from QUANTAXIS.QAData import  QA_data_tick_resample,QA_data_get_hfq,QA_data_get_qfq,QA_data_make_qfq,QA_data_make_hfq
+from QUANTAXIS.QAData import QA_data_tick_resample, QA_data_get_hfq, QA_data_get_qfq, QA_data_make_qfq, QA_data_make_hfq
 
 
 # Util
