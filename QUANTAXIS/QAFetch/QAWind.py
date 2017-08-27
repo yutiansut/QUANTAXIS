@@ -42,13 +42,14 @@ import pandas as pd
 import pymongo
 from QUANTAXIS.QAUtil import QA_util_date_valid, QA_util_log_info
 from . import data_list as data_list
-try:
-    from WindPy import w
-except:
-    QA_util_log_info('No WindPY Module!')
+
 
 
 def QA_fetch_get_stock_info(name, startDate, endDate):
+    try:
+        from WindPy import w
+    except:
+        QA_util_log_info('No WindPY Module!')
     w.start()
     # get the all stock list on the endDate
     # judge the vaild date
@@ -69,6 +70,10 @@ def QA_fetch_get_stock_info(name, startDate, endDate):
 
 
 def QA_fetch_get_stock_day(name, startDate, endDate, if_fq='01'):
+    try:
+        from WindPy import w
+    except:
+        QA_util_log_info('No WindPY Module!')
     w.start()
     if(QA_util_date_valid(endDate) == False):
         QA_util_log_info("wrong date")
@@ -93,6 +98,10 @@ def QA_fetch_get_stock_day(name, startDate, endDate, if_fq='01'):
 
 
 def QA_fetch_get_stock_day_simple(name, startDate, endDate):
+    try:
+        from WindPy import w
+    except:
+        QA_util_log_info('No WindPY Module!')
     w.start()
     if(QA_util_date_valid(endDate) == False):
         QA_util_log_info("wrong date")
@@ -107,6 +116,10 @@ def QA_fetch_get_stock_day_simple(name, startDate, endDate):
 
 
 def QA_fetch_get_stock_indicator(name, startDate, endDate):
+    try:
+        from WindPy import w
+    except:
+        QA_util_log_info('No WindPY Module!')
     w.start()
     if(QA_util_date_valid(endDate) == False):
         QA_util_log_info("wrong date")
@@ -142,6 +155,10 @@ def QA_fetch_get_stock_indicator(name, startDate, endDate):
 
 
 def QA_fetch_get_stock_shape(name, startDate, endDate):
+    try:
+        from WindPy import w
+    except:
+        QA_util_log_info('No WindPY Module!')
     w.start()
     if(QA_util_date_valid(endDate) == False):
         QA_util_log_info("wrong date")
@@ -155,6 +172,10 @@ def QA_fetch_get_stock_shape(name, startDate, endDate):
 
 
 def QA_fetch_get_stock_risk(name, startDate, endDate):
+    try:
+        from WindPy import w
+    except:
+        QA_util_log_info('No WindPY Module!')
     w.start()
     if(QA_util_date_valid(endDate) == False):
         QA_util_log_info("wrong date")
@@ -170,6 +191,10 @@ def QA_fetch_get_stock_risk(name, startDate, endDate):
 
 
 def QA_fetch_get_stock_xueqiu(name, startDate, endDate):
+    try:
+        from WindPy import w
+    except:
+        QA_util_log_info('No WindPY Module!')
     w.start()
     if(QA_util_date_valid(endDate) == False):
         QA_util_log_info("wrong date")
@@ -183,11 +208,19 @@ def QA_fetch_get_stock_xueqiu(name, startDate, endDate):
 
 
 def QA_fetch_get_stock_financial(name, startDate, endDate):
+    try:
+        from WindPy import w
+    except:
+        QA_util_log_info('No WindPY Module!')
     w.start()
     pass
 
 
 def QA_fetch_get_trade_date(endDate, exchange):
+    try:
+        from WindPy import w
+    except:
+        QA_util_log_info('No WindPY Module!')
     w.start()
     supportExchanges = ["SSE", "SZSE", "CFFEX", "SHFE", "DCE", "CZCE"]
     if (exchange in supportExchanges):
@@ -204,6 +237,10 @@ def QA_fetch_get_trade_date(endDate, exchange):
 
 
 def QA_fetch_get_stock_list(date):
+    try:
+        from WindPy import w
+    except:
+        QA_util_log_info('No WindPY Module!')
     w.start()
     if(QA_util_date_valid(date) == False):
         QA_util_log_info("wrong date")
@@ -214,6 +251,10 @@ def QA_fetch_get_stock_list(date):
 
 
 def QA_fetch_get_stock_list_special(date, id):
+    try:
+        from WindPy import w
+    except:
+        QA_util_log_info('No WindPY Module!')
     w.start()
     if(QA_util_date_valid(date) == False):
         QA_util_log_info("wrong date")
