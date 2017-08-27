@@ -130,7 +130,7 @@ def QA_SU_save_stock_transaction(client=QA_Setting.client):
         __saving_work(__stock_list.index[i_])
 
 if __name__ == '__main__':
-    # QA_SU_save_stock_all()
-    #QA_SU_save_stock_xdxr()
-    #QA_SU_save_stock_min()
+    QA_SU_save_stock_all()
+    QA_SU_save_stock_xdxr()
+    QA_SU_save_stock_min()
     QA_SU_save_stock_transaction()
