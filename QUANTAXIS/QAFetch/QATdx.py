@@ -45,24 +45,28 @@ def ping(ip):
     try:
         with api.connect(ip, 7709):
             api.get_security_bars(9, 0, '000001', 0, 1)
-        return float(datetime.datetime.now() - x1)
+        return datetime.datetime.now() - __time1
     except:
         return datetime.timedelta(9, 9, 0)
 
 
 def select_best_ip():
-    listx = ['180.153.18.170', '180.153.18.171', '202.108.253.130', '202.108.253.131', '60.191.117.167', '115.238.56.198', '218.75.126.9', '115.238.90.165',
-             '124.160.88.183', '60.12.136.250', '218.108.98.244', '218.108.47.69', '14.17.75.71', '180.153.39.51']
+    
+    listx = ['180.153.18.170', '180.153.18.171', '202.108.253.130', '202.108.253.131',
+             '60.191.117.167', '115.238.56.198', '218.75.126.9', '115.238.90.165',
+             '124.160.88.183', '60.12.136.250', '218.108.98.244', '218.108.47.69', 
+             '14.17.75.71', '180.153.39.51']
     data = [ping(x) for x in listx]
+    #print(data)
     return listx[data.index(min(data))]
-
+best_ip=select_best_ip()
 
 def __select_market_code(code):
 
     return 1 if str(code)[0] == '6' else 0
 
 
-def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=select_best_ip(), port=7709):
+def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=best_ip, port=7709):
     api = TdxHq_API()
     market_code = __select_market_code(code)
     if if_fq in ['00', 'bfq']:
@@ -147,7 +151,7 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=select_bes
             return data[data['open'] != 0][start_date:end_date]
 
 
-def QA_fetch_get_stock_latest(code, ip=select_best_ip(), port=7709):
+def QA_fetch_get_stock_latest(code, ip=best_ip, port=7709):
     code = [code] if isinstance(code, str) else code
     api = TdxHq_API(multithread=True)
     with api.connect(ip, port):
@@ -170,13 +174,13 @@ def QA_fetch_get_stock_latest(code, ip=select_best_ip(), port=7709):
         return data
 
 
-def QA_fetch_get_stock_list(code, date, ip=select_best_ip(), port=7709):
+def QA_fetch_get_stock_list(code, date, ip=best_ip, port=7709):
     with api.connect(ip, port):
         stocks = api.get_security_list(1, 255)
         return stocks
 
 
-def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=select_best_ip(), port=7709):
+def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=best_ip, port=7709):
     api = TdxHq_API()
     __data = pd.DataFrame()
     with api.connect(ip, port):
@@ -191,7 +195,7 @@ def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=select_best_ip(), 
         return data
 
 
-def QA_fetch_get_index_day(code, start_date, end_date, ip=select_best_ip(), port=7709):
+def QA_fetch_get_index_day(code, start_date, end_date, ip=best_ip, port=7709):
     api = TdxHq_API()
     start_date = QA_util_get_real_date(start_date, trade_date_sse, 1)
     end_date = QA_util_get_real_date(end_date, trade_date_sse, -1)
@@ -209,7 +213,7 @@ def QA_fetch_get_index_day(code, start_date, end_date, ip=select_best_ip(), port
         return data[start_date:end_date]
 
 
-def QA_fetch_get_stock_min(code, start, end, level, ip=select_best_ip(), port=7709):
+def QA_fetch_get_stock_min(code, start, end, level, ip=best_ip, port=7709):
     api = TdxHq_API()
     market_code = __select_market_code(code)
     type_ = ''
@@ -265,7 +269,7 @@ def __QA_fetch_get_stock_transaction(code, day, retry, api):
             return data_
 
 
-def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=select_best_ip(), port=7709):
+def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=best_ip, port=7709):
     api = TdxHq_API()
 
     real_start, real_end = QA_util_get_real_datelist(start, end)
@@ -294,7 +298,7 @@ def QA_fetch_get_stock_info():
     pass
 
 
-def QA_fetch_get_stock_xdxr(code, ip=select_best_ip(), port=7709):
+def QA_fetch_get_stock_xdxr(code, ip=best_ip, port=7709):
     api = TdxHq_API()
     market_code = __select_market_code(code)
     with api.connect():
