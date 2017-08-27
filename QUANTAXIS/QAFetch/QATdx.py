@@ -57,7 +57,6 @@ def select_best_ip():
              '124.160.88.183', '60.12.136.250', '218.108.98.244', '218.108.47.69', 
              '14.17.75.71', '180.153.39.51']
     data = [ping(x) for x in listx]
-    #print(data)
     return listx[data.index(min(data))]
 best_ip=select_best_ip()
 
