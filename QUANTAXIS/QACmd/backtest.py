@@ -39,7 +39,7 @@ QB.account.history  当前账户的历史交易记录
 QB.account.assets 当前账户总资产
 QB.account.detail 当前账户的交易对账单
 QB.account.init_assest 账户的最初资金
-
+QB.strategy_gap 前推日期
 
 
 QB.strategy_stock_list 回测初始化的时候  输入的一个回测标的
@@ -92,7 +92,6 @@ QB.QA_backtest_hold_amount(QB,code)
 def init():
     QB.backtest_type='day'
     QB.setting.QA_util_sql_mongo_ip='127.0.0.1'
-
     QB.account.init_assest=2500000
     QB.benchmark_code='hs300'
 

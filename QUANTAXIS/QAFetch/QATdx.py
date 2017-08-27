@@ -209,16 +209,17 @@ def QA_fetch_get_index_day(code, start_date, end_date, ip=select_best_ip(), port
 def QA_fetch_get_stock_min(code, start, end, level, ip=select_best_ip(), port=7709):
     api = TdxHq_API()
     market_code = __select_market_code(code)
+    type_ = ''
     if str(level) in ['5', '5m', '5min', 'five']:
-        level = 0
+        level, type_ = 0, '5min'
     elif str(level) in ['1', '1m', '1min', 'one']:
-        level = 8
+        level, type_ = 8, '1min'
     elif str(level) in ['15', '15m', '15min', 'fifteen']:
-        level = 1
+        level, type_ = 1, '15min'
     elif str(level) in ['30', '30m', '30min', 'half']:
-        level = 2
+        level, type_ = 2, '30min'
     elif str(level) in ['60', '60m', '60min', '1h']:
-        level = 3
+        level, type_ = 3, '60min'
     with api.connect(ip, port):
         data = []
         for i in range(26):
@@ -236,6 +237,7 @@ def QA_fetch_get_stock_min(code, start, end, level, ip=select_best_ip(), port=77
             lambda x: QA_util_date_stamp(x))
         data['time_stamp'] = data['datetime'].apply(
             lambda x: QA_util_time_stamp(x))
+        data['type'] = type_
     return data[start:end]
 
 
