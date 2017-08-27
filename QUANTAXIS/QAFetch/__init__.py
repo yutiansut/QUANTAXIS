@@ -67,6 +67,8 @@ def QA_fetch_get_stock_day(package, code, startDate, endDate, if_fq='01', type_=
         return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq)
     elif package in ['ts', 'tushare']:
         return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq, type_)
+    elif package in ['wind']:
+        return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq)
     else:
         return Engine.QA_fetch_get_stock_day(code, startDate, endDate)
 
