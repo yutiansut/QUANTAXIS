@@ -22,5 +22,5 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .fq_factor import QA_data_fq_factor
+from .data_fq import QA_data_get_hfq,QA_data_get_qfq,QA_data_make_qfq,QA_data_make_hfq
 from .make_bar import QA_data_tick_resample
