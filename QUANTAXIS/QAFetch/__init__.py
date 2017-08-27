@@ -63,12 +63,10 @@ def use(package):
 
 def QA_fetch_get_stock_day(package, code, startDate, endDate, if_fq='01', type_='json'):
     Engine = use(package)
-    if package in ['ths', 'THS']:
+    if package in ['ths', 'THS','wind','tdx','pytdx']:
         return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq)
     elif package in ['ts', 'tushare']:
         return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq, type_)
-    elif package in ['wind']:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq)
     else:
         return Engine.QA_fetch_get_stock_day(code, startDate, endDate)
 
