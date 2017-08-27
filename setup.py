@@ -49,7 +49,7 @@ NAME = "quantaxis"
 名字，一般放你包的名字即可
 """
 PACKAGES = ["QUANTAXIS", "QUANTAXIS.QAFetch", "QUANTAXIS.QACmd", "QUANTAXIS.QAMarket", 'QUANTAXIS.QAWeb',
-            "QUANTAXIS.QABacktest", "QUANTAXIS.QASQL", "QUANTAXIS.QATask","QUANTAXIS.QAData",
+            "QUANTAXIS.QABacktest", "QUANTAXIS.QASQL", "QUANTAXIS.QATask", "QUANTAXIS.QAData",
             "QUANTAXIS.QASU", "QUANTAXIS.QAUtil", "QUANTAXIS.QAARP", "QUANTAXIS.QASignal", "QUANTAXIS.QAIndicator"]
 """
 包含的包，可以多个，这是一个列表
@@ -90,16 +90,16 @@ setup(
         'Operating System :: OS Independent',
     ],
     install_requires=['pandas>=0.20', 'numpy>=1.12.0', 'tushare>=0.7.4', 'flask_socketio>=2.9.0 ',
-                      'lxml', ' beautifulsoup4','flask-socketio','flask',
-                      'pymongo>=3.4', 'celery>=4.0.0', 'six>=1.10.0', 'tabulate>=0.7.7', 'pytdx>=1.33'
-                      'docopt>=0.6.2', 'zenlog>=1.1', 'delegator.py>=0.0.12', 'flask>=0.12.2'],
+                      'lxml', ' beautifulsoup4', 'flask-socketio', 'flask', 'click>=6.7',
+                      'pymongo>=3.4', 'celery>=4.0.0', 'six>=1.10.0', 'tabulate>=0.7.7', 'pytdx>=1.33',
+                      'zenlog>=1.1', 'delegator.py>=0.0.12', 'flask>=0.12.2'],
     entry_points={
         'console_scripts': [
             'quantaxis=QUANTAXIS.QACmd:QA_cmd',
             'quantaxisd=QUANTAXIS.QAWeb.QA_Web:main'
         ]
     },
-    #install_requires=requirements,
+    # install_requires=requirements,
     keywords=KEYWORDS,
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,
