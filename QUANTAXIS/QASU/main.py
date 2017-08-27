@@ -1,4 +1,3 @@
-# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -22,10 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 from QUANTAXIS.QAUtil import QA_Setting
-
-from . import fqfactor as fq
 from . import save_tdx_file as tdx_file
 from . import save_tushare as sts
 from . import save_wind as sw
@@ -61,11 +57,6 @@ def QA_SU_save_stock_day_init(startDate, engine, client=QA_Setting.client):
 def QA_SU_update_stock_day(engine, client=QA_Setting.client):
     engine = select_update_engine(engine)
     engine.QA_update_stock_day_all(client)
-
-
-def QA_SU_save_stock_fqfactor(engine='', client=QA_Setting.client):
-    fq.QA_save_fq_factor(client)
-
 
 def select_save_engine(engine):
     if engine in ['wind', 'Wind', 'WIND']:

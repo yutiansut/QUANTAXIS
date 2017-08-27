@@ -22,109 +22,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from pytdx.hq import TdxHq_API
-api = TdxHq_API()
+from QUANTAXIS.QAFetch.QATdx import QA_fetch_get_stock_day,QA_fetch_get_stock_min,QA_fetch_get_stock_xdxr,QA_fetch_get_stock_transaction
 
 
-def get_stock_day(api, code):
+def save_stock_day():
+    #QA_fetch_get_stock_day(code)
 
-    data = []
-    if str(code)[0] == '6':
-        index_code = 1
-    else:
-        index_code = 0
-
-    with api.connect():
-        for i in range(11):
-            data += api.get_security_bars(9,
-                                          index_code, code, (10 - i) * 800, 800)
-    return api.to_df(data)
-
-
-def get_stock_1_min(api, code):
-    data = []
-    if str(code)[0] == '6':
-        index_code = 1
-    else:
-        index_code = 0
-    with api.connect():
-        for i in range(51):
-            data += api.get_security_bars(8,
-                                          index_code, code, (50 - i) * 800, 800)
-            # print(len(data))
-    return api.to_df(data)
-
-
-def get_stock_5_min(api, code):
-    data = []
-    if str(code)[0] == '6':
-        index_code = 1
-    else:
-        index_code = 0
-    with api.connect():
-        for i in range(51):
-            data += api.get_security_bars(0,
-                                          index_code, code, (50 - i) * 800, 800)
-            # print(len(data))
-    return api.to_df(data)
-
-
-def get_stock_15_min(api, code):
-    data = []
-    if str(code)[0] == '6':
-        index_code = 1
-    else:
-        index_code = 0
-    with api.connect():
-        for i in range(51):
-            data += api.get_security_bars(1,
-                                          index_code, code, (50 - i) * 800, 800)
-            # print(len(data))
-    return api.to_df(data)
-
-
-def get_stock_30_min(api, code):
-    data = []
-    if str(code)[0] == '6':
-        index_code = 1
-    else:
-        index_code = 0
-    with api.connect():
-        for i in range(51):
-            data += api.get_security_bars(2,
-                                          index_code, code, (50 - i) * 800, 800)
-            # print(len(data))
-    return api.to_df(data)
-
-
-def get_stock_1_hour(api, code):
-    data = []
-    if str(code)[0] == '6':
-        index_code = 1
-    else:
-        index_code = 0
-    with api.connect():
-        for i in range(51):
-            data += api.get_security_bars(3,
-                                          index_code, code, (50 - i) * 800, 800)
-            # print(len(data))
-    return api.to_df(data)
-
-
-def get_stock_transaction(api, code, date):
-    if str(code)[0] == '6':
-        index_code = 1
-    else:
-        index_code = 0
-    with api.connect():
-        for i in range(11):
-            data += api.get_history_transaction_data(
-                index_code, code, (10 - i) * 2000, 2000, date)
-            # print(len(data))
-    return api.to_df(data)
-
+    pass
 
 if __name__ == '__main__':
-    from pytdx.hq import TdxHq_API
-    api = TdxHq_API()
-    print(get_stock_1_min(api, '000001'))
+    pass

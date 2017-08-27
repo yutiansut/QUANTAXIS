@@ -29,8 +29,8 @@ import time
 
 import tushare as ts
 
-from QUANTAXIS.QAFetch import QATushare
-from QUANTAXIS.QAUtil import QA_util_date_stamp, QA_util_time_stamp, QA_util_log_info, trade_date_sse,QA_util_to_json_from_pandas
+from QUANTAXIS.QAFetch.QATushare import QA_fetch_get_stock_day, QA_fetch_get_stock_list, QA_fetch_get_trade_date, QA_fetch_get_stock_info
+from QUANTAXIS.QAUtil import QA_util_date_stamp, QA_util_time_stamp, QA_util_log_info, trade_date_sse, QA_util_to_json_from_pandas
 from QUANTAXIS.QAUtil.QASetting import QA_Setting
 
 
@@ -42,7 +42,7 @@ def QA_save_stock_day_all(client=QA_Setting.client):
     def saving_work(i):
         QA_util_log_info('Now Saving ==== %s' % (i))
         try:
-            data_json = QATushare.QA_fetch_get_stock_day(
+            data_json = QA_fetch_get_stock_day(
                 i, startDate='1990-01-01')
 
             __coll.insert_many(data_json)
@@ -60,7 +60,7 @@ def QA_save_stock_day_all(client=QA_Setting.client):
 
 
 def QA_SU_save_stock_list(client=QA_Setting.client):
-    data = QATushare.QA_fetch_get_stock_list()
+    data = QA_fetch_get_stock_list()
     date = str(datetime.date.today())
     date_stamp = QA_util_date_stamp(date)
     coll = client.quantaxis.stock_list
@@ -69,13 +69,13 @@ def QA_SU_save_stock_list(client=QA_Setting.client):
 
 
 def QA_SU_save_trade_date_all(client=QA_Setting.client):
-    data = QATushare.QA_fetch_get_trade_date('', '')
+    data = QA_fetch_get_trade_date('', '')
     coll = client.quantaxis.trade_date
     coll.insert_many(data)
 
 
 def QA_SU_save_stock_info(client=QA_Setting.client):
-    data = QATushare.QA_fetch_get_stock_info('all')
+    data = QA_fetch_get_stock_info('all')
     coll = client.quantaxis.stock_info
     coll.insert_many(data)
 
@@ -89,7 +89,7 @@ def QA_save_stock_day_all_bfq(client=QA_Setting.client):
     def saving_work(i):
         QA_util_log_info('Now Saving ==== %s' % (i))
         try:
-            data_json = QATushare.QA_fetch_get_stock_day(
+            data_json = QA_fetch_get_stock_day(
                 i, startDate='1990-01-01', if_fq='00')
 
             __coll.insert_many(data_json)
@@ -115,9 +115,9 @@ def QA_save_stock_day_with_fqfactor(client=QA_Setting.client):
     def saving_work(i):
         QA_util_log_info('Now Saving ==== %s' % (i))
         try:
-            data_hfq = QATushare.QA_fetch_get_stock_day(
-                i, startDate='1990-01-01', if_fq='02',type_='pd')
-            data_json=QA_util_to_json_from_pandas(data_hfq)
+            data_hfq = QA_fetch_get_stock_day(
+                i, startDate='1990-01-01', if_fq='02', type_='pd')
+            data_json = QA_util_to_json_from_pandas(data_hfq)
             __coll.insert_many(data_json)
         except:
             QA_util_log_info('error in saving ==== %s' % str(i))
@@ -133,5 +133,6 @@ def QA_save_stock_day_with_fqfactor(client=QA_Setting.client):
     QA_util_log_info('Saving Process has been done !')
     return 0
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     QA_save_stock_day_with_fqfactor()

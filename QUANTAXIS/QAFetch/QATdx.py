@@ -65,8 +65,6 @@ def __select_market_code(code):
 def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=select_best_ip(), port=7709):
     api = TdxHq_API()
     market_code = __select_market_code(code)
-    #start_date = QA_util_get_real_date(start_date, trade_date_sse, 1)
-    #end_date = QA_util_get_real_date(end_date, trade_date_sse, -1)
     if if_fq in ['00', 'bfq']:
         with api.connect(ip, port):
             data = []
