@@ -22,14 +22,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from QUANTAXIS.QAFetch.QATdx import QA_fetch_get_stock_day, QA_fetch_get_stock_min, QA_fetch_get_stock_xdxr, QA_fetch_get_stock_transaction
+from QUANTAXIS.QAFetch.QATdx import select_best_ip,QA_fetch_get_stock_day, QA_fetch_get_stock_min, QA_fetch_get_stock_xdxr, QA_fetch_get_stock_transaction
 from QUANTAXIS.QAUtil import QA_util_to_json_from_pandas, QA_Setting, QA_util_log_info
 from QUANTAXIS.QAFetch.QATushare import QA_fetch_get_stock_list,QA_fetch_get_stock_time_to_market
 import datetime
 
-
+ip=select_best_ip()
 def QA_SU_save_stock_all(client=QA_Setting.client):
-    __stock_list = QA_fetch_get_stock_list()
+    __stock_list = QA_fetch_get_stock_time_to_market()
     __coll = client.quantaxis.stock_day
     __coll.ensure_index('code')
     __err = []
@@ -40,24 +40,23 @@ def QA_SU_save_stock_all(client=QA_Setting.client):
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
                     QA_fetch_get_stock_day(
-                        code, '1990-01-01', str(datetime.date.today()), '00')))
+                        code, '1990-01-01', str(datetime.date.today()), '00',ip)))
         except:
             __err.append(code)
     for i_ in range(len(__stock_list)):
         QA_util_log_info('The %s of Total %s' % (i_, len(__stock_list)))
         QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
             float(i_ / len(__stock_list) * 100))[0:4] + '%')
-        __saving_work(__stock_list[i_])
+        __saving_work(__stock_list.index[i_])
 
     if len(__err) > 0:
         QA_util_log_info('ERROR! Try Again with \n')
         QA_util_log_info(__err)
-        for i__ in __err:
-            __saving_work(i__)
+        
 
 
 def QA_SU_save_stock_xdxr(client=QA_Setting.client):
-    __stock_list = QA_fetch_get_stock_list()
+    __stock_list = QA_fetch_get_stock_time_to_market()
     __coll = client.quantaxis.stock_xdxr
     __coll.ensure_index('code')
     __err = []
@@ -67,19 +66,20 @@ def QA_SU_save_stock_xdxr(client=QA_Setting.client):
         try:
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
-                    QA_fetch_get_stock_xdxr(code)))
+                    QA_fetch_get_stock_xdxr(code,ip)))
 
         except:
             __err.append(code)
     for i_ in range(len(__stock_list)):
+        #__saving_work('000001')
         QA_util_log_info('The %s of Total %s' % (i_, len(__stock_list)))
         QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
             float(i_ / len(__stock_list) * 100))[0:4] + '%')
-        __saving_work(__stock_list[i_])
+        __saving_work(__stock_list.index[i_])
 
 
 def QA_SU_save_stock_min(client=QA_Setting.client):
-    __stock_list = QA_fetch_get_stock_list()
+    __stock_list = QA_fetch_get_stock_time_to_market()
     __coll = client.quantaxis.stock_min
     __coll.ensure_index('code')
     __err = []
@@ -90,15 +90,15 @@ def QA_SU_save_stock_min(client=QA_Setting.client):
             QA_util_log_info('##JOB03.1 Now Saving STOCK_1_MIN ==== %s' % (code))
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
-                    QA_fetch_get_stock_min(code, '2015-01-01', str(datetime.date.today()), '1min')))
+                    QA_fetch_get_stock_min(code, '2015-01-01', str(datetime.date.today()), '1min',ip)))
             QA_util_log_info('##JOB03.2 Now Saving STOCK_5_MIN ==== %s' % (code))
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
-                    QA_fetch_get_stock_min(code, '2015-01-01', str(datetime.date.today()), '5min')))
+                    QA_fetch_get_stock_min(code, '2015-01-01', str(datetime.date.today()), '5min',ip)))
             QA_util_log_info('##JOB03.3 Now Saving STOCK_15_MIN ==== %s' % (code))
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
-                    QA_fetch_get_stock_min(code, '2015-01-01', str(datetime.date.today()), '15min')))
+                    QA_fetch_get_stock_min(code, '2015-01-01', str(datetime.date.today()), '15min',ip)))
         except:
             __err.append(code)
     for i_ in range(len(__stock_list)):
@@ -106,7 +106,7 @@ def QA_SU_save_stock_min(client=QA_Setting.client):
         QA_util_log_info('The %s of Total %s' % (i_, len(__stock_list)))
         QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
             float(i_ / len(__stock_list) * 100))[0:4] + '%')
-        __saving_work(__stock_list[i_])
+        __saving_work(__stock_list.index[i_])
 
 def QA_SU_save_stock_transaction(client=QA_Setting.client):
     __stock_list = QA_fetch_get_stock_time_to_market()
@@ -119,14 +119,14 @@ def QA_SU_save_stock_transaction(client=QA_Setting.client):
         try:
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
-                    QA_fetch_get_stock_transaction(code, str(__stock_list[code]), str(datetime.date.today()))))
+                    QA_fetch_get_stock_transaction(code, str(__stock_list[code]), str(datetime.date.today()),ip=ip)))
         except:
             __err.append(code)
     for i_ in range(len(__stock_list)):
         #__saving_work('000001')
         QA_util_log_info('The %s of Total %s' % (i_, len(__stock_list)))
         QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
-            float(i_ / len(__stock_list.index) * 100))[0:4] + '%')
+            float(i_ / len(__stock_list) * 100))[0:4] + '%')
         __saving_work(__stock_list.index[i_])
 
 if __name__ == '__main__':

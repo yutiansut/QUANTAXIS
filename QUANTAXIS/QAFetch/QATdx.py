@@ -73,6 +73,7 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=select_bes
                                               market_code, code, (9 - i) * 800, 800)
             data = api.to_df(data)
             data['date'] = data['datetime'].apply(lambda x: x[0:10])
+            data['code'] = code
             data['date_stamp'] = data['date'].apply(
                 lambda x: QA_util_date_stamp(x))
             data['date'] = pd.to_datetime(data['date'])
@@ -91,6 +92,7 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=select_bes
                 data += api.get_security_bars(9,
                                               market_code, code, (9 - i) * 800, 800)
             data = api.to_df(data)
+            data['code'] = code
             data['date'] = data['datetime'].apply(lambda x: x[0:10])
             data['date_stamp'] = data['date'].apply(
                 lambda x: QA_util_date_stamp(x))
@@ -122,6 +124,7 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=select_bes
                                               market_code, code, (9 - i) * 800, 800)
             data = api.to_df(data)
             data['date'] = data['datetime'].apply(lambda x: x[0:10])
+            data['code'] = code
             data['date_stamp'] = data['date'].apply(
                 lambda x: QA_util_date_stamp(x))
             data['date'] = pd.to_datetime(data['date'])
