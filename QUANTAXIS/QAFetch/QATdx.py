@@ -86,10 +86,6 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=best_ip, p
             data['date'] = data['date'].apply(lambda x: str(x)[0:10])
             data = data.drop(['year', 'month', 'day', 'hour',
                               'minute', 'datetime'], axis=1)
-            #print(data)
-            
-            #__data=pd.concat([data[start_date:end_date],data_ts['turnover']],axis=1).fillna(0)
-            #print(data_ts['turnover'])
             return data[data['open'] != 0][start_date:end_date]
     elif if_fq in ['01', 'qfq']:
         xdxr_data = QA_fetch_get_stock_xdxr(code)

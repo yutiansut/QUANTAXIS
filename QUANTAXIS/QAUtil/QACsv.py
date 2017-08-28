@@ -27,7 +27,7 @@ import csv
 def QA_util_save_csv(data: list, name: str, column=None, location=None):
     # 重写了一下保存的模式
     # 增加了对于可迭代对象的判断 2017/8/10
-
+    '将list保存成csv,第一个参数是list,第二个参数是要保存的名字'
     assert isinstance(data, list)
     if location is None:
         path = './' + str(name) + '.csv'
