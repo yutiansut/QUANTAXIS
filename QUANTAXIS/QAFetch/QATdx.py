@@ -93,7 +93,6 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=best_ip, p
             return data[data['open'] != 0][start_date:end_date]
     elif if_fq in ['01', 'qfq']:
         xdxr_data = QA_fetch_get_stock_xdxr(code)
-        liquidity=xdxr_data[['liquidity_after']]
         info = xdxr_data[xdxr_data['category'] == 1]
 
         with api.connect(ip, port):
@@ -113,10 +112,6 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=best_ip, p
                               'minute', 'datetime'], axis=1)
             data = pd.concat([data, info[['fenhong', 'peigu', 'peigujia',
                                           'songzhuangu']][data.index[0]:]], axis=1).fillna(0)
-            print(data)
-            print(liquidity)
-            #data = pd.concat([data,liquidity],axis=1).fillna(method='ffill')
-            #data['turnover']=data['vol']/data['liquidity_after']
             data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
                                 * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
             data['adj'] = (data['preclose'].shift(-1) /
@@ -126,11 +121,10 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=best_ip, p
             data['low'] = data['low'] * data['adj']
             data['close'] = data['close'] * data['adj']
             data['preclose'] = data['preclose'] * data['adj']
-            return data[data['open'] != 0][start_date:end_date],liquidity
+            return data[data['open'] != 0][start_date:end_date]
     elif if_fq in ['02', 'hfq']:
         xdxr_data = QA_fetch_get_stock_xdxr(code)
         info = xdxr_data[xdxr_data['category'] == 1]
-        liquidity=xdxr_data['liquidity_after']
         with api.connect(ip, port):
             data = []
             for i in range(10):
@@ -149,10 +143,6 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=best_ip, p
 
             data = pd.concat([data, info[['fenhong', 'peigu', 'peigujia',
                                           'songzhuangu']][data.index[0]:]], axis=1).fillna(0)
-
-
-            data = pd.concat([data,liquidity[data.index[0]:]],axis=1).fillna(method='ffill')
-            data['turnover']=data['vol']/data['liquidity_after']
             data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
                                 * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
             data['adj'] = (data['preclose'].shift(-1) /
