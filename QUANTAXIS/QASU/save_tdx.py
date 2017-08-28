@@ -119,7 +119,7 @@ def QA_SU_save_stock_transaction(client=QA_Setting.client):
         try:
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
-                    QA_fetch_get_stock_transaction(code, str(__stock_list[code]), str(datetime.date.today())=ip)))
+                    QA_fetch_get_stock_transaction(code, str(__stock_list[code]), str(datetime.date.today()))))
         except:
             __err.append(code)
     for i_ in range(len(__stock_list)):
