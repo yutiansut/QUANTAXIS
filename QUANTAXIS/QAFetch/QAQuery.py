@@ -32,7 +32,7 @@ from pandas import DataFrame
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
                               QA_util_date_valid, QA_util_log_info,
                               QA_util_time_stamp)
-
+from QUANTAXIS.QAData import QA_data_make_hfq,QA_data_make_qfq
 """
 按要求从数据库取数据，并转换成numpy结构
 
@@ -216,18 +216,15 @@ def QA_fetch_future_day():
     pass
 
 
-def QA_fetch_stock_to_fq(__data):
-    __data_fq = QA_fetch_stock_day(
-        __data['code'][0], str(__data.index[0])[0:10], str(__data.index[-1])[0:10], 'pd', drop_factor=False)
-    __data_fq = __data_fq['qfqfactor'].resample('1min').ffill()
-
-    res = pd.concat([__data, __data_fq], axis=1, join='inner')
-    res['open'] = res['open'] * res['qfqfactor']
-    res['high'] = res['high'] * res['qfqfactor']
-    res['low'] = res['low'] * res['qfqfactor']
-    res['close'] = res['close'] * res['qfqfactor']
-    return res
-
+def QA_fetch_stock_to_fq(__data,type_='01'):
+    '股票 日线/分钟线 动态复权接口'
+    if type_ in ['01','qfq']:
+        return QA_data_make_qfq(__data,QA_QA_fetch_stock_xdxr(__data['code'][0]),__data.index[0],__data.index[-1])
+    elif type_ in ['02','hfq']:
+        return QA_data_make_hfq(__data,QA_QA_fetch_stock_xdxr(__data['code'][0]),__data.index[0],__data.index[-1])
+    else:
+        QA_util_log_info('wrong fq type! Using qfq')
+        return QA_data_make_qfq(__data,QA_QA_fetch_stock_xdxr(__data['code'][0]),__data.index[0],__data.index[-1])
 
 def QA_fetch_future_min():
     pass
