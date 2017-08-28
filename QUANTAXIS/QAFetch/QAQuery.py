@@ -219,12 +219,12 @@ def QA_fetch_future_day():
 def QA_fetch_stock_to_fq(__data,type_='01'):
     '股票 日线/分钟线 动态复权接口'
     if type_ in ['01','qfq']:
-        return QA_data_make_qfq(__data,QA_QA_fetch_stock_xdxr(__data['code'][0]),__data.index[0],__data.index[-1])
+        return QA_data_make_qfq(__data,QA_fetch_stock_xdxr(__data['code'][0]),__data.index[0],__data.index[-1])
     elif type_ in ['02','hfq']:
-        return QA_data_make_hfq(__data,QA_QA_fetch_stock_xdxr(__data['code'][0]),__data.index[0],__data.index[-1])
+        return QA_data_make_hfq(__data,QA_fetch_stock_xdxr(__data['code'][0]),__data.index[0],__data.index[-1])
     else:
         QA_util_log_info('wrong fq type! Using qfq')
-        return QA_data_make_qfq(__data,QA_QA_fetch_stock_xdxr(__data['code'][0]),__data.index[0],__data.index[-1])
+        return QA_data_make_qfq(__data,QA_fetch_stock_xdxr(__data['code'][0]),__data.index[0],__data.index[-1])
 
 def QA_fetch_future_min():
     pass
