@@ -26,6 +26,7 @@ import datetime
 import numpy as np
 import pandas as pd
 from pytdx.hq import TdxHq_API
+import tushare as ts
 from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_str2int,
                               QA_util_date_valid, QA_util_get_real_date,
                               QA_util_get_real_datelist, QA_util_log_info,
@@ -85,9 +86,14 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=best_ip, p
             data['date'] = data['date'].apply(lambda x: str(x)[0:10])
             data = data.drop(['year', 'month', 'day', 'hour',
                               'minute', 'datetime'], axis=1)
+            #print(data)
+            
+            #__data=pd.concat([data[start_date:end_date],data_ts['turnover']],axis=1).fillna(0)
+            #print(data_ts['turnover'])
             return data[data['open'] != 0][start_date:end_date]
     elif if_fq in ['01', 'qfq']:
         xdxr_data = QA_fetch_get_stock_xdxr(code)
+        liquidity=xdxr_data[['liquidity_after']]
         info = xdxr_data[xdxr_data['category'] == 1]
 
         with api.connect(ip, port):
@@ -107,6 +113,10 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=best_ip, p
                               'minute', 'datetime'], axis=1)
             data = pd.concat([data, info[['fenhong', 'peigu', 'peigujia',
                                           'songzhuangu']][data.index[0]:]], axis=1).fillna(0)
+            print(data)
+            print(liquidity)
+            #data = pd.concat([data,liquidity],axis=1).fillna(method='ffill')
+            #data['turnover']=data['vol']/data['liquidity_after']
             data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
                                 * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
             data['adj'] = (data['preclose'].shift(-1) /
@@ -116,11 +126,11 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=best_ip, p
             data['low'] = data['low'] * data['adj']
             data['close'] = data['close'] * data['adj']
             data['preclose'] = data['preclose'] * data['adj']
-            return data[data['open'] != 0][start_date:end_date]
+            return data[data['open'] != 0][start_date:end_date],liquidity
     elif if_fq in ['02', 'hfq']:
         xdxr_data = QA_fetch_get_stock_xdxr(code)
         info = xdxr_data[xdxr_data['category'] == 1]
-
+        liquidity=xdxr_data['liquidity_after']
         with api.connect(ip, port):
             data = []
             for i in range(10):
@@ -139,6 +149,10 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=best_ip, p
 
             data = pd.concat([data, info[['fenhong', 'peigu', 'peigujia',
                                           'songzhuangu']][data.index[0]:]], axis=1).fillna(0)
+
+
+            data = pd.concat([data,liquidity[data.index[0]:]],axis=1).fillna(method='ffill')
+            data['turnover']=data['vol']/data['liquidity_after']
             data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
                                 * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
             data['adj'] = (data['preclose'].shift(-1) /
@@ -174,10 +188,14 @@ def QA_fetch_get_stock_latest(code, ip=best_ip, port=7709):
         return data
 
 
-def QA_fetch_get_stock_list(code, date, ip=best_ip, port=7709):
+def QA_fetch_get_stock_list(market_code, ip=best_ip, port=7709):
     with api.connect(ip, port):
-        stocks = api.get_security_list(1, 255)
-        return stocks
+        stock_=[]
+        for i in range(13):
+            stock_.append(api.get_security_list(int(market_code), (12-i)*1000))
+
+        stocks=api.to_df(stock_)
+        return stock_
 
 
 def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=best_ip, port=7709):
@@ -328,6 +346,9 @@ def QA_fetch_get_stock_xdxr(code, ip=best_ip, port=7709):
         data['category_meaning'] = data['category'].apply(
             lambda x: category[str(x)])
         data['code'] = code
+        data=data.rename(index=str,columns={'panhouliutong':'liquidity_after',
+                'panqianliutong':'liquidity_before','houzongguben':'shares_after',
+                'qianzongguben':'shares_before'})
         data = data.set_index('date', drop=False)
         return data
 
