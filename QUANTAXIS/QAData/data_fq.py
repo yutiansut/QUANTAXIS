@@ -30,48 +30,23 @@ import pandas as pd
 
 
 def QA_data_get_qfq(code, start, end):
+    '使用网络数据进行复权/需要联网'
     xdxr_data = QA_fetch_get_stock_xdxr('tdx', code)
-    info = xdxr_data[xdxr_data['category'] == 1]
     bfq_data = QA_fetch_get_stock_day(
         'tdx', code, '1990-01-01', str(datetime.date.today())).dropna(axis=0)
-    data = pd.concat([bfq_data, info[['fenhong', 'peigu', 'peigujia',
-                                      'songzhuangu']][bfq_data.index[0]:]], axis=1).fillna(0)
-    data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
-                        * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
-    data['adjx'] = (data['preclose'].shift(-1) / data['close']).fillna(1)
-    data['adj'] = (data['preclose'].shift(-1) /
-                   data['close']).fillna(1)[::-1].cumprod()
-    data['open'] = data['open'] * data['adj']
-    data['high'] = data['high'] * data['adj']
-    data['low'] = data['low'] * data['adj']
-    data['close'] = data['close'] * data['adj']
-    data['preclose'] = data['preclose'] * data['adj']
-    return data[data['open'] != 0][start:end]
+    return QA_data_make_qfq(bfq_data,xdxr_data,start,end)
 
 
 def QA_data_get_hfq(code, start, end):
+    '使用网络数据进行复权/需要联网'
     xdxr_data = QA_fetch_get_stock_xdxr('tdx', code)
-    info = xdxr_data[xdxr_data['category'] == 1]
     bfq_data = QA_fetch_get_stock_day(
         'tdx', code, '1990-01-01', str(datetime.date.today())).dropna(axis=0)
-    data = pd.concat([bfq_data, info[['fenhong', 'peigu', 'peigujia',
-                                      'songzhuangu']][bfq_data.index[0]:]], axis=1).fillna(0)
-    data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
-                        * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
-    data['adjx'] = (data['preclose'].shift(-1) / data['close']).fillna(1)
-    data['adj'] = (data['preclose'].shift(-1) /
-                   data['close']).fillna(1).cumprod()
-    data['open'] = data['open'] / data['adj']
-    data['high'] = data['high'] / data['adj']
-    data['low'] = data['low'] / data['adj']
-    data['close'] = data['close'] / data['adj']
-    data['preclose'] = data['preclose'] / data['adj']
-    return data[data['open'] != 0][start:end]
+    return QA_data_make_hfq(bfq_data,xdxr_data,start,end)
 
 
-def QA_data_make_qfq(bfq_data, start, end):
-    code = str(bfq_data['code'][0])
-    xdxr_data = QA_fetch_get_stock_xdxr('tdx', code)
+def QA_data_make_qfq(bfq_data,xdxr_data,start, end):
+    '使用数据库数据进行复权'
     info = xdxr_data[xdxr_data['category'] == 1]
     data = pd.concat([bfq_data, info[['fenhong', 'peigu', 'peigujia',
                                       'songzhuangu']][bfq_data.index[0]:]], axis=1).fillna(0)
@@ -88,9 +63,8 @@ def QA_data_make_qfq(bfq_data, start, end):
     return data[data['open'] != 0][start:end]
 
 
-def QA_data_make_hfq(bfq_data, start, end):
-    code = str(bfq_data['code'][0])
-    xdxr_data = QA_fetch_get_stock_xdxr('tdx', code)
+def QA_data_make_hfq(bfq_data, xdxr_data,start, end):
+    '使用数据库数据进行复权'
     info = xdxr_data[xdxr_data['category'] == 1]
     data = pd.concat([bfq_data, info[['fenhong', 'peigu', 'peigujia',
                                       'songzhuangu']][bfq_data.index[0]:]], axis=1).fillna(0)
@@ -105,3 +79,6 @@ def QA_data_make_hfq(bfq_data, start, end):
     data['close'] = data['close'] / data['adj']
     data['preclose'] = data['preclose'] / data['adj']
     return data[data['open'] != 0][start:end]
+
+
+

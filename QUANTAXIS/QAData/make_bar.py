@@ -45,6 +45,10 @@ def QA_data_tick_resample(tick,type_='1min'):
     return data
 
 
+
+
+
+
 if __name__ == '__main__':
     tick = QA_fetch_get_stock_transaction(
         'tdx', '000001', '2017-01-03', '2017-01-05')
