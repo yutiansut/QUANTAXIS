@@ -336,6 +336,7 @@ def QA_fetch_get_stock_xdxr(code, ip=best_ip, port=7709):
                 'panqianliutong':'liquidity_before','houzongguben':'shares_after',
                 'qianzongguben':'shares_before'})
         data = data.set_index('date', drop=False)
+        data['date']=data['date'].apply(lambda x: str(x))
         return data
 
 
