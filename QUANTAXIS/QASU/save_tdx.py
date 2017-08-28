@@ -110,7 +110,7 @@ def QA_SU_save_stock_min(client=QA_Setting.client):
 
 def QA_SU_save_stock_transaction(client=QA_Setting.client):
     __stock_list = QA_fetch_get_stock_time_to_market()
-    __coll = client.quantaxis.stock_min
+    __coll = client.quantaxis.stock_transaction
     __coll.ensure_index('code')
     __err = []
 
