@@ -32,7 +32,9 @@ def QA_util_mongo_initial(db=QA_Setting.client.quantaxis):
     db.drop_collection('stock_list')
     db.drop_collection('stock_info')
     db.drop_collection('trade_date')
-
+    db.drop_collection('stock_min')
+    db.drop_collection('stock_transaction')
+    db.drop_collection('stock_xdxr')
 
 def QA_util_mongo_make_index(db=QA_Setting.client.quantaxis):
     try:

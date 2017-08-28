@@ -24,6 +24,7 @@
 from QUANTAXIS.QAUtil import QA_Setting
 from . import save_tdx_file as tdx_file
 from . import save_tushare as sts
+from . import save_tdx as stdx
 from . import save_wind as sw
 from . import update_tushare as uts
 from . import update_wind as uw
@@ -63,7 +64,8 @@ def select_save_engine(engine):
         return sw
     elif engine in ['tushare', 'ts', 'Tushare']:
         return sts
-
+    elif engine in ['tdx']:
+        return stdx
 
 def select_update_engine(engine):
     if engine in ['wind', 'Wind', 'WIND']:
