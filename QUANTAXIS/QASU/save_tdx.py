@@ -27,7 +27,7 @@ from QUANTAXIS.QAUtil import QA_util_to_json_from_pandas, QA_Setting, QA_util_lo
 from QUANTAXIS.QAFetch.QATushare import QA_fetch_get_stock_list,QA_fetch_get_stock_time_to_market
 import datetime
 
-ip=select_best_ip()
+#ip=select_best_ip()
 def QA_SU_save_stock_all(client=QA_Setting.client):
     __stock_list = QA_fetch_get_stock_time_to_market()
     __coll = client.quantaxis.stock_day
@@ -40,7 +40,7 @@ def QA_SU_save_stock_all(client=QA_Setting.client):
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
                     QA_fetch_get_stock_day(
-                        code, '1990-01-01', str(datetime.date.today()), '00',ip)))
+                        code, '1990-01-01', str(datetime.date.today()), '00')))
         except:
             __err.append(code)
     for i_ in range(len(__stock_list)):
@@ -66,7 +66,7 @@ def QA_SU_save_stock_xdxr(client=QA_Setting.client):
         try:
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
-                    QA_fetch_get_stock_xdxr(code,ip)))
+                    QA_fetch_get_stock_xdxr(code)))
 
         except:
             __err.append(code)
@@ -90,15 +90,15 @@ def QA_SU_save_stock_min(client=QA_Setting.client):
             QA_util_log_info('##JOB03.1 Now Saving STOCK_1_MIN ==== %s' % (code))
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
-                    QA_fetch_get_stock_min(code, '2015-01-01', str(datetime.date.today()), '1min',ip)))
+                    QA_fetch_get_stock_min(code, '2015-01-01', str(datetime.date.today()), '1min')))
             QA_util_log_info('##JOB03.2 Now Saving STOCK_5_MIN ==== %s' % (code))
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
-                    QA_fetch_get_stock_min(code, '2015-01-01', str(datetime.date.today()), '5min',ip)))
+                    QA_fetch_get_stock_min(code, '2015-01-01', str(datetime.date.today()), '5min')))
             QA_util_log_info('##JOB03.3 Now Saving STOCK_15_MIN ==== %s' % (code))
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
-                    QA_fetch_get_stock_min(code, '2015-01-01', str(datetime.date.today()), '15min',ip)))
+                    QA_fetch_get_stock_min(code, '2015-01-01', str(datetime.date.today()), '15min')))
         except:
             __err.append(code)
     for i_ in range(len(__stock_list)):
@@ -119,7 +119,7 @@ def QA_SU_save_stock_transaction(client=QA_Setting.client):
         try:
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
-                    QA_fetch_get_stock_transaction(code, str(__stock_list[code]), str(datetime.date.today()),ip=ip)))
+                    QA_fetch_get_stock_transaction(code, str(__stock_list[code]), str(datetime.date.today())=ip)))
         except:
             __err.append(code)
     for i_ in range(len(__stock_list)):
