@@ -51,12 +51,13 @@ def ping(ip):
 
 
 def select_best_ip():
-    
+    QA_util_log_info('Selecting the Best Server IP of TDX')
     listx = ['180.153.18.170', '180.153.18.171', '202.108.253.130', '202.108.253.131',
              '60.191.117.167', '115.238.56.198', '218.75.126.9', '115.238.90.165',
              '124.160.88.183', '60.12.136.250', '218.108.98.244', '218.108.47.69', 
              '14.17.75.71', '180.153.39.51']
     data = [ping(x) for x in listx]
+    QA_util_log_info('===The BEST SERVER is :  %s ==='%(listx[data.index(min(data))]))
     return listx[data.index(min(data))]
 best_ip=select_best_ip()
 
