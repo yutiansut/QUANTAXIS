@@ -46,5 +46,5 @@ def QA_util_mongo_make_index(db=QA_Setting.client.quantaxis):
 
 
 def QA_util_mongo_status(db=QA_Setting.client.quantaxis):
-    QA_util_log_info(db.get_collection())
+    QA_util_log_info(db.collection_names())
     QA_util_log_info(db.last_status())
