@@ -235,3 +235,12 @@ def QA_fetch_future_min():
 
 def QA_fetch_future_tick():
     pass
+
+
+
+def QA_fetch_stock_xdxr(code,format_='pd',collections=QA_Setting.client.quantaxis.stock_xdxr):
+    '获取股票除权信息/数据库'
+    data=pd.DataFrame([item for item in collections.find({'code':code})]).drop(['_id'],axis=1)
+    data['date']=pd.to_datetime(data['date'])
+    return data.set_index('date',drop=False)
+    #data['date']=data['date'].apply(lambda)
