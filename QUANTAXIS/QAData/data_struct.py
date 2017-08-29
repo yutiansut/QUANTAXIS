@@ -16,6 +16,7 @@ from QUANTAXIS.QAFetch import QAQuery
 
 class QA_DataStruct_Stock_day():
     '自定义的日线数据结构'
+
     def __init__(self, DataFrame):
         self.type = 'stock_day'
         self.if_fq = 'bfq'
@@ -26,9 +27,8 @@ class QA_DataStruct_Stock_day():
         self.close = DataFrame['close']
         self.vol = DataFrame['volume']
         self.date = DataFrame['date']
-        self.date_index = DataFrame.index
+        self.index = DataFrame.index
         self.data = DataFrame
-
     def to_qfq(self):
         data = QA_DataStruct_Stock_day(QAQuery.QA_fetch_stock_to_fq(self.data))
         data.if_fq = 'qfq'
@@ -39,6 +39,9 @@ class QA_DataStruct_Stock_day():
             QAQuery.QA_fetch_stock_to_fq(self.data, 'hfq'))
         data.if_fq = 'hfq'
         return data
+
+    def reverse(self):
+        return QA_DataStruct_Stock_day(QAQuery.QA_fetch_stock_to_fq(self.data[::-1]))
 
     def show(self):
         return QA_util_log_info(self.data)
