@@ -11,21 +11,27 @@ import pandas as pd
 import numpy as np
 
 from QUANTAXIS.QAUtil import QA_Setting
+
+
 class QA_Data_Min():
     def init(self):
-        self.open,self.close=np.array()
-        self.high=np.array()
-        self.date_index=pd.Series()
-    def to_dataframe(self):
-        return pd.DataFrame([self.open,self.close])
+        self.open, self.close = np.array()
+        self.high = np.array()
+        self.date_index = pd.Series()
 
-    def resample(self,type='d'):
+    def to_dataframe(self):
+        return pd.DataFrame([self.open, self.close])
+
+    def resample(self, type='d'):
         return self.to_dataframe().resample('1d').ohlc()
+
     def to_csv(self):
         pass
+
     def to_list(self):
         pass
-    def to_mongo(self,collection=QA_Setting.client):
+
+    def to_mongo(self, collection=QA_Setting.client):
         pass
 
     """
@@ -33,3 +39,35 @@ class QA_Data_Min():
     
     
     """
+
+
+class QA_Data_Stock_day():
+    pass
+
+
+class QA_Data_Stock_transaction():
+    pass
+
+
+class QA_Data_Stock_xdxr():
+    pass
+
+
+class QA_Data_Market_reply():
+    pass
+
+
+class QA_Data_Market_bid():
+    pass
+
+
+class QA_Data_Market_bid_queue():
+    pass
+
+
+class QA_Data_ARP_account():
+    pass
+
+
+class QA_Data_Quantaxis_error():
+    pass
