@@ -194,7 +194,7 @@ def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=best_ip, port=7709
                 [(__select_market_code(x), x) for x in code[80 * id_:80 * (id_ + 1)]])))
             __data['datetime'] = datetime.datetime.now()
         data = __data[['datetime', 'code', 'open', 'high', 'low', 'price']]
-        return data.set_index('code', drop=False,inplace=True)
+        return data.set_index('code', drop=False,inplace=False)
 
 
 def QA_fetch_get_index_day(code, start_date, end_date, ip=best_ip, port=7709):
@@ -208,7 +208,7 @@ def QA_fetch_get_index_day(code, start_date, end_date, ip=best_ip, port=7709):
         data = api.to_df(data)
         data['date'] = data['datetime'].apply(lambda x: x[0:10])
         data['date'] = pd.to_datetime(data['date'])
-        return data.set_index('date', drop=False,inplace=True).drop(['year', 'month', 'day', 'hour','minute', 'datetime'], axis=1,inplace=True)[start_date:end_date]
+        return data.set_index('date', drop=False,inplace=True).drop(['year', 'month', 'day', 'hour','minute', 'datetime'], axis=1,inplace=False)[start_date:end_date]
 
 
 def QA_fetch_get_stock_min(code, start, end, level, ip=best_ip, port=7709):

@@ -31,7 +31,7 @@ by yutiansut
 
 2017/4/8
 """
-__version__ = '0.4.1.29'
+__version__ = '0.4.1.32'
 __author__ = 'yutiansut'
 logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
@@ -92,7 +92,9 @@ from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
 from QUANTAXIS.QATask import QA_Queue, QA_Event, QA_Job, QA_Engine
 
 # Data
-from QUANTAXIS.QAData import QA_data_tick_resample, QA_data_get_hfq, QA_data_get_qfq, QA_data_make_qfq, QA_data_make_hfq, QA_DataStruct_Stock_day
+from QUANTAXIS.QAData import (QA_data_tick_resample, QA_data_get_hfq, QA_data_get_qfq, QA_data_make_qfq,
+                              QA_data_make_hfq, QA_DataStruct_Stock_day, QA_DataStruct_Stock_min,
+                              QA_DataStruct_Index_day)
 
 
 # Util

@@ -32,7 +32,7 @@ from pandas import DataFrame
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
                               QA_util_date_valid, QA_util_log_info,
                               QA_util_time_stamp)
-from QUANTAXIS.QAData import QA_data_make_hfq,QA_data_make_qfq,QA_DataStruct_Stock_day
+from QUANTAXIS.QAData import QA_data_make_hfq,QA_data_make_qfq,QA_DataStruct_Stock_day,QA_DataStruct_Index_day,QA_DataStruct_Stock_min
 """
 按要求从数据库取数据，并转换成numpy结构
 
@@ -77,26 +77,16 @@ def QA_fetch_index_day_adv(code, __start, __end, format_='numpy', collections=QA
                 "$gte": QA_util_date_stamp(__start)
             }
         }):
-            # print(item['code'])
-
             __data.append([str(item['code']), float(item['open']), float(item['high']), float(
-                item['low']), float(item['close']), float(item['volume']), item['date']])
-        if format_ in ['n', 'N', 'numpy']:
-            __data = numpy.asarray(__data)
-        elif format_ in ['list', 'l', 'L']:
-            __data = __data
-        elif format_ in ['P', 'p', 'pandas', 'pd']:
-            __data = DataFrame(__data, columns=[
-                'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
-            __data['date'] = pd.to_datetime(__data['date'])
-            __data = __data.set_index('date')
-
-        return __data
+                item['low']), float(item['close']), float(item['vol']), item['date']])
+        __data = DataFrame(__data, columns=[
+            'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
+        __data['date'] = pd.to_datetime(__data['date'])
+        __data = __data.set_index('date', drop=False)
+        return QA_DataStruct_Index_day(__data)
     else:
         QA_util_log_info('something wrong with date')
-
-
-def QA_fetch_stock_min_adv(code, startTime, endTime, format_='numpy', type_='1min', collections=QA_Setting.client.quantaxis.stock_min):
+def QA_fetch_stock_min_adv(code, start, end, type_='1min', collections=QA_Setting.client.quantaxis.stock_min):
     '获取股票分钟线'
     if type_ in ['1min', '1m']:
         type_ = '1min'
@@ -107,8 +97,8 @@ def QA_fetch_stock_min_adv(code, startTime, endTime, format_='numpy', type_='1mi
     __data = []
     for item in collections.find({
         'code': str(code), "time_stamp": {
-            "$gte": QA_util_time_stamp(startTime),
-            "$lte": QA_util_time_stamp(endTime)
+            "$gte": QA_util_time_stamp(start),
+            "$lte": QA_util_time_stamp(end)
         },'type':type_
     }):
 
@@ -120,13 +110,6 @@ def QA_fetch_stock_min_adv(code, startTime, endTime, format_='numpy', type_='1mi
     
     __data['datetime'] = pd.to_datetime(__data['datetime'])
     __data = __data.set_index('datetime', drop=False)
-    #res = QA_fetch_stock_to_fq(__data)
-    if format_ in ['numpy', 'np', 'n']:
-        return numpy.asarray(__data)
-    elif format_ in ['list', 'l', 'L']:
-        return numpy.asarray(__data).tolist()
-    elif format_ in ['P', 'p', 'pandas', 'pd']:
-        return __data
 
-
-
+    print(__data)
+    return QA_DataStruct_Stock_min(__data)
