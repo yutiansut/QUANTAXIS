@@ -22,31 +22,30 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from QUANTAXIS.QAUtil import QA_util_make_bar,QA_util_log_info
+from QUANTAXIS.QAUtil import QA_util_make_min_index, QA_util_log_info
 from QUANTAXIS.QAFetch import QA_fetch_get_stock_transaction
 from datetime import time
+import pandas as pd
 
 
-def QA_data_tick_resample(tick,type_='1min'):
+def QA_data_tick_resample(tick, type_='1min'):
+    data = tick['price'].resample(
+        type_, label='right', closed='left').ohlc()
+
+    data['volume'] = tick[tick['buyorsell'] != 2]['vol'].resample(
+        type_, label='right', closed='left').sum()
+    data['code']=tick['code'][0]
     
-    if type_ in ['1min','1m']:
-        type='1min'
-    elif type_ in ['5min','5m']:
-        type='5min'
-    else :
-        QA_util_log_info('Not Support Type! Using 5min')
-        type='5min'
-    data_ = QA_util_make_bar(type, str(tick.index[0])[
-                             0:10], str(tick.index[-1])[0:10])
-    data = tick['price'].resample(type, label='right').ohlc()
-    data['volume'] = tick['vol'].resample(type, label='right').sum()
+    __data_=pd.DataFrame()
+    for item in tick.drop_duplicates('date')['date']:
+        __data = data[item]
+        _data = __data[time(9, 31):time(11, 30)].append(__data[time(13, 1):time(15,0)])
+        __data_=__data_.append(_data)
 
-    data = data.reindex(data_.index)
-    return data
-
-
-
-
+    __data_['datetime']=__data_.index
+    __data_['date']=__data_['datetime'].apply(lambda x: str(x)[0:10])
+    __data_['datetime']=__data_['datetime'].apply(lambda x: str(x)[0:19])
+    return __data_.fillna(method='ffill')
 
 
 if __name__ == '__main__':

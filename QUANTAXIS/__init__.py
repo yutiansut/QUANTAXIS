@@ -94,7 +94,7 @@ from QUANTAXIS.QATask import QA_Queue, QA_Event, QA_Job, QA_Engine
 # Data
 from QUANTAXIS.QAData import (QA_data_tick_resample, QA_data_get_hfq, QA_data_get_qfq, QA_data_make_qfq,
                               QA_data_make_hfq, QA_DataStruct_Stock_day, QA_DataStruct_Stock_min,
-                              QA_DataStruct_Index_day)
+                              QA_DataStruct_Index_day,QA_DataStruct_Stock_transaction)
 
 
 # Util
@@ -119,9 +119,7 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms
                               QA_util_multi_demension_list, QA_util_diff_list,
                               QA_util_to_json_from_pandas, QA_util_to_list_from_numpy, QA_util_to_list_from_pandas,
                               QA_util_mongo_initial, QA_util_mongo_make_index, QA_util_mongo_status, QA_util_mongo_infos,
-                              QA_util_make_15min_bar, QA_util_make_1h_bar,
-                              QA_util_make_1min_bar, QA_util_make_5min_bar,
-                              QA_util_make_30min_bar, QA_util_make_bar)
+                              QA_util_make_min_index, QA_util_make_hour_index)
 
 from QUANTAXIS.QAIndicator import *
 from QUANTAXIS.QASQL import qasql, qacold

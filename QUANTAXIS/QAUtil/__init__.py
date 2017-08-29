@@ -58,6 +58,4 @@ from .QATransform import (QA_util_to_json_from_pandas,
 from .QAMongo import (QA_util_mongo_initial, QA_util_mongo_make_index,
                      QA_util_mongo_status, QA_util_mongo_infos)
 # bar 相关
-from .QABar import (QA_util_make_15min_bar, QA_util_make_1h_bar,
-                    QA_util_make_1min_bar, QA_util_make_5min_bar,
-                    QA_util_make_30min_bar, QA_util_make_bar)
+from .QABar import (QA_util_make_min_index, QA_util_make_hour_index)

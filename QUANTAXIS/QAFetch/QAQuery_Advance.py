@@ -32,7 +32,9 @@ from pandas import DataFrame
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
                               QA_util_date_valid, QA_util_log_info,
                               QA_util_time_stamp)
-from QUANTAXIS.QAData import QA_data_make_hfq,QA_data_make_qfq,QA_DataStruct_Stock_day,QA_DataStruct_Index_day,QA_DataStruct_Stock_min
+from QUANTAXIS.QAData import (QA_data_make_hfq,QA_data_make_qfq,QA_DataStruct_Stock_day,
+                                QA_DataStruct_Index_day,QA_DataStruct_Stock_min,
+                                QA_DataStruct_Stock_transaction)
 """
 按要求从数据库取数据，并转换成numpy结构
 
@@ -108,3 +110,13 @@ def QA_fetch_stock_min_adv(code, start, end, type_='1min', collections=QA_Settin
     
     __data['datetime'] = pd.to_datetime(__data['datetime'])
     return QA_DataStruct_Stock_min(__data.set_index('datetime', drop=False))
+
+
+def QA_fetch_stock_transaction_adv(code,start,end, collections=QA_Setting.client.quantaxis.stock_transaction):
+    data=DataFrame([item for item in collections.find({
+        'code': str(code), "date": {
+            "$gte":start,
+            "$lte": end        
+            }})]).drop('_id',axis=1,inplace=False)
+    data['datetime']=pd.to_datetime(data['date']+' '+data['time'])
+    return QA_DataStruct_Stock_transaction(data.set_index('datetime',drop=False))

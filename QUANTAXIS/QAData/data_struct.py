@@ -12,6 +12,7 @@ import numpy as np
 
 from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info, QA_util_to_json_from_pandas
 from QUANTAXIS.QAFetch import QAQuery
+from .data_resample import QA_data_tick_resample
 
 class __stock_hq_base():
     def __init__(self, DataFrame):
@@ -23,10 +24,11 @@ class __stock_hq_base():
         self.low = DataFrame['low']
         self.close = DataFrame['close']
         if 'volume' in DataFrame.columns:
-            self.vol = DataFrame['volume']  
-        else :
+            self.vol = DataFrame['volume']
+        else:
             self.vol = DataFrame['vol']
         self.date = DataFrame['date']
+        self.code = DataFrame['code']
         self.index = DataFrame.index
         self.data = DataFrame
 
@@ -64,12 +66,14 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
         self.low = DataFrame['low']
         self.close = DataFrame['close']
         if 'volume' in DataFrame.columns:
-            self.vol = DataFrame['volume']  
-        else :
+            self.vol = DataFrame['volume']
+        else:
             self.vol = DataFrame['vol']
         self.date = DataFrame['date']
         self.index = DataFrame.index
+        self.code = DataFrame['code']
         self.data = DataFrame
+
     def to_qfq(self):
         data = QA_DataStruct_Stock_day(QAQuery.QA_fetch_stock_to_fq(self.data))
         data.if_fq = 'qfq'
@@ -80,6 +84,8 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
             QAQuery.QA_fetch_stock_to_fq(self.data, 'hfq'))
         data.if_fq = 'hfq'
         return data
+
+
 class QA_DataStruct_Index_day(__stock_hq_base):
     '自定义的日线数据结构'
 
@@ -90,14 +96,17 @@ class QA_DataStruct_Index_day(__stock_hq_base):
         self.open = DataFrame['open']
         self.high = DataFrame['high']
         self.low = DataFrame['low']
+
         self.close = DataFrame['close']
         if 'volume' in DataFrame.columns:
-            self.vol = DataFrame['volume']  
-        else :
+            self.vol = DataFrame['volume']
+        else:
             self.vol = DataFrame['vol']
         self.date = DataFrame['date']
+        self.code = DataFrame['code']
         self.index = DataFrame.index
         self.data = DataFrame
+
 
 class QA_DataStruct_Stock_min(__stock_hq_base):
     def __init__(self, DataFrame):
@@ -109,11 +118,12 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
         self.low = DataFrame['low']
         self.close = DataFrame['close']
         if 'volume' in DataFrame.columns:
-            self.vol = DataFrame['volume']  
-        else :
+            self.vol = DataFrame['volume']
+        else:
             self.vol = DataFrame['vol']
         self.datetime = DataFrame['datetime']
-        self.date= DataFrame['date']
+        self.date = DataFrame['date']
+        self.code = DataFrame['code']
         self.index = DataFrame.index
         self.data = DataFrame
 
@@ -127,9 +137,27 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
             QAQuery.QA_fetch_stock_to_fq(self.data, 'hfq'))
         data.if_fq = 'hfq'
         return data
-class QA_DataStruct_Stock_transaction():
-    pass
 
+
+class QA_DataStruct_Stock_transaction():
+    def __init__(self, DataFrame):
+        self.type = 'stock_transaction'
+        self.if_fq = 'None'
+        self.mongo_coll = QA_Setting.client.quantaxis.stock_transaction
+        self.buyorsell = DataFrame['buyorsell']
+        self.price = DataFrame['price']
+        if 'volume' in DataFrame.columns:
+            self.vol = DataFrame['volume']
+        else:
+            self.vol = DataFrame['vol']
+        self.date = DataFrame['date']
+        self.time = DataFrame['time']
+        self.datetime = DataFrame['datetime']
+        self.order = DataFrame['order']
+        self.index = DataFrame.index
+        self.data = DataFrame
+    def resample(self,type_='1min'):
+        return QA_DataStruct_Stock_min(QA_data_tick_resample(self.data,type_))
 
 class QA_DataStruct_Stock_xdxr():
     pass
