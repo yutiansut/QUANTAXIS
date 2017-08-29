@@ -27,10 +27,8 @@ import random
 import threading
 import time
 
-from six.moves import queue
-from QUANTAXIS.QATask import QA_Queue
-
-
+import pandas as pd
+from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_to_json_from_pandas
 """
 重新定义bid模式
 
@@ -51,26 +49,63 @@ class QA_QAMarket_bid():
         self.code = str('000001')
         self.user = 'root'
         self.strategy = 'example01'
-        self.status = '0x01'
+        self.type = '0x01'
         self.bid_model = 'strategy'
         self.amount_model = 'amount'
         self.order_id = str(random.random())
         self.trade_id = ''
+        self.status = ''
 
     def stock_day(self):
-        self.status = '0x01'
+        self.type = '0x01'
 
     def stock_min(self):
-        self.status = '0x02'
+        self.type = '0x02'
 
     def future_day(self):
-        self.status = '1x01'
+        self.type = '1x01'
 
     def show(self):
         return vars(self)
 
+    def to_df(self):
+        return pd.DataFrame([vars(self), ])
+
+    def from_dict(self, bid: dict):
+        try:
+            self.price = bid['price']
+            self.date = bid['date']
+            self.datetime = bid['datetime']
+            self.sending_time = bid['sending_time']  # 下单时间
+            self.transact_time = bid['transact_time']
+            self.amount = bid['amount']
+            self.towards = bid['towards']
+            self.code = bid['code']
+            self.user = bid['user']
+            self.strategy = bid['strategy']
+            self.type = bid['type']
+            self.bid_model = bid['bid_model']
+            self.amount_model = bid['amount_model']
+            self.order_id = bid['order_id']
+            self.trade_id = bid['trade_id']
+            return self
+        except:
+            QA_util_log_info('Failed to tran from dict')
+
+    def from_dataframe(self, dataframe):
+        bid_list = []
+        for item in QA_util_to_json_from_pandas(dataframe):
+            bid_list.append(self.from_dict(item))
+        return bid_list
+class QA_QAMarket_bid_list():
+    def __init__(self):
+        self.list=[]
+    def from_dataframe(self,dataframe):
+        for item in QA_util_to_json_from_pandas(dataframe):
+            self.list.append(QA_QAMarket_bid().from_dict(item))
+        return self.list
 
 if __name__ == '__main__':
     ax = QA_QAMarket_bid()
     ax.stock_day()
-    print(ax.status)
+    print(ax.type)

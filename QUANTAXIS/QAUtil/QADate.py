@@ -32,6 +32,9 @@ from .QADate_trade import trade_date_sse
 def QA_util_time_now():
     return datetime.datetime.now()
 
+def QA_util_date_today():
+    return datetime.date.today()
+
 
 def QA_util_date_str2int(date):
     return int(str(date)[0:4] + str(date)[5:7] + str(date)[8:10])

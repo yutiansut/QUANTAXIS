@@ -27,7 +27,7 @@ import time
 
 
 def QA_util_if_trade(day):
-    '是否交易'
+    '日期是否交易'
     if day in trade_date_sse:
         return True
     else:

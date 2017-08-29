@@ -34,7 +34,7 @@ QAFetch is Under [QAStandard#0.0.2@10x] Protocol
 from . import QAWind as QAWind
 from . import QATushare as QATushare
 from . import QATdx as QATdx
-from .QAQuery import QA_fetch_stock_day, QA_fetch_stocklist_day, QA_fetch_index_day
+#from .QAQuery import QA_fetch_stock_day, QA_fetch_stocklist_day, QA_fetch_index_day
 from . import QAThs as QAThs
 #import QAFetch.QAGmsdk as QAGmsdk
 #import QAFetch.QACrawlData as QACD
@@ -51,7 +51,7 @@ author yutiansut
 def use(package):
     if package in ['wind']:
         from WindPy import w
-        w.start()
+        #w.start()
         return QAWind
     elif package in ['tushare', 'ts']:
         return QATushare
@@ -63,7 +63,7 @@ def use(package):
 
 def QA_fetch_get_stock_day(package, code, startDate, endDate, if_fq='01', type_='json'):
     Engine = use(package)
-    if package in ['ths', 'THS']:
+    if package in ['ths', 'THS','wind','tdx','pytdx']:
         return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq)
     elif package in ['ts', 'tushare']:
         return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq, type_)
@@ -98,5 +98,11 @@ def QA_fetch_get_stock_transaction(package, code, start, end, retry=2):
     Engine = use(package)
     if package in ['tdx', 'pytdx']:
         return Engine.QA_fetch_get_stock_transaction(code, start, end, retry)
+    else:
+        return 'Unsupport packages'
+def QA_fetch_get_stock_xdxr(package, code):
+    Engine=use(package)
+    if package in ['tdx', 'pytdx']:
+            return Engine.QA_fetch_get_stock_xdxr( code)
     else:
         return 'Unsupport packages'

@@ -22,14 +22,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from QUANTAXIS.QAUtil import QA_util_make_bar
+from QUANTAXIS.QAUtil import QA_util_make_bar,QA_util_log_info
 from QUANTAXIS.QAFetch import QA_fetch_get_stock_transaction
 from datetime import time
 
 
-def QA_data_tick_resample(tick,type='1min'):
+def QA_data_tick_resample(tick,type_='1min'):
     
-
+    if type_ in ['1min','1m']:
+        type='1min'
+    elif type_ in ['5min','5m']:
+        type='5min'
+    else :
+        QA_util_log_info('Not Support Type! Using 5min')
+        type='5min'
     data_ = QA_util_make_bar(type, str(tick.index[0])[
                              0:10], str(tick.index[-1])[0:10])
     data = tick['price'].resample(type, label='right').ohlc()
@@ -37,6 +43,10 @@ def QA_data_tick_resample(tick,type='1min'):
 
     data = data.reindex(data_.index)
     return data
+
+
+
+
 
 
 if __name__ == '__main__':

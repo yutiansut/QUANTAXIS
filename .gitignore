@@ -44,12 +44,12 @@ __pycache__/
 env/
 
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
 lib64/
 parts/
+*whl
 sdist/
 var/
 *.egg-info/

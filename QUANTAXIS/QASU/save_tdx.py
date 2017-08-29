@@ -22,109 +22,115 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from pytdx.hq import TdxHq_API
-api = TdxHq_API()
+from QUANTAXIS.QAFetch.QATdx import select_best_ip,QA_fetch_get_stock_day, QA_fetch_get_stock_min, QA_fetch_get_stock_xdxr, QA_fetch_get_stock_transaction
+from QUANTAXIS.QAUtil import QA_util_to_json_from_pandas, QA_Setting, QA_util_log_info
+from QUANTAXIS.QAFetch.QATushare import QA_fetch_get_stock_list,QA_fetch_get_stock_time_to_market
+import datetime
+
+#ip=select_best_ip()
+def QA_SU_save_stock_all(client=QA_Setting.client):
+    __stock_list = QA_fetch_get_stock_time_to_market()
+    __coll = client.quantaxis.stock_day
+    __coll.ensure_index('code')
+    __err = []
+
+    def __saving_work(code):
+        QA_util_log_info('##JOB01 Now Saving STOCK_DAY==== %s' % (code))
+        try:
+            __coll.insert_many(
+                QA_util_to_json_from_pandas(
+                    QA_fetch_get_stock_day(
+                        code, '1990-01-01', str(datetime.date.today()), '00')))
+        except:
+            __err.append(code)
+    for i_ in range(len(__stock_list)):
+        QA_util_log_info('The %s of Total %s' % (i_, len(__stock_list)))
+        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
+            float(i_ / len(__stock_list) * 100))[0:4] + '%')
+        __saving_work(__stock_list.index[i_])
+
+    if len(__err) > 0:
+        QA_util_log_info('ERROR! Try Again with \n')
+        QA_util_log_info(__err)
+        
 
 
-def get_stock_day(api, code):
+def QA_SU_save_stock_xdxr(client=QA_Setting.client):
+    __stock_list = QA_fetch_get_stock_time_to_market()
+    __coll = client.quantaxis.stock_xdxr
+    __coll.ensure_index('code')
+    __err = []
 
-    data = []
-    if str(code)[0] == '6':
-        index_code = 1
-    else:
-        index_code = 0
+    def __saving_work(code):
+        QA_util_log_info('##JOB02 Now Saving XDXR INFO ==== %s' % (code))
+        try:
+            __coll.insert_many(
+                QA_util_to_json_from_pandas(
+                    QA_fetch_get_stock_xdxr(code)))
 
-    with api.connect():
-        for i in range(11):
-            data += api.get_security_bars(9,
-                                          index_code, code, (10 - i) * 800, 800)
-    return api.to_df(data)
-
-
-def get_stock_1_min(api, code):
-    data = []
-    if str(code)[0] == '6':
-        index_code = 1
-    else:
-        index_code = 0
-    with api.connect():
-        for i in range(51):
-            data += api.get_security_bars(8,
-                                          index_code, code, (50 - i) * 800, 800)
-            # print(len(data))
-    return api.to_df(data)
+        except:
+            __err.append(code)
+    for i_ in range(len(__stock_list)):
+        #__saving_work('000001')
+        QA_util_log_info('The %s of Total %s' % (i_, len(__stock_list)))
+        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
+            float(i_ / len(__stock_list) * 100))[0:4] + '%')
+        __saving_work(__stock_list.index[i_])
 
 
-def get_stock_5_min(api, code):
-    data = []
-    if str(code)[0] == '6':
-        index_code = 1
-    else:
-        index_code = 0
-    with api.connect():
-        for i in range(51):
-            data += api.get_security_bars(0,
-                                          index_code, code, (50 - i) * 800, 800)
-            # print(len(data))
-    return api.to_df(data)
+def QA_SU_save_stock_min(client=QA_Setting.client):
+    __stock_list = QA_fetch_get_stock_time_to_market()
+    __coll = client.quantaxis.stock_min
+    __coll.ensure_index('code')
+    __err = []
 
+    def __saving_work(code):
+        QA_util_log_info('##JOB03 Now Saving STOCK_MIN ==== %s' % (code))
+        try:
+            QA_util_log_info('##JOB03.1 Now Saving STOCK_1_MIN ==== %s' % (code))
+            __coll.insert_many(
+                QA_util_to_json_from_pandas(
+                    QA_fetch_get_stock_min(code, '2015-01-01', str(datetime.date.today()), '1min')))
+            QA_util_log_info('##JOB03.2 Now Saving STOCK_5_MIN ==== %s' % (code))
+            __coll.insert_many(
+                QA_util_to_json_from_pandas(
+                    QA_fetch_get_stock_min(code, '2015-01-01', str(datetime.date.today()), '5min')))
+            QA_util_log_info('##JOB03.3 Now Saving STOCK_15_MIN ==== %s' % (code))
+            __coll.insert_many(
+                QA_util_to_json_from_pandas(
+                    QA_fetch_get_stock_min(code, '2015-01-01', str(datetime.date.today()), '15min')))
+        except:
+            __err.append(code)
+    for i_ in range(len(__stock_list)):
+        #__saving_work('000001')
+        QA_util_log_info('The %s of Total %s' % (i_, len(__stock_list)))
+        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
+            float(i_ / len(__stock_list) * 100))[0:4] + '%')
+        __saving_work(__stock_list.index[i_])
 
-def get_stock_15_min(api, code):
-    data = []
-    if str(code)[0] == '6':
-        index_code = 1
-    else:
-        index_code = 0
-    with api.connect():
-        for i in range(51):
-            data += api.get_security_bars(1,
-                                          index_code, code, (50 - i) * 800, 800)
-            # print(len(data))
-    return api.to_df(data)
+def QA_SU_save_stock_transaction(client=QA_Setting.client):
+    __stock_list = QA_fetch_get_stock_time_to_market()
+    __coll = client.quantaxis.stock_transaction
+    __coll.ensure_index('code')
+    __err = []
 
-
-def get_stock_30_min(api, code):
-    data = []
-    if str(code)[0] == '6':
-        index_code = 1
-    else:
-        index_code = 0
-    with api.connect():
-        for i in range(51):
-            data += api.get_security_bars(2,
-                                          index_code, code, (50 - i) * 800, 800)
-            # print(len(data))
-    return api.to_df(data)
-
-
-def get_stock_1_hour(api, code):
-    data = []
-    if str(code)[0] == '6':
-        index_code = 1
-    else:
-        index_code = 0
-    with api.connect():
-        for i in range(51):
-            data += api.get_security_bars(3,
-                                          index_code, code, (50 - i) * 800, 800)
-            # print(len(data))
-    return api.to_df(data)
-
-
-def get_stock_transaction(api, code, date):
-    if str(code)[0] == '6':
-        index_code = 1
-    else:
-        index_code = 0
-    with api.connect():
-        for i in range(11):
-            data += api.get_history_transaction_data(
-                index_code, code, (10 - i) * 2000, 2000, date)
-            # print(len(data))
-    return api.to_df(data)
-
+    def __saving_work(code):
+        QA_util_log_info('##JOB04 Now Saving STOCK_TRANSACTION ==== %s' % (code))
+        try:
+            __coll.insert_many(
+                QA_util_to_json_from_pandas(
+                    QA_fetch_get_stock_transaction(code, str(__stock_list[code]), str(datetime.date.today()))))
+        except:
+            __err.append(code)
+    for i_ in range(len(__stock_list)):
+        #__saving_work('000001')
+        QA_util_log_info('The %s of Total %s' % (i_, len(__stock_list)))
+        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
+            float(i_ / len(__stock_list) * 100))[0:4] + '%')
+        __saving_work(__stock_list.index[i_])
 
 if __name__ == '__main__':
-    from pytdx.hq import TdxHq_API
-    api = TdxHq_API()
-    print(get_stock_1_min(api, '000001'))
+    QA_SU_save_stock_all()
+    QA_SU_save_stock_xdxr()
+    QA_SU_save_stock_min()
+    QA_SU_save_stock_transaction()

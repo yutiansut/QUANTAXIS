@@ -23,34 +23,3 @@
 # SOFTWARE.
 
 
-from QUANTAXIS.QAData import QA_data_fq_factor
-import json
-from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info, QA_util_to_json_from_pandas, QA_util_date_stamp
-from QUANTAXIS.QAFetch.QATushare import QA_fetch_get_stock_list
-
-
-def QA_save_fq_factor(client=QA_Setting.client):
-    '保存复权因子'
-    _coll = client.quantaxis.fq_factor
-
-    _stock_list = QA_fetch_get_stock_list()
-
-    for _item in _stock_list:
-        data = QA_data_fq_factor(_item)
-        data['date'] = data.index
-        data['date'] = data['date'].apply(lambda x: str(x)[0:10])
-        data['date_stamp'] = data['date'].apply(
-            lambda x: QA_util_date_stamp(x))
-
-        data['code'] = _item
-
-        data_json = QA_util_to_json_from_pandas(data)
-        _coll.insert_many(data_json)
-
-
-def QA_update_fq_factor(client=QA_Setting.client):
-    pass
-
-
-if __name__ == '__main__':
-    QA_save_fq_factor()

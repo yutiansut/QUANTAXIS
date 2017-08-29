@@ -31,7 +31,7 @@ by yutiansut
 
 2017/4/8
 """
-__version__ = '0.4.1.5'
+__version__ = '0.4.1.29'
 __author__ = 'yutiansut'
 logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
@@ -54,16 +54,17 @@ logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n '
 # fetch methods
 
-from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day, QA_fetch_get_trade_date, QA_fetch_get_stock_min,
+from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day, QA_fetch_get_trade_date, QA_fetch_get_stock_min, QA_fetch_get_stock_xdxr,
                                QA_fetch_get_stock_indicator, QA_fetch_get_stock_realtime, QA_fetch_get_stock_transaction)
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_trade_date, QA_fetch_stock_day, QA_fetch_stocklist_day, QA_fetch_index_day,
                                        QA_fetch_stock_min, QA_fetch_stocklist_min, QA_fetch_future_min, QA_fetch_future_day,
-                                       QA_fetch_future_tick, QA_fetch_stock_list, QA_fetch_stock_full, QA_fetch_stock_to_fq)
+                                       QA_fetch_future_tick, QA_fetch_stock_list, QA_fetch_stock_full, QA_fetch_stock_to_fq,
+                                       QA_fetch_stock_xdxr)
 
 
 # save
 from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_day, QA_SU_save_stock_info, QA_SU_save_stock_min_5,
-                                 QA_SU_save_stock_day_init,  QA_SU_save_trade_date, QA_SU_update_stock_day, QA_SU_save_stock_fqfactor)
+                                 QA_SU_save_stock_day_init,  QA_SU_save_trade_date, QA_SU_update_stock_day)
 from QUANTAXIS.QASU.save_backtest import (
     QA_SU_save_account_message, QA_SU_save_backtest_message, QA_SU_save_account_to_csv)
 from QUANTAXIS.QASU.save_tushare import (
@@ -91,7 +92,7 @@ from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
 from QUANTAXIS.QATask import QA_Queue, QA_Event
 
 # Data
-from QUANTAXIS.QAData import QA_data_fq_factor, QA_data_tick_resample
+from QUANTAXIS.QAData import QA_data_tick_resample, QA_data_get_hfq, QA_data_get_qfq, QA_data_make_qfq, QA_data_make_hfq,QA_DataStruct_Stock_day
 
 
 # Util
@@ -103,7 +104,7 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms
                               QA_util_realtime, QA_util_id2date, QA_util_is_trade, QA_util_get_date_index,
                               QA_util_get_index_date, QA_util_select_hours,
                               QA_util_select_min, QA_util_time_delay, QA_util_time_now, QA_util_date_str2int,
-                              QA_util_date_int2str,
+                              QA_util_date_int2str,QA_util_date_today,
                               QA_util_sql_mongo_setting,
                               QA_util_log_debug, QA_util_log_expection, QA_util_log_info,
                               QA_util_cfg_initial, QA_util_get_cfg,
@@ -115,7 +116,7 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms
                               QA_util_save_csv,
                               QA_util_multi_demension_list, QA_util_diff_list,
                               QA_util_to_json_from_pandas, QA_util_to_list_from_numpy, QA_util_to_list_from_pandas,
-                              QA_util_mongo_initial, QA_util_mongo_make_index,
+                              QA_util_mongo_initial, QA_util_mongo_make_index,QA_util_mongo_status,QA_util_mongo_infos,
                               QA_util_make_15min_bar, QA_util_make_1h_bar,
                               QA_util_make_1min_bar, QA_util_make_5min_bar,
                               QA_util_make_30min_bar, QA_util_make_bar)
