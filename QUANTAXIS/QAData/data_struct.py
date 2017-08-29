@@ -25,7 +25,10 @@ class QA_DataStruct_Stock_day():
         self.high = DataFrame['high']
         self.low = DataFrame['low']
         self.close = DataFrame['close']
-        self.vol = DataFrame['volume']
+        if 'volume' in DataFrame.columns:
+            self.vol = DataFrame['volume']  
+        else :
+            self.vol = DataFrame['vol']
         self.date = DataFrame['date']
         self.index = DataFrame.index
         self.data = DataFrame
