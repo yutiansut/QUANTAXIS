@@ -55,8 +55,7 @@ def QA_fetch_stock_day_adv(code, __start, __end,collections=QA_Setting.client.qu
         __data = DataFrame(__data, columns=[
             'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
         __data['date'] = pd.to_datetime(__data['date'])
-        __data = __data.set_index('date', drop=False)
-        return QA_DataStruct_Stock_day(__data)
+        return QA_DataStruct_Stock_day(__data.set_index('date', drop=False))
     else:
         QA_util_log_info('something wrong with date')
 
@@ -82,8 +81,7 @@ def QA_fetch_index_day_adv(code, __start, __end, format_='numpy', collections=QA
         __data = DataFrame(__data, columns=[
             'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
         __data['date'] = pd.to_datetime(__data['date'])
-        __data = __data.set_index('date', drop=False)
-        return QA_DataStruct_Index_day(__data)
+        return QA_DataStruct_Index_day(__data.set_index('date', drop=False))
     else:
         QA_util_log_info('something wrong with date')
 def QA_fetch_stock_min_adv(code, start, end, type_='1min', collections=QA_Setting.client.quantaxis.stock_min):
@@ -109,7 +107,4 @@ def QA_fetch_stock_min_adv(code, start, end, type_='1min', collections=QA_Settin
         'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'time_stamp', 'date'])
     
     __data['datetime'] = pd.to_datetime(__data['datetime'])
-    __data = __data.set_index('datetime', drop=False)
-
-    print(__data)
-    return QA_DataStruct_Stock_min(__data)
+    return QA_DataStruct_Stock_min(__data.set_index('datetime', drop=False))
