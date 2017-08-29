@@ -34,7 +34,7 @@ def QA_data_get_qfq(code, start, end):
     xdxr_data = QA_fetch_get_stock_xdxr('tdx', code)
     bfq_data = QA_fetch_get_stock_day(
         'tdx', code, '1990-01-01', str(datetime.date.today())).dropna(axis=0)
-    return QA_data_make_qfq(bfq_data,xdxr_data,start,end)
+    return QA_data_make_qfq(bfq_data[start:end],xdxr_data)
 
 
 def QA_data_get_hfq(code, start, end):
@@ -42,17 +42,17 @@ def QA_data_get_hfq(code, start, end):
     xdxr_data = QA_fetch_get_stock_xdxr('tdx', code)
     bfq_data = QA_fetch_get_stock_day(
         'tdx', code, '1990-01-01', str(datetime.date.today())).dropna(axis=0)
-    return QA_data_make_hfq(bfq_data,xdxr_data,start,end)
+    return QA_data_make_hfq(bfq_data[start:end],xdxr_data)
 
 
-def QA_data_make_qfq(bfq_data,xdxr_data,start, end):
+def QA_data_make_qfq(bfq_data,xdxr_data):
     '使用数据库数据进行复权'
     info = xdxr_data[xdxr_data['category'] == 1]
     data = pd.concat([bfq_data, info[['fenhong', 'peigu', 'peigujia',
-                                      'songzhuangu']][bfq_data.index[0]:]], axis=1).fillna(0)
+                                      'songzhuangu']][bfq_data.index[0]:bfq_data.index[-1]]], axis=1).fillna(0)
+
     data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
                         * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
-    data['adjx'] = (data['preclose'].shift(-1) / data['close']).fillna(1)
     data['adj'] = (data['preclose'].shift(-1) /
                    data['close']).fillna(1)[::-1].cumprod()
     data['open'] = data['open'] * data['adj']
@@ -60,17 +60,16 @@ def QA_data_make_qfq(bfq_data,xdxr_data,start, end):
     data['low'] = data['low'] * data['adj']
     data['close'] = data['close'] * data['adj']
     data['preclose'] = data['preclose'] * data['adj']
-    return data[data['open'] != 0][start:end]
+    return data[data['open'] != 0]
 
 
-def QA_data_make_hfq(bfq_data, xdxr_data,start, end):
+def QA_data_make_hfq(bfq_data, xdxr_data):
     '使用数据库数据进行复权'
     info = xdxr_data[xdxr_data['category'] == 1]
     data = pd.concat([bfq_data, info[['fenhong', 'peigu', 'peigujia',
-                                      'songzhuangu']][bfq_data.index[0]:]], axis=1).fillna(0)
+                                      'songzhuangu']][bfq_data.index[0]:bfq_data.index[-1]]], axis=1).fillna(0)
     data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
                         * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
-    data['adjx'] = (data['preclose'].shift(-1) / data['close']).fillna(1)
     data['adj'] = (data['preclose'].shift(-1) /
                    data['close']).fillna(1).cumprod()
     data['open'] = data['open'] / data['adj']
@@ -78,7 +77,7 @@ def QA_data_make_hfq(bfq_data, xdxr_data,start, end):
     data['low'] = data['low'] / data['adj']
     data['close'] = data['close'] / data['adj']
     data['preclose'] = data['preclose'] / data['adj']
-    return data[data['open'] != 0][start:end]
+    return data[data['open'] != 0]
 
 
 
