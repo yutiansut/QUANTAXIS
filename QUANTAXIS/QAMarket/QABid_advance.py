@@ -83,5 +83,3 @@ class QA_QAMarket_bid():
     def QA_bid_status(self):
         lens = len(self.bid_list)
         return {'status': lens}
-
-

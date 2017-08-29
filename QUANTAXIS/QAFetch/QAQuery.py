@@ -26,12 +26,12 @@
 import datetime
 
 import numpy
+import pandas as pd
 from bson.objectid import ObjectId
 from pandas import DataFrame
-import pandas as pd
-
-from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_valid,QA_util_time_stamp,
-                              QA_util_log_info, QA_Setting)
+from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
+                              QA_util_date_valid, QA_util_log_info,
+                              QA_util_time_stamp)
 
 """
 按要求从数据库取数据，并转换成numpy结构
@@ -39,123 +39,185 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_valid,QA_util_tim
 """
 
 
-def QA_fetch_stock_day(code, startDate, endDate, type_='numpy', collections=QA_Setting.client.quantaxis.stock_day,):
-    # print(datetime.datetime.now())
-    startDate = str(startDate)[0:10]
-    endDate = str(endDate)[0:10]
+def QA_fetch_stock_day(code, __start, __end, type_='numpy', collections=QA_Setting.client.quantaxis.stock_day, drop_factor=True):
+    '获取股票日线'
+    __start = str(__start)[0:10]
+    __end = str(__end)[0:10]
 
-    if QA_util_date_valid(endDate) == True:
+    if QA_util_date_valid(__end) == True:
 
-        list_a = []
+        __data = []
 
         for item in collections.find({
             'code': str(code)[0:6], "date_stamp": {
-                "$lte": QA_util_date_stamp(endDate),
-                "$gte": QA_util_date_stamp(startDate)}}):
-            list_a.append([str(item['code']), float(item['open']), float(item['high']), float(
-                item['low']), float(item['close']), float(item['volume']), item['date'], float(item['turnover'])])
+                "$lte": QA_util_date_stamp(__end),
+                "$gte": QA_util_date_stamp(__start)}}):
+            if drop_factor:
+                __data.append([str(item['code']), float(item['open']), float(item['high']), float(
+                    item['low']), float(item['close']), float(item['volume']), item['date']])
+            else:
+                __data.append([str(item['code']), float(item['open']), float(item['high']), float(
+                    item['low']), float(item['close']), float(item['volume']), item['date'], item['qfqfactor']])
         # 多种数据格式
-        if type_ == 'numpy':
-            data = numpy.asarray(list_a)
-        elif type_ == 'list':
-            data = list_a
-        elif type_ == 'pandas':
-            data = DataFrame(list_a, columns=[
-                             'code', 'open', 'high', 'low', 'close', 'volume', 'date', 'turnover'])
-        return data
+        if type_ in ['n', 'N', 'numpy']:
+            __data = numpy.asarray(__data)
+        elif type_ in ['list', 'l', 'L']:
+            __data = __data
+        elif type_ in ['P', 'p', 'pandas', 'pd']:
+
+            __data = DataFrame(__data, columns=[
+                'code', 'open', 'high', 'low', 'close', 'volume', 'date'] if drop_factor else [
+                'code', 'open', 'high', 'low', 'close', 'volume', 'date', 'qfqfactor'])
+
+            __data['date'] = pd.to_datetime(__data['date'])
+            __data = __data.set_index('date',drop=False)
+        return __data
     else:
         QA_util_log_info('something wrong with date')
 
 
 def QA_fetch_trade_date(collections):
-    data = []
+    '获取交易日期'
+    __data = []
     for item in collections.find({}):
-        data.append(item['date'])
-    return data
+        __data.append(item['date'])
+    return __data
+
+
 def QA_fetch_stock_list(collections=QA_Setting.client.quantaxis.stock_list):
-    data=[]
+    '获取股票列表'
+    __data = []
     for item in collections.find_one()['stock']['code']:
-        data.append(item)
+        __data.append(item)
+
+    return __data
 
 
-    return data
+def QA_fetch_stock_full(date_, type_='numpy', collections=QA_Setting.client.quantaxis.stock_day):
+    '获取全市场的某一日的数据'
+    #__start = str(__start)[0:10]
+    Date = str(date_)[0:10]
+    if QA_util_date_valid(Date) == True:
+
+        __data = []
+        for item in collections.find({
+            "date_stamp": {
+                "$lte": QA_util_date_stamp(Date),
+                "$gte": QA_util_date_stamp(Date)}}):
+            __data.append([str(item['code']), float(item['open']), float(item['high']), float(
+                item['low']), float(item['close']), float(item['volume']), item['date']])
+        # 多种数据格式
+        if type_ in ['n', 'N', 'numpy']:
+            __data = numpy.asarray(__data)
+        elif type_ in ['list', 'l', 'L']:
+            __data = __data
+        elif type_ in ['P', 'p', 'pandas', 'pd']:
+            __data = DataFrame(__data, columns=[
+                'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
+            __data['date'] = pd.to_datetime(__data['date'])
+            __data = __data.set_index('date', drop=True)
+        return __data
+    else:
+        QA_util_log_info('something wrong with date')
+
 
 def QA_fetch_stock_info(code, collections):
+    '获取股票信息'
     pass
 
 
-
-
-def QA_fetch_stock_table_by_day(stock_list,date_range):
-    """用于获取股票面数据"""
-    pass
-
-def QA_fetch_stocklist_day(stock_list, collections, date_range):
-    data = []
+def QA_fetch_stocklist_day(stock_list, date_range,collections=QA_Setting.client.quantaxis.stock_day):
+    '获取多个股票的日线'
+    __data = []
     for item in stock_list:
-        data.append(QA_fetch_stock_day(
-            item, date_range[0], date_range[-1], 'numpy', collections))
-    return data
+        __data.append(QA_fetch_stock_day(
+            item, date_range[0], date_range[-1], 'pd', collections))
+    return __data
 
 
-def QA_fetch_index_day(code, startDate, endDate, type_='numpy', collections=QA_Setting.client.quantaxis.stock_day):
+def QA_fetch_index_day(code, __start, __end, type_='numpy', collections=QA_Setting.client.quantaxis.stock_day):
+    '获取指数日线'
     # print(datetime.datetime.now())
-    startDate = str(startDate)[0:10]
-    endDate = str(endDate)[0:10]
+    __start = str(__start)[0:10]
+    __end = str(__end)[0:10]
 
-    if QA_util_date_valid(endDate) == True:
+    if QA_util_date_valid(__end) == True:
 
-        list_a = []
+        __data = []
 
         for item in collections.find({
             'code': str(code), "date_stamp": {
-                "$lte": QA_util_date_stamp(endDate),
-                "$gte": QA_util_date_stamp(startDate)
+                "$lte": QA_util_date_stamp(__end),
+                "$gte": QA_util_date_stamp(__start)
             }
         }):
             # print(item['code'])
 
-            list_a.append([str(item['code']), float(item['open']), float(item['high']), float(
+            __data.append([str(item['code']), float(item['open']), float(item['high']), float(
                 item['low']), float(item['close']), float(item['volume']), item['date']])
-        if type_ == 'numpy':
-            data = numpy.asarray(list_a)
-        elif type_ == 'list':
-            data = list_a
-        elif type_ == 'pandas':
-            data = DataFrame(list_a, columns=[
-                             'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
+        if type_ in ['n', 'N', 'numpy']:
+            __data = numpy.asarray(__data)
+        elif type_ in ['list', 'l', 'L']:
+            __data = __data
+        elif type_ in ['P', 'p', 'pandas', 'pd']:
+            __data = DataFrame(__data, columns=[
+                'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
+            __data['date'] = pd.to_datetime(__data['date'])
+            __data = __data.set_index('date')
 
-        return data
+        return __data
     else:
         QA_util_log_info('something wrong with date')
 
 
 def QA_fetch_stock_min(code, startTime, endTime, type_='numpy', collections=QA_Setting.client.quantaxis.stock_min_five):
-    list_a = []
-
+    '获取前复权股票分钟线'
+    __data = []
+    __data_fq = []
     for item in collections.find({
-        'code': str(code), "datetime": {
-            "$lte": QA_util_time_stamp(startTime),
-            "$gte": QA_util_time_stamp(endTime)
+        'code': str(code), "time_stamp": {
+            "$gte": QA_util_time_stamp(startTime),
+            "$lte": QA_util_time_stamp(endTime)
         }
     }):
-        # print(item['code'])
 
-        list_a.append([str(item['code']), float(item['open']), float(item['high']), float(
-            item['low']), float(item['close']), float(item['volume']), item['date']])
-    if type_ == 'numpy':
-        data = numpy.asarray(list_a)
-    elif type_ == 'list':
-        data = list_a
-    elif type_ == 'pandas':
-        data = DataFrame(list_a, columns=[
-            'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
+        __data.append([str(item['code']), float(item['open']), float(item['high']), float(
+            item['low']), float(item['close']), float(item['volume']), item['datetime'], item['time_stamp'], item['date']])
 
-    return data
+    __data = DataFrame(__data, columns=[
+        'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'time_stamp', 'date'])
 
+    __data['datetime'] = pd.to_datetime(__data['datetime'])
+    __data = __data.set_index('datetime', drop=False)
+
+    res = QA_fetch_stock_to_fq(__data)
+    if type_ in ['numpy', 'np', 'n']:
+        return numpy.asarray(res)
+    elif type_ in ['list', 'l', 'L']:
+        return numpy.asarray(res).tolist()
+    elif type_ in ['P', 'p', 'pandas', 'pd']:
+        return res
+def QA_fetch_stocklist_min(stock_list, date_range, collections=QA_Setting.client.quantaxis.stock_min_five):
+    '获取前复权股票分钟线'
+    __data = []
+    for item in stock_list:
+        __data.append(QA_fetch_stock_min(
+            item, date_range[0], date_range[-1], 'pd', collections))
+    return __data
 
 def QA_fetch_future_day():
     pass
+def QA_fetch_stock_to_fq(__data):
+    __data_fq = QA_fetch_stock_day(
+        __data['code'][0], str(__data.index[0])[0:10], str(__data.index[-1])[0:10], 'pd', drop_factor=False)
+    __data_fq = __data_fq['qfqfactor'].resample('1min').ffill()
+
+    res = pd.concat([__data, __data_fq], axis=1, join='inner')
+    res['open'] = res['open'] * res['qfqfactor']
+    res['high'] = res['high'] * res['qfqfactor']
+    res['low'] = res['low'] * res['qfqfactor']
+    res['close'] = res['close'] * res['qfqfactor']
+    return res
 
 
 def QA_fetch_future_min():

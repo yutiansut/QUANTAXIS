@@ -1,4 +1,4 @@
-# encoding: UTF-8
+# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -22,48 +22,24 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
-"""
-QA_Fetch main entry
-with QAWind/QATushare
-
-@author yutiansut
-"""
-#import QAFetch.QAGmsdk as QAGmsdk
-#import QAFetch.QACrawlData as QACD
-import pymongo
-
-from . import QATushare as QATushare
-from . import QAWind as QAWind
-from . import QAThs as QAThs
-
-#from WindPy import w
-# w.start()
-# w.start()
+from QUANTAXIS.QAUtil import QA_util_make_bar
+from QUANTAXIS.QAFetch import QA_fetch_get_stock_transaction
+from datetime import time
 
 
-def use(package):
-    if package in ['wind']:
-        return QAWind
-    elif package in ['tushare', 'ts']:
-        return QATushare
-    elif package in ['ths', 'THS']:
-        return QAThs
+def QA_data_tick_resample(tick,type='1min'):
+    
+
+    data_ = QA_util_make_bar(type, str(tick.index[0])[
+                             0:10], str(tick.index[-1])[0:10])
+    data = tick['price'].resample(type, label='right').ohlc()
+    data['volume'] = tick['vol'].resample(type, label='right').sum()
+
+    data = data.reindex(data_.index)
+    return data
 
 
-def QA_fetch_get_stock_day(package, code, startDate, endDate, if_fq='01'):
-    Engine = use(package)
-    if package in ['ths', 'THS']:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq)
-    else:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate)
-
-
-def QA_fetch_get_stock_indicator(package, code, startDate, endDate):
-    Engine = use(package)
-    return Engine.QA_fetch_get_stock_indicator(code, startDate, endDate)
-
-
-def QA_fetch_get_trade_date(package, endDate, exchange):
-    Engine = use(package)
-    return Engine.QA_fetch_get_trade_date(endDate, exchange)
+if __name__ == '__main__':
+    tick = QA_fetch_get_stock_transaction(
+        'tdx', '000001', '2017-01-03', '2017-01-05')
+    print(QA_data_tick_resample(tick))

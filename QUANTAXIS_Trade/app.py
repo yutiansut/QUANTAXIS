@@ -4,9 +4,8 @@ from flask import request,make_response
 from pymongo import MongoClient
 import datetime
 import time
-from QA_trade_stock import QA_Trade_stock_api, QA_Trade_stock_util
-from QA_strategy_center import strategy_loader
-from QA_status_center import status_moniter
+from Tradex.QA_trade_stock import QA_Trade_stock_api, QA_Trade_stock_util
+
 
 app = Flask(__name__)
 st = QA_Trade_stock_api.QA_Stock()

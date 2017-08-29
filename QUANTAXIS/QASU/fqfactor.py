@@ -1,4 +1,4 @@
-# encoding: UTF-8
+# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -23,47 +23,34 @@
 # SOFTWARE.
 
 
-"""
-QA_Fetch main entry
-with QAWind/QATushare
-
-@author yutiansut
-"""
-#import QAFetch.QAGmsdk as QAGmsdk
-#import QAFetch.QACrawlData as QACD
-import pymongo
-
-from . import QATushare as QATushare
-from . import QAWind as QAWind
-from . import QAThs as QAThs
-
-#from WindPy import w
-# w.start()
-# w.start()
+from QUANTAXIS.QAData import QA_data_fq_factor
+import json
+from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info, QA_util_to_json_from_pandas, QA_util_date_stamp
+from QUANTAXIS.QAFetch.QATushare import QA_fetch_get_stock_list
 
 
-def use(package):
-    if package in ['wind']:
-        return QAWind
-    elif package in ['tushare', 'ts']:
-        return QATushare
-    elif package in ['ths', 'THS']:
-        return QAThs
+def QA_save_fq_factor(client=QA_Setting.client):
+    '保存复权因子'
+    _coll = client.quantaxis.fq_factor
+
+    _stock_list = QA_fetch_get_stock_list()
+
+    for _item in _stock_list:
+        data = QA_data_fq_factor(_item)
+        data['date'] = data.index
+        data['date'] = data['date'].apply(lambda x: str(x)[0:10])
+        data['date_stamp'] = data['date'].apply(
+            lambda x: QA_util_date_stamp(x))
+
+        data['code'] = _item
+
+        data_json = QA_util_to_json_from_pandas(data)
+        _coll.insert_many(data_json)
 
 
-def QA_fetch_get_stock_day(package, code, startDate, endDate, if_fq='01'):
-    Engine = use(package)
-    if package in ['ths', 'THS']:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq)
-    else:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate)
+def QA_update_fq_factor(client=QA_Setting.client):
+    pass
 
 
-def QA_fetch_get_stock_indicator(package, code, startDate, endDate):
-    Engine = use(package)
-    return Engine.QA_fetch_get_stock_indicator(code, startDate, endDate)
-
-
-def QA_fetch_get_trade_date(package, endDate, exchange):
-    Engine = use(package)
-    return Engine.QA_fetch_get_trade_date(endDate, exchange)
+if __name__ == '__main__':
+    QA_save_fq_factor()

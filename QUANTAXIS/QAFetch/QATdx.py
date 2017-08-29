@@ -21,12 +21,17 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import datetime
+
 import numpy as np
 import pandas as pd
 from pytdx.hq import TdxHq_API
-from QUANTAXIS.QAUtil import (QA_util_date_valid, QA_util_log_info,QA_util_get_real_date,
-                              QA_util_web_ping, trade_date_sse)
-import datetime
+from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_str2int,
+                              QA_util_date_valid, QA_util_get_real_date,
+                              QA_util_get_real_datelist, QA_util_log_info,
+                              QA_util_time_stamp, QA_util_web_ping,
+                              trade_date_sse)
+
 # 基于Pytdx的数据接口,好处是可以在linux/mac上联入通达信行情
 # 具体参见rainx的pytdx(https://github.com/rainx/pytdx)
 #
@@ -34,92 +39,165 @@ import datetime
 api = TdxHq_API()
 
 
+def __select_market_code(code):
+
+    return 1 if str(code)[0] == '6' else 0
 
 
-
-
-"""
-from Pytdx/api-main
+def QA_fetch_get_stock_day(code, start_date, end_date, ip='119.147.212.81', port=7709):
     api = TdxHq_API()
-    if api.connect('101.227.73.20', 7709):
-        log.info("获取股票行情")
-        stocks = api.get_security_quotes([(0, "000001"), (1, "600300")])
-        pprint.pprint(stocks)
-        log.info("获取k线")
-        data = api.get_security_bars(9,0, '000001', 4, 3)
-        pprint.pprint(data)
-        log.info("获取 深市 股票数量")
-        pprint.pprint(api.get_security_count(0))
-        log.info("获取股票列表")
-        stocks = api.get_security_list(1, 255)
-        pprint.pprint(stocks)
-        log.info("获取指数k线")
-        data = api.get_index_bars(9,1, '000001', 1, 2)
-        pprint.pprint(data)
-        log.info("查询分时行情")
-        data = api.get_minute_time_data(TDXParams.MARKET_SH, '600300')
-        pprint.pprint(data)
-        log.info("查询历史分时行情")
-        data = api.get_history_minute_time_data(TDXParams.MARKET_SH, '600300', 20161209)
-        pprint.pprint(data)
-        log.info("查询分时成交")
-        data = api.get_transaction_data(TDXParams.MARKET_SZ, '000001', 0, 30)
-        pprint.pprint(data)
-        log.info("查询历史分时成交")
-        data = api.get_history_transaction_data(TDXParams.MARKET_SZ, '000001', 0, 10, 20170209)
-        pprint.pprint(data)
-        log.info("查询公司信息目录")
-        data = api.get_company_info_category(TDXParams.MARKET_SZ, '000001')
-        pprint.pprint(data)
-        log.info("读取公司信息-最新提示")
-        data = api.get_company_info_content(0, '000001', '000001.txt', 0, 10)
-        pprint.pprint(data)
-        log.info("读取除权除息信息")
-        data = api.get_xdxr_info(1, '600300')
-        pprint.pprint(data)
-        log.info("读取财务信息")
-        data = api.get_finance_info(0, '000001')
-        pprint.pprint(data)
-
-        api.disconnect()
-"""
-def QA_fetch_get_stock_day(code, start_date,end_date,ip='119.147.212.81',port=7709):
-    if str(code)[0]=='6':
-        #0 - 深圳， 1 - 上海
-        market_code=1
-    else:
-        market_code=0
-
-    start_date=QA_util_get_real_date(start_date,trade_date_sse,1)
-    end_date=QA_util_get_real_date(end_date,trade_date_sse,-1)
+    market_code = __select_market_code(code)
+    start_date = QA_util_get_real_date(start_date, trade_date_sse, 1)
+    end_date = QA_util_get_real_date(end_date, trade_date_sse, -1)
     with api.connect(ip, port):
+        data = []
+        for i in range(10):
+            data += api.get_security_bars(9,
+                                          market_code, code, (9 - i) * 800, 800)
+        data = api.to_df(data)
+        data['date'] = data['datetime'].apply(lambda x: x[0:10])
+        data['date_stamp'] = data['date'].apply(
+            lambda x: QA_util_date_stamp(x))
+        data['date'] = pd.to_datetime(data['date'])
+        data = data.set_index('date', drop=False)
+        data['date'] = data['date'].apply(lambda x: str(x)[0:10])
+        data = data.drop(['year', 'month', 'day', 'hour',
+                          'minute', 'datetime'], axis=1)
+        return data[start_date:end_date]
 
-        # 判断end_date在哪个位置
-        index_0=str(datetime.date.today())
-        index_of_index_0=trade_date_sse.index(index_0)
-        index_of_index_end=trade_date_sse.index(end_date)
-        index_of_index_start=trade_date_sse.index(start_date)
+
+def QA_fetch_get_stock_list(code, date, ip='119.147.212.81', port=7709):
+    with api.connect(ip, port):
+        stocks = api.get_security_list(1, 255)
+        return stocks
+
+
+def QA_fetch_get_stock_realtime(code=['000001','000002'], ip='119.147.212.81', port=7709):
+    api = TdxHq_API()
+    __data=pd.DataFrame()
+    with api.connect(ip, port):
+        code=[code] if type(code) is str else code
+        for id_ in range(int(len(code)/80)+1):
+            __data = __data.append(api.to_df(api.get_security_quotes(
+                [(__select_market_code(x),x) for x in code[80*id_:80*(id_+1)]])))
+            __data['datetime']=datetime.datetime.now()
+        data = __data[['datetime','code', 'open', 'high', 'low', 'price']]
+        data = data.set_index('code',drop=False)
         
-        index_of_end=index_of_index_0-index_of_index_end
-        index_length=index_of_index_end+1-index_of_index_start
-        #data = api.get_security_bars(9, market_code, code,index_of_end, index_length)  # 返回普通list
-        data = api.to_df(api.get_security_bars(9, market_code, code,index_of_end, index_length))  # 返回DataFrame
-    return data
-def QA_fetch_get_stock_list(code, date,ip='119.147.212.81',port=7709):
-    with api.connect(ip, port):
-        stocks = api.get_security_list(1, 255)
-        return stocks
-def QA_fetch_get_stock_realtime(code, date,ip='119.147.212.81',port=7709):
-    with api.connect(ip, port):
-        stocks = api.get_security_quotes([(0, "000001")])
-        return stocks
-    
-def QA_fetch_get_index_day(code, date,ip='119.147.212.81',port=7709):
-    with api.connect(ip, port):
-        stocks = api.get_index_bars(9,1, '000001', 1, 2)
-    return stocks
+        return data
 
 
-if __name__=='__main__':
-    print(QA_fetch_get_stock_day('000001','2017-07-03','2017-07-10'))
-    print(QA_fetch_get_stock_day('000001','2017-07-01','2017-07-09'))
+def QA_fetch_get_index_day(code, start_date, end_date, ip='119.147.212.81', port=7709):
+    api = TdxHq_API()
+    start_date = QA_util_get_real_date(start_date, trade_date_sse, 1)
+    end_date = QA_util_get_real_date(end_date, trade_date_sse, -1)
+    with api.connect(ip, port):
+        data = []
+        for i in range(10):
+            data += api.get_index_bars(9, 1, code, (9 - i) * 800, 800)
+        data = api.to_df(data)
+        data['date'] = data['datetime'].apply(lambda x: x[0:10])
+        data['date'] = pd.to_datetime(data['date'])
+        data = data.set_index('date', drop=False)
+        data = data.drop(['year', 'month', 'day', 'hour',
+                          'minute', 'datetime'], axis=1)
+
+        return data[start_date:end_date]
+
+
+def QA_fetch_get_stock_min(code, start, end, level, ip='221.231.141.60', port=7709):
+    api = TdxHq_API()
+    market_code = __select_market_code(code)
+    if str(level) in ['5', '5m', '5min', 'five']:
+        level = 0
+    elif str(level) in ['1', '1m', '1min', 'one']:
+        level = 8
+    elif str(level) in ['15', '15m', '15min', 'fifteen']:
+        level = 1
+    elif str(level) in ['30', '30m', '30min', 'half']:
+        level = 2
+    elif str(level) in ['60', '60m', '60min', '1h']:
+        level = 3
+    with api.connect(ip, port):
+        data = []
+        for i in range(26):
+            data += api.get_security_bars(level,
+                                          market_code, code, (25 - i) * 800, 800)
+        data = api.to_df(data)
+        data['datetime'] = pd.to_datetime(data['datetime'])
+        data['code'] = code
+        data = data.set_index('datetime', drop=False)
+        data = data.drop(['year', 'month', 'day', 'hour',
+                          'minute'], axis=1)
+        data['datetime'] = data['datetime'].apply(lambda x: str(x)[0:19])
+        data['date'] = data['datetime'].apply(lambda x: str(x)[0:10])
+        data['date_stamp'] = data['date'].apply(
+            lambda x: QA_util_date_stamp(x))
+        data['time_stamp'] = data['datetime'].apply(
+            lambda x: QA_util_time_stamp(x))
+    return data[start:end]
+
+
+def __QA_fetch_get_stock_transaction(code, day, retry, api):
+    market_code = __select_market_code(code)
+    data_ = []
+    for i in range(21):
+        data_ += api.get_history_transaction_data(
+            market_code, code, (20 - i) * 800, 800, QA_util_date_str2int(day))
+    data_ = api.to_df(data_)
+    data_['date'] = day
+    data_['datetime'] = data_['time'].apply(lambda x: str(day) + ' ' + x)
+    data_['datetime'] = pd.to_datetime(data_['datetime'])
+    data_['code'] = str(code)
+    data_['order'] = range(len(data_.index))
+    data_ = data_.set_index('datetime', drop=True)
+
+    for _ in range(retry):
+        if len(data_) < 2:
+            return __QA_fetch_get_stock_transaction(code, day, 0, api)
+        else:
+            return data_
+
+
+def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip='221.231.141.60', port=7709):
+    api = TdxHq_API()
+
+    real_start, real_end = QA_util_get_real_datelist(start, end)
+    real_id_range = []
+    with api.connect():
+        data = pd.DataFrame()
+        for index_ in range(trade_date_sse.index(real_start), trade_date_sse.index(real_end) + 1):
+
+            try:
+                data_ = __QA_fetch_get_stock_transaction(
+                    code, trade_date_sse[index_], retry, api)
+                if len(data_) < 1:
+                    return None
+            except:
+                QA_util_log_info('Wrong in Getting %s history transaction data in day %s' % (
+                    code, trade_date_sse[index_]))
+            else:
+                QA_util_log_info('Successfully Getting %s history transaction data in day %s' % (
+                    code, trade_date_sse[index_]))
+                data = data.append(data_)
+
+        return data
+
+
+def QA_fetch_get_stock_info():
+    pass
+
+
+def QA_fetch_get_stock_xdxr(code, ip='221.231.141.60', port=7709):
+    api = TdxHq_API()
+    market_code = __select_market_code(code)
+    with api.connect():
+        return api.to_df(api.get_xdxr_info(market_code, code))
+
+
+if __name__ == '__main__':
+    # print(QA_fetch_get_stock_day('000001','2017-07-03','2017-07-10'))
+    #print(QA_fetch_get_stock_day('000001', '2013-07-01', '2013-07-09'))
+    # print(QA_fetch_get_stock_realtime('000001'))
+    print(QA_fetch_get_index_day('000001', '2017-01-01', '2017-07-01'))
+    #print(QA_fetch_get_stock_transaction('000001', '2017-07-03', '2017-07-10'))

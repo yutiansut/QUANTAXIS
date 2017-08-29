@@ -25,35 +25,47 @@
 import json
 
 import tushare as QATs
+import pandas as pd
+from QUANTAXIS.QAUtil import QA_util_date_stamp, QA_util_log_info, QA_util_to_json_from_pandas
 
-from QUANTAXIS.QAUtil import QA_util_date_stamp
 
-
-def QA_fetch_get_stock_day(name, startDate=None, endDate=None):
+def QA_fetch_get_stock_day(name, startDate='', endDate='', if_fq='01', type_='json'):
     if (len(name) != 6):
         name = str(name)[0:6]
-    data = QATs.get_hist_data(str(name), startDate, endDate).sort_index()
 
-    data_json = json.loads(data.to_json(orient='records'))
+    if str(if_fq) in ['qfq', '01']:
+        if_fq = 'qfq'
+    elif str(if_fq) in ['hfq', '02']:
+        if_fq = 'hfq'
+    elif str(if_fq) in ['bfq', '00']:
+        if_fq = 'bfq'
+    else:
+        QA_util_log_info('wrong with fq_factor! using qfq')
+        if_fq = 'qfq'
 
-    for j in range(0, len(data_json), 1):
-        data_json[j]['date_stamp'] = QA_util_date_stamp(
-            list(data.index)[j])
-        data_json[j]['date'] = list(data.index)[j]
-        data_json[j]['code'] = str(name)
-
-    return data_json
-
+    data = QATs.get_k_data(str(name), startDate, endDate,
+                           ktype='D', autype=if_fq, retry_count=200, pause=0.005).sort_index()
+    
+    data['date_stamp'] = data['date'].apply(lambda x: QA_util_date_stamp(x))
+    data['fqtype'] = if_fq
+    if type_ in ['json']:
+        data_json = QA_util_to_json_from_pandas(data)
+        return data_json
+    elif type_ in ['pd', 'pandas', 'p']:
+        data['date'] = pd.to_datetime(data['date'])
+        data = data.set_index('date',drop=False)
+        data['date'] = data['date'].apply(lambda x: str(x)[0:10])
+        return data
 
 def QA_fetch_get_stock_realtime():
     data = QATs.get_today_all()
-    data_json = json.loads(data.to_json(orient='records'))
+    data_json = QA_util_to_json_from_pandas(data)
     return data_json
 
 
 def QA_fetch_get_stock_info(name):
     data = QATs.get_stock_basics()
-    data_json = json.loads(data.to_json(orient='records'))
+    data_json = QA_util_to_json_from_pandas(data)
 
     for i in range(0, len(data_json) - 1, 1):
         data_json[i]['code'] = data.index[i]
@@ -74,7 +86,7 @@ def QA_fetch_get_stock_list():
 def QA_fetch_get_trade_date(endDate, exchange):
     data = QATs.trade_cal()
     da = data[data.isOpen > 0]
-    data_json = json.loads(da.to_json(orient='records'))
+    data_json = QA_util_to_json_from_pandas(data)
     message = []
     for i in range(0, len(data_json) - 1, 1):
         date = data_json[i]['calendarDate']
@@ -85,7 +97,6 @@ def QA_fetch_get_trade_date(endDate, exchange):
                'exchangeName': exchangeName, 'date_stamp': data_stamp}
         message.append(mes)
     return message
-
 # test
 
 # print(get_stock_day("000001",'2001-01-01','2010-01-01'))

@@ -1,4 +1,4 @@
-# encoding: UTF-8
+# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -23,47 +23,15 @@
 # SOFTWARE.
 
 
-"""
-QA_Fetch main entry
-with QAWind/QATushare
-
-@author yutiansut
-"""
-#import QAFetch.QAGmsdk as QAGmsdk
-#import QAFetch.QACrawlData as QACD
-import pymongo
-
-from . import QATushare as QATushare
-from . import QAWind as QAWind
-from . import QAThs as QAThs
-
-#from WindPy import w
-# w.start()
-# w.start()
+from QUANTAXIS.QAFetch import QA_fetch_get_stock_day
+import pandas as pd
 
 
-def use(package):
-    if package in ['wind']:
-        return QAWind
-    elif package in ['tushare', 'ts']:
-        return QATushare
-    elif package in ['ths', 'THS']:
-        return QAThs
+def QA_data_fq_factor(code, start='1991-01-01', end=''):
+    bfq = QA_fetch_get_stock_day('ts', code, start, end, '00', 'pd')
+    qfq = QA_fetch_get_stock_day('ts', code, '1991-01-01', '', '01', 'pd')
+    factor_frame = pd.DataFrame()
+    factor_frame['qfqfactor'] = qfq['open'] / bfq['open']
+    return factor_frame
 
 
-def QA_fetch_get_stock_day(package, code, startDate, endDate, if_fq='01'):
-    Engine = use(package)
-    if package in ['ths', 'THS']:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq)
-    else:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate)
-
-
-def QA_fetch_get_stock_indicator(package, code, startDate, endDate):
-    Engine = use(package)
-    return Engine.QA_fetch_get_stock_indicator(code, startDate, endDate)
-
-
-def QA_fetch_get_trade_date(package, endDate, exchange):
-    Engine = use(package)
-    return Engine.QA_fetch_get_trade_date(endDate, exchange)

@@ -41,47 +41,36 @@ from QUANTAXIS.QATask import QA_Queue
 
 class QA_QAMarket_bid():
     def __init__(self):
-        self.bid = {
-            'price': float(16),
-            'date': str('2015-01-05'),
-            'time': str(time.mktime(datetime.datetime.now().timetuple())),
-            'amount': int(10),
-            'towards': int(1),
-            'code': str('000001'),
-            'user': str('root'),
-            'strategy': str('example01'),
-            'status': '0x01',
-            'bid_model': 'strategy',
-            'amount_model': 'amount',
-            'order_id': str(random.random())
-        }
+        self.price = 16
+        self.date = '2015-01-05'
+        self.datetime = '2015-01-05 09:01:00'
+        self.sending_time = '2015-01-05 09:01:00'  # 下单时间
+        self.transact_time = ''
+        self.amount = 10
+        self.towards = 1
+        self.code = str('000001')
+        self.user = 'root'
+        self.strategy = 'example01'
+        self.status = '0x01'
+        self.bid_model = 'strategy'
+        self.amount_model = 'amount'
+        self.order_id = str(random.random())
+        self.trade_id = ''
 
-        # 报价队列  插入/取出/查询
-        self.bid_queue = queue.Queue(maxsize=20)
+    def stock_day(self):
+        self.status = '0x01'
 
-    def QA_bid_insert(self, __bid):
-        self.bid_queue.put(__bid)
+    def stock_min(self):
+        self.status = '0x02'
 
-    def QA_bid_pop(self):
-        return self.bid_queue.get()
+    def future_day(self):
+        self.status = '1x01'
 
-    def QA_bid_status(self):
-        lens = len(self.bid_queue)
-        return {'status': lens}
-
-
-class bid_server(QA_Queue):
-    def __init__(self, queue):
-        super().__init__()
-        self.queue = queue
-
-    def select_market(self,bid):
-        pass
-    def push_bid(self):
-
-        while self.bid_queue.empty():
-            print(self.bid_queue.queue)
+    def show(self):
+        return vars(self)
 
 
 if __name__ == '__main__':
-    pass
+    ax = QA_QAMarket_bid()
+    ax.stock_day()
+    print(ax.status)

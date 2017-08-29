@@ -1,4 +1,4 @@
-# encoding: UTF-8
+# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -22,48 +22,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
-"""
-QA_Fetch main entry
-with QAWind/QATushare
-
-@author yutiansut
-"""
-#import QAFetch.QAGmsdk as QAGmsdk
-#import QAFetch.QACrawlData as QACD
-import pymongo
-
-from . import QATushare as QATushare
-from . import QAWind as QAWind
-from . import QAThs as QAThs
-
-#from WindPy import w
-# w.start()
-# w.start()
+import json
+import pandas as pd
+import numpy as np
+import csv
 
 
-def use(package):
-    if package in ['wind']:
-        return QAWind
-    elif package in ['tushare', 'ts']:
-        return QATushare
-    elif package in ['ths', 'THS']:
-        return QAThs
+def QA_util_to_json_from_pandas(data):
+    return json.loads(data.to_json(orient='records'))
 
 
-def QA_fetch_get_stock_day(package, code, startDate, endDate, if_fq='01'):
-    Engine = use(package)
-    if package in ['ths', 'THS']:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq)
-    else:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate)
+def QA_util_to_json_from_numpy(data):
+    pass
 
 
-def QA_fetch_get_stock_indicator(package, code, startDate, endDate):
-    Engine = use(package)
-    return Engine.QA_fetch_get_stock_indicator(code, startDate, endDate)
+def QA_util_to_json_from_list(data):
+    pass
 
 
-def QA_fetch_get_trade_date(package, endDate, exchange):
-    Engine = use(package)
-    return Engine.QA_fetch_get_trade_date(endDate, exchange)
+def QA_util_to_list_from_pandas(data):
+    return np.asarray(data).tolist()
+
+
+def QA_util_to_list_from_numpy(data):
+    return data.tolist()

@@ -28,14 +28,17 @@ import time
 import threading
 from .QADate_trade import trade_date_sse
 
+
 def QA_util_time_now():
     return datetime.datetime.now()
 
+
 def QA_util_date_str2int(date):
-    return int(str(date)[0:4]+str(date)[5:7]+str(date)[8:10])
+    return int(str(date)[0:4] + str(date)[5:7] + str(date)[8:10])
+
 
 def QA_util_date_int2str(date):
-    return str(str(date)[0:4]+'-'+str(date)[4:6]+'-'+str(date)[6:8])
+    return str(str(date)[0:4] + '-' + str(date)[4:6] + '-' + str(date)[6:8])
 
 
 def QA_util_date_stamp(date):
@@ -45,21 +48,19 @@ def QA_util_date_stamp(date):
     return date
 
 
-
-
-
 def QA_util_time_stamp(time_):
     '''
-    数据格式需要是%Y-%m-%d %H:%M:%S 中间要有空格
+    数据格式最好是%Y-%m-%d %H:%M:%S 中间要有空格 
     '''
-
-    try:
+    if len(str(time_)) == 10:
+        # yyyy-mm-dd格式
+        return time.mktime(time.strptime(time_, '%Y-%m-%d'))
+    elif len(str(time_)) == 16:
+            # yyyy-mm-dd hh:mm格式
+        return time.mktime(time.strptime(time_, '%Y-%m-%d %H:%M'))
+    else:
         timestr = str(time_)[0:19]
-        time__ = time.mktime(time.strptime(timestr, '%Y-%m-%d %H:%M:%S'))
-        return time__
-
-    except:
-        return QA_util_date_stamp('1900-01-01')
+        return time.mktime(time.strptime(timestr, '%Y-%m-%d %H:%M:%S'))
 
 
 def QA_util_ms_stamp(ms):
@@ -100,38 +101,6 @@ def QA_util_is_trade(date, code, client):
     except:
         return False
 
-
-def QA_util_get_real_date(date, trade_list, towards):
-    """
-    获取真实的交易日期,其中,第三个参数towards是表示向前/向后推
-    towards=1 日期向后迭代
-    towards=-1 日期向前迭代
-    @ yutiansut
-    
-    """
-    if towards == 1:
-        while date not in trade_list:
-            date = str(datetime.datetime.strptime(
-                date, '%Y-%m-%d') + datetime.timedelta(days=1))[0:10]
-        else:
-            return date
-    elif towards == -1:
-        while date not in trade_list:
-            date = str(datetime.datetime.strptime(
-                date, '%Y-%m-%d') - datetime.timedelta(days=1))[0:10]
-        else:
-            return date
-
-
-def QA_util_get_real_datelist(start,end):
-    """
-    取数据的真实区间,返回的时候用 start,end=QA_util_get_real_datelist
-    @yutiansut
-    2017/8/10
-    """
-    real_start=QA_util_get_real_date(start,trade_date_sse,1)
-    real_end=QA_util_get_real_date(end,trade_date_sse,-1)
-    return (real_start,real_end)
 
 def QA_util_get_date_index(date, trade_list):
     return trade_list.index(date)
@@ -241,16 +210,15 @@ def QA_util_select_min(time=None, gt=None, lt=None, gte=None, lte=None):
         return True
 
 
-
 def QA_util_time_delay(time_=0):
     '这是一个用于复用/比如说@装饰器的延时函数\
     使用threading里面的延时,为了是不阻塞进程\
     有时候,同时发进去两个函数,第一个函数需要延时\
     第二个不需要的话,用sleep就会阻塞掉第二个进程'
     def _exec(func):
-        threading.Timer(time_,func)
+        threading.Timer(time_, func)
     return _exec
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     print(QA_util_time_stamp('2017-01-01 10:25:08'))

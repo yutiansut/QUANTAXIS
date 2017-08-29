@@ -1,4 +1,4 @@
-# encoding: UTF-8
+# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -23,47 +23,6 @@
 # SOFTWARE.
 
 
-"""
-QA_Fetch main entry
-with QAWind/QATushare
+def QA_market_deoc(func, *arg, **kwargs):
 
-@author yutiansut
-"""
-#import QAFetch.QAGmsdk as QAGmsdk
-#import QAFetch.QACrawlData as QACD
-import pymongo
-
-from . import QATushare as QATushare
-from . import QAWind as QAWind
-from . import QAThs as QAThs
-
-#from WindPy import w
-# w.start()
-# w.start()
-
-
-def use(package):
-    if package in ['wind']:
-        return QAWind
-    elif package in ['tushare', 'ts']:
-        return QATushare
-    elif package in ['ths', 'THS']:
-        return QAThs
-
-
-def QA_fetch_get_stock_day(package, code, startDate, endDate, if_fq='01'):
-    Engine = use(package)
-    if package in ['ths', 'THS']:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq)
-    else:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate)
-
-
-def QA_fetch_get_stock_indicator(package, code, startDate, endDate):
-    Engine = use(package)
-    return Engine.QA_fetch_get_stock_indicator(code, startDate, endDate)
-
-
-def QA_fetch_get_trade_date(package, endDate, exchange):
-    Engine = use(package)
-    return Engine.QA_fetch_get_trade_date(endDate, exchange)
+    return func(*arg, **kwargs)
