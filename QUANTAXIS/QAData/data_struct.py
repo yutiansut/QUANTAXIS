@@ -41,7 +41,7 @@ class QA_DataStruct_Stock_day():
         return data
 
     def reverse(self):
-        return QA_DataStruct_Stock_day(QAQuery.QA_fetch_stock_to_fq(self.data[::-1]))
+        return QA_DataStruct_Stock_day(self.data[::-1])
 
     def show(self):
         return QA_util_log_info(self.data)
