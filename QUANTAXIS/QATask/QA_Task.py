@@ -23,32 +23,37 @@
 
 
 import threading
-
-from six.moves import queue
+import time
+import queue
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting
-from .QA_Event import QA_Event, QA_EventDispatcher
+#from .QA_Event import QA_Event, QA_EventDispatcher
 from .QA_Queue_standard import QA_Queue
 
 
 """
 标准的QUANTAXIS事件方法,具有QA_Queue,QA_Event等特性,以及一些日志和外部接口
 """
-
-
-class QA_Task():
-    def __init__(self, Job: queue.Queue,  Event_: QA_Event, Dispatcher_: QA_EventDispatcher):
-        self.Job = Job
+class QA_Job():
+    def __init__(self):
+        self.type='default'
+        self.func='print(\'start\')'
+    
+class QA_Engine():
+    def __init__(self,name='default'):
+        self.Job = queue.Queue()
         self.Task = QA_Queue(self.Job)
-
-    def start_task(self, name: str, if_demon=False):
         self.Task.setName(name)
+    def query_state(self):
+        self.Job.put({'func': 'QA_util_log_info(theading.enumerate())'})
+        self.Job.put({'func': 'QA_util_log_info(theading.current_thread())'})
+    def put(self,task:QA_Job):
+        self.Job.put(vars(QA_Job))
+    def start(self):
         self.Task.start()
-
+    def pause(self):
+        self.Task.pause()
+    def resume(self):
+        self.Task.resume()
 
 if __name__ == '__main__':
-    x1 = queue.Queue()
-    # X1=QA_Queue(x1)
-    E1 = QA_Event('x1')
-    D1 = QA_EventDispatcher()
-    QA_Task(x1, E1, D1).start_task('xx')
-    x1.put({'func': print(x1)})
+    pass

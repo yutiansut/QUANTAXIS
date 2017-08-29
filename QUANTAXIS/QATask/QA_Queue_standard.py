@@ -96,16 +96,15 @@ class QA_Queue(threading.Thread):
                         else:
                             pass
                     else:
-                        QA_util_log_info("From Engine %s" % str(threading.current_thread())
-                                         + "Engine will waiting for new task ...")
-                        time.sleep(5)
+                        QA_util_log_info("From Engine %s  Engine will waiting for new task ..." % str(threading.current_thread()))
+                        time.sleep(1)
                 except:
                     time.sleep(1)
                     self.run()
                 __res = self.__QA_queue_status()  # 判断消息队列大小
                 if __res > 0:
-                    QA_util_log_info("From Engine %s: There are still %d tasks to do" % (
-                        str(threading.current_thread()), __res))
+                    #QA_util_log_info("From Engine %s: There are still %d tasks to do" % (str(threading.current_thread()), __res))
+                    pass
                 # input()
                 threading.Timer(0.005, self.run)
 

@@ -89,10 +89,10 @@ from QUANTAXIS.QABacktest.QABacktest import QA_Backtest
 from QUANTAXIS.QABacktest.QABacktest_stock_day import QA_Backtest_stock_day
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
 # task
-from QUANTAXIS.QATask import QA_Queue, QA_Event
+from QUANTAXIS.QATask import QA_Queue, QA_Event, QA_Job, QA_Engine
 
 # Data
-from QUANTAXIS.QAData import QA_data_tick_resample, QA_data_get_hfq, QA_data_get_qfq, QA_data_make_qfq, QA_data_make_hfq,QA_DataStruct_Stock_day
+from QUANTAXIS.QAData import QA_data_tick_resample, QA_data_get_hfq, QA_data_get_qfq, QA_data_make_qfq, QA_data_make_hfq, QA_DataStruct_Stock_day
 
 
 # Util
@@ -104,7 +104,7 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms
                               QA_util_realtime, QA_util_id2date, QA_util_is_trade, QA_util_get_date_index,
                               QA_util_get_index_date, QA_util_select_hours,
                               QA_util_select_min, QA_util_time_delay, QA_util_time_now, QA_util_date_str2int,
-                              QA_util_date_int2str,QA_util_date_today,
+                              QA_util_date_int2str, QA_util_date_today,
                               QA_util_sql_mongo_setting,
                               QA_util_log_debug, QA_util_log_expection, QA_util_log_info,
                               QA_util_cfg_initial, QA_util_get_cfg,
@@ -116,7 +116,7 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms
                               QA_util_save_csv,
                               QA_util_multi_demension_list, QA_util_diff_list,
                               QA_util_to_json_from_pandas, QA_util_to_list_from_numpy, QA_util_to_list_from_pandas,
-                              QA_util_mongo_initial, QA_util_mongo_make_index,QA_util_mongo_status,QA_util_mongo_infos,
+                              QA_util_mongo_initial, QA_util_mongo_make_index, QA_util_mongo_status, QA_util_mongo_infos,
                               QA_util_make_15min_bar, QA_util_make_1h_bar,
                               QA_util_make_1min_bar, QA_util_make_5min_bar,
                               QA_util_make_30min_bar, QA_util_make_bar)
