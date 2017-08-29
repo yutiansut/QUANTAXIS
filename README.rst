@@ -3,7 +3,12 @@ QUANTAXIS quantitative financial strategy framework
 
 QUANTAXIS quantitative framework to achieve the stock and futures market, the whole species back to the test.Through the distributed crawler for data capture, to build a response to the data cleaning and market push engine to build a multi-language open response frame. And build interactive visualization of clients and websites.
 
+.. image:: https://badge.waffle.io/yutiansut/QUANTAXIS.svg?label=ready&title=Ready 
+ :target: https://waffle.io/yutiansut/QUANTAXIS 
+ :alt: 'Stories in Ready'
 
+
+ 
 0.4.0-beta Release Note
 ---------------------------------
 
