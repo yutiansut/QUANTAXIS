@@ -10,64 +10,55 @@
 import pandas as pd
 import numpy as np
 
-from QUANTAXIS.QAUtil import QA_Setting
+from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info
+from QUANTAXIS.QAFetch import QAQuery
 
+class QA_DataStruct_Stock_day():
+    def __init__(self, DataFrame):
+        self.open = DataFrame['open']
+        self.high = DataFrame['high']
+        self.low= DataFrame['low']
+        self.close = DataFrame['close']
+        self.date_index = DataFrame.index
+        self.data = DataFrame
 
-class QA_Data_Min():
-    def init(self):
-        self.open, self.close = np.array()
-        self.high = np.array()
-        self.date_index = pd.Series()
-
-    def to_dataframe(self):
-        return pd.DataFrame([self.open, self.close])
-
-    def resample(self, type='d'):
-        return self.to_dataframe().resample('1d').ohlc()
-
-    def to_csv(self):
-        pass
+    def to_qfq(self):
+        return QA_DataStruct_Stock_day(QAQuery.QA_fetch_stock_to_fq(self.data))
+    def to_hfq(self):
+        return QA_DataStruct_Stock_day(QAQuery.QA_fetch_stock_to_fq(self.data,'hfq'))
+    def show(self):
+        return QA_util_log_info(self.data)
+    
+    def add_func(self, func,*arg,**kwargs):
+        return func(self.data,*arg,**kwargs)
 
     def to_list(self):
-        pass
+        return np.asarray(self.data).tolist()
 
-    def to_mongo(self, collection=QA_Setting.client):
-        pass
-
-    """
-    最好这个可以被复用，以及被快速转化为protobuf
-    
-    
-    """
-
-
-class QA_Data_Stock_day():
+        
+class QA_DataStruct_Stock_transaction():
     pass
 
 
-class QA_Data_Stock_transaction():
+class QA_DataStruct_Stock_xdxr():
     pass
 
 
-class QA_Data_Stock_xdxr():
+class QA_DataStruct_Market_reply():
     pass
 
 
-class QA_Data_Market_reply():
+class QA_DataStruct_Market_bid():
     pass
 
 
-class QA_Data_Market_bid():
+class QA_DataStruct_Market_bid_queue():
     pass
 
 
-class QA_Data_Market_bid_queue():
+class QA_DataStruct_ARP_account():
     pass
 
 
-class QA_Data_ARP_account():
-    pass
-
-
-class QA_Data_Quantaxis_error():
+class QA_DataStruct_Quantaxis_error():
     pass

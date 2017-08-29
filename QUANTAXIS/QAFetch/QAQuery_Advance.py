@@ -32,46 +32,31 @@ from pandas import DataFrame
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
                               QA_util_date_valid, QA_util_log_info,
                               QA_util_time_stamp)
-from QUANTAXIS.QAData import QA_data_make_hfq,QA_data_make_qfq
+from QUANTAXIS.QAData import QA_data_make_hfq,QA_data_make_qfq,QA_DataStruct_Stock_day
 """
 按要求从数据库取数据，并转换成numpy结构
 
 """
 
 
-def QA_fetch_stock_day(code, __start, __end, format_='numpy', collections=QA_Setting.client.quantaxis.stock_day, drop_factor=True):
+def QA_fetch_stock_day(code, __start, __end,collections=QA_Setting.client.quantaxis.stock_day):
     '获取股票日线'
     __start = str(__start)[0:10]
     __end = str(__end)[0:10]
 
     if QA_util_date_valid(__end) == True:
-
         __data = []
-
         for item in collections.find({
             'code': str(code)[0:6], "date_stamp": {
                 "$lte": QA_util_date_stamp(__end),
                 "$gte": QA_util_date_stamp(__start)}}):
-            if drop_factor:
-                __data.append([str(item['code']), float(item['open']), float(item['high']), float(
-                    item['low']), float(item['close']), float(item['vol']), item['date']])
-            else:
-                __data.append([str(item['code']), float(item['open']), float(item['high']), float(
-                    item['low']), float(item['close']), float(item['vol']), item['date'], item['qfqfactor']])
-        # 多种数据格式
-        if format_ in ['n', 'N', 'numpy']:
-            __data = numpy.asarray(__data)
-        elif format_ in ['list', 'l', 'L']:
-            __data = __data
-        elif format_ in ['P', 'p', 'pandas', 'pd']:
-
-            __data = DataFrame(__data, columns=[
-                'code', 'open', 'high', 'low', 'close', 'volume', 'date'] if drop_factor else [
-                'code', 'open', 'high', 'low', 'close', 'volume', 'date', 'qfqfactor'])
-
-            __data['date'] = pd.to_datetime(__data['date'])
-            __data = __data.set_index('date', drop=False)
-        return __data
+            __data.append([str(item['code']), float(item['open']), float(item['high']), float(
+                item['low']), float(item['close']), float(item['vol']), item['date']])
+        __data = DataFrame(__data, columns=[
+            'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
+        __data['date'] = pd.to_datetime(__data['date'])
+        __data = __data.set_index('date', drop=False)
+        return QA_DataStruct_Stock_day(__data)
     else:
         QA_util_log_info('something wrong with date')
 
