@@ -89,9 +89,9 @@ class QA_Queue(threading.Thread):
                     if self.queue.empty() is False:
                         __task = self.queue.get()  # 接收消息
                         assert isinstance(__task, dict)
-                        if __task['fn'] != None:
+                        if __task['func'] != None:
 
-                            eval(__task['fn'])
+                            eval(__task['func'])
                             self.queue.__task_done()  # 完成一个任务
                         else:
                             pass
@@ -127,7 +127,7 @@ if __name__ == '__main__':
     q = queue.Queue()
     worker = QA_Queue(q)
     worker.start()
-    q.put({'type': '1x00', 'subtype': '1x01', 'fn': print('aa')},
+    q.put({'type': '1x00', 'subtype': '1x01', 'func': print('aa')},
           block=False, timeout=None)
     print('*' * 10)
     print(worker.queue.queue)
@@ -135,6 +135,6 @@ if __name__ == '__main__':
     QA_util_log_info('===now we will sleep 20 sec, and wait for the response')
     QA_util_log_info(datetime.datetime.now())
     time.sleep(20)
-    q.put({'type': '1x00', 'subtype': '1x01', 'fn': print('vv')},
+    q.put({'type': '1x00', 'subtype': '1x01', 'func': print('vv')},
           block=False, timeout=None)
     QA_util_log_info(datetime.datetime.now())

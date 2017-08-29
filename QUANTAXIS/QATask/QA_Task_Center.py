@@ -51,4 +51,4 @@ if __name__ == '__main__':
     E1 = QA_Event('x1')
     D1 = QA_EventDispatcher()
     QA_Task(x1, E1, D1).start_task('xx')
-    x1.put({'fn': print(x1)})
+    x1.put({'func': print(x1)})

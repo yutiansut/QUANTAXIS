@@ -194,9 +194,7 @@ def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=best_ip, port=7709
                 [(__select_market_code(x), x) for x in code[80 * id_:80 * (id_ + 1)]])))
             __data['datetime'] = datetime.datetime.now()
         data = __data[['datetime', 'code', 'open', 'high', 'low', 'price']]
-        data = data.set_index('code', drop=False)
-
-        return data
+        return data.set_index('code', drop=False,inplace=True)
 
 
 def QA_fetch_get_index_day(code, start_date, end_date, ip=best_ip, port=7709):
@@ -210,11 +208,7 @@ def QA_fetch_get_index_day(code, start_date, end_date, ip=best_ip, port=7709):
         data = api.to_df(data)
         data['date'] = data['datetime'].apply(lambda x: x[0:10])
         data['date'] = pd.to_datetime(data['date'])
-        data = data.set_index('date', drop=False)
-        data = data.drop(['year', 'month', 'day', 'hour',
-                          'minute', 'datetime'], axis=1)
-
-        return data[start_date:end_date]
+        return data.set_index('date', drop=False,inplace=True).drop(['year', 'month', 'day', 'hour','minute', 'datetime'], axis=1,inplace=True)[start_date:end_date]
 
 
 def QA_fetch_get_stock_min(code, start, end, level, ip=best_ip, port=7709):
@@ -239,9 +233,7 @@ def QA_fetch_get_stock_min(code, start, end, level, ip=best_ip, port=7709):
         data = api.to_df(data)
         data['datetime'] = pd.to_datetime(data['datetime'])
         data['code'] = code
-        data = data.set_index('datetime', drop=False)
-        data = data.drop(['year', 'month', 'day', 'hour',
-                          'minute'], axis=1)
+        data.set_index('datetime', drop=False,inplace=True).drop(['year', 'month', 'day', 'hour','minute'], axis=1,inplace=True)
         data['datetime'] = data['datetime'].apply(lambda x: str(x)[0:19])
         data['date'] = data['datetime'].apply(lambda x: str(x)[0:10])
         data['date_stamp'] = data['date'].apply(
@@ -264,7 +256,7 @@ def __QA_fetch_get_stock_transaction(code, day, retry, api):
     data_['datetime'] = pd.to_datetime(data_['datetime'])
     data_['code'] = str(code)
     data_['order'] = range(len(data_.index))
-    data_ = data_.set_index('datetime', drop=True)
+    data_.set_index('datetime', drop=True,inplace=True)
 
     for _ in range(retry):
         if len(data_) < 2:
@@ -335,7 +327,7 @@ def QA_fetch_get_stock_xdxr(code, ip=best_ip, port=7709):
         data=data.rename(index=str,columns={'panhouliutong':'liquidity_after',
                 'panqianliutong':'liquidity_before','houzongguben':'shares_after',
                 'qianzongguben':'shares_before'})
-        data = data.set_index('date', drop=False)
+        data.set_index('date', drop=False,inplace=True)
         data['date']=data['date'].apply(lambda x: str(x))
         return data
 
