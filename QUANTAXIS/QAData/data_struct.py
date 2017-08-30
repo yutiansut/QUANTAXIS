@@ -62,8 +62,11 @@ class __stock_hq_base():
 
     def to_json(self):
         return QA_util_to_json_from_pandas(self.data)
+    """
     def rolling(self,gap):
         return self.data.rolling(gap)
+
+    """
     def ATR(self, gap=14):
         list_mtr = []
         __id = -gap
@@ -75,22 +78,16 @@ class __stock_hq_base():
         return list_mtr[-1], res[-1]
 
     def KDJ(self, N=9, M1=3, M2=3):
-        '''
-        计算公式：
-            RSV:=(CLOSE- LLV(LOW,N) )/(HHV(HIGH,N)-LLV(LOW,N))*100;
-            K:SMA(RSV,M1,1);
-            D:SMA(K,M2,1);
-            J:3*K-2*D;
-        '''
-        # 计算close的N日移动平均，权重默认为1
-        RSV = (self.close[-(N+M1+M2):] - LLV(self.low[-(N+M1+M2):], N)) / (HHV(self.high[-(N+M1+M2):], N) - LLV(self.low[-(N+M1+M2):], N)) * 100
-        print(RSV)
-        K = SMA(RSV, (M1 * 2 - 1))
-        D = SMA(K, (M2 * 2 - 1))
+        # https://www.joinquant.com/post/142  先计算KD
+        __K,__D= talib.STOCHF(np.array(self.high[-(N+M1+M2+1):]), np.array(self.low[-(N+M1+M2+1):]), np.array(self.close[-(N+M1+M2+1):]), N , M2, fastd_matype=0)
+
+        K = np.array(list(map(lambda x : SMA(__K[:x], M1), range(1, len(__K) + 1))))
+        D = np.array(list(map(lambda x : SMA(K[:x], M2), range(1, len(K) + 1))))
         J = K * 3 - D * 2
 
-        return K,D,J
-
+        return K[-1],D[-1],J[-1]
+    def JLHB(self,N = 7, M = 5):
+        pass
 
 class QA_DataStruct_Stock_day(__stock_hq_base):
     '自定义的日线数据结构'
