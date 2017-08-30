@@ -80,7 +80,6 @@ def selenium_driver():
     dcap["phantomjs.page.settings.loadImages"] = False
     dcap["phantomjs.page.settings.userAgent"] = choice(ua_list)
     driver = webdriver.PhantomJS(executable_path='phantomjs.exe',desired_capabilities=dcap)
-
     return driver
 
 
