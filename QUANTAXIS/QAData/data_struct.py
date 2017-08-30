@@ -13,6 +13,12 @@ import numpy as np
 from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info, QA_util_to_json_from_pandas
 from QUANTAXIS.QAFetch import QAQuery
 from .data_resample import QA_data_tick_resample
+from QUANTAXIS.QAIndicator import LLV,HHV,SMA,EMA
+import numpy as np
+import six
+import talib
+from functools import reduce
+# ATR
 
 
 class __stock_hq_base():
@@ -32,6 +38,9 @@ class __stock_hq_base():
         self.code = DataFrame['code']
         self.index = DataFrame.index
         self.data = DataFrame
+
+    def len(self):
+        return len(self.data)
 
     def reverse(self):
         return __stock_hq_base(self.data[::-1])
@@ -53,6 +62,34 @@ class __stock_hq_base():
 
     def to_json(self):
         return QA_util_to_json_from_pandas(self.data)
+    def rolling(self,gap):
+        return self.data.rolling(gap)
+    def ATR(self, gap=14):
+        list_mtr = []
+        __id = -gap
+        while __id < 0:
+            list_mtr.append(max(self.high[__id] - self.low[__id], abs(
+                self.close[__id - 1] - self.high[__id]), abs(self.close[__id - 1] - self.low[__id])))
+            __id += 1
+        res = talib.MA(np.array(list_mtr), gap)
+        return list_mtr[-1], res[-1]
+
+    def KDJ(self, N=9, M1=3, M2=3):
+        '''
+        计算公式：
+            RSV:=(CLOSE- LLV(LOW,N) )/(HHV(HIGH,N)-LLV(LOW,N))*100;
+            K:SMA(RSV,M1,1);
+            D:SMA(K,M2,1);
+            J:3*K-2*D;
+        '''
+        # 计算close的N日移动平均，权重默认为1
+        RSV = (self.close[-(N+M1+M2):] - LLV(self.low[-(N+M1+M2):], N)) / (HHV(self.high[-(N+M1+M2):], N) - LLV(self.low[-(N+M1+M2):], N)) * 100
+        print(RSV)
+        K = SMA(RSV, (M1 * 2 - 1))
+        D = SMA(K, (M2 * 2 - 1))
+        J = K * 3 - D * 2
+
+        return K,D,J
 
 
 class QA_DataStruct_Stock_day(__stock_hq_base):

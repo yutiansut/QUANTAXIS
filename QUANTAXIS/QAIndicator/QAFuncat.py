@@ -8,27 +8,6 @@ import six
 # ATR
 
 
-def ATR(security_list, timeperiod=14):
-    # 修复传入为单只股票的情况
-    if isinstance(security_list, str):
-        security_list = [security_list]
-    # 计算 ATR
-    atr = {}
-    for stock in security_list:
-        security_data = attribute_history(
-            stock, timeperiod * 2, '1d', ['close', 'high', 'low'], df=False)
-        nan_count = list(np.isnan(security_data['close'])).count(True)
-        if nan_count == len(security_data['close']):
-
-            atr[stock] = np.array([np.nan])
-        else:
-            close_ATR = security_data['close']
-            high_ATR = security_data['high']
-            low_ATR = security_data['low']
-            atr[stock] = talib.ATR(high_ATR, low_ATR, close_ATR, timeperiod)
-    return atr
-
-
 def df_to_sarray(df):
     """
     Convert a pandas DataFrame object to a numpy structured array.
