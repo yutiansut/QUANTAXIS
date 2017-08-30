@@ -56,6 +56,4 @@ script:
 - "python setup.py install"
 
 
-after_success:
-- quantaxis
-- exit
+#after_success:
