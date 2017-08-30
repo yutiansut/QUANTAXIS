@@ -34,7 +34,7 @@ def QA_data_get_qfq(code, start, end):
     xdxr_data = QA_fetch_get_stock_xdxr('tdx', code)
     bfq_data = QA_fetch_get_stock_day(
         'tdx', code, '1990-01-01', str(datetime.date.today())).dropna(axis=0)
-    return QA_data_make_qfq(bfq_data[start:end],xdxr_data)
+    return QA_data_make_qfq(bfq_data[start:end], xdxr_data)
 
 
 def QA_data_get_hfq(code, start, end):
@@ -42,10 +42,10 @@ def QA_data_get_hfq(code, start, end):
     xdxr_data = QA_fetch_get_stock_xdxr('tdx', code)
     bfq_data = QA_fetch_get_stock_day(
         'tdx', code, '1990-01-01', str(datetime.date.today())).dropna(axis=0)
-    return QA_data_make_hfq(bfq_data[start:end],xdxr_data)
+    return QA_data_make_hfq(bfq_data[start:end], xdxr_data)
 
 
-def QA_data_make_qfq(bfq_data,xdxr_data):
+def QA_data_make_qfq(bfq_data, xdxr_data):
     '使用数据库数据进行复权'
     info = xdxr_data[xdxr_data['category'] == 1]
     data = pd.concat([bfq_data, info[['fenhong', 'peigu', 'peigujia',
@@ -78,6 +78,3 @@ def QA_data_make_hfq(bfq_data, xdxr_data):
     data['close'] = data['close'] / data['adj']
     data['preclose'] = data['preclose'] / data['adj']
     return data[data['open'] != 0]
-
-
-

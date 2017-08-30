@@ -14,6 +14,7 @@ from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info, QA_util_to_json_from_
 from QUANTAXIS.QAFetch import QAQuery
 from .data_resample import QA_data_tick_resample
 
+
 class __stock_hq_base():
     def __init__(self, DataFrame):
         self.type = ''
@@ -156,8 +157,10 @@ class QA_DataStruct_Stock_transaction():
         self.order = DataFrame['order']
         self.index = DataFrame.index
         self.data = DataFrame
-    def resample(self,type_='1min'):
-        return QA_DataStruct_Stock_min(QA_data_tick_resample(self.data,type_))
+
+    def resample(self, type_='1min'):
+        return QA_DataStruct_Stock_min(QA_data_tick_resample(self.data, type_))
+
 
 class QA_DataStruct_Stock_xdxr():
     pass
