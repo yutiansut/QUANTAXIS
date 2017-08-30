@@ -55,7 +55,6 @@ class QA_Queue(threading.Thread):
         threading.Thread.__init__(self)
         self.queue = queue
         self.thread_stop = False
-        self.__type: dict
         self.__flag = threading.Event()     # 用于暂停线程的标识
         self.__flag.set()       # 设置为True
         self.__running = threading.Event()      # 用于停止线程的标识
@@ -63,8 +62,8 @@ class QA_Queue(threading.Thread):
 
     def QA_queue_job_register(self, __job):
         '首先对于任务进行类型判断,输入的job的类型一定是一个dict模式的,同时需要含有一个type的K-V对'
-        assert type(__job) == dict
-        assert type(__job['type']) == str
+        assert isinstance(__job,dict)
+        assert isinstance(__job['type'],str)
 
     def __QA_queue_put(self, args):
         return self.queue.put()
