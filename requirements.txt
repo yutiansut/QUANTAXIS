@@ -15,4 +15,5 @@ zenlog
 pytdx>=1.34
 flask-socketio 
 flask
+Cython==0.24.1
 TA-Lib
