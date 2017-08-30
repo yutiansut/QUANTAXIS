@@ -330,7 +330,7 @@ class QA_Backtest():
         ), __data.T[4].astype(float).tolist(),
             __data.T[5].astype(float).tolist())
 
-    def QA_backtest_send_order(self, __code: str, __amount: int, __towards: int, __order: dict):
+    def QA_backtest_send_order(self, __code, __amount, __towards, __order):
         """
         2017/8/4
         委托函数
