@@ -58,3 +58,4 @@ script:
 
 after_success:
 - quantaxis
+- exit
