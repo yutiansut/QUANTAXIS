@@ -11,7 +11,7 @@ import pandas as pd
 import numpy as np
 
 from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info, QA_util_to_json_from_pandas
-from QUANTAXIS.QAFetch import QAQuery
+from .data_fq import QA_data_stock_to_fq
 from .data_resample import QA_data_tick_resample
 from QUANTAXIS.QAIndicator import LLV,HHV,SMA,EMA
 import numpy as np
@@ -110,13 +110,13 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
         self.data = DataFrame
 
     def to_qfq(self):
-        data = QA_DataStruct_Stock_day(QAQuery.QA_fetch_stock_to_fq(self.data))
+        data = QA_DataStruct_Stock_day(QA_data_stock_to_fq(self.data))
         data.if_fq = 'qfq'
         return data
 
     def to_hfq(self):
         data = QA_DataStruct_Stock_day(
-            QAQuery.QA_fetch_stock_to_fq(self.data, 'hfq'))
+            QA_data_stock_to_fq(self.data, 'hfq'))
         data.if_fq = 'hfq'
         return data
 
@@ -163,13 +163,13 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
         self.data = DataFrame
 
     def to_qfq(self):
-        data = QA_DataStruct_Stock_min(QAQuery.QA_fetch_stock_to_fq(self.data))
+        data = QA_DataStruct_Stock_min(QA_data_stock_to_fq(self.data))
         data.if_fq = 'qfq'
         return data
 
     def to_hfq(self):
         data = QA_DataStruct_Stock_min(
-            QAQuery.QA_fetch_stock_to_fq(self.data, 'hfq'))
+            QA_data_stock_to_fq(self.data, 'hfq'))
         data.if_fq = 'hfq'
         return data
 

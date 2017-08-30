@@ -34,7 +34,6 @@ QAFetch is Under [QAStandard#0.0.2@10x] Protocol
 from . import QAWind as QAWind
 from . import QATushare as QATushare
 from . import QATdx as QATdx
-#from .QAQuery import QA_fetch_stock_day, QA_fetch_stocklist_day, QA_fetch_index_day
 from . import QAThs as QAThs
 #import QAFetch.QAGmsdk as QAGmsdk
 #import QAFetch.QACrawlData as QACD
