@@ -61,7 +61,7 @@ class QA_Queue(threading.Thread):
         self.__running = threading.Event()      # 用于停止线程的标识
         self.__running.set()      # 将running设置为True
 
-    def QA_queue_job_register(self, __job:):
+    def QA_queue_job_register(self, __job):
         '首先对于任务进行类型判断,输入的job的类型一定是一个dict模式的,同时需要含有一个type的K-V对'
         assert type(__job) == dict
         assert type(__job['type']) == str
