@@ -34,7 +34,7 @@ install:
 - "pip install tushare"
 # command to build
 script: 
-- "python setup.py install"
+
 #  添加源
 - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
 # Ubuntu 12.04
@@ -57,8 +57,8 @@ script:
 - sudo npm install n -g
 - sudo n latest
 - sudo npm install npm -g #更新npm
+- "python setup.py install"
 
 
-
-#after_success:
-    #"python easy_start_tushare.py"
+after_success:
+- quantaxis
