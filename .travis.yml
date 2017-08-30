@@ -16,6 +16,8 @@ os: "ubuntu"
 
 # command to install dependencies
 install: 
+- "sudo apt-get update"
+- "sudo apt-get install python3-dev"
 - "pip install -r requirements.txt"
 - "pip install tushare"
 # command to build
