@@ -196,9 +196,6 @@ class QA_DataStruct_Stock_transaction():
         return QA_DataStruct_Stock_min(QA_data_tick_resample(self.data, type_))
 
 
-class QA_DataStruct_Stock_xdxr():
-    pass
-
 
 class QA_DataStruct_Market_reply():
     pass
