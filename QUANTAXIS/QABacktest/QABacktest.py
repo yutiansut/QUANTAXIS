@@ -302,13 +302,9 @@ class QA_Backtest():
         '这个函数封装了关于获取的方式'
         gap_ = self.strategy_gap if gap_ is None else gap_
         index_of_code = self.strategy_stock_list.index(code)
+        self.market_data.select_code(index_of_code).select_time('',date)
         __res = self.market_data.data[index_of_code][:date].tail(gap_)
-        if type_ in ['l', 'list', 'L']:
-            return np.asarray(__res).tolist()
-        elif type_ in ['pd', 'pandas', 'p']:
-            return res
-        else:
-            return np.asarray(__res)
+
 
     def QA_backtest_hold_amount(self, __code):
         # return sum(list(map(lambda item: item[3] if __code in item else 0,
