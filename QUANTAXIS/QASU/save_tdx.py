@@ -54,6 +54,8 @@ def QA_SU_save_stock_day(start='1990-01-01', end=str(datetime.date.today()), cli
     if len(__err) > 0:
         QA_util_log_info('ERROR! Try Again with \n')
         QA_util_log_info(__err)
+
+
 def QA_SU_save_stock_xdxr(client=QA_Setting.client):
     __stock_list = QA_fetch_get_stock_time_to_market()
     __coll = client.quantaxis.stock_xdxr
@@ -75,6 +77,15 @@ def QA_SU_save_stock_xdxr(client=QA_Setting.client):
         QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
             float(i_ / len(__stock_list) * 100))[0:4] + '%')
         __saving_work(__stock_list.index[i_])
+
+
+def save_stock_min(code, start, end, level, coll):
+    QA_util_log_info('##JOB03 Now Saving STOCK_MIN ==== %s' % (code))
+    QA_util_log_info(
+        '##JOB03.1 Now Saving STOCK_MIN %s==== %s' % (level, code))
+    coll.insert_many(
+        QA_util_to_json_from_pandas(
+            QA_fetch_get_stock_min(code, start, end, level)))
 
 
 def QA_SU_save_stock_min(client=QA_Setting.client):
