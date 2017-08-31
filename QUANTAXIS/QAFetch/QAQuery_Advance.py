@@ -34,7 +34,6 @@ from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
                               QA_util_time_stamp)
 from QUANTAXIS.QAData import (QA_data_make_hfq, QA_data_make_qfq, QA_DataStruct_Stock_day,
                               QA_DataStruct_Index_day, QA_DataStruct_Stock_min,
-                              QA_DataStruct_StockList_min,
                               QA_DataStruct_Stock_transaction,QA_DataStruct_Stock_day)
 
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stocklist_day
