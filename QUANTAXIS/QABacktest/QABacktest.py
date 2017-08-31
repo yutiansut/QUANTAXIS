@@ -47,10 +47,11 @@ from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_index_day, QA_fetch_stock_day,
                                        QA_fetch_trade_date)
 from QUANTAXIS.QASU.save_backtest import (QA_SU_save_account_message,
                                           QA_SU_save_account_to_csv)
-from QUANTAXIS.QAUtil import (QA_Setting, QA_util_get_real_date,
+from QUANTAXIS.QAUtil import (QA_Setting, QA_util_get_real_date,trade_date_sse,
                               QA_util_log_info, QA_util_log_expection)
 
 from QUANTAXIS.QATask import QA_Queue
+
 from tabulate import tabulate
 
 import configparser
@@ -73,6 +74,7 @@ class QA_Backtest():
     today = ''
 
     def __init__(self):
+        
         self.backtest_type = 'day'
         self.account = QA_Account()
         self.market = QA_Market()
@@ -102,8 +104,7 @@ class QA_Backtest():
         # 回测的名字
         self.strategy_name = str('example_min')
        # 股票的交易日历,真实回测的交易周期,和交易周期在交易日历中的id
-        self.trade_list = QA_fetch_trade_date(
-            self.setting.client.quantaxis.trade_date)
+        self.trade_list = trade_date_sse
         self.benchmark_code = 'hs300'
         """
         这里会涉及一个区间的问题,开始时间是要向后推,而结束时间是要向前推,1代表向后推,-1代表向前推
@@ -441,7 +442,8 @@ class QA_Backtest():
         20
         """
         pass
-
+    def QA_backtest_status(self):
+        return vars(self)
     def QA_backtest_sell_all(self):
         while len(self.account.hold) > 1:
             __hold_list = self.account.hold[1::]
