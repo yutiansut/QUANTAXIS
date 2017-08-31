@@ -88,7 +88,7 @@ def QA_data_stock_to_fq(__data, type_='01'):
         data = pd.DataFrame([item for item in collections.find(
             {'code': code})]).drop(['_id'], axis=1)
         data['date'] = pd.to_datetime(data['date'])
-        return data.set_index('date', drop=False)
+        return data.set_index(['date', 'code'], drop=False)
     '股票 日线/分钟线 动态复权接口'
     if type_ in ['01', 'qfq']:
         return QA_data_make_qfq(__data, __QA_fetch_stock_xdxr(__data['code'][0]))

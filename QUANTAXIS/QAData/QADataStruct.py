@@ -17,6 +17,7 @@ from QUANTAXIS.QAIndicator import LLV, HHV, SMA, EMA
 import numpy as np
 import six
 import talib
+import itertools
 from functools import reduce
 # ATR
 
@@ -70,63 +71,6 @@ class __stock_hq_base():
         return self.data.rolling(gap)
 
     """
-
-
-class QA_DataStruct_Stock_day(__stock_hq_base):
-    '自定义的日线数据结构'
-
-    def __init__(self, DataFrame):
-        self.type = 'stock_day'
-        self.if_fq = 'bfq'
-        self.mongo_coll = QA_Setting.client.quantaxis.stock_day
-        self.open = DataFrame['open']
-        self.high = DataFrame['high']
-        self.low = DataFrame['low']
-        self.close = DataFrame['close']
-        if 'volume' in DataFrame.columns:
-            self.vol = DataFrame['volume']
-        else:
-            self.vol = DataFrame['vol']
-        self.date = DataFrame['date']
-        self.index = DataFrame.index
-        self.code = DataFrame['code']
-        self.data = DataFrame
-
-    def to_qfq(self):
-        data = QA_DataStruct_Stock_day(QA_data_stock_to_fq(self.data))
-        data.if_fq = 'qfq'
-        return data
-
-    def to_hfq(self):
-        data = QA_DataStruct_Stock_day(
-            QA_data_stock_to_fq(self.data, 'hfq'))
-        data.if_fq = 'hfq'
-        return data
-
-    def ATR(self, gap=14):
-        list_mtr = []
-        __id = -gap
-        while __id < 0:
-            list_mtr.append(max(self.high[__id] - self.low[__id], abs(
-                self.close[__id - 1] - self.high[__id]), abs(self.close[__id - 1] - self.low[__id])))
-            __id += 1
-        res = talib.MA(np.array(list_mtr), gap)
-        return list_mtr[-1], res[-1]
-
-    def KDJ(self, N=9, M1=3, M2=3):
-        # https://www.joinquant.com/post/142  先计算KD
-        __K, __D = talib.STOCHF(np.array(self.high[-(N + M1 + M2 + 1):]), np.array(self.low[-(
-            N + M1 + M2 + 1):]), np.array(self.close[-(N + M1 + M2 + 1):]), N, M2, fastd_matype=0)
-
-        K = np.array(
-            list(map(lambda x: SMA(__K[:x], M1), range(1, len(__K) + 1))))
-        D = np.array(list(map(lambda x: SMA(K[:x], M2), range(1, len(K) + 1))))
-        J = K * 3 - D * 2
-
-        return K[-1], D[-1], J[-1]
-
-    def JLHB(self, N=7, M=5):
-        pass
 
 
 class QA_DataStruct_Index_day(__stock_hq_base):
@@ -232,8 +176,9 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
         pass
 
 
-class QA_DataStruct_StockList_day(__stock_hq_base):
+class QA_DataStruct_Stock_day(__stock_hq_base):
     def __init__(self, DataFrame):
+        self.data = DataFrame
         self.type = 'stock_day'
         self.if_fq = 'bfq'
         self.mongo_coll = QA_Setting.client.quantaxis.stock_day
@@ -245,27 +190,30 @@ class QA_DataStruct_StockList_day(__stock_hq_base):
             self.vol = DataFrame['volume']
         else:
             self.vol = DataFrame['vol']
-        self.date = DataFrame['date']
+        self.date = self.data.index.levels[self.data.index.names.index('date')]
         self.index = DataFrame.index
-        self.code = DataFrame['code']
-        self.data = DataFrame
+        self.code = self.data.index.levels[self.data.index.names.index('code')]
 
     def to_qfq(self):
-        data = QA_DataStruct_StockList_day(QA_data_stocklist_to_fq(self.data))
+        data = QA_DataStruct_Stock_day(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
+            self.data[self.data['code'] == x]), self.code))))
         data.if_fq = 'qfq'
         return data
 
     def to_hfq(self):
-        data = QA_DataStruct_StockList_day(
-            QA_data_stocklist_to_fq(self.data, 'hfq'))
+        data = QA_DataStruct_Stock_day(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
+            self.data[self.data['code'] == x], '01'), self.code))))
         data.if_fq = 'hfq'
         return data
-
+    def sync_status(self,data):
+        '固定的状态要同步 尤其在创建新的datastruct时候'
+        (data.if_fq,data.type,data.mongo_coll)=(self.if_fq,self.type,self.mongo_coll)
+        return data
     def splits(self):
-        return list(map(lambda x: QA_DataStruct_Stock_day(self.data[self.data['code'] == x]), self.data.index.levels[1]))
+        return list(map(lambda data: self.sync_status(data), list(map(lambda x: QA_DataStruct_Stock_day(self.data[self.data['code'] == x]), self.code))))
 
     def add_func(self, func, *arg, **kwargs):
-        return QA_DataStruct_StockList_day(pd.concat(list(map(lambda x: func(self.data[self.data['code'] == x], *arg, **kwargs), self.data.index.levels[1]))))
+        return self.sync_status(QA_DataStruct_Stock_day(pd.concat(list(map(lambda x: func(self.data[self.data['code'] == x], *arg, **kwargs), self.code)))))
 
 
 class QA_DataStruct_StockList_min(__stock_hq_base):
