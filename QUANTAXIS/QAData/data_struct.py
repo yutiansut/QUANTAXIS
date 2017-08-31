@@ -171,13 +171,13 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
         self.data = DataFrame
 
     def to_qfq(self):
-        data = QA_DataStruct_Stock_min(QA_data_stocklist_to_fq(self.data))
+        data = QA_DataStruct_Stock_min(QA_data_stock_to_fq(self.data))
         data.if_fq = 'qfq'
         return data
 
     def to_hfq(self):
         data = QA_DataStruct_Stock_min(
-            QA_data_stocklist_to_fq(self.data, 'hfq'))
+            QA_data_stock_to_fq(self.data, 'hfq'))
         data.if_fq = 'hfq'
         return data
 
@@ -202,13 +202,13 @@ class QA_DataStruct_StockList_min(__stock_hq_base):
         self.data = DataFrame
 
     def to_qfq(self):
-        data = QA_DataStruct_Stock_min(QA_data_stock_to_fq(self.data))
+        data = QA_DataStruct_Stock_min(QA_data_stocklist_to_fq(self.data))
         data.if_fq = 'qfq'
         return data
 
     def to_hfq(self):
         data = QA_DataStruct_Stock_min(
-            QA_data_stock_to_fq(self.data, 'hfq'))
+            QA_data_stocklist_to_fq(self.data, 'hfq'))
         data.if_fq = 'hfq'
         return data
 
