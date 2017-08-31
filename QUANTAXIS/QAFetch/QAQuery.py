@@ -79,7 +79,7 @@ def QA_fetch_stock_day(code, __start, __end, format_='numpy', collections=QA_Set
 def QA_fetch_trade_date(collections):
     '获取交易日期'
     __data = []
-    for item in collections.find({}):
+    for item in collections.find_one({}):
         __data.append(item['date'])
     return __data
 
@@ -203,12 +203,12 @@ def QA_fetch_stock_min(code, startTime, endTime, format_='numpy', type_='1min', 
         return __data
 
 
-def QA_fetch_stocklist_min(stock_list, date_range, collections=QA_Setting.client.quantaxis.stock_min_five):
-    '获取前复权股票分钟线'
+def QA_fetch_stocklist_min(stock_list, date_range, type_='1min', collections=QA_Setting.client.quantaxis.stock_min):
+    '获取不复权股票分钟线'
     __data = []
     for item in stock_list:
         __data.append(QA_fetch_stock_min(
-            item, date_range[0], date_range[-1], 'pd', collections))
+            item, date_range[0], date_range[-1], 'pd', type_, collections))
     return __data
 
 

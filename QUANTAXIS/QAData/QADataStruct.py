@@ -36,7 +36,14 @@ class __stock_hq_base():
             self.vol = DataFrame['volume']
         else:
             self.vol = DataFrame['vol']
-        self.date = self.data.index.levels[self.data.index.names.index('date')]
+        if 'date' in self.data.index.names.index:
+            self.date = self.data.index.levels[self.data.index.names.index(
+                'date')]
+            self.datetime = self.date
+        elif 'datetime' in self.data.index.names.index:
+            self.datetime = self.data.index.levels[self.data.index.names.index(
+                'datetime')]
+            self.date = self.datetime.apply(lambda x: str(x)[0:10])
         self.index = DataFrame.index
         self.code = self.data.index.levels[self.data.index.names.index('code')]
 
@@ -71,8 +78,12 @@ class __stock_hq_base():
         return __stock_hq_base
 
     def splits(self):
-        return list(map(lambda data: self.sync_status(data), list(map(lambda x: (
-            self.data[self.data['code'] == x].set_index(['date', 'code'], drop=False)), self.code))))
+        if self.type in ['stock_day', 'index_day']:
+            return list(map(lambda data: self.sync_status(data), list(map(lambda x: (
+                self.data[self.data['code'] == x].set_index(['date', 'code'], drop=False)), self.code))))
+        elif self.type in ['stock_min']:
+            return list(map(lambda data: self.sync_status(data), list(map(lambda x: (
+                self.data[self.data['code'] == x].set_index(['datetime', 'code'], drop=False)), self.code))))
 
     def add_func(self, func, *arg, **kwargs):
         return self.sync_status(__stock_hq_base(pd.concat(list(map(lambda x: func(
@@ -139,9 +150,10 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
             self.vol = DataFrame['volume']
         else:
             self.vol = DataFrame['vol']
-        self.datetime = DataFrame['datetime']
+        self.date = DataFrame['date']
         self.data = DataFrame
-        self.date = self.data.index.levels[self.data.index.names.index('date')]
+        self.datetime = self.data.index.levels[self.data.index.names.index(
+            'datetime')]
         self.index = DataFrame.index
         self.code = self.data.index.levels[self.data.index.names.index('code')]
 
@@ -170,7 +182,7 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
     def splits(self):
         return list(map(lambda data: self.sync_status(data), list(map(
             lambda x: QA_DataStruct_Stock_min(self.data[self.data['code'] == x].
-                                              set_index(['date', 'code'], drop=False)), self.code))))
+                                              set_index(['datetime', 'code'], drop=False)), self.code))))
 
     def ATR(self, gap=14):
         list_mtr = []
@@ -241,8 +253,6 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
     def splits(self):
         return list(map(lambda data: self.sync_status(data), list(map(lambda x: QA_DataStruct_Stock_day(
             self.data[self.data['code'] == x].set_index(['date', 'code'], drop=False)), self.code))))
-
-
 
 
 class QA_DataStruct_Stock_transaction():
