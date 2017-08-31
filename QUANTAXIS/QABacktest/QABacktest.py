@@ -143,7 +143,7 @@ class QA_Backtest():
                 self.strategy_stock_list, self.trade_list[self.start_real_id - int(
                     self.strategy_gap)], self.trade_list[self.end_real_id])
 
-        elif self.backtest_type in ['min', 'm', '0x01']:
+        elif self.backtest_type in ['1min','5min','15min']:
             self.market_data = QA_fetch_stocklist_min_adv(
                 self.strategy_stock_list, self.trade_list[
                     self.start_real_id - int(self.strategy_gap)],
@@ -230,7 +230,7 @@ class QA_Backtest():
         __market_data_for_backtest = self.QA_backtest_get_market_data(
             self, __bid.code, __bid.date, 1)
         __O, __H, __L, __C, __V = self.QA_backtest_get_OHLCV(
-            self, __market_data_for_backtest) if __market_data_for_backtest.len()) > 0 else(None, None, None, None, None)
+            self, __market_data_for_backtest) if __market_data_for_backtest.len() > 0 else(None, None, None, None, None)
         if __O is not None:
             if __order['bid_model'] in ['limit', 'Limit', 'Limited', 'limited', 'l', 'L', 0, '0']:
                     # 限价委托模式
