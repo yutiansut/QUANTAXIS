@@ -24,7 +24,7 @@
 
 
 from QUANTAXIS.QAFetch import QA_fetch_get_stock_day, QA_fetch_get_stock_xdxr
-
+from QUANTAXIS.QAUtil import QA_Setting,QA_util_log_info
 
 import datetime
 import pandas as pd
@@ -97,3 +97,18 @@ def QA_data_stock_to_fq(__data,type_='01'):
     else:
         QA_util_log_info('wrong fq type! Using qfq')
         return QA_data_make_qfq(__data,__QA_fetch_stock_xdxr(__data['code'][0]))
+def QA_data_stocklist_to_fq(__data,type_='01'):
+    def __QA_fetch_stock_xdxr(code,format_='pd',collections=QA_Setting.client.quantaxis.stock_xdxr):
+        '获取股票除权信息/数据库'
+        data=pd.DataFrame([item for item in collections.find({'code':code})]).drop(['_id'],axis=1)
+        data['date']=pd.to_datetime(data['date'])
+        return data.set_index(['date','code'],drop=False)
+    '股票 日线/分钟线 动态复权接口'
+    for item in __data.index.levels[0]:
+        if type_ in ['01','qfq']:
+            return pd.concat(list(map(lambda x:QA.QA_data_make_qfq(__data[__data['code']==x],__QA_fetch_stock_xdxr(x)),__data.index.levels[1])))
+        elif type_ in ['02','hfq']:
+            return pd.concat(list(map(lambda x:QA.QA_data_make_hfq(__data[__data['code']==x],__QA_fetch_stock_xdxr(x)),__data.index.levels[1])))
+        else:
+            QA_util_log_info('wrong fq type! Using qfq')
+            return pd.concat(list(map(lambda x:QA.QA_data_make_qfq(__data[__data['code']==x],__QA_fetch_stock_xdxr(x)),__data.index.levels[1])))

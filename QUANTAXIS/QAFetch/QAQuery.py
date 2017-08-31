@@ -32,7 +32,7 @@ from pandas import DataFrame
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
                               QA_util_date_valid, QA_util_log_info,
                               QA_util_time_stamp)
-from QUANTAXIS.QAData import QA_data_make_hfq,QA_data_make_qfq
+from QUANTAXIS.QAData import QA_data_make_hfq, QA_data_make_qfq
 """
 按要求从数据库取数据，并转换成numpy结构
 
@@ -183,15 +183,15 @@ def QA_fetch_stock_min(code, startTime, endTime, format_='numpy', type_='1min', 
         'code': str(code), "time_stamp": {
             "$gte": QA_util_time_stamp(startTime),
             "$lte": QA_util_time_stamp(endTime)
-        },'type':type_
+        }, 'type': type_
     }):
 
         __data.append([str(item['code']), float(item['open']), float(item['high']), float(
             item['low']), float(item['close']), float(item['vol']), item['datetime'], item['time_stamp'], item['date']])
-    
+
     __data = DataFrame(__data, columns=[
         'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'time_stamp', 'date'])
-    
+
     __data['datetime'] = pd.to_datetime(__data['datetime'])
     __data = __data.set_index('datetime', drop=False)
     #res = QA_fetch_stock_to_fq(__data)
@@ -216,7 +216,6 @@ def QA_fetch_future_day():
     pass
 
 
-
 def QA_fetch_future_min():
     pass
 
@@ -225,10 +224,10 @@ def QA_fetch_future_tick():
     pass
 
 
-
-def QA_fetch_stock_xdxr(code,format_='pd',collections=QA_Setting.client.quantaxis.stock_xdxr):
+def QA_fetch_stock_xdxr(code, format_='pd', collections=QA_Setting.client.quantaxis.stock_xdxr):
     '获取股票除权信息/数据库'
-    data=pd.DataFrame([item for item in collections.find({'code':code})]).drop(['_id'],axis=1)
-    data['date']=pd.to_datetime(data['date'])
-    return data.set_index('date',drop=False)
-    #data['date']=data['date'].apply(lambda)
+    data = pd.DataFrame([item for item in collections.find(
+        {'code': code})]).drop(['_id'], axis=1)
+    data['date'] = pd.to_datetime(data['date'])
+    return data.set_index('date', drop=False)
+    # data['date']=data['date'].apply(lambda)

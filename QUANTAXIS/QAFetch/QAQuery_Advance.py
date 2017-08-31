@@ -35,6 +35,8 @@ from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
 from QUANTAXIS.QAData import (QA_data_make_hfq, QA_data_make_qfq, QA_DataStruct_Stock_day,
                               QA_DataStruct_Index_day, QA_DataStruct_Stock_min,
                               QA_DataStruct_Stock_transaction)
+
+from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stocklist_day
 """
 按要求从数据库取数据，并转换成numpy结构
 
@@ -57,18 +59,15 @@ def QA_fetch_stock_day_adv(code, __start, __end, collections=QA_Setting.client.q
         __data = DataFrame(__data, columns=[
             'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
         __data['date'] = pd.to_datetime(__data['date'])
-        return QA_DataStruct_Stock_day(__data.set_index(['date', 'code'], drop=False))
+        return QA_DataStruct_Stock_day(__data.set_index(['date'], drop=False))
     else:
         QA_util_log_info('something wrong with date')
 
 
 def QA_fetch_stocklist_day_adv(code, __start, __end, collections=QA_Setting.client.quantaxis.stock_day):
     '获取股票日线'
-    container = []
-    for item in code:
-        container.append(QA_fetch_stock_day_adv(
-            item, __start, __end, collections))
-    return container
+    container = pd.concat(QA_fetch_stocklist_day(code,[__start,__end])).set_index(['date','code'],drop=False)
+    return QA_DataStruct_Stock_day(container)
 
 
 def QA_fetch_index_day_adv(code, __start, __end, format_='numpy', collections=QA_Setting.client.quantaxis.stock_day):
