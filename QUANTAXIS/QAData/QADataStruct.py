@@ -71,10 +71,12 @@ class __stock_hq_base():
         return __stock_hq_base
 
     def splits(self):
-        return list(map(lambda data: self.sync_status(data), list(map(lambda x: (self.data[self.data['code'] == x].set_index(['date', 'code'], drop=False)), self.code))))
+        return list(map(lambda data: self.sync_status(data), list(map(lambda x: (
+            self.data[self.data['code'] == x].set_index(['date', 'code'], drop=False)), self.code))))
 
     def add_func(self, func, *arg, **kwargs):
-        return self.sync_status(__stock_hq_base(pd.concat(list(map(lambda x: func(self.data[self.data['code'] == x], *arg, **kwargs), self.code)))))
+        return self.sync_status(__stock_hq_base(pd.concat(list(map(lambda x: func(
+            self.data[self.data['code'] == x], *arg, **kwargs), self.code)))))
 
 
 class QA_DataStruct_Index_day(__stock_hq_base):
@@ -150,7 +152,8 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
             data.if_fq = 'qfq'
             return data
         else:
-            QA_util_log_info('none support type for qfq Current type is:%s' % self.if_fq)
+            QA_util_log_info(
+                'none support type for qfq Current type is:%s' % self.if_fq)
             return self
 
     def to_hfq(self):
@@ -160,7 +163,8 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
             data.if_fq = 'hfq'
             return data
         else:
-            QA_util_log_info('none support type for qfq Current type is:%s' % self.if_fq)
+            QA_util_log_info(
+                'none support type for qfq Current type is:%s' % self.if_fq)
             return self
 
     def splits(self):
@@ -217,7 +221,8 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
             data.if_fq = 'qfq'
             return data
         else:
-            QA_util_log_info('none support type for qfq Current type is: %s' % self.if_fq)
+            QA_util_log_info(
+                'none support type for qfq Current type is: %s' % self.if_fq)
             return self
 
     def to_hfq(self):
@@ -227,11 +232,13 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
             data.if_fq = 'hfq'
             return data
         else:
-            QA_util_log_info('none support type for qfq Current type is: %s' % self.if_fq)
+            QA_util_log_info(
+                'none support type for qfq Current type is: %s' % self.if_fq)
             return self
 
     def splits(self):
-        return list(map(lambda data: self.sync_status(data), list(map(lambda x: QA_DataStruct_Stock_day(self.data[self.data['code'] == x].set_index(['date', 'code'], drop=False)), self.code))))
+        return list(map(lambda data: self.sync_status(data), list(map(lambda x: QA_DataStruct_Stock_day(
+            self.data[self.data['code'] == x].set_index(['date', 'code'], drop=False)), self.code))))
 
 
 class QA_DataStruct_StockList_min(__stock_hq_base):

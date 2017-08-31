@@ -61,7 +61,7 @@ def QA_data_make_qfq(bfq_data, xdxr_data):
     data['low'] = data['low'] * data['adj']
     data['close'] = data['close'] * data['adj']
     data['preclose'] = data['preclose'] * data['adj']
-    return data[data['open'] != 0]
+    return data.drop(['fenhong', 'peigu', 'peigujia', 'songzhuangu'], axis=1)[data['open'] != 0]
 
 
 def QA_data_make_hfq(bfq_data, xdxr_data):
@@ -78,7 +78,7 @@ def QA_data_make_hfq(bfq_data, xdxr_data):
     data['low'] = data['low'] / data['adj']
     data['close'] = data['close'] / data['adj']
     data['preclose'] = data['preclose'] / data['adj']
-    return data[data['open'] != 0]
+    return data.drop(['fenhong', 'peigu', 'peigujia', 'songzhuangu'], axis=1)[data['open'] != 0]
 
 
 def QA_data_stock_to_fq(__data, type_='01'):
@@ -97,5 +97,3 @@ def QA_data_stock_to_fq(__data, type_='01'):
     else:
         QA_util_log_info('wrong fq type! Using qfq')
         return QA_data_make_qfq(__data, __QA_fetch_stock_xdxr(__data['code'][0]))
-
-
