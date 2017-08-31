@@ -35,7 +35,7 @@ import apscheduler
 import numpy as np
 import pandas as pd
 import pymongo
-from QUANTAXIS import *
+
 from QUANTAXIS import (QA_Market, QA_Portfolio, QA_QAMarket_bid, QA_Risk,
                        __version__)
 from QUANTAXIS.QAMarket.QABid import QA_QAMarket_bid_list
@@ -52,7 +52,7 @@ from QUANTAXIS.QASU.save_backtest import (QA_SU_save_account_message,
                                           QA_SU_save_account_to_csv)
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_get_real_date, trade_date_sse,
                               QA_util_log_info, QA_util_log_expection)
-from QUANTAXIS.QAData import QA_DataStruct_Stock_min,QA_DataStruct_Stock_day
+from QUANTAXIS.QAData import QA_DataStruct_Stock_min, QA_DataStruct_Stock_day
 from QUANTAXIS.QATask import QA_Queue
 
 from tabulate import tabulate
@@ -228,23 +228,23 @@ class QA_Backtest():
 
     def __warp_bid(self, __bid, __order):
         __market_data_for_backtest = self.QA_backtest_get_market_data(
-            self, __bid.code, __bid.date, 'np', 1)
+            self, __bid.code, __bid.date, 1)
         __O, __H, __L, __C, __V = self.QA_backtest_get_OHLCV(
-            self, __market_data_for_backtest) if len(__market_data_for_backtest) > 0 else(None, None, None, None, None)
+            self, __market_data_for_backtest) if __market_data_for_backtest.len()) > 0 else(None, None, None, None, None)
         if __O is not None:
             if __order['bid_model'] in ['limit', 'Limit', 'Limited', 'limited', 'l', 'L', 0, '0']:
                     # 限价委托模式
-                __bid.price = __order['price']
+                __bid.price=__order['price']
             elif __order['bid_model'] in ['Market', 'market', 'MARKET', 'm', 'M', 1, '1']:
-                __bid.price = 0.5 * (float(__O[0]) + float(__C[0]))
+                __bid.price=0.5 * (float(__O[0]) + float(__C[0]))
             elif __order['bid_model'] in ['strict', 'Strict', 's', 'S', '2', 2]:
-                __bid.price = float(
+                __bid.price=float(
                     __H[0]) if __bid.towards == 1 else float(__L[0])
             elif __order['bid_model'] in ['close', 'close_price', 'c', 'C', '3', 3]:
-                __bid.price = float(__C[0])
+                __bid.price=float(__C[0])
 
-            __bid.price = float('%.2f' % __bid.price)
-            return __bid
+            __bid.price=float('%.2f' % __bid.price)
+            return __bid, __market_data_for_backtest
         else:
             return None
 
@@ -262,8 +262,8 @@ class QA_Backtest():
                                                   'trade_id', 'sell_price', 'sell_order_id',
                                                   'sell_trade_id', 'sell_date', 'left_amount',
                                                   'commission')))
-        __exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
-        self.__benchmark_data = QA_fetch_index_day(
+        __exist_time=int(self.end_real_id) - int(self.start_real_id) + 1
+        self.__benchmark_data=QA_fetch_index_day(
             self.benchmark_code, self.start_real_date,
             self.end_real_date)
         if len(self.__messages) > 1:
@@ -301,7 +301,7 @@ class QA_Backtest():
     def QA_backtest_get_market_data(self, code, date, gap_=None):
         '这个函数封装了关于获取的方式'
         gap_ = self.strategy_gap if gap_ is None else gap_
-        return self.market_data.select_code(code).select_time_with_gap(date,gap_,'lte')
+        return self.market_data.select_code(code).select_time_with_gap(date, gap_, 'lte')
 
     def QA_backtest_hold_amount(self, __code):
         # return sum(list(map(lambda item: item[3] if __code in item else 0,
@@ -324,10 +324,7 @@ class QA_Backtest():
 
     def QA_backtest_get_OHLCV(self, __data):
         '快速返回 OHLCV格式'
-        return (__data.T[1].astype(float).tolist(), __data.T[2].astype(float).tolist(),
-                __data.T[3].astype(float).tolist(
-        ), __data.T[4].astype(float).tolist(),
-            __data.T[5].astype(float).tolist())
+        return (__data.open,__data.high,__data.low,__data.close,__data.vol)
 
     def QA_backtest_send_order(self, __code, __amount, __towards, __order):
         """
@@ -361,12 +358,10 @@ class QA_Backtest():
                                          self.setting.QA_setting_user_name, self.strategy_name,
                                          __code, self.running_date, self.running_date,
                                          self.running_date, __amount, __towards)
-        __bid = self.__warp_bid(self, __bid, __order)
+        __bid,__market = self.__warp_bid(self, __bid, __order)
         if __bid is not None:
-            # return self.__QA_backtest_send_bid(self, __bid)
-            self.account.order_queue = self.account.order_queue.append(
-                __bid.to_df())
-        # 先进行处理:
+            return self.__QA_backtest_send_bid(self, __bid,__market)
+
 
     def __sync_assets_status(self):
         '交易前需要同步持仓状态/现金'
@@ -382,13 +377,13 @@ class QA_Backtest():
         __wait_for_deal = __wait_for_deal['amount'].groupby(
             'code').sum() if len(__wait_for_deal) > 0 else pd.DataFrame()
 
-    def __QA_backtest_send_bid(self, __bid):
+    def __QA_backtest_send_bid(self, __bid,__market=None):
         if __bid.towards == 1:
             # 扣费以下这个订单时的bar的open扣费
 
             if self.account.cash_available > (__bid.price * __bid.amount):
                 # 这是买入的情况 买入的时候主要考虑的是能不能/有没有足够的钱来买入
-                __message = self.market.receive_bid(__bid)
+                __message = self.market.receive_bid(__bid,__market)
                 self.account.cash_available -= (__bid.price * __bid.amount)
                 # 先扔进去买入,再通过返回的值来判定是否成功
                 if __message['header']['status'] == 200 and __message['body']['bid']['amount'] > 0:
@@ -414,7 +409,7 @@ class QA_Backtest():
             if __amount_hold > 0:
 
                 __bid.amount = __amount_hold if __amount_hold < __bid.amount else __bid.amount
-                __message = self.market.receive_bid(__bid)
+                __message = self.market.receive_bid(__bid,__market)
                 if __message['header']['status'] == 200:
                     self.account.QA_account_receive_deal(__message)
                     QA_util_log_info('SELL %s Price %s Date %s Amount %s' % (
