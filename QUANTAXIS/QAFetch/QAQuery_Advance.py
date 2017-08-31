@@ -60,7 +60,25 @@ def QA_fetch_stock_day_adv(code, __start, __end,collections=QA_Setting.client.qu
         return QA_DataStruct_Stock_day(__data.set_index('date', drop=False))
     else:
         QA_util_log_info('something wrong with date')
+def QA_fetch_stocklist_day_adv(code, __start, __end,collections=QA_Setting.client.quantaxis.stock_day):
+    '获取股票日线'
+    __start = str(__start)[0:10]
+    __end = str(__end)[0:10]
 
+    if QA_util_date_valid(__end) == True:
+        __data = []
+        for item in collections.find({
+            'code': str(code)[0:6], "date_stamp": {
+                "$lte": QA_util_date_stamp(__end),
+                "$gte": QA_util_date_stamp(__start)}}):
+            __data.append([str(item['code']), float(item['open']), float(item['high']), float(
+                item['low']), float(item['close']), float(item['vol']), item['date']])
+        __data = DataFrame(__data, columns=[
+            'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
+        __data['date'] = pd.to_datetime(__data['date'])
+        return QA_DataStruct_Stock_day(__data.set_index('date', drop=False))
+    else:
+        QA_util_log_info('something wrong with date')
 
 def QA_fetch_index_day_adv(code, __start, __end, format_='numpy', collections=QA_Setting.client.quantaxis.stock_day):
     '获取指数日线'

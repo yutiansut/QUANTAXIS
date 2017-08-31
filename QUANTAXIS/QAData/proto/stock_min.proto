@@ -1,0 +1,17 @@
+syntax="proto3";
+message stock_min{
+    required string code=1;
+    required float open=2;
+    required float high=3;
+    required float low=4;
+    required float close=5;
+    required float volume=6;
+    required string date =7;
+    optional float amount=8;
+    optional string date_stamp=9;
+    required string datetime =7;
+    required string time_stamp =7;
+    enum type{
+
+    }
+}
