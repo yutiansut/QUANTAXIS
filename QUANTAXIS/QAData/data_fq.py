@@ -109,9 +109,9 @@ def QA_data_stocklist_to_fq(__data, type_='01'):
     '股票 日线/分钟线 动态复权接口'
     for item in __data.index.levels[0]:
         if type_ in ['01', 'qfq']:
-            return pd.concat(list(map(lambda x: QA.QA_data_make_qfq(__data[__data['code'] == x], __QA_fetch_stock_xdxr(x)), __data.index.levels[1])))
+            return pd.concat(list(map(lambda x: QA_data_make_qfq(__data[__data['code'] == x], __QA_fetch_stock_xdxr(x)), __data.index.levels[1])))
         elif type_ in ['02', 'hfq']:
-            return pd.concat(list(map(lambda x: QA.QA_data_make_hfq(__data[__data['code'] == x], __QA_fetch_stock_xdxr(x)), __data.index.levels[1])))
+            return pd.concat(list(map(lambda x: QA_data_make_hfq(__data[__data['code'] == x], __QA_fetch_stock_xdxr(x)), __data.index.levels[1])))
         else:
             QA_util_log_info('wrong fq type! Using qfq')
-            return pd.concat(list(map(lambda x: QA.QA_data_make_qfq(__data[__data['code'] == x], __QA_fetch_stock_xdxr(x)), __data.index.levels[1])))
+            return pd.concat(list(map(lambda x: QA_data_make_qfq(__data[__data['code'] == x], __QA_fetch_stock_xdxr(x)), __data.index.levels[1])))
