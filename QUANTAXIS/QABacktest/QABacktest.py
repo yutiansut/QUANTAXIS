@@ -301,10 +301,7 @@ class QA_Backtest():
     def QA_backtest_get_market_data(self, code, date, gap_=None):
         '这个函数封装了关于获取的方式'
         gap_ = self.strategy_gap if gap_ is None else gap_
-        index_of_code = self.strategy_stock_list.index(code)
-        self.market_data.select_code(index_of_code).select_time('',date)
-        __res = self.market_data.data[index_of_code][:date].tail(gap_)
-
+        return self.market_data.select_code(code).select_time_with_gap(date,gap_,'lte')
 
     def QA_backtest_hold_amount(self, __code):
         # return sum(list(map(lambda item: item[3] if __code in item else 0,
