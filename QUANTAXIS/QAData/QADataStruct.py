@@ -251,15 +251,21 @@ class QA_DataStruct_StockList_day(__stock_hq_base):
         self.data = DataFrame
 
     def to_qfq(self):
-        data = QA_DataStruct_Stock_day(QA_data_stocklist_to_fq(self.data))
+        data = QA_DataStruct_StockList_day(QA_data_stocklist_to_fq(self.data))
         data.if_fq = 'qfq'
         return data
 
     def to_hfq(self):
-        data = QA_DataStruct_Stock_day(
+        data = QA_DataStruct_StockList_day(
             QA_data_stocklist_to_fq(self.data, 'hfq'))
         data.if_fq = 'hfq'
         return data
+
+    def splits(self):
+        return list(map(lambda x: QA_DataStruct_Stock_day(self.data[self.data['code'] == x]), self.data.index.levels[1]))
+
+    def add_func(self, func, *arg, **kwargs):
+        return QA_DataStruct_StockList_day(pd.concat(list(map(lambda x: func(self.data[self.data['code'] == x], *arg, **kwargs), self.data.index.levels[1]))))
 
 
 class QA_DataStruct_StockList_min(__stock_hq_base):
@@ -282,12 +288,12 @@ class QA_DataStruct_StockList_min(__stock_hq_base):
         self.data = DataFrame
 
     def to_qfq(self):
-        data = QA_DataStruct_Stock_min(QA_data_stocklist_to_fq(self.data))
+        data = QA_DataStruct_StockList_min(QA_data_stocklist_to_fq(self.data))
         data.if_fq = 'qfq'
         return data
 
     def to_hfq(self):
-        data = QA_DataStruct_Stock_min(
+        data = QA_DataStruct_StockList_min(
             QA_data_stocklist_to_fq(self.data, 'hfq'))
         data.if_fq = 'hfq'
         return data
