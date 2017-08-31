@@ -156,7 +156,8 @@ class QA_Backtest_stock_day():
         QA_util_log_info('QUANTAXIS Backtest Engine Initial Successfully')
         QA_util_log_info('Basical Info: \n' + tabulate(
             [[str(__version__), str(self.strategy_name)]], headers=('Version', 'Strategy_name')))
-        QA_util_log_info('BACKTEST Cookie_ID is:  '+str(self.account.account_cookie))
+        QA_util_log_info('BACKTEST Cookie_ID is:  ' +
+                         str(self.account.account_cookie))
         QA_util_log_info('Stock_List: \n' +
                          tabulate([self.strategy_stock_list]))
 
@@ -436,7 +437,7 @@ class QA_Backtest_stock_day():
             pre_del_id = []
 
             def __sell(id_):
-                if __hold_list[item_][3] > 0:
+                if __hold_list[id_][3] > 0:
                     __last_bid = self.bid
                     __last_bid.amount = int(__hold_list[id_][3])
                     __last_bid.order_id = str(random.random())
