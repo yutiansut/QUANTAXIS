@@ -52,7 +52,7 @@ from QUANTAXIS.QASU.save_backtest import (QA_SU_save_account_message,
                                           QA_SU_save_account_to_csv)
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_get_real_date, trade_date_sse,
                               QA_util_log_info, QA_util_log_expection)
-
+from QUANTAXIS.QAData import QA_DataStruct_Stock_min,QA_DataStruct_Stock_day
 from QUANTAXIS.QATask import QA_Queue
 
 from tabulate import tabulate
@@ -298,11 +298,11 @@ class QA_Backtest():
             QA_SU_save_account_message(self.__messages, self.setting.client)
             QA_SU_save_account_to_csv(self.__messages)
 
-    def QA_backtest_get_market_data(self, code, date, type_='numpy', gap_=None):
+    def QA_backtest_get_market_data(self, code, date, gap_=None):
         '这个函数封装了关于获取的方式'
         gap_ = self.strategy_gap if gap_ is None else gap_
         index_of_code = self.strategy_stock_list.index(code)
-        __res = self.market_data[index_of_code][:date].tail(gap_)
+        __res = self.market_data.data[index_of_code][:date].tail(gap_)
         if type_ in ['l', 'list', 'L']:
             return np.asarray(__res).tolist()
         elif type_ in ['pd', 'pandas', 'p']:
