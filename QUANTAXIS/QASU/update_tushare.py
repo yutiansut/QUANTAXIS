@@ -60,8 +60,6 @@ def QA_update_stock_day_all(client=QA_Setting.client):
     stock_list.append('sz50')
     stock_list.append('hs300')
 
-    
-
 
     for item in stock_list:
         QA_util_log_info('updating stock data -- %s' % item)

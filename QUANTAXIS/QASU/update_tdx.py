@@ -1,30 +1,40 @@
-from QUANTAXIS.QAUtil import QA_Setting,QA_util_log_info
+from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info, trade_date_sse
 from QUANTAXIS.QAFetch.QATushare import QA_fetch_get_stock_time_to_market
+from QUANTAXIS.QASU.save_tdx import save_stock_day
+import datetime
 
 
-def update_stock_day(client=QA_Setting.client):
-    
-    coll_stocklist = client.quantaxis.stock_list
-    # 使用find_one
-    stock_list = coll_stocklist.find_one()['stock']['code']
-    for item in stock_list:
-        QA_util_log_info('updating stock data -- %s' % item)
-        # coll.find({'code':str(item)[0:6]}).count()
-        # 先拿到最后一个记录的交易日期
+def QA_update_stock_day_all(client=QA_Setting.client):
+
+    coll_stock_day = client.quantaxis.stock_day
+    for item in QA_fetch_get_stock_time_to_market().index:
         try:
             if coll_stock_day.find({'code': str(item)[0:6]}).count() > 0:
                 # 加入这个判断的原因是因为如果股票是刚上市的 数据库会没有数据 所以会有负索引问题出现
+
                 start_date = str(coll_stock_day.find({'code': str(item)[0:6]})[
-                                 coll_stock_day.find({'code': str(item)[0:6]}).count() - 1]['date'])
+                    coll_stock_day.find({'code': str(item)[0:6]}).count() - 1]['date'])
                 end_date = str(datetime.date.today())
+                start_date = trade_date_sse[trade_date_sse.index(
+                    start_date) + 1]
+                QA_util_log_info(' UPDATE_STOCK_DAY \n Trying updating %s from %s to %s' %
+                                 (item, start_date, end_date))
 
-                QA_util_log_info('trying updating from %s to %s' %
-                                 (start_date, end_date))
-                data = QATushare.QA_fetch_get_stock_day(
-                    str(item)[0:6], start_date, end_date,'02')[1::]
+                save_stock_day(item, start_date, end_date, coll_stock_day)
+
             else:
-                # 这时候直接更新拿到所有的数据就好了
-                data = QATushare.QA_fetch_get_stock_day(
-                    item, startDate='1990-01-01',if_fq='02')
+                save_stock_day(item, '1990-01-01',
+                               datetime.date.today, coll_stock_day)
 
-            coll_stock_day.insert_many(data)
+        except:
+            QA_util_log_info('error in updating--- %s' % item)
+    QA_util_log_info('Done == \n')
+
+
+def update_stock_xdxr(client=QA_Setting.client):
+    client.quantaxis.drop_collection('stock_xdxr')
+    coll_stock_xdxr = client.quantaxis.stock_xdxr
+
+
+if __name__ == '__main__':
+    update_stock_day()
