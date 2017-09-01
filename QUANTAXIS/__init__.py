@@ -31,7 +31,7 @@ by yutiansut
 
 2017/4/8
 """
-__version__ = '0.4.1.32'
+__version__ = '0.4.1.40'
 __author__ = 'yutiansut'
 logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
@@ -62,8 +62,10 @@ from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_trade_date, QA_fetch_stock_day, 
 from QUANTAXIS.QAFetch.QAQuery_Advance import *
 
 # save
-from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_day, QA_SU_save_stock_info, QA_SU_save_stock_min_5,
+from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_index_min,
+                                 QA_SU_save_stock_min, QA_SU_save_stock_xdxr, QA_SU_save_stock_info, QA_SU_save_stock_min_5,
                                  QA_SU_save_stock_day_init,  QA_SU_save_trade_date, QA_SU_update_stock_day)
+
 from QUANTAXIS.QASU.save_backtest import (
     QA_SU_save_account_message, QA_SU_save_backtest_message, QA_SU_save_account_to_csv)
 from QUANTAXIS.QASU.save_tushare import (
