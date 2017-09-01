@@ -77,5 +77,5 @@ def QA_SU_update_index_min(client=QA_Setting.client):
     pass
 
 if __name__ == '__main__':
-    QA_SU_update_stock_day()
+    #QA_SU_update_stock_day()
     QA_SU_update_stock_xdxr()
