@@ -175,7 +175,6 @@ def QA_fetch_get_index_day(code, start_date, end_date, ip=best_ip, port=7709):
 
 def QA_fetch_get_index_min(code, start, end, level='1min', ip=best_ip, port=7709):
     api = TdxHq_API()
-    #market_code = __select_market_code(code)
     type_ = ''
     if str(level) in ['5', '5m', '5min', 'five']:
         level, type_ = 0, '5min'
