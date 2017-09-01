@@ -37,10 +37,9 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_str2int,
 # 具体参见rainx的pytdx(https://github.com/rainx/pytdx)
 #
 
-api = TdxHq_API()
-
 
 def ping(ip):
+    api = TdxHq_API()
     __time1 = datetime.datetime.now()
     api = TdxHq_API()
     try:
@@ -200,21 +199,27 @@ def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=best_ip, port=7709
         return data.set_index('code', drop=False, inplace=False)
 
 
+def QA_fetch_get_stock_list(ip=best_ip, port=7709):
+    api = TdxHq_API()
+    with api.connect(ip, port):
+        return pd.concat([pd.concat([api.to_df(api.get_security_list(j, i * 1000)).assign(sse='sh' if j == 0 else 'sz') for i in range(int(api.get_security_count(j) / 1000) + 1)],axis=0) for j in range(2)],axis=0)
+
+
 def QA_fetch_get_index_day(code, start_date, end_date, ip=best_ip, port=7709):
     api = TdxHq_API()
     with api.connect(ip, port):
-        data = []
+        data = pd.DataFrame()
         for i in range(10):
-            data += api.get_index_bars(9, 1, code, (9 - i) * 800, 800)
-        data = api.to_df(data)
+            data = data.append(
+                api.to_df(api.get_index_bars(9, 1, code, (9 - i) * 800, 800)))
         data['date'] = data['datetime'].apply(lambda x: x[0:10])
         data['date'] = pd.to_datetime(data['date'])
         return data.set_index('date', drop=False, inplace=False).drop(['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1, inplace=False)[start_date:end_date]
 
 
-def QA_fetch_get_index_min(code, start, end, level, ip=best_ip, port=7709):
+def QA_fetch_get_index_min(code, start, end, level='1min', ip=best_ip, port=7709):
     api = TdxHq_API()
-    market_code = __select_market_code(code)
+    #market_code = __select_market_code(code)
     type_ = ''
     if str(level) in ['5', '5m', '5min', 'five']:
         level, type_ = 0, '5min'
@@ -227,11 +232,11 @@ def QA_fetch_get_index_min(code, start, end, level, ip=best_ip, port=7709):
     elif str(level) in ['60', '60m', '60min', '1h']:
         level, type_ = 3, '60min'
     with api.connect(ip, port):
-        data = []
+        data = pd.DataFrame()
         for i in range(26):
-            data += api.get_index_bars(level,
-                                       market_code, code, (25 - i) * 800, 800)
-        data = api.to_df(data)
+            data = data.append(api.to_df(api.get_index_bars(
+                level, 1, code, (25 - i) * 800, 800)))
+        print(data)
         data['datetime'] = pd.to_datetime(data['datetime'])
         data['code'] = code
         data = data.drop(['year', 'month', 'day', 'hour', 'minute'], axis=1,
@@ -247,7 +252,7 @@ def QA_fetch_get_index_min(code, start, end, level, ip=best_ip, port=7709):
         return data[start:end]
 
 
-def QA_fetch_get_stock_min(code, start, end, level, ip=best_ip, port=7709):
+def QA_fetch_get_stock_min(code, start, end, level='1min', ip=best_ip, port=7709):
     api = TdxHq_API()
     market_code = __select_market_code(code)
     type_ = ''
