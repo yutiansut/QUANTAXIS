@@ -26,8 +26,9 @@ from QUANTAXIS.QAFetch.QATdx import (select_best_ip, QA_fetch_get_stock_day, QA_
                                      QA_fetch_get_stock_xdxr, QA_fetch_get_stock_transaction,
                                      QA_fetch_get_stock_list, QA_fetch_get_stock_day, QA_fetch_get_index_min)
 from QUANTAXIS.QAUtil import QA_util_to_json_from_pandas, QA_Setting, QA_util_log_info
-from QUANTAXIS.QAFetch.QATushare import QA_fetch_get_stock_list, QA_fetch_get_stock_time_to_market
+from QUANTAXIS.QAFetch.QATushare import QA_fetch_get_stock_time_to_market
 import datetime
+import pandas as pd
 
 # ip=select_best_ip()
 
@@ -125,11 +126,14 @@ def QA_SU_save_stock_min(client=QA_Setting.client):
 
 
 def QA_SU_save_index_day(client=QA_Setting.client):
-    __index_list = ['000001']
+    index_list = QA_fetch_get_stock_list()
+    index_list['code'] = index_list['code'].apply(lambda x: int(x))
+    __index_list = pd.concat([index_list[index_list['sse'] == 'sz'][index_list['code'] // 1000 >= 395],
+                              index_list[index_list['sse'] == 'sh'][index_list['code'] // 100000 == 0]])['code']
     __coll = client.quantaxis.index_day
     __coll.ensure_index('code')
     __err = []
-    
+
     def __saving_work(code):
         try:
             QA_util_log_info(
@@ -148,8 +152,11 @@ def QA_SU_save_index_day(client=QA_Setting.client):
 
 
 def QA_SU_save_index_min(client=QA_Setting.client):
-    __index_list = []
-    __coll = client.quantaxis.index_day
+    index_list = QA_fetch_get_stock_list()
+    index_list['code'] = index_list['code'].apply(lambda x: int(x))
+    __index_list = pd.concat([index_list[index_list['sse'] == 'sz'][index_list['code'] // 1000 >= 395],
+                              index_list[index_list['sse'] == 'sh'][index_list['code'] // 100000 == 0]])['code']
+    __coll = client.quantaxis.index_min
     __coll.ensure_index('code')
     __err = []
 
@@ -172,24 +179,16 @@ def QA_SU_save_index_min(client=QA_Setting.client):
 
 
 def QA_SU_save_stock_list(client=QA_Setting.client):
-    __index_list = []
     __coll = client.quantaxis.stock_list
     __coll.ensure_index('code')
     __err = []
 
-    def __saving_work(code):
-        try:
-            QA_util_log_info('##JOB06 Now Saving STOCK_LIST ====')
-            __coll.insert_many(QA_util_to_json_from_pandas(
-                QA_fetch_get_stock_list()))
-        except:
-            __err.append(code)
-    for i_ in range(len(__index_list)):
-        #__saving_work('000001')
-        QA_util_log_info('The %s of Total %s' % (i_, len(__index_list)))
-        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
-            float(i_ / len(__index_list) * 100))[0:4] + '%')
-        __saving_work(__index_list[i_])
+
+    try:
+        QA_util_log_info('##JOB06 Now Saving STOCK_LIST ====')
+        __coll.insert_many(QA_util_to_json_from_pandas( QA_fetch_get_stock_list()))
+    except:
+        __err.append(code)
 
 
 def QA_SU_save_stock_transaction(client=QA_Setting.client):
