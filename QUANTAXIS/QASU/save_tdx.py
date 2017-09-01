@@ -235,4 +235,5 @@ if __name__ == '__main__':
     #QA_SU_save_stock_xdxr()
     #QA_SU_save_stock_min()
     #QA_SU_save_stock_transaction()
-    QA_SU_save_index_day()
+    #QA_SU_save_index_day()
+    QA_SU_save_stock_list()
