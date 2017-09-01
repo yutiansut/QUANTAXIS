@@ -41,7 +41,6 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_str2int,
 def ping(ip):
     api = TdxHq_API()
     __time1 = datetime.datetime.now()
-    api = TdxHq_API()
     try:
         with api.connect(ip, 7709):
             api.get_security_bars(9, 0, '000001', 0, 1)
@@ -158,32 +157,14 @@ def QA_fetch_get_stock_latest(code, ip=best_ip, port=7709):
     code = [code] if isinstance(code, str) else code
     api = TdxHq_API(multithread=True)
     with api.connect(ip, port):
-        data = pd.DataFrame()
-        for item in code:
-            market_code = __select_market_code(item)
-            __data = api.to_df(api.get_security_bars(
-                9, market_code, item, 0, 1))
-            __data['code'] = item
-            data = data.append(__data)
-        data['date'] = data['datetime'].apply(lambda x: x[0:10])
-        data['date_stamp'] = data['date'].apply(
-            lambda x: QA_util_date_stamp(x))
-        data['date'] = pd.to_datetime(data['date'])
-        data.set_index('date', drop=False, inplace=True)
-        data['date'] = data['date'].apply(lambda x: str(x)[0:10])
-        return data.drop(['year', 'month', 'day', 'hour',
-                          'minute', 'datetime'], axis=1)
-
-
-def QA_fetch_get_stock_list(market_code, ip=best_ip, port=7709):
-    with api.connect(ip, port):
-        stock_ = []
-        for i in range(13):
-            stock_.append(api.get_security_list(
-                int(market_code), (12 - i) * 1000))
-
-        stocks = api.to_df(stock_)
-        return stock_
+        data = pd.concat([api.to_df(api.get_security_bars(
+            9, __select_market_code(item), item, 0, 1)).assign(code=item) for item in code], axis=0)
+        return data\
+            .assign(date=pd.to_datetime(data['datetime']
+                                        .apply(lambda x: x[0:10])), date_stamp=data['datetime']
+                    .apply(lambda x: QA_util_date_stamp(str(x[0:10]))))\
+            .set_index('date', drop=False)\
+            .drop(['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1)
 
 
 def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=best_ip, port=7709):
@@ -202,19 +183,16 @@ def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=best_ip, port=7709
 def QA_fetch_get_stock_list(ip=best_ip, port=7709):
     api = TdxHq_API()
     with api.connect(ip, port):
-        return pd.concat([pd.concat([api.to_df(api.get_security_list(j, i * 1000)).assign(sse='sh' if j == 0 else 'sz') for i in range(int(api.get_security_count(j) / 1000) + 1)],axis=0) for j in range(2)],axis=0)
+        return pd.concat([pd.concat([api.to_df(api.get_security_list(j, i * 1000)).assign(sse='sh' if j == 0 else 'sz') for i in range(int(api.get_security_count(j) / 1000) + 1)], axis=0) for j in range(2)], axis=0)
 
 
 def QA_fetch_get_index_day(code, start_date, end_date, ip=best_ip, port=7709):
     api = TdxHq_API()
     with api.connect(ip, port):
-        data = pd.DataFrame()
-        for i in range(10):
-            data = data.append(
-                api.to_df(api.get_index_bars(9, 1, code, (9 - i) * 800, 800)))
-        data['date'] = data['datetime'].apply(lambda x: x[0:10])
-        data['date'] = pd.to_datetime(data['date'])
-        return data.set_index('date', drop=False, inplace=False).drop(['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1, inplace=False)[start_date:end_date]
+        data = pd.concat([api.to_df(api.get_index_bars(
+            9, 1, code, (9 - i) * 800, 800)) for i in range(10)], axis=0)
+
+        return data.assign(date=pd.to_datetime(data['datetime'].apply(lambda x: x[0:10]))).set_index('date', drop=False, inplace=False).drop(['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1, inplace=False)[start_date:end_date]
 
 
 def QA_fetch_get_index_min(code, start, end, level='1min', ip=best_ip, port=7709):
@@ -267,45 +245,29 @@ def QA_fetch_get_stock_min(code, start, end, level='1min', ip=best_ip, port=7709
     elif str(level) in ['60', '60m', '60min', '1h']:
         level, type_ = 3, '60min'
     with api.connect(ip, port):
-        data = []
-        for i in range(26):
-            data += api.get_security_bars(level,
-                                          market_code, code, (25 - i) * 800, 800)
-        data = api.to_df(data)
-        data['datetime'] = pd.to_datetime(data['datetime'])
-        data['code'] = code
-        data = data.drop(['year', 'month', 'day', 'hour', 'minute'], axis=1,
-                         inplace=False).set_index('datetime', drop=False, inplace=False)
-        data['datetime'] = data['datetime'].apply(lambda x: str(x)[0:19])
-        data['date'] = data['datetime'].apply(lambda x: str(x)[0:10])
-        data['date_stamp'] = data['date'].apply(
-            lambda x: QA_util_date_stamp(x))
-        data['time_stamp'] = data['datetime'].apply(
-            lambda x: QA_util_time_stamp(x))
-        data['type'] = type_
-        print(data)
-        return data[start:end]
+
+        data = pd.concat([api.to_df(api.get_security_bars(level,
+                                                          market_code, code, (25 - i) * 800, 800)) for i in range(26)], axis=0)
+        return data\
+            .assign(datetime=pd.to_datetime(data['datetime']), code=code)\
+            .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1, inplace=False)\
+            .set_index('datetime', drop=False, inplace=False)\
+            .assign(date=data['datetime'].apply(lambda x: str(x)[0:10]))\
+            .assign(date_stamp=QA_util_date_stamp(data['datetime'].apply(lambda x: str(x)[0:10])))\
+            .assign(time_stamp=data['datetime'].apply(lambda x: QA_util_time_stamp(x)))\
+            .assign(type=type_)[start:end]
 
 
 def __QA_fetch_get_stock_transaction(code, day, retry, api):
-    market_code = __select_market_code(code)
-    data_ = []
-    for i in range(21):
-        data_ += api.get_history_transaction_data(
-            market_code, code, (20 - i) * 800, 800, QA_util_date_str2int(day))
-    data_ = api.to_df(data_)
-    data_['date'] = day
-    data_['datetime'] = data_['time'].apply(lambda x: str(day) + ' ' + x)
-    data_['datetime'] = pd.to_datetime(data_['datetime'])
-    data_['code'] = str(code)
-    data_['order'] = range(len(data_.index))
-    data_.set_index('datetime', drop=False, inplace=True)
+    data_ = pd.concat([api.to_df(api.get_history_transaction_data(
+        __select_market_code(code), code, (20 - i) * 800, 800, QA_util_date_str2int(day))) for i in range(21)], axis=0)
 
     for _ in range(retry):
         if len(data_) < 2:
             return __QA_fetch_get_stock_transaction(code, day, 0, api)
         else:
-            return data_
+            return data_.assign(date=day).assign(datetime=pd.to_datetime(data_['time'].apply(lambda x: str(day) + ' ' + x)))\
+                        .assign(code=str(code)).assign(order=range(len(data_.index))).set_index('datetime', drop=False, inplace=False)
 
 
 def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=best_ip, port=7709):
