@@ -169,12 +169,12 @@ def QA_SU_save_index_min(client=QA_Setting.client):
                 QA_util_to_json_from_pandas(
                     QA_fetch_get_index_min(code, '2015-01-01', str(datetime.date.today()), '1min')))
             QA_util_log_info(
-                '##JOB03.2 Now Saving INDEX_5_MIN ==== %s' % (code))
+                '##JOB0.2 Now Saving INDEX_5_MIN ==== %s' % (code))
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
                     QA_fetch_get_index_min(code, '2015-01-01', str(datetime.date.today()), '5min')))
             QA_util_log_info(
-                '##JOB03.3 Now Saving INDEX_15_MIN ==== %s' % (code))
+                '##JOB05.3 Now Saving INDEX_15_MIN ==== %s' % (code))
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
                     QA_fetch_get_index_min(code, '2015-01-01', str(datetime.date.today()), '15min')))
@@ -209,7 +209,7 @@ def QA_SU_save_stock_transaction(client=QA_Setting.client):
 
     def __saving_work(code):
         QA_util_log_info(
-            '##JOB04 Now Saving STOCK_TRANSACTION ==== %s' % (code))
+            '##JOB07 Now Saving STOCK_TRANSACTION ==== %s' % (code))
         try:
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
