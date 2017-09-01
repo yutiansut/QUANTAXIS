@@ -212,6 +212,41 @@ def QA_fetch_get_index_day(code, start_date, end_date, ip=best_ip, port=7709):
         return data.set_index('date', drop=False, inplace=False).drop(['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1, inplace=False)[start_date:end_date]
 
 
+def QA_fetch_get_index_min(code, start, end, level, ip=best_ip, port=7709):
+    api = TdxHq_API()
+    market_code = __select_market_code(code)
+    type_ = ''
+    if str(level) in ['5', '5m', '5min', 'five']:
+        level, type_ = 0, '5min'
+    elif str(level) in ['1', '1m', '1min', 'one']:
+        level, type_ = 8, '1min'
+    elif str(level) in ['15', '15m', '15min', 'fifteen']:
+        level, type_ = 1, '15min'
+    elif str(level) in ['30', '30m', '30min', 'half']:
+        level, type_ = 2, '30min'
+    elif str(level) in ['60', '60m', '60min', '1h']:
+        level, type_ = 3, '60min'
+    with api.connect(ip, port):
+        data = []
+        for i in range(26):
+            data += api.get_index_bars(level,
+                                       market_code, code, (25 - i) * 800, 800)
+        data = api.to_df(data)
+        data['datetime'] = pd.to_datetime(data['datetime'])
+        data['code'] = code
+        data = data.drop(['year', 'month', 'day', 'hour', 'minute'], axis=1,
+                         inplace=False).set_index('datetime', drop=False, inplace=False)
+        data['datetime'] = data['datetime'].apply(lambda x: str(x)[0:19])
+        data['date'] = data['datetime'].apply(lambda x: str(x)[0:10])
+        data['date_stamp'] = data['date'].apply(
+            lambda x: QA_util_date_stamp(x))
+        data['time_stamp'] = data['datetime'].apply(
+            lambda x: QA_util_time_stamp(x))
+        data['type'] = type_
+        print(data)
+        return data[start:end]
+
+
 def QA_fetch_get_stock_min(code, start, end, level, ip=best_ip, port=7709):
     api = TdxHq_API()
     market_code = __select_market_code(code)
@@ -234,7 +269,8 @@ def QA_fetch_get_stock_min(code, start, end, level, ip=best_ip, port=7709):
         data = api.to_df(data)
         data['datetime'] = pd.to_datetime(data['datetime'])
         data['code'] = code
-        data=data.drop(['year', 'month', 'day', 'hour', 'minute'], axis=1, inplace=False).set_index('datetime', drop=False,inplace=False)
+        data = data.drop(['year', 'month', 'day', 'hour', 'minute'], axis=1,
+                         inplace=False).set_index('datetime', drop=False, inplace=False)
         data['datetime'] = data['datetime'].apply(lambda x: str(x)[0:19])
         data['date'] = data['datetime'].apply(lambda x: str(x)[0:10])
         data['date_stamp'] = data['date'].apply(

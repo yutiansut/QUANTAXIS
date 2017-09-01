@@ -257,7 +257,7 @@ class QA_Backtest():
             return None
 
     def __end_of_backtest(self, *arg, **kwargs):
-
+        print(self.account.assets)
         # 开始分析
         QA_util_log_info('start analysis====\n' +
                          str(self.strategy_stock_list))
