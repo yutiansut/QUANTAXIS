@@ -192,7 +192,6 @@ def QA_fetch_get_index_min(code, start, end, level='1min', ip=best_ip, port=7709
         for i in range(26):
             data = data.append(api.to_df(api.get_index_bars(
                 level, 1, code, (25 - i) * 800, 800)))
-        print(data)
         data['datetime'] = pd.to_datetime(data['datetime'])
         data['code'] = code
         data = data.drop(['year', 'month', 'day', 'hour', 'minute'], axis=1,
