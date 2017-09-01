@@ -200,7 +200,6 @@ def QA_fetch_get_index_min(code, start, end, level='1min', ip=best_ip, port=7709
         data['time_stamp'] = data['datetime'].apply(
             lambda x: QA_util_time_stamp(x))
         data['type'] = type_
-        print(data)
         return data[start:end]
 
 
