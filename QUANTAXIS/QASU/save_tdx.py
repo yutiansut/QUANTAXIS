@@ -137,7 +137,7 @@ def QA_SU_save_index_day(client=QA_Setting.client):
     def __saving_work(code):
         try:
             QA_util_log_info(
-                '##JOB03.1 Now Saving INDEX_DAY==== %s' % (code))
+                '##JOB04 Now Saving INDEX_DAY==== %s' % (code))
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
                     QA_fetch_get_stock_min(code, '1990-01-01', str(datetime.date.today()), '1min')))
@@ -161,13 +161,23 @@ def QA_SU_save_index_min(client=QA_Setting.client):
     __err = []
 
     def __saving_work(code):
-        # QA_util_log_info('##JOB05 Now Saving INDEX_DAY ==== %s' % (code))
+        QA_util_log_info('##JOB05 Now Saving INDEX_MIN  ==== %s' % (code))
         try:
             QA_util_log_info(
-                '##JOB05 Now Saving INDEX_MIN  ==== %s' % (code))
+                '##JOB05.1 Now Saving INDEX_1_MIN ==== %s' % (code))
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
                     QA_fetch_get_index_min(code, '2015-01-01', str(datetime.date.today()), '1min')))
+            QA_util_log_info(
+                '##JOB03.2 Now Saving INDEX_5_MIN ==== %s' % (code))
+            __coll.insert_many(
+                QA_util_to_json_from_pandas(
+                    QA_fetch_get_index_min(code, '2015-01-01', str(datetime.date.today()), '5min')))
+            QA_util_log_info(
+                '##JOB03.3 Now Saving INDEX_15_MIN ==== %s' % (code))
+            __coll.insert_many(
+                QA_util_to_json_from_pandas(
+                    QA_fetch_get_index_min(code, '2015-01-01', str(datetime.date.today()), '15min')))
         except:
             __err.append(code)
     for i_ in range(len(__index_list)):
@@ -183,12 +193,12 @@ def QA_SU_save_stock_list(client=QA_Setting.client):
     __coll.ensure_index('code')
     __err = []
 
-
     try:
         QA_util_log_info('##JOB06 Now Saving STOCK_LIST ====')
-        __coll.insert_many(QA_util_to_json_from_pandas( QA_fetch_get_stock_list()))
+        __coll.insert_many(QA_util_to_json_from_pandas(
+            QA_fetch_get_stock_list()))
     except:
-        __err.append(code)
+        pass
 
 
 def QA_SU_save_stock_transaction(client=QA_Setting.client):
