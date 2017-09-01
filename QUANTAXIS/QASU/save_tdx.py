@@ -40,11 +40,11 @@ from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
 
 
 def save_stock_day(code, start, end, coll):
-    QA_util_log_info('##JOB01 Now Saving STOCK_DAY==== %s' % (code))
+    QA_util_log_info('##JOB01 Now Saving STOCK_DAY==== %s' % (str(code)))
     coll.insert_many(
         QA_util_to_json_from_pandas(
             QA_fetch_get_stock_day(
-                code, start, end, '00')))
+                str(code), start, end, '00')))
 
 
 def QA_SU_save_stock_day(start='1990-01-01', end=str(datetime.date.today()), client=QA_Setting.client):
@@ -72,14 +72,14 @@ def QA_SU_save_stock_xdxr(client=QA_Setting.client):
     __err = []
 
     def __saving_work(code):
-        QA_util_log_info('##JOB02 Now Saving XDXR INFO ==== %s' % (code))
+        QA_util_log_info('##JOB02 Now Saving XDXR INFO ==== %s' % (str(code)))
         try:
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
-                    QA_fetch_get_stock_xdxr(code)))
+                    QA_fetch_get_stock_xdxr(str(code))))
 
         except:
-            __err.append(code)
+            __err.append(str(code))
     for i_ in range(len(__stock_list)):
         #__saving_work('000001')
         QA_util_log_info('The %s of Total %s' % (i_, len(__stock_list)))
@@ -89,12 +89,12 @@ def QA_SU_save_stock_xdxr(client=QA_Setting.client):
 
 
 def save_stock_min(code, start, end, level, coll):
-    QA_util_log_info('##JOB03 Now Saving STOCK_MIN ==== %s' % (code))
+    QA_util_log_info('##JOB03 Now Saving STOCK_MIN ==== %s' % (str(code)))
     QA_util_log_info(
-        '##JOB03.1 Now Saving STOCK_MIN %s==== %s' % (level, code))
+        '##JOB03.1 Now Saving STOCK_MIN %s==== %s' % (level, str(code)))
     coll.insert_many(
         QA_util_to_json_from_pandas(
-            QA_fetch_get_stock_min(code, start, end, level)))
+            QA_fetch_get_stock_min(str(code), start, end, level)))
 
 
 def QA_SU_save_stock_min(client=QA_Setting.client):
@@ -104,23 +104,23 @@ def QA_SU_save_stock_min(client=QA_Setting.client):
     __err = []
 
     def __saving_work(code):
-        QA_util_log_info('##JOB03 Now Saving STOCK_MIN ==== %s' % (code))
+        QA_util_log_info('##JOB03 Now Saving STOCK_MIN ==== %s' % (str(code)))
         try:
             QA_util_log_info(
-                '##JOB03.1 Now Saving STOCK_1_MIN ==== %s' % (code))
+                '##JOB03.1 Now Saving STOCK_1_MIN ==== %s' % (str(code)))
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
-                    QA_fetch_get_stock_min(code, '2015-01-01', str(datetime.date.today()), '1min')))
+                    QA_fetch_get_stock_min(str(code), '2015-01-01', str(datetime.date.today()), '1min')))
             QA_util_log_info(
-                '##JOB03.2 Now Saving STOCK_5_MIN ==== %s' % (code))
+                '##JOB03.2 Now Saving STOCK_5_MIN ==== %s' % (str(code)))
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
-                    QA_fetch_get_stock_min(code, '2015-01-01', str(datetime.date.today()), '5min')))
+                    QA_fetch_get_stock_min(str(code), '2015-01-01', str(datetime.date.today()), '5min')))
             QA_util_log_info(
-                '##JOB03.3 Now Saving STOCK_15_MIN ==== %s' % (code))
+                '##JOB03.3 Now Saving STOCK_15_MIN ==== %s' % (str(code)))
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
-                    QA_fetch_get_stock_min(code, '2015-01-01', str(datetime.date.today()), '15min')))
+                    QA_fetch_get_stock_min(str(code), '2015-01-01', str(datetime.date.today()), '15min')))
         except:
             __err.append(code)
     for i_ in range(len(__stock_list)):
@@ -143,7 +143,7 @@ def QA_SU_save_index_day(client=QA_Setting.client):
     def __saving_work(code):
         try:
             QA_util_log_info(
-                '##JOB04 Now Saving INDEX_DAY==== %s' % (code))
+                '##JOB04 Now Saving INDEX_DAY==== %s' % (str(code)))
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
                     QA_fetch_get_index_day(str(code), '1990-01-01', str(datetime.date.today()))))
@@ -167,23 +167,23 @@ def QA_SU_save_index_min(client=QA_Setting.client):
     __err = []
 
     def __saving_work(code):
-        QA_util_log_info('##JOB05 Now Saving INDEX_MIN  ==== %s' % (code))
+        QA_util_log_info('##JOB05 Now Saving INDEX_MIN  ==== %s' % (str(code)))
         try:
             QA_util_log_info(
-                '##JOB05.1 Now Saving INDEX_1_MIN ==== %s' % (code))
+                '##JOB05.1 Now Saving INDEX_1_MIN ==== %s' % (str(code)))
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
-                    QA_fetch_get_index_min(code, '2015-01-01', str(datetime.date.today()), '1min')))
+                    QA_fetch_get_index_min(str(code), '2015-01-01', str(datetime.date.today()), '1min')))
             QA_util_log_info(
-                '##JOB0.2 Now Saving INDEX_5_MIN ==== %s' % (code))
+                '##JOB0.2 Now Saving INDEX_5_MIN ==== %s' % (str(code)))
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
-                    QA_fetch_get_index_min(code, '2015-01-01', str(datetime.date.today()), '5min')))
+                    QA_fetch_get_index_min(str(code), '2015-01-01', str(datetime.date.today()), '5min')))
             QA_util_log_info(
-                '##JOB05.3 Now Saving INDEX_15_MIN ==== %s' % (code))
+                '##JOB05.3 Now Saving INDEX_15_MIN ==== %s' % (str(code)))
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
-                    QA_fetch_get_index_min(code, '2015-01-01', str(datetime.date.today()), '15min')))
+                    QA_fetch_get_index_min(str(code), '2015-01-01', str(datetime.date.today()), '15min')))
         except:
             __err.append(code)
     for i_ in range(len(__index_list)):
@@ -215,13 +215,13 @@ def QA_SU_save_stock_transaction(client=QA_Setting.client):
 
     def __saving_work(code):
         QA_util_log_info(
-            '##JOB07 Now Saving STOCK_TRANSACTION ==== %s' % (code))
+            '##JOB07 Now Saving STOCK_TRANSACTION ==== %s' % (str(code)))
         try:
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
-                    QA_fetch_get_stock_transaction(code, str(__stock_list[code]), str(datetime.date.today()))))
+                    QA_fetch_get_stock_transaction(str(code), str(__stock_list[code]), str(datetime.date.today()))))
         except:
-            __err.append(code)
+            __err.append(str(code))
     for i_ in range(len(__stock_list)):
         #__saving_work('000001')
         QA_util_log_info('The %s of Total %s' % (i_, len(__stock_list)))
