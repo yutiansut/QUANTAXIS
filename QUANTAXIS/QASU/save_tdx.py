@@ -22,13 +22,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from QUANTAXIS.QAFetch.QATdx import (select_best_ip, QA_fetch_get_stock_day, QA_fetch_get_stock_min,
-                                     QA_fetch_get_stock_xdxr, QA_fetch_get_stock_transaction,
-                                     QA_fetch_get_stock_list, QA_fetch_get_stock_day, QA_fetch_get_index_min)
-from QUANTAXIS.QAUtil import QA_util_to_json_from_pandas, QA_Setting, QA_util_log_info
-from QUANTAXIS.QAFetch.QATushare import QA_fetch_get_stock_time_to_market
 import datetime
+
 import pandas as pd
+from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_index_min,
+                                     QA_fetch_get_stock_day,
+                                     QA_fetch_get_stock_list,
+                                     QA_fetch_get_stock_min,
+                                     QA_fetch_get_stock_transaction,
+                                     QA_fetch_get_stock_xdxr, select_best_ip)
+from QUANTAXIS.QAFetch.QATushare import QA_fetch_get_stock_time_to_market
+from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
+                              QA_util_to_json_from_pandas)
 
 # ip=select_best_ip()
 

@@ -7,18 +7,19 @@
 
 """
 
-import pandas as pd
-import numpy as np
-
-from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info, QA_util_to_json_from_pandas
-from QUANTAXIS.QAData.data_fq import QA_data_stock_to_fq
-from QUANTAXIS.QAData.data_resample import QA_data_tick_resample
-from QUANTAXIS.QAIndicator import LLV, HHV, SMA, EMA
-import numpy as np
-import six
-import talib
 import itertools
 from functools import reduce
+
+import numpy as np
+import pandas as pd
+import six
+import talib
+from QUANTAXIS.QAData.data_fq import QA_data_stock_to_fq
+from QUANTAXIS.QAData.data_resample import QA_data_tick_resample
+from QUANTAXIS.QAIndicator import EMA, HHV, LLV, SMA
+from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
+                              QA_util_to_json_from_pandas)
+
 # ATR
 
 

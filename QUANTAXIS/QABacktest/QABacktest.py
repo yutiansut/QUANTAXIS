@@ -23,43 +23,43 @@
 # SOFTWARE.
 
 
+import configparser
 import csv
 import datetime
 import json
 import os
+import queue
 import random
 import re
 import sys
 import time
+from functools import reduce, update_wrapper, wraps
+
 import apscheduler
 import numpy as np
 import pandas as pd
 import pymongo
-
 from QUANTAXIS import (QA_Market, QA_Portfolio, QA_QAMarket_bid, QA_Risk,
                        __version__)
-from QUANTAXIS.QAMarket.QABid import QA_QAMarket_bid_list
 from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
+from QUANTAXIS.QAData import QA_DataStruct_Stock_day, QA_DataStruct_Stock_min
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_index_day, QA_fetch_stock_day,
                                        QA_fetch_stock_info,
                                        QA_fetch_stocklist_day,
                                        QA_fetch_trade_date)
-from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_stocklist_day_adv, QA_fetch_stock_day_adv,
-                                               QA_fetch_stock_min_adv, QA_fetch_stocklist_min_adv)
-
+from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_stock_day_adv,
+                                               QA_fetch_stock_min_adv,
+                                               QA_fetch_stocklist_day_adv,
+                                               QA_fetch_stocklist_min_adv)
+from QUANTAXIS.QAMarket.QABid import QA_QAMarket_bid_list
 from QUANTAXIS.QASU.save_backtest import (QA_SU_save_account_message,
                                           QA_SU_save_account_to_csv)
-from QUANTAXIS.QAUtil import (QA_Setting, QA_util_get_real_date, trade_date_sse,
-                              QA_util_log_info, QA_util_log_expection, QA_util_make_min_index)
-from QUANTAXIS.QAData import QA_DataStruct_Stock_min, QA_DataStruct_Stock_day
 from QUANTAXIS.QATask import QA_Queue
-
+from QUANTAXIS.QAUtil import (QA_Setting, QA_util_get_real_date,
+                              QA_util_log_expection, QA_util_log_info,
+                              QA_util_make_min_index, trade_date_sse)
 from tabulate import tabulate
-
-import configparser
-import queue
-from functools import wraps, update_wrapper, reduce
 
 
 class QA_Backtest():
