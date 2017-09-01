@@ -45,9 +45,9 @@ def QA_SU_save_stock_list(engine, client=QA_Setting.client):
     engine.QA_SU_save_stock_list(client)
 
 
-def QA_SU_save_stock_day(name, startDate, endDate, engine, client=QA_Setting.client):
+def QA_SU_save_stock_day( engine, client=QA_Setting.client):
     engine = select_save_engine(engine)
-    engine.QA_SU_save_stock_day(name, startDate, endDate, client)
+    engine.QA_SU_save_stock_day(client)
 
 
 def QA_SU_save_stock_min(engine, client=QA_Setting.client):
