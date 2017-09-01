@@ -68,9 +68,6 @@ from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_day, QA
 
 from QUANTAXIS.QASU.save_backtest import (
     QA_SU_save_account_message, QA_SU_save_backtest_message, QA_SU_save_account_to_csv)
-from QUANTAXIS.QASU.save_tushare import (
-    QA_save_stock_day_all, QA_SU_save_trade_date_all, QA_save_stock_day_with_fqfactor)
-
 
 from QUANTAXIS.QASU.user import (QA_user_sign_in, QA_user_sign_up)
 # event driver

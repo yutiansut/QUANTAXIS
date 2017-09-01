@@ -128,7 +128,7 @@ class CLI(cmd.Cmd):
         QA_util_log_info('Save all the stock data from tushare')
 
     def do_update(self, arg):
-        QA_SU_update_stock_day('ts', QA_Setting.client)
+        QA_SU_update_stock_day('tdx')
 
     def help_update(self):
         QA_util_log_info('Update the stock data')
