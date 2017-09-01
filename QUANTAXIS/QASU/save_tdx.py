@@ -25,7 +25,8 @@
 import datetime
 
 import pandas as pd
-from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_index_min,
+from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_index_day,
+                                     QA_fetch_get_index_min,
                                      QA_fetch_get_stock_day,
                                      QA_fetch_get_stock_list,
                                      QA_fetch_get_stock_min,
@@ -133,21 +134,21 @@ def QA_SU_save_stock_min(client=QA_Setting.client):
 def QA_SU_save_index_day(client=QA_Setting.client):
     index_list = QA_fetch_get_stock_list()
     index_list['code'] = index_list['code'].apply(lambda x: int(x))
-    __index_list = pd.concat([index_list[index_list['sse'] == 'sz'][index_list['code'] // 1000 >= 395],
+    __index_list = pd.concat([index_list[index_list['sse'] == 'sz'][index_list['code'] // 1000 >= 399],
                               index_list[index_list['sse'] == 'sh'][index_list['code'] // 100000 == 0]])['code']
     __coll = client.quantaxis.index_day
     __coll.ensure_index('code')
     __err = []
-
+    
     def __saving_work(code):
         try:
             QA_util_log_info(
                 '##JOB04 Now Saving INDEX_DAY==== %s' % (code))
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
-                    QA_fetch_get_stock_min(code, '1990-01-01', str(datetime.date.today()), '1min')))
+                    QA_fetch_get_index_day(str(code), '1990-01-01', str(datetime.date.today()))))
         except:
-            __err.append(code)
+            __err.append(str(code))
     for i_ in range(len(__index_list)):
         #__saving_work('000001')
         QA_util_log_info('The %s of Total %s' % (i_, len(__index_list)))
@@ -159,7 +160,7 @@ def QA_SU_save_index_day(client=QA_Setting.client):
 def QA_SU_save_index_min(client=QA_Setting.client):
     index_list = QA_fetch_get_stock_list()
     index_list['code'] = index_list['code'].apply(lambda x: int(x))
-    __index_list = pd.concat([index_list[index_list['sse'] == 'sz'][index_list['code'] // 1000 >= 395],
+    __index_list = pd.concat([index_list[index_list['sse'] == 'sz'][index_list['code'] // 1000 >= 399],
                               index_list[index_list['sse'] == 'sh'][index_list['code'] // 100000 == 0]])['code']
     __coll = client.quantaxis.index_min
     __coll.ensure_index('code')
@@ -230,7 +231,8 @@ def QA_SU_save_stock_transaction(client=QA_Setting.client):
 
 
 if __name__ == '__main__':
-    QA_SU_save_stock_day()
-    QA_SU_save_stock_xdxr()
-    QA_SU_save_stock_min()
-    QA_SU_save_stock_transaction()
+    #QA_SU_save_stock_day()
+    #QA_SU_save_stock_xdxr()
+    #QA_SU_save_stock_min()
+    #QA_SU_save_stock_transaction()
+    QA_SU_save_index_day()
