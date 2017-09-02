@@ -314,23 +314,27 @@ class QA_Backtest():
         return self.market_data.select_code(code).select_time_with_gap(date, gap_, 'lte')
 
     def QA_backtest_hold_amount(self, __code):
-        # return sum(list(map(lambda item: item[3] if __code in item else 0,
-        # self.account.hold)))
         try:
             return self.account.hold_available[__code]
         except:
             return 0
 
     def __sell_from_order_queue(self):
+        
+        # 每个bar结束的时候,批量交易
         __result = []
         self.order.__init__()
-        __bid_list = self.order.from_dataframe(self.account.order_queue)
+        __bid_list = self.order.from_dataframe(self.account.order_queue[self.account.order_queue['status'] != 200])
         for item in __bid_list:
-            __result.append(self.__QA_backtest_send_bid(
-                self, item)['header']['status'])
-
-        self.account.order_queue['status'] = __result
-        return self.account.order_queue[self.account.order_queue['status'] != 200]
+            __bid,__market=self.__wrap_bid(item)
+            __message=self.__QA_backtest_send_bid(self,__bid,__market)
+            if isinstance(__message,dict):
+                if __message['header']['status'] in ['200',200]:
+                    self.__sync_order_LM(self,'trade',__bid,__message['header']['order_id'],__message['header']['trade_id'],__message)
+                else:
+                    self.__sync_order_LM(self,'wait')
+                    
+        #return self.account.order_queue[self.account.order_queue['status'] != 200]
 
     def QA_backtest_get_OHLCV(self, __data):
         '快速返回 OHLCV格式'
@@ -379,7 +383,6 @@ class QA_Backtest():
 
         if __bid is not None:
             self.__sync_order_LM('create_order', order_=__bid)
-            # return self.__QA_backtest_send_bid(self, __bid, __market)
 
     def __sync_order_LM(self, event_, order_=None, order_id_=None, trade_id_=None, market_message_=None):
         """
@@ -467,7 +470,7 @@ class QA_Backtest():
             QA_util_log_info(
                 'warning:Unknown type of order event in  %s' % str(self.now))
 
-    def __QA_backtest_send_bid(self, __bid, __market=None):
+    def __QA_backtest_send_bid(self,__bid,__market=None):
 
         if __bid.towards == 1:
             # 扣费
@@ -608,6 +611,7 @@ class QA_Backtest():
             if __backtest_cls.backtest_type in ['day', 'd']:
 
                 func(*arg, **kwargs)  # 发委托单
+                __backtest_cls.__sell_from_order_queue(__backtest_cls)
             elif __backtest_cls.backtest_type in ['1min', '5min', '15min']:
                 daily_min = QA_util_make_min_index(__backtest_cls.today)
                 # print(daily_min)
@@ -619,6 +623,7 @@ class QA_Backtest():
                     QA_util_log_info(
                         tabulate(__backtest_cls.account.message['body']['account']['hold']))
                     func(*arg, **kwargs)  # 发委托单
+                    __backtest_cls.__sell_from_order_queue(__backtest_cls)
             __backtest_cls.__sync_order_LM('daily_settle')  # 每日结算
             # 队列循环批量发单
 
