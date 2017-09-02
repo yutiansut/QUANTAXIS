@@ -179,10 +179,21 @@ def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=best_ip, port=7709
         return data.set_index('code', drop=False, inplace=False)
 
 
-def QA_fetch_get_stock_list(ip=best_ip, port=7709):
+def QA_fetch_get_stock_list(type_='stock',ip=best_ip, port=7709):
+    
     api = TdxHq_API()
     with api.connect(ip, port):
-        return pd.concat([pd.concat([api.to_df(api.get_security_list(j, i * 1000)).assign(sse='sz' if j == 0 else 'sh').set_index(['code','sse'],drop=False) for i in range(int(api.get_security_count(j) / 1000) + 1)], axis=0) for j in range(2)], axis=0)
+        data=pd.concat([pd.concat([api.to_df(api.get_security_list(j, i * 1000)).assign(sse='sz' if j == 0 else 'sh').set_index(['code','sse'],drop=False) for i in range(int(api.get_security_count(j) / 1000) + 1)], axis=0) for j in range(2)], axis=0)
+        if type_ in ['stock','gp']:
+            index_list['code'] = data['code'].apply(lambda x: int(x))
+            return pd.concat([index_list[index_list['sse'] == 'sz'][index_list['code'] // 10000 <= 30][index_list['code'] // 100000 != 2],
+                              index_list[index_list['sse'] == 'sh'][index_list['code'] // 100000 == 6]])
+        elif type_ in ['index','zs']:
+            index_list['code'] = data['code'].apply(lambda x: int(x))
+            return pd.concat([index_list[index_list['sse'] == 'sz'][index_list['code'] // 1000 >= 399],
+                              index_list[index_list['sse'] == 'sh'][index_list['code'] // 1000 == 0]])
+        else:
+            return data
 
 
 def QA_fetch_get_index_day(code, start_date, end_date, ip=best_ip, port=7709):
