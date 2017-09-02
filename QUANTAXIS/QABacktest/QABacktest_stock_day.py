@@ -386,7 +386,7 @@ class QA_Backtest_stock_day():
             if __message['body']['bid']['amount'] > 0:
                 # 这个判断是为了 如果买入资金不充足,所以买入报了一个0量单的情况
                 #如果买入量>0, 才判断为成功交易
-                self.account.QA_account_receive_deal(__message)
+                self.messages=self.account.QA_account_receive_deal(__message)
                 return __message
 
         # 下面是卖出操作,这里在卖出前需要考虑一个是否有仓位的问题:
@@ -403,7 +403,7 @@ class QA_Backtest_stock_day():
                 __message = self.market.receive_bid(
                     __bid)
                 if __message['header']['status'] == 200:
-                    self.account.QA_account_receive_deal(__message)
+                    self.messages=self.account.QA_account_receive_deal(__message)
                 return __message
             else:
                 err_info = 'Error: Not Enough amount for code %s in hold list' % str(
