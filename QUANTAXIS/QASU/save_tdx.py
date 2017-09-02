@@ -234,3 +234,4 @@ if __name__ == '__main__':
     # QA_SU_save_index_day()
     # QA_SU_save_stock_list()
     # QA_SU_save_index_min()
+    pass
