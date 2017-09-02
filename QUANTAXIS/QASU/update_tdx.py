@@ -1,7 +1,9 @@
-from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info, trade_date_sse
-from QUANTAXIS.QAFetch.QATushare import QA_fetch_get_stock_time_to_market
-from QUANTAXIS.QASU.save_tdx import save_stock_day, QA_SU_save_stock_xdxr, save_stock_min
 import datetime
+
+from QUANTAXIS.QAFetch.QATushare import QA_fetch_get_stock_time_to_market
+from QUANTAXIS.QASU.save_tdx import (QA_SU_save_stock_xdxr, save_stock_day,
+                                     save_stock_min)
+from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info, trade_date_sse
 
 
 def QA_SU_update_stock_day(client=QA_Setting.client):
@@ -73,9 +75,11 @@ def QA_SU_update_stock_min(client=QA_Setting.client):
 def QA_SU_update_index_day(client=QA_Setting.client):
     pass
 
+
 def QA_SU_update_index_min(client=QA_Setting.client):
     pass
 
+
 if __name__ == '__main__':
-    #QA_SU_update_stock_day()
+    # QA_SU_update_stock_day()
     QA_SU_update_stock_xdxr()

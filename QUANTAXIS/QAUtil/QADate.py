@@ -24,13 +24,15 @@
 
 import datetime
 import re
-import time
 import threading
+import time
+
 from .QADate_trade import trade_date_sse
 
 
 def QA_util_time_now():
     return datetime.datetime.now()
+
 
 def QA_util_date_today():
     return datetime.date.today()

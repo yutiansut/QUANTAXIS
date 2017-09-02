@@ -50,7 +50,7 @@ author yutiansut
 def use(package):
     if package in ['wind']:
         from WindPy import w
-        #w.start()
+        # w.start()
         return QAWind
     elif package in ['tushare', 'ts']:
         return QATushare
@@ -62,7 +62,7 @@ def use(package):
 
 def QA_fetch_get_stock_day(package, code, startDate, endDate, if_fq='01', type_='json'):
     Engine = use(package)
-    if package in ['ths', 'THS','wind','tdx','pytdx']:
+    if package in ['ths', 'THS', 'wind', 'tdx', 'pytdx']:
         return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq)
     elif package in ['ts', 'tushare']:
         return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq, type_)
@@ -91,6 +91,8 @@ def QA_fetch_get_stock_min(package, code, start, end, type_):
         return Engine.QA_fetch_get_stock_min(code, start, end, type_)
     else:
         return 'Unsupport packages'
+
+
 def QA_fetch_get_stock_list(package, type_='stock'):
     Engine = use(package)
     if package in ['tdx', 'pytdx']:
@@ -98,31 +100,34 @@ def QA_fetch_get_stock_list(package, type_='stock'):
     else:
         return 'Unsupport packages'
 
+
 def QA_fetch_get_stock_transaction(package, code, start, end, retry=2):
     Engine = use(package)
     if package in ['tdx', 'pytdx']:
         return Engine.QA_fetch_get_stock_transaction(code, start, end, retry)
     else:
         return 'Unsupport packages'
+
+
 def QA_fetch_get_stock_xdxr(package, code):
-    Engine=use(package)
+    Engine = use(package)
     if package in ['tdx', 'pytdx']:
-            return Engine.QA_fetch_get_stock_xdxr( code)
+        return Engine.QA_fetch_get_stock_xdxr(code)
     else:
         return 'Unsupport packages'
 
 
-def QA_fetch_get_index_day(package,code,start,end):
-    Engine=use(package)
+def QA_fetch_get_index_day(package, code, start, end):
+    Engine = use(package)
     if package in ['tdx', 'pytdx']:
-            return Engine.QA_fetch_get_index_day(code,start,end)
+        return Engine.QA_fetch_get_index_day(code, start, end)
     else:
         return 'Unsupport packages'
 
-def QA_fetch_get_index_min(package,code,start,end,level='1min'):
-    Engine=use(package)
+
+def QA_fetch_get_index_min(package, code, start, end, level='1min'):
+    Engine = use(package)
     if package in ['tdx', 'pytdx']:
-            return Engine.QA_fetch_get_index_min(code,start,end,level)
+        return Engine.QA_fetch_get_index_min(code, start, end, level)
     else:
         return 'Unsupport packages'
-

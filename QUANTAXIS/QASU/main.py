@@ -25,9 +25,9 @@ from QUANTAXIS.QASU import save_tdx as stdx
 from QUANTAXIS.QASU import save_tdx_file as tdx_file
 from QUANTAXIS.QASU import save_tushare as sts
 from QUANTAXIS.QASU import save_wind as sw
+from QUANTAXIS.QASU import update_tdx as utdx
 from QUANTAXIS.QASU import update_tushare as uts
 from QUANTAXIS.QASU import update_wind as uw
-from QUANTAXIS.QASU import update_tdx as utdx
 from QUANTAXIS.QAUtil import QA_Setting
 
 
@@ -89,9 +89,12 @@ def QA_SU_update_stock_xdxr(engine, client=QA_Setting.client):
 def QA_SU_update_stock_min(engine, client=QA_Setting.client):
     engine = select_update_engine(engine)
     engine.QA_SU_update_stock_min(client)
+
+
 def QA_SU_update_index_day(engine, client=QA_Setting.client):
     engine = select_update_engine(engine)
     engine.QA_SU_update_index_day(client)
+
 
 def QA_SU_update_index_min(engine, client=QA_Setting.client):
     engine = select_update_engine(engine)

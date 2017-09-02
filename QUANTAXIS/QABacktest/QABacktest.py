@@ -53,8 +53,9 @@ from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_stock_day_adv,
                                                QA_fetch_stocklist_day_adv,
                                                QA_fetch_stocklist_min_adv)
 from QUANTAXIS.QAMarket.QABid import QA_QAMarket_bid_list
-from QUANTAXIS.QASU.save_backtest import (QA_SU_save_account_message,QA_SU_save_backtest_message,
-                                          QA_SU_save_account_to_csv)
+from QUANTAXIS.QASU.save_backtest import (QA_SU_save_account_message,
+                                          QA_SU_save_account_to_csv,
+                                          QA_SU_save_backtest_message)
 from QUANTAXIS.QATask import QA_Queue
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_get_real_date,
                               QA_util_log_expection, QA_util_log_info,
@@ -236,9 +237,9 @@ class QA_Backtest():
 
     def __warp_bid(self, __bid, __order):
         __market_data_for_backtest = self.QA_backtest_get_market_data(
-            self,__bid.code, __bid.date, 1)
+            self, __bid.code, __bid.date, 1)
         __O, __H, __L, __C, __V = self.QA_backtest_get_OHLCV(
-            self,__market_data_for_backtest) if __market_data_for_backtest.len() > 0 else(None, None, None, None, None)
+            self, __market_data_for_backtest) if __market_data_for_backtest.len() > 0 else(None, None, None, None, None)
         if __O is not None:
             if __order['bid_model'] in ['limit', 'Limit', 'Limited', 'limited', 'l', 'L', 0, '0']:
                     # 限价委托模式
@@ -365,9 +366,9 @@ class QA_Backtest():
                                          self.setting.QA_setting_user_name, self.strategy_name,
                                          __code, self.running_date, self.now,
                                          self.running_date, __amount, __towards)
-        __bid, __market = self.__warp_bid(self,__bid, __order)
+        __bid, __market = self.__warp_bid(self, __bid, __order)
         if __bid is not None:
-            return self.__QA_backtest_send_bid(self,__bid, __market)
+            return self.__QA_backtest_send_bid(self, __bid, __market)
 
     def __sync_assets_status(self):
         '交易前需要同步持仓状态/现金'
@@ -501,7 +502,7 @@ class QA_Backtest():
     @classmethod
     def load_strategy(__backtest_cls, func, *arg, **kwargs):
         '策略加载函数'
-       
+
         # 首先判断是否能满足回测的要求`
         __messages = {}
         __backtest_cls.__init_cash_per_stock = int(
@@ -534,7 +535,7 @@ class QA_Backtest():
                     __backtest_cls.now = min_index
                     QA_util_log_info(
                         '=================Min hold list====================')
-                    QA_util_log_info('in the begining of %s' %str(min_index))
+                    QA_util_log_info('in the begining of %s' % str(min_index))
                     QA_util_log_info(
                         tabulate(__backtest_cls.account.message['body']['account']['hold']))
                     func(*arg, **kwargs)  # 发委托单
