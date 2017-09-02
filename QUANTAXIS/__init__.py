@@ -56,7 +56,7 @@ logo = ' \n \
 
 from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day, QA_fetch_get_trade_date, QA_fetch_get_stock_min, QA_fetch_get_stock_xdxr,
                                QA_fetch_get_stock_indicator, QA_fetch_get_stock_realtime, QA_fetch_get_stock_transaction,
-                               QA_fetch_get_index_day,QA_fetch_get_index_min,QA_fetch_get_stock_list)
+                               QA_fetch_get_index_day, QA_fetch_get_index_min, QA_fetch_get_stock_list)
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_trade_date, QA_fetch_stock_day, QA_fetch_stocklist_day, QA_fetch_index_day,
                                        QA_fetch_stock_min, QA_fetch_stocklist_min, QA_fetch_future_min, QA_fetch_future_day,
                                        QA_fetch_future_tick, QA_fetch_stock_list, QA_fetch_stock_full, QA_fetch_stock_xdxr)
@@ -93,7 +93,7 @@ from QUANTAXIS.QATask import QA_Queue, QA_Event, QA_Job, QA_Engine
 # Data
 from QUANTAXIS.QAData import (QA_data_tick_resample, QA_data_get_hfq, QA_data_get_qfq, QA_data_make_qfq, QA_data_stock_to_fq,
                               QA_data_make_hfq, QA_DataStruct_Stock_day, QA_DataStruct_Stock_min,
-                              QA_DataStruct_Index_day, QA_DataStruct_Stock_transaction)
+                              QA_DataStruct_Index_day, QA_DataStruct_Index_min, QA_DataStruct_Stock_transaction)
 
 
 # Util

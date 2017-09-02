@@ -24,7 +24,7 @@
 
 
 import QUANTAXIS as QA
-from QUANTAXIS import QA_Backtest_stock_day as QB
+from QUANTAXIS import QA_Backtest as QB
 
 
 """
@@ -93,6 +93,8 @@ def init():
     QB.backtest_type='day'
     QB.setting.QA_util_sql_mongo_ip='127.0.0.1'
     QB.account.init_assest=2500000
+    
+    #benchmark 必须是指数代码
     QB.benchmark_code='hs300'
 
     QB.strategy_stock_list=['000001','000002','600010','601801','603111']
