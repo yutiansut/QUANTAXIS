@@ -159,10 +159,18 @@ def QA_SU_save_index_day(client=QA_Setting.client):
 
 def QA_SU_save_index_min(client=QA_Setting.client):
     index_list = QA_fetch_get_stock_list()
+
+    """
+    暂时存储的时候 我们只需要几个基础的指数指标就可以了:
+    市场系列 上证指数/深证成指/创业板指/沪深300/A股指数
+    沪深系列
+    中证系列
+    
+    """
     index_list['code'] = index_list['code'].apply(lambda x: int(x))
     __index_list = pd.concat([index_list[index_list['sse'] == 'sz'][index_list['code'] // 1000 >= 399],
-                              index_list[index_list['sse'] == 'sh'][index_list['code'] // 100000 == 0]])['code']
-    __coll = client.quantaxis.index_min
+                              index_list[index_list['sse'] == 'sh'][index_list['code'] // 1000 == 0]])['code']
+    __coll = client.quantaxis.index_mmin2
     __coll.ensure_index('code')
     __err = []
 
@@ -175,7 +183,7 @@ def QA_SU_save_index_min(client=QA_Setting.client):
                 QA_util_to_json_from_pandas(
                     QA_fetch_get_index_min(str(code), '2015-01-01', str(datetime.date.today()), '1min')))
             QA_util_log_info(
-                '##JOB0.2 Now Saving INDEX_5_MIN ==== %s' % (str(code)))
+                '##JOB05.2 Now Saving INDEX_5_MIN ==== %s' % (str(code)))
             __coll.insert_many(
                 QA_util_to_json_from_pandas(
                     QA_fetch_get_index_min(str(code), '2015-01-01', str(datetime.date.today()), '5min')))
@@ -185,6 +193,7 @@ def QA_SU_save_index_min(client=QA_Setting.client):
                 QA_util_to_json_from_pandas(
                     QA_fetch_get_index_min(str(code), '2015-01-01', str(datetime.date.today()), '15min')))
         except:
+            QA_util_log_info('error')
             __err.append(code)
     for i_ in range(len(__index_list)):
         #__saving_work('000001')
