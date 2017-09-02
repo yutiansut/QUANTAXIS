@@ -184,28 +184,28 @@ def QA_fetch_get_stock_list(type_='stock', ip=best_ip, port=7709):
         data = pd.concat([pd.concat([api.to_df(api.get_security_list(j, i * 1000)).assign(sse='sz' if j == 0 else 'sh').set_index(
             ['code', 'sse'], drop=False) for i in range(int(api.get_security_count(j) / 1000) + 1)], axis=0) for j in range(2)], axis=0)
         if type_ in ['stock', 'gp']:
-            data['code'] = data['code'].apply(lambda x: int(x))
-            return pd.concat([data[data['sse'] == 'sz'][data['code'] // 10000 <= 30][data['code'] // 100000 != 2],
-                              data[data['sse'] == 'sh'][data['code'] // 100000 == 6]])
+            return pd.concat([data[data['sse'] == 'sz'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 10000 <= 30][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 100000 != 2],
+                              data[data['sse'] == 'sh'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 100000 == 6]]).assign(code=data['code'].apply(lambda x: str(x)))
         elif type_ in ['index', 'zs']:
-            data['code'] = data['code'].apply(lambda x: int(x))
-            return pd.concat([data[data['sse'] == 'sz'][data['code'] // 1000 >= 399],
-                              data[data['sse'] == 'sh'][data['code'] // 1000 == 0]])
+
+            return pd.concat([data[data['sse'] == 'sz'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 1000 >= 399],
+                              data[data['sse'] == 'sh'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 1000 == 0]]).assign(code=data['code'].apply(lambda x: str(x)))
         else:
-            return data
+            return data.assign(code=data['code'].apply(lambda x: str(x)))
 
 
 def QA_fetch_get_index_day(code, start_date, end_date, ip=best_ip, port=7709):
     '指数日线'
+    QA_util_log_info(code)
     api = TdxHq_API()
     with api.connect(ip, port):
         data = pd.concat([api.to_df(api.get_index_bars(
             9, 1 if str(code)[0] in ['0', '8', '9'] else 0, str(code), (9 - i) * 800, 800)) for i in range(10)], axis=0)
-        return  data.assign(date=pd.to_datetime(data['datetime'].apply(lambda x: x[0:10]))).assign(code=str(code))\
-                .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10])))\
-                .set_index('date', drop=False, inplace=False)\
-                .drop(['year', 'month', 'day', 'hour',
-                       'minute', 'datetime'], axis=1)[start_date:end_date]
+        return data.assign(date=pd.to_datetime(data['datetime'].apply(lambda x: x[0:10]))).assign(code=str(code))\
+            .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10])))\
+            .set_index('date', drop=False, inplace=False)\
+            .drop(['year', 'month', 'day', 'hour',
+                   'minute', 'datetime'], axis=1)[start_date:end_date]
 
 
 def QA_fetch_get_index_min(code, start, end, level='1min', ip=best_ip, port=7709):
