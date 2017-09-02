@@ -151,7 +151,7 @@ def QA_SU_save_index_day(client=QA_Setting.client):
         QA_util_log_info('The %s of Total %s' % (i_, len(__index_list)))
         QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
             float(i_ / len(__index_list) * 100))[0:4] + '%')
-        __saving_work(__index_list[i_])
+        __saving_work(__index_list['code'][i_])
 
 
 def QA_SU_save_index_min(client=QA_Setting.client):
@@ -187,7 +187,7 @@ def QA_SU_save_index_min(client=QA_Setting.client):
         QA_util_log_info('The %s of Total %s' % (i_, len(__index_list)))
         QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
             float(i_ / len(__index_list) * 100))[0:4] + '%')
-        __saving_work(__index_list[i_])
+        __saving_work(__index_list['code'][i_])
 
 
 def QA_SU_save_stock_list(client=QA_Setting.client):
