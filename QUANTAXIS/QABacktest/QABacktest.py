@@ -326,8 +326,7 @@ class QA_Backtest():
         # 每个bar结束的时候,批量交易
         __result = []
         self.order.__init__()
-        print(self.account.order_queue[self.account.order_queue['status'] != 200])
-        __bid_list = self.order.from_dataframe(self.account.order_queue[self.account.order_queue['status'] != 200])
+        __bid_list = self.order.from_dataframe(self.account.order_queue.query('status!=200').query('status!=500').query('status!=400'))
         for item in __bid_list:
             __bid,__market=self.__wrap_bid(self,item)
             __message=self.__QA_backtest_send_bid(self,__bid,__market)
@@ -337,7 +336,6 @@ class QA_Backtest():
                 else:
                     self.__sync_order_LM(self,'wait')
                     
-        #return self.account.order_queue[self.account.order_queue['status'] != 200]
 
     def QA_backtest_get_OHLCV(self, __data):
         '快速返回 OHLCV格式'
@@ -426,7 +424,7 @@ class QA_Backtest():
         elif event_ in ['cancel_order']:  # 订单事件:主动撤单/每日结算/成功全部交易
             #try:
             assert isinstance(order_id_,str)
-            self.account.order_queue[self.account.order_queue['order_id']==order_id_]['status'] = 400  # 注销
+            self.account.order_queue.loc[self.account.order_queue['order_id']==order_id_,'status']= 400 
             if order_.towards is 1:
                 # 买入
                 self.account.cash_available -= self.account.order_queue.query('order_id=="order_id_"')[
@@ -435,18 +433,15 @@ class QA_Backtest():
             elif order_.towards is -1:
                 self.account.hold_available[order_.code] += self.account.order_queue.query(
                     'order_id=="order_id_"')['price']
-
-            #except:
-            #    QA_util_log_info('Order Event Warning:%s in %s' % (event_,str(self.now)))
-
         elif event_ in ['daily_settle']:# 每日结算/全撤
             __need_to_be_del=self.account.order_queue.query('status!=200').query('status!=500').query('status!=400') # 注销(backtest撤单)
 
             # 买入
 
             __need_to_be_del['amount']=__need_to_be_del['amount']*__need_to_be_del['towards']
-            print('xxxx')
-            print(__need_to_be_del)
+            #print('xxxx')
+            #print(__need_to_be_del)
+            #if len()
             #input()
             #self.account.cash_available -= self.account.order_queue.query('order_id=="order_id_"')[
             #    'amount'] * self.account.order_queue.query('order_id=="order_id_"')['price']
@@ -455,21 +450,27 @@ class QA_Backtest():
             #    'order_id=="order_id_"')['price']
 
 
-            self.account.order_queue.query('status!=200').query('status!=500').query('status!=400')['status'] = 500
+            self.account.order_queue.query('status!=500').query('status!=400')['status'] = 500
+            #print(self.account.order_queue.query('status!=200').query('status!=400'))
+            #input()
+
         elif event_ in ['trade']:
             #try:
             assert isinstance(order_,QA_QAMarket_bid)
             assert isinstance(order_id_,str)
             assert isinstance(trade_id_,str)
             assert isinstance(market_message_,dict)
+
             if order_.towards is 1:
                 # 买入
                 self.account.cash_available -= market_message_['body']['bid']['amount']*market_message_['body']['bid']['price']
                 order_.trade_id=trade_id_
                 order_.transact_time=self.now
                 order_.amount-=market_message_['body']['bid']['amount']
+                
                 if order_.amount==0:
                     self.account.order_queue.loc[self.account.order_queue['order_id']==order_id_,'status']= 200 #注销(成功交易)
+                    
                 else:
                     self.account.order_queue.loc[self.account.order_queue['order_id']==order_id_,'status']= 203#注销(成功交易)
                     self.account.order_queue.query('order_id=="order_id_"')['amount']-=market_message_['body']['bid']['amount']
@@ -635,7 +636,7 @@ class QA_Backtest():
                         tabulate(__backtest_cls.account.message['body']['account']['hold']))
                     func(*arg, **kwargs)  # 发委托单
                     __backtest_cls.__sell_from_order_queue(__backtest_cls)
-            __backtest_cls.__sync_order_LM(__backtest_cls,'daily_settle')  # 每日结算
+            #__backtest_cls.__sync_order_LM(__backtest_cls,'daily_settle')  # 每日结算
 
         # 最后一天
         __backtest_cls.__end_of_trading(__backtest_cls)
