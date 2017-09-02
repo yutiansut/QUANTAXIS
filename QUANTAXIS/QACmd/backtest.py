@@ -97,7 +97,7 @@ def init():
     #benchmark 必须是指数代码
     QB.benchmark_code='000001'
 
-    QB.strategy_stock_list=['000001','000002','600010','601801','603111']
+    QB.strategy_stock_list=['000001','000002','600010','601801']
     QB.strategy_start_date='2017-03-01'
     QB.strategy_end_date='2017-07-01'
 
@@ -122,8 +122,9 @@ def strategy():
 
     
         else:
-            #print(QB.QA_backtest_hold_amount(QB,item))
+            print(QB.QA_backtest_hold_amount(QB,item))
             QB.QA_backtest_send_order(QB,item,10000,-1,{'bid_model':'Market'})
+            #input()
     
 @QB.end_backtest
 def after_backtest():
