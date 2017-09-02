@@ -20,7 +20,12 @@ import QUANTAXIS as QA
 #data=QA.QAFetch.QATdx.QA_fetch_get_stock_xdxr('00001')
 
 # 股票列表
-data=QA.QAFetch.QATdx.QA_fetch_get_stock_list()
+
+#data=QA.QAFetch.QATdx.QA_fetch_get_stock_list('stock')
+# 指数列表
+#data=QA.QAFetch.QATdx.QA_fetch_get_stock_list('index')
+# 全部列表
+data=QA.QAFetch.QATdx.QA_fetch_get_stock_list('all')
 """
 QA.QAFetch.QATdx.QA_fetch_get_stock_list()
 QA.QAFetch.QATdx.QA_fetch_get_index_day()

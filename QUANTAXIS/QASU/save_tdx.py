@@ -132,14 +132,11 @@ def QA_SU_save_stock_min(client=QA_Setting.client):
 
 
 def QA_SU_save_index_day(client=QA_Setting.client):
-    index_list = QA_fetch_get_stock_list()
-    index_list['code'] = index_list['code'].apply(lambda x: int(x))
-    __index_list = pd.concat([index_list[index_list['sse'] == 'sz'][index_list['code'] // 1000 >= 399],
-                              index_list[index_list['sse'] == 'sh'][index_list['code'] // 1000 == 0]])['code']
+    __index_list = QA_fetch_get_stock_list('index')
     __coll = client.quantaxis.index_day
     __coll.ensure_index('code')
     __err = []
-    
+
     def __saving_work(code):
         try:
             QA_util_log_info(
@@ -158,14 +155,9 @@ def QA_SU_save_index_day(client=QA_Setting.client):
 
 
 def QA_SU_save_index_min(client=QA_Setting.client):
-    index_list = QA_fetch_get_stock_list()
+    __index_list = QA_fetch_get_stock_list('index')
 
-    """
-    """
-    index_list['code'] = index_list['code'].apply(lambda x: int(x))
-    __index_list = pd.concat([index_list[index_list['sse'] == 'sz'][index_list['code'] // 1000 >= 399],
-                              index_list[index_list['sse'] == 'sh'][index_list['code'] // 1000 == 0]])['code']
-    __coll = client.quantaxis.index_mmin2
+    __coll = client.quantaxis.index_min
     __coll.ensure_index('code')
     __err = []
 
@@ -235,10 +227,10 @@ def QA_SU_save_stock_transaction(client=QA_Setting.client):
 
 
 if __name__ == '__main__':
-    #QA_SU_save_stock_day()
-    #QA_SU_save_stock_xdxr()
-    #QA_SU_save_stock_min()
-    #QA_SU_save_stock_transaction()
-    #QA_SU_save_index_day()
-    #QA_SU_save_stock_list()
+    # QA_SU_save_stock_day()
+    # QA_SU_save_stock_xdxr()
+    # QA_SU_save_stock_min()
+    # QA_SU_save_stock_transaction()
+    # QA_SU_save_index_day()
+    # QA_SU_save_stock_list()
     QA_SU_save_index_min()
