@@ -135,7 +135,7 @@ def QA_SU_save_index_day(client=QA_Setting.client):
     index_list = QA_fetch_get_stock_list()
     index_list['code'] = index_list['code'].apply(lambda x: int(x))
     __index_list = pd.concat([index_list[index_list['sse'] == 'sz'][index_list['code'] // 1000 >= 399],
-                              index_list[index_list['sse'] == 'sh'][index_list['code'] // 100000 == 0]])['code']
+                              index_list[index_list['sse'] == 'sh'][index_list['code'] // 1000 == 0]])['code']
     __coll = client.quantaxis.index_day
     __coll.ensure_index('code')
     __err = []
@@ -161,11 +161,6 @@ def QA_SU_save_index_min(client=QA_Setting.client):
     index_list = QA_fetch_get_stock_list()
 
     """
-    暂时存储的时候 我们只需要几个基础的指数指标就可以了:
-    市场系列 上证指数/深证成指/创业板指/沪深300/A股指数
-    沪深系列
-    中证系列
-    
     """
     index_list['code'] = index_list['code'].apply(lambda x: int(x))
     __index_list = pd.concat([index_list[index_list['sse'] == 'sz'][index_list['code'] // 1000 >= 399],

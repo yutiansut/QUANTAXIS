@@ -128,7 +128,6 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=best_ip, p
 
 def QA_fetch_get_stock_min(code, start, end, level='1min', ip=best_ip, port=7709):
     api = TdxHq_API()
-    market_code = __select_market_code(str(code))
     type_ = ''
     if str(level) in ['5', '5m', '5min', 'five']:
         level, type_ = 0, '5min'
@@ -142,16 +141,15 @@ def QA_fetch_get_stock_min(code, start, end, level='1min', ip=best_ip, port=7709
         level, type_ = 3, '60min'
     with api.connect(ip, port):
 
-        data = pd.concat([api.to_df(api.get_security_bars(level,
-                                                          market_code, str(code), (25 - i) * 800, 800)) for i in range(26)], axis=0)
+        data = pd.concat([api.to_df(api.get_security_bars(level,__select_market_code(str(code)), str(code), (25 - i) * 800, 800)) for i in range(26)], axis=0)
+        #print(data['datetime'].apply(lambda x: str(x)[0:10]))
         return data\
             .assign(datetime=pd.to_datetime(data['datetime']), code=str(code))\
             .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1, inplace=False)\
-            .set_index('datetime', drop=False, inplace=False)\
             .assign(date=data['datetime'].apply(lambda x: str(x)[0:10]))\
-            .assign(date_stamp=QA_util_date_stamp(data['datetime'].apply(lambda x: str(x)[0:10])))\
+            .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(x)))\
             .assign(time_stamp=data['datetime'].apply(lambda x: QA_util_time_stamp(x)))\
-            .assign(type=type_)[start:end]
+            .assign(type=type_).set_index('datetime', drop=False, inplace=False)[start:end]
 
 
 def QA_fetch_get_stock_latest(code, ip=best_ip, port=7709):

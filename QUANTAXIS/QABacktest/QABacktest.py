@@ -53,7 +53,7 @@ from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_stock_day_adv,
                                                QA_fetch_stocklist_day_adv,
                                                QA_fetch_stocklist_min_adv)
 from QUANTAXIS.QAMarket.QABid import QA_QAMarket_bid_list
-from QUANTAXIS.QASU.save_backtest import (QA_SU_save_account_message,
+from QUANTAXIS.QASU.save_backtest import (QA_SU_save_account_message,QA_SU_save_backtest_message,
                                           QA_SU_save_account_to_csv)
 from QUANTAXIS.QATask import QA_Queue
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_get_real_date,
@@ -257,7 +257,6 @@ class QA_Backtest():
             return None
 
     def __end_of_backtest(self, *arg, **kwargs):
-        print(self.account.assets)
         # 开始分析
         QA_util_log_info('start analysis====\n' +
                          str(self.strategy_stock_list))
