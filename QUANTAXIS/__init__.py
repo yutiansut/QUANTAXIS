@@ -132,7 +132,7 @@ import argparse
 
 # 检查python版本
 import sys
-if sys.version_info.major != 3 or sys.version_info.minor != 6 or 5 or 4:
+if sys.version_info.major != 3 or sys.version_info.minor not in [4,5,6]:
     print('wrong version, should be 3.4/3.5/3.6 version')
     sys.exit()
 
