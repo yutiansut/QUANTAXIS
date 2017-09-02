@@ -237,12 +237,12 @@ class QA_Backtest():
             for item_x in pre_del_id:
                 __hold_list.pop(item_x)
 
-    def __wrap_bid(self, __bid, __order):
+    def __wrap_bid(self, __bid, __order=None):
         __market_data_for_backtest = self.QA_backtest_get_market_data(
             self, __bid.code, __bid.date, 1)
         __O, __H, __L, __C, __V = self.QA_backtest_get_OHLCV(
             self, __market_data_for_backtest) if __market_data_for_backtest.len() > 0 else(None, None, None, None, None)
-        if __O is not None:
+        if __O is not None and __order is not None:
             if __order['bid_model'] in ['limit', 'Limit', 'Limited', 'limited', 'l', 'L', 0, '0']:
                     # 限价委托模式
                 __bid.price = __order['price']
@@ -257,7 +257,7 @@ class QA_Backtest():
             __bid.price = float('%.2f' % __bid.price)
             return __bid, __market_data_for_backtest
         else:
-            return None
+            return __bid, __market_data_for_backtest
 
     def __end_of_backtest(self, *arg, **kwargs):
         # 开始分析
@@ -326,7 +326,7 @@ class QA_Backtest():
         self.order.__init__()
         __bid_list = self.order.from_dataframe(self.account.order_queue[self.account.order_queue['status'] != 200])
         for item in __bid_list:
-            __bid,__market=self.__wrap_bid(item)
+            __bid,__market=self.__wrap_bid(self,item)
             __message=self.__QA_backtest_send_bid(self,__bid,__market)
             if isinstance(__message,dict):
                 if __message['header']['status'] in ['200',200]:
@@ -382,7 +382,7 @@ class QA_Backtest():
         __bid, __market = self.__wrap_bid(self, __bid, __order)
 
         if __bid is not None:
-            self.__sync_order_LM('create_order', order_=__bid)
+            self.__sync_order_LM(self,'create_order', order_=__bid)
 
     def __sync_order_LM(self, event_, order_=None, order_id_=None, trade_id_=None, market_message_=None):
         """
@@ -606,7 +606,7 @@ class QA_Backtest():
             __backtest_cls.now = __backtest_cls.running_date
             __backtest_cls.today = __backtest_cls.running_date
             # 交易前同步持仓状态
-            __backtest_cls.__sync_order_LM('init_')  # 初始化事件
+            __backtest_cls.__sync_order_LM(__backtest_cls,'init_')  # 初始化事件
 
             if __backtest_cls.backtest_type in ['day', 'd']:
 
@@ -624,7 +624,7 @@ class QA_Backtest():
                         tabulate(__backtest_cls.account.message['body']['account']['hold']))
                     func(*arg, **kwargs)  # 发委托单
                     __backtest_cls.__sell_from_order_queue(__backtest_cls)
-            __backtest_cls.__sync_order_LM('daily_settle')  # 每日结算
+            __backtest_cls.__sync_order_LM(__backtest_cls,'daily_settle')  # 每日结算
             # 队列循环批量发单
 
         # 最后一天
