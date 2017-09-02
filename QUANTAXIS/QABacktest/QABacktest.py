@@ -80,6 +80,7 @@ class QA_Backtest():
     trade_list = []
     start_real_id = 0
     end_real_id = 0
+    temp = {}
 
     def __init__(self):
 
@@ -98,6 +99,7 @@ class QA_Backtest():
         self.trade_list = []
         self.start_real_id = 0
         self.end_real_id = 0
+        self.temp = {}
 
     def __QA_backtest_init(self):
         """既然是被当做装饰器使用,就需要把变量设置放在装饰函数的前面,把函数放在装饰函数的后面"""
@@ -354,20 +356,15 @@ class QA_Backtest():
         功能
         =============
         1. 封装一个bid类(分配地址)
-        2. 检查(wrap)
-        3. 发送到_send_bid方法
+        2. 检查账户/临时扣费
+        3. 检查市场(wrap)
+        4. 发送到_send_bid方法
         """
-        # 只需要维护未成交队列即可,无非是一个可用资金和可卖股票数量的调整
 
         # 必须是100股的倍数
-
-        
+        # 封装bid
         __amount = int(__amount / 100) * 100
-
-        # self.__QA_backtest_set_bid_model()
-
-        __bid = self.bid
-
+        __bid = self.bid  # init
         (__bid.order_id, __bid.user, __bid.strategy,
          __bid.code, __bid.date, __bid.datetime,
          __bid.sending_time,
@@ -375,32 +372,106 @@ class QA_Backtest():
                                          self.setting.QA_setting_user_name, self.strategy_name,
                                          __code, self.running_date, self.now,
                                          self.running_date, __amount, __towards)
+
+        # 检查账户/临时扣费
+
         __bid, __market = self.__wrap_bid(self, __bid, __order)
+
         if __bid is not None:
-            return self.__QA_backtest_send_bid(self, __bid, __market)
+            self.__sync_order_LM('create_order', order_=__bid)
+            # return self.__QA_backtest_send_bid(self, __bid, __market)
 
-    def __sync_assets_status(self):
-        '交易前需要同步持仓状态/现金'
-        self.account.cash_available = self.account.cash[-1]
-        __temp_hold = pd.DataFrame(
-            self.account.hold[1::], columns=self.account.hold[0])
-        __temp_hold = __temp_hold.set_index('code', drop=False)
-        self.account.hold_available = __temp_hold['amount'].groupby(
-            'code').sum()
+    def __sync_order_LM(self, event_, order_=None, order_id_=None, trade_id_=None, market_message_=None):
+        """
+        订单事件: 生命周期管理 Order-Lifecycle-Management
+        statusA 初始化 资产 
+        statusB 初始化订单  临时扣除资产(可用现金/可卖股份)
+        statusC 订单存活(等待交易)
+        statusD 订单死亡(每日结算/完成交易/撤单) 恢复临时资产    
+        =======
+        1. 更新持仓
+        2. 更新现金
+        """
+        if event_ is 'init_':
 
-        __wait_for_deal = self.account.order_queue[self.account.order_queue['status'] != 200] if len(
-            self.account.order_queue) > 0 else pd.DataFrame()
-        __wait_for_deal = __wait_for_deal['amount'].groupby(
-            'code').sum() if len(__wait_for_deal) > 0 else pd.DataFrame()
+            self.account.cash_available = self.account.cash[-1]
+            self.account.hold_available = pd.DataFrame(self.account.hold[1::], columns=self.account.hold[0]).set_index(
+                'code', drop=False)['amount'].groupby('code').sum()
+
+        elif event_ is 'create_order':
+            if order_ is not None:
+                if order_.towards is 1:
+                    # 买入
+                    self.account.cash_available -= order_.amount * order_.price
+                    self.account.order_queue = self.account.order_queue.append(
+                        order_.to_df())
+                elif order_.towards is -1:
+                    self.account.hold_available[order_.code] -= order_.amount
+                    self.account.order_queue = self.account.order_queue.append(
+                        order_.to_df())
+            else:
+                QA_util_log_info('warning: No order in %s' % str(self.now))
+
+        elif event_ in ['wait', 'live']:
+            # 订单存活 不会导致任何状态改变
+            pass
+        elif event_ in ['cancel_order', 'daily_settle']:  # 订单事件:主动撤单/每日结算/成功全部交易
+            try:
+                assert isinstance(order_id_,str)
+                self.account.order_queue.query('order_id=="order_id_')[
+                    'status'] = 400  # 注销
+                if order_.towards is 1:
+                    # 买入
+                    self.account.cash_available -= self.account.order_queue.query('order_id=="order_id_')[
+                        'amount'] * self.account.order_queue.query('order_id=="order_id_')['price']
+
+                elif order_.towards is -1:
+                    self.account.hold_available[order_.code] += self.account.order_queue.query(
+                        'order_id=="order_id_')['price']
+
+            except:
+                QA_util_log_info('Order Event Warning: in %s' % str(self.now))
+        elif event_ in ['trade']:
+            try:
+                assert isinstance(order_,QA_QAMarket_bid)
+                assert isinstance(order_id_,str)
+                assert isinstance(trade_id_,str)
+                assert isinstance(market_message_,dict)
+                if order_.towards is 1:
+                    # 买入
+                    self.account.cash_available -= market_message_['body']['bid']['amount']*market_message_['body']['bid']['price']
+                    order_.trade_id=trade_id_
+                    order_.transact_time=self.now
+                    order_.amount-=market_message_['body']['bid']['amount']
+                    if order_.amount==0:
+                        self.account.order_queue.query('order_id=="order_id_')['status'] = 203 #注销(成功交易)
+                    else:
+                        self.account.order_queue.query('order_id=="order_id_')['amount']-=market_message_['body']['bid']['amount']
+                elif order_.towards is -1:
+                    self.account.hold_available[order_.code] += market_message_['body']['bid']['amount']
+                    # 当日卖出的股票 可以继续买入/ 可用资金增加(要减去手续费)
+                    self.account.cash_available += market_message_['body']['bid']['amount']*market_message_['body']['bid']['price']-market_message_['body']['fee']['commission']
+
+                    order_.trade_id=trade_id_
+                    order_.transact_time=self.now
+                    order_.amount-=market_message_['body']['bid']['amount']
+                    if order_.amount==0:
+                        self.account.order_queue.query('order_id=="order_id_')['status'] = 203 #注销(成功交易)
+                    else:
+                        self.account.order_queue.query('order_id=="order_id_')['amount']-=market_message_['body']['bid']['amount']
+
+            except:
+                QA_util_log_info('Order Event Warning: in %s' % str(self.now))
+
+        else:
+            QA_util_log_info(
+                'warning:Unknown type of order event in  %s' % str(self.now))
 
     def __QA_backtest_send_bid(self, __bid, __market=None):
-        
-        """
-        
-        """
 
         if __bid.towards == 1:
-            # 扣费以下这个订单时的bar的open扣费
+            # 扣费
+            # 以下这个订单时的bar的open扣费
 
             if self.account.cash_available > (__bid.price * __bid.amount):
                 # 这是买入的情况 买入的时候主要考虑的是能不能/有没有足够的钱来买入
@@ -415,10 +486,9 @@ class QA_Backtest():
                     self.account.QA_account_receive_deal(__message)
                     return __message
                 else:
-                    self.account.order_queue = self.account.order_queue.append(
-                        __bid.to_df())
+
                     return __message
-        # 下面是卖出操作,这里在卖出前需要考虑一个是否有仓位的问题:
+        # 下面是卖出操作,这里在卖出前需要考虑一个是否有仓位的问题:`````````````                                `
         # 因为在股票中是不允许卖空操作的,所以这里是股票的交易引擎和期货的交易引擎的不同所在
 
         elif __bid.towards == -1:
@@ -521,8 +591,6 @@ class QA_Backtest():
         __messages = {}
         __backtest_cls.__init_cash_per_stock = int(
             float(__backtest_cls.account.init_assest) / len(__backtest_cls.strategy_stock_list))
-        print(__backtest_cls.start_real_id)
-        print(__backtest_cls.start_real_id)
         # 策略的交易日循环
         for i in range(int(__backtest_cls.start_real_id), int(__backtest_cls.end_real_id) - 1, 1):
             __backtest_cls.running_date = __backtest_cls.trade_list[i]
@@ -535,13 +603,11 @@ class QA_Backtest():
             __backtest_cls.now = __backtest_cls.running_date
             __backtest_cls.today = __backtest_cls.running_date
             # 交易前同步持仓状态
+            __backtest_cls.__sync_order_LM('init_')  # 初始化事件
 
             if __backtest_cls.backtest_type in ['day', 'd']:
-                __backtest_cls.__sync_assets_status(__backtest_cls)
-                func(*arg, **kwargs)  # 发委托单
-                __backtest_cls.account.order_queue = __backtest_cls.__sell_from_order_queue(
-                    __backtest_cls)
 
+                func(*arg, **kwargs)  # 发委托单
             elif __backtest_cls.backtest_type in ['1min', '5min', '15min']:
                 daily_min = QA_util_make_min_index(__backtest_cls.today)
                 # print(daily_min)
@@ -553,7 +619,7 @@ class QA_Backtest():
                     QA_util_log_info(
                         tabulate(__backtest_cls.account.message['body']['account']['hold']))
                     func(*arg, **kwargs)  # 发委托单
-
+            __backtest_cls.__sync_order_LM('daily_settle')  # 每日结算
             # 队列循环批量发单
 
         # 最后一天
