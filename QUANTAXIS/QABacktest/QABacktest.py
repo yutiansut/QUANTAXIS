@@ -235,7 +235,7 @@ class QA_Backtest():
             for item_x in pre_del_id:
                 __hold_list.pop(item_x)
 
-    def __warp_bid(self, __bid, __order):
+    def __wrap_bid(self, __bid, __order):
         __market_data_for_backtest = self.QA_backtest_get_market_data(
             self, __bid.code, __bid.date, 1)
         __O, __H, __L, __C, __V = self.QA_backtest_get_OHLCV(
@@ -349,10 +349,19 @@ class QA_Backtest():
             0 限价委托 LIMIT ORDER
             1 市价委托 MARKET ORDER
             2 严格模式(买入按最高价 卖出按最低价) STRICT ORDER
+
+
+        功能
+        =============
+        1. 封装一个bid类(分配地址)
+        2. 检查(wrap)
+        3. 发送到_send_bid方法
         """
         # 只需要维护未成交队列即可,无非是一个可用资金和可卖股票数量的调整
 
         # 必须是100股的倍数
+
+        
         __amount = int(__amount / 100) * 100
 
         # self.__QA_backtest_set_bid_model()
@@ -366,7 +375,7 @@ class QA_Backtest():
                                          self.setting.QA_setting_user_name, self.strategy_name,
                                          __code, self.running_date, self.now,
                                          self.running_date, __amount, __towards)
-        __bid, __market = self.__warp_bid(self, __bid, __order)
+        __bid, __market = self.__wrap_bid(self, __bid, __order)
         if __bid is not None:
             return self.__QA_backtest_send_bid(self, __bid, __market)
 
@@ -385,6 +394,11 @@ class QA_Backtest():
             'code').sum() if len(__wait_for_deal) > 0 else pd.DataFrame()
 
     def __QA_backtest_send_bid(self, __bid, __market=None):
+        
+        """
+        
+        """
+
         if __bid.towards == 1:
             # 扣费以下这个订单时的bar的open扣费
 
@@ -403,7 +417,7 @@ class QA_Backtest():
                 else:
                     self.account.order_queue = self.account.order_queue.append(
                         __bid.to_df())
-
+                    return __message
         # 下面是卖出操作,这里在卖出前需要考虑一个是否有仓位的问题:
         # 因为在股票中是不允许卖空操作的,所以这里是股票的交易引擎和期货的交易引擎的不同所在
 
