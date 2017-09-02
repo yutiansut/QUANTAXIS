@@ -9,7 +9,7 @@ QUANTAXIS quantitative framework to achieve the stock and futures market, the wh
 
 
  
-0.4.0-beta Release Note
+0.4.1 Release Note
 ---------------------------------
 
 QUANTAXIS Quantitative Financial Strategy Framework is a quantitative analysis solution for small and medium-sized strategy teams.We can quickly implement scene-oriented customization solutions with highly decoupled modularity and standardized protocols. QUANTAXIS is a progressive open Framework, you can according to their own needs, the introduction of their own data, analysis programs, visualization process, you can also RESTful interface, the rapid realization of multi-LAN / WAN collaboration.
