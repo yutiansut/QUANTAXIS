@@ -118,7 +118,7 @@ class QA_Backtest():
         self.strategy_name = str('example_min')
        # 股票的交易日历,真实回测的交易周期,和交易周期在交易日历中的id
         self.trade_list = trade_date_sse
-        self.benchmark_code = 'hs300'
+        self.benchmark_code = '000300'
         """
         这里会涉及一个区间的问题,开始时间是要向后推,而结束时间是要向前推,1代表向后推,-1代表向前推
         """
