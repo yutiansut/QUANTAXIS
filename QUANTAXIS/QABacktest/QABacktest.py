@@ -153,17 +153,13 @@ class QA_Backtest():
             self.market_data = QA_fetch_stocklist_day_adv(
                 self.strategy_stock_list, self.trade_list[self.start_real_id - int(
                     self.strategy_gap)], self.trade_list[self.end_real_id])
-            self.__benchmark_data = QA_fetch_index_day(
-            self.benchmark_code, self.start_real_date,
-            self.end_real_date)
+            self.benchmark_data = QA_fetch_index_day(self.benchmark_code, self.start_real_date,self.end_real_date)
         elif self.backtest_type in ['1min', '5min', '15min']:
             self.market_data = QA_fetch_stocklist_min_adv(
                 self.strategy_stock_list, self.trade_list[
                     self.start_real_id - int(self.strategy_gap)],
                 self.trade_list[self.end_real_id], self.backtest_type)
-            self.__benchmark_data = QA_fetch_index_min(
-            self.benchmark_code, self.start_real_date,
-            self.end_real_date)
+            self.__benchmark_data = QA_fetch_index_min(self.benchmark_code, self.start_real_date,self.end_real_date)
     def __QA_backtest_start(self, *args, **kwargs):
         """
         这个是回测流程开始的入口

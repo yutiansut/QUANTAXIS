@@ -201,7 +201,11 @@ def QA_fetch_get_index_day(code, start_date, end_date, ip=best_ip, port=7709):
     with api.connect(ip, port):
         data = pd.concat([api.to_df(api.get_index_bars(
             9, 1 if str(code)[0] in ['0', '8', '9'] else 0, str(code), (9 - i) * 800, 800)) for i in range(10)], axis=0)
-        return data.assign(date=pd.to_datetime(data['datetime'].apply(lambda x: x[0:10]))).set_index('date', drop=False, inplace=False).drop(['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1, inplace=False)[start_date:end_date]
+        return  data.assign(date=pd.to_datetime(data['datetime'].apply(lambda x: x[0:10]))).assign(code=str(code))\
+                .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10])))\
+                .set_index('date', drop=False, inplace=False)\
+                .drop(['year', 'month', 'day', 'hour',
+                       'minute', 'datetime'], axis=1)[start_date:end_date]
 
 
 def QA_fetch_get_index_min(code, start, end, level='1min', ip=best_ip, port=7709):
@@ -220,18 +224,13 @@ def QA_fetch_get_index_min(code, start, end, level='1min', ip=best_ip, port=7709
     with api.connect(ip, port):
         data = pd.concat([api.to_df(api.get_index_bars(
             level, 1 if str(code)[0] in ['0', '8', '9'] else 0, code, (25 - i) * 800, 800)) for i in range(26)], axis=0)
-        data['datetime'] = pd.to_datetime(data['datetime'])
-        data['code'] = str(code)
-        data = data.drop(['year', 'month', 'day', 'hour', 'minute'], axis=1,
-                         inplace=False).set_index('datetime', drop=False, inplace=False)
-        data['datetime'] = data['datetime'].apply(lambda x: str(x)[0:19])
-        data['date'] = data['datetime'].apply(lambda x: str(x)[0:10])
-        data['date_stamp'] = data['date'].apply(
-            lambda x: QA_util_date_stamp(x))
-        data['time_stamp'] = data['datetime'].apply(
-            lambda x: QA_util_time_stamp(x))
-        data['type'] = type_
-        return data[start:end]
+        return data\
+            .assign(datetime=pd.to_datetime(data['datetime']), code=str(code))\
+            .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1, inplace=False)\
+            .assign(date=data['datetime'].apply(lambda x: str(x)[0:10]))\
+            .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(x)))\
+            .assign(time_stamp=data['datetime'].apply(lambda x: QA_util_time_stamp(x)))\
+            .assign(type=type_).set_index('datetime', drop=False, inplace=False)[start:end]
 
 
 def __QA_fetch_get_stock_transaction(code, day, retry, api):

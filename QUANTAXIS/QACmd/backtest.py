@@ -95,7 +95,7 @@ def init():
     QB.account.init_assest=2500000
     
     #benchmark 必须是指数代码
-    QB.benchmark_code='000001'
+    QB.benchmark_code='0003000'
 
     QB.strategy_stock_list=['000001','000002','600010','601801']
     QB.strategy_start_date='2017-03-01'
@@ -104,16 +104,13 @@ def init():
 @QB.before_backtest
 def before_backtest():
     global risk_position
-    QA.QA_util_log_info(QB.account.message)
-    
+    QA.QA_util_log_info(QB.benchmark_data)
+    input()
     
     
 @QB.load_strategy
 def strategy():
-    #print(QB.account.message)
-    #print(QB.account.cash)
-    #input()
-    QA.QA_util_log_info(QB.account.order_queue)
+
     QA.QA_util_log_info(QB.account.hold_available)
     for item in QB.strategy_stock_list:
         #QA.QA_util_log_info(QB.QA_backtest_get_market_data(QB,item,QB.today))
