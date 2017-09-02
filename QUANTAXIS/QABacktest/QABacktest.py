@@ -413,58 +413,68 @@ class QA_Backtest():
                     self.account.order_queue = self.account.order_queue.append(
                         order_.to_df())
             else:
-                QA_util_log_info('warning: No order in %s' % str(self.now))
+                QA_util_log_info('Order Event Warning:%s in %s' % (event_,str(self.now)))
 
         elif event_ in ['wait', 'live']:
             # 订单存活 不会导致任何状态改变
             pass
-        elif event_ in ['cancel_order', 'daily_settle']:  # 订单事件:主动撤单/每日结算/成功全部交易
-            try:
-                assert isinstance(order_id_,str)
-                self.account.order_queue.query('order_id=="order_id_')[
-                    'status'] = 400  # 注销
-                if order_.towards is 1:
-                    # 买入
-                    self.account.cash_available -= self.account.order_queue.query('order_id=="order_id_')[
-                        'amount'] * self.account.order_queue.query('order_id=="order_id_')['price']
+        elif event_ in ['cancel_order']:  # 订单事件:主动撤单/每日结算/成功全部交易
+            #try:
+            assert isinstance(order_id_,str)
+            self.account.order_queue[self.account.order_queue['order_id']==order_id_]['status'] = 400  # 注销
+            if order_.towards is 1:
+                # 买入
+                self.account.cash_available -= self.account.order_queue.query('order_id=="order_id_')[
+                    'amount'] * self.account.order_queue.query('order_id=="order_id_')['price']
 
-                elif order_.towards is -1:
-                    self.account.hold_available[order_.code] += self.account.order_queue.query(
-                        'order_id=="order_id_')['price']
+            elif order_.towards is -1:
+                self.account.hold_available[order_.code] += self.account.order_queue.query(
+                    'order_id=="order_id_')['price']
 
-            except:
-                QA_util_log_info('Order Event Warning: in %s' % str(self.now))
+            #except:
+            #    QA_util_log_info('Order Event Warning:%s in %s' % (event_,str(self.now)))
+
+        elif event_ in ['daily_settle']:# 每日结算/全撤
+            self.account.order_queue[self.account.order_queue['status'] != 200]['status'] = 500  # 注销(backtest撤单)
+            if order_.towards is 1:
+                # 买入
+                self.account.cash_available -= self.account.order_queue.query('order_id=="order_id_')[
+                    'amount'] * self.account.order_queue.query('order_id=="order_id_')['price']
+
+            elif order_.towards is -1:
+                self.account.hold_available[order_.code] += self.account.order_queue.query(
+                    'order_id=="order_id_')['price']
         elif event_ in ['trade']:
-            try:
-                assert isinstance(order_,QA_QAMarket_bid)
-                assert isinstance(order_id_,str)
-                assert isinstance(trade_id_,str)
-                assert isinstance(market_message_,dict)
-                if order_.towards is 1:
-                    # 买入
-                    self.account.cash_available -= market_message_['body']['bid']['amount']*market_message_['body']['bid']['price']
-                    order_.trade_id=trade_id_
-                    order_.transact_time=self.now
-                    order_.amount-=market_message_['body']['bid']['amount']
-                    if order_.amount==0:
-                        self.account.order_queue.query('order_id=="order_id_')['status'] = 203 #注销(成功交易)
-                    else:
-                        self.account.order_queue.query('order_id=="order_id_')['amount']-=market_message_['body']['bid']['amount']
-                elif order_.towards is -1:
-                    self.account.hold_available[order_.code] += market_message_['body']['bid']['amount']
-                    # 当日卖出的股票 可以继续买入/ 可用资金增加(要减去手续费)
-                    self.account.cash_available += market_message_['body']['bid']['amount']*market_message_['body']['bid']['price']-market_message_['body']['fee']['commission']
+            #try:
+            assert isinstance(order_,QA_QAMarket_bid)
+            assert isinstance(order_id_,str)
+            assert isinstance(trade_id_,str)
+            assert isinstance(market_message_,dict)
+            if order_.towards is 1:
+                # 买入
+                self.account.cash_available -= market_message_['body']['bid']['amount']*market_message_['body']['bid']['price']
+                order_.trade_id=trade_id_
+                order_.transact_time=self.now
+                order_.amount-=market_message_['body']['bid']['amount']
+                if order_.amount==0:
+                    self.account.order_queue[self.account.order_queue['order_id']==order_id_]['status'] = 203 #注销(成功交易)
+                else:
+                    self.account.order_queue.query('order_id=="order_id_')['amount']-=market_message_['body']['bid']['amount']
+            elif order_.towards is -1:
+                self.account.hold_available[order_.code] += market_message_['body']['bid']['amount']
+                # 当日卖出的股票 可以继续买入/ 可用资金增加(要减去手续费)
+                self.account.cash_available += market_message_['body']['bid']['amount']*market_message_['body']['bid']['price']-market_message_['body']['fee']['commission']
 
-                    order_.trade_id=trade_id_
-                    order_.transact_time=self.now
-                    order_.amount-=market_message_['body']['bid']['amount']
-                    if order_.amount==0:
-                        self.account.order_queue.query('order_id=="order_id_')['status'] = 203 #注销(成功交易)
-                    else:
-                        self.account.order_queue.query('order_id=="order_id_')['amount']-=market_message_['body']['bid']['amount']
+                order_.trade_id=trade_id_
+                order_.transact_time=self.now
+                order_.amount-=market_message_['body']['bid']['amount']
+                if order_.amount==0:
+                    self.account.order_queue[self.account.order_queue['order_id']==order_id_]['status'] = 203 #注销(成功交易)
+                else:
+                    self.account.order_queue[self.account.order_queue['order_id']==order_id_]['amount']-=market_message_['body']['bid']['amount']
 
-            except:
-                QA_util_log_info('Order Event Warning: in %s' % str(self.now))
+            #except:
+                #QA_util_log_info('Order Event Warning:%s in %s' % (event_,str(self.now)))
 
         else:
             QA_util_log_info(
@@ -522,7 +532,7 @@ class QA_Backtest():
         else:
             return "Error: No buy/sell towards"
 
-    def QA_backtest_check_order(self, order):
+    def QA_backtest_check_order(self, order_id_):
         '用于检查委托单的状态'
         """
         委托单被报入交易所会有一个回报,回报状态就是交易所返回的字段:
@@ -531,11 +541,13 @@ class QA_Backtest():
         随着回测框架的不断升级,会有更多状态需要被管理:
 
 
-        200 委托成功,交易成功
-        203 委托成功,待成交
-        20
+        200 委托成功,完全交易
+        203 委托成功,未完全成功
+        300 刚创建订单的时候
+        400 已撤单
+        500 服务器撤单/每日结算
         """
-        pass
+        return self.account.order_queue[self.account.order_queue['order_id']==order_id_]['status']
 
     def QA_backtest_status(self):
         return vars(self)
