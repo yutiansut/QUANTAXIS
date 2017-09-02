@@ -292,7 +292,7 @@ class QA_Backtest_stock_day():
         if type_ in ['l', 'list', 'L']:
             return np.asarray(__res).tolist()
         elif type_ in ['pd', 'pandas', 'p']:
-            return res
+            return __res
         else:
             return np.asarray(__res)
 
