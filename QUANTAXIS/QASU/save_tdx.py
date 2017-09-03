@@ -52,17 +52,24 @@ def QA_SU_save_stock_day(start='1990-01-01', end=str(datetime.date.today()), cli
     __coll = client.quantaxis.stock_day
     __coll.ensure_index('code')
     __err = []
-    for i_ in range(len(__stock_list)):
-        QA_util_log_info('The %s of Total %s' % (i_, len(__stock_list)))
-        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
-            float(i_ / len(__stock_list) * 100))[0:4] + '%')
+
+
+
+    def __saving_work(code):
         try:
-            save_stock_day(__stock_list.index[i_], start, end, __coll)
+            QA_util_log_info(
+                '##JOB01 Now Saving STOCK_DAY==== %s' % (str(code)))
+            __coll.insert_many(
+                QA_util_to_json_from_pandas(
+                    QA_fetch_get_stock_day(str(code), '1990-01-01', str(datetime.date.today()),'00')))
         except:
-            __err.append(__stock_list.index[i_])
-    if len(__err) > 0:
-        QA_util_log_info('ERROR! Try Again with \n')
-        QA_util_log_info(__err)
+            __err.append(str(code))
+    for i_ in range(len(__stock_list )):
+        #__saving_work('000001')
+        QA_util_log_info('The %s of Total %s' % (i_, len(__stock_list )))
+        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
+            float(i_ / len(__stock_list ) * 100))[0:4] + '%')
+        __saving_work(__stock_list.index[i_])
 
 
 def QA_SU_save_stock_xdxr(client=QA_Setting.client):

@@ -239,7 +239,7 @@ class QA_Backtest():
 
     def __wrap_bid(self, __bid, __order=None):
         __market_data_for_backtest = self.QA_backtest_get_market_data(
-            self, __bid.code, __bid.date, 1)
+            self, __bid.code, __bid.datetime, 1)
         __O, __H, __L, __C, __V = self.QA_backtest_get_OHLCV(
             self, __market_data_for_backtest) if __market_data_for_backtest.len() > 0 else(None, None, None, None, None)
         if __O is not None and __order is not None:
@@ -309,7 +309,6 @@ class QA_Backtest():
     def QA_backtest_get_market_data(self, code, date, gap_=None):
         '这个函数封装了关于获取的方式'
         gap_ = self.strategy_gap if gap_ is None else gap_
-        print(date)
         return self.market_data.select_code(code).select_time_with_gap(date, gap_, 'lte')
 
     def QA_backtest_hold_amount(self, __code):
@@ -375,7 +374,7 @@ class QA_Backtest():
          __bid.sending_time,
          __bid.amount, __bid.towards) = (str(random.random()),
                                          self.setting.QA_setting_user_name, self.strategy_name,
-                                         __code, self.running_date, self.now,
+                                         __code, self.running_date, str(self.now),
                                          self.running_date, __amount, __towards)
 
         # 检查账户/临时扣费
@@ -421,24 +420,31 @@ class QA_Backtest():
         elif event_ in ['wait', 'live']:
             # 订单存活 不会导致任何状态改变
             pass
-        elif event_ in ['cancel_order']:  # 订单事件:主动撤单/每日结算/成功全部交易
+        elif event_ in ['cancel_order']:  # 订单事件:主动撤单
             #try:
             assert isinstance(order_id_,str)
-            self.account.order_queue.loc[self.account.order_queue['order_id']==order_id_,'status']= 400 
-            if order_.towards is 1:
-                # 买入
-                self.account.cash_available -= self.account.order_queue.query('order_id=="order_id_"')[
+            self.account.order_queue.loc[self.account.order_queue['order_id']==order_id_,'status']= 400 #注销事件
+            if order_id.towards is 1:
+                # 多单 撤单  现金增加
+                self.account.cash_available += self.account.order_queue.query('order_id=="order_id_"')[
                     'amount'] * self.account.order_queue.query('order_id=="order_id_"')['price']
 
             elif order_.towards is -1:
+                # 空单撤单 可卖数量增加
                 self.account.hold_available[order_.code] += self.account.order_queue.query(
                     'order_id=="order_id_"')['price']
-        elif event_ in ['daily_settle']:# 每日结算/全撤
+        elif event_ in ['daily_settle']:# 每日结算/全撤/把成交的买入/卖出单标记为500 同时结转
             __need_to_be_del=self.account.order_queue.query('status!=200').query('status!=500').query('status!=400') # 注销(backtest撤单)
 
             # 买入
+            """
+            因为今日买入的股票 是不能今日卖出的
+            
+            """
 
             __need_to_be_del['amount']=__need_to_be_del['amount']*__need_to_be_del['towards']
+
+
             #print('xxxx')
             #print(__need_to_be_del)
             #if len()
@@ -468,14 +474,14 @@ class QA_Backtest():
                 order_.transact_time=self.now
                 order_.amount-=market_message_['body']['bid']['amount']
                 
-                if order_.amount==0:
-                    self.account.order_queue.loc[self.account.order_queue['order_id']==order_id_,'status']= 200 #注销(成功交易)
+                if order_.amount==0:# 完全交易
+                    self.account.order_queue.loc[self.account.order_queue['order_id']==order_id_,'status']= 201 #注销(成功交易)['买入单不能立即结转']
                     
-                else:
+                elif order_.amount>0:
                     self.account.order_queue.loc[self.account.order_queue['order_id']==order_id_,'status']= 203#注销(成功交易)
                     self.account.order_queue.query('order_id=="order_id_"')['amount']-=market_message_['body']['bid']['amount']
             elif order_.towards is -1:
-                self.account.hold_available[order_.code] += market_message_['body']['bid']['amount']
+                self.account.hold_available[order_.code] -= market_message_['body']['bid']['amount']
                 # 当日卖出的股票 可以继续买入/ 可用资金增加(要减去手续费)
                 self.account.cash_available += market_message_['body']['bid']['amount']*market_message_['body']['bid']['price']-market_message_['body']['fee']['commission']
 
