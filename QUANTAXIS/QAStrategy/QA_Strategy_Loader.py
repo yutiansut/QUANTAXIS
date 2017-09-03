@@ -15,17 +15,11 @@ class QA_Strategy():
         print('after')
         pass
 
-
-
     @classmethod
     def strategy_init(clcs, func, *arg, **kwargs):
 
-        
-
-
-        def __init( *arg, **kwargs):
-            clcs.strategy_type='0x01'
-
+        def __init(*arg, **kwargs):
+            clcs.strategy_type = '0x01'
 
     @classmethod
     def strategy_loader(clcs, func, *arg, **kwargs):
@@ -42,16 +36,14 @@ class QA_Strategy():
 
 if __name__ == '__main__':
 
-
-
-
     class strategy():
 
         @QA_Strategy.strategy_init
         def strategy_init(self):
             pass
+
         @QA_Strategy.strategy_loader
-        def data_handle(self,a,v):
+        def data_handle(self, a, v):
             print(a)
 
-    strategy(1,2)
+    strategy(1, 2)

@@ -1,4 +1,3 @@
-# encoding: UTF-8
 #
 # The MIT License (MIT)
 #
@@ -23,47 +22,38 @@
 # SOFTWARE.
 
 
+import threading
+import time
+import queue
+from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting
+#from .QA_Event import QA_Event, QA_EventDispatcher
+from .QA_Queue_standard import QA_Queue
+
+
 """
-QA_Fetch main entry
-with QAWind/QATushare
-
-@author yutiansut
+标准的QUANTAXIS事件方法,具有QA_Queue,QA_Event等特性,以及一些日志和外部接口
 """
-#import QAFetch.QAGmsdk as QAGmsdk
-#import QAFetch.QACrawlData as QACD
-import pymongo
+class QA_Job():
+    def __init__(self):
+        self.type='default'
+        self.func='print(\'start\')'
+    
+class QA_Engine():
+    def __init__(self,name='default'):
+        self.Job = queue.Queue()
+        self.Task = QA_Queue(self.Job)
+        self.Task.setName(name)
+    def query_state(self):
+        self.Job.put({'func': 'QA_util_log_info(theading.enumerate())'})
+        self.Job.put({'func': 'QA_util_log_info(theading.current_thread())'})
+    def put(self,task:QA_Job):
+        self.Job.put(vars(QA_Job))
+    def start(self):
+        self.Task.start()
+    def pause(self):
+        self.Task.pause()
+    def resume(self):
+        self.Task.resume()
 
-from . import QATushare as QATushare
-from . import QAWind as QAWind
-from . import QAThs as QAThs
-
-#from WindPy import w
-# w.start()
-# w.start()
-
-
-def use(package):
-    if package in ['wind']:
-        return QAWind
-    elif package in ['tushare', 'ts']:
-        return QATushare
-    elif package in ['ths', 'THS']:
-        return QAThs
-
-
-def QA_fetch_get_stock_day(package, code, startDate, endDate, if_fq='01'):
-    Engine = use(package)
-    if package in ['ths', 'THS']:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq)
-    else:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate)
-
-
-def QA_fetch_get_stock_indicator(package, code, startDate, endDate):
-    Engine = use(package)
-    return Engine.QA_fetch_get_stock_indicator(code, startDate, endDate)
-
-
-def QA_fetch_get_trade_date(package, endDate, exchange):
-    Engine = use(package)
-    return Engine.QA_fetch_get_trade_date(endDate, exchange)
+if __name__ == '__main__':
+    pass

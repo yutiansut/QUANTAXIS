@@ -34,8 +34,8 @@ except:
 打包的用的setup必须引入，
 """
 
-if sys.version_info.major != 3 or sys.version_info.minor != 6:
-    print('wrong version, should be 3.6 version')
+if sys.version_info.major != 3 or sys.version_info.minor not in [4,5,6]:
+    print('wrong version, should be 3.4/3.5/3.6 version')
     sys.exit()
 
 
@@ -90,7 +90,7 @@ setup(
         'Operating System :: OS Independent',
     ],
     install_requires=['pandas>=0.20', 'numpy>=1.12.0', 'tushare>=0.7.4', 'flask_socketio>=2.9.0 ',
-                      'lxml', ' beautifulsoup4', 'flask-socketio', 'flask', 'click>=6.7',
+                      'lxml', ' beautifulsoup4', 'flask-socketio', 'flask', 'click>=6.7','TA-Lib',
                       'pymongo>=3.4', 'celery>=4.0.0', 'six>=1.10.0', 'tabulate>=0.7.7', 'pytdx>=1.33',
                       'zenlog>=1.1', 'delegator.py>=0.0.12', 'flask>=0.12.2'],
     entry_points={

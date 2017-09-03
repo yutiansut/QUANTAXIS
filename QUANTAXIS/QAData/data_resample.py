@@ -1,3 +1,4 @@
+# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -21,34 +22,34 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
-import threading
-
-from six.moves import queue
-from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting
-from .QA_Event import QA_Event, QA_EventDispatcher
-from .QA_Queue_standard import QA_Queue
+from QUANTAXIS.QAUtil import QA_util_make_min_index, QA_util_log_info
+from QUANTAXIS.QAFetch import QA_fetch_get_stock_transaction
+from datetime import time
+import pandas as pd
 
 
-"""
-标准的QUANTAXIS事件方法,具有QA_Queue,QA_Event等特性,以及一些日志和外部接口
-"""
+def QA_data_tick_resample(tick, type_='1min'):
+    data = tick['price'].resample(
+        type_, label='right', closed='left').ohlc()
 
+    data['volume'] = tick[tick['buyorsell'] != 2]['vol'].resample(
+        type_, label='right', closed='left').sum()
+    data['code'] = tick['code'][0]
 
-class QA_Task():
-    def __init__(self, Job: queue.Queue,  Event_: QA_Event, Dispatcher_: QA_EventDispatcher):
-        self.Job = Job
-        self.Task = QA_Queue(self.Job)
+    __data_ = pd.DataFrame()
+    for item in tick.drop_duplicates('date')['date']:
+        __data = data[item]
+        _data = __data[time(9, 31):time(11, 30)].append(
+            __data[time(13, 1):time(15, 0)])
+        __data_ = __data_.append(_data)
 
-    def start_task(self, name: str, if_demon=False):
-        self.Task.setName(name)
-        self.Task.start()
+    __data_['datetime'] = __data_.index
+    __data_['date'] = __data_['datetime'].apply(lambda x: str(x)[0:10])
+    __data_['datetime'] = __data_['datetime'].apply(lambda x: str(x)[0:19])
+    return __data_.fillna(method='ffill').set_index(['datetime','code'])
 
 
 if __name__ == '__main__':
-    x1 = queue.Queue()
-    # X1=QA_Queue(x1)
-    E1 = QA_Event('x1')
-    D1 = QA_EventDispatcher()
-    QA_Task(x1, E1, D1).start_task('xx')
-    x1.put({'fn': print(x1)})
+    tick = QA_fetch_get_stock_transaction(
+        'tdx', '000001', '2017-01-03', '2017-01-05')
+    print(QA_data_tick_resample(tick))

@@ -32,14 +32,14 @@ from pandas import DataFrame
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
                               QA_util_date_valid, QA_util_log_info,
                               QA_util_time_stamp)
-from QUANTAXIS.QAData import QA_data_make_hfq,QA_data_make_qfq
+from QUANTAXIS.QAData import QA_data_make_hfq, QA_data_make_qfq
 """
 按要求从数据库取数据，并转换成numpy结构
 
 """
 
 
-def QA_fetch_stock_day(code, __start, __end, format_='numpy', collections=QA_Setting.client.quantaxis.stock_day, drop_factor=True):
+def QA_fetch_stock_day(code, __start, __end, format_='numpy', collections=QA_Setting.client.quantaxis.stock_day):
     '获取股票日线'
     __start = str(__start)[0:10]
     __end = str(__end)[0:10]
@@ -52,12 +52,10 @@ def QA_fetch_stock_day(code, __start, __end, format_='numpy', collections=QA_Set
             'code': str(code)[0:6], "date_stamp": {
                 "$lte": QA_util_date_stamp(__end),
                 "$gte": QA_util_date_stamp(__start)}}):
-            if drop_factor:
-                __data.append([str(item['code']), float(item['open']), float(item['high']), float(
-                    item['low']), float(item['close']), float(item['vol']), item['date']])
-            else:
-                __data.append([str(item['code']), float(item['open']), float(item['high']), float(
-                    item['low']), float(item['close']), float(item['vol']), item['date'], item['qfqfactor']])
+
+            __data.append([str(item['code']), float(item['open']), float(item['high']), float(
+                item['low']), float(item['close']), float(item['vol']), item['date']])
+
         # 多种数据格式
         if format_ in ['n', 'N', 'numpy']:
             __data = numpy.asarray(__data)
@@ -66,8 +64,7 @@ def QA_fetch_stock_day(code, __start, __end, format_='numpy', collections=QA_Set
         elif format_ in ['P', 'p', 'pandas', 'pd']:
 
             __data = DataFrame(__data, columns=[
-                'code', 'open', 'high', 'low', 'close', 'volume', 'date'] if drop_factor else [
-                'code', 'open', 'high', 'low', 'close', 'volume', 'date', 'qfqfactor'])
+                'code', 'open', 'high', 'low', 'close', 'volume', 'date']) 
 
             __data['date'] = pd.to_datetime(__data['date'])
             __data = __data.set_index('date', drop=False)
@@ -79,7 +76,7 @@ def QA_fetch_stock_day(code, __start, __end, format_='numpy', collections=QA_Set
 def QA_fetch_trade_date(collections):
     '获取交易日期'
     __data = []
-    for item in collections.find({}):
+    for item in collections.find_one({}):
         __data.append(item['date'])
     return __data
 
@@ -135,9 +132,8 @@ def QA_fetch_stocklist_day(stock_list, date_range, collections=QA_Setting.client
     return __data
 
 
-def QA_fetch_index_day(code, __start, __end, format_='numpy', collections=QA_Setting.client.quantaxis.stock_day):
+def QA_fetch_index_day(code, __start, __end, format_='numpy', collections=QA_Setting.client.quantaxis.index_day):
     '获取指数日线'
-    # print(datetime.datetime.now())
     __start = str(__start)[0:10]
     __end = str(__end)[0:10]
 
@@ -146,30 +142,61 @@ def QA_fetch_index_day(code, __start, __end, format_='numpy', collections=QA_Set
         __data = []
 
         for item in collections.find({
-            'code': str(code), "date_stamp": {
+            'code': str(code)[0:6], "date_stamp": {
                 "$lte": QA_util_date_stamp(__end),
-                "$gte": QA_util_date_stamp(__start)
-            }
-        }):
-            # print(item['code'])
+                "$gte": QA_util_date_stamp(__start)}}):
 
             __data.append([str(item['code']), float(item['open']), float(item['high']), float(
-                item['low']), float(item['close']), float(item['volume']), item['date']])
+                item['low']), float(item['close']), float(item['vol']), item['date']])
+
+        # 多种数据格式
         if format_ in ['n', 'N', 'numpy']:
             __data = numpy.asarray(__data)
         elif format_ in ['list', 'l', 'L']:
             __data = __data
         elif format_ in ['P', 'p', 'pandas', 'pd']:
-            __data = DataFrame(__data, columns=[
-                'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
-            __data['date'] = pd.to_datetime(__data['date'])
-            __data = __data.set_index('date')
 
+            __data = DataFrame(__data, columns=[
+                'code', 'open', 'high', 'low', 'close', 'volume', 'date'] )
+
+            __data['date'] = pd.to_datetime(__data['date'])
+            __data = __data.set_index('date', drop=False)
         return __data
     else:
         QA_util_log_info('something wrong with date')
 
 
+def QA_fetch_index_min(code, startTime, endTime, format_='numpy', type_='1min', collections=QA_Setting.client.quantaxis.index_min):
+    '获取股票分钟线'
+    if type_ in ['1min', '1m']:
+        type_ = '1min'
+    elif type_ in ['5min', '5m']:
+        type_ = '5min'
+    elif type_ in ['15min', '15m']:
+        type_ = '15min'
+    __data = []
+    for item in collections.find({
+        'code': str(code), "time_stamp": {
+            "$gte": QA_util_time_stamp(startTime),
+            "$lte": QA_util_time_stamp(endTime)
+        }, 'type': type_
+    }):
+
+        __data.append([str(item['code']), float(item['open']), float(item['high']), float(
+            item['low']), float(item['close']), float(item['vol']), item['datetime'], item['time_stamp'], item['date']])
+
+    __data = DataFrame(__data, columns=[
+        'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'time_stamp', 'date'])
+
+    __data['datetime'] = pd.to_datetime(__data['datetime'])
+    __data = __data.set_index('datetime', drop=False)
+    #res = QA_fetch_stock_to_fq(__data)
+    if format_ in ['numpy', 'np', 'n']:
+        return numpy.asarray(__data)
+    elif format_ in ['list', 'l', 'L']:
+        return numpy.asarray(__data).tolist()
+    elif format_ in ['P', 'p', 'pandas', 'pd']:
+        return __data
 def QA_fetch_stock_min(code, startTime, endTime, format_='numpy', type_='1min', collections=QA_Setting.client.quantaxis.stock_min):
     '获取股票分钟线'
     if type_ in ['1min', '1m']:
@@ -183,15 +210,15 @@ def QA_fetch_stock_min(code, startTime, endTime, format_='numpy', type_='1min', 
         'code': str(code), "time_stamp": {
             "$gte": QA_util_time_stamp(startTime),
             "$lte": QA_util_time_stamp(endTime)
-        },'type':type_
+        }, 'type': type_
     }):
 
         __data.append([str(item['code']), float(item['open']), float(item['high']), float(
             item['low']), float(item['close']), float(item['vol']), item['datetime'], item['time_stamp'], item['date']])
-    
+
     __data = DataFrame(__data, columns=[
         'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'time_stamp', 'date'])
-    
+
     __data['datetime'] = pd.to_datetime(__data['datetime'])
     __data = __data.set_index('datetime', drop=False)
     #res = QA_fetch_stock_to_fq(__data)
@@ -203,28 +230,18 @@ def QA_fetch_stock_min(code, startTime, endTime, format_='numpy', type_='1min', 
         return __data
 
 
-def QA_fetch_stocklist_min(stock_list, date_range, collections=QA_Setting.client.quantaxis.stock_min_five):
-    '获取前复权股票分钟线'
+def QA_fetch_stocklist_min(stock_list, date_range, type_='1min', collections=QA_Setting.client.quantaxis.stock_min):
+    '获取不复权股票分钟线'
     __data = []
     for item in stock_list:
         __data.append(QA_fetch_stock_min(
-            item, date_range[0], date_range[-1], 'pd', collections))
+            item, date_range[0], date_range[-1], 'pd', type_, collections))
     return __data
 
 
 def QA_fetch_future_day():
     pass
 
-
-def QA_fetch_stock_to_fq(__data,type_='01'):
-    '股票 日线/分钟线 动态复权接口'
-    if type_ in ['01','qfq']:
-        return QA_data_make_qfq(__data,QA_fetch_stock_xdxr(__data['code'][0]),__data.index[0],__data.index[-1])
-    elif type_ in ['02','hfq']:
-        return QA_data_make_hfq(__data,QA_fetch_stock_xdxr(__data['code'][0]),__data.index[0],__data.index[-1])
-    else:
-        QA_util_log_info('wrong fq type! Using qfq')
-        return QA_data_make_qfq(__data,QA_fetch_stock_xdxr(__data['code'][0]),__data.index[0],__data.index[-1])
 
 def QA_fetch_future_min():
     pass
@@ -234,10 +251,10 @@ def QA_fetch_future_tick():
     pass
 
 
-
-def QA_fetch_stock_xdxr(code,format_='pd',collections=QA_Setting.client.quantaxis.stock_xdxr):
+def QA_fetch_stock_xdxr(code, format_='pd', collections=QA_Setting.client.quantaxis.stock_xdxr):
     '获取股票除权信息/数据库'
-    data=pd.DataFrame([item for item in collections.find({'code':code})]).drop(['_id'],axis=1)
-    data['date']=pd.to_datetime(data['date'])
-    return data.set_index('date',drop=False)
-    #data['date']=data['date'].apply(lambda)
+    data = pd.DataFrame([item for item in collections.find(
+        {'code': code})]).drop(['_id'], axis=1)
+    data['date'] = pd.to_datetime(data['date'])
+    return data.set_index('date', drop=False)
+    # data['date']=data['date'].apply(lambda)

@@ -54,7 +54,7 @@ class QA_QAMarket_bid():
         self.amount_model = 'amount'
         self.order_id = str(random.random())
         self.trade_id = ''
-        self.status = ''
+        self.status = '300'
 
     def stock_day(self):
         self.type = '0x01'
@@ -71,7 +71,7 @@ class QA_QAMarket_bid():
     def to_df(self):
         return pd.DataFrame([vars(self), ])
 
-    def from_dict(self, bid: dict):
+    def from_dict(self, bid):
         try:
             self.price = bid['price']
             self.date = bid['date']

@@ -22,7 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .data_fq import QA_data_get_hfq,QA_data_get_qfq,QA_data_make_qfq,QA_data_make_hfq
-from .make_bar import QA_data_tick_resample
+from .data_fq import QA_data_get_hfq, QA_data_get_qfq, QA_data_make_qfq, QA_data_make_hfq, QA_data_stock_to_fq
+from .data_resample import QA_data_tick_resample
 
-from .data_struct import QA_DataStruct_Stock_day
+from .QADataStruct import (QA_DataStruct_Stock_day, QA_DataStruct_Stock_min, QA_DataStruct_Index_min,
+                           QA_DataStruct_Index_day, QA_DataStruct_Stock_transaction)

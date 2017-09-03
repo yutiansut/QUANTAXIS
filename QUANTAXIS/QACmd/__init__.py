@@ -33,9 +33,9 @@ import platform
 
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting, QA_util_mongo_initial, QA_util_mongo_make_index
-from QUANTAXIS import (QA_SU_save_stock_info, QA_SU_save_stock_list,
-                       QA_SU_save_trade_date_all, QA_save_stock_day_all,
-                       QA_SU_update_stock_day, QA_save_stock_day_with_fqfactor)
+from QUANTAXIS import (QA_SU_save_stock_list, QA_SU_save_stock_min, QA_SU_save_stock_xdxr,
+                       QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_index_min,
+                       QA_SU_update_stock_day)
 from QUANTAXIS import __version__
 
 
@@ -117,19 +117,18 @@ class CLI(cmd.Cmd):
         QA_Setting.client.quantaxis.user_list.insert(
             {'username': 'admin', 'password': 'admin'})
         # 3. 股票列表存储
-        QA_SU_save_stock_list('ts', QA_Setting.client)
-        # 4. 交易日期存储
-        QA_SU_save_trade_date_all()
-        # 5. 股票基本面信息存储
-        QA_SU_save_stock_info('ts', QA_Setting.client)
-
-        QA_save_stock_day_with_fqfactor()
+        QA_SU_save_stock_day('tdx')
+        QA_SU_save_stock_xdxr('tdx')
+        QA_SU_save_stock_min('tdx')
+        QA_SU_save_index_day('tdx')
+        QA_SU_save_index_min('tdx')
+        QA_SU_save_stock_list('tdx')
 
     def help_save(self):
         QA_util_log_info('Save all the stock data from tushare')
 
     def do_update(self, arg):
-        QA_SU_update_stock_day('ts', QA_Setting.client)
+        QA_SU_update_stock_day('tdx')
 
     def help_update(self):
         QA_util_log_info('Update the stock data')

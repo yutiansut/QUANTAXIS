@@ -156,7 +156,8 @@ class QA_Backtest_stock_day():
         QA_util_log_info('QUANTAXIS Backtest Engine Initial Successfully')
         QA_util_log_info('Basical Info: \n' + tabulate(
             [[str(__version__), str(self.strategy_name)]], headers=('Version', 'Strategy_name')))
-        QA_util_log_info('BACKTEST Cookie_ID is:  '+str(self.account.account_cookie))
+        QA_util_log_info('BACKTEST Cookie_ID is:  ' +
+                         str(self.account.account_cookie))
         QA_util_log_info('Stock_List: \n' +
                          tabulate([self.strategy_stock_list]))
 
@@ -293,7 +294,7 @@ class QA_Backtest_stock_day():
         if type_ in ['l', 'list', 'L']:
             return np.asarray(__res).tolist()
         elif type_ in ['pd', 'pandas', 'p']:
-            return res
+            return __res
         else:
             return np.asarray(__res)
 
@@ -307,7 +308,7 @@ class QA_Backtest_stock_day():
         ), __data.T[4].astype(float).tolist(),
             __data.T[5].astype(float).tolist())
 
-    def QA_backtest_send_order(self, __code: str, __amount: int, __towards: int, __order: dict):
+    def QA_backtest_send_order(self, __code, __amount, __towards, __order):
         """
         2017/8/4
         委托函数
@@ -387,7 +388,7 @@ class QA_Backtest_stock_day():
             if __message['body']['bid']['amount'] > 0:
                 # 这个判断是为了 如果买入资金不充足,所以买入报了一个0量单的情况
                 #如果买入量>0, 才判断为成功交易
-                self.account.QA_account_receive_deal(__message)
+                self.messages=self.account.QA_account_receive_deal(__message)
                 return __message
 
         # 下面是卖出操作,这里在卖出前需要考虑一个是否有仓位的问题:
@@ -404,7 +405,7 @@ class QA_Backtest_stock_day():
                 __message = self.market.receive_bid(
                     __bid)
                 if __message['header']['status'] == 200:
-                    self.account.QA_account_receive_deal(__message)
+                    self.messages=self.account.QA_account_receive_deal(__message)
                 return __message
             else:
                 err_info = 'Error: Not Enough amount for code %s in hold list' % str(
@@ -436,7 +437,7 @@ class QA_Backtest_stock_day():
             pre_del_id = []
 
             def __sell(id_):
-                if __hold_list[item_][3] > 0:
+                if __hold_list[id_][3] > 0:
                     __last_bid = self.bid
                     __last_bid.amount = int(__hold_list[id_][3])
                     __last_bid.order_id = str(random.random())

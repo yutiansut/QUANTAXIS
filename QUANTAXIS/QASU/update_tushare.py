@@ -36,7 +36,7 @@ def QA_update_stock_day(name, startDate, endDate):
     data = QATushare.QA_fetch_get_stock_day(name, startDate, endDate)
 
 
-def QA_update_stock_day_all(client=QA_Setting.client):
+def QA_SU_update_stock_day(client=QA_Setting.client):
 
     data = QATushare.QA_fetch_get_stock_list()
     date = str(datetime.date.today())
@@ -59,8 +59,6 @@ def QA_update_stock_day_all(client=QA_Setting.client):
     coll_stock_day = client.quantaxis.stock_day
     stock_list.append('sz50')
     stock_list.append('hs300')
-
-    
 
 
     for item in stock_list:
