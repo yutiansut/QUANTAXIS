@@ -102,45 +102,84 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=best_ip, p
             data['close'] = data['close'] * data['adj']
             data['preclose'] = data['preclose'] * data['adj']
             return data[start_date:end_date]
-        elif if_fq in ['02', 'hfq']:
+        elif if_fq in ['03', 'ddqfq']:
             xdxr_data = QA_fetch_get_stock_xdxr(code)
             info = xdxr_data[xdxr_data['category'] == 1]
+
             data = pd.concat([data.assign(date=pd.to_datetime(data['datetime'].apply(lambda x: x[0:10]))).assign(code=str(code))
                               .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10])))
                               .set_index('date', drop=False, inplace=False)
                               .drop(['year', 'month', 'day', 'hour',
                                      'minute', 'datetime'], axis=1), info[['fenhong', 'peigu', 'peigujia',
-                                                                           'songzhuangu']][data.index[0]:]], axis=1).fillna(0)
-            data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
+                                                                           'songzhuangu']][data.index[0]:data.index[-1]]], axis=1).fillna(0)
+            data['preclose']=(data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
                                 * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
-            data['adj'] = (data['preclose'].shift(-1) /
+            data['adj']=(data['preclose'].shift(-1) /
+                           data['close']).fillna(1)[::-1].cumprod()
+            data['open']=data['open'] * data['adj']
+            data['high']=data['high'] * data['adj']
+            data['low']=data['low'] * data['adj']
+            data['close']=data['close'] * data['adj']
+            data['preclose']=data['preclose'] * data['adj']
+            return data[start_date:end_date]
+        elif if_fq in ['02', 'hfq']:
+            xdxr_data=QA_fetch_get_stock_xdxr(code)
+            info=xdxr_data[xdxr_data['category'] == 1]
+            data=pd.concat([data.assign(date=pd.to_datetime(data['datetime'].apply(lambda x: x[0:10]))).assign(code=str(code))
+                              .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10])))
+                              .set_index('date', drop=False, inplace=False)
+                              .drop(['year', 'month', 'day', 'hour',
+                                     'minute', 'datetime'], axis=1), info[['fenhong', 'peigu', 'peigujia',
+                                                                           'songzhuangu']][data.index[0]:]], axis=1).fillna(0)
+            data['preclose']=(data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
+                                * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
+            data['adj']=(data['preclose'].shift(-1) /
                            data['close']).fillna(1).cumprod()
-            data['open'] = data['open'] / data['adj']
-            data['high'] = data['high'] / data['adj']
-            data['low'] = data['low'] / data['adj']
-            data['close'] = data['close'] / data['adj']
-            data['preclose'] = data['preclose'] / data['adj']
+            data['open']=data['open'] / data['adj']
+            data['high']=data['high'] / data['adj']
+            data['low']=data['low'] / data['adj']
+            data['close']=data['close'] / data['adj']
+            data['preclose']=data['preclose'] / data['adj']
+            return data[start_date:end_date]
+        elif if_fq in ['04', 'ddhfq']:
+            xdxr_data=QA_fetch_get_stock_xdxr(code)
+            info=xdxr_data[xdxr_data['category'] == 1]
+            data=pd.concat([data.assign(date=pd.to_datetime(data['datetime'].apply(lambda x: x[0:10]))).assign(code=str(code))
+                              .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10])))
+                              .set_index('date', drop=False, inplace=False)
+                              .drop(['year', 'month', 'day', 'hour',
+                                     'minute', 'datetime'], axis=1), info[['fenhong', 'peigu', 'peigujia',
+                                                                           'songzhuangu']][data.index[0]:data.index[-1]]], axis=1).fillna(0)
+            data['preclose']=(data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
+                                * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
+            data['adj']=(data['preclose'].shift(-1) /
+                           data['close']).fillna(1).cumprod()
+            data['open']=data['open'] / data['adj']
+            data['high']=data['high'] / data['adj']
+            data['low']=data['low'] / data['adj']
+            data['close']=data['close'] / data['adj']
+            data['preclose']=data['preclose'] / data['adj']
             return data[start_date:end_date]
 
 
 def QA_fetch_get_stock_min(code, start, end, level='1min', ip=best_ip, port=7709):
-    api = TdxHq_API()
-    type_ = ''
+    api=TdxHq_API()
+    type_=''
     if str(level) in ['5', '5m', '5min', 'five']:
-        level, type_ = 0, '5min'
+        level, type_=0, '5min'
     elif str(level) in ['1', '1m', '1min', 'one']:
-        level, type_ = 8, '1min'
+        level, type_=8, '1min'
     elif str(level) in ['15', '15m', '15min', 'fifteen']:
-        level, type_ = 1, '15min'
+        level, type_=1, '15min'
     elif str(level) in ['30', '30m', '30min', 'half']:
-        level, type_ = 2, '30min'
+        level, type_=2, '30min'
     elif str(level) in ['60', '60m', '60min', '1h']:
-        level, type_ = 3, '60min'
+        level, type_=3, '60min'
     with api.connect(ip, port):
 
-        data = pd.concat([api.to_df(api.get_security_bars(level, __select_market_code(
+        data=pd.concat([api.to_df(api.get_security_bars(level, __select_market_code(
             str(code)), str(code), (25 - i) * 800, 800)) for i in range(26)], axis=0)
-        #print(data['datetime'].apply(lambda x: str(x)[0:10]))
+        # print(data['datetime'].apply(lambda x: str(x)[0:10]))
         return data\
             .assign(datetime=pd.to_datetime(data['datetime']), code=str(code))\
             .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1, inplace=False)\
@@ -151,10 +190,10 @@ def QA_fetch_get_stock_min(code, start, end, level='1min', ip=best_ip, port=7709
 
 
 def QA_fetch_get_stock_latest(code, ip=best_ip, port=7709):
-    code = [code] if isinstance(code, str) else code
-    api = TdxHq_API(multithread=True)
+    code=[code] if isinstance(code, str) else code
+    api=TdxHq_API(multithread=True)
     with api.connect(ip, port):
-        data = pd.concat([api.to_df(api.get_security_bars(
+        data=pd.concat([api.to_df(api.get_security_bars(
             9, __select_market_code(item), item, 0, 1)).assign(code=item) for item in code], axis=0)
         return data\
             .assign(date=pd.to_datetime(data['datetime']
@@ -165,23 +204,23 @@ def QA_fetch_get_stock_latest(code, ip=best_ip, port=7709):
 
 
 def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=best_ip, port=7709):
-    api = TdxHq_API()
-    __data = pd.DataFrame()
+    api=TdxHq_API()
+    __data=pd.DataFrame()
     with api.connect(ip, port):
-        code = [code] if type(code) is str else code
+        code=[code] if type(code) is str else code
         for id_ in range(int(len(code) / 80) + 1):
-            __data = __data.append(api.to_df(api.get_security_quotes(
+            __data=__data.append(api.to_df(api.get_security_quotes(
                 [(__select_market_code(x), x) for x in code[80 * id_:80 * (id_ + 1)]])))
-            __data['datetime'] = datetime.datetime.now()
-        data = __data[['datetime', 'code', 'open', 'high', 'low', 'price']]
+            __data['datetime']=datetime.datetime.now()
+        data=__data[['datetime', 'code', 'open', 'high', 'low', 'price']]
         return data.set_index('code', drop=False, inplace=False)
 
 
 def QA_fetch_get_stock_list(type_='stock', ip=best_ip, port=7709):
 
-    api = TdxHq_API()
+    api=TdxHq_API()
     with api.connect(ip, port):
-        data = pd.concat([pd.concat([api.to_df(api.get_security_list(j, i * 1000)).assign(sse='sz' if j == 0 else 'sh').set_index(
+        data=pd.concat([pd.concat([api.to_df(api.get_security_list(j, i * 1000)).assign(sse='sz' if j == 0 else 'sh').set_index(
             ['code', 'sse'], drop=False) for i in range(int(api.get_security_count(j) / 1000) + 1)], axis=0) for j in range(2)], axis=0)
         if type_ in ['stock', 'gp']:
             return pd.concat([data[data['sse'] == 'sz'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 10000 <= 30][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 100000 != 2],
@@ -197,9 +236,9 @@ def QA_fetch_get_stock_list(type_='stock', ip=best_ip, port=7709):
 def QA_fetch_get_index_day(code, start_date, end_date, ip=best_ip, port=7709):
     '指数日线'
     QA_util_log_info(code)
-    api = TdxHq_API()
+    api=TdxHq_API()
     with api.connect(ip, port):
-        data = pd.concat([api.to_df(api.get_index_bars(
+        data=pd.concat([api.to_df(api.get_index_bars(
             9, 1 if str(code)[0] in ['0', '8', '9'] else 0, str(code), (9 - i) * 800, 800)) for i in range(10)], axis=0)
         return data.assign(date=pd.to_datetime(data['datetime'].apply(lambda x: x[0:10]))).assign(code=str(code))\
             .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10])))\
@@ -209,20 +248,20 @@ def QA_fetch_get_index_day(code, start_date, end_date, ip=best_ip, port=7709):
 
 
 def QA_fetch_get_index_min(code, start, end, level='1min', ip=best_ip, port=7709):
-    api = TdxHq_API()
-    type_ = ''
+    api=TdxHq_API()
+    type_=''
     if str(level) in ['5', '5m', '5min', 'five']:
-        level, type_ = 0, '5min'
+        level, type_=0, '5min'
     elif str(level) in ['1', '1m', '1min', 'one']:
-        level, type_ = 8, '1min'
+        level, type_=8, '1min'
     elif str(level) in ['15', '15m', '15min', 'fifteen']:
-        level, type_ = 1, '15min'
+        level, type_=1, '15min'
     elif str(level) in ['30', '30m', '30min', 'half']:
-        level, type_ = 2, '30min'
+        level, type_=2, '30min'
     elif str(level) in ['60', '60m', '60min', '1h']:
-        level, type_ = 3, '60min'
+        level, type_=3, '60min'
     with api.connect(ip, port):
-        data = pd.concat([api.to_df(api.get_index_bars(
+        data=pd.concat([api.to_df(api.get_index_bars(
             level, 1 if str(code)[0] in ['0', '8', '9'] else 0, code, (25 - i) * 800, 800)) for i in range(26)], axis=0)
         return data\
             .assign(datetime=pd.to_datetime(data['datetime']), code=str(code))\
@@ -234,7 +273,7 @@ def QA_fetch_get_index_min(code, start, end, level='1min', ip=best_ip, port=7709
 
 
 def __QA_fetch_get_stock_transaction(code, day, retry, api):
-    data_ = pd.concat([api.to_df(api.get_history_transaction_data(
+    data_=pd.concat([api.to_df(api.get_history_transaction_data(
         __select_market_code(str(code)), str(code), (20 - i) * 800, 800, QA_util_date_str2int(day))) for i in range(21)], axis=0)
 
     for _ in range(retry):
@@ -246,16 +285,16 @@ def __QA_fetch_get_stock_transaction(code, day, retry, api):
 
 
 def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=best_ip, port=7709):
-    api = TdxHq_API()
+    api=TdxHq_API()
 
-    real_start, real_end = QA_util_get_real_datelist(start, end)
-    real_id_range = []
+    real_start, real_end=QA_util_get_real_datelist(start, end)
+    real_id_range=[]
     with api.connect(ip, port):
-        data = pd.DataFrame()
+        data=pd.DataFrame()
         for index_ in range(trade_date_sse.index(real_start), trade_date_sse.index(real_end) + 1):
 
             try:
-                data_ = __QA_fetch_get_stock_transaction(
+                data_=__QA_fetch_get_stock_transaction(
                     code, trade_date_sse[index_], retry, api)
                 if len(data_) < 1:
                     return None
@@ -265,7 +304,7 @@ def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=best_ip, port=7
             else:
                 QA_util_log_info('Successfully Getting %s history transaction data in day %s' % (
                     code, trade_date_sse[index_]))
-                data = data.append(data_)
+                data=data.append(data_)
 
         return data
 
@@ -275,14 +314,14 @@ def QA_fetch_get_stock_info():
 
 
 def QA_fetch_get_stock_xdxr(code, ip=best_ip, port=7709):
-    api = TdxHq_API()
-    market_code = __select_market_code(code)
+    api=TdxHq_API()
+    market_code=__select_market_code(code)
     with api.connect(ip, port):
-        category = {
+        category={
             '1': '除权除息', '2': '送配股上市', '3': '非流通股上市', '4': '未知股本变动', '5': '股本变化',
             '6': '增发新股', '7': '股份回购', '8': '增发新股上市', '9': '转配股上市', '10': '可转债上市',
             '11': '扩缩股', '12': '非流通股缩股', '13':  '送认购权证', '14': '送认沽权证'}
-        data = api.to_df(api.get_xdxr_info(market_code, code))
+        data=api.to_df(api.get_xdxr_info(market_code, code))
         return data\
             .assign(date=pd.to_datetime(data[['year', 'month', 'day']]))\
             .drop(['year', 'month', 'day'], axis=1)\
@@ -296,7 +335,7 @@ def QA_fetch_get_stock_xdxr(code, ip=best_ip, port=7709):
 
 if __name__ == '__main__':
     # print(QA_fetch_get_stock_day('000001','2017-07-03','2017-07-10'))
-    #print(QA_fetch_get_stock_day('000001', '2013-07-01', '2013-07-09'))
+    # print(QA_fetch_get_stock_day('000001', '2013-07-01', '2013-07-09'))
     # print(QA_fetch_get_stock_realtime('000001'))
     print(QA_fetch_get_index_day('000001', '2017-01-01', '2017-07-01'))
-    #print(QA_fetch_get_stock_transaction('000001', '2017-07-03', '2017-07-10'))
+    # print(QA_fetch_get_stock_transaction('000001', '2017-07-03', '2017-07-10'))
