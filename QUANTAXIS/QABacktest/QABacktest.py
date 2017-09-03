@@ -309,6 +309,7 @@ class QA_Backtest():
     def QA_backtest_get_market_data(self, code, date, gap_=None):
         '这个函数封装了关于获取的方式'
         gap_ = self.strategy_gap if gap_ is None else gap_
+        print(date)
         return self.market_data.select_code(code).select_time_with_gap(date, gap_, 'lte')
 
     def QA_backtest_hold_amount(self, __code):
@@ -323,8 +324,11 @@ class QA_Backtest():
         __result = []
         self.order.__init__()
         __bid_list = self.order.from_dataframe(self.account.order_queue.query('status!=200').query('status!=500').query('status!=400'))
+
         for item in __bid_list:
             __bid,__market=self.__wrap_bid(self,item)
+            print(vars(__bid))
+            print(__market.data)
             __message=self.__QA_backtest_send_bid(self,__bid,__market)
             if isinstance(__message,dict):
                 if __message['header']['status'] in ['200',200]:

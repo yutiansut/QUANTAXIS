@@ -114,7 +114,7 @@ def strategy():
 
     QA.QA_util_log_info(QB.account.hold_available)
     for item in QB.strategy_stock_list:
-        #QA.QA_util_log_info(QB.QA_backtest_get_market_data(QB,item,QB.today))
+        #QA.QA_util_log_info(QB.QA_backtest_get_market_data(QB,item,QB.today).data)
         if QB.QA_backtest_hold_amount(QB,item)==0:
             QB.QA_backtest_send_order(QB,item,10000,1,{'bid_model':'Market'})
 
