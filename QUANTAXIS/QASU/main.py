@@ -1,4 +1,3 @@
-# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -22,20 +21,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
+from QUANTAXIS.QASU import save_tdx as stdx
+from QUANTAXIS.QASU import save_tdx_file as tdx_file
+from QUANTAXIS.QASU import save_tushare as sts
+from QUANTAXIS.QASU import save_wind as sw
+from QUANTAXIS.QASU import update_tdx as utdx
+from QUANTAXIS.QASU import update_tushare as uts
+from QUANTAXIS.QASU import update_wind as uw
 from QUANTAXIS.QAUtil import QA_Setting
-
-from . import fqfactor as fq
-from . import save_tdx_file as tdx_file
-from . import save_tushare as sts
-from . import save_wind as sw
-from . import update_tushare as uts
-from . import update_wind as uw
-
-
-def QA_SU_save_stock_list(engine, client=QA_Setting.client):
-    engine = select_save_engine(engine)
-    engine.QA_SU_save_stock_list(client)
 
 
 def QA_SU_save_trade_date(engine, client=QA_Setting.client):
@@ -48,9 +41,34 @@ def QA_SU_save_stock_info(engine, client=QA_Setting.client):
     engine.QA_SU_save_stock_info(client)
 
 
-def QA_SU_save_stock_day(name, startDate, endDate, engine, client=QA_Setting.client):
+def QA_SU_save_stock_list(engine, client=QA_Setting.client):
     engine = select_save_engine(engine)
-    engine.QA_SU_save_stock_day(name, startDate, endDate, client)
+    engine.QA_SU_save_stock_list(client)
+
+
+def QA_SU_save_stock_day(engine, client=QA_Setting.client):
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_stock_day(client)
+
+
+def QA_SU_save_stock_min(engine, client=QA_Setting.client):
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_stock_min(client)
+
+
+def QA_SU_save_index_day(engine, client=QA_Setting.client):
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_index_day(client)
+
+
+def QA_SU_save_index_min(engine, client=QA_Setting.client):
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_index_min(client)
+
+
+def QA_SU_save_stock_xdxr(engine, client=QA_Setting.client):
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_stock_xdxr(client)
 
 
 def QA_SU_save_stock_day_init(startDate, engine, client=QA_Setting.client):
@@ -60,11 +78,27 @@ def QA_SU_save_stock_day_init(startDate, engine, client=QA_Setting.client):
 
 def QA_SU_update_stock_day(engine, client=QA_Setting.client):
     engine = select_update_engine(engine)
-    engine.QA_update_stock_day_all(client)
+    engine.QA_SU_update_stock_day(client)
 
 
-def QA_SU_save_stock_fqfactor(engine='', client=QA_Setting.client):
-    fq.QA_save_fq_factor(client)
+def QA_SU_update_stock_xdxr(engine, client=QA_Setting.client):
+    engine = select_update_engine(engine)
+    engine.QA_SU_update_stock_xdxr(client)
+
+
+def QA_SU_update_stock_min(engine, client=QA_Setting.client):
+    engine = select_update_engine(engine)
+    engine.QA_SU_update_stock_min(client)
+
+
+def QA_SU_update_index_day(engine, client=QA_Setting.client):
+    engine = select_update_engine(engine)
+    engine.QA_SU_update_index_day(client)
+
+
+def QA_SU_update_index_min(engine, client=QA_Setting.client):
+    engine = select_update_engine(engine)
+    engine.QA_SU_update_index_min(client)
 
 
 def select_save_engine(engine):
@@ -72,6 +106,8 @@ def select_save_engine(engine):
         return sw
     elif engine in ['tushare', 'ts', 'Tushare']:
         return sts
+    elif engine in ['tdx']:
+        return stdx
 
 
 def select_update_engine(engine):
@@ -79,6 +115,8 @@ def select_update_engine(engine):
         return uw
     elif engine in ['tushare', 'ts', 'Tushare']:
         return uts
+    elif engine in ['tdx']:
+        return utdx
 
 
 def QA_SU_save_stock_min_5(file_dir, client=QA_Setting.client):

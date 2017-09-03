@@ -156,6 +156,8 @@ class QA_Backtest_stock_day():
         QA_util_log_info('QUANTAXIS Backtest Engine Initial Successfully')
         QA_util_log_info('Basical Info: \n' + tabulate(
             [[str(__version__), str(self.strategy_name)]], headers=('Version', 'Strategy_name')))
+        QA_util_log_info('BACKTEST Cookie_ID is:  ' +
+                         str(self.account.account_cookie))
         QA_util_log_info('Stock_List: \n' +
                          tabulate([self.strategy_stock_list]))
 
@@ -209,7 +211,7 @@ class QA_Backtest_stock_day():
                     __last_bid.user = self.setting.QA_setting_user_name
                     __last_bid.strategy = self.strategy_name
                     __last_bid.bid_model = 'auto'
-                    __last_bid.status = '0x01'
+                    __last_bid.type = '0x01'
                     __last_bid.amount_model = 'amount'
 
                     __message = self.market.receive_bid(
@@ -306,7 +308,7 @@ class QA_Backtest_stock_day():
         ), __data.T[4].astype(float).tolist(),
             __data.T[5].astype(float).tolist())
 
-    def QA_backtest_send_order(self, __code: str, __amount: int, __towards: int, __order: dict):
+    def QA_backtest_send_order(self, __code, __amount, __towards, __order):
         """
         2017/8/4
         委托函数
@@ -435,7 +437,7 @@ class QA_Backtest_stock_day():
             pre_del_id = []
 
             def __sell(id_):
-                if __hold_list[item_][3] > 0:
+                if __hold_list[id_][3] > 0:
                     __last_bid = self.bid
                     __last_bid.amount = int(__hold_list[id_][3])
                     __last_bid.order_id = str(random.random())
@@ -446,7 +448,7 @@ class QA_Backtest_stock_day():
                     __last_bid.user = self.setting.QA_setting_user_name
                     __last_bid.strategy = self.strategy_name
                     __last_bid.bid_model = 'auto'
-                    __last_bid.status = '0x01'
+                    __last_bid.type = '0x01'
                     __last_bid.amount_model = 'amount'
 
                     __message = self.market.receive_bid(

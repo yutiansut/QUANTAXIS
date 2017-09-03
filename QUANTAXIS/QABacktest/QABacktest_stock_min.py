@@ -208,7 +208,7 @@ class QA_Backtest_stock_day():
                     __last_bid.user = self.setting.QA_setting_user_name
                     __last_bid.strategy = self.strategy_name
                     __last_bid.bid_model = 'auto'
-                    __last_bid.status = '0x01'
+                    __last_bid.type = '0x01'
                     __last_bid.amount_model = 'amount'
 
                     __message = self.market.receive_bid(
@@ -303,7 +303,7 @@ class QA_Backtest_stock_day():
         ), __data.T[4].astype(float).tolist(),
             __data.T[5].astype(float).tolist())
 
-    def QA_backtest_send_order(self, __code: str, __amount: int, __towards: int, __order: dict):
+    def QA_backtest_send_order(self, __code, __amount, __towards, __order):
         """
         2017/8/4
         委托函数
@@ -441,7 +441,7 @@ class QA_Backtest_stock_day():
                     __last_bid.user = self.setting.QA_setting_user_name
                     __last_bid.strategy = self.strategy_name
                     __last_bid.bid_model = 'auto'
-                    __last_bid.status = '0x01'
+                    __last_bid.type = '0x01'
                     __last_bid.amount_model = 'amount'
 
                     __message = self.market.receive_bid(

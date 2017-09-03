@@ -48,19 +48,19 @@ class QA_Market():
                        'future_day': QA_fetch_future_day, 'future_min': QA_fetch_future_min, 'future_tick': QA_fetch_future_tick}
 
     def _choice_trading_market(self, __bid, __data=None):
-        assert isinstance(__bid.status, str)
-        if __bid.status == '0x01':
+        assert isinstance(__bid.type, str)
+        if __bid.type == '0x01':
             __data=self.__get_stock_day_data(__bid)
             return market_stock_day_engine(__bid, __data)
-        elif __bid.status == '0x02':
+        elif __bid.type == '0x02':
             # 获取股票引擎
             __data=self.__get_stock_min_data(__bid)
             return market_stock_engine(__bid, __data)
-        elif __bid.status == '1x01':
+        elif __bid.type == '1x01':
             return market_future_engine(__bid, __data)
-        elif __bid.status == '1x02':
+        elif __bid.type == '1x02':
             return market_future_engine(__bid, __data)
-        elif __bid.status == '1x03':
+        elif __bid.type == '1x03':
             return market_future_engine(__bid, __data)
     def __get_stock_min_data(self,__bid):
         __data = QA_util_to_json_from_pandas(QA_fetch_stock_min(str(

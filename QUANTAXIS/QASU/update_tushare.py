@@ -36,7 +36,7 @@ def QA_update_stock_day(name, startDate, endDate):
     data = QATushare.QA_fetch_get_stock_day(name, startDate, endDate)
 
 
-def QA_update_stock_day_all(client=QA_Setting.client):
+def QA_SU_update_stock_day(client=QA_Setting.client):
 
     data = QATushare.QA_fetch_get_stock_list()
     date = str(datetime.date.today())
@@ -45,22 +45,20 @@ def QA_update_stock_day_all(client=QA_Setting.client):
     client.quantaxis.drop_collection('stock_list')
     client.quantaxis.drop_collection('trade_date')
     client.quantaxis.drop_collection('stock_info')
-    client.quantaxis.drop_collection('stock_day')
+    #client.quantaxis.drop_collection('stock_day')
     # client.quantaxis.user_list.insert(
     #{'username': 'admin', 'password': 'admin'})
     QA_SU_save_stock_info()
     QA_SU_save_stock_list()
     QA_SU_save_trade_date_all()
-    QA_save_stock_day_with_fqfactor()
-    """
+    #QA_save_stock_day_with_fqfactor()
+
     coll_stocklist = client.quantaxis.stock_list
     # 使用find_one
     stock_list = coll_stocklist.find_one()['stock']['code']
     coll_stock_day = client.quantaxis.stock_day
     stock_list.append('sz50')
     stock_list.append('hs300')
-
-    
 
 
     for item in stock_list:
@@ -77,14 +75,12 @@ def QA_update_stock_day_all(client=QA_Setting.client):
                 QA_util_log_info('trying updating from %s to %s' %
                                  (start_date, end_date))
                 data = QATushare.QA_fetch_get_stock_day(
-                    str(item)[0:6], start_date, end_date)[1::]
+                    str(item)[0:6], start_date, end_date,'02')[1::]
             else:
-
                 # 这时候直接更新拿到所有的数据就好了
                 data = QATushare.QA_fetch_get_stock_day(
-                    item, startDate='1990-01-01')
+                    item, startDate='1990-01-01',if_fq='02')
 
             coll_stock_day.insert_many(data)
         except:
             QA_util_log_info('error in updating--- %s' % item)
-    """

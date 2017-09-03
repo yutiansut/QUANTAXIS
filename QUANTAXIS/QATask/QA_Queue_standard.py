@@ -55,16 +55,15 @@ class QA_Queue(threading.Thread):
         threading.Thread.__init__(self)
         self.queue = queue
         self.thread_stop = False
-        self.__type: dict
         self.__flag = threading.Event()     # 用于暂停线程的标识
         self.__flag.set()       # 设置为True
         self.__running = threading.Event()      # 用于停止线程的标识
         self.__running.set()      # 将running设置为True
 
-    def QA_queue_job_register(self, __job: dict):
+    def QA_queue_job_register(self, __job):
         '首先对于任务进行类型判断,输入的job的类型一定是一个dict模式的,同时需要含有一个type的K-V对'
-        assert type(__job) == dict
-        assert type(__job['type']) == str
+        assert isinstance(__job,dict)
+        assert isinstance(__job['type'],str)
 
     def __QA_queue_put(self, args):
         return self.queue.put()
@@ -89,23 +88,22 @@ class QA_Queue(threading.Thread):
                     if self.queue.empty() is False:
                         __task = self.queue.get()  # 接收消息
                         assert isinstance(__task, dict)
-                        if __task['fn'] != None:
+                        if __task['func'] != None:
 
-                            eval(__task['fn'])
+                            eval(__task['func'])
                             self.queue.__task_done()  # 完成一个任务
                         else:
                             pass
                     else:
-                        QA_util_log_info("From Engine %s" % str(threading.current_thread())
-                                         + "Engine will waiting for new task ...")
-                        time.sleep(5)
+                        QA_util_log_info("From Engine %s  Engine will waiting for new task ..." % str(threading.current_thread()))
+                        time.sleep(1)
                 except:
                     time.sleep(1)
                     self.run()
                 __res = self.__QA_queue_status()  # 判断消息队列大小
                 if __res > 0:
-                    QA_util_log_info("From Engine %s: There are still %d tasks to do" % (
-                        str(threading.current_thread()), __res))
+                    #QA_util_log_info("From Engine %s: There are still %d tasks to do" % (str(threading.current_thread()), __res))
+                    pass
                 # input()
                 threading.Timer(0.005, self.run)
 
@@ -127,7 +125,7 @@ if __name__ == '__main__':
     q = queue.Queue()
     worker = QA_Queue(q)
     worker.start()
-    q.put({'type': '1x00', 'subtype': '1x01', 'fn': print('aa')},
+    q.put({'type': '1x00', 'subtype': '1x01', 'func': print('aa')},
           block=False, timeout=None)
     print('*' * 10)
     print(worker.queue.queue)
@@ -135,6 +133,6 @@ if __name__ == '__main__':
     QA_util_log_info('===now we will sleep 20 sec, and wait for the response')
     QA_util_log_info(datetime.datetime.now())
     time.sleep(20)
-    q.put({'type': '1x00', 'subtype': '1x01', 'fn': print('vv')},
+    q.put({'type': '1x00', 'subtype': '1x01', 'func': print('vv')},
           block=False, timeout=None)
     QA_util_log_info(datetime.datetime.now())

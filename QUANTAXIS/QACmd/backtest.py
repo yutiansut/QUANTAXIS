@@ -24,7 +24,7 @@
 
 
 import QUANTAXIS as QA
-from QUANTAXIS import QA_Backtest_stock_day as QB
+from QUANTAXIS import QA_Backtest as QB
 
 
 """
@@ -39,7 +39,7 @@ QB.account.history  当前账户的历史交易记录
 QB.account.assets 当前账户总资产
 QB.account.detail 当前账户的交易对账单
 QB.account.init_assest 账户的最初资金
-
+QB.strategy_gap 前推日期
 
 
 QB.strategy_stock_list 回测初始化的时候  输入的一个回测标的
@@ -90,38 +90,39 @@ QB.QA_backtest_hold_amount(QB,code)
 
 @QB.backtest_init
 def init():
-    QB.backtest_type='day'
+    #QB.backtest_type='day'
+    QB.backtest_type='1min'
     QB.setting.QA_util_sql_mongo_ip='127.0.0.1'
-
     QB.account.init_assest=2500000
-    QB.benchmark_code='hs300'
+    
+    #benchmark 必须是指数代码
+    QB.benchmark_code='399001'
 
-    QB.strategy_stock_list=['000001','000002','600010','601801','603111']
-    QB.strategy_start_date='2017-03-01'
-    QB.strategy_end_date='2017-07-01'
+    QB.strategy_stock_list=['000001','000002','600010','601801']
+    QB.strategy_start_date='2017-07-01'
+    QB.strategy_end_date='2017-07-10'
 
 @QB.before_backtest
 def before_backtest():
     global risk_position
-    QA.QA_util_log_info(QB.account.message)
-    
+    QA.QA_util_log_info(QB.benchmark_data)
+    input()
     
     
 @QB.load_strategy
 def strategy():
-    #print(QB.account.message)
-    #print(QB.account.cash)
-    #input()
-    
+
+    QA.QA_util_log_info(QB.account.hold_available)
     for item in QB.strategy_stock_list:
-        QA.QA_util_log_info(QB.QA_backtest_get_market_data(QB,item,QB.today))
+        #QA.QA_util_log_info(QB.QA_backtest_get_market_data(QB,item,QB.today).data)
         if QB.QA_backtest_hold_amount(QB,item)==0:
             QB.QA_backtest_send_order(QB,item,10000,1,{'bid_model':'Market'})
 
     
         else:
-            #print(QB.QA_backtest_hold_amount(QB,item))
+            print(QB.QA_backtest_hold_amount(QB,item))
             QB.QA_backtest_send_order(QB,item,10000,-1,{'bid_model':'Market'})
+            #input()
     
 @QB.end_backtest
 def after_backtest():
