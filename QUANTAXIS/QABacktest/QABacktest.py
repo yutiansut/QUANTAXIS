@@ -159,7 +159,7 @@ class QA_Backtest():
                 self.strategy_stock_list, self.trade_list[
                     self.start_real_id - int(self.strategy_gap)],
                 self.trade_list[self.end_real_id], self.backtest_type)
-            self.__benchmark_data = QA_fetch_index_min(self.benchmark_code, self.start_real_date,self.end_real_date)
+            self.benchmark_data = QA_fetch_index_min(self.benchmark_code, self.start_real_date,self.end_real_date)
     def __QA_backtest_start(self, *args, **kwargs):
         """
         这个是回测流程开始的入口
@@ -278,7 +278,7 @@ class QA_Backtest():
             performace = QA_backtest_analysis_start(
                 self.setting.client, self.strategy_stock_list, self.__messages,
                 self.trade_list[self.start_real_id:self.end_real_id + 1],
-                self.market_data, self.__benchmark_data)
+                self.market_data, self.benchmark_data)
             _backtest_mes = {
                 'user': self.setting.QA_setting_user_name,
                 'strategy': self.strategy_name,
