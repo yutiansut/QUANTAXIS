@@ -91,7 +91,7 @@ QB.QA_backtest_hold_amount(QB,code)
 @QB.backtest_init
 def init():
     #QB.backtest_type='day'
-    QB.backtest_type='1min'
+    QB.backtest_type='day'
     QB.setting.QA_util_sql_mongo_ip='127.0.0.1'
     QB.account.init_assest=2500000
     
@@ -99,7 +99,7 @@ def init():
     QB.benchmark_code='399001'
 
     QB.strategy_stock_list=['000001','000002','600010','601801']
-    QB.strategy_start_date='2017-07-01'
+    QB.strategy_start_date='2016-07-01'
     QB.strategy_end_date='2017-07-10'
 
 @QB.before_backtest
