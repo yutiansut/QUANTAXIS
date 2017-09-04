@@ -39,13 +39,6 @@ from . import QAThs as QAThs
 #import QAFetch.QACrawlData as QACD
 
 
-#from WindPy import w
-# w.start()
-
-"""
-author yutiansut
-"""
-
 
 def use(package):
     if package in ['wind']:
