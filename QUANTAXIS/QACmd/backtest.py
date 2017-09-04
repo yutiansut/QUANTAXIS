@@ -105,8 +105,7 @@ def init():
 @QB.before_backtest
 def before_backtest():
     global risk_position
-    QA.QA_util_log_info(QB.benchmark_data)
-    input()
+    #QA.QA_util_log_info(QB.benchmark_data)
     
     
 @QB.load_strategy
