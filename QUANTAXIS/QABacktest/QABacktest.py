@@ -175,8 +175,7 @@ class QA_Backtest():
             [[str(__version__), str(self.strategy_name)]], headers=('Version', 'Strategy_name')))
         QA_util_log_info('BACKTEST Cookie_ID is:  ' +
                          str(self.account.account_cookie))
-        QA_util_log_info('Stock_List: \n' +
-                         tabulate([self.strategy_stock_list]))
+        QA_util_log_info('Stock_List: \n' + tabulate([self.strategy_stock_list]))
 
         # 初始化报价模式
         self.__messages = []
@@ -387,10 +386,12 @@ class QA_Backtest():
     def __sync_order_LM(self, event_, order_=None, order_id_=None, trade_id_=None, market_message_=None):
         """
         订单事件: 生命周期管理 Order-Lifecycle-Management
-        statusA 初始化 资产 
-        statusB 初始化订单  临时扣除资产(可用现金/可卖股份)
-        statusC 订单存活(等待交易)
-        statusD 订单死亡(每日结算/完成交易/撤单) 恢复临时资产    
+        status1xx 订单待生成
+        status3xx 初始化订单  临时扣除资产(可用现金/可卖股份)
+        status3xx 订单存活(等待交易)
+        status2xx 订单完全交易/未完全交易
+        status4xx 主动撤单
+        status500 订单死亡(每日结算) 恢复临时资产    
         =======
         1. 更新持仓
         2. 更新现金

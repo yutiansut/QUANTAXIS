@@ -70,10 +70,22 @@ def __select_market_code(code):
     return 1 if str(code)[0] == '6' else 0
 
 
-def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', ip=best_ip, port=7709):
+def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', ip=best_ip, port=7709):
     api = TdxHq_API()
     with api.connect(ip, port):
-        data = pd.concat([api.to_df(api.get_security_bars(9, __select_market_code(
+
+        if level in ['day', 'd', 'D', 'DAY', 'Day']:
+            level = 9
+        elif level in ['w', 'W', 'Week', 'week']:
+            level = 5
+        elif level in ['month', 'M', 'm', 'Month']:
+            level = 6
+        elif level in ['Q', 'Quarter', 'q']:
+            level = 10
+        elif level in ['y', 'Y', 'year', 'Year']:
+            level = 11
+
+        data = pd.concat([api.to_df(api.get_security_bars(level, __select_market_code(
             code), code, (9 - i) * 800, 800)) for i in range(10)], axis=0)
         if if_fq in ['00', 'bfq']:
             data = data.assign(date=data['datetime'].apply(lambda x: str(x[0:10]))).assign(code=str(code))\
