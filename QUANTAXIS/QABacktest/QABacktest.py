@@ -163,12 +163,6 @@ class QA_Backtest():
     def __QA_backtest_start(self, *args, **kwargs):
         """
         这个是回测流程开始的入口
-
-        assert len(self.strategy_stock_list) > 0
-        assert len(self.trade_list) > 0
-        assert isinstance(self.start_real_date, str)
-        assert isinstance(self.end_real_date, str)
-        assert len(self.market_data.code) == len(self.strategy_stock_list)
         """
         QA_util_log_info('QUANTAXIS Backtest Engine Initial Successfully')
         QA_util_log_info('Basical Info: \n' + tabulate(
@@ -324,9 +318,13 @@ class QA_Backtest():
         __bid_list = self.order.from_dataframe(self.account.order_queue.query('status!=200').query('status!=500').query('status!=400'))
 
         for item in __bid_list:
+            #在发单的时候要改变交易日期
+            item.date=self.today
+            item.datetime=self.now
+
+
             __bid,__market=self.__wrap_bid(self,item)
-            print(vars(__bid))
-            print(__market.data)
+
             __message=self.__QA_backtest_send_bid(self,__bid,__market)
             if isinstance(__message,dict):
                 if __message['header']['status'] in ['200',200]:
@@ -408,7 +406,7 @@ class QA_Backtest():
                     # 买入
                     if self.account.cash_available-order_.amount * order_.price>0:
                         self.account.cash_available -= order_.amount * order_.price
-                        
+                        order_.status=300# 修改订单状态
                         self.account.order_queue = self.account.order_queue.append(
                             order_.to_df())
                 elif order_.towards is -1:
@@ -443,7 +441,7 @@ class QA_Backtest():
             
             """
 
-            __need_to_be_del['amount']=__need_to_be_del['amount']*__need_to_be_del['towards']
+            #__need_to_be_del['amount']=__need_to_be_del['amount']*__need_to_be_del['towards']
 
 
             #print('xxxx')
@@ -456,8 +454,11 @@ class QA_Backtest():
             #self.account.hold_available[order_.code] += self.account.order_queue.query(
             #    'order_id=="order_id_"')['price']
 
+            self.account.cash_available = self.account.cash[-1]
+            self.account.hold_available = pd.DataFrame(self.account.hold[1::], columns=self.account.hold[0]).set_index(
+                'code', drop=False)['amount'].groupby('code').sum()
 
-            self.account.order_queue.query('status!=500').query('status!=400')['status'] = 500
+            self.account.order_queue=pd.DataFrame()
             #print(self.account.order_queue.query('status!=200').query('status!=400'))
             #input()
 
@@ -643,7 +644,7 @@ class QA_Backtest():
                         tabulate(__backtest_cls.account.message['body']['account']['hold']))
                     func(*arg, **kwargs)  # 发委托单
                     __backtest_cls.__sell_from_order_queue(__backtest_cls)
-            #__backtest_cls.__sync_order_LM(__backtest_cls,'daily_settle')  # 每日结算
+            __backtest_cls.__sync_order_LM(__backtest_cls,'daily_settle')  # 每日结算
 
         # 最后一天
         __backtest_cls.__end_of_trading(__backtest_cls)
