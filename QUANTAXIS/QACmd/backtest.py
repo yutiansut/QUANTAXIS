@@ -96,7 +96,7 @@ def init():
     QB.account.init_assest=2500000
     
     #benchmark 必须是指数代码
-    QB.benchmark_code='399001'
+    QB.benchmark_code='399300'
 
     QB.strategy_stock_list=['000001','000002','600010','601801']
     QB.strategy_start_date='2016-07-01'
