@@ -175,13 +175,14 @@ def market_stock_day_engine(__bid, __data=None):
                                     'strategy': str(__bid.strategy)
                                 },
                                 'order_id': str(__bid.order_id),
-                                'trade_id': str(random.random())
+                                'trade_id': str(random.random())    
                             },
                             'body': {
                                 'bid': {
                                     'price': float("%.2f" % float(str(__deal_price))),
                                     'code': str(__bid.code),
                                     'amount': int(__bid.amount),
+                                    'datetime': str(__bid.datetime),
                                     'date': str(__bid.date),
                                     'towards': int(__bid.towards)
                                 },
