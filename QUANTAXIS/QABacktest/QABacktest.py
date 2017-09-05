@@ -437,23 +437,10 @@ class QA_Backtest():
 
             # 买入
             """
-            因为今日买入的股票 是不能今日卖出的
-            
+            每日结算流程
+            - 同步实际的现金和仓位
+            - 清空留仓单/未成功的订单
             """
-
-            #__need_to_be_del['amount']=__need_to_be_del['amount']*__need_to_be_del['towards']
-
-
-            #print('xxxx')
-            #print(__need_to_be_del)
-            #if len()
-            #input()
-            #self.account.cash_available -= self.account.order_queue.query('order_id=="order_id_"')[
-            #    'amount'] * self.account.order_queue.query('order_id=="order_id_"')['price']
-
-            #self.account.hold_available[order_.code] += self.account.order_queue.query(
-            #    'order_id=="order_id_"')['price']
-
             self.account.cash_available = self.account.cash[-1]
             self.account.hold_available = pd.DataFrame(self.account.hold[1::], columns=self.account.hold[0]).set_index(
                 'code', drop=False)['amount'].groupby('code').sum()
