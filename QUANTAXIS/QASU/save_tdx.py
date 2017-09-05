@@ -39,12 +39,7 @@ from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
 # ip=select_best_ip()
 
 
-def save_stock_day(code, start, end, coll):
-    QA_util_log_info('##JOB01 Now Saving STOCK_DAY==== %s' % (str(code)))
-    coll.insert_many(
-        QA_util_to_json_from_pandas(
-            QA_fetch_get_stock_day(
-                str(code), start, end, '00')))
+
 
 
 def QA_SU_save_stock_day(start='1990-01-01', end=str(datetime.date.today()), client=QA_Setting.client):
