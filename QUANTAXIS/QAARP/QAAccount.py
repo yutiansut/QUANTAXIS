@@ -91,8 +91,6 @@ class QA_Account():
         }
 
     def QA_account_update(self, __update_message):
-        print(__update_message['bid'])
-        input()
         if str(__update_message['status'])[0] == '2':
 
             # towards>1 买入成功
@@ -102,7 +100,7 @@ class QA_Account():
                 __new_price, __new_order_id,
                 __new_trade_id, __new_trade_fee) = (str(__update_message['bid']['code']),
                                                     float(__update_message['bid']['amount']), str(
-                                                        __update_message['bid']['date']),
+                                                        __update_message['bid']['datetime']),
                                                     int(__update_message['bid']['towards']), float(
                                                         __update_message['bid']['price']),
                                                     float(__update_message['order_id']), float(
@@ -277,6 +275,7 @@ class QA_Account():
         return __data
 
     def QA_account_receive_order(self, __message):
+        
         # 主要是把从market拿到的数据进行解包,一个一个发送给账户进行更新,再把最后的结果反回
         __data = self.QA_account_update({
             'code': __message['header']['code'],
