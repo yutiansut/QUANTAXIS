@@ -425,6 +425,9 @@ class QA_Backtest():
                 if order_.towards is 1:
                     # 买入
                     if self.account.cash_available - order_.amount * order_.price > 0:
+                        print('%s,%s'%(self.account.cash_available,self.now))
+                        print(vars(order_))
+                        input()
                         self.account.cash_available -= order_.amount * order_.price
                         order_.status = 300  # 修改订单状态
 
@@ -484,8 +487,8 @@ class QA_Backtest():
             if order_.towards is 1:
                 # 买入
                 # 减少现金
-                self.account.cash_available -= market_message_[
-                    'body']['bid']['amount'] * market_message_['body']['bid']['price']
+                #self.account.cash_available -= market_message_[
+                #    'body']['bid']['amount'] * market_message_['body']['bid']['price']
                 order_.trade_id = trade_id_
                 order_.transact_time = self.now
                 order_.amount -= market_message_['body']['bid']['amount']
@@ -502,8 +505,8 @@ class QA_Backtest():
                     self.account.order_queue.query('order_id=="order_id_"')[
                         'amount'] -= market_message_['body']['bid']['amount']
             elif order_.towards is -1:
-                self.account.hold_available[order_.code] -= market_message_[
-                    'body']['bid']['amount']
+                #self.account.hold_available[order_.code] -= market_message_[
+                #    'body']['bid']['amount']
                 # 当日卖出的股票 可以继续买入/ 可用资金增加(要减去手续费)
                 self.account.cash_available += market_message_['body']['bid']['amount'] * market_message_[
                     'body']['bid']['price'] - market_message_['body']['fee']['commission']

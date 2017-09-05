@@ -114,7 +114,6 @@ class QA_Account():
 
                 # 如果是买入的waiting  那么要减少可用资金,增加在途资金
                 # 如果是卖出的waiting 则减少hold_list
-                input()
             elif int(__update_message['status']) == 200:
                 '交易成功的处理'
                 self.history.append(
