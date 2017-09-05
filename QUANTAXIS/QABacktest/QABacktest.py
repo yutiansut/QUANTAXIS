@@ -390,6 +390,8 @@ class QA_Backtest():
                                          __code, self.running_date, str(
                                              self.now),
                                          self.running_date, __amount, __towards)
+
+        
         if self.backtest_type in ['day']:
             __bid.type = '0x01'
         elif self.backtest_type in ['1min', '5min', '15min']:
@@ -399,6 +401,8 @@ class QA_Backtest():
         __bid, __market = self.__wrap_bid(self, __bid, __order)
 
         if __bid is not None and __market != 500:
+            print('GET the Order Code %s Amount %s Price %s Towards %s Time %s'%(__bid.code,__bid.amount,__bid.price,__bid.towards,__bid.datetime))
+            print(__market.data)
             self.__sync_order_LM(self, 'create_order', order_=__bid)
 
     def __sync_order_LM(self, event_, order_=None, order_id_=None, trade_id_=None, market_message_=None):
@@ -425,9 +429,6 @@ class QA_Backtest():
                 if order_.towards is 1:
                     # 买入
                     if self.account.cash_available - order_.amount * order_.price > 0:
-                        print('%s,%s'%(self.account.cash_available,self.now))
-                        print(vars(order_))
-                        input()
                         self.account.cash_available -= order_.amount * order_.price
                         order_.status = 300  # 修改订单状态
 
@@ -487,8 +488,6 @@ class QA_Backtest():
             if order_.towards is 1:
                 # 买入
                 # 减少现金
-                #self.account.cash_available -= market_message_[
-                #    'body']['bid']['amount'] * market_message_['body']['bid']['price']
                 order_.trade_id = trade_id_
                 order_.transact_time = self.now
                 order_.amount -= market_message_['body']['bid']['amount']
@@ -510,7 +509,6 @@ class QA_Backtest():
                 # 当日卖出的股票 可以继续买入/ 可用资金增加(要减去手续费)
                 self.account.cash_available += market_message_['body']['bid']['amount'] * market_message_[
                     'body']['bid']['price'] - market_message_['body']['fee']['commission']
-
                 order_.trade_id = trade_id_
                 order_.transact_time = self.now
                 order_.amount -= market_message_['body']['bid']['amount']
