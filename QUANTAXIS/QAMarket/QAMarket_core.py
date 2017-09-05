@@ -54,7 +54,7 @@ class QA_Market():
             return market_stock_day_engine(__bid, __data)
         elif __bid.type == '0x02':
             # 获取股票引擎
-            __data=self.__get_stock_min_data(__bid)
+            __data=self.__get_stock_min_data(__bid) if __data is None else __data
             return market_stock_engine(__bid, __data)
         elif __bid.type == '1x01':
             return market_future_engine(__bid, __data)
