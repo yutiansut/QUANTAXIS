@@ -152,14 +152,14 @@ class QA_Backtest():
         if self.backtest_type in ['day', 'd', '0x00']:
             self.market_data = QA_fetch_stocklist_day_adv(
                 self.strategy_stock_list, self.trade_list[self.start_real_id - int(
-                    self.strategy_gap)], self.trade_list[self.end_real_id])
+                    self.strategy_gap)], self.trade_list[self.end_real_id]).to_qfq()
             self.benchmark_data = QA_fetch_index_day(
                 self.benchmark_code, self.start_real_date, self.end_real_date)
         elif self.backtest_type in ['1min', '5min', '15min']:
             self.market_data = QA_fetch_stocklist_min_adv(
                 self.strategy_stock_list, self.trade_list[
                     self.start_real_id - int(self.strategy_gap)],
-                self.trade_list[self.end_real_id], self.backtest_type)
+                self.trade_list[self.end_real_id], self.backtest_type).to_qfq()
             self.benchmark_data = QA_fetch_index_min(
                 self.benchmark_code, self.start_real_date, self.end_real_date)
 
