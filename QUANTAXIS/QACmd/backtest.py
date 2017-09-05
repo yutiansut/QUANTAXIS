@@ -91,7 +91,7 @@ QB.QA_backtest_hold_amount(QB,code)
 @QB.backtest_init
 def init():
     #QB.backtest_type='day'
-    QB.backtest_type='day' # 日线回测
+    QB.backtest_type='5min' # 日线回测
     QB.setting.QA_util_sql_mongo_ip='127.0.0.1' #回测数据库
     QB.account.init_assest=2500000 # 初始资金
     QB.strategy_name='test_example' # 策略名称

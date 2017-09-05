@@ -373,7 +373,10 @@ class QA_Backtest():
                                          self.setting.QA_setting_user_name, self.strategy_name,
                                          __code, self.running_date, str(self.now),
                                          self.running_date, __amount, __towards)
-
+        if self.backtest_type in ['day']:
+            __bid.type='0x01'
+        elif self.backtest_type in ['1min','5min','15min']:
+            __bid.type='0x02'   
         # 检查账户/临时扣费
 
         __bid, __market = self.__wrap_bid(self, __bid, __order)
@@ -407,8 +410,10 @@ class QA_Backtest():
                     if self.account.cash_available-order_.amount * order_.price>0:
                         self.account.cash_available -= order_.amount * order_.price
                         order_.status=300# 修改订单状态
+
                         self.account.order_queue = self.account.order_queue.append(
                             order_.to_df())
+
                 elif order_.towards is -1:
                     if self.account.hold_available[order_.code]-order_.amount>=0:
                         self.account.hold_available[order_.code] -= order_.amount
@@ -458,13 +463,14 @@ class QA_Backtest():
 
             if order_.towards is 1:
                 # 买入
+                # 减少现金 
                 self.account.cash_available -= market_message_['body']['bid']['amount']*market_message_['body']['bid']['price']
                 order_.trade_id=trade_id_
                 order_.transact_time=self.now
                 order_.amount-=market_message_['body']['bid']['amount']
                 
                 if order_.amount==0:# 完全交易
-                    self.account.order_queue.loc[self.account.order_queue['order_id']==order_id_,'status']= 201 #注销(成功交易)['买入单不能立即结转']
+                    self.account.order_queue.loc[self.account.order_queue['order_id']==order_id_,'status']= 200 #注销(成功交易)['买入单不能立即结转']
                     
                 elif order_.amount>0:
                     self.account.order_queue.loc[self.account.order_queue['order_id']==order_id_,'status']= 203#注销(成功交易)
@@ -482,13 +488,9 @@ class QA_Backtest():
                 else:
                     self.account.order_queue.loc[self.account.order_queue['order_id']==order_id_,'status']= 203#注销(成功交易)
                     self.account.order_queue[self.account.order_queue['order_id']==order_id_]['amount']-=market_message_['body']['bid']['amount']
-
-            #except:
-                #QA_util_log_info('Order Event Warning:%s in %s' % (event_,str(self.now)))
-
         else:
             QA_util_log_info(
-                'warning:Unknown type of order event in  %s' % str(self.now))
+                'EventEngine Warning:Unknown type of order event in  %s' % str(self.now))
 
     def __QA_backtest_send_bid(self,__bid,__market=None):
         __message = self.market.receive_bid(__bid, __market)

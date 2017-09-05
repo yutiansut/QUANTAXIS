@@ -162,15 +162,15 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
 
     def select_time_with_gap(self, time, gap, method):
         if method in ['gt', '>=']:
-            return self.sync_status(QA_DataStruct_Stock_min(self.data[self.data['datetime'] > time].head(gap).set_index(['datetime', 'code'], drop=False)))
+            return self.sync_status(QA_DataStruct_Stock_min(self.data[self.data['datetime'] > time].head(int(gap)).set_index(['datetime', 'code'], drop=False)))
         elif method in ['gte', '>']:
-            return self.sync_status(QA_DataStruct_Stock_min(self.data[self.data['datetime'] >= time].head(gap).set_index(['datetime', 'code'], drop=False)))
+            return self.sync_status(QA_DataStruct_Stock_min(self.data[self.data['datetime'] >= time].head(int(gap)).set_index(['datetime', 'code'], drop=False)))
         elif method in ['lt', '<']:
-            return self.sync_status(QA_DataStruct_Stock_min(self.data[self.data['datetime'] < time].tail(gap).set_index(['datetime', 'code'], drop=False)))
+            return self.sync_status(QA_DataStruct_Stock_min(self.data[self.data['datetime'] < time].tail(int(gap)).set_index(['datetime', 'code'], drop=False)))
         elif method in ['lte', '<=']:
-            return self.sync_status(QA_DataStruct_Stock_min(self.data[self.data['datetime'] <= time].tail(gap).set_index(['datetime', 'code'], drop=False)))
+            return self.sync_status(QA_DataStruct_Stock_min(self.data[self.data['datetime'] <= time].tail(int(gap)).set_index(['datetime', 'code'], drop=False)))
         elif method in ['e', '==', '=', 'equal']:
-            return self.sync_status(QA_DataStruct_Stock_min(self.data[self.data['datetime'] == time].tail(gap).set_index(['datetime', 'code'], drop=False)))
+            return self.sync_status(QA_DataStruct_Stock_min(self.data[self.data['datetime'] == time].tail(int(gap)).set_index(['datetime', 'code'], drop=False)))
 
     def to_qfq(self):
         if self.if_fq is 'bfq':

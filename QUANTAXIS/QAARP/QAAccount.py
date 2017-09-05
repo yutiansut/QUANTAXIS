@@ -91,6 +91,8 @@ class QA_Account():
         }
 
     def QA_account_update(self, __update_message):
+        print(__update_message['bid'])
+        input()
         if str(__update_message['status'])[0] == '2':
 
             # towards>1 买入成功
