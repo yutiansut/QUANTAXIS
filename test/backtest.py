@@ -90,8 +90,8 @@ QB.QA_backtest_hold_amount(QB,code)
 
 @QB.backtest_init
 def init():
-    QB.backtest_type = 'day'
-    # QB.backtest_type='5min' # 日线回测
+    #QB.backtest_type = '5min'
+    QB.backtest_type='day' # 日线回测
     QB.setting.QA_util_sql_mongo_ip = '127.0.0.1'  # 回测数据库
     QB.account.init_assest = 2500000  # 初始资金
     QB.strategy_name = 'test_example'  # 策略名称
@@ -99,7 +99,7 @@ def init():
     QB.benchmark_code = '000300'
     QB.strategy_stock_list = [
         '000001', '000002', '600010', '601801']  # 回测的股票列表
-    QB.strategy_start_date = '2016-07-01'  # 回测开始日期
+    QB.strategy_start_date = '2017-03-01'  # 回测开始日期
     QB.strategy_end_date = '2017-07-10'    # 回测结束日期
 
 
@@ -118,11 +118,11 @@ def strategy():
         # QA.QA_util_log_info(QB.QA_backtest_get_market_data(QB,item,QB.today).data)
         if QB.QA_backtest_hold_amount(QB, item) == 0:
             QB.QA_backtest_send_order(
-                QB, item, 10000, 1, {'bid_model': 'Market'})
+                QB, item, 100, 1, {'bid_model': 'Market'})
         else:
             # print(QB.QA_backtest_hold_amount(QB,item))
             QB.QA_backtest_send_order(
-                QB, item, 10000, -1, {'bid_model': 'Market'})
+                QB, item, 100, -1, {'bid_model': 'Market'})
 
 
 @QB.end_backtest
