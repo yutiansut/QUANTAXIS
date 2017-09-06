@@ -61,6 +61,11 @@ def QA_backtest_analysis_start(client, code_list, message, total_date, market_da
 
     Max Drawdown：最大回撤。描述策略可能出现的最糟糕的情况。
     具体计算方法为 max(1 - 策略当日价值 / 当日之前虚拟账户最高价值)
+
+
+    单次交易收益
+    收益/次数的频次直方图
+    单日最大持仓
     """
     # 计算一个benchmark
     # 这个benchmark 是在开始的那天 市价买入和策略所选标的一致的所有股票,然后一直持仓
