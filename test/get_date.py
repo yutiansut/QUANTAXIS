@@ -1,4 +1,4 @@
-#coding:utf-8
+# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -21,13 +21,15 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import pymongo
 import csv
 import json
-l=[]
+
+import pymongo
+
+l = []
 
 for item in pymongo.MongoClient().quantaxis.trade_date.find():
     l.append(item['date'])
-    #d[item['num']]=item['date']
+    # d[item['num']]=item['date']
 print(l)
-#print(d)
+# print(d)
