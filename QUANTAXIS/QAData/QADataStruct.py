@@ -249,8 +249,7 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
 
     def to_qfq(self):
         if self.if_fq is 'bfq':
-            data = QA_DataStruct_Stock_day(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
-                self.data[self.data['code'] == x]), self.code))))
+            data = QA_DataStruct_Stock_day(pd.concat(list(map(lambda x: QA_data_stock_to_fq(self.data[self.data['code'] == x]), self.code))))
             data.if_fq = 'qfq'
             return data
         else:
