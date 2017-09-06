@@ -315,12 +315,17 @@ class QA_Backtest():
         gap_ = self.strategy_gap if gap_ is None else gap_
         return self.market_data.select_code(code).select_time_with_gap(date, gap_, 'lte')
 
-    def QA_backtest_hold_amount(self, __code):
+    def QA_backtest_sell_available(self, __code):
         try:
-            return self.account.hold_available[__code]
+            return self.account.sell_available[__code]
         except:
             return 0
-
+    def QA_backtest_hold_amount(self, __code):
+        try:
+            return pd.DataFrame(self.account.hold[1::], columns=self.account.hold[0]).set_index(
+                'code', drop=False)['amount'].groupby('code').sum()[__code]
+        except:
+            return 0
     def __sell_from_order_queue(self):
 
         # 每个bar结束的时候,批量交易
@@ -421,7 +426,7 @@ class QA_Backtest():
         if event_ is 'init_':
 
             self.account.cash_available = self.account.cash[-1]
-            self.account.hold_available = pd.DataFrame(self.account.hold[1::], columns=self.account.hold[0]).set_index(
+            self.account.sell_available = pd.DataFrame(self.account.hold[1::], columns=self.account.hold[0]).set_index(
                 'code', drop=False)['amount'].groupby('code').sum()
 
         elif event_ is 'create_order':
@@ -435,8 +440,8 @@ class QA_Backtest():
                         self.account.order_queue = self.account.order_queue.append(
                             order_.to_df())
                 elif order_.towards is -1:
-                    if self.account.hold_available[order_.code] - order_.amount >= 0:
-                        self.account.hold_available[order_.code] -= order_.amount
+                    if self.account.sell_available[order_.code] - order_.amount >= 0:
+                        self.account.sell_available[order_.code] -= order_.amount
                         self.account.order_queue = self.account.order_queue.append(
                             order_.to_df())
             else:
@@ -458,11 +463,9 @@ class QA_Backtest():
 
             elif order_.towards is -1:
                 # 空单撤单 可卖数量增加
-                self.account.hold_available[order_.code] += self.account.order_queue.query(
+                self.account.sell_available[order_.code] += self.account.order_queue.query(
                     'order_id=="order_id_"')['price']
         elif event_ in ['daily_settle']:  # 每日结算/全撤/把成交的买入/卖出单标记为500 同时结转
-            __need_to_be_del = self.account.order_queue.query('status!=200').query(
-                'status!=500').query('status!=400')  # 注销(backtest撤单)
 
             # 买入
             """
@@ -471,7 +474,7 @@ class QA_Backtest():
             - 清空留仓单/未成功的订单
             """
             self.account.cash_available = self.account.cash[-1]
-            self.account.hold_available = pd.DataFrame(self.account.hold[1::], columns=self.account.hold[0]).set_index(
+            self.account.sell_available = pd.DataFrame(self.account.hold[1::], columns=self.account.hold[0]).set_index(
                 'code', drop=False)['amount'].groupby('code').sum()
 
             self.account.order_queue = pd.DataFrame()
@@ -504,7 +507,7 @@ class QA_Backtest():
                     self.account.order_queue.query('order_id=="order_id_"')[
                         'amount'] -= market_message_['body']['bid']['amount']
             elif order_.towards is -1:
-                #self.account.hold_available[order_.code] -= market_message_[
+                #self.account.sell_available[order_.code] -= market_message_[
                 #    'body']['bid']['amount']
                 # 当日卖出的股票 可以继续买入/ 可用资金增加(要减去手续费)
                 self.account.cash_available += market_message_['body']['bid']['amount'] * market_message_[
