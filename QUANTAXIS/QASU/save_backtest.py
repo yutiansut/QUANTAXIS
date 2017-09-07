@@ -75,14 +75,13 @@ def QA_SU_save_account_to_csv(message):
                 csvwriter.writerow(message['body']['account']['history'][i])
             except:
                 pass
-    __file_name_2 = 'backtest-detail--' + \
-        str(message['header']['cookie']) + '.csv'
+def QA_SU_save_pnl_to_csv(detail,cookie):
+    __file_name_2 = 'backtest-pnl--' + \
+        str(cookie) + '.csv'
     with open(__file_name_2, 'w', newline='') as E:
         csvwriter_1 = csv.writer(E)
-        csvwriter_1.writerow(['user:', message['header']['session']['user']])
-        csvwriter_1.writerow(
-            ['strategy', message['header']['session']['strategy']])
-        for item in message['body']['account']['detail']:
+        csvwriter_1.writerow(detail.columns)
+        for item in detail:
             csvwriter_1.writerow(item)
 
     """

@@ -34,6 +34,7 @@ import re
 import sys
 import time
 from functools import reduce, update_wrapper, wraps
+from statistics import mean
 
 import apscheduler
 import numpy as np
@@ -44,22 +45,26 @@ from QUANTAXIS import (QA_Market, QA_Portfolio, QA_QAMarket_bid, QA_Risk,
 from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
 from QUANTAXIS.QAData import QA_DataStruct_Stock_day, QA_DataStruct_Stock_min
-from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_index_day, QA_fetch_index_min, QA_fetch_stock_day,
-                                       QA_fetch_stock_info,
+from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_index_day, QA_fetch_index_min,
+                                       QA_fetch_stock_day, QA_fetch_stock_info,
                                        QA_fetch_stocklist_day,
                                        QA_fetch_trade_date)
-from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_stock_day_adv,QA_fetch_index_day_adv,
-                                               QA_fetch_stock_min_adv,QA_fetch_index_min_adv,
+from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_index_day_adv,
+                                               QA_fetch_index_min_adv,
+                                               QA_fetch_stock_day_adv,
+                                               QA_fetch_stock_min_adv,
                                                QA_fetch_stocklist_day_adv,
                                                QA_fetch_stocklist_min_adv)
 from QUANTAXIS.QAMarket.QABid import QA_QAMarket_bid_list
 from QUANTAXIS.QASU.save_backtest import (QA_SU_save_account_message,
                                           QA_SU_save_account_to_csv,
-                                          QA_SU_save_backtest_message)
+                                          QA_SU_save_backtest_message,
+                                          QA_SU_save_pnl_to_csv)
 from QUANTAXIS.QATask import QA_Queue
-from QUANTAXIS.QAUtil import (QA_Setting, QA_util_get_real_date, QA_util_to_json_from_pandas,
+from QUANTAXIS.QAUtil import (QA_Setting, QA_util_get_real_date,
                               QA_util_log_expection, QA_util_log_info,
-                              QA_util_make_min_index, trade_date_sse)
+                              QA_util_make_min_index,
+                              QA_util_to_json_from_pandas, trade_date_sse)
 from tabulate import tabulate
 
 
@@ -265,6 +270,17 @@ class QA_Backtest():
 
     def __end_of_backtest(self, *arg, **kwargs):
         # 开始分析
+
+        # 对于account.detail做一定的整理
+        self.account.detail=detail=pd.DataFrame(self.account.detail,columns=['date', 'code', 'price', 'amounts', 'order_id',
+                                                  'trade_id', 'sell_price', 'sell_order_id',
+                                                  'sell_trade_id', 'sell_date', 'left_amount',
+                                                  'commission'])
+        self.account.detail['sell_average']=self.account.detail['sell_price'].apply(lambda x: mean(x))
+        self.account.detail['pnl_persentage']=self.account.detail['sell_average']-self.account.detail['price']
+
+        self.account.detail['pnl']=self.account.detail['pnl_persentage']*(self.account.detail['amounts']-self.account.detail['left_amount'])-self.account.detail['commission']
+        self.account.detail=self.account.detail.drop(['order_id','trade_id','sell_order_id','sell_trade_id'],axis=1)
         QA_util_log_info('start analysis====\n' +
                          str(self.strategy_stock_list))
         QA_util_log_info('=' * 10 + 'Trade History' + '=' * 10)
@@ -272,10 +288,7 @@ class QA_Backtest():
                                          headers=('date', 'code', 'price', 'towards',
                                                   'amounts', 'order_id', 'trade_id', 'commission')))
         QA_util_log_info('\n' + tabulate(self.account.detail,
-                                         headers=('date', 'code', 'price', 'amounts', 'order_id',
-                                                  'trade_id', 'sell_price', 'sell_order_id',
-                                                  'sell_trade_id', 'sell_date', 'left_amount',
-                                                  'commission')))
+                                         headers=(self.account.detail.columns)))
         __exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
 
         if len(self.__messages) > 1:
@@ -309,6 +322,7 @@ class QA_Backtest():
             QA_SU_save_backtest_message(_backtest_mes, self.setting.client)
             QA_SU_save_account_message(self.__messages, self.setting.client)
             QA_SU_save_account_to_csv(self.__messages)
+            QA_SU_save_pnl_to_csv(self.account.detail,self.account.account_cookie)
 
     def QA_backtest_get_market_data(self, code, date, gap_=None):
         '这个函数封装了关于获取的方式'

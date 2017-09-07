@@ -83,7 +83,6 @@ def query_day_qfq(code):
 
 @app.route('/query/day/hfq/<code>')
 def query_day_hfq(code):
-
     data =QA.QA_fetch_stock_day_adv(
         code, '1990-01-01', str(datetime.date.today())).to_hfq().to_json()
     return jsonify(data)
@@ -93,7 +92,7 @@ def query_day_hfq(code):
 def query_min_bfq(code):
 
     data =QA.QA_fetch_stock_min_adv(
-        code, '2017-07-01', str(datetime.date.today())).to_json()
+        code, '2017-07-01', str(datetime.date.today()),'1min').to_json()
     return jsonify(data)
 
 
