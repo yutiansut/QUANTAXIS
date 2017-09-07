@@ -211,7 +211,6 @@ def QA_backtest_calc_volatility(assest_profit_matrix):
 
 def QA_backtest_calc_dropback_max(history):
     drops = []
-    print(history)
     for i in range(1, len(history), 1):
         maxs = max(history[:i])
         cur = history[i - 1]
