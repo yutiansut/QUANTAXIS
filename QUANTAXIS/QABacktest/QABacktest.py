@@ -322,7 +322,10 @@ class QA_Backtest():
             QA_SU_save_backtest_message(_backtest_mes, self.setting.client)
             QA_SU_save_account_message(self.__messages, self.setting.client)
             QA_SU_save_account_to_csv(self.__messages)
-            QA_SU_save_pnl_to_csv(self.account.detail,self.account.account_cookie)
+            
+            self.account.detail.to_csv('backtest-pnl--'+str(self.account.account_cookie)+'.csv')
+            
+            #QA_SU_save_pnl_to_csv(self.account.detail,self.account.account_cookie)
 
     def QA_backtest_get_market_data(self, code, date, gap_=None):
         '这个函数封装了关于获取的方式'
