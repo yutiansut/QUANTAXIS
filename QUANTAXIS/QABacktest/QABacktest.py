@@ -158,7 +158,7 @@ class QA_Backtest():
         if self.backtest_type in ['day', 'd', '0x00']:
             self.market_data = QA_fetch_stocklist_day_adv(
                 self.strategy_stock_list, self.trade_list[self.start_real_id - int(
-                    self.strategy_gap)], self.trade_list[self.end_real_id]).to_qfq()
+                    self.strategy_gap)], self.trade_list[self.end_real_id])
             
         elif self.backtest_type in ['1min', '5min', '15min']:
             self.market_data = QA_fetch_stocklist_min_adv(
@@ -198,46 +198,11 @@ class QA_Backtest():
     def __end_of_trading(self, *arg, **kwargs):
         # 在回测的最后一天,平掉所有仓位(回测的最后一天是不买入的)
         # 回测最后一天的交易处理
-
-        while len(self.account.hold) > 1:
-            __hold_list = self.account.hold[1::]
-            pre_del_id = []
-            for item_ in range(0, len(__hold_list)):
-                if __hold_list[item_][3] > 0:
-                    __last_bid = self.bid
-                    __last_bid.amount = int(__hold_list[item_][3])
-                    __last_bid.order_id = str(random.random())
-                    __last_bid.price = 'close_price'
-                    __last_bid.code = str(__hold_list[item_][1])
-                    __last_bid.date = self.trade_list[self.end_real_id]
-                    __last_bid.towards = -1
-                    __last_bid.user = self.setting.QA_setting_user_name
-                    __last_bid.strategy = self.strategy_name
-                    __last_bid.bid_model = 'auto'
-                    __last_bid.type = '0x01'
-                    __last_bid.amount_model = 'amount'
-
-                    __message = self.market.receive_bid(
-                        __last_bid)
-                    _remains_day = 0
-                    while __message['header']['status'] == 500:
-                        # 停牌状态,这个时候按停牌的最后一天计算价值(假设平仓)
-
-                        __last_bid.date = self.trade_list[self.end_real_id - _remains_day]
-                        _remains_day += 1
-                        __message = self.market.receive_bid(
-                            __last_bid)
-
-                        # 直到市场不是为0状态位置,停止前推日期
-
-                    self.__messages = self.account.QA_account_receive_deal(
-                        __message)
-                else:
-                    pre_del_id.append(item_)
-            pre_del_id.sort()
-            pre_del_id.reverse()
-            for item_x in pre_del_id:
-                __hold_list.pop(item_x)
+        self.now=self.end_real_date
+        self.today=self.end_real_date
+        self.QA_backtest_sell_all(self)
+        self.__sell_from_order_queue(self)
+        self.__sync_order_LM(self, 'daily_settle')  # 每日结算
 
     def __wrap_bid(self, __bid, __order=None):
         __market_data_for_backtest = self.market_data.get_bar(
@@ -348,7 +313,7 @@ class QA_Backtest():
         # 每个bar结束的时候,批量交易
         __result = []
         self.order.__init__()
-        if len(self.account.order_queue) > 1:
+        if len(self.account.order_queue) >= 1:
             __bid_list = self.order.from_dataframe(self.account.order_queue.query(
                 'status!=200').query('status!=500').query('status!=400'))
 
@@ -601,51 +566,16 @@ class QA_Backtest():
         return vars(self)
 
     def QA_backtest_sell_all(self):
-        while len(self.account.hold) > 1:
-            __hold_list = self.account.hold[1::]
-            pre_del_id = []
+        __hold_list=pd.DataFrame(self.account.hold[1::], columns=self.account.hold[0]).set_index(
+                'code', drop=False)['amount'].groupby('code').sum()
 
-            def __sell(id_):
-                if __hold_list[id_][3] > 0:
-                    __last_bid = self.bid
-                    __last_bid.amount = int(__hold_list[id_][3])
-                    __last_bid.order_id = str(random.random())
-                    __last_bid.price = 'close_price'
-                    __last_bid.code = str(__hold_list[id_][1])
-                    __last_bid.date = self.now
-                    __last_bid.towards = -1
-                    __last_bid.user = self.setting.QA_setting_user_name
-                    __last_bid.strategy = self.strategy_name
-                    __last_bid.bid_model = 'auto'
-                    __last_bid.type = '0x01'
-                    __last_bid.amount_model = 'amount'
+        for item in self.strategy_stock_list:
+            try:
+                if __hold_list[item] > 0:
+                    self.QA_backtest_send_order(self, item, __hold_list[item], -1, {'bid_model': 'C'})
 
-                    __message = self.market.receive_bid(
-                        __last_bid)
-                    _remains_day = 0
-                    while __message['header']['status'] == 500:
-                        # 停牌状态,这个时候按停牌的最后一天计算价值(假设平仓)
-
-                        __last_bid.date = self.trade_list[self.end_real_id - _remains_day]
-                        _remains_day += 1
-                        __message = self.market.receive_bid(
-                            __last_bid)
-
-                        # 直到市场不是为0状态位置,停止前推日期
-
-                    self.__messages = self.account.QA_account_receive_deal(
-                        __message)
-                else:
-                    pre_del_id.append(id_)
-                return pre_del_id
-
-            pre_del_id = reduce(lambda _, x: __sell(x),
-                                range(len(__hold_list)))
-            pre_del_id.sort()
-            pre_del_id.reverse()
-            for item_x in pre_del_id:
-                __hold_list.pop(item_x)
-
+            except:
+                pass
     @classmethod
     def load_strategy(__backtest_cls, func, *arg, **kwargs):
         '策略加载函数'
@@ -658,7 +588,7 @@ class QA_Backtest():
         for i in range(int(__backtest_cls.start_real_id), int(__backtest_cls.end_real_id) - 1, 1):
             __backtest_cls.running_date = __backtest_cls.trade_list[i]
             QA_util_log_info(
-                '=================daily hold list====================')
+                '=================daily hold list====================') 
             QA_util_log_info('in the begining of ' +
                              __backtest_cls.running_date)
             QA_util_log_info(
