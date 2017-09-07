@@ -23,11 +23,13 @@
 # SOFTWARE.
 
 import csv
+import datetime
 import json
 import os
 import queue
 import sys
 import threading
+import time
 
 import numpy as np
 import pandas as pd
@@ -57,8 +59,40 @@ def hello():
 
 @app.route('/query_k/<code>')
 def query_k(code):
+    print(ts.get_k_data(code).to_json(orient='records'))
     data = json.loads(ts.get_k_data(code).to_json(orient='records'))
 
+    return jsonify(data)
+
+
+@app.route('/query/day/bfq/<code>')
+def query_day_bfq(code):
+
+    data =QA.QA_fetch_stock_day_adv(
+        code, '1990-01-01', str(datetime.date.today())).to_json()
+    return jsonify(data)
+
+
+@app.route('/query/day/qfq/<code>')
+def query_day_qfq(code):
+
+    data =QA.QA_fetch_stock_day_adv(
+        code, '1990-01-01', str(datetime.date.today())).to_qfq().to_json()
+    return jsonify(data)
+
+
+@app.route('/query/day/hfq/<code>')
+def query_day_hfq(code):
+    data =QA.QA_fetch_stock_day_adv(
+        code, '1990-01-01', str(datetime.date.today())).to_hfq().to_json()
+    return jsonify(data)
+
+
+@app.route('/query/min/bfq/<code>')
+def query_min_bfq(code):
+
+    data =QA.QA_fetch_stock_min_adv(
+        code, '2017-07-01', str(datetime.date.today()),'1min').to_json()
     return jsonify(data)
 
 
@@ -68,7 +102,12 @@ def query_backtest_by_id(cookie_id):
 
 
 def main():
+    
     from gevent import pywsgi
     from geventwebsocket.handler import WebSocketHandler
     server = pywsgi.WSGIServer(('', 5050), app, handler_class=WebSocketHandler)
     server.serve_forever()
+
+
+if __name__ == '__main__':
+    main()
