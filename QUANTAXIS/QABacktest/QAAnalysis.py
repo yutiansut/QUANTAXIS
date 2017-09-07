@@ -81,16 +81,13 @@ def QA_backtest_analysis_start(client, code_list, message, total_date,benchmark_
     trade_history = message['body']['account']['history']
     cash = message['body']['account']['cash']
     assets = message['body']['account']['assets']
-    assets_= data.resample('D').last().dropna()['assets']
+    assets_= data.resample('D').last().dropna()
     # 计算交易日
-    trade_date = [assets_.index]
-    assets_d = [assets_]
-    print(trade_date)
-    print(assets_d)
+    trade_date = list(assets_['time'].apply(lambda x: str(x)[0:10]))
+    assets_d = list(assets_['assets'])
     # benchmark资产
     benchmark_assets = QA_backtest_calc_benchmark(
         benchmark_data, assets[0])
-
     #d2=pd.concat([data.resample('D').last(),pd.DataFrame(benchmark_assets,columns=['benchmark'])])
     # benchmark年化收益
     benchmark_annualized_returns = QA_backtest_calc_profit_per_year(
@@ -163,10 +160,8 @@ def QA_backtest_result_check(datelist, message):
 
 
 def QA_backtest_calc_benchmark(benchmark_data, init_assets):
-    assets = []
-    for item in benchmark_data:
-        assets.append(
-            float(item[1]) / float(benchmark_data[1][1]) * float(init_assets))
+
+    assets=list(benchmark_data['open'] / float(benchmark_data['open'][0]) * float(init_assets))
     return assets
 
 
@@ -216,7 +211,7 @@ def QA_backtest_calc_volatility(assest_profit_matrix):
 
 def QA_backtest_calc_dropback_max(history):
     drops = []
-
+    print(history)
     for i in range(1, len(history), 1):
         maxs = max(history[:i])
         cur = history[i - 1]
