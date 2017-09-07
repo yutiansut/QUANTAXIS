@@ -66,7 +66,7 @@ class CLI(cmd.Cmd):
         shutil.copy(file_dir, now_path)
 
         QA_util_log_info(
-            'successfully generate a example strategy in' + now_path)
+            'Successfully generate a example strategy in :  ' + now_path)
 
     def help_examples(self):
         print('make a sample backtest framework')
