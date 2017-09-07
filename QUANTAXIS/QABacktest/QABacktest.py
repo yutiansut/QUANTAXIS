@@ -48,8 +48,8 @@ from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_index_day, QA_fetch_index_min, Q
                                        QA_fetch_stock_info,
                                        QA_fetch_stocklist_day,
                                        QA_fetch_trade_date)
-from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_stock_day_adv,
-                                               QA_fetch_stock_min_adv,
+from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_stock_day_adv,QA_fetch_index_day_adv,
+                                               QA_fetch_stock_min_adv,QA_fetch_index_min_adv,
                                                QA_fetch_stocklist_day_adv,
                                                QA_fetch_stocklist_min_adv)
 from QUANTAXIS.QAMarket.QABid import QA_QAMarket_bid_list
@@ -148,20 +148,20 @@ class QA_Backtest():
         # 重新初始化账户的cookie
         self.account.account_cookie = str(random.random())
         # 初始化股票池的市场数据
-
+        self.benchmark_data = QA_fetch_index_day_adv(
+                self.benchmark_code, self.start_real_date, self.end_real_date)
         if self.backtest_type in ['day', 'd', '0x00']:
             self.market_data = QA_fetch_stocklist_day_adv(
                 self.strategy_stock_list, self.trade_list[self.start_real_id - int(
                     self.strategy_gap)], self.trade_list[self.end_real_id]).to_qfq()
-            self.benchmark_data = QA_fetch_index_day(
-                self.benchmark_code, self.start_real_date, self.end_real_date)
+            
         elif self.backtest_type in ['1min', '5min', '15min']:
             self.market_data = QA_fetch_stocklist_min_adv(
                 self.strategy_stock_list, self.trade_list[
                     self.start_real_id - int(self.strategy_gap)],
                 self.trade_list[self.end_real_id], self.backtest_type).to_qfq()
-            self.benchmark_data = QA_fetch_index_min(
-                self.benchmark_code, self.start_real_date, self.end_real_date)
+            #self.benchmark_data = QA_fetch_index_min_adv(
+            #    self.benchmark_code, self.start_real_date, self.end_real_date,self.backtest_type)
 
     def __QA_backtest_start(self, *args, **kwargs):
         """
@@ -282,7 +282,7 @@ class QA_Backtest():
             performace = QA_backtest_analysis_start(
                 self.setting.client, self.strategy_stock_list, self.__messages,
                 self.trade_list[self.start_real_id:self.end_real_id + 1],
-                self.market_data, self.benchmark_data)
+                self.benchmark_data.data)
             _backtest_mes = {
                 'user': self.setting.QA_setting_user_name,
                 'strategy': self.strategy_name,
@@ -407,7 +407,6 @@ class QA_Backtest():
 
         if __bid is not None and __market != 500:
             print('GET the Order Code %s Amount %s Price %s Towards %s Time %s'%(__bid.code,__bid.amount,__bid.price,__bid.towards,__bid.datetime))
-            print(__market.data)
             self.__sync_order_LM(self, 'create_order', order_=__bid)
 
     def __sync_order_LM(self, event_, order_=None, order_id_=None, trade_id_=None, market_message_=None):

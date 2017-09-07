@@ -4,3 +4,4 @@
 *.h linguist-language=C
 *.cc linguist-language=C
 *.proto linguist-language=Protocol Buffer
+*.py linguist-language=yutiansut

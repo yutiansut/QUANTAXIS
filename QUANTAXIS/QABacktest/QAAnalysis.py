@@ -30,12 +30,12 @@ we will give some function
 import math
 
 import numpy
-
+import pandas as pd
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day
 from QUANTAXIS.QAUtil import QA_util_log_info, trade_date_sse
 
 
-def QA_backtest_analysis_start(client, code_list, message, total_date, market_data, benchmark_data):
+def QA_backtest_analysis_start(client, code_list, message, total_date,benchmark_data):
     # 主要要从message_history分析
     # 1.收益率
     # 2.胜率
@@ -69,18 +69,29 @@ def QA_backtest_analysis_start(client, code_list, message, total_date, market_da
     """
     # 计算一个benchmark
     # 这个benchmark 是在开始的那天 市价买入和策略所选标的一致的所有股票,然后一直持仓
+    data=pd.concat([pd.DataFrame(message['body']['account']['history'],
+            columns=['time','code','price','towards','amount','order_id','trade_id','commission']),
+            pd.DataFrame(message['body']['account']['assets'],columns=['assets'])],axis=1)
+    data['time']=pd.to_datetime(data['time'])
+    data.set_index('time',drop=False,inplace=True)
+
+
+
 
     trade_history = message['body']['account']['history']
     cash = message['body']['account']['cash']
     assets = message['body']['account']['assets']
-
+    assets_= data.resample('D').last().dropna()['assets']
     # 计算交易日
-    trade_date = QA_backtest_calc_trade_date(trade_history)
-    assets_d = QA_backtest_calc_assets(trade_history, assets)
-
+    trade_date = [assets_.index]
+    assets_d = [assets_]
+    print(trade_date)
+    print(assets_d)
     # benchmark资产
     benchmark_assets = QA_backtest_calc_benchmark(
         benchmark_data, assets[0])
+
+    #d2=pd.concat([data.resample('D').last(),pd.DataFrame(benchmark_assets,columns=['benchmark'])])
     # benchmark年化收益
     benchmark_annualized_returns = QA_backtest_calc_profit_per_year(
         benchmark_assets, len(total_date))
