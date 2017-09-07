@@ -255,7 +255,6 @@ class QA_Backtest():
         QA_util_log_info('\n' + tabulate(self.account.detail,
                                          headers=(self.account.detail.columns)))
         __exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
-
         if len(self.__messages) > 1:
             performace = QA_backtest_analysis_start(
                 self.setting.client, self.strategy_stock_list, self.__messages,
@@ -521,7 +520,7 @@ class QA_Backtest():
                 # 如果买入量>0, 才判断为成功交易
                 QA_util_log_info('BUY %s Price %s Date %s Amount %s' % (
                     __bid.code, __bid.price, __bid.datetime, __bid.amount))
-                self.account.QA_account_receive_deal(__message)
+                self.__messages=self.account.QA_account_receive_deal(__message)
                 return __message
             else:
 
@@ -534,7 +533,7 @@ class QA_Backtest():
             # 股票中不允许有卖空操作
             # 检查持仓面板
             if __message['header']['status'] == 200:
-                self.account.QA_account_receive_deal(__message)
+                self.__messages=self.account.QA_account_receive_deal(__message)
                 QA_util_log_info('SELL %s Price %s Date %s  Amount %s' % (
                     __bid.code, __bid.price, __bid.datetime, __bid.amount))
                 return __message
