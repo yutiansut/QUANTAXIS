@@ -6,7 +6,7 @@
 [![GitHub forks](https://img.shields.io/github/forks/yutiansut/quantaxis.svg?style=social&label=Fork&)](https://github.com/yutiansut/quantaxis/fork)
 
 
-![main_1](https://user-images.githubusercontent.com/11537812/30212442-92fbfe04-94d7-11e7-9f6d-695ac5464719.gif)
+![main_1](http://osnhakmay.bkt.clouddn.com/Main_1.gif)
 
 
 ![version](https://img.shields.io/badge/Version-%200.4.1-orange.svg)
