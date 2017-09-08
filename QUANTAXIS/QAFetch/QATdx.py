@@ -64,11 +64,12 @@ def select_best_ip():
 
 best_ip = select_best_ip()
 
-
+# return 1 if sh, 0 if sz
 def __select_market_code(code):
-
-    return 1 if str(code)[0] == '6' else 0
-
+    code = str(code)
+    if code[0] in ['5','6','9'] or code[:3] in ["009","126","110","201","202","203","204"]:
+        return 1
+    return 0
 
 def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', ip=best_ip, port=7709):
     api = TdxHq_API()
