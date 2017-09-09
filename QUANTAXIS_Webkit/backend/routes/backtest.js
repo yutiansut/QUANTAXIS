@@ -45,7 +45,7 @@ router.get('/info', function (req, res, next) {
 
   })
 });
-//http://localhost:3000/backtest/info?name=yutiansut
+
 router.get('/info', function (req, res, next) {
   console.log('backtest')
   name = req.query.strategy
