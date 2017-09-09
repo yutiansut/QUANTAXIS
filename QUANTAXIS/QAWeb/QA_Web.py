@@ -110,11 +110,26 @@ def query_min_qfq(code):
     return jsonify(data)
 
 
-@app.route('/backtest/[cookie_id]')
-def query_backtest_by_id(cookie_id):
-    pass
+@app.route('/backtest/info', methods=['POST', 'GET'])
+def query_backtest_by_():
+    return jsonify(data=QA.QA_fetch_backtest_info(
+            None if 'user' not in dict(list(request.args.items())) else dict(list(request.args.items()))['user'],
+            None if 'cookie' not in dict(list(request.args.items())) else dict(list(request.args.items()))['cookie'],
+            None if 'strategy' not in dict(list(request.args.items())) else dict(list(request.args.items()))['strategy']
+            ))
 
 
+@app.route('/backtest/history', methods=['POST', 'GET'])
+def query_backtest_history():
+    data=QA.QA_fetch_backtest_history(cookie=request.args.get('cookie',''))
+    return jsonify(data)
+
+
+
+@app.route('/backtest/info_all', methods=['POST', 'GET'])
+def query_backtest():
+    data=QA.QA_fetch_backtest_info()
+    return jsonify(data)
 def main():
     
     from gevent import pywsgi
