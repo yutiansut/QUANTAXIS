@@ -37,7 +37,7 @@ import pymongo
 import QUANTAXIS as QA
 import requests
 import tushare as ts
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template,request
 from flask_socketio import SocketIO, emit
 from tabulate import tabulate
 
@@ -57,9 +57,17 @@ def hello():
     return "QUANTAXIS SOCKET SERVER"
 
 
+@app.route('/signin', methods=['POST', 'GET'])
+def signin():
+    return str(QA.QA_user_sign_in(request.args.get('username',''),request.args.get('password','')))
+
+@app.route('/signup', methods=['POST', 'GET'])
+def signup():
+    return str(QA.QA_user_sign_up(request.args.get('username',''),request.args.get('password','')))
+
+
 @app.route('/query_k/<code>')
 def query_k(code):
-    print(ts.get_k_data(code).to_json(orient='records'))
     data = json.loads(ts.get_k_data(code).to_json(orient='records'))
 
     return jsonify(data)
@@ -93,6 +101,12 @@ def query_min_bfq(code):
 
     data =QA.QA_fetch_stock_min_adv(
         code, '2017-07-01', str(datetime.date.today()),'1min').to_json()
+    return jsonify(data)
+@app.route('/query/min/qfq/<code>')
+def query_min_qfq(code):
+
+    data =QA.QA_fetch_stock_min_adv(
+        code, '2017-07-01', str(datetime.date.today()),'1min').to_qfq().to_json()
     return jsonify(data)
 
 

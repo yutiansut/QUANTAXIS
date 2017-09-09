@@ -52,3 +52,4 @@ class QA_Setting():
             return self.user
         else:
             QA_util_log_info('failed to login')
+
