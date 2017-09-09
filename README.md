@@ -42,7 +42,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - 指标数据
 
 
-<img src="http://i1.piimg.com/1949/62c510db7915837a.png" width = "80%" />
+<img src="http://i1.piimg.com/1949/62c510db7915837a.png" width = "50%" />
 
 
 <!-- TOC -->
