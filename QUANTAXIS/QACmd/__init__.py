@@ -114,10 +114,10 @@ class CLI(cmd.Cmd):
 
     def do_save(self, arg):
         # 仅仅是为了初始化才在这里插入用户,如果想要注册用户,要到webkit底下注册
-        arg = arg.split(' ')
-        if len(arg) == 0:
+        if arg == '':
             print("Usage: save all|insert_user|stock_day|stock_xdxr|stock_min|index_day|index_min|stock_list")
         else:
+            arg = arg.split(' ')
             if len(arg)  == 1 and arg[0] == 'all':
                 QA_Setting.client.quantaxis.user_list.insert(
                     {'username': 'admin', 'password': 'admin'})
