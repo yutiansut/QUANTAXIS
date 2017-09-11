@@ -40,7 +40,7 @@ QB.account.assets 当前账户总资产
 QB.account.detail 当前账户的交易对账单
 QB.account.init_assest 账户的最初资金
 QB.strategy_gap 前推日期
-
+QB.strategy_name 策略名称
 
 QB.strategy_stock_list 回测初始化的时候  输入的一个回测标的
 QB.strategy_start_date 回测的开始时间
@@ -91,6 +91,7 @@ QB.QA_backtest_hold_amount(QB,code)
 @QB.backtest_init
 def init():
     QB.backtest_type='day'
+    QB.strategy_name='test_daily'
     #QB.backtest_type='5min' # 日线回测
     QB.setting.QA_util_sql_mongo_ip='127.0.0.1' #回测数据库
     QB.account.init_assest=2500000 # 初始资金

@@ -135,7 +135,7 @@ class CLI(cmd.Cmd):
                     eval("QA_SU_save_%s('tdx')" %(i))
 
     def help_save(self):
-        QA_util_log_info('Save all the stock data from tushare')
+        QA_util_log_info('Save all the stock data from pytdx')
 
     def do_update(self, arg):
         QA_SU_update_stock_day('tdx')
