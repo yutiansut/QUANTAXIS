@@ -39,7 +39,8 @@ export default new Router({
           component: require('@/components/Personal/notebook.vue')
         },
         {
-          'path': '/personal/markdown',
+          'path': '/personal/markdown/:id',
+          name: 'markdown',
           component: require('@/components/Personal/markdown.vue')
         },
         {

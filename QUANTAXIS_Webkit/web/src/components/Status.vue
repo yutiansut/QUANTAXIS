@@ -56,7 +56,7 @@
           'web_link':'https://github.com/sinall/ShiPanE-Python-SDK'
         },{
           'name': 'Rainx/Tdx_trade插件',
-          'port': 19250,
+          'port': 19820,
           'status':'检测中...',
           'web_link':'https://github.com/rainx/TdxTradeServer'
         }],

@@ -1,9 +1,18 @@
 <template>
-  <markdown-editor  id='markdown' :highlight="true"  v-model="content" ref="markdownEditor":configs="configs"></markdown-editor>
+  <div>
+    <h2 style="text_align:'left'">{{this.title}}</h2>
+    <markdown-editor id='markdown' :highlight="true" v-model="content" ref="markdownEditor" :configs="configs"></markdown-editor>
+    <div>
+      <mu-flat-button v-on:click='save()' label="SAVE" class="demo-flat-button" />
+
+      <mu-flat-button v-on:click='clear()' label="CLEAR" class="demo-flat-button" />
+    </div>
+  </div>
 </template>
 
 <script>
   import hljs from 'highlight.js';
+  import axios from 'axios'
 
   window.hljs = hljs;
   import markdownEditor from 'vue-simplemde/src/markdown-editor'
@@ -13,15 +22,50 @@
     components: {
       markdownEditor
     },
-    data () {
+    data() {
       return {
-        content: '',
+        content: '# QUANTAXIS Markdown Editor',
+        title: '',
         configs: {
           spellChecker: false // 禁用拼写检查
         }
       }
-    }
+    },
+    methods: {
+      clear() {
+        this.content = ''
+      },
+      ready(id) {
+        axios.get('http://localhost:3000/notebook/query?id=' +id )
+          .then(response => {
+            this.title = response.data['title']
+            this.content =response.data['content']
+            console.log(response.data)
+          })
+
+
+      },
+      save() {
+        console.log(this.content)
+        let text=String(this.content)
+        axios.get('http://localhost:3000/notebook/modify',{ params:{id:this.$route.params.id,title:this.title,content:text}})
+          .then(response => {
+            this.title=response.data['value']['title']
+            this.content=response.data['value']['content']
+          })
+      }},
+
+
+      mounted() {
+        this.$nextTick(function () {
+           this.ready(this.$route.params.id);
+
+        })
+      }
+
+
   }
+
 </script>
 
 <style>
@@ -31,20 +75,21 @@
   @import '~simplemde/dist/simplemde.min.css';
 
 
-.CodeMirror-sizer {
-  text-align:left;
-  position: relative;
-}
-.CodeMirror-scroll{
-  text-align:left;
-  position: relative;
-}
-.markdown-editor{
-  text-align:left;
-  text-overflow:scrollable;
-  position: relative;
-}
+  .CodeMirror-sizer {
+    text-align: left;
+    position: relative;
+  }
 
+  .CodeMirror-scroll {
+    text-align: left;
+    position: relative;
+  }
+
+  .markdown-editor {
+    text-align: left;
+    text-overflow: scrollable;
+    position: relative;
+  }
   /* 高亮主题可选列表：https://github.com/isagalaev/highlight.js/tree/master/src/styles */
-</style>
 
+</style>
