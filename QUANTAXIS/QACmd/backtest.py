@@ -111,7 +111,7 @@ def before_backtest():
 @QB.load_strategy
 def strategy():
 
-    QA.QA_util_log_info(QB.account.hold_available)  
+    QA.QA_util_log_info(QB.account.sell_available)  
     QA.QA_util_log_info('LEFT Cash: %s'%QB.account.cash_available)
     for item in QB.strategy_stock_list:
         #QA.QA_util_log_info(QB.QA_backtest_get_market_data(QB,item,QB.today).data) 
