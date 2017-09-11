@@ -1,99 +1,50 @@
 <template>
-        <div class="markdown-editor">
-                <textarea></textarea>
-        </div>
+  <markdown-editor  id='markdown' :highlight="true"  v-model="content" ref="markdownEditor":configs="configs"></markdown-editor>
 </template>
 
 <script>
-import SimpleMDE from 'simplemde';
-export default {
-        name: 'markdown-editor',
-        props: {
-                value: String,
-                previewClass: String,
-                customTheme: {
-                        type: Boolean,
-                        default() {
-                                return false;
-                        },
-                },
-                configs: {
-                        type: Object,
-                        default() {
-                                return {};
-                        },
-                },
-        },
-        ready() {
-                this.initialize();
-                this.syncValue();
-        },
-        mounted() {
-                this.initialize();
-        },
-        methods: {
-                initialize() {
-                        let configs = {};
-                        Object.assign(configs, this.configs);
-                        configs.element = configs.element || this.$el.firstElementChild;
-                        configs.initialValue = configs.initialValue || this.value;
-                        // 实例化编辑器
-                        this.simplemde = new SimpleMDE(configs);
-                        // 判断是否开启代码高亮
-                        if (configs.renderingConfig && configs.renderingConfig.codeSyntaxHighlighting) {
-                                require.ensure([], () => {
-                                        const theme = configs.renderingConfig.highlightingTheme || 'default';
-                                        window.hljs = require('highlight.js');
-                                        require(`highlight.js/styles/${theme}.css`);
-                                }, 'highlight');
-                        }
-                        // 判断是否引入样式文件
-                        if (!this.customTheme) {
-                                require('simplemde/dist/simplemde.min.css');
-                        }
-                        // 添加自定义 previewClass
-                        const className = this.previewClass || '';
-                        this.addPreviewClass(className);
-                        // 绑定事件
-                        this.bindingEvents();
-                },
-                bindingEvents() {
-                        this.simplemde.codemirror.on('change', () => {
-                                this.$emit('input', this.simplemde.value());
-                        });
-                },
-                addPreviewClass(className) {
-                        const wrapper = this.simplemde.codemirror.getWrapperElement();
-                        const preview = document.createElement('div');
-                        wrapper.nextSibling.className += ` ${className}`;
-                        preview.className = `editor-preview ${className}`;
-                        wrapper.appendChild(preview);
-                },
-                syncValue() {
-                        this.simplemde.codemirror.on('change', () => {
-                                this.value = this.simplemde.value();
-                        });
-                },
-        },
-        destroyed() {
-                this.simplemde = null;
-        },
-        watch: {
-                value(val) {
-                        if (val === this.simplemde.value()) return;
-                        this.simplemde.value(val);
-                },
-        },
-};
+  import hljs from 'highlight.js';
+
+  window.hljs = hljs;
+  import markdownEditor from 'vue-simplemde/src/markdown-editor'
+
+  // 基础用法
+  export default {
+    components: {
+      markdownEditor
+    },
+    data () {
+      return {
+        content: '',
+        configs: {
+          spellChecker: false // 禁用拼写检查
+        }
+      }
+    }
+  }
 </script>
 
 <style>
-.markdown-editor .markdown-body {
-        padding: 0.5em
+  @import '~simplemde-theme-base/dist/simplemde-theme-base.min.css';
+  @import '~github-markdown-css';
+  @import '~highlight.js/styles/atom-one-dark.css';
+  @import '~simplemde/dist/simplemde.min.css';
+
+
+.CodeMirror-sizer {
+  text-align:left;
+  position: relative;
+}
+.CodeMirror-scroll{
+  text-align:left;
+  position: relative;
+}
+.markdown-editor{
+  text-align:left;
+  text-overflow:scrollable;
+  position: relative;
 }
 
-.markdown-editor .editor-preview-active,
-.markdown-editor .editor-preview-active-side {
-        display: block;
-}
+  /* 高亮主题可选列表：https://github.com/isagalaev/highlight.js/tree/master/src/styles */
 </style>
+
