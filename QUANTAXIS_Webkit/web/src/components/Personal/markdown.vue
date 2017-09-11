@@ -78,8 +78,8 @@
           })
           .then(response => {
 
-            this.title = response.data['value']['title']
-            this.content = response.data['value']['content']
+            //this.title = response.data['value']['title']
+            //this.content = response.data['value']['content']
             this.open('top')
             //this.close('top')
           })
@@ -100,6 +100,11 @@
             this.topPopup = false
           }, 800)
         }
+      },
+      content: function (val, oldVal) {
+        setTimeout(() => {
+        this.save()
+      }, 800)
       }
     }
 
