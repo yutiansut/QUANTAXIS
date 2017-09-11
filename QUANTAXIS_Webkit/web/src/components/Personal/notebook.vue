@@ -2,18 +2,18 @@
   <div>
     <h2 align='left'>> NOTEBOOK</h2>
 
-    <input v-model="message" v-on:keyup.enter="insert_pages($event.currentTarget.value)" placeholder="在此输入文章名" lazy>
+    <mu-paper>
+        <mu-text-field hintText="搜索文章" class="demo-divider-form" :underlineShow="false" v-model="message"/>
+    </mu-paper>
     <div class="container">
 
       <mu-flat-button label="NEW" v-on:click='insert_pages()' class="demo-flat-button" />
-      <mu-flat-button label="MODIFY" class="demo-flat-button" />
       <mu-flat-button label="DELETE" class="demo-flat-button" />
     </div>
 
     <mu-table multiSelectable enableSelectAll ref="table">
       <mu-thead>
         <mu-tr>
-          <mu-th>ID</mu-th>
           <mu-th>title</mu-th>
           <mu-th>content</mu-th>
         </mu-tr>
@@ -21,9 +21,10 @@
       <template v-for="item in items">
       <mu-tbody >
         <mu-tr>
-          <mu-td>{{item['_id']}}</mu-td>
+          <router-link :to="{ name:'markdown',params: {id:item['_id']}}">
           <mu-td>{{item['title']}}</mu-td>
           <mu-td>{{item['content']}}</mu-td>
+          </router-link>
         </mu-tr>
 
       </mu-tbody>

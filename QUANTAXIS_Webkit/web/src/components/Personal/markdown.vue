@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h2 style="text_align:'left'">{{this.title}}</h2>
+    <mu-paper>
+    <mu-text-field hintText="Input One" class="demo-divider-form" :underlineShow="false" v-model="title"/>
+    </mu-paper>
     <markdown-editor id='markdown' :highlight="true" v-model="content" ref="markdownEditor" :configs="configs"></markdown-editor>
     <div>
       <mu-flat-button v-on:click='save()' label="SAVE" class="demo-flat-button" />
@@ -91,5 +93,13 @@
     position: relative;
   }
   /* 高亮主题可选列表：https://github.com/isagalaev/highlight.js/tree/master/src/styles */
-
+  .demo-divider-form {
+    margin-bottom: 0;
+    text-align:left;
+    font-size: 2em;
+    margin: .67em 0;
+    font-weight: bold;
+    font-family: 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif';
+    margin-left: 20px;
+  }
 </style>
