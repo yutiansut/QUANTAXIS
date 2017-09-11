@@ -13,6 +13,10 @@ export default new Router({
       path: '/',
       name: 'homePage',
       component: require('@/components/HomePage.vue')
+    },{
+      path: '/status',
+      name: 'status',
+      component: require('@/components/Status.vue')
     },
     {
       path: '/sign',

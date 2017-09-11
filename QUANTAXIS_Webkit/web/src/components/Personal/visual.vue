@@ -218,7 +218,7 @@
             this.items[0]['benchmark_vol'] = data['benchmark_vol'].toFixed(5)
             this.items[0]['exist'] = data['exist']
             this.items[0]['win_rate'] = data['win_rate'].toFixed(3)
-            console.log(this.items)
+            //console.log(this.items)
 
 
             this.chart.setOption({

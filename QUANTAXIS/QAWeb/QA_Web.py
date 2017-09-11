@@ -37,7 +37,7 @@ import pymongo
 import QUANTAXIS as QA
 import requests
 import tushare as ts
-from flask import Flask, jsonify, render_template,request
+from flask import Flask, jsonify, render_template,request,make_response
 from flask_socketio import SocketIO, emit
 from tabulate import tabulate
 
@@ -56,6 +56,14 @@ def test_message(message):
 def hello():
     return "QUANTAXIS SOCKET SERVER"
 
+@app.route("/status")
+def status():
+    rst = make_response(jsonify('200'))
+    rst.headers['Access-Control-Allow-Origin'] = '*'
+    rst.headers['Access-Control-Allow-Methods'] = 'PUT,GET,POST,DELETE'
+    allow_headers = "Referer,Accept,Origin,User-Agent"
+    rst.headers['Access-Control-Allow-Headers'] = allow_headers
+    return rst
 
 @app.route('/signin', methods=['POST', 'GET'])
 def signin():
