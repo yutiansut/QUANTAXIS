@@ -7,8 +7,9 @@
         </div>
         <div id="personal-content">
             <ul>
+                <h3>回测概览</h3>
                 <mu-table :height="height">
-    
+
                     <template v-for="item in items">
                             <mu-thead>
                                 <mu-tr>
@@ -22,36 +23,39 @@
 
                             <mu-tr>
                                 <router-link :to="{ name:'history',params: {id:item['account_cookie']}}">
-                                   
+
                                     <mu-td>{{ item['strategy']}}</mu-td>
                                     <mu-td>{{ item['start_time']}}</mu-td>
                                     <mu-td>{{ item['end_time']}}</mu-td>
                                     <mu-td>{{ item['annualized_returns']}}</mu-td>
-    
+
                                 </router-link>
                             </mu-tr>
                         </mu-tbody>
-    
+
                     </template>
-    
+
                 </mu-table>
-                <li>爬虫状况</li>
-                <mu-table>
+                <h3>NOTEBOOK</h3>
+                <mu-table multiSelectable enableSelectAll ref="table">
                     <mu-thead>
-                        <mu-tr>
-                            <mu-th>ID</mu-th>
-                            <mu-th>Name</mu-th>
-                            <mu-th>Status</mu-th>
-                        </mu-tr>
+                      <mu-tr>
+                        <mu-th>title</mu-th>
+                        <mu-th>content</mu-th>
+                      </mu-tr>
                     </mu-thead>
-                    <mu-tbody>
-                        <mu-tr>
-                            <mu-td>S6001C0001</mu-td>
-                            <mu-td>华尔街中文网爬虫</mu-td>
-                            <mu-td>Stopped</mu-td>
-                        </mu-tr>
+                    <template v-for="item in itema">
+                    <mu-tbody >
+                      <mu-tr>
+                        <router-link :to="{ name:'markdown',params: {id:item['_id']}}">
+                        <mu-td>{{item['title']}}</mu-td>
+                        <mu-td>{{item['content']}}</mu-td>
+                        </router-link>
+                      </mu-tr>
+
                     </mu-tbody>
-                </mu-table>
+                    </template>
+                  </mu-table>
                 <li>回测概览</li>
             </ul>
         </div>
@@ -65,11 +69,24 @@ export default {
             itemd: {
                 user: sessionStorage.user
             },
-            items: ['']
+            items: [''],
+            itema:['']
 
         }
     },
     methods: {
+      query() {
+
+        axios.get('http://localhost:3000/notebook/queryall')
+          .then(response => {
+            this.itema = response.data;
+            console.log(this.items)
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      },
+
         ready() {
 
             axios.get('http://localhost:3000/backtest/info?name=' + sessionStorage.user)
@@ -89,6 +106,7 @@ export default {
     mounted() {
         this.$nextTick(function () {
             this.ready();
+            this.query();
 
         })
     }
@@ -110,6 +128,9 @@ export default {
 }
 
 li {
+    float: left;
+}
+h3{
     float: left;
 }
 </style>

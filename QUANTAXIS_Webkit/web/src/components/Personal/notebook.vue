@@ -3,7 +3,7 @@
     <h2 align='left'>> NOTEBOOK</h2>
 
     <mu-paper>
-        <mu-text-field hintText="搜索文章" class="demo-divider-form" :underlineShow="false" v-model="message"/>
+        <mu-text-field v-on:keyup.enter='querycontent($event.currentTarget.value)' hintText="搜索文章" class="demo-divider-form" :underlineShow="false" v-model="message"  />
     </mu-paper>
     <div class="container">
 
@@ -68,6 +68,18 @@
           .then(response => {
             var _id = response.data['_id'];
             this.$router.push({name:'markdown',params: {id:_id}})
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      },
+      querycontent(mes){
+        console.log(mes)
+        console.log(this.message)
+        axios.get('http://localhost:3000/notebook/querycontent?content='+mes)
+          .then(response => {
+            this.items = response.data;
+
           })
           .catch(function (error) {
             console.log(error);

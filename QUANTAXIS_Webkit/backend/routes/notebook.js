@@ -54,7 +54,20 @@ router.get('/query', function (req, res, next) {
 
   })
 });
+router.get('/querycontent', function (req, res, next) {
+  var content = new RegExp(req.query.content)
+  mongodb.connect('mongodb://localhost:27017/quantaxis', function (err, conn) {
+    conn.collection('notebook', function (err, coll) {
+      coll.find({
+        'content': content
+      }).toArray(function (err, docs) {
+        res.send(docs)
 
+      })
+    })
+
+  })
+});
 router.get('/queryall', function (req, res, next) {
   var id = req.query.id
   var id_ = new mongodb.ObjectID(id)
