@@ -137,12 +137,6 @@ class CLI(cmd.Cmd):
     def help_save(self):
         QA_util_log_info('Save all the stock data from pytdx')
 
-    def do_update(self, arg):
-        QA_SU_update_stock_day('tdx')
-
-    def help_update(self):
-        QA_util_log_info('Update the stock data')
-
 
 def sourcecpy(src, des):
     src = os.path.normpath(src)
