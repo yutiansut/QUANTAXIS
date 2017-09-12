@@ -39,13 +39,6 @@ from . import QAThs as QAThs
 #import QAFetch.QACrawlData as QACD
 
 
-#from WindPy import w
-# w.start()
-
-"""
-author yutiansut
-"""
-
 
 def use(package):
     if package in ['wind']:
@@ -60,12 +53,14 @@ def use(package):
         return QAThs
 
 
-def QA_fetch_get_stock_day(package, code, startDate, endDate, if_fq='01', type_='json'):
+def QA_fetch_get_stock_day(package, code, startDate, endDate, if_fq='01',level='day', type_='json'):
     Engine = use(package)
-    if package in ['ths', 'THS', 'wind', 'tdx', 'pytdx']:
+    if package in ['ths', 'THS', 'wind']:
         return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq)
     elif package in ['ts', 'tushare']:
         return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq, type_)
+    elif package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq,level)
     else:
         return Engine.QA_fetch_get_stock_day(code, startDate, endDate)
 

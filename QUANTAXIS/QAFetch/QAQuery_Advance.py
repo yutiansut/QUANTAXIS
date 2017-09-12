@@ -88,7 +88,6 @@ def QA_fetch_index_day_adv(code, __start, __end, collections=QA_Setting.client.q
         __data = DataFrame(__data, columns=[
             'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
         __data['date'] = pd.to_datetime(__data['date'])
-        print(__data)
         return QA_DataStruct_Index_day(__data.set_index(['date', 'code'], drop=False))
     else:
         QA_util_log_info('something wrong with date')

@@ -31,7 +31,7 @@ by yutiansut
 
 2017/4/8
 """
-__version__ = '0.4.1.40'
+__version__ = '0.4.5'
 __author__ = 'yutiansut'
 logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
@@ -59,7 +59,9 @@ from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day, QA_fetch_get_trade_date, 
                                QA_fetch_get_index_day, QA_fetch_get_index_min, QA_fetch_get_stock_list)
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_trade_date, QA_fetch_stock_day, QA_fetch_stocklist_day, QA_fetch_index_day,
                                        QA_fetch_stock_min, QA_fetch_stocklist_min, QA_fetch_future_min, QA_fetch_future_day,
-                                       QA_fetch_future_tick, QA_fetch_stock_list, QA_fetch_stock_full, QA_fetch_stock_xdxr)
+                                       QA_fetch_future_tick, QA_fetch_stock_list, QA_fetch_stock_full, QA_fetch_stock_xdxr,
+                                       QA_fetch_backtest_info,QA_fetch_backtest_history)
+
 from QUANTAXIS.QAFetch.QAQuery_Advance import *
 
 # save
@@ -130,7 +132,7 @@ from QUANTAXIS.QACmd import QA_cmd
 import argparse
 
 
-# 检查python版本
+# check
 import sys
 if sys.version_info.major != 3 or sys.version_info.minor not in [4,5,6]:
     print('wrong version, should be 3.4/3.5/3.6 version')

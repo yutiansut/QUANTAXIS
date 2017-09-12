@@ -175,13 +175,14 @@ def market_stock_day_engine(__bid, __data=None):
                                     'strategy': str(__bid.strategy)
                                 },
                                 'order_id': str(__bid.order_id),
-                                'trade_id': str(random.random())
+                                'trade_id': str(random.random())    
                             },
                             'body': {
                                 'bid': {
                                     'price': float("%.2f" % float(str(__deal_price))),
                                     'code': str(__bid.code),
                                     'amount': int(__bid.amount),
+                                    'datetime': str(__bid.datetime),
                                     'date': str(__bid.date),
                                     'towards': int(__bid.towards)
                                 },
@@ -275,6 +276,21 @@ def market_stock_engine(__bid, __data):
 
     # trade mod
     assert isinstance(__data,dict)
+    def __get_data(__bid):
+        '隔离掉引擎查询数据库的行为'
+        __data = QA_util_to_json_from_pandas(QA_fetch_stock_day(str(
+            __bid.code)[0:6], str(__bid.date)[0:10], str(__bid.date)[0:10], 'pd'))
+        if len(__data) == 0:
+            pass
+        else:
+            __data = __data[0]
+        return __data
+# trade mod
+
+    if __data is None:
+        __data = __get_data(__bid)
+    else:
+        pass
 
     def __trading(__bid, __data):
         """
@@ -370,6 +386,7 @@ def market_stock_engine(__bid, __data):
                             'price': float("%.2f" % float(str(__deal_price))),
                             'code': str(__bid.code),
                             'amount': int(__bid.amount),
+                            'datetime': str(__bid.datetime),
                             'date': str(__bid.date),
                             'towards': int(__bid.towards)
                         },

@@ -45,7 +45,7 @@ class QA_Account():
 
         self.hold = [['date', 'code', ' price',
                       'amount', 'order_id', 'trade_id']]
-        self.hold_available=[['date', 'code', ' price',
+        self.sell_available=[['date', 'code', ' price',
                       'amount', 'order_id', 'trade_id']]
         self.init_assest = 1000000
         self.cash = [self.init_assest]
@@ -61,7 +61,7 @@ class QA_Account():
     def init(self):
         self.hold = [['date', 'code', ' price',
                       'amount', 'order_id', 'trade_id']]
-        self.hold_available=[['date', 'code', ' price',
+        self.sell_available=[['date', 'code', ' price',
                       'amount', 'order_id', 'trade_id']]
         self.history = []
         self.profit = []
@@ -100,7 +100,7 @@ class QA_Account():
                 __new_price, __new_order_id,
                 __new_trade_id, __new_trade_fee) = (str(__update_message['bid']['code']),
                                                     float(__update_message['bid']['amount']), str(
-                                                        __update_message['bid']['date']),
+                                                        __update_message['bid']['datetime']),
                                                     int(__update_message['bid']['towards']), float(
                                                         __update_message['bid']['price']),
                                                     float(__update_message['order_id']), float(
@@ -114,7 +114,6 @@ class QA_Account():
 
                 # 如果是买入的waiting  那么要减少可用资金,增加在途资金
                 # 如果是卖出的waiting 则减少hold_list
-                input()
             elif int(__update_message['status']) == 200:
                 '交易成功的处理'
                 self.history.append(
@@ -275,6 +274,7 @@ class QA_Account():
         return __data
 
     def QA_account_receive_order(self, __message):
+        
         # 主要是把从market拿到的数据进行解包,一个一个发送给账户进行更新,再把最后的结果反回
         __data = self.QA_account_update({
             'code': __message['header']['code'],

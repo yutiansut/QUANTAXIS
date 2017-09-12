@@ -66,7 +66,7 @@ class CLI(cmd.Cmd):
         shutil.copy(file_dir, now_path)
 
         QA_util_log_info(
-            'successfully generate a example strategy in' + now_path)
+            'Successfully generate a example strategy in :  ' + now_path)
 
     def help_examples(self):
         print('make a sample backtest framework')
@@ -114,24 +114,28 @@ class CLI(cmd.Cmd):
 
     def do_save(self, arg):
         # 仅仅是为了初始化才在这里插入用户,如果想要注册用户,要到webkit底下注册
-        QA_Setting.client.quantaxis.user_list.insert(
-            {'username': 'admin', 'password': 'admin'})
-        # 3. 股票列表存储
-        QA_SU_save_stock_day('tdx')
-        QA_SU_save_stock_xdxr('tdx')
-        QA_SU_save_stock_min('tdx')
-        QA_SU_save_index_day('tdx')
-        QA_SU_save_index_min('tdx')
-        QA_SU_save_stock_list('tdx')
+        if arg == '':
+            print("Usage: save all|insert_user|stock_day|stock_xdxr|stock_min|index_day|index_min|stock_list")
+        else:
+            arg = arg.split(' ')
+            if len(arg)  == 1 and arg[0] == 'all':
+                QA_Setting.client.quantaxis.user_list.insert(
+                    {'username': 'admin', 'password': 'admin'})
+                QA_SU_save_stock_day('tdx')
+                QA_SU_save_stock_xdxr('tdx')
+                QA_SU_save_stock_min('tdx')
+                QA_SU_save_index_day('tdx')
+                QA_SU_save_index_min('tdx')
+                QA_SU_save_stock_list('tdx')
+            for i in arg:
+                if i == 'insert_user':
+                    QA_Setting.client.quantaxis.user_list.insert(
+                        {'username': 'admin', 'password': 'admin'})
+                else:
+                    eval("QA_SU_save_%s('tdx')" %(i))
 
     def help_save(self):
-        QA_util_log_info('Save all the stock data from tushare')
-
-    def do_update(self, arg):
-        QA_SU_update_stock_day('tdx')
-
-    def help_update(self):
-        QA_util_log_info('Update the stock data')
+        QA_util_log_info('Save all the stock data from pytdx')
 
 
 def sourcecpy(src, des):

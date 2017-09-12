@@ -54,7 +54,7 @@ class QA_QAMarket_bid():
         self.amount_model = 'amount'
         self.order_id = str(random.random())
         self.trade_id = ''
-        self.status = '300'
+        self.status = '100'
 
     def stock_day(self):
         self.type = '0x01'
