@@ -26,7 +26,7 @@ tushare/
 .exe
 .pypirc
 private/
-
+package-lock*.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -154,3 +154,7 @@ thought/
 # jupyter-kernel
 
 kernel*.json
+
+
+# packge-lock
+

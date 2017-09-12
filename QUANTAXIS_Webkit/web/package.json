@@ -16,13 +16,16 @@
     "echarts": "^3.6.1",
     "fs": "0.0.1-security",
     "fs.realpath": "^1.0.0",
+    "github-markdown-css": "^2.8.0",
     "highlight.js": "^9.12.0",
     "muse-ui": "^2.1.0",
     "process-nextick-args": "^1.0.7",
     "simplemde": "^1.11.2",
+    "simplemde-theme-base": "^0.2.1",
     "util-deprecate": "^1.0.2",
     "vue": "^2.3.3",
-    "vue-router": "^2.3.1"
+    "vue-router": "^2.3.1",
+    "vue-simplemde": "^0.4.4"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.2",

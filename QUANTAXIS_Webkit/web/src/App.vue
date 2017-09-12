@@ -1,23 +1,23 @@
 <template>
   <div id="app">
     <mu-appbar title="Title">
-      <mu-flat-button class="quantaxislogo" href='https://github.com/yutiansut/quantaxis' color="white" style="-webkit-app-region: drag"
+      <mu-flat-button class="quantaxislogo" href='https://github.com/yutiansut/quantaxis' target="view_window" color="white" style="-webkit-app-region: drag"
         disable slot="left">QUANTAXIS</mu-flat-button>
       <mu-raised-button label="MENU" slot="right" @click="toggle()" />
       <mu-drawer right :open="open" @close="toggle()">
         <mu-appbar title="MENU" />
         <mu-list>
           <router-link to='/personal/index'>
-            <mu-list-item title="USER" />
+            <mu-list-item title="用户中心" />
           </router-link>
           <router-link to='/'>
-            <mu-list-item title="HOME" />
+            <mu-list-item title="首页" />
+          </router-link>
+          <router-link to='/status'>
+            <mu-list-item title="插件状态" />
           </router-link>
 
-          <router-link to='/start'>
-            <mu-list-item title="START" />
-          </router-link>
-          <mu-list-item href='https://github.com/yutiansut/quantaxis' title="GITHUB" />
+          <mu-list-item href='https://github.com/yutiansut/quantaxis'target="view_window" title="GITHUB" />
           <mu-list-item @click.native="open = false" title="Close" />
         </mu-list>
       </mu-drawer>

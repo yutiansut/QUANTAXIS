@@ -10,6 +10,7 @@ var users = require('./routes/users');
 var stock = require('./routes/stock');
 var apis = require('./routes/apis');
 var job = require('./routes/job');
+var notebook = require('./routes/notebook');
 var monitor = require('./routes/monitor')
 var backtest = require('./routes/backtest');
 var trade = require('./routes/trade');
@@ -33,6 +34,7 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/stock', stock);
 app.use('/apis', apis);
+app.use('/notebook',notebook);
 app.use('/job', job);
 app.use('/trade', trade);
 app.use('/backtest', backtest);

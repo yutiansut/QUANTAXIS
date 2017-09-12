@@ -9,7 +9,9 @@ import 'muse-ui/dist/muse-ui.css'
 import 'muse-ui/dist/theme-carbon.css'
 // import './carbon.css'
 import echarts from 'echarts'
+import VueSimplemde from 'vue-simplemde'
 
+Vue.use(VueSimplemde)
 Vue.config.productionTip = false
 Vue.use(MuseUI)
 /* eslint-disable no-new */

@@ -36,6 +36,9 @@ from QUANTAXIS.QAFetch.QATushare import QA_fetch_get_stock_time_to_market
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
                               QA_util_to_json_from_pandas)
 
+from concurrent.futures import ThreadPoolExecutor
+import concurrent
+
 # ip=select_best_ip()
 
 def now_time():
@@ -122,12 +125,16 @@ def QA_SU_save_stock_min(client=QA_Setting.client):
                     QA_fetch_get_stock_min(str(code), '2015-01-01', str(now_time())[0:19], '15min')))
         except:
             __err.append(code)
-    for i_ in range(len(__stock_list)):
-        #__saving_work('000001')
-        QA_util_log_info('The %s of Total %s' % (i_, len(__stock_list)))
+
+    executor = ThreadPoolExecutor(max_workers=2)
+
+    res = {executor.submit(__saving_work,__stock_list.index[i_]) for i_ in range(len(__stock_list))}
+    count = 0
+    for i_ in concurrent.futures.as_completed(res):
+        QA_util_log_info('The %s of Total %s' % (count, len(__stock_list)))
         QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
-            float(i_ / len(__stock_list) * 100))[0:4] + '%')
-        __saving_work(__stock_list.index[i_])
+            float(count / len(__stock_list) * 100))[0:4] + '%')
+        count = count + 1
 
 
 def QA_SU_save_index_day(client=QA_Setting.client):
@@ -181,12 +188,16 @@ def QA_SU_save_index_min(client=QA_Setting.client):
         except:
             QA_util_log_info('error')
             __err.append(code)
-    for i_ in range(len(__index_list)):
-        #__saving_work('000001')
-        QA_util_log_info('The %s of Total %s' % (i_, len(__index_list)))
+
+    executor = ThreadPoolExecutor(max_workers=2)
+
+    res = {executor.submit(__saving_work, __index_list['code'][i_]) for i_ in range(len(__index_list))}
+    count = 0
+    for i_ in concurrent.futures.as_completed(res):
+        QA_util_log_info('The %s of Total %s' % (count, len(__index_list)))
         QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
-            float(i_ / len(__index_list) * 100))[0:4] + '%')
-        __saving_work(__index_list['code'][i_])
+            float(count / len(__index_list) * 100))[0:4] + '%')
+        count = count + 1
 
 
 def QA_SU_save_stock_list(client=QA_Setting.client):
