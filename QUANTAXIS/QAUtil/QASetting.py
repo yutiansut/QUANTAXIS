@@ -26,6 +26,7 @@ from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_sql_mongo_setting
 
 
 class QA_Setting():
+    
     QA_util_sql_mongo_ip = '127.0.0.1'
     QA_util_sql_mongo_port = '27017'
     client = QA_util_sql_mongo_setting(
@@ -34,12 +35,20 @@ class QA_Setting():
     QA_setting_user_name = ''
     QA_setting_user_password = ''
     user = {'username': '', 'password': '', 'login': False}
-
-    def QA_setting_init(self):
+    
+    def QA_setting_init(self,ip='127.0.0.1',port=27017):
+        self.QA_util_sql_mongo_ip=ip
+        self.QA_util_sql_mongo_port=port
         self.client = QA_util_sql_mongo_setting(
             self.QA_util_sql_mongo_ip, self.QA_util_sql_mongo_port)
-        self.user = self.QA_setting_login()
 
+        #return self
+        self.user = self.QA_setting_login()
+    def set_ip(self,ip='127.0.0.1'):
+        self.QA_util_sql_mongo_ip=ip
+        self.client = QA_util_sql_mongo_setting(
+            self.QA_util_sql_mongo_ip, self.QA_util_sql_mongo_port)
+        return self
     def QA_setting_login(self):
         self.username = self.QA_setting_user_name
         self.password = self.QA_setting_user_password
