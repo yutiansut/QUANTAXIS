@@ -46,7 +46,7 @@ def now_time():
     return datetime.datetime.now() - datetime.timedelta(days=1) if datetime.datetime.now().hour < 15 else datetime.datetime.now()
 
 
-def QA_SU_save_stock_day( client=QA_Setting.client):
+def QA_SU_save_stock_day(client=QA_Setting.client):
     __stock_list = QA_fetch_get_stock_time_to_market()
     coll_stock_day = client.quantaxis.stock_day
     coll_stock_day.ensure_index('code')
@@ -67,10 +67,10 @@ def QA_SU_save_stock_day( client=QA_Setting.client):
                 start_date = '1990-01-01'
             QA_util_log_info(' UPDATE_STOCK_DAY \n Trying updating %s from %s to %s' %
                              (code, start_date, end_date))
-
-            coll_stock_day.insert_many(
-                QA_util_to_json_from_pandas(
-                    QA_fetch_get_stock_day(str(code), start_date, end_date, '00')[1::]))
+            if start_date != end_date:
+                coll_stock_day.insert_many(
+                    QA_util_to_json_from_pandas(
+                        QA_fetch_get_stock_day(str(code), start_date, end_date, '00')[1::]))
         except:
             __err.append(str(code))
     for item in range(len(__stock_list)):
@@ -126,14 +126,15 @@ def QA_SU_save_stock_min(client=QA_Setting.client):
                     start_time = '2015-01-01'
                 QA_util_log_info(
                     '##JOB03.%s Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min'].index(type), str(code), start_time, end_time, type))
-                __coll.insert_many(
-                    QA_util_to_json_from_pandas(
-                        QA_fetch_get_stock_min(str(code), start_time, end_time, type)[1::]))
+                if start_time != end_time:
+                    __coll.insert_many(
+                        QA_util_to_json_from_pandas(
+                            QA_fetch_get_stock_min(str(code), start_time, end_time, type)[1::]))
 
         except:
             __err.append(code)
 
-    executor = ThreadPoolExecutor(max_workers=2)
+    executor = ThreadPoolExecutor(max_workers=4)
 
     res = {executor.submit(
         __saving_work, __stock_list.index[i_], __coll) for i_ in range(len(__stock_list))}
@@ -164,9 +165,10 @@ def QA_SU_save_index_day(client=QA_Setting.client):
                 start_time = '1990-01-01'
             QA_util_log_info(
                 '##JOB04 Now Saving INDEX_DAY==== %s' % (str(code)))
-            __coll.insert_many(
-                QA_util_to_json_from_pandas(
-                    QA_fetch_get_index_day(str(code), '1990-01-01', str(now_time())[0:10])[1::]))
+            if start_time != end_time:
+                __coll.insert_many(
+                    QA_util_to_json_from_pandas(
+                        QA_fetch_get_index_day(str(code), start_time, end_time)[1::]))
         except:
             __err.append(str(code))
     for i_ in range(len(__index_list)):
@@ -198,14 +200,15 @@ def QA_SU_save_index_min(client=QA_Setting.client):
                     start_time = '2015-01-01'
                 QA_util_log_info(
                     '##JOB05.%s Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min'].index(type), str(code), start_time, end_time, type))
-                __coll.insert_many(
-                    QA_util_to_json_from_pandas(
-                        QA_fetch_get_stock_min(str(code), start_time, end_time, type)[1::]))
+                if start_time != end_time:
+                    __coll.insert_many(
+                        QA_util_to_json_from_pandas(
+                            QA_fetch_get_stock_min(str(code), start_time, end_time, type)[1::]))
 
         except:
             __err.append(code)
 
-    executor = ThreadPoolExecutor(max_workers=2)
+    executor = ThreadPoolExecutor(max_workers=4)
 
     res = {executor.submit(
         __saving_work, __index_list.index[i_], __coll) for i_ in range(len(__index_list))}
