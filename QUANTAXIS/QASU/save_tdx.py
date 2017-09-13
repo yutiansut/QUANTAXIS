@@ -153,8 +153,8 @@ def QA_SU_save_index_day(client=QA_Setting.client):
     __coll = client.quantaxis.index_day
     __coll.ensure_index('code')
     __err = []
-
     def __saving_work(code, __coll):
+        
         try:
 
             ref_ = __coll.find({'code': str(code)[0:6]})
@@ -178,7 +178,7 @@ def QA_SU_save_index_day(client=QA_Setting.client):
         QA_util_log_info('The %s of Total %s' % (i_, len(__index_list)))
         QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
             float(i_ / len(__index_list) * 100))[0:4] + '%')
-        __saving_work(__index_list['code'][i_], __coll)
+        __saving_work(__index_list.index[i_][0], __coll)
 
 
 def QA_SU_save_index_min(client=QA_Setting.client):
