@@ -127,12 +127,13 @@ class CLI(cmd.Cmd):
                 QA_SU_save_index_day('tdx')
                 QA_SU_save_index_min('tdx')
                 QA_SU_save_stock_list('tdx')
-            for i in arg:
-                if i == 'insert_user':
-                    QA_Setting.client.quantaxis.user_list.insert(
-                        {'username': 'admin', 'password': 'admin'})
-                else:
-                    eval("QA_SU_save_%s('tdx')" %(i))
+            else:
+                for i in arg:
+                    if i == 'insert_user':
+                        QA_Setting.client.quantaxis.user_list.insert(
+                            {'username': 'admin', 'password': 'admin'})
+                    else:
+                        eval("QA_SU_save_%s('tdx')" %(i))
 
     def help_save(self):
         QA_util_log_info('Save all the stock data from pytdx')
