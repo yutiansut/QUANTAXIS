@@ -163,8 +163,10 @@ def QA_SU_save_index_day(client=QA_Setting.client):
                 start_time = ref_[ref_.count() - 1]['date']
             else:
                 start_time = '1990-01-01'
-            QA_util_log_info(
-                '##JOB04 Now Saving INDEX_DAY==== %s' % (str(code)))
+
+            QA_util_log_info('##JOB04 Now Saving INDEX_DAY==== \n Trying updating %s from %s to %s' %
+                             (code, start_time, end_time))
+
             if start_time != end_time:
                 __coll.insert_many(
                     QA_util_to_json_from_pandas(
@@ -181,12 +183,12 @@ def QA_SU_save_index_day(client=QA_Setting.client):
 
 def QA_SU_save_index_min(client=QA_Setting.client):
     __index_list = QA_fetch_get_stock_list('index')
-
     __coll = client.quantaxis.index_min
     __coll.ensure_index('code')
     __err = []
 
     def __saving_work(code, __coll):
+        
         QA_util_log_info('##JOB05 Now Saving STOCK_MIN ==== %s' % (str(code)))
         try:
 
@@ -211,7 +213,7 @@ def QA_SU_save_index_min(client=QA_Setting.client):
     executor = ThreadPoolExecutor(max_workers=4)
 
     res = {executor.submit(
-        __saving_work, __index_list.index[i_], __coll) for i_ in range(len(__index_list))}
+        __saving_work, __index_list.index[i_][0], __coll) for i_ in range(len(__index_list))}# multi index ./.
     count = 0
     for i_ in concurrent.futures.as_completed(res):
         QA_util_log_info('The %s of Total %s' % (count, len(__index_list)))
