@@ -130,8 +130,9 @@ class CLI(cmd.Cmd):
             else:
                 for i in arg:
                     if i == 'insert_user':
-                        QA_Setting.client.quantaxis.user_list.insert(
-                            {'username': 'admin', 'password': 'admin'})
+                        if QA_Setting.client.quantaxis.user_list.find({'username':'admin'}).count()==0:
+                            QA_Setting.client.quantaxis.user_list.insert(
+                                {'username': 'admin', 'password': 'admin'})
                     else:
                         eval("QA_SU_save_%s('tdx')" %(i))
 
