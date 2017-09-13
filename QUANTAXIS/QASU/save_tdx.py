@@ -163,8 +163,10 @@ def QA_SU_save_index_day(client=QA_Setting.client):
                 start_time = ref_[ref_.count() - 1]['date']
             else:
                 start_time = '1990-01-01'
-            QA_util_log_info(
-                '##JOB04 Now Saving INDEX_DAY==== %s' % (str(code)))
+
+            QA_util_log_info('##JOB04 Now Saving INDEX_DAY==== \n Trying updating %s from %s to %s' %
+                             (code, start_time, end_time))
+
             if start_time != end_time:
                 __coll.insert_many(
                     QA_util_to_json_from_pandas(
