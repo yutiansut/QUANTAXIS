@@ -36,6 +36,8 @@ from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting, QA_util_mongo_initial
 from QUANTAXIS import (QA_SU_save_stock_list, QA_SU_save_stock_min, QA_SU_save_stock_xdxr,
                        QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_index_min,
                        QA_SU_update_stock_day)
+
+from QUANTAXIS import *
 from QUANTAXIS import __version__
 
 
@@ -139,7 +141,14 @@ class CLI(cmd.Cmd):
     def help_save(self):
         QA_util_log_info('Save all the stock data from pytdx')
 
+    def do_fn(self,arg):
+        try:
+            QA_util_log_info(eval(arg))
+        except:
+            print(Exception)
 
+    def help(self):
+        QA_util_log_info('fn+methods name')
 def sourcecpy(src, des):
     src = os.path.normpath(src)
     des = os.path.normpath(des)
