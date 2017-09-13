@@ -106,7 +106,7 @@
 
   #check_box {
     position: relative;
-    width: 70%;
+    width: 80%;
     height: 100%;
     float: left;
 
@@ -134,5 +134,13 @@
 .mu-raised-button-label{
   position: relative;
   float: left;
+}
+
+.mu-td{
+  white-space: nowrap;
+}
+
+.mu-table{
+  table-layout:auto;
 }
 </style>

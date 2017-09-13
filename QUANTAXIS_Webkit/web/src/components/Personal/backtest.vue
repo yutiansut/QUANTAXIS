@@ -1,6 +1,6 @@
 <template>
   <div id="index">
-  
+
     <li class="input">
       <input v-model="message" v-on:keyup.enter="info($event.currentTarget.value)" placeholder="在此输入策略的用户名" lazy>
       <input v-model="messages" v-on:keyup.enter="code($event.currentTarget.value)" placeholder="在此输入策略涉及的股票代码" lazy>
@@ -19,7 +19,7 @@
         </mu-tr>
       </mu-thead>
       <template v-for="item in items">
-  
+
         <mu-tbody>
           <mu-tr>
             <router-link :to="{ name:'history',params: {id:item['account_cookie']}}">
@@ -34,9 +34,9 @@
             </router-link>
           </mu-tr>
         </mu-tbody>
-  
+
       </template>
-  
+
     </mu-table>
   </div>
 </template>
@@ -103,5 +103,14 @@ export default {
 
 .input {
   float: left;
+}
+
+
+.mu-td{
+  white-space:normal;
+}
+
+.mu-table{
+  table-layout:auto;
 }
 </style>
