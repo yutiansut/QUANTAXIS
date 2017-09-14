@@ -397,7 +397,7 @@ classdef QUANTAXIS<handle
             end
         end
         function Login(QA,varargin)
-            register=input('QUANTAXIS 2.0 Alpha  Login or Register Y-REGISTER N-LOGIN(Y/N): ','s');
+            register=input('QUANTAXIS 0.3.9  Login or Register Y-REGISTER N-LOGIN(Y/N): ','s');
             
             
             sqlquery1=['CREATE TABLE if not exists `quantaxis`.`', 'userlist','` (`Userid` DOUBLE NULL,`Name` TEXT NULL COMMENT '''',`PassWord` TEXT NULL COMMENT '''',`Mail` TEXT NULL);'];

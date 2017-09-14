@@ -1,0 +1,21 @@
+
+
+订单状态。
+``` python
+    OrderStatus_New = 1,                        #已报
+    OrderStatus_PartiallyFilled = 2,            #部成
+    OrderStatus_Filled = 3,                     #已成
+    OrderStatus_DoneForDay = 4,                 #
+    OrderStatus_Canceled = 5,                   #已撤
+    OrderStatus_PendingCancel = 6,              #待撤
+    OrderStatus_Stopped = 7,                    #停止
+    OrderStatus_Rejected = 8,                   #已拒绝
+    OrderStatus_Suspended = 9,                  #挂起
+    OrderStatus_PendingNew = 10,                #待报
+    OrderStatus_Calculated = 11,                #计算
+    OrderStatus_Expired = 12,                   #已过期
+    OrderStatus_AcceptedForBidding = 13,        #接受竞价
+    OrderStatus_PendingReplace = 14             #待修改
+```
+syntax="proto3";
+package QAAccount;

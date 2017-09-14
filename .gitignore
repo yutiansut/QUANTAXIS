@@ -26,7 +26,7 @@ tushare/
 .exe
 .pypirc
 private/
-
+package-lock*.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -44,12 +44,12 @@ __pycache__/
 env/
 
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
 lib64/
 parts/
+*whl
 sdist/
 var/
 *.egg-info/
@@ -149,3 +149,12 @@ thought/
 #jupyter
 
 *.ipynb
+
+
+# jupyter-kernel
+
+kernel*.json
+
+
+# packge-lock
+
