@@ -31,7 +31,7 @@ from QUANTAXIS import QA_Backtest as QB
 写在前面:
 ===============QUANTAXIS BACKTEST STOCK_DAY中的变量
 常量:
-QB.backtest_type 回测类型 'day','min'
+QB.backtest_type 回测类型 'day','1min','5min','15min'
 QB.account.message  当前账户消息
 QB.account.cash  当前可用资金
 QB.account.hold  当前账户持仓

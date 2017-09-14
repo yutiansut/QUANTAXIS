@@ -46,7 +46,7 @@ from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
 """
 
 
-def QA_fetch_stock_day_adv(code, __start, __end, collections=QA_Setting.client.quantaxis.stock_day):
+def QA_fetch_stock_day_adv(code, __start, __end,if_drop_index=False,  collections=QA_Setting.client.quantaxis.stock_day):
     '获取股票日线'
     __start = str(__start)[0:10]
     __end = str(__end)[0:10]
@@ -62,17 +62,17 @@ def QA_fetch_stock_day_adv(code, __start, __end, collections=QA_Setting.client.q
         __data = DataFrame(__data, columns=[
             'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
         __data['date'] = pd.to_datetime(__data['date'])
-        return QA_DataStruct_Stock_day(__data.set_index(['date', 'code'], drop=False))
+        return QA_DataStruct_Stock_day(__data.set_index(['date', 'code'], drop=if_drop_index))
     else:
         QA_util_log_info('something wrong with date')
 
 
-def QA_fetch_stocklist_day_adv(code, __start, __end, collections=QA_Setting.client.quantaxis.stock_day):
+def QA_fetch_stocklist_day_adv(code, __start, __end, if_drop_index=False, collections=QA_Setting.client.quantaxis.stock_day):
     '获取股票日线'
-    return QA_DataStruct_Stock_day(pd.concat(QA_fetch_stocklist_day(code, [__start, __end])).set_index(['date', 'code'], drop=False))
+    return QA_DataStruct_Stock_day(pd.concat(QA_fetch_stocklist_day(code, [__start, __end])).set_index(['date', 'code'], drop=if_drop_index))
 
 
-def QA_fetch_index_day_adv(code, __start, __end, collections=QA_Setting.client.quantaxis.index_day):
+def QA_fetch_index_day_adv(code, __start, __end,if_drop_index=False,  collections=QA_Setting.client.quantaxis.index_day):
     '获取指数日线'
     __start = str(__start)[0:10]
     __end = str(__end)[0:10]
@@ -88,13 +88,13 @@ def QA_fetch_index_day_adv(code, __start, __end, collections=QA_Setting.client.q
         __data = DataFrame(__data, columns=[
             'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
         __data['date'] = pd.to_datetime(__data['date'])
-        return QA_DataStruct_Index_day(__data.set_index(['date', 'code'], drop=False))
+        return QA_DataStruct_Index_day(__data.set_index(['date', 'code'], drop=if_drop_index))
     else:
         QA_util_log_info('something wrong with date')
 
 
 
-def QA_fetch_index_min_adv(code, start, end, type_='1min', collections=QA_Setting.client.quantaxis.index_min):
+def QA_fetch_index_min_adv(code, start, end, type_='1min',if_drop_index=False,  collections=QA_Setting.client.quantaxis.index_min):
     '获取股票分钟线'
     if type_ in ['1min', '1m']:
         type_ = '1min'
@@ -117,10 +117,10 @@ def QA_fetch_index_min_adv(code, start, end, type_='1min', collections=QA_Settin
         'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'time_stamp', 'date'])
 
     __data['datetime'] = pd.to_datetime(__data['datetime'])
-    return QA_DataStruct_Stock_min(__data.set_index(['datetime', 'code'], drop=False))
+    return QA_DataStruct_Stock_min(__data.set_index(['datetime', 'code'], drop=if_drop_index))
 
 
-def QA_fetch_stock_min_adv(code, start, end, type_='1min', collections=QA_Setting.client.quantaxis.stock_min):
+def QA_fetch_stock_min_adv(code, start, end, type_='1min', if_drop_index=False, collections=QA_Setting.client.quantaxis.stock_min):
     '获取股票分钟线'
     if type_ in ['1min', '1m']:
         type_ = '1min'
@@ -143,11 +143,11 @@ def QA_fetch_stock_min_adv(code, start, end, type_='1min', collections=QA_Settin
         'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'time_stamp', 'date'])
 
     __data['datetime'] = pd.to_datetime(__data['datetime'])
-    return QA_DataStruct_Stock_min(__data.set_index(['datetime', 'code'], drop=False))
+    return QA_DataStruct_Stock_min(__data.set_index(['datetime', 'code'], drop=if_drop_index))
 
 
-def QA_fetch_stocklist_min_adv(code, start, end, type_='1min', collections=QA_Setting.client.quantaxis.stock_min):
-    return QA_DataStruct_Stock_min(pd.concat(QA_fetch_stocklist_min(code, [start, end], type_)).set_index(['datetime', 'code'], drop=False))
+def QA_fetch_stocklist_min_adv(code, start, end, type_='1min',if_drop_index=False,  collections=QA_Setting.client.quantaxis.stock_min):
+    return QA_DataStruct_Stock_min(pd.concat(QA_fetch_stocklist_min(code, [start, end], type_)).set_index(['datetime', 'code'], drop=if_drop_index))
 
 
 def QA_fetch_stock_transaction_adv(code, start, end, collections=QA_Setting.client.quantaxis.stock_transaction):
@@ -157,4 +157,4 @@ def QA_fetch_stock_transaction_adv(code, start, end, collections=QA_Setting.clie
             "$lte": end
         }})]).drop('_id', axis=1, inplace=False)
     data['datetime'] = pd.to_datetime(data['date'] + ' ' + data['time'])
-    return QA_DataStruct_Stock_transaction(data.set_index('datetime', drop=False))
+    return QA_DataStruct_Stock_transaction(data.set_index('datetime', drop=if_drop_index))

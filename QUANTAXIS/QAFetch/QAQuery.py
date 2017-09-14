@@ -198,7 +198,7 @@ def QA_fetch_index_min(code, startTime, endTime, format_='numpy', type_='1min', 
         return numpy.asarray(__data).tolist()
     elif format_ in ['P', 'p', 'pandas', 'pd']:
         return __data
-def QA_fetch_stock_min(code, startTime, endTime, format_='numpy', type_='1min', collections=QA_Setting.client.quantaxis.stock_min):
+def QA_fetch_stock_min(code, startTime, endTime, format_='numpy', type_='1min',collections=QA_Setting.client.quantaxis.stock_min):
     '获取股票分钟线'
     if type_ in ['1min', '1m']:
         type_ = '1min'
