@@ -183,7 +183,7 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
     def to_qfq(self):
         if self.if_fq is 'bfq':
             data = QA_DataStruct_Stock_min(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
-                self.data[self.data['code'] == x]), self.code))))
+                self.data[self.data['code'] == x]), self.code))).set_index(['datetime','code'], drop=False))
             data.if_fq = 'qfq'
             return data
         else:
@@ -194,7 +194,7 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
     def to_hfq(self):
         if self.if_fq is 'bfq':
             data = QA_DataStruct_Stock_min(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
-                self.data[self.data['code'] == x], '01'), self.code))))
+                self.data[self.data['code'] == x], '01'), self.code))).set_index(['datetime','code'], drop=False))
             data.if_fq = 'hfq'
             return data
         else:

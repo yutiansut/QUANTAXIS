@@ -91,6 +91,7 @@ def QA_data_stock_to_fq(__data, type_='01'):
         return data.set_index(['date', 'code'], drop=False)
     '股票 日线/分钟线 动态复权接口'
     if type_ in ['01', 'qfq']:
+        #print(QA_data_make_qfq(__data, __QA_fetch_stock_xdxr(__data['code'][0])))
         return QA_data_make_qfq(__data, __QA_fetch_stock_xdxr(__data['code'][0]))
     elif type_ in ['02', 'hfq']:
         return QA_data_make_hfq(__data, __QA_fetch_stock_xdxr(__data['code'][0]))
