@@ -90,10 +90,11 @@ class __stock_hq_base():
         return self.sync_status(__stock_hq_base(pd.concat(list(map(lambda x: func(
             self.data[self.data['code'] == x], *arg, **kwargs), self.code)))))
     def pivot(self,column_):
+        assert isinstance(column_,str)
         try:
-            return self.data.pivot_table(index='datetime',columns='code',values=column_)
+            return self.data.pivot(index='datetime',columns='code',values=column_)
         except:
-            return self.data.pivot_table(index='date',columns='code',values=column_)
+            return self.data.pivot(index='date',columns='code',values=column_)
 
 class QA_DataStruct_Index_day(__stock_hq_base):
     '自定义的日线数据结构'
