@@ -443,7 +443,7 @@ class QA_Backtest():
             assert isinstance(order_id_, str)
             self.account.order_queue.loc[self.account.order_queue['order_id']
                                          == order_id_, 'status'] = 400  # 注销事件
-            if order_id.towards is 1:
+            if order_.towards is 1:
                 # 多单 撤单  现金增加
                 self.account.cash_available += self.account.order_queue.query('order_id=="order_id_"')[
                     'amount'] * self.account.order_queue.query('order_id=="order_id_"')['price']
