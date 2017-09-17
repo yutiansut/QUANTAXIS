@@ -154,18 +154,18 @@ class QA_Backtest():
         self.account.account_cookie = str(random.random())
         # 初始化股票池的市场数据
         self.benchmark_data = QA_fetch_index_day_adv(
-                self.benchmark_code, self.start_real_date, self.end_real_date)
+            self.benchmark_code, self.start_real_date, self.end_real_date)
         if self.backtest_type in ['day', 'd', '0x00']:
             self.market_data = QA_fetch_stocklist_day_adv(
                 self.strategy_stock_list, self.trade_list[self.start_real_id - int(
                     self.strategy_gap)], self.trade_list[self.end_real_id])
-            
+
         elif self.backtest_type in ['1min', '5min', '15min']:
             self.market_data = QA_fetch_stocklist_min_adv(
                 self.strategy_stock_list, self.trade_list[
                     self.start_real_id - int(self.strategy_gap)],
                 self.trade_list[self.end_real_id], self.backtest_type).to_qfq()
-            #self.benchmark_data = QA_fetch_index_min_adv(
+            # self.benchmark_data = QA_fetch_index_min_adv(
             #    self.benchmark_code, self.start_real_date, self.end_real_date,self.backtest_type)
 
     def __QA_backtest_start(self, *args, **kwargs):
@@ -198,8 +198,8 @@ class QA_Backtest():
     def __end_of_trading(self, *arg, **kwargs):
         # 在回测的最后一天,平掉所有仓位(回测的最后一天是不买入的)
         # 回测最后一天的交易处理
-        self.now=self.end_real_date
-        self.today=self.end_real_date
+        self.now = self.end_real_date
+        self.today = self.end_real_date
         self.QA_backtest_sell_all(self)
         self.__sell_from_order_queue(self)
         self.__sync_order_LM(self, 'daily_settle')  # 每日结算
@@ -237,15 +237,19 @@ class QA_Backtest():
         # 开始分析
 
         # 对于account.detail做一定的整理
-        self.account.detail=detail=pd.DataFrame(self.account.detail,columns=['date', 'code', 'price', 'amounts', 'order_id',
-                                                  'trade_id', 'sell_price', 'sell_order_id',
-                                                  'sell_trade_id', 'sell_date', 'left_amount',
-                                                  'commission'])
-        self.account.detail['sell_average']=self.account.detail['sell_price'].apply(lambda x: mean(x))
-        self.account.detail['pnl_persentage']=self.account.detail['sell_average']-self.account.detail['price']
+        self.account.detail = detail = pd.DataFrame(self.account.detail, columns=['date', 'code', 'price', 'amounts', 'order_id',
+                                                                                  'trade_id', 'sell_price', 'sell_order_id',
+                                                                                  'sell_trade_id', 'sell_date', 'left_amount',
+                                                                                  'commission'])
+        self.account.detail['sell_average'] = self.account.detail['sell_price'].apply(
+            lambda x: mean(x))
+        self.account.detail['pnl_persentage'] = self.account.detail['sell_average'] - \
+            self.account.detail['price']
 
-        self.account.detail['pnl']=self.account.detail['pnl_persentage']*(self.account.detail['amounts']-self.account.detail['left_amount'])-self.account.detail['commission']
-        self.account.detail=self.account.detail.drop(['order_id','trade_id','sell_order_id','sell_trade_id'],axis=1)
+        self.account.detail['pnl'] = self.account.detail['pnl_persentage'] * (
+            self.account.detail['amounts'] - self.account.detail['left_amount']) - self.account.detail['commission']
+        self.account.detail = self.account.detail.drop(
+            ['order_id', 'trade_id', 'sell_order_id', 'sell_trade_id'], axis=1)
         QA_util_log_info('start analysis====\n' +
                          str(self.strategy_stock_list))
         QA_util_log_info('=' * 10 + 'Trade History' + '=' * 10)
@@ -286,10 +290,11 @@ class QA_Backtest():
             QA_SU_save_backtest_message(_backtest_mes, self.setting.client)
             QA_SU_save_account_message(self.__messages, self.setting.client)
             QA_SU_save_account_to_csv(self.__messages)
-            
-            self.account.detail.to_csv('backtest-pnl--'+str(self.account.account_cookie)+'.csv')
-            
-            #QA_SU_save_pnl_to_csv(self.account.detail,self.account.account_cookie)
+
+            self.account.detail.to_csv(
+                'backtest-pnl--' + str(self.account.account_cookie) + '.csv')
+
+            # QA_SU_save_pnl_to_csv(self.account.detail,self.account.account_cookie)
 
     def QA_backtest_get_market_data(self, code, date, gap_=None):
         '这个函数封装了关于获取的方式'
@@ -301,12 +306,14 @@ class QA_Backtest():
             return self.account.sell_available[__code]
         except:
             return 0
+
     def QA_backtest_hold_amount(self, __code):
         try:
             return pd.DataFrame(self.account.hold[1::], columns=self.account.hold[0]).set_index(
                 'code', drop=False)['amount'].groupby('code').sum()[__code]
         except:
             return 0
+
     def __sell_from_order_queue(self):
 
         # 每个bar结束的时候,批量交易
@@ -377,7 +384,6 @@ class QA_Backtest():
                                              self.now),
                                          self.running_date, __amount, __towards)
 
-        
         if self.backtest_type in ['day']:
             __bid.type = '0x01'
         elif self.backtest_type in ['1min', '5min', '15min']:
@@ -387,7 +393,8 @@ class QA_Backtest():
         __bid, __market = self.__wrap_bid(self, __bid, __order)
 
         if __bid is not None and __market != 500:
-            print('GET the Order Code %s Amount %s Price %s Towards %s Time %s'%(__bid.code,__bid.amount,__bid.price,__bid.towards,__bid.datetime))
+            print('GET the Order Code %s Amount %s Price %s Towards %s Time %s' % (
+                __bid.code, __bid.amount, __bid.price, __bid.towards, __bid.datetime))
             self.__sync_order_LM(self, 'create_order', order_=__bid)
 
     def __sync_order_LM(self, event_, order_=None, order_id_=None, trade_id_=None, market_message_=None):
@@ -487,7 +494,7 @@ class QA_Backtest():
                     self.account.order_queue.query('order_id=="order_id_"')[
                         'amount'] -= market_message_['body']['bid']['amount']
             elif order_.towards is -1:
-                #self.account.sell_available[order_.code] -= market_message_[
+                # self.account.sell_available[order_.code] -= market_message_[
                 #    'body']['bid']['amount']
                 # 当日卖出的股票 可以继续买入/ 可用资金增加(要减去手续费)
                 self.account.cash_available += market_message_['body']['bid']['amount'] * market_message_[
@@ -520,7 +527,8 @@ class QA_Backtest():
                 # 如果买入量>0, 才判断为成功交易
                 QA_util_log_info('BUY %s Price %s Date %s Amount %s' % (
                     __bid.code, __bid.price, __bid.datetime, __bid.amount))
-                self.__messages=self.account.QA_account_receive_deal(__message)
+                self.__messages = self.account.QA_account_receive_deal(
+                    __message)
                 return __message
             else:
 
@@ -533,7 +541,8 @@ class QA_Backtest():
             # 股票中不允许有卖空操作
             # 检查持仓面板
             if __message['header']['status'] == 200:
-                self.__messages=self.account.QA_account_receive_deal(__message)
+                self.__messages = self.account.QA_account_receive_deal(
+                    __message)
                 QA_util_log_info('SELL %s Price %s Date %s  Amount %s' % (
                     __bid.code, __bid.price, __bid.datetime, __bid.amount))
                 return __message
@@ -565,16 +574,18 @@ class QA_Backtest():
         return vars(self)
 
     def QA_backtest_sell_all(self):
-        __hold_list=pd.DataFrame(self.account.hold[1::], columns=self.account.hold[0]).set_index(
-                'code', drop=False)['amount'].groupby('code').sum()
+        __hold_list = pd.DataFrame(self.account.hold[1::], columns=self.account.hold[0]).set_index(
+            'code', drop=False)['amount'].groupby('code').sum()
 
         for item in self.strategy_stock_list:
             try:
                 if __hold_list[item] > 0:
-                    self.QA_backtest_send_order(self, item, __hold_list[item], -1, {'bid_model': 'C'})
+                    self.QA_backtest_send_order(
+                        self, item, __hold_list[item], -1, {'bid_model': 'C'})
 
             except:
                 pass
+
     @classmethod
     def load_strategy(__backtest_cls, func, *arg, **kwargs):
         '策略加载函数'
@@ -587,7 +598,7 @@ class QA_Backtest():
         for i in range(int(__backtest_cls.start_real_id), int(__backtest_cls.end_real_id) - 1, 1):
             __backtest_cls.running_date = __backtest_cls.trade_list[i]
             QA_util_log_info(
-                '=================daily hold list====================') 
+                '=================daily hold list====================')
             QA_util_log_info('in the begining of ' +
                              __backtest_cls.running_date)
             QA_util_log_info(
