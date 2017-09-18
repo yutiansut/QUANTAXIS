@@ -472,8 +472,6 @@ class QA_Backtest():
                 'code', drop=False)['amount'].groupby('code').sum()
 
             self.account.order_queue = pd.DataFrame()
-            # print(self.account.order_queue.query('status!=200').query('status!=400'))
-            # input()
 
         elif event_ in ['trade']:
             # try:
@@ -615,7 +613,7 @@ class QA_Backtest():
             # 交易前同步持仓状态
             __backtest_cls.__sync_order_LM(__backtest_cls, 'init_')  # 初始化事件
 
-            if __backtest_cls.backtest_type in ['day', 'd']:
+            if __backtest_cls.backtest_type in ['day', 'd','index_day']:
 
                 func(*arg, **kwargs)  # 发委托单
                 __backtest_cls.__sell_from_order_queue(__backtest_cls)
@@ -632,6 +630,7 @@ class QA_Backtest():
                         tabulate(__backtest_cls.account.message['body']['account']['hold']))
                     func(*arg, **kwargs)  # 发委托单
                     __backtest_cls.__sell_from_order_queue(__backtest_cls)
+
             __backtest_cls.__sync_order_LM(
                 __backtest_cls, 'daily_settle')  # 每日结算
 

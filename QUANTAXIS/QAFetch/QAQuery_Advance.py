@@ -33,7 +33,7 @@ from QUANTAXIS.QAData import (QA_data_make_hfq, QA_data_make_qfq,
                               QA_DataStruct_Index_day, QA_DataStruct_Index_min,
                               QA_DataStruct_Stock_day, QA_DataStruct_Stock_min,
                               QA_DataStruct_Stock_transaction)
-from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_stocklist_day,
+from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_stocklist_day,QA_fetch_indexlist_day,
                                        QA_fetch_stocklist_min)
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
                               QA_util_date_valid, QA_util_log_info,
@@ -94,7 +94,7 @@ def QA_fetch_index_day_adv(code, __start, __end,if_drop_index=False,  collection
             QA_util_log_info('something wrong with date')
 
     elif isinstance(code,list):
-        pass
+        return QA_DataStruct_Index_day(pd.concat(QA_fetch_indexlist_day(code, [__start, __end])).query('volume>1').set_index(['date', 'code'], drop=if_drop_index))
 
 def QA_fetch_index_min_adv(code, start, end, type_='1min',if_drop_index=False,  collections=QA_Setting.client.quantaxis.index_min):
     '获取股票分钟线'
