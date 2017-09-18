@@ -116,6 +116,27 @@ class QA_DataStruct_Index_day(__stock_hq_base):
         self.index = DataFrame.index
         self.code = self.data.index.levels[self.data.index.names.index('code')]
 
+    def select_time(self, start, end):
+        return self.sync_status(QA_DataStruct_Index_day(self.data[self.data['date'] >= start][self.data['date'] <= end].set_index(['date', 'code'], drop=False)))
+
+    def select_time_with_gap(self, time, gap, method):
+        if method in ['gt', '>=']:
+            return self.sync_status(QA_DataStruct_Index_day(self.data[self.data['date'] > time].head(gap).set_index(['date', 'code'], drop=False)))
+        elif method in ['gte', '>']:
+            return self.sync_status(QA_DataStruct_Index_day(self.data[self.data['date'] >= time].head(gap).set_index(['date', 'code'], drop=False)))
+        elif method in ['lt', '<']:
+            return self.sync_status(QA_DataStruct_Index_day(self.data[self.data['date'] < time].tail(gap).set_index(['date', 'code'], drop=False)))
+        elif method in ['lte', '<=']:
+            return self.sync_status(QA_DataStruct_Index_day(self.data[self.data['date'] <= time].tail(gap).set_index(['date', 'code'], drop=False)))
+        elif method in ['e', '==', '=', 'equal']:
+            return self.sync_status(QA_DataStruct_Index_day(self.data[self.data['date'] == time].tail(gap).set_index(['date', 'code'], drop=False)))
+
+    def select_code(self, code):
+        return self.sync_status(QA_DataStruct_Index_day(self.data[self.data['code'] == code].set_index(['date', 'code'], drop=False)))
+
+    def get_bar(self, code, time):
+        return self.sync_status(QA_DataStruct_Index_day((self.data[self.data['code'] == code])[self.data['date'] == time].set_index(['date', 'code'], drop=False)))
+
 
 class QA_DataStruct_Index_min(__stock_hq_base):
     '自定义的日线数据结构'

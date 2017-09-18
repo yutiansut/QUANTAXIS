@@ -158,15 +158,21 @@ class QA_Backtest():
         if self.backtest_type in ['day', 'd', '0x00']:
             self.market_data = QA_fetch_stocklist_day_adv(
                 self.strategy_stock_list, self.trade_list[self.start_real_id - int(
-                    self.strategy_gap)], self.trade_list[self.end_real_id])
+                    self.strategy_gap)], self.trade_list[self.end_real_id]).to_qfq()
 
         elif self.backtest_type in ['1min', '5min', '15min']:
             self.market_data = QA_fetch_stocklist_min_adv(
                 self.strategy_stock_list, self.trade_list[
                     self.start_real_id - int(self.strategy_gap)],
-                self.trade_list[self.end_real_id+1], self.backtest_type).to_qfq()
-            # self.benchmark_data = QA_fetch_index_min_adv(
-            #    self.benchmark_code, self.start_real_date, self.end_real_date,self.backtest_type)
+                self.trade_list[self.end_real_id + 1], self.backtest_type).to_qfq()
+
+        elif self.backtest_type in ['index_day']:
+            self.market_data = QA_fetch_index_day_adv(self.strategy_stock_list, self.trade_list[self.start_real_id - int(
+                self.strategy_gap)], self.trade_list[self.end_real_id])
+
+        elif self.backtest_type in ['index_min']:
+            self.benchmark_data = QA_fetch_index_min_adv(
+                self.strategy_stock_list, self.start_real_date, self.end_real_date, self.backtest_type)
 
     def __QA_backtest_start(self, *args, **kwargs):
         """
@@ -198,7 +204,7 @@ class QA_Backtest():
     def __end_of_trading(self, *arg, **kwargs):
         # 在回测的最后一天,平掉所有仓位(回测的最后一天是不买入的)
         # 回测最后一天的交易处理
-        self.now = str(self.end_real_date)+' 15:00:00'
+        self.now = str(self.end_real_date) + ' 15:00:00'
         self.today = self.end_real_date
         self.QA_backtest_sell_all(self)
         self.__sell_from_order_queue(self)
@@ -216,7 +222,8 @@ class QA_Backtest():
                         # 限价委托模式
                     __bid.price = __order['price']
                 elif __order['bid_model'] in ['Market', 'market', 'MARKET', 'm', 'M', 1, '1']:
-                    __bid.price = float(__O[0])  #2017-09-18 修改  市价单以当前bar开盘价下单
+                    # 2017-09-18 修改  市价单以当前bar开盘价下单
+                    __bid.price = float(__O[0])
                 elif __order['bid_model'] in ['strict', 'Strict', 's', 'S', '2', 2]:
                     __bid.price = float(
                         __H[0]) if __bid.towards == 1 else float(__L[0])
@@ -465,8 +472,6 @@ class QA_Backtest():
                 'code', drop=False)['amount'].groupby('code').sum()
 
             self.account.order_queue = pd.DataFrame()
-            # print(self.account.order_queue.query('status!=200').query('status!=400'))
-            # input()
 
         elif event_ in ['trade']:
             # try:
@@ -608,7 +613,7 @@ class QA_Backtest():
             # 交易前同步持仓状态
             __backtest_cls.__sync_order_LM(__backtest_cls, 'init_')  # 初始化事件
 
-            if __backtest_cls.backtest_type in ['day', 'd']:
+            if __backtest_cls.backtest_type in ['day', 'd','index_day']:
 
                 func(*arg, **kwargs)  # 发委托单
                 __backtest_cls.__sell_from_order_queue(__backtest_cls)
@@ -625,6 +630,7 @@ class QA_Backtest():
                         tabulate(__backtest_cls.account.message['body']['account']['hold']))
                     func(*arg, **kwargs)  # 发委托单
                     __backtest_cls.__sell_from_order_queue(__backtest_cls)
+
             __backtest_cls.__sync_order_LM(
                 __backtest_cls, 'daily_settle')  # 每日结算
 
