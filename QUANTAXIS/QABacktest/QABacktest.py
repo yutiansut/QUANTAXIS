@@ -158,15 +158,21 @@ class QA_Backtest():
         if self.backtest_type in ['day', 'd', '0x00']:
             self.market_data = QA_fetch_stocklist_day_adv(
                 self.strategy_stock_list, self.trade_list[self.start_real_id - int(
-                    self.strategy_gap)], self.trade_list[self.end_real_id])
+                    self.strategy_gap)], self.trade_list[self.end_real_id]).to_qfq()
 
         elif self.backtest_type in ['1min', '5min', '15min']:
             self.market_data = QA_fetch_stocklist_min_adv(
                 self.strategy_stock_list, self.trade_list[
                     self.start_real_id - int(self.strategy_gap)],
-                self.trade_list[self.end_real_id+1], self.backtest_type).to_qfq()
-            # self.benchmark_data = QA_fetch_index_min_adv(
-            #    self.benchmark_code, self.start_real_date, self.end_real_date,self.backtest_type)
+                self.trade_list[self.end_real_id + 1], self.backtest_type).to_qfq()
+
+        elif self.backtest_type in ['index_day']:
+            self.market_data = QA_fetch_index_day_adv(self.strategy_stock_list, self.trade_list[self.start_real_id - int(
+                self.strategy_gap)], self.trade_list[self.end_real_id])
+
+        elif self.backtest_type in ['index_min']:
+            self.benchmark_data = QA_fetch_index_min_adv(
+                self.strategy_stock_list, self.start_real_date, self.end_real_date, self.backtest_type)
 
     def __QA_backtest_start(self, *args, **kwargs):
         """
@@ -198,7 +204,7 @@ class QA_Backtest():
     def __end_of_trading(self, *arg, **kwargs):
         # 在回测的最后一天,平掉所有仓位(回测的最后一天是不买入的)
         # 回测最后一天的交易处理
-        self.now = str(self.end_real_date)+' 15:00:00'
+        self.now = str(self.end_real_date) + ' 15:00:00'
         self.today = self.end_real_date
         self.QA_backtest_sell_all(self)
         self.__sell_from_order_queue(self)
@@ -216,7 +222,8 @@ class QA_Backtest():
                         # 限价委托模式
                     __bid.price = __order['price']
                 elif __order['bid_model'] in ['Market', 'market', 'MARKET', 'm', 'M', 1, '1']:
-                    __bid.price = float(__O[0])  #2017-09-18 修改  市价单以当前bar开盘价下单
+                    # 2017-09-18 修改  市价单以当前bar开盘价下单
+                    __bid.price = float(__O[0])
                 elif __order['bid_model'] in ['strict', 'Strict', 's', 'S', '2', 2]:
                     __bid.price = float(
                         __H[0]) if __bid.towards == 1 else float(__L[0])

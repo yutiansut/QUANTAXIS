@@ -25,14 +25,12 @@
 import json
 import pprint
 
-import matplotlib
-import matplotlib.pyplot as plt
+import pyecharts
 import numpy
 import pymongo
-import seaborn
 
 
-class QA_Plot_backtest:
+class QA_Plot_backtest():
 
     def __init__(self):
         pass
