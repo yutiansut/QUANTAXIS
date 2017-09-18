@@ -216,7 +216,7 @@ class QA_Backtest():
                         # 限价委托模式
                     __bid.price = __order['price']
                 elif __order['bid_model'] in ['Market', 'market', 'MARKET', 'm', 'M', 1, '1']:
-                    __bid.price = 0.5 * (float(__O[0]) + float(__C[0]))
+                    __bid.price = float(__O[0])  #2017-09-18 修改  市价单以当前bar开盘价下单
                 elif __order['bid_model'] in ['strict', 'Strict', 's', 'S', '2', 2]:
                     __bid.price = float(
                         __H[0]) if __bid.towards == 1 else float(__L[0])
