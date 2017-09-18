@@ -164,7 +164,7 @@ class QA_Backtest():
             self.market_data = QA_fetch_stocklist_min_adv(
                 self.strategy_stock_list, self.trade_list[
                     self.start_real_id - int(self.strategy_gap)],
-                self.trade_list[self.end_real_id], self.backtest_type).to_qfq()
+                self.trade_list[self.end_real_id+1], self.backtest_type).to_qfq()
             # self.benchmark_data = QA_fetch_index_min_adv(
             #    self.benchmark_code, self.start_real_date, self.end_real_date,self.backtest_type)
 

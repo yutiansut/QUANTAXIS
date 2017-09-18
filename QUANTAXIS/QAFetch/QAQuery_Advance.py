@@ -69,7 +69,7 @@ def QA_fetch_stock_day_adv(code, __start, __end,if_drop_index=False,  collection
 
 def QA_fetch_stocklist_day_adv(code, __start, __end, if_drop_index=False, collections=QA_Setting.client.quantaxis.stock_day):
     '获取股票日线'
-    return QA_DataStruct_Stock_day(pd.concat(QA_fetch_stocklist_day(code, [__start, __end])).query('vol>1').set_index(['date', 'code'], drop=if_drop_index))
+    return QA_DataStruct_Stock_day(pd.concat(QA_fetch_stocklist_day(code, [__start, __end])).query('volume>1').set_index(['date', 'code'], drop=if_drop_index))
 
 
 def QA_fetch_index_day_adv(code, __start, __end,if_drop_index=False,  collections=QA_Setting.client.quantaxis.index_day):
