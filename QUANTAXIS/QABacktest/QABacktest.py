@@ -198,7 +198,7 @@ class QA_Backtest():
     def __end_of_trading(self, *arg, **kwargs):
         # 在回测的最后一天,平掉所有仓位(回测的最后一天是不买入的)
         # 回测最后一天的交易处理
-        self.now = self.end_real_date
+        self.now = str(self.end_real_date)+' 15:00:00'
         self.today = self.end_real_date
         self.QA_backtest_sell_all(self)
         self.__sell_from_order_queue(self)
