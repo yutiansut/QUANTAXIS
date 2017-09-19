@@ -170,9 +170,9 @@ class QA_Backtest():
             self.market_data = QA_fetch_index_day_adv(self.strategy_stock_list, self.trade_list[self.start_real_id - int(
                 self.strategy_gap)], self.trade_list[self.end_real_id])
 
-        elif self.backtest_type in ['index_min']:
+        elif self.backtest_type in ['index_1min','index_5min','index_15min']:
             self.benchmark_data = QA_fetch_index_min_adv(
-                self.strategy_stock_list, self.start_real_date, self.end_real_date, self.backtest_type)
+                self.strategy_stock_list, self.start_real_date, self.end_real_date, self.backtest_type.split('_')[1])
 
     def __QA_backtest_start(self, *args, **kwargs):
         """
@@ -434,7 +434,8 @@ class QA_Backtest():
                         self.account.order_queue = self.account.order_queue.append(
                             order_.to_df())
                 elif order_.towards is -1:
-                    if self.account.sell_available[order_.code] - order_.amount >= 0:
+                    
+                    if self.QA_backtest_sell_available(self,order_.code) - order_.amount >= 0:
                         self.account.sell_available[order_.code] -= order_.amount
                         self.account.order_queue = self.account.order_queue.append(
                             order_.to_df())
@@ -617,7 +618,7 @@ class QA_Backtest():
 
                 func(*arg, **kwargs)  # 发委托单
                 __backtest_cls.__sell_from_order_queue(__backtest_cls)
-            elif __backtest_cls.backtest_type in ['1min', '5min', '15min']:
+            elif __backtest_cls.backtest_type in ['1min', '5min', '15min','index_1min','index_5min','index_15min']:
                 daily_min = QA_util_make_min_index(
                     __backtest_cls.today, type_=__backtest_cls.backtest_type)  # 创造分钟线index
                 # print(daily_min)

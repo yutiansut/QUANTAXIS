@@ -105,22 +105,27 @@ def QA_fetch_index_min_adv(code, start, end, type_='1min',if_drop_index=False,  
     elif type_ in ['15min', '15m']:
         type_ = '15min'
     __data = []
-    for item in collections.find({
-        'code': str(code), "time_stamp": {
-            "$gte": QA_util_time_stamp(start),
-            "$lte": QA_util_time_stamp(end)
-        }, 'type': type_
-    }):
+    if isinstance(code,str):
+        for item in collections.find({
+            'code': str(code), "time_stamp": {
+                "$gte": QA_util_time_stamp(start),
+                "$lte": QA_util_time_stamp(end)
+            }, 'type': type_
+        }):
 
-        __data.append([str(item['code']), float(item['open']), float(item['high']), float(
-            item['low']), float(item['close']), float(item['vol']), item['datetime'], item['time_stamp'], item['date']])
+            __data.append([str(item['code']), float(item['open']), float(item['high']), float(
+                item['low']), float(item['close']), float(item['vol']), item['datetime'], item['time_stamp'], item['date']])
 
-    __data = DataFrame(__data, columns=[
-        'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'time_stamp', 'date'])
+        __data = DataFrame(__data, columns=[
+            'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'time_stamp', 'date'])
 
-    __data['datetime'] = pd.to_datetime(__data['datetime'])
-    return QA_DataStruct_Stock_min(__data.query('volume>1').set_index(['datetime', 'code'], drop=if_drop_index))
+        __data['datetime'] = pd.to_datetime(__data['datetime'])
+        return QA_DataStruct_Stock_min(__data.query('volume>1').set_index(['datetime', 'code'], drop=if_drop_index))
 
+
+    elif isinstance(code,list):
+        pass
+        #return QA_DataStruct_Index_min(pd.concat(QA_fetch_indexlist_day(code, [__start, __end])).query('volume>1').set_index(['date', 'code'], drop=if_drop_index))
 
 def QA_fetch_stock_min_adv(code, start, end, type_='1min', if_drop_index=False, collections=QA_Setting.client.quantaxis.stock_min):
     '获取股票分钟线'
