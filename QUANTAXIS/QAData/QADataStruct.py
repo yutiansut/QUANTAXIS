@@ -16,11 +16,12 @@ import six
 import talib
 from QUANTAXIS.QAData.data_fq import QA_data_stock_to_fq
 from QUANTAXIS.QAData.data_resample import QA_data_tick_resample
+from QUANTAXIS.QAData.proto import (stock_day_pb2,  # protobuf import
+                                    stock_min_pb2)
 from QUANTAXIS.QAIndicator import EMA, HHV, LLV, SMA
-from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,trade_date_sse,
-                              QA_util_to_json_from_pandas)
+from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
+                              QA_util_to_json_from_pandas, trade_date_sse)
 
-# ATR
 
 class __stock_base():
     def __init__(self, DataFrame):
