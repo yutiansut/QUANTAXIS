@@ -301,17 +301,37 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
     def select_time(self, start, end):
         return self.sync_status(QA_DataStruct_Stock_day(self.data[self.data['date'] >= start][self.data['date'] <= end].set_index(['date', 'code'], drop=False)))
 
+
+
     def select_time_with_gap(self, time, gap, method):
         if method in ['gt', '>=']:
-            return self.sync_status(QA_DataStruct_Stock_day(self.data[self.data['date'] > time].head(gap).set_index(['date', 'code'], drop=False)))
+            
+            def __gt(__dataS):
+                
+                return self.sync_status(QA_DataStruct_Stock_day(__dataS.data[__dataS.data['date'] > time].head(gap).set_index(['date', 'code'], drop=False))).data
+            return self.sync_status(QA_DataStruct_Stock_day(pd.concat(list(map(lambda x:__gt(x),self.splits())))))
+
         elif method in ['gte', '>']:
-            return self.sync_status(QA_DataStruct_Stock_day(self.data[self.data['date'] >= time].head(gap).set_index(['date', 'code'], drop=False)))
+            def __gte(__dataS):
+                
+                return self.sync_status(QA_DataStruct_Stock_day(__dataS.data[__dataS.data['date'] >= time].head(gap).set_index(['date', 'code'], drop=False))).data
+            return self.sync_status(QA_DataStruct_Stock_day(pd.concat(list(map(lambda x:__gte(x),self.splits())))))
         elif method in ['lt', '<']:
-            return self.sync_status(QA_DataStruct_Stock_day(self.data[self.data['date'] < time].tail(gap).set_index(['date', 'code'], drop=False)))
+            def __lt(__dataS):
+                        
+                return self.sync_status(QA_DataStruct_Stock_day(__dataS.data[__dataS.data['date'] < time].head(gap).set_index(['date', 'code'], drop=False))).data
+            return self.sync_status(QA_DataStruct_Stock_day(pd.concat(list(map(lambda x:__lt(x),self.splits())))))
         elif method in ['lte', '<=']:
-            return self.sync_status(QA_DataStruct_Stock_day(self.data[self.data['date'] <= time].tail(gap).set_index(['date', 'code'], drop=False)))
+            def __lte(__dataS):
+                    
+                return self.sync_status(QA_DataStruct_Stock_day(__dataS.data[__dataS.data['date'] <= time].head(gap).set_index(['date', 'code'], drop=False))).data
+            return self.sync_status(QA_DataStruct_Stock_day(pd.concat(list(map(lambda x:__lte(x),self.splits())))))
         elif method in ['e', '==', '=', 'equal']:
-            return self.sync_status(QA_DataStruct_Stock_day(self.data[self.data['date'] == time].tail(gap).set_index(['date', 'code'], drop=False)))
+            def __eq(__dataS):
+                
+                return self.sync_status(QA_DataStruct_Stock_day(__dataS.data[__dataS.data['date'] == time].head(gap).set_index(['date', 'code'], drop=False))).data
+            return self.sync_status(QA_DataStruct_Stock_day(pd.concat(list(map(lambda x:__eq(x),self.splits())))))
+
 
     def select_code(self, code):
         return self.sync_status(QA_DataStruct_Stock_day(self.data[self.data['code'] == code].set_index(['date', 'code'], drop=False)))
