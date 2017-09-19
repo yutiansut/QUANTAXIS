@@ -31,7 +31,7 @@ by yutiansut
 
 2017/4/8
 """
-__version__ = '0.4.28'
+__version__ = '0.4.30'
 __author__ = 'yutiansut'
 logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
@@ -87,7 +87,7 @@ from QUANTAXIS.QAARP.QARisk import (QA_risk_account_freeCash_currentAssest,
                                     QA_risk_account_freeCash_initAssest, QA_risk_eva_account)
 # Backtest
 from QUANTAXIS.QABacktest.QABacktest import QA_Backtest
-from QUANTAXIS.QABacktest.QABacktest_stock_day import QA_Backtest_stock_day
+
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
 # task
 from QUANTAXIS.QATask import QA_Queue, QA_Event, QA_Job, QA_Engine
@@ -105,7 +105,7 @@ from QUANTAXIS.QAUtil.QAType import (
 
 from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms_stamp, QA_util_date_valid,
                               QA_util_realtime, QA_util_id2date, QA_util_is_trade, QA_util_get_date_index,
-                              QA_util_get_index_date, QA_util_select_hours,QA_util_date_gap,
+                              QA_util_get_index_date, QA_util_select_hours,QA_util_date_gap,QA_util_time_gap,
                               QA_util_select_min, QA_util_time_delay, QA_util_time_now, QA_util_date_str2int,
                               QA_util_date_int2str, QA_util_date_today,
                               QA_util_sql_mongo_setting,

@@ -68,6 +68,15 @@ from QUANTAXIS.QAUtil import (QA_Setting, QA_util_get_real_date,
 from tabulate import tabulate
 
 
+"""
+通用的 用装饰器注入代码的回测框架
+
+@yutiansut
+2017/09/19
+
+"""
+
+
 class QA_Backtest():
     '最终目的还是实现一个通用的回测类'
     backtest_type = 'day'
@@ -170,8 +179,8 @@ class QA_Backtest():
             self.market_data = QA_fetch_index_day_adv(self.strategy_stock_list, self.trade_list[self.start_real_id - int(
                 self.strategy_gap)], self.trade_list[self.end_real_id])
 
-        elif self.backtest_type in ['index_1min','index_5min','index_15min']:
-            self.benchmark_data = QA_fetch_index_min_adv(
+        elif self.backtest_type in ['index_1min', 'index_5min', 'index_15min']:
+            self.market_data = QA_fetch_index_min_adv(
                 self.strategy_stock_list, self.start_real_date, self.end_real_date, self.backtest_type.split('_')[1])
 
     def __QA_backtest_start(self, *args, **kwargs):
@@ -391,7 +400,7 @@ class QA_Backtest():
                                              self.now),
                                          self.running_date, __amount, __towards)
 
-        if self.backtest_type in ['day','index_day']:
+        if self.backtest_type in ['day', 'index_day']:
             __bid.type = '0x01'
         elif self.backtest_type in ['1min', '5min', '15min']:
             __bid.type = '0x02'
@@ -434,8 +443,8 @@ class QA_Backtest():
                         self.account.order_queue = self.account.order_queue.append(
                             order_.to_df())
                 elif order_.towards is -1:
-                    
-                    if self.QA_backtest_sell_available(self,order_.code) - order_.amount >= 0:
+
+                    if self.QA_backtest_sell_available(self, order_.code) - order_.amount >= 0:
                         self.account.sell_available[order_.code] -= order_.amount
                         self.account.order_queue = self.account.order_queue.append(
                             order_.to_df())
@@ -473,6 +482,15 @@ class QA_Backtest():
                 'code', drop=False)['amount'].groupby('code').sum()
 
             self.account.order_queue = pd.DataFrame()
+        elif event_ in ['t_0']:
+            """
+            T+0交易事件
+
+            同步t+0的账户状态 /允许卖出
+            """
+            self.account.cash_available = self.account.cash[-1]
+            self.account.sell_available = pd.DataFrame(self.account.hold[1::], columns=self.account.hold[0]).set_index(
+                'code', drop=False)['amount'].groupby('code').sum()
 
         elif event_ in ['trade']:
             # try:
@@ -614,13 +632,19 @@ class QA_Backtest():
             # 交易前同步持仓状态
             __backtest_cls.__sync_order_LM(__backtest_cls, 'init_')  # 初始化事件
 
-            if __backtest_cls.backtest_type in ['day', 'd','index_day']:
+            if __backtest_cls.backtest_type in ['day', 'd', 'index_day']:
 
                 func(*arg, **kwargs)  # 发委托单
                 __backtest_cls.__sell_from_order_queue(__backtest_cls)
-            elif __backtest_cls.backtest_type in ['1min', '5min', '15min','index_1min','index_5min','index_15min']:
+            elif __backtest_cls.backtest_type in ['1min', '5min', '15min', 'index_1min', 'index_5min', 'index_15min']:
+                if __backtest_cls.backtest_type in ['1min','index_1min']:
+                    type_='1min'
+                elif __backtest_cls.backtest_type in ['5min','index_5min']:
+                    type_='5min'
+                elif __backtest_cls.backtest_type in ['15min','index_15min']:
+                    type_='15min'
                 daily_min = QA_util_make_min_index(
-                    __backtest_cls.today, type_=__backtest_cls.backtest_type)  # 创造分钟线index
+                    __backtest_cls.today, type_)  # 创造分钟线index
                 # print(daily_min)
                 for min_index in daily_min:
                     __backtest_cls.now = min_index
@@ -631,7 +655,8 @@ class QA_Backtest():
                         tabulate(__backtest_cls.account.message['body']['account']['hold']))
                     func(*arg, **kwargs)  # 发委托单
                     __backtest_cls.__sell_from_order_queue(__backtest_cls)
-
+                    if __backtest_cls.backtest_type in ['index_1min', 'index_5min', 'index_15min']:
+                         __backtest_cls.__sync_order_LM( __backtest_cls, 't_0') 
             __backtest_cls.__sync_order_LM(
                 __backtest_cls, 'daily_settle')  # 每日结算
 
