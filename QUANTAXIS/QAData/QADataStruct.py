@@ -89,12 +89,14 @@ class __stock_hq_base():
     def add_func(self, func, *arg, **kwargs):
         return self.sync_status(__stock_hq_base(pd.concat(list(map(lambda x: func(
             self.data[self.data['code'] == x], *arg, **kwargs), self.code)))))
-    def pivot(self,column_):
-        assert isinstance(column_,str)
+
+    def pivot(self, column_):
+        assert isinstance(column_, str)
         try:
-            return self.data.pivot(index='datetime',columns='code',values=column_)
+            return self.data.pivot(index='datetime', columns='code', values=column_)
         except:
-            return self.data.pivot(index='date',columns='code',values=column_)
+            return self.data.pivot(index='date', columns='code', values=column_)
+
 
 class QA_DataStruct_Index_day(__stock_hq_base):
     '自定义的日线数据结构'
@@ -205,7 +207,7 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
     def to_qfq(self):
         if self.if_fq is 'bfq':
             data = QA_DataStruct_Stock_min(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
-                self.data[self.data['code'] == x]), self.code))).set_index(['datetime','code'], drop=False))
+                self.data[self.data['code'] == x]), self.code))).set_index(['datetime', 'code'], drop=False))
             data.if_fq = 'qfq'
             return data
         else:
@@ -216,7 +218,7 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
     def to_hfq(self):
         if self.if_fq is 'bfq':
             data = QA_DataStruct_Stock_min(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
-                self.data[self.data['code'] == x], '01'), self.code))).set_index(['datetime','code'], drop=False))
+                self.data[self.data['code'] == x], '01'), self.code))).set_index(['datetime', 'code'], drop=False))
             data.if_fq = 'hfq'
             return data
         else:
@@ -275,7 +277,8 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
 
     def to_qfq(self):
         if self.if_fq is 'bfq':
-            data = QA_DataStruct_Stock_day(pd.concat(list(map(lambda x: QA_data_stock_to_fq(self.data[self.data['code'] == x]), self.code))))
+            data = QA_DataStruct_Stock_day(pd.concat(list(map(
+                lambda x: QA_data_stock_to_fq(self.data[self.data['code'] == x]), self.code))))
             data.if_fq = 'qfq'
             return data
         else:
@@ -301,37 +304,33 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
     def select_time(self, start, end):
         return self.sync_status(QA_DataStruct_Stock_day(self.data[self.data['date'] >= start][self.data['date'] <= end].set_index(['date', 'code'], drop=False)))
 
-
-
     def select_time_with_gap(self, time, gap, method):
         if method in ['gt', '>=']:
-            
+
             def __gt(__dataS):
-                
+
                 return self.sync_status(QA_DataStruct_Stock_day(__dataS.data[__dataS.data['date'] > time].head(gap).set_index(['date', 'code'], drop=False))).data
-            return self.sync_status(QA_DataStruct_Stock_day(pd.concat(list(map(lambda x:__gt(x),self.splits())))))
+            return self.sync_status(QA_DataStruct_Stock_day(pd.concat(list(map(lambda x: __gt(x), self.splits())))))
 
         elif method in ['gte', '>']:
             def __gte(__dataS):
-                
                 return self.sync_status(QA_DataStruct_Stock_day(__dataS.data[__dataS.data['date'] >= time].head(gap).set_index(['date', 'code'], drop=False))).data
-            return self.sync_status(QA_DataStruct_Stock_day(pd.concat(list(map(lambda x:__gte(x),self.splits())))))
+            return self.sync_status(QA_DataStruct_Stock_day(pd.concat(list(map(lambda x: __gte(x), self.splits())))))
         elif method in ['lt', '<']:
             def __lt(__dataS):
-                        
+
                 return self.sync_status(QA_DataStruct_Stock_day(__dataS.data[__dataS.data['date'] < time].head(gap).set_index(['date', 'code'], drop=False))).data
-            return self.sync_status(QA_DataStruct_Stock_day(pd.concat(list(map(lambda x:__lt(x),self.splits())))))
+            return self.sync_status(QA_DataStruct_Stock_day(pd.concat(list(map(lambda x: __lt(x), self.splits())))))
         elif method in ['lte', '<=']:
             def __lte(__dataS):
-                    
+
                 return self.sync_status(QA_DataStruct_Stock_day(__dataS.data[__dataS.data['date'] <= time].head(gap).set_index(['date', 'code'], drop=False))).data
-            return self.sync_status(QA_DataStruct_Stock_day(pd.concat(list(map(lambda x:__lte(x),self.splits())))))
+            return self.sync_status(QA_DataStruct_Stock_day(pd.concat(list(map(lambda x: __lte(x), self.splits())))))
         elif method in ['e', '==', '=', 'equal']:
             def __eq(__dataS):
-                
-                return self.sync_status(QA_DataStruct_Stock_day(__dataS.data[__dataS.data['date'] == time].head(gap).set_index(['date', 'code'], drop=False))).data
-            return self.sync_status(QA_DataStruct_Stock_day(pd.concat(list(map(lambda x:__eq(x),self.splits())))))
 
+                return self.sync_status(QA_DataStruct_Stock_day(__dataS.data[__dataS.data['date'] == time].head(gap).set_index(['date', 'code'], drop=False))).data
+            return self.sync_status(QA_DataStruct_Stock_day(pd.concat(list(map(lambda x: __eq(x), self.splits())))))
 
     def select_code(self, code):
         return self.sync_status(QA_DataStruct_Stock_day(self.data[self.data['code'] == code].set_index(['date', 'code'], drop=False)))
