@@ -336,7 +336,7 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
         return self.sync_status(QA_DataStruct_Stock_day(self.data[self.data['code'] == code].set_index(['date', 'code'], drop=False)))
 
     def get_bar(self, code, time):
-        return self.sync_status(QA_DataStruct_Stock_day((self.data[self.data['code'] == code])[self.data['date'] == time].set_index(['date', 'code'], drop=False)))
+        return self.sync_status(QA_DataStruct_Stock_day((self.data[self.data['code'] == code])[self.data['date'] == str(time)[0:10]].set_index(['date', 'code'], drop=False)))
 
 
     
