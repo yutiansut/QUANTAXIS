@@ -17,7 +17,7 @@ import talib
 from QUANTAXIS.QAData.data_fq import QA_data_stock_to_fq
 from QUANTAXIS.QAData.data_resample import QA_data_tick_resample
 from QUANTAXIS.QAIndicator import EMA, HHV, LLV, SMA
-from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
+from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,trade_date_sse,
                               QA_util_to_json_from_pandas)
 
 # ATR
@@ -137,7 +137,7 @@ class QA_DataStruct_Index_day(__stock_hq_base):
         return self.sync_status(QA_DataStruct_Index_day(self.data[self.data['code'] == code].set_index(['date', 'code'], drop=False)))
 
     def get_bar(self, code, time):
-        return self.sync_status(QA_DataStruct_Index_day((self.data[self.data['code'] == code])[self.data['date'] == time].set_index(['date', 'code'], drop=False)))
+        return self.sync_status(QA_DataStruct_Index_day((self.data[self.data['code'] == code])[self.data['date'] == str(time)[0:10]].set_index(['date', 'code'], drop=False)))
 
 
 class QA_DataStruct_Index_min(__stock_hq_base):
@@ -339,6 +339,7 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
         return self.sync_status(QA_DataStruct_Stock_day((self.data[self.data['code'] == code])[self.data['date'] == time].set_index(['date', 'code'], drop=False)))
 
 
+    
 class QA_DataStruct_Stock_transaction():
     def __init__(self, DataFrame):
         self.type = 'stock_transaction'

@@ -391,7 +391,7 @@ class QA_Backtest():
                                              self.now),
                                          self.running_date, __amount, __towards)
 
-        if self.backtest_type in ['day']:
+        if self.backtest_type in ['day','index_day']:
             __bid.type = '0x01'
         elif self.backtest_type in ['1min', '5min', '15min']:
             __bid.type = '0x02'
