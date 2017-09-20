@@ -183,6 +183,10 @@ def QA_fetch_index_min(code, startTime, endTime, format_='numpy', type_='1min', 
         type_ = '5min'
     elif type_ in ['15min', '15m']:
         type_ = '15min'
+    elif type_ in ['30min', '30m']:
+        type_ = '30min'
+    elif type_ in ['60min', '60m']:
+        type_ = '60min'
     __data = []
     for item in collections.find({
         'code': str(code), "time_stamp": {
@@ -214,6 +218,10 @@ def QA_fetch_stock_min(code, startTime, endTime, format_='numpy', type_='1min',c
         type_ = '5min'
     elif type_ in ['15min', '15m']:
         type_ = '15min'
+    elif type_ in ['30min', '30m']:
+        type_ = '30min'
+    elif type_ in ['60min', '60m']:
+        type_ = '60min'
     __data = []
     for item in collections.find({
         'code': str(code), "time_stamp": {

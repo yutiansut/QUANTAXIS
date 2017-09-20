@@ -44,10 +44,10 @@ def ping(ip):
     __time1 = datetime.datetime.now()
     try:
         with api.connect(ip, 7709):
-            if len(api.get_security_list(0, 1)) >800:
+            if len(api.get_security_list(0, 1)) > 800:
                 return datetime.datetime.now() - __time1
     except:
-        print('Bad REPSONSE %s' %ip)
+        print('Bad REPSONSE %s' % ip)
         return datetime.timedelta(9, 9, 0)
 
 
@@ -196,7 +196,7 @@ def QA_fetch_get_stock_min(code, start, end, level='1min', ip=best_ip, port=7709
 
         data = pd.concat([api.to_df(api.get_security_bars(level, __select_market_code(
             str(code)), str(code), (25 - i) * 800, 800)) for i in range(26)], axis=0)
-        # print(data['datetime'].apply(lambda x: str(x)[0:10]))
+
         data = data\
             .assign(datetime=pd.to_datetime(data['datetime']), code=str(code))\
             .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1, inplace=False)\
@@ -204,7 +204,6 @@ def QA_fetch_get_stock_min(code, start, end, level='1min', ip=best_ip, port=7709
             .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(x)))\
             .assign(time_stamp=data['datetime'].apply(lambda x: QA_util_time_stamp(x)))\
             .assign(type=type_).set_index('datetime', drop=False, inplace=False)[start:end]
-        # data
         return data.assign(datetime=data['datetime'].apply(lambda x: str(x)))
 
 
