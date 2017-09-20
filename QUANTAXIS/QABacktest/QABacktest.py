@@ -313,9 +313,14 @@ class QA_Backtest():
             # QA_SU_save_pnl_to_csv(self.account.detail,self.account.account_cookie)
 
     def QA_backtest_get_market_data(self, code, date, gap_=None):
-        '这个函数封装了关于获取的方式'
+        '这个函数封装了关于获取的方式 用GAP的模式'
         gap_ = self.strategy_gap if gap_ is None else gap_
         return self.market_data.select_code(code).select_time_with_gap(date, gap_, 'lte')
+    def QA_backtest_get_market_data_bar(self, code, time):
+        '这个函数封装了关于获取的方式'
+        return self.market_data.get_bar(code,time)
+
+
 
     def QA_backtest_sell_available(self, __code):
         try:
