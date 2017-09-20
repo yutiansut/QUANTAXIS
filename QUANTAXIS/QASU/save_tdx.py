@@ -189,7 +189,7 @@ def QA_SU_save_index_min(client=QA_Setting.client):
 
     def __saving_work(code, __coll):
         
-        QA_util_log_info('##JOB05 Now Saving STOCK_MIN ==== %s' % (str(code)))
+        QA_util_log_info('##JOB05 Now Saving Index_MIN ==== %s' % (str(code)))
         try:
 
             for type in ['1min', '5min', '15min']:
@@ -205,7 +205,7 @@ def QA_SU_save_index_min(client=QA_Setting.client):
                 if start_time != end_time:
                     __coll.insert_many(
                         QA_util_to_json_from_pandas(
-                            QA_fetch_get_stock_min(str(code), start_time, end_time, type)[1::]))
+                            QA_fetch_get_index_min(str(code), start_time, end_time, type)[1::]))
 
         except:
             __err.append(code)
