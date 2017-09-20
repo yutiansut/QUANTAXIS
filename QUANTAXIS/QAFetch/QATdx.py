@@ -44,16 +44,16 @@ def ping(ip):
     __time1 = datetime.datetime.now()
     try:
         with api.connect(ip, 7709):
-            api.get_security_bars(9, 0, '000001', 0, 1)
-        return datetime.datetime.now() - __time1
+            if len(api.get_security_list(0, 1)) >800:
+                return datetime.datetime.now() - __time1
     except:
+        print('Bad REPSONSE %s' %ip)
         return datetime.timedelta(9, 9, 0)
 
 
 def select_best_ip():
     QA_util_log_info('Selecting the Best Server IP of TDX')
-    listx = ['180.153.18.170', '180.153.18.171', '202.108.253.130', '202.108.253.131',
-             '60.191.117.167', '115.238.56.198', '218.75.126.9', '115.238.90.165',
+    listx = ['218.75.126.9', '115.238.90.165',
              '124.160.88.183', '60.12.136.250', '218.108.98.244', '218.108.47.69',
              '14.17.75.71', '180.153.39.51']
     data = [ping(x) for x in listx]
@@ -64,10 +64,14 @@ def select_best_ip():
 
 best_ip = select_best_ip()
 
+# return 1 if sh, 0 if sz
+
 
 def __select_market_code(code):
-
-    return 1 if str(code)[0] == '6' else 0
+    code = str(code)
+    if code[0] in ['5', '6', '9'] or code[:3] in ["009", "126", "110", "201", "202", "203", "204"]:
+        return 1
+    return 0
 
 
 def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', ip=best_ip, port=7709):
@@ -243,7 +247,7 @@ def QA_fetch_get_stock_list(type_='stock', ip=best_ip, port=7709):
         elif type_ in ['index', 'zs']:
 
             return pd.concat([data[data['sse'] == 'sz'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 1000 >= 399],
-                              data[data['sse'] == 'sh'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 1000 == 0]]).assign(code=data['code'].apply(lambda x: str(x)))
+                              data[data['sse'] == 'sh'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 1000 == 0]]).sort_index().assign(code=data['code'].apply(lambda x: str(x)))
         else:
             return data.assign(code=data['code'].apply(lambda x: str(x)))
 

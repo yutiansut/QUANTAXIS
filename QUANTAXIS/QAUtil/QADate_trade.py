@@ -24,7 +24,8 @@
 
 import datetime
 import time
-
+import math
+import pandas as pd
 
 def QA_util_if_trade(day):
     '日期是否交易'
@@ -69,6 +70,22 @@ def QA_util_get_trade_range(start,end):
     '给出交易具体时间'
     start,end=QA_util_get_real_datelist(start,end)
     return trade_date_sse[trade_date_sse.index(start):trade_date_sse.index(end)+1:1]
+
+def QA_util_date_gap(date,gap,methods):
+    try:
+        if methods in ['>','gt']:
+            return trade_date_sse[trade_date_sse.index(date)+gap]
+        elif methods in ['>=','gte']:
+            return trade_date_sse[trade_date_sse.index(date)+gap-1]
+        elif methods in ['<','lt']:
+            return trade_date_sse[trade_date_sse.index(date)-gap]
+        elif methods in ['<=','lte']:
+            return trade_date_sse[trade_date_sse.index(date)-gap+1]
+        elif methods in ['==','=','eq']:
+            return date
+        
+    except:
+        return  'wrong date'
 
 
 

@@ -16,3 +16,5 @@ pytdx>=1.34
 flask-socketio 
 flask
 TA-Lib
+pyecharts
+protobuf

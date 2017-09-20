@@ -31,7 +31,7 @@ by yutiansut
 
 2017/4/8
 """
-__version__ = '0.4.1.40'
+__version__ = '0.4.34'
 __author__ = 'yutiansut'
 logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
@@ -59,7 +59,9 @@ from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day, QA_fetch_get_trade_date, 
                                QA_fetch_get_index_day, QA_fetch_get_index_min, QA_fetch_get_stock_list)
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_trade_date, QA_fetch_stock_day, QA_fetch_stocklist_day, QA_fetch_index_day,
                                        QA_fetch_stock_min, QA_fetch_stocklist_min, QA_fetch_future_min, QA_fetch_future_day,
-                                       QA_fetch_future_tick, QA_fetch_stock_list, QA_fetch_stock_full, QA_fetch_stock_xdxr)
+                                       QA_fetch_future_tick, QA_fetch_stock_list, QA_fetch_stock_full, QA_fetch_stock_xdxr,
+                                       QA_fetch_backtest_info,QA_fetch_backtest_history)
+
 from QUANTAXIS.QAFetch.QAQuery_Advance import *
 
 # save
@@ -85,7 +87,7 @@ from QUANTAXIS.QAARP.QARisk import (QA_risk_account_freeCash_currentAssest,
                                     QA_risk_account_freeCash_initAssest, QA_risk_eva_account)
 # Backtest
 from QUANTAXIS.QABacktest.QABacktest import QA_Backtest
-from QUANTAXIS.QABacktest.QABacktest_stock_day import QA_Backtest_stock_day
+
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
 # task
 from QUANTAXIS.QATask import QA_Queue, QA_Event, QA_Job, QA_Engine
@@ -103,7 +105,7 @@ from QUANTAXIS.QAUtil.QAType import (
 
 from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms_stamp, QA_util_date_valid,
                               QA_util_realtime, QA_util_id2date, QA_util_is_trade, QA_util_get_date_index,
-                              QA_util_get_index_date, QA_util_select_hours,
+                              QA_util_get_index_date, QA_util_select_hours,QA_util_date_gap,QA_util_time_gap,
                               QA_util_select_min, QA_util_time_delay, QA_util_time_now, QA_util_date_str2int,
                               QA_util_date_int2str, QA_util_date_today,
                               QA_util_sql_mongo_setting,
@@ -130,7 +132,7 @@ from QUANTAXIS.QACmd import QA_cmd
 import argparse
 
 
-# 检查python版本
+# check
 import sys
 if sys.version_info.major != 3 or sys.version_info.minor not in [4,5,6]:
     print('wrong version, should be 3.4/3.5/3.6 version')

@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+import "stock_day.proto";
+import "stock_min.proto";
+
+service StockHQService {
+    rpc Search (stock_day.stock_day) returns (stock_day);
+    rpc GetFeature(ask)
+  }
+  
+

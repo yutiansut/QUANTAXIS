@@ -27,11 +27,12 @@ import datetime
 
 import numpy
 import pandas as pd
+
 from bson.objectid import ObjectId
 from pandas import DataFrame
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
                               QA_util_date_valid, QA_util_log_info,
-                              QA_util_time_stamp)
+                              QA_util_time_stamp,QA_util_to_json_from_pandas,QA_util_to_list_from_pandas)
 from QUANTAXIS.QAData import QA_data_make_hfq, QA_data_make_qfq
 """
 按要求从数据库取数据，并转换成numpy结构
@@ -165,6 +166,14 @@ def QA_fetch_index_day(code, __start, __end, format_='numpy', collections=QA_Set
     else:
         QA_util_log_info('something wrong with date')
 
+def QA_fetch_indexlist_day(stock_list, date_range, collections=QA_Setting.client.quantaxis.index_day):
+    '获取多个股票的日线'
+    __data = []
+    for item in stock_list:
+        __data.append(QA_fetch_index_day(
+            item, date_range[0], date_range[-1], 'pd', collections))
+    return __data
+
 
 def QA_fetch_index_min(code, startTime, endTime, format_='numpy', type_='1min', collections=QA_Setting.client.quantaxis.index_min):
     '获取股票分钟线'
@@ -197,7 +206,7 @@ def QA_fetch_index_min(code, startTime, endTime, format_='numpy', type_='1min', 
         return numpy.asarray(__data).tolist()
     elif format_ in ['P', 'p', 'pandas', 'pd']:
         return __data
-def QA_fetch_stock_min(code, startTime, endTime, format_='numpy', type_='1min', collections=QA_Setting.client.quantaxis.stock_min):
+def QA_fetch_stock_min(code, startTime, endTime, format_='numpy', type_='1min',collections=QA_Setting.client.quantaxis.stock_min):
     '获取股票分钟线'
     if type_ in ['1min', '1m']:
         type_ = '1min'
@@ -258,3 +267,10 @@ def QA_fetch_stock_xdxr(code, format_='pd', collections=QA_Setting.client.quanta
     data['date'] = pd.to_datetime(data['date'])
     return data.set_index('date', drop=False)
     # data['date']=data['date'].apply(lambda)
+
+
+def QA_fetch_backtest_info(user=None,account_cookie=None,strategy=None,stock_list=None,collections=QA_Setting.client.quantaxis.backtest_info):
+    
+    return QA_util_to_json_from_pandas(pd.DataFrame([item for item in collections.find(QA_util_to_json_from_pandas(pd.DataFrame([user,account_cookie,strategy,stock_list],index=['user','account_cookie','strategy','stock_list']).dropna().T)[0])]).drop(['_id'], axis=1))
+def QA_fetch_backtest_history(cookie=None,collections=QA_Setting.client.quantaxis.backtest_history):
+    return QA_util_to_json_from_pandas(pd.DataFrame([item for item in collections.find(QA_util_to_json_from_pandas(pd.DataFrame([cookie],index=['cookie']).dropna().T)[0])]).drop(['_id'], axis=1))
