@@ -10,12 +10,12 @@
 
 
 
-![version](https://img.shields.io/badge/Version-%200.4.15-orange.svg)
+![version](https://img.shields.io/badge/Version-%200.4.38-orange.svg)
 ![build](https://travis-ci.org/yutiansut/QUANTAXIS.svg?branch=master)
 [![Stories in Ready](https://badge.waffle.io/yutiansut/QUANTAXIS.svg?label=ready&title=Ready)](http://waffle.io/yutiansut/QUANTAXIS)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.8-brown.svg)
-![Pypi](https://img.shields.io/badge/Pypi-%200.4.15-blue.svg)
+![Pypi](https://img.shields.io/badge/Pypi-%200.4.38-blue.svg)
 ![python](https://img.shields.io/badge/python-%203.6/3.5/3.4/win/ubuntu-darkgrey.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.4.0-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
@@ -31,9 +31,9 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 已经实现：
 
 - 日线（自1990年）回测 [定点复权] (T+1)
-- 分钟线 [1min/5min/15min]回测 (T+1)
+- 分钟线 [1min/5min/15min/30min/60min]回测 (T+1)
 - 股指期货日线(T+0)
-- 股指期货分钟线(T+0)
+- 股指期货分钟线 [1min/5min/15min/30min/60min](T+0)
 - 基于tushare/pytdx/各种爬虫的数据源
 - 实时交易数据
 - 基于Vue.js的前端网站
@@ -74,7 +74,7 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.8
 - python3.6(开发环境) python2 回测框架不兼容(attention! 之后会逐步用更多高级语法)   [*] 如果需要交易,请下载32位的python3.6
 - nodejs 需要安装>7的版本,来支持es6语法
 - mongodb是必须要装的
-
+- 强烈推荐mongodb的可视化库  robomongo 百度即可下载
 
 一个简易demo(需要先安装并启动mongodb,python版本需要大于3)
 ```shell
@@ -93,7 +93,7 @@ git clone https://github.com/yutiansut/quantaxis
 cd quantaxis 
 (sudo) pip install -e . # 一定要用这种方法,python setup.py install方法无法解压 安装在本目录下的开发模式
 在命令行输入 quantaxis 进去quantaxis CLI
-quantaxis> save
+quantaxis> save all
 
 随意新建一个目录:
 
@@ -110,17 +110,21 @@ python  backtest.py
 启动网络插件(nodejs 版本号需要大于6,最好是7)
 ```shell
 cd QUANTAXISWebkit
-(sudo) npm run install
+
 
 (sudo) npm install forever -g
 cd backend
+(sudo) npm install
 (sudo) forever start bin/www
 cd ..
 cd web
-(sudo) npm run dev
+(sudo) npm install
+(sudo) npm run dev 或者 forever start build/dev-server.js
 ```
 会自动启动localhost:8080网页端口,用账户名admin,密码admin登录
+(注明: admin注册是在python的QUANTAXIS save all时候执行的)
 
+另外 如果save all已经执行,依然登录不进去 点击插件状态 查看3000端口是否打开
 ## 回测Webkit插件概览
 
 ![](http://i2.muimg.com/567571/736ba4adda9fac85.png)
