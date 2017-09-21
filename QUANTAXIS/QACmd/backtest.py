@@ -101,8 +101,7 @@ def init():
     QB.setting.QA_util_sql_mongo_ip = '127.0.0.1'  # 回测数据库
 
     QB.account.init_assest = 2500000  # 初始资金
-    # 策略名称
-    QB.strategy_name = 'test_example'
+    
     # benchmark 必须是指数代码
     QB.benchmark_code = '399300'
     # 手续费系数

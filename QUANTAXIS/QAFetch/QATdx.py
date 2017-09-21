@@ -26,6 +26,7 @@ import datetime
 import numpy as np
 import pandas as pd
 from pytdx.hq import TdxHq_API
+from pytdx.exhq import TdxExHq_API
 from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_str2int,
                               QA_util_date_valid, QA_util_get_real_date,
                               QA_util_get_real_datelist, QA_util_log_info,
@@ -247,17 +248,36 @@ def QA_fetch_get_stock_list(type_='stock', ip=best_ip, port=7709):
 
             return pd.concat([data[data['sse'] == 'sz'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 1000 >= 399],
                               data[data['sse'] == 'sh'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 1000 == 0]]).sort_index().assign(code=data['code'].apply(lambda x: str(x)))
+        
+        elif type_ in ['etf','ETF']:
+            return pd.concat([data[data['sse'] == 'sz'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 10000 == 15],
+                              data[data['sse'] == 'sh'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 10000 == 51]]).sort_index().assign(code=data['code'].apply(lambda x: str(x)))
+                 
         else:
             return data.assign(code=data['code'].apply(lambda x: str(x)))
+        
 
-
-def QA_fetch_get_index_day(code, start_date, end_date, ip=best_ip, port=7709):
+def QA_fetch_get_index_day(code, start_date, end_date, level='day', ip=best_ip, port=7709):
     '指数日线'
-    QA_util_log_info(code)
     api = TdxHq_API()
+    if level in ['day', 'd', 'D', 'DAY', 'Day']:
+        level = 9
+    elif level in ['w', 'W', 'Week', 'week']:
+        level = 5
+    elif level in ['month', 'M', 'm', 'Month']:
+        level = 6
+    elif level in ['Q', 'Quarter', 'q']:
+        level = 10
+    elif level in ['y', 'Y', 'year', 'Year']:
+        level = 11
+
     with api.connect(ip, port):
-        data = pd.concat([api.to_df(api.get_index_bars(
-            9, 1 if str(code)[0] in ['0', '8', '9'] else 0, str(code), (9 - i) * 800, 800)) for i in range(10)], axis=0)
+        if str(code)[0] in ['5', '1']:  # ETF
+            data = pd.concat([api.to_df(api.get_security_bars(
+                level, 1 if str(code)[0] in ['0', '8', '9', '5'] else 0, code, (25 - i) * 800, 800)) for i in range(26)], axis=0)
+        else:
+            data = pd.concat([api.to_df(api.get_index_bars(
+                level, 1 if str(code)[0] in ['0', '8', '9', '5'] else 0, code, (25 - i) * 800, 800)) for i in range(26)], axis=0)
         data = data.assign(date=data['datetime'].apply(lambda x: str(x[0:10]))).assign(code=str(code))\
             .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10])))\
             .set_index('date', drop=False, inplace=False)\
@@ -280,8 +300,12 @@ def QA_fetch_get_index_min(code, start, end, level='1min', ip=best_ip, port=7709
     elif str(level) in ['60', '60m', '60min', '1h']:
         level, type_ = 3, '60min'
     with api.connect(ip, port):
-        data = pd.concat([api.to_df(api.get_index_bars(
-            level, 1 if str(code)[0] in ['0', '8', '9'] else 0, code, (25 - i) * 800, 800)) for i in range(26)], axis=0)
+        if str(code)[0] in ['5', '1']:  # ETF
+            data = pd.concat([api.to_df(api.get_security_bars(
+                level, 1 if str(code)[0] in ['0', '8', '9', '5'] else 0, code, (25 - i) * 800, 800)) for i in range(26)], axis=0)
+        else:
+            data = pd.concat([api.to_df(api.get_index_bars(
+                level, 1 if str(code)[0] in ['0', '8', '9', '5'] else 0, code, (25 - i) * 800, 800)) for i in range(26)], axis=0)
         data = data\
             .assign(datetime=pd.to_datetime(data['datetime']), code=str(code))\
             .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1, inplace=False)\

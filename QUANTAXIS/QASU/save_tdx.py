@@ -227,6 +227,83 @@ def QA_SU_save_index_min(client=QA_Setting.client):
     QA_util_log_info(__err)
 
 
+def QA_SU_save_etf_day(client=QA_Setting.client):
+    __index_list = QA_fetch_get_stock_list('etf')
+    __coll = client.quantaxis.index_day
+    __coll.ensure_index('code')
+    __err = []
+    def __saving_work(code, __coll):
+        
+        try:
+
+            ref_ = __coll.find({'code': str(code)[0:6]})
+            end_time = end_date = str(now_time())[0:10]
+            if ref_.count() > 0:
+                start_time = ref_[ref_.count() - 1]['date']
+            else:
+                start_time = '1990-01-01'
+
+            QA_util_log_info('##JOB06 Now Saving ETF_DAY==== \n Trying updating %s from %s to %s' %
+                             (code, start_time, end_time))
+
+            if start_time != end_time:
+                __coll.insert_many(
+                    QA_util_to_json_from_pandas(
+                        QA_fetch_get_index_day(str(code), start_time, end_time)[1::]))
+        except:
+            __err.append(str(code))
+    for i_ in range(len(__index_list)):
+        #__saving_work('000001')
+        QA_util_log_info('The %s of Total %s' % (i_, len(__index_list)))
+        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
+            float(i_ / len(__index_list) * 100))[0:4] + '%')
+        __saving_work(__index_list.index[i_][0], __coll)
+
+
+def QA_SU_save_etf_min(client=QA_Setting.client):
+    __index_list = QA_fetch_get_stock_list('etf')
+    __coll = client.quantaxis.index_min
+    __coll.ensure_index('code')
+    __err = []
+
+    def __saving_work(code, __coll):
+        
+        QA_util_log_info('##JOB07 Now Saving ETF_MIN ==== %s' % (str(code)))
+        try:
+
+            for type in ['1min', '5min', '15min','30min','60min']:
+                ref_ = __coll.find(
+                    {'code': str(code)[0:6], 'type': type})
+                end_time = str(datetime.datetime.now())[0:19]
+                if ref_.count() > 0:
+                    start_time = ref_[ref_.count() - 1]['datetime']
+                else:
+                    start_time = '2015-01-01'
+                QA_util_log_info(
+                    '##JOB07.%s Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min','30min','60min'].index(type), str(code), start_time, end_time, type))
+                if start_time != end_time:
+                    __data=QA_fetch_get_index_min(str(code), start_time, end_time, type)
+                    if len(__data)>1:
+                        __coll.insert_many(
+                            QA_util_to_json_from_pandas(__data[1::]))
+
+        except:
+            __err.append(code)
+
+    executor = ThreadPoolExecutor(max_workers=4)
+
+    res = {executor.submit(
+        __saving_work, __index_list.index[i_][0], __coll) for i_ in range(len(__index_list))}# multi index ./.
+    count = 0
+    for i_ in concurrent.futures.as_completed(res):
+        QA_util_log_info('The %s of Total %s' % (count, len(__index_list)))
+        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
+            float(count / len(__index_list) * 100))[0:4] + '%')
+        count = count + 1
+    QA_util_log_info('ERROR CODE \n ')
+    QA_util_log_info(__err)
+
+
 def QA_SU_save_stock_list(client=QA_Setting.client):
     client.quantaxis.drop_collection('stock_list')
     __coll = client.quantaxis.stock_list
@@ -234,7 +311,7 @@ def QA_SU_save_stock_list(client=QA_Setting.client):
     __err = []
 
     try:
-        QA_util_log_info('##JOB06 Now Saving STOCK_LIST ====')
+        QA_util_log_info('##JOB08 Now Saving STOCK_LIST ====')
         __coll.insert_many(QA_util_to_json_from_pandas(
             QA_fetch_get_stock_list()))
     except:

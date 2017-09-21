@@ -39,7 +39,6 @@ from . import QAThs as QAThs
 #import QAFetch.QACrawlData as QACD
 
 
-
 def use(package):
     if package in ['wind']:
         from WindPy import w
@@ -53,14 +52,14 @@ def use(package):
         return QAThs
 
 
-def QA_fetch_get_stock_day(package, code, startDate, endDate, if_fq='01',level='day', type_='json'):
+def QA_fetch_get_stock_day(package, code, startDate, endDate, if_fq='01', level='day', type_='json'):
     Engine = use(package)
     if package in ['ths', 'THS', 'wind']:
         return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq)
     elif package in ['ts', 'tushare']:
         return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq, type_)
     elif package in ['tdx', 'pytdx']:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq,level)
+        return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq, level)
     else:
         return Engine.QA_fetch_get_stock_day(code, startDate, endDate)
 
@@ -80,10 +79,10 @@ def QA_fetch_get_trade_date(package, endDate, exchange):
     return Engine.QA_fetch_get_trade_date(endDate, exchange)
 
 
-def QA_fetch_get_stock_min(package, code, start, end, type_):
+def QA_fetch_get_stock_min(package, code, start, end, level='1min'):
     Engine = use(package)
     if package in ['tdx', 'pytdx']:
-        return Engine.QA_fetch_get_stock_min(code, start, end, type_)
+        return Engine.QA_fetch_get_stock_min(code, start, end, level)
     else:
         return 'Unsupport packages'
 
@@ -112,10 +111,10 @@ def QA_fetch_get_stock_xdxr(package, code):
         return 'Unsupport packages'
 
 
-def QA_fetch_get_index_day(package, code, start, end):
+def QA_fetch_get_index_day(package, code, start, end, level='day'):
     Engine = use(package)
     if package in ['tdx', 'pytdx']:
-        return Engine.QA_fetch_get_index_day(code, start, end)
+        return Engine.QA_fetch_get_index_day(code, start, end, level)
     else:
         return 'Unsupport packages'
 

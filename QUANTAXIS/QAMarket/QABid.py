@@ -62,6 +62,18 @@ class QA_QAMarket_bid():
     def stock_min(self):
         self.type = '0x02'
 
+    def index_day(self):
+        self.type = '0x03'
+
+    def index_min(self):
+        self.type = '0x04'
+
+    def stock_transaction(self):
+        self.type = '0x05'
+
+    def index_transaction(self):
+        self.type = '0x06'
+
     def future_day(self):
         self.type = '1x01'
 
@@ -97,13 +109,17 @@ class QA_QAMarket_bid():
         for item in QA_util_to_json_from_pandas(dataframe):
             bid_list.append(self.from_dict(item))
         return bid_list
+
+
 class QA_QAMarket_bid_list():
     def __init__(self):
-        self.list=[]
-    def from_dataframe(self,dataframe):
+        self.list = []
+
+    def from_dataframe(self, dataframe):
         for item in QA_util_to_json_from_pandas(dataframe):
             self.list.append(QA_QAMarket_bid().from_dict(item))
         return self.list
+
 
 if __name__ == '__main__':
     ax = QA_QAMarket_bid()
