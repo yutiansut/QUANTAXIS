@@ -118,10 +118,43 @@ class CLI(cmd.Cmd):
         # 仅仅是为了初始化才在这里插入用户,如果想要注册用户,要到webkit底下注册
         if arg == '':
             print(
-                "Usage: save all|insert_user|stock_day|stock_xdxr|stock_min|index_day|index_min|etf_day|etf_min|stock_list")
+                "Usage: save all|X|x|day|min|insert_user|stock_day|stock_xdxr|stock_min|index_day|index_min|etf_day|etf_min|stock_list")
         else:
             arg = arg.split(' ')
             if len(arg) == 1 and arg[0] == 'all':
+                QA_Setting.client.quantaxis.user_list.insert(
+                    {'username': 'admin', 'password': 'admin'})
+                QA_SU_save_stock_day('tdx')
+                QA_SU_save_stock_xdxr('tdx')
+                #QA_SU_save_stock_min('tdx')
+                QA_SU_save_index_day('tdx')
+                #QA_SU_save_index_min('tdx')
+                #QA_SU_save_etf_day('tdx')
+                #QA_SU_save_etf_min('tdx')
+                QA_SU_save_stock_list('tdx')
+            elif len(arg) == 1 and arg[0] == 'day':
+                QA_Setting.client.quantaxis.user_list.insert(
+                    {'username': 'admin', 'password': 'admin'})
+                QA_SU_save_stock_day('tdx')
+                QA_SU_save_stock_xdxr('tdx')
+                #QA_SU_save_stock_min('tdx')
+                QA_SU_save_index_day('tdx')
+                #QA_SU_save_index_min('tdx')
+                QA_SU_save_etf_day('tdx')
+                #QA_SU_save_etf_min('tdx')
+                QA_SU_save_stock_list('tdx')
+            elif len(arg) == 1 and arg[0] == 'min':
+                QA_Setting.client.quantaxis.user_list.insert(
+                    {'username': 'admin', 'password': 'admin'})
+                #QA_SU_save_stock_day('tdx')
+                QA_SU_save_stock_xdxr('tdx')
+                QA_SU_save_stock_min('tdx')
+                #QA_SU_save_index_day('tdx')
+                QA_SU_save_index_min('tdx')
+                #QA_SU_save_etf_day('tdx')
+                QA_SU_save_etf_min('tdx')
+                QA_SU_save_stock_list('tdx')
+            elif len(arg) == 1 and arg[0] in ['X','x']:
                 QA_Setting.client.quantaxis.user_list.insert(
                     {'username': 'admin', 'password': 'admin'})
                 QA_SU_save_stock_day('tdx')
