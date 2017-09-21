@@ -95,7 +95,8 @@ class QA_Backtest():
     start_real_id = 0
     end_real_id = 0
     temp = {}
-    commission_fee_coeff=0.0015
+    commission_fee_coeff = 0.0015
+
     def __init__(self):
 
         self.backtest_type = 'day'
@@ -114,7 +115,8 @@ class QA_Backtest():
         self.start_real_id = 0
         self.end_real_id = 0
         self.temp = {}
-        self.commission_fee_coeff=0.0015
+        self.commission_fee_coeff = 0.0015
+
     def __QA_backtest_init(self):
         """既然是被当做装饰器使用,就需要把变量设置放在装饰函数的前面,把函数放在装饰函数的后面"""
         # 设置回测的开始结束时间
@@ -141,6 +143,7 @@ class QA_Backtest():
         self.account.init_assest = 1000000
         self.backtest_bid_model = 'market_price'
         self.commission_fee_coeff = 0.0015
+
     def __QA_backtest_prepare(self):
         """
         这是模型内部的 初始化,主要是初始化一些账户和市场资产
@@ -169,7 +172,7 @@ class QA_Backtest():
                 self.strategy_stock_list, self.trade_list[self.start_real_id - int(
                     self.strategy_gap)], self.trade_list[self.end_real_id]).to_qfq()
 
-        elif self.backtest_type in ['1min', '5min', '15min','30min','60min']:
+        elif self.backtest_type in ['1min', '5min', '15min', '30min', '60min']:
             self.market_data = QA_fetch_stocklist_min_adv(
                 self.strategy_stock_list, self.trade_list[
                     self.start_real_id - int(self.strategy_gap)],
@@ -310,17 +313,14 @@ class QA_Backtest():
             self.account.detail.to_csv(
                 'backtest-pnl--' + str(self.account.account_cookie) + '.csv')
 
-            # QA_SU_save_pnl_to_csv(self.account.detail,self.account.account_cookie)
-
     def QA_backtest_get_market_data(self, code, date, gap_=None):
         '这个函数封装了关于获取的方式 用GAP的模式'
         gap_ = self.strategy_gap if gap_ is None else gap_
         return self.market_data.select_code(code).select_time_with_gap(date, gap_, 'lte')
+
     def QA_backtest_get_market_data_bar(self, code, time):
         '这个函数封装了关于获取的方式'
-        return self.market_data.get_bar(code,time)
-
-
+        return self.market_data.get_bar(code, time)
 
     def QA_backtest_sell_available(self, __code):
         try:
@@ -394,8 +394,8 @@ class QA_Backtest():
 
         # 必须是100股的倍数
         # 封装bid
-        __amount = int(__amount / 100) * 100
-        __bid = self.bid  # init
+
+        __bid = QA_QAMarket_bid()  # init
         (__bid.order_id, __bid.user, __bid.strategy,
          __bid.code, __bid.date, __bid.datetime,
          __bid.sending_time,
@@ -405,14 +405,22 @@ class QA_Backtest():
                                              self.now),
                                          self.running_date, __amount, __towards)
 
-        if self.backtest_type in ['day', 'index_day']:
+        # 2017-09-21 修改: 只有股票的交易才需要控制amount的最小交易单位
+        if self.backtest_type in ['day']:
             __bid.type = '0x01'
-        elif self.backtest_type in ['1min', '5min', '15min']:
+            __bid.amount = int(__bid.amount / 100) * 100
+        elif self.backtest_type in ['1min', '5min', '15min', '30min', '60min']:
             __bid.type = '0x02'
+            __bid.amount = int(__bid.amount / 100) * 100
+        elif self.backtest_type in ['index_day']:
+            __bid.type = '0x03'
+            __bid.amount = int(__bid.amount)
+        elif self.backtest_type in ['index_1min', 'index_5min', 'index_15min', 'index_30min', 'index_60min']:
+            __bid.type = '0x04'
+            __bid.amount = int(__bid.amount)
         # 检查账户/临时扣费
 
         __bid, __market = self.__wrap_bid(self, __bid, __order)
-
         if __bid is not None and __market != 500:
             print('GET the Order Code %s Amount %s Price %s Towards %s Time %s' % (
                 __bid.code, __bid.amount, __bid.price, __bid.towards, __bid.datetime))
@@ -438,6 +446,7 @@ class QA_Backtest():
                 'code', drop=False)['amount'].groupby('code').sum()
 
         elif event_ is 'create_order':
+
             if order_ is not None:
                 if order_.towards is 1:
                     # 买入
@@ -447,12 +456,16 @@ class QA_Backtest():
 
                         self.account.order_queue = self.account.order_queue.append(
                             order_.to_df())
+                    else:
+                        QA_util_log_info('FROM ENGINE: NOT ENOUGH MONEY:CASH  %s Order %s' % (
+                            self.account.cash_available, order_.amount * order_.price))
                 elif order_.towards is -1:
 
                     if self.QA_backtest_sell_available(self, order_.code) - order_.amount >= 0:
                         self.account.sell_available[order_.code] -= order_.amount
                         self.account.order_queue = self.account.order_queue.append(
                             order_.to_df())
+
             else:
                 QA_util_log_info('Order Event Warning:%s in %s' %
                                  (event_, str(self.now)))
@@ -482,6 +495,7 @@ class QA_Backtest():
             - 同步实际的现金和仓位
             - 清空留仓单/未成功的订单
             """
+
             self.account.cash_available = self.account.cash[-1]
             self.account.sell_available = pd.DataFrame(self.account.hold[1::], columns=self.account.hold[0]).set_index(
                 'code', drop=False)['amount'].groupby('code').sum()
@@ -503,7 +517,7 @@ class QA_Backtest():
             assert isinstance(order_id_, str)
             assert isinstance(trade_id_, str)
             assert isinstance(market_message_, dict)
-
+            print(self.account.order_queue)
             if order_.towards is 1:
                 # 买入
                 # 减少现金
@@ -641,17 +655,17 @@ class QA_Backtest():
 
                 func(*arg, **kwargs)  # 发委托单
                 __backtest_cls.__sell_from_order_queue(__backtest_cls)
-            elif __backtest_cls.backtest_type in ['1min', '5min', '15min','30min','60min', 'index_1min', 'index_5min', 'index_15min','index_30min','index_60min']:
-                if __backtest_cls.backtest_type in ['1min','index_1min']:
-                    type_='1min'
-                elif __backtest_cls.backtest_type in ['5min','index_5min']:
-                    type_='5min'
-                elif __backtest_cls.backtest_type in ['15min','index_15min']:
-                    type_='15min'
-                elif __backtest_cls.backtest_type in ['30min','index_30min']:
-                    type_='30min'
-                elif __backtest_cls.backtest_type in ['60min','index_60min']:
-                    type_='60min'
+            elif __backtest_cls.backtest_type in ['1min', '5min', '15min', '30min', '60min', 'index_1min', 'index_5min', 'index_15min', 'index_30min', 'index_60min']:
+                if __backtest_cls.backtest_type in ['1min', 'index_1min']:
+                    type_ = '1min'
+                elif __backtest_cls.backtest_type in ['5min', 'index_5min']:
+                    type_ = '5min'
+                elif __backtest_cls.backtest_type in ['15min', 'index_15min']:
+                    type_ = '15min'
+                elif __backtest_cls.backtest_type in ['30min', 'index_30min']:
+                    type_ = '30min'
+                elif __backtest_cls.backtest_type in ['60min', 'index_60min']:
+                    type_ = '60min'
                 daily_min = QA_util_make_min_index(
                     __backtest_cls.today, type_)  # 创造分钟线index
                 # print(daily_min)
@@ -663,9 +677,10 @@ class QA_Backtest():
                     QA_util_log_info(
                         tabulate(__backtest_cls.account.message['body']['account']['hold']))
                     func(*arg, **kwargs)  # 发委托单
+
                     __backtest_cls.__sell_from_order_queue(__backtest_cls)
                     if __backtest_cls.backtest_type in ['index_1min', 'index_5min', 'index_15min']:
-                         __backtest_cls.__sync_order_LM( __backtest_cls, 't_0') 
+                        __backtest_cls.__sync_order_LM(__backtest_cls, 't_0')
             __backtest_cls.__sync_order_LM(
                 __backtest_cls, 'daily_settle')  # 每日结算
 

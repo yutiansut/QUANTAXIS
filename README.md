@@ -45,28 +45,16 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - 指标数据
 
 
-
-
-
-<!-- TOC -->
-
-- [QUANTAXIS 量化金融策略框架](#quantaxis-量化金融策略框架)
-    - [框架结构](#框架结构)
-    - [QUANTAXIS 标准化协议和未来协议](#quantaxis-标准化协议和未来协议)
-    - [部署问题:](#部署问题)
-    - [回测Webkit插件概览](#回测webkit插件概览)
-
-<!-- /TOC -->
-
 ## 框架结构
 ![](http://i1.piimg.com/567571/dc3c811a5afcb4fb.png)
+
 
 ## QUANTAXIS 标准化协议和未来协议
 
 
 QUANTAXIS-Stardand-Protocol 版本号0.0.8
 
-详情参见  [QUANATXISProtocol](https://github.com/yutiansut/QUANTAXIS/tree/0.3.8-dev-RC-ARP/QUANTAXISProtocol)
+详情参见  [QUANATXISProtocol](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXISProtocol/readme.md)
 
 ## 部署问题:
 
