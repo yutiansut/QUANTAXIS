@@ -310,7 +310,6 @@ class QA_Backtest():
             self.account.detail.to_csv(
                 'backtest-pnl--' + str(self.account.account_cookie) + '.csv')
 
-            # QA_SU_save_pnl_to_csv(self.account.detail,self.account.account_cookie)
 
     def QA_backtest_get_market_data(self, code, date, gap_=None):
         '这个函数封装了关于获取的方式 用GAP的模式'
@@ -394,7 +393,7 @@ class QA_Backtest():
 
         # 必须是100股的倍数
         # 封装bid
-        __amount = int(__amount / 100) * 100
+        
         __bid = self.bid  # init
         (__bid.order_id, __bid.user, __bid.strategy,
          __bid.code, __bid.date, __bid.datetime,
@@ -405,10 +404,18 @@ class QA_Backtest():
                                              self.now),
                                          self.running_date, __amount, __towards)
 
-        if self.backtest_type in ['day', 'index_day']:
+
+        # 2017-09-21 修改: 只有股票的交易才需要控制amount的最小交易单位
+        if self.backtest_type in ['day']:
             __bid.type = '0x01'
-        elif self.backtest_type in ['1min', '5min', '15min']:
+            __bid.amount = int(__bid.amount / 100) * 100
+        elif self.backtest_type in ['1min', '5min', '15min','30min','60min']:
             __bid.type = '0x02'
+            __bid.amount = int(__bid.amount / 100) * 100
+        elif self.backtest_type in ['index_day']:
+            __bid.type = '0x03'
+        elif self.backtest_type in ['index_1min','index_5min','index_15min','index_30min','index_60min']:
+            __bid.type = '0x04'
         # 检查账户/临时扣费
 
         __bid, __market = self.__wrap_bid(self, __bid, __order)

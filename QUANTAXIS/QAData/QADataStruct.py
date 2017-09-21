@@ -105,10 +105,10 @@ class stock_hq_base(__stock_base):
 
     def splits(self):
         if self.type in ['stock_day', 'index_day']:
-            return list(map(lambda data: self.sync_status(data), list(map(lambda x: (
+            return list(map(lambda data: self.sync_status(data), list(map(lambda x: stock_hq_base(
                 self.data[self.data['code'] == x].set_index(['date', 'code'], drop=False)), self.code))))
         elif self.type in ['stock_min','index_min']:
-            return list(map(lambda data: self.sync_status(data), list(map(lambda x: (
+            return list(map(lambda data: self.sync_status(data), list(map(lambda x: stock_hq_base(
                 self.data[self.data['code'] == x].set_index(['datetime', 'code'], drop=False)), self.code))))
 
     def add_func(self, func, *arg, **kwargs):
@@ -235,10 +235,10 @@ class QA_DataStruct_Index_day(stock_hq_base):
 
     def splits(self):
         if self.type in ['stock_day', 'index_day']:
-            return list(map(lambda data: self.sync_status(data), list(map(lambda x: (
+            return list(map(lambda data: self.sync_status(data), list(map(lambda x: QA_DataStruct_Index_day(
                 self.data[self.data['code'] == x].set_index(['date', 'code'], drop=False)), self.code))))
         elif self.type in ['stock_min','index_min']:
-            return list(map(lambda data: self.sync_status(data), list(map(lambda x: (
+            return list(map(lambda data: self.sync_status(data), list(map(lambda x:(
                 self.data[self.data['code'] == x].set_index(['datetime', 'code'], drop=False)), self.code))))
 
     def add_func(self, func, *arg, **kwargs):
@@ -371,7 +371,7 @@ class QA_DataStruct_Index_min(stock_hq_base):
             return list(map(lambda data: self.sync_status(data), list(map(lambda x: (
                 self.data[self.data['code'] == x].set_index(['date', 'code'], drop=False)), self.code))))
         elif self.type in ['stock_min','index_min']:
-            return list(map(lambda data: self.sync_status(data), list(map(lambda x: (
+            return list(map(lambda data: self.sync_status(data), list(map(lambda x: QA_DataStruct_Index_min(
                 self.data[self.data['code'] == x].set_index(['datetime', 'code'], drop=False)), self.code))))
 
     def add_func(self, func, *arg, **kwargs):
@@ -396,6 +396,7 @@ class QA_DataStruct_Index_min(stock_hq_base):
         if method in ['gt', '>=']:
 
             def __gt(__dataS):
+                print(__dataS)
                 if self.type in ['stock_day', 'index_day']:
                     return __dataS.data[__dataS.data['date'] > time].head(gap).set_index(['date', 'code'], drop=False)
                 elif self.type in ['stock_min','index_min']:
@@ -549,7 +550,7 @@ class QA_DataStruct_Stock_min(stock_hq_base):
             return list(map(lambda data: self.sync_status(data), list(map(lambda x: (
                 self.data[self.data['code'] == x].set_index(['date', 'code'], drop=False)), self.code))))
         elif self.type in ['stock_min','index_min']:
-            return list(map(lambda data: self.sync_status(data), list(map(lambda x: (
+            return list(map(lambda data: self.sync_status(data), list(map(lambda x: QA_DataStruct_Stock_min(
                 self.data[self.data['code'] == x].set_index(['datetime', 'code'], drop=False)), self.code))))
 
     def add_func(self, func, *arg, **kwargs):
@@ -695,7 +696,7 @@ class QA_DataStruct_Stock_day(stock_hq_base):
 
     def splits(self):
         if self.type in ['stock_day', 'index_day']:
-            return list(map(lambda data: self.sync_status(data), list(map(lambda x: (
+            return list(map(lambda data: self.sync_status(data), list(map(lambda x: QA_DataStruct_Stock_day(
                 self.data[self.data['code'] == x].set_index(['date', 'code'], drop=False)), self.code))))
         elif self.type in ['stock_min','index_min']:
             return list(map(lambda data: self.sync_status(data), list(map(lambda x: (
@@ -723,6 +724,7 @@ class QA_DataStruct_Stock_day(stock_hq_base):
         if method in ['gt', '>=']:
 
             def __gt(__dataS):
+                
                 if self.type in ['stock_day', 'index_day']:
                     return __dataS.data[__dataS.data['date'] > time].head(gap).set_index(['date', 'code'], drop=False)
                 elif self.type in ['stock_min','index_min']:
