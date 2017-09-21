@@ -1,6 +1,0 @@
-*.css linguist-language=HTML
-*.pb.cc linguist-language=C
-*.pb.h linguist-language=C
-*.h linguist-language=C
-*.cc linguist-language=C
-*.proto linguist-language=Protocol Buffer
