@@ -40,7 +40,7 @@ renew in 2017/6/28
 """
 
 
-def market_stock_day_engine(__bid, __data=None):
+def market_stock_day_engine(__bid, __data=None,__commission_fee_coeff=0.0005):
     # data mod
     # inside function
     def __get_data(__bid):
@@ -160,7 +160,7 @@ def market_stock_day_engine(__bid, __data=None):
                         if int(__bid.towards) > 0:
                             __commission_fee = 0
                         else:
-                            __commission_fee = 0.0015 * \
+                            __commission_fee = __commission_fee_coeff * \
                                 float(__deal_price) * float(__bid.amount)
                             if __commission_fee < 5:
                                 __commission_fee = 5
@@ -270,7 +270,8 @@ def market_stock_day_engine(__bid, __data=None):
             }
     return __trading(__bid, __data)
 
-def market_stock_engine(__bid, __data):
+def market_stock_engine(__bid, __data=None,__commission_fee_coeff=0.0015):
+    # 新增一个__commission_fee_coeff 手续费系数
     # data mod
     # inside function
 
@@ -364,7 +365,7 @@ def market_stock_engine(__bid, __data):
                 if int(__bid.towards) > 0:
                     __commission_fee = 0
                 else:
-                    __commission_fee = 0.0015 * \
+                    __commission_fee = __commission_fee_coeff * \
                         float(__deal_price) * float(__bid.amount)
                     if __commission_fee < 5:
                         __commission_fee = 5

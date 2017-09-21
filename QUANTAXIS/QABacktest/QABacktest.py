@@ -95,7 +95,7 @@ class QA_Backtest():
     start_real_id = 0
     end_real_id = 0
     temp = {}
-
+    commission_fee_coeff=0.0015
     def __init__(self):
 
         self.backtest_type = 'day'
@@ -114,7 +114,7 @@ class QA_Backtest():
         self.start_real_id = 0
         self.end_real_id = 0
         self.temp = {}
-
+        self.commission_fee_coeff=0.0015
     def __QA_backtest_init(self):
         """既然是被当做装饰器使用,就需要把变量设置放在装饰函数的前面,把函数放在装饰函数的后面"""
         # 设置回测的开始结束时间
@@ -140,7 +140,7 @@ class QA_Backtest():
         self.strategy_stock_list = ['000001', '000002', '000004']
         self.account.init_assest = 1000000
         self.backtest_bid_model = 'market_price'
-
+        self.commission_fee_coeff = 0.0015
     def __QA_backtest_prepare(self):
         """
         这是模型内部的 初始化,主要是初始化一些账户和市场资产
@@ -150,7 +150,7 @@ class QA_Backtest():
         """
 
         # 重新初始账户资产
-
+        self.market = QA_Market(self.commission_fee_coeff)
         self.setting.QA_setting_init()
         self.account.init()
         self.start_real_date = QA_util_get_real_date(
@@ -169,7 +169,7 @@ class QA_Backtest():
                 self.strategy_stock_list, self.trade_list[self.start_real_id - int(
                     self.strategy_gap)], self.trade_list[self.end_real_id]).to_qfq()
 
-        elif self.backtest_type in ['1min', '5min', '15min']:
+        elif self.backtest_type in ['1min', '5min', '15min','30min','60min']:
             self.market_data = QA_fetch_stocklist_min_adv(
                 self.strategy_stock_list, self.trade_list[
                     self.start_real_id - int(self.strategy_gap)],
@@ -179,7 +179,7 @@ class QA_Backtest():
             self.market_data = QA_fetch_index_day_adv(self.strategy_stock_list, self.trade_list[self.start_real_id - int(
                 self.strategy_gap)], self.trade_list[self.end_real_id])
 
-        elif self.backtest_type in ['index_1min', 'index_5min', 'index_15min']:
+        elif self.backtest_type in ['index_1min', 'index_5min', 'index_15min', 'index_30min', 'index_60min']:
             self.market_data = QA_fetch_index_min_adv(
                 self.strategy_stock_list, self.start_real_date, self.end_real_date, self.backtest_type.split('_')[1])
 
@@ -641,13 +641,17 @@ class QA_Backtest():
 
                 func(*arg, **kwargs)  # 发委托单
                 __backtest_cls.__sell_from_order_queue(__backtest_cls)
-            elif __backtest_cls.backtest_type in ['1min', '5min', '15min', 'index_1min', 'index_5min', 'index_15min']:
+            elif __backtest_cls.backtest_type in ['1min', '5min', '15min','30min','60min', 'index_1min', 'index_5min', 'index_15min','index_30min','index_60min']:
                 if __backtest_cls.backtest_type in ['1min','index_1min']:
                     type_='1min'
                 elif __backtest_cls.backtest_type in ['5min','index_5min']:
                     type_='5min'
                 elif __backtest_cls.backtest_type in ['15min','index_15min']:
                     type_='15min'
+                elif __backtest_cls.backtest_type in ['30min','index_30min']:
+                    type_='30min'
+                elif __backtest_cls.backtest_type in ['60min','index_60min']:
+                    type_='60min'
                 daily_min = QA_util_make_min_index(
                     __backtest_cls.today, type_)  # 创造分钟线index
                 # print(daily_min)

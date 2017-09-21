@@ -115,8 +115,7 @@ def QA_SU_save_stock_min(client=QA_Setting.client):
     def __saving_work(code, __coll):
         QA_util_log_info('##JOB03 Now Saving STOCK_MIN ==== %s' % (str(code)))
         try:
-
-            for type in ['1min', '5min', '15min']:
+            for type in ['1min', '5min', '15min','30min','60min']:
                 ref_ = __coll.find(
                     {'code': str(code)[0:6], 'type': type})
                 end_time = str(datetime.datetime.now())[0:19]
@@ -125,13 +124,16 @@ def QA_SU_save_stock_min(client=QA_Setting.client):
                 else:
                     start_time = '2015-01-01'
                 QA_util_log_info(
-                    '##JOB03.%s Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min'].index(type), str(code), start_time, end_time, type))
+                    '##JOB03.%s Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min','30min','60min'].index(type), str(code), start_time, end_time, type))
                 if start_time != end_time:
-                    __coll.insert_many(
-                        QA_util_to_json_from_pandas(
-                            QA_fetch_get_stock_min(str(code), start_time, end_time, type)[1::]))
+                    __data=QA_fetch_get_stock_min(str(code), start_time, end_time, type)
+                    if len(__data)>1:
+                        __coll.insert_many(
+                            QA_util_to_json_from_pandas(__data[1::]))
 
-        except:
+        except Exception as e:
+            QA_util_log_info(e)
+
             __err.append(code)
 
     executor = ThreadPoolExecutor(max_workers=4)
@@ -192,7 +194,7 @@ def QA_SU_save_index_min(client=QA_Setting.client):
         QA_util_log_info('##JOB05 Now Saving Index_MIN ==== %s' % (str(code)))
         try:
 
-            for type in ['1min', '5min', '15min']:
+            for type in ['1min', '5min', '15min','30min','60min']:
                 ref_ = __coll.find(
                     {'code': str(code)[0:6], 'type': type})
                 end_time = str(datetime.datetime.now())[0:19]
@@ -201,11 +203,12 @@ def QA_SU_save_index_min(client=QA_Setting.client):
                 else:
                     start_time = '2015-01-01'
                 QA_util_log_info(
-                    '##JOB05.%s Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min'].index(type), str(code), start_time, end_time, type))
+                    '##JOB05.%s Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min','30min','60min'].index(type), str(code), start_time, end_time, type))
                 if start_time != end_time:
-                    __coll.insert_many(
-                        QA_util_to_json_from_pandas(
-                            QA_fetch_get_index_min(str(code), start_time, end_time, type)[1::]))
+                    __data=QA_fetch_get_index_min(str(code), start_time, end_time, type)
+                    if len(__data)>1:
+                        __coll.insert_many(
+                            QA_util_to_json_from_pandas(__data[1::]))
 
         except:
             __err.append(code)
