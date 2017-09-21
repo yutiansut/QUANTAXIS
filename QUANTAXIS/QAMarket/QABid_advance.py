@@ -57,7 +57,7 @@ Bid-Job-Management-Center
 """
 
 
-class QA_QAMarket_bid():
+class QA_QAMarket_order_tree():
     def __init__(self):
         self.bid = {
             'price': float(16),
