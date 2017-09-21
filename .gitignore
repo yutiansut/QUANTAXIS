@@ -26,7 +26,8 @@ tushare/
 .exe
 .pypirc
 private/
-package-lock*.json
+
+*lock.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
