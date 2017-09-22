@@ -89,7 +89,6 @@ def QA_data_stock_to_fq(__data, type_='01'):
             data = pd.DataFrame([item for item in collections.find(
                 {'code': code})]).drop(['_id'], axis=1)
             data['date'] = pd.to_datetime(data['date'])
-            print(data.set_index(['date', 'code'], drop=False))
             return data.set_index(['date', 'code'], drop=False)
         except:
             return pd.DataFrame(columns=['category','category_meaning','code','date','fenhong','fenshu','liquidity_after','liquidity_before','name','peigu','peigujia','shares_after','shares_before','songzhuangu','suogu','xingquanjia'])

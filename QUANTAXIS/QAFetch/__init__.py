@@ -64,9 +64,9 @@ def QA_fetch_get_stock_day(package, code, startDate, endDate, if_fq='01', level=
         return Engine.QA_fetch_get_stock_day(code, startDate, endDate)
 
 
-def QA_fetch_get_stock_realtime(package):
+def QA_fetch_get_stock_realtime(package,code):
     Engine = use(package)
-    return Engine.QA_fetch_get_stock_realtime()
+    return Engine.QA_fetch_get_stock_realtime(code)
 
 
 def QA_fetch_get_stock_indicator(package, code, startDate, endDate):

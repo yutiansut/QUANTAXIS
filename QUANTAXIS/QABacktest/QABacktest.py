@@ -517,7 +517,6 @@ class QA_Backtest():
             assert isinstance(order_id_, str)
             assert isinstance(trade_id_, str)
             assert isinstance(market_message_, dict)
-            print(self.account.order_queue)
             if order_.towards is 1:
                 # 买入
                 # 减少现金
@@ -557,7 +556,7 @@ class QA_Backtest():
                                              order_id_]['amount'] -= market_message_['body']['bid']['amount']
         else:
             QA_util_log_info(
-                'EventEngine Warning:Unknown type of order event in  %s' % str(self.now))
+                'EventEngine Warning: Unknown type of order event in  %s' % str(self.now))
 
     def __QA_backtest_send_bid(self, __bid, __market=None):
         __message = self.market.receive_bid(__bid, __market)
