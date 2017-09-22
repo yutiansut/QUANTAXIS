@@ -248,14 +248,14 @@ def QA_fetch_get_stock_list(type_='stock', ip=best_ip, port=7709):
 
             return pd.concat([data[data['sse'] == 'sz'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 1000 >= 399],
                               data[data['sse'] == 'sh'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 1000 == 0]]).sort_index().assign(code=data['code'].apply(lambda x: str(x)))
-        
-        elif type_ in ['etf','ETF']:
+
+        elif type_ in ['etf', 'ETF']:
             return pd.concat([data[data['sse'] == 'sz'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 10000 == 15],
                               data[data['sse'] == 'sh'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 10000 == 51]]).sort_index().assign(code=data['code'].apply(lambda x: str(x)))
-                 
+
         else:
             return data.assign(code=data['code'].apply(lambda x: str(x)))
-        
+
 
 def QA_fetch_get_index_day(code, start_date, end_date, level='day', ip=best_ip, port=7709):
     '指数日线'
