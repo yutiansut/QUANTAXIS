@@ -80,7 +80,8 @@ def QA_SU_save_stock_day(client=QA_Setting.client):
             float(item / len(__stock_list) * 100))[0:4] + '%')
 
         __saving_work(__stock_list.index[item], coll_stock_day)
-
+        QA_util_log_info('ERROR CODE \n ')
+        QA_util_log_info(__err)
 
 def QA_SU_save_stock_xdxr(client=QA_Setting.client):
     client.quantaxis.drop_collection('stock_xdxr')
@@ -104,7 +105,8 @@ def QA_SU_save_stock_xdxr(client=QA_Setting.client):
         QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
             float(i_ / len(__stock_list) * 100))[0:4] + '%')
         __saving_work(__stock_list.index[i_], __coll)
-
+        QA_util_log_info('ERROR CODE \n ')
+        QA_util_log_info(__err)
 
 def QA_SU_save_stock_min(client=QA_Setting.client):
     __stock_list = QA_fetch_get_stock_time_to_market()
@@ -181,8 +183,8 @@ def QA_SU_save_index_day(client=QA_Setting.client):
         QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
             float(i_ / len(__index_list) * 100))[0:4] + '%')
         __saving_work(__index_list.index[i_][0], __coll)
-
-
+        QA_util_log_info('ERROR CODE \n ')
+        QA_util_log_info(__err)
 def QA_SU_save_index_min(client=QA_Setting.client):
     __index_list = QA_fetch_get_stock_list('index')
     __coll = client.quantaxis.index_min
@@ -339,7 +341,8 @@ def QA_SU_save_stock_transaction(client=QA_Setting.client):
         QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
             float(i_ / len(__stock_list) * 100))[0:4] + '%')
         __saving_work(__stock_list.index[i_])
-
+        QA_util_log_info('ERROR CODE \n ')
+        QA_util_log_info(__err)
 
 if __name__ == '__main__':
     # QA_SU_save_stock_day()
