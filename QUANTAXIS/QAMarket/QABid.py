@@ -45,11 +45,11 @@ class QA_QAMarket_bid():
         self.sending_time = '2015-01-05 09:01:00'  # 下单时间
         self.transact_time = ''
         self.amount = 10
-        self.towards = 1
+        self.towards = 1  # side 
         self.code = str('000001')
         self.user = 'root'
         self.strategy = 'example01'
-        self.type = '0x01'
+        self.type = '0x01'  # see below
         self.bid_model = 'strategy'
         self.amount_model = 'amount'
         self.order_id = str(random.random())
@@ -82,7 +82,8 @@ class QA_QAMarket_bid():
 
     def to_df(self):
         return pd.DataFrame([vars(self), ])
-
+    def to_dict(self):
+        return vars(self)
     def from_dict(self, bid):
         try:
             self.price = bid['price']
@@ -111,15 +112,17 @@ class QA_QAMarket_bid():
         return bid_list
 
 
-class QA_QAMarket_bid_list():
+class QA_QAMarket_bid_list():   # also the order tree 
+    """
+    一个待成交列表
+    
+    """
     def __init__(self):
         self.list = []
 
     def from_dataframe(self, dataframe):
-        for item in QA_util_to_json_from_pandas(dataframe):
-            self.list.append(QA_QAMarket_bid().from_dict(item))
+        self.list=[QA_QAMarket_bid().from_dict(item) for item in QA_util_to_json_from_pandas(dataframe)]
         return self.list
-
 
 if __name__ == '__main__':
     ax = QA_QAMarket_bid()
