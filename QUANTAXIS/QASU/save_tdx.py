@@ -82,6 +82,8 @@ def QA_SU_save_stock_day(client=QA_Setting.client):
         __saving_work(__stock_list.index[item], coll_stock_day)
     QA_util_log_info('ERROR CODE \n ')
     QA_util_log_info(__err)
+
+
 def QA_SU_save_stock_xdxr(client=QA_Setting.client):
     client.quantaxis.drop_collection('stock_xdxr')
     __stock_list = QA_fetch_get_stock_time_to_market()
@@ -107,6 +109,7 @@ def QA_SU_save_stock_xdxr(client=QA_Setting.client):
     QA_util_log_info('ERROR CODE \n ')
     QA_util_log_info(__err)
 
+
 def QA_SU_save_stock_min(client=QA_Setting.client):
     __stock_list = QA_fetch_get_stock_time_to_market()
     __coll = client.quantaxis.stock_min
@@ -116,7 +119,7 @@ def QA_SU_save_stock_min(client=QA_Setting.client):
     def __saving_work(code, __coll):
         QA_util_log_info('##JOB03 Now Saving STOCK_MIN ==== %s' % (str(code)))
         try:
-            for type in ['1min', '5min', '15min','30min','60min']:
+            for type in ['1min', '5min', '15min', '30min', '60min']:
                 ref_ = __coll.find(
                     {'code': str(code)[0:6], 'type': type})
                 end_time = str(datetime.datetime.now())[0:19]
@@ -125,10 +128,11 @@ def QA_SU_save_stock_min(client=QA_Setting.client):
                 else:
                     start_time = '2015-01-01'
                 QA_util_log_info(
-                    '##JOB03.%s Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min','30min','60min'].index(type), str(code), start_time, end_time, type))
+                    '##JOB03.%s Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min', '30min', '60min'].index(type), str(code), start_time, end_time, type))
                 if start_time != end_time:
-                    __data=QA_fetch_get_stock_min(str(code), start_time, end_time, type)
-                    if len(__data)>1:
+                    __data = QA_fetch_get_stock_min(
+                        str(code), start_time, end_time, type)
+                    if len(__data) > 1:
                         __coll.insert_many(
                             QA_util_to_json_from_pandas(__data[1::]))
 
@@ -156,8 +160,9 @@ def QA_SU_save_index_day(client=QA_Setting.client):
     __coll = client.quantaxis.index_day
     __coll.ensure_index('code')
     __err = []
+
     def __saving_work(code, __coll):
-        
+
         try:
 
             ref_ = __coll.find({'code': str(code)[0:6]})
@@ -184,6 +189,8 @@ def QA_SU_save_index_day(client=QA_Setting.client):
         __saving_work(__index_list.index[i_][0], __coll)
     QA_util_log_info('ERROR CODE \n ')
     QA_util_log_info(__err)
+
+
 def QA_SU_save_index_min(client=QA_Setting.client):
     __index_list = QA_fetch_get_stock_list('index')
     __coll = client.quantaxis.index_min
@@ -191,11 +198,11 @@ def QA_SU_save_index_min(client=QA_Setting.client):
     __err = []
 
     def __saving_work(code, __coll):
-        
+
         QA_util_log_info('##JOB05 Now Saving Index_MIN ==== %s' % (str(code)))
         try:
 
-            for type in ['1min', '5min', '15min','30min','60min']:
+            for type in ['1min', '5min', '15min', '30min', '60min']:
                 ref_ = __coll.find(
                     {'code': str(code)[0:6], 'type': type})
                 end_time = str(datetime.datetime.now())[0:19]
@@ -204,10 +211,11 @@ def QA_SU_save_index_min(client=QA_Setting.client):
                 else:
                     start_time = '2015-01-01'
                 QA_util_log_info(
-                    '##JOB05.%s Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min','30min','60min'].index(type), str(code), start_time, end_time, type))
+                    '##JOB05.%s Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min', '30min', '60min'].index(type), str(code), start_time, end_time, type))
                 if start_time != end_time:
-                    __data=QA_fetch_get_index_min(str(code), start_time, end_time, type)
-                    if len(__data)>1:
+                    __data = QA_fetch_get_index_min(
+                        str(code), start_time, end_time, type)
+                    if len(__data) > 1:
                         __coll.insert_many(
                             QA_util_to_json_from_pandas(__data[1::]))
 
@@ -217,7 +225,7 @@ def QA_SU_save_index_min(client=QA_Setting.client):
     executor = ThreadPoolExecutor(max_workers=4)
 
     res = {executor.submit(
-        __saving_work, __index_list.index[i_][0], __coll) for i_ in range(len(__index_list))}# multi index ./.
+        __saving_work, __index_list.index[i_][0], __coll) for i_ in range(len(__index_list))}  # multi index ./.
     count = 0
     for i_ in concurrent.futures.as_completed(res):
         QA_util_log_info('The %s of Total %s' % (count, len(__index_list)))
@@ -233,8 +241,9 @@ def QA_SU_save_etf_day(client=QA_Setting.client):
     __coll = client.quantaxis.index_day
     __coll.ensure_index('code')
     __err = []
+
     def __saving_work(code, __coll):
-        
+
         try:
 
             ref_ = __coll.find({'code': str(code)[0:6]})
@@ -262,6 +271,7 @@ def QA_SU_save_etf_day(client=QA_Setting.client):
     QA_util_log_info('ERROR CODE \n ')
     QA_util_log_info(__err)
 
+
 def QA_SU_save_etf_min(client=QA_Setting.client):
     __index_list = QA_fetch_get_stock_list('etf')
     __coll = client.quantaxis.index_min
@@ -269,11 +279,11 @@ def QA_SU_save_etf_min(client=QA_Setting.client):
     __err = []
 
     def __saving_work(code, __coll):
-        
+
         QA_util_log_info('##JOB07 Now Saving ETF_MIN ==== %s' % (str(code)))
         try:
 
-            for type in ['1min', '5min', '15min','30min','60min']:
+            for type in ['1min', '5min', '15min', '30min', '60min']:
                 ref_ = __coll.find(
                     {'code': str(code)[0:6], 'type': type})
                 end_time = str(datetime.datetime.now())[0:19]
@@ -282,10 +292,11 @@ def QA_SU_save_etf_min(client=QA_Setting.client):
                 else:
                     start_time = '2015-01-01'
                 QA_util_log_info(
-                    '##JOB07.%s Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min','30min','60min'].index(type), str(code), start_time, end_time, type))
+                    '##JOB07.%s Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min', '30min', '60min'].index(type), str(code), start_time, end_time, type))
                 if start_time != end_time:
-                    __data=QA_fetch_get_index_min(str(code), start_time, end_time, type)
-                    if len(__data)>1:
+                    __data = QA_fetch_get_index_min(
+                        str(code), start_time, end_time, type)
+                    if len(__data) > 1:
                         __coll.insert_many(
                             QA_util_to_json_from_pandas(__data[1::]))
 
@@ -295,7 +306,7 @@ def QA_SU_save_etf_min(client=QA_Setting.client):
     executor = ThreadPoolExecutor(max_workers=4)
 
     res = {executor.submit(
-        __saving_work, __index_list.index[i_][0], __coll) for i_ in range(len(__index_list))}# multi index ./.
+        __saving_work, __index_list.index[i_][0], __coll) for i_ in range(len(__index_list))}  # multi index ./.
     count = 0
     for i_ in concurrent.futures.as_completed(res):
         QA_util_log_info('The %s of Total %s' % (count, len(__index_list)))
@@ -343,6 +354,7 @@ def QA_SU_save_stock_transaction(client=QA_Setting.client):
         __saving_work(__stock_list.index[i_])
     QA_util_log_info('ERROR CODE \n ')
     QA_util_log_info(__err)
+
 
 if __name__ == '__main__':
     # QA_SU_save_stock_day()

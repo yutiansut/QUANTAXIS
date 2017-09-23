@@ -131,6 +131,7 @@ def QA_fetch_index_min_adv(code, start, end, type_='1min', if_drop_index=False, 
     elif isinstance(code, list):
         return QA_DataStruct_Index_min(pd.concat([QA_fetch_index_min_adv(code_, start, end, type_, if_drop_index).data for code_ in code]).set_index(['datetime', 'code'], drop=if_drop_index))
 
+
 def QA_fetch_stock_min_adv(code, start, end, type_='1min', if_drop_index=False, collections=QA_Setting.client.quantaxis.stock_min):
     '获取股票分钟线'
     if type_ in ['1min', '1m']:
