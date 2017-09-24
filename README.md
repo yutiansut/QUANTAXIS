@@ -49,13 +49,6 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 ![](http://i1.piimg.com/567571/dc3c811a5afcb4fb.png)
 
 
-## QUANTAXIS 标准化协议和未来协议
-
-
-QUANTAXIS-Stardand-Protocol 版本号0.0.8
-
-详情参见  [QUANATXISProtocol](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXISProtocol/readme.md)
-
 ## 部署问题:
 
 - Windows/Linux(ubuntu) 已测试通过
@@ -113,6 +106,7 @@ cd web
 (注明: admin注册是在python的QUANTAXIS save all时候执行的)
 
 另外 如果save all已经执行,依然登录不进去 点击插件状态 查看3000端口是否打开
+
 
 
 ## 一些基础的api介绍
@@ -310,6 +304,11 @@ QA.QA_fetch_stocklist_day_adv()
 
 ```
 
+## 项目捐赠
+
+写代码不易...写文档最难过...请....作者喝杯咖啡呗?
+
+![](http://osnhakmay.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20170923132018.jpg)
 
 
 ## 回测Webkit插件概览
@@ -321,3 +320,10 @@ QA.QA_fetch_stocklist_day_adv()
 ![](http://i1.piimg.com/567571/053ac3e3850f8f60.png)
 ![](http://osnhakmay.bkt.clouddn.com/quantaxis%20markdown.gif)
 
+
+## QUANTAXIS 标准化协议和未来协议
+
+
+QUANTAXIS-Stardand-Protocol 版本号0.0.8
+
+详情参见  [QUANATXISProtocol](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXISProtocol/readme.md)
