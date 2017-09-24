@@ -1,105 +1,89 @@
-import QUANTAXIS as QA
-import sys
-QA.QA_util_log_info('='*10)
-QA.QA_util_log_info('日线数据')
-QA.QA_util_log_info('不复权')  
-data=QA.QAFetch.QATdx.QA_fetch_get_stock_day('00001','2017-01-01','2017-01-31')
-QA.QA_util_log_info(data)
-QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
-QA.QA_util_log_info('前复权')
-data=QA.QAFetch.QATdx.QA_fetch_get_stock_day('00001','2017-01-01','2017-01-31','01')
-QA.QA_util_log_info(data)
-QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
-QA.QA_util_log_info('后复权')
-data=QA.QAFetch.QATdx.QA_fetch_get_stock_day('00001','2017-01-01','2017-01-31','02')
-QA.QA_util_log_info(data)
-QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
-QA.QA_util_log_info('定点前复权')
-data=QA.QAFetch.QATdx.QA_fetch_get_stock_day('00001','2017-01-01','2017-01-31','03')
-QA.QA_util_log_info(data)
-QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
-QA.QA_util_log_info('定点后复权')
-data=QA.QAFetch.QATdx.QA_fetch_get_stock_day('00001','2017-01-01','2017-01-31','04')
-QA.QA_util_log_info(data)
-QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
-QA.QA_util_log_info('='*10)
-QA.QA_util_log_info('='*10)
-QA.QA_util_log_info('分钟线')
-QA.QA_util_log_info('1min')
-data=QA.QAFetch.QATdx.QA_fetch_get_stock_min('000001','2017-07-01','2017-08-01','1min')
-QA.QA_util_log_info(data)
-QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
-QA.QA_util_log_info('5min')
-data=QA.QAFetch.QATdx.QA_fetch_get_stock_min('000001','2017-07-01','2017-08-01','5min')
-QA.QA_util_log_info(data)
-QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
-QA.QA_util_log_info('15min')
-data=QA.QAFetch.QATdx.QA_fetch_get_stock_min('000001','2017-07-01','2017-08-01','15min')
-QA.QA_util_log_info(data)
-QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
-QA.QA_util_log_info('='*10)
-QA.QA_util_log_info('='*10)
-QA.QA_util_log_info('除权除息')
-data=QA.QAFetch.QATdx.QA_fetch_get_stock_xdxr('00001')
-QA.QA_util_log_info(data)
-QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
-QA.QA_util_log_info('='*10)
-QA.QA_util_log_info('='*10)
-QA.QA_util_log_info('股票列表')
-data=QA.QAFetch.QATdx.QA_fetch_get_stock_list('stock')
-QA.QA_util_log_info(data)
-QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
-QA.QA_util_log_info('指数列表')
-data=QA.QAFetch.QATdx.QA_fetch_get_stock_list('index')
-QA.QA_util_log_info(data)
-QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
-QA.QA_util_log_info('全部列表')
-data=QA.QAFetch.QATdx.QA_fetch_get_stock_list('all')
-QA.QA_util_log_info(data)
-QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
-QA.QA_util_log_info('='*10)
-QA.QA_util_log_info('='*10)
-QA.QA_util_log_info('指数日线')
-data=QA.QAFetch.QATdx.QA_fetch_get_index_day('000001','2017-01-01','2017-09-01')
-QA.QA_util_log_info(data)
-QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
-QA.QA_util_log_info('='*10)
-QA.QA_util_log_info('='*10)
-QA.QA_util_log_info('指数分钟线')
-QA.QA_util_log_info('1min')
-data=QA.QAFetch.QATdx.QA_fetch_get_index_min('000001','2017-07-01','2017-08-01','1min')
-QA.QA_util_log_info(data)
-QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
-QA.QA_util_log_info('5min')
-data=QA.QAFetch.QATdx.QA_fetch_get_index_min('000001','2017-07-01','2017-08-01','5min')
-QA.QA_util_log_info(data)
-QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
-QA.QA_util_log_info('15min')
-data=QA.QAFetch.QATdx.QA_fetch_get_index_min('000001','2017-07-01','2017-08-01','15min')
-QA.QA_util_log_info(data)
-QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
-QA.QA_util_log_info('='*10)
-QA.QA_util_log_info('='*10)
-QA.QA_util_log_info('最后一次交易价格')
-QA.QA_util_log_info('参数为列表')
-data=QA.QAFetch.QATdx.QA_fetch_get_stock_latest(['000001','000002'])
-QA.QA_util_log_info(data)
-QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
-QA.QA_util_log_info('参数为一只股票')
-data=QA.QAFetch.QATdx.QA_fetch_get_stock_latest('000001')
-QA.QA_util_log_info(data)
-QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
-QA.QA_util_log_info('='*10)
-QA.QA_util_log_info('='*10)
-QA.QA_util_log_info('实时价格')
-data=QA.QAFetch.QATdx.QA_fetch_get_stock_realtime(['000001','000002'])
-QA.QA_util_log_info(data)
-QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
-QA.QA_util_log_info('='*10)
-QA.QA_util_log_info('='*10)
-QA.QA_util_log_info('分笔成交')
-data=QA.QAFetch.QATdx.QA_fetch_get_stock_transaction('000001','2001-01-01','2001-01-15')
-QA.QA_util_log_info(data)
-QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
-QA.QA_util_log_info('='*10)
-QA.QA_util_log_info('='*10)
+import datetime
+
+import numpy as np
+import pandas as pd
+from pytdx.hq import TdxHq_API
+from pytdx.exhq import TdxExHq_API
+from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_str2int,
+                              QA_util_date_valid, QA_util_get_real_date,
+                              QA_util_get_real_datelist, QA_util_log_info,
+                              QA_util_time_stamp, QA_util_web_ping,
+                              trade_date_sse)
+import asyncio
+import tushare as ts
+
+
+def ping(ip):
+    api = TdxHq_API()
+    __time1 = datetime.datetime.now()
+    try:
+        with api.connect(ip, 7709):
+            if len(api.get_security_list(0, 1)) > 800:
+                return datetime.datetime.now() - __time1
+    except:
+        print('Bad REPSONSE %s' % ip)
+        return datetime.timedelta(9, 9, 0)
+
+
+def select_best_ip():
+    QA_util_log_info('Selecting the Best Server IP of TDX')
+    listx = ['218.75.126.9', '115.238.90.165',
+             '124.160.88.183', '60.12.136.250', '218.108.98.244', '218.108.47.69',
+             '14.17.75.71', '180.153.39.51']
+    data = [ping(x) for x in listx]
+    QA_util_log_info('===The BEST SERVER is :  %s ===' %
+                     (listx[data.index(min(data))]))
+    return listx[data.index(min(data))]
+
+
+best_ip = select_best_ip()
+
+# return 1 if sh, 0 if sz
+
+
+def __select_market_code(code):
+    code = str(code)
+    if code[0] in ['5', '6', '9'] or code[:3] in ["009", "126", "110", "201", "202", "203", "204"]:
+        return 1
+    return 0
+
+
+def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=best_ip, port=7709):
+    api = TdxHq_API()
+    __data = pd.DataFrame()
+    code = [code] if type(code) is str else code
+
+
+
+
+
+
+    async def _get_security_quotes(__code):
+        """
+        """
+        assert isinstance(__code, str)
+
+        data=await api.get_security_quotes([(__select_market_code(__code), __code)])
+        data=api.to_df(data)
+        data['datetime'] = datetime.datetime.now()
+
+        return data[['datetime', 'code', 'open', 'high', 'low', 'price']]
+
+    with api.connect(ip, port):
+        coroutines = [asyncio.ensure_future(
+            _get_security_quotes(code_)) for code_ in code]
+
+        print(coroutines)
+        try:
+            loop = asyncio.get_event_loop()
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+
+        res = loop.run_until_complete(asyncio.gather(*coroutines))
+        print(res)
+        return res
+
+
+if __name__ == '__main__':
+    print(QA_fetch_get_stock_realtime())

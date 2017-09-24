@@ -10,7 +10,7 @@
 
 
 
-![version](https://img.shields.io/badge/Version-%200.4.42-orange.svg)
+![version](https://img.shields.io/badge/Version-%200.4.43-orange.svg)
 ![build](https://travis-ci.org/yutiansut/QUANTAXIS.svg?branch=master)
 [![Stories in Ready](https://badge.waffle.io/yutiansut/QUANTAXIS.svg?label=ready&title=Ready)](http://waffle.io/yutiansut/QUANTAXIS)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
@@ -113,6 +113,137 @@ cd web
 (注明: admin注册是在python的QUANTAXIS save all时候执行的)
 
 另外 如果save all已经执行,依然登录不进去 点击插件状态 查看3000端口是否打开
+
+
+## 一些基础的api介绍
+
+QUANTAXIS 是一个渐进式的框架,也就是说 你可以很简单的只使用回测部分,也可以逐步深入开发,从数据源获取/数据库替代,到回测的引擎的修改,自定义交易模式,事件修改等等.
+
+在0.5.0以前,api都不是很稳定,所以文档这块比较欠缺,暂时先给一些常用的api说明:
+
+
+```python
+
+import QUANTAXIS as QA
+
+
+QA.QA_fetch_get_  系列:
+从网上获取数据
+
+QA.QA_fetch_ 系列 
+从本地数据库获取数据
+
+import QUANTAXIS as QA
+import sys
+QA.QA_util_log_info('='*10)
+QA.QA_util_log_info('日线数据')
+QA.QA_util_log_info('不复权')  
+data=QA.QAFetch.QATdx.QA_fetch_get_stock_day('00001','2017-01-01','2017-01-31')
+QA.QA_util_log_info(data)
+QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
+QA.QA_util_log_info('前复权')
+data=QA.QAFetch.QATdx.QA_fetch_get_stock_day('00001','2017-01-01','2017-01-31','01')
+QA.QA_util_log_info(data)
+QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
+QA.QA_util_log_info('后复权')
+data=QA.QAFetch.QATdx.QA_fetch_get_stock_day('00001','2017-01-01','2017-01-31','02')
+QA.QA_util_log_info(data)
+QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
+QA.QA_util_log_info('定点前复权')
+data=QA.QAFetch.QATdx.QA_fetch_get_stock_day('00001','2017-01-01','2017-01-31','03')
+QA.QA_util_log_info(data)
+QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
+QA.QA_util_log_info('定点后复权')
+data=QA.QAFetch.QATdx.QA_fetch_get_stock_day('00001','2017-01-01','2017-01-31','04')
+QA.QA_util_log_info(data)
+QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
+QA.QA_util_log_info('='*10)
+QA.QA_util_log_info('='*10)
+QA.QA_util_log_info('分钟线')
+QA.QA_util_log_info('1min')
+data=QA.QAFetch.QATdx.QA_fetch_get_stock_min('000001','2017-07-01','2017-08-01','1min')
+QA.QA_util_log_info(data)
+QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
+QA.QA_util_log_info('5min')
+data=QA.QAFetch.QATdx.QA_fetch_get_stock_min('000001','2017-07-01','2017-08-01','5min')
+QA.QA_util_log_info(data)
+QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
+QA.QA_util_log_info('15min')
+data=QA.QAFetch.QATdx.QA_fetch_get_stock_min('000001','2017-07-01','2017-08-01','15min')
+QA.QA_util_log_info(data)
+QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
+QA.QA_util_log_info('='*10)
+QA.QA_util_log_info('='*10)
+QA.QA_util_log_info('除权除息')
+data=QA.QAFetch.QATdx.QA_fetch_get_stock_xdxr('00001')
+QA.QA_util_log_info(data)
+QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
+QA.QA_util_log_info('='*10)
+QA.QA_util_log_info('='*10)
+QA.QA_util_log_info('股票列表')
+data=QA.QAFetch.QATdx.QA_fetch_get_stock_list('stock')
+QA.QA_util_log_info(data)
+QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
+QA.QA_util_log_info('指数列表')
+data=QA.QAFetch.QATdx.QA_fetch_get_stock_list('index')
+QA.QA_util_log_info(data)
+QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
+QA.QA_util_log_info('全部列表')
+data=QA.QAFetch.QATdx.QA_fetch_get_stock_list('all')
+QA.QA_util_log_info(data)
+QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
+QA.QA_util_log_info('='*10)
+QA.QA_util_log_info('='*10)
+QA.QA_util_log_info('指数日线')
+data=QA.QAFetch.QATdx.QA_fetch_get_index_day('000001','2017-01-01','2017-09-01')
+QA.QA_util_log_info(data)
+QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
+QA.QA_util_log_info('='*10)
+QA.QA_util_log_info('='*10)
+QA.QA_util_log_info('指数分钟线')
+QA.QA_util_log_info('1min')
+data=QA.QAFetch.QATdx.QA_fetch_get_index_min('000001','2017-07-01','2017-08-01','1min')
+QA.QA_util_log_info(data)
+QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
+QA.QA_util_log_info('5min')
+data=QA.QAFetch.QATdx.QA_fetch_get_index_min('000001','2017-07-01','2017-08-01','5min')
+QA.QA_util_log_info(data)
+QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
+QA.QA_util_log_info('15min')
+data=QA.QAFetch.QATdx.QA_fetch_get_index_min('000001','2017-07-01','2017-08-01','15min')
+QA.QA_util_log_info(data)
+QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
+QA.QA_util_log_info('='*10)
+QA.QA_util_log_info('='*10)
+QA.QA_util_log_info('最后一次交易价格')
+QA.QA_util_log_info('参数为列表')
+data=QA.QAFetch.QATdx.QA_fetch_get_stock_latest(['000001','000002'])
+QA.QA_util_log_info(data)
+QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
+QA.QA_util_log_info('参数为一只股票')
+data=QA.QAFetch.QATdx.QA_fetch_get_stock_latest('000001')
+QA.QA_util_log_info(data)
+QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
+QA.QA_util_log_info('='*10)
+QA.QA_util_log_info('='*10)
+QA.QA_util_log_info('实时价格')
+data=QA.QAFetch.QATdx.QA_fetch_get_stock_realtime(['000001','000002'])
+QA.QA_util_log_info(data)
+QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
+QA.QA_util_log_info('='*10)
+QA.QA_util_log_info('='*10)
+QA.QA_util_log_info('分笔成交')
+data=QA.QAFetch.QATdx.QA_fetch_get_stock_transaction('000001','2001-01-01','2001-01-15')
+QA.QA_util_log_info(data)
+QA.QA_util_log_info(QA.QA_util_to_json_from_pandas(data.head(1)))
+QA.QA_util_log_info('='*10)
+QA.QA_util_log_info('='*10)
+
+
+```
+
+
+
 ## 回测Webkit插件概览
 
 ![](http://i2.muimg.com/567571/736ba4adda9fac85.png)
