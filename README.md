@@ -113,6 +113,33 @@ cd web
 (注明: admin注册是在python的QUANTAXIS save all时候执行的)
 
 另外 如果save all已经执行,依然登录不进去 点击插件状态 查看3000端口是否打开
+
+
+## 一些基础的api介绍
+
+QUANTAXIS 是一个渐进式的框架,也就是说 你可以很简单的只使用回测部分,也可以逐步深入开发,从数据源获取/数据库替代,到回测的引擎的修改,自定义交易模式,事件修改等等.
+
+在0.5.0以前,api都不是很稳定,所以文档这块比较欠缺,暂时先给一些常用的api说明:
+
+
+```python
+
+import QUANTAXIS as QA
+
+
+QA.QA_fetch_get_  系列:
+从网上获取数据
+
+QA.QA_fetch_ 系列 
+从本地数据库获取数据
+
+
+
+
+```
+
+
+
 ## 回测Webkit插件概览
 
 ![](http://i2.muimg.com/567571/736ba4adda9fac85.png)
