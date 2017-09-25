@@ -49,9 +49,14 @@ def QA_data_get_hfq(code, start, end):
 def QA_data_make_qfq(bfq_data, xdxr_data):
     '使用数据库数据进行复权'
     info = xdxr_data[xdxr_data['category'] == 1]
-    data = pd.concat([bfq_data, info[['fenhong', 'peigu', 'peigujia',
-                                      'songzhuangu']][bfq_data.index[0]:bfq_data.index[-1]]], axis=1).fillna(0)
-
+    bfq_data['if_trade']=True
+    data = pd.concat([bfq_data, info[['category']][bfq_data.index[0]:bfq_data.index[-1]]], axis=1)
+    data['date']=data.index.levels[0]
+    data['if_trade'].fillna(value=False,inplace=True)
+    data=data.fillna(method='ffill')
+    data = pd.concat([data, info[['fenhong', 'peigu', 'peigujia',
+                                      'songzhuangu']][bfq_data.index[0]:bfq_data.index[-1]]], axis=1)
+    data=data.fillna(0)
     data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
                         * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
     data['adj'] = (data['preclose'].shift(-1) /
@@ -61,14 +66,22 @@ def QA_data_make_qfq(bfq_data, xdxr_data):
     data['low'] = data['low'] * data['adj']
     data['close'] = data['close'] * data['adj']
     data['preclose'] = data['preclose'] * data['adj']
-    return data.drop(['fenhong', 'peigu', 'peigujia', 'songzhuangu'], axis=1)[data['open'] != 0]
+
+    data=data[data['if_trade']]
+    return data.drop(['fenhong', 'peigu', 'peigujia', 'songzhuangu','if_trade','category'], axis=1)[data['open'] != 0]
 
 
 def QA_data_make_hfq(bfq_data, xdxr_data):
     '使用数据库数据进行复权'
     info = xdxr_data[xdxr_data['category'] == 1]
-    data = pd.concat([bfq_data, info[['fenhong', 'peigu', 'peigujia',
-                                      'songzhuangu']][bfq_data.index[0]:bfq_data.index[-1]]], axis=1).fillna(0)
+    bfq_data['if_trade']=True
+    data = pd.concat([bfq_data, info[['category']][bfq_data.index[0]:bfq_data.index[-1]]], axis=1)
+    data['date']=data.index.levels[0]
+    data['if_trade'].fillna(value=False,inplace=True)
+    data=data.fillna(method='ffill')
+    data = pd.concat([data, info[['fenhong', 'peigu', 'peigujia',
+                                      'songzhuangu']][bfq_data.index[0]:bfq_data.index[-1]]], axis=1)
+    data=data.fillna(0)
     data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
                         * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
     data['adj'] = (data['preclose'].shift(-1) /

@@ -101,14 +101,28 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', 
             return data.assign(date=data['date'].apply(lambda x: str(x)[0:10]))
         elif if_fq in ['01', 'qfq']:
             xdxr_data = QA_fetch_get_stock_xdxr(code)
+
             info = xdxr_data[xdxr_data['category'] == 1]
 
-            data = pd.concat([data.assign(date=pd.to_datetime(data['datetime'].apply(lambda x: x[0:10]))).assign(code=str(code))
-                              .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10])))
-                              .set_index('date', drop=False, inplace=False)
-                              .drop(['year', 'month', 'day', 'hour',
-                                     'minute', 'datetime'], axis=1), info[['fenhong', 'peigu', 'peigujia',
-                                                                           'songzhuangu']][data.index[0]:]], axis=1).fillna(0)
+            bfq_data = data\
+                .assign(date=pd.to_datetime(data['datetime'].apply(lambda x: x[0:10])))\
+                .assign(code=str(code))\
+                .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10])))\
+                .set_index('date', drop=False, inplace=False)\
+                .drop(['year', 'month', 'day', 'hour',
+                       'minute', 'datetime'], axis=1)
+
+            bfq_data['if_trade']=True
+            data = pd.concat([bfq_data, info[['category']]
+                              [bfq_data.index[0]:]], axis=1)
+
+            data['date'] = data.index
+            data['if_trade'].fillna(value=False, inplace=True)
+            data = data.fillna(method='ffill')
+            data = pd.concat([data, info[['fenhong', 'peigu', 'peigujia',
+                                          'songzhuangu']][bfq_data.index[0]:]], axis=1)
+            data = data.fillna(0)
+
             data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
                                 * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
             data['adj'] = (data['preclose'].shift(-1) /
@@ -119,17 +133,33 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', 
             data['close'] = data['close'] * data['adj']
             data['preclose'] = data['preclose'] * data['adj']
 
-            return data.assign(date=data['date'].apply(lambda x: str(x)[0:10]))[start_date:end_date]
+            data = data[data['if_trade']]
+            return data.drop(['fenhong', 'peigu', 'peigujia', 'songzhuangu', 'if_trade', 'category'], axis=1)[data['open'] != 0].assign(date=data['date'].apply(lambda x: str(x)[0:10]))[start_date:end_date]
+
         elif if_fq in ['03', 'ddqfq']:
             xdxr_data = QA_fetch_get_stock_xdxr(code)
+
             info = xdxr_data[xdxr_data['category'] == 1]
 
-            data = pd.concat([data.assign(date=pd.to_datetime(data['datetime'].apply(lambda x: x[0:10]))).assign(code=str(code))
-                              .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10])))
-                              .set_index('date', drop=False, inplace=False)
-                              .drop(['year', 'month', 'day', 'hour',
-                                     'minute', 'datetime'], axis=1), info[['fenhong', 'peigu', 'peigujia',
-                                                                           'songzhuangu']][data.index[0]:data.index[-1]]], axis=1).fillna(0)
+            bfq_data = data\
+                .assign(date=pd.to_datetime(data['datetime'].apply(lambda x: x[0:10])))\
+                .assign(code=str(code))\
+                .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10])))\
+                .set_index('date', drop=False, inplace=False)\
+                .drop(['year', 'month', 'day', 'hour',
+                       'minute', 'datetime'], axis=1)
+
+            bfq_data['if_trade']=True
+            data = pd.concat([bfq_data, info[['category']]
+                              [bfq_data.index[0]:end_date]], axis=1)
+
+            data['date'] = data.index
+            data['if_trade'].fillna(value=False, inplace=True)
+            data = data.fillna(method='ffill')
+            data = pd.concat([data, info[['fenhong', 'peigu', 'peigujia',
+                                          'songzhuangu']][bfq_data.index[0]:end_date]], axis=1)
+            data = data.fillna(0)
+
             data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
                                 * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
             data['adj'] = (data['preclose'].shift(-1) /
@@ -139,16 +169,34 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', 
             data['low'] = data['low'] * data['adj']
             data['close'] = data['close'] * data['adj']
             data['preclose'] = data['preclose'] * data['adj']
-            return data.assign(date=data['date'].apply(lambda x: str(x)[0:10]))[start_date:end_date]
+
+            data = data[data['if_trade']]
+            return data.drop(['fenhong', 'peigu', 'peigujia', 'songzhuangu', 'if_trade', 'category'], axis=1)[data['open'] != 0].assign(date=data['date'].apply(lambda x: str(x)[0:10]))[start_date:end_date]
+
         elif if_fq in ['02', 'hfq']:
             xdxr_data = QA_fetch_get_stock_xdxr(code)
+
             info = xdxr_data[xdxr_data['category'] == 1]
-            data = pd.concat([data.assign(date=pd.to_datetime(data['datetime'].apply(lambda x: x[0:10]))).assign(code=str(code))
-                              .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10])))
-                              .set_index('date', drop=False, inplace=False)
-                              .drop(['year', 'month', 'day', 'hour',
-                                     'minute', 'datetime'], axis=1), info[['fenhong', 'peigu', 'peigujia',
-                                                                           'songzhuangu']][data.index[0]:]], axis=1).fillna(0)
+
+            bfq_data = data\
+                .assign(date=pd.to_datetime(data['datetime'].apply(lambda x: x[0:10])))\
+                .assign(code=str(code))\
+                .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10])))\
+                .set_index('date', drop=False, inplace=False)\
+                .drop(['year', 'month', 'day', 'hour',
+                       'minute', 'datetime'], axis=1)
+
+            bfq_data['if_trade']=True
+            data = pd.concat([bfq_data, info[['category']]
+                              [bfq_data.index[0]:]], axis=1)
+
+            data['date'] = data.index
+            data['if_trade'].fillna(value=False, inplace=True)
+            data = data.fillna(method='ffill')
+            data = pd.concat([data, info[['fenhong', 'peigu', 'peigujia',
+                                          'songzhuangu']][bfq_data.index[0]:]], axis=1)
+            data = data.fillna(0)
+
             data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
                                 * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
             data['adj'] = (data['preclose'].shift(-1) /
@@ -158,16 +206,33 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', 
             data['low'] = data['low'] / data['adj']
             data['close'] = data['close'] / data['adj']
             data['preclose'] = data['preclose'] / data['adj']
-            return data.assign(date=data['date'].apply(lambda x: str(x)[0:10]))[start_date:end_date]
+            data = data[data['if_trade']]
+            return data.drop(['fenhong', 'peigu', 'peigujia', 'songzhuangu', 'if_trade', 'category'], axis=1)[data['open'] != 0].assign(date=data['date'].apply(lambda x: str(x)[0:10]))[start_date:end_date]
+
         elif if_fq in ['04', 'ddhfq']:
             xdxr_data = QA_fetch_get_stock_xdxr(code)
+
             info = xdxr_data[xdxr_data['category'] == 1]
-            data = pd.concat([data.assign(date=pd.to_datetime(data['datetime'].apply(lambda x: x[0:10]))).assign(code=str(code))
-                              .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10])))
-                              .set_index('date', drop=False, inplace=False)
-                              .drop(['year', 'month', 'day', 'hour',
-                                     'minute', 'datetime'], axis=1), info[['fenhong', 'peigu', 'peigujia',
-                                                                           'songzhuangu']][data.index[0]:data.index[-1]]], axis=1).fillna(0)
+
+            bfq_data = data\
+                .assign(date=pd.to_datetime(data['datetime'].apply(lambda x: x[0:10])))\
+                .assign(code=str(code))\
+                .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10])))\
+                .set_index('date', drop=False, inplace=False)\
+                .drop(['year', 'month', 'day', 'hour',
+                       'minute', 'datetime'], axis=1)
+
+            bfq_data['if_trade']=True
+            data = pd.concat([bfq_data, info[['category']]
+                              [bfq_data.index[0]:end_date]], axis=1)
+
+            data['date'] = data.index
+            data['if_trade'].fillna(value=False, inplace=True)
+            data = data.fillna(method='ffill')
+            data = pd.concat([data, info[['fenhong', 'peigu', 'peigujia',
+                                          'songzhuangu']][bfq_data.index[0]:end_date]], axis=1)
+            data = data.fillna(0)
+
             data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
                                 * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
             data['adj'] = (data['preclose'].shift(-1) /
@@ -177,7 +242,9 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', 
             data['low'] = data['low'] / data['adj']
             data['close'] = data['close'] / data['adj']
             data['preclose'] = data['preclose'] / data['adj']
-            return data.assign(date=data['date'].apply(lambda x: str(x)[0:10]))[start_date:end_date]
+            data = data[data['if_trade']]
+            return data.drop(['fenhong', 'peigu', 'peigujia', 'songzhuangu', 'if_trade', 'category'], axis=1)[data['open'] != 0].assign(date=data['date'].apply(lambda x: str(x)[0:10]))[start_date:end_date]
+
 
 
 def QA_fetch_get_stock_min(code, start, end, level='1min', ip=best_ip, port=7709):
