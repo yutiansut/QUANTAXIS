@@ -10,12 +10,12 @@
 
 
 
-![version](https://img.shields.io/badge/Version-%200.4.43-orange.svg)
+![version](https://img.shields.io/badge/Version-%200.4.45-orange.svg)
 ![build](https://travis-ci.org/yutiansut/QUANTAXIS.svg?branch=master)
 [![Stories in Ready](https://badge.waffle.io/yutiansut/QUANTAXIS.svg?label=ready&title=Ready)](http://waffle.io/yutiansut/QUANTAXIS)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.8-brown.svg)
-![Pypi](https://img.shields.io/badge/Pypi-%200.4.42-blue.svg)
+![Pypi](https://img.shields.io/badge/Pypi-%200.4.45-blue.svg)
 ![python](https://img.shields.io/badge/python-%203.6/3.5/3.4/win/ubuntu-darkgrey.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.4.0-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
@@ -43,7 +43,20 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - 文档更新
 - 基本面数据
 - 指标数据
+<!-- TOC -->
 
+- [QUANTAXIS 量化金融策略框架](#quantaxis-量化金融策略框架)
+    - [框架结构](#框架结构)
+    - [部署问题:](#部署问题)
+    - [一些基础的api介绍](#一些基础的api介绍)
+        - [QUANTAXIS.QABacktest 的 api](#quantaxisqabacktest-的-api)
+        - [QUANTAXIS的api](#quantaxis的api)
+    - [项目捐赠](#项目捐赠)
+    - [关于QUANTAXIS基金](#关于quantaxis基金)
+    - [回测Webkit插件概览](#回测webkit插件概览)
+    - [QUANTAXIS 标准化协议和未来协议](#quantaxis-标准化协议和未来协议)
+
+<!-- /TOC -->
 
 ## 框架结构
 ![](http://i1.piimg.com/567571/dc3c811a5afcb4fb.png)
@@ -309,6 +322,14 @@ QA.QA_fetch_stocklist_day_adv()
 写代码不易...写文档最难过...请....作者喝杯咖啡呗?
 
 <img src="http://osnhakmay.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20170923132018.jpg" width = "27.5%" />
+
+(PS: 支付的时候 请带上你的名字/昵称呀 会维护一个赞助列表~ )
+## 关于QUANTAXIS基金
+
+第一天挂上项目捐赠就有童靴赞助支持~~蟹蟹蟹蟹~~
+
+准备把项目捐赠的钱 以及我自己会补一部分进来 维护一个基金会  主要是奖励文档编写和bug提交的童鞋们~
+
 
 
 ## 回测Webkit插件概览
