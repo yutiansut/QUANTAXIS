@@ -184,7 +184,8 @@ class QA_Backtest():
 
         elif self.backtest_type in ['index_1min', 'index_5min', 'index_15min', 'index_30min', 'index_60min']:
             self.market_data = QA_fetch_index_min_adv(
-                self.strategy_stock_list, self.start_real_date, self.end_real_date, self.backtest_type.split('_')[1])
+                self.strategy_stock_list, self.trade_list[self.start_real_id - int(
+                    self.strategy_gap)], self.trade_list[self.end_real_id + 1], self.backtest_type.split('_')[1])
 
     def __QA_backtest_start(self, *args, **kwargs):
         """
