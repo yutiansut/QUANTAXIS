@@ -206,7 +206,7 @@ class QA_Backtest():
 
         elif self.backtest_type in ['index_1min', 'index_5min', 'index_15min', 'index_30min', 'index_60min']:
             self.market_data = QA_fetch_index_min_adv(
-                self.strategy_stock_list, QA_util_time_gap(self.start_real_time,self.strategy_gap,'<',self.backtest_type),  QA_util_time_gap(self.end_real_time,1,'>',self.backtest_type), self.backtest_type.split('_')[1])
+                self.strategy_stock_list, QA_util_time_gap(self.start_real_time,self.strategy_gap,'<',self.backtest_type.split('_')[1]),  QA_util_time_gap(self.end_real_time,1,'>',self.backtest_type.split('_')[1]), self.backtest_type.split('_')[1])
 
     def __QA_backtest_start(self, *args, **kwargs):
         """
