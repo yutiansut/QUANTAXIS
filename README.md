@@ -10,12 +10,12 @@
 
 
 
-![version](https://img.shields.io/badge/Version-%200.4.46-orange.svg)
+![version](https://img.shields.io/badge/Version-%200.4.48-orange.svg)
 ![build](https://travis-ci.org/yutiansut/QUANTAXIS.svg?branch=master)
 [![Stories in Ready](https://badge.waffle.io/yutiansut/QUANTAXIS.svg?label=ready&title=Ready)](http://waffle.io/yutiansut/QUANTAXIS)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.8-brown.svg)
-![Pypi](https://img.shields.io/badge/Pypi-%200.4.46-blue.svg)
+![Pypi](https://img.shields.io/badge/Pypi-%200.4.48-blue.svg)
 ![python](https://img.shields.io/badge/python-%203.6/3.5/3.4/win/ubuntu-darkgrey.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.4.0-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
@@ -45,16 +45,16 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - 指标数据
 <!-- TOC -->
 
-- [QUANTAXIS 量化金融策略框架](#quantaxis-量化金融策略框架)
-    - [框架结构](#框架结构)
-    - [部署问题:](#部署问题)
-    - [项目捐赠](#项目捐赠)
-    - [关于QUANTAXIS基金](#关于quantaxis基金)
-    - [一些基础的api介绍](#一些基础的api介绍)
-        - [QUANTAXIS.QABacktest 的 api](#quantaxisqabacktest-的-api)
-        - [QUANTAXIS的api](#quantaxis的api)
-    - [回测Webkit插件概览](#回测webkit插件概览)
-    - [QUANTAXIS 标准化协议和未来协议](#quantaxis-标准化协议和未来协议)
+- [QUANTAXIS 量化金融策略框架](#quantaxis-%E9%87%8F%E5%8C%96%E9%87%91%E8%9E%8D%E7%AD%96%E7%95%A5%E6%A1%86%E6%9E%B6)
+    - [框架结构](#%E6%A1%86%E6%9E%B6%E7%BB%93%E6%9E%84)
+    - [部署问题:](#%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98)
+    - [项目捐赠](#%E9%A1%B9%E7%9B%AE%E6%8D%90%E8%B5%A0)
+    - [关于QUANTAXIS基金](#%E5%85%B3%E4%BA%8Equantaxis%E5%9F%BA%E9%87%91)
+    - [一些基础的api介绍](#%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80%E7%9A%84api%E4%BB%8B%E7%BB%8D)
+        - [QUANTAXIS.QABacktest 的 api](#quantaxisqabacktest-%E7%9A%84-api)
+        - [QUANTAXIS的api](#quantaxis%E7%9A%84api)
+    - [回测Webkit插件概览](#%E5%9B%9E%E6%B5%8Bwebkit%E6%8F%92%E4%BB%B6%E6%A6%82%E8%A7%88)
+    - [QUANTAXIS 标准化协议和未来协议](#quantaxis-%E6%A0%87%E5%87%86%E5%8C%96%E5%8D%8F%E8%AE%AE%E5%92%8C%E6%9C%AA%E6%9D%A5%E5%8D%8F%E8%AE%AE)
 
 <!-- /TOC -->
 
@@ -130,6 +130,7 @@ cd web
 
 (PS: 支付的时候 请带上你的名字/昵称呀 会维护一个赞助列表~ )
 
+[捐赠列表](https://github.com/yutiansut/quantaxis/sponsorship.md)
 
 
 ## 关于QUANTAXIS基金
