@@ -43,7 +43,7 @@ import concurrent
 
 
 def now_time():
-    return datetime.datetime.now() - datetime.timedelta(days=1) if datetime.datetime.now().hour < 15 else datetime.datetime.now()
+    return datetime.datetime(year=datetime.date.today().year,month=datetime.date.today().month,day=datetime.date.today().day,hour=15)-datetime.timedelta(days=1) if datetime.datetime.now().hour < 15 else datetime.datetime(year=datetime.date.today().year,month=datetime.date.today().month,day=datetime.date.today().day,hour=15)
 
 
 def QA_SU_save_stock_day(client=QA_Setting.client):
