@@ -130,7 +130,7 @@ cd web
 
 (PS: 支付的时候 请带上你的名字/昵称呀 会维护一个赞助列表~ )
 
-[捐赠列表](https://github.com/yutiansut/quantaxis/sponsorship.md)
+[捐赠列表](https://github.com/yutiansut/QUANTAXIS/blob/master/sponsorship.md)
 
 
 ## 关于QUANTAXIS基金
