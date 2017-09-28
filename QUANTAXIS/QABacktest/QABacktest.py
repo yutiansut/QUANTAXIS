@@ -193,20 +193,20 @@ class QA_Backtest():
         if self.backtest_type in ['day', 'd', '0x00']:
             self.market_data = QA_fetch_stocklist_day_adv(
                 self.strategy_stock_list, self.trade_list[self.start_real_id - int(
-                    self.strategy_gap)], self.trade_list[self.end_real_id]).to_qfq()
+                    self.strategy_gap+1)], self.trade_list[self.end_real_id]).to_qfq()
 
         elif self.backtest_type in ['1min', '5min', '15min', '30min', '60min']:
             self.market_data = QA_fetch_stocklist_min_adv(
-                self.strategy_stock_list, QA_util_time_gap(self.start_real_time,self.strategy_gap,'<',self.backtest_type),
+                self.strategy_stock_list, QA_util_time_gap(self.start_real_time,self.strategy_gap+1,'<',self.backtest_type),
                 QA_util_time_gap(self.end_real_time,1,'>',self.backtest_type), self.backtest_type).to_qfq()
 
         elif self.backtest_type in ['index_day']:
             self.market_data = QA_fetch_index_day_adv(self.strategy_stock_list, self.trade_list[self.start_real_id - int(
-                self.strategy_gap)], self.end_real_date)
+                self.strategy_gap+1)], self.end_real_date)
 
         elif self.backtest_type in ['index_1min', 'index_5min', 'index_15min', 'index_30min', 'index_60min']:
             self.market_data = QA_fetch_index_min_adv(
-                self.strategy_stock_list, QA_util_time_gap(self.start_real_time,self.strategy_gap,'<',self.backtest_type.split('_')[1]),  QA_util_time_gap(self.end_real_time,1,'>',self.backtest_type.split('_')[1]), self.backtest_type.split('_')[1])
+                self.strategy_stock_list, QA_util_time_gap(self.start_real_time,self.strategy_gap+1,'<',self.backtest_type.split('_')[1]),  QA_util_time_gap(self.end_real_time,1,'>',self.backtest_type.split('_')[1]), self.backtest_type.split('_')[1])
 
     def __QA_backtest_start(self, *args, **kwargs):
         """
@@ -335,10 +335,10 @@ class QA_Backtest():
             self.account.detail.to_csv(
                 'backtest-pnl--' + str(self.account.account_cookie) + '.csv')
 
-    def QA_backtest_get_market_data(self, code, date, gap_=None):
+    def QA_backtest_get_market_data(self, code, date, gap_=None,type_='lt'):
         '这个函数封装了关于获取的方式 用GAP的模式'
         gap_ = self.strategy_gap if gap_ is None else gap_
-        return self.market_data.select_code(code).select_time_with_gap(date, gap_, 'lte')
+        return self.market_data.select_code(code).select_time_with_gap(date, gap_, type_)
 
     def QA_backtest_get_market_data_bar(self, code, time):
         '这个函数封装了关于获取的方式'

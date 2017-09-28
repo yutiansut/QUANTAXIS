@@ -10,12 +10,12 @@
 
 
 
-![version](https://img.shields.io/badge/Version-%200.4.48-orange.svg)
+![version](https://img.shields.io/badge/Version-%200.4.50-orange.svg)
 ![build](https://travis-ci.org/yutiansut/QUANTAXIS.svg?branch=master)
 [![Stories in Ready](https://badge.waffle.io/yutiansut/QUANTAXIS.svg?label=ready&title=Ready)](http://waffle.io/yutiansut/QUANTAXIS)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.8-brown.svg)
-![Pypi](https://img.shields.io/badge/Pypi-%200.4.48-blue.svg)
+![Pypi](https://img.shields.io/badge/Pypi-%200.4.50-blue.svg)
 ![python](https://img.shields.io/badge/python-%203.6/3.5/3.4/win/ubuntu-darkgrey.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.4.0-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
@@ -176,7 +176,9 @@ QB.benchmark_code  #策略业绩评价的对照行情
 
 #函数:
 #获取市场(基于gap)行情:
-QB.QA_backtest_get_market_data(QB,code,QB.today)
+QB.QA_backtest_get_market_data(QB,code,QB.today/QB.now)
+- 可选项: gap_ 
+- 可选项: type_ 'lt','lte' 默认是lt
 #获取单个bar
 QB.QA_backtest_get_market_data_bar(QB,code,QB.today/QB.now)
 
