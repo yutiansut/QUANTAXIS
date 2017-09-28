@@ -53,11 +53,11 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
         - [Nodejs](#nodejs)
         - [python](#python)
             - [python的一些需要编译的包的安装](#python%E7%9A%84%E4%B8%80%E4%BA%9B%E9%9C%80%E8%A6%81%E7%BC%96%E8%AF%91%E7%9A%84%E5%8C%85%E7%9A%84%E5%AE%89%E8%A3%85)
-                - [安装TA-Lib](#%E5%AE%89%E8%A3%85ta-lib)
         - [安装QUANTAXIS](#%E5%AE%89%E8%A3%85quantaxis)
         - [安装QUANATXIS_WebKit](#%E5%AE%89%E8%A3%85quanatxiswebkit)
         - [启动QUANTAXIS CLI 并进行数据的初始化存储](#%E5%90%AF%E5%8A%A8quantaxis-cli-%E5%B9%B6%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E5%AD%98%E5%82%A8)
         - [启动QUANTAXIS_Webkit来查看回测的结果](#%E5%90%AF%E5%8A%A8quantaxiswebkit%E6%9D%A5%E6%9F%A5%E7%9C%8B%E5%9B%9E%E6%B5%8B%E7%9A%84%E7%BB%93%E6%9E%9C)
+        - [更新QUANTAXIS](#%E6%9B%B4%E6%96%B0quantaxis)
     - [项目捐赠](#%E9%A1%B9%E7%9B%AE%E6%8D%90%E8%B5%A0)
     - [关于QUANTAXIS基金](#%E5%85%B3%E4%BA%8Equantaxis%E5%9F%BA%E9%87%91)
     - [一些基础的api介绍](#%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80%E7%9A%84api%E4%BB%8B%E7%BB%8D)
@@ -159,6 +159,8 @@ linux/mac下的nodejs有一个版本管理包 叫n 需要全局安装 -g
 
 所以无论装了什么版本的nodejs  只需要npm install n -g  就行  
 ### python
+
+> Linux
 ```shell
 
 #install python3.6 in linux
@@ -168,9 +170,13 @@ sudo apt-get install python3.6
 wget https://bootstrap.pypa.io/get-pip.py
 sudo -H python3.6 get-pip.py
 ```
+> Windows
+
+建议直接安装Anaconda包,记住在安装时 选择添加path不然后面会很麻烦
+
 #### python的一些需要编译的包的安装
 
-##### 安装TA-Lib
+安装TA-Lib
 ```
 sudo apt-get update
 sudo apt-get install python3.6-dev
@@ -249,7 +255,24 @@ cd web
 
 另外 如果save all已经执行,依然登录不进去 点击插件状态 查看3000端口是否打开
 
+### 更新QUANTAXIS
 
+由于目前项目还在开发中,所以需要使用Git来更新项目:
+
+常规更新:
+```
+cd QUANTAXIS
+git pull
+```
+
+如果本地有进行更改,遇到更新失败:
+
+(注意: 最好不要在本地修改该项目文件,如果需要做一些自定义功能,可以进fork[在项目的右上角])
+
+```
+git reset --hard origin/master
+git pull
+```
 
 ## 项目捐赠
 
