@@ -62,8 +62,8 @@ class QA_Queue(threading.Thread):
 
     def QA_queue_job_register(self, __job):
         '首先对于任务进行类型判断,输入的job的类型一定是一个dict模式的,同时需要含有一个type的K-V对'
-        assert isinstance(__job,dict)
-        assert isinstance(__job['type'],str)
+        assert isinstance(__job, dict)
+        assert isinstance(__job['type'], str)
 
     def __QA_queue_put(self, args):
         return self.queue.put()
@@ -95,7 +95,8 @@ class QA_Queue(threading.Thread):
                         else:
                             pass
                     else:
-                        QA_util_log_info("From Engine %s  Engine will waiting for new task ..." % str(threading.current_thread()))
+                        QA_util_log_info("From Engine %s  Engine will waiting for new task ..." % str(
+                            threading.current_thread()))
                         time.sleep(1)
                 except:
                     time.sleep(1)

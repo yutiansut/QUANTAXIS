@@ -144,7 +144,7 @@ def realtime():
     request.args.get('username','')
 
 def main():
-    socketio.run(app)
+    #socketio.run(app)
     from gevent import pywsgi
     from geventwebsocket.handler import WebSocketHandler
     server = pywsgi.WSGIServer(('', 5050), app, handler_class=WebSocketHandler)
