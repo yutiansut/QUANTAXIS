@@ -130,7 +130,7 @@ cd web
 
 (PS: 支付的时候 请带上你的名字/昵称呀 会维护一个赞助列表~ )
 
-[捐赠列表](https://github.com/yutiansut/quantaxis/sponsorship.md)
+[捐赠列表](https://github.com/yutiansut/QUANTAXIS/blob/master/sponsorship.md)
 
 
 ## 关于QUANTAXIS基金
@@ -176,7 +176,9 @@ QB.benchmark_code  #策略业绩评价的对照行情
 
 #函数:
 #获取市场(基于gap)行情:
-QB.QA_backtest_get_market_data(QB,code,QB.today)
+QB.QA_backtest_get_market_data(QB,code,QB.today/QB.now)
+- 可选项: gap_ 
+- 可选项: type_ 'lt','lte' 默认是lt
 #获取单个bar
 QB.QA_backtest_get_market_data_bar(QB,code,QB.today/QB.now)
 
