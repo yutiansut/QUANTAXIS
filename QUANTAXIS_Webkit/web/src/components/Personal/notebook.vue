@@ -3,7 +3,8 @@
     <h2 align='left'>> NOTEBOOK</h2>
 
     <mu-paper>
-        <mu-text-field v-on:keyup.enter='querycontent($event.currentTarget.value)' hintText="搜索文章" class="demo-divider-form" :underlineShow="false" v-model="message"  />
+      <mu-text-field v-on:keyup.enter='querycontent($event.currentTarget.value)' hintText="搜索文章" class="demo-divider-form" :underlineShow="false"
+        v-model="message" />
     </mu-paper>
     <div class="container">
 
@@ -19,15 +20,15 @@
         </mu-tr>
       </mu-thead>
       <template v-for="item in items">
-      <mu-tbody >
-        <mu-tr>
-          <router-link :to="{ name:'markdown',params: {id:item['_id']}}">
-          <mu-td>{{item['title']}}</mu-td>
-          <mu-td>{{item['content']}}</mu-td>
-          </router-link>
-        </mu-tr>
+        <mu-tbody>
+          <mu-tr>
+            <router-link :to="{ name:'markdown',params: {id:item['_id']}}">
+              <mu-td>{{item['title']}}</mu-td>
+              <mu-td>{{item['content'].substr(0,100)}}</mu-td>
+            </router-link>
+          </mu-tr>
 
-      </mu-tbody>
+        </mu-tbody>
       </template>
     </mu-table>
 
@@ -35,16 +36,7 @@
 
 </template>
 
-<style>
-  .container {
-    display: flex;
-  }
 
-  .demo-flat-button {
-    margin: 12px;
-  }
-
-</style>
 <script>
   import axios from 'axios'
 
@@ -64,25 +56,29 @@
     },
     methods: {
       insert_pages() {
-        axios.get('http://localhost:3000/notebook/new?title=' +'new')
+        axios.get('http://localhost:3000/notebook/new?title=' + 'new')
           .then(response => {
             var _id = response.data['_id'];
-            this.$router.push({name:'markdown',params: {id:_id}})
+            this.$router.push({
+              name: 'markdown',
+              params: {
+                id: _id
+              }
+            })
           })
           .catch(function (error) {
-            console.log(error);
+
           });
       },
-      querycontent(mes){
-        console.log(mes)
-        console.log(this.message)
-        axios.get('http://localhost:3000/notebook/querycontent?content='+mes)
+      querycontent(mes) {
+
+        axios.get('http://localhost:3000/notebook/querycontent?content=' + mes)
           .then(response => {
             this.items = response.data;
 
           })
           .catch(function (error) {
-            console.log(error);
+
           });
       },
       query() {
@@ -90,20 +86,38 @@
         axios.get('http://localhost:3000/notebook/queryall')
           .then(response => {
             this.items = response.data;
-            console.log(this.items)
+
           })
-          .catch(function (error) {
-            console.log(error);
-          });
+          .catch(function (error) {});
       }
 
     },
-    mounted(){
+    mounted() {
       this.$nextTick(function () {
-           this.query()
+        this.query()
 
-        })
+      })
     }
   }
 
 </script>
+
+
+<style>
+  .container {
+    display: flex;
+  }
+
+  .demo-flat-button {
+    margin: 12px;
+  }
+
+  .mu-td {
+    white-space: nowrap;
+  }
+
+  .mu-table {
+    table-layout: auto;
+  }
+
+</style>

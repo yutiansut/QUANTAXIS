@@ -31,7 +31,7 @@ from QUANTAXIS import QA_Backtest as QB
 写在前面:
 ===============QUANTAXIS BACKTEST STOCK_DAY中的变量
 常量:
-QB.backtest_type 回测类型 'day','min'
+QB.backtest_type 回测类型 day/1min/5min/15min/30min/60min/index_day/index_1min/index_5min/index_15min/index_30min/index_60min/
 QB.account.message  当前账户消息
 QB.account.cash  当前可用资金
 QB.account.hold  当前账户持仓
@@ -56,8 +56,9 @@ QB.benchmark_code  策略业绩评价的对照行情
 
 函数:
 获取市场(基于gap)行情:
-QB.QA_backtest_get_market_data(QB,code,QB.today,type)
-type 可以指定是 pandas,numpy或者list 默认返回numpy格式
+QB.QA_backtest_get_market_data(QB,code,QB.today)
+获取单个bar
+QB.QA_backtest_get_market_data_bar(QB,code,QB.today/QB.now)
 
 拿到开高收低量
 Open,High,Low,Close,Volume=QB.QA_backtest_get_OHLCV(QB,QB.QA_backtest_get_market_data(QB,item,QB.today))
@@ -76,7 +77,7 @@ order有三种方式:
   注意: 限价成交需要给出价格:
   order['price']=xxxx
 
-2.市价成交 order['bid_model']=1或者m,M,market,Market
+2.市价成交 order['bid_model']=1或者m,M,market,Market  [其实是以bar的开盘价成交]
 3.严格成交模式 order['bid_model']=2或者s,S
     及 买入按bar的最高价成交 卖出按bar的最低价成交
 3.收盘价成交模式 order['bid_model']=3或者c,C
@@ -90,39 +91,51 @@ QB.QA_backtest_hold_amount(QB,code)
 
 @QB.backtest_init
 def init():
-    QB.backtest_type='day'
-    QB.strategy_name='test_daily'
-    #QB.backtest_type='5min' # 日线回测
-    QB.setting.QA_util_sql_mongo_ip='127.0.0.1' #回测数据库
-    QB.account.init_assest=2500000 # 初始资金
-    QB.strategy_name='test_example' # 策略名称
-    #benchmark 必须是指数代码
-    QB.benchmark_code='399300'
+    # 回测的类别
+    # day/1min/5min/15min/30min/60min/index_day/index_1min/index_5min/index_15min/index_30min/index_60min/
+    QB.backtest_type = '60min'
+    # QB.backtest_type='5min' # 日线回测
+    # 策略的名称
+    QB.strategy_name = 'test_daily'
+    # 数据库位置
+    QB.setting.QA_util_sql_mongo_ip = '127.0.0.1'  # 回测数据库
 
-    QB.strategy_stock_list=['000001','000002','600010','601801'] # 回测的股票列表
-    QB.strategy_start_date='2016-07-01'  # 回测开始日期
-    QB.strategy_end_date='2017-07-10'    # 回测结束日期
+    QB.account.init_assest = 2500000  # 初始资金
+    
+    # benchmark 必须是指数代码
+    QB.benchmark_code = '399300'
+    # 手续费系数
+    QB.commission_fee_coeff = 0.0015  # 千五的手续费(单向)
+
+    QB.strategy_gap = 30   # 在取数据的时候 向前取多少个bar(会按回测的时间动态移动)
+    QB.strategy_stock_list = ['000001', '000002',
+                              '600010', '601801']  # 回测的股票列表/如果是指数回测 就是指数列表
+    QB.strategy_start_date = '2016-07-01 10:30:00'  # 回测开始日期
+    QB.strategy_end_date = '2017-07-10'    # 回测结束日期
+
 
 @QB.before_backtest
 def before_backtest():
     global risk_position
-    #QA.QA_util_log_info(QB.benchmark_data) 
-    
-    
+    # QA.QA_util_log_info(QB.benchmark_data)
+
+
 @QB.load_strategy
 def strategy():
 
-    QA.QA_util_log_info(QB.account.sell_available)  
-    QA.QA_util_log_info('LEFT Cash: %s'%QB.account.cash_available)
+    QA.QA_util_log_info(QB.account.sell_available)
+    QA.QA_util_log_info('LEFT Cash: %s' % QB.account.cash_available)
     for item in QB.strategy_stock_list:
-        #QA.QA_util_log_info(QB.QA_backtest_get_market_data(QB,item,QB.today).data) 
-        if QB.QA_backtest_hold_amount(QB,item)==0:
-            QB.QA_backtest_send_order(QB,item,10000,1,{'bid_model':'Market'}) 
+        QA.QA_util_log_info(QB.QA_backtest_get_market_data(QB,item,QB.now).data)
+        if QB.QA_backtest_hold_amount(QB, item) == 0:
+            QB.QA_backtest_send_order(
+                QB, item, 10000, 1, {'bid_model': 'Market'})
 
-    
         else:
-            #print(QB.QA_backtest_hold_amount(QB,item))
-            QB.QA_backtest_send_order(QB,item,10000,-1,{'bid_model':'Market'})
+            # print(QB.QA_backtest_hold_amount(QB,item))
+            QB.QA_backtest_send_order(
+                QB, item, 10000, -1, {'bid_model': 'Market'})
+
 
 @QB.end_backtest
 def after_backtest():

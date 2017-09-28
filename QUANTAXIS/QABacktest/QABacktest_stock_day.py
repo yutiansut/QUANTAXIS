@@ -35,7 +35,6 @@ import apscheduler
 import numpy as np
 import pandas as pd
 import pymongo
-from QUANTAXIS import *
 from QUANTAXIS import (QA_Market, QA_Portfolio, QA_QAMarket_bid, QA_Risk,
                        __version__)
 from QUANTAXIS.QAARP.QAAccount import QA_Account

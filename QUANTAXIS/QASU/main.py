@@ -65,6 +65,15 @@ def QA_SU_save_index_min(engine, client=QA_Setting.client):
     engine = select_save_engine(engine)
     engine.QA_SU_save_index_min(client)
 
+def QA_SU_save_etf_day(engine, client=QA_Setting.client):
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_etf_day(client)
+
+
+def QA_SU_save_etf_min(engine, client=QA_Setting.client):
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_etf_min(client)
+
 
 def QA_SU_save_stock_xdxr(engine, client=QA_Setting.client):
     engine = select_save_engine(engine)

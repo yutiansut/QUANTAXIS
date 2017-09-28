@@ -138,8 +138,13 @@ def query_backtest_history():
 def query_backtest():
     data=QA.QA_fetch_backtest_info()
     return jsonify(data)
+
+@app.route('/realtime', methods=['POST', 'GET'])
+def realtime():
+    request.args.get('username','')
+
 def main():
-    
+    #socketio.run(app)
     from gevent import pywsgi
     from geventwebsocket.handler import WebSocketHandler
     server = pywsgi.WSGIServer(('', 5050), app, handler_class=WebSocketHandler)
