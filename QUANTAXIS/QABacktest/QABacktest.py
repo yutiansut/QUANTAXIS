@@ -63,7 +63,7 @@ from QUANTAXIS.QASU.save_backtest import (QA_SU_save_account_message,
 from QUANTAXIS.QATask import QA_Queue
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_get_real_date,
                               QA_util_log_expection, QA_util_log_info,
-                              QA_util_make_min_index,
+                              QA_util_make_min_index,QA_util_time_gap,QA_util_date_gap,
                               QA_util_to_json_from_pandas, trade_date_sse)
 from tabulate import tabulate
 
@@ -96,7 +96,10 @@ class QA_Backtest():
     end_real_id = 0
     temp = {}
     commission_fee_coeff = 0.0015
-
+    strategy_start_date=''
+    strategy_start_time=''
+    strategy_end_date=''
+    strategy_end_time=''
     def __init__(self):
 
         self.backtest_type = 'day'
@@ -109,6 +112,10 @@ class QA_Backtest():
         self.user = self.setting.QA_setting_user_name
         self.market_data = []
         self.now = ''
+        self.strategy_start_date=''
+        self.strategy_start_time=''
+        self.strategy_end_date=''
+        self.strategy_end_time=''
         self.today = ''
         self.strategy_stock_list = []
         self.trade_list = []
@@ -151,17 +158,33 @@ class QA_Backtest():
         @yutiansut
         2017/7/20
         """
+        if len(str(self.strategy_start_date))==10:
+            self.strategy_start_time=str(self.strategy_start_date)+' 15:00:00'
+        elif len(str(self.strategy_start_date))==19:
+            self.strategy_start_time=str(self.strategy_start_date)
+            self.strategy_start_date=str(self.strategy_start_date)[0:10]
+        else:
+            QA_util_log_info('Wrong start date format')
 
+        if len(str(self.strategy_end_date))==10:
+            self.strategy_end_time=str(self.strategy_end_date)+' 15:00:00'
+        elif len(str(self.strategy_end_date))==19:
+            self.strategy_end_time=str(self.strategy_end_date)
+            self.strategy_end_date=str(self.strategy_end_date)[0:10]
+        else:
+            QA_util_log_info('Wrong end date format')
         # 重新初始账户资产
         self.market = QA_Market(self.commission_fee_coeff)
         self.setting.QA_setting_init()
         self.account.init()
         self.start_real_date = QA_util_get_real_date(
             self.strategy_start_date, self.trade_list, 1)
+        self.start_real_time=str(self.start_real_date)+' '+self.strategy_start_time.split(' ')[1]
         self.start_real_id = self.trade_list.index(self.start_real_date)
         self.end_real_date = QA_util_get_real_date(
             self.strategy_end_date, self.trade_list, -1)
         self.end_real_id = self.trade_list.index(self.end_real_date)
+        self.end_real_time=str(self.end_real_date)+' '+self.strategy_end_time.split(' ')[1]
         # 重新初始化账户的cookie
         self.account.account_cookie = str(random.random())
         # 初始化股票池的市场数据
@@ -170,22 +193,20 @@ class QA_Backtest():
         if self.backtest_type in ['day', 'd', '0x00']:
             self.market_data = QA_fetch_stocklist_day_adv(
                 self.strategy_stock_list, self.trade_list[self.start_real_id - int(
-                    self.strategy_gap)], self.trade_list[self.end_real_id]).to_qfq()
+                    self.strategy_gap+1)], self.trade_list[self.end_real_id]).to_qfq()
 
         elif self.backtest_type in ['1min', '5min', '15min', '30min', '60min']:
             self.market_data = QA_fetch_stocklist_min_adv(
-                self.strategy_stock_list, self.trade_list[
-                    self.start_real_id - int(self.strategy_gap)],
-                self.trade_list[self.end_real_id + 1], self.backtest_type).to_qfq()
+                self.strategy_stock_list, QA_util_time_gap(self.start_real_time,self.strategy_gap+1,'<',self.backtest_type),
+                QA_util_time_gap(self.end_real_time,1,'>',self.backtest_type), self.backtest_type).to_qfq()
 
         elif self.backtest_type in ['index_day']:
             self.market_data = QA_fetch_index_day_adv(self.strategy_stock_list, self.trade_list[self.start_real_id - int(
-                self.strategy_gap)], self.trade_list[self.end_real_id])
+                self.strategy_gap+1)], self.end_real_date)
 
         elif self.backtest_type in ['index_1min', 'index_5min', 'index_15min', 'index_30min', 'index_60min']:
             self.market_data = QA_fetch_index_min_adv(
-                self.strategy_stock_list, self.trade_list[self.start_real_id - int(
-                    self.strategy_gap)], self.trade_list[self.end_real_id + 1], self.backtest_type.split('_')[1])
+                self.strategy_stock_list, QA_util_time_gap(self.start_real_time,self.strategy_gap+1,'<',self.backtest_type.split('_')[1]),  QA_util_time_gap(self.end_real_time,1,'>',self.backtest_type.split('_')[1]), self.backtest_type.split('_')[1])
 
     def __QA_backtest_start(self, *args, **kwargs):
         """
@@ -314,10 +335,10 @@ class QA_Backtest():
             self.account.detail.to_csv(
                 'backtest-pnl--' + str(self.account.account_cookie) + '.csv')
 
-    def QA_backtest_get_market_data(self, code, date, gap_=None):
+    def QA_backtest_get_market_data(self, code, date, gap_=None,type_='lt'):
         '这个函数封装了关于获取的方式 用GAP的模式'
         gap_ = self.strategy_gap if gap_ is None else gap_
-        return self.market_data.select_code(code).select_time_with_gap(date, gap_, 'lte')
+        return self.market_data.select_code(code).select_time_with_gap(date, gap_, type_)
 
     def QA_backtest_get_market_data_bar(self, code, time):
         '这个函数封装了关于获取的方式'

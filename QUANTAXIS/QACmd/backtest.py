@@ -110,7 +110,7 @@ def init():
     QB.strategy_gap = 30   # 在取数据的时候 向前取多少个bar(会按回测的时间动态移动)
     QB.strategy_stock_list = ['000001', '000002',
                               '600010', '601801']  # 回测的股票列表/如果是指数回测 就是指数列表
-    QB.strategy_start_date = '2016-07-01'  # 回测开始日期
+    QB.strategy_start_date = '2016-07-01 10:30:00'  # 回测开始日期
     QB.strategy_end_date = '2017-07-10'    # 回测结束日期
 
 
@@ -126,7 +126,7 @@ def strategy():
     QA.QA_util_log_info(QB.account.sell_available)
     QA.QA_util_log_info('LEFT Cash: %s' % QB.account.cash_available)
     for item in QB.strategy_stock_list:
-        # QA.QA_util_log_info(QB.QA_backtest_get_market_data(QB,item,QB.today).data)
+        QA.QA_util_log_info(QB.QA_backtest_get_market_data(QB,item,QB.today).data)
         if QB.QA_backtest_hold_amount(QB, item) == 0:
             QB.QA_backtest_send_order(
                 QB, item, 10000, 1, {'bid_model': 'Market'})
