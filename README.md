@@ -159,6 +159,8 @@ linux/mac下的nodejs有一个版本管理包 叫n 需要全局安装 -g
 
 所以无论装了什么版本的nodejs  只需要npm install n -g  就行  
 ### python
+
+> Linux
 ```shell
 
 #install python3.6 in linux
@@ -168,6 +170,10 @@ sudo apt-get install python3.6
 wget https://bootstrap.pypa.io/get-pip.py
 sudo -H python3.6 get-pip.py
 ```
+> Windows
+
+建议直接安装Anaconda包,记住在安装时 选择添加path不然后面会很麻烦
+
 #### python的一些需要编译的包的安装
 
 安装TA-Lib
