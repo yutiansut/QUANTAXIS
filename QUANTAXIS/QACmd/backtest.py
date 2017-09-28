@@ -93,7 +93,7 @@ QB.QA_backtest_hold_amount(QB,code)
 def init():
     # 回测的类别
     # day/1min/5min/15min/30min/60min/index_day/index_1min/index_5min/index_15min/index_30min/index_60min/
-    QB.backtest_type = '60min'
+    QB.backtest_type = 'day'
     # QB.backtest_type='5min' # 日线回测
     # 策略的名称
     QB.strategy_name = 'test_daily'
@@ -126,7 +126,7 @@ def strategy():
     QA.QA_util_log_info(QB.account.sell_available)
     QA.QA_util_log_info('LEFT Cash: %s' % QB.account.cash_available)
     for item in QB.strategy_stock_list:
-        QA.QA_util_log_info(QB.QA_backtest_get_market_data(QB,item,QB.now).data)
+        QA.QA_util_log_info(QB.QA_backtest_get_market_data(QB,item,QB.today).data)
         if QB.QA_backtest_hold_amount(QB, item) == 0:
             QB.QA_backtest_send_order(
                 QB, item, 10000, 1, {'bid_model': 'Market'})
