@@ -72,7 +72,8 @@ class stock_hq_base(__stock_base):
             self.date = self.data['date']
         self.index = DataFrame.index
         self.code = self.data.index.levels[self.data.index.names.index('code')]
-
+    def __repr__(self):
+        return 'QA_Base_DataStruct with %s securities'%len(self.code)
     def len(self):
         return len(self.data)
 
@@ -203,9 +204,13 @@ class QA_DataStruct_Index_day(stock_hq_base):
         self.date = self.data.index.levels[self.data.index.names.index('date')]
         self.index = DataFrame.index
         self.code = self.data.index.levels[self.data.index.names.index('code')]
+
+    def __repr__(self):
+        return 'QA_DataStruct_Index_day with %s securities'%len(self.code)
     def len(self):
             return len(self.data)
-
+    def __repr__(self):
+        return 'QA_Base_DataStruct with %s securities'%len(self.code)
     def reverse(self):
         return QA_DataStruct_Index_day(self.data[::-1])
 
@@ -336,6 +341,9 @@ class QA_DataStruct_Index_min(stock_hq_base):
             'datetime')]
         self.index = DataFrame.index
         self.code = self.data.index.levels[self.data.index.names.index('code')]
+
+    def __repr__(self):
+        return 'QA_DataStruct_Index_Min with %s securities'%len(self.code)
     def len(self):
             return len(self.data)
 
@@ -466,7 +474,8 @@ class QA_DataStruct_Stock_min(stock_hq_base):
             'datetime')]
         self.index = DataFrame.index
         self.code = self.data.index.levels[self.data.index.names.index('code')]
-
+    def __repr__(self):
+        return 'QA_DataStruct_Stock_Min with %s securities'%len(self.code)
     def to_qfq(self):
         if self.if_fq is 'bfq':
             data = QA_DataStruct_Stock_min(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
@@ -641,7 +650,8 @@ class QA_DataStruct_Stock_day(stock_hq_base):
         self.date = self.data.index.levels[self.data.index.names.index('date')]
         self.index = DataFrame.index
         self.code = self.data.index.levels[self.data.index.names.index('code')]
-
+    def __repr__(self):
+        return 'QA_DataStruct_Stock_day with %s securities'%len(self.code)
     def to_qfq(self):
         if self.if_fq is 'bfq':
             data = QA_DataStruct_Stock_day(pd.concat(list(map(
