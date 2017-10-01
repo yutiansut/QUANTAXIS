@@ -35,9 +35,6 @@ class QA_Market():
         self.tick = 'day'
         self.slipper = '0.0005'
 
-    # client=QA_Setting.client
-    # client=QA.QA_util_sql_mongo_setting()
-    # db= client.market
     def receive_bid(self, bid, client):
         if self.type == '2x' and self.tick == 'day':
             coll = client.quantaxis.stock_day
@@ -87,9 +84,6 @@ class QA_Market():
                         }
                     }
                 }
-
-                # QA_signal_send(message,client)
-            # print(message['body']['bid']['amount'])
                 return message
             else:
                 QA_util_log_info('not success')
