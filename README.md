@@ -10,12 +10,12 @@
 
 
 
-![version](https://img.shields.io/badge/Version-%200.4.50-orange.svg)
+![version](https://img.shields.io/badge/Version-%200.4.52-orange.svg)
 ![build](https://travis-ci.org/yutiansut/QUANTAXIS.svg?branch=master)
 [![Stories in Ready](https://badge.waffle.io/yutiansut/QUANTAXIS.svg?label=ready&title=Ready)](http://waffle.io/yutiansut/QUANTAXIS)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.8-brown.svg)
-![Pypi](https://img.shields.io/badge/Pypi-%200.4.50-blue.svg)
+![Pypi](https://img.shields.io/badge/Pypi-%200.4.52-blue.svg)
 ![python](https://img.shields.io/badge/python-%203.6/3.5/3.4/win/ubuntu-darkgrey.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.4.0-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
@@ -45,26 +45,27 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - 指标数据
 <!-- TOC -->
 
-- [QUANTAXIS 量化金融策略框架](#quantaxis-%E9%87%8F%E5%8C%96%E9%87%91%E8%9E%8D%E7%AD%96%E7%95%A5%E6%A1%86%E6%9E%B6)
-    - [框架结构](#%E6%A1%86%E6%9E%B6%E7%BB%93%E6%9E%84)
-    - [部署问题:](#%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98)
+- [QUANTAXIS 量化金融策略框架](#quantaxis-量化金融策略框架)
+    - [框架结构](#框架结构)
+    - [部署问题:](#部署问题)
         - [git](#git)
         - [MongoDB](#mongodb)
         - [Nodejs](#nodejs)
         - [python](#python)
-            - [python的一些需要编译的包的安装](#python%E7%9A%84%E4%B8%80%E4%BA%9B%E9%9C%80%E8%A6%81%E7%BC%96%E8%AF%91%E7%9A%84%E5%8C%85%E7%9A%84%E5%AE%89%E8%A3%85)
-        - [安装QUANTAXIS](#%E5%AE%89%E8%A3%85quantaxis)
-        - [安装QUANATXIS_WebKit](#%E5%AE%89%E8%A3%85quanatxiswebkit)
-        - [启动QUANTAXIS CLI 并进行数据的初始化存储](#%E5%90%AF%E5%8A%A8quantaxis-cli-%E5%B9%B6%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E5%AD%98%E5%82%A8)
-        - [启动QUANTAXIS_Webkit来查看回测的结果](#%E5%90%AF%E5%8A%A8quantaxiswebkit%E6%9D%A5%E6%9F%A5%E7%9C%8B%E5%9B%9E%E6%B5%8B%E7%9A%84%E7%BB%93%E6%9E%9C)
-        - [更新QUANTAXIS](#%E6%9B%B4%E6%96%B0quantaxis)
-    - [项目捐赠](#%E9%A1%B9%E7%9B%AE%E6%8D%90%E8%B5%A0)
-    - [关于QUANTAXIS基金](#%E5%85%B3%E4%BA%8Equantaxis%E5%9F%BA%E9%87%91)
-    - [一些基础的api介绍](#%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80%E7%9A%84api%E4%BB%8B%E7%BB%8D)
-        - [QUANTAXIS.QABacktest 的 api](#quantaxisqabacktest-%E7%9A%84-api)
-        - [QUANTAXIS的api](#quantaxis%E7%9A%84api)
-    - [回测Webkit插件概览](#%E5%9B%9E%E6%B5%8Bwebkit%E6%8F%92%E4%BB%B6%E6%A6%82%E8%A7%88)
-    - [QUANTAXIS 标准化协议和未来协议](#quantaxis-%E6%A0%87%E5%87%86%E5%8C%96%E5%8D%8F%E8%AE%AE%E5%92%8C%E6%9C%AA%E6%9D%A5%E5%8D%8F%E8%AE%AE)
+            - [python的一些需要编译的包的安装](#python的一些需要编译的包的安装)
+        - [安装QUANTAXIS](#安装quantaxis)
+        - [安装QUANATXIS_WebKit](#安装quanatxis_webkit)
+        - [启动QUANTAXIS CLI 并进行数据的初始化存储](#启动quantaxis-cli-并进行数据的初始化存储)
+        - [启动QUANTAXIS_Webkit来查看回测的结果](#启动quantaxis_webkit来查看回测的结果)
+        - [更新QUANTAXIS](#更新quantaxis)
+    - [项目捐赠](#项目捐赠)
+    - [关于QUANTAXIS基金](#关于quantaxis基金)
+    - [一些基础的api介绍](#一些基础的api介绍)
+        - [QUANTAXIS.QABacktest 的 api](#quantaxisqabacktest-的-api)
+        - [QUANTAXIS的核心数据结构](#quantaxis的核心数据结构)
+        - [QUANTAXIS的api](#quantaxis的api)
+    - [回测Webkit插件概览](#回测webkit插件概览)
+    - [QUANTAXIS 标准化协议和未来协议](#quantaxis-标准化协议和未来协议)
 
 <!-- /TOC -->
 
@@ -363,7 +364,23 @@ QB.QA_backtest_hold_amount(QB,code)
 
 
 ```
+### QUANTAXIS的核心数据结构
 
+QA_DataStruct
+
+
+属性用@property装饰器装饰,进行懒运算 提高效率
+
+DataStruct具有的功能:
+
+- 数据容器
+- 数据变换 [分拆/合并/倒序] split/merge/reverse
+- 数据透视 pivot
+- 数据筛选 select_time/select_time_with_gap/select_code/get_bar
+- 数据复权 to_qfq/to_hfq
+- 数据显示 show
+- 格式变换 to_json/to_pandas/to_list/to_numpy
+- 数据库式查询  query
 
 ### QUANTAXIS的api
 ```python
