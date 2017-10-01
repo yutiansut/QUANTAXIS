@@ -329,6 +329,7 @@ class QA_DataStruct_Index_min(__stock_hq_base):
     def __init__(self, DataFrame):
         self.type = 'index_min'
         self.if_fq = ''
+        self.data = DataFrame
         self.mongo_coll = QA_Setting.client.quantaxis.index_min
 
 

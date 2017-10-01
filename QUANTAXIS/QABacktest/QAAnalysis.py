@@ -28,14 +28,14 @@ Analysis Center for Backtest
 we will give some function
 """
 import math
-
+import sys
 import numpy
 import pandas as pd
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day
 from QUANTAXIS.QAUtil import QA_util_log_info, trade_date_sse
 
 
-def QA_backtest_analysis_start(client, code_list, message, total_date,benchmark_data):
+def QA_backtest_analysis_start(client, code_list,assets_d,account_days, message, total_date,benchmark_data):
     # 主要要从message_history分析
     # 1.收益率
     # 2.胜率
@@ -67,6 +67,12 @@ def QA_backtest_analysis_start(client, code_list, message, total_date,benchmark_
     收益/次数的频次直方图
     单日最大持仓
     """
+    # 数据检查
+    if (len(benchmark_data))<1:
+        QA_util_log_info('Wrong with benchmark data ! ')
+        sys.exit()
+
+    
     # 计算一个benchmark
     # 这个benchmark 是在开始的那天 市价买入和策略所选标的一致的所有股票,然后一直持仓
     data=pd.concat([pd.DataFrame(message['body']['account']['history'],
@@ -81,10 +87,10 @@ def QA_backtest_analysis_start(client, code_list, message, total_date,benchmark_
     trade_history = message['body']['account']['history']
     cash = message['body']['account']['cash']
     assets = message['body']['account']['assets']
-    assets_= data.resample('D').last().dropna()
+
+    #assets_= data.resample('D').last().dropna()
     # 计算交易日
-    trade_date = list(assets_['time'].apply(lambda x: str(x)[0:10]))
-    assets_d = list(assets_['assets'])
+    trade_date = account_days
     # benchmark资产
     benchmark_assets = QA_backtest_calc_benchmark(
         benchmark_data, assets[0])

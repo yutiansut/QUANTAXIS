@@ -101,6 +101,8 @@ class QA_Backtest():
     strategy_end_date=''
     strategy_end_time=''
     benchmark_type ='index'
+    account_d_value=[]
+    account_d_key=[]
     def __init__(self):
 
         self.backtest_type = 'day'
@@ -125,6 +127,8 @@ class QA_Backtest():
         self.temp = {}
         self.commission_fee_coeff = 0.0015
         self.benchmark_type = 'index'
+
+
 
     def __QA_backtest_init(self):
         """既然是被当做装饰器使用,就需要把变量设置放在装饰函数的前面,把函数放在装饰函数的后面"""
@@ -308,7 +312,7 @@ class QA_Backtest():
         __exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
         if len(self.__messages) > 1:
             performace = QA_backtest_analysis_start(
-                self.setting.client, self.strategy_stock_list, self.__messages,
+                self.setting.client, self.strategy_stock_list,self.account_d_value,self.account_d_key,self.__messages,
                 self.trade_list[self.start_real_id:self.end_real_id + 1],
                 self.benchmark_data.data)
             _backtest_mes = {
@@ -529,6 +533,12 @@ class QA_Backtest():
                 'code', drop=False)['amount'].groupby('code').sum()
 
             self.account.order_queue = pd.DataFrame()
+
+            self.account_d_key.append(self.today)
+            try:
+                self.account_d_value.append(self.account.assets[-1])
+            except:
+                self.account_d_value.append(self.account.cash[-1])
         elif event_ in ['t_0']:
             """
             T+0交易事件
