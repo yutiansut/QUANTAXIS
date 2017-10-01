@@ -23,57 +23,61 @@ from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
                               QA_util_to_json_from_pandas, trade_date_sse)
 
 
-class __stock_base():
-    def __init__(self, DataFrame):
-        self.data = DataFrame
-        self.type = ''
-        self.if_fq = 'bfq'
-        self.mongo_coll = QA_Setting.client.quantaxis
-        self.open = DataFrame['open']
-        self.high = DataFrame['high']
-        self.low = DataFrame['low']
-        self.close = DataFrame['close']
-        if 'volume' in DataFrame.columns:
-            self.vol = DataFrame['volume']
-        else:
-            self.vol = DataFrame['vol']
-        if 'date' in self.data.index.names.index:
-            self.date = self.data.index.levels[self.data.index.names.index(
-                'date')]
-            self.datetime = self.date
-        elif 'datetime' in self.data.index.names.index:
-            self.datetime = self.data.index.levels[self.data.index.names.index(
-                'datetime')]
-            self.date = self.datetime.apply(lambda x: str(x)[0:10])
-        self.index = DataFrame.index
-        self.code = self.data.index.levels[self.data.index.names.index('code')]
-
 class __stock_hq_base():
     def __init__(self, DataFrame):
         self.data = DataFrame
         self.type = ''
         self.if_fq = 'bfq'
         self.mongo_coll = QA_Setting.client.quantaxis
-        self.open = DataFrame['open']
-        self.high = DataFrame['high']
-        self.low = DataFrame['low']
-        self.close = DataFrame['close']
-        if 'volume' in DataFrame.columns:
-            self.vol = DataFrame['volume']
-        else:
-            self.vol = DataFrame['vol']
-        if 'date' in self.data.index.names:
-            self.date = self.data.index.levels[self.data.index.names.index(
-                'date')]
-            self.datetime = self.date
-        elif 'datetime' in self.data.index.names:
-            self.datetime = self.data.index.levels[self.data.index.names.index(
-                'datetime')]
-            self.date = self.data['date']
-        self.index = DataFrame.index
-        self.code = self.data.index.levels[self.data.index.names.index('code')]
+
+
+
+
     def __repr__(self):
         return 'QA_Base_DataStruct with %s securities'%len(self.code)
+    def __call__(self):
+        return self.data
+
+    # 使用property进行懒运算
+    @property
+    def open(self):
+        return self.data['open']
+
+    @property
+    def high(self):
+        return self.data['high']
+    @property
+    def low(self):
+        return self.data['low']
+    @property
+    def close(self):
+        return self.data['close']
+
+    @property
+    def vol(self):
+        if 'volume' in self.data.columns:
+            return self.data['volume']
+        else:
+            return self.data['vol']
+    @property
+    def date(self):
+        
+        return self.data.index.levels[self.data.index.names.index(
+                'date')] if 'date' in self.data.index.names else self.data['date']
+    @property
+    def datetime(self):
+        
+        return self.data.index.levels[self.data.index.names.index(
+                'datetime')] if 'datetime' in self.data.index.names else self.data.index.levels[self.data.index.names.index(
+                'date')]
+
+    @property
+    def index(self):
+        return self.data.index
+
+    @property
+    def code(self):
+        return self.data.index.levels[self.data.index.names.index('code')]
     def len(self):
         return len(self.data)
 
@@ -192,18 +196,8 @@ class QA_DataStruct_Index_day(__stock_hq_base):
         self.data = DataFrame
         self.type = 'index_day'
         self.if_fq = ''
-        self.mongo_coll = QA_Setting.client.quantaxis.stock_day
-        self.open = DataFrame['open']
-        self.high = DataFrame['high']
-        self.low = DataFrame['low']
-        self.close = DataFrame['close']
-        if 'volume' in DataFrame.columns:
-            self.vol = DataFrame['volume']
-        else:
-            self.vol = DataFrame['vol']
-        self.date = self.data.index.levels[self.data.index.names.index('date')]
-        self.index = DataFrame.index
-        self.code = self.data.index.levels[self.data.index.names.index('code')]
+        self.mongo_coll = QA_Setting.client.quantaxis.index_day
+
 
     """
     def __add__(self,DataStruct):
@@ -214,6 +208,9 @@ class QA_DataStruct_Index_day(__stock_hq_base):
     """
     def __repr__(self):
         return 'QA_DataStruct_Index_day with %s securities'%len(self.code)
+
+
+
     def len(self):
             return len(self.data)
 
@@ -332,21 +329,8 @@ class QA_DataStruct_Index_min(__stock_hq_base):
     def __init__(self, DataFrame):
         self.type = 'index_min'
         self.if_fq = ''
-        self.mongo_coll = QA_Setting.client.quantaxis.stock_min
-        self.open = DataFrame['open']
-        self.high = DataFrame['high']
-        self.low = DataFrame['low']
-        self.close = DataFrame['close']
-        if 'volume' in DataFrame.columns:
-            self.vol = DataFrame['volume']
-        else:
-            self.vol = DataFrame['vol']
-        self.date = DataFrame['date']
-        self.data = DataFrame
-        self.datetime = self.data.index.levels[self.data.index.names.index(
-            'datetime')]
-        self.index = DataFrame.index
-        self.code = self.data.index.levels[self.data.index.names.index('code')]
+        self.mongo_coll = QA_Setting.client.quantaxis.index_min
+
 
     def __repr__(self):
         return 'QA_DataStruct_Index_Min with %s securities'%len(self.code)
@@ -466,20 +450,7 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
         self.type = 'stock_min'
         self.if_fq = 'bfq'
         self.mongo_coll = QA_Setting.client.quantaxis.stock_min
-        self.open = DataFrame['open']
-        self.high = DataFrame['high']
-        self.low = DataFrame['low']
-        self.close = DataFrame['close']
-        if 'volume' in DataFrame.columns:
-            self.vol = DataFrame['volume']
-        else:
-            self.vol = DataFrame['vol']
-        self.date = DataFrame['date']
-        self.data = DataFrame
-        self.datetime = self.data.index.levels[self.data.index.names.index(
-            'datetime')]
-        self.index = DataFrame.index
-        self.code = self.data.index.levels[self.data.index.names.index('code')]
+
     def __repr__(self):
         return 'QA_DataStruct_Stock_Min with %s securities'%len(self.code)
     def to_qfq(self):
@@ -645,17 +616,7 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
         self.type = 'stock_day'
         self.if_fq = 'bfq'
         self.mongo_coll = QA_Setting.client.quantaxis.stock_day
-        self.open = DataFrame['open']
-        self.high = DataFrame['high']
-        self.low = DataFrame['low']
-        self.close = DataFrame['close']
-        if 'volume' in DataFrame.columns:
-            self.vol = DataFrame['volume']
-        else:
-            self.vol = DataFrame['vol']
-        self.date = self.data.index.levels[self.data.index.names.index('date')]
-        self.index = DataFrame.index
-        self.code = self.data.index.levels[self.data.index.names.index('code')]
+
     def __repr__(self):
         return 'QA_DataStruct_Stock_day with %s securities'%len(self.code)
     def to_qfq(self):
