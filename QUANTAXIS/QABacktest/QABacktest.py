@@ -535,7 +535,10 @@ class QA_Backtest():
             self.account.order_queue = pd.DataFrame()
 
             self.account_d_key.append(self.today)
-            self.account_d_value.append(self.account.assets[-1])
+            try:
+                self.account_d_value.append(self.account.assets[-1])
+            except:
+                self.account_d_value.append(self.account.cash[-1])
         elif event_ in ['t_0']:
             """
             T+0交易事件
