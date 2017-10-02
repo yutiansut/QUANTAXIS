@@ -10,12 +10,12 @@
 
 
 
-![version](https://img.shields.io/badge/Version-%200.4.50-orange.svg)
+![version](https://img.shields.io/badge/Version-%200.4.55-orange.svg)
 ![build](https://travis-ci.org/yutiansut/QUANTAXIS.svg?branch=master)
 [![Stories in Ready](https://badge.waffle.io/yutiansut/QUANTAXIS.svg?label=ready&title=Ready)](http://waffle.io/yutiansut/QUANTAXIS)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.8-brown.svg)
-![Pypi](https://img.shields.io/badge/Pypi-%200.4.50-blue.svg)
+![Pypi](https://img.shields.io/badge/Pypi-%200.4.55-blue.svg)
 ![python](https://img.shields.io/badge/python-%203.6/3.5/3.4/win/ubuntu-darkgrey.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.4.0-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
@@ -45,16 +45,27 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - 指标数据
 <!-- TOC -->
 
-- [QUANTAXIS 量化金融策略框架](#quantaxis-%E9%87%8F%E5%8C%96%E9%87%91%E8%9E%8D%E7%AD%96%E7%95%A5%E6%A1%86%E6%9E%B6)
-    - [框架结构](#%E6%A1%86%E6%9E%B6%E7%BB%93%E6%9E%84)
-    - [部署问题:](#%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98)
-    - [项目捐赠](#%E9%A1%B9%E7%9B%AE%E6%8D%90%E8%B5%A0)
-    - [关于QUANTAXIS基金](#%E5%85%B3%E4%BA%8Equantaxis%E5%9F%BA%E9%87%91)
-    - [一些基础的api介绍](#%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80%E7%9A%84api%E4%BB%8B%E7%BB%8D)
-        - [QUANTAXIS.QABacktest 的 api](#quantaxisqabacktest-%E7%9A%84-api)
-        - [QUANTAXIS的api](#quantaxis%E7%9A%84api)
-    - [回测Webkit插件概览](#%E5%9B%9E%E6%B5%8Bwebkit%E6%8F%92%E4%BB%B6%E6%A6%82%E8%A7%88)
-    - [QUANTAXIS 标准化协议和未来协议](#quantaxis-%E6%A0%87%E5%87%86%E5%8C%96%E5%8D%8F%E8%AE%AE%E5%92%8C%E6%9C%AA%E6%9D%A5%E5%8D%8F%E8%AE%AE)
+- [QUANTAXIS 量化金融策略框架](#quantaxis-量化金融策略框架)
+    - [框架结构](#框架结构)
+    - [部署问题:](#部署问题)
+        - [git](#git)
+        - [MongoDB](#mongodb)
+        - [Nodejs](#nodejs)
+        - [python](#python)
+            - [python的一些需要编译的包的安装](#python的一些需要编译的包的安装)
+        - [安装QUANTAXIS](#安装quantaxis)
+        - [安装QUANATXIS_WebKit](#安装quanatxis_webkit)
+        - [启动QUANTAXIS CLI 并进行数据的初始化存储](#启动quantaxis-cli-并进行数据的初始化存储)
+        - [启动QUANTAXIS_Webkit来查看回测的结果](#启动quantaxis_webkit来查看回测的结果)
+        - [更新QUANTAXIS](#更新quantaxis)
+    - [项目捐赠](#项目捐赠)
+    - [关于QUANTAXIS基金](#关于quantaxis基金)
+    - [一些基础的api介绍](#一些基础的api介绍)
+        - [QUANTAXIS.QABacktest 的 api](#quantaxisqabacktest-的-api)
+        - [QUANTAXIS的核心数据结构](#quantaxis的核心数据结构)
+        - [QUANTAXIS的api](#quantaxis的api)
+    - [回测Webkit插件概览](#回测webkit插件概览)
+    - [QUANTAXIS 标准化协议和未来协议](#quantaxis-标准化协议和未来协议)
 
 <!-- /TOC -->
 
@@ -71,6 +82,86 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - 强烈推荐mongodb的可视化库  robomongo 百度即可下载
 
 一个简易demo(需要先安装并启动mongodb,python版本需要大于3)
+
+### git
+>windows
+
+百度搜索:git 下载--exe安装
+
+>linux
+
+自带 无需安装
+
+### MongoDB 
+> Windows
+
+- 下载地址 MongoDB 64位 3.4.7:[下载链接](https://www.mongodb.com/dr/fastdl.mongodb.org/win32/mongodb-win32-x86_64-2008plus-ssl-3.4.7-signed.msi)
+
+- 可以使用迅雷下载加速
+
+- 下载完毕以后双击MSI文件安装,一般会安装到C:\Program Files\MongoDB\Server\3.4\bin
+
+* MongoDB需要一个data目录一个logo目录,一般我们会在D:中新建一个data目录
+```powershell
+# 打开Powershell(Win键+R 在运行中输入Powershell)
+cd D:
+md data
+# 然后在data目录下 新建一个data目录用于存放mongo的数据,log目录用于存放log
+cd data
+md data
+md log
+# 到Mongo的程序文件夹下,使用命令
+cd C:\Program Files\MongoDB\Server\3.4\bin
+# 用mongod 命令安装
+.\mongod.exe --dbpath  D:\data\data  --logpath D:\data\log\mongo.log --httpinterface --rest --serviceName 'MongoDB' --install
+# 启动mongodb服务
+net start MongoDB
+```
+> linux
+- Ubuntu
+
+```shell
+#  添加源
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
+# Ubuntu 12.04
+echo "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu precise/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+# Ubuntu 14.04
+echo "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+# Ubuntu 16.04
+echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+# 更新源
+sudo apt-get update
+# 安装MongoDB
+sudo apt-get install -y mongodb-org
+# 开启MongoDB服务
+sudo service mongod start
+
+```
+### Nodejs
+> windows
+
+官网链接: https://nodejs.org/zh-cn/download/current/
+
+直接下载exe 按要求安装即可 最新版本 8.2.1
+
+> Linux
+
+- Ubuntu
+
+```shell
+sudo apt-get install npm
+sudo npm install n -g
+sudo n latest
+sudo npm install npm -g #更新npm
+sudo npm install forever -g #安装一个全局的forever 用于之后启动
+```
+
+linux/mac下的nodejs有一个版本管理包 叫n 需要全局安装 -g
+
+所以无论装了什么版本的nodejs  只需要npm install n -g  就行  
+### python
+
+> Linux
 ```shell
 
 #install python3.6 in linux
@@ -79,48 +170,110 @@ sudo apt-get update
 sudo apt-get install python3.6
 wget https://bootstrap.pypa.io/get-pip.py
 sudo -H python3.6 get-pip.py
-#
+```
+> Windows
 
+建议直接安装Anaconda包,记住在安装时 选择添加path不然后面会很麻烦
 
+#### python的一些需要编译的包的安装
 
+安装TA-Lib
+```
+sudo apt-get update
+sudo apt-get install python3.6-dev
+wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
+tar -xzvf ta-lib-0.4.0-src.tar.gz
+cd ta-lib
+./configure --prefix=/usr
+make
+sudo make install
+cd ..
+pip install TA-Lib
+# 安装剩余的依赖项
+python3.6 -m pip install -r requirements.txt -i https://pypi.doubanio.com/simple
+python3.6 -m pip install tushare https://pypi.doubanio.com/simple
+#####
+
+# Windows 下安装一些需要编译的包:
+# 访问http://www.lfd.uci.edu/~gohlke/pythonlibs/  下载对应的whl安装包
+# pip install xxxxx(文件名).whl
+```
+### 安装QUANTAXIS
+```
 git clone https://github.com/yutiansut/quantaxis
 cd quantaxis 
 (sudo) pip install -e . # 一定要用这种方法,python setup.py install方法无法解压 安装在本目录下的开发模式
+
+```
+### 安装QUANATXIS_WebKit
+```shell
+cd QUANTAXIS_Webkit
+(sudo) npm install forever -g
+
+# 先去后台项目的文件夹安装
+cd backend
+(sudo) npm install
+# 再去前端的文件夹安装
+cd ..
+cd web
+(sudo) npm install
+```
+### 启动QUANTAXIS CLI 并进行数据的初始化存储
+
 在命令行输入 quantaxis 进去quantaxis CLI
 quantaxis> save all
 
-随意新建一个目录:
+随意新建一个目录:(不要跟QUANTAXIS文件夹在一个目录)
 
 在命令行输入 quantaxis 进去quantaxis CLI
 
 
-输入examples 在目录下生成一个示例策略
+输入examples 在当前目录下生成一个示例策略
 
+运行这个示例策略:
 
 python  backtest.py
 
-```
+
+### 启动QUANTAXIS_Webkit来查看回测的结果
+
 
 启动网络插件(nodejs 版本号需要大于6,最好是7)
 ```shell
-cd QUANTAXISWebkit
-
-
-(sudo) npm install forever -g
+cd QUANTAXIS_Webkit
+# 先启动后台服务器  在3000端口
 cd backend
-(sudo) npm install
 (sudo) forever start bin/www
 cd ..
+# 再启动前端服务器  在8080端口
 cd web
 (sudo) npm install
 (sudo) npm run dev 或者 forever start build/dev-server.js
 ```
+
 会自动启动localhost:8080网页端口,用账户名admin,密码admin登录
 (注明: admin注册是在python的QUANTAXIS save all时候执行的)
 
 另外 如果save all已经执行,依然登录不进去 点击插件状态 查看3000端口是否打开
 
+### 更新QUANTAXIS
 
+由于目前项目还在开发中,所以需要使用Git来更新项目:
+
+常规更新:
+```
+cd QUANTAXIS
+git pull
+```
+
+如果本地有进行更改,遇到更新失败:
+
+(注意: 最好不要在本地修改该项目文件,如果需要做一些自定义功能,可以进fork[在项目的右上角])
+
+```
+git reset --hard origin/master
+git pull
+```
 
 ## 项目捐赠
 
@@ -209,7 +362,23 @@ QB.QA_backtest_hold_amount(QB,code)
 
 
 ```
+### QUANTAXIS的核心数据结构
 
+QA_DataStruct
+
+
+属性用@property装饰器装饰,进行懒运算 提高效率
+
+DataStruct具有的功能:
+
+- 数据容器
+- 数据变换 [分拆/合并/倒序] split/merge/reverse
+- 数据透视 pivot
+- 数据筛选 select_time/select_time_with_gap/select_code/get_bar
+- 数据复权 to_qfq/to_hfq
+- 数据显示 show
+- 格式变换 to_json/to_pandas/to_list/to_numpy
+- 数据库式查询  query
 
 ### QUANTAXIS的api
 ```python

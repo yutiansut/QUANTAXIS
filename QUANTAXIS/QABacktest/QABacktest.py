@@ -100,6 +100,9 @@ class QA_Backtest():
     strategy_start_time=''
     strategy_end_date=''
     strategy_end_time=''
+    benchmark_type ='index'
+    account_d_value=[]
+    account_d_key=[]
     def __init__(self):
 
         self.backtest_type = 'day'
@@ -123,6 +126,9 @@ class QA_Backtest():
         self.end_real_id = 0
         self.temp = {}
         self.commission_fee_coeff = 0.0015
+        self.benchmark_type = 'index'
+
+
 
     def __QA_backtest_init(self):
         """既然是被当做装饰器使用,就需要把变量设置放在装饰函数的前面,把函数放在装饰函数的后面"""
@@ -188,8 +194,12 @@ class QA_Backtest():
         # 重新初始化账户的cookie
         self.account.account_cookie = str(random.random())
         # 初始化股票池的市场数据
-        self.benchmark_data = QA_fetch_index_day_adv(
-            self.benchmark_code, self.start_real_date, self.end_real_date)
+        if self.benchmark_type in ['I','index']:
+            self.benchmark_data = QA_fetch_index_day_adv(
+                self.benchmark_code, self.start_real_date, self.end_real_date)
+        elif self.benchmark_type in ['S','stock']:
+            self.benchmark_data = QA_fetch_stock_day_adv(
+                self.benchmark_code, self.start_real_date, self.end_real_date)
         if self.backtest_type in ['day', 'd', '0x00']:
             self.market_data = QA_fetch_stocklist_day_adv(
                 self.strategy_stock_list, self.trade_list[self.start_real_id - int(
@@ -276,7 +286,6 @@ class QA_Backtest():
 
     def __end_of_backtest(self, *arg, **kwargs):
         # 开始分析
-
         # 对于account.detail做一定的整理
         self.account.detail = detail = pd.DataFrame(self.account.detail, columns=['date', 'code', 'price', 'amounts', 'order_id',
                                                                                   'trade_id', 'sell_price', 'sell_order_id',
@@ -302,7 +311,7 @@ class QA_Backtest():
         __exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
         if len(self.__messages) > 1:
             performace = QA_backtest_analysis_start(
-                self.setting.client, self.strategy_stock_list, self.__messages,
+                self.setting.client, self.strategy_stock_list,self.account_d_value,self.account_d_key,self.__messages,
                 self.trade_list[self.start_real_id:self.end_real_id + 1],
                 self.benchmark_data.data)
             _backtest_mes = {
@@ -523,6 +532,9 @@ class QA_Backtest():
                 'code', drop=False)['amount'].groupby('code').sum()
 
             self.account.order_queue = pd.DataFrame()
+
+            self.account_d_key.append(self.today)
+            self.account_d_value.append(self.account.QA_account_calc_assets())
         elif event_ in ['t_0']:
             """
             T+0交易事件
@@ -725,7 +737,6 @@ class QA_Backtest():
 
     @classmethod
     def end_backtest(__backtest_cls, func, *arg, **kwargs):
-        # yield __backtest_cls.cash
         __backtest_cls.__end_of_backtest(__backtest_cls, func, *arg, **kwargs)
         return func(*arg, **kwargs)
 

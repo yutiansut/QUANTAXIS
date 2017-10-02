@@ -50,6 +50,7 @@ QB.strategy_end_date  回测的结束时间
 QB.today  在策略里面代表策略执行时的日期
 QB.now  在策略里面代表策略执行时的时间
 QB.benchmark_code  策略业绩评价的对照行情
+QB.benchmark_type  对照行情是股票还是指数
 
 
 
@@ -102,8 +103,10 @@ def init():
 
     QB.account.init_assest = 2500000  # 初始资金
     
-    # benchmark 必须是指数代码
+    # benchmark 
     QB.benchmark_code = '399300'
+    # benchmark 可以是个股，也可以是指数
+    QB.benchmark_type = 'index'
     # 手续费系数
     QB.commission_fee_coeff = 0.0015  # 千五的手续费(单向)
 
@@ -112,6 +115,7 @@ def init():
                               '600010', '601801']  # 回测的股票列表/如果是指数回测 就是指数列表
     QB.strategy_start_date = '2016-07-01 10:30:00'  # 回测开始日期
     QB.strategy_end_date = '2017-07-10'    # 回测结束日期
+
 
 
 @QB.before_backtest
