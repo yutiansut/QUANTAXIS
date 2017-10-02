@@ -286,7 +286,6 @@ class QA_Backtest():
 
     def __end_of_backtest(self, *arg, **kwargs):
         # 开始分析
-
         # 对于account.detail做一定的整理
         self.account.detail = detail = pd.DataFrame(self.account.detail, columns=['date', 'code', 'price', 'amounts', 'order_id',
                                                                                   'trade_id', 'sell_price', 'sell_order_id',
@@ -535,10 +534,7 @@ class QA_Backtest():
             self.account.order_queue = pd.DataFrame()
 
             self.account_d_key.append(self.today)
-            try:
-                self.account_d_value.append(self.account.assets[-1])
-            except:
-                self.account_d_value.append(self.account.cash[-1])
+            self.account_d_value.append(self.account.QA_account_calc_assets())
         elif event_ in ['t_0']:
             """
             T+0交易事件
@@ -741,7 +737,6 @@ class QA_Backtest():
 
     @classmethod
     def end_backtest(__backtest_cls, func, *arg, **kwargs):
-        # yield __backtest_cls.cash
         __backtest_cls.__end_of_backtest(__backtest_cls, func, *arg, **kwargs)
         return func(*arg, **kwargs)
 

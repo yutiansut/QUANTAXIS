@@ -289,7 +289,9 @@ class QA_Account():
             'fee': __message['body']['fee'],
         })
         return __data
+    def QA_account_calc_assets(self):
+        'get the real assets [from cash and market values]'
 
-
+        return self.cash[-1] + sum([float(self.hold[i][2]) * float(self.hold[i][3]) for  i in range(1, len(self.hold))])
 class QA_Account_min(QA_Account):
     pass
