@@ -45,15 +45,15 @@ def QA_util_get_real_date(date, trade_list, towards):
     if towards == 1:
         while date not in trade_list:
             date = str(datetime.datetime.strptime(
-                date, '%Y-%m-%d') + datetime.timedelta(days=1))[0:10]
+                str(date), '%Y-%m-%d') + datetime.timedelta(days=1))[0:10]
         else:
-            return date
+            return str(date)
     elif towards == -1:
         while date not in trade_list:
             date = str(datetime.datetime.strptime(
-                date, '%Y-%m-%d') - datetime.timedelta(days=1))[0:10]
+                str(date), '%Y-%m-%d') - datetime.timedelta(days=1))[0:10]
         else:
-            return date
+            return str(date)
 
 
 def QA_util_get_real_datelist(start,end):
