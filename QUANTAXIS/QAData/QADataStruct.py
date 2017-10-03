@@ -447,7 +447,7 @@ class QA_DataStruct_Index_min(__stock_hq_base):
             return self.sync_status(QA_DataStruct_Index_min((self.data[self.data['code'] == code])[self.data['datetime'] == str(time)[0:19]].set_index(['datetime', 'code'], drop=False)))
 class QA_DataStruct_Stock_min(__stock_hq_base):
     def __init__(self, DataFrame):
-        
+        self.data = DataFrame
         self.type = 'stock_min'
         self.if_fq = 'bfq'
         self.mongo_coll = QA_Setting.client.quantaxis.stock_min
