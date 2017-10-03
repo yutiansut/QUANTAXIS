@@ -168,8 +168,7 @@ def QA_backtest_result_check(datelist, message):
 
 def QA_backtest_calc_benchmark(benchmark_data, init_assets):
 
-    assets=list(benchmark_data['close'] / float(benchmark_data['close'][0]) * float(init_assets))
-    return assets
+    return list(benchmark_data['close'] / float(benchmark_data['open'][0]) * float(init_assets))
 
 
 def QA_backtest_calc_alpha(annualized_returns, benchmark_annualized_returns, beta, r):
