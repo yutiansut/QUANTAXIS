@@ -1,5 +1,5 @@
 #coding:utf-8
-from QA_trade_stock import QA_Trade_stock_util,QA_Trade_stock_api
+from QA_tradex import QA_Trade_stock_util,QA_Trade_stock_api
 import pymongo
 import csv,time,datetime
 
