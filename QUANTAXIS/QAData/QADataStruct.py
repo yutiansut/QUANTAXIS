@@ -22,7 +22,7 @@ from QUANTAXIS.QAIndicator import EMA, HHV, LLV, SMA
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
                               QA_util_to_json_from_pandas, trade_date_sse)
 
-import matplotlib.pyplot as plt
+from pyecharts import Kline
 
 
 class __stock_hq_base():
@@ -85,10 +85,33 @@ class __stock_hq_base():
 
     def plot(self, code=None):
         if code is None:
-            self.data.loc[:, 'open':'close'].plot()
+            data=[]
+            axis=[]
+            for dates,row in self.data.iterrows():
+                open,high,low,close=row[1:5]
+                datas=[open,close,low,high]
+                axis.append(dates[0])
+                data.append(datas)
+            path_name='.\QA_'+self.type+'_'+self.code[0]+'_'+self.if_fq+'.html'
+            kline=Kline(self.code[0]+'__'+self.if_fq+'__'+self.type,width=1360,height=700)
+            kline.add(self.code[0],axis,data,mark_point=["max","min"], is_datazoom_show=True,datazoom_orient='horizontal')
+            kline.render(path_name)
+            QA_util_log_info('The Pic has been saved to your path: %s'%path_name)
         else:
-            self.select_code(code).data.loc[:, 'open':'close'].plot()
-        plt.show()
+            data=[]
+            axis=[]
+            for dates,row in self.select_code(code).data.iterrows():
+                open,high,low,close=row[1:5]
+                datas=[open,close,low,high]
+                axis.append(dates[0])
+                data.append(datas)
+            path_name='.\QA_'+self.type+'_'+code+'_'+self.if_fq+'.html'
+            kline=Kline(code+'__'+self.if_fq+'__'+self.type,width=1360,height=700)
+            kline.add(code,axis,data,mark_point=["max","min"], is_datazoom_show=True,datazoom_orient='horizontal')
+            kline.render(path_name)
+            QA_util_log_info('The Pic has been saved to your path: %s'%path_name)
+        
+
 
     def len(self):
         return len(self.data)

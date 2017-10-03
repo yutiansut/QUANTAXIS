@@ -52,7 +52,6 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
         - [MongoDB](#mongodb)
         - [Nodejs](#nodejs)
         - [python](#python)
-            - [python的一些需要编译的包的安装](#python的一些需要编译的包的安装)
         - [安装QUANTAXIS](#安装quantaxis)
         - [安装QUANATXIS_WebKit](#安装quanatxis_webkit)
         - [启动QUANTAXIS CLI 并进行数据的初始化存储](#启动quantaxis-cli-并进行数据的初始化存储)
@@ -381,7 +380,7 @@ DataStruct具有的功能:
 - 数据显示 show
 - 格式变换 to_json/to_pandas/to_list/to_numpy
 - 数据库式查询  query
-
+- 画图 plot
 ### QUANTAXIS的api
 ```python
 
