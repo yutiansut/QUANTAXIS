@@ -9,7 +9,6 @@ from QA_tradex import QA_Trade_stock_api, QA_Trade_stock_util
 
 app = Flask(__name__)
 st = QA_Trade_stock_api.QA_Stock()
-# print(st)
 db=MongoClient().quantaxis
 
 print('*' * 6 + 'Start QUANTAXIS Trade Server' + '*' * 6)
@@ -23,12 +22,10 @@ def homepage():
 @app.route('/trade/setting/config', methods=['GET'])
 def get_config():
     st = QA_Trade_stock_api.QA_Stock()
-    # print(st)
     configs = st.get_config()
     
     if db.trade_setting.find({'accountNo':configs['accountNo']}).count()<1:
         db.trade_setting.insert(configs)
-    #print(configs)
     return jsonify(configs)
 
 
@@ -65,7 +62,6 @@ def get_account_assets():
 @app.route('/trade/query/orders', methods=['GET'])
 def get_orders():
     st = QA_Trade_stock_api.QA_Stock()
-    # print(st)
     data = st.get_config()
     return jsonify(data)
 
