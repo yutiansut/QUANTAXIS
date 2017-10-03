@@ -353,9 +353,9 @@ class QA_Backtest():
         gap_ = self.strategy_gap if gap_ is None else gap_
         return self.market_data_dict[code].select_time_with_gap(date, gap_, type_)
 
-    def QA_backtest_get_market_data_bar(self, code, time):
+    def QA_backtest_get_market_data_bar(self, code, time,if_trade=True):
         '这个函数封装了关于获取的方式'
-        return self.market_data_dict[code].get_bar(code, time)
+        return self.market_data_dict[code].get_bar(code, time,if_trade)
 
     def QA_backtest_sell_available(self, __code):
         try:
@@ -538,9 +538,14 @@ class QA_Backtest():
             self.account.order_queue = pd.DataFrame()
 
             self.account_d_key.append(self.today)
-            self.account_d_value.append(self.account.cash[-1]+sum([self.QA_backtest_get_market_data_bar(
-                self, self.account.hold[i][1], self.now).close[0]*float(self.account.hold[i][3])
-                    for i in range(1, len(self.account.hold))]))
+            
+            if len(self.account.hold)>1:
+                
+                self.account_d_value.append(self.account.cash[-1]+sum([self.QA_backtest_get_market_data_bar(
+                    self, self.account.hold[i][1], self.now,if_trade=False).close[0]*float(self.account.hold[i][3])
+                        for i in range(1, len(self.account.hold))]))
+            else:
+                self.account_d_value.append(self.account.cash[-1])
         elif event_ in ['t_0']:
             """
             T+0交易事件

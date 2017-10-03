@@ -181,7 +181,7 @@ class __stock_hq_base():
         elif self.type in ['stock_min','index_min']:
             return self.sync_status(__stock_hq_base(self.data[self.data['code'] == code].set_index(['datetime', 'code'], drop=False)))
 
-    def get_bar(self, code, time):
+    def get_bar(self, code, time,if_trade):
         if self.type in ['stock_day', 'index_day']:
             return self.sync_status(__stock_hq_base((self.data[self.data['code'] == code])[self.data['date'] == str(time)[0:10]].set_index(['date', 'code'], drop=False)))
 
@@ -314,12 +314,12 @@ class QA_DataStruct_Index_day(__stock_hq_base):
         elif self.type in ['stock_min','index_min']:
             return self.sync_status(QA_DataStruct_Index_day(self.data[self.data['code'] == code].set_index(['datetime', 'code'], drop=False)))
 
-    def get_bar(self, code, time):
-        if self.type in ['stock_day', 'index_day']:
+    def get_bar(self, code, time,if_trade=True):
+        
+        if if_trade:
             return self.sync_status(QA_DataStruct_Index_day((self.data[self.data['code'] == code])[self.data['date'] == str(time)[0:10]].set_index(['date', 'code'], drop=False)))
-
-        elif self.type in ['stock_min','index_min']:
-            return self.sync_status(QA_DataStruct_Index_day((self.data[self.data['code'] == code])[self.data['datetime'] == str(time)[0:19]].set_index(['datetime', 'code'], drop=False)))
+        else:
+            return self.sync_status(QA_DataStruct_Index_day((self.data[self.data['code'] == code])[self.data['date'] <= str(time)[0:10]].set_index(['date', 'code'], drop=False).tail(1)))
 
 
 
@@ -439,12 +439,14 @@ class QA_DataStruct_Index_min(__stock_hq_base):
         elif self.type in ['stock_min','index_min']:
             return self.sync_status(QA_DataStruct_Index_min(self.data[self.data['code'] == code].set_index(['datetime', 'code'], drop=False)))
 
-    def get_bar(self, code, time):
-        if self.type in ['stock_day', 'index_day']:
-            return self.sync_status(QA_DataStruct_Index_min((self.data[self.data['code'] == code])[self.data['date'] == str(time)[0:10]].set_index(['date', 'code'], drop=False)))
-
-        elif self.type in ['stock_min','index_min']:
+    def get_bar(self, code, time,if_trade=True):
+        
+        if if_trade:
             return self.sync_status(QA_DataStruct_Index_min((self.data[self.data['code'] == code])[self.data['datetime'] == str(time)[0:19]].set_index(['datetime', 'code'], drop=False)))
+        else:
+            return self.sync_status(QA_DataStruct_Index_min((self.data[self.data['code'] == code])[self.data['datetime'] <= str(time)[0:19]].set_index(['datetime', 'code'], drop=False).tail(1)))
+
+            
 class QA_DataStruct_Stock_min(__stock_hq_base):
     def __init__(self, DataFrame):
         self.data = DataFrame
@@ -605,12 +607,12 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
         elif self.type in ['stock_min','index_min']:
             return self.sync_status(QA_DataStruct_Stock_min(self.data[self.data['code'] == code].set_index(['datetime', 'code'], drop=False)))
 
-    def get_bar(self, code, time):
-        if self.type in ['stock_day', 'index_day']:
-            return self.sync_status(QA_DataStruct_Stock_min((self.data[self.data['code'] == code])[self.data['date'] == str(time)[0:10]].set_index(['date', 'code'], drop=False)))
-
-        elif self.type in ['stock_min','index_min']:
+    def get_bar(self, code, time,if_trade=True):
+        if if_trade:
             return self.sync_status(QA_DataStruct_Stock_min((self.data[self.data['code'] == code])[self.data['datetime'] == str(time)[0:19]].set_index(['datetime', 'code'], drop=False)))
+        else:
+            return self.sync_status(QA_DataStruct_Stock_min((self.data[self.data['code'] == code])[self.data['datetime'] <= str(time)[0:19]].set_index(['datetime', 'code'], drop=False).tail(1)))
+
 class QA_DataStruct_Stock_day(__stock_hq_base):
     def __init__(self, DataFrame):
         self.data = DataFrame
@@ -746,12 +748,12 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
         elif self.type in ['stock_min','index_min']:
             return self.sync_status(QA_DataStruct_Stock_day(self.data[self.data['code'] == code].set_index(['datetime', 'code'], drop=False)))
 
-    def get_bar(self, code, time):
-        if self.type in ['stock_day', 'index_day']:
+    def get_bar(self, code, time, if_trade=True):
+        if if_trade:
             return self.sync_status(QA_DataStruct_Stock_day((self.data[self.data['code'] == code])[self.data['date'] == str(time)[0:10]].set_index(['date', 'code'], drop=False)))
+        else:
+            return self.sync_status(QA_DataStruct_Stock_day((self.data[self.data['code'] == code])[self.data['date'] <= str(time)[0:10]].set_index(['date', 'code'], drop=False).tail(1)))
 
-        elif self.type in ['stock_min','index_min']:
-            return self.sync_status(QA_DataStruct_Stock_day((self.data[self.data['code'] == code])[self.data['datetime'] == str(time)[0:19]].set_index(['datetime', 'code'], drop=False)))
 
     
 class QA_DataStruct_Stock_transaction():
