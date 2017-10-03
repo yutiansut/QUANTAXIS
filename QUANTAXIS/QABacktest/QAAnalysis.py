@@ -42,7 +42,7 @@ def QA_backtest_analysis_start(client, code_list,assets_d,account_days, message,
     # 3.回撤
     """
     Annualized Returns: 策略年化收益率。表示投资期限为一年的预期收益率。
-    具体计算方式为 (策略最终价值 / 策略初始价值 - 1) / 回测交易日数量 × 250
+    具体计算方式为 (策略最终价值 / 策略初始价值)^(250 / 回测交易日数量) - 1
 
     Alpha：阿尔法
     具体计算方式为 (策略年化收益 - 无风险收益) - beta × (参考标准年化收益 - 无风险收益)，这里的无风险收益指的是中国固定利率国债收益率曲线上10年期国债的年化到期收益率。
@@ -103,7 +103,7 @@ def QA_backtest_analysis_start(client, code_list,assets_d,account_days, message,
     # days=len(assest_history)-1
     # 策略年化收益
     annualized_returns = QA_backtest_calc_profit_per_year(
-        assets, len(total_date))
+        assets_d, len(total_date))
 
     # 收益矩阵
     assest_profit = QA_backtest_calc_profit_matrix(assets)
@@ -112,20 +112,21 @@ def QA_backtest_analysis_start(client, code_list,assets_d,account_days, message,
     # 策略日收益
     profit_day = QA_backtest_calc_profit_matrix(assets_d)
     # 胜率
-    win_rate = QA_backtest_calc_win_rate(profit_day)
+    win_rate = QA_backtest_calc_win_rate(assest_profit)
+    # 日胜率
+    win_rate_day = QA_backtest_calc_win_rate(profit_day)
     # 年化波动率
-    volatility_year = QA_backtest_calc_volatility(assest_profit)
+    volatility_year = QA_backtest_calc_volatility(profit_day)
     benchmark_volatility_year = QA_backtest_calc_volatility(benchmark_profit)
     # 夏普比率
     sharpe = QA_backtest_calc_sharpe(
-        annualized_returns, benchmark_annualized_returns, volatility_year)
+        annualized_returns, 0.05, volatility_year)
 
     # 最大回撤
     max_drop = QA_backtest_calc_dropback_max(assets_d)
 
     # 计算beta
-    beta = QA_backtest_calc_beta(
-        assest_profit, benchmark_profit, benchmark_volatility_year)
+    beta = QA_backtest_calc_beta(profit_day, benchmark_profit)
     # 计算Alpha
     alpha = QA_backtest_calc_alpha(
         annualized_returns, benchmark_annualized_returns, beta, 0.05)
@@ -133,8 +134,8 @@ def QA_backtest_analysis_start(client, code_list,assets_d,account_days, message,
         'code': code_list,
         'annualized_returns': annualized_returns,
         'benchmark_annualized_returns': benchmark_annualized_returns,
-        'assets': assets_d,
-        'benchmark_assets': benchmark_assets,
+        'assets': assets_d[1:],
+        'benchmark_assets': benchmark_assets[1:],
         'vol': volatility_year,
         'benchmark_vol': benchmark_volatility_year,
         'sharpe': sharpe,
@@ -167,7 +168,7 @@ def QA_backtest_result_check(datelist, message):
 
 def QA_backtest_calc_benchmark(benchmark_data, init_assets):
 
-    assets=list(benchmark_data['open'] / float(benchmark_data['open'][0]) * float(init_assets))
+    assets=list(benchmark_data['close'] / float(benchmark_data['close'][0]) * float(init_assets))
     return assets
 
 
@@ -178,15 +179,15 @@ def QA_backtest_calc_alpha(annualized_returns, benchmark_annualized_returns, bet
     return alpha
 
 
-def QA_backtest_calc_beta(assest_profit, benchmark_profit, benchmark_volatility_year):
+def QA_backtest_calc_beta(assest_profit, benchmark_profit):
     if len(assest_profit) < len(benchmark_profit):
         for i in range(0, len(benchmark_profit) - len(assest_profit), 1):
             assest_profit.append(0)
     elif len(assest_profit) > len(benchmark_profit):
         for i in range(0, len(assest_profit) - len(benchmark_profit), 1):
             benchmark_profit.append(0)
-    calc_cov = numpy.cov(assest_profit, benchmark_profit)[0, 1]
-    beta = calc_cov / benchmark_volatility_year
+    calc_cov = numpy.cov(assest_profit, benchmark_profit)
+    beta = calc_cov[0, 1] / calc_cov[1, 1]
     return beta
 
 
@@ -195,14 +196,13 @@ def QA_backtest_calc_profit(assest_history):
 
 
 def QA_backtest_calc_profit_per_year(assest_history, days):
-    return float(float(assest_history[-1]) / float(assest_history[0]) - 1) / int(days) * 250
+    return math.pow(float(assest_history[-1]) / float(assest_history[0]), 250.0/float(days)) - 1.0
 
 
 def QA_backtest_calc_profit_matrix(assest_history):
     assest_profit = []
-    for i in range(0, len(assest_history) - 2, 1):
-        assest_profit.append(
-            float(assest_history[i + 1]) / float(assest_history[i]) - 1)
+    if len(assest_history) > 1:
+        assest_profit = [assest_history[i+1] / assest_history[i] - 1.0 for i in range(len(assest_history)-1)]
     return assest_profit
 
 
@@ -226,8 +226,8 @@ def QA_backtest_calc_dropback_max(history):
     return max_drop
 
 
-def QA_backtest_calc_sharpe(annualized_returns, benchmark_annualized_returns, volatility_year):
-    return (annualized_returns - benchmark_annualized_returns) / volatility_year
+def QA_backtest_calc_sharpe(annualized_returns, r, volatility_year):
+    return (annualized_returns - r) / volatility_year
 
 
 def QA_backtest_calc_trade_date(history):
