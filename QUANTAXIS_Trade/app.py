@@ -1,16 +1,15 @@
 #!flask/bin/python
 from flask import Flask, jsonify
-from flask import request,make_response
+from flask import request, make_response
 from pymongo import MongoClient
 import datetime
 import time
-from Tradex.QA_trade_stock import QA_Trade_stock_api, QA_Trade_stock_util
+from QA_tradex import QA_Trade_stock_api, QA_Trade_stock_util
 
 
 app = Flask(__name__)
 st = QA_Trade_stock_api.QA_Stock()
-# print(st)
-db=MongoClient().quantaxis
+db = MongoClient().quantaxis
 
 print('*' * 6 + 'Start QUANTAXIS Trade Server' + '*' * 6)
 
@@ -23,12 +22,10 @@ def homepage():
 @app.route('/trade/setting/config', methods=['GET'])
 def get_config():
     st = QA_Trade_stock_api.QA_Stock()
-    # print(st)
     configs = st.get_config()
-    
-    if db.trade_setting.find({'accountNo':configs['accountNo']}).count()<1:
+
+    if db.trade_setting.find({'accountNo': configs['accountNo']}).count() < 1:
         db.trade_setting.insert(configs)
-    #print(configs)
     return jsonify(configs)
 
 
@@ -48,12 +45,14 @@ def get_account_stock():
     client = st.QA_trade_stock_login()
     data = st.QA_trade_stock_get_stock(client)
     return jsonify(data)
+
+
 @app.route('/trade/query/assets', methods=['GET'])
 def get_account_assets():
     st = QA_Trade_stock_api.QA_Stock()
     st.get_config()
     client = st.QA_trade_stock_login()
-    data=QA_Trade_stock_util.QA_get_account_assest(st,client)
+    data = QA_Trade_stock_util.QA_get_account_assest(st, client)
     rst = make_response(jsonify(data))
     rst.headers['Access-Control-Allow-Origin'] = '*'
     rst.headers['Access-Control-Allow-Methods'] = 'PUT,GET,POST,DELETE'
@@ -65,7 +64,6 @@ def get_account_assets():
 @app.route('/trade/query/orders', methods=['GET'])
 def get_orders():
     st = QA_Trade_stock_api.QA_Stock()
-    # print(st)
     data = st.get_config()
     return jsonify(data)
 
@@ -87,6 +85,7 @@ def set_config():
         return jsonify(config), 201
     except:
         return "wrong"
+
 
 """
 @app.route('/todo/api/v1.0/tasks/<int:task_id>', methods=['PUT'])
