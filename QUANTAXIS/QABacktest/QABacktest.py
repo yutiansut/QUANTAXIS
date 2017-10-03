@@ -183,6 +183,7 @@ class QA_Backtest():
         self.market = QA_Market(self.commission_fee_coeff)
         self.setting.QA_setting_init()
         self.account.init()
+        self.account_d_value.append(self.account.init_assest)
         self.start_real_date = QA_util_get_real_date(
             self.strategy_start_date, self.trade_list, 1)
         self.start_real_time=str(self.start_real_date)+' '+self.strategy_start_time.split(' ')[1]
@@ -196,10 +197,10 @@ class QA_Backtest():
         # 初始化股票池的市场数据
         if self.benchmark_type in ['I','index']:
             self.benchmark_data = QA_fetch_index_day_adv(
-                self.benchmark_code, self.start_real_date, self.end_real_date)
+                self.benchmark_code, self.trade_list[self.start_real_id-1], self.end_real_date)
         elif self.benchmark_type in ['S','stock']:
             self.benchmark_data = QA_fetch_stock_day_adv(
-                self.benchmark_code, self.start_real_date, self.end_real_date)
+                self.benchmark_code, self.trade_list[self.start_real_id-1], self.end_real_date)
         if self.backtest_type in ['day', 'd', '0x00']:
             self.market_data = QA_fetch_stocklist_day_adv(
                 self.strategy_stock_list, self.trade_list[self.start_real_id - int(
@@ -534,7 +535,9 @@ class QA_Backtest():
             self.account.order_queue = pd.DataFrame()
 
             self.account_d_key.append(self.today)
-            self.account_d_value.append(self.account.QA_account_calc_assets())
+            self.account_d_value.append(self.account.cash[-1]+sum([self.QA_backtest_get_market_data_bar(
+                self, self.account.hold[i][1], self.now).close[0]*float(self.account.hold[i][3])
+                    for i in range(1, len(self.account.hold))]))
         elif event_ in ['t_0']:
             """
             T+0交易事件
@@ -671,7 +674,7 @@ class QA_Backtest():
         __backtest_cls.__init_cash_per_stock = int(
             float(__backtest_cls.account.init_assest) / len(__backtest_cls.strategy_stock_list))
         # 策略的交易日循环
-        for i in range(int(__backtest_cls.start_real_id), int(__backtest_cls.end_real_id) - 1, 1):
+        for i in range(int(__backtest_cls.start_real_id), int(__backtest_cls.end_real_id)):
             __backtest_cls.running_date = __backtest_cls.trade_list[i]
             QA_util_log_info(
                 '=================daily hold list====================')
