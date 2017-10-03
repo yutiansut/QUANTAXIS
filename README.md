@@ -175,9 +175,10 @@ sudo -H python3.6 get-pip.py
 
 建议直接安装Anaconda包,记住在安装时 选择添加path不然后面会很麻烦
 
-#### python的一些需要编译的包的安装
+> python的一些需要编译的包的安装
 
 安装TA-Lib
+> Ubuntu
 ```
 sudo apt-get update
 sudo apt-get install python3.6-dev
@@ -193,8 +194,10 @@ pip install TA-Lib
 python3.6 -m pip install -r requirements.txt -i https://pypi.doubanio.com/simple
 python3.6 -m pip install tushare https://pypi.doubanio.com/simple
 #####
+```
+> Windows
+```
 
-# Windows 下安装一些需要编译的包:
 # 访问http://www.lfd.uci.edu/~gohlke/pythonlibs/  下载对应的whl安装包
 # pip install xxxxx(文件名).whl
 ```
@@ -247,7 +250,6 @@ cd backend
 cd ..
 # 再启动前端服务器  在8080端口
 cd web
-(sudo) npm install
 (sudo) npm run dev 或者 forever start build/dev-server.js
 ```
 
