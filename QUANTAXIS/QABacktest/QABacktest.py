@@ -103,6 +103,7 @@ class QA_Backtest():
     benchmark_type ='index'
     account_d_value=[]
     account_d_key=[]
+    market_data_dict={}
     def __init__(self):
 
         self.backtest_type = 'day'
@@ -127,7 +128,7 @@ class QA_Backtest():
         self.temp = {}
         self.commission_fee_coeff = 0.0015
         self.benchmark_type = 'index'
-
+        self.market_data_dict={}
 
 
     def __QA_backtest_init(self):
@@ -218,6 +219,8 @@ class QA_Backtest():
         elif self.backtest_type in ['index_1min', 'index_5min', 'index_15min', 'index_30min', 'index_60min']:
             self.market_data = QA_fetch_index_min_adv(
                 self.strategy_stock_list, QA_util_time_gap(self.start_real_time,self.strategy_gap+1,'<',self.backtest_type.split('_')[1]),  QA_util_time_gap(self.end_real_time,1,'>',self.backtest_type.split('_')[1]), self.backtest_type.split('_')[1])
+        self.market_data_dict=dict(zip(list(self.market_data.code),self.market_data.splits()))
+
 
     def __QA_backtest_start(self, *args, **kwargs):
         """
@@ -256,7 +259,7 @@ class QA_Backtest():
         self.__sync_order_LM(self, 'daily_settle')  # 每日结算
 
     def __wrap_bid(self, __bid, __order=None):
-        __market_data_for_backtest = self.market_data.get_bar(
+        __market_data_for_backtest = self.market_data_dict[__bid.code].get_bar(
             __bid.code, __bid.datetime)
         if __market_data_for_backtest.len() == 1:
 
@@ -348,11 +351,11 @@ class QA_Backtest():
     def QA_backtest_get_market_data(self, code, date, gap_=None,type_='lt'):
         '这个函数封装了关于获取的方式 用GAP的模式'
         gap_ = self.strategy_gap if gap_ is None else gap_
-        return self.market_data.select_code(code).select_time_with_gap(date, gap_, type_)
+        return self.market_data_dict[code].select_time_with_gap(date, gap_, type_)
 
     def QA_backtest_get_market_data_bar(self, code, time):
         '这个函数封装了关于获取的方式'
-        return self.market_data.get_bar(code, time)
+        return self.market_data_dict[code].get_bar(code, time)
 
     def QA_backtest_sell_available(self, __code):
         try:
