@@ -381,6 +381,8 @@ DataStruct具有的功能:
 - 格式变换 to_json/to_pandas/to_list/to_numpy
 - 数据库式查询  query
 - 画图 plot
+
+![](http://osnhakmay.bkt.clouddn.com/QQ%E5%9B%BE%E7%89%8720171004112702.png)
 ### QUANTAXIS的api
 ```python
 
