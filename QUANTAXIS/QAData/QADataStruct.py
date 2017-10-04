@@ -114,7 +114,7 @@ class __stock_hq_base():
                 axis.append(dates[0])
                 data.append(datas)
             
-            path_name='.'+os.sep+'QA_'+self.type+'_codepackage_'+self.if_fq+'.html'
+            path_name='.'+os.sep+'QA_'+self.type+'_'+code+'_'+self.if_fq+'.html'
             kline=Kline(code+'__'+self.if_fq+'__'+self.type,width=1360,height=700,page_title='QUANTAXIS')
             kline.add(code,axis,data,mark_point=["max","min"], is_datazoom_show=True,datazoom_orient='horizontal')
             kline.render(path_name)
