@@ -10,12 +10,12 @@
 
 
 
-![version](https://img.shields.io/badge/Version-%200.4.60-orange.svg)
+![version](https://img.shields.io/badge/Version-%200.4.61-orange.svg)
 ![build](https://travis-ci.org/yutiansut/QUANTAXIS.svg?branch=master)
 [![Stories in Ready](https://badge.waffle.io/yutiansut/QUANTAXIS.svg?label=ready&title=Ready)](http://waffle.io/yutiansut/QUANTAXIS)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.8-brown.svg)
-![Pypi](https://img.shields.io/badge/Pypi-%200.4.60-blue.svg)
+![Pypi](https://img.shields.io/badge/Pypi-%200.4.61-blue.svg)
 ![python](https://img.shields.io/badge/python-%203.6/3.5/3.4/win/ubuntu-darkgrey.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.4.0-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
@@ -327,6 +327,7 @@ QB.today  #在策略里面代表策略执行时的日期
 QB.now  #在策略里面代表策略执行时的时间
 QB.benchmark_code  #策略业绩评价的对照行情
 
+QB.backtest_print_log = True  # 是否在屏幕上输出结果
 
 
 

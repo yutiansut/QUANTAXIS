@@ -53,7 +53,7 @@ QB.benchmark_code  策略业绩评价的对照行情
 QB.benchmark_type  对照行情是股票还是指数
 
 
-
+QB.backtest_print_log = True  # 是否在屏幕上输出结果
 
 函数:
 获取市场(基于gap)行情:

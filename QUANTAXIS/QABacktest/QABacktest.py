@@ -104,7 +104,7 @@ class QA_Backtest():
     account_d_value = []
     account_d_key = []
     market_data_dict = {}
-
+    backtest_print_log = True
     def __init__(self):
 
         self.backtest_type = 'day'
