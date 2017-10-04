@@ -132,13 +132,12 @@ def strategy():
         QA.QA_util_log_info(
             QB.QA_backtest_get_market_data(QB, item, QB.today).data)  # 如果是分钟回测 用QB.now
 
-        if QB.QA_backtest_hold_amount(QB, item) == 0:
+        if QB.QA_backtest_hold_amount(QB, item) == 0:  # 如果不持仓
             QB.QA_backtest_send_order(
                 QB, item, 10000, 1, {'bid_model': 'Market'})
-        else:
+        elif QB.QA_backtest_sell_available(QB, item) > 0:  #如果可卖数量大于0
             QB.QA_backtest_send_order(
                 QB, item, 10000, -1, {'bid_model': 'Market'})
-
 
 @QB.end_backtest
 def after_backtest():
