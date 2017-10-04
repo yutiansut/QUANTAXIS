@@ -23,7 +23,7 @@ from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
                               QA_util_to_json_from_pandas, trade_date_sse)
 
 from pyecharts import Kline
-
+import webbrowser
 
 class __stock_hq_base():
     def __init__(self, DataFrame):
@@ -96,6 +96,7 @@ class __stock_hq_base():
             kline=Kline(self.code[0]+'__'+self.if_fq+'__'+self.type,width=1360,height=700)
             kline.add(self.code[0],axis,data,mark_point=["max","min"], is_datazoom_show=True,datazoom_orient='horizontal')
             kline.render(path_name)
+            webbrowser.open(path_name)
             QA_util_log_info('The Pic has been saved to your path: %s'%path_name)
         else:
             data=[]
@@ -109,6 +110,7 @@ class __stock_hq_base():
             kline=Kline(code+'__'+self.if_fq+'__'+self.type,width=1360,height=700)
             kline.add(code,axis,data,mark_point=["max","min"], is_datazoom_show=True,datazoom_orient='horizontal')
             kline.render(path_name)
+            webbrowser.open(path_name)
             QA_util_log_info('The Pic has been saved to your path: %s'%path_name)
         
 

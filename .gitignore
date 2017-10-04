@@ -25,6 +25,7 @@ tushare/
 *.exe
 .exe
 .pypirc
+QA_*.html
 private/
 
 *lock.json
