@@ -226,10 +226,12 @@ def QA_backtest_calc_dropback_max(history):
 
 
 def QA_backtest_calc_sharpe(annualized_returns, r, volatility_year):
+    '计算夏普比率'
     return (annualized_returns - r) / volatility_year
 
 
 def QA_backtest_calc_trade_date(history):
+    '计算交易日期'
     trade_date = []
 
     # trade_date_sse.index(history[-1][0])-trade_date_sse.index(history[0][0])
