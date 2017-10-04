@@ -145,21 +145,27 @@ def QA_fetch_stock_min_adv(code, start, end, type_='1min', if_drop_index=False, 
     elif type_ in ['60min', '60m']:
         type_ = '60min'
     __data = []
-    for item in collections.find({
-        'code': str(code), "time_stamp": {
-            "$gte": QA_util_time_stamp(start),
-            "$lte": QA_util_time_stamp(end)
-        }, 'type': type_
-    }):
 
-        __data.append([str(item['code']), float(item['open']), float(item['high']), float(
-            item['low']), float(item['close']), float(item['vol']), item['datetime'], item['time_stamp'], item['date']])
+    if isinstance(code, str):
 
-    __data = DataFrame(__data, columns=[
-        'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'time_stamp', 'date'])
+        for item in collections.find({
+            'code': str(code), "time_stamp": {
+                "$gte": QA_util_time_stamp(start),
+                "$lte": QA_util_time_stamp(end)
+            }, 'type': type_
+        }):
 
-    __data['datetime'] = pd.to_datetime(__data['datetime'])
-    return QA_DataStruct_Stock_min(__data.query('volume>1').set_index(['datetime', 'code'], drop=if_drop_index))
+            __data.append([str(item['code']), float(item['open']), float(item['high']), float(
+                item['low']), float(item['close']), float(item['vol']), item['datetime'], item['time_stamp'], item['date']])
+
+        __data = DataFrame(__data, columns=[
+            'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'time_stamp', 'date'])
+
+        __data['datetime'] = pd.to_datetime(__data['datetime'])
+        return QA_DataStruct_Stock_min(__data.query('volume>1').set_index(['datetime', 'code'], drop=if_drop_index))
+    elif isinstance(code, list):
+        '新增codelist的代码'
+        return QA_DataStruct_Stock_min(pd.concat([QA_fetch_stock_min_adv(code_, start, end, type_, if_drop_index).data for code_ in code]).set_index(['datetime', 'code'], drop=if_drop_index))
 
 
 def QA_fetch_stocklist_min_adv(code, start, end, type_='1min', if_drop_index=False,  collections=QA_Setting.client.quantaxis.stock_min):
