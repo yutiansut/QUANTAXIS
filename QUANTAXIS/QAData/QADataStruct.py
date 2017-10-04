@@ -91,6 +91,7 @@ class __stock_hq_base():
             kline=Kline('CodePackage_'+self.if_fq+'_'+self.type,width=1360,height=700,page_title='QUANTAXIS')
             
             data_splits=self.splits()
+
             for i_ in range(len(data_splits)):
                 data=[]
                 axis=[]
@@ -371,7 +372,7 @@ class QA_DataStruct_Index_min(__stock_hq_base):
     def __init__(self, DataFrame):
         self.type = 'index_min'
         self.if_fq = ''
-        self.data = DataFrame
+        self.data = DataFrame.ix[:,['code','open','high','low','close','volume','datetime','date']]
         self.mongo_coll = QA_Setting.client.quantaxis.index_min
 
     def __repr__(self):
@@ -491,7 +492,7 @@ class QA_DataStruct_Index_min(__stock_hq_base):
 
 class QA_DataStruct_Stock_min(__stock_hq_base):
     def __init__(self, DataFrame):
-        self.data = DataFrame
+        self.data = DataFrame.ix[:,['code','open','high','low','close','volume','datetime','date']]
         self.type = 'stock_min'
         self.if_fq = 'bfq'
         self.mongo_coll = QA_Setting.client.quantaxis.stock_min
