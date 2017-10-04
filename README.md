@@ -382,7 +382,7 @@ DataStruct具有的功能:
 - 数据库式查询  query
 - 画图 plot
 
-![](http://osnhakmay.bkt.clouddn.com/QQ%E5%9B%BE%E7%89%8720171004112702.png)
+![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20171004125336.png)
 ### QUANTAXIS的api
 ```python
 
