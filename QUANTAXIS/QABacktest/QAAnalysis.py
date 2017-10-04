@@ -35,7 +35,7 @@ from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day
 from QUANTAXIS.QAUtil import QA_util_log_info, trade_date_sse
 
 
-def QA_backtest_analysis_start(client, code_list,assets_d,account_days, message, total_date,benchmark_data):
+def QA_backtest_analysis_start(client, code_list, assets_d, account_days, message, total_date, benchmark_data):
     # 主要要从message_history分析
     # 1.收益率
     # 2.胜率
@@ -68,21 +68,17 @@ def QA_backtest_analysis_start(client, code_list,assets_d,account_days, message,
     单日最大持仓
     """
     # 数据检查
-    if (len(benchmark_data))<1:
+    if (len(benchmark_data)) < 1:
         QA_util_log_info('Wrong with benchmark data ! ')
         sys.exit()
 
-    
     # 计算一个benchmark
     # 这个benchmark 是在开始的那天 市价买入和策略所选标的一致的所有股票,然后一直持仓
-    data=pd.concat([pd.DataFrame(message['body']['account']['history'],
-            columns=['time','code','price','towards','amount','order_id','trade_id','commission']),
-            pd.DataFrame(message['body']['account']['assets'],columns=['assets'])],axis=1)
-    data['time']=pd.to_datetime(data['time'])
-    data.set_index('time',drop=False,inplace=True)
-
-
-
+    data = pd.concat([pd.DataFrame(message['body']['account']['history'],
+                                   columns=['time', 'code', 'price', 'towards', 'amount', 'order_id', 'trade_id', 'commission']),
+                      pd.DataFrame(message['body']['account']['assets'], columns=['assets'])], axis=1)
+    data['time'] = pd.to_datetime(data['time'])
+    data.set_index('time', drop=False, inplace=True)
 
     trade_history = message['body']['account']['history']
     cash = message['body']['account']['cash']
@@ -94,7 +90,7 @@ def QA_backtest_analysis_start(client, code_list,assets_d,account_days, message,
     # benchmark资产
     benchmark_assets = QA_backtest_calc_benchmark(
         benchmark_data, assets[0])
-    #d2=pd.concat([data.resample('D').last(),pd.DataFrame(benchmark_assets,columns=['benchmark'])])
+    # d2=pd.concat([data.resample('D').last(),pd.DataFrame(benchmark_assets,columns=['benchmark'])])
     # benchmark年化收益
     benchmark_annualized_returns = QA_backtest_calc_profit_per_year(
         benchmark_assets, len(total_date))
@@ -195,13 +191,14 @@ def QA_backtest_calc_profit(assest_history):
 
 
 def QA_backtest_calc_profit_per_year(assest_history, days):
-    return math.pow(float(assest_history[-1]) / float(assest_history[0]), 250.0/float(days)) - 1.0
+    return math.pow(float(assest_history[-1]) / float(assest_history[0]), 250.0 / float(days)) - 1.0
 
 
 def QA_backtest_calc_profit_matrix(assest_history):
     assest_profit = []
     if len(assest_history) > 1:
-        assest_profit = [assest_history[i+1] / assest_history[i] - 1.0 for i in range(len(assest_history)-1)]
+        assest_profit = [assest_history[i + 1] / assest_history[i] -
+                         1.0 for i in range(len(assest_history) - 1)]
     return assest_profit
 
 

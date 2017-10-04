@@ -166,6 +166,8 @@ def QA_fetch_stock_min_adv(code, start, end, type_='1min', if_drop_index=False, 
     elif isinstance(code, list):
         '新增codelist的代码'
         return QA_DataStruct_Stock_min(pd.concat([QA_fetch_stock_min_adv(code_, start, end, type_, if_drop_index).data for code_ in code]).set_index(['datetime', 'code'], drop=if_drop_index))
+
+
 def QA_fetch_stocklist_min_adv(code, start, end, type_='1min', if_drop_index=False,  collections=QA_Setting.client.quantaxis.stock_min):
     return QA_DataStruct_Stock_min(pd.concat(QA_fetch_stocklist_min(code, [start, end], type_)).query('volume>1').set_index(['datetime', 'code'], drop=if_drop_index))
 
