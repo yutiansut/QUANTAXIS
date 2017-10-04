@@ -8,22 +8,24 @@
 """
 
 import itertools
+import os
+import sys
+import webbrowser
 from functools import reduce
-
+import platform
 import numpy as np
 import pandas as pd
 import six
 import talib
+from pyecharts import Kline
 from QUANTAXIS.QAData.data_fq import QA_data_stock_to_fq
 from QUANTAXIS.QAData.data_resample import QA_data_tick_resample
-from QUANTAXIS.QAData.proto import (stock_day_pb2,  # protobuf import
-                                    stock_min_pb2)
+from QUANTAXIS.QAData.proto import stock_day_pb2  # protobuf import
+from QUANTAXIS.QAData.proto import stock_min_pb2
 from QUANTAXIS.QAIndicator import EMA, HHV, LLV, SMA
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
                               QA_util_to_json_from_pandas, trade_date_sse)
 
-from pyecharts import Kline
-import webbrowser
 
 class __stock_hq_base():
     def __init__(self, DataFrame):
@@ -85,16 +87,25 @@ class __stock_hq_base():
 
     def plot(self, code=None):
         if code is None:
-            data=[]
-            axis=[]
-            for dates,row in self.data.iterrows():
-                open,high,low,close=row[1:5]
-                datas=[open,close,low,high]
-                axis.append(dates[0])
-                data.append(datas)
-            path_name='.\QA_'+self.type+'_'+self.code[0]+'_'+self.if_fq+'.html'
-            kline=Kline(self.code[0]+'__'+self.if_fq+'__'+self.type,width=1360,height=700)
-            kline.add(self.code[0],axis,data,mark_point=["max","min"], is_datazoom_show=True,datazoom_orient='horizontal')
+            if platform.system() == 'Windows':
+                path_name='.\QA_'+self.type+'_codepackage_'+self.if_fq+'.html'
+            else:
+                path_name='./QA_'+self.type+'_codepackage_'+self.if_fq+'.html'
+            
+            kline=Kline('CodePackage_'+self.if_fq+'_'+self.type,width=1360,height=700,page_title='QUANTAXIS')
+            
+            data_splits=self.splits()
+            for i_ in range(len(data_splits)):
+                data=[]
+                axis=[]
+                for dates,row in data_splits[i_].data.iterrows():
+                    open,high,low,close=row[1:5]
+                    datas=[open,close,low,high]
+                    axis.append(dates[0])
+                    data.append(datas)
+                
+                
+                kline.add(self.code[i_],axis,data,mark_point=["max","min"], is_datazoom_show=True,datazoom_orient='horizontal')
             kline.render(path_name)
             webbrowser.open(path_name)
             QA_util_log_info('The Pic has been saved to your path: %s'%path_name)
@@ -106,8 +117,11 @@ class __stock_hq_base():
                 datas=[open,close,low,high]
                 axis.append(dates[0])
                 data.append(datas)
-            path_name='.\QA_'+self.type+'_'+code+'_'+self.if_fq+'.html'
-            kline=Kline(code+'__'+self.if_fq+'__'+self.type,width=1360,height=700)
+            if platform.system() == 'Windows':
+                path_name='.\QA_'+self.type+'_'+code+'_'+self.if_fq+'.html'
+            else:
+                path_name='./QA_'+self.type+'_'+code+'_'+self.if_fq+'.html'
+            kline=Kline(code+'__'+self.if_fq+'__'+self.type,width=1360,height=700,page_title='QUANTAXIS')
             kline.add(code,axis,data,mark_point=["max","min"], is_datazoom_show=True,datazoom_orient='horizontal')
             kline.render(path_name)
             webbrowser.open(path_name)
