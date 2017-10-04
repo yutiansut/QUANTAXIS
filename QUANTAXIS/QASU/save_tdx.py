@@ -34,7 +34,7 @@ from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_index_day,
                                      QA_fetch_get_stock_xdxr, select_best_ip)
 from QUANTAXIS.QAFetch.QATushare import QA_fetch_get_stock_time_to_market
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info, trade_date_sse,
-                              QA_util_to_json_from_pandas,QA_util_get_real_date)
+                              QA_util_to_json_from_pandas, QA_util_get_real_date)
 
 from concurrent.futures import ThreadPoolExecutor
 import concurrent
@@ -43,7 +43,8 @@ import concurrent
 
 
 def now_time():
-    return str(QA_util_get_real_date(str(datetime.date.today()-datetime.timedelta(days=1)),trade_date_sse,-1))+' 15:00:00' if datetime.datetime.now().hour < 15 else str(QA_util_get_real_date(str(datetime.date.today()),trade_date_sse,-1))+' 15:00:00'
+    return str(QA_util_get_real_date(str(datetime.date.today() - datetime.timedelta(days=1)), trade_date_sse, -1)) + ' 15:00:00' if datetime.datetime.now().hour < 15 else str(QA_util_get_real_date(str(datetime.date.today()), trade_date_sse, -1)) + ' 15:00:00'
+
 
 def QA_SU_save_stock_day(client=QA_Setting.client):
     __stock_list = QA_fetch_get_stock_time_to_market()
@@ -165,7 +166,7 @@ def QA_SU_save_index_day(client=QA_Setting.client):
         try:
 
             ref_ = __coll.find({'code': str(code)[0:6]})
-            end_time =  str(now_time())[0:10]
+            end_time = str(now_time())[0:10]
             if ref_.count() > 0:
                 start_time = ref_[ref_.count() - 1]['date']
             else:
