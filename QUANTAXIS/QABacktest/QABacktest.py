@@ -226,7 +226,7 @@ class QA_Backtest():
                 self.strategy_stock_list, QA_util_time_gap(self.start_real_time, self.strategy_gap + 1, '<', self.backtest_type.split('_')[1]),  QA_util_time_gap(self.end_real_time, 1, '>', self.backtest_type.split('_')[1]), self.backtest_type.split('_')[1])
         self.market_data_dict = dict(
             zip(list(self.market_data.code), self.market_data.splits()))
-
+        
     def __QA_backtest_log_info(self, log):
         if self.backtest_print_log:
             return QA_util_log_info(log)
