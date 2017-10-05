@@ -41,6 +41,7 @@ class __stock_hq_base():
         return self.data
 
     # 使用property进行懒运算
+
     @property
     def open(self):
         return self.data['open']
@@ -85,6 +86,12 @@ class __stock_hq_base():
     def code(self):
         return self.data.index.levels[self.data.index.names.index('code')]
 
+    @property
+    @lru_cache()
+    def dicts(self):
+        return self.to_dict('index')
+    
+    @lru_cache()
     def plot(self, code=None):
         if code is None:
             path_name='.'+os.sep+'QA_'+self.type+'_codepackage_'+self.if_fq+'.html'
@@ -123,30 +130,34 @@ class __stock_hq_base():
             QA_util_log_info('The Pic has been saved to your path: %s'%path_name)
         
 
-
+    @lru_cache()
     def len(self):
         return len(self.data)
 
     def reverse(self):
         return __stock_hq_base(self.data[::-1])
-
+    @lru_cache()
     def show(self):
         return QA_util_log_info(self.data)
-
+    @lru_cache()
     def query(self, query_text):
         return self.data.query(query_text)
-
+    @lru_cache()
     def to_list(self):
         return np.asarray(self.data).tolist()
-
+    @lru_cache()
     def to_pd(self):
         return self.data
-
+    @lru_cache()
     def to_numpy(self):
         return np.asarray(self.data)
     @lru_cache()
     def to_json(self):
         return QA_util_to_json_from_pandas(self.data)
+
+    @lru_cache()
+    def to_dict(self,orient='dict'):
+        return self.data.to_dict(orient)
     @lru_cache()
     def sync_status(self, __stock_hq_base):
         '固定的状态要同步 尤其在创建新的datastruct时候'
@@ -256,29 +267,10 @@ class QA_DataStruct_Index_day(__stock_hq_base):
     def __repr__(self):
         return 'QA_DataStruct_Index_day with %s securities' % len(self.code)
 
-    def len(self):
-        return len(self.data)
 
     def reverse(self):
         return QA_DataStruct_Index_day(self.data[::-1])
 
-    def show(self):
-        return QA_util_log_info(self.data)
-
-    def query(self, query_text):
-        return self.data.query(query_text)
-
-    def to_list(self):
-        return np.asarray(self.data).tolist()
-
-    def to_pd(self):
-        return self.data
-
-    def to_numpy(self):
-        return np.asarray(self.data)
-
-    def to_json(self):
-        return QA_util_to_json_from_pandas(self.data)
 
     def sync_status(self, QA_DataStruct_Index_day):
         '固定的状态要同步 尤其在创建新的datastruct时候'
@@ -379,26 +371,11 @@ class QA_DataStruct_Index_min(__stock_hq_base):
     def __repr__(self):
         return 'QA_DataStruct_Index_Min with %s securities' % len(self.code)
 
-    def len(self):
-        return len(self.data)
 
     def reverse(self):
         return QA_DataStruct_Index_min(self.data[::-1])
 
-    def show(self):
-        return QA_util_log_info(self.data)
 
-    def query(self, query_text):
-        return self.data.query(query_text)
-
-    def to_list(self):
-        return np.asarray(self.data).tolist()
-
-    def to_pd(self):
-        return self.data
-
-    def to_numpy(self):
-        return np.asarray(self.data)
 
     def to_json(self):
         return QA_util_to_json_from_pandas(self.data)
@@ -548,30 +525,12 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
     def JLHB(self, N=7, M=5):
         pass
 
-    def len(self):
-        return len(self.data)
-
+    @lru_cache()
     def reverse(self):
         return QA_DataStruct_Stock_min(self.data[::-1])
 
-    def show(self):
-        return QA_util_log_info(self.data)
 
-    def query(self, query_text):
-        return self.data.query(query_text)
-
-    def to_list(self):
-        return np.asarray(self.data).tolist()
-
-    def to_pd(self):
-        return self.data
-
-    def to_numpy(self):
-        return np.asarray(self.data)
-
-    def to_json(self):
-        return QA_util_to_json_from_pandas(self.data)
-
+    @lru_cache()
     def sync_status(self, QA_DataStruct_Stock_min):
         '固定的状态要同步 尤其在创建新的datastruct时候'
         (QA_DataStruct_Stock_min.if_fq, QA_DataStruct_Stock_min.type, QA_DataStruct_Stock_min.mongo_coll) = (
@@ -667,7 +626,7 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
 
     def __repr__(self):
         return 'QA_DataStruct_Stock_day with %s securities' % len(self.code)
-
+    @lru_cache()
     def to_qfq(self):
         if self.if_fq is 'bfq':
             data = QA_DataStruct_Stock_day(pd.concat(list(map(
@@ -678,7 +637,7 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
             QA_util_log_info(
                 'none support type for qfq Current type is: %s' % self.if_fq)
             return self
-
+    @lru_cache()
     def to_hfq(self):
         if self.if_fq is 'bfq':
             data = QA_DataStruct_Stock_day(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
@@ -690,30 +649,11 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
                 'none support type for qfq Current type is: %s' % self.if_fq)
             return self
 
-    def len(self):
-        return len(self.data)
-
+    @lru_cache()
     def reverse(self):
         return QA_DataStruct_Stock_day(self.data[::-1])
 
-    def show(self):
-        return QA_util_log_info(self.data)
-
-    def query(self, query_text):
-        return self.data.query(query_text)
-
-    def to_list(self):
-        return np.asarray(self.data).tolist()
-
-    def to_pd(self):
-        return self.data
-
-    def to_numpy(self):
-        return np.asarray(self.data)
-
-    def to_json(self):
-        return QA_util_to_json_from_pandas(self.data)
-
+    @lru_cache()
     def sync_status(self, QA_DataStruct_Stock_day):
         '固定的状态要同步 尤其在创建新的datastruct时候'
         (QA_DataStruct_Stock_day.if_fq, QA_DataStruct_Stock_day.type, QA_DataStruct_Stock_day.mongo_coll) = (
