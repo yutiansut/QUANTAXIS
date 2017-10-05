@@ -35,28 +35,28 @@ DataFrame 类
 """
 
 
-def QA_indicator_OSC(DF, N, M):
+def QA_indicator_OSC(DataFrame, N, M):
     '变动速率线'
-    C = DF['close']
+    C = DataFrame['close']
     OS = (C - MA(C, N)) * 100
     MAOSC = EMA(OS, M)
     DICT = {'OSC': OS, 'MAOSC': MAOSC}
-    VAR = pd.DataFrame(DICT)
-    return VAR
+
+    return DICT
 
 
-def QA_indicator_BBI(DF, N1, N2, N3, N4):
+def QA_indicator_BBI(DataFrame, N1, N2, N3, N4):
     '多空指标'
-    C = DF['close']
+    C = DataFrame['close']
     bbi = (MA(C, N1) + MA(C, N2) + MA(C, N3) + MA(C, N4)) / 4
     DICT = {'BBI': bbi}
-    VAR = pd.DataFrame(DICT)
-    return VAR
+
+    return DICT
 
 
-def QA_indicator_PBX(DF, N1, N2, N3, N4, N5, N6):
+def QA_indicator_PBX(DataFrame, N1, N2, N3, N4, N5, N6):
     '瀑布线'
-    C = DF['close']
+    C = DataFrame['close']
     PBX1 = (EMA(C, N1) + EMA(C, 2 * N1) + EMA(C, 4 * N1)) / 3
     PBX2 = (EMA(C, N2) + EMA(C, 2 * N2) + EMA(C, 4 * N2)) / 3
     PBX3 = (EMA(C, N3) + EMA(C, 2 * N3) + EMA(C, 4 * N3)) / 3
@@ -65,117 +65,131 @@ def QA_indicator_PBX(DF, N1, N2, N3, N4, N5, N6):
     PBX6 = (EMA(C, N6) + EMA(C, 2 * N6) + EMA(C, 4 * N6)) / 3
     DICT = {'PBX1': PBX1, 'PBX2': PBX2, 'PBX3': PBX3,
             'PBX4': PBX4, 'PBX5': PBX5, 'PBX6': PBX6}
-    VAR = pd.DataFrame(DICT)
-    return VAR
+
+    return DICT
 
 
-def QA_indicator_BOLL(DF, N):
+def QA_indicator_BOLL(DataFrame, N):
     '布林线'
-    C = DF['close']
+    C = DataFrame['close']
     boll = MA(C, N)
     UB = boll + 2 * STD(C, N)
     LB = boll - 2 * STD(C, N)
     DICT = {'BOLL': boll, 'UB': UB, 'LB': LB}
-    VAR = pd.DataFrame(DICT)
-    return VAR
+
+    return DICT
 
 
-def QA_indicator_ROC(DF, N, M):
+def QA_indicator_ROC(DataFrame, N, M):
     '变动率指标'
-    C = DF['close']
+    C = DataFrame['close']
     roc = 100 * (C - REF(C, N)) / REF(C, N)
     MAROC = MA(roc, M)
     DICT = {'ROC': roc, 'MAROC': MAROC}
-    VAR = pd.DataFrame(DICT)
-    return VAR
+
+    return DICT
 
 
-def QA_indicator_MTM(DF, N, M):
+def QA_indicator_MTM(DataFrame, N, M):
     '动量线'
-    C = DF['close']
+    C = DataFrame['close']
     mtm = C - REF(C, N)
     MTMMA = MA(mtm, M)
     DICT = {'MTM': mtm, 'MTMMA': MTMMA}
-    VAR = pd.DataFrame(DICT)
-    return VAR
+
+    return DICT
 
 
-def QA_indicator_MFI(DF, N):
+def QA_indicator_KDJ(DataFrame, N=9, M1=3, M2=3):
+    C = DataFrame['close']
+    H = DataFrame['high']
+    L = DataFrame['low']
+
+    RSV = (C - LLV(L, N)) / (HHV(H, N) - LLV(L, N)) * 100
+    K = SMA(RSV, M1)
+    D = SMA(K, M2)
+    J = 3 * K - 2 * D
+    DICT = {'KDJ_K': K, 'KDJ_D': D, 'KDJ_J': J}
+
+    return DICT
+
+
+def QA_indicator_MFI(DataFrame, N):
     '资金指标'
-    C = DF['close']
-    H = DF['high']
-    L = DF['low']
-    VOL = DF['vol']
+    C = DataFrame['close']
+    H = DataFrame['high']
+    L = DataFrame['low']
+    VOL = DataFrame['volume']
     TYP = (C + H + L) / 3
     V1 = SUM(IF(TYP > REF(TYP, 1), TYP * VOL, 0), N) / \
         SUM(IF(TYP < REF(TYP, 1), TYP * VOL, 0), N)
     mfi = 100 - (100 / (1 + V1))
-    DICT = {'MFI': mfi}
-    VAR = pd.DataFrame(DICT)
-    return VAR
+    DICT = [{'MFI': mfi}]
+
+    return DICT
 
 
-def QA_indicator_ATR(DF, N):
-    C = DF['close']
-    H = DF['high']
-    L = DF['low']
+def QA_indicator_ATR(DataFrame, N):
+    C = DataFrame['close']
+    H = DataFrame['high']
+    L = DataFrame['low']
     TR1 = MAX(MAX((H - L), ABS(REF(C, 1) - H)), ABS(REF(C, 1) - L))
     atr = MA(TR1, N)
     return atr
 
 
-def QA_indicator_SKDJ(DF, N, M):
-    CLOSE = DF['close']
-    LOWV = LLV(DF['low'], N)
-    HIGHV = HHV(DF['high'], N)
+def QA_indicator_SKDJ(DataFrame, N, M):
+    CLOSE = DataFrame['close']
+    LOWV = LLV(DataFrame['low'], N)
+    HIGHV = HHV(DataFrame['high'], N)
     RSV = EMA((CLOSE - LOWV) / (HIGHV - LOWV) * 100, M)
     K = EMA(RSV, M)
     D = MA(K, M)
     DICT = {'SKDJ_K': K, 'SKDJ_D': D}
-    VAR = pd.DataFrame(DICT)
-    return VAR
+
+    return DICT
 
 
-def QA_indicator_WR(DF, N, N1):
+def QA_indicator_WR(DataFrame, N, N1):
     '威廉指标'
-    HIGH = DF['high']
-    LOW = DF['low']
-    CLOSE = DF['close']
+    HIGH = DataFrame['high']
+    LOW = DataFrame['low']
+    CLOSE = DataFrame['close']
     WR1 = 100 * (HHV(HIGH, N) - CLOSE) / (HHV(HIGH, N) - LLV(LOW, N))
     WR2 = 100 * (HHV(HIGH, N1) - CLOSE) / (HHV(HIGH, N1) - LLV(LOW, N1))
     DICT = {'WR1': WR1, 'WR2': WR2}
-    VAR = pd.DataFrame(DICT)
-    return VAR
+
+    return DICT
 
 
-def QA_indicator_BIAS(DF, N1, N2, N3):
+def QA_indicator_BIAS(DataFrame, N1, N2, N3):
     '乖离率'
-    CLOSE = DF['close']
+    CLOSE = DataFrame['close']
     BIAS1 = (CLOSE - MA(CLOSE, N1)) / MA(CLOSE, N1) * 100
     BIAS2 = (CLOSE - MA(CLOSE, N2)) / MA(CLOSE, N2) * 100
     BIAS3 = (CLOSE - MA(CLOSE, N3)) / MA(CLOSE, N3) * 100
     DICT = {'BIAS1': BIAS1, 'BIAS2': BIAS2, 'BIAS3': BIAS3}
-    VAR = pd.DataFrame(DICT)
-    return VAR
+
+    return DICT
 
 
-def QA_indicator_RSI(DF, N1, N2, N3):
+def QA_indicator_RSI(DataFrame, N1, N2, N3):
     '相对强弱指标RSI1:SMA(MAX(CLOSE-LC,0),N1,1)/SMA(ABS(CLOSE-LC),N1,1)*100;'
-    CLOSE = DF['close']
+    CLOSE = DataFrame['close']
     LC = REF(CLOSE, 1)
     RSI1 = SMA(MAX(CLOSE - LC, 0), N1, 1) / SMA(ABS(CLOSE - LC), N1, 1) * 100
     RSI2 = SMA(MAX(CLOSE - LC, 0), N2, 1) / SMA(ABS(CLOSE - LC), N2, 1) * 100
     RSI3 = SMA(MAX(CLOSE - LC, 0), N3, 1) / SMA(ABS(CLOSE - LC), N3, 1) * 100
     DICT = {'RSI1': RSI1, 'RSI2': RSI2, 'RSI3': RSI3}
-    VAR = pd.DataFrame(DICT)
-    return VAR
+
+    return DICT
 
 
-def QA_indicator_ADTM(DF, N, M):
+def QA_indicator_ADTM(DataFrame, N, M):
     '动态买卖气指标'
-    HIGH = DF['high']
-    LOW = DF['low']
-    OPEN = DF['open']
+    HIGH = DataFrame['high']
+    LOW = DataFrame['low']
+    OPEN = DataFrame['open']
     DTM = IF(OPEN <= REF(OPEN, 1), 0, MAX(
         (HIGH - OPEN), (OPEN - REF(OPEN, 1))))
     DBM = IF(OPEN >= REF(OPEN, 1), 0, MAX((OPEN - LOW), (OPEN - REF(OPEN, 1))))
@@ -185,14 +199,14 @@ def QA_indicator_ADTM(DF, N, M):
                IF(STM == SBM, 0, (STM - SBM) / SBM))
     MAADTM = MA(ADTM1, M)
     DICT = {'ADTM': ADTM1, 'MAADTM': MAADTM}
-    VAR = pd.DataFrame(DICT)
-    return VAR
+
+    return DICT
 
 
-def QA_indicator_DDI(DF, N, N1, M, M1):
+def QA_indicator_DDI(DataFrame, N, N1, M, M1):
     '方向标准离差指数'
-    H = DF['high']
-    L = DF['low']
+    H = DataFrame['high']
+    L = DataFrame['low']
     DMZ = IF((H + L) <= (REF(H, 1) + REF(L, 1)), 0,
              MAX(ABS(H - REF(H, 1)), ABS(L - REF(L, 1))))
     DMF = IF((H + L) >= (REF(H, 1) + REF(L, 1)), 0,
@@ -203,5 +217,9 @@ def QA_indicator_DDI(DF, N, N1, M, M1):
     ADDI = SMA(ddi, N1, M)
     AD = MA(ADDI, M1)
     DICT = {'DDI': ddi, 'ADDI': ADDI, 'AD': AD}
-    VAR = pd.DataFrame(DICT)
-    return VAR
+
+    return DICT
+
+
+def QA_indicator_CCI(DataFrame, N):
+    pass
