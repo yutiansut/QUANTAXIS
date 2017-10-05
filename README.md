@@ -282,7 +282,7 @@ git pull
 
 ## 项目捐赠
 
-写代码不易...写文档最难过...请....作者喝杯咖啡呗?
+写代码不易...写文档最难过...请作者喝杯咖啡呗?
 
 <img src="http://osnhakmay.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20170923132018.jpg" width = "27.5%" />
 
