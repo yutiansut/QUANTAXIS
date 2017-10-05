@@ -39,7 +39,7 @@ QUANTAXIS  指标计算
 """趋势类"""
 import numpy as np
 import pandas as pd
-from .formula import SMA
+from QUANTAXIS.QAIndicator.base_func import SMA
 
 # TODO
 # 基于无状态的pd结构的指标

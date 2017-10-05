@@ -94,6 +94,30 @@ class __stock_hq_base():
     def dicts(self):
         return self.to_dict('index')
 
+
+    def ATR(self, gap=14):
+        list_mtr = []
+        __id = -gap
+        while __id < 0:
+            list_mtr.append(max(self.high[__id] - self.low[__id], abs(
+                self.close[__id - 1] - self.high[__id]), abs(self.close[__id - 1] - self.low[__id])))
+            __id += 1
+        res = talib.MA(np.array(list_mtr), gap)
+        return list_mtr[-1], res[-1]
+
+    def KDJ(self, N=9, M1=3, M2=3):
+        # https://www.joinquant.com/post/142  先计算KD
+        __K, __D = talib.STOCHF(np.array(self.high[-(N + M1 + M2 + 1):]), np.array(self.low[-(
+            N + M1 + M2 + 1):]), np.array(self.close[-(N + M1 + M2 + 1):]), N, M2, fastd_matype=0)
+
+        K = np.array(
+            list(map(lambda x: SMA(__K[:x], M1), range(1, len(__K) + 1))))
+        D = np.array(list(map(lambda x: SMA(K[:x], M2), range(1, len(K) + 1))))
+        J = K * 3 - D * 2
+
+        return K[-1], D[-1], J[-1]
+
+
     @lru_cache()
     def plot(self, code=None):
         if code is None:
@@ -177,8 +201,8 @@ class __stock_hq_base():
                 self.data[self.data['code'] == x].set_index(['datetime', 'code'], drop=False)), self.code))))
     @lru_cache()
     def add_func(self, func, *arg, **kwargs):
-        return self.sync_status(__stock_hq_base(pd.concat(list(map(lambda x: func(
-            self.data[self.data['code'] == x], *arg, **kwargs), self.code)))))
+        return list(map(lambda x: func(
+            self.data[self.data['code'] == x], *arg, **kwargs), self.code))
     @lru_cache()
     def pivot(self, column_):
         assert isinstance(column_, str)
@@ -292,10 +316,7 @@ class QA_DataStruct_Index_day(__stock_hq_base):
         elif self.type in ['stock_min', 'index_min']:
             return list(map(lambda data: self.sync_status(data), list(map(lambda x: (
                 self.data[self.data['code'] == x].set_index(['datetime', 'code'], drop=False)), self.code))))
-    @lru_cache()
-    def add_func(self, func, *arg, **kwargs):
-        return self.sync_status(QA_DataStruct_Index_day(pd.concat(list(map(lambda x: func(
-            self.data[self.data['code'] == x], *arg, **kwargs), self.code)))))
+
     @lru_cache()
     def pivot(self, column_):
         assert isinstance(column_, str)
@@ -400,10 +421,7 @@ class QA_DataStruct_Index_min(__stock_hq_base):
         elif self.type in ['stock_min', 'index_min']:
             return list(map(lambda data: self.sync_status(data), list(map(lambda x: QA_DataStruct_Index_min(
                 self.data[self.data['code'] == x].set_index(['datetime', 'code'], drop=False)), self.code))))
-    @lru_cache()
-    def add_func(self, func, *arg, **kwargs):
-        return self.sync_status(QA_DataStruct_Index_min(pd.concat(list(map(lambda x: func(
-            self.data[self.data['code'] == x], *arg, **kwargs), self.code)))))
+
     @lru_cache()
     def pivot(self, column_):
         assert isinstance(column_, str)
@@ -507,31 +525,6 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
                 'none support type for qfq Current type is:%s' % self.if_fq)
             return self
 
-    def ATR(self, gap=14):
-        list_mtr = []
-        __id = -gap
-        while __id < 0:
-            list_mtr.append(max(self.high[__id] - self.low[__id], abs(
-                self.close[__id - 1] - self.high[__id]), abs(self.close[__id - 1] - self.low[__id])))
-            __id += 1
-        res = talib.MA(np.array(list_mtr), gap)
-        return list_mtr[-1], res[-1]
-
-    def KDJ(self, N=9, M1=3, M2=3):
-        # https://www.joinquant.com/post/142  先计算KD
-        __K, __D = talib.STOCHF(np.array(self.high[-(N + M1 + M2 + 1):]), np.array(self.low[-(
-            N + M1 + M2 + 1):]), np.array(self.close[-(N + M1 + M2 + 1):]), N, M2, fastd_matype=0)
-
-        K = np.array(
-            list(map(lambda x: SMA(__K[:x], M1), range(1, len(__K) + 1))))
-        D = np.array(list(map(lambda x: SMA(K[:x], M2), range(1, len(K) + 1))))
-        J = K * 3 - D * 2
-
-        return K[-1], D[-1], J[-1]
-
-    def JLHB(self, N=7, M=5):
-        pass
-
     @lru_cache()
     def reverse(self):
         return QA_DataStruct_Stock_min(self.data[::-1])
@@ -551,10 +544,7 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
         elif self.type in ['stock_min', 'index_min']:
             return list(map(lambda data: self.sync_status(data), list(map(lambda x: QA_DataStruct_Stock_min(
                 self.data[self.data['code'] == x].set_index(['datetime', 'code'], drop=False)), self.code))))
-    @lru_cache()
-    def add_func(self, func, *arg, **kwargs):
-        return self.sync_status(QA_DataStruct_Stock_min(pd.concat(list(map(lambda x: func(
-            self.data[self.data['code'] == x], *arg, **kwargs), self.code)))))
+
     @lru_cache()
     def pivot(self, column_):
         assert isinstance(column_, str)
@@ -674,10 +664,7 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
         elif self.type in ['stock_min', 'index_min']:
             return list(map(lambda data: self.sync_status(data), list(map(lambda x: (
                 self.data[self.data['code'] == x].set_index(['datetime', 'code'], drop=False)), self.code))))
-    @lru_cache()
-    def add_func(self, func, *arg, **kwargs):
-        return self.sync_status(QA_DataStruct_Stock_day(pd.concat(list(map(lambda x: func(
-            self.data[self.data['code'] == x], *arg, **kwargs), self.code)))))
+
     @lru_cache()
     def pivot(self, column_):
         assert isinstance(column_, str)

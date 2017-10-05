@@ -1,101 +1,42 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
+# coding:utf-8
+#
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+from functools import reduce
 
 import numpy as np
 import pandas as pd
-from functools import reduce
-
-def EMA(DF, N):
-    return pd.Series.ewm(DF, span=N, min_periods=N - 1, adjust=True).mean()
+from QUANTAXIS.QAIndicator.base_func import *
 
 
-def MA(DF, N):
-    return pd.Series.rolling(DF, N).mean()
+"""
+DataFrame 类
 
-# 威廉SMA  参考https://www.joinquant.com/post/867
-def SMA(Series, N):
-    '威廉SMA'
-    Series = pd.Series(Series).fillna(0)
-    return reduce(lambda x, y: ((N-1) * x + y) / N, Series)
+以下的函数都可以被直接add_func
+"""
 
 
-def HHV(Series, N):
-    return pd.Series(Series).rolling(N).max().values
-
-
-def LLV(Series, N):
-    return pd.Series(Series).rolling(N).min().values
-
-
-def ATR(DF, N):
-    C = DF['close']
-    H = DF['high']
-    L = DF['low']
-    TR1 = MAX(MAX((H - L), ABS(REF(C, 1) - H)), ABS(REF(C, 1) - L))
-    atr = MA(TR1, N)
-    return atr
-
-
-def SUM(DF, N):
-    return pd.Series.rolling(DF, N).sum()
-
-
-def ABS(DF):
-    return abs(DF)
-
-
-def MAX(A, B):
-    var = IF(A > B, A, B)
-    return var
-
-
-def MIN(A, B):
-    var = IF(A < B, A, B)
-    return var
-
-
-def IF(COND, V1, V2):
-    var = np.where(COND, V1, V2)
-    for i in range(len(var)):
-        V1[i] = var[i]
-    return V1
-
-
-def REF(DF, N):
-    var = DF.diff(N)
-    var = DF - var
-    return var
-
-
-def STD(DF, N):
-    return pd.Series.rolling(DF, N).std()
-
-
-def MACD(DF, FAST, SLOW, MID):
-    EMAFAST = EMA(DF, FAST)
-    EMASLOW = EMA(DF, SLOW)
-    DIFF = EMAFAST - EMASLOW
-    DEA = EMA(DIFF, MID)
-    MACD = (DIFF - DEA) * 2
-    DICT = {'DIFF': DIFF, 'DEA': DEA, 'MACD': MACD}
-    VAR = pd.DataFrame(DICT)
-    return VAR
-
-
-def KDJ(DF, N, M1, M2):
-    C = DF['close']
-    H = DF['high']
-    L = DF['low']
-    RSV = (C - LLV(L, N)) / (HHV(H, N) - LLV(L, N)) * 100
-    K = SMA(RSV, M1, 1)
-    D = SMA(K, M2, 1)
-    J = 3 * K - 2 * D
-    DICT = {'KDJ_K': K, 'KDJ_D': D, 'KDJ_J': J}
-    VAR = pd.DataFrame(DICT)
-    return VAR
-
-
-def OSC(DF, N, M):  # 变动速率线
+def OSC(DF, N, M):
+    '变动速率线'
     C = DF['close']
     OS = (C - MA(C, N)) * 100
     MAOSC = EMA(OS, M)
@@ -104,7 +45,8 @@ def OSC(DF, N, M):  # 变动速率线
     return VAR
 
 
-def BBI(DF, N1, N2, N3, N4):  # 多空指标
+def BBI(DF, N1, N2, N3, N4):
+    '多空指标'
     C = DF['close']
     bbi = (MA(C, N1) + MA(C, N2) + MA(C, N3) + MA(C, N4)) / 4
     DICT = {'BBI': bbi}
@@ -112,16 +54,8 @@ def BBI(DF, N1, N2, N3, N4):  # 多空指标
     return VAR
 
 
-def BBIBOLL(DF, N1, N2, N3, N4, N, M):  # 多空布林线
-    bbiboll = BBI(DF, N1, N2, N3, N4)
-    UPER = bbiboll + M * STD(bbiboll, N)
-    DOWN = bbiboll - M * STD(bbiboll, N)
-    DICT = {'BBIBOLL': bbiboll, 'UPER': UPER, 'DOWN': DOWN}
-    VAR = pd.DataFrame(DICT)
-    return VAR
-
-
-def PBX(DF, N1, N2, N3, N4, N5, N6):  # 瀑布线
+def PBX(DF, N1, N2, N3, N4, N5, N6):
+    '瀑布线'
     C = DF['close']
     PBX1 = (EMA(C, N1) + EMA(C, 2 * N1) + EMA(C, 4 * N1)) / 3
     PBX2 = (EMA(C, N2) + EMA(C, 2 * N2) + EMA(C, 4 * N2)) / 3
@@ -135,7 +69,8 @@ def PBX(DF, N1, N2, N3, N4, N5, N6):  # 瀑布线
     return VAR
 
 
-def BOLL(DF, N):  # 布林线
+def BOLL(DF, N):
+    '布林线'
     C = DF['close']
     boll = MA(C, N)
     UB = boll + 2 * STD(C, N)
@@ -145,7 +80,8 @@ def BOLL(DF, N):  # 布林线
     return VAR
 
 
-def ROC(DF, N, M):  # 变动率指标
+def ROC(DF, N, M):
+    '变动率指标'
     C = DF['close']
     roc = 100 * (C - REF(C, N)) / REF(C, N)
     MAROC = MA(roc, M)
@@ -154,7 +90,8 @@ def ROC(DF, N, M):  # 变动率指标
     return VAR
 
 
-def MTM(DF, N, M):  # 动量线
+def MTM(DF, N, M):
+    '动量线'
     C = DF['close']
     mtm = C - REF(C, N)
     MTMMA = MA(mtm, M)
@@ -163,7 +100,8 @@ def MTM(DF, N, M):  # 动量线
     return VAR
 
 
-def MFI(DF, N):  # 资金指标
+def MFI(DF, N):
+    '资金指标'
     C = DF['close']
     H = DF['high']
     L = DF['low']
@@ -175,6 +113,15 @@ def MFI(DF, N):  # 资金指标
     DICT = {'MFI': mfi}
     VAR = pd.DataFrame(DICT)
     return VAR
+
+
+def ATR(DF, N):
+    C = DF['close']
+    H = DF['high']
+    L = DF['low']
+    TR1 = MAX(MAX((H - L), ABS(REF(C, 1) - H)), ABS(REF(C, 1) - L))
+    atr = MA(TR1, N)
+    return atr
 
 
 def SKDJ(DF, N, M):
@@ -189,7 +136,8 @@ def SKDJ(DF, N, M):
     return VAR
 
 
-def WR(DF, N, N1):  # 威廉指标
+def WR(DF, N, N1):
+    '威廉指标'
     HIGH = DF['high']
     LOW = DF['low']
     CLOSE = DF['close']
@@ -200,7 +148,8 @@ def WR(DF, N, N1):  # 威廉指标
     return VAR
 
 
-def BIAS(DF, N1, N2, N3):  # 乖离率
+def BIAS(DF, N1, N2, N3):
+    '乖离率'
     CLOSE = DF['close']
     BIAS1 = (CLOSE - MA(CLOSE, N1)) / MA(CLOSE, N1) * 100
     BIAS2 = (CLOSE - MA(CLOSE, N2)) / MA(CLOSE, N2) * 100
@@ -210,7 +159,8 @@ def BIAS(DF, N1, N2, N3):  # 乖离率
     return VAR
 
 
-def RSI(DF, N1, N2, N3):  # 相对强弱指标RSI1:SMA(MAX(CLOSE-LC,0),N1,1)/SMA(ABS(CLOSE-LC),N1,1)*100;
+def RSI(DF, N1, N2, N3):
+    '相对强弱指标RSI1:SMA(MAX(CLOSE-LC,0),N1,1)/SMA(ABS(CLOSE-LC),N1,1)*100;'
     CLOSE = DF['close']
     LC = REF(CLOSE, 1)
     RSI1 = SMA(MAX(CLOSE - LC, 0), N1, 1) / SMA(ABS(CLOSE - LC), N1, 1) * 100
@@ -221,7 +171,8 @@ def RSI(DF, N1, N2, N3):  # 相对强弱指标RSI1:SMA(MAX(CLOSE-LC,0),N1,1)/SMA
     return VAR
 
 
-def ADTM(DF, N, M):  # 动态买卖气指标
+def ADTM(DF, N, M):
+    '动态买卖气指标'
     HIGH = DF['high']
     LOW = DF['low']
     OPEN = DF['open']
@@ -238,7 +189,8 @@ def ADTM(DF, N, M):  # 动态买卖气指标
     return VAR
 
 
-def DDI(DF, N, N1, M, M1):  # 方向标准离差指数
+def DDI(DF, N, N1, M, M1):
+    '方向标准离差指数'
     H = DF['high']
     L = DF['low']
     DMZ = IF((H + L) <= (REF(H, 1) + REF(L, 1)), 0,
