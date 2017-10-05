@@ -35,7 +35,7 @@ DataFrame 类
 """
 
 
-def OSC(DF, N, M):
+def QA_indicator_OSC(DF, N, M):
     '变动速率线'
     C = DF['close']
     OS = (C - MA(C, N)) * 100
@@ -45,7 +45,7 @@ def OSC(DF, N, M):
     return VAR
 
 
-def BBI(DF, N1, N2, N3, N4):
+def QA_indicator_BBI(DF, N1, N2, N3, N4):
     '多空指标'
     C = DF['close']
     bbi = (MA(C, N1) + MA(C, N2) + MA(C, N3) + MA(C, N4)) / 4
@@ -54,7 +54,7 @@ def BBI(DF, N1, N2, N3, N4):
     return VAR
 
 
-def PBX(DF, N1, N2, N3, N4, N5, N6):
+def QA_indicator_PBX(DF, N1, N2, N3, N4, N5, N6):
     '瀑布线'
     C = DF['close']
     PBX1 = (EMA(C, N1) + EMA(C, 2 * N1) + EMA(C, 4 * N1)) / 3
@@ -69,7 +69,7 @@ def PBX(DF, N1, N2, N3, N4, N5, N6):
     return VAR
 
 
-def BOLL(DF, N):
+def QA_indicator_BOLL(DF, N):
     '布林线'
     C = DF['close']
     boll = MA(C, N)
@@ -80,7 +80,7 @@ def BOLL(DF, N):
     return VAR
 
 
-def ROC(DF, N, M):
+def QA_indicator_ROC(DF, N, M):
     '变动率指标'
     C = DF['close']
     roc = 100 * (C - REF(C, N)) / REF(C, N)
@@ -90,7 +90,7 @@ def ROC(DF, N, M):
     return VAR
 
 
-def MTM(DF, N, M):
+def QA_indicator_MTM(DF, N, M):
     '动量线'
     C = DF['close']
     mtm = C - REF(C, N)
@@ -100,7 +100,7 @@ def MTM(DF, N, M):
     return VAR
 
 
-def MFI(DF, N):
+def QA_indicator_MFI(DF, N):
     '资金指标'
     C = DF['close']
     H = DF['high']
@@ -115,7 +115,7 @@ def MFI(DF, N):
     return VAR
 
 
-def ATR(DF, N):
+def QA_indicator_ATR(DF, N):
     C = DF['close']
     H = DF['high']
     L = DF['low']
@@ -124,7 +124,7 @@ def ATR(DF, N):
     return atr
 
 
-def SKDJ(DF, N, M):
+def QA_indicator_SKDJ(DF, N, M):
     CLOSE = DF['close']
     LOWV = LLV(DF['low'], N)
     HIGHV = HHV(DF['high'], N)
@@ -136,7 +136,7 @@ def SKDJ(DF, N, M):
     return VAR
 
 
-def WR(DF, N, N1):
+def QA_indicator_WR(DF, N, N1):
     '威廉指标'
     HIGH = DF['high']
     LOW = DF['low']
@@ -148,7 +148,7 @@ def WR(DF, N, N1):
     return VAR
 
 
-def BIAS(DF, N1, N2, N3):
+def QA_indicator_BIAS(DF, N1, N2, N3):
     '乖离率'
     CLOSE = DF['close']
     BIAS1 = (CLOSE - MA(CLOSE, N1)) / MA(CLOSE, N1) * 100
@@ -159,7 +159,7 @@ def BIAS(DF, N1, N2, N3):
     return VAR
 
 
-def RSI(DF, N1, N2, N3):
+def QA_indicator_RSI(DF, N1, N2, N3):
     '相对强弱指标RSI1:SMA(MAX(CLOSE-LC,0),N1,1)/SMA(ABS(CLOSE-LC),N1,1)*100;'
     CLOSE = DF['close']
     LC = REF(CLOSE, 1)
@@ -171,7 +171,7 @@ def RSI(DF, N1, N2, N3):
     return VAR
 
 
-def ADTM(DF, N, M):
+def QA_indicator_ADTM(DF, N, M):
     '动态买卖气指标'
     HIGH = DF['high']
     LOW = DF['low']
@@ -189,7 +189,7 @@ def ADTM(DF, N, M):
     return VAR
 
 
-def DDI(DF, N, N1, M, M1):
+def QA_indicator_DDI(DF, N, N1, M, M1):
     '方向标准离差指数'
     H = DF['high']
     L = DF['low']
