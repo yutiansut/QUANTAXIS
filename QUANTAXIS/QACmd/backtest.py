@@ -86,7 +86,8 @@ order有三种方式:
 查询当前一只股票的持仓量
 QB.QA_backtest_hold_amount(QB,code)
 
-
+查询当前一只股票的可卖数量
+QB.QA_backtest_sell_available(QB,code)
 """
 
 
