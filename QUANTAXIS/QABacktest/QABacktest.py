@@ -725,7 +725,6 @@ class QA_Backtest():
                     type_ = '60min'
                 daily_min = QA_util_make_min_index(
                     __backtest_cls.today, type_)  # 创造分钟线index
-                # print(daily_min)
                 for min_index in daily_min:
                     __backtest_cls.now = min_index
                     __backtest_cls.__QA_backtest_log_info(__backtest_cls,
