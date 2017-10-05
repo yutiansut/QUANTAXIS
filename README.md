@@ -10,12 +10,12 @@
 
 
 
-![version](https://img.shields.io/badge/Version-%200.4.65-orange.svg)
+![version](https://img.shields.io/badge/Version-%200.4.70-orange.svg)
 ![build](https://travis-ci.org/yutiansut/QUANTAXIS.svg?branch=master)
 [![Stories in Ready](https://badge.waffle.io/yutiansut/QUANTAXIS.svg?label=ready&title=Ready)](http://waffle.io/yutiansut/QUANTAXIS)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.8-brown.svg)
-![Pypi](https://img.shields.io/badge/Pypi-%200.4.65-blue.svg)
+![Pypi](https://img.shields.io/badge/Pypi-%200.4.70-blue.svg)
 ![python](https://img.shields.io/badge/python-%203.6/3.5/3.4/win/ubuntu-darkgrey.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.4.0-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
@@ -37,12 +37,14 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - 基于tushare/pytdx/各种爬虫的数据源
 - 实时交易数据
 - 基于Vue.js的前端网站
+- 自定义的数据结构
+- 指标计算
 
 预计实现:
 
 - 文档更新
 - 基本面数据
-- 指标数据
+
 <!-- TOC -->
 
 - [QUANTAXIS 量化金融策略框架](#quantaxis-量化金融策略框架)
@@ -386,6 +388,7 @@ DataStruct具有的功能:
 - 格式变换 to_json/to_pandas/to_list/to_numpy
 - 数据库式查询  query
 - 画图 plot
+- 计算指标 add_func
 
 ![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20171004125336.png)
 ### QUANTAXIS的api
