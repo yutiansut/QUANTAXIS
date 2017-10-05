@@ -105,18 +105,6 @@ def MACD(Series, FAST, SLOW, MID):
     return VAR
 
 
-def KDJ(DF, N, M1, M2):
-    C = DF['close']
-    H = DF['high']
-    L = DF['low']
-    RSV = (C - LLV(L, N)) / (HHV(H, N) - LLV(L, N)) * 100
-    K = SMA(RSV, M1, 1)
-    D = SMA(K, M2, 1)
-    J = 3 * K - 2 * D
-    DICT = {'KDJ_K': K, 'KDJ_D': D, 'KDJ_J': J}
-    VAR = pd.DataFrame(DICT)
-    return VAR
-
 
 def BBIBOLL(Series, N1, N2, N3, N4, N, M):  # 多空布林线
     bbiboll = BBI(Series, N1, N2, N3, N4)
