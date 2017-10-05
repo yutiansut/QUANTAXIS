@@ -7,12 +7,15 @@
 
 """
 
+import datetime
 import itertools
 import os
-import sys
-import webbrowser
-from functools import reduce,lru_cache
 import platform
+import sys
+import time
+import webbrowser
+from functools import lru_cache, reduce
+
 import numpy as np
 import pandas as pd
 import six
@@ -90,7 +93,7 @@ class __stock_hq_base():
     @lru_cache()
     def dicts(self):
         return self.to_dict('index')
-    
+
     @lru_cache()
     def plot(self, code=None):
         if code is None:
@@ -245,8 +248,12 @@ class __stock_hq_base():
 
         elif self.type in ['stock_min', 'index_min']:
             return self.sync_status(__stock_hq_base((self.data[self.data['code'] == code])[self.data['datetime'] == str(time)[0:19]].set_index(['datetime', 'code'], drop=False)))
-
-
+    @lru_cache()
+    def find_bar(self,code,time):
+        if len(time)==10:
+            return self.dicts[(datetime.datetime.strptime(time,'%Y-%m-%d'),code)]
+        elif len(time)==19:
+            return self.dicts[(datetime.datetime.strptime(time,'%Y-%m-%d %H:%M:%S'),code)]
 class QA_DataStruct_Index_day(__stock_hq_base):
     '自定义的日线数据结构'
 

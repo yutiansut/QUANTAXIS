@@ -226,7 +226,24 @@ class QA_Backtest():
                 self.strategy_stock_list, QA_util_time_gap(self.start_real_time, self.strategy_gap + 1, '<', self.backtest_type.split('_')[1]),  QA_util_time_gap(self.end_real_time, 1, '>', self.backtest_type.split('_')[1]), self.backtest_type.split('_')[1])
         self.market_data_dict = dict(
             zip(list(self.market_data.code), self.market_data.splits()))
-        
+        self.market_data_hashable=self.market_data.dicts
+    def QA_backtest_find_bar(self,code,time):
+        if isinstance(time,str):
+            if len(time)==10:
+                try:
+                    return self.market_data_hashable[(datetime.datetime.strptime(time,'%Y-%m-%d'),code)]
+                except:
+                    return None
+            elif len(time)==19:
+                try:
+                    return self.market_data_hashable[(datetime.datetime.strptime(time,'%Y-%m-%d %H:%M:%S'),code)]
+                except:
+                    return None
+        else:
+            try:
+                return self.market_data_hashable[(time,code)]
+            except:
+                return None
     def __QA_backtest_log_info(self, log):
         if self.backtest_print_log:
             return QA_util_log_info(log)
@@ -264,31 +281,40 @@ class QA_Backtest():
     def __end_of_trading(self, *arg, **kwargs):
         # 在回测的最后一天,平掉所有仓位(回测的最后一天是不买入的)
         # 回测最后一天的交易处理
-        self.now = str(self.end_real_date) + ' 15:00:00'
+        if self.backtest_type in ['day']:
+            self.now = str(self.end_real_date)
+            self.today = str(self.end_real_date)
+        elif self.backtest_type in ['1min', '5min', '15min', '30min', '60min']:
+            self.now = str(self.end_real_date) + ' 15:00:00'
+            self.today = str(self.end_real_date)
+        elif self.backtest_type in ['index_day']:
+            self.now = str(self.end_real_date)
+            self.today = str(self.end_real_date)
+        elif self.backtest_type in ['index_1min', 'index_5min', 'index_15min', 'index_30min', 'index_60min']:
+            self.now = str(self.end_real_date) + ' 15:00:00'
+            self.today = str(self.end_real_date)
+        
         self.today = self.end_real_date
         self.QA_backtest_sell_all(self)
         self.__sell_from_order_queue(self)
         self.__sync_order_LM(self, 'daily_settle')  # 每日结算
 
     def __wrap_bid(self, __bid, __order=None):
-        __market_data_for_backtest = self.market_data_dict[__bid.code].get_bar(
-            __bid.code, __bid.datetime)
-        if __market_data_for_backtest.len() == 1:
+        __market_data_for_backtest =self.QA_backtest_find_bar(self,__bid.code,__bid.datetime)
+        if __market_data_for_backtest is not None:
 
-            __O, __H, __L, __C, __V = self.QA_backtest_get_OHLCV(
-                self, __market_data_for_backtest)
-            if __O is not None and __order is not None:
+            if __market_data_for_backtest['open'] is not None and __order is not None:
                 if __order['bid_model'] in ['limit', 'Limit', 'Limited', 'limited', 'l', 'L', 0, '0']:
                         # 限价委托模式
                     __bid.price = __order['price']
                 elif __order['bid_model'] in ['Market', 'market', 'MARKET', 'm', 'M', 1, '1']:
                     # 2017-09-18 修改  市价单以当前bar开盘价下单
-                    __bid.price = float(__O[0])
+                    __bid.price = float(__market_data_for_backtest['open'])
                 elif __order['bid_model'] in ['strict', 'Strict', 's', 'S', '2', 2]:
                     __bid.price = float(
-                        __H[0]) if __bid.towards == 1 else float(__L[0])
+                        __market_data_for_backtest['high']) if __bid.towards == 1 else float(__market_data_for_backtest['low'])
                 elif __order['bid_model'] in ['close', 'close_price', 'c', 'C', '3', 3]:
-                    __bid.price = float(__C[0])
+                    __bid.price = float(__market_data_for_backtest['close'])
 
                 __bid.price = float('%.2f' % __bid.price)
                 return __bid, __market_data_for_backtest
@@ -399,7 +425,7 @@ class QA_Backtest():
 
                 __bid, __market = self.__wrap_bid(self, item)
                 __message = self.__QA_backtest_send_bid(
-                    self, __bid, __market.to_json()[0])
+                    self, __bid, __market)
                 if isinstance(__message, dict):
                     if __message['header']['status'] in ['200', 200]:
                         self.__sync_order_LM(
