@@ -158,8 +158,6 @@ def QA_backtest_calc_assets(trade_history, assets):
     return assets_d
 
 
-def QA_backtest_result_check(datelist, message):
-    pass
 
 
 def QA_backtest_calc_benchmark(benchmark_data, init_assets):
@@ -238,12 +236,8 @@ def QA_backtest_calc_trade_date(history):
     return trade_date
 
 
-def QA_backtest_calc_trade_time_profit():
-    pass
 
 
-def QA_backtest_calc_trade_time_loss():
-    pass
 
 
 def QA_backtest_calc_win_rate(profit_day):
