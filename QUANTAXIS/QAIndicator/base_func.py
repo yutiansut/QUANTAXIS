@@ -51,6 +51,10 @@ def SMA(Series, N):
     return reduce(lambda x, y: ((N - 1) * x + y) / N, Series)
 
 
+def DIFF(Series, N=1):
+    return pd.Series(Series).diff(N)
+
+
 def HHV(Series, N):
     return pd.Series(Series).rolling(N).max().values
 
@@ -105,11 +109,20 @@ def MACD(Series, FAST, SLOW, MID):
     return VAR
 
 
-
 def BBIBOLL(Series, N1, N2, N3, N4, N, M):  # 多空布林线
+
     bbiboll = BBI(Series, N1, N2, N3, N4)
     UPER = bbiboll + M * STD(bbiboll, N)
     DOWN = bbiboll - M * STD(bbiboll, N)
     DICT = {'BBIBOLL': bbiboll, 'UPER': UPER, 'DOWN': DOWN}
+    VAR = pd.DataFrame(DICT)
+    return VAR
+
+
+def BBI(Series, N1, N2, N3, N4):
+    '多空指标'
+    
+    bbi = (MA(Series, N1) + MA(Series, N2) + MA(Series, N3) + MA(Series, N4)) / 4
+    DICT = {'BBI': bbi}
     VAR = pd.DataFrame(DICT)
     return VAR
