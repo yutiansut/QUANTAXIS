@@ -34,7 +34,7 @@ from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_index_day,
                                      QA_fetch_get_stock_xdxr, select_best_ip)
 from QUANTAXIS.QAFetch.QATushare import QA_fetch_get_stock_time_to_market
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info, trade_date_sse,
-                              QA_util_to_json_from_pandas)
+                              QA_util_to_json_from_pandas, QA_util_get_real_date)
 
 from concurrent.futures import ThreadPoolExecutor
 import concurrent
@@ -43,7 +43,7 @@ import concurrent
 
 
 def now_time():
-    return datetime.datetime(year=datetime.date.today().year,month=datetime.date.today().month,day=datetime.date.today().day,hour=15)-datetime.timedelta(days=1) if datetime.datetime.now().hour < 15 else datetime.datetime(year=datetime.date.today().year,month=datetime.date.today().month,day=datetime.date.today().day,hour=15)
+    return str(QA_util_get_real_date(str(datetime.date.today() - datetime.timedelta(days=1)), trade_date_sse, -1)) + ' 15:00:00' if datetime.datetime.now().hour < 15 else str(QA_util_get_real_date(str(datetime.date.today()), trade_date_sse, -1)) + ' 15:00:00'
 
 
 def QA_SU_save_stock_day(client=QA_Setting.client):
@@ -122,7 +122,7 @@ def QA_SU_save_stock_min(client=QA_Setting.client):
             for type in ['1min', '5min', '15min', '30min', '60min']:
                 ref_ = __coll.find(
                     {'code': str(code)[0:6], 'type': type})
-                end_time = str(datetime.datetime.now())[0:19]
+                end_time = str(now_time())[0:19]
                 if ref_.count() > 0:
                     start_time = ref_[ref_.count() - 1]['datetime']
                 else:
@@ -166,7 +166,7 @@ def QA_SU_save_index_day(client=QA_Setting.client):
         try:
 
             ref_ = __coll.find({'code': str(code)[0:6]})
-            end_time = end_date = str(now_time())[0:10]
+            end_time = str(now_time())[0:10]
             if ref_.count() > 0:
                 start_time = ref_[ref_.count() - 1]['date']
             else:
@@ -205,7 +205,7 @@ def QA_SU_save_index_min(client=QA_Setting.client):
             for type in ['1min', '5min', '15min', '30min', '60min']:
                 ref_ = __coll.find(
                     {'code': str(code)[0:6], 'type': type})
-                end_time = str(datetime.datetime.now())[0:19]
+                end_time = str(now_time())[0:19]
                 if ref_.count() > 0:
                     start_time = ref_[ref_.count() - 1]['datetime']
                 else:
@@ -247,7 +247,7 @@ def QA_SU_save_etf_day(client=QA_Setting.client):
         try:
 
             ref_ = __coll.find({'code': str(code)[0:6]})
-            end_time = end_date = str(now_time())[0:10]
+            end_time = str(now_time())[0:10]
             if ref_.count() > 0:
                 start_time = ref_[ref_.count() - 1]['date']
             else:
@@ -286,7 +286,7 @@ def QA_SU_save_etf_min(client=QA_Setting.client):
             for type in ['1min', '5min', '15min', '30min', '60min']:
                 ref_ = __coll.find(
                     {'code': str(code)[0:6], 'type': type})
-                end_time = str(datetime.datetime.now())[0:19]
+                end_time = str(now_time())[0:19]
                 if ref_.count() > 0:
                     start_time = ref_[ref_.count() - 1]['datetime']
                 else:

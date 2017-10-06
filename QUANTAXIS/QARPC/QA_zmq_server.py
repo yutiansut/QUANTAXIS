@@ -36,9 +36,6 @@ class QA_RPC_Sever_pub():
         socket.send("%d %d" % (topic, messagedata))
         time.sleep(1)
 
-
-
-
 class QA_RPC_Sever_pubs():
     
     port = "5556"

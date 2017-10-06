@@ -224,5 +224,12 @@ def QA_util_time_delay(time_=0):
     return _exec
 
 
+def QA_util_calc_time(func, *args, **kwargs):
+    '耗时长度的装饰器'
+    time = datetime.datetime.now()
+    func(*args, **kwargs)
+    print(datetime.datetime.now - time)
+
+
 if __name__ == '__main__':
     print(QA_util_time_stamp('2017-01-01 10:25:08'))

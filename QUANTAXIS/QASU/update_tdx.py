@@ -9,7 +9,12 @@ from QUANTAXIS.QASU.save_tdx import QA_SU_save_stock_xdxr
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
                               QA_util_to_json_from_pandas, trade_date_sse)
 
+"""
+该模块已经废弃
 
+目前都在save_tdx中 增量更新
+
+"""
 
 
 def QA_SU_update_stock_day(client=QA_Setting.client):

@@ -25,6 +25,7 @@ tushare/
 *.exe
 .exe
 .pypirc
+QA_*.html
 private/
 
 *lock.json
@@ -66,7 +67,7 @@ examples/
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
-
+technical_analysis.py
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt

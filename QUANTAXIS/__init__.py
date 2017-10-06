@@ -31,7 +31,7 @@ by yutiansut
 
 2017/4/8
 """
-__version__ = '0.4.50'
+__version__ = '0.5.0'
 __author__ = 'yutiansut'
 logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
@@ -123,7 +123,7 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms
                               QA_util_make_min_index, QA_util_make_hour_index)
 
 from QUANTAXIS.QAIndicator import *
-from QUANTAXIS.QASQL import qasql, qacold
+
 #from QUANTAXIS.QAWeb import QA_Web
 # CMD and Cli
 import QUANTAXIS.QACmd

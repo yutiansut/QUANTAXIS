@@ -75,7 +75,9 @@ def QA_SU_save_account_to_csv(message):
                 csvwriter.writerow(message['body']['account']['history'][i])
             except:
                 pass
-def QA_SU_save_pnl_to_csv(detail,cookie):
+
+
+def QA_SU_save_pnl_to_csv(detail, cookie):
     __file_name_2 = 'backtest-pnl--' + \
         str(cookie) + '.csv'
     with open(__file_name_2, 'w', newline='') as E:

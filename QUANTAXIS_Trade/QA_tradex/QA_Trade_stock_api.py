@@ -5,9 +5,7 @@ import msvcrt
 import sys
 import configparser
 import os
-#print (os.path.dirname(os.path.realpath(__file__)))
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
-# input()
 import TradeX
 
 TradeX.OpenTdx()
@@ -17,7 +15,6 @@ class QA_Stock():
 
     def set_config(self, configs):
         try:
-            # print(str(os.path.dirname(os.path.realpath(__file__)))+'setting.ini')
 
             self.sHost = configs['host']
             self.nPort = configs['port']
@@ -35,7 +32,6 @@ class QA_Stock():
     def get_config(self):
         config = configparser.ConfigParser()
         try:
-            # print(str(os.path.dirname(os.path.realpath(__file__)))+'setting.ini')
             config.read(
                 str(os.path.dirname(os.path.realpath(__file__))) + '\setting.ini')
             self.sHost = config['trade-mock']['host']
@@ -72,7 +68,7 @@ class QA_Stock():
         except TradeX.error as e:
             return ("error: " + e.message)
 
-    def QA_trade_stock_login_with_config(self,config):
+    def QA_trade_stock_login_with_config(self, config):
         try:
             TradeX.OpenTdx()
             client = TradeX.Logon(str(config[0]), int(config[1]), str(config[2]), int(self.sBranchID),
@@ -109,11 +105,10 @@ class QA_Stock():
 
         _errinfo, self.result = _client.QueryData(self.nCategory)
         if _errinfo != "":
-            return (errinfo)
+            return (_errinfo)
         else:
-            # print(self.result)
             accounts = self.result.split('\n')[1].split('\t')
-            account={}
+            account = {}
             account['account_id'] = accounts[0]
             account['available'] = accounts[3]
             account['freeze'] = accounts[4]
@@ -127,34 +122,34 @@ class QA_Stock():
 
         _errinfo, self.result = client.QueryData(self.nCategory)
         if _errinfo != "":
-            return (errinfo)
+            return (_errinfo)
         else:
-            stocks=self.result.split('\n')
-            stock=[]
-            for i in range(1,len(stocks)):
-                temp={}
-                temp['code']=stocks[i].split('\t')[0]
-                temp['name']=stocks[i].split('\t')[1]
-                temp['number']=stocks[i].split('\t')[2]
-                temp['hold']=stocks[i].split('\t')[3]
-                temp['sell_available']=stocks[i].split('\t')[4]
-                temp['price_now']=stocks[i].split('\t')[5]
-                temp['value_now']=stocks[i].split('\t')[6]
-                temp['price_buy']=stocks[i].split('\t')[7]
-                temp['pnl_float']=stocks[i].split('\t')[8]
-                temp['pnl_ratio']=stocks[i].split('\t')[9]
-                temp['account_type']=stocks[i].split('\t')[10]
-                temp['account_id']=stocks[i].split('\t')[11]
-                temp['shareholder']=stocks[i].split('\t')[12]
-                temp['exchange']=stocks[i].split('\t')[13]
-                temp['trade_mark']=stocks[i].split('\t')[14]
-                temp['insure_mark']=stocks[i].split('\t')[15]
-                temp['buy_today']=stocks[i].split('\t')[16]
-                temp['sell_today']=stocks[i].split('\t')[17]
-                temp['position_buy']=stocks[i].split('\t')[18]
-                temp['position_sell']=stocks[i].split('\t')[19]
-                temp['price_yesterday']=stocks[i].split('\t')[20]
-                temp['margin']=stocks[i].split('\t')[21]
+            stocks = self.result.split('\n')
+            stock = []
+            for i in range(1, len(stocks)):
+                temp = {}
+                temp['code'] = stocks[i].split('\t')[0]
+                temp['name'] = stocks[i].split('\t')[1]
+                temp['number'] = stocks[i].split('\t')[2]
+                temp['hold'] = stocks[i].split('\t')[3]
+                temp['sell_available'] = stocks[i].split('\t')[4]
+                temp['price_now'] = stocks[i].split('\t')[5]
+                temp['value_now'] = stocks[i].split('\t')[6]
+                temp['price_buy'] = stocks[i].split('\t')[7]
+                temp['pnl_float'] = stocks[i].split('\t')[8]
+                temp['pnl_ratio'] = stocks[i].split('\t')[9]
+                temp['account_type'] = stocks[i].split('\t')[10]
+                temp['account_id'] = stocks[i].split('\t')[11]
+                temp['shareholder'] = stocks[i].split('\t')[12]
+                temp['exchange'] = stocks[i].split('\t')[13]
+                temp['trade_mark'] = stocks[i].split('\t')[14]
+                temp['insure_mark'] = stocks[i].split('\t')[15]
+                temp['buy_today'] = stocks[i].split('\t')[16]
+                temp['sell_today'] = stocks[i].split('\t')[17]
+                temp['position_buy'] = stocks[i].split('\t')[18]
+                temp['position_sell'] = stocks[i].split('\t')[19]
+                temp['price_yesterday'] = stocks[i].split('\t')[20]
+                temp['margin'] = stocks[i].split('\t')[21]
                 stock.append(temp)
             return stock
 
@@ -164,7 +159,7 @@ class QA_Stock():
 
         _errinfo, self.result = client.QueryData(self.nCategory)
         if _errinfo != "":
-            return (errinfo)
+            return (_errinfo)
         else:
 
             return self.result
@@ -174,7 +169,7 @@ class QA_Stock():
         self.nCategory = 2
 
         _errinfo, self.result = client.QueryData(self.nCategory)
-        if errinfo != "":
+        if _errinfo != "":
             return (_errinfo)
         else:
             print(self.result)
@@ -184,9 +179,9 @@ class QA_Stock():
         # 股东代码
         self.nCategory = 5
 
-        errinfo, self.result = client.QueryData(self.nCategory)
-        if errinfo != "":
-            print(errinfo)
+        _errinfo, self.result = client.QueryData(self.nCategory)
+        if _errinfo != "":
+            print(_errinfo)
         else:
             # print(self.result.split('\n')[1].split('\t')[0])
             # print(self.result.split('\n')[2].split('\t')[0])
@@ -215,7 +210,7 @@ class QA_Stock():
             sPrice - 价格
             sVolume - 委托证券的股数
             返回值：
-            errinfo - 出错时函数抛出的异常信息；
+            _errinfo - 出错时函数抛出的异常信息；
             result - 查询到的数据。
 
 
@@ -228,12 +223,13 @@ class QA_Stock():
             """
 
     def QA_trade_stock_post_order(self, client, order):
-        
-        if len(order)==6:
-            
-            errinfo, self.result = client.SendOrder(order[0],order[1],order[2],order[3],order[4],order[5])
-            if errinfo != "":
-                print(errinfo)
+
+        if len(order) == 6:
+
+            _errinfo, self.result = client.SendOrder(
+                order[0], order[1], order[2], order[3], order[4], order[5])
+            if _errinfo != "":
+                print(_errinfo)
             else:
                 print(self.result)
 
@@ -262,42 +258,24 @@ class QA_Stock():
         nMarket - 市场代码0:深圳，1:上海
         Orderid - 可撤销的委托单号
         返回值：
-        errinfo - 出错时函数抛出的异常信息；
+        _errinfo - 出错时函数抛出的异常信息；
         result - 查询到的数据。
 
         """
 
-        errinfo, result = client.CancelOrder(
+        _errinfo, result = client.CancelOrder(
             int(order_list[0]), str(order_list[1]))
-        if errinfo != "":
-            print(errinfo)
+        if _errinfo != "":
+            print(_errinfo)
         else:
             print(result)
             return (result)
 
-    def QA_trade_stock_delete_order(self, client, order_list):
-        """
-        参数：
-        nMarket - 市场代码0:深圳，1:上海
-        Orderid - 可撤销的委托单号
-        返回值：
-        errinfo - 出错时函数抛出的异常信息；
-        result - 查询到的数据。
-
-        """
-
-        errinfo, result = client.CancelOrders(
-            int(order_list[0]), str(order_list[1]))
-        if errinfo != "":
-            print(errinfo)
-        else:
-            print(result)
-            return (result)
 
     def QA_trade_stock_get_quote(self, client, stock):
-        errinfo, self.result = client.GetQuote(str(stock),)
-        if errinfo != "":
-            print(errinfo)
+        _errinfo, self.result = client.GetQuote(str(stock),)
+        if _errinfo != "":
+            print(_errinfo)
         else:
             #print (self.result)
             return self.result
@@ -305,11 +283,11 @@ class QA_Stock():
     def QA_trade_stock_get_quotes(self, client, stock_list):
         res = client.GetQuotes(tuple(stock_list))
         for elem in res:
-            errinfo, result = elem
-            if errinfo != "":
-                print (errinfo)
+            _errinfo, result = elem
+            if _errinfo != "":
+                print(_errinfo)
             else:
-                print (result)
+                print(result)
 
     def QA_trade_stock_get_stockbars(self, client):
         pass
