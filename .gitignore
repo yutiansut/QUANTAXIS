@@ -1,33 +1,25 @@
-node_module/
+
+# Self-defined ignore
+
 *.pyc
 node_modules/
 .vscode/
-.pyc
-QUANTAXISTaskServer/
-quantaxisback/
 *.7z
 .idea/
 *.log
-fetch/
 .vscode/
 *.pdf
 *.gitconfig
-.gitconfig
-.rqalpha/
-*.psd
 *.rdb
 .ipython/
 .matplotlib/
 .log
 *.log
 .ssh/
-tushare/
 *.exe
-.exe
 .pypirc
 QA_*.html
-private/
-
+test/
 *lock.json
 
 # Byte-compiled / optimized / DLL files

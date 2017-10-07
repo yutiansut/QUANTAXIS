@@ -29,6 +29,8 @@ import shutil
 import string
 import sys
 import platform
+import click
+import subprocess
 
 
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
@@ -46,7 +48,11 @@ class CLI(cmd.Cmd):
     def __init__(self):
         cmd.Cmd.__init__(self)
         self.prompt = 'QUANTAXIS> '    # 定义命令行提示符
-
+    def do_shell(self, arg):
+        "run a shell commad"
+        print (">", arg)
+        sub_cmd = subprocess.Popen(arg,shell=True, stdout=subprocess.PIPE)
+        print (sub_cmd.communicate()[0])
     def do_version(self, arg):
         QA_util_log_info(__version__)
 
@@ -54,6 +60,9 @@ class CLI(cmd.Cmd):
         print("syntax: version [message]",)
         print("-- prints a version message")
 
+
+    @click.command()
+    @click.option('--e', default=1, help='Number of greetings.')
     def do_examples(self, arg):
         QA_util_log_info('QUANTAXIS example')
         now_path = os.getcwd()
