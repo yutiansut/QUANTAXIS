@@ -25,15 +25,15 @@
 
 import datetime
 
-import numpy
 import pandas as pd
-from bson.objectid import ObjectId
 from pandas import DataFrame
+
 from QUANTAXIS.QAData import (QA_data_make_hfq, QA_data_make_qfq,
                               QA_DataStruct_Index_day, QA_DataStruct_Index_min,
                               QA_DataStruct_Stock_day, QA_DataStruct_Stock_min,
                               QA_DataStruct_Stock_transaction)
-from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_stocklist_day, QA_fetch_indexlist_day,
+from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_indexlist_day,
+                                       QA_fetch_stocklist_day,
                                        QA_fetch_stocklist_min)
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
                               QA_util_date_valid, QA_util_log_info,
@@ -46,7 +46,11 @@ from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
 """
 
 
-def QA_fetch_stock_day_adv(code, __start, __end, if_drop_index=False,  collections=QA_Setting.client.quantaxis.stock_day):
+def QA_fetch_stock_day_adv(
+        code,
+        __start, __end,
+        if_drop_index=False,
+        collections=QA_Setting.client.quantaxis.stock_day):
     '获取股票日线'
     __start = str(__start)[0:10]
     __end = str(__end)[0:10]
@@ -69,12 +73,20 @@ def QA_fetch_stock_day_adv(code, __start, __end, if_drop_index=False,  collectio
         return QA_DataStruct_Stock_day(pd.concat(QA_fetch_stocklist_day(code, [__start, __end])).query('volume>1').set_index(['date', 'code'], drop=if_drop_index))
 
 
-def QA_fetch_stocklist_day_adv(code, __start, __end, if_drop_index=False, collections=QA_Setting.client.quantaxis.stock_day):
+def QA_fetch_stocklist_day_adv(
+        code,
+        __start, __end,
+        if_drop_index=False,
+        collections=QA_Setting.client.quantaxis.stock_day):
     '获取股票日线'
     return QA_DataStruct_Stock_day(pd.concat(QA_fetch_stocklist_day(code, [__start, __end])).query('volume>1').set_index(['date', 'code'], drop=if_drop_index))
 
 
-def QA_fetch_index_day_adv(code, __start, __end, if_drop_index=False,  collections=QA_Setting.client.quantaxis.index_day):
+def QA_fetch_index_day_adv(
+        code,
+        __start, __end,
+        if_drop_index=False,
+        collections=QA_Setting.client.quantaxis.index_day):
     '获取指数日线'
     __start = str(__start)[0:10]
     __end = str(__end)[0:10]
@@ -98,7 +110,12 @@ def QA_fetch_index_day_adv(code, __start, __end, if_drop_index=False,  collectio
         return QA_DataStruct_Index_day(pd.concat(QA_fetch_indexlist_day(code, [__start, __end])).query('volume>1').set_index(['date', 'code'], drop=if_drop_index))
 
 
-def QA_fetch_index_min_adv(code, start, end, type_='1min', if_drop_index=False,  collections=QA_Setting.client.quantaxis.index_min):
+def QA_fetch_index_min_adv(
+        code,
+        start, end,
+        type_='1min',
+        if_drop_index=False,
+        collections=QA_Setting.client.quantaxis.index_min):
     '获取股票分钟线'
     if type_ in ['1min', '1m']:
         type_ = '1min'
@@ -132,7 +149,12 @@ def QA_fetch_index_min_adv(code, start, end, type_='1min', if_drop_index=False, 
         return QA_DataStruct_Index_min(pd.concat([QA_fetch_index_min_adv(code_, start, end, type_, if_drop_index).data for code_ in code]).set_index(['datetime', 'code'], drop=if_drop_index))
 
 
-def QA_fetch_stock_min_adv(code, start, end, type_='1min', if_drop_index=False, collections=QA_Setting.client.quantaxis.stock_min):
+def QA_fetch_stock_min_adv(
+        code,
+        start, end,
+        type_='1min',
+        if_drop_index=False,
+        collections=QA_Setting.client.quantaxis.stock_min):
     '获取股票分钟线'
     if type_ in ['1min', '1m']:
         type_ = '1min'
@@ -168,11 +190,19 @@ def QA_fetch_stock_min_adv(code, start, end, type_='1min', if_drop_index=False, 
         return QA_DataStruct_Stock_min(pd.concat([QA_fetch_stock_min_adv(code_, start, end, type_, if_drop_index).data for code_ in code]).set_index(['datetime', 'code'], drop=if_drop_index))
 
 
-def QA_fetch_stocklist_min_adv(code, start, end, type_='1min', if_drop_index=False,  collections=QA_Setting.client.quantaxis.stock_min):
+def QA_fetch_stocklist_min_adv(
+        code,
+        start, end,
+        type_='1min',
+        if_drop_index=False,  collections=QA_Setting.client.quantaxis.stock_min):
     return QA_DataStruct_Stock_min(pd.concat(QA_fetch_stocklist_min(code, [start, end], type_)).query('volume>1').set_index(['datetime', 'code'], drop=if_drop_index))
 
 
-def QA_fetch_stock_transaction_adv(code, start, end, if_drop_index=False, collections=QA_Setting.client.quantaxis.stock_transaction):
+def QA_fetch_stock_transaction_adv(
+        code,
+        start, end,
+        if_drop_index=False,
+        collections=QA_Setting.client.quantaxis.stock_transaction):
     data = DataFrame([item for item in collections.find({
         'code': str(code), "date": {
             "$gte": start,

@@ -176,7 +176,12 @@ def QA_fetch_indexlist_day(stock_list, date_range, collections=QA_Setting.client
     return __data
 
 
-def QA_fetch_index_min(code, startTime, endTime, format_='numpy', type_='1min', collections=QA_Setting.client.quantaxis.index_min):
+def QA_fetch_index_min(
+        code,
+        startTime, endTime,
+        format_='numpy',
+        type_='1min',
+        collections=QA_Setting.client.quantaxis.index_min):
     '获取股票分钟线'
     if type_ in ['1min', '1m']:
         type_ = '1min'

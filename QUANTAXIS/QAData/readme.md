@@ -11,3 +11,4 @@ DataStruct具有的功能:
 - 数据显示 show
 - 格式变换 to_json/to_pandas/to_list/to_numpy
 - 数据库式查询  query
+- 画图 plot
