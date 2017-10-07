@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<ProfilingTarget xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ProjectTarget>
+    <TargetProject>eede2b2a-66ad-44da-a541-7ff3bca7fb06</TargetProject>
+    <FriendlyName>quantaxis</FriendlyName>
+  </ProjectTarget>
+</ProfilingTarget>
