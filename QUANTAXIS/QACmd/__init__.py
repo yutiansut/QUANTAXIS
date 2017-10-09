@@ -29,7 +29,6 @@ import shutil
 import string
 import sys
 import platform
-import click
 import subprocess
 
 
