@@ -37,7 +37,7 @@ class __stock_hq_base():
         self.mongo_coll = QA_Setting.client.quantaxis
 
     def __repr__(self):
-        return 'QA_Base_DataStruct with %s securities' % len(self.code)
+        return '< QA_Base_DataStruct with %s securities >' % len(self.code)
 
     def __call__(self):
         return self.data
@@ -273,7 +273,7 @@ class QA_DataStruct_Index_day(__stock_hq_base):
     """
 
     def __repr__(self):
-        return 'QA_DataStruct_Index_day with %s securities' % len(self.code)
+        return '< QA_DataStruct_Index_day with %s securities >' % len(self.code)
 
 
     def reverse(self):
@@ -374,7 +374,7 @@ class QA_DataStruct_Index_min(__stock_hq_base):
         self.mongo_coll = QA_Setting.client.quantaxis.index_min
 
     def __repr__(self):
-        return 'QA_DataStruct_Index_Min with %s securities' % len(self.code)
+        return '< QA_DataStruct_Index_Min with %s securities >' % len(self.code)
 
 
     def reverse(self):
@@ -478,7 +478,7 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
         self.mongo_coll = QA_Setting.client.quantaxis.stock_min
 
     def __repr__(self):
-        return 'QA_DataStruct_Stock_Min with %s securities' % len(self.code)
+        return '< QA_DataStruct_Stock_Min with %s securities >' % len(self.code)
 
     def to_qfq(self):
         if self.if_fq is 'bfq':
@@ -599,7 +599,7 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
         self.mongo_coll = QA_Setting.client.quantaxis.stock_day
 
     def __repr__(self):
-        return 'QA_DataStruct_Stock_day with %s securities' % len(self.code)
+        return '< QA_DataStruct_Stock_day with %s securities >' % len(self.code)
     @lru_cache()
     def to_qfq(self):
         if self.if_fq is 'bfq':
@@ -712,6 +712,31 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
             return self.sync_status(QA_DataStruct_Stock_day((self.data[self.data['code'] == code])[self.data['date'] <= str(time)[0:10]].set_index(['date', 'code'], drop=False).tail(1)))
 
 
+
+class QA_DataStruct_Stock_block():
+    def __init__(self,DataFrame):
+        self.data=DataFrame
+    def __repr__(self):
+        return '< QA_DataStruct_Stock_Block >'
+    def __call__(self):
+        return self.data
+    @property
+    def len(self):
+        return len(self.data)
+    @property
+    def block_name(self):
+        return self.data.groupby('blockname').sum().index.tolist()
+    def show(self):
+        return self.data
+
+    def get_code(self,code):
+        return self.data[self.data['code']==code]
+
+
+    def get_block(self,_block_name):
+        return self.data[self.data['blockname']==_block_name]
+
+
 class QA_DataStruct_Stock_transaction():
     def __init__(self, DataFrame):
         self.type = 'stock_transaction'
@@ -732,6 +757,9 @@ class QA_DataStruct_Stock_transaction():
 
     def resample(self, type_='1min'):
         return QA_DataStruct_Stock_min(QA_data_tick_resample(self.data, type_))
+
+
+
 
 
 class QA_DataStruct_Market_reply():

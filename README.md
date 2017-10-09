@@ -12,12 +12,12 @@
 
 
 
-![version](https://img.shields.io/badge/Version-%200.5.0-orange.svg)
+![version](https://img.shields.io/badge/Version-%200.5.1-orange.svg)
 ![build](https://travis-ci.org/yutiansut/QUANTAXIS.svg?branch=master)
 [![Stories in Ready](https://badge.waffle.io/yutiansut/QUANTAXIS.svg?label=ready&title=Ready)](http://waffle.io/yutiansut/QUANTAXIS)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.8-brown.svg)
-![Pypi](https://img.shields.io/badge/Pypi-%200.5.0-blue.svg)
+![Pypi](https://img.shields.io/badge/Pypi-%200.5.1-blue.svg)
 ![python](https://img.shields.io/badge/python-%203.6/3.5/3.4/win/ubuntu-darkgrey.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.4.0-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
@@ -41,6 +41,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - 基于Vue.js的前端网站
 - 自定义的数据结构
 - 指标计算
+- 板块数据(0.5.1新增)
 
 预计实现:
 
@@ -506,20 +507,20 @@ data=QA.QAFetch.QATdx.QA_fetch_get_stock_realtime(['000001','000002'])
 QA.QA_util_log_info('分笔成交')
 data=QA.QAFetch.QATdx.QA_fetch_get_stock_transaction('000001','2001-01-01','2001-01-15')
 
+QA.QA_util_log_info('板块数据')
+data=QA.QAFetch.QATdx.QA_fetch_get_stock_block()
+
 
 """
 QA.QA_fetch_ 系列 
 从本地数据库获取数据
 """
-
-QA.QA_fetch_stock_day()
-
-QA.QA_fetch_stocklist_day()
-
-QA.QA_fetch_stock_day_adv()
-
-QA.QA_fetch_stocklist_day_adv()
-
+# 股票
+QA_fetch_stock_day_adv(code,start,end)
+QA_fetch_stock_min_adv(code,start,end,type_='1min') # type_可以选1min/5min/15min/30min/60min 
+# 指数/ETF
+QA_fetch_index_day_adv(code,start,end)
+QA_fetch_index_min_adv(code,start,end,type_='1min') # type_可以选1min/5min/15min/30min/60min 
 
 
 ```

@@ -31,7 +31,7 @@ from pandas import DataFrame
 from QUANTAXIS.QAData import (QA_data_make_hfq, QA_data_make_qfq,
                               QA_DataStruct_Index_day, QA_DataStruct_Index_min,
                               QA_DataStruct_Stock_day, QA_DataStruct_Stock_min,
-                              QA_DataStruct_Stock_transaction)
+                              QA_DataStruct_Stock_transaction,QA_DataStruct_Stock_block)
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_indexlist_day,
                                        QA_fetch_stocklist_day,
                                        QA_fetch_stocklist_min)
@@ -210,3 +210,14 @@ def QA_fetch_stock_transaction_adv(
         }})]).drop('_id', axis=1, inplace=False)
     data['datetime'] = pd.to_datetime(data['date'] + ' ' + data['time'])
     return QA_DataStruct_Stock_transaction(data.set_index('datetime', drop=if_drop_index))
+
+
+
+def QA_fetch_stock_block_adv(code=None, collections=QA_Setting.client.quantaxis.stock_block):
+    if code is not None:
+        data = pd.DataFrame([item for item in collections.find(
+            {'code': code})]).drop(['_id'], axis=1)
+        return QA_DataStruct_Stock_block(data.set_index('code', drop=False))
+    else:
+        data = pd.DataFrame([item for item in collections.find()]).drop(['_id'], axis=1)
+        return QA_DataStruct_Stock_block(data.set_index('code', drop=False))
