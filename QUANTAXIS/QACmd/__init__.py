@@ -61,8 +61,8 @@ class CLI(cmd.Cmd):
         print("-- prints a version message")
 
 
-    @click.command()
-    @click.option('--e', default=1, help='Number of greetings.')
+    #@click.command()
+    #@click.option('--e', default=1, help='Number of greetings.')
     def do_examples(self, arg):
         QA_util_log_info('QUANTAXIS example')
         now_path = os.getcwd()
