@@ -397,6 +397,16 @@ DataStruct具有的功能:
 - 画图 plot
 - 计算指标 add_func
 
+
+QA_DataStruct_Stock_block
+
+- (属性)该类下的所有板块名称 block_name
+- 查询某一只股票所在的所有板块 get_code(code)
+- 查询某一个板块下的所有股票 get_block(block)
+- 展示当前类下的所有数据 show
+
+
+
 ![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20171004125336.png)
 ### QUANTAXIS的api
 ```python
@@ -521,7 +531,8 @@ QA_fetch_stock_min_adv(code,start,end,type_='1min') # type_可以选1min/5min/15
 # 指数/ETF
 QA_fetch_index_day_adv(code,start,end)
 QA_fetch_index_min_adv(code,start,end,type_='1min') # type_可以选1min/5min/15min/30min/60min 
-
+# 板块
+QA_fetch_stock_block_adv(code)
 
 ```
 
