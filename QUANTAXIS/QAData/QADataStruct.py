@@ -19,7 +19,6 @@ from functools import lru_cache, reduce
 import numpy as np
 import pandas as pd
 import six
-import talib
 from pyecharts import Kline
 from QUANTAXIS.QAData.data_fq import QA_data_stock_to_fq
 from QUANTAXIS.QAData.data_resample import QA_data_tick_resample
@@ -93,18 +92,6 @@ class __stock_hq_base():
     @lru_cache()
     def dicts(self):
         return self.to_dict('index')
-
-
-    def ATR(self, gap=14):
-        list_mtr = []
-        __id = -gap
-        while __id < 0:
-            list_mtr.append(max(self.high[__id] - self.low[__id], abs(
-                self.close[__id - 1] - self.high[__id]), abs(self.close[__id - 1] - self.low[__id])))
-            __id += 1
-        res = talib.MA(np.array(list_mtr), gap)
-        return list_mtr[-1], res[-1]
-
 
 
 

@@ -31,6 +31,7 @@ from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_index_day,
                                      QA_fetch_get_stock_list,
                                      QA_fetch_get_stock_min,
                                      QA_fetch_get_stock_transaction,
+                                     QA_fetch_get_stock_block,
                                      QA_fetch_get_stock_xdxr, select_best_ip)
 from QUANTAXIS.QAFetch.QATushare import QA_fetch_get_stock_time_to_market
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info, trade_date_sse,
@@ -331,6 +332,19 @@ def QA_SU_save_stock_list(client=QA_Setting.client):
         pass
 
 
+def QA_SU_save_stock_block(client=QA_Setting.client):
+    client.quantaxis.drop_collection('stock_block')
+    __coll = client.quantaxis.stock_block
+    __coll.ensure_index('code')
+    __err = []
+    try:
+        QA_util_log_info('##JOB09 Now Saving STOCK_BlOCK ====')
+        __coll.insert_many(QA_util_to_json_from_pandas(
+            QA_fetch_get_stock_block()))
+    except:
+        pass
+
+
 def QA_SU_save_stock_transaction(client=QA_Setting.client):
     __stock_list = QA_fetch_get_stock_time_to_market()
     __coll = client.quantaxis.stock_transaction
@@ -339,7 +353,7 @@ def QA_SU_save_stock_transaction(client=QA_Setting.client):
 
     def __saving_work(code):
         QA_util_log_info(
-            '##JOB07 Now Saving STOCK_TRANSACTION ==== %s' % (str(code)))
+            '##JOB10 Now Saving STOCK_TRANSACTION ==== %s' % (str(code)))
         try:
             __coll.insert_many(
                 QA_util_to_json_from_pandas(

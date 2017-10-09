@@ -112,7 +112,7 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', 
                 .drop(['year', 'month', 'day', 'hour',
                        'minute', 'datetime'], axis=1)
 
-            bfq_data['if_trade']=True
+            bfq_data['if_trade'] = True
             data = pd.concat([bfq_data, info[['category']]
                               [bfq_data.index[0]:]], axis=1)
 
@@ -149,7 +149,7 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', 
                 .drop(['year', 'month', 'day', 'hour',
                        'minute', 'datetime'], axis=1)
 
-            bfq_data['if_trade']=True
+            bfq_data['if_trade'] = True
             data = pd.concat([bfq_data, info[['category']]
                               [bfq_data.index[0]:end_date]], axis=1)
 
@@ -186,7 +186,7 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', 
                 .drop(['year', 'month', 'day', 'hour',
                        'minute', 'datetime'], axis=1)
 
-            bfq_data['if_trade']=True
+            bfq_data['if_trade'] = True
             data = pd.concat([bfq_data, info[['category']]
                               [bfq_data.index[0]:]], axis=1)
 
@@ -222,7 +222,7 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', 
                 .drop(['year', 'month', 'day', 'hour',
                        'minute', 'datetime'], axis=1)
 
-            bfq_data['if_trade']=True
+            bfq_data['if_trade'] = True
             data = pd.concat([bfq_data, info[['category']]
                               [bfq_data.index[0]:end_date]], axis=1)
 
@@ -244,7 +244,6 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', 
             data['preclose'] = data['preclose'] / data['adj']
             data = data[data['if_trade']]
             return data.drop(['fenhong', 'peigu', 'peigujia', 'songzhuangu', 'if_trade', 'category'], axis=1)[data['open'] != 0].assign(date=data['date'].apply(lambda x: str(x)[0:10]))[start_date:end_date]
-
 
 
 def QA_fetch_get_stock_min(code, start, end, level='1min', ip=best_ip, port=7709):
@@ -354,6 +353,7 @@ def QA_fetch_get_index_day(code, start_date, end_date, level='day', ip=best_ip, 
 
 
 def QA_fetch_get_index_min(code, start, end, level='1min', ip=best_ip, port=7709):
+    '指数分钟线'
     api = TdxHq_API()
     type_ = ''
     if str(level) in ['5', '5m', '5min', 'five']:
@@ -397,6 +397,7 @@ def __QA_fetch_get_stock_transaction(code, day, retry, api):
 
 
 def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=best_ip, port=7709):
+    '逐笔成交'
     api = TdxHq_API()
 
     real_start, real_end = QA_util_get_real_datelist(start, end)
@@ -422,6 +423,7 @@ def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=best_ip, port=7
 
 
 def QA_fetch_get_stock_xdxr(code, ip=best_ip, port=7709):
+    '除权除息'
     api = TdxHq_API()
     market_code = __select_market_code(code)
     with api.connect(ip, port):
@@ -442,8 +444,29 @@ def QA_fetch_get_stock_xdxr(code, ip=best_ip, port=7709):
         return data.assign(date=data['date'].apply(lambda x: str(x)[0:10]))
 
 
-def QA_fetch_get_stock_info():
-    pass
+def QA_fetch_get_stock_block(ip=best_ip, port=7709):
+    '板块数据'
+    api = TdxHq_API()
+    with api.connect(ip, port):
+
+        data = pd.concat([api.to_df(api.get_and_parse_block_info("block_gn.dat")),
+                          api.to_df(api.get_and_parse_block_info("block.dat")),
+                          api.to_df(api.get_and_parse_block_info(
+                              "block_zs.dat")),
+                          api.to_df(api.get_and_parse_block_info("block_fg.dat"))])
+
+        if len(data) > 10:
+            return data.assign(source='tdx').set_index('code', drop=False, inplace=False)
+        else:
+            QA_util_log_info('Wrong with fetch block ')
+
+
+def QA_fetch_get_stock_info(code,ip=best_ip, port=7709):
+    '股票财务数据'
+    api = TdxHq_API()
+    market_code = __select_market_code(code)
+    with api.connect(ip, port):
+        return api.to_df(api.get_finance_info(market_code, code))
 
 
 if __name__ == '__main__':

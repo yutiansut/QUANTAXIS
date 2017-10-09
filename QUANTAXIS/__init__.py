@@ -31,7 +31,7 @@ by yutiansut
 
 2017/4/8
 """
-__version__ = '0.5.0'
+__version__ = '0.5.1'
 __author__ = 'yutiansut'
 logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
@@ -56,7 +56,8 @@ logo = ' \n \
 
 from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day, QA_fetch_get_trade_date, QA_fetch_get_stock_min, QA_fetch_get_stock_xdxr,
                                QA_fetch_get_stock_indicator, QA_fetch_get_stock_realtime, QA_fetch_get_stock_transaction,
-                               QA_fetch_get_index_day, QA_fetch_get_index_min, QA_fetch_get_stock_list)
+                               QA_fetch_get_index_day, QA_fetch_get_index_min, QA_fetch_get_stock_list,QA_fetch_get_stock_info,
+                               QA_fetch_get_stock_block)
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_trade_date, QA_fetch_stock_day, QA_fetch_stocklist_day, QA_fetch_index_day,
                                        QA_fetch_stock_min, QA_fetch_stocklist_min, QA_fetch_future_min, QA_fetch_future_day,
                                        QA_fetch_future_tick, QA_fetch_stock_list, QA_fetch_stock_full, QA_fetch_stock_xdxr,
@@ -66,7 +67,7 @@ from QUANTAXIS.QAFetch.QAQuery_Advance import *
 
 # save
 from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_index_min,
-                                 QA_SU_save_stock_min, QA_SU_save_stock_xdxr, QA_SU_save_stock_info, QA_SU_save_stock_min_5,
+                                 QA_SU_save_stock_min, QA_SU_save_stock_xdxr, QA_SU_save_stock_info, QA_SU_save_stock_min_5,QA_SU_save_stock_block,
                                  QA_SU_save_stock_day_init,  QA_SU_save_trade_date, QA_SU_update_stock_day, QA_SU_save_etf_day, QA_SU_save_etf_min)
 
 from QUANTAXIS.QASU.save_backtest import (
