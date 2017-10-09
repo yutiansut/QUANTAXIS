@@ -105,6 +105,7 @@ class QA_Backtest():
     account_d_key = []
     market_data_dict = {}
     backtest_print_log = True
+
     def __init__(self):
 
         self.backtest_type = 'day'
@@ -226,24 +227,26 @@ class QA_Backtest():
                 self.strategy_stock_list, QA_util_time_gap(self.start_real_time, self.strategy_gap + 1, '<', self.backtest_type.split('_')[1]),  QA_util_time_gap(self.end_real_time, 1, '>', self.backtest_type.split('_')[1]), self.backtest_type.split('_')[1])
         self.market_data_dict = dict(
             zip(list(self.market_data.code), self.market_data.splits()))
-        self.market_data_hashable=self.market_data.dicts
-    def QA_backtest_find_bar(self,code,time):
-        if isinstance(time,str):
-            if len(time)==10:
+        self.market_data_hashable = self.market_data.dicts
+
+    def QA_backtest_find_bar(self, code, time):
+        if isinstance(time, str):
+            if len(time) == 10:
                 try:
-                    return self.market_data_hashable[(datetime.datetime.strptime(time,'%Y-%m-%d'),code)]
+                    return self.market_data_hashable[(datetime.datetime.strptime(time, '%Y-%m-%d'), code)]
                 except:
                     return None
-            elif len(time)==19:
+            elif len(time) == 19:
                 try:
-                    return self.market_data_hashable[(datetime.datetime.strptime(time,'%Y-%m-%d %H:%M:%S'),code)]
+                    return self.market_data_hashable[(datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S'), code)]
                 except:
                     return None
         else:
             try:
-                return self.market_data_hashable[(time,code)]
+                return self.market_data_hashable[(time, code)]
             except:
                 return None
+
     def __QA_backtest_log_info(self, log):
         if self.backtest_print_log:
             return QA_util_log_info(log)
@@ -293,14 +296,15 @@ class QA_Backtest():
         elif self.backtest_type in ['index_1min', 'index_5min', 'index_15min', 'index_30min', 'index_60min']:
             self.now = str(self.end_real_date) + ' 15:00:00'
             self.today = str(self.end_real_date)
-        
+
         self.today = self.end_real_date
         self.QA_backtest_sell_all(self)
         self.__sell_from_order_queue(self)
         self.__sync_order_LM(self, 'daily_settle')  # 每日结算
 
     def __wrap_bid(self, __bid, __order=None):
-        __market_data_for_backtest =self.QA_backtest_find_bar(self,__bid.code,__bid.datetime)
+        __market_data_for_backtest = self.QA_backtest_find_bar(
+            self, __bid.code, __bid.datetime)
         if __market_data_for_backtest is not None:
 
             if __market_data_for_backtest['open'] is not None and __order is not None:
@@ -713,81 +717,81 @@ class QA_Backtest():
                 pass
 
     @classmethod
-    def load_strategy(__backtest_cls, func, *arg, **kwargs):
+    def load_strategy(_cls, func, *arg, **kwargs):
         '策略加载函数'
 
         # 首先判断是否能满足回测的要求`
         __messages = {}
-        __backtest_cls.__init_cash_per_stock = int(
-            float(__backtest_cls.account.init_assest) / len(__backtest_cls.strategy_stock_list))
+        _cls.__init_cash_per_stock = int(
+            float(_cls.account.init_assest) / len(_cls.strategy_stock_list))
         # 策略的交易日循环
-        for i in range(int(__backtest_cls.start_real_id), int(__backtest_cls.end_real_id)):
-            __backtest_cls.running_date = __backtest_cls.trade_list[i]
-            __backtest_cls.__QA_backtest_log_info(__backtest_cls,
-                                                  '=================daily hold list====================')
-            __backtest_cls.__QA_backtest_log_info(__backtest_cls, 'in the begining of ' +
-                                                  __backtest_cls.running_date)
-            __backtest_cls.__QA_backtest_log_info(__backtest_cls,
-                                                  tabulate(__backtest_cls.account.message['body']['account']['hold']))
-            __backtest_cls.now = __backtest_cls.running_date
-            __backtest_cls.today = __backtest_cls.running_date
+        for i in range(int(_cls.start_real_id), int(_cls.end_real_id)):
+            _cls.running_date = _cls.trade_list[i]
+            _cls.__QA_backtest_log_info(
+                _cls, '=================daily hold list====================')
+            _cls.__QA_backtest_log_info(_cls, 'in the begining of ' +
+                                        _cls.running_date)
+            _cls.__QA_backtest_log_info(_cls,
+                                        tabulate(_cls.account.message['body']['account']['hold']))
+            _cls.now = _cls.running_date
+            _cls.today = _cls.running_date
             # 交易前同步持仓状态
-            __backtest_cls.__sync_order_LM(__backtest_cls, 'init_')  # 初始化事件
+            _cls.__sync_order_LM(_cls, 'init_')  # 初始化事件
 
-            if __backtest_cls.backtest_type in ['day', 'd', 'index_day']:
+            if _cls.backtest_type in ['day', 'd', 'index_day']:
 
                 func(*arg, **kwargs)  # 发委托单
-                __backtest_cls.__sell_from_order_queue(__backtest_cls)
-            elif __backtest_cls.backtest_type in ['1min', '5min', '15min', '30min', '60min', 'index_1min', 'index_5min', 'index_15min', 'index_30min', 'index_60min']:
-                if __backtest_cls.backtest_type in ['1min', 'index_1min']:
+                _cls.__sell_from_order_queue(_cls)
+            elif _cls.backtest_type in ['1min', '5min', '15min', '30min', '60min', 'index_1min', 'index_5min', 'index_15min', 'index_30min', 'index_60min']:
+                if _cls.backtest_type in ['1min', 'index_1min']:
                     type_ = '1min'
-                elif __backtest_cls.backtest_type in ['5min', 'index_5min']:
+                elif _cls.backtest_type in ['5min', 'index_5min']:
                     type_ = '5min'
-                elif __backtest_cls.backtest_type in ['15min', 'index_15min']:
+                elif _cls.backtest_type in ['15min', 'index_15min']:
                     type_ = '15min'
-                elif __backtest_cls.backtest_type in ['30min', 'index_30min']:
+                elif _cls.backtest_type in ['30min', 'index_30min']:
                     type_ = '30min'
-                elif __backtest_cls.backtest_type in ['60min', 'index_60min']:
+                elif _cls.backtest_type in ['60min', 'index_60min']:
                     type_ = '60min'
                 daily_min = QA_util_make_min_index(
-                    __backtest_cls.today, type_)  # 创造分钟线index
+                    _cls.today, type_)  # 创造分钟线index
                 for min_index in daily_min:
-                    __backtest_cls.now = min_index
-                    __backtest_cls.__QA_backtest_log_info(__backtest_cls,
-                                                          '=================Min hold list====================')
-                    __backtest_cls.__QA_backtest_log_info(
-                        __backtest_cls, 'in the begining of %s' % str(min_index))
-                    __backtest_cls.__QA_backtest_log_info(__backtest_cls,
-                                                          tabulate(__backtest_cls.account.message['body']['account']['hold']))
+                    _cls.now = min_index
+                    _cls.__QA_backtest_log_info(_cls,
+                                                '=================Min hold list====================')
+                    _cls.__QA_backtest_log_info(
+                        _cls, 'in the begining of %s' % str(min_index))
+                    _cls.__QA_backtest_log_info(_cls,
+                                                tabulate(_cls.account.message['body']['account']['hold']))
                     func(*arg, **kwargs)  # 发委托单
 
-                    __backtest_cls.__sell_from_order_queue(__backtest_cls)
-                    if __backtest_cls.backtest_type in ['index_1min', 'index_5min', 'index_15min']:
-                        __backtest_cls.__sync_order_LM(__backtest_cls, 't_0')
-            __backtest_cls.__sync_order_LM(
-                __backtest_cls, 'daily_settle')  # 每日结算
+                    _cls.__sell_from_order_queue(_cls)
+                    if _cls.backtest_type in ['index_1min', 'index_5min', 'index_15min']:
+                        _cls.__sync_order_LM(_cls, 't_0')
+            _cls.__sync_order_LM(
+                _cls, 'daily_settle')  # 每日结算
 
         # 最后一天
-        __backtest_cls.__end_of_trading(__backtest_cls)
+        _cls.__end_of_trading(_cls)
 
     @classmethod
-    def backtest_init(__backtest_cls, func, *arg, **kwargs):
-        def __init_backtest(__backtest_cls, *arg, **kwargs):
-            __backtest_cls.__QA_backtest_init(__backtest_cls)
+    def backtest_init(_cls, func, *arg, **kwargs):
+        def __init_backtest(_cls, *arg, **kwargs):
+            _cls.__QA_backtest_init(_cls)
             func(*arg, **kwargs)
-            __backtest_cls.__QA_backtest_prepare(__backtest_cls)
-        return __init_backtest(__backtest_cls)
+            _cls.__QA_backtest_prepare(_cls)
+        return __init_backtest(_cls)
 
     @classmethod
-    def before_backtest(__backtest_cls, func, *arg, **kwargs):
-        def __before_backtest(__backtest_cls, *arg, **kwargs):
+    def before_backtest(_cls, func, *arg, **kwargs):
+        def __before_backtest(_cls, *arg, **kwargs):
             func(*arg, **kwargs)
-            __backtest_cls.__QA_backtest_start(__backtest_cls)
-        return __before_backtest(__backtest_cls)
+            _cls.__QA_backtest_start(_cls)
+        return __before_backtest(_cls)
 
     @classmethod
-    def end_backtest(__backtest_cls, func, *arg, **kwargs):
-        __backtest_cls.__end_of_backtest(__backtest_cls, func, *arg, **kwargs)
+    def end_backtest(_cls, func, *arg, **kwargs):
+        _cls.__end_of_backtest(_cls, func, *arg, **kwargs)
         return func(*arg, **kwargs)
 
 
