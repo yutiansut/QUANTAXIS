@@ -6,11 +6,11 @@
     </div>
     <div id='textbox'>
       <div>
-  
+
         </mu-dropDown-menu>
       </div>
-  
-      <mu-text-field label="账户" hintText="请输入用户名" v-model="valuex" type="password" labelFloat/>
+
+      <mu-text-field label="账户" hintText="请输入用户名" v-model="valuex"  labelFloat/>
       <br/>
       <mu-text-field label="密码" hintText="请输入密码" type="password" labelFloat/>
       <br/>
@@ -20,7 +20,7 @@
     <mu-popup position="top" :overlay="false" popupClass="demo-popup-top" :open="topPopup">
       注册成功
     </mu-popup>
-  
+
   </div>
 </template>
 <style lang="css">
