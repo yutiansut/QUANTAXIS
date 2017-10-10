@@ -274,6 +274,9 @@ class QA_Backtest():
         self.QA_backtest_sell_all(self)
         self.__sell_from_order_queue(self)
         self.__sync_order_LM(self, 'daily_settle')  # 每日结算
+
+
+
     def __sell_from_order_queue(self):
     
         # 每个bar结束的时候,批量交易
@@ -510,13 +513,21 @@ class QA_Backtest():
                                                                                   'trade_id', 'sell_price', 'sell_order_id',
                                                                                   'sell_trade_id', 'sell_date', 'left_amount',
                                                                                   'commission'])
-        self.account.detail['sell_average'] = self.account.detail['sell_price'].apply(
-            lambda x: mean(x))
-        self.account.detail['pnl_persentage'] = self.account.detail['sell_average'] - \
-            self.account.detail['price']
+        
 
-        self.account.detail['pnl'] = self.account.detail['pnl_persentage'] * (
-            self.account.detail['amounts'] - self.account.detail['left_amount']) - self.account.detail['commission']
+        def __mean(list_):
+            if len(list_)>0:
+                return mean(list_)
+            else:
+                return 'No Data'
+
+        self.account.detail['sell_average'] = self.account.detail['sell_price'].apply(
+            lambda x: __mean(x))
+        #self.account.detail['pnl_persentage'] = self.account.detail['sell_average'] - \
+        #    self.account.detail['price']
+
+        #self.account.detail['pnl'] = self.account.detail['pnl_persentage'] * (
+        #    self.account.detail['amounts'] - self.account.detail['left_amount']) - self.account.detail['commission']
         self.account.detail = self.account.detail.drop(
             ['order_id', 'trade_id', 'sell_order_id', 'sell_trade_id'], axis=1)
         self.__QA_backtest_log_info(self, 'start analysis====\n' +
@@ -716,6 +727,8 @@ class QA_Backtest():
 
             except:
                 pass
+
+
 
     @classmethod
     def load_strategy(_cls, func, *arg, **kwargs):
