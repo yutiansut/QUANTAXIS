@@ -12,12 +12,12 @@
 
 
 
-![version](https://img.shields.io/badge/Version-%200.5.1-orange.svg)
+![version](https://img.shields.io/badge/Version-%200.5.2-orange.svg)
 ![build](https://travis-ci.org/yutiansut/QUANTAXIS.svg?branch=master)
 [![Stories in Ready](https://badge.waffle.io/yutiansut/QUANTAXIS.svg?label=ready&title=Ready)](http://waffle.io/yutiansut/QUANTAXIS)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.8-brown.svg)
-![Pypi](https://img.shields.io/badge/Pypi-%200.5.1-blue.svg)
+![Pypi](https://img.shields.io/badge/Pypi-%200.5.2-blue.svg)
 ![python](https://img.shields.io/badge/python-%203.6/3.5/3.4/win/ubuntu-darkgrey.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.4.0-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
@@ -341,6 +341,9 @@ QB.benchmark_code  #策略业绩评价的对照行情
 QB.backtest_print_log = True  # 是否在屏幕上输出结果
 
 
+QB.setting.QA_setting_user_name = str('admin') #回测账户
+QB.setting.QA_setting_user_password = str('admin') #回测密码
+
 
 #函数:
 #获取市场(基于gap)行情:
@@ -374,7 +377,10 @@ order有三种方式:
 """
 #查询当前一只股票的持仓量
 QB.QA_backtest_hold_amount(QB,code)
-
+#查询当前一只股票的可卖数量
+QB.QA_backtest_sell_available(QB,code)
+#查询当前一只股票的持仓平均成本
+QB.QA_backtest_hold_price(QB,code)
 
 ```
 ### QUANTAXIS的核心数据结构

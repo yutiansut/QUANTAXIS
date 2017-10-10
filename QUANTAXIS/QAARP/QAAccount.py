@@ -43,9 +43,9 @@ class QA_Account():
 
     def __init__(self):
 
-        self.hold = [['date', 'code', ' price',
+        self.hold = [['date', 'code', 'price',
                       'amount', 'order_id', 'trade_id']]
-        self.sell_available=[['date', 'code', ' price',
+        self.sell_available=[['date', 'code', 'price',
                       'amount', 'order_id', 'trade_id']]
         self.init_assest = 1000000
         self.cash = [self.init_assest]
@@ -59,9 +59,9 @@ class QA_Account():
         self.message = {}
 
     def init(self):
-        self.hold = [['date', 'code', ' price',
+        self.hold = [['date', 'code', 'price',
                       'amount', 'order_id', 'trade_id']]
-        self.sell_available=[['date', 'code', ' price',
+        self.sell_available=[['date', 'code', 'price',
                       'amount', 'order_id', 'trade_id']]
         self.history = []
         self.profit = []
