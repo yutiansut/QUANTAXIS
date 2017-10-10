@@ -81,11 +81,7 @@ def QA_fetch_trade_date():
 
 def QA_fetch_stock_list(collections=QA_Setting.client.quantaxis.stock_list):
     '获取股票列表'
-    __data = []
-    for item in collections.find_one()['stock']['code']:
-        __data.append(item)
-
-    return __data
+    return [item for item in collections.find()]
 
 
 def QA_fetch_stock_full(date_, format_='numpy', collections=QA_Setting.client.quantaxis.stock_day):

@@ -211,7 +211,9 @@ def QA_fetch_stock_transaction_adv(
     data['datetime'] = pd.to_datetime(data['date'] + ' ' + data['time'])
     return QA_DataStruct_Stock_transaction(data.set_index('datetime', drop=if_drop_index))
 
-
+def QA_fetch_stock_list_adv(collections=QA_Setting.client.quantaxis.stock_list):
+    '获取股票列表'
+    return pd.DataFrame([item for item in collections.find()]).drop('_id', axis=1, inplace=False)
 
 def QA_fetch_stock_block_adv(code=None, collections=QA_Setting.client.quantaxis.stock_block):
     if code is not None:

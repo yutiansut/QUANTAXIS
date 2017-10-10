@@ -46,6 +46,8 @@ QB.strategy_stock_list 回测初始化的时候  输入的一个回测标的
 QB.strategy_start_date 回测的开始时间
 QB.strategy_end_date  回测的结束时间
 
+QB.setting.QA_setting_user_name = str('admin') #回测账户
+QB.setting.QA_setting_user_password = str('admin') #回测密码
 
 QB.today  在策略里面代表策略执行时的日期
 QB.now  在策略里面代表策略执行时的时间
@@ -83,11 +85,12 @@ order有三种方式:
     及 买入按bar的最高价成交 卖出按bar的最低价成交
 3.收盘价成交模式 order['bid_model']=3或者c,C
 
-查询当前一只股票的持仓量
+#查询当前一只股票的持仓量
 QB.QA_backtest_hold_amount(QB,code)
-
-查询当前一只股票的可卖数量
+#查询当前一只股票的可卖数量
 QB.QA_backtest_sell_available(QB,code)
+#查询当前一只股票的持仓平均成本
+QB.QA_backtest_hold_price(QB,code)
 """
 
 
@@ -101,6 +104,8 @@ def init():
     QB.strategy_name = 'test_daily'
     # 数据库位置
     QB.setting.QA_util_sql_mongo_ip = '127.0.0.1'  # 回测数据库
+    QB.setting.QA_setting_user_name = str('admin') #回测账户
+    QB.setting.QA_setting_user_password = str('admin') #回测密码
 
     QB.account.init_assest = 2500000  # 初始资金
 
@@ -139,7 +144,13 @@ def strategy():
         elif QB.QA_backtest_sell_available(QB, item) > 0:  #如果可卖数量大于0
             QB.QA_backtest_send_order(
                 QB, item, 10000, -1, {'bid_model': 'Market'})
-
+                
+# #查询当前一只股票的持仓量
+# QB.QA_backtest_hold_amount(QB,code)
+# #查询当前一只股票的可卖数量
+# QB.QA_backtest_sell_available(QB,code)
+# #查询当前一只股票的持仓平均成本
+# QB.QA_backtest_hold_price(QB,code)
 @QB.end_backtest
 def after_backtest():
     pass

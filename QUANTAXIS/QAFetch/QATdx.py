@@ -32,7 +32,7 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_str2int,
                               QA_util_get_real_datelist, QA_util_log_info,
                               QA_util_time_stamp, QA_util_web_ping,
                               trade_date_sse)
-
+#from pypinyin import lazy_pinyin
 import tushare as ts
 
 # 基于Pytdx的数据接口,好处是可以在linux/mac上联入通达信行情
@@ -310,17 +310,26 @@ def QA_fetch_get_stock_list(type_='stock', ip=best_ip, port=7709):
         if type_ in ['stock', 'gp']:
             return pd.concat([data[data['sse'] == 'sz'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 10000 <= 30][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 100000 != 2],
                               data[data['sse'] == 'sh'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 100000 == 6]]).assign(code=data['code'].apply(lambda x: str(x)))
+                #.assign(szm=data['name'].apply(lambda x: ''.join([y[0] for y in lazy_pinyin(x)])))\
+                #.assign(quanpin=data['name'].apply(lambda x: ''.join(lazy_pinyin(x))))
         elif type_ in ['index', 'zs']:
 
             return pd.concat([data[data['sse'] == 'sz'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 1000 >= 399],
-                              data[data['sse'] == 'sh'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 1000 == 0]]).sort_index().assign(code=data['code'].apply(lambda x: str(x)))
-
+                              data[data['sse'] == 'sh'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 1000 == 0]]) \
+                .sort_index()\
+                .assign(code=data['code'].apply(lambda x: str(x)))
+                #.assign(szm=data['name'].apply(lambda x: ''.join([y[0] for y in lazy_pinyin(x)])))\
+                #.assign(quanpin=data['name'].apply(lambda x: ''.join(lazy_pinyin(x))))
         elif type_ in ['etf', 'ETF']:
             return pd.concat([data[data['sse'] == 'sz'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 10000 == 15],
-                              data[data['sse'] == 'sh'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 10000 == 51]]).sort_index().assign(code=data['code'].apply(lambda x: str(x)))
+                              data[data['sse'] == 'sh'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 10000 == 51]]).sort_index().assign(code=data['code'].apply(lambda x: str(x)))\
+                #.assign(szm=data['name'].apply(lambda x: ''.join([y[0] for y in lazy_pinyin(x)])))\
+                #.assign(quanpin=data['name'].apply(lambda x: ''.join(lazy_pinyin(x))))
 
         else:
             return data.assign(code=data['code'].apply(lambda x: str(x)))
+            #.assign(szm=data['name'].apply(lambda x: ''.join([y[0] for y in lazy_pinyin(x)])))\
+            #    .assign(quanpin=data['name'].apply(lambda x: ''.join(lazy_pinyin(x))))
 
 
 def QA_fetch_get_index_day(code, start_date, end_date, level='day', ip=best_ip, port=7709):
@@ -461,7 +470,7 @@ def QA_fetch_get_stock_block(ip=best_ip, port=7709):
             QA_util_log_info('Wrong with fetch block ')
 
 
-def QA_fetch_get_stock_info(code,ip=best_ip, port=7709):
+def QA_fetch_get_stock_info(code, ip=best_ip, port=7709):
     '股票财务数据'
     api = TdxHq_API()
     market_code = __select_market_code(code)

@@ -33,7 +33,7 @@ import random
 import re
 import sys
 import time
-from functools import reduce, update_wrapper, wraps
+from functools import reduce, update_wrapper, wraps,lru_cache
 from statistics import mean
 
 import apscheduler
@@ -372,8 +372,7 @@ class QA_Backtest():
             """
 
             self.account.cash_available = self.account.cash[-1]
-            self.account.sell_available = pd.DataFrame(self.account.hold[1::], columns=self.account.hold[0]).set_index(
-                'code', drop=False)['amount'].groupby('code').sum()
+            self.account.sell_available = self.QA_backtest_hold(self)['amount'].groupby('code').sum()
 
             self.account.order_queue = pd.DataFrame()
 
@@ -393,8 +392,7 @@ class QA_Backtest():
             同步t+0的账户状态 /允许卖出
             """
             self.account.cash_available = self.account.cash[-1]
-            self.account.sell_available = pd.DataFrame(self.account.hold[1::], columns=self.account.hold[0]).set_index(
-                'code', drop=False)['amount'].groupby('code').sum()
+            self.account.sell_available = self.QA_backtest_hold(self)['amount'].groupby('code').sum()
 
         elif event_ in ['trade']:
             # try:
@@ -572,6 +570,7 @@ class QA_Backtest():
         return self.__QA_backtest_init()
     def QA_Backtest_after_init(self):
         return self.__QA_backtest_prepare()
+    @lru_cache()
     def QA_backtest_find_bar(self, code, time):
         if isinstance(time, str):
             if len(time) == 10:
@@ -589,27 +588,43 @@ class QA_Backtest():
                 return self.market_data_hashable[(time, code)]
             except:
                 return None
+    @lru_cache()
     def QA_backtest_get_market_data(self, code, date, gap_=None, type_='lt'):
         '这个函数封装了关于获取的方式 用GAP的模式'
         gap_ = self.strategy_gap if gap_ is None else gap_
         return self.market_data_dict[code].select_time_with_gap(date, gap_, type_)
+    @lru_cache()
     def QA_backtest_get_market_data_bar(self, code, time, if_trade=True):
         '这个函数封装了关于获取的方式'
         return self.market_data_dict[code].get_bar(code, time, if_trade)
+
+    #@lru_cache()
     def QA_backtest_sell_available(self, __code):
         try:
             return self.account.sell_available[__code]
         except:
             return 0
+   # @lru_cache()
+    def QA_backtest_hold(self):
+        return pd.DataFrame(self.account.hold[1::], columns=self.account.hold[0]).set_index('code', drop=False)
     def QA_backtest_hold_amount(self, __code):
-        try:
+        try:   
             return pd.DataFrame(self.account.hold[1::], columns=self.account.hold[0]).set_index(
                 'code', drop=False)['amount'].groupby('code').sum()[__code]
         except:
             return 0
+
+
+    def QA_backtest_hold_price(self,__code):
+        try:
+            return self.QA_backtest_hold(self)['price'].groupby('code').mean()[__code]
+        except:
+            return None
+    @lru_cache()
     def QA_backtest_get_OHLCV(self, __data):
         '快速返回 OHLCV格式'
         return (__data.open, __data.high, __data.low, __data.close, __data.vol)
+
     def QA_backtest_send_order(self, __code, __amount, __towards, __order):
         """
         2017/8/4
@@ -668,6 +683,7 @@ class QA_Backtest():
             print('GET the Order Code %s Amount %s Price %s Towards %s Time %s' % (
                 __bid.code, __bid.amount, __bid.price, __bid.towards, __bid.datetime))
             self.__sync_order_LM(self, 'create_order', order_=__bid)
+    @lru_cache()
     def QA_backtest_check_order(self, order_id_):
         '用于检查委托单的状态'
         """
@@ -684,8 +700,10 @@ class QA_Backtest():
         500 服务器撤单/每日结算
         """
         return self.account.order_queue[self.account.order_queue['order_id'] == order_id_]['status']
+    @lru_cache()
     def QA_backtest_status(self):
         return vars(self)
+    @lru_cache()
     def QA_backtest_sell_all(self):
         __hold_list = pd.DataFrame(self.account.hold[1::], columns=self.account.hold[0]).set_index(
             'code', drop=False)['amount'].groupby('code').sum()
