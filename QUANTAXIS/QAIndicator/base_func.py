@@ -100,7 +100,7 @@ def STD(Series, N):
 
 def AVEDEV(Series,N):
     '平均绝对偏差 mean absolute deviation'
-    return pd.Series(Series).rolling(N).mad()
+    return pd.Series(Series).tail(N).mad()
 
 def MACD(Series, FAST, SLOW, MID):
     EMAFAST = EMA(Series, FAST)
