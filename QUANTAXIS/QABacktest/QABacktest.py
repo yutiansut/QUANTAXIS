@@ -165,6 +165,7 @@ class QA_Backtest():
         @yutiansut
         2017/7/20
         """
+
         if len(str(self.strategy_start_date)) == 10:
             self.strategy_start_time = str(
                 self.strategy_start_date) + ' 15:00:00'

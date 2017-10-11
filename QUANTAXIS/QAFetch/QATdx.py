@@ -89,7 +89,7 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', 
             level = 10
         elif level in ['y', 'Y', 'year', 'Year']:
             level = 11
-
+    
         data = pd.concat([api.to_df(api.get_security_bars(level, __select_market_code(
             code), code, (9 - i) * 800, 800)) for i in range(10)], axis=0)
         if if_fq in ['00', 'bfq']:
