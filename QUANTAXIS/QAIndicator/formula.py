@@ -225,6 +225,7 @@ def QA_indicator_CCI(DataFrame, N=14):
     """
     TYP:=(HIGH+LOW+CLOSE)/3;
     CCI:(TYP-MA(TYP,N))/(0.015*AVEDEV(TYP,N));
+    返回一个值
     """
     typ=(DataFrame['high']+DataFrame['low']+DataFrame['close'])/3
-    return (typ-MA(typ,N))/(0.015*AVEDEV(typ,N))
+    return ((typ-MA(typ,N))/(0.015*AVEDEV(typ,N)))[-1]
