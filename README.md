@@ -48,31 +48,32 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - 文档更新
 - 基本面数据
 
+
 <!-- TOC -->
 
-- [QUANTAXIS 量化金融策略框架](#quantaxis-%E9%87%8F%E5%8C%96%E9%87%91%E8%9E%8D%E7%AD%96%E7%95%A5%E6%A1%86%E6%9E%B6)
-    - [框架结构](#%E6%A1%86%E6%9E%B6%E7%BB%93%E6%9E%84)
-    - [部署问题:](#%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98)
+- [QUANTAXIS 量化金融策略框架](#quantaxis-量化金融策略框架)
+    - [框架结构](#框架结构)
+    - [部署问题:](#部署问题)
         - [git](#git)
         - [MongoDB](#mongodb)
         - [Nodejs](#nodejs)
         - [python](#python)
-        - [安装QUANTAXIS](#%E5%AE%89%E8%A3%85quantaxis)
-        - [安装QUANATXIS_WebKit](#%E5%AE%89%E8%A3%85quanatxiswebkit)
-        - [启动QUANTAXIS CLI 并进行数据的初始化存储](#%E5%90%AF%E5%8A%A8quantaxis-cli-%E5%B9%B6%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E5%AD%98%E5%82%A8)
-        - [启动QUANTAXIS_Webkit来查看回测的结果](#%E5%90%AF%E5%8A%A8quantaxiswebkit%E6%9D%A5%E6%9F%A5%E7%9C%8B%E5%9B%9E%E6%B5%8B%E7%9A%84%E7%BB%93%E6%9E%9C)
-        - [更新QUANTAXIS](#%E6%9B%B4%E6%96%B0quantaxis)
-    - [项目捐赠](#%E9%A1%B9%E7%9B%AE%E6%8D%90%E8%B5%A0)
-    - [关于QUANTAXIS基金](#%E5%85%B3%E4%BA%8Equantaxis%E5%9F%BA%E9%87%91)
-    - [一些基础的api介绍](#%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80%E7%9A%84api%E4%BB%8B%E7%BB%8D)
-        - [QUANTAXIS.QABacktest 的 api](#quantaxisqabacktest-%E7%9A%84-api)
-        - [QUANTAXIS的核心数据结构](#quantaxis%E7%9A%84%E6%A0%B8%E5%BF%83%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84)
-        - [QUANTAXIS的api](#quantaxis%E7%9A%84api)
-    - [回测Webkit插件概览](#%E5%9B%9E%E6%B5%8Bwebkit%E6%8F%92%E4%BB%B6%E6%A6%82%E8%A7%88)
-    - [QUANTAXIS 标准化协议和未来协议](#quantaxis-%E6%A0%87%E5%87%86%E5%8C%96%E5%8D%8F%E8%AE%AE%E5%92%8C%E6%9C%AA%E6%9D%A5%E5%8D%8F%E8%AE%AE)
+        - [安装QUANTAXIS](#安装quantaxis)
+        - [安装QUANATXIS_WebKit](#安装quanatxis_webkit)
+        - [启动QUANTAXIS CLI 并进行数据的初始化存储](#启动quantaxis-cli-并进行数据的初始化存储)
+        - [启动QUANTAXIS_Webkit来查看回测的结果](#启动quantaxis_webkit来查看回测的结果)
+        - [更新QUANTAXIS](#更新quantaxis)
+    - [项目捐赠](#项目捐赠)
+    - [关于QUANTAXIS基金](#关于quantaxis基金)
+    - [一些基础的api介绍](#一些基础的api介绍)
+        - [QUANTAXIS.QABacktest 的 api](#quantaxisqabacktest-的-api)
+        - [QUANTAXIS的核心数据结构](#quantaxis的核心数据结构)
+        - [QUANTAXIS的指标系统](#quantaxis的指标系统)
+        - [QUANTAXIS的api](#quantaxis的api)
+    - [回测Webkit插件概览](#回测webkit插件概览)
+    - [QUANTAXIS 标准化协议和未来协议](#quantaxis-标准化协议和未来协议)
 
 <!-- /TOC -->
-
 ## 框架结构
 ![](http://i1.piimg.com/567571/dc3c811a5afcb4fb.png)
 
@@ -420,6 +421,84 @@ QA_DataStruct_Stock_block
 
 
 ![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20171004125336.png)
+
+
+### QUANTAXIS的指标系统
+
+QUANTAXIS的核心数据结构有一个方法叫add_func(func,*args,**kwargs),作为一个指标入口,会返回一个和DataStruct中股票数量一致长度的list
+
+QUANTAXIS有两种类型的指标:
+
+- 基础指标(输入为Series的指标)
+- 应用级指标(可应用于DataStruct的指标)
+
+其中,基础指标是为了应用级指标做准备的,及对应于Series的分析和dataframe的分析的关系
+
+基础类指标 [基本和同花顺/通达信一致]
+```python
+import QUANTAXIS as QA
+QA.MA(Series, N)
+QA.EMA(Series, N)
+QA.DIFF(Series, N=1)
+QA.HHV(Series, N)
+QA.LLV(Series, N)
+QA.SUM(Series, N)
+QA.ABS(Series)
+QA.MAX(A, B)
+QA.MIN(A, B)
+QA.CROSS(A, B)
+QA.COUNT(COND, N)
+QA.IF(COND, V1, V2)
+QA.REF(Series, N)
+QA.STD(Series, N)
+QA.AVEDEV(Series, N)
+QA.BBIBOLL(Series, N1, N2, N3, N4, N, M)
+```
+应用级指标  add_func(func)
+```python
+import QUANTAXIS as QA
+QA.QA_indicator_OSC(DataFrame, N, M)
+QA.QA_indicator_BBI(DataFrame, N1, N2, N3, N4)
+QA.QA_indicator_PBX(DataFrame, N1, N2, N3, N4, N5, N6)
+QA.QA_indicator_BOLL(DataFrame, N)
+QA.QA_indicator_ROC(DataFrame, N, M)
+QA.QA_indicator_MTM(DataFrame, N, M)
+QA.QA_indicator_KDJ(DataFrame, N=9, M1=3, M2=3)
+QA.QA_indicator_MFI(DataFrame, N)
+QA.QA_indicator_ATR(DataFrame, N)
+QA.QA_indicator_SKDJ(DataFrame, N, M)
+QA.QA_indicator_WR(DataFrame, N, N1)
+QA.QA_indicator_BIAS(DataFrame, N1, N2, N3)
+QA.QA_indicator_RSI(DataFrame, N1, N2, N3)
+QA.QA_indicator_ADTM(DataFrame, N, M)
+QA.QA_indicator_DDI(DataFrame, N, N1, M, M1)
+QA.QA_indicator_CCI(DataFrame, N=14)
+```
+自己写一个指标:
+
+比如 绝路航标
+```python
+import QUANTAXIS as QA
+def JLHB(data, m=7, n=5):
+    """
+    通达信定义
+    VAR1:=(CLOSE-LLV(LOW,60))/(HHV(HIGH,60)-LLV(LOW,60))*80; 
+    B:SMA(VAR1,N,1); 
+    VAR2:SMA(B,M,1); 
+    绝路航标:IF(CROSS(B,VAR2) AND B<40,50,0);
+    """
+    var1 = (data['close'] - QA.LLV(data['low'], 60)) / \
+        (QA.HHV(data['high'], 60) - QA.LLV(data['low'], 60)) * 80
+    B = QA.MA(var1, m)
+    var2 = QA.MA(B, n)
+    if QA.CROSS(B,var2) and B[-1]<40:
+        return 1
+    else:
+        return 0
+
+# 得到指标
+QA.QA_fetch_stock_day_adv('000001','2017-01-01','2017-01-31').to_qfq().add_func(JLHB)
+```
 ### QUANTAXIS的api
 ```python
 
