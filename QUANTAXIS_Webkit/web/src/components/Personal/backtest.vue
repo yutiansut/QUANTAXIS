@@ -10,7 +10,7 @@
         <mu-tr>
           <mu-th>user</mu-th>
           <mu-th>strategy</mu-th>
-          <mu-th>code</mu-th>
+
           <mu-th>start</mu-th>
           <mu-th>end</mu-th>
           <mu-th>profit</mu-th>
@@ -25,7 +25,7 @@
             <router-link :to="{ name:'history',params: {id:item['account_cookie']}}">
               <mu-td>{{ item['user']}}</mu-td>
               <mu-td>{{ item['strategy']}}</mu-td>
-              <mu-td>{{ item['stock_list']}}</mu-td>
+
               <mu-td>{{ item['start_time']}}</mu-td>
               <mu-td>{{ item['end_time']}}</mu-td>
               <mu-td>{{ item['profit']}}</mu-td>
@@ -63,10 +63,10 @@ export default {
       axios.get('http://localhost:3000/backtest/info?name=' + val)
         .then(response => {
           this.items = response.data;
-          console.log(this.items)
+          //console.log(this.items)
           this.length = this.items.length;
           var performance = response.data[0]['performance'];
-          console.log(performance)
+          //console.log(performance)
         })
         .catch(function (error) {
           console.log(error);
@@ -78,10 +78,10 @@ export default {
       axios.get('http://localhost:3000/backtest/info_code?code=' + val)
         .then(response => {
           this.items = response.data;
-          console.log(this.items)
+          //console.log(this.items)
           this.length = this.items.length;
           var performance = response.data[0]['performance'];
-          console.log(performance)
+          //console.log(performance)
         })
         .catch(function (error) {
           console.log(error);
