@@ -48,31 +48,32 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - 文档更新
 - 基本面数据
 
+
 <!-- TOC -->
 
-- [QUANTAXIS 量化金融策略框架](#quantaxis-%E9%87%8F%E5%8C%96%E9%87%91%E8%9E%8D%E7%AD%96%E7%95%A5%E6%A1%86%E6%9E%B6)
-    - [框架结构](#%E6%A1%86%E6%9E%B6%E7%BB%93%E6%9E%84)
-    - [部署问题:](#%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98)
+- [QUANTAXIS 量化金融策略框架](#quantaxis-量化金融策略框架)
+    - [框架结构](#框架结构)
+    - [部署问题:](#部署问题)
         - [git](#git)
         - [MongoDB](#mongodb)
         - [Nodejs](#nodejs)
         - [python](#python)
-        - [安装QUANTAXIS](#%E5%AE%89%E8%A3%85quantaxis)
-        - [安装QUANATXIS_WebKit](#%E5%AE%89%E8%A3%85quanatxiswebkit)
-        - [启动QUANTAXIS CLI 并进行数据的初始化存储](#%E5%90%AF%E5%8A%A8quantaxis-cli-%E5%B9%B6%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E5%AD%98%E5%82%A8)
-        - [启动QUANTAXIS_Webkit来查看回测的结果](#%E5%90%AF%E5%8A%A8quantaxiswebkit%E6%9D%A5%E6%9F%A5%E7%9C%8B%E5%9B%9E%E6%B5%8B%E7%9A%84%E7%BB%93%E6%9E%9C)
-        - [更新QUANTAXIS](#%E6%9B%B4%E6%96%B0quantaxis)
-    - [项目捐赠](#%E9%A1%B9%E7%9B%AE%E6%8D%90%E8%B5%A0)
-    - [关于QUANTAXIS基金](#%E5%85%B3%E4%BA%8Equantaxis%E5%9F%BA%E9%87%91)
-    - [一些基础的api介绍](#%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80%E7%9A%84api%E4%BB%8B%E7%BB%8D)
-        - [QUANTAXIS.QABacktest 的 api](#quantaxisqabacktest-%E7%9A%84-api)
-        - [QUANTAXIS的核心数据结构](#quantaxis%E7%9A%84%E6%A0%B8%E5%BF%83%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84)
-        - [QUANTAXIS的api](#quantaxis%E7%9A%84api)
-    - [回测Webkit插件概览](#%E5%9B%9E%E6%B5%8Bwebkit%E6%8F%92%E4%BB%B6%E6%A6%82%E8%A7%88)
-    - [QUANTAXIS 标准化协议和未来协议](#quantaxis-%E6%A0%87%E5%87%86%E5%8C%96%E5%8D%8F%E8%AE%AE%E5%92%8C%E6%9C%AA%E6%9D%A5%E5%8D%8F%E8%AE%AE)
+        - [安装QUANTAXIS](#安装quantaxis)
+        - [安装QUANATXIS_WebKit](#安装quanatxis_webkit)
+        - [启动QUANTAXIS CLI 并进行数据的初始化存储](#启动quantaxis-cli-并进行数据的初始化存储)
+        - [启动QUANTAXIS_Webkit来查看回测的结果](#启动quantaxis_webkit来查看回测的结果)
+        - [更新QUANTAXIS](#更新quantaxis)
+    - [项目捐赠](#项目捐赠)
+    - [关于QUANTAXIS基金](#关于quantaxis基金)
+    - [一些基础的api介绍](#一些基础的api介绍)
+        - [QUANTAXIS.QABacktest 的 api](#quantaxisqabacktest-的-api)
+        - [QUANTAXIS的核心数据结构](#quantaxis的核心数据结构)
+        - [QUANTAXIS的指标系统](#quantaxis的指标系统)
+        - [QUANTAXIS的api](#quantaxis的api)
+    - [回测Webkit插件概览](#回测webkit插件概览)
+    - [QUANTAXIS 标准化协议和未来协议](#quantaxis-标准化协议和未来协议)
 
 <!-- /TOC -->
-
 ## 框架结构
 ![](http://i1.piimg.com/567571/dc3c811a5afcb4fb.png)
 
