@@ -81,11 +81,20 @@ def MIN(A, B):
     return var
 
 
+
+def CROSS(A,B):
+    if A[-2]<B[-2] and A[-1]>B[-1]:
+        return True
+    else:
+        return False
+
+def COUNT(COND,N):
+    var = np.where(COND,1,0)
+    return var[-N:].sum()
+
 def IF(COND, V1, V2):
     var = np.where(COND, V1, V2)
-    for i in range(len(var)):
-        V1[i] = var[i]
-    return V1
+    return pd.Series(var,index=V1.index)
 
 
 def REF(Series, N):
