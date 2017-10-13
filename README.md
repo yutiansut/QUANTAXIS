@@ -437,9 +437,9 @@ day线的参数是code, start, end
 min线的参数是code, start, end, type_='1min'
 
 其中 code 可以是一个股票,也可以是一列股票(list)
-```
-取一个股票的数据
 
+取一个股票的数据
+```
 QA.QA_fetch_stock_day_adv('000001','2017-01-01','2017-10-01')
 In [5]: QA.QA_fetch_stock_day_adv('000001','2017-01-01','2017-10-01')
 Out[5]: QA_DataStruct_Stock_day with 1 securities
