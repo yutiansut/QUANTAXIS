@@ -25,7 +25,7 @@ from functools import reduce
 
 import numpy as np
 import pandas as pd
-from QUANTAXIS.QAIndicator.base_func import *
+from QUANTAXIS.QAIndicator.QAIndicator_Series import *
 
 
 """

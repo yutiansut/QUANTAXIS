@@ -25,6 +25,8 @@
 """
 一个通用的可以接入不同模型的类
 """
+
+
 class QA_Analysis_Machine_Learning():
     def __init__(self, *args, **kwargs):
         pass

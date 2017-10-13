@@ -22,6 +22,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """
+
+***********  之后会被合并到QAIndicator_Dataframe里面    ***********
+
+
 QUANTAXIS  指标计算
 
 分为7类76个指标
@@ -39,7 +43,7 @@ QUANTAXIS  指标计算
 """趋势类"""
 import numpy as np
 import pandas as pd
-from QUANTAXIS.QAIndicator.base_func import *
+from QUANTAXIS.QAIndicator.QAIndicator_Series import *
 
 
 # TODO
