@@ -43,8 +43,15 @@ class QA_Analysis_stock:
 
     """
 
-    def __init__(self, dataframe, *args, **kwargs):
-        self.data = dataframe
+    def __init__(self, dataStruct, *args, **kwargs):
+        try:
+            # 如果是QA_Data_系列
+            self.data = dataStruct.data
+            self._data = dataStruct
+        except AttributeError:
+            # 如果是dataframe
+            self.data =dataStruct
+
         # self.data=DataSturct.data
 
     def __repr__(self):
@@ -73,6 +80,12 @@ class QA_Analysis_stock:
 
     @property
     def vol(self):
+        if 'volume' in self.data.columns:
+            return self.data['volume']
+        else:
+            return self.data['vol']
+    @property
+    def volume(self):
         if 'volume' in self.data.columns:
             return self.data['volume']
         else:
