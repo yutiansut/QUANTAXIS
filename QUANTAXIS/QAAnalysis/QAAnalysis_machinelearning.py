@@ -22,6 +22,26 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+"""
+一个通用的可以接入不同模型的类
+"""
 
-from QUANTAXIS.QAAnalysis.QAAnalysis_dataframe import *
-from QUANTAXIS.QAAnalysis.QAAnalysis_series import *
+
+class QA_Analysis_Machine_Learning():
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def training(self):
+        pass
+
+    def data_co(self):
+        pass
+
+    def cross_valid(self):
+        pass
+
+    def load_modules(self):
+        pass
+
+    def load_data(self):
+        pass
