@@ -69,6 +69,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
         - [QUANTAXIS.QABacktest 的 api](#quantaxisqabacktest-的-api)
         - [QUANTAXIS的核心数据结构](#quantaxis的核心数据结构)
         - [QUANTAXIS的指标系统](#quantaxis的指标系统)
+        - [QUANTAXIS的行情分析/研究用](#quantaxis的行情分析研究用)
         - [QUANTAXIS的api](#quantaxis的api)
     - [回测Webkit插件概览](#回测webkit插件概览)
     - [QUANTAXIS 标准化协议和未来协议](#quantaxis-标准化协议和未来协议)
@@ -499,6 +500,68 @@ def JLHB(data, m=7, n=5):
 # 得到指标
 QA.QA_fetch_stock_day_adv('000001','2017-01-01','2017-01-31').to_qfq().add_func(JLHB)
 ```
+
+### QUANTAXIS的行情分析/研究用
+
+
+主要是针对行情的各种指标计算(惰性) 
+
+接收DataFrame形式的行情以及QUANTAXIS.QADATA格式的行情
+
+目前有:
+
+
+(属性)
+
+- 一阶差分
+- 样本方差
+- 方差
+- 标准差
+- 样本标准差
+- 平均数
+- 调和平均数
+- 众数
+- 振幅(极差)
+- 偏度
+- 峰度
+- 百分比变化
+- 平均绝对偏差 
+
+```python
+import QUANTAXIS as QA
+
+data=QA.QA_fetch_stock_day_adv('600066','2013-12-01','2017-10-01') #[可选to_qfq(),to_hfq()]
+s=QA.QA_Analysis_stock(data)
+# s 的属性是( < QA_Analysis_Stock > )
+
+s.open # 开盘价序列
+s.close # 收盘价序列
+s.high # 最高价序列
+s.low # 最低价序列
+s.vol  # 量
+s.volume # 同vol
+s.date  # 日期
+s.datetime
+s.index  # 索引
+s.price  # 平均价(O+H+L+C)/4
+s.mean # price的平均数
+s.max  # price的最大值
+s.min # price的最小值
+s.mad # price的平均绝对偏差
+s.mode  # price的众数(没啥用)
+s.price_diff # price的一阶差分
+s.variance # price的方差
+s.pvariance # price的样本方差
+s.stdev  # price的标准差
+s.pstdev # price的样本标准差
+s.mean_harmonic # price的调和平均数
+s.amplitude  #price的振幅[极差]
+s.skewnewss # price的峰度 (4阶中心距)
+s.kurtosis  # price的偏度 (3阶中心距)
+s.pct_change # price的百分比变化序列
+
+```
+
 ### QUANTAXIS的api
 ```python
 

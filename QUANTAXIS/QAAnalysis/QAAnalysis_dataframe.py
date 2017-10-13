@@ -149,10 +149,6 @@ class QA_Analysis_stock:
     def pstdev(self):
         return statistics.pstdev(self.price)
 
-    #平均数
-    @property
-    def mean(self):
-        return statistics.mean(self.price)
 
     # 调和平均数
     @property
