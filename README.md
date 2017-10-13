@@ -12,12 +12,12 @@
 
 
 
-![version](https://img.shields.io/badge/Version-%200.5.3-orange.svg)
+![version](https://img.shields.io/badge/Version-%200.5.5-orange.svg)
 ![build](https://travis-ci.org/yutiansut/QUANTAXIS.svg?branch=master)
 [![Stories in Ready](https://badge.waffle.io/yutiansut/QUANTAXIS.svg?label=ready&title=Ready)](http://waffle.io/yutiansut/QUANTAXIS)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.8-brown.svg)
-![Pypi](https://img.shields.io/badge/Pypi-%200.5.3-blue.svg)
+![Pypi](https://img.shields.io/badge/Pypi-%200.5.5-blue.svg)
 ![python](https://img.shields.io/badge/python-%203.6/3.5/3.4/win/ubuntu-darkgrey.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.4.0-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
@@ -504,7 +504,7 @@ QA.QA_fetch_stock_day_adv('000001','2017-01-01','2017-01-31').to_qfq().add_func(
 ### QUANTAXIS的行情分析/研究用
 
 
-主要是针对行情的各种指标计算(惰性) 
+主要是针对行情的各种统计学特征/指标等分析,支持QA_DataStruct_系列的add_func()功能
 
 接收DataFrame形式的行情以及QUANTAXIS.QADATA格式的行情
 
@@ -559,6 +559,9 @@ s.amplitude  #price的振幅[极差]
 s.skewnewss # price的峰度 (4阶中心距)
 s.kurtosis  # price的偏度 (3阶中心距)
 s.pct_change # price的百分比变化序列
+
+
+s.add_func(QA.QA_indicator_CCI) # 指标计算, 和DataStruct用法一致
 
 ```
 

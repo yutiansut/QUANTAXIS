@@ -28,6 +28,7 @@ import statistics
 
 import numpy as np
 import pandas as pd
+from functools import lru_cache
 #import scipy
 #import statsmodels
 #from scipy import integrate, optimize, stats
@@ -184,3 +185,9 @@ class QA_Analysis_stock:
     @property
     def mad(self):
         return self.price.mad()
+
+
+    # 函数 指标计算
+    @lru_cache()
+    def add_func(self, func, *arg, **kwargs):
+        return func(self.data, *arg, **kwargs)
