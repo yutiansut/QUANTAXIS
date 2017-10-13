@@ -34,7 +34,7 @@ except:
 打包的用的setup必须引入，
 """
 
-if sys.version_info.major != 3 or sys.version_info.minor not in [4,5,6]:
+if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6]:
     print('wrong version, should be 3.4/3.5/3.6 version')
     sys.exit()
 
@@ -49,7 +49,7 @@ NAME = "quantaxis"
 名字，一般放你包的名字即可
 """
 PACKAGES = ["QUANTAXIS", "QUANTAXIS.QAFetch", "QUANTAXIS.QACmd", "QUANTAXIS.QAMarket", 'QUANTAXIS.QAWeb',
-            "QUANTAXIS.QABacktest", "QUANTAXIS.QATask", "QUANTAXIS.QAData",'QUANTAXIS.QAData.proto',
+            "QUANTAXIS.QABacktest", "QUANTAXIS.QATask", "QUANTAXIS.QAData", 'QUANTAXIS.QAData.proto', "QUANTAXIS.QAAnalysis",
             "QUANTAXIS.QASU", "QUANTAXIS.QAUtil", "QUANTAXIS.QAARP", "QUANTAXIS.QASignal", "QUANTAXIS.QAIndicator"]
 """
 包含的包，可以多个，这是一个列表
@@ -90,9 +90,9 @@ setup(
         'Operating System :: OS Independent',
     ],
     install_requires=['pandas>=0.20.3', 'numpy>=1.12.0', 'tushare>=0.7.4', 'flask_socketio>=2.9.0 ',
-                      'lxml', ' beautifulsoup4', 'flask-socketio', 'flask', 'click>=6.7','TA-Lib','matplotlib',
+                      'lxml', ' beautifulsoup4', 'flask-socketio', 'flask', 'click>=6.7', 'TA-Lib', 'matplotlib',
                       'pymongo>=3.4', 'celery>=4.0.0', 'six>=1.10.0', 'tabulate>=0.7.7', 'pytdx>=1.33',
-                      'zenlog>=1.1', 'delegator.py>=0.0.12', 'flask>=0.12.2','pyecharts>=0.2.4','protobuf'],
+                      'zenlog>=1.1', 'delegator.py>=0.0.12', 'flask>=0.12.2', 'pyecharts>=0.2.4', 'protobuf'],
     entry_points={
         'console_scripts': [
             'quantaxis=QUANTAXIS.QACmd:QA_cmd',
