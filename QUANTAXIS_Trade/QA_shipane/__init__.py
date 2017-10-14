@@ -22,10 +22,5 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-class QA_Trade:
-    def __init__(self, *args, **kwargs):
-        pass
-    def send_orders(self,order):
-        pass
-    def send_query(self,query):
-        pass
+
+import shipane_sdk
