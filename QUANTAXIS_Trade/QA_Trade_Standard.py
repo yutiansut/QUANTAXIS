@@ -25,7 +25,67 @@
 class QA_Trade:
     def __init__(self, *args, **kwargs):
         pass
-    def send_orders(self,order):
+
+
+
+#      
+
+class QA_Trade_Spi():
+    "和中泰XTP一致的回调函数"
+    def __init__(self, *args, **kwargs):
         pass
-    def send_query(self,query):
+    def onDisconnected(self):
+        pass
+    def onError(self):
+        pass
+    def onOrderEvent(self):
+        pass
+    def onTradeEvent(self):
+        pass
+    def onCancelOrderEvent(self):
+        pass
+    def onQueryOrder(self):
+        pass
+    def onQueryTrade(self):
+        pass
+    def onQueryPosition(self):
+        pass
+    def onQueryAsset(self):
+        pass
+
+
+class QA_Trade_Api():
+    def __init__(self, *args, **kwargs):
+        pass
+    def Release(self):
+        pass
+    def get_trading_day(self):
+        pass
+    def register_spi(self):
+        pass
+    def get_api_last_error(self):
+        pass
+    def get_api_version(self):
+        pass
+    def get_client_id(self):
+        pass
+    def get_account_id(self):
+        pass
+    def subscribe_public_topic(self):
+        pass
+    def login(self):
+        pass
+    def logout(self):
+        pass
+    def insert_order(self):
+        pass
+    def cancel_order(self):
+        pass
+    def query_order(self):
+        pass
+    def query_trade(self):
+        pass
+    def query_position(self):
+        pass
+    def query_asset(self):
         pass
