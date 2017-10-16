@@ -27,8 +27,7 @@ from QUANTAXIS.QAData.proto import stock_min_pb2
 from QUANTAXIS.QAIndicator import EMA, HHV, LLV, SMA
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
                               QA_util_to_json_from_pandas, trade_date_sse)
-
-
+from QUANTAXIS.QAFetch.QATdx import QA_fetch_get_stock_realtime
 class __stock_hq_base():
     def __init__(self, DataFrame):
         self.data = DataFrame
@@ -726,6 +725,7 @@ class QA_DataStruct_Stock_block():
     @property
     def block_name(self):
         return self.data.groupby('blockname').sum().index.tolist()
+
     def show(self):
         return self.data
 
@@ -735,7 +735,19 @@ class QA_DataStruct_Stock_block():
 
     def get_block(self,_block_name):
         return self.data[self.data['blockname']==_block_name]
-
+    
+    def get_price(self,_block_name=None):
+        if _block_name is not None:
+            try:
+                code=self.data[self.data['blockname']==_block_name].code.unique().tolist()
+                # try to get a datastruct package of lastest price
+                return QA_fetch_get_stock_realtime(code)
+                
+            except:
+                return "Wrong Block Name! Please Check"
+        else:
+            code=self.data.code.unique().tolist()
+            return QA_fetch_get_stock_realtime(code)
 
 class QA_DataStruct_Stock_transaction():
     def __init__(self, DataFrame):

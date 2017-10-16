@@ -56,6 +56,7 @@ class QA_QAMarket_bid():
         self.trade_id = ''
         self.status = '100'
 
+
     def stock_day(self):
         self.type = '0x01'
 

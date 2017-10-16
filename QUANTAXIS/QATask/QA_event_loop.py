@@ -28,22 +28,5 @@
 短期内不会实装
 
 """
-import asyncio
-from asyncio import AbstractEventLoopPolicy
-
-
-class QA_Event_loop():
-    def __init__(self, loop=None):
-        try:
-            self.loop = loop or asyncio.get_event_loop()
-            if self.loop.is_running():
-                raise NotImplementedError("Cannot use QA_Event_loop in "
-                                        "asynchroneous environment")
-        except:
-            self.loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(self.loop)
-
-
-class QA_Event_future():
-    pass
-
+from gevent import monkey; monkey.patch_all()
+from gevent import wsgi

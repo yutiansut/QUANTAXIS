@@ -28,36 +28,47 @@ class QA_Trade:
 
 
 
-#      
+class QATrade_Query:
+    """
+    一个查询类
+    """
+    def __init__(self, *args, **kwargs):
+        pass
+    @property
+    def code(self):
+        pass
 
+    @code.setter
+    def code(self):
+        pass
 class QA_Trade_Spi():
     "和中泰XTP一致的回调函数"
     def __init__(self, *args, **kwargs):
         pass
-    def onDisconnected(self):
+    def on_disconnected(self):
         pass
-    def onError(self):
+    def on_error(self):
         pass
-    def onOrderEvent(self):
+    def on_order_event(self):
         pass
-    def onTradeEvent(self):
+    def on_trade_event(self):
         pass
-    def onCancelOrderEvent(self):
+    def on_cancel_order_event(self):
         pass
-    def onQueryOrder(self):
+    def on_query_order(self):
         pass
-    def onQueryTrade(self):
+    def on_query_trade(self):
         pass
-    def onQueryPosition(self):
+    def on_query_position(self):
         pass
-    def onQueryAsset(self):
+    def on_query_asset(self):
         pass
 
 
 class QA_Trade_Api():
     def __init__(self, *args, **kwargs):
         pass
-    def Release(self):
+    def release(self):
         pass
     def get_trading_day(self):
         pass
