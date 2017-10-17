@@ -771,7 +771,25 @@ class QA_DataStruct_Stock_transaction():
         return QA_DataStruct_Stock_min(QA_data_tick_resample(self.data, type_))
 
 
+class QA_DataStruct_Security_list():
+    def __init__(self,DataFrame):
+        self.data= DataFrame.loc[:,['sse','code','name']].set_index('code',drop=False)
+    @property
+    def code(self):
+        return self.data.code
 
+    @property
+    def name(self):
+        return self.data.name
+    
+    def get_stock(self,ST_option):
+        return self.data
+
+    def get_index(self):
+        return self.data
+    
+    def get_etf(self):
+        return self.data
 
 
 class QA_DataStruct_Market_reply():
