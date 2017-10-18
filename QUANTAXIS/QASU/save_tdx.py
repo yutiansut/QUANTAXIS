@@ -37,7 +37,7 @@ from QUANTAXIS.QAFetch.QATushare import QA_fetch_get_stock_time_to_market
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info, trade_date_sse,
                               QA_util_to_json_from_pandas, QA_util_get_real_date)
 import pymongo
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor,ThreadPoolExecutor
 import concurrent
 
 # ip=select_best_ip()
@@ -143,7 +143,7 @@ def QA_SU_save_stock_min(client=QA_Setting.client):
             __err.append(code)
 
     executor = ThreadPoolExecutor(max_workers=4)
-
+    #executor.map((__saving_work, __stock_list.index[i_], __coll),URLS)
     res = {executor.submit(
         __saving_work, __stock_list.index[i_], __coll) for i_ in range(len(__stock_list))}
     count = 0
@@ -321,7 +321,7 @@ def QA_SU_save_etf_min(client=QA_Setting.client):
 def QA_SU_save_stock_list(client=QA_Setting.client):
     client.quantaxis.drop_collection('stock_list')
     __coll = client.quantaxis.stock_list
-    __coll.create_index('code',pymongo.ASCENDING)
+    __coll.create_index('code')
     __err = []
 
     try:
@@ -335,7 +335,7 @@ def QA_SU_save_stock_list(client=QA_Setting.client):
 def QA_SU_save_stock_block(client=QA_Setting.client):
     client.quantaxis.drop_collection('stock_block')
     __coll = client.quantaxis.stock_block
-    __coll.create_index('code',pymongo.ASCENDING)
+    __coll.create_index('code')
     __err = []
     try:
         QA_util_log_info('##JOB09 Now Saving STOCK_BlOCK ====')
