@@ -238,3 +238,28 @@ def QA_indicator_CCI(DataFrame, N=14):
     """
     typ = (DataFrame['high'] + DataFrame['low'] + DataFrame['close']) / 3
     return ((typ - MA(typ, N)) / (0.015 * AVEDEV(typ, N))).tail(1)
+
+def QA_indicator_ASI(DataFrame,M1,M2):
+    """
+    LC=REF(CLOSE,1);
+    AA=ABS(HIGH-LC);
+    BB=ABS(LOW-LC);
+    CC=ABS(HIGH-REF(LOW,1));
+    DD=ABS(LC-REF(OPEN,1));
+    R=IF(AA>BB AND AA>CC,AA+BB/2+DD/4,IF(BB>CC AND BB>AA,BB+AA/2+DD/4,CC+DD/4));
+    X=(CLOSE-LC+(CLOSE-OPEN)/2+LC-REF(OPEN,1));
+    SI=16*X/R*MAX(AA,BB);
+    ASI:SUM(SI,M1);
+    ASIT:MA(ASI,M2);
+    """
+    CLOSE=DataFrame['close']
+    HIGH=DataFrame['high']
+    LOW=DataFrame['low']
+    OPEN=DataFrame['open']
+    LC=REF(CLOSE,1)
+    AA=ABS(HIGH-LC)
+    CC=ABS(HIGH-REF(LOW,1))
+    DD=ABS(LC-REF(OPEN,1))
+    
+    #R=IF(AA>BB AND AA>CC,AA+BB/2+DD/4,IF(BB>CC AND BB>AA,BB+AA/2+DD/4,CC+DD/4))
+    X=(CLOSE-LC+(CLOSE-OPEN)/2+LC-REF(OPEN,1))
