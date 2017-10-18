@@ -321,7 +321,7 @@ def QA_SU_save_etf_min(client=QA_Setting.client):
 def QA_SU_save_stock_list(client=QA_Setting.client):
     client.quantaxis.drop_collection('stock_list')
     __coll = client.quantaxis.stock_list
-    __coll.create_index('code',pymongo.ASCENDING)
+    __coll.create_index('code')
     __err = []
 
     try:
@@ -335,7 +335,7 @@ def QA_SU_save_stock_list(client=QA_Setting.client):
 def QA_SU_save_stock_block(client=QA_Setting.client):
     client.quantaxis.drop_collection('stock_block')
     __coll = client.quantaxis.stock_block
-    __coll.create_index('code',pymongo.ASCENDING)
+    __coll.create_index('code')
     __err = []
     try:
         QA_util_log_info('##JOB09 Now Saving STOCK_BlOCK ====')
