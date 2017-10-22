@@ -11,5 +11,6 @@ message stock_min{
  string date_stamp=9;
  string datetime =10;
  string time_stamp =11;
+ string message=12;
 
 }
