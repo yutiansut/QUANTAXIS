@@ -66,6 +66,7 @@ class QA_Account():
         self.history = []
         self.profit = []
         self.account_cookie = str(random.random())
+        self.assets = [self.init_assest]
         self.cash = [self.init_assest]
         self.cash_available = self.cash[-1]  # 在途资金
         self.order_queue = pd.DataFrame()   # 已委托待成交队列
