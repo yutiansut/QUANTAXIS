@@ -200,7 +200,7 @@ cd ..
 sudo python3.6 -m pip install TA-Lib
 # 安装剩余的依赖项
 sudo python3.6 -m pip install -r requirements.txt -i https://pypi.doubanio.com/simple
-sudo python3.6 -m pip install tushare
+sudo python3.6 -m pip install tushare<0.9
 
 ```
 > Windows
@@ -214,7 +214,7 @@ sudo python3.6 -m pip install tushare
 git clone https://github.com/yutiansut/quantaxis
 cd quantaxis .
 pip install -r requirements.txt -i https://pypi.doubanio.com/simple
-pip install tushare https://pypi.doubanio.com/simple
+pip install tushare<0.9
 (sudo) pip install -e . # 一定要用这种方法,python setup.py install方法无法解压 安装在本目录下的开发模式
 
 ```
