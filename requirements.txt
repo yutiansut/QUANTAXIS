@@ -19,3 +19,4 @@ flask
 TA-Lib
 pyecharts
 protobuf>=3.4
+motor>=1.1
