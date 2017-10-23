@@ -14,7 +14,7 @@ import platform
 import sys
 import time
 import webbrowser
-from functools import lru_cache, reduce
+from functools import lru_cache, reduce,partial
 
 import numpy as np
 import pandas as pd
@@ -28,6 +28,9 @@ from QUANTAXIS.QAIndicator import EMA, HHV, LLV, SMA
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
                               QA_util_to_json_from_pandas, trade_date_sse)
 from QUANTAXIS.QAFetch.QATdx import QA_fetch_get_stock_realtime
+
+
+
 class __stock_hq_base():
     def __init__(self, DataFrame):
         self.data = DataFrame
@@ -481,10 +484,13 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
 
     def to_qfq(self):
         if self.if_fq is 'bfq':
-            data = QA_DataStruct_Stock_min(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
-                self.data[self.data['code'] == x]), self.code))).set_index(['datetime', 'code'], drop=False))
-            data.if_fq = 'qfq'
-            return data
+            if len(self.code)<20:
+                data = QA_DataStruct_Stock_min(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
+                    self.data[self.data['code'] == x]), self.code))).set_index(['datetime', 'code'], drop=False))
+                data.if_fq = 'qfq'
+                return data
+            else:
+                data=QA_DataStruct_Stock_min(self.data.groupby('code').apply(QA_data_stock_to_fq))
         else:
             QA_util_log_info(
                 'none support type for qfq Current type is:%s' % self.if_fq)
