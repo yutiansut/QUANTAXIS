@@ -466,7 +466,7 @@ def QA_fetch_get_stock_block(ip=best_ip, port=7709):
                           api.to_df(api.get_and_parse_block_info("block_fg.dat"))])
 
         if len(data) > 10:
-            return data.assign(source='tdx').set_index('code', drop=False, inplace=False)
+            return data.assign(source='tdx').set_index('code', drop=False, inplace=False).drop_duplicates()
         else:
             QA_util_log_info('Wrong with fetch block ')
 
