@@ -30,8 +30,9 @@ from pandas import DataFrame
 
 from QUANTAXIS.QAData import (QA_data_make_hfq, QA_data_make_qfq,
                               QA_DataStruct_Index_day, QA_DataStruct_Index_min,
+                              QA_DataStruct_Stock_block,
                               QA_DataStruct_Stock_day, QA_DataStruct_Stock_min,
-                              QA_DataStruct_Stock_transaction,QA_DataStruct_Stock_block)
+                              QA_DataStruct_Stock_transaction)
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_indexlist_day,
                                        QA_fetch_stocklist_day,
                                        QA_fetch_stocklist_min)
