@@ -75,7 +75,7 @@ def __select_market_code(code):
     return 0
 
 
-def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', ip=best_ip, port=7709):
+def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='01', level='day', ip=best_ip, port=7709):
     api = TdxHq_API()
     with api.connect(ip, port):
 
@@ -288,7 +288,21 @@ def QA_fetch_get_stock_latest(code, ip=best_ip, port=7709):
             .drop(['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1)
 
 
-def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=best_ip, port=7709):
+def QA_fetch_get_stock_realtime(code=['000001', '000002'], 
+                                fields=['datetime', 'code', 'open', 'high', 'low', 'price'],
+                                index='code', 
+                                ip=best_ip, 
+                                port=7709):
+    '''
+    fields:['market', 'code', 'active1', 'price', 'last_close', 'open', 'high',
+           'low', 'reversed_bytes0', 'reversed_bytes1', 'vol', 'cur_vol', 'amount',
+           's_vol', 'b_vol', 'reversed_bytes2', 'reversed_bytes3', 'bid1', 'ask1',
+           'bid_vol1', 'ask_vol1', 'bid2', 'ask2', 'bid_vol2', 'ask_vol2', 'bid3',
+           'ask3', 'bid_vol3', 'ask_vol3', 'bid4', 'ask4', 'bid_vol4', 'ask_vol4',
+           'bid5', 'ask5', 'bid_vol5', 'ask_vol5', 'reversed_bytes4',
+           'reversed_bytes5', 'reversed_bytes6', 'reversed_bytes7',
+           'reversed_bytes8', 'reversed_bytes9', 'active2']
+    '''
     api = TdxHq_API()
     __data = pd.DataFrame()
     with api.connect(ip, port):
@@ -297,8 +311,9 @@ def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=best_ip, port=7709
             __data = __data.append(api.to_df(api.get_security_quotes(
                 [(__select_market_code(x), x) for x in code[80 * id_:80 * (id_ + 1)]])))
             __data['datetime'] = datetime.datetime.now()
-        data = __data[['datetime', 'code', 'open', 'high', 'low', 'price']]
-        return data.set_index('code', drop=False, inplace=False)
+        data = __data[fields]
+        return data.set_index(index, drop=False, inplace=False)
+
 
 
 def QA_fetch_get_stock_list(type_='stock', ip=best_ip, port=7709):
