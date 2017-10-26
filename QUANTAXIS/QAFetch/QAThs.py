@@ -28,7 +28,7 @@ import requests
 from QUANTAXIS.QAUtil import trade_date_sse
 
 
-def QA_fetch_get_stock_day_in_year(code, year, if_fq='00'):
+def QA_fetch_get_stock_day_in_year(code, year, if_fq='01'):
     data_ = []
     url = 'http://d.10jqka.com.cn/v2/line/hs_%s/%s/%s.js' % (
         str(code), str(if_fq), str(year))
@@ -45,7 +45,7 @@ def QA_fetch_get_stock_day_in_year(code, year, if_fq='00'):
         pass
 
 
-def QA_fetch_get_stock_day(code, start, end, if_fq='00'):
+def QA_fetch_get_stock_day(code, start, end, if_fq='01'):
     start_year = int(str(start)[0:4])
     end_year = int(str(end)[0:4])
     data = QA_fetch_get_stock_day_in_year(code, start_year, if_fq)
