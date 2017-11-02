@@ -459,11 +459,11 @@ def QA_fetch_get_stock_block(ip=best_ip, port=7709):
     api = TdxHq_API()
     with api.connect(ip, port):
 
-        data = pd.concat([api.to_df(api.get_and_parse_block_info("block_gn.dat")),
-                          api.to_df(api.get_and_parse_block_info("block.dat")),
+        data = pd.concat([api.to_df(api.get_and_parse_block_info("block_gn.dat")).assign(type='gn'),
+                          api.to_df(api.get_and_parse_block_info("block.dat")).assign(type='yb'),
                           api.to_df(api.get_and_parse_block_info(
-                              "block_zs.dat")),
-                          api.to_df(api.get_and_parse_block_info("block_fg.dat"))])
+                              "block_zs.dat")).assign(type='zs'),
+                          api.to_df(api.get_and_parse_block_info("block_fg.dat")).assign(type='fg')])
 
         if len(data) > 10:
             return data.assign(source='tdx').set_index('code', drop=False, inplace=False).drop_duplicates()
