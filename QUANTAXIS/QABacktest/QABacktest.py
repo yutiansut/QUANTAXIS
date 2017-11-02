@@ -618,12 +618,18 @@ class QA_Backtest():
     def QA_backtest_get_market_data(self, code, date, gap_=None, type_='lt'):
         '这个函数封装了关于获取的方式 用GAP的模式'
         gap_ = self.strategy_gap if gap_ is None else gap_
-        return self.market_data_dict[code].select_time_with_gap(date, gap_, type_)
+        try:
+            return self.market_data_dict[code].select_time_with_gap(date, gap_, type_)
+        except:
+            return None
 
     @lru_cache()
     def QA_backtest_get_market_data_bar(self, code, time, if_trade=True):
         '这个函数封装了关于获取的方式'
-        return self.market_data_dict[code].get_bar(code, time, if_trade)
+        try:
+            return self.market_data_dict[code].get_bar(code, time, if_trade)
+        except:
+            return None
 
     #@lru_cache()
     def QA_backtest_sell_available(self, __code):

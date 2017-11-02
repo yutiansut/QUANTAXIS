@@ -288,10 +288,11 @@ class QA_Backtest_stock_day():
         '这个函数封装了关于获取的方式'
         index_of_date = 0
         index_of_code = self.strategy_stock_list.index(code)
-        if date in [l[6] for l in self.market_data[index_of_code]]:
-            index_of_date = [l[6]
-                             for l in self.market_data[index_of_code]].index(date)
-        return self.__QA_get_data_from_market(self, index_of_date, index_of_code)
+        try:
+            index_of_date = [l[6] for l in self.market_data[index_of_code]].index(date)
+            return self.__QA_get_data_from_market(self, index_of_date, index_of_code)
+        except:
+            return None
 
     def QA_backtest_hold_amount(self, __code):
         return sum(list(map(lambda item:item[3] if __code in item else 0,self.account.hold)))
