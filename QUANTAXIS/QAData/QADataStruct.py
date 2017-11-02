@@ -741,7 +741,9 @@ class QA_DataStruct_Stock_block():
 
     def get_block(self,_block_name):
         return self.data[self.data['blockname']==_block_name]
-    
+    def get_type(self,_type):
+        return self.data[self.data['type']==_type]
+
     def get_price(self,_block_name=None):
         if _block_name is not None:
             try:
