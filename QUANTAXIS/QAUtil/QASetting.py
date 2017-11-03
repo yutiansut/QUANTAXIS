@@ -35,7 +35,29 @@ class QA_Setting():
     QA_setting_user_name = ''
     QA_setting_user_password = ''
     user = {'username': '', 'password': '', 'login': False}
+
+    def __init__(self,ip=QA_util_sql_mongo_ip,port=QA_util_sql_mongo_port,
+        username=QA_setting_user_name,password=QA_setting_user_password):
+        self.mongo_ip=ip
+        self.mongo_port=port
+        self.mongo_username=username
+        self.mongo_password=password
+        self.client = QA_util_sql_mongo_setting(
+            self.mongo_ip, self.mongo_port)
     
+    def login(self):
+        QA_util_log_info('username:' + str(self.mongo_username))
+        self.client = QA_util_sql_mongo_setting(
+            self.mongo_ip, self.mongo_port)
+        result = QA_user_sign_in(self.mongo_username, self.mongo_password, self.client)
+        if result == True:
+            self.user['username'] = self.username
+            self.user['password'] = self.password
+            self.user['login'] = True
+            return self.user
+        else:
+            QA_util_log_info('failed to login')
+
     def QA_setting_init(self,ip='127.0.0.1',port=27017):
         self.QA_util_sql_mongo_ip=ip
         self.QA_util_sql_mongo_port=port
