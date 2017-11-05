@@ -51,7 +51,6 @@ def ping(ip):
         print('Bad REPSONSE %s' % ip)
         return datetime.timedelta(9, 9, 0)
 
-
 def select_best_ip():
     QA_util_log_info('Selecting the Best Server IP of TDX')
     listx = ['218.75.126.9', '115.238.90.165',

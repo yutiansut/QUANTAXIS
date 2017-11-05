@@ -31,7 +31,7 @@ install:
 
 - "sudo apt-get install python3-dev"
 - "pip install -r requirements.txt"
-- "pip install tushare"
+- "pip install tushare==0.8.7"
 # command to build
 script: 
 
