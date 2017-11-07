@@ -297,7 +297,7 @@ def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=best_ip, port=7709
             __data = __data.append(api.to_df(api.get_security_quotes(
                 [(__select_market_code(x), x) for x in code[80 * id_:80 * (id_ + 1)]])))
             __data['datetime'] = datetime.datetime.now()
-        data = __data[['datetime', 'code', 'open', 'high', 'low', 'price']]
+        data = __data[['datetime', 'code', 'open', 'high', 'low', 'price','ask1','ask_vol1','ask2','ask_vol2','ask3','ask_vol3','ask4','ask_vol4','ask5','ask_vol5']]
         return data.set_index('code', drop=False, inplace=False)
 
 
