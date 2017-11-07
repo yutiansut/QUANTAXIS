@@ -95,7 +95,6 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', 
         data = data[data['open'] != 0]
 
         if if_fq in ['00', 'bfq']:
-            return data.assign(date=data['datetime'].apply(lambda x: str(x[0:10]))).assign(code=str(code))
             data = data.assign(date=data['datetime'].apply(lambda x: str(x[0:10]))).assign(code=str(code))\
                 .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10]))).set_index('date', drop=False, inplace=False)
             return data.drop(['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1)[start_date:end_date].assign(date=data['date'].apply(lambda x: str(x)[0:10]))
