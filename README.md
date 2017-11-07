@@ -8,7 +8,7 @@
 [点击右上角Star和Watch来跟踪项目进展! 点击Fork来创建属于你的QUANTAXIS!]
 
 ![main_1](http://osnhakmay.bkt.clouddn.com/Main_1.gif)
-<img src="http://i1.piimg.com/1949/62c510db7915837a.png" width = "27.5%" />
+<img src="http://osnhakmay.bkt.clouddn.com/QUANTAXIS-Line.png" width = "27.5%" />
 
 
 
