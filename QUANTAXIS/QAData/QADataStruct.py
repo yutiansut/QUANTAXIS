@@ -730,19 +730,22 @@ class QA_DataStruct_Stock_block():
         return len(self.data)
     @property
     def block_name(self):
-        return self.data.groupby('blockname').sum().index.tolist()
+        return self.data.groupby('blockname').sum().index.unique().tolist()
+    @property
+    def code(self):
+        return self.data.code.unique().tolist()
 
     def show(self):
         return self.data
 
     def get_code(self,code):
-        return self.data[self.data['code']==code]
+        return QA_DataStruct_Stock_block(self.data[self.data['code']==code])
 
 
     def get_block(self,_block_name):
-        return self.data[self.data['blockname']==_block_name]
+        return QA_DataStruct_Stock_block(self.data[self.data['blockname']==_block_name])
     def get_type(self,_type):
-        return self.data[self.data['type']==_type]
+        return QA_DataStruct_Stock_block(self.data[self.data['type']==_type])
 
     def get_price(self,_block_name=None):
         if _block_name is not None:
