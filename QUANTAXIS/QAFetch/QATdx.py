@@ -51,6 +51,7 @@ def ping(ip):
         print('Bad REPSONSE %s' % ip)
         return datetime.timedelta(9, 9, 0)
 
+
 def select_best_ip():
     QA_util_log_info('Selecting the Best Server IP of TDX')
     listx = ['218.75.126.9', '115.238.90.165',
@@ -88,7 +89,7 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', 
             level = 10
         elif level in ['y', 'Y', 'year', 'Year']:
             level = 11
-    
+
         data = pd.concat([api.to_df(api.get_security_bars(level, __select_market_code(
             code), code, (9 - i) * 800, 800)) for i in range(10)], axis=0)
         if if_fq in ['00', 'bfq']:
@@ -309,8 +310,8 @@ def QA_fetch_get_stock_list(type_='stock', ip=best_ip, port=7709):
         if type_ in ['stock', 'gp']:
             return pd.concat([data[data['sse'] == 'sz'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 10000 <= 30][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 100000 != 2][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 100000 != 1],
                               data[data['sse'] == 'sh'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 100000 == 6]]).assign(code=data['code'].apply(lambda x: str(x))).assign(name=data['name'].apply(lambda x: str(x)[0:4]))
-                #.assign(szm=data['name'].apply(lambda x: ''.join([y[0] for y in lazy_pinyin(x)])))\
-                #.assign(quanpin=data['name'].apply(lambda x: ''.join(lazy_pinyin(x))))
+            #.assign(szm=data['name'].apply(lambda x: ''.join([y[0] for y in lazy_pinyin(x)])))\
+            #.assign(quanpin=data['name'].apply(lambda x: ''.join(lazy_pinyin(x))))
         elif type_ in ['index', 'zs']:
 
             return pd.concat([data[data['sse'] == 'sz'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 1000 >= 399],
@@ -318,13 +319,13 @@ def QA_fetch_get_stock_list(type_='stock', ip=best_ip, port=7709):
                 .sort_index()\
                 .assign(name=data['name'].apply(lambda x: str(x)[0:4]))\
                 .assign(code=data['code'].apply(lambda x: str(x)))
-                #.assign(szm=data['name'].apply(lambda x: ''.join([y[0] for y in lazy_pinyin(x)])))\
-                #.assign(quanpin=data['name'].apply(lambda x: ''.join(lazy_pinyin(x))))
+            #.assign(szm=data['name'].apply(lambda x: ''.join([y[0] for y in lazy_pinyin(x)])))\
+            #.assign(quanpin=data['name'].apply(lambda x: ''.join(lazy_pinyin(x))))
         elif type_ in ['etf', 'ETF']:
             return pd.concat([data[data['sse'] == 'sz'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 10000 == 15],
                               data[data['sse'] == 'sh'][data.assign(code=data['code'].apply(lambda x: int(x)))['code'] // 10000 == 51]]).sort_index().assign(code=data['code'].apply(lambda x: str(x))).assign(name=data['name'].apply(lambda x: str(x)[0:4]))\
                 #.assign(szm=data['name'].apply(lambda x: ''.join([y[0] for y in lazy_pinyin(x)])))\
-                #.assign(quanpin=data['name'].apply(lambda x: ''.join(lazy_pinyin(x))))
+            #.assign(quanpin=data['name'].apply(lambda x: ''.join(lazy_pinyin(x))))
 
         else:
             return data.assign(code=data['code'].apply(lambda x: str(x))).assign(name=data['name'].apply(lambda x: str(x)[0:4]))
@@ -459,13 +460,14 @@ def QA_fetch_get_stock_block(ip=best_ip, port=7709):
     with api.connect(ip, port):
 
         data = pd.concat([api.to_df(api.get_and_parse_block_info("block_gn.dat")).assign(type='gn'),
-                          api.to_df(api.get_and_parse_block_info("block.dat")).assign(type='yb'),
+                          api.to_df(api.get_and_parse_block_info(
+                              "block.dat")).assign(type='yb'),
                           api.to_df(api.get_and_parse_block_info(
                               "block_zs.dat")).assign(type='zs'),
                           api.to_df(api.get_and_parse_block_info("block_fg.dat")).assign(type='fg')])
 
         if len(data) > 10:
-            return data.assign(source='tdx').set_index('code', drop=False, inplace=False).drop_duplicates()
+            return data.assign(source='tdx').drop(['block_type', 'code_index'], axis=1).set_index('code', drop=False, inplace=False).drop_duplicates()
         else:
             QA_util_log_info('Wrong with fetch block ')
 
