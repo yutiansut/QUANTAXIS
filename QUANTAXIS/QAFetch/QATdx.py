@@ -102,17 +102,17 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', 
         elif if_fq in ['01', 'qfq']:
 
             xdxr_data = QA_fetch_get_stock_xdxr(code)
-            bfq_data = data.assign(date=data['datetime'].apply(lambda x: str(x[0:10]))).assign(code=str(code))\
+            bfq_data = data.assign(date=pd.to_datetime(data['datetime'].apply(lambda x: str(x[0:10])))).assign(code=str(code))\
                 .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10]))).set_index('date', drop=False, inplace=False)
             bfq_data = bfq_data.drop(
                 ['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1)
-            bfq_data['if_trade'] = True
+            #
             if xdxr_data is not None:
                 info = xdxr_data[xdxr_data['category'] == 1]
-
+                bfq_data['if_trade'] = True
                 data = pd.concat([bfq_data, info[['category']]
                                   [bfq_data.index[0]:]], axis=1)
-
+                
                 data['date'] = data.index
                 data['if_trade'].fillna(value=False, inplace=True)
                 data = data.fillna(method='ffill')
@@ -133,6 +133,10 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', 
                 data = data[data['if_trade']]
                 return data.drop(['fenhong', 'peigu', 'peigujia', 'songzhuangu', 'if_trade', 'category'], axis=1)[data['open'] != 0].assign(date=data['date'].apply(lambda x: str(x)[0:10]))[start_date:end_date]
             else:
+                
+                
+                bfq_data['preclose']=bfq_data['close'].shift(1)
+                bfq_data['adj']=1
                 return bfq_data[start_date:end_date]
         elif if_fq in ['03', 'ddqfq']:
             xdxr_data = QA_fetch_get_stock_xdxr(code)
