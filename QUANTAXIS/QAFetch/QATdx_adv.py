@@ -25,9 +25,10 @@
 import concurrent
 import datetime
 import queue
+from collections import deque
 import threading
 from concurrent.futures import ThreadPoolExecutor
-from threading import Thread,Event,Timer
+from threading import Thread, Event, Timer
 
 import numpy as np
 import pandas as pd
@@ -51,10 +52,12 @@ class QA_Tdx_Executor():
         self._api_worker = Thread(
             target=self.api_worker(), args=(), name='API Worker')
         self._api_worker.start()
+
     def _queue_clean(self):
-        self._queue= queue.LifoQueue(maxsize=200)
+        self._queue = queue.LifoQueue(maxsize=200)
+
     def _test_speed(self, ip, port=7709):
-        
+
         api = TdxHq_API()
         _time = datetime.datetime.now()
         try:
@@ -63,35 +66,39 @@ class QA_Tdx_Executor():
                     return (datetime.datetime.now() - _time).total_seconds()
         except:
             return datetime.timedelta(9, 9, 0).total_seconds()
-        
+
     def get_available(self):
 
         if self._queue.empty() is False:
             return self._queue.get_nowait()
 
         else:
-            #print('x')
+            # print('x')
             Timer(0, self.api_worker).start()
             return self._queue.get()
-            
+
     def api_worker(self):
         data = []
 
-        self._queue_clean()
-        for item in info_ip_list:
-            _sec=self._test_speed(item)
-            if _sec<0.1:
-                self._queue.put(TdxHq_API(heartbeat=False).connect(ip=item))
-
+        if self._queue.qsize() < 80:
+            for item in info_ip_list:
+                _sec = self._test_speed(item)
+                if _sec < 0.1:
+                    self._queue.put(
+                        TdxHq_API(heartbeat=False).connect(ip=item))
+        else:
+            pass
         Timer(5, self.api_worker).start()
+
+
 if __name__ == '__main__':
     import time
     x = QA_Tdx_Executor()
     print(x._queue.qsize())
     print(x.get_available())
     for i in range(100):
-        #print(threading.enumerate())
+        # print(threading.enumerate())
         print(x.get_available())
         print('Current Available IP {}'.format(x._queue.qsize()))
-        
+
         time.sleep(1)
