@@ -47,12 +47,12 @@ from QUANTAXIS.QAUtil.QADate import QA_util_calc_time
 
 class QA_Tdx_Executor():
     def __init__(self, *args, **kwargs):
-        self._queue = queue.Queue()
+        self._queue = queue.LifoQueue(maxsize=200)
         self._api_worker = Thread(
             target=self.api_worker(), args=(), name='API Worker')
         self._api_worker.start()
     def _queue_clean(self):
-        self._queue=queue.Queue()
+        self._queue= queue.LifoQueue(maxsize=200)
     def _test_speed(self, ip, port=7709):
         
         api = TdxHq_API()
@@ -66,30 +66,33 @@ class QA_Tdx_Executor():
             return datetime.timedelta(9, 9, 0).total_seconds()
         
     def get_available(self):
-        if self._queue.empty is False:
+
+        if self._queue.empty() is False:
             return self._queue.get_nowait()
+
         else:
+            #print('x')
             Timer(0, self.api_worker).start()
             return self._queue.get()
             
     def api_worker(self):
         data = []
 
-
+        self._queue_clean()
         for item in info_ip_list:
             _sec=self._test_speed(item)
             if _sec<0.1:
                 self._queue.put(TdxHq_API(heartbeat=False).connect(ip=item))
 
-        Timer(2, self.api_worker).start()
+        Timer(5, self.api_worker).start()
 if __name__ == '__main__':
     import time
     x = QA_Tdx_Executor()
     print(x._queue.qsize())
     print(x.get_available())
     for i in range(100):
-        print(threading.enumerate())
+        #print(threading.enumerate())
         print(x.get_available())
-        print(x._queue.qsize())
+        print('Current Available IP {}'.format(x._queue.qsize()))
         
         time.sleep(1)
