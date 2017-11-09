@@ -18,4 +18,4 @@ class QA_Analysis_block():
 
 
 #ana=QA_Analysis_block(QA_fetch_stock_block_adv().get_block('昨日涨停').code.tolist())
-print(ana.market_data('2017-10-01','2017-10-30'))
+#print(ana.market_data('2017-10-01','2017-10-30'))
