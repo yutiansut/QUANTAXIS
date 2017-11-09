@@ -64,6 +64,8 @@ class QA_Tdx_Executor():
             with api.connect(ip, port, time_out=0.05):
                 if len(api.get_security_list(0, 1)) > 800:
                     return (datetime.datetime.now() - _time).total_seconds()
+                else:
+                    return datetime.timedelta(9, 9, 0).total_seconds()
         except:
             return datetime.timedelta(9, 9, 0).total_seconds()
 
@@ -71,9 +73,7 @@ class QA_Tdx_Executor():
 
         if self._queue.empty() is False:
             return self._queue.get_nowait()
-
         else:
-            # print('x')
             Timer(0, self.api_worker).start()
             return self._queue.get()
 
@@ -87,18 +87,53 @@ class QA_Tdx_Executor():
                     self._queue.put(
                         TdxHq_API(heartbeat=False).connect(ip=item))
         else:
-            pass
+            self._queue_clean()
+            Timer(0, self.api_worker).start()
         Timer(5, self.api_worker).start()
 
 
+    def _distribute_job(self,job):
+        pass
+
+    # api.get_security_bars(args)
+    def run(self,func,*args,**kwargs):
+        pass
+
+
+    def get_realtime(self,code):
+        __data = pd.DataFrame()
+        code = [code] if type(code) is str else code
+        try:
+            for id_ in range(int(len(code) / 80) + 1):
+                __data = __data.append(self.get_available().to_df(self.get_available().get_security_quotes(
+                    [(self._select_market_code(x), x) for x in code[80 * id_:80 * (id_ + 1)]])))
+                __data['datetime'] = datetime.datetime.now()
+            data = __data[['datetime', 'code', 'open', 'high', 'low', 'price', 'ask1', 'ask_vol1',
+                        'ask2', 'ask_vol2', 'ask3', 'ask_vol3', 'ask4', 'ask_vol4', 'ask5', 'ask_vol5']]
+            return data.set_index('code', drop=False, inplace=False)
+        except:
+            return None
+    def _select_market_code(self,code):
+        code = str(code)
+        if code[0] in ['5', '6', '9'] or code[:3] in ["009", "126", "110", "201", "202", "203", "204"]:
+            return 1
+        return 0
+
 if __name__ == '__main__':
     import time
+    import tushare as ts
+    code=ts.get_today_all().code.tolist()
     x = QA_Tdx_Executor()
     print(x._queue.qsize())
     print(x.get_available())
-    for i in range(100):
-        # print(threading.enumerate())
-        print(x.get_available())
-        print('Current Available IP {}'.format(x._queue.qsize()))
+    for i in range(100000):
+        _time=datetime.datetime.now()
+        data=x.get_realtime(code)
+        if data is not None:
+            
+            print(len(data))
+        print('Time {}'.format((datetime.datetime.now()-_time).total_seconds()))
+        print(x._queue.qsize())
+        #print(threading.enumerate())
 
-        time.sleep(1)
+
