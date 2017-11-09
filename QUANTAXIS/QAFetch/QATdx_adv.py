@@ -29,13 +29,13 @@ from collections import deque
 import threading
 from concurrent.futures import ThreadPoolExecutor
 from threading import Thread, Event, Timer
-from multiprocessing import Process,Pool
+from multiprocessing import Process, Pool
 import numpy as np
 import pandas as pd
 from pytdx.exhq import TdxExHq_API
 from pytdx.hq import TdxHq_API
 
-
+import logging
 from QUANTAXIS.QAUtil.QASetting import info_ip_list
 from QUANTAXIS.QAUtil.QADate import QA_util_calc_time
 """
@@ -48,7 +48,8 @@ from QUANTAXIS.QAUtil.QADate import QA_util_calc_time
 
 class QA_Tdx_Executor():
     def __init__(self, *args, **kwargs):
-        self._queue = queue.LifoQueue(maxsize=200)
+        self._queue = queue.Queue(maxsize=200)
+        self.api_no_connection = TdxHq_API()
         self._api_worker = Thread(
             target=self.api_worker(), args=(), name='API Worker')
         self._api_worker.start()
@@ -58,7 +59,8 @@ class QA_Tdx_Executor():
 
     def _test_speed(self, ip, port=7709):
 
-        api = TdxHq_API()
+        api = TdxHq_API(raise_exception=True, auto_retry=False)
+        api.need_setup = False
         _time = datetime.datetime.now()
         try:
             with api.connect(ip, port, time_out=0.05):
@@ -66,7 +68,8 @@ class QA_Tdx_Executor():
                     return (datetime.datetime.now() - _time).total_seconds()
                 else:
                     return datetime.timedelta(9, 9, 0).total_seconds()
-        except:
+        except Exception as e:
+            #print('BAD IP {}, DEL for Reason{}'.format(ip,e))
             return datetime.timedelta(9, 9, 0).total_seconds()
 
     def get_available(self):
@@ -81,55 +84,67 @@ class QA_Tdx_Executor():
         data = []
 
         if self._queue.qsize() < 80:
+
             for item in info_ip_list:
                 _sec = self._test_speed(item)
                 if _sec < 0.1:
                     self._queue.put(
-                        TdxHq_API(heartbeat=False).connect(ip=item))
+                        TdxHq_API(heartbeat=False).connect(ip=item, time_out=0.05))
         else:
             self._queue_clean()
             Timer(0, self.api_worker).start()
-        Timer(5, self.api_worker).start()
+        Timer(300, self.api_worker).start()
 
-    def get_realtime(self,code):
-        __data = pd.DataFrame()
-        api_no_connection=TdxHq_API()
+    def singal_job(self, context, id_, time_out=0.5):
+        try:
+            _api = self.get_available()
+
+            __data = context.append(self.api_no_connection.to_df(_api.get_security_quotes(
+                [(self._select_market_code(x), x) for x in code[80 * id_:80 * (id_ + 1)]])))
+            __data['datetime'] = datetime.datetime.now()
+            self._queue.put(_api)  # 加入注销
+            return __data
+        except:
+            return self.singal_job(context, id_)
+
+    def get_realtime(self, code):
+        context = pd.DataFrame()
+
         code = [code] if type(code) is str else code
         try:
             for id_ in range(int(len(code) / 80) + 1):
-                _api=self.get_available()
-                __data = __data.append(api_no_connection.to_df(_api.get_security_quotes(
-                    [(self._select_market_code(x), x) for x in code[80 * id_:80 * (id_ + 1)]])))
-                __data['datetime'] = datetime.datetime.now()
-                _api.disconnect()  #加入注销
-            data = __data[['datetime', 'code', 'open', 'high', 'low', 'price', 'ask1', 'ask_vol1',
-                        'ask2', 'ask_vol2', 'ask3', 'ask_vol3', 'ask4', 'ask_vol4', 'ask5', 'ask_vol5']]
+
+                context = self.singal_job(context, id_)
+
+            data = context[['datetime', 'code', 'open', 'high', 'low', 'price', 'ask1', 'ask_vol1',
+                            'ask2', 'ask_vol2', 'ask3', 'ask_vol3', 'ask4', 'ask_vol4', 'ask5', 'ask_vol5']]
             return data.set_index('code', drop=False, inplace=False)
         except:
             return None
-    def _select_market_code(self,code):
+
+    def _select_market_code(self, code):
         code = str(code)
         if code[0] in ['5', '6', '9'] or code[:3] in ["009", "126", "110", "201", "202", "203", "204"]:
             return 1
         return 0
 
+
 if __name__ == '__main__':
     import time
+    _time1 = datetime.datetime.now()
     from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_block_adv
-    code=QA_fetch_stock_block_adv().code
+    code = QA_fetch_stock_block_adv().code
     x = QA_Tdx_Executor()
     print(x._queue.qsize())
     print(x.get_available())
     for i in range(100000):
-        _time=datetime.datetime.now()
-        data=x.get_realtime(code)
+        _time = datetime.datetime.now()
+        data = x.get_realtime(code)
         if data is not None:
-            
             print(len(data))
-            
-        print('Time {}'.format((datetime.datetime.now()-_time).total_seconds()))
+        print('Time {}'.format((datetime.datetime.now() - _time).total_seconds()))
         time.sleep(1)
-        print(x._queue.qsize())
-        #print(threading.enumerate())
-
-
+        print('Connection Pool NOW LEFT {} Available IP'.format(x._queue.qsize()))
+        print('Program Last Time {}'.format(
+            (datetime.datetime.now() - _time1).total_seconds()))
+        # print(threading.enumerate())
