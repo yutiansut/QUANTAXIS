@@ -137,6 +137,10 @@ class QA_Tdx_Executor():
         return 0
 
 
+    def save_mongo(self):
+        pass
+
+
 if __name__ == '__main__':
     import time
     _time1 = datetime.datetime.now()
