@@ -91,23 +91,17 @@ class QA_Tdx_Executor():
             Timer(0, self.api_worker).start()
         Timer(5, self.api_worker).start()
 
-
-    def _distribute_job(self,job):
-        pass
-
-    # api.get_security_bars(args)
-    def run(self,func,*args,**kwargs):
-        pass
-
-
     def get_realtime(self,code):
         __data = pd.DataFrame()
+        api_no_connection=TdxHq_API()
         code = [code] if type(code) is str else code
         try:
             for id_ in range(int(len(code) / 80) + 1):
-                __data = __data.append(self.get_available().to_df(self.get_available().get_security_quotes(
+                _api=self.get_available()
+                __data = __data.append(api_no_connection.to_df(_api.get_security_quotes(
                     [(self._select_market_code(x), x) for x in code[80 * id_:80 * (id_ + 1)]])))
                 __data['datetime'] = datetime.datetime.now()
+                _api.disconnect()  #加入注销
             data = __data[['datetime', 'code', 'open', 'high', 'low', 'price', 'ask1', 'ask_vol1',
                         'ask2', 'ask_vol2', 'ask3', 'ask_vol3', 'ask4', 'ask_vol4', 'ask5', 'ask_vol5']]
             return data.set_index('code', drop=False, inplace=False)
@@ -121,8 +115,8 @@ class QA_Tdx_Executor():
 
 if __name__ == '__main__':
     import time
-    import tushare as ts
-    code=ts.get_today_all().code.tolist()
+    from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_block_adv
+    code=QA_fetch_stock_block_adv().code
     x = QA_Tdx_Executor()
     print(x._queue.qsize())
     print(x.get_available())
@@ -132,7 +126,9 @@ if __name__ == '__main__':
         if data is not None:
             
             print(len(data))
+            
         print('Time {}'.format((datetime.datetime.now()-_time).total_seconds()))
+        time.sleep(1)
         print(x._queue.qsize())
         #print(threading.enumerate())
 
