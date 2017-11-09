@@ -226,9 +226,10 @@ def QA_util_time_delay(time_=0):
 
 def QA_util_calc_time(func, *args, **kwargs):
     '耗时长度的装饰器'
-    time = datetime.datetime.now()
+    _time = datetime.datetime.now()
     func(*args, **kwargs)
-    print(datetime.datetime.now - time)
+    print(datetime.datetime.now() - _time)
+    #return datetime.datetime.now() - _time
 
 
 if __name__ == '__main__':
