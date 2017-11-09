@@ -77,6 +77,10 @@ class QA_Tdx_Executor():
             #print('BAD IP {}, DEL for Reason{}'.format(ip,e))
             return datetime.timedelta(9, 9, 0).total_seconds()
 
+    @property
+    def ipsize(self):
+        return len(self._queue.qsize())
+
     def get_available(self):
 
         if self._queue.empty() is False:
