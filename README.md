@@ -163,6 +163,11 @@ sudo npm install n -g
 sudo n latest
 sudo npm install npm -g #更新npm
 sudo npm install forever -g #安装一个全局的forever 用于之后启动
+(如果forever 安装卡住/耗时过长 使用淘宝镜像CNPM)
+
+(sudo npm install cnpm -g)
+(sudo cnpm install forever -g)
+
 ```
 
 linux/mac下的nodejs有一个版本管理包 叫n 需要全局安装 -g
