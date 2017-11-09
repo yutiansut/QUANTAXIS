@@ -113,7 +113,6 @@ class QA_Tdx_Executor():
         code = [code] if type(code) is str else code
         try:
             for id_ in range(int(len(code) / 80) + 1):
-
                 context = self.singal_job(context, id_)
 
             data = context[['datetime', 'code', 'open', 'high', 'low', 'price', 'ask1', 'ask_vol1',
