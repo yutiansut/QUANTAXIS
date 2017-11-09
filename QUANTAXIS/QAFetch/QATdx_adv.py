@@ -29,7 +29,7 @@ from collections import deque
 import threading
 from concurrent.futures import ThreadPoolExecutor
 from threading import Thread, Event, Timer
-
+from multiprocessing import Process,Pool
 import numpy as np
 import pandas as pd
 from pytdx.exhq import TdxExHq_API
