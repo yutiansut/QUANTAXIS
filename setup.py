@@ -91,7 +91,7 @@ setup(
     ],
     install_requires=['pandas>=0.20.3', 'numpy>=1.12.0', 'tushare==0.8.7', 'flask_socketio>=2.9.0 ','motor>=1.1',
                       'lxml>=4.0', ' beautifulsoup4', 'flask-socketio', 'flask', 'click>=6.7', 'TA-Lib', 'matplotlib',
-                      'pymongo>=3.4', 'celery>=4.0.0', 'six>=1.10.0', 'tabulate>=0.7.7', 'pytdx>=1.52',
+                      'pymongo>=3.4', 'celery>=4.0.0', 'six>=1.10.0', 'tabulate>=0.7.7', 'pytdx>=1.56',
                       'zenlog>=1.1', 'delegator.py>=0.0.12', 'flask>=0.12.2', 'pyecharts>=0.2.4', 'protobuf>=3.4.0'],
     entry_points={
         'console_scripts': [
