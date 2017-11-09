@@ -22,22 +22,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import asyncio
 import concurrent
 import datetime
+import logging
 import queue
-from collections import deque
 import threading
+from collections import deque
 from concurrent.futures import ThreadPoolExecutor
-from threading import Thread, Event, Timer
-from multiprocessing import Process, Pool
+from multiprocessing import Pool, Process
+from threading import Event, Thread, Timer
+
 import numpy as np
 import pandas as pd
+from motor.motor_asyncio import AsyncIOMotorClient
+
 from pytdx.exhq import TdxExHq_API
 from pytdx.hq import TdxHq_API
-
-import logging
-from QUANTAXIS.QAUtil.QASetting import info_ip_list
 from QUANTAXIS.QAUtil.QADate import QA_util_calc_time
+from QUANTAXIS.QAUtil.QASetting import info_ip_list
+
+
 """
 准备做一个多连接的连接池执行器Executor
 
