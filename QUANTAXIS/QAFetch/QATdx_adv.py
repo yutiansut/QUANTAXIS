@@ -62,7 +62,6 @@ class QA_Tdx_Executor():
                 if len(api.get_security_list(0, 1)) > 800:
                     return (datetime.datetime.now() - _time).total_seconds()
         except:
-            #print('Bad REPSONSE %s' % ip)
             return datetime.timedelta(9, 9, 0).total_seconds()
         
     def get_available(self):
