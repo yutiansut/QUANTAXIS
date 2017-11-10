@@ -81,6 +81,11 @@ class QA_Tdx_Executor():
     def ipsize(self):
         return len(self._queue.qsize())
 
+    @property
+    def api(self):
+        return self.get_available()
+
+
     def get_available(self):
 
         if self._queue.empty() is False:
