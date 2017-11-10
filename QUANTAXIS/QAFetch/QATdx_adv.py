@@ -22,22 +22,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import asyncio
 import concurrent
 import datetime
+import logging
 import queue
-from collections import deque
 import threading
+from collections import deque
 from concurrent.futures import ThreadPoolExecutor
-from threading import Thread, Event, Timer
-from multiprocessing import Process, Pool
+from multiprocessing import Pool, Process
+from threading import Event, Thread, Timer
+
 import numpy as np
 import pandas as pd
+from motor.motor_asyncio import AsyncIOMotorClient
+
 from pytdx.exhq import TdxExHq_API
 from pytdx.hq import TdxHq_API
-
-import logging
-from QUANTAXIS.QAUtil.QASetting import info_ip_list
 from QUANTAXIS.QAUtil.QADate import QA_util_calc_time
+from QUANTAXIS.QAUtil.QASetting import info_ip_list
+
+
 """
 准备做一个多连接的连接池执行器Executor
 
@@ -51,16 +56,16 @@ class QA_Tdx_Executor():
         self._queue = queue.Queue(maxsize=200)
         self.api_no_connection = TdxHq_API()
         self._api_worker = Thread(
-            target=self.api_worker(), args=(), name='API Worker')
+            target=self.api_worker, args=(), name='API Worker')
         self._api_worker.start()
 
     def _queue_clean(self):
-        self._queue = queue.LifoQueue(maxsize=200)
+        self._queue = queue.Queue(maxsize=200)
 
     def _test_speed(self, ip, port=7709):
-
+        
         api = TdxHq_API(raise_exception=True, auto_retry=False)
-        api.need_setup = False
+        #api.need_setup = False
         _time = datetime.datetime.now()
         try:
             with api.connect(ip, port, time_out=0.05):
@@ -72,6 +77,15 @@ class QA_Tdx_Executor():
             #print('BAD IP {}, DEL for Reason{}'.format(ip,e))
             return datetime.timedelta(9, 9, 0).total_seconds()
 
+    @property
+    def ipsize(self):
+        return len(self._queue.qsize())
+
+    @property
+    def api(self):
+        return self.get_available()
+
+
     def get_available(self):
 
         if self._queue.empty() is False:
@@ -82,9 +96,7 @@ class QA_Tdx_Executor():
 
     def api_worker(self):
         data = []
-
         if self._queue.qsize() < 80:
-
             for item in info_ip_list:
                 _sec = self._test_speed(item)
                 if _sec < 0.1:
@@ -113,7 +125,6 @@ class QA_Tdx_Executor():
         code = [code] if type(code) is str else code
         try:
             for id_ in range(int(len(code) / 80) + 1):
-
                 context = self.singal_job(context, id_)
 
             data = context[['datetime', 'code', 'open', 'high', 'low', 'price', 'ask1', 'ask_vol1',
@@ -127,6 +138,10 @@ class QA_Tdx_Executor():
         if code[0] in ['5', '6', '9'] or code[:3] in ["009", "126", "110", "201", "202", "203", "204"]:
             return 1
         return 0
+
+
+    def save_mongo(self):
+        pass
 
 
 if __name__ == '__main__':
