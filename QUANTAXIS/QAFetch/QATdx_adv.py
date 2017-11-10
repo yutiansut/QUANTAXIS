@@ -56,16 +56,16 @@ class QA_Tdx_Executor():
         self._queue = queue.Queue(maxsize=200)
         self.api_no_connection = TdxHq_API()
         self._api_worker = Thread(
-            target=self.api_worker(), args=(), name='API Worker')
+            target=self.api_worker, args=(), name='API Worker')
         self._api_worker.start()
 
     def _queue_clean(self):
-        self._queue = queue.LifoQueue(maxsize=200)
+        self._queue = queue.Queue(maxsize=200)
 
     def _test_speed(self, ip, port=7709):
-
+        
         api = TdxHq_API(raise_exception=True, auto_retry=False)
-        api.need_setup = False
+        #api.need_setup = False
         _time = datetime.datetime.now()
         try:
             with api.connect(ip, port, time_out=0.05):
@@ -91,9 +91,7 @@ class QA_Tdx_Executor():
 
     def api_worker(self):
         data = []
-
         if self._queue.qsize() < 80:
-
             for item in info_ip_list:
                 _sec = self._test_speed(item)
                 if _sec < 0.1:
