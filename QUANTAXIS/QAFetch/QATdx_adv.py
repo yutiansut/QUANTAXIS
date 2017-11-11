@@ -52,18 +52,34 @@ from QUANTAXIS.QAUtil.QASetting import info_ip_list
 
 
 class QA_Tdx_Executor():
-    def __init__(self, *args, **kwargs):
+    def __init__(self, thread_num=2, *args, **kwargs):
+        self.thread_num = thread_num
         self._queue = queue.Queue(maxsize=200)
         self.api_no_connection = TdxHq_API()
         self._api_worker = Thread(
             target=self.api_worker, args=(), name='API Worker')
         self._api_worker.start()
 
+        self.executor = ThreadPoolExecutor(self.thread_num)
+
+    def __getattr__(self, item):
+        try:
+            api = self.get_available()
+            func = api.__getattribute__(item)
+
+            def wrapper(*args, **kwargs):
+                res = self.executor.submit(func, *args, **kwargs)
+                self._queue.put(api)
+                return res
+            return wrapper
+        except:
+            return self.__getattr__(item)
+
     def _queue_clean(self):
         self._queue = queue.Queue(maxsize=200)
 
     def _test_speed(self, ip, port=7709):
-        
+
         api = TdxHq_API(raise_exception=True, auto_retry=False)
         #api.need_setup = False
         _time = datetime.datetime.now()
@@ -84,7 +100,6 @@ class QA_Tdx_Executor():
     @property
     def api(self):
         return self.get_available()
-
 
     def get_available(self):
 
@@ -133,12 +148,22 @@ class QA_Tdx_Executor():
         except:
             return None
 
-    def _select_market_code(self, code):
+    def get_realtime_concurrent(self, code):
+        code = [code] if type(code) is str else code
+
+        try:
+            # for id_ in range(int(len(code) / 80) + 1):
+            data = {self.get_security_quotes([(self.get_market(
+                x), x) for x in code[80 * pos:80 * (pos + 1)]]) for pos in range(int(len(code) / 80) + 1)}
+            return [i.result() for i in data]
+        except:
+            pass
+
+    def get_market(self, code):
         code = str(code)
         if code[0] in ['5', '6', '9'] or code[:3] in ["009", "126", "110", "201", "202", "203", "204"]:
             return 1
         return 0
-
 
     def save_mongo(self):
         pass
@@ -154,9 +179,11 @@ if __name__ == '__main__':
     print(x.get_available())
     for i in range(100000):
         _time = datetime.datetime.now()
-        data = x.get_realtime(code)
+        #data = x.get_realtime(code)
+        data = x.get_realtime_concurrent(code)
         if data is not None:
             print(len(data))
+            print(data[0])
         print('Time {}'.format((datetime.datetime.now() - _time).total_seconds()))
         time.sleep(1)
         print('Connection Pool NOW LEFT {} Available IP'.format(x._queue.qsize()))
