@@ -181,9 +181,9 @@ if __name__ == '__main__':
         _time = datetime.datetime.now()
         #data = x.get_realtime(code)
         data = x.get_realtime_concurrent(code)
-        #if data is not None:
-            #print(len(data))
-            #print(data[0])
+        # if data is not None:
+        # print(len(data))
+        # print(data[0])
         print('Time {}'.format((datetime.datetime.now() - _time).total_seconds()))
         time.sleep(1)
         print('Connection Pool NOW LEFT {} Available IP'.format(x._queue.qsize()))
