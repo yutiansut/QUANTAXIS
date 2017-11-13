@@ -112,7 +112,7 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', 
                 bfq_data['if_trade'] = True
                 data = pd.concat([bfq_data, info[['category']]
                                   [bfq_data.index[0]:]], axis=1)
-                
+
                 data['date'] = data.index
                 data['if_trade'].fillna(value=False, inplace=True)
                 data = data.fillna(method='ffill')
@@ -133,10 +133,9 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', 
                 data = data[data['if_trade']]
                 return data.drop(['fenhong', 'peigu', 'peigujia', 'songzhuangu', 'if_trade', 'category'], axis=1)[data['open'] != 0].assign(date=data['date'].apply(lambda x: str(x)[0:10]))[start_date:end_date]
             else:
-                
-                
-                bfq_data['preclose']=bfq_data['close'].shift(1)
-                bfq_data['adj']=1
+
+                bfq_data['preclose'] = bfq_data['close'].shift(1)
+                bfq_data['adj'] = 1
                 return bfq_data[start_date:end_date]
         elif if_fq in ['03', 'ddqfq']:
             xdxr_data = QA_fetch_get_stock_xdxr(code)
@@ -299,8 +298,10 @@ def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=best_ip, port=7709
             __data = __data.append(api.to_df(api.get_security_quotes(
                 [(__select_market_code(x), x) for x in code[80 * id_:80 * (id_ + 1)]])))
             __data['datetime'] = datetime.datetime.now()
-        data = __data[['datetime', 'code', 'open', 'high', 'low', 'price', 'ask1', 'ask_vol1',
-                       'ask2', 'ask_vol2', 'ask3', 'ask_vol3', 'ask4', 'ask_vol4', 'ask5', 'ask_vol5']]
+        data = __data[['datetime', 'last_close', 'code', 'open', 'high', 'low', 'price', 'cur_vol',
+                       's_vol', 'b_vol','vol', 'ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',
+                       'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3', 'ask4',
+                       'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
         return data.set_index('code', drop=False, inplace=False)
 
 
@@ -489,6 +490,6 @@ def QA_fetch_get_stock_info(code, ip=best_ip, port=7709):
 if __name__ == '__main__':
     # print(QA_fetch_get_stock_day('000001','2017-07-03','2017-07-10'))
     # print(QA_fetch_get_stock_day('000001', '2013-07-01', '2013-07-09'))
-    # print(QA_fetch_get_stock_realtime('000001'))
-    print(QA_fetch_get_index_day('000001', '2017-01-01', '2017-07-01'))
+    print(QA_fetch_get_stock_realtime('000001'))
+    #print(QA_fetch_get_index_day('000001', '2017-01-01', '2017-07-01'))
     # print(QA_fetch_get_stock_transaction('000001', '2017-07-03', '2017-07-10'))

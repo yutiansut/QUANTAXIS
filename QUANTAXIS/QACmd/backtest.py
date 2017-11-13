@@ -135,8 +135,11 @@ def strategy():
     QA.QA_util_log_info(QB.account.sell_available)
     QA.QA_util_log_info('LEFT Cash: %s' % QB.account.cash_available)
     for item in QB.strategy_stock_list:
-        QA.QA_util_log_info(
-            QB.QA_backtest_get_market_data(QB, item, QB.today).data)  # 如果是分钟回测 用QB.now
+        market_data=QB.QA_backtest_get_market_data(QB, item, QB.today)
+        if market_data is not None:
+            QA.QA_util_log_info(market_data.data)
+        else:
+            QA.QA_util_log_info('{} HAS NO DATA IN {}'.format(item,QB.today))# 如果是分钟回测 用QB.now
 
         if QB.QA_backtest_hold_amount(QB, item) == 0:  # 如果不持仓
             QB.QA_backtest_send_order(
