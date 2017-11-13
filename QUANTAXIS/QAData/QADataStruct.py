@@ -491,6 +491,7 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
                 return data
             else:
                 data=QA_DataStruct_Stock_min(self.data.groupby('code').apply(QA_data_stock_to_fq))
+                return data
         else:
             QA_util_log_info(
                 'none support type for qfq Current type is:%s' % self.if_fq)
@@ -608,10 +609,16 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
     @lru_cache()
     def to_qfq(self):
         if self.if_fq is 'bfq':
-            data = QA_DataStruct_Stock_day(pd.concat(list(map(
-                lambda x: QA_data_stock_to_fq(self.data[self.data['code'] == x]), self.code))))
-            data.if_fq = 'qfq'
-            return data
+             if len(self.code)<20:
+
+                data = QA_DataStruct_Stock_day(pd.concat(list(map(
+                    lambda x: QA_data_stock_to_fq(self.data[self.data['code'] == x]), self.code))))
+                data.if_fq = 'qfq'
+                return data
+            else:
+                data=QA_DataStruct_Stock_day(self.data.groupby('code').apply(QA_data_stock_to_fq))
+                data.if_fq = 'qfq'
+                return data
         else:
             QA_util_log_info(
                 'none support type for qfq Current type is: %s' % self.if_fq)
