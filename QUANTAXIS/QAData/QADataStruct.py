@@ -609,7 +609,7 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
     @lru_cache()
     def to_qfq(self):
         if self.if_fq is 'bfq':
-             if len(self.code)<20:
+            if len(self.code)<20:
 
                 data = QA_DataStruct_Stock_day(pd.concat(list(map(
                     lambda x: QA_data_stock_to_fq(self.data[self.data['code'] == x]), self.code))))
