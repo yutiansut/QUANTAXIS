@@ -93,6 +93,36 @@ class QA_Tdx_Executor():
             #print('BAD IP {}, DEL for Reason{}'.format(ip,e))
             return datetime.timedelta(9, 9, 0).total_seconds()
 
+    def get_market(self, code):
+        code = str(code)
+        if code[0] in ['5', '6', '9'] or code[:3] in ["009", "126", "110", "201", "202", "203", "204"]:
+            return 1
+        return 0
+
+    def get_level(self, level):
+        if level in ['day', 'd', 'D', 'DAY', 'Day']:
+            level = 9
+        elif level in ['w', 'W', 'Week', 'week']:
+            level = 5
+        elif level in ['month', 'M', 'm', 'Month']:
+            level = 6
+        elif level in ['Q', 'Quarter', 'q']:
+            level = 10
+        elif level in ['y', 'Y', 'year', 'Year']:
+            level = 11
+        elif str(level) in ['5', '5m', '5min', 'five']:
+            level = 0
+        elif str(level) in ['1', '1m', '1min', 'one']:
+            level = 8
+        elif str(level) in ['15', '15m', '15min', 'fifteen']:
+            level = 1
+        elif str(level) in ['30', '30m', '30min', 'half']:
+            level = 2
+        elif str(level) in ['60', '60m', '60min', '1h']:
+            level = 3
+
+        return level
+
     @property
     def ipsize(self):
         return len(self._queue.qsize())
@@ -155,48 +185,22 @@ class QA_Tdx_Executor():
             # for id_ in range(int(len(code) / 80) + 1):
             data = {self.get_security_quotes([(self.get_market(
                 x), x) for x in code[80 * pos:80 * (pos + 1)]]) for pos in range(int(len(code) / 80) + 1)}
-            return ([i.result() for i in data],datetime.datetime.now())
+            return ([i.result() for i in data], datetime.datetime.now())
         except:
             pass
 
-    def get_security_bar_concurrent(self,code,_type,lens):
-        code = [code] if type(code) is str else code
+    def get_security_bar_concurrent(self, code, _type, lens):
+        #code = [code] if type(code) is str else code
         try:
-            data = {self.get_security_bars([(self.get_level(_type), self.get_market(str(_code)), str(_code), (25 - i) * 800, 800) for _code in code ])  for i in range(int(lens/800)+1)}
-            return ([i.result() for i in data],datetime.datetime.now())
+
+
+           #[api.get_security_bars(level, __select_market_code(str(code)), str(code), (25 - i) * 800, 800) for i in range(26)]
+            data = {self.get_security_bars(self.get_level(_type), self.get_market(str(code)), str(code), (25 - i) * 800, 800) for i in range(int(lens / 800) + 1)}
+            print(data.result())
+            #return ([i.result() for i in data], datetime.datetime.now())
 
         except:
             pass
-    def get_market(self, code):
-        code = str(code)
-        if code[0] in ['5', '6', '9'] or code[:3] in ["009", "126", "110", "201", "202", "203", "204"]:
-            return 1
-        return 0
-
-    def get_level(self,level):
-        if level in ['day', 'd', 'D', 'DAY', 'Day']:
-            level = 9
-        elif level in ['w', 'W', 'Week', 'week']:
-            level = 5
-        elif level in ['month', 'M', 'm', 'Month']:
-            level = 6
-        elif level in ['Q', 'Quarter', 'q']:
-            level = 10
-        elif level in ['y', 'Y', 'year', 'Year']:
-            level = 11
-        elif str(level) in ['5', '5m', '5min', 'five']:
-            level= 0
-        elif str(level) in ['1', '1m', '1min', 'one']:
-            level = 8
-        elif str(level) in ['15', '15m', '15min', 'fifteen']:
-            level = 1
-        elif str(level) in ['30', '30m', '30min', 'half']:
-            level = 2
-        elif str(level) in ['60', '60m', '60min', '1h']:
-            level = 3
-
-        return level
-
 
     def save_mongo(self):
         pass
@@ -214,14 +218,15 @@ if __name__ == '__main__':
         _time = datetime.datetime.now()
         #data = x.get_realtime(code)
         #data = x.get_realtime_concurrent(code)
-        data,_time=x.get_security_bar_concurrent(code,'15min',20)
+        #print(code[0])
+        x.get_security_bar_concurrent(code[0], '15min', 20)
         # if data is not None:
         # print(len(data))
-        print(data)
+        #print(data)
         print('Time {}'.format((datetime.datetime.now() - _time).total_seconds()))
         time.sleep(1)
         print('Connection Pool NOW LEFT {} Available IP'.format(x._queue.qsize()))
         print('Program Last Time {}'.format(
             (datetime.datetime.now() - _time1).total_seconds()))
-        #print(threading.enumerate())
+        # print(threading.enumerate())
 #
