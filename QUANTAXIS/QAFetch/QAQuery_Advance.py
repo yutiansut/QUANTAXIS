@@ -55,7 +55,7 @@ def QA_fetch_stock_day_adv(
     '获取股票日线'
     __start = str(__start)[0:10]
     __end = str(__end)[0:10]
-    
+
     if isinstance(code, str):
         print(code)
         if QA_util_date_valid(__end) == True:
@@ -214,12 +214,16 @@ def QA_fetch_stock_transaction_adv(
     data['datetime'] = pd.to_datetime(data['date'] + ' ' + data['time'])
     return QA_DataStruct_Stock_transaction(data.set_index('datetime', drop=if_drop_index))
 
+
 def QA_fetch_security_list_adv(collections=QA_Setting.client.quantaxis.stock_list):
     '获取股票列表'
     return pd.DataFrame([item for item in collections.find()]).drop('_id', axis=1, inplace=False)
+
+
 def QA_fetch_stock_list_adv(collections=QA_Setting.client.quantaxis.stock_list):
     '获取股票列表'
     return pd.DataFrame([item for item in collections.find()]).drop('_id', axis=1, inplace=False)
+
 
 def QA_fetch_stock_block_adv(code=None, collections=QA_Setting.client.quantaxis.stock_block):
     if code is not None:
@@ -227,5 +231,6 @@ def QA_fetch_stock_block_adv(code=None, collections=QA_Setting.client.quantaxis.
             {'code': code})]).drop(['_id'], axis=1)
         return QA_DataStruct_Stock_block(data.set_index('code', drop=False).drop_duplicates())
     else:
-        data = pd.DataFrame([item for item in collections.find()]).drop(['_id'], axis=1)
+        data = pd.DataFrame(
+            [item for item in collections.find()]).drop(['_id'], axis=1)
         return QA_DataStruct_Stock_block(data.set_index('code', drop=False).drop_duplicates())
