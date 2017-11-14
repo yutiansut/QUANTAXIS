@@ -35,6 +35,7 @@ from . import QAWind as QAWind
 from . import QATushare as QATushare
 from . import QATdx as QATdx
 from . import QAThs as QAThs
+
 #import QAFetch.QAGmsdk as QAGmsdk
 #import QAFetch.QACrawlData as QACD
 
@@ -156,3 +157,7 @@ def QA_fetch_get_stock_info(package, code):
         return Engine.QA_fetch_get_stock_info(code)
     else:
         return 'Unsupport packages'
+
+
+def QA_fetch_security_bars(code, _type, lens):
+    return QATdx.QA_fetch_security_bars(code, _type, lens)

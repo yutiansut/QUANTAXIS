@@ -74,6 +74,39 @@ def __select_market_code(code):
         return 1
     return 0
 
+def __select_type(level):
+    if level in ['day', 'd', 'D', 'DAY', 'Day']:
+        level = 9
+    elif level in ['w', 'W', 'Week', 'week']:
+        level = 5
+    elif level in ['month', 'M', 'm', 'Month']:
+        level = 6
+    elif level in ['Q', 'Quarter', 'q']:
+        level = 10
+    elif level in ['y', 'Y', 'year', 'Year']:
+        level = 11
+    elif str(level) in ['5', '5m', '5min', 'five']:
+        level, type_ = 0, '5min'
+    elif str(level) in ['1', '1m', '1min', 'one']:
+        level, type_ = 8, '1min'
+    elif str(level) in ['15', '15m', '15min', 'fifteen']:
+        level, type_ = 1, '15min'
+    elif str(level) in ['30', '30m', '30min', 'half']:
+        level, type_ = 2, '30min'
+    elif str(level) in ['60', '60m', '60min', '1h']:
+        level, type_ = 3, '60min'
+
+    return level
+
+def QA_fetch_security_bars(code,_type,lens,ip=best_ip, port=7709):
+    api = TdxHq_API()
+    with api.connect(ip, port):
+        data = pd.concat([api.to_df(api.get_security_bars(__select_type(_type), __select_market_code(code), code, (i-1) * 800, 800)) for i in range(1,int(lens/800)+2)], axis=0)
+        if data is not None:
+            return data
+        else:
+            return None
+
 
 def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', ip=best_ip, port=7709):
     api = TdxHq_API()
