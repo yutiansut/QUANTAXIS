@@ -7,7 +7,10 @@ from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_day_adv, QA_fetch_s
 #from QUANTAXIS.QAAnalysis.QAAnalysis_dataframe import QA_Analysis_stock
 class QA_Analysis_block():
     def __init__(self, block, *args, **kwargs):
-        self.block_code = block
+        try:
+            self.block_code = block.code
+        except:
+            self.block_code = block
 
     def market_data(self, start, end, _type='day'):
         return QA_fetch_stock_day_adv(self.block_code, start, end)
