@@ -78,8 +78,16 @@ class QA_Analysis_block():
     def block_turnover(self,market_data=None):
         return self.stock_turnover(market_data).turnover.groupby('date').mean()
     def stock_info(self):
+        data=[]
         
-        return pd.concat([QA_fetch_stock_info(item) for item in self.block_code]).set_index('code',drop=False)
+        for item in self.block_code:
+            try:
+                _data=QA_fetch_stock_info(item)
+            except:
+                _data=QA_fetch_get_stock_info(item)
+            data.append(_data)
+
+        return pd.concat(data).set_index('code',drop=False)
 
     def res(self):
         import matplotlib.pyplot as plt
@@ -103,7 +111,7 @@ if __name__ == "__main__":
     ana = QA_Analysis_block(
         QA.QA_fetch_stock_block_adv().get_block('昨日涨停').code)
     print(ana.block_pcg())
-    print(QA.QA_fetch_get_stock_info('tdx','600116'))
+    #print(QA_fetch_get_stock_info('600116'))
     #data=QA.QA_fetch_get_stock_info('tdx','000001')
     #js=QA.QA_util_to_json_from_pandas(data)
 
