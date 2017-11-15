@@ -519,8 +519,8 @@ def QA_fetch_get_stock_info(code, ip=best_ip, port=7709):
     '股票财务数据'
     api = TdxHq_API()
     market_code = __select_market_code(code)
-    api.connect(ip, port)
-    return api.to_df(api.get_finance_info(market_code, code))
+    with api.connect(ip, port):
+        return api.to_df(api.get_finance_info(market_code, code))
 
 
 if __name__ == '__main__':
