@@ -517,8 +517,8 @@ def QA_fetch_get_stock_info(code, ip=best_ip, port=7709):
     api = TdxHq_API()
     market_code = __select_market_code(code)
     with api.connect(ip, port):
-        return api.to_df(api.get_finance_info(market_code, code))
-
+        data=api.to_df(api.get_finance_info(market_code, code))
+        return data
 
 if __name__ == '__main__':
     # print(QA_fetch_get_stock_day('000001','2017-07-03','2017-07-10'))
