@@ -31,7 +31,7 @@ class QA_Analysis_block():
         if block_name is not None:
             self.block_code = QA_fetch_stock_block_adv().get_block(block_name).code
         self.lens=lens
-        self.Executor=QA_Tdx_Executor()
+        #self.Executor=QA_Tdx_Executor()
 
     def market_data(self, start, end, _type='day'):
         return QA_fetch_stock_day_adv(self.block_code, start, end)
@@ -103,9 +103,9 @@ if __name__ == "__main__":
     ana = QA_Analysis_block(
         QA.QA_fetch_stock_block_adv().get_block('昨日涨停').code)
     print(ana.block_pcg())
-
-    data=QA.QA_fetch_get_stock_info('tdx','000001')
-    js=QA.QA_util_to_json_from_pandas(data)
+    print(QA.QA_fetch_get_stock_info('tdx','600116'))
+    #data=QA.QA_fetch_get_stock_info('tdx','000001')
+    #js=QA.QA_util_to_json_from_pandas(data)
 
 
     """
@@ -114,4 +114,16 @@ if __name__ == "__main__":
     f=QA.QA_fetch_get_stock_info('tdx','000001').liutongguben.values[0]
     turnover=d/f
     """
-    print(js)
+    #print(js)
+
+
+    x=[]
+    y=[]
+    block=QA.QA_fetch_stock_block_adv().get_type('gn').block_name
+    for item in block:
+        print(item)
+        data=QA_Analysis_block(block_name=item)
+        x.append(data.block_pcg())
+        y.append(data.block_turnover())
+    print(len(x))
+    print(len(y))
