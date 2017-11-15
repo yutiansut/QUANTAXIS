@@ -14,7 +14,7 @@ from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_stock_day_adv,
 from QUANTAXIS.QAFetch.QATdx import QA_fetch_get_stock_info
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_real_datelist
 from QUANTAXIS.QAFetch.QATdx_adv import QA_Tdx_Executor
-
+from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_info
 def get_gap_trade(gap):
     return QA_util_get_real_datelist(datetime.date.today() + datetime.timedelta(days=-int(gap)), datetime.date.today())
 
@@ -79,7 +79,7 @@ class QA_Analysis_block():
         return self.stock_turnover(market_data).turnover.groupby('date').mean()
     def stock_info(self):
         
-        return pd.concat([QA_fetch_get_stock_info(item) for item in self.block_code]).set_index('code',drop=False)
+        return pd.concat([QA_fetch_stock_info(item) for item in self.block_code]).set_index('code',drop=False)
 
     def res(self):
         import matplotlib.pyplot as plt

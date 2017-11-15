@@ -297,7 +297,10 @@ def QA_fetch_stock_block(code=None,format_='pd', collections=QA_Setting.client.q
         return data.set_index('code', drop=False)
 
 def QA_fetch_stock_info(code,format_='pd', collections=QA_Setting.client.quantaxis.stock_info):
-    data = pd.DataFrame([item for item in collections.find(
-        {'code': code})]).drop(['_id'], axis=1)
-    #data['date'] = pd.to_datetime(data['date'])
-    return data.set_index('code', drop=False)
+    try:
+        data = pd.DataFrame([item for item in collections.find(
+            {'code': code})]).drop(['_id'], axis=1)
+        #data['date'] = pd.to_datetime(data['date'])
+        return data.set_index('code', drop=False)
+    except:
+        return None
