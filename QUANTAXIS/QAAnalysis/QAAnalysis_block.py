@@ -13,7 +13,7 @@ from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_stock_day_adv,
                                                QA_fetch_stock_block_adv)
 from QUANTAXIS.QAFetch.QATdx import QA_fetch_get_stock_info
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_real_datelist
-
+from QUANTAXIS.QAFetch.QATdx_adv import QA_Tdx_Executor
 
 def get_gap_trade(gap):
     return QA_util_get_real_datelist(datetime.date.today() + datetime.timedelta(days=-int(gap)), datetime.date.today())
@@ -31,6 +31,7 @@ class QA_Analysis_block():
         if block_name is not None:
             self.block_code = QA_fetch_stock_block_adv().get_block(block_name).code
         self.lens=lens
+        self.Executor=QA_Tdx_Executor()
 
     def market_data(self, start, end, _type='day'):
         return QA_fetch_stock_day_adv(self.block_code, start, end)
@@ -77,6 +78,7 @@ class QA_Analysis_block():
     def block_turnover(self,market_data=None):
         return self.stock_turnover(market_data).turnover.groupby('date').mean()
     def stock_info(self):
+        
         return pd.concat([QA_fetch_get_stock_info(item) for item in self.block_code]).set_index('code',drop=False)
 
     def res(self):
@@ -90,7 +92,7 @@ class QA_Analysis_block():
 class QA_Analysis_blocks():
     def __init__(self, *args, **kwargs):
         self.blocks=QA.QA_fetch_stock_block_adv().get_type('gn').block_name
-        
+
         
 
 

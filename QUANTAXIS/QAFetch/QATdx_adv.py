@@ -205,11 +205,6 @@ class QA_Tdx_Executor():
         try:
             _api = self.get_available()
             for i in range(1,int(lens / 800) +2):
-                # self.api_no_connection.connect()
-                # print(i)
-                # print('{},{},{},{},{}'.format(self.get_level(_type), self.get_market(str(code)), str(code), (i - 1) * 800, 800))
-                # print(self.api_no_connection.get_security_bars(self.get_level(_type), self.get_market(str(code)), str(code), (i - 1) * 800, 800))
-                # print(_api.get_security_bars(self.get_level(_type), self.get_market(str(code)), str(code), (i - 1) * 800, 800))
                 context.extend(_api.get_security_bars(self.get_level(
                     _type), self.get_market(str(code)), str(code), (i - 1) * 800, 800))
                 #print(context)
@@ -222,12 +217,9 @@ class QA_Tdx_Executor():
     def get_security_bars(self, code, _type, lens):
         code = [code] if type(code) is str else code
         context = []
-        #print(code)
         try:
             for item in code:
-                #print(item)
                 context = self._get_security_bars(context, item, _type, lens)
-            #print(context)
             return context
         except Exception as e:
             raise e

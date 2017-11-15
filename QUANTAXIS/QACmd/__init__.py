@@ -34,7 +34,7 @@ import subprocess
 
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting, QA_util_mongo_initial, QA_util_mongo_make_index
-from QUANTAXIS import (QA_SU_save_stock_list, QA_SU_save_stock_min, QA_SU_save_stock_xdxr,QA_SU_save_stock_block,
+from QUANTAXIS import (QA_SU_save_stock_list, QA_SU_save_stock_min, QA_SU_save_stock_xdxr,QA_SU_save_stock_block,QA_SU_save_stock_info,
                        QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_index_min, QA_SU_save_etf_day, QA_SU_save_etf_min,
                        QA_SU_update_stock_day)
 
@@ -141,6 +141,7 @@ class CLI(cmd.Cmd):
                 #QA_SU_save_etf_min('tdx')
                 QA_SU_save_stock_list('tdx')
                 QA_SU_save_stock_block('tdx')
+                QA_SU_save_stock_info('tdx')
             elif len(arg) == 1 and arg[0] == 'day':
                 QA_Setting.client.quantaxis.user_list.insert(
                     {'username': 'admin', 'password': 'admin'})
@@ -177,6 +178,7 @@ class CLI(cmd.Cmd):
                 QA_SU_save_etf_min('tdx')
                 QA_SU_save_stock_list('tdx')
                 QA_SU_save_stock_block('tdx')
+                QA_SU_save_stock_info('tdx')
             else:
                 for i in arg:
                     if i == 'insert_user':
