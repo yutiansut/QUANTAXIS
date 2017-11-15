@@ -495,7 +495,12 @@ def QA_fetch_get_stock_xdxr(code, ip=best_ip, port=7709):
             return data.assign(date=data['date'].apply(lambda x: str(x)[0:10]))
         else:
             return None
-
+def QA_fetch_get_stock_info(code, ip=best_ip, port=7709):
+    '除权除息'
+    api = TdxHq_API()
+    market_code = __select_market_code(code)
+    with api.connect(ip, port):
+        return api.to_df(api.get_finance_info(market_code, code))
 
 def QA_fetch_get_stock_block(ip=best_ip, port=7709):
     '板块数据'
@@ -515,12 +520,6 @@ def QA_fetch_get_stock_block(ip=best_ip, port=7709):
             QA_util_log_info('Wrong with fetch block ')
 
 
-def QA_fetch_get_stock_info(code, ip=best_ip, port=7709):
-    '股票财务数据'
-    api = TdxHq_API()
-    market_code = __select_market_code(code)
-    with api.connect(ip, port):
-        return api.to_df(api.get_finance_info(market_code, code))
 
 
 if __name__ == '__main__':
