@@ -22,25 +22,26 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import concurrent
 import datetime
-import pymongo
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+
 import pandas as pd
+import pymongo
+
+from QUANTAXIS.QAFetch import QA_fetch_get_stock_block
 from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_index_day,
                                      QA_fetch_get_index_min,
                                      QA_fetch_get_stock_day,
+                                     QA_fetch_get_stock_info,
                                      QA_fetch_get_stock_list,
                                      QA_fetch_get_stock_min,
                                      QA_fetch_get_stock_transaction,
-
                                      QA_fetch_get_stock_xdxr, select_best_ip)
-
-from QUANTAXIS.QAFetch import QA_fetch_get_stock_block
 from QUANTAXIS.QAFetch.QATushare import QA_fetch_get_stock_time_to_market
-from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info, trade_date_sse,
-                              QA_util_to_json_from_pandas, QA_util_get_real_date)
-import pymongo
-from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
-import concurrent
+from QUANTAXIS.QAUtil import (QA_Setting, QA_util_get_real_date,
+                              QA_util_log_info, QA_util_to_json_from_pandas,
+                              trade_date_sse)
 
 # ip=select_best_ip()
 
@@ -354,6 +355,30 @@ def QA_SU_save_stock_block(client=QA_Setting.client):
             QA_fetch_get_stock_block('ths')))
     except:
         pass
+def QA_SU_save_stock_info(client=QA_Setting.client):
+    client.quantaxis.drop_collection('stock_info')
+    __stock_list = QA_fetch_get_stock_time_to_market()
+    __coll = client.quantaxis.stock_info
+    __coll.create_index('code')
+    __err = []
+
+    def __saving_work(code, __coll):
+        QA_util_log_info('##JOB010 Now Saving STOCK INFO ==== %s' % (str(code)))
+        try:
+            __coll.insert_many(
+                QA_util_to_json_from_pandas(
+                    QA_fetch_get_stock_info(str(code))))
+
+        except:
+            __err.append(str(code))
+    for i_ in range(len(__stock_list)):
+        #__saving_work('000001')
+        QA_util_log_info('The %s of Total %s' % (i_, len(__stock_list)))
+        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
+            float(i_ / len(__stock_list) * 100))[0:4] + '%')
+        __saving_work(__stock_list.index[i_], __coll)
+    QA_util_log_info('ERROR CODE \n ')
+    QA_util_log_info(__err)
 
 
 def QA_SU_save_stock_transaction(client=QA_Setting.client):
