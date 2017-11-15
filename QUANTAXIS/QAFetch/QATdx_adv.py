@@ -185,7 +185,7 @@ class QA_Tdx_Executor():
             # for id_ in range(int(len(code) / 80) + 1):
             data = {self.get_security_quotes([(self.get_market(
                 x), x) for x in code[80 * pos:80 * (pos + 1)]]) for pos in range(int(len(code) / 80) + 1)}
-            return ([i.result() for i in data], datetime.datetime.now())
+            return (pd.concat([self.api_no_connection.to_df(i.result()) for i in data]), datetime.datetime.now())
         except:
             pass
 
@@ -245,7 +245,9 @@ if __name__ == '__main__':
     print(x._queue.qsize())
     print(x.get_available())
     data = x.get_security_bars(code[0], '15min', 20)
-    print(data)
+    #print(data)    
+    for i in range(5):
+        print(x.get_realtime_concurrent(code))
 
 
 #     for i in range(100000):

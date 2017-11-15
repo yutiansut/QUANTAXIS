@@ -21,7 +21,7 @@ def get_gap_trade(gap):
 
 #from QUANTAXIS.QAAnalysis.QAAnalysis_dataframe import QA_Analysis_stock
 class QA_Analysis_block():
-    def __init__(self, block=None, block_name=None, *args, **kwargs):
+    def __init__(self, block=None, block_name=None,lens=90, *args, **kwargs):
 
         try:
             self.block_code = block.code
@@ -30,6 +30,7 @@ class QA_Analysis_block():
 
         if block_name is not None:
             self.block_code = QA_fetch_stock_block_adv().get_block(block_name).code
+        self.lens=lens
 
     def market_data(self, start, end, _type='day'):
         return QA_fetch_stock_day_adv(self.block_code, start, end)
@@ -45,12 +46,16 @@ class QA_Analysis_block():
     def month_data(self):
         'this monthly data'
         'return a QUANTAXIS DATASTRUCT'
-        _start, _end = get_gap_trade(30)
+        _start, _end = get_gap_trade(90)
         return self.market_data(_start, _end)
+    @property
+    def _data(self):
+        _start, _end = get_gap_trade(self.lens)
+        return self.market_data(_start, _end)        
 
     def block_price(self, market_data=None):
         if market_data is None:
-            market_data=self.month_data.to_qfq()
+            market_data=self._data.to_qfq()
         else:
             market_data=market_data.to_qfq()
         return QA_Analysis_stock(market_data).price.groupby('date').mean()
@@ -60,7 +65,7 @@ class QA_Analysis_block():
 
     def stock_turnover(self,market_data=None):
         if market_data is None:
-            market_data=self.month_data.to_qfq()
+            market_data=self._data.to_qfq()
         else:
             market_data=market_data.to_qfq()
         _data=market_data.data
@@ -82,6 +87,12 @@ class QA_Analysis_block():
 
 
     
+class QA_Analysis_blocks():
+    def __init__(self, *args, **kwargs):
+        self.blocks=QA.QA_fetch_stock_block_adv().get_type('gn').block_name
+        
+        
+
 
 
 if __name__ == "__main__":
