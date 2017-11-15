@@ -114,7 +114,8 @@ if __name__ == "__main__":
     #print(QA_fetch_get_stock_info('600116'))
     #data=QA.QA_fetch_get_stock_info('tdx','000001')
     #js=QA.QA_util_to_json_from_pandas(data)
-
+    #import pymongo
+    #pymongo.MongoClient().quantaxis.stock_info.insert_many(QA.QA_util_to_json_from_pandas(QA_fetch_get_stock_info('600116')))
 
     """
     计算换手率
