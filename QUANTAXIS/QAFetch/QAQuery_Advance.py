@@ -57,7 +57,6 @@ def QA_fetch_stock_day_adv(
     __end = str(__end)[0:10]
 
     if isinstance(code, str):
-        print(code)
         if QA_util_date_valid(__end) == True:
             __data = []
             for item in collections.find({
@@ -65,9 +64,9 @@ def QA_fetch_stock_day_adv(
                     "$lte": QA_util_date_stamp(__end),
                     "$gte": QA_util_date_stamp(__start)}}):
                 __data.append([str(item['code']), float(item['open']), float(item['high']), float(
-                    item['low']), float(item['close']), float(item['vol']), item['date']])
+                    item['low']), float(item['close']), float(item['vol']), float(item['amount']),item['date']])
             __data = DataFrame(__data, columns=[
-                'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
+                'code', 'open', 'high', 'low', 'close', 'volume', 'amount','date'])
             __data['date'] = pd.to_datetime(__data['date'])
             return QA_DataStruct_Stock_day(__data.query('volume>1').set_index(['date', 'code'], drop=if_drop_index))
         else:
