@@ -233,3 +233,5 @@ def QA_fetch_stock_block_adv(code=None, collections=QA_Setting.client.quantaxis.
         data = pd.DataFrame(
             [item for item in collections.find()]).drop(['_id'], axis=1)
         return QA_DataStruct_Stock_block(data.set_index('code', drop=False).drop_duplicates())
+
+
