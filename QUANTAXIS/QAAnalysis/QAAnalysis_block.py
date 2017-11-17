@@ -62,7 +62,11 @@ class QA_Analysis_block():
         return QA_Analysis_stock(market_data).price.groupby('date').mean()
     
     def block_pcg(self, market_data=None):
-        return self.block_price(market_data).pct_change()
+        if market_data is None:
+            market_data=self._data.to_qfq()
+        else:
+            market_data=market_data.to_qfq()
+        return QA_Analysis_stock(market_data).day_pct_change.groupby('date').mean()
 
     def stock_turnover(self,market_data=None):
         if market_data is None:
