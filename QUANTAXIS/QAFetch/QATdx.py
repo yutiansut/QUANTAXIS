@@ -74,6 +74,7 @@ def __select_market_code(code):
         return 1
     return 0
 
+
 def __select_type(level):
     if level in ['day', 'd', 'D', 'DAY', 'Day']:
         level = 9
@@ -98,10 +99,12 @@ def __select_type(level):
 
     return level
 
-def QA_fetch_security_bars(code,_type,lens,ip=best_ip, port=7709):
+
+def QA_fetch_security_bars(code, _type, lens, ip=best_ip, port=7709):
     api = TdxHq_API()
     with api.connect(ip, port):
-        data = pd.concat([api.to_df(api.get_security_bars(__select_type(_type), __select_market_code(code), code, (i-1) * 800, 800)) for i in range(1,int(lens/800)+2)], axis=0)
+        data = pd.concat([api.to_df(api.get_security_bars(__select_type(_type), __select_market_code(
+            code), code, (i - 1) * 800, 800)) for i in range(1, int(lens / 800) + 2)], axis=0)
         if data is not None:
             return data
         else:
@@ -332,7 +335,7 @@ def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=best_ip, port=7709
                 [(__select_market_code(x), x) for x in code[80 * id_:80 * (id_ + 1)]])))
             __data['datetime'] = datetime.datetime.now()
         data = __data[['datetime', 'last_close', 'code', 'open', 'high', 'low', 'price', 'cur_vol',
-                       's_vol', 'b_vol','vol', 'ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',
+                       's_vol', 'b_vol', 'vol', 'ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',
                        'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3', 'ask4',
                        'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
         return data.set_index('code', drop=False, inplace=False)
@@ -492,7 +495,12 @@ def QA_fetch_get_stock_xdxr(code, ip=best_ip, port=7709):
             return data.assign(date=data['date'].apply(lambda x: str(x)[0:10]))
         else:
             return None
-
+def QA_fetch_get_stock_info(code, ip=best_ip, port=7709):
+    '除权除息'
+    api = TdxHq_API()
+    market_code = __select_market_code(code)
+    with api.connect(ip, port):
+        return api.to_df(api.get_finance_info(market_code, code))
 
 def QA_fetch_get_stock_block(ip=best_ip, port=7709):
     '板块数据'
@@ -512,13 +520,7 @@ def QA_fetch_get_stock_block(ip=best_ip, port=7709):
             QA_util_log_info('Wrong with fetch block ')
 
 
-def QA_fetch_get_stock_info(code, ip=best_ip, port=7709):
-    '股票财务数据'
-    api = TdxHq_API()
-    market_code = __select_market_code(code)
-    with api.connect(ip, port):
-        data=api.to_df(api.get_finance_info(market_code, code))
-        return data
+
 
 if __name__ == '__main__':
     # print(QA_fetch_get_stock_day('000001','2017-07-03','2017-07-10'))
@@ -526,3 +528,5 @@ if __name__ == '__main__':
     print(QA_fetch_get_stock_realtime('000001'))
     #print(QA_fetch_get_index_day('000001', '2017-01-01', '2017-07-01'))
     # print(QA_fetch_get_stock_transaction('000001', '2017-07-03', '2017-07-10'))
+
+    print(QA_fetch_get_stock_info('600116'))
