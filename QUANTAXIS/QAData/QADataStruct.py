@@ -97,6 +97,7 @@ class __stock_hq_base():
 
 
 
+
     @lru_cache()
     def plot(self, code=None):
         if code is None:
@@ -190,12 +191,17 @@ class __stock_hq_base():
         except:
             return self.data.pivot(index='date', columns='code', values=column_)
     @lru_cache()
-    def select_time(self, start, end):
+    def select_time(self, start, end=None):
         if self.type in ['stock_day', 'index_day']:
-            return self.sync_status(__stock_hq_base(self.data[self.data['date'] >= start][self.data['date'] <= end].set_index(['date', 'code'], drop=False)))
+            if end is not None:
+                return self.sync_status(__stock_hq_base(self.data[self.data['date'] >= start][self.data['date'] <= end].set_index(['date', 'code'], drop=False)))
+            else:
+                return self.sync_status(__stock_hq_base(self.data[self.data['date'] == start].set_index(['date', 'code'], drop=False)))
         elif self.type in ['stock_min', 'index_min']:
-            return self.sync_status(__stock_hq_base(self.data[self.data['datetime'] >= start][self.data['datetime'] <= end].set_index(['datetime', 'code'], drop=False)))
-
+            if end is not None:
+                return self.sync_status(__stock_hq_base(self.data[self.data['datetime'] >= start][self.data['datetime'] <= end].set_index(['datetime', 'code'], drop=False)))
+            else:
+                return self.sync_status(__stock_hq_base(self.data[self.data['datetime'] == start].set_index(['datetime', 'code'], drop=False)))
     @lru_cache()
     def select_time_with_gap(self, time, gap, method):
 
