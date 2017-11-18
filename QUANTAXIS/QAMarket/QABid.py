@@ -110,7 +110,28 @@ class QA_QAMarket_bid():
         for item in QA_util_to_json_from_pandas(dataframe):
             bid_list.append(self.from_dict(item))
         return bid_list
-
+    
+    def apply(self,bid):
+        try:
+            self.price = bid['price']
+            self.date = bid['date']
+            self.datetime = bid['datetime']
+            self.sending_time = bid['sending_time']  # 下单时间
+            self.transact_time = bid['transact_time']
+            self.amount = bid['amount']
+            self.towards = bid['towards']
+            self.code = bid['code']
+            self.user = bid['user']
+            self.strategy = bid['strategy']
+            self.type = bid['type']
+            self.bid_model = bid['bid_model']
+            self.amount_model = bid['amount_model']
+            self.order_id = bid['order_id']
+            self.trade_id = bid['trade_id']
+            return self
+        except:
+            QA_util_log_info('Failed to tran from dict')
+        
 
 class QA_QAMarket_bid_list():   # also the order tree 
     """
