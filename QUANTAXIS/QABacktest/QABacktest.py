@@ -88,8 +88,9 @@ class QA_Backtest():
     clients = setting.client
     user = setting.QA_setting_user_name
     market_data = []
-    now = ''
-    today = ''
+    now = None
+    today = None
+    last_time =None
     strategy_stock_list = []
     trade_list = []
     start_real_id = 0
@@ -226,8 +227,7 @@ class QA_Backtest():
         elif self.backtest_type in ['index_1min', 'index_5min', 'index_15min', 'index_30min', 'index_60min']:
             self.market_data = QA_fetch_index_min_adv(
                 self.strategy_stock_list, QA_util_time_gap(self.start_real_time, self.strategy_gap + 1, '<', self.backtest_type.split('_')[1]),  QA_util_time_gap(self.end_real_time, 1, '>', self.backtest_type.split('_')[1]), self.backtest_type.split('_')[1])
-        self.market_data_dict = dict(
-            zip(list(self.market_data.code), self.market_data.splits()))
+        self.market_data_dict = dict(zip(list(self.market_data.code), self.market_data.splits()))
         self.market_data_hashable = self.market_data.dicts
 
     def __QA_backtest_log_info(self, log):
@@ -624,6 +624,17 @@ class QA_Backtest():
             return None
 
     @lru_cache()
+    def QA_backtest_get_market_data_panel(self, date=None, type_='lt'):
+        try:
+            if date is not None:
+                if type_ in ['lt']:
+                    return self.market_data.select_time_with_gap(date, 1, type_)
+            else:
+                return self.market_data.select_time_with_gap(self.last_time, 1, type_)
+        except Exception as e:
+            raise e
+
+    @lru_cache()
     def QA_backtest_get_market_data_bar(self, code, time, if_trade=True):
         '这个函数封装了关于获取的方式'
         try:
@@ -772,8 +783,13 @@ class QA_Backtest():
                                         _cls.running_date)
             _cls.__QA_backtest_log_info(_cls,
                                         tabulate(_cls.account.message['body']['account']['hold']))
+
+            if _cls.now is not None:
+                _cls.last_time=_cls.now
+
             _cls.now = _cls.running_date
             _cls.today = _cls.running_date
+            
             # 交易前同步持仓状态
             _cls.__sync_order_LM(_cls, 'init_')  # 初始化事件
 
@@ -796,6 +812,7 @@ class QA_Backtest():
                     _cls.today, type_)  # 创造分钟线index
                 for min_index in daily_min:
                     _cls.now = min_index
+
                     _cls.__QA_backtest_log_info(_cls,
                                                 '=================Min hold list====================')
                     _cls.__QA_backtest_log_info(
