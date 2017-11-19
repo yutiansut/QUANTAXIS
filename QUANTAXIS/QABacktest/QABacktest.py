@@ -630,7 +630,7 @@ class QA_Backtest():
                 if type_ in ['lt']:
                     return self.market_data.select_time_with_gap(date, 1, type_)
             else:
-                return self.market_data.select_time_with_gap(self.last_time, 1, type_)
+                return self.market_data.select_time_with_gap(self.now, 1, type_)
         except Exception as e:
             raise e
 
