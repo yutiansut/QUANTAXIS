@@ -33,6 +33,8 @@ import random
 import re
 import sys
 import time
+import threading
+from threading import Thread,Timer
 from functools import reduce, update_wrapper, wraps, lru_cache
 from statistics import mean
 
@@ -864,6 +866,13 @@ class QA_Backtest():
     def end_backtest(_cls, func, *arg, **kwargs):
         _cls.__end_of_backtest(_cls, func, *arg, **kwargs)
         return func(*arg, **kwargs)
+
+
+    # 暂时不确定要不要用
+    @classmethod
+    def trade_event(_cls,func,*arg, **kwargs):
+        return func(*arg, **kwargs)
+        
 
 
 if __name__ == '__main__':
