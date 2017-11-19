@@ -172,7 +172,7 @@ class QA_Backtest():
 
 
 
-
+        self.strategy_stock_list=np.unique(self.strategy_stock_list).tolist() #保证不会重复
         if len(str(self.strategy_start_date)) == 10:
             self.strategy_start_time = str(
                 self.strategy_start_date) + ' 15:00:00'
