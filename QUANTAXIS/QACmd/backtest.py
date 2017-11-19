@@ -91,6 +91,14 @@ QB.QA_backtest_hold_amount(QB,code)
 QB.QA_backtest_sell_available(QB,code)
 #查询当前一只股票的持仓平均成本
 QB.QA_backtest_hold_price(QB,code)
+
+
+=====
+近期新增:
+QB.QA_backtest_get_market_data_panel(QB,time,type_)
+
+QB.QB.QA_backtest_get_block(QB,block_list)  # 获取股票的板块代码  输入是一个板块的list ['钢铁','昨日涨停']  输出是不重复的股票列表
+
 """
 
 
