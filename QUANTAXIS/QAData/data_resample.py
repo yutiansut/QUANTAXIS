@@ -37,7 +37,8 @@ def QA_data_tick_resample(tick, type_='1min'):
     data['code'] = tick['code'][0]
 
     __data_ = pd.DataFrame()
-    for item in tick.drop_duplicates('date')['date']:
+    _temp=tick.drop_duplicates('date')['date']
+    for item in _temp:
         __data = data[item]
         _data = __data[time(9, 31):time(11, 30)].append(
             __data[time(13, 1):time(15, 0)])
