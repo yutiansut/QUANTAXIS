@@ -53,6 +53,7 @@ from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_index_day_adv,
                                                QA_fetch_index_min_adv,
                                                QA_fetch_stock_day_adv,
                                                QA_fetch_stock_min_adv,
+                                               QA_fetch_stock_block_adv,
                                                QA_fetch_stocklist_day_adv,
                                                QA_fetch_stocklist_min_adv)
 from QUANTAXIS.QAMarket.QABid import QA_QAMarket_bid_list
@@ -168,6 +169,9 @@ class QA_Backtest():
         @yutiansut
         2017/7/20
         """
+
+
+
 
         if len(str(self.strategy_start_date)) == 10:
             self.strategy_start_time = str(
@@ -641,6 +645,18 @@ class QA_Backtest():
             return self.market_data_dict[code].get_bar(code, time, if_trade)
         except:
             return None
+
+    def QA_backtest_get_block(self, block_list):
+        block_=QA_fetch_stock_block_adv()
+        _data=[]
+
+        try:
+            for item in block_list:
+                
+                _data.extend(block_.get_block(item).code)
+            return np.unique(_data).tolist()
+        except Exception as e:
+            raise e
 
     #@lru_cache()
     def QA_backtest_sell_available(self, __code):
