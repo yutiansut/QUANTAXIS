@@ -14,7 +14,7 @@ import platform
 import sys
 import time
 import webbrowser
-from functools import lru_cache, reduce,partial
+from functools import lru_cache, reduce, partial
 
 import numpy as np
 import pandas as pd
@@ -28,7 +28,6 @@ from QUANTAXIS.QAIndicator import EMA, HHV, LLV, SMA
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
                               QA_util_to_json_from_pandas, trade_date_sse)
 from QUANTAXIS.QAFetch.QATdx import QA_fetch_get_stock_realtime
-
 
 
 class __stock_hq_base():
@@ -95,47 +94,50 @@ class __stock_hq_base():
     def dicts(self):
         return self.to_dict('index')
 
-
-
-
     @lru_cache()
     def plot(self, code=None):
         if code is None:
-            path_name='.'+os.sep+'QA_'+self.type+'_codepackage_'+self.if_fq+'.html'
-            kline=Kline('CodePackage_'+self.if_fq+'_'+self.type,width=1360,height=700,page_title='QUANTAXIS')
-            
-            data_splits=self.splits()
+            path_name = '.' + os.sep + 'QA_' + self.type + \
+                '_codepackage_' + self.if_fq + '.html'
+            kline = Kline('CodePackage_' + self.if_fq + '_' + self.type,
+                          width=1360, height=700, page_title='QUANTAXIS')
+
+            data_splits = self.splits()
 
             for i_ in range(len(data_splits)):
-                data=[]
-                axis=[]
-                for dates,row in data_splits[i_].data.iterrows():
-                    open,high,low,close=row[1:5]
-                    datas=[open,close,low,high]
+                data = []
+                axis = []
+                for dates, row in data_splits[i_].data.iterrows():
+                    open, high, low, close = row[1:5]
+                    datas = [open, close, low, high]
                     axis.append(dates[0])
                     data.append(datas)
-                
-                
-                kline.add(self.code[i_],axis,data,mark_point=["max","min"], is_datazoom_show=True,datazoom_orient='horizontal')
+
+                kline.add(self.code[i_], axis, data, mark_point=[
+                          "max", "min"], is_datazoom_show=True, datazoom_orient='horizontal')
             kline.render(path_name)
             webbrowser.open(path_name)
-            QA_util_log_info('The Pic has been saved to your path: %s'%path_name)
+            QA_util_log_info(
+                'The Pic has been saved to your path: %s' % path_name)
         else:
-            data=[]
-            axis=[]
-            for dates,row in self.select_code(code).data.iterrows():
-                open,high,low,close=row[1:5]
-                datas=[open,close,low,high]
+            data = []
+            axis = []
+            for dates, row in self.select_code(code).data.iterrows():
+                open, high, low, close = row[1:5]
+                datas = [open, close, low, high]
                 axis.append(dates[0])
                 data.append(datas)
-            
-            path_name='.'+os.sep+'QA_'+self.type+'_'+code+'_'+self.if_fq+'.html'
-            kline=Kline(code+'__'+self.if_fq+'__'+self.type,width=1360,height=700,page_title='QUANTAXIS')
-            kline.add(code,axis,data,mark_point=["max","min"], is_datazoom_show=True,datazoom_orient='horizontal')
+
+            path_name = '.' + os.sep + 'QA_' + self.type + \
+                '_' + code + '_' + self.if_fq + '.html'
+            kline = Kline(code + '__' + self.if_fq + '__' + self.type,
+                          width=1360, height=700, page_title='QUANTAXIS')
+            kline.add(code, axis, data, mark_point=[
+                      "max", "min"], is_datazoom_show=True, datazoom_orient='horizontal')
             kline.render(path_name)
             webbrowser.open(path_name)
-            QA_util_log_info('The Pic has been saved to your path: %s'%path_name)
-        
+            QA_util_log_info(
+                'The Pic has been saved to your path: %s' % path_name)
 
     @lru_cache()
     def len(self):
@@ -143,34 +145,42 @@ class __stock_hq_base():
 
     def reverse(self):
         return __stock_hq_base(self.data[::-1])
+
     @lru_cache()
     def show(self):
         return QA_util_log_info(self.data)
+
     @lru_cache()
     def query(self, query_text):
         return self.data.query(query_text)
+
     @lru_cache()
     def to_list(self):
         return np.asarray(self.data).tolist()
+
     @lru_cache()
     def to_pd(self):
         return self.data
+
     @lru_cache()
     def to_numpy(self):
         return np.asarray(self.data)
+
     @lru_cache()
     def to_json(self):
         return QA_util_to_json_from_pandas(self.data)
 
     @lru_cache()
-    def to_dict(self,orient='dict'):
+    def to_dict(self, orient='dict'):
         return self.data.to_dict(orient)
+
     @lru_cache()
     def sync_status(self, __stock_hq_base):
         '固定的状态要同步 尤其在创建新的datastruct时候'
         (__stock_hq_base.if_fq, __stock_hq_base.type, __stock_hq_base.mongo_coll) = (
             self.if_fq, self.type, self.mongo_coll)
         return __stock_hq_base
+
     @lru_cache()
     def splits(self):
         if self.type in ['stock_day', 'index_day']:
@@ -179,10 +189,12 @@ class __stock_hq_base():
         elif self.type in ['stock_min', 'index_min']:
             return list(map(lambda data: self.sync_status(data), list(map(lambda x: __stock_hq_base(
                 self.data[self.data['code'] == x].set_index(['datetime', 'code'], drop=False)), self.code))))
+
     @lru_cache()
     def add_func(self, func, *arg, **kwargs):
         return list(map(lambda x: func(
             self.data[self.data['code'] == x], *arg, **kwargs), self.code))
+
     @lru_cache()
     def pivot(self, column_):
         assert isinstance(column_, str)
@@ -190,6 +202,7 @@ class __stock_hq_base():
             return self.data.pivot(index='datetime', columns='code', values=column_)
         except:
             return self.data.pivot(index='date', columns='code', values=column_)
+
     @lru_cache()
     def select_time(self, start, end=None):
         if self.type in ['stock_day', 'index_day']:
@@ -202,6 +215,7 @@ class __stock_hq_base():
                 return self.sync_status(__stock_hq_base(self.data[self.data['datetime'] >= start][self.data['datetime'] <= end].set_index(['datetime', 'code'], drop=False)))
             else:
                 return self.sync_status(__stock_hq_base(self.data[self.data['datetime'] == start].set_index(['datetime', 'code'], drop=False)))
+
     @lru_cache()
     def select_time_with_gap(self, time, gap, method):
 
@@ -243,6 +257,7 @@ class __stock_hq_base():
                 elif self.type in ['stock_min', 'index_min']:
                     return __dataS.data[__dataS.data['datetime'] == time].head(gap).set_index(['datetime', 'code'], drop=False)
             return self.sync_status(__stock_hq_base(pd.concat(list(map(lambda x: __eq(x), self.splits())))))
+
     @lru_cache()
     def select_code(self, code):
         if self.type in ['stock_day', 'index_day']:
@@ -250,6 +265,7 @@ class __stock_hq_base():
 
         elif self.type in ['stock_min', 'index_min']:
             return self.sync_status(__stock_hq_base(self.data[self.data['code'] == code].set_index(['datetime', 'code'], drop=False)))
+
     @lru_cache()
     def get_bar(self, code, time, if_trade):
         if self.type in ['stock_day', 'index_day']:
@@ -257,12 +273,15 @@ class __stock_hq_base():
 
         elif self.type in ['stock_min', 'index_min']:
             return self.sync_status(__stock_hq_base((self.data[self.data['code'] == code])[self.data['datetime'] == str(time)[0:19]].set_index(['datetime', 'code'], drop=False)))
+
     @lru_cache()
-    def find_bar(self,code,time):
-        if len(time)==10:
-            return self.dicts[(datetime.datetime.strptime(time,'%Y-%m-%d'),code)]
-        elif len(time)==19:
-            return self.dicts[(datetime.datetime.strptime(time,'%Y-%m-%d %H:%M:%S'),code)]
+    def find_bar(self, code, time):
+        if len(time) == 10:
+            return self.dicts[(datetime.datetime.strptime(time, '%Y-%m-%d'), code)]
+        elif len(time) == 19:
+            return self.dicts[(datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S'), code)]
+
+
 class QA_DataStruct_Index_day(__stock_hq_base):
     '自定义的日线数据结构'
 
@@ -283,16 +302,15 @@ class QA_DataStruct_Index_day(__stock_hq_base):
     def __repr__(self):
         return '< QA_DataStruct_Index_day with %s securities >' % len(self.code)
 
-
     def reverse(self):
         return QA_DataStruct_Index_day(self.data[::-1])
-
 
     def sync_status(self, QA_DataStruct_Index_day):
         '固定的状态要同步 尤其在创建新的datastruct时候'
         (QA_DataStruct_Index_day.if_fq, QA_DataStruct_Index_day.type, QA_DataStruct_Index_day.mongo_coll) = (
             self.if_fq, self.type, self.mongo_coll)
         return QA_DataStruct_Index_day
+
     @lru_cache()
     def splits(self):
         if self.type in ['stock_day', 'index_day']:
@@ -309,12 +327,14 @@ class QA_DataStruct_Index_day(__stock_hq_base):
             return self.data.pivot(index='datetime', columns='code', values=column_)
         except:
             return self.data.pivot(index='date', columns='code', values=column_)
+
     @lru_cache()
     def select_time(self, start, end):
         if self.type in ['stock_day', 'index_day']:
             return self.sync_status(QA_DataStruct_Index_day(self.data[self.data['date'] >= start][self.data['date'] <= end].set_index(['date', 'code'], drop=False)))
         elif self.type in ['stock_min', 'index_min']:
             return self.sync_status(QA_DataStruct_Index_day(self.data[self.data['datetime'] >= start][self.data['datetime'] <= end].set_index(['datetime', 'code'], drop=False)))
+
     @lru_cache()
     def select_time_with_gap(self, time, gap, method):
 
@@ -356,6 +376,7 @@ class QA_DataStruct_Index_day(__stock_hq_base):
                 elif self.type in ['stock_min', 'index_min']:
                     return __dataS.data[__dataS.data['datetime'] == time].head(gap).set_index(['datetime', 'code'], drop=False)
             return self.sync_status(QA_DataStruct_Index_day(pd.concat(list(map(lambda x: __eq(x), self.splits())))))
+
     @lru_cache()
     def select_code(self, code):
         if self.type in ['stock_day', 'index_day']:
@@ -363,6 +384,7 @@ class QA_DataStruct_Index_day(__stock_hq_base):
 
         elif self.type in ['stock_min', 'index_min']:
             return self.sync_status(QA_DataStruct_Index_day(self.data[self.data['code'] == code].set_index(['datetime', 'code'], drop=False)))
+
     @lru_cache()
     def get_bar(self, code, time, if_trade=True):
 
@@ -378,17 +400,15 @@ class QA_DataStruct_Index_min(__stock_hq_base):
     def __init__(self, DataFrame):
         self.type = 'index_min'
         self.if_fq = ''
-        self.data = DataFrame.ix[:,['code','open','high','low','close','volume','datetime','date']]
+        self.data = DataFrame.ix[:, [
+            'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'date']]
         self.mongo_coll = QA_Setting.client.quantaxis.index_min
 
     def __repr__(self):
         return '< QA_DataStruct_Index_Min with %s securities >' % len(self.code)
 
-
     def reverse(self):
         return QA_DataStruct_Index_min(self.data[::-1])
-
-
 
     def to_json(self):
         return QA_util_to_json_from_pandas(self.data)
@@ -398,6 +418,7 @@ class QA_DataStruct_Index_min(__stock_hq_base):
         (QA_DataStruct_Index_min.if_fq, QA_DataStruct_Index_min.type, QA_DataStruct_Index_min.mongo_coll) = (
             self.if_fq, self.type, self.mongo_coll)
         return QA_DataStruct_Index_min
+
     @lru_cache()
     def splits(self):
         if self.type in ['stock_day', 'index_day']:
@@ -414,12 +435,14 @@ class QA_DataStruct_Index_min(__stock_hq_base):
             return self.data.pivot(index='datetime', columns='code', values=column_)
         except:
             return self.data.pivot(index='date', columns='code', values=column_)
+
     @lru_cache()
     def select_time(self, start, end):
         if self.type in ['stock_day', 'index_day']:
             return self.sync_status(QA_DataStruct_Index_min(self.data[self.data['date'] >= start][self.data['date'] <= end].set_index(['date', 'code'], drop=False)))
         elif self.type in ['stock_min', 'index_min']:
             return self.sync_status(QA_DataStruct_Index_min(self.data[self.data['datetime'] >= start][self.data['datetime'] <= end].set_index(['datetime', 'code'], drop=False)))
+
     @lru_cache()
     def select_time_with_gap(self, time, gap, method):
 
@@ -462,6 +485,7 @@ class QA_DataStruct_Index_min(__stock_hq_base):
                 elif self.type in ['stock_min', 'index_min']:
                     return __dataS.data[__dataS.data['datetime'] == time].head(gap).set_index(['datetime', 'code'], drop=False)
             return self.sync_status(QA_DataStruct_Index_min(pd.concat(list(map(lambda x: __eq(x), self.splits())))))
+
     @lru_cache()
     def select_code(self, code):
         if self.type in ['stock_day', 'index_day']:
@@ -469,6 +493,7 @@ class QA_DataStruct_Index_min(__stock_hq_base):
 
         elif self.type in ['stock_min', 'index_min']:
             return self.sync_status(QA_DataStruct_Index_min(self.data[self.data['code'] == code].set_index(['datetime', 'code'], drop=False)))
+
     @lru_cache()
     def get_bar(self, code, time, if_trade=True):
 
@@ -480,7 +505,8 @@ class QA_DataStruct_Index_min(__stock_hq_base):
 
 class QA_DataStruct_Stock_min(__stock_hq_base):
     def __init__(self, DataFrame):
-        self.data = DataFrame.ix[:,['code','open','high','low','close','volume','datetime','date']]
+        self.data = DataFrame.ix[:, [
+            'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'date']]
         self.type = 'stock_min'
         self.if_fq = 'bfq'
         self.mongo_coll = QA_Setting.client.quantaxis.stock_min
@@ -490,13 +516,14 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
 
     def to_qfq(self):
         if self.if_fq is 'bfq':
-            if len(self.code)<20:
+            if len(self.code) < 20:
                 data = QA_DataStruct_Stock_min(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
                     self.data[self.data['code'] == x]), self.code))).set_index(['datetime', 'code'], drop=False))
                 data.if_fq = 'qfq'
                 return data
             else:
-                data=QA_DataStruct_Stock_min(self.data.groupby('code').apply(QA_data_stock_to_fq))
+                data = QA_DataStruct_Stock_min(
+                    self.data.groupby('code').apply(QA_data_stock_to_fq))
                 return data
         else:
             QA_util_log_info(
@@ -518,13 +545,13 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
     def reverse(self):
         return QA_DataStruct_Stock_min(self.data[::-1])
 
-
     @lru_cache()
     def sync_status(self, QA_DataStruct_Stock_min):
         '固定的状态要同步 尤其在创建新的datastruct时候'
         (QA_DataStruct_Stock_min.if_fq, QA_DataStruct_Stock_min.type, QA_DataStruct_Stock_min.mongo_coll) = (
             self.if_fq, self.type, self.mongo_coll)
         return QA_DataStruct_Stock_min
+
     @lru_cache()
     def splits(self):
         if self.type in ['stock_day', 'index_day']:
@@ -541,12 +568,14 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
             return self.data.pivot(index='datetime', columns='code', values=column_)
         except:
             return self.data.pivot(index='date', columns='code', values=column_)
+
     @lru_cache()
     def select_time(self, start, end):
         if self.type in ['stock_day', 'index_day']:
             return self.sync_status(QA_DataStruct_Stock_min(self.data[self.data['date'] >= start][self.data['date'] <= end].set_index(['date', 'code'], drop=False)))
         elif self.type in ['stock_min', 'index_min']:
             return self.sync_status(QA_DataStruct_Stock_min(self.data[self.data['datetime'] >= start][self.data['datetime'] <= end].set_index(['datetime', 'code'], drop=False)))
+
     @lru_cache()
     def select_time_with_gap(self, time, gap, method):
 
@@ -588,6 +617,7 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
                 elif self.type in ['stock_min', 'index_min']:
                     return __dataS.data[__dataS.data['datetime'] == time].head(gap).set_index(['datetime', 'code'], drop=False)
             return self.sync_status(QA_DataStruct_Stock_min(pd.concat(list(map(lambda x: __eq(x), self.splits())))))
+
     @lru_cache()
     def select_code(self, code):
         if self.type in ['stock_day', 'index_day']:
@@ -595,6 +625,7 @@ class QA_DataStruct_Stock_min(__stock_hq_base):
 
         elif self.type in ['stock_min', 'index_min']:
             return self.sync_status(QA_DataStruct_Stock_min(self.data[self.data['code'] == code].set_index(['datetime', 'code'], drop=False)))
+
     @lru_cache()
     def get_bar(self, code, time, if_trade=True):
         if if_trade:
@@ -612,23 +643,26 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
 
     def __repr__(self):
         return '< QA_DataStruct_Stock_day with %s securities >' % len(self.code)
+
     @lru_cache()
     def to_qfq(self):
         if self.if_fq is 'bfq':
-            if len(self.code)<20:
+            if len(self.code) < 20:
 
                 data = QA_DataStruct_Stock_day(pd.concat(list(map(
                     lambda x: QA_data_stock_to_fq(self.data[self.data['code'] == x]), self.code))))
                 data.if_fq = 'qfq'
                 return data
             else:
-                data=QA_DataStruct_Stock_day(self.data.groupby('code').apply(QA_data_stock_to_fq))
+                data = QA_DataStruct_Stock_day(
+                    self.data.groupby('code').apply(QA_data_stock_to_fq))
                 data.if_fq = 'qfq'
                 return data
         else:
             QA_util_log_info(
                 'none support type for qfq Current type is: %s' % self.if_fq)
             return self
+
     @lru_cache()
     def to_hfq(self):
         if self.if_fq is 'bfq':
@@ -651,6 +685,7 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
         (QA_DataStruct_Stock_day.if_fq, QA_DataStruct_Stock_day.type, QA_DataStruct_Stock_day.mongo_coll) = (
             self.if_fq, self.type, self.mongo_coll)
         return QA_DataStruct_Stock_day
+
     @lru_cache()
     def splits(self):
         if self.type in ['stock_day', 'index_day']:
@@ -667,12 +702,14 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
             return self.data.pivot(index='datetime', columns='code', values=column_)
         except:
             return self.data.pivot(index='date', columns='code', values=column_)
+
     @lru_cache()
     def select_time(self, start, end):
         if self.type in ['stock_day', 'index_day']:
             return self.sync_status(QA_DataStruct_Stock_day(self.data[self.data['date'] >= start][self.data['date'] <= end].set_index(['date', 'code'], drop=False)))
         elif self.type in ['stock_min', 'index_min']:
             return self.sync_status(QA_DataStruct_Stock_day(self.data[self.data['datetime'] >= start][self.data['datetime'] <= end].set_index(['datetime', 'code'], drop=False)))
+
     @lru_cache()
     def select_time_with_gap(self, time, gap, method):
 
@@ -715,6 +752,7 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
                 elif self.type in ['stock_min', 'index_min']:
                     return __dataS.data[__dataS.data['datetime'] == time].head(gap).set_index(['datetime', 'code'], drop=False)
             return self.sync_status(QA_DataStruct_Stock_day(pd.concat(list(map(lambda x: __eq(x), self.splits())))))
+
     @lru_cache()
     def select_code(self, code):
         if self.type in ['stock_day', 'index_day']:
@@ -722,6 +760,7 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
 
         elif self.type in ['stock_min', 'index_min']:
             return self.sync_status(QA_DataStruct_Stock_day(self.data[self.data['code'] == code].set_index(['datetime', 'code'], drop=False)))
+
     @lru_cache()
     def get_bar(self, code, time, if_trade=True):
         if if_trade:
@@ -730,20 +769,24 @@ class QA_DataStruct_Stock_day(__stock_hq_base):
             return self.sync_status(QA_DataStruct_Stock_day((self.data[self.data['code'] == code])[self.data['date'] <= str(time)[0:10]].set_index(['date', 'code'], drop=False).tail(1)))
 
 
-
 class QA_DataStruct_Stock_block():
-    def __init__(self,DataFrame):
-        self.data=DataFrame
+    def __init__(self, DataFrame):
+        self.data = DataFrame
+
     def __repr__(self):
         return '< QA_DataStruct_Stock_Block >'
+
     def __call__(self):
         return self.data
+
     @property
     def len(self):
         return len(self.data)
+
     @property
     def block_name(self):
         return self.data.groupby('blockname').sum().index.unique().tolist()
+
     @property
     def code(self):
         return self.data.code.unique().tolist()
@@ -751,27 +794,29 @@ class QA_DataStruct_Stock_block():
     def show(self):
         return self.data
 
-    def get_code(self,code):
-        return QA_DataStruct_Stock_block(self.data[self.data['code']==code])
+    def get_code(self, code):
+        return QA_DataStruct_Stock_block(self.data[self.data['code'] == code])
 
+    def get_block(self, _block_name):
+        return QA_DataStruct_Stock_block(self.data[self.data['blockname'] == _block_name])
 
-    def get_block(self,_block_name):
-        return QA_DataStruct_Stock_block(self.data[self.data['blockname']==_block_name])
-    def get_type(self,_type):
-        return QA_DataStruct_Stock_block(self.data[self.data['type']==_type])
+    def get_type(self, _type):
+        return QA_DataStruct_Stock_block(self.data[self.data['type'] == _type])
 
-    def get_price(self,_block_name=None):
+    def get_price(self, _block_name=None):
         if _block_name is not None:
             try:
-                code=self.data[self.data['blockname']==_block_name].code.unique().tolist()
+                code = self.data[self.data['blockname']
+                                 == _block_name].code.unique().tolist()
                 # try to get a datastruct package of lastest price
                 return QA_fetch_get_stock_realtime(code)
-                
+
             except:
                 return "Wrong Block Name! Please Check"
         else:
-            code=self.data.code.unique().tolist()
+            code = self.data.code.unique().tolist()
             return QA_fetch_get_stock_realtime(code)
+
 
 class QA_DataStruct_Stock_transaction():
     def __init__(self, DataFrame):
@@ -796,8 +841,10 @@ class QA_DataStruct_Stock_transaction():
 
 
 class QA_DataStruct_Security_list():
-    def __init__(self,DataFrame):
-        self.data= DataFrame.loc[:,['sse','code','name']].set_index('code',drop=False)
+    def __init__(self, DataFrame):
+        self.data = DataFrame.loc[:, ['sse', 'code', 'name']].set_index(
+            'code', drop=False)
+
     @property
     def code(self):
         return self.data.code
@@ -805,13 +852,13 @@ class QA_DataStruct_Security_list():
     @property
     def name(self):
         return self.data.name
-    
-    def get_stock(self,ST_option):
+
+    def get_stock(self, ST_option):
         return self.data
 
     def get_index(self):
         return self.data
-    
+
     def get_etf(self):
         return self.data
 
