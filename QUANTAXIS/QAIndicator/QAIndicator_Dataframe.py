@@ -263,3 +263,15 @@ def QA_indicator_ASI(DataFrame,M1,M2):
     
     #R=IF(AA>BB AND AA>CC,AA+BB/2+DD/4,IF(BB>CC AND BB>AA,BB+AA/2+DD/4,CC+DD/4))
     X=(CLOSE-LC+(CLOSE-OPEN)/2+LC-REF(OPEN,1))
+
+def QA_indicator_MA(DataFrame,N):
+    CLOSE = DataFrame['close']
+    return MA(CLOSE,N)
+
+def QA_indicator_EMA(DataFrame,N):
+    CLOSE = DataFrame['close']
+    return EMA(CLOSE,N)
+
+def QA_indicator_SMA(DataFrame,N):
+    CLOSE = DataFrame['close']
+    return SMA(CLOSE,N)
