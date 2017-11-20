@@ -165,7 +165,7 @@ sudo service mongod start
 ```shell
 sudo apt-get install npm
 sudo npm install n -g
-sudo n latest
+sudo n stable
 sudo npm install npm -g #更新npm
 sudo npm install forever -g #安装一个全局的forever 用于之后启动
 (如果forever 安装卡住/耗时过长 使用淘宝镜像CNPM)
