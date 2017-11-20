@@ -33,6 +33,8 @@ import random
 import re
 import sys
 import time
+import threading
+from threading import Thread,Timer
 from functools import reduce, update_wrapper, wraps, lru_cache
 from statistics import mean
 
@@ -53,6 +55,7 @@ from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_index_day_adv,
                                                QA_fetch_index_min_adv,
                                                QA_fetch_stock_day_adv,
                                                QA_fetch_stock_min_adv,
+                                               QA_fetch_stock_block_adv,
                                                QA_fetch_stocklist_day_adv,
                                                QA_fetch_stocklist_min_adv)
 from QUANTAXIS.QAMarket.QABid import QA_QAMarket_bid_list
@@ -88,8 +91,9 @@ class QA_Backtest():
     clients = setting.client
     user = setting.QA_setting_user_name
     market_data = []
-    now = ''
-    today = ''
+    now = None
+    today = None
+    last_time =None
     strategy_stock_list = []
     trade_list = []
     start_real_id = 0
@@ -168,6 +172,9 @@ class QA_Backtest():
         2017/7/20
         """
 
+
+
+        self.strategy_stock_list=np.unique(self.strategy_stock_list).tolist() #保证不会重复
         if len(str(self.strategy_start_date)) == 10:
             self.strategy_start_time = str(
                 self.strategy_start_date) + ' 15:00:00'
@@ -226,8 +233,7 @@ class QA_Backtest():
         elif self.backtest_type in ['index_1min', 'index_5min', 'index_15min', 'index_30min', 'index_60min']:
             self.market_data = QA_fetch_index_min_adv(
                 self.strategy_stock_list, QA_util_time_gap(self.start_real_time, self.strategy_gap + 1, '<', self.backtest_type.split('_')[1]),  QA_util_time_gap(self.end_real_time, 1, '>', self.backtest_type.split('_')[1]), self.backtest_type.split('_')[1])
-        self.market_data_dict = dict(
-            zip(list(self.market_data.code), self.market_data.splits()))
+        self.market_data_dict = dict(zip(list(self.market_data.code), self.market_data.splits()))
         self.market_data_hashable = self.market_data.dicts
 
     def __QA_backtest_log_info(self, log):
@@ -624,12 +630,35 @@ class QA_Backtest():
             return None
 
     @lru_cache()
+    def QA_backtest_get_market_data_panel(self, date=None, type_='lt'):
+        try:
+            if date is not None:
+                if type_ in ['lt']:
+                    return self.market_data.select_time_with_gap(date, 1, type_)
+            else:
+                return self.market_data.select_time_with_gap(self.now, 1, type_)
+        except Exception as e:
+            raise e
+
+    @lru_cache()
     def QA_backtest_get_market_data_bar(self, code, time, if_trade=True):
         '这个函数封装了关于获取的方式'
         try:
             return self.market_data_dict[code].get_bar(code, time, if_trade)
         except:
             return None
+
+    def QA_backtest_get_block(self, block_list):
+        block_=QA_fetch_stock_block_adv()
+        _data=[]
+
+        try:
+            for item in block_list:
+                
+                _data.extend(block_.get_block(item).code)
+            return np.unique(_data).tolist()
+        except Exception as e:
+            raise e
 
     #@lru_cache()
     def QA_backtest_sell_available(self, __code):
@@ -772,8 +801,13 @@ class QA_Backtest():
                                         _cls.running_date)
             _cls.__QA_backtest_log_info(_cls,
                                         tabulate(_cls.account.message['body']['account']['hold']))
+
+            if _cls.now is not None:
+                _cls.last_time=_cls.now
+
             _cls.now = _cls.running_date
             _cls.today = _cls.running_date
+            
             # 交易前同步持仓状态
             _cls.__sync_order_LM(_cls, 'init_')  # 初始化事件
 
@@ -792,10 +826,10 @@ class QA_Backtest():
                     type_ = '30min'
                 elif _cls.backtest_type in ['60min', 'index_60min']:
                     type_ = '60min'
-                daily_min = QA_util_make_min_index(
-                    _cls.today, type_)  # 创造分钟线index
+                daily_min = QA_util_make_min_index(_cls.today, type_)  # 创造分钟线index
                 for min_index in daily_min:
                     _cls.now = min_index
+
                     _cls.__QA_backtest_log_info(_cls,
                                                 '=================Min hold list====================')
                     _cls.__QA_backtest_log_info(
@@ -831,6 +865,13 @@ class QA_Backtest():
     def end_backtest(_cls, func, *arg, **kwargs):
         _cls.__end_of_backtest(_cls, func, *arg, **kwargs)
         return func(*arg, **kwargs)
+
+
+    # 暂时不确定要不要用
+    @classmethod
+    def trade_event(_cls,func,*arg, **kwargs):
+        return func(*arg, **kwargs)
+        
 
 
 if __name__ == '__main__':

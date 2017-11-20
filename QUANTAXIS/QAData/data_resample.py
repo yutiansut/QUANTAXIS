@@ -32,12 +32,13 @@ def QA_data_tick_resample(tick, type_='1min'):
     data = tick['price'].resample(
         type_, label='right', closed='left').ohlc()
 
-    data['volume'] = tick[tick['buyorsell'] != 2]['vol'].resample(
+    data['volume'] = tick['vol'].resample(
         type_, label='right', closed='left').sum()
     data['code'] = tick['code'][0]
 
     __data_ = pd.DataFrame()
-    for item in tick.drop_duplicates('date')['date']:
+    _temp=tick.drop_duplicates('date')['date']
+    for item in _temp:
         __data = data[item]
         _data = __data[time(9, 31):time(11, 30)].append(
             __data[time(13, 1):time(15, 0)])
@@ -46,7 +47,7 @@ def QA_data_tick_resample(tick, type_='1min'):
     __data_['datetime'] = __data_.index
     __data_['date'] = __data_['datetime'].apply(lambda x: str(x)[0:10])
     __data_['datetime'] = __data_['datetime'].apply(lambda x: str(x)[0:19])
-    return __data_.fillna(method='ffill').set_index(['datetime', 'code'],drop=False)
+    return __data_.fillna(method='ffill').set_index(['datetime', 'code'], drop=False)
 
 
 if __name__ == '__main__':

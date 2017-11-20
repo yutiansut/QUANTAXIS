@@ -152,7 +152,7 @@ class QA_Tdx_Executor():
             Timer(0, self.api_worker).start()
         Timer(300, self.api_worker).start()
 
-    def singal_job(self, context, id_, time_out=0.5):
+    def _singal_job(self, context, id_, time_out=0.5):
         try:
             _api = self.get_available()
 
@@ -170,7 +170,7 @@ class QA_Tdx_Executor():
         code = [code] if type(code) is str else code
         try:
             for id_ in range(int(len(code) / 80) + 1):
-                context = self.singal_job(context, id_)
+                context = self._singal_job(context, id_)
 
             data = context[['datetime', 'code', 'open', 'high', 'low', 'price', 'ask1', 'ask_vol1',
                             'ask2', 'ask_vol2', 'ask3', 'ask_vol3', 'ask4', 'ask_vol4', 'ask5', 'ask_vol5']]
@@ -185,7 +185,7 @@ class QA_Tdx_Executor():
             # for id_ in range(int(len(code) / 80) + 1):
             data = {self.get_security_quotes([(self.get_market(
                 x), x) for x in code[80 * pos:80 * (pos + 1)]]) for pos in range(int(len(code) / 80) + 1)}
-            return ([i.result() for i in data], datetime.datetime.now())
+            return (pd.concat([self.api_no_connection.to_df(i.result()) for i in data]), datetime.datetime.now())
         except:
             pass
 
@@ -193,14 +193,36 @@ class QA_Tdx_Executor():
         #code = [code] if type(code) is str else code
         try:
 
-
            #[api.get_security_bars(level, __select_market_code(str(code)), str(code), (25 - i) * 800, 800) for i in range(26)]
-            data = {self.get_security_bars(self.get_level(_type), self.get_market(str(code)), str(code), (25 - i) * 800, 800) for i in range(int(lens / 800) + 1)}
-            print(data.result())
-            #return ([i.result() for i in data], datetime.datetime.now())
+            data = {[self.get_security_bars(self.get_level(_type), self.get_market(
+                str(code)), str(code), (25 - i) * 800, 800) for i in range(int(lens / 800) + 1)]}
+            print([i.result() for i in data])
 
         except:
-            pass
+            raise Exception
+
+    def _get_security_bars(self, context, code, _type, lens):
+        try:
+            _api = self.get_available()
+            for i in range(1,int(lens / 800) +2):
+                context.extend(_api.get_security_bars(self.get_level(
+                    _type), self.get_market(str(code)), str(code), (i - 1) * 800, 800))
+                #print(context)
+            self._queue.put(_api)
+            return context
+        except Exception as e:
+            #print(e)
+            return self._get_security_bars(context, code, _type, lens)
+
+    def get_security_bars(self, code, _type, lens):
+        code = [code] if type(code) is str else code
+        context = []
+        try:
+            for item in code:
+                context = self._get_security_bars(context, item, _type, lens)
+            return context
+        except Exception as e:
+            raise e
 
     def save_mongo(self):
         pass
@@ -214,19 +236,25 @@ if __name__ == '__main__':
     x = QA_Tdx_Executor()
     print(x._queue.qsize())
     print(x.get_available())
-    for i in range(100000):
-        _time = datetime.datetime.now()
-        #data = x.get_realtime(code)
-        #data = x.get_realtime_concurrent(code)
-        #print(code[0])
-        x.get_security_bar_concurrent(code[0], '15min', 20)
-        # if data is not None:
-        # print(len(data))
-        #print(data)
-        print('Time {}'.format((datetime.datetime.now() - _time).total_seconds()))
-        time.sleep(1)
-        print('Connection Pool NOW LEFT {} Available IP'.format(x._queue.qsize()))
-        print('Program Last Time {}'.format(
-            (datetime.datetime.now() - _time1).total_seconds()))
-        # print(threading.enumerate())
-#
+    data = x.get_security_bars(code[0], '15min', 20)
+    #print(data)    
+    for i in range(5):
+        print(x.get_realtime_concurrent(code))
+
+
+#     for i in range(100000):
+#         _time = datetime.datetime.now()
+#         #data = x.get_realtime(code)
+#         #data = x.get_realtime_concurrent(code)
+#         # print(code[0])
+#         data = x.get_security_bars(code, '15min', 20)
+#         # if data is not None:
+#         # print(len(data))
+#         print(data)
+#         print('Time {}'.format((datetime.datetime.now() - _time).total_seconds()))
+#         time.sleep(1)
+#         print('Connection Pool NOW LEFT {} Available IP'.format(x._queue.qsize()))
+#         print('Program Last Time {}'.format(
+#             (datetime.datetime.now() - _time1).total_seconds()))
+#         # print(threading.enumerate())
+# #
