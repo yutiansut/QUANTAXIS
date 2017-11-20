@@ -304,7 +304,8 @@ def QA_fetch_stock_info(code, format_='pd', collections=QA_Setting.client.quanta
             {'code': code})]).drop(['_id'], axis=1)
         #data['date'] = pd.to_datetime(data['date'])
         return data.set_index('code', drop=False)
-    except:
+    except Exception as e:
+        QA_util_log_info(e)
         return None
 
 
