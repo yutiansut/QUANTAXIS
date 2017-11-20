@@ -1,4 +1,4 @@
-# coding:utf-8
+# coding=utf-8
 #
 # The MIT License (MIT)
 #
@@ -21,33 +21,31 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import pymongo
-import re
-import datetime
-import time
-import motor
-import asyncio
-from motor import motor_asyncio
-from motor.motor_asyncio import (AsyncIOMotorCollection, AsyncIOMotorClient, AsyncIOMotorDatabase,
-                                 AsyncIOMotorCommandCursor)
-from .QALogs import QA_util_log_info
 
 
-def QA_util_sql_mongo_setting(ip='127.0.0.1', port=27017):
-    QA_sql_mongo_client = pymongo.MongoClient(ip, int(port))
-    QA_util_log_info('ip:{},port:{}'.format(str(ip),str(port)))
-    return QA_sql_mongo_client
-
-# async
+from QUANTAXIS.QABacktest.QABacktest import QA_Backtest as QB
+from QUANTAXIS.QAMarket import QA_QAMarket_bid
+"""
 
 
-def QA_util_sql_async_mongo_setting(ip='127.0.0.1', port=27017):
-    QA_sql_async_mongo_client = AsyncIOMotorClient(ip, int(port))
-    QA_util_log_info('ip:{},port{}'.format(str(ip),str(port)))
-    return QA_sql_async_mongo_client
+暂时估摸着也还是用不起来 诶
+"""
+
+class QA_Order():
+    def __init__(self, *args, **kwargs):
+        self.order = QA_QAMarket_bid()
+
+    def load_order_strategy(self, strategy):
+        self.strategy = strategy
+
+    def apply_order_strategy(self):
+        self.order.apply(self.strategy)
+
+    def signal(towards=1):
+        pass
+
+
 
 
 if __name__=='__main__':
-    # test async_mongo
-    client=QA_util_sql_async_mongo_setting().quantaxis.stock_day
-    print(client)
+    order=QA_Order()

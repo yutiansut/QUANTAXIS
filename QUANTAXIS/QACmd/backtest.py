@@ -91,6 +91,14 @@ QB.QA_backtest_hold_amount(QB,code)
 QB.QA_backtest_sell_available(QB,code)
 #查询当前一只股票的持仓平均成本
 QB.QA_backtest_hold_price(QB,code)
+
+
+=====
+近期新增:
+QB.QA_backtest_get_market_data_panel(QB,time,type_)
+
+QB.QB.QA_backtest_get_block(QB,block_list)  # 获取股票的板块代码  输入是一个板块的list ['钢铁','昨日涨停']  输出是不重复的股票列表
+
 """
 
 
@@ -134,6 +142,10 @@ def strategy():
     global risk_position  # 在这个地方global变量 可以拿到before_backtest里面的东西
     QA.QA_util_log_info(QB.account.sell_available)
     QA.QA_util_log_info('LEFT Cash: %s' % QB.account.cash_available)
+
+    #QB.QA_backtest_get_market_data_panel(QB,time,type_) 面板数据
+    # time 如果不填 就是默认的QB.now/QB.today
+    # type_ 如果不填 默认是 'lt' 如果需要当日的数据 'lte' 
     for item in QB.strategy_stock_list:
         market_data=QB.QA_backtest_get_market_data(QB, item, QB.today)
         if market_data is not None:
