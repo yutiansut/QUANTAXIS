@@ -32,7 +32,7 @@ def QA_data_tick_resample(tick, type_='1min'):
     data = tick['price'].resample(
         type_, label='right', closed='left').ohlc()
 
-    data['volume'] = tick[tick['buyorsell'] != 2]['vol'].resample(
+    data['volume'] = tick['vol'].resample(
         type_, label='right', closed='left').sum()
     data['code'] = tick['code'][0]
 
