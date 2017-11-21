@@ -194,8 +194,6 @@ class QA_Tdx_Executor():
     def get_security_bar_concurrent(self, code, _type, lens):
         #code = [code] if type(code) is str else code
         try:
-
-           #[api.get_security_bars(level, __select_market_code(str(code)), str(code), (25 - i) * 800, 800) for i in range(26)]
             data = {[self.get_security_bars(self.get_level(_type), self.get_market(
                 str(code)), str(code), (25 - i) * 800, 800) for i in range(int(lens / 800) + 1)]}
             print([i.result() for i in data])

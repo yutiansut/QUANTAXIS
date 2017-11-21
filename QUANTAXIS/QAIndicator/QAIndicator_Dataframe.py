@@ -275,3 +275,9 @@ def QA_indicator_EMA(DataFrame,N):
 def QA_indicator_SMA(DataFrame,N):
     CLOSE = DataFrame['close']
     return SMA(CLOSE,N)
+
+
+def low_shadow(DataFrame):#下影线
+    return abs(DataFrame.low-MIN(DataFrame.open,DataFrame.close))
+def high_shadow(DataFrame):#上影线
+    return abs(DataFrame.high-MAX(DataFrame.open,DataFrame.close))
