@@ -40,8 +40,8 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from pytdx.exhq import TdxExHq_API
 from pytdx.hq import TdxHq_API
 from QUANTAXIS.QAUtil.QADate import QA_util_calc_time
-from QUANTAXIS.QAUtil.QASetting import info_ip_list
-
+from QUANTAXIS.QAUtil.QASetting import info_ip_list,QA_Setting
+from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
 
 """
 准备做一个多连接的连接池执行器Executor
@@ -224,8 +224,8 @@ class QA_Tdx_Executor():
         except Exception as e:
             raise e
 
-    def save_mongo(self):
-        pass
+    def save_mongo(self,data,client=QA_Setting.client.quantaxis.realtime):
+        client.insert_many(QA_util_to_json_from_pandas(data))
 
 
 if __name__ == '__main__':
@@ -233,28 +233,32 @@ if __name__ == '__main__':
     _time1 = datetime.datetime.now()
     from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_block_adv
     code = QA_fetch_stock_block_adv().code
+    print(len(code))
     x = QA_Tdx_Executor()
     print(x._queue.qsize())
     print(x.get_available())
-    data = x.get_security_bars(code[0], '15min', 20)
+    #data = x.get_security_bars(code[0], '15min', 20)
     #print(data)    
-    for i in range(5):
-        print(x.get_realtime_concurrent(code))
+    # for i in range(5):
+    #     print(x.get_realtime_concurrent(code))
 
 
-#     for i in range(100000):
-#         _time = datetime.datetime.now()
-#         #data = x.get_realtime(code)
-#         #data = x.get_realtime_concurrent(code)
-#         # print(code[0])
-#         data = x.get_security_bars(code, '15min', 20)
-#         # if data is not None:
-#         # print(len(data))
-#         print(data)
-#         print('Time {}'.format((datetime.datetime.now() - _time).total_seconds()))
-#         time.sleep(1)
-#         print('Connection Pool NOW LEFT {} Available IP'.format(x._queue.qsize()))
-#         print('Program Last Time {}'.format(
-#             (datetime.datetime.now() - _time1).total_seconds()))
-#         # print(threading.enumerate())
+    for i in range(100000):
+        _time = datetime.datetime.now()
+        #data = x.get_realtime(code)
+        data = x.get_realtime_concurrent(code)
+
+        data[0]['datetime']=data[1]
+        x.save_mongo(data[0])
+        # print(code[0])
+        #data = x.get_security_bars(code, '15min', 20)
+        # if data is not None:
+        print(len(data[0]))
+        #print(data)
+        print('Time {}'.format((datetime.datetime.now() - _time).total_seconds()))
+        time.sleep(1)
+        print('Connection Pool NOW LEFT {} Available IP'.format(x._queue.qsize()))
+        print('Program Last Time {}'.format(
+            (datetime.datetime.now() - _time1).total_seconds()))
+        # print(threading.enumerate())
 # #
