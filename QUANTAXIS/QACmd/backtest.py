@@ -1,32 +1,9 @@
 # coding=utf-8
-#
-# The MIT License (MIT)
-#
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
 
 import QUANTAXIS as QA
 from QUANTAXIS import QA_Backtest as QB
-
-
+import numpy as np
+from datetime import datetime
 """
 写在前面:
 ===============QUANTAXIS BACKTEST STOCK_DAY中的变量
@@ -92,13 +69,10 @@ QB.QA_backtest_sell_available(QB,code)
 #查询当前一只股票的持仓平均成本
 QB.QA_backtest_hold_price(QB,code)
 
-
-=====
 近期新增:
 QB.QA_backtest_get_market_data_panel(QB,time,type_)
 
-QB.QB.QA_backtest_get_block(QB,block_list)  # 获取股票的板块代码  输入是一个板块的list ['钢铁','昨日涨停']  输出是不重复的股票列表
-
+QB.QA_backtest_get_block(QB,block_list)  # 获取股票的板块代码  输入是一个板块的list ['钢铁','昨日涨停']  输出是不重复的股票列表
 """
 
 
@@ -112,29 +86,33 @@ def init():
     QB.strategy_name = 'test_daily'
     # 数据库位置
     QB.setting.QA_util_sql_mongo_ip = '127.0.0.1'  # 回测数据库
-    QB.setting.QA_setting_user_name = str('admin') #回测账户
-    QB.setting.QA_setting_user_password = str('admin') #回测密码
+    QB.setting.QA_setting_user_name = str('admin')  # 回测账户
+    QB.setting.QA_setting_user_password = str('admin')  # 回测密码
 
-    QB.account.init_assest = 2500000  # 初始资金
+    QB.account.init_assest = 2000000  # 初始资金
 
     # benchmark
-    QB.benchmark_code = '399300'
+    QB.benchmark_code = '000300'
     # benchmark 可以是个股，也可以是指数
     QB.benchmark_type = 'index'
     # 手续费系数
     QB.commission_fee_coeff = 0.0015  # 千五的手续费(单向)
 
-    QB.strategy_gap = 30   # 在取数据的时候 向前取多少个bar(会按回测的时间动态移动)
-    QB.strategy_stock_list = ['000001', '000002',
-                              '600010', '601801']  # 回测的股票列表/如果是指数回测 就是指数列表
-    QB.strategy_start_date = '2016-07-01 10:30:00'  # 回测开始日期
-    QB.strategy_end_date = '2017-07-10'    # 回测结束日期
-    QB.backtest_print_log = True  # 是否在屏幕上输出结果
+    QB.strategy_gap = 30  # 在取数据的时候 向前取多少个bar(会按回测的时间动态移动)
+    QB.strategy_stock_list = QB.QA_backtest_get_block(QB,['钢铁'])
+
+    QB.strategy_start_date = '2017-06-01 10:30:00'  # 回测开始日期
+    QB.strategy_end_date = '2017-10-01'  # 回测结束日期
+    QB.backtest_print_log = False  # 是否在屏幕上输出结果
 
 
 @QB.before_backtest
 def before_backtest():
+    global start_time
+    start_time = datetime.now()
     global risk_position
+
+
 
 
 @QB.load_strategy
@@ -142,24 +120,36 @@ def strategy():
     global risk_position  # 在这个地方global变量 可以拿到before_backtest里面的东西
     QA.QA_util_log_info(QB.account.sell_available)
     QA.QA_util_log_info('LEFT Cash: %s' % QB.account.cash_available)
-
-    #QB.QA_backtest_get_market_data_panel(QB,time,type_) 面板数据
+    # QB.QA_backtest_get_market_data_panel(QB,time,type_) 面板数据
     # time 如果不填 就是默认的QB.now/QB.today
-    # type_ 如果不填 默认是 'lt' 如果需要当日的数据 'lte' 
-    for item in QB.strategy_stock_list:
-        market_data=QB.QA_backtest_get_market_data(QB, item, QB.today)
-        if market_data is not None:
-            QA.QA_util_log_info(market_data.data)
-        else:
-            QA.QA_util_log_info('{} HAS NO DATA IN {}'.format(item,QB.today))# 如果是分钟回测 用QB.now
+    # type_ 如果不填 默认是 'lt' 如果需要当日的数据 'lte'
+    each_capital = int(QB.account.cash_available/(len(QB.strategy_stock_list)-len(QB.account.sell_available)))
 
-        if QB.QA_backtest_hold_amount(QB, item) == 0:  # 如果不持仓
-            QB.QA_backtest_send_order(
-                QB, item, 10000, 1, {'bid_model': 'Market'})
-        elif QB.QA_backtest_sell_available(QB, item) > 0:  #如果可卖数量大于0
-            QB.QA_backtest_send_order(
-                QB, item, 10000, -1, {'bid_model': 'Market'})
-                
+    for item in QB.strategy_stock_list:
+        if QB.QA_backtest_find_bar(QB, item, QB.today) is not None: #今日开盘-能取到数据
+            market_data = QB.QA_backtest_get_market_data(QB, item, QB.today,type_='lte')  #type_='lte' 才能取到今日
+            Open, High, Low, Close, Volume = QB.QA_backtest_get_OHLCV(QB,market_data)
+
+            MA = market_data.add_func(QA.QA_indicator_MA,10)
+            MA_s = MA[0][-1]
+            if not np.isnan(MA_s):
+                if QB.QA_backtest_hold_amount(QB, item) == 0:  # 如果不持仓
+                    if Close[-1] >= MA_s:
+                        QB.QA_backtest_send_order(QB, item, int(each_capital/Close[-1]/100)*100, 1, {'bid_model': 'c'})
+                elif QB.QA_backtest_sell_available(QB, item) > 0:  # 如果可卖数量大于0
+                    hold_price = QB.QA_backtest_hold_price(QB, item)
+
+                    if Close[-1] <= MA_s:
+                        QB.QA_backtest_send_order(QB, item, QB.QA_backtest_sell_available(QB,item), -1, {'bid_model': 'c'})
+
+        else:
+            QA.QA_util_log_info('{} HAS NO DATA IN {}'.format(item, QB.today))  # 如果是分钟回测 用QB.now
+    pcg_total = len(QA.QA_util_get_trade_range(QB.strategy_start_date,QB.strategy_end_date))
+    pcg_now = len(QA.QA_util_get_trade_range(QB.strategy_start_date,QB.today))
+    QA.QA_util_log_info('Now Completed {}%'.format(int(100*pcg_now/pcg_total)))
+
+
+
 # #查询当前一只股票的持仓量
 # QB.QA_backtest_hold_amount(QB,code)
 # #查询当前一只股票的可卖数量
@@ -168,4 +158,7 @@ def strategy():
 # QB.QA_backtest_hold_price(QB,code)
 @QB.end_backtest
 def after_backtest():
-    pass
+    global start_time
+    end_time = datetime.now()
+    cost_time = (end_time - start_time).total_seconds()
+    QA.QA_util_log_info('耗费时间 {} {}'.format(cost_time,'seconds'))
