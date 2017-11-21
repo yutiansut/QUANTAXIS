@@ -40,7 +40,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from pytdx.exhq import TdxExHq_API
 from pytdx.hq import TdxHq_API
 from QUANTAXIS.QAUtil.QADate import QA_util_calc_time
-from QUANTAXIS.QAUtil.QASetting import info_ip_list,QA_Setting
+from QUANTAXIS.QAUtil.QASetting import info_ip_list, QA_Setting
 from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
 
 """
@@ -172,8 +172,10 @@ class QA_Tdx_Executor():
             for id_ in range(int(len(code) / 80) + 1):
                 context = self._singal_job(context, id_)
 
-            data = context[['datetime', 'code', 'open', 'high', 'low', 'price', 'ask1', 'ask_vol1',
-                            'ask2', 'ask_vol2', 'ask3', 'ask_vol3', 'ask4', 'ask_vol4', 'ask5', 'ask_vol5']]
+            data = context[['datetime', 'last_close', 'code', 'open', 'high', 'low', 'price', 'cur_vol',
+                            's_vol', 'b_vol', 'vol', 'ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',
+                            'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3', 'ask4',
+                            'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
             return data.set_index('code', drop=False, inplace=False)
         except:
             return None
@@ -204,14 +206,14 @@ class QA_Tdx_Executor():
     def _get_security_bars(self, context, code, _type, lens):
         try:
             _api = self.get_available()
-            for i in range(1,int(lens / 800) +2):
+            for i in range(1, int(lens / 800) + 2):
                 context.extend(_api.get_security_bars(self.get_level(
                     _type), self.get_market(str(code)), str(code), (i - 1) * 800, 800))
-                #print(context)
+                # print(context)
             self._queue.put(_api)
             return context
         except Exception as e:
-            #print(e)
+            # print(e)
             return self._get_security_bars(context, code, _type, lens)
 
     def get_security_bars(self, code, _type, lens):
@@ -224,7 +226,7 @@ class QA_Tdx_Executor():
         except Exception as e:
             raise e
 
-    def save_mongo(self,data,client=QA_Setting.client.quantaxis.realtime):
+    def save_mongo(self, data, client=QA_Setting.client.quantaxis.realtime):
         client.insert_many(QA_util_to_json_from_pandas(data))
 
 
@@ -238,23 +240,22 @@ if __name__ == '__main__':
     print(x._queue.qsize())
     print(x.get_available())
     #data = x.get_security_bars(code[0], '15min', 20)
-    #print(data)    
+    # print(data)
     # for i in range(5):
     #     print(x.get_realtime_concurrent(code))
-
 
     for i in range(100000):
         _time = datetime.datetime.now()
         #data = x.get_realtime(code)
         data = x.get_realtime_concurrent(code)
 
-        data[0]['datetime']=data[1]
+        data[0]['datetime'] = data[1]
         x.save_mongo(data[0])
         # print(code[0])
         #data = x.get_security_bars(code, '15min', 20)
         # if data is not None:
         print(len(data[0]))
-        #print(data)
+        # print(data)
         print('Time {}'.format((datetime.datetime.now() - _time).total_seconds()))
         time.sleep(1)
         print('Connection Pool NOW LEFT {} Available IP'.format(x._queue.qsize()))
