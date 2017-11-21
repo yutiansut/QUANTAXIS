@@ -30,7 +30,7 @@ import pandas as pd
 
 from bson.objectid import ObjectId
 from pandas import DataFrame
-from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,trade_date_sse,
+from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp, trade_date_sse,
                               QA_util_date_valid, QA_util_log_info,
                               QA_util_time_stamp, QA_util_to_json_from_pandas, QA_util_to_list_from_pandas)
 from QUANTAXIS.QAData import QA_data_make_hfq, QA_data_make_qfq
@@ -287,20 +287,30 @@ def QA_fetch_backtest_history(cookie=None, collections=QA_Setting.client.quantax
     return QA_util_to_json_from_pandas(pd.DataFrame([item for item in collections.find(QA_util_to_json_from_pandas(pd.DataFrame([cookie], index=['cookie']).dropna().T)[0])]).drop(['_id'], axis=1))
 
 
-def QA_fetch_stock_block(code=None,format_='pd', collections=QA_Setting.client.quantaxis.stock_block):
+def QA_fetch_stock_block(code=None, format_='pd', collections=QA_Setting.client.quantaxis.stock_block):
     if code is not None:
         data = pd.DataFrame([item for item in collections.find(
             {'code': code})]).drop(['_id'], axis=1)
         return data.set_index('code', drop=False)
     else:
-        data = pd.DataFrame([item for item in collections.find()]).drop(['_id'], axis=1)
+        data = pd.DataFrame(
+            [item for item in collections.find()]).drop(['_id'], axis=1)
         return data.set_index('code', drop=False)
 
-def QA_fetch_stock_info(code,format_='pd', collections=QA_Setting.client.quantaxis.stock_info):
+
+def QA_fetch_stock_info(code, format_='pd', collections=QA_Setting.client.quantaxis.stock_info):
     try:
         data = pd.DataFrame([item for item in collections.find(
             {'code': code})]).drop(['_id'], axis=1)
         #data['date'] = pd.to_datetime(data['date'])
         return data.set_index('code', drop=False)
-    except:
+    except Exception as e:
+        QA_util_log_info(e)
         return None
+
+
+def QA_fetch_stock_name(code, collections=QA_Setting.client.quantaxis.stock_list):
+    try:
+        return collections.find_one({'code': code})['name']
+    except Exception as e:
+        QA_util_log_info(e)
