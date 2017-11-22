@@ -67,6 +67,18 @@ def QA_util_time_stamp(time_):
         return time.mktime(time.strptime(timestr, '%Y-%m-%d %H:%M:%S'))
 
 
+def QA_util_stamp2datetime(timestamp):
+    """
+    datestamp转datetime
+    
+    pandas转出来的timestamp是13位整数 要/1000
+    
+    """
+    try:
+        return datetime.datetime.fromtimestamp(timestamp)
+    except Exception as e:
+        return datetime.datetime.fromtimestamp(timestamp/1000)
+
 def QA_util_ms_stamp(ms):
     return ms
 
