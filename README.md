@@ -40,7 +40,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 ```
 [注意: tushare最新版本因为单方面直接复制了pytdx  所以导致和最新版本的pytdx不兼容 如有安装0.8.7版本以上的tushare 请降级使用]
 
-**降级时需注意: 直接pip uninstall tushare以后 还要去删掉tushare安装目录下的pytdx 再重新安装最新版本的pytdx **
+*** 降级时需注意: 直接pip uninstall tushare以后 还要去删掉tushare安装目录下的pytdx 再重新安装最新版本的pytdx ***
 
 ```
 - 实时交易数据
@@ -165,7 +165,7 @@ sudo service mongod start
 ```shell
 sudo apt-get install npm
 sudo npm install n -g
-sudo n latest
+sudo n stable
 sudo npm install npm -g #更新npm
 sudo npm install forever -g #安装一个全局的forever 用于之后启动
 (如果forever 安装卡住/耗时过长 使用淘宝镜像CNPM)
