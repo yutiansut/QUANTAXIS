@@ -229,7 +229,7 @@ cd quantaxis .
 pip install -r requirements.txt -i https://pypi.doubanio.com/simple
 pip install tushare==0.8.7
 (sudo) pip install -e . # 一定要用这种方法,python setup.py install方法无法解压 安装在本目录下的开发模式
-
+# 注: 安装成本地开发模式以后,只需要git pull 就可以更新代码 无需重新 pip install -e .
 ```
 ### 安装QUANATXIS_WebKit
 ```shell
