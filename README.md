@@ -219,7 +219,7 @@ cd ..
 sudo python3.6 -m pip install TA-Lib
 # 安装剩余的依赖项
 sudo python3.6 -m pip install -r requirements.txt -i https://pypi.doubanio.com/simple
-sudo python3.6 -m pip install tushare<0.9
+sudo python3.6 -m pip install tushare==0.8.7 -i https://pypi.doubanio.com/simple
 
 ```
 > Windows
