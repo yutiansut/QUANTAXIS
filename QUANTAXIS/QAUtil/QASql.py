@@ -33,8 +33,8 @@ from motor.motor_asyncio import (AsyncIOMotorCollection, AsyncIOMotorClient, Asy
 from .QALogs import QA_util_log_info
 
 
-def QA_util_sql_mongo_setting(host='127.0.0.1', port=27017, user_name="root", user_pwd="passwd", db_name="amdin"):
-    uri = "mongodb://{username}:{password}@{host}:{port}/{db_name}?authMechanism=MONGODB-CR".format(username=user_name,
+def QA_util_sql_mongo_setting(host='127.0.0.1', port=27017, user_name="admin", user_pwd="test", db_name="quantaxis"):
+    uri = "mongodb://{username}:{password}@{host}:{port}/{db_name}?authMechanism=SCRAM-SHA-1".format(username=user_name,
                                                                                                     password=user_pwd,
                                                                                                     host=host,
                                                                                                     port=port,
