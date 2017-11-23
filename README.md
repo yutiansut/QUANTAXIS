@@ -12,12 +12,12 @@
 
 
 
-![version](https://img.shields.io/badge/Version-%200.5.12-orange.svg)
+![version](https://img.shields.io/badge/Version-%200.5.20-orange.svg)
 ![build](https://travis-ci.org/yutiansut/QUANTAXIS.svg?branch=master)
 [![Stories in Ready](https://badge.waffle.io/yutiansut/QUANTAXIS.svg?label=ready&title=Ready)](http://waffle.io/yutiansut/QUANTAXIS)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.8-brown.svg)
-![Pypi](https://img.shields.io/badge/Pypi-%200.5.12-blue.svg)
+![Pypi](https://img.shields.io/badge/Pypi-%200.5.20-blue.svg)
 ![python](https://img.shields.io/badge/python-%203.6/3.5/3.4/win/ubuntu-darkgrey.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.4.0-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
@@ -48,14 +48,19 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - 自定义的数据结构
 - 指标计算
 - 板块数据(0.5.1新增)/同花顺,通达信板块
-- 基本面数据(部分)
+- 基本面数据(部分 最新一期财务报表)
 - 行情分发
+- 循环回测
+
 
 预计实现:
 
 - 文档更新
 - 期货数据/回测
 - 实盘
+- 分析模块(行情分析/板块分析)
+- 回测管理优化
+- 成交记录分析器
 
 <!-- TOC -->
 
