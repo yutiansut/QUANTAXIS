@@ -88,7 +88,9 @@ def init():
     QB.setting.QA_util_sql_mongo_ip = '127.0.0.1'  # 回测数据库
     QB.setting.QA_setting_user_name = str('admin')  # 回测账户
     QB.setting.QA_setting_user_password = str('admin')  # 回测密码
-
+    QB.topic_name = 'EXAMPLE'  #回测的主题
+    QB.stratey_version = 'V1'  #回测的版本号
+    
     QB.account.init_assest = 2000000  # 初始资金
 
     # benchmark
