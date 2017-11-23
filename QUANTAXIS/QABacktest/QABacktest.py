@@ -112,9 +112,9 @@ class QA_Backtest():
     if_save_to_mongo = True
     if_save_to_csv = True
 
-    topic_name=''
-    topic_id =''
-    stratey_version =''
+    topic_name = 'EXAMPLE'
+    topic_id = ''
+    stratey_version = 'V1'
 
     def __init__(self):
 
@@ -128,7 +128,7 @@ class QA_Backtest():
         self.user = self.setting.QA_setting_user_name
         self.market_data = []
         self.now = None
-        self.last_time=None
+        self.last_time = None
         self.strategy_start_date = ''
         self.strategy_start_time = ''
         self.strategy_end_date = ''
@@ -147,9 +147,10 @@ class QA_Backtest():
         self.backtest_print_log = True  # 打印
         self.if_save_to_mongo = True
         self.if_save_to_csv = True
-        self.stratey_version =''
-        self.topic_name=''
-        self.topic_id =''
+        self.stratey_version = 'V1'
+        self.topic_name = 'EXAMPLE'
+        self.topic_id = ''
+        self.dirs='.{}QUANTAXIS_RESULT{}{}{}{}{}'.format(os.sep, os.sep, self.topic_name, os.sep, self.stratey_version, os.sep)
 
     def __QA_backtest_init(self):
         self.__init__(self)
@@ -250,7 +251,8 @@ class QA_Backtest():
         self.market_data_dict = dict(
             zip(list(self.market_data.code), self.market_data.splits()))
         self.market_data_hashable = self.market_data.dicts
-
+        self.dirs='.{}QUANTAXIS_RESULT{}{}{}{}{}'.format(os.sep, os.sep, self.topic_name, os.sep, self.stratey_version, os.sep)
+        os.makedirs(self.dirs,exist_ok=True)
     def __QA_backtest_log_info(self, log):
         if self.backtest_print_log:
             return QA_util_log_info(log)
@@ -272,6 +274,16 @@ class QA_Backtest():
 
         # 初始化报价模式
         self.__messages = []
+
+    def __save_strategy_files(self):
+        
+        file_name = '{}backtest_{}.py'.format(self.dirs,self.account.account_cookie)
+        
+        with open(sys.argv[0], 'rb') as p:
+            data = p.read()
+            with open(file_name, 'wb') as f:
+
+                f.write(data)
 
     def __QA_bid_amount(self, __strategy_amount, __amount):
         if __strategy_amount == 'mean':
@@ -556,10 +568,14 @@ class QA_Backtest():
             lambda x: __mean(x))
 
         try:
-            self.account.detail['pnl_persentage'] = self.account.detail['sell_average'] - \
+            self.account.detail['pnl_price'] = self.account.detail['sell_average'] - \
                 self.account.detail['price']
+            
+            self.account.detail['pnl'] = self.account.detail['pnl_price'] * (
+                self.account.detail['amounts'] - self.account.detail['left_amount']) - self.account.detail['commission']
 
-            self.account.detail['pnl'] = self.account.detail['pnl_persentage'] * (self.account.detail['amounts'] - self.account.detail['left_amount'])- self.account.detail['commission']
+
+            self.account.detail['pnl_presentage']=self.account.detail['pnl_price']/self.account.detail['price']
         except:
             pass
         self.account.detail = self.account.detail.drop(
@@ -608,10 +624,11 @@ class QA_Backtest():
                 QA_SU_save_account_message(
                     self.__messages, self.setting.client)
             if self.if_save_to_csv:
-                QA_SU_save_account_to_csv(self.__messages)
+                QA_SU_save_account_to_csv(self.__messages,self.dirs)
 
                 self.account.detail.to_csv(
-                    'backtest-pnl--' + str(self.account.account_cookie) + '.csv')
+                    '{}backtest-pnl-{}.csv'.format(self.dirs,str(self.account.account_cookie)))
+                self.__save_strategy_files(self)
 
     def __check_state(self, bid_price, bid_amount):
         pass
