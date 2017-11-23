@@ -46,7 +46,7 @@ from .QAWeb import QA_util_web_ping
 # 交易日相关
 from .QADate_trade import (trade_date_sse, QA_util_if_trade, QA_util_date_gap,
                            QA_util_get_real_datelist, QA_util_get_real_date,
-                           QA_util_get_trade_range)
+                           QA_util_get_trade_range, QA_util_get_trade_gap)
 # csv 文件相关
 from .QACsv import QA_util_save_csv
 # list格式相关
