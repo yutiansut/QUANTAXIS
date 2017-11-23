@@ -114,7 +114,7 @@ class QA_Backtest():
 
     topic_name=''
     topic_id =''
-
+    stratey_version =''
 
     def __init__(self):
 
@@ -147,7 +147,7 @@ class QA_Backtest():
         self.backtest_print_log = True  # 打印
         self.if_save_to_mongo = True
         self.if_save_to_csv = True
-
+        self.stratey_version =''
         self.topic_name=''
         self.topic_id =''
 
