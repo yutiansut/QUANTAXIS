@@ -31,7 +31,7 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_str2int,
                               QA_util_date_valid, QA_util_get_real_date,
                               QA_util_get_real_datelist, QA_util_log_info,
                               QA_util_time_stamp, QA_util_web_ping,
-                              trade_date_sse)
+                              trade_date_sse,QA_util_get_trade_gap)
 
 
 # 基于Pytdx的数据接口,好处是可以在linux/mac上联入通达信行情
@@ -124,14 +124,20 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', 
             level = 10
         elif level in ['y', 'Y', 'year', 'Year']:
             level = 11
+        start_date=str(start_date)[0:10]
+        today_=datetime.date.today()
+        lens=QA_util_get_trade_gap(start_date,today_)
 
+        
         data = pd.concat([api.to_df(api.get_security_bars(level, __select_market_code(
-            code), code, (9 - i) * 800, 800)) for i in range(10)], axis=0)
+            code), code, (int(lens/800)- i) * 800, 800)) for i in range(int(lens/800)+1)], axis=0)
+        
         data = data[data['open'] != 0]
 
         if if_fq in ['00', 'bfq']:
             data = data.assign(date=data['datetime'].apply(lambda x: str(x[0:10]))).assign(code=str(code))\
                 .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10]))).set_index('date', drop=False, inplace=False)
+
             return data.drop(['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1)[start_date:end_date].assign(date=data['date'].apply(lambda x: str(x)[0:10]))
 
         elif if_fq in ['01', 'qfq']:
@@ -285,20 +291,29 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', 
 def QA_fetch_get_stock_min(code, start, end, level='1min', ip=best_ip, port=7709):
     api = TdxHq_API()
     type_ = ''
+    start_date=str(start)[0:10]
+    today_=datetime.date.today()
+    lens=QA_util_get_trade_gap(start_date,today_)
     if str(level) in ['5', '5m', '5min', 'five']:
         level, type_ = 0, '5min'
+        lens = 48*lens
     elif str(level) in ['1', '1m', '1min', 'one']:
         level, type_ = 8, '1min'
+        lens = 240*lens
     elif str(level) in ['15', '15m', '15min', 'fifteen']:
         level, type_ = 1, '15min'
+        lens = 16*lens
     elif str(level) in ['30', '30m', '30min', 'half']:
         level, type_ = 2, '30min'
+        lens = 8*lens
     elif str(level) in ['60', '60m', '60min', '1h']:
         level, type_ = 3, '60min'
+        lens = 4*lens
+
     with api.connect(ip, port):
 
         data = pd.concat([api.to_df(api.get_security_bars(level, __select_market_code(
-            str(code)), str(code), (25 - i) * 800, 800)) for i in range(26)], axis=0)
+            str(code)), str(code), (int(lens/800)- i) * 800, 800)) for i in range(int(lens/800)+1)], axis=0)
 
         data = data\
             .assign(datetime=pd.to_datetime(data['datetime']), code=str(code))\
@@ -387,12 +402,17 @@ def QA_fetch_get_index_day(code, start_date, end_date, level='day', ip=best_ip, 
         level = 11
 
     with api.connect(ip, port):
+
+        start_date=str(start_date)[0:10]
+        today_=datetime.date.today()
+        lens=QA_util_get_trade_gap(start_date,today_)
+
         if str(code)[0] in ['5', '1']:  # ETF
             data = pd.concat([api.to_df(api.get_security_bars(
-                level, 1 if str(code)[0] in ['0', '8', '9', '5'] else 0, code, (25 - i) * 800, 800)) for i in range(26)], axis=0)
+                level, 1 if str(code)[0] in ['0', '8', '9', '5'] else 0, code, (int(lens/800) - i) * 800, 800)) for i in range(int(lens/800)+1)], axis=0)
         else:
             data = pd.concat([api.to_df(api.get_index_bars(
-                level, 1 if str(code)[0] in ['0', '8', '9', '5'] else 0, code, (25 - i) * 800, 800)) for i in range(26)], axis=0)
+                level, 1 if str(code)[0] in ['0', '8', '9', '5'] else 0, code, (int(lens/800) - i) * 800, 800)) for i in range(int(lens/800)+1)], axis=0)
         data = data.assign(date=data['datetime'].apply(lambda x: str(x[0:10]))).assign(code=str(code))\
             .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10])))\
             .set_index('date', drop=False, inplace=False)\
@@ -405,23 +425,33 @@ def QA_fetch_get_index_min(code, start, end, level='1min', ip=best_ip, port=7709
     '指数分钟线'
     api = TdxHq_API()
     type_ = ''
+
+    start_date=str(start)[0:10]
+    today_=datetime.date.today()
+    lens=QA_util_get_trade_gap(start_date,today_)
     if str(level) in ['5', '5m', '5min', 'five']:
         level, type_ = 0, '5min'
+        lens = 48*lens
     elif str(level) in ['1', '1m', '1min', 'one']:
         level, type_ = 8, '1min'
+        lens = 240*lens
     elif str(level) in ['15', '15m', '15min', 'fifteen']:
         level, type_ = 1, '15min'
+        lens = 16*lens
     elif str(level) in ['30', '30m', '30min', 'half']:
         level, type_ = 2, '30min'
+        lens = 8*lens
     elif str(level) in ['60', '60m', '60min', '1h']:
         level, type_ = 3, '60min'
+        lens = 4*lens
     with api.connect(ip, port):
+
         if str(code)[0] in ['5', '1']:  # ETF
             data = pd.concat([api.to_df(api.get_security_bars(
-                level, 1 if str(code)[0] in ['0', '8', '9', '5'] else 0, code, (25 - i) * 800, 800)) for i in range(26)], axis=0)
+                level, 1 if str(code)[0] in ['0', '8', '9', '5'] else 0, code, (int(lens/800) - i) * 800, 800)) for i in range(int(lens/800)+1)], axis=0)
         else:
             data = pd.concat([api.to_df(api.get_index_bars(
-                level, 1 if str(code)[0] in ['0', '8', '9', '5'] else 0, code, (25 - i) * 800, 800)) for i in range(26)], axis=0)
+                level, 1 if str(code)[0] in ['0', '8', '9', '5'] else 0, code, (int(lens/800) - i) * 800, 800)) for i in range(int(lens/800)+1)], axis=0)
         data = data\
             .assign(datetime=pd.to_datetime(data['datetime']), code=str(code))\
             .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1, inplace=False)\

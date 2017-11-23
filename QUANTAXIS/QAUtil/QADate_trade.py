@@ -1,4 +1,4 @@
-#coding:utf-8
+# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -27,6 +27,7 @@ import time
 import math
 import pandas as pd
 
+
 def QA_util_if_trade(day):
     '日期是否交易'
     if day in trade_date_sse:
@@ -34,17 +35,19 @@ def QA_util_if_trade(day):
     else:
         return False
 
+
 def QA_util_get_real_date(date, trade_list, towards):
     """
     获取真实的交易日期,其中,第三个参数towards是表示向前/向后推
     towards=1 日期向后迭代
     towards=-1 日期向前迭代
     @ yutiansut
-    
+
     """
     if towards == 1:
         while date not in trade_list:
-            date = str(datetime.datetime.strptime(str(date)[0:10], '%Y-%m-%d') + datetime.timedelta(days=1))[0:10]
+            date = str(datetime.datetime.strptime(
+                str(date)[0:10], '%Y-%m-%d') + datetime.timedelta(days=1))[0:10]
         else:
             return str(date)[0:10]
     elif towards == -1:
@@ -53,6 +56,8 @@ def QA_util_get_real_date(date, trade_list, towards):
                 str(date)[0:10], '%Y-%m-%d') - datetime.timedelta(days=1))[0:10]
         else:
             return str(date)[0:10]
+
+
 
 
 def QA_util_get_real_datelist(start,end):
@@ -69,6 +74,12 @@ def QA_util_get_trade_range(start,end):
     '给出交易具体时间'
     start,end=QA_util_get_real_datelist(start,end)
     return trade_date_sse[trade_date_sse.index(start):trade_date_sse.index(end)+1:1]
+
+
+def QA_util_get_trade_gap(start, end):
+    '返回start_day到end_day中间有多少个交易天 算首尾'
+    start, end = QA_util_get_real_datelist(start, end)
+    return trade_date_sse.index(end)+1-trade_date_sse.index(start)
 
 def QA_util_date_gap(date,gap,methods):
     try:
