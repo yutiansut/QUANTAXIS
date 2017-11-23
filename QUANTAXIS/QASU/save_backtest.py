@@ -60,8 +60,7 @@ def QA_SU_save_backtest_message(message, client):
 
 def QA_SU_save_account_to_csv(message,path=os.getcwd()):
 
-    __file_name_1 = '{}backtest-ca&history--' + \
-        str(message['header']['cookie']) + '.csv'.format(path)
+    __file_name_1 = '{}backtest-ca&history-{}.csv'.format(path,str(message['header']['cookie']))
     with open(__file_name_1, 'w', newline='') as C:
         csvwriter = csv.writer(C)
         csvwriter.writerow(['date', 'code', 'price', 'towards', 'amount',
