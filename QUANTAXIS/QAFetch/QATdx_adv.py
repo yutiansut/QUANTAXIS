@@ -86,7 +86,7 @@ class QA_Tdx_Executor():
         try:
             with api.connect(ip, port, time_out=self.ms):
                 if len(api.get_security_list(0, 1)) > 800:
-                    print((datetime.datetime.now() - _time).total_seconds())
+                    #print((datetime.datetime.now() - _time).total_seconds())
                     return (datetime.datetime.now() - _time).total_seconds()
                 else:
                     return datetime.timedelta(9, 9, 0).total_seconds()
@@ -235,9 +235,10 @@ if __name__ == '__main__':
     from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_block_adv
     code = QA_fetch_stock_block_adv().code
     print(len(code))
-    x = QA_Tdx_Executor()
+    x = QA_Tdx_Executor(ms=0.3)
     print(x._queue.qsize())
     print(x.get_available())
+    print(x._queue.qsize())
     #data = x.get_security_bars(code[0], '15min', 20)
     # print(data)
     # for i in range(5):

@@ -434,8 +434,18 @@ def QA_fetch_get_index_min(code, start, end, level='1min', ip=best_ip, port=7709
 
 
 def __QA_fetch_get_stock_transaction(code, day, retry, api):
-    data_ = pd.concat([api.to_df(api.get_history_transaction_data(
-        __select_market_code(str(code)), str(code), (20 - i) * 800, 800, QA_util_date_str2int(day))) for i in range(21)], axis=0)
+    batch_size = 2000  # 800 or 2000 ? 2000 maybe also works
+    data_arr = []
+    max_offset = 21
+    cur_offset = 0
+    while cur_offset <= max_offset:
+        one_chunk = api.get_history_transaction_data(
+        __select_market_code(str(code)), str(code), cur_offset * batch_size, batch_size, QA_util_date_str2int(day))
+        if one_chunk is None or one_chunk == []:
+            break
+        data_arr = one_chunk + data_arr
+        cur_offset += 1
+    data_ = api.to_df(data_arr)
 
     for _ in range(retry):
         if len(data_) < 2:
