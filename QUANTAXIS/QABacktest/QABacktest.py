@@ -112,6 +112,10 @@ class QA_Backtest():
     if_save_to_mongo = True
     if_save_to_csv = True
 
+    topic_name=''
+    topic_id =''
+
+
     def __init__(self):
 
         self.backtest_type = 'day'
@@ -123,23 +127,32 @@ class QA_Backtest():
         self.clients = self.setting.client
         self.user = self.setting.QA_setting_user_name
         self.market_data = []
-        self.now = ''
+        self.now = None
+        self.last_time=None
         self.strategy_start_date = ''
         self.strategy_start_time = ''
         self.strategy_end_date = ''
         self.strategy_end_time = ''
-        self.today = ''
+        self.today = None
         self.strategy_stock_list = []
         self.trade_list = []
         self.start_real_id = 0
         self.end_real_id = 0
         self.temp = {}
         self.commission_fee_coeff = 0.0015
+        self.account_d_value = []
+        self.account_d_key = []
         self.benchmark_type = 'index'
         self.market_data_dict = {}
         self.backtest_print_log = True  # 打印
+        self.if_save_to_mongo = True
+        self.if_save_to_csv = True
+
+        self.topic_name=''
+        self.topic_id =''
 
     def __QA_backtest_init(self):
+        self.__init__(self)
         """既然是被当做装饰器使用,就需要把变量设置放在装饰函数的前面,把函数放在装饰函数的后面"""
         # 设置回测的开始结束时间
         self.strategy_start_date = str('2017-01-05')
