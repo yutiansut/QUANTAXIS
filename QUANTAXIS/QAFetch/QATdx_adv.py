@@ -86,7 +86,7 @@ class QA_Tdx_Executor():
         try:
             with api.connect(ip, port, time_out=self.ms):
                 if len(api.get_security_list(0, 1)) > 800:
-                    print((datetime.datetime.now() - _time).total_seconds())
+                    
                     return (datetime.datetime.now() - _time).total_seconds()
                 else:
                     return datetime.timedelta(9, 9, 0).total_seconds()
