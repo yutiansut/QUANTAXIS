@@ -52,14 +52,14 @@ from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
 
 
 class QA_Tdx_Executor():
-    def __init__(self, thread_num=2, *args, **kwargs):
+    def __init__(self, thread_num=2, ms=0.05, *args, **kwargs):
         self.thread_num = thread_num
         self._queue = queue.Queue(maxsize=200)
         self.api_no_connection = TdxHq_API()
         self._api_worker = Thread(
             target=self.api_worker, args=(), name='API Worker')
         self._api_worker.start()
-
+        self.ms = ms
         self.executor = ThreadPoolExecutor(self.thread_num)
 
     def __getattr__(self, item):
@@ -84,8 +84,9 @@ class QA_Tdx_Executor():
         #api.need_setup = False
         _time = datetime.datetime.now()
         try:
-            with api.connect(ip, port, time_out=0.05):
+            with api.connect(ip, port, time_out=self.ms):
                 if len(api.get_security_list(0, 1)) > 800:
+                    #print((datetime.datetime.now() - _time).total_seconds())
                     return (datetime.datetime.now() - _time).total_seconds()
                 else:
                     return datetime.timedelta(9, 9, 0).total_seconds()
@@ -234,9 +235,10 @@ if __name__ == '__main__':
     from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_block_adv
     code = QA_fetch_stock_block_adv().code
     print(len(code))
-    x = QA_Tdx_Executor()
+    x = QA_Tdx_Executor(ms=0.3)
     print(x._queue.qsize())
     print(x.get_available())
+    print(x._queue.qsize())
     #data = x.get_security_bars(code[0], '15min', 20)
     # print(data)
     # for i in range(5):
