@@ -162,3 +162,6 @@ def after_backtest():
     end_time = datetime.now()
     cost_time = (end_time - start_time).total_seconds()
     QA.QA_util_log_info('耗费时间 {} {}'.format(cost_time,'seconds'))
+
+    QB.if_save_to_csv=True
+    QB.if_save_to_mongo=True
