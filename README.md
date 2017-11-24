@@ -254,7 +254,8 @@ cd web
 
 在命令行输入 quantaxis 进去quantaxis CLI
 quantaxis> save all
-
+quantaxis> save stock_block
+quantaxis> save stock_info
 随意新建一个目录:(不要跟QUANTAXIS文件夹在一个目录)
 
 在命令行输入 quantaxis 进去quantaxis CLI
