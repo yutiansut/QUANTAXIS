@@ -24,7 +24,7 @@ test/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[cod]
+
 *$py.class
 
 #zip
@@ -134,12 +134,6 @@ ENV/
 
 
 
-# thoughts/
-
-thought/
-.thought/
-.vs/
-
 #jupyter
 
 *.ipynb
@@ -152,3 +146,4 @@ kernel*.json
 
 # packge-lock
 
+.\vs
