@@ -111,7 +111,9 @@ class QA_Backtest():
     backtest_print_log = True
     if_save_to_mongo = True
     if_save_to_csv = True
-    outside_data={}
+    outside_data=[]
+    outside_data_dict=[]
+    outside_data_hashable={}
     topic_name = 'EXAMPLE'
     topic_id = ''
     stratey_version = 'V1'
@@ -150,7 +152,9 @@ class QA_Backtest():
         self.stratey_version = 'V1'
         self.topic_name = 'EXAMPLE'
         self.topic_id = ''
-        self.outside_data={}
+        self.outside_data=[]
+        self.outside_data_dict=[]
+        self.outside_data_hashable={}
         self.dirs='.{}QUANTAXIS_RESULT{}{}{}{}{}'.format(os.sep, os.sep, self.topic_name, os.sep, self.stratey_version, os.sep)
 
     def __QA_backtest_init(self):
@@ -651,24 +655,27 @@ class QA_Backtest():
         if isinstance(time, str):
             if len(time) == 10:
                 try:
-                    return self.market_data_hashable[(datetime.datetime.strptime(time, '%Y-%m-%d'), code)]
+                    try:
+                        return self.market_data_hashable[(datetime.datetime.strptime(time, '%Y-%m-%d'), code)]
+                    except:
+                        return self.outside_data_hashable[(datetime.datetime.strptime(time, '%Y-%m-%d'), code)]
                 except:
-                    return self.outside_data_hashable[(datetime.datetime.strptime(time, '%Y-%m-%d'), code)]
-                else:
                     return None
             elif len(time) == 19:
                 try:
-                    return self.market_data_hashable[(datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S'), code)]
+                    try:
+                        return self.market_data_hashable[(datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S'), code)]
+                    except:
+                        return self.outside_data_hashable[(datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S'), code)]
                 except:
-                    return self.outside_data_hashable[(datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S'), code)]
-                else:
                     return None
         else:
             try:
-                return self.market_data_hashable[(time, code)]
+                try:
+                    return self.market_data_hashable[(time, code)]
+                except:
+                    return self.outside_data_hashable[(time, code)]
             except:
-                return self.outside_data_hashable[(time, code)]
-            else:
                 return None
 
     @lru_cache()
@@ -676,10 +683,11 @@ class QA_Backtest():
         '这个函数封装了关于获取的方式 用GAP的模式'
         gap_ = self.strategy_gap if gap_ is None else gap_
         try:
-            return self.market_data_dict[code].select_time_with_gap(date, gap_, type_)
+            try:
+                return self.market_data_dict[code].select_time_with_gap(date, gap_, type_)
+            except:
+                return self.market_data_dict[code].get_bar(code, time, if_trade)
         except:
-            return self.market_data_dict[code].get_bar(code, time, if_trade)
-        else:
             return None
 
     @lru_cache()
@@ -697,10 +705,11 @@ class QA_Backtest():
     def QA_backtest_get_market_data_bar(self, code, time, if_trade=True):
         '这个函数封装了关于获取的方式'
         try:
-            return self.market_data_dict[code].get_bar(code, time, if_trade)
+            try:
+                return self.market_data_dict[code].get_bar(code, time, if_trade)
+            except:
+                return self.outside_data_dict[code].get_bar(code, time, if_trade)
         except:
-            return self.outside_data_dict[code].get_bar(code, time, if_trade)
-        else:
             return None
 
     def QA_backtest_get_block(self, block_list):
