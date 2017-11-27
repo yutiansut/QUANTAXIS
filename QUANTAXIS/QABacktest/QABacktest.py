@@ -111,7 +111,7 @@ class QA_Backtest():
     backtest_print_log = True
     if_save_to_mongo = True
     if_save_to_csv = True
-
+    outside_data={}
     topic_name = 'EXAMPLE'
     topic_id = ''
     stratey_version = 'V1'
@@ -150,6 +150,7 @@ class QA_Backtest():
         self.stratey_version = 'V1'
         self.topic_name = 'EXAMPLE'
         self.topic_id = ''
+        self.outside_data={}
         self.dirs='.{}QUANTAXIS_RESULT{}{}{}{}{}'.format(os.sep, os.sep, self.topic_name, os.sep, self.stratey_version, os.sep)
 
     def __QA_backtest_init(self):
@@ -253,6 +254,12 @@ class QA_Backtest():
         self.market_data_hashable = self.market_data.dicts
         self.dirs='.{}QUANTAXIS_RESULT{}{}{}{}{}'.format(os.sep, os.sep, self.topic_name, os.sep, self.stratey_version, os.sep)
         os.makedirs(self.dirs,exist_ok=True)
+        try:
+            self.outside_data_dict=dict(
+            zip(list(self.outside_data.code), self.outside_data.splits()))
+            self.outside_data_hashable=self.outside_data.dicts
+        except Exception as e:
+            pass
     def __QA_backtest_log_info(self, log):
         if self.backtest_print_log:
             return QA_util_log_info(log)
@@ -646,16 +653,22 @@ class QA_Backtest():
                 try:
                     return self.market_data_hashable[(datetime.datetime.strptime(time, '%Y-%m-%d'), code)]
                 except:
+                    return self.outside_data_hashable[(datetime.datetime.strptime(time, '%Y-%m-%d'), code)]
+                else:
                     return None
             elif len(time) == 19:
                 try:
                     return self.market_data_hashable[(datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S'), code)]
                 except:
+                    return self.outside_data_hashable[(datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S'), code)]
+                else:
                     return None
         else:
             try:
                 return self.market_data_hashable[(time, code)]
             except:
+                return self.outside_data_hashable[(time, code)]
+            else:
                 return None
 
     @lru_cache()
@@ -665,6 +678,8 @@ class QA_Backtest():
         try:
             return self.market_data_dict[code].select_time_with_gap(date, gap_, type_)
         except:
+            return self.market_data_dict[code].get_bar(code, time, if_trade)
+        else:
             return None
 
     @lru_cache()
@@ -684,6 +699,8 @@ class QA_Backtest():
         try:
             return self.market_data_dict[code].get_bar(code, time, if_trade)
         except:
+            return self.outside_data_dict[code].get_bar(code, time, if_trade)
+        else:
             return None
 
     def QA_backtest_get_block(self, block_list):
