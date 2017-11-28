@@ -170,8 +170,10 @@ class QA_Tdx_Executor():
             for id_ in range(int(len(code) / 80) + 1):
                 context = self._singal_job(context, id_)
 
-            data = context[['datetime', 'code', 'open', 'high', 'low', 'price', 'ask1', 'ask_vol1',
-                            'ask2', 'ask_vol2', 'ask3', 'ask_vol3', 'ask4', 'ask_vol4', 'ask5', 'ask_vol5']]
+            data = context[['datetime', 'last_close', 'code', 'open', 'high', 'low', 'price', 'cur_vol',
+                       's_vol', 'b_vol', 'vol', 'ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',
+                       'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3', 'ask4',
+                       'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
             return data.set_index('code', drop=False, inplace=False)
         except:
             return None
