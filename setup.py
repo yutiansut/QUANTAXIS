@@ -96,7 +96,8 @@ setup(
     entry_points={
         'console_scripts': [
             'quantaxis=QUANTAXIS.QACmd:QA_cmd',
-            'quantaxisd=QUANTAXIS.QAWeb.QA_Web:main'
+            'quantaxisd=QUANTAXIS.QAWeb.QA_Web:main',
+            'quantaxisq=QUANTAXIS.QAFetch.QATdx_adv:bat'
         ]
     },
     # install_requires=requirements,
