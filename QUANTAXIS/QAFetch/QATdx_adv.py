@@ -40,6 +40,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from pytdx.exhq import TdxExHq_API
 from pytdx.hq import TdxHq_API
 from QUANTAXIS.QAUtil.QADate import QA_util_calc_time
+from QUANTAXIS.QAUtil.QADate_trade import QA_util_if_tradetime
 from QUANTAXIS.QAUtil.QASetting import info_ip_list,QA_Setting
 from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
 
@@ -245,20 +246,21 @@ if __name__ == '__main__':
 
     for i in range(100000):
         _time = datetime.datetime.now()
+        if QA_util_if_tradetime(_time):#如果在交易时间
         #data = x.get_realtime(code)
-        data = x.get_realtime_concurrent(code)
+            data = x.get_realtime_concurrent(code)
 
-        data[0]['datetime']=data[1]
-        x.save_mongo(data[0])
-        # print(code[0])
-        #data = x.get_security_bars(code, '15min', 20)
-        # if data is not None:
-        print(len(data[0]))
-        #print(data)
-        print('Time {}'.format((datetime.datetime.now() - _time).total_seconds()))
-        time.sleep(1)
-        print('Connection Pool NOW LEFT {} Available IP'.format(x._queue.qsize()))
-        print('Program Last Time {}'.format(
-            (datetime.datetime.now() - _time1).total_seconds()))
-        # print(threading.enumerate())
-# #
+            data[0]['datetime']=data[1]
+            x.save_mongo(data[0])
+            # print(code[0])
+            #data = x.get_security_bars(code, '15min', 20)
+            # if data is not None:
+            print(len(data[0]))
+            #print(data)
+            print('Time {}'.format((datetime.datetime.now() - _time).total_seconds()))
+            time.sleep(1)
+            print('Connection Pool NOW LEFT {} Available IP'.format(x._queue.qsize()))
+            print('Program Last Time {}'.format(
+                (datetime.datetime.now() - _time1).total_seconds()))
+            # print(threading.enumerate())
+    # #
