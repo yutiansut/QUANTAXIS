@@ -126,7 +126,7 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms
                               QA_util_make_min_index, QA_util_make_hour_index)
 
 from QUANTAXIS.QAIndicator import *
-
+#from QUANTAXIS.QAFetch.QATdx_adv import bat
 #from QUANTAXIS.QAWeb import QA_Web
 # CMD and Cli
 import QUANTAXIS.QACmd
