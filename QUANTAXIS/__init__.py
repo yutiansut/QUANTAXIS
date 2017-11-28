@@ -31,7 +31,7 @@ by yutiansut
 
 2017/4/8
 """
-__version__ = '0.5.21'
+__version__ = '0.5.22'
 __author__ = 'yutiansut'
 logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
@@ -116,7 +116,7 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms
                               QA_util_cfg_initial, QA_util_get_cfg,
                               QA_Setting,
                               QA_util_web_ping,
-                              trade_date_sse, QA_util_if_trade,
+                              trade_date_sse, QA_util_if_trade, QA_util_if_tradetime,
                               QA_util_get_real_datelist, QA_util_get_real_date,
                               QA_util_get_trade_range, QA_util_get_trade_gap,
                               QA_util_save_csv,
