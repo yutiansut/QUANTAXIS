@@ -293,7 +293,8 @@ cd web
 登录后点击左上角 <模拟回测> 在模拟回测的选择界面的用户名搜索框输入回测的时候的用户名(默认是admin),回车
 
 选择和你回测策略中名称一致的结果即可进入可视化界面
-
+![开启web](http://osnhakmay.bkt.clouddn.com/quantaxis%E5%BC%80%E5%90%AF.gif)
+![web操作](http://osnhakmay.bkt.clouddn.com/quantaxisweb.gif)
 
 ### 更新QUANTAXIS
 
