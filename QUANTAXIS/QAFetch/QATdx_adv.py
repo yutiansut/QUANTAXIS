@@ -177,6 +177,7 @@ class QA_Tdx_Executor():
                             's_vol', 'b_vol', 'vol', 'ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',
                             'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3', 'ask4',
                             'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
+            data['datetime']=data['datetime'].apply(lambda x : str(x))
             return data.set_index('code', drop=False, inplace=False)
         except:
             return None

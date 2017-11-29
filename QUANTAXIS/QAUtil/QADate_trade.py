@@ -34,7 +34,6 @@ def QA_util_if_trade(day):
         return True
     else:
         return False
-    
 def QA_util_if_tradetime(_time):
     '时间是否交易'
     _time=datetime.datetime.strptime(str(_time)[0:19],'%Y-%m-%d %H:%M:%S')
