@@ -309,6 +309,7 @@ def QA_fetch_stock_info(code, format_='pd', collections=QA_Setting.client.quanta
         return None
 
 
+
 def QA_fetch_stock_name(code, collections=QA_Setting.client.quantaxis.stock_list):
     try:
         return collections.find_one({'code': code})['name']
