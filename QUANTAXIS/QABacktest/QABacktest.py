@@ -753,7 +753,7 @@ class QA_Backtest():
         '快速返回 OHLCV格式'
         return (__data.open, __data.high, __data.low, __data.close, __data.vol)
 
-    def QA_backtest_send_order(self, __code, __amount, __towards, __order):
+    def QA_backtest_send_order(self, code, amount, towards, order_type):
         """
         2017/8/4
         委托函数
@@ -781,36 +781,35 @@ class QA_Backtest():
         # 必须是100股的倍数
         # 封装bid
 
-        __bid = QA_QAMarket_bid()  # init
-        (__bid.order_id, __bid.user, __bid.strategy,
-         __bid.code, __bid.date, __bid.datetime,
-         __bid.sending_time,
-         __bid.amount, __bid.towards) = (str(random.random()),
+        _bid = QA_QAMarket_bid()  # init
+        (_bid.order_id, _bid.user, _bid.strategy,
+         _bid.code, _bid.date, _bid.datetime,
+         _bid.sending_time,
+         _bid.amount, _bid.towards) = (str(random.random()),
                                          self.setting.QA_setting_user_name, self.strategy_name,
-                                         __code, self.running_date, str(
-                                             self.now),
-                                         self.running_date, __amount, __towards)
+                                         code, self.running_date, str(self.now),
+                                         self.running_date, amount, towards)
 
         # 2017-09-21 修改: 只有股票的交易才需要控制amount的最小交易单位
         if self.backtest_type in ['day']:
-            __bid.type = '0x01'
-            __bid.amount = int(__bid.amount / 100) * 100
+            _bid.type = '0x01'
+            _bid.amount = int(_bid.amount / 100) * 100
         elif self.backtest_type in ['1min', '5min', '15min', '30min', '60min']:
-            __bid.type = '0x02'
-            __bid.amount = int(__bid.amount / 100) * 100
+            _bid.type = '0x02'
+            _bid.amount = int(_bid.amount / 100) * 100
         elif self.backtest_type in ['index_day']:
-            __bid.type = '0x03'
-            __bid.amount = int(__bid.amount)
+            _bid.type = '0x03'
+            _bid.amount = int(_bid.amount)
         elif self.backtest_type in ['index_1min', 'index_5min', 'index_15min', 'index_30min', 'index_60min']:
-            __bid.type = '0x04'
-            __bid.amount = int(__bid.amount)
+            _bid.type = '0x04'
+            _bid.amount = int(_bid.amount)
         # 检查账户/临时扣费
 
-        __bid, __market = self.__wrap_bid(self, __bid, __order)
-        if __bid is not None and __market != 500:
+        _bid, _market = self.__wrap_bid(self, _bid, order_type)
+        if _bid is not None and _market != 500:
             print('GET the Order Code %s Amount %s Price %s Towards %s Time %s' % (
-                __bid.code, __bid.amount, __bid.price, __bid.towards, __bid.datetime))
-            self.__sync_order_LM(self, 'create_order', order_=__bid)
+                _bid.code, _bid.amount, _bid.price, _bid.towards, _bid.datetime))
+            self.__sync_order_LM(self, 'create_order', order_=_bid)
 
     @lru_cache()
     def QA_backtest_check_order(self, order_id_):
