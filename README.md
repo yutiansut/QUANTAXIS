@@ -305,6 +305,7 @@ cd web
 选择和你回测策略中名称一致的结果即可进入可视化界面
 ![开启web](http://osnhakmay.bkt.clouddn.com/quantaxis%E5%BC%80%E5%90%AF.gif)
 ![web操作](http://osnhakmay.bkt.clouddn.com/quantaxisweb.gif)
+(web操作的图太大 github上无法显示, 可以点进链接查看)
 
 ### 更新QUANTAXIS
 
