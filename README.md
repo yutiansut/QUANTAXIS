@@ -36,7 +36,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - 分钟线 [1min/5min/15min/30min/60min]回测 (T+1)
 - 股指期货日线(T+0)/指数日线/ETF日线
 - 股指期货分钟线(T+0) / 指数分钟线/ETF分钟线 [1min/5min/15min/30min/60min] 
-- 基于pytdx/各种爬虫的数据源 
+- 基于[pytdx](https://github.com/rainx/pytdx)各种爬虫的数据源 
 ```
 [注意: tushare最新版本因为单方面直接复制了pytdx  所以导致和最新版本的pytdx不兼容 如有安装0.8.7版本以上的tushare 请降级使用]
 
