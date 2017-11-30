@@ -137,12 +137,12 @@ def strategy():
             if not np.isnan(MA_s):
                 if QB.QA_backtest_hold_amount(QB, item) == 0:  # 如果不持仓
                     if Close[-1] >= MA_s:
-                        QB.QA_backtest_send_order(QB, item, int(each_capital/Close[-1]/100)*100, 1, {'bid_model': 'c'})
+                        QB.QA_backtest_send_order(QB, code=item, amount=int(each_capital/Close[-1]/100)*100,towards= 1,order_type= {'bid_model': 'c'})
                 elif QB.QA_backtest_sell_available(QB, item) > 0:  # 如果可卖数量大于0
                     hold_price = QB.QA_backtest_hold_price(QB, item)
 
                     if Close[-1] <= MA_s:
-                        QB.QA_backtest_send_order(QB, item, QB.QA_backtest_sell_available(QB,item), -1, {'bid_model': 'c'})
+                        QB.QA_backtest_send_order(QB, code=item, amount=QB.QA_backtest_sell_available(QB,item), towards=-1, order_type={'bid_model': 'c'})
 
         else:
             QA.QA_util_log_info('{} HAS NO DATA IN {}'.format(item, QB.today))  # 如果是分钟回测 用QB.now
