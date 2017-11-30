@@ -30,7 +30,7 @@ from statistics import mean
 
 
 
-class result_analyzer():
+class backtest_result_analyzer():
     def __init__(self, cookie_id, *args, **kwargs):
         self.cookie = cookie_id
         self.backtest_history=QA_fetch_backtest_history(cookie=self.cookie)
@@ -86,7 +86,7 @@ def _mean(list_):
 
 
 if __name__=='__main__':
-    ana=result_analyzer(cookie_id='0.0792467630583924')
+    ana=backtest_result_analyzer(cookie_id='0.0792467630583924')
     print(ana.detail)
     code=ana.codes
     print(ana.get_stock_tradehistory(code[1]))
