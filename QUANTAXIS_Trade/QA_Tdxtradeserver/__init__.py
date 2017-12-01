@@ -9,7 +9,7 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 
 class TdxTradeApiParams:
-    
+
     """
     参见 https://github.com/yutiansut/pytdx/blob/master/pytdx/trade/trade.py
     0 资金
@@ -29,25 +29,26 @@ class TdxTradeApiParams:
     14 配号查询
     15 中签查询
     """
-    QUERY_CATEGORY_CASH     = 0
-    QUERY_CATEGORY_STOCKS   = 1
-    QUERY_CATEGORY_ORDER_OF_TODAY       = 2
-    QUERY_CATEGORY_DEAL_OF_TODAY        = 3
-    QUERY_CATEGORY_CANCELABLE_ORDER     = 4
-    QUERY_CATEGORY_SHAREHOLDERS_CODE    = 5
-    QUERY_CATEGORY_BALANCE_OF_MARGIN_LOAN   = 6
-    QUERY_CATEGORY_BALANCE_OF_STOCK_LOAN    = 7
-    QUERY_CATEGORY_OPERABLE_MARGIN_SOTCK    = 8
+    QUERY_CATEGORY_CASH = 0
+    QUERY_CATEGORY_STOCKS = 1
+    QUERY_CATEGORY_ORDER_OF_TODAY = 2
+    QUERY_CATEGORY_DEAL_OF_TODAY = 3
+    QUERY_CATEGORY_CANCELABLE_ORDER = 4
+    QUERY_CATEGORY_SHAREHOLDERS_CODE = 5
+    QUERY_CATEGORY_BALANCE_OF_MARGIN_LOAN = 6
+    QUERY_CATEGORY_BALANCE_OF_STOCK_LOAN = 7
+    QUERY_CATEGORY_OPERABLE_MARGIN_SOTCK = 8
 
-    QUERY_CATEGORY_NEW_STOCKS       = 12
+    QUERY_CATEGORY_NEW_STOCKS = 12
     QUERY_CATEGORY_NEW_STOCKS_QUOTA = 13
     QUERY_CATEGORY_NEW_STOCK_NUMBER = 14
-    QUERY_CATEGORY_NEW_STOCK_HIT    = 1
+    QUERY_CATEGORY_NEW_STOCK_HIT = 1
+
 
 class QATrade_TdxTradeServer(base_trade.QA_Trade_Api):
     def __init__(self, broker="http://127.0.0.1:19820/api", encoding="utf-8", enc_key=None, enc_iv=None):
         super().__init__()
-        
+
         self._endpoint = broker
         self._encoding = "utf-8"
         if enc_key == None or enc_iv == None:
@@ -60,22 +61,22 @@ class QATrade_TdxTradeServer(base_trade.QA_Trade_Api):
             self._transport_enc_key = enc_key
             self._transport_enc_iv = enc_iv
             backend = default_backend()
-            self._cipher = Cipher(algorithms.AES(enc_key), modes.CBC(enc_iv), backend=backend)
+            self._cipher = Cipher(algorithms.AES(
+                enc_key), modes.CBC(enc_iv), backend=backend)
 
         self._session = requests.Session()
-        self._event_dict ={'logon':self.on_login,'logoff':self.on_logout,'ping':self.on_ping,
-                            'query_data':self.on_query_data,'send_order':self.on_insert_order,
-                            'cacnel_order':self.on_cancel_order_event,'get_quote':self.on_get_quote}
-
+        self._event_dict = {'logon': self.on_login, 'logoff': self.on_logout, 'ping': self.on_ping,
+                            'query_data': self.on_query_data, 'send_order': self.on_insert_order,
+                            'cacnel_order': self.on_cancel_order_event, 'get_quote': self.on_get_quote}
+        self.client_id=''
+        self.account_id=''
     def spi_job(self, params=None):
         print(' ')
         while self._queue.empty() is False:
-            job=self._queue.get()
+            job = self._queue.get()
 
-            res=self.call(str(job[0]),job[1])
+            res = self.call(str(job[0]), job[1])
             self._event_dict[str(job[0])](res)
-            
-             
 
     def call(self, func, params=None):
         json_obj = {
@@ -86,7 +87,7 @@ class QATrade_TdxTradeServer(base_trade.QA_Trade_Api):
 
         if self._transport_enc:
             data_to_send = self.encrypt(json_obj)
-            
+
             response = self._session.post(self._endpoint, data=data_to_send)
         else:
             response = self._session.post(self._endpoint, json=json_obj)
@@ -97,7 +98,7 @@ class QATrade_TdxTradeServer(base_trade.QA_Trade_Api):
 
         if self._transport_enc:
             decoded_text = self.decrypt(text)
-            
+
             return json.loads(decoded_text)
         else:
             return json.loads(text)
@@ -124,38 +125,43 @@ class QATrade_TdxTradeServer(base_trade.QA_Trade_Api):
         if 'data' in result:
             data = result['data']
             return pd.DataFrame(data=data)
-    def ping(self):
     
+    def get_client_id(self):
+        return self.client_id
+
+    def get_account_id(self):
+        return self.account_id
+
+    def ping(self):
+
         self._queue.put(["ping", {}])
 
-
     def login(self, ip, port, version, yyb_id, account_id, trade_account, jy_passwrod, tx_password):
-        self._queue.put(["logon",{
-        "ip": ip,
-        "port": port,
-        "version": version,
-        "yyb_id": yyb_id,
-        "account_no": account_id,
-        "trade_account": trade_account,
-        "jy_password": jy_passwrod,
-        "tx_password": tx_password
-    }])
-
-
+        self.account_id=account_id
+        self._queue.put(["logon", {
+            "ip": ip,
+            "port": port,
+            "version": version,
+            "yyb_id": yyb_id,
+            "account_no": account_id,
+            "trade_account": trade_account,
+            "jy_password": jy_passwrod,
+            "tx_password": tx_password
+        }])
 
     def logoff(self, client_id):
         self._queue.put(["logoff", {
-        "client_id": client_id
-    }])
+            "client_id": client_id
+        }])
 
     def query_data(self, client_id, category):
-        return self._queue.put(["query_data", {
+        self._queue.put(["query_data", {
             "client_id": client_id,
             "category": category
         }])
 
     def insert_order(self, client_id, category, price_type, gddm, zqdm, price, quantity):
-        return self._queue.put(["send_order", {
+        self._queue.put(["send_order", {
             'client_id': client_id,
             'category': category,
             'price_type': price_type,
@@ -166,40 +172,62 @@ class QATrade_TdxTradeServer(base_trade.QA_Trade_Api):
         }])
 
     def cacnel_order(self, client_id, exchange_id, hth):
-        return self.call("cacnel_order", {
+        self._queue.put(["cacnel_order", {
             'client_id': client_id,
             'exchange_id': exchange_id,
             'hth': hth
-        })
+        }])
 
     def get_quote(self, client_id, code):
-        return self.call("get_quote", {
+        self._queue.put(["get_quote", {
             'client_id': client_id,
             'code': code,
-        })
+        }])
 
-    def on_ping(self,data):
-        print(data)
-    def on_insert_order(self,data):
-        print(data)
 
-    def on_login(self,data):
-        print(data)
-    def on_logout(self,data):
-        print(data)
-    def on_query_asset(self,data):
-        print(data)
-    def on_query_order(self,data):
-        print(data)
-    def on_query_data(self,data):
-        print(data)
-    def on_query_position(self,data):
-        print(data)
-    def on_cancel_order_event(self,data):
-        print(data)
-    def on_get_quote(self,data):
+    def query_asset(self):
+        self._queue.put(["query_data", {
+            "client_id": client_id,
+            "category": category
+        }])
+
+
+    def on_ping(self, data):
         print(data)
 
-if __name__=='__main__':
-    api=QATrade_TdxTradeServer(broker="http://127.0.0.1:19820/api",enc_key=b"d29f1e0cd5a611e7", enc_iv=b"b1f4001a7dda7113")
+    def on_insert_order(self, data):
+        print(data)
+
+    def on_login(self, data):
+        try:
+            self.client_id=data['data']['clientid']
+        except:
+            pass
+        print(data)
+
+    def on_logout(self, data):
+        print(data)
+
+    def on_query_asset(self, data):
+        print(data)
+
+    def on_query_order(self, data):
+        print(data)
+
+    def on_query_data(self, data):
+        print(data)
+
+    def on_query_position(self, data):
+        print(data)
+
+    def on_cancel_order_event(self, data):
+        print(data)
+
+    def on_get_quote(self, data):
+        print(data)
+
+
+if __name__ == '__main__':
+    api = QATrade_TdxTradeServer(broker="http://127.0.0.1:19820/api",
+                                 enc_key=b"d29f1e0cd5a611e7", enc_iv=b"b1f4001a7dda7113")
     api.ping()
