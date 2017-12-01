@@ -23,10 +23,14 @@
 # SOFTWARE.
 
 
-from QUANTAXIS.QAFetch.QAQuery import QA_fetch_backtest_history, QA_fetch_backtest_info, QA_fetch_stock_day_adv
-from QUANTAXIS.QAUtil.QADate_trade import QA_util_date_gap
-import pandas as pd
 from statistics import mean
+
+import pandas as pd
+
+from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_backtest_history,
+                                       QA_fetch_backtest_info)
+from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_day_adv
+from QUANTAXIS.QAUtil.QADate_trade import QA_util_date_gap
 
 
 class backtest_result_analyzer():
