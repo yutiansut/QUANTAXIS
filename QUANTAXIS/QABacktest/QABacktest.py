@@ -586,7 +586,7 @@ class QA_Backtest():
                 self.account.detail['amounts'] - self.account.detail['left_amount']) - self.account.detail['commission']
 
 
-            self.account.detail['pnl_presentage']=self.account.detail['pnl_price']/self.account.detail['price']
+            self.account.detail['pnl_precentage']=self.account.detail['pnl_price']/self.account.detail['price']
         except:
             pass
         self.account.detail = self.account.detail.drop(

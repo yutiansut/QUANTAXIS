@@ -5,6 +5,8 @@ import requests
 import urllib
 import json
 import base64
+import time
+from threading import Timer
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
@@ -73,11 +75,13 @@ class QATrade_TdxTradeServer(base_trade.QA_Trade_Api):
         self.account_id=''
     def spi_job(self, params=None):
         print(' ')
-        while self._queue.empty() is False:
+        if self._queue.empty() is False:
             job = self._queue.get()
 
             res = self.call(str(job[0]), job[1])
             self._event_dict[str(job[0])](res)
+        else:
+            self.spi_job()
 
     def call(self, func, params=None):
         json_obj = {
@@ -234,3 +238,4 @@ if __name__ == '__main__':
     api = QATrade_TdxTradeServer(broker="http://127.0.0.1:19820/api",
                                  enc_key=b"d29f1e0cd5a611e7", enc_iv=b"b1f4001a7dda7113")
     api.ping()
+    
