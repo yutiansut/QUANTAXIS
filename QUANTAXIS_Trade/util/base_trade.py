@@ -48,22 +48,23 @@ class QA_Trade:
     def __init__(self, *args, **kwargs):
         pass
 
+
 class Order(QA_QAMarket_bid):
     def __init__(self, *args, **kwargs):
         pass
 
 
 class QA_Trade_Api():
-    
+
     def __init__(self, *args, **kwargs):
-        self.spi_thread=Thread(target=self.spi_job,name='QATradeSpi',daemon=True)
-        self._queue=queue.Queue()
+        self.spi_thread = Thread(
+            target=self.spi_job, name='QATradeSpi', daemon=True)
+        self._queue = queue.Queue()
         self.spi_thread.start()
 
     def spi_job(self, *args, **kwargs):
         # 任务应当在这里做
         pass
-
 
     def connect(self, *args, **kwargs):
         pass
@@ -115,8 +116,37 @@ class QA_Trade_Api():
 
     def query_asset(self, *args, **kwargs):
         pass
-    
-    
+
+    def query_data(self, *args, **kwargs):
+        pass
+
+    def on_disconnected(self, *args, **kwargs):
+        pass
+
+    def on_error(self, *args, **kwargs):
+        pass
+
+    def on_order_event(self, *args, **kwargs):
+        pass
+
+    def on_trade_event(self, *args, **kwargs):
+        pass
+
+    def on_cancel_order_event(self, *args, **kwargs):
+        pass
+
+    def on_query_order(self, *args, **kwargs):
+        pass
+
+    def on_query_trade(self, *args, **kwargs):
+        pass
+
+    def on_query_position(self, *args, **kwargs):
+        pass
+
+    def on_query_asset(self, *args, **kwargs):
+        pass
+
 
 class QA_Trade_Spi():
     def __init__(self, *args, **kwargs):
