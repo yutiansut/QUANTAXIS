@@ -1,5 +1,6 @@
 # coding:utf-8
 from QUANTAXIS_Trade.util import base_trade
+import pandas as pd
 import requests
 import urllib
 import json
@@ -187,8 +188,8 @@ class QATrade_TdxTradeServer(base_trade.QA_Trade_Api):
 
     def query_asset(self):
         self._queue.put(["query_data", {
-            "client_id": client_id,
-            "category": category
+            "client_id": self.client_id,
+            "category": TdxTradeApiParams.QUERY_CATEGORY_CASH
         }])
 
 
