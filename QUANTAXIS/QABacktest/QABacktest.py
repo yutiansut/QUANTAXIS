@@ -564,7 +564,7 @@ class QA_Backtest():
     def __end_of_backtest(self, *arg, **kwargs):
         # 开始分析
         # 对于account.detail做一定的整理
-        self.account.detail = detail = pd.DataFrame(self.account.detail, columns=['date', 'code', 'price', 'amounts', 'order_id',
+        self.account.detail = pd.DataFrame(self.account.detail, columns=['date', 'code', 'price', 'amounts', 'order_id',
                                                                                   'trade_id', 'sell_price', 'sell_order_id',
                                                                                   'sell_trade_id', 'sell_date', 'left_amount',
                                                                                   'commission'])
