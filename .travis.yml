@@ -33,7 +33,7 @@ install:
 
 
 - "pip install -r requirements.txt"
-- "pip install tushare==0.8.7 -i https://pypi.doubanio.com/simple"
+- "pip install git+https://github.com/yutiansut/tushare"
 # command to build
 script: 
 
