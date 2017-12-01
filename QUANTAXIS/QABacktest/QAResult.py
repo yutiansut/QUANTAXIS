@@ -58,7 +58,7 @@ class backtest_result_analyzer():
                 detail['amounts'] - detail['left_amount']) - detail['commission']
 
 
-            detail['pnl_presentage']=detail['pnl_price']/detail['price']
+            detail['pnl_precentage']=detail['pnl_price']/detail['price']
         except:
             pass
 
@@ -75,6 +75,10 @@ class backtest_result_analyzer():
     def get_stock_tradedetail(self,code):
         return self.detail[self.detail.code==code]
     
+    def get_loss_trade(self,num=5):
+        return self.detail[self.detail.pnl_precentage<=0].sort_values(by=['pnl_precentage'],ascending=True).head(num)
+    def get_profit_trade(self,num=5):
+        return self.detail[self.detail.pnl_precentage>=0].sort_values(by=['pnl_precentage'],ascending=False).head(num)
 
 def _mean(list_):
     if len(list_) > 0:
@@ -91,3 +95,5 @@ if __name__=='__main__':
     code=ana.codes
     print(ana.get_stock_tradehistory(code[1]))
     print(ana.get_stock_tradedetail(code[1]))
+    print(ana.get_loss_trade())
+    print(ana.get_profit_trade())
