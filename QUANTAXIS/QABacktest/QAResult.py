@@ -23,7 +23,7 @@
 # SOFTWARE.
 
 
-from QUANTAXIS.QAFetch.QAQuery import QA_fetch_backtest_history, QA_fetch_backtest_info
+from QUANTAXIS.QAFetch.QAQuery import QA_fetch_backtest_history, QA_fetch_backtest_info, QA_fetch_stock_day_adv
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_date_gap
 import pandas as pd
 from statistics import mean
@@ -81,7 +81,7 @@ class backtest_result_analyzer():
         return self.detail[self.detail.pnl_precentage >= 0].sort_values(by=['pnl_precentage'], ascending=False).head(num)
 
     def get_trade_marketdata(self, rx):
-        return QA.QA_fetch_stock_day_adv(rx.code.values[0], QA_util_date_gap(rx.date.values[0], gap=3, methods='lt'), QA_util_date_gap(rx.sell_date.values[0][-1], gap=3, methods='gt'))
+        return QA_fetch_stock_day_adv(rx.code.values[0], QA_util_date_gap(rx.date.values[0], gap=3, methods='lt'), QA_util_date_gap(rx.sell_date.values[0][-1], gap=3, methods='gt'))
 
 
 def _mean(list_):
