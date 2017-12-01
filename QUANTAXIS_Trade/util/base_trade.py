@@ -37,8 +37,6 @@ import numpy as np
 import pandas as pd
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from pytdx.exhq import TdxExHq_API
-from pytdx.hq import TdxHq_API
 
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_if_tradetime
 from QUANTAXIS.QAUtil.QASetting import QA_Setting, info_ip_list
@@ -58,8 +56,9 @@ class Order(QA_QAMarket_bid):
 class QA_Trade_Api():
     
     def __init__(self, *args, **kwargs):
-        self.spi_thread=Thread(target=None,name='QATradeSpi',daemon=True)
+        self.spi_thread=Thread(target=self.spi_job,name='QATradeSpi',daemon=True)
         self._queue=queue.Queue()
+        self.spi_thread.start()
 
     def spi_job(self, *args, **kwargs):
         # 任务应当在这里做
