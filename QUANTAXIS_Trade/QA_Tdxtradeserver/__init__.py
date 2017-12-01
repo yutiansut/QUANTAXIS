@@ -42,14 +42,13 @@ class TdxTradeApiParams:
     QUERY_CATEGORY_NEW_STOCKS       = 12
     QUERY_CATEGORY_NEW_STOCKS_QUOTA = 13
     QUERY_CATEGORY_NEW_STOCK_NUMBER = 14
-    QUERY_CATEGORY_NEW_STOCK_HIT    = 15
-
+    QUERY_CATEGORY_NEW_STOCK_HIT    = 1
 
 class QATrade_TdxTradeServer(base_trade.QA_Trade_Api):
-    def __init__(self, endpoint="http://127.0.0.1:10920/api", encoding="utf-8", enc_key=None, enc_iv=None):
-        super.__init__()
+    def __init__(self, broker="http://127.0.0.1:19820/api", encoding="utf-8", enc_key=None, enc_iv=None):
+        super().__init__()
         
-        self._endpoint = endpoint
+        self._endpoint = broker
         self._encoding = "utf-8"
         if enc_key == None or enc_iv == None:
             self._transport_enc = False
@@ -66,9 +65,12 @@ class QATrade_TdxTradeServer(base_trade.QA_Trade_Api):
         self._session = requests.Session()
 
 
-    def spi_job(self, func, params=None):
-        while self._queue.empty is False:
+    def spi_job(self, params=None):
+        print(' ')
+        while self._queue.empty() is False:
             job=self._queue.get()
+
+            self.call(str(job[0]),job[1])
             
              
 
@@ -76,26 +78,29 @@ class QATrade_TdxTradeServer(base_trade.QA_Trade_Api):
         json_obj = {
             "func": func
         }
-
         if params is not None:
             json_obj["params"] = params
 
         if self._transport_enc:
             data_to_send = self.encrypt(json_obj)
+            
             response = self._session.post(self._endpoint, data=data_to_send)
         else:
             response = self._session.post(self._endpoint, json=json_obj)
+
         response.encoding = self._encoding
+
         text = response.text
 
         if self._transport_enc:
             decoded_text = self.decrypt(text)
-            log.debug(decoded_text)
+            print(decoded_text)
             return json.loads(decoded_text)
         else:
             return json.loads(text)
+
     def encrypt(self, source_obj):
-            encrypter = self._cipher.encryptor()
+        encrypter = self._cipher.encryptor()
         source = json.dumps(source_obj)
         source = source.encode(self._encoding)
         need_to_padding = 16 - (len(source) % 16)
@@ -118,11 +123,11 @@ class QATrade_TdxTradeServer(base_trade.QA_Trade_Api):
             return pd.DataFrame(data=data)
     def ping(self):
     
-        return self.call("ping", {})
+        self._queue.put(["ping", {}])
 
 
     def login(self, ip, port, version, yyb_id, account_id, trade_account, jy_passwrod, tx_password):
-        return self.call("logon",{
+        self._queue.put(["logon",{
         "ip": ip,
         "port": port,
         "version": version,
@@ -131,11 +136,17 @@ class QATrade_TdxTradeServer(base_trade.QA_Trade_Api):
         "trade_account": trade_account,
         "jy_password": jy_passwrod,
         "tx_password": tx_password
-    })
+    }])
 
 
 
     def logoff(self, client_id):
-        return self.call("logoff", {
+        self._queue.put(["logoff", {
         "client_id": client_id
-    })
+    }])
+
+
+
+if __name__=='__main__':
+    api=QATrade_TdxTradeServer(broker="http://127.0.0.1:19820/api",enc_key=b"d29f1e0cd5a611e7", enc_iv=b"b1f4001a7dda7113")
+    api.ping()
