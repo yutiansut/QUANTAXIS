@@ -200,11 +200,13 @@ class QATrade_TdxTradeServer(base_trade.QA_Trade_Api):
         print(data)
 
     def on_login(self, data):
+        print(data)
         try:
-            self.client_id=data['data']['clientid']
+            self.client_id=data['data']['client_id']
+            #print(self.client_id)
         except:
             pass
-        print(data)
+        
 
     def on_logout(self, data):
         print(data)
