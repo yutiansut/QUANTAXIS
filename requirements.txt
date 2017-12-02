@@ -20,3 +20,4 @@ TA-Lib
 pyecharts
 protobuf>=3.4
 motor>=1.1
+tushare==0.8.7

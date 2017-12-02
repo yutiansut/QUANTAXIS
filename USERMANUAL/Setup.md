@@ -100,6 +100,6 @@ sudo npm install npm -g #更新npm
 sudo npm install forever -g #安装一个全局的forever 用于之后启动
 ```
 
-linux/mac下的nodejs有一个版本管理包 叫n 需要全局安装 -g
+linux/mac下的nodejs有一个版本管理包    叫n 需要全局安装 -g
 
 所以无论装了什么版本的nodejs  只需要npm install n -g  就行  
