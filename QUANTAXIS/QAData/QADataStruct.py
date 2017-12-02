@@ -840,6 +840,12 @@ class QA_DataStruct_Stock_transaction():
         self.index = DataFrame.index
         self.data = DataFrame
 
+    def __repr__(self):
+        return '< QA_DataStruct_Stock_Transaction >'
+
+    def __call__(self):
+        return self.data
+
     def resample(self, type_='1min'):
         return QA_DataStruct_Stock_min(QA_data_tick_resample(self.data, type_))
 
