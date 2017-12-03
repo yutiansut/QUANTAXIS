@@ -286,7 +286,7 @@ def market_stock_engine(__bid, __data=None,__commission_fee_coeff=0.0015):
         else:
             __data = __data[0]
         return __data
-# trade mod
+    # trade mod
 
     if __data is None:
         __data = __get_data(__bid)
