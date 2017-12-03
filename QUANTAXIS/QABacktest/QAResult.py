@@ -85,9 +85,8 @@ class backtest_result_analyzer():
         return self.detail[self.detail.pnl_precentage >= 0].sort_values(by=['pnl_precentage'], ascending=False).head(num)
 
     def get_trade_marketdata(self, rx,gap=3):
-        data=QA_fetch_stock_day_adv(rx.code.values[0], QA_util_date_gap(rx.date.values[0], gap, methods='lt'), QA_util_date_gap(rx.sell_date.values[0][-1], gap, methods='gt'))
-        data['tradesignal']='N'
-        return data
+        return QA_fetch_stock_day_adv(rx.code.values[0], QA_util_date_gap(rx.date.values[0], gap, methods='lt'), QA_util_date_gap(rx.sell_date.values[0][-1], gap, methods='gt'))
+        
 
 
 def _mean(list_):
