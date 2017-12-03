@@ -108,7 +108,7 @@ sudo -H python3.6 get-pip.py
 
 > python的一些需要编译的包的安装
 
-安装TA-Lib
+安装TA-Lib(现在talib不是必须选项)
 > Ubuntu
 ```
 sudo apt-get update
@@ -131,8 +131,11 @@ sudo python3.6 -m pip install tushare==0.8.7 -i https://pypi.doubanio.com/simple
 > Windows
 ```
 
-# 访问http://www.lfd.uci.edu/~gohlke/pythonlibs/  下载对应的whl安装包
-# pip install xxxxx(文件名).whl
+访问http://www.lfd.uci.edu/~gohlke/pythonlibs/  下载对应的whl安装包
+
+(如 http://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib 下载TA_Lib‑0.4.10‑cp36‑cp36m‑win_amd64.whl)
+
+pip install xxxxx(文件名).whl
 ```
 ### 安装QUANTAXIS
 ```
