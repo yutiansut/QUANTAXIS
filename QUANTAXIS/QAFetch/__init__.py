@@ -36,23 +36,7 @@ from . import QATushare as QATushare
 from . import QATdx as QATdx
 from . import QAThs as QAThs
 
-#import QAFetch.QAGmsdk as QAGmsdk
-#import QAFetch.QACrawlData as QACD
 
-
-class QA_Fetcher():
-    """
-    一个通用的数据获取方法类
-
-
-    """
-
-    def __init__(self, *args, **kwargs):
-        pass
-
-    @property
-    def security_list(self):
-        return self.security_list
 
 
 def use(package):
