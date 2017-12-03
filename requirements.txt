@@ -16,7 +16,6 @@ zenlog
 pytdx>=1.52
 flask-socketio 
 flask
-TA-Lib
 pyecharts
 protobuf>=3.4
 motor>=1.1
