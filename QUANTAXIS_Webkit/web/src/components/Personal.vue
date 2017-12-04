@@ -9,13 +9,13 @@
                     <mu-list-item title="NOTEBOOK"></mu-list-item>
                 </router-link>
                 <router-link to="/personal/backtest">
-                    <mu-list-item title="模拟回测"></mu-list-item>
+                    <mu-list-item title="模拟回测(点击此处打开回测)"></mu-list-item>
                 </router-link>
-    
+
                 <router-link to="/personal/monitor">
                     <mu-list-item title="日线数据"></mu-list-item>
                 </router-link>
-    
+
             </mu-list>
             <mu-divider/>
             <mu-list>
@@ -28,7 +28,7 @@
                 <router-link to="/personal/stocklist">
                     <mu-list-item title="股票池"></mu-list-item>
                 </router-link>
-    
+
                 <router-link to="/personal/capital">
                     <mu-list-item title="资金曲线"></mu-list-item>
                 </router-link>
