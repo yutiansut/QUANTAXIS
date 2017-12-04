@@ -292,6 +292,13 @@ class QA_Backtest():
         
         with open(sys.argv[0], 'rb') as p:
             data = p.read()
+
+            collection=self.setting.client.quantaxis.strategy
+
+
+            collection.insert({'cookie':self.account.account_cookie,'name':self.strategy_name,
+                        'topic':self.topic_name,'version':self.stratey_version,'user':self.user,'datetime':datetime.datetime.now(),
+                        'content':data.decode('utf-8')})
             with open(file_name, 'wb') as f:
 
                 f.write(data)

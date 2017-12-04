@@ -316,20 +316,22 @@ def QA_fetch_stock_name(code, collections=QA_Setting.client.quantaxis.stock_list
         QA_util_log_info(e)
 
 
-def QA_fetch_quotation(code, collections=QA_Setting.client.quantaxis):
+def QA_fetch_quotation(code, db=QA_Setting.client.quantaxis):
     try:
-        database='realtime_{}'.format(datetime.date.today())
-        return collections.database.find({'code': code}).sort('datetime', QA_util_sql_mongo_sort_DESCENDING)[0]
+        collections = db.get_collection(
+            'realtime_{}'.format(datetime.date.today()))
+        return collections.find({'code': code}).sort('datetime', QA_util_sql_mongo_sort_DESCENDING)[0]
     except Exception as e:
         raise e
 
-def QA_fetch_quotations(time=None, collections=QA_Setting.client.quantaxis):
+def QA_fetch_quotations(time=None, db=QA_Setting.client.quantaxis):
     
     try:
-        database='realtime_{}'.format(datetime.date.today())
-        times=collections.database.find({'code': '000001'}).sort('datetime', QA_util_sql_mongo_sort_DESCENDING)[0]['datetime']
-        print(datetime)
-        return pd.DataFrame([item for item in collections.database.find({'datetime':datetime})]).drop(['_id'], axis=1)
+        collections = db.get_collection(
+            'realtime_{}'.format(datetime.date.today()))
+        times=collections.find({'code': '000001'}).sort('datetime', QA_util_sql_mongo_sort_DESCENDING)[0]['datetime']
+        
+        return pd.DataFrame([item for item in collections.find({'datetime':times})]).drop(['_id'], axis=1)
     except Exception as e:
         raise e
 
