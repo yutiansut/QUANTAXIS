@@ -330,8 +330,8 @@ def QA_fetch_quotations(time=None, db=QA_Setting.client.quantaxis):
         collections = db.get_collection(
             'realtime_{}'.format(datetime.date.today()))
         times=collections.find({'code': '000001'}).sort('datetime', QA_util_sql_mongo_sort_DESCENDING)[0]['datetime']
-        print(datetime)
-        return pd.DataFrame([item for item in collections.find({'datetime':datetime})]).drop(['_id'], axis=1)
+        
+        return pd.DataFrame([item for item in collections.find({'datetime':times})]).drop(['_id'], axis=1)
     except Exception as e:
         raise e
 
