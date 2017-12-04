@@ -5,6 +5,9 @@
                 <mu-raised-button label="账户表现" class="demo-raised-button" secondary/>
             </router-link>
             <mu-raised-button v-on:click='query()' label="成交明细" class="demo-raised-button" />
+            <router-link :to="{ name:'strategy',params: {id:this.message}}">
+                <mu-raised-button label="策略查看" class="demo-raised-button" primary/>
+            </router-link>
             <mu-divider />
         </div>
         <mu-table :height="height">
@@ -24,16 +27,16 @@
                         <mu-td>commission</mu-td>
                     </mu-tr>
                 <mu-tbody>
-                   
+
                     <mu-tr>
-                        
+
                         <mu-td>{{item[0]}}</mu-td>
                         <mu-td>{{item[1]}}</mu-td>
                         <mu-td>{{item[2]}}</mu-td>
                         <mu-td>{{item[3]}}</mu-td>
                         <mu-td>{{item[4]}}</mu-td>
                         <mu-td>{{item[7]}}</mu-td>
-    
+
                     </mu-tr>
                 </mu-tbody>
             </template>
