@@ -53,7 +53,7 @@
     },
     data() {
       return {
-        code: '//QUANTAXIS CODE EDITOR! \n',
+        code: '//QUANTAXIS CODE EDITOR! \n ## 按F5刷新页面',
         theme:'vs',
         title:'',
         version:'',
@@ -115,13 +115,8 @@
             this.topPopup = false
           }, 800)
         }
-      },
-      content: function (val, oldVal) {
-        setTimeout(() => {
-        this.save()
-      }, 800)
       }
-    }
+      }
 
 
   }

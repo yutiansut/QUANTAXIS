@@ -22,16 +22,17 @@
 
         <mu-tbody>
           <mu-tr>
-            <router-link :to="{ name:'history',params: {id:item['account_cookie']}}">
+
               <mu-td>{{ item['user']}}</mu-td>
-              <mu-td>{{ item['strategy']}}</mu-td>
+              <mu-td><router-link :to="{ name:'history',params: {id:item['account_cookie']}}">{{ item['strategy']}}</router-link></mu-td>
 
               <mu-td>{{ item['start_time']}}</mu-td>
               <mu-td>{{ item['end_time']}}</mu-td>
               <mu-td>{{ item['profit']}}</mu-td>
               <mu-td>{{ item['alpha']}}</mu-td>
               <mu-td>{{ item['annualized_returns']}}</mu-td>
-            </router-link>
+
+
           </mu-tr>
         </mu-tbody>
 
