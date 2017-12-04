@@ -33,7 +33,8 @@ from .QADate import(QA_util_date_stamp, QA_util_time_stamp, QA_util_ms_stamp, QA
                     QA_util_get_index_date, QA_util_select_hours, QA_util_date_int2str, QA_util_date_today,
                     QA_util_select_min, QA_util_time_delay, QA_util_time_now, QA_util_date_str2int)
 # sql设置
-from .QASql import (QA_util_sql_mongo_setting, QA_util_sql_async_mongo_setting)
+from .QASql import (QA_util_sql_mongo_setting, QA_util_sql_async_mongo_setting,
+                    QA_util_sql_mongo_sort_ASCENDING, QA_util_sql_mongo_sort_DESCENDING)
 # log 文件相关
 from .QALogs import (
     QA_util_log_debug, QA_util_log_expection, QA_util_log_info)
