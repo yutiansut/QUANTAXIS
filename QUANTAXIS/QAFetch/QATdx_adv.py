@@ -228,8 +228,9 @@ class QA_Tdx_Executor():
         except Exception as e:
             raise e
 
-    def save_mongo(self, data, client=QA_Setting.client.quantaxis.realtime):
-        client.insert_many(QA_util_to_json_from_pandas(data))
+    def save_mongo(self, data, client=QA_Setting.client.quantaxis):
+        database='realtime_{}'.format(datetime.date.today())
+        client.database.insert_many(QA_util_to_json_from_pandas(data))
 
 
 def bat():
@@ -241,7 +242,8 @@ def bat():
     x = QA_Tdx_Executor()
     print(x._queue.qsize())
     print(x.get_available())
-    QA_Setting.client.quantaxis.realtime.create_index([('code', QA_util_sql_mongo_sort_ASCENDING),
+    database='realtime_{}'.format(datetime.date.today())
+    QA_Setting.client.quantaxis.database.create_index([('code', QA_util_sql_mongo_sort_ASCENDING),
                                                        ('datetime', QA_util_sql_mongo_sort_ASCENDING)])
 
     for i in range(100000):
