@@ -316,9 +316,10 @@ def QA_fetch_stock_name(code, collections=QA_Setting.client.quantaxis.stock_list
         QA_util_log_info(e)
 
 
-def QA_fetch_quotation(code, collections=QA_Setting.client.quantaxis.realtime):
+def QA_fetch_quotation(code, collections=QA_Setting.client.quantaxis):
     try:
-        return collections.find({'code': code}).sort('datetime', QA_util_sql_mongo_sort_DESCENDING)[0]
+        database='realtime_{}'.format(datetime.date.today())
+        return collections.database.find({'code': code}).sort('datetime', QA_util_sql_mongo_sort_DESCENDING)[0]
     except Exception as e:
         raise e
 
@@ -328,7 +329,7 @@ def QA_fetch_quotations(time=None, collections=QA_Setting.client.quantaxis):
         database='realtime_{}'.format(datetime.date.today())
         times=collections.database.find({'code': '000001'}).sort('datetime', QA_util_sql_mongo_sort_DESCENDING)[0]['datetime']
         print(datetime)
-        return pd.DataFrame([item for item in collections.find({'datetime':datetime})]).drop(['_id'], axis=1)
+        return pd.DataFrame([item for item in collections.database.find({'datetime':datetime})]).drop(['_id'], axis=1)
     except Exception as e:
         raise e
 
