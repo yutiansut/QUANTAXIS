@@ -229,8 +229,10 @@ class QA_Tdx_Executor():
             raise e
 
     def save_mongo(self, data, client=QA_Setting.client.quantaxis):
-        database='realtime_{}'.format(datetime.date.today())
-        client.database.insert_many(QA_util_to_json_from_pandas(data))
+        database = QA_Setting.client.quantaxis.get_collection(
+            'realtime_{}'.format(datetime.date.today()))
+
+        database.insert_many(QA_util_to_json_from_pandas(data))
 
 
 def bat():
@@ -242,9 +244,13 @@ def bat():
     x = QA_Tdx_Executor()
     print(x._queue.qsize())
     print(x.get_available())
-    database='realtime_{}'.format(datetime.date.today())
-    QA_Setting.client.quantaxis.database.create_index([('code', QA_util_sql_mongo_sort_ASCENDING),
-                                                       ('datetime', QA_util_sql_mongo_sort_ASCENDING)])
+
+    database = QA_Setting.client.quantaxis.get_collection(
+        'realtime_{}'.format(datetime.date.today()))
+
+    print(database)
+    database.create_index([('code', QA_util_sql_mongo_sort_ASCENDING),
+                           ('datetime', QA_util_sql_mongo_sort_ASCENDING)])
 
     for i in range(100000):
         _time = datetime.datetime.now()
@@ -279,8 +285,6 @@ if __name__ == '__main__':
 
     QA_Setting.client.quantaxis.realtime.create_index([('code', QA_util_sql_mongo_sort_ASCENDING),
                                                        ('datetime', QA_util_sql_mongo_sort_ASCENDING)])
-
-
 
     # print(len(code))
     # x = QA_Tdx_Executor()
