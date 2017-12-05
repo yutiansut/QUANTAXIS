@@ -11,7 +11,7 @@
             <router-link to='/personal/index'>
               <mu-list-item title="用户中心" />
             </router-link>
-            <router-link to='/'>
+            <router-link to='/personal/setting'>
             <mu-menu-item title="Settings" /></router-link>
             <mu-menu-item title="Sign out" @click="signout" />
           </mu-menu>

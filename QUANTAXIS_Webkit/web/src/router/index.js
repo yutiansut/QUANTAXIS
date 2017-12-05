@@ -19,6 +19,11 @@ export default new Router({
       component: require('@/components/Status.vue')
     },
     {
+      path: '/setting',
+      name: 'settings',
+      component: require('@/components/Setting.vue')
+    },
+    {
       path: '/sign',
       name: 'signPage',
       component: require('@/components/Sign.vue')

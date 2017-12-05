@@ -4,12 +4,12 @@
         <h2>Intergrated Quantitative System | WebKit Visualization Soulution</h2>
     </div>
 </template>
-<script> 
+<script>
 
 export default {
     name: "home"
 }
-</script>    
+</script>
 <style>
 #title {
     position: relative;
@@ -17,7 +17,8 @@ export default {
     height: 100%;
     float: left;
     display: inline-block;
-    margin: 10% 0%;
+
+    margin: 18% 8% 18% 12%;
 }
 
 #title h1 {
