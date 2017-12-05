@@ -3,14 +3,12 @@
 
     <li class="input">
       <input v-model="message" v-on:keyup.enter="info($event.currentTarget.value)" placeholder="在此输入策略的用户名" lazy>
-      <input v-model="messages" v-on:keyup.enter="code($event.currentTarget.value)" placeholder="在此输入策略涉及的股票代码" lazy>
     </li>
     <mu-table :height="height">
       <mu-thead>
         <mu-tr>
           <mu-th>user</mu-th>
           <mu-th>strategy</mu-th>
-
           <mu-th>start</mu-th>
           <mu-th>end</mu-th>
           <mu-th>profit</mu-th>
@@ -24,7 +22,7 @@
           <mu-tr>
 
               <mu-td>{{ item['user']}}</mu-td>
-              <mu-td><router-link :to="{ name:'history',params: {id:item['account_cookie']}}">{{ item['strategy']}}</router-link></mu-td>
+              <mu-td><router-link :to="{ name:'history',params: {id:item['account_cookie']}}" >{{ item['strategy']}}</router-link></mu-td>
 
               <mu-td>{{ item['start_time']}}</mu-td>
               <mu-td>{{ item['end_time']}}</mu-td>

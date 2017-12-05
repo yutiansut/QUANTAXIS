@@ -1,26 +1,21 @@
 <template>
-  <div id="app">
+  <div>
     <mu-appbar title="Title">
       <mu-flat-button class="quantaxislogo" href='https://github.com/yutiansut/quantaxis' target="view_window" color="white" style="-webkit-app-region: drag"
         disable slot="left">QUANTAXIS</mu-flat-button>
-      <mu-raised-button label="MENU" slot="right" @click="toggle()" />
-      <mu-drawer right :open="open" @close="toggle()">
-        <mu-appbar title="MENU" />
-        <mu-list>
-          <router-link to='/personal/index'>
-            <mu-list-item title="用户中心" />
-          </router-link>
-          <router-link to='/'>
-            <mu-list-item title="首页" />
-          </router-link>
-          <router-link to='/status'>
-            <mu-list-item title="插件状态" />
-          </router-link>
 
-          <mu-list-item href='https://github.com/yutiansut/quantaxis'target="view_window" title="GITHUB" />
-          <mu-list-item @click.native="open = false" title="Close" />
-        </mu-list>
-      </mu-drawer>
+
+      <mu-raised-button slot='right' label="User" ref="button" @click="toggle"/>
+      <mu-popover :trigger="trigger" :open="open" @close="handleClose">
+          <mu-menu>
+            <router-link to='/personal/index'>
+              <mu-list-item title="用户中心" />
+            </router-link>
+            <router-link to='/'>
+            <mu-menu-item title="Settings" /></router-link>
+            <mu-menu-item title="Sign out" @click="signout" />
+          </mu-menu>
+        </mu-popover>
     </mu-appbar>
     <router-view></router-view>
   </div>
@@ -31,12 +26,34 @@
     name: 'app',
     data() {
       return {
-        open: false
+        open: false,
+        docked: true,
+        item: '登录',
+        trigger:null
       }
     },
+    mounted () {
+      this.trigger = this.$refs.button.$el
+    },
     methods: {
-      toggle() {
+      toggle () {
         this.open = !this.open
+      },
+      handleClose (e) {
+        this.open = false
+      },
+      signout(){
+        sessionStorage.clear()
+      }
+    },
+
+    watch: {
+      topPopup(val) {
+        if (val) {
+          setTimeout(() => {
+            this.item = '注销'
+          }, 800)
+        }
       }
     }
   }
@@ -56,4 +73,24 @@
     font-size: 1.8em;
   }
 
+
+  .mu-item-content {
+    font-size: 18px;
+    text-align: middle;
+  }
+
+  .user_pad{
+    background-color:#2c3e50
+  }
+  .demo-paper {
+    display: inline-block;
+    height: 100px;
+    width: 100px;
+    margin: 20px;
+    text-align: center;
+  }
+  .mu-circle{
+    margin: 0 auto;
+
+  }
 </style>
