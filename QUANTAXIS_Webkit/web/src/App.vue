@@ -44,6 +44,7 @@
       },
       signout(){
         sessionStorage.clear()
+        this.$router.push('/sign');
       }
     },
 
