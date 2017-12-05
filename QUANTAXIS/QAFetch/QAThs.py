@@ -79,7 +79,7 @@ def QA_fetch_get_stock_block():
         for _i in range(len(gn)):
             for i in range(1, 15):
                 _data = etree.HTML(requests.get(
-                    'http://q.10jqka.com.cn/{}/detail/order/desc/page/{}/ajax/1/code/{}'.format(item, i, gpath[_i].split('/')[-2])).text)
+                    'http://q.10jqka.com.cn/{}/detail/order/desc/page/{}/ajax/1/code/{}'.format(item, i, gpath[_i].split('/')[-2]),headers=headers).text)
                 name = _data.xpath('/html/body/table/tbody/tr/td[3]/a/text()')
                 code = _data.xpath('/html/body/table/tbody/tr/td[3]/a/@href')
                 for i_ in range(len(name)):
