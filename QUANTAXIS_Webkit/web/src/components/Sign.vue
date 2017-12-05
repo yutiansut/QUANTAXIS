@@ -120,6 +120,9 @@ export default {
         .catch(function (error) {
           console.log(error);
         });
+    },
+    logout(){
+      sessionStorage.clear()
     }
   },
   watch: {
