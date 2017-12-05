@@ -87,7 +87,10 @@ export default {
         });
     }
 
-  }
+  },
+mounted(){
+  this.info(sessionStorage.user)
+}
 }
 
 </script>
