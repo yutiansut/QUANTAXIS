@@ -60,14 +60,20 @@ def QA_fetch_get_stock_day(code, start, end, if_fq='00'):
         return pd.DataFrame()
     else:
         return data[start:end]
-
+headers={'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+'Accept-Encoding':'gzip, deflate',
+'Accept-Language':'zh-CN,zh;q=0.9',
+'Cache-Control':'max-age=0',
+'Connection':'keep-alive',
+'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'}
 
 def QA_fetch_get_stock_block():
     url_list = ['gn', 'dy', 'thshy', 'zjhhy']  # 概念/地域/同花顺板块/证监会板块
     data = []
+
     for item in url_list:
         tree = etree.HTML(requests.get(
-            'http://q.10jqka.com.cn/{}/'.format(item)).text)
+            'http://q.10jqka.com.cn/{}/'.format(item),headers=headers).text)
         gn = tree.xpath('/html/body/div/div/div/div/div/a/text()')
         gpath = tree.xpath('/html/body/div/div/div/div/div/a/@href')
         for _i in range(len(gn)):
