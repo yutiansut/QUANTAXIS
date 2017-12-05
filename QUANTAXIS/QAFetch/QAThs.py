@@ -65,6 +65,8 @@ headers={'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/w
 'Accept-Language':'zh-CN,zh;q=0.9',
 'Cache-Control':'max-age=0',
 'Connection':'keep-alive',
+'Host':'q.10jqka.com.cn',
+'Upgrade-Insecure-Requests':1,
 'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'}
 
 def QA_fetch_get_stock_block():

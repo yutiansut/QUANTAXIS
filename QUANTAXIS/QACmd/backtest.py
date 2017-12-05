@@ -101,7 +101,7 @@ def init():
     QB.commission_fee_coeff = 0.0015  # 千五的手续费(单向)
 
     QB.strategy_gap = 30  # 在取数据的时候 向前取多少个bar(会按回测的时间动态移动)
-    QB.strategy_stock_list = QB.QA_backtest_get_block(QB,['钢铁'])
+    QB.strategy_stock_list = QB.QA_backtest_get_block(QB,['MSCI成份'])
 
     QB.strategy_start_date = '2017-06-01 10:30:00'  # 回测开始日期
     QB.strategy_end_date = '2017-10-01'  # 回测结束日期
