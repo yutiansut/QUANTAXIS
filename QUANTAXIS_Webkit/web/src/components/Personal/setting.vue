@@ -1,21 +1,10 @@
 <template>
   <div>
       <mu-list>
-        <mu-list-item disabled title="个人设置" describeText="总是中断"/>
+        <mu-list-item disabled title="推送设置" describeText="暂时无法使用"/>
       </mu-list>
       <mu-divider />
-      <mu-list>
-        <mu-sub-header>声音开启设置</mu-sub-header>
-        <mu-list-item disableRipple @click="handleToggle('events')" title="事件和提醒">
-          <mu-switch v-model="events"  slot="right"/>
-        </mu-list-item>
-        <mu-list-item disableRipple @click="handleToggle('calls')" title="电话">
-          <mu-switch v-model="calls" slot="right"/>
-        </mu-list-item>
-        <mu-list-item disableRipple @click="handleToggle('messages')" title="信息">
-          <mu-switch v-model="messages" slot="right"/>
-        </mu-list-item>
-      </mu-list>
+
       <mu-list>
         <mu-sub-header>通知设置</mu-sub-header>
 
