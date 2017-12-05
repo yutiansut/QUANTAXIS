@@ -9,7 +9,9 @@
         <router-link to="/personal/backtest">
           <mu-list-item title="模拟回测(点击此处打开回测)"></mu-list-item>
         </router-link>
-
+        <router-link to="/personal/tree">
+          <mu-list-item title="回测分析"></mu-list-item>
+        </router-link>
         <router-link to="/personal/monitor">
           <mu-list-item title="日线数据"></mu-list-item>
         </router-link>
