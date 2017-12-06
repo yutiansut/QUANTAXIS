@@ -286,6 +286,9 @@ class QA_Backtest():
         # 初始化报价模式
         self.__messages = []
 
+
+        
+
     def __save_strategy_files(self):
         
         file_name = '{}backtest_{}.py'.format(self.dirs,self.account.account_cookie)
@@ -311,10 +314,24 @@ class QA_Backtest():
             return __amount * 0.5, 'amount'
         elif __strategy_amount == 'all':
             return __amount, 'amount'
+    def _make_slice(self):
+        
+        QA_Setting.client.quantaxis.slice.insert({
+            'cookie':self.account.account_cookie,
+            'account_message':self.__messages,
+            'account_d_value':self.account_d_value, 
+            'account_d_key':self.account_d_key,
+            'now':self.now,
+            'today':self.today,
+            'running_date':self.running_date,
+            'strategy_stock_list':self.strategy_stock_list,
+            'dirs':self.dirs,
 
+             })
     def __end_of_trading(self, *arg, **kwargs):
         # 在回测的最后一天,平掉所有仓位(回测的最后一天是不买入的)
         # 回测最后一天的交易处理
+        #self._make_slice(self)
         if self.backtest_type in ['day']:
             self.now = str(self.end_real_date)
             self.today = str(self.end_real_date)
@@ -928,8 +945,8 @@ class QA_Backtest():
     @classmethod
     def before_backtest(_cls, func, *arg, **kwargs):
         def __before_backtest(_cls, *arg, **kwargs):
-            func(*arg, **kwargs)
             _cls.__QA_backtest_before_backtest(_cls)
+            func(*arg, **kwargs)
         return __before_backtest(_cls)
 
     @classmethod

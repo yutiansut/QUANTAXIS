@@ -14,7 +14,7 @@
     "bluebird": "^3.5.1",
     "buffer-shims": "^1.0.0",
     "caniuse-lite": "^1.0.30000684",
-    "echarts": "^3.6.1",
+    "echarts": "^3.8.5",
     "es2015": "0.0.0",
     "fs": "0.0.1-security",
     "fs.realpath": "^1.0.0",
