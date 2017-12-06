@@ -11,9 +11,10 @@
           <mu-th>strategy</mu-th>
           <mu-th>start</mu-th>
           <mu-th>end</mu-th>
-          <mu-th>profit</mu-th>
-          <mu-th>alpha</mu-th>
+
+
           <mu-th>annualized_returns</mu-th>
+          <mu-th>update</mu-th>
         </mu-tr>
       </mu-thead>
       <template v-for="item in items">
@@ -26,11 +27,11 @@
 
               <mu-td>{{ item['start_time']}}</mu-td>
               <mu-td>{{ item['end_time']}}</mu-td>
-              <mu-td>{{ item['profit']}}</mu-td>
-              <mu-td>{{ item['alpha']}}</mu-td>
+
+
               <mu-td>{{ item['annualized_returns']}}</mu-td>
-
-
+              <mu-raised-button label="update" class="demo-snackbar-button" @click="run_update(item['account_cookie'])"/>
+              <mu-toast v-if="toast" :message=click @close="hideToast"></mu-toast>
           </mu-tr>
         </mu-tbody>
 
@@ -48,11 +49,13 @@ export default {
       multiSelectable: true,
       enableSelectAll: false,
       message: '',
+      click:'回测更新任务已开启',
       messages: '',
       items: [''],
       total: 180,
       current: 1,
-      showSizeChanger: true
+      showSizeChanger: true,
+      toast: false
     }
   },
   methods: {
@@ -85,6 +88,24 @@ export default {
         .catch(function (error) {
           console.log(error);
         });
+    },
+    run_update(cookie){
+
+      this.showToast()
+      axios.get('http://localhost:5050/backtest/run?cookie=' + cookie)
+      .then(response => {
+        console.log(response.data)
+        this.click=response.data
+        this.showToast()
+      })
+    }, showToast () {
+      this.toast = true
+      if (this.toastTimer) clearTimeout(this.toastTimer)
+      this.toastTimer = setTimeout(() => { this.toast = false }, 2000)
+    },
+    hideToast () {
+      this.toast = false
+      if (this.toastTimer) clearTimeout(this.toastTimer)
     }
 
   },
