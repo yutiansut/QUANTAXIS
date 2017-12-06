@@ -294,5 +294,16 @@ class QA_Account():
         'get the real assets [from cash and market values]'
 
         return self.cash[-1] + sum([float(self.hold[i][2]) * float(self.hold[i][3]) for  i in range(1, len(self.hold))])
+
+    def from_message(self,message):
+        
+        self.account_cookie=message['header']['cookie']
+        self.hold=message['body']['account']['hold']
+        self.history=message['body']['account']['history']
+        self.cash=message['body']['account']['cash']
+        self.assets=message['body']['account']['assets']
+        self.detail=message['body']['account']['detail']
+        self.message=message
+        return self
 class QA_Account_min(QA_Account):
     pass
