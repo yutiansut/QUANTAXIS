@@ -34,13 +34,15 @@ import time
 import numpy as np
 import pandas as pd
 import pymongo
-import QUANTAXIS as QA
+import re
+
 import requests
 import tushare as ts
 from flask import Flask, jsonify, render_template,request,make_response
 from flask_socketio import SocketIO, emit
 from tabulate import tabulate
-
+import QUANTAXIS as QA
+from QUANTAXIS.QAUtil.QASetting import QA_Setting
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'secret!'
@@ -142,6 +144,28 @@ def query_backtest():
 @app.route('/realtime', methods=['POST', 'GET'])
 def realtime():
     request.args.get('username','')
+
+
+@app.route('/backtest/run', methods=['POST', 'GET'])
+def run_backtest():
+    data=QA_Setting.client.quantaxis.strategy.find_one({'cookie':request.args.get('cookie','')})
+    strategy_file=re.sub('strategy_end_date(.*)=(.*)\\\r\\\n ','strategy_end_date  = \'{}\' \r\n '.format(datetime.date.today()),data['content'])
+
+    temp_path='{}{}update_job{}update_id_{}{}'.format(data['absoultpath'],os.sep,os.sep,data['cookie'],os.sep)
+    os.makedirs(temp_path,exist_ok=True)
+    temp_file_name='{}updatejob.py'.format(temp_path)
+    with open(temp_file_name,'w',encoding='utf-8') as r:
+        r.write(strategy_file)
+    os.system('{} {}'.format(sys.executable,temp_file_name))
+
+
+    return jsonify({
+        'response':200,
+        'update_date':datetime.date.today(),
+        'job_dir':temp_path,
+        'job_filename':temp_file_name,
+        'father_cookie':data['cookie']})
+
 
 def main():
     #socketio.run(app)

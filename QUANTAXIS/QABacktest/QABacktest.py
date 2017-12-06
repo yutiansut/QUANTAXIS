@@ -117,6 +117,7 @@ class QA_Backtest():
     topic_name = 'EXAMPLE'
     topic_id = ''
     stratey_version = 'V1'
+    absoult_path=sys.path[0]
 
     def __init__(self):
 
@@ -155,7 +156,8 @@ class QA_Backtest():
         self.outside_data=[]
         self.outside_data_dict=[]
         self.outside_data_hashable={}
-        self.dirs='.{}QUANTAXIS_RESULT{}{}{}{}{}'.format(os.sep, os.sep, self.topic_name, os.sep, self.stratey_version, os.sep)
+        self.absoult_path=sys.path[0]
+        self.dirs='{}{}QUANTAXIS_RESULT{}{}{}{}{}'.format(self.absoult_path,os.sep, os.sep, self.topic_name, os.sep, self.stratey_version, os.sep)
 
     def __QA_backtest_init(self):
         self.__init__(self)
@@ -256,7 +258,7 @@ class QA_Backtest():
         self.market_data_dict = dict(
             zip(list(self.market_data.code), self.market_data.splits()))
         self.market_data_hashable = self.market_data.dicts
-        self.dirs='.{}QUANTAXIS_RESULT{}{}{}{}{}'.format(os.sep, os.sep, self.topic_name, os.sep, self.stratey_version, os.sep)
+        self.dirs='{}{}QUANTAXIS_RESULT{}{}{}{}{}'.format(self.absoult_path,os.sep, os.sep, self.topic_name, os.sep, self.stratey_version, os.sep)
         os.makedirs(self.dirs,exist_ok=True)
         try:
             self.outside_data_dict=dict(
@@ -292,7 +294,7 @@ class QA_Backtest():
     def __save_strategy_files(self):
         
         file_name = '{}backtest_{}.py'.format(self.dirs,self.account.account_cookie)
-        
+
         with open(sys.argv[0], 'rb') as p:
             data = p.read()
 
@@ -301,7 +303,9 @@ class QA_Backtest():
 
             collection.insert({'cookie':self.account.account_cookie,'name':self.strategy_name,
                         'topic':self.topic_name,'version':self.stratey_version,'user':self.user,'datetime':datetime.datetime.now(),
-                        'content':data.decode('utf-8')})
+                        'content':data.decode('utf-8'),
+                        'dirs':self.dirs,
+                        'absoultpath':self.absoult_path})
             with open(file_name, 'wb') as f:
 
                 f.write(data)
