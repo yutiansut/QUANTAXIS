@@ -11,8 +11,6 @@
           <mu-th>strategy</mu-th>
           <mu-th>start</mu-th>
           <mu-th>end</mu-th>
-
-
           <mu-th>annualized_returns</mu-th>
           <mu-th>update</mu-th>
         </mu-tr>
