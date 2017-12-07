@@ -125,7 +125,8 @@ def strategy():
     # QB.QA_backtest_get_market_data_panel(QB,time,type_) 面板数据
     # time 如果不填 就是默认的QB.now/QB.today
     # type_ 如果不填 默认是 'lt' 如果需要当日的数据 'lte'
-    each_capital = int(QB.account.cash_available/(len(QB.strategy_stock_list)-len(QB.account.sell_available)))
+    amounts=1 if len(QB.strategy_stock_list)-len(QB.account.sell_available)==0 else len(QB.strategy_stock_list)-len(QB.account.sell_available)
+    each_capital = int(QB.account.cash_available/amounts)
 
     for item in QB.strategy_stock_list:
         if QB.QA_backtest_find_bar(QB, item, QB.today) is not None: #今日开盘-能取到数据
