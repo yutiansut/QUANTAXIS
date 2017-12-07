@@ -150,7 +150,7 @@ def realtime():
 def run_backtest():
     data=QA_Setting.client.quantaxis.strategy.find_one({'cookie':request.args.get('cookie','')})
     strategy_file=re.sub('strategy_end_date(.*)=(.*)\\\r\\\n ','strategy_end_date  = \'{}\' \r\n '.format(datetime.date.today()),data['content'])
-    strategy_file=re.sub('strategy_name(.*)=(.*)\\\r\\\n ','strategy_name  = \'update_job{}\' \r\n '.format(data['cookie']),data['content'])
+    strategy_file=re.sub('strategy_name(.*)=(.*)\\\r\\\n ','strategy_name  = \'update_job{}\' \r\n '.format(data['cookie']),strategy_file)
     temp_path='{}{}update_job{}update_id_{}{}'.format(data['absoultpath'],os.sep,os.sep,data['cookie'],os.sep)
     os.makedirs(temp_path,exist_ok=True)
     temp_file_name='{}updatejob.py'.format(temp_path)
