@@ -87,7 +87,8 @@ class backtest_result_analyzer():
     def get_trade_marketdata(self, rx,gap=3):
         return QA_fetch_stock_day_adv(rx.code.values[0], QA_util_date_gap(rx.date.values[0], gap, methods='lt'), QA_util_date_gap(rx.sell_date.values[0][-1], gap, methods='gt'))
         
-
+    def get_trade_before_and_after_pnl(self,rx,N=3,M=10):
+        data=self.get_trade_marketdata(rx,M)
 
 def _mean(list_):
     if len(list_) > 0:
