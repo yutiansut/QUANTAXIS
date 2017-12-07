@@ -35,7 +35,7 @@ from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day
 from QUANTAXIS.QAUtil import QA_util_log_info, trade_date_sse
 
 
-def QA_backtest_analysis_start(client, code_list, assets_d, account_days, message, total_date, benchmark_data):
+def QA_backtest_analysis_backtest(client, code_list, assets_d, account_days, message, total_date, benchmark_data):
     # 主要要从message_history分析
     # 1.收益率
     # 2.胜率
@@ -235,9 +235,11 @@ def QA_backtest_calc_trade_date(history):
             trade_date.append(history[i][0])
     return trade_date
 
+def calc_trade_time(history):
+    return len(history)
 
-
-
+def calc_every_pnl(detail):
+    pass
 
 
 def QA_backtest_calc_win_rate(profit_day):

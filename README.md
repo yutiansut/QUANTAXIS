@@ -67,7 +67,8 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 - [QUANTAXIS 量化金融策略框架](#quantaxis-量化金融策略框架)
     - [框架结构](#框架结构)
-    - [安装说明](#安装说明)
+    - [安装和部署](#安装和部署)
+    - [更新](#更新)
     - [Docker](#docker)
     - [使用说明](#使用说明)
     - [项目捐赠](#项目捐赠)
@@ -79,8 +80,11 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 ![](http://i1.piimg.com/567571/dc3c811a5afcb4fb.png)
 
 
-## 安装说明
+## 安装和部署
 参见 [安装说明](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXISProtocol/install.md)
+
+## 更新
+参见 [更新说明](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXISProtocol/update.md)
 
 ## Docker
 参见 [Docker](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXISProtocol/docker.md)

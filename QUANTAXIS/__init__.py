@@ -90,7 +90,7 @@ from QUANTAXIS.QAARP.QARisk import (QA_risk_account_freeCash_currentAssest,
 # Backtest
 from QUANTAXIS.QABacktest.QABacktest import QA_Backtest
 
-from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
+from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_backtest
 from QUANTAXIS.QABacktest.QAResult import backtest_result_analyzer
 # task
 from QUANTAXIS.QATask import QA_Queue, QA_Event, QA_Job, QA_Engine

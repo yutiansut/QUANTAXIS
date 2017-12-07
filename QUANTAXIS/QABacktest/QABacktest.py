@@ -45,7 +45,7 @@ import pymongo
 from QUANTAXIS import (QA_Market, QA_Portfolio, QA_QAMarket_bid, QA_Risk,
                        __version__)
 from QUANTAXIS.QAARP.QAAccount import QA_Account
-from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_start
+from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_backtest
 from QUANTAXIS.QAData import QA_DataStruct_Stock_day, QA_DataStruct_Stock_min
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_index_day, QA_fetch_index_min,
                                        QA_fetch_stock_day, QA_fetch_stock_info,
@@ -630,7 +630,7 @@ class QA_Backtest():
                                                           headers=(self.account.detail.columns)))
         __exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
         if len(self.__messages) > 1:
-            performace = QA_backtest_analysis_start(
+            performace = QA_backtest_analysis_backtest(
                 self.setting.client, self.strategy_stock_list, self.account_d_value, self.account_d_key, self.__messages,
                 self.trade_list[self.start_real_id:self.end_real_id + 1],
                 self.benchmark_data.data)
