@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_log_debug
-
+import pandas as pd
 
 class QA_Backtest_Event_engine():
     def __init__(self, *args, **kwargs):
