@@ -24,7 +24,8 @@
 import os
 
 from QUANTAXIS.QASU.user import QA_user_sign_in, QA_user_sign_up
-from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_sql_mongo_setting
+from QUANTAXIS.QAUtil import QA_util_log_info
+from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting
 
 
 class QA_Setting():
