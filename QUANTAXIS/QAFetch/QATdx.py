@@ -309,7 +309,8 @@ def QA_fetch_get_stock_min(code, start, end, level='1min', ip=best_ip, port=7709
     elif str(level) in ['60', '60m', '60min', '1h']:
         level, type_ = 3, '60min'
         lens = 4*lens
-
+    if lens>20800:
+        lens=20800
     with api.connect(ip, port):
 
         data = pd.concat([api.to_df(api.get_security_bars(level, __select_market_code(
@@ -444,6 +445,9 @@ def QA_fetch_get_index_min(code, start, end, level='1min', ip=best_ip, port=7709
     elif str(level) in ['60', '60m', '60min', '1h']:
         level, type_ = 3, '60min'
         lens = 4*lens
+
+    if lens>20800:
+        lens=20800
     with api.connect(ip, port):
 
         if str(code)[0] in ['5', '1']:  # ETF
