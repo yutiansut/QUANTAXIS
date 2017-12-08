@@ -12,12 +12,12 @@
 
 
 
-![version](https://img.shields.io/badge/Version-%200.5.25-orange.svg)
+![version](https://img.shields.io/badge/Version-%200.5.26-orange.svg)
 ![build](https://travis-ci.org/yutiansut/QUANTAXIS.svg?branch=master)
 [![Stories in Ready](https://badge.waffle.io/yutiansut/QUANTAXIS.svg?label=ready&title=Ready)](http://waffle.io/yutiansut/QUANTAXIS)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.8-brown.svg)
-![Pypi](https://img.shields.io/badge/Pypi-%200.5.25-blue.svg)
+![Pypi](https://img.shields.io/badge/Pypi-%200.5.26-blue.svg)
 ![python](https://img.shields.io/badge/python-%203.6/3.5/3.4/win/ubuntu-darkgrey.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.4.0-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
@@ -37,13 +37,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - 股指期货日线(T+0)/指数日线/ETF日线
 - 股指期货分钟线(T+0) / 指数分钟线/ETF分钟线 [1min/5min/15min/30min/60min] 
 - 基于[pytdx](https://github.com/rainx/pytdx)各种爬虫的数据源 
-```
-[注意: tushare最新版本因为单方面直接复制了pytdx  所以导致和最新版本的pytdx不兼容 如有安装0.8.7版本以上的tushare 请降级使用]
-
-*** 降级时需注意: 直接pip uninstall tushare以后 还要去删掉tushare安装目录下的pytdx 再重新安装最新版本的pytdx ***
-
-```
-- 实时交易数据
+- 实时交易数据,实时tick
 - 基于Vue.js的前端网站
 - 自定义的数据结构
 - 指标计算
@@ -63,6 +57,12 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 - 成交记录分析器
 
+```
+[注意: tushare最新版本因为单方面直接复制了pytdx  所以导致和最新版本的pytdx不兼容 如有安装0.8.7版本以上的tushare 请降级使用]
+
+*** 降级时需注意: 直接pip uninstall tushare以后 还要去删掉tushare安装目录下的pytdx 再重新安装最新版本的pytdx ***
+
+```
 <!-- TOC -->
 
 - [QUANTAXIS 量化金融策略框架](#quantaxis-量化金融策略框架)
