@@ -23,10 +23,11 @@
 # SOFTWARE.
 import pymongo
 
-from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info
+
+from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 
 
-def QA_user_sign_in(name, password, client=QA_Setting.client):
+def QA_user_sign_in(name, password, client):
     coll = client.quantaxis.user_list
     if (coll.find({'username': name, 'password': password}).count() > 0):
         QA_util_log_info('success login! your username is:' + str(name))
@@ -36,7 +37,7 @@ def QA_user_sign_in(name, password, client=QA_Setting.client):
         return False
 
 
-def QA_user_sign_up(name, password, client=QA_Setting.client):
+def QA_user_sign_up(name, password, client):
     coll = client.quantaxis.user_list
     if (coll.find({'username': name}).count() > 0):
         QA_util_log_info('user name is already exist')

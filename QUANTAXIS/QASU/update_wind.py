@@ -29,4 +29,4 @@ import pymongo
 
 from QUANTAXIS.QAFetch import QAWind
 from QUANTAXIS.QAUtil import QA_Setting, QA_util_date_stamp, QA_util_time_stamp
-from QUANTAXIS.save_wind import *
+from QUANTAXIS.QASU.save_wind import *
