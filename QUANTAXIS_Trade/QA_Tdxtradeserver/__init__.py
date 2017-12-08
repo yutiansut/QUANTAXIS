@@ -70,7 +70,7 @@ class QATrade_TdxTradeServer(base_trade.QA_Trade_Api):
         self._session = requests.Session()
         self._event_dict = {'logon': self.on_login, 'logoff': self.on_logout, 'ping': self.on_ping,
                             'query_data': self.on_query_data, 'send_order': self.on_insert_order,
-                            'cacnel_order': self.on_cancel_order_event, 'get_quote': self.on_get_quote}
+                            'cancel_order': self.on_cancel_order_event, 'get_quote': self.on_get_quote}
         self.client_id=''
         self.account_id=''
     def spi_job(self, params=None):
@@ -176,8 +176,8 @@ class QATrade_TdxTradeServer(base_trade.QA_Trade_Api):
             'quantity': quantity
         }])
 
-    def cacnel_order(self, client_id, exchange_id, hth):
-        self._queue.put(["cacnel_order", {
+    def cancel_order(self, client_id, exchange_id, hth):
+        self._queue.put(["cancel_order", {
             'client_id': client_id,
             'exchange_id': exchange_id,
             'hth': hth
