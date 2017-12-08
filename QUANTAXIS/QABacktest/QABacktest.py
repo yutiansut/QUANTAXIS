@@ -46,6 +46,7 @@ from QUANTAXIS import (QA_Market, QA_Portfolio, QA_QAMarket_bid, QA_Risk,
                        __version__)
 from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_backtest
+from QUANTAXIS.QABacktest.backtest_setting import backtest_setting
 from QUANTAXIS.QAData import QA_DataStruct_Stock_day, QA_DataStruct_Stock_min
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_index_day, QA_fetch_index_min,
                                        QA_fetch_stock_day, QA_fetch_stock_info,
@@ -115,7 +116,6 @@ class QA_Backtest():
     outside_data_dict=[]
     outside_data_hashable={}
     topic_name = 'EXAMPLE'
-    topic_id = ''
     stratey_version = 'V1'
     absoult_path=sys.path[0]
 
@@ -152,7 +152,6 @@ class QA_Backtest():
         self.if_save_to_csv = True
         self.stratey_version = 'V1'
         self.topic_name = 'EXAMPLE'
-        self.topic_id = ''
         self.outside_data=[]
         self.outside_data_dict=[]
         self.outside_data_hashable={}
@@ -332,7 +331,7 @@ class QA_Backtest():
             'dirs':self.dirs,
 
              })
-    def __end_of_trading(self, *arg, **kwargs):
+    def _end_of_trading(self, *arg, **kwargs):
         # 在回测的最后一天,平掉所有仓位(回测的最后一天是不买入的)
         # 回测最后一天的交易处理
         #self._make_slice(self)
@@ -351,10 +350,10 @@ class QA_Backtest():
 
         self.today = self.end_real_date
         self.QA_backtest_sell_all(self)
-        self.__sell_from_order_queue(self)
+        self._sell_from_order_queue(self)
         self.__sync_order_LM(self, 'daily_settle')  # 每日结算
 
-    def __sell_from_order_queue(self):
+    def _sell_from_order_queue(self):
 
         # 每个bar结束的时候,批量交易
         __result = []
@@ -905,7 +904,7 @@ class QA_Backtest():
             if _cls.backtest_type in ['day', 'd', 'index_day']:
 
                 func(*arg, **kwargs)  # 发委托单
-                _cls.__sell_from_order_queue(_cls)
+                _cls._sell_from_order_queue(_cls)
             elif _cls.backtest_type in ['1min', '5min', '15min', '30min', '60min', 'index_1min', 'index_5min', 'index_15min', 'index_30min', 'index_60min']:
                 if _cls.backtest_type in ['1min', 'index_1min']:
                     type_ = '1min'
@@ -930,13 +929,13 @@ class QA_Backtest():
                                                 tabulate(_cls.account.message['body']['account']['hold']))
                     func(*arg, **kwargs)  # 发委托单
 
-                    _cls.__sell_from_order_queue(_cls)
+                    _cls._sell_from_order_queue(_cls)
                     if _cls.backtest_type in ['index_1min', 'index_5min', 'index_15min']:
                         _cls.__sync_order_LM(_cls, 't_0')
             _cls.__sync_order_LM(_cls, 'daily_settle')  # 每日结算
 
         # 最后一天
-        _cls.__end_of_trading(_cls)
+        _cls._end_of_trading(_cls)
 
     @classmethod
     def backtest_init(_cls, func, *arg, **kwargs):
