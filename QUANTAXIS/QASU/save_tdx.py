@@ -355,6 +355,8 @@ def QA_SU_save_stock_block(client=QA_Setting.client):
             QA_fetch_get_stock_block('ths')))
     except:
         pass
+
+
 def QA_SU_save_stock_info(client=QA_Setting.client):
     client.quantaxis.drop_collection('stock_info')
     __stock_list = QA_fetch_get_stock_time_to_market()
@@ -363,7 +365,8 @@ def QA_SU_save_stock_info(client=QA_Setting.client):
     __err = []
 
     def __saving_work(code, __coll):
-        QA_util_log_info('##JOB010 Now Saving STOCK INFO ==== %s' % (str(code)))
+        QA_util_log_info(
+            '##JOB010 Now Saving STOCK INFO ==== %s' % (str(code)))
         try:
             __coll.insert_many(
                 QA_util_to_json_from_pandas(

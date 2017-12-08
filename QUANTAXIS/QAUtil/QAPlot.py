@@ -1,9 +1,12 @@
+import os
+import webbrowser
+
 import pyecharts
 from pyecharts import Kline
-import os
+
 from QUANTAXIS.QAData.QADataStruct import __stock_hq_base
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-import webbrowser
+
 
 """
 0.5.1预计新增内容:
@@ -14,6 +17,8 @@ import webbrowser
 
 主要是画DataStruct的k线图, DataStruct加指标的图,以及回测框架的回测结果的图
 """
+
+
 def plot_datastruct(__stock_hq_base, code=None):
     if code is None:
         path_name = '.' + os.sep + 'QA_' + __stock_hq_base.type + \

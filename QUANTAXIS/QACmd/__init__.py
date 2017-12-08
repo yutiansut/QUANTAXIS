@@ -34,7 +34,7 @@ import subprocess
 
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_backtest
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting, QA_util_mongo_initial, QA_util_mongo_make_index
-from QUANTAXIS import (QA_SU_save_stock_list, QA_SU_save_stock_min, QA_SU_save_stock_xdxr,QA_SU_save_stock_block,QA_SU_save_stock_info,
+from QUANTAXIS import (QA_SU_save_stock_list, QA_SU_save_stock_min, QA_SU_save_stock_xdxr, QA_SU_save_stock_block, QA_SU_save_stock_info,
                        QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_index_min, QA_SU_save_etf_day, QA_SU_save_etf_min,
                        QA_SU_update_stock_day)
 
@@ -47,18 +47,19 @@ class CLI(cmd.Cmd):
     def __init__(self):
         cmd.Cmd.__init__(self)
         self.prompt = 'QUANTAXIS> '    # 定义命令行提示符
+
     def do_shell(self, arg):
         "run a shell commad"
-        print (">", arg)
-        sub_cmd = subprocess.Popen(arg,shell=True, stdout=subprocess.PIPE)
-        print (sub_cmd.communicate()[0])
+        print(">", arg)
+        sub_cmd = subprocess.Popen(arg, shell=True, stdout=subprocess.PIPE)
+        print(sub_cmd.communicate()[0])
+
     def do_version(self, arg):
         QA_util_log_info(__version__)
 
     def help_version(self):
         print("syntax: version [message]",)
         print("-- prints a version message")
-
 
     #@click.command()
     #@click.option('--e', default=1, help='Number of greetings.')
@@ -135,41 +136,41 @@ class CLI(cmd.Cmd):
                         {'username': 'admin', 'password': 'admin'})
                 QA_SU_save_stock_day('tdx')
                 QA_SU_save_stock_xdxr('tdx')
-                #QA_SU_save_stock_min('tdx')
+                # QA_SU_save_stock_min('tdx')
                 QA_SU_save_index_day('tdx')
-                #QA_SU_save_index_min('tdx')
-                #QA_SU_save_etf_day('tdx')
-                #QA_SU_save_etf_min('tdx')
+                # QA_SU_save_index_min('tdx')
+                # QA_SU_save_etf_day('tdx')
+                # QA_SU_save_etf_min('tdx')
                 QA_SU_save_stock_list('tdx')
-                #QA_SU_save_stock_block('tdx')
-                #QA_SU_save_stock_info('tdx')
+                # QA_SU_save_stock_block('tdx')
+                # QA_SU_save_stock_info('tdx')
             elif len(arg) == 1 and arg[0] == 'day':
                 if QA_Setting.client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
                     QA_Setting.client.quantaxis.user_list.insert(
                         {'username': 'admin', 'password': 'admin'})
                 QA_SU_save_stock_day('tdx')
                 QA_SU_save_stock_xdxr('tdx')
-                #QA_SU_save_stock_min('tdx')
+                # QA_SU_save_stock_min('tdx')
                 QA_SU_save_index_day('tdx')
-                #QA_SU_save_index_min('tdx')
+                # QA_SU_save_index_min('tdx')
                 QA_SU_save_etf_day('tdx')
-                #QA_SU_save_etf_min('tdx')
+                # QA_SU_save_etf_min('tdx')
                 QA_SU_save_stock_list('tdx')
                 QA_SU_save_stock_block('tdx')
             elif len(arg) == 1 and arg[0] == 'min':
                 if QA_Setting.client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
                     QA_Setting.client.quantaxis.user_list.insert(
                         {'username': 'admin', 'password': 'admin'})
-                #QA_SU_save_stock_day('tdx')
+                # QA_SU_save_stock_day('tdx')
                 QA_SU_save_stock_xdxr('tdx')
                 QA_SU_save_stock_min('tdx')
-                #QA_SU_save_index_day('tdx')
+                # QA_SU_save_index_day('tdx')
                 QA_SU_save_index_min('tdx')
-                #QA_SU_save_etf_day('tdx')
+                # QA_SU_save_etf_day('tdx')
                 QA_SU_save_etf_min('tdx')
                 QA_SU_save_stock_list('tdx')
                 QA_SU_save_stock_block('tdx')
-            elif len(arg) == 1 and arg[0] in ['X','x']:
+            elif len(arg) == 1 and arg[0] in ['X', 'x']:
                 if QA_Setting.client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
                     QA_Setting.client.quantaxis.user_list.insert(
                         {'username': 'admin', 'password': 'admin'})
@@ -182,7 +183,7 @@ class CLI(cmd.Cmd):
                 QA_SU_save_etf_min('tdx')
                 QA_SU_save_stock_list('tdx')
                 QA_SU_save_stock_block('tdx')
-                #QA_SU_save_stock_info('tdx')
+                # QA_SU_save_stock_info('tdx')
             else:
                 for i in arg:
                     if i == 'insert_user':

@@ -31,10 +31,10 @@ QAFetch is Under [QAStandard#0.0.2@10x] Protocol
 
 
 """
-from . import QAWind as QAWind
-from . import QATushare as QATushare
-from . import QATdx as QATdx
-from . import QAThs as QAThs
+from QUANTAXIS.QAFetch import QAWind as QAWind
+from QUANTAXIS.QAFetch import QATushare as QATushare
+from QUANTAXIS.QAFetch import QATdx as QATdx
+from QUANTAXIS.QAFetch import QAThs as QAThs
 
 
 def use(package):
@@ -150,4 +150,4 @@ def QA_fetch_get_stock_info(package, code):
 
 
 def QA_fetch_get_security_bars(code, _type, lens):
-    return QATdx.QA_fetch_security_bars(code, _type, lens)
+    return QATdx.QA_fetch_get_security_bars(code, _type, lens)

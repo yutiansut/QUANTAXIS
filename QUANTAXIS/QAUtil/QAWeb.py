@@ -23,7 +23,7 @@
 # SOFTWARE.
 
 import datetime
-from subprocess import Popen, PIPE
+from subprocess import PIPE, Popen
 
 
 def QA_util_web_ping(url):

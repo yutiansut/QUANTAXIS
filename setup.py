@@ -25,7 +25,9 @@
 import codecs
 import os
 import sys
+
 import QUANTAXIS
+
 try:
     from setuptools import setup
 except:

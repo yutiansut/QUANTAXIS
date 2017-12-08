@@ -71,8 +71,9 @@ class QATrade_TdxTradeServer(base_trade.QA_Trade_Api):
         self._event_dict = {'logon': self.on_login, 'logoff': self.on_logout, 'ping': self.on_ping,
                             'query_data': self.on_query_data, 'send_order': self.on_insert_order,
                             'cancel_order': self.on_cancel_order_event, 'get_quote': self.on_get_quote}
-        self.client_id=''
-        self.account_id=''
+        self.client_id = ''
+        self.account_id = ''
+
     def spi_job(self, params=None):
         print(' ')
         if self._queue.empty() is False:
@@ -130,7 +131,7 @@ class QATrade_TdxTradeServer(base_trade.QA_Trade_Api):
         if 'data' in result:
             data = result['data']
             return pd.DataFrame(data=data)
-    
+
     def get_client_id(self):
         return self.client_id
 
@@ -142,7 +143,7 @@ class QATrade_TdxTradeServer(base_trade.QA_Trade_Api):
         self._queue.put(["ping", {}])
 
     def login(self, ip, port, version, yyb_id, account_id, trade_account, jy_passwrod, tx_password):
-        self.account_id=account_id
+        self.account_id = account_id
         self._queue.put(["logon", {
             "ip": ip,
             "port": port,
@@ -189,13 +190,11 @@ class QATrade_TdxTradeServer(base_trade.QA_Trade_Api):
             'code': code,
         }])
 
-
     def query_asset(self):
         self._queue.put(["query_data", {
             "client_id": self.client_id,
             "category": TdxTradeApiParams.QUERY_CATEGORY_CASH
         }])
-
 
     def on_ping(self, data):
         print(data)
@@ -206,11 +205,10 @@ class QATrade_TdxTradeServer(base_trade.QA_Trade_Api):
     def on_login(self, data):
         print(data)
         try:
-            self.client_id=data['data']['client_id']
-            #print(self.client_id)
+            self.client_id = data['data']['client_id']
+            # print(self.client_id)
         except:
             pass
-        
 
     def on_logout(self, data):
         print(data)
@@ -238,4 +236,3 @@ if __name__ == '__main__':
     api = QATrade_TdxTradeServer(broker="http://127.0.0.1:19820/api",
                                  enc_key=b"d29f1e0cd5a611e7", enc_iv=b"b1f4001a7dda7113")
     api.ping()
-    

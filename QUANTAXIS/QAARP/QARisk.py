@@ -22,11 +22,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from QUANTAXIS.QABacktest import QAAnalysis
-from QUANTAXIS.QAUtil import QA_util_log_expection, QA_util_log_info
 import math
+
 import numpy
 import pandas
+
+from QUANTAXIS.QABacktest import QAAnalysis
+from QUANTAXIS.QAUtil import QA_util_log_expection, QA_util_log_info
+
+
 """收益性的包括年化收益率、净利润、总盈利、总亏损、有效年化收益率、资金使用率。
 
 风险性主要包括胜率、平均盈亏比、最大回撤比例、最大连续亏损次数、最大连续盈利次数、持仓时间占比、贝塔。

@@ -29,8 +29,10 @@ we will give some function
 """
 import math
 import sys
+
 import numpy
 import pandas as pd
+
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day
 from QUANTAXIS.QAUtil import QA_util_log_info, trade_date_sse
 
@@ -158,8 +160,6 @@ def QA_backtest_calc_assets(trade_history, assets):
     return assets_d
 
 
-
-
 def QA_backtest_calc_benchmark(benchmark_data, init_assets):
 
     return list(benchmark_data['close'] / float(benchmark_data['open'][0]) * float(init_assets))
@@ -235,8 +235,10 @@ def QA_backtest_calc_trade_date(history):
             trade_date.append(history[i][0])
     return trade_date
 
+
 def calc_trade_time(history):
     return len(history)
+
 
 def calc_every_pnl(detail):
     pass

@@ -28,7 +28,6 @@ import threading
 import time
 from threading import Thread
 
-
 from QUANTAXIS.QAUtil import (QA_util_log_debug, QA_util_log_expection,
                               QA_util_log_info)
 from six.moves import queue

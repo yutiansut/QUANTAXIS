@@ -22,10 +22,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import json
-import pandas as pd
-import numpy as np
 import csv
+import json
+
+import numpy as np
+import pandas as pd
 
 
 def QA_util_to_json_from_pandas(data):

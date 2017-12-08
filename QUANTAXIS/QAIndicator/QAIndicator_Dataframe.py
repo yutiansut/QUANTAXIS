@@ -239,7 +239,8 @@ def QA_indicator_CCI(DataFrame, N=14):
     typ = (DataFrame['high'] + DataFrame['low'] + DataFrame['close']) / 3
     return ((typ - MA(typ, N)) / (0.015 * AVEDEV(typ, N))).tail(1)
 
-def QA_indicator_ASI(DataFrame,M1,M2):
+
+def QA_indicator_ASI(DataFrame, M1, M2):
     """
     LC=REF(CLOSE,1);
     AA=ABS(HIGH-LC);
@@ -252,41 +253,53 @@ def QA_indicator_ASI(DataFrame,M1,M2):
     ASI:SUM(SI,M1);
     ASIT:MA(ASI,M2);
     """
-    CLOSE=DataFrame['close']
-    HIGH=DataFrame['high']
-    LOW=DataFrame['low']
-    OPEN=DataFrame['open']
-    LC=REF(CLOSE,1)
-    AA=ABS(HIGH-LC)
-    CC=ABS(HIGH-REF(LOW,1))
-    DD=ABS(LC-REF(OPEN,1))
-    
-    #R=IF(AA>BB AND AA>CC,AA+BB/2+DD/4,IF(BB>CC AND BB>AA,BB+AA/2+DD/4,CC+DD/4))
-    X=(CLOSE-LC+(CLOSE-OPEN)/2+LC-REF(OPEN,1))
-
-def QA_indicator_MA(DataFrame,N):
     CLOSE = DataFrame['close']
-    return MA(CLOSE,N)
+    HIGH = DataFrame['high']
+    LOW = DataFrame['low']
+    OPEN = DataFrame['open']
+    LC = REF(CLOSE, 1)
+    AA = ABS(HIGH - LC)
+    CC = ABS(HIGH - REF(LOW, 1))
+    DD = ABS(LC - REF(OPEN, 1))
 
-def QA_indicator_EMA(DataFrame,N):
+    # R=IF(AA>BB AND AA>CC,AA+BB/2+DD/4,IF(BB>CC AND BB>AA,BB+AA/2+DD/4,CC+DD/4))
+    X = (CLOSE - LC + (CLOSE - OPEN) / 2 + LC - REF(OPEN, 1))
+
+
+def QA_indicator_MA(DataFrame, N):
     CLOSE = DataFrame['close']
-    return EMA(CLOSE,N)
+    return MA(CLOSE, N)
 
-def QA_indicator_SMA(DataFrame,N):
+
+def QA_indicator_EMA(DataFrame, N):
     CLOSE = DataFrame['close']
-    return SMA(CLOSE,N)
+    return EMA(CLOSE, N)
 
 
-def lower_shadow(DataFrame):#下影线
-    return abs(DataFrame.low-MIN(DataFrame.open,DataFrame.close))
-def upper_shadow(DataFrame):#上影线
-    return abs(DataFrame.high-MAX(DataFrame.open,DataFrame.close))
+def QA_indicator_SMA(DataFrame, N):
+    CLOSE = DataFrame['close']
+    return SMA(CLOSE, N)
+
+
+def lower_shadow(DataFrame):  # 下影线
+    return abs(DataFrame.low - MIN(DataFrame.open, DataFrame.close))
+
+
+def upper_shadow(DataFrame):  # 上影线
+    return abs(DataFrame.high - MAX(DataFrame.open, DataFrame.close))
+
+
 def body_abs(DataFrame):
-    return abs(DataFrame.open-DataFrame.close)
+    return abs(DataFrame.open - DataFrame.close)
+
+
 def body(DataFrame):
-    return DataFrame.close-DataFrame.open
+    return DataFrame.close - DataFrame.open
+
 
 def price_pcg(DataFrame):
-    return body(DataFrame)/DataFrame.open
+    return body(DataFrame) / DataFrame.open
+
+
 def amplitude(DataFrame):
-    return (DataFrame.high-DataFrame.low)/DataFrame.low
+    return (DataFrame.high - DataFrame.low) / DataFrame.low
