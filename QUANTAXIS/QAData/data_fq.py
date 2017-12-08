@@ -23,11 +23,12 @@
 # SOFTWARE.
 
 
+import datetime
+
+import pandas as pd
+
 from QUANTAXIS.QAFetch import QA_fetch_get_stock_day, QA_fetch_get_stock_xdxr
 from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info
-
-import datetime
-import pandas as pd
 
 
 def QA_data_get_qfq(code, start, end):

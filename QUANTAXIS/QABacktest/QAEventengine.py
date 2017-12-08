@@ -21,10 +21,11 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_log_debug
 import pandas as pd
+
 from QUANTAXIS.QAARP import QA_Account, QA_Portfolio, QA_Risk
 from QUANTAXIS.QAMarket import QA_QAMarket_bid, QA_QAMarket_bid_list
+from QUANTAXIS.QAUtil import QA_util_log_debug, QA_util_log_info
 
 
 class QA_Backtest_Event_engine():

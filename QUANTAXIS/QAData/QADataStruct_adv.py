@@ -14,20 +14,21 @@ import platform
 import sys
 import time
 import webbrowser
-from functools import lru_cache, reduce, partial
+from functools import lru_cache, partial, reduce
 
 import numpy as np
 import pandas as pd
 import six
 from pyecharts import Kline
+
 from QUANTAXIS.QAData.data_fq import QA_data_stock_to_fq
 from QUANTAXIS.QAData.data_resample import QA_data_tick_resample
 from QUANTAXIS.QAData.proto import stock_day_pb2  # protobuf import
 from QUANTAXIS.QAData.proto import stock_min_pb2
+from QUANTAXIS.QAFetch.QATdx import QA_fetch_get_stock_realtime
 from QUANTAXIS.QAIndicator import EMA, HHV, LLV, SMA
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
                               QA_util_to_json_from_pandas, trade_date_sse)
-from QUANTAXIS.QAFetch.QATdx import QA_fetch_get_stock_realtime
 
 
 class __stock_hq_base():

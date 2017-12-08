@@ -22,8 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys
 import os
+import sys
 
 
 class backtest_setting():
@@ -42,7 +42,7 @@ class backtest_setting():
     def dirs(self):
         return '{}{}QUANTAXIS_RESULT{}{}{}{}{}'.format(
             self.absoult_path, os.sep, os.sep, self.topic, os.sep, self.version, os.sep)
-            
+
     @property
     def database_uri(self):
         return self.sql_setting.client.quantaxis

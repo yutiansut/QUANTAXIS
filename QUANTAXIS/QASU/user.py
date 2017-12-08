@@ -21,11 +21,13 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from QUANTAXIS.QAUtil import QA_util_log_info
 import pymongo
 
-def QA_user_sign_in(name, password, clients=pymongo.MongoClient()):
-    coll = clients.quantaxis.user_list
+from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info
+
+
+def QA_user_sign_in(name, password, client=QA_Setting.client):
+    coll = client.quantaxis.user_list
     if (coll.find({'username': name, 'password': password}).count() > 0):
         QA_util_log_info('success login! your username is:' + str(name))
         return True
@@ -34,8 +36,8 @@ def QA_user_sign_in(name, password, clients=pymongo.MongoClient()):
         return False
 
 
-def QA_user_sign_up(name, password, clients=pymongo.MongoClient()):
-    coll = clients.quantaxis.user_list
+def QA_user_sign_up(name, password, client=QA_Setting.client):
+    coll = client.quantaxis.user_list
     if (coll.find({'username': name}).count() > 0):
         QA_util_log_info('user name is already exist')
         return False

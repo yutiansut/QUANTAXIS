@@ -22,10 +22,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from QUANTAXIS.QAUtil import QA_util_make_min_index, QA_util_log_info
-from QUANTAXIS.QAFetch import QA_fetch_get_stock_transaction
 from datetime import time
+
 import pandas as pd
+
+from QUANTAXIS.QAFetch import QA_fetch_get_stock_transaction
+from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_make_min_index
 
 
 def QA_data_tick_resample(tick, type_='1min'):
@@ -37,7 +39,7 @@ def QA_data_tick_resample(tick, type_='1min'):
     data['code'] = tick['code'][0]
 
     __data_ = pd.DataFrame()
-    _temp=tick.drop_duplicates('date')['date']
+    _temp = tick.drop_duplicates('date')['date']
     for item in _temp:
         __data = data[item]
         _data = __data[time(9, 31):time(11, 30)].append(

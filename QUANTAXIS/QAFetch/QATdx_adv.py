@@ -37,14 +37,16 @@ from threading import Event, Thread, Timer
 import numpy as np
 import pandas as pd
 from motor.motor_asyncio import AsyncIOMotorClient
-
 from pytdx.exhq import TdxExHq_API
 from pytdx.hq import TdxHq_API
+
 from QUANTAXIS.QAUtil.QADate import QA_util_calc_time
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_if_tradetime
 from QUANTAXIS.QAUtil.QASetting import QA_Setting, info_ip_list
+from QUANTAXIS.QAUtil.QASql import (QA_util_sql_mongo_sort_ASCENDING,
+                                    QA_util_sql_mongo_sort_DESCENDING)
 from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
-from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_sort_ASCENDING, QA_util_sql_mongo_sort_DESCENDING
+
 
 """
 准备做一个多连接的连接池执行器Executor

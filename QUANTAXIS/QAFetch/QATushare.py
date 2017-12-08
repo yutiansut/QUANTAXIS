@@ -24,9 +24,11 @@
 
 import json
 
-import tushare as QATs
 import pandas as pd
-from QUANTAXIS.QAUtil import QA_util_date_stamp, QA_util_log_info, QA_util_to_json_from_pandas,QA_util_date_int2str
+import tushare as QATs
+
+from QUANTAXIS.QAUtil import (QA_util_date_int2str, QA_util_date_stamp,
+                              QA_util_log_info, QA_util_to_json_from_pandas)
 
 
 def QA_fetch_get_stock_day(name, startDate='', endDate='', if_fq='01', type_='json'):
@@ -45,7 +47,7 @@ def QA_fetch_get_stock_day(name, startDate='', endDate='', if_fq='01', type_='js
 
     data = QATs.get_k_data(str(name), startDate, endDate,
                            ktype='D', autype=if_fq, retry_count=200, pause=0.005).sort_index()
-    
+
     data['date_stamp'] = data['date'].apply(lambda x: QA_util_date_stamp(x))
     data['fqtype'] = if_fq
     if type_ in ['json']:
@@ -53,9 +55,10 @@ def QA_fetch_get_stock_day(name, startDate='', endDate='', if_fq='01', type_='js
         return data_json
     elif type_ in ['pd', 'pandas', 'p']:
         data['date'] = pd.to_datetime(data['date'])
-        data = data.set_index('date',drop=False)
+        data = data.set_index('date', drop=False)
         data['date'] = data['date'].apply(lambda x: str(x)[0:10])
         return data
+
 
 def QA_fetch_get_stock_realtime():
     data = QATs.get_today_all()
@@ -81,9 +84,12 @@ def QA_fetch_get_stock_tick(name, date):
 def QA_fetch_get_stock_list():
     df = QATs.get_stock_basics()
     return list(df.index)
+
+
 def QA_fetch_get_stock_time_to_market():
     data = QATs.get_stock_basics()
-    return data[data['timeToMarket']!=0]['timeToMarket'].apply(lambda x:QA_util_date_int2str(x))
+    return data[data['timeToMarket'] != 0]['timeToMarket'].apply(lambda x: QA_util_date_int2str(x))
+
 
 def QA_fetch_get_trade_date(endDate, exchange):
     data = QATs.trade_cal()
@@ -97,7 +103,7 @@ def QA_fetch_get_trade_date(endDate, exchange):
         data_stamp = QA_util_date_stamp(date)
         mes = {'date': date, 'num': num,
                'exchangeName': exchangeName, 'date_stamp': data_stamp}
-        message.append(mes) 
+        message.append(mes)
     return message
 # test
 

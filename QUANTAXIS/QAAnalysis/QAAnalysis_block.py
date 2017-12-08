@@ -8,13 +8,15 @@ import datetime
 import pandas as pd
 
 from QUANTAXIS.QAAnalysis.QAAnalysis_dataframe import QA_Analysis_stock
-from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_stock_day_adv,
-                                               QA_fetch_stock_min_adv,
-                                               QA_fetch_stock_block_adv)
-from QUANTAXIS.QAFetch.QATdx import QA_fetch_get_stock_info
-from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_real_datelist
-from QUANTAXIS.QAFetch.QATdx_adv import QA_Tdx_Executor
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_info
+from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_stock_block_adv,
+                                               QA_fetch_stock_day_adv,
+                                               QA_fetch_stock_min_adv)
+from QUANTAXIS.QAFetch.QATdx import QA_fetch_get_stock_info
+from QUANTAXIS.QAFetch.QATdx_adv import QA_Tdx_Executor
+from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_real_datelist
+
+
 def get_gap_trade(gap):
     return QA_util_get_real_datelist(datetime.date.today() + datetime.timedelta(days=-int(gap)), datetime.date.today())
 

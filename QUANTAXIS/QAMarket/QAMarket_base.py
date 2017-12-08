@@ -3,6 +3,7 @@ import random
 
 from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info
 
+
 """
 需要一个可以被修改和继承的基类
 
