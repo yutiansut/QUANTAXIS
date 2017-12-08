@@ -99,7 +99,7 @@ def __select_type(level):
     return level
 
 
-def QA_fetch_security_bars(code, _type, lens, ip=best_ip, port=7709):
+def QA_fetch_get_security_bars(code, _type, lens, ip=best_ip, port=7709):
     api = TdxHq_API()
     with api.connect(ip, port):
         data = pd.concat([api.to_df(api.get_security_bars(__select_type(_type), __select_market_code(
@@ -490,7 +490,7 @@ def __QA_fetch_get_stock_transaction(code, day, retry, api):
 
 
 def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=best_ip, port=7709):
-    '逐笔成交'
+    '历史逐笔成交'
     api = TdxHq_API()
 
     real_start, real_end = QA_util_get_real_datelist(start, end)
@@ -513,7 +513,20 @@ def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=best_ip, port=7
                 data = data.append(data_)
 
         return data.assign(datetime=data['datetime'].apply(lambda x: str(x)[0:19]))
+def QA_fetch_get_stock_transaction_realtime(code, ip=best_ip, port=7709):
+    '实时逐笔成交 包含集合竞价'
+    api = TdxHq_API()
+    
+    with api.connect(ip, port):
+        data = pd.DataFrame()
+        data = pd.concat([api.to_df(api.get_transaction_data(
+                __select_market_code(str(code)), code, (2 - i) * 2000, 2000)) for i in range(3)], axis=0)
+        if 'value' in data.columns:
+            data=data.drop(['value'],axis=1)
 
+        day=datetime.date.today()
+        return data.dropna().assign(date=day).assign(datetime=pd.to_datetime(data['time'].apply(lambda x: str(day) + ' ' + str(x))))\
+                            .assign(code=str(code)).assign(order=range(len(data.index))).set_index('datetime', drop=False, inplace=False)
 
 def QA_fetch_get_stock_xdxr(code, ip=best_ip, port=7709):
     '除权除息'
@@ -562,8 +575,9 @@ def QA_fetch_get_stock_block(ip=best_ip, port=7709):
         else:
             QA_util_log_info('Wrong with fetch block ')
 
-
-
+def QA_fetch_get_future_day(ip=best_ip, port=7709):
+    '期货数据'
+    pass
 
 if __name__ == '__main__':
     # print(QA_fetch_get_stock_day('000001','2017-07-03','2017-07-10'))

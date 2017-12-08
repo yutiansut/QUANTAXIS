@@ -23,6 +23,9 @@
 # SOFTWARE.
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_log_debug
 import pandas as pd
+from QUANTAXIS.QAARP import QA_Account, QA_Portfolio, QA_Risk
+from QUANTAXIS.QAMarket import QA_QAMarket_bid, QA_QAMarket_bid_list
+
 
 class QA_Backtest_Event_engine():
     def __init__(self, *args, **kwargs):
@@ -81,7 +84,7 @@ def sync_order_LM(cls, event_, order_=None, order_id_=None, trade_id_=None, mark
         # try:
         assert isinstance(order_id_, str)
         cls.account.order_queue.loc[cls.account.order_queue['order_id']
-                                     == order_id_, 'status'] = 400  # 注销事件
+                                    == order_id_, 'status'] = 400  # 注销事件
         if order_.towards is 1:
             # 多单 撤单  现金增加
             cls.account.cash_available += cls.account.order_queue.query('order_id=="order_id_"')[
@@ -131,12 +134,12 @@ def sync_order_LM(cls, event_, order_=None, order_id_=None, trade_id_=None, mark
             if order_.amount == 0:  # 完全交易
                 # 注销(成功交易)['买入单不能立即结转']
                 cls.account.order_queue.loc[cls.account.order_queue['order_id']
-                                             == order_id_, 'status'] = 200
+                                            == order_id_, 'status'] = 200
 
             elif order_.amount > 0:
                 # 注销(成功交易)
                 cls.account.order_queue.loc[cls.account.order_queue['order_id']
-                                             == order_id_, 'status'] = 203
+                                            == order_id_, 'status'] = 203
                 cls.account.order_queue.query('order_id=="order_id_"')[
                     'amount'] -= market_message_['body']['bid']['amount']
         elif order_.towards is -1:
@@ -151,13 +154,13 @@ def sync_order_LM(cls, event_, order_=None, order_id_=None, trade_id_=None, mark
             if order_.amount == 0:
                 # 注销(成功交易)
                 cls.account.order_queue.loc[cls.account.order_queue['order_id']
-                                             == order_id_, 'status'] = 200
+                                            == order_id_, 'status'] = 200
             else:
                 # 注销(成功交易)
                 cls.account.order_queue.loc[cls.account.order_queue['order_id']
-                                             == order_id_, 'status'] = 203
+                                            == order_id_, 'status'] = 203
                 cls.account.order_queue[cls.account.order_queue['order_id'] ==
-                                         order_id_]['amount'] -= market_message_['body']['bid']['amount']
+                                        order_id_]['amount'] -= market_message_['body']['bid']['amount']
     else:
         QA_util_log_info(
             'EventEngine Warning: Unknown type of order event in  %s' % str(cls.now))
