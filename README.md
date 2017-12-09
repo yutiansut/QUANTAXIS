@@ -12,12 +12,12 @@
 
 
 
-![version](https://img.shields.io/badge/Version-%200.5.26-orange.svg)
+![version](https://img.shields.io/badge/Version-%200.5.28-orange.svg)
 ![build](https://travis-ci.org/yutiansut/QUANTAXIS.svg?branch=master)
 [![Stories in Ready](https://badge.waffle.io/yutiansut/QUANTAXIS.svg?label=ready&title=Ready)](http://waffle.io/yutiansut/QUANTAXIS)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.8-brown.svg)
-![Pypi](https://img.shields.io/badge/Pypi-%200.5.26-blue.svg)
+![Pypi](https://img.shields.io/badge/Pypi-%200.5.28-blue.svg)
 ![python](https://img.shields.io/badge/python-%203.6/3.5/3.4/win/ubuntu-darkgrey.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.4.0-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
@@ -35,7 +35,8 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - 日线（自1990年）回测 [定点复权] (T+1)
 - 分钟线 [1min/5min/15min/30min/60min]回测 (T+1)
 - 股指期货日线(T+0)/指数日线/ETF日线
-- 股指期货分钟线(T+0) / 指数分钟线/ETF分钟线 [1min/5min/15min/30min/60min] 
+- 股指期货分钟线(T+0) / 指数分钟线/ETF分钟线 [1min/5min/15min/30min/60min]
+- 期货日线/分钟线(期货指数/期货主连/期货合约)
 - 基于[pytdx](https://github.com/rainx/pytdx)各种爬虫的数据源 
 - 实时交易数据,实时tick
 - 基于Vue.js的前端网站
@@ -51,7 +52,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 预计实现:
 
 - 文档更新
-- 期货数据/回测
+- 期货回测
 - 实盘
 - 分析模块(行情分析/板块分析)
 
