@@ -151,3 +151,11 @@ def QA_fetch_get_stock_info(package, code):
 
 def QA_fetch_get_security_bars(code, _type, lens):
     return QATdx.QA_fetch_get_security_bars(code, _type, lens)
+
+
+def QA_fetch_get_future_day(package, code, start, end, _type):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_future_day(code, start, end, _type=_type)
+    else:
+        return 'Unsupport packages'

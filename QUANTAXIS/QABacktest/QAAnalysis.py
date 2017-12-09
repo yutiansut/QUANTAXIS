@@ -38,6 +38,7 @@ from QUANTAXIS.QAUtil import QA_util_log_info, trade_date_sse
 
 
 def QA_backtest_analysis_backtest(client, code_list, assets_d, account_days, message, total_date, benchmark_data):
+    
     # 主要要从message_history分析
     # 1.收益率
     # 2.胜率
