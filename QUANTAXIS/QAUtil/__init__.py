@@ -65,7 +65,7 @@ from QUANTAXIS.QAUtil.QAMongo import (QA_util_mongo_infos,
                                       QA_util_mongo_make_index,
                                       QA_util_mongo_status)
 # QUANTAXIS设置相关
-from QUANTAXIS.QAUtil.QASetting import QA_Setting, info_ip_list
+from QUANTAXIS.QAUtil.QASetting import QA_Setting, info_ip_list, stock_ip_list, future_ip_list
 # sql
 from QUANTAXIS.QAUtil.QASql import (QA_util_sql_async_mongo_setting,
                                     QA_util_sql_mongo_setting,

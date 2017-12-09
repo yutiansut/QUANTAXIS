@@ -115,7 +115,7 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms
                               QA_util_sql_mongo_setting, QA_util_sql_async_mongo_setting, QA_util_sql_mongo_sort_ASCENDING, QA_util_sql_mongo_sort_DESCENDING,
                               QA_util_log_debug, QA_util_log_expection, QA_util_log_info,
                               QA_util_cfg_initial, QA_util_get_cfg,
-                              QA_Setting,
+                              QA_Setting, info_ip_list, stock_ip_list, future_ip_list,
                               QA_util_web_ping,
                               trade_date_sse, QA_util_if_trade, QA_util_if_tradetime,
                               QA_util_get_real_datelist, QA_util_get_real_date,
