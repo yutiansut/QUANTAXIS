@@ -40,8 +40,8 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - 基于[pytdx](https://github.com/rainx/pytdx)各种爬虫的数据源 
 - 实时交易数据,实时tick
 - 基于Vue.js的前端网站
-- 自定义的数据结构
-- 指标计算
+- 自定义的数据结构QADataStruct
+- 指标计算QAIndicator
 - 板块数据(0.5.1新增)/同花顺,通达信板块
 - 基本面数据(部分 最新一期财务报表)
 - 行情分发
