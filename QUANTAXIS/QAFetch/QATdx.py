@@ -46,14 +46,14 @@ def ping(ip, type_='stock'):
     __time1 = datetime.datetime.now()
     try:
         if type_ in ['stock']:
-            with api.connect(ip, 7709, time_out=1):
+            with api.connect(ip, 7709, time_out=0.7):
                 if len(api.get_security_list(0, 1)) > 800:
                     return datetime.datetime.now() - __time1
                 else:
                     print('Bad STOCKIP REPSONSE %s' % ip)
                     return datetime.timedelta(9, 9, 0)
         elif type_ in ['future']:
-            with apix.connect(ip, 7727, time_out=1):
+            with apix.connect(ip, 7727, time_out=0.7):
                 if apix.get_instrument_count() > 40000:
                     return datetime.datetime.now() - __time1
                 else:
