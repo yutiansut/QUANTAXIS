@@ -691,7 +691,7 @@ def QA_fetch_get_future_list(ip=best_ip['future'], port=7727):
             for i in range(int(num / 500) + 1)], axis=0).set_index('code', drop=False)
 
 extension_market_info = QA_fetch_get_future_list()
-def QA_fetch_get_future_day(code, start_date, end_date, _type='day', ip=best_ip['future'], port=7727, extension_market_info=extension_market_info):
+def QA_fetch_get_future_day(code, start_date, end_date, level='day', ip=best_ip['future'], port=7727, extension_market_info=extension_market_info):
     '期货数据 日线'
 
     apix = TdxExHq_API()
@@ -703,18 +703,49 @@ def QA_fetch_get_future_day(code, start_date, end_date, _type='day', ip=best_ip[
         code_market = extension_market_info.query('code=="{}"'.format(code))
         
         data = pd.concat([apix.to_df(apix.get_instrument_bars(_select_type(
-            _type), int(code_market.market), str(code),(int(lens / 700) - i) * 700, 700))for i in range(int(lens / 700) + 1)], axis=0)
+            level), int(code_market.market), str(code),(int(lens / 700) - i) * 700, 700))for i in range(int(lens / 700) + 1)], axis=0)
         data = data.assign(date=data['datetime'].apply(lambda x: str(x[0:10]))).assign(code=str(code))\
             .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10]))).set_index('date', drop=False, inplace=False)
 
         return data.drop(['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1)[start_date:end_date].assign(date=data['date'].apply(lambda x: str(x)[0:10]))
 
 
-def QA_fetch_get_future_min(ip=best_ip['future'], port=7727):
+def QA_fetch_get_future_min(code, start, end, level='1min',ip=best_ip['future'], port=7727, extension_market_info=extension_market_info):
     '期货数据 分钟线'
     apix = TdxExHq_API()
+    type_ = ''
+    start_date = str(start)[0:10]
+    today_ = datetime.date.today()
+    lens = QA_util_get_trade_gap(start_date, today_)
+    if str(level) in ['5', '5m', '5min', 'five']:
+        level, type_ = 0, '5min'
+        lens = 48 * lens
+    elif str(level) in ['1', '1m', '1min', 'one']:
+        level, type_ = 8, '1min'
+        lens = 240 * lens
+    elif str(level) in ['15', '15m', '15min', 'fifteen']:
+        level, type_ = 1, '15min'
+        lens = 16 * lens
+    elif str(level) in ['30', '30m', '30min', 'half']:
+        level, type_ = 2, '30min'
+        lens = 8 * lens
+    elif str(level) in ['60', '60m', '60min', '1h']:
+        level, type_ = 3, '60min'
+        lens = 4 * lens
+    if lens > 20800:
+        lens = 20800
     with apix.connect(ip, port):
-        pass
+        code_market = extension_market_info.query('code=="{}"'.format(code))
+        data = pd.concat([apix.to_df(apix.get_instrument_bars(level, int(code_market.market), str(code), (int(lens / 700) - i) * 700, 700)) for i in range(int(lens / 700) + 1)], axis=0)
+
+        data = data\
+            .assign(datetime=pd.to_datetime(data['datetime']), code=str(code))\
+            .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1, inplace=False)\
+            .assign(date=data['datetime'].apply(lambda x: str(x)[0:10]))\
+            .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(x)))\
+            .assign(time_stamp=data['datetime'].apply(lambda x: QA_util_time_stamp(x)))\
+            .assign(type=type_).set_index('datetime', drop=False, inplace=False)[start:end]
+        return data.assign(datetime=data['datetime'].apply(lambda x: str(x)))
 
 
 def QA_fetch_get_future_transaction(ip=best_ip['future'], port=7727):
