@@ -99,7 +99,9 @@ from QUANTAXIS.QATask import QA_Queue, QA_Event, QA_Job, QA_Engine
 # Data
 from QUANTAXIS.QAData import (QA_data_tick_resample, QA_data_get_hfq, QA_data_get_qfq, QA_data_make_qfq, QA_data_stock_to_fq,
                               QA_data_make_hfq, QA_DataStruct_Stock_day, QA_DataStruct_Stock_min,
-                              QA_DataStruct_Index_day, QA_DataStruct_Index_min, QA_DataStruct_Stock_transaction, QA_DataStruct_Stock_block)
+                              QA_DataStruct_future_day, QA_DataStruct_future_min,
+                              QA_DataStruct_Index_day, QA_DataStruct_Index_min,
+                              QA_DataStruct_Stock_transaction, QA_DataStruct_Stock_block)
 # Analysis
 from QUANTAXIS.QAAnalysis import *
 

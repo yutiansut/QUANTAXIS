@@ -689,15 +689,17 @@ def QA_fetch_get_future_list(ip=best_ip['future'], port=7727):
         return pd.concat([apix.to_df(
             apix.get_instrument_info((int(num / 500) - i) * 500, 500))
             for i in range(int(num / 500) + 1)], axis=0).set_index('code', drop=False)
-
-extension_market_info = QA_fetch_get_future_list()
-def QA_fetch_get_future_day(code, start_date, end_date, level='day', ip=best_ip['future'], port=7727, extension_market_info=extension_market_info):
+global extension_market_info
+extension_market_info = None
+def QA_fetch_get_future_day(code, start_date, end_date, level='day', ip=best_ip['future'], port=7727):
     '期货数据 日线'
 
     apix = TdxExHq_API()
     start_date = str(start_date)[0:10]
     today_ = datetime.date.today()
     lens = QA_util_get_trade_gap(start_date, today_)
+    global extension_market_info
+    extension_market_info=QA_fetch_get_future_list() if extension_market_info is None else extension_market_info
 
     with apix.connect(ip, port):
         code_market = extension_market_info.query('code=="{}"'.format(code))
@@ -710,13 +712,16 @@ def QA_fetch_get_future_day(code, start_date, end_date, level='day', ip=best_ip[
         return data.drop(['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1)[start_date:end_date].assign(date=data['date'].apply(lambda x: str(x)[0:10]))
 
 
-def QA_fetch_get_future_min(code, start, end, level='1min',ip=best_ip['future'], port=7727, extension_market_info=extension_market_info):
+def QA_fetch_get_future_min(code, start, end, level='1min',ip=best_ip['future'], port=7727):
     '期货数据 分钟线'
     apix = TdxExHq_API()
     type_ = ''
     start_date = str(start)[0:10]
     today_ = datetime.date.today()
     lens = QA_util_get_trade_gap(start_date, today_)
+    global extension_market_info
+    extension_market_info=QA_fetch_get_future_list() if extension_market_info is None else extension_market_info
+    
     if str(level) in ['5', '5m', '5min', 'five']:
         level, type_ = 0, '5min'
         lens = 48 * lens
