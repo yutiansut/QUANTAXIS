@@ -370,15 +370,15 @@ class QA_DataStruct_Stock_day(_quotation_base):
 
 
 class QA_DataStruct_Stock_min(_quotation_base):
-    def __init__(self, DataFrame):
+    def __init__(self, DataFrame, dtype='stock_min', if_fq='bfq'):
         try:
             self.data = DataFrame.ix[:, [
                 'code', 'open', 'high', 'low', 'close', 'volume', 'preclose', 'datetime', 'date']]
         except:
             self.data = DataFrame.ix[:, [
                 'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'date']]
-        self.type = 'stock_min'
-        self.if_fq = 'bfq'
+        self.type = dtype
+        self.if_fq = if_fq
         self.mongo_coll = QA_Setting.client.quantaxis.stock_min
 
     def __repr__(self):
@@ -413,7 +413,13 @@ class QA_DataStruct_Stock_min(_quotation_base):
 
 
 class QA_DataStruct_future_day(_quotation_base):
-    def __init__(self, DataFrame):
+    def __init__(self, DataFrame,dtype='future_day', if_fq=''):
+        self.type = 'future_day'
+        self.data = DataFrame.ix[:, [
+            'code', 'open', 'high', 'low', 'close', 'trade', 'position', 'datetime', 'date']]
+        self.mongo_coll = QA_Setting.client.quantaxis.future_day
+class QA_DataStruct_future_min(_quotation_base):
+    def __init__(self, DataFrame,dtype='future_min', if_fq=''):
         self.type = 'future_day'
         self.data = DataFrame.ix[:, [
             'code', 'open', 'high', 'low', 'close', 'trade', 'position', 'datetime', 'date']]
@@ -443,9 +449,9 @@ class QA_DataStruct_Index_day(_quotation_base):
 class QA_DataStruct_Index_min(_quotation_base):
     '自定义的分钟线数据结构'
 
-    def __init__(self, DataFrame):
-        self.type = 'index_min'
-        self.if_fq = ''
+    def __init__(self, DataFrame,dtype='index_min', if_fq=''):
+        self.type = dtype
+        self.if_fq = if_fq
         self.data = DataFrame.ix[:, [
             'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'date']]
         self.mongo_coll = QA_Setting.client.quantaxis.index_min
