@@ -263,6 +263,7 @@ class QA_Backtest():
         self.dirs = '{}{}QUANTAXIS_RESULT{}{}{}{}{}'.format(
             self.absoult_path, os.sep, os.sep, self.topic_name, os.sep, self.stratey_version, os.sep)
         os.makedirs(self.dirs, exist_ok=True)
+        self.lastest_price = {}
         try:
             self.outside_data_dict = dict(
                 zip(list(self.outside_data.code), self.outside_data.splits()))
@@ -464,10 +465,8 @@ class QA_Backtest():
             self.account_d_key.append(self.today)
 
             if len(self.account.hold) > 1:
-
-                self.account_d_value.append(self.account.cash[-1] + sum([self.QA_backtest_get_market_data_bar(
-                    self, self.account.hold[i][1], self.now, if_trade=False).close[0] * float(self.account.hold[i][3])
-                    for i in range(1, len(self.account.hold))]))
+                self.account_d_value.append(self.account.cash[-1] + sum([self.lastest_price[self.account.hold[i][1]] * float(self.account.hold[i][3])
+                                                                         for i in range(1, len(self.account.hold))]))
             else:
                 self.account_d_value.append(self.account.cash[-1])
         elif event_ in ['t_0']:
@@ -725,8 +724,8 @@ class QA_Backtest():
     def QA_backtest_get_market_data_panel(self, date=None, type_='lt'):
         try:
             if date is not None:
-                if type_ in ['lt']:
-                    return self.market_data.select_time_with_gap(date, 1, type_)
+
+                return self.market_data.select_time_with_gap(date, 1, type_)
             else:
                 return self.market_data.select_time_with_gap(self.now, 1, type_)
         except Exception as e:
@@ -907,6 +906,11 @@ class QA_Backtest():
 
             if _cls.backtest_type in ['day', 'd', 'index_day']:
 
+                _temp = _cls.QA_backtest_get_market_data_panel(
+                    _cls, type_='lte').data.set_index('code').close.to_dict()
+                for key in _temp.keys():
+                    _cls.lastest_price[key] = _temp[key]
+
                 func(*arg, **kwargs)  # 发委托单
                 _cls._sell_from_order_queue(_cls)
             elif _cls.backtest_type in ['1min', '5min', '15min', '30min', '60min', 'index_1min', 'index_5min', 'index_15min', 'index_30min', 'index_60min']:
@@ -931,6 +935,11 @@ class QA_Backtest():
                         _cls, 'in the begining of %s' % str(min_index))
                     _cls.__QA_backtest_log_info(_cls,
                                                 tabulate(_cls.account.message['body']['account']['hold']))
+                    _temp = _cls.QA_backtest_get_market_data_panel(
+                        _cls, type_='lte').data.set_index('code').close.to_dict()
+                    for key in _temp.keys():
+                        _cls.lastest_price[key] = _temp[key]
+
                     func(*arg, **kwargs)  # 发委托单
 
                     _cls._sell_from_order_queue(_cls)
