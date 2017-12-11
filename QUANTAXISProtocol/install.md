@@ -1,4 +1,21 @@
+# QUANTAXIS 的安装/部署/更新
 
+
+<!-- TOC -->
+
+- [QUANTAXIS 的安装/部署/更新](#quantaxis-的安装部署更新)
+    - [部署问题:](#部署问题)
+        - [git](#git)
+        - [MongoDB](#mongodb)
+        - [Nodejs](#nodejs)
+        - [python](#python)
+        - [安装QUANTAXIS](#安装quantaxis)
+    - [安装QUANATXIS_WebKit](#安装quanatxis_webkit)
+    - [启动QUANTAXIS CLI 并进行数据的初始化存储](#启动quantaxis-cli-并进行数据的初始化存储)
+    - [启动QUANTAXIS_Webkit来查看回测的结果](#启动quantaxis_webkit来查看回测的结果)
+    - [更新QUANTAXIS](#更新quantaxis)
+
+<!-- /TOC -->
 ## 部署问题:
 
 - Windows/Linux(ubuntu) 已测试通过
@@ -155,7 +172,7 @@ pip install tushare==0.8.7
 *** 降级时需注意: 直接pip uninstall tushare以后 还要去删掉tushare安装目录下(一般是lib\site-packages\)的pytdx 再重新安装最新版本的pytdx ***
 
 ```
-### 安装QUANATXIS_WebKit
+## 安装QUANATXIS_WebKit
 ```shell
 cd QUANTAXIS_Webkit
 (sudo) npm install forever -g
@@ -168,7 +185,7 @@ cd ..
 cd web
 (sudo) npm install
 ```
-### 启动QUANTAXIS CLI 并进行数据的初始化存储
+## 启动QUANTAXIS CLI 并进行数据的初始化存储
 
 在命令行输入 quantaxis 进去quantaxis CLI
 ```
@@ -191,7 +208,7 @@ python  backtest.py
 一般而言 日线4个组合的回测(一年)在14-17秒左右 5min级别4个组合的回测(一年)在3-4分钟左右
 
 
-### 启动QUANTAXIS_Webkit来查看回测的结果
+## 启动QUANTAXIS_Webkit来查看回测的结果
 
 
 启动网络插件(nodejs 版本号需要大于6,最好是7)
@@ -219,7 +236,7 @@ cd web
 ![web操作](http://osnhakmay.bkt.clouddn.com/quantaxisweb.gif)
 (web操作的图太大 github上无法显示, 可以点进链接查看)
 
-### 更新QUANTAXIS
+## 更新QUANTAXIS
 
 由于目前项目还在开发中,所以需要使用Git来更新项目:
 
