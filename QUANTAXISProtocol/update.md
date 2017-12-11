@@ -1,5 +1,11 @@
-# 更新QUANTAXIS
+# QUANTAXIS更新
+<!-- TOC -->
 
+- [QUANTAXIS更新](#quantaxis更新)
+    - [更新QUANTAXIS (python)](#更新quantaxis-python)
+    - [更新QUANTAXIS_Webkit (nodejs)](#更新quantaxis_webkit-nodejs)
+
+<!-- /TOC -->
 由于目前项目还在开发中,所以需要使用Git来更新项目:
 
 点击右上角的Star和watch来持续跟踪项目进展~

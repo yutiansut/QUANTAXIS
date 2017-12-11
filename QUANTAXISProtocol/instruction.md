@@ -6,6 +6,18 @@ QUANTAXIS 是一个渐进式的框架,也就是说 你可以很简单的只使�
 
 在0.5.0以前,api都不是很稳定,所以文档这块比较欠缺,暂时先给一些常用的api说明:
 
+该部分文档可以配合 [Jupyter Example](https://github.com/yutiansut/QUANTAXIS/tree/master/jupyterexample) 一起使用
+
+<!-- TOC -->
+
+- [一些基础的api介绍](#一些基础的api介绍)
+    - [QUANTAXIS.QABacktest 的 api](#quantaxisqabacktest-的-api)
+    - [QUANTAXIS的核心数据结构](#quantaxis的核心数据结构)
+    - [QUANTAXIS的指标系统](#quantaxis的指标系统)
+    - [QUANTAXIS的行情分析/研究用](#quantaxis的行情分析研究用)
+    - [QUANTAXIS的api](#quantaxis的api)
+
+<!-- /TOC -->
 ### QUANTAXIS.QABacktest 的 api
 ```python
 from QUANTAXIS import QA_Backtest as QB
