@@ -46,10 +46,25 @@ def MA(Series, N):
 # 威廉SMA  参考https://www.joinquant.com/post/867
 
 
-def SMA(Series, N):
-    '威廉SMA'
-    Series = pd.Series(Series).fillna(0)
-    return reduce(lambda x, y: ((N - 1) * x + y) / N, Series)
+def SMA(Series, N, M=1):
+
+    ret = []
+    i = 1
+    length = len(Series)
+    # 跳过X中前面几个 nan 值
+    while i < length:
+        if np.isnan(Series[i]):
+            i += 1
+        else:
+            break
+    preY = Series[i]  # Y'
+    ret.append(preY)
+    while i < length:
+        Y = (M * Series[i] + (N - M) * preY) / float(N)
+        ret.append(Y)
+        preY = Y
+        i += 1
+    return ret
 
 
 def DIFF(Series, N=1):

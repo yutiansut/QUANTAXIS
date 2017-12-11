@@ -353,6 +353,7 @@ QUANTAXIS有两种类型的指标:
 import QUANTAXIS as QA
 QA.MA(Series, N)
 QA.EMA(Series, N)
+QA.SMA(Series, N, M=1)
 QA.DIFF(Series, N=1)
 QA.HHV(Series, N)
 QA.LLV(Series, N)
@@ -403,15 +404,15 @@ def JLHB(data, m=7, n=5):
     """
     var1 = (data['close'] - QA.LLV(data['low'], 60)) / \
         (QA.HHV(data['high'], 60) - QA.LLV(data['low'], 60)) * 80
-    B = QA.MA(var1, m)
-    var2 = QA.MA(B, n)
+    B = QA.SMA(var1, m)
+    var2 = QA.SMA(B, n)
     if QA.CROSS(B,var2) and B[-1]<40:
         return 1
     else:
         return 0
 
 # 得到指标
-QA.QA_fetch_stock_day_adv('000001','2017-01-01','2017-01-31').to_qfq().add_func(JLHB)
+QA.QA_fetch_stock_day_adv('000001','2017-01-01','2017-03-31').to_qfq().add_func(JLHB)
 ```
 
 ### QUANTAXIS的行情分析/研究用
