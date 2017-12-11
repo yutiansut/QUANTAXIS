@@ -72,6 +72,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
     - [更新](#更新)
     - [Docker](#docker)
     - [使用说明](#使用说明)
+    - [Jupyter示例](#jupyter示例)
     - [项目捐赠](#项目捐赠)
     - [回测Webkit插件概览](#回测webkit插件概览)
     - [QUANTAXIS 标准化协议和未来协议](#quantaxis-标准化协议和未来协议)
