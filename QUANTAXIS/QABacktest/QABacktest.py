@@ -906,11 +906,9 @@ class QA_Backtest():
 
             if _cls.backtest_type in ['day', 'd', 'index_day']:
 
-                _temp = _cls.QA_backtest_get_market_data_panel(
-                    _cls, type_='lte').data.set_index('code').close.to_dict()
+                _temp = _cls.market_data.select_time(_cls.today,_cls.today).data.set_index('code').close.to_dict()
                 for key in _temp.keys():
                     _cls.lastest_price[key] = _temp[key]
-
                 func(*arg, **kwargs)  # 发委托单
                 _cls._sell_from_order_queue(_cls)
             elif _cls.backtest_type in ['1min', '5min', '15min', '30min', '60min', 'index_1min', 'index_5min', 'index_15min', 'index_30min', 'index_60min']:
