@@ -105,8 +105,13 @@ def init():
     QB.commission_fee_coeff = 0.0015  # 千五的手续费(单向)
 
     QB.strategy_gap = 30  # 在取数据的时候 向前取多少个bar(会按回测的时间动态移动)
-    QB.strategy_stock_list = QB.QA_backtest_get_block(QB, ['MSCI成份'])
-
+    """
+    QB.strategy_stock_list 只需要是一个list即可
+    可以用QB.QA_backtest_get_block(QB, ['MSCI成份'])来获取板块成份股代码进行回测
+    也可以直接指定股票列表['000001','000002','000004']
+    """
+    #QB.strategy_stock_list = QB.QA_backtest_get_block(QB, ['MSCI成份'])
+    QB.strategy_stock_list = ['000001','000002','000004']
     QB.strategy_start_date = '2017-06-01 10:30:00'  # 回测开始日期
     QB.strategy_end_date = '2017-10-01'  # 回测结束日期
     QB.backtest_print_log = False  # 是否在屏幕上输出结果
