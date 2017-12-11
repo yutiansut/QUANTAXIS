@@ -60,6 +60,7 @@ class QA_Market():
             # 获取股票引擎
             __data = self.__get_stock_min_data(
                 __bid) if __data is None else __data
+            
             return market_stock_engine(__bid, __data, self.commission_fee_coeff)
 
         elif __bid.type == '0x03':

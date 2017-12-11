@@ -355,10 +355,10 @@ class QA_Backtest():
 
         self.today = self.end_real_date
         self.QA_backtest_sell_all(self)
-        self._sell_from_order_queue(self)
+        self._deal_from_order_queue(self)
         self.__sync_order_LM(self, 'daily_settle')  # 每日结算
 
-    def _sell_from_order_queue(self):
+    def _deal_from_order_queue(self):
 
         # 每个bar结束的时候,批量交易
         __result = []
@@ -373,8 +373,10 @@ class QA_Backtest():
                 item.datetime = self.now
 
                 __bid, __market = self.__wrap_bid(self, item)
+
                 __message = self.__QA_backtest_send_bid(
                     self, __bid, __market)
+
                 if isinstance(__message, dict):
                     if __message['header']['status'] in ['200', 200]:
                         self.__sync_order_LM(
@@ -589,8 +591,7 @@ class QA_Backtest():
         else:
             self.__QA_backtest_log_info(self, 'BACKTEST ENGINE ERROR=== CODE %s TIME %s NO MARKET DATA!' % (
                 __bid.code, __bid.datetime))
-            return __bid, 500
-
+            return __bid, None
     def __end_of_backtest(self, *arg, **kwargs):
         # 开始分析
         # 对于account.detail做一定的整理
@@ -836,7 +837,8 @@ class QA_Backtest():
         # 检查账户/临时扣费
 
         _bid, _market = self.__wrap_bid(self, _bid, order_type)
-        if _bid is not None and _market != 500:
+
+        if _bid is not None and _market is not None and _bid.amount>0:
             print('GET the Order Code %s Amount %s Price %s Towards %s Time %s' % (
                 _bid.code, _bid.amount, _bid.price, _bid.towards, _bid.datetime))
             self.__sync_order_LM(self, 'create_order', order_=_bid)
@@ -910,7 +912,7 @@ class QA_Backtest():
                 for key in _temp.keys():
                     _cls.lastest_price[key] = _temp[key]
                 func(*arg, **kwargs)  # 发委托单
-                _cls._sell_from_order_queue(_cls)
+                _cls._deal_from_order_queue(_cls)
             elif _cls.backtest_type in ['1min', '5min', '15min', '30min', '60min', 'index_1min', 'index_5min', 'index_15min', 'index_30min', 'index_60min']:
                 if _cls.backtest_type in ['1min', 'index_1min']:
                     type_ = '1min'
@@ -933,14 +935,15 @@ class QA_Backtest():
                         _cls, 'in the begining of %s' % str(min_index))
                     _cls.__QA_backtest_log_info(_cls,
                                                 tabulate(_cls.account.message['body']['account']['hold']))
-                    _temp = _cls.QA_backtest_get_market_data_panel(
-                        _cls, type_='lte').data.set_index('code').close.to_dict()
+
+
+                    _temp = _cls.market_data.select_time(_cls.now,_cls.now).data.set_index('code').close.to_dict()
                     for key in _temp.keys():
                         _cls.lastest_price[key] = _temp[key]
 
                     func(*arg, **kwargs)  # 发委托单
 
-                    _cls._sell_from_order_queue(_cls)
+                    _cls._deal_from_order_queue(_cls)
                     if _cls.backtest_type in ['index_1min', 'index_5min', 'index_15min']:
                         _cls.__sync_order_LM(_cls, 't_0')
             _cls.__sync_order_LM(_cls, 'daily_settle')  # 每日结算
