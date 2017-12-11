@@ -330,7 +330,6 @@ def QA_fetch_get_stock_min(code, start, end, level='1min', ip=best_ip['stock'], 
 
         data = pd.concat([api.to_df(api.get_security_bars(level, _select_market_code(
             str(code)), str(code), (int(lens / 800) - i) * 800, 800)) for i in range(int(lens / 800) + 1)], axis=0)
-
         data = data\
             .assign(datetime=pd.to_datetime(data['datetime']), code=str(code))\
             .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1, inplace=False)\
