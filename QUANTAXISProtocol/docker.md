@@ -1,4 +1,4 @@
-#快速使用Docker建立QUANTAXIS执行环境
+# 快速使用Docker建立QUANTAXIS执行环境
 
 <!-- TOC -->
 - [快速使用Docker建立QUANTAXIS执行环境](#快速使用Docker建立QUANTAXIS执行环境)
@@ -7,7 +7,7 @@
 
 <!-- TOC -->
 
-##获取安装了QUANTAIS的镜像
+## 获取安装了QUANTAIS的镜像
 
 首先，到[docker网站](https://www.docker.com/)下载相应的版本，并创建账号（注意：登录docker账号才能下载镜像）
 
@@ -42,7 +42,7 @@ cd
 http://localhost:8080
 ```
  
-##从头安装QUANTAXIS
+## 从头安装QUANTAXIS
 
 可以从一个干净的ubuntu镜像上开始安装，获取ubuntu镜像
 ```angular2html
