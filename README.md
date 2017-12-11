@@ -37,6 +37,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
     - [Docker](#docker)
     - [使用说明](#使用说明)
     - [Jupyter示例](#jupyter示例)
+    - [常见问题FAQ](#常见问题faq)
     - [项目捐赠](#项目捐赠)
     - [回测Webkit插件概览](#回测webkit插件概览)
     - [QUANTAXIS 标准化协议和未来协议](#quantaxis-标准化协议和未来协议)
@@ -102,6 +103,8 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 ## Jupyter示例
 参见 [Jupyter示例](https://github.com/yutiansut/QUANTAXIS/tree/master/jupyterexample)
 
+## 常见问题FAQ
+参见 [FAQ](https://github.com/yutiansut/QUANTAXIS/tree/master/QUANTAXISProtocol/faq.md)
 
 ## 项目捐赠
 
