@@ -136,7 +136,7 @@ ENV/
 
 #jupyter
 
-*.ipynb
+
 
 
 # jupyter-kernel
