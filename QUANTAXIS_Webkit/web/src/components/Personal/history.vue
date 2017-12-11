@@ -1,12 +1,13 @@
 <template>
   <div>
     <div class="container">
+      <mu-raised-button v-on:click='query()' label="成交明细" class="demo-raised-button" primary />
       <router-link :to="{ name:'visual',params: {id:this.message}}">
         <mu-raised-button label="账户表现" class="demo-raised-button" secondary/>
       </router-link>
-      <mu-raised-button v-on:click='query()' label="成交明细" class="demo-raised-button" />
+      
       <router-link :to="{ name:'strategy',params: {id:this.message}}">
-        <mu-raised-button label="策略查看" class="demo-raised-button" primary/>
+        <mu-raised-button label="策略查看" class="demo-raised-button" />
       </router-link>
       <mu-divider />
     </div>
