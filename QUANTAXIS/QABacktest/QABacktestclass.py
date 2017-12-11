@@ -49,7 +49,10 @@ from QUANTAXIS import (QA_Market, QA_Portfolio, QA_QAMarket_bid, QA_Risk,
 from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QABacktest.backtest_setting import backtest_setting
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_backtest
-from QUANTAXIS.QAData import QA_DataStruct_Stock_day, QA_DataStruct_Stock_min
+from QUANTAXIS.QAData.QADataStruct import (QA_DataStruct_Index_day, QA_DataStruct_Index_min,
+                                           QA_DataStruct_Stock_day, QA_DataStruct_Stock_min,
+                                           QA_DataStruct_future_day, QA_DataStruct_future_min, _quotation_base)
+
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_index_day, QA_fetch_index_min,
                                        QA_fetch_stock_day, QA_fetch_stock_info,
                                        QA_fetch_stocklist_day,
@@ -83,7 +86,7 @@ from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_gap,
 """
 
 
-class QA_Backtest():
+class QA_Backtest_with_class():
     '因为是装饰器调用的 所以变量要写在外面 类装饰器不会调用__init__'
     backtest_type = 'day'
     account = QA_Account()
@@ -162,7 +165,7 @@ class QA_Backtest():
             self.absoult_path, os.sep, os.sep, self.topic_name, os.sep, self.stratey_version, os.sep)
 
     def __QA_backtest_init(self):
-        self.__init__(self)
+        self.__init__()
         """既然是被当做装饰器使用,就需要把变量设置放在装饰函数的前面,把函数放在装饰函数的后面"""
         # 设置回测的开始结束时间
         self.strategy_start_date = str('2017-01-05')
@@ -206,7 +209,7 @@ class QA_Backtest():
             self.strategy_start_time = str(self.strategy_start_date)
             self.strategy_start_date = str(self.strategy_start_date)[0:10]
         else:
-            self.__QA_backtest_log_info(self, 'Wrong start date format')
+            self.__QA_backtest_log_info('Wrong start date format')
 
         if len(str(self.strategy_end_date)) == 10:
             self.strategy_end_time = str(self.strategy_end_date) + ' 15:00:00'
@@ -214,7 +217,7 @@ class QA_Backtest():
             self.strategy_end_time = str(self.strategy_end_date)
             self.strategy_end_date = str(self.strategy_end_date)[0:10]
         else:
-            self.__QA_backtest_log_info(self, 'Wrong end date format')
+            self.__QA_backtest_log_info('Wrong end date format')
         # 重新初始账户资产
         self.market = QA_Market(self.commission_fee_coeff)
         self.setting.QA_setting_init()
@@ -268,7 +271,7 @@ class QA_Backtest():
             self.outside_data_dict = dict(
                 zip(list(self.outside_data.code), self.outside_data.splits()))
             self.outside_data_hashable = self.outside_data.dicts
-        except Exception as e:
+        except:
             pass
 
     def __QA_backtest_log_info(self, log):
@@ -282,12 +285,12 @@ class QA_Backtest():
         这个是回测流程开始的入口
         """
         self.__QA_backtest_log_info(
-            self, 'QUANTAXIS Backtest Engine Initial Successfully')
-        self.__QA_backtest_log_info(self, 'Basical Info: \n' + tabulate(
+            'QUANTAXIS Backtest Engine Initial Successfully')
+        self.__QA_backtest_log_info('Basical Info: \n' + tabulate(
             [[str(__version__), str(self.strategy_name)]], headers=('Version', 'Strategy_name')))
-        self.__QA_backtest_log_info(self, 'BACKTEST Cookie_ID is:  ' +
+        self.__QA_backtest_log_info('BACKTEST Cookie_ID is:  ' +
                                     str(self.account.account_cookie))
-        self.__QA_backtest_log_info(self, 'Stock_List: \n' +
+        self.__QA_backtest_log_info('Stock_List: \n' +
                                     tabulate([self.strategy_stock_list]))
 
         # 初始化报价模式
@@ -354,9 +357,9 @@ class QA_Backtest():
             self.today = str(self.end_real_date)
 
         self.today = self.end_real_date
-        self.QA_backtest_sell_all(self)
-        self._deal_from_order_queue(self)
-        self.__sync_order_LM(self, 'daily_settle')  # 每日结算
+        self.QA_backtest_sell_all()
+        self._deal_from_order_queue()
+        self.__sync_order_LM('daily_settle')  # 每日结算
 
     def _deal_from_order_queue(self):
 
@@ -375,17 +378,17 @@ class QA_Backtest():
                 __bid, __market = self.__wrap_bid(self, item)
 
                 __message = self.__QA_backtest_send_bid(
-                    self, __bid, __market)
+                    __bid, __market)
 
                 if isinstance(__message, dict):
                     if __message['header']['status'] in ['200', 200]:
                         self.__sync_order_LM(
-                            self, 'trade', __bid, __message['header']['order_id'], __message['header']['trade_id'], __message)
+                            'trade', __bid, __message['header']['order_id'], __message['header']['trade_id'], __message)
                     else:
-                        self.__sync_order_LM(self, 'wait')
+                        self.__sync_order_LM('wait')
         else:
-            self.__QA_backtest_log_info(self,
-                                        'FROM BACKTEST: Order Queue is empty at %s!' % self.now)
+            self.__QA_backtest_log_info(
+                'FROM BACKTEST: Order Queue is empty at %s!' % self.now)
             pass
 
     def __sync_order_LM(self, event_, order_=None, order_id_=None, trade_id_=None, market_message_=None):
@@ -419,17 +422,17 @@ class QA_Backtest():
                         self.account.order_queue = self.account.order_queue.append(
                             order_.to_df())
                     else:
-                        self.__QA_backtest_log_info(self, 'FROM ENGINE: NOT ENOUGH MONEY:CASH  %s Order %s' % (
+                        self.__QA_backtest_log_info('FROM ENGINE: NOT ENOUGH MONEY:CASH  %s Order %s' % (
                             self.account.cash_available, order_.amount * order_.price))
                 elif order_.towards is -1:
 
-                    if self.QA_backtest_sell_available(self, order_.code) - order_.amount >= 0:
+                    if self.QA_backtest_sell_available(order_.code) - order_.amount >= 0:
                         self.account.sell_available[order_.code] -= order_.amount
                         self.account.order_queue = self.account.order_queue.append(
                             order_.to_df())
 
             else:
-                self.__QA_backtest_log_info(self, 'Order Event Warning:%s in %s' %
+                self.__QA_backtest_log_info('Order Event Warning:%s in %s' %
                                             (event_, str(self.now)))
 
         elif event_ in ['wait', 'live']:
@@ -459,8 +462,8 @@ class QA_Backtest():
             """
 
             self.account.cash_available = self.account.cash[-1]
-            self.account.sell_available = self.QA_backtest_hold(
-                self)['amount'].groupby('code').sum()
+            self.account.sell_available = self.QA_backtest_hold()[
+                'amount'].groupby('code').sum()
 
             self.account.order_queue = pd.DataFrame()
 
@@ -478,8 +481,8 @@ class QA_Backtest():
             同步t+0的账户状态 /允许卖出
             """
             self.account.cash_available = self.account.cash[-1]
-            self.account.sell_available = self.QA_backtest_hold(
-                self)['amount'].groupby('code').sum()
+            self.account.sell_available = self.QA_backtest_hold()[
+                'amount'].groupby('code').sum()
 
         elif event_ in ['trade']:
             # try:
@@ -525,8 +528,8 @@ class QA_Backtest():
                     self.account.order_queue[self.account.order_queue['order_id'] ==
                                              order_id_]['amount'] -= market_message_['body']['bid']['amount']
         else:
-            self.__QA_backtest_log_info(self,
-                                        'EventEngine Warning: Unknown type of order event in  %s' % str(self.now))
+            self.__QA_backtest_log_info(
+                'EventEngine Warning: Unknown type of order event in  %s' % str(self.now))
 
     def __QA_backtest_send_bid(self, __bid, __market=None):
         __message = self.market.receive_bid(__bid, __market)
@@ -537,7 +540,7 @@ class QA_Backtest():
             if __message['header']['status'] == 200 and __message['body']['bid']['amount'] > 0:
                 # 这个判断是为了 如果买入资金不充足,所以买入报了一个0量单的情况
                 # 如果买入量>0, 才判断为成功交易
-                self.__QA_backtest_log_info(self, 'BUY %s Price %s Date %s Amount %s' % (
+                self.__QA_backtest_log_info('BUY %s Price %s Date %s Amount %s' % (
                     __bid.code, __bid.price, __bid.datetime, __bid.amount))
                 self.__messages = self.account.QA_account_receive_deal(
                     __message)
@@ -555,7 +558,7 @@ class QA_Backtest():
             if __message['header']['status'] == 200:
                 self.__messages = self.account.QA_account_receive_deal(
                     __message)
-                self.__QA_backtest_log_info(self, 'SELL %s Price %s Date %s  Amount %s' % (
+                self.__QA_backtest_log_info('SELL %s Price %s Date %s  Amount %s' % (
                     __bid.code, __bid.price, __bid.datetime, __bid.amount))
                 return __message
             else:
@@ -567,7 +570,7 @@ class QA_Backtest():
 
     def __wrap_bid(self, __bid, __order=None):
         __market_data_for_backtest = self.QA_backtest_find_bar(
-            self, __bid.code, __bid.datetime)
+            __bid.code, __bid.datetime)
         if __market_data_for_backtest is not None:
 
             if __market_data_for_backtest['open'] is not None and __order is not None:
@@ -589,9 +592,10 @@ class QA_Backtest():
                 return __bid, __market_data_for_backtest
 
         else:
-            self.__QA_backtest_log_info(self, 'BACKTEST ENGINE ERROR=== CODE %s TIME %s NO MARKET DATA!' % (
+            self.__QA_backtest_log_info('BACKTEST ENGINE ERROR=== CODE %s TIME %s NO MARKET DATA!' % (
                 __bid.code, __bid.datetime))
             return __bid, None
+
     def __end_of_backtest(self, *arg, **kwargs):
         # 开始分析
         # 对于account.detail做一定的整理
@@ -622,15 +626,14 @@ class QA_Backtest():
             pass
         self.account.detail = self.account.detail.drop(
             ['order_id', 'trade_id', 'sell_order_id', 'sell_trade_id'], axis=1)
-        self.__QA_backtest_log_info(self, 'start analysis====\n' +
+        self.__QA_backtest_log_info('start analysis====\n' +
                                     str(self.strategy_stock_list))
-        self.__QA_backtest_log_info(
-            self, '=' * 10 + 'Trade History' + '=' * 10)
-        self.__QA_backtest_log_info(self, '\n' + tabulate(self.account.history,
-                                                          headers=('date', 'code', 'price', 'towards',
-                                                                   'amounts', 'order_id', 'trade_id', 'commission')))
-        self.__QA_backtest_log_info(self, '\n' + tabulate(self.account.detail,
-                                                          headers=(self.account.detail.columns)))
+        self.__QA_backtest_log_info('=' * 10 + 'Trade History' + '=' * 10)
+        self.__QA_backtest_log_info('\n' + tabulate(self.account.history,
+                                                    headers=('date', 'code', 'price', 'towards',
+                                                             'amounts', 'order_id', 'trade_id', 'commission')))
+        self.__QA_backtest_log_info('\n' + tabulate(self.account.detail,
+                                                    headers=(self.account.detail.columns)))
         __exist_time = int(self.end_real_id) - int(self.start_real_id) + 1
         if len(self.__messages) > 1:
             performace = QA_backtest_analysis_backtest(
@@ -670,7 +673,7 @@ class QA_Backtest():
 
                 self.account.detail.to_csv(
                     '{}backtest-pnl-{}.csv'.format(self.dirs, str(self.account.account_cookie)))
-                self.__save_strategy_files(self)
+                self.__save_strategy_files()
 
     def __check_state(self, bid_price, bid_amount):
         pass
@@ -841,12 +844,12 @@ class QA_Backtest():
             _bid.amount = int(_bid.amount)
         # 检查账户/临时扣费
 
-        _bid, _market = self.__wrap_bid(self, _bid, order_type)
+        _bid, _market = self.__wrap_bid(_bid, order_type)
 
-        if _bid is not None and _market is not None and _bid.amount>0:
+        if _bid is not None and _market is not None and _bid.amount > 0:
             print('GET the Order Code %s Amount %s Price %s Towards %s Time %s' % (
                 _bid.code, _bid.amount, _bid.price, _bid.towards, _bid.datetime))
-            self.__sync_order_LM(self, 'create_order', order_=_bid)
+            self.__sync_order_LM('create_order', order_=_bid)
 
     @lru_cache()
     def QA_backtest_check_order(self, order_id_):
@@ -884,104 +887,213 @@ class QA_Backtest():
             except:
                 pass
 
-    @classmethod
-    def load_strategy(_cls, func, *arg, **kwargs):
+
+    def _load_strategy(self, *arg, **kwargs):
         '策略加载函数'
 
         # 首先判断是否能满足回测的要求`
         __messages = {}
-        _cls.__init_cash_per_stock = int(
-            float(_cls.account.init_assest) / len(_cls.strategy_stock_list))
+        self.__init_cash_per_stock = int(
+            float(self.account.init_assest) / len(self.strategy_stock_list))
         # 策略的交易日循环
-        for i in range(int(_cls.start_real_id), int(_cls.end_real_id)):
-            _cls.running_date = _cls.trade_list[i]
-            _cls.__QA_backtest_log_info(
-                _cls, '=================daily hold list====================')
-            _cls.__QA_backtest_log_info(_cls, 'in the begining of ' +
-                                        _cls.running_date)
-            _cls.__QA_backtest_log_info(_cls,
-                                        tabulate(_cls.account.message['body']['account']['hold']))
+        for i in range(int(self.start_real_id), int(self.end_real_id)):
+            self.running_date = self.trade_list[i]
+            self.__QA_backtest_log_info(
+                 '=================daily hold list====================')
+            self.__QA_backtest_log_info('in the begining of ' +
+                                        self.running_date)
+            self.__QA_backtest_log_info(
+                                        tabulate(self.account.message['body']['account']['hold']))
 
-            if _cls.now is not None:
-                _cls.last_time = _cls.now
+            if self.now is not None:
+                self.last_time = self.now
 
-            _cls.now = _cls.running_date
-            _cls.today = _cls.running_date
+            self.now = self.running_date
+            self.today = self.running_date
 
             # 交易前同步持仓状态
-            _cls.__sync_order_LM(_cls, 'init_')  # 初始化事件
+            self.__sync_order_LM(self, 'init_')  # 初始化事件
 
-            if _cls.backtest_type in ['day', 'd', 'index_day']:
+            if self.backtest_type in ['day', 'd', 'index_day']:
 
-                _temp = _cls.market_data.select_time(_cls.today,_cls.today).data.set_index('code').close.to_dict()
+                _temp = self.market_data.select_time(
+                    self.today, self.today).data.set_index('code').close.to_dict()
                 for key in _temp.keys():
-                    _cls.lastest_price[key] = _temp[key]
-                func(*arg, **kwargs)  # 发委托单
-                _cls._deal_from_order_queue(_cls)
-            elif _cls.backtest_type in ['1min', '5min', '15min', '30min', '60min', 'index_1min', 'index_5min', 'index_15min', 'index_30min', 'index_60min']:
-                if _cls.backtest_type in ['1min', 'index_1min']:
+                    self.lastest_price[key] = _temp[key]
+                self.strategy(*arg, **kwargs)  # 发委托单
+                self._deal_from_order_queue()
+            elif self.backtest_type in ['1min', '5min', '15min', '30min', '60min', 'index_1min', 'index_5min', 'index_15min', 'index_30min', 'index_60min']:
+                if self.backtest_type in ['1min', 'index_1min']:
                     type_ = '1min'
-                elif _cls.backtest_type in ['5min', 'index_5min']:
+                elif self.backtest_type in ['5min', 'index_5min']:
                     type_ = '5min'
-                elif _cls.backtest_type in ['15min', 'index_15min']:
+                elif self.backtest_type in ['15min', 'index_15min']:
                     type_ = '15min'
-                elif _cls.backtest_type in ['30min', 'index_30min']:
+                elif self.backtest_type in ['30min', 'index_30min']:
                     type_ = '30min'
-                elif _cls.backtest_type in ['60min', 'index_60min']:
+                elif self.backtest_type in ['60min', 'index_60min']:
                     type_ = '60min'
                 daily_min = QA_util_make_min_index(
-                    _cls.today, type_)  # 创造分钟线index
+                    self.today, type_)  # 创造分钟线index
                 for min_index in daily_min:
-                    _cls.now = min_index
+                    self.now = min_index
 
-                    _cls.__QA_backtest_log_info(_cls,
+                    self.__QA_backtest_log_info(
                                                 '=================Min hold list====================')
-                    _cls.__QA_backtest_log_info(
-                        _cls, 'in the begining of %s' % str(min_index))
-                    _cls.__QA_backtest_log_info(_cls,
-                                                tabulate(_cls.account.message['body']['account']['hold']))
+                    self.__QA_backtest_log_info(
+                         'in the begining of %s' % str(min_index))
+                    self.__QA_backtest_log_info(
+                                                tabulate(self.account.message['body']['account']['hold']))
 
-
-                    _temp = _cls.market_data.select_time(_cls.now,_cls.now).data.set_index('code').close.to_dict()
+                    _temp = self.market_data.select_time(
+                        self.now, self.now).data.set_index('code').close.to_dict()
                     for key in _temp.keys():
-                        _cls.lastest_price[key] = _temp[key]
+                        self.lastest_price[key] = _temp[key]
 
-                    func(*arg, **kwargs)  # 发委托单
+                    self.strategy(*arg, **kwargs)  # 发委托单
 
-                    _cls._deal_from_order_queue(_cls)
-                    if _cls.backtest_type in ['index_1min', 'index_5min', 'index_15min']:
-                        _cls.__sync_order_LM(_cls, 't_0')
-            _cls.__sync_order_LM(_cls, 'daily_settle')  # 每日结算
+                    self._deal_from_order_queue()
+                    if self.backtest_type in ['index_1min', 'index_5min', 'index_15min']:
+                        self.__sync_order_LM('t_0')
+            self.__sync_order_LM( 'daily_settle')  # 每日结算
 
         # 最后一天
-        _cls._end_of_trading(_cls)
+        self._end_of_trading()
 
-    @classmethod
-    def backtest_init(_cls, func, *arg, **kwargs):
-        def __init_backtest(_cls, *arg, **kwargs):
-            _cls.__QA_backtest_init(_cls)
-            func(*arg, **kwargs)
-            _cls.__QA_backtest_prepare(_cls)
-        return __init_backtest(_cls)
 
-    @classmethod
-    def before_backtest(_cls, func, *arg, **kwargs):
-        def __before_backtest(_cls, *arg, **kwargs):
-            _cls.__QA_backtest_before_backtest(_cls)
-            func(*arg, **kwargs)
-        return __before_backtest(_cls)
+    def _backtest_init(self):
 
-    @classmethod
-    def end_backtest(_cls, func, *arg, **kwargs):
-        _cls.__end_of_backtest(_cls, func, *arg, **kwargs)
-        return func(*arg, **kwargs)
+        self.__QA_backtest_init()
+        self.backtest_init()
+        self.__QA_backtest_prepare()
 
+
+
+    def _before_backtest(self):
+
+        self.__QA_backtest_before_backtest()
+        self.before_backtest()
+
+
+
+    def _end_backtest(self):
+        self.end_backtest()
+        self.__end_of_backtest()
+
+    def run(self):
+        self._backtest_init()
+        self._before_backtest()
+        self._load_strategy()
+        self._end_backtest()
     # 暂时不确定要不要用
-    @classmethod
-    def trade_event(_cls, func, *arg, **kwargs):
-        return func(*arg, **kwargs)
 
 
+    def strategy(self):
+        pass
+    def backtest_init(self):
+        pass
+    def before_backtest(self):
+        pass
+    def end_backtest(self):
+        pass
 if __name__ == '__main__':
+    import QUANTAXIS as QA
+    from datetime import datetime
 
-    pass
+    import numpy as np
+    class backtest(QA_Backtest_with_class):
+
+
+        def backtest_init(self):
+            self.backtest_type = 'day'
+            # self.backtest_type='5min' # 日线回测
+            # 策略的名称
+            self.strategy_name = 'test_daily'
+            # 数据库位置
+            self.setting.QA_util_sql_mongo_ip = '127.0.0.1'  # 回测数据库
+            self.setting.QA_setting_user_name = str('admin')  # 回测账户
+            self.setting.QA_setting_user_password = str('admin')  # 回测密码
+            self.topic_name = 'EXAMPLE'  # 回测的主题
+            self.stratey_version = 'V1'  # 回测的版本号
+
+            self.account.init_assest = 2000000  # 初始资金
+
+            # benchmark
+            self.benchmark_code = '000300'
+            # benchmark 可以是个股，也可以是指数
+            self.benchmark_type = 'index'
+            # 手续费系数
+            self.commission_fee_coeff = 0.0015  # 千五的手续费(单向)
+
+            self.strategy_gap = 30  # 在取数据的时候 向前取多少个bar(会按回测的时间动态移动)
+            """
+            self.strategy_stock_list 只需要是一个list即可
+            可以用QB.QA_backtest_get_block(self, ['MSCI成份'])来获取板块成份股代码进行回测
+            也可以直接指定股票列表['000001','000002','000004']
+            """
+            #self.strategy_stock_list = self.QA_backtest_get_block(self, ['MSCI成份'])
+            self.strategy_stock_list = ['000001','000002','000004']
+            self.strategy_start_date = '2017-06-01 10:30:00'  # 回测开始日期
+            self.strategy_end_date = '2017-10-01'  # 回测结束日期
+            self.backtest_print_log = True  # 是否在屏幕上输出结果
+        def before_backtest(self):
+            global start_time
+            start_time = datetime.now()
+            global risk_position
+
+            print(self.market_data_hashable)
+            input()
+
+        def strategy(self):
+            global risk_position  # 在这个地方global变量 可以拿到before_backtest里面的东西
+            QA.QA_util_log_info(self.account.sell_available)
+            QA.QA_util_log_info('LEFT Cash: %s' % self.account.cash_available)
+            # self.QA_backtest_get_market_data_panel(self,time,type_) 面板数据
+            # time 如果不填 就是默认的QB.now/self.today
+            # type_ 如果不填 默认是 'lt' 如果需要当日的数据 'lte'
+            amounts = 1 if len(self.strategy_stock_list) - len(self.account.sell_available) == 0 else len(
+                self.strategy_stock_list) - len(self.account.sell_available)
+            each_capital = int(self.account.cash_available / amounts)
+            print(self.QA_backtest_find_bar('000001','2017-09-18'))
+            for item in self.strategy_stock_list:
+                if self.QA_backtest_find_bar(item, self.today) is not None:  # 今日开盘-能取到数据
+                    market_data = self.QA_backtest_get_market_data( item, self.today, type_='lte')  # type_='lte' 才能取到今日
+                    Open, High, Low, Close, Volume = self.QA_backtest_get_OHLCV(market_data)
+
+                    MA = market_data.add_func(QA.QA_indicator_MA, 10)
+                    MA_s = MA[0][-1]
+                    if not np.isnan(MA_s):
+                        if self.QA_backtest_hold_amount( item) == 0:  # 如果不持仓
+                            if Close[-1] >= MA_s:
+                                self.QA_backtest_send_order(code=item, amount=int(
+                                    each_capital / Close[-1] / 100) * 100, towards=1, order_type={'bid_model': 'c'})
+                        elif self.QA_backtest_sell_available( item) > 0:  # 如果可卖数量大于0
+                            hold_price = self.QA_backtest_hold_price(item)
+
+                            if Close[-1] <= MA_s:
+                                self.QA_backtest_send_order(code=item, amount=self.QA_backtest_sell_available(
+                                    self, item), towards=-1, order_type={'bid_model': 'c'})
+
+                else:
+                    QA.QA_util_log_info('{} HAS NO DATA IN {}'.format(
+                        item, self.today))  # 如果是分钟回测 用QB.now
+            pcg_total = len(QA.QA_util_get_trade_range(
+                self.strategy_start_date, self.strategy_end_date))
+            pcg_now = len(QA.QA_util_get_trade_range(self.strategy_start_date, self.today))
+            QA.QA_util_log_info('Now Completed {}%'.format(
+                int(100 * pcg_now / pcg_total)))
+        def end_backtest(self):
+            global start_time
+            end_time = datetime.now()
+            cost_time = (end_time - start_time).total_seconds()
+            QA.QA_util_log_info('耗费时间 {} {}'.format(cost_time, 'seconds'))
+
+            self.if_save_to_csv = True
+            self.if_save_to_mongo = True
+
+
+    
+
+    ba=backtest()
+    ba.run()
+    
