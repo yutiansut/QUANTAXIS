@@ -1,5 +1,13 @@
-# 1. QUANTAXIS FAQ
+# QUANTAXIS FAQ
+<!-- TOC -->
 
+- [QUANTAXIS FAQ](#quantaxis-faq)
+    - [1.QUANTAXIS web部分下载后npm install 安装失败/报错/警告](#1quantaxis-web部分下载后npm-install-安装失败报错警告)
+    - [2.QUANTAXIS web 无法启动](#2quantaxis-web-无法启动)
+    - [3.QUANTAXIS web 启动后点击登录/注册按钮无反应](#3quantaxis-web-启动后点击登录注册按钮无反应)
+    - [4.如何更新数据?](#4如何更新数据)
+
+<!-- /TOC -->
 ## 1.QUANTAXIS web部分下载后npm install 安装失败/报错/警告
 
 
@@ -43,5 +51,16 @@ tasklist | findstr 8080
 cd QUANTAXIS\QUANTAXIS_Webkit\backend
 forever start bin\www
 ```
+
+## 4.如何更新数据?
+
+在命令行输入 ```quantaxis```进入QUANTAXIS CLI
+
+1. 如果在初始化的时候是存储日线数据的
+输入```save all```来更新数据
+
+2. 如果在初始化时存储了分钟线数据:
+输入 ``` save x ```来更新数据
+
 
 
