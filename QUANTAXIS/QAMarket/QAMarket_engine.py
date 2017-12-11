@@ -275,27 +275,6 @@ def market_stock_day_engine(__bid, __data=None, __commission_fee_coeff=0.0005):
 
 def market_stock_engine(__bid, __data=None, __commission_fee_coeff=0.0015):
     # 新增一个__commission_fee_coeff 手续费系数
-    # data mod
-    # inside function
-
-    # trade mod
-    assert isinstance(__data, dict)
-
-    def __get_data(__bid):
-        '隔离掉引擎查询数据库的行为'
-        __data = QA_util_to_json_from_pandas(QA_fetch_stock_day(str(
-            __bid.code)[0:6], str(__bid.date)[0:10], str(__bid.date)[0:10], 'pd'))
-        if len(__data) == 0:
-            pass
-        else:
-            __data = __data[0]
-        return __data
-    # trade mod
-
-    if __data is None:
-        __data = __get_data(__bid)
-    else:
-        pass
 
     def __trading(__bid, __data):
         """
