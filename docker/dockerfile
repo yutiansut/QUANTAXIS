@@ -1,0 +1,15 @@
+FROM yutiansut/quantaxis
+
+MAINTAINER yutiasnut 'yutiansut@qq.com'
+
+# update QUANTAXIS
+RUN cd ./QUANTAXIS && git pull
+RUN python3.6 -m pip install -e .
+# 
+RUN npm install forever -g
+
+
+
+
+EXPOSE 8080 
+EXPOSE 3000
