@@ -15,13 +15,38 @@
 ```shell
 docker pull duanrb/quantaxis
 
-# 国内镜像加速的话
+# 国内镜像加速
 docker pull registry.docker-cn.com/duanrb/quantaxis
+
+# 国内阿里云镜像
+
+### 杭州阿里云镜像
+docker pull registry.cn-hangzhou.aliyuncs.com/quantaxis/quantaxis  
+# 5G大礼包 包括完整的ubuntu/nodejs/python3.6/mongodb/quantaxis环境 已保存部分数据 开箱即用
+# 会持续更新数据
+
+### 上海阿里云镜像
+docker pull registry.cn-shanghai.aliyuncs.com/quantaxis/quantaxis  
+# 包括完整的ubuntu/nodejs/python3.6/mongodb/quantaxis环境 无数据版本 开箱后需要存储
+# Ubuntu 16.04 64位 纯净版
+# nodejs 8
+
+# python3.6 python3.6-dev
+# quantaxis 最新版本
+
+# mongodb community server 3.4 版本
+
 ```
+
 
 下载镜像后执行
 ```
+# 选择你下载的镜像
 docker run -it -p 8080:8080 -p 3000:3000 duanrb/quantaxis bash
+
+docker run -it -p 8080:8080 -p 3000:3000 registry.cn-hangzhou.aliyuncs.com/quantaxis/quantaxis
+
+docker run -it -p 8080:8080 -p 3000:3000 registry.cn-shanghai.aliyuncs.com/quantaxis/quantaxis
 ```
 
 然后在docker容器中执行以下命令
