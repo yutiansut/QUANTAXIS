@@ -25,6 +25,31 @@
 - 强烈推荐mongodb的可视化库  robomongo 百度即可下载
 
 一个简易demo(需要先安装并启动mongodb,python版本需要大于3)
+### ubuntu换源
+```
+# 更换阿里云的源
+echo "deb-src http://archive.ubuntu.com/ubuntu xenial main restricted #Added by software-properties
+deb http://mirrors.aliyun.com/ubuntu/ xenial main restricted
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial main restricted multiverse universe #Added by software-properties
+deb http://mirrors.aliyun.com/ubuntu/ xenial-updates main restricted
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial-updates main restricted multiverse universe #Added by software-properties
+deb http://mirrors.aliyun.com/ubuntu/ xenial universe
+deb http://mirrors.aliyun.com/ubuntu/ xenial-updates universe
+deb http://mirrors.aliyun.com/ubuntu/ xenial multiverse
+deb http://mirrors.aliyun.com/ubuntu/ xenial-updates multiverse
+deb http://mirrors.aliyun.com/ubuntu/ xenial-backports main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial-backports main restricted universe multiverse #Added by software-properties
+deb http://archive.canonical.com/ubuntu xenial partner
+deb-src http://archive.canonical.com/ubuntu xenial partner
+deb http://mirrors.aliyun.com/ubuntu/ xenial-security main restricted
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security main restricted multiverse universe #Added by software-properties
+deb http://mirrors.aliyun.com/ubuntu/ xenial-security universe
+deb http://mirrors.aliyun.com/ubuntu/ xenial-security multiverse " | sudo tee /etc/apt/sources.list.d/sources.list  
+
+# 更新
+
+sudo apt-get update
+```
 
 ### git
 >windows
@@ -87,6 +112,8 @@ sudo service mongod start
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
 # Ubuntu 16.04
 echo "deb http://mirrors.aliyun.com/mongodb/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+
+# 更新
 sudo apt-get update
 # 安装MongoDB
 sudo apt-get install -y mongodb-org
