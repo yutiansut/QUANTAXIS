@@ -80,6 +80,20 @@ sudo apt-get install -y mongodb-org
 sudo service mongod start
 
 ```
+
+
+```
+注意:
+如果遇到这个错误:
+WARNING: The following packages cannot be authenticated!
+  mongodb-org-shell mongodb-org-server mongodb-org-mongos mongodb-org-tools mongodb-org
+E: There were unauthenticated packages and -y was used without --allow-unauthenticated
+
+则需要
+sudo apt-get install -y mongodb-org --allow-unauthenticated
+```
+
+
 ### Nodejs
 > windows
 
