@@ -1,17 +1,38 @@
 # 快速使用Docker建立QUANTAXIS执行环境
 
 <!-- TOC -->
-- [快速使用Docker建立QUANTAXIS执行环境](#快速使用Docker建立QUANTAXIS执行环境)
-    - [获取安装了QUANTAXIS的镜像](#获取安装了QUANTAXIS的镜像)
-    - [从头安装QUANTAXIS](#从头安装QUANTAXIS)
 
-<!-- TOC -->
+- [快速使用Docker建立QUANTAXIS执行环境](#快速使用docker建立quantaxis执行环境)
+    - [QUANTAXIS的镜像](#quantaxis的镜像)
+    - [获取安装了QUANTAIS的镜像](#获取安装了quantais的镜像)
+    - [从头安装QUANTAXIS](#从头安装quantaxis)
+
+<!-- /TOC -->
+
+
+## QUANTAXIS的镜像
+
+QUANTAXIS官方维护了3个镜像:
+
+1. DOCKER网站下的 yutiansut/quantaxis 以及国内的加速版本 registry.docker-cn.com/yutiansut/quantaxis
+
+2. 阿里云DOCKER= 杭州镜像仓库的 registry.cn-hangzhou.aliyuncs.com/quantaxis/quantaxis 
+
+3. 阿里云DOCKER= 上海镜像仓库的 registry.cn-shanghai.aliyuncs.com/quantaxis/quantaxis 
+
+
+其中 杭州的镜像是包括了node_modules,以及市场日线数据的镜像  比较大 适合只想一次性部署的同学们
+
+阿里云上海仓库,DOCKER官网的镜像是同一份docker,包含了所有必需的程序 但是没有存储数据
+
 
 ## 获取安装了QUANTAIS的镜像
 
 首先，到[docker网站](https://www.docker.com/)下载相应的版本，并创建账号（注意：登录docker账号才能下载镜像）
 
 执行以下命令获取镜像
+
+
 ```shell
 docker pull yutiansut/quantaxis
 
