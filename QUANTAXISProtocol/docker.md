@@ -13,10 +13,10 @@
 
 执行以下命令获取镜像
 ```shell
-docker pull duanrb/quantaxis
+docker pull yutiansut/quantaxis
 
 # 国内镜像加速
-docker pull registry.docker-cn.com/duanrb/quantaxis
+docker pull registry.docker-cn.com/yutiansut/quantaxis
 
 # 国内阿里云镜像
 
@@ -42,7 +42,7 @@ docker pull registry.cn-shanghai.aliyuncs.com/quantaxis/quantaxis
 下载镜像后执行
 ```
 # 选择你下载的镜像
-docker run -it -p 8080:8080 -p 3000:3000 duanrb/quantaxis bash
+docker run -it -p 8080:8080 -p 3000:3000 yutiansut/quantaxis bash
 
 docker run -it -p 8080:8080 -p 3000:3000 registry.cn-hangzhou.aliyuncs.com/quantaxis/quantaxis
 
@@ -54,14 +54,17 @@ docker run -it -p 8080:8080 -p 3000:3000 registry.cn-shanghai.aliyuncs.com/quant
 tmux #建议使用tmux来管理多个窗口，与 Tmux 类似的软件还有 screen、dvtm、splitvt、byobu 等
 
 # 启动 mongodb    
-cd
+cd root
 ./startmongodb.sh
 
 # 使用tmux开启新窗口 (Ctrl-b c)
 
 # 启动
-cd
+cd root
 ./startwebkit.sh
+
+
+# WEBKIT 也可以用forever来打开
 
 ```
 
