@@ -14,6 +14,9 @@
 执行以下命令获取镜像
 ```shell
 docker pull duanrb/quantaxis
+
+# 国内镜像加速的话
+docker pull registry.docker-cn.com/duanrb/quantaxis
 ```
 
 下载镜像后执行
@@ -48,4 +51,4 @@ http://localhost:8080
 ```angular2html
 docker pull ubuntu
 ```
-然后按照[QUANTAXIS 安装说明](Setup.md)进行安装
+然后按照[QUANTAXIS 安装说明](install.md)进行安装
