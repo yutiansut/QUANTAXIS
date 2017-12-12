@@ -26,6 +26,7 @@ import datetime
 import random
 import time
 
+
 """
 重新定义bid模式
 

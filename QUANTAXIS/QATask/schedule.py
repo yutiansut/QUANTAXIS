@@ -29,11 +29,9 @@ import sched
 import time
 from threading import Timer
 
+from QUANTAXIS.QATask.QA_Queue_standard import QA_Queue
 from QUANTAXIS.QAUtil import (QA_util_log_debug, QA_util_log_expection,
                               QA_util_log_info)
-
-from .QA_Queue_standard import QA_Queue
-
 
 schedule = sched.scheduler(time.time, time.sleep)
 

@@ -27,7 +27,9 @@ import subprocess
 
 import pandas as pd
 import pymongo
-from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info
+
+from QUANTAXIS.QAUtil.QASetting import QA_Setting
+from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 
 
 def QA_util_mongo_initial(db=QA_Setting.client.quantaxis):

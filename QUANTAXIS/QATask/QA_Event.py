@@ -27,7 +27,6 @@ from datetime import datetime
 
 from QUANTAXIS.QAUtil import QA_util_log_info
 
-
 # this is a standard module of writing signal
 
 

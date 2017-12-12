@@ -29,7 +29,7 @@ def QA_util_save_csv(data, name, column=None, location=None):
     # 增加了对于可迭代对象的判断 2017/8/10
     """
     QA_util_save_csv(data,name,column,location)
-    
+
     将list保存成csv
     第一个参数是list
     第二个参数是要保存的名字

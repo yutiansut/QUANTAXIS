@@ -27,8 +27,8 @@ import threading
 from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_valid,
                               QA_util_log_info)
 
-from .QAAccount import QA_Account
-from .QARisk import QA_Risk
+from QUANTAXIS.QAARP.QAAccount import QA_Account
+from QUANTAXIS.QAARP.QARisk import QA_Risk
 
 
 class QA_Portfolio():

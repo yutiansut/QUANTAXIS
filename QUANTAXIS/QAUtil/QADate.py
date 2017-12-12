@@ -27,7 +27,7 @@ import re
 import threading
 import time
 
-from .QADate_trade import trade_date_sse
+from QUANTAXIS.QAUtil.QADate_trade import trade_date_sse
 
 
 def QA_util_time_now():
@@ -65,6 +65,19 @@ def QA_util_time_stamp(time_):
     else:
         timestr = str(time_)[0:19]
         return time.mktime(time.strptime(timestr, '%Y-%m-%d %H:%M:%S'))
+
+
+def QA_util_stamp2datetime(timestamp):
+    """
+    datestamp转datetime
+
+    pandas转出来的timestamp是13位整数 要/1000
+
+    """
+    try:
+        return datetime.datetime.fromtimestamp(timestamp)
+    except Exception as e:
+        return datetime.datetime.fromtimestamp(timestamp / 1000)
 
 
 def QA_util_ms_stamp(ms):
@@ -222,6 +235,14 @@ def QA_util_time_delay(time_=0):
     def _exec(func):
         threading.Timer(time_, func)
     return _exec
+
+
+def QA_util_calc_time(func, *args, **kwargs):
+    '耗时长度的装饰器'
+    _time = datetime.datetime.now()
+    func(*args, **kwargs)
+    print(datetime.datetime.now() - _time)
+    # return datetime.datetime.now() - _time
 
 
 if __name__ == '__main__':
