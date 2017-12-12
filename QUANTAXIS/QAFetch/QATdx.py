@@ -120,6 +120,13 @@ def QA_fetch_get_security_bars(code, _type, lens, ip=best_ip['stock'], port=7709
     with api.connect(ip, port):
         data = pd.concat([api.to_df(api.get_security_bars(_select_type(_type), _select_market_code(
             code), code, (i - 1) * 800, 800)) for i in range(1, int(lens / 800) + 2)], axis=0)
+        data = data\
+            .assign(datetime=pd.to_datetime(data['datetime']), code=str(code))\
+            .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1, inplace=False)\
+            .assign(date=data['datetime'].apply(lambda x: str(x)[0:10]))\
+            .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(x)))\
+            .assign(time_stamp=data['datetime'].apply(lambda x: QA_util_time_stamp(x)))\
+            .assign(type=_type).set_index('datetime', drop=False, inplace=False).tail(lens)
         if data is not None:
             return data
         else:
