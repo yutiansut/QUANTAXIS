@@ -14,14 +14,14 @@
 
 QUANTAXIS官方维护了3个镜像:
 
-1. DOCKER网站下的 yutiansut/quantaxis 以及国内的加速版本 registry.docker-cn.com/yutiansut/quantaxis
+1. DOCKER网站下的 ```yutiansut/quantaxis``` 以及国内的加速版本 ```registry.docker-cn.com/yutiansut/quantaxis```
 
-2. 阿里云DOCKER= 杭州镜像仓库的 registry.cn-hangzhou.aliyuncs.com/quantaxis/quantaxis 
+2. 阿里云DOCKER= 杭州镜像仓库的 ```registry.cn-hangzhou.aliyuncs.com/quantaxis/quantaxis ```
 
-3. 阿里云DOCKER= 上海镜像仓库的 registry.cn-shanghai.aliyuncs.com/quantaxis/quantaxis 
+3. 阿里云DOCKER= 上海镜像仓库的 ```registry.cn-shanghai.aliyuncs.com/quantaxis/quantaxis``` 
 
 
-其中 杭州的镜像是包括了node_modules,以及市场日线数据的镜像  比较大 适合只想一次性部署的同学们
+其中 杭州的镜像是包括了```node_modules```,以及市场日线数据的镜像  比较大 适合只想一次性部署的同学们
 
 阿里云上海仓库,DOCKER官网的镜像是同一份docker,包含了所有必需的程序 但是没有存储数据
 
