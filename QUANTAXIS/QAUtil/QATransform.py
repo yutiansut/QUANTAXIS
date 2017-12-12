@@ -47,3 +47,16 @@ def QA_util_to_list_from_pandas(data):
 
 def QA_util_to_list_from_numpy(data):
     return data.tolist()
+
+
+def QA_util_to_pandas_from_json(data):
+
+    if isinstance(data, dict):
+        return pd.DataFrame(data=[data, ])
+    else:
+        return pd.DataFrame(data=[{'value': data}])
+
+
+def QA_util_to_pandas_from_list(data):
+    if isinstance(data, list):
+        return pd.DataFrame(data=data)

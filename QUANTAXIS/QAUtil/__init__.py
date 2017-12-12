@@ -74,6 +74,8 @@ from QUANTAXIS.QAUtil.QASql import (QA_util_sql_async_mongo_setting,
 # format
 from QUANTAXIS.QAUtil.QATransform import (QA_util_to_json_from_pandas,
                                           QA_util_to_list_from_numpy,
-                                          QA_util_to_list_from_pandas)
+                                          QA_util_to_list_from_pandas,
+                                          QA_util_to_pandas_from_json,
+                                          QA_util_to_pandas_from_list)
 # 网络相关
 from QUANTAXIS.QAUtil.QAWeb import QA_util_web_ping
