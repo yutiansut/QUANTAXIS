@@ -42,7 +42,7 @@ docker pull registry.cn-shanghai.aliyuncs.com/quantaxis/quantaxis
 下载镜像后执行
 ```
 # 选择你下载的镜像
-docker run -it -p 8080:8080 -p 3000:3000 duanrb/quantaxis bash
+docker run -it -p 8080:8080 -p 3000:3000 yutiansut/quantaxis bash
 
 docker run -it -p 8080:8080 -p 3000:3000 registry.cn-hangzhou.aliyuncs.com/quantaxis/quantaxis
 
