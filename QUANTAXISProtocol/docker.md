@@ -29,7 +29,7 @@ docker pull registry.cn-hangzhou.aliyuncs.com/quantaxis/quantaxis
 docker pull registry.cn-shanghai.aliyuncs.com/quantaxis/quantaxis  
 # 包括完整的ubuntu/nodejs/python3.6/mongodb/quantaxis环境 无数据版本 开箱后需要存储
 # Ubuntu 16.04 64位 纯净版
-# nodejs 8
+# nodejs 8.2.1
 
 # python3.6 python3.6-dev
 # quantaxis 最新版本
