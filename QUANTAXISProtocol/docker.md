@@ -55,7 +55,8 @@ tmux #建议使用tmux来管理多个窗口，与 Tmux 类似的软件还有 scr
 
 # 启动 mongodb    
 cd root
-./startmongodb.sh
+nohup sh ./startmongodb.sh &
+
 
 # 使用tmux开启新窗口 (Ctrl-b c)
 
