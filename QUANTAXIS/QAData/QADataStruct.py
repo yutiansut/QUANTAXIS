@@ -28,7 +28,7 @@ from QUANTAXIS.QAData.proto import stock_day_pb2  # protobuf import
 from QUANTAXIS.QAData.proto import stock_min_pb2
 from QUANTAXIS.QAFetch.QATdx import QA_fetch_get_stock_realtime
 from QUANTAXIS.QAIndicator import EMA, HHV, LLV, SMA
-from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
+from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info, QA_util_to_pandas_from_json,
                               QA_util_to_json_from_pandas, trade_date_sse)
 
 
@@ -177,26 +177,25 @@ class _quotation_base():
     def len(self):
         return len(self.data)
 
-    def query(self,context):
+    def query(self, context):
         return self.data.query(context)
 
-    def new(self,data=None,dtype=None,if_fq=None):
+    def new(self, data=None, dtype=None, if_fq=None):
         """
         创建一个新的DataStruct
         data 默认是self.data
         inplace 是否是对于原类的修改
-        
+
         """
-        data=self.data if data is None else data
-        dtype=self.type if dtype is None else dtype
-        if_fq=self.if_fq if if_fq is None else if_fq
-        temp=copy(self)
-        temp.__init__(data,dtype,if_fq)
+        data = self.data if data is None else data
+        dtype = self.type if dtype is None else dtype
+        if_fq = self.if_fq if if_fq is None else if_fq
+        temp = copy(self)
+        temp.__init__(data, dtype, if_fq)
         return temp
+
     def reverse(self):
         return self.new(self.data[::-1])
-
-    
 
     @lru_cache()
     def show(self):
@@ -240,7 +239,6 @@ class _quotation_base():
         return list(map(lambda x: func(
             self.query('code=="{}"'.format(x)), *arg, **kwargs), self.code))
 
-
     def pivot(self, column_):
         '增加对于多列的支持'
         if isinstance(column_, str):
@@ -275,10 +273,10 @@ class _quotation_base():
 
             def __gt(_data):
                 if self.type[-3:] in ['day']:
-                    
+
                     return _data.query('date>"{}"'.format(time)).head(gap).set_index(['date', 'code'], drop=False)
                 elif self.type[-3:] in ['min']:
-                    
+
                     return _data.data[_data.data['datetime'] > time].head(gap).set_index(['datetime', 'code'], drop=False)
             return self.new(pd.concat(list(map(lambda x: __gt(x), self.splits()))), self.type, self.if_fq)
 
@@ -324,7 +322,7 @@ class _quotation_base():
     @lru_cache()
     def get_bar(self, code, time, if_trade):
         if self.type[-3:] in ['day']:
-            return self.new(self.query('code=="{}" & date=="{}"'.format(code,str(time)[0:10])).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
+            return self.new(self.query('code=="{}" & date=="{}"'.format(code, str(time)[0:10])).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
 
         elif self.type[-3:] in ['min']:
             return self.new(self.query('code=="{}"'.format(code))[self.data['datetime'] == str(time)].set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
@@ -413,13 +411,15 @@ class QA_DataStruct_Stock_min(_quotation_base):
 
 
 class QA_DataStruct_future_day(_quotation_base):
-    def __init__(self, DataFrame,dtype='future_day', if_fq=''):
+    def __init__(self, DataFrame, dtype='future_day', if_fq=''):
         self.type = 'future_day'
         self.data = DataFrame.ix[:, [
             'code', 'open', 'high', 'low', 'close', 'trade', 'position', 'datetime', 'date']]
         self.mongo_coll = QA_Setting.client.quantaxis.future_day
+
+
 class QA_DataStruct_future_min(_quotation_base):
-    def __init__(self, DataFrame,dtype='future_min', if_fq=''):
+    def __init__(self, DataFrame, dtype='future_min', if_fq=''):
         self.type = 'future_day'
         self.data = DataFrame.ix[:, [
             'code', 'open', 'high', 'low', 'close', 'trade', 'position', 'datetime', 'date']]
@@ -446,10 +446,11 @@ class QA_DataStruct_Index_day(_quotation_base):
     def __repr__(self):
         return '< QA_DataStruct_Index_day with {} securities >'.format(len(self.code))
 
+
 class QA_DataStruct_Index_min(_quotation_base):
     '自定义的分钟线数据结构'
 
-    def __init__(self, DataFrame,dtype='index_min', if_fq=''):
+    def __init__(self, DataFrame, dtype='index_min', if_fq=''):
         self.type = dtype
         self.if_fq = if_fq
         self.data = DataFrame.ix[:, [
@@ -535,6 +536,32 @@ class QA_DataStruct_Stock_transaction():
 
     def resample(self, type_='1min'):
         return QA_DataStruct_Stock_min(QA_data_tick_resample(self.data, type_))
+
+
+class QA_DataStruct_Stock_realtime():
+    def __init__(self, market_data):
+        if isinstance(market_data, dict):
+            self.market_data = QA_util_to_pandas_from_json(market_data)
+            
+        elif isinstance(market_data,pd.DataFrame):
+            self.market_data=market_data
+
+        
+    @property
+    def open(self):
+        return self.market_data.open
+    
+    @property
+    def price(self):
+        return self.market_data.price
+
+    @property
+    def high(self):
+        return self.market_data.high
+
+    @property
+    def low(self):
+        return self.market_data.low
 
 
 class QA_DataStruct_Security_list():

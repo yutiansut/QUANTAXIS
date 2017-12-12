@@ -1,12 +1,13 @@
 # coding:utf-8
-from QUANTAXIS_Trade.util import base_trade
-import pandas as pd
-import requests
 import urllib
 import json
 import base64
 import time
 from threading import Timer
+from QUANTAXIS_Trade.util import base_trade
+import pandas as pd
+import requests
+
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 

@@ -41,44 +41,53 @@ from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_to_json_from_pandas
 
 
 class QA_QAMarket_bid():
-    def __init__(self):
-        self.price = 16
-        self.date = '2015-01-05'
-        self.datetime = '2015-01-05 09:01:00'
-        self.sending_time = '2015-01-05 09:01:00'  # 下单时间
-        self.transact_time = ''
-        self.amount = 10
-        self.towards = 1  # side
-        self.code = str('000001')
-        self.user = 'root'
-        self.strategy = 'example01'
-        self.type = '0x01'  # see below
-        self.bid_model = 'strategy'
-        self.amount_model = 'amount'
-        self.order_id = str(random.random())
-        self.trade_id = ''
-        self.status = '100'
+    def __init__(self, price=16, date='2015-01-05', datetime='2015-01-05 09:01:00', sending_time='2015-01-05 09:01:00', transact_time='', amount=10,
+                 towards=1, code='000001', user='root', strategy='example01', btype='0x01', bid_model='strategy', amount_model='amount',
+                 order_id=str(random.random()), trade_id='', status='100'):
+        self.price = price
+        self.date = date
+        self.datetime = datetime
+        self.sending_time = sending_time  # 下单时间
+        self.transact_time = transact_time
+        self.amount = amount
+        self.towards = towards  # side
+        self.code = code
+        self.user = user
+        self.strategy = strategy
+        self.type = btype  # see below
+        self.bid_model = strategy
+        self.amount_model = amount_model
+        self.order_id = order_id
+        self.trade_id = trade_id
+        self.status = status
 
     def stock_day(self):
         self.type = '0x01'
+        return self
 
     def stock_min(self):
         self.type = '0x02'
+        return self
 
     def index_day(self):
         self.type = '0x03'
+        return self
 
     def index_min(self):
         self.type = '0x04'
+        return self
 
     def stock_transaction(self):
         self.type = '0x05'
+        return self
 
     def index_transaction(self):
         self.type = '0x06'
+        return self
 
     def future_day(self):
         self.type = '1x01'
+        return self
 
     def show(self):
         return vars(self)
@@ -154,6 +163,7 @@ class QA_QAMarket_bid_list():   # also the order tree
 
 
 if __name__ == '__main__':
-    ax = QA_QAMarket_bid()
-    ax.stock_day()
-    print(ax.type)
+    ax = QA_QAMarket_bid().stock_day()
+
+    print(ax.show())
+    print(ax.to_df())
