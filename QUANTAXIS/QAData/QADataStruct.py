@@ -542,15 +542,14 @@ class QA_DataStruct_Stock_realtime():
     def __init__(self, market_data):
         if isinstance(market_data, dict):
             self.market_data = QA_util_to_pandas_from_json(market_data)
-            
-        elif isinstance(market_data,pd.DataFrame):
-            self.market_data=market_data
 
-        
+        elif isinstance(market_data, pd.DataFrame):
+            self.market_data = market_data
+
     @property
     def open(self):
         return self.market_data.open
-    
+
     @property
     def price(self):
         return self.market_data.price
@@ -562,6 +561,44 @@ class QA_DataStruct_Stock_realtime():
     @property
     def low(self):
         return self.market_data.low
+
+    @property
+    def code(self):
+        return self.code
+
+    @property
+    def last_close(self):
+        return self.market_data.last_close
+
+    @property
+    def cur_vol(self):
+        return self.market_data.cur_vol
+
+    @property
+    def s_vol(self):
+        return self.market_data.s_vol
+
+    @property
+    def b_vol(self):
+        return self.market_data.b_vol
+
+    @property
+    def vol(self):
+        return self.market_data.vol
+
+    @property
+    def ask_list(self):
+        return self.market_data.ix[:, ['ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',
+                        'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3', 'ask4',
+                        'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
+    @property
+    def bid_list(self):
+        return self.market_data.ix[:, ['bid1', 'bid_vol1','bid2', 'bid_vol2',  'bid3', 'bid_vol3', 'bid4', 'bid_vol4','bid5', 'bid_vol5']]
+
+    [['datetime', 'active1', 'active2', 'last_close', 'code', 'open', 'high', 'low', 'price', 'cur_vol',
+      's_vol', 'b_vol', 'vol', 'ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',
+                        'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3', 'ask4',
+                        'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
 
 
 class QA_DataStruct_Security_list():
