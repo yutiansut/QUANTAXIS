@@ -80,6 +80,31 @@ sudo apt-get install -y mongodb-org
 sudo service mongod start
 
 ```
+
+```
+阿里云镜像版本
+#  添加源
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
+# Ubuntu 16.04
+echo "deb http://mirrors.aliyun.com/mongodb/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+sudo apt-get update
+# 安装MongoDB
+sudo apt-get install -y mongodb-org
+# 开启MongoDB服务
+sudo service mongod start
+```
+```
+注意:
+如果遇到这个错误:
+WARNING: The following packages cannot be authenticated!
+  mongodb-org-shell mongodb-org-server mongodb-org-mongos mongodb-org-tools mongodb-org
+E: There were unauthenticated packages and -y was used without --allow-unauthenticated
+
+则需要
+sudo apt-get install -y mongodb-org --allow-unauthenticated
+```
+
+
 ### Nodejs
 > windows
 
