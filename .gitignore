@@ -1,37 +1,30 @@
-node_module/
+
+# Self-defined ignore
+
 *.pyc
 node_modules/
 .vscode/
-.pyc
-QUANTAXISTaskServer/
-quantaxisback/
 *.7z
 .idea/
 *.log
-fetch/
 .vscode/
 *.pdf
 *.gitconfig
-.gitconfig
-.rqalpha/
-*.psd
 *.rdb
 .ipython/
 .matplotlib/
 .log
 *.log
 .ssh/
-tushare/
 *.exe
-.exe
 .pypirc
-private/
-
+QA_*.html
+test/
 *lock.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[cod]
+
 *$py.class
 
 #zip
@@ -66,7 +59,7 @@ examples/
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
-
+technical_analysis.py
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
@@ -141,15 +134,9 @@ ENV/
 
 
 
-# thoughts/
-
-thought/
-.thought/
-.vs/
-
 #jupyter
 
-*.ipynb
+
 
 
 # jupyter-kernel
@@ -159,3 +146,4 @@ kernel*.json
 
 # packge-lock
 
+.\vs

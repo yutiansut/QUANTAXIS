@@ -22,9 +22,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .QAAccount import QA_Account
-from .QARisk import QA_Risk
-from .QAPortfolio import QA_Portfolio
+from QUANTAXIS.QAARP.QAAccount import QA_Account
+from QUANTAXIS.QAARP.QARisk import QA_Risk
+from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
 
 from QUANTAXIS.QAARP.QARisk import (QA_risk_account_freeCash_currentAssest,
                                     QA_risk_account_freeCash_frozenAssest,

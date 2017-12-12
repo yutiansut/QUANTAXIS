@@ -58,10 +58,9 @@ def QA_SU_save_backtest_message(message, client):
     __coll.insert(message)
 
 
-def QA_SU_save_account_to_csv(message):
-    __now_path = os.getcwd()
-    __file_name_1 = 'backtest-ca&history--' + \
-        str(message['header']['cookie']) + '.csv'
+def QA_SU_save_account_to_csv(message,path=os.getcwd()):
+
+    __file_name_1 = '{}backtest-ca&history-{}.csv'.format(path,str(message['header']['cookie']))
     with open(__file_name_1, 'w', newline='') as C:
         csvwriter = csv.writer(C)
         csvwriter.writerow(['date', 'code', 'price', 'towards', 'amount',
@@ -75,7 +74,9 @@ def QA_SU_save_account_to_csv(message):
                 csvwriter.writerow(message['body']['account']['history'][i])
             except:
                 pass
-def QA_SU_save_pnl_to_csv(detail,cookie):
+
+
+def QA_SU_save_pnl_to_csv(detail, cookie):
     __file_name_2 = 'backtest-pnl--' + \
         str(cookie) + '.csv'
     with open(__file_name_2, 'w', newline='') as E:

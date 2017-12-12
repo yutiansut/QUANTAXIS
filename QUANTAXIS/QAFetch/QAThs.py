@@ -25,6 +25,8 @@
 import numpy as np
 import pandas as pd
 import requests
+from lxml import etree
+
 from QUANTAXIS.QAUtil import trade_date_sse
 
 
@@ -59,6 +61,39 @@ def QA_fetch_get_stock_day(code, start, end, if_fq='00'):
         return pd.DataFrame()
     else:
         return data[start:end]
+
+
+headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+           'Accept-Encoding': 'gzip, deflate',
+           'Accept-Language': 'zh-CN,zh;q=0.9',
+           'Cache-Control': 'max-age=0',
+           'Connection': 'keep-alive',
+           'Host': 'q.10jqka.com.cn',
+           'Upgrade-Insecure-Requests': 1,
+           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'}
+
+
+def QA_fetch_get_stock_block():
+    url_list = ['gn', 'dy', 'thshy', 'zjhhy']  # 概念/地域/同花顺板块/证监会板块
+    data = []
+
+    for item in url_list:
+        tree = etree.HTML(requests.get(
+            'http://q.10jqka.com.cn/{}/'.format(item), headers=headers).text)
+        gn = tree.xpath('/html/body/div/div/div/div/div/a/text()')
+        gpath = tree.xpath('/html/body/div/div/div/div/div/a/@href')
+        for _i in range(len(gn)):
+            for i in range(1, 15):
+                _data = etree.HTML(requests.get(
+                    'http://q.10jqka.com.cn/{}/detail/order/desc/page/{}/ajax/1/code/{}'.format(item, i, gpath[_i].split('/')[-2]), headers=headers).text)
+                name = _data.xpath('/html/body/table/tbody/tr/td[3]/a/text()')
+                code = _data.xpath('/html/body/table/tbody/tr/td[3]/a/@href')
+                for i_ in range(len(name)):
+                    print(
+                        'Now Crawling-{}-{}-{}-{}'.format(gn[_i], code[i_].split('/')[-1], item, 'ths'))
+                    data.append([gn[_i], code[i_].split('/')[-1], item, 'ths'])
+
+    return pd.DataFrame(data, columns=['blockname',  'code', 'type', 'source']).set_index('code', drop=False)
 
 
 if __name__ == '__main__':

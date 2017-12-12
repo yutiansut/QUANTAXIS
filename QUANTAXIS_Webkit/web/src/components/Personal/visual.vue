@@ -9,9 +9,12 @@
       <router-link :to="{name:'history',params: {id:this.data0}}">
         <mu-raised-button label="成交明细" class="demo-raised-button" primary/>
       </router-link>
-      <mu-raised-button v-on:click='ready()' label="行情数据" class="demo-raised-button" secondary/>
+      <mu-raised-button v-on:click='ready()' label="账户表现" class="demo-raised-button" secondary/>
+      <router-link :to="{name:'strategy',params: {id:this.data0}}">
+        <mu-raised-button label="策略查看" class="demo-raised-button" />
+      </router-link>
       <mu-raised-button label="说明" class="demo-raised-button" @click="showToast" />
-      <mu-toast v-if="toast" message="此版本仅适用于0.4.2的回测演示" @close="hideToast" />
+      <mu-toast v-if="toast" message="此版本仅适用于0.5.25的回测演示" @close="hideToast" />
       <mu-divider />
     </div>
     <div>

@@ -29,8 +29,13 @@ import time
 
 import tushare as ts
 
-from QUANTAXIS.QAFetch.QATushare import QA_fetch_get_stock_day, QA_fetch_get_stock_list, QA_fetch_get_trade_date, QA_fetch_get_stock_info
-from QUANTAXIS.QAUtil import QA_util_date_stamp, QA_util_time_stamp, QA_util_log_info, trade_date_sse, QA_util_to_json_from_pandas
+from QUANTAXIS.QAFetch.QATushare import (QA_fetch_get_stock_day,
+                                         QA_fetch_get_stock_info,
+                                         QA_fetch_get_stock_list,
+                                         QA_fetch_get_trade_date)
+from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_log_info,
+                              QA_util_time_stamp, QA_util_to_json_from_pandas,
+                              trade_date_sse)
 from QUANTAXIS.QAUtil.QASetting import QA_Setting
 
 

@@ -1,4 +1,4 @@
-#coding:utf-8
+# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -23,14 +23,30 @@
 # SOFTWARE.
 
 import datetime
-import time
 import math
+import time
+
 import pandas as pd
+
 
 def QA_util_if_trade(day):
     '日期是否交易'
     if day in trade_date_sse:
         return True
+    else:
+        return False
+def QA_util_if_tradetime(_time):
+    '时间是否交易'
+    _time=datetime.datetime.strptime(str(_time)[0:19],'%Y-%m-%d %H:%M:%S')
+    if QA_util_if_trade(str(_time.date())[0:10]):
+        if _time.hour in [10,13,14] :
+            return True
+        elif _time.hour in [9] and _time.minute >=30:
+            return True
+        elif _time.hour in [11] and _time.minute<=30:
+            return True
+        else:
+            return False
     else:
         return False
 
@@ -40,20 +56,22 @@ def QA_util_get_real_date(date, trade_list, towards):
     towards=1 日期向后迭代
     towards=-1 日期向前迭代
     @ yutiansut
-    
+
     """
     if towards == 1:
         while date not in trade_list:
             date = str(datetime.datetime.strptime(
-                date, '%Y-%m-%d') + datetime.timedelta(days=1))[0:10]
+                str(date)[0:10], '%Y-%m-%d') + datetime.timedelta(days=1))[0:10]
         else:
-            return date
+            return str(date)[0:10]
     elif towards == -1:
         while date not in trade_list:
             date = str(datetime.datetime.strptime(
-                date, '%Y-%m-%d') - datetime.timedelta(days=1))[0:10]
+                str(date)[0:10], '%Y-%m-%d') - datetime.timedelta(days=1))[0:10]
         else:
-            return date
+            return str(date)[0:10]
+
+
 
 
 def QA_util_get_real_datelist(start,end):
@@ -70,6 +88,12 @@ def QA_util_get_trade_range(start,end):
     '给出交易具体时间'
     start,end=QA_util_get_real_datelist(start,end)
     return trade_date_sse[trade_date_sse.index(start):trade_date_sse.index(end)+1:1]
+
+
+def QA_util_get_trade_gap(start, end):
+    '返回start_day到end_day中间有多少个交易天 算首尾'
+    start, end = QA_util_get_real_datelist(start, end)
+    return trade_date_sse.index(end)+1-trade_date_sse.index(start)
 
 def QA_util_date_gap(date,gap,methods):
     try:

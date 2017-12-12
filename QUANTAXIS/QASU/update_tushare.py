@@ -22,14 +22,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from QUANTAXIS.QAFetch import QATushare
-from QUANTAXIS.QAUtil import QA_util_date_stamp, QA_Setting, QA_util_date_valid, QA_util_log_info
-from .save_tushare import QA_SU_save_stock_info, QA_SU_save_stock_list, QA_SU_save_trade_date_all,QA_save_stock_day_with_fqfactor
-import json
-import pymongo
 import datetime
+import json
 import re
 import time
+
+import pymongo
+
+from QUANTAXIS.QAFetch import QATushare
+from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
+                              QA_util_date_valid, QA_util_log_info)
+
+from .save_tushare import (QA_save_stock_day_with_fqfactor,
+                           QA_SU_save_stock_info, QA_SU_save_stock_list,
+                           QA_SU_save_trade_date_all)
 
 
 def QA_update_stock_day(name, startDate, endDate):
@@ -45,13 +51,13 @@ def QA_SU_update_stock_day(client=QA_Setting.client):
     client.quantaxis.drop_collection('stock_list')
     client.quantaxis.drop_collection('trade_date')
     client.quantaxis.drop_collection('stock_info')
-    #client.quantaxis.drop_collection('stock_day')
+    # client.quantaxis.drop_collection('stock_day')
     # client.quantaxis.user_list.insert(
     #{'username': 'admin', 'password': 'admin'})
     QA_SU_save_stock_info()
     QA_SU_save_stock_list()
     QA_SU_save_trade_date_all()
-    #QA_save_stock_day_with_fqfactor()
+    # QA_save_stock_day_with_fqfactor()
 
     coll_stocklist = client.quantaxis.stock_list
     # 使用find_one
@@ -59,7 +65,6 @@ def QA_SU_update_stock_day(client=QA_Setting.client):
     coll_stock_day = client.quantaxis.stock_day
     stock_list.append('sz50')
     stock_list.append('hs300')
-
 
     for item in stock_list:
         QA_util_log_info('updating stock data -- %s' % item)
@@ -75,11 +80,11 @@ def QA_SU_update_stock_day(client=QA_Setting.client):
                 QA_util_log_info('trying updating from %s to %s' %
                                  (start_date, end_date))
                 data = QATushare.QA_fetch_get_stock_day(
-                    str(item)[0:6], start_date, end_date,'02')[1::]
+                    str(item)[0:6], start_date, end_date, '02')[1::]
             else:
                 # 这时候直接更新拿到所有的数据就好了
                 data = QATushare.QA_fetch_get_stock_day(
-                    item, startDate='1990-01-01',if_fq='02')
+                    item, startDate='1990-01-01', if_fq='02')
 
             coll_stock_day.insert_many(data)
         except:

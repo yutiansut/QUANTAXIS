@@ -2,10 +2,10 @@ QUANTAXIS-Protocol
 标准化协议QAS/未来协议QAF
 ------------
 
-- 当前版本:0.0.8
-- 协议最后修改日期:2017-07-04
-- 项目版本:QUANTAXIS 0.3.9
-<!-- TOC -->
+- 当前版本:0.0.9
+- 协议最后修改日期:2017-12-04
+- 项目版本:QUANTAXIS 0.5.25
+  <!-- TOC -->
 
 - [QAS-00x Intro  简介](#qas-00x-intro--简介)
     - [QAS-001-x  About](#qas-001-x--about)
@@ -115,7 +115,7 @@ QA_util_time_stamp 这个是函数
 ### QAS-003-4 数据库/表命名方式
 由于多数据源的问题,我们规定了基础指标和扩展指标,方便用户的不同权限的自定义需求
 
-比如说,如果你只有免费的数据源通道,那么你可以选择基础的指标(tushare,wind大奖章)
+比如说,如果你只有免费的数据源通道,那么你可以选择基础的指标(pytdx,wind大奖章)
 
 如果你具有wind机构版权限,那么你可以在免费的指标上扩展你的指标,但仍然保持原有的基础指标名不变
 
@@ -215,7 +215,7 @@ bid是一个标准报价包
 
 # QAS-40x QABacktest 回测类
 - QA_Backtest
-QA_Backtest 里面有4个抽象类:
+  QA_Backtest 里面有4个抽象类:
 ```python
 account=QA_Account()
 market=QA_Market()

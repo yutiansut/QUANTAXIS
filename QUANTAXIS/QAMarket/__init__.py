@@ -23,6 +23,5 @@
 # SOFTWARE.
 
 
-from .QAMarket_core import QA_Market
-import datetime
-from .QABid import QA_QAMarket_bid
+from QUANTAXIS.QAMarket.QAMarket_core import QA_Market
+from QUANTAXIS.QAMarket.QABid import QA_QAMarket_bid, QA_QAMarket_bid_list

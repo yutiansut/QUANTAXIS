@@ -26,8 +26,10 @@
 import datetime
 import random
 
-from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info, QA_util_to_json_from_pandas
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day, QA_fetch_stock_min
+from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
+                              QA_util_to_json_from_pandas)
+
 
 """stock market trading engine
 
@@ -40,7 +42,7 @@ renew in 2017/6/28
 """
 
 
-def market_stock_day_engine(__bid, __data=None,__commission_fee_coeff=0.0005):
+def market_stock_day_engine(__bid, __data=None, __commission_fee_coeff=0.0005):
     # data mod
     # inside function
     def __get_data(__bid):
@@ -68,7 +70,7 @@ def market_stock_day_engine(__bid, __data=None,__commission_fee_coeff=0.0005):
 
                 __bid_t = __bid
                 __bid_t.price = (float(__data["high"]) +
-                                    float(__data["low"])) * 0.5
+                                 float(__data["low"])) * 0.5
                 return __trading(__bid_t, __data)
 
             elif __bid.price == 'close_price':
@@ -175,7 +177,7 @@ def market_stock_day_engine(__bid, __data=None,__commission_fee_coeff=0.0005):
                                     'strategy': str(__bid.strategy)
                                 },
                                 'order_id': str(__bid.order_id),
-                                'trade_id': str(random.random())    
+                                'trade_id': str(random.random())
                             },
                             'body': {
                                 'bid': {
@@ -270,28 +272,9 @@ def market_stock_day_engine(__bid, __data=None,__commission_fee_coeff=0.0005):
             }
     return __trading(__bid, __data)
 
-def market_stock_engine(__bid, __data=None,__commission_fee_coeff=0.0015):
+
+def market_stock_engine(__bid, __data=None, __commission_fee_coeff=0.0015):
     # 新增一个__commission_fee_coeff 手续费系数
-    # data mod
-    # inside function
-
-    # trade mod
-    assert isinstance(__data,dict)
-    def __get_data(__bid):
-        '隔离掉引擎查询数据库的行为'
-        __data = QA_util_to_json_from_pandas(QA_fetch_stock_day(str(
-            __bid.code)[0:6], str(__bid.date)[0:10], str(__bid.date)[0:10], 'pd'))
-        if len(__data) == 0:
-            pass
-        else:
-            __data = __data[0]
-        return __data
-# trade mod
-
-    if __data is None:
-        __data = __get_data(__bid)
-    else:
-        pass
 
     def __trading(__bid, __data):
         """
@@ -475,6 +458,7 @@ def market_stock_engine(__bid, __data=None,__commission_fee_coeff=0.0015):
             }
     return __trading(__bid, __data)
 
+
 def market_future_engine(__bid, __data=None):
     # data mod
     # inside function
@@ -503,7 +487,7 @@ def market_future_engine(__bid, __data=None):
 
                 __bid_t = __bid
                 __bid_t.price = (float(__data["high"]) +
-                                    float(__data["low"])) * 0.5
+                                 float(__data["low"])) * 0.5
                 return __trading(__bid_t, __data)
 
             elif __bid.price == 'close_price':
@@ -703,5 +687,7 @@ def market_future_engine(__bid, __data=None):
                 }
             }
     return __trading(__bid, __data)
-if __name__=='__main__':
+
+
+if __name__ == '__main__':
     pass

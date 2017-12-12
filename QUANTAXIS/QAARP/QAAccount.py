@@ -25,8 +25,9 @@
 import datetime
 import random
 import time
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 
 # 2017/6/4修改: 去除总资产的动态权益计算
 
@@ -43,9 +44,9 @@ class QA_Account():
 
     def __init__(self):
 
-        self.hold = [['date', 'code', ' price',
+        self.hold = [['date', 'code', 'price',
                       'amount', 'order_id', 'trade_id']]
-        self.sell_available=[['date', 'code', ' price',
+        self.sell_available=[['date', 'code', 'price',
                       'amount', 'order_id', 'trade_id']]
         self.init_assest = 1000000
         self.cash = [self.init_assest]
@@ -59,13 +60,14 @@ class QA_Account():
         self.message = {}
 
     def init(self):
-        self.hold = [['date', 'code', ' price',
+        self.hold = [['date', 'code', 'price',
                       'amount', 'order_id', 'trade_id']]
-        self.sell_available=[['date', 'code', ' price',
+        self.sell_available=[['date', 'code', 'price',
                       'amount', 'order_id', 'trade_id']]
         self.history = []
         self.profit = []
         self.account_cookie = str(random.random())
+        self.assets = [self.init_assest]
         self.cash = [self.init_assest]
         self.cash_available = self.cash[-1]  # 在途资金
         self.order_queue = pd.DataFrame()   # 已委托待成交队列
@@ -90,23 +92,23 @@ class QA_Account():
             }
         }
 
-    def QA_account_update(self, __update_message):
-        if str(__update_message['status'])[0] == '2':
+    def QA_account_update(self, update_message):
+        if str(update_message['status'])[0] == '2':
 
             # towards>1 买入成功
             # towards<1 卖出成功
 
             (__new_code, __new_amount, __new_trade_date, __new_towards,
                 __new_price, __new_order_id,
-                __new_trade_id, __new_trade_fee) = (str(__update_message['bid']['code']),
-                                                    float(__update_message['bid']['amount']), str(
-                                                        __update_message['bid']['datetime']),
-                                                    int(__update_message['bid']['towards']), float(
-                                                        __update_message['bid']['price']),
-                                                    float(__update_message['order_id']), float(
-                                                        __update_message['trade_id']),
-                                                    float(__update_message['fee']['commission']))
-            if int(__update_message['status']) == 203:
+                __new_trade_id, __new_trade_fee) = (str(update_message['bid']['code']),
+                                                    float(update_message['bid']['amount']), str(
+                                                        update_message['bid']['datetime']),
+                                                    int(update_message['bid']['towards']), float(
+                                                        update_message['bid']['price']),
+                                                    float(update_message['order_id']), float(
+                                                        update_message['trade_id']),
+                                                    float(update_message['fee']['commission']))
+            if int(update_message['status']) == 203:
                 '委托成功 待交易'
                 self.order_queue.append(
                     [__new_trade_date, __new_code, __new_price, __new_amount,
@@ -114,7 +116,7 @@ class QA_Account():
 
                 # 如果是买入的waiting  那么要减少可用资金,增加在途资金
                 # 如果是卖出的waiting 则减少hold_list
-            elif int(__update_message['status']) == 200:
+            elif int(update_message['status']) == 200:
                 '交易成功的处理'
                 self.history.append(
                     [__new_trade_date, __new_code, __new_price, __new_towards,
@@ -199,15 +201,15 @@ class QA_Account():
             # 将交易记录插入历史交易记录
         else:
             pass
-        self.QA_account_calc_profit(__update_message)
+        self.QA_account_calc_profit(update_message)
         self.message = {
             'header': {
                 'source': 'account',
                 'cookie': self.account_cookie,
                 'session': {
-                    'user': __update_message['user'],
-                    'strategy': __update_message['strategy'],
-                    'code': __update_message['bid']['code']
+                    'user': update_message['user'],
+                    'strategy': update_message['strategy'],
+                    'code': update_message['bid']['code']
                 }
 
             },
@@ -226,8 +228,8 @@ class QA_Account():
 
         return self.message
 
-    def QA_account_calc_profit(self, __update_message):
-        if __update_message['status'] == 200 and __update_message['bid']['towards'] == 1:
+    def QA_account_calc_profit(self, update_message):
+        if update_message['status'] == 200 and update_message['bid']['towards'] == 1:
             # 买入/
             # 证券价值=买入的证券价值+持有到结算(收盘价)的价值
 
@@ -235,10 +237,10 @@ class QA_Account():
 
             # 可用资金=上一期可用资金-买入的资金
             self.cash.append(float(self.cash[-1]) - float(
-                __update_message['bid']['price']) * float(
-                    __update_message['bid']['amount']) * __update_message['bid']['towards'] - float(__update_message['fee']['commission']))
+                update_message['bid']['price']) * float(
+                    update_message['bid']['amount']) * update_message['bid']['towards'] - float(update_message['fee']['commission']))
 
-        elif __update_message['status'] == 200 and __update_message['bid']['towards'] == -1:
+        elif update_message['status'] == 200 and update_message['bid']['towards'] == -1:
             # success trade,sell
             # 证券价值=买入的证券价值+持有到结算(收盘价)的价值
             # 买入的部分在update_message
@@ -246,8 +248,8 @@ class QA_Account():
             # 卖出的时候,towards=-1,所以是加上卖出的资产
             # 可用资金=上一期可用资金+卖出的资金
             self.cash.append(float(self.cash[-1]) - float(
-                __update_message['bid']['price']) * float(
-                    __update_message['bid']['amount']) * __update_message['bid']['towards'] - float(__update_message['fee']['commission']))
+                update_message['bid']['price']) * float(
+                    update_message['bid']['amount']) * update_message['bid']['towards'] - float(update_message['fee']['commission']))
 
             # 更新可用资金历史
 
@@ -257,39 +259,52 @@ class QA_Account():
             market_value += (float(self.hold[i][2]) * float(self.hold[i][3]))
         self.assets.append(self.cash[-1] + market_value)
 
-    def QA_account_receive_deal(self, __message):
+    def QA_account_receive_deal(self, _message):
         # 主要是把从market拿到的数据进行解包,一个一个发送给账户进行更新,再把最后的结果反回
         __data = self.QA_account_update({
-            'code': __message['header']['code'],
-            'status': __message['header']['status'],
-            'user': __message['header']['session']['user'],
-            'strategy': __message['header']['session']['strategy'],
-            'trade_id': __message['header']['trade_id'],
-            'order_id': __message['header']['order_id'],
+            'code': _message['header']['code'],
+            'status': _message['header']['status'],
+            'user': _message['header']['session']['user'],
+            'strategy': _message['header']['session']['strategy'],
+            'trade_id': _message['header']['trade_id'],
+            'order_id': _message['header']['order_id'],
             'date_stamp': str(time.mktime(datetime.datetime.now().timetuple())),
-            'bid': __message['body']['bid'],
-            'market': __message['body']['market'],
-            'fee': __message['body']['fee'],
+            'bid': _message['body']['bid'],
+            'market': _message['body']['market'],
+            'fee': _message['body']['fee'],
         })
         return __data
 
-    def QA_account_receive_order(self, __message):
+    def QA_account_receive_order(self, _message):
         
         # 主要是把从market拿到的数据进行解包,一个一个发送给账户进行更新,再把最后的结果反回
         __data = self.QA_account_update({
-            'code': __message['header']['code'],
-            'status': __message['header']['status'],
-            'user': __message['header']['session']['user'],
-            'strategy': __message['header']['session']['strategy'],
-            'trade_id': __message['header']['trade_id'],
-            'order_id': __message['header']['order_id'],
+            'code': _message['header']['code'],
+            'status': _message['header']['status'],
+            'user': _message['header']['session']['user'],
+            'strategy': _message['header']['session']['strategy'],
+            'trade_id': _message['header']['trade_id'],
+            'order_id': _message['header']['order_id'],
             'date_stamp': str(time.mktime(datetime.datetime.now().timetuple())),
-            'bid': __message['body']['bid'],
-            'market': __message['body']['market'],
-            'fee': __message['body']['fee'],
+            'bid': _message['body']['bid'],
+            'market': _message['body']['market'],
+            'fee': _message['body']['fee'],
         })
         return __data
+    def QA_account_calc_assets(self):
+        'get the real assets [from cash and market values]'
 
+        return self.cash[-1] + sum([float(self.hold[i][2]) * float(self.hold[i][3]) for  i in range(1, len(self.hold))])
 
+    def from_message(self,message):
+        
+        self.account_cookie=message['header']['cookie']
+        self.hold=message['body']['account']['hold']
+        self.history=message['body']['account']['history']
+        self.cash=message['body']['account']['cash']
+        self.assets=message['body']['account']['assets']
+        self.detail=message['body']['account']['detail']
+        self.message=message
+        return self
 class QA_Account_min(QA_Account):
     pass

@@ -30,7 +30,9 @@ import time
 
 import pymongo
 from pytdx.reader import TdxFileNotFoundException, TdxMinBarReader
-from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info, QA_util_time_stamp, QA_util_date_stamp
+
+from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp, QA_util_log_info,
+                              QA_util_time_stamp)
 
 
 def QA_save_tdx_to_mongo(file_dir, client=QA_Setting.client):

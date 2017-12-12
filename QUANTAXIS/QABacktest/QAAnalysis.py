@@ -28,21 +28,24 @@ Analysis Center for Backtest
 we will give some function
 """
 import math
+import sys
 
 import numpy
 import pandas as pd
+
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day
 from QUANTAXIS.QAUtil import QA_util_log_info, trade_date_sse
 
 
-def QA_backtest_analysis_start(client, code_list, message, total_date,benchmark_data):
+def QA_backtest_analysis_backtest(client, code_list, assets_d, account_days, message, total_date, benchmark_data):
+    
     # 主要要从message_history分析
     # 1.收益率
     # 2.胜率
     # 3.回撤
     """
     Annualized Returns: 策略年化收益率。表示投资期限为一年的预期收益率。
-    具体计算方式为 (策略最终价值 / 策略初始价值 - 1) / 回测交易日数量 × 250
+    具体计算方式为 (策略最终价值 / 策略初始价值)^(250 / 回测交易日数量) - 1
 
     Alpha：阿尔法
     具体计算方式为 (策略年化收益 - 无风险收益) - beta × (参考标准年化收益 - 无风险收益)，这里的无风险收益指的是中国固定利率国债收益率曲线上10年期国债的年化到期收益率。
@@ -67,28 +70,30 @@ def QA_backtest_analysis_start(client, code_list, message, total_date,benchmark_
     收益/次数的频次直方图
     单日最大持仓
     """
+    # 数据检查
+    if (len(benchmark_data)) < 1:
+        QA_util_log_info('Wrong with benchmark data ! ')
+        sys.exit()
+
     # 计算一个benchmark
     # 这个benchmark 是在开始的那天 市价买入和策略所选标的一致的所有股票,然后一直持仓
-    data=pd.concat([pd.DataFrame(message['body']['account']['history'],
-            columns=['time','code','price','towards','amount','order_id','trade_id','commission']),
-            pd.DataFrame(message['body']['account']['assets'],columns=['assets'])],axis=1)
-    data['time']=pd.to_datetime(data['time'])
-    data.set_index('time',drop=False,inplace=True)
-
-
-
+    data = pd.concat([pd.DataFrame(message['body']['account']['history'],
+                                   columns=['time', 'code', 'price', 'towards', 'amount', 'order_id', 'trade_id', 'commission']),
+                      pd.DataFrame(message['body']['account']['assets'], columns=['assets'])], axis=1)
+    data['time'] = pd.to_datetime(data['time'])
+    data.set_index('time', drop=False, inplace=True)
 
     trade_history = message['body']['account']['history']
     cash = message['body']['account']['cash']
     assets = message['body']['account']['assets']
-    assets_= data.resample('D').last().dropna()
+
+    #assets_= data.resample('D').last().dropna()
     # 计算交易日
-    trade_date = list(assets_['time'].apply(lambda x: str(x)[0:10]))
-    assets_d = list(assets_['assets'])
+    trade_date = account_days
     # benchmark资产
     benchmark_assets = QA_backtest_calc_benchmark(
         benchmark_data, assets[0])
-    #d2=pd.concat([data.resample('D').last(),pd.DataFrame(benchmark_assets,columns=['benchmark'])])
+    # d2=pd.concat([data.resample('D').last(),pd.DataFrame(benchmark_assets,columns=['benchmark'])])
     # benchmark年化收益
     benchmark_annualized_returns = QA_backtest_calc_profit_per_year(
         benchmark_assets, len(total_date))
@@ -97,7 +102,7 @@ def QA_backtest_analysis_start(client, code_list, message, total_date,benchmark_
     # days=len(assest_history)-1
     # 策略年化收益
     annualized_returns = QA_backtest_calc_profit_per_year(
-        assets, len(total_date))
+        assets_d, len(total_date))
 
     # 收益矩阵
     assest_profit = QA_backtest_calc_profit_matrix(assets)
@@ -106,20 +111,21 @@ def QA_backtest_analysis_start(client, code_list, message, total_date,benchmark_
     # 策略日收益
     profit_day = QA_backtest_calc_profit_matrix(assets_d)
     # 胜率
-    win_rate = QA_backtest_calc_win_rate(profit_day)
+    win_rate = QA_backtest_calc_win_rate(assest_profit)
+    # 日胜率
+    win_rate_day = QA_backtest_calc_win_rate(profit_day)
     # 年化波动率
-    volatility_year = QA_backtest_calc_volatility(assest_profit)
+    volatility_year = QA_backtest_calc_volatility(profit_day)
     benchmark_volatility_year = QA_backtest_calc_volatility(benchmark_profit)
     # 夏普比率
     sharpe = QA_backtest_calc_sharpe(
-        annualized_returns, benchmark_annualized_returns, volatility_year)
+        annualized_returns, 0.05, volatility_year)
 
     # 最大回撤
     max_drop = QA_backtest_calc_dropback_max(assets_d)
 
     # 计算beta
-    beta = QA_backtest_calc_beta(
-        assest_profit, benchmark_profit, benchmark_volatility_year)
+    beta = QA_backtest_calc_beta(profit_day, benchmark_profit)
     # 计算Alpha
     alpha = QA_backtest_calc_alpha(
         annualized_returns, benchmark_annualized_returns, beta, 0.05)
@@ -127,8 +133,8 @@ def QA_backtest_analysis_start(client, code_list, message, total_date,benchmark_
         'code': code_list,
         'annualized_returns': annualized_returns,
         'benchmark_annualized_returns': benchmark_annualized_returns,
-        'assets': assets_d,
-        'benchmark_assets': benchmark_assets,
+        'assets': assets_d[1:],
+        'benchmark_assets': benchmark_assets[1:],
         'vol': volatility_year,
         'benchmark_vol': benchmark_volatility_year,
         'sharpe': sharpe,
@@ -155,14 +161,9 @@ def QA_backtest_calc_assets(trade_history, assets):
     return assets_d
 
 
-def QA_backtest_result_check(datelist, message):
-    pass
-
-
 def QA_backtest_calc_benchmark(benchmark_data, init_assets):
 
-    assets=list(benchmark_data['open'] / float(benchmark_data['open'][0]) * float(init_assets))
-    return assets
+    return list(benchmark_data['close'] / float(benchmark_data['open'][0]) * float(init_assets))
 
 
 def QA_backtest_calc_alpha(annualized_returns, benchmark_annualized_returns, beta, r):
@@ -172,15 +173,15 @@ def QA_backtest_calc_alpha(annualized_returns, benchmark_annualized_returns, bet
     return alpha
 
 
-def QA_backtest_calc_beta(assest_profit, benchmark_profit, benchmark_volatility_year):
+def QA_backtest_calc_beta(assest_profit, benchmark_profit):
     if len(assest_profit) < len(benchmark_profit):
         for i in range(0, len(benchmark_profit) - len(assest_profit), 1):
             assest_profit.append(0)
     elif len(assest_profit) > len(benchmark_profit):
         for i in range(0, len(assest_profit) - len(benchmark_profit), 1):
             benchmark_profit.append(0)
-    calc_cov = numpy.cov(assest_profit, benchmark_profit)[0, 1]
-    beta = calc_cov / benchmark_volatility_year
+    calc_cov = numpy.cov(assest_profit, benchmark_profit)
+    beta = calc_cov[0, 1] / calc_cov[1, 1]
     return beta
 
 
@@ -189,14 +190,14 @@ def QA_backtest_calc_profit(assest_history):
 
 
 def QA_backtest_calc_profit_per_year(assest_history, days):
-    return float(float(assest_history[-1]) / float(assest_history[0]) - 1) / int(days) * 250
+    return math.pow(float(assest_history[-1]) / float(assest_history[0]), 250.0 / float(days)) - 1.0
 
 
 def QA_backtest_calc_profit_matrix(assest_history):
     assest_profit = []
-    for i in range(0, len(assest_history) - 2, 1):
-        assest_profit.append(
-            float(assest_history[i + 1]) / float(assest_history[i]) - 1)
+    if len(assest_history) > 1:
+        assest_profit = [assest_history[i + 1] / assest_history[i] -
+                         1.0 for i in range(len(assest_history) - 1)]
     return assest_profit
 
 
@@ -220,11 +221,13 @@ def QA_backtest_calc_dropback_max(history):
     return max_drop
 
 
-def QA_backtest_calc_sharpe(annualized_returns, benchmark_annualized_returns, volatility_year):
-    return (annualized_returns - benchmark_annualized_returns) / volatility_year
+def QA_backtest_calc_sharpe(annualized_returns, r, volatility_year):
+    '计算夏普比率'
+    return (annualized_returns - r) / volatility_year
 
 
 def QA_backtest_calc_trade_date(history):
+    '计算交易日期'
     trade_date = []
 
     # trade_date_sse.index(history[-1][0])-trade_date_sse.index(history[0][0])
@@ -234,11 +237,11 @@ def QA_backtest_calc_trade_date(history):
     return trade_date
 
 
-def QA_backtest_calc_trade_time_profit():
-    pass
+def calc_trade_time(history):
+    return len(history)
 
 
-def QA_backtest_calc_trade_time_loss():
+def calc_every_pnl(detail):
     pass
 
 

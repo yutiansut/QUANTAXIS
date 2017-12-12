@@ -22,6 +22,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import math
+
+import numpy
+import pandas
+
 from QUANTAXIS.QABacktest import QAAnalysis
 from QUANTAXIS.QAUtil import QA_util_log_expection, QA_util_log_info
 
@@ -37,7 +42,7 @@ the account datastruct should be a standard struct which can be directly sended 
 """
 
 
-def QA_risk_eva_account(client, message, days):
+def QA_risk_eva_account(message, days, client):
     cookie = message['header']['cookie']
     account = message['body']['account']
     # 绩效表现指标分析
@@ -108,6 +113,125 @@ def QA_risk_account_freeCash_frozenAssest(freeCash, frozenAssest):
         QA_util_log_expection('currentAssest: ' + str(frozenAssest))
         QA_util_log_expection('expected result: ' +
                               str(float(freeCash) / float(frozenAssest)))
+
+
+def QA_risk_calc_assets(trade_history, assets):
+    assets_d = []
+    trade_date = []
+    for i in range(0, len(trade_history), 1):
+        if trade_history[i][0] not in trade_date:
+            trade_date.append(trade_history[i][0])
+            assets_d.append(assets[i])
+        else:
+            assets_d.pop(-1)
+            assets_d.append(assets[i])
+
+    return assets_d
+
+
+def QA_risk_result_check(datelist, message):
+    pass
+
+
+def QA_risk_calc_benchmark(benchmark_data, init_assets):
+
+    return list(benchmark_data['close'] / float(benchmark_data['open'][0]) * float(init_assets))
+
+
+def QA_risk_calc_alpha(annualized_returns, benchmark_annualized_returns, beta, r):
+
+    alpha = (annualized_returns - r) - (beta) * \
+        (benchmark_annualized_returns - r)
+    return alpha
+
+
+def QA_risk_calc_beta(assest_profit, benchmark_profit):
+    if len(assest_profit) < len(benchmark_profit):
+        for i in range(0, len(benchmark_profit) - len(assest_profit), 1):
+            assest_profit.append(0)
+    elif len(assest_profit) > len(benchmark_profit):
+        for i in range(0, len(assest_profit) - len(benchmark_profit), 1):
+            benchmark_profit.append(0)
+    calc_cov = numpy.cov(assest_profit, benchmark_profit)
+    beta = calc_cov[0, 1] / calc_cov[1, 1]
+    return beta
+
+
+def QA_risk_calc_profit(assest_history):
+    return (assest_history[-1] / assest_history[1]) - 1
+
+
+def QA_risk_calc_profit_per_year(assest_history, days):
+    return math.pow(float(assest_history[-1]) / float(assest_history[0]), 250.0 / float(days)) - 1.0
+
+
+def QA_risk_calc_profit_matrix(assest_history):
+    assest_profit = []
+    if len(assest_history) > 1:
+        assest_profit = [assest_history[i + 1] / assest_history[i] -
+                         1.0 for i in range(len(assest_history) - 1)]
+    return assest_profit
+
+
+def QA_risk_calc_volatility(assest_profit_matrix):
+    # 策略每日收益的年化标准差
+    assest_profit = assest_profit_matrix
+
+    volatility_day = numpy.std(assest_profit)
+    volatility_year = volatility_day * math.sqrt(250)
+    return volatility_year
+
+
+def QA_risk_calc_dropback_max(history):
+    drops = []
+    for i in range(1, len(history), 1):
+        maxs = max(history[:i])
+        cur = history[i - 1]
+        drop = 1 - cur / maxs
+        drops.append(drop)
+    max_drop = max(drops)
+    return max_drop
+
+
+def QA_risk_calc_sharpe(annualized_returns, r, volatility_year):
+    '计算夏普比率'
+    return (annualized_returns - r) / volatility_year
+
+
+def QA_risk_calc_trade_date(history):
+    '计算交易日期'
+    trade_date = []
+
+    # trade_date_sse.index(history[-1][0])-trade_date_sse.index(history[0][0])
+    for i in range(0, len(history), 1):
+        if history[i][0] not in trade_date:
+            trade_date.append(history[i][0])
+    return trade_date
+
+
+def QA_risk_calc_trade_time_profit():
+    pass
+
+
+def QA_risk_calc_trade_time_loss():
+    pass
+
+
+def QA_risk_calc_win_rate(profit_day):
+    # 大于0的次数
+    abovez = 0
+    belowz = 0
+    for i in range(0, len(profit_day) - 1, 1):
+        if profit_day[i] > 0:
+            abovez = abovez + 1
+        elif profit_day[i] < 0:
+            belowz = belowz + 1
+    if belowz == 0:
+        belowz = 1
+    if abovez == 0:
+        abovez = 1
+    win_rate = abovez / (abovez + belowz)
+    return win_rate
 
 
 class QA_Risk():
