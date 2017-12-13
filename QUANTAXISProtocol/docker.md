@@ -25,6 +25,25 @@ QUANTAXIS官方维护了3个镜像:
 
 阿里云上海仓库,DOCKER官网的镜像是同一份docker,包含了所有必需的程序 但是没有存储数据
 
+|              | yutiansut/quantaxis | 上海阿里云DOCKER仓库 | 杭州阿里云DOCKER仓库    |
+| ------------ | ------------------- | ------------- | ---------------- |
+| 地址           | 国外(可以加速)            | 上海            | 杭州               |
+| 系统           | Ubuntu16.04         | Ubuntu16.04   | Ubuntu16.04      |
+| python       | python3.6           | python 3.6    | python3.6        |
+| mongo        | mongo 3.4 社区版       | mongo 3.4 社区版 | mongo3.4 社区版     |
+|              | nodejs 8.2.1        | nodejs 8.2.1  | nodejs 8.2.1     |
+| QUANTAXIS 目录 | ~/QUANTAXIS         | ~/QUANTAXIS   | ~/root/quantaxis |
+| forever      | 有                   | 有             | 有                |
+| web部分的依赖项    | 未安装                 | 未安装           | 已安装              |
+|              | 未存储                 | 未存储           | 已存储(每日更新)        |
+|              |                     |               |                  |
+
+
+
+
+
+
+
 
 ## 获取安装了QUANTAIS的镜像
 
@@ -94,11 +113,12 @@ cd root
 ```angular2html
 http://localhost:8080
 ```
- 
+
 ## 从头安装QUANTAXIS
 
 可以从一个干净的ubuntu镜像上开始安装，获取ubuntu镜像
 ```angular2html
-docker pull ubuntu
+docker pull library/ubuntu
+docker run -it library/ubuntu bash
 ```
 然后按照[QUANTAXIS 安装说明](install.md)进行安装
