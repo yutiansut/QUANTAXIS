@@ -100,16 +100,17 @@ docker run -it -p 8080:8080 -p 3000:3000 registry.cn-shanghai.aliyuncs.com/quant
 ```
 
 # 启动 mongodb    
-cd root
-nohup sh ./startmongodb.sh &
+cd /root && nohup sh ./startmongod.sh &
 
 
 # 启动 WEBKIT
-cd root/quantaxis/QUANTAXIS_Webkit/backend && forever start ./bin/www
+cd /root/quantaxis/QUANTAXIS_Webkit/backend && forever start ./bin/www
 
-cd root/quantaxis/QUANTAXIS_Webkit/web && forever start ./build/dev-server.js
+cd /root/quantaxis/QUANTAXIS_Webkit/web && forever start ./build/dev-server.js
 
 ```
+
+![启动命令](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20171213104144.png)
 
 ```
 # 多窗口
