@@ -90,21 +90,21 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 
 ## 安装和部署
-参见 [安装说明](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXISProtocol/install.md)
+参见 [安装说明](https://github.com/yutiansut/QUANTAXIS/blob/master/Documents/install.md)
 
 ## 更新
-参见 [更新说明](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXISProtocol/update.md)
+参见 [更新说明](https://github.com/yutiansut/QUANTAXIS/blob/master/Documents/update.md)
 
 ## Docker
-参见 [Docker](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXISProtocol/docker.md)
+参见 [Docker](https://github.com/yutiansut/QUANTAXIS/blob/master/Documents/docker.md)
 ## 使用说明
-参见 [使用说明](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXISProtocol/instruction.md)
+参见 [使用说明](https://github.com/yutiansut/QUANTAXIS/blob/master/Documents/instruction.md)
 
 ## Jupyter示例
 参见 [Jupyter示例](https://github.com/yutiansut/QUANTAXIS/tree/master/jupyterexample)
 
 ## 常见问题FAQ
-参见 [FAQ](https://github.com/yutiansut/QUANTAXIS/tree/master/QUANTAXISProtocol/FAQ.md)
+参见 [FAQ](https://github.com/yutiansut/QUANTAXIS/tree/master/Documents/FAQ.md)
 
 ## 项目捐赠
 
@@ -134,4 +134,4 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 QUANTAXIS-Stardand-Protocol 版本号0.0.8
 
-详情参见  [QUANATXISProtocol](https://github.com/yutiansut/QUANTAXIS/blob/master/QUANTAXISProtocol/readme.md)
+详情参见  [QUANATXISProtocol](https://github.com/yutiansut/QUANTAXIS/blob/master/Documents/readme.md)
