@@ -38,7 +38,7 @@ QUANTAXIS官方维护了3个镜像:
 | python       | python3.6           | python 3.6    | python3.6       |
 | mongo        | mongo 3.4 社区版       | mongo 3.4 社区版 | mongo3.4 社区版    |
 | nodejs       | nodejs 8.2.1        | nodejs 8.2.1  | nodejs 8.2.1    |
-| sshserver       |无                | 无               | 已经内置   |
+| sshserver       |内置                | 内置              | 内置   |
 | QUANTAXIS 目录 | /QUANTAXIS          | /QUANTAXIS    | /root/quantaxis |
 | forever      | 有                   | 有             | 有               |
 | web部分的依赖项    | 未安装                 | 未安装           | 已安装             |
