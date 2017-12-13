@@ -9,6 +9,7 @@
         - [下载镜像后执行(4选一)](#下载镜像后执行4选一)
         - [在docker容器中执行以下命令](#在docker容器中执行以下命令)
         - [在浏览器中打开以下链接](#在浏览器中打开以下链接)
+        - [其他注意选项](#其他注意选项)
     - [从头安装QUANTAXIS](#从头安装quantaxis)
 
 <!-- /TOC -->
@@ -37,6 +38,7 @@ QUANTAXIS官方维护了3个镜像:
 | python       | python3.6           | python 3.6    | python3.6       |
 | mongo        | mongo 3.4 社区版       | mongo 3.4 社区版 | mongo3.4 社区版    |
 | nodejs       | nodejs 8.2.1        | nodejs 8.2.1  | nodejs 8.2.1    |
+| sshserver       | nodejs 8.2.1        | nodejs 8.2.1  |已经内置   |
 | QUANTAXIS 目录 | /QUANTAXIS          | /QUANTAXIS    | /root/quantaxis |
 | forever      | 有                   | 有             | 有               |
 | web部分的依赖项    | 未安装                 | 未安装           | 已安装             |
@@ -121,10 +123,38 @@ http://localhost:8080
 ```
 
 
-## 其他注意选项
+### 其他注意选项
 
-1. docker 是可以通过ssh 连接的
-2. 多窗口问题 建议使用tmux来管理多个窗口，与 Tmux 类似的软件还有 screen、dvtm、splitvt、byobu 等
+1. docker 是可以通过ssh 连接的 ``` /etc/init.d/ssh start ```
+2. 多窗口 
+
+
+首先需要运行一个docker
+
+```
+A:\quantaxis [master ≡]
+λ  docker run -it -p 8080:8080 -p 3000:3000 registry.cn-hangzhou.aliyuncs.com/quantaxis/quantaxis
+root@f22b5357dc6e:/#
+
+```
+然后在别的命令行执行 ``` docker ps``` 查询正在运行的docker的container_id
+```
+A:\Users\yutia
+λ  docker ps
+
+
+CONTAINER ID        IMAGE                                                   COMMAND             CREATED             STATUS              PORTS                                            NAMES
+f22b5357dc6e        registry.cn-hangzhou.aliyuncs.com/quantaxis/quantaxis   "bash"              21 seconds ago      Up 20 seconds       0.0.0.0:3000->3000/tcp, 0.0.0.0:8080->8080/tcp   boring_panini
+
+```
+然后执行 ```docker exec -it  [CONTAINERID] /bin/bash``` 进入
+
+```
+A:\Users\yutia
+λ  docker exec -it  f22b5357dc6e /bin/bash
+root@f22b5357dc6e:/#
+
+```
 
 ## 从头安装QUANTAXIS
 
