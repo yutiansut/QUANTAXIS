@@ -90,6 +90,11 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 
 ## 安装和部署
+
+```
+git clone https://github.com/yutiansut/quantaxis --depth 1
+```
+
 参见 [安装说明](https://github.com/yutiansut/QUANTAXIS/blob/master/Documents/install.md)
 
 ## 更新
