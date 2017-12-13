@@ -75,13 +75,7 @@ docker pull registry.cn-hangzhou.aliyuncs.com/quantaxis/quantaxis
 ### 上海阿里云镜像
 docker pull registry.cn-shanghai.aliyuncs.com/quantaxis/quantaxis  
 # 包括完整的ubuntu/nodejs/python3.6/mongodb/quantaxis环境 无数据版本 开箱后需要存储
-# Ubuntu 16.04 64位 纯净版
-# nodejs 8.2.1
 
-# python3.6 python3.6-dev
-# quantaxis 最新版本
-
-# mongodb community server 3.4 版本
 ```
 
 
@@ -104,22 +98,24 @@ docker run -it -p 8080:8080 -p 3000:3000 registry.cn-shanghai.aliyuncs.com/quant
 
 ### 在docker容器中执行以下命令
 ```
-tmux #建议使用tmux来管理多个窗口，与 Tmux 类似的软件还有 screen、dvtm、splitvt、byobu 等
 
 # 启动 mongodb    
 cd root
 nohup sh ./startmongodb.sh &
 
 
+# 启动 WEBKIT
+cd root/quantaxis/QUANTAXIS_Webkit/backend && forever start ./bin/www
+
+cd root/quantaxis/QUANTAXIS_Webkit/web && forever start ./build/dev-server.js
+
+```
+
+```
+# 多窗口
+tmux 
+#建议使用tmux来管理多个窗口，与 Tmux 类似的软件还有 screen、dvtm、splitvt、byobu 等
 # 使用tmux开启新窗口 (Ctrl-b c)
-
-# 启动
-cd root
-./startwebkit.sh
-
-
-# WEBKIT 也可以用forever来打开
-
 ```
 
 ### 在浏览器中打开以下链接
