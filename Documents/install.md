@@ -5,6 +5,7 @@
 
 - [QUANTAXIS 的安装/部署/更新](#quantaxis-的安装部署更新)
     - [部署问题:](#部署问题)
+        - [ubuntu换源](#ubuntu换源)
         - [git](#git)
         - [MongoDB](#mongodb)
         - [Nodejs](#nodejs)
@@ -210,7 +211,7 @@ pip install xxxxx(文件名).whl
 ```
 ### 安装QUANTAXIS
 ```
-git clone https://github.com/yutiansut/quantaxis
+git clone https://github.com/yutiansut/quantaxis --depth 1
 cd quantaxis .
 pip install -r requirements.txt -i https://pypi.doubanio.com/simple
 pip install tushare==0.8.7
