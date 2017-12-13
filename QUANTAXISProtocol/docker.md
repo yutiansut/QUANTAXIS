@@ -113,17 +113,18 @@ cd /root/quantaxis/QUANTAXIS_Webkit/web && forever start ./build/dev-server.js
 
 ![启动命令](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20171213104144.png)
 
-```
-# 多窗口
-tmux 
-#建议使用tmux来管理多个窗口，与 Tmux 类似的软件还有 screen、dvtm、splitvt、byobu 等
-# 使用tmux开启新窗口 (Ctrl-b c)
-```
+
 
 ### 在浏览器中打开以下链接
 ```angular2html
 http://localhost:8080
 ```
+
+
+## 其他注意选项
+
+1. docker 是可以通过ssh 连接的
+2. 多窗口问题 建议使用tmux来管理多个窗口，与 Tmux 类似的软件还有 screen、dvtm、splitvt、byobu 等
 
 ## 从头安装QUANTAXIS
 
