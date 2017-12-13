@@ -2,6 +2,10 @@ FROM yutiansut/quantaxis
 
 MAINTAINER yutiasnut 'yutiansut@qq.com'
 
+
+#没写完没写完没写完!
+#重要的事情说三遍
+
 # update QUANTAXIS
 RUN cd ./QUANTAXIS && git pull
 RUN python3.6 -m pip install -e .
