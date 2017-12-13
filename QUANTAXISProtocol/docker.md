@@ -29,18 +29,19 @@ QUANTAXIS官方维护了3个镜像:
 
 阿里云上海仓库,DOCKER官网的镜像是同一份docker,包含了所有必需的程序 但是没有存储数据
 
-|              | yutiansut/quantaxis | 上海阿里云DOCKER仓库 | 杭州阿里云DOCKER仓库    |
-| ------------ | ------------------- | ------------- | ---------------- |
-| 地址           | 国外(可以加速)            | 上海            | 杭州               |
-| 系统           | Ubuntu16.04         | Ubuntu16.04   | Ubuntu16.04      |
-| python       | python3.6           | python 3.6    | python3.6        |
-| mongo        | mongo 3.4 社区版       | mongo 3.4 社区版 | mongo3.4 社区版     |
-|              | nodejs 8.2.1        | nodejs 8.2.1  | nodejs 8.2.1     |
-| QUANTAXIS 目录 | ~/QUANTAXIS         | ~/QUANTAXIS   | ~/root/quantaxis |
-| forever      | 有                   | 有             | 有                |
-| web部分的依赖项    | 未安装                 | 未安装           | 已安装              |
-|              | 未存储                 | 未存储           | 已存储(每日更新)        |
-|              |                     |               |                  |
+|              | yutiansut/quantaxis | 上海阿里云DOCKER仓库 | 杭州阿里云DOCKER仓库   |
+| ------------ | ------------------- | ------------- | --------------- |
+| 描述           | 网速不好的轻量纯净版本         | 网速不好的轻量纯净版本   | 无脑部署版           |
+| 地址           | 国外(可以加速)            | 上海            | 杭州              |
+| 系统           | Ubuntu16.04         | Ubuntu16.04   | Ubuntu16.04     |
+| python       | python3.6           | python 3.6    | python3.6       |
+| mongo        | mongo 3.4 社区版       | mongo 3.4 社区版 | mongo3.4 社区版    |
+| nodejs       | nodejs 8.2.1        | nodejs 8.2.1  | nodejs 8.2.1    |
+| QUANTAXIS 目录 | /QUANTAXIS          | /QUANTAXIS    | /root/quantaxis |
+| forever      | 有                   | 有             | 有               |
+| web部分的依赖项    | 未安装                 | 未安装           | 已安装             |
+| 日线数据         | 未存储                 | 未存储           | 已存储(每日更新)       |
+|              |                     |               |                 |
 
 
 
