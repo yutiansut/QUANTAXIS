@@ -5,6 +5,10 @@
 - [快速使用Docker建立QUANTAXIS执行环境](#快速使用docker建立quantaxis执行环境)
     - [QUANTAXIS的镜像](#quantaxis的镜像)
     - [获取安装了QUANTAIS的镜像](#获取安装了quantais的镜像)
+        - [执行以下命令获取镜像(4选1)](#执行以下命令获取镜像4选1)
+        - [下载镜像后执行(4选一)](#下载镜像后执行4选一)
+        - [在docker容器中执行以下命令](#在docker容器中执行以下命令)
+        - [在浏览器中打开以下链接](#在浏览器中打开以下链接)
     - [从头安装QUANTAXIS](#从头安装quantaxis)
 
 <!-- /TOC -->
@@ -49,7 +53,10 @@ QUANTAXIS官方维护了3个镜像:
 
 首先，到[docker网站](https://www.docker.com/)下载相应的版本，并创建账号（注意：登录docker账号才能下载镜像）
 
-执行以下命令获取镜像
+(如果国外网站下载速度过慢,windows版本的docker安装文件群共享有)
+
+
+### 执行以下命令获取镜像(4选1)
 
 
 ```shell
@@ -75,21 +82,27 @@ docker pull registry.cn-shanghai.aliyuncs.com/quantaxis/quantaxis
 # quantaxis 最新版本
 
 # mongodb community server 3.4 版本
-
 ```
 
 
-下载镜像后执行
+![执行时的命令行](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20171213102629.png)
+
+
+### 下载镜像后执行(4选一)
+
 ```
 # 选择你下载的镜像
 docker run -it -p 8080:8080 -p 3000:3000 yutiansut/quantaxis bash
+
+docker run -it -p 8080:8080 -p 3000:3000 registry.docker-cn.com/yutiansut/quantaxis bash
 
 docker run -it -p 8080:8080 -p 3000:3000 registry.cn-hangzhou.aliyuncs.com/quantaxis/quantaxis
 
 docker run -it -p 8080:8080 -p 3000:3000 registry.cn-shanghai.aliyuncs.com/quantaxis/quantaxis
 ```
 
-然后在docker容器中执行以下命令
+
+### 在docker容器中执行以下命令
 ```
 tmux #建议使用tmux来管理多个窗口，与 Tmux 类似的软件还有 screen、dvtm、splitvt、byobu 等
 
@@ -109,7 +122,7 @@ cd root
 
 ```
 
-在浏览器中打开以下链接
+### 在浏览器中打开以下链接
 ```angular2html
 http://localhost:8080
 ```
