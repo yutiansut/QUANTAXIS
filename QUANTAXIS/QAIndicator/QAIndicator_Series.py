@@ -64,7 +64,7 @@ def SMA(Series, N, M=1):
         ret.append(Y)
         preY = Y
         i += 1
-    return ret
+    return pd.Series(ret)
 
 
 def DIFF(Series, N=1):
