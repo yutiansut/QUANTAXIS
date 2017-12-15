@@ -81,3 +81,6 @@ from QUANTAXIS.QAUtil.QATransform import (QA_util_to_json_from_pandas,
 from QUANTAXIS.QAUtil.QAWeb import QA_util_web_ping
 # 随机数生成
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
+
+# 固定的参数
+from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE,Order_DIRECTION

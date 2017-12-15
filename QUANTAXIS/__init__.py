@@ -31,7 +31,7 @@ by yutiansut
 
 2017/4/8
 """
-__version__ = '0.5.28'
+__version__ = '0.5.50'
 __author__ = 'yutiansut'
 logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
@@ -128,7 +128,8 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms
                               QA_util_to_json_from_pandas, QA_util_to_list_from_numpy, QA_util_to_list_from_pandas, QA_util_to_pandas_from_json, QA_util_to_pandas_from_list,
                               QA_util_mongo_initial, QA_util_mongo_make_index, QA_util_mongo_status, QA_util_mongo_infos,
                               QA_util_make_min_index, QA_util_make_hour_index,
-                              QA_util_random_with_topic)
+                              QA_util_random_with_topic,
+                              MARKET_TYPE, Order_DIRECTION)  # QAPARAMETER
 
 from QUANTAXIS.QAIndicator import *
 #from QUANTAXIS.QAFetch.QATdx_adv import bat
@@ -147,6 +148,6 @@ if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6]:
     sys.exit()
 
 
-QA_util_log_info('Welcome to QUANTAXIS, the Version is ' + __version__)
+QA_util_log_info('Welcome to QUANTAXIS, the Version is {}'.format(__version__))
 
 QA_util_log_info(logo)

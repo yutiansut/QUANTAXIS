@@ -54,7 +54,7 @@ class Order_DIRECTION:
         return -3
 
 
-class ORDER_TYPE():
+class MARKET_TYPE():
     @property
     def stock_day(self):
         return '0x01'
