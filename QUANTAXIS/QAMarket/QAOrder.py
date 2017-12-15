@@ -32,16 +32,23 @@ from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_to_json_from_pandas, QA_u
 
 
 """
-重新定义bid模式
+重新定义Order模式
 
+在2017-12-15的Account-remake-version 分支中
 
+Bid类全部被更名为Order类
+
+用于和 bid_ask 区分
+
+by yutiansut@2017/12/15
 
 """
 
 
+
 class QA_Order():
     def __init__(self, price=16, date='2015-01-05', datetime='2015-01-05 09:01:00', sending_time='2015-01-05 09:01:00', transact_time='', amount=10,
-                 towards=1, code='000001', user='root', account_cookie='',strategy='example01', btype='0x01', order_model='strategy', amount_model='amount',
+                 towards=1, code='000001', user='root', account_cookie='', strategy='example01', btype='0x01', order_model='strategy', amount_model='amount',
                  order_id=QA_util_random_with_topic(topic='Order'), trade_id='', status='100'):
         self.price = price
         self.date = date
@@ -52,7 +59,7 @@ class QA_Order():
         self.towards = towards  # side
         self.code = code
         self.user = user
-        self.account_cookie=account_cookie
+        self.account_cookie = account_cookie
         self.strategy = strategy
         self.type = btype  # see below
         self.order_model = strategy
@@ -112,7 +119,7 @@ class QA_Order():
             self.towards = order['towards']
             self.code = order['code']
             self.user = order['user']
-            self.account_cookie=order['account_cookie']
+            self.account_cookie = order['account_cookie']
             self.strategy = order['strategy']
             self.type = order['type']
             self.order_model = order['order_model']
@@ -141,7 +148,7 @@ class QA_Order():
             self.code = order['code']
             self.user = order['user']
             self.strategy = order['strategy']
-            self.account_cookie=order['account_cookie']
+            self.account_cookie = order['account_cookie']
             self.type = order['type']
             self.order_model = order['order_model']
             self.amount_model = order['amount_model']

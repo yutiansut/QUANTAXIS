@@ -61,7 +61,7 @@ from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_index_day_adv,
                                                QA_fetch_stocklist_day_adv,
                                                QA_fetch_stocklist_min_adv)
 from QUANTAXIS.QAMarket.QAOrder import QA_Order_list,QA_Order
-from QUANTAXIS.QAMarket.QAMarket_core import QA_Market
+from QUANTAXIS.QAMarket.QAMarket import QA_Market
 from QUANTAXIS.QASU.save_backtest import (QA_SU_save_account_message,
                                           QA_SU_save_account_to_csv,
                                           QA_SU_save_backtest_message,
