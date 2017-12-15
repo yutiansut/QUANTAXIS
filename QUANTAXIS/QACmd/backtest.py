@@ -57,14 +57,14 @@ QB.QA_backtest_sell_all(QB)
 QB.QA_backtest_send_order(QB, code,amount,towards,order: dict)
 
 order有三种方式:
-1.限价成交 order['bid_model']=0或者l,L
+1.限价成交 order['order_model']=0或者l,L
   注意: 限价成交需要给出价格:
   order['price']=xxxx
 
-2.市价成交 order['bid_model']=1或者m,M,market,Market  [其实是以bar的开盘价成交]
-3.严格成交模式 order['bid_model']=2或者s,S
+2.市价成交 order['order_model']=1或者m,M,market,Market  [其实是以bar的开盘价成交]
+3.严格成交模式 order['order_model']=2或者s,S
     及 买入按bar的最高价成交 卖出按bar的最低价成交
-3.收盘价成交模式 order['bid_model']=3或者c,C
+3.收盘价成交模式 order['order_model']=3或者c,C
 
 #查询当前一只股票的持仓量
 QB.QA_backtest_hold_amount(QB,code)
@@ -149,13 +149,13 @@ def strategy():
                 if QB.QA_backtest_hold_amount(QB, item) == 0:  # 如果不持仓
                     if Close[-1] >= MA_s:
                         QB.QA_backtest_send_order(QB, code=item, amount=int(
-                            each_capital / Close[-1] / 100) * 100, towards=1, order_type={'bid_model': 'c'})
+                            each_capital / Close[-1] / 100) * 100, towards=1, order_type={'order_model': 'c'})
                 elif QB.QA_backtest_sell_available(QB, item) > 0:  # 如果可卖数量大于0
                     hold_price = QB.QA_backtest_hold_price(QB, item)
 
                     if Close[-1] <= MA_s:
                         QB.QA_backtest_send_order(QB, code=item, amount=QB.QA_backtest_sell_available(
-                            QB, item), towards=-1, order_type={'bid_model': 'c'})
+                            QB, item), towards=-1, order_type={'order_model': 'c'})
 
         else:
             QA.QA_util_log_info('{} HAS NO DATA IN {}'.format(

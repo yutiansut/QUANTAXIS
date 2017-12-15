@@ -41,7 +41,7 @@ from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_to_json_from_pandas, QA_u
 
 class QA_Order():
     def __init__(self, price=16, date='2015-01-05', datetime='2015-01-05 09:01:00', sending_time='2015-01-05 09:01:00', transact_time='', amount=10,
-                 towards=1, code='000001', user='root', account_cookie='',strategy='example01', btype='0x01', bid_model='strategy', amount_model='amount',
+                 towards=1, code='000001', user='root', account_cookie='',strategy='example01', btype='0x01', order_model='strategy', amount_model='amount',
                  order_id=QA_util_random_with_topic(topic='Order'), trade_id='', status='100'):
         self.price = price
         self.date = date
@@ -101,26 +101,26 @@ class QA_Order():
     def to_dict(self):
         return vars(self)
 
-    def from_dict(self, bid):
+    def from_dict(self, order):
         try:
-            self.price = bid['price']
-            self.date = bid['date']
-            self.datetime = bid['datetime']
-            self.sending_time = bid['sending_time']  # 下单时间
-            self.transact_time = bid['transact_time']
-            self.amount = bid['amount']
-            self.towards = bid['towards']
-            self.code = bid['code']
-            self.user = bid['user']
-            self.account_cookie=bid['account_cookie']
-            self.strategy = bid['strategy']
-            self.type = bid['type']
-            self.order_model = bid['bid_model']
-            self.amount_model = bid['amount_model']
-            self.order_id = bid['order_id']
-            self.trade_id = bid['trade_id']
+            self.price = order['price']
+            self.date = order['date']
+            self.datetime = order['datetime']
+            self.sending_time = order['sending_time']  # 下单时间
+            self.transact_time = order['transact_time']
+            self.amount = order['amount']
+            self.towards = order['towards']
+            self.code = order['code']
+            self.user = order['user']
+            self.account_cookie=order['account_cookie']
+            self.strategy = order['strategy']
+            self.type = order['type']
+            self.order_model = order['order_model']
+            self.amount_model = order['amount_model']
+            self.order_id = order['order_id']
+            self.trade_id = order['trade_id']
             return self
-        except:
+        except Exception as e:
             QA_util_log_info('Failed to tran from dict')
 
     def from_dataframe(self, dataframe):
@@ -129,24 +129,24 @@ class QA_Order():
             bid_list.append(self.from_dict(item))
         return bid_list
 
-    def apply(self, bid):
+    def apply(self, order):
         try:
-            self.price = bid['price']
-            self.date = bid['date']
-            self.datetime = bid['datetime']
-            self.sending_time = bid['sending_time']  # 下单时间
-            self.transact_time = bid['transact_time']
-            self.amount = bid['amount']
-            self.towards = bid['towards']
-            self.code = bid['code']
-            self.user = bid['user']
-            self.strategy = bid['strategy']
-            self.account_cookie=bid['account_cookie']
-            self.type = bid['type']
-            self.order_model = bid['bid_model']
-            self.amount_model = bid['amount_model']
-            self.order_id = bid['order_id']
-            self.trade_id = bid['trade_id']
+            self.price = order['price']
+            self.date = order['date']
+            self.datetime = order['datetime']
+            self.sending_time = order['sending_time']  # 下单时间
+            self.transact_time = order['transact_time']
+            self.amount = order['amount']
+            self.towards = order['towards']
+            self.code = order['code']
+            self.user = order['user']
+            self.strategy = order['strategy']
+            self.account_cookie=order['account_cookie']
+            self.type = order['type']
+            self.order_model = order['order_model']
+            self.amount_model = order['amount_model']
+            self.order_id = order['order_id']
+            self.trade_id = order['trade_id']
             return self
         except:
             QA_util_log_info('Failed to tran from dict')
