@@ -71,9 +71,6 @@ def QA_util_get_real_date(date, trade_list, towards):
         else:
             return str(date)[0:10]
 
-
-
-
 def QA_util_get_real_datelist(start,end):
     """
     取数据的真实区间,返回的时候用 start,end=QA_util_get_real_datelist

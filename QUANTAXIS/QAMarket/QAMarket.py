@@ -22,32 +22,36 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-#from .market_config import stock_market,future_market,HK_stock_market,US_stock_market
-import datetime
 
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_future_day,
                                        QA_fetch_future_min,
                                        QA_fetch_future_tick,
                                        QA_fetch_index_day, QA_fetch_index_min,
                                        QA_fetch_stock_day, QA_fetch_stock_min)
-from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
-                              QA_util_sql_mongo_setting,
+from QUANTAXIS.QAMarket.QAMarket_engine import (market_future_engine,
+                                                market_stock_day_engine,
+                                                market_stock_engine)
+from QUANTAXIS.QAUtil import (QA_util_log_info,
                               QA_util_to_json_from_pandas)
-
-from .QAMarket_engine import (market_future_engine, market_stock_day_engine,
-                              market_stock_engine)
 
 
 class QA_Market():
-    '在这里加载数据'
-    # client=QA_Setting.client
-    # client=QA.QA_util_sql_mongo_setting()
-    # db= client.market
+    """
+    QUANTAXIS MARKET 部分
+
+    回测/模拟盘
+    股票/指数/期货/债券/ETF
+    @yutiansut
+
+    """
 
     def __init__(self, commission_fee_coeff=0.0015):
         self.engine = {'stock_day': QA_fetch_stock_day, 'stock_min': QA_fetch_stock_min,
                        'future_day': QA_fetch_future_day, 'future_min': QA_fetch_future_min, 'future_tick': QA_fetch_future_tick}
         self.commission_fee_coeff = commission_fee_coeff
+
+    def __repr__(self):
+        return '< QA_MARKET >'
 
     def _choice_trading_market(self, __order, __data=None):
         assert isinstance(__order.type, str)
@@ -59,16 +63,16 @@ class QA_Market():
             # 获取股票引擎
             __data = self.__get_stock_min_data(
                 __order) if __data is None else __data
-            
+
             return market_stock_engine(__order, __data, self.commission_fee_coeff)
 
         elif __order.type == '0x03':
-                # 获取股票引擎
+
             __data = self.__get_index_day_data(
                 __order) if __data is None else __data
             return market_stock_engine(__order, __data, self.commission_fee_coeff)
         elif __order.type == '0x04':
-                # 获取股票引擎
+
             __data = self.__get_index_min_data(
                 __order) if __data is None else __data
             return market_stock_engine(__order, __data, self.commission_fee_coeff)
@@ -117,7 +121,7 @@ class QA_Market():
 
     def receive_order(self, __order, __data=None):
         """
-        get the bid and choice which market to trade
+        get the order and choice which market to trade
 
         """
         def __confirm_order(__order):
