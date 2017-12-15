@@ -80,7 +80,7 @@ from QUANTAXIS.QASU.user import (QA_user_sign_in, QA_user_sign_up)
 
 # market
 
-from QUANTAXIS.QAMarket import (QA_QAMarket_bid, QA_Market)
+from QUANTAXIS.QAMarket import (QA_Bid, QA_Market)
 
 # Account,Risk,Portfolio
 
@@ -127,7 +127,8 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms
                               QA_util_multi_demension_list, QA_util_diff_list,
                               QA_util_to_json_from_pandas, QA_util_to_list_from_numpy, QA_util_to_list_from_pandas, QA_util_to_pandas_from_json, QA_util_to_pandas_from_list,
                               QA_util_mongo_initial, QA_util_mongo_make_index, QA_util_mongo_status, QA_util_mongo_infos,
-                              QA_util_make_min_index, QA_util_make_hour_index)
+                              QA_util_make_min_index, QA_util_make_hour_index,
+                              QA_util_random_with_topic)
 
 from QUANTAXIS.QAIndicator import *
 #from QUANTAXIS.QAFetch.QATdx_adv import bat

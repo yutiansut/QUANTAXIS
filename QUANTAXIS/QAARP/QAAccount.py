@@ -29,6 +29,8 @@ import time
 import numpy as np
 import pandas as pd
 
+from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
+from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 # 2017/6/4修改: 去除总资产的动态权益计算
 
 
@@ -47,7 +49,7 @@ class QA_Account():
                  sell_available=[['date', 'code', 'price',
                                   'amount', 'order_id', 'trade_id']],
                  init_assest=1000000, order_queue=pd.DataFrame(),
-                 cash=[], history=[], detail=[], assets=[], profit=[],
+                 cash=[], history=[], detail=[], assets=None,
                  account_cookie=None):
 
         self.hold = hold
@@ -59,10 +61,12 @@ class QA_Account():
         self.order_queue = order_queue  # 已委托待成交队列
         self.history = history
         self.detail = detail
-        self.assets = assets
-        self.profit = profit
-        self.account_cookie = str(
-            random.random()) if account_cookie is None else account_cookie
+        self.assets = [self.init_assest] if assets is None else assets
+
+        self.account_cookie = QA_util_random_with_topic('Acc') if account_cookie is None else account_cookie
+
+    def __repr__(self):
+        return '<QA_Account {} with Assets {}>'.format(self.account_cookie,self.assets[-1])
 
     @property
     def message(self):
@@ -93,8 +97,8 @@ class QA_Account():
         self.sell_available = [['date', 'code', 'price',
                                 'amount', 'order_id', 'trade_id']]
         self.history = []
-        self.profit = []
-        self.account_cookie = str(random.random())
+
+        self.account_cookie =QA_util_random_with_topic(topic='Acc')
         self.assets = [self.init_assest]
         self.cash = [self.init_assest]
         self.cash_available = self.cash[-1]  # 在途资金

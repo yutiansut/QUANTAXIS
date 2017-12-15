@@ -79,3 +79,5 @@ from QUANTAXIS.QAUtil.QATransform import (QA_util_to_json_from_pandas,
                                           QA_util_to_pandas_from_list)
 # 网络相关
 from QUANTAXIS.QAUtil.QAWeb import QA_util_web_ping
+# 随机数生成
+from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic

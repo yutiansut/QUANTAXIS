@@ -23,13 +23,12 @@
 # SOFTWARE.
 
 import datetime
-import random
 import threading
 import time
 
 import pandas as pd
 
-from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_to_json_from_pandas
+from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_to_json_from_pandas,QA_util_random_with_topic
 
 
 """
@@ -40,10 +39,10 @@ from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_to_json_from_pandas
 """
 
 
-class QA_QAMarket_bid():
+class QA_Bid():
     def __init__(self, price=16, date='2015-01-05', datetime='2015-01-05 09:01:00', sending_time='2015-01-05 09:01:00', transact_time='', amount=10,
                  towards=1, code='000001', user='root', strategy='example01', btype='0x01', bid_model='strategy', amount_model='amount',
-                 order_id=str(random.random()), trade_id='', status='100'):
+                 order_id=QA_util_random_with_topic(topic='Bid'), trade_id='', status='100'):
         self.price = price
         self.date = date
         self.datetime = datetime
@@ -147,7 +146,7 @@ class QA_QAMarket_bid():
             QA_util_log_info('Failed to tran from dict')
 
 
-class QA_QAMarket_bid_list():   # also the order tree
+class QA_Bid_list():   # also the order tree
     """
     一个待成交列表
 
@@ -157,13 +156,13 @@ class QA_QAMarket_bid_list():   # also the order tree
         self.list = []
 
     def from_dataframe(self, dataframe):
-        self.list = [QA_QAMarket_bid().from_dict(item)
+        self.list = [QA_Bid().from_dict(item)
                      for item in QA_util_to_json_from_pandas(dataframe)]
         return self.list
 
 
 if __name__ == '__main__':
-    ax = QA_QAMarket_bid().stock_day()
+    ax = QA_Bid().stock_day()
 
     print(ax.show())
     print(ax.to_df())
