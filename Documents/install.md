@@ -61,6 +61,10 @@ sudo apt-get update
 
 自带 无需安装
 
+> mac
+
+[下载安装](https://git-scm.com/download/mac)
+
 ### MongoDB 
 > Windows
 
@@ -132,6 +136,22 @@ E: There were unauthenticated packages and -y was used without --allow-unauthent
 sudo apt-get install -y mongodb-org --allow-unauthenticated
 ```
 
+> mac
+
+
+```
+安装mongodb:
+brew update
+brew install mongodb
+
+创建数据库文件:
+sudo mkdir -p /data/db
+然后需要输入你的密码
+
+启动mongodb
+sudo mongod
+继续输入你的密码
+```
 
 ### Nodejs
 > windows
@@ -160,9 +180,16 @@ sudo npm install forever -g #安装一个全局的forever 用于之后启动
 linux/mac下的nodejs有一个版本管理包 叫n 需要全局安装 -g
 
 所以无论装了什么版本的nodejs  只需要npm install n -g  就行  
+
+> mac
+
+[下载安装](https://nodejs.org/zh-cn/download/)
+选择mac的那个下载，然后你懂的
+
 ### python
 
 > Linux
+
 ```shell
 
 #install python3.6 in linux
@@ -176,10 +203,17 @@ sudo -H python3.6 get-pip.py
 
 建议直接安装Anaconda包,记住在安装时 选择添加path不然后面会很麻烦
 
+> mac
+
+```
+brew install python3
+```
+
 > python的一些需要编译的包的安装
 
 安装TA-Lib(现在talib不是必须选项)
 > Ubuntu
+
 ```
 sudo apt-get update
 sudo apt-get install python3.6-dev
@@ -201,6 +235,7 @@ sudo python3.6 -m pip install git+https://github.com/yutiansut/tushare
 
 ```
 > Windows
+
 ```
 
 访问http://www.lfd.uci.edu/~gohlke/pythonlibs/  下载对应的whl安装包
@@ -209,6 +244,28 @@ sudo python3.6 -m pip install git+https://github.com/yutiansut/tushare
 
 pip install xxxxx(文件名).whl
 ```
+
+> mac
+
+```shell
+# 装talib前要先装numpy
+sudo python3.6 -m pip install numpy -i https://pypi.doubanio.com/simple
+wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
+tar -xzvf ta-lib-0.4.0-src.tar.gz
+cd ta-lib
+./configure --prefix=/usr
+make
+sudo make install
+cd ..
+sudo python3.6 -m pip install TA-Lib
+# 安装剩余的依赖项
+sudo python3.6 -m pip install -r requirements.txt -i https://pypi.doubanio.com/simple
+sudo python3.6 -m pip install tushare==0.8.7 -i https://pypi.doubanio.com/simple
+# 有一定几率在安装0.8.7的tushare时会出错
+sudo python3.6 -m pip install git+https://github.com/yutiansut/tushare
+
+```
+
 ### 安装QUANTAXIS
 ```
 git clone https://github.com/yutiansut/quantaxis --depth 1
