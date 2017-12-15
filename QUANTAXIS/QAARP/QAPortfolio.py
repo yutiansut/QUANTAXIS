@@ -43,10 +43,10 @@ class QA_Portfolio():
     """
 
     def init(self):
-        self.portfolio_account = []
+        self.portfolio_account = {}
         self.portfolio_cookies=[]
-        for i in range(0, len(self.portfolio_cookies) - 1, 1):
-            self.portfolio_account[i] = QA_Account(coo)
+        for cookie in self.portfolio_cookies:
+            self.portfolio_account[cookie] = QA_Account(account_cookie=cookie)
 
     def QA_portfolio_get_portfolio(self):
         return self.portfolio_account
@@ -55,6 +55,8 @@ class QA_Portfolio():
         if account_cookie is None:
             temp=QA_Account()
             if temp.account_cookie is not in self.portfolio_cookies:
+                self.portfolio_cookies.append(temp.account_cookie)
+                self.portfolio_account[temp.account_cookie]=temp
 
 
     def cookie_mangement(self):
