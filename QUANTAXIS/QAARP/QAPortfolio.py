@@ -54,7 +54,7 @@ class QA_Portfolio():
     def new_accouts(self,account_cookie=None):
         if account_cookie is None:
             temp=QA_Account()
-            if temp.account_cookie is not in self.portfolio_cookies:
+            if temp.account_cookie not in self.portfolio_cookies:
                 self.portfolio_cookies.append(temp.account_cookie)
                 self.portfolio_account[temp.account_cookie]=temp
 
