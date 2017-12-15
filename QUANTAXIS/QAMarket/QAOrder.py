@@ -92,7 +92,7 @@ class QA_Order():
         self.type = '1x01'
         return self
 
-    def show(self):
+    def info(self):
         return vars(self)
 
     def to_df(self):
@@ -173,5 +173,5 @@ class QA_Order_list():   # also the order tree
 if __name__ == '__main__':
     ax = QA_Order().stock_day()
 
-    print(ax.show())
+    print(ax.info())
     print(ax.to_df())
