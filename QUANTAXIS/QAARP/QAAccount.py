@@ -42,28 +42,56 @@ class QA_Account():
     """
     # 一个hold改成list模式
 
-    def __init__(self):
+    def __init__(self,
+                 hold=[['date', 'code', 'price', 'amount', 'order_id', 'trade_id']],
+                 sell_available=[['date', 'code', 'price',
+                                  'amount', 'order_id', 'trade_id']],
+                 init_assest=1000000, order_queue=pd.DataFrame(),
+                 cash=[], history=[], detail=[], assets=[], profit=[],
+                 account_cookie=None):
 
-        self.hold = [['date', 'code', 'price',
-                      'amount', 'order_id', 'trade_id']]
-        self.sell_available=[['date', 'code', 'price',
-                      'amount', 'order_id', 'trade_id']]
-        self.init_assest = 1000000
-        self.cash = [self.init_assest]
+        self.hold = hold
+        self.sell_available = sell_available
+        self.init_assest = init_assest
+
+        self.cash = [self.init_assest] if len(cash) < 1 else cash
         self.cash_available = self.cash[-1]  # 可用资金
-        self.order_queue = pd.DataFrame()  # 已委托待成交队列
-        self.history = []
-        self.detail = []
-        self.assets = []
-        self.profit = []
-        self.account_cookie = str()
-        self.message = {}
+        self.order_queue = order_queue  # 已委托待成交队列
+        self.history = history
+        self.detail = detail
+        self.assets = assets
+        self.profit = profit
+        self.account_cookie = str(
+            random.random()) if account_cookie is None else account_cookie
 
-    def init(self):
+    @property
+    def message(self):
+        return {
+            'header': {
+                'source': 'account',
+                'cookie': self.account_cookie,
+                'session': {
+                    'user': '',
+                    'strategy': ''
+                }
+            },
+            'body': {
+                'account': {
+                    'hold': self.hold,
+                    'cash': self.cash,
+                    'assets': self.cash,
+                    'history': self.history,
+                    'detail': self.detail
+                },
+                'date_stamp': str(time.mktime(datetime.datetime.now().timetuple()))
+            }
+        }
+
+    def init(self,init_assest=None):
         self.hold = [['date', 'code', 'price',
                       'amount', 'order_id', 'trade_id']]
-        self.sell_available=[['date', 'code', 'price',
-                      'amount', 'order_id', 'trade_id']]
+        self.sell_available = [['date', 'code', 'price',
+                                'amount', 'order_id', 'trade_id']]
         self.history = []
         self.profit = []
         self.account_cookie = str(random.random())
@@ -276,7 +304,7 @@ class QA_Account():
         return __data
 
     def QA_account_receive_order(self, _message):
-        
+
         # 主要是把从market拿到的数据进行解包,一个一个发送给账户进行更新,再把最后的结果反回
         __data = self.QA_account_update({
             'code': _message['header']['code'],
@@ -291,20 +319,23 @@ class QA_Account():
             'fee': _message['body']['fee'],
         })
         return __data
+
     def QA_account_calc_assets(self):
         'get the real assets [from cash and market values]'
 
-        return self.cash[-1] + sum([float(self.hold[i][2]) * float(self.hold[i][3]) for  i in range(1, len(self.hold))])
+        return self.cash[-1] + sum([float(self.hold[i][2]) * float(self.hold[i][3]) for i in range(1, len(self.hold))])
 
-    def from_message(self,message):
-        
-        self.account_cookie=message['header']['cookie']
-        self.hold=message['body']['account']['hold']
-        self.history=message['body']['account']['history']
-        self.cash=message['body']['account']['cash']
-        self.assets=message['body']['account']['assets']
-        self.detail=message['body']['account']['detail']
-        self.message=message
+    def from_message(self, message):
+
+        self.account_cookie = message['header']['cookie']
+        self.hold = message['body']['account']['hold']
+        self.history = message['body']['account']['history']
+        self.cash = message['body']['account']['cash']
+        self.assets = message['body']['account']['assets']
+        self.detail = message['body']['account']['detail']
+
         return self
+
+
 class QA_Account_min(QA_Account):
     pass
