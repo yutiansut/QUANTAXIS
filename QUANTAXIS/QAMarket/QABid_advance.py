@@ -31,7 +31,7 @@ from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 bid不应该以一个简单的报价模板的形式引入,而应该直接作为一个下单/回报/状态系统
 
-比如*  QA_Send_bid()
+比如*  QA_Send_order()
 会回报一个状态 
 {
     下单成功(10x):{
@@ -59,7 +59,7 @@ Bid-Job-Management-Center
 
 class QA_QAMarket_order_tree():
     def __init__(self):
-        self.bid = {
+        self.order = {
             'price': float(16),
             'date': str('2015-01-05'),
             'time': str(time.mktime(datetime.datetime.now().timetuple())),
@@ -71,15 +71,15 @@ class QA_QAMarket_order_tree():
             'status': '0x01',
             'order_id': QA_util_random_with_topic(topic='Order')
         }
-        self.bid_list = [self.bid]
+        self.order_list = [self.order]
     # 报价队列  插入/取出/查询pytho
 
-    def QA_bid_insert(self):
-        self.bid_list.append(self.bid)
+    def QA_Order_insert(self):
+        self.order_list.append(self.order)
 
-    def QA_bid_pop(self):
-        self.bid_list.pop()
+    def QA_Order_pop(self):
+        self.order_list.pop()
 
-    def QA_bid_status(self):
-        lens = len(self.bid_list)
+    def QA_Order_status(self):
+        lens = len(self.order_list)
         return {'status': lens}

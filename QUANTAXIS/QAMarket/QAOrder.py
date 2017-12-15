@@ -39,9 +39,9 @@ from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_to_json_from_pandas, QA_u
 """
 
 
-class QA_Bid():
+class QA_Order():
     def __init__(self, price=16, date='2015-01-05', datetime='2015-01-05 09:01:00', sending_time='2015-01-05 09:01:00', transact_time='', amount=10,
-                 towards=1, code='000001', user='root', strategy='example01', btype='0x01', bid_model='strategy', amount_model='amount',
+                 towards=1, code='000001', user='root', account_cookie='',strategy='example01', btype='0x01', bid_model='strategy', amount_model='amount',
                  order_id=QA_util_random_with_topic(topic='Order'), trade_id='', status='100'):
         self.price = price
         self.date = date
@@ -52,16 +52,17 @@ class QA_Bid():
         self.towards = towards  # side
         self.code = code
         self.user = user
+        self.account_cookie=account_cookie
         self.strategy = strategy
         self.type = btype  # see below
-        self.bid_model = strategy
+        self.order_model = strategy
         self.amount_model = amount_model
         self.order_id = order_id
         self.trade_id = trade_id
         self.status = status
 
     def __repr__(self):
-        return '< QA_Bid datetime:{} code:{} price:{} towards:{} btype:{} order_id:{} user:{} >'.format(self.datetime, self.code, self.price, self.towards, self.type, self.order_id, self.user)
+        return '< QA_Order datetime:{} code:{} price:{} towards:{} btype:{} order_id:{} account:{} >'.format(self.datetime, self.code, self.price, self.towards, self.type, self.order_id, self.account_cookie)
 
     def stock_day(self):
         self.type = '0x01'
@@ -111,9 +112,10 @@ class QA_Bid():
             self.towards = bid['towards']
             self.code = bid['code']
             self.user = bid['user']
+            self.account_cookie=bid['account_cookie']
             self.strategy = bid['strategy']
             self.type = bid['type']
-            self.bid_model = bid['bid_model']
+            self.order_model = bid['bid_model']
             self.amount_model = bid['amount_model']
             self.order_id = bid['order_id']
             self.trade_id = bid['trade_id']
@@ -139,8 +141,9 @@ class QA_Bid():
             self.code = bid['code']
             self.user = bid['user']
             self.strategy = bid['strategy']
+            self.account_cookie=bid['account_cookie']
             self.type = bid['type']
-            self.bid_model = bid['bid_model']
+            self.order_model = bid['bid_model']
             self.amount_model = bid['amount_model']
             self.order_id = bid['order_id']
             self.trade_id = bid['trade_id']
@@ -149,7 +152,7 @@ class QA_Bid():
             QA_util_log_info('Failed to tran from dict')
 
 
-class QA_Bid_list():   # also the order tree
+class QA_Order_list():   # also the order tree
     """
     一个待成交列表
 
@@ -160,7 +163,7 @@ class QA_Bid_list():   # also the order tree
 
     def from_dataframe(self, dataframe):
         try:
-            self.list = [QA_Bid().from_dict(item)
+            self.list = [QA_Order().from_dict(item)
                          for item in QA_util_to_json_from_pandas(dataframe)]
             return self.list
         except:
@@ -168,7 +171,7 @@ class QA_Bid_list():   # also the order tree
 
 
 if __name__ == '__main__':
-    ax = QA_Bid().stock_day()
+    ax = QA_Order().stock_day()
 
     print(ax.show())
     print(ax.to_df())
