@@ -74,7 +74,7 @@ from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_gap,
                               QA_util_get_real_date, QA_util_log_expection,
                               QA_util_log_info, QA_util_make_min_index,
                               QA_util_time_gap, QA_util_to_json_from_pandas,
-                              trade_date_sse)
+                              trade_date_sse,QA_util_random_with_topic)
 
 
 """

@@ -23,7 +23,6 @@
 # SOFTWARE.
 
 import datetime
-import random
 import time
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
