@@ -231,7 +231,7 @@ class QA_Backtest():
         self.end_real_time = str(self.end_real_date) + \
             ' ' + self.strategy_end_time.split(' ')[1]
         # 重新初始化账户的cookie
-        self.account.account_cookie = str(random.random())
+        self.account.account_cookie = QA_util_random_with_topic(topic='Acc')
         # 初始化股票池的市场数据
         if self.benchmark_type in ['I', 'index']:
             self.benchmark_data = QA_fetch_index_day_adv(

@@ -25,7 +25,7 @@
 import datetime
 import random
 import time
-
+from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 """
 重新定义bid模式
@@ -70,7 +70,7 @@ class QA_QAMarket_order_tree():
             'user': str('root'),
             'strategy': str('example01'),
             'status': '0x01',
-            'order_id': str(random.random())
+            'order_id': QA_util_random_with_topic(topic='Order')
         }
         self.bid_list = [self.bid]
     # 报价队列  插入/取出/查询pytho
