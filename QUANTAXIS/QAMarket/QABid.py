@@ -28,7 +28,7 @@ import time
 
 import pandas as pd
 
-from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_to_json_from_pandas,QA_util_random_with_topic
+from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_to_json_from_pandas, QA_util_random_with_topic
 
 
 """
@@ -59,6 +59,9 @@ class QA_Bid():
         self.order_id = order_id
         self.trade_id = trade_id
         self.status = status
+
+    def __repr__(self):
+        return '< QA_Bid datetime:{} code:{} price:{} towards:{} btype:{} order_id:{} user:{} >'.format(self.datetime, self.code, self.price, self.towards, self.type, self.order_id, self.user)
 
     def stock_day(self):
         self.type = '0x01'
@@ -152,13 +155,16 @@ class QA_Bid_list():   # also the order tree
 
     """
 
-    def __init__(self):
-        self.list = []
+    def __init__(self, _list=[]):
+        self.list = _list
 
     def from_dataframe(self, dataframe):
-        self.list = [QA_Bid().from_dict(item)
-                     for item in QA_util_to_json_from_pandas(dataframe)]
-        return self.list
+        try:
+            self.list = [QA_Bid().from_dict(item)
+                         for item in QA_util_to_json_from_pandas(dataframe)]
+            return self.list
+        except:
+            pass
 
 
 if __name__ == '__main__':
