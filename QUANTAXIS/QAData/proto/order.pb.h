@@ -30,9 +30,9 @@
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
-class QA_Market_bid;
-class QA_Market_bidDefaultTypeInternal;
-extern QA_Market_bidDefaultTypeInternal _QA_Market_bid_default_instance_;
+class QA_Market_order;
+class QA_Market_orderDefaultTypeInternal;
+extern QA_Market_orderDefaultTypeInternal _QA_Market_order_default_instance_;
 
 namespace protobuf_order_2eproto {
 // Internal implementation detail -- do not call these.
@@ -51,24 +51,24 @@ void InitDefaults();
 
 // ===================================================================
 
-class QA_Market_bid : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:QA_Market_bid) */ {
+class QA_Market_order : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:QA_Market_order) */ {
  public:
-  QA_Market_bid();
-  virtual ~QA_Market_bid();
+  QA_Market_order();
+  virtual ~QA_Market_order();
 
-  QA_Market_bid(const QA_Market_bid& from);
+  QA_Market_order(const QA_Market_order& from);
 
-  inline QA_Market_bid& operator=(const QA_Market_bid& from) {
+  inline QA_Market_order& operator=(const QA_Market_order& from) {
     CopyFrom(from);
     return *this;
   }
   #if LANG_CXX11
-  QA_Market_bid(QA_Market_bid&& from) noexcept
-    : QA_Market_bid() {
+  QA_Market_order(QA_Market_order&& from) noexcept
+    : QA_Market_order() {
     *this = ::std::move(from);
   }
 
-  inline QA_Market_bid& operator=(QA_Market_bid&& from) noexcept {
+  inline QA_Market_order& operator=(QA_Market_order&& from) noexcept {
     if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
       if (this != &from) InternalSwap(&from);
     } else {
@@ -78,29 +78,29 @@ class QA_Market_bid : public ::google::protobuf::Message /* @@protoc_insertion_p
   }
   #endif
   static const ::google::protobuf::Descriptor* descriptor();
-  static const QA_Market_bid& default_instance();
+  static const QA_Market_order& default_instance();
 
-  static inline const QA_Market_bid* internal_default_instance() {
-    return reinterpret_cast<const QA_Market_bid*>(
-               &_QA_Market_bid_default_instance_);
+  static inline const QA_Market_order* internal_default_instance() {
+    return reinterpret_cast<const QA_Market_order*>(
+               &_QA_Market_order_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
     0;
 
-  void Swap(QA_Market_bid* other);
-  friend void swap(QA_Market_bid& a, QA_Market_bid& b) {
+  void Swap(QA_Market_order* other);
+  friend void swap(QA_Market_order& a, QA_Market_order& b) {
     a.Swap(&b);
   }
 
   // implements Message ----------------------------------------------
 
-  inline QA_Market_bid* New() const PROTOBUF_FINAL { return New(NULL); }
+  inline QA_Market_order* New() const PROTOBUF_FINAL { return New(NULL); }
 
-  QA_Market_bid* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  QA_Market_order* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
   void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
   void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void CopyFrom(const QA_Market_bid& from);
-  void MergeFrom(const QA_Market_bid& from);
+  void CopyFrom(const QA_Market_order& from);
+  void MergeFrom(const QA_Market_order& from);
   void Clear() PROTOBUF_FINAL;
   bool IsInitialized() const PROTOBUF_FINAL;
 
@@ -116,7 +116,7 @@ class QA_Market_bid : public ::google::protobuf::Message /* @@protoc_insertion_p
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const PROTOBUF_FINAL;
-  void InternalSwap(QA_Market_bid* other);
+  void InternalSwap(QA_Market_order* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
     return NULL;
@@ -245,18 +245,18 @@ class QA_Market_bid : public ::google::protobuf::Message /* @@protoc_insertion_p
   void set_allocated_type(::std::string* type);
 
   // string bid_model = 12;
-  void clear_bid_model();
+  void clear_order_model();
   static const int kBidModelFieldNumber = 12;
   const ::std::string& bid_model() const;
-  void set_bid_model(const ::std::string& value);
+  void set_order_model(const ::std::string& value);
   #if LANG_CXX11
-  void set_bid_model(::std::string&& value);
+  void set_order_model(::std::string&& value);
   #endif
-  void set_bid_model(const char* value);
-  void set_bid_model(const char* value, size_t size);
-  ::std::string* mutable_bid_model();
-  ::std::string* release_bid_model();
-  void set_allocated_bid_model(::std::string* bid_model);
+  void set_order_model(const char* value);
+  void set_order_model(const char* value, size_t size);
+  ::std::string* mutable_order_model();
+  ::std::string* release_order_model();
+  void set_allocated_order_model(::std::string* bid_model);
 
   // string amount_model = 13;
   void clear_amount_model();
@@ -332,7 +332,7 @@ class QA_Market_bid : public ::google::protobuf::Message /* @@protoc_insertion_p
   ::google::protobuf::int64 towards() const;
   void set_towards(::google::protobuf::int64 value);
 
-  // @@protoc_insertion_point(class_scope:QA_Market_bid)
+  // @@protoc_insertion_point(class_scope:QA_Market_order)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
@@ -365,737 +365,737 @@ class QA_Market_bid : public ::google::protobuf::Message /* @@protoc_insertion_p
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
-// QA_Market_bid
+// QA_Market_order
 
 // float price = 1;
-inline void QA_Market_bid::clear_price() {
+inline void QA_Market_order::clear_price() {
   price_ = 0;
 }
-inline float QA_Market_bid::price() const {
-  // @@protoc_insertion_point(field_get:QA_Market_bid.price)
+inline float QA_Market_order::price() const {
+  // @@protoc_insertion_point(field_get:QA_Market_order.price)
   return price_;
 }
-inline void QA_Market_bid::set_price(float value) {
+inline void QA_Market_order::set_price(float value) {
   
   price_ = value;
-  // @@protoc_insertion_point(field_set:QA_Market_bid.price)
+  // @@protoc_insertion_point(field_set:QA_Market_order.price)
 }
 
 // string date = 2;
-inline void QA_Market_bid::clear_date() {
+inline void QA_Market_order::clear_date() {
   date_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& QA_Market_bid::date() const {
-  // @@protoc_insertion_point(field_get:QA_Market_bid.date)
+inline const ::std::string& QA_Market_order::date() const {
+  // @@protoc_insertion_point(field_get:QA_Market_order.date)
   return date_.GetNoArena();
 }
-inline void QA_Market_bid::set_date(const ::std::string& value) {
+inline void QA_Market_order::set_date(const ::std::string& value) {
   
   date_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:QA_Market_bid.date)
+  // @@protoc_insertion_point(field_set:QA_Market_order.date)
 }
 #if LANG_CXX11
-inline void QA_Market_bid::set_date(::std::string&& value) {
+inline void QA_Market_order::set_date(::std::string&& value) {
   
   date_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:QA_Market_bid.date)
+  // @@protoc_insertion_point(field_set_rvalue:QA_Market_order.date)
 }
 #endif
-inline void QA_Market_bid::set_date(const char* value) {
+inline void QA_Market_order::set_date(const char* value) {
   GOOGLE_DCHECK(value != NULL);
   
   date_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:QA_Market_bid.date)
+  // @@protoc_insertion_point(field_set_char:QA_Market_order.date)
 }
-inline void QA_Market_bid::set_date(const char* value, size_t size) {
+inline void QA_Market_order::set_date(const char* value, size_t size) {
   
   date_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:QA_Market_bid.date)
+  // @@protoc_insertion_point(field_set_pointer:QA_Market_order.date)
 }
-inline ::std::string* QA_Market_bid::mutable_date() {
+inline ::std::string* QA_Market_order::mutable_date() {
   
-  // @@protoc_insertion_point(field_mutable:QA_Market_bid.date)
+  // @@protoc_insertion_point(field_mutable:QA_Market_order.date)
   return date_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* QA_Market_bid::release_date() {
-  // @@protoc_insertion_point(field_release:QA_Market_bid.date)
+inline ::std::string* QA_Market_order::release_date() {
+  // @@protoc_insertion_point(field_release:QA_Market_order.date)
   
   return date_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void QA_Market_bid::set_allocated_date(::std::string* date) {
+inline void QA_Market_order::set_allocated_date(::std::string* date) {
   if (date != NULL) {
     
   } else {
     
   }
   date_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), date);
-  // @@protoc_insertion_point(field_set_allocated:QA_Market_bid.date)
+  // @@protoc_insertion_point(field_set_allocated:QA_Market_order.date)
 }
 
 // string datetime = 3;
-inline void QA_Market_bid::clear_datetime() {
+inline void QA_Market_order::clear_datetime() {
   datetime_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& QA_Market_bid::datetime() const {
-  // @@protoc_insertion_point(field_get:QA_Market_bid.datetime)
+inline const ::std::string& QA_Market_order::datetime() const {
+  // @@protoc_insertion_point(field_get:QA_Market_order.datetime)
   return datetime_.GetNoArena();
 }
-inline void QA_Market_bid::set_datetime(const ::std::string& value) {
+inline void QA_Market_order::set_datetime(const ::std::string& value) {
   
   datetime_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:QA_Market_bid.datetime)
+  // @@protoc_insertion_point(field_set:QA_Market_order.datetime)
 }
 #if LANG_CXX11
-inline void QA_Market_bid::set_datetime(::std::string&& value) {
+inline void QA_Market_order::set_datetime(::std::string&& value) {
   
   datetime_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:QA_Market_bid.datetime)
+  // @@protoc_insertion_point(field_set_rvalue:QA_Market_order.datetime)
 }
 #endif
-inline void QA_Market_bid::set_datetime(const char* value) {
+inline void QA_Market_order::set_datetime(const char* value) {
   GOOGLE_DCHECK(value != NULL);
   
   datetime_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:QA_Market_bid.datetime)
+  // @@protoc_insertion_point(field_set_char:QA_Market_order.datetime)
 }
-inline void QA_Market_bid::set_datetime(const char* value, size_t size) {
+inline void QA_Market_order::set_datetime(const char* value, size_t size) {
   
   datetime_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:QA_Market_bid.datetime)
+  // @@protoc_insertion_point(field_set_pointer:QA_Market_order.datetime)
 }
-inline ::std::string* QA_Market_bid::mutable_datetime() {
+inline ::std::string* QA_Market_order::mutable_datetime() {
   
-  // @@protoc_insertion_point(field_mutable:QA_Market_bid.datetime)
+  // @@protoc_insertion_point(field_mutable:QA_Market_order.datetime)
   return datetime_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* QA_Market_bid::release_datetime() {
-  // @@protoc_insertion_point(field_release:QA_Market_bid.datetime)
+inline ::std::string* QA_Market_order::release_datetime() {
+  // @@protoc_insertion_point(field_release:QA_Market_order.datetime)
   
   return datetime_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void QA_Market_bid::set_allocated_datetime(::std::string* datetime) {
+inline void QA_Market_order::set_allocated_datetime(::std::string* datetime) {
   if (datetime != NULL) {
     
   } else {
     
   }
   datetime_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), datetime);
-  // @@protoc_insertion_point(field_set_allocated:QA_Market_bid.datetime)
+  // @@protoc_insertion_point(field_set_allocated:QA_Market_order.datetime)
 }
 
 // string sending_time = 4;
-inline void QA_Market_bid::clear_sending_time() {
+inline void QA_Market_order::clear_sending_time() {
   sending_time_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& QA_Market_bid::sending_time() const {
-  // @@protoc_insertion_point(field_get:QA_Market_bid.sending_time)
+inline const ::std::string& QA_Market_order::sending_time() const {
+  // @@protoc_insertion_point(field_get:QA_Market_order.sending_time)
   return sending_time_.GetNoArena();
 }
-inline void QA_Market_bid::set_sending_time(const ::std::string& value) {
+inline void QA_Market_order::set_sending_time(const ::std::string& value) {
   
   sending_time_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:QA_Market_bid.sending_time)
+  // @@protoc_insertion_point(field_set:QA_Market_order.sending_time)
 }
 #if LANG_CXX11
-inline void QA_Market_bid::set_sending_time(::std::string&& value) {
+inline void QA_Market_order::set_sending_time(::std::string&& value) {
   
   sending_time_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:QA_Market_bid.sending_time)
+  // @@protoc_insertion_point(field_set_rvalue:QA_Market_order.sending_time)
 }
 #endif
-inline void QA_Market_bid::set_sending_time(const char* value) {
+inline void QA_Market_order::set_sending_time(const char* value) {
   GOOGLE_DCHECK(value != NULL);
   
   sending_time_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:QA_Market_bid.sending_time)
+  // @@protoc_insertion_point(field_set_char:QA_Market_order.sending_time)
 }
-inline void QA_Market_bid::set_sending_time(const char* value, size_t size) {
+inline void QA_Market_order::set_sending_time(const char* value, size_t size) {
   
   sending_time_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:QA_Market_bid.sending_time)
+  // @@protoc_insertion_point(field_set_pointer:QA_Market_order.sending_time)
 }
-inline ::std::string* QA_Market_bid::mutable_sending_time() {
+inline ::std::string* QA_Market_order::mutable_sending_time() {
   
-  // @@protoc_insertion_point(field_mutable:QA_Market_bid.sending_time)
+  // @@protoc_insertion_point(field_mutable:QA_Market_order.sending_time)
   return sending_time_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* QA_Market_bid::release_sending_time() {
-  // @@protoc_insertion_point(field_release:QA_Market_bid.sending_time)
+inline ::std::string* QA_Market_order::release_sending_time() {
+  // @@protoc_insertion_point(field_release:QA_Market_order.sending_time)
   
   return sending_time_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void QA_Market_bid::set_allocated_sending_time(::std::string* sending_time) {
+inline void QA_Market_order::set_allocated_sending_time(::std::string* sending_time) {
   if (sending_time != NULL) {
     
   } else {
     
   }
   sending_time_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), sending_time);
-  // @@protoc_insertion_point(field_set_allocated:QA_Market_bid.sending_time)
+  // @@protoc_insertion_point(field_set_allocated:QA_Market_order.sending_time)
 }
 
 // string transact_time = 5;
-inline void QA_Market_bid::clear_transact_time() {
+inline void QA_Market_order::clear_transact_time() {
   transact_time_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& QA_Market_bid::transact_time() const {
-  // @@protoc_insertion_point(field_get:QA_Market_bid.transact_time)
+inline const ::std::string& QA_Market_order::transact_time() const {
+  // @@protoc_insertion_point(field_get:QA_Market_order.transact_time)
   return transact_time_.GetNoArena();
 }
-inline void QA_Market_bid::set_transact_time(const ::std::string& value) {
+inline void QA_Market_order::set_transact_time(const ::std::string& value) {
   
   transact_time_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:QA_Market_bid.transact_time)
+  // @@protoc_insertion_point(field_set:QA_Market_order.transact_time)
 }
 #if LANG_CXX11
-inline void QA_Market_bid::set_transact_time(::std::string&& value) {
+inline void QA_Market_order::set_transact_time(::std::string&& value) {
   
   transact_time_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:QA_Market_bid.transact_time)
+  // @@protoc_insertion_point(field_set_rvalue:QA_Market_order.transact_time)
 }
 #endif
-inline void QA_Market_bid::set_transact_time(const char* value) {
+inline void QA_Market_order::set_transact_time(const char* value) {
   GOOGLE_DCHECK(value != NULL);
   
   transact_time_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:QA_Market_bid.transact_time)
+  // @@protoc_insertion_point(field_set_char:QA_Market_order.transact_time)
 }
-inline void QA_Market_bid::set_transact_time(const char* value, size_t size) {
+inline void QA_Market_order::set_transact_time(const char* value, size_t size) {
   
   transact_time_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:QA_Market_bid.transact_time)
+  // @@protoc_insertion_point(field_set_pointer:QA_Market_order.transact_time)
 }
-inline ::std::string* QA_Market_bid::mutable_transact_time() {
+inline ::std::string* QA_Market_order::mutable_transact_time() {
   
-  // @@protoc_insertion_point(field_mutable:QA_Market_bid.transact_time)
+  // @@protoc_insertion_point(field_mutable:QA_Market_order.transact_time)
   return transact_time_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* QA_Market_bid::release_transact_time() {
-  // @@protoc_insertion_point(field_release:QA_Market_bid.transact_time)
+inline ::std::string* QA_Market_order::release_transact_time() {
+  // @@protoc_insertion_point(field_release:QA_Market_order.transact_time)
   
   return transact_time_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void QA_Market_bid::set_allocated_transact_time(::std::string* transact_time) {
+inline void QA_Market_order::set_allocated_transact_time(::std::string* transact_time) {
   if (transact_time != NULL) {
     
   } else {
     
   }
   transact_time_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), transact_time);
-  // @@protoc_insertion_point(field_set_allocated:QA_Market_bid.transact_time)
+  // @@protoc_insertion_point(field_set_allocated:QA_Market_order.transact_time)
 }
 
 // float amount = 6;
-inline void QA_Market_bid::clear_amount() {
+inline void QA_Market_order::clear_amount() {
   amount_ = 0;
 }
-inline float QA_Market_bid::amount() const {
-  // @@protoc_insertion_point(field_get:QA_Market_bid.amount)
+inline float QA_Market_order::amount() const {
+  // @@protoc_insertion_point(field_get:QA_Market_order.amount)
   return amount_;
 }
-inline void QA_Market_bid::set_amount(float value) {
+inline void QA_Market_order::set_amount(float value) {
   
   amount_ = value;
-  // @@protoc_insertion_point(field_set:QA_Market_bid.amount)
+  // @@protoc_insertion_point(field_set:QA_Market_order.amount)
 }
 
 // int64 towards = 7;
-inline void QA_Market_bid::clear_towards() {
+inline void QA_Market_order::clear_towards() {
   towards_ = GOOGLE_LONGLONG(0);
 }
-inline ::google::protobuf::int64 QA_Market_bid::towards() const {
-  // @@protoc_insertion_point(field_get:QA_Market_bid.towards)
+inline ::google::protobuf::int64 QA_Market_order::towards() const {
+  // @@protoc_insertion_point(field_get:QA_Market_order.towards)
   return towards_;
 }
-inline void QA_Market_bid::set_towards(::google::protobuf::int64 value) {
+inline void QA_Market_order::set_towards(::google::protobuf::int64 value) {
   
   towards_ = value;
-  // @@protoc_insertion_point(field_set:QA_Market_bid.towards)
+  // @@protoc_insertion_point(field_set:QA_Market_order.towards)
 }
 
 // string code = 8;
-inline void QA_Market_bid::clear_code() {
+inline void QA_Market_order::clear_code() {
   code_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& QA_Market_bid::code() const {
-  // @@protoc_insertion_point(field_get:QA_Market_bid.code)
+inline const ::std::string& QA_Market_order::code() const {
+  // @@protoc_insertion_point(field_get:QA_Market_order.code)
   return code_.GetNoArena();
 }
-inline void QA_Market_bid::set_code(const ::std::string& value) {
+inline void QA_Market_order::set_code(const ::std::string& value) {
   
   code_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:QA_Market_bid.code)
+  // @@protoc_insertion_point(field_set:QA_Market_order.code)
 }
 #if LANG_CXX11
-inline void QA_Market_bid::set_code(::std::string&& value) {
+inline void QA_Market_order::set_code(::std::string&& value) {
   
   code_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:QA_Market_bid.code)
+  // @@protoc_insertion_point(field_set_rvalue:QA_Market_order.code)
 }
 #endif
-inline void QA_Market_bid::set_code(const char* value) {
+inline void QA_Market_order::set_code(const char* value) {
   GOOGLE_DCHECK(value != NULL);
   
   code_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:QA_Market_bid.code)
+  // @@protoc_insertion_point(field_set_char:QA_Market_order.code)
 }
-inline void QA_Market_bid::set_code(const char* value, size_t size) {
+inline void QA_Market_order::set_code(const char* value, size_t size) {
   
   code_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:QA_Market_bid.code)
+  // @@protoc_insertion_point(field_set_pointer:QA_Market_order.code)
 }
-inline ::std::string* QA_Market_bid::mutable_code() {
+inline ::std::string* QA_Market_order::mutable_code() {
   
-  // @@protoc_insertion_point(field_mutable:QA_Market_bid.code)
+  // @@protoc_insertion_point(field_mutable:QA_Market_order.code)
   return code_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* QA_Market_bid::release_code() {
-  // @@protoc_insertion_point(field_release:QA_Market_bid.code)
+inline ::std::string* QA_Market_order::release_code() {
+  // @@protoc_insertion_point(field_release:QA_Market_order.code)
   
   return code_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void QA_Market_bid::set_allocated_code(::std::string* code) {
+inline void QA_Market_order::set_allocated_code(::std::string* code) {
   if (code != NULL) {
     
   } else {
     
   }
   code_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), code);
-  // @@protoc_insertion_point(field_set_allocated:QA_Market_bid.code)
+  // @@protoc_insertion_point(field_set_allocated:QA_Market_order.code)
 }
 
 // string user = 9;
-inline void QA_Market_bid::clear_user() {
+inline void QA_Market_order::clear_user() {
   user_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& QA_Market_bid::user() const {
-  // @@protoc_insertion_point(field_get:QA_Market_bid.user)
+inline const ::std::string& QA_Market_order::user() const {
+  // @@protoc_insertion_point(field_get:QA_Market_order.user)
   return user_.GetNoArena();
 }
-inline void QA_Market_bid::set_user(const ::std::string& value) {
+inline void QA_Market_order::set_user(const ::std::string& value) {
   
   user_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:QA_Market_bid.user)
+  // @@protoc_insertion_point(field_set:QA_Market_order.user)
 }
 #if LANG_CXX11
-inline void QA_Market_bid::set_user(::std::string&& value) {
+inline void QA_Market_order::set_user(::std::string&& value) {
   
   user_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:QA_Market_bid.user)
+  // @@protoc_insertion_point(field_set_rvalue:QA_Market_order.user)
 }
 #endif
-inline void QA_Market_bid::set_user(const char* value) {
+inline void QA_Market_order::set_user(const char* value) {
   GOOGLE_DCHECK(value != NULL);
   
   user_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:QA_Market_bid.user)
+  // @@protoc_insertion_point(field_set_char:QA_Market_order.user)
 }
-inline void QA_Market_bid::set_user(const char* value, size_t size) {
+inline void QA_Market_order::set_user(const char* value, size_t size) {
   
   user_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:QA_Market_bid.user)
+  // @@protoc_insertion_point(field_set_pointer:QA_Market_order.user)
 }
-inline ::std::string* QA_Market_bid::mutable_user() {
+inline ::std::string* QA_Market_order::mutable_user() {
   
-  // @@protoc_insertion_point(field_mutable:QA_Market_bid.user)
+  // @@protoc_insertion_point(field_mutable:QA_Market_order.user)
   return user_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* QA_Market_bid::release_user() {
-  // @@protoc_insertion_point(field_release:QA_Market_bid.user)
+inline ::std::string* QA_Market_order::release_user() {
+  // @@protoc_insertion_point(field_release:QA_Market_order.user)
   
   return user_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void QA_Market_bid::set_allocated_user(::std::string* user) {
+inline void QA_Market_order::set_allocated_user(::std::string* user) {
   if (user != NULL) {
     
   } else {
     
   }
   user_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), user);
-  // @@protoc_insertion_point(field_set_allocated:QA_Market_bid.user)
+  // @@protoc_insertion_point(field_set_allocated:QA_Market_order.user)
 }
 
 // string strategy = 10;
-inline void QA_Market_bid::clear_strategy() {
+inline void QA_Market_order::clear_strategy() {
   strategy_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& QA_Market_bid::strategy() const {
-  // @@protoc_insertion_point(field_get:QA_Market_bid.strategy)
+inline const ::std::string& QA_Market_order::strategy() const {
+  // @@protoc_insertion_point(field_get:QA_Market_order.strategy)
   return strategy_.GetNoArena();
 }
-inline void QA_Market_bid::set_strategy(const ::std::string& value) {
+inline void QA_Market_order::set_strategy(const ::std::string& value) {
   
   strategy_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:QA_Market_bid.strategy)
+  // @@protoc_insertion_point(field_set:QA_Market_order.strategy)
 }
 #if LANG_CXX11
-inline void QA_Market_bid::set_strategy(::std::string&& value) {
+inline void QA_Market_order::set_strategy(::std::string&& value) {
   
   strategy_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:QA_Market_bid.strategy)
+  // @@protoc_insertion_point(field_set_rvalue:QA_Market_order.strategy)
 }
 #endif
-inline void QA_Market_bid::set_strategy(const char* value) {
+inline void QA_Market_order::set_strategy(const char* value) {
   GOOGLE_DCHECK(value != NULL);
   
   strategy_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:QA_Market_bid.strategy)
+  // @@protoc_insertion_point(field_set_char:QA_Market_order.strategy)
 }
-inline void QA_Market_bid::set_strategy(const char* value, size_t size) {
+inline void QA_Market_order::set_strategy(const char* value, size_t size) {
   
   strategy_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:QA_Market_bid.strategy)
+  // @@protoc_insertion_point(field_set_pointer:QA_Market_order.strategy)
 }
-inline ::std::string* QA_Market_bid::mutable_strategy() {
+inline ::std::string* QA_Market_order::mutable_strategy() {
   
-  // @@protoc_insertion_point(field_mutable:QA_Market_bid.strategy)
+  // @@protoc_insertion_point(field_mutable:QA_Market_order.strategy)
   return strategy_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* QA_Market_bid::release_strategy() {
-  // @@protoc_insertion_point(field_release:QA_Market_bid.strategy)
+inline ::std::string* QA_Market_order::release_strategy() {
+  // @@protoc_insertion_point(field_release:QA_Market_order.strategy)
   
   return strategy_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void QA_Market_bid::set_allocated_strategy(::std::string* strategy) {
+inline void QA_Market_order::set_allocated_strategy(::std::string* strategy) {
   if (strategy != NULL) {
     
   } else {
     
   }
   strategy_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), strategy);
-  // @@protoc_insertion_point(field_set_allocated:QA_Market_bid.strategy)
+  // @@protoc_insertion_point(field_set_allocated:QA_Market_order.strategy)
 }
 
 // string type = 11;
-inline void QA_Market_bid::clear_type() {
+inline void QA_Market_order::clear_type() {
   type_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& QA_Market_bid::type() const {
-  // @@protoc_insertion_point(field_get:QA_Market_bid.type)
+inline const ::std::string& QA_Market_order::type() const {
+  // @@protoc_insertion_point(field_get:QA_Market_order.type)
   return type_.GetNoArena();
 }
-inline void QA_Market_bid::set_type(const ::std::string& value) {
+inline void QA_Market_order::set_type(const ::std::string& value) {
   
   type_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:QA_Market_bid.type)
+  // @@protoc_insertion_point(field_set:QA_Market_order.type)
 }
 #if LANG_CXX11
-inline void QA_Market_bid::set_type(::std::string&& value) {
+inline void QA_Market_order::set_type(::std::string&& value) {
   
   type_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:QA_Market_bid.type)
+  // @@protoc_insertion_point(field_set_rvalue:QA_Market_order.type)
 }
 #endif
-inline void QA_Market_bid::set_type(const char* value) {
+inline void QA_Market_order::set_type(const char* value) {
   GOOGLE_DCHECK(value != NULL);
   
   type_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:QA_Market_bid.type)
+  // @@protoc_insertion_point(field_set_char:QA_Market_order.type)
 }
-inline void QA_Market_bid::set_type(const char* value, size_t size) {
+inline void QA_Market_order::set_type(const char* value, size_t size) {
   
   type_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:QA_Market_bid.type)
+  // @@protoc_insertion_point(field_set_pointer:QA_Market_order.type)
 }
-inline ::std::string* QA_Market_bid::mutable_type() {
+inline ::std::string* QA_Market_order::mutable_type() {
   
-  // @@protoc_insertion_point(field_mutable:QA_Market_bid.type)
+  // @@protoc_insertion_point(field_mutable:QA_Market_order.type)
   return type_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* QA_Market_bid::release_type() {
-  // @@protoc_insertion_point(field_release:QA_Market_bid.type)
+inline ::std::string* QA_Market_order::release_type() {
+  // @@protoc_insertion_point(field_release:QA_Market_order.type)
   
   return type_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void QA_Market_bid::set_allocated_type(::std::string* type) {
+inline void QA_Market_order::set_allocated_type(::std::string* type) {
   if (type != NULL) {
     
   } else {
     
   }
   type_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), type);
-  // @@protoc_insertion_point(field_set_allocated:QA_Market_bid.type)
+  // @@protoc_insertion_point(field_set_allocated:QA_Market_order.type)
 }
 
 // string bid_model = 12;
-inline void QA_Market_bid::clear_bid_model() {
+inline void QA_Market_order::clear_order_model() {
   bid_model_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& QA_Market_bid::bid_model() const {
-  // @@protoc_insertion_point(field_get:QA_Market_bid.bid_model)
+inline const ::std::string& QA_Market_order::bid_model() const {
+  // @@protoc_insertion_point(field_get:QA_Market_order.bid_model)
   return bid_model_.GetNoArena();
 }
-inline void QA_Market_bid::set_bid_model(const ::std::string& value) {
+inline void QA_Market_order::set_order_model(const ::std::string& value) {
   
   bid_model_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:QA_Market_bid.bid_model)
+  // @@protoc_insertion_point(field_set:QA_Market_order.bid_model)
 }
 #if LANG_CXX11
-inline void QA_Market_bid::set_bid_model(::std::string&& value) {
+inline void QA_Market_order::set_order_model(::std::string&& value) {
   
   bid_model_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:QA_Market_bid.bid_model)
+  // @@protoc_insertion_point(field_set_rvalue:QA_Market_order.bid_model)
 }
 #endif
-inline void QA_Market_bid::set_bid_model(const char* value) {
+inline void QA_Market_order::set_order_model(const char* value) {
   GOOGLE_DCHECK(value != NULL);
   
   bid_model_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:QA_Market_bid.bid_model)
+  // @@protoc_insertion_point(field_set_char:QA_Market_order.bid_model)
 }
-inline void QA_Market_bid::set_bid_model(const char* value, size_t size) {
+inline void QA_Market_order::set_order_model(const char* value, size_t size) {
   
   bid_model_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:QA_Market_bid.bid_model)
+  // @@protoc_insertion_point(field_set_pointer:QA_Market_order.bid_model)
 }
-inline ::std::string* QA_Market_bid::mutable_bid_model() {
+inline ::std::string* QA_Market_order::mutable_order_model() {
   
-  // @@protoc_insertion_point(field_mutable:QA_Market_bid.bid_model)
+  // @@protoc_insertion_point(field_mutable:QA_Market_order.bid_model)
   return bid_model_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* QA_Market_bid::release_bid_model() {
-  // @@protoc_insertion_point(field_release:QA_Market_bid.bid_model)
+inline ::std::string* QA_Market_order::release_order_model() {
+  // @@protoc_insertion_point(field_release:QA_Market_order.bid_model)
   
   return bid_model_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void QA_Market_bid::set_allocated_bid_model(::std::string* bid_model) {
+inline void QA_Market_order::set_allocated_order_model(::std::string* bid_model) {
   if (bid_model != NULL) {
     
   } else {
     
   }
   bid_model_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), bid_model);
-  // @@protoc_insertion_point(field_set_allocated:QA_Market_bid.bid_model)
+  // @@protoc_insertion_point(field_set_allocated:QA_Market_order.bid_model)
 }
 
 // string amount_model = 13;
-inline void QA_Market_bid::clear_amount_model() {
+inline void QA_Market_order::clear_amount_model() {
   amount_model_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& QA_Market_bid::amount_model() const {
-  // @@protoc_insertion_point(field_get:QA_Market_bid.amount_model)
+inline const ::std::string& QA_Market_order::amount_model() const {
+  // @@protoc_insertion_point(field_get:QA_Market_order.amount_model)
   return amount_model_.GetNoArena();
 }
-inline void QA_Market_bid::set_amount_model(const ::std::string& value) {
+inline void QA_Market_order::set_amount_model(const ::std::string& value) {
   
   amount_model_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:QA_Market_bid.amount_model)
+  // @@protoc_insertion_point(field_set:QA_Market_order.amount_model)
 }
 #if LANG_CXX11
-inline void QA_Market_bid::set_amount_model(::std::string&& value) {
+inline void QA_Market_order::set_amount_model(::std::string&& value) {
   
   amount_model_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:QA_Market_bid.amount_model)
+  // @@protoc_insertion_point(field_set_rvalue:QA_Market_order.amount_model)
 }
 #endif
-inline void QA_Market_bid::set_amount_model(const char* value) {
+inline void QA_Market_order::set_amount_model(const char* value) {
   GOOGLE_DCHECK(value != NULL);
   
   amount_model_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:QA_Market_bid.amount_model)
+  // @@protoc_insertion_point(field_set_char:QA_Market_order.amount_model)
 }
-inline void QA_Market_bid::set_amount_model(const char* value, size_t size) {
+inline void QA_Market_order::set_amount_model(const char* value, size_t size) {
   
   amount_model_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:QA_Market_bid.amount_model)
+  // @@protoc_insertion_point(field_set_pointer:QA_Market_order.amount_model)
 }
-inline ::std::string* QA_Market_bid::mutable_amount_model() {
+inline ::std::string* QA_Market_order::mutable_amount_model() {
   
-  // @@protoc_insertion_point(field_mutable:QA_Market_bid.amount_model)
+  // @@protoc_insertion_point(field_mutable:QA_Market_order.amount_model)
   return amount_model_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* QA_Market_bid::release_amount_model() {
-  // @@protoc_insertion_point(field_release:QA_Market_bid.amount_model)
+inline ::std::string* QA_Market_order::release_amount_model() {
+  // @@protoc_insertion_point(field_release:QA_Market_order.amount_model)
   
   return amount_model_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void QA_Market_bid::set_allocated_amount_model(::std::string* amount_model) {
+inline void QA_Market_order::set_allocated_amount_model(::std::string* amount_model) {
   if (amount_model != NULL) {
     
   } else {
     
   }
   amount_model_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), amount_model);
-  // @@protoc_insertion_point(field_set_allocated:QA_Market_bid.amount_model)
+  // @@protoc_insertion_point(field_set_allocated:QA_Market_order.amount_model)
 }
 
 // string order_id = 14;
-inline void QA_Market_bid::clear_order_id() {
+inline void QA_Market_order::clear_order_id() {
   order_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& QA_Market_bid::order_id() const {
-  // @@protoc_insertion_point(field_get:QA_Market_bid.order_id)
+inline const ::std::string& QA_Market_order::order_id() const {
+  // @@protoc_insertion_point(field_get:QA_Market_order.order_id)
   return order_id_.GetNoArena();
 }
-inline void QA_Market_bid::set_order_id(const ::std::string& value) {
+inline void QA_Market_order::set_order_id(const ::std::string& value) {
   
   order_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:QA_Market_bid.order_id)
+  // @@protoc_insertion_point(field_set:QA_Market_order.order_id)
 }
 #if LANG_CXX11
-inline void QA_Market_bid::set_order_id(::std::string&& value) {
+inline void QA_Market_order::set_order_id(::std::string&& value) {
   
   order_id_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:QA_Market_bid.order_id)
+  // @@protoc_insertion_point(field_set_rvalue:QA_Market_order.order_id)
 }
 #endif
-inline void QA_Market_bid::set_order_id(const char* value) {
+inline void QA_Market_order::set_order_id(const char* value) {
   GOOGLE_DCHECK(value != NULL);
   
   order_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:QA_Market_bid.order_id)
+  // @@protoc_insertion_point(field_set_char:QA_Market_order.order_id)
 }
-inline void QA_Market_bid::set_order_id(const char* value, size_t size) {
+inline void QA_Market_order::set_order_id(const char* value, size_t size) {
   
   order_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:QA_Market_bid.order_id)
+  // @@protoc_insertion_point(field_set_pointer:QA_Market_order.order_id)
 }
-inline ::std::string* QA_Market_bid::mutable_order_id() {
+inline ::std::string* QA_Market_order::mutable_order_id() {
   
-  // @@protoc_insertion_point(field_mutable:QA_Market_bid.order_id)
+  // @@protoc_insertion_point(field_mutable:QA_Market_order.order_id)
   return order_id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* QA_Market_bid::release_order_id() {
-  // @@protoc_insertion_point(field_release:QA_Market_bid.order_id)
+inline ::std::string* QA_Market_order::release_order_id() {
+  // @@protoc_insertion_point(field_release:QA_Market_order.order_id)
   
   return order_id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void QA_Market_bid::set_allocated_order_id(::std::string* order_id) {
+inline void QA_Market_order::set_allocated_order_id(::std::string* order_id) {
   if (order_id != NULL) {
     
   } else {
     
   }
   order_id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), order_id);
-  // @@protoc_insertion_point(field_set_allocated:QA_Market_bid.order_id)
+  // @@protoc_insertion_point(field_set_allocated:QA_Market_order.order_id)
 }
 
 // string trade_id = 15;
-inline void QA_Market_bid::clear_trade_id() {
+inline void QA_Market_order::clear_trade_id() {
   trade_id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& QA_Market_bid::trade_id() const {
-  // @@protoc_insertion_point(field_get:QA_Market_bid.trade_id)
+inline const ::std::string& QA_Market_order::trade_id() const {
+  // @@protoc_insertion_point(field_get:QA_Market_order.trade_id)
   return trade_id_.GetNoArena();
 }
-inline void QA_Market_bid::set_trade_id(const ::std::string& value) {
+inline void QA_Market_order::set_trade_id(const ::std::string& value) {
   
   trade_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:QA_Market_bid.trade_id)
+  // @@protoc_insertion_point(field_set:QA_Market_order.trade_id)
 }
 #if LANG_CXX11
-inline void QA_Market_bid::set_trade_id(::std::string&& value) {
+inline void QA_Market_order::set_trade_id(::std::string&& value) {
   
   trade_id_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:QA_Market_bid.trade_id)
+  // @@protoc_insertion_point(field_set_rvalue:QA_Market_order.trade_id)
 }
 #endif
-inline void QA_Market_bid::set_trade_id(const char* value) {
+inline void QA_Market_order::set_trade_id(const char* value) {
   GOOGLE_DCHECK(value != NULL);
   
   trade_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:QA_Market_bid.trade_id)
+  // @@protoc_insertion_point(field_set_char:QA_Market_order.trade_id)
 }
-inline void QA_Market_bid::set_trade_id(const char* value, size_t size) {
+inline void QA_Market_order::set_trade_id(const char* value, size_t size) {
   
   trade_id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:QA_Market_bid.trade_id)
+  // @@protoc_insertion_point(field_set_pointer:QA_Market_order.trade_id)
 }
-inline ::std::string* QA_Market_bid::mutable_trade_id() {
+inline ::std::string* QA_Market_order::mutable_trade_id() {
   
-  // @@protoc_insertion_point(field_mutable:QA_Market_bid.trade_id)
+  // @@protoc_insertion_point(field_mutable:QA_Market_order.trade_id)
   return trade_id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* QA_Market_bid::release_trade_id() {
-  // @@protoc_insertion_point(field_release:QA_Market_bid.trade_id)
+inline ::std::string* QA_Market_order::release_trade_id() {
+  // @@protoc_insertion_point(field_release:QA_Market_order.trade_id)
   
   return trade_id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void QA_Market_bid::set_allocated_trade_id(::std::string* trade_id) {
+inline void QA_Market_order::set_allocated_trade_id(::std::string* trade_id) {
   if (trade_id != NULL) {
     
   } else {
     
   }
   trade_id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), trade_id);
-  // @@protoc_insertion_point(field_set_allocated:QA_Market_bid.trade_id)
+  // @@protoc_insertion_point(field_set_allocated:QA_Market_order.trade_id)
 }
 
 // string status = 16;
-inline void QA_Market_bid::clear_status() {
+inline void QA_Market_order::clear_status() {
   status_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& QA_Market_bid::status() const {
-  // @@protoc_insertion_point(field_get:QA_Market_bid.status)
+inline const ::std::string& QA_Market_order::status() const {
+  // @@protoc_insertion_point(field_get:QA_Market_order.status)
   return status_.GetNoArena();
 }
-inline void QA_Market_bid::set_status(const ::std::string& value) {
+inline void QA_Market_order::set_status(const ::std::string& value) {
   
   status_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:QA_Market_bid.status)
+  // @@protoc_insertion_point(field_set:QA_Market_order.status)
 }
 #if LANG_CXX11
-inline void QA_Market_bid::set_status(::std::string&& value) {
+inline void QA_Market_order::set_status(::std::string&& value) {
   
   status_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:QA_Market_bid.status)
+  // @@protoc_insertion_point(field_set_rvalue:QA_Market_order.status)
 }
 #endif
-inline void QA_Market_bid::set_status(const char* value) {
+inline void QA_Market_order::set_status(const char* value) {
   GOOGLE_DCHECK(value != NULL);
   
   status_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:QA_Market_bid.status)
+  // @@protoc_insertion_point(field_set_char:QA_Market_order.status)
 }
-inline void QA_Market_bid::set_status(const char* value, size_t size) {
+inline void QA_Market_order::set_status(const char* value, size_t size) {
   
   status_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:QA_Market_bid.status)
+  // @@protoc_insertion_point(field_set_pointer:QA_Market_order.status)
 }
-inline ::std::string* QA_Market_bid::mutable_status() {
+inline ::std::string* QA_Market_order::mutable_status() {
   
-  // @@protoc_insertion_point(field_mutable:QA_Market_bid.status)
+  // @@protoc_insertion_point(field_mutable:QA_Market_order.status)
   return status_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* QA_Market_bid::release_status() {
-  // @@protoc_insertion_point(field_release:QA_Market_bid.status)
+inline ::std::string* QA_Market_order::release_status() {
+  // @@protoc_insertion_point(field_release:QA_Market_order.status)
   
   return status_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void QA_Market_bid::set_allocated_status(::std::string* status) {
+inline void QA_Market_order::set_allocated_status(::std::string* status) {
   if (status != NULL) {
     
   } else {
     
   }
   status_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), status);
-  // @@protoc_insertion_point(field_set_allocated:QA_Market_bid.status)
+  // @@protoc_insertion_point(field_set_allocated:QA_Market_order.status)
 }
 
 #ifdef __GNUC__

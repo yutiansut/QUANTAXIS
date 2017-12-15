@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-message QA_Market_bid{
+message QA_Market_order{
     float price=1;
     string date=2;
     string datetime=3;

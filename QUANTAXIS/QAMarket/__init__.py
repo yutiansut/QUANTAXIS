@@ -24,4 +24,4 @@
 
 
 from QUANTAXIS.QAMarket.QAMarket_core import QA_Market
-from QUANTAXIS.QAMarket.QABid import QA_Bid, QA_Bid_list
+from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_Order_list

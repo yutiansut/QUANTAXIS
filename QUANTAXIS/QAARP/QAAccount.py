@@ -31,6 +31,7 @@ import pandas as pd
 
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
+from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_Order_list
 # 2017/6/4修改: 去除总资产的动态权益计算
 
 
@@ -44,7 +45,7 @@ class QA_Account():
     """
     # 一个hold改成list模式
 
-    def __init__(self,
+    def __init__(self, strategy_name='', user='', market_type='0x01',
                  hold=[['date', 'code', 'price', 'amount', 'order_id', 'trade_id']],
                  sell_available=[['date', 'code', 'price',
                                   'amount', 'order_id', 'trade_id']],
@@ -55,6 +56,9 @@ class QA_Account():
         self.hold = hold
         self.sell_available = sell_available
         self.init_assest = init_assest
+        self.strategy_name = strategy_name
+        self.user = user
+        self.market_type = market_type
 
         self.cash = [self.init_assest] if len(cash) < 1 else cash
         self.cash_available = self.cash[-1]  # 可用资金
@@ -62,21 +66,15 @@ class QA_Account():
         self.history = history
         self.detail = detail
         self.assets = [self.init_assest] if assets is None else assets
-
-        self.account_cookie = QA_util_random_with_topic('Acc') if account_cookie is None else account_cookie
-
-    def __repr__(self):
-        return '<QA_Account {} with Assets {}>'.format(self.account_cookie,self.assets[-1])
-
-    @property
-    def message(self):
-        return {
+        self.account_cookie = QA_util_random_with_topic(
+            'Acc') if account_cookie is None else account_cookie
+        self.message = {
             'header': {
                 'source': 'account',
                 'cookie': self.account_cookie,
                 'session': {
-                    'user': '',
-                    'strategy': ''
+                    'user': self.user,
+                    'strategy': self.strategy_name
                 }
             },
             'body': {
@@ -87,18 +85,21 @@ class QA_Account():
                     'history': self.history,
                     'detail': self.detail
                 },
-                'date_stamp': str(time.mktime(datetime.datetime.now().timetuple()))
+                'date_stamp': datetime.datetime.now().timestamp()
             }
         }
 
-    def init(self,init_assest=None):
+    def __repr__(self):
+        return '<QA_Account {} Assets:{}>'.format(self.account_cookie, self.assets[-1])
+
+    def init(self, init_assest=None):
         self.hold = [['date', 'code', 'price',
                       'amount', 'order_id', 'trade_id']]
         self.sell_available = [['date', 'code', 'price',
                                 'amount', 'order_id', 'trade_id']]
         self.history = []
 
-        self.account_cookie =QA_util_random_with_topic(topic='Acc')
+        self.account_cookie = QA_util_random_with_topic(topic='Acc')
         self.assets = [self.init_assest]
         self.cash = [self.init_assest]
         self.cash_available = self.cash[-1]  # 在途资金
@@ -120,7 +121,7 @@ class QA_Account():
                     'history': self.history,
                     'detail': self.detail
                 },
-                'date_stamp': str(time.mktime(datetime.datetime.now().timetuple()))
+                'date_stamp': datetime.datetime.now().timestamp()
             }
         }
 
@@ -137,7 +138,7 @@ class QA_Account():
                                                         update_message['bid']['datetime']),
                                                     int(update_message['bid']['towards']), float(
                                                         update_message['bid']['price']),
-                                                    float(update_message['order_id']), float(
+                                                    str(update_message['order_id']), str(
                                                         update_message['trade_id']),
                                                     float(update_message['fee']['commission']))
             if int(update_message['status']) == 203:
@@ -254,7 +255,7 @@ class QA_Account():
                     'detail': self.detail
                 },
                 'time': str(datetime.datetime.now()),
-                'date_stamp': str(time.mktime(datetime.datetime.now().timetuple()))
+                'date_stamp': datetime.datetime.now().timestamp()
             }
         }
 
@@ -328,6 +329,19 @@ class QA_Account():
         'get the real assets [from cash and market values]'
 
         return self.cash[-1] + sum([float(self.hold[i][2]) * float(self.hold[i][3]) for i in range(1, len(self.hold))])
+
+    def send_order(self, code, amount, time, towards, order_type):
+
+        date= str(time)[0:10] if len(str(time))==19 else str(time)
+            
+        _order = QA_Order()  # init
+        (_order.user, _order.strategy, _order.account_cookie,
+         _order.code, _order.date, _order.datetime,
+         _order.sending_time,
+         _order.amount, _order.towards) = (self.user, self.strategy_name, self.account_cookie,
+                                       code, date, time,
+                                       time, amount, towards)
+        return _order
 
     def from_message(self, message):
 
