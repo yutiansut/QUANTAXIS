@@ -29,9 +29,11 @@ import time
 import numpy as np
 import pandas as pd
 
-from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
-from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_Order_list
+from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
+from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, Order_DIRECTION
+from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
+
 # 2017/6/4修改: 去除总资产的动态权益计算
 
 
@@ -45,26 +47,27 @@ class QA_Account():
     """
     # 一个hold改成list模式
 
-    def __init__(self, strategy_name='', user='', market_type='0x01',
-                 hold=[['date', 'code', 'price', 'amount', 'order_id', 'trade_id']],
-                 sell_available=[['date', 'code', 'price',
-                                  'amount', 'order_id', 'trade_id']],
-                 init_assest=1000000, order_queue=pd.DataFrame(),
-                 cash=[], history=[], detail=[], assets=None,
+    def __init__(self, strategy_name='', user='', market_type=MARKET_TYPE.stock_day,
+                 hold=None,
+                 sell_available=None,
+                 init_assest=None, order_queue=None,
+                 cash=None, history=None, detail=None, assets=None,
                  account_cookie=None):
 
-        self.hold = hold
-        self.sell_available = sell_available
-        self.init_assest = init_assest
+        self.hold = [['date', 'code', 'price', 'amount',
+                      'order_id', 'trade_id']] if hold is None else hold
+        self.sell_available = [['date', 'code', 'price',
+                                'amount', 'order_id', 'trade_id']] if sell_available is None else sell_available
+        self.init_assest = 1000000 if init_assest is None else init_assest
         self.strategy_name = strategy_name
         self.user = user
         self.market_type = market_type
 
-        self.cash = [self.init_assest] if len(cash) < 1 else cash
+        self.cash = [self.init_assest] if cash is None else cash
         self.cash_available = self.cash[-1]  # 可用资金
-        self.order_queue = order_queue  # 已委托待成交队列
-        self.history = history
-        self.detail = detail
+        self.order_queue = pd.DataFrame() if order_queue is None else order_queue  # 已委托待成交队列
+        self.history = [] if history is None else history
+        self.detail = [] if detail is None else detail
         self.assets = [self.init_assest] if assets is None else assets
         self.account_cookie = QA_util_random_with_topic(
             'Acc') if account_cookie is None else account_cookie
@@ -332,15 +335,15 @@ class QA_Account():
 
     def send_order(self, code, amount, time, towards, order_type):
 
-        date= str(time)[0:10] if len(str(time))==19 else str(time)
-            
+        date = str(time)[0:10] if len(str(time)) == 19 else str(time)
+
         _order = QA_Order()  # init
         (_order.user, _order.strategy, _order.account_cookie,
          _order.code, _order.date, _order.datetime,
          _order.sending_time,
          _order.amount, _order.towards) = (self.user, self.strategy_name, self.account_cookie,
-                                       code, date, time,
-                                       time, amount, towards)
+                                           code, date, time,
+                                           time, amount, towards)
         return _order
 
     def from_message(self, message):
