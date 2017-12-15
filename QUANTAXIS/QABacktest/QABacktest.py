@@ -366,7 +366,7 @@ class QA_Backtest():
         if len(self.account.order_queue) >= 1:
             __order_list = self.order.from_dataframe(self.account.order_queue.query(
                 'status!=200').query('status!=500').query('status!=400'))
-
+            
             for item in __order_list:
                 # 在发单的时候要改变交易日期
                 item.date = self.today
@@ -565,22 +565,22 @@ class QA_Backtest():
         else:
             return "Error: No buy/sell towards"
 
-    def __wrap_order(self, __order, __order=None):
+    def __wrap_order(self, __order, order_type=None):
         __market_data_for_backtest = self.QA_backtest_find_bar(
             self, __order.code, __order.datetime)
         if __market_data_for_backtest is not None:
 
-            if __market_data_for_backtest['open'] is not None and __order is not None:
-                if __order['bid_model'] in ['limit', 'Limit', 'Limited', 'limited', 'l', 'L', 0, '0']:
+            if __market_data_for_backtest['open'] is not None and order_type is not None:
+                if order_type['order_model'] in ['limit', 'Limit', 'Limited', 'limited', 'l', 'L', 0, '0']:
                         # 限价委托模式
                     __order.price = __order['price']
-                elif __order['bid_model'] in ['Market', 'market', 'MARKET', 'm', 'M', 1, '1']:
+                elif order_type['order_model'] in ['Market', 'market', 'MARKET', 'm', 'M', 1, '1']:
                     # 2017-09-18 修改  市价单以当前bar开盘价下单
                     __order.price = float(__market_data_for_backtest['open'])
-                elif __order['bid_model'] in ['strict', 'Strict', 's', 'S', '2', 2]:
+                elif order_type['order_model'] in ['strict', 'Strict', 's', 'S', '2', 2]:
                     __order.price = float(
                         __market_data_for_backtest['high']) if __order.towards == 1 else float(__market_data_for_backtest['low'])
-                elif __order['bid_model'] in ['close', 'close_price', 'c', 'C', '3', 3]:
+                elif order_type['order_model'] in ['close', 'close_price', 'c', 'C', '3', 3]:
                     __order.price = float(__market_data_for_backtest['close'])
 
                 __order.price = float('%.2f' % __order.price)
@@ -878,7 +878,7 @@ class QA_Backtest():
             try:
                 if __hold_list[item] > 0:
                     self.QA_backtest_send_order(
-                        self, item, __hold_list[item], -1, {'bid_model': 'C'})
+                        self, item, __hold_list[item], -1, {'order_model': 'C'})
 
             except:
                 pass

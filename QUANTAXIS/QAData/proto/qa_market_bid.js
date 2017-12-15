@@ -486,7 +486,7 @@ proto.QA_Market_order.prototype.setType = function(value) {
 
 
 /**
- * optional string bid_model = 12;
+ * optional string order_model = 12;
  * @return {string}
  */
 proto.QA_Market_order.prototype.getBidModel = function() {

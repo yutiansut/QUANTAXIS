@@ -574,16 +574,16 @@ class QA_Backtest_with_class():
         if __market_data_for_backtest is not None:
 
             if __market_data_for_backtest['open'] is not None and __order is not None:
-                if __order['bid_model'] in ['limit', 'Limit', 'Limited', 'limited', 'l', 'L', 0, '0']:
+                if __order['order_model'] in ['limit', 'Limit', 'Limited', 'limited', 'l', 'L', 0, '0']:
                         # 限价委托模式
                     __order.price = __order['price']
-                elif __order['bid_model'] in ['Market', 'market', 'MARKET', 'm', 'M', 1, '1']:
+                elif __order['order_model'] in ['Market', 'market', 'MARKET', 'm', 'M', 1, '1']:
                     # 2017-09-18 修改  市价单以当前bar开盘价下单
                     __order.price = float(__market_data_for_backtest['open'])
-                elif __order['bid_model'] in ['strict', 'Strict', 's', 'S', '2', 2]:
+                elif __order['order_model'] in ['strict', 'Strict', 's', 'S', '2', 2]:
                     __order.price = float(
                         __market_data_for_backtest['high']) if __order.towards == 1 else float(__market_data_for_backtest['low'])
-                elif __order['bid_model'] in ['close', 'close_price', 'c', 'C', '3', 3]:
+                elif __order['order_model'] in ['close', 'close_price', 'c', 'C', '3', 3]:
                     __order.price = float(__market_data_for_backtest['close'])
 
                 __order.price = float('%.2f' % __order.price)
@@ -882,7 +882,7 @@ class QA_Backtest_with_class():
             try:
                 if __hold_list[item] > 0:
                     self.send_order(
-                        self, item, __hold_list[item], -1, {'bid_model': 'C'})
+                        self, item, __hold_list[item], -1, {'order_model': 'C'})
 
             except:
                 pass
@@ -1067,14 +1067,14 @@ if __name__ == '__main__':
                         if self.hold_amount(item) == 0:  # 如果不持仓
                             if Close[-1] >= MA_s:
                                 self.send_order(code=item, amount=int(
-                                    each_capital / Close[-1] / 100) * 100, towards=1, order_type={'bid_model': 'c'})
+                                    each_capital / Close[-1] / 100) * 100, towards=1, order_type={'order_model': 'c'})
                         # 如果可卖数量大于0
                         elif self.QA_backtest_sell_available(item) > 0:
                             hold_price = self.hold_price(item)
 
                             if Close[-1] <= MA_s:
                                 self.send_order(code=item, amount=self.QA_backtest_sell_available(
-                                    self, item), towards=-1, order_type={'bid_model': 'c'})
+                                    self, item), towards=-1, order_type={'order_model': 'c'})
 
                 else:
                     QA.QA_util_log_info('{} HAS NO DATA IN {}'.format(

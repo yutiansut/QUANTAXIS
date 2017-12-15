@@ -206,7 +206,7 @@ public sealed partial class QA_Market_order : pb::IMessage<QA_Market_order> {
     }
   }
 
-  /// <summary>Field number for the "bid_model" field.</summary>
+  /// <summary>Field number for the "order_model" field.</summary>
   public const int BidModelFieldNumber = 12;
   private string bidModel_ = "";
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
