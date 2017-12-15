@@ -42,7 +42,7 @@ from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_to_json_from_pandas,QA_ut
 class QA_Bid():
     def __init__(self, price=16, date='2015-01-05', datetime='2015-01-05 09:01:00', sending_time='2015-01-05 09:01:00', transact_time='', amount=10,
                  towards=1, code='000001', user='root', strategy='example01', btype='0x01', bid_model='strategy', amount_model='amount',
-                 order_id=QA_util_random_with_topic(topic='Bid'), trade_id='', status='100'):
+                 order_id=QA_util_random_with_topic(topic='Order'), trade_id='', status='100'):
         self.price = price
         self.date = date
         self.datetime = datetime
