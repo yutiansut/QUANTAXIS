@@ -37,23 +37,25 @@ class QA_Portfolio():
     在portfolio中,我们希望通过cookie来控制account_unit
     对于account的指标,要进行风险控制,组合成最优的投资组合的量
 
-    portfolio通过每天结束的时候,计算总账户可用资金,来更新和计算总账户资金占比情况
+    用account的cookie来管理控制account
+
 
     """
 
     def init(self):
-        self.portfolio_code = ['']
         self.portfolio_account = []
-        for i in range(0, len(self.portfolio_code) - 1, 1):
-            self.portfolio_account[i] = QA_Account()
+        self.portfolio_cookies=[]
+        for i in range(0, len(self.portfolio_cookies) - 1, 1):
+            self.portfolio_account[i] = QA_Account(coo)
 
     def QA_portfolio_get_portfolio(self):
-        # QA_util_log_info(self.portfolio_account)
         return self.portfolio_account
 
-    def QA_portfolio_calc(self):
+    def new_accouts(self,account_cookie=None):
+        if account_cookie is None:
+            temp=QA_Account()
+            if temp.account_cookie is not in self.portfolio_cookies:
 
-        pass
 
     def cookie_mangement(self):
         pass
