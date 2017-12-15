@@ -1,4 +1,4 @@
-#coding : utf-8
+# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -22,6 +22,26 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import random
+import datetime
+import time
 
-from QUANTAXIS.QAMarket.QAMarket_core import QA_Market
-from QUANTAXIS.QAMarket.QABid import QA_Bid, QA_Bid_list
+
+def QA_util_random_with_topic(topic='Acc',lens=8):
+
+    """
+    生成account随机值
+
+    Acc+4数字id+4位大小写随机
+    
+    """
+    _list = [chr(i) for i in range(65,91)] + [chr(i) for i in range(97,123)] + [ str(i) for i in range(10)]
+
+    num = random.sample(_list,lens)
+    return '{}_{}'.format(topic,''.join(num))
+
+
+
+if __name__ == '__main__':
+    print(QA_util_random_with_topic(input()))
+    

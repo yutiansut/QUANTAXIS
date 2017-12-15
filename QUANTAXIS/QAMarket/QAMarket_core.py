@@ -24,7 +24,6 @@
 
 #from .market_config import stock_market,future_market,HK_stock_market,US_stock_market
 import datetime
-import random
 
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_future_day,
                                        QA_fetch_future_min,

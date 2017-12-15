@@ -1,7 +1,7 @@
 import datetime
-import random
 
-from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info
+from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
+                              QA_util_random_with_topic)
 
 
 """
@@ -114,7 +114,7 @@ def market_engine_base(__bid, fp=None):
                                 'strategy': str(__bid['strategy'])
                             },
                             'order_id': str(__bid['order_id']),
-                            'trade_id': str(random.random())
+                            'trade_id': QA_util_random_with_topic(topic='Trade')
                         },
                         'body': {
                             'bid': {
@@ -149,7 +149,7 @@ def market_engine_base(__bid, fp=None):
                         'strategy': str(__bid['strategy'])
                     },
                     'order_id': str(__bid['order_id']),
-                    'trade_id': str(random.random())
+                    'trade_id': QA_util_random_with_topic(topic='Trade')
                 },
                 'body': {
                     'bid': {

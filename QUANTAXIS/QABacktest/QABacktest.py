@@ -44,8 +44,7 @@ import pandas as pd
 import pymongo
 from tabulate import tabulate
 
-from QUANTAXIS import (QA_Market, QA_Portfolio, QA_QAMarket_bid, QA_Risk,
-                       __version__)
+from QUANTAXIS import (QA_Portfolio,QA_Risk,__version__)
 from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QABacktest.backtest_setting import backtest_setting
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_backtest
@@ -61,7 +60,8 @@ from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_index_day_adv,
                                                QA_fetch_stock_min_adv,
                                                QA_fetch_stocklist_day_adv,
                                                QA_fetch_stocklist_min_adv)
-from QUANTAXIS.QAMarket.QABid import QA_QAMarket_bid_list
+from QUANTAXIS.QAMarket.QABid import QA_Bid_list,QA_Bid
+from QUANTAXIS.QAMarket.QAMarket_core import QA_Market
 from QUANTAXIS.QASU.save_backtest import (QA_SU_save_account_message,
                                           QA_SU_save_account_to_csv,
                                           QA_SU_save_backtest_message,
@@ -70,8 +70,8 @@ from QUANTAXIS.QATask import QA_Queue
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_gap,
                               QA_util_get_real_date, QA_util_log_expection,
                               QA_util_log_info, QA_util_make_min_index,
-                              QA_util_time_gap, QA_util_to_json_from_pandas,
-                              trade_date_sse)
+                              QA_util_random_with_topic, QA_util_time_gap,
+                              QA_util_to_json_from_pandas, trade_date_sse)
 
 
 """
@@ -88,8 +88,8 @@ class QA_Backtest():
     backtest_type = 'day'
     account = QA_Account()
     market = QA_Market()
-    bid = QA_QAMarket_bid()
-    order = QA_QAMarket_bid_list()
+    bid = QA_Bid()
+    order = QA_Bid_list()
     setting = QA_Setting()
     clients = setting.client
     user = setting.QA_setting_user_name
@@ -126,8 +126,8 @@ class QA_Backtest():
         self.backtest_type = 'day'
         self.account = QA_Account()
         self.market = QA_Market()
-        self.order = QA_QAMarket_bid_list()
-        self.bid = QA_QAMarket_bid()
+        self.order = QA_Bid_list()
+        self.bid = QA_Bid()
         self.setting = QA_Setting()
         self.clients = self.setting.client
         self.user = self.setting.QA_setting_user_name
@@ -483,7 +483,7 @@ class QA_Backtest():
 
         elif event_ in ['trade']:
             # try:
-            assert isinstance(order_, QA_QAMarket_bid)
+            assert isinstance(order_, QA_Bid)
             assert isinstance(order_id_, str)
             assert isinstance(trade_id_, str)
             assert isinstance(market_message_, dict)
@@ -817,12 +817,11 @@ class QA_Backtest():
         # 必须是100股的倍数
         # 封装bid
 
-        _bid = QA_QAMarket_bid()  # init
-        (_bid.order_id, _bid.user, _bid.strategy,
+        _bid = QA_Bid()  # init
+        (_bid.user, _bid.strategy,
          _bid.code, _bid.date, _bid.datetime,
          _bid.sending_time,
-         _bid.amount, _bid.towards) = (str(random.random()),
-                                       self.setting.QA_setting_user_name, self.strategy_name,
+         _bid.amount, _bid.towards) = (self.setting.QA_setting_user_name, self.strategy_name,
                                        code, self.running_date, str(self.now),
                                        self.running_date, amount, towards)
 

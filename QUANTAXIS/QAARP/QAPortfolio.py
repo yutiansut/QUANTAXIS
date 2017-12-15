@@ -34,30 +34,47 @@ from QUANTAXIS.QAARP.QARisk import QA_Risk
 class QA_Portfolio():
 
     """
+    QUANTAXIS 多账户
+    以及组合管理
+
+    # 状态 未完成
+    # 适用 回测/实盘
+
+
     在portfolio中,我们希望通过cookie来控制account_unit
     对于account的指标,要进行风险控制,组合成最优的投资组合的量
 
     用account的cookie来管理控制account
-
-
     """
 
-    def init(self):
-        self.portfolio_account = {}
-        self.portfolio_cookies=[]
+    def __init__(self, portfolio_cookies=[]):
+        self.portfolio_accounts = {}
+        self.portfolio_cookies = portfolio_cookies
         for cookie in self.portfolio_cookies:
-            self.portfolio_account[cookie] = QA_Account(account_cookie=cookie)
+            self.portfolio_accounts[cookie] = QA_Account(account_cookie=cookie)
+
+    def __repr__(self):
+        return '<QA_Portfolio with {} Accounts>'.format(len(self.portfolio_cookies))
 
     def QA_portfolio_get_portfolio(self):
-        return self.portfolio_account
+        return self.portfolio_accounts
 
-    def new_accouts(self,account_cookie=None):
+    def new_accout(self, account_cookie=None):
         if account_cookie is None:
-            temp=QA_Account()
+            temp = QA_Account()
             if temp.account_cookie not in self.portfolio_cookies:
                 self.portfolio_cookies.append(temp.account_cookie)
-                self.portfolio_account[temp.account_cookie]=temp
+                self.portfolio_accounts[temp.account_cookie] = temp
 
+            else:
+                pass
+
+    def get_account(self, cookie):
+        try:
+            return self.portfolio_accounts[cookie]
+        except:
+            QA_util_log_info('Can not find this account')
+            return None
 
     def cookie_mangement(self):
         pass
