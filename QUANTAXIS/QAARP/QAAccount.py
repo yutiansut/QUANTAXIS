@@ -38,13 +38,14 @@ from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 
 class QA_Account():
-    """
-    账户类:    
-    记录回测的时候的账户情况(持仓列表,交易历史,利润,报单,可用资金)
+    """[QA_Account]
 
+    [description]
+    QA_Account 是QUANTAXIS的最小不可分割单元之一
 
-    新增一个  已委托待成交队列,以及在途资金
+    QA_Account
     """
+
     # 一个hold改成list模式
 
     def __init__(self, strategy_name='', user='', market_type=MARKET_TYPE.stock_day,
@@ -129,6 +130,17 @@ class QA_Account():
         }
 
     def update(self, update_message):
+        """[用于更新账户]
+
+        [description]
+
+        Arguments:
+            update_message {json/dict} -- message_from_deal
+
+        Returns:
+            {json} -- message of account
+        """
+
         if str(update_message['status'])[0] == '2':
 
             # towards>1 买入成功
@@ -296,8 +308,18 @@ class QA_Account():
         self.assets.append(self.cash[-1] + market_value)
 
     def receive_deal(self, _message):
-        # 主要是把从market拿到的数据进行解包,一个一个发送给账户进行更新,再把最后的结果反回
-        __data = self.update({
+        """[主要是把从market拿到的数据进行解包,一个一个发送给账户进行更新,再把最后的结果反回]
+
+        [description]
+
+        Arguments:
+            _message {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+
+        return self.update({
             'code': _message['header']['code'],
             'status': _message['header']['status'],
             'user': _message['header']['session']['user'],
@@ -309,8 +331,6 @@ class QA_Account():
             'market': _message['body']['market'],
             'fee': _message['body']['fee'],
         })
-        return __data
-
 
     def calc_assets(self):
         'get the real assets [from cash and market values]'
@@ -318,6 +338,20 @@ class QA_Account():
         return self.cash[-1] + sum([float(self.hold[i][2]) * float(self.hold[i][3]) for i in range(1, len(self.hold))])
 
     def send_order(self, code, amount, time, towards, order_type):
+        """[summary]
+
+        [description]
+
+        Arguments:
+            code {[type]} -- [description]
+            amount {[type]} -- [description]
+            time {[type]} -- [description]
+            towards {[type]} -- [description]
+            order_type {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
 
         date = str(time)[0:10] if len(str(time)) == 19 else str(time)
 
@@ -345,8 +379,6 @@ class QA_Account_min(QA_Account):
     pass
 
 
-
 if __name__ == '__main__':
-    account=QA_Account()
+    account = QA_Account()
     # 创建一个account账户
-    
