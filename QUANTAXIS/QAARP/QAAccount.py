@@ -277,6 +277,14 @@ class QA_Account():
         return self.message
 
     def calc_profit(self, update_message):
+        """用于计算profit
+        
+        [description]
+        
+        Arguments:
+            update_message {[type]} -- [description]
+        """
+        
         if update_message['status'] == 200 and update_message['bid']['towards'] == 1:
             # 买入/
             # 证券价值=买入的证券价值+持有到结算(收盘价)的价值
