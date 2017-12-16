@@ -23,12 +23,11 @@
 # SOFTWARE.
 
 #from .market_config import stock_market,future_market,HK_stock_market,US_stock_market
-import datetime
-import random
+
 
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day, QA_fetch_stock_min
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
-                              QA_util_to_json_from_pandas,QA_util_random_with_topic)
+                              QA_util_to_json_from_pandas, QA_util_random_with_topic)
 
 
 """stock market trading engine
@@ -70,7 +69,7 @@ def market_stock_day_engine(__order, __data=None, __commission_fee_coeff=0.0005)
 
                 __order_t = __order
                 __order_t.price = (float(__data["high"]) +
-                                 float(__data["low"])) * 0.5
+                                   float(__data["low"])) * 0.5
                 return __trading(__order_t, __data)
 
             elif __order.price == 'close_price':
@@ -487,7 +486,7 @@ def market_future_engine(__order, __data=None):
 
                 __order_t = __order
                 __order_t.price = (float(__data["high"]) +
-                                 float(__data["low"])) * 0.5
+                                   float(__data["low"])) * 0.5
                 return __trading(__order_t, __data)
 
             elif __order.price == 'close_price':
