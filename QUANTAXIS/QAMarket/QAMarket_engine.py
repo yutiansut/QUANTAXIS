@@ -28,7 +28,7 @@ import random
 
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day, QA_fetch_stock_min
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
-                              QA_util_to_json_from_pandas)
+                              QA_util_to_json_from_pandas,QA_util_random_with_topic)
 
 
 """stock market trading engine
@@ -107,7 +107,7 @@ def market_stock_day_engine(__order, __data=None, __commission_fee_coeff=0.0005)
                                     'strategy': str(__order.strategy)
                                 },
                                 'order_id': str(__order.order_id),
-                                'trade_id': str(random.random())
+                                'trade_id': QA_util_random_with_topic('Trade')
                             },
                             'body': {
                                 'bid': {
@@ -177,7 +177,7 @@ def market_stock_day_engine(__order, __data=None, __commission_fee_coeff=0.0005)
                                     'strategy': str(__order.strategy)
                                 },
                                 'order_id': str(__order.order_id),
-                                'trade_id': str(random.random())
+                                'trade_id':  QA_util_random_with_topic('Trade')
                             },
                             'body': {
                                 'bid': {
@@ -212,7 +212,7 @@ def market_stock_day_engine(__order, __data=None, __commission_fee_coeff=0.0005)
                                     'strategy': str(__order.strategy)
                                 },
                                 'order_id': str(__order.order_id),
-                                'trade_id': str(random.random())
+                                'trade_id':  QA_util_random_with_topic('Trade')
                             },
                             'body': {
                                 'bid': {
@@ -247,7 +247,7 @@ def market_stock_day_engine(__order, __data=None, __commission_fee_coeff=0.0005)
                         'strategy': str(__order.strategy)
                     },
                     'order_id': str(__order.order_id),
-                    'trade_id': str(random.random())
+                    'trade_id':  QA_util_random_with_topic('Trade')
                 },
                 'body': {
                     'bid': {
@@ -293,7 +293,7 @@ def market_stock_engine(__order, __data=None, __commission_fee_coeff=0.0015):
                             'strategy': str(__order.strategy)
                         },
                         'order_id': str(__order.order_id),
-                        'trade_id': str(random.random())
+                        'trade_id':  QA_util_random_with_topic('Trade')
                     },
                     'body': {
                         'bid': {
@@ -363,7 +363,7 @@ def market_stock_engine(__order, __data=None, __commission_fee_coeff=0.0015):
                             'strategy': str(__order.strategy)
                         },
                         'order_id': str(__order.order_id),
-                        'trade_id': str(random.random())
+                        'trade_id':  QA_util_random_with_topic('Trade')
                     },
                     'body': {
                         'bid': {
@@ -398,7 +398,7 @@ def market_stock_engine(__order, __data=None, __commission_fee_coeff=0.0015):
                             'strategy': str(__order.strategy)
                         },
                         'order_id': str(__order.order_id),
-                        'trade_id': str(random.random())
+                        'trade_id':  QA_util_random_with_topic('Trade')
                     },
                     'body': {
                         'bid': {
@@ -433,7 +433,7 @@ def market_stock_engine(__order, __data=None, __commission_fee_coeff=0.0015):
                         'strategy': str(__order.strategy)
                     },
                     'order_id': str(__order.order_id),
-                    'trade_id': str(random.random())
+                    'trade_id':  QA_util_random_with_topic('Trade')
                 },
                 'body': {
                     'bid': {
@@ -524,7 +524,7 @@ def market_future_engine(__order, __data=None):
                                     'strategy': str(__order.strategy)
                                 },
                                 'order_id': str(__order.order_id),
-                                'trade_id': str(random.random())
+                                'trade_id':  QA_util_random_with_topic('Trade')
                             },
                             'body': {
                                 'bid': {
@@ -594,7 +594,7 @@ def market_future_engine(__order, __data=None):
                                     'strategy': str(__order.strategy)
                                 },
                                 'order_id': str(__order.order_id),
-                                'trade_id': str(random.random())
+                                'trade_id':  QA_util_random_with_topic('Trade')
                             },
                             'body': {
                                 'bid': {
@@ -628,7 +628,7 @@ def market_future_engine(__order, __data=None):
                                     'strategy': str(__order.strategy)
                                 },
                                 'order_id': str(__order.order_id),
-                                'trade_id': str(random.random())
+                                'trade_id':  QA_util_random_with_topic('Trade')
                             },
                             'body': {
                                 'bid': {
@@ -663,7 +663,7 @@ def market_future_engine(__order, __data=None):
                         'strategy': str(__order.strategy)
                     },
                     'order_id': str(__order.order_id),
-                    'trade_id': str(random.random())
+                    'trade_id':  QA_util_random_with_topic('Trade')
                 },
                 'body': {
                     'bid': {
