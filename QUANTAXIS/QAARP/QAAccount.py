@@ -128,7 +128,7 @@ class QA_Account():
             }
         }
 
-    def QA_account_update(self, update_message):
+    def update(self, update_message):
         if str(update_message['status'])[0] == '2':
 
             # towards>1 买入成功
@@ -237,7 +237,7 @@ class QA_Account():
             # 将交易记录插入历史交易记录
         else:
             pass
-        self.QA_account_calc_profit(update_message)
+        self.calc_profit(update_message)
         self.message = {
             'header': {
                 'source': 'account',
@@ -264,7 +264,7 @@ class QA_Account():
 
         return self.message
 
-    def QA_account_calc_profit(self, update_message):
+    def calc_profit(self, update_message):
         if update_message['status'] == 200 and update_message['bid']['towards'] == 1:
             # 买入/
             # 证券价值=买入的证券价值+持有到结算(收盘价)的价值
@@ -295,9 +295,9 @@ class QA_Account():
             market_value += (float(self.hold[i][2]) * float(self.hold[i][3]))
         self.assets.append(self.cash[-1] + market_value)
 
-    def QA_account_receive_deal(self, _message):
+    def receive_deal(self, _message):
         # 主要是把从market拿到的数据进行解包,一个一个发送给账户进行更新,再把最后的结果反回
-        __data = self.QA_account_update({
+        __data = self.update({
             'code': _message['header']['code'],
             'status': _message['header']['status'],
             'user': _message['header']['session']['user'],
@@ -311,24 +311,8 @@ class QA_Account():
         })
         return __data
 
-    def QA_account_receive_order(self, _message):
 
-        # 主要是把从market拿到的数据进行解包,一个一个发送给账户进行更新,再把最后的结果反回
-        __data = self.QA_account_update({
-            'code': _message['header']['code'],
-            'status': _message['header']['status'],
-            'user': _message['header']['session']['user'],
-            'strategy': _message['header']['session']['strategy'],
-            'trade_id': _message['header']['trade_id'],
-            'order_id': _message['header']['order_id'],
-            'date_stamp': str(time.mktime(datetime.datetime.now().timetuple())),
-            'bid': _message['body']['bid'],
-            'market': _message['body']['market'],
-            'fee': _message['body']['fee'],
-        })
-        return __data
-
-    def QA_account_calc_assets(self):
+    def calc_assets(self):
         'get the real assets [from cash and market values]'
 
         return self.cash[-1] + sum([float(self.hold[i][2]) * float(self.hold[i][3]) for i in range(1, len(self.hold))])
@@ -354,9 +338,15 @@ class QA_Account():
         self.cash = message['body']['account']['cash']
         self.assets = message['body']['account']['assets']
         self.detail = message['body']['account']['detail']
-
         return self
 
 
 class QA_Account_min(QA_Account):
     pass
+
+
+
+if __name__ == '__main__':
+    account=QA_Account()
+    # 创建一个account账户
+    
