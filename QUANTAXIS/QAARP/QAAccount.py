@@ -54,22 +54,29 @@ class QA_Account():
                  init_assest=None, order_queue=None,
                  cash=None, history=None, detail=None, assets=None,
                  account_cookie=None):
+        self._history_headers=['datetime','code','price','towards','amount','order_id','trade_id','commission_fee']
+        self._detail_headers=['datetime','code','price','towards','amount','order_id','trade_id',
+                    'match_price','match_order_id','match_trade_id','commission_fee','match_commission']
+        self._hold_headers=['datetime', 'code', 'price', 'amount','order_id', 'trade_id']
+    
+        self.hold = [] if hold is None else hold
 
-        self.hold = [['date', 'code', 'price', 'amount',
-                      'order_id', 'trade_id']] if hold is None else hold
-        self.sell_available = [['date', 'code', 'price',
-                                'amount', 'order_id', 'trade_id']] if sell_available is None else sell_available
         self.init_assest = 1000000 if init_assest is None else init_assest
         self.strategy_name = strategy_name
         self.user = user
         self.market_type = market_type
 
         self.cash = [self.init_assest] if cash is None else cash
+        self.assets = [self.init_assest] if assets is None else assets
+
         self.cash_available = self.cash[-1]  # 可用资金
+        self.sell_available = [['datetime', 'code', 'price',
+                                'amount', 'order_id', 'trade_id']] if sell_available is None else sell_available
         self.order_queue = pd.DataFrame() if order_queue is None else order_queue  # 已委托待成交队列
+
         self.history = [] if history is None else history
         self.detail = [] if detail is None else detail
-        self.assets = [self.init_assest] if assets is None else assets
+        
         self.account_cookie = QA_util_random_with_topic(
             'Acc') if account_cookie is None else account_cookie
         self.message = {
@@ -89,7 +96,7 @@ class QA_Account():
                     'history': self.history,
                     'detail': self.detail
                 },
-                'date_stamp': datetime.datetime.now().timestamp()
+                'running_time': str(datetime.datetime.now())
             }
         }
 
@@ -97,8 +104,7 @@ class QA_Account():
         return '<QA_Account {} Assets:{}>'.format(self.account_cookie, self.assets[-1])
 
     def init(self, init_assest=None):
-        self.hold = [['date', 'code', 'price',
-                      'amount', 'order_id', 'trade_id']]
+        self.hold = []
         self.sell_available = [['date', 'code', 'price',
                                 'amount', 'order_id', 'trade_id']]
         self.history = []
@@ -125,7 +131,7 @@ class QA_Account():
                     'history': self.history,
                     'detail': self.detail
                 },
-                'date_stamp': datetime.datetime.now().timestamp()
+                'running_time': str(datetime.datetime.now())
             }
         }
 
@@ -186,7 +192,7 @@ class QA_Account():
                     __pop_list = []
                     while __new_amount > 0:
 
-                        if len(self.hold) > 1:
+                        if len(self.hold) > 0:
                             for i in range(0, len(self.hold)):
 
                                 if __new_code in self.hold[i]:
@@ -237,7 +243,7 @@ class QA_Account():
 
                         self.hold.pop(__id)
                     __del_id = []
-                    for __hold_id in range(1, len(self.hold)):
+                    for __hold_id in range(0, len(self.hold)):
                         if int(self.hold[__hold_id][3]) == 0:
                             __del_id.append(__hold_id)
                     __del_id.sort()
@@ -311,7 +317,7 @@ class QA_Account():
 
             # hold
         market_value = 0
-        for i in range(1, len(self.hold)):
+        for i in range(0, len(self.hold)):
             market_value += (float(self.hold[i][2]) * float(self.hold[i][3]))
         self.assets.append(self.cash[-1] + market_value)
 
@@ -343,7 +349,7 @@ class QA_Account():
     def calc_assets(self):
         'get the real assets [from cash and market values]'
 
-        return self.cash[-1] + sum([float(self.hold[i][2]) * float(self.hold[i][3]) for i in range(1, len(self.hold))])
+        return self.cash[-1] + sum([float(self.hold[i][2]) * float(self.hold[i][3]) for i in range(0, len(self.hold))])
 
     def send_order(self, code, amount, time, towards, order_type):
         """[summary]
