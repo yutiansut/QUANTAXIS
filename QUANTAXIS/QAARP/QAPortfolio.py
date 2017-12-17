@@ -25,7 +25,7 @@
 import threading
 
 from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_valid,
-                              QA_util_log_info)
+                              QA_util_log_info, QA_Setting)
 
 from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAARP.QARisk import QA_Risk
@@ -59,7 +59,16 @@ class QA_Portfolio():
     def QA_portfolio_get_portfolio(self):
         return self.portfolio_accounts
 
-    def new_accout(self, account_cookie=None):
+    def add_account(self, account_cookie):
+        temp=QA_Account(account_cookie=account_cookie)
+        if account_cookie not in self.portfolio_cookies:
+            self.portfolio_cookies.append(temp.account_cookie)
+            self.portfolio_accounts[temp.account_cookie] = temp
+
+        else:
+            pass        
+
+    def new_account(self, account_cookie=None):
         if account_cookie is None:
             temp = QA_Account()
             if temp.account_cookie not in self.portfolio_cookies:
@@ -79,5 +88,47 @@ class QA_Portfolio():
     def cookie_mangement(self):
         pass
 
-    def QA_portfolio_get_free_cash(self):
+    def get_cash(self):
+        """拿到整个portfolio的可用资金
+        
+        统计每一个时间点的时候的cash总和
+        """
+        
         pass
+
+    def pull(self,account_cookie=None,collection=QA_Setting.client.quantaxis.account):
+        if account_cookie is None:
+            for item in self.portfolio_cookies:
+                try:
+                    message=collection.find_one({'cookie':item})['message']
+                    QA_util_log_info('{} sync successfully'.format(item))
+                except Exception as e:
+                    QA_util_log_info('{} sync wrong \\\n wrong info {}'.format(item,e))
+                self.portfolio_accounts[item].from_message(message)
+
+        else:
+            try:
+                message=collection.find_one({'cookie':account_cookie})['message']
+                QA_util_log_info('{} sync successfully'.format(item))
+            except Exception as e:
+                QA_util_log_info('{} sync wrong \\\n wrong info {}'.format(account_cookie,e))
+            self.portfolio_accounts[account_cookie].from_message(message)          
+
+    def push(self,account_cookie=None,collection=QA_Setting.client.quantaxis.account):
+        message=self.portfolio_accounts[account_cookie].message
+        if account_cookie is None:
+            for item in self.portfolio_cookies:
+                try:
+                    message=collection.find_one_and_update({'cookie':item})
+                    QA_util_log_info('{} sync successfully'.format(item))
+                except Exception as e:
+                    QA_util_log_info('{} sync wrong \\\n wrong info {}'.format(item,e))
+                self.portfolio_accounts[item].from_message(message)
+
+        else:
+            try:
+                message=collection.find_one({'cookie':account_cookie})['message']
+                QA_util_log_info('{} sync successfully'.format(item))
+            except Exception as e:
+                QA_util_log_info('{} sync wrong \\\n wrong info {}'.format(account_cookie,e))
+            self.portfolio_accounts[account_cookie].from_message(message)  
