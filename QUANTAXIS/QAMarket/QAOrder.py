@@ -23,12 +23,13 @@
 # SOFTWARE.
 
 import datetime
-import threading
-import time
 
+import time
+import queue
 import pandas as pd
 
-from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_to_json_from_pandas, QA_util_random_with_topic
+from QUANTAXIS.QAUtil import (QA_util_log_info, QA_util_random_with_topic,
+                              QA_util_to_json_from_pandas)
 
 
 """
@@ -45,15 +46,27 @@ by yutiansut@2017/12/15
 """
 
 
-
 class QA_Order():
-    def __init__(self, price=16, date='2015-01-05', datetime='2015-01-05 09:01:00', sending_time='2015-01-05 09:01:00', transact_time='', amount=10,
-                 towards=1, code='000001', user='root', account_cookie='', strategy='example01', btype='0x01', order_model='strategy', amount_model='amount',
-                 order_id=QA_util_random_with_topic(topic='Order'), trade_id='', status='100'):
+    def __init__(self, price=None, date=None, datetime=None, sending_time=None, transact_time=None, amount=None,
+                 towards=None, code=None, user=None, account_cookie=None, strategy=None, btype=None, order_model=None, amount_model=None,
+                 order_id=QA_util_random_with_topic(topic='Order'), trade_id=None, status='100'):
         self.price = price
-        self.date = date
-        self.datetime = datetime
-        self.sending_time = sending_time  # 下单时间
+        self.datetime = None
+        if datetime is None and date is not None:
+            self.date = date
+            self.datetime = '{} 09:31:00'.format(self.date)
+
+        elif date is None and datetime is not None:
+            self.date = datetime[0:10]
+            self.datetime = datetime
+
+        elif date is not None and datetime is not None:
+            self.date = date
+            self.datetime = datetime
+        else:
+            QA_util_log_info('QA_ORDER WRONG: NO DATE OR DATETIME INIT')
+        self.sending_time = self.datetime if sending_time is None else sending_time  # 下单时间
+
         self.transact_time = transact_time
         self.amount = amount
         self.towards = towards  # side
@@ -62,14 +75,15 @@ class QA_Order():
         self.account_cookie = account_cookie
         self.strategy = strategy
         self.type = btype  # see below
-        self.order_model = strategy
+        self.order_model = order_model
         self.amount_model = amount_model
         self.order_id = order_id
         self.trade_id = trade_id
         self.status = status
 
     def __repr__(self):
-        return '< QA_Order datetime:{} code:{} price:{} towards:{} btype:{} order_id:{} account:{} >'.format(self.datetime, self.code, self.price, self.towards, self.type, self.order_id, self.account_cookie)
+        return '< QA_Order datetime:{} code:{} price:{} towards:{} btype:{} order_id:{} account:{} status:{} >'.format(
+            self.datetime, self.code, self.price, self.towards, self.type, self.order_id, self.account_cookie, self.status)
 
     def stock_day(self):
         self.type = '0x01'
@@ -167,6 +181,7 @@ class QA_Order_list():   # also the order tree
 
     def __init__(self, _list=[]):
         self.list = _list
+        self.order_queue = queue.Queue()
 
     def from_dataframe(self, dataframe):
         try:

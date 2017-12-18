@@ -28,11 +28,18 @@ from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_future_day,
                                        QA_fetch_future_tick,
                                        QA_fetch_index_day, QA_fetch_index_min,
                                        QA_fetch_stock_day, QA_fetch_stock_min)
+from QUANTAXIS.QAFetch.QATdx import (QA_fetch_depth_market_data,
+                                     QA_fetch_get_future_day,
+                                     QA_fetch_get_future_min,
+                                     QA_fetch_get_future_transaction,
+                                     QA_fetch_get_future_transaction_realtime,
+                                     QA_fetch_get_index_day,
+                                     QA_fetch_get_index_min,
+                                     QA_fetch_get_stock_day,
+                                     QA_fetch_get_stock_min)
 from QUANTAXIS.QAMarket.QAMarket_engine import (market_future_engine,
-                                                market_stock_day_engine,
                                                 market_stock_engine)
-from QUANTAXIS.QAUtil import (QA_util_log_info,
-                              QA_util_to_json_from_pandas)
+from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_to_json_from_pandas
 
 
 class QA_Market():
@@ -46,99 +53,68 @@ class QA_Market():
     """
 
     def __init__(self, commission_fee_coeff=0.0015):
-        self.engine = {'stock_day': QA_fetch_stock_day, 'stock_min': QA_fetch_stock_min,
-                       'future_day': QA_fetch_future_day, 'future_min': QA_fetch_future_min, 'future_tick': QA_fetch_future_tick}
+        self.fetcher = {'0x01': QA_fetch_stock_day, '0x02': QA_fetch_stock_min,
+                        '1x01': QA_fetch_index_day, '1x02': QA_fetch_index_min,
+                        '2x01': QA_fetch_future_day, '2x02': QA_fetch_future_min, '2x03': QA_fetch_future_tick}
+        self.engine = {'0x01': market_stock_engine, '0x02': market_stock_engine,
+                       '1x01': market_stock_engine, '1x02': market_stock_engine,
+                       '2x01': market_future_engine, '2x02': market_future_engine, '2x03': market_future_engine}
         self.commission_fee_coeff = commission_fee_coeff
+        self.market_data = None
 
     def __repr__(self):
         return '< QA_MARKET >'
 
-    def _choice_trading_market(self, __order, __data=None):
-        assert isinstance(__order.type, str)
-        if __order.type == '0x01':
-            __data = self.__get_stock_day_data(
-                __order) if __data is None else __data
-            return market_stock_day_engine(__order, __data, self.commission_fee_coeff)
-        elif __order.type == '0x02':
-            # 获取股票引擎
-            __data = self.__get_stock_min_data(
-                __order) if __data is None else __data
-
-            return market_stock_engine(__order, __data, self.commission_fee_coeff)
-
-        elif __order.type == '0x03':
-
-            __data = self.__get_index_day_data(
-                __order) if __data is None else __data
-            return market_stock_engine(__order, __data, self.commission_fee_coeff)
-        elif __order.type == '0x04':
-
-            __data = self.__get_index_min_data(
-                __order) if __data is None else __data
-            return market_stock_engine(__order, __data, self.commission_fee_coeff)
-        elif __order.type == '1x01':
-            return market_future_engine(__order, __data)
-        elif __order.type == '1x02':
-            return market_future_engine(__order, __data)
-        elif __order.type == '1x03':
-            return market_future_engine(__order, __data)
-
-    def __get_stock_min_data(self, __order):
-        __data = QA_util_to_json_from_pandas(QA_fetch_stock_min(str(
-            __order.code)[0:6], str(__order.datetime)[0:19], str(__order.datetime)[0:10], 'pd'))
-        if len(__data) == 0:
-            pass
-        else:
-            __data = __data[0]
-        return __data
-
-    def __get_stock_day_data(self, __order):
-        __data = QA_util_to_json_from_pandas(QA_fetch_stock_day(str(
-            __order.code)[0:6], str(__order.datetime)[0:10], str(__order.datetime)[0:10], 'pd'))
-        if len(__data) == 0:
-            pass
-        else:
-            __data = __data[0]
-        return __data
-
-    def __get_index_day_data(self, __order):
-        __data = QA_util_to_json_from_pandas(QA_fetch_index_day(str(
-            __order.code)[0:6], str(__order.datetime)[0:10], str(__order.datetime)[0:10], 'pd'))
-        if len(__data) == 0:
-            pass
-        else:
-            __data = __data[0]
-        return __data
-
-    def __get_index_min_data(self, __order):
-        __data = QA_util_to_json_from_pandas(QA_fetch_index_min(str(
-            __order.code)[0:6], str(__order.datetime)[0:10], str(__order.datetime)[0:10], 'pd'))
-        if len(__data) == 0:
-            pass
-        else:
-            __data = __data[0]
-        return __data
-
-    def receive_order(self, __order, __data=None):
+    def receive_order(self, order, market_data=None):
         """
         get the order and choice which market to trade
 
         """
-        def __confirm_order(__order):
-            if isinstance(__order.price, str):
-                if __order.price == 'market_price':
-                    return __order
-                elif __order.price == 'close_price':
-                    return __order
-                elif __order.price == 'strict' or 'strict_model' or 'strict_price':
-                    __order.price = 'strict_price'
-                    return __order
-                else:
-                    QA_util_log_info('unsupport type:' + __order.price)
-                    return __order
-            else:
-                return __order
-        return self._choice_trading_market(__confirm_order(__order), __data)
+        assert isinstance(order.type, str)
 
-    def trading_engine(self):
-        pass
+        self.market_data = self.warp_market(
+            order) if market_data is None else market_data
+        order = self.warp_order(order)
+
+        return self.engine[order.type](order, self.market_data, self.commission_fee_coeff)
+
+    def warp_market(self, order):
+        try:
+            return self.fetcher[order.type](code=order.code, start=order.datetime, end=order.datetime, format='json')[0]
+        except:
+            pass
+
+    def warp_order(self, order):
+        """对order的封装
+
+        [description]
+
+        Arguments:
+            order {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+
+        if order.order_model == 'market' and order.price is None:
+            order.price = (float(self.market_data["high"]) +
+                           float(self.market_data["low"])) * 0.5
+
+        elif order.order_model == 'close' and order.price is None:
+
+            order.price = float(self.market_data["close"])
+
+        elif order.order_model == 'strict' and order.price is None:
+            '加入严格模式'
+
+            if order.towards == 1:
+
+                order.price = float(self.market_data["high"])
+            else:
+                order.price = float(self.market_data["low"])
+
+        # 对于股票 有最小交易100股限制
+        order.amount = int(order.amount / (order.price * 100)) * \
+            100 if order.type in ['0x01', '0x02', '0x03'] else order.amount
+
+        return order
