@@ -29,7 +29,7 @@ import copy
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
                               QA_util_random_with_topic,
                               QA_util_to_json_from_pandas)
-
+from QUANTAXIS.QAUtil.QAParameter import MARKET_STATUS, TRADE_STATUS
 
 """stock market trading engine
 
@@ -57,13 +57,13 @@ def market_stock_engine(order, market_data, commission_fee_coeff=0.0015):
         step2: deal
         step3: return callback
         """
-    
+
         try:
             if float(market_data['open']) == float(market_data['high']) == float(market_data['close']) == float(market_data['low']):
                 return {
                     'header': {
                         'source': 'market',
-                        'status': 202,
+                        'status': TRADE_STATUS.PRICE_LIMIT,
                         'reason': '开盘涨跌停 封版',
                         'code': str(order.code),
                         'session': {
@@ -134,7 +134,7 @@ def market_stock_engine(order, market_data, commission_fee_coeff=0.0015):
                 return {
                     'header': {
                         'source': 'market',
-                        'status': 200,
+                        'status': TRADE_STATUS.SUCCESS,
                         'code': str(order.code),
                         'session': {
                             'user': str(order.user),
@@ -169,7 +169,7 @@ def market_stock_engine(order, market_data, commission_fee_coeff=0.0015):
                 return {
                     'header': {
                         'source': 'market',
-                        'status': 400,
+                        'status': TRADE_STATUS.FAILED,
                         'code': str(order.code),
                         'session': {
                             'user': str(order.user),
@@ -205,7 +205,7 @@ def market_stock_engine(order, market_data, commission_fee_coeff=0.0015):
             return {
                 'header': {
                     'source': 'market',
-                    'status': 500,
+                    'status': TRADE_STATUS.NO_MARKET_DATA,
                     'code': str(order.code),
                     'session': {
                         'user': str(order.user),
