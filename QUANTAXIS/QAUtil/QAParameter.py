@@ -114,9 +114,9 @@ class RUNNING_ENVIRONMENT:
     实盘
     """
     
-    BACKETEST = 1
-    SIMULATION = 2
-    REAL = 3
+    BACKETEST = 'backtest'
+    SIMULATION = 'simulation'
+    REAL = 'real'
 
 
 class MARKET_STATUS:

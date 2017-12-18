@@ -24,12 +24,11 @@
 
 #from .market_config import stock_market,future_market,HK_stock_market,US_stock_market
 
-import copy
 
-from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
-                              QA_util_random_with_topic,
-                              QA_util_to_json_from_pandas)
-from QUANTAXIS.QAUtil.QAParameter import MARKET_STATUS, TRADE_STATUS
+
+from QUANTAXIS.QAUtil import (QA_util_log_info,
+                              QA_util_random_with_topic)
+from QUANTAXIS.QAUtil.QAParameter import TRADE_STATUS
 
 """stock market trading engine
 
@@ -201,7 +200,7 @@ def market_stock_engine(order, market_data, commission_fee_coeff=0.0015):
                 }
 
         except Exception as e:
-            print(e)
+            QA_util_log_info('MARKET ENGINE ERROR: {}'.format(e))
             return {
                 'header': {
                     'source': 'market',

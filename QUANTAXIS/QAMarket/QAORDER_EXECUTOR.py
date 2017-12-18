@@ -24,6 +24,7 @@
 import pandas as pd
 import numpy as np
 import datetime
+import queue
 from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_Order_list
 from QUANTAXIS.QAMarket.QAMarket import QA_Market
 from QUANTAXIS.QAUtil.QAParameter import RUNNING_ENVIRONMENT
@@ -43,9 +44,10 @@ class ORDER_EXECUTOR():
 
     """
 
-    def __init__(self, order, market, environment, *args, **kwargs):
-        self.order = order
+    def __init__(self, order_queue=queue.Queue(), market, environment=RUNNING_ENVIRONMENT.BACKETEST, *args, **kwargs):
+        self.order_queue() = order
         self.market = market
+        self.environment_engine = {'backtest':QA_Market,'simulation':}
         self.environment = environment
 
     def switch_environment(self, environment):
