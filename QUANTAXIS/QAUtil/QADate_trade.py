@@ -79,18 +79,27 @@ def QA_util_get_real_datelist(start,end):
     """
     real_start=QA_util_get_real_date(start,trade_date_sse,1)
     real_end=QA_util_get_real_date(end,trade_date_sse,-1)
-    return (real_start,real_end)
+    if trade_date_sse.index(real_start)> trade_date_sse.index(real_end):
+        return None,None
+    else:
+        return (real_start,real_end)
 
 def QA_util_get_trade_range(start,end):
     '给出交易具体时间'
     start,end=QA_util_get_real_datelist(start,end)
-    return trade_date_sse[trade_date_sse.index(start):trade_date_sse.index(end)+1:1]
+    if start is not None:
+        return trade_date_sse[trade_date_sse.index(start):trade_date_sse.index(end)+1:1]
+    else:
+        return None
 
 
 def QA_util_get_trade_gap(start, end):
     '返回start_day到end_day中间有多少个交易天 算首尾'
     start, end = QA_util_get_real_datelist(start, end)
-    return trade_date_sse.index(end)+1-trade_date_sse.index(start)
+    if start is not None:
+        return trade_date_sse.index(end)+1-trade_date_sse.index(start)
+    else:
+        return 0
 
 def QA_util_date_gap(date,gap,methods):
     try:

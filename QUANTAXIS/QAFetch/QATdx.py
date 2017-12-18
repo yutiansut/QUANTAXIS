@@ -529,6 +529,8 @@ def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=best_ip['stock'
     api = TdxHq_API()
 
     real_start, real_end = QA_util_get_real_datelist(start, end)
+    if real_start is None:
+        return None
     real_id_range = []
     with api.connect(ip, port):
         data = pd.DataFrame()
