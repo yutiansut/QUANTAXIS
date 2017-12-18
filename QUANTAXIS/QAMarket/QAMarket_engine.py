@@ -42,14 +42,13 @@ renew in 2017/6/28
 """
 
 
-def market_stock_engine(order, market_data=None, commission_fee_coeff=0.0015):
+def market_stock_engine(order, market_data, commission_fee_coeff=0.0015):
     # 新增一个__commission_fee_coeff 手续费系数
     """MARKET ENGINE
 
     在拿到市场数据后对于订单的撮合判断 生成成交信息
 
     """
-    
 
     def __trading(order, market_data):
         """
@@ -58,7 +57,9 @@ def market_stock_engine(order, market_data=None, commission_fee_coeff=0.0015):
         step2: deal
         step3: return callback
         """
-        
+        print(order.info())
+        print(market_data)
+    
         try:
             if float(market_data['open']) == float(market_data['high']) == float(market_data['close']) == float(market_data['low']):
                 return {
@@ -101,7 +102,7 @@ def market_stock_engine(order, market_data=None, commission_fee_coeff=0.0015):
                     float(order.price) == float(market_data['high'])):
                 '能成功交易的情况'
                 if float(order.amount) < float(market_data['volume']) * 100 / 16:
-                    __deal_price = order.price
+                    deal_price = order.price
                 elif float(order.amount) >= float(market_data['volume']) * 100 / 16 and \
                         float(order.amount) < float(market_data['volume']) * 100 / 8:
                     """
@@ -111,24 +112,24 @@ def market_stock_engine(order, market_data=None, commission_fee_coeff=0.0015):
                     sell_price=mean(min{open,close},low)
                     """
                     if int(order.towards) > 0:
-                        __deal_price = (max(float(market_data['open']), float(
+                        deal_price = (max(float(market_data['open']), float(
                             market_data['close'])) + float(market_data['high'])) * 0.5
                     else:
-                        __deal_price = (min(float(market_data['open']), float(
+                        deal_price = (min(float(market_data['open']), float(
                             market_data['close'])) + float(market_data['low'])) * 0.5
 
                 else:
                     order.amount = float(market_data['volume']) / 8
                     if int(order.towards) > 0:
-                        __deal_price = float(market_data['high'])
+                        deal_price = float(market_data['high'])
                     else:
-                        __deal_price = float(market_data['low'])
+                        deal_price = float(market_data['low'])
 
                 if int(order.towards) > 0:
                     __commission_fee = 0
                 else:
                     __commission_fee = commission_fee_coeff * \
-                        float(__deal_price) * float(order.amount)
+                        float(deal_price) * float(order.amount)
                     if __commission_fee < 5:
                         __commission_fee = 5
 
@@ -142,11 +143,11 @@ def market_stock_engine(order, market_data=None, commission_fee_coeff=0.0015):
                             'strategy': str(order.strategy)
                         },
                         'order_id': str(order.order_id),
-                        'trade_id':  QA_util_random_with_topic('Trade')
+                        'trade_id': QA_util_random_with_topic('Trade')
                     },
                     'body': {
                         'bid': {
-                            'price': float("%.2f" % float(str(__deal_price))),
+                            'price': float("%.2f" % float(str(deal_price))),
                             'code': str(order.code),
                             'amount': int(order.amount),
                             'datetime': str(order.datetime),
@@ -201,7 +202,8 @@ def market_stock_engine(order, market_data=None, commission_fee_coeff=0.0015):
                     }
                 }
 
-        except:
+        except Exception as e:
+            print(e)
             return {
                 'header': {
                     'source': 'market',
@@ -241,21 +243,6 @@ def market_stock_engine(order, market_data=None, commission_fee_coeff=0.0015):
 def market_future_engine(order, market_data=None, commission_fee_coeff=0.0015):
     # data mod
     # inside function
-    def __get_data(order):
-        '隔离掉引擎查询数据库的行为'
-        market_data = QA_util_to_json_from_pandas(QA_fetch_stock_day(str(
-            order.code)[0:6], str(order.date)[0:10], str(order.date)[0:10], 'pd'))
-        if len(market_data) == 0:
-            pass
-        else:
-            market_data = market_data[0]
-        return market_data
-    # trade mod
-
-    if market_data is None:
-        market_data = __get_data(order)
-    else:
-        pass
 
     def __trading(order, market_data):
         """
@@ -332,7 +319,7 @@ def market_future_engine(order, market_data=None, commission_fee_coeff=0.0015):
                             float(order.price) == float(market_data['high'])):
                         '能成功交易的情况'
                         if float(order.amount) < float(market_data['volume']) * 100 / 16:
-                            __deal_price = order.price
+                            deal_price = order.price
                         elif float(order.amount) >= float(market_data['volume']) * 100 / 16 and \
                                 float(order.amount) < float(market_data['volume']) * 100 / 8:
                             """
@@ -342,24 +329,24 @@ def market_future_engine(order, market_data=None, commission_fee_coeff=0.0015):
                             sell_price=mean(min{open,close},low)
                             """
                             if int(order.towards) > 0:
-                                __deal_price = (max(float(market_data['open']), float(
+                                deal_price = (max(float(market_data['open']), float(
                                     market_data['close'])) + float(market_data['high'])) * 0.5
                             else:
-                                __deal_price = (min(float(market_data['open']), float(
+                                deal_price = (min(float(market_data['open']), float(
                                     market_data['close'])) + float(market_data['low'])) * 0.5
 
                         else:
                             order.amount = float(market_data['volume']) / 8
                             if int(order.towards) > 0:
-                                __deal_price = float(market_data['high'])
+                                deal_price = float(market_data['high'])
                             else:
-                                __deal_price = float(market_data['low'])
+                                deal_price = float(market_data['low'])
 
                         if int(order.towards) > 0:
                             __commission_fee = 0
                         else:
                             __commission_fee = 0.0015 * \
-                                float(__deal_price) * float(order.amount)
+                                float(deal_price) * float(order.amount)
                             if __commission_fee < 5:
                                 __commission_fee = 5
 
@@ -377,7 +364,7 @@ def market_future_engine(order, market_data=None, commission_fee_coeff=0.0015):
                             },
                             'body': {
                                 'bid': {
-                                    'price': float("%.2f" % float(str(__deal_price))),
+                                    'price': float("%.2f" % float(str(deal_price))),
                                     'code': str(order.code),
                                     'amount': int(order.amount),
                                     'date': str(order.date),
