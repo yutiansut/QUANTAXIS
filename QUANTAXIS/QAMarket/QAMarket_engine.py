@@ -44,7 +44,7 @@ renew in 2017/6/28
 
 def market_stock_engine(order, market_data, commission_fee_coeff=0.0015):
     # 新增一个__commission_fee_coeff 手续费系数
-    """MARKET ENGINE
+    """MARKET ENGINE STOCK
 
     在拿到市场数据后对于订单的撮合判断 生成成交信息
 
@@ -57,8 +57,6 @@ def market_stock_engine(order, market_data, commission_fee_coeff=0.0015):
         step2: deal
         step3: return callback
         """
-        print(order.info())
-        print(market_data)
     
         try:
             if float(market_data['open']) == float(market_data['high']) == float(market_data['close']) == float(market_data['low']):
