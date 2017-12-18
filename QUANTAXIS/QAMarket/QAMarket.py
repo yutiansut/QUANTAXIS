@@ -168,13 +168,12 @@ class QA_Market():
             data = self.fetcher[order.type](
                 code=order.code, start=order.datetime, end=order.datetime, format='json')[0]
             if 'vol' in data.keys() and 'volume' not in data.keys():
-                data['vol'] = data['volume']
-            elif 'vol' in data.keys() and 'volume' not in data.keys():
                 data['volume'] = data['vol']
+            elif 'vol' not in data.keys() and 'volume' in data.keys():
+                data['vol'] = data['volume']
             
             else:
                 pass
-            print(data)
             return data
         except Exception as e:
             QA_util_log_info('MARKET_ENGING ERROR: {}'.format(e))
