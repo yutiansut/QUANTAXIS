@@ -135,4 +135,5 @@ class TRADE_STATUS:
     SUCCESS = 200
     NO_MARKET_DATA = 500
     PRICE_LIMIT = 202
+    FAILED = 400
     
