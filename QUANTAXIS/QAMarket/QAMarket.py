@@ -30,8 +30,7 @@ from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_future_day,
                                        QA_fetch_future_tick,
                                        QA_fetch_index_day, QA_fetch_index_min,
                                        QA_fetch_stock_day, QA_fetch_stock_min)
-from QUANTAXIS.QAFetch.QATdx import (QA_fetch_depth_market_data,
-                                     QA_fetch_get_future_day,
+from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_future_day,
                                      QA_fetch_get_future_min,
                                      QA_fetch_get_future_transaction,
                                      QA_fetch_get_future_transaction_realtime,
@@ -39,13 +38,14 @@ from QUANTAXIS.QAFetch.QATdx import (QA_fetch_depth_market_data,
                                      QA_fetch_get_index_min,
                                      QA_fetch_get_stock_day,
                                      QA_fetch_get_stock_min)
+from QUANTAXIS.QAMarket.QAMarket_base import _market_engine_base
 from QUANTAXIS.QAMarket.QAMarket_engine import (market_future_engine,
                                                 market_stock_engine)
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, RUNNING_ENVIRONMENT
+from QUANTAXIS.QAUtil.QAParameter import RUNNING_ENVIRONMENT
 
 
-class QA_Market():
+class QA_Market(_market_engine_base):
     """
     QUANTAXIS MARKET 部分
 
@@ -58,7 +58,6 @@ class QA_Market():
     def __init__(self, commission_fee_coeff=0.0015, environment=RUNNING_ENVIRONMENT.BACKETEST, if_nondatabase=False):
         """[summary]
 
-        [description]
 
         Keyword Arguments:
             commission_fee_coeff {[type]} -- [description] (default: {0})
@@ -76,9 +75,8 @@ class QA_Market():
                                     '2x01': QA_fetch_get_future_day, '2x02': QA_fetch_get_future_min}
         self.commission_fee_coeff = commission_fee_coeff
         self.market_data = None
-
-    def __repr__(self):
-        return '< QA_MARKET >'
+        self.environment = environment
+        self.if_nondatabase = if_nondatabase
 
     def receive_order(self, order, market_data=None):
         """
@@ -87,7 +85,7 @@ class QA_Market():
         """
         assert isinstance(order.type, str)
 
-        self.market_data = self.warp_market(
+        self.market_data = self.get_market(
             order) if market_data is None else market_data
         order = self.warp(order)
 
@@ -120,7 +118,7 @@ class QA_Market():
                     order.datetime, '%Y-%m-%d %H-%M-%S') + datetime.timedelta(minute=1))
                 order.date = exact_time[0:10]
                 order.datetime = exact_time
-            self.market_data = self.warp_market(order)
+            self.market_data = self.get_market(order)
             if self.market_data is None:
                 return order
             order.price = (float(self.market_data["high"]) +
@@ -131,7 +129,7 @@ class QA_Market():
                 order.datetime = self.market_data.datetime
             except:
                 order.datetime = '{} 15:00:00'.format(order.date)
-            self.market_data = self.warp_market(order)
+            self.market_data = self.get_market(order)
             if self.market_data is None:
                 return order
             order.price = float(self.market_data["close"])
@@ -149,7 +147,7 @@ class QA_Market():
                     order.datetime, '%Y-%m-%d %H-%M-%S') + datetime.timedelta(minute=1))
                 order.date = exact_time[0:10]
                 order.datetime = exact_time
-            self.market_data = self.warp_market(order)
+            self.market_data = self.get_market(order)
             if self.market_data is None:
                 return order
             if order.towards == 1:
@@ -163,7 +161,18 @@ class QA_Market():
 
         return order
 
-    def warp_market(self, order):
+    def get_market(self, order):
+        """get_market func
+
+        [description]
+
+        Arguments:
+            order {orders} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+
         try:
             data = self.fetcher[order.type](
                 code=order.code, start=order.datetime, end=order.datetime, format='json')[0]
@@ -171,7 +180,7 @@ class QA_Market():
                 data['volume'] = data['vol']
             elif 'vol' not in data.keys() and 'volume' in data.keys():
                 data['vol'] = data['volume']
-            
+
             else:
                 pass
             return data
