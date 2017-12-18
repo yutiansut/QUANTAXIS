@@ -24,10 +24,11 @@
 
 #from .market_config import stock_market,future_market,HK_stock_market,US_stock_market
 
+import copy
 
-from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day, QA_fetch_stock_min
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
-                              QA_util_to_json_from_pandas, QA_util_random_with_topic)
+                              QA_util_random_with_topic,
+                              QA_util_to_json_from_pandas)
 
 
 """stock market trading engine
@@ -41,314 +42,93 @@ renew in 2017/6/28
 """
 
 
-def market_stock_day_engine(__order, __data=None, __commission_fee_coeff=0.0005):
-    # data mod
-    # inside function
-    def __get_data(__order):
-        '隔离掉引擎查询数据库的行为'
-        __data = QA_util_to_json_from_pandas(QA_fetch_stock_day(str(
-            __order.code)[0:6], str(__order.date)[0:10], str(__order.date)[0:10], 'pd'))
-        if len(__data) == 0:
-            pass
-        else:
-            __data = __data[0]
-        return __data
-    # trade mod
-
-    if __data is None:
-        __data = __get_data(__order)
-    else:
-        pass
-
-    def __trading(__order, __data):
-        """
-        trading system
-        """
-        try:
-            if __order.price == 'market_price':
-
-                __order_t = __order
-                __order_t.price = (float(__data["high"]) +
-                                   float(__data["low"])) * 0.5
-                return __trading(__order_t, __data)
-
-            elif __order.price == 'close_price':
-                __order_t = __order
-                __order_t.price = float(__data["close"])
-                return __trading(__order_t, __data)
-            elif __order.price == 'strict_price':
-                '加入严格模式'
-                __order_t = __order
-                if __order_t.towards == 1:
-
-                    __order_t.price = float(__data["high"])
-                else:
-                    __order_t.price = float(__data["low"])
-
-                return __trading(__order_t, __data)
-            else:
-                if __order.amount_model == 'price':
-                    __order_s = __order
-                    __order_s.amount = int(
-                        __order.amount / (__order.price * 100)) * 100
-                    __order_s.amount_model = 'amount'
-                    return __trading(__order_s, __data)
-                else:
-                    if float(__data['open']) == float(__data['high']) == float(__data['close']) == float(__data['low']):
-                        return {
-                            'header': {
-                                'source': 'market',
-                                'status': 202,
-                                'reason': '开盘涨跌停 封版',
-                                'code': str(__order.code),
-                                'session': {
-                                    'user': str(__order.user),
-                                    'strategy': str(__order.strategy)
-                                },
-                                'order_id': str(__order.order_id),
-                                'trade_id': QA_util_random_with_topic('Trade')
-                            },
-                            'body': {
-                                'bid': {
-                                    'price': 0,
-                                    'code': str(__order.code),
-                                    'amount': 0,
-                                    'date': str(__order.date),
-                                    'towards': __order.towards
-                                },
-                                'market': {
-                                    'open': __data['open'],
-                                    'high': __data['high'],
-                                    'low': __data['low'],
-                                    'close': __data['close'],
-                                    'volume': __data['volume'],
-                                    'code': __data['code']
-                                },
-                                'fee': {
-                                    'commission': 0
-                                }
-                            }
-                        }
-                    elif ((float(__order.price) < float(__data["high"]) and
-                           float(__order.price) > float(__data["low"])) or
-                          float(__order.price) == float(__data["low"]) or
-                            float(__order.price) == float(__data['high'])):
-                        '能成功交易的情况'
-                        if float(__order.amount) < float(__data['volume']) * 100 / 16:
-                            __deal_price = __order.price
-                        elif float(__order.amount) >= float(__data['volume']) * 100 / 16 and \
-                                float(__order.amount) < float(__data['volume']) * 100 / 8:
-                            """
-                            add some slippers
-
-                            buy_price=mean(max{open,close},high)
-                            sell_price=mean(min{open,close},low)
-                            """
-                            if int(__order.towards) > 0:
-                                __deal_price = (max(float(__data['open']), float(
-                                    __data['close'])) + float(__data['high'])) * 0.5
-                            else:
-                                __deal_price = (min(float(__data['open']), float(
-                                    __data['close'])) + float(__data['low'])) * 0.5
-
-                        else:
-                            __order.amount = float(__data['volume']) / 8
-                            if int(__order.towards) > 0:
-                                __deal_price = float(__data['high'])
-                            else:
-                                __deal_price = float(__data['low'])
-
-                        if int(__order.towards) > 0:
-                            __commission_fee = 0
-                        else:
-                            __commission_fee = __commission_fee_coeff * \
-                                float(__deal_price) * float(__order.amount)
-                            if __commission_fee < 5:
-                                __commission_fee = 5
-
-                        return {
-                            'header': {
-                                'source': 'market',
-                                'status': 200,
-                                'code': str(__order.code),
-                                'session': {
-                                    'user': str(__order.user),
-                                    'strategy': str(__order.strategy)
-                                },
-                                'order_id': str(__order.order_id),
-                                'trade_id':  QA_util_random_with_topic('Trade')
-                            },
-                            'body': {
-                                'bid': {
-                                    'price': float("%.2f" % float(str(__deal_price))),
-                                    'code': str(__order.code),
-                                    'amount': int(__order.amount),
-                                    'datetime': str(__order.datetime),
-                                    'date': str(__order.date),
-                                    'towards': int(__order.towards)
-                                },
-                                'market': {
-                                    'open': __data['open'],
-                                    'high': __data['high'],
-                                    'low': __data['low'],
-                                    'close': __data['close'],
-                                    'volume': __data['volume'],
-                                    'code': __data['code']
-                                },
-                                'fee': {
-                                    'commission': float(__commission_fee)
-                                }
-                            }
-                        }
-                    else:
-                        return {
-                            'header': {
-                                'source': 'market',
-                                'status': 400,
-                                'code': str(__order.code),
-                                'session': {
-                                    'user': str(__order.user),
-                                    'strategy': str(__order.strategy)
-                                },
-                                'order_id': str(__order.order_id),
-                                'trade_id':  QA_util_random_with_topic('Trade')
-                            },
-                            'body': {
-                                'bid': {
-                                    'price': 0,
-                                    'code': str(__order.code),
-                                    'amount': 0,
-                                    'date': str(__order.date),
-                                    'towards': __order.towards
-                                },
-                                'market': {
-                                    'open': __data['open'],
-                                    'high': __data['high'],
-                                    'low': __data['low'],
-                                    'close': __data['close'],
-                                    'volume': __data['volume'],
-                                    'code': __data['code']
-                                },
-                                'fee': {
-                                    'commission': 0
-                                }
-                            }
-                        }
-
-        except:
-            return {
-                'header': {
-                    'source': 'market',
-                    'status': 500,
-                    'code': str(__order.code),
-                    'session': {
-                        'user': str(__order.user),
-                        'strategy': str(__order.strategy)
-                    },
-                    'order_id': str(__order.order_id),
-                    'trade_id':  QA_util_random_with_topic('Trade')
-                },
-                'body': {
-                    'bid': {
-                        'price': 0,
-                        'code': str(__order.code),
-                        'amount': 0,
-                        'date': str(__order.date),
-                        'towards': __order.towards
-                    },
-                    'market': {
-                        'open': 0,
-                        'high': 0,
-                        'low': 0,
-                        'close': 0,
-                        'volume': 0,
-                        'code': 0
-                    },
-                    'fee': {
-                        'commission': 0
-                    }
-                }
-            }
-    return __trading(__order, __data)
-
-
-def market_stock_engine(__order, __data=None, __commission_fee_coeff=0.0015):
+def market_stock_engine(order, market_data=None, commission_fee_coeff=0.0015):
     # 新增一个__commission_fee_coeff 手续费系数
+    """MARKET ENGINE
 
-    def __trading(__order, __data):
+    在拿到市场数据后对于订单的撮合判断 生成成交信息
+
+    """
+    
+
+    def __trading(order, market_data):
         """
         trading system
+        step1: check market_data
+        step2: deal
+        step3: return callback
         """
+        
         try:
-            if float(__data['open']) == float(__data['high']) == float(__data['close']) == float(__data['low']):
+            if float(market_data['open']) == float(market_data['high']) == float(market_data['close']) == float(market_data['low']):
                 return {
                     'header': {
                         'source': 'market',
                         'status': 202,
                         'reason': '开盘涨跌停 封版',
-                        'code': str(__order.code),
+                        'code': str(order.code),
                         'session': {
-                            'user': str(__order.user),
-                            'strategy': str(__order.strategy)
+                            'user': str(order.user),
+                            'strategy': str(order.strategy)
                         },
-                        'order_id': str(__order.order_id),
+                        'order_id': str(order.order_id),
                         'trade_id':  QA_util_random_with_topic('Trade')
                     },
                     'body': {
                         'bid': {
                             'price': 0,
-                            'code': str(__order.code),
+                            'code': str(order.code),
                             'amount': 0,
-                            'date': str(__order.date),
-                            'towards': __order.towards
+                            'date': str(order.date),
+                            'towards': order.towards
                         },
                         'market': {
-                            'open': __data['open'],
-                            'high': __data['high'],
-                            'low': __data['low'],
-                            'close': __data['close'],
-                            'volume': __data['volume'],
-                            'code': __data['code']
+                            'open': market_data['open'],
+                            'high': market_data['high'],
+                            'low': market_data['low'],
+                            'close': market_data['close'],
+                            'volume': market_data['volume'],
+                            'code': market_data['code']
                         },
                         'fee': {
                             'commission': 0
                         }
                     }
                 }
-            elif ((float(__order.price) < float(__data["high"]) and
-                    float(__order.price) > float(__data["low"])) or
-                    float(__order.price) == float(__data["low"]) or
-                    float(__order.price) == float(__data['high'])):
+            elif ((float(order.price) < float(market_data["high"]) and
+                    float(order.price) > float(market_data["low"])) or
+                    float(order.price) == float(market_data["low"]) or
+                    float(order.price) == float(market_data['high'])):
                 '能成功交易的情况'
-                if float(__order.amount) < float(__data['volume']) * 100 / 16:
-                    __deal_price = __order.price
-                elif float(__order.amount) >= float(__data['volume']) * 100 / 16 and \
-                        float(__order.amount) < float(__data['volume']) * 100 / 8:
+                if float(order.amount) < float(market_data['volume']) * 100 / 16:
+                    __deal_price = order.price
+                elif float(order.amount) >= float(market_data['volume']) * 100 / 16 and \
+                        float(order.amount) < float(market_data['volume']) * 100 / 8:
                     """
                     add some slippers
 
                     buy_price=mean(max{open,close},high)
                     sell_price=mean(min{open,close},low)
                     """
-                    if int(__order.towards) > 0:
-                        __deal_price = (max(float(__data['open']), float(
-                            __data['close'])) + float(__data['high'])) * 0.5
+                    if int(order.towards) > 0:
+                        __deal_price = (max(float(market_data['open']), float(
+                            market_data['close'])) + float(market_data['high'])) * 0.5
                     else:
-                        __deal_price = (min(float(__data['open']), float(
-                            __data['close'])) + float(__data['low'])) * 0.5
+                        __deal_price = (min(float(market_data['open']), float(
+                            market_data['close'])) + float(market_data['low'])) * 0.5
 
                 else:
-                    __order.amount = float(__data['volume']) / 8
-                    if int(__order.towards) > 0:
-                        __deal_price = float(__data['high'])
+                    order.amount = float(market_data['volume']) / 8
+                    if int(order.towards) > 0:
+                        __deal_price = float(market_data['high'])
                     else:
-                        __deal_price = float(__data['low'])
+                        __deal_price = float(market_data['low'])
 
-                if int(__order.towards) > 0:
+                if int(order.towards) > 0:
                     __commission_fee = 0
                 else:
-                    __commission_fee = __commission_fee_coeff * \
-                        float(__deal_price) * float(__order.amount)
+                    __commission_fee = commission_fee_coeff * \
+                        float(__deal_price) * float(order.amount)
                     if __commission_fee < 5:
                         __commission_fee = 5
 
@@ -356,30 +136,30 @@ def market_stock_engine(__order, __data=None, __commission_fee_coeff=0.0015):
                     'header': {
                         'source': 'market',
                         'status': 200,
-                        'code': str(__order.code),
+                        'code': str(order.code),
                         'session': {
-                            'user': str(__order.user),
-                            'strategy': str(__order.strategy)
+                            'user': str(order.user),
+                            'strategy': str(order.strategy)
                         },
-                        'order_id': str(__order.order_id),
+                        'order_id': str(order.order_id),
                         'trade_id':  QA_util_random_with_topic('Trade')
                     },
                     'body': {
                         'bid': {
                             'price': float("%.2f" % float(str(__deal_price))),
-                            'code': str(__order.code),
-                            'amount': int(__order.amount),
-                            'datetime': str(__order.datetime),
-                            'date': str(__order.date),
-                            'towards': int(__order.towards)
+                            'code': str(order.code),
+                            'amount': int(order.amount),
+                            'datetime': str(order.datetime),
+                            'date': str(order.date),
+                            'towards': int(order.towards)
                         },
                         'market': {
-                            'open': __data['open'],
-                            'high': __data['high'],
-                            'low': __data['low'],
-                            'close': __data['close'],
-                            'volume': __data['volume'],
-                            'code': __data['code']
+                            'open': market_data['open'],
+                            'high': market_data['high'],
+                            'low': market_data['low'],
+                            'close': market_data['close'],
+                            'volume': market_data['volume'],
+                            'code': market_data['code']
                         },
                         'fee': {
                             'commission': float(__commission_fee)
@@ -391,29 +171,29 @@ def market_stock_engine(__order, __data=None, __commission_fee_coeff=0.0015):
                     'header': {
                         'source': 'market',
                         'status': 400,
-                        'code': str(__order.code),
+                        'code': str(order.code),
                         'session': {
-                            'user': str(__order.user),
-                            'strategy': str(__order.strategy)
+                            'user': str(order.user),
+                            'strategy': str(order.strategy)
                         },
-                        'order_id': str(__order.order_id),
+                        'order_id': str(order.order_id),
                         'trade_id':  QA_util_random_with_topic('Trade')
                     },
                     'body': {
                         'bid': {
                             'price': 0,
-                            'code': str(__order.code),
+                            'code': str(order.code),
                             'amount': 0,
-                            'date': str(__order.date),
-                            'towards': __order.towards
+                            'date': str(order.date),
+                            'towards': order.towards
                         },
                         'market': {
-                            'open': __data['open'],
-                            'high': __data['high'],
-                            'low': __data['low'],
-                            'close': __data['close'],
-                            'volume': __data['volume'],
-                            'code': __data['code']
+                            'open': market_data['open'],
+                            'high': market_data['high'],
+                            'low': market_data['low'],
+                            'close': market_data['close'],
+                            'volume': market_data['volume'],
+                            'code': market_data['code']
                         },
                         'fee': {
                             'commission': 0
@@ -426,21 +206,21 @@ def market_stock_engine(__order, __data=None, __commission_fee_coeff=0.0015):
                 'header': {
                     'source': 'market',
                     'status': 500,
-                    'code': str(__order.code),
+                    'code': str(order.code),
                     'session': {
-                        'user': str(__order.user),
-                        'strategy': str(__order.strategy)
+                        'user': str(order.user),
+                        'strategy': str(order.strategy)
                     },
-                    'order_id': str(__order.order_id),
+                    'order_id': str(order.order_id),
                     'trade_id':  QA_util_random_with_topic('Trade')
                 },
                 'body': {
                     'bid': {
                         'price': 0,
-                        'code': str(__order.code),
+                        'code': str(order.code),
                         'amount': 0,
-                        'date': str(__order.date),
-                        'towards': __order.towards
+                        'date': str(order.date),
+                        'towards': order.towards
                     },
                     'market': {
                         'open': 0,
@@ -455,131 +235,131 @@ def market_stock_engine(__order, __data=None, __commission_fee_coeff=0.0015):
                     }
                 }
             }
-    return __trading(__order, __data)
+    return __trading(order, market_data)
 
 
-def market_future_engine(__order, __data=None):
+def market_future_engine(order, market_data=None, commission_fee_coeff=0.0015):
     # data mod
     # inside function
-    def __get_data(__order):
+    def __get_data(order):
         '隔离掉引擎查询数据库的行为'
-        __data = QA_util_to_json_from_pandas(QA_fetch_stock_day(str(
-            __order.code)[0:6], str(__order.date)[0:10], str(__order.date)[0:10], 'pd'))
-        if len(__data) == 0:
+        market_data = QA_util_to_json_from_pandas(QA_fetch_stock_day(str(
+            order.code)[0:6], str(order.date)[0:10], str(order.date)[0:10], 'pd'))
+        if len(market_data) == 0:
             pass
         else:
-            __data = __data[0]
-        return __data
+            market_data = market_data[0]
+        return market_data
     # trade mod
 
-    if __data is None:
-        __data = __get_data(__order)
+    if market_data is None:
+        market_data = __get_data(order)
     else:
         pass
 
-    def __trading(__order, __data):
+    def __trading(order, market_data):
         """
         trading system
         """
         try:
-            if __order.price == 'market_price':
+            if order.order_model == 'market_price':
 
-                __order_t = __order
-                __order_t.price = (float(__data["high"]) +
-                                   float(__data["low"])) * 0.5
-                return __trading(__order_t, __data)
+                __order_t = order
+                __order_t.price = (float(market_data["high"]) +
+                                   float(market_data["low"])) * 0.5
+                return __trading(__order_t, market_data)
 
-            elif __order.price == 'close_price':
-                __order_t = __order
-                __order_t.price = float(__data["close"])
-                return __trading(__order_t, __data)
-            elif __order.price == 'strict_price':
+            elif order.order_model == 'close_price':
+                __order_t = order
+                __order_t.price = float(market_data["close"])
+                return __trading(__order_t, market_data)
+            elif order.order_model == 'strict_price':
                 '加入严格模式'
-                __order_t = __order
+                __order_t = order
                 if __order_t.towards == 1:
 
-                    __order_t.price = float(__data["high"])
+                    __order_t.price = float(market_data["high"])
                 else:
-                    __order_t.price = float(__data["low"])
+                    __order_t.price = float(market_data["low"])
 
-                return __trading(__order_t, __data)
+                return __trading(__order_t, market_data)
             else:
-                if __order.amount_model == 'price':
-                    __order_s = __order
+                if order.amount_model == 'price':
+                    __order_s = order
                     __order_s.amount = int(
-                        __order.amount / (__order.price * 100)) * 100
+                        order.amount / (order.price * 100)) * 100
                     __order_s.amount_model = 'amount'
-                    return __trading(__order_s, __data)
+                    return __trading(__order_s, market_data)
                 else:
-                    if float(__data['open']) == float(__data['high']) == float(__data['close']) == float(__data['low']):
+                    if float(market_data['open']) == float(market_data['high']) == float(market_data['close']) == float(market_data['low']):
                         return {
                             'header': {
                                 'source': 'market',
                                 'status': 202,
                                 'reason': '开盘涨跌停 封版',
-                                'code': str(__order.code),
+                                'code': str(order.code),
                                 'session': {
-                                    'user': str(__order.user),
-                                    'strategy': str(__order.strategy)
+                                    'user': str(order.user),
+                                    'strategy': str(order.strategy)
                                 },
-                                'order_id': str(__order.order_id),
+                                'order_id': str(order.order_id),
                                 'trade_id':  QA_util_random_with_topic('Trade')
                             },
                             'body': {
                                 'bid': {
                                     'price': 0,
-                                    'code': str(__order.code),
+                                    'code': str(order.code),
                                     'amount': 0,
-                                    'date': str(__order.date),
-                                    'towards': __order.towards
+                                    'date': str(order.date),
+                                    'towards': order.towards
                                 },
                                 'market': {
-                                    'open': __data['open'],
-                                    'high': __data['high'],
-                                    'low': __data['low'],
-                                    'close': __data['close'],
-                                    'volume': __data['volume'],
-                                    'code': __data['code']
+                                    'open': market_data['open'],
+                                    'high': market_data['high'],
+                                    'low': market_data['low'],
+                                    'close': market_data['close'],
+                                    'volume': market_data['volume'],
+                                    'code': market_data['code']
                                 },
                                 'fee': {
                                     'commission': 0
                                 }
                             }
                         }
-                    elif ((float(__order.price) < float(__data["high"]) and
-                           float(__order.price) > float(__data["low"])) or
-                          float(__order.price) == float(__data["low"]) or
-                            float(__order.price) == float(__data['high'])):
+                    elif ((float(order.price) < float(market_data["high"]) and
+                           float(order.price) > float(market_data["low"])) or
+                          float(order.price) == float(market_data["low"]) or
+                            float(order.price) == float(market_data['high'])):
                         '能成功交易的情况'
-                        if float(__order.amount) < float(__data['volume']) * 100 / 16:
-                            __deal_price = __order.price
-                        elif float(__order.amount) >= float(__data['volume']) * 100 / 16 and \
-                                float(__order.amount) < float(__data['volume']) * 100 / 8:
+                        if float(order.amount) < float(market_data['volume']) * 100 / 16:
+                            __deal_price = order.price
+                        elif float(order.amount) >= float(market_data['volume']) * 100 / 16 and \
+                                float(order.amount) < float(market_data['volume']) * 100 / 8:
                             """
                             add some slippers
 
                             buy_price=mean(max{open,close},high)
                             sell_price=mean(min{open,close},low)
                             """
-                            if int(__order.towards) > 0:
-                                __deal_price = (max(float(__data['open']), float(
-                                    __data['close'])) + float(__data['high'])) * 0.5
+                            if int(order.towards) > 0:
+                                __deal_price = (max(float(market_data['open']), float(
+                                    market_data['close'])) + float(market_data['high'])) * 0.5
                             else:
-                                __deal_price = (min(float(__data['open']), float(
-                                    __data['close'])) + float(__data['low'])) * 0.5
+                                __deal_price = (min(float(market_data['open']), float(
+                                    market_data['close'])) + float(market_data['low'])) * 0.5
 
                         else:
-                            __order.amount = float(__data['volume']) / 8
-                            if int(__order.towards) > 0:
-                                __deal_price = float(__data['high'])
+                            order.amount = float(market_data['volume']) / 8
+                            if int(order.towards) > 0:
+                                __deal_price = float(market_data['high'])
                             else:
-                                __deal_price = float(__data['low'])
+                                __deal_price = float(market_data['low'])
 
-                        if int(__order.towards) > 0:
+                        if int(order.towards) > 0:
                             __commission_fee = 0
                         else:
                             __commission_fee = 0.0015 * \
-                                float(__deal_price) * float(__order.amount)
+                                float(__deal_price) * float(order.amount)
                             if __commission_fee < 5:
                                 __commission_fee = 5
 
@@ -587,29 +367,29 @@ def market_future_engine(__order, __data=None):
                             'header': {
                                 'source': 'market',
                                 'status': 200,
-                                'code': str(__order.code),
+                                'code': str(order.code),
                                 'session': {
-                                    'user': str(__order.user),
-                                    'strategy': str(__order.strategy)
+                                    'user': str(order.user),
+                                    'strategy': str(order.strategy)
                                 },
-                                'order_id': str(__order.order_id),
+                                'order_id': str(order.order_id),
                                 'trade_id':  QA_util_random_with_topic('Trade')
                             },
                             'body': {
                                 'bid': {
                                     'price': float("%.2f" % float(str(__deal_price))),
-                                    'code': str(__order.code),
-                                    'amount': int(__order.amount),
-                                    'date': str(__order.date),
-                                    'towards': int(__order.towards)
+                                    'code': str(order.code),
+                                    'amount': int(order.amount),
+                                    'date': str(order.date),
+                                    'towards': int(order.towards)
                                 },
                                 'market': {
-                                    'open': __data['open'],
-                                    'high': __data['high'],
-                                    'low': __data['low'],
-                                    'close': __data['close'],
-                                    'volume': __data['volume'],
-                                    'code': __data['code']
+                                    'open': market_data['open'],
+                                    'high': market_data['high'],
+                                    'low': market_data['low'],
+                                    'close': market_data['close'],
+                                    'volume': market_data['volume'],
+                                    'code': market_data['code']
                                 },
                                 'fee': {
                                     'commission': float(__commission_fee)
@@ -621,29 +401,29 @@ def market_future_engine(__order, __data=None):
                             'header': {
                                 'source': 'market',
                                 'status': 400,
-                                'code': str(__order.code),
+                                'code': str(order.code),
                                 'session': {
-                                    'user': str(__order.user),
-                                    'strategy': str(__order.strategy)
+                                    'user': str(order.user),
+                                    'strategy': str(order.strategy)
                                 },
-                                'order_id': str(__order.order_id),
+                                'order_id': str(order.order_id),
                                 'trade_id':  QA_util_random_with_topic('Trade')
                             },
                             'body': {
                                 'bid': {
                                     'price': 0,
-                                    'code': str(__order.code),
+                                    'code': str(order.code),
                                     'amount': 0,
-                                    'date': str(__order.date),
-                                    'towards': __order.towards
+                                    'date': str(order.date),
+                                    'towards': order.towards
                                 },
                                 'market': {
-                                    'open': __data['open'],
-                                    'high': __data['high'],
-                                    'low': __data['low'],
-                                    'close': __data['close'],
-                                    'volume': __data['volume'],
-                                    'code': __data['code']
+                                    'open': market_data['open'],
+                                    'high': market_data['high'],
+                                    'low': market_data['low'],
+                                    'close': market_data['close'],
+                                    'volume': market_data['volume'],
+                                    'code': market_data['code']
                                 },
                                 'fee': {
                                     'commission': 0
@@ -656,21 +436,21 @@ def market_future_engine(__order, __data=None):
                 'header': {
                     'source': 'market',
                     'status': 500,
-                    'code': str(__order.code),
+                    'code': str(order.code),
                     'session': {
-                        'user': str(__order.user),
-                        'strategy': str(__order.strategy)
+                        'user': str(order.user),
+                        'strategy': str(order.strategy)
                     },
-                    'order_id': str(__order.order_id),
+                    'order_id': str(order.order_id),
                     'trade_id':  QA_util_random_with_topic('Trade')
                 },
                 'body': {
                     'bid': {
                         'price': 0,
-                        'code': str(__order.code),
+                        'code': str(order.code),
                         'amount': 0,
-                        'date': str(__order.date),
-                        'towards': __order.towards
+                        'date': str(order.date),
+                        'towards': order.towards
                     },
                     'market': {
                         'open': 0,
@@ -685,7 +465,7 @@ def market_future_engine(__order, __data=None):
                     }
                 }
             }
-    return __trading(__order, __data)
+    return __trading(order, market_data)
 
 
 if __name__ == '__main__':

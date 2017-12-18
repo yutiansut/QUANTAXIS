@@ -31,7 +31,7 @@ import pandas as pd
 
 from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_Order_list
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, Order_DIRECTION
+from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, ORDER_DIRECTION
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 # 2017/6/4修改: 去除总资产的动态权益计算
@@ -48,23 +48,25 @@ class QA_Account():
 
     # 一个hold改成list模式
 
-    def __init__(self, strategy_name='', user='', market_type=MARKET_TYPE.stock_day,
+    def __init__(self, strategy_name='', user='', account_type=MARKET_TYPE.STOCK_DAY,
                  hold=None,
                  sell_available=None,
                  init_assest=None, order_queue=None,
                  cash=None, history=None, detail=None, assets=None,
                  account_cookie=None):
-        self._history_headers=['datetime','code','price','towards','amount','order_id','trade_id','commission_fee']
-        self._detail_headers=['datetime','code','price','towards','amount','order_id','trade_id',
-                    'match_price','match_order_id','match_trade_id','commission_fee','match_commission']
-        self._hold_headers=['datetime', 'code', 'price', 'amount','order_id', 'trade_id']
-    
+        self._history_headers = ['datetime', 'code', 'price',
+                                 'towards', 'amount', 'order_id', 'trade_id', 'commission_fee']
+        self._detail_headers = ['datetime', 'code', 'price', 'towards', 'amount', 'order_id', 'trade_id',
+                                'match_price', 'match_order_id', 'match_trade_id', 'commission_fee', 'match_commission']
+        self._hold_headers = ['datetime', 'code',
+                              'price', 'amount', 'order_id', 'trade_id']
+
         self.hold = [] if hold is None else hold
 
         self.init_assest = 1000000 if init_assest is None else init_assest
         self.strategy_name = strategy_name
         self.user = user
-        self.market_type = market_type
+        self.account_type = account_type
 
         self.cash = [self.init_assest] if cash is None else cash
         self.assets = [self.init_assest] if assets is None else assets
@@ -76,7 +78,7 @@ class QA_Account():
 
         self.history = [] if history is None else history
         self.detail = [] if detail is None else detail
-        
+
         self.account_cookie = QA_util_random_with_topic(
             'Acc') if account_cookie is None else account_cookie
         self.message = {
@@ -135,34 +137,34 @@ class QA_Account():
             }
         }
 
-    def update(self, update_message):
+    def update(self, message):
         """[用于更新账户]
 
         [description]
 
         Arguments:
-            update_message {json/dict} -- message_from_deal
+            message {json/dict} -- message_from_deal
 
         Returns:
             {json} -- message of account
         """
 
-        if str(update_message['status'])[0] == '2':
+        if str(message['header']['status'])[0] == '2':
 
             # towards>1 买入成功
             # towards<1 卖出成功
 
             (__new_code, __new_amount, __new_trade_date, __new_towards,
                 __new_price, __new_order_id,
-                __new_trade_id, __new_trade_fee) = (str(update_message['bid']['code']),
-                                                    float(update_message['bid']['amount']), str(
-                                                        update_message['bid']['datetime']),
-                                                    int(update_message['bid']['towards']), float(
-                                                        update_message['bid']['price']),
-                                                    str(update_message['order_id']), str(
-                                                        update_message['trade_id']),
-                                                    float(update_message['fee']['commission']))
-            if int(update_message['status']) == 203:
+                __new_trade_id, __new_trade_fee) = (str(message['body']['bid']['code']),
+                                                    float(message['body']['bid']['amount']), str(
+                                                        message['body']['bid']['datetime']),
+                                                    int(message['body']['bid']['towards']), float(
+                                                        message['body']['bid']['price']),
+                                                    str(message['header']['order_id']), str(
+                                                        message['header']['trade_id']),
+                                                    float(message['body']['fee']['commission']))
+            if int(message['header']['status']) == 203:
                 '委托成功 待交易'
                 self.order_queue.append(
                     [__new_trade_date, __new_code, __new_price, __new_amount,
@@ -170,7 +172,7 @@ class QA_Account():
 
                 # 如果是买入的waiting  那么要减少可用资金,增加在途资金
                 # 如果是卖出的waiting 则减少hold_list
-            elif int(update_message['status']) == 200:
+            elif int(message['header']['status']) == 200:
                 '交易成功的处理'
                 self.history.append(
                     [__new_trade_date, __new_code, __new_price, __new_towards,
@@ -255,15 +257,15 @@ class QA_Account():
             # 将交易记录插入历史交易记录
         else:
             pass
-        self.calc_profit(update_message)
+        self.calc_profit(message)
         self.message = {
             'header': {
                 'source': 'account',
                 'cookie': self.account_cookie,
                 'session': {
-                    'user': update_message['user'],
-                    'strategy': update_message['strategy'],
-                    'code': update_message['bid']['code']
+                    'user': message['header']['session']['user'],
+                    'strategy': message['header']['session']['strategy'],
+                    'code': message['body']['bid']['code']
                 }
 
             },
@@ -282,16 +284,16 @@ class QA_Account():
 
         return self.message
 
-    def calc_profit(self, update_message):
+    def calc_profit(self, message):
         """用于计算profit
-        
+
         [description]
-        
+
         Arguments:
-            update_message {[type]} -- [description]
+            message {[type]} -- [description]
         """
-        
-        if update_message['status'] == 200 and update_message['bid']['towards'] == 1:
+
+        if message['header']['status'] == 200 and message['body']['bid']['towards'] == 1:
             # 买入/
             # 证券价值=买入的证券价值+持有到结算(收盘价)的价值
 
@@ -299,10 +301,10 @@ class QA_Account():
 
             # 可用资金=上一期可用资金-买入的资金
             self.cash.append(float(self.cash[-1]) - float(
-                update_message['bid']['price']) * float(
-                    update_message['bid']['amount']) * update_message['bid']['towards'] - float(update_message['fee']['commission']))
+                message['body']['bid']['price']) * float(
+                    message['body']['bid']['amount']) * message['body']['bid']['towards'] - float(message['body']['fee']['commission']))
 
-        elif update_message['status'] == 200 and update_message['bid']['towards'] == -1:
+        elif message['header']['status'] == 200 and message['body']['bid']['towards'] == -1:
             # success trade,sell
             # 证券价值=买入的证券价值+持有到结算(收盘价)的价值
             # 买入的部分在update_message
@@ -310,8 +312,8 @@ class QA_Account():
             # 卖出的时候,towards=-1,所以是加上卖出的资产
             # 可用资金=上一期可用资金+卖出的资金
             self.cash.append(float(self.cash[-1]) - float(
-                update_message['bid']['price']) * float(
-                    update_message['bid']['amount']) * update_message['bid']['towards'] - float(update_message['fee']['commission']))
+                message['body']['bid']['price']) * float(
+                    message['body']['bid']['amount']) * message['body']['bid']['towards'] - float(message['body']['fee']['commission']))
 
             # 更新可用资金历史
 
@@ -333,25 +335,14 @@ class QA_Account():
             [type] -- [description]
         """
 
-        return self.update({
-            'code': _message['header']['code'],
-            'status': _message['header']['status'],
-            'user': _message['header']['session']['user'],
-            'strategy': _message['header']['session']['strategy'],
-            'trade_id': _message['header']['trade_id'],
-            'order_id': _message['header']['order_id'],
-            'date_stamp': str(time.mktime(datetime.datetime.now().timetuple())),
-            'bid': _message['body']['bid'],
-            'market': _message['body']['market'],
-            'fee': _message['body']['fee'],
-        })
+        return self.update(_message)
 
     def calc_assets(self):
         'get the real assets [from cash and market values]'
 
         return self.cash[-1] + sum([float(self.hold[i][2]) * float(self.hold[i][3]) for i in range(0, len(self.hold))])
 
-    def send_order(self, code, amount, time, towards, order_type):
+    def send_order(self, code, amount, time, towards, order_model):
         """[summary]
 
         [description]
@@ -368,14 +359,13 @@ class QA_Account():
         """
 
         date = str(time)[0:10] if len(str(time)) == 19 else str(time)
+        time= str(time) if len(str(time)) == 19 else '{} 09:31:00'.format(str(time)[0:10])
 
-        _order = QA_Order()  # init
-        (_order.user, _order.strategy, _order.account_cookie,
-         _order.code, _order.date, _order.datetime,
-         _order.sending_time,
-         _order.amount, _order.towards) = (self.user, self.strategy_name, self.account_cookie,
-                                           code, date, time,
-                                           time, amount, towards)
+        _order = QA_Order(user=self.user,strategy=self.strategy_name,
+                    account_cookie=self.account_cookie,code=code,
+                    date=date,datetime=time,sending_time=time,
+                    btype=self.account_type,amount=amount,
+                    order_model=order_model,towards=towards)  # init
         return _order
 
     def from_message(self, message):

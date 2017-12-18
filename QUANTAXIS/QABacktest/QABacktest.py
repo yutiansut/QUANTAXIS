@@ -126,8 +126,8 @@ class QA_Backtest():
         self.backtest_type = 'day'
         self.account = QA_Account()
         self.market = QA_Market()
+        
         self.order = QA_Order_list()
-        self.order = QA_Order()
         self.setting = QA_Setting()
         self.clients = self.setting.client
         self.user = self.setting.QA_setting_user_name
@@ -574,10 +574,10 @@ class QA_Backtest():
                 if order_type['order_model'] in ['limit', 'Limit', 'Limited', 'limited', 'l', 'L', 0, '0']:
                         # 限价委托模式
                     __order.price = __order['price']
-                elif order_type['order_model'] in ['Market', 'market', 'MARKET', 'm', 'M', 1, '1']:
+                elif order_type['order_model'] in ['Market', 'market', 'MARKET', 'm', 'M', 1, '1','next_open','NEXT_OPEN']:
                     # 2017-09-18 修改  市价单以当前bar开盘价下单
                     __order.price = float(__market_data_for_backtest['open'])
-                elif order_type['order_model'] in ['strict', 'Strict', 's', 'S', '2', 2]:
+                elif order_type['order_model'] in ['strict', 'Strict', 's', 'S', '2', 2,]:
                     __order.price = float(
                         __market_data_for_backtest['high']) if __order.towards == 1 else float(__market_data_for_backtest['low'])
                 elif order_type['order_model'] in ['close', 'close_price', 'c', 'C', '3', 3]:
