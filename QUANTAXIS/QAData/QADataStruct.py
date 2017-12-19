@@ -628,11 +628,11 @@ class QA_DataStruct_Market_reply():
     pass
 
 
-class QA_DataStruct_Market_bid():
+class QA_DataStruct_Market_order():
     pass
 
 
-class QA_DataStruct_Market_bid_queue():
+class QA_DataStruct_Market_order_queue():
     pass
 
 

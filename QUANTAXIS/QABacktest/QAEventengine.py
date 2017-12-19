@@ -24,7 +24,7 @@
 import pandas as pd
 
 from QUANTAXIS.QAARP import QA_Account, QA_Portfolio, QA_Risk
-from QUANTAXIS.QAMarket import QA_QAMarket_bid, QA_QAMarket_bid_list
+from QUANTAXIS.QAMarket import QA_Order, QA_Order_list
 from QUANTAXIS.QAUtil import QA_util_log_debug, QA_util_log_info
 
 
@@ -121,7 +121,7 @@ def sync_order_LM(cls, event_, order_=None, order_id_=None, trade_id_=None, mark
 
     elif event_ in ['trade']:
         # try:
-        assert isinstance(order_, QA_QAMarket_bid)
+        assert isinstance(order_, QA_Order)
         assert isinstance(order_id_, str)
         assert isinstance(trade_id_, str)
         assert isinstance(market_message_, dict)
