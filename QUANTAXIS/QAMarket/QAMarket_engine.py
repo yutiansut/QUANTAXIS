@@ -41,7 +41,7 @@ renew in 2017/6/28
 """
 
 
-def market_stock_engine(order, market_data, commission_fee_coeff=0.0015):
+def market_stock_engine(order, market_data, commission_fee_coeff=0.00025,tax_coeff=0.001):
     # 新增一个__commission_fee_coeff 手续费系数
     """MARKET ENGINE STOCK
 
@@ -89,7 +89,8 @@ def market_stock_engine(order, market_data, commission_fee_coeff=0.0015):
                             'code': market_data['code']
                         },
                         'fee': {
-                            'commission': 0
+                            'commission': 0,
+                            'tax':0
                         }
                     }
                 }
@@ -123,13 +124,18 @@ def market_stock_engine(order, market_data, commission_fee_coeff=0.0015):
                         deal_price = float(market_data['low'])
 
                 if int(order.towards) > 0:
-                    __commission_fee = 0
-                else:
-                    __commission_fee = commission_fee_coeff * \
+                    commission_fee = commission_fee_coeff * \
                         float(deal_price) * float(order.amount)
-                    if __commission_fee < 5:
-                        __commission_fee = 5
-
+                    commission_fee = 5 if commission_fee < 5 else commission_fee
+                        
+                    tax= tax_coeff * \
+                        float(deal_price) * float(order.amount)
+                else:
+                    commission_fee = commission_fee_coeff * \
+                        float(deal_price) * float(order.amount)
+                    commission_fee = 5 if commission_fee < 5 else commission_fee
+                    tax= tax_coeff * \
+                        float(deal_price) * float(order.amount)
                 return {
                     'header': {
                         'source': 'market',
@@ -160,7 +166,8 @@ def market_stock_engine(order, market_data, commission_fee_coeff=0.0015):
                             'code': market_data['code']
                         },
                         'fee': {
-                            'commission': float(__commission_fee)
+                            'commission': float(commission_fee),
+                            'tax':float(tax)
                         }
                     }
                 }
@@ -230,7 +237,8 @@ def market_stock_engine(order, market_data, commission_fee_coeff=0.0015):
                         'code': 0
                     },
                     'fee': {
-                        'commission': 0
+                            'commission':0,
+                            'tax':0
                     }
                 }
             }
@@ -340,12 +348,12 @@ def market_future_engine(order, market_data=None, commission_fee_coeff=0.0015):
                                 deal_price = float(market_data['low'])
 
                         if int(order.towards) > 0:
-                            __commission_fee = 0
+                            commission_fee = 0
                         else:
-                            __commission_fee = 0.0015 * \
+                            commission_fee = 0.0015 * \
                                 float(deal_price) * float(order.amount)
-                            if __commission_fee < 5:
-                                __commission_fee = 5
+                            if commission_fee < 5:
+                                commission_fee = 5
 
                         return {
                             'header': {
@@ -376,7 +384,7 @@ def market_future_engine(order, market_data=None, commission_fee_coeff=0.0015):
                                     'code': market_data['code']
                                 },
                                 'fee': {
-                                    'commission': float(__commission_fee)
+                                    'commission': float(commission_fee)
                                 }
                             }
                         }
