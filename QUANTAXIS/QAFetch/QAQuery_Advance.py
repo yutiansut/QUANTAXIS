@@ -219,8 +219,9 @@ def QA_fetch_stock_transaction_adv(
         'code': str(code), "date": {
             "$gte": start,
             "$lte": end
-        }})]).drop('_id', axis=1, inplace=False)
-    data['datetime'] = pd.to_datetime(data['date'] + ' ' + data['time'])
+        }})])
+
+    data['datetime'] = pd.to_datetime(data['datetime'])
     return QA_DataStruct_Stock_transaction(data.set_index('datetime', drop=if_drop_index))
 
 

@@ -152,12 +152,17 @@ class QA_Market(_market_engine_base):
                 order.price = float(self.market_data["high"])
             else:
                 order.price = float(self.market_data["low"])
+        return order
 
         # 对于股票 有最小交易100股限制
-        order.amount = int(order.amount / (order.price * 100)) * \
-            100 if order.type in ['0x01', '0x02', '0x03'] else order.amount
 
-        return order
+        """        if order.amount_model is AMOUNT_MODEL.BY_PRICE:
+            order.amount = int(order.amount / (order.price * 100)) * \
+                100 if order.type in ['0x01', '0x02', '0x03'] else order.amount
+        else:
+            pass
+        """
+            
 
     def get_market(self, order):
         """get_market func
