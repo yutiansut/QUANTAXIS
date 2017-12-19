@@ -72,19 +72,6 @@ class ORDER_MODEL:
     STRICT = 'strict'  # 严格模式/不推荐(仅限回测测试用)
 
 
-class Order_PRICE:
-    """订单的价格模式
-
-    [description]
-    """
-
-
-class ORDER_AMOUNT:
-    """[summary]
-
-    [description]
-    """
-    pass
 
 class ORDER_STATUS:
     """订单状态
@@ -98,7 +85,17 @@ class ORDER_STATUS:
 class MARKET_TYPE():
     """市场种类
 
-    [description]
+    日线 尾数01
+    分钟线 尾数02
+    tick 尾数03
+
+    市场:
+    股票 0
+    指数/基金 1
+    期货 2
+    港股 3
+    美股 4
+    比特币/加密货币市场 5
     """
 
     STOCK_DAY = '0x01'
