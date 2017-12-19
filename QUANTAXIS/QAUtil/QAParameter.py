@@ -72,10 +72,9 @@ class ORDER_MODEL:
     STRICT = 'strict'  # 严格模式/不推荐(仅限回测测试用)
 
 
-
 class ORDER_STATUS:
     """订单状态
-    
+
     status1xx 订单待生成
     status3xx 初始化订单  临时扣除资产(可用现金/可卖股份)
     status3xx 订单存活(等待交易)
@@ -93,13 +92,13 @@ class ORDER_STATUS:
     订单生成(100) -- 进入待成交队列(300) -- 部分成交(203) -- 未成交(300) -- 每日结算(500) -- 死亡
     订单生成(100) -- 进入待成交队列(300) -- 主动撤单(400) -- 每日结算(500) -- 死亡
     """
-    
-    NEW=100
-    SUCCESS_ALL=200
-    SUCCESS_PART=203
-    ALIVE=300
-    CANCEL_ALL=400
-    SETTLED=500
+
+    NEW = 100
+    SUCCESS_ALL = 200
+    SUCCESS_PART = 203
+    QUEUED = 300  # queued 用于表示在order_queue中 实际表达的意思是订单存活 待成交
+    CANCEL_ALL = 400
+    SETTLED = 500
 
 
 class MARKET_TYPE():
@@ -133,13 +132,13 @@ class MARKET_TYPE():
 
 class RUNNING_ENVIRONMENT:
     """执行环境
-    
+
     回测
     模拟
     实盘
     随机(按算法/分布随机生成行情)/仅用于训练测试
     """
-    
+
     BACKETEST = 'backtest'
     SIMULATION = 'simulation'
     REAL = 'real'
@@ -148,15 +147,14 @@ class RUNNING_ENVIRONMENT:
 
 class TRADE_STATUS:
     """交易状态返回值
-    
+
     涨跌停限制: 202
     成功交易 : 200
     当天无交易数据: 500
-    
+    订单失败(比如买卖价格超过涨跌停价格范围,交易量过大等等):400
     """
-    
+
     SUCCESS = 200
-    NO_MARKET_DATA = 500
     PRICE_LIMIT = 202
+    NO_MARKET_DATA = 500
     FAILED = 400
-    
