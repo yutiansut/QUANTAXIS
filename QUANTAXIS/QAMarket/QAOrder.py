@@ -30,7 +30,7 @@ import pandas as pd
 
 from QUANTAXIS.QAUtil import (QA_util_log_info, QA_util_random_with_topic,
                               QA_util_to_json_from_pandas)
-
+from QUANTAXIS.QAUtil.QAParameter import ORDER_MODEL, AMOUNT_MODEL
 
 """
 重新定义Order模式
@@ -48,7 +48,7 @@ by yutiansut@2017/12/15
 
 class QA_Order():
     def __init__(self, price=None, date=None, datetime=None, sending_time=None, transact_time=None, amount=None,
-                 towards=None, code=None, user=None, account_cookie=None, strategy=None, btype=None, order_model=None, amount_model=None,
+                 towards=None, code=None, user=None, account_cookie=None, strategy=None, btype=None, order_model=None, amount_model=AMOUNT_MODEL.BY_AMOUNT,
                  order_id=QA_util_random_with_topic(topic='Order'), trade_id=None, status='100'):
         self.price = price
         self.datetime = None
@@ -84,34 +84,6 @@ class QA_Order():
     def __repr__(self):
         return '< QA_Order datetime:{} code:{} price:{} towards:{} btype:{} order_id:{} account:{} status:{} >'.format(
             self.datetime, self.code, self.price, self.towards, self.type, self.order_id, self.account_cookie, self.status)
-
-    def stock_day(self):
-        self.type = '0x01'
-        return self
-
-    def stock_min(self):
-        self.type = '0x02'
-        return self
-
-    def index_day(self):
-        self.type = '0x03'
-        return self
-
-    def index_min(self):
-        self.type = '0x04'
-        return self
-
-    def stock_transaction(self):
-        self.type = '0x05'
-        return self
-
-    def index_transaction(self):
-        self.type = '0x06'
-        return self
-
-    def future_day(self):
-        self.type = '1x01'
-        return self
 
     def info(self):
         return vars(self)
@@ -173,27 +145,55 @@ class QA_Order():
             QA_util_log_info('Failed to tran from dict')
 
 
-class QA_Order_list():   # also the order tree
+class QA_OrderQueue():   # also the order tree
     """
-    一个待成交列表
+    一个待成交队列
 
     """
 
-    def __init__(self, _list=[]):
-        self.list = _list
-        self.order_queue = queue.Queue()
-
+    def __init__(self):
+        self.order_list = []
+        self.queue = pd.DataFrame()
+    def __repr__(self):
+        return '< QA_OrderQueue AMOUNT {} WAITING TRADE {} >'.format(len(self.queue),len(self.pending))
+    def __call__(self):
+        return self.queue
     def from_dataframe(self, dataframe):
         try:
-            self.list = [QA_Order().from_dict(item)
+            self.order_list = [QA_Order().from_dict(item)
                          for item in QA_util_to_json_from_pandas(dataframe)]
-            return self.list
+            return self.order_list
         except:
             pass
 
+    def insert_order(self, order):
+        self.queue = self.queue.append(
+            order.to_df(), ignore_index=True)
+
+    def settle(self):
+        """结算
+        
+        清空订单簿
+        """
+        self.queue = pd.DataFrame()
+
+    @property
+    def pending(self):
+        """选择待成交列表
+        
+        [description]
+        
+        Returns:
+            [type] -- [description]
+        """
+        try:
+            return self.queue.query('status!=200').query('status!=500').query('status!=400')
+        except:
+            return pd.DataFrame()
+
 
 if __name__ == '__main__':
-    ax = QA_Order().stock_day()
+    ax = QA_Order()
 
     print(ax.info())
     print(ax.to_df())

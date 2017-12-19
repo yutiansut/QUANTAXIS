@@ -31,7 +31,7 @@ from QUANTAXIS.QAMarket.QA_RandomMarket import QA_RandomMarket
 from QUANTAXIS.QAMarket.QA_RealMarket import QA_RealMarket
 from QUANTAXIS.QAMarket.QA_SimulationMarket import QA_SimulationMarket
 from QUANTAXIS.QAMarket.QAMarket import QA_Market
-from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_Order_list
+from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
 from QUANTAXIS.QAUtil.QAParameter import (ORDER_EVENT, ORDER_STATUS,
                                           RUNNING_ENVIRONMENT)
 
@@ -41,7 +41,13 @@ class QA_OrderHandler():
 
     仅负责一个无状态的执行层
 
-    用于接受订单 发送给相应的marker_broker
+    ORDER执行器的作用是因为 
+    在实盘中 当一个订单发送出去的时候,市场不会返回一个更新的订单类回来
+    大部分时间都依赖子线程主动查询 或者是一个市场信息来进行判断
+
+    ORDER_Handler的作用就是根据信息更新Order
+
+    用于接受订单 发送给相应的marker_broker 再根据返回的信息 进行更新
 
     可用的market_broker:
     1.回测盘
@@ -50,15 +56,21 @@ class QA_OrderHandler():
 
     """
 
-    def __init__(self, order_queue=pd.DataFrame(), environment=RUNNING_ENVIRONMENT.BACKETEST, *args, **kwargs):
-        self.order_queue = order_queue
+    def __init__(self, environment=RUNNING_ENVIRONMENT.BACKETEST, *args, **kwargs):
+        self.order_queue = QA_OrderQueue()
         self.environment_engine = {
             'backtest': QA_Market, 'simulation': QA_SimulationMarket, 'real': QA_RealMarket, 'random': QA_RandomMarket}
         self.market = self.environment_engine[environment]()
+        self.event = ''
 
     def set_environment(self, environment):
         self.market = self.environment_engine[environment]()
 
-    def order_event(self, event, order_id):
+    def order_event(self, event, message):
         if event is ORDER_EVENT.CREATE:
-            self.order_queue.append()
+            # 此时的message应该是订单类
+            assert isinstance(message, QA_Order)
+            self.order_queue.insert_order(message)
+        elif event is ORDER_EVENT.TRADE:
+            assert isinstance(message, dict)
+            self.market.receive_order()

@@ -114,6 +114,17 @@ class ORDER_EVENT:
     CANCEL = 'cancel'
 
 
+class AMOUNT_MODEL:
+    """订单的成交量
+
+    by_price是按固定成交总额下单,动态计算成交量
+    by_amount 按固定成家量下单
+    """
+
+    BY_PRICE = 'by_price'
+    BY_AMOUNT = 'by_amount'
+
+
 class MARKET_TYPE():
     """市场种类
 
@@ -171,5 +182,3 @@ class TRADE_STATUS:
     PRICE_LIMIT = 202
     NO_MARKET_DATA = 500
     FAILED = 400
-
-

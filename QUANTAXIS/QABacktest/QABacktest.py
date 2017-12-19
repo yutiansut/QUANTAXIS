@@ -60,7 +60,7 @@ from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_index_day_adv,
                                                QA_fetch_stock_min_adv,
                                                QA_fetch_stocklist_day_adv,
                                                QA_fetch_stocklist_min_adv)
-from QUANTAXIS.QAMarket.QAOrder import QA_Order_list,QA_Order
+from QUANTAXIS.QAMarket.QAOrder import QA_OrderQueue,QA_Order
 from QUANTAXIS.QAMarket.QAMarket import QA_Market
 from QUANTAXIS.QASU.save_backtest import (QA_SU_save_account_message,
                                           QA_SU_save_account_to_csv,
@@ -89,7 +89,7 @@ class QA_Backtest():
     account = QA_Account()
     market = QA_Market()
     bid = QA_Order()
-    order = QA_Order_list()
+    order = QA_OrderQueue()
     setting = QA_Setting()
     clients = setting.client
     user = setting.QA_setting_user_name
@@ -127,7 +127,7 @@ class QA_Backtest():
         self.account = QA_Account()
         self.market = QA_Market()
         
-        self.order = QA_Order_list()
+        self.order = QA_OrderQueue()
         self.setting = QA_Setting()
         self.clients = self.setting.client
         self.user = self.setting.QA_setting_user_name

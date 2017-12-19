@@ -29,9 +29,9 @@ import time
 import numpy as np
 import pandas as pd
 
-from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_Order_list
+from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, ORDER_DIRECTION
+from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, ORDER_DIRECTION, AMOUNT_MODEL, ORDER_MODEL
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 # 2017/6/4修改: 去除总资产的动态权益计算
@@ -342,7 +342,7 @@ class QA_Account():
 
         return self.cash[-1] + sum([float(self.hold[i][2]) * float(self.hold[i][3]) for i in range(0, len(self.hold))])
 
-    def send_order(self, code, amount, time, towards, order_model):
+    def send_order(self, code, amount, time, towards, order_model, amount_model):
         """[summary]
 
         [description]
@@ -352,21 +352,23 @@ class QA_Account():
             amount {[type]} -- [description]
             time {[type]} -- [description]
             towards {[type]} -- [description]
-            order_type {[type]} -- [description]
+            order_model {[type]} -- [description]
+            amount_model {[type]} -- [description]
 
         Returns:
             [type] -- [description]
         """
 
         date = str(time)[0:10] if len(str(time)) == 19 else str(time)
-        time= str(time) if len(str(time)) == 19 else '{} 09:31:00'.format(str(time)[0:10])
+        time = str(time) if len(
+            str(time)) == 19 else '{} 09:31:00'.format(str(time)[0:10])
 
-        _order = QA_Order(user=self.user,strategy=self.strategy_name,
-                    account_cookie=self.account_cookie,code=code,
-                    date=date,datetime=time,sending_time=time,
-                    btype=self.account_type,amount=amount,
-                    order_model=order_model,towards=towards)  # init
-        return _order
+        return QA_Order(user=self.user, strategy=self.strategy_name,
+                          account_cookie=self.account_cookie, code=code,
+                          date=date, datetime=time, sending_time=time,
+                          btype=self.account_type, amount=amount,
+                          order_model=order_model, towards=towards,amount_model=amount_model)  # init
+
 
     def from_message(self, message):
 

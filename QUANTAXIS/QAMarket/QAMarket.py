@@ -42,6 +42,7 @@ from QUANTAXIS.QAMarket.QAMarket_base import _market_engine_base
 from QUANTAXIS.QAMarket.QAMarket_engine import (market_future_engine,
                                                 market_stock_engine)
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
+from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_MODEL
 
 
 class QA_Market(_market_engine_base):
@@ -152,18 +153,19 @@ class QA_Market(_market_engine_base):
                 order.price = float(self.market_data["high"])
             else:
                 order.price = float(self.market_data["low"])
-        return order
+        
 
         # 对于股票 有最小交易100股限制
 
-        """        if order.amount_model is AMOUNT_MODEL.BY_PRICE:
+        if order.amount_model is AMOUNT_MODEL.BY_PRICE:
             order.amount = int(order.amount / (order.price * 100)) * \
                 100 if order.type in ['0x01', '0x02', '0x03'] else order.amount
-        else:
-            pass
-        """
-            
+            order.amount_model=AMOUNT_MODEL.BY_AMOUNT
+        elif order.amount_model is AMOUNT_MODEL.BY_AMOUNT:
+            order.amount = int(
+                order.amount / 100) * 100 if order.type in ['0x01', '0x02', '0x03'] else order.amount
 
+        return order
     def get_market(self, order):
         """get_market func
 
