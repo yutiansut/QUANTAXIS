@@ -31,7 +31,7 @@ QUANTAXIS-Protocol
     - [QAS-203-x QA_SU_user](#qas-203-x-qa_su_user)
 - [QAS-30x QAMarket 市场机制类](#qas-30x-qamarket-市场机制类)
     - [QAS-301-x QA_Market](#qas-301-x-qa_market)
-    - [QAS-302-x QA_QAMarket_bid](#qas-302-x-qa_qamarket_bid)
+    - [QAS-302-x QA_Order](#qas-302-x-QA_Order)
 - [QAS-40x QABacktest 回测类](#qas-40x-qabacktest-回测类)
 - [QAS-50x QAARP(account/risk/portfolio)账户/风险/组合管理类](#qas-50x-qaarpaccountriskportfolio账户风险组合管理类)
     - [QAS-501-x QA_Account](#qas-501-x-qa_account)
@@ -96,7 +96,7 @@ QUANTAXIS是一个渐进式框架,所以会有基础模块和扩展模块之分
 ### QAS-003-2 类命名方式
 类的命名
 
-- QA+ _大写字母类+_小写字母 ( QA_Account,QA_Risk,QA_Market,QA_QAMarket_bid,QA_Backtest )
+- QA+ _大写字母类+_小写字母 ( QA_Account,QA_Risk,QA_Market,QA_Order,QA_Backtest )
 ### QAS-003-3 函数命名方式
 函数的命名
 
@@ -109,7 +109,7 @@ QUANTAXIS是一个渐进式框架,所以会有基础模块和扩展模块之分
 > 但如果模块是缩写形式,则缩写部分还是大写,如 QA_SU_save_stock_day
 
 ```
-QA_QAMarket_bid  这个是类
+QA_Order  这个是类
 QA_util_time_stamp 这个是函数
 ```
 ### QAS-003-4 数据库/表命名方式
@@ -196,7 +196,7 @@ from QUANTAXIS.QAFetch.QAQuery import *
 
 # QAS-30x QAMarket 市场机制类 
 ## QAS-301-x QA_Market
-## QAS-302-x QA_QAMarket_bid
+## QAS-302-x QA_Order
 bid是一个标准报价包
 ```python
 
@@ -219,7 +219,7 @@ bid是一个标准报价包
 ```python
 account=QA_Account()
 market=QA_Market()
-bid=QA_QAMarket_bid()
+bid=QA_Order()
 setting=QA_Setting()
 ```
 # QAS-50x QAARP(account/risk/portfolio)账户/风险/组合管理类

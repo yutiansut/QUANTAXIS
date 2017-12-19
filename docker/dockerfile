@@ -3,13 +3,10 @@ FROM registry.cn-shanghai.aliyuncs.com/yutiansut/quantaxis
 MAINTAINER yutiansut 'yutiansut@qq.com'
 
 
-
-
 # Update QUANTAXIS
 
 RUN cd /home/quantaxis && git pull
 RUN pip install -e .
-# 
 
 # RUN cd /root && nohup sh ./startmongod.sh &
 # RUN cd /root/quantaxis/QUANTAXIS_Webkit/backend && forever start ./bin/www
