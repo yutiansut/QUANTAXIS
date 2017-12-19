@@ -1,14 +1,14 @@
-FROM yutiansut/quantaxis
+FROM registry.cn-shanghai.aliyuncs.com/yutiansut/quantaxis
 
-MAINTAINER yutiasnut 'yutiansut@qq.com'
+MAINTAINER yutiansut 'yutiansut@qq.com'
 
 
-#没写完没写完没写完!
-#重要的事情说三遍
 
-# update QUANTAXIS
-RUN cd /QUANTAXIS && git pull
-RUN python3.6 -m pip install -e .
+
+# Update QUANTAXIS
+
+RUN cd /home/quantaxis && git pull
+RUN pip install -e .
 # 
 
 # RUN cd /root && nohup sh ./startmongod.sh &
@@ -19,3 +19,4 @@ RUN python3.6 -m pip install -e .
 
 EXPOSE 8080 
 EXPOSE 3000
+EXPOSE 8888
