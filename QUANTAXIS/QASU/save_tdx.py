@@ -52,7 +52,8 @@ def now_time():
 
 def QA_SU_save_stock_day(code=None, client=QA_Setting.client):
     codelist = QA_fetch_get_stock_time_to_market() if code is None else code
-    codelist = [codelist] if isinstance(codelist, str) else codelist
+    codelist = pd.DataFrame([codelist], columns=['code']).set_index('code') if isinstance(
+        codelist, str) else pd.DataFrame(codelist, columns=['code']).set_index('code')
     coll_stock_day = client.quantaxis.stock_day
     coll_stock_day.create_index(
         [("code", pymongo.ASCENDING), ("date_stamp", pymongo.ASCENDING)])
@@ -66,7 +67,7 @@ def QA_SU_save_stock_day(code=None, client=QA_Setting.client):
             ref = coll_stock_day.find({'code': str(code)[0:6]})
             end_date = str(now_time())[0:10]
             if ref.count() > 0:
-                    # 加入这个判断的原因是因为如果股票是刚上市的 数据库会没有数据 所以会有负索引问题出现
+                # 加入这个判断的原因是因为如果股票是刚上市的 数据库会没有数据 所以会有负索引问题出现
 
                 start_date = ref[ref.count() - 1]['date']
             else:
@@ -96,7 +97,8 @@ def QA_SU_save_stock_day(code=None, client=QA_Setting.client):
 def QA_SU_save_stock_xdxr(code=None, client=QA_Setting.client):
     client.quantaxis.drop_collection('stock_xdxr')
     codelist = QA_fetch_get_stock_time_to_market() if code is None else code
-    codelist = [codelist] if isinstance(codelist, str) else codelist
+    codelist = pd.DataFrame([codelist], columns=['code']).set_index('code') if isinstance(
+        codelist, str) else pd.DataFrame(codelist, columns=['code']).set_index('code')
     coll = client.quantaxis.stock_xdxr
     coll.create_index([('code', pymongo.ASCENDING),
                        ('date', pymongo.ASCENDING)])
@@ -127,7 +129,8 @@ def QA_SU_save_stock_xdxr(code=None, client=QA_Setting.client):
 def QA_SU_save_stock_min(code=None, client=QA_Setting.client):
 
     codelist = QA_fetch_get_stock_time_to_market() if code is None else code
-    codelist = [codelist] if isinstance(codelist, str) else codelist
+    codelist = pd.DataFrame([codelist], columns=['code']).set_index('code') if isinstance(
+        codelist, str) else pd.DataFrame(codelist, columns=['code']).set_index('code')
     coll = client.quantaxis.stock_min
     coll.create_index([('code', pymongo.ASCENDING), ('time_stamp',
                                                      pymongo.ASCENDING), ('date_stamp', pymongo.ASCENDING)])
@@ -175,10 +178,9 @@ def QA_SU_save_stock_min(code=None, client=QA_Setting.client):
         QA_util_log_info(err)
 
 
-def QA_SU_save_index_day(code=None, client=QA_Setting.client):
+def QA_SU_save_index_day(client=QA_Setting.client):
 
-    codelist = QA_fetch_get_stock_list('index') if code is None else code
-    codelist = [codelist] if isinstance(codelist, str) else codelist
+    codelist = QA_fetch_get_stock_list('index')
     coll = client.quantaxis.index_day
     coll.create_index([('code', pymongo.ASCENDING),
                        ('date_stamp', pymongo.ASCENDING)])
@@ -217,10 +219,10 @@ def QA_SU_save_index_day(code=None, client=QA_Setting.client):
         QA_util_log_info(err)
 
 
-def QA_SU_save_index_min(code=None, client=QA_Setting.client):
+def QA_SU_save_index_min(client=QA_Setting.client):
 
-    codelist = QA_fetch_get_stock_list('index') if code is None else code
-    codelist = [codelist] if isinstance(codelist, str) else codelist
+    codelist = QA_fetch_get_stock_list('index')
+    #codelist = [codelist] if isinstance(codelist, str) else codelist
     coll = client.quantaxis.index_min
     coll.create_index([('code', pymongo.ASCENDING), ('time_stamp',
                                                      pymongo.ASCENDING), ('date_stamp', pymongo.ASCENDING)])
@@ -268,9 +270,9 @@ def QA_SU_save_index_min(code=None, client=QA_Setting.client):
         QA_util_log_info(err)
 
 
-def QA_SU_save_etf_day(code=None, client=QA_Setting.client):
-    codelist = QA_fetch_get_stock_list('etf') if code is None else code
-    codelist = [codelist] if isinstance(codelist, str) else codelist
+def QA_SU_save_etf_day(client=QA_Setting.client):
+    codelist = QA_fetch_get_stock_list('etf')  # if code is None else code
+    #codelist = [codelist] if isinstance(codelist, str) else codelist
     coll = client.quantaxis.index_day
     coll.create_index([('code', pymongo.ASCENDING),
                        ('date_stamp', pymongo.ASCENDING)])
@@ -309,9 +311,9 @@ def QA_SU_save_etf_day(code=None, client=QA_Setting.client):
         QA_util_log_info(err)
 
 
-def QA_SU_save_etf_min(code=None, client=QA_Setting.client):
-    codelist = QA_fetch_get_stock_list('etf') if code is None else code
-    codelist = [codelist] if isinstance(codelist, str) else codelist
+def QA_SU_save_etf_min(client=QA_Setting.client):
+    codelist = QA_fetch_get_stock_list('etf')  # if code is None else code
+    #codelist = [codelist] if isinstance(codelist, str) else codelist
     coll = client.quantaxis.index_min
     coll.create_index([('code', pymongo.ASCENDING), ('time_stamp',
                                                      pymongo.ASCENDING), ('date_stamp', pymongo.ASCENDING)])
@@ -401,7 +403,8 @@ def QA_SU_save_stock_block(client=QA_Setting.client):
 def QA_SU_save_stock_info(code=None, client=QA_Setting.client):
     client.quantaxis.drop_collection('stock_info')
     codelist = QA_fetch_get_stock_time_to_market() if code is None else code
-    codelist = [codelist] if isinstance(codelist, str) else codelist
+    codelist = pd.DataFrame([codelist], columns=['code']).set_index('code') if isinstance(
+        codelist, str) else pd.DataFrame(codelist, columns=['code']).set_index('code')
     coll = client.quantaxis.stock_info
     coll.create_index('code')
     err = []
@@ -431,7 +434,8 @@ def QA_SU_save_stock_info(code=None, client=QA_Setting.client):
 
 def QA_SU_save_stock_transaction(code=None, client=QA_Setting.client):
     codelist = QA_fetch_get_stock_time_to_market() if code is None else code
-    codelist = [codelist] if isinstance(codelist, str) else codelist
+    codelist = pd.DataFrame([codelist], columns=['code']).set_index('code') if isinstance(
+        codelist, str) else pd.DataFrame(codelist, columns=['code']).set_index('code')
     coll = client.quantaxis.stock_transaction
     coll.create_index('code')
     err = []
