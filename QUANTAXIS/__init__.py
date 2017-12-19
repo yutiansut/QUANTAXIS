@@ -31,7 +31,8 @@ by yutiansut
 
 2017/4/8
 """
-__version__ = '0.5.30'
+
+__version__ = 'remake-version'
 __author__ = 'yutiansut'
 logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
@@ -59,8 +60,10 @@ from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day, QA_fetch_get_trade_date, 
                                QA_fetch_get_index_day, QA_fetch_get_index_min, QA_fetch_get_stock_list, QA_fetch_get_stock_info,
                                QA_fetch_get_stock_block, QA_fetch_get_stock_transaction_realtime, QA_fetch_get_security_bars,
                                QA_fetch_get_future_day, QA_fetch_get_future_min, QA_fetch_get_future_list)
-from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_trade_date, QA_fetch_stock_day, QA_fetch_stocklist_day, QA_fetch_index_day,
-                                       QA_fetch_stock_min, QA_fetch_stocklist_min, QA_fetch_future_min, QA_fetch_future_day,
+from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_trade_date,
+                                       QA_fetch_stock_day, QA_fetch_stocklist_day, QA_fetch_stock_min, QA_fetch_stocklist_min,
+                                       QA_fetch_index_day, QA_fetch_index_min,
+                                       QA_fetch_future_min, QA_fetch_future_day,
                                        QA_fetch_future_tick, QA_fetch_stock_list, QA_fetch_stock_full, QA_fetch_stock_xdxr,
                                        QA_fetch_backtest_info, QA_fetch_backtest_history, QA_fetch_stock_block, QA_fetch_stock_info,
                                        QA_fetch_stock_name, QA_fetch_quotation, QA_fetch_quotations)
@@ -80,7 +83,8 @@ from QUANTAXIS.QASU.user import (QA_user_sign_in, QA_user_sign_up)
 
 # market
 
-from QUANTAXIS.QAMarket import (QA_QAMarket_bid, QA_Market)
+from QUANTAXIS.QAMarket import (QA_Order, QA_Order_list, QA_OrderHandler,
+                                QA_RealMarket, QA_Market, QA_RandomMarket, QA_SimulationMarket)
 
 # Account,Risk,Portfolio
 
@@ -110,7 +114,7 @@ from QUANTAXIS.QAUtil.QAType import (
     QA_util_ensure_date, QA_util_ensure_dict, QA_util_ensure_ms, QA_util_ensure_timeSerires)
 
 
-from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms_stamp, QA_util_date_valid,
+from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms_stamp, QA_util_date_valid, QA_util_calc_time,
                               QA_util_realtime, QA_util_id2date, QA_util_is_trade, QA_util_get_date_index,
                               QA_util_get_index_date, QA_util_select_hours, QA_util_date_gap, QA_util_time_gap,
                               QA_util_select_min, QA_util_time_delay, QA_util_time_now, QA_util_date_str2int,
@@ -127,7 +131,9 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms
                               QA_util_multi_demension_list, QA_util_diff_list,
                               QA_util_to_json_from_pandas, QA_util_to_list_from_numpy, QA_util_to_list_from_pandas, QA_util_to_pandas_from_json, QA_util_to_pandas_from_list,
                               QA_util_mongo_initial, QA_util_mongo_make_index, QA_util_mongo_status, QA_util_mongo_infos,
-                              QA_util_make_min_index, QA_util_make_hour_index)
+                              QA_util_make_min_index, QA_util_make_hour_index,
+                              QA_util_random_with_topic,
+                              MARKET_TYPE, ORDER_STATUS, TRADE_STATUS, ORDER_DIRECTION, ORDER_MODEL, ORDER_EVENT, RUNNING_ENVIRONMENT)  # QAPARAMETER
 
 from QUANTAXIS.QAIndicator import *
 #from QUANTAXIS.QAFetch.QATdx_adv import bat
@@ -146,6 +152,6 @@ if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6]:
     sys.exit()
 
 
-QA_util_log_info('Welcome to QUANTAXIS, the Version is ' + __version__)
+QA_util_log_info('Welcome to QUANTAXIS, the Version is {}'.format(__version__))
 
 QA_util_log_info(logo)
