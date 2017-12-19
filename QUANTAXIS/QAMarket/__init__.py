@@ -28,4 +28,4 @@ from QUANTAXIS.QAMarket.QA_RandomMarket import QA_RandomMarket
 from QUANTAXIS.QAMarket.QA_RealMarket import QA_RealMarket
 from QUANTAXIS.QAMarket.QA_SimulationMarket import QA_SimulationMarket
 from QUANTAXIS.QAMarket.QAMarket import QA_Market
-from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_Order_list
+from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue

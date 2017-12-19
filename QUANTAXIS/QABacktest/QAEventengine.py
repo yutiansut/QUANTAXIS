@@ -24,7 +24,7 @@
 import pandas as pd
 
 from QUANTAXIS.QAARP import QA_Account, QA_Portfolio, QA_Risk
-from QUANTAXIS.QAMarket import QA_Order, QA_Order_list
+from QUANTAXIS.QAMarket import QA_Order, QA_OrderQueue
 from QUANTAXIS.QAUtil import QA_util_log_debug, QA_util_log_info
 
 

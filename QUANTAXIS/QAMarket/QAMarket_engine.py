@@ -218,7 +218,7 @@ def market_stock_engine(order, market_data, commission_fee_coeff=0.00025,tax_coe
                         'strategy': str(order.strategy)
                     },
                     'order_id': str(order.order_id),
-                    'trade_id':  QA_util_random_with_topic('Trade')
+                    'trade_id': QA_util_random_with_topic('Trade')
                 },
                 'body': {
                     'bid': {
