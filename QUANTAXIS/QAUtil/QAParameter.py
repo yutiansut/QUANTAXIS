@@ -86,6 +86,14 @@ class ORDER_AMOUNT:
     """
     pass
 
+class ORDER_STATUS:
+    """订单状态
+    
+    新建订单 101
+    """
+    
+    NEW=101
+
 
 class MARKET_TYPE():
     """市场种类
@@ -112,15 +120,13 @@ class RUNNING_ENVIRONMENT:
     回测
     模拟
     实盘
+    随机(按算法/分布随机生成行情)/仅用于训练测试
     """
     
     BACKETEST = 'backtest'
     SIMULATION = 'simulation'
     REAL = 'real'
-
-
-class MARKET_STATUS:
-    MARKET_CLOSE=500
+    RANODM = 'random'
 
 
 class TRADE_STATUS:

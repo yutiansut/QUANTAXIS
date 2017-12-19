@@ -50,7 +50,7 @@ class QA_Market(_market_engine_base):
     QUANTAXIS MARKET 部分
 
     回测/模拟盘
-    股票/指数/期货/债券/ETF
+    股票/指数/期货/债券/ETF/基金
     @yutiansut
 
     """
