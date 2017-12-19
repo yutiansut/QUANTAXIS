@@ -551,7 +551,6 @@ def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=best_ip['stock'
 
         return data.assign(datetime=data['datetime'].apply(lambda x: str(x)[0:19]))
 
-
 def QA_fetch_get_stock_transaction_realtime(code, ip=best_ip['stock'], port=7709):
     '实时逐笔成交 包含集合竞价'
     api = TdxHq_API()

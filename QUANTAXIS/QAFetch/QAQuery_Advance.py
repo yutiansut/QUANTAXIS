@@ -103,9 +103,12 @@ def QA_fetch_stock_min_adv(
     elif type_ in ['60min', '60m']:
         type_ = '60min'
     __data = []
+
+    
     end = start if end is None else end
-    if start == end and len(start) == 10:
+    if len(start) == 10:
         start = '{} 09:30:00'.format(start)
+    if len(end) == 10:
         end = '{} 15:00:00'.format(end)
     if isinstance(code, str):
 
@@ -185,8 +188,9 @@ def QA_fetch_index_min_adv(
         type_ = '60min'
     __data = []
     end = start if end is None else end
-    if start == end and len(start) == 10:
+    if len(start) == 10:
         start = '{} 09:30:00'.format(start)
+    if len(end) == 10:
         end = '{} 15:00:00'.format(end)
     if isinstance(code, str):
         for item in collections.find({
