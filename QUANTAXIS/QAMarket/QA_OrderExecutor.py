@@ -21,18 +21,22 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import pandas as pd
-import numpy as np
 import datetime
 import queue
-from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_Order_list
-from QUANTAXIS.QAMarket.QAMarket import QA_Market
-from QUANTAXIS.QAUtil.QAParameter import RUNNING_ENVIRONMENT
-from QUANTAXIS.QAMarket.QA_SimulationMarket import QA_SimulationMarket
+
+import numpy as np
+import pandas as pd
+
 from QUANTAXIS.QAMarket.QA_RandomMarket import QA_RandomMarket
 from QUANTAXIS.QAMarket.QA_RealMarket import QA_RealMarket
+from QUANTAXIS.QAMarket.QA_SimulationMarket import QA_SimulationMarket
+from QUANTAXIS.QAMarket.QAMarket import QA_Market
+from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_Order_list
+from QUANTAXIS.QAUtil.QAParameter import (ORDER_EVENT, ORDER_STATUS,
+                                          RUNNING_ENVIRONMENT)
 
-class ORDER_EXECUTOR():
+
+class QA_OrderHandler():
     """ORDER执行器
 
     仅负责一个无状态的执行层
@@ -46,11 +50,15 @@ class ORDER_EXECUTOR():
 
     """
 
-    def __init__(self, order_queue=queue.Queue(), market, environment=RUNNING_ENVIRONMENT.BACKETEST, *args, **kwargs):
-        self.order_queue() = order
-        self.market = market
-        self.environment_engine = {'backtest':QA_Market,'simulation':QA_SimulationMarket,'real':QA_RealMarket,'random':QA_RandomMarket}
-        self.environment = environment
+    def __init__(self, order_queue=pd.DataFrame(), environment=RUNNING_ENVIRONMENT.BACKETEST, *args, **kwargs):
+        self.order_queue = order_queue
+        self.environment_engine = {
+            'backtest': QA_Market, 'simulation': QA_SimulationMarket, 'real': QA_RealMarket, 'random': QA_RandomMarket}
+        self.market = self.environment_engine[environment]()
 
-    def switch_environment(self, environment):
-        self.environment = environment
+    def set_environment(self, environment):
+        self.market = self.environment_engine[environment]()
+
+    def order_event(self, event, order_id):
+        if event is ORDER_EVENT.CREATE:
+            self.order_queue.append()

@@ -27,21 +27,19 @@ import datetime
 import time
 
 
-def QA_util_random_with_topic(topic='Acc',lens=8):
-
+def QA_util_random_with_topic(topic='Acc', lens=8):
     """
     生成account随机值
 
     Acc+4数字id+4位大小写随机
-    
+
     """
-    _list = [chr(i) for i in range(65,91)] + [chr(i) for i in range(97,123)] + [ str(i) for i in range(10)]
+    _list = [chr(i) for i in range(65, 91)] + [chr(i)
+                                               for i in range(97, 123)] + [str(i) for i in range(10)]
 
-    num = random.sample(_list,lens)
-    return '{}_{}'.format(topic,''.join(num))
-
+    num = random.sample(_list, lens)
+    return '{}_{}'.format(topic, ''.join(num))
 
 
 if __name__ == '__main__':
     print(QA_util_random_with_topic(input()))
-    

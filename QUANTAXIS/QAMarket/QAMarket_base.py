@@ -23,13 +23,13 @@
 # SOFTWARE.
 
 
-
 """
 需要一个可以被修改和继承的基类
 
 2017/8/12
 
 """
+from abc import ABC, abstractmethod
 
 
 class _market_engine_base():
@@ -44,11 +44,14 @@ class _market_engine_base():
     def __repr__(self):
         return '< QA_MARKET >'
 
+    @abstractmethod
     def receive_order(self, order, market_data=None):
-        pass
+        raise NotImplementedError
 
+    @abstractmethod
     def get_data(self, order):
-        pass
+        raise NotImplementedError
 
+    @abstractmethod
     def warp(self, order):
-        pass
+        raise NotImplementedError

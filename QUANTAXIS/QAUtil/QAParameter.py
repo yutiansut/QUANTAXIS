@@ -101,6 +101,19 @@ class ORDER_STATUS:
     SETTLED = 500
 
 
+class ORDER_EVENT:
+    """订单事件
+
+    创建订单 create
+    交易 trade
+    撤单 cancel
+
+    """
+    CREATE = 'create'
+    TRADE = 'trade'
+    CANCEL = 'cancel'
+
+
 class MARKET_TYPE():
     """市场种类
 
@@ -158,3 +171,5 @@ class TRADE_STATUS:
     PRICE_LIMIT = 202
     NO_MARKET_DATA = 500
     FAILED = 400
+
+
