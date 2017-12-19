@@ -66,7 +66,7 @@ from QUANTAXIS.QAUtil.QAMongo import (QA_util_mongo_infos,
                                       QA_util_mongo_status)
 # Parameter
 from QUANTAXIS.QAUtil.QAParameter import (MARKET_TYPE, ORDER_STATUS, TRADE_STATUS,
-                                          ORDER_DIRECTION, ORDER_MODEL,
+                                          ORDER_DIRECTION, ORDER_MODEL, ORDER_EVENT,
                                           RUNNING_ENVIRONMENT)
 # RANDOM class
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic

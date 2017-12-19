@@ -42,7 +42,6 @@ from QUANTAXIS.QAMarket.QAMarket_base import _market_engine_base
 from QUANTAXIS.QAMarket.QAMarket_engine import (market_future_engine,
                                                 market_stock_engine)
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import RUNNING_ENVIRONMENT
 
 
 class QA_Market(_market_engine_base):
@@ -55,7 +54,7 @@ class QA_Market(_market_engine_base):
 
     """
 
-    def __init__(self, commission_fee_coeff=0.0015, environment=RUNNING_ENVIRONMENT.BACKETEST, if_nondatabase=False):
+    def __init__(self, commission_fee_coeff=0.0015, if_nondatabase=False):
         """[summary]
 
 
@@ -75,7 +74,6 @@ class QA_Market(_market_engine_base):
                                     '2x01': QA_fetch_get_future_day, '2x02': QA_fetch_get_future_min}
         self.commission_fee_coeff = commission_fee_coeff
         self.market_data = None
-        self.environment = environment
         self.if_nondatabase = if_nondatabase
 
     def receive_order(self, order, market_data=None):
