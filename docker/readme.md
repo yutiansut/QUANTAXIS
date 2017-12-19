@@ -1,8 +1,8 @@
-# b快速使用Docker建立QUANTAXIS执行环境
+# 使用Docker建立QUANTAXIS执行环境
 
 <!-- TOC -->
 
-- [b快速使用Docker建立QUANTAXIS执行环境](#b快速使用docker建立quantaxis执行环境)
+- [使用Docker建立QUANTAXIS执行环境](#使用docker建立quantaxis执行环境)
     - [QUANTAXIS的镜像](#quantaxis的镜像)
     - [1.获取QUANTAIS镜像](#1获取quantais镜像)
         - [1.1 执行以下命令获取镜像(2选1)](#11-执行以下命令获取镜像2选1)
@@ -32,7 +32,7 @@ QUANTAXIS官方维护了2个镜像:
 
 阿里云上海仓库,DOCKER官网的镜像是同一份docker,包含了所有必需的程序 但是没有存储数据
 
-|                 | yutiansut/quantaxis | 上海阿里云DOCKER仓库   | 
+|                 |     海外仓库           | 上海阿里云DOCKER仓库   | 
 | --------------- | ------------------- | --------------- | 
 | 描述              | 网速不好的轻量纯净版本         | 网速不好的轻量纯净版本     | 
 | 地址              | 国外(可以加速)            | 上海              | 
