@@ -28,7 +28,9 @@ import queue
 from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_Order_list
 from QUANTAXIS.QAMarket.QAMarket import QA_Market
 from QUANTAXIS.QAUtil.QAParameter import RUNNING_ENVIRONMENT
-
+from QUANTAXIS.QAMarket.QA_SimulationMarket import QA_SimulationMarket
+from QUANTAXIS.QAMarket.QA_RandomMarket import QA_RandomMarket
+from QUANTAXIS.QAMarket.QA_RealMarket import QA_RealMarket
 
 class ORDER_EXECUTOR():
     """ORDER执行器
@@ -47,7 +49,7 @@ class ORDER_EXECUTOR():
     def __init__(self, order_queue=queue.Queue(), market, environment=RUNNING_ENVIRONMENT.BACKETEST, *args, **kwargs):
         self.order_queue() = order
         self.market = market
-        self.environment_engine = {'backtest':QA_Market,'simulation':}
+        self.environment_engine = {'backtest':QA_Market,'simulation':QA_SimulationMarket,'real':QA_RealMarket,'random':QA_RandomMarket}
         self.environment = environment
 
     def switch_environment(self, environment):
