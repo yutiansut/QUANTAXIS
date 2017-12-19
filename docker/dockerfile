@@ -1,4 +1,4 @@
-FROM registry.cn-hangzhou.aliyuncs.com/quantaxis/quantaxis
+FROM yutiansut/quantaxis
 
 MAINTAINER yutiasnut 'yutiansut@qq.com'
 
@@ -7,13 +7,13 @@ MAINTAINER yutiasnut 'yutiansut@qq.com'
 #重要的事情说三遍
 
 # update QUANTAXIS
-RUN cd ./QUANTAXIS && git pull
+RUN cd /QUANTAXIS && git pull
 RUN python3.6 -m pip install -e .
 # 
 
-RUN cd /root && nohup sh ./startmongod.sh &
-RUN cd /root/quantaxis/QUANTAXIS_Webkit/backend && forever start ./bin/www
-RUN cd /root/quantaxis/QUANTAXIS_Webkit/web && forever start ./build/dev-server.js
+# RUN cd /root && nohup sh ./startmongod.sh &
+# RUN cd /root/quantaxis/QUANTAXIS_Webkit/backend && forever start ./bin/www
+# RUN cd /root/quantaxis/QUANTAXIS_Webkit/web && forever start ./build/dev-server.js
 
 
 
