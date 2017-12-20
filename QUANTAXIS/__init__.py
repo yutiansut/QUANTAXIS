@@ -83,7 +83,8 @@ from QUANTAXIS.QASU.user import (QA_user_sign_in, QA_user_sign_up)
 
 # market
 
-from QUANTAXIS.QAMarket import (QA_Order, QA_OrderQueue, QA_OrderHandler, QA_Market,
+from QUANTAXIS.QAMarket import (QA_Order, QA_OrderQueue, QA_OrderHandler,
+                                QA_Market, QA_Dealer,
                                 QA_RandomBroker, QA_SimulatedBroker, QA_RealBroker, QA_BacktestBroker)
 
 # Account,Risk,Portfolio

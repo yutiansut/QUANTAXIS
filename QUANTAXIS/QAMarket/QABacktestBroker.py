@@ -57,15 +57,14 @@ class QA_BacktestBroker(QA_Broker):
     def __init__(self, commission_fee_coeff=0.0015, if_nondatabase=False):
         """[summary]
 
-    
+
         Keyword Arguments:
             commission_fee_coeff {[type]} -- [description] (default: {0})
             environment {[type]} -- [description] (default: {RUNNING_ENVIRONMENT})
             if_nondatabase {[type]} -- [description] (default: {False})
         """
-        
 
-        self.dealer =QA_Dealer(commission_fee_coeff)
+        self.dealer = QA_Dealer(commission_fee_coeff)
         self.engine = {'0x01': self.dealer.backtest_stock_dealer}
         self.fetcher = {'0x01': QA_fetch_stock_day, '0x02': QA_fetch_stock_min,
                         '1x01': QA_fetch_index_day, '1x02': QA_fetch_index_min,
@@ -88,7 +87,7 @@ class QA_BacktestBroker(QA_Broker):
             order) if market_data is None else market_data
         order = self.warp(order)
 
-        return self.engine[order.type](order, self.market_data, self.commission_fee_coeff)
+        return self.dealer.deal(order, self.market_data)
 
     def warp(self, order):
         """对order/market的封装

@@ -98,10 +98,13 @@ class QA_Dealer():
         self.status = None
 
     def deal(self, order, market_data):
+        
         self.order = order
         self.market_data = market_data
         self.deal_price = 0
         self.deal_amount = 0
+        if order.type in [MARKET_TYPE.STOCK_DAY,MARKET_TYPE.STOCK_MIN,MARKET_TYPE.STOCK_TRANSACTION]:
+            return self.backtest_stock_dealer()
 
     def callback_message(self):
         # 这是标准的return back message
@@ -142,8 +145,7 @@ class QA_Dealer():
         }
         return message
 
-    def PRICE_LIMIT(self):
-        pass
+
 
     def cal_stock_fee(self):
         if int(self.order.towards) > 0:
