@@ -1,4 +1,4 @@
-#coding : utf-8
+# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -22,10 +22,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
-from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
-from QUANTAXIS.QAMarket.QARandomBroker import QA_RandomBroker
-from QUANTAXIS.QAMarket.QARealMarket import QA_RealMarket
-from QUANTAXIS.QAMarket.QASimulatedBroker import QA_SimulatedBroker
-from QUANTAXIS.QAMarket.QAMarket import QA_Market
-from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
+
+class QA_User():
+    def __init__(self, *args, **kwargs):
+
+        self.user_name = ''
+        self.password = ''
+        self.db_uri = ''
+
+        self.session = {}
+        self.portfolio_list = {}
+
+    def login(self):
+        pass
+
+    def logout(self):
+        pass

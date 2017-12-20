@@ -23,20 +23,38 @@
 # SOFTWARE.
 
 
-from QUANTAXIS.QAMarket.QAMarket_base import _market_engine_base
+import datetime
+
+from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_future_day,
+                                       QA_fetch_future_min,
+                                       QA_fetch_future_tick,
+                                       QA_fetch_index_day, QA_fetch_index_min,
+                                       QA_fetch_stock_day, QA_fetch_stock_min)
+from QUANTAXIS.QAFetch.QATdx import (QA_fetch_depth_market_data,
+                                     QA_fetch_get_future_day,
+                                     QA_fetch_get_future_min,
+                                     QA_fetch_get_future_transaction,
+                                     QA_fetch_get_future_transaction_realtime,
+                                     QA_fetch_get_index_day,
+                                     QA_fetch_get_index_min,
+                                     QA_fetch_get_stock_day,
+                                     QA_fetch_get_stock_min)
+from QUANTAXIS.QAMarket.QABroker import _market_broker
+from QUANTAXIS.QAMarket.QADealer import (backtest_future_dealer,
+                                                backtest_stock_dealer)
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QAParameter import RUNNING_ENVIRONMENT
 
 
-class QA_RandomMarket(_market_engine_base):
+class QA_SimulatedBroker(_market_broker):
     def __init__(self, *args, **kwargs):
         pass
-
+        
     def get_data(self, order):
         pass
 
     def warp(self, order):
         pass
 
-    def receive_order(self, order):
+    def receive_order(self,order):
         pass

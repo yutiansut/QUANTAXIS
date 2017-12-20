@@ -27,9 +27,9 @@ import queue
 import numpy as np
 import pandas as pd
 
-from QUANTAXIS.QAMarket.QA_RandomMarket import QA_RandomMarket
-from QUANTAXIS.QAMarket.QA_RealMarket import QA_RealMarket
-from QUANTAXIS.QAMarket.QA_SimulationMarket import QA_SimulationMarket
+from QUANTAXIS.QAMarket.QARandomBroker import QA_RandomBroker
+from QUANTAXIS.QAMarket.QARealBroker import QA_RealBroker
+from QUANTAXIS.QAMarket.QASimulatedBroker import QA_SimulatedBroker
 from QUANTAXIS.QAMarket.QAMarket import QA_Market
 from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
 from QUANTAXIS.QAUtil.QAParameter import (ORDER_EVENT, ORDER_STATUS,
@@ -59,7 +59,7 @@ class QA_OrderHandler():
     def __init__(self, environment=RUNNING_ENVIRONMENT.BACKETEST, *args, **kwargs):
         self.order_queue = QA_OrderQueue()
         self.environment_engine = {
-            'backtest': QA_Market, 'simulation': QA_SimulationMarket, 'real': QA_RealMarket, 'random': QA_RandomMarket}
+            'backtest': QA_Market, 'simulation': QA_SimulatedBroker, 'real': QA_RealBroker, 'random': QA_RandomBroker}
         self.market = self.environment_engine[environment]()
         self.event = ''
 
@@ -73,4 +73,7 @@ class QA_OrderHandler():
             self.order_queue.insert_order(message)
         elif event is ORDER_EVENT.TRADE:
             assert isinstance(message, dict)
-            self.market.receive_order()
+            # list comprehension for trade
+            msg = [self.market.receive_order(item)
+                   for item in self.order_queue.trade_list]
+
