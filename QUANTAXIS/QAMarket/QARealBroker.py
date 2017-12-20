@@ -23,13 +23,13 @@
 # SOFTWARE.
 
 
-from QUANTAXIS.QAMarket.QAMarket_base import _market_engine_base
+from QUANTAXIS.QAMarket.QABroker import _market_broker
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QAParameter import RUNNING_ENVIRONMENT
 from QUANTAXIS.QAFetch.QATdx import QA_fetch_depth_market_data
 
 
-class QA_RealMarket(_market_engine_base):
+class QA_RealBroker(_market_broker):
     def __init__(self, *args, **kwargs):
         pass
 

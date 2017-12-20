@@ -41,7 +41,7 @@ renew in 2017/6/28
 """
 
 
-def market_stock_engine(order, market_data, commission_fee_coeff=0.00025,tax_coeff=0.001):
+def backtest_stock_dealer(order, market_data, commission_fee_coeff=0.00025,tax_coeff=0.001):
     # 新增一个__commission_fee_coeff 手续费系数
     """MARKET ENGINE STOCK
 
@@ -245,7 +245,7 @@ def market_stock_engine(order, market_data, commission_fee_coeff=0.00025,tax_coe
     return __trading(order, market_data)
 
 
-def market_future_engine(order, market_data=None, commission_fee_coeff=0.0015):
+def backtest_future_dealer(order, market_data=None, commission_fee_coeff=0.0015):
     # data mod
     # inside function
 

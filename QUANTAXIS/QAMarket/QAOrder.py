@@ -22,10 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import datetime
 
-import time
-import queue
 import pandas as pd
 
 from QUANTAXIS.QAUtil import (QA_util_log_info, QA_util_random_with_topic,
@@ -49,7 +46,7 @@ by yutiansut@2017/12/15
 class QA_Order():
     def __init__(self, price=None, date=None, datetime=None, sending_time=None, transact_time=None, amount=None,
                  towards=None, code=None, user=None, account_cookie=None, strategy=None, btype=None, order_model=None, amount_model=AMOUNT_MODEL.BY_AMOUNT,
-                 order_id=QA_util_random_with_topic(topic='Order'), trade_id=None, status='100'):
+                 order_id=QA_util_random_with_topic(topic='Order'), trade_id=None, status='100', *args, **kwargs):
         self.price = price
         self.datetime = None
         if datetime is None and date is not None:
@@ -64,7 +61,8 @@ class QA_Order():
             self.date = date
             self.datetime = datetime
         else:
-            QA_util_log_info('QA_ORDER WRONG: NO DATE OR DATETIME INIT')
+            QA_util_log_info(
+                'QA_ORDER WARNING: {} HAS NO DATE OR DATETIME INIT'.format(order_id))
         self.sending_time = self.datetime if sending_time is None else sending_time  # 下单时间
 
         self.transact_time = transact_time
@@ -96,6 +94,8 @@ class QA_Order():
 
     def from_dict(self, order):
         try:
+            QA_util_log_info('QA_ORDER CHANGE: from {} change to {}'.format(
+                self.order_id, order['order_id']))
             self.price = order['price']
             self.date = order['date']
             self.datetime = order['datetime']
@@ -116,34 +116,6 @@ class QA_Order():
         except Exception as e:
             QA_util_log_info('Failed to tran from dict')
 
-    def from_dataframe(self, dataframe):
-        bid_list = []
-        for item in QA_util_to_json_from_pandas(dataframe):
-            bid_list.append(self.from_dict(item))
-        return bid_list
-
-    def apply(self, order):
-        try:
-            self.price = order['price']
-            self.date = order['date']
-            self.datetime = order['datetime']
-            self.sending_time = order['sending_time']  # 下单时间
-            self.transact_time = order['transact_time']
-            self.amount = order['amount']
-            self.towards = order['towards']
-            self.code = order['code']
-            self.user = order['user']
-            self.strategy = order['strategy']
-            self.account_cookie = order['account_cookie']
-            self.type = order['type']
-            self.order_model = order['order_model']
-            self.amount_model = order['amount_model']
-            self.order_id = order['order_id']
-            self.trade_id = order['trade_id']
-            return self
-        except:
-            QA_util_log_info('Failed to tran from dict')
-
 
 class QA_OrderQueue():   # also the order tree
     """
@@ -154,14 +126,17 @@ class QA_OrderQueue():   # also the order tree
     def __init__(self):
         self.order_list = []
         self.queue = pd.DataFrame()
+
     def __repr__(self):
-        return '< QA_OrderQueue AMOUNT {} WAITING TRADE {} >'.format(len(self.queue),len(self.pending))
+        return '< QA_OrderQueue AMOUNT {} WAITING TRADE {} >'.format(len(self.queue), len(self.pending))
+
     def __call__(self):
         return self.queue
-    def from_dataframe(self, dataframe):
+
+    def _from_dataframe(self, dataframe):
         try:
             self.order_list = [QA_Order().from_dict(item)
-                         for item in QA_util_to_json_from_pandas(dataframe)]
+                               for item in QA_util_to_json_from_pandas(dataframe)]
             return self.order_list
         except:
             pass
@@ -172,7 +147,7 @@ class QA_OrderQueue():   # also the order tree
 
     def settle(self):
         """结算
-        
+
         清空订单簿
         """
         self.queue = pd.DataFrame()
@@ -180,16 +155,28 @@ class QA_OrderQueue():   # also the order tree
     @property
     def pending(self):
         """选择待成交列表
-        
+
         [description]
-        
+
         Returns:
-            [type] -- [description]
+            dataframe
         """
         try:
             return self.queue.query('status!=200').query('status!=500').query('status!=400')
         except:
             return pd.DataFrame()
+
+    @property
+    def trade_list(self):
+        """批量交易
+
+        [description]
+
+        Returns:
+            list of orders
+        """
+
+        return self._from_dataframe(self.pending)
 
 
 if __name__ == '__main__':
