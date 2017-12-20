@@ -97,7 +97,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 ![](http://osnhakmay.bkt.clouddn.com/remakedoc_account.png)
 ```市场部分```
 
-![](http://osnhakmay.bkt.clouddn.com/remakedoc_market.png)
+![](http://osnhakmay.bkt.clouddn.com/%E9%87%8D%E6%9E%84%E6%96%87%E6%A1%A3-%E5%B8%82%E5%9C%BA.png)
 
 ```事件部分```
 
