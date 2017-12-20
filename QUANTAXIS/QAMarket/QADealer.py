@@ -59,7 +59,7 @@ class dealer_preset():
         self.tax_coeff = None  # 费率
 
     def load_preset(self):
-        if self.maket_type in [MARKET_TYPE.STOCK_DAY, MARKET_TYPE.STOCK_MIN, MARKET_TYPE.STOCK_TRANSACTION]:
+        if self.market_type in [MARKET_TYPE.STOCK_DAY, MARKET_TYPE.STOCK_MIN, MARKET_TYPE.STOCK_TRANSACTION]:
             self.if_price_limit = True  # 是否限制涨跌停(美股/加密货币不限制)
             self.if_commission = True  # 是否收手续费(部分合约/部分加密货币不收手续费)
             self.if_tax = True  # 是否收税
