@@ -39,14 +39,13 @@ from QUANTAXIS.QAFetch.QATdx import (QA_fetch_depth_market_data,
                                      QA_fetch_get_index_min,
                                      QA_fetch_get_stock_day,
                                      QA_fetch_get_stock_min)
-from QUANTAXIS.QAMarket.QABroker import _market_broker
-from QUANTAXIS.QAMarket.QADealer import (backtest_future_dealer,
-                                                backtest_stock_dealer)
+from QUANTAXIS.QAMarket.QABroker import QA_Broker
+from QUANTAXIS.QAMarket.QADealer import QA_Dealer
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QAParameter import RUNNING_ENVIRONMENT
 
 
-class QA_SimulatedBroker(_market_broker):
+class QA_SimulatedBroker(QA_Broker):
     def __init__(self, *args, **kwargs):
         pass
         

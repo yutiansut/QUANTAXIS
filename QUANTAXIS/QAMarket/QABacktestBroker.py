@@ -38,14 +38,13 @@ from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_future_day,
                                      QA_fetch_get_index_min,
                                      QA_fetch_get_stock_day,
                                      QA_fetch_get_stock_min)
-from QUANTAXIS.QAMarket.QABroker import _market_broker
-from QUANTAXIS.QAMarket.QADealer import (
-    backtest_future_dealer, backtest_stock_dealer)
+from QUANTAXIS.QAMarket.QABroker import QA_Broker
+from QUANTAXIS.QAMarket.QADealer import QA_Dealer
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_MODEL
 
 
-class QA_BacktestBroker(_market_broker):
+class QA_BacktestBroker(QA_Broker):
     """
     QUANTAXIS MARKET 部分
 
@@ -58,15 +57,16 @@ class QA_BacktestBroker(_market_broker):
     def __init__(self, commission_fee_coeff=0.0015, if_nondatabase=False):
         """[summary]
 
-
+    
         Keyword Arguments:
             commission_fee_coeff {[type]} -- [description] (default: {0})
             environment {[type]} -- [description] (default: {RUNNING_ENVIRONMENT})
             if_nondatabase {[type]} -- [description] (default: {False})
         """
-        self.engine = {'0x01': backtest_stock_dealer, '0x02': backtest_stock_dealer,
-                       '1x01': backtest_stock_dealer, '1x02': backtest_stock_dealer,
-                       '2x01': backtest_future_dealer, '2x02': backtest_future_dealer, '2x03': backtest_future_dealer}
+        
+
+        self.dealer =QA_Dealer(commission_fee_coeff)
+        self.engine = {'0x01': self.dealer.backtest_stock_dealer}
         self.fetcher = {'0x01': QA_fetch_stock_day, '0x02': QA_fetch_stock_min,
                         '1x01': QA_fetch_index_day, '1x02': QA_fetch_index_min,
                         '2x01': QA_fetch_future_day, '2x02': QA_fetch_future_min, '2x03': QA_fetch_future_tick}

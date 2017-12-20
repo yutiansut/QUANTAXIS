@@ -32,7 +32,7 @@
 from abc import ABC, abstractmethod
 
 
-class _market_broker():
+class QA_Broker():
     """MARKET ENGINGE ABSTRACT
 
     receive_order => warp => get_data => engine
