@@ -33,3 +33,4 @@ from QUANTAXIS.QAMarket.QAMarket import QA_Market
 
 from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
 from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
+from QUANTAXIS.QAMarket.QADealer import QA_Dealer
