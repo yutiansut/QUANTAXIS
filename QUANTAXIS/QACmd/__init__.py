@@ -33,7 +33,7 @@ import subprocess
 
 
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_backtest
-from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting, QA_util_mongo_initial, QA_util_mongo_make_index
+from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting, QA_util_mongo_initial
 from QUANTAXIS import (QA_SU_save_stock_list, QA_SU_save_stock_min, QA_SU_save_stock_xdxr, QA_SU_save_stock_block, QA_SU_save_stock_info,
                        QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_index_min, QA_SU_save_etf_day, QA_SU_save_etf_min,
                        QA_SU_update_stock_day)
@@ -88,11 +88,6 @@ class CLI(cmd.Cmd):
     def help_drop_database(self):
         print('drop quantaxis\'s databases')
 
-    def do_make_index(self, arg):
-        QA_util_mongo_make_index()
-
-    def help_make_index(self):
-        print('make index for quantaxis databases')
 
     def do_quit(self, arg):     # 定义quit命令所执行的操作
         sys.exit(1)

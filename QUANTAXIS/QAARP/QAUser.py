@@ -23,7 +23,8 @@
 # SOFTWARE.
 
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
-
+from QUANTAXIS.QAUtil.QASetting import QA_Setting
+from QUANTAXIS.QASU.user import QA_user_sign_in,QA_user_sign_up
 
 class QA_User():
     def __init__(self, *args, **kwargs):
@@ -35,8 +36,15 @@ class QA_User():
         self.session = {}
         self.portfolio_list = {}
 
+    @property
+    def client(self):
+        return QA_Setting.client
+
     def login(self):
-        pass
+        if QA_user_sign_in(self.user_name,self.password,self.client):
+            pass
+        else:
+            return False
 
     def logout(self):
         pass

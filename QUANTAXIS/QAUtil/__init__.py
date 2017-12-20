@@ -62,7 +62,6 @@ from QUANTAXIS.QAUtil.QALogs import (QA_util_log_debug, QA_util_log_expection,
 # MongoDB
 from QUANTAXIS.QAUtil.QAMongo import (QA_util_mongo_infos,
                                       QA_util_mongo_initial,
-                                      QA_util_mongo_make_index,
                                       QA_util_mongo_status)
 # Parameter
 from QUANTAXIS.QAUtil.QAParameter import (MARKET_TYPE, ORDER_STATUS, TRADE_STATUS,

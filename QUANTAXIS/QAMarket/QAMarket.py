@@ -38,9 +38,8 @@ from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_future_day,
                                      QA_fetch_get_index_min,
                                      QA_fetch_get_stock_day,
                                      QA_fetch_get_stock_min)
-from QUANTAXIS.QAMarket.QABroker import _market_broker
-from QUANTAXIS.QAMarket.QADealer import (backtest_future_dealer,
-                                                backtest_stock_dealer)
+from QUANTAXIS.QAMarket.QABroker import QA_Broker
+from QUANTAXIS.QAMarket.QADealer import QA_Dealer
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_MODEL
 
