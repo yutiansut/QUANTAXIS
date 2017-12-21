@@ -21,15 +21,15 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from threading import Event, Thread, Timer
 import queue
 from abc import ABC, abstractmethod
-
+from threading import Event, Thread, Timer
 
 # 交易封装
 
+
 class QA_Trade():
-    
+
     def __init__(self, *args, **kwargs):
         self.spi_thread = Thread(
             target=self.spi_job, name='QATradeSpi', daemon=True)
@@ -38,11 +38,15 @@ class QA_Trade():
 
     def spi_job(self, *args, **kwargs):
         # 任务应当在这里做
-        pass
+        job = self._queue.get()
 
     def connect(self, *args, **kwargs):
-        
+
         pass
+
+    def on_connect(self, *args, **kwargs):
+        pass
+
     def release(self, *args, **kwargs):
         pass
 
@@ -76,25 +80,43 @@ class QA_Trade():
     def insert_order(self, *args, **kwargs):
         pass
 
+    def on_insert_order(self, *args, **kwargs):
+        pass
+
     def cancel_order(self, *args, **kwargs):
+        pass
+
+    def on_cancel_order(self, *args, **kwargs):
         pass
 
     def query_order(self, *args, **kwargs):
         pass
 
+    def on_query_order(self, *args, **kwargs):
+        pass
+
     def query_trade(self, *args, **kwargs):
+        pass
+
+    def on_query_trade(self, *args, **kwargs):
         pass
 
     def query_position(self, *args, **kwargs):
         pass
 
+    def on_query_position(self, *args, **kwargs):
+        pass
+
     def query_asset(self, *args, **kwargs):
+        pass
+
+    def on_query_asset(self, *args, **kwargs):
         pass
 
     def query_data(self, *args, **kwargs):
         pass
 
-    def on_disconnected(self, *args, **kwargs):
+    def on_query_data(self, *args, **kwargs):
         pass
 
     def on_error(self, *args, **kwargs):
@@ -107,16 +129,4 @@ class QA_Trade():
         pass
 
     def on_cancel_order_event(self, *args, **kwargs):
-        pass
-
-    def on_query_order(self, *args, **kwargs):
-        pass
-
-    def on_query_trade(self, *args, **kwargs):
-        pass
-
-    def on_query_position(self, *args, **kwargs):
-        pass
-
-    def on_query_asset(self, *args, **kwargs):
         pass
