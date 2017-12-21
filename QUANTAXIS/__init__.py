@@ -134,7 +134,7 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms
                               QA_util_mongo_initial,  QA_util_mongo_status, QA_util_mongo_infos,
                               QA_util_make_min_index, QA_util_make_hour_index,
                               QA_util_random_with_topic,
-                              MARKET_TYPE, ORDER_STATUS, TRADE_STATUS, AMOUNT_MODEL, ORDER_DIRECTION, ORDER_MODEL, ORDER_EVENT, RUNNING_ENVIRONMENT)  # QAPARAMETER
+                              MARKET_TYPE, ORDER_STATUS, TRADE_STATUS, MARKET_ERROR, AMOUNT_MODEL, ORDER_DIRECTION, ORDER_MODEL, ORDER_EVENT, RUNNING_ENVIRONMENT)  # QAPARAMETER
 
 from QUANTAXIS.QAIndicator import *
 #from QUANTAXIS.QAFetch.QATdx_adv import bat
