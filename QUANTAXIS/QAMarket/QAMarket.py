@@ -65,10 +65,15 @@ class QA_Market(QA_Trade):
         self.order_handler = QA_OrderHandler()
         self._broker = {BROKER_TYPE.BACKETEST: QA_BacktestBroker, BROKER_TYPE.RANODM: QA_RandomBroker,
                         BROKER_TYPE.REAL: QA_RealBroker, BROKER_TYPE.SIMULATION: QA_SimulatedBroker}
+        self.broker_name = None
         self.broker = None
+
+    def __repr__(self):
+        return '< QA_MARKET with {} Broker >'.format(self.broker_name)
 
     def connect(self, broker):
         if broker in self._broker.keys():
+            self.broker_name = broker
             self.broker = self._broker[broker]()
             return True
         else:
@@ -93,9 +98,14 @@ class QA_Market(QA_Trade):
     def get_account_id(self):
         return [item.account_cookie for item in self.session.values()]
 
-    def insert_order(self, order):
+    def insert_order(self, account_id, amount, amount_model, time, code, order_model, towards):
+
+        order = self.session[account_id].send_order(
+            amount=amount, amount_model=amount_model, time=time, code=code, order_model=order_model, towards=towards)
+        print(order.info())
         self.order_handler.order_event(event=ORDER_EVENT.CREATE, message=order)
-        msg=self.order_handler.order_event(event=ORDER_EVENT.TRADE, message={'broker':self.broker})
+        msg = self.order_handler.order_event(
+            event=ORDER_EVENT.TRADE, message={'broker': self.broker})
 
 
 if __name__ == '__main__':
@@ -110,9 +120,9 @@ if __name__ == '__main__':
     market = QA_Market()
 
     market.connect(QA.RUNNING_ENVIRONMENT.BACKETEST)
+    print(market)
     market.login(a_1)
     market.login(a_2)
     print(market.get_account_id())
-    order = user.portfolio_accounts[a_1].send_order(amount=10000, amount_model=QA.AMOUNT_MODEL.BY_PRICE,
-                                                            time='2017-12-14', code='000001', order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY)
-    market.insert_order(order)
+    market.insert_order(account_id=a_1, amount=10000, amount_model=QA.AMOUNT_MODEL.BY_PRICE,
+                        time='2017-12-14', code='000001', order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY)
