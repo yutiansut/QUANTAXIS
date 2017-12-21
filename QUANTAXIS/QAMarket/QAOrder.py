@@ -61,8 +61,9 @@ class QA_Order():
             self.date = date
             self.datetime = datetime
         else:
-            QA_util_log_info(
-                'QA_ORDER WARNING: {} HAS NO DATE OR DATETIME INIT'.format(order_id))
+            pass
+            # QA_util_log_info(
+            #     'QA_ORDER WARNING: {} HAS NO DATE OR DATETIME INIT'.format(order_id))
         self.sending_time = self.datetime if sending_time is None else sending_time  # 下单时间
 
         self.transact_time = transact_time
@@ -94,8 +95,8 @@ class QA_Order():
 
     def from_dict(self, order):
         try:
-            QA_util_log_info('QA_ORDER CHANGE: from {} change to {}'.format(
-                self.order_id, order['order_id']))
+            # QA_util_log_info('QA_ORDER CHANGE: from {} change to {}'.format(
+            #     self.order_id, order['order_id']))
             self.price = order['price']
             self.date = order['date']
             self.datetime = order['datetime']
