@@ -25,6 +25,9 @@ from threading import Event, Thread, Timer
 import queue
 from abc import ABC, abstractmethod
 
+
+# 交易封装
+
 class QA_Trade():
     
     def __init__(self, *args, **kwargs):

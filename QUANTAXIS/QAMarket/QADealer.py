@@ -44,6 +44,10 @@ standard message
 
 """
 
+class commission():
+    if_buyside_commission=False
+    if_sellside_commission=True
+    if_commission=if_buyside_commission and if_sellside_commission
 
 class dealer_preset():
     def __init__(self, market_type, *args, **kwargs):

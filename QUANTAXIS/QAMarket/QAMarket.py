@@ -54,3 +54,5 @@ class QA_Market():
 
     def __init__(self, *args, **kwargs):
         pass
+
+    
