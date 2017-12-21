@@ -58,7 +58,7 @@ class QA_Market(QA_Trade):
 
         self.trading_account={}
     def login(self,account_cookie):
-        if account_cookie is not in self.trading_account.keys():
+        if account_cookie not in self.trading_account.keys():
             self.trading_account[account_cookie]=QA_Account(account_cookie=account_cookie)
         else:
-            return False,
+            return False
