@@ -168,6 +168,19 @@ class RUNNING_ENVIRONMENT:
     REAL = 'real'
     RANODM = 'random'
 
+class BROKER_TYPE:
+    """执行环境
+
+    回测
+    模拟
+    实盘
+    随机(按算法/分布随机生成行情)/仅用于训练测试
+    """
+
+    BACKETEST = 'backtest'
+    SIMULATION = 'simulation'
+    REAL = 'real'
+    RANODM = 'random'
 
 class TRADE_STATUS:
     """交易状态返回值

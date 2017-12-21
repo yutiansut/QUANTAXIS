@@ -41,9 +41,14 @@ from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_future_day,
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.QADealer import QA_Dealer
 from QUANTAXIS.QAMarket.QATrade import QA_Trade
+from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
+from QUANTAXIS.QAMarket.QABacktestBroker import QA_BacktestBroker
+from QUANTAXIS.QAMarket.QARandomBroker import QA_RandomBroker
+from QUANTAXIS.QAMarket.QARealBroker import QA_RealBroker
+from QUANTAXIS.QAMarket.QASimulatedBroker import QA_SimulatedBroker
 from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_MODEL
+from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_MODEL, ORDER_EVENT, BROKER_TYPE
 
 
 class QA_Market(QA_Trade):
@@ -55,10 +60,59 @@ class QA_Market(QA_Trade):
     """
 
     def __init__(self, *args, **kwargs):
+        super().__init__()
+        self.session = {}
+        self.order_handler = QA_OrderHandler()
+        self._broker = {BROKER_TYPE.BACKETEST: QA_BacktestBroker, BROKER_TYPE.RANODM: QA_RandomBroker,
+                        BROKER_TYPE.REAL: QA_RealBroker, BROKER_TYPE.SIMULATION: QA_SimulatedBroker}
+        self.broker = None
 
-        self.trading_account={}
-    def login(self,account_cookie):
-        if account_cookie not in self.trading_account.keys():
-            self.trading_account[account_cookie]=QA_Account(account_cookie=account_cookie)
+    def connect(self, broker):
+        if broker in self._broker.keys():
+            self.broker = self._broker[broker]()
+            return True
         else:
             return False
+
+    def login(self, account_cookie):
+        if account_cookie not in self.session.keys():
+            self.session[account_cookie] = QA_Account(
+                account_cookie=account_cookie)
+        else:
+            return False
+
+    def logout(self, account_cookie):
+        if account_cookie not in self.session.keys():
+            return False
+        else:
+            self.session.pop(account_cookie)
+
+    def get_trading_day(self):
+        pass
+
+    def get_account_id(self):
+        return [item.account_cookie for item in self.session.values()]
+
+    def insert_order(self, order):
+        self.order_handler.order_event(event=ORDER_EVENT.CREATE, message=order)
+        msg=self.order_handler.order_event(event=ORDER_EVENT.TRADE, message={'broker':self.broker})
+
+
+if __name__ == '__main__':
+
+    import QUANTAXIS as QA
+
+    user = QA.QA_Portfolio()
+    # 创建两个account
+
+    a_1 = user.new_account()
+    a_2 = user.new_account()
+    market = QA_Market()
+
+    market.connect(QA.RUNNING_ENVIRONMENT.BACKETEST)
+    market.login(a_1)
+    market.login(a_2)
+    print(market.get_account_id())
+    order = user.portfolio_accounts[a_1].send_order(amount=10000, amount_model=QA.AMOUNT_MODEL.BY_PRICE,
+                                                            time='2017-12-14', code='000001', order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY)
+    market.insert_order(order)

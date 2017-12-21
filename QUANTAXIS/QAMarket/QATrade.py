@@ -41,8 +41,8 @@ class QA_Trade():
         pass
 
     def connect(self, *args, **kwargs):
+        
         pass
-
     def release(self, *args, **kwargs):
         pass
 
