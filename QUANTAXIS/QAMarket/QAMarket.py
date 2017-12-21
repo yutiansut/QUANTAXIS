@@ -102,10 +102,14 @@ class QA_Market(QA_Trade):
 
         order = self.session[account_id].send_order(
             amount=amount, amount_model=amount_model, time=time, code=code, order_model=order_model, towards=towards)
-        print(order.info())
+        self.on_insert_order(order.info())
         self.order_handler.order_event(event=ORDER_EVENT.CREATE, message=order)
         msg = self.order_handler.order_event(
             event=ORDER_EVENT.TRADE, message={'broker': self.broker})
+        self.on_trade_event(msg)
+
+    def on_insert_order(self,data):
+        print(data)
 
 
 if __name__ == '__main__':
