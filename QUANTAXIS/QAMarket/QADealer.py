@@ -119,7 +119,8 @@ class QA_Dealer():
                 'code': self.order.code,
                 'session': {
                     'user': self.order.user,
-                    'strategy': self.order.strategy
+                    'strategy': self.order.strategy,
+                    'account':self.order.account_cookie
                 },
                 'order_id': self.order.order_id,
                 'trade_id': QA_util_random_with_topic('Trade')
