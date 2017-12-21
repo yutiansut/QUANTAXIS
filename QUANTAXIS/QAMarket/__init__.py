@@ -30,6 +30,7 @@ from QUANTAXIS.QAMarket.QABacktestBroker import QA_BacktestBroker
 from QUANTAXIS.QAMarket.QASimulatedBroker import QA_SimulatedBroker
 
 from QUANTAXIS.QAMarket.QAMarket import QA_Market
+from QUANTAXIS.QAMarket.QATrade import QA_Trade
 
 from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
 from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler

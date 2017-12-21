@@ -182,3 +182,7 @@ class TRADE_STATUS:
     PRICE_LIMIT = 202
     NO_MARKET_DATA = 500
     FAILED = 400
+
+
+class MARKET_ERROR:
+    ACCOUNT_EXIST='Account has already exist'

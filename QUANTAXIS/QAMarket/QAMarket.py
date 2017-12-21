@@ -40,11 +40,13 @@ from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_future_day,
                                      QA_fetch_get_stock_min)
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.QADealer import QA_Dealer
+from QUANTAXIS.QAMarket.QATrade import QA_Trade
+from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_MODEL
 
 
-class QA_Market():
+class QA_Market(QA_Trade):
     """
     QUANTAXIS MARKET 部分
 
@@ -53,6 +55,10 @@ class QA_Market():
     """
 
     def __init__(self, *args, **kwargs):
-        pass
 
-    
+        self.trading_account={}
+    def login(self,account_cookie):
+        if account_cookie is not in self.trading_account.keys():
+            self.trading_account[account_cookie]=QA_Account(account_cookie=account_cookie)
+        else:
+            return False,
