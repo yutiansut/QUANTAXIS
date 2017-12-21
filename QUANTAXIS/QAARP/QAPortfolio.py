@@ -37,7 +37,6 @@ class QA_Portfolio():
     QUANTAXIS 多账户
     以及组合管理
 
-    # 状态 未完成
     # 适用 回测/实盘
 
 
@@ -74,9 +73,10 @@ class QA_Portfolio():
             if temp.account_cookie not in self.portfolio_cookies:
                 self.portfolio_cookies.append(temp.account_cookie)
                 self.portfolio_accounts[temp.account_cookie] = temp
+                return temp.account_cookie
 
             else:
-                pass
+                return False
 
     def get_account(self, cookie):
         try:
