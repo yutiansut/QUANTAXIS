@@ -67,6 +67,7 @@ class QA_Market(QA_Trade):
                         BROKER_TYPE.REAL: QA_RealBroker, BROKER_TYPE.SIMULATION: QA_SimulatedBroker}
         self.broker_name = None
         self.broker = None
+        self.running_time = None
 
     def __repr__(self):
         return '< QA_MARKET with {} Broker >'.format(self.broker_name)
@@ -93,7 +94,7 @@ class QA_Market(QA_Trade):
             self.session.pop(account_cookie)
 
     def get_trading_day(self):
-        pass
+        return self.running_time
 
     def get_account_id(self):
         return [item.account_cookie for item in self.session.values()]
@@ -108,8 +109,17 @@ class QA_Market(QA_Trade):
             event=ORDER_EVENT.TRADE, message={'broker': self.broker})
         self.on_trade_event(msg)
 
-    def on_insert_order(self,data):
+    def on_insert_order(self, data):
         print(data)
+
+    def query_order(self, order_id):
+        return self.order_handler.order_queue.query_order(order_id)
+
+    def query_asset(self, account_cookie):
+        return self.session[account_cookie].cash
+
+    def query_position(self, account_cookie):
+        pass
 
 
 if __name__ == '__main__':

@@ -72,3 +72,5 @@ class QA_OrderHandler():
             print(msg)
             return msg
 
+    def query_order(self,order_id):
+        return self.order_queue.queue.query()
