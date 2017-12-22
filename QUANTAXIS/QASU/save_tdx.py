@@ -51,11 +51,11 @@ def now_time():
 
 
 def QA_SU_save_stock_day(client=QA_Setting.client):
-    __stock_list = QA_fetch_get_stock_time_to_market()
+    stock_list = QA_fetch_get_stock_time_to_market()
     coll_stock_day = client.quantaxis.stock_day
     coll_stock_day.create_index(
         [("code", pymongo.ASCENDING), ("date_stamp", pymongo.ASCENDING)])
-    __err = []
+    err = []
 
     def __saving_work(code, coll_stock_day):
         try:
@@ -77,57 +77,64 @@ def QA_SU_save_stock_day(client=QA_Setting.client):
                     QA_util_to_json_from_pandas(
                         QA_fetch_get_stock_day(str(code), start_date, end_date, '00')[1::]))
         except:
-            __err.append(str(code))
-    for item in range(len(__stock_list)):
+            err.append(str(code))
+    for item in range(len(stock_list)):
         QA_util_log_info('The %s of Total %s' %
-                         (item, len(__stock_list)))
+                         (item, len(stock_list)))
         QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
-            float(item / len(__stock_list) * 100))[0:4] + '%')
+            float(item / len(stock_list) * 100))[0:4] + '%')
 
-        __saving_work(__stock_list.index[item], coll_stock_day)
-    QA_util_log_info('ERROR CODE \n ')
-    QA_util_log_info(__err)
+        __saving_work(stock_list.index[item], coll_stock_day)
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS')
+    else:
+        QA_util_log_info('ERROR CODE \n ')
+        QA_util_log_info(err)
+
 
 
 def QA_SU_save_stock_xdxr(client=QA_Setting.client):
     client.quantaxis.drop_collection('stock_xdxr')
-    __stock_list = QA_fetch_get_stock_time_to_market()
-    __coll = client.quantaxis.stock_xdxr
-    __coll.create_index([('code', pymongo.ASCENDING),
+    stock_list = QA_fetch_get_stock_time_to_market()
+    coll = client.quantaxis.stock_xdxr
+    coll.create_index([('code', pymongo.ASCENDING),
                          ('date', pymongo.ASCENDING)])
-    __err = []
+    err = []
 
-    def __saving_work(code, __coll):
+    def __saving_work(code, coll):
         QA_util_log_info('##JOB02 Now Saving XDXR INFO ==== %s' % (str(code)))
         try:
-            __coll.insert_many(
+            coll.insert_many(
                 QA_util_to_json_from_pandas(
                     QA_fetch_get_stock_xdxr(str(code))))
 
         except:
-            __err.append(str(code))
-    for i_ in range(len(__stock_list)):
+            err.append(str(code))
+    for i_ in range(len(stock_list)):
         #__saving_work('000001')
-        QA_util_log_info('The %s of Total %s' % (i_, len(__stock_list)))
+        QA_util_log_info('The %s of Total %s' % (i_, len(stock_list)))
         QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
-            float(i_ / len(__stock_list) * 100))[0:4] + '%')
-        __saving_work(__stock_list.index[i_], __coll)
-    QA_util_log_info('ERROR CODE \n ')
-    QA_util_log_info(__err)
+            float(i_ / len(stock_list) * 100))[0:4] + '%')
+        __saving_work(stock_list.index[i_], coll)
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS')
+    else:
+        QA_util_log_info('ERROR CODE \n ')
+        QA_util_log_info(err)
 
 
 def QA_SU_save_stock_min(client=QA_Setting.client):
-    __stock_list = QA_fetch_get_stock_time_to_market()
-    __coll = client.quantaxis.stock_min
-    __coll.create_index([('code', pymongo.ASCENDING), ('time_stamp',
+    stock_list = QA_fetch_get_stock_time_to_market()
+    coll = client.quantaxis.stock_min
+    coll.create_index([('code', pymongo.ASCENDING), ('time_stamp',
                                                        pymongo.ASCENDING), ('date_stamp', pymongo.ASCENDING)])
-    __err = []
+    err = []
 
-    def __saving_work(code, __coll):
+    def __saving_work(code, coll):
         QA_util_log_info('##JOB03 Now Saving STOCK_MIN ==== %s' % (str(code)))
         try:
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = __coll.find(
+                ref_ = coll.find(
                     {'code': str(code)[0:6], 'type': type})
                 end_time = str(now_time())[0:19]
                 if ref_.count() > 0:
@@ -140,40 +147,43 @@ def QA_SU_save_stock_min(client=QA_Setting.client):
                     __data = QA_fetch_get_stock_min(
                         str(code), start_time, end_time, type)
                     if len(__data) > 1:
-                        __coll.insert_many(
+                        coll.insert_many(
                             QA_util_to_json_from_pandas(__data[1::]))
 
         except Exception as e:
             QA_util_log_info(e)
 
-            __err.append(code)
+            err.append(code)
 
     executor = ThreadPoolExecutor(max_workers=4)
-    #executor.map((__saving_work, __stock_list.index[i_], __coll),URLS)
+    #executor.map((__saving_work, stock_list.index[i_], coll),URLS)
     res = {executor.submit(
-        __saving_work, __stock_list.index[i_], __coll) for i_ in range(len(__stock_list))}
+        __saving_work, stock_list.index[i_], coll) for i_ in range(len(stock_list))}
     count = 0
     for i_ in concurrent.futures.as_completed(res):
-        QA_util_log_info('The %s of Total %s' % (count, len(__stock_list)))
+        QA_util_log_info('The %s of Total %s' % (count, len(stock_list)))
         QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
-            float(count / len(__stock_list) * 100))[0:4] + '%')
+            float(count / len(stock_list) * 100))[0:4] + '%')
         count = count + 1
-    QA_util_log_info('ERROR CODE \n ')
-    QA_util_log_info(__err)
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS')
+    else:
+        QA_util_log_info('ERROR CODE \n ')
+        QA_util_log_info(err)
 
 
 def QA_SU_save_index_day(client=QA_Setting.client):
     __index_list = QA_fetch_get_stock_list('index')
-    __coll = client.quantaxis.index_day
-    __coll.create_index([('code', pymongo.ASCENDING),
+    coll = client.quantaxis.index_day
+    coll.create_index([('code', pymongo.ASCENDING),
                          ('date_stamp', pymongo.ASCENDING)])
-    __err = []
+    err = []
 
-    def __saving_work(code, __coll):
+    def __saving_work(code, coll):
 
         try:
 
-            ref_ = __coll.find({'code': str(code)[0:6]})
+            ref_ = coll.find({'code': str(code)[0:6]})
             end_time = str(now_time())[0:10]
             if ref_.count() > 0:
                 start_time = ref_[ref_.count() - 1]['date']
@@ -184,35 +194,37 @@ def QA_SU_save_index_day(client=QA_Setting.client):
                              (code, start_time, end_time))
 
             if start_time != end_time:
-                __coll.insert_many(
+                coll.insert_many(
                     QA_util_to_json_from_pandas(
                         QA_fetch_get_index_day(str(code), start_time, end_time)[1::]))
         except:
-            __err.append(str(code))
+            err.append(str(code))
     for i_ in range(len(__index_list)):
         #__saving_work('000001')
         QA_util_log_info('The %s of Total %s' % (i_, len(__index_list)))
         QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
             float(i_ / len(__index_list) * 100))[0:4] + '%')
-        __saving_work(__index_list.index[i_][0], __coll)
-    QA_util_log_info('ERROR CODE \n ')
-    QA_util_log_info(__err)
-
+        __saving_work(__index_list.index[i_][0], coll)
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS')
+    else:
+        QA_util_log_info('ERROR CODE \n ')
+        QA_util_log_info(err)
 
 def QA_SU_save_index_min(client=QA_Setting.client):
     __index_list = QA_fetch_get_stock_list('index')
-    __coll = client.quantaxis.index_min
-    __coll.create_index([('code', pymongo.ASCENDING), ('time_stamp',
+    coll = client.quantaxis.index_min
+    coll.create_index([('code', pymongo.ASCENDING), ('time_stamp',
                                                        pymongo.ASCENDING), ('date_stamp', pymongo.ASCENDING)])
-    __err = []
+    err = []
 
-    def __saving_work(code, __coll):
+    def __saving_work(code, coll):
 
         QA_util_log_info('##JOB05 Now Saving Index_MIN ==== %s' % (str(code)))
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = __coll.find(
+                ref_ = coll.find(
                     {'code': str(code)[0:6], 'type': type})
                 end_time = str(now_time())[0:19]
                 if ref_.count() > 0:
@@ -225,38 +237,41 @@ def QA_SU_save_index_min(client=QA_Setting.client):
                     __data = QA_fetch_get_index_min(
                         str(code), start_time, end_time, type)
                     if len(__data) > 1:
-                        __coll.insert_many(
+                        coll.insert_many(
                             QA_util_to_json_from_pandas(__data[1::]))
 
         except:
-            __err.append(code)
+            err.append(code)
 
     executor = ThreadPoolExecutor(max_workers=4)
 
     res = {executor.submit(
-        __saving_work, __index_list.index[i_][0], __coll) for i_ in range(len(__index_list))}  # multi index ./.
+        __saving_work, __index_list.index[i_][0], coll) for i_ in range(len(__index_list))}  # multi index ./.
     count = 0
     for i_ in concurrent.futures.as_completed(res):
         QA_util_log_info('The %s of Total %s' % (count, len(__index_list)))
         QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
             float(count / len(__index_list) * 100))[0:4] + '%')
         count = count + 1
-    QA_util_log_info('ERROR CODE \n ')
-    QA_util_log_info(__err)
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS')
+    else:
+        QA_util_log_info('ERROR CODE \n ')
+        QA_util_log_info(err)
 
 
 def QA_SU_save_etf_day(client=QA_Setting.client):
     __index_list = QA_fetch_get_stock_list('etf')
-    __coll = client.quantaxis.index_day
-    __coll.create_index([('code', pymongo.ASCENDING),
+    coll = client.quantaxis.index_day
+    coll.create_index([('code', pymongo.ASCENDING),
                          ('date_stamp', pymongo.ASCENDING)])
-    __err = []
+    err = []
 
-    def __saving_work(code, __coll):
+    def __saving_work(code, coll):
 
         try:
 
-            ref_ = __coll.find({'code': str(code)[0:6]})
+            ref_ = coll.find({'code': str(code)[0:6]})
             end_time = str(now_time())[0:10]
             if ref_.count() > 0:
                 start_time = ref_[ref_.count() - 1]['date']
@@ -267,35 +282,39 @@ def QA_SU_save_etf_day(client=QA_Setting.client):
                              (code, start_time, end_time))
 
             if start_time != end_time:
-                __coll.insert_many(
+                coll.insert_many(
                     QA_util_to_json_from_pandas(
                         QA_fetch_get_index_day(str(code), start_time, end_time)[1::]))
         except:
-            __err.append(str(code))
+            err.append(str(code))
     for i_ in range(len(__index_list)):
         #__saving_work('000001')
         QA_util_log_info('The %s of Total %s' % (i_, len(__index_list)))
         QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
             float(i_ / len(__index_list) * 100))[0:4] + '%')
-        __saving_work(__index_list.index[i_][0], __coll)
-    QA_util_log_info('ERROR CODE \n ')
-    QA_util_log_info(__err)
+        __saving_work(__index_list.index[i_][0], coll)
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS')
+    else:
+        QA_util_log_info('ERROR CODE \n ')
+        QA_util_log_info(err)
+
 
 
 def QA_SU_save_etf_min(client=QA_Setting.client):
     __index_list = QA_fetch_get_stock_list('etf')
-    __coll = client.quantaxis.index_min
-    __coll.create_index([('code', pymongo.ASCENDING), ('time_stamp',
+    coll = client.quantaxis.index_min
+    coll.create_index([('code', pymongo.ASCENDING), ('time_stamp',
                                                        pymongo.ASCENDING), ('date_stamp', pymongo.ASCENDING)])
-    __err = []
+    err = []
 
-    def __saving_work(code, __coll):
+    def __saving_work(code, coll):
 
         QA_util_log_info('##JOB07 Now Saving ETF_MIN ==== %s' % (str(code)))
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = __coll.find(
+                ref_ = coll.find(
                     {'code': str(code)[0:6], 'type': type})
                 end_time = str(now_time())[0:19]
                 if ref_.count() > 0:
@@ -308,35 +327,39 @@ def QA_SU_save_etf_min(client=QA_Setting.client):
                     __data = QA_fetch_get_index_min(
                         str(code), start_time, end_time, type)
                     if len(__data) > 1:
-                        __coll.insert_many(
+                        coll.insert_many(
                             QA_util_to_json_from_pandas(__data[1::]))
 
         except:
-            __err.append(code)
+            err.append(code)
 
     executor = ThreadPoolExecutor(max_workers=4)
 
     res = {executor.submit(
-        __saving_work, __index_list.index[i_][0], __coll) for i_ in range(len(__index_list))}  # multi index ./.
+        __saving_work, __index_list.index[i_][0], coll) for i_ in range(len(__index_list))}  # multi index ./.
     count = 0
     for i_ in concurrent.futures.as_completed(res):
         QA_util_log_info('The %s of Total %s' % (count, len(__index_list)))
         QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
             float(count / len(__index_list) * 100))[0:4] + '%')
         count = count + 1
-    QA_util_log_info('ERROR CODE \n ')
-    QA_util_log_info(__err)
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS')
+    else:
+        QA_util_log_info('ERROR CODE \n ')
+        QA_util_log_info(err)
+
 
 
 def QA_SU_save_stock_list(client=QA_Setting.client):
     client.quantaxis.drop_collection('stock_list')
-    __coll = client.quantaxis.stock_list
-    __coll.create_index('code')
-    __err = []
+    coll = client.quantaxis.stock_list
+    coll.create_index('code')
+    err = []
 
     try:
         QA_util_log_info('##JOB08 Now Saving STOCK_LIST ====')
-        __coll.insert_many(QA_util_to_json_from_pandas(
+        coll.insert_many(QA_util_to_json_from_pandas(
             QA_fetch_get_stock_list()))
     except:
         pass
@@ -344,14 +367,14 @@ def QA_SU_save_stock_list(client=QA_Setting.client):
 
 def QA_SU_save_stock_block(client=QA_Setting.client):
     client.quantaxis.drop_collection('stock_block')
-    __coll = client.quantaxis.stock_block
-    __coll.create_index('code')
-    __err = []
+    coll = client.quantaxis.stock_block
+    coll.create_index('code')
+    err = []
     try:
         QA_util_log_info('##JOB09 Now Saving STOCK_BlOCK ====')
-        __coll.insert_many(QA_util_to_json_from_pandas(
+        coll.insert_many(QA_util_to_json_from_pandas(
             QA_fetch_get_stock_block('tdx')))
-        __coll.insert_many(QA_util_to_json_from_pandas(
+        coll.insert_many(QA_util_to_json_from_pandas(
             QA_fetch_get_stock_block('ths')))
     except:
         pass
@@ -359,54 +382,61 @@ def QA_SU_save_stock_block(client=QA_Setting.client):
 
 def QA_SU_save_stock_info(client=QA_Setting.client):
     client.quantaxis.drop_collection('stock_info')
-    __stock_list = QA_fetch_get_stock_time_to_market()
-    __coll = client.quantaxis.stock_info
-    __coll.create_index('code')
-    __err = []
+    stock_list = QA_fetch_get_stock_time_to_market()
+    coll = client.quantaxis.stock_info
+    coll.create_index('code')
+    err = []
 
-    def __saving_work(code, __coll):
+    def __saving_work(code, coll):
         QA_util_log_info(
             '##JOB010 Now Saving STOCK INFO ==== %s' % (str(code)))
         try:
-            __coll.insert_many(
+            coll.insert_many(
                 QA_util_to_json_from_pandas(
                     QA_fetch_get_stock_info(str(code))))
 
         except:
-            __err.append(str(code))
-    for i_ in range(len(__stock_list)):
+            err.append(str(code))
+    for i_ in range(len(stock_list)):
         #__saving_work('000001')
-        QA_util_log_info('The %s of Total %s' % (i_, len(__stock_list)))
+        QA_util_log_info('The %s of Total %s' % (i_, len(stock_list)))
         QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
-            float(i_ / len(__stock_list) * 100))[0:4] + '%')
-        __saving_work(__stock_list.index[i_], __coll)
-    QA_util_log_info('ERROR CODE \n ')
-    QA_util_log_info(__err)
+            float(i_ / len(stock_list) * 100))[0:4] + '%')
+        __saving_work(stock_list.index[i_], coll)
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS')
+    else:
+        QA_util_log_info('ERROR CODE \n ')
+        QA_util_log_info(err)
+
 
 
 def QA_SU_save_stock_transaction(client=QA_Setting.client):
-    __stock_list = QA_fetch_get_stock_time_to_market()
-    __coll = client.quantaxis.stock_transaction
-    __coll.create_index('code', pymongo.ASCENDING)
-    __err = []
+    stock_list = QA_fetch_get_stock_time_to_market()
+    coll = client.quantaxis.stock_transaction
+    coll.create_index('code')
+    err = []
 
     def __saving_work(code):
         QA_util_log_info(
             '##JOB10 Now Saving STOCK_TRANSACTION ==== %s' % (str(code)))
         try:
-            __coll.insert_many(
+            coll.insert_many(
                 QA_util_to_json_from_pandas(
-                    QA_fetch_get_stock_transaction(str(code), str(__stock_list[code]), str(now_time())[0:10])))
+                    QA_fetch_get_stock_transaction(str(code), str(stock_list[code]), str(now_time())[0:10])))
         except:
-            __err.append(str(code))
-    for i_ in range(len(__stock_list)):
+            err.append(str(code))
+    for i_ in range(len(stock_list)):
         #__saving_work('000001')
-        QA_util_log_info('The %s of Total %s' % (i_, len(__stock_list)))
+        QA_util_log_info('The %s of Total %s' % (i_, len(stock_list)))
         QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
-            float(i_ / len(__stock_list) * 100))[0:4] + '%')
-        __saving_work(__stock_list.index[i_])
-    QA_util_log_info('ERROR CODE \n ')
-    QA_util_log_info(__err)
+            float(i_ / len(stock_list) * 100))[0:4] + '%')
+        __saving_work(stock_list.index[i_])
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS')
+    else:
+        QA_util_log_info('ERROR CODE \n ')
+        QA_util_log_info(err)
 
 
 if __name__ == '__main__':
