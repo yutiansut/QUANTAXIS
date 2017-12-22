@@ -168,6 +168,7 @@ class RUNNING_ENVIRONMENT:
     REAL = 'real'
     RANODM = 'random'
 
+
 class BROKER_TYPE:
     """执行环境
 
@@ -181,6 +182,7 @@ class BROKER_TYPE:
     SIMULATION = 'simulation'
     REAL = 'real'
     RANODM = 'random'
+
 
 class TRADE_STATUS:
     """交易状态返回值
@@ -198,4 +200,13 @@ class TRADE_STATUS:
 
 
 class MARKET_ERROR:
-    ACCOUNT_EXIST='Account has already exist'
+    ACCOUNT_EXIST = 'Account has already exist'
+
+
+class BROKER_EVENT:
+    TRADE = 'broker_trade'
+    SETTLE = 'broker_settle'
+
+
+class ACCOUNT_EVENT:
+    UPDATE = 'account_update'

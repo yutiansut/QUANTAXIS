@@ -24,7 +24,9 @@
 
 
 import datetime
-
+from concurrent.futures.process import ProcessPoolExecutor
+from concurrent.futures.thread import ThreadPoolExecutor
+from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_future_day,
                                        QA_fetch_future_min,
                                        QA_fetch_future_tick,
@@ -38,17 +40,19 @@ from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_future_day,
                                      QA_fetch_get_index_min,
                                      QA_fetch_get_stock_day,
                                      QA_fetch_get_stock_min)
+from QUANTAXIS.QAMarket.QABacktestBroker import QA_BacktestBroker
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.QADealer import QA_Dealer
-from QUANTAXIS.QAMarket.QATrade import QA_Trade
 from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
-from QUANTAXIS.QAMarket.QABacktestBroker import QA_BacktestBroker
 from QUANTAXIS.QAMarket.QARandomBroker import QA_RandomBroker
 from QUANTAXIS.QAMarket.QARealBroker import QA_RealBroker
 from QUANTAXIS.QAMarket.QASimulatedBroker import QA_SimulatedBroker
-from QUANTAXIS.QAARP.QAAccount import QA_Account
+from QUANTAXIS.QAMarket.QATrade import QA_Trade
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_MODEL, ORDER_EVENT, BROKER_TYPE
+from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
+                                          BROKER_EVENT, BROKER_TYPE,
+                                          ORDER_EVENT, ORDER_MODEL)
+import threading
 
 
 class QA_Market(QA_Trade):
@@ -79,7 +83,7 @@ class QA_Market(QA_Trade):
             return True
         else:
             return False
-
+        
     def login(self, account_cookie):
         if account_cookie not in self.session.keys():
             self.session[account_cookie] = QA_Account(
@@ -99,17 +103,36 @@ class QA_Market(QA_Trade):
     def get_account_id(self):
         return [item.account_cookie for item in self.session.values()]
 
-    def insert_order(self, account_id, amount, amount_model, time, code, order_model, towards):
+    def spi_job(self):
+        
+        while self.event_queue.empty is False:
+            event = self.event_queue.get()
+            if event['type'] is ORDER_EVENT.CREATE:
 
+                self.order_handler.order_event(
+                    event=event['type'], message=event['message'])
+                self.on_insert_order(
+                    {'order_id': event['message'].order_id, 'order': event['message'].info()})
+                yield self.event_queue.put({
+                    'type': ORDER_EVENT.TRADE})
+            elif event['type'] is ORDER_EVENT.TRADE:
+                msg = self.order_handler.order_event(
+                    event=event['type'], message={'broker': self.broker})
+                self.on_trade_event(msg)
+
+
+
+    def insert_order(self, account_id, amount, amount_model, time, code, order_model, towards):
         order = self.session[account_id].send_order(
             amount=amount, amount_model=amount_model, time=time, code=code, order_model=order_model, towards=towards)
-        self.on_insert_order(order.info())
-        self.order_handler.order_event(event=ORDER_EVENT.CREATE, message=order)
-        msg = self.order_handler.order_event(
-            event=ORDER_EVENT.TRADE, message={'broker': self.broker})
-        self.on_trade_event(msg)
+
+        self.event_queue.put({
+            'type': ORDER_EVENT.CREATE,
+            'message': order
+        })
 
     def on_insert_order(self, data):
+        print('callback')
         print(data)
 
     def query_order(self, order_id):

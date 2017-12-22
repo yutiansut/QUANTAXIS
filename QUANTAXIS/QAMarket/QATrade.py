@@ -29,16 +29,24 @@ from threading import Event, Thread, Timer
 
 
 class QA_Trade():
+    "多线程+generator模式"
 
     def __init__(self, *args, **kwargs):
         self.spi_thread = Thread(
-            target=self.spi_job, name='QATradeSpi', daemon=True)
-        self._queue = queue.Queue()
+            target=self.spi_job, name='QATradeSpi', daemon=False)
+        self.event_queue = queue.Queue()
         self.spi_thread.start()
 
     def spi_job(self, *args, **kwargs):
         # 任务应当在这里做
-        job = self._queue.get()
+
+        while True:
+            task = self.event_queue.get()
+            try:
+                next(task)
+                self.event_queue.put(task)
+            except StopIteration:
+                pass
 
     def connect(self, *args, **kwargs):
 
