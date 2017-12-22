@@ -105,6 +105,17 @@ class QA_Account():
     def __repr__(self):
         return '<QA_Account {} Assets:{}>'.format(self.account_cookie, self.assets[-1])
 
+    @property
+    def latest_assets(self):
+        return self.assets[-1]
+    @property
+    def latest_cash(self):
+        return self.cash[-1]
+
+    @property
+    def latest_hold(self):
+        return self.hold
+    
     def init(self, init_assest=None):
         self.hold = []
         self.sell_available = [['date', 'code', 'price',
