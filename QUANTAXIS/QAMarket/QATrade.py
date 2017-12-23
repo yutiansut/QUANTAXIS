@@ -41,6 +41,7 @@ class QA_Trade():
         # 任务应当在这里做
 
         while True:
+            # 获取generator
             task = self.event_queue.get()
             try:
                 next(task)

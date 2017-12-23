@@ -46,9 +46,9 @@ from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_MODEL
 
 class QA_BacktestBroker(QA_Broker):
     """
-    QUANTAXIS MARKET 部分
+    QUANTAXIS Broker 部分
 
-    回测/模拟盘
+    回测
     股票/指数/期货/债券/ETF/基金
     @yutiansut
 
