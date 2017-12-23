@@ -39,6 +39,7 @@ from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
                               QA_util_to_list_from_pandas, trade_date_sse)
 
 
+
 """
 按要求从数据库取数据，并转换成numpy结构
 

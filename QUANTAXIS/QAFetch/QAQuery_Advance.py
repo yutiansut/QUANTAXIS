@@ -39,6 +39,10 @@ from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_indexlist_day,
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
                               QA_util_date_valid, QA_util_log_info,
                               QA_util_time_stamp)
+# from gevent import monkey
+# #monkey.patch_all()
+# import gevent
+# from gevent import Greenlet
 
 
 """
@@ -74,7 +78,8 @@ def QA_fetch_stock_day_adv(
             QA_util_log_info('something wrong with date')
     elif isinstance(code, list):
         return QA_DataStruct_Stock_day(pd.concat(QA_fetch_stocklist_day(code, [start, end])).query('volume>1').set_index(['date', 'code'], drop=if_drop_index))
-
+        #print([Greenlet.get(item).data for item in gevent.joinall([gevent.spawn(QA_fetch_stock_day_adv,_code,start,end,if_drop_index) for _code in code])])
+        #return QA_DataStruct_Stock_day(pd.concat([Greenlet.get(item).data for item in gevent.joinall([gevent.spawn(QA_fetch_stock_day_adv,_code,start,end,if_drop_index) for _code in code])]).set_index(['date', 'code'], drop=if_drop_index))
 
 def QA_fetch_stocklist_day_adv(
         code,
