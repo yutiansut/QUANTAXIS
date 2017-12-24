@@ -44,7 +44,6 @@ from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_MODEL
 
 
-
 class QA_BacktestBroker(QA_Broker):
     """
     QUANTAXIS Broker 部分
@@ -77,14 +76,13 @@ class QA_BacktestBroker(QA_Broker):
         self.market_data = None
         self.if_nondatabase = if_nondatabase
 
-    def receive_order(self,event, order, market_data=None):
+    def receive_order(self, event, order, market_data=None):
         """
         get the order and choice which market to trade
 
         """
-        
+
         assert isinstance(order.type, str)
-        if 
         self.market_data = self.get_market(
             order) if market_data is None else market_data
         order = self.warp(order)
