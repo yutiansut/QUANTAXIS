@@ -34,7 +34,7 @@ from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Job
 from QUANTAXIS.QAUtil.QAParameter import EVENT_TYPE, BROKER_EVENT
 
 
-class QA_Broker(QA_JOB):
+class QA_Broker(QA_Job):
     """MARKET ENGINGE ABSTRACT
 
     receive_order => warp => get_data => engine
