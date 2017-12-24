@@ -24,7 +24,7 @@
 import queue
 from abc import ABC, abstractmethod
 from threading import Event, Thread, Timer
-
+from QUANTAXIS.QAEngine.QAThread import QA_Thread
 # 交易封装
 
 
@@ -32,10 +32,9 @@ class QA_Trade():
     "多线程+generator模式"
 
     def __init__(self, *args, **kwargs):
-        self.spi_thread = Thread(
-            target=self.spi_job, name='QATradeSpi', daemon=False)
         self.event_queue = queue.Queue()
-        self.spi_thread.start()
+        self.spi_thread = QA_Thread(self.event_queue)
+        #self.spi_thread.start()
 
     def spi_job(self, *args, **kwargs):
         # 任务应当在这里做

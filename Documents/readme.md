@@ -40,10 +40,10 @@ QUANTAXIS-Protocol
 - [QAS-60x QAUtil 工具类](#qas-60x-qautil-工具类)
 - [QAS-70x QASpider 爬虫类](#qas-70x-qaspider-爬虫类)
 - [QAS-80x QASignal 信号/事件驱动类](#qas-80x-qasignal-信号事件驱动类)
-- [QAS-90x QATask 任务/事件队列](#qas-90x-qatask-任务事件队列)
+- [QAS-90x QAEngine 任务/事件队列](#qas-90x-qatask-任务事件队列)
     - [QAS-901 QA_Event](#qas-901-qa_event)
-    - [QAS-902 QA_Queue](#qas-902-qa_queue)
-    - [QAS-903 QA_Task_Center](#qas-903-qa_task_center)
+    - [QAS-902 QA_Thread](#qas-902-qa_queue)
+    - [QAS-903 QA_Engine_Center](#qas-903-qa_task_center)
     - [QAS-904 QA_MultiProcessing](#qas-904-qa_multiprocessing)
     - [QAS-905 QA_schedule](#qas-905-qa_schedule)
 - [QAS-100x QACmd 命令行扩展类](#qas-100x-qacmd-命令行扩展类)
@@ -78,7 +78,7 @@ QUANTAXIS是一个渐进式框架,所以会有基础模块和扩展模块之分
 ### QAS-002-2 Extension Module 扩展模块
 - [爬虫类 QASpider](#qas-70x-qaspider-爬虫类)
 - [信号/事件驱动类 QASignal](#qas-80x-qasignal-信号事件驱动类)
-- [任务机制/异步类 QATask](#qas-90x-qatask-任务机制异步类)
+- [任务机制/异步类 QAEngine](#qas-90x-qatask-任务机制异步类)
 - [命令行扩展类 QACmd](#qas-100x-qacmd-命令行扩展类)
 ### QAS-002-3 Mod 插件模块
 - [QUANTAXIS-Webkit 插件](https://github.com/yutiansut/QUANTAXIS_Webkit)
@@ -88,7 +88,7 @@ QUANTAXIS是一个渐进式框架,所以会有基础模块和扩展模块之分
 ### QAS-003-1 模块命名方式
 模块的命名 
 
-- QA+首字母大写的方法(QASpider/QAFetch/QAMarket/QASignal/QATask/QAUtil)
+- QA+首字母大写的方法(QASpider/QAFetch/QAMarket/QASignal/QAEngine/QAUtil)
 - QA+纯大写字母的缩写(QASU,QAARP)
 
 >一般而言,模块是不修改的,当然,如果你需要深度定制你的模块名,则不仅需要遵守QAS#003-1协议,还需要修改"__init__.py",才能使你的模块生效
@@ -235,15 +235,15 @@ setting=QA_Setting()
 # QAS-70x QASpider 爬虫类
 # QAS-80x QASignal 信号/事件驱动类
 
-# QAS-90x QATask 任务/事件队列
+# QAS-90x QAEngine 任务/事件队列
 
 QATASK 给了5种不同场景下的解决方案:
 
 - QA_Event  主要负责的是事件的一对多的分发和订阅
 
-- QA_Queue  主要负责的是维护一个函数句柄队列,可以理解为一个生产者消费者模型
+- QA_Thread  主要负责的是维护一个函数句柄队列,可以理解为一个生产者消费者模型
 
-- QA_Task_Center  主要负责的是一个对外的兼容接口,无论是socket,还是zeromq,celery,rabbitmq,redis等等
+- QA_Engine_Center  主要负责的是一个对外的兼容接口,无论是socket,还是zeromq,celery,rabbitmq,redis等等
 
 - QA_Multi_Processing  主要是一个多线程和多进程的
 
@@ -251,8 +251,8 @@ QATASK 给了5种不同场景下的解决方案:
 
 
 ## QAS-901 QA_Event
-## QAS-902 QA_Queue
-## QAS-903 QA_Task_Center
+## QAS-902 QA_Thread
+## QAS-903 QA_Engine_Center
 ## QAS-904 QA_MultiProcessing
 ## QAS-905 QA_schedule
 

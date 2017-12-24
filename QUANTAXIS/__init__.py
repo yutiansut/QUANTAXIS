@@ -89,17 +89,19 @@ from QUANTAXIS.QAMarket import (QA_Order, QA_OrderQueue, QA_OrderHandler,
 
 # Account,Risk,Portfolio
 
-from QUANTAXIS.QAARP import QA_Account, QA_Portfolio, QA_Risk
-from QUANTAXIS.QAARP.QARisk import (QA_risk_account_freeCash_currentAssest,
-                                    QA_risk_account_freeCash_frozenAssest,
-                                    QA_risk_account_freeCash_initAssest, QA_risk_eva_account)
+from QUANTAXIS.QAARP.QAAccount import QA_Account
+from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
+from QUANTAXIS.QAARP.QARisk import QA_Performace, QA_Risk
+from QUANTAXIS.QAARP.QAUser import QA_User
+
 # Backtest
 from QUANTAXIS.QABacktest.QABacktest import QA_Backtest
 
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_backtest
 from QUANTAXIS.QABacktest.QAResult import backtest_result_analyzer
+
 # task
-from QUANTAXIS.QATask import QA_Queue, QA_Event, QA_Job, QA_Engine
+from QUANTAXIS.QAEngine import QA_Thread, QA_Event, QA_Job, QA_Engine
 
 # Data
 from QUANTAXIS.QAData import (QA_data_tick_resample, QA_data_get_hfq, QA_data_get_qfq, QA_data_make_qfq, QA_data_stock_to_fq,

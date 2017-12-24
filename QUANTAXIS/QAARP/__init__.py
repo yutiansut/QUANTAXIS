@@ -26,10 +26,6 @@ from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAARP.QARisk import QA_Risk
 from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
 
-from QUANTAXIS.QAARP.QARisk import (QA_risk_account_freeCash_currentAssest,
-                                    QA_risk_account_freeCash_frozenAssest,
-                                    QA_risk_account_freeCash_initAssest, QA_risk_eva_account)
-
 
 class QA_ARP():
     def __init__(self):

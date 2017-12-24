@@ -1,4 +1,3 @@
-# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -21,15 +20,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from multiprocessing.dummy import Pool as ThreadPool
-from multiprocessing.pool import Pool
 
 
-def QA_util_MP_thread(num):
-    pool = ThreadPool(num)
-    return pool
-
-
-def QA_util_MP_process(num):
-    pool = Pool(num)
-    return pool
+from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Job
+from QUANTAXIS.QAEngine.QAThread import QA_Thread
+from QUANTAXIS.QAEngine.QA_Task import QA_Task
