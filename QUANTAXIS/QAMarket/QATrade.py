@@ -24,7 +24,7 @@
 import queue
 from abc import ABC, abstractmethod
 from threading import Event, Thread, Timer
-from QUANTAXIS.QAEngine.QAThread import QA_Thread
+from QUANTAXIS.QAEngine.QAThreadEngine import QA_Thread
 # 交易封装
 
 
