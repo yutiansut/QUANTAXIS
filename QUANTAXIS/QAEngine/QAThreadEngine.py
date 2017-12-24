@@ -37,14 +37,6 @@ from QUANTAXIS.QAUtil import QA_util_log_info
 """
 
 
-def now_time(func):
-    QA_util_log_info("From Engine %s" % str(
-        threading.current_thread()) + str(datetime.datetime.now()))
-    QA_util_log_info('FROM QUANTAXIS SYS== now running ' +
-                     str(len(threading.enumerate())) + ' threads')
-    func
-
-
 class QA_Thread(threading.Thread):
     '这是一个随意新建线程的生产者消费者模型'
 
