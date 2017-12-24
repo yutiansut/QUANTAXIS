@@ -46,7 +46,7 @@ def now_time(func):
 
 
 class QA_Thread(threading.Thread):
-    '这个是一个能够复用的多功能生产者消费者模型'
+    '这是一个随意新建线程的生产者消费者模型'
 
     def __init__(self, queue=None, name=None):
         threading.Thread.__init__(self)
@@ -118,6 +118,17 @@ class QA_Thread(threading.Thread):
 
     def qsize(self):
         return self.queue.qsize()
+
+
+class QA_Engine():
+    def __init__(self, *args, **kwargs):
+        self.threads = {}
+
+    def new(self, name):
+        self.threads[name] = QA_Thread(name=name)
+
+    def stop(self, name):
+        self.threads[name].stop()
 
 
 if __name__ == '__main__':
