@@ -66,7 +66,6 @@ from QUANTAXIS.QASU.save_backtest import (QA_SU_save_account_message,
                                           QA_SU_save_account_to_csv,
                                           QA_SU_save_backtest_message,
                                           QA_SU_save_pnl_to_csv)
-from QUANTAXIS.QAEngine import QA_Thread
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_gap,
                               QA_util_get_real_date, QA_util_log_expection,
                               QA_util_log_info, QA_util_make_min_index,
