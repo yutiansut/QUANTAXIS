@@ -23,5 +23,5 @@
 
 
 from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Job
-from QUANTAXIS.QAEngine.QAThread import QA_Thread
 from QUANTAXIS.QAEngine.QATask import QA_Task
+from QUANTAXIS.QAEngine.QAThread import QA_Thread
