@@ -23,13 +23,13 @@
 # SOFTWARE.
 
 import datetime
-
 import threading
 import time
-
-from QUANTAXIS.QAUtil import QA_util_log_info
-from QUANTAXIS.QAEngine.QATask import QA_Task
 from queue import Queue
+
+from QUANTAXIS.QAEngine.QATask import QA_Task
+from QUANTAXIS.QAUtil import QA_util_log_info
+
 
 """
 标准化的QUANATAXIS事件分发,可以快速引入和复用
@@ -85,9 +85,10 @@ class QA_Thread(threading.Thread):
                 except:
                     time.sleep(1)
                     self.run()
-                __res = self.qsize()# 判断消息队列大小
+                __res = self.qsize()  # 判断消息队列大小
                 if __res > 0:
-                    QA_util_log_info("From Engine %s: There are still %d tasks to do" % (str(threading.current_thread()), __res))
+                    QA_util_log_info("From Engine %s: There are still %d tasks to do" % (
+                        str(threading.current_thread()), __res))
                 threading.Timer(0.005, self.run)
 
     def pause(self):
@@ -122,4 +123,3 @@ class QA_Thread(threading.Thread):
 if __name__ == '__main__':
     import queue
     q = queue.Queue()
-
