@@ -38,7 +38,6 @@ from QUANTAXIS import (QA_SU_save_stock_list, QA_SU_save_stock_min, QA_SU_save_s
                        QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_index_min, QA_SU_save_etf_day, QA_SU_save_etf_min,
                        QA_SU_update_stock_day)
 
-from QUANTAXIS import *
 from QUANTAXIS import __version__
 
 

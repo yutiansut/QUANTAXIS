@@ -210,3 +210,11 @@ class BROKER_EVENT:
 
 class ACCOUNT_EVENT:
     UPDATE = 'account_update'
+
+
+class EVENT_TYPE:
+    BROKER_EVENT = 'broker_event'
+    ACCOUNT_EVENT = 'account_event'
+    MARKET_EVENT = 'market_event'
+    TRADE_EVENT = 'trade_event'
+    ENGINE_EVENT = 'engine_event'

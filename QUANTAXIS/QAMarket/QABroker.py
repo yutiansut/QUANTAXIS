@@ -30,22 +30,25 @@
 
 """
 from abc import ABC, abstractmethod
+from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Job
+from QUANTAXIS.QAUtil.QAParameter import EVENT_TYPE, BROKER_EVENT
 
 
-class QA_Broker():
+class QA_Broker(QA_JOB):
     """MARKET ENGINGE ABSTRACT
 
     receive_order => warp => get_data => engine
     """
 
     def __init__(self, *args, **kwargs):
-        pass
+        super().__init__()
+        self.type = EVENT_TYPE.BROKER_EVENT
 
     def __repr__(self):
         return '< QA_MARKET >'
 
     @abstractmethod
-    def receive_order(self, order, market_data=None):
+    def receive_order(self, event, order, market_data=None):
         raise NotImplementedError
 
     @abstractmethod
@@ -55,3 +58,10 @@ class QA_Broker():
     @abstractmethod
     def warp(self, order):
         raise NotImplementedError
+
+
+class QA_BROKER_EVENT(QA_Event):
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+
+        self.event_type = None

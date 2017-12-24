@@ -53,13 +53,15 @@ from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
                                           BROKER_EVENT, BROKER_TYPE,
                                           ORDER_EVENT, ORDER_MODEL)
 import threading
-
+from threading import Event, Thread, Timer
 
 class QA_Market(QA_Trade):
     """
     QUANTAXIS MARKET 部分
 
     交易前置
+    
+    暂时还是采用双线程spi模式
 
     """
 
@@ -72,6 +74,9 @@ class QA_Market(QA_Trade):
         self.broker_name = None
         self.broker = None
         self.running_time = None
+        
+        self.spi_thread.start()
+        print(self.spi_thread.is_alive())
 
     def __repr__(self):
         return '< QA_MARKET with {} Broker >'.format(self.broker_name)
@@ -104,21 +109,25 @@ class QA_Market(QA_Trade):
         return [item.account_cookie for item in self.session.values()]
 
     def spi_job(self):
-        
-        while self.event_queue.empty is False:
-            event = self.event_queue.get()
-            if event['type'] is ORDER_EVENT.CREATE:
 
-                self.order_handler.order_event(
-                    event=event['type'], message=event['message'])
-                self.on_insert_order(
-                    {'order_id': event['message'].order_id, 'order': event['message'].info()})
-                yield self.event_queue.put({
-                    'type': ORDER_EVENT.TRADE})
-            elif event['type'] is ORDER_EVENT.TRADE:
-                msg = self.order_handler.order_event(
-                    event=event['type'], message={'broker': self.broker})
-                self.on_trade_event(msg)
+        while True:
+            print('running')
+            try:
+                event = self.event_queue.get()
+                if event['type'] is ORDER_EVENT.CREATE:
+
+                    self.order_handler.order_event(
+                        event=event['type'], message=event['message'])
+                    self.on_insert_order(
+                        {'order_id': event['message'].order_id, 'order': event['message'].info()})
+                    yield self.event_queue.put({
+                        'type': ORDER_EVENT.TRADE})
+                elif event['type'] is ORDER_EVENT.TRADE:
+                    msg = self.order_handler.order_event(
+                        event=event['type'], message={'broker': self.broker})
+                    self.on_trade_event(msg)
+            except:
+                pass
 
 
 

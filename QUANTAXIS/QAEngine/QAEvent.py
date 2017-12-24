@@ -1,3 +1,4 @@
+# encoding: UTF-8
 #
 # The MIT License (MIT)
 #
@@ -21,7 +22,34 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import sys
+from datetime import datetime
+from abc import ABC, abstractmethod
+from QUANTAXIS.QAUtil import QA_util_log_info
 
-from QUANTAXIS.QATask.QA_Event import QA_Event
-from QUANTAXIS.QATask.QA_Queue_standard import QA_Queue
-from QUANTAXIS.QATask.QA_Task import QA_Engine, QA_Job
+"""
+QUANTAXIS EVENT  
+
+EVENT 是会被推送进QUEUE的任务class
+
+通过EVENT_QUEUE.get()拿到标准的event,然后执行
+"""
+# coding:utf-8
+
+
+class QA_Job(object):
+    def __init__(self, *args, **kwargs):
+        self.type = None
+
+    def __repr__(self):
+        return '< QA_EVENT {} >'.format(self.type)
+
+    @abstractmethod
+    def run(self, event):
+        raise NotImplementedError
+
+
+class QA_Event(object):
+    def __init__(self, *args, **kwargs):
+        self.event_type = None
+        self.func = None

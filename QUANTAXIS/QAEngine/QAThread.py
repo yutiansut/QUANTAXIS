@@ -21,15 +21,13 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import csv
+
 import datetime
-import json
+
 import threading
 import time
-from threading import Thread
 
-from QUANTAXIS.QAUtil import (QA_util_log_debug, QA_util_log_expection,
-                              QA_util_log_info)
+from QUANTAXIS.QAUtil import QA_util_log_info
 from six.moves import queue
 
 
@@ -47,7 +45,7 @@ def now_time(func):
     func
 
 
-class QA_Queue(threading.Thread):
+class QA_Thread(threading.Thread):
     '这个是一个能够复用的多功能生产者消费者模型'
 
     def __init__(self, queue):
@@ -58,6 +56,9 @@ class QA_Queue(threading.Thread):
         self.__flag.set()       # 设置为True
         self.__running = threading.Event()      # 用于停止线程的标识
         self.__running.set()      # 将running设置为True
+
+    def __repr__(self):
+        return '< QA_STANDARD Threading Queue >'
 
     def QA_queue_job_register(self, __job):
         '首先对于任务进行类型判断,输入的job的类型一定是一个dict模式的,同时需要含有一个type的K-V对'
@@ -94,8 +95,8 @@ class QA_Queue(threading.Thread):
                         else:
                             pass
                     else:
-                        QA_util_log_info("From Engine %s  Engine will waiting for new task ..." % str(
-                            threading.current_thread()))
+                        # QA_util_log_info("From Engine %s  Engine will waiting for new task ..." % str(
+                        #     threading.current_thread()))
                         time.sleep(1)
                 except:
                     time.sleep(1)
@@ -123,9 +124,9 @@ class QA_Queue(threading.Thread):
 
 if __name__ == '__main__':
     q = queue.Queue()
-    worker = QA_Queue(q)
+    worker = QA_Thread(q)
     worker.start()
-    q.put({'type': '1x00', 'subtype': '1x01', 'func': print('aa')},
+    q.put({'type': '1x00', 'subtype': '1x01', 'func':' print(\'aa\')'},
           block=False, timeout=None)
     print('*' * 10)
     print(worker.queue.queue)
@@ -133,6 +134,6 @@ if __name__ == '__main__':
     QA_util_log_info('===now we will sleep 20 sec, and wait for the response')
     QA_util_log_info(datetime.datetime.now())
     time.sleep(20)
-    q.put({'type': '1x00', 'subtype': '1x01', 'func': print('vv')},
+    q.put({'type': '1x00', 'subtype': '1x01', 'func': 'print(\'vv\')'},
           block=False, timeout=None)
     QA_util_log_info(datetime.datetime.now())
