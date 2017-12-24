@@ -22,10 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys
-from datetime import datetime
-from abc import ABC, abstractmethod
-from QUANTAXIS.QAUtil import QA_util_log_info
+
+from abc import abstractmethod
 
 """
 QUANTAXIS EVENT  
