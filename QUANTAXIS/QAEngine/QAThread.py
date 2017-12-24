@@ -28,6 +28,7 @@ import threading
 import time
 
 from QUANTAXIS.QAUtil import QA_util_log_info
+from QUANTAXIS.QAEngine.QATask import QA_Task
 from six.moves import queue
 
 
@@ -86,11 +87,12 @@ class QA_Thread(threading.Thread):
 
                 try:
                     if self.queue.empty() is False:
-                        __task = self.queue.get()  # 接收消息
-                        assert isinstance(__task, dict)
-                        if __task['func'] != None:
+                        _task = self.queue.get()  # 接收消息
+                        assert isinstance(_task,QA_Task)
+                        if _task.job != None:
 
-                            eval(__task['func'])
+                            _task.do()
+                        
                             self.queue.__task_done()  # 完成一个任务
                         else:
                             pass

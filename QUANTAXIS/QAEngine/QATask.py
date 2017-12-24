@@ -29,7 +29,7 @@ import time
 from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info
 
 from QUANTAXIS.QAEngine.QAThread import QA_Thread
-
+from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 """
 标准的QUANTAXIS事件方法,具有QA_Thread,QA_Event等特性,以及一些日志和外部接口
@@ -37,26 +37,30 @@ from QUANTAXIS.QAEngine.QAThread import QA_Thread
 
 
 class QA_Task():
-    def __init__(self, name='default'):
-        self.Job = queue.Queue()
-        self.Task = QA_Thread(self.Job)
-        self.Task.setName(name)
+    def __init__(self, job, event, callback=False):
+        self.job = job
+        self.event = event
+        self.res = None
+        self.callback = callback
+        self.task_id = QA_util_random_with_topic('Task')
+    
+    def do(self):
+        self.res = self.job.run(self.event)
+        if self.callback:
+            self.callback(self.res)
 
-    def query_state(self):
-        self.Job.put({'func': 'QA_util_log_info(theading.enumerate())'})
-        self.Job.put({'func': 'QA_util_log_info(theading.current_thread())'})
-
-    def put(self, task):
-        self.Job.put(vars(task))
-
-    def start(self):
-        self.Task.start()
-
-    def pause(self):
-        self.Task.pause()
-
-    def resume(self):
-        self.Task.resume()
+    @property
+    def result(self):
+        # return {
+        #     'task_id': self.task_id,
+        #     'result': self.res,
+        #     'job': self.job,
+        #     'event': self.event
+        # }
+        return {
+            'task_id': self.task_id,
+            'result': self.res
+        }
 
 
 if __name__ == '__main__':

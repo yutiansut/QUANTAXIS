@@ -82,7 +82,6 @@ from QUANTAXIS.QASU.user import (QA_user_sign_in, QA_user_sign_up)
 # event driver
 
 # market
-
 from QUANTAXIS.QAMarket import (QA_Order, QA_OrderQueue, QA_OrderHandler,
                                 QA_Market, QA_Dealer,
                                 QA_RandomBroker, QA_SimulatedBroker, QA_RealBroker, QA_BacktestBroker)
@@ -100,8 +99,8 @@ from QUANTAXIS.QABacktest.QABacktest import QA_Backtest
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_backtest
 from QUANTAXIS.QABacktest.QAResult import backtest_result_analyzer
 
-# task
-from QUANTAXIS.QAEngine import QA_Thread, QA_Event, QA_Job, QA_Engine
+# ENGINE
+from QUANTAXIS.QAEngine import QA_Thread, QA_Event, QA_Job, QA_Task
 
 # Data
 from QUANTAXIS.QAData import (QA_data_tick_resample, QA_data_get_hfq, QA_data_get_qfq, QA_data_make_qfq, QA_data_stock_to_fq,
@@ -136,7 +135,8 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms
                               QA_util_mongo_initial,  QA_util_mongo_status, QA_util_mongo_infos,
                               QA_util_make_min_index, QA_util_make_hour_index,
                               QA_util_random_with_topic,
-                              MARKET_TYPE, ORDER_STATUS, TRADE_STATUS, MARKET_ERROR, AMOUNT_MODEL, ORDER_DIRECTION, ORDER_MODEL, ORDER_EVENT, RUNNING_ENVIRONMENT)  # QAPARAMETER
+                              MARKET_TYPE, ORDER_STATUS, TRADE_STATUS, MARKET_ERROR, AMOUNT_MODEL, ORDER_DIRECTION, ORDER_MODEL, ORDER_EVENT,
+                              MARKET_EVENT, ENGINE_EVENT, RUNNING_ENVIRONMENT)  # QAPARAMETER
 
 from QUANTAXIS.QAIndicator import *
 #from QUANTAXIS.QAFetch.QATdx_adv import bat

@@ -50,6 +50,8 @@ class QA_Job(object):
 
 
 class QA_Event(object):
-    def __init__(self, *args, **kwargs):
-        self.event_type = None
-        self.func = None
+    def __init__(self, event_type=None, func=None, message=None, callback=False, *args, **kwargs):
+        self.event_type = event_type
+        self.func = func
+        self.message = message
+        self.callback = callback
