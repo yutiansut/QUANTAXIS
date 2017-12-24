@@ -79,8 +79,8 @@ class QA_Market(QA_Trade):
         self.broker = None
         self.running_time = None
 
-        self.spi_thread.start()
-        print(self.spi_thread.is_alive())
+        #self.spi_thread.start()
+        #print(self.spi_thread.is_alive())
 
     def __repr__(self):
         return '< QA_MARKET with {} Broker >'.format(self.broker_name)
@@ -92,6 +92,7 @@ class QA_Market(QA_Trade):
             return True
         else:
             return False
+        self.spi_thread.start()
 
     def login(self, account_cookie):
         if account_cookie not in self.session.keys():

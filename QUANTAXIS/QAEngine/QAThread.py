@@ -87,7 +87,7 @@ class QA_Thread(threading.Thread):
                     self.run()
                 __res = self.qsize()# 判断消息队列大小
                 if __res > 0:
-                    #QA_util_log_info("From Engine %s: There are still %d tasks to do" % (str(threading.current_thread()), __res))
+                    QA_util_log_info("From Engine %s: There are still %d tasks to do" % (str(threading.current_thread()), __res))
                 threading.Timer(0.005, self.run)
 
     def pause(self):
@@ -122,5 +122,4 @@ class QA_Thread(threading.Thread):
 if __name__ == '__main__':
     import queue
     q = queue.Queue()
-    worker = QA_Thread(q)
-    worker.start()
+
