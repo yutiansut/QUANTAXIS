@@ -100,7 +100,7 @@ from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_backtest
 from QUANTAXIS.QABacktest.QAResult import backtest_result_analyzer
 
 # ENGINE
-from QUANTAXIS.QAEngine import QA_Thread, QA_Event, QA_Job, QA_Task
+from QUANTAXIS.QAEngine import QA_Thread, QA_Event, QA_Job, QA_Task, QA_Engine
 
 # Data
 from QUANTAXIS.QAData import (QA_data_tick_resample, QA_data_get_hfq, QA_data_get_qfq, QA_data_make_qfq, QA_data_stock_to_fq,
