@@ -117,7 +117,7 @@ class QA_Thread(threading.Thread):
         return self.get_nowait(task)
 
     def qsize(self):
-        return self.queue._qsize
+        return self.queue.qsize()
 
 
 if __name__ == '__main__':
