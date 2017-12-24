@@ -51,7 +51,7 @@ class QA_Thread(threading.Thread):
         self.name = name
 
     def __repr__(self):
-        return '< QA_STANDARD Threading Queue >'
+        return '< QA_Thread {} >'.format(self.name)
 
     def run(self):
         while self.__running.isSet():
@@ -116,11 +116,20 @@ class QA_Engine():
     def __init__(self, *args, **kwargs):
         self.threads = {}
 
+    def __repr__(self):
+        return ' <QA_ENGINE with {} >'.format(self.threads.keys())
+
     def new(self, name):
         self.threads[name] = QA_Thread(name=name)
 
+    def start(self, name):
+        self.threads[name].start()
+
     def stop(self, name):
         self.threads[name].stop()
+
+    def run_job(self, threadname, task):
+        self.threads[threadname].put(task)
 
 
 if __name__ == '__main__':
