@@ -27,8 +27,6 @@ import threading
 import time
 
 from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info
-
-from QUANTAXIS.QAEngine.QAThread import QA_Thread
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 """
