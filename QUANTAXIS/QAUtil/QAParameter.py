@@ -101,19 +101,6 @@ class ORDER_STATUS:
     SETTLED = 500
 
 
-class ORDER_EVENT:
-    """订单事件
-
-    创建订单 create
-    交易 trade
-    撤单 cancel
-
-    """
-    CREATE = 'create'
-    TRADE = 'trade'
-    CANCEL = 'cancel'
-
-
 class AMOUNT_MODEL:
     """订单的成交量
 
@@ -125,51 +112,7 @@ class AMOUNT_MODEL:
     BY_AMOUNT = 'by_amount'
 
 
-class MARKET_TYPE():
-    """市场种类
-
-    日线 尾数01
-    分钟线 尾数02
-    tick 尾数03
-
-    市场:
-    股票 0
-    指数/基金 1
-    期货 2
-    港股 3
-    美股 4
-    比特币/加密货币市场 5
-    """
-
-    STOCK_DAY = '0x01'
-    STOCK_MIN = '0x02'
-    STOCK_TRANSACTION = '0x03'
-
-    INDEX_DAY = '1x01'
-    INDEX_MIN = '1x02'
-    INDEX_TRANSACTION = '1x03'
-
-    FUTUER_DAY = '2x01'
-    FUTUER_MIN = '2x02'
-    FUTUER_TRANSACTION = '2x03'
-
-
 class RUNNING_ENVIRONMENT:
-    """执行环境
-
-    回测
-    模拟
-    实盘
-    随机(按算法/分布随机生成行情)/仅用于训练测试
-    """
-
-    BACKETEST = 'backtest'
-    SIMULATION = 'simulation'
-    REAL = 'real'
-    RANODM = 'random'
-
-
-class BROKER_TYPE:
     """执行环境
 
     回测
@@ -203,13 +146,48 @@ class MARKET_ERROR:
     ACCOUNT_EXIST = 'Account has already exist'
 
 
-class BROKER_EVENT:
-    TRADE = 'broker_trade'
-    SETTLE = 'broker_settle'
+class MARKET_TYPE():
+    """市场种类
+
+    日线 尾数01
+    分钟线 尾数02
+    tick 尾数03
+
+    市场:
+    股票 0
+    指数/基金 1
+    期货 2
+    港股 3
+    美股 4
+    比特币/加密货币市场 5
+    """
+
+    STOCK_DAY = '0x01'
+    STOCK_MIN = '0x02'
+    STOCK_TRANSACTION = '0x03'
+
+    INDEX_DAY = '1x01'
+    INDEX_MIN = '1x02'
+    INDEX_TRANSACTION = '1x03'
+
+    FUTUER_DAY = '2x01'
+    FUTUER_MIN = '2x02'
+    FUTUER_TRANSACTION = '2x03'
 
 
-class ACCOUNT_EVENT:
-    UPDATE = 'account_update'
+class BROKER_TYPE:
+    """执行环境
+
+    回测
+    模拟
+    实盘
+    随机(按算法/分布随机生成行情)/仅用于训练测试
+    """
+
+    BACKETEST = 'backtest'
+    SIMULATION = 'simulation'
+    REAL = 'real'
+    RANODM = 'random'
 
 
 class EVENT_TYPE:
@@ -218,3 +196,41 @@ class EVENT_TYPE:
     MARKET_EVENT = 'market_event'
     TRADE_EVENT = 'trade_event'
     ENGINE_EVENT = 'engine_event'
+    ORDER_EVENT = 'order_event'
+
+
+class MARKET_EVENT:
+    QUERY_ORDER = 'query_order'
+    QUERY_ASSETS = 'query_assets'
+    QUERY_ACCOUNT = 'query_account'
+    QUERY_CASH = 'query_cash'
+    QUERY_DATA = 'query_data'
+
+
+class ENGINE_EVENT:
+    MARKET_INIT = 'market_init'
+    BAR_SETTLE = 'bar_settle'
+    DAILY_SETTLE = 'daily_settle'
+    UPDATE = 'update'
+
+
+class ACCOUNT_EVENT:
+    UPDATE = 'account_update'
+
+
+class BROKER_EVENT:
+    TRADE = 'broker_trade'
+    SETTLE = 'broker_settle'
+
+
+class ORDER_EVENT:
+    """订单事件
+
+    创建订单 create
+    交易 trade
+    撤单 cancel
+
+    """
+    CREATE = 'create'
+    TRADE = 'trade'
+    CANCEL = 'cancel'

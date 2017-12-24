@@ -29,12 +29,16 @@ import pandas as pd
 
 
 from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
-from QUANTAXIS.QAUtil.QAParameter import (ORDER_EVENT, ORDER_STATUS,
-                                          RUNNING_ENVIRONMENT)
+from QUANTAXIS.QAUtil.QAParameter import (ORDER_EVENT, ORDER_STATUS, BROKER_EVENT, MARKET_EVENT,
+                                          RUNNING_ENVIRONMENT, EVENT_TYPE)
+from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Job
 
 
-class QA_OrderHandler():
+class QA_OrderHandler(QA_Job):
     """ORDER执行器
+
+
+    ORDEHANDLDER 归属于MARKET前置
 
     仅负责一个无状态的执行层
 
@@ -54,23 +58,27 @@ class QA_OrderHandler():
     """
 
     def __init__(self, *args, **kwargs):
+        super().__init__()
         self.order_queue = QA_OrderQueue()
+        self.type = EVENT_TYPE.MARKET_EVENT
 
-        self.event = ''
+        self.event = QA_Event()
 
-    def order_event(self, event, message):
-        if event is ORDER_EVENT.CREATE:
+    def run(self, event):
+        if event.event_type is ORDER_EVENT.CREATE:
             # 此时的message应该是订单类
-            assert isinstance(message, QA_Order)
-            self.order_queue.insert_order(message)
-        elif event is ORDER_EVENT.TRADE:
-            assert isinstance(message, dict)
-            # list comprehension for trade
+            assert isinstance(event.message, QA_Order)
+            self.order_queue.insert_order(event.message)
+        elif event.event_type is BROKER_EVENT.TRADE:
+            assert isinstance(event.message, dict)
             
-            msg = [message['broker'].receive_order(item)
-                   for item in self.order_queue.trade_list]
-            print(msg)
-            return msg
+            # list comprehension for trade
 
-    def query_order(self,order_id):
+            # make event
+            
+            msg = [event.message['broker'].receive_order(item)
+                   for item in self.order_queue.trade_list]
+            return msg
+        
+    def query_order(self, order_id):
         return self.order_queue.queue.query()

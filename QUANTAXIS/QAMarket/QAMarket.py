@@ -24,9 +24,14 @@
 
 
 import datetime
+import threading
 from concurrent.futures.process import ProcessPoolExecutor
 from concurrent.futures.thread import ThreadPoolExecutor
+from threading import Event, Thread, Timer
+
 from QUANTAXIS.QAARP.QAAccount import QA_Account
+from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Job
+from QUANTAXIS.QAEngine.QATask import QA_Task
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_future_day,
                                        QA_fetch_future_min,
                                        QA_fetch_future_tick,
@@ -52,15 +57,14 @@ from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
                                           BROKER_EVENT, BROKER_TYPE,
                                           ORDER_EVENT, ORDER_MODEL)
-import threading
-from threading import Event, Thread, Timer
+
 
 class QA_Market(QA_Trade):
     """
     QUANTAXIS MARKET 部分
 
     交易前置
-    
+
     暂时还是采用双线程spi模式
 
     """
@@ -74,7 +78,7 @@ class QA_Market(QA_Trade):
         self.broker_name = None
         self.broker = None
         self.running_time = None
-        
+
         self.spi_thread.start()
         print(self.spi_thread.is_alive())
 
@@ -88,7 +92,7 @@ class QA_Market(QA_Trade):
             return True
         else:
             return False
-        
+
     def login(self, account_cookie):
         if account_cookie not in self.session.keys():
             self.session[account_cookie] = QA_Account(
@@ -129,16 +133,12 @@ class QA_Market(QA_Trade):
             except:
                 pass
 
-
-
     def insert_order(self, account_id, amount, amount_model, time, code, order_model, towards):
         order = self.session[account_id].send_order(
             amount=amount, amount_model=amount_model, time=time, code=code, order_model=order_model, towards=towards)
 
-        self.event_queue.put({
-            'type': ORDER_EVENT.CREATE,
-            'message': order
-        })
+        self.event_queue.put(QA_Task(job=self.order_handler, event=QA_Event(
+            event_type=ORDER_EVENT.CREATE, message=order)))
 
     def on_insert_order(self, data):
         print('callback')
