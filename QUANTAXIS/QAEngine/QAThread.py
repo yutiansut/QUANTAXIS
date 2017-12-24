@@ -29,8 +29,7 @@ import time
 
 from QUANTAXIS.QAUtil import QA_util_log_info
 from QUANTAXIS.QAEngine.QATask import QA_Task
-from six.moves import queue
-
+from queue import Queue
 
 """
 标准化的QUANATAXIS事件分发,可以快速引入和复用
@@ -49,35 +48,18 @@ def now_time(func):
 class QA_Thread(threading.Thread):
     '这个是一个能够复用的多功能生产者消费者模型'
 
-    def __init__(self, queue):
+    def __init__(self, queue=None, name=None):
         threading.Thread.__init__(self)
-        self.queue = queue
+        self.queue = Queue() if queue is None else queue
         self.thread_stop = False
         self.__flag = threading.Event()     # 用于暂停线程的标识
         self.__flag.set()       # 设置为True
         self.__running = threading.Event()      # 用于停止线程的标识
         self.__running.set()      # 将running设置为True
+        self.name = name
 
     def __repr__(self):
         return '< QA_STANDARD Threading Queue >'
-
-    def QA_queue_job_register(self, __job):
-        '首先对于任务进行类型判断,输入的job的类型一定是一个dict模式的,同时需要含有一个type的K-V对'
-        assert isinstance(__job, dict)
-        assert isinstance(__job['type'], str)
-
-    def __QA_queue_put(self, args):
-        return self.queue.put()
-
-    def __QA_queue_pop(self, block=True, timeout=20):
-
-        print(self.queue.queue)
-        _l = self.queue.get()
-        print(self.queue.queue)
-        return _l
-
-    def __QA_queue_status(self):
-        return self.queue.qsize()
 
     def run(self):
         while self.__running.isSet():
@@ -88,12 +70,12 @@ class QA_Thread(threading.Thread):
                 try:
                     if self.queue.empty() is False:
                         _task = self.queue.get()  # 接收消息
-                        assert isinstance(_task,QA_Task)
+                        assert isinstance(_task, QA_Task)
                         if _task.job != None:
 
                             _task.do()
-                        
-                            self.queue.__task_done()  # 完成一个任务
+
+                            self.queue.task_done()  # 完成一个任务
                         else:
                             pass
                     else:
@@ -103,11 +85,9 @@ class QA_Thread(threading.Thread):
                 except:
                     time.sleep(1)
                     self.run()
-                __res = self.__QA_queue_status()  # 判断消息队列大小
+                __res = self.qsize()# 判断消息队列大小
                 if __res > 0:
                     #QA_util_log_info("From Engine %s: There are still %d tasks to do" % (str(threading.current_thread()), __res))
-                    pass
-                # input()
                 threading.Timer(0.005, self.run)
 
     def pause(self):
@@ -123,19 +103,24 @@ class QA_Thread(threading.Thread):
     def __start(self):
         self.queue.start()
 
+    def put(self, task):
+        self.queue.put(task)
+
+    def put_nowait(self, task):
+        self.queue.put_nowait(task)
+
+    def get(self, task):
+        return self.get(task)
+
+    def get_nowait(self, task):
+        return self.get_nowait(task)
+
+    def qsize(self):
+        return self.queue._qsize
+
 
 if __name__ == '__main__':
+    import queue
     q = queue.Queue()
     worker = QA_Thread(q)
     worker.start()
-    q.put({'type': '1x00', 'subtype': '1x01', 'func':' print(\'aa\')'},
-          block=False, timeout=None)
-    print('*' * 10)
-    print(worker.queue.queue)
-    input()
-    QA_util_log_info('===now we will sleep 20 sec, and wait for the response')
-    QA_util_log_info(datetime.datetime.now())
-    time.sleep(20)
-    q.put({'type': '1x00', 'subtype': '1x01', 'func': 'print(\'vv\')'},
-          block=False, timeout=None)
-    QA_util_log_info(datetime.datetime.now())
