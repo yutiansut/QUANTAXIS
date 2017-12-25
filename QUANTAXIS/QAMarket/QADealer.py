@@ -205,6 +205,7 @@ class QA_Dealer():
                 '能成功交易的情况 有滑点调整'
                 if float(self.order.amount) < float(self.market_data['volume']) * 100 / 16:
                     self.deal_price = self.order.price
+                    self.deal_amount=self.order.amount
                 elif float(self.order.amount) >= float(self.market_data['volume']) * 100 / 16 and \
                         float(self.order.amount) < float(self.market_data['volume']) * 100 / 8:
                     """
@@ -219,9 +220,10 @@ class QA_Dealer():
                     else:
                         self.deal_price = (min(float(self.market_data['open']), float(
                             self.market_data['close'])) + float(self.market_data['low'])) * 0.5
+                    self.deal_amount=self.order.amount
 
                 else:
-                    self.order.amount = float(self.market_data['volume']) / 8
+                    self.deal_amount = float(self.market_data['volume']) / 8
                     if int(self.order.towards) > 0:
                         self.deal_price = float(self.market_data['high'])
                     else:

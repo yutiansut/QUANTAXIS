@@ -364,14 +364,21 @@ class QA_Account(QA_Job):
         date = str(time)[0:10] if len(str(time)) == 19 else str(time)
         time = str(time) if len(
             str(time)) == 19 else '{} 09:31:00'.format(str(time)[0:10])
-        if towards in [ORDER_DIRECTION.BUY]:
+        if towards in [ORDER_DIRECTION.BUY] and amount_model is AMOUNT_MODEL.BY_AMOUNT:
             if self.cash_available > amount * price:
                 self.cash_available -= amount * price
                 flag = True
-
-        elif towards in [ORDER_DIRECTION.SELL]:
+        if towards in [ORDER_DIRECTION.BUY] and amount_model is AMOUNT_MODEL.BY_PRICE:
+            if self.cash_available > amount :
+                self.cash_available -= amount 
+                flag = True
+        elif towards in [ORDER_DIRECTION.SELL] and amount_model is AMOUNT_MODEL.BY_AMOUNT:
             if self.sell_available[code] > amount:
                 self.sell_available[code] -= amount
+                flag = True
+        elif towards in [ORDER_DIRECTION.SELL] and amount_model is AMOUNT_MODEL.BY_PRICE:
+            if self.sell_available[code] > amount:
+                self.sell_available[code] -= int(amount/price*100)*100
                 flag = True
         if flag:
             return QA_Order(user=self.user, strategy=self.strategy_name, data_type=data_type,
