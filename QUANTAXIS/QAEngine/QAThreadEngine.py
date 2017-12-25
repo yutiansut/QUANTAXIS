@@ -114,22 +114,32 @@ class QA_Thread(threading.Thread):
 
 class QA_Engine():
     def __init__(self, *args, **kwargs):
-        self.threads = {}
+        self.kernals = {}
 
     def __repr__(self):
-        return ' <QA_ENGINE with {} >'.format(self.threads.keys())
+        return ' <QA_ENGINE with {} >'.format(self.kernals.keys())
 
     def new(self, name):
-        self.threads[name] = QA_Thread(name=name)
+        self.kernals[name] = QA_Thread(name=name)
+
+    @property
+    def kernel_num(self):
+        return len(self.kernals.keys())
 
     def start(self, name):
-        self.threads[name].start()
+        self.kernals[name].start()
 
     def stop(self, name):
-        self.threads[name].stop()
+        self.kernals[name].stop()
+        del self.kernals[name]
 
     def run_job(self, threadname, task):
-        self.threads[threadname].put(task)
+        self.kernals[threadname].put(task)
+
+    def map_to_thread(self, task_lisk):
+        "里面需要是的是tuple"
+        for thread_name, task in task_lisk:
+            self.run_job(thread_name, task)
 
 
 if __name__ == '__main__':
