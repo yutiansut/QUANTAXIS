@@ -113,33 +113,12 @@ class QA_Market(QA_Trade):
     def get_account_id(self):
         return [item.account_cookie for item in self.session.values()]
 
-    # def spi_job(self):
-
-    #     while True:
-    #         print('running')
-    #         try:
-    #             event = self.event_queue.get()
-    #             if event['type'] is ORDER_EVENT.CREATE:
-
-    #                 self.order_handler.order_event(
-    #                     event=event['type'], message=event['message'])
-    #                 self.on_insert_order(
-    #                     {'order_id': event['message'].order_id, 'order': event['message'].info()})
-    #                 yield self.event_queue.put({
-    #                     'type': ORDER_EVENT.TRADE})
-    #             elif event['type'] is ORDER_EVENT.TRADE:
-    #                 msg = self.order_handler.order_event(
-    #                     event=event['type'], message={'broker': self.broker})
-    #                 self.on_trade_event(msg)
-    #         except:
-    #             pass
-
     def insert_order(self, account_id, amount, amount_model, time, code, order_model, towards):
         order = self.session[account_id].send_order(
             amount=amount, amount_model=amount_model, time=time, code=code, order_model=order_model, towards=towards)
 
         self.event_queue.put(QA_Task(job=self.order_handler, event=QA_Event(
-            event_type=ORDER_EVENT.CREATE, message=order)))
+            event_type=ORDER_EVENT.CREATE, message=order, callback=self.on_insert_order)))
 
     def on_insert_order(self, data):
         print('callback')
@@ -162,6 +141,13 @@ class QA_Market(QA_Trade):
         "内部函数"
         self.event_queue.put(QA_Task(job=self.order_handler, event=QA_Event(
             event_type=BROKER_EVENT.TRADE, message={'broker': self.broker}, callback=self.on_trade_event)))
+
+    def _settle(self):
+        self.event_queue.put(QA_Task(job=self.order_handler, event=QA_Event(
+            event_type=BROKER_EVENT.SETTLE, message={'broker': self.broker})))
+
+    def _close(self):
+        pass
 
 
 if __name__ == '__main__':
