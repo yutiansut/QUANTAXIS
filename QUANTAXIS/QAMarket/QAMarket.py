@@ -179,6 +179,7 @@ class QA_Market(QA_Trade):
             ))
 
     def on_query_data(self, data):
+        print('ON QUERY')
         print(data)
 
     def on_trade_event(self, data):
