@@ -44,10 +44,12 @@ standard message
 
 """
 
+
 class commission():
-    if_buyside_commission=False
-    if_sellside_commission=True
-    if_commission=if_buyside_commission and if_sellside_commission
+    if_buyside_commission = False
+    if_sellside_commission = True
+    if_commission = if_buyside_commission and if_sellside_commission
+
 
 class dealer_preset():
     def __init__(self, market_type, *args, **kwargs):
@@ -102,12 +104,12 @@ class QA_Dealer():
         self.status = None
 
     def deal(self, order, market_data):
-        
+
         self.order = order
         self.market_data = market_data
         self.deal_price = 0
         self.deal_amount = 0
-        if order.type in [MARKET_TYPE.STOCK_DAY,MARKET_TYPE.STOCK_MIN,MARKET_TYPE.STOCK_TRANSACTION]:
+        if order.type in [MARKET_TYPE.STOCK_DAY, MARKET_TYPE.STOCK_MIN, MARKET_TYPE.STOCK_TRANSACTION]:
             return self.backtest_stock_dealer()
 
     def callback_message(self):
@@ -120,7 +122,7 @@ class QA_Dealer():
                 'session': {
                     'user': self.order.user,
                     'strategy': self.order.strategy,
-                    'account':self.order.account_cookie
+                    'account': self.order.account_cookie
                 },
                 'order_id': self.order.order_id,
                 'trade_id': QA_util_random_with_topic('Trade')
@@ -149,8 +151,6 @@ class QA_Dealer():
             }
         }
         return message
-
-
 
     def cal_stock_fee(self):
         if int(self.order.towards) > 0:

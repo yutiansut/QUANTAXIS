@@ -41,7 +41,7 @@ from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_future_day,
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.QADealer import QA_Dealer
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_MODEL
+from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_MODEL, BROKER_TYPE, BROKER_EVENT, MARKET_EVENT, MARKET_TYPE
 
 
 class QA_BacktestBroker(QA_Broker):
@@ -65,16 +65,29 @@ class QA_BacktestBroker(QA_Broker):
         """
         super().__init__()
         self.dealer = QA_Dealer(commission_fee_coeff)
-        self.engine = {'0x01': self.dealer.backtest_stock_dealer}
-        self.fetcher = {'0x01': QA_fetch_stock_day, '0x02': QA_fetch_stock_min,
-                        '1x01': QA_fetch_index_day, '1x02': QA_fetch_index_min,
-                        '2x01': QA_fetch_future_day, '2x02': QA_fetch_future_min, '2x03': QA_fetch_future_tick}
-        self.nondatabase_fetcher = {'0x01': QA_fetch_get_stock_day, '0x02': QA_fetch_get_stock_min,
-                                    '1x01': QA_fetch_get_index_day, '1x02': QA_fetch_get_index_min,
-                                    '2x01': QA_fetch_get_future_day, '2x02': QA_fetch_get_future_min}
+        self.engine = {
+            MARKET_TYPE.STOCK_DAY: self.dealer.backtest_stock_dealer}
+        self.fetcher = {MARKET_TYPE.STOCK_DAY: QA_fetch_stock_day, MARKET_TYPE.STOCK_MIN: QA_fetch_stock_min,
+                        MARKET_TYPE.INDEX_DAY: QA_fetch_index_day, MARKET_TYPE.INDEX_MIN: QA_fetch_index_min,
+                        MARKET_TYPE.FUTUER_DAY: QA_fetch_future_day, MARKET_TYPE.FUTUER_MIN: QA_fetch_future_min}
+        self.nondatabase_fetcher = {MARKET_TYPE.STOCK_DAY: QA_fetch_get_stock_day,  MARKET_TYPE.STOCK_MIN: QA_fetch_get_stock_min,
+                                    MARKET_TYPE.INDEX_DAY: QA_fetch_get_index_day, MARKET_TYPE.INDEX_MIN: QA_fetch_get_index_min,
+                                    MARKET_TYPE.FUTUER_DAY: QA_fetch_get_future_day, MARKET_TYPE.FUTUER_MIN: QA_fetch_get_future_min}
         self.commission_fee_coeff = commission_fee_coeff
         self.market_data = None
         self.if_nondatabase = if_nondatabase
+        self.name = BROKER_TYPE.BACKETEST
+
+    def run(self, event):
+        if event.event_type is MARKET_EVENT.QUERY_DATA:
+            # 查询数据部分
+            code = event.message['code']
+            data_type = event.message['data_type']
+            start = event.message['start']
+            end = event.message['start'] if event.message['end'] is None else event.message['end']
+            market_type = event.message['market_type']
+            event.callback(self.fetcher[market_type](
+                code, start, end, dtype=data_type))
 
     def receive_order(self, event):
         """
@@ -88,7 +101,7 @@ class QA_BacktestBroker(QA_Broker):
                 order) if event.message['market_data'] is None else event.message['market_data']
         else:
             self.market_data = self.get_market(order)
-            
+
         order = self.warp(order)
 
         return self.dealer.deal(order, self.market_data)
