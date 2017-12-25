@@ -23,13 +23,12 @@
 # SOFTWARE.
 
 
-import click
+
 import sys
 import os
-import configparser
+import argparse
 
 
 # 一个直接通过命令行运行的指令
 # 用于docker
-
 
