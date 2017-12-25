@@ -80,13 +80,14 @@ class QA_Market(QA_Trade):
         self.broker_name = None
         self.broker = None
         self.running_time = None
-        self.trade_engine.create_kernal('MARKET')
-        self.trade_engine.start_kernal('MARKET')
-        # self.spi_thread.start()
-        # print(self.spi_thread.is_alive())
 
     def __repr__(self):
         return '< QA_MARKET with {} Broker >'.format(self.broker_name)
+
+    def start(self):
+        self.trade_engine.start()
+        self.trade_engine.create_kernal('MARKET')
+        self.trade_engine.start_kernal('MARKET')
 
     def connect(self, broker):
         if broker in self._broker.keys():
@@ -100,6 +101,7 @@ class QA_Market(QA_Trade):
             return False
 
     def login(self, account_cookie):
+        
         if account_cookie not in self.session.keys():
             self.session[account_cookie] = QA_Account(
                 account_cookie=account_cookie)

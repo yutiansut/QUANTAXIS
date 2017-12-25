@@ -21,7 +21,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import queue
+
 from abc import ABC, abstractmethod
 from threading import Event, Thread, Timer
 from QUANTAXIS.QAEngine.QAThreadEngine import QA_Thread,QA_Engine
@@ -32,8 +32,9 @@ class QA_Trade():
     "多线程+generator模式"
 
     def __init__(self, *args, **kwargs):
-        self.event_queue = queue.Queue()
         self.trade_engine = QA_Engine()
+        self.event_queue = self.trade_engine.queue
+        
         # self.spi_thread.start()
 
     def connect(self, *args, **kwargs):
