@@ -41,7 +41,9 @@ from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_future_day,
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.QADealer import QA_Dealer
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_MODEL, BROKER_TYPE, BROKER_EVENT, MARKET_EVENT, MARKET_TYPE
+from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT,
+                                          BROKER_TYPE, MARKET_EVENT,
+                                          MARKET_TYPE, ORDER_MODEL)
 
 
 class QA_BacktestBroker(QA_Broker):

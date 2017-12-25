@@ -33,8 +33,9 @@ from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Job
 from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
-                                          MARKET_TYPE, ORDER_DIRECTION,
-                                          ORDER_EVENT, ORDER_MODEL)
+                                          BROKER_TYPE, MARKET_TYPE,
+                                          ORDER_DIRECTION, ORDER_EVENT,
+                                          ORDER_MODEL)
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 # 2017/6/4修改: 去除总资产的动态权益计算
@@ -52,7 +53,7 @@ class QA_Account(QA_Job):
     # 一个hold改成list模式
 
     def __init__(self, strategy_name='', user='', account_type=MARKET_TYPE.STOCK_DAY,
-                 hold=None,
+                 hold=None, broker_type=BROKER_TYPE.BACKETEST,
                  sell_available=None,
                  init_assest=None, order_queue=None,
                  cash=None, history=None, detail=None, assets=None,
@@ -82,7 +83,7 @@ class QA_Account(QA_Job):
 
         self.history = [] if history is None else history
         self.detail = [] if detail is None else detail
-
+        self.broker_type = broker_type
         self.account_cookie = QA_util_random_with_topic(
             'Acc') if account_cookie is None else account_cookie
         self.message = {
@@ -369,8 +370,8 @@ class QA_Account(QA_Job):
                 self.cash_available -= amount * price
                 flag = True
         if towards in [ORDER_DIRECTION.BUY] and amount_model is AMOUNT_MODEL.BY_PRICE:
-            if self.cash_available > amount :
-                self.cash_available -= amount 
+            if self.cash_available > amount:
+                self.cash_available -= amount
                 flag = True
         elif towards in [ORDER_DIRECTION.SELL] and amount_model is AMOUNT_MODEL.BY_AMOUNT:
             if self.sell_available[code] > amount:
@@ -378,7 +379,7 @@ class QA_Account(QA_Job):
                 flag = True
         elif towards in [ORDER_DIRECTION.SELL] and amount_model is AMOUNT_MODEL.BY_PRICE:
             if self.sell_available[code] > amount:
-                self.sell_available[code] -= int(amount/price*100)*100
+                self.sell_available[code] -= int(amount / price * 100) * 100
                 flag = True
         if flag:
             return QA_Order(user=self.user, strategy=self.strategy_name, data_type=data_type,
