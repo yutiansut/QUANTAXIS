@@ -113,34 +113,65 @@ class QA_Thread(threading.Thread):
         return self.queue.qsize()
 
 
-class QA_Engine():
+class QA_Engine(QA_Thread):
     def __init__(self, *args, **kwargs):
+        super().__init__(name='QAENGINE')
         self.kernals = {}
+        self.__flag = threading.Event()     # 用于暂停线程的标识
+        self.__flag.set()       # 设置为True
+        self.__running = threading.Event()      # 用于停止线程的标识
+        self.__running.set()      # 将running设置为True
 
     def __repr__(self):
-        return ' <QA_ENGINE with {} >'.format(self.kernals.keys())
-
-    def new(self, name):
-        self.kernals[name] = QA_Thread(name=name)
+        return ' <QA_ENGINE with {} kernals>'.format(list(self.kernals.keys()))
 
     @property
     def kernel_num(self):
         return len(self.kernals.keys())
 
-    def start(self, name):
+    def create_kernal(self, name):
+        # ENGINE线程创建一个事件线程
+        self.kernals[name] = QA_Thread(name=name)
+
+    def start_kernal(self, name):
         self.kernals[name].start()
 
-    def stop(self, name):
+    def stop_kernal(self, name):
         self.kernals[name].stop()
         del self.kernals[name]
 
-    def run_job(self, threadname, task):
-        self.kernals[threadname].put(task)
+    def run_job(self, task):
+        self.kernals[task.engine].put(task)
 
-    def map_to_thread(self, task_lisk):
-        "里面需要是的是tuple"
-        for thread_name, task in task_lisk:
-            self.run_job(thread_name, task)
+    def run(self):
+        while self.__running.isSet():
+            self.__flag.wait()
+            while not self.thread_stop:
+                '这是一个阻塞的队列,避免出现消息的遗漏'
+
+                try:
+                    if self.queue.empty() is False:
+                        _task = self.queue.get()  # 接收消息
+                        assert isinstance(_task, QA_Task)
+                        if _task.job != None:
+
+                            self.run_job(_task)
+
+                            self.queue.task_done()  # 完成一个任务
+                        else:
+                            pass
+                    else:
+                        # QA_util_log_info("From Engine %s  Engine will waiting for new task ..." % str(
+                        #     threading.current_thread()))
+                        time.sleep(1)
+                except:
+                    time.sleep(1)
+                    self.run()
+                __res = self.qsize()  # 判断消息队列大小
+                if __res > 0:
+                    QA_util_log_info("From Engine %s: There are still %d tasks to do" % (
+                        str(threading.current_thread()), __res))
+                threading.Timer(0.005, self.run)
 
 
 if __name__ == '__main__':

@@ -68,9 +68,9 @@ class QA_OrderHandler(QA_Job):
         if event.event_type is ORDER_EVENT.CREATE:
             # 此时的message应该是订单类
             assert isinstance(event.message, QA_Order)
-            self.order_queue.insert_order(event.message)
+            order=self.order_queue.insert_order(event.message)
             if event.callback:
-                event.callback('SUCCESS')
+                event.callback(order)
         elif event.event_type is BROKER_EVENT.TRADE:
             assert isinstance(event.message, dict)
             for item in self.order_queue.trade_list:

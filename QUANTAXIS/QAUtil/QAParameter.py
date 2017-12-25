@@ -216,6 +216,8 @@ class ENGINE_EVENT:
 
 class ACCOUNT_EVENT:
     UPDATE = 'account_update'
+    SETTLE = 'account_settle'
+    MAKE_ORDER = 'account_make_order'
 
 
 class BROKER_EVENT:
@@ -234,3 +236,24 @@ class ORDER_EVENT:
     CREATE = 'create'
     TRADE = 'trade'
     CANCEL = 'cancel'
+
+
+class QUERY_DATA_TYPE:
+    """查询的级别
+
+    [description]
+    """
+
+    YEAR = 'year'  # 年bar
+    QUARTER = 'quarter'  # 季度bar
+    MONTH = 'month'  # 月bar
+    WEEK = 'week'  # 周bar
+    DAY = 'day'  # 日bar
+    ONE_MIN = '1min'  # 1min bar
+    FIVE_MIN = '5min'  # 5min bar
+    FIFTEEN_MIN = '15min'  # 15min bar
+    THIRTY_MIN = '30min'  # 30min bar
+    HOUR = '60min'  # 60min bar
+    SIXTY_MIN = '60min'  # 60min bar
+    CURRENT = 'current'  # 当前bar
+    TICK = 'tick'  # transaction
