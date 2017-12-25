@@ -9,7 +9,7 @@ import threading
     QUANTAXIS>> ip:127.0.0.1,port:27017
     QUANTAXIS>> Selecting the Best Server IP of TDX
     QUANTAXIS>> === The BEST SERVER ===
-     stock_ip 218.75.126.9 future_ip 61.152.107.141
+     stock_ip 115.238.90.165 future_ip 61.152.107.141
     QUANTAXIS>> Welcome to QUANTAXIS, the Version is remake-version
     QUANTAXIS>>  
      ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` 
@@ -37,7 +37,8 @@ import threading
 ```python
 user = QA.QA_Portfolio()
 # 创建两个account
-
+#这里是创建一个资产组合,然后在组合里面创建两个account  你可以想象成股票里面的两个策略账户
+#然后返回的是这个账户的id
 a_1 = user.new_account()
 a_2 = user.new_account()
 
@@ -51,13 +52,17 @@ a_1
 
 
 
-    'Acc_FsQN0DqR'
+    'Acc_xvt2kqXZ'
 
 
 
 
 ```python
-
+"""
+然后这里 是创建一个交易前置  你可以理解成 创建了一个无界面的通达信客户端
+然后start()开启这个客户端
+连接到backtest的broker上 这个broker可以更换
+"""
 # 创建一个交易前置
 market = QA.QA_Market()
 # 交易前置连接broker 
@@ -75,19 +80,20 @@ print(market)
 
 
 ```python
+#线程里面 开启了一个broker的线程 
 threading.enumerate()
 ```
 
 
 
 
-    [<_MainThread(MainThread, started 20740)>,
-     <Thread(Thread-4, started daemon 20560)>,
-     <Heartbeat(Thread-5, started daemon 9832)>,
-     <HistorySavingThread(IPythonHistorySavingThread, started 8108)>,
-     <ParentPollerWindows(Thread-3, started daemon 16972)>,
-     <Thread(pymongo_server_monitor_thread, started daemon 18040)>,
-     <Thread(pymongo_kill_cursors_thread, started daemon 10108)>,
+    [<_MainThread(MainThread, started 19460)>,
+     <Thread(Thread-4, started daemon 17808)>,
+     <Heartbeat(Thread-5, started daemon 11868)>,
+     <HistorySavingThread(IPythonHistorySavingThread, started 17232)>,
+     <ParentPollerWindows(Thread-3, started daemon 15980)>,
+     <Thread(pymongo_server_monitor_thread, started daemon 19808)>,
+     <Thread(pymongo_kill_cursors_thread, started daemon 17780)>,
       <QA_ENGINE with ['backtest'] kernals>,
      < QA_Thread backtest >]
 
@@ -95,6 +101,7 @@ threading.enumerate()
 
 
 ```python
+# 再连接一个模拟盘的BROKER
 market.connect(QA.RUNNING_ENVIRONMENT.SIMULATION)
 ```
 
@@ -107,19 +114,23 @@ market.connect(QA.RUNNING_ENVIRONMENT.SIMULATION)
 
 
 ```python
+"""
+然后我们假设又连进了模拟盘 看到这时候引擎里面有两个broker了
+好比是通达信连了实盘又连了模拟盘
+"""
 threading.enumerate()
 ```
 
 
 
 
-    [<_MainThread(MainThread, started 20740)>,
-     <Thread(Thread-4, started daemon 20560)>,
-     <Heartbeat(Thread-5, started daemon 9832)>,
-     <HistorySavingThread(IPythonHistorySavingThread, started 8108)>,
-     <ParentPollerWindows(Thread-3, started daemon 16972)>,
-     <Thread(pymongo_server_monitor_thread, started daemon 18040)>,
-     <Thread(pymongo_kill_cursors_thread, started daemon 10108)>,
+    [<_MainThread(MainThread, started 19460)>,
+     <Thread(Thread-4, started daemon 17808)>,
+     <Heartbeat(Thread-5, started daemon 11868)>,
+     <HistorySavingThread(IPythonHistorySavingThread, started 17232)>,
+     <ParentPollerWindows(Thread-3, started daemon 15980)>,
+     <Thread(pymongo_server_monitor_thread, started daemon 19808)>,
+     <Thread(pymongo_kill_cursors_thread, started daemon 17780)>,
       <QA_ENGINE with ['backtest', 'simulation'] kernals>,
      < QA_Thread backtest >,
      < QA_Thread simulation >]
@@ -128,6 +139,9 @@ threading.enumerate()
 
 
 ```python
+"""
+登陆到这个交易前置上 把你刚才的两个账户
+"""
 # 登陆交易
 market.login(a_1)
 market.login(a_2)
@@ -137,58 +151,57 @@ print(market.get_account_id())
 
 ```
 
-    ['Acc_FsQN0DqR', 'Acc_wQoEPFRl']
+    ['Acc_xvt2kqXZ', 'Acc_VEwA26U7']
     
 
 
 ```python
-import threading
-threading.enumerate()
+#然后这里 往交易前置里面添加订单 这个操作是异步的
 ```
 
 
-
-
-    [<_MainThread(MainThread, started 20740)>,
-     <Thread(Thread-4, started daemon 20560)>,
-     <Heartbeat(Thread-5, started daemon 9832)>,
-     <HistorySavingThread(IPythonHistorySavingThread, started 8108)>,
-     <ParentPollerWindows(Thread-3, started daemon 16972)>,
-     <Thread(pymongo_server_monitor_thread, started daemon 18040)>,
-     <Thread(pymongo_kill_cursors_thread, started daemon 10108)>,
-      <QA_ENGINE with ['backtest', 'simulation'] kernals>,
-     < QA_Thread backtest >,
-     < QA_Thread simulation >]
-
-
+```python
+#这两个是 每个账户都下了单
+```
 
 
 ```python
-market.insert_order(account_id=a_1, amount=10000,price=None, amount_model=QA.AMOUNT_MODEL.BY_PRICE,time='2017-12-14', code='000001', 
+market.insert_order(account_id=a_1, amount=100000,price=None, amount_model=QA.AMOUNT_MODEL.BY_PRICE,time='2017-12-14', code='000001', 
                     order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY,market_type=QA.MARKET_TYPE.STOCK_DAY,
                    data_type=QA.MARKETDATA_TYPE.DAY,broker_name=QA.BROKER_TYPE.BACKETEST)
 ```
 
-    QUANTAXIS>> From Engine  <QA_ENGINE with ['backtest', 'simulation'] kernals>: There are still 1 tasks to do
-    
-
-    < QA_Order datetime:2017-12-14 09:31:00 code:000001 price:13.0 towards:1 btype:0x01 order_id:Order_pjtLJEHA account:Acc_FsQN0DqR status:300 >
+    < QA_Order datetime:2017-12-14 09:31:00 code:000001 price:13.0 towards:1 btype:0x01 order_id:Order_dltU7r8i account:Acc_xvt2kqXZ status:300 >
     
 
 
 ```python
-market.insert_order(account_id=a_2, amount=10000,price=None, amount_model=QA.AMOUNT_MODEL.BY_PRICE,time='2017-12-14', code='000001', 
+market.insert_order(account_id=a_2, amount=100000,price=None, amount_model=QA.AMOUNT_MODEL.BY_PRICE,time='2017-12-14', code='000001', 
                     order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY,market_type=QA.MARKET_TYPE.STOCK_DAY,
                    data_type=QA.MARKETDATA_TYPE.DAY,broker_name=QA.BROKER_TYPE.BACKETEST)
 ```
 
-    < QA_Order datetime:2017-12-14 09:31:00 code:000001 price:13.0 towards:1 btype:0x01 order_id:Order_KHERf6z9 account:Acc_wQoEPFRl status:300 >
+    < QA_Order datetime:2017-12-14 09:31:00 code:000001 price:13.0 towards:1 btype:0x01 order_id:Order_OoZaITdW account:Acc_VEwA26U7 status:300 >
     
 
 
 ```python
-#market.order_handler.order_queue.settle()
+#
+"""
+下单以后 现金不会减少 但是可用现金会被扣除
+因为如果是市价单 你的成交价未定
+没法直接减少现金
+可用现金减少 cash不减少 等到settle 等到成功交易的时候 才会扣cash
+
+"""
 ```
+
+
+
+
+    '\n下单以后 现金不会减少 但是可用现金会被扣除\n因为如果是市价单 你的成交价未定\n没法直接减少现金\n可用现金减少 cash不减少 等到settle 等到成功交易的时候 才会扣cash\n\n'
+
+
 
 
 ```python
@@ -198,12 +211,27 @@ market.session[a_1].cash_available
 
 
 
-    870000.0
+    900000
 
 
 
 
 ```python
+market.session[a_1].cash
+```
+
+
+
+
+    [1000000]
+
+
+
+
+```python
+"""
+这里是交易前置内部的订单队列
+"""
 market.order_handler.order_queue()
 ```
 
@@ -273,16 +301,16 @@ market.order_handler.order_queue()
   </thead>
   <tbody>
     <tr>
-      <th>Order_pjtLJEHA</th>
-      <td>Acc_FsQN0DqR</td>
-      <td>10000</td>
+      <th>Order_dltU7r8i</th>
+      <td>Acc_xvt2kqXZ</td>
+      <td>100000</td>
       <td>by_price</td>
       <td>000001</td>
       <td>day</td>
       <td>2017-12-14</td>
       <td>2017-12-14 09:31:00</td>
       <td>0x01</td>
-      <td>Order_pjtLJEHA</td>
+      <td>Order_dltU7r8i</td>
       <td>close</td>
       <td>13.0</td>
       <td>2017-12-14 09:31:00</td>
@@ -295,16 +323,16 @@ market.order_handler.order_queue()
       <td></td>
     </tr>
     <tr>
-      <th>Order_KHERf6z9</th>
-      <td>Acc_wQoEPFRl</td>
-      <td>10000</td>
+      <th>Order_OoZaITdW</th>
+      <td>Acc_VEwA26U7</td>
+      <td>100000</td>
       <td>by_price</td>
       <td>000001</td>
       <td>day</td>
       <td>2017-12-14</td>
       <td>2017-12-14 09:31:00</td>
       <td>0x01</td>
-      <td>Order_KHERf6z9</td>
+      <td>Order_OoZaITdW</td>
       <td>close</td>
       <td>13.0</td>
       <td>2017-12-14 09:31:00</td>
@@ -330,13 +358,14 @@ market.order_handler.order_queue.trade_list
 
 
 
-    [< QA_Order datetime:2017-12-14 09:31:00 code:000001 price:13.0 towards:1 btype:0x01 order_id:Order_pjtLJEHA account:Acc_FsQN0DqR status:100 >,
-     < QA_Order datetime:2017-12-14 09:31:00 code:000001 price:13.0 towards:1 btype:0x01 order_id:Order_KHERf6z9 account:Acc_wQoEPFRl status:100 >]
+    [< QA_Order datetime:2017-12-14 09:31:00 code:000001 price:13.0 towards:1 btype:0x01 order_id:Order_dltU7r8i account:Acc_xvt2kqXZ status:100 >,
+     < QA_Order datetime:2017-12-14 09:31:00 code:000001 price:13.0 towards:1 btype:0x01 order_id:Order_OoZaITdW account:Acc_VEwA26U7 status:100 >]
 
 
 
 
 ```python
+#pending 是指的待成交列表
 market.order_handler.order_queue.pending
 ```
 
@@ -406,16 +435,16 @@ market.order_handler.order_queue.pending
   </thead>
   <tbody>
     <tr>
-      <th>Order_pjtLJEHA</th>
-      <td>Acc_FsQN0DqR</td>
-      <td>10000</td>
+      <th>Order_dltU7r8i</th>
+      <td>Acc_xvt2kqXZ</td>
+      <td>100000</td>
       <td>by_price</td>
       <td>000001</td>
       <td>day</td>
       <td>2017-12-14</td>
       <td>2017-12-14 09:31:00</td>
       <td>0x01</td>
-      <td>Order_pjtLJEHA</td>
+      <td>Order_dltU7r8i</td>
       <td>close</td>
       <td>13.0</td>
       <td>2017-12-14 09:31:00</td>
@@ -428,16 +457,16 @@ market.order_handler.order_queue.pending
       <td></td>
     </tr>
     <tr>
-      <th>Order_KHERf6z9</th>
-      <td>Acc_wQoEPFRl</td>
-      <td>10000</td>
+      <th>Order_OoZaITdW</th>
+      <td>Acc_VEwA26U7</td>
+      <td>100000</td>
       <td>by_price</td>
       <td>000001</td>
       <td>day</td>
       <td>2017-12-14</td>
       <td>2017-12-14 09:31:00</td>
       <td>0x01</td>
-      <td>Order_KHERf6z9</td>
+      <td>Order_OoZaITdW</td>
       <td>close</td>
       <td>13.0</td>
       <td>2017-12-14 09:31:00</td>
@@ -457,6 +486,11 @@ market.order_handler.order_queue.pending
 
 
 ```python
+"""
+这个_trade是一个私有方法 只有模拟盘和回测才会有 实盘就是真的交易了 
+这个_trade是backtest类去调用的
+
+"""
 market._trade(QA.BROKER_TYPE.BACKETEST)
 ```
 
@@ -464,10 +498,23 @@ market._trade(QA.BROKER_TYPE.BACKETEST)
     
 
     ON TRADE
-    {'header': {'source': 'market', 'status': 200, 'code': '000001', 'session': {'user': '', 'strategy': '', 'account': 'Acc_FsQN0DqR'}, 'order_id': 'Order_pjtLJEHA', 'trade_id': 'Trade_W5suaHMt'}, 'body': {'order': {'price': 13.0, 'code': '000001', 'amount': 0, 'date': '2017-12-14', 'datetime': '2017-12-14 09:31:00', 'towards': 1}, 'market': {'open': 13.15, 'high': 13.31, 'low': 12.91, 'close': 13.0, 'volume': 1001997.0, 'code': '000001'}, 'fee': {'commission': 195.0, 'tax': 0}}}
+    {'header': {'source': 'market', 'status': 200, 'code': '000001', 'session': {'user': '', 'strategy': '', 'account': 'Acc_xvt2kqXZ'}, 'order_id': 'Order_dltU7r8i', 'trade_id': 'Trade_KDWgrQCZ'}, 'body': {'order': {'price': 13.0, 'code': '000001', 'amount': 7600, 'date': '2017-12-14', 'datetime': '2017-12-14 09:31:00', 'towards': 1}, 'market': {'open': 13.15, 'high': 13.31, 'low': 12.91, 'close': 13.0, 'volume': 1001997.0, 'code': '000001'}, 'fee': {'commission': 148.2, 'tax': 0}}}
     ON TRADE
-    {'header': {'source': 'market', 'status': 200, 'code': '000001', 'session': {'user': '', 'strategy': '', 'account': 'Acc_wQoEPFRl'}, 'order_id': 'Order_KHERf6z9', 'trade_id': 'Trade_Up067OtA'}, 'body': {'order': {'price': 13.0, 'code': '000001', 'amount': 0, 'date': '2017-12-14', 'datetime': '2017-12-14 09:31:00', 'towards': 1}, 'market': {'open': 13.15, 'high': 13.31, 'low': 12.91, 'close': 13.0, 'volume': 1001997.0, 'code': '000001'}, 'fee': {'commission': 195.0, 'tax': 0}}}
+    {'header': {'source': 'market', 'status': 200, 'code': '000001', 'session': {'user': '', 'strategy': '', 'account': 'Acc_VEwA26U7'}, 'order_id': 'Order_OoZaITdW', 'trade_id': 'Trade_7gEAC36D'}, 'body': {'order': {'price': 13.0, 'code': '000001', 'amount': 7600, 'date': '2017-12-14', 'datetime': '2017-12-14 09:31:00', 'towards': 1}, 'market': {'open': 13.15, 'high': 13.31, 'low': 12.91, 'close': 13.0, 'volume': 1001997.0, 'code': '000001'}, 'fee': {'commission': 148.2, 'tax': 0}}}
     
+
+
+```python
+"""下面这两个是 查询  一个是异步查询 一个是同步的(no_wait)
+异步不会阻塞当前线程 同步会阻塞"""
+```
+
+
+
+
+    '下面这两个是 查询  一个是异步查询 一个是同步的(no_wait)\n异步不会阻塞当前线程 同步会阻塞'
+
+
 
 
 ```python
@@ -499,18 +546,20 @@ market.query_data_no_wait(broker_name=QA.BROKER_TYPE.BACKETEST,data_type=QA.MARK
 
 
 ```python
+"""成交了以后 你可以看到账户的资产变化了"""
 market.session[a_1]
 ```
 
 
 
 
-    <QA_Account Acc_FsQN0DqR Assets:999805.0>
+    <QA_Account Acc_xvt2kqXZ Assets:999851.8>
 
 
 
 
 ```python
+"""待成交列表被清空"""
 market.order_handler.order_queue.pending
 ```
 
@@ -587,6 +636,7 @@ market.order_handler.order_queue.pending
 
 
 ```python
+"""待成交队列清空"""
 market.order_handler.order_queue.trade_list
 ```
 
@@ -594,5 +644,171 @@ market.order_handler.order_queue.trade_list
 
 
     []
+
+
+
+
+```python
+"""
+cash 现金减少
+"""
+market.session[a_1].cash
+```
+
+
+
+
+    [1000000, 901051.8]
+
+
+
+
+```python
+"""
+资产减少
+"""
+market.session[a_1].assets
+```
+
+
+
+
+    [1000000, 999851.8]
+
+
+
+
+```python
+"""
+因为没有触发每日结算时间 在T+1的市场 即使买入了也没有可卖的
+"""
+market.session[a_1].sell_available
+```
+
+
+
+
+    [['datetime', 'code', 'price', 'amount', 'order_id', 'trade_id']]
+
+
+
+
+```python
+"""
+持仓表增加
+"""
+market.session[a_1].hold
+```
+
+
+
+
+    [['2017-12-14 09:31:00',
+      '000001',
+      13.0,
+      7600.0,
+      'Order_dltU7r8i',
+      'Trade_KDWgrQCZ']]
+
+
+
+
+```python
+import pandas as pd
+"""用pandas打印的漂亮一点"""
+pd.DataFrame(data=market.session[a_1].hold,columns=market.session[a_1]._hold_headers)
+```
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>datetime</th>
+      <th>code</th>
+      <th>price</th>
+      <th>amount</th>
+      <th>order_id</th>
+      <th>trade_id</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2017-12-14 09:31:00</td>
+      <td>000001</td>
+      <td>13.0</td>
+      <td>7600.0</td>
+      <td>Order_dltU7r8i</td>
+      <td>Trade_KDWgrQCZ</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+"""
+账户信息
+
+可以看到 减少的资产 主要是因为收了手续费
+"""
+market.session[a_1].message
+```
+
+
+
+
+    {'body': {'account': {'assets': [1000000, 999851.8],
+       'cash': [1000000, 901051.8],
+       'detail': [['2017-12-14 09:31:00',
+         '000001',
+         13.0,
+         7600.0,
+         'Order_dltU7r8i',
+         'Trade_KDWgrQCZ',
+         [],
+         [],
+         [],
+         [],
+         7600.0,
+         148.2]],
+       'history': [['2017-12-14 09:31:00',
+         '000001',
+         13.0,
+         1,
+         7600.0,
+         'Order_dltU7r8i',
+         'Trade_KDWgrQCZ',
+         148.2]],
+       'hold': [['2017-12-14 09:31:00',
+         '000001',
+         13.0,
+         7600.0,
+         'Order_dltU7r8i',
+         'Trade_KDWgrQCZ']]},
+      'date_stamp': 1514243009.306398,
+      'time': '2017-12-26 07:03:29.306398'},
+     'header': {'cookie': 'Acc_xvt2kqXZ',
+      'session': {'code': '000001', 'strategy': '', 'user': ''},
+      'source': 'account'}}
 
 

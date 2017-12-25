@@ -122,6 +122,7 @@ class QA_Market(QA_Trade):
         return [item.account_cookie for item in self.session.values()]
 
     def insert_order(self, account_id, amount, amount_model, time, code, price, order_model, towards, market_type, data_type, broker_name):
+        
         flag = False
         if order_model in [ORDER_MODEL.CLOSE, ORDER_MODEL.NEXT_OPEN]:
             _price = self.query_data_no_wait(broker_name=broker_name, data_type=data_type,
@@ -146,7 +147,7 @@ class QA_Market(QA_Trade):
             self.event_queue.put(QA_Task(job=self.order_handler, event=QA_Event(
                 event_type=ORDER_EVENT.CREATE, message=order, callback=self.on_insert_order)))
         else:
-            return flag
+            pass
 
     def on_insert_order(self, order):
         print(order)
@@ -249,5 +250,3 @@ if __name__ == '__main__':
     market.login(a_1)
     market.login(a_2)
     print(market.get_account_id())
-    market.insert_order(account_id=a_1, amount=10000, amount_model=QA.AMOUNT_MODEL.BY_PRICE,
-                        time='2017-12-14', code='000001', order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY)
