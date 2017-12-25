@@ -38,12 +38,12 @@ QUANTAXIS官方维护了2个镜像:
 | 地址              | 国外(可以加速)            | 上海              | 
 | 系统              | Ubuntu16.04         | Ubuntu16.04     | 
 | python入口名       | python3.6           | python          |
-| mongo           | mongo 3.4 社区版       | mongo 3.4 社区版   | 
-| nodejs          | nodejs 8.2.1        | nodejs 8.2.1    | 
-| sshserver       | 内置                  | 内置              |
+| mongo           | mongo 3.4 社区版       | 暂无   | 
+| nodejs          | nodejs 8.2.1        | nodejs 8.9.3   | 
+| sshserver       | 内置                  | 暂无              |
 | QUANTAXIS 目录    | /QUANTAXIS          | /home/quantaxis | 
 | forever         | 有                   | 有               | 
-| web部分的依赖项       | 未安装                 | 未安装             | 
+| web部分的依赖项       | 未安装                 | 已安装            | 
 | 日线数据            | 未存储                 | 未存储             | 
 | 版本号             | V+数字版本              | V+数字版本          | 
 | JupyterNoteBook | 暂不支持                | 支持              | 
