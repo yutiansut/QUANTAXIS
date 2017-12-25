@@ -76,15 +76,19 @@ class QA_BacktestBroker(QA_Broker):
         self.market_data = None
         self.if_nondatabase = if_nondatabase
 
-    def receive_order(self, event, order, market_data=None):
+    def receive_order(self, event):
         """
         get the order and choice which market to trade
 
         """
+        order = event.message['order']
 
-        assert isinstance(order.type, str)
-        self.market_data = self.get_market(
-            order) if market_data is None else market_data
+        if 'market_data' in event.message.keys():
+            self.market_data = self.get_market(
+                order) if event.message['market_data'] is None else event.message['market_data']
+        else:
+            self.market_data = self.get_market(order)
+            
         order = self.warp(order)
 
         return self.dealer.deal(order, self.market_data)

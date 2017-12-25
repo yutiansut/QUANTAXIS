@@ -78,9 +78,9 @@ class QA_Market(QA_Trade):
         self.broker_name = None
         self.broker = None
         self.running_time = None
-
-        #self.spi_thread.start()
-        #print(self.spi_thread.is_alive())
+        self.spi_thread.setName('MARKET')
+        # self.spi_thread.start()
+        # print(self.spi_thread.is_alive())
 
     def __repr__(self):
         return '< QA_MARKET with {} Broker >'.format(self.broker_name)
@@ -89,10 +89,10 @@ class QA_Market(QA_Trade):
         if broker in self._broker.keys():
             self.broker_name = broker
             self.broker = self._broker[broker]()
+            self.spi_thread.start()  # 开启trade事件子线程
             return True
         else:
             return False
-        self.spi_thread.start()
 
     def login(self, account_cookie):
         if account_cookie not in self.session.keys():
@@ -113,26 +113,26 @@ class QA_Market(QA_Trade):
     def get_account_id(self):
         return [item.account_cookie for item in self.session.values()]
 
-    def spi_job(self):
+    # def spi_job(self):
 
-        while True:
-            print('running')
-            try:
-                event = self.event_queue.get()
-                if event['type'] is ORDER_EVENT.CREATE:
+    #     while True:
+    #         print('running')
+    #         try:
+    #             event = self.event_queue.get()
+    #             if event['type'] is ORDER_EVENT.CREATE:
 
-                    self.order_handler.order_event(
-                        event=event['type'], message=event['message'])
-                    self.on_insert_order(
-                        {'order_id': event['message'].order_id, 'order': event['message'].info()})
-                    yield self.event_queue.put({
-                        'type': ORDER_EVENT.TRADE})
-                elif event['type'] is ORDER_EVENT.TRADE:
-                    msg = self.order_handler.order_event(
-                        event=event['type'], message={'broker': self.broker})
-                    self.on_trade_event(msg)
-            except:
-                pass
+    #                 self.order_handler.order_event(
+    #                     event=event['type'], message=event['message'])
+    #                 self.on_insert_order(
+    #                     {'order_id': event['message'].order_id, 'order': event['message'].info()})
+    #                 yield self.event_queue.put({
+    #                     'type': ORDER_EVENT.TRADE})
+    #             elif event['type'] is ORDER_EVENT.TRADE:
+    #                 msg = self.order_handler.order_event(
+    #                     event=event['type'], message={'broker': self.broker})
+    #                 self.on_trade_event(msg)
+    #         except:
+    #             pass
 
     def insert_order(self, account_id, amount, amount_model, time, code, order_model, towards):
         order = self.session[account_id].send_order(
@@ -153,6 +153,15 @@ class QA_Market(QA_Trade):
 
     def query_position(self, account_cookie):
         pass
+
+    def on_trade_event(self, data):
+        print('ON_TRADE')
+        print(data)
+
+    def _trade(self):
+        "内部函数"
+        self.event_queue.put(QA_Task(job=self.order_handler, event=QA_Event(
+            event_type=BROKER_EVENT.TRADE, message={'broker': self.broker}, callback=self.on_trade_event)))
 
 
 if __name__ == '__main__':

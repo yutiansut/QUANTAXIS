@@ -71,14 +71,9 @@ class QA_OrderHandler(QA_Job):
             self.order_queue.insert_order(event.message)
         elif event.event_type is BROKER_EVENT.TRADE:
             assert isinstance(event.message, dict)
-            
-            # list comprehension for trade
+            for item in self.order_queue.trade_list:
+                event.callback(event.message['broker'].receive_order(
+                    QA_Event(event_type=BROKER_EVENT.TRADE, message={'order': item})))
 
-            # make event
-            
-            msg = [event.message['broker'].receive_order(item)
-                   for item in self.order_queue.trade_list]
-            return msg
-        
     def query_order(self, order_id):
         return self.order_queue.queue.query()
