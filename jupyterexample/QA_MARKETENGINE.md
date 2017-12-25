@@ -52,7 +52,7 @@ a_1
 
 
 
-    'Acc_xvt2kqXZ'
+    'Acc_DasXt8cC'
 
 
 
@@ -87,13 +87,13 @@ threading.enumerate()
 
 
 
-    [<_MainThread(MainThread, started 19460)>,
-     <Thread(Thread-4, started daemon 17808)>,
-     <Heartbeat(Thread-5, started daemon 11868)>,
-     <HistorySavingThread(IPythonHistorySavingThread, started 17232)>,
-     <ParentPollerWindows(Thread-3, started daemon 15980)>,
-     <Thread(pymongo_server_monitor_thread, started daemon 19808)>,
-     <Thread(pymongo_kill_cursors_thread, started daemon 17780)>,
+    [<_MainThread(MainThread, started 13012)>,
+     <Thread(Thread-4, started daemon 21380)>,
+     <Heartbeat(Thread-5, started daemon 15080)>,
+     <HistorySavingThread(IPythonHistorySavingThread, started 3348)>,
+     <ParentPollerWindows(Thread-3, started daemon 20444)>,
+     <Thread(pymongo_server_monitor_thread, started daemon 21476)>,
+     <Thread(pymongo_kill_cursors_thread, started daemon 8648)>,
       <QA_ENGINE with ['backtest'] kernals>,
      < QA_Thread backtest >]
 
@@ -124,13 +124,13 @@ threading.enumerate()
 
 
 
-    [<_MainThread(MainThread, started 19460)>,
-     <Thread(Thread-4, started daemon 17808)>,
-     <Heartbeat(Thread-5, started daemon 11868)>,
-     <HistorySavingThread(IPythonHistorySavingThread, started 17232)>,
-     <ParentPollerWindows(Thread-3, started daemon 15980)>,
-     <Thread(pymongo_server_monitor_thread, started daemon 19808)>,
-     <Thread(pymongo_kill_cursors_thread, started daemon 17780)>,
+    [<_MainThread(MainThread, started 13012)>,
+     <Thread(Thread-4, started daemon 21380)>,
+     <Heartbeat(Thread-5, started daemon 15080)>,
+     <HistorySavingThread(IPythonHistorySavingThread, started 3348)>,
+     <ParentPollerWindows(Thread-3, started daemon 20444)>,
+     <Thread(pymongo_server_monitor_thread, started daemon 21476)>,
+     <Thread(pymongo_kill_cursors_thread, started daemon 8648)>,
       <QA_ENGINE with ['backtest', 'simulation'] kernals>,
      < QA_Thread backtest >,
      < QA_Thread simulation >]
@@ -143,15 +143,15 @@ threading.enumerate()
 登陆到这个交易前置上 把你刚才的两个账户
 """
 # 登陆交易
-market.login(a_1)
-market.login(a_2)
+market.login(a_1,QA.BROKER_TYPE.BACKETEST)
+market.login(a_2,QA.BROKER_TYPE.BACKETEST)
 # 打印市场中的交易账户
 print(market.get_account_id())
 
 
 ```
 
-    ['Acc_xvt2kqXZ', 'Acc_VEwA26U7']
+    ['Acc_DasXt8cC', 'Acc_GQ3hu9d5']
     
 
 
@@ -171,7 +171,7 @@ market.insert_order(account_id=a_1, amount=100000,price=None, amount_model=QA.AM
                    data_type=QA.MARKETDATA_TYPE.DAY,broker_name=QA.BROKER_TYPE.BACKETEST)
 ```
 
-    < QA_Order datetime:2017-12-14 09:31:00 code:000001 price:13.0 towards:1 btype:0x01 order_id:Order_dltU7r8i account:Acc_xvt2kqXZ status:300 >
+    < QA_Order datetime:2017-12-14 09:31:00 code:000001 price:13.0 towards:1 btype:0x01 order_id:Order_L5gj0sUo account:Acc_DasXt8cC status:300 >
     
 
 
@@ -181,7 +181,7 @@ market.insert_order(account_id=a_2, amount=100000,price=None, amount_model=QA.AM
                    data_type=QA.MARKETDATA_TYPE.DAY,broker_name=QA.BROKER_TYPE.BACKETEST)
 ```
 
-    < QA_Order datetime:2017-12-14 09:31:00 code:000001 price:13.0 towards:1 btype:0x01 order_id:Order_OoZaITdW account:Acc_VEwA26U7 status:300 >
+    < QA_Order datetime:2017-12-14 09:31:00 code:000001 price:13.0 towards:1 btype:0x01 order_id:Order_26WY3Nmp account:Acc_GQ3hu9d5 status:300 >
     
 
 
@@ -289,8 +289,8 @@ market.order_handler.order_queue()
   </thead>
   <tbody>
     <tr>
-      <th>Order_dltU7r8i</th>
-      <td>Acc_xvt2kqXZ</td>
+      <th>Order_L5gj0sUo</th>
+      <td>Acc_DasXt8cC</td>
       <td>100000</td>
       <td>by_price</td>
       <td>000001</td>
@@ -298,7 +298,7 @@ market.order_handler.order_queue()
       <td>2017-12-14</td>
       <td>2017-12-14 09:31:00</td>
       <td>0x01</td>
-      <td>Order_dltU7r8i</td>
+      <td>Order_L5gj0sUo</td>
       <td>close</td>
       <td>13.0</td>
       <td>2017-12-14 09:31:00</td>
@@ -311,8 +311,8 @@ market.order_handler.order_queue()
       <td></td>
     </tr>
     <tr>
-      <th>Order_OoZaITdW</th>
-      <td>Acc_VEwA26U7</td>
+      <th>Order_26WY3Nmp</th>
+      <td>Acc_GQ3hu9d5</td>
       <td>100000</td>
       <td>by_price</td>
       <td>000001</td>
@@ -320,7 +320,7 @@ market.order_handler.order_queue()
       <td>2017-12-14</td>
       <td>2017-12-14 09:31:00</td>
       <td>0x01</td>
-      <td>Order_OoZaITdW</td>
+      <td>Order_26WY3Nmp</td>
       <td>close</td>
       <td>13.0</td>
       <td>2017-12-14 09:31:00</td>
@@ -346,8 +346,8 @@ market.order_handler.order_queue.trade_list
 
 
 
-    [< QA_Order datetime:2017-12-14 09:31:00 code:000001 price:13.0 towards:1 btype:0x01 order_id:Order_dltU7r8i account:Acc_xvt2kqXZ status:100 >,
-     < QA_Order datetime:2017-12-14 09:31:00 code:000001 price:13.0 towards:1 btype:0x01 order_id:Order_OoZaITdW account:Acc_VEwA26U7 status:100 >]
+    [< QA_Order datetime:2017-12-14 09:31:00 code:000001 price:13.0 towards:1 btype:0x01 order_id:Order_L5gj0sUo account:Acc_DasXt8cC status:100 >,
+     < QA_Order datetime:2017-12-14 09:31:00 code:000001 price:13.0 towards:1 btype:0x01 order_id:Order_26WY3Nmp account:Acc_GQ3hu9d5 status:100 >]
 
 
 
@@ -361,6 +361,7 @@ market.order_handler.order_queue.pending
 
 
 <div>
+
 
 <table border="1" class="dataframe">
   <thead>
@@ -411,8 +412,8 @@ market.order_handler.order_queue.pending
   </thead>
   <tbody>
     <tr>
-      <th>Order_dltU7r8i</th>
-      <td>Acc_xvt2kqXZ</td>
+      <th>Order_L5gj0sUo</th>
+      <td>Acc_DasXt8cC</td>
       <td>100000</td>
       <td>by_price</td>
       <td>000001</td>
@@ -420,7 +421,7 @@ market.order_handler.order_queue.pending
       <td>2017-12-14</td>
       <td>2017-12-14 09:31:00</td>
       <td>0x01</td>
-      <td>Order_dltU7r8i</td>
+      <td>Order_L5gj0sUo</td>
       <td>close</td>
       <td>13.0</td>
       <td>2017-12-14 09:31:00</td>
@@ -433,8 +434,8 @@ market.order_handler.order_queue.pending
       <td></td>
     </tr>
     <tr>
-      <th>Order_OoZaITdW</th>
-      <td>Acc_VEwA26U7</td>
+      <th>Order_26WY3Nmp</th>
+      <td>Acc_GQ3hu9d5</td>
       <td>100000</td>
       <td>by_price</td>
       <td>000001</td>
@@ -442,7 +443,7 @@ market.order_handler.order_queue.pending
       <td>2017-12-14</td>
       <td>2017-12-14 09:31:00</td>
       <td>0x01</td>
-      <td>Order_OoZaITdW</td>
+      <td>Order_26WY3Nmp</td>
       <td>close</td>
       <td>13.0</td>
       <td>2017-12-14 09:31:00</td>
@@ -474,9 +475,9 @@ market._trade(QA.BROKER_TYPE.BACKETEST)
     
 
     ON TRADE
-    {'header': {'source': 'market', 'status': 200, 'code': '000001', 'session': {'user': '', 'strategy': '', 'account': 'Acc_xvt2kqXZ'}, 'order_id': 'Order_dltU7r8i', 'trade_id': 'Trade_KDWgrQCZ'}, 'body': {'order': {'price': 13.0, 'code': '000001', 'amount': 7600, 'date': '2017-12-14', 'datetime': '2017-12-14 09:31:00', 'towards': 1}, 'market': {'open': 13.15, 'high': 13.31, 'low': 12.91, 'close': 13.0, 'volume': 1001997.0, 'code': '000001'}, 'fee': {'commission': 148.2, 'tax': 0}}}
+    {'header': {'source': 'market', 'status': 200, 'code': '000001', 'session': {'user': '', 'strategy': '', 'account': 'Acc_DasXt8cC'}, 'order_id': 'Order_L5gj0sUo', 'trade_id': 'Trade_PyBjheit'}, 'body': {'order': {'price': 13.0, 'code': '000001', 'amount': 7600, 'date': '2017-12-14', 'datetime': '2017-12-14 09:31:00', 'towards': 1}, 'market': {'open': 13.15, 'high': 13.31, 'low': 12.91, 'close': 13.0, 'volume': 1001997.0, 'code': '000001'}, 'fee': {'commission': 148.2, 'tax': 0}}}
     ON TRADE
-    {'header': {'source': 'market', 'status': 200, 'code': '000001', 'session': {'user': '', 'strategy': '', 'account': 'Acc_VEwA26U7'}, 'order_id': 'Order_OoZaITdW', 'trade_id': 'Trade_7gEAC36D'}, 'body': {'order': {'price': 13.0, 'code': '000001', 'amount': 7600, 'date': '2017-12-14', 'datetime': '2017-12-14 09:31:00', 'towards': 1}, 'market': {'open': 13.15, 'high': 13.31, 'low': 12.91, 'close': 13.0, 'volume': 1001997.0, 'code': '000001'}, 'fee': {'commission': 148.2, 'tax': 0}}}
+    {'header': {'source': 'market', 'status': 200, 'code': '000001', 'session': {'user': '', 'strategy': '', 'account': 'Acc_GQ3hu9d5'}, 'order_id': 'Order_26WY3Nmp', 'trade_id': 'Trade_nfQhzk5R'}, 'body': {'order': {'price': 13.0, 'code': '000001', 'amount': 7600, 'date': '2017-12-14', 'datetime': '2017-12-14 09:31:00', 'towards': 1}, 'market': {'open': 13.15, 'high': 13.31, 'low': 12.91, 'close': 13.0, 'volume': 1001997.0, 'code': '000001'}, 'fee': {'commission': 148.2, 'tax': 0}}}
     
 
 
@@ -529,7 +530,7 @@ market.session[a_1]
 
 
 
-    <QA_Account Acc_xvt2kqXZ Assets:999851.8>
+    <QA_Account Acc_DasXt8cC Assets:999851.8>
 
 
 
@@ -671,8 +672,8 @@ market.session[a_1].hold
       '000001',
       13.0,
       7600.0,
-      'Order_dltU7r8i',
-      'Trade_KDWgrQCZ']]
+      'Order_L5gj0sUo',
+      'Trade_PyBjheit']]
 
 
 
@@ -707,8 +708,8 @@ pd.DataFrame(data=market.session[a_1].hold,columns=market.session[a_1]._hold_hea
       <td>000001</td>
       <td>13.0</td>
       <td>7600.0</td>
-      <td>Order_dltU7r8i</td>
-      <td>Trade_KDWgrQCZ</td>
+      <td>Order_L5gj0sUo</td>
+      <td>Trade_PyBjheit</td>
     </tr>
   </tbody>
 </table>
@@ -735,8 +736,8 @@ market.session[a_1].message
          '000001',
          13.0,
          7600.0,
-         'Order_dltU7r8i',
-         'Trade_KDWgrQCZ',
+         'Order_L5gj0sUo',
+         'Trade_PyBjheit',
          [],
          [],
          [],
@@ -748,19 +749,76 @@ market.session[a_1].message
          13.0,
          1,
          7600.0,
-         'Order_dltU7r8i',
-         'Trade_KDWgrQCZ',
+         'Order_L5gj0sUo',
+         'Trade_PyBjheit',
          148.2]],
        'hold': [['2017-12-14 09:31:00',
          '000001',
          13.0,
          7600.0,
-         'Order_dltU7r8i',
-         'Trade_KDWgrQCZ']]},
-      'date_stamp': 1514243009.306398,
-      'time': '2017-12-26 07:03:29.306398'},
-     'header': {'cookie': 'Acc_xvt2kqXZ',
+         'Order_L5gj0sUo',
+         'Trade_PyBjheit']]},
+      'date_stamp': 1514244662.029989,
+      'time': '2017-12-26 07:31:02.029989'},
+     'header': {'cookie': 'Acc_DasXt8cC',
       'session': {'code': '000001', 'strategy': '', 'user': ''},
       'source': 'account'}}
+
+
+
+
+```python
+"""结算事件"""
+market._settle(QA.BROKER_TYPE.BACKETEST)
+```
+
+    QUANTAXIS>> From Engine  <QA_ENGINE with ['backtest', 'simulation'] kernals>: There are still 2 tasks to do
+    QUANTAXIS>> From Engine  <QA_ENGINE with ['backtest', 'simulation'] kernals>: There are still 1 tasks to do
+    QUANTAXIS>> From Engine < QA_Thread backtest >: There are still 3 tasks to do
+    QUANTAXIS>> From Engine < QA_Thread backtest >: There are still 2 tasks to do
+    QUANTAXIS>> From Engine < QA_Thread backtest >: There are still 1 tasks to do
+    
+
+
+```python
+"""
+结算完以后 可卖数量就会变成和持仓数一样
+"""
+market.session[a_1].sell_available
+```
+
+
+
+
+    code
+    000001    7600.0
+    Name: amount, dtype: float64
+
+
+
+
+```python
+"""
+结算完以后 待成交队列也被清空
+"""
+
+market.order_handler.order_queue()
+```
+
+
+
+
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+</div>
 
 

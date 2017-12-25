@@ -30,8 +30,9 @@
 
 """
 from abc import ABC, abstractmethod
+
 from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Job
-from QUANTAXIS.QAUtil.QAParameter import EVENT_TYPE, BROKER_EVENT
+from QUANTAXIS.QAUtil.QAParameter import BROKER_EVENT, EVENT_TYPE
 
 
 class QA_Broker(QA_Job):

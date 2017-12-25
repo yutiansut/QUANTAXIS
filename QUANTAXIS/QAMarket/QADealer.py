@@ -25,9 +25,9 @@
 #from .market_config import stock_market,future_market,HK_stock_market,US_stock_market
 
 
-from QUANTAXIS.QAUtil import (QA_util_log_info,
-                              QA_util_random_with_topic)
-from QUANTAXIS.QAUtil.QAParameter import TRADE_STATUS, MARKET_TYPE
+from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_random_with_topic
+from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, TRADE_STATUS
+
 
 """撮合类
 

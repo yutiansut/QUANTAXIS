@@ -56,9 +56,9 @@ from QUANTAXIS.QAMarket.QATrade import QA_Trade
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
                                           BROKER_EVENT, BROKER_TYPE,
-                                          MARKET_EVENT, ORDER_DIRECTION,
-                                          ORDER_EVENT, ORDER_MODEL,
-                                          ORDER_STATUS, MARKETDATA_TYPE)
+                                          MARKET_EVENT, MARKETDATA_TYPE,
+                                          ORDER_DIRECTION, ORDER_EVENT,
+                                          ORDER_MODEL, ORDER_STATUS)
 
 
 class QA_Market(QA_Trade):
@@ -101,11 +101,11 @@ class QA_Market(QA_Trade):
         else:
             return False
 
-    def login(self, account_cookie):
+    def login(self, account_cookie, broker_name):
 
         if account_cookie not in self.session.keys():
             self.session[account_cookie] = QA_Account(
-                account_cookie=account_cookie)
+                account_cookie=account_cookie, broker_type=broker_name)
         else:
             return False
 
@@ -122,7 +122,7 @@ class QA_Market(QA_Trade):
         return [item.account_cookie for item in self.session.values()]
 
     def insert_order(self, account_id, amount, amount_model, time, code, price, order_model, towards, market_type, data_type, broker_name):
-        
+
         flag = False
         if order_model in [ORDER_MODEL.CLOSE, ORDER_MODEL.NEXT_OPEN]:
             _price = self.query_data_no_wait(broker_name=broker_name, data_type=data_type,
@@ -205,12 +205,12 @@ class QA_Market(QA_Trade):
     def _on_trade_event(self, data):
         self.session[data['header']['session']['account']].receive_deal(data)
         self.on_trade_event(data)
-    
-    def on_trade_event(self,data):
+
+    def on_trade_event(self, data):
         print('ON TRADE')
         print(data)
 
-    def _trade(self,broker_name):
+    def _trade(self, broker_name):
         "内部函数"
         self.event_queue.put(QA_Task(
             job=self.order_handler,
@@ -221,14 +221,23 @@ class QA_Market(QA_Trade):
                     'broker': self.broker[broker_name]},
                 callback=self._on_trade_event)))
 
-    def _settle(self):
+    def _settle(self, broker_name):
         # 向事件线程发送BROKER的SETTLE事件
-        self.event_queue.put(QA_Task(job=self.order_handler, event=QA_Event(
-            event_type=BROKER_EVENT.SETTLE, message={'broker': self.broker})))
+        self.event_queue.put(QA_Task(
+            job=self.order_handler,
+            engine=broker_name,
+            event=QA_Event(
+                event_type=BROKER_EVENT.SETTLE,
+                message={'broker': self.broker[broker_name]})))
         # 向事件线程发送ACCOUNT的SETTLE事件
         for item in self.session.values():
-            self.event_queue.put(
-                QA_Task(job=item, event=QA_Event(event_type=ACCOUNT_EVENT.SETTLE)))
+            if item.broker_type is broker_name:
+                self.event_queue.put(
+                    QA_Task(
+                        job=item,
+                        engine=broker_name,
+                        event=QA_Event(
+                            event_type=ACCOUNT_EVENT.SETTLE)))
 
     def _close(self):
         pass
