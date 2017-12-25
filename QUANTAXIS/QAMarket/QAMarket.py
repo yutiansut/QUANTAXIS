@@ -77,9 +77,10 @@ class QA_Market(QA_Trade):
         self.order_handler = QA_OrderHandler()
         self._broker = {BROKER_TYPE.BACKETEST: QA_BacktestBroker, BROKER_TYPE.RANODM: QA_RandomBroker,
                         BROKER_TYPE.REAL: QA_RealBroker, BROKER_TYPE.SIMULATION: QA_SimulatedBroker}
-        
+
         self.broker = {}
         self.running_time = None
+        self.last_query_data = None
 
     def __repr__(self):
         return '< QA_MARKET with {} Broker >'.format(list(self.broker.keys()))
@@ -92,7 +93,7 @@ class QA_Market(QA_Trade):
     def connect(self, broker):
         if broker in self._broker.keys():
 
-            self.broker[broker] = self._broker[broker]()# 在这里实例化
+            self.broker[broker] = self._broker[broker]()  # 在这里实例化
             self.trade_engine.create_kernal('{}'.format(broker))
             self.trade_engine.start_kernal('{}'.format(broker))
             # 开启trade事件子线程
@@ -120,19 +121,35 @@ class QA_Market(QA_Trade):
     def get_account_id(self):
         return [item.account_cookie for item in self.session.values()]
 
-    def insert_order(self, account_id, amount, amount_model, time, code, order_model, towards):
+    def insert_order(self, account_id, amount, amount_model, time, code, price, order_model, towards, market_type, data_type, broker_name):
+        flag = False
+        if order_model in [ORDER_MODEL.CLOSE, ORDER_MODEL.NEXT_OPEN]:
+            _price = self.query_data_no_wait(broker_name=broker_name, data_type=data_type,
+                                             market_type=market_type, code=code, start=time)
+            if _price is not None:
+                price = float(_price[0][4])
+                flag = True
+        elif order_model is ORDER_MODEL.MARKET:
+            _price = self.query_data_no_wait(broker_name=broker_name, data_type=data_type,
+                                             market_type=market_type, code=code, start=time)
+            if _price is not None:
+                price = float(_price[0][1])
+                flag = True
 
-        order = self.session[account_id].send_order(
-            amount=amount, amount_model=amount_model, time=time, code=code, order_model=order_model, towards=towards)
-        #current_price = self.query_data(order.code, order.time)
-        self.event_queue.put(QA_Task(job=self.order_handler, event=QA_Event(
-            event_type=ORDER_EVENT.CREATE, message=order, callback=self.on_insert_order)))
+        elif order_model is ORDER_MODEL.LIMIT:
+            # if price > self.last_query_data[0][2] or price < self.last_query_data[0][3]:
+            flag = True
+        if flag:
+            order = self.session[account_id].send_order(
+                amount=amount, amount_model=amount_model, time=time, code=code, price=price,
+                order_model=order_model, towards=towards, market_type=market_type, data_type=data_type)
+            self.event_queue.put(QA_Task(job=self.order_handler, event=QA_Event(
+                event_type=ORDER_EVENT.CREATE, message=order, callback=self.on_insert_order)))
+        else:
+            return flag
 
     def on_insert_order(self, order):
-        if order.status is ORDER_STATUS.QUEUED:
-            if order.towards in [ORDER_DIRECTION.BUY]:
-                #    self._broker[on_]
-                pass
+        print(order)
 
     def _renew_account(self):
         pass
@@ -144,21 +161,22 @@ class QA_Market(QA_Trade):
         return self.session[account_cookie].cash
 
     def query_position(self, broker_name, account_cookie):
-        self.event_queue.put(
-            QA_Task(
-                job=self.broker[broker_name],
-                engine=broker_name,
-                event=QA_Event(
-                    event_type=MARKET_EVENT.QUERY_ACCOUNT,
-                    message={
-                        'account': account_cookie
-                    },
-                    callback=self.on_query_position
-                )
-            ))
+        pass
 
     def on_query_position(self, data):
         pass
+
+    def query_data_no_wait(self, broker_name, data_type, market_type, code, start, end=None):
+        return self.broker[broker_name].run(event=QA_Event(
+            event_type=MARKET_EVENT.QUERY_DATA,
+            message={
+                'data_type':  data_type,
+                'market_type': market_type,
+                'code': code,
+                'start': start,
+                'end': end
+            }
+        ))
 
     def query_data(self, broker_name, data_type, market_type, code, start, end=None):
         self.event_queue.put(
@@ -181,15 +199,26 @@ class QA_Market(QA_Trade):
     def on_query_data(self, data):
         print('ON QUERY')
         print(data)
+        self.last_query_data = data
 
-    def on_trade_event(self, data):
-        print('ON_TRADE')
+    def _on_trade_event(self, data):
+        self.session[data['header']['session']['account']].receive_deal(data)
+        self.on_trade_event(data)
+    
+    def on_trade_event(self,data):
+        print('ON TRADE')
         print(data)
 
-    def _trade(self):
+    def _trade(self,broker_name):
         "内部函数"
-        self.event_queue.put(QA_Task(job=self.order_handler, event=QA_Event(
-            event_type=BROKER_EVENT.TRADE, message={'broker': self.broker}, callback=self.on_trade_event)))
+        self.event_queue.put(QA_Task(
+            job=self.order_handler,
+            engine=broker_name,
+            event=QA_Event(
+                event_type=BROKER_EVENT.TRADE,
+                message={
+                    'broker': self.broker[broker_name]},
+                callback=self._on_trade_event)))
 
     def _settle(self):
         # 向事件线程发送BROKER的SETTLE事件

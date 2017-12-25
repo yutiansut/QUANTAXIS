@@ -165,9 +165,10 @@ class QA_Engine(QA_Thread):
                     else:
                         # QA_util_log_info("From Engine %s  Engine will waiting for new task ..." % str(
                         #     threading.current_thread()))
-                        time.sleep(1)
+                        #time.sleep(1)
+                        pass
                 except:
-                    time.sleep(1)
+                    #time.sleep(1)
                     self.run()
                 __res = self.qsize()  # 判断消息队列大小
                 if __res > 0:

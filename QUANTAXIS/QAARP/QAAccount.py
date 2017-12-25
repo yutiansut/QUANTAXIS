@@ -29,11 +29,14 @@ import time
 import numpy as np
 import pandas as pd
 
+from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Job
 from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, ORDER_DIRECTION, AMOUNT_MODEL, ORDER_MODEL, ACCOUNT_EVENT
+from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
+                                          MARKET_TYPE, ORDER_DIRECTION,
+                                          ORDER_EVENT, ORDER_MODEL)
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
-from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Job
+
 # 2017/6/4修改: 去除总资产的动态权益计算
 
 
@@ -169,11 +172,11 @@ class QA_Account(QA_Job):
 
             (__new_code, __new_amount, __new_trade_date, __new_towards,
                 __new_price, __new_order_id,
-                __new_trade_id, __new_trade_fee) = (str(message['body']['bid']['code']),
-                                                    float(message['body']['bid']['amount']), str(
-                                                        message['body']['bid']['datetime']),
-                                                    int(message['body']['bid']['towards']), float(
-                                                        message['body']['bid']['price']),
+                __new_trade_id, __new_trade_fee) = (str(message['body']['order']['code']),
+                                                    float(message['body']['order']['amount']), str(
+                                                        message['body']['order']['datetime']),
+                                                    int(message['body']['order']['towards']), float(
+                                                        message['body']['order']['price']),
                                                     str(message['header']['order_id']), str(
                                                         message['header']['trade_id']),
                                                     float(message['body']['fee']['commission']))
@@ -278,7 +281,7 @@ class QA_Account(QA_Job):
                 'session': {
                     'user': message['header']['session']['user'],
                     'strategy': message['header']['session']['strategy'],
-                    'code': message['body']['bid']['code']
+                    'code': message['body']['order']['code']
                 }
 
             },
@@ -306,7 +309,7 @@ class QA_Account(QA_Job):
             message {[type]} -- [description]
         """
 
-        if message['header']['status'] == 200 and message['body']['bid']['towards'] == 1:
+        if message['header']['status'] == 200 and message['body']['order']['towards'] == 1:
             # 买入/
             # 证券价值=买入的证券价值+持有到结算(收盘价)的价值
 
@@ -314,10 +317,10 @@ class QA_Account(QA_Job):
 
             # 可用资金=上一期可用资金-买入的资金
             self.cash.append(float(self.cash[-1]) - float(
-                message['body']['bid']['price']) * float(
-                    message['body']['bid']['amount']) * message['body']['bid']['towards'] - float(message['body']['fee']['commission']))
+                message['body']['order']['price']) * float(
+                    message['body']['order']['amount']) * message['body']['order']['towards'] - float(message['body']['fee']['commission']))
 
-        elif message['header']['status'] == 200 and message['body']['bid']['towards'] == -1:
+        elif message['header']['status'] == 200 and message['body']['order']['towards'] == -1:
             # success trade,sell
             # 证券价值=买入的证券价值+持有到结算(收盘价)的价值
             # 买入的部分在update_message
@@ -325,8 +328,8 @@ class QA_Account(QA_Job):
             # 卖出的时候,towards=-1,所以是加上卖出的资产
             # 可用资金=上一期可用资金+卖出的资金
             self.cash.append(float(self.cash[-1]) - float(
-                message['body']['bid']['price']) * float(
-                    message['body']['bid']['amount']) * message['body']['bid']['towards'] - float(message['body']['fee']['commission']))
+                message['body']['order']['price']) * float(
+                    message['body']['order']['amount']) * message['body']['order']['towards'] - float(message['body']['fee']['commission']))
 
             # 更新可用资金历史
 
@@ -341,7 +344,7 @@ class QA_Account(QA_Job):
 
         return self.cash[-1] + sum([float(self.hold[i][2]) * float(self.hold[i][3]) for i in range(0, len(self.hold))])
 
-    def send_order(self, code, amount, time, towards, order_model, amount_model):
+    def send_order(self, code, amount, time, towards, price, order_model, amount_model, data_type, market_type):
         """[summary]
 
         [description]
@@ -357,16 +360,27 @@ class QA_Account(QA_Job):
         Returns:
             [type] -- [description]
         """
-
+        flag = False
         date = str(time)[0:10] if len(str(time)) == 19 else str(time)
         time = str(time) if len(
             str(time)) == 19 else '{} 09:31:00'.format(str(time)[0:10])
-        
-        return QA_Order(user=self.user, strategy=self.strategy_name,
-                        account_cookie=self.account_cookie, code=code,
-                        date=date, datetime=time, sending_time=time,
-                        btype=self.account_type, amount=amount,
-                        order_model=order_model, towards=towards, amount_model=amount_model)  # init
+        if towards in [ORDER_DIRECTION.BUY]:
+            if self.cash_available > amount * price:
+                self.cash_available -= amount * price
+                flag = True
+
+        elif towards in [ORDER_DIRECTION.SELL]:
+            if self.sell_available[code] > amount:
+                self.sell_available[code] -= amount
+                flag = True
+        if flag:
+            return QA_Order(user=self.user, strategy=self.strategy_name, data_type=data_type,
+                            account_cookie=self.account_cookie, code=code, market_type=market_type,
+                            date=date, datetime=time, sending_time=time,
+                            btype=self.account_type, amount=amount, price=price,
+                            order_model=order_model, towards=towards, amount_model=amount_model)  # init
+        else:
+            return flag
 
     def settle(self):
         '初始化的时候 同步可用资金/可卖股票'
@@ -385,14 +399,13 @@ class QA_Account(QA_Job):
         return self
 
     def run(self, event):
-        if event.type is ACCOUNT_EVENT.SETTLE:
+        if event.event_type is ACCOUNT_EVENT.SETTLE:
             self.settle()
 
-        elif event.type is ACCOUNT_EVENT.UPDATE:
+        elif event.event_type is ACCOUNT_EVENT.UPDATE:
             self.receive_deal(event.message)
-        elif event.type is ACCOUNT_EVENT.MAKE_ORDER:
-            event.callback(self.send_order(event.message['code'], event.message['amount'], event.message['time'],
-                                           event.message['towards'], event.message['order_model'], event.message['amount_model']))
+        elif event.event_type is ACCOUNT_EVENT.MAKE_ORDER:
+            pass
 
 
 class QA_Account_min(QA_Account):

@@ -86,8 +86,12 @@ class QA_BacktestBroker(QA_Broker):
             start = event.message['start']
             end = event.message['start'] if event.message['end'] is None else event.message['end']
             market_type = event.message['market_type']
-            event.callback(self.fetcher[market_type](
-                code, start, end, dtype=data_type))
+            res = self.fetcher[market_type](
+                code, start, end, dtype=data_type)
+            if event.callback:
+                event.callback(res)
+            else:
+                return res
 
     def receive_order(self, event):
         """
