@@ -23,8 +23,9 @@
 # SOFTWARE.
 
 from QUANTAXIS.QAARP.QAAccount import QA_Account
-from QUANTAXIS.QAARP.QARisk import QA_Risk
+from QUANTAXIS.QAARP.QARisk import QA_Risk, QA_Performace
 from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
+from QUANTAXIS.QAARP.QAUser import QA_User
 
 
 class QA_ARP():

@@ -24,7 +24,7 @@
 
 import threading
 
-from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_valid,
+from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_valid, QA_util_random_with_topic,
                               QA_util_log_info, QA_Setting)
 
 from QUANTAXIS.QAARP.QAAccount import QA_Account
@@ -46,33 +46,31 @@ class QA_Portfolio():
     用account的cookie来管理控制account
     """
 
-    def __init__(self, portfolio_cookies=[]):
-        self.portfolio_accounts = {}
-        self.portfolio_cookies = portfolio_cookies
-        for cookie in self.portfolio_cookies:
-            self.portfolio_accounts[cookie] = QA_Account(account_cookie=cookie)
+    def __init__(self):
+        self.accounts = {}
+        self.portfolio_cookie = QA_util_random_with_topic('Portfolio')
+        for cookie in self.accounts.keys():
+            self.accounts[cookie] = QA_Account(account_cookie=cookie)
 
     def __repr__(self):
-        return '<QA_Portfolio with {} Accounts>'.format(len(self.portfolio_cookies))
+        return '<QA_Portfolio with {} Accounts>'.format(len(self.accounts.keys()))
 
     def QA_portfolio_get_portfolio(self):
-        return self.portfolio_accounts
+        return self.accounts
 
-    def add_account(self, account_cookie):
-        temp=QA_Account(account_cookie=account_cookie)
-        if account_cookie not in self.portfolio_cookies:
-            self.portfolio_cookies.append(temp.account_cookie)
-            self.portfolio_accounts[temp.account_cookie] = temp
+    def add_account(self, account):
+        #temp = QA_Account(account_cookie=account_cookie)
+        if account.account_cookie not in self.accounts.keys():
+            self.accounts[account.account_cookie] = account
 
         else:
-            pass        
+            pass
 
     def new_account(self, account_cookie=None):
         if account_cookie is None:
             temp = QA_Account()
-            if temp.account_cookie not in self.portfolio_cookies:
-                self.portfolio_cookies.append(temp.account_cookie)
-                self.portfolio_accounts[temp.account_cookie] = temp
+            if temp.account_cookie not in self.accounts.keys():
+                self.accounts[temp.account_cookie] = temp
                 return temp.account_cookie
 
             else:
@@ -80,7 +78,7 @@ class QA_Portfolio():
 
     def get_account(self, cookie):
         try:
-            return self.portfolio_accounts[cookie]
+            return self.accounts[cookie]
         except:
             QA_util_log_info('Can not find this account')
             return None
@@ -90,45 +88,51 @@ class QA_Portfolio():
 
     def get_cash(self):
         """拿到整个portfolio的可用资金
-        
+
         统计每一个时间点的时候的cash总和
         """
-        
+
         pass
 
-    def pull(self,account_cookie=None,collection=QA_Setting.client.quantaxis.account):
+    def pull(self, account_cookie=None, collection=QA_Setting.client.quantaxis.account):
         if account_cookie is None:
-            for item in self.portfolio_cookies:
+            for item in self.accounts.keys():
                 try:
-                    message=collection.find_one({'cookie':item})['message']
+                    message = collection.find_one({'cookie': item})['message']
                     QA_util_log_info('{} sync successfully'.format(item))
                 except Exception as e:
-                    QA_util_log_info('{} sync wrong \\\n wrong info {}'.format(item,e))
-                self.portfolio_accounts[item].from_message(message)
+                    QA_util_log_info(
+                        '{} sync wrong \\\n wrong info {}'.format(item, e))
+                self.accounts[item].from_message(message)
 
         else:
             try:
-                message=collection.find_one({'cookie':account_cookie})['message']
+                message = collection.find_one(
+                    {'cookie': account_cookie})['message']
                 QA_util_log_info('{} sync successfully'.format(item))
             except Exception as e:
-                QA_util_log_info('{} sync wrong \\\n wrong info {}'.format(account_cookie,e))
-            self.portfolio_accounts[account_cookie].from_message(message)          
+                QA_util_log_info(
+                    '{} sync wrong \\\n wrong info {}'.format(account_cookie, e))
+            self.accounts[account_cookie].from_message(message)
 
-    def push(self,account_cookie=None,collection=QA_Setting.client.quantaxis.account):
-        message=self.portfolio_accounts[account_cookie].message
+    def push(self, account_cookie=None, collection=QA_Setting.client.quantaxis.account):
+        message = self.accounts[account_cookie].message
         if account_cookie is None:
-            for item in self.portfolio_cookies:
+            for item in self.accounts.keys():
                 try:
-                    message=collection.find_one_and_update({'cookie':item})
+                    message = collection.find_one_and_update({'cookie': item})
                     QA_util_log_info('{} sync successfully'.format(item))
                 except Exception as e:
-                    QA_util_log_info('{} sync wrong \\\n wrong info {}'.format(item,e))
-                self.portfolio_accounts[item].from_message(message)
+                    QA_util_log_info(
+                        '{} sync wrong \\\n wrong info {}'.format(item, e))
+                self.accounts[item].from_message(message)
 
         else:
             try:
-                message=collection.find_one({'cookie':account_cookie})['message']
+                message = collection.find_one(
+                    {'cookie': account_cookie})['message']
                 QA_util_log_info('{} sync successfully'.format(item))
             except Exception as e:
-                QA_util_log_info('{} sync wrong \\\n wrong info {}'.format(account_cookie,e))
-            self.portfolio_accounts[account_cookie].from_message(message)  
+                QA_util_log_info(
+                    '{} sync wrong \\\n wrong info {}'.format(account_cookie, e))
+            self.accounts[account_cookie].from_message(message)

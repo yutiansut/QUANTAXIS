@@ -28,7 +28,7 @@ import time
 from queue import Queue
 
 from QUANTAXIS.QAEngine.QATask import QA_Task
-from QUANTAXIS.QAUtil import QA_util_log_info
+from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_random_with_topic
 
 
 """
@@ -48,7 +48,8 @@ class QA_Thread(threading.Thread):
         self.__flag.set()       # 设置为True
         self.__running = threading.Event()      # 用于停止线程的标识
         self.__running.set()      # 将running设置为True
-        self.name = name
+        self.name = QA_util_random_with_topic(
+            topic='QAWorker', lens=3) if name is None else name
 
     def __repr__(self):
         return '< QA_Thread {} >'.format(self.name)

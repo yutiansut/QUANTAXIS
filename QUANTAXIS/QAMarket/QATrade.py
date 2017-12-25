@@ -33,20 +33,8 @@ class QA_Trade():
 
     def __init__(self, *args, **kwargs):
         self.event_queue = queue.Queue()
-        self.spi_thread = QA_Thread(self.event_queue)
-        #self.spi_thread.start()
-
-    def spi_job(self, *args, **kwargs):
-        # 任务应当在这里做
-
-        while True:
-            # 获取generator
-            task = self.event_queue.get()
-            try:
-                next(task)
-                self.event_queue.put(task)
-            except StopIteration:
-                pass
+        self.spi_thread = QA_Thread(self.event_queue, name='TRADE')
+        # self.spi_thread.start()
 
     def connect(self, *args, **kwargs):
 
