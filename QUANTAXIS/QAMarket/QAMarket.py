@@ -56,9 +56,9 @@ from QUANTAXIS.QAMarket.QATrade import QA_Trade
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
                                           BROKER_EVENT, BROKER_TYPE,
-                                          ORDER_DIRECTION, ORDER_EVENT,
-                                          ORDER_MODEL, ORDER_STATUS,
-                                          QUERY_DATA_TYPE)
+                                          MARKET_EVENT, ORDER_DIRECTION,
+                                          ORDER_EVENT, ORDER_MODEL,
+                                          ORDER_STATUS, MARKETDATA_TYPE)
 
 
 class QA_Market(QA_Trade):
@@ -77,22 +77,22 @@ class QA_Market(QA_Trade):
         self.order_handler = QA_OrderHandler()
         self._broker = {BROKER_TYPE.BACKETEST: QA_BacktestBroker, BROKER_TYPE.RANODM: QA_RandomBroker,
                         BROKER_TYPE.REAL: QA_RealBroker, BROKER_TYPE.SIMULATION: QA_SimulatedBroker}
-        self.broker_name = None
-        self.broker = None
+        
+        self.broker = {}
         self.running_time = None
 
     def __repr__(self):
-        return '< QA_MARKET with {} Broker >'.format(self.broker_name)
+        return '< QA_MARKET with {} Broker >'.format(list(self.broker.keys()))
 
     def start(self):
         self.trade_engine.start()
-        self.trade_engine.create_kernal('MARKET')
-        self.trade_engine.start_kernal('MARKET')
+        # self.trade_engine.create_kernal('MARKET')
+        # self.trade_engine.start_kernal('MARKET')
 
     def connect(self, broker):
         if broker in self._broker.keys():
-            self.broker_name = broker
-            self.broker = self._broker[broker]()
+
+            self.broker[broker] = self._broker[broker]()# 在这里实例化
             self.trade_engine.create_kernal('{}'.format(broker))
             self.trade_engine.start_kernal('{}'.format(broker))
             # 开启trade事件子线程
@@ -101,7 +101,7 @@ class QA_Market(QA_Trade):
             return False
 
     def login(self, account_cookie):
-        
+
         if account_cookie not in self.session.keys():
             self.session[account_cookie] = QA_Account(
                 account_cookie=account_cookie)
@@ -124,7 +124,7 @@ class QA_Market(QA_Trade):
 
         order = self.session[account_id].send_order(
             amount=amount, amount_model=amount_model, time=time, code=code, order_model=order_model, towards=towards)
-        current_price = self.query_data(order.code, order.time)
+        #current_price = self.query_data(order.code, order.time)
         self.event_queue.put(QA_Task(job=self.order_handler, event=QA_Event(
             event_type=ORDER_EVENT.CREATE, message=order, callback=self.on_insert_order)))
 
@@ -143,16 +143,43 @@ class QA_Market(QA_Trade):
     def query_asset(self, account_cookie):
         return self.session[account_cookie].cash
 
-    def query_position(self, account_cookie):
+    def query_position(self, broker_name, account_cookie):
+        self.event_queue.put(
+            QA_Task(
+                job=self.broker[broker_name],
+                engine=broker_name,
+                event=QA_Event(
+                    event_type=MARKET_EVENT.QUERY_ACCOUNT,
+                    message={
+                        'account': account_cookie
+                    },
+                    callback=self.on_query_position
+                )
+            ))
+
+    def on_query_position(self, data):
         pass
 
-    def query_data(self, broker_name, query_data_type, code, start, end=None):
-        self.event_queue.put(QA_Task(
-            job=self.broker
-        ))
+    def query_data(self, broker_name, data_type, market_type, code, start, end=None):
+        self.event_queue.put(
+            QA_Task(
+                job=self.broker[broker_name],
+                engine=broker_name,
+                event=QA_Event(
+                    event_type=MARKET_EVENT.QUERY_DATA,
+                    message={
+                        'data_type':  data_type,
+                        'market_type': market_type,
+                        'code': code,
+                        'start': start,
+                        'end': end
+                    },
+                    callback=self.on_query_data
+                )
+            ))
 
     def on_query_data(self, data):
-        pass
+        print(data)
 
     def on_trade_event(self, data):
         print('ON_TRADE')

@@ -46,7 +46,7 @@ from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
 """
 
 
-def QA_fetch_stock_day(code, start, end, format='numpy', collections=QA_Setting.client.quantaxis.stock_day):
+def QA_fetch_stock_day(code, start, end, format='numpy', dtype='day', collections=QA_Setting.client.quantaxis.stock_day):
     '获取股票日线'
     start = str(start)[0:10]
     end = str(end)[0:10]

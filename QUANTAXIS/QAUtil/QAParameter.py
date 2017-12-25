@@ -238,7 +238,7 @@ class ORDER_EVENT:
     CANCEL = 'cancel'
 
 
-class QUERY_DATA_TYPE:
+class MARKETDATA_TYPE:
     """查询的级别
 
     [description]

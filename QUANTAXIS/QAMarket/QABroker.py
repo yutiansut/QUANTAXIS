@@ -43,6 +43,7 @@ class QA_Broker(QA_Job):
     def __init__(self, *args, **kwargs):
         super().__init__()
         self.type = EVENT_TYPE.BROKER_EVENT
+        self.name = None
 
     def __repr__(self):
         return '< QA_MARKET >'

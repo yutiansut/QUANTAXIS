@@ -361,7 +361,7 @@ class QA_Account(QA_Job):
         date = str(time)[0:10] if len(str(time)) == 19 else str(time)
         time = str(time) if len(
             str(time)) == 19 else '{} 09:31:00'.format(str(time)[0:10])
-
+        
         return QA_Order(user=self.user, strategy=self.strategy_name,
                         account_cookie=self.account_cookie, code=code,
                         date=date, datetime=time, sending_time=time,
