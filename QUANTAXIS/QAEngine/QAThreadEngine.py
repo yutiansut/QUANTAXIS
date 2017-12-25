@@ -114,8 +114,8 @@ class QA_Thread(threading.Thread):
 
 
 class QA_Engine(QA_Thread):
-    def __init__(self, *args, **kwargs):
-        super().__init__(name='QAENGINE')
+    def __init__(self, queue=None, *args, **kwargs):
+        super().__init__(queue=queue, name='QAENGINE')
         self.kernals = {}
         self.__flag = threading.Event()     # 用于暂停线程的标识
         self.__flag.set()       # 设置为True
@@ -153,13 +153,15 @@ class QA_Engine(QA_Thread):
                     if self.queue.empty() is False:
                         _task = self.queue.get()  # 接收消息
                         assert isinstance(_task, QA_Task)
-                        if _task.job != None:
-
+                        if _task.engine is None:
+                            # 如果不指定线程 就在ENGINE线程中运行
+                            _task.do()
+                            self.queue.task_done()
+                        else:
+                            #
                             self.run_job(_task)
 
-                            self.queue.task_done()  # 完成一个任务
-                        else:
-                            pass
+                            self.queue.task_done()
                     else:
                         # QA_util_log_info("From Engine %s  Engine will waiting for new task ..." % str(
                         #     threading.current_thread()))
