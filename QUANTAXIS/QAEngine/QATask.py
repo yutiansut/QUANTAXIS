@@ -31,12 +31,13 @@ from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 
 class QA_Task():
-    def __init__(self, job, event, callback=False):
+    def __init__(self, job, event, engine=None, callback=False):
         self.job = job
         self.event = event
         self.res = None
         self.callback = callback
         self.task_id = QA_util_random_with_topic('Task')
+        self.engine = engine
 
     def do(self):
         self.res = self.job.run(self.event)

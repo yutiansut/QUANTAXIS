@@ -27,7 +27,7 @@ import pandas as pd
 
 from QUANTAXIS.QAUtil import (QA_util_log_info, QA_util_random_with_topic,
                               QA_util_to_json_from_pandas)
-from QUANTAXIS.QAUtil.QAParameter import ORDER_MODEL, AMOUNT_MODEL
+from QUANTAXIS.QAUtil.QAParameter import ORDER_MODEL, AMOUNT_MODEL, ORDER_STATUS
 
 """
 重新定义Order模式
@@ -143,9 +143,11 @@ class QA_OrderQueue():   # also the order tree
             pass
 
     def insert_order(self, order):
+        order.status = ORDER_STATUS.QUEUED
         self.queue = self.queue.append(
             order.to_df(), ignore_index=True)
         self.queue.set_index('order_id', drop=False, inplace=True)
+        return order
 
     @property
     def order_ids(self):

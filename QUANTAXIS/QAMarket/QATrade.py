@@ -24,7 +24,7 @@
 import queue
 from abc import ABC, abstractmethod
 from threading import Event, Thread, Timer
-from QUANTAXIS.QAEngine.QAThreadEngine import QA_Thread
+from QUANTAXIS.QAEngine.QAThreadEngine import QA_Thread,QA_Engine
 # 交易封装
 
 
@@ -33,7 +33,7 @@ class QA_Trade():
 
     def __init__(self, *args, **kwargs):
         self.event_queue = queue.Queue()
-        self.spi_thread = QA_Thread(self.event_queue, name='TRADE')
+        self.trade_engine = QA_Engine()
         # self.spi_thread.start()
 
     def connect(self, *args, **kwargs):

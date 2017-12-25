@@ -56,16 +56,18 @@ from QUANTAXIS.QAMarket.QATrade import QA_Trade
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
                                           BROKER_EVENT, BROKER_TYPE,
-                                          ORDER_EVENT, ORDER_MODEL)
+                                          ORDER_DIRECTION, ORDER_EVENT,
+                                          ORDER_MODEL, ORDER_STATUS,
+                                          QUERY_DATA_TYPE)
 
 
 class QA_Market(QA_Trade):
     """
     QUANTAXIS MARKET 部分
 
-    交易前置
+    交易前置/可连接到多个broker中
 
-    暂时还是采用双线程spi模式
+    暂时还是采用多线程engine模式
 
     """
 
@@ -78,7 +80,8 @@ class QA_Market(QA_Trade):
         self.broker_name = None
         self.broker = None
         self.running_time = None
-        self.spi_thread.setName('MARKET')
+        self.trade_engine.create_kernal('MARKET')
+        self.trade_engine.start_kernal('MARKET')
         # self.spi_thread.start()
         # print(self.spi_thread.is_alive())
 
@@ -89,7 +92,9 @@ class QA_Market(QA_Trade):
         if broker in self._broker.keys():
             self.broker_name = broker
             self.broker = self._broker[broker]()
-            self.spi_thread.start()  # 开启trade事件子线程
+            self.trade_engine.create_kernal('{}'.format(broker))
+            self.trade_engine.start_kernal('{}'.format(broker))
+            # 开启trade事件子线程
             return True
         else:
             return False
@@ -114,15 +119,21 @@ class QA_Market(QA_Trade):
         return [item.account_cookie for item in self.session.values()]
 
     def insert_order(self, account_id, amount, amount_model, time, code, order_model, towards):
+
         order = self.session[account_id].send_order(
             amount=amount, amount_model=amount_model, time=time, code=code, order_model=order_model, towards=towards)
-
+        current_price = self.query_data(order.code, order.time)
         self.event_queue.put(QA_Task(job=self.order_handler, event=QA_Event(
             event_type=ORDER_EVENT.CREATE, message=order, callback=self.on_insert_order)))
 
-    def on_insert_order(self, data):
-        print('callback')
-        print(data)
+    def on_insert_order(self, order):
+        if order.status is ORDER_STATUS.QUEUED:
+            if order.towards in [ORDER_DIRECTION.BUY]:
+                #    self._broker[on_]
+                pass
+
+    def _renew_account(self):
+        pass
 
     def query_order(self, order_id):
         return self.order_handler.order_queue.query_order(order_id)
@@ -131,6 +142,14 @@ class QA_Market(QA_Trade):
         return self.session[account_cookie].cash
 
     def query_position(self, account_cookie):
+        pass
+
+    def query_data(self, broker_name, query_data_type, code, start, end=None):
+        self.event_queue.put(QA_Task(
+            job=self.broker
+        ))
+
+    def on_query_data(self, data):
         pass
 
     def on_trade_event(self, data):
@@ -143,8 +162,13 @@ class QA_Market(QA_Trade):
             event_type=BROKER_EVENT.TRADE, message={'broker': self.broker}, callback=self.on_trade_event)))
 
     def _settle(self):
+        # 向事件线程发送BROKER的SETTLE事件
         self.event_queue.put(QA_Task(job=self.order_handler, event=QA_Event(
             event_type=BROKER_EVENT.SETTLE, message={'broker': self.broker})))
+        # 向事件线程发送ACCOUNT的SETTLE事件
+        for item in self.session.values():
+            self.event_queue.put(
+                QA_Task(job=item, event=QA_Event(event_type=ACCOUNT_EVENT.SETTLE)))
 
     def _close(self):
         pass

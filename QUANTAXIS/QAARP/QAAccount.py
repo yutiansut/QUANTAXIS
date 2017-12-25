@@ -31,13 +31,13 @@ import pandas as pd
 
 from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, ORDER_DIRECTION, AMOUNT_MODEL, ORDER_MODEL
+from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, ORDER_DIRECTION, AMOUNT_MODEL, ORDER_MODEL, ACCOUNT_EVENT
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
-
+from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Job
 # 2017/6/4修改: 去除总资产的动态权益计算
 
 
-class QA_Account():
+class QA_Account(QA_Job):
     """[QA_Account]
 
     [description]
@@ -54,6 +54,7 @@ class QA_Account():
                  init_assest=None, order_queue=None,
                  cash=None, history=None, detail=None, assets=None,
                  account_cookie=None):
+        super().__init__()
         self._history_headers = ['datetime', 'code', 'price',
                                  'towards', 'amount', 'order_id', 'trade_id', 'commission_fee']
         self._detail_headers = ['datetime', 'code', 'price', 'towards', 'amount', 'order_id', 'trade_id',
@@ -108,6 +109,7 @@ class QA_Account():
     @property
     def latest_assets(self):
         return self.assets[-1]
+
     @property
     def latest_cash(self):
         return self.cash[-1]
@@ -115,7 +117,7 @@ class QA_Account():
     @property
     def latest_hold(self):
         return self.hold
-    
+
     def init(self, init_assest=None):
         self.hold = []
         self.sell_available = [['date', 'code', 'price',
@@ -148,7 +150,7 @@ class QA_Account():
             }
         }
 
-    def update(self, message):
+    def receive_deal(self, message):
         """[用于更新账户]
 
         [description]
@@ -334,20 +336,6 @@ class QA_Account():
             market_value += (float(self.hold[i][2]) * float(self.hold[i][3]))
         self.assets.append(self.cash[-1] + market_value)
 
-    def receive_deal(self, _message):
-        """[主要是把从market拿到的数据进行解包,一个一个发送给账户进行更新,再把最后的结果反回]
-
-        [description]
-
-        Arguments:
-            _message {[type]} -- [description]
-
-        Returns:
-            [type] -- [description]
-        """
-
-        return self.update(_message)
-
     def calc_assets(self):
         'get the real assets [from cash and market values]'
 
@@ -375,11 +363,16 @@ class QA_Account():
             str(time)) == 19 else '{} 09:31:00'.format(str(time)[0:10])
 
         return QA_Order(user=self.user, strategy=self.strategy_name,
-                          account_cookie=self.account_cookie, code=code,
-                          date=date, datetime=time, sending_time=time,
-                          btype=self.account_type, amount=amount,
-                          order_model=order_model, towards=towards,amount_model=amount_model)  # init
+                        account_cookie=self.account_cookie, code=code,
+                        date=date, datetime=time, sending_time=time,
+                        btype=self.account_type, amount=amount,
+                        order_model=order_model, towards=towards, amount_model=amount_model)  # init
 
+    def settle(self):
+        '初始化的时候 同步可用资金/可卖股票'
+        self.cash_available = self.cash[-1]
+        self.sell_available = pd.DataFrame(self.hold, columns=self._hold_headers).set_index(
+            'code', drop=False)['amount'].groupby('code').sum()
 
     def from_message(self, message):
 
@@ -390,6 +383,16 @@ class QA_Account():
         self.assets = message['body']['account']['assets']
         self.detail = message['body']['account']['detail']
         return self
+
+    def run(self, event):
+        if event.type is ACCOUNT_EVENT.SETTLE:
+            self.settle()
+
+        elif event.type is ACCOUNT_EVENT.UPDATE:
+            self.receive_deal(event.message)
+        elif event.type is ACCOUNT_EVENT.MAKE_ORDER:
+            event.callback(self.send_order(event.message['code'], event.message['amount'], event.message['time'],
+                                           event.message['towards'], event.message['order_model'], event.message['amount_model']))
 
 
 class QA_Account_min(QA_Account):
