@@ -37,7 +37,7 @@ import numpy as np
 import pandas as pd
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from QUANTAXIS.QAMarket.QABid import QA_QAMarket_bid
+from QUANTAXIS.QAMarket.QAOrder import QA_Order
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_if_tradetime
 from QUANTAXIS.QAUtil.QASetting import QA_Setting, info_ip_list
 from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
@@ -48,7 +48,7 @@ class QA_Trade:
         pass
 
 
-class Order(QA_QAMarket_bid):
+class Order(QA_Order):
     def __init__(self, *args, **kwargs):
         pass
 

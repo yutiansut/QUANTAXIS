@@ -130,7 +130,7 @@ git clone https://github.com/yutiansut/quantaxis --depth 1
 
 写代码不易...请作者喝杯咖啡呗?
 
-<img src="http://osnhakmay.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20170923132018.jpg" width = "27.5%" />
+<img src="http://osnhakmay.bkt.clouddn.com/IMG_0002.JPG" width = "27.5%" />
 
 (PS: 支付的时候 请带上你的名字/昵称呀 会维护一个赞助列表~ )
 

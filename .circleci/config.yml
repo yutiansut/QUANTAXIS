@@ -46,6 +46,7 @@ jobs:
           command: |
             . venv/bin/activate
             python setup.py install
+            echo 'SUCCESS'
 
       - store_artifacts:
           path: test-reports

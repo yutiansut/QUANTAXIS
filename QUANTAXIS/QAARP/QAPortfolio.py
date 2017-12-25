@@ -25,7 +25,7 @@
 import threading
 
 from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_valid,
-                              QA_util_log_info)
+                              QA_util_log_info, QA_Setting)
 
 from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAARP.QARisk import QA_Risk
@@ -34,29 +34,101 @@ from QUANTAXIS.QAARP.QARisk import QA_Risk
 class QA_Portfolio():
 
     """
+    QUANTAXIS 多账户
+    以及组合管理
+
+    # 适用 回测/实盘
+
+
     在portfolio中,我们希望通过cookie来控制account_unit
     对于account的指标,要进行风险控制,组合成最优的投资组合的量
 
-    portfolio通过每天结束的时候,计算总账户可用资金,来更新和计算总账户资金占比情况
-
+    用account的cookie来管理控制account
     """
 
-    def init(self):
-        self.portfolio_code = ['']
-        self.portfolio_account = []
-        for i in range(0, len(self.portfolio_code) - 1, 1):
-            self.portfolio_account[i] = QA_Account()
+    def __init__(self, portfolio_cookies=[]):
+        self.portfolio_accounts = {}
+        self.portfolio_cookies = portfolio_cookies
+        for cookie in self.portfolio_cookies:
+            self.portfolio_accounts[cookie] = QA_Account(account_cookie=cookie)
+
+    def __repr__(self):
+        return '<QA_Portfolio with {} Accounts>'.format(len(self.portfolio_cookies))
 
     def QA_portfolio_get_portfolio(self):
-        # QA_util_log_info(self.portfolio_account)
-        return self.portfolio_account
+        return self.portfolio_accounts
 
-    def QA_portfolio_calc(self):
+    def add_account(self, account_cookie):
+        temp=QA_Account(account_cookie=account_cookie)
+        if account_cookie not in self.portfolio_cookies:
+            self.portfolio_cookies.append(temp.account_cookie)
+            self.portfolio_accounts[temp.account_cookie] = temp
 
-        pass
+        else:
+            pass        
+
+    def new_account(self, account_cookie=None):
+        if account_cookie is None:
+            temp = QA_Account()
+            if temp.account_cookie not in self.portfolio_cookies:
+                self.portfolio_cookies.append(temp.account_cookie)
+                self.portfolio_accounts[temp.account_cookie] = temp
+                return temp.account_cookie
+
+            else:
+                return False
+
+    def get_account(self, cookie):
+        try:
+            return self.portfolio_accounts[cookie]
+        except:
+            QA_util_log_info('Can not find this account')
+            return None
 
     def cookie_mangement(self):
         pass
 
-    def QA_portfolio_get_free_cash(self):
+    def get_cash(self):
+        """拿到整个portfolio的可用资金
+        
+        统计每一个时间点的时候的cash总和
+        """
+        
         pass
+
+    def pull(self,account_cookie=None,collection=QA_Setting.client.quantaxis.account):
+        if account_cookie is None:
+            for item in self.portfolio_cookies:
+                try:
+                    message=collection.find_one({'cookie':item})['message']
+                    QA_util_log_info('{} sync successfully'.format(item))
+                except Exception as e:
+                    QA_util_log_info('{} sync wrong \\\n wrong info {}'.format(item,e))
+                self.portfolio_accounts[item].from_message(message)
+
+        else:
+            try:
+                message=collection.find_one({'cookie':account_cookie})['message']
+                QA_util_log_info('{} sync successfully'.format(item))
+            except Exception as e:
+                QA_util_log_info('{} sync wrong \\\n wrong info {}'.format(account_cookie,e))
+            self.portfolio_accounts[account_cookie].from_message(message)          
+
+    def push(self,account_cookie=None,collection=QA_Setting.client.quantaxis.account):
+        message=self.portfolio_accounts[account_cookie].message
+        if account_cookie is None:
+            for item in self.portfolio_cookies:
+                try:
+                    message=collection.find_one_and_update({'cookie':item})
+                    QA_util_log_info('{} sync successfully'.format(item))
+                except Exception as e:
+                    QA_util_log_info('{} sync wrong \\\n wrong info {}'.format(item,e))
+                self.portfolio_accounts[item].from_message(message)
+
+        else:
+            try:
+                message=collection.find_one({'cookie':account_cookie})['message']
+                QA_util_log_info('{} sync successfully'.format(item))
+            except Exception as e:
+                QA_util_log_info('{} sync wrong \\\n wrong info {}'.format(account_cookie,e))
+            self.portfolio_accounts[account_cookie].from_message(message)  
