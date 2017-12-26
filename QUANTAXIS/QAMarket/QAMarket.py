@@ -197,6 +197,18 @@ class QA_Market(QA_Trade):
                 )
             ))
 
+    def query_currentbar(self, broker_name, market_type, code):
+        return self.broker[broker_name].run(event=QA_Event(
+            event_type=MARKET_EVENT.QUERY_DATA,
+            message={
+                'data_type':  MARKETDATA_TYPE.CURRENT,
+                'market_type': market_type,
+                'code': code,
+                'start': self.running_time,
+                'end': None
+            }
+        ))
+
     def on_query_data(self, data):
         print('ON QUERY')
         print(data)
