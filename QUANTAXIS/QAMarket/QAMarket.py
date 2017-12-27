@@ -101,6 +101,9 @@ class QA_Market(QA_Trade):
         else:
             return False
 
+    def get_account(self, account_cookie):
+        return self.session[account_cookie]
+
     def login(self, account_cookie, broker_name):
 
         if account_cookie not in self.session.keys():
@@ -153,19 +156,25 @@ class QA_Market(QA_Trade):
         print(order)
 
     def _renew_account(self):
-        pass
+        for item in self.session.values():
+
+            self.event_queue.put(
+                QA_Task(
+                    job=item,
+                    event=QA_Event(
+                        event_type=ACCOUNT_EVENT.SETTLE)))
 
     def query_order(self, order_id):
         return self.order_handler.order_queue.query_order(order_id)
 
     def query_asset(self, account_cookie):
-        return self.session[account_cookie].cash
+        return self.get_account(account_cookie).assets
 
     def query_position(self, broker_name, account_cookie):
-        pass
+        return self.get_account(account_cookie).hold
 
-    def on_query_position(self, data):
-        pass
+    def query_cash(self, broker_name, account_cookie):
+        return self.get_account(account_cookie).cash_available
 
     def query_data_no_wait(self, broker_name, data_type, market_type, code, start, end=None):
         return self.broker[broker_name].run(event=QA_Event(
@@ -260,4 +269,3 @@ if __name__ == '__main__':
     market = QA_Market()
 
     market.connect(QA.RUNNING_ENVIRONMENT.BACKETEST)
-
