@@ -67,15 +67,13 @@ class QA_OrderHandler(QA_Job):
     def run(self, event):
         if event.event_type is ORDER_EVENT.CREATE:
             # 此时的message应该是订单类
-            assert isinstance(event.message, QA_Order)
-            order = self.order_queue.insert_order(event.message)
+            order = self.order_queue.insert_order(event.order)
             if event.callback:
                 event.callback(order)
         elif event.event_type is BROKER_EVENT.TRADE:
-            assert isinstance(event.message, dict)
             for item in self.order_queue.trade_list:
-                res = event.message['broker'].receive_order(
-                    QA_Event(event_type=BROKER_EVENT.TRADE, message={'order': item}))
+                res = event.broker.receive_order(
+                    QA_Event(event_type=BROKER_EVENT.TRADE,order=item))
                 event.callback(res)
                 self.order_queue.set_status(
                     item.order_id, res['header']['status'])

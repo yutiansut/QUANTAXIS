@@ -53,3 +53,6 @@ class QA_Event(object):
         self.func = func
         self.message = message
         self.callback = callback
+
+        for item in kwargs.keys():
+            exec('self.{}=kwargs[item]'.format(item))

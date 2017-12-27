@@ -83,11 +83,11 @@ class QA_BacktestBroker(QA_Broker):
     def run(self, event):
         if event.event_type is MARKET_EVENT.QUERY_DATA:
             # 查询数据部分
-            code = event.message['code']
-            data_type = event.message['data_type']
-            start = event.message['start']
-            end = event.message['start'] if event.message['end'] is None else event.message['end']
-            market_type = event.message['market_type']
+            code = event.code
+            data_type = event.data_type
+            start = event.start
+            end = event.start if event.end is None else event.end
+            market_type = event.market_type
             res = self.fetcher[market_type](
                 code, start, end, dtype=data_type)
             if event.callback:
@@ -100,11 +100,11 @@ class QA_BacktestBroker(QA_Broker):
         get the order and choice which market to trade
 
         """
-        order = event.message['order']
+        order = event.order
 
-        if 'market_data' in event.message.keys():
+        if 'market_data' in event.__dict__.keys():
             self.market_data = self.get_market(
-                order) if event.message['market_data'] is None else event.message['market_data']
+                order) if event.market_data is None else event.market_data
         else:
             self.market_data = self.get_market(order)
 
