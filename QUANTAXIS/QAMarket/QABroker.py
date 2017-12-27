@@ -53,13 +53,13 @@ class QA_Broker(QA_Job):
     def receive_order(self, event):
         raise NotImplementedError
 
-    @abstractmethod
     def get_data(self, order):
-        raise NotImplementedError
+        pass
 
-    @abstractmethod
     def warp(self, order):
-        raise NotImplementedError
+        pass
+
+    
 
 
 class QA_BROKER_EVENT(QA_Event):

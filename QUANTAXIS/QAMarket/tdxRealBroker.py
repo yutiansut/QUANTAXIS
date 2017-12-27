@@ -187,16 +187,13 @@ class TdxTradeApi(QA_Broker):
         5 市价委托(深圳全额成交或撤销)
         6 市价委托(上海五档即成转限价)
         """
-        self.send_order(event.client_id, event.category, event.price_type)
-        client_id, category, price_type, gddm, zqdm, price, quantity
+        return self.send_order(event.client_id, event.category, event.price_type,event.gddm,event.zqdm,event.price,event.quantity)
+        #client_id, category, price_type, gddm, zqdm, price, quantity
 
-    def get_data(self, order):
-        raise NotImplementedError
+    def run(self,event):
+        pass
 
-    def warp(self, order):
-        raise NotImplementedError
-
-
+    
 if __name__ == "__main__":
     import os
     api = TdxTradeApi(endpoint="http://10.11.5.175:10092/api",
