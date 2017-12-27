@@ -145,7 +145,7 @@ class QA_Market(QA_Trade):
                 amount=amount, amount_model=amount_model, time=time, code=code, price=price,
                 order_model=order_model, towards=towards, market_type=market_type, data_type=data_type)
             self.event_queue.put(QA_Task(job=self.order_handler, event=QA_Event(
-                event_type=ORDER_EVENT.CREATE, message=order, callback=self.on_insert_order)))
+                event_type=ORDER_EVENT.CREATE, order=order, callback=self.on_insert_order)))
         else:
             pass
 
@@ -170,13 +170,11 @@ class QA_Market(QA_Trade):
     def query_data_no_wait(self, broker_name, data_type, market_type, code, start, end=None):
         return self.broker[broker_name].run(event=QA_Event(
             event_type=MARKET_EVENT.QUERY_DATA,
-            message={
-                'data_type':  data_type,
-                'market_type': market_type,
-                'code': code,
-                'start': start,
-                'end': end
-            }
+            data_type=data_type,
+            market_type=market_type,
+            code=code,
+            start=start,
+            end=end
         ))
 
     def query_data(self, broker_name, data_type, market_type, code, start, end=None):
@@ -186,13 +184,11 @@ class QA_Market(QA_Trade):
                 engine=broker_name,
                 event=QA_Event(
                     event_type=MARKET_EVENT.QUERY_DATA,
-                    message={
-                        'data_type':  data_type,
-                        'market_type': market_type,
-                        'code': code,
-                        'start': start,
-                        'end': end
-                    },
+                    data_type=data_type,
+                    market_type=market_type,
+                    code=code,
+                    start=start,
+                    end=end,
                     callback=self.on_query_data
                 )
             ))
@@ -200,13 +196,11 @@ class QA_Market(QA_Trade):
     def query_currentbar(self, broker_name, market_type, code):
         return self.broker[broker_name].run(event=QA_Event(
             event_type=MARKET_EVENT.QUERY_DATA,
-            message={
-                'data_type':  MARKETDATA_TYPE.CURRENT,
-                'market_type': market_type,
-                'code': code,
-                'start': self.running_time,
-                'end': None
-            }
+            data_type=MARKETDATA_TYPE.CURRENT,
+            market_type=market_type,
+            code=code,
+            start=self.running_time,
+            end=None
         ))
 
     def on_query_data(self, data):
@@ -229,8 +223,7 @@ class QA_Market(QA_Trade):
             engine=broker_name,
             event=QA_Event(
                 event_type=BROKER_EVENT.TRADE,
-                message={
-                    'broker': self.broker[broker_name]},
+                broker=self.broker[broker_name],
                 callback=self._on_trade_event)))
 
     def _settle(self, broker_name):
@@ -240,7 +233,7 @@ class QA_Market(QA_Trade):
             engine=broker_name,
             event=QA_Event(
                 event_type=BROKER_EVENT.SETTLE,
-                message={'broker': self.broker[broker_name]})))
+                broker=self.broker[broker_name])))
         # 向事件线程发送ACCOUNT的SETTLE事件
         for item in self.session.values():
             if item.broker_type is broker_name:
@@ -267,7 +260,4 @@ if __name__ == '__main__':
     market = QA_Market()
 
     market.connect(QA.RUNNING_ENVIRONMENT.BACKETEST)
-    print(market)
-    market.login(a_1)
-    market.login(a_2)
-    print(market.get_account_id())
+

@@ -83,3 +83,4 @@ class QA_Backtest():
 
     def __init__(self):
         pass
+ 
