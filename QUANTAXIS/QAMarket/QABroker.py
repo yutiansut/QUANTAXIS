@@ -50,7 +50,7 @@ class QA_Broker(QA_Job):
         return '< QA_MARKET >'
 
     @abstractmethod
-    def receive_order(self, event, order, market_data=None):
+    def receive_order(self, event):
         raise NotImplementedError
 
     @abstractmethod
