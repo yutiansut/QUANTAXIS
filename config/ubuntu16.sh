@@ -37,7 +37,7 @@ sudo -H python3.6 get-pip.py
 sudo apt-get install git
 cd ~
 git clone https://github.com/yutiansut/quantaxis
-
+cd ~/quantaxis
 sudo python3.6 -m pip install -r requirements.txt -i https://pypi.doubanio.com/simple
 sudo python3.6 -m pip install git+https://github.com/yutiansut/tushare
 sudo pip install -e .
