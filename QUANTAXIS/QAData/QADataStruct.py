@@ -61,9 +61,9 @@ class _quotation_base():
 
     def __init__(self, DataFrame, dtype='undefined', if_fq='bfq', marketdata_type='None'):
         self.data = DataFrame
-        self.data_type =dtype
+        self.data_type = dtype
         self.type = dtype
-        self.data_id = QA_util_random_with_topic('DATA',lens=3)
+        self.data_id = QA_util_random_with_topic('DATA', lens=3)
         self.if_fq = if_fq
         self.mongo_coll = eval(
             'QA_Setting().client.quantaxis.{}'.format(self.type))
@@ -86,30 +86,30 @@ class _quotation_base():
         """
         for i in range(len(self.index)):
             yield self.data.iloc[i]
-   
+
     def __reversed__(self):
         return self.reverse()
 
-    def __add__(self,DataStruct):
-        assert isinstance(DataStruct,_quotation_base)
+    def __add__(self, DataStruct):
+        assert isinstance(DataStruct, _quotation_base)
         assert self.is_same(DataStruct)
-        return self.new(data=self.data.append(DataStruct.data).drop_duplicates().set_index(self.index.names,drop=False),dtype=self.type,if_fq=self.if_fq)
+        return self.new(data=self.data.append(DataStruct.data).drop_duplicates().set_index(self.index.names, drop=False), dtype=self.type, if_fq=self.if_fq)
 
     __radd__ = __add__
 
-    def __iadd__(self,DataStruct):
-        assert isinstance(DataStruct,_quotation_base)
+    def __iadd__(self, DataStruct):
+        assert isinstance(DataStruct, _quotation_base)
         assert self.is_same(DataStruct)
         return self.append(DataStruct)
 
     def __sub__(self, DataStruct):
-        assert isinstance(DataStruct,_quotation_base)
+        assert isinstance(DataStruct, _quotation_base)
         assert self.is_same(DataStruct)
-        return self.new(data=self.data.drop(DataStruct.index).set_index(self.index.names,drop=False),dtype=self.type,if_fq=self.if_fq)
+        return self.new(data=self.data.drop(DataStruct.index).set_index(self.index.names, drop=False), dtype=self.type, if_fq=self.if_fq)
 
     __rsub__ = __sub__
 
-    def __isub__(self,DataStruct):
+    def __isub__(self, DataStruct):
         return self.drop(DataStruct)
 
     @property
@@ -177,23 +177,25 @@ class _quotation_base():
     @property
     def panel_gen(self):
         for item in self.index.levels[0]:
-            yield self.data.xs(item,level=0)
+            yield self.data.xs(item, level=0)
 
     @property
     def security_gen(self):
         for item in self.index.levels[1]:
-            yield self.data.xs(item,level=1)
+            yield self.data.xs(item, level=1)
 
-    def append(self,DataStruct):
-        assert isinstance(DataStruct,_quotation_base)
+    def append(self, DataStruct):
+        assert isinstance(DataStruct, _quotation_base)
         assert self.is_same(DataStruct)
-        self.data=self.data.append(DataStruct.data).drop_duplicates().set_index(self.index.names,drop=False)
+        self.data = self.data.append(DataStruct.data).drop_duplicates(
+        ).set_index(self.index.names, drop=False)
         return self
 
-    def drop(self,DataStruct):
-        assert isinstance(DataStruct,_quotation_base)
+    def drop(self, DataStruct):
+        assert isinstance(DataStruct, _quotation_base)
         assert self.is_same(DataStruct)
-        self.data=self.data.drop(DataStruct.index).set_index(self.index.names,drop=False)
+        self.data = self.data.drop(DataStruct.index).set_index(
+            self.index.names, drop=False)
         return self
 
     @property
@@ -207,7 +209,6 @@ class _quotation_base():
     @property
     def dicts(self):
         return self.to_dict('index')
-
 
     def plot(self, code=None):
         if code is None:
@@ -253,7 +254,6 @@ class _quotation_base():
             QA_util_log_info(
                 'The Pic has been saved to your path: {}'.format(path_name))
 
-
     def len(self):
         return len(self.data)
 
@@ -295,8 +295,8 @@ class _quotation_base():
     def to_dict(self, orient='dict'):
         return self.data.to_dict(orient)
 
-    def is_same(self,DataStruct):
-        if self.type==DataStruct.type and self.if_fq==DataStruct.if_fq:
+    def is_same(self, DataStruct):
+        if self.type == DataStruct.type and self.if_fq == DataStruct.if_fq:
             return True
         else:
             return False
@@ -656,11 +656,12 @@ class QA_DataStruct_Stock_realtime():
     @property
     def ask_list(self):
         return self.market_data.ix[:, ['ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',
-                        'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3', 'ask4',
-                        'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
+                                       'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3', 'ask4',
+                                       'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
+
     @property
     def bid_list(self):
-        return self.market_data.ix[:, ['bid1', 'bid_vol1','bid2', 'bid_vol2',  'bid3', 'bid_vol3', 'bid4', 'bid_vol4','bid5', 'bid_vol5']]
+        return self.market_data.ix[:, ['bid1', 'bid_vol1', 'bid2', 'bid_vol2',  'bid3', 'bid_vol3', 'bid4', 'bid_vol4', 'bid5', 'bid_vol5']]
 
     [['datetime', 'active1', 'active2', 'last_close', 'code', 'open', 'high', 'low', 'price', 'cur_vol',
       's_vol', 'b_vol', 'vol', 'ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',

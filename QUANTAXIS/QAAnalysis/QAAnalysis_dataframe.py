@@ -23,12 +23,9 @@
 # SOFTWARE.
 
 
-import math
 import statistics
 from functools import lru_cache
 
-import numpy as np
-import pandas as pd
 
 #import scipy
 #import statsmodels
