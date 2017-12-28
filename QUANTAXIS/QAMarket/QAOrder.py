@@ -27,7 +27,8 @@ import pandas as pd
 
 from QUANTAXIS.QAUtil import (QA_util_log_info, QA_util_random_with_topic,
                               QA_util_to_json_from_pandas)
-from QUANTAXIS.QAUtil.QAParameter import ORDER_MODEL, AMOUNT_MODEL, ORDER_STATUS
+from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_STATUS
+
 
 """
 重新定义Order模式

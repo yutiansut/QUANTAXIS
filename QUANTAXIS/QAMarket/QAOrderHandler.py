@@ -21,17 +21,11 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import datetime
-import queue
-
-import numpy as np
-import pandas as pd
 
 
-from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
-from QUANTAXIS.QAUtil.QAParameter import (ORDER_EVENT, ORDER_STATUS, BROKER_EVENT, MARKET_EVENT,
-                                          RUNNING_ENVIRONMENT, EVENT_TYPE)
 from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Job
+from QUANTAXIS.QAMarket.QAOrder import QA_OrderQueue
+from QUANTAXIS.QAUtil.QAParameter import BROKER_EVENT, EVENT_TYPE, ORDER_EVENT
 
 
 class QA_OrderHandler(QA_Job):
