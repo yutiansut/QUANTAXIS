@@ -73,10 +73,13 @@ class _quotation_base():
 
     def __call__(self):
         return self.data
+
     def __str__(self):
         return self.data
+
     def __len__(self):
         return len(self.index)
+
     def __iter__(self):
         """
         iter the row one by one
@@ -172,13 +175,11 @@ class _quotation_base():
         return self.data.index.levels[1]
 
     @property
-    @lru_cache()
     def panel_gen(self):
         for item in self.index.levels[0]:
             yield self.data.xs(item,level=0)
 
     @property
-    @lru_cache()
     def security_gen(self):
         for item in self.index.levels[1]:
             yield self.data.xs(item,level=1)
@@ -207,7 +208,7 @@ class _quotation_base():
     def dicts(self):
         return self.to_dict('index')
 
-    @lru_cache()
+
     def plot(self, code=None):
         if code is None:
             path_name = '.' + os.sep + 'QA_' + self.type + \
@@ -252,10 +253,10 @@ class _quotation_base():
             QA_util_log_info(
                 'The Pic has been saved to your path: {}'.format(path_name))
 
-    @lru_cache()
+
     def len(self):
         return len(self.data)
-    @lru_cache()
+
     def query(self, context):
         return self.data.query(context)
 
@@ -272,41 +273,34 @@ class _quotation_base():
         temp = copy(self)
         temp.__init__(data, dtype, if_fq)
         return temp
-    @lru_cache()
+
     def reverse(self):
         return self.new(self.data[::-1])
 
-    @lru_cache()
     def show(self):
         return QA_util_log_info(self.data)
 
-    @lru_cache()
     def to_list(self):
         return np.asarray(self.data).tolist()
 
-    @lru_cache()
     def to_pd(self):
         return self.data
 
-    @lru_cache()
     def to_numpy(self):
         return np.asarray(self.data)
 
-    @lru_cache()
     def to_json(self):
         return QA_util_to_json_from_pandas(self.data)
 
-    @lru_cache()
     def to_dict(self, orient='dict'):
         return self.data.to_dict(orient)
 
-    @lru_cache()
     def is_same(self,DataStruct):
         if self.type==DataStruct.type and self.if_fq==DataStruct.if_fq:
             return True
         else:
             return False
-    @lru_cache()
+
     def splits(self):
         if self.type[-3:] in ['day']:
             return list(map(lambda x: self.new(
@@ -315,11 +309,10 @@ class _quotation_base():
             return list(map(lambda x: self.new(
                 self.query('code=="{}"'.format(x)).set_index(['datetime', 'code'], drop=False), self.type, self.if_fq), self.code))
 
-    @lru_cache()
     def add_func(self, func, *arg, **kwargs):
         return list(map(lambda x: func(
             self.query('code=="{}"'.format(x)), *arg, **kwargs), self.code))
-    @lru_cache()
+
     def pivot(self, column_):
         '增加对于多列的支持'
         if isinstance(column_, str):
@@ -333,7 +326,6 @@ class _quotation_base():
             except:
                 return self.data.pivot_table(index='date', columns='code', values=column_)
 
-    @lru_cache()
     def select_time(self, start, end=None):
         if self.type[-3:] in ['day']:
             if end is not None:
@@ -347,7 +339,6 @@ class _quotation_base():
             else:
                 return self.new(self.data[self.data['datetime'] >= start].set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
 
-    @lru_cache()
     def select_time_with_gap(self, time, gap, method):
 
         if method in ['gt', '>']:
@@ -391,7 +382,6 @@ class _quotation_base():
                     return _data.data[_data.data['datetime'] == time].head(gap).set_index(['datetime', 'code'], drop=False)
             return self.new(pd.concat(list(map(lambda x: __eq(x), self.splits()))), self.type, self.if_fq)
 
-    @lru_cache()
     def select_code(self, code):
         if self.type[-3:] in ['day']:
 
@@ -400,7 +390,6 @@ class _quotation_base():
         elif self.type[-3:] in ['min']:
             return self.new(self.data.query('code=="{}"'.format(code)).set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
 
-    @lru_cache()
     def get_bar(self, code, time, if_trade):
         if self.type[-3:] in ['day']:
             return self.new(self.query('code=="{}" & date=="{}"'.format(code, str(time)[0:10])).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
@@ -408,7 +397,6 @@ class _quotation_base():
         elif self.type[-3:] in ['min']:
             return self.new(self.query('code=="{}"'.format(code))[self.data['datetime'] == str(time)].set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
 
-    @lru_cache()
     def find_bar(self, code, time):
         if len(time) == 10:
             return self.dicts[(datetime.datetime.strptime(time, '%Y-%m-%d'), code)]
@@ -423,7 +411,6 @@ class QA_DataStruct_Stock_day(_quotation_base):
     def __repr__(self):
         return '< QA_DataStruct_Stock_day with {} securities >'.format(len(self.code))
 
-    @lru_cache()
     def to_qfq(self):
         if self.if_fq is 'bfq':
             if len(self.code) < 20:
@@ -437,7 +424,6 @@ class QA_DataStruct_Stock_day(_quotation_base):
                 'none support type for qfq Current type is: %s' % self.if_fq)
             return self
 
-    @lru_cache()
     def to_hfq(self):
         if self.if_fq is 'bfq':
             return self.new(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
