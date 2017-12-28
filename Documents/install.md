@@ -23,8 +23,11 @@
 
 ## 安装
 
-WINDOWS安装 参见 [windows](install_for_windows.md)
-Ubuntu安装 参见 [Ubuntu](install_for_ubuntu.md)
+- WINDOWS安装 参见 [windows](install_for_windows.md)
+
+- Ubuntu安装 参见 [Ubuntu](install_for_ubuntu.md)
+
+- MAC 安装 参见 [MAC](install_for_mac.md)
 
 
 ## 启动QUANTAXIS CLI 并进行数据的初始化存储
