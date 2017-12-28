@@ -83,7 +83,7 @@ class QA_Thread(threading.Thread):
                 if __res > 0:
                     QA_util_log_info("From Engine %s: There are still %d tasks to do" % (
                         str(threading.current_thread()), __res))
-                threading.Timer(0.005, self.run)
+                #threading.Timer(0.005, self.run)
 
     def pause(self):
         self.__flag.clear()
@@ -176,8 +176,8 @@ class QA_Engine(QA_Thread):
                 if __res > 0:
                     QA_util_log_info("From Engine %s: There are still %d tasks to do" % (
                         str(threading.current_thread()), __res))
-                threading.Timer(0.005, self.run)
-
+                #threading.Timer(0.005, self.run)
+                #self.run()
 
 if __name__ == '__main__':
     import queue
