@@ -22,14 +22,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import math
-
-import numpy
-import pandas
-
-from QUANTAXIS.QABacktest import QAAnalysis
-from QUANTAXIS.QAUtil import QA_util_log_expection, QA_util_log_info
-
 
 """收益性的包括年化收益率、净利润、总盈利、总亏损、有效年化收益率、资金使用率。
 
