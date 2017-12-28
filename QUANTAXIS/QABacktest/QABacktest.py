@@ -60,6 +60,7 @@ class QA_Backtest():
     
     def __init__(self,market_type,start,end,commission_fee,):
         self.user=QA_User()
-        self.user.session
+        self.user.new_portfolio()
+
         
  
