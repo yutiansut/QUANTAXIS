@@ -25,9 +25,7 @@
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 
-"""
-标准的QUANTAXIS事件方法,具有QA_Thread,QA_Event等特性,以及一些日志和外部接口
-"""
+"""标准的QUANTAXIS事件方法,具有QA_Thread,QA_Event等特性,以及一些日志和外部接口"""
 
 
 class QA_Task():

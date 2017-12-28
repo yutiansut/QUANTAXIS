@@ -31,10 +31,8 @@ from QUANTAXIS.QAEngine.QATask import QA_Task
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_random_with_topic
 
 
-"""
-标准化的QUANATAXIS事件分发,可以快速引入和复用
-每个事件需要携带一个方法,并且是需要立即被执行的时间才能使用这个事件方法
-"""
+"""标准化的QUANATAXIS事件分发,可以快速引入和复用
+每个事件需要携带一个方法,并且是需要立即被执行的时间才能使用这个事件方法"""
 
 
 class QA_Thread(threading.Thread):
@@ -75,8 +73,7 @@ class QA_Thread(threading.Thread):
                         # QA_util_log_info("From Engine %s  Engine will waiting for new task ..." % str(
                         #     threading.current_thread()))
                         time.sleep(0.1)
-                except Exception as e:
-                    raise e
+                except:
                     time.sleep(0.1)
                     self.run()
                 __res = self.qsize()  # 判断消息队列大小
