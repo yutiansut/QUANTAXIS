@@ -22,11 +22,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
+from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 from QUANTAXIS.QAUtil.QASetting import QA_Setting
-from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QASU.user import QA_user_sign_in
-from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
+
 
 class QA_User():
     def __init__(self, *args, **kwargs):
