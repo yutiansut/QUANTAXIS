@@ -2,9 +2,6 @@
 
 
 import requests
-import urllib
-import json
-import base64
 import pandas as pd
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
@@ -12,7 +9,8 @@ from QUANTAXIS.QAMarket.QABroker import QA_Broker
 try:
     from pytdx.log import log
 except ImportError:
-    def log(x): return None
+    def log(x): 
+        return None
 
 
 class TdxTradeApiParams:

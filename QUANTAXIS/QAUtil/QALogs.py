@@ -33,9 +33,8 @@ QA_util_log_expection()
 """
 
 import datetime
-import time
 
-from zenlog import log, logging
+from zenlog import logging
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s QUANTAXIS>>> %(message)s',

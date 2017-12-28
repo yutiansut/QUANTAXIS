@@ -21,6 +21,10 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+import pandas as pd
+
+from QUANTAXIS.QAIndicator.QAIndicator_Series import *
 """
 
 ***********  之后会被合并到QAIndicator_Dataframe里面    ***********
@@ -41,10 +45,7 @@ QUANTAXIS  指标计算
 
 
 """趋势类"""
-import numpy as np
-import pandas as pd
 
-from QUANTAXIS.QAIndicator.QAIndicator_Series import *
 
 # TODO
 # 基于无状态的pd结构的指标

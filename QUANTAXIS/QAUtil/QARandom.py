@@ -23,8 +23,6 @@
 # SOFTWARE.
 
 import random
-import datetime
-import time
 
 
 def QA_util_random_with_topic(topic='Acc', lens=8):

@@ -24,8 +24,6 @@
 
 
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
-from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import RUNNING_ENVIRONMENT
 
 
 class QA_RandomBroker(QA_Broker):

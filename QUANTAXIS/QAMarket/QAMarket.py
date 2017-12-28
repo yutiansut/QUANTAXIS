@@ -35,8 +35,7 @@ from QUANTAXIS.QAMarket.QATrade import QA_Trade
 from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
                                           BROKER_EVENT, BROKER_TYPE,
                                           MARKET_EVENT, MARKETDATA_TYPE,
-                                          ORDER_DIRECTION, ORDER_EVENT,
-                                          ORDER_MODEL, ORDER_STATUS)
+                                          ORDER_EVENT)
 
 
 class QA_Market(QA_Trade):

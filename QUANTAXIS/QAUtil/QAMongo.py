@@ -26,7 +26,6 @@
 import subprocess
 
 import pandas as pd
-import pymongo
 
 from QUANTAXIS.QAUtil.QASetting import QA_Setting
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info

@@ -22,9 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from abc import ABC, abstractmethod
-from threading import Event, Thread, Timer
-from QUANTAXIS.QAEngine.QAThreadEngine import QA_Thread,QA_Engine
+from QUANTAXIS.QAEngine.QAThreadEngine import QA_Engine
+
 # 交易封装
 
 

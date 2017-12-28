@@ -24,9 +24,6 @@
 
 
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
-from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import RUNNING_ENVIRONMENT
-from QUANTAXIS.QAFetch.QATdx import QA_fetch_depth_market_data
 
 
 class QA_RealBroker(QA_Broker):
