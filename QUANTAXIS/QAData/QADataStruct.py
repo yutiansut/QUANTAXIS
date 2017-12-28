@@ -90,7 +90,7 @@ class _quotation_base():
     def __add__(self,DataStruct):
         assert isinstance(DataStruct,_quotation_base)
         assert self.is_same(DataStruct)
-        return self.new(data=self.data.append(DataStruct.data).drop_duplicates(),dtype=self.type,if_fq=self.if_fq)
+        return self.new(data=self.data.append(DataStruct.data).drop_duplicates().set_index(self.index.names,drop=False),dtype=self.type,if_fq=self.if_fq)
 
     __radd__ = __add__
 
@@ -102,15 +102,12 @@ class _quotation_base():
     def __sub__(self, DataStruct):
         assert isinstance(DataStruct,_quotation_base)
         assert self.is_same(DataStruct)
-        return self.new(data=self.data.drop(DataStruct.index).drop_duplicates(),dtype=self.type,if_fq=self.if_fq)
+        return self.new(data=self.data.drop(DataStruct.index).set_index(self.index.names,drop=False),dtype=self.type,if_fq=self.if_fq)
 
     __rsub__ = __sub__
 
     def __isub__(self,DataStruct):
-        assert isinstance(DataStruct,_quotation_base)
-        assert self.is_same(DataStruct)
-        self.data.drop(DataStruct.index,inplace=True)
-        return self
+        return self.drop(DataStruct)
 
     @property
     def open(self):
@@ -186,18 +183,16 @@ class _quotation_base():
         for item in self.index.levels[1]:
             yield self.data.xs(item,level=1)
 
-    @lru_cache()
     def append(self,DataStruct):
         assert isinstance(DataStruct,_quotation_base)
         assert self.is_same(DataStruct)
-        self.data=self.data.append(DataStruct.data).drop_duplicates()
+        self.data=self.data.append(DataStruct.data).drop_duplicates().set_index(self.index.names,drop=False)
         return self
 
-    @lru_cache()
     def drop(self,DataStruct):
         assert isinstance(DataStruct,_quotation_base)
         assert self.is_same(DataStruct)
-        self.data.drop(DataStruct.index,inplace=True)
+        self.data=self.data.drop(DataStruct.index).set_index(self.index.names,drop=False)
         return self
 
     @property
