@@ -100,7 +100,7 @@ def QA_data_make_hfq(bfq_data, xdxr_data):
 
 def QA_data_stock_to_fq(__data, type_='01'):
 
-    def __QA_fetch_stock_xdxr(code, format_='pd', collections=QA_Setting.client.quantaxis.stock_xdxr):
+    def __QA_fetch_stock_xdxr(code, format_='pd', collections=QA_Setting().client.quantaxis.stock_xdxr):
         '获取股票除权信息/数据库'
         try:
             data = pd.DataFrame([item for item in collections.find(

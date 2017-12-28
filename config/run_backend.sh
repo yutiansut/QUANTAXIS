@@ -1,4 +1,6 @@
 # run mongo
-
-#service mongod restart
+echo 'QUANTAXIS BACKEND BASH'
 mongod
+
+
+
