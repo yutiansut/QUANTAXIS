@@ -24,19 +24,15 @@
 
 
 from abc import abstractmethod
-
-"""
-QUANTAXIS EVENT  
-
+"""QUANTAXIS EVENT
 EVENT 是会被推送进QUEUE的任务class
-
-通过EVENT_QUEUE.get()拿到标准的event,然后执行
-"""
-# coding:utf-8
+通过EVENT_QUEUE.get()拿到标准的event,然后执行"""
 
 
 class QA_Job(object):
-    def __init__(self, *args, **kwargs):
+    """JOB是worker 需要接受QA_EVENT 需要完善RUN方法"""
+
+    def __init__(self):
         self.type = None
 
     def __repr__(self):
