@@ -72,12 +72,12 @@ An EXAMPLE of QUANTAXIS BACKTEST like that below:
     QB.QA_backtest_send_order(QB, code,amount,towards,order: dict)
 
     order has three model:
-    1.Limited order order['bid_model']=0 or l,L
+    1.Limited order order['order_model']=0 or l,L
     attention: this model should have a order['price'] key
     order['price']=xxxx
 
-    2.Market order order['bid_model']=1 or m,M,market,Market
-    3.Strict model order['bid_model']=2 or s,S
+    2.Market order order['order_model']=1 or m,M,market,Market
+    3.Strict model order['order_model']=2 or s,S
         which is buy in the highest price or sell in the lowest price
 
     Query the hold amount
@@ -116,12 +116,12 @@ An EXAMPLE of QUANTAXIS BACKTEST like that below:
         for item in QB.strategy_stock_list:
             QA.QA_util_log_info(QB.QA_backtest_get_market_data(QB,item,QB.today))
             if QB.QA_backtest_hold_amount(QB,item)==0:
-                QB.QA_backtest_send_order(QB,item,10000,1,{'bid_model':'Market'})
+                QB.QA_backtest_send_order(QB,item,10000,1,{'order_model':'Market'})
 
         
             else:
                 #print(QB.QA_backtest_hold_amount(QB,item))
-                QB.QA_backtest_send_order(QB,item,10000,-1,{'bid_model':'Market'})
+                QB.QA_backtest_send_order(QB,item,10000,-1,{'order_model':'Market'})
         
     @QB.end_backtest
     def after_backtest():

@@ -157,7 +157,7 @@ def realtime():
 
 @app.route('/backtest/run', methods=['POST', 'GET'])
 def run_backtest():
-    data = QA_Setting.client.quantaxis.strategy.find_one(
+    data = QA_Setting().client.quantaxis.strategy.find_one(
         {'cookie': request.args.get('cookie', '')})
     strategy_file = re.sub('strategy_end_date(.*)=(.*)\\\r\\\n ',
                            'strategy_end_date  = \'{}\' \r\n '.format(datetime.date.today()), data['content'])

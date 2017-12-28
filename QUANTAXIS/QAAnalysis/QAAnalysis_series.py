@@ -23,7 +23,3 @@
 # SOFTWARE.
 
 
-import numpy as np
-import pandas as pd
-
-from QUANTAXIS.QAIndicator.QAIndicator_Series import MA, MACD, MAX, MIN
