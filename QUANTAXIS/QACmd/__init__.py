@@ -125,8 +125,8 @@ class CLI(cmd.Cmd):
         else:
             arg = arg.split(' ')
             if len(arg) == 1 and arg[0] == 'all':
-                if QA_Setting.client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
-                    QA_Setting.client.quantaxis.user_list.insert(
+                if QA_Setting().client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
+                    QA_Setting().client.quantaxis.user_list.insert(
                         {'username': 'admin', 'password': 'admin'})
                 QA_SU_save_stock_day('tdx')
                 QA_SU_save_stock_xdxr('tdx')
@@ -139,8 +139,8 @@ class CLI(cmd.Cmd):
                 # QA_SU_save_stock_block('tdx')
                 # QA_SU_save_stock_info('tdx')
             elif len(arg) == 1 and arg[0] == 'day':
-                if QA_Setting.client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
-                    QA_Setting.client.quantaxis.user_list.insert(
+                if QA_Setting().client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
+                    QA_Setting().client.quantaxis.user_list.insert(
                         {'username': 'admin', 'password': 'admin'})
                 QA_SU_save_stock_day('tdx')
                 QA_SU_save_stock_xdxr('tdx')
@@ -152,8 +152,8 @@ class CLI(cmd.Cmd):
                 QA_SU_save_stock_list('tdx')
                 QA_SU_save_stock_block('tdx')
             elif len(arg) == 1 and arg[0] == 'min':
-                if QA_Setting.client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
-                    QA_Setting.client.quantaxis.user_list.insert(
+                if QA_Setting().client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
+                    QA_Setting().client.quantaxis.user_list.insert(
                         {'username': 'admin', 'password': 'admin'})
                 # QA_SU_save_stock_day('tdx')
                 QA_SU_save_stock_xdxr('tdx')
@@ -165,8 +165,8 @@ class CLI(cmd.Cmd):
                 QA_SU_save_stock_list('tdx')
                 QA_SU_save_stock_block('tdx')
             elif len(arg) == 1 and arg[0] in ['X', 'x']:
-                if QA_Setting.client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
-                    QA_Setting.client.quantaxis.user_list.insert(
+                if QA_Setting().client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
+                    QA_Setting().client.quantaxis.user_list.insert(
                         {'username': 'admin', 'password': 'admin'})
                 QA_SU_save_stock_day('tdx')
                 QA_SU_save_stock_xdxr('tdx')
@@ -181,8 +181,8 @@ class CLI(cmd.Cmd):
             else:
                 for i in arg:
                     if i == 'insert_user':
-                        if QA_Setting.client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
-                            QA_Setting.client.quantaxis.user_list.insert(
+                        if QA_Setting().client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
+                            QA_Setting().client.quantaxis.user_list.insert(
                                 {'username': 'admin', 'password': 'admin'})
                     else:
                         eval("QA_SU_save_%s('tdx')" % (i))

@@ -230,8 +230,8 @@ class QA_Tdx_Executor():
         except Exception as e:
             raise e
 
-    def save_mongo(self, data, client=QA_Setting.client.quantaxis):
-        database = QA_Setting.client.quantaxis.get_collection(
+    def save_mongo(self, data, client=QA_Setting().client.quantaxis):
+        database = QA_Setting().client.quantaxis.get_collection(
             'realtime_{}'.format(datetime.date.today()))
 
         database.insert_many(QA_util_to_json_from_pandas(data))
@@ -247,7 +247,7 @@ def bat():
     print(x._queue.qsize())
     print(x.get_available())
 
-    database = QA_Setting.client.quantaxis.get_collection(
+    database = QA_Setting().client.quantaxis.get_collection(
         'realtime_{}'.format(datetime.date.today()))
 
     print(database)
@@ -285,7 +285,7 @@ if __name__ == '__main__':
     from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_block_adv
     code = QA_fetch_stock_block_adv().code
 
-    QA_Setting.client.quantaxis.realtime.create_index([('code', QA_util_sql_mongo_sort_ASCENDING),
+    QA_Setting().client.quantaxis.realtime.create_index([('code', QA_util_sql_mongo_sort_ASCENDING),
                                                        ('datetime', QA_util_sql_mongo_sort_ASCENDING)])
 
     # print(len(code))

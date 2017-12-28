@@ -46,7 +46,7 @@ from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
 """
 
 
-def QA_fetch_stock_day(code, start, end, format='numpy', dtype='day', collections=QA_Setting.client.quantaxis.stock_day):
+def QA_fetch_stock_day(code, start, end, format='numpy', dtype='day', collections=QA_Setting().client.quantaxis.stock_day):
     '获取股票日线'
     start = str(start)[0:10]
     end = str(end)[0:10]
@@ -83,7 +83,7 @@ def QA_fetch_stock_day(code, start, end, format='numpy', dtype='day', collection
         QA_util_log_info('something wrong with date')
 
 
-def QA_fetch_stock_min(code, start, end, format='numpy', dtype='1min', collections=QA_Setting.client.quantaxis.stock_min):
+def QA_fetch_stock_min(code, start, end, format='numpy', dtype='1min', collections=QA_Setting().client.quantaxis.stock_min):
     '获取股票分钟线'
     if dtype in ['1min', '1m']:
         dtype = '1min'
@@ -123,7 +123,7 @@ def QA_fetch_stock_min(code, start, end, format='numpy', dtype='1min', collectio
         return __data
 
 
-def QA_fetch_stocklist_min(stock_list, date_range, dtype='1min', collections=QA_Setting.client.quantaxis.stock_min):
+def QA_fetch_stocklist_min(stock_list, date_range, dtype='1min', collections=QA_Setting().client.quantaxis.stock_min):
     '获取不复权股票分钟线'
     __data = []
     for item in stock_list:
@@ -137,12 +137,12 @@ def QA_fetch_trade_date():
     return trade_date_sse
 
 
-def QA_fetch_stock_list(collections=QA_Setting.client.quantaxis.stock_list):
+def QA_fetch_stock_list(collections=QA_Setting().client.quantaxis.stock_list):
     '获取股票列表'
     return [item for item in collections.find()]
 
 
-def QA_fetch_stock_full(date, format='numpy', collections=QA_Setting.client.quantaxis.stock_day):
+def QA_fetch_stock_full(date, format='numpy', collections=QA_Setting().client.quantaxis.stock_day):
     '获取全市场的某一日的数据'
     Date = str(date)[0:10]
     if QA_util_date_valid(Date) == True:
@@ -169,7 +169,7 @@ def QA_fetch_stock_full(date, format='numpy', collections=QA_Setting.client.quan
         QA_util_log_info('something wrong with date')
 
 
-def QA_fetch_stocklist_day(stock_list, date_range, collections=QA_Setting.client.quantaxis.stock_day):
+def QA_fetch_stocklist_day(stock_list, date_range, collections=QA_Setting().client.quantaxis.stock_day):
     '获取多个股票的日线'
     __data = []
     for item in stock_list:
@@ -178,7 +178,7 @@ def QA_fetch_stocklist_day(stock_list, date_range, collections=QA_Setting.client
     return __data
 
 
-def QA_fetch_index_day(code, start, end, format='numpy', collections=QA_Setting.client.quantaxis.index_day):
+def QA_fetch_index_day(code, start, end, format='numpy', collections=QA_Setting().client.quantaxis.index_day):
     '获取指数日线'
     start = str(start)[0:10]
     end = str(end)[0:10]
@@ -214,7 +214,7 @@ def QA_fetch_index_day(code, start, end, format='numpy', collections=QA_Setting.
         QA_util_log_info('something wrong with date')
 
 
-def QA_fetch_indexlist_day(stock_list, date_range, collections=QA_Setting.client.quantaxis.index_day):
+def QA_fetch_indexlist_day(stock_list, date_range, collections=QA_Setting().client.quantaxis.index_day):
     '获取多个股票的日线'
     __data = []
     for item in stock_list:
@@ -228,7 +228,7 @@ def QA_fetch_index_min(
         start, end,
         format='numpy',
         dtype='1min',
-        collections=QA_Setting.client.quantaxis.index_min):
+        collections=QA_Setting().client.quantaxis.index_min):
     '获取股票分钟线'
     if dtype in ['1min', '1m']:
         dtype = '1min'
@@ -281,7 +281,7 @@ def QA_fetch_future_tick():
     pass
 
 
-def QA_fetch_stock_xdxr(code, format='pd', collections=QA_Setting.client.quantaxis.stock_xdxr):
+def QA_fetch_stock_xdxr(code, format='pd', collections=QA_Setting().client.quantaxis.stock_xdxr):
     '获取股票除权信息/数据库'
     data = pd.DataFrame([item for item in collections.find(
         {'code': code})]).drop(['_id'], axis=1)
@@ -290,16 +290,16 @@ def QA_fetch_stock_xdxr(code, format='pd', collections=QA_Setting.client.quantax
     # data['date']=data['date'].apply(lambda)
 
 
-def QA_fetch_backtest_info(user=None, account_cookie=None, strategy=None, stock_list=None, collections=QA_Setting.client.quantaxis.backtest_info):
+def QA_fetch_backtest_info(user=None, account_cookie=None, strategy=None, stock_list=None, collections=QA_Setting().client.quantaxis.backtest_info):
 
     return QA_util_to_json_from_pandas(pd.DataFrame([item for item in collections.find(QA_util_to_json_from_pandas(pd.DataFrame([user, account_cookie, strategy, stock_list], index=['user', 'account_cookie', 'strategy', 'stock_list']).dropna().T)[0])]).drop(['_id'], axis=1))
 
 
-def QA_fetch_backtest_history(cookie=None, collections=QA_Setting.client.quantaxis.backtest_history):
+def QA_fetch_backtest_history(cookie=None, collections=QA_Setting().client.quantaxis.backtest_history):
     return QA_util_to_json_from_pandas(pd.DataFrame([item for item in collections.find(QA_util_to_json_from_pandas(pd.DataFrame([cookie], index=['cookie']).dropna().T)[0])]).drop(['_id'], axis=1))
 
 
-def QA_fetch_stock_block(code=None, format='pd', collections=QA_Setting.client.quantaxis.stock_block):
+def QA_fetch_stock_block(code=None, format='pd', collections=QA_Setting().client.quantaxis.stock_block):
     if code is not None:
         data = pd.DataFrame([item for item in collections.find(
             {'code': code})]).drop(['_id'], axis=1)
@@ -310,7 +310,7 @@ def QA_fetch_stock_block(code=None, format='pd', collections=QA_Setting.client.q
         return data.set_index('code', drop=False)
 
 
-def QA_fetch_stock_info(code, format='pd', collections=QA_Setting.client.quantaxis.stock_info):
+def QA_fetch_stock_info(code, format='pd', collections=QA_Setting().client.quantaxis.stock_info):
     try:
         data = pd.DataFrame([item for item in collections.find(
             {'code': code})]).drop(['_id'], axis=1)
@@ -321,14 +321,14 @@ def QA_fetch_stock_info(code, format='pd', collections=QA_Setting.client.quantax
         return None
 
 
-def QA_fetch_stock_name(code, collections=QA_Setting.client.quantaxis.stock_list):
+def QA_fetch_stock_name(code, collections=QA_Setting().client.quantaxis.stock_list):
     try:
         return collections.find_one({'code': code})['name']
     except Exception as e:
         QA_util_log_info(e)
 
 
-def QA_fetch_quotation(code, db=QA_Setting.client.quantaxis):
+def QA_fetch_quotation(code, db=QA_Setting().client.quantaxis):
     try:
         collections = db.get_collection(
             'realtime_{}'.format(datetime.date.today()))
@@ -337,7 +337,7 @@ def QA_fetch_quotation(code, db=QA_Setting.client.quantaxis):
         raise e
 
 
-def QA_fetch_quotations(time=None, db=QA_Setting.client.quantaxis):
+def QA_fetch_quotations(time=None, db=QA_Setting().client.quantaxis):
 
     try:
         collections = db.get_collection(

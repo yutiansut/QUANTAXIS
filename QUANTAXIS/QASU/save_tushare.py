@@ -39,7 +39,7 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_log_info,
 from QUANTAXIS.QAUtil.QASetting import QA_Setting
 
 
-def QA_save_stock_day_all(client=QA_Setting.client):
+def QA_save_stock_day_all(client=QA_Setting().client):
     df = ts.get_stock_basics()
     __coll = client.quantaxis.stock_day
     __coll.ensure_index('code')
@@ -64,7 +64,7 @@ def QA_save_stock_day_all(client=QA_Setting.client):
     saving_work('sz50')
 
 
-def QA_SU_save_stock_list(client=QA_Setting.client):
+def QA_SU_save_stock_list(client=QA_Setting().client):
     data = QA_fetch_get_stock_list()
     date = str(datetime.date.today())
     date_stamp = QA_util_date_stamp(date)
@@ -73,19 +73,19 @@ def QA_SU_save_stock_list(client=QA_Setting.client):
                  'stock': {'code': data}})
 
 
-def QA_SU_save_trade_date_all(client=QA_Setting.client):
+def QA_SU_save_trade_date_all(client=QA_Setting().client):
     data = QA_fetch_get_trade_date('', '')
     coll = client.quantaxis.trade_date
     coll.insert_many(data)
 
 
-def QA_SU_save_stock_info(client=QA_Setting.client):
+def QA_SU_save_stock_info(client=QA_Setting().client):
     data = QA_fetch_get_stock_info('all')
     coll = client.quantaxis.stock_info
     coll.insert_many(data)
 
 
-def QA_save_stock_day_all_bfq(client=QA_Setting.client):
+def QA_save_stock_day_all_bfq(client=QA_Setting().client):
     df = ts.get_stock_basics()
 
     __coll = client.quantaxis.stock_day_bfq
@@ -111,7 +111,7 @@ def QA_save_stock_day_all_bfq(client=QA_Setting.client):
     saving_work('sz50')
 
 
-def QA_save_stock_day_with_fqfactor(client=QA_Setting.client):
+def QA_save_stock_day_with_fqfactor(client=QA_Setting().client):
     df = ts.get_stock_basics()
 
     __coll = client.quantaxis.stock_day
