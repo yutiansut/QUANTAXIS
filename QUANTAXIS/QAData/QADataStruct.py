@@ -138,6 +138,11 @@ class _quotation_base():
                 'date')]
 
     @property
+    def panel_gen(self):
+        for item in self.index.levels[0]:
+            yield self.data.xs(item,level=0)
+
+    @property
     def index(self):
         return self.data.index
 
