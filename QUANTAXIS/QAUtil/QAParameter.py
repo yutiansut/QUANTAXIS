@@ -208,6 +208,7 @@ class MARKET_EVENT:
 
 
 class ENGINE_EVENT:
+    """引擎事件"""
     MARKET_INIT = 'market_init'
     BAR_SETTLE = 'bar_settle'
     DAILY_SETTLE = 'daily_settle'
@@ -215,12 +216,15 @@ class ENGINE_EVENT:
 
 
 class ACCOUNT_EVENT:
+    """账户事件"""
     UPDATE = 'account_update'
     SETTLE = 'account_settle'
     MAKE_ORDER = 'account_make_order'
 
 
 class BROKER_EVENT:
+    """BROKER事件"""
+    LOAD_DATA = 'load_data'
     TRADE = 'broker_trade'
     SETTLE = 'broker_settle'
 
@@ -257,3 +261,31 @@ class MARKETDATA_TYPE:
     SIXTY_MIN = '60min'  # 60min bar
     CURRENT = 'current'  # 当前bar
     TICK = 'tick'  # transaction
+
+
+class SECURITY_TYPE:
+    '证券的种类'
+    STOCK_CN = 'stock_cn'  # 中国A股
+    STOCK_HK = 'stock_hk'  # 港股
+    STOCK_US = 'stock_us'  # 美股
+    FUTURE_CN = 'future_cn'  # 国内期货
+    OPTION_CN = 'option_cn'  # 国内期权
+    STOCKOPTION_CN = 'stockoption_cn'  # 个股期权
+    # BITCOIN = 'bitcoin'  # 比特币
+    CRYPTOCURRENCY = 'cryptocurrency'  # 加密货币(衍生货币)
+    INDEX_CN = 'index_cn'  # 中国指数
+    FUND_CN = 'fund_cn'   # 中国基金
+    BOND_CN = 'bond_cn'  # 中国债券
+
+
+class CURRENCY_TYPE:
+    """货币种类"""
+    RMB = 'rmb'  # 人民币
+    USD = 'usd'  # 美元
+    EUR = 'eur'  # 欧元
+    HKD = 'hkd'  # 港币
+    GBP = 'GBP'  # 英镑
+    BTC = 'btc'  # 比特币
+    JPY = 'jpy'  # 日元
+    AUD = 'aud'  # 澳元
+    CAD = 'cad'  # 加拿大元

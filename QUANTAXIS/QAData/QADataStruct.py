@@ -41,7 +41,6 @@ from functools import lru_cache, partial, reduce
 
 import numpy as np
 import pandas as pd
-import six
 from pyecharts import Kline
 
 from QUANTAXIS.QAData.data_fq import QA_data_stock_to_fq
@@ -50,16 +49,21 @@ from QUANTAXIS.QAData.proto import stock_day_pb2  # protobuf import
 from QUANTAXIS.QAData.proto import stock_min_pb2
 from QUANTAXIS.QAFetch.QATdx import QA_fetch_get_stock_realtime
 from QUANTAXIS.QAIndicator import EMA, HHV, LLV, SMA
-from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info, QA_util_to_pandas_from_json,
-                              QA_util_to_json_from_pandas, trade_date_sse)
+from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
+                              QA_util_random_with_topic,
+                              QA_util_to_json_from_pandas,
+                              QA_util_to_pandas_from_json, trade_date_sse)
+from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, MARKETDATA_TYPE
 
 
 class _quotation_base():
     '一个自适应股票/期货/指数的基础类'
 
-    def __init__(self, DataFrame, dtype='undefined', if_fq='bfq'):
+    def __init__(self, DataFrame, dtype='undefined', if_fq='bfq', marketdata_type='None'):
         self.data = DataFrame
+        self.data_type =dtype
         self.type = dtype
+        self.data_id = QA_util_random_with_topic('DATA',lens=3)
         self.if_fq = if_fq
         self.mongo_coll = eval(
             'QA_Setting.client.quantaxis.{}'.format(self.type))
@@ -69,78 +73,132 @@ class _quotation_base():
 
     def __call__(self):
         return self.data
+    def __str__(self):
+        return self.data
+    def __len__(self):
+        return len(self.index)
+    def __iter__(self):
+        """
+        iter the row one by one
+        """
+        for i in range(len(self.index)):
+            yield self.data.iloc[i]
+   
+    def __reversed__(self):
+        return self.reverse()
 
-    # 使用property进行惰性运算
+    def __add__(self,DataStruct):
+        assert isinstance(DataStruct,_quotation_base)
+        assert self.is_same(DataStruct)
+        return self.new(data=self.data.append(DataStruct.data).drop_duplicates(),dtype=self.type,if_fq=self.if_fq)
+
+    __radd__ = __add__
+
+    def __iadd__(self,DataStruct):
+        assert isinstance(DataStruct,_quotation_base)
+        assert self.is_same(DataStruct)
+        return self.append(DataStruct)
+
+    def __sub__(self, DataStruct):
+        assert isinstance(DataStruct,_quotation_base)
+        assert self.is_same(DataStruct)
+        return self.new(data=self.data.drop(DataStruct.index).drop_duplicates(),dtype=self.type,if_fq=self.if_fq)
+
+    __rsub__ = __sub__
+
+    def __isub__(self,DataStruct):
+        assert isinstance(DataStruct,_quotation_base)
+        assert self.is_same(DataStruct)
+        self.data.drop(DataStruct.index,inplace=True)
+        return self
 
     @property
     def open(self):
-        return self.data['open']
+        return self.data.open
 
     @property
     def high(self):
-        return self.data['high']
+        return self.data.high
 
     @property
     def low(self):
-        return self.data['low']
+        return self.data.low
 
     @property
     def close(self):
-        return self.data['close']
+        return self.data.close
 
     @property
     def vol(self):
         if 'volume' in self.data.columns:
-            return self.data['volume']
+            return self.data.volume
         elif 'vol' in self.data.columns:
-            return self.data['vol']
+            return self.data.vol
         else:
             return None
 
     @property
     def volume(self):
         if 'volume' in self.data.columns:
-            return self.data['volume']
+            return self.data.volume
         elif 'vol' in self.data.columns:
-            return self.data['vol']
+            return self.data.vol
         elif 'trade' in self.data.columns:
-            return self.data['trade']
+            return self.data.trade
         else:
             return None
 
     @property
     def trade(self):
         if 'trade' in self.data.columns:
-            return self.data['trade']
+            return self.data.trade
         else:
             return None
 
     @property
     def position(self):
         if 'position' in self.data.columns:
-            return self.data['position']
+            return self.data.position
         else:
             return None
 
     @property
     def date(self):
         try:
-            return self.data.index.levels[self.data.index.names.index(
-                'date')] if 'date' in self.data.index.names else self.data['date']
+            return self.data.index.levels[1] if 'date' in self.data.index.names else self.data['date']
         except:
             return None
 
     @property
     def datetime(self):
         '分钟线结构返回datetime 日线结构返回date'
-        return self.data.index.levels[self.data.index.names.index(
-            'datetime')] if 'datetime' in self.data.index.names else self.data.index.levels[self.data.index.names.index(
-                'date')]
+        return self.data.index.levels[1]
 
     @property
+    @lru_cache()
     def panel_gen(self):
         for item in self.index.levels[0]:
             yield self.data.xs(item,level=0)
+
+    @property
+    @lru_cache()
+    def security_gen(self):
+        for item in self.index.levels[1]:
+            yield self.data.xs(item,level=1)
+
+    @lru_cache()
+    def append(self,DataStruct):
+        assert isinstance(DataStruct,_quotation_base)
+        assert self.is_same(DataStruct)
+        self.data=self.data.append(DataStruct.data).drop_duplicates()
+        return self
+
+    @lru_cache()
+    def drop(self,DataStruct):
+        assert isinstance(DataStruct,_quotation_base)
+        assert self.is_same(DataStruct)
+        self.data.drop(DataStruct.index,inplace=True)
+        return self
 
     @property
     def index(self):
@@ -148,10 +206,9 @@ class _quotation_base():
 
     @property
     def code(self):
-        return self.data.index.levels[self.data.index.names.index('code')]
+        return self.data.index.levels[1]
 
     @property
-    @lru_cache()
     def dicts(self):
         return self.to_dict('index')
 
@@ -203,7 +260,7 @@ class _quotation_base():
     @lru_cache()
     def len(self):
         return len(self.data)
-
+    @lru_cache()
     def query(self, context):
         return self.data.query(context)
 
@@ -220,17 +277,13 @@ class _quotation_base():
         temp = copy(self)
         temp.__init__(data, dtype, if_fq)
         return temp
-
+    @lru_cache()
     def reverse(self):
         return self.new(self.data[::-1])
 
     @lru_cache()
     def show(self):
         return QA_util_log_info(self.data)
-
-    @lru_cache()
-    def query(self, query_text):
-        return self.data.query(query_text)
 
     @lru_cache()
     def to_list(self):
@@ -253,6 +306,12 @@ class _quotation_base():
         return self.data.to_dict(orient)
 
     @lru_cache()
+    def is_same(self,DataStruct):
+        if self.type==DataStruct.type and self.if_fq==DataStruct.if_fq:
+            return True
+        else:
+            return False
+    @lru_cache()
     def splits(self):
         if self.type[-3:] in ['day']:
             return list(map(lambda x: self.new(
@@ -265,7 +324,7 @@ class _quotation_base():
     def add_func(self, func, *arg, **kwargs):
         return list(map(lambda x: func(
             self.query('code=="{}"'.format(x)), *arg, **kwargs), self.code))
-
+    @lru_cache()
     def pivot(self, column_):
         '增加对于多列的支持'
         if isinstance(column_, str):
