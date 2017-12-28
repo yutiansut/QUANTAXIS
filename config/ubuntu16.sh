@@ -65,9 +65,9 @@ npm install cnpm -g
 
 cd ~/quantaxis/QUANTAXIS_Webkit/backend
 npm install
-forever start bin/www
+
 
 cd ~/quantaxis/QUANTAXIS_Webkit/web
 npm install
-forever start build/dev-server.js
+
 
