@@ -21,33 +21,25 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import asyncio
-import datetime
-import re
-import time
 
-import motor
 import pymongo
-from motor import motor_asyncio
-from motor.motor_asyncio import (AsyncIOMotorClient, AsyncIOMotorCollection,
-                                 AsyncIOMotorCommandCursor,
-                                 AsyncIOMotorDatabase)
+from motor.motor_asyncio import AsyncIOMotorClient
 
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 
 
 def QA_util_sql_mongo_setting(ip='127.0.0.1', port=27017):
-    QA_sql_mongo_client = pymongo.MongoClient(ip, int(port))
+    client = pymongo.MongoClient(ip, int(port))
     QA_util_log_info('ip:{},port:{}'.format(str(ip), str(port)))
-    return QA_sql_mongo_client
+    return client
 
 # async
 
 
 def QA_util_sql_async_mongo_setting(ip='127.0.0.1', port=27017):
-    QA_sql_async_mongo_client = AsyncIOMotorClient(ip, int(port))
+    client = AsyncIOMotorClient(ip, int(port))
     QA_util_log_info('ip:{},port{}'.format(str(ip), str(port)))
-    return QA_sql_async_mongo_client
+    return client
 
 
 QA_util_sql_mongo_sort_ASCENDING = pymongo.ASCENDING
