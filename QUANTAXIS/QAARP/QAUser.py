@@ -24,38 +24,35 @@
 
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 from QUANTAXIS.QAUtil.QASetting import QA_Setting
-from QUANTAXIS.QASU.user import QA_user_sign_in, QA_user_sign_up
+from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
+from QUANTAXIS.QASU.user import QA_user_sign_in
 from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
 
 class QA_User():
     def __init__(self, *args, **kwargs):
+        self.setting=QA_Setting()
 
-        self.user_name = ''
-        self.password = ''
-        self.db_uri = ''
-
-        self.session = {}
         self.portfolio_list = {}
+        self.user_cookie = QA_util_random_with_topic('USER')
 
     def client(self):
-        return QA_Setting.client
+        return self.setting.client
 
-    def login(self,user_name,password,ip,port):
-        if QA_user_sign_in(user_name, password, self.client):
-            self.user_name=user_name
-            self.password=password
-            self.client=
+    def connect_database(self,ip='127.0.0.1',port=27017):
+        self.setting.change(ip,port)
+
+    def login(self,user_name,password):
+        if self.setting.login(user_name,password):
+            QA_util_log_info('SUCCESS')
         else:
-            return False
-
-    def logout(self):
-        pass
-
-    def save(self):
-        self.db_uri
+            QA_util_log_info('FAILD')
+            
 
     def new_portfolio(self):
         _portfolio=QA_Portfolio()
-        self.portfolio_list[_portfolio.portfolio_cookie]=_portfolio
+        if _portfolio.portfolio_cookie not in self.portfolio_list.keys():
+            self.portfolio_list[_portfolio.portfolio_cookie]=_portfolio
+            
+        
     def get_portfolio(self, portfolio):
         return self.portfolio_list[portfolio]

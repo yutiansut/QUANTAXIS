@@ -21,9 +21,10 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import os
 
-from QUANTAXIS.QASU.user import QA_user_sign_in, QA_user_sign_up
+from functools import lru_cache
+
+from QUANTAXIS.QASU.user import QA_user_sign_in
 from QUANTAXIS.QAUtil import QA_util_log_info
 from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting
 
@@ -42,21 +43,21 @@ class QA_Setting():
         return QA_util_sql_mongo_setting(self.ip,self.port)
 
 
-    def change_ip(self, ip='127.0.0.1'):
-        self.QA_util_sql_mongo_ip = ip
-        self.client = QA_util_sql_mongo_setting(
-            self.ip, self.port)
+    def change(self, ip,port):
+        self.ip = ip
+        self.port=port
         return self
 
-    def login(self):
-
-        QA_util_log_info('username:' + str(self.username))
-        user = QA_user_sign_in(self.username, self.password, self.client)
-        if user is None:
-            QA_util_log_info('failed to login')
-            return None
+    def login(self,user_name,password):
+        user=QA_user_sign_in(user_name, password, self.client)
+        if user is not None:
+            self.user_name=user_name
+            self.password=password
+            self.user=user
+            return self.user
         else:
-            return user
+            return False
+
 
 
 info_ip_list = ['101.227.73.20', '101.227.77.254',

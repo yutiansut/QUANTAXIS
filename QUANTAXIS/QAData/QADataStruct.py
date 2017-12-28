@@ -66,7 +66,7 @@ class _quotation_base():
         self.data_id = QA_util_random_with_topic('DATA',lens=3)
         self.if_fq = if_fq
         self.mongo_coll = eval(
-            'QA_Setting.client.quantaxis.{}'.format(self.type))
+            'QA_Setting().client.quantaxis.{}'.format(self.type))
 
     def __repr__(self):
         return '< QA_Base_DataStruct with %s securities >' % len(self.code)
@@ -444,7 +444,7 @@ class QA_DataStruct_Stock_min(_quotation_base):
                 'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'date']]
         self.type = dtype
         self.if_fq = if_fq
-        self.mongo_coll = QA_Setting.client.quantaxis.stock_min
+        self.mongo_coll = QA_Setting().client.quantaxis.stock_min
 
     def __repr__(self):
         return '< QA_DataStruct_Stock_Min with {} securities >'.format(len(self.code))
@@ -482,7 +482,7 @@ class QA_DataStruct_future_day(_quotation_base):
         self.type = 'future_day'
         self.data = DataFrame.ix[:, [
             'code', 'open', 'high', 'low', 'close', 'trade', 'position', 'datetime', 'date']]
-        self.mongo_coll = QA_Setting.client.quantaxis.future_day
+        self.mongo_coll = QA_Setting().client.quantaxis.future_day
 
 
 class QA_DataStruct_future_min(_quotation_base):
@@ -490,7 +490,7 @@ class QA_DataStruct_future_min(_quotation_base):
         self.type = 'future_day'
         self.data = DataFrame.ix[:, [
             'code', 'open', 'high', 'low', 'close', 'trade', 'position', 'datetime', 'date']]
-        self.mongo_coll = QA_Setting.client.quantaxis.future_min
+        self.mongo_coll = QA_Setting().client.quantaxis.future_min
 
 
 class QA_DataStruct_Index_day(_quotation_base):
@@ -501,7 +501,7 @@ class QA_DataStruct_Index_day(_quotation_base):
         self.type = dtype
         self.if_fq = if_fq
         self.mongo_coll = eval(
-            'QA_Setting.client.quantaxis.{}'.format(self.type))
+            'QA_Setting().client.quantaxis.{}'.format(self.type))
     """
     def __add__(self,DataStruct):
         'add func with merge list and reindex'
@@ -522,7 +522,7 @@ class QA_DataStruct_Index_min(_quotation_base):
         self.if_fq = if_fq
         self.data = DataFrame.ix[:, [
             'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'date']]
-        self.mongo_coll = QA_Setting.client.quantaxis.index_min
+        self.mongo_coll = QA_Setting().client.quantaxis.index_min
 
     def __repr__(self):
         return '< QA_DataStruct_Index_Min with %s securities >' % len(self.code)
@@ -581,7 +581,7 @@ class QA_DataStruct_Stock_transaction():
     def __init__(self, DataFrame):
         self.type = 'stock_transaction'
         self.if_fq = 'None'
-        self.mongo_coll = QA_Setting.client.quantaxis.stock_transaction
+        self.mongo_coll = QA_Setting().client.quantaxis.stock_transaction
         self.buyorsell = DataFrame['buyorsell']
         self.price = DataFrame['price']
         if 'volume' in DataFrame.columns:

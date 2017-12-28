@@ -325,7 +325,7 @@ class QA_Backtest_with_class():
 
     def _make_slice(self):
 
-        QA_Setting.client.quantaxis.slice.insert({
+        QA_Setting().client.quantaxis.slice.insert({
             'cookie': self.account.account_cookie,
             'account_message': self.__messages,
             'account_d_value': self.account_d_value,
