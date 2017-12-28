@@ -143,8 +143,8 @@ from QUANTAXIS.QAIndicator import *
 #from QUANTAXIS.QAWeb import QA_Web
 # CMD and Cli
 import QUANTAXIS.QACmd
-
 from QUANTAXIS.QACmd import QA_cmd
+
 import argparse
 
 
