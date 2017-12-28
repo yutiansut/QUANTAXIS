@@ -3,7 +3,7 @@
   "version": "0.4.0-alpha",
   "private": true,
   "scripts": {
-    "build": "pkg . -t node8-win-x64 --out-path ./dist",
+    "build": "pkg . -t node8-win-x64,node8-win-x86 --out-path ./dist",
     "start": "node ./bin/www",
     "debug": "SET DEBUG=nodejsspider:*& npm start"
   },
