@@ -30,44 +30,33 @@ from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting
 
 class QA_Setting():
 
-    QA_util_sql_mongo_ip = os.getenv(
-        'MONGO_IP') if os.getenv('MONGO_IP') else '127.0.0.1'
-    QA_util_sql_mongo_port = os.getenv(
-        'MONGO_PORT') if os.getenv('MONGO_PORT') else '27017'
-    client = QA_util_sql_mongo_setting(
-        QA_util_sql_mongo_ip, QA_util_sql_mongo_port)
 
-    QA_setting_user_name = ''
-    QA_setting_user_password = ''
-    user = {'username': '', 'password': '', 'login': False}
+    def __init__(self, ip='127.0.0.1', port=27017):
+        self.ip=ip
+        self.port=port
+        self.username=None
+        self.password=None
 
-    def QA_setting_init(self, ip='127.0.0.1', port=27017):
-        self.QA_util_sql_mongo_ip = ip
-        self.QA_util_sql_mongo_port = port
-        self.client = QA_util_sql_mongo_setting(
-            self.QA_util_sql_mongo_ip, self.QA_util_sql_mongo_port)
+    @property
+    def client(self):
+        return QA_util_sql_mongo_setting(self.ip,self.port)
 
-        # return self
-        self.user = self.QA_setting_login()
 
-    def set_ip(self, ip='127.0.0.1'):
+    def change_ip(self, ip='127.0.0.1'):
         self.QA_util_sql_mongo_ip = ip
         self.client = QA_util_sql_mongo_setting(
-            self.QA_util_sql_mongo_ip, self.QA_util_sql_mongo_port)
+            self.ip, self.port)
         return self
 
-    def QA_setting_login(self):
-        self.username = self.QA_setting_user_name
-        self.password = self.QA_setting_user_password
-        QA_util_log_info('username:' + str(self.QA_setting_user_name))
-        result = QA_user_sign_in(self.username, self.password, self.client)
-        if result == True:
-            self.user['username'] = self.username
-            self.user['password'] = self.password
-            self.user['login'] = True
-            return self.user
-        else:
+    def login(self):
+
+        QA_util_log_info('username:' + str(self.username))
+        user = QA_user_sign_in(self.username, self.password, self.client)
+        if user is None:
             QA_util_log_info('failed to login')
+            return None
+        else:
+            return user
 
 
 info_ip_list = ['101.227.73.20', '101.227.77.254',

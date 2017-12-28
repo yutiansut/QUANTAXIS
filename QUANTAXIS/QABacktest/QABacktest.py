@@ -23,64 +23,43 @@
 # SOFTWARE.
 
 
-import configparser
-import csv
-import datetime
-import json
-import os
-import queue
-import random
-import re
-import sys
-import threading
-import time
-from functools import lru_cache, reduce, update_wrapper, wraps
-from statistics import mean
-from threading import Thread, Timer
-
-import apscheduler
-import numpy as np
-import pandas as pd
-import pymongo
-from tabulate import tabulate
-
-from QUANTAXIS import (QA_Portfolio, QA_Risk, __version__)
-from QUANTAXIS.QAARP.QAAccount import QA_Account
-from QUANTAXIS.QABacktest.backtest_setting import backtest_setting
-from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_backtest
-from QUANTAXIS.QAData import QA_DataStruct_Stock_day, QA_DataStruct_Stock_min
-from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_index_day, QA_fetch_index_min,
-                                       QA_fetch_stock_day, QA_fetch_stock_info,
-                                       QA_fetch_stocklist_day,
-                                       QA_fetch_trade_date)
-from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_index_day_adv,
-                                               QA_fetch_index_min_adv,
-                                               QA_fetch_stock_block_adv,
-                                               QA_fetch_stock_day_adv,
-                                               QA_fetch_stock_min_adv,
-                                               QA_fetch_stocklist_day_adv,
-                                               QA_fetch_stocklist_min_adv)
-from QUANTAXIS.QAMarket.QAOrder import QA_OrderQueue, QA_Order
 from QUANTAXIS.QAMarket.QAMarket import QA_Market
-from QUANTAXIS.QASU.save_backtest import (QA_SU_save_account_message,
-                                          QA_SU_save_account_to_csv,
-                                          QA_SU_save_backtest_message,
-                                          QA_SU_save_pnl_to_csv)
-from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_gap,
-                              QA_util_get_real_date, QA_util_log_expection,
-                              QA_util_log_info, QA_util_make_min_index,
-                              QA_util_random_with_topic, QA_util_time_gap,
-                              QA_util_to_json_from_pandas, trade_date_sse)
+from QUANTAXIS.QAMarket.QABacktestBroker import QA_BacktestBroker
 
+from QUANTAXIS.QAARP.QAUser import QA_User
+from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
+from QUANTAXIS.QAARP.QAAccount import QA_Account
 
-"""
-
-
-"""
 
 
 class QA_Backtest():
+    """BACKTEST
+    
+    BACKTEST的主要目的:
 
-    def __init__(self):
-        pass
+    - 引入时间轴环境,获取全部的数据,然后按生成器将数据迭代插入回测的BROKER
+        (这一个过程是模拟在真实情况中市场的时间变化和价格变化)
+
+    - BROKER有了新数据以后 会通知MARKET交易前置,MARKET告知已经注册的所有的ACCOUNT 有新的市场数据
+
+    - ACCOUNT 获取了新的市场函数,并将其插入他已有的数据中(update)
+
+    - ACCOUNT 底下注册的策略STRATEGY根据新的市场函数,产生新的买卖判断,综合生成信号
+
+    - 买卖判断通过交易前置发送给对应的BROKER,进行交易
+
+    - BROKER发送SETTLE指令 结束这一个bar的所有交易,进行清算
+
+    - 账户也进行清算,更新持仓,可卖,可用现金等
+
+    - 迭代循环直至结束回测
+
+    - 回测去计算这段时间的各个账户收益,并给出综合的最终结果
+
+    """
+    
+    def __init__(self,market_type,start,end,commission_fee,):
+        self.user=QA_User()
+        self.user.session
+        
  
