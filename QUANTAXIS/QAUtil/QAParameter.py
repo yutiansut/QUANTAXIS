@@ -200,16 +200,19 @@ class EVENT_TYPE:
 
 
 class MARKET_EVENT:
+    """交易前置事件"""
     QUERY_ORDER = 'query_order'
     QUERY_ASSETS = 'query_assets'
     QUERY_ACCOUNT = 'query_account'
     QUERY_CASH = 'query_cash'
     QUERY_DATA = 'query_data'
+    
 
 
 class ENGINE_EVENT:
     """引擎事件"""
     MARKET_INIT = 'market_init'
+    UPCOMING_DATA = 'upcoming_data'
     BAR_SETTLE = 'bar_settle'
     DAILY_SETTLE = 'daily_settle'
     UPDATE = 'update'

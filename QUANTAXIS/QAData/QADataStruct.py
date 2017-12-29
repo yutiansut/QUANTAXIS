@@ -54,6 +54,7 @@ from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
                               QA_util_to_json_from_pandas,
                               QA_util_to_pandas_from_json, trade_date_sse)
 from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, MARKETDATA_TYPE
+from QUANTAXIS.QAUtil.QADate import QA_util_to_datetime
 
 
 class _quotation_base():
@@ -209,6 +210,12 @@ class _quotation_base():
     @property
     def dicts(self):
         return self.to_dict('index')
+
+    def get_data(self, time, code):
+        try:
+            return self.dicts[(QA_util_to_datetime(time), str(code))]
+        except Exception as e:
+            raise e
 
     def plot(self, code=None):
         if code is None:
