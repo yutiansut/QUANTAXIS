@@ -103,7 +103,7 @@ class QA_Account(QA_Job):
         }
 
     def __repr__(self):
-        return '<QA_Account {} Assets:{}>'.format(self.account_cookie, self.assets[-1])
+        return '< QA_Account {} Assets:{} >'.format(self.account_cookie, self.assets[-1])
 
     @property
     def latest_assets(self):
