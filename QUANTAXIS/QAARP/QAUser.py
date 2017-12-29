@@ -31,9 +31,11 @@ from QUANTAXIS.QAUtil.QASetting import QA_Setting
 class QA_User():
     def __init__(self, *args, **kwargs):
         self.setting=QA_Setting()
-
         self.portfolio_list = {}
         self.user_cookie = QA_util_random_with_topic('USER')
+
+    def __repr__(self):
+        return '< QA_USER {} with {} portfolio >'.format(self.user_cookie,len(self.portfolio_list.keys()))
 
     def client(self):
         return self.setting.client
@@ -52,7 +54,19 @@ class QA_User():
         _portfolio=QA_Portfolio()
         if _portfolio.portfolio_cookie not in self.portfolio_list.keys():
             self.portfolio_list[_portfolio.portfolio_cookie]=_portfolio
+            return _portfolio.portfolio_cookie
             
         
     def get_portfolio(self, portfolio):
         return self.portfolio_list[portfolio]
+
+
+
+if __name__=='__main__':
+        user=QA_User()
+        portfolio1=user.new_portfolio()
+        ac1=user.get_portfolio(portfolio1).new_account()
+
+        print(user)
+        print(user.get_portfolio(portfolio1))
+        print(user.get_portfolio(portfolio1).get_account(ac1))

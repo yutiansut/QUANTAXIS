@@ -60,7 +60,9 @@ class QA_Backtest():
     
     def __init__(self,market_type,start,end,commission_fee,):
         self.user=QA_User()
-        self.user.new_portfolio()
+        portfolio=self.user.new_portfolio()
+        ac1=portfolio.new_account()
 
+        print()
         
  
