@@ -30,6 +30,11 @@ import pandas as pd
 
 
 def QA_util_to_json_from_pandas(data):
+    """需要对于datetime 和date 进行转换, 以免直接被变成了时间戳"""
+    if 'datetime' in data.columns:
+        data.datetime=data.datetime.apply(str)
+    if 'date' in data.columns:
+        data.date=data.date.apply(str)
     return json.loads(data.to_json(orient='records'))
 
 

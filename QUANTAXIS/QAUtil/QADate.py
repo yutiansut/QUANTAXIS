@@ -28,6 +28,7 @@ import threading
 import time
 
 from QUANTAXIS.QAUtil.QADate_trade import trade_date_sse
+from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 
 
 def QA_util_time_now():
@@ -44,6 +45,16 @@ def QA_util_date_str2int(date):
 
 def QA_util_date_int2str(date):
     return str(str(date)[0:4] + '-' + str(date)[4:6] + '-' + str(date)[6:8])
+
+
+def QA_util_to_datetime(time):
+    if len(str(time)) == 10:
+        _time = '{} 00:00:00'.format(time)
+    elif len(str(time)) == 19:
+        _time = str(time)
+    else:
+        QA_util_log_info('WRONG DATETIME FORMAT {}'.format(time))
+    return datetime.datetime.strptime(_time, '%Y-%m-%d %H:%M:%S')
 
 
 def QA_util_date_stamp(date):

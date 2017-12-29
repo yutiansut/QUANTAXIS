@@ -38,7 +38,7 @@ from QUANTAXIS.QAUtil.QACsv import QA_util_save_csv
 from QUANTAXIS.QAUtil.QADate import (QA_util_date_int2str, QA_util_date_stamp,
                                      QA_util_date_str2int, QA_util_date_today,
                                      QA_util_date_valid, QA_util_calc_time,
-                                     QA_util_get_date_index,
+                                     QA_util_get_date_index, QA_util_to_datetime,
                                      QA_util_get_index_date, QA_util_id2date,
                                      QA_util_is_trade, QA_util_ms_stamp,
                                      QA_util_realtime, QA_util_select_hours,
@@ -65,7 +65,7 @@ from QUANTAXIS.QAUtil.QAMongo import (QA_util_mongo_infos,
                                       QA_util_mongo_status)
 # Parameter
 from QUANTAXIS.QAUtil.QAParameter import (MARKET_TYPE, ORDER_STATUS, TRADE_STATUS,
-                                          ORDER_DIRECTION, ORDER_MODEL, ORDER_EVENT, MARKETDATA_TYPE,BROKER_TYPE,
+                                          ORDER_DIRECTION, ORDER_MODEL, ORDER_EVENT, MARKETDATA_TYPE, BROKER_TYPE,
                                           ACCOUNT_EVENT, BROKER_EVENT, EVENT_TYPE, MARKET_EVENT, ENGINE_EVENT,
                                           RUNNING_ENVIRONMENT, AMOUNT_MODEL, MARKET_ERROR)
 # RANDOM class

@@ -38,9 +38,9 @@ from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_future_day,
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.QADealer import QA_Dealer
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_TYPE,
+from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_TYPE, ENGINE_EVENT,
                                           MARKET_EVENT, MARKET_TYPE)
-
+from QUANTAXIS.QAUtil.QADate import QA_util_to_datetime
 
 class QA_BacktestBroker(QA_Broker):
     """
@@ -75,6 +75,7 @@ class QA_BacktestBroker(QA_Broker):
         self.market_data = None
         self.if_nondatabase = if_nondatabase
         self.name = BROKER_TYPE.BACKETEST
+        self._quotation = {}  # 一个可以缓存数据的dict
 
     def run(self, event):
         if event.event_type is MARKET_EVENT.QUERY_DATA:
@@ -90,6 +91,11 @@ class QA_BacktestBroker(QA_Broker):
                 event.callback(res)
             else:
                 return res
+        elif event.event_type is ENGINE_EVENT.UPCOMING_DATA:
+            new_marketdata_dict = event.market_data.dicts
+            for item in new_marketdata_dict.keys():
+                if item not in self._quotation.keys():
+                    self._quotation[item] = new_marketdata_dict[item]
 
     def receive_order(self, event):
         """
@@ -178,7 +184,7 @@ class QA_BacktestBroker(QA_Broker):
             order.amount = int(order.amount / (order.price * 100)) * \
                 100 if order.type in ['0x01', '0x02', '0x03'] else order.amount
             order.amount_model = AMOUNT_MODEL.BY_AMOUNT
-            
+
         elif order.amount_model in [AMOUNT_MODEL.BY_AMOUNT]:
             order.amount = int(
                 order.amount / 100) * 100 if order.type in ['0x01', '0x02', '0x03'] else order.amount
@@ -197,17 +203,21 @@ class QA_BacktestBroker(QA_Broker):
             [type] -- [description]
         """
 
-        try:
-            data = self.fetcher[order.type](
-                code=order.code, start=order.datetime, end=order.datetime, format='json')[0]
-            if 'vol' in data.keys() and 'volume' not in data.keys():
-                data['volume'] = data['vol']
-            elif 'vol' not in data.keys() and 'volume' in data.keys():
-                data['vol'] = data['volume']
+        #首先判断是否在_quotation里面
 
-            else:
-                pass
-            return data
-        except Exception as e:
-            QA_util_log_info('MARKET_ENGING ERROR: {}'.format(e))
-            return None
+        if (order.datetime,order.code) in self._quotation.keys():
+            return self._quotation[(QA_util_to_datetime(order.datetime),order.code)]
+
+        else:
+            try:
+                data = self.fetcher[order.type](
+                    code=order.code, start=order.datetime, end=order.datetime, format='json')[0]
+                if 'vol' in data.keys() and 'volume' not in data.keys():
+                    data['volume'] = data['vol']
+                elif 'vol' not in data.keys() and 'volume' in data.keys():
+                    data['vol'] = data['volume']
+                
+                return data
+            except Exception as e:
+                QA_util_log_info('MARKET_ENGING ERROR: {}'.format(e))
+                return None
