@@ -60,7 +60,11 @@ class QA_User():
     def get_portfolio(self, portfolio):
         return self.portfolio_list[portfolio]
 
-
+    def generate_simpleaccount(self):
+        if len(self.portfolio_list.keys())<1:
+            po=self.new_portfolio()
+            ac=self.get_portfolio(po).new_account()
+            return ac,po
 
 if __name__=='__main__':
         user=QA_User()

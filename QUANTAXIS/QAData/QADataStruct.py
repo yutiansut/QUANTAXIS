@@ -75,8 +75,7 @@ class _quotation_base():
     def __call__(self):
         return self.data
 
-    def __str__(self):
-        return self.data
+    __str__=__repr__
 
     def __len__(self):
         return len(self.index)
@@ -166,19 +165,19 @@ class _quotation_base():
     @property
     def date(self):
         try:
-            return self.data.index.levels[1] if 'date' in self.data.index.names else self.data['date']
+            return self.data.index.levels[0] if 'date' in self.data.index.names else self.data['date']
         except:
             return None
 
     @property
     def datetime(self):
         '分钟线结构返回datetime 日线结构返回date'
-        return self.data.index.levels[1]
+        return self.data.index.levels[0]
 
     @property
     def panel_gen(self):
         for item in self.index.levels[0]:
-            yield self.data.xs(item, level=0)
+            yield self.new(self.data.xs(item, level=0).set_index(self.index.names,drop=False),dtype=self.type,if_fq=self.if_fq)
 
     @property
     def security_gen(self):
@@ -417,7 +416,7 @@ class QA_DataStruct_Stock_day(_quotation_base):
 
     def __repr__(self):
         return '< QA_DataStruct_Stock_day with {} securities >'.format(len(self.code))
-
+    __str__=__repr__
     def to_qfq(self):
         if self.if_fq is 'bfq':
             if len(self.code) < 20:
@@ -455,7 +454,7 @@ class QA_DataStruct_Stock_min(_quotation_base):
 
     def __repr__(self):
         return '< QA_DataStruct_Stock_Min with {} securities >'.format(len(self.code))
-
+    __str__=__repr__
     def to_qfq(self):
         if self.if_fq is 'bfq':
             if len(self.code) < 20:
@@ -490,7 +489,9 @@ class QA_DataStruct_future_day(_quotation_base):
         self.data = DataFrame.ix[:, [
             'code', 'open', 'high', 'low', 'close', 'trade', 'position', 'datetime', 'date']]
         self.mongo_coll = QA_Setting().client.quantaxis.future_day
-
+    def __repr__(self):
+        return '< QA_DataStruct_Future_day with {} securities >'.format(len(self.code))
+    __str__=__repr__
 
 class QA_DataStruct_future_min(_quotation_base):
     def __init__(self, DataFrame, dtype='future_min', if_fq=''):
@@ -498,8 +499,9 @@ class QA_DataStruct_future_min(_quotation_base):
         self.data = DataFrame.ix[:, [
             'code', 'open', 'high', 'low', 'close', 'trade', 'position', 'datetime', 'date']]
         self.mongo_coll = QA_Setting().client.quantaxis.future_min
-
-
+    def __repr__(self):
+        return '< QA_DataStruct_Future_min with {} securities >'.format(len(self.code))
+    __str__=__repr__
 class QA_DataStruct_Index_day(_quotation_base):
     '自定义的日线数据结构'
 
@@ -519,7 +521,7 @@ class QA_DataStruct_Index_day(_quotation_base):
 
     def __repr__(self):
         return '< QA_DataStruct_Index_day with {} securities >'.format(len(self.code))
-
+    __str__=__repr__
 
 class QA_DataStruct_Index_min(_quotation_base):
     '自定义的分钟线数据结构'
@@ -534,7 +536,7 @@ class QA_DataStruct_Index_min(_quotation_base):
     def __repr__(self):
         return '< QA_DataStruct_Index_Min with %s securities >' % len(self.code)
 
-
+    __str__=__repr__
 class QA_DataStruct_Stock_block():
     def __init__(self, DataFrame):
         self.data = DataFrame
