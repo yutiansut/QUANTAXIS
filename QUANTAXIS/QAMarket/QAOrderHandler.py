@@ -25,7 +25,8 @@
 
 from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Job
 from QUANTAXIS.QAMarket.QAOrder import QA_OrderQueue
-from QUANTAXIS.QAUtil.QAParameter import BROKER_EVENT, EVENT_TYPE, ORDER_EVENT
+from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, EVENT_TYPE,
+                                          MARKET_EVENT, ORDER_EVENT)
 
 
 class QA_OrderHandler(QA_Job):
@@ -64,6 +65,7 @@ class QA_OrderHandler(QA_Job):
             order = self.order_queue.insert_order(event.order)
             if event.callback:
                 event.callback(order)
+                
         elif event.event_type is BROKER_EVENT.TRADE:
             for item in self.order_queue.trade_list:
                 res = event.broker.receive_order(
@@ -74,6 +76,9 @@ class QA_OrderHandler(QA_Job):
 
         elif event.event_type is BROKER_EVENT.SETTLE:
             self.order_queue.settle()
+        
+        elif event.event_type is MARKET_EVENT.QUERY_ORDER:
+            return self.query_order(event.order_id)
 
     def query_order(self, order_id):
         return self.order_queue.queue.query()
