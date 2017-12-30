@@ -148,8 +148,18 @@ class QA_Market(QA_Trade):
                     event=QA_Event(
                         event_type=ACCOUNT_EVENT.SETTLE)))
 
-    def query_order(self, order_id):
-        return self.order_handler.order_queue.query_order(order_id)
+    def query_order(self,broker_name, order_id):
+
+        res=self.event_queue.put(
+            QA_Task(
+                job=self.broker[broker_name],
+                engine=broker_name,
+                event=QA_Event(
+                    order_id=order_id
+                )
+            ))
+
+        return res
 
     def query_assets(self, account_cookie):
         return self.get_account(account_cookie).assets
@@ -222,7 +232,7 @@ class QA_Market(QA_Trade):
     def _settle(self, broker_name):
         # 向事件线程发送BROKER的SETTLE事件
         self.event_queue.put(QA_Task(
-            job=self.order_handler,
+            job=self.broker[broker_name],
             engine=broker_name,
             event=QA_Event(
                 event_type=BROKER_EVENT.SETTLE,

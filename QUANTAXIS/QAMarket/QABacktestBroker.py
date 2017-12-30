@@ -94,6 +94,8 @@ class QA_BacktestBroker(QA_Broker):
                 event.callback(res)
             else:
                 return res
+        elif event.event_type is MARKET_EVENT.QUERY_ORDER:
+            self.order_handler.run(event)
         elif event.event_type is ENGINE_EVENT.UPCOMING_DATA:
             new_marketdata_dict = event.market_data.dicts
             for item in new_marketdata_dict.keys():
@@ -102,6 +104,8 @@ class QA_BacktestBroker(QA_Broker):
         elif event.event_type is BROKER_EVENT.RECEIVE_ORDER:
             self.order_handler.run(event)
         elif event.event_type is BROKER_EVENT.TRADE:
+            self.order_handler.run(event)
+        elif event.event_type is BROKER_EVENT.SETTLE:
             self.order_handler.run(event)
 
     def receive_order(self, event):
