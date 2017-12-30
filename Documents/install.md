@@ -13,7 +13,7 @@
 <!-- /TOC -->
 ## 部署问题:
 
-- Windows/Linux(ubuntu) 已测试通过
+- Windows/Linux(ubuntu)/Mac 已测试通过
 - python3.6(开发环境) python2 回测框架不兼容(attention! 之后会逐步用更多高级语法)   [*] 如果需要交易,请下载32位的python3.6
 - nodejs 需要安装>7的版本,来支持es6语法
 - mongodb是必须要装的
@@ -21,13 +21,21 @@
 
 一个简易demo(需要先安装并启动mongodb,python版本需要大于3)
 
+
 ## 安装
+
 
 - WINDOWS安装 参见 [windows](install_for_windows.md)
 
 - Ubuntu安装 参见 [Ubuntu](install_for_ubuntu.md)
 
 - MAC 安装 参见 [MAC](install_for_mac.md)
+
+
+
+
+
+
 
 
 ## 启动QUANTAXIS CLI 并进行数据的初始化存储
