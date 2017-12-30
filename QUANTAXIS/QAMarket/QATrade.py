@@ -103,10 +103,10 @@ class QA_Trade():
     def on_query_position(self, *args, **kwargs):
         pass
 
-    def query_asset(self, *args, **kwargs):
+    def query_assets(self, *args, **kwargs):
         pass
 
-    def on_query_asset(self, *args, **kwargs):
+    def on_query_assets(self, *args, **kwargs):
         pass
 
     def query_data(self, *args, **kwargs):

@@ -35,7 +35,7 @@ from QUANTAXIS.QAMarket.QATrade import QA_Trade
 from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
                                           BROKER_EVENT, BROKER_TYPE,
                                           MARKET_EVENT, MARKETDATA_TYPE,
-                                          ORDER_EVENT)
+                                          ORDER_EVENT, ORDER_MODEL)
 
 
 class QA_Market(QA_Trade):
@@ -86,10 +86,11 @@ class QA_Market(QA_Trade):
         if account_cookie not in self.session.keys():
             self.session[account_cookie] = QA_Account(
                 account_cookie=account_cookie, broker_type=broker_name)
+            return True
         else:
             return False
 
-    def logout(self, account_cookie):
+    def logout(self, account_cookie,broker_name):
         if account_cookie not in self.session.keys():
             return False
         else:
@@ -144,13 +145,13 @@ class QA_Market(QA_Trade):
     def query_order(self, order_id):
         return self.order_handler.order_queue.query_order(order_id)
 
-    def query_asset(self, account_cookie):
+    def query_assets(self, account_cookie):
         return self.get_account(account_cookie).assets
 
-    def query_position(self, broker_name, account_cookie):
+    def query_position(self, account_cookie):
         return self.get_account(account_cookie).hold
 
-    def query_cash(self, broker_name, account_cookie):
+    def query_cash(self, account_cookie):
         return self.get_account(account_cookie).cash_available
 
     def query_data_no_wait(self, broker_name, data_type, market_type, code, start, end=None):
