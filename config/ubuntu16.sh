@@ -38,6 +38,8 @@ apt-get install libxml2-dev libxslt-dev
 apt-get install git
 cd ~
 git clone https://github.com/yutiansut/quantaxis
+# add some permission for quantaxis
+chmod -R 777 ./quantaxis
 cd ~/quantaxis
 python3.6 -m pip install pillow -i https://pypi.doubanio.com/simple
 python3.6 -m pip install -r requirements.txt -i https://pypi.doubanio.com/simple
