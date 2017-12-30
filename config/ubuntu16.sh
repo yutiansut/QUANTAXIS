@@ -39,6 +39,7 @@ apt-get install git
 cd ~
 git clone https://github.com/yutiansut/quantaxis
 cd ~/quantaxis
+python3.6 -m pip install pillow -i https://pypi.doubanio.com/simple
 python3.6 -m pip install -r requirements.txt -i https://pypi.doubanio.com/simple
 python3.6 -m pip install git+https://github.com/yutiansut/tushare
 pip install -e .
