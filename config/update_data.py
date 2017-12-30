@@ -1,4 +1,4 @@
-# coding:utf-8
+#coding :utf-8
 #
 # The MIT License (MIT)
 #
@@ -22,37 +22,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from datetime import time
+import datetime
+from QUANTAXIS import (QA_SU_save_etf_day, QA_SU_save_index_day,
+                       QA_SU_save_stock_block, QA_SU_save_stock_day,
+                       QA_SU_save_stock_list, QA_SU_save_stock_xdxr,
+                       QA_util_log_info)
 
-import pandas as pd
+QA_util_log_info('SAVE/UPDATE {}'.format(datetime.datetime.now()))
 
-from QUANTAXIS.QAFetch import QA_fetch_get_stock_transaction
-from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_make_min_index
-
-
-def QA_data_tick_resample(tick, type_='1min'):
-    data = tick['price'].resample(
-        type_, label='right', closed='left').ohlc()
-
-    data['volume'] = tick['vol'].resample(
-        type_, label='right', closed='left').sum()
-    data['code'] = tick['code'][0]
-
-    __data_ = pd.DataFrame()
-    _temp = tick.drop_duplicates('date')['date']
-    for item in _temp:
-        __data = data[item]
-        _data = __data[time(9, 31):time(11, 30)].append(
-            __data[time(13, 1):time(15, 0)])
-        __data_ = __data_.append(_data)
-
-    __data_['datetime'] = __data_.index
-    __data_['date'] = __data_['datetime'].apply(lambda x: str(x)[0:10])
-    
-    return __data_.fillna(method='ffill').set_index(['datetime', 'code'], drop=False)
-
-
-if __name__ == '__main__':
-    tick = QA_fetch_get_stock_transaction(
-        'tdx', '000001', '2017-01-03', '2017-01-05')
-    print(QA_data_tick_resample(tick))
+QA_SU_save_stock_day('tdx')
+QA_SU_save_stock_xdxr('tdx')
+QA_SU_save_etf_day('tdx')
+QA_SU_save_index_day('tdx')
+QA_SU_save_stock_list('tdx')
+QA_SU_save_stock_block('tdx')

@@ -114,7 +114,7 @@ def init():
     QB.strategy_stock_list = ['000001','000002','000004']
     QB.strategy_start_date = '2017-06-01 10:30:00'  # 回测开始日期
     QB.strategy_end_date = '2017-10-01'  # 回测结束日期
-    QB.backtest_print_log = False  # 是否在屏幕上输出结果
+    QB.backtest_print_log = True  # 是否在屏幕上输出结果
 
 
 @QB.before_backtest
