@@ -33,7 +33,8 @@ wget https://bootstrap.pypa.io/get-pip.py
 
 python3.6 get-pip.py
 
-apt-get install libxslt-devel libxml2-devel  
+
+apt-get install libxml2-dev libxslt-dev
 apt-get install git
 cd ~
 git clone https://github.com/yutiansut/quantaxis
