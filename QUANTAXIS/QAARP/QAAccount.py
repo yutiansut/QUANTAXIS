@@ -48,7 +48,7 @@ class QA_Account(QA_Job):
     # 一个hold改成list模式
 
     def __init__(self, strategy_name='', user='', account_type=MARKET_TYPE.STOCK_DAY,
-                 hold=None, broker_type=BROKER_TYPE.BACKETEST,
+                 hold=None, broker=BROKER_TYPE.BACKETEST,
                  sell_available=None,
                  init_assest=None, order_queue=None,
                  cash=None, history=None, detail=None, assets=None,
@@ -78,7 +78,7 @@ class QA_Account(QA_Job):
 
         self.history = [] if history is None else history
         self.detail = [] if detail is None else detail
-        self.broker_type = broker_type
+        self.broker = broker
         self.account_cookie = QA_util_random_with_topic(
             'Acc') if account_cookie is None else account_cookie
         self.message = {

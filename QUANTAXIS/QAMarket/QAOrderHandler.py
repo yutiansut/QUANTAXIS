@@ -59,7 +59,7 @@ class QA_OrderHandler(QA_Job):
         self.event = QA_Event()
 
     def run(self, event):
-        if event.event_type is ORDER_EVENT.CREATE:
+        if event.event_type is BROKER_EVENT.RECEIVE_ORDER:
             # 此时的message应该是订单类
             order = self.order_queue.insert_order(event.order)
             if event.callback:

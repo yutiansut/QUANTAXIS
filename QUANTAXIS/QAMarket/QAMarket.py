@@ -85,7 +85,7 @@ class QA_Market(QA_Trade):
 
         if account_cookie not in self.session.keys():
             self.session[account_cookie] = QA_Account(
-                account_cookie=account_cookie, broker_type=broker_name)
+                account_cookie=account_cookie, broker=broker_name)
             return True
         else:
             return False
@@ -122,11 +122,17 @@ class QA_Market(QA_Trade):
             # if price > self.last_query_data[0][2] or price < self.last_query_data[0][3]:
             flag = True
         if flag:
-            order = self.session[account_id].send_order(
+            order = self.get_account(account_id).send_order(
                 amount=amount, amount_model=amount_model, time=time, code=code, price=price,
                 order_model=order_model, towards=towards, market_type=market_type, data_type=data_type)
-            self.event_queue.put(QA_Task(job=self.order_handler, event=QA_Event(
-                event_type=ORDER_EVENT.CREATE, order=order, callback=self.on_insert_order)))
+            self.event_queue.put(
+                QA_Task(
+                    job=self.broker[self.get_account(account_id).broker], 
+                    engine=self.get_account(account_id).broker,
+                    event=QA_Event(
+                        event_type=BROKER_EVENT.RECEIVE_ORDER, 
+                        order=order, 
+                        callback=self.on_insert_order)))
         else:
             pass
 
@@ -206,7 +212,7 @@ class QA_Market(QA_Trade):
     def _trade(self, broker_name):
         "内部函数"
         self.event_queue.put(QA_Task(
-            job=self.order_handler,
+            job=self.broker[broker_name],
             engine=broker_name,
             event=QA_Event(
                 event_type=BROKER_EVENT.TRADE,
@@ -223,7 +229,7 @@ class QA_Market(QA_Trade):
                 broker=self.broker[broker_name])))
         # 向事件线程发送ACCOUNT的SETTLE事件
         for item in self.session.values():
-            if item.broker_type is broker_name:
+            if item.broker is broker_name:
                 self.event_queue.put(
                     QA_Task(
                         job=item,

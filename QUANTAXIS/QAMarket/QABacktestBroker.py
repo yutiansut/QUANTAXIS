@@ -37,10 +37,12 @@ from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_future_day,
                                      QA_fetch_get_stock_min)
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.QADealer import QA_Dealer
-from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_TYPE, ENGINE_EVENT,
-                                          MARKET_EVENT, MARKET_TYPE)
 from QUANTAXIS.QAUtil.QADate import QA_util_to_datetime
+from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
+from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_TYPE,
+                                          ENGINE_EVENT, MARKET_EVENT,
+                                          MARKET_TYPE, BROKER_EVENT)
+from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
 
 class QA_BacktestBroker(QA_Broker):
     """
@@ -63,6 +65,7 @@ class QA_BacktestBroker(QA_Broker):
         """
         super().__init__()
         self.dealer = QA_Dealer(commission_fee_coeff)
+        self.order_handler=QA_OrderHandler()
         self.engine = {
             MARKET_TYPE.STOCK_DAY: self.dealer.backtest_stock_dealer}
         self.fetcher = {MARKET_TYPE.STOCK_DAY: QA_fetch_stock_day, MARKET_TYPE.STOCK_MIN: QA_fetch_stock_min,
@@ -96,6 +99,10 @@ class QA_BacktestBroker(QA_Broker):
             for item in new_marketdata_dict.keys():
                 if item not in self._quotation.keys():
                     self._quotation[item] = new_marketdata_dict[item]
+        elif event.event_type is BROKER_EVENT.RECEIVE_ORDER:
+            self.order_handler.run(event)
+        elif event.event_type is BROKER_EVENT.TRADE:
+            self.order_handler.run(event)
 
     def receive_order(self, event):
         """
@@ -203,10 +210,10 @@ class QA_BacktestBroker(QA_Broker):
             [type] -- [description]
         """
 
-        #首先判断是否在_quotation里面
+        # 首先判断是否在_quotation里面
 
-        if (order.datetime,order.code) in self._quotation.keys():
-            return self._quotation[(QA_util_to_datetime(order.datetime),order.code)]
+        if (order.datetime, order.code) in self._quotation.keys():
+            return self._quotation[(QA_util_to_datetime(order.datetime), order.code)]
 
         else:
             try:
@@ -216,7 +223,7 @@ class QA_BacktestBroker(QA_Broker):
                     data['volume'] = data['vol']
                 elif 'vol' not in data.keys() and 'volume' in data.keys():
                     data['vol'] = data['volume']
-                
+
                 return data
             except Exception as e:
                 QA_util_log_info('MARKET_ENGING ERROR: {}'.format(e))
