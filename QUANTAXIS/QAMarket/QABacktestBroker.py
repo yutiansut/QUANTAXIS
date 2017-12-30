@@ -44,6 +44,7 @@ from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_TYPE,
                                           MARKET_TYPE, BROKER_EVENT)
 from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
 
+
 class QA_BacktestBroker(QA_Broker):
     """
     QUANTAXIS Broker 部分
@@ -65,7 +66,7 @@ class QA_BacktestBroker(QA_Broker):
         """
         super().__init__()
         self.dealer = QA_Dealer(commission_fee_coeff)
-        self.order_handler=QA_OrderHandler()
+        self.order_handler = QA_OrderHandler()
         self.engine = {
             MARKET_TYPE.STOCK_DAY: self.dealer.backtest_stock_dealer}
         self.fetcher = {MARKET_TYPE.STOCK_DAY: QA_fetch_stock_day, MARKET_TYPE.STOCK_MIN: QA_fetch_stock_min,
@@ -79,6 +80,7 @@ class QA_BacktestBroker(QA_Broker):
         self.if_nondatabase = if_nondatabase
         self.name = BROKER_TYPE.BACKETEST
         self._quotation = {}  # 一个可以缓存数据的dict
+        self.broker_data = None
 
     def run(self, event):
         if event.event_type is MARKET_EVENT.QUERY_DATA:
@@ -86,10 +88,14 @@ class QA_BacktestBroker(QA_Broker):
             code = event.code
             data_type = event.data_type
             start = event.start
-            end = event.start if event.end is None else event.end
+            end = start if event.end is None else event.end
             market_type = event.market_type
-            res = self.fetcher[market_type](
-                code, start, end, dtype=data_type)
+            try:
+                res = self.broker_data.select_time(
+                    start, end).select_code(code)
+            except:
+                res = self.fetcher[market_type](
+                    code, start, end, dtype=data_type)
             if event.callback:
                 event.callback(res)
             else:
@@ -101,6 +107,11 @@ class QA_BacktestBroker(QA_Broker):
             for item in new_marketdata_dict.keys():
                 if item not in self._quotation.keys():
                     self._quotation[item] = new_marketdata_dict[item]
+            if self.broker_data is None:
+                self.broker_data = event.market_data
+            else:
+                self.broker_data.append(event.market_data)
+            
         elif event.event_type is BROKER_EVENT.RECEIVE_ORDER:
             self.order_handler.run(event)
         elif event.event_type is BROKER_EVENT.TRADE:

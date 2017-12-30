@@ -23,18 +23,20 @@
 # SOFTWARE.
 
 
-from QUANTAXIS.QAMarket.QAMarket import QA_Market
-from QUANTAXIS.QAMarket.QABacktestBroker import QA_BacktestBroker
-
-from QUANTAXIS.QAARP.QAUser import QA_User
-from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
 from QUANTAXIS.QAARP.QAAccount import QA_Account
-
+from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
+from QUANTAXIS.QAARP.QAUser import QA_User
+from QUANTAXIS.QAEngine.QAEvent import QA_Event
+from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_day_adv
+from QUANTAXIS.QAMarket.QABacktestBroker import QA_BacktestBroker
+from QUANTAXIS.QAMarket.QAMarket import QA_Market
+from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, BROKER_TYPE, MARKET_TYPE,
+                                          ENGINE_EVENT, MARKETDATA_TYPE)
 
 
 class QA_Backtest():
     """BACKTEST
-    
+
     BACKTEST的主要目的:
 
     - 引入时间轴环境,获取全部的数据,然后按生成器将数据迭代插入回测的BROKER
@@ -57,12 +59,44 @@ class QA_Backtest():
     - 回测去计算这段时间的各个账户收益,并给出综合的最终结果
 
     """
-    
-    def __init__(self,market_type,start,end,commission_fee,):
-        self.user=QA_User()
-        portfolio=self.user.new_portfolio()
-        ac1=portfolio.new_account()
 
-        print()
-        
- 
+    def __init__(self, market_type, start, end, code_list, commission_fee,):
+        self.user = QA_User()
+
+        ac, po = self.user.generate_simpleaccount()
+        print(ac)
+        self.market = QA_Market()
+        self.market.start()
+        self.market.connect(BROKER_TYPE.BACKETEST)
+        print(self.market)
+        self.broker = QA_BacktestBroker(commission_fee)
+        self.start = start
+        self.end = end
+        self.code_list = code_list
+        self.ingest_data = QA_fetch_stock_day_adv(
+            code_list, start, end).panel_gen
+
+    def run(self):
+        data = next(self.ingest_data)
+        self.market.running_time=str(data.date[0])[0:10]
+        print(data)
+        self.broker.run(QA_Event(
+            event_type=ENGINE_EVENT.UPCOMING_DATA,
+            market_data=data))
+        print(self.broker._quotation)
+        print(self.broker.broker_data)
+
+        # print(self.market.query_currentbar(
+        #     broker_name=BROKER_TYPE.BACKETEST,
+        #     market_type=MARKET_TYPE,
+        #     code=self.code_list[0]))
+
+
+if __name__ == '__main__':
+    backtest = QA_Backtest(market_type=MARKET_TYPE.STOCK_DAY,
+                           start='2017-01-01',
+                           end='2017-01-31',
+                           code_list=['000001','600010'],
+                           commission_fee=0.00015)
+    backtest.run()
+    backtest.run()
