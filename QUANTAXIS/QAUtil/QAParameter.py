@@ -230,6 +230,8 @@ class BROKER_EVENT:
     LOAD_DATA = 'load_data'
     TRADE = 'broker_trade'
     SETTLE = 'broker_settle'
+    RECEIVE_ORDER = 'receive_order'
+    
 
 
 class ORDER_EVENT:
