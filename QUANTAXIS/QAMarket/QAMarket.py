@@ -51,7 +51,6 @@ class QA_Market(QA_Trade):
     def __init__(self, *args, **kwargs):
         super().__init__()
         self.session = {}
-        self.order_handler = QA_OrderHandler()
         self._broker = {BROKER_TYPE.BACKETEST: QA_BacktestBroker, BROKER_TYPE.RANODM: QA_RandomBroker,
                         BROKER_TYPE.REAL: QA_RealBroker, BROKER_TYPE.SIMULATION: QA_SimulatedBroker}
 
