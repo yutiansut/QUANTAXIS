@@ -29,7 +29,7 @@ import pandas as pd
 from QUANTAXIS.QAEngine.QAEvent import QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_Order
 from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
-                                          BROKER_TYPE, MARKET_TYPE,
+                                          BROKER_TYPE, MARKET_TYPE, ENGINE_EVENT,
                                           ORDER_DIRECTION)
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
@@ -409,8 +409,11 @@ class QA_Account(QA_Worker):
             self.receive_deal(event.message)
         elif event.event_type is ACCOUNT_EVENT.MAKE_ORDER:
             pass
+        elif event.event_type is ENGINE_EVENT.UPCOMING_DATA:
+            pass
 
-
+    def load_strategy(self,strategy):
+        self.strategy=strategy
 class QA_Account_min(QA_Account):
     pass
 

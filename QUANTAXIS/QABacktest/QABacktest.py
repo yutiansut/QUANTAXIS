@@ -108,7 +108,7 @@ class QA_Backtest():
             )
         self.market._trade(self.broker_name)
         self.market._settle(self.broker_name, callback=self.if_settle)
-        # yield self.user
+
 
     def if_settle(self, data):
         if data is 'settle':
