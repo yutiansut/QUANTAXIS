@@ -1,0 +1,10 @@
+exclude:
+- /QUANTAXIS/QAData/proto/.*
+- /QUANTAXIS_Trade/.*
+- /QUANTAXIS_Webkit/.*
+component_depth: 1
+languages:
+- csharp
+- javascript
+- python
+- script

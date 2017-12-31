@@ -21,13 +21,21 @@
 
 一个简易demo(需要先安装并启动mongodb,python版本需要大于3)
 
+
 ## 安装
+
 
 - WINDOWS安装 参见 [windows](install_for_windows.md)
 
 - Ubuntu安装 参见 [Ubuntu](install_for_ubuntu.md)
 
 - MAC 安装 参见 [MAC](install_for_mac.md)
+
+
+
+
+
+
 
 
 ## 启动QUANTAXIS CLI 并进行数据的初始化存储
