@@ -61,6 +61,12 @@ class QA_Market(QA_Trade):
     def __repr__(self):
         return '< QA_MARKET with {} Broker >'.format(list(self.broker.keys()))
 
+    def time_change(self, time, callback=False):
+        self.running_time = time
+        self.event_queue.put(QA_Task(
+            worker=
+        ))
+
     def start(self):
         self.trade_engine.start()
         # self.trade_engine.create_kernal('MARKET')
@@ -263,7 +269,6 @@ class QA_Market(QA_Trade):
                 event_type=BROKER_EVENT.SETTLE,
                 broker=self.broker[broker_name],
                 callback=callback)))
-
 
     def _close(self):
         pass
