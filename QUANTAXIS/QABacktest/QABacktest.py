@@ -30,9 +30,10 @@ from QUANTAXIS.QAEngine.QAEvent import QA_Event
 from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_day_adv
 from QUANTAXIS.QAMarket.QABacktestBroker import QA_BacktestBroker
 from QUANTAXIS.QAMarket.QAMarket import QA_Market
-from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, BROKER_TYPE,
-                                          ENGINE_EVENT, MARKET_TYPE,
-                                          MARKETDATA_TYPE)
+from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT,
+                                          BROKER_TYPE, ENGINE_EVENT,
+                                          MARKET_TYPE, MARKETDATA_TYPE,
+                                          ORDER_DIRECTION, ORDER_MODEL)
 
 
 class QA_Backtest():
@@ -63,7 +64,7 @@ class QA_Backtest():
 
     def __init__(self, market_type, start, end, code_list, commission_fee,):
         self.user = QA_User()
-
+        self.if_settled = False
         ac, po = self.user.generate_simpleaccount()
         print(ac)
         self.market = QA_Market()
@@ -74,7 +75,8 @@ class QA_Backtest():
         self.broker_name = 'backtest_broker'
         self.market.register(self.broker_name, self.broker)
         print(self.market)
-        self.market.login(ac, self.broker_name)
+        self.market.login(self.broker_name, ac,
+                          self.user.get_portfolio(po).get_account(ac))
         self.start = start
         self.end = end
         self.code_list = code_list
@@ -95,6 +97,31 @@ class QA_Backtest():
             broker_name=self.broker_name,
             market_type=MARKET_TYPE,
             code=self.code_list[0]))
+        print(self.market.get_account_id())
+        for ac in self.market.get_account_id():
+            self.market.insert_order(
+                account_id=ac, amount=1000, amount_model=AMOUNT_MODEL.BY_AMOUNT,
+                time=self.market.running_time, code=self.code_list[0], price=0,
+                order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.BUY,
+                market_type=MARKET_TYPE.STOCK_DAY, data_type=MARKETDATA_TYPE.DAY,
+                broker_name=self.broker_name
+            )
+        self.market._trade(self.broker_name)
+        self.market._settle(self.broker_name, callback=self.if_settle)
+        # yield self.user
+
+    def if_settle(self, data):
+        if data is 'settle':
+            self.if_settled = True
+            self.risk_control()
+
+    def risk_control(self):
+        if self.if_settled:
+            for po in self.user.portfolio_list.keys():
+                for ac in self.user.get_portfolio(po).accounts.keys():
+                    accounts = self.user.get_portfolio(po).get_account(ac)
+                    print(accounts.assets)
+                    print(accounts.cash)
 
         # print(self.market.query_data)
 
@@ -106,4 +133,4 @@ if __name__ == '__main__':
                            code_list=['000001', '600010'],
                            commission_fee=0.00015)
     backtest.run()
-    backtest.run()
+    # backtest.run()
