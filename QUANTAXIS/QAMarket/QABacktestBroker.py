@@ -103,7 +103,7 @@ class QA_BacktestBroker(QA_Broker):
         elif event.event_type is MARKET_EVENT.QUERY_ORDER:
             self.order_handler.run(event)
         elif event.event_type is ENGINE_EVENT.UPCOMING_DATA:
-            new_marketdata_dict = event.market_data.dicts
+            new_marketdata_dict = event.market_data.dicts   
             for item in new_marketdata_dict.keys():
                 if item not in self._quotation.keys():
                     self._quotation[item] = new_marketdata_dict[item]
@@ -116,6 +116,8 @@ class QA_BacktestBroker(QA_Broker):
             self.order_handler.run(event)
         elif event.event_type is BROKER_EVENT.TRADE:
             self.order_handler.run(event)
+            if event.callback:
+                event.callback('trade')
         elif event.event_type is BROKER_EVENT.SETTLE:
             self.order_handler.run(event)
             if event.callback:

@@ -63,9 +63,8 @@ class QA_Market(QA_Trade):
 
     def time_change(self, time, callback=False):
         self.running_time = time
-        self.event_queue.put(QA_Task(
-            worker=
-        ))
+        # self.event_queue.put(QA_Task(
+        #     worker=pass))
 
     def start(self):
         self.trade_engine.start()
@@ -286,3 +285,4 @@ if __name__ == '__main__':
     market = QA_Market()
 
     market.connect(QA.RUNNING_ENVIRONMENT.BACKETEST)
+    #
