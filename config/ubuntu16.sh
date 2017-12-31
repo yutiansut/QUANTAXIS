@@ -34,10 +34,14 @@ wget https://bootstrap.pypa.io/get-pip.py
 python3.6 get-pip.py
 
 
+apt-get install libxml2-dev libxslt-dev
 apt-get install git
 cd ~
 git clone https://github.com/yutiansut/quantaxis
+# add some permission for quantaxis
+chmod -R 777 ./quantaxis
 cd ~/quantaxis
+python3.6 -m pip install pillow -i https://pypi.doubanio.com/simple
 python3.6 -m pip install -r requirements.txt -i https://pypi.doubanio.com/simple
 python3.6 -m pip install git+https://github.com/yutiansut/tushare
 pip install -e .
@@ -55,7 +59,7 @@ apt-get install -y mongodb-org --allow-unauthenticated
 # 开启MongoDB服务
 service mongod start
 
-
+apt-get install curl
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 apt-get install -y nodejs
 apt-get install npm
