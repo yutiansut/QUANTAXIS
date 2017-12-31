@@ -92,7 +92,7 @@ class QA_BacktestBroker(QA_Broker):
             market_type = event.market_type
             try:
                 res = self.broker_data.select_time(
-                    start, end).select_code(code)
+                    start, end).select_code(code).to_numpy()
             except:
                 res = self.fetcher[market_type](
                     code, start, end, dtype=data_type)
@@ -118,6 +118,8 @@ class QA_BacktestBroker(QA_Broker):
             self.order_handler.run(event)
         elif event.event_type is BROKER_EVENT.SETTLE:
             self.order_handler.run(event)
+            if event.callback:
+                event.callback('settle')
 
     def receive_order(self, event):
         """
