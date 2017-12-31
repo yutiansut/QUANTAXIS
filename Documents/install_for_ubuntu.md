@@ -18,7 +18,7 @@
 ## 一键部署
 
 ```
-wget https://github.com/yutiansut/QUANTAXIS/blob/master/config/ubuntu16.sh
+wget https://raw.githubusercontent.com/yutiansut/QUANTAXIS/master/config/ubuntu16.sh
 sudo bash ./ubuntu16.sh
 ```
 

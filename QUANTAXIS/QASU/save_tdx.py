@@ -109,6 +109,7 @@ def QA_SU_save_stock_xdxr(client=QA_Setting().client):
                     QA_fetch_get_stock_xdxr(str(code))))
 
         except:
+
             err.append(str(code))
     for i_ in range(len(stock_list)):
         #__saving_work('000001')
@@ -119,8 +120,20 @@ def QA_SU_save_stock_xdxr(client=QA_Setting().client):
     if len(err) < 1:
         QA_util_log_info('SUCCESS')
     else:
-        QA_util_log_info('ERROR CODE \n ')
-        QA_util_log_info(err)
+
+        try_code=err
+        err=[]
+        QA_util_log_info('Try to get stock xdxr info in erro list! \n')
+        for i__ in range(len(try_code)):         
+            QA_util_log_info('The %s of Total %s' % (i__, len(try_code)))
+            QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(float(i__ / len(try_code) * 100))[0:4] + '%')
+            __saving_work(try_code[i__], coll)
+        if len(err) < 1:
+            QA_util_log_info('SUCCESS')
+        else:
+            QA_util_log_info('ERROR CODE \n ')
+            QA_util_log_info(err)
+
 
 
 def QA_SU_save_stock_min(client=QA_Setting().client):
