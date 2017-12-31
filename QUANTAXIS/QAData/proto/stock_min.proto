@@ -1,0 +1,16 @@
+syntax="proto3";
+message stock_min{
+ string code=1;
+ float open=2;
+ float high=3;
+ float low=4;
+ float close=5;
+ float volume=6;
+ string date =7;
+ float amount=8;
+ string date_stamp=9;
+ string datetime =10;
+ string time_stamp =11;
+ string message=12;
+
+}

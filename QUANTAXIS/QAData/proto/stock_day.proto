@@ -1,0 +1,18 @@
+syntax = "proto3";
+service SearchService {
+  rpc Search (stock_day) returns (stock_day);
+}
+message stock_day{
+    string code=1;// code
+    float open=2;
+    float high=3;
+    float low=4;
+    float close=5;
+    float volume=6;
+    string date =7;
+    float amount=8;
+    string date_stamp=9;
+    float preclose=10;//fq data
+    float adj=11;//fq data
+
+}

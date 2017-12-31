@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+//import "stock_day.proto";
+// .\protoc.exe --python_out .  --proto_path . --grpc_out . --plugin=protoc-gen-grpc=.\grpc_csharp_plugin.exe .\stock_hq.proto
+//import "stock_min.proto";
+
+package stock_hq;
+
+service StockHQService {
+
+    rpc QA_fetch_p2p (query_struct) returns (hq_struct);
+    rpc QA_fetch_p2s (query_struct) returns (stream hq_struct);
+    rpc QA_fetch_s2s (stream query_struct) returns (stream hq_struct);
+    rpc QA_fetch_s2p (stream query_struct) returns (hq_struct);
+    //rpc RouteChat (stream long) returns (stream long_hq);
+  }
+  
+
+
+message query_struct{
+  string type =1;
+  string code =2;
+  string message=3;
+}
+
+
+
+message hq_struct{
+ string code=1; 
+ float open=2;
+ float high=3;
+ float low=4;
+ float close=5;
+ float volume=6;
+ string date =7;
+ float amount=8;
+ string date_stamp=9;
+ string datetime =10;
+ string time_stamp =11;
+ string message = 12;
+
+}
