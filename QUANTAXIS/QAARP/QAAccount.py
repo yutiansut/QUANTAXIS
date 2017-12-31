@@ -26,7 +26,7 @@ import datetime
 
 import pandas as pd
 
-from QUANTAXIS.QAEngine.QAEvent import QA_Job
+from QUANTAXIS.QAEngine.QAEvent import QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_Order
 from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
                                           BROKER_TYPE, MARKET_TYPE,
@@ -36,7 +36,7 @@ from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 # 2017/6/4修改: 去除总资产的动态权益计算
 
 
-class QA_Account(QA_Job):
+class QA_Account(QA_Worker):
     """[QA_Account]
 
     [description]

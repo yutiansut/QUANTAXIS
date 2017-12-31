@@ -29,8 +29,8 @@ from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 
 class QA_Task():
-    def __init__(self, job, event, engine=None, callback=False):
-        self.job = job
+    def __init__(self, worker, event, engine=None, callback=False):
+        self.worker = worker
         self.event = event
         self.res = None
         self.callback = callback
@@ -38,7 +38,7 @@ class QA_Task():
         self.engine = engine
 
     def do(self):
-        self.res = self.job.run(self.event)
+        self.res = self.worker.run(self.event)
         if self.callback:
             self.callback(self.res)
 
@@ -47,7 +47,7 @@ class QA_Task():
         # return {
         #     'task_id': self.task_id,
         #     'result': self.res,
-        #     'job': self.job,
+        #     'worker': self.worker,
         #     'event': self.event
         # }
         return {

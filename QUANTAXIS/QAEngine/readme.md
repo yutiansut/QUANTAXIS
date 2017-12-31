@@ -4,14 +4,14 @@
 QUANTAXIS ENGINE 由三个部分组成:
 
 ```
-QA_Job/QAEvent
+QA_Worker/QAEvent
 
 QA_Task
 
 QA_Thread / QA_Engine
 ```
 
-QA_JOB是做事情的主体,主体根据相应的事件(QA_Event),在实际的应用中,QA_Job 是需要被继承,并修改run()方法的
+QA_Worker是做事情的主体,主体根据相应的事件(QA_Event),在实际的应用中,QA_Worker 是需要被继承,并修改run()方法的
 
 QA_Task是主体在某一个时间点做的事件,他被放置于QA_Engine/QA_Thread的事件队列中
 
