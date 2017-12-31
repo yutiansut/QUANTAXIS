@@ -26,11 +26,11 @@ import datetime
 
 import pandas as pd
 
-from QUANTAXIS.QAEngine.QAEvent import QA_Worker
+from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_Order
 from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
-                                          BROKER_TYPE, MARKET_TYPE, ENGINE_EVENT,
-                                          ORDER_DIRECTION)
+                                          BROKER_TYPE, ENGINE_EVENT,
+                                          MARKET_TYPE, ORDER_DIRECTION)
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 # 2017/6/4修改: 去除总资产的动态权益计算
@@ -101,6 +101,7 @@ class QA_Account(QA_Worker):
                 'running_time': str(datetime.datetime.now())
             }
         }
+        self.strategy = None
 
     def __repr__(self):
         return '< QA_Account {} Assets:{} >'.format(self.account_cookie, self.assets[-1])
@@ -410,12 +411,19 @@ class QA_Account(QA_Worker):
         elif event.event_type is ACCOUNT_EVENT.MAKE_ORDER:
             pass
         elif event.event_type is ENGINE_EVENT.UPCOMING_DATA:
-            pass
+            self.strategy.run(event)
 
-    def load_strategy(self,strategy):
-        self.strategy=strategy
-class QA_Account_min(QA_Account):
-    pass
+    def load_strategy(self, strategy):
+        self.strategy = strategy
+
+
+def strategy(QA_Worker):
+    def __init__(self):
+        super().__init__()
+
+    def run(self, event):
+        if event.event_type is ENGINE_EVENT.UPCOMING_DATA:
+            print(event.data)
 
 
 if __name__ == '__main__':
