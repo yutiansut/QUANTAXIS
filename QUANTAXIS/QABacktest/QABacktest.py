@@ -30,8 +30,9 @@ from QUANTAXIS.QAEngine.QAEvent import QA_Event
 from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_day_adv
 from QUANTAXIS.QAMarket.QABacktestBroker import QA_BacktestBroker
 from QUANTAXIS.QAMarket.QAMarket import QA_Market
-from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, BROKER_TYPE, MARKET_TYPE,
-                                          ENGINE_EVENT, MARKETDATA_TYPE)
+from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, BROKER_TYPE,
+                                          ENGINE_EVENT, MARKET_TYPE,
+                                          MARKETDATA_TYPE)
 
 
 class QA_Backtest():
@@ -67,9 +68,13 @@ class QA_Backtest():
         print(ac)
         self.market = QA_Market()
         self.market.start()
-        self.market.connect(BROKER_TYPE.BACKETEST)
-        print(self.market)
+        # self.market.connect(BROKER_TYPE.BACKETEST)
+
         self.broker = QA_BacktestBroker(commission_fee)
+        self.broker_name = 'backtest_broker'
+        self.market.register(self.broker_name, self.broker)
+        print(self.market)
+        self.market.login(ac, self.broker_name)
         self.start = start
         self.end = end
         self.code_list = code_list
@@ -78,7 +83,7 @@ class QA_Backtest():
 
     def run(self):
         data = next(self.ingest_data)
-        self.market.running_time=str(data.date[0])[0:10]
+        self.market.running_time = str(data.date[0])[0:10]
         print(data)
         self.broker.run(QA_Event(
             event_type=ENGINE_EVENT.UPCOMING_DATA,
@@ -86,17 +91,19 @@ class QA_Backtest():
         print(self.broker._quotation)
         print(self.broker.broker_data)
 
-        # print(self.market.query_currentbar(
-        #     broker_name=BROKER_TYPE.BACKETEST,
-        #     market_type=MARKET_TYPE,
-        #     code=self.code_list[0]))
+        print(self.market.query_currentbar(
+            broker_name=self.broker_name,
+            market_type=MARKET_TYPE,
+            code=self.code_list[0]))
+
+        # print(self.market.query_data)
 
 
 if __name__ == '__main__':
     backtest = QA_Backtest(market_type=MARKET_TYPE.STOCK_DAY,
                            start='2017-01-01',
                            end='2017-01-31',
-                           code_list=['000001','600010'],
+                           code_list=['000001', '600010'],
                            commission_fee=0.00015)
     backtest.run()
     backtest.run()
