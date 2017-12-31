@@ -62,7 +62,7 @@ class QA_Thread(threading.Thread):
                     if self.queue.empty() is False:
                         _task = self.queue.get()  # 接收消息
                         assert isinstance(_task, QA_Task)
-                        if _task.job != None:
+                        if _task.worker != None:
 
                             _task.do()
 

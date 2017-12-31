@@ -76,7 +76,14 @@ class QA_Market(QA_Trade):
             return True
         else:
             return False
-
+    def register(self,broker_name,broker):
+        if broker_name not in self._broker.keys():
+            self.broker[broker_name]=broker
+            self.trade_engine.create_kernal('{}'.format(broker_name))
+            self.trade_engine.start_kernal('{}'.format(broker_name))
+            return True
+        else:
+            return False
     def get_account(self, account_cookie):
         return self.session[account_cookie]
 
@@ -126,7 +133,7 @@ class QA_Market(QA_Trade):
                 order_model=order_model, towards=towards, market_type=market_type, data_type=data_type)
             self.event_queue.put(
                 QA_Task(
-                    job=self.broker[self.get_account(account_id).broker], 
+                    worker=self.broker[self.get_account(account_id).broker], 
                     engine=self.get_account(account_id).broker,
                     event=QA_Event(
                         event_type=BROKER_EVENT.RECEIVE_ORDER, 
@@ -143,7 +150,7 @@ class QA_Market(QA_Trade):
 
             self.event_queue.put(
                 QA_Task(
-                    job=item,
+                    worker=item,
                     event=QA_Event(
                         event_type=ACCOUNT_EVENT.SETTLE)))
 
@@ -151,7 +158,7 @@ class QA_Market(QA_Trade):
 
         res=self.event_queue.put(
             QA_Task(
-                job=self.broker[broker_name],
+                worker=self.broker[broker_name],
                 engine=broker_name,
                 event=QA_Event(
                     order_id=order_id
@@ -182,7 +189,7 @@ class QA_Market(QA_Trade):
     def query_data(self, broker_name, data_type, market_type, code, start, end=None):
         self.event_queue.put(
             QA_Task(
-                job=self.broker[broker_name],
+                worker=self.broker[broker_name],
                 engine=broker_name,
                 event=QA_Event(
                     event_type=MARKET_EVENT.QUERY_DATA,
@@ -221,7 +228,7 @@ class QA_Market(QA_Trade):
     def _trade(self, broker_name):
         "内部函数"
         self.event_queue.put(QA_Task(
-            job=self.broker[broker_name],
+            worker=self.broker[broker_name],
             engine=broker_name,
             event=QA_Event(
                 event_type=BROKER_EVENT.TRADE,
@@ -231,7 +238,7 @@ class QA_Market(QA_Trade):
     def _settle(self, broker_name):
         # 向事件线程发送BROKER的SETTLE事件
         self.event_queue.put(QA_Task(
-            job=self.broker[broker_name],
+            worker=self.broker[broker_name],
             engine=broker_name,
             event=QA_Event(
                 event_type=BROKER_EVENT.SETTLE,
@@ -241,7 +248,7 @@ class QA_Market(QA_Trade):
             if item.broker is broker_name:
                 self.event_queue.put(
                     QA_Task(
-                        job=item,
+                        worker=item,
                         engine=broker_name,
                         event=QA_Event(
                             event_type=ACCOUNT_EVENT.SETTLE)))

@@ -23,13 +23,13 @@
 # SOFTWARE.
 
 
-from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Job
+from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_OrderQueue
 from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, EVENT_TYPE,
                                           MARKET_EVENT, ORDER_EVENT)
 
 
-class QA_OrderHandler(QA_Job):
+class QA_OrderHandler(QA_Worker):
     """ORDER执行器
 
 

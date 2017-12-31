@@ -29,7 +29,7 @@ EVENT 是会被推送进QUEUE的任务class
 通过EVENT_QUEUE.get()拿到标准的event,然后执行"""
 
 
-class QA_Job(object):
+class QA_Worker(object):
     """JOB是worker 需要接受QA_EVENT 需要完善RUN方法"""
 
     def __init__(self):

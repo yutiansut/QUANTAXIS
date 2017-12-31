@@ -31,11 +31,11 @@
 """
 from abc import abstractmethod
 
-from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Job
+from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Worker
 from QUANTAXIS.QAUtil.QAParameter import EVENT_TYPE
 
 
-class QA_Broker(QA_Job):
+class QA_Broker(QA_Worker):
     """MARKET ENGINGE ABSTRACT
 
     receive_order => warp => get_data => engine
