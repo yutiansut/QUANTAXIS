@@ -23,10 +23,6 @@
 # SOFTWARE.
 
 import datetime
-import math
-import time
-
-import pandas as pd
 
 
 def QA_util_if_trade(day):
