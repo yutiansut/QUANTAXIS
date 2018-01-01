@@ -76,6 +76,8 @@ class QA_Market(QA_Trade):
             ))
 
         print(self.running_time)
+        if callback:
+            callback()
         # self.event_queue.put(QA_Task(
         #     worker=pass))
 
