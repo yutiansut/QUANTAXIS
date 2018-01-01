@@ -63,13 +63,15 @@ class QA_Market(QA_Trade):
         return '< QA_MARKET with {} Broker >'.format(list(self.broker.keys()))
 
     def upcoming_data(self, data, callback=False):
+        # main thread
         self.running_time = data.datetime[0]
         for item in self.session.values():
             self.event_queue.put(QA_Task(
                 worker=item,
                 event=QA_Event(
                     event_type=ENGINE_EVENT.UPCOMING_DATA,
-                    market_data=data
+                    market_data=data,
+                    send_order=self.insert_order
                 )
             ))
 

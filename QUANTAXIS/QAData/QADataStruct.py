@@ -259,7 +259,7 @@ class _quotation_base():
             webbrowser.open(path_name)
             QA_util_log_info(
                 'The Pic has been saved to your path: {}'.format(path_name))
-
+    @property
     def len(self):
         return len(self.data)
 

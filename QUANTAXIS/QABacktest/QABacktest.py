@@ -65,24 +65,32 @@ class QA_Backtest():
     def __init__(self, market_type, start, end, code_list, commission_fee,):
         self.user = QA_User()
         self.if_settled = False
-        ac, po = self.user.generate_simpleaccount()
-        print(ac)
+        self.account=None
+        self.portfolio=None
+        
         self.market = QA_Market()
-        self.market.start()
-        # self.market.connect(BROKER_TYPE.BACKETEST)
-
         self.broker = QA_BacktestBroker(commission_fee)
         self.broker_name = 'backtest_broker'
-        self.market.register(self.broker_name, self.broker)
-        print(self.market)
-        self.market.login(self.broker_name, ac,
-                          self.user.get_portfolio(po).get_account(ac))
         self.start = start
         self.end = end
         self.code_list = code_list
         self.ingest_data = QA_fetch_stock_day_adv(
             code_list, start, end).panel_gen
 
+
+    def _generate_account(self):
+        self.account,self.portfolio = self.user.generate_simpleaccount()
+        
+    def start_market(self):
+        self.market.start()
+        self.market.register(self.broker_name, self.broker)
+
+        self.market.login(self.broker_name, self.account,
+                          self.user.get_portfolio(self.portfolio).get_account(self.account))
+    def _trade(self):
+        self.market._trade(self.broker_name)
+    def _settle(self):
+        self.market._settle(self.broker_name, callback=self.if_settle)
     def run(self):
         data = next(self.ingest_data)
         #self.market.running_time = str(data.date[0])[0:10]
@@ -107,9 +115,7 @@ class QA_Backtest():
                 market_type=MARKET_TYPE.STOCK_DAY, data_type=MARKETDATA_TYPE.DAY,
                 broker_name=self.broker_name
             )
-        self.market._trade(self.broker_name)
-        self.market._settle(self.broker_name, callback=self.if_settle)
-
+        
     def if_settle(self, data):
         if data is 'settle':
             self.if_settled = True
@@ -132,5 +138,9 @@ if __name__ == '__main__':
                            end='2017-01-31',
                            code_list=['000001', '600010'],
                            commission_fee=0.00015)
+    backtest._generate_account()
+    backtest.start_market()
     backtest.run()
+    backtest._trade()
+    backtest._settle()
     # backtest.run()
