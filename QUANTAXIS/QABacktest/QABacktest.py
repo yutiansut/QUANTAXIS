@@ -85,19 +85,20 @@ class QA_Backtest():
 
     def run(self):
         data = next(self.ingest_data)
-        self.market.running_time = str(data.date[0])[0:10]
-        print(data)
+        #self.market.running_time = str(data.date[0])[0:10]
+        # print(data)
         self.broker.run(QA_Event(
             event_type=ENGINE_EVENT.UPCOMING_DATA,
             market_data=data))
-        print(self.broker._quotation)
-        print(self.broker.broker_data)
+        self.market.upcoming_data(data)
+        # print(self.broker._quotation)
+        # print(self.broker.broker_data)
 
-        print(self.market.query_currentbar(
-            broker_name=self.broker_name,
-            market_type=MARKET_TYPE,
-            code=self.code_list[0]))
-        print(self.market.get_account_id())
+        # print(self.market.query_currentbar(
+        #     broker_name=self.broker_name,
+        #     market_type=MARKET_TYPE,
+        #     code=self.code_list[0]))
+        # print(self.market.get_account_id())
         for ac in self.market.get_account_id():
             self.market.insert_order(
                 account_id=ac, amount=1000, amount_model=AMOUNT_MODEL.BY_AMOUNT,
