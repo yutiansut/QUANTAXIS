@@ -48,7 +48,7 @@ def QA_save_tdx_to_mongo(file_dir, client=QA_Setting.client):
 
                 QA_util_log_info('Now_saving ' + str(file)
                                  [2:8] + '\'s 5 min tick')
-                fname = file_dir + '\\' + file
+                fname = file_dir + os.sep + file
                 df = reader.get_df(fname)
                 df['code'] = str(file)[2:8]
                 df['market'] = str(file)[0:2]
