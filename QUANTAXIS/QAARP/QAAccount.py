@@ -420,8 +420,6 @@ class QA_Account(QA_Worker):
         pass
 
 
-
-
 if __name__ == '__main__':
     account = QA_Account()
     # 创建一个account账户
