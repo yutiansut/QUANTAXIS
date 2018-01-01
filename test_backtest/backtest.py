@@ -82,14 +82,11 @@ if __name__ == '__main__':
                         code_list=['000001', '600010'],
                         commission_fee=0.00015)
     backtest.start_market()
-    backtest.run()
-    backtest.run()
-    backtest.run()
-    backtest.run()
-    backtest.run()
-    import time
-    print(time.sleep(3))
-    backtest._trade()
-    backtest._settle()
+
+    for i in range(10):
+        backtest.run()
+        
+        backtest._settle()
+    
 
     # backtest.run()
