@@ -1,0 +1,22 @@
+import Router from 'koa-router';
+import root from './root';
+import users from './users';
+import stock from './stock';
+import apis from './apis';
+import notebook from './notebook';
+import job from './job';
+import trade from './trade';
+import backtest from './backtest';
+import monitor from './monitor';
+
+const router = new Router();
+root(router);
+users(router);
+stock(router);
+apis(router);
+notebook(router);
+job(router);
+trade(router);
+backtest(router);
+monitor(router);
+export default router;
