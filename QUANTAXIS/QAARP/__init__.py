@@ -26,7 +26,7 @@ from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAARP.QARisk import QA_Risk, QA_Performace
 from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
 from QUANTAXIS.QAARP.QAUser import QA_User
-
+from QUANTAXIS.QAARP.QAStrategy import QA_Strategy
 
 class QA_ARP():
     def __init__(self):
