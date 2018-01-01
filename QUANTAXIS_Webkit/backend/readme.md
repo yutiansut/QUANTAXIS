@@ -1,10 +1,21 @@
 ## quantaxisbackend ![NPM version](https://img.shields.io/npm/v/quantaxisbackend.svg?style=flat)
 
-a nodejs version of quantaxis spider
+a nodejs version of quantaxis spider.
+Now support standalone executable releases.
 
 ### Installation
 ```bash
 $ npm install quantaxisbackend
+```
+
+### Usage
+support following environment variables:
+```
+MONGO_HOST=localhost
+MONGO_PORT=27017
+MONGO_DB=27017
+MONGO_USER=admin
+MONGO_PASS=admin
 ```
 
 ### Example
