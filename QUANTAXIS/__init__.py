@@ -112,8 +112,6 @@ from QUANTAXIS.QAData import (QA_data_tick_resample, QA_data_get_hfq, QA_data_ge
 from QUANTAXIS.QAAnalysis import *
 
 # Util
-from QUANTAXIS.QAUtil.QAType import (
-    QA_util_ensure_date, QA_util_ensure_dict, QA_util_ensure_ms, QA_util_ensure_timeSerires)
 
 
 from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms_stamp, QA_util_date_valid, QA_util_calc_time,
