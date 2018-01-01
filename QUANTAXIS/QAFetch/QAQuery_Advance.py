@@ -39,11 +39,6 @@ from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_indexlist_day,
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
                               QA_util_date_valid, QA_util_log_info,
                               QA_util_time_stamp)
-# from gevent import monkey
-# #monkey.patch_all()
-# import gevent
-# from gevent import Greenlet
-
 
 """
 按要求从数据库取数据，并转换成numpy结构

@@ -22,29 +22,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import asyncio
-import concurrent
-import datetime
-import logging
-import queue
-import threading
-import time
-from collections import deque
-from concurrent.futures import ThreadPoolExecutor
-from multiprocessing import Pool, Process
-from threading import Event, Thread, Timer
 
-import numpy as np
+import datetime
+import queue
+import time
+from concurrent.futures import ThreadPoolExecutor
+from threading import Thread, Timer
+
 import pandas as pd
-from motor.motor_asyncio import AsyncIOMotorClient
-from pytdx.exhq import TdxExHq_API
 from pytdx.hq import TdxHq_API
 
-from QUANTAXIS.QAUtil.QADate import QA_util_calc_time
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_if_tradetime
 from QUANTAXIS.QAUtil.QASetting import QA_Setting, info_ip_list
-from QUANTAXIS.QAUtil.QASql import (QA_util_sql_mongo_sort_ASCENDING,
-                                    QA_util_sql_mongo_sort_DESCENDING)
+from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_sort_ASCENDING
 from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
 
 
@@ -286,7 +276,7 @@ if __name__ == '__main__':
     code = QA_fetch_stock_block_adv().code
 
     QA_Setting().client.quantaxis.realtime.create_index([('code', QA_util_sql_mongo_sort_ASCENDING),
-                                                       ('datetime', QA_util_sql_mongo_sort_ASCENDING)])
+                                                         ('datetime', QA_util_sql_mongo_sort_ASCENDING)])
 
     # print(len(code))
     # x = QA_Tdx_Executor()
