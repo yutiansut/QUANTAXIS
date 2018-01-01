@@ -52,18 +52,19 @@ class QA_Portfolio():
     def __repr__(self):
         return '< QA_Portfolio {} with {} Accounts >'.format(self.portfolio_cookie, len(self.accounts.keys()))
 
-    def QA_portfolio_get_portfolio(self):
+    def get_portfolio(self):
+        'return the accounts dict'
         return self.accounts
 
     def add_account(self, account):
-        #temp = QA_Account(account_cookie=account_cookie)
+        'portfolio add a account/stratetgy'
         if account.account_cookie not in self.accounts.keys():
             self.accounts[account.account_cookie] = account
-
         else:
             pass
 
     def new_account(self, account_cookie=None):
+        'portfolio create a account/strategy'
         if account_cookie is None:
             temp = QA_Account()
             if temp.account_cookie not in self.accounts.keys():
@@ -74,6 +75,7 @@ class QA_Portfolio():
                 return False
 
     def get_account(self, cookie):
+        'give the account_cookie and return the account/strategy back'
         try:
             return self.accounts[cookie]
         except:
@@ -92,6 +94,7 @@ class QA_Portfolio():
         pass
 
     def pull(self, account_cookie=None, collection=QA_Setting().client.quantaxis.account):
+        'pull from the databases'
         if account_cookie is None:
             for item in self.accounts.keys():
                 try:
@@ -113,6 +116,7 @@ class QA_Portfolio():
             self.accounts[account_cookie].from_message(message)
 
     def push(self, account_cookie=None, collection=QA_Setting().client.quantaxis.account):
+        'push to databases'
         message = self.accounts[account_cookie].message
         if account_cookie is None:
             for item in self.accounts.keys():

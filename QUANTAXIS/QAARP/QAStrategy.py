@@ -27,5 +27,9 @@ from QUANTAXIS.QAARP.QAAccount import QA_Account
 
 
 class QA_Strategy(QA_Account):
+    """account
+    
+    [description]
+    """
     def __init__(self):
         super().__init__()

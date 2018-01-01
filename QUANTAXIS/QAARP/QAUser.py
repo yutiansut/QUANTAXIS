@@ -29,7 +29,10 @@ from QUANTAXIS.QAUtil.QASetting import QA_Setting
 
 
 class QA_User():
-    def __init__(self, *args, **kwargs):
+    """QA_User 
+    User--Portfolio--Account/Strategy
+    """
+    def __init__(self):
         self.setting = QA_Setting()
         self.portfolio_list = {}
         self.user_cookie = QA_util_random_with_topic('USER')
@@ -38,27 +41,33 @@ class QA_User():
         return '< QA_USER {} with {} portfolio >'.format(self.user_cookie, len(self.portfolio_list.keys()))
 
     def client(self):
+        'user.client to connect database'
         return self.setting.client
 
     def connect_database(self, ip='127.0.0.1', port=27017):
+        'connect is also a way to change database from IP_A to IP_B'
         self.setting.change(ip, port)
 
     def login(self, user_name, password):
+        'login to a database'
         if self.setting.login(user_name, password):
             QA_util_log_info('SUCCESS')
         else:
             QA_util_log_info('FAILD')
 
     def new_portfolio(self):
+        'create a portfolio'
         _portfolio = QA_Portfolio()
         if _portfolio.portfolio_cookie not in self.portfolio_list.keys():
             self.portfolio_list[_portfolio.portfolio_cookie] = _portfolio
             return _portfolio.portfolio_cookie
 
     def get_portfolio(self, portfolio):
+        'get a portfolio'
         return self.portfolio_list[portfolio]
 
     def generate_simpleaccount(self):
+        'make a simple account with a easier way'
         if len(self.portfolio_list.keys()) < 1:
             po = self.new_portfolio()
             ac = self.get_portfolio(po).new_account()

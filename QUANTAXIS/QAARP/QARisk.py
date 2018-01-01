@@ -29,12 +29,6 @@
 
 综合性指标主要包括风险收益比，夏普比例，波动率，VAR，偏度，峰度等"""
 
-"""
-the account datastruct should be a standard struct which can be directly sended to another function
-
-
-"""
-
 
 class QA_Risk():
     pass

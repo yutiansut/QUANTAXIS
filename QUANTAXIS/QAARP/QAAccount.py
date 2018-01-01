@@ -101,29 +101,33 @@ class QA_Account(QA_Worker):
                 'running_time': str(datetime.datetime.now())
             }
         }
-        self.strategy = None
+        self.market_data = None
 
     def __repr__(self):
         return '< QA_Account {} Assets:{} >'.format(self.account_cookie, self.assets[-1])
 
     @property
     def latest_assets(self):
+        'return the lastest assets'
         return self.assets[-1]
 
     @property
     def latest_cash(self):
+        'return the lastest cash'
         return self.cash[-1]
 
     @property
     def latest_hold(self):
+        'return the lastest hold'
         return self.hold
 
     def init(self, init_assest=None):
+        'init methods'
         self.hold = []
         self.sell_available = [['date', 'code', 'price',
                                 'amount', 'order_id', 'trade_id']]
         self.history = []
-
+        self.init_assest = init_assest
         self.account_cookie = QA_util_random_with_topic(topic='Acc')
         self.assets = [self.init_assest]
         self.cash = [self.init_assest]
@@ -393,7 +397,7 @@ class QA_Account(QA_Worker):
             'code', drop=False)['amount'].groupby('code').sum()
 
     def from_message(self, message):
-
+        'resume the account from standard message'
         self.account_cookie = message['header']['cookie']
         self.hold = message['body']['account']['hold']
         self.history = message['body']['account']['history']
@@ -403,20 +407,43 @@ class QA_Account(QA_Worker):
         return self
 
     def run(self, event):
+        'QA_WORKER method'
         if event.event_type is ACCOUNT_EVENT.SETTLE:
             self.settle()
 
         elif event.event_type is ACCOUNT_EVENT.UPDATE:
             self.receive_deal(event.message)
         elif event.event_type is ACCOUNT_EVENT.MAKE_ORDER:
-            pass
+            """generate order
+            if callback callback the order
+            if not return back the order
+            """
+            data=self.send_order(code=event.code, amount=event.amount, time=event.time,
+                            amount_model=event.amount_model, towards=event.towards,
+                            price=event.price, order_model=event.order_model,
+                            data_type=event.data_type,
+                            market_type=event.market_type)
+            if event.callback:
+                event.callback(data)
+            else:
+                return data
         elif event.event_type is ENGINE_EVENT.UPCOMING_DATA:
+            """update the market_data
+            1. update the inside market_data struct
+            2. tell the on_bar methods
+            """
+            if self.market_data is None:
+                self.market_data=event.market_data
+            else:
+                self.market_data.append(event.market_data)
             self.on_bar(event)
 
     def on_bar(self, event):
+        'while updating the market data'
         print(event.market_data)
 
     def on_tick(self, event):
+        'on tick event'
         pass
 
 
