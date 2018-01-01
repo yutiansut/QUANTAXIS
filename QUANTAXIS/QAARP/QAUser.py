@@ -30,47 +30,46 @@ from QUANTAXIS.QAUtil.QASetting import QA_Setting
 
 class QA_User():
     def __init__(self, *args, **kwargs):
-        self.setting=QA_Setting()
+        self.setting = QA_Setting()
         self.portfolio_list = {}
         self.user_cookie = QA_util_random_with_topic('USER')
 
     def __repr__(self):
-        return '< QA_USER {} with {} portfolio >'.format(self.user_cookie,len(self.portfolio_list.keys()))
+        return '< QA_USER {} with {} portfolio >'.format(self.user_cookie, len(self.portfolio_list.keys()))
 
     def client(self):
         return self.setting.client
 
-    def connect_database(self,ip='127.0.0.1',port=27017):
-        self.setting.change(ip,port)
+    def connect_database(self, ip='127.0.0.1', port=27017):
+        self.setting.change(ip, port)
 
-    def login(self,user_name,password):
-        if self.setting.login(user_name,password):
+    def login(self, user_name, password):
+        if self.setting.login(user_name, password):
             QA_util_log_info('SUCCESS')
         else:
             QA_util_log_info('FAILD')
-            
 
     def new_portfolio(self):
-        _portfolio=QA_Portfolio()
+        _portfolio = QA_Portfolio()
         if _portfolio.portfolio_cookie not in self.portfolio_list.keys():
-            self.portfolio_list[_portfolio.portfolio_cookie]=_portfolio
+            self.portfolio_list[_portfolio.portfolio_cookie] = _portfolio
             return _portfolio.portfolio_cookie
-            
-        
+
     def get_portfolio(self, portfolio):
         return self.portfolio_list[portfolio]
 
     def generate_simpleaccount(self):
-        if len(self.portfolio_list.keys())<1:
-            po=self.new_portfolio()
-            ac=self.get_portfolio(po).new_account()
-            return ac,po
+        if len(self.portfolio_list.keys()) < 1:
+            po = self.new_portfolio()
+            ac = self.get_portfolio(po).new_account()
+            return ac, po
 
-if __name__=='__main__':
-        user=QA_User()
-        portfolio1=user.new_portfolio()
-        ac1=user.get_portfolio(portfolio1).new_account()
 
-        print(user)
-        print(user.get_portfolio(portfolio1))
-        print(user.get_portfolio(portfolio1).get_account(ac1))
+if __name__ == '__main__':
+    user = QA_User()
+    portfolio1 = user.new_portfolio()
+    ac1 = user.get_portfolio(portfolio1).new_account()
+
+    print(user)
+    print(user.get_portfolio(portfolio1))
+    print(user.get_portfolio(portfolio1).get_account(ac1))

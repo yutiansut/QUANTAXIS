@@ -23,7 +23,6 @@
 # SOFTWARE.
 
 
-
 from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
                               QA_util_random_with_topic)
@@ -51,7 +50,7 @@ class QA_Portfolio():
             self.accounts[cookie] = QA_Account(account_cookie=cookie)
 
     def __repr__(self):
-        return '< QA_Portfolio {} with {} Accounts >'.format(self.portfolio_cookie,len(self.accounts.keys()))
+        return '< QA_Portfolio {} with {} Accounts >'.format(self.portfolio_cookie, len(self.accounts.keys()))
 
     def QA_portfolio_get_portfolio(self):
         return self.accounts
