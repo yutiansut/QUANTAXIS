@@ -32,6 +32,7 @@ class QA_User():
     """QA_User 
     User--Portfolio--Account/Strategy
     """
+
     def __init__(self):
         self.setting = QA_Setting()
         self.portfolio_list = {}
@@ -72,6 +73,12 @@ class QA_User():
             po = self.new_portfolio()
             ac = self.get_portfolio(po).new_account()
             return ac, po
+
+    def register_account(self, account):
+        if len(self.portfolio_list.keys()) < 1:
+            po = self.new_portfolio()
+            self.get_portfolio(po).add_account(account)
+            return (po, account.account_cookie)
 
 
 if __name__ == '__main__':

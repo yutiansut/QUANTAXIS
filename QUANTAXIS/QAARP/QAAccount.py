@@ -102,6 +102,8 @@ class QA_Account(QA_Worker):
             }
         }
         self.market_data = None
+        self._currenttime = None
+
 
     def __repr__(self):
         return '< QA_Account {} Assets:{} >'.format(self.account_cookie, self.assets[-1])
@@ -120,6 +122,10 @@ class QA_Account(QA_Worker):
     def latest_hold(self):
         'return the lastest hold'
         return self.hold
+
+    @property
+    def current_time(self):
+        return self._currenttime
 
     def init(self, init_assest=None):
         'init methods'
@@ -396,6 +402,13 @@ class QA_Account(QA_Worker):
         self.sell_available = pd.DataFrame(self.hold, columns=self._hold_headers).set_index(
             'code', drop=False)['amount'].groupby('code').sum()
 
+    def on_bar(self, event):
+        'while updating the market data'
+        print(event.market_data)
+
+    def on_tick(self, event):
+        'on tick event'
+        pass
     def from_message(self, message):
         'resume the account from standard message'
         self.account_cookie = message['header']['cookie']
@@ -405,7 +418,6 @@ class QA_Account(QA_Worker):
         self.assets = message['body']['account']['assets']
         self.detail = message['body']['account']['detail']
         return self
-
     def run(self, event):
         'QA_WORKER method'
         if event.event_type is ACCOUNT_EVENT.SETTLE:
@@ -418,11 +430,11 @@ class QA_Account(QA_Worker):
             if callback callback the order
             if not return back the order
             """
-            data=self.send_order(code=event.code, amount=event.amount, time=event.time,
-                            amount_model=event.amount_model, towards=event.towards,
-                            price=event.price, order_model=event.order_model,
-                            data_type=event.data_type,
-                            market_type=event.market_type)
+            data = self.send_order(code=event.code, amount=event.amount, time=event.time,
+                                   amount_model=event.amount_model, towards=event.towards,
+                                   price=event.price, order_model=event.order_model,
+                                   data_type=event.data_type,
+                                   market_type=event.market_type)
             if event.callback:
                 event.callback(data)
             else:
@@ -432,20 +444,12 @@ class QA_Account(QA_Worker):
             1. update the inside market_data struct
             2. tell the on_bar methods
             """
+            self._currenttime = event.market_data.datetime[-1]
             if self.market_data is None:
-                self.market_data=event.market_data
+                self.market_data = event.market_data
             else:
                 self.market_data.append(event.market_data)
             self.on_bar(event)
-
-    def on_bar(self, event):
-        'while updating the market data'
-        print(event.market_data)
-
-    def on_tick(self, event):
-        'on tick event'
-        pass
-
 
 if __name__ == '__main__':
     account = QA_Account()
