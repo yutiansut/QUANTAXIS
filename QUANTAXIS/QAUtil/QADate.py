@@ -23,11 +23,9 @@
 # SOFTWARE.
 
 import datetime
-import re
 import threading
 import time
 
-from QUANTAXIS.QAUtil.QADate_trade import trade_date_sse
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 
 

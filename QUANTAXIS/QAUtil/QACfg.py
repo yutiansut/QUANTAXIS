@@ -23,8 +23,6 @@
 # SOFTWARE.
 
 
-import os
-import sys
 from configparser import ConfigParser
 
 
