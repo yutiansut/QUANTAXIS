@@ -86,13 +86,13 @@ from QUANTAXIS.QAMarket import (QA_Order, QA_OrderQueue, QA_OrderHandler,
                                 QA_Market, QA_Dealer,
                                 QA_RandomBroker, QA_SimulatedBroker, QA_RealBroker, QA_BacktestBroker)
 
-# Account,Risk,Portfolio
+# Account,Risk,Portfolio,User,Strategy
 
 from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
 from QUANTAXIS.QAARP.QARisk import QA_Performace, QA_Risk
 from QUANTAXIS.QAARP.QAUser import QA_User
-
+from QUANTAXIS.QAARP.QAStrategy import QA_Strategy
 # Backtest
 from QUANTAXIS.QABacktest.QABacktest import QA_Backtest
 
