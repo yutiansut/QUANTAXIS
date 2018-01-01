@@ -411,19 +411,15 @@ class QA_Account(QA_Worker):
         elif event.event_type is ACCOUNT_EVENT.MAKE_ORDER:
             pass
         elif event.event_type is ENGINE_EVENT.UPCOMING_DATA:
-            self.strategy.run(event)
+            self.on_bar(event)
 
-    def load_strategy(self, strategy):
-        self.strategy = strategy
+    def on_bar(self, event):
+        print(event.market_data)
+
+    def on_tick(self, event):
+        pass
 
 
-def strategy(QA_Worker):
-    def __init__(self):
-        super().__init__()
-
-    def run(self, event):
-        if event.event_type is ENGINE_EVENT.UPCOMING_DATA:
-            print(event.data)
 
 
 if __name__ == '__main__':
