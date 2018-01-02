@@ -104,7 +104,6 @@ class QA_Account(QA_Worker):
         self.market_data = None
         self._currenttime = None
 
-
     def __repr__(self):
         return '< QA_Account {} Assets:{} >'.format(self.account_cookie, self.assets[-1])
 
@@ -409,6 +408,7 @@ class QA_Account(QA_Worker):
     def on_tick(self, event):
         'on tick event'
         pass
+
     def from_message(self, message):
         'resume the account from standard message'
         self.account_cookie = message['header']['cookie']
@@ -418,6 +418,7 @@ class QA_Account(QA_Worker):
         self.assets = message['body']['account']['assets']
         self.detail = message['body']['account']['detail']
         return self
+
     def run(self, event):
         'QA_WORKER method'
         if event.event_type is ACCOUNT_EVENT.SETTLE:
@@ -450,6 +451,11 @@ class QA_Account(QA_Worker):
             else:
                 self.market_data.append(event.market_data)
             self.on_bar(event)
+
+            
+            if event.callback:
+                event.callback(event)
+
 
 if __name__ == '__main__':
     account = QA_Account()

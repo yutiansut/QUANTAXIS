@@ -65,18 +65,24 @@ class QA_OrderHandler(QA_Worker):
             order = self.order_queue.insert_order(event.order)
             if event.callback:
                 event.callback(order)
-                
+
         elif event.event_type is BROKER_EVENT.TRADE:
+            res=[]
             for item in self.order_queue.trade_list:
-                res = event.broker.receive_order(
-                    QA_Event(event_type=BROKER_EVENT.TRADE,order=item))
-                event.callback(res)
+                result=event.broker.receive_order(
+                    QA_Event(event_type=BROKER_EVENT.TRADE, order=item))
+                
                 self.order_queue.set_status(
-                    item.order_id, res['header']['status'])
+                    item.order_id, result['header']['status'])
+
+                res.append(result)
+            event.res = res
+            
+            return event
 
         elif event.event_type is BROKER_EVENT.SETTLE:
             self.order_queue.settle()
-        
+
         elif event.event_type is MARKET_EVENT.QUERY_ORDER:
             return self.query_order(event.order_id)
 

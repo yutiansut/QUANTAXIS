@@ -8,7 +8,7 @@ class MAStrategy(QA_Strategy):
         super().__init__()
 
     def on_bar(self,event):
-        print(self.market_data)        
+        #print(self.market_data)        
         if self.market_data.len>1:
             for item in event.market_data.code:
                 event.send_order(account_id=self.account_cookie,

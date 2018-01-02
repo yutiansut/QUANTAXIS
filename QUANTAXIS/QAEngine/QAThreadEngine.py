@@ -139,7 +139,9 @@ class QA_Engine(QA_Thread):
         del self.kernals[name]
 
     def run_job(self, task):
+        print(task.event.event_type)
         self.kernals[task.engine].put(task)
+        
 
     def run(self):
         while self.__running.isSet():
@@ -153,6 +155,7 @@ class QA_Engine(QA_Thread):
                         assert isinstance(_task, QA_Task)
                         if _task.engine is None:
                             # 如果不指定线程 就在ENGINE线程中运行
+                            print(_task.event.event_type)
                             _task.do()
                             self.queue.task_done()
                         else:
