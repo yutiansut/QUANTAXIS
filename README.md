@@ -148,8 +148,11 @@ git clone https://github.com/yutiansut/quantaxis --depth 1
 ![](http://osnhakmay.bkt.clouddn.com/loginpage.png)
 ![](http://osnhakmay.bkt.clouddn.com/adminpage.png)
 ![](http://osnhakmay.bkt.clouddn.com/backtestpage.png)
-
-
+![](http://osnhakmay.bkt.clouddn.com/rebacktest.png)
+![](http://osnhakmay.bkt.clouddn.com/backtestpic.png)
+![](http://osnhakmay.bkt.clouddn.com/strategy.png)
+![](http://osnhakmay.bkt.clouddn.com/kline.png)
+![](http://osnhakmay.bkt.clouddn.com/settings.png)
 
 
 ## QUANTAXIS 标准化协议和未来协议
