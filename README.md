@@ -144,11 +144,13 @@ git clone https://github.com/yutiansut/quantaxis --depth 1
 
 ## 回测Webkit插件概览
 
-![](http://i2.muimg.com/567571/736ba4adda9fac85.png)
-![](http://i2.muimg.com/588926/345e924a45cae6e5.png)
-![](http://i1.piimg.com/1949/7b6e2fc347220f7b.png)
+![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180103010030.png)
+![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180103010042.png)
+![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180103010053.png)
+![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180103010113.png)
+![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180103010104.png)
 ![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20171204183938.png)
-![](http://i1.piimg.com/567571/09bd05c3698f2d38.png)
+
 ![](http://i1.piimg.com/567571/053ac3e3850f8f60.png)
 ![](http://osnhakmay.bkt.clouddn.com/quantaxis%20markdown.gif)
 
