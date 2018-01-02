@@ -9,7 +9,7 @@
 [点击右上角Star和Watch来跟踪项目进展! 点击Fork来创建属于你的QUANTAXIS!]
 
 ![main_1](http://osnhakmay.bkt.clouddn.com/Main_1.gif)
-![logo](http://osnhakmay.bkt.clouddn.com/QUANTAXIS-white2.png)
+![logo](http://osnhakmay.bkt.clouddn.com/small_logo.png)
 
 
 
