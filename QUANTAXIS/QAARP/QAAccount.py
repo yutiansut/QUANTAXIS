@@ -126,6 +126,9 @@ class QA_Account(QA_Worker):
     def current_time(self):
         return self._currenttime
 
+    @property
+    def hold_table(self):
+        return pd.DataFrame(data=self.hold,columns=self._hold_headers)
     def init(self, init_assest=None):
         'init methods'
         self.hold = []
