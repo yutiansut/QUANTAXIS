@@ -96,6 +96,7 @@ class QA_Backtest():
     def run(self):
         try:
             print(self.user.get_portfolio(self.portfolio).get_account(self.account).assets)
+            print(self.user.get_portfolio(self.portfolio).get_account(self.account).cash)
             data = next(self.ingest_data)
             #self.market.running_time = str(data.date[0])[0:10]
             # print(data)
@@ -107,7 +108,7 @@ class QA_Backtest():
             self.market.upcoming_data(
                 self.broker_name, data, after_success=self.run)
 
-            print(self.user.get_portfolio(self.portfolio).get_account(self.account).hold)
+            print(self.user.get_portfolio(self.portfolio).get_account(self.account).hold_table)
 
         except:
             pass
