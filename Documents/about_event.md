@@ -25,6 +25,9 @@ QAENGINE分三个部分
 
 事件的核心可以简单理解为一个带队列的线程(进程/协程),将事件分类,做成生产者消费者模式,通过队列传递任务
 
+
+![](http://osnhakmay.bkt.clouddn.com/QUANTAXISEvent.png)
+
 ## QATASK - 存在于队列中的标准单元
 
 ```QUANTAXIS
