@@ -144,8 +144,8 @@ git clone https://github.com/yutiansut/quantaxis --depth 1
 
 ## 回测Webkit插件概览
 
-![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180103010030.png)
-![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180103010042.png)
+![](http://osnhakmay.bkt.clouddn.com/homepage.png)
+![](http://osnhakmay.bkt.clouddn.com/loginpage.png)
 ![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180103010053.png)
 ![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180103010104.png)
 
@@ -155,7 +155,12 @@ git clone https://github.com/yutiansut/quantaxis --depth 1
 ![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180103010129.png)
 
 ![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180103010142.png)
-![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20171204183938.png)
+
+![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180103010206.png)
+
+![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180103010217.png)
+
+
 
 ![](http://i1.piimg.com/567571/053ac3e3850f8f60.png)
 ![](http://osnhakmay.bkt.clouddn.com/quantaxis%20markdown.gif)
