@@ -9,7 +9,7 @@
 [点击右上角Star和Watch来跟踪项目进展! 点击Fork来创建属于你的QUANTAXIS!]
 
 ![main_1](http://osnhakmay.bkt.clouddn.com/Main_1.gif)
-<img src="http://osnhakmay.bkt.clouddn.com/QUANTAXIS-white.png" width = "27.5%" />
+![logo](http://osnhakmay.bkt.clouddn.com/QUANTAXIS-white2.png)
 
 
 
@@ -54,7 +54,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 ## 功能
 ======
 
-![](http://i1.piimg.com/567571/dc3c811a5afcb4fb.png)
+![](http://osnhakmay.bkt.clouddn.com/framework.png)
 
 已经实现：
 
@@ -95,14 +95,15 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 近期正在对QUANTAXIS的部分代码在重构 欢迎加群来一起讨论/发PR
 
-```账户部分```
+
 
 ![](http://osnhakmay.bkt.clouddn.com/remakedoc_account.png)
-```市场部分```
+
+
 
 ![](http://osnhakmay.bkt.clouddn.com/%E9%87%8D%E6%9E%84%E6%96%87%E6%A1%A3-%E5%B8%82%E5%9C%BA.png)
 
-```事件部分```
+
 
 ![](http://osnhakmay.bkt.clouddn.com/remakedoc_event.png)
 
@@ -132,7 +133,8 @@ git clone https://github.com/yutiansut/quantaxis --depth 1
 
 写代码不易...请作者喝杯咖啡呗?
 
-<img src="http://osnhakmay.bkt.clouddn.com/IMG_0002.JPG" width = "27.5%" />
+
+![](http://osnhakmay.bkt.clouddn.com/alipay.png)
 
 (PS: 支付的时候 请带上你的名字/昵称呀 会维护一个赞助列表~ )
 
