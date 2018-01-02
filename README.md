@@ -1,4 +1,4 @@
-![](http://osnhakmay.bkt.clouddn.com/backtestpage.png)# QUANTAXIS 量化金融策略框架
+# QUANTAXIS 量化金融策略框架
 
 
 
