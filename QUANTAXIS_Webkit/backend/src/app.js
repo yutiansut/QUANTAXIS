@@ -1,5 +1,6 @@
 import Koa from 'koa';
 import logger from 'koa-logger';
+import jwt from 'koa-jwt';
 import router from "./routes";
 import mongo from './database';
 
@@ -35,6 +36,12 @@ app.use(async (ctx, next) => {
 });
 app.use(router.routes());
 app.use(router.allowedMethods());
+// Middleware below this line can
+// make decisions based on whether ctx.state.user is set.
+app.use(jwt({
+  secret: process.env.SECRET || 'shared-secret',
+  passthrough: true
+}));
 
 module.exports = app;
 
