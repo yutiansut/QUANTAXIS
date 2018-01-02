@@ -6,17 +6,17 @@ export default function (router) {
     };
   })
 
-  router.get('/trade/history', function (req, res, next) {
+  router.get('/trade/history', async function (ctx, next) {
     //console.log('backtest')
-    ctx.db.collection('trade_stock').find().toArray(function (err, docs) {
-      res.send(docs)
-    })
+    const cursor = ctx.db.collection('trade_stock').find();
+    let docs = await cursor.toArray();
+    res.send(docs)
   });
 
-  router.get('/trade/lastest', function (req, res, next) {
+  router.get('/trade/lastest', async function (ctx, next) {
     //console.log('backtest')
-    ctx.db.collection('trade_stock').find().toArray(function (err, docs) {
-      res.send(docs[docs.length - 1]);
-    });
+    const cursor = ctx.db.collection('trade_stock').find();
+    let docs = await cursor.toArray();
+    res.send(docs[docs.length - 1]);
   });
 }

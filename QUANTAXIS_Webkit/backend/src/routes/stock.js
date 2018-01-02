@@ -32,22 +32,21 @@ export default function (router) {
     var start_stamp = new Date(start).getTime();
     var end_stamp = new Date(end).getTime();
     console.log(code)
-    ctx.body = await ctx.db.collection('stock_day').find({
+    const cursor = ctx.db.collection('stock_day').find({
       "code": code,
       "date_stamp": {
         $gte: start_stamp / 1000 - 50,
         $lte: end_stamp / 1000
       }
-    }).toArray(function (err, docs) {
-        //console.log(err)
-        //console.log(docs)
-        data = []
-        for (id in docs) {
-          data.push(docs[id])
-        }
-        ctx.body = (data)
-
     });
+    let docs = await cursor.toArray();
+    //console.log(err)
+    //console.log(docs)
+    data = []
+    for (id in docs) {
+      data.push(docs[id])
+    }
+    ctx.body = (data)
   });
 
   router.get('/stock/index', function (ctx, next) {
