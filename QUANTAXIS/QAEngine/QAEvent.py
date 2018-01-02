@@ -36,7 +36,7 @@ class QA_Worker(object):
         self.type = None
 
     def __repr__(self):
-        return '< QA_EVENT {} >'.format(self.type)
+        return '< QA_Worker {} >'.format(self.type)
 
     @abstractmethod
     def run(self, event):
