@@ -1,4 +1,4 @@
-# QUANTAXIS 量化金融策略框架
+![](http://osnhakmay.bkt.clouddn.com/backtestpage.png)# QUANTAXIS 量化金融策略框架
 
 
 
@@ -150,20 +150,6 @@ git clone https://github.com/yutiansut/quantaxis --depth 1
 ![](http://osnhakmay.bkt.clouddn.com/backtestpage.png)
 
 
-![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180103010113.png)
-
-![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180103010129.png)
-
-![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180103010142.png)
-
-![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180103010206.png)
-
-![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180103010217.png)
-
-
-
-![](http://i1.piimg.com/567571/053ac3e3850f8f60.png)
-![](http://osnhakmay.bkt.clouddn.com/quantaxis%20markdown.gif)
 
 
 ## QUANTAXIS 标准化协议和未来协议
