@@ -22,3 +22,4 @@
 
 
 * [FAQ](Documents/FAQ.md)
+* [捐赠感谢](CONTRIBUTING.md)
