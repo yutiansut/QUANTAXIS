@@ -113,21 +113,29 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 git clone https://github.com/yutiansut/quantaxis --depth 1
 ```
 
-参见 [安装说明](https://github.com/yutiansut/QUANTAXIS/blob/master/Documents/install.md)
+参见 [安装说明](Documents/install.md)
 
 ## 更新
-参见 [更新说明](https://github.com/yutiansut/QUANTAXIS/blob/master/Documents/update.md)
+参见 [更新说明](Documents/update.md)
 
 ## Docker
-参见 [Docker](https://github.com/yutiansut/QUANTAXIS/blob/master/Documents/docker.md)
+参见 [Docker](Documents/docker.md)
 ## 使用说明
-参见 [使用说明](https://github.com/yutiansut/QUANTAXIS/blob/master/Documents/instruction.md)
+参见 
+
+* [QUANTAXIS回测API](Documents/backtest_api.md)
+* [QUANTAXIS的数据结构](Documents/DataStruct.md)
+* [QUANTAXIS指标系统](Documents/indicators.md)
+* [QUANTAXIS的数据获取指南](Documents/DataFetch.md)
+* [QUANTAXIS行情研究](Documents/analysis.md)
+* [QUANTAXIS回测分析](Documents/backtestanalysis.md)
+* [常见策略整理](Documents/strategy.md)
 
 ## Jupyter示例
-参见 [Jupyter示例](https://github.com/yutiansut/QUANTAXIS/tree/master/jupyterexample)
+参见 [Jupyter示例](jupyterexample)
 
 ## 常见问题FAQ
-参见 [FAQ](https://github.com/yutiansut/QUANTAXIS/tree/master/Documents/FAQ.md)
+参见 [FAQ](Documents/FAQ.md)
 
 ## 项目捐赠
 
@@ -138,7 +146,7 @@ git clone https://github.com/yutiansut/quantaxis --depth 1
 
 (PS: 支付的时候 请带上你的名字/昵称呀 会维护一个赞助列表~ )
 
-[捐赠列表](https://github.com/yutiansut/QUANTAXIS/blob/master/CONTRIBUTING.md)
+[捐赠列表](CONTRIBUTING.md)
 
 
 
@@ -160,4 +168,4 @@ git clone https://github.com/yutiansut/quantaxis --depth 1
 
 QUANTAXIS-Stardand-Protocol 版本号0.0.8
 
-详情参见  [QUANATXISProtocol](https://github.com/yutiansut/QUANTAXIS/blob/master/Documents/readme.md)
+详情参见  [QUANATXISProtocol](Documents/readme.md)
