@@ -96,7 +96,7 @@ QAEngine是一个用于管理threadengine的分派器,可以自定义创建QAThr
 
 ## 参考示例:
 
-代码在()[about_event.py]中
+代码在[](about_event.py)中
 
 ```python
 import QUANTAXIS as QA
