@@ -16,6 +16,7 @@
 * [QUANTAXIS的数据结构](Documents/DataStruct.md)
 * [QUANTAXIS指标系统](Documents/indicators.md)
 * [QUANTAXIS的数据获取指南](Documents/DataFetch.md)
+* [QUANTAXIS行情研究](Documents/analysis.md)
 * [QUANTAXIS回测分析](Documents/backtestanalysis.md)
 
 
