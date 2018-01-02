@@ -62,8 +62,13 @@ class QA_Market(QA_Trade):
     def __repr__(self):
         return '< QA_MARKET with {} Broker >'.format(list(self.broker.keys()))
 
-    def upcoming_data(self, data, callback=False):
-        # main thread
+    def upcoming_data(self, broker, data, after_success=False):
+        # main thread'
+
+        # if self.running_time is not None and self.running_time!= data.datetime[0]:
+        #     for item in self.broker.keys():
+        #         self._settle(item)
+
         self.running_time = data.datetime[0]
         for item in self.session.values():
             self.event_queue.put(QA_Task(
@@ -71,13 +76,15 @@ class QA_Market(QA_Trade):
                 event=QA_Event(
                     event_type=ENGINE_EVENT.UPCOMING_DATA,
                     market_data=data,
-                    send_order=self.insert_order
+                    broker_name=broker,
+                    send_order=self.insert_order,
+                    callback=self._trade,
+                    after_success=after_success
                 )
             ))
 
-        print(self.running_time)
-        if callback:
-            callback()
+        # print(self.running_time)
+
         # self.event_queue.put(QA_Task(
         #     worker=pass))
 
@@ -246,27 +253,36 @@ class QA_Market(QA_Trade):
         print(data)
         self.last_query_data = data
 
-    def _on_trade_event(self, data):
-        self.session[data['header']['session']['account']].receive_deal(data)
-        self.on_trade_event(data)
+    def _on_trade_event(self, event):
+        for res in event.res:
+            self.session[res['header']['session']['account']].receive_deal(res)
+        self.on_trade_event(event)
 
-    def on_trade_event(self, data):
+
+    def on_trade_event(self, event):
         print('ON TRADE')
-        print(data)
+        self._settle(event.broker_name)
+        if event.after_success:
+            event.after_success()
 
-    def _trade(self, broker_name):
+
+    def _trade(self, event):
         "内部函数"
+        
         self.event_queue.put(QA_Task(
-            worker=self.broker[broker_name],
-            engine=broker_name,
+            worker=self.broker[event.broker_name],
+            engine=event.broker_name,
             event=QA_Event(
                 event_type=BROKER_EVENT.TRADE,
-                broker=self.broker[broker_name],
-                callback=self._on_trade_event)))
+                broker=self.broker[event.broker_name],
+                broker_name=event.broker_name,
+                callback=self._on_trade_event,
+                after_success=event.after_success
+            )))
 
     def _settle(self, broker_name, callback=False):
         # 向事件线程发送BROKER的SETTLE事件
-
+        
         # 向事件线程发送ACCOUNT的SETTLE事件
         for item in self.session.values():
             if item.broker is broker_name:
@@ -283,6 +299,8 @@ class QA_Market(QA_Trade):
                 event_type=BROKER_EVENT.SETTLE,
                 broker=self.broker[broker_name],
                 callback=callback)))
+
+        print('===== SETTLED {} ====='.format(self.running_time))
 
     def _close(self):
         pass

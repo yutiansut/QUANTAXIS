@@ -45,48 +45,26 @@ class Backtest(QA_Backtest):
         super().__init__(market_type, start, end, code_list, commission_fee)
         self.user = QA_User()
         mastrategy = MAStrategy()
-        self.portfolio,self.account= self.user.register_account(mastrategy)
+        self.portfolio, self.account = self.user.register_account(mastrategy)
         print(self.user.get_portfolio(self.portfolio).accounts)
-
-    def run(self):
-        data = next(self.ingest_data)
-        #self.market.running_time = str(data.date[0])[0:10]
-        # print(data)
-        self.broker.run(QA_Event(
-            event_type=ENGINE_EVENT.UPCOMING_DATA,
-            market_data=data))
-        self.market.upcoming_data(data,callback=self._trade)
-
-
+        print(self.user.get_portfolio(self.portfolio).get_account(self.account).assets)
         #self.market._settle(self.broker_name, callback=self.if_settle)
-    def if_settle(self, data):
-        if data is 'settle':
-            self.if_settled = True
-            self.risk_control()
-
-    def risk_control(self):
-        if self.if_settled:
-            for po in self.user.portfolio_list.keys():
-                for ac in self.user.get_portfolio(po).accounts.keys():
-                    accounts = self.user.get_portfolio(po).get_account(ac)
-                    print(accounts.assets)
-                    print(accounts.cash)
 
         # print(self.market.query_data)
 
 
 if __name__ == '__main__':
+    import QUANTAXIS as QA
     backtest = Backtest(market_type=MARKET_TYPE.STOCK_DAY,
                         start='2017-01-01',
                         end='2017-01-31',
-                        code_list=['000001', '600010'],
+                        code_list=QA.QA_fetch_stock_block_adv().code[0:5],
                         commission_fee=0.00015)
     backtest.start_market()
 
-    for i in range(10):
-        backtest.run()
-        
-        backtest._settle()
-    
+
+    backtest.run()
+
+        # backtest._settle()
 
     # backtest.run()

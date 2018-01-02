@@ -65,9 +65,9 @@ class QA_Backtest():
     def __init__(self, market_type, start, end, code_list, commission_fee,):
         self.user = QA_User()
         self.if_settled = False
-        self.account=None
-        self.portfolio=None
-        
+        self.account = None
+        self.portfolio = None
+
         self.market = QA_Market()
         self.broker = QA_BacktestBroker(commission_fee)
         self.broker_name = 'backtest_broker'
@@ -77,28 +77,40 @@ class QA_Backtest():
         self.ingest_data = QA_fetch_stock_day_adv(
             code_list, start, end).panel_gen
 
-
     def _generate_account(self):
-        self.account,self.portfolio = self.user.generate_simpleaccount()
-        
+        self.account, self.portfolio = self.user.generate_simpleaccount()
+
     def start_market(self):
         self.market.start()
         self.market.register(self.broker_name, self.broker)
 
         self.market.login(self.broker_name, self.account,
                           self.user.get_portfolio(self.portfolio).get_account(self.account))
+
     def _trade(self):
         self.market._trade(self.broker_name)
+
     def _settle(self):
-        self.market._settle(self.broker_name, callback=self.if_settle)
+        self.market._settle(self.broker_name, callback=self.on_settle)
+
     def run(self):
-        data = next(self.ingest_data)
-        #self.market.running_time = str(data.date[0])[0:10]
-        # print(data)
-        self.broker.run(QA_Event(
-            event_type=ENGINE_EVENT.UPCOMING_DATA,
-            market_data=data))
-        self.market.upcoming_data(data)
+        try:
+            print(self.user.get_portfolio(self.portfolio).get_account(self.account).assets)
+            data = next(self.ingest_data)
+            #self.market.running_time = str(data.date[0])[0:10]
+            # print(data)
+
+            self.broker.run(QA_Event(
+                event_type=ENGINE_EVENT.UPCOMING_DATA,
+                market_data=data))
+
+            self.market.upcoming_data(
+                self.broker_name, data, after_success=self.run)
+
+            print(self.user.get_portfolio(self.portfolio).get_account(self.account).hold)
+
+        except:
+            pass
         # print(self.broker._quotation)
         # print(self.broker.broker_data)
 
@@ -107,16 +119,16 @@ class QA_Backtest():
         #     market_type=MARKET_TYPE,
         #     code=self.code_list[0]))
         # print(self.market.get_account_id())
-        for ac in self.market.get_account_id():
-            self.market.insert_order(
-                account_id=ac, amount=1000, amount_model=AMOUNT_MODEL.BY_AMOUNT,
-                time=self.market.running_time, code=self.code_list[0], price=0,
-                order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.BUY,
-                market_type=MARKET_TYPE.STOCK_DAY, data_type=MARKETDATA_TYPE.DAY,
-                broker_name=self.broker_name
-            )
-        
-    def if_settle(self, data):
+
+        # for ac in self.market.get_account_id():
+        #     self.market.insert_order(
+        #         account_id=ac, amount=1000, amount_model=AMOUNT_MODEL.BY_AMOUNT,
+        #         time=self.market.running_time, code=self.code_list[0], price=0,
+        #         order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.BUY,
+        #         market_type=MARKET_TYPE.STOCK_DAY, data_type=MARKETDATA_TYPE.DAY,
+        #         broker_name=self.broker_name
+        #     )
+    def on_settle(self, data):
         if data is 'settle':
             self.if_settled = True
             self.risk_control()
