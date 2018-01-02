@@ -26,9 +26,9 @@ app.use(async (ctx, next) => {
 });
 mongo(app.context, mongo_opt) ;
 
-app.use((ctx, next) => {
+app.use(async (ctx, next) => {
   if (ctx.db) {
-    next()
+    await next()
   } else {
     ctx.body = 'Database is not connected. Please check your DB config.';
   }
