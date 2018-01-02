@@ -10,11 +10,15 @@
   },
   "bin": "./build/backend.js",
   "dependencies": {
+    "iconv-lite": "^0.4.19",
     "koa": "^2.4.1",
     "koa-jwt": "^3.3.0",
     "koa-logger": "^3.1.0",
     "koa-router": "^7.3.0",
-    "mongodb": "^2.2.30"
+    "mongodb": "^2.2.30",
+    "no-fetch": "^1.6.2",
+    "superagent-charset": "^1.2.0",
+    "whatwg-fetch": "^2.0.3"
   },
   "description": "a nodejs version of quantaxis spider",
   "main": "app.js",
