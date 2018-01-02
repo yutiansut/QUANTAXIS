@@ -148,7 +148,8 @@ git clone https://github.com/yutiansut/quantaxis --depth 1
 ![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180103010042.png)
 ![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180103010053.png)
 ![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180103010113.png)
-![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180103010104.png)
+
+
 ![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20171204183938.png)
 
 ![](http://i1.piimg.com/567571/053ac3e3850f8f60.png)
