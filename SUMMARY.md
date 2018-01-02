@@ -7,4 +7,5 @@
 * [mac 安装](Documents/install_for_mac.md)
 * [更新](Documents/update.md)
 * [APIS](Documents/instruction.md)
+* [QUANTAXIS的数据结构](Documents/DataStruct.md)
 
