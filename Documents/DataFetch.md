@@ -1,6 +1,10 @@
 # QUANTAXIS的数据获取部分
 
-数据获取分 从外部获取和从数据库获取 具体可以参见[jupyter notebook](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/jupyterexample/QAFetch.ipynb)
+数据获取分 
+- 从外部获取
+- 从数据库获取 
+
+具体可以参见[jupyter notebook](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/jupyterexample/QAFetch.ipynb)
 
 ```python
 
