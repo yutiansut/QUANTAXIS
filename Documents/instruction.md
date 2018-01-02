@@ -120,7 +120,7 @@ QA_DataStruct_Stock_block
 
 
 我们可以通过 
-```
+```python
 import QUANTAXIS as QA
 
 # QA.QA_fetch_stock_day_adv
@@ -135,19 +135,19 @@ min线的参数是code, start, end, type_='1min'
 其中 code 可以是一个股票,也可以是一列股票(list)
 
 取一个股票的数据
-```
+```python
 QA.QA_fetch_stock_day_adv('000001','2017-01-01','2017-10-01')
 In [5]: QA.QA_fetch_stock_day_adv('000001','2017-01-01','2017-10-01')
 Out[5]: QA_DataStruct_Stock_day with 1 securities
 ```
 取多个股票的数据
-```
+```python
 QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-01-01','2017-10-01')
 In [6]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-01-01','2017-10-01')
 Out[6]: QA_DataStruct_Stock_day with 2 securities
 ```
 显示结构体的数据 .data
-```
+```python
 In [10]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-09-20','2017-10-01').data
 Out[10]:
                      code   open   high    low  close    volume       date
@@ -170,7 +170,7 @@ date       code
 2017-09-29 000002  000002  26.56  26.80  26.00  26.25  345752.0 2017-09-29
 ```
 显示结构体的开/高/收/低 .open/.high/.close/.low
-```
+```python
 In [5]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-09-20','2017-10-01').high
 Out[5]:
 date        code
@@ -197,7 +197,7 @@ Name: high, dtype: float64
 返回的是一个DataStruct,用.data展示返回的数据的结构
 
 其中DataStruct.if_fq的属性会改变
-```
+```python
 In [4]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-09-20','2017-10-01').to_qfq().data
 
 Out[4]:
@@ -240,7 +240,7 @@ date       code
 2017-09-29 000002     26.41  1.0
 ```
 数据透视 .pivot()
-```
+```python
 In [6]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-09-20','2017-10-01').pivot('open')
 Out[6]:
 code        000001  000002
@@ -255,7 +255,7 @@ date
 2017-09-29   10.92   26.56
 ```
 数据的时间筛选.select_time(start,end)
-```
+```python
 In [10]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-09-20','2017-10-01').select_time('2017-09-20','2017-09-25')
 Out[10]: QA_DataStruct_Stock_day with 2 securities
 
@@ -277,7 +277,7 @@ date       code
 time是你选择的时间
 gap是长度 (int)
 methods有 '<=','lte','<','lt','eq','==','>','gt','>=','gte'的选项
-```
+```python
 In [14]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-09-20','2017-10-01').select_time_with_gap('2017-09-20',2,'gt')
 Out[14]: QA_DataStruct_Stock_day with 2 securities
 
@@ -292,7 +292,7 @@ date       code
 ```
 选取结构组里面某一只股票select_code(code)
 
-```
+```python
 In [16]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-09-20','2017-10-01').select_code('000001')
 Out[16]: QA_DataStruct_Stock_day with 1 securities
 In [17]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-09-20','2017-10-01').select_code('000001').data
@@ -312,7 +312,7 @@ date       code
 
 第三个选项 默认是True  
 第三选项的意义在于,如果出现了停牌,参数如果是True 那么就会返回空值 而如果是False,就会返回停牌前最后一个交易日的值
-```
+```python
 In [18]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-09-20','2017-10-01').get_bar('000001','2017-09-20',True)
 Out[18]: QA_DataStruct_Stock_day with 1 securities
 
@@ -326,7 +326,7 @@ date       code
 画图 plot(code)
 
 如果是()空值 就会把全部的股票都画出来
-```
+```python
 In [20]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-09-20','2017-10-01').plot()
 QUANTAXIS>> The Pic has been saved to your path: .\QA_stock_day_codepackage_bfq.html
 
