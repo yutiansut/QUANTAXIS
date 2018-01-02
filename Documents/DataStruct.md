@@ -1,9 +1,8 @@
-# QA_DataStruct QUANTAXIS的核心数据结构以及方法
-
+# QUANTAXIS的核心数据结构以及方法
 
 属性用@property装饰器装饰,进行懒运算 提高效率
 
-DataStruct具有的功能:
+QA_DataStruct具有的功能:
 
 - 数据容器
 - 数据变换 [分拆/合并/倒序] split/merge/reverse
@@ -15,6 +14,7 @@ DataStruct具有的功能:
 - 数据库式查询  query
 - 画图 plot
 - 计算指标 add_func
+- 生成器 panel_gen(按时间分类的面板生成器)/security_gen(按股票分类的股票生成器)
 
 
 QA_DataStruct_Stock_block
