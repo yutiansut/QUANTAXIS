@@ -47,7 +47,8 @@ class Backtest(QA_Backtest):
         mastrategy = MAStrategy()
         self.portfolio, self.account = self.user.register_account(mastrategy)
         print(self.user.get_portfolio(self.portfolio).accounts)
-        print(self.user.get_portfolio(self.portfolio).get_account(self.account).assets)
+        print(self.user.get_portfolio(
+            self.portfolio).get_account(self.account).assets)
         #self.market._settle(self.broker_name, callback=self.if_settle)
 
         # print(self.market.query_data)
@@ -62,9 +63,8 @@ if __name__ == '__main__':
                         commission_fee=0.00015)
     backtest.start_market()
 
-
     backtest.run()
 
-        # backtest._settle()
+    # backtest._settle()
 
     # backtest.run()

@@ -91,7 +91,29 @@ class dealer_preset():
 
 class QA_Dealer():
 
-    def __init__(self,  commission_fee_coeff=0.00025, tax_coeff=0.001, *args, **kwargs):
+    """[summary]
+
+
+    对于不同的市场规则:
+    股票市场 t+1
+    期货/期权/加密货币市场 t+0
+
+    股票/加密货币市场不允许卖空
+    期货/期权市场允许卖空
+
+    t+1的市场是
+    当日的买入 更新持仓- 不更新可卖数量- 资金冻结
+    当日的卖出 及时更新可用资金
+
+    t+0市场是:
+    当日买入 即时更新持仓和可卖
+    当日卖出 即时更新
+
+    卖空的规则是
+    允许无仓位的时候卖出证券(按市值和保证金比例限制算)
+    """
+
+    def __init__(self, commission_fee_coeff=0.00025, tax_coeff=0.001, *args, **kwargs):
         self.commission_fee_coeff = commission_fee_coeff
         self.tax_coeff = tax_coeff
         self.deal_name = ''
@@ -152,30 +174,30 @@ class QA_Dealer():
         }
         return message
 
-    def cal_stock_fee(self):
-        if int(self.order.towards) > 0:
-            commission_fee = self.commission_fee_coeff * \
+    def cal_fee(self):
+        if self.order.market_type in [MARKET_TYPE.STOCK_DAY,MARKET_TYPE.STOCK_MIN,MARKET_TYPE.STOCK_TRANSACTION]:
+            if int(self.order.towards) > 0:
+                commission_fee = self.commission_fee_coeff * \
+                    float(self.deal_price) * float(self.order.amount)
+                self.commission_fee = 5 if commission_fee < 5 else commission_fee
+
+                self.tax = 0  # 买入不收印花税
+            else:
+                commission_fee = self.commission_fee_coeff * \
+                    float(self.deal_price) * float(self.order.amount)
+
+                self.commission_fee = 5 if commission_fee < 5 else commission_fee
+
+                self.tax = self.tax_coeff * \
+                    float(self.deal_price) * float(self.order.amount)
+        elif self.order.market_type in [MARKET_TYPE.FUTUER_DAY,MARKET_TYPE.FUTUER_MIN,MARKET_TYPE.FUTUER_TRANSACTION]:
+            # 期货不收税
+            # 双边手续费 也没有最小手续费限制
+            self.commission_fee = self.commission_fee_coeff * \
                 float(self.deal_price) * float(self.order.amount)
-            self.commission_fee = 5 if commission_fee < 5 else commission_fee
+            #self.commission_fee = 5 if commission_fee < 5 else commission_fee
 
             self.tax = 0  # 买入不收印花税
-        else:
-            commission_fee = self.commission_fee_coeff * \
-                float(self.deal_price) * float(self.order.amount)
-
-            self.commission_fee = 5 if commission_fee < 5 else commission_fee
-
-            self.tax = self.tax_coeff * \
-                float(self.deal_price) * float(self.order.amount)
-
-    def cal_future_fee(self):
-        # 期货不收税
-        # 双边手续费 也没有最小手续费限制
-        self.commission_fee = self.commission_fee_coeff * \
-            float(self.deal_price) * float(self.order.amount)
-        #self.commission_fee = 5 if commission_fee < 5 else commission_fee
-
-        self.tax = 0  # 买入不收印花税
 
     def backtest_stock_dealer(self):
         # 新增一个__commission_fee_coeff 手续费系数
@@ -196,7 +218,7 @@ class QA_Dealer():
                 self.status = TRADE_STATUS.PRICE_LIMIT
                 self.deal_price = 0
                 self.deal_amount = 0
-                self.cal_stock_fee()
+                self.cal_fee()
                 return self.callback_message()
             elif ((float(self.order.price) < float(self.market_data["high"]) and
                     float(self.order.price) > float(self.market_data["low"])) or
@@ -205,7 +227,7 @@ class QA_Dealer():
                 '能成功交易的情况 有滑点调整'
                 if float(self.order.amount) < float(self.market_data['volume']) * 100 / 16:
                     self.deal_price = self.order.price
-                    self.deal_amount=self.order.amount
+                    self.deal_amount = self.order.amount
                 elif float(self.order.amount) >= float(self.market_data['volume']) * 100 / 16 and \
                         float(self.order.amount) < float(self.market_data['volume']) * 100 / 8:
                     """
@@ -220,7 +242,7 @@ class QA_Dealer():
                     else:
                         self.deal_price = (min(float(self.market_data['open']), float(
                             self.market_data['close'])) + float(self.market_data['low'])) * 0.5
-                    self.deal_amount=self.order.amount
+                    self.deal_amount = self.order.amount
 
                 else:
                     self.deal_amount = float(self.market_data['volume']) / 8
@@ -229,14 +251,14 @@ class QA_Dealer():
                     else:
                         self.deal_price = float(self.market_data['low'])
 
-                self.cal_stock_fee()
+                self.cal_fee()
                 self.status = TRADE_STATUS.SUCCESS
                 return self.callback_message()
             else:
                 self.status = TRADE_STATUS.FAILED
                 self.deal_price = 0
                 self.deal_amount = 0
-                self.cal_stock_fee()
+                self.cal_fee()
                 return self.callback_message()
 
         except Exception as e:
@@ -244,6 +266,11 @@ class QA_Dealer():
             self.status = TRADE_STATUS.NO_MARKET_DATA
             return self.callback_message()
 
+
+
+class Stock_Dealer(QA_Dealer):
+    def __init__(self, *args, **kwargs):
+        super().__init__()
 
 if __name__ == '__main__':
     pass

@@ -119,7 +119,7 @@ class QA_Order():
             self.trade_id = order['trade_id']
             return self
         except Exception as e:
-            QA_util_log_info('Failed to tran from dict')
+            QA_util_log_info('Failed to tran from dict {}'.format(e))
 
 
 class QA_OrderQueue():   # also the order tree
