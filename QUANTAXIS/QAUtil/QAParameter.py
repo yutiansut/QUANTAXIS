@@ -206,7 +206,6 @@ class MARKET_EVENT:
     QUERY_ACCOUNT = 'query_account'
     QUERY_CASH = 'query_cash'
     QUERY_DATA = 'query_data'
-    
 
 
 class ENGINE_EVENT:
@@ -226,12 +225,18 @@ class ACCOUNT_EVENT:
 
 
 class BROKER_EVENT:
-    """BROKER事件"""
+    """BROKER事件
+    BROKER 
+    有加载数据的任务 load data
+    撮合成交的任务 broker_trade
+
+
+    """
     LOAD_DATA = 'load_data'
     TRADE = 'broker_trade'
     SETTLE = 'broker_settle'
+    DAILY_SETTLE = 'broker_dailysettle'
     RECEIVE_ORDER = 'receive_order'
-    
 
 
 class ORDER_EVENT:

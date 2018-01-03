@@ -26,7 +26,7 @@ import datetime
 
 import pandas as pd
 
-from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Worker
+from QUANTAXIS.QAEngine.QAEvent import QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_Order
 from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
                                           BROKER_TYPE, ENGINE_EVENT,
@@ -128,7 +128,12 @@ class QA_Account(QA_Worker):
 
     @property
     def hold_table(self):
-        return pd.DataFrame(data=self.hold,columns=self._hold_headers)
+        return pd.DataFrame(data=self.hold, columns=self._hold_headers)
+
+    @property
+    def assets_series(self):
+        return pd.Series(self.assets)
+
     def init(self, init_assest=None):
         'init methods'
         self.hold = []
@@ -455,7 +460,6 @@ class QA_Account(QA_Worker):
                 self.market_data.append(event.market_data)
             self.on_bar(event)
 
-            
             if event.callback:
                 event.callback(event)
 

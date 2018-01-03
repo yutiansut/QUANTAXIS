@@ -11,12 +11,26 @@ class MAStrategy(QA_Strategy):
         #print(self.market_data)        
         if self.market_data.len>1:
             for item in event.market_data.code:
-                event.send_order(account_id=self.account_cookie,
-                    amount=1000, amount_model=AMOUNT_MODEL.BY_AMOUNT,
-                    time=self.current_time, code=item, price=0,
-                    order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.BUY,
-                    market_type=MARKET_TYPE.STOCK_DAY, data_type=MARKETDATA_TYPE.DAY,
-                    broker_name=self.broker
-                )
+                try:
+                    
+                    event.send_order(account_id=self.account_cookie,
+                        amount=1000, amount_model=AMOUNT_MODEL.BY_AMOUNT,
+                        time=self.current_time, code=item, price=0,
+                        order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.BUY,
+                        market_type=MARKET_TYPE.STOCK_DAY, data_type=MARKETDATA_TYPE.DAY,
+                        broker_name=self.broker
+                    )
+                    print(self.sell_available[item])
+                    if self.sell_available[item]>0:
+                        print('sell')
+                        event.send_order(account_id=self.account_cookie,
+                            amount=self.sell_available[item], amount_model=AMOUNT_MODEL.BY_AMOUNT,
+                            time=self.current_time, code=item, price=0,
+                            order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.SELL,
+                            market_type=MARKET_TYPE.STOCK_DAY, data_type=MARKETDATA_TYPE.DAY,
+                            broker_name=self.broker
+                        )
+                except:
+                    pass
         
 
