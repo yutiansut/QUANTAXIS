@@ -28,7 +28,7 @@ import pandas as pd
 
 from QUANTAXIS.QAEngine.QAEvent import QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_Order
-from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
+from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL, TRADE_STATUS,
                                           BROKER_TYPE, ENGINE_EVENT,
                                           MARKET_TYPE, ORDER_DIRECTION)
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
@@ -42,7 +42,21 @@ class QA_Account(QA_Worker):
     [description]
     QA_Account 是QUANTAXIS的最小不可分割单元之一
 
-    QA_Account
+    QA_Account是账户类 需要兼容股票/期货/指数
+    QA_Account继承自QA_Worker 可以被事件驱动
+    QA_Account可以直接被QA_Strategy继承
+
+    有三类输入:
+    信息类: 账户绑定的策略名/账户的用户名/账户类别/账户识别码/账户的broker
+    资产类: 总资产/现金/可用现金/交易历史/交易对照表
+    规则类: 是否允许卖空/是否允许t0结算
+
+    方法:
+    惰性计算:最新持仓/最新总资产/最新现金/持仓面板
+    生成订单/接受交易结果数据
+    接收新的数据/on_bar/on_tick方法/缓存新数据的market_data
+
+
     """
 
     # 一个hold改成list模式
@@ -52,7 +66,8 @@ class QA_Account(QA_Worker):
                  sell_available=None,
                  init_assest=None, order_queue=None,
                  cash=None, history=None, detail=None, assets=None,
-                 account_cookie=None):
+                 account_cookie=None,
+                 allow_t0=False, allow_sellopen=False):
         super().__init__()
         self._history_headers = ['datetime', 'code', 'price',
                                  'towards', 'amount', 'order_id', 'trade_id', 'commission_fee']
@@ -75,7 +90,7 @@ class QA_Account(QA_Worker):
         self.sell_available = [['datetime', 'code', 'price',
                                 'amount', 'order_id', 'trade_id']] if sell_available is None else sell_available
         self.order_queue = pd.DataFrame() if order_queue is None else order_queue  # 已委托待成交队列
-
+        self.accchange_date = []
         self.history = [] if history is None else history
         self.detail = [] if detail is None else detail
         self.broker = broker
@@ -97,12 +112,17 @@ class QA_Account(QA_Worker):
                     'assets': self.cash,
                     'history': self.history,
                     'detail': self.detail
-                },
-                'running_time': str(datetime.datetime.now())
+                }
             }
         }
         self.market_data = None
         self._currenttime = None
+
+        # 两个规则
+        # 1.是否允许t+0 及买入及结算
+        # 2.是否允许卖空开仓
+        self.allow_t0 = allow_t0
+        self.allow_sellopen = allow_sellopen
 
     def __repr__(self):
         return '< QA_Account {} Assets:{} >'.format(self.account_cookie, self.assets[-1])
@@ -134,14 +154,13 @@ class QA_Account(QA_Worker):
     def assets_series(self):
         return pd.Series(self.assets)
 
-    def init(self, init_assest=None):
-        'init methods'
+    def reset_assets(self, init_assest=None):
+        'reset_assets/history/hold/cash/orderqueue'
         self.hold = []
         self.sell_available = [['date', 'code', 'price',
                                 'amount', 'order_id', 'trade_id']]
         self.history = []
         self.init_assest = init_assest
-        self.account_cookie = QA_util_random_with_topic(topic='Acc')
         self.assets = [self.init_assest]
         self.cash = [self.init_assest]
         self.cash_available = self.cash[-1]  # 在途资金
@@ -162,8 +181,7 @@ class QA_Account(QA_Worker):
                     'assets': self.cash,
                     'history': self.history,
                     'detail': self.detail
-                },
-                'running_time': str(datetime.datetime.now())
+                }
             }
         }
 
@@ -184,9 +202,10 @@ class QA_Account(QA_Worker):
             # towards>1 买入成功
             # towards<1 卖出成功
 
-            (__new_code, __new_amount, __new_trade_date, __new_towards,
-                __new_price, __new_order_id,
-                __new_trade_id, __new_trade_fee) = (str(message['body']['order']['code']),
+            (__new_code, __new_amount,
+             __new_trade_date, __new_towards,
+             __new_price, __new_order_id,
+             __new_trade_id, __new_trade_fee) = (str(message['body']['order']['code']),
                                                     float(message['body']['order']['amount']), str(
                                                         message['body']['order']['datetime']),
                                                     int(message['body']['order']['towards']), float(
@@ -194,7 +213,7 @@ class QA_Account(QA_Worker):
                                                     str(message['header']['order_id']), str(
                                                         message['header']['trade_id']),
                                                     float(message['body']['fee']['commission']))
-            if int(message['header']['status']) == 203:
+            if int(message['header']['status']) == TRADE_STATUS.PRICE_LIMIT:
                 '委托成功 待交易'
                 self.order_queue.append(
                     [__new_trade_date, __new_code, __new_price, __new_amount,
@@ -202,7 +221,7 @@ class QA_Account(QA_Worker):
 
                 # 如果是买入的waiting  那么要减少可用资金,增加在途资金
                 # 如果是卖出的waiting 则减少hold_list
-            elif int(message['header']['status']) == 200:
+            elif int(message['header']['status']) == TRADE_STATUS.SUCCESS:
                 '交易成功的处理'
                 self.history.append(
                     [__new_trade_date, __new_code, __new_price, __new_towards,
@@ -404,10 +423,23 @@ class QA_Account(QA_Worker):
             return flag
 
     def settle(self):
-        '初始化的时候 同步可用资金/可卖股票'
+        '同步可用资金/可卖股票'
         self.cash_available = self.cash[-1]
         self.sell_available = pd.DataFrame(self.hold, columns=self._hold_headers).set_index(
             'code', drop=False)['amount'].groupby('code').sum()
+
+    def market_close(self, renew_data):
+        '计算账户market_value'
+        asset = self.cash[-1]
+        for i in range(len(self.hold)):
+            if self.hold[i][1] in renew_data.code:
+                asset += renew_data.query('code=={}'.format(self.hold[i][1]))[
+                    'close'] * float(self.hold[i][3])
+            else:
+
+                self.hold + sum([float(self.hold[i][2]) * float(self.hold[i][3])
+                                 for i in range(0, len(self.hold))])
+        return self.cash[-1] + sum([float(self.hold[i][2]) * float(self.hold[i][3]) for i in range(0, len(self.hold))])
 
     def on_bar(self, event):
         'while updating the market data'

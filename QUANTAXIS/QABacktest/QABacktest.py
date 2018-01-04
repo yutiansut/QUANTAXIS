@@ -23,7 +23,6 @@
 # SOFTWARE.
 
 
-from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
 from QUANTAXIS.QAARP.QAUser import QA_User
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
@@ -87,11 +86,6 @@ class QA_Backtest():
         self.market.login(self.broker_name, self.account,
                           self.user.get_portfolio(self.portfolio).get_account(self.account))
 
-    def _trade(self):
-        self.market._trade(self.broker_name)
-
-    def _settle(self):
-        self.market._settle(self.broker_name, callback=self.on_settle)
 
     def run(self):
         try:
@@ -108,10 +102,10 @@ class QA_Backtest():
             self.market.upcoming_data(
                 self.broker_name, data, after_success=self.run)
 
-            print(self.user.get_portfolio(self.portfolio).get_account(self.account).hold_table)
+
 
         except:
-            pass
+            self.after_success()
         # print(self.broker._quotation)
         # print(self.broker.broker_data)
 
@@ -129,21 +123,17 @@ class QA_Backtest():
         #         market_type=MARKET_TYPE.STOCK_DAY, data_type=MARKETDATA_TYPE.DAY,
         #         broker_name=self.broker_name
         #     )
-    def on_settle(self, data):
-        if data is 'settle':
-            self.if_settled = True
-            self.risk_control()
-
-    def risk_control(self):
-        if self.if_settled:
-            for po in self.user.portfolio_list.keys():
-                for ac in self.user.get_portfolio(po).accounts.keys():
-                    accounts = self.user.get_portfolio(po).get_account(ac)
-                    print(accounts.assets)
-                    print(accounts.cash)
 
         # print(self.market.query_data)
-
+    def after_success(self):
+        print('AFTER SUCCESS')
+        for po in self.user.portfolio_list.keys():
+            for ac in self.user.get_portfolio(po).accounts.keys():
+                accounts = self.user.get_portfolio(po).get_account(ac)
+                print(len(accounts.hold))
+                print(len(accounts.assets))
+                print(len(accounts.history))
+                
 
 if __name__ == '__main__':
     backtest = QA_Backtest(market_type=MARKET_TYPE.STOCK_DAY,
@@ -154,6 +144,5 @@ if __name__ == '__main__':
     backtest._generate_account()
     backtest.start_market()
     backtest.run()
-    backtest._trade()
-    backtest._settle()
+
     # backtest.run()
