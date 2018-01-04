@@ -401,7 +401,7 @@ class QA_DataStruct_Stock_min(_quotation_base):
     def to_hfq(self):
         if self.if_fq is 'bfq':
             data = QA_DataStruct_Stock_min(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
-                self.data[self.data['code'] == x], '01'), self.code))).set_index(['datetime', 'code'], drop=False))
+                self.data[self.data['code'] == x], 'hfq'), self.code))).set_index(['datetime', 'code'], drop=False))
             data.if_fq = 'hfq'
             return data
         else:
