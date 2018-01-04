@@ -39,7 +39,7 @@ from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.QADealer import QA_Dealer
 from QUANTAXIS.QAUtil.QADate import QA_util_to_datetime
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_TYPE,
+from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_TYPE,ORDER_MODEL,
                                           ENGINE_EVENT, MARKET_EVENT,
                                           MARKET_TYPE, BROKER_EVENT)
 from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
@@ -173,7 +173,7 @@ class QA_BacktestBroker(QA_Broker):
 
         # 因为成交模式对时间的封装
 
-        if order.order_model == 'market' and order.price is None:
+        if order.order_model == ORDER_MODEL.MARKET and order.price is None:
 
             if order.type[-2:] == '01':
                 exact_time = str(datetime.datetime.strptime(
@@ -192,7 +192,7 @@ class QA_BacktestBroker(QA_Broker):
             order.price = (float(self.market_data["high"]) +
                            float(self.market_data["low"])) * 0.5
 
-        elif order.order_model == 'close' and order.price is None:
+        elif order.order_model == ORDER_MODEL.CLOSE and order.price is None:
             try:
                 order.datetime = self.market_data.datetime
             except:
@@ -202,7 +202,7 @@ class QA_BacktestBroker(QA_Broker):
                 return order
             order.price = float(self.market_data["close"])
 
-        elif order.order_model == 'strict' and order.price is None:
+        elif order.order_model == ORDER_MODEL.STRICT and order.price is None:
             '加入严格模式'
             if order.type[-2:] == '01':
                 exact_time = str(datetime.datetime.strptime(
