@@ -37,7 +37,7 @@ from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
                                           ENGINE_EVENT, MARKET_EVENT,
                                           MARKETDATA_TYPE, ORDER_EVENT,
                                           ORDER_MODEL)
-
+from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 
 class QA_Market(QA_Trade):
     """
@@ -150,15 +150,23 @@ class QA_Market(QA_Trade):
         if order_model in [ORDER_MODEL.CLOSE, ORDER_MODEL.NEXT_OPEN]:
             _price = self.query_data_no_wait(broker_name=broker_name, data_type=data_type,
                                              market_type=market_type, code=code, start=time)
-            if _price is not None:
+
+            if _price is not None and len(_price) > 0:
                 price = float(_price[0][4])
                 flag = True
+            else:
+                QA_util_log_info('MARKET WARING: SOMEING WRONG WITH ORDER \n ')
+                QA_util_log_info('code {} date {} price {} order_model {} amount_model {}'.format(code,time,price,order_model,amount_model))
         elif order_model is ORDER_MODEL.MARKET:
             _price = self.query_data_no_wait(broker_name=broker_name, data_type=data_type,
                                              market_type=market_type, code=code, start=time)
-            if _price is not None:
+            if _price is not None and len(_price) > 0:
                 price = float(_price[0][1])
                 flag = True
+            else:
+                QA_util_log_info('MARKET WARING: SOMEING WRONG WITH ORDER \n ')
+                QA_util_log_info('code {} date {} price {} order_model {} amount_model {}'.format(code,time,price,order_model,amount_model))
+
 
         elif order_model is ORDER_MODEL.LIMIT:
             # if price > self.last_query_data[0][2] or price < self.last_query_data[0][3]:
@@ -299,7 +307,6 @@ class QA_Market(QA_Trade):
                 callback=callback)))
 
         print('===== SETTLED {} ====='.format(self.running_time))
-
 
     def _close(self):
         pass
