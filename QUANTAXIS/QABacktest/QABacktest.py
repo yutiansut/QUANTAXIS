@@ -82,48 +82,21 @@ class QA_Backtest():
     def start_market(self):
         self.market.start()
         self.market.register(self.broker_name, self.broker)
-
         self.market.login(self.broker_name, self.account,
                           self.user.get_portfolio(self.portfolio).get_account(self.account))
 
-
     def run(self):
         try:
-            print(self.user.get_portfolio(self.portfolio).get_account(self.account).cash)
             data = next(self.ingest_data)
             #self.market.running_time = str(data.date[0])[0:10]
-            print(data)
-
             self.broker.run(QA_Event(
                 event_type=ENGINE_EVENT.UPCOMING_DATA,
                 market_data=data))
-
             self.market.upcoming_data(
                 self.broker_name, data, after_success=self.run)
-
-
-
         except:
             self.after_success()
-        # print(self.broker._quotation)
-        # print(self.broker.broker_data)
 
-        # print(self.market.query_currentbar(
-        #     broker_name=self.broker_name,
-        #     market_type=MARKET_TYPE,
-        #     code=self.code_list[0]))
-        # print(self.market.get_account_id())
-
-        # for ac in self.market.get_account_id():
-        #     self.market.insert_order(
-        #         account_id=ac, amount=1000, amount_model=AMOUNT_MODEL.BY_AMOUNT,
-        #         time=self.market.running_time, code=self.code_list[0], price=0,
-        #         order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.BUY,
-        #         market_type=MARKET_TYPE.STOCK_DAY, data_type=MARKETDATA_TYPE.DAY,
-        #         broker_name=self.broker_name
-        #     )
-
-        # print(self.market.query_data)
     def after_success(self):
         print('AFTER SUCCESS')
         for po in self.user.portfolio_list.keys():
@@ -132,7 +105,7 @@ class QA_Backtest():
                 print(accounts.hold)
 
                 print(accounts.history)
-                
+
 
 if __name__ == '__main__':
     backtest = QA_Backtest(market_type=MARKET_TYPE.STOCK_DAY,
