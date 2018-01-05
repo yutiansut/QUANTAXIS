@@ -48,7 +48,7 @@ class Backtest(QA_Backtest):
         self.portfolio, self.account = self.user.register_account(mastrategy)
         print(self.user.get_portfolio(self.portfolio).accounts)
         print(self.user.get_portfolio(
-            self.portfolio).get_account(self.account).assets)
+            self.portfolio).get_account(self.account).cash)
         #self.market._settle(self.broker_name, callback=self.if_settle)
 
         # print(self.market.query_data)

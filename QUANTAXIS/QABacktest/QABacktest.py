@@ -89,11 +89,10 @@ class QA_Backtest():
 
     def run(self):
         try:
-            print(self.user.get_portfolio(self.portfolio).get_account(self.account).assets)
             print(self.user.get_portfolio(self.portfolio).get_account(self.account).cash)
             data = next(self.ingest_data)
             #self.market.running_time = str(data.date[0])[0:10]
-            # print(data)
+            print(data)
 
             self.broker.run(QA_Event(
                 event_type=ENGINE_EVENT.UPCOMING_DATA,
@@ -130,9 +129,9 @@ class QA_Backtest():
         for po in self.user.portfolio_list.keys():
             for ac in self.user.get_portfolio(po).accounts.keys():
                 accounts = self.user.get_portfolio(po).get_account(ac)
-                print(len(accounts.hold))
-                print(len(accounts.assets))
-                print(len(accounts.history))
+                print(accounts.hold)
+
+                print(accounts.history)
                 
 
 if __name__ == '__main__':
