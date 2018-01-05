@@ -206,13 +206,13 @@ class QA_Account(QA_Worker):
              __new_trade_date, __new_towards,
              __new_price, __new_order_id,
              __new_trade_id, __new_trade_fee) = (str(message['body']['order']['code']),
-                                                    float(message['body']['order']['amount']), str(
-                                                        message['body']['order']['datetime']),
-                                                    int(message['body']['order']['towards']), float(
-                                                        message['body']['order']['price']),
-                                                    str(message['header']['order_id']), str(
-                                                        message['header']['trade_id']),
-                                                    float(message['body']['fee']['commission']))
+                                                 float(message['body']['order']['amount']), str(
+                 message['body']['order']['datetime']),
+                int(message['body']['order']['towards']), float(
+                 message['body']['order']['price']),
+                str(message['header']['order_id']), str(
+                 message['header']['trade_id']),
+                float(message['body']['fee']['commission']))
             if int(message['header']['status']) == TRADE_STATUS.PRICE_LIMIT:
                 '委托成功 待交易'
                 self.order_queue.append(
@@ -410,6 +410,9 @@ class QA_Account(QA_Worker):
                 self.sell_available[code] -= amount
                 flag = True
         elif towards in [ORDER_DIRECTION.SELL] and amount_model is AMOUNT_MODEL.BY_PRICE:
+
+            if self.allow_sellopen:
+                flag = True
             if self.sell_available[code] > amount:
                 self.sell_available[code] -= int(amount / price * 100) * 100
                 flag = True
