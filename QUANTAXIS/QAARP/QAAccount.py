@@ -208,7 +208,8 @@ class QA_Account(QA_Worker):
                             account_cookie=self.account_cookie, code=code, market_type=market_type,
                             date=date, datetime=time, sending_time=time,
                             btype=self.account_type, amount=amount, price=price,
-                            order_model=order_model, towards=towards, amount_model=amount_model)  # init
+                            order_model=order_model, towards=towards, 
+                            amount_model=amount_model)  # init
         else:
             return flag
 
@@ -216,7 +217,6 @@ class QA_Account(QA_Worker):
         '同步可用资金/可卖股票'
         self.cash_available = self.cash[-1]
         self.sell_available = self.hold
-        # self.sell_available = pass
 
     def on_bar(self, event):
         'while updating the market data'
