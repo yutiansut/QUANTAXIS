@@ -73,14 +73,15 @@ class QA_Thread(threading.Thread):
                         # QA_util_log_info("From Engine %s  Engine will waiting for new task ..." % str(
                         #     threading.current_thread()))
                         time.sleep(0.1)
+                        pass
                 except:
                     time.sleep(0.1)
                     self.run()
-                __res = self.qsize()  # 判断消息队列大小
-                if __res > 0:
-                    pass
-                    QA_util_log_info("From Engine %s: There are still %d tasks to do" % (
-                        str(threading.current_thread()), __res))
+                # __res = self.qsize()  # 判断消息队列大小
+                # if __res > 0:
+                #     pass
+                #     # QA_util_log_info("From Engine %s: There are still %d tasks to do" % (
+                #     #     str(threading.current_thread()), __res))
                 #threading.Timer(0.005, self.run)
 
     def pause(self):
@@ -174,8 +175,8 @@ class QA_Engine(QA_Thread):
                 __res = self.qsize()  # 判断消息队列大小
                 if __res > 0:
                     pass
-                    QA_util_log_info("From Engine %s: There are still %d tasks to do" % (
-                        str(threading.current_thread()), __res))
+                    # QA_util_log_info("From Engine %s: There are still %d tasks to do" % (
+                    #     str(threading.current_thread()), __res))
                 #threading.Timer(0.005, self.run)
                 #self.run()
 

@@ -191,10 +191,8 @@ class QA_OrderQueue():   # also the order tree
         return self._from_dataframe(self.pending)
 
     def query_order(self, order_id):
-        try:
-            return self.queue[order_id]
-        except:
-            return None
+
+        return self.queue.get(order_id, None)
 
     def set_status(self, order_id, new_status):
         try:
