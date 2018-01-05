@@ -22,24 +22,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import csv
 import datetime
 import json
 import os
-import queue
 import re
 import sys
-import threading
-import time
 
-import numpy as np
-import pandas as pd
-import pymongo
-import requests
+
+
 import tushare as ts
-from flask import Flask, jsonify, make_response, render_template, request
+from flask import Flask, jsonify, make_response, request
 from flask_socketio import SocketIO, emit
-from tabulate import tabulate
+
 
 import QUANTAXIS as QA
 from QUANTAXIS.QAUtil.QASetting import QA_Setting
