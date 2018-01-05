@@ -68,7 +68,6 @@ class QA_Account(QA_Worker):
 
     """
 
-    # 一个hold改成list模式
 
     def __init__(self, strategy_name='', user='', account_type=MARKET_TYPE.STOCK_DAY,
                  broker=BROKER_TYPE.BACKETEST, portfolio=None,
@@ -115,10 +114,9 @@ class QA_Account(QA_Worker):
                 'source': 'account',
                 'cookie': self.account_cookie,
                 'portfolio': self.portfolio,
-                'session': {
-                    'user': self.user,
-                    'strategy': self.strategy_name
-                }
+                'user':self.user,
+                'strategy_name':self.strategy_name,
+                'current_time':self._currenttime
             },
             'body': {
                 'account': {
@@ -224,18 +222,6 @@ class QA_Account(QA_Worker):
         self.sell_available = self.hold
         # self.sell_available = pass
 
-    def market_close(self, renew_data):
-        '计算账户market_value'
-        # asset = self.cash[-1]
-        # for i in range(len(self.hold)):
-        #     if self.hold[i][1] in renew_data.code:
-        #         asset += renew_data.query('code=={}'.format(self.hold[i][1]))[
-        #             'close'] * float(self.hold[i][3])
-        #     else:
-
-        #         self.hold + sum([float(self.hold[i][2]) * float(self.hold[i][3])
-        #                          for i in range(0, len(self.hold))])
-        # return self.cash[-1] + sum([float(self.hold[i][2]) * float(self.hold[i][3]) for i in range(0, len(self.hold))])
 
     def on_bar(self, event):
         'while updating the market data'
@@ -246,8 +232,11 @@ class QA_Account(QA_Worker):
         pass
 
     def from_message(self, message):
-        'resume the account from standard message'
-        self.account_cookie = message['header']['cookie']
+        """resume the account from standard message
+        这个是从数据库恢复账户时需要的"""
+        self.portfolio=message.get('portfolio',None)
+        self.user=message.get('user',None)
+        self.account_cookie = message.get('account_cookie',None)
         self.history = message['body']['account']['history']
         self.cash = message['body']['account']['cash']
         return self
