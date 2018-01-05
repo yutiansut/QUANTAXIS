@@ -126,7 +126,6 @@ class QA_Dealer():
         self.status = None
 
     def deal(self, order, market_data):
-
         self.order = order
         self.market_data = market_data
         self.deal_price = 0
