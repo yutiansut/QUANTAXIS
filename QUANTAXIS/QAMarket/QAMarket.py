@@ -83,10 +83,6 @@ class QA_Market(QA_Trade):
                 )
             ))
 
-        # print(self.running_time)
-
-        # self.event_queue.put(QA_Task(
-        #     worker=pass))
 
     def start(self):
         self.trade_engine.start()
@@ -188,6 +184,7 @@ class QA_Market(QA_Trade):
 
     def on_insert_order(self, order):
         print(order)
+
 
     def _renew_account(self):
         for item in self.session.values():

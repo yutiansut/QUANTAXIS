@@ -126,6 +126,9 @@ class QA_Account(QA_Worker):
         return pd.DataFrame(data=self.history, columns=self._history_headers).groupby('code').amount.sum()
 
     @property
+    def history_table(self):
+        return pd.DataFrame(data=self.history,columns=self._history_headers)
+    @property
     def latest_cash(self):
         'return the lastest cash'
         return self.cash[-1]

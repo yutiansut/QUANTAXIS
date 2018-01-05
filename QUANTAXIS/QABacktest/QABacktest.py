@@ -104,7 +104,7 @@ class QA_Backtest():
                 accounts = self.user.get_portfolio(po).get_account(ac)
                 print(accounts.hold)
 
-                print(accounts.history)
+                print(accounts.history_table)
 
 
 if __name__ == '__main__':
