@@ -64,7 +64,6 @@ class QA_Order():
         else:
             pass
         self.sending_time = self.datetime if sending_time is None else sending_time  # 下单时间
-
         self.transact_time = transact_time
         self.amount = amount
         self.towards = towards  # side
