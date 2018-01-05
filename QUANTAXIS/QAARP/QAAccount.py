@@ -94,7 +94,7 @@ class QA_Account(QA_Worker):
         # 两个规则
         # 1.是否允许t+0 及买入及结算
         # 2.是否允许卖空开仓
-        # 3.是否允许保证金交易
+        # 3.是否允许保证金交易/ 如果不是false 就需要制定保证金比例(dict形式)
         self.allow_t0 = allow_t0
         self.allow_sellopen = allow_sellopen
         self.margin_level = margin_level
@@ -183,32 +183,33 @@ class QA_Account(QA_Worker):
         date = str(time)[0:10] if len(str(time)) == 19 else str(time)
         time = str(time) if len(
             str(time)) == 19 else '{} 09:31:00'.format(str(time)[0:10])
-        if towards in [ORDER_DIRECTION.BUY] and amount_model is AMOUNT_MODEL.BY_AMOUNT:
-            if self.cash_available > amount * price:
-                self.cash_available -= amount * price
-                flag = True
-        if towards in [ORDER_DIRECTION.BUY] and amount_model is AMOUNT_MODEL.BY_PRICE:
-            if self.cash_available > amount:
-                self.cash_available -= amount
-                flag = True
-        elif towards in [ORDER_DIRECTION.SELL] and amount_model is AMOUNT_MODEL.BY_AMOUNT:
-            if self.sell_available[code] > amount:
-                self.sell_available[code] -= amount
-                flag = True
-        elif towards in [ORDER_DIRECTION.SELL] and amount_model is AMOUNT_MODEL.BY_PRICE:
 
+        amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
+            amount / price)
+        if self.account_type in [MARKET_TYPE.STOCK_DAY, MARKET_TYPE.STOCK_MIN, MARKET_TYPE.STOCK_TRANSACTION]:
+            amount = int(amount / 100) * 100
+
+        marketvalue = amount * price if amount_model is AMOUNT_MODEL.BY_AMOUNT else amount
+
+        amount_model = AMOUNT_MODEL.BY_AMOUNT
+        if int(towards) > 0:
+            # 是买入的情况(包括买入.买开.买平)
+            if self.cash_available >= marketvalue:
+                self.cash_available -= marketvalue
+                flag = True
+        elif int(towards) < 0:
             if self.allow_sellopen:
                 flag = True
-
-            if self.sell_available.get(code, 0) > amount:
-                self.sell_available[code] -= int(amount / price * 100) * 100
+            if self.sell_available.get(code, 0) >= amount:
+                self.sell_available[code] -= amount
                 flag = True
-        if flag:
+
+        if flag and amount > 0:
             return QA_Order(user=self.user, strategy=self.strategy_name, data_type=data_type,
                             account_cookie=self.account_cookie, code=code, market_type=market_type,
                             date=date, datetime=time, sending_time=time,
                             btype=self.account_type, amount=amount, price=price,
-                            order_model=order_model, towards=towards, 
+                            order_model=order_model, towards=towards,
                             amount_model=amount_model)  # init
         else:
             return flag

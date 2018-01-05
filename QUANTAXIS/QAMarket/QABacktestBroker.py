@@ -225,14 +225,14 @@ class QA_BacktestBroker(QA_Broker):
 
         # 对于股票 有最小交易100股限制
 
-        if order.amount_model in [AMOUNT_MODEL.BY_PRICE]:
-            order.amount = int(order.amount / (order.price * 100)) * \
-                100 if order.type in ['0x01', '0x02', '0x03'] else order.amount
-            order.amount_model = AMOUNT_MODEL.BY_AMOUNT
+        # if order.amount_model in [AMOUNT_MODEL.BY_PRICE]:
+        #     order.amount = int(order.amount / (order.price * 100)) * \
+        #         100 if order.type in ['0x01', '0x02', '0x03'] else order.amount
+        #     order.amount_model = AMOUNT_MODEL.BY_AMOUNT
 
-        elif order.amount_model in [AMOUNT_MODEL.BY_AMOUNT]:
-            order.amount = int(
-                order.amount / 100) * 100 if order.type in ['0x01', '0x02', '0x03'] else order.amount
+        # elif order.amount_model in [AMOUNT_MODEL.BY_AMOUNT]:
+        #     order.amount = int(
+        #         order.amount / 100) * 100 if order.type in ['0x01', '0x02', '0x03'] else order.amount
 
         return order
 
