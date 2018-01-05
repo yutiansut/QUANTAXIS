@@ -22,15 +22,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import datetime
 
 import pandas as pd
 
 from QUANTAXIS.QAEngine.QAEvent import QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_Order
-from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL, TRADE_STATUS,
+from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
                                           BROKER_TYPE, ENGINE_EVENT,
-                                          MARKET_TYPE, ORDER_DIRECTION)
+                                          MARKET_TYPE, ORDER_DIRECTION,
+                                          TRADE_STATUS)
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 # 2017/6/4修改: 去除总资产的动态权益计算
@@ -45,8 +45,6 @@ class QA_Account(QA_Worker):
     - 不再计算总资产/不再计算当前持仓/不再计算交易对照明细表
     - 不再动态计算账户股票/期货市值
     - 只维护 cash/history两个字段 剩下的全部惰性计算
-
-
 
 
     QA_Account 是QUANTAXIS的最小不可分割单元之一
@@ -68,14 +66,10 @@ class QA_Account(QA_Worker):
 
     """
 
-
-    def __init__(self, strategy_name='', user='', account_type=MARKET_TYPE.STOCK_DAY,
-                 broker=BROKER_TYPE.BACKETEST, portfolio=None,
-                 sell_available=None,
-                 init_assets=None,
-                 cash=None, history=None,
-                 account_cookie=None,
-                 allow_t0=False, allow_sellopen=False):
+    def __init__(self, strategy_name=None, user=None, account_type=MARKET_TYPE.STOCK_DAY,
+                 broker=BROKER_TYPE.BACKETEST, portfolio=None, account_cookie=None,
+                 sell_available=None, init_assets=None, cash=None, history=None,
+                 margin_level=False, allow_t0=False, allow_sellopen=False):
         super().__init__()
         self._history_headers = ['datetime', 'code', 'price',
                                  'amount', 'order_id', 'trade_id', 'commission_fee']
@@ -83,11 +77,10 @@ class QA_Account(QA_Worker):
         self.strategy_name = strategy_name
         self.user = user
         self.account_type = account_type
-        self.broker = broker
+        self.portfolio = portfolio
         self.account_cookie = QA_util_random_with_topic(
             'Acc') if account_cookie is None else account_cookie
-        self.portfolio = QA_util_random_with_topic(
-            'Port') if portfolio is None else portfolio
+        self.broker = broker
         self.market_data = None
         self._currenttime = None
         # 资产类
@@ -101,8 +94,10 @@ class QA_Account(QA_Worker):
         # 两个规则
         # 1.是否允许t+0 及买入及结算
         # 2.是否允许卖空开仓
+        # 3.是否允许保证金交易
         self.allow_t0 = allow_t0
         self.allow_sellopen = allow_sellopen
+        self.margin_level = margin_level
 
     def __repr__(self):
         return '< QA_Account {}>'.format(self.account_cookie)
@@ -114,9 +109,9 @@ class QA_Account(QA_Worker):
                 'source': 'account',
                 'cookie': self.account_cookie,
                 'portfolio': self.portfolio,
-                'user':self.user,
-                'strategy_name':self.strategy_name,
-                'current_time':self._currenttime
+                'user': self.user,
+                'strategy_name': self.strategy_name,
+                'current_time': self._currenttime
             },
             'body': {
                 'account': {
@@ -159,7 +154,8 @@ class QA_Account(QA_Worker):
             self.history.append(
                 [str(message['body']['order']['datetime']), str(message['body']['order']['code']),
                  float(message['body']['order']['price']), int(message['body']['order']['towards']) *
-                 float(message['body']['order']['amount']), str(message['header']['order_id']),
+                 float(message['body']['order']['amount']), str(
+                     message['header']['order_id']),
                  str(message['header']['trade_id']), float(message['body']['fee']['commission'])])
             self.cash.append(float(self.cash[-1]) - float(message['body']['order']['price']) *
                              float(message['body']['order']['amount']) * message['body']['order']['towards'] -
@@ -222,7 +218,6 @@ class QA_Account(QA_Worker):
         self.sell_available = self.hold
         # self.sell_available = pass
 
-
     def on_bar(self, event):
         'while updating the market data'
         print(event.market_data)
@@ -234,9 +229,9 @@ class QA_Account(QA_Worker):
     def from_message(self, message):
         """resume the account from standard message
         这个是从数据库恢复账户时需要的"""
-        self.portfolio=message.get('portfolio',None)
-        self.user=message.get('user',None)
-        self.account_cookie = message.get('account_cookie',None)
+        self.portfolio = message.get('portfolio', None)
+        self.user = message.get('user', None)
+        self.account_cookie = message.get('account_cookie', None)
         self.history = message['body']['account']['history']
         self.cash = message['body']['account']['cash']
         return self
