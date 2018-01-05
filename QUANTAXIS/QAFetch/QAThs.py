@@ -27,8 +27,6 @@ import pandas as pd
 import requests
 from lxml import etree
 
-from QUANTAXIS.QAUtil import trade_date_sse
-
 
 def QA_fetch_get_stock_day_in_year(code, year, if_fq='00'):
     data_ = []

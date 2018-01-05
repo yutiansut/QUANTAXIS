@@ -116,12 +116,6 @@ if __name__ == "__main__":
     # print(get_this_week())
     ana = QA_Analysis_block(
         QA.QA_fetch_stock_block_adv().get_block('昨日涨停').code)
-    print(ana.block_pcg())
-    #print(QA_fetch_get_stock_info('600116'))
-    #data=QA.QA_fetch_get_stock_info('tdx','000001')
-    #js=QA.QA_util_to_json_from_pandas(data)
-    #import pymongo
-    #pymongo.MongoClient().quantaxis.stock_info.insert_many(QA.QA_util_to_json_from_pandas(QA_fetch_get_stock_info('600116')))
 
     """
     计算换手率

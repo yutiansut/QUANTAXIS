@@ -23,13 +23,11 @@
 # SOFTWARE.
 
 
-import datetime
 
 import pandas as pd
 from pandas import DataFrame
 
-from QUANTAXIS.QAData import (QA_data_make_hfq, QA_data_make_qfq,
-                              QA_DataStruct_Index_day, QA_DataStruct_Index_min,
+from QUANTAXIS.QAData import (QA_DataStruct_Index_day, QA_DataStruct_Index_min,
                               QA_DataStruct_Stock_block,
                               QA_DataStruct_Stock_day, QA_DataStruct_Stock_min,
                               QA_DataStruct_Stock_transaction)

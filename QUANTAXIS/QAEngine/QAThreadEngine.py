@@ -78,6 +78,7 @@ class QA_Thread(threading.Thread):
                     self.run()
                 __res = self.qsize()  # 判断消息队列大小
                 if __res > 0:
+                    pass
                     QA_util_log_info("From Engine %s: There are still %d tasks to do" % (
                         str(threading.current_thread()), __res))
                 #threading.Timer(0.005, self.run)
@@ -139,7 +140,6 @@ class QA_Engine(QA_Thread):
         del self.kernals[name]
 
     def run_job(self, task):
-        print(task.event.event_type)
         self.kernals[task.engine].put(task)
         
 
@@ -155,7 +155,6 @@ class QA_Engine(QA_Thread):
                         assert isinstance(_task, QA_Task)
                         if _task.engine is None:
                             # 如果不指定线程 就在ENGINE线程中运行
-                            print(_task.event.event_type)
                             _task.do()
                             self.queue.task_done()
                         else:
@@ -174,6 +173,7 @@ class QA_Engine(QA_Thread):
                     self.run()
                 __res = self.qsize()  # 判断消息队列大小
                 if __res > 0:
+                    pass
                     QA_util_log_info("From Engine %s: There are still %d tasks to do" % (
                         str(threading.current_thread()), __res))
                 #threading.Timer(0.005, self.run)
