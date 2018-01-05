@@ -37,20 +37,16 @@ class ORDER_DIRECTION:
     BUY_CLOSE 期货 空平(多头平旧仓)
     SELL_OPEN 期货 空开
     SELL_CLOSE 期货 多平(空头平旧仓)
-    SELL
+    
 
-    双开：多头空头同时开新仓
-    双平：多头空头同时平旧仓
-    多换：多头开新仓，新仓对应的是多平
-    空换：空头开新仓，新仓对应的是空平
     """
 
     BUY = 1
     SELL = -1
-    BUY_OPEN = 2
-    BUY_CLOSE = 3
-    SELL_OPEN = -2
-    SELL_CLOSE = -3
+    BUY_OPEN = 1
+    BUY_CLOSE = 1
+    SELL_OPEN = -1
+    SELL_CLOSE = -1
 
 
 class ORDER_MODEL:
