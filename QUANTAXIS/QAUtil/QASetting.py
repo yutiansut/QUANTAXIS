@@ -27,6 +27,7 @@ from QUANTAXIS.QASU.user import QA_user_sign_in
 from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting
 
 
+
 class QA_Setting():
 
 
@@ -44,6 +45,8 @@ class QA_Setting():
     def change(self, ip,port):
         self.ip = ip
         self.port=port
+        global DATABASE
+        DATABASE=self.client.quantaxis
         return self
 
     def login(self,user_name,password):
@@ -55,7 +58,9 @@ class QA_Setting():
             return self.user
         else:
             return False
+        
 
+DATABASE=QA_Setting().client.quantaxis
 
 
 info_ip_list = ['101.227.73.20', '101.227.77.254',

@@ -64,6 +64,7 @@ if __name__ == '__main__':
     backtest.start_market()
 
     backtest.run()
+    
 
     # backtest._settle()
 

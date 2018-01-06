@@ -24,7 +24,7 @@
 
 
 from QUANTAXIS.QAARP.QAAccount import QA_Account
-from QUANTAXIS.QAUtil import (QA_Setting, QA_util_log_info,
+from QUANTAXIS.QAUtil import (DATABASE, QA_util_log_info,
                               QA_util_random_with_topic)
 
 
@@ -93,7 +93,7 @@ class QA_Portfolio():
 
         pass
 
-    def pull(self, account_cookie=None, collection=QA_Setting().client.quantaxis.account):
+    def pull(self, account_cookie=None, collection=DATABASE.account):
         'pull from the databases'
         if account_cookie is None:
             for item in self.accounts.keys():
@@ -115,7 +115,7 @@ class QA_Portfolio():
                     '{} sync wrong \\\n wrong info {}'.format(account_cookie, e))
             self.accounts[account_cookie].from_message(message)
 
-    def push(self, account_cookie=None, collection=QA_Setting().client.quantaxis.account):
+    def push(self, account_cookie=None, collection=DATABASE.account):
         'push to databases'
         message = self.accounts[account_cookie].message
         if account_cookie is None:

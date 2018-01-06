@@ -22,7 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
+import sys
+import threading
 from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
 from QUANTAXIS.QAARP.QAUser import QA_User
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
@@ -105,6 +106,14 @@ class QA_Backtest():
                 print(accounts.hold)
 
                 print(accounts.history_table)
+            
+        self.stop()
+
+    def stop(self):
+        print('stop')
+        print(threading.enumerate())
+        self.market.trade_engine.stop()
+
 
 
 if __name__ == '__main__':
