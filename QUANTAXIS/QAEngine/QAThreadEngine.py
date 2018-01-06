@@ -111,7 +111,7 @@ class QA_Thread(threading.Thread):
 
     def qsize(self):
         return self.queue.qsize()
-
+    
 
 class QA_Engine(QA_Thread):
     def __init__(self, queue=None, *args, **kwargs):

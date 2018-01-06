@@ -36,7 +36,7 @@ from flask_socketio import SocketIO, emit
 
 
 import QUANTAXIS as QA
-from QUANTAXIS.QAUtil.QASetting import QA_Setting
+from QUANTAXIS.QAUtil.QASetting import DATABASE
 
 app = Flask(__name__)
 
@@ -151,7 +151,7 @@ def realtime():
 
 @app.route('/backtest/run', methods=['POST', 'GET'])
 def run_backtest():
-    data = QA_Setting().client.quantaxis.strategy.find_one(
+    data = DATABASE.strategy.find_one(
         {'cookie': request.args.get('cookie', '')})
     strategy_file = re.sub('strategy_end_date(.*)=(.*)\\\r\\\n ',
                            'strategy_end_date  = \'{}\' \r\n '.format(datetime.date.today()), data['content'])
