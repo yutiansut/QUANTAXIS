@@ -59,7 +59,7 @@ if __name__ == '__main__':
     backtest = Backtest(market_type=MARKET_TYPE.STOCK_DAY,
                         start='2017-01-01',
                         end='2017-01-05',
-                        code_list=QA.QA_fetch_stock_block_adv().code[0:500],
+                        code_list=QA.QA_fetch_stock_block_adv().code[0:50],
                         commission_fee=0.00015)
     backtest.start_market()
 
