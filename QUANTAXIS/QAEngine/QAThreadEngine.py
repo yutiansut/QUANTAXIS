@@ -91,8 +91,9 @@ class QA_Thread(threading.Thread):
         self.__flag.set()    # 设置为True, 让线程停止阻塞
 
     def stop(self):
-        self.__flag.set()       # 将线程从暂停状态恢复, 如何已经暂停的话
-        self.__running.clear()        # 设置为False
+        # self.__flag.set()       # 将线程从暂停状态恢复, 如何已经暂停的话
+        self.__running.clear()
+        self.thread_stop = True        # 设置为False
 
     def __start(self):
         self.queue.start()
@@ -111,7 +112,7 @@ class QA_Thread(threading.Thread):
 
     def qsize(self):
         return self.queue.qsize()
-    
+
 
 class QA_Engine(QA_Thread):
     def __init__(self, queue=None, *args, **kwargs):
@@ -142,7 +143,22 @@ class QA_Engine(QA_Thread):
 
     def run_job(self, task):
         self.kernals[task.engine].put(task)
-        
+
+    def stop_all(self):
+        for item in self.kernals.values():
+            item.stop()
+        self.kernals = {}
+
+    def stop(self):
+        # self.__flag.set()       # 将线程从暂停状态恢复, 如何已经暂停的话
+        self.__running.clear()
+        self.thread_stop = True
+
+    def pause(self):
+        self.__flag.clear()
+
+    def resume(self):
+        self.__flag.set()    # 设置为True, 让线程停止阻塞
 
     def run(self):
         while self.__running.isSet():
@@ -166,19 +182,13 @@ class QA_Engine(QA_Thread):
                     else:
                         # QA_util_log_info("From Engine %s  Engine will waiting for new task ..." % str(
                         #     threading.current_thread()))
-                        #time.sleep(1)
+                        # time.sleep(5)
                         pass
                 except Exception as e:
-                    #time.sleep(1)
+                    # time.sleep(1)
                     raise e
                     self.run()
-                __res = self.qsize()  # 判断消息队列大小
-                if __res > 0:
-                    pass
-                    # QA_util_log_info("From Engine %s: There are still %d tasks to do" % (
-                    #     str(threading.current_thread()), __res))
-                #threading.Timer(0.005, self.run)
-                #self.run()
+
 
 if __name__ == '__main__':
     import queue
