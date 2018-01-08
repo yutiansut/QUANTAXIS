@@ -47,7 +47,7 @@ by yutiansut@2017/12/15
 class QA_Order():
     def __init__(self, price=None, date=None, datetime=None, sending_time=None, transact_time=None, amount=None, market_type=None, data_type=None,
                  towards=None, code=None, user=None, account_cookie=None, strategy=None, btype=None, order_model=None, amount_model=AMOUNT_MODEL.BY_AMOUNT,
-                 order_id=None, trade_id=None, status='100', *args, **kwargs):
+                 order_id=None, trade_id=None, status='100', callback=False, *args, **kwargs):
         self.price = price
         self.datetime = None
         if datetime is None and date is not None:
@@ -80,6 +80,7 @@ class QA_Order():
             topic='Order') if order_id is None else order_id
         self.trade_id = trade_id
         self.status = status
+        self.callback = callback
 
     def __repr__(self):
         return '< QA_Order datetime:{} code:{} price:{} towards:{} btype:{} order_id:{} account:{} status:{} >'.format(
@@ -116,6 +117,7 @@ class QA_Order():
             self.amount_model = order['amount_model']
             self.order_id = order['order_id']
             self.trade_id = order['trade_id']
+            self.callback = order['callback']
             return self
         except Exception as e:
             QA_util_log_info('Failed to tran from dict {}'.format(e))
