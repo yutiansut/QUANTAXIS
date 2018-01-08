@@ -134,6 +134,10 @@ class QA_Engine(QA_Thread):
         # ENGINE线程创建一个事件线程
         self.kernals[name] = QA_Thread(name=name)
 
+    def register_kernal(self, name, kernal):
+        if name not in self.kernals.keys():
+            self.kernals[name] = kernal
+
     def start_kernal(self, name):
         self.kernals[name].start()
 

@@ -152,7 +152,6 @@ class QA_Account(QA_Worker):
 
         update history and cash
         """
-
         if message['header']['status'] is TRADE_STATUS.SUCCESS:
             self.history.append(
                 [str(message['body']['order']['datetime']), str(message['body']['order']['code']),
@@ -210,7 +209,7 @@ class QA_Account(QA_Worker):
         if flag and amount > 0:
             return QA_Order(user=self.user, strategy=self.strategy_name, data_type=data_type,
                             account_cookie=self.account_cookie, code=code, market_type=market_type,
-                            date=date, datetime=time, sending_time=time,
+                            date=date, datetime=time, sending_time=time,callback=self.receive_deal,
                             btype=self.account_type, amount=amount, price=price,
                             order_model=order_model, towards=towards,
                             amount_model=amount_model)  # init
