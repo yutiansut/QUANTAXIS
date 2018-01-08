@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys
+
 import threading
 from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
 from QUANTAXIS.QAARP.QAUser import QA_User
@@ -110,9 +110,10 @@ class QA_Backtest():
         self.stop()
 
     def stop(self):
-        print('stop')
-        print(threading.enumerate())
+
+        self.market.trade_engine.stop_all()
         self.market.trade_engine.stop()
+        print(threading.enumerate())
 
 
 
