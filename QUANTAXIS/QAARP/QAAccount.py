@@ -132,8 +132,12 @@ class QA_Account(QA_Worker):
         return self.history_table.pivot(index='datetime',columns='code',values='amount').fillna(0)
 
     @property
-    def daily_balance(self):
-        return self.trade.cumsum()
+    def daily_hold(self):
+        data=self.trade.cumsum()
+        data['date']=data.index
+        data.date=data.date.apply(lambda x : str(x)[0:10])
+        return  data.set_index('date')
+        
 
 
 

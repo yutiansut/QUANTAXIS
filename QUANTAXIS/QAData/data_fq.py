@@ -28,7 +28,7 @@ import datetime
 import pandas as pd
 
 from QUANTAXIS.QAFetch import QA_fetch_get_stock_day, QA_fetch_get_stock_xdxr
-from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info
+from QUANTAXIS.QAUtil import QA_util_log_info, DATABASE
 
 
 def QA_data_get_qfq(code, start, end):
@@ -88,7 +88,8 @@ def QA_data_make_hfq(bfq_data, xdxr_data):
     data = data.fillna(0)
     data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
                         * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
-    data['adj']=  (data['close']/data['preclose'].shift(-1)).cumprod().shift(1).fillna(1)
+    data['adj'] = (data['close'] / data['preclose'].shift(-1)
+                   ).cumprod().shift(1).fillna(1)
     data['open'] = data['open'] * data['adj']
     data['high'] = data['high'] * data['adj']
     data['low'] = data['low'] * data['adj']
@@ -99,7 +100,7 @@ def QA_data_make_hfq(bfq_data, xdxr_data):
 
 def QA_data_stock_to_fq(__data, type_='01'):
 
-    def __QA_fetch_stock_xdxr(code, format_='pd', collections=QA_Setting().client.quantaxis.stock_xdxr):
+    def __QA_fetch_stock_xdxr(code, format_='pd', collections=DATABASE.stock_xdxr):
         '获取股票除权信息/数据库'
         try:
             data = pd.DataFrame([item for item in collections.find(

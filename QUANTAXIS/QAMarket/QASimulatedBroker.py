@@ -23,7 +23,12 @@
 # SOFTWARE.
 
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
-
+from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_future_day,
+                                     QA_fetch_get_future_min,
+                                     QA_fetch_get_index_day,
+                                     QA_fetch_get_index_min,
+                                     QA_fetch_get_stock_day,
+                                     QA_fetch_get_stock_min)
 
 class QA_SimulatedBroker(QA_Broker):
     def __init__(self, *args, **kwargs):

@@ -27,7 +27,6 @@ from datetime import time
 import pandas as pd
 
 from QUANTAXIS.QAFetch import QA_fetch_get_stock_transaction
-from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_make_min_index
 
 
 def QA_data_tick_resample(tick, type_='1min'):

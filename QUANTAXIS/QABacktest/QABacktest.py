@@ -23,7 +23,6 @@
 # SOFTWARE.
 
 
-import threading
 from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
 from QUANTAXIS.QAARP.QAUser import QA_User
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
@@ -35,6 +34,7 @@ from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT,
                                           MARKET_TYPE, MARKETDATA_TYPE,
                                           ORDER_DIRECTION, ORDER_MODEL)
 import time
+
 
 class QA_Backtest():
     """BACKTEST
@@ -78,15 +78,24 @@ class QA_Backtest():
             code_list, start, end).panel_gen
 
     def _generate_account(self):
+        """generate a simple account
+        """
+
         self.account, self.portfolio = self.user.generate_simpleaccount()
 
     def start_market(self):
+        """start the market thread and register backtest broker thread
+        """
+
         self.market.start()
         self.market.register(self.broker_name, self.broker)
         self.market.login(self.broker_name, self.account,
                           self.user.get_portfolio(self.portfolio).get_account(self.account))
 
     def run(self):
+        """generator driven data flow
+        """
+
         try:
             data = next(self.ingest_data)
             #self.market.running_time = str(data.date[0])[0:10]
@@ -103,29 +112,30 @@ class QA_Backtest():
                 if self.market.clear():
                     break
 
-            
             self.run()
-                
+
         except:
             self.after_success()
 
     def after_success(self):
-        print('AFTER SUCCESS')
+        """called when all trading fininshed, for performance analysis
+        """
+
         for po in self.user.portfolio_list.keys():
             for ac in self.user.get_portfolio(po).accounts.keys():
                 accounts = self.user.get_portfolio(po).get_account(ac)
                 print(accounts.hold)
 
                 print(accounts.history_table)
-            
+
         self.stop()
 
     def stop(self):
+        """stop all the market trade enging threads and all subthreads
+        """
 
         self.market.trade_engine.stop_all()
         self.market.trade_engine.stop()
-        print(threading.enumerate())
-
 
 
 if __name__ == '__main__':

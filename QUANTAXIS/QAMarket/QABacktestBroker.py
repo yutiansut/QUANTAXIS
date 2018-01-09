@@ -39,11 +39,12 @@ from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.QADealer import QA_Dealer
 from QUANTAXIS.QAUtil.QADate import QA_util_to_datetime
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_TYPE,ORDER_MODEL,
+from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_TYPE, ORDER_MODEL,
                                           ENGINE_EVENT, MARKET_EVENT,
                                           MARKET_TYPE, BROKER_EVENT)
 from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
+
 
 class QA_BacktestBroker(QA_Broker):
     """
@@ -129,13 +130,13 @@ class QA_BacktestBroker(QA_Broker):
             #     self.broker_data = event.market_data
             # else:
             #     self.broker_data.append(event.market_data)
-            #self.broker_data=event.market_data
+            # self.broker_data=event.market_data
 
         elif event.event_type is BROKER_EVENT.RECEIVE_ORDER:
             self.order_handler.run(event)
-            self.run(QA_Event(event_type=BROKER_EVENT.TRADE,broker=self))
+            self.run(QA_Event(event_type=BROKER_EVENT.TRADE, broker=self))
         elif event.event_type is BROKER_EVENT.TRADE:
-            event=self.order_handler.run(event)
+            event = self.order_handler.run(event)
 
             event.message = 'trade'
             if event.callback:
@@ -176,7 +177,7 @@ class QA_BacktestBroker(QA_Broker):
 
         # 因为成交模式对时间的封装
 
-        if order.order_model == ORDER_MODEL.MARKET and order.price is None:
+        if order.order_model == ORDER_MODEL.MARKET:
 
             if order.type[-2:] == '01':
                 exact_time = str(datetime.datetime.strptime(
@@ -195,7 +196,7 @@ class QA_BacktestBroker(QA_Broker):
             order.price = (float(self.market_data["high"]) +
                            float(self.market_data["low"])) * 0.5
 
-        elif order.order_model == ORDER_MODEL.CLOSE and order.price is None:
+        elif order.order_model == ORDER_MODEL.CLOSE:
             try:
                 order.datetime = self.market_data.datetime
             except:
@@ -205,7 +206,7 @@ class QA_BacktestBroker(QA_Broker):
                 return order
             order.price = float(self.market_data["close"])
 
-        elif order.order_model == ORDER_MODEL.STRICT and order.price is None:
+        elif order.order_model == ORDER_MODEL.STRICT:
             '加入严格模式'
             if order.type[-2:] == '01':
                 exact_time = str(datetime.datetime.strptime(
