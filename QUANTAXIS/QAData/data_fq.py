@@ -88,10 +88,6 @@ def QA_data_make_hfq(bfq_data, xdxr_data):
     data = data.fillna(0)
     data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
                         * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
-    return data
-    # data['adj'] = (data['preclose'].shift(-1) /
-    #                data['close']).fillna(1).cumprod()
-
     data['adj']=  (data['close']/data['preclose'].shift(-1)).cumprod().shift(1).fillna(1)
     data['open'] = data['open'] * data['adj']
     data['high'] = data['high'] * data['adj']
