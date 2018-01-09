@@ -49,7 +49,6 @@ def QA_fetch_stock_day_adv(
         if_drop_index=False,
         collections=DATABASE.stock_day):
     '获取股票日线'
-    print(collections)
     end = start if end is None else end
     start = str(start)[0:10]
     end = str(end)[0:10]

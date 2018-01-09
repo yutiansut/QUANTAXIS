@@ -73,10 +73,9 @@ class backtest_result_analyzer():
         return self.history.code.unique().tolist()
 
     def get_stock_tradehistory(self, code):
-        return self.history[self.history.code == code]
-
+        return self.history.query('code=="{}"'.format(code))
     def get_stock_tradedetail(self, code):
-        return self.detail[self.detail.code == code]
+        return self.detail.query('code=="{}"'.format(code))
 
     def get_loss_trade(self, num=5):
         return self.detail[self.detail.pnl_precentage <= 0].sort_values(by=['pnl_precentage'], ascending=True).head(num)
