@@ -1,8 +1,9 @@
+
 # coding:utf-8
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -88,19 +89,18 @@ def QA_data_make_hfq(bfq_data, xdxr_data):
     data = data.fillna(0)
     data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
                         * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
-    data['adj'] = (data['preclose'].shift(-1) /
-                   data['close']).fillna(1).cumprod()
-    data['open'] = data['open'] / data['adj']
-    data['high'] = data['high'] / data['adj']
-    data['low'] = data['low'] / data['adj']
-    data['close'] = data['close'] / data['adj']
-    data['preclose'] = data['preclose'] / data['adj']
+    data['adj']=  (data['close']/data['preclose'].shift(-1)).cumprod().shift(1).fillna(1)
+    data['open'] = data['open'] * data['adj']
+    data['high'] = data['high'] * data['adj']
+    data['low'] = data['low'] * data['adj']
+    data['close'] = data['close'] * data['adj']
+    data['preclose'] = data['preclose'] * data['adj']
     return data.query('if_trade==1').drop(['fenhong', 'peigu', 'peigujia', 'songzhuangu'], axis=1).query("open != 0")
 
 
 def QA_data_stock_to_fq(__data, type_='01'):
 
-    def __QA_fetch_stock_xdxr(code, format_='pd', collections=QA_Setting.client.quantaxis.stock_xdxr):
+    def __QA_fetch_stock_xdxr(code, format_='pd', collections=QA_Setting().client.quantaxis.stock_xdxr):
         '获取股票除权信息/数据库'
         try:
             data = pd.DataFrame([item for item in collections.find(
@@ -113,7 +113,6 @@ def QA_data_stock_to_fq(__data, type_='01'):
                                          'shares_after', 'shares_before', 'songzhuangu', 'suogu', 'xingquanjia'])
     '股票 日线/分钟线 动态复权接口'
     if type_ in ['01', 'qfq']:
-        #print(QA_data_make_qfq(__data, __QA_fetch_stock_xdxr(__data['code'][0])))
         return QA_data_make_qfq(__data, __QA_fetch_stock_xdxr(__data['code'][0]))
     elif type_ in ['02', 'hfq']:
         return QA_data_make_hfq(__data, __QA_fetch_stock_xdxr(__data['code'][0]))
