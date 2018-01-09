@@ -95,13 +95,15 @@ class QA_Backtest():
                 market_data=data))
             self.market.upcoming_data(
                 self.broker_name, data)
-
-
             while True:
-                if self.market.event_queue.empty() and self.market.trade_engine.kernals[self.broker_name].queue.empty():
+                if self.market.trade_engine.kernals[self.broker_name].queue.empty():
+                    break
+            self.market._settle(self.broker_name)
+            while True:
+                if self.market.clear():
                     break
 
-            self.market._settle(self.broker_name)
+            
             self.run()
                 
         except:
