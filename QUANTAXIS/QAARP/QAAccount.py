@@ -127,7 +127,8 @@ class QA_Account(QA_Worker):
 
     @property
     def history_table(self):
-        return pd.DataFrame(data=self.history,columns=self._history_headers)
+        return pd.DataFrame(data=self.history, columns=self._history_headers)
+
     @property
     def latest_cash(self):
         'return the lastest cash'
@@ -209,7 +210,7 @@ class QA_Account(QA_Worker):
         if flag and amount > 0:
             return QA_Order(user=self.user, strategy=self.strategy_name, data_type=data_type,
                             account_cookie=self.account_cookie, code=code, market_type=market_type,
-                            date=date, datetime=time, sending_time=time,callback=self.receive_deal,
+                            date=date, datetime=time, sending_time=time, callback=self.receive_deal,
                             btype=self.account_type, amount=amount, price=price,
                             order_model=order_model, towards=towards,
                             amount_model=amount_model)  # init

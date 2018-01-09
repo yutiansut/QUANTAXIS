@@ -62,7 +62,7 @@ class QA_Market(QA_Trade):
     def __repr__(self):
         return '< QA_MARKET with {} Broker >'.format(list(self.broker.keys()))
 
-    def upcoming_data(self, broker, data, after_success=False):
+    def upcoming_data(self, broker, data):
         # main thread'
 
         # if self.running_time is not None and self.running_time!= data.datetime[0]:
@@ -77,9 +77,7 @@ class QA_Market(QA_Trade):
                     event_type=ENGINE_EVENT.UPCOMING_DATA,
                     market_data=data,
                     broker_name=broker,
-                    send_order=self.insert_order,
-                    callback=self._trade,
-                    after_success=after_success
+                    send_order=self.insert_order
                 )
             ))
 
@@ -185,7 +183,6 @@ class QA_Market(QA_Trade):
     def on_insert_order(self, order):
         print(order)
 
-
     def _renew_account(self):
         for item in self.session.values():
 
@@ -258,16 +255,12 @@ class QA_Market(QA_Trade):
         print(data)
         self.last_query_data = data
 
-    def _on_trade_event(self, event):
-        for res in event.res:
-            self.session[res['header']['session']['account']].receive_deal(res)
-        self.on_trade_event(event)
+
 
     def on_trade_event(self, event):
         print('ON TRADE')
-        self._settle(event.broker_name)
-        if event.after_success:
-            event.after_success()
+        print(event.res)
+
 
     def _trade(self, event):
         "内部函数"
@@ -279,8 +272,7 @@ class QA_Market(QA_Trade):
                 event_type=BROKER_EVENT.TRADE,
                 broker=self.broker[event.broker_name],
                 broker_name=event.broker_name,
-                callback=self._on_trade_event,
-                after_success=event.after_success
+                callback=self.on_trade_event
             )))
 
     def _settle(self, broker_name, callback=False):
@@ -308,6 +300,9 @@ class QA_Market(QA_Trade):
     def _close(self):
         pass
 
+
+    def clear(self):
+        return self.trade_engine.clear()
 
 if __name__ == '__main__':
 

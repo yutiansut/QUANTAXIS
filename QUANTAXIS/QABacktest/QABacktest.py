@@ -34,7 +34,7 @@ from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT,
                                           BROKER_TYPE, ENGINE_EVENT,
                                           MARKET_TYPE, MARKETDATA_TYPE,
                                           ORDER_DIRECTION, ORDER_MODEL)
-
+import time
 
 class QA_Backtest():
     """BACKTEST
@@ -94,7 +94,16 @@ class QA_Backtest():
                 event_type=ENGINE_EVENT.UPCOMING_DATA,
                 market_data=data))
             self.market.upcoming_data(
-                self.broker_name, data, after_success=self.run)
+                self.broker_name, data)
+
+
+            while True:
+                if self.market.event_queue.empty() and self.market.trade_engine.kernals[self.broker_name].queue.empty():
+                    break
+
+            self.market._settle(self.broker_name)
+            self.run()
+                
         except:
             self.after_success()
 
