@@ -43,7 +43,7 @@ from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_TYPE,ORDER_MODEL,
                                           ENGINE_EVENT, MARKET_EVENT,
                                           MARKET_TYPE, BROKER_EVENT)
 from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
-
+from QUANTAXIS.QAEngine.QAEvent import QA_Event
 
 class QA_BacktestBroker(QA_Broker):
     """
@@ -125,15 +125,18 @@ class QA_BacktestBroker(QA_Broker):
             for item in new_marketdata_dict.keys():
                 if item not in self._quotation.keys():
                     self._quotation[item] = new_marketdata_dict[item]
-            if self.broker_data is None:
-                self.broker_data = event.market_data
-            else:
-                self.broker_data.append(event.market_data)
+            # if self.broker_data is None:
+            #     self.broker_data = event.market_data
+            # else:
+            #     self.broker_data.append(event.market_data)
+            #self.broker_data=event.market_data
 
         elif event.event_type is BROKER_EVENT.RECEIVE_ORDER:
             self.order_handler.run(event)
+            self.run(QA_Event(event_type=BROKER_EVENT.TRADE,broker=self))
         elif event.event_type is BROKER_EVENT.TRADE:
             event=self.order_handler.run(event)
+
             event.message = 'trade'
             if event.callback:
                 event.callback(event)

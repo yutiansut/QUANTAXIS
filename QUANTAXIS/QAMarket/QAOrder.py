@@ -41,6 +41,12 @@ Bid类全部被更名为Order类
 
 by yutiansut@2017/12/15
 
+
+@2018/1/9
+需要重新考虑 order的重复创建耗时问题
+
+order_frame 是一个管理性面板  但是还是需要一个缓存dict
+
 """
 
 
@@ -133,6 +139,7 @@ class QA_OrderQueue():   # also the order tree
     def __init__(self):
         self.order_list = []
         self.queue = pd.DataFrame()
+        self._queue = {}
 
     def __repr__(self):
         return '< QA_OrderQueue AMOUNT {} WAITING TRADE {} >'.format(len(self.queue), len(self.pending))
@@ -153,6 +160,7 @@ class QA_OrderQueue():   # also the order tree
         self.queue = self.queue.append(
             order.to_df(), ignore_index=True)
         self.queue.set_index('order_id', drop=False, inplace=True)
+        self._queue[order.order_id] = order
         return order
 
     @property
@@ -165,6 +173,7 @@ class QA_OrderQueue():   # also the order tree
         清空订单簿
         """
         self.queue = pd.DataFrame()
+        self._queue = {}
 
     @property
     def pending(self):
@@ -190,7 +199,7 @@ class QA_OrderQueue():   # also the order tree
             list of orders
         """
 
-        return self._from_dataframe(self.pending)
+        return [self._queue[order_id] for order_id in self.pending.index]
 
     def query_order(self, order_id):
 
@@ -200,6 +209,7 @@ class QA_OrderQueue():   # also the order tree
         try:
             if order_id in self.order_ids:
                 self.queue.loc[order_id, 'status'] = new_status
+                self._queue[order_id].status = new_status
             else:
                 pass
         except:
