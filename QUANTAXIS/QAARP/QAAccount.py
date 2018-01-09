@@ -120,14 +120,22 @@ class QA_Account(QA_Worker):
                 }
             }
         }
-
+    @property
+    def history_table(self):
+        return pd.DataFrame(data=self.history, columns=self._history_headers)
     @property
     def hold(self):
         return pd.DataFrame(data=self.history, columns=self._history_headers).groupby('code').amount.sum()
 
     @property
-    def history_table(self):
-        return pd.DataFrame(data=self.history, columns=self._history_headers)
+    def trade(self):
+        return self.history_table.pivot(index='datetime',columns='code',values='amount').fillna(0)
+
+    @property
+    def daily_balance(self):
+        return self.trade.cumsum()
+
+
 
     @property
     def latest_cash(self):
