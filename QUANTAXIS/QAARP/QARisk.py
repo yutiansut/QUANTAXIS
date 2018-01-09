@@ -29,10 +29,58 @@
 
 综合性指标主要包括风险收益比，夏普比例，波动率，VAR，偏度，峰度等"""
 
+import numpy as np
+import pandas as pd
+
 
 class QA_Risk():
-    pass
+    def __init__(self, account):
+        self._history = account.history
+        self._cash = account.cash
+
+    def make_assets(self, market_data=None):
+        pass
+
+    @property
+    def assets(self):
+        pass
+
+    @property
+    def max_dropback(self):
+        pass
+
+    @property
+    def profit(self):
+        pass
+
+    @property
+    def annualize_return(self):
+        pass
+
+    @property
+    def volatility(self):
+        pass
 
 
-class QA_Performace():
-    pass
+class QA_Performace(QA_Risk):
+    def __init__(self, account):
+        super().__init__(account)
+        
+    @property
+    def benchmark_assets(self):
+        pass
+
+    def set_benchmark(self):
+        pass
+
+    @property
+    def alpha(self):
+        pass
+
+    @property
+    def beta(self):
+        pass
+
+    @property
+    def sharpe(self):
+        pass
