@@ -27,40 +27,37 @@ from QUANTAXIS.QASU.user import QA_user_sign_in
 from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting
 
 
-
 class QA_Setting():
 
-
     def __init__(self, ip='127.0.0.1', port=27017):
-        self.ip=ip
-        self.port=port
-        self.username=None
-        self.password=None
+        self.ip = ip
+        self.port = port
+        self.username = None
+        self.password = None
 
     @property
     def client(self):
-        return QA_util_sql_mongo_setting(self.ip,self.port)
+        return QA_util_sql_mongo_setting(self.ip, self.port)
 
-
-    def change(self, ip,port):
+    def change(self, ip, port):
         self.ip = ip
-        self.port=port
+        self.port = port
         global DATABASE
-        DATABASE=self.client.quantaxis
+        DATABASE = self.client.quantaxis
         return self
 
-    def login(self,user_name,password):
-        user=QA_user_sign_in(user_name, password, self.client)
+    def login(self, user_name, password):
+        user = QA_user_sign_in(user_name, password, self.client)
         if user is not None:
-            self.user_name=user_name
-            self.password=password
-            self.user=user
+            self.user_name = user_name
+            self.password = password
+            self.user = user
             return self.user
         else:
             return False
-        
 
-DATABASE=QA_Setting().client.quantaxis
+
+DATABASE = QA_Setting().client.quantaxis
 
 
 info_ip_list = ['101.227.73.20', '101.227.77.254',
