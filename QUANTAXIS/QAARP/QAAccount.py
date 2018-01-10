@@ -77,6 +77,7 @@ class QA_Account(QA_Worker):
         self.strategy_name = strategy_name
         self.user = user
         self.account_type = account_type
+        self.trade_index = []
         self.portfolio = portfolio
         self.account_cookie = QA_util_random_with_topic(
             'Acc') if account_cookie is None else account_cookie
@@ -120,26 +121,45 @@ class QA_Account(QA_Worker):
                 }
             }
         }
+
     @property
     def history_table(self):
+        '交易历史的table'
         return pd.DataFrame(data=self.history, columns=self._history_headers)
+
+    @property
+    def cash_table(self):
+        '现金的table'
+        _cash = pd.DataFrame(data=[self.cash[1::], self.trade_index], index=[
+                             'cash', 'datetime']).T
+        _cash['date'] = _cash.datetime.apply(lambda x: str(x)[0:10])
+        return _cash.set_index('datetime', drop=False)
+
     @property
     def hold(self):
+        '持仓'
         return pd.DataFrame(data=self.history, columns=self._history_headers).groupby('code').amount.sum()
 
     @property
     def trade(self):
-        return self.history_table.pivot(index='datetime',columns='code',values='amount').fillna(0)
+        '每次交易的pivot表'
+        return self.history_table.pivot(index='datetime', columns='code', values='amount').fillna(0)
+
+    @property
+    def daily_cash(self):
+        '每日交易结算时的现金表'
+        return self.cash_table.drop_duplicates(subset='date', keep='last')
 
     @property
     def daily_hold(self):
-        data=self.trade.cumsum()
-        data['date']=data.index
-        data.date=data.date.apply(lambda x : str(x)[0:10])
-        return  data.set_index('date')
-        
+        '每日交易结算时的持仓表'
+        data = self.trade.cumsum()
+        data['date'] = data.index
+        data.date = data.date.apply(lambda x: str(x)[0:10])
+        return data.set_index('date')
 
-
+    # 计算assets的时候 需要一个market_data=QA.QA_fetch_stock_day_adv(list(data.columns),data.index[0],data.index[-1])
+    # (market_data.to_qfq().pivot('close')*data).sum(axis=1)+user.get_account(a_1).daily_cash.set_index('date').cash
 
     @property
     def latest_cash(self):
@@ -166,6 +186,7 @@ class QA_Account(QA_Worker):
         update history and cash
         """
         if message['header']['status'] is TRADE_STATUS.SUCCESS:
+            self.trade_index.append(str(message['body']['order']['datetime']))
             self.history.append(
                 [str(message['body']['order']['datetime']), str(message['body']['order']['code']),
                  float(message['body']['order']['price']), int(message['body']['order']['towards']) *
