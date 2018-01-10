@@ -133,7 +133,7 @@ def QA_indicator_MFI(DataFrame, N=14):
     V1 = SUM(IF(TYP > REF(TYP, 1), TYP * VOL, 0), N) / \
         SUM(IF(TYP < REF(TYP, 1), TYP * VOL, 0), N)
     mfi = 100 - (100 / (1 + V1))
-    DICT = [{'MFI': mfi}]
+    DICT = {'MFI': mfi}
 
     return DICT
 
