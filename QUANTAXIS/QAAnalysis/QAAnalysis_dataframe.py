@@ -141,9 +141,10 @@ class QA_Analysis_stock:
 
         return statistics.variance(self.price)
     # 标准差
+
     @property
     def day_pct_change(self):
-        return (self.open-self.close)/self.open
+        return (self.open - self.close) / self.open
 
     @property
     def stdev(self):

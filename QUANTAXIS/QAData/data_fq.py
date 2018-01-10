@@ -67,7 +67,11 @@ def QA_data_make_qfq(bfq_data, xdxr_data):
     data['low'] = data['low'] * data['adj']
     data['close'] = data['close'] * data['adj']
     data['preclose'] = data['preclose'] * data['adj']
-
+    try:
+        data['high_limit'] = data['high_limit'] * data['adj']
+        data['low_limit']= data['high_limit'] * data['adj']
+    except:
+        pass
     return data.query('if_trade==1').drop(['fenhong', 'peigu', 'peigujia', 'songzhuangu',
                                            'if_trade', 'category'], axis=1).query("open != 0")
 
@@ -95,6 +99,11 @@ def QA_data_make_hfq(bfq_data, xdxr_data):
     data['low'] = data['low'] * data['adj']
     data['close'] = data['close'] * data['adj']
     data['preclose'] = data['preclose'] * data['adj']
+    try:
+        data['high_limit'] = data['high_limit'] * data['adj']
+        data['low_limit']= data['high_limit'] * data['adj']
+    except:
+        pass
     return data.query('if_trade==1').drop(['fenhong', 'peigu', 'peigujia', 'songzhuangu'], axis=1).query("open != 0")
 
 

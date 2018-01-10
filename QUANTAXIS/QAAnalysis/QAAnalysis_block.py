@@ -23,7 +23,7 @@ def get_gap_trade(gap):
 
 #from QUANTAXIS.QAAnalysis.QAAnalysis_dataframe import QA_Analysis_stock
 class QA_Analysis_block():
-    def __init__(self, block=None, block_name=None,lens=90, *args, **kwargs):
+    def __init__(self, block=None, block_name=None, lens=90, *args, **kwargs):
 
         try:
             self.block_code = block.code
@@ -32,8 +32,8 @@ class QA_Analysis_block():
 
         if block_name is not None:
             self.block_code = QA_fetch_stock_block_adv().get_block(block_name).code
-        self.lens=lens
-        #self.Executor=QA_Tdx_Executor()
+        self.lens = lens
+        # self.Executor=QA_Tdx_Executor()
 
     def market_data(self, start, end, _type='day'):
         return QA_fetch_stock_day_adv(self.block_code, start, end)
@@ -51,49 +51,51 @@ class QA_Analysis_block():
         'return a QUANTAXIS DATASTRUCT'
         _start, _end = get_gap_trade(90)
         return self.market_data(_start, _end)
+
     @property
     def _data(self):
         _start, _end = get_gap_trade(self.lens)
-        return self.market_data(_start, _end)        
+        return self.market_data(_start, _end)
 
     def block_price(self, market_data=None):
         if market_data is None:
-            market_data=self._data.to_qfq()
+            market_data = self._data.to_qfq()
         else:
-            market_data=market_data.to_qfq()
+            market_data = market_data.to_qfq()
         return QA_Analysis_stock(market_data).price.groupby('date').mean()
-    
+
     def block_pcg(self, market_data=None):
         if market_data is None:
-            market_data=self._data.to_qfq()
+            market_data = self._data.to_qfq()
         else:
-            market_data=market_data.to_qfq()
+            market_data = market_data.to_qfq()
         return QA_Analysis_stock(market_data).day_pct_change.groupby('date').mean()
 
-    def stock_turnover(self,market_data=None):
+    def stock_turnover(self, market_data=None):
         if market_data is None:
-            market_data=self._data.to_qfq()
+            market_data = self._data.to_qfq()
         else:
-            market_data=market_data.to_qfq()
-        _data=market_data.data
-        _info=self.stock_info()
-        _data['ltgb']=_data.code.apply(lambda x: _info.liutongguben[x])
-        _data['turnover']=100*_data['volume']/ _data['ltgb']
+            market_data = market_data.to_qfq()
+        _data = market_data.data
+        _info = self.stock_info()
+        _data['ltgb'] = _data.code.apply(lambda x: _info.liutongguben[x])
+        _data['turnover'] = 100 * _data['volume'] / _data['ltgb']
         return _data
 
-    def block_turnover(self,market_data=None):
+    def block_turnover(self, market_data=None):
         return self.stock_turnover(market_data).turnover.groupby('date').mean()
+
     def stock_info(self):
-        data=[]
-        
+        data = []
+
         for item in self.block_code:
             try:
-                _data=QA_fetch_stock_info(item)
+                _data = QA_fetch_stock_info(item)
             except:
-                _data=QA_fetch_get_stock_info(item)
+                _data = QA_fetch_get_stock_info(item)
             data.append(_data)
 
-        return pd.concat(data).set_index('code',drop=False)
+        return pd.concat(data).set_index('code', drop=False)
 
     def res(self):
         import matplotlib.pyplot as plt
@@ -102,13 +104,9 @@ class QA_Analysis_block():
         plt.show()
 
 
-    
 class QA_Analysis_blocks():
     def __init__(self, *args, **kwargs):
-        self.blocks=QA.QA_fetch_stock_block_adv().get_type('gn').block_name
-
-        
-
+        self.blocks = QA.QA_fetch_stock_block_adv().get_type('gn').block_name
 
 
 if __name__ == "__main__":
@@ -123,15 +121,14 @@ if __name__ == "__main__":
     f=QA.QA_fetch_get_stock_info('tdx','000001').liutongguben.values[0]
     turnover=d/f
     """
-    #print(js)
+    # print(js)
 
-
-    x=[]
-    y=[]
-    block=QA.QA_fetch_stock_block_adv().get_type('gn').block_name
+    x = []
+    y = []
+    block = QA.QA_fetch_stock_block_adv().get_type('gn').block_name
     for item in block:
         print(item)
-        data=QA_Analysis_block(block_name=item)
+        data = QA_Analysis_block(block_name=item)
         x.append(data.block_pcg())
         y.append(data.block_turnover())
     print(len(x))

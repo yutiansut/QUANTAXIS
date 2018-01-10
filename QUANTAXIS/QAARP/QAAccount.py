@@ -176,6 +176,7 @@ class QA_Account(QA_Worker):
 
     @property
     def current_time(self):
+        'return current time (in backtest/real environment)'
         return self._currenttime
 
     def reset_assets(self, init_assets=None):
