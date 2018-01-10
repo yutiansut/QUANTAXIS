@@ -77,7 +77,6 @@ class QA_Account(QA_Worker):
         self.strategy_name = strategy_name
         self.user = user
         self.account_type = account_type
-        self.trade_index = []
         self.portfolio = portfolio
         self.account_cookie = QA_util_random_with_topic(
             'Acc') if account_cookie is None else account_cookie
@@ -90,7 +89,7 @@ class QA_Account(QA_Worker):
         self.cash_available = self.cash[-1]  # 可用资金
         self.sell_available = sell_available
         self.history = [] if history is None else history
-
+        self.trade_index = []
         # 规则类
         # 两个规则
         # 1.是否允许t+0 及买入及结算
@@ -105,19 +104,28 @@ class QA_Account(QA_Worker):
 
     @property
     def message(self):
+        'the standard message which can be transef'
         return {
             'header': {
                 'source': 'account',
                 'cookie': self.account_cookie,
                 'portfolio': self.portfolio,
                 'user': self.user,
+                'broker':self.broker,
+                'account_type':self.account_type,
                 'strategy_name': self.strategy_name,
-                'current_time': self._currenttime
+                'current_time': self._currenttime,
+
+                'allow_sellopen': self.allow_sellopen,
+                'allow_t0': self.allow_t0,
+                'margin_level': self.margin_level
             },
             'body': {
                 'account': {
+                    'init_asset':self.init_assets,
                     'cash': self.cash,
                     'history': self.history,
+                    'trade_index': self.trade_index
                 }
             }
         }
@@ -269,8 +277,16 @@ class QA_Account(QA_Worker):
         self.portfolio = message.get('portfolio', None)
         self.user = message.get('user', None)
         self.account_cookie = message.get('account_cookie', None)
+        self.strategy_name=message.get('strategy_name',None)
+        self.broker=message.get('broker',None)
+        self.account_type=message.get('account_type',None)
+        self._currenttime=message.get('current_time',None)
         self.history = message['body']['account']['history']
         self.cash = message['body']['account']['cash']
+        self.trade_index=message['body']['account']['trade_index']
+        self.allow_sellopen=message.get('allow_sellopen',False)
+        self.allow_t0=message.get('allow_t0',False)
+        self.margin_level=message.get('margin_level',False)
         return self
 
     def run(self, event):
