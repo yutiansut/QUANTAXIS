@@ -49,16 +49,17 @@ class Backtest(QA_Backtest):
         print(self.user.get_portfolio(self.portfolio).accounts)
         print(self.user.get_portfolio(
             self.portfolio).get_account(self.account).cash)
-        #self.market._settle(self.broker_name, callback=self.if_settle)
+        
 
-        # print(self.market.query_data)
+    def after_success(self):
+        print(self.user.get_portfolio(self.portfolio).get_account(self.account))
 
 
 if __name__ == '__main__':
     import QUANTAXIS as QA
     backtest = Backtest(market_type=MARKET_TYPE.STOCK_DAY,
                         start='2017-01-01',
-                        end='2017-01-31',
+                        end='2018-01-31',
                         code_list=QA.QA_fetch_stock_block_adv().code[0:5],
                         commission_fee=0.00015)
     backtest.start_market()

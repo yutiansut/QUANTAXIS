@@ -180,14 +180,14 @@ class QA_BacktestBroker(QA_Broker):
         if order.order_model == ORDER_MODEL.MARKET:
 
             if order.type[-2:] == '01':
-                exact_time = str(datetime.datetime.strptime(
-                    order.datetime, '%Y-%m-%d %H-%M-%S') + datetime.timedelta(day=1))
+                # exact_time = str(datetime.datetime.strptime(
+                #     str(order.datetime), '%Y-%m-%d %H-%M-%S') + datetime.timedelta(day=1))
 
-                order.date = exact_time[0:10]
+                order.date = order.datetime[0:10]
                 order.datetime = '{} 09:30:00'.format(order.date)
             elif order.type[-2:] == '02':
                 exact_time = str(datetime.datetime.strptime(
-                    order.datetime, '%Y-%m-%d %H-%M-%S') + datetime.timedelta(minute=1))
+                    str(order.datetime), '%Y-%m-%d %H-%M-%S') + datetime.timedelta(minute=1))
                 order.date = exact_time[0:10]
                 order.datetime = exact_time
             self.market_data = self.get_market(order)
@@ -195,7 +195,18 @@ class QA_BacktestBroker(QA_Broker):
                 return order
             order.price = (float(self.market_data["high"]) +
                            float(self.market_data["low"])) * 0.5
-
+        elif order.order_model == ORDER_MODEL.NEXT_OPEN:
+            try:
+                exact_time = str(datetime.datetime.strptime(
+                    str(order.datetime), '%Y-%m-%d %H-%M-%S') + datetime.timedelta(day=1))
+                order.date = exact_time[0:10]
+                order.datetime = '{} 09:30:00'.format(order.date)
+            except:
+                order.datetime = '{} 15:00:00'.format(order.date)
+            self.market_data = self.get_market(order)
+            if self.market_data is None:
+                return order
+            order.price = float(self.market_data["close"])
         elif order.order_model == ORDER_MODEL.CLOSE:
             try:
                 order.datetime = self.market_data.datetime

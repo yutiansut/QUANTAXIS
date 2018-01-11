@@ -29,16 +29,28 @@ from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_future_day,
                                      QA_fetch_get_index_min,
                                      QA_fetch_get_stock_day,
                                      QA_fetch_get_stock_min)
+from QUANTAXIS.QAMarket.QADealer import QA_Dealer
 
 class QA_SimulatedBroker(QA_Broker):
     def __init__(self, *args, **kwargs):
-        pass
-        
-    def get_data(self, order):
+        self.dealer=QA_Dealer()
+
+    def get_market(self, order):
         pass
 
     def warp(self, order):
         pass
 
-    def receive_order(self,order):
-        pass
+    def receive_order(self, event):
+        order = event.order
+
+        if 'market_data' in event.__dict__.keys():
+            self.market_data = self.get_market(
+                order) if event.market_data is None else event.market_data
+        else:
+            self.market_data = self.get_market(order)
+
+        order = self.warp(order)
+
+        return self.dealer.deal(order, self.market_data)
+    
