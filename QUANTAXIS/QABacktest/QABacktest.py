@@ -112,27 +112,6 @@ class QA_Backtest():
                     break
         self.after_success()
 
-        # try:
-        #     data = next(self.ingest_data)
-        #     #self.market.running_time = str(data.date[0])[0:10]
-        #     self.broker.run(QA_Event(
-        #         event_type=ENGINE_EVENT.UPCOMING_DATA,
-        #         market_data=data))
-        #     self.market.upcoming_data(
-        #         self.broker_name, data)
-        #     while True:
-        #         if self.market.trade_engine.kernals[self.broker_name].queue.empty():
-        #             break
-        #     self.market._settle(self.broker_name)
-        #     while True:
-        #         if self.market.clear():
-        #             break
-
-        #     self.run()
-
-        # except:
-        #     self.after_success()
-
     def after_success(self):
         """called when all trading fininshed, for performance analysis
         """
