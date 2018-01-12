@@ -56,10 +56,12 @@ echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongod
 apt-get update
 # 安装MongoDB
 apt-get install -y mongodb-org --allow-unauthenticated
-# 更新
-apt-get update
-# 安装MongoDB
-apt-get install -y mongodb-org --allow-unauthenticated
+cd /
+mkdir data
+cd data
+mkdir data
+mkdir log
+
 # 开启MongoDB服务
 service mongod start
 
