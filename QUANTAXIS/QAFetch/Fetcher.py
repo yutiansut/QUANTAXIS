@@ -39,7 +39,7 @@ from QUANTAXIS.QAFetch import QAQuery_Advance as QAMongo
 from QUANTAXIS.QAUtil.QAParameter import FREQUENCE, MARKET_TYPE, DATASOURCE, OUTPUT_FORMAT
 
 
-def QA_fetch(code, start, end, frequence, market, source, output):
+def QA_quotation(code, start, end, frequence, market, source, output):
     """一个统一的fetch
 
     Arguments:
@@ -75,5 +75,5 @@ def QA_fetch(code, start, end, frequence, market, source, output):
 
 
 if __name__ == '__main__':
-    print(QA_fetch('000001', '2017-01-01', '2017-01-31', frequence=FREQUENCE.DAY,
+    print(QA_quotation('000001', '2017-01-01', '2017-01-31', frequence=FREQUENCE.DAY,
                    market=MARKET_TYPE.STOCK_CN, source=DATASOURCE.TDX, output=OUTPUT_FORMAT.DATAFRAME))
