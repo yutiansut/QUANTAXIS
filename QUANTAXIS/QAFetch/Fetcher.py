@@ -36,10 +36,10 @@ from QUANTAXIS.QAFetch import QATushare as QATushare
 from QUANTAXIS.QAFetch import QATdx as QATdx
 from QUANTAXIS.QAFetch import QAThs as QAThs
 from QUANTAXIS.QAFetch import QAQuery_Advance as QAMongo
-from QUANTAXIS.QAUtil.QAParameter import FREQUENCE, MARKET_TYPE, DATASOURCE
+from QUANTAXIS.QAUtil.QAParameter import FREQUENCE, MARKET_TYPE, DATASOURCE, OUTPUT_FORMAT
 
 
-def QA_fetch(code, start, end, frequence, market, source, output='pandas'):
+def QA_fetch(code, start, end, frequence, market, source, output):
     """一个统一的fetch
 
     Arguments:
@@ -55,21 +55,25 @@ def QA_fetch(code, start, end, frequence, market, source, output='pandas'):
     if market is MARKET_TYPE.STOCK_CN:
         if frequence is FREQUENCE.DAY:
             if source is DATASOURCE.MONGO:
-                return QAMongo.QA_fetch_stock_day_adv(code, start, end)
+                res = QAMongo.QA_fetch_stock_day_adv(code, start, end)
             elif source is DATASOURCE.TDX:
-                return QATdx.QA_fetch_get_stock_day(code, start, end, '00')
+                res = QATdx.QA_fetch_get_stock_day(code, start, end, '00')
             elif source is DATASOURCE.TUSHARE:
-                return QATushare.QA_fetch_get_stock_day(code, start, end, '00')
+                res = QATushare.QA_fetch_get_stock_day(code, start, end, '00')
         elif frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
             if source is DATASOURCE.MONGO:
-                return QAMongo.QA_fetch_stock_min_adv(code, start, end, type_=frequence)
+                res = QAMongo.QA_fetch_stock_min_adv(
+                    code, start, end, type_=frequence)
             elif source is DATASOURCE.TDX:
-                return QATdx.QA_fetch_get_stock_min(code, start, end, level=frequence)
+                res = QATdx.QA_fetch_get_stock_min(
+                    code, start, end, level=frequence)
         elif frequence is FREQUENCE.TICK:
             if source is DATASOURCE.TDX:
-                return QATdx.QA_fetch_get_stock_transaction(code, start, end)
+                res = QATdx.QA_fetch_get_stock_transaction(code, start, end)
+
+    return res
 
 
 if __name__ == '__main__':
     print(QA_fetch('000001', '2017-01-01', '2017-01-31', frequence=FREQUENCE.DAY,
-                   market=MARKET_TYPE.STOCK_CN, source=DATASOURCE.TDX))
+                   market=MARKET_TYPE.STOCK_CN, source=DATASOURCE.TDX, output=OUTPUT_FORMAT.DATAFRAME))
