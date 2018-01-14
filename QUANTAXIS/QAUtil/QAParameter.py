@@ -37,7 +37,7 @@ class ORDER_DIRECTION:
     BUY_CLOSE 期货 空平(多头平旧仓)
     SELL_OPEN 期货 空开
     SELL_CLOSE 期货 多平(空头平旧仓)
-    
+
 
     """
 
@@ -169,6 +169,7 @@ class MARKET_TYPE():
     FUND_CN = 'fund_cn'   # 中国基金
     BOND_CN = 'bond_cn'  # 中国债券
 
+
 class BROKER_TYPE:
     """执行环境
 
@@ -267,9 +268,6 @@ class FREQUENCE:
     TICK = 'tick'  # transaction
 
 
-
-
-
 class CURRENCY_TYPE:
     """货币种类"""
     RMB = 'rmb'  # 人民币
@@ -281,3 +279,26 @@ class CURRENCY_TYPE:
     JPY = 'jpy'  # 日元
     AUD = 'aud'  # 澳元
     CAD = 'cad'  # 加拿大元
+
+
+class DATASOURCE:
+    """数据来源
+    """
+
+    WIND = 'wind'
+    THS = 'ths'
+    TUSHARE = 'tushare'
+    TDX = 'tdx'
+    MONGO = 'mongo'
+
+
+class OUTPUT_FORMAT:
+    """输出格式
+    """
+
+    DATASTRUCT = 'datastruct'
+    DATAFRAME = 'dataframe'
+    SERIES = 'series'
+    NDARRAY = 'ndarray'
+    LIST = 'list'
+    JSON = 'json'
