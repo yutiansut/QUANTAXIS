@@ -44,7 +44,7 @@ class QA_Fetcher():
         self.datasouce = {'wind': QAWind, 'tushare': QATushare,
                           'tdx': QATdx, 'ths': QAThs, 'mongo': QAMongo}
 
-    def fetch(self, code, start, end, frequence, securitytype, source):
+    def fetch(self, code, start, end, frequence, market, source):
         """一个统一的fetch
         
         Arguments:
@@ -52,8 +52,8 @@ class QA_Fetcher():
             start {[type]} -- 开始日期
             end {[type]} -- 结束日期
             frequence {[type]} -- 频率()
-            securitytype {[type]} -- [description]
-            source {[type]} -- [description]
+            market {[type]} -- 市场
+            source {[type]} -- 来源
         """
 
-        pass
+        
