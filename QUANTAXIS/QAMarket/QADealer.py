@@ -65,7 +65,7 @@ class dealer_preset():
         self.tax_coeff = None  # 费率
 
     def load_preset(self):
-        if self.market_type in [MARKET_TYPE.STOCK_DAY, MARKET_TYPE.STOCK_MIN, MARKET_TYPE.STOCK_TRANSACTION]:
+        if self.market_type is MARKET_TYPE.STOCK_CN:
             self.if_price_limit = True  # 是否限制涨跌停(美股/加密货币不限制)
             self.if_commission = True  # 是否收手续费(部分合约/部分加密货币不收手续费)
             self.if_tax = True  # 是否收税
@@ -75,7 +75,7 @@ class dealer_preset():
             self.commission_coeff = 0.00025  # 手续费比例
             self.tax_coeff = 0.001  # 费率
             return self
-        elif self.market_type in [MARKET_TYPE.FUTUER_DAY, MARKET_TYPE.FUTUER_MIN, MARKET_TYPE.FUTUER_TRANSACTION]:
+        elif self.market_type is MARKET_TYPE.FUTURE_CN:
             self.if_price_limit = True  # 是否限制涨跌停(美股/加密货币不限制)
             self.if_commission = True  # 是否收手续费(部分合约/部分加密货币不收手续费)
             self.if_tax = False  # 是否收税
@@ -130,7 +130,7 @@ class QA_Dealer():
         self.market_data = market_data
         self.deal_price = 0
         self.deal_amount = 0
-        if order.type in [MARKET_TYPE.STOCK_DAY, MARKET_TYPE.STOCK_MIN, MARKET_TYPE.STOCK_TRANSACTION]:
+        if order.type is MARKET_TYPE.STOCK_CN:
             return self.backtest_stock_dealer()
 
     def callback_message(self):
@@ -174,7 +174,7 @@ class QA_Dealer():
         return message
 
     def cal_fee(self):
-        if self.order.market_type in [MARKET_TYPE.STOCK_DAY,MARKET_TYPE.STOCK_MIN,MARKET_TYPE.STOCK_TRANSACTION]:
+        if self.order.market_type is MARKET_TYPE.STOCK_CN:
             if int(self.order.towards) > 0:
                 commission_fee = self.commission_fee_coeff * \
                     float(self.deal_price) * float(self.order.amount)
@@ -189,7 +189,7 @@ class QA_Dealer():
 
                 self.tax = self.tax_coeff * \
                     float(self.deal_price) * float(self.order.amount)
-        elif self.order.market_type in [MARKET_TYPE.FUTUER_DAY,MARKET_TYPE.FUTUER_MIN,MARKET_TYPE.FUTUER_TRANSACTION]:
+        elif self.order.market_type is MARKET_TYPE.FUTURE_CN:
             # 期货不收税
             # 双边手续费 也没有最小手续费限制
             self.commission_fee = self.commission_fee_coeff * \

@@ -33,7 +33,7 @@ from QUANTAXIS.QAMarket.QABacktestBroker import QA_BacktestBroker
 from QUANTAXIS.QAMarket.QAMarket import QA_Market
 from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT,
                                           BROKER_TYPE, ENGINE_EVENT,
-                                          MARKET_TYPE, MARKETDATA_TYPE,
+                                          MARKET_TYPE, FREQUENCE,
                                           ORDER_DIRECTION, ORDER_MODEL)
 
 from test_backtest.strategy import MAStrategy
@@ -52,14 +52,14 @@ class Backtest(QA_Backtest):
         
 
     def after_success(self):
-        print(self.user.get_portfolio(self.portfolio).get_account(self.account))
+        print(self.user.get_portfolio(self.portfolio).get_account(self.account).history_table)
 
 
 if __name__ == '__main__':
     import QUANTAXIS as QA
-    backtest = Backtest(market_type=MARKET_TYPE.STOCK_DAY,
+    backtest = Backtest(market_type=MARKET_TYPE.STOCK_CN,
                         start='2017-01-01',
-                        end='2018-01-31',
+                        end='2017-01-31',
                         code_list=QA.QA_fetch_stock_block_adv().code[0:5],
                         commission_fee=0.00015)
     backtest.start_market()

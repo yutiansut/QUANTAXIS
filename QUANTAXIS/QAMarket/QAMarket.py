@@ -35,7 +35,7 @@ from QUANTAXIS.QAMarket.QATrade import QA_Trade
 from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
                                           BROKER_EVENT, BROKER_TYPE,
                                           ENGINE_EVENT, MARKET_EVENT,
-                                          MARKETDATA_TYPE, ORDER_EVENT,
+                                          FREQUENCE, ORDER_EVENT,
                                           ORDER_MODEL)
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 
@@ -138,11 +138,11 @@ class QA_Market(QA_Trade):
     def get_account_id(self):
         return list(self.session.keys())
 
-    def insert_order(self, account_id, amount, amount_model, time, code, price, order_model, towards, market_type, data_type, broker_name):
+    def insert_order(self, account_id, amount, amount_model, time, code, price, order_model, towards, market_type, frequence, broker_name):
 
         flag = False
         if order_model in [ORDER_MODEL.CLOSE, ORDER_MODEL.NEXT_OPEN]:
-            _price = self.query_data_no_wait(broker_name=broker_name, data_type=data_type,
+            _price = self.query_data_no_wait(broker_name=broker_name, frequence=frequence,
                                              market_type=market_type, code=code, start=time)
 
             if _price is not None and len(_price) > 0:
@@ -152,7 +152,7 @@ class QA_Market(QA_Trade):
                 QA_util_log_info('MARKET WARING: SOMEING WRONG WITH ORDER \n ')
                 QA_util_log_info('code {} date {} price {} order_model {} amount_model {}'.format(code,time,price,order_model,amount_model))
         elif order_model is ORDER_MODEL.MARKET:
-            _price = self.query_data_no_wait(broker_name=broker_name, data_type=data_type,
+            _price = self.query_data_no_wait(broker_name=broker_name, frequence=frequence,
                                              market_type=market_type, code=code, start=time)
             if _price is not None and len(_price) > 0:
                 price = float(_price[0][1])
@@ -168,7 +168,7 @@ class QA_Market(QA_Trade):
         if flag:
             order = self.get_account(account_id).send_order(
                 amount=amount, amount_model=amount_model, time=time, code=code, price=price,
-                order_model=order_model, towards=towards, market_type=market_type, data_type=data_type)
+                order_model=order_model, towards=towards, market_type=market_type, frequence=frequence)
             self.event_queue.put(
                 QA_Task(
                     worker=self.broker[self.get_account(account_id).broker],
@@ -214,24 +214,24 @@ class QA_Market(QA_Trade):
     def query_cash(self, account_cookie):
         return self.get_account(account_cookie).cash_available
 
-    def query_data_no_wait(self, broker_name, data_type, market_type, code, start, end=None):
+    def query_data_no_wait(self, broker_name, frequence, market_type, code, start, end=None):
         return self.broker[broker_name].run(event=QA_Event(
             event_type=MARKET_EVENT.QUERY_DATA,
-            data_type=data_type,
+            frequence=frequence,
             market_type=market_type,
             code=code,
             start=start,
             end=end
         ))
 
-    def query_data(self, broker_name, data_type, market_type, code, start, end=None):
+    def query_data(self, broker_name, frequence, market_type, code, start, end=None):
         self.event_queue.put(
             QA_Task(
                 worker=self.broker[broker_name],
                 engine=broker_name,
                 event=QA_Event(
                     event_type=MARKET_EVENT.QUERY_DATA,
-                    data_type=data_type,
+                    frequence=frequence,
                     market_type=market_type,
                     code=code,
                     start=start,
@@ -243,7 +243,7 @@ class QA_Market(QA_Trade):
     def query_currentbar(self, broker_name, market_type, code):
         return self.broker[broker_name].run(event=QA_Event(
             event_type=MARKET_EVENT.QUERY_DATA,
-            data_type=MARKETDATA_TYPE.CURRENT,
+            frequence=FREQUENCE.CURRENT,
             market_type=market_type,
             code=code,
             start=self.running_time,

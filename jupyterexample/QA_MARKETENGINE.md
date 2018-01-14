@@ -167,8 +167,8 @@ print(market.get_account_id())
 
 ```python
 market.insert_order(account_id=a_1, amount=100000,price=None, amount_model=QA.AMOUNT_MODEL.BY_PRICE,time='2017-12-14', code='000001', 
-                    order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY,market_type=QA.MARKET_TYPE.STOCK_DAY,
-                   data_type=QA.MARKETDATA_TYPE.DAY,broker_name=QA.BROKER_TYPE.BACKETEST)
+                    order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY,market_type=QA.MARKET_TYPE.STOCK_CN,
+                   data_type=QA.FREQUENCE.DAY,broker_name=QA.BROKER_TYPE.BACKETEST)
 ```
 
     < QA_Order datetime:2017-12-14 09:31:00 code:000001 price:13.0 towards:1 btype:0x01 order_id:Order_L5gj0sUo account:Acc_DasXt8cC status:300 >
@@ -177,8 +177,8 @@ market.insert_order(account_id=a_1, amount=100000,price=None, amount_model=QA.AM
 
 ```python
 market.insert_order(account_id=a_2, amount=100000,price=None, amount_model=QA.AMOUNT_MODEL.BY_PRICE,time='2017-12-14', code='000001', 
-                    order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY,market_type=QA.MARKET_TYPE.STOCK_DAY,
-                   data_type=QA.MARKETDATA_TYPE.DAY,broker_name=QA.BROKER_TYPE.BACKETEST)
+                    order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY,market_type=QA.MARKET_TYPE.STOCK_CN,
+                   data_type=QA.FREQUENCE.DAY,broker_name=QA.BROKER_TYPE.BACKETEST)
 ```
 
     < QA_Order datetime:2017-12-14 09:31:00 code:000001 price:13.0 towards:1 btype:0x01 order_id:Order_26WY3Nmp account:Acc_GQ3hu9d5 status:300 >
@@ -495,7 +495,7 @@ market._trade(QA.BROKER_TYPE.BACKETEST)
 
 
 ```python
-market.query_data(broker_name=QA.BROKER_TYPE.BACKETEST,data_type=QA.MARKETDATA_TYPE.DAY,market_type=QA.MARKET_TYPE.STOCK_DAY,
+market.query_data(broker_name=QA.BROKER_TYPE.BACKETEST,data_type=QA.FREQUENCE.DAY,market_type=QA.MARKET_TYPE.STOCK_CN,
                  code='000001',start='2017-12-14')
 ```
 
@@ -508,7 +508,7 @@ market.query_data(broker_name=QA.BROKER_TYPE.BACKETEST,data_type=QA.MARKETDATA_T
 
 
 ```python
-market.query_data_no_wait(broker_name=QA.BROKER_TYPE.BACKETEST,data_type=QA.MARKETDATA_TYPE.DAY,market_type=QA.MARKET_TYPE.STOCK_DAY,
+market.query_data_no_wait(broker_name=QA.BROKER_TYPE.BACKETEST,data_type=QA.FREQUENCE.DAY,market_type=QA.MARKET_TYPE.STOCK_CN,
                  code='000001',start='2017-12-14')
 ```
 

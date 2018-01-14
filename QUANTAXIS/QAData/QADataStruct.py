@@ -53,7 +53,7 @@ from QUANTAXIS.QAUtil import (DATABASE, QA_util_log_info,
                               QA_util_random_with_topic,
                               QA_util_to_json_from_pandas,
                               QA_util_to_pandas_from_json, trade_date_sse)
-from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, MARKETDATA_TYPE
+from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, FREQUENCE
 from QUANTAXIS.QAUtil.QADate import QA_util_to_datetime
 
 

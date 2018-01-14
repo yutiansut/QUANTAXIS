@@ -22,8 +22,8 @@ print(market)
 market.login(QA.BROKER_TYPE.BACKETEST, a_1, user.get_account(a_1))
 for code in ['000001', '000002', '000004', '000007']:
     market.insert_order(account_id=a_1, amount=1000, price=None, amount_model=QA.AMOUNT_MODEL.BY_AMOUNT, time='2017-12-01', code=code,
-                        order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY, market_type=QA.MARKET_TYPE.STOCK_DAY,
-                        data_type=QA.MARKETDATA_TYPE.DAY, broker_name=QA.BROKER_TYPE.BACKETEST)
+                        order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY, market_type=QA.MARKET_TYPE.STOCK_CN,
+                        data_type=QA.FREQUENCE.DAY, broker_name=QA.BROKER_TYPE.BACKETEST)
 
 
 market._settle(QA.BROKER_TYPE.BACKETEST)

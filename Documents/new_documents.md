@@ -58,7 +58,7 @@ account.message记录了account的所有状态 用于
 ```
 strategy_name=''  # 策略名称
 user=''  # 用户
-market_type=MARKET_TYPE.stock_day  # market_type
+market_type=MARKET_TYPE.STOCK_CN  # market_type
 hold=[['date', 'code', 'price', 'amount', 'order_id', 'trade_id']]  #list
 sell_available=[['date', 'code', 'price', 'amount', 'order_id', 'trade_id']] #list
 init_assest=1000000 #int

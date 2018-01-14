@@ -87,13 +87,13 @@ class QA_BacktestBroker(QA_Broker):
         self.dealer = QA_Dealer(commission_fee_coeff)
         self.order_handler = QA_OrderHandler()
         self.engine = {
-            MARKET_TYPE.STOCK_DAY: self.dealer.backtest_stock_dealer}
-        self.fetcher = {MARKET_TYPE.STOCK_DAY: QA_fetch_stock_day, MARKET_TYPE.STOCK_MIN: QA_fetch_stock_min,
-                        MARKET_TYPE.INDEX_DAY: QA_fetch_index_day, MARKET_TYPE.INDEX_MIN: QA_fetch_index_min,
-                        MARKET_TYPE.FUTUER_DAY: QA_fetch_future_day, MARKET_TYPE.FUTUER_MIN: QA_fetch_future_min}
-        self.nondatabase_fetcher = {MARKET_TYPE.STOCK_DAY: QA_fetch_get_stock_day,  MARKET_TYPE.STOCK_MIN: QA_fetch_get_stock_min,
-                                    MARKET_TYPE.INDEX_DAY: QA_fetch_get_index_day, MARKET_TYPE.INDEX_MIN: QA_fetch_get_index_min,
-                                    MARKET_TYPE.FUTUER_DAY: QA_fetch_get_future_day, MARKET_TYPE.FUTUER_MIN: QA_fetch_get_future_min}
+            MARKET_TYPE.STOCK_CN: self.dealer.backtest_stock_dealer}
+
+        self.fetcher = {MARKET_TYPE.STOCK_CN: QA_fetch_stock_day}
+        #, MARKET_TYPE.STOCK_MIN: QA_fetch_stock_min,
+        #                 MARKET_TYPE.INDEX_DAY: QA_fetch_index_day, MARKET_TYPE.INDEX_MIN: QA_fetch_index_min,
+        #                 MARKET_TYPE.FUTUER_DAY: QA_fetch_future_day, MARKET_TYPE.FUTUER_MIN: QA_fetch_future_min}
+
         self.commission_fee_coeff = commission_fee_coeff
         self.market_data = None
         self.if_nondatabase = if_nondatabase
@@ -105,7 +105,7 @@ class QA_BacktestBroker(QA_Broker):
         if event.event_type is MARKET_EVENT.QUERY_DATA:
             # 查询数据部分
             code = event.code
-            data_type = event.data_type
+            frequence = event.frequence
             start = event.start
             end = start if event.end is None else event.end
             market_type = event.market_type
@@ -114,7 +114,7 @@ class QA_BacktestBroker(QA_Broker):
                     start, end).select_code(code).to_numpy()
             except:
                 res = self.fetcher[market_type](
-                    code, start, end, dtype=data_type)
+                    code, start, end, dtype=frequence)
             if event.callback:
                 event.callback(res)
             else:

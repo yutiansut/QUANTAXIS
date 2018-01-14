@@ -1,7 +1,7 @@
 # utf-8
 from QUANTAXIS.QAARP.QAStrategy import QA_Strategy
 from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, MARKET_TYPE,
-                                          MARKETDATA_TYPE, ORDER_DIRECTION,
+                                          FREQUENCE, ORDER_DIRECTION,
                                           ORDER_MODEL)
 
 
@@ -19,7 +19,7 @@ class MAStrategy(QA_Strategy):
                                      amount=10000, amount_model=AMOUNT_MODEL.BY_AMOUNT,
                                      time=self.current_time, code=item, price=0,
                                      order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.BUY,
-                                     market_type=MARKET_TYPE.STOCK_DAY, data_type=MARKETDATA_TYPE.DAY,
+                                     market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY,
                                      broker_name=self.broker)
 
                 else:
@@ -28,7 +28,7 @@ class MAStrategy(QA_Strategy):
                                          amount=self.sell_available[item], amount_model=AMOUNT_MODEL.BY_AMOUNT,
                                          time=self.current_time, code=item, price=0,
                                          order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.SELL,
-                                         market_type=MARKET_TYPE.STOCK_DAY, data_type=MARKETDATA_TYPE.DAY,
+                                         market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY,
                                          broker_name=self.broker
                                          )
                     else:
@@ -36,7 +36,7 @@ class MAStrategy(QA_Strategy):
                                          amount=10000, amount_model=AMOUNT_MODEL.BY_AMOUNT,
                                          time=self.current_time, code=item, price=0,
                                          order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.BUY,
-                                         market_type=MARKET_TYPE.STOCK_DAY, data_type=MARKETDATA_TYPE.DAY,
+                                         market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY,
                                          broker_name=self.broker)
         except:
             pass
@@ -53,7 +53,7 @@ class DUOStrategy(QA_Strategy):
                                      amount=10000, amount_model=AMOUNT_MODEL.BY_AMOUNT,
                                      time=self.current_time, code=item, price=0,
                                      order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.BUY,
-                                     market_type=MARKET_TYPE.STOCK_DAY, data_type=MARKETDATA_TYPE.DAY,
+                                     market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY,
                                      broker_name=self.broker)
 
                 else:
@@ -62,7 +62,7 @@ class DUOStrategy(QA_Strategy):
                                          amount=self.sell_available[item], amount_model=AMOUNT_MODEL.BY_AMOUNT,
                                          time=self.current_time, code=item, price=0,
                                          order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.SELL,
-                                         market_type=MARKET_TYPE.STOCK_DAY, data_type=MARKETDATA_TYPE.DAY,
+                                         market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY,
                                          broker_name=self.broker
                                          )
                     else:
@@ -70,5 +70,5 @@ class DUOStrategy(QA_Strategy):
                                          amount=10000, amount_model=AMOUNT_MODEL.BY_AMOUNT,
                                          time=self.current_time, code=item, price=0,
                                          order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.BUY,
-                                         market_type=MARKET_TYPE.STOCK_DAY, data_type=MARKETDATA_TYPE.DAY,
+                                         market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY,
                                          broker_name=self.broker)
