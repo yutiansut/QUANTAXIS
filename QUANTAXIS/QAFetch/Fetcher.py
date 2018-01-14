@@ -36,7 +36,7 @@ from QUANTAXIS.QAFetch import QATushare as QATushare
 from QUANTAXIS.QAFetch import QATdx as QATdx
 from QUANTAXIS.QAFetch import QAThs as QAThs
 from QUANTAXIS.QAFetch import QAQuery_Advance as QAMongo
-from QUANTAXIS.QAUtil.QAParameter import FREQUENCE, SECURITY_TYPE, MARKET_TYPE
+from QUANTAXIS.QAUtil.QAParameter import FREQUENCE, MARKET_TYPE
 
 
 class QA_Fetcher():

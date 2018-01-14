@@ -267,19 +267,7 @@ class FREQUENCE:
     TICK = 'tick'  # transaction
 
 
-class SECURITY_TYPE:
-    '证券的种类'
-    STOCK_CN = 'stock_cn'  # 中国A股
-    STOCK_HK = 'stock_hk'  # 港股
-    STOCK_US = 'stock_us'  # 美股
-    FUTURE_CN = 'future_cn'  # 国内期货
-    OPTION_CN = 'option_cn'  # 国内期权
-    STOCKOPTION_CN = 'stockoption_cn'  # 个股期权
-    # BITCOIN = 'bitcoin'  # 比特币
-    CRYPTOCURRENCY = 'cryptocurrency'  # 加密货币(衍生货币)
-    INDEX_CN = 'index_cn'  # 中国指数
-    FUND_CN = 'fund_cn'   # 中国基金
-    BOND_CN = 'bond_cn'  # 中国债券
+
 
 
 class CURRENCY_TYPE:
