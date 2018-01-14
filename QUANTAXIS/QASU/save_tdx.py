@@ -143,7 +143,7 @@ def QA_SU_save_stock_xdxr(client=QA_Setting.client):
 
 
 
-def QA_SU_save_stock_min(QA_Setting.client):
+def QA_SU_save_stock_min(client=QA_Setting.client):
     stock_list = QA_fetch_get_stock_time_to_market()
     coll = client.quantaxis.stock_min
     coll.create_index([('code', pymongo.ASCENDING), ('time_stamp',
