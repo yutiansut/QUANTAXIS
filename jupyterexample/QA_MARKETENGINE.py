@@ -43,19 +43,19 @@ print(market.get_account_id())
 
 
 market.insert_order(account_id=a_1, amount=100000,price=None, amount_model=QA.AMOUNT_MODEL.BY_PRICE,time='2017-12-01', code='600010', 
-                    order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY,market_type=QA.MARKET_TYPE.STOCK_DAY,
-                   data_type=QA.MARKETDATA_TYPE.DAY,broker_name=QA.BROKER_TYPE.BACKETEST)
+                    order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY,market_type=QA.MARKET_TYPE.STOCK_CN,
+                   data_type=QA.FREQUENCE.DAY,broker_name=QA.BROKER_TYPE.BACKETEST)
 
 
 market.insert_order(account_id=a_1, amount=100000,price=None, amount_model=QA.AMOUNT_MODEL.BY_PRICE,time='2017-12-01', code='000001', 
-                    order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY,market_type=QA.MARKET_TYPE.STOCK_DAY,
-                   data_type=QA.MARKETDATA_TYPE.DAY,broker_name=QA.BROKER_TYPE.BACKETEST)
+                    order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY,market_type=QA.MARKET_TYPE.STOCK_CN,
+                   data_type=QA.FREQUENCE.DAY,broker_name=QA.BROKER_TYPE.BACKETEST)
 
 
 
 # market.insert_order(account_id=a_2, amount=100000,price=None, amount_model=QA.AMOUNT_MODEL.BY_PRICE,time='2017-12-14', code='000001', 
-#                     order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY,market_type=QA.MARKET_TYPE.STOCK_DAY,
-#                    data_type=QA.MARKETDATA_TYPE.DAY,broker_name=QA.BROKER_TYPE.BACKETEST)
+#                     order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY,market_type=QA.MARKET_TYPE.STOCK_CN,
+#                    data_type=QA.FREQUENCE.DAY,broker_name=QA.BROKER_TYPE.BACKETEST)
 
 
 
@@ -121,14 +121,14 @@ market._trade(QA.QA_Event(broker_name=QA.BROKER_TYPE.BACKETEST,after_success=Non
 # In[20]:
 
 
-market.query_data(broker_name=QA.BROKER_TYPE.BACKETEST,data_type=QA.MARKETDATA_TYPE.DAY,market_type=QA.MARKET_TYPE.STOCK_DAY,
+market.query_data(broker_name=QA.BROKER_TYPE.BACKETEST,data_type=QA.FREQUENCE.DAY,market_type=QA.MARKET_TYPE.STOCK_CN,
                  code='600010',start='2017-12-01')
 
 
 # In[21]:
 
 
-market.query_data_no_wait(broker_name=QA.BROKER_TYPE.BACKETEST,data_type=QA.MARKETDATA_TYPE.DAY,market_type=QA.MARKET_TYPE.STOCK_DAY,
+market.query_data_no_wait(broker_name=QA.BROKER_TYPE.BACKETEST,data_type=QA.FREQUENCE.DAY,market_type=QA.MARKET_TYPE.STOCK_CN,
                  code='000001',start='2017-12-14')
 
 

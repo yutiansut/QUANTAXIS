@@ -31,7 +31,7 @@ from QUANTAXIS.QAMarket.QABacktestBroker import QA_BacktestBroker
 from QUANTAXIS.QAMarket.QAMarket import QA_Market
 from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT,
                                           BROKER_TYPE, ENGINE_EVENT,
-                                          MARKET_TYPE, MARKETDATA_TYPE,
+                                          MARKET_TYPE, FREQUENCE,
                                           ORDER_DIRECTION, ORDER_MODEL)
 import time
 
@@ -96,7 +96,6 @@ class QA_Backtest():
         """generator driven data flow
         """
 
-
         for data in self.ingest_data:
             self.broker.run(QA_Event(
                 event_type=ENGINE_EVENT.UPCOMING_DATA,
@@ -134,7 +133,7 @@ class QA_Backtest():
 
 
 if __name__ == '__main__':
-    backtest = QA_Backtest(market_type=MARKET_TYPE.STOCK_DAY,
+    backtest = QA_Backtest(market_type=MARKET_TYPE.STOCK_CN,
                            start='2017-01-01',
                            end='2017-01-31',
                            code_list=['000001', '600010'],

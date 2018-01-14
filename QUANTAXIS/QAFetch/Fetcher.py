@@ -35,4 +35,25 @@ from QUANTAXIS.QAFetch import QAWind as QAWind
 from QUANTAXIS.QAFetch import QATushare as QATushare
 from QUANTAXIS.QAFetch import QATdx as QATdx
 from QUANTAXIS.QAFetch import QAThs as QAThs
+from QUANTAXIS.QAFetch import QAQuery_Advance as QAMongo
+from QUANTAXIS.QAUtil.QAParameter import FREQUENCE, SECURITY_TYPE, MARKET_TYPE
 
+
+class QA_Fetcher():
+    def __init__(self):
+        self.datasouce = {'wind': QAWind, 'tushare': QATushare,
+                          'tdx': QATdx, 'ths': QAThs, 'mongo': QAMongo}
+
+    def fetch(self, code, start, end, frequence, securitytype, source):
+        """一个统一的fetch
+        
+        Arguments:
+            code {[type]} -- 证券/股票的代码
+            start {[type]} -- 开始日期
+            end {[type]} -- 结束日期
+            frequence {[type]} -- 频率()
+            securitytype {[type]} -- [description]
+            source {[type]} -- [description]
+        """
+
+        pass

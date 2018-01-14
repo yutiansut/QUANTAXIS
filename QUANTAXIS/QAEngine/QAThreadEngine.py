@@ -77,7 +77,6 @@ class QA_Thread(threading.Thread):
                 except Exception as e:
                     # time.sleep(0.1)
                     #self.run()
-                    QA_util_log_info(e)
                     pass
                 # __res = self.qsize()  # 判断消息队列大小
                 # if __res > 0:
@@ -189,6 +188,7 @@ class QA_Engine(QA_Thread):
                         pass
                 except Exception as e:
                     # time.sleep(1)
+                    #QA_util_log_info(e)
                     raise e
                     #self.run()
 

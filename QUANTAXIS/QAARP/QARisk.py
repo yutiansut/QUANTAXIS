@@ -31,12 +31,21 @@
 
 import numpy as np
 import pandas as pd
+import math
+from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_day_adv
+from QUANTAXIS.QAARP.QAAccount import QA_Account
 
 
-class QA_Risk():
+class QA_Risk(QA_Account):
     def __init__(self, account):
-        self._history = account.history
-        self._cash = account.cash
+        super().__init__()
+        self.from_message(account.message)
+
+
+
+    @property
+    def market_data(self):
+        return QA_fetch_stock_day_adv()
 
     def make_assets(self, market_data=None):
         pass
@@ -65,7 +74,7 @@ class QA_Risk():
 class QA_Performace(QA_Risk):
     def __init__(self, account):
         super().__init__(account)
-        
+
     @property
     def benchmark_assets(self):
         pass
@@ -84,3 +93,11 @@ class QA_Performace(QA_Risk):
     @property
     def sharpe(self):
         pass
+
+
+def annualize_return(assets, days):
+    return math.pow(float(assets[-1]) / float(assets[0]), 250.0 / float(days)) - 1.0
+
+
+def profit(assets):
+    return (assets[-1] / assets[1]) - 1

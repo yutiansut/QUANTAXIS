@@ -30,14 +30,14 @@ for date in QA.QA_util_get_trade_range('2017-01-01','2017-01-31'):
     for code in ['000001', '000002', '000004', '000007']:
         if random.random()<0.3:
             market.insert_order(account_id=a_1, amount=1000, price=None, amount_model=QA.AMOUNT_MODEL.BY_AMOUNT, time=date, code=code,
-                                order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY, market_type=QA.MARKET_TYPE.STOCK_DAY,
-                                data_type=QA.MARKETDATA_TYPE.DAY, broker_name=QA.BROKER_TYPE.BACKETEST)
+                                order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY, market_type=QA.MARKET_TYPE.STOCK_CN,
+                                data_type=QA.FREQUENCE.DAY, broker_name=QA.BROKER_TYPE.BACKETEST)
         else:
             try:
                 print(user.get_account(a_1).sell_available.get(code,0))
                 market.insert_order(account_id=a_1, amount=1000, price=None, amount_model=QA.AMOUNT_MODEL.BY_AMOUNT, time=date, code=code,
-                                    order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.SELL, market_type=QA.MARKET_TYPE.STOCK_DAY,
-                                    data_type=QA.MARKETDATA_TYPE.DAY, broker_name=QA.BROKER_TYPE.BACKETEST)
+                                    order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.SELL, market_type=QA.MARKET_TYPE.STOCK_CN,
+                                    data_type=QA.FREQUENCE.DAY, broker_name=QA.BROKER_TYPE.BACKETEST)
             except:
                 pass
     market._settle(QA.BROKER_TYPE.BACKETEST)
@@ -962,8 +962,8 @@ user.get_account(a_1).daily_hold
 
 ```python
 market.insert_order(account_id=a_1, amount=2000, price=None, amount_model=QA.AMOUNT_MODEL.BY_AMOUNT, time='2017-01-27', code='000001',
-                    order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.SELL, market_type=QA.MARKET_TYPE.STOCK_DAY,
-                    data_type=QA.MARKETDATA_TYPE.DAY, broker_name=QA.BROKER_TYPE.BACKETEST)
+                    order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.SELL, market_type=QA.MARKET_TYPE.STOCK_CN,
+                    data_type=QA.FREQUENCE.DAY, broker_name=QA.BROKER_TYPE.BACKETEST)
 ```
 
     QUANTAXIS>> MARKET WARING: SOMEING WRONG WITH ORDER 

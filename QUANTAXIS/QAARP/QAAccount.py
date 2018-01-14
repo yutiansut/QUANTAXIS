@@ -65,7 +65,7 @@ class QA_Account(QA_Worker):
 
     """
 
-    def __init__(self, strategy_name=None, user=None, account_type=MARKET_TYPE.STOCK_DAY,
+    def __init__(self, strategy_name=None, user=None, account_type=MARKET_TYPE.STOCK_CN,
                  broker=BROKER_TYPE.BACKETEST, portfolio=None, account_cookie=None,
                  sell_available=None, init_assets=None, cash=None, history=None,
                  margin_level=False, allow_t0=False, allow_sellopen=False):
@@ -88,7 +88,7 @@ class QA_Account(QA_Worker):
         self.cash_available = self.cash[-1]  # 可用资金
         self.sell_available = sell_available
         self.history = [] if history is None else history
-        self.trade_index = []
+        self.time_index = []
         # 规则类
         # 两个规则
         # 1.是否允许t+0 及买入及结算
@@ -124,10 +124,19 @@ class QA_Account(QA_Worker):
                     'init_asset':self.init_assets,
                     'cash': self.cash,
                     'history': self.history,
-                    'trade_index': self.trade_index
+                    'trade_index': self.time_index
                 }
             }
         }
+
+    @property
+    def start_date(self):
+        return str(self.time_index[0])[0:10]
+
+    @property
+    def end_date(self):
+        return str(self.time_index[-1])[0:10]
+
 
     @property
     def history_table(self):
@@ -137,7 +146,7 @@ class QA_Account(QA_Worker):
     @property
     def cash_table(self):
         '现金的table'
-        _cash = pd.DataFrame(data=[self.cash[1::], self.trade_index], index=[
+        _cash = pd.DataFrame(data=[self.cash[1::], self.time_index], index=[
                              'cash', 'datetime']).T
         _cash['date'] = _cash.datetime.apply(lambda x: str(x)[0:10])
         return _cash.set_index('datetime', drop=False)
@@ -194,7 +203,7 @@ class QA_Account(QA_Worker):
         update history and cash
         """
         if message['header']['status'] is TRADE_STATUS.SUCCESS:
-            self.trade_index.append(str(message['body']['order']['datetime']))
+            self.time_index.append(str(message['body']['order']['datetime']))
             self.history.append(
                 [str(message['body']['order']['datetime']), str(message['body']['order']['code']),
                  float(message['body']['order']['price']), int(message['body']['order']['towards']) *
@@ -207,7 +216,7 @@ class QA_Account(QA_Worker):
 
         return self.message
 
-    def send_order(self, code, amount, time, towards, price, order_model, amount_model, data_type, market_type):
+    def send_order(self, code, amount, time, towards, price, order_model, amount_model, frequence, market_type):
         """[summary]
 
         [description]
@@ -230,7 +239,7 @@ class QA_Account(QA_Worker):
 
         amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
             amount / price)
-        if self.account_type in [MARKET_TYPE.STOCK_DAY, MARKET_TYPE.STOCK_MIN, MARKET_TYPE.STOCK_TRANSACTION]:
+        if self.account_type is MARKET_TYPE.STOCK_CN:
             amount = int(amount / 100) * 100
 
         marketvalue = amount * price if amount_model is AMOUNT_MODEL.BY_AMOUNT else amount
@@ -249,7 +258,7 @@ class QA_Account(QA_Worker):
                 flag = True
 
         if flag and amount > 0:
-            return QA_Order(user=self.user, strategy=self.strategy_name, data_type=data_type,
+            return QA_Order(user=self.user, strategy=self.strategy_name, frequence=frequence,
                             account_cookie=self.account_cookie, code=code, market_type=market_type,
                             date=date, datetime=time, sending_time=time, callback=self.receive_deal,
                             btype=self.account_type, amount=amount, price=price,
@@ -283,7 +292,7 @@ class QA_Account(QA_Worker):
         self._currenttime=message.get('current_time',None)
         self.history = message['body']['account']['history']
         self.cash = message['body']['account']['cash']
-        self.trade_index=message['body']['account']['trade_index']
+        self.time_index=message['body']['account']['trade_index']
         self.allow_sellopen=message.get('allow_sellopen',False)
         self.allow_t0=message.get('allow_t0',False)
         self.margin_level=message.get('margin_level',False)
@@ -304,7 +313,7 @@ class QA_Account(QA_Worker):
             data = self.send_order(code=event.code, amount=event.amount, time=event.time,
                                    amount_model=event.amount_model, towards=event.towards,
                                    price=event.price, order_model=event.order_model,
-                                   data_type=event.data_type,
+                                   frequence=event.frequence,
                                    market_type=event.market_type)
             if event.callback:
                 event.callback(data)
