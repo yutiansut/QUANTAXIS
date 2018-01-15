@@ -75,15 +75,8 @@ class QA_Thread(threading.Thread):
 
                         pass
                 except Exception as e:
-                    # time.sleep(0.1)
-                    #self.run()
                     pass
-                # __res = self.qsize()  # 判断消息队列大小
-                # if __res > 0:
-                #     pass
-                #     # QA_util_log_info("From Engine %s: There are still %d tasks to do" % (
-                #     #     str(threading.current_thread()), __res))
-                #threading.Timer(0.005, self.run)
+
 
     def pause(self):
         self.__flag.clear()
@@ -187,8 +180,6 @@ class QA_Engine(QA_Thread):
                     else:
                         pass
                 except Exception as e:
-                    # time.sleep(1)
-                    #QA_util_log_info(e)
                     raise e
                     #self.run()
 

@@ -32,7 +32,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = 'remake-version'
+__version__ = '0.7.0'
 __author__ = 'yutiansut'
 logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
@@ -54,6 +54,7 @@ logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n '
 # fetch methods
+from QUANTAXIS.QAFetch.Fetcher import QA_quotation  # 统一的获取接口
 
 from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day, QA_fetch_get_trade_date, QA_fetch_get_stock_min, QA_fetch_get_stock_xdxr,
                                QA_fetch_get_stock_indicator, QA_fetch_get_stock_realtime, QA_fetch_get_stock_transaction,
