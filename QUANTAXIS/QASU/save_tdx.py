@@ -101,7 +101,7 @@ def QA_SU_save_stock_day(client=QA_Setting.client):
 
 
 def QA_SU_save_stock_xdxr(client=QA_Setting.client):
-    client.drop_collection('stock_xdxr')
+    client.quantaxis.drop_collection('stock_xdxr')
     stock_list = QA_fetch_get_stock_time_to_market()
     coll = client.quantaxis.stock_xdxr
     coll.create_index([('code', pymongo.ASCENDING),
@@ -411,7 +411,7 @@ def QA_SU_save_etf_min(client=QA_Setting.client):
 
 
 def QA_SU_save_stock_list(client=QA_Setting.client):
-    client.drop_collection('stock_list')
+    client.quantaxis.drop_collection('stock_list')
     coll = client.quantaxis.stock_list
     coll.create_index('code')
     err = []
@@ -425,7 +425,7 @@ def QA_SU_save_stock_list(client=QA_Setting.client):
 
 
 def QA_SU_save_stock_block(client=QA_Setting.client):
-    client.drop_collection('stock_block')
+    client.quantaxis.drop_collection('stock_block')
     coll = client.quantaxis.stock_block
     coll.create_index('code')
     err = []
@@ -440,7 +440,7 @@ def QA_SU_save_stock_block(client=QA_Setting.client):
 
 
 def QA_SU_save_stock_info(client=QA_Setting.client):
-    client.drop_collection('stock_info')
+    client.quantaxis.drop_collection('stock_info')
     stock_list = QA_fetch_get_stock_time_to_market()
     coll = client.quantaxis.stock_info
     coll.create_index('code')
