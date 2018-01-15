@@ -27,8 +27,10 @@
 这里定义的是一些常用常量
 """
 
+from enum import Enum
 
-class ORDER_DIRECTION:
+
+class ORDER_DIRECTION(Enum):
     """订单的买卖方向
 
     BUY 股票 买入
@@ -49,7 +51,7 @@ class ORDER_DIRECTION:
     SELL_CLOSE = -1
 
 
-class ORDER_MODEL:
+class ORDER_MODEL(Enum):
     """订单的成交模式
 
     LIMIT 限价模式
@@ -68,7 +70,7 @@ class ORDER_MODEL:
     STRICT = 'strict'  # 严格模式/不推荐(仅限回测测试用)
 
 
-class ORDER_STATUS:
+class ORDER_STATUS(Enum):
     """订单状态
 
     status1xx 订单待生成
@@ -97,7 +99,7 @@ class ORDER_STATUS:
     SETTLED = 500
 
 
-class AMOUNT_MODEL:
+class AMOUNT_MODEL(Enum):
     """订单的成交量
 
     by_price是按固定成交总额下单,动态计算成交量
@@ -108,7 +110,7 @@ class AMOUNT_MODEL:
     BY_AMOUNT = 'by_amount'
 
 
-class RUNNING_ENVIRONMENT:
+class RUNNING_ENVIRONMENT(Enum):
     """执行环境
 
     回测
@@ -123,7 +125,7 @@ class RUNNING_ENVIRONMENT:
     RANODM = 'random'
 
 
-class TRADE_STATUS:
+class TRADE_STATUS(Enum):
     """交易状态返回值
 
     涨跌停限制: 202
@@ -138,11 +140,11 @@ class TRADE_STATUS:
     FAILED = 400
 
 
-class MARKET_ERROR:
+class MARKET_ERROR(Enum):
     ACCOUNT_EXIST = 'Account has already exist'
 
 
-class MARKET_TYPE():
+class MARKET_TYPE(Enum):
     """市场种类
 
     日线 尾数01
@@ -170,7 +172,7 @@ class MARKET_TYPE():
     BOND_CN = 'bond_cn'  # 中国债券
 
 
-class BROKER_TYPE:
+class BROKER_TYPE(Enum):
     """执行环境
 
     回测
@@ -185,7 +187,7 @@ class BROKER_TYPE:
     RANODM = 'random'
 
 
-class EVENT_TYPE:
+class EVENT_TYPE(Enum):
     BROKER_EVENT = 'broker_event'
     ACCOUNT_EVENT = 'account_event'
     MARKET_EVENT = 'market_event'
@@ -194,7 +196,7 @@ class EVENT_TYPE:
     ORDER_EVENT = 'order_event'
 
 
-class MARKET_EVENT:
+class MARKET_EVENT(Enum):
     """交易前置事件"""
     QUERY_ORDER = 'query_order'
     QUERY_ASSETS = 'query_assets'
@@ -203,7 +205,7 @@ class MARKET_EVENT:
     QUERY_DATA = 'query_data'
 
 
-class ENGINE_EVENT:
+class ENGINE_EVENT(Enum):
     """引擎事件"""
     MARKET_INIT = 'market_init'
     UPCOMING_DATA = 'upcoming_data'
@@ -212,14 +214,14 @@ class ENGINE_EVENT:
     UPDATE = 'update'
 
 
-class ACCOUNT_EVENT:
+class ACCOUNT_EVENT(Enum):
     """账户事件"""
     UPDATE = 'account_update'
     SETTLE = 'account_settle'
     MAKE_ORDER = 'account_make_order'
 
 
-class BROKER_EVENT:
+class BROKER_EVENT(Enum):
     """BROKER事件
     BROKER 
     有加载数据的任务 load data
@@ -234,7 +236,7 @@ class BROKER_EVENT:
     RECEIVE_ORDER = 'receive_order'
 
 
-class ORDER_EVENT:
+class ORDER_EVENT(Enum):
     """订单事件
 
     创建订单 create
@@ -247,7 +249,7 @@ class ORDER_EVENT:
     CANCEL = 'cancel'
 
 
-class FREQUENCE:
+class FREQUENCE(Enum):
     """查询的级别
 
     [description]
@@ -268,7 +270,7 @@ class FREQUENCE:
     TICK = 'tick'  # transaction
 
 
-class CURRENCY_TYPE:
+class CURRENCY_TYPE(Enum):
     """货币种类"""
     RMB = 'rmb'  # 人民币
     USD = 'usd'  # 美元
@@ -281,7 +283,7 @@ class CURRENCY_TYPE:
     CAD = 'cad'  # 加拿大元
 
 
-class DATASOURCE:
+class DATASOURCE(Enum):
     """数据来源
     """
 
@@ -292,7 +294,7 @@ class DATASOURCE:
     MONGO = 'mongo'
 
 
-class OUTPUT_FORMAT:
+class OUTPUT_FORMAT(Enum):
     """输出格式
     """
 
