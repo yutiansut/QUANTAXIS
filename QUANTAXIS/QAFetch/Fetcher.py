@@ -35,21 +35,22 @@ from QUANTAXIS.QAFetch import QAWind as QAWind
 from QUANTAXIS.QAFetch import QATushare as QATushare
 from QUANTAXIS.QAFetch import QATdx as QATdx
 from QUANTAXIS.QAFetch import QAThs as QAThs
+from QUANTAXIS.QAFetch import QAQuery
 from QUANTAXIS.QAFetch import QAQuery_Advance as QAMongo
-from QUANTAXIS.QAUtil.QAParameter import FREQUENCE, MARKET_TYPE, DATASOURCE, OUTPUT_FORMAT
+from QUANTAXIS.QAUtil.QAParameter import FREQUENCE, MARKET_TYPE, DATASOURCE, OUTPUT_FORMAT, DATABASE_TABLE
 
 
 def QA_quotation(code, start, end, frequence, market, source, output):
     """一个统一的fetch
 
     Arguments:
-        code {[type]} -- 证券/股票的代码
-        start {[type]} -- 开始日期
-        end {[type]} -- 结束日期
-        frequence {[type]} -- 频率()
-        market {[type]} -- 市场
-        source {[type]} -- 来源
-
+        code {str/list} -- 证券/股票的代码
+        start {str} -- 开始日期
+        end {str} -- 结束日期
+        frequence {enum} -- 频率 QA.FREQUENCE
+        market {enum} -- 市场 QA.MARKET_TYPE
+        source {enum} -- 来源 QA.DATASOURCE
+        output {enum} -- 输出类型 QA.OUTPUT_FORMAT
 
     """
     if market is MARKET_TYPE.STOCK_CN:
@@ -70,10 +71,10 @@ def QA_quotation(code, start, end, frequence, market, source, output):
         elif frequence is FREQUENCE.TICK:
             if source is DATASOURCE.TDX:
                 res = QATdx.QA_fetch_get_stock_transaction(code, start, end)
-
+    print(type(res))
     return res
 
 
 if __name__ == '__main__':
     print(QA_quotation('000001', '2017-01-01', '2017-01-31', frequence=FREQUENCE.DAY,
-                   market=MARKET_TYPE.STOCK_CN, source=DATASOURCE.TDX, output=OUTPUT_FORMAT.DATAFRAME))
+                       market=MARKET_TYPE.STOCK_CN, source=DATASOURCE.TDX, output=OUTPUT_FORMAT.DATAFRAME))
