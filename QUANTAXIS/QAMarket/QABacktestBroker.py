@@ -40,7 +40,7 @@ from QUANTAXIS.QAMarket.QADealer import QA_Dealer
 from QUANTAXIS.QAUtil.QADate import QA_util_to_datetime
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_TYPE, ORDER_MODEL,
-                                          ENGINE_EVENT, MARKET_EVENT,
+                                          ENGINE_EVENT, MARKET_EVENT, FREQUENCE,
                                           MARKET_TYPE, BROKER_EVENT)
 from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
@@ -89,7 +89,7 @@ class QA_BacktestBroker(QA_Broker):
         self.engine = {
             MARKET_TYPE.STOCK_CN: self.dealer.backtest_stock_dealer}
 
-        self.fetcher = {MARKET_TYPE.STOCK_CN: QA_fetch_stock_day}
+        self.fetcher = {(MARKET_TYPE.STOCK_CN,FREQUENCE.DAY): QA_fetch_stock_day}
         #, MARKET_TYPE.STOCK_MIN: QA_fetch_stock_min,
         #                 MARKET_TYPE.INDEX_DAY: QA_fetch_index_day, MARKET_TYPE.INDEX_MIN: QA_fetch_index_min,
         #                 MARKET_TYPE.FUTUER_DAY: QA_fetch_future_day, MARKET_TYPE.FUTUER_MIN: QA_fetch_future_min}
@@ -113,7 +113,7 @@ class QA_BacktestBroker(QA_Broker):
                 res = self.broker_data.select_time(
                     start, end).select_code(code).to_numpy()
             except:
-                res = self.fetcher[market_type](
+                res = self.fetcher[(market_type,frequence)](
                     code, start, end, dtype=frequence)
             if event.callback:
                 event.callback(res)
@@ -270,7 +270,7 @@ class QA_BacktestBroker(QA_Broker):
 
         else:
             try:
-                data = self.fetcher[order.type](
+                data = self.fetcher[(order.type,order.frequence)](
                     code=order.code, start=order.datetime, end=order.datetime, format='json')[0]
                 if 'vol' in data.keys() and 'volume' not in data.keys():
                     data['volume'] = data['vol']
