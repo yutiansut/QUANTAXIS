@@ -51,7 +51,7 @@ order_frame 是一个管理性面板  但是还是需要一个缓存dict
 
 
 class QA_Order():
-    def __init__(self, price=None, date=None, datetime=None, sending_time=None, transact_time=None, amount=None, market_type=None, data_type=None,
+    def __init__(self, price=None, date=None, datetime=None, sending_time=None, transact_time=None, amount=None, market_type=None, frequence=None,
                  towards=None, code=None, user=None, account_cookie=None, strategy=None, btype=None, order_model=None, amount_model=AMOUNT_MODEL.BY_AMOUNT,
                  order_id=None, trade_id=None, status='100', callback=False, *args, **kwargs):
         self.price = price
@@ -76,7 +76,7 @@ class QA_Order():
         self.code = code
         self.user = user
         self.market_type = market_type
-        self.data_type = data_type
+        self.frequence = frequence
         self.account_cookie = account_cookie
         self.strategy = strategy
         self.type = btype  # see below
@@ -111,7 +111,7 @@ class QA_Order():
             self.sending_time = order['sending_time']  # 下单时间
             self.transact_time = order['transact_time']
             self.amount = order['amount']
-            self.data_type = order['data_type']
+            self.frequence = order['frequence']
             self.market_type = order['market_type']
             self.towards = order['towards']
             self.code = order['code']
