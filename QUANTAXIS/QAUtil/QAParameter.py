@@ -27,10 +27,8 @@
 这里定义的是一些常用常量
 """
 
-from enum import Enum
 
-
-class ORDER_DIRECTION(Enum):
+class ORDER_DIRECTION():
     """订单的买卖方向
 
     BUY 股票 买入
@@ -51,7 +49,7 @@ class ORDER_DIRECTION(Enum):
     SELL_CLOSE = -1
 
 
-class ORDER_MODEL(Enum):
+class ORDER_MODEL():
     """订单的成交模式
 
     LIMIT 限价模式
@@ -70,7 +68,7 @@ class ORDER_MODEL(Enum):
     STRICT = 'strict'  # 严格模式/不推荐(仅限回测测试用)
 
 
-class ORDER_STATUS(Enum):
+class ORDER_STATUS():
     """订单状态
 
     status1xx 订单待生成
@@ -99,7 +97,7 @@ class ORDER_STATUS(Enum):
     SETTLED = 500
 
 
-class AMOUNT_MODEL(Enum):
+class AMOUNT_MODEL():
     """订单的成交量
 
     by_price是按固定成交总额下单,动态计算成交量
@@ -110,7 +108,7 @@ class AMOUNT_MODEL(Enum):
     BY_AMOUNT = 'by_amount'
 
 
-class RUNNING_ENVIRONMENT(Enum):
+class RUNNING_ENVIRONMENT():
     """执行环境
 
     回测
@@ -125,7 +123,7 @@ class RUNNING_ENVIRONMENT(Enum):
     RANODM = 'random'
 
 
-class TRADE_STATUS(Enum):
+class TRADE_STATUS():
     """交易状态返回值
 
     涨跌停限制: 202
@@ -140,11 +138,11 @@ class TRADE_STATUS(Enum):
     FAILED = 400
 
 
-class MARKET_ERROR(Enum):
+class MARKET_ERROR():
     ACCOUNT_EXIST = 'Account has already exist'
 
 
-class MARKET_TYPE(Enum):
+class MARKET_TYPE():
     """市场种类
 
     日线 尾数01
@@ -172,7 +170,7 @@ class MARKET_TYPE(Enum):
     BOND_CN = 'bond_cn'  # 中国债券
 
 
-class BROKER_TYPE(Enum):
+class BROKER_TYPE():
     """执行环境
 
     回测
@@ -187,7 +185,7 @@ class BROKER_TYPE(Enum):
     RANODM = 'random'
 
 
-class EVENT_TYPE(Enum):
+class EVENT_TYPE():
     BROKER_EVENT = 'broker_event'
     ACCOUNT_EVENT = 'account_event'
     MARKET_EVENT = 'market_event'
@@ -196,7 +194,7 @@ class EVENT_TYPE(Enum):
     ORDER_EVENT = 'order_event'
 
 
-class MARKET_EVENT(Enum):
+class MARKET_EVENT():
     """交易前置事件"""
     QUERY_ORDER = 'query_order'
     QUERY_ASSETS = 'query_assets'
@@ -205,7 +203,7 @@ class MARKET_EVENT(Enum):
     QUERY_DATA = 'query_data'
 
 
-class ENGINE_EVENT(Enum):
+class ENGINE_EVENT():
     """引擎事件"""
     MARKET_INIT = 'market_init'
     UPCOMING_DATA = 'upcoming_data'
@@ -214,14 +212,14 @@ class ENGINE_EVENT(Enum):
     UPDATE = 'update'
 
 
-class ACCOUNT_EVENT(Enum):
+class ACCOUNT_EVENT():
     """账户事件"""
     UPDATE = 'account_update'
     SETTLE = 'account_settle'
     MAKE_ORDER = 'account_make_order'
 
 
-class BROKER_EVENT(Enum):
+class BROKER_EVENT():
     """BROKER事件
     BROKER 
     有加载数据的任务 load data
@@ -236,7 +234,7 @@ class BROKER_EVENT(Enum):
     RECEIVE_ORDER = 'receive_order'
 
 
-class ORDER_EVENT(Enum):
+class ORDER_EVENT():
     """订单事件
 
     创建订单 create
@@ -249,7 +247,7 @@ class ORDER_EVENT(Enum):
     CANCEL = 'cancel'
 
 
-class FREQUENCE(Enum):
+class FREQUENCE():
     """查询的级别
 
     [description]
@@ -270,7 +268,7 @@ class FREQUENCE(Enum):
     TICK = 'tick'  # transaction
 
 
-class CURRENCY_TYPE(Enum):
+class CURRENCY_TYPE():
     """货币种类"""
     RMB = 'rmb'  # 人民币
     USD = 'usd'  # 美元
@@ -283,7 +281,7 @@ class CURRENCY_TYPE(Enum):
     CAD = 'cad'  # 加拿大元
 
 
-class DATASOURCE(Enum):
+class DATASOURCE():
     """数据来源
     """
 
@@ -294,7 +292,7 @@ class DATASOURCE(Enum):
     MONGO = 'mongo'
 
 
-class OUTPUT_FORMAT(Enum):
+class OUTPUT_FORMAT():
     """输出格式
     """
 
@@ -304,3 +302,39 @@ class OUTPUT_FORMAT(Enum):
     NDARRAY = 'ndarray'
     LIST = 'list'
     JSON = 'json'
+
+
+DATABASE_TABLE = {
+    (MARKET_TYPE.STOCK_CN, FREQUENCE.DAY): 'stock_day',
+    (MARKET_TYPE.STOCK_CN, FREQUENCE.ONE_MIN): 'stock_min',
+    (MARKET_TYPE.STOCK_CN, FREQUENCE.FIVE_MIN): 'stock_min',
+    (MARKET_TYPE.STOCK_CN, FREQUENCE.FIFTEEN_MIN): 'stock_min',
+    (MARKET_TYPE.STOCK_CN, FREQUENCE.THIRTY_MIN): 'stock_min',
+    (MARKET_TYPE.STOCK_CN, FREQUENCE.SIXTY_MIN): 'stock_min',
+    (MARKET_TYPE.STOCK_CN, FREQUENCE.HOUR): 'stock_min',
+    (MARKET_TYPE.STOCK_CN, FREQUENCE.TICK): 'stock_transaction',
+    (MARKET_TYPE.INDEX_CN, FREQUENCE.DAY): 'index_day',
+    (MARKET_TYPE.INDEX_CN, FREQUENCE.ONE_MIN): 'index_min',
+    (MARKET_TYPE.INDEX_CN, FREQUENCE.FIVE_MIN): 'index_min',
+    (MARKET_TYPE.INDEX_CN, FREQUENCE.FIFTEEN_MIN): 'index_min',
+    (MARKET_TYPE.INDEX_CN, FREQUENCE.THIRTY_MIN): 'index_min',
+    (MARKET_TYPE.INDEX_CN, FREQUENCE.SIXTY_MIN): 'index_min',
+    (MARKET_TYPE.INDEX_CN, FREQUENCE.HOUR): 'index_min',
+    (MARKET_TYPE.INDEX_CN, FREQUENCE.TICK): 'index_transaction',
+    (MARKET_TYPE.FUND_CN, FREQUENCE.DAY): 'index_day',
+    (MARKET_TYPE.FUND_CN, FREQUENCE.ONE_MIN): 'index_min',
+    (MARKET_TYPE.FUND_CN, FREQUENCE.FIVE_MIN): 'index_min',
+    (MARKET_TYPE.FUND_CN, FREQUENCE.FIFTEEN_MIN): 'index_min',
+    (MARKET_TYPE.FUND_CN, FREQUENCE.THIRTY_MIN): 'index_min',
+    (MARKET_TYPE.FUND_CN, FREQUENCE.SIXTY_MIN): 'index_min',
+    (MARKET_TYPE.FUND_CN, FREQUENCE.HOUR): 'index_min',
+    (MARKET_TYPE.FUND_CN, FREQUENCE.TICK): 'index_transaction',
+    (MARKET_TYPE.FUTURE_CN, FREQUENCE.DAY): 'future_day',
+    (MARKET_TYPE.FUTURE_CN, FREQUENCE.ONE_MIN): 'future_min',
+    (MARKET_TYPE.FUTURE_CN, FREQUENCE.FIVE_MIN): 'future_min',
+    (MARKET_TYPE.FUTURE_CN, FREQUENCE.FIFTEEN_MIN): 'future_min',
+    (MARKET_TYPE.FUTURE_CN, FREQUENCE.THIRTY_MIN): 'future_min',
+    (MARKET_TYPE.FUTURE_CN, FREQUENCE.SIXTY_MIN): 'future_min',
+    (MARKET_TYPE.FUTURE_CN, FREQUENCE.HOUR): 'future_min',
+    (MARKET_TYPE.FUTURE_CN, FREQUENCE.TICK): 'future_transaction'
+}

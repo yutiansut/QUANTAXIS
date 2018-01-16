@@ -34,7 +34,6 @@ from QUANTAXIS.QAUtil import (DATABASE, QA_Setting, QA_util_date_stamp,
                               QA_util_sql_mongo_sort_DESCENDING,
                               QA_util_time_stamp, QA_util_to_json_from_pandas,
                               trade_date_sse)
-
 """
 按要求从数据库取数据，并转换成numpy结构
 
@@ -111,7 +110,6 @@ def QA_fetch_stock_min(code, start, end, format='numpy', dtype='1min', collectio
 
     __data['datetime'] = pd.to_datetime(__data['datetime'])
     __data = __data.set_index('datetime', drop=False)
-    #res = QA_fetch_stock_to_fq(__data)
     if format in ['numpy', 'np', 'n']:
         return numpy.asarray(__data)
     elif format in ['list', 'l', 'L']:
@@ -257,7 +255,6 @@ def QA_fetch_index_min(
 
     __data['datetime'] = pd.to_datetime(__data['datetime'])
     __data = __data.set_index('datetime', drop=False)
-    #res = QA_fetch_stock_to_fq(__data)
     if format in ['numpy', 'np', 'n']:
         return numpy.asarray(__data)
     elif format in ['list', 'l', 'L']:
