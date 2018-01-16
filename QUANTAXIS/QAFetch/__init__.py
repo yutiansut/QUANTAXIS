@@ -50,16 +50,16 @@ def use(package):
         return QAThs
 
 
-def QA_fetch_get_stock_day(package, code, startDate, endDate, if_fq='01', level='day', type_='json'):
+def QA_fetch_get_stock_day(package, code, start, end, if_fq='01', level='day', type_='json'):
     Engine = use(package)
     if package in ['ths', 'THS', 'wind']:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq)
+        return Engine.QA_fetch_get_stock_day(code, start, end, if_fq)
     elif package in ['ts', 'tushare']:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq, type_)
+        return Engine.QA_fetch_get_stock_day(code, start, end, if_fq, type_)
     elif package in ['tdx', 'pytdx']:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq, level)
+        return Engine.QA_fetch_get_stock_day(code, start, end, if_fq, level)
     else:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate)
+        return Engine.QA_fetch_get_stock_day(code, start, end)
 
 
 def QA_fetch_get_stock_realtime(package, code):
@@ -67,14 +67,14 @@ def QA_fetch_get_stock_realtime(package, code):
     return Engine.QA_fetch_get_stock_realtime(code)
 
 
-def QA_fetch_get_stock_indicator(package, code, startDate, endDate):
+def QA_fetch_get_stock_indicator(package, code, start, end):
     Engine = use(package)
-    return Engine.QA_fetch_get_stock_indicator(code, startDate, endDate)
+    return Engine.QA_fetch_get_stock_indicator(code, start, end)
 
 
-def QA_fetch_get_trade_date(package, endDate, exchange):
+def QA_fetch_get_trade_date(package, end, exchange):
     Engine = use(package)
-    return Engine.QA_fetch_get_trade_date(endDate, exchange)
+    return Engine.QA_fetch_get_trade_date(end, exchange)
 
 
 def QA_fetch_get_stock_min(package, code, start, end, level='1min'):
