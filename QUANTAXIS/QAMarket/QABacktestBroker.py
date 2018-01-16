@@ -89,10 +89,10 @@ class QA_BacktestBroker(QA_Broker):
         self.engine = {
             MARKET_TYPE.STOCK_CN: self.dealer.backtest_stock_dealer}
 
-        self.fetcher = {(MARKET_TYPE.STOCK_CN,FREQUENCE.DAY): QA_fetch_stock_day}
-        #, MARKET_TYPE.STOCK_MIN: QA_fetch_stock_min,
-        #                 MARKET_TYPE.INDEX_DAY: QA_fetch_index_day, MARKET_TYPE.INDEX_MIN: QA_fetch_index_min,
-        #                 MARKET_TYPE.FUTUER_DAY: QA_fetch_future_day, MARKET_TYPE.FUTUER_MIN: QA_fetch_future_min}
+        self.fetcher = {(MARKET_TYPE.STOCK_CN, FREQUENCE.DAY): QA_fetch_stock_day, (MARKET_TYPE.STOCK_CN, FREQUENCE.FIFTEEN_MIN): QA_fetch_stock_min,
+                        (MARKET_TYPE.STOCK_CN, FREQUENCE.ONE_MIN): QA_fetch_stock_min, (MARKET_TYPE.STOCK_CN, FREQUENCE.FIVE_MIN): QA_fetch_stock_min,
+                        (MARKET_TYPE.STOCK_CN, FREQUENCE.THIRTY_MIN): QA_fetch_stock_min, (MARKET_TYPE.STOCK_CN, FREQUENCE.SIXTY_MIN): QA_fetch_stock_min}
+
 
         self.commission_fee_coeff = commission_fee_coeff
         self.market_data = None
@@ -113,7 +113,7 @@ class QA_BacktestBroker(QA_Broker):
                 res = self.broker_data.select_time(
                     start, end).select_code(code).to_numpy()
             except:
-                res = self.fetcher[(market_type,frequence)](
+                res = self.fetcher[(market_type, frequence)](
                     code, start, end, dtype=frequence)
             if event.callback:
                 event.callback(res)
@@ -270,7 +270,7 @@ class QA_BacktestBroker(QA_Broker):
 
         else:
             try:
-                data = self.fetcher[(order.type,order.frequence)](
+                data = self.fetcher[(order.type, order.frequence)](
                     code=order.code, start=order.datetime, end=order.datetime, format='json')[0]
                 if 'vol' in data.keys() and 'volume' not in data.keys():
                     data['volume'] = data['vol']
