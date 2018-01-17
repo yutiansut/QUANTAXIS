@@ -44,7 +44,7 @@ class Backtest(QA_Backtest):
     def __init__(self, market_type, frequence, start, end, code_list, commission_fee):
         super().__init__(market_type,  frequence, start, end, code_list, commission_fee)
         self.user = QA_User()
-        mastrategy = MAMINStrategy()
+        mastrategy = MAStrategy()
         self.portfolio, self.account = self.user.register_account(mastrategy)
         print(self.user.get_portfolio(self.portfolio).accounts)
         print(self.user.get_portfolio(
@@ -84,7 +84,7 @@ def run_minbacktest():
 
 
 if __name__ == '__main__':
-    run_minbacktest()
+    run_daybacktest()
     # backtest._settle()
 
     # backtest.run()
