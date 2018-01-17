@@ -27,7 +27,7 @@ import pandas as pd
 
 from QUANTAXIS.QAEngine.QAEvent import QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_Order
-from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
+from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL, FREQUENCE,
                                           BROKER_TYPE, ENGINE_EVENT,
                                           MARKET_TYPE, TRADE_STATUS)
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
@@ -65,7 +65,7 @@ class QA_Account(QA_Worker):
 
     """
 
-    def __init__(self, strategy_name=None, user=None, account_type=MARKET_TYPE.STOCK_CN,
+    def __init__(self, strategy_name=None, user=None, market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY,
                  broker=BROKER_TYPE.BACKETEST, portfolio=None, account_cookie=None,
                  sell_available=None, init_assets=None, cash=None, history=None,
                  margin_level=False, allow_t0=False, allow_sellopen=False):
@@ -75,11 +75,12 @@ class QA_Account(QA_Worker):
         # 信息类:
         self.strategy_name = strategy_name
         self.user = user
-        self.account_type = account_type
+        self.market_type = market_type
         self.portfolio = portfolio
         self.account_cookie = QA_util_random_with_topic(
             'Acc') if account_cookie is None else account_cookie
         self.broker = broker
+        self.frequence = frequence
         self.market_data = None
         self._currenttime = None
         # 资产类
@@ -110,8 +111,8 @@ class QA_Account(QA_Worker):
                 'cookie': self.account_cookie,
                 'portfolio': self.portfolio,
                 'user': self.user,
-                'broker':self.broker,
-                'account_type':self.account_type,
+                'broker': self.broker,
+                'market_type': self.market_type,
                 'strategy_name': self.strategy_name,
                 'current_time': self._currenttime,
 
@@ -121,7 +122,7 @@ class QA_Account(QA_Worker):
             },
             'body': {
                 'account': {
-                    'init_asset':self.init_assets,
+                    'init_asset': self.init_assets,
                     'cash': self.cash,
                     'history': self.history,
                     'trade_index': self.time_index
@@ -136,7 +137,6 @@ class QA_Account(QA_Worker):
     @property
     def end_date(self):
         return str(self.time_index[-1])[0:10]
-
 
     @property
     def history_table(self):
@@ -216,7 +216,7 @@ class QA_Account(QA_Worker):
 
         return self.message
 
-    def send_order(self, code, amount, time, towards, price, order_model, amount_model, frequence, market_type):
+    def send_order(self, code, amount, time, towards, price, order_model, amount_model):
         """[summary]
 
         [description]
@@ -239,7 +239,7 @@ class QA_Account(QA_Worker):
 
         amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
             amount / price)
-        if self.account_type is MARKET_TYPE.STOCK_CN:
+        if self.market_type is MARKET_TYPE.STOCK_CN:
             amount = int(amount / 100) * 100
 
         marketvalue = amount * price if amount_model is AMOUNT_MODEL.BY_AMOUNT else amount
@@ -258,11 +258,10 @@ class QA_Account(QA_Worker):
                 flag = True
 
         if flag and amount > 0:
-            return QA_Order(user=self.user, strategy=self.strategy_name, frequence=frequence,
-                            account_cookie=self.account_cookie, code=code, market_type=market_type,
+            return QA_Order(user=self.user, strategy=self.strategy_name, frequence=self.frequence,
+                            account_cookie=self.account_cookie, code=code, market_type=self.market_type,
                             date=date, datetime=time, sending_time=time, callback=self.receive_deal,
-                            btype=self.account_type, amount=amount, price=price,
-                            order_model=order_model, towards=towards,
+                            amount=amount, price=price, order_model=order_model, towards=towards,
                             amount_model=amount_model)  # init
         else:
             return flag
@@ -286,16 +285,16 @@ class QA_Account(QA_Worker):
         self.portfolio = message.get('portfolio', None)
         self.user = message.get('user', None)
         self.account_cookie = message.get('account_cookie', None)
-        self.strategy_name=message.get('strategy_name',None)
-        self.broker=message.get('broker',None)
-        self.account_type=message.get('account_type',None)
-        self._currenttime=message.get('current_time',None)
+        self.strategy_name = message.get('strategy_name', None)
+        self.broker = message.get('broker', None)
+        self.market_type = message.get('market_type', None)
+        self._currenttime = message.get('current_time', None)
         self.history = message['body']['account']['history']
         self.cash = message['body']['account']['cash']
-        self.time_index=message['body']['account']['trade_index']
-        self.allow_sellopen=message.get('allow_sellopen',False)
-        self.allow_t0=message.get('allow_t0',False)
-        self.margin_level=message.get('margin_level',False)
+        self.time_index = message['body']['account']['trade_index']
+        self.allow_sellopen = message.get('allow_sellopen', False)
+        self.allow_t0 = message.get('allow_t0', False)
+        self.margin_level = message.get('margin_level', False)
         return self
 
     def run(self, event):

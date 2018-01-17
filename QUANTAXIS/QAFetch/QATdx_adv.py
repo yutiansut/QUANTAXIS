@@ -92,29 +92,29 @@ class QA_Tdx_Executor():
             return 1
         return 0
 
-    def get_level(self, level):
-        if level in ['day', 'd', 'D', 'DAY', 'Day']:
-            level = 9
-        elif level in ['w', 'W', 'Week', 'week']:
-            level = 5
-        elif level in ['month', 'M', 'm', 'Month']:
-            level = 6
-        elif level in ['Q', 'Quarter', 'q']:
-            level = 10
-        elif level in ['y', 'Y', 'year', 'Year']:
-            level = 11
-        elif str(level) in ['5', '5m', '5min', 'five']:
-            level = 0
-        elif str(level) in ['1', '1m', '1min', 'one']:
-            level = 8
-        elif str(level) in ['15', '15m', '15min', 'fifteen']:
-            level = 1
-        elif str(level) in ['30', '30m', '30min', 'half']:
-            level = 2
-        elif str(level) in ['60', '60m', '60min', '1h']:
-            level = 3
+    def get_frequence(self, frequence):
+        if frequence in ['day', 'd', 'D', 'DAY', 'Day']:
+            frequence = 9
+        elif frequence in ['w', 'W', 'Week', 'week']:
+            frequence = 5
+        elif frequence in ['month', 'M', 'm', 'Month']:
+            frequence = 6
+        elif frequence in ['Q', 'Quarter', 'q']:
+            frequence = 10
+        elif frequence in ['y', 'Y', 'year', 'Year']:
+            frequence = 11
+        elif str(frequence) in ['5', '5m', '5min', 'five']:
+            frequence = 0
+        elif str(frequence) in ['1', '1m', '1min', 'one']:
+            frequence = 8
+        elif str(frequence) in ['15', '15m', '15min', 'fifteen']:
+            frequence = 1
+        elif str(frequence) in ['30', '30m', '30min', 'half']:
+            frequence = 2
+        elif str(frequence) in ['60', '60m', '60min', '1h']:
+            frequence = 3
 
-        return level
+        return frequence
 
     @property
     def ipsize(self):
@@ -189,8 +189,8 @@ class QA_Tdx_Executor():
         #code = [code] if type(code) is str else code
         try:
 
-           #[api.get_security_bars(level, __select_market_code(str(code)), str(code), (25 - i) * 800, 800) for i in range(26)]
-            data = {[self.get_security_bars(self.get_level(_type), self.get_market(
+           #[api.get_security_bars(frequence, __select_market_code(str(code)), str(code), (25 - i) * 800, 800) for i in range(26)]
+            data = {[self.get_security_bars(self.get_frequence(_type), self.get_market(
                 str(code)), str(code), (25 - i) * 800, 800) for i in range(int(lens / 800) + 1)]}
             print([i.result() for i in data])
 
@@ -201,7 +201,7 @@ class QA_Tdx_Executor():
         try:
             _api = self.get_available()
             for i in range(1, int(lens / 800) + 2):
-                context.extend(_api.get_security_bars(self.get_level(
+                context.extend(_api.get_security_bars(self.get_frequence(
                     _type), self.get_market(str(code)), str(code), (i - 1) * 800, 800))
                 # print(context)
             self._queue.put(_api)

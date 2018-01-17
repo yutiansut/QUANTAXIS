@@ -52,8 +52,30 @@ order_frame 是一个管理性面板  但是还是需要一个缓存dict
 
 class QA_Order():
     def __init__(self, price=None, date=None, datetime=None, sending_time=None, transact_time=None, amount=None, market_type=None, frequence=None,
-                 towards=None, code=None, user=None, account_cookie=None, strategy=None, btype=None, order_model=None, amount_model=AMOUNT_MODEL.BY_AMOUNT,
+                 towards=None, code=None, user=None, account_cookie=None, strategy=None, order_model=None, amount_model=AMOUNT_MODEL.BY_AMOUNT,
                  order_id=None, trade_id=None, status='100', callback=False, *args, **kwargs):
+        """委托字段
+        price 委托的价格
+        date 委托的日期
+        datetime 委托的时间
+        sending_time 发送委托单的时间
+        transact_time 委托成交的时间
+        amount 委托量
+        market_type 委托的市场
+        frequence 频率
+        towards 委托方向
+        code 委托代码
+        user 委托股东
+        account_cookie 委托账户的cookie
+        strategy 策略名
+        order_model 委托方式(限价/市价/下一个bar/)
+        amount_model 委托量模式(按量委托/按总成交额委托)
+        order_id 委托单id
+        trade_id 成交id
+        status 订单状态
+        callback 回调函数
+        """
+
         self.price = price
         self.datetime = None
         if datetime is None and date is not None:
@@ -79,7 +101,7 @@ class QA_Order():
         self.frequence = frequence
         self.account_cookie = account_cookie
         self.strategy = strategy
-        self.type = btype  # see below
+        self.type = market_type  # see below
         self.order_model = order_model
         self.amount_model = amount_model
         self.order_id = QA_util_random_with_topic(

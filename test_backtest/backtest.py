@@ -41,23 +41,52 @@ from test_backtest.strategy import MAStrategy
 
 class Backtest(QA_Backtest):
 
-    def __init__(self, market_type, start, end, code_list, commission_fee):
-        super().__init__(market_type, start, end, code_list, commission_fee)
+    def __init__(self, market_type, frequence, start, end, code_list, commission_fee):
+        super().__init__(market_type,  frequence, start, end, code_list, commission_fee)
         self.user = QA_User()
         mastrategy = MAStrategy()
         self.portfolio, self.account = self.user.register_account(mastrategy)
         print(self.user.get_portfolio(self.portfolio).accounts)
         print(self.user.get_portfolio(
             self.portfolio).get_account(self.account).cash)
-        
 
     def after_success(self):
-        print(self.user.get_portfolio(self.portfolio).get_account(self.account).history_table)
+        print(self.user.get_portfolio(self.portfolio).get_account(
+            self.account).history_table)
+
+
+def run_daybacktest():
+    import QUANTAXIS as QA
+    backtest = Backtest(market_type=MARKET_TYPE.STOCK_CN,
+                        frequence=FREQUENCE.DAY,
+                        start='2017-01-01',
+                        end='2017-01-31',
+                        code_list=QA.QA_fetch_stock_block_adv().code[0:5],
+                        commission_fee=0.00015)
+    backtest.start_market()
+
+    backtest.run()
+    backtest.stop()
+
+
+def run_minbacktest():
+    import QUANTAXIS as QA
+    backtest = Backtest(market_type=MARKET_TYPE.STOCK_CN,
+                        frequence=FREQUENCE.FIFTEEN_MIN,
+                        start='2017-01-01',
+                        end='2017-01-31',
+                        code_list=QA.QA_fetch_stock_block_adv().code[0:5],
+                        commission_fee=0.00015)
+    backtest.start_market()
+
+    backtest.run()
+    backtest.stop()
 
 
 if __name__ == '__main__':
     import QUANTAXIS as QA
     backtest = Backtest(market_type=MARKET_TYPE.STOCK_CN,
+                        frequence=FREQUENCE.DAY,
                         start='2017-01-01',
                         end='2017-01-31',
                         code_list=QA.QA_fetch_stock_block_adv().code[0:5],

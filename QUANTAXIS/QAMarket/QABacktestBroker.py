@@ -91,7 +91,13 @@ class QA_BacktestBroker(QA_Broker):
 
         self.fetcher = {(MARKET_TYPE.STOCK_CN, FREQUENCE.DAY): QA_fetch_stock_day, (MARKET_TYPE.STOCK_CN, FREQUENCE.FIFTEEN_MIN): QA_fetch_stock_min,
                         (MARKET_TYPE.STOCK_CN, FREQUENCE.ONE_MIN): QA_fetch_stock_min, (MARKET_TYPE.STOCK_CN, FREQUENCE.FIVE_MIN): QA_fetch_stock_min,
-                        (MARKET_TYPE.STOCK_CN, FREQUENCE.THIRTY_MIN): QA_fetch_stock_min, (MARKET_TYPE.STOCK_CN, FREQUENCE.SIXTY_MIN): QA_fetch_stock_min}
+                        (MARKET_TYPE.STOCK_CN, FREQUENCE.THIRTY_MIN): QA_fetch_stock_min, (MARKET_TYPE.STOCK_CN, FREQUENCE.SIXTY_MIN): QA_fetch_stock_min,
+                        (MARKET_TYPE.INDEX_CN, FREQUENCE.DAY): QA_fetch_index_day, (MARKET_TYPE.INDEX_CN, FREQUENCE.FIFTEEN_MIN): QA_fetch_index_min,
+                        (MARKET_TYPE.INDEX_CN, FREQUENCE.ONE_MIN): QA_fetch_index_min, (MARKET_TYPE.INDEX_CN, FREQUENCE.FIVE_MIN): QA_fetch_index_min,
+                        (MARKET_TYPE.INDEX_CN, FREQUENCE.THIRTY_MIN): QA_fetch_index_min, (MARKET_TYPE.INDEX_CN, FREQUENCE.SIXTY_MIN): QA_fetch_index_min,
+                        (MARKET_TYPE.FUND_CN, FREQUENCE.DAY): QA_fetch_index_day, (MARKET_TYPE.FUND_CN, FREQUENCE.FIFTEEN_MIN): QA_fetch_index_min,
+                        (MARKET_TYPE.FUND_CN, FREQUENCE.ONE_MIN): QA_fetch_index_min, (MARKET_TYPE.FUND_CN, FREQUENCE.FIVE_MIN): QA_fetch_index_min,
+                        (MARKET_TYPE.FUND_CN, FREQUENCE.THIRTY_MIN): QA_fetch_index_min, (MARKET_TYPE.FUND_CN, FREQUENCE.SIXTY_MIN): QA_fetch_index_min}
 
 
         self.commission_fee_coeff = commission_fee_coeff
@@ -114,7 +120,7 @@ class QA_BacktestBroker(QA_Broker):
                     start, end).select_code(code).to_numpy()
             except:
                 res = self.fetcher[(market_type, frequence)](
-                    code, start, end, dtype=frequence)
+                    code, start, end, frequence=frequence)
             if event.callback:
                 event.callback(res)
             else:
@@ -179,13 +185,13 @@ class QA_BacktestBroker(QA_Broker):
 
         if order.order_model == ORDER_MODEL.MARKET:
 
-            if order.type[-2:] == '01':
+            if order.frequence is FREQUENCE.DAY:
                 # exact_time = str(datetime.datetime.strptime(
                 #     str(order.datetime), '%Y-%m-%d %H-%M-%S') + datetime.timedelta(day=1))
 
                 order.date = order.datetime[0:10]
                 order.datetime = '{} 09:30:00'.format(order.date)
-            elif order.type[-2:] == '02':
+            elif order.frequence in [FREQUENCE.ONE_MIN,FREQUENCE.FIVE_MIN,FREQUENCE.FIFTEEN_MIN,FREQUENCE.THIRTY_MIN,FREQUENCE.SIXTY_MIN]:
                 exact_time = str(datetime.datetime.strptime(
                     str(order.datetime), '%Y-%m-%d %H-%M-%S') + datetime.timedelta(minute=1))
                 order.date = exact_time[0:10]
@@ -219,13 +225,13 @@ class QA_BacktestBroker(QA_Broker):
 
         elif order.order_model == ORDER_MODEL.STRICT:
             '加入严格模式'
-            if order.type[-2:] == '01':
+            if order.frequence is FREQUENCE.DAY:
                 exact_time = str(datetime.datetime.strptime(
                     order.datetime, '%Y-%m-%d %H-%M-%S') + datetime.timedelta(day=1))
 
                 order.date = exact_time[0:10]
                 order.datetime = '{} 09:30:00'.format(order.date)
-            elif order.type[-2:] == '02':
+            elif order.frequence in [FREQUENCE.ONE_MIN,FREQUENCE.FIVE_MIN,FREQUENCE.FIFTEEN_MIN,FREQUENCE.THIRTY_MIN,FREQUENCE.SIXTY_MIN]:
                 exact_time = str(datetime.datetime.strptime(
                     order.datetime, '%Y-%m-%d %H-%M-%S') + datetime.timedelta(minute=1))
                 order.date = exact_time[0:10]
@@ -238,16 +244,6 @@ class QA_BacktestBroker(QA_Broker):
             else:
                 order.price = float(self.market_data["low"])
 
-        # 对于股票 有最小交易100股限制
-
-        # if order.amount_model in [AMOUNT_MODEL.BY_PRICE]:
-        #     order.amount = int(order.amount / (order.price * 100)) * \
-        #         100 if order.type in ['0x01', '0x02', '0x03'] else order.amount
-        #     order.amount_model = AMOUNT_MODEL.BY_AMOUNT
-
-        # elif order.amount_model in [AMOUNT_MODEL.BY_AMOUNT]:
-        #     order.amount = int(
-        #         order.amount / 100) * 100 if order.type in ['0x01', '0x02', '0x03'] else order.amount
 
         return order
 
@@ -270,7 +266,7 @@ class QA_BacktestBroker(QA_Broker):
 
         else:
             try:
-                data = self.fetcher[(order.type, order.frequence)](
+                data = self.fetcher[(order.market_type, order.frequence)](
                     code=order.code, start=order.datetime, end=order.datetime, format='json')[0]
                 if 'vol' in data.keys() and 'volume' not in data.keys():
                     data['volume'] = data['vol']
