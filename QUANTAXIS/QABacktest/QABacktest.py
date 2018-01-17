@@ -23,17 +23,19 @@
 # SOFTWARE.
 
 
+import time
+from functools import lru_cache
+
 from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
 from QUANTAXIS.QAARP.QAUser import QA_User
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
-from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_day_adv
+from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_day_adv, QA_fetch_stock_min_adv
 from QUANTAXIS.QAMarket.QABacktestBroker import QA_BacktestBroker
 from QUANTAXIS.QAMarket.QAMarket import QA_Market
 from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT,
-                                          BROKER_TYPE, ENGINE_EVENT,
-                                          MARKET_TYPE, FREQUENCE,
-                                          ORDER_DIRECTION, ORDER_MODEL)
-import time
+                                          BROKER_TYPE, ENGINE_EVENT, FREQUENCE,
+                                          MARKET_TYPE, ORDER_DIRECTION,
+                                          ORDER_MODEL)
 
 
 class QA_Backtest():
@@ -62,20 +64,28 @@ class QA_Backtest():
 
     """
 
-    def __init__(self, market_type, start, end, code_list, commission_fee,):
+    def __init__(self, market_type, frequence, start, end, code_list, commission_fee,):
         self.user = QA_User()
         self.if_settled = False
         self.account = None
         self.portfolio = None
 
         self.market = QA_Market()
+        self.market_type = market_type
+        self.frequence = frequence
         self.broker = QA_BacktestBroker(commission_fee)
         self.broker_name = 'backtest_broker'
+
         self.start = start
         self.end = end
         self.code_list = code_list
-        self.ingest_data = QA_fetch_stock_day_adv(
-            code_list, start, end).to_qfq().panel_gen
+
+        if self.market_type is MARKET_TYPE.STOCK_CN and self.frequence is FREQUENCE.DAY:
+            self.ingest_data = QA_fetch_stock_day_adv(
+                self.code_list, self.start, self.end).to_qfq().panel_gen
+        elif self.market_type is MARKET_TYPE.STOCK_CN and self.frequence[-3:] is 'min':
+            self.ingest_data = QA_fetch_stock_min_adv(
+                self.code_list, self.start, self.end, self.frequence).to_qfq().panel_gen
 
     def _generate_account(self):
         """generate a simple account
@@ -134,6 +144,7 @@ class QA_Backtest():
 
 if __name__ == '__main__':
     backtest = QA_Backtest(market_type=MARKET_TYPE.STOCK_CN,
+                           frequence=FREQUENCE.DAY,
                            start='2017-01-01',
                            end='2017-01-31',
                            code_list=['000001', '600010'],

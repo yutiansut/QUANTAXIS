@@ -42,7 +42,7 @@ from QUANTAXIS.QAUtil import (DATABASE, QA_Setting, QA_util_date_stamp,
 
 
 
-def QA_fetch_stock_day(code, start, end, format='numpy', dtype='day', collections=DATABASE.stock_day):
+def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collections=DATABASE.stock_day):
     '获取股票日线'
     start = str(start)[0:10]
     end = str(end)[0:10]
@@ -79,24 +79,24 @@ def QA_fetch_stock_day(code, start, end, format='numpy', dtype='day', collection
         QA_util_log_info('something wrong with date')
 
 
-def QA_fetch_stock_min(code, start, end, format='numpy', dtype='1min', collections=DATABASE.stock_min):
+def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', collections=DATABASE.stock_min):
     '获取股票分钟线'
-    if dtype in ['1min', '1m']:
-        dtype = '1min'
-    elif dtype in ['5min', '5m']:
-        dtype = '5min'
-    elif dtype in ['15min', '15m']:
-        dtype = '15min'
-    elif dtype in ['30min', '30m']:
-        dtype = '30min'
-    elif dtype in ['60min', '60m']:
-        dtype = '60min'
+    if frequence in ['1min', '1m']:
+        frequence = '1min'
+    elif frequence in ['5min', '5m']:
+        frequence = '5min'
+    elif frequence in ['15min', '15m']:
+        frequence = '15min'
+    elif frequence in ['30min', '30m']:
+        frequence = '30min'
+    elif frequence in ['60min', '60m']:
+        frequence = '60min'
     __data = []
     cursor = collections.find({
         'code': str(code), "time_stamp": {
             "$gte": QA_util_time_stamp(start),
             "$lte": QA_util_time_stamp(end)
-        }, 'type': dtype
+        }, 'type': frequence
     })
     if format in ['dict', 'json']:
         return [data for data in cursor]
@@ -118,12 +118,12 @@ def QA_fetch_stock_min(code, start, end, format='numpy', dtype='1min', collectio
         return __data
 
 
-def QA_fetch_stocklist_min(stock_list, date_range, dtype='1min', collections=DATABASE.stock_min):
+def QA_fetch_stocklist_min(stock_list, date_range, frequence='1min', collections=DATABASE.stock_min):
     '获取不复权股票分钟线'
     __data = []
     for item in stock_list:
         __data.append(QA_fetch_stock_min(
-            item, date_range[0], date_range[-1], 'pd', dtype, collections))
+            item, date_range[0], date_range[-1], 'pd', frequence, collections))
     return __data
 
 
@@ -222,26 +222,26 @@ def QA_fetch_index_min(
         code,
         start, end,
         format='numpy',
-        dtype='1min',
+        frequence='1min',
         collections=DATABASE.index_min):
     '获取股票分钟线'
-    if dtype in ['1min', '1m']:
-        dtype = '1min'
-    elif dtype in ['5min', '5m']:
-        dtype = '5min'
-    elif dtype in ['15min', '15m']:
-        dtype = '15min'
-    elif dtype in ['30min', '30m']:
-        dtype = '30min'
-    elif dtype in ['60min', '60m']:
-        dtype = '60min'
+    if frequence in ['1min', '1m']:
+        frequence = '1min'
+    elif frequence in ['5min', '5m']:
+        frequence = '5min'
+    elif frequence in ['15min', '15m']:
+        frequence = '15min'
+    elif frequence in ['30min', '30m']:
+        frequence = '30min'
+    elif frequence in ['60min', '60m']:
+        frequence = '60min'
     __data = []
 
     cursor = collections.find({
         'code': str(code), "time_stamp": {
             "$gte": QA_util_time_stamp(start),
             "$lte": QA_util_time_stamp(end)
-        }, 'type': dtype
+        }, 'type': frequence
     })
     if format in ['dict', 'json']:
         return [data for data in cursor]

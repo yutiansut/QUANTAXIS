@@ -64,10 +64,10 @@ def QA_quotation(code, start, end, frequence, market, source, output):
         elif frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
             if source is DATASOURCE.MONGO:
                 res = QAMongo.QA_fetch_stock_min_adv(
-                    code, start, end, type_=frequence)
+                    code, start, end, frequence=frequence)
             elif source is DATASOURCE.TDX:
                 res = QATdx.QA_fetch_get_stock_min(
-                    code, start, end, level=frequence)
+                    code, start, end, frequence=frequence)
         elif frequence is FREQUENCE.TICK:
             if source is DATASOURCE.TDX:
                 res = QATdx.QA_fetch_get_stock_transaction(code, start, end)

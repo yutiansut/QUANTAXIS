@@ -71,6 +71,7 @@ class QA_Market(QA_Trade):
 
         self.running_time = data.datetime[0]
         for item in self.session.values():
+            # session里面是已经注册的account
             self.event_queue.put(QA_Task(
                 worker=item,
                 event=QA_Event(
@@ -80,7 +81,6 @@ class QA_Market(QA_Trade):
                     send_order=self.insert_order
                 )
             ))
-
 
     def start(self):
         self.trade_engine.start()
@@ -168,7 +168,7 @@ class QA_Market(QA_Trade):
         if flag:
             order = self.get_account(account_id).send_order(
                 amount=amount, amount_model=amount_model, time=time, code=code, price=price,
-                order_model=order_model, towards=towards, market_type=market_type, frequence=frequence)
+                order_model=order_model, towards=towards)
             self.event_queue.put(
                 QA_Task(
                     worker=self.broker[self.get_account(account_id).broker],
@@ -255,12 +255,9 @@ class QA_Market(QA_Trade):
         print(data)
         self.last_query_data = data
 
-
-
     def on_trade_event(self, event):
         print('ON TRADE')
         print(event.res)
-
 
     def _trade(self, event):
         "内部函数"
@@ -299,7 +296,6 @@ class QA_Market(QA_Trade):
 
     def _close(self):
         pass
-
 
     def clear(self):
         return self.trade_engine.clear()

@@ -86,20 +86,20 @@ def QA_fetch_stocklist_day_adv(
 def QA_fetch_stock_min_adv(
         code,
         start, end=None,
-        type_='1min',
+        frequence='1min',
         if_drop_index=False,
         collections=DATABASE.stock_min):
     '获取股票分钟线'
-    if type_ in ['1min', '1m']:
-        type_ = '1min'
-    elif type_ in ['5min', '5m']:
-        type_ = '5min'
-    elif type_ in ['15min', '15m']:
-        type_ = '15min'
-    elif type_ in ['30min', '30m']:
-        type_ = '30min'
-    elif type_ in ['60min', '60m']:
-        type_ = '60min'
+    if frequence in ['1min', '1m']:
+        frequence = '1min'
+    elif frequence in ['5min', '5m']:
+        frequence = '5min'
+    elif frequence in ['15min', '15m']:
+        frequence = '15min'
+    elif frequence in ['30min', '30m']:
+        frequence = '30min'
+    elif frequence in ['60min', '60m']:
+        frequence = '60min'
     __data = []
 
     end = start if end is None else end
@@ -113,7 +113,7 @@ def QA_fetch_stock_min_adv(
             'code': str(code), "time_stamp": {
                 "$gte": QA_util_time_stamp(start),
                 "$lte": QA_util_time_stamp(end)
-            }, 'type': type_
+            }, 'type': frequence
         }):
 
             __data.append([str(item['code']), float(item['open']), float(item['high']), float(
@@ -126,15 +126,15 @@ def QA_fetch_stock_min_adv(
         return QA_DataStruct_Stock_min(__data.query('volume>1').set_index(['datetime', 'code'], drop=if_drop_index))
     elif isinstance(code, list):
         '新增codelist的代码'
-        return QA_DataStruct_Stock_min(pd.concat([QA_fetch_stock_min_adv(code_, start, end, type_, if_drop_index).data for code_ in code]).set_index(['datetime', 'code'], drop=if_drop_index))
+        return QA_DataStruct_Stock_min(pd.concat([QA_fetch_stock_min_adv(code_, start, end, frequence, if_drop_index).data for code_ in code]).set_index(['datetime', 'code'], drop=if_drop_index))
 
 
 def QA_fetch_stocklist_min_adv(
         code,
         start, end=None,
-        type_='1min',
+        frequence='1min',
         if_drop_index=False,  collections=DATABASE.stock_min):
-    return QA_DataStruct_Stock_min(pd.concat(QA_fetch_stocklist_min(code, [start, end], type_)).query('volume>1').set_index(['datetime', 'code'], drop=if_drop_index))
+    return QA_DataStruct_Stock_min(pd.concat(QA_fetch_stocklist_min(code, [start, end], frequence)).query('volume>1').set_index(['datetime', 'code'], drop=if_drop_index))
 
 
 def QA_fetch_index_day_adv(
@@ -169,20 +169,20 @@ def QA_fetch_index_day_adv(
 def QA_fetch_index_min_adv(
         code,
         start, end=None,
-        type_='1min',
+        frequence='1min',
         if_drop_index=False,
         collections=DATABASE.index_min):
     '获取股票分钟线'
-    if type_ in ['1min', '1m']:
-        type_ = '1min'
-    elif type_ in ['5min', '5m']:
-        type_ = '5min'
-    elif type_ in ['15min', '15m']:
-        type_ = '15min'
-    elif type_ in ['30min', '30m']:
-        type_ = '30min'
-    elif type_ in ['60min', '60m']:
-        type_ = '60min'
+    if frequence in ['1min', '1m']:
+        frequence = '1min'
+    elif frequence in ['5min', '5m']:
+        frequence = '5min'
+    elif frequence in ['15min', '15m']:
+        frequence = '15min'
+    elif frequence in ['30min', '30m']:
+        frequence = '30min'
+    elif frequence in ['60min', '60m']:
+        frequence = '60min'
     __data = []
     end = start if end is None else end
     if len(start) == 10:
@@ -194,7 +194,7 @@ def QA_fetch_index_min_adv(
             'code': str(code), "time_stamp": {
                 "$gte": QA_util_time_stamp(start),
                 "$lte": QA_util_time_stamp(end)
-            }, 'type': type_
+            }, 'type': frequence
         }):
 
             __data.append([str(item['code']), float(item['open']), float(item['high']), float(
@@ -207,7 +207,7 @@ def QA_fetch_index_min_adv(
         return QA_DataStruct_Index_min(__data.query('volume>1').set_index(['datetime', 'code'], drop=if_drop_index))
 
     elif isinstance(code, list):
-        return QA_DataStruct_Index_min(pd.concat([QA_fetch_index_min_adv(code_, start, end, type_, if_drop_index).data for code_ in code]).set_index(['datetime', 'code'], drop=if_drop_index))
+        return QA_DataStruct_Index_min(pd.concat([QA_fetch_index_min_adv(code_, start, end, frequence, if_drop_index).data for code_ in code]).set_index(['datetime', 'code'], drop=if_drop_index))
 
 
 def QA_fetch_stock_transaction_adv(

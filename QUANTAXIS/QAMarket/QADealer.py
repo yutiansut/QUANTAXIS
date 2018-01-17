@@ -130,7 +130,7 @@ class QA_Dealer():
         self.market_data = market_data
         self.deal_price = 0
         self.deal_amount = 0
-        if order.type is MARKET_TYPE.STOCK_CN:
+        if order.market_type is MARKET_TYPE.STOCK_CN:
             return self.backtest_stock_dealer()
 
     def callback_message(self):
