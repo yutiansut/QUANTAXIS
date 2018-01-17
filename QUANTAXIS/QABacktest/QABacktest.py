@@ -83,7 +83,7 @@ class QA_Backtest():
         if self.market_type is MARKET_TYPE.STOCK_CN and self.frequence is FREQUENCE.DAY:
             self.ingest_data = QA_fetch_stock_day_adv(
                 self.code_list, self.start, self.end).to_qfq().panel_gen
-        elif self.market_type is MARKET_TYPE.STOCK_CN and self.frequence[-3:] is 'min':
+        elif self.market_type is MARKET_TYPE.STOCK_CN and self.frequence[-3:] == 'min':
             self.ingest_data = QA_fetch_stock_min_adv(
                 self.code_list, self.start, self.end, self.frequence).to_qfq().panel_gen
 

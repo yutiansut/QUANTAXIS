@@ -214,10 +214,14 @@ class QA_BacktestBroker(QA_Broker):
                 return order
             order.price = float(self.market_data["close"])
         elif order.order_model == ORDER_MODEL.CLOSE:
+
             try:
                 order.datetime = self.market_data.datetime
             except:
-                order.datetime = '{} 15:00:00'.format(order.date)
+                if len(str(order.datetime)) == 19:
+                    pass
+                else:
+                    order.datetime = '{} 15:00:00'.format(order.date)
             self.market_data = self.get_market(order)
             if self.market_data is None:
                 return order
@@ -272,7 +276,6 @@ class QA_BacktestBroker(QA_Broker):
                     data['volume'] = data['vol']
                 elif 'vol' not in data.keys() and 'volume' in data.keys():
                     data['vol'] = data['volume']
-
                 return data
             except Exception as e:
                 QA_util_log_info('MARKET_ENGING ERROR: {}'.format(e))
