@@ -38,6 +38,7 @@ from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
                                           ORDER_MODEL)
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 
+
 class QA_Market(QA_Trade):
     """
     QUANTAXIS MARKET 部分
@@ -149,7 +150,8 @@ class QA_Market(QA_Trade):
                 flag = True
             else:
                 QA_util_log_info('MARKET WARING: SOMEING WRONG WITH ORDER \n ')
-                QA_util_log_info('code {} date {} price {} order_model {} amount_model {}'.format(code,time,price,order_model,amount_model))
+                QA_util_log_info('code {} date {} price {} order_model {} amount_model {}'.format(
+                    code, time, price, order_model, amount_model))
         elif order_model is ORDER_MODEL.MARKET:
             _price = self.query_data_no_wait(broker_name=broker_name, frequence=frequence,
                                              market_type=market_type, code=code, start=time)
@@ -158,8 +160,8 @@ class QA_Market(QA_Trade):
                 flag = True
             else:
                 QA_util_log_info('MARKET WARING: SOMEING WRONG WITH ORDER \n ')
-                QA_util_log_info('code {} date {} price {} order_model {} amount_model {}'.format(code,time,price,order_model,amount_model))
-
+                QA_util_log_info('code {} date {} price {} order_model {} amount_model {}'.format(
+                    code, time, price, order_model, amount_model))
 
         elif order_model is ORDER_MODEL.LIMIT:
             # if price > self.last_query_data[0][2] or price < self.last_query_data[0][3]:
@@ -298,6 +300,7 @@ class QA_Market(QA_Trade):
 
     def clear(self):
         return self.trade_engine.clear()
+
 
 if __name__ == '__main__':
 

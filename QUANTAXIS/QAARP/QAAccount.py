@@ -71,7 +71,7 @@ class QA_Account(QA_Worker):
                  margin_level=False, allow_t0=False, allow_sellopen=False):
         super().__init__()
         self._history_headers = ['datetime', 'code', 'price',
-                                 'amount', 'order_id', 'trade_id', 'commission_fee']
+                                 'amount', 'order_id', 'trade_id', 'commission','tax']
         # 信息类:
         self.strategy_name = strategy_name
         self.user = user
@@ -209,7 +209,7 @@ class QA_Account(QA_Worker):
                  float(message['body']['order']['price']), int(message['body']['order']['towards']) *
                  float(message['body']['order']['amount']), str(
                      message['header']['order_id']),
-                 str(message['header']['trade_id']), float(message['body']['fee']['commission'])])
+                 str(message['header']['trade_id']), float(message['body']['fee']['commission']), float(message['body']['fee']['tax'])])
             self.cash.append(float(self.cash[-1]) - float(message['body']['order']['price']) *
                              float(message['body']['order']['amount']) * message['body']['order']['towards'] -
                              float(message['body']['fee']['commission']))
