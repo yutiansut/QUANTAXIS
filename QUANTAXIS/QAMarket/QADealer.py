@@ -210,7 +210,6 @@ class QA_Dealer():
         step2: deal
         step3: return callback
         """
-
         try:
             if float(self.market_data['open']) == float(self.market_data['high']) == float(self.market_data['close']) == float(self.market_data['low']):
 

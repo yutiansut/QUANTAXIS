@@ -192,8 +192,9 @@ class QA_BacktestBroker(QA_Broker):
                 order.date = order.datetime[0:10]
                 order.datetime = '{} 09:30:00'.format(order.date)
             elif order.frequence in [FREQUENCE.ONE_MIN,FREQUENCE.FIVE_MIN,FREQUENCE.FIFTEEN_MIN,FREQUENCE.THIRTY_MIN,FREQUENCE.SIXTY_MIN]:
+                print(order.datetime)
                 exact_time = str(datetime.datetime.strptime(
-                    str(order.datetime), '%Y-%m-%d %H-%M-%S') + datetime.timedelta(minute=1))
+                    str(order.datetime), '%Y-%m-%d %H:%M:%S') + datetime.timedelta(minutes=1))
                 order.date = exact_time[0:10]
                 order.datetime = exact_time
             self.market_data = self.get_market(order)
