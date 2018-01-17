@@ -14,9 +14,11 @@ class MAStrategy(QA_Strategy):
     def on_bar(self, event):
         try:
             for item in event.market_data.code:
-                print()
+                print(self.current_time)
+                print(self.cash)
+                print(self.cash_available)
+                print(self.daily_hold)
                 if self.sell_available is None:
-                    print(self.current_time)
 
                     event.send_order(account_id=self.account_cookie,
                                      amount=10000, amount_model=AMOUNT_MODEL.BY_AMOUNT,
