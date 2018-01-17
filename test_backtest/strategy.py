@@ -3,7 +3,7 @@ from QUANTAXIS.QAARP.QAStrategy import QA_Strategy
 from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, MARKET_TYPE,
                                           FREQUENCE, ORDER_DIRECTION,
                                           ORDER_MODEL)
-
+from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 
 class MAStrategy(QA_Strategy):
     def __init__(self):
@@ -14,10 +14,17 @@ class MAStrategy(QA_Strategy):
     def on_bar(self, event):
         try:
             for item in event.market_data.code:
-                print(self.current_time)
-                print(self.cash)
-                print(self.cash_available)
-                print(self.daily_hold)
+                QA_util_log_info(self.current_time)
+                QA_util_log_info('cash \n' )
+                QA_util_log_info(self.cash)
+                QA_util_log_info('cash_available \n')
+                QA_util_log_info(self.cash_available)
+                QA_util_log_info('daily_hold \n')
+                QA_util_log_info('\n'+self.daily_hold)
+                QA_util_log_info('daily_cash \n')
+                QA_util_log_info(self.daily_cash)
+                QA_util_log_info('sell_available \n')
+                QA_util_log_info(self.sell_available)
                 if self.sell_available is None:
 
                     event.send_order(account_id=self.account_cookie,

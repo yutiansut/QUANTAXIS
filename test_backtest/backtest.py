@@ -38,7 +38,7 @@ from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT,
 
 from test_backtest.strategy import MAStrategy
 from test_backtest.minstrategy import MAMINStrategy
-
+from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 class Backtest(QA_Backtest):
 
     def __init__(self, market_type, frequence, start, end, code_list, commission_fee):
@@ -46,12 +46,12 @@ class Backtest(QA_Backtest):
         self.user = QA_User()
         mastrategy = MAStrategy()
         self.portfolio, self.account = self.user.register_account(mastrategy)
-        print(self.user.get_portfolio(self.portfolio).accounts)
-        print(self.user.get_portfolio(
+        QA_util_log_info(self.user.get_portfolio(self.portfolio).accounts)
+        QA_util_log_info(self.user.get_portfolio(
             self.portfolio).get_account(self.account).cash)
 
     def after_success(self):
-        print(self.user.get_portfolio(self.portfolio).get_account(
+        QA_util_log_info(self.user.get_portfolio(self.portfolio).get_account(
             self.account).history_table)
 
 
