@@ -27,7 +27,6 @@ from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
 from QUANTAXIS.QAEngine.QATask import QA_Task
 from QUANTAXIS.QAMarket.QABacktestBroker import QA_BacktestBroker
-from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
 from QUANTAXIS.QAMarket.QARandomBroker import QA_RandomBroker
 from QUANTAXIS.QAMarket.QARealBroker import QA_RealBroker
 from QUANTAXIS.QAMarket.QASimulatedBroker import QA_SimulatedBroker

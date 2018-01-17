@@ -74,7 +74,7 @@ def run_minbacktest():
     backtest = Backtest(market_type=MARKET_TYPE.STOCK_CN,
                         frequence=FREQUENCE.FIFTEEN_MIN,
                         start='2017-11-01',
-                        end='2017-11-28',
+                        end='2017-11-03',
                         code_list=QA.QA_fetch_stock_block_adv().code[0:5],
                         commission_fee=0.00015)
     backtest.start_market()
