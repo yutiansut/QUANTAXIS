@@ -78,12 +78,12 @@ def QA_SU_save_stock_day(client=DATABASE):
             else:
                 start_date = '1990-01-01'
                 QA_util_log_info(' UPDATE_STOCK_DAY \n Trying updating %s from %s to %s' %
-<<<<<<< HEAD
                                  (code, start_date, end_date))
-=======
-                                (code, start_date, end_date))
                 if start_date != end_date:
-            except:
+                    coll_stock_day.insert_many(
+                        QA_util_to_json_from_pandas(
+                            QA_fetch_get_stock_day(str(code), start_date, end_date, '00')))
+        except:
             err.append(str(code))
     for item in range(len(stock_list)):
         QA_util_log_info('The %s of Total %s' %
