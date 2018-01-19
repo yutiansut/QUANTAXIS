@@ -110,7 +110,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 ## 文档
 
-文档参见: [book](book.yutiansut.com)
+文档参见: [book](http://book.yutiansut.com)
 
 ## 安装和部署
 
