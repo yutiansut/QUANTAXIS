@@ -39,7 +39,7 @@ import QUANTAXIS as QA
 
 ```
 day线的参数是code, start, end
-min线的参数是code, start, end, type_='1min'
+min线的参数是code, start, end, frequence='1min'
 
 其中 code 可以是一个股票,也可以是一列股票(list)
 

@@ -18,7 +18,7 @@ os: "ubuntu"
 install: 
 
 
-
+- "pip install git+https://github.com/yutiansut/pytdx"
 - "pip install -r requirements.txt"
 - "pip install git+https://github.com/yutiansut/tushare"
 # command to build

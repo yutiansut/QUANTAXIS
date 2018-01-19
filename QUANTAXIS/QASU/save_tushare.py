@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -36,12 +36,12 @@ from QUANTAXIS.QAFetch.QATushare import (QA_fetch_get_stock_day,
 from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_log_info,
                               QA_util_time_stamp, QA_util_to_json_from_pandas,
                               trade_date_sse)
-from QUANTAXIS.QAUtil.QASetting import QA_Setting
+from QUANTAXIS.QAUtil.QASetting import DATABASE
 
 
-def QA_save_stock_day_all(client=QA_Setting.client):
+def QA_save_stock_day_all(client=DATABASE):
     df = ts.get_stock_basics()
-    __coll = client.quantaxis.stock_day
+    __coll = client.stock_day
     __coll.ensure_index('code')
 
     def saving_work(i):
@@ -64,31 +64,31 @@ def QA_save_stock_day_all(client=QA_Setting.client):
     saving_work('sz50')
 
 
-def QA_SU_save_stock_list(client=QA_Setting.client):
+def QA_SU_save_stock_list(client=DATABASE):
     data = QA_fetch_get_stock_list()
     date = str(datetime.date.today())
     date_stamp = QA_util_date_stamp(date)
-    coll = client.quantaxis.stock_list
+    coll = client.stock_list
     coll.insert({'date': date, 'date_stamp': date_stamp,
                  'stock': {'code': data}})
 
 
-def QA_SU_save_trade_date_all(client=QA_Setting.client):
+def QA_SU_save_trade_date_all(client=DATABASE):
     data = QA_fetch_get_trade_date('', '')
-    coll = client.quantaxis.trade_date
+    coll = client.trade_date
     coll.insert_many(data)
 
 
-def QA_SU_save_stock_info(client=QA_Setting.client):
+def QA_SU_save_stock_info(client=DATABASE):
     data = QA_fetch_get_stock_info('all')
-    coll = client.quantaxis.stock_info
+    coll = client.stock_info
     coll.insert_many(data)
 
 
-def QA_save_stock_day_all_bfq(client=QA_Setting.client):
+def QA_save_stock_day_all_bfq(client=DATABASE):
     df = ts.get_stock_basics()
 
-    __coll = client.quantaxis.stock_day_bfq
+    __coll = client.stock_day_bfq
     __coll.ensure_index('code')
 
     def saving_work(i):
@@ -111,10 +111,10 @@ def QA_save_stock_day_all_bfq(client=QA_Setting.client):
     saving_work('sz50')
 
 
-def QA_save_stock_day_with_fqfactor(client=QA_Setting.client):
+def QA_save_stock_day_with_fqfactor(client=DATABASE):
     df = ts.get_stock_basics()
 
-    __coll = client.quantaxis.stock_day
+    __coll = client.stock_day
     __coll.ensure_index('code')
 
     def saving_work(i):

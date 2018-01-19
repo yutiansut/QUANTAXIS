@@ -7,7 +7,7 @@
  */
 // GENERATED CODE -- DO NOT EDIT!
 
-goog.provide('proto.QA_Market_bid');
+goog.provide('proto.QA_Market_order');
 
 goog.require('jspb.BinaryReader');
 goog.require('jspb.BinaryWriter');
@@ -24,12 +24,12 @@ goog.require('jspb.Message');
  * @extends {jspb.Message}
  * @constructor
  */
-proto.QA_Market_bid = function(opt_data) {
+proto.QA_Market_order = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.QA_Market_bid, jspb.Message);
+goog.inherits(proto.QA_Market_order, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
-  proto.QA_Market_bid.displayName = 'proto.QA_Market_bid';
+  proto.QA_Market_order.displayName = 'proto.QA_Market_order';
 }
 
 
@@ -44,8 +44,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     for transitional soy proto support: http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.QA_Market_bid.prototype.toObject = function(opt_includeInstance) {
-  return proto.QA_Market_bid.toObject(opt_includeInstance, this);
+proto.QA_Market_order.prototype.toObject = function(opt_includeInstance) {
+  return proto.QA_Market_order.toObject(opt_includeInstance, this);
 };
 
 
@@ -54,11 +54,11 @@ proto.QA_Market_bid.prototype.toObject = function(opt_includeInstance) {
  * @param {boolean|undefined} includeInstance Whether to include the JSPB
  *     instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.QA_Market_bid} msg The msg instance to transform.
+ * @param {!proto.QA_Market_order} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.QA_Market_bid.toObject = function(includeInstance, msg) {
+proto.QA_Market_order.toObject = function(includeInstance, msg) {
   var f, obj = {
     price: +jspb.Message.getFieldWithDefault(msg, 1, 0.0),
     date: jspb.Message.getFieldWithDefault(msg, 2, ""),
@@ -89,23 +89,23 @@ proto.QA_Market_bid.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.QA_Market_bid}
+ * @return {!proto.QA_Market_order}
  */
-proto.QA_Market_bid.deserializeBinary = function(bytes) {
+proto.QA_Market_order.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.QA_Market_bid;
-  return proto.QA_Market_bid.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.QA_Market_order;
+  return proto.QA_Market_order.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.QA_Market_bid} msg The message object to deserialize into.
+ * @param {!proto.QA_Market_order} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.QA_Market_bid}
+ * @return {!proto.QA_Market_order}
  */
-proto.QA_Market_bid.deserializeBinaryFromReader = function(msg, reader) {
+proto.QA_Market_order.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -189,9 +189,9 @@ proto.QA_Market_bid.deserializeBinaryFromReader = function(msg, reader) {
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.QA_Market_bid.prototype.serializeBinary = function() {
+proto.QA_Market_order.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.QA_Market_bid.serializeBinaryToWriter(this, writer);
+  proto.QA_Market_order.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -199,11 +199,11 @@ proto.QA_Market_bid.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.QA_Market_bid} message
+ * @param {!proto.QA_Market_order} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.QA_Market_bid.serializeBinaryToWriter = function(message, writer) {
+proto.QA_Market_order.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getPrice();
   if (f !== 0.0) {
@@ -324,13 +324,13 @@ proto.QA_Market_bid.serializeBinaryToWriter = function(message, writer) {
  * optional float price = 1;
  * @return {number}
  */
-proto.QA_Market_bid.prototype.getPrice = function() {
+proto.QA_Market_order.prototype.getPrice = function() {
   return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 1, 0.0));
 };
 
 
 /** @param {number} value */
-proto.QA_Market_bid.prototype.setPrice = function(value) {
+proto.QA_Market_order.prototype.setPrice = function(value) {
   jspb.Message.setField(this, 1, value);
 };
 
@@ -339,13 +339,13 @@ proto.QA_Market_bid.prototype.setPrice = function(value) {
  * optional string date = 2;
  * @return {string}
  */
-proto.QA_Market_bid.prototype.getDate = function() {
+proto.QA_Market_order.prototype.getDate = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
 /** @param {string} value */
-proto.QA_Market_bid.prototype.setDate = function(value) {
+proto.QA_Market_order.prototype.setDate = function(value) {
   jspb.Message.setField(this, 2, value);
 };
 
@@ -354,13 +354,13 @@ proto.QA_Market_bid.prototype.setDate = function(value) {
  * optional string datetime = 3;
  * @return {string}
  */
-proto.QA_Market_bid.prototype.getDatetime = function() {
+proto.QA_Market_order.prototype.getDatetime = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
 
 /** @param {string} value */
-proto.QA_Market_bid.prototype.setDatetime = function(value) {
+proto.QA_Market_order.prototype.setDatetime = function(value) {
   jspb.Message.setField(this, 3, value);
 };
 
@@ -369,13 +369,13 @@ proto.QA_Market_bid.prototype.setDatetime = function(value) {
  * optional string sending_time = 4;
  * @return {string}
  */
-proto.QA_Market_bid.prototype.getSendingTime = function() {
+proto.QA_Market_order.prototype.getSendingTime = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
 };
 
 
 /** @param {string} value */
-proto.QA_Market_bid.prototype.setSendingTime = function(value) {
+proto.QA_Market_order.prototype.setSendingTime = function(value) {
   jspb.Message.setField(this, 4, value);
 };
 
@@ -384,13 +384,13 @@ proto.QA_Market_bid.prototype.setSendingTime = function(value) {
  * optional string transact_time = 5;
  * @return {string}
  */
-proto.QA_Market_bid.prototype.getTransactTime = function() {
+proto.QA_Market_order.prototype.getTransactTime = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
 };
 
 
 /** @param {string} value */
-proto.QA_Market_bid.prototype.setTransactTime = function(value) {
+proto.QA_Market_order.prototype.setTransactTime = function(value) {
   jspb.Message.setField(this, 5, value);
 };
 
@@ -399,13 +399,13 @@ proto.QA_Market_bid.prototype.setTransactTime = function(value) {
  * optional float amount = 6;
  * @return {number}
  */
-proto.QA_Market_bid.prototype.getAmount = function() {
+proto.QA_Market_order.prototype.getAmount = function() {
   return /** @type {number} */ (+jspb.Message.getFieldWithDefault(this, 6, 0.0));
 };
 
 
 /** @param {number} value */
-proto.QA_Market_bid.prototype.setAmount = function(value) {
+proto.QA_Market_order.prototype.setAmount = function(value) {
   jspb.Message.setField(this, 6, value);
 };
 
@@ -414,13 +414,13 @@ proto.QA_Market_bid.prototype.setAmount = function(value) {
  * optional int64 towards = 7;
  * @return {number}
  */
-proto.QA_Market_bid.prototype.getTowards = function() {
+proto.QA_Market_order.prototype.getTowards = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 7, 0));
 };
 
 
 /** @param {number} value */
-proto.QA_Market_bid.prototype.setTowards = function(value) {
+proto.QA_Market_order.prototype.setTowards = function(value) {
   jspb.Message.setField(this, 7, value);
 };
 
@@ -429,13 +429,13 @@ proto.QA_Market_bid.prototype.setTowards = function(value) {
  * optional string code = 8;
  * @return {string}
  */
-proto.QA_Market_bid.prototype.getCode = function() {
+proto.QA_Market_order.prototype.getCode = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 8, ""));
 };
 
 
 /** @param {string} value */
-proto.QA_Market_bid.prototype.setCode = function(value) {
+proto.QA_Market_order.prototype.setCode = function(value) {
   jspb.Message.setField(this, 8, value);
 };
 
@@ -444,13 +444,13 @@ proto.QA_Market_bid.prototype.setCode = function(value) {
  * optional string user = 9;
  * @return {string}
  */
-proto.QA_Market_bid.prototype.getUser = function() {
+proto.QA_Market_order.prototype.getUser = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 9, ""));
 };
 
 
 /** @param {string} value */
-proto.QA_Market_bid.prototype.setUser = function(value) {
+proto.QA_Market_order.prototype.setUser = function(value) {
   jspb.Message.setField(this, 9, value);
 };
 
@@ -459,13 +459,13 @@ proto.QA_Market_bid.prototype.setUser = function(value) {
  * optional string strategy = 10;
  * @return {string}
  */
-proto.QA_Market_bid.prototype.getStrategy = function() {
+proto.QA_Market_order.prototype.getStrategy = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 10, ""));
 };
 
 
 /** @param {string} value */
-proto.QA_Market_bid.prototype.setStrategy = function(value) {
+proto.QA_Market_order.prototype.setStrategy = function(value) {
   jspb.Message.setField(this, 10, value);
 };
 
@@ -474,28 +474,28 @@ proto.QA_Market_bid.prototype.setStrategy = function(value) {
  * optional string type = 11;
  * @return {string}
  */
-proto.QA_Market_bid.prototype.getType = function() {
+proto.QA_Market_order.prototype.getType = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 11, ""));
 };
 
 
 /** @param {string} value */
-proto.QA_Market_bid.prototype.setType = function(value) {
+proto.QA_Market_order.prototype.setType = function(value) {
   jspb.Message.setField(this, 11, value);
 };
 
 
 /**
- * optional string bid_model = 12;
+ * optional string order_model = 12;
  * @return {string}
  */
-proto.QA_Market_bid.prototype.getBidModel = function() {
+proto.QA_Market_order.prototype.getBidModel = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 12, ""));
 };
 
 
 /** @param {string} value */
-proto.QA_Market_bid.prototype.setBidModel = function(value) {
+proto.QA_Market_order.prototype.setBidModel = function(value) {
   jspb.Message.setField(this, 12, value);
 };
 
@@ -504,13 +504,13 @@ proto.QA_Market_bid.prototype.setBidModel = function(value) {
  * optional string amount_model = 13;
  * @return {string}
  */
-proto.QA_Market_bid.prototype.getAmountModel = function() {
+proto.QA_Market_order.prototype.getAmountModel = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 13, ""));
 };
 
 
 /** @param {string} value */
-proto.QA_Market_bid.prototype.setAmountModel = function(value) {
+proto.QA_Market_order.prototype.setAmountModel = function(value) {
   jspb.Message.setField(this, 13, value);
 };
 
@@ -519,13 +519,13 @@ proto.QA_Market_bid.prototype.setAmountModel = function(value) {
  * optional string order_id = 14;
  * @return {string}
  */
-proto.QA_Market_bid.prototype.getOrderId = function() {
+proto.QA_Market_order.prototype.getOrderId = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 14, ""));
 };
 
 
 /** @param {string} value */
-proto.QA_Market_bid.prototype.setOrderId = function(value) {
+proto.QA_Market_order.prototype.setOrderId = function(value) {
   jspb.Message.setField(this, 14, value);
 };
 
@@ -534,13 +534,13 @@ proto.QA_Market_bid.prototype.setOrderId = function(value) {
  * optional string trade_id = 15;
  * @return {string}
  */
-proto.QA_Market_bid.prototype.getTradeId = function() {
+proto.QA_Market_order.prototype.getTradeId = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 15, ""));
 };
 
 
 /** @param {string} value */
-proto.QA_Market_bid.prototype.setTradeId = function(value) {
+proto.QA_Market_order.prototype.setTradeId = function(value) {
   jspb.Message.setField(this, 15, value);
 };
 
@@ -549,13 +549,13 @@ proto.QA_Market_bid.prototype.setTradeId = function(value) {
  * optional string status = 16;
  * @return {string}
  */
-proto.QA_Market_bid.prototype.getStatus = function() {
+proto.QA_Market_order.prototype.getStatus = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 16, ""));
 };
 
 
 /** @param {string} value */
-proto.QA_Market_bid.prototype.setStatus = function(value) {
+proto.QA_Market_order.prototype.setStatus = function(value) {
   jspb.Message.setField(this, 16, value);
 };
 

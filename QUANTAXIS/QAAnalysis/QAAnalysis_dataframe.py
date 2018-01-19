@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,12 +23,9 @@
 # SOFTWARE.
 
 
-import math
 import statistics
 from functools import lru_cache
 
-import numpy as np
-import pandas as pd
 
 #import scipy
 #import statsmodels
@@ -144,9 +141,10 @@ class QA_Analysis_stock:
 
         return statistics.variance(self.price)
     # 标准差
+
     @property
     def day_pct_change(self):
-        return (self.open-self.close)/self.open
+        return (self.open - self.close) / self.open
 
     @property
     def stdev(self):

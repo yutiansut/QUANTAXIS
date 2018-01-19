@@ -124,10 +124,10 @@ QA.QA_fetch_ 系列
 """
 # 股票
 QA_fetch_stock_day_adv(code,start,end)
-QA_fetch_stock_min_adv(code,start,end,type_='1min') # type_可以选1min/5min/15min/30min/60min 
+QA_fetch_stock_min_adv(code,start,end,frequence='1min') # frequence可以选1min/5min/15min/30min/60min 
 # 指数/ETF
 QA_fetch_index_day_adv(code,start,end)
-QA_fetch_index_min_adv(code,start,end,type_='1min') # type_可以选1min/5min/15min/30min/60min 
+QA_fetch_index_min_adv(code,start,end,frequence='1min') # frequence可以选1min/5min/15min/30min/60min 
 # 板块
 QA_fetch_stock_block_adv(code)
 

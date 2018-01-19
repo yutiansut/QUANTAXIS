@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -53,14 +53,14 @@ def SMA(Series, N, M=1):
     length = len(Series)
     # 跳过X中前面几个 nan 值
     while i < length:
-        if np.isnan(Series[i]):
+        if np.isnan(Series.iloc[i]):
             i += 1
         else:
             break
-    preY = Series[i]  # Y'
+    preY = Series.iloc[i]  # Y'
     ret.append(preY)
     while i < length:
-        Y = (M * Series[i] + (N - M) * preY) / float(N)
+        Y = (M * Series.iloc[i] + (N - M) * preY) / float(N)
         ret.append(Y)
         preY = Y
         i += 1
@@ -98,7 +98,7 @@ def MIN(A, B):
 
 
 def CROSS(A, B):
-    if A[-2] < B[-2] and A[-1] > B[-1]:
+    if A.iloc[-2] < B.iloc[-2] and A.iloc[-1] > B.iloc[-1]:
         return True
     else:
         return False
