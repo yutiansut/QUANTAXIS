@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,27 +23,9 @@
 # SOFTWARE.
 
 from QUANTAXIS.QAARP.QAAccount import QA_Account
-from QUANTAXIS.QAARP.QARisk import QA_Risk
+from QUANTAXIS.QAARP.QARisk import QA_Risk, QA_Performace
 from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
-
-from QUANTAXIS.QAARP.QARisk import (QA_risk_account_freeCash_currentAssest,
-                                    QA_risk_account_freeCash_frozenAssest,
-                                    QA_risk_account_freeCash_initAssest, QA_risk_eva_account)
+from QUANTAXIS.QAARP.QAUser import QA_User
+from QUANTAXIS.QAARP.QAStrategy import QA_Strategy
 
 
-class QA_ARP():
-    def __init__(self):
-        pass
-
-    def QA_ARP_A2R(self, QA_Account, QA_Risk):
-
-        pass
-
-    def QA_ARP_R2P(self, QA_Risk, QA_Portfolio):
-        pass
-
-    def QA_ARP_P2R(self, QA_Risk, QA_Portfolio):
-        pass
-
-    def QA_ARP_R2A(self, QA_Account, QA_Risk):
-        pass

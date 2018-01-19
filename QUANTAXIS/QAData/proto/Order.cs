@@ -31,17 +31,17 @@ public static partial class OrderReflection {
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { },
         new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-          new pbr::GeneratedClrTypeInfo(typeof(global::QA_Market_bid), global::QA_Market_bid.Parser, new[]{ "Price", "Date", "Datetime", "SendingTime", "TransactTime", "Amount", "Towards", "Code", "User", "Strategy", "Type", "BidModel", "AmountModel", "OrderId", "TradeId", "Status" }, null, null, null)
+          new pbr::GeneratedClrTypeInfo(typeof(global::QA_Market_order), global::QA_Market_order.Parser, new[]{ "Price", "Date", "Datetime", "SendingTime", "TransactTime", "Amount", "Towards", "Code", "User", "Strategy", "Type", "BidModel", "AmountModel", "OrderId", "TradeId", "Status" }, null, null, null)
         }));
   }
   #endregion
 
 }
 #region Messages
-public sealed partial class QA_Market_bid : pb::IMessage<QA_Market_bid> {
-  private static readonly pb::MessageParser<QA_Market_bid> _parser = new pb::MessageParser<QA_Market_bid>(() => new QA_Market_bid());
+public sealed partial class QA_Market_order : pb::IMessage<QA_Market_order> {
+  private static readonly pb::MessageParser<QA_Market_order> _parser = new pb::MessageParser<QA_Market_order>(() => new QA_Market_order());
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-  public static pb::MessageParser<QA_Market_bid> Parser { get { return _parser; } }
+  public static pb::MessageParser<QA_Market_order> Parser { get { return _parser; } }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   public static pbr::MessageDescriptor Descriptor {
@@ -54,14 +54,14 @@ public sealed partial class QA_Market_bid : pb::IMessage<QA_Market_bid> {
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-  public QA_Market_bid() {
+  public QA_Market_order() {
     OnConstruction();
   }
 
   partial void OnConstruction();
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-  public QA_Market_bid(QA_Market_bid other) : this() {
+  public QA_Market_order(QA_Market_order other) : this() {
     price_ = other.price_;
     date_ = other.date_;
     datetime_ = other.datetime_;
@@ -81,8 +81,8 @@ public sealed partial class QA_Market_bid : pb::IMessage<QA_Market_bid> {
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-  public QA_Market_bid Clone() {
-    return new QA_Market_bid(this);
+  public QA_Market_order Clone() {
+    return new QA_Market_order(this);
   }
 
   /// <summary>Field number for the "price" field.</summary>
@@ -206,7 +206,7 @@ public sealed partial class QA_Market_bid : pb::IMessage<QA_Market_bid> {
     }
   }
 
-  /// <summary>Field number for the "bid_model" field.</summary>
+  /// <summary>Field number for the "order_model" field.</summary>
   public const int BidModelFieldNumber = 12;
   private string bidModel_ = "";
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -263,11 +263,11 @@ public sealed partial class QA_Market_bid : pb::IMessage<QA_Market_bid> {
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   public override bool Equals(object other) {
-    return Equals(other as QA_Market_bid);
+    return Equals(other as QA_Market_order);
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-  public bool Equals(QA_Market_bid other) {
+  public bool Equals(QA_Market_order other) {
     if (ReferenceEquals(other, null)) {
       return false;
     }
@@ -443,7 +443,7 @@ public sealed partial class QA_Market_bid : pb::IMessage<QA_Market_bid> {
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-  public void MergeFrom(QA_Market_bid other) {
+  public void MergeFrom(QA_Market_order other) {
     if (other == null) {
       return;
     }

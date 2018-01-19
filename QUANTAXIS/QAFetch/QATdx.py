@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -90,29 +90,29 @@ def _select_market_code(code):
     return 0
 
 
-def _select_type(level):
-    if level in ['day', 'd', 'D', 'DAY', 'Day']:
-        level = 9
-    elif level in ['w', 'W', 'Week', 'week']:
-        level = 5
-    elif level in ['month', 'M', 'm', 'Month']:
-        level = 6
-    elif level in ['Q', 'Quarter', 'q']:
-        level = 10
-    elif level in ['y', 'Y', 'year', 'Year']:
-        level = 11
-    elif str(level) in ['5', '5m', '5min', 'five']:
-        level, type_ = 0, '5min'
-    elif str(level) in ['1', '1m', '1min', 'one']:
-        level, type_ = 8, '1min'
-    elif str(level) in ['15', '15m', '15min', 'fifteen']:
-        level, type_ = 1, '15min'
-    elif str(level) in ['30', '30m', '30min', 'half']:
-        level, type_ = 2, '30min'
-    elif str(level) in ['60', '60m', '60min', '1h']:
-        level, type_ = 3, '60min'
+def _select_type(frequence):
+    if frequence in ['day', 'd', 'D', 'DAY', 'Day']:
+        frequence = 9
+    elif frequence in ['w', 'W', 'Week', 'week']:
+        frequence = 5
+    elif frequence in ['month', 'M', 'm', 'Month']:
+        frequence = 6
+    elif frequence in ['Q', 'Quarter', 'q']:
+        frequence = 10
+    elif frequence in ['y', 'Y', 'year', 'Year']:
+        frequence = 11
+    elif str(frequence) in ['5', '5m', '5min', 'five']:
+        frequence, type_ = 0, '5min'
+    elif str(frequence) in ['1', '1m', '1min', 'one']:
+        frequence, type_ = 8, '1min'
+    elif str(frequence) in ['15', '15m', '15min', 'fifteen']:
+        frequence, type_ = 1, '15min'
+    elif str(frequence) in ['30', '30m', '30min', 'half']:
+        frequence, type_ = 2, '30min'
+    elif str(frequence) in ['60', '60m', '60min', '1h']:
+        frequence, type_ = 3, '60min'
 
-    return level
+    return frequence
 
 
 def QA_fetch_get_security_bars(code, _type, lens, ip=best_ip['stock'], port=7709):
@@ -133,25 +133,25 @@ def QA_fetch_get_security_bars(code, _type, lens, ip=best_ip['stock'], port=7709
             return None
 
 
-def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', ip=best_ip['stock'], port=7709):
+def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', frequence='day', ip=best_ip['stock'], port=7709):
     api = TdxHq_API()
     with api.connect(ip, port):
 
-        if level in ['day', 'd', 'D', 'DAY', 'Day']:
-            level = 9
-        elif level in ['w', 'W', 'Week', 'week']:
-            level = 5
-        elif level in ['month', 'M', 'm', 'Month']:
-            level = 6
-        elif level in ['Q', 'Quarter', 'q']:
-            level = 10
-        elif level in ['y', 'Y', 'year', 'Year']:
-            level = 11
+        if frequence in ['day', 'd', 'D', 'DAY', 'Day']:
+            frequence = 9
+        elif frequence in ['w', 'W', 'Week', 'week']:
+            frequence = 5
+        elif frequence in ['month', 'M', 'm', 'Month']:
+            frequence = 6
+        elif frequence in ['Q', 'Quarter', 'q']:
+            frequence = 10
+        elif frequence in ['y', 'Y', 'year', 'Year']:
+            frequence = 11
         start_date = str(start_date)[0:10]
         today_ = datetime.date.today()
         lens = QA_util_get_trade_gap(start_date, today_)
 
-        data = pd.concat([api.to_df(api.get_security_bars(level, _select_market_code(
+        data = pd.concat([api.to_df(api.get_security_bars(frequence, _select_market_code(
             code), code, (int(lens / 800) - i) * 800, 800)) for i in range(int(lens / 800) + 1)], axis=0)
 
         data = data[data['open'] != 0]
@@ -310,32 +310,32 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', level='day', 
             return data.drop(['fenhong', 'peigu', 'peigujia', 'songzhuangu', 'if_trade', 'category'], axis=1)[data['open'] != 0].assign(date=data['date'].apply(lambda x: str(x)[0:10]))[start_date:end_date]
 
 
-def QA_fetch_get_stock_min(code, start, end, level='1min', ip=best_ip['stock'], port=7709):
+def QA_fetch_get_stock_min(code, start, end, frequence='1min', ip=best_ip['stock'], port=7709):
     api = TdxHq_API()
     type_ = ''
     start_date = str(start)[0:10]
     today_ = datetime.date.today()
     lens = QA_util_get_trade_gap(start_date, today_)
-    if str(level) in ['5', '5m', '5min', 'five']:
-        level, type_ = 0, '5min'
+    if str(frequence) in ['5', '5m', '5min', 'five']:
+        frequence, type_ = 0, '5min'
         lens = 48 * lens
-    elif str(level) in ['1', '1m', '1min', 'one']:
-        level, type_ = 8, '1min'
+    elif str(frequence) in ['1', '1m', '1min', 'one']:
+        frequence, type_ = 8, '1min'
         lens = 240 * lens
-    elif str(level) in ['15', '15m', '15min', 'fifteen']:
-        level, type_ = 1, '15min'
+    elif str(frequence) in ['15', '15m', '15min', 'fifteen']:
+        frequence, type_ = 1, '15min'
         lens = 16 * lens
-    elif str(level) in ['30', '30m', '30min', 'half']:
-        level, type_ = 2, '30min'
+    elif str(frequence) in ['30', '30m', '30min', 'half']:
+        frequence, type_ = 2, '30min'
         lens = 8 * lens
-    elif str(level) in ['60', '60m', '60min', '1h']:
-        level, type_ = 3, '60min'
+    elif str(frequence) in ['60', '60m', '60min', '1h']:
+        frequence, type_ = 3, '60min'
         lens = 4 * lens
     if lens > 20800:
         lens = 20800
     with api.connect(ip, port):
 
-        data = pd.concat([api.to_df(api.get_security_bars(level, _select_market_code(
+        data = pd.concat([api.to_df(api.get_security_bars(frequence, _select_market_code(
             str(code)), str(code), (int(lens / 800) - i) * 800, 800)) for i in range(int(lens / 800) + 1)], axis=0)
         data = data\
             .assign(datetime=pd.to_datetime(data['datetime']), code=str(code))\
@@ -423,19 +423,19 @@ def QA_fetch_get_stock_list(type_='stock', ip=best_ip['stock'], port=7709):
             #    .assign(quanpin=data['name'].apply(lambda x: ''.join(lazy_pinyin(x))))
 
 
-def QA_fetch_get_index_day(code, start_date, end_date, level='day', ip=best_ip['stock'], port=7709):
+def QA_fetch_get_index_day(code, start_date, end_date, frequence='day', ip=best_ip['stock'], port=7709):
     '指数日线'
     api = TdxHq_API()
-    if level in ['day', 'd', 'D', 'DAY', 'Day']:
-        level = 9
-    elif level in ['w', 'W', 'Week', 'week']:
-        level = 5
-    elif level in ['month', 'M', 'm', 'Month']:
-        level = 6
-    elif level in ['Q', 'Quarter', 'q']:
-        level = 10
-    elif level in ['y', 'Y', 'year', 'Year']:
-        level = 11
+    if frequence in ['day', 'd', 'D', 'DAY', 'Day']:
+        frequence = 9
+    elif frequence in ['w', 'W', 'Week', 'week']:
+        frequence = 5
+    elif frequence in ['month', 'M', 'm', 'Month']:
+        frequence = 6
+    elif frequence in ['Q', 'Quarter', 'q']:
+        frequence = 10
+    elif frequence in ['y', 'Y', 'year', 'Year']:
+        frequence = 11
 
     with api.connect(ip, port):
 
@@ -445,10 +445,10 @@ def QA_fetch_get_index_day(code, start_date, end_date, level='day', ip=best_ip['
 
         if str(code)[0] in ['5', '1']:  # ETF
             data = pd.concat([api.to_df(api.get_security_bars(
-                level, 1 if str(code)[0] in ['0', '8', '9', '5'] else 0, code, (int(lens / 800) - i) * 800, 800)) for i in range(int(lens / 800) + 1)], axis=0)
+                frequence, 1 if str(code)[0] in ['0', '8', '9', '5'] else 0, code, (int(lens / 800) - i) * 800, 800)) for i in range(int(lens / 800) + 1)], axis=0)
         else:
             data = pd.concat([api.to_df(api.get_index_bars(
-                level, 1 if str(code)[0] in ['0', '8', '9', '5'] else 0, code, (int(lens / 800) - i) * 800, 800)) for i in range(int(lens / 800) + 1)], axis=0)
+                frequence, 1 if str(code)[0] in ['0', '8', '9', '5'] else 0, code, (int(lens / 800) - i) * 800, 800)) for i in range(int(lens / 800) + 1)], axis=0)
         data = data.assign(date=data['datetime'].apply(lambda x: str(x[0:10]))).assign(code=str(code))\
             .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10])))\
             .set_index('date', drop=False, inplace=False)\
@@ -457,7 +457,7 @@ def QA_fetch_get_index_day(code, start_date, end_date, level='day', ip=best_ip['
         return data.assign(date=data['date'].apply(lambda x: str(x)[0:10]))
 
 
-def QA_fetch_get_index_min(code, start, end, level='1min', ip=best_ip['stock'], port=7709):
+def QA_fetch_get_index_min(code, start, end, frequence='1min', ip=best_ip['stock'], port=7709):
     '指数分钟线'
     api = TdxHq_API()
     type_ = ''
@@ -465,20 +465,20 @@ def QA_fetch_get_index_min(code, start, end, level='1min', ip=best_ip['stock'], 
     start_date = str(start)[0:10]
     today_ = datetime.date.today()
     lens = QA_util_get_trade_gap(start_date, today_)
-    if str(level) in ['5', '5m', '5min', 'five']:
-        level, type_ = 0, '5min'
+    if str(frequence) in ['5', '5m', '5min', 'five']:
+        frequence, type_ = 0, '5min'
         lens = 48 * lens
-    elif str(level) in ['1', '1m', '1min', 'one']:
-        level, type_ = 8, '1min'
+    elif str(frequence) in ['1', '1m', '1min', 'one']:
+        frequence, type_ = 8, '1min'
         lens = 240 * lens
-    elif str(level) in ['15', '15m', '15min', 'fifteen']:
-        level, type_ = 1, '15min'
+    elif str(frequence) in ['15', '15m', '15min', 'fifteen']:
+        frequence, type_ = 1, '15min'
         lens = 16 * lens
-    elif str(level) in ['30', '30m', '30min', 'half']:
-        level, type_ = 2, '30min'
+    elif str(frequence) in ['30', '30m', '30min', 'half']:
+        frequence, type_ = 2, '30min'
         lens = 8 * lens
-    elif str(level) in ['60', '60m', '60min', '1h']:
-        level, type_ = 3, '60min'
+    elif str(frequence) in ['60', '60m', '60min', '1h']:
+        frequence, type_ = 3, '60min'
         lens = 4 * lens
 
     if lens > 20800:
@@ -487,10 +487,10 @@ def QA_fetch_get_index_min(code, start, end, level='1min', ip=best_ip['stock'], 
 
         if str(code)[0] in ['5', '1']:  # ETF
             data = pd.concat([api.to_df(api.get_security_bars(
-                level, 1 if str(code)[0] in ['0', '8', '9', '5'] else 0, code, (int(lens / 800) - i) * 800, 800)) for i in range(int(lens / 800) + 1)], axis=0)
+                frequence, 1 if str(code)[0] in ['0', '8', '9', '5'] else 0, code, (int(lens / 800) - i) * 800, 800)) for i in range(int(lens / 800) + 1)], axis=0)
         else:
             data = pd.concat([api.to_df(api.get_index_bars(
-                level, 1 if str(code)[0] in ['0', '8', '9', '5'] else 0, code, (int(lens / 800) - i) * 800, 800)) for i in range(int(lens / 800) + 1)], axis=0)
+                frequence, 1 if str(code)[0] in ['0', '8', '9', '5'] else 0, code, (int(lens / 800) - i) * 800, 800)) for i in range(int(lens / 800) + 1)], axis=0)
         data = data\
             .assign(datetime=pd.to_datetime(data['datetime']), code=str(code))\
             .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1, inplace=False)\
@@ -548,8 +548,11 @@ def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=best_ip['stock'
                 QA_util_log_info('Successfully Getting %s history transaction data in day %s' % (
                     code, trade_date_sse[index_]))
                 data = data.append(data_)
+        if len(data)>0:
 
-        return data.assign(datetime=data['datetime'].apply(lambda x: str(x)[0:19]))
+            return data.assign(datetime=data['datetime'].apply(lambda x: str(x)[0:19]))
+        else:
+            return None
 
 def QA_fetch_get_stock_transaction_realtime(code, ip=best_ip['stock'], port=7709):
     '实时逐笔成交 包含集合竞价'
@@ -712,7 +715,7 @@ def QA_fetch_get_future_list(ip=best_ip['future'], port=7727):
             for i in range(int(num / 500) + 1)], axis=0).set_index('code', drop=False)
 global extension_market_info
 extension_market_info = None
-def QA_fetch_get_future_day(code, start_date, end_date, level='day', ip=best_ip['future'], port=7727):
+def QA_fetch_get_future_day(code, start_date, end_date, frequence='day', ip=best_ip['future'], port=7727):
     '期货数据 日线'
 
     apix = TdxExHq_API()
@@ -726,14 +729,14 @@ def QA_fetch_get_future_day(code, start_date, end_date, level='day', ip=best_ip[
         code_market = extension_market_info.query('code=="{}"'.format(code))
         
         data = pd.concat([apix.to_df(apix.get_instrument_bars(_select_type(
-            level), int(code_market.market), str(code),(int(lens / 700) - i) * 700, 700))for i in range(int(lens / 700) + 1)], axis=0)
+            frequence), int(code_market.market), str(code),(int(lens / 700) - i) * 700, 700))for i in range(int(lens / 700) + 1)], axis=0)
         data = data.assign(date=data['datetime'].apply(lambda x: str(x[0:10]))).assign(code=str(code))\
             .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10]))).set_index('date', drop=False, inplace=False)
 
         return data.drop(['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1)[start_date:end_date].assign(date=data['date'].apply(lambda x: str(x)[0:10]))
 
 
-def QA_fetch_get_future_min(code, start, end, level='1min',ip=best_ip['future'], port=7727):
+def QA_fetch_get_future_min(code, start, end, frequence='1min',ip=best_ip['future'], port=7727):
     '期货数据 分钟线'
     apix = TdxExHq_API()
     type_ = ''
@@ -743,26 +746,26 @@ def QA_fetch_get_future_min(code, start, end, level='1min',ip=best_ip['future'],
     global extension_market_info
     extension_market_info=QA_fetch_get_future_list() if extension_market_info is None else extension_market_info
     
-    if str(level) in ['5', '5m', '5min', 'five']:
-        level, type_ = 0, '5min'
+    if str(frequence) in ['5', '5m', '5min', 'five']:
+        frequence, type_ = 0, '5min'
         lens = 48 * lens
-    elif str(level) in ['1', '1m', '1min', 'one']:
-        level, type_ = 8, '1min'
+    elif str(frequence) in ['1', '1m', '1min', 'one']:
+        frequence, type_ = 8, '1min'
         lens = 240 * lens
-    elif str(level) in ['15', '15m', '15min', 'fifteen']:
-        level, type_ = 1, '15min'
+    elif str(frequence) in ['15', '15m', '15min', 'fifteen']:
+        frequence, type_ = 1, '15min'
         lens = 16 * lens
-    elif str(level) in ['30', '30m', '30min', 'half']:
-        level, type_ = 2, '30min'
+    elif str(frequence) in ['30', '30m', '30min', 'half']:
+        frequence, type_ = 2, '30min'
         lens = 8 * lens
-    elif str(level) in ['60', '60m', '60min', '1h']:
-        level, type_ = 3, '60min'
+    elif str(frequence) in ['60', '60m', '60min', '1h']:
+        frequence, type_ = 3, '60min'
         lens = 4 * lens
     if lens > 20800:
         lens = 20800
     with apix.connect(ip, port):
         code_market = extension_market_info.query('code=="{}"'.format(code))
-        data = pd.concat([apix.to_df(apix.get_instrument_bars(level, int(code_market.market), str(code), (int(lens / 700) - i) * 700, 700)) for i in range(int(lens / 700) + 1)], axis=0)
+        data = pd.concat([apix.to_df(apix.get_instrument_bars(frequence, int(code_market.market), str(code), (int(lens / 700) - i) * 700, 700)) for i in range(int(lens / 700) + 1)], axis=0)
 
         data = data\
             .assign(datetime=pd.to_datetime(data['datetime']), code=str(code))\

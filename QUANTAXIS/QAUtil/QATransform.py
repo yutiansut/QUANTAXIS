@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,11 @@ import pandas as pd
 
 
 def QA_util_to_json_from_pandas(data):
+    """需要对于datetime 和date 进行转换, 以免直接被变成了时间戳"""
+    if 'datetime' in data.columns:
+        data.datetime = data.datetime.apply(str)
+    if 'date' in data.columns:
+        data.date = data.date.apply(str)
     return json.loads(data.to_json(orient='records'))
 
 
