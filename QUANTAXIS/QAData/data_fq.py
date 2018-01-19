@@ -50,7 +50,7 @@ def QA_data_get_hfq(code, start, end):
 def QA_data_make_qfq(bfq_data, xdxr_data):
     '使用数据库数据进行复权'
     info = xdxr_data[xdxr_data['category'] == 1]
-    bfq_data['if_trade'] = 1
+    bfq_data.loc[:, 'if_trade'] = 1
     data = pd.concat([bfq_data, info[['category']]
                       [bfq_data.index[0]:bfq_data.index[-1]]], axis=1)
     data['if_trade'].fillna(value=0, inplace=True)
@@ -69,7 +69,7 @@ def QA_data_make_qfq(bfq_data, xdxr_data):
     data['preclose'] = data['preclose'] * data['adj']
     try:
         data['high_limit'] = data['high_limit'] * data['adj']
-        data['low_limit']= data['high_limit'] * data['adj']
+        data['low_limit'] = data['high_limit'] * data['adj']
     except:
         pass
     return data.query('if_trade==1').drop(['fenhong', 'peigu', 'peigujia', 'songzhuangu',
@@ -79,7 +79,7 @@ def QA_data_make_qfq(bfq_data, xdxr_data):
 def QA_data_make_hfq(bfq_data, xdxr_data):
     '使用数据库数据进行复权'
     info = xdxr_data[xdxr_data['category'] == 1]
-    bfq_data['if_trade'] = 1
+    bfq_data.loc[:, 'if_trade'] = 1
     data = pd.concat([bfq_data, info[['category']]
                       [bfq_data.index[0]:bfq_data.index[-1]]], axis=1)
 
@@ -101,7 +101,7 @@ def QA_data_make_hfq(bfq_data, xdxr_data):
     data['preclose'] = data['preclose'] * data['adj']
     try:
         data['high_limit'] = data['high_limit'] * data['adj']
-        data['low_limit']= data['high_limit'] * data['adj']
+        data['low_limit'] = data['high_limit'] * data['adj']
     except:
         pass
     return data.query('if_trade==1').drop(['fenhong', 'peigu', 'peigujia', 'songzhuangu'], axis=1).query("open != 0")

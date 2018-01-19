@@ -105,8 +105,14 @@ class QA_Backtest():
     def run(self):
         """generator driven data flow
         """
-
+        _date=None
         for data in self.ingest_data:
+            date=data.date[0]
+            if self.market_type is MARKET_TYPE.STOCK_CN :
+                if _date!=date:
+                    self.market._settle(self.broker_name)
+            elif self.market_type in [MARKET_TYPE.FUND_CN,MARKET_TYPE.INDEX_CN,MARKET_TYPE.FUTURE_CN]:
+                self.market._settle(self.broker_name)
             self.broker.run(QA_Event(
                 event_type=ENGINE_EVENT.UPCOMING_DATA,
                 market_data=data))
@@ -114,14 +120,9 @@ class QA_Backtest():
                 self.broker_name, data)
             self.market.trade_engine.queue.join()
             self.market.trade_engine.kernals[self.broker_name].queue.join()
-            while True:
-                if self.market.clear():
-                    
-                    break
-            self.market._settle(self.broker_name)
-            while True:
-                if self.market.clear():
-                    break
+
+            _date=date
+
         self.after_success()
 
     def after_success(self):
