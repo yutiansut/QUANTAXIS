@@ -48,6 +48,7 @@ class QA_Thread(threading.Thread):
         self.__running.set()      # 将running设置为True
         self.name = QA_util_random_with_topic(
             topic='QAWorker', lens=3) if name is None else name
+        self.idle = False
 
     def __repr__(self):
         return '< QA_Thread {} >'.format(self.name)
@@ -70,13 +71,9 @@ class QA_Thread(threading.Thread):
                         else:
                             pass
                     else:
-                        # QA_util_log_info("From Engine %s  Engine will waiting for new task ..." % str(
-                        #     threading.current_thread()))
-
-                        pass
+                        self.idle = True
                 except Exception as e:
                     pass
-
 
     def pause(self):
         self.__flag.clear()
@@ -175,21 +172,26 @@ class QA_Engine(QA_Thread):
                         else:
                             #
                             self.run_job(_task)
-
                             self.queue.task_done()
                     else:
-                        pass
+                        self.idle = True
                 except Exception as e:
                     raise e
-                    #self.run()
+                    # self.run()
 
     def clear(self):
         res = True
         for item in self.kernals.values():
             if not item.queue.empty():
                 res = False
+            if not item.idle:
+                res = False
+
+            item.queue.join()
         if not self.queue.empty():
             res = False
+
+        
         return res
 
 
