@@ -112,6 +112,10 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 文档参见: [book](http://book.yutiansut.com)
 
+下载文档手册 
+
+[PDF](https://www.gitbook.com/download/pdf/book/quantaxis/quantaxis) | [MOBI](https://www.gitbook.com/download/mobi/book/quantaxis/quantaxis) | [EPUB](https://www.gitbook.com/download/epub/book/quantaxis/quantaxis)
+
 ## 安装和部署
 
 ```
