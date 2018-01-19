@@ -12,9 +12,10 @@ class MAStrategy(QA_Strategy):
         self.market_type = MARKET_TYPE.STOCK_CN
 
     def on_bar(self, event):
+        sellavailable=self.sell_available
         try:
             for item in event.market_data.code:
-                if self.sell_available is None:
+                if sellavailable is None:
 
                     event.send_order(account_id=self.account_cookie,
                                      amount=100, amount_model=AMOUNT_MODEL.BY_AMOUNT,
@@ -24,9 +25,9 @@ class MAStrategy(QA_Strategy):
                                      broker_name=self.broker)
 
                 else:
-                    if self.sell_available.get(item, 0) > 0:
+                    if sellavailable.get(item, 0) > 0:
                         event.send_order(account_id=self.account_cookie,
-                                         amount=self.sell_available[item], amount_model=AMOUNT_MODEL.BY_AMOUNT,
+                                         amount=sellavailable[item], amount_model=AMOUNT_MODEL.BY_AMOUNT,
                                          time=self.current_time, code=item, price=0,
                                          order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.SELL,
                                          market_type=self.market_type, frequence=self.frequence,

@@ -63,7 +63,7 @@ def run_daybacktest():
                         frequence=FREQUENCE.DAY,
                         start='2017-01-01',
                         end='2017-01-10',
-                        code_list=QA.QA_fetch_stock_block_adv().code[0:5],
+                        code_list=QA.QA_fetch_stock_block_adv().code[0:500],
                         commission_fee=0.00015)
     backtest.start_market()
 
@@ -77,7 +77,7 @@ def run_minbacktest():
                         frequence=FREQUENCE.FIFTEEN_MIN,
                         start='2017-11-01',
                         end='2017-11-10',
-                        code_list=QA.QA_fetch_stock_block_adv().code[0:50],
+                        code_list=QA.QA_fetch_stock_block_adv().code[0:5],
                         commission_fee=0.00015)
     backtest.start_market()
 
@@ -86,7 +86,7 @@ def run_minbacktest():
 
 
 if __name__ == '__main__':
-    run_daybacktest()
+    run_minbacktest()
     # backtest._settle()
 
     # backtest.run()
