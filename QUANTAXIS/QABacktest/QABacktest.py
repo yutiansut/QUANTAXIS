@@ -118,8 +118,7 @@ class QA_Backtest():
                 market_data=data))
             self.market.upcoming_data(
                 self.broker_name, data)
-            self.market.trade_engine.queue.join()
-            self.market.trade_engine.kernals[self.broker_name].queue.join()
+            self.market.trade_engine.join()
 
             _date=date
 
