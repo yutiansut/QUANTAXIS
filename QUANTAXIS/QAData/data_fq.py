@@ -1,3 +1,4 @@
+
 # coding:utf-8
 #
 # The MIT License (MIT)
@@ -92,24 +93,35 @@ def QA_data_make_hfq(bfq_data, xdxr_data):
     data = data.fillna(0)
     data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
                         * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
+<<<<<<< HEAD
     data['adj'] = (data['close'] / data['preclose'].shift(-1)
                    ).cumprod().shift(1).fillna(1)
+=======
+    data['adj']=  (data['close']/data['preclose'].shift(-1)).cumprod().shift(1).fillna(1)
+>>>>>>> master
     data['open'] = data['open'] * data['adj']
     data['high'] = data['high'] * data['adj']
     data['low'] = data['low'] * data['adj']
     data['close'] = data['close'] * data['adj']
     data['preclose'] = data['preclose'] * data['adj']
+<<<<<<< HEAD
     try:
         data['high_limit'] = data['high_limit'] * data['adj']
         data['low_limit'] = data['high_limit'] * data['adj']
     except:
         pass
+=======
+>>>>>>> master
     return data.query('if_trade==1').drop(['fenhong', 'peigu', 'peigujia', 'songzhuangu'], axis=1).query("open != 0")
 
 
 def QA_data_stock_to_fq(__data, type_='01'):
 
+<<<<<<< HEAD
     def __QA_fetch_stock_xdxr(code, format_='pd', collections=DATABASE.stock_xdxr):
+=======
+    def __QA_fetch_stock_xdxr(code, format_='pd', collections=QA_Setting().client.quantaxis.stock_xdxr):
+>>>>>>> master
         '获取股票除权信息/数据库'
         try:
             data = pd.DataFrame([item for item in collections.find(

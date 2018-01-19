@@ -32,6 +32,13 @@
 
 大佬写的增强学习框架:
 [DeepRL](https://github.com/ppaanngggg/DeepRL)
+
+期货回测/实盘框架
+[ParadoxTrading](https://github.com/ppaanngggg/ParadoxTrading)
+
+RAINX大大的pytdx
+[PYTDX](https://github.com/rainx/pytdx)
+
 (逃~~)
 
 ---
