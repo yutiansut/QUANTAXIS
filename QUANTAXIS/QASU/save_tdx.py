@@ -47,7 +47,7 @@ from QUANTAXIS.QAUtil import (DATABASE, QA_util_get_real_date,
 
 
 def now_time():
-    return str(QA_util_get_real_date(str(datetime.date.today() - datetime.timedelta(days=1)), trade_date_sse, -1)) + ' 15:00:00' if datetime.datetime.now().hour < 15 else str(QA_util_get_real_date(str(datetime.date.today()), trade_date_sse, -1)) + ' 15:00:00'
+    return str(QA_util_get_real_date(str(datetime.date.today() - datetime.timedelta(days=1)), trade_date_sse, -1)) + ' 17:00:00' if datetime.datetime.now().hour < 15 else str(QA_util_get_real_date(str(datetime.date.today()), trade_date_sse, -1)) + ' 15:00:00'
 
 
 def QA_SU_save_stock_day(client=DATABASE):

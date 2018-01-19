@@ -548,8 +548,11 @@ def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=best_ip['stock'
                 QA_util_log_info('Successfully Getting %s history transaction data in day %s' % (
                     code, trade_date_sse[index_]))
                 data = data.append(data_)
+        if len(data)>0:
 
-        return data.assign(datetime=data['datetime'].apply(lambda x: str(x)[0:19]))
+            return data.assign(datetime=data['datetime'].apply(lambda x: str(x)[0:19]))
+        else:
+            return None
 
 def QA_fetch_get_stock_transaction_realtime(code, ip=best_ip['stock'], port=7709):
     '实时逐笔成交 包含集合竞价'
