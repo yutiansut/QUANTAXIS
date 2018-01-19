@@ -39,6 +39,8 @@ from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT,
 from test_backtest.strategy import MAStrategy
 from test_backtest.minstrategy import MAMINStrategy
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
+
+
 class Backtest(QA_Backtest):
 
     def __init__(self, market_type, frequence, start, end, code_list, commission_fee):
@@ -60,7 +62,7 @@ def run_daybacktest():
     backtest = Backtest(market_type=MARKET_TYPE.STOCK_CN,
                         frequence=FREQUENCE.DAY,
                         start='2017-01-01',
-                        end='2017-01-31',
+                        end='2017-01-10',
                         code_list=QA.QA_fetch_stock_block_adv().code[0:5],
                         commission_fee=0.00015)
     backtest.start_market()
@@ -74,8 +76,8 @@ def run_minbacktest():
     backtest = Backtest(market_type=MARKET_TYPE.STOCK_CN,
                         frequence=FREQUENCE.FIFTEEN_MIN,
                         start='2017-11-01',
-                        end='2017-11-03',
-                        code_list=QA.QA_fetch_stock_block_adv().code[0:5],
+                        end='2017-11-10',
+                        code_list=QA.QA_fetch_stock_block_adv().code[0:50],
                         commission_fee=0.00015)
     backtest.start_market()
 
