@@ -26,7 +26,6 @@ for code in ['000001','000002','000004','600010','000007']:
                         order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY, market_type=QA.MARKET_TYPE.STOCK_CN,
                         frequence=QA.FREQUENCE.FIFTEEN_MIN, broker_name=QA.BROKER_TYPE.BACKETEST)
 
-
 market._settle(QA.BROKER_TYPE.BACKETEST)
 while True:
     if market.clear():

@@ -191,8 +191,12 @@ class QA_Engine(QA_Thread):
         if not self.queue.empty():
             res = False
 
-        
         return res
+
+    def join(self):
+        for item in self.kernals.values():
+            item.queue.join()
+        self.queue.join()
 
 
 if __name__ == '__main__':
