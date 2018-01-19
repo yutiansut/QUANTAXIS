@@ -147,3 +147,8 @@ kernel*.json
 # packge-lock
 
 .\vs
+
+
+
+# sqlite database
+*.db
