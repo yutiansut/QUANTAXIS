@@ -36,6 +36,9 @@
 期货回测/实盘框架
 [ParadoxTrading](https://github.com/ppaanngggg/ParadoxTrading)
 
+RAINX大大的pytdx
+[PYTDX](https://github.com/rainx/pytdx)
+
 (逃~~)
 
 ---
@@ -49,7 +52,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 - [QUANTAXIS 量化金融策略框架](#quantaxis-量化金融策略框架)
     - [功能](#功能)
-    - [公告](#公告)
+    - [文档](#文档)
     - [安装和部署](#安装和部署)
     - [更新](#更新)
     - [Docker](#docker)
@@ -99,27 +102,19 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - 成交记录分析器
 
 ```
-[注意: tushare最新版本因为单方面直接复制了pytdx  所以导致和最新版本的pytdx不兼容 如有安装0.8.7版本以上的tushare 请降级使用]
+[注意: tushare 1.0以上的版本内置了一个pytdx  所以导致和最新版本的pytdx不兼容 如有安装0.8.7版本以上的tushare 请降级使用]
 
 *** 降级时需注意: 直接pip uninstall tushare以后 还要去删掉tushare安装目录下的pytdx 再重新安装最新版本的pytdx ***
 
 ```
 
-## 公告
+## 文档
 
-近期正在对QUANTAXIS的部分代码在重构 欢迎加群来一起讨论/发PR
+文档参见: [book](http://book.yutiansut.com)
 
+下载文档手册 
 
-
-![](http://osnhakmay.bkt.clouddn.com/remakedoc_account.png)
-
-
-
-![](http://osnhakmay.bkt.clouddn.com/%E9%87%8D%E6%9E%84%E6%96%87%E6%A1%A3-%E5%B8%82%E5%9C%BA.png)
-
-
-
-![](http://osnhakmay.bkt.clouddn.com/remakedoc_event.png)
+[PDF](https://www.gitbook.com/download/pdf/book/quantaxis/quantaxis) | [MOBI](https://www.gitbook.com/download/mobi/book/quantaxis/quantaxis) | [EPUB](https://www.gitbook.com/download/epub/book/quantaxis/quantaxis)
 
 ## 安装和部署
 

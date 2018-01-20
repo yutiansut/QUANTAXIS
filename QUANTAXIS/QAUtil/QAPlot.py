@@ -1,10 +1,31 @@
+# coding=utf-8
+#
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 import os
 import webbrowser
 
-import pyecharts
 from pyecharts import Kline
 
-from QUANTAXIS.QAData.QADataStruct import __stock_hq_base
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 
 
@@ -19,14 +40,14 @@ from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 """
 
 
-def plot_datastruct(__stock_hq_base, code=None):
+def plot_datastruct(_quotation_base, code=None):
     if code is None:
-        path_name = '.' + os.sep + 'QA_' + __stock_hq_base.type + \
-            '_codepackage_' + __stock_hq_base.if_fq + '.html'
-        kline = Kline('CodePackage_' + __stock_hq_base.if_fq + '_' + __stock_hq_base.type,
+        path_name = '.' + os.sep + 'QA_' + _quotation_base.type + \
+            '_codepackage_' + _quotation_base.if_fq + '.html'
+        kline = Kline('CodePackage_' + _quotation_base.if_fq + '_' + _quotation_base.type,
                       width=1360, height=700, page_title='QUANTAXIS')
 
-        data_splits = __stock_hq_base.splits()
+        data_splits = _quotation_base.splits()
 
         for i_ in range(len(data_splits)):
             data = []
@@ -37,7 +58,7 @@ def plot_datastruct(__stock_hq_base, code=None):
                 axis.append(dates[0])
                 data.append(datas)
 
-            kline.add(__stock_hq_base.code[i_], axis, data, mark_point=[
+            kline.add(_quotation_base.code[i_], axis, data, mark_point=[
                       "max", "min"], is_datazoom_show=True, datazoom_orient='horizontal')
         kline.render(path_name)
         webbrowser.open(path_name)
@@ -45,15 +66,15 @@ def plot_datastruct(__stock_hq_base, code=None):
     else:
         data = []
         axis = []
-        for dates, row in __stock_hq_base.select_code(code).data.iterrows():
+        for dates, row in _quotation_base.select_code(code).data.iterrows():
             open, high, low, close = row[1:5]
             datas = [open, close, low, high]
             axis.append(dates[0])
             data.append(datas)
 
-        path_name = '.' + os.sep + 'QA_' + __stock_hq_base.type + \
-            '_' + code + '_' + __stock_hq_base.if_fq + '.html'
-        kline = Kline(code + '__' + __stock_hq_base.if_fq + '__' + __stock_hq_base.type,
+        path_name = '.' + os.sep + 'QA_' + _quotation_base.type + \
+            '_' + code + '_' + _quotation_base.if_fq + '.html'
+        kline = Kline(code + '__' + _quotation_base.if_fq + '__' + _quotation_base.type,
                       width=1360, height=700, page_title='QUANTAXIS')
         kline.add(code, axis, data, mark_point=[
                   "max", "min"], is_datazoom_show=True, datazoom_orient='horizontal')

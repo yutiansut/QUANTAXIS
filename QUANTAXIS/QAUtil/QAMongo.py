@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,13 +26,12 @@
 import subprocess
 
 import pandas as pd
-import pymongo
 
-from QUANTAXIS.QAUtil.QASetting import QA_Setting
+from QUANTAXIS.QAUtil.QASetting import DATABASE
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 
 
-def QA_util_mongo_initial(db=QA_Setting.client.quantaxis):
+def QA_util_mongo_initial(db=DATABASE):
 
     db.drop_collection('stock_day')
     db.drop_collection('stock_list')
@@ -43,21 +42,16 @@ def QA_util_mongo_initial(db=QA_Setting.client.quantaxis):
     db.drop_collection('stock_xdxr')
 
 
-def QA_util_mongo_make_index(db=QA_Setting.client.quantaxis):
-    try:
-        db.stock_day.ensure_index('code')
-        db.stock_min_five.ensure_index('code')
-    except:
-        pass
 
 
-def QA_util_mongo_status(db=QA_Setting.client.quantaxis):
+
+def QA_util_mongo_status(db=DATABASE):
     QA_util_log_info(db.collection_names())
     QA_util_log_info(db.last_status())
     QA_util_log_info(subprocess.call('mongostat', shell=True))
 
 
-def QA_util_mongo_infos(db=QA_Setting.client.quantaxis):
+def QA_util_mongo_infos(db=DATABASE):
 
     data_struct = []
 

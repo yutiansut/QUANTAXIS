@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ from QUANTAXIS.QAUtil import (QA_util_date_int2str, QA_util_date_stamp,
                               QA_util_log_info, QA_util_to_json_from_pandas)
 
 
-def QA_fetch_get_stock_day(name, startDate='', endDate='', if_fq='01', type_='json'):
+def QA_fetch_get_stock_day(name, start='', end='', if_fq='01', type_='json'):
     if (len(name) != 6):
         name = str(name)[0:6]
 
@@ -45,7 +45,7 @@ def QA_fetch_get_stock_day(name, startDate='', endDate='', if_fq='01', type_='js
         QA_util_log_info('wrong with fq_factor! using qfq')
         if_fq = 'qfq'
 
-    data = QATs.get_k_data(str(name), startDate, endDate,
+    data = QATs.get_k_data(str(name), start, end,
                            ktype='D', autype=if_fq, retry_count=200, pause=0.005).sort_index()
 
     data['date_stamp'] = data['date'].apply(lambda x: QA_util_date_stamp(x))
@@ -91,7 +91,7 @@ def QA_fetch_get_stock_time_to_market():
     return data[data['timeToMarket'] != 0]['timeToMarket'].apply(lambda x: QA_util_date_int2str(x))
 
 
-def QA_fetch_get_trade_date(endDate, exchange):
+def QA_fetch_get_trade_date(end, exchange):
     data = QATs.trade_cal()
     da = data[data.isOpen > 0]
     data_json = QA_util_to_json_from_pandas(data)

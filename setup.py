@@ -51,8 +51,8 @@ NAME = "quantaxis"
 名字，一般放你包的名字即可
 """
 PACKAGES = ["QUANTAXIS", "QUANTAXIS.QAFetch", "QUANTAXIS.QACmd", "QUANTAXIS.QAMarket", 'QUANTAXIS.QAWeb',
-            "QUANTAXIS.QABacktest", "QUANTAXIS.QATask", "QUANTAXIS.QAData", 'QUANTAXIS.QAData.proto', "QUANTAXIS.QAAnalysis",
-            "QUANTAXIS.QASU", "QUANTAXIS.QAUtil", "QUANTAXIS.QAARP", "QUANTAXIS.QASignal", "QUANTAXIS.QAIndicator"]
+            "QUANTAXIS.QABacktest", "QUANTAXIS.QAEngine", "QUANTAXIS.QAData", 'QUANTAXIS.QAData.proto', "QUANTAXIS.QAAnalysis",
+            "QUANTAXIS.QASU", "QUANTAXIS.QAUtil", "QUANTAXIS.QAARP", "QUANTAXIS.QAIndicator"]
 """
 包含的包，可以多个，这是一个列表
 """

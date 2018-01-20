@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -73,10 +73,9 @@ class backtest_result_analyzer():
         return self.history.code.unique().tolist()
 
     def get_stock_tradehistory(self, code):
-        return self.history[self.history.code == code]
-
+        return self.history.query('code=="{}"'.format(code))
     def get_stock_tradedetail(self, code):
-        return self.detail[self.detail.code == code]
+        return self.detail.query('code=="{}"'.format(code))
 
     def get_loss_trade(self, num=5):
         return self.detail[self.detail.pnl_precentage <= 0].sort_values(by=['pnl_precentage'], ascending=True).head(num)
