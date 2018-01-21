@@ -105,13 +105,15 @@ class QA_Backtest():
     def run(self):
         """generator driven data flow
         """
-        _date=None
+        # 如果出现了日期的改变 才会进行结算的事件
+        
+        _date = None
         for data in self.ingest_data:
-            date=data.date[0]
-            if self.market_type is MARKET_TYPE.STOCK_CN :
-                if _date!=date:
+            date = data.date[0]
+            if self.market_type is MARKET_TYPE.STOCK_CN:
+                if _date != date:
                     self.market._settle(self.broker_name)
-            elif self.market_type in [MARKET_TYPE.FUND_CN,MARKET_TYPE.INDEX_CN,MARKET_TYPE.FUTURE_CN]:
+            elif self.market_type in [MARKET_TYPE.FUND_CN, MARKET_TYPE.INDEX_CN, MARKET_TYPE.FUTURE_CN]:
                 self.market._settle(self.broker_name)
             self.broker.run(QA_Event(
                 event_type=ENGINE_EVENT.UPCOMING_DATA,
@@ -120,7 +122,7 @@ class QA_Backtest():
                 self.broker_name, data)
             self.market.trade_engine.join()
 
-            _date=date
+            _date = date
 
         self.after_success()
 
