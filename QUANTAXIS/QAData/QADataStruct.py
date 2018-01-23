@@ -237,13 +237,14 @@ class _quotation_base():
     @property
     @lru_cache()
     def stdev(self):
-
+        'Sample standard deviation'
         return statistics.stdev(self.price)
-    # 样本标准差
+    # 总体标准差
 
     @property
     @lru_cache()
     def pstdev(self):
+        'Population standard deviation'
         return statistics.pstdev(self.price)
 
     # 调和平均数
@@ -258,7 +259,7 @@ class _quotation_base():
     def mode(self):
         return statistics.mode(self.price)
 
-    # 波动率
+
 
     # 振幅
     @property
@@ -404,7 +405,6 @@ class _quotation_base():
         temp = copy(self)
         temp.__init__(data, dtype, if_fq)
         return temp
-
 
     def reverse(self):
         return self.new(self.data[::-1])
