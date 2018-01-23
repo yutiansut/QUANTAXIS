@@ -71,7 +71,7 @@ class QA_Account(QA_Worker):
                  margin_level=False, allow_t0=False, allow_sellopen=False):
         super().__init__()
         self._history_headers = ['datetime', 'code', 'price',
-                                 'amount', 'order_id', 'trade_id', 'commission','tax']
+                                 'amount', 'order_id', 'trade_id', 'commission', 'tax']
         # 信息类:
         self.strategy_name = strategy_name
         self.user = user
@@ -311,9 +311,7 @@ class QA_Account(QA_Worker):
             """
             data = self.send_order(code=event.code, amount=event.amount, time=event.time,
                                    amount_model=event.amount_model, towards=event.towards,
-                                   price=event.price, order_model=event.order_model,
-                                   frequence=event.frequence,
-                                   market_type=event.market_type)
+                                   price=event.price, order_model=event.order_model)
             if event.callback:
                 event.callback(data)
             else:
@@ -327,7 +325,7 @@ class QA_Account(QA_Worker):
             if self.market_data is None:
                 self.market_data = event.market_data
             else:
-                self.market_data.append(event.market_data)
+                self.market_data = self.market_data + event.market_data
             self.on_bar(event)
 
             if event.callback:

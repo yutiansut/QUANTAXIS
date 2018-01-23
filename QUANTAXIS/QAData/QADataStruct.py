@@ -33,6 +33,7 @@ import datetime
 import itertools
 import os
 import platform
+import statistics
 import sys
 import time
 import webbrowser
@@ -53,8 +54,8 @@ from QUANTAXIS.QAUtil import (DATABASE, QA_util_log_info,
                               QA_util_random_with_topic,
                               QA_util_to_json_from_pandas,
                               QA_util_to_pandas_from_json, trade_date_sse)
-from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, FREQUENCE
 from QUANTAXIS.QAUtil.QADate import QA_util_to_datetime
+from QUANTAXIS.QAUtil.QAParameter import FREQUENCE, MARKET_TYPE
 
 
 class _quotation_base():
@@ -97,10 +98,10 @@ class _quotation_base():
 
     __radd__ = __add__
 
-    def __iadd__(self, DataStruct):
-        assert isinstance(DataStruct, _quotation_base)
-        assert self.is_same(DataStruct)
-        return self.append(DataStruct)
+    # def __iadd__(self, DataStruct):
+    #     assert isinstance(DataStruct, _quotation_base)
+    #     assert self.is_same(DataStruct)
+    #     return self.append(DataStruct)
 
     def __sub__(self, DataStruct):
         assert isinstance(DataStruct, _quotation_base)
@@ -109,27 +110,36 @@ class _quotation_base():
 
     __rsub__ = __sub__
 
-    def __isub__(self, DataStruct):
-        return self.drop(DataStruct)
-
+    # def __isub__(self, DataStruct):
+    #     return self.drop(DataStruct)
     @property
+    @lru_cache()
     def open(self):
+        'return open price series'
         return self.data.open
 
     @property
+    @lru_cache()
     def high(self):
+        'return high price series'
         return self.data.high
 
     @property
+    @lru_cache()
     def low(self):
+        'return low price series'
         return self.data.low
 
     @property
+    @lru_cache()
     def close(self):
+        'return close price series'
         return self.data.close
 
     @property
+    @lru_cache()
     def vol(self):
+        'return vol/volume'
         if 'volume' in self.data.columns:
             return self.data.volume
         elif 'vol' in self.data.columns:
@@ -138,6 +148,7 @@ class _quotation_base():
             return None
 
     @property
+    @lru_cache()
     def volume(self):
         if 'volume' in self.data.columns:
             return self.data.volume
@@ -149,6 +160,12 @@ class _quotation_base():
             return None
 
     @property
+    @lru_cache()
+    def price(self):
+        return (self.open + self.high + self.low + self.close) / 4
+
+    @property
+    @lru_cache()
     def trade(self):
         if 'trade' in self.data.columns:
             return self.data.trade
@@ -156,6 +173,7 @@ class _quotation_base():
             return None
 
     @property
+    @lru_cache()
     def position(self):
         if 'position' in self.data.columns:
             return self.data.position
@@ -163,6 +181,7 @@ class _quotation_base():
             return None
 
     @property
+    @lru_cache()
     def date(self):
         try:
             return self.data.index.levels[0] if 'date' in self.data.index.names else self.data['date']
@@ -170,53 +189,162 @@ class _quotation_base():
             return None
 
     @property
+    @lru_cache()
     def datetime(self):
         '分钟线结构返回datetime 日线结构返回date'
         return self.data.index.levels[0]
 
     @property
+    @lru_cache()
+    def max(self):
+        return self.price.max()
+
+    @property
+    @lru_cache()
+    def min(self):
+        return self.price.min()
+
+    @property
+    @lru_cache()
+    def mean(self):
+        return self.price.mean()
+    # 一阶差分序列
+
+    @property
+    @lru_cache()
+    def price_diff(self):
+        return self.price.diff(1)
+
+    # 样本方差(无偏估计) population variance
+    @property
+    @lru_cache()
+    def pvariance(self):
+        return statistics.pvariance(self.price)
+
+    # 方差
+    @property
+    @lru_cache()
+    def variance(self):
+        'variance 方差'
+        return statistics.variance(self.price)
+    # 标准差
+
+    @property
+    @lru_cache()
+    def bar_pct_change(self):
+        return (self.open - self.close) / self.open
+
+    @property
+    @lru_cache()
+    def stdev(self):
+
+        return statistics.stdev(self.price)
+    # 样本标准差
+
+    @property
+    @lru_cache()
+    def pstdev(self):
+        return statistics.pstdev(self.price)
+
+    # 调和平均数
+    @property
+    @lru_cache()
+    def mean_harmonic(self):
+        return statistics.harmonic_mean(self.price)
+
+    # 众数
+    @property
+    @lru_cache()
+    def mode(self):
+        return statistics.mode(self.price)
+
+    # 波动率
+
+    # 振幅
+    @property
+    @lru_cache()
+    def amplitude(self):
+        return self.max - self.min
+    # 偏度 Skewness
+
+    @property
+    @lru_cache()
+    def skewnewss(self):
+        return self.price.skew()
+    # 峰度Kurtosis
+
+    @property
+    @lru_cache()
+    def kurtosis(self):
+        return self.price.kurt()
+    # 百分数变化
+
+    @property
+    @lru_cache()
+    def pct_change(self):
+        return self.price.pct_change()
+
+    # 平均绝对偏差
+    @property
+    @lru_cache()
+    def mad(self):
+        return self.price.mad()
+
+    @property
+    @lru_cache()
     def panel_gen(self):
         for item in self.index.levels[0]:
             yield self.new(self.data.xs(item, level=0).set_index(self.index.names, drop=False), dtype=self.type, if_fq=self.if_fq)
 
     @property
+    @lru_cache()
     def security_gen(self):
         for item in self.index.levels[1]:
             yield self.data.xs(item, level=1)
 
-    def append(self, DataStruct):
-        assert isinstance(DataStruct, _quotation_base)
-        assert self.is_same(DataStruct)
-        self.data = self.data.append(DataStruct.data).drop_duplicates(
-        ).set_index(self.index.names, drop=False)
-        return self
+    # def append(self, DataStruct):
+    #     assert isinstance(DataStruct, _quotation_base)
+    #     assert self.is_same(DataStruct)
+    #     self.data = self.data.append(DataStruct.data).drop_duplicates(
+    #     ).set_index(self.index.names, drop=False)
+    #     return self
 
-    def drop(self, DataStruct):
-        assert isinstance(DataStruct, _quotation_base)
-        assert self.is_same(DataStruct)
-        self.data = self.data.drop(DataStruct.index).set_index(
-            self.index.names, drop=False)
-        return self
+    # def drop(self, DataStruct):
+    #     assert isinstance(DataStruct, _quotation_base)
+    #     assert self.is_same(DataStruct)
+    #     self.data = self.data.drop(DataStruct.index).set_index(
+    #         self.index.names, drop=False)
+    #     return self
 
     @property
+    @lru_cache()
     def index(self):
         return self.data.index
 
     @property
+    @lru_cache()
     def code(self):
         return self.data.index.levels[1]
 
     @property
+    @lru_cache()
     def dicts(self):
         return self.to_dict('index')
 
+    @property
+    @lru_cache()
+    def len(self):
+        return len(self.data)
+
     def get_data(self, time, code):
+        'give the time,code tuple and turn the dict'
         try:
             return self.dicts[(QA_util_to_datetime(time), str(code))]
         except Exception as e:
             raise e
 
     def plot(self, code=None):
+        'plot the market_data'
         if code is None:
             path_name = '.' + os.sep + 'QA_' + self.type + \
                 '_codepackage_' + self.if_fq + '.html'
@@ -260,10 +388,6 @@ class _quotation_base():
             QA_util_log_info(
                 'The Pic has been saved to your path: {}'.format(path_name))
 
-    @property
-    def len(self):
-        return len(self.data)
-
     def query(self, context):
         return self.data.query(context)
 
@@ -280,6 +404,7 @@ class _quotation_base():
         temp = copy(self)
         temp.__init__(data, dtype, if_fq)
         return temp
+
 
     def reverse(self):
         return self.new(self.data[::-1])
@@ -456,6 +581,7 @@ class QA_DataStruct_Stock_day(_quotation_base):
     def low_limit(self):
         '跌停价'
         return self.data.low_limit
+
 
 class QA_DataStruct_Stock_min(_quotation_base):
     def __init__(self, DataFrame, dtype='stock_min', if_fq='bfq'):
