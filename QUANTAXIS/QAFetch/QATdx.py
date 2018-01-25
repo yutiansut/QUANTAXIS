@@ -406,14 +406,14 @@ def QA_fetch_get_stock_list(type_='stock', ip=best_ip['stock'], port=7709):
             return pd.concat([
                 data.query('sse=="sz"')[
                     data.code // 10000 <= 30][data.code // 100000 != 2][data.code // 100000 != 1],
-                data.query('sse=="sz"')[data.code // 100000 == 6]]).assign(code=data['code'].apply(str)).assign(name=data['name'].apply(lambda x: str(x)[0:4]))
+                data.query('sse=="sz"')[data.code // 100000 == 6]]).assign(code=data['code'].apply(str)).assign(name=data['name'].apply(lambda x: str(x)[0:6]))
 
         elif type_ in ['index', 'zs']:
 
             return pd.concat([data[data['sse'] == 'sz'][data.code // 1000 >= 399],
                               data[data['sse'] == 'sh'][data.code // 1000 == 0]]) \
                 .sort_index()\
-                .assign(name=data['name'].apply(lambda x: str(x)[0:4]))\
+                .assign(name=data['name'].apply(lambda x: str(x)[0:6]))\
                 .assign(code=data['code'].apply(lambda x: str(x)))
             #.assign(szm=data['name'].apply(lambda x: ''.join([y[0] for y in lazy_pinyin(x)])))\
             #.assign(quanpin=data['name'].apply(lambda x: ''.join(lazy_pinyin(x))))
@@ -424,7 +424,7 @@ def QA_fetch_get_stock_list(type_='stock', ip=best_ip['stock'], port=7709):
             #.assign(quanpin=data['name'].apply(lambda x: ''.join(lazy_pinyin(x))))
 
         else:
-            return data.assign(code=data['code'].apply(lambda x: str(x))).assign(name=data['name'].apply(lambda x: str(x)[0:4]))
+            return data.assign(code=data['code'].apply(lambda x: str(x))).assign(name=data['name'].apply(lambda x: str(x)[0:6]))
             #.assign(szm=data['name'].apply(lambda x: ''.join([y[0] for y in lazy_pinyin(x)])))\
             #    .assign(quanpin=data['name'].apply(lambda x: ''.join(lazy_pinyin(x))))
 
