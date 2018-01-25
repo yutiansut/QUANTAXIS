@@ -531,7 +531,7 @@ def __QA_fetch_get_stock_transaction(code, day, retry, api):
 
 
 def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=best_ip['stock'], port=7709):
-    '历史逐笔成交'
+    '历史逐笔成交 buyorsell 1--sell 0--buy 2--盘前'
     api = TdxHq_API()
 
     real_start, real_end = QA_util_get_real_datelist(start, end)
@@ -562,7 +562,7 @@ def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=best_ip['stock'
 
 
 def QA_fetch_get_stock_transaction_realtime(code, ip=best_ip['stock'], port=7709):
-    '实时逐笔成交 包含集合竞价'
+    '实时逐笔成交 包含集合竞价 buyorsell 1--sell 0--buy 2--盘前'
     api = TdxHq_API()
 
     with api.connect(ip, port):
