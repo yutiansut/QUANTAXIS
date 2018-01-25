@@ -51,7 +51,7 @@ def QA_data_get_hfq(code, start, end):
 def QA_data_make_qfq(bfq_data, xdxr_data):
     '使用数据库数据进行复权'
     info = xdxr_data[xdxr_data['category'] == 1]
-    bfq_data.loc[:, 'if_trade'] = 1
+    bfq_data = bfq_data.assign(if_trade=1)
     data = pd.concat([bfq_data, info[['category']]
                       [bfq_data.index[0]:bfq_data.index[-1]]], axis=1)
     data['if_trade'].fillna(value=0, inplace=True)
@@ -80,7 +80,7 @@ def QA_data_make_qfq(bfq_data, xdxr_data):
 def QA_data_make_hfq(bfq_data, xdxr_data):
     '使用数据库数据进行复权'
     info = xdxr_data[xdxr_data['category'] == 1]
-    bfq_data.loc[:, 'if_trade'] = 1
+    bfq_data = bfq_data.assign(if_trade=1)
     data = pd.concat([bfq_data, info[['category']]
                       [bfq_data.index[0]:bfq_data.index[-1]]], axis=1)
 
