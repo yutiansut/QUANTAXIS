@@ -571,9 +571,9 @@ def QA_fetch_get_stock_transaction_realtime(code, ip=best_ip['stock'], port=7709
             _select_market_code(str(code)), code, (2 - i) * 2000, 2000)) for i in range(3)], axis=0)
         if 'value' in data.columns:
             data = data.drop(['value'], axis=1)
-
+        data=data.dropna()
         day = datetime.date.today()
-        return data.dropna().assign(date=day).assign(datetime=pd.to_datetime(data['time'].apply(lambda x: str(day) + ' ' + str(x))))\
+        return data.assign(date=str(day)).assign(datetime=pd.to_datetime(data['time'].apply(lambda x: str(day) + ' ' + str(x))))\
                             .assign(code=str(code)).assign(order=range(len(data.index))).set_index('datetime', drop=False, inplace=False)
 
 
