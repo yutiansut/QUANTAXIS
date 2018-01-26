@@ -69,7 +69,7 @@ class QA_Portfolio():
             temp = QA_Account()
             if temp.account_cookie not in self.accounts.keys():
                 self.accounts[temp.account_cookie] = temp
-                return temp.account_cookie
+                return temp
 
             else:
                 return False
