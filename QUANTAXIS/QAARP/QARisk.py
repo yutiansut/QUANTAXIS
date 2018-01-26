@@ -48,13 +48,15 @@ class QA_Risk():
         self.fetch = {MARKET_TYPE.STOCK_CN: QA_fetch_stock_day_adv,
                       MARKET_TYPE.INDEX_CN: QA_fetch_index_day_adv}
 
-    @lru_cache()
+    
     @property
+    @lru_cache()
     def market_data(self):
         return QA_fetch_stock_day_adv(self.account.code, self.account.start_date, self.account.end_date)
 
-    @lru_cache()
+    
     @property
+    @lru_cache()
     def assets(self):
         '惰性计算 日市值'
         return ((self.market_data.to_qfq().pivot('close') * self.account.daily_hold).sum(axis=1) + self.account.daily_cash.set_index('date').cash).fillna(method='pad')
