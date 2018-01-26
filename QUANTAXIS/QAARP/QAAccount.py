@@ -130,6 +130,13 @@ class QA_Account(QA_Worker):
             }
         }
 
+
+    @property
+    def code(self):
+        """该账户曾交易代码 用set 去重
+        """
+        return list(set([item[1] for item in self.history]))
+
     @property
     def start_date(self):
         return str(self.time_index[0])[0:10]
