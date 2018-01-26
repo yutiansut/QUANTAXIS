@@ -36,29 +36,41 @@ import numpy as np
 import pandas as pd
 
 from QUANTAXIS.QAARP.QAAccount import QA_Account
-from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_day_adv
+from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_day_adv, QA_fetch_index_day_adv
+from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE
 
 
-class QA_Risk(QA_Account):
+class QA_Risk():
     def __init__(self, account):
-        self.from_message(account.message)
+        self.account = account
+        self.benchmark = None
 
-    @lru_cache(maxsize=128, typed=False)
+        self.fetch = {MARKET_TYPE.STOCK_CN: QA_fetch_stock_day_adv,
+                      MARKET_TYPE.INDEX_CN: QA_fetch_index_day_adv}
+
+    @lru_cache()
     @property
     def market_data(self):
-        return QA_fetch_stock_day_adv(self.code, self.start_date, self.end_date)
+        return QA_fetch_stock_day_adv(self.account.code, self.account.start_date, self.account.end_date)
 
-    @lru_cache(maxsize=128, typed=False)
+    @lru_cache()
     @property
     def assets(self):
-        return (self.market_data.to_qfq().pivot('close') * self.daily_hold).sum(axis=1) + self.daily_cash.set_index('date').cash
+        '惰性计算 日市值'
+        return ((self.market_data.to_qfq().pivot('close') * self.account.daily_hold).sum(axis=1) + self.account.daily_cash.set_index('date').cash).fillna(method='pad')
 
     @property
     def max_dropback(self):
+        """最大回撤
+        """
+
         pass
 
     @property
     def profit(self):
+        """利润
+        """
+
         pass
 
     @property
@@ -68,6 +80,12 @@ class QA_Risk(QA_Account):
     @property
     def volatility(self):
         pass
+
+    def set_benchmark(self, code, market_type):
+        self.benchmark = self.fetch[market_type](
+            code, self.account.start_date, self.account.end_date)
+
+
 
 
 class QA_Performace(QA_Risk):
