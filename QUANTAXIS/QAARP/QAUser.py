@@ -71,14 +71,16 @@ class QA_User():
         'make a simple account with a easier way'
         if len(self.portfolio_list.keys()) < 1:
             po = self.new_portfolio()
-            ac = self.get_portfolio(po).new_account()
+            ac = po.new_account()
             return ac, po
 
     def register_account(self, account):
         if len(self.portfolio_list.keys()) < 1:
             po = self.new_portfolio()
-            self.get_portfolio(po).add_account(account)
-            return (po, account.account_cookie)
+        else:
+            po = self.portfolio_list.values()[0]
+        po.add_account(account)
+        return (po, account)
 
 
 if __name__ == '__main__':
