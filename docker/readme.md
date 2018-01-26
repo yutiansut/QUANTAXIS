@@ -90,13 +90,16 @@ docker run -it -e GRANT_SUDO=yes -p 8888:8888 -p 8080:8080 -p 3000:3000 registry
 ```
 
 # 启动 mongodb    
-cd /root && nohup sh ./startmongod.sh &
+cd /home/quantaxis/config && nohup sh ./run_backend.sh &
 
 
 # 启动 WEBKIT
-cd /root/quantaxis/QUANTAXIS_Webkit/backend && forever start ./bin/www
+cd /home/quantaxis/QUANTAXIS_Webkit/backend && forever start ./bin/www
 
-cd /root/quantaxis/QUANTAXIS_Webkit/web && forever start ./build/dev-server.js
+cd /home/quantaxis/QUANTAXIS_Webkit/web && forever start ./build/dev-server.js
+
+# 启动jupyter
+cd /home/quantaxis/config && nohup sh ./startjupyter.sh &
 
 ```
 
@@ -120,7 +123,7 @@ http://localhost:8888
 
 ```
 A:\quantaxis [master ≡]
-λ  docker run -it -p 8080:8080 -p 3000:3000 registry.cn-hangzhou.aliyuncs.com/quantaxis/quantaxis
+λ  docker run -it -p 8080:8080 -p 3000:3000 registry.cn-shanghai.aliyuncs.com/yutiansut/quantaxis
 root@f22b5357dc6e:/#
 
 ```
@@ -131,7 +134,7 @@ A:\Users\yutia
 
 
 CONTAINER ID        IMAGE                                                   COMMAND             CREATED             STATUS              PORTS                                            NAMES
-f22b5357dc6e        registry.cn-hangzhou.aliyuncs.com/quantaxis/quantaxis   "bash"              21 seconds ago      Up 20 seconds       0.0.0.0:3000->3000/tcp, 0.0.0.0:8080->8080/tcp   boring_panini
+f22b5357dc6e        registry.cn-shanghai.aliyuncs.com/yutiansut/quantaxis   "bash"              21 seconds ago      Up 20 seconds       0.0.0.0:3000->3000/tcp, 0.0.0.0:8080->8080/tcp   boring_panini
 
 ```
 然后执行 ```docker exec -it  [CONTAINERID] /bin/bash``` 进入
