@@ -27,6 +27,6 @@
 * [协议](Documents/readme.md)
 
 
-* [重构文档- 概览](https://github.com/QUANTAXIS/QUANTAXIS/blob/account-remake-version/Documents/new_documents.md)
-* [重构文档- 事件](https://github.com/QUANTAXIS/QUANTAXIS/blob/account-remake-version/Documents/about_event.md)
-* [重构文档- 市场](https://github.com/QUANTAXIS/QUANTAXIS/blob/account-remake-version/Documents/about_market.md)
+* [重构文档- 概览](Documents/new_documents.md)
+* [重构文档- 事件](Documents/about_event.md)
+* [重构文档- 市场](Documents/about_market.md)
