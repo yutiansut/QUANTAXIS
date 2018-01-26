@@ -78,7 +78,11 @@ class QA_Market(QA_Trade):
                     event_type=ENGINE_EVENT.UPCOMING_DATA,
                     market_data=data,
                     broker_name=broker,
-                    send_order=self.insert_order
+                    send_order=self.insert_order,
+                    query_data=self.query_data_no_wait,
+                    query_order=self.query_order,
+                    query_assets=self.query_assets,
+                    query_trade=self.query_trade
                 )
             ))
 
