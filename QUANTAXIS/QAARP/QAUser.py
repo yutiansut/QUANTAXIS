@@ -61,7 +61,7 @@ class QA_User():
         _portfolio = QA_Portfolio()
         if _portfolio.portfolio_cookie not in self.portfolio_list.keys():
             self.portfolio_list[_portfolio.portfolio_cookie] = _portfolio
-            return _portfolio.portfolio_cookie
+            return _portfolio
 
     def get_portfolio(self, portfolio):
         'get a portfolio'
