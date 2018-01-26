@@ -35,7 +35,6 @@ from functools import lru_cache
 import numpy as np
 import pandas as pd
 
-from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_day_adv, QA_fetch_index_day_adv
 from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE
 

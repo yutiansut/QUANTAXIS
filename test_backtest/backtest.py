@@ -48,13 +48,9 @@ class Backtest(QA_Backtest):
         self.user = QA_User()
         mastrategy = MAStrategy()
         self.portfolio, self.account = self.user.register_account(mastrategy)
-        QA_util_log_info(self.user.get_portfolio(self.portfolio).accounts)
-        QA_util_log_info(self.user.get_portfolio(
-            self.portfolio).get_account(self.account).cash)
 
     def after_success(self):
-        QA_util_log_info(self.user.get_portfolio(self.portfolio).get_account(
-            self.account).history_table)
+        QA_util_log_info(self.account.history_table)
 
 
 def run_daybacktest():

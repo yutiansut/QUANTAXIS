@@ -99,8 +99,8 @@ class QA_Backtest():
 
         self.market.start()
         self.market.register(self.broker_name, self.broker)
-        self.market.login(self.broker_name, self.account,
-                          self.user.get_portfolio(self.portfolio).get_account(self.account))
+        self.market.login(self.broker_name, self.account.account_cookie,
+                          self.account)
 
     def run(self):
         """generator driven data flow
