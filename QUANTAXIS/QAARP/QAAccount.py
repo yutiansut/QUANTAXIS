@@ -218,20 +218,20 @@ class QA_Account(QA_Worker):
 
     def send_order(self, code, amount, time, towards, price, order_model, amount_model):
         """[summary]
-
-        [description]
-
+        
         Arguments:
             code {[type]} -- [description]
             amount {[type]} -- [description]
             time {[type]} -- [description]
             towards {[type]} -- [description]
+            price {[type]} -- [description]
             order_model {[type]} -- [description]
             amount_model {[type]} -- [description]
-
+        
         Returns:
             [type] -- [description]
         """
+
         flag = False
         date = str(time)[0:10] if len(str(time)) == 19 else str(time)
         time = str(time) if len(
