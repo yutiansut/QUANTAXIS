@@ -38,7 +38,6 @@ from QUANTAXIS.QAARP.QAAccount import QA_Account
 
 class QA_Risk(QA_Account):
     def __init__(self, account):
-        super().__init__()
         self.from_message(account.message)
 
 
