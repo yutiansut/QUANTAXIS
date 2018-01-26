@@ -171,10 +171,10 @@ self.daily_cash # 账户的每日结算时的现金
 self.daily_hold # 账户每日结算的持仓
 self.current_time # 账户的当前时间
 
-# 账户发送订单
-self.send_order(self, code, amount, time, towards, price, order_model, amount_model)
-
-
 # 账户的on_bar事件
 self.on_bar(self,event)
+
+event 事件封装了数据和方法*(包括 所需的行情数据/下单接口)
+
+
 ```
