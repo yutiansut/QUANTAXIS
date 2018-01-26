@@ -32,18 +32,18 @@ QUANTAXIS官方维护了2个镜像:
 
 阿里云上海仓库,DOCKER官网的镜像是同一份docker,包含了所有必需的程序 但是没有存储数据
 
-|                 | 海外仓库             | 上海阿里云DOCKER仓库   | 
+|                 |     海外仓库           | 上海阿里云DOCKER仓库   | 
 | --------------- | ------------------- | --------------- | 
 | 描述              | 网速不好的轻量纯净版本         | 网速不好的轻量纯净版本     | 
 | 地址              | 国外(可以加速)            | 上海              | 
 | 系统              | Ubuntu16.04         | Ubuntu16.04     | 
 | python入口名       | python3.6           | python          |
-| mongo           | mongo 3.4 社区版       | mongo 3.4 社区版   | 
-| nodejs          | nodejs 8.2.1        | nodejs 8.2.1    | 
-| sshserver       | 内置                  | 内置              |
+| mongo           | mongo 3.4 社区版       | 暂无   | 
+| nodejs          | nodejs 8.2.1        | nodejs 8.9.3   | 
+| sshserver       | 内置                  | 暂无              |
 | QUANTAXIS 目录    | /QUANTAXIS          | /home/quantaxis | 
 | forever         | 有                   | 有               | 
-| web部分的依赖项       | 未安装                 | 未安装             | 
+| web部分的依赖项       | 未安装                 | 已安装            | 
 | 日线数据            | 未存储                 | 未存储             | 
 | 版本号             | V+数字版本              | V+数字版本          | 
 | JupyterNoteBook | 暂不支持                | 支持              | 
@@ -90,13 +90,16 @@ docker run -it -e GRANT_SUDO=yes -p 8888:8888 -p 8080:8080 -p 3000:3000 registry
 ```
 
 # 启动 mongodb    
-cd /root && nohup sh ./startmongod.sh &
+cd /home/quantaxis/config && nohup sh ./run_backend.sh &
 
 
 # 启动 WEBKIT
-cd /root/quantaxis/QUANTAXIS_Webkit/backend && forever start ./bin/www
+cd /home/quantaxis/QUANTAXIS_Webkit/backend && forever start ./bin/www
 
-cd /root/quantaxis/QUANTAXIS_Webkit/web && forever start ./build/dev-server.js
+cd /home/quantaxis/QUANTAXIS_Webkit/web && forever start ./build/dev-server.js
+
+# 启动jupyter
+cd /home/quantaxis/config && nohup sh ./startjupyter.sh &
 
 ```
 
@@ -120,7 +123,7 @@ http://localhost:8888
 
 ```
 A:\quantaxis [master ≡]
-λ  docker run -it -p 8080:8080 -p 3000:3000 registry.cn-hangzhou.aliyuncs.com/quantaxis/quantaxis
+λ  docker run -it -p 8080:8080 -p 3000:3000 registry.cn-shanghai.aliyuncs.com/yutiansut/quantaxis
 root@f22b5357dc6e:/#
 
 ```
@@ -131,7 +134,7 @@ A:\Users\yutia
 
 
 CONTAINER ID        IMAGE                                                   COMMAND             CREATED             STATUS              PORTS                                            NAMES
-f22b5357dc6e        registry.cn-hangzhou.aliyuncs.com/quantaxis/quantaxis   "bash"              21 seconds ago      Up 20 seconds       0.0.0.0:3000->3000/tcp, 0.0.0.0:8080->8080/tcp   boring_panini
+f22b5357dc6e        registry.cn-shanghai.aliyuncs.com/yutiansut/quantaxis   "bash"              21 seconds ago      Up 20 seconds       0.0.0.0:3000->3000/tcp, 0.0.0.0:8080->8080/tcp   boring_panini
 
 ```
 然后执行 ```docker exec -it  [CONTAINERID] /bin/bash``` 进入
