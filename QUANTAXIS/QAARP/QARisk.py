@@ -29,29 +29,29 @@
 
 综合性指标主要包括风险收益比，夏普比例，波动率，VAR，偏度，峰度等"""
 
+import math
+from functools import lru_cache
+
 import numpy as np
 import pandas as pd
-import math
-from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_day_adv
+
 from QUANTAXIS.QAARP.QAAccount import QA_Account
+from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_day_adv
 
 
 class QA_Risk(QA_Account):
     def __init__(self, account):
         self.from_message(account.message)
 
-
-
+    @lru_cache(maxsize=128, typed=False)
     @property
     def market_data(self):
-        return QA_fetch_stock_day_adv()
+        return QA_fetch_stock_day_adv(self.code, self.start_date, self.end_date)
 
-    def make_assets(self, market_data=None):
-        pass
-
+    @lru_cache(maxsize=128, typed=False)
     @property
     def assets(self):
-        pass
+        return (self.market_data.to_qfq().pivot('close') * self.daily_hold).sum(axis=1) + self.daily_cash.set_index('date').cash
 
     @property
     def max_dropback(self):
