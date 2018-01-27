@@ -461,7 +461,7 @@ def QA_fetch_get_stock_list(type_='stock', ip=best_ip['stock'], port=7709):
 
         sz=sz.assign(sec=sz.code.apply(for_sz))
         sh=sh.assign(sec=sh.code.apply(for_sh))
-        print(sz)
+
         if type_ in ['stock', 'gp']:
 
             return pd.concat([sz, sh]).query('sec=="stock_cn"').sort_index().assign(name=data['name'].apply(lambda x: str(x)[0:6]))
