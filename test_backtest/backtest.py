@@ -27,10 +27,7 @@ from QUANTAXIS.QAARP.QARisk import QA_Risk
 from QUANTAXIS.QAARP.QAUser import QA_User
 from QUANTAXIS.QABacktest.QABacktest import QA_Backtest
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT,
-                                          BROKER_TYPE, ENGINE_EVENT, FREQUENCE,
-                                          MARKET_TYPE, ORDER_DIRECTION,
-                                          ORDER_MODEL)
+from QUANTAXIS.QAUtil.QAParameter import FREQUENCE, MARKET_TYPE
 from test_backtest.minstrategy import MAMINStrategy
 from test_backtest.strategy import MAStrategy
 
@@ -49,8 +46,10 @@ class Backtest(QA_Backtest):
         risk = QA_Risk(self.account)
 
         print(risk.assets)
-        risk.set_benchmark('000001', MARKET_TYPE.INDEX_CN)
-        print(risk.benchmark)
+        print('annualize_return : {} %'.format(risk.annualize_return))
+        print('max_dropback : {} %'.format(risk.max_dropback))
+        print('profit : {} %'.format(risk.profit))
+        print('volatility : {}'.format(risk.volatility))
 
 
 def run_daybacktest():
