@@ -392,6 +392,34 @@ def QA_fetch_depth_market_data(code=['000001', '000002'], ip=best_ip['stock'], p
                        'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
         return data.set_index(['datetime', 'code'], drop=False, inplace=False)
 
+'''
+沪市
+001×××国债现货；
+110×××120×××企业债券；
+129×××100×××可转换债券；
+201×××国债回购；
+310×××国债期货；
+500×××550×××基金；
+
+
+600×××A股；
+
+700×××配股；
+710×××转配股；
+701×××转配股再配股；
+711×××转配股再转配股；
+720×××红利；
+730×××新股申购；
+735×××新基金申购；
+737×××新股配售；
+900×××B股。
+
+深市
+深市A股票买卖的代码是以000打头，如：顺鑫农业：股票代码是000860。
+B股买卖的代码是以200打头，如：深中冠B股，代码是200018。
+中小板股票代码以002打头，如：东华合创股票代码是002065。
+创业板股票代码以300打头，如：探路者股票代码是：300005
+'''
 
 def QA_fetch_get_stock_list(type_='stock', ip=best_ip['stock'], port=7709):
 
@@ -406,7 +434,7 @@ def QA_fetch_get_stock_list(type_='stock', ip=best_ip['stock'], port=7709):
             return pd.concat([
                 data.query('sse=="sz"')[
                     data.code // 10000 <= 30][data.code // 100000 != 2][data.code // 100000 != 1],
-                data.query('sse=="sz"')[data.code // 100000 == 6]]).assign(code=data['code'].apply(str)).assign(name=data['name'].apply(lambda x: str(x)[0:6]))
+                data.query('sse=="sh"')[data.code // 100000 == 6]]).assign(code=data['code'].apply(str)).assign(name=data['name'].apply(lambda x: str(x)[0:6]))
 
         elif type_ in ['index', 'zs']:
 
