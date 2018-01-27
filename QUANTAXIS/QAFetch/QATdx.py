@@ -392,6 +392,7 @@ def QA_fetch_depth_market_data(code=['000001', '000002'], ip=best_ip['stock'], p
                        'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
         return data.set_index(['datetime', 'code'], drop=False, inplace=False)
 
+
 '''
 沪市
 001×××国债现货；
@@ -419,7 +420,34 @@ def QA_fetch_depth_market_data(code=['000001', '000002'], ip=best_ip['stock'], p
 B股买卖的代码是以200打头，如：深中冠B股，代码是200018。
 中小板股票代码以002打头，如：东华合创股票代码是002065。
 创业板股票代码以300打头，如：探路者股票代码是：300005
+
+
+更多参见 issue https://github.com/QUANTAXIS/QUANTAXIS/issues/158
+@yutiansut
 '''
+
+
+def for_sz(code):
+    if str(code)[0:2] in ['00', '30', '02']:
+        return 'stock_cn'
+    elif str(code)[0:2] in ['39']:
+        return 'index_cn'
+    elif str(code)[0:2] in ['15']:
+        return 'etf_cn'
+    else:
+        return 'undefined'
+
+
+def for_sh(code):
+    if str(code)[0] == '6':
+        return 'stock_cn'
+    elif str(code)[0] == '0':
+        return 'index_cn'
+    elif str(code)[0:2] == '51':
+        return 'etf_cn'
+    else:
+        return 'undefined'
+
 
 def QA_fetch_get_stock_list(type_='stock', ip=best_ip['stock'], port=7709):
 
@@ -427,29 +455,24 @@ def QA_fetch_get_stock_list(type_='stock', ip=best_ip['stock'], port=7709):
     with api.connect(ip, port):
         data = pd.concat([pd.concat([api.to_df(api.get_security_list(j, i * 1000)).assign(sse='sz' if j == 0 else 'sh').set_index(
             ['code', 'sse'], drop=False) for i in range(int(api.get_security_count(j) / 1000) + 1)], axis=0) for j in range(2)], axis=0)
-        data.code = data.code.apply(int)
+        #data.code = data.code.apply(int)
+        sz = data.query('sse=="sz"')
+        sh = data.query('sse=="sh"')
 
+        sz=sz.assign(sec=sz.code.apply(for_sz))
+        sh=sh.assign(sec=sh.code.apply(for_sh))
+        print(sz)
         if type_ in ['stock', 'gp']:
 
-            return pd.concat([
-                data.query('sse=="sz"')[
-                    data.code // 10000 <= 30][data.code // 100000 != 2][data.code // 100000 != 1],
-                data.query('sse=="sh"')[data.code // 100000 == 6]]).assign(code=data['code'].apply(str)).assign(name=data['name'].apply(lambda x: str(x)[0:6]))
+            return pd.concat([sz, sh]).query('sec=="stock_cn"').sort_index().assign(name=data['name'].apply(lambda x: str(x)[0:6]))
 
         elif type_ in ['index', 'zs']:
 
-            return pd.concat([data[data['sse'] == 'sz'][data.code // 1000 >= 399],
-                              data[data['sse'] == 'sh'][data.code // 1000 == 0]]) \
-                .sort_index()\
-                .assign(name=data['name'].apply(lambda x: str(x)[0:6]))\
-                .assign(code=data['code'].apply(lambda x: str(x)))
+            return pd.concat([sz, sh]).query('sec=="index_cn"').sort_index().assign(name=data['name'].apply(lambda x: str(x)[0:6]))
             #.assign(szm=data['name'].apply(lambda x: ''.join([y[0] for y in lazy_pinyin(x)])))\
             #.assign(quanpin=data['name'].apply(lambda x: ''.join(lazy_pinyin(x))))
         elif type_ in ['etf', 'ETF']:
-            return pd.concat([data[data['sse'] == 'sz'][data.code // 10000 == 15],
-                              data[data['sse'] == 'sh'][data.code // 10000 == 51]]).sort_index().assign(code=data['code'].apply(lambda x: str(x))).assign(name=data['name'].apply(lambda x: str(x)[0:4]))\
-                #.assign(szm=data['name'].apply(lambda x: ''.join([y[0] for y in lazy_pinyin(x)])))\
-            #.assign(quanpin=data['name'].apply(lambda x: ''.join(lazy_pinyin(x))))
+            return pd.concat([sz, sh]).query('sec=="etf_cn"').sort_index().assign(name=data['name'].apply(lambda x: str(x)[0:6]))
 
         else:
             return data.assign(code=data['code'].apply(lambda x: str(x))).assign(name=data['name'].apply(lambda x: str(x)[0:6]))
@@ -599,10 +622,10 @@ def QA_fetch_get_stock_transaction_realtime(code, ip=best_ip['stock'], port=7709
             _select_market_code(str(code)), code, (2 - i) * 2000, 2000)) for i in range(3)], axis=0)
         if 'value' in data.columns:
             data = data.drop(['value'], axis=1)
-        data=data.dropna()
+        data = data.dropna()
         day = datetime.date.today()
         return data.assign(date=str(day)).assign(datetime=pd.to_datetime(data['time'].apply(lambda x: str(day) + ' ' + str(x))))\
-                            .assign(code=str(code)).assign(order=range(len(data.index))).set_index('datetime', drop=False, inplace=False)
+            .assign(code=str(code)).assign(order=range(len(data.index))).set_index('datetime', drop=False, inplace=False)
 
 
 def QA_fetch_get_stock_xdxr(code, ip=best_ip['stock'], port=7709):
