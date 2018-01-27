@@ -52,7 +52,7 @@ class TdxTradeApiParams:
     QUERY_CATEGORY_NEW_STOCK_HIT = 15
 
 
-class TdxTradeApi(QA_Broker):
+class TDXBroker(QA_Broker):
     def __init__(self, endpoint="http://127.0.0.1:10092/api", encoding="utf-8", enc_key=None, enc_iv=None):
 
         self._endpoint = endpoint
@@ -197,7 +197,7 @@ class TdxTradeApi(QA_Broker):
     
 if __name__ == "__main__":
     import os
-    api = TdxTradeApi(endpoint="http://10.11.5.175:10092/api",
+    api = TDXBroker(endpoint="http://10.11.5.175:10092/api",
                       enc_key=b"4f1cf3fec4c84c84", enc_iv=b"0c78abc083b011e7")
     #api = TdxTradeApi(endpoint="http://10.11.5.175:10092/api")
     print("---Ping---")
