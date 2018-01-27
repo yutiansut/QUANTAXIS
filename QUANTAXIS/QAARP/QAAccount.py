@@ -31,6 +31,7 @@ from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL, FREQUENCE
                                           BROKER_TYPE, ENGINE_EVENT,
                                           MARKET_TYPE, TRADE_STATUS)
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
+from QUANTAXIS.QASU.save_account import save_account
 
 # 2017/6/4修改: 去除总资产的动态权益计算
 
@@ -338,6 +339,8 @@ class QA_Account(QA_Worker):
             if event.callback:
                 event.callback(event)
 
+    def save(self):
+        save_account(self.message)
 
 if __name__ == '__main__':
     account = QA_Account()

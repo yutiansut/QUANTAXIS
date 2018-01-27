@@ -51,6 +51,8 @@ class Backtest(QA_Backtest):
         print('profit : {} %'.format(risk.profit))
         print('volatility : {}'.format(risk.volatility))
 
+        self.account.save()
+
 
 def run_daybacktest():
     import QUANTAXIS as QA
