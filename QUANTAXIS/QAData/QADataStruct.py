@@ -552,7 +552,10 @@ class QA_DataStruct_Stock_day(_quotation_base):
 
     def to_qfq(self):
         if self.if_fq is 'bfq':
-            if len(self.code) < 20:
+            if len(self.code) <1:
+                self.if_fq = 'qfq'
+                return self
+            elif len(self.code) < 20:
                 return self.new(pd.concat(list(map(
                     lambda x: QA_data_stock_to_fq(self.data[self.data['code'] == x]), self.code))), self.type, 'qfq')
             else:
@@ -565,8 +568,12 @@ class QA_DataStruct_Stock_day(_quotation_base):
 
     def to_hfq(self):
         if self.if_fq is 'bfq':
-            return self.new(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
-                self.data[self.data['code'] == x], 'hfq'), self.code))), self.type, 'hfq')
+            if len(self.code) <1:
+                self.if_fq = 'hfq'
+                return self
+            else:
+                return self.new(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
+                    self.data[self.data['code'] == x], 'hfq'), self.code))), self.type, 'hfq')
         else:
             QA_util_log_info(
                 'none support type for qfq Current type is: %s' % self.if_fq)
@@ -608,7 +615,10 @@ class QA_DataStruct_Stock_min(_quotation_base):
 
     def to_qfq(self):
         if self.if_fq is 'bfq':
-            if len(self.code) < 20:
+            if len(self.code) <1:
+                self.if_fq = 'qfq'
+                return self
+            elif len(self.code) < 20:
                 data = QA_DataStruct_Stock_min(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
                     self.data[self.data['code'] == x]), self.code))).set_index(['datetime', 'code'], drop=False))
                 data.if_fq = 'qfq'
@@ -624,10 +634,14 @@ class QA_DataStruct_Stock_min(_quotation_base):
 
     def to_hfq(self):
         if self.if_fq is 'bfq':
-            data = QA_DataStruct_Stock_min(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
-                self.data[self.data['code'] == x], 'hfq'), self.code))).set_index(['datetime', 'code'], drop=False))
-            data.if_fq = 'hfq'
-            return data
+            if len(self.code)<1:
+                self.if_fq = 'hfq'
+                return self
+            else:
+                data = QA_DataStruct_Stock_min(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
+                    self.data[self.data['code'] == x], 'hfq'), self.code))).set_index(['datetime', 'code'], drop=False))
+                data.if_fq = 'hfq'
+                return data
         else:
             QA_util_log_info(
                 'none support type for qfq Current type is:%s' % self.if_fq)

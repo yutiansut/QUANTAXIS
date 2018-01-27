@@ -118,7 +118,7 @@ def QA_data_stock_to_fq(__data, type_='01'):
             data['date'] = pd.to_datetime(data['date'])
             return data.set_index(['date', 'code'], drop=False)
         except:
-            return pd.DataFrame(columns=['category', 'category_meaning', 'code', 'date', 'fenhong',
+            return pd.DataFrame(data=[],columns=['category', 'category_meaning', 'code', 'date', 'fenhong',
                                          'fenshu', 'liquidity_after', 'liquidity_before', 'name', 'peigu', 'peigujia',
                                          'shares_after', 'shares_before', 'songzhuangu', 'suogu', 'xingquanjia'])
     '股票 日线/分钟线 动态复权接口'
