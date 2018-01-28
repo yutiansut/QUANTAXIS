@@ -213,93 +213,103 @@ class _quotation_base():
     @property
     @lru_cache()
     def price_diff(self):
+        '返回DataStruct.price的一阶差分'
         return self.price.diff(1)
 
     # 样本方差(无偏估计) population variance
     @property
     @lru_cache()
     def pvariance(self):
+        '返回DataStruct.price的方差 variance'
         return statistics.pvariance(self.price)
 
     # 方差
     @property
     @lru_cache()
     def variance(self):
-        'variance 方差'
+        '返回DataStruct.price的方差 variance'
         return statistics.variance(self.price)
     # 标准差
 
     @property
     @lru_cache()
     def bar_pct_change(self):
-        return (self.open - self.close) / self.open
+        '返回bar的涨跌幅'
+        return (self.close - self.open) / self.open
 
     @property
     @lru_cache()
     def stdev(self):
-        'Sample standard deviation'
+        '返回DataStruct.price的样本标准差 Sample standard deviation'
         return statistics.stdev(self.price)
     # 总体标准差
 
     @property
     @lru_cache()
     def pstdev(self):
-        'Population standard deviation'
+        '返回DataStruct.price的总体标准差 Population standard deviation'
         return statistics.pstdev(self.price)
 
     # 调和平均数
     @property
     @lru_cache()
     def mean_harmonic(self):
+        '返回DataStruct.price的调和平均数'
         return statistics.harmonic_mean(self.price)
 
     # 众数
     @property
     @lru_cache()
     def mode(self):
+        '返回DataStruct.price的众数'
         return statistics.mode(self.price)
-
-
 
     # 振幅
     @property
     @lru_cache()
     def amplitude(self):
+        '返回DataStruct.price的百分比变化'
         return self.max - self.min
     # 偏度 Skewness
 
     @property
     @lru_cache()
     def skewnewss(self):
+        '返回DataStruct.price的偏度'
         return self.price.skew()
     # 峰度Kurtosis
 
     @property
     @lru_cache()
     def kurtosis(self):
+        '返回DataStruct.price的峰度'
         return self.price.kurt()
     # 百分数变化
 
     @property
     @lru_cache()
     def pct_change(self):
+        '返回DataStruct.price的百分比变化'
         return self.price.pct_change()
 
     # 平均绝对偏差
     @property
     @lru_cache()
     def mad(self):
+        '平均绝对偏差'
         return self.price.mad()
 
     @property
     @lru_cache()
     def panel_gen(self):
+        '返回一个基于bar的面板迭代器'
         for item in self.index.levels[0]:
             yield self.new(self.data.xs(item, level=0).set_index(self.index.names, drop=False), dtype=self.type, if_fq=self.if_fq)
 
     @property
     @lru_cache()
     def security_gen(self):
+        '返回一个基于代码的迭代器'
         for item in self.index.levels[1]:
             yield self.data.xs(item, level=1)
 
@@ -320,21 +330,25 @@ class _quotation_base():
     @property
     @lru_cache()
     def index(self):
+        '返回结构体的索引'
         return self.data.index
 
     @property
     @lru_cache()
     def code(self):
+        '返回结构体中的代码'
         return self.data.index.levels[1]
 
     @property
     @lru_cache()
     def dicts(self):
+        '返回dict形式数据'
         return self.to_dict('index')
 
     @property
     @lru_cache()
     def len(self):
+        '返回结构的长度'
         return len(self.data)
 
     def get_data(self, time, code):
