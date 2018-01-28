@@ -68,6 +68,7 @@ from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_trade_date,
                                        QA_fetch_future_tick, QA_fetch_stock_list, QA_fetch_stock_full, QA_fetch_stock_xdxr,
                                        QA_fetch_backtest_info, QA_fetch_backtest_history, QA_fetch_stock_block, QA_fetch_stock_info,
                                        QA_fetch_stock_name, QA_fetch_quotation, QA_fetch_quotations)
+from QUANTAXIS.QAFetch.QACrawler import QA_fetch_get_sh_margin, QA_fetch_get_sz_margin
 
 from QUANTAXIS.QAFetch.QAQuery_Advance import *
 
