@@ -33,6 +33,7 @@ import pandas as pd
 Series 类
 
 这个是下面以DataFrame为输入的基础函数
+return pd.Series format
 """
 
 

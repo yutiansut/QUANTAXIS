@@ -159,6 +159,30 @@ class _quotation_base():
         else:
             return None
 
+    """为了方便调用  增加一些容易写错的情况
+    """
+
+    HIGH=high
+    High=high
+    LOW=low
+    Low=low
+    CLOSE=close
+    Close=close
+    VOLUME=vol
+    Volume=vol
+    VOL=vol
+    Vol=vol
+    
+    @property
+    @lru_cache()
+    def OPEN(self):
+        return self.open
+
+    @property
+    @lru_cache()
+    def Open(self):
+        return self.open
+
     @property
     @lru_cache()
     def price(self):
