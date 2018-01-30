@@ -34,3 +34,6 @@ def save_account(message,collection=DATABASE.account):
 
 def query_account(query_mes,collection=DATABASE.account):
     return collection.find(query_mes)
+
+def update_account(mes,collection=DATABASE.account):
+    collection.find_one_and_update({'account_cookie':mes['account_cookie']})
