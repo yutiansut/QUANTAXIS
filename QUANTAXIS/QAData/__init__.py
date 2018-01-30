@@ -32,5 +32,5 @@ from QUANTAXIS.QAData.QADataStruct import (QA_DataStruct_Index_day,
                                            QA_DataStruct_Stock_day,
                                            QA_DataStruct_Stock_min,
                                            QA_DataStruct_Future_day,
-                                           QA_DataStruct_future_min,
+                                           QA_DataStruct_Future_min,
                                            QA_DataStruct_Stock_transaction)
