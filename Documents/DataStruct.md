@@ -1,6 +1,10 @@
 # QUANTAXIS的核心数据结构以及方法
 
+
+![datastruct](http://osnhakmay.bkt.clouddn.com/datastruct.png)
+
 属性用@property装饰器装饰,进行懒运算 提高效率
+
 
 QA_DataStruct具有的功能:
 
