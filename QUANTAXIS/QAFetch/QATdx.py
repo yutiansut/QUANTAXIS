@@ -654,7 +654,7 @@ def QA_fetch_get_stock_xdxr(code, ip=best_ip['stock'], port=7709):
 
 
 def QA_fetch_get_stock_info(code, ip=best_ip['stock'], port=7709):
-    '除权除息'
+    '股票基本信息'
     api = TdxHq_API()
     market_code = _select_market_code(code)
     with api.connect(ip, port):
