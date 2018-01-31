@@ -105,9 +105,9 @@ def CROSS(A, B):
         return False
 
 
-def COUNT(COND, N):
-    var = np.where(COND, 1, 0)
-    return var[-N:].sum()
+# def COUNT(COND, N):
+#     var = np.where(COND, 1, 0)
+#     return var[-N:].sum()
 
 
 def IF(COND, V1, V2):
@@ -119,6 +119,22 @@ def REF(Series, N):
     var = Series.diff(N)
     var = Series - var
     return var
+
+
+def LAST(COND, N1, N2):
+    """表达持续性
+
+    Arguments:
+        COND {[type]} -- [description]
+        N1 {[type]} -- [description]
+        N2 {[type]} -- [description]
+    """
+
+    return COND.iloc[-N1:-N2].all()
+
+
+def COUNT(COND, N):
+    return COND.tail(N).all()
 
 
 def STD(Series, N):
