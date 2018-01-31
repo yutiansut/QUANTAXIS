@@ -62,7 +62,7 @@ class _quotation_base():
     '一个自适应股票/期货/指数的基础类'
 
     def __init__(self, DataFrame, dtype='undefined', if_fq='bfq', marketdata_type='None'):
-        self.data = DataFrame
+        self.data = DataFrame.sort_index()
         self.data_type = dtype
         self.type = dtype
         self.data_id = QA_util_random_with_topic('DATA', lens=3)
@@ -162,17 +162,17 @@ class _quotation_base():
     """为了方便调用  增加一些容易写错的情况
     """
 
-    HIGH=high
-    High=high
-    LOW=low
-    Low=low
-    CLOSE=close
-    Close=close
-    VOLUME=vol
-    Volume=vol
-    VOL=vol
-    Vol=vol
-    
+    HIGH = high
+    High = high
+    LOW = low
+    Low = low
+    CLOSE = close
+    Close = close
+    VOLUME = vol
+    Volume = vol
+    VOL = vol
+    Vol = vol
+
     @property
     @lru_cache()
     def OPEN(self):
@@ -509,6 +509,9 @@ class _quotation_base():
             else:
                 return self.new(self.data[self.data['datetime'] >= start].set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
 
+    def select_month(self, month):
+        return self.new(self.data.loc[month, slice(None)], self.type, self.if_fq)
+
     def select_time_with_gap(self, time, gap, method):
 
         if method in ['gt', '>']:
@@ -590,7 +593,7 @@ class QA_DataStruct_Stock_day(_quotation_base):
 
     def to_qfq(self):
         if self.if_fq is 'bfq':
-            if len(self.code) <1:
+            if len(self.code) < 1:
                 self.if_fq = 'qfq'
                 return self
             elif len(self.code) < 20:
@@ -606,7 +609,7 @@ class QA_DataStruct_Stock_day(_quotation_base):
 
     def to_hfq(self):
         if self.if_fq is 'bfq':
-            if len(self.code) <1:
+            if len(self.code) < 1:
                 self.if_fq = 'hfq'
                 return self
             else:
@@ -653,7 +656,7 @@ class QA_DataStruct_Stock_min(_quotation_base):
 
     def to_qfq(self):
         if self.if_fq is 'bfq':
-            if len(self.code) <1:
+            if len(self.code) < 1:
                 self.if_fq = 'qfq'
                 return self
             elif len(self.code) < 20:
@@ -672,7 +675,7 @@ class QA_DataStruct_Stock_min(_quotation_base):
 
     def to_hfq(self):
         if self.if_fq is 'bfq':
-            if len(self.code)<1:
+            if len(self.code) < 1:
                 self.if_fq = 'hfq'
                 return self
             else:

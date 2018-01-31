@@ -197,3 +197,17 @@ class QA_Analysis_stock:
     @lru_cache()
     def add_func(self, func, *arg, **kwargs):
         return func(self.data, *arg, **kwargs)
+
+
+def shadow_calc(data):
+    '计算上下影线'
+    up_shadow = abs(data.high - (max(data.open, data.close)))
+    down_shadow = abs(data.low - (min(data.open, data.close)))
+    straight = abs(data.open - data.close)
+    towards = True if data.open < data.close else False
+    print('=' * 15)
+    print('up_shadow : {}'.format(up_shadow))
+    print('down_shadow : {}'.format(down_shadow))
+    print('straight: {}'.format(straight))
+    print('towards : {}'.format(towards))
+    return up_shadow, down_shadow, straight
