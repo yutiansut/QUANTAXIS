@@ -130,6 +130,8 @@ def LAST(COND, N1, N2):
         N2 {[type]} -- [description]
     """
     N2=1 if N2==0 else N2
+    assert N2>0
+    assert N1>N2
     return COND.iloc[-N1:-N2].all()
 
 
