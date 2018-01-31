@@ -223,3 +223,11 @@ def shadow_calc(data):
     print('entity: {}'.format(entity))
     print('towards : {}'.format(towards))
     return up_shadow, down_shadow, entity, data.date, data.code
+
+
+class shadow():
+    def __init__(self, data):
+        self.data = data
+
+    def shadow_panel(self):
+        return 

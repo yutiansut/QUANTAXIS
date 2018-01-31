@@ -465,6 +465,11 @@ class _quotation_base():
     def to_dict(self, orient='dict'):
         return self.data.to_dict(orient)
 
+    def to_hdf(self, place, name):
+        'IO --> hdf5'
+        self.data.to_hdf(place, name)
+        return place, name
+
     def is_same(self, DataStruct):
         if self.type == DataStruct.type and self.if_fq == DataStruct.if_fq:
             return True
