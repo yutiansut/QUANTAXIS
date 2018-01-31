@@ -158,7 +158,7 @@ def QA_fetch_stock_full(date, format='numpy', collections=DATABASE.stock_day):
             __data = DataFrame(__data, columns=[
                 'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
             __data['date'] = pd.to_datetime(__data['date'])
-            __data = __data.set_index('date', drop=True)
+            __data = __data.set_index('date', drop=False)
         return __data
     else:
         QA_util_log_info('something wrong with date')
