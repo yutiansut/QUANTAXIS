@@ -32,6 +32,7 @@ from QUANTAXIS.QAData import (QA_DataStruct_Index_day, QA_DataStruct_Index_min,
                               QA_DataStruct_Stock_transaction)
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_indexlist_day,
                                        QA_fetch_stocklist_day,
+                                       QA_fetch_stock_full,
                                        QA_fetch_stocklist_min)
 from QUANTAXIS.QAUtil import (DATABASE, QA_Setting, QA_util_date_stamp,
                               QA_util_date_valid, QA_util_log_info,
@@ -136,7 +137,9 @@ def QA_fetch_stocklist_min_adv(
         if_drop_index=False,  collections=DATABASE.stock_min):
     return QA_DataStruct_Stock_min(pd.concat(QA_fetch_stocklist_min(code, [start, end], frequence)).query('volume>1').set_index(['datetime', 'code'], drop=if_drop_index).sort_index())
 
-
+def QA_fetch_stock_day_full_adv(date):
+    '返回全市场某一天的数据'
+    return QA_DataStruct_Stock_day(QA_fetch_stock_full(date,'pd').set_index(['date','code'],drop=False))
 def QA_fetch_index_day_adv(
         code,
         start, end=None,
