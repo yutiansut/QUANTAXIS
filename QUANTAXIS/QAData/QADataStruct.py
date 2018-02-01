@@ -1024,6 +1024,12 @@ class QA_DataStruct_Stock_transaction():
 
         return self.data.query('amount<={}'.format(smallamount))
 
+    def get_time(self, start, end=None):
+        if end is None:
+            return self.data.loc[start]
+        else:
+            return self.data.loc[start:end]
+
 
 class QA_DataStruct_Stock_realtime():
     def __init__(self, market_data):
