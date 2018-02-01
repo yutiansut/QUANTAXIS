@@ -1014,16 +1014,15 @@ class QA_DataStruct_Stock_transaction():
 
     def get_small_order(self, smallamount=200000):
         """return small level order
-        
+
         Keyword Arguments:
             smallamount {[type]} -- [description] (default: {200000})
-        
+
         Returns:
             [type] -- [description]
         """
 
         return self.data.query('amount<={}'.format(smallamount))
-
 
 
 class QA_DataStruct_Stock_realtime():
@@ -1111,23 +1110,3 @@ class QA_DataStruct_Security_list():
 
     def get_etf(self):
         return self.data
-
-
-class QA_DataStruct_Market_reply():
-    pass
-
-
-class QA_DataStruct_Market_order():
-    pass
-
-
-class QA_DataStruct_Market_order_queue():
-    pass
-
-
-class QA_DataStruct_ARP_account():
-    pass
-
-
-class QA_DataStruct_Quantaxis_error():
-    pass
