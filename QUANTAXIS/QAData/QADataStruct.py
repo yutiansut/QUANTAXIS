@@ -159,6 +159,15 @@ class _quotation_base():
         else:
             return None
 
+    @property
+    @lru_cache()
+    def amount(self):
+        if 'amount' in self.data.columns:
+            return self.data.amount
+        else:
+            return self.vol*self.price*100
+        
+
     """为了方便调用  增加一些容易写错的情况
     """
 
@@ -841,6 +850,9 @@ class QA_DataStruct_Stock_transaction():
 
     def resample(self, type_='1min'):
         return QA_DataStruct_Stock_min(QA_data_tick_resample(self.data, type_))
+
+    def splitbydays(self):
+        pass
 
 
 class QA_DataStruct_Stock_realtime():
