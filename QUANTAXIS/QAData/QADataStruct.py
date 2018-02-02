@@ -294,7 +294,10 @@ class _quotation_base():
     @lru_cache()
     def mode(self):
         '返回DataStruct.price的众数'
-        return statistics.mode(self.price)
+        try:
+            return statistics.mode(self.price)
+        except :
+            return None
 
     # 振幅
     @property
@@ -306,14 +309,14 @@ class _quotation_base():
 
     @property
     @lru_cache()
-    def skewnewss(self):
+    def skew(self):
         '返回DataStruct.price的偏度'
         return self.price.skew()
     # 峰度Kurtosis
 
     @property
     @lru_cache()
-    def kurtosis(self):
+    def kurt(self):
         '返回DataStruct.price的峰度'
         return self.price.kurt()
     # 百分数变化

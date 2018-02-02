@@ -21,6 +21,19 @@
     - [选取结构组里面某一只股票select_code(code)](#选取结构组里面某一只股票select_codecode)
     - [取某一只股票的某一个时间的bar(code,time,if_trade)](#取某一只股票的某一个时间的barcodetimeif_trade)
     - [画图 plot(code)](#画图-plotcode)
+    - [统计学部分](#统计学部分)
+        - [平均价 price](#平均价-price)
+        - [price均值 mean](#price均值-mean)
+        - [max/min](#maxmin)
+        - [方差/样本方差 pvariance/variance](#方差样本方差-pvariancevariance)
+        - [标准差/样本标准差 pstdev/stdev](#标准差样本标准差-pstdevstdev)
+        - [调和平均数 mean_harmonic](#调和平均数-mean_harmonic)
+        - [众数 mode](#众数-mode)
+        - [振幅 amplitude](#振幅-amplitude)
+        - [偏度 skew](#偏度-skew)
+        - [峰度 kurt](#峰度-kurt)
+        - [百分比变化 pct_change](#百分比变化-pct_change)
+        - [平均绝对偏差 mad](#平均绝对偏差-mad)
 
 <!-- /TOC -->
 QA_DataStruct具有的功能:
@@ -286,3 +299,180 @@ QUANTAXIS>> The Pic has been saved to your path: .\QA_stock_day_000001_bfq.html
 ```
 
 ![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20171004125336.png)
+
+## 统计学部分
+
+### 平均价 price
+
+为了统计学指标的需要, price=AVERAGE(open+high+low+close)
+
+price是一个```pd.Series``` 类
+
+```python
+In [7]: QA.QA_fetch_stock_day_adv('000001','2017-09-20','2017-10-01').price
+Out[7]:
+date        code
+2017-09-20  000001    11.2125
+2017-09-21  000001    11.3575
+2017-09-22  000001    11.4250
+2017-09-25  000001    11.3400
+2017-09-26  000001    11.1425
+2017-09-27  000001    10.9800
+2017-09-28  000001    10.9150
+2017-09-29  000001    11.0125
+dtype: float64
+
+```
+
+### price均值 mean
+
+mean是price的均值
+
+```python
+In [6]: QA.QA_fetch_stock_day_adv('000001','2017-09-20','2017-10-01').mean
+Out[6]: 11.173125
+```
+
+### max/min
+
+max/min 分别是price序列的最大值和最小值
+
+```python
+In [8]: QA.QA_fetch_stock_day_adv('000001','2017-09-20','2017-10-01').max
+Out[8]: 11.424999999999999
+
+In [9]: QA.QA_fetch_stock_day_adv('000001','2017-09-20','2017-10-01').min
+Out[9]: 10.915000000000001
+```
+
+### 方差/样本方差 pvariance/variance
+
+分别是price的方差和样本方差
+
+```python
+
+In [10]: QA.QA_fetch_stock_day_adv('000001','2017-09-20','2017-10-01').variance
+Out[10]: 0.0367852678571427
+
+In [11]: QA.QA_fetch_stock_day_adv('000001','2017-09-20','2017-10-01').pvariance
+Out[11]: 0.03218710937499986
+```
+
+### 标准差/样本标准差 pstdev/stdev
+
+分别是price的总体标准差和样本标准差
+
+
+```python
+
+In [12]: QA.QA_fetch_stock_day_adv('000001','2017-09-20','2017-10-01').pstdev
+Out[12]: 0.17940766253145338
+
+In [13]: QA.QA_fetch_stock_day_adv('000001','2017-09-20','2017-10-01').stdev
+Out[13]: 0.19179485878704544
+```
+
+
+### 调和平均数 mean_harmonic
+
+price的调和平均数
+
+```python
+In [14]: QA.QA_fetch_stock_day_adv('000001','2017-09-20','2017-10-01').mean_harmonic
+Out[14]: 11.170242242781745
+
+```
+
+### 众数 mode
+返回price的众数 (注意: price序列可能没有众数,因此可能会报错,内部处理后,返回None)
+
+```python
+In [31]: QA.QA_fetch_stock_day_adv('000001','2017-01-20','2017-10-01').mode
+Out[31]: 9.1375
+
+In [31]: QA.QA_fetch_stock_day_adv('000001','2017-01-20','2017-10-01').mode
+Out[31]: None
+
+
+```
+
+
+### 振幅 amplitude
+
+返回price的振幅
+
+```python
+In [33]: QA.QA_fetch_stock_day_adv('000001','2017-01-20','2017-10-01').amplitude
+Out[33]: 3.1325000000000003
+```
+
+
+### 偏度 skew
+
+返回price的偏度
+
+```python
+
+In [35]: QA.QA_fetch_stock_day_adv('000001','2017-01-20','2017-10-01').skew
+Out[35]: 0.70288041557825753
+
+```
+
+
+### 峰度 kurt
+
+返回price的峰度
+
+```python
+In [37]: QA.QA_fetch_stock_day_adv('000001','2017-01-20','2017-10-01').kurt
+Out[37]: -1.0703273213086726
+```
+
+### 百分比变化 pct_change
+
+返回price的百分比变化
+
+```python
+In [40]: QA.QA_fetch_stock_day_adv('000001','2017-09-20','2017-10-01').pct_change
+Out[40]:
+date        code
+2017-09-20  000001         NaN
+2017-09-21  000001    0.012932
+2017-09-22  000001    0.005943
+2017-09-25  000001   -0.007440
+2017-09-26  000001   -0.017416
+2017-09-27  000001   -0.014584
+2017-09-28  000001   -0.005920
+2017-09-29  000001    0.008933
+dtype: float64
+```
+
+### 平均绝对偏差 mad
+ 
+
+ 返回price的平均绝对偏差
+
+ ```python
+In [41]: QA.QA_fetch_stock_day_adv('000001','2017-09-20','2017-10-01').mad
+Out[41]: 0.16062499999999957
+```
+
+### 价格差分 price_diff
+
+返回价格的一阶差分
+
+```python
+
+In [42]: QA.QA_fetch_stock_day_adv('000001','2017-09-20','2017-10-01').price_diff
+Out[42]:
+date        code
+2017-09-20  000001       NaN
+2017-09-21  000001    0.1450
+2017-09-22  000001    0.0675
+2017-09-25  000001   -0.0850
+2017-09-26  000001   -0.1975
+2017-09-27  000001   -0.1625
+2017-09-28  000001   -0.0650
+2017-09-29  000001    0.0975
+dtype: float64
+```
