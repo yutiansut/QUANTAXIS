@@ -31,7 +31,7 @@
 
 - MAC 安装 参见 [MAC](install_for_mac.md)
 
-
+- 便捷版本 参见 [Portable-QA](https://github.com/QUANTAXIS/portable_QA)
 
 
 
