@@ -5,16 +5,33 @@
 
 属性用@property装饰器装饰,进行懒运算 提高效率
 
+<!-- TOC -->
 
+- [QUANTAXIS的核心数据结构以及方法](#quantaxis的核心数据结构以及方法)
+    - [取一个股票的数据](#取一个股票的数据)
+    - [取多个股票的数据](#取多个股票的数据)
+    - [显示结构体的数据 .data](#显示结构体的数据-data)
+    - [显示结构体的开/高/收/低 .open/.high/.close/.low](#显示结构体的开高收低-openhighcloselow)
+    - [结构体拆分 splits()](#结构体拆分-splits)
+    - [数据结构复权to_qfq()/to_hfq()](#数据结构复权to_qfqto_hfq)
+    - [数据透视 .pivot()](#数据透视-pivot)
+    - [数据的时间筛选.select_time(start,end)](#数据的时间筛选select_timestartend)
+    - [数据按时间往前/往后推 select_time_with_gap(time,gap,methods)](#数据按时间往前往后推-select_time_with_gaptimegapmethods)
+    - [选取某一个月份的数据 select_month(month)](#选取某一个月份的数据-select_monthmonth)
+    - [选取结构组里面某一只股票select_code(code)](#选取结构组里面某一只股票select_codecode)
+    - [取某一只股票的某一个时间的bar(code,time,if_trade)](#取某一只股票的某一个时间的barcodetimeif_trade)
+    - [画图 plot(code)](#画图-plotcode)
+
+<!-- /TOC -->
 QA_DataStruct具有的功能:
 
 - 数据容器
 - 数据变换 [分拆/合并/倒序] split/merge/reverse
 - 数据透视 pivot
-- 数据筛选 select_time/select_time_with_gap/select_code/get_bar
+- 数据筛选 select_time/select_time_with_gap/select_code/get_bar/select_month
 - 数据复权 to_qfq/to_hfq
 - 数据显示 show
-- 格式变换 to_json/to_pandas/to_list/to_numpy
+- 格式变换 to_json/to_pandas/to_list/to_numpy/to_hdf
 - 数据库式查询  query
 - 画图 plot
 - 计算指标 add_func
@@ -47,19 +64,19 @@ min线的参数是code, start, end, frequence='1min'
 
 其中 code 可以是一个股票,也可以是一列股票(list)
 
-取一个股票的数据
+## 取一个股票的数据
 ```python
 QA.QA_fetch_stock_day_adv('000001','2017-01-01','2017-10-01')
 In [5]: QA.QA_fetch_stock_day_adv('000001','2017-01-01','2017-10-01')
 Out[5]: QA_DataStruct_Stock_day with 1 securities
 ```
-取多个股票的数据
+## 取多个股票的数据
 ```python
 QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-01-01','2017-10-01')
 In [6]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-01-01','2017-10-01')
 Out[6]: QA_DataStruct_Stock_day with 2 securities
 ```
-显示结构体的数据 .data
+## 显示结构体的数据 .data
 ```python
 In [10]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-09-20','2017-10-01').data
 Out[10]:
@@ -82,7 +99,7 @@ date       code
 2017-09-28 000002  000002  27.00  27.15  26.40  26.41  262347.0 2017-09-28
 2017-09-29 000002  000002  26.56  26.80  26.00  26.25  345752.0 2017-09-29
 ```
-显示结构体的开/高/收/低 .open/.high/.close/.low
+## 显示结构体的开/高/收/低 .open/.high/.close/.low
 ```python
 In [5]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-09-20','2017-10-01').high
 Out[5]:
@@ -105,7 +122,19 @@ date        code
 2017-09-29  000002    26.80
 Name: high, dtype: float64
 ```
-数据结构复权to_qfq()/to_hfq()
+## 结构体拆分 splits()
+
+当一个DataStruct里面存在多个证券时,可以通过拆分的方法,将其变成多个DataStruct
+
+```python
+In [3]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-09-20','2017-10-01').splits()
+Out[3]:
+[< QA_DataStruct_Stock_day with 1 securities >,
+ < QA_DataStruct_Stock_day with 1 securities >]
+
+```
+
+## 数据结构复权to_qfq()/to_hfq()
 
 返回的是一个DataStruct,用.data展示返回的数据的结构
 
@@ -152,7 +181,7 @@ date       code
 2017-09-28 000002     26.84  1.0
 2017-09-29 000002     26.41  1.0
 ```
-数据透视 .pivot()
+## 数据透视 .pivot()
 ```python
 In [6]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-09-20','2017-10-01').pivot('open')
 Out[6]:
@@ -167,7 +196,7 @@ date
 2017-09-28   10.98   27.00
 2017-09-29   10.92   26.56
 ```
-数据的时间筛选.select_time(start,end)
+## 数据的时间筛选.select_time(start,end)
 ```python
 In [10]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-09-20','2017-10-01').select_time('2017-09-20','2017-09-25')
 Out[10]: QA_DataStruct_Stock_day with 2 securities
@@ -185,7 +214,7 @@ date       code
 2017-09-22 000002  000002  28.39  28.67  27.52  27.81  423093.0 2017-09-22
 2017-09-25 000002  000002  27.20  27.20  26.10  26.12  722702.0 2017-09-25
 ```
-数据按时间往前/往后推 select_time_with_gap(time,gap,methods)
+## 数据按时间往前/往后推 select_time_with_gap(time,gap,methods)
 
 time是你选择的时间
 gap是长度 (int)
@@ -203,7 +232,15 @@ date       code
 2017-09-21 000002  000002  28.50  29.06  27.75  28.40  536324.0 2017-09-21
 2017-09-22 000002  000002  28.39  28.67  27.52  27.81  423093.0 2017-09-22
 ```
-选取结构组里面某一只股票select_code(code)
+## 选取某一个月份的数据 select_month(month)
+
+可以通过select_month 来选取某一个月份的数据
+```python
+In [4]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-09-20','2017-10-01').select_month('2017-09')
+Out[4]: < QA_DataStruct_Stock_day with 2 securities >
+```
+
+## 选取结构组里面某一只股票select_code(code)
 
 ```python
 In [16]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-09-20','2017-10-01').select_code('000001')
@@ -221,7 +258,7 @@ date       code
 2017-09-28 000001  000001  10.98  10.98  10.82  10.88  517220.0 2017-09-28
 2017-09-29 000001  000001  10.92  11.16  10.86  11.11  682280.0 2017-09-29
 ```
-取某一只股票的某一个时间的bar(code,time,if_trade)
+## 取某一只股票的某一个时间的bar(code,time,if_trade)
 
 第三个选项 默认是True  
 第三选项的意义在于,如果出现了停牌,参数如果是True 那么就会返回空值 而如果是False,就会返回停牌前最后一个交易日的值
@@ -236,7 +273,7 @@ date       code
 2017-09-20 000001  000001  11.14  11.37  11.05  11.29  787154.0 2017-09-20
 
 ```
-画图 plot(code)
+## 画图 plot(code)
 
 如果是()空值 就会把全部的股票都画出来
 ```python
