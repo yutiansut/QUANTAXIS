@@ -36,10 +36,10 @@ from QUANTAXIS.QAUtil.QADate_trade import (QA_util_date_gap,
 
 def QA_util_make_min_index(day, type_='1min'):
     """创建股票分钟线的index
-    
+
     Arguments:
         day {[type]} -- [description]
-    
+
     Returns:
         [type] -- [description]
     """
@@ -53,10 +53,10 @@ def QA_util_make_min_index(day, type_='1min'):
 
 def QA_util_make_hour_index(day, type_='1h'):
     """创建股票的小时线的index
-    
+
     Arguments:
         day {[type]} -- [description]
-    
+
     Returns:
         [type] -- [description]
     """
@@ -146,7 +146,6 @@ def QA_util_time_gap(time, gap, methods, type_):
 
 
 """
-
 
 
 if __name__ == '__main__':

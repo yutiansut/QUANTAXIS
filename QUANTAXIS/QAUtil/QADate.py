@@ -30,22 +30,61 @@ from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 
 
 def QA_util_time_now():
+    """[summary]
+    
+    Returns:
+        [type] -- [description]
+    """
+
     return datetime.datetime.now()
 
 
 def QA_util_date_today():
+    """[summary]
+    
+    Returns:
+        [type] -- [description]
+    """
+
     return datetime.date.today()
 
 
 def QA_util_date_str2int(date):
+    """[summary]
+    
+    Arguments:
+        date {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+
     return int(str(date)[0:4] + str(date)[5:7] + str(date)[8:10])
 
 
 def QA_util_date_int2str(date):
+    """[summary]
+    
+    Arguments:
+        date {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+
     return str(str(date)[0:4] + '-' + str(date)[4:6] + '-' + str(date)[6:8])
 
 
 def QA_util_to_datetime(time):
+    """[summary]
+    
+    Arguments:
+        time {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+
     if len(str(time)) == 10:
         _time = '{} 00:00:00'.format(time)
     elif len(str(time)) == 19:
@@ -56,6 +95,15 @@ def QA_util_to_datetime(time):
 
 
 def QA_util_date_stamp(date):
+    """[summary]
+    
+    Arguments:
+        date {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+
     datestr = str(date)[0:10]
     date = time.mktime(time.strptime(datestr, '%Y-%m-%d'))
     return date
@@ -90,10 +138,28 @@ def QA_util_stamp2datetime(timestamp):
 
 
 def QA_util_ms_stamp(ms):
+    """[summary]
+    
+    Arguments:
+        ms {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+
     return ms
 
 
 def QA_util_date_valid(date):
+    """[summary]
+    
+    Arguments:
+        date {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+
     try:
 
         time.strptime(date, "%Y-%m-%d")
@@ -103,6 +169,13 @@ def QA_util_date_valid(date):
 
 
 def QA_util_realtime(strtime, client):
+    """[summary]
+    
+    Arguments:
+        strtime {[type]} -- [description]
+        client {[type]} -- [description]
+    """
+
     time_stamp = QA_util_date_stamp(strtime)
     coll = client.quantaxis.trade_date
     temp_str = coll.find_one({'date_stamp': {"$gte": time_stamp}})
@@ -111,13 +184,34 @@ def QA_util_realtime(strtime, client):
     return {'time_real': time_real, 'id': time_id}
 
 
-def QA_util_id2date(id, client):
+def QA_util_id2date(idx, client):
+    """[summary]
+    
+    Arguments:
+        idx {[type]} -- [description]
+        client {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+
     coll = client.quantaxis.trade_date
-    temp_str = coll.find_one({'num': id})
+    temp_str = coll.find_one({'num': idx})
     return temp_str['date']
 
 
 def QA_util_is_trade(date, code, client):
+    """判断是否是交易日
+    
+    Arguments:
+        date {[type]} -- [description]
+        code {[type]} -- [description]
+        client {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+
     coll = client.quantaxis.stock_day
     date = str(date)[0:10]
     is_trade = coll.find_one({'code': code, 'date': date})
@@ -129,6 +223,16 @@ def QA_util_is_trade(date, code, client):
 
 
 def QA_util_get_date_index(date, trade_list):
+    """返回在trade_list中的index位置
+    
+    Arguments:
+        date {[type]} -- [description]
+        trade_list {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+
     return trade_list.index(date)
 
 

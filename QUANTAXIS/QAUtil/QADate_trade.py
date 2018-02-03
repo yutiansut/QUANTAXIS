@@ -107,6 +107,17 @@ def QA_util_get_trade_gap(start, end):
 
 
 def QA_util_date_gap(date, gap, methods):
+    """[summary]
+    
+    Arguments:
+        date {[type]} -- [description]
+        gap {[type]} -- [description]
+        methods {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+
     try:
         if methods in ['>', 'gt']:
             return trade_date_sse[trade_date_sse.index(date) + gap]
