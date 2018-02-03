@@ -86,3 +86,4 @@ from QUANTAXIS.QAUtil.QATransform import (QA_util_to_json_from_pandas,
                                           QA_util_to_pandas_from_list)
 # 网络相关
 from QUANTAXIS.QAUtil.QAWeb import QA_util_web_ping
+from QUANTAXIS.QAUtil.QAMail import QA_util_send_mail

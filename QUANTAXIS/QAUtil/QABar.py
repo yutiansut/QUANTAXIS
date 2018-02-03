@@ -23,9 +23,7 @@
 # SOFTWARE.
 
 import datetime
-import json
 import math
-import time
 
 import numpy as np
 import pandas as pd
@@ -37,6 +35,15 @@ from QUANTAXIS.QAUtil.QADate_trade import (QA_util_date_gap,
 
 
 def QA_util_make_min_index(day, type_='1min'):
+    """创建股票分钟线的index
+    
+    Arguments:
+        day {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+
     if QA_util_if_trade(day) is True:
         return pd.date_range(str(day) + ' 09:30:00', str(day) + ' 11:30:00', freq=type_, closed='right').append(
             pd.date_range(str(day) + ' 13:00:00', str(day) + ' 15:00:00', freq=type_, closed='right'))
@@ -45,6 +52,15 @@ def QA_util_make_min_index(day, type_='1min'):
 
 
 def QA_util_make_hour_index(day, type_='1h'):
+    """创建股票的小时线的index
+    
+    Arguments:
+        day {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+
     if QA_util_if_trade(day) is True:
         return pd.date_range(str(day) + ' 09:30:00', str(day) + ' 11:30:00', freq=type_, closed='right').append(
             pd.date_range(str(day) + ' 13:00:00', str(day) + ' 15:00:00', freq=type_, closed='right'))
