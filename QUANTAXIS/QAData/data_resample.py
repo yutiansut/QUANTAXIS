@@ -30,6 +30,15 @@ from QUANTAXIS.QAFetch import QA_fetch_get_stock_transaction
 
 
 def QA_data_tick_resample(tick, type_='1min'):
+    """tick采样成任意级别分钟线
+
+    Arguments:
+        tick {[type]} -- transaction
+
+    Returns:
+        [type] -- [description]
+    """
+
     data = tick['price'].resample(
         type_, label='right', closed='left').ohlc()
 
@@ -52,6 +61,6 @@ def QA_data_tick_resample(tick, type_='1min'):
 
 
 if __name__ == '__main__':
-    tick = QA_fetch_get_stock_transaction(
+    tickz = QA_fetch_get_stock_transaction(
         'tdx', '000001', '2017-01-03', '2017-01-05')
-    print(QA_data_tick_resample(tick))
+    print(QA_data_tick_resample(tickz))
