@@ -458,6 +458,30 @@ class _quotation_base():
     def reverse(self):
         return self.new(self.data[::-1])
 
+    def tail(self,lens):
+        """返回最后Lens个值的DataStruct
+        
+        Arguments:
+            lens {[type]} -- [description]
+        
+        Returns:
+            [type] -- [description]
+        """
+
+        return self.new(self.data.tail(lens))
+    
+    def head(self,lens):
+        """返回最前lens个值的DataStruct
+        
+        Arguments:
+            lens {[type]} -- [description]
+        
+        Returns:
+            [type] -- [description]
+        """
+
+        return self.new(self.data.head(lens))
+
     def show(self):
         return QA_util_log_info(self.data)
 
