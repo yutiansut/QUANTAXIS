@@ -813,29 +813,89 @@ class QA_DataStruct_Stock_block():
 
     @property
     def len(self):
+        """返回DataStruct的长度
+        
+        Returns:
+            [type] -- [description]
+        """
+
         return len(self.data)
 
     @property
     def block_name(self):
+        """返回所有的板块名
+        
+        Returns:
+            [type] -- [description]
+        """
+
         return self.data.groupby('blockname').sum().index.unique().tolist()
 
     @property
     def code(self):
+        """返回唯一的证券代码
+        
+        Returns:
+            [type] -- [description]
+        """
+
         return self.data.code.unique().tolist()
 
     def show(self):
+        """展示DataStruct
+        
+        Returns:
+            dataframe -- [description]
+        """
+
         return self.data
 
     def get_code(self, code):
+        """getcode 获取某一只股票的板块
+        
+        Arguments:
+            code {str} -- 股票代码
+        
+        Returns:
+            DataStruct -- [description]
+        """
+
         return QA_DataStruct_Stock_block(self.data[self.data['code'] == code])
 
     def get_block(self, _block_name):
+        """getblock 获取板块
+        
+        Arguments:
+            _block_name {[type]} -- [description]
+        
+        Returns:
+            [type] -- [description]
+        """
+
         return QA_DataStruct_Stock_block(self.data[self.data['blockname'] == _block_name])
 
     def getdtype(self, dtype):
+        """getdtype
+        
+        Arguments:
+            dtype {str} -- gn-概念/dy-地域/fg-风格/zs-指数
+        
+        Returns:
+            [type] -- [description]
+        """
+
         return QA_DataStruct_Stock_block(self.data[self.data['type'] == dtype])
 
     def get_price(self, _block_name=None):
+        """get_price
+        
+        Keyword Arguments:
+            _block_name {[type]} -- [description] (default: {None})
+        
+        Returns:
+            [type] -- [description]
+        """
+
         if _block_name is not None:
             try:
                 code = self.data[self.data['blockname']
