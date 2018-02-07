@@ -116,6 +116,21 @@ def _select_type(frequence):
 
 
 def QA_fetch_get_security_bars(code, _type, lens, ip=best_ip['stock'], port=7709):
+    """按bar长度推算数据
+    
+    Arguments:
+        code {[type]} -- [description]
+        _type {[type]} -- [description]
+        lens {[type]} -- [description]
+    
+    Keyword Arguments:
+        ip {[type]} -- [description] (default: {best_ip})
+        port {[type]} -- [description] (default: {7709})
+    
+    Returns:
+        [type] -- [description]
+    """
+
     api = TdxHq_API()
     with api.connect(ip, port):
         data = pd.concat([api.to_df(api.get_security_bars(_select_type(_type), _select_market_code(
@@ -134,8 +149,30 @@ def QA_fetch_get_security_bars(code, _type, lens, ip=best_ip['stock'], port=7709
 
 
 def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', frequence='day', ip=best_ip['stock'], port=7709):
+    """获取日线及以上级别的数据
+
+
+    Arguments:
+        code {str:6} -- code 是一个单独的code 6位长度的str
+        start_date {str:10} -- 10位长度的日期 比如'2017-01-01'
+        end_date {str:10} -- 10位长度的日期 比如'2018-01-01'
+
+    Keyword Arguments:
+        if_fq {str} -- '00'/'bfq' -- 不复权 '01'/'qfq' -- 前复权 '02'/'hfq' -- 后复权 '03'/'ddqfq' -- 定点前复权 '04'/'ddhfq' --定点后复权
+        frequency {str} -- day/week/month/quarter/year 也可以是简写 D/W/M/Q/Y
+        ip {str} -- [description] (default: best_ip['stock']) ip可以通过select_best_ip()函数重新获取
+        port {int} -- [description] (default: {7709})
+
+
+    Returns:
+        pd.DataFrame/None -- 返回的是dataframe,如果出错比如只获取了一天,而当天停牌,返回None
+
+    Exception:
+        如果出现网络问题/服务器拒绝, 会出现socket:time out 尝试再次获取/更换ip即可, 本函数不做处理
+    """
+
     api = TdxHq_API()
-    with api.connect(ip, port):
+    with api.connect(ip, port, time_out=0.7):
 
         if frequence in ['day', 'd', 'D', 'DAY', 'Day']:
             frequence = 9
@@ -143,7 +180,7 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', frequence='da
             frequence = 5
         elif frequence in ['month', 'M', 'm', 'Month']:
             frequence = 6
-        elif frequence in ['Q', 'Quarter', 'q']:
+        elif frequence in ['quarter', 'Q', 'Quarter', 'q']:
             frequence = 10
         elif frequence in ['y', 'Y', 'year', 'Year']:
             frequence = 11
@@ -154,6 +191,9 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', frequence='da
         data = pd.concat([api.to_df(api.get_security_bars(frequence, _select_market_code(
             code), code, (int(lens / 800) - i) * 800, 800)) for i in range(int(lens / 800) + 1)], axis=0)
 
+        # 这里的问题是: 如果只取了一天的股票,而当天停牌, 那么就直接返回None了
+        if len(data) < 1:
+            return None
         data = data[data['open'] != 0]
 
         if if_fq in ['00', 'bfq']:
@@ -459,8 +499,8 @@ def QA_fetch_get_stock_list(type_='stock', ip=best_ip['stock'], port=7709):
         sz = data.query('sse=="sz"')
         sh = data.query('sse=="sh"')
 
-        sz=sz.assign(sec=sz.code.apply(for_sz))
-        sh=sh.assign(sec=sh.code.apply(for_sh))
+        sz = sz.assign(sec=sz.code.apply(for_sz))
+        sh = sh.assign(sec=sh.code.apply(for_sh))
 
         if type_ in ['stock', 'gp']:
 
