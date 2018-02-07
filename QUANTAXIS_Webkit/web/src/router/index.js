@@ -48,6 +48,10 @@ export default new Router({
           component: require('@/components/Personal/monitor.vue')
         },
         {
+          'path': '/personal/traingame',
+          component: require('@/components/Personal/traingame.vue')
+        },
+        {
           'path': '/personal/history/:id',
           name: 'history',
           component: require('@/components/Personal/history.vue')
