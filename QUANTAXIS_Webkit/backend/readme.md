@@ -1,127 +1,95 @@
-## quantaxisbackend ![NPM version](https://img.shields.io/npm/v/quantaxisbackend.svg?style=flat)
+# QUANTAXIS 的后台api
 
-a nodejs version of quantaxis spider
+<!-- TOC -->
 
-### Installation
-```bash
-$ npm install quantaxisbackend
+- [QUANTAXIS 的后台api](#quantaxis-的后台api)
+    - [后端的标准和格式规范](#后端的标准和格式规范)
+        - [基础标准](#基础标准)
+    - [命名格式](#命名格式)
+    - [后端的实现方式和注意事项](#后端的实现方式和注意事项)
+        - [跨域支持](#跨域支持)
+        - [权限](#权限)
+    - [必须实现的部分](#必须实现的部分)
+        - [用户管理 /user](#用户管理-user)
+        - [回测部分 /backtest](#回测部分-backtest)
+        - [行情查询部分 /marketdata](#行情查询部分-marketdata)
+        - [实时行情推送 /realtime](#实时行情推送-realtime)
+
+<!-- /TOC -->
+
+
+quantaxis 采用前后端分离的模式开发,所以对于后端而言 是一个可以快速替换/语言随意的部分.只需要按照规则设置好REST的url即可
+
+
+## 后端的标准和格式规范
+
+### 基础标准
+
+quantaxis的后台可以用 nodejs(express/koa), python(flask/django/tornado), go 等等语言实现
+
+quantaxis的后台部分主要是作为微服务,给前端(web/client/app)等提供标准化的查询/交互接口
+
+
+## 命名格式
+
+quantaxis的后台命名格式
+
+http://ip:port/功能(backtest/marketdata/user/..)/细分功能(info/query_code/..)
+
+example:
+
+```
+http://localhost:3000/backtest/info_cookie?cookie=xxxxx  ==>  按backtest的cookie查询backtest的信息
+
 ```
 
-### Example
-```js
-var quantaxisbackend = require('quantaxisbackend');
+## 后端的实现方式和注意事项
+
+
+### 跨域支持
+
+因为是前后端分离的模式, 需要对于url采取跨域允许
+
+跨域在python中的实现
+```python
+@app.route("/status")
+def status():
+    rst = make_response(jsonify('200'))
+    rst.headers['Access-Control-Allow-Origin'] = '*'
+    rst.headers['Access-Control-Allow-Methods'] = 'PUT,GET,POST,DELETE'
+    allow_headers = "Referer,Accept,Origin,User-Agent"
+    rst.headers['Access-Control-Allow-Headers'] = allow_headers
+    return rst
+
 ```
 
-### API
+跨域在nodejs中的实现
+```javascript
 
-- quantaxisbackend.domain()
-- quantaxisbackend._events()
-- quantaxisbackend._maxListeners()
-- quantaxisbackend.setMaxListeners()
-- quantaxisbackend.getMaxListeners()
-- quantaxisbackend.emit()
-- quantaxisbackend.addListener()
-- quantaxisbackend.on()
-- quantaxisbackend.prependListener()
-- quantaxisbackend.once()
-- quantaxisbackend.prependOnceListener()
-- quantaxisbackend.removeListener()
-- quantaxisbackend.removeAllListeners()
-- quantaxisbackend.listeners()
-- quantaxisbackend.listenerCount()
-- quantaxisbackend.eventNames()
-- quantaxisbackend.init()
-- quantaxisbackend.defaultConfiguration()
-- quantaxisbackend.lazyrouter()
-- quantaxisbackend.handle()
-- quantaxisbackend.use()
-- quantaxisbackend.route()
-- quantaxisbackend.engine()
-- quantaxisbackend.param()
-- quantaxisbackend.set()
-- quantaxisbackend.path()
-- quantaxisbackend.enabled()
-- quantaxisbackend.disabled()
-- quantaxisbackend.enable()
-- quantaxisbackend.disable()
-- quantaxisbackend.acl()
-- quantaxisbackend.bind()
-- quantaxisbackend.checkout()
-- quantaxisbackend.connect()
-- quantaxisbackend.copy()
-- quantaxisbackend.delete()
-- quantaxisbackend.get()
-- quantaxisbackend.head()
-- quantaxisbackend.link()
-- quantaxisbackend.lock()
-- quantaxisbackend.m-search()
-- quantaxisbackend.merge()
-- quantaxisbackend.mkactivity()
-- quantaxisbackend.mkcalendar()
-- quantaxisbackend.mkcol()
-- quantaxisbackend.move()
-- quantaxisbackend.notify()
-- quantaxisbackend.options()
-- quantaxisbackend.patch()
-- quantaxisbackend.post()
-- quantaxisbackend.propfind()
-- quantaxisbackend.proppatch()
-- quantaxisbackend.purge()
-- quantaxisbackend.put()
-- quantaxisbackend.rebind()
-- quantaxisbackend.report()
-- quantaxisbackend.search()
-- quantaxisbackend.subscribe()
-- quantaxisbackend.trace()
-- quantaxisbackend.unbind()
-- quantaxisbackend.unlink()
-- quantaxisbackend.unlock()
-- quantaxisbackend.unsubscribe()
-- quantaxisbackend.all()
-- quantaxisbackend.del()
-- quantaxisbackend.render()
-- quantaxisbackend.listen()
-- quantaxisbackend.request()
-- quantaxisbackend.response()
-- quantaxisbackend.cache()
-- quantaxisbackend.engines()
-- quantaxisbackend.settings()
-- quantaxisbackend._eventsCount()
-- quantaxisbackend.locals()
-- quantaxisbackend.mountpath()
-- quantaxisbackend._router()
+router.get('*', function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+  res.header("X-Powered-By", ' 3.2.1')
+  res.header("Content-Type", "application/json;charset=utf-8");
+  next();
+});
 
-### Contributing
-- Fork this Repo first
-- Clone your Repo
-- Install dependencies by `$ npm install`
-- Checkout a feature branch
-- Feel free to add your features
-- Make sure your features are fully tested
-- Publish your local branch, Open a pull request
-- Enjoy hacking <3
+```
 
-### MIT license
-Copyright (c) 2017 yutianut (yutiansut@qq.com)
+### 权限
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the &quot;Software&quot;), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+后台服务需要保护好隐私不被泄露,避免路径攻击和端口暴露等问题
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+## 必须实现的部分
 
-THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
 
----
-![docor]()
-built upon love by [docor](git+https://github.com/turingou/docor.git) v0.3.0
+### 用户管理 /user
+
+
+### 回测部分 /backtest
+
+### 行情查询部分 /marketdata
+
+### 实时行情推送 /realtime
+

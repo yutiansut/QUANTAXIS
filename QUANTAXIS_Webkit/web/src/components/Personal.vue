@@ -28,6 +28,9 @@
         <router-link to="/personal/stocklist">
           <mu-list-item title="股票池"></mu-list-item>
         </router-link>
+        <router-link to="/personal/traingame">
+          <mu-list-item title="日线训练"></mu-list-item>
+        </router-link>
 
         <router-link to="/personal/capital">
           <mu-list-item title="资金曲线"></mu-list-item>
