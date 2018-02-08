@@ -191,14 +191,11 @@ class QA_Tdx_Executor():
     def get_security_bar_concurrent(self, code, _type, lens):
         #code = [code] if type(code) is str else code
         try:
-            print('{}{}{}{}{}'.format(self.get_frequence(_type), self.get_market(
-                str(code[0])), str(code[0]), 0, lens))
-            print(self.get_security_bars(self.get_frequence(_type), self.get_market(
-                str(code[0])), str(code[0]), 0, lens))
+
             data = {self.get_security_bars(self.get_frequence(_type), self.get_market(
                 str(code)), str(code), 0, lens) for code in code}
 
-            print([i.result() for i in data])
+            return [i.result() for i in data]
 
         except:
             raise Exception
@@ -253,8 +250,7 @@ def get_bar():
     for i in range(100000):
         _time = datetime.datetime.now()
         if QA_util_if_tradetime(_time):  # 如果在交易时间
-            #data = x.get_realtime(code)
-            data = x.get_security_bar_concurrent(code[0:10], 'day', 10)
+            data = x.get_security_bar_concurrent(code, 'day', 1)
             print(data)
             #data[0]['datetime'] = data[1]
             # x.save_mongo(data[0])
@@ -274,6 +270,13 @@ def get_bar():
             print('Not Trading time {}'.format(_time))
             time.sleep(1)
 
+def get_day_once():
+
+    _time1 = datetime.datetime.now()
+    from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_block_adv
+    code = QA_fetch_stock_block_adv().code
+    x = QA_Tdx_Executor()
+    return x.get_security_bar_concurrent(code, 'day', 1)
 
 def bat():
 
