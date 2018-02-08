@@ -13,6 +13,7 @@
         - [用户管理 /user](#用户管理-user)
         - [回测部分 /backtest](#回测部分-backtest)
         - [行情查询部分 /marketdata](#行情查询部分-marketdata)
+            - [current](#current)
         - [实时行情推送 /realtime](#实时行情推送-realtime)
 
 <!-- /TOC -->
@@ -90,6 +91,9 @@ router.get('*', function (req, res, next) {
 ### 回测部分 /backtest
 
 ### 行情查询部分 /marketdata
+
+#### current
+http://localhost:3000/stock/history/time?code=000001&start=2017-01-01&end=2018-02-02
 
 ### 实时行情推送 /realtime
 
