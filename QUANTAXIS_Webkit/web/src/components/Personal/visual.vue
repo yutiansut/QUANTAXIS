@@ -209,8 +209,6 @@
             var end_time = data['end_time']
             var profit = data['total_returns']
 
-            //console.log(data)
-
             this.items[0]['alpha'] = data['alpha'].toFixed(3)
             this.items[0]['beta'] = data['beta'].toFixed(4)
             this.items[0]['max_drop'] = data['max_drop'].toFixed(3)
@@ -221,8 +219,6 @@
             this.items[0]['benchmark_vol'] = data['benchmark_vol'].toFixed(5)
             this.items[0]['exist'] = data['exist']
             this.items[0]['win_rate'] = data['win_rate'].toFixed(3)
-            //console.log(this.items)
-
 
             this.chart.setOption({
               title: {
@@ -239,12 +235,9 @@
               if (trade_date.indexOf(market_time[i]) == -1) {
                 trade_date.splice(i, 0, market_time[i])
                 assets.splice(i, 0, assets[i - 1])
-                //console.log()
               }
 
             }
-            //console.log(market_time)
-            //console.log(benchmark_history)
             this.chart.setOption({
               series: [{
                 name: 'benchmark',

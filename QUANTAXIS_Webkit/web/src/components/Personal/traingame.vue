@@ -2,13 +2,11 @@
   <div>
       <h2 align="left">>TrainGame</h2>
       
-        <div class="container">
-        <div id="main">
-          </div>
-        </div>
-      <div>
 
-      </div>
+      <div id="main">
+        </div>
+
+
   </div>
 </template>
 <script>
@@ -19,7 +17,7 @@ import axios from "axios";
 export default {
   data() {
     return {
-      title:'000001',
+      title: "000001",
       chart: null,
       time: [],
       toast: false
@@ -36,8 +34,6 @@ export default {
         grid: {
           x: "5%",
           y: "15%",
-          // x2:300,
-          // y2:400,
           borderWidth: 1
         },
         toolbox: {
@@ -46,12 +42,7 @@ export default {
             dataZoom: {
               yAxisIndex: "none"
             },
-            dataView: {
-              readOnly: false
-            },
-            magicType: {
-              type: ["line", "bar"]
-            },
+            // dataView: { readOnly: false },
             restore: {},
             saveAsImage: {}
           }
@@ -66,19 +57,11 @@ export default {
           {
             data: [],
             scale: true
-          },
-          {
-            data: [],
-            scale: true
-
-            //boundaryGap : false,
-            //axisLine: {onZero: true}
           }
         ],
         yAxis: [
-          {},
           {
-            name: "account",
+            name: "price",
             max: "dataMax",
             min: "dataMin"
           }
@@ -86,13 +69,9 @@ export default {
         legend: {
           data: [
             {
-              name: "assets"
-            },
-            {
-              name: "benchmark"
+              name: "market"
             }
           ],
-          //data:['k_line'],
           x: "left",
           top: "5%"
         },
@@ -100,58 +79,83 @@ export default {
           {
             show: true,
             realtime: true,
-            start: 0,
+            start:90,
+            end: 100
+          },
+          {
+            type: "inside",
+            realtime: true,
+            start: 90,
             end: 100
           }
         ],
         series: [
           {
-            name: "assets",
-            type: "line",
-            data: [],
-            lineStyle: {
-              normal: {
-                color: "#c23531"
-              }
-            },
-            areaStyle: {
-              normal: {
-                color: "#c23531",
-                opacity: 0.3
-              }
-            },
-            yAxisIndex: 1
-          },
-          {
-            name: "benchmark",
-            type: "line",
-            data: [],
-            lineStyle: {
-              normal: {
-                color: "#2f4554"
-              }
-            },
-            areaStyle: {
-              normal: {
-                color: "#2f4554",
-                opacity: 0.3
-              }
-            },
-            yAxisIndex: 1
+            name: "market",
+            type: "candlestick",
+            data: []
           }
         ]
       });
+    },
+    get_data(code, start, end) {
+      axios
+        .get(
+          "http://localhost:3000/stock/history/time?code=000001&start=2017-01-01&end=2018-02-08"
+        )
+        .then(response => {
+          var date = new Date()
+          console.log(string(date))
+          var market_data = response.data;
+          var kline = [];
+          var k_time = [];
+          for (var i = 0; i < market_data.length; i++) {
+            var temp_day = [];
+            temp_day.push(parseFloat(market_data[i]["open"]));
+            temp_day.push(parseFloat(market_data[i]["close"]));
+            temp_day.push(parseFloat(market_data[i]["low"]));
+            temp_day.push(parseFloat(market_data[i]["high"]));
+            kline.push(temp_day);
+            k_time.push(market_data[i]['date']);
+          }
+          this.chart.setOption({
+            title: {
+              text: "data"
+            },
+
+            series: {
+              name: "market",
+              type: "candlestick",
+              data: kline
+            },
+            xAxis: {
+              data: k_time
+            }
+          });
+        });
     }
   },
-    get_data(code,start,end){
-      data=axios.get()
-
-    },
 
   mounted() {
     this.$nextTick(function() {
       this.drawline("main");
+      this.get_data("000001", "2018-01-01", "2018-02-02");
     });
   }
 };
 </script>
+
+<style>
+  #main {
+    position: relative;
+    left: 0;
+    margin-left: 0px;
+    margin-bottom: 0px;
+    width: 800px;
+    height: 600px;
+    border-radius: 10px;
+  }
+
+
+
+</style>
