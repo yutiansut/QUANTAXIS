@@ -2,7 +2,7 @@
   <div>
       <h2 align="left">>TrainGame</h2>
       
-
+      <mu-raised-button v-on:click='new_data()' label="BUY" class="demo-raised-button" secondary/>
       <div id="main">
         </div>
 
@@ -20,7 +20,12 @@ export default {
       title: "000001",
       chart: null,
       time: [],
-      toast: false
+      toast: false,
+      market_data:[],
+      show_data:[],
+      show_time:[],
+      splited_data:[],
+      splited_date:[]
     };
   },
   methods: {
@@ -79,7 +84,7 @@ export default {
           {
             show: true,
             realtime: true,
-            start:90,
+            start: 90,
             end: 100
           },
           {
@@ -104,19 +109,29 @@ export default {
           "http://localhost:3000/stock/history/time?code=000001&start=2017-01-01&end=2018-02-08"
         )
         .then(response => {
-          var date = new Date()
-          console.log(string(date))
           var market_data = response.data;
           var kline = [];
           var k_time = [];
-          for (var i = 0; i < market_data.length; i++) {
+          var n =16
+          for (var i = 0; i < market_data.length-n; i++) {
             var temp_day = [];
             temp_day.push(parseFloat(market_data[i]["open"]));
             temp_day.push(parseFloat(market_data[i]["close"]));
             temp_day.push(parseFloat(market_data[i]["low"]));
             temp_day.push(parseFloat(market_data[i]["high"]));
-            kline.push(temp_day);
-            k_time.push(market_data[i]['date']);
+
+            this.show_data.push(temp_day);
+            this.show_time.push(market_data[i]["date"]);
+          }
+          for (var i = market_data.length-n; i < market_data.length; i++) {
+            var temp_day = [];
+            temp_day.push(parseFloat(market_data[i]["open"]));
+            temp_day.push(parseFloat(market_data[i]["close"]));
+            temp_day.push(parseFloat(market_data[i]["low"]));
+            temp_day.push(parseFloat(market_data[i]["high"]));
+            
+            this.splited_data.push(temp_day);
+            this.splited_date.push(market_data[i]["date"]);
           }
           this.chart.setOption({
             title: {
@@ -126,13 +141,34 @@ export default {
             series: {
               name: "market",
               type: "candlestick",
-              data: kline
+              data: this.show_data
             },
             xAxis: {
-              data: k_time
+              data: this.show_time
             }
           });
+
         });
+    },
+    new_data(){
+      var l1=this.splited_data.shift();
+      var l1_date=this.splited_date.shift();
+      this.show_data.push(l1);
+      this.show_time.push(l1_date);
+                this.chart.setOption({
+            title: {
+              text: "data"
+            },
+
+            series: {
+              name: "market",
+              type: "candlestick",
+              data: this.show_data
+            },
+            xAxis: {
+              data: this.show_time
+            }
+          });
     }
   },
 
@@ -146,16 +182,13 @@ export default {
 </script>
 
 <style>
-  #main {
-    position: relative;
-    left: 0;
-    margin-left: 0px;
-    margin-bottom: 0px;
-    width: 800px;
-    height: 600px;
-    border-radius: 10px;
-  }
-
-
-
+#main {
+  position: relative;
+  left: 0;
+  margin-left: 0px;
+  margin-bottom: 0px;
+  width: 800px;
+  height: 600px;
+  border-radius: 10px;
+}
 </style>
