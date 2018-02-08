@@ -29,4 +29,15 @@ import pandas as pd
 
 
 def concat(lists):
+    """类似于pd.concat 用于合并一个list里面的多个DataStruct,会自动去重
+
+
+
+    Arguments:
+        lists {[type]} -- [DataStruct1,DataStruct2,....,DataStructN]
+
+    Returns:
+        [type] -- new DataStruct
+    """
+
     return lists[0].new(pd.concat([lists.data for lists in lists]).drop_duplicates())
