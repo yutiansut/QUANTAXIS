@@ -21,11 +21,11 @@ export default {
       chart: null,
       time: [],
       toast: false,
-      market_data:[],
-      show_data:[],
-      show_time:[],
-      splited_data:[],
-      splited_date:[]
+      market_data: [],
+      show_data: [],
+      show_time: [],
+      splited_data: [],
+      splited_date: []
     };
   },
   methods: {
@@ -112,8 +112,8 @@ export default {
           var market_data = response.data;
           var kline = [];
           var k_time = [];
-          var n =16
-          for (var i = 0; i < market_data.length-n; i++) {
+          var n = 50;
+          for (var i = 0; i < market_data.length - n; i++) {
             var temp_day = [];
             temp_day.push(parseFloat(market_data[i]["open"]));
             temp_day.push(parseFloat(market_data[i]["close"]));
@@ -123,13 +123,13 @@ export default {
             this.show_data.push(temp_day);
             this.show_time.push(market_data[i]["date"]);
           }
-          for (var i = market_data.length-n; i < market_data.length; i++) {
+          for (var i = market_data.length - n; i < market_data.length; i++) {
             var temp_day = [];
             temp_day.push(parseFloat(market_data[i]["open"]));
             temp_day.push(parseFloat(market_data[i]["close"]));
             temp_day.push(parseFloat(market_data[i]["low"]));
             temp_day.push(parseFloat(market_data[i]["high"]));
-            
+
             this.splited_data.push(temp_day);
             this.splited_date.push(market_data[i]["date"]);
           }
@@ -147,28 +147,27 @@ export default {
               data: this.show_time
             }
           });
-
         });
     },
-    new_data(){
-      var l1=this.splited_data.shift();
-      var l1_date=this.splited_date.shift();
+    new_data() {
+      var l1 = this.splited_data.shift();
+      var l1_date = this.splited_date.shift();
       this.show_data.push(l1);
       this.show_time.push(l1_date);
-                this.chart.setOption({
-            title: {
-              text: "data"
-            },
+      this.chart.setOption({
+        title: {
+          text: "data"
+        },
 
-            series: {
-              name: "market",
-              type: "candlestick",
-              data: this.show_data
-            },
-            xAxis: {
-              data: this.show_time
-            }
-          });
+        series: {
+          name: "market",
+          type: "candlestick",
+          data: this.show_data
+        },
+        xAxis: {
+          data: this.show_time
+        }
+      });
     }
   },
 
