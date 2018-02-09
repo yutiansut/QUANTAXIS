@@ -26,6 +26,7 @@
 """DataStruct的方法
 """
 import pandas as pd
+from QUANTAXIS.QAData.QADataStruct import QA_DataStruct_Stock_day, QA_DataStruct_Stock_min
 
 
 def concat(lists):
@@ -41,3 +42,21 @@ def concat(lists):
     """
 
     return lists[0].new(pd.concat([lists.data for lists in lists]).drop_duplicates())
+
+
+def from_tushare(dataframe, dtype='day'):
+    """dataframe from tushare
+    
+    Arguments:
+        dataframe {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+
+    if dtype in ['day']:
+        return QA_DataStruct_Stock_day(dataframe.set_index(['date', 'code'], drop=False), dtype='stock_day')
+    elif dtype in ['min']:
+        return QA_DataStruct_Stock_min(dataframe.set_index(['datetime', 'code'], drop=False), dtype='stock_min')
+
+

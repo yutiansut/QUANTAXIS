@@ -93,6 +93,7 @@ router.get('*', function (req, res, next) {
 ### 行情查询部分 /marketdata
 
 #### current
+
 http://localhost:3000/stock/history/time?code=000001&start=2017-01-01&end=2018-02-02
 
 ### 实时行情推送 /realtime
