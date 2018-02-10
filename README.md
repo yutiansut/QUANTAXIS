@@ -11,7 +11,7 @@
 ![post201802](http://osnhakmay.bkt.clouddn.com/quantaxis-post201802.png)
 ![main_1](http://osnhakmay.bkt.clouddn.com/Main_1.gif)
 ![logo](http://osnhakmay.bkt.clouddn.com/small_logo.png)
-
+![presentbyyutiansut](http://osnhakmay.bkt.clouddn.com/yutiansut.png)
 
 
 ![version](https://img.shields.io/badge/Version-%201.0.9-orange.svg)
