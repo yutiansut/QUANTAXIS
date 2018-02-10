@@ -87,8 +87,18 @@ router.get('*', function (req, res, next) {
 
 ### 用户管理 /user
 
+登陆
+
+http://localhost:3000/users/login?name=admin&password=admin
+
+注册
+
+http://localhost:3000/users/signup?name=[name]&password=[password]
+
 
 ### 回测部分 /backtest
+
+
 
 ### 行情查询部分 /marketdata
 
