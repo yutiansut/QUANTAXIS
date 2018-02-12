@@ -48,7 +48,7 @@ def QA_save_stock_day_all(client=DATABASE):
         QA_util_log_info('Now Saving ==== %s' % (i))
         try:
             data_json = QA_fetch_get_stock_day(
-                i, startDate='1990-01-01')
+                i, start='1990-01-01')
 
             __coll.insert_many(data_json)
         except:
@@ -95,7 +95,7 @@ def QA_save_stock_day_all_bfq(client=DATABASE):
         QA_util_log_info('Now Saving ==== %s' % (i))
         try:
             data_json = QA_fetch_get_stock_day(
-                i, startDate='1990-01-01', if_fq='00')
+                i, start='1990-01-01', if_fq='00')
 
             __coll.insert_many(data_json)
         except:
@@ -121,7 +121,7 @@ def QA_save_stock_day_with_fqfactor(client=DATABASE):
         QA_util_log_info('Now Saving ==== %s' % (i))
         try:
             data_hfq = QA_fetch_get_stock_day(
-                i, startDate='1990-01-01', if_fq='02', type_='pd')
+                i, start='1990-01-01', if_fq='02', type_='pd')
             data_json = QA_util_to_json_from_pandas(data_hfq)
             __coll.insert_many(data_json)
         except:
