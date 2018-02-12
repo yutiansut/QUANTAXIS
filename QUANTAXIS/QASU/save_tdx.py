@@ -51,6 +51,12 @@ def now_time():
 
 
 def QA_SU_save_stock_day(client=DATABASE):
+    """save stock_day
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
     stock_list = QA_fetch_get_stock_time_to_market()
     coll_stock_day = client.stock_day
     coll_stock_day.create_index(
@@ -100,6 +106,12 @@ def QA_SU_save_stock_day(client=DATABASE):
 
 
 def QA_SU_save_stock_xdxr(client=DATABASE):
+    """[summary]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
     client.drop_collection('stock_xdxr')
     stock_list = QA_fetch_get_stock_time_to_market()
     coll = client.stock_xdxr
@@ -118,7 +130,6 @@ def QA_SU_save_stock_xdxr(client=DATABASE):
 
             err.append(str(code))
     for i_ in range(len(stock_list)):
-        #__saving_work('000001')
         QA_util_log_info('The %s of Total %s' % (i_, len(stock_list)))
         QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
             float(i_ / len(stock_list) * 100))[0:4] + '%')
@@ -143,6 +154,12 @@ def QA_SU_save_stock_xdxr(client=DATABASE):
 
 
 def QA_SU_save_stock_min(client=DATABASE):
+    """save stock_min
+    
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
     stock_list = QA_fetch_get_stock_time_to_market()
     coll = client.stock_min
     coll.create_index([('code', pymongo.ASCENDING), ('time_stamp',
@@ -201,6 +218,12 @@ def QA_SU_save_stock_min(client=DATABASE):
 
 
 def QA_SU_save_index_day(client=DATABASE):
+    """save index_day
+    
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
     __index_list = QA_fetch_get_stock_list('index')
     coll = client.index_day
     coll.create_index([('code', pymongo.ASCENDING),
@@ -246,6 +269,12 @@ def QA_SU_save_index_day(client=DATABASE):
 
 
 def QA_SU_save_index_min(client=DATABASE):
+    """save index_min
+    
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
     __index_list = QA_fetch_get_stock_list('index')
     coll = client.index_min
     coll.create_index([('code', pymongo.ASCENDING), ('time_stamp',
@@ -303,6 +332,12 @@ def QA_SU_save_index_min(client=DATABASE):
 
 
 def QA_SU_save_etf_day(client=DATABASE):
+    """save etf_day
+    
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
     __index_list = QA_fetch_get_stock_list('etf')
     coll = client.index_day
     coll.create_index([('code', pymongo.ASCENDING),
@@ -350,6 +385,12 @@ def QA_SU_save_etf_day(client=DATABASE):
 
 
 def QA_SU_save_etf_min(client=DATABASE):
+    """save etf_min
+    
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
     __index_list = QA_fetch_get_stock_list('etf')
     coll = client.index_min
     coll.create_index([('code', pymongo.ASCENDING), ('time_stamp',
@@ -407,6 +448,12 @@ def QA_SU_save_etf_min(client=DATABASE):
 
 
 def QA_SU_save_stock_list(client=DATABASE):
+    """save stock_list
+    
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
     client.drop_collection('stock_list')
     coll = client.stock_list
     coll.create_index('code')
@@ -421,6 +468,12 @@ def QA_SU_save_stock_list(client=DATABASE):
 
 
 def QA_SU_save_stock_block(client=DATABASE):
+    """save stock_block
+    
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
     client.drop_collection('stock_block')
     coll = client.stock_block
     coll.create_index('code')
@@ -436,6 +489,12 @@ def QA_SU_save_stock_block(client=DATABASE):
 
 
 def QA_SU_save_stock_info(client=DATABASE):
+    """save stock_info
+    
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
     client.drop_collection('stock_info')
     stock_list = QA_fetch_get_stock_time_to_market()
     coll = client.stock_info
@@ -466,6 +525,12 @@ def QA_SU_save_stock_info(client=DATABASE):
 
 
 def QA_SU_save_stock_transaction(client=DATABASE):
+    """save stock_transaction
+    
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
     stock_list = QA_fetch_get_stock_time_to_market()
     coll = client.stock_transaction
     coll.create_index('code')

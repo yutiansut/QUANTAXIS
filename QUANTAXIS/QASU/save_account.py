@@ -28,12 +28,43 @@ from QUANTAXIS.QAUtil import DATABASE
 """
 
 
-def save_account(message,collection=DATABASE.account):
+def save_account(message, collection=DATABASE.account):
+    """save account
+    
+    Arguments:
+        message {[type]} -- [description]
+    
+    Keyword Arguments:
+        collection {[type]} -- [description] (default: {DATABASE})
+    """
+
     collection.save(message)
 
 
-def query_account(query_mes,collection=DATABASE.account):
+def query_account(query_mes, collection=DATABASE.account):
+    """get the account
+    
+    Arguments:
+        query_mes {[type]} -- [description]
+    
+    Keyword Arguments:
+        collection {[type]} -- [description] (default: {DATABASE})
+    
+    Returns:
+        [type] -- [description]
+    """
+
     return collection.find(query_mes)
 
-def update_account(mes,collection=DATABASE.account):
-    collection.find_one_and_update({'account_cookie':mes['account_cookie']})
+
+def update_account(mes, collection=DATABASE.account):
+    """update the account with account message
+    
+    Arguments:
+        mes {[type]} -- [description]
+    
+    Keyword Arguments:
+        collection {[type]} -- [description] (default: {DATABASE})
+    """
+
+    collection.find_one_and_update({'account_cookie': mes['account_cookie']})
