@@ -47,7 +47,9 @@ from QUANTAXIS.QAUtil import (DATABASE, QA_util_get_real_date,
 
 
 def now_time():
-    return str(QA_util_get_real_date(str(datetime.date.today() - datetime.timedelta(days=1)), trade_date_sse, -1)) + ' 17:00:00' if datetime.datetime.now().hour < 15 else str(QA_util_get_real_date(str(datetime.date.today()), trade_date_sse, -1)) + ' 15:00:00'
+    return str(QA_util_get_real_date(str(datetime.date.today() - datetime.timedelta(days=1)), trade_date_sse, -1)) + \
+        ' 17:00:00' if datetime.datetime.now().hour < 15 else str(QA_util_get_real_date(
+            str(datetime.date.today()), trade_date_sse, -1)) + ' 15:00:00'
 
 
 def QA_SU_save_stock_day(client=DATABASE):
@@ -155,7 +157,7 @@ def QA_SU_save_stock_xdxr(client=DATABASE):
 
 def QA_SU_save_stock_min(client=DATABASE):
     """save stock_min
-    
+
     Keyword Arguments:
         client {[type]} -- [description] (default: {DATABASE})
     """
@@ -219,7 +221,7 @@ def QA_SU_save_stock_min(client=DATABASE):
 
 def QA_SU_save_index_day(client=DATABASE):
     """save index_day
-    
+
     Keyword Arguments:
         client {[type]} -- [description] (default: {DATABASE})
     """
@@ -270,7 +272,7 @@ def QA_SU_save_index_day(client=DATABASE):
 
 def QA_SU_save_index_min(client=DATABASE):
     """save index_min
-    
+
     Keyword Arguments:
         client {[type]} -- [description] (default: {DATABASE})
     """
@@ -333,7 +335,7 @@ def QA_SU_save_index_min(client=DATABASE):
 
 def QA_SU_save_etf_day(client=DATABASE):
     """save etf_day
-    
+
     Keyword Arguments:
         client {[type]} -- [description] (default: {DATABASE})
     """
@@ -386,7 +388,7 @@ def QA_SU_save_etf_day(client=DATABASE):
 
 def QA_SU_save_etf_min(client=DATABASE):
     """save etf_min
-    
+
     Keyword Arguments:
         client {[type]} -- [description] (default: {DATABASE})
     """
@@ -449,7 +451,7 @@ def QA_SU_save_etf_min(client=DATABASE):
 
 def QA_SU_save_stock_list(client=DATABASE):
     """save stock_list
-    
+
     Keyword Arguments:
         client {[type]} -- [description] (default: {DATABASE})
     """
@@ -469,7 +471,7 @@ def QA_SU_save_stock_list(client=DATABASE):
 
 def QA_SU_save_stock_block(client=DATABASE):
     """save stock_block
-    
+
     Keyword Arguments:
         client {[type]} -- [description] (default: {DATABASE})
     """
@@ -490,7 +492,7 @@ def QA_SU_save_stock_block(client=DATABASE):
 
 def QA_SU_save_stock_info(client=DATABASE):
     """save stock_info
-    
+
     Keyword Arguments:
         client {[type]} -- [description] (default: {DATABASE})
     """
@@ -526,7 +528,7 @@ def QA_SU_save_stock_info(client=DATABASE):
 
 def QA_SU_save_stock_transaction(client=DATABASE):
     """save stock_transaction
-    
+
     Keyword Arguments:
         client {[type]} -- [description] (default: {DATABASE})
     """
