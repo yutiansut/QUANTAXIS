@@ -40,8 +40,15 @@ def get_filename():
 
 
 def download():
+    """
+    会创建一个download/文件夹
+    """
     result = get_filename()
     for item in result:
         r = requests.get('http://down.tdx.com.cn:8001/fin/{}'.format(item))
         with open(item, "wb") as code:
             code.write(r.content)
+
+
+def get_and_parse(filename):
+    return HistoryFinancialReader.get_df(filename)
