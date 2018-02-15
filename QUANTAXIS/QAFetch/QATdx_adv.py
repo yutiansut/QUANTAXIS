@@ -74,7 +74,6 @@ class QA_Tdx_Executor():
     def _test_speed(self, ip, port=7709):
 
         api = TdxHq_API(raise_exception=True, auto_retry=False)
-        #api.need_setup = False
         _time = datetime.datetime.now()
         try:
             with api.connect(ip, port, time_out=0.05):
@@ -83,7 +82,6 @@ class QA_Tdx_Executor():
                 else:
                     return datetime.timedelta(9, 9, 0).total_seconds()
         except Exception as e:
-            #print('BAD IP {}, DEL for Reason{}'.format(ip,e))
             return datetime.timedelta(9, 9, 0).total_seconds()
 
     def get_market(self, code):
@@ -181,7 +179,6 @@ class QA_Tdx_Executor():
         code = [code] if type(code) is str else code
 
         try:
-            # for id_ in range(int(len(code) / 80) + 1):
             data = {self.get_security_quotes([(self.get_market(
                 x), x) for x in code[80 * pos:80 * (pos + 1)]]) for pos in range(int(len(code) / 80) + 1)}
             return (pd.concat([self.api_no_connection.to_df(i.result()) for i in data]), datetime.datetime.now())
@@ -189,7 +186,6 @@ class QA_Tdx_Executor():
             pass
 
     def get_security_bar_concurrent(self, code, _type, lens):
-        #code = [code] if type(code) is str else code
         try:
 
             data = {self.get_security_bars(self.get_frequence(_type), self.get_market(
