@@ -80,7 +80,6 @@ def status():
     allow_headers = "Referer,Accept,Origin,User-Agent"
     rst.headers['Access-Control-Allow-Headers'] = allow_headers
     return rst
-
 ```
 
 
