@@ -240,12 +240,7 @@ def get_bar():
     print(x._queue.qsize())
     print(x.get_available())
 
-    # database = DATABASE.get_collection(
-    #     'realtime_{}'.format(datetime.date.today()))
 
-    # print(database)
-    # database.create_index([('code', QA_util_sql_mongo_sort_ASCENDING),
-    #                        ('datetime', QA_util_sql_mongo_sort_ASCENDING)])
 
     for i in range(100000):
         _time = datetime.datetime.now()
