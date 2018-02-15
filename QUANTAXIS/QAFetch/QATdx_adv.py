@@ -210,7 +210,6 @@ class QA_Tdx_Executor():
             self._queue.put(_api)
             return context
         except Exception as e:
-            # print(e)
             return self._get_security_bars(context, code, _type, lens)
 
     def get_security_bar(self, code, _type, lens):
