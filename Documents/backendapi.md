@@ -138,11 +138,9 @@ http://[ip]:[port]/users/signup?name=[name]&password=[password]
 总URI为 http://[ip]:[port]/[market_type]/[frequence]?code=[]&start=[]&end=[]
 
 #### 股票日线
-
 http://[ip]:[port]/marketdata/stock/day?code=[]&start=[]&end=[]
 
 #### 股票分钟线
-
 http://[ip]:[port]/marketdata/stock/min?code=[]&start=[]&end=[]
 
 #### 股票实时上下五档
@@ -153,10 +151,17 @@ http://[ip]:[port]/marketdata/stock/transaction?code=[]&start=[]&end=[]
 
 
 
+### 实时行情推送 /quotation
 
-#### current
+/quotation 推送指的是 建立一个websocket链接:
 
-http://[ip]:[port]/stock/history/time?code=000001&start=2017-01-01&end=2018-02-02
+1. user login
 
-### 实时行情推送 /realtime
+2. auth
+
+3. send_req
+
+4. make connection
+
+5. data transport
 
