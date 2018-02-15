@@ -1,20 +1,21 @@
 # 使用Docker建立QUANTAXIS执行环境
 
-<!-- TOC -->
+<!-- vscode-markdown-toc -->
+* 1. [QUANTAXIS的镜像](#QUANTAXIS)
+* 2. [1.获取QUANTAIS镜像](#QUANTAIS)
+	* 2.1. [1.1 执行以下命令获取镜像(2选1)](#)
+	* 2.2. [1.2 运行镜像(2选1)](#-1)
+	* 2.3. [1.3 在docker中执行命令(启动服务)](#docker)
+	* 2.4. [在浏览器中打开以下链接](#-1)
+	* 2.5. [其他注意选项](#-1)
 
-- [使用Docker建立QUANTAXIS执行环境](#使用docker建立quantaxis执行环境)
-    - [QUANTAXIS的镜像](#quantaxis的镜像)
-    - [1.获取QUANTAIS镜像](#1获取quantais镜像)
-        - [1.1 执行以下命令获取镜像(2选1)](#11-执行以下命令获取镜像2选1)
-        - [1.2 运行镜像(2选1)](#12-运行镜像2选1)
-        - [1.3 在docker中执行命令(启动服务)](#13-在docker中执行命令启动服务)
-        - [在浏览器中打开以下链接](#在浏览器中打开以下链接)
-        - [其他注意选项](#其他注意选项)
+<!-- vscode-markdown-toc-config
+	numbering=true
+	autoSave=true
+	/vscode-markdown-toc-config -->
+<!-- /vscode-markdown-toc -->
 
-<!-- /TOC -->
-
-
-## QUANTAXIS的镜像
+##  1. <a name='QUANTAXIS'></a>QUANTAXIS的镜像
 
 QUANTAXIS官方维护了2个镜像:
 
@@ -50,14 +51,14 @@ QUANTAXIS官方维护了2个镜像:
 
 
 
-## 1.获取QUANTAIS镜像
+##  2. <a name='QUANTAIS'></a>1.获取QUANTAIS镜像
 
 首先，到[docker网站](https://www.docker.com/)下载相应的版本，并创建账号（注意：登录docker账号才能下载镜像）
 
 (如果国外网站下载速度过慢,windows版本的docker安装文件群共享有)
 
 
-### 1.1 执行以下命令获取镜像(2选1)
+###  2.1. <a name=''></a>1.1 执行以下命令获取镜像(2选1)
 
 
 ```shell
@@ -75,7 +76,7 @@ docker pull registry.cn-shanghai.aliyuncs.com/yutiansut/quantaxis
 ![执行时的命令行](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20171213102629.png)
 
 
-### 1.2 运行镜像(2选1)
+###  2.2. <a name='-1'></a>1.2 运行镜像(2选1)
 
 ```
 # 选择你下载的镜像
@@ -86,7 +87,7 @@ docker run -it -e GRANT_SUDO=yes -p 8888:8888 -p 8080:8080 -p 3000:3000 registry
 ```
 
 
-### 1.3 在docker中执行命令(启动服务)
+###  2.3. <a name='docker'></a>1.3 在docker中执行命令(启动服务)
 ```
 
 # 启动 mongodb    
@@ -107,14 +108,14 @@ cd /home/quantaxis/config && nohup sh ./startjupyter.sh &
 
 
 
-### 在浏览器中打开以下链接
+###  2.4. <a name='-1'></a>在浏览器中打开以下链接
 ```angular2html
 http://localhost:8080
 http://localhost:8888
 ```
 
 
-### 其他注意选项
+###  2.5. <a name='-1'></a>其他注意选项
 
 1. docker 是可以通过ssh 连接的 ``` /etc/init.d/ssh start ```
 2. 多窗口 
