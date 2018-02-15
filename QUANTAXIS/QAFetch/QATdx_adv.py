@@ -285,7 +285,6 @@ def bat():
     for i in range(100000):
         _time = datetime.datetime.now()
         if QA_util_if_tradetime(_time):  # 如果在交易时间
-            #data = x.get_realtime(code)
             data = x.get_realtime_concurrent(code)
 
             data[0]['datetime'] = data[1]
