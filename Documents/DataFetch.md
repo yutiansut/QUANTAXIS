@@ -30,10 +30,10 @@
 
 
 ##  1. <a name='FROMWEBSITE'></a>从网上获取 | FROM WEBSITE
-"""
+
 QA.QA_fetch_get_  系列:
+
 从网上获取数据
-"""
 
 ###  1.1. <a name='STOCK_CNDAY'></a>股票/日线 | STOCK_CN/DAY
 ```python
@@ -147,12 +147,13 @@ data=QA.QAFetch.QATdx.QA_fetch_get_stock_block()
 ```
 
 
-"""
-QA.QA_fetch_ 系列 
-从本地数据库获取数据
-"""
+
 
 ##  2. <a name='FROMLOCALHOST'></a>从数据库获取 | FROM LOCALHOST
+
+QA.QA_fetch_ 系列 
+
+从本地数据库获取数据
 
 ###  2.1. <a name='STOCK_CNDAY-1'></a>股票日线 | STOCK_CN/DAY
 ```python
