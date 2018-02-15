@@ -245,14 +245,7 @@ def get_bar():
         _time = datetime.datetime.now()
         if QA_util_if_tradetime(_time):  # 如果在交易时间
             data = x.get_security_bar_concurrent(code, 'day', 1)
-            print(data)
-            #data[0]['datetime'] = data[1]
-            # x.save_mongo(data[0])
-            # print(code[0])
-            #data = x.get_security_bars(code, '15min', 20)
-            # if data is not None:
-            # print(len(data[0]))
-            # print(data)
+
             print('Time {}'.format(
                 (datetime.datetime.now() - _time).total_seconds()))
             time.sleep(1)
