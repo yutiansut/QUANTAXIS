@@ -4,38 +4,41 @@
 ![datastruct](http://osnhakmay.bkt.clouddn.com/datastruct.png)
 
 属性用@property装饰器装饰,进行懒运算 提高效率
+<!-- vscode-markdown-toc -->
+* 1. [取一个股票的数据](#)
+* 2. [取多个股票的数据](#-1)
+* 3. [显示结构体的数据 .data](#.data)
+* 4. [显示结构体的开/高/收/低 .open/.high/.close/.low](#.open.high.close.low)
+* 5. [结构体拆分 splits()](#splits)
+* 6. [数据结构复权to_qfq()/to_hfq()](#to_qfqto_hfq)
+* 7. [数据透视 .pivot()](#.pivot)
+* 8. [数据的时间筛选.select_time(start,end)](#.select_timestartend)
+* 9. [数据按时间往前/往后推 select_time_with_gap(time,gap,methods)](#select_time_with_gaptimegapmethods)
+* 10. [选取某一个月份的数据 select_month(month)](#select_monthmonth)
+* 11. [选取结构组里面某一只股票select_code(code)](#select_codecode)
+* 12. [取某一只股票的某一个时间的bar(code,time,if_trade)](#barcodetimeif_trade)
+* 13. [画图 plot(code)](#plotcode)
+* 14. [统计学部分](#-1)
+	* 14.1. [平均价 price](#price)
+	* 14.2. [price均值 mean](#pricemean)
+	* 14.3. [max/min](#maxmin)
+	* 14.4. [方差/样本方差 pvariance/variance](#pvariancevariance)
+	* 14.5. [标准差/样本标准差 pstdev/stdev](#pstdevstdev)
+	* 14.6. [调和平均数 mean_harmonic](#mean_harmonic)
+	* 14.7. [众数 mode](#mode)
+	* 14.8. [振幅 amplitude](#amplitude)
+	* 14.9. [偏度 skew](#skew)
+	* 14.10. [峰度 kurt](#kurt)
+	* 14.11. [百分比变化 pct_change](#pct_change)
+	* 14.12. [平均绝对偏差 mad](#mad)
+	* 14.13. [价格差分 price_diff](#price_diff)
 
-<!-- TOC -->
+<!-- vscode-markdown-toc-config
+	numbering=true
+	autoSave=true
+	/vscode-markdown-toc-config -->
+<!-- /vscode-markdown-toc -->
 
-- [QUANTAXIS的核心数据结构以及方法](#quantaxis的核心数据结构以及方法)
-    - [取一个股票的数据](#取一个股票的数据)
-    - [取多个股票的数据](#取多个股票的数据)
-    - [显示结构体的数据 .data](#显示结构体的数据-data)
-    - [显示结构体的开/高/收/低 .open/.high/.close/.low](#显示结构体的开高收低-openhighcloselow)
-    - [结构体拆分 splits()](#结构体拆分-splits)
-    - [数据结构复权to_qfq()/to_hfq()](#数据结构复权to_qfqto_hfq)
-    - [数据透视 .pivot()](#数据透视-pivot)
-    - [数据的时间筛选.select_time(start,end)](#数据的时间筛选select_timestartend)
-    - [数据按时间往前/往后推 select_time_with_gap(time,gap,methods)](#数据按时间往前往后推-select_time_with_gaptimegapmethods)
-    - [选取某一个月份的数据 select_month(month)](#选取某一个月份的数据-select_monthmonth)
-    - [选取结构组里面某一只股票select_code(code)](#选取结构组里面某一只股票select_codecode)
-    - [取某一只股票的某一个时间的bar(code,time,if_trade)](#取某一只股票的某一个时间的barcodetimeif_trade)
-    - [画图 plot(code)](#画图-plotcode)
-    - [统计学部分](#统计学部分)
-        - [平均价 price](#平均价-price)
-        - [price均值 mean](#price均值-mean)
-        - [max/min](#maxmin)
-        - [方差/样本方差 pvariance/variance](#方差样本方差-pvariancevariance)
-        - [标准差/样本标准差 pstdev/stdev](#标准差样本标准差-pstdevstdev)
-        - [调和平均数 mean_harmonic](#调和平均数-mean_harmonic)
-        - [众数 mode](#众数-mode)
-        - [振幅 amplitude](#振幅-amplitude)
-        - [偏度 skew](#偏度-skew)
-        - [峰度 kurt](#峰度-kurt)
-        - [百分比变化 pct_change](#百分比变化-pct_change)
-        - [平均绝对偏差 mad](#平均绝对偏差-mad)
-
-<!-- /TOC -->
 QA_DataStruct具有的功能:
 
 - 数据容器
@@ -77,19 +80,19 @@ min线的参数是code, start, end, frequence='1min'
 
 其中 code 可以是一个股票,也可以是一列股票(list)
 
-## 取一个股票的数据
+##  1. <a name=''></a>取一个股票的数据
 ```python
 QA.QA_fetch_stock_day_adv('000001','2017-01-01','2017-10-01')
 In [5]: QA.QA_fetch_stock_day_adv('000001','2017-01-01','2017-10-01')
 Out[5]: QA_DataStruct_Stock_day with 1 securities
 ```
-## 取多个股票的数据
+##  2. <a name='-1'></a>取多个股票的数据
 ```python
 QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-01-01','2017-10-01')
 In [6]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-01-01','2017-10-01')
 Out[6]: QA_DataStruct_Stock_day with 2 securities
 ```
-## 显示结构体的数据 .data
+##  3. <a name='.data'></a>显示结构体的数据 .data
 ```python
 In [10]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-09-20','2017-10-01').data
 Out[10]:
@@ -112,7 +115,7 @@ date       code
 2017-09-28 000002  000002  27.00  27.15  26.40  26.41  262347.0 2017-09-28
 2017-09-29 000002  000002  26.56  26.80  26.00  26.25  345752.0 2017-09-29
 ```
-## 显示结构体的开/高/收/低 .open/.high/.close/.low
+##  4. <a name='.open.high.close.low'></a>显示结构体的开/高/收/低 .open/.high/.close/.low
 ```python
 In [5]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-09-20','2017-10-01').high
 Out[5]:
@@ -135,7 +138,7 @@ date        code
 2017-09-29  000002    26.80
 Name: high, dtype: float64
 ```
-## 结构体拆分 splits()
+##  5. <a name='splits'></a>结构体拆分 splits()
 
 当一个DataStruct里面存在多个证券时,可以通过拆分的方法,将其变成多个DataStruct
 
@@ -147,7 +150,7 @@ Out[3]:
 
 ```
 
-## 数据结构复权to_qfq()/to_hfq()
+##  6. <a name='to_qfqto_hfq'></a>数据结构复权to_qfq()/to_hfq()
 
 返回的是一个DataStruct,用.data展示返回的数据的结构
 
@@ -194,7 +197,7 @@ date       code
 2017-09-28 000002     26.84  1.0
 2017-09-29 000002     26.41  1.0
 ```
-## 数据透视 .pivot()
+##  7. <a name='.pivot'></a>数据透视 .pivot()
 ```python
 In [6]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-09-20','2017-10-01').pivot('open')
 Out[6]:
@@ -209,7 +212,7 @@ date
 2017-09-28   10.98   27.00
 2017-09-29   10.92   26.56
 ```
-## 数据的时间筛选.select_time(start,end)
+##  8. <a name='.select_timestartend'></a>数据的时间筛选.select_time(start,end)
 ```python
 In [10]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-09-20','2017-10-01').select_time('2017-09-20','2017-09-25')
 Out[10]: QA_DataStruct_Stock_day with 2 securities
@@ -227,7 +230,7 @@ date       code
 2017-09-22 000002  000002  28.39  28.67  27.52  27.81  423093.0 2017-09-22
 2017-09-25 000002  000002  27.20  27.20  26.10  26.12  722702.0 2017-09-25
 ```
-## 数据按时间往前/往后推 select_time_with_gap(time,gap,methods)
+##  9. <a name='select_time_with_gaptimegapmethods'></a>数据按时间往前/往后推 select_time_with_gap(time,gap,methods)
 
 time是你选择的时间
 gap是长度 (int)
@@ -245,7 +248,7 @@ date       code
 2017-09-21 000002  000002  28.50  29.06  27.75  28.40  536324.0 2017-09-21
 2017-09-22 000002  000002  28.39  28.67  27.52  27.81  423093.0 2017-09-22
 ```
-## 选取某一个月份的数据 select_month(month)
+##  10. <a name='select_monthmonth'></a>选取某一个月份的数据 select_month(month)
 
 可以通过select_month 来选取某一个月份的数据
 ```python
@@ -253,7 +256,7 @@ In [4]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-09-20','2017-10-01')
 Out[4]: < QA_DataStruct_Stock_day with 2 securities >
 ```
 
-## 选取结构组里面某一只股票select_code(code)
+##  11. <a name='select_codecode'></a>选取结构组里面某一只股票select_code(code)
 
 ```python
 In [16]: QA.QA_fetch_stock_day_adv(['000001','000002'],'2017-09-20','2017-10-01').select_code('000001')
@@ -271,7 +274,7 @@ date       code
 2017-09-28 000001  000001  10.98  10.98  10.82  10.88  517220.0 2017-09-28
 2017-09-29 000001  000001  10.92  11.16  10.86  11.11  682280.0 2017-09-29
 ```
-## 取某一只股票的某一个时间的bar(code,time,if_trade)
+##  12. <a name='barcodetimeif_trade'></a>取某一只股票的某一个时间的bar(code,time,if_trade)
 
 第三个选项 默认是True  
 第三选项的意义在于,如果出现了停牌,参数如果是True 那么就会返回空值 而如果是False,就会返回停牌前最后一个交易日的值
@@ -286,7 +289,7 @@ date       code
 2017-09-20 000001  000001  11.14  11.37  11.05  11.29  787154.0 2017-09-20
 
 ```
-## 画图 plot(code)
+##  13. <a name='plotcode'></a>画图 plot(code)
 
 如果是()空值 就会把全部的股票都画出来
 ```python
@@ -300,9 +303,9 @@ QUANTAXIS>> The Pic has been saved to your path: .\QA_stock_day_000001_bfq.html
 
 ![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20171004125336.png)
 
-## 统计学部分
+##  14. <a name='-1'></a>统计学部分
 
-### 平均价 price
+###  14.1. <a name='price'></a>平均价 price
 
 为了统计学指标的需要, price=AVERAGE(open+high+low+close)
 
@@ -324,7 +327,7 @@ dtype: float64
 
 ```
 
-### price均值 mean
+###  14.2. <a name='pricemean'></a>price均值 mean
 
 mean是price的均值
 
@@ -333,7 +336,7 @@ In [6]: QA.QA_fetch_stock_day_adv('000001','2017-09-20','2017-10-01').mean
 Out[6]: 11.173125
 ```
 
-### max/min
+###  14.3. <a name='maxmin'></a>max/min
 
 max/min 分别是price序列的最大值和最小值
 
@@ -345,7 +348,7 @@ In [9]: QA.QA_fetch_stock_day_adv('000001','2017-09-20','2017-10-01').min
 Out[9]: 10.915000000000001
 ```
 
-### 方差/样本方差 pvariance/variance
+###  14.4. <a name='pvariancevariance'></a>方差/样本方差 pvariance/variance
 
 分别是price的方差和样本方差
 
@@ -358,7 +361,7 @@ In [11]: QA.QA_fetch_stock_day_adv('000001','2017-09-20','2017-10-01').pvariance
 Out[11]: 0.03218710937499986
 ```
 
-### 标准差/样本标准差 pstdev/stdev
+###  14.5. <a name='pstdevstdev'></a>标准差/样本标准差 pstdev/stdev
 
 分别是price的总体标准差和样本标准差
 
@@ -373,7 +376,7 @@ Out[13]: 0.19179485878704544
 ```
 
 
-### 调和平均数 mean_harmonic
+###  14.6. <a name='mean_harmonic'></a>调和平均数 mean_harmonic
 
 price的调和平均数
 
@@ -383,7 +386,7 @@ Out[14]: 11.170242242781745
 
 ```
 
-### 众数 mode
+###  14.7. <a name='mode'></a>众数 mode
 返回price的众数 (注意: price序列可能没有众数,因此可能会报错,内部处理后,返回None)
 
 ```python
@@ -397,7 +400,7 @@ Out[31]: None
 ```
 
 
-### 振幅 amplitude
+###  14.8. <a name='amplitude'></a>振幅 amplitude
 
 返回price的振幅
 
@@ -407,7 +410,7 @@ Out[33]: 3.1325000000000003
 ```
 
 
-### 偏度 skew
+###  14.9. <a name='skew'></a>偏度 skew
 
 返回price的偏度
 
@@ -419,7 +422,7 @@ Out[35]: 0.70288041557825753
 ```
 
 
-### 峰度 kurt
+###  14.10. <a name='kurt'></a>峰度 kurt
 
 返回price的峰度
 
@@ -428,7 +431,7 @@ In [37]: QA.QA_fetch_stock_day_adv('000001','2017-01-20','2017-10-01').kurt
 Out[37]: -1.0703273213086726
 ```
 
-### 百分比变化 pct_change
+###  14.11. <a name='pct_change'></a>百分比变化 pct_change
 
 返回price的百分比变化
 
@@ -447,7 +450,7 @@ date        code
 dtype: float64
 ```
 
-### 平均绝对偏差 mad
+###  14.12. <a name='mad'></a>平均绝对偏差 mad
  
 
  返回price的平均绝对偏差
@@ -457,7 +460,7 @@ In [41]: QA.QA_fetch_stock_day_adv('000001','2017-09-20','2017-10-01').mad
 Out[41]: 0.16062499999999957
 ```
 
-### 价格差分 price_diff
+###  14.13. <a name='price_diff'></a>价格差分 price_diff
 
 返回价格的一阶差分
 
