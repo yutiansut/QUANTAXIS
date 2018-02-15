@@ -134,56 +134,68 @@ router.get('*', function (req, res, next) {
 ###  4.1. <a name='user'></a>用户管理 /user
 
 ####  4.1.1. <a name='-1'></a>登陆
-
+```
 http://[ip]:[port]/users/login?name=[]&password=[]
-
+```
 ####  4.1.2. <a name='-1'></a>注册
-
+```
 http://[ip]:[port]/users/signup?name=[]&password=[]
-
+```
 
 ###  4.2. <a name='backtest'></a>回测部分 /backtest
 
 ####  4.2.1. <a name='-1'></a>回测概览(列表查询)
+```
 http://[ip]:[port]/backtest/list?user=[]
+```
 
 ####  4.2.2. <a name='-1'></a>单个回测结果查询()
+```
 http://[ip]:[port]/backtest/info?cookie=[]
-
+```
 
 ###  4.3. <a name='marketdatadata'></a>行情查询部分 /marketdata & /data
 
 功能性的API,分别代表着 日线/分钟线/实时(5档)/分笔数据
 
 ####  4.3.1. <a name='URIGENERALURIRULE'></a>URI总规则 GENERAL URI RULE
+```
 总URI为 http://[ip]:[port]/[market_type]/[frequence]?code=[]&start=[]&end=[]
+```
 
 ####  4.3.2. <a name='STOCKDAY'></a>股票日线 STOCK DAY
+```
 http://[ip]:[port]/marketdata/stock/day?code=[]&start=[]&end=[]
+```
 
 当不给定结束日期的时候,返回的就是直到当前的数据
 
 ####  4.3.3. <a name='STOCKMINDATA'></a>股票分钟线 STOCK MINDATA
+```
 http://[ip]:[port]/marketdata/stock/min?code=[]&start=[]&end=[]
+```
 
 当不给定结束日期的时候,返回的就是直到当前的数据
 
 ####  4.3.4. <a name='STOCKREALTIME5-ASKBID'></a>股票实时上下五档 STOCK REALTIME 5-ASK/BID
+```
 http://[ip]:[port]/marketdata/stock/realtime?code=[]
+```
 
 实时返回股票的L1上下五档的行情数据
 
 ####  4.3.5. <a name='STOCKTRANSACTION'></a>股票分笔数据 STOCK TRANSACTION
+```
 http://[ip]:[port]/marketdata/stock/transaction?code=[]&start=[]&end=[]
-
+```
 code 指的是具体的股票代码
 start 指的是分笔开始的时间
 end 指的是分笔结束的时间
 
 ####  4.3.6. <a name='-1'></a>股票财务数据
-
+```
 http://[ip]:[port]/marketdata/stock/info?code=[]&time=[]
-
+```
 code 指的是具体的股票
 time 指的是时间段
 
@@ -192,16 +204,18 @@ time 指的是时间段
 time的格式为: YEAR['YYYY']+Q+times[1,2,3,4](1- 1季度财报 2- 半年度财报 3- 3季度财报 4- 年报)
 
 ####  4.3.7. <a name='-1'></a>期货日线
+```
 http://[ip]:[port]/marketdata/future/day?code=[]&start=[]&end=[]
-
+```
 
 ####  4.3.8. <a name='-1'></a>期货分钟线
+```
 http://[ip]:[port]/marketdata/future/min?code=[]&start=[]&end=[]
-
+```
 ###  4.4. <a name='quotation'></a>实时行情推送 /quotation
-
+```
 /quotation 推送指的是 建立一个websocket链接:
-
+```
 1. user login [Handler]
 
 2. auth []
