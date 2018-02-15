@@ -36,6 +36,7 @@ QA.QA_fetch_get_  系列:
 """
 
 ###  1.1. <a name='STOCK_CNDAY'></a>股票/日线 | STOCK_CN/DAY
+```python
 QA.QA_util_log_info('日线数据')
 QA.QA_util_log_info('不复权')  
 data=QA.QAFetch.QATdx.QA_fetch_get_stock_day('00001','2017-01-01','2017-01-31')
@@ -52,10 +53,10 @@ data=QA.QAFetch.QATdx.QA_fetch_get_stock_day('00001','2017-01-01','2017-01-31','
 
 QA.QA_util_log_info('定点后复权')
 data=QA.QAFetch.QATdx.QA_fetch_get_stock_day('00001','2017-01-01','2017-01-31','04')
-
+```
 
 ###  1.2. <a name='STOCK_CNMIN'></a>股票/分钟线 | STOCK_CN/MIN
-
+```python
 QA.QA_util_log_info('分钟线')
 QA.QA_util_log_info('1min')
 data=QA.QAFetch.QATdx.QA_fetch_get_stock_min('000001','2017-07-01','2017-08-01','1min')
@@ -71,34 +72,34 @@ data=QA.QAFetch.QATdx.QA_fetch_get_stock_min('000001','2017-07-01','2017-08-01',
 
 QA.QA_util_log_info('60min')
 data=QA.QAFetch.QATdx.QA_fetch_get_stock_min('000001','2017-07-01','2017-08-01','60min')
-
+```
 
 
 ###  1.3. <a name='STOCK_CNXDXR'></a>股票/权息数据 | STOCK_CN/XDXR
-
+```python
 QA.QA_util_log_info('除权除息')
 data=QA.QAFetch.QATdx.QA_fetch_get_stock_xdxr('00001')
-
+```
 
 
 ###  1.4. <a name='STOCK_CNLIST'></a>股票/列表 | STOCK_CN/LIST
-
+```python
 QA.QA_util_log_info('股票列表')
 data=QA.QAFetch.QATdx.QA_fetch_get_stock_list('stock')
-
+```
 
 ###  1.5. <a name='IDNEX_CNLIST'></a>指数/列表 | IDNEX_CN/LIST
-
+```python
 QA.QA_util_log_info('指数列表')
 data=QA.QAFetch.QATdx.QA_fetch_get_stock_list('index')
-
+```
 ###  1.6. <a name='INDEX_CNDAY'></a>指数/日线 | INDEX_CN/DAY
-
+```python
 QA.QA_util_log_info('指数日线')
 data=QA.QAFetch.QATdx.QA_fetch_get_index_day('000001','2017-01-01','2017-09-01')
-
+```
 ###  1.7. <a name='INDEX_CNMIN'></a>指数/分钟线 | INDEX_CN/MIN
-
+```python
 QA.QA_util_log_info('指数分钟线')
 QA.QA_util_log_info('1min')
 data=QA.QAFetch.QATdx.QA_fetch_get_index_min('000001','2017-07-01','2017-08-01','1min')
@@ -110,9 +111,10 @@ data=QA.QAFetch.QATdx.QA_fetch_get_index_min('000001','2017-07-01','2017-08-01',
 
 QA.QA_util_log_info('15min')
 data=QA.QAFetch.QATdx.QA_fetch_get_index_min('000001','2017-07-01','2017-08-01','15min')
-
+```
 
 ###  1.8. <a name='STOCKLASTPRICE'></a>最新交易价格STOCK | LAST PRICE
+```python
 QA.QA_util_log_info('最后一次交易价格')
 QA.QA_util_log_info('参数为列表')
 data=QA.QAFetch.QATdx.QA_fetch_get_stock_latest(['000001','000002'])
@@ -120,23 +122,29 @@ data=QA.QAFetch.QATdx.QA_fetch_get_stock_latest(['000001','000002'])
 
 QA.QA_util_log_info('参数为一只股票')
 data=QA.QAFetch.QATdx.QA_fetch_get_stock_latest('000001')
-
+```
 
 ###  1.9. <a name='STOCK_CNQUOTATION'></a>实时上下五档 STOCK_CN/QUOTATION
+```python
 QA.QA_util_log_info('实时价格')
 data=QA.QAFetch.QATdx.QA_fetch_get_stock_realtime(['000001','000002'])
+```
 
 ###  1.10. <a name='STOCK_CNTRANSACTION'></a>分笔数据 | STOCK_CN/TRANSACTION
+```python
 QA.QA_util_log_info('分笔成交')
 
 历史分笔
 data=QA.QAFetch.QATdx.QA_fetch_get_stock_transaction('000001','2001-01-01','2001-01-15')
 实时分笔(当天)
 data=QA.QAFetch.QATdx.QA_fetch_get_stock_transaction_realtime('000001')
+```
 
 ###  1.11. <a name='STOCK_CNBLOCK'></a>版块数据 | STOCK_CN/BLOCK
+```python
 QA.QA_util_log_info('板块数据')
 data=QA.QAFetch.QATdx.QA_fetch_get_stock_block()
+```
 
 
 """
@@ -147,13 +155,23 @@ QA.QA_fetch_ 系列
 ##  2. <a name='FROMLOCALHOST'></a>从数据库获取 | FROM LOCALHOST
 
 ###  2.1. <a name='STOCK_CNDAY-1'></a>股票日线 | STOCK_CN/DAY
+```python
 QA_fetch_stock_day_adv(code,start,end)
+```
 ###  2.2. <a name='STOCK_CNMIN-1'></a>股票分钟线 | STOCK_CN/MIN
+```python
 QA_fetch_stock_min_adv(code,start,end,frequence='1min') # frequence可以选1min/5min/15min/30min/60min 
+```
 ###  2.3. <a name='INDEX_CNETF_CNDAY'></a>指数/基金日线 | INDEX_CN,ETF_CN/DAY
+```python
 QA_fetch_index_day_adv(code,start,end)
+```
 ###  2.4. <a name='INDEX_CNETF_CNMIN'></a>指数/基金分钟线 | INDEX_CN,ETF_CN/MIN
+```python
 QA_fetch_index_min_adv(code,start,end,frequence='1min') # frequence可以选1min/5min/15min/30min/60min 
+```
 ###  2.5. <a name='STOCK_CNBLOCK-1'></a>板块 | STOCK_CN/ BLOCK
+```python
 QA_fetch_stock_block_adv(code)
+```
 
