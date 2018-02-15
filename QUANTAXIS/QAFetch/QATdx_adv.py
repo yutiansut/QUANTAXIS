@@ -289,10 +289,7 @@ def bat():
 
             data[0]['datetime'] = data[1]
             x.save_mongo(data[0])
-            # print(code[0])
 
-            print(len(data[0]))
-            # print(data)
             print('Time {}'.format(
                 (datetime.datetime.now() - _time).total_seconds()))
             time.sleep(1)
