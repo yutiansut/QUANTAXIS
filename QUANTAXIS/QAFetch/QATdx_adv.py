@@ -290,8 +290,7 @@ def bat():
             data[0]['datetime'] = data[1]
             x.save_mongo(data[0])
             # print(code[0])
-            #data = x.get_security_bars(code, '15min', 20)
-            # if data is not None:
+
             print(len(data[0]))
             # print(data)
             print('Time {}'.format(
