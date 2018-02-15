@@ -18,6 +18,7 @@
 	* 2.2. [股票分钟线 | STOCK_CN/MIN](#STOCK_CNMIN-1)
 	* 2.3. [指数/基金日线 | INDEX_CN,ETF_CN/DAY](#INDEX_CNETF_CNDAY)
 	* 2.4. [指数/基金分钟线 | INDEX_CN,ETF_CN/MIN](#INDEX_CNETF_CNMIN)
+	* 2.5. [板块 | STOCK_CN/ BLOCK](#STOCK_CNBLOCK-1)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -153,6 +154,6 @@ QA_fetch_stock_min_adv(code,start,end,frequence='1min') # frequence可以选1min
 QA_fetch_index_day_adv(code,start,end)
 ###  2.4. <a name='INDEX_CNETF_CNMIN'></a>指数/基金分钟线 | INDEX_CN,ETF_CN/MIN
 QA_fetch_index_min_adv(code,start,end,frequence='1min') # frequence可以选1min/5min/15min/30min/60min 
-# 板块
+###  2.5. <a name='STOCK_CNBLOCK-1'></a>板块 | STOCK_CN/ BLOCK
 QA_fetch_stock_block_adv(code)
 
