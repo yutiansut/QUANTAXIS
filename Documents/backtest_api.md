@@ -1,18 +1,20 @@
 # 账户/组合/策略的说明 QAARP模块
 
 
-<!-- TOC -->
+<!-- vscode-markdown-toc -->
+* 1. [账户/组合/策略的关系](#)
+* 2. [创建自定义的策略](#-1)
 
-- [账户/组合/策略的说明 QAARP模块](#账户组合策略的说明-qaarp模块)
-    - [账户/组合/策略的关系](#账户组合策略的关系)
-    - [创建自定义的策略](#创建自定义的策略)
-
-<!-- /TOC -->
+<!-- vscode-markdown-toc-config
+	numbering=true
+	autoSave=true
+	/vscode-markdown-toc-config -->
+<!-- /vscode-markdown-toc -->
 @yutiansut
 2018/1/26
 在1.0版本以后,回测的策略是以继承账户类来进行的
 
-## 账户/组合/策略的关系
+##  1. <a name=''></a>账户/组合/策略的关系
 
 {
   UserA:{
@@ -96,7 +98,7 @@ Out[]:
 ```
 
 
-## 创建自定义的策略
+##  2. <a name='-1'></a>创建自定义的策略
 
 
 ```python
