@@ -29,6 +29,9 @@
 
 
 ----------
+
+![happynewyear](http://osnhakmay.bkt.clouddn.com/quantaxishappynewyear.png)
+
 新年寄语:
 
 QUANTAXIS 祝大家在2018年 新年大吉 ~
@@ -36,6 +39,7 @@ QUANTAXIS 祝大家在2018年 新年大吉 ~
 主要还是要注意身体 (^-^)
 
 @yutiansut 2018/2/16
+
 
 ---
 
