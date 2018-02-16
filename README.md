@@ -29,18 +29,13 @@
 
 
 ----------
-广告区:
+新年寄语:
 
-大佬写的增强学习框架:
-[DeepRL](https://github.com/ppaanngggg/DeepRL)
+QUANTAXIS 祝大家在2018年 新年大吉 ~
 
-期货回测/实盘框架
-[ParadoxTrading](https://github.com/ppaanngggg/ParadoxTrading)
+主要还是要注意身体 (^-^)
 
-RAINX大大的pytdx
-[PYTDX](https://github.com/rainx/pytdx)
-
-(逃~~)
+@yutiansut 2018/2/16
 
 ---
 
@@ -49,27 +44,28 @@ RAINX大大的pytdx
 
 QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化分析解决方案. 我们通过高度解耦的模块化以及标准化协议,可以快速的实现面向场景的定制化解决方案.QUANTAXIS是一个渐进式的开放式框架,你可以根据自己的需要,引入自己的数据,分析方案,可视化过程等,也可以通过RESTful接口,快速实现多人局域网/广域网内的协作.
 
-<!-- TOC -->
+<!-- vscode-markdown-toc -->
+* 1. [功能](#)
+* 2. [文档](#-1)
+* 3. [安装和部署](#-1)
+* 4. [更新](#-1)
+* 5. [Docker](#Docker)
+* 6. [使用说明](#-1)
+* 7. [Jupyter示例](#Jupyter)
+* 8. [常见问题FAQ](#FAQ)
+* 9. [项目捐赠](#-1)
+* 10. [回测Webkit插件概览](#Webkit)
+* 11. [QUANTAXIS 标准化协议和未来协议](#QUANTAXIS)
 
-- [QUANTAXIS 量化金融策略框架](#quantaxis-量化金融策略框架)
-    - [功能](#功能)
-    - [文档](#文档)
-    - [安装和部署](#安装和部署)
-    - [更新](#更新)
-    - [Docker](#docker)
-    - [使用说明](#使用说明)
-    - [Jupyter示例](#jupyter示例)
-    - [常见问题FAQ](#常见问题faq)
-    - [项目捐赠](#项目捐赠)
-    - [回测Webkit插件概览](#回测webkit插件概览)
-    - [QUANTAXIS 标准化协议和未来协议](#quantaxis-标准化协议和未来协议)
-
-<!-- /TOC -->
+<!-- vscode-markdown-toc-config
+	numbering=true
+	autoSave=true
+	/vscode-markdown-toc-config -->
+<!-- /vscode-markdown-toc -->
 
 
 
-
-## 功能
+##  1. <a name=''></a>功能
 ======
 
 ![](http://osnhakmay.bkt.clouddn.com/framework.png)
@@ -104,7 +100,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 
 
-## 文档
+##  2. <a name='-1'></a>文档
 
 文档参见: [book](http://book.yutiansut.com)
 
@@ -112,7 +108,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 [PDF](https://www.gitbook.com/download/pdf/book/quantaxis/quantaxis) | [MOBI](https://www.gitbook.com/download/mobi/book/quantaxis/quantaxis) | [EPUB](https://www.gitbook.com/download/epub/book/quantaxis/quantaxis)
 
-## 安装和部署
+##  3. <a name='-1'></a>安装和部署
 
 ```
 git clone https://github.com/yutiansut/quantaxis --depth 1
@@ -120,12 +116,12 @@ git clone https://github.com/yutiansut/quantaxis --depth 1
 
 参见 [安装说明](Documents/install.md)
 
-## 更新
+##  4. <a name='-1'></a>更新
 参见 [更新说明](Documents/update.md)
 
-## Docker
+##  5. <a name='Docker'></a>Docker
 参见 [Docker](Documents/docker.md)
-## 使用说明
+##  6. <a name='-1'></a>使用说明
 参见 
 
 * [QUANTAXIS回测API](Documents/backtest_api.md)
@@ -136,13 +132,13 @@ git clone https://github.com/yutiansut/quantaxis --depth 1
 * [QUANTAXIS回测分析](Documents/backtestanalysis.md)
 * [常见策略整理](Documents/strategy.md)
 
-## Jupyter示例
+##  7. <a name='Jupyter'></a>Jupyter示例
 参见 [Jupyter示例](jupyterexample)
 
-## 常见问题FAQ
+##  8. <a name='FAQ'></a>常见问题FAQ
 参见 [FAQ](Documents/FAQ.md)
 
-## 项目捐赠
+##  9. <a name='-1'></a>项目捐赠
 
 写代码不易...请作者喝杯咖啡呗?
 
@@ -155,7 +151,7 @@ git clone https://github.com/yutiansut/quantaxis --depth 1
 
 
 
-## 回测Webkit插件概览
+##  10. <a name='Webkit'></a>回测Webkit插件概览
 
 ![](http://osnhakmay.bkt.clouddn.com/homepage.png)
 ![](http://osnhakmay.bkt.clouddn.com/loginpage.png)
@@ -168,7 +164,7 @@ git clone https://github.com/yutiansut/quantaxis --depth 1
 ![](http://osnhakmay.bkt.clouddn.com/settings.png)
 
 
-## QUANTAXIS 标准化协议和未来协议
+##  11. <a name='QUANTAXIS'></a>QUANTAXIS 标准化协议和未来协议
 
 
 QUANTAXIS-Stardand-Protocol 版本号0.0.8
