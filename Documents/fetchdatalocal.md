@@ -4,7 +4,8 @@
 * 1. [一般封装 QA_fetch_类](#QA_fetch_)
 	* 1.1. [股票日线 | STOCK_CN/DAY](#STOCK_CNDAY)
 	* 1.2. [股票分钟线 | STOCK_CN/MIN](#STOCK_CNMIN)
-* 2. [高级封装 *_adv类](#_adv)
+* 2. [高级封装 **_adv类](#_adv)
+	* 2.1. [股票日线 | STOCK_CN/DAY](#STOCK_CNDAY-1)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -60,6 +61,38 @@ QA.QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', collec
 ```python
 QA.QA_fetch_stocklist_min(stock_list, date_range, frequence='1min', collections=DATABASE.stock_min)
 ```
-##  2. <a name='_adv'></a>高级封装 *_adv类
 
 
+##  2. <a name='_adv'></a>高级封装 *adv
+
+###  2.1. <a name='STOCK_CNDAY-1'></a>股票日线 | STOCK_CN/DAY
+
+```python
+QA.QA_fetch_stock_day_adv(code, start='all', end=None, if_drop_index=False, collections=DATABASE.stock_day)
+```
+
+- code 股票 可以是一只股票/一列股票
+- start 开始日期 如果不给定或者参数是'all' 则为股票的所有交易日
+- end 结束日期(yyyy-mm-dd) 如果不给定 则为和开始日期同一天, 如果开始日期为'all'参数,则为今天
+
+- if_drop_index 默认false 强烈建议不要改
+- collection 指的是数据库连接 默认是本地[127.0.0.1:27017]的quantaxis数据库,可以使用pymongo.MongoClient(ip,port)来修改数据源
+
+返回 
+
+type QA_DATASTRUCT_STOCK_DAY
+具体用法参见[](DataStruct.md)
+
+
+### 
+
+
+```python
+In [28]: QA.QA_fetch_stock_day_adv?
+Signature: QA.QA_fetch_stock_day_adv(code, start='all', end=None, if_drop_index=False, collections=Collection(Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis'), 'stock_day'))
+
+
+In [29]: QA.QA_fetch_stock_min_adv?
+Signature: QA.QA_fetch_stock_min_adv(code, start, end=None, frequence='1min', if_drop_index=False, collections=Collection(Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis'), 'stock_min'))
+
+```
