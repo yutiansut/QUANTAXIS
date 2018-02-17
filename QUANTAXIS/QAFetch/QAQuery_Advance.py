@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
+import datetime
 import pandas as pd
 from pandas import DataFrame
 
@@ -42,17 +42,22 @@ from QUANTAXIS.QAUtil import (DATABASE, QA_Setting, QA_util_date_stamp,
 按要求从数据库取数据，并转换成numpy结构
 
 """
-
+#start='1990-01-01',end=str(datetime.date.today())
 
 def QA_fetch_stock_day_adv(
         code,
-        start, end=None,
+        start='all', end=None,
+
         if_drop_index=False,
         collections=DATABASE.stock_day):
     '获取股票日线'
     end = start if end is None else end
     start = str(start)[0:10]
     end = str(end)[0:10]
+
+    if start=='all':
+        start='1990-01-01'
+        end=str(datetime.date.today())
 
     if isinstance(code, str):
         if QA_util_date_valid(end) == True:
@@ -77,10 +82,14 @@ def QA_fetch_stock_day_adv(
 
 def QA_fetch_stocklist_day_adv(
         code,
-        start, end=None,
+        start='all', end=None,
         if_drop_index=False,
         collections=DATABASE.stock_day):
     '获取股票日线'
+        
+    if start=='all':
+        start='1990-01-01'
+        end=str(datetime.date.today())
     return QA_DataStruct_Stock_day(pd.concat(QA_fetch_stocklist_day(code, [start, end])).query('volume>1').set_index(['date', 'code'], drop=if_drop_index).sort_index())
 
 
