@@ -65,10 +65,15 @@ headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,imag
            'Accept-Encoding': 'gzip, deflate',
            'Accept-Language': 'zh-CN,zh;q=0.9',
            'Cache-Control': 'max-age=0',
+           'Referer': 'http://www.10jqka.com.cn/',
            'Connection': 'keep-alive',
            'Host': 'q.10jqka.com.cn',
-           'Upgrade-Insecure-Requests': 1,
-           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'}
+           'Upgrade-Insecure-Requests': '1',
+           'If-Modified-Since': 'Thu, 11 Jan 2018 07:05:01 GMT',
+           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36'}
+
+headers_data = headers
+headers_data['X-Requested-With'] = 'XMLHttpRequest'
 
 
 def QA_fetch_get_stock_block():
@@ -80,12 +85,18 @@ def QA_fetch_get_stock_block():
             'http://q.10jqka.com.cn/{}/'.format(item), headers=headers).text)
         gn = tree.xpath('/html/body/div/div/div/div/div/a/text()')
         gpath = tree.xpath('/html/body/div/div/div/div/div/a/@href')
+
         for _i in range(len(gn)):
+            headers_data['Referer'] = 'http://q.10jqka.com.cn/{}/detail/code/{}'.format(
+                item, gpath[_i].split('/')[-2])
+
             for i in range(1, 15):
+
                 _data = etree.HTML(requests.get(
-                    'http://q.10jqka.com.cn/{}/detail/order/desc/page/{}/ajax/1/code/{}'.format(item, i, gpath[_i].split('/')[-2]), headers=headers).text)
+                    'http://q.10jqka.com.cn/{}/detail/order/desc/page/{}/ajax/1/code/{}'.format(item, i, gpath[_i].split('/')[-2]), headers=headers_data).text)
                 name = _data.xpath('/html/body/table/tbody/tr/td[3]/a/text()')
                 code = _data.xpath('/html/body/table/tbody/tr/td[3]/a/@href')
+
                 for i_ in range(len(name)):
                     print(
                         'Now Crawling-{}-{}-{}-{}'.format(gn[_i], code[i_].split('/')[-1], item, 'ths'))
