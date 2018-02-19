@@ -1,21 +1,23 @@
 # QUANTAXIS 的安装 MAC篇
 
-<!-- TOC -->
+<!-- vscode-markdown-toc -->
+* 1. [python](#python)
+* 2. [QUANTAXIS](#QUANTAXIS)
+* 3. [MONGODB](#MONGODB)
+* 4. [NODEJS](#NODEJS)
+* 5. [QUANTAXIS_WEBKIT](#QUANTAXIS_WEBKIT)
 
-- [QUANTAXIS 的安装 MAC篇](#quantaxis-%E7%9A%84%E5%AE%89%E8%A3%85-mac%E7%AF%87)
-    - [python](#python)
-    - [QUANTAXIS](#quantaxis)
-    - [MONGODB](#mongodb)
-    - [NODEJS](#nodejs)
-    - [QUANTAXIS_WEBKIT](#quantaxiswebkit)
-
-<!-- /TOC -->
-## python
+<!-- vscode-markdown-toc-config
+	numbering=true
+	autoSave=true
+	/vscode-markdown-toc-config -->
+<!-- /vscode-markdown-toc -->
+##  1. <a name='python'></a>python
 ```
 brew install python3
 ```
 
-## QUANTAXIS
+##  2. <a name='QUANTAXIS'></a>QUANTAXIS
 
 ```
 git clone https://github.com/yutiansut/quantaxis --depth 1
@@ -28,7 +30,7 @@ python3.6 -m pip install -e .
 ```
 
 
-## MONGODB
+##  3. <a name='MONGODB'></a>MONGODB
 
 安装mongodb:
 ```
@@ -51,7 +53,7 @@ sudo mongod
 继续输入你的密码
 
 
-## NODEJS
+##  4. <a name='NODEJS'></a>NODEJS
 
 ```
 brew install node
@@ -60,7 +62,7 @@ sudo npm install cnpm -g
 sudo npm install forever -g
 ```
 
-## QUANTAXIS_WEBKIT
+##  5. <a name='QUANTAXIS_WEBKIT'></a>QUANTAXIS_WEBKIT
 
 ```
 cd QUANTAXIS_WEBKIT\web 
