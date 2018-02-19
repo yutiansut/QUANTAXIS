@@ -86,8 +86,9 @@ class QA_Portfolio():
     def cookie_mangement(self):
         pass
 
-    def show(self):
-        return pd.concat([acc.show() for acc in self.accounts.values()],axis=1)
+    @property
+    def table(self):
+        return pd.concat([acc.table for acc in self.accounts.values()],axis=1)
 
     def get_cash(self):
         """拿到整个portfolio的可用资金
