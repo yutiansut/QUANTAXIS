@@ -21,7 +21,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
+import pandas as pd
 from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
@@ -40,6 +40,10 @@ class QA_User():
 
     def __repr__(self):
         return '< QA_USER {} with {} portfolio >'.format(self.user_cookie, len(self.portfolio_list.keys()))
+
+    @property
+    def table(self):
+        return pd.concat([po.table for po in self.portfolio_list.values()],axis=1)
 
     def client(self):
         'user.client to connect database'
