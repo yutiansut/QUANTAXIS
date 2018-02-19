@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
+import pandas as pd
 from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAUtil import (DATABASE, QA_util_log_info,
                               QA_util_random_with_topic)
@@ -43,9 +43,10 @@ class QA_Portfolio():
     用account的cookie来管理控制account
     """
 
-    def __init__(self):
+    def __init__(self,user_cookie=None):
         self.accounts = {}
         self.portfolio_cookie = QA_util_random_with_topic('Portfolio')
+        self.user_cookie=user_cookie
         for cookie in self.accounts.keys():
             self.accounts[cookie] = QA_Account(account_cookie=cookie)
 
@@ -66,7 +67,7 @@ class QA_Portfolio():
     def new_account(self, account_cookie=None):
         'portfolio create a account/strategy'
         if account_cookie is None:
-            temp = QA_Account()
+            temp = QA_Account(portfolio=self.portfolio_cookie,user=self.user_cookie)
             if temp.account_cookie not in self.accounts.keys():
                 self.accounts[temp.account_cookie] = temp
                 return temp
@@ -84,6 +85,9 @@ class QA_Portfolio():
 
     def cookie_mangement(self):
         pass
+
+    def show(self):
+        return pd.concat([acc.show() for acc in self.accounts.values()],axis=1)
 
     def get_cash(self):
         """拿到整个portfolio的可用资金
