@@ -2,12 +2,12 @@
 
 <!-- TOC -->
 
-- [QUANTAXIS 的安装 MAC篇](#quantaxis-的安装-mac篇)
+- [QUANTAXIS 的安装 MAC篇](#quantaxis-%E7%9A%84%E5%AE%89%E8%A3%85-mac%E7%AF%87)
     - [python](#python)
     - [QUANTAXIS](#quantaxis)
     - [MONGODB](#mongodb)
     - [NODEJS](#nodejs)
-    - [QUANTAXIS_WEBKIT](#quantaxis_webkit)
+    - [QUANTAXIS_WEBKIT](#quantaxiswebkit)
 
 <!-- /TOC -->
 ## python
@@ -21,7 +21,8 @@ brew install python3
 git clone https://github.com/yutiansut/quantaxis --depth 1
 cd quantaxis .
 sudo python3.6 -m pip install -r requirements.txt -i https://pypi.doubanio.com/simple
-sudo python3.6 -m pip install git+https://github.com/yutiansut/tushare
+sudo python3.6 -m pip install tushare
+sudo python3.6 -m pip install pytdx
 
 python3.6 -m pip install -e .
 ```

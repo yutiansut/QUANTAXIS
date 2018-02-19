@@ -1,15 +1,15 @@
 # QUANTAXIS 的安装 WIN篇
 <!-- TOC -->
 
-- [QUANTAXIS 的安装 WIN篇](#quantaxis-的安装-win篇)
-    - [部署问题:](#部署问题)
-    - [下载PYTHON(可以跳过)](#下载python可以跳过)
-    - [安装(可以跳过)](#安装可以跳过)
-    - [下载git](#下载git)
-    - [使用git下载QUANTAXIS](#使用git下载quantaxis)
-    - [安装QUANTAXIS的依赖项](#安装quantaxis的依赖项)
-    - [下载安装数据库](#下载安装数据库)
-    - [安装QUANTAXIS的web插件](#安装quantaxis的web插件)
+- [QUANTAXIS 的安装 WIN篇](#quantaxis-%E7%9A%84%E5%AE%89%E8%A3%85-win%E7%AF%87)
+    - [部署问题:](#%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98)
+    - [下载PYTHON(可以跳过)](#%E4%B8%8B%E8%BD%BDpython%E5%8F%AF%E4%BB%A5%E8%B7%B3%E8%BF%87)
+    - [安装(可以跳过)](#%E5%AE%89%E8%A3%85%E5%8F%AF%E4%BB%A5%E8%B7%B3%E8%BF%87)
+    - [下载git](#%E4%B8%8B%E8%BD%BDgit)
+    - [使用git下载QUANTAXIS](#%E4%BD%BF%E7%94%A8git%E4%B8%8B%E8%BD%BDquantaxis)
+    - [安装QUANTAXIS的依赖项](#%E5%AE%89%E8%A3%85quantaxis%E7%9A%84%E4%BE%9D%E8%B5%96%E9%A1%B9)
+    - [下载安装数据库](#%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85%E6%95%B0%E6%8D%AE%E5%BA%93)
+    - [安装QUANTAXIS的web插件](#%E5%AE%89%E8%A3%85quantaxis%E7%9A%84web%E6%8F%92%E4%BB%B6)
 
 <!-- /TOC -->
 ## 部署问题:
@@ -73,10 +73,9 @@ git clone https://github.com/yutiansut/quantaxis --depth 1
 cd C:\quantaxis
 
 python -m pip install -r requirements.txt -i https://pypi.doubanio.com/simple
-python -m pip install git+https://github.com/yutiansut/tushare
+python -m pip install tushare
+python -m pip install pytdx
 python -m pip install -e . -i https://pypi.doubanio.com/simple
-
-
 ```
 
 完成以后 在命令行输入 ```quantaxis```即可进入QUANTAXIS的cli界面

@@ -50,7 +50,7 @@ python -m pip install pillow -i https://pypi.doubanio.com/simple
 python -m pip install -r requirements.txt -i https://pypi.doubanio.com/simple
 python -m pip install tushare
 python -m pip install pytdx
-pip install -e .
+python -m pip install -e .
 
 
 
