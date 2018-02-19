@@ -66,8 +66,8 @@ class QA_Account(QA_Worker):
 
     """
 
-    def __init__(self, strategy_name=None, user=None, market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY,
-                 broker=BROKER_TYPE.BACKETEST, portfolio=None, account_cookie=None,
+    def __init__(self, strategy_name=None, user_cookie=None, market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY,
+                 broker=BROKER_TYPE.BACKETEST, portfolio_cookie=None, account_cookie=None,
                  sell_available=None, init_assets=None, cash=None, history=None,
                  margin_level=False, allow_t0=False, allow_sellopen=False):
         super().__init__()
@@ -75,9 +75,9 @@ class QA_Account(QA_Worker):
                                  'amount', 'order_id', 'trade_id', 'commission', 'tax']
         # 信息类:
         self.strategy_name = strategy_name
-        self.user = user
+        self.user_cookie = user_cookie
         self.market_type = market_type
-        self.portfolio = portfolio
+        self.portfolio_cookie = portfolio_cookie
         self.account_cookie = QA_util_random_with_topic(
             'Acc') if account_cookie is None else account_cookie
         self.broker = broker
@@ -109,8 +109,8 @@ class QA_Account(QA_Worker):
         return {
             'source': 'account',
             'account_cookie': self.account_cookie,
-            'portfolio': self.portfolio,
-            'user': self.user,
+            'portfolio_cookie': self.portfolio_cookie,
+            'user_cookie': self.user_cookie,
             'broker': self.broker,
             'market_type': self.market_type,
             'strategy_name': self.strategy_name,
@@ -176,7 +176,7 @@ class QA_Account(QA_Worker):
         return data.set_index('date')
 
     # 计算assets的时候 需要一个market_data=QA.QA_fetch_stock_day_adv(list(data.columns),data.index[0],data.index[-1])
-    # (market_data.to_qfq().pivot('close')*data).sum(axis=1)+user.get_account(a_1).daily_cash.set_index('date').cash
+    # (market_data.to_qfq().pivot('close')*data).sum(axis=1)+user_cookie.get_account(a_1).daily_cash.set_index('date').cash
 
     @property
     def latest_cash(self):
@@ -259,7 +259,7 @@ class QA_Account(QA_Worker):
                 flag = True
 
         if flag and amount > 0:
-            return QA_Order(user=self.user, strategy=self.strategy_name, frequence=self.frequence,
+            return QA_Order(user_cookie=self.user_cookie, strategy=self.strategy_name, frequence=self.frequence,
                             account_cookie=self.account_cookie, code=code, market_type=self.market_type,
                             date=date, datetime=time, sending_time=time, callback=self.receive_deal,
                             amount=amount, price=price, order_model=order_model, towards=towards,
@@ -284,8 +284,8 @@ class QA_Account(QA_Worker):
         """resume the account from standard message
         这个是从数据库恢复账户时需要的"""
         self.account_cookie = message.get('account_cookie', None)
-        self.portfolio = message.get('portfolio', None)
-        self.user = message.get('user', None)
+        self.portfolio_cookie = message.get('portfolio_cookie', None)
+        self.user_cookie = message.get('user_cookie', None)
         self.broker = message.get('broker', None)
         self.market_type = message.get('market_type', None)
         self.strategy_name = message.get('strategy_name', None)
