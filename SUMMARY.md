@@ -20,7 +20,7 @@
 * [QUANTAXIS回测分析](Documents/backtestanalysis.md)
 * [QUANTAXIS WEB API说明](Documents/backendapi.md)
 * [常见策略整理](Documents/strategy.md)
-
+* [QUANTAXIS的开发列表](job_list.md)
 
 * [FAQ](Documents/FAQ.md)
 * [协议](Documents/readme.md)
