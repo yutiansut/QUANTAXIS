@@ -56,6 +56,9 @@ from QUANTAXIS.QAUtil.QADate_trade import (QA_util_date_gap,
 # list function
 from QUANTAXIS.QAUtil.QAList import (QA_util_diff_list,
                                      QA_util_multi_demension_list)
+
+# dict function
+from QUANTAXIS.QAUtil.QADict import QA_util_dict_remove_key
 # log
 from QUANTAXIS.QAUtil.QALogs import (QA_util_log_debug, QA_util_log_expection,
                                      QA_util_log_info)
