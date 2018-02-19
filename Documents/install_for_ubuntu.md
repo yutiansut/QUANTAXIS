@@ -1,16 +1,16 @@
 # QUANTAXIS 的安装 Ubuntu篇
 <!-- TOC -->
 
-- [QUANTAXIS 的安装 Ubuntu篇](#quantaxis-的安装-ubuntu篇)
-    - [一键部署](#一键部署)
-    - [手动部署](#手动部署)
-    - [换源](#换源)
-    - [安装python](#安装python)
-    - [安装git](#安装git)
-    - [下载安装quantaxis](#下载安装quantaxis)
-    - [安装mongo](#安装mongo)
-    - [安装nodejs](#安装nodejs)
-    - [安装QUANTAXIS_WEBKIT](#安装quantaxis_webkit)
+- [QUANTAXIS 的安装 Ubuntu篇](#quantaxis-%E7%9A%84%E5%AE%89%E8%A3%85-ubuntu%E7%AF%87)
+    - [一键部署](#%E4%B8%80%E9%94%AE%E9%83%A8%E7%BD%B2)
+    - [手动部署](#%E6%89%8B%E5%8A%A8%E9%83%A8%E7%BD%B2)
+    - [换源](#%E6%8D%A2%E6%BA%90)
+    - [安装python](#%E5%AE%89%E8%A3%85python)
+    - [安装git](#%E5%AE%89%E8%A3%85git)
+    - [下载安装quantaxis](#%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85quantaxis)
+    - [安装mongo](#%E5%AE%89%E8%A3%85mongo)
+    - [安装nodejs](#%E5%AE%89%E8%A3%85nodejs)
+    - [安装QUANTAXIS_WEBKIT](#%E5%AE%89%E8%A3%85quantaxiswebkit)
 
 <!-- /TOC -->
 
@@ -54,7 +54,6 @@ apt install software-properties-common
 add-apt-repository ppa:jonathonf/python-3.6
 apt-get update
 
-apt-get install python3.6
 apt-get install python3.6-dev
 wget https://bootstrap.pypa.io/get-pip.py
 
@@ -74,8 +73,9 @@ cd ~
 git clone https://github.com/yutiansut/quantaxis
 cd ~/quantaxis
 python3.6 -m pip install -r requirements.txt -i https://pypi.doubanio.com/simple
-python3.6 -m pip install git+https://github.com/yutiansut/tushare
-pip install -e .
+python3.6 -m pip install tushare
+python3.6 -m pip install pytdx
+python3.6 -m pip install -e .
 
 ```
 
