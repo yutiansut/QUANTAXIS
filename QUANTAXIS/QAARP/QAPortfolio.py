@@ -43,10 +43,10 @@ class QA_Portfolio():
     用account的cookie来管理控制account
     """
 
-    def __init__(self,user_cookie=None):
+    def __init__(self, user_cookie=None):
         self.accounts = {}
         self.portfolio_cookie = QA_util_random_with_topic('Portfolio')
-        self.user_cookie=user_cookie
+        self.user_cookie = user_cookie
         for cookie in self.accounts.keys():
             self.accounts[cookie] = QA_Account(account_cookie=cookie)
 
@@ -60,6 +60,8 @@ class QA_Portfolio():
     def add_account(self, account):
         'portfolio add a account/stratetgy'
         if account.account_cookie not in self.accounts.keys():
+            account.portfolio = self.portfolio_cookie
+            account.user = self.user_cookie
             self.accounts[account.account_cookie] = account
         else:
             pass
@@ -67,7 +69,8 @@ class QA_Portfolio():
     def new_account(self, account_cookie=None):
         'portfolio create a account/strategy'
         if account_cookie is None:
-            temp = QA_Account(portfolio=self.portfolio_cookie,user=self.user_cookie)
+            temp = QA_Account(portfolio=self.portfolio_cookie,
+                              user=self.user_cookie)
             if temp.account_cookie not in self.accounts.keys():
                 self.accounts[temp.account_cookie] = temp
                 return temp
@@ -88,7 +91,7 @@ class QA_Portfolio():
 
     @property
     def table(self):
-        return pd.concat([acc.table for acc in self.accounts.values()],axis=1)
+        return pd.concat([acc.table for acc in self.accounts.values()], axis=1)
 
     def get_cash(self):
         """拿到整个portfolio的可用资金
