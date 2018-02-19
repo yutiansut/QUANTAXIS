@@ -22,34 +22,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from QUANTAXIS.QAUtil import DATABASE
 
-"""对于账户的增删改查(QAACCOUNT/QAUSER/QAPORTFOLIO)
-"""
-
-
-def save_account(message, collection=DATABASE.account):
-    """save account
-    
-    Arguments:
-        message {[type]} -- [description]
-    
-    Keyword Arguments:
-        collection {[type]} -- [description] (default: {DATABASE})
+def QA_util_dict_remove_key(dicts, key):
+    """
+    输入一个dict 返回删除后的
     """
 
-    collection.save(message)
-
-
-
-def update_account(mes, collection=DATABASE.account):
-    """update the account with account message
-    
-    Arguments:
-        mes {[type]} -- [description]
-    
-    Keyword Arguments:
-        collection {[type]} -- [description] (default: {DATABASE})
-    """
-
-    collection.find_one_and_update({'account_cookie': mes['account_cookie']})
+    if isinstance(key, list):
+        for item in key:
+            try:
+                dicts.pop(item)
+            except:
+                pass
+    else:
+        try:
+            dicts.pop(key)
+        except:
+            pass
+    return dicts

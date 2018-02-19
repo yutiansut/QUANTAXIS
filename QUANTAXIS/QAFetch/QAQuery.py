@@ -30,10 +30,13 @@ import pandas as pd
 from pandas import DataFrame
 
 from QUANTAXIS.QAUtil import (DATABASE, QA_Setting, QA_util_date_stamp,
-                              QA_util_date_valid, QA_util_log_info,
+                              QA_util_date_valid, QA_util_dict_remove_key,
+                              QA_util_log_info,
                               QA_util_sql_mongo_sort_DESCENDING,
                               QA_util_time_stamp, QA_util_to_json_from_pandas,
                               trade_date_sse)
+
+
 """
 按要求从数据库取数据，并转换成numpy结构
 
@@ -53,7 +56,7 @@ def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collec
                 "$lte": QA_util_date_stamp(end),
                 "$gte": QA_util_date_stamp(start)}})
         if format in ['json', 'dict']:
-            return [data for data in cursor]
+            return [QA_util_dict_remove_key(data, '_id') for data in cursor]
 
         for item in cursor:
             __data.append([str(item['code']), float(item['open']), float(item['high']), float(
@@ -339,6 +342,22 @@ def QA_fetch_quotations(date=datetime.date.today(), db=DATABASE):
             {})]).drop(['_id'], axis=1).set_index('datetime', drop=False).sort_index()
     except Exception as e:
         raise e
+
+
+def QA_fetch_account(message={}, db=DATABASE):
+    """get the account
+
+    Arguments:
+        query_mes {[type]} -- [description]
+
+    Keyword Arguments:
+        collection {[type]} -- [description] (default: {DATABASE})
+
+    Returns:
+        [type] -- [description]
+    """
+    collection = DATABASE.account
+    return [QA_util_dict_remove_key(res, '_id') for res in collection.find(message)]
 
 
 if __name__ == '__main__':

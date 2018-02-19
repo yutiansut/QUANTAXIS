@@ -27,11 +27,11 @@ import pandas as pd
 
 from QUANTAXIS.QAEngine.QAEvent import QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_Order
-from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL, FREQUENCE,
-                                          BROKER_TYPE, ENGINE_EVENT,
+from QUANTAXIS.QASU.save_account import save_account, update_account
+from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
+                                          BROKER_TYPE, ENGINE_EVENT, FREQUENCE,
                                           MARKET_TYPE, TRADE_STATUS)
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
-from QUANTAXIS.QASU.save_account import save_account
 
 # 2017/6/4修改: 去除总资产的动态权益计算
 
@@ -107,30 +107,23 @@ class QA_Account(QA_Worker):
     def message(self):
         'the standard message which can be transef'
         return {
-            'header': {
-                'source': 'account',
-                'cookie': self.account_cookie,
-                'portfolio': self.portfolio,
-                'user': self.user,
-                'broker': self.broker,
-                'market_type': self.market_type,
-                'strategy_name': self.strategy_name,
-                'current_time': self._currenttime,
+            'source': 'account',
+            'account_cookie': self.account_cookie,
+            'portfolio': self.portfolio,
+            'user': self.user,
+            'broker': self.broker,
+            'market_type': self.market_type,
+            'strategy_name': self.strategy_name,
+            'current_time': self._currenttime,
 
-                'allow_sellopen': self.allow_sellopen,
-                'allow_t0': self.allow_t0,
-                'margin_level': self.margin_level
-            },
-            'body': {
-                'account': {
-                    'init_asset': self.init_assets,
-                    'cash': self.cash,
-                    'history': self.history,
-                    'trade_index': self.time_index
-                }
-            }
+            'allow_sellopen': self.allow_sellopen,
+            'allow_t0': self.allow_t0,
+            'margin_level': self.margin_level,
+            'init_asset': self.init_assets,
+            'cash': self.cash,
+            'history': self.history,
+            'trade_index': self.time_index
         }
-
 
     @property
     def code(self):
@@ -226,7 +219,7 @@ class QA_Account(QA_Worker):
 
     def send_order(self, code, amount, time, towards, price, order_model, amount_model):
         """[summary]
-        
+
         Arguments:
             code {[type]} -- [description]
             amount {[type]} -- [description]
@@ -235,7 +228,7 @@ class QA_Account(QA_Worker):
             price {[type]} -- [description]
             order_model {[type]} -- [description]
             amount_model {[type]} -- [description]
-        
+
         Returns:
             [type] -- [description]
         """
@@ -290,20 +283,28 @@ class QA_Account(QA_Worker):
     def from_message(self, message):
         """resume the account from standard message
         这个是从数据库恢复账户时需要的"""
+        self.account_cookie = message.get('account_cookie', None)
         self.portfolio = message.get('portfolio', None)
         self.user = message.get('user', None)
-        self.account_cookie = message.get('account_cookie', None)
-        self.strategy_name = message.get('strategy_name', None)
         self.broker = message.get('broker', None)
         self.market_type = message.get('market_type', None)
+        self.strategy_name = message.get('strategy_name', None)
         self._currenttime = message.get('current_time', None)
-        self.history = message['body']['account']['history']
-        self.cash = message['body']['account']['cash']
-        self.time_index = message['body']['account']['trade_index']
         self.allow_sellopen = message.get('allow_sellopen', False)
         self.allow_t0 = message.get('allow_t0', False)
         self.margin_level = message.get('margin_level', False)
+
+        self.history = message['history']
+        self.cash = message['cash']
+        self.time_index = message['trade_index']
+        self.init_asset = message['init_asset']
         return self
+
+    def show(self):
+        """
+        打印出account的内容
+        """
+        return pd.DataFrame([self.message,]).set_index('account_cookie',drop=False).T
 
     def run(self, event):
         'QA_WORKER method'
@@ -341,6 +342,15 @@ class QA_Account(QA_Worker):
 
     def save(self):
         save_account(self.message)
+
+
+class Account_handler():
+    def __init__(self):
+        pass
+
+    def get_account(self, message):
+        pass
+
 
 if __name__ == '__main__':
     account = QA_Account()
