@@ -300,11 +300,12 @@ class QA_Account(QA_Worker):
         self.init_asset = message['init_asset']
         return self
 
-    def show(self):
+    @property
+    def table(self):
         """
         打印出account的内容
         """
-        return pd.DataFrame([self.message,]).set_index('account_cookie',drop=False).T
+        return pd.DataFrame([self.message, ]).set_index('account_cookie', drop=False).T
 
     def run(self, event):
         'QA_WORKER method'
