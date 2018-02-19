@@ -72,17 +72,22 @@ class QA_User():
         return self.portfolio_list[portfolio]
 
     def generate_simpleaccount(self):
-        'make a simple account with a easier way'
+        """make a simple account with a easier way
+        如果当前user中没有创建portfolio, 则创建一个portfolio,并用此portfolio创建一个account
+        如果已有一个或多个portfolio,则使用第一个portfolio来创建一个account
+        """
         if len(self.portfolio_list.keys()) < 1:
             po = self.new_portfolio()
-            ac = po.new_account()
-            return ac, po
+        else:
+            po = list(self.portfolio_list.values())[0]
+        ac = po.new_account()
+        return ac, po
 
     def register_account(self, account):
         if len(self.portfolio_list.keys()) < 1:
             po = self.new_portfolio()
         else:
-            po = self.portfolio_list.values()[0]
+            po = list(self.portfolio_list.values())[0]
         po.add_account(account)
         return (po, account)
 
