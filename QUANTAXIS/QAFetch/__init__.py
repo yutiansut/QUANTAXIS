@@ -158,18 +158,18 @@ def QA_fetch_get_future_list(package,):
         return 'Unsupport packages'
 
 
-def QA_fetch_get_future_day(package, code, start, end, level='day'):
+def QA_fetch_get_future_day(package, code, start, end, frequence='day'):
     Engine = use(package)
     if package in ['tdx', 'pytdx']:
-        return Engine.QA_fetch_get_future_day(code, start, end, level=level)
+        return Engine.QA_fetch_get_future_day(code, start, end, frequence=frequence)
     else:
         return 'Unsupport packages'
 
 
-def QA_fetch_get_future_min(package, code, start, end, level='1min'):
+def QA_fetch_get_future_min(package, code, start, end, frequence='1min'):
     Engine = use(package)
     if package in ['tdx', 'pytdx']:
-        return Engine.QA_fetch_get_future_min(code, start, end, level=level)
+        return Engine.QA_fetch_get_future_min(code, start, end, frequence=frequence)
     else:
         return 'Unsupport packages'
 
