@@ -60,8 +60,8 @@ class QA_Portfolio():
     def add_account(self, account):
         'portfolio add a account/stratetgy'
         if account.account_cookie not in self.accounts.keys():
-            account.portfolio = self.portfolio_cookie
-            account.user = self.user_cookie
+            account.portfolio_cookie = self.portfolio_cookie
+            account.user_cookie = self.user_cookie
             self.accounts[account.account_cookie] = account
         else:
             pass
@@ -69,14 +69,21 @@ class QA_Portfolio():
     def new_account(self, account_cookie=None):
         'portfolio create a account/strategy'
         if account_cookie is None:
-            temp = QA_Account(portfolio=self.portfolio_cookie,
-                              user=self.user_cookie)
+            temp = QA_Account(portfolio_cookie=self.portfolio_cookie,
+                              user_cookie=self.user_cookie)
             if temp.account_cookie not in self.accounts.keys():
                 self.accounts[temp.account_cookie] = temp
                 return temp
 
             else:
-                return False
+                return self.new_account()
+        else:
+            if account_cookie not in self.accounts.keys():
+                self.accounts[account_cookie] = QA_Account(portfolio_cookie=self.portfolio_cookie,
+                                                           user_cookie=self.user_cookie, account_cookie=account_cookie)
+                return self.accounts[account_cookie]
+            else:
+                return self.new_account(account_cookie)
 
     def get_account(self, cookie):
         'give the account_cookie and return the account/strategy back'
