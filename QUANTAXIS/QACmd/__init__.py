@@ -57,7 +57,6 @@ class CLI(cmd.Cmd):
     def do_version(self, arg):
         QA_util_log_info(__version__)
 
-
     def help_version(self):
         print("syntax: version [message]",)
         print("-- prints a version message")
@@ -138,6 +137,13 @@ class CLI(cmd.Cmd):
                 save stock_list : save stock_list \n\
                 save stock_block: save stock_block \n\
                 save stock_info : save stock_info \n\
+                ----------------------------------------------------------\n\
+                if you just want to save daily data just\n\
+                    save all+ save stock_block+save stock_info, it about 1G data \n\
+                if you want to save save the fully data including min level \n\
+                    save x + save stock_info \n \n\
+                @yutiansut\n\
+                @QUANTAXIS\n\
                 ")
         else:
             arg = arg.split(' ')
@@ -180,7 +186,7 @@ class CLI(cmd.Cmd):
                 # QA_SU_save_etf_day('tdx')
                 QA_SU_save_etf_min('tdx')
                 QA_SU_save_stock_list('tdx')
-                #QA_SU_save_stock_block('tdx')
+                # QA_SU_save_stock_block('tdx')
             elif len(arg) == 1 and arg[0] in ['X', 'x']:
                 if QA_Setting().client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
                     QA_Setting().client.quantaxis.user_list.insert(
@@ -213,7 +219,7 @@ class CLI(cmd.Cmd):
         except:
             print(Exception)
 
-    def do_help(self):
+    def do_help(self, arg):
         QA_util_log_info('MORE EXAMPLE on https://github.com/yutiansut/QADemo')
 
     def help(self):
