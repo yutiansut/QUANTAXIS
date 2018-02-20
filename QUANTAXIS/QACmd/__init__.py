@@ -57,6 +57,7 @@ class CLI(cmd.Cmd):
     def do_version(self, arg):
         QA_util_log_info(__version__)
 
+
     def help_version(self):
         print("syntax: version [message]",)
         print("-- prints a version message")
@@ -121,7 +122,22 @@ class CLI(cmd.Cmd):
         # 仅仅是为了初始化才在这里插入用户,如果想要注册用户,要到webkit底下注册
         if arg == '':
             print(
-                "Usage: save all|X|x|day|min|insert_user|stock_day|stock_xdxr|stock_min|index_day|index_min|etf_day|etf_min|stock_list|stock_block")
+                "Usage: \n\
+                save all  : save stock_day/xdxr/ index_day/ stock_list \n \
+                save X|x| : save stock_day/xdxr/min index_day/min etf_day/min stock_list/block \n \
+                save day  : save stock_day/xdxr index_day etf_day stock_list \n \
+                save min  : save stock_min/xdxr index_min etf_min stock_list \n \
+                save stock_day  : save stock_day \n \
+                save stock_xdxr : save stock_xdxr \n\
+                save stock_min  : save stock_min \n \
+                save index_day  : save index_day \n\
+                save index_min  : save index_min \n\
+                save etf_day    : save etf_day \n\
+                save etf_min    : save etf_min \n\
+                save stock_list : save stock_list \n\
+                save stock_block: save stock_block \n\
+                save stock_info : save stock_info \n\
+                ")
         else:
             arg = arg.split(' ')
             if len(arg) == 1 and arg[0] == 'all':
@@ -163,7 +179,7 @@ class CLI(cmd.Cmd):
                 # QA_SU_save_etf_day('tdx')
                 QA_SU_save_etf_min('tdx')
                 QA_SU_save_stock_list('tdx')
-                QA_SU_save_stock_block('tdx')
+                #QA_SU_save_stock_block('tdx')
             elif len(arg) == 1 and arg[0] in ['X', 'x']:
                 if QA_Setting().client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
                     QA_Setting().client.quantaxis.user_list.insert(
@@ -195,6 +211,9 @@ class CLI(cmd.Cmd):
             QA_util_log_info(eval(arg))
         except:
             print(Exception)
+
+    def do_help(self):
+        QA_util_log_info('MORE EXAMPLE on https://github.com/yutiansut/QADemo')
 
     def help(self):
         QA_util_log_info('fn+methods name')
