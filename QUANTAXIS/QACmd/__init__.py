@@ -123,13 +123,14 @@ class CLI(cmd.Cmd):
         if arg == '':
             print(
                 "Usage: \n\
-                save all  : save stock_day/xdxr/ index_day/ stock_list \n \
-                save X|x| : save stock_day/xdxr/min index_day/min etf_day/min stock_list/block \n \
-                save day  : save stock_day/xdxr index_day etf_day stock_list \n \
-                save min  : save stock_min/xdxr index_min etf_min stock_list \n \
-                save stock_day  : save stock_day \n \
+                save all  : save stock_day/xdxr/ index_day/ stock_list \n\
+                save X|x  : save stock_day/xdxr/min index_day/min etf_day/min stock_list/block \n\
+                save day  : save stock_day/xdxr index_day etf_day stock_list \n\
+                save min  : save stock_min/xdxr index_min etf_min stock_list \n\
+                ------------------------------------------------------------ \n\
+                save stock_day  : save stock_day \n\
                 save stock_xdxr : save stock_xdxr \n\
-                save stock_min  : save stock_min \n \
+                save stock_min  : save stock_min \n\
                 save index_day  : save index_day \n\
                 save index_min  : save index_min \n\
                 save etf_day    : save etf_day \n\
