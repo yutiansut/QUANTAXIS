@@ -26,6 +26,14 @@ import numpy as np
 import pandas as pd
 import requests
 from lxml import etree
+from QUANTAXIS.QAFetch.base import headers
+
+
+headers_ths = headers
+headers_ths['Referer'] = 'http://www.10jqka.com.cn/'
+headers_ths['Host'] = 'q.10jqka.com.cn'
+headers_data = headers_ths
+headers_data['X-Requested-With'] = 'XMLHttpRequest'
 
 
 def QA_fetch_get_stock_day_in_year(code, year, if_fq='00'):
@@ -61,28 +69,13 @@ def QA_fetch_get_stock_day(code, start, end, if_fq='00'):
         return data[start:end]
 
 
-headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-           'Accept-Encoding': 'gzip, deflate',
-           'Accept-Language': 'zh-CN,zh;q=0.9',
-           'Cache-Control': 'max-age=0',
-           'Referer': 'http://www.10jqka.com.cn/',
-           'Connection': 'keep-alive',
-           'Host': 'q.10jqka.com.cn',
-           'Upgrade-Insecure-Requests': '1',
-           'If-Modified-Since': 'Thu, 11 Jan 2018 07:05:01 GMT',
-           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36'}
-
-headers_data = headers
-headers_data['X-Requested-With'] = 'XMLHttpRequest'
-
-
 def QA_fetch_get_stock_block():
     url_list = ['gn', 'dy', 'thshy', 'zjhhy']  # 概念/地域/同花顺板块/证监会板块
     data = []
 
     for item in url_list:
         tree = etree.HTML(requests.get(
-            'http://q.10jqka.com.cn/{}/'.format(item), headers=headers).text)
+            'http://q.10jqka.com.cn/{}/'.format(item), headers=headers_ths).text)
         gn = tree.xpath('/html/body/div/div/div/div/div/a/text()')
         gpath = tree.xpath('/html/body/div/div/div/div/div/a/@href')
 

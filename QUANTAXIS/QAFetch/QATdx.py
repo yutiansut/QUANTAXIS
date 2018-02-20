@@ -35,6 +35,8 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_str2int,
                               QA_util_web_ping, future_ip_list, stock_ip_list,
                               trade_date_sse)
 
+from QUANTAXIS.QAFetch.base import _select_market_code, _select_type
+
 # 基于Pytdx的数据接口,好处是可以在linux/mac上联入通达信行情
 # 具体参见rainx的pytdx(https://github.com/rainx/pytdx)
 #
@@ -83,50 +85,18 @@ best_ip = select_best_ip()
 # return 1 if sh, 0 if sz
 
 
-def _select_market_code(code):
-    code = str(code)
-    if code[0] in ['5', '6', '9'] or code[:3] in ["009", "126", "110", "201", "202", "203", "204"]:
-        return 1
-    return 0
-
-
-def _select_type(frequence):
-    if frequence in ['day', 'd', 'D', 'DAY', 'Day']:
-        frequence = 9
-    elif frequence in ['w', 'W', 'Week', 'week']:
-        frequence = 5
-    elif frequence in ['month', 'M', 'm', 'Month']:
-        frequence = 6
-    elif frequence in ['Q', 'Quarter', 'q']:
-        frequence = 10
-    elif frequence in ['y', 'Y', 'year', 'Year']:
-        frequence = 11
-    elif str(frequence) in ['5', '5m', '5min', 'five']:
-        frequence, type_ = 0, '5min'
-    elif str(frequence) in ['1', '1m', '1min', 'one']:
-        frequence, type_ = 8, '1min'
-    elif str(frequence) in ['15', '15m', '15min', 'fifteen']:
-        frequence, type_ = 1, '15min'
-    elif str(frequence) in ['30', '30m', '30min', 'half']:
-        frequence, type_ = 2, '30min'
-    elif str(frequence) in ['60', '60m', '60min', '1h']:
-        frequence, type_ = 3, '60min'
-
-    return frequence
-
-
 def QA_fetch_get_security_bars(code, _type, lens, ip=best_ip['stock'], port=7709):
     """按bar长度推算数据
-    
+
     Arguments:
         code {[type]} -- [description]
         _type {[type]} -- [description]
         lens {[type]} -- [description]
-    
+
     Keyword Arguments:
         ip {[type]} -- [description] (default: {best_ip})
         port {[type]} -- [description] (default: {7709})
-    
+
     Returns:
         [type] -- [description]
     """
