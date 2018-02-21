@@ -23,6 +23,9 @@ wget https://raw.githubusercontent.com/yutiansut/QUANTAXIS/master/config/ubuntu1
 sudo bash ./ubuntu16.sh
 ```
 
+在脚本运行中,遇到输入的时候 一律选```yes```或者 ```y```
+
+
 ##  2. <a name='-1'></a>手动部署
 
 ##  3. <a name='-1'></a>换源
