@@ -32,6 +32,12 @@ headers_em['Host'] = 'emweb.securities.eastmoney.com'
 
 
 def QA_fetch_get_stock_analysis(code):
+    """
+    'zyfw', 主营范围 'jyps'#经营评述 'zygcfx' 主营构成分析
+
+    date 主营构成	主营收入(元)	收入比例cbbl	主营成本(元)	成本比例	主营利润(元)	利润比例	毛利率(%)
+    行业 /产品/ 区域 hq cp qy
+    """
     market = 'sh' if _select_market_code(code) == 1 else 'sz'
     null = 'none'
     data = eval(requests.get(BusinessAnalysis_url.format(
@@ -57,13 +63,15 @@ def QA_fetch_get_stock_analysis(code):
         res_zyfcfx = None
 
     return zyfw, jyps, res_zyfcfx
-    #'zyfw', 主营范围 'jyps'#经营评述 'zygcfx' 主营构成分析
-
-    """
-    date 主营构成	主营收入(元)	收入比例cbbl	主营成本(元)	成本比例	主营利润(元)	利润比例	毛利率(%)
-
-    行业 /产品/ 区域 hq cp qy
 
 
-    """
-    return zyfw, jyps,
+
+cpbidu = 'http://emweb.securities.eastmoney.com/PC_HSF10/OperationsRequired/OperationsRequiredAjax?times=1&code=sz300059'
+
+headers_em_OperationsRequired = headers
+headers_em_OperationsRequired['Accept'] = '*/*'
+headers_em_OperationsRequired['Referer'] = 'http://emweb.securities.eastmoney.com/PC_HSF10/OperationsRequired/Index?type=soft&code=sz300059'
+
+headers_em_OperationsRequired['X-Requested-With'] = 'XMLHttpRequest'
+
+research_report = 'http://emweb.securities.eastmoney.com/PC_HSF10/ResearchReport/ResearchReportAjax?code=sz300059&icode=447'

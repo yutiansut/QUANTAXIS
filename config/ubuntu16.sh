@@ -24,11 +24,11 @@ apt-get update
 
 apt install software-properties-common
 
-add-apt-repository ppa:jonathonf/python-3.6
-apt-get update
+# add-apt-repository ppa:jonathonf/python-3.6
+# apt-get update
 
 
-apt-get install python3.6-dev
+# apt-get install python3.6-dev
 wget https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-5.1.0-Linux-x86_64.sh
 bash Anaconda3-5.1.0-Linux-x86_64.sh
 
