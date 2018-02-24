@@ -56,10 +56,11 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 * 5. [Docker](#Docker)
 * 6. [使用说明](#-1)
 * 7. [Jupyter示例](#Jupyter)
-* 8. [常见问题FAQ](#FAQ)
-* 9. [项目捐赠](#-1)
-* 10. [回测Webkit插件概览](#Webkit)
-* 11. [QUANTAXIS 标准化协议和未来协议](#QUANTAXIS)
+* 8. [开发计划](#-1)
+* 9. [常见问题FAQ](#FAQ)
+* 10. [项目捐赠](#-1)
+* 11. [回测Webkit插件概览](#Webkit)
+* 12. [QUANTAXIS 标准化协议和未来协议](#QUANTAXIS)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -144,12 +145,12 @@ git clone https://github.com/yutiansut/quantaxis --depth 1
 参见 [Jupyter示例](jupyterexample)
 
 
-## 开发计划
+##  8. <a name='-1'></a>开发计划
 参见 [开发计划](job_list.md)
-##  8. <a name='FAQ'></a>常见问题FAQ
+##  9. <a name='FAQ'></a>常见问题FAQ
 参见 [FAQ](Documents/FAQ.md)
 
-##  9. <a name='-1'></a>项目捐赠
+##  10. <a name='-1'></a>项目捐赠
 
 写代码不易...请作者喝杯咖啡呗?
 
@@ -162,7 +163,7 @@ git clone https://github.com/yutiansut/quantaxis --depth 1
 
 
 
-##  10. <a name='Webkit'></a>回测Webkit插件概览
+##  11. <a name='Webkit'></a>回测Webkit插件概览
 
 ![](http://osnhakmay.bkt.clouddn.com/homepage.png)
 ![](http://osnhakmay.bkt.clouddn.com/loginpage.png)
@@ -175,7 +176,7 @@ git clone https://github.com/yutiansut/quantaxis --depth 1
 ![](http://osnhakmay.bkt.clouddn.com/settings.png)
 
 
-##  11. <a name='QUANTAXIS'></a>QUANTAXIS 标准化协议和未来协议
+##  12. <a name='QUANTAXIS'></a>QUANTAXIS 标准化协议和未来协议
 
 
 QUANTAXIS-Stardand-Protocol 版本号0.0.8
