@@ -53,3 +53,7 @@ def update_account(mes, collection=DATABASE.account):
     """
 
     collection.find_one_and_update({'account_cookie': mes['account_cookie']})
+
+
+def save_riskanalysis(message,collection=DATABASE.risk):
+    collection.save(message)
