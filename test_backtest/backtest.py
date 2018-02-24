@@ -48,6 +48,7 @@ class Backtest(QA_Backtest):
         print(risk().T)
 
         self.account.save()
+        risk.save()
 
 
 def run_daybacktest():
