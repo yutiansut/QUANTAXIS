@@ -145,6 +145,9 @@ def AVEDEV(Series, N):
 
 
 def MACD(Series, FAST, SLOW, MID):
+    """macd指标 仅适用于Series
+    对于DATAFRAME的应用请使用QA_indicator_macd
+    """
     EMAFAST = EMA(Series, FAST)
     EMASLOW = EMA(Series, SLOW)
     DIFF = EMAFAST - EMASLOW
