@@ -119,7 +119,7 @@ class QA_Account(QA_Worker):
             'allow_sellopen': self.allow_sellopen,
             'allow_t0': self.allow_t0,
             'margin_level': self.margin_level,
-            'init_asset': self.init_assets,
+            'init_assets': self.init_assets,
             'cash': self.cash,
             'history': self.history,
             'trade_index': self.time_index
@@ -297,7 +297,7 @@ class QA_Account(QA_Worker):
         self.history = message['history']
         self.cash = message['cash']
         self.time_index = message['trade_index']
-        self.init_asset = message['init_asset']
+        self.init_assets = message['init_assets']
         return self
 
     @property

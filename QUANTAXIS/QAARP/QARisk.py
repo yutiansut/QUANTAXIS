@@ -45,9 +45,10 @@ class QA_Risk():
 
     """
 
-    def __init__(self, account):
+    def __init__(self, account, benchmark_code='000300', benchmark_type=MARKET_TYPE.INDEX_CN):
         self.account = account
-        self.benchmark = None
+        self.benchmark_code = benchmark_code  # 默认沪深300
+        self.benchmark_type = benchmark_type
 
         self.fetch = {MARKET_TYPE.STOCK_CN: QA_fetch_stock_day_adv,
                       MARKET_TYPE.INDEX_CN: QA_fetch_index_day_adv}
@@ -74,9 +75,13 @@ class QA_Risk():
 
     @property
     def profit(self):
+        return self.calc_profit(self.assets)
+
+    @property
+    def profit_pct(self):
         """利润
         """
-        return (float(self.assets.iloc[-1]) / float(self.assets.iloc[0])) - 1
+        return self.calc_profitpctchange(self.assets)
 
     @property
     def annualize_return(self):
@@ -86,7 +91,7 @@ class QA_Risk():
             [type] -- [description]
         """
 
-        return math.pow(float(self.assets.iloc[-1]) / float(self.assets.iloc[0]), 250.0 / float(self.time_gap)) - 1.0
+        return self.calc_annualize_return(self.assets, self.time_gap)
 
     @property
     def volatility(self):
@@ -95,8 +100,7 @@ class QA_Risk():
         Returns:
             [type] -- [description]
         """
-
-        return self.assets.diff().std()
+        return self.profit_pct.std() * math.sqrt(250)
 
     @property
     def message(self):
@@ -108,12 +112,79 @@ class QA_Risk():
             'profit': self.profit,
             'max_dropback': self.max_dropback,
             'time_gap': self.time_gap,
-            'volatility': self.volatility
+            'volatility': self.volatility,
+            'benchmark_code': self.benchmark_code,
+            'beta': self.beta,
+            'alpha': self.alpha,
+            'sharpe': self.sharpe
         }
 
+    @property
+    def benchmark_data(self):
+        return self.fetch[self.benchmark_type](
+            self.benchmark_code, self.account.start_date, self.account.end_date)
+
+    @property
+    def benchmark_assets(self):
+        return (self.benchmark_data.open / float(self.benchmark_data.open.iloc[0]) * float(self.account.init_assets))
+
+    @property
+    def benchmark_annualize_return(self):
+        """年化收益
+
+        Returns:
+            [type] -- [description]
+        """
+
+        return self.calc_annualize_return(self.benchmark_assets, self.time_gap)
+
+    @property
+    def benchmark_profitpct(self):
+        return self.calc_profitpctchange(self.benchmark_assets)
+
+    @property
+    def beta(self):
+        return self.calc_beta(self.profit_pct.dropna(), self.benchmark_profitpct.dropna())
+
+    @property
+    def alpha(self):
+        return self.calc_alpha(self.annualize_return, self.benchmark_annualize_return, self.beta, 0.05)
+
+    @property
+    def sharpe(self):
+        return self.calc_sharpe(self.annualize_return, self.volatility, 0.05)
+
     def set_benchmark(self, code, market_type):
-        self.benchmark = self.fetch[market_type](
-            code, self.account.start_date, self.account.end_date)
+        self.benchmark_code = code
+        self.benchmark_type = market_type
+
+    def calc_annualize_return(self, assets, days):
+        return math.pow(float(assets.iloc[-1]) / float(assets.iloc[0]), 250.0 / float(days)) - 1.0
+
+    # def calc_profit(self, assets):
+    #     return (assets.iloc[-1] / assets.iloc[1]) - 1
+
+    def calc_profitpctchange(self, assets):
+        return self.assets[::-1].pct_change()
+
+    def calc_beta(self, assest_profit, benchmark_profit):
+
+        calc_cov = np.cov(assest_profit, benchmark_profit)
+        beta = calc_cov[0, 1] / calc_cov[1, 1]
+        return beta
+
+    def calc_alpha(self, annualized_returns, benchmark_annualized_returns, beta, r=0.05):
+
+        alpha = (annualized_returns - r) - (beta) * \
+            (benchmark_annualized_returns - r)
+        return alpha
+
+    def calc_profit(self, assets):
+        return (float(assets.iloc[-1]) / float(assets.iloc[0])) - 1
+
+    def calc_sharpe(self, annualized_returns, volatility_year, r=0.05):
+        '计算夏普比率'
+        return (annualized_returns - r) / volatility_year
 
 
 class QA_Performace(QA_Risk):
@@ -138,11 +209,3 @@ class QA_Performace(QA_Risk):
     @property
     def sharpe(self):
         pass
-
-
-def annualize_return(assets, days):
-    return math.pow(float(assets[-1]) / float(assets[0]), 250.0 / float(days)) - 1.0
-
-
-def profit(assets):
-    return (assets[-1] / assets[1]) - 1
