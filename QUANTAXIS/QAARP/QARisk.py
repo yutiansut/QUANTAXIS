@@ -41,6 +41,10 @@ from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_trade_gap
 
 
 class QA_Risk():
+    """QARISK 是一个风险插件
+
+    """
+
     def __init__(self, account):
         self.account = account
         self.benchmark = None
@@ -56,11 +60,17 @@ class QA_Risk():
         self.time_gap = QA_util_get_trade_gap(
             self.account.start_date, self.account.end_date)
 
+    def __repr__(self):
+        return '< QA_RISK ANALYSIS ACCOUNT-{} >'.format(self.account.account_cookie)
+
+    def __call__(self):
+        return pd.DataFrame([self.message])
+
     @property
     def max_dropback(self):
         """最大回撤
         """
-        return max([self.assets.iloc[idx::].max() - self.assets.iloc[idx::].min() for idx in range(len(self.assets))])/float(self.assets.iloc[0])
+        return max([self.assets.iloc[idx::].max() - self.assets.iloc[idx::].min() for idx in range(len(self.assets))]) / float(self.assets.iloc[0])
 
     @property
     def profit(self):
@@ -87,6 +97,19 @@ class QA_Risk():
         """
 
         return self.assets.diff().std()
+
+    @property
+    def message(self):
+        return {
+            'account_cookie': self.account.account_cookie,
+            'portfolio_cookie': self.account.portfolio_cookie,
+            'user_cookie': self.account.user_cookie,
+            'annualize_return': self.annualize_return,
+            'profit': self.profit,
+            'max_dropback': self.max_dropback,
+            'time_gap': self.time_gap,
+            'volatility': self.volatility
+        }
 
     def set_benchmark(self, code, market_type):
         self.benchmark = self.fetch[market_type](
