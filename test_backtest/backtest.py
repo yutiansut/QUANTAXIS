@@ -43,13 +43,9 @@ class Backtest(QA_Backtest):
 
     def after_success(self):
         QA_util_log_info(self.account.history_table)
-        risk = QA_Risk(self.account)
+        risk = QA_Risk(self.account,benchmark_code='000300',benchmark_type=MARKET_TYPE.INDEX_CN)
 
-        print(risk.assets)
-        print('annualize_return : {} %'.format(risk.annualize_return))
-        print('max_dropback : {} %'.format(risk.max_dropback))
-        print('profit : {} %'.format(risk.profit))
-        print('volatility : {}'.format(risk.volatility))
+        print(risk().T)
 
         self.account.save()
 

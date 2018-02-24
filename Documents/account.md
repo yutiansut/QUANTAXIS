@@ -7,6 +7,7 @@
     - [账户/组合/策略的关系](#账户组合策略的关系)
     - [创建自定义的策略](#创建自定义的策略)
     - [深入了解策略的组成](#深入了解策略的组成)
+    - [风险分析模块](#风险分析模块)
 
 <!-- /TOC -->
 @yutiansut
@@ -178,3 +179,34 @@ event 事件封装了数据和方法*(包括 所需的行情数据/下单接口)
 
 
 ```
+
+
+
+## 风险分析模块
+
+QA_Risk 是一个风险计算模块
+
+```python
+R=QA.QA_Risk(ACCOUNT)
+
+#< QA_RISK ANALYSIS ACCOUNT-Acc_50wle3cY >
+
+R()
+
+    account_cookie	annualize_return	max_dropback	portfolio_cookie	profit	time_gap	user_cookie	    volatility
+0	Acc_50wle3cY	-0.000458	        0.00012     	Portfolio_oAkrKvj9	-0.000011	6	    USER_l1CeBXog	64.696986
+
+R.message
+
+{'account_cookie': 'Acc_50wle3cY',
+ 'annualize_return': -0.0004582372482384578,
+ 'max_dropback': 0.00012000168002352033,
+ 'portfolio_cookie': 'Portfolio_oAkrKvj9',
+ 'profit': -1.1000154002127616e-05,
+ 'time_gap': 6,
+ 'user_cookie': 'USER_l1CeBXog',
+ 'volatility': 64.69698601944299}
+
+```
+
+R.
