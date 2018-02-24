@@ -187,12 +187,12 @@ event 事件封装了数据和方法*(包括 所需的行情数据/下单接口)
 QA_Risk 是一个风险计算模块
 
 ```python
-R=QA.QA_Risk(ACCOUNT)
+R=QA.QA_Risk(ACCOUNT,benchmark_code='000300',benchmark_type=MARKET_TYPE.INDEX_CN)
 
 #< QA_RISK ANALYSIS ACCOUNT-Acc_50wle3cY >
 
 R()
-
+# R() 是一个datafram形式的表达结果
     account_cookie	annualize_return	max_dropback	portfolio_cookie	profit	time_gap	user_cookie	    volatility
 0	Acc_50wle3cY	-0.000458	        0.00012     	Portfolio_oAkrKvj9	-0.000011	6	    USER_l1CeBXog	64.696986
 
@@ -208,5 +208,3 @@ R.message
  'volatility': 64.69698601944299}
 
 ```
-
-R.

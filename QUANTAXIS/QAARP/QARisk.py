@@ -35,9 +35,11 @@ from functools import lru_cache
 import numpy as np
 import pandas as pd
 
-from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_day_adv, QA_fetch_index_day_adv
-from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE
+from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_index_day_adv,
+                                               QA_fetch_stock_day_adv)
+from QUANTAXIS.QASU.save_account import save_riskanalysis
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_trade_gap
+from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE
 
 
 class QA_Risk():
@@ -185,6 +187,12 @@ class QA_Risk():
     def calc_sharpe(self, annualized_returns, volatility_year, r=0.05):
         '计算夏普比率'
         return (annualized_returns - r) / volatility_year
+
+    def save(self):
+        """save to mongodb
+        
+        """
+        save_riskanalysis(self.message)
 
 
 class QA_Performace(QA_Risk):
