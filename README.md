@@ -129,6 +129,9 @@ git clone https://github.com/yutiansut/quantaxis --depth 1
 ##  6. <a name='-1'></a>使用说明
 参见 
 
+
+* [QUANTAXIS的使用示例](https://github.com/yutiansut/QADemo)
+
 * [QUANTAXIS回测API](Documents/backtest_api.md)
 * [QUANTAXIS的数据结构](Documents/DataStruct.md)
 * [QUANTAXIS指标系统](Documents/indicators.md)
@@ -140,6 +143,9 @@ git clone https://github.com/yutiansut/quantaxis --depth 1
 ##  7. <a name='Jupyter'></a>Jupyter示例
 参见 [Jupyter示例](jupyterexample)
 
+
+## 开发计划
+参见 [开发计划](job_list.md)
 ##  8. <a name='FAQ'></a>常见问题FAQ
 参见 [FAQ](Documents/FAQ.md)
 
