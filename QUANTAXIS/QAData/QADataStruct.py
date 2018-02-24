@@ -296,7 +296,7 @@ class _quotation_base():
         '返回DataStruct.price的众数'
         try:
             return statistics.mode(self.price)
-        except :
+        except:
             return None
 
     # 振幅
@@ -458,24 +458,24 @@ class _quotation_base():
     def reverse(self):
         return self.new(self.data[::-1])
 
-    def tail(self,lens):
+    def tail(self, lens):
         """返回最后Lens个值的DataStruct
-        
+
         Arguments:
             lens {[type]} -- [description]
-        
+
         Returns:
             [type] -- [description]
         """
 
         return self.new(self.data.tail(lens))
-    
-    def head(self,lens):
+
+    def head(self, lens):
         """返回最前lens个值的DataStruct
-        
+
         Arguments:
             lens {[type]} -- [description]
-        
+
         Returns:
             [type] -- [description]
         """
@@ -814,7 +814,7 @@ class QA_DataStruct_Stock_block():
     @property
     def len(self):
         """返回DataStruct的长度
-        
+
         Returns:
             [type] -- [description]
         """
@@ -824,7 +824,7 @@ class QA_DataStruct_Stock_block():
     @property
     def block_name(self):
         """返回所有的板块名
-        
+
         Returns:
             [type] -- [description]
         """
@@ -834,7 +834,7 @@ class QA_DataStruct_Stock_block():
     @property
     def code(self):
         """返回唯一的证券代码
-        
+
         Returns:
             [type] -- [description]
         """
@@ -843,7 +843,7 @@ class QA_DataStruct_Stock_block():
 
     def show(self):
         """展示DataStruct
-        
+
         Returns:
             dataframe -- [description]
         """
@@ -852,10 +852,10 @@ class QA_DataStruct_Stock_block():
 
     def get_code(self, code):
         """getcode 获取某一只股票的板块
-        
+
         Arguments:
             code {str} -- 股票代码
-        
+
         Returns:
             DataStruct -- [description]
         """
@@ -864,10 +864,10 @@ class QA_DataStruct_Stock_block():
 
     def get_block(self, _block_name):
         """getblock 获取板块
-        
+
         Arguments:
             _block_name {[type]} -- [description]
-        
+
         Returns:
             [type] -- [description]
         """
@@ -876,10 +876,10 @@ class QA_DataStruct_Stock_block():
 
     def getdtype(self, dtype):
         """getdtype
-        
+
         Arguments:
             dtype {str} -- gn-概念/dy-地域/fg-风格/zs-指数
-        
+
         Returns:
             [type] -- [description]
         """
@@ -888,10 +888,10 @@ class QA_DataStruct_Stock_block():
 
     def get_price(self, _block_name=None):
         """get_price
-        
+
         Keyword Arguments:
             _block_name {[type]} -- [description] (default: {None})
-        
+
         Returns:
             [type] -- [description]
         """
@@ -1118,7 +1118,20 @@ class QA_DataStruct_Stock_transaction():
             return self.data.loc[start:end]
 
 
-class QA_DataStruct_Stock_realtime():
+class _realtime_base():
+    """
+    realtime 基类
+
+    主要字段有:
+    code/name
+    time
+    open/high/low
+
+    买卖报价队列:(不同的可能不一样 只提供list)
+    ask_list[ask1_price/ask1_volume|ask2_price/ask2_volume|ask3_price/ask3_volume....]
+    bid_list[bid1_price/bid1_volume|bid2_price/bid2_volume|bid3_price/bid3_volume....]
+    """
+
     def __init__(self, market_data):
         if isinstance(market_data, dict):
             self.market_data = QA_util_to_pandas_from_json(market_data)
@@ -1128,27 +1141,52 @@ class QA_DataStruct_Stock_realtime():
 
     @property
     def open(self):
-        return self.market_data.open
+        try:
+            return self.market_data.open
+        except:
+            return None
 
     @property
     def price(self):
-        return self.market_data.price
+        try:
+            return self.market_data.price
+        except:
+            return None
 
     @property
     def high(self):
-        return self.market_data.high
-
+        try:
+            return self.market_data.high
+        except:
+            return None
     @property
     def low(self):
-        return self.market_data.low
+        try:
+            return self.market_data.low
+        except:
+            return None
 
     @property
     def code(self):
-        return self.code
-
+        try:
+            return self.market_data.code
+        except:
+            return None
     @property
     def last_close(self):
-        return self.market_data.last_close
+        try:
+            return self.market_data.last_close
+        except:
+            return None
+
+
+class QA_DataStruct_Stock_realtime(_realtime_base):
+    def __init__(self, market_data):
+        if isinstance(market_data, dict):
+            self.market_data = QA_util_to_pandas_from_json(market_data)
+
+        elif isinstance(market_data, pd.DataFrame):
+            self.market_data = market_data
 
     @property
     def cur_vol(self):
@@ -1176,10 +1214,10 @@ class QA_DataStruct_Stock_realtime():
     def bid_list(self):
         return self.market_data.ix[:, ['bid1', 'bid_vol1', 'bid2', 'bid_vol2',  'bid3', 'bid_vol3', 'bid4', 'bid_vol4', 'bid5', 'bid_vol5']]
 
-    [['datetime', 'active1', 'active2', 'last_close', 'code', 'open', 'high', 'low', 'price', 'cur_vol',
-      's_vol', 'b_vol', 'vol', 'ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',
-                        'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3', 'ask4',
-                        'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
+    # [['datetime', 'active1', 'active2', 'last_close', 'code', 'open', 'high', 'low', 'price', 'cur_vol',
+    #   's_vol', 'b_vol', 'vol', 'ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',
+    #                     'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3', 'ask4',
+    #                     'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
 
 
 class QA_DataStruct_Security_list():
