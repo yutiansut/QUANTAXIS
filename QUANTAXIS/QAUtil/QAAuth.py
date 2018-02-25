@@ -21,3 +21,35 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+
+""" 
+"""
+import os
+import sys
+path = os.path.expanduser('~')
+qa_path = '{}{}{}'.format(path, os.sep, '.quantaxis')
+setting_path = '{}{}{}'.format(qa_path, os.sep, '.setting')
+cache_path = '{}{}{}'.format(qa_path, os.sep, '.cache')
+
+
+def make_cache():
+    pass
+
+
+def make_dir():
+    path = os.path.expanduser('~')
+    qa_path = '{}{}{}'.format(path, os.sep, '.quantaxis')
+    os.makedirs(qa_path, exist_ok=True)
+    setting_path = '{}{}{}'.format(qa_path, os.sep, '.setting')
+    cache_path = '{}{}{}'.format(qa_path, os.sep, '.cache')
+    os.makedirs(setting_path, exist_ok=True)
+    os.makedirs(cache_path, exist_ok=True)
+
+
+def save_data():
+    pass
+
+
+if __name__ == '__main__':
+    make_dir()
