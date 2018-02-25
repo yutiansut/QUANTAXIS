@@ -113,7 +113,7 @@ class QA_Portfolio():
         if account_cookie is None:
             for item in self.accounts.keys():
                 try:
-                    message = collection.find_one({'cookie': item})['message']
+                    message = collection.find_one({'account_cookie': item})
                     QA_util_log_info('{} sync successfully'.format(item))
                 except Exception as e:
                     QA_util_log_info(
@@ -123,7 +123,7 @@ class QA_Portfolio():
         else:
             try:
                 message = collection.find_one(
-                    {'cookie': account_cookie})['message']
+                    {'account_cookie': account_cookie})
                 QA_util_log_info('{} sync successfully'.format(item))
             except Exception as e:
                 QA_util_log_info(
@@ -136,7 +136,8 @@ class QA_Portfolio():
         if account_cookie is None:
             for item in self.accounts.keys():
                 try:
-                    message = collection.find_one_and_update({'cookie': item})
+                    message = collection.find_one_and_update(
+                        {'account_cookie': item})
                     QA_util_log_info('{} sync successfully'.format(item))
                 except Exception as e:
                     QA_util_log_info(
@@ -146,7 +147,7 @@ class QA_Portfolio():
         else:
             try:
                 message = collection.find_one(
-                    {'cookie': account_cookie})['message']
+                    {'account_cookie': account_cookie})
                 QA_util_log_info('{} sync successfully'.format(item))
             except Exception as e:
                 QA_util_log_info(
