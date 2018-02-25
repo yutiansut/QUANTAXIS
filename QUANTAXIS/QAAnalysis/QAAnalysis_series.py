@@ -23,5 +23,5 @@
 # SOFTWARE.
 
 
-def QA_Analysis_Series_slope(data):
+def QAAnalysis_Series_slope(data):
     pass

@@ -29,8 +29,8 @@
 import QUANTAXIS as QA
 
 data=QA.QA_fetch_stock_day_adv('600066','2013-12-01','2017-10-01') #[可选to_qfq(),to_hfq()]
-s=QA.QA_Analysis_stock(data)
-# s 的属性是( < QA_Analysis_Stock > )
+s=QA.QAAnalysis_stock(data)
+# s 的属性是( < QAAnalysis_Stock > )
 
 s.open # 开盘价序列
 s.close # 收盘价序列

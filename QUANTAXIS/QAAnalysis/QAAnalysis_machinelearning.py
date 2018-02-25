@@ -27,7 +27,7 @@
 """
 
 
-class QA_Analysis_Machine_Learning():
+class QAAnalysis_Machine_Learning():
     def __init__(self, *args, **kwargs):
         pass
 

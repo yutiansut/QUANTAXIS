@@ -34,7 +34,7 @@ from functools import lru_cache
 #from QUANTAXIS.QAData.QADataStruct import QA_DataStruct_Index_day,QA_DataStruct_Index_min,QA_DataStruct_Stock_day,QA_DataStruct_Stock_min
 
 
-class QA_Analysis_stock:
+class QAAnalysis_stock:
     """
     行情分析器
 
@@ -54,7 +54,7 @@ class QA_Analysis_stock:
         # self.data=DataSturct.data
 
     def __repr__(self):
-        return '< QA_Analysis_Stock  >'
+        return '< QAAnalysis_Stock  >'
 
     def __call__(self):
         return self.data
