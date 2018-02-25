@@ -43,7 +43,8 @@ class Backtest(QA_Backtest):
 
     def after_success(self):
         QA_util_log_info(self.account.history_table)
-        risk = QA_Risk(self.account,benchmark_code='000300',benchmark_type=MARKET_TYPE.INDEX_CN)
+        risk = QA_Risk(self.account, benchmark_code='000300',
+                       benchmark_type=MARKET_TYPE.INDEX_CN)
 
         print(risk().T)
 

@@ -43,7 +43,7 @@ class QA_User():
 
     @property
     def table(self):
-        return pd.concat([po.table for po in self.portfolio_list.values()],axis=1)
+        return pd.concat([po.table for po in self.portfolio_list.values()], axis=1)
 
     def client(self):
         'user.client to connect database'

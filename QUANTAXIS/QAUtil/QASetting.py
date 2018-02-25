@@ -28,7 +28,6 @@ from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting
 
 
 class QA_Setting():
-
     def __init__(self, ip='127.0.0.1', port=27017):
         self.ip = ip
         self.port = port
@@ -55,7 +54,6 @@ class QA_Setting():
             return self.user
         else:
             return False
-
 
 DATABASE = QA_Setting().client.quantaxis
 
