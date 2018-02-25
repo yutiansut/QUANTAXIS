@@ -7,7 +7,7 @@ import datetime
 
 import pandas as pd
 
-from QUANTAXIS.QAAnalysis.QAAnalysis_dataframe import QA_Analysis_stock
+from QUANTAXIS.QAAnalysis.QAAnalysis_dataframe import QAAnalysis_stock
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_info
 from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_stock_block_adv,
                                                QA_fetch_stock_day_adv,
@@ -21,8 +21,8 @@ def get_gap_trade(gap):
     return QA_util_get_real_datelist(datetime.date.today() + datetime.timedelta(days=-int(gap)), datetime.date.today())
 
 
-#from QUANTAXIS.QAAnalysis.QAAnalysis_dataframe import QA_Analysis_stock
-class QA_Analysis_block():
+#from QUANTAXIS.QAAnalysis.QAAnalysis_dataframe import QAAnalysis_stock
+class QAAnalysis_block():
     def __init__(self, block=None, block_name=None, lens=90, *args, **kwargs):
 
         try:
@@ -62,14 +62,14 @@ class QA_Analysis_block():
             market_data = self._data.to_qfq()
         else:
             market_data = market_data.to_qfq()
-        return QA_Analysis_stock(market_data).price.groupby('date').mean()
+        return QAAnalysis_stock(market_data).price.groupby('date').mean()
 
     def block_pcg(self, market_data=None):
         if market_data is None:
             market_data = self._data.to_qfq()
         else:
             market_data = market_data.to_qfq()
-        return QA_Analysis_stock(market_data).day_pct_change.groupby('date').mean()
+        return QAAnalysis_stock(market_data).day_pct_change.groupby('date').mean()
 
     def stock_turnover(self, market_data=None):
         if market_data is None:
@@ -104,7 +104,7 @@ class QA_Analysis_block():
         plt.show()
 
 
-class QA_Analysis_blocks():
+class QAAnalysis_blocks():
     def __init__(self, *args, **kwargs):
         self.blocks = QA.QA_fetch_stock_block_adv().get_type('gn').block_name
 
@@ -112,7 +112,7 @@ class QA_Analysis_blocks():
 if __name__ == "__main__":
     import QUANTAXIS as QA
     # print(get_this_week())
-    ana = QA_Analysis_block(
+    ana = QAAnalysis_block(
         QA.QA_fetch_stock_block_adv().get_block('昨日涨停').code)
 
     """
@@ -128,7 +128,7 @@ if __name__ == "__main__":
     block = QA.QA_fetch_stock_block_adv().get_type('gn').block_name
     for item in block:
         print(item)
-        data = QA_Analysis_block(block_name=item)
+        data = QAAnalysis_block(block_name=item)
         x.append(data.block_pcg())
         y.append(data.block_turnover())
     print(len(x))
