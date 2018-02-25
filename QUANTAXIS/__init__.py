@@ -61,7 +61,7 @@ from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day, QA_fetch_get_trade_date, 
                                QA_fetch_get_index_day, QA_fetch_get_index_min, QA_fetch_get_stock_list, QA_fetch_get_stock_info,
                                QA_fetch_get_stock_block, QA_fetch_get_stock_transaction_realtime, QA_fetch_get_security_bars,
                                QA_fetch_get_future_day, QA_fetch_get_future_min, QA_fetch_get_future_list)
-from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_trade_date,QA_fetch_account,
+from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_trade_date, QA_fetch_account,
                                        QA_fetch_stock_day, QA_fetch_stocklist_day, QA_fetch_stock_min, QA_fetch_stocklist_min,
                                        QA_fetch_index_day, QA_fetch_index_min,
                                        QA_fetch_future_min, QA_fetch_future_day,
@@ -81,6 +81,7 @@ from QUANTAXIS.QASU.save_backtest import (
     QA_SU_save_account_message, QA_SU_save_backtest_message, QA_SU_save_account_to_csv)
 
 from QUANTAXIS.QASU.user import (QA_user_sign_in, QA_user_sign_up)
+from QUANTAXIS.QASU.save_local import make_dir, setting_path, cache_path, qa_path
 # event driver
 
 # market
