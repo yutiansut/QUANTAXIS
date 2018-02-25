@@ -43,17 +43,23 @@ from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting
 
 
 class QA_Fetcher():
-    def __init__(self, ip='127.0.0.1', port=27017):
+    def __init__(self, ip='127.0.0.1', port=27017, username='',password='',):
+        """
+        初始化的时候 会初始化
+        """
         self.ip = ip
         self.port = port
         self.database = QA_util_sql_mongo_setting(ip, port).quantaxis
         self.history = {}
 
+        self.best_ip=QATdx.best_ip
+
+
     def change_ip(self, ip, port):
         self.database = QA_util_sql_mongo_setting(ip, port).quantaxis
         return self
 
-    def get(self, code, start, end, frequence, market, source, output):
+    def get_quotation(self, code=None, start=None, end=None, frequence=None, market=None, source=None, output=None):
         """        
         Arguments:
             code {str/list} -- 证券/股票的代码
@@ -66,6 +72,13 @@ class QA_Fetcher():
         """
         pass
 
+    def get_info(self,code,frequence,market,source,output):
+        if source is DATASOURCE.TDX:
+            res=QATdx.QA_fetch_get_stock_info(code,self.best_ip)
+            return res
+        elif source is DATASOURCE.MONGO:
+            res=QAQuery.QA_fetch_stock_info(code,format=output,collections=self.database.stock_info)
+            return res
 
 def QA_quotation(code, start, end, frequence, market, source, output):
     """一个统一的fetch

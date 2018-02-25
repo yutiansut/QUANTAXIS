@@ -285,11 +285,16 @@ class DATASOURCE():
     """数据来源
     """
 
-    WIND = 'wind'
-    THS = 'ths'
-    TUSHARE = 'tushare'
-    TDX = 'tdx'
-    MONGO = 'mongo'
+    WIND = 'wind' # wind金融终端
+    TDB = 'tdb' # wind tdb
+    THS = 'ths' # 同花顺网页
+    TUSHARE = 'tushare' # tushare
+    TDX = 'tdx' # 通达信
+    MONGO = 'mongo' # 本地/远程Mongodb
+    EASTMONEY = 'eastmoney' # 东方财富网
+    CHOICE = 'choice' # choice金融终端
+    CCXT = 'ccxt' # github/ccxt 虚拟货币
+    LOCALFILE = 'localfile' # 本地文件
 
 
 class OUTPUT_FORMAT():
