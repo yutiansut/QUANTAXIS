@@ -35,9 +35,21 @@ class QA_Portfolio():
     以及组合管理
 
     # 适用 回测/实盘
+    
+    # PORTFOLIO应当作为一个视图来处理,这个视图作为一个静态的观察点 可以去衡量风险 观察业绩等等
+    @2018/02/26
 
+    ::::::::::::::::::::::::::::::::::::::::::::::::
+    ::        ::STRATEGY 1 -- ACCOUNT 1 --{P1,P3} ::
+    ::  USER  ::STRATEGY 2 -- ACCOUNT 2 --{P1,P2} ::
+    ::        ::STRATEGY 3 -- ACCOUNT 3 --{P2,P3} ::
+    ::::::::::::::::::::::::::::::::::::::::::::::::
+
+
+    PORTFOLIO
 
     在portfolio中,我们希望通过cookie来控制account_unit
+    
     对于account的指标,要进行风险控制,组合成最优的投资组合的量
 
     用account的cookie来管理控制account
