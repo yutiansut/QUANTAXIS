@@ -41,17 +41,36 @@ class QA_Portfolio():
     对于account的指标,要进行风险控制,组合成最优的投资组合的量
 
     用account的cookie来管理控制account
+
+    portfolio里面的资产主要考虑的是 资金的分配
     """
 
-    def __init__(self, user_cookie=None):
+    def __init__(self, user_cookie=None, strategy_name=None, init_assets=1000000, cash=None, sell_available=None, history=None):
         self.accounts = {}
         self.portfolio_cookie = QA_util_random_with_topic('Portfolio')
         self.user_cookie = user_cookie
+        self.strategy_name = strategy_name
+        # 和account一样的资产类
+        self.init_assets = 1000000 if init_assets is None else init_assets
+        self.cash = [self.init_assets] if cash is None else cash
+        self.cash_available = self.cash[-1]  # 可用资金
+        self.sell_available = sell_available
+        self.history = [] if history is None else history
+        self.time_index = []
+
         for cookie in self.accounts.keys():
             self.accounts[cookie] = QA_Account(account_cookie=cookie)
 
     def __repr__(self):
         return '< QA_Portfolio {} with {} Accounts >'.format(self.portfolio_cookie, len(self.accounts.keys()))
+
+    @property
+    def cash(self):
+        pass
+
+    @property
+    def history(self):
+        pass
 
     def get_portfolio(self):
         'return the accounts dict'

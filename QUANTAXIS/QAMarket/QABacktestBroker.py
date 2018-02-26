@@ -25,6 +25,7 @@
 
 import datetime
 
+from QUANTAXIS.QAEngine.QAEvent import QA_Event
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_future_day,
                                        QA_fetch_future_min, QA_fetch_index_day,
                                        QA_fetch_index_min, QA_fetch_stock_day,
@@ -37,13 +38,13 @@ from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_future_day,
                                      QA_fetch_get_stock_min)
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.QADealer import QA_Dealer
+from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
 from QUANTAXIS.QAUtil.QADate import QA_util_to_datetime
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_TYPE, ORDER_MODEL,
-                                          ENGINE_EVENT, MARKET_EVENT, FREQUENCE,
-                                          MARKET_TYPE, BROKER_EVENT)
-from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
-from QUANTAXIS.QAEngine.QAEvent import QA_Event
+from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT,
+                                          BROKER_TYPE, ENGINE_EVENT, FREQUENCE,
+                                          MARKET_EVENT, MARKET_TYPE,
+                                          ORDER_MODEL)
 
 
 class QA_BacktestBroker(QA_Broker):
@@ -98,7 +99,6 @@ class QA_BacktestBroker(QA_Broker):
                         (MARKET_TYPE.FUND_CN, FREQUENCE.DAY): QA_fetch_index_day, (MARKET_TYPE.FUND_CN, FREQUENCE.FIFTEEN_MIN): QA_fetch_index_min,
                         (MARKET_TYPE.FUND_CN, FREQUENCE.ONE_MIN): QA_fetch_index_min, (MARKET_TYPE.FUND_CN, FREQUENCE.FIVE_MIN): QA_fetch_index_min,
                         (MARKET_TYPE.FUND_CN, FREQUENCE.THIRTY_MIN): QA_fetch_index_min, (MARKET_TYPE.FUND_CN, FREQUENCE.SIXTY_MIN): QA_fetch_index_min}
-
 
         self.commission_fee_coeff = commission_fee_coeff
         self.market_data = None
@@ -191,7 +191,7 @@ class QA_BacktestBroker(QA_Broker):
 
                 order.date = order.datetime[0:10]
                 order.datetime = '{} 09:30:00'.format(order.date)
-            elif order.frequence in [FREQUENCE.ONE_MIN,FREQUENCE.FIVE_MIN,FREQUENCE.FIFTEEN_MIN,FREQUENCE.THIRTY_MIN,FREQUENCE.SIXTY_MIN]:
+            elif order.frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
                 print(order.datetime)
                 exact_time = str(datetime.datetime.strptime(
                     str(order.datetime), '%Y-%m-%d %H:%M:%S') + datetime.timedelta(minutes=1))
@@ -236,7 +236,7 @@ class QA_BacktestBroker(QA_Broker):
 
                 order.date = exact_time[0:10]
                 order.datetime = '{} 09:30:00'.format(order.date)
-            elif order.frequence in [FREQUENCE.ONE_MIN,FREQUENCE.FIVE_MIN,FREQUENCE.FIFTEEN_MIN,FREQUENCE.THIRTY_MIN,FREQUENCE.SIXTY_MIN]:
+            elif order.frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
                 exact_time = str(datetime.datetime.strptime(
                     order.datetime, '%Y-%m-%d %H-%M-%S') + datetime.timedelta(minute=1))
                 order.date = exact_time[0:10]
@@ -248,7 +248,6 @@ class QA_BacktestBroker(QA_Broker):
                 order.price = float(self.market_data["high"])
             else:
                 order.price = float(self.market_data["low"])
-
 
         return order
 
