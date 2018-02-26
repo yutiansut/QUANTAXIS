@@ -45,6 +45,9 @@ from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE
 class QA_Risk():
     """QARISK 是一个风险插件
 
+    需要加载一个account/portfolio类进来:
+    需要有
+    code,start_date,end_date,daily_cash,daily_hold
     """
 
     def __init__(self, account, benchmark_code='000300', benchmark_type=MARKET_TYPE.INDEX_CN):
@@ -64,7 +67,7 @@ class QA_Risk():
             self.account.start_date, self.account.end_date)
 
     def __repr__(self):
-        return '< QA_RISK ANALYSIS ACCOUNT-{} >'.format(self.account.account_cookie)
+        return '< QA_RISK ANALYSIS ACCOUNT/PORTFOLIO >'
 
     def __call__(self):
         return pd.DataFrame([self.message])
