@@ -64,13 +64,8 @@ class QA_Portfolio():
     def __repr__(self):
         return '< QA_Portfolio {} with {} Accounts >'.format(self.portfolio_cookie, len(self.accounts.keys()))
 
-    @property
-    def cash(self):
-        pass
 
-    @property
-    def history(self):
-        pass
+
 
     def get_portfolio(self):
         'return the accounts dict'
