@@ -27,7 +27,7 @@ from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAUtil import (DATABASE, QA_util_log_info,
                               QA_util_random_with_topic)
 
-
+# pylint: disable=old-style-class, too-few-public-methods
 class QA_Portfolio():
 
     """
@@ -49,7 +49,7 @@ class QA_Portfolio():
     PORTFOLIO
 
     在portfolio中,我们希望通过cookie来控制account_unit
-    
+
     对于account的指标,要进行风险控制,组合成最优的投资组合的量
 
     用account的cookie来管理控制account
