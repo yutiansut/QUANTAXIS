@@ -74,6 +74,7 @@ class QAAnalysis_trade():
 
     def get_stock_tradehistory(self, code):
         return self.history.query('code=="{}"'.format(code))
+
     def get_stock_tradedetail(self, code):
         return self.detail.query('code=="{}"'.format(code))
 
