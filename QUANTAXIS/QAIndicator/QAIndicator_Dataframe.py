@@ -182,7 +182,7 @@ def QA_indicator_BIAS(DataFrame, N1, N2, N3):
     return DICT
 
 
-def QA_indicator_RSI(DataFrame, N1, N2, N3):
+def QA_indicator_RSI(DataFrame, N1=12, N2=26, N3=9):
     '相对强弱指标RSI1:SMA(MAX(CLOSE-LC,0),N1,1)/SMA(ABS(CLOSE-LC),N1,1)*100;'
     CLOSE = DataFrame['close']
     LC = REF(CLOSE, 1)
@@ -312,7 +312,7 @@ def amplitude(DataFrame):
 # def QA_indicator_COUNT(dataframe, text, N=10):
 #     """[summary]
 #     函数：COUNT(X,N) 参数： X为数组，N为计算周期
-#     说明：统计N周期中满足X条件的周期数,若N=0则从第一个有效值开始。 
+#     说明：统计N周期中满足X条件的周期数,若N=0则从第一个有效值开始。
 #     示例：COUNT(CLOSE>OPEN,20);表示统计20周期内收阳的周期数。
 #     Arguments:
 #         dataframe {[type]} -- [description]
