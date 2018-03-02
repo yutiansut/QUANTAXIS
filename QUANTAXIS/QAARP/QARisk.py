@@ -193,30 +193,47 @@ class QA_Risk():
 
     def save(self):
         """save to mongodb
-        
+
         """
         save_riskanalysis(self.message)
 
 
-class QA_Performace(QA_Risk):
+class QA_Performance():
+    """
+    QA_Performance是一个绩效分析插件
+
+    需要加载一个account/portfolio类进来:
+    需要有
+    code,start_date,end_date,daily_cash,daily_hold
+    """
+
     def __init__(self, account):
-        super().__init__(account)
+
+        self.account = account
+        self._style_title = ['beta', 'momentum', 'size', 'earning_yield',
+                             'volatility', 'growth', 'value', 'leverage', 'liquidity', 'reversal']
 
     @property
-    def benchmark_assets(self):
-        pass
-
-    def set_benchmark(self):
-        pass
-
-    @property
-    def alpha(self):
+    def prefer(self):
         pass
 
     @property
-    def beta(self):
+    def style(self):
+
+        pass
+
+    def abnormal_active(self):
+        pass
+
+    def brinson(self):
+        pass
+
+    def hold_info(self):
         pass
 
     @property
-    def sharpe(self):
+    def accumulate_return(self):
+        """
+        returns a pd-Dataframe format accumulate return for different periods
+        """
         pass

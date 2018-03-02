@@ -93,7 +93,7 @@ from QUANTAXIS.QAMarket import (QA_Order, QA_OrderQueue, QA_OrderHandler,
 
 from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
-from QUANTAXIS.QAARP.QARisk import QA_Performace, QA_Risk
+from QUANTAXIS.QAARP.QARisk import QA_Performance, QA_Risk
 from QUANTAXIS.QAARP.QAUser import QA_User
 from QUANTAXIS.QAARP.QAStrategy import QA_Strategy
 # Backtest

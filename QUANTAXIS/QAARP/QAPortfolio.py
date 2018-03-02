@@ -28,6 +28,8 @@ from QUANTAXIS.QAUtil import (DATABASE, QA_util_log_info,
                               QA_util_random_with_topic)
 
 # pylint: disable=old-style-class, too-few-public-methods
+
+
 class QA_Portfolio():
 
     """
@@ -176,3 +178,53 @@ class QA_Portfolio():
                 QA_util_log_info(
                     '{} sync wrong \\\n wrong info {}'.format(account_cookie, e))
             self.accounts[account_cookie].from_message(message)
+
+
+class QA_TEST_MAKEPortfolio():
+
+    def __init__(self):
+        """
+        this is a dict for account_cookie----account instance
+        """
+        self.account_list = dict()
+
+    def make_portfolio(self, account_list):
+        pass
+
+
+class Portfolio():
+    """
+    对于Portfolio而言,一切都是基于内部的account的信息的变更而变更的
+
+    Portfolio不应该有过多可以修改的部分(作为一个view存在)
+    """
+    def __init__(self,account_list):
+
+        """
+                    ||portfolio||
+        ||acc1_cookie--acc1||acc2-cookie--acc2||...||
+
+
+        ||cash||assets||hold||history||trade_index||
+
+
+        ||Risk_analysis||Performace_analysis||
+        """
+        self.account_list=dict()
+
+        self._portfolio_cookie=None
+        self._broker=None
+        self._user_cookie=None
+        self._market_type=None
+        self._strategy_name=None
+        self._currenttime=None
+        self._init_assets=None
+        self._cash=None
+        self._history=None
+        self._trade_index=None
+
+
+
+    @property
+    def cash(self):
+        pass
