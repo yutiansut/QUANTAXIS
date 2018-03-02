@@ -173,7 +173,8 @@ class QA_Account(QA_Worker):
     def daily_hold(self):
         '每日交易结算时的持仓表'
         data = self.trade.cumsum()
-        data['date'] = data.index
+        data['date'] = data.index.levels[0]
+        data['account_cookie']=data.index.levels[1]
         data.date = data.date.apply(lambda x: str(x)[0:10])
         return data.set_index(['date', 'account_cookie'], drop=False).sort_index()
 
