@@ -174,7 +174,7 @@ class QA_Account(QA_Worker):
         '每日交易结算时的持仓表'
         data = self.trade.cumsum()
 
-        data = data.assign(account_cookie=data.index.levels[1]).assign(
+        data = data.assign(account_cookie=self.account_cookie).assign(
             date=data.index.levels[0])
         data.date = data.date.apply(lambda x: str(x)[0:10])
         return data.set_index(['date', 'account_cookie'], drop=False).sort_index()
