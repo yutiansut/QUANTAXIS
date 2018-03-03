@@ -213,10 +213,10 @@ class Portfolio():
         """
         self.account_list = dict(
             zip([account.account_cookie for account in account_list], account_list))
-
-        self._portfolio_cookie = None
+        self.portfolio_cookie = QA_util_random_with_topic('Portfolio')
+        self.user_cookie = None
         self._broker = None
-        self._user_cookie = None
+        self.user_cookie = None
         self._market_type = None
         self._strategy_name = None
         self._currenttime = None
@@ -226,6 +226,10 @@ class Portfolio():
         self._trade_index = None
 
     @property
+    def account_cookie(self):
+        return [account.account_cookie for account in self.accounts]
+
+    @property
     def accounts(self):
         """
         return all accounts inside the portfolio view
@@ -233,12 +237,16 @@ class Portfolio():
         return list(self.account_list.values())
 
     @property
-    def cash(self):
-        """
-        return: list format
+    def start_date(self):
+        return str(pd.to_datetime(pd.Series([account.start_date for account in self.accounts])).min())[0:10]
 
-        """
-        return sum([account.cash for account in self.accounts])
+    @property
+    def end_date(self):
+        return str(pd.to_datetime(pd.Series([account.end_date for account in self.accounts])).max())[0:10]
+
+    @property
+    def code(self):
+        return pd.concat([pd.Series(account.code) for account in self.accounts]).drop_duplicates().tolist()
 
     @property
     def init_assets(self):
@@ -246,8 +254,12 @@ class Portfolio():
 
     @property
     def daily_cash(self):
-        return sum([account.assets for account in self.accounts])
+        res = pd.DataFrame(sum([account.daily_cash.set_index(
+            'datetime').cash for account in self.accounts]))
+        res = res.assign(date=res.index)
+        res.date = res.date.apply(lambda x: str(x)[0:10])
+        return res
 
     @property
     def daily_hold(self):
-        pass
+        return pd.concat([account.daily_hold.set_index('date') for account in self.accounts]).groupby('date').sum()
