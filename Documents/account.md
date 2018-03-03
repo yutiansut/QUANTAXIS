@@ -3,11 +3,12 @@
 
 <!-- TOC -->
 
-- [账户/组合/策略的说明 QAARP模块](#账户组合策略的说明-qaarp模块)
-    - [账户/组合/策略的关系](#账户组合策略的关系)
-    - [创建自定义的策略](#创建自定义的策略)
-    - [深入了解策略的组成](#深入了解策略的组成)
-    - [风险分析模块](#风险分析模块)
+- [账户/组合/策略的说明 QAARP模块](#%E8%B4%A6%E6%88%B7%E7%BB%84%E5%90%88%E7%AD%96%E7%95%A5%E7%9A%84%E8%AF%B4%E6%98%8E-qaarp%E6%A8%A1%E5%9D%97)
+    - [账户/组合/策略的关系](#%E8%B4%A6%E6%88%B7%E7%BB%84%E5%90%88%E7%AD%96%E7%95%A5%E7%9A%84%E5%85%B3%E7%B3%BB)
+    - [创建自定义的策略](#%E5%88%9B%E5%BB%BA%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84%E7%AD%96%E7%95%A5)
+    - [深入了解策略的组成](#%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3%E7%AD%96%E7%95%A5%E7%9A%84%E7%BB%84%E6%88%90)
+    - [风险分析模块](#%E9%A3%8E%E9%99%A9%E5%88%86%E6%9E%90%E6%A8%A1%E5%9D%97)
+    - [组合视角 PORTFOLIO VIEW](#%E7%BB%84%E5%90%88%E8%A7%86%E8%A7%92-portfolio-view)
 
 <!-- /TOC -->
 @yutiansut
@@ -208,3 +209,24 @@ R.message
  'volatility': 64.69698601944299}
 
 ```
+
+
+## 组合视角 PORTFOLIO VIEW
+
+QA_PortfolioView 是一个组合视角,只要输入account列表,就可以生成一个视角
+
+```python
+accounts=[QA_Account1,QA_Account2,....]
+PV=QA.QA_PortfolioView(accounts)
+
+```
+PV可以直接被加载到QA_Risk模块中
+
+```python
+risk_pv=QA.QA_Risk(PV)
+
+#calc result
+
+risk.message
+```
+
