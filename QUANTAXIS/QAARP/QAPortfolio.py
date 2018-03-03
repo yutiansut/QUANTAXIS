@@ -193,7 +193,7 @@ class QA_TEST_MAKEPortfolio():
         pass
 
 
-class Portfolio():
+class QA_PortfolioView():
     """
     对于Portfolio而言,一切都是基于内部的account的信息的变更而变更的
 

@@ -32,7 +32,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.0.12'
+__version__ = '1.0.13'
 __author__ = 'yutiansut'
 logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
@@ -92,7 +92,7 @@ from QUANTAXIS.QAMarket import (QA_Order, QA_OrderQueue, QA_OrderHandler,
 # Account,Risk,Portfolio,User,Strategy
 
 from QUANTAXIS.QAARP.QAAccount import QA_Account
-from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
+from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio,QA_PortfolioView
 from QUANTAXIS.QAARP.QARisk import QA_Performance, QA_Risk
 from QUANTAXIS.QAARP.QAUser import QA_User
 from QUANTAXIS.QAARP.QAStrategy import QA_Strategy
