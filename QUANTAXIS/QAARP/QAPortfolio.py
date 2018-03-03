@@ -215,15 +215,15 @@ class Portfolio():
             zip([account.account_cookie for account in account_list], account_list))
         self.portfolio_cookie = QA_util_random_with_topic('Portfolio')
         self.user_cookie = None
-        self._broker = None
-        self.user_cookie = None
-        self._market_type = None
-        self._strategy_name = None
-        self._currenttime = None
-        self._init_assets = None
-        self._cash = None
-        self._history = None
-        self._trade_index = None
+        # self._broker = None
+        # self.user_cookie = None
+        # self._market_type = None
+        # self._strategy_name = None
+        # self._currenttime = None
+        # self._init_assets = None
+        # self._cash = None
+        # self._history = None
+        # self._trade_index = None
 
     @property
     def account_cookie(self):
