@@ -12,7 +12,7 @@ from QUANTAXIS.QAMarket.QABroker import QA_Broker
 try:
     from pytdx.log import log
 except ImportError:
-    def log(x): 
+    def log(x):
         return None
 
 
@@ -111,18 +111,18 @@ class SPETradeApi(QA_Broker):
         5 市价委托(深圳全额成交或撤销)
         6 市价委托(上海五档即成转限价)
         """
-        return self.send_order(event.client_id, event.category, event.price_type,event.gddm,event.zqdm,event.price,event.quantity)
+        return self.send_order(event.client_id, event.category, event.price_type, event.gddm, event.zqdm, event.price, event.quantity)
         #client_id, category, price_type, gddm, zqdm, price, quantity
 
-    def run(self,event):
+    def run(self, event):
         pass
 
-    
+
 if __name__ == "__main__":
     import os
-    api = TdxTradeApi(endpoint="http://10.11.5.175:10092/api",
+    api = SPETradeApi(endpoint="http://10.11.5.175:10092/api",
                       enc_key=b"4f1cf3fec4c84c84", enc_iv=b"0c78abc083b011e7")
-    #api = TdxTradeApi(endpoint="http://10.11.5.175:10092/api")
+    #api = SPETradeApi(endpoint="http://10.11.5.175:10092/api")
     print("---Ping---")
     result = api.ping()
     print(result)
