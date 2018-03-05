@@ -1133,51 +1133,71 @@ class _realtime_base():
     """
 
     def __init__(self, market_data):
-        if isinstance(market_data, dict):
-            self.market_data = QA_util_to_pandas_from_json(market_data)
+        """转化成dict模式
 
-        elif isinstance(market_data, pd.DataFrame):
+        Arguments:
+            market_data {[type]} -- [description]
+        """
+
+        if isinstance(market_data, dict):
             self.market_data = market_data
+        elif isinstance(market_data, pd.DataFrame):
+            self.market_data = QA_util_to_json_from_pandas(market_data)
 
     @property
     def open(self):
-        try:
-            return self.market_data.open
-        except:
-            return None
+        return self.market_data.get('open', None)
 
     @property
     def price(self):
-        try:
-            return self.market_data.price
-        except:
-            return None
+        return self.market_data.get('price', None)
 
     @property
     def high(self):
-        try:
-            return self.market_data.high
-        except:
-            return None
+        return self.market_data.get('high', None)
+
     @property
     def low(self):
-        try:
-            return self.market_data.low
-        except:
-            return None
+        return self.market_data.get('low', None)
 
     @property
     def code(self):
-        try:
-            return self.market_data.code
-        except:
-            return None
+        return self.market_data.get('code', None)
+
     @property
     def last_close(self):
-        try:
-            return self.market_data.last_close
-        except:
-            return None
+        return self.market_data.get('last_close', None)
+
+    @property
+    def bid1(self):
+        return self.market_data.get('bid1', None)
+
+    @property
+    def bid_vol1(self):
+        return self.market_data.get('bid_vol1', None)
+
+    @property
+    def bid2(self):
+        return self.market_data.get('bid2', None)
+
+    @property
+    def bid_vol2(self):
+        return self.market_data.get('bid_vol2', None)
+
+    @property
+    def bid3(self):
+        return self.market_data.get('bid3', self.market_data.get('bid3_price', None))
+
+    @property
+    def bid_vol3(self):
+        return self.market_data.get('bid_vol3', self.market_data.get('bid3_volume', None))
+
+
+    def serialize(self):
+        """to_protobuf
+        """
+        pass
+
 
 
 class QA_DataStruct_Stock_realtime(_realtime_base):
@@ -1187,6 +1207,18 @@ class QA_DataStruct_Stock_realtime(_realtime_base):
 
         elif isinstance(market_data, pd.DataFrame):
             self.market_data = market_data
+
+    def __repr__(self):
+        return '< QA_REALTIME_STRUCT {}{} >'.format(self.code, self.datetime)
+
+    @property
+    def code(self):
+        return self.market_data.code.tolist()[0]
+
+    @property
+    def datetime(self):
+
+        return self.market_data.
 
     @property
     def cur_vol(self):
@@ -1214,10 +1246,29 @@ class QA_DataStruct_Stock_realtime(_realtime_base):
     def bid_list(self):
         return self.market_data.ix[:, ['bid1', 'bid_vol1', 'bid2', 'bid_vol2',  'bid3', 'bid_vol3', 'bid4', 'bid_vol4', 'bid5', 'bid_vol5']]
 
+    @property
+    def ab_board(self):
+        """ask_bid board
+        bid3 bid_vol3
+        bid2 bid_vol2
+        bid1 bid_vol1
+        ===============
+        price /cur_vol
+        ===============
+        ask1 ask_vol1
+        ask2 ask_vol2
+        ask3 ask_vol3
+        """
+        pass
+
     # [['datetime', 'active1', 'active2', 'last_close', 'code', 'open', 'high', 'low', 'price', 'cur_vol',
     #   's_vol', 'b_vol', 'vol', 'ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',
     #                     'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3', 'ask4',
     #                     'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
+
+
+class QA_DataStruct_Stock_realtime_series():
+    pass
 
 
 class QA_DataStruct_Security_list():

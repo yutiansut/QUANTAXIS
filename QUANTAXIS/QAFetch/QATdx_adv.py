@@ -235,9 +235,7 @@ def get_bar():
     print(x._queue.qsize())
     print(x.get_available())
 
-
-
-    for i in range(100000):
+    while True:
         _time = datetime.datetime.now()
         if QA_util_if_tradetime(_time):  # 如果在交易时间
             data = x.get_security_bar_concurrent(code, 'day', 1)
@@ -249,9 +247,12 @@ def get_bar():
                 x._queue.qsize()))
             print('Program Last Time {}'.format(
                 (datetime.datetime.now() - _time1).total_seconds()))
+
+            return data
         else:
             print('Not Trading time {}'.format(_time))
             time.sleep(1)
+
 
 def get_day_once():
 
@@ -260,6 +261,7 @@ def get_day_once():
     code = QA_fetch_stock_block_adv().code
     x = QA_Tdx_Executor()
     return x.get_security_bar_concurrent(code, 'day', 1)
+
 
 def bat():
 
