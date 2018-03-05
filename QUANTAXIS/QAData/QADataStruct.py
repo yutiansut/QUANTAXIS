@@ -1153,6 +1153,10 @@ class _realtime_base():
         return self.market_data.get('price', None)
 
     @property
+    def datetime(self):
+        return self.market_data.get('datetime', None)
+
+    @property
     def high(self):
         return self.market_data.get('high', None)
 
@@ -1192,12 +1196,10 @@ class _realtime_base():
     def bid_vol3(self):
         return self.market_data.get('bid_vol3', self.market_data.get('bid3_volume', None))
 
-
     def serialize(self):
         """to_protobuf
         """
         pass
-
 
 
 class QA_DataStruct_Stock_realtime(_realtime_base):
@@ -1210,31 +1212,6 @@ class QA_DataStruct_Stock_realtime(_realtime_base):
 
     def __repr__(self):
         return '< QA_REALTIME_STRUCT {}{} >'.format(self.code, self.datetime)
-
-    @property
-    def code(self):
-        return self.market_data.code.tolist()[0]
-
-    @property
-    def datetime(self):
-
-        return self.market_data.
-
-    @property
-    def cur_vol(self):
-        return self.market_data.cur_vol
-
-    @property
-    def s_vol(self):
-        return self.market_data.s_vol
-
-    @property
-    def b_vol(self):
-        return self.market_data.b_vol
-
-    @property
-    def vol(self):
-        return self.market_data.vol
 
     @property
     def ask_list(self):
