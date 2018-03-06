@@ -1205,23 +1205,22 @@ class _realtime_base():
 class QA_DataStruct_Stock_realtime(_realtime_base):
     def __init__(self, market_data):
         if isinstance(market_data, dict):
-            self.market_data = QA_util_to_pandas_from_json(market_data)
-
-        elif isinstance(market_data, pd.DataFrame):
             self.market_data = market_data
+        elif isinstance(market_data, pd.DataFrame):
+            self.market_data = QA_util_to_json_from_pandas(market_data)
 
     def __repr__(self):
         return '< QA_REALTIME_STRUCT {}{} >'.format(self.code, self.datetime)
 
-    @property
-    def ask_list(self):
-        return self.market_data.ix[:, ['ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',
-                                       'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3', 'ask4',
-                                       'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
+    # @property
+    # def ask_list(self):
+    #     return self.market_data.ix[:, ['ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',
+    #                                    'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3', 'ask4',
+    #                                    'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
 
-    @property
-    def bid_list(self):
-        return self.market_data.ix[:, ['bid1', 'bid_vol1', 'bid2', 'bid_vol2',  'bid3', 'bid_vol3', 'bid4', 'bid_vol4', 'bid5', 'bid_vol5']]
+    # @property
+    # def bid_list(self):
+    #     return self.market_data.ix[:, ['bid1', 'bid_vol1', 'bid2', 'bid_vol2',  'bid3', 'bid_vol3', 'bid4', 'bid_vol4', 'bid5', 'bid_vol5']]
 
     @property
     def ab_board(self):
