@@ -110,8 +110,14 @@ class _quotation_base():
 
     __rsub__ = __sub__
 
+    def __getitem__(self, key):
+        return self.new(data=self.data.__getitem__(key), dtype=self.type, if_fq=self.if_fq)
+
+    def ix(self, key):
+        return self.new(data=self.data.ix(key), dtype=self.type, if_fq=self.if_fq)
     # def __isub__(self, DataStruct):
     #     return self.drop(DataStruct)
+
     @property
     @lru_cache()
     def open(self):
@@ -1173,6 +1179,10 @@ class _realtime_base():
         return self.market_data.get('last_close', None)
 
     @property
+    def cur_vol(self):
+        return self.market_data.get('cur_vol', None)
+
+    @property
     def bid1(self):
         return self.market_data.get('bid1', None)
 
@@ -1190,16 +1200,67 @@ class _realtime_base():
 
     @property
     def bid3(self):
-        return self.market_data.get('bid3', self.market_data.get('bid3_price', None))
+        return self.market_data.get('bid3', None)
 
     @property
     def bid_vol3(self):
-        return self.market_data.get('bid_vol3', self.market_data.get('bid3_volume', None))
+        return self.market_data.get('bid_vol3', None)
 
-    def serialize(self):
-        """to_protobuf
-        """
-        pass
+    @property
+    def bid4(self):
+        return self.market_data.get('bid4', None)
+
+    @property
+    def bid_vol4(self):
+        return self.market_data.get('bid_vol4', None)
+
+    @property
+    def bid5(self):
+        return self.market_data.get('bid5', None)
+
+    @property
+    def bid_vol5(self):
+        return self.market_data.get('bid_vol5', None)
+
+    @property
+    def ask1(self):
+        return self.market_data.get('ask1', None)
+
+    @property
+    def ask_vol1(self):
+        return self.market_data.get('ask_vol1', None)
+
+    @property
+    def ask2(self):
+        return self.market_data.get('ask2', None)
+
+    @property
+    def ask_vol2(self):
+        return self.market_data.get('ask_vol2', None)
+
+    @property
+    def ask3(self):
+        return self.market_data.get('ask3', None)
+
+    @property
+    def ask_vol3(self):
+        return self.market_data.get('ask_vol3', None)
+
+    @property
+    def ask4(self):
+        return self.market_data.get('ask4', None)
+
+    @property
+    def ask_vol4(self):
+        return self.market_data.get('ask_vol4', None)
+
+    @property
+    def ask5(self):
+        return self.market_data.get('ask5', None)
+
+    @property
+    def ask_vol5(self):
+        return self.market_data.get('ask_vol5', None)
 
 
 class QA_DataStruct_Stock_realtime(_realtime_base):
@@ -1223,6 +1284,13 @@ class QA_DataStruct_Stock_realtime(_realtime_base):
     #     return self.market_data.ix[:, ['bid1', 'bid_vol1', 'bid2', 'bid_vol2',  'bid3', 'bid_vol3', 'bid4', 'bid_vol4', 'bid5', 'bid_vol5']]
 
     @property
+    def _data(self):
+        """
+        return a dataframe-type result
+        """
+        return pd.DataFrame(self.market_data)
+
+    @property
     def ab_board(self):
         """ask_bid board
         bid3 bid_vol3
@@ -1235,16 +1303,29 @@ class QA_DataStruct_Stock_realtime(_realtime_base):
         ask2 ask_vol2
         ask3 ask_vol3
         """
-        pass
+        return 'BID5 {}  {} \nBID4 {}  {} \nBID3 {}  {} \nBID2 {}  {} \nBID1 {}  {} \n============\nCURRENT {}  {} \n============\
+        \nASK1 {}  {} \nASK2 {}  {} \nASK3 {}  {} \nASK4 {}  {} \nASK5 {}  {} \nTIME {}  CODE {} '.format(
+            self.bid5, self.bid_vol5, self.bid4, self.bid_vol4, self.bid3, self.bid_vol3, self.bid2, self.bid_vol2, self.bid1, self.bid_vol1,
+            self.price, self.cur_vol,
+            self.ask1, self.ask_vol1, self.ask2, self.ask_vol2, self.ask3, self.ask_vol3, self.ask4, self.ask_vol4, self.ask5, self.ask_vol5,
+            self.datetime, self.code
+        )
 
-    # [['datetime', 'active1', 'active2', 'last_close', 'code', 'open', 'high', 'low', 'price', 'cur_vol',
-    #   's_vol', 'b_vol', 'vol', 'ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',
-    #                     'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3', 'ask4',
-    #                     'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
+    def serialize(self):
+        """to_protobuf
+        """
+        pass
 
 
 class QA_DataStruct_Stock_realtime_series():
-    pass
+    def __init__(self, sr_series):
+
+        if isinstance(sr_series[0], QA_DataStruct_Stock_realtime):
+            self.sr_series = sr_series
+        elif isinstance(sr_series[0], dict):
+            self.sr_series = [
+                QA_DataStruct_Stock_realtime(sr) for sr in sr_series]
+        self.table = pd.concat([sr._data for sr in self.sr_series])
 
 
 class QA_DataStruct_Security_list():
