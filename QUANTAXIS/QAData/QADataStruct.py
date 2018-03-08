@@ -141,17 +141,6 @@ class _quotation_base():
 
     @property
     @lru_cache()
-    def vol(self):
-        'return vol/volume'
-        if 'volume' in self.data.columns:
-            return self.data.volume
-        elif 'vol' in self.data.columns:
-            return self.data.vol
-        else:
-            return None
-
-    @property
-    @lru_cache()
     def volume(self):
         if 'volume' in self.data.columns:
             return self.data.volume
@@ -161,6 +150,8 @@ class _quotation_base():
             return self.data.trade
         else:
             return None
+
+    vol = volume
 
     @property
     @lru_cache()
