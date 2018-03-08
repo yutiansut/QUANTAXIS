@@ -113,6 +113,10 @@ class _quotation_base():
     def __getitem__(self, key):
         return self.new(data=self.data.__getitem__(key), dtype=self.type, if_fq=self.if_fq)
 
+    def __getattr__(self, attr):
+        raise AttributeError(
+            'QA CLASS Currently has no attribute {}'.format(attr))
+
     def ix(self, key):
         return self.new(data=self.data.ix(key), dtype=self.type, if_fq=self.if_fq)
     # def __isub__(self, DataStruct):
