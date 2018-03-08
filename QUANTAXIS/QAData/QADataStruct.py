@@ -98,11 +98,6 @@ class _quotation_base():
 
     __radd__ = __add__
 
-    # def __iadd__(self, DataStruct):
-    #     assert isinstance(DataStruct, _quotation_base)
-    #     assert self.is_same(DataStruct)
-    #     return self.append(DataStruct)
-
     def __sub__(self, DataStruct):
         assert isinstance(DataStruct, _quotation_base)
         assert self.is_same(DataStruct)
@@ -119,8 +114,6 @@ class _quotation_base():
 
     def ix(self, key):
         return self.new(data=self.data.ix(key), dtype=self.type, if_fq=self.if_fq)
-    # def __isub__(self, DataStruct):
-    #     return self.drop(DataStruct)
 
     @property
     @lru_cache()
@@ -357,20 +350,6 @@ class _quotation_base():
         '返回一个基于代码的迭代器'
         for item in self.index.levels[1]:
             yield self.data.xs(item, level=1)
-
-    # def append(self, DataStruct):
-    #     assert isinstance(DataStruct, _quotation_base)
-    #     assert self.is_same(DataStruct)
-    #     self.data = self.data.append(DataStruct.data).drop_duplicates(
-    #     ).set_index(self.index.names, drop=False)
-    #     return self
-
-    # def drop(self, DataStruct):
-    #     assert isinstance(DataStruct, _quotation_base)
-    #     assert self.is_same(DataStruct)
-    #     self.data = self.data.drop(DataStruct.index).set_index(
-    #         self.index.names, drop=False)
-    #     return self
 
     @property
     @lru_cache()
