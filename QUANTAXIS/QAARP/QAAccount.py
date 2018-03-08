@@ -348,6 +348,12 @@ class QA_Account(QA_Worker):
     def save(self):
         save_account(self.message)
 
+    def change_cash(self, money):
+        res = self.cash[-1]+money
+        if res >= 0:
+            # 高危操作
+            self.cash[-1] = res
+
 
 class Account_handler():
     def __init__(self):
