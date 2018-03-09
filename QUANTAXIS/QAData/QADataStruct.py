@@ -1038,6 +1038,44 @@ class QA_DataStruct_Stock_transaction():
         """
 
         return self.data.amount
+    """
+    最新:IF(ISNULL(NEW),PRE,NEW);
+    IF (ISNULL(RANGE_AVG_PRICE) OR RANGE_AVG_PRICE <= 0)
+    {
+        IF (MARKETTYPE == 232 OR MARKETTYPE == 56 OR MARKETTYPE==64 OR MARKETTYPE==128 OR MARKETTYPE==168 OR MARKETTYPE==184 OR MARKETTYPE == 200 OR MARKETTYPE == 80 OR (VOL > 1 AND VOL<100))
+        {
+            b=SUBSAMEDAY(&VOL) ;
+            m=SUM(b*最新,0);
+            均价:IF(m>0,m/VOL,PRE);
+        }
+        ELSE IF(CODETYPE!=0 AND MONEY>0)
+        {
+            IF(ISNULL(MONEY) OR ISNULL(VOL) OR VOL==0 OR MONEY==0)
+                均价:PRE;
+            ELSE IF(VOL==VOL[1] OR MONEY==MONEY[1])
+                均价:均价[1];
+            ELSE
+                均价:MONEY/VOL;
+        }
+        ELSE IF (MARKETTYPE == 176)
+        {
+            b=SUBSAMEDAY(&MONEY);
+            m=SUM(b*最新,0);
+            IF(m>0)
+                均价:m/MONEY;
+        }
+    }
+    ELSE
+    {
+        均价:RANGE_AVG_PRICE;
+    }
+    DRAWGBK(MARKETTYPE==32 AND FORMATTIME(1)<10 AND TRADETIME>242),RGB(0,0,128);
+    RETURN;
+
+
+    hx_star;
+    hx_star_p;
+    """
 
     def __repr__(self):
         return '< QA_DataStruct_Stock_Transaction >'
