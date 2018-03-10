@@ -38,6 +38,7 @@ from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT,
                                           ORDER_MODEL)
 
 
+
 class QA_Backtest():
     """BACKTEST
 

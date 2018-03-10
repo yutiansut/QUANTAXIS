@@ -598,6 +598,10 @@ class _quotation_base():
 
 
 class QA_DataStruct_Stock_day(_quotation_base):
+    """
+    this is a datastruct for stock_day
+    """
+
     def __init__(self, DataFrame, dtype='stock_day', if_fq='bfq'):
         super().__init__(DataFrame, dtype, if_fq)
         if 'high_limit' not in self.data.columns:
