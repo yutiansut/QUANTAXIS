@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 import datetime
+import re
 
 import pandas as pd
 from pandas import DataFrame
@@ -252,21 +253,26 @@ def QA_fetch_stock_list_adv(collections=DATABASE.stock_list):
     return pd.DataFrame([item for item in collections.find()]).drop('_id', axis=1, inplace=False)
 
 
-def QA_fetch_stock_block_adv(code=None, collections=DATABASE.stock_block):
+def QA_fetch_stock_block_adv(code=None, blockname=None, collections=DATABASE.stock_block):
     """返回板块
 
     Keyword Arguments:
         code {[type]} -- [description] (default: {None})
+        blockname {[type]} -- [descrioption] (default : {None})
         collections {[type]} -- [description] (default: {DATABASE})
 
     Returns:
         [type] -- [description]
     """
 
-    if code is not None:
+    if code is not None and blockname is None:
         data = pd.DataFrame([item for item in collections.find(
             {'code': code})]).drop(['_id'], axis=1)
         return QA_DataStruct_Stock_block(data.set_index('code', drop=False).drop_duplicates())
+    elif blockname is not None and code is None:
+
+        data = pd.DataFrame([item for item in collections.find(
+            {'blockname': re.compile(blockname)})]).drop(['_id'], axis=1)
     else:
         data = pd.DataFrame(
             [item for item in collections.find()]).drop(['_id'], axis=1)
