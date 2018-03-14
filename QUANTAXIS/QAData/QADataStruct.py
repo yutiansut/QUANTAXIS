@@ -739,6 +739,7 @@ class QA_DataStruct_Future_min(_quotation_base):
     """
     struct for future
     """
+
     def __init__(self, DataFrame, dtype='future_min', if_fq=''):
         self.type = 'future_day'
         self.data = DataFrame.ix[:, [
@@ -1141,7 +1142,6 @@ class QA_DataStruct_Stock_transaction():
             return self.data.loc[start]
         else:
             return self.data.loc[start:end]
-
 
 
 class _realtime_base():
