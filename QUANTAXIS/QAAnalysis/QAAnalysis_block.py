@@ -104,9 +104,14 @@ class QAAnalysis_block():
         plt.show()
 
 
-class QAAnalysis_blocks():
-    def __init__(self, *args, **kwargs):
-        self.blocks = QA.QA_fetch_stock_block_adv().get_type('gn').block_name
+
+class QAAnalysis_codewithblock():
+    def __init__(self, block):
+        self.block = block
+        self.code = block.code
+
+
+
 
 
 if __name__ == "__main__":
