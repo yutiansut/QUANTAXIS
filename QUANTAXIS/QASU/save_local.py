@@ -24,7 +24,7 @@
 import os
 import sys
 
-
+#QUNATAXIS_DIR='{}{}{}'.format( os.path.expanduser('~'), os.sep, '.quantaxis')
 
 path = os.path.expanduser('~')
 qa_path = '{}{}{}'.format(path, os.sep, '.quantaxis')
@@ -44,3 +44,5 @@ def make_dir():
     cache_path = '{}{}{}'.format(qa_path, os.sep, '.cache')
     os.makedirs(setting_path, exist_ok=True)
     os.makedirs(cache_path, exist_ok=True)
+
+

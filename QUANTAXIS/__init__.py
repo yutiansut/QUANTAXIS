@@ -156,7 +156,8 @@ import sys
 if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6]:
     print('wrong version, should be 3.4/3.5/3.6 version')
     sys.exit()
-
+    
+make_dir()
 
 QA_util_log_info('Welcome to QUANTAXIS, the Version is {}'.format(__version__))
 
