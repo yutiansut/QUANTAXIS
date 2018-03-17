@@ -61,4 +61,9 @@ def prase_all():
     """
     解析目录下的所有文件
     """
-    filename=''
+    filepath='{}{}{}{}'.format(qa_path,os.sep,'downloads',os.sep)
+
+
+
+if __name__=='__main__':
+    print(get_filename())
