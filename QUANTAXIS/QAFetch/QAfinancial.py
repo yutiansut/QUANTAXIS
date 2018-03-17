@@ -22,9 +22,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import os
+import sys
 import requests
 from pytdx.reader.history_financial_reader import HistoryFinancialReader
 from pytdx.crawler.history_financial_crawler import HistoryFinancialCrawler, HistoryFinancialListCrawler
+
+from QUANTAXIS.QASU.save_local import qa_path
 """
 参见PYTDX 1.65
 """
@@ -52,3 +56,9 @@ def download():
 
 def get_and_parse(filename):
     return HistoryFinancialReader.get_df(filename)
+
+def prase_all():
+    """
+    解析目录下的所有文件
+    """
+    filename=''
