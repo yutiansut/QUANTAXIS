@@ -42,7 +42,8 @@ def make_dir():
     os.makedirs(qa_path, exist_ok=True)
     setting_path = '{}{}{}'.format(qa_path, os.sep, '.setting')
     cache_path = '{}{}{}'.format(qa_path, os.sep, '.cache')
+    downloads_path = '{}{}{}'.format(qa_path, os.sep, 'downloads')
     os.makedirs(setting_path, exist_ok=True)
     os.makedirs(cache_path, exist_ok=True)
-
+    os.makedirs(downloads_path, exist_ok=True)
 

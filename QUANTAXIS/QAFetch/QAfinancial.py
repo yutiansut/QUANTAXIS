@@ -50,7 +50,10 @@ def download():
     result = get_filename()
     for item in result:
         r = requests.get('http://down.tdx.com.cn:8001/fin/{}'.format(item))
-        with open(item, "wb") as code:
+
+
+        file='{}{}{}{}{}'.format(qa_path,os.sep,'downloads',os.sep,item)
+        with open(file, "wb") as code:
             code.write(r.content)
 
 
@@ -66,4 +69,4 @@ def prase_all():
 
 
 if __name__=='__main__':
-    print(get_filename())
+    download()
