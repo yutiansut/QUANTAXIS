@@ -52,13 +52,13 @@ def QA_util_get_next_day(date,n=1):
     """
     得到下一个(n)交易日
     """
-    return QA_util_get_real_date(date,trade_date_sse,n)
+    return QA_util_date_gap(date,n,'gt')
 
 def QA_util_get_last_day(date,n=1):
     """
     得到上一个(n)交易日
     """
-    return QA_util_get_real_date(date,trade_date_sse,-n)
+    return QA_util_date_gap(date,n,'lt')
     
 def QA_util_get_real_date(date, trade_list, towards):
     """
