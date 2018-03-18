@@ -92,7 +92,7 @@ from QUANTAXIS.QAMarket import (QA_Order, QA_OrderQueue, QA_OrderHandler,
 # Account,Risk,Portfolio,User,Strategy
 
 from QUANTAXIS.QAARP.QAAccount import QA_Account
-from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio,QA_PortfolioView
+from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio, QA_PortfolioView
 from QUANTAXIS.QAARP.QARisk import QA_Performance, QA_Risk
 from QUANTAXIS.QAARP.QAUser import QA_User
 from QUANTAXIS.QAARP.QAStrategy import QA_Strategy
@@ -119,7 +119,7 @@ from QUANTAXIS.QAAnalysis import *
 
 
 from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms_stamp, QA_util_date_valid, QA_util_calc_time,
-                              QA_util_realtime, QA_util_id2date, QA_util_is_trade, QA_util_get_date_index,
+                              QA_util_realtime, QA_util_id2date, QA_util_is_trade, QA_util_get_date_index, QA_util_get_last_day, QA_util_get_next_day,
                               QA_util_get_index_date, QA_util_select_hours, QA_util_date_gap, QA_util_time_gap,
                               QA_util_select_min, QA_util_time_delay, QA_util_time_now, QA_util_date_str2int,
                               QA_util_date_int2str, QA_util_date_today, QA_util_to_datetime,

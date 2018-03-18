@@ -48,7 +48,18 @@ def QA_util_if_tradetime(_time):
     else:
         return False
 
+def QA_util_get_next_day(date,n=1):
+    """
+    得到下一个(n)交易日
+    """
+    return QA_util_get_real_date(date,trade_date_sse,n)
 
+def QA_util_get_last_day(date,n=1):
+    """
+    得到上一个(n)交易日
+    """
+    return QA_util_get_real_date(date,trade_date_sse,-n)
+    
 def QA_util_get_real_date(date, trade_list, towards):
     """
     获取真实的交易日期,其中,第三个参数towards是表示向前/向后推
