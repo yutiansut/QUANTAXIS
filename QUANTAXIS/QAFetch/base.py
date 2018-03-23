@@ -28,7 +28,7 @@ headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,imag
            'Cache-Control': 'max-age=0',
            'Connection': 'keep-alive',
            'Upgrade-Insecure-Requests': '1',
-           'If-Modified-Since': 'Thu, 11 Jan 2018 07:05:01 GMT',
+        #   'If-Modified-Since': 'Thu, 11 Jan 2018 07:05:01 GMT',
            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36'}
 
 
