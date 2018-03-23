@@ -780,6 +780,7 @@ def QA_fetch_get_future_list(ip=best_ip['future'], port=7727):
     '期货代码list'
     apix = TdxExHq_API()
     with apix.connect(ip, port):
+        market_info=apix.get_markets()
         num = apix.get_instrument_count()
         return pd.concat([apix.to_df(
             apix.get_instrument_info((int(num / 500) - i) * 500, 500))
@@ -872,6 +873,15 @@ def QA_fetch_get_future_transaction_realtime(ip=best_ip['future'], port=7727):
 def QA_fetch_get_future_realtime(code, ip=best_ip['future'], port=7727):
     '期货实时价格'
     pass
+
+
+
+
+def QA_fetch_get_wholemarket_list():
+    hq_codelist=QA_fetch_get_stock_list(type_='all').loc[:,['code','name']].set_index(['code','name'],drop=False)
+    kz_codelist=QA_fetch_get_future_list().loc[:,['code','name']].set_index(['code','name'],drop=False)
+
+    return pd.concat([hq_codelist,kz_codelist]).sort_index()
 
 
 if __name__ == '__main__':

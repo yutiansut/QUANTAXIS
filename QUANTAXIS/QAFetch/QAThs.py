@@ -58,9 +58,9 @@ def QA_fetch_get_stock_day(code, start, end, if_fq='00'):
     end_year = int(str(end)[0:4])
     data = QA_fetch_get_stock_day_in_year(code, start_year, if_fq)
     if start_year < end_year:
-        for i_ in range(start_year + 1, end_year + 1):
+        for i2 in range(start_year + 1, end_year + 1):
             data = pd.concat(
-                [data, QA_fetch_get_stock_day_in_year(code, i_, if_fq)], axis=0)
+                [data, QA_fetch_get_stock_day_in_year(code, i2, if_fq)], axis=0)
     else:
         pass
     if data is None:
@@ -72,28 +72,28 @@ def QA_fetch_get_stock_day(code, start, end, if_fq='00'):
 def QA_fetch_get_stock_block():
     url_list = ['gn', 'dy', 'thshy', 'zjhhy']  # 概念/地域/同花顺板块/证监会板块
     data = []
-
+    cookie=input('cookie')
     for item in url_list:
         tree = etree.HTML(requests.get(
             'http://q.10jqka.com.cn/{}/'.format(item), headers=headers_ths).text)
         gn = tree.xpath('/html/body/div/div/div/div/div/a/text()')
         gpath = tree.xpath('/html/body/div/div/div/div/div/a/@href')
-
-        for _i in range(len(gn)):
+        headers_data['cookie']=cookie
+        for r in range(len(gn)):
             headers_data['Referer'] = 'http://q.10jqka.com.cn/{}/detail/code/{}'.format(
-                item, gpath[_i].split('/')[-2])
+                item, gpath[r].split('/')[-2])
 
             for i in range(1, 15):
 
                 _data = etree.HTML(requests.get(
-                    'http://q.10jqka.com.cn/{}/detail/order/desc/page/{}/ajax/1/code/{}'.format(item, i, gpath[_i].split('/')[-2]), headers=headers_data).text)
+                    'http://q.10jqka.com.cn/{}/detail/order/desc/page/{}/ajax/1/code/{}'.format(item, i, gpath[r].split('/')[-2]), headers=headers_data).text)
                 name = _data.xpath('/html/body/table/tbody/tr/td[3]/a/text()')
                 code = _data.xpath('/html/body/table/tbody/tr/td[3]/a/@href')
 
-                for i_ in range(len(name)):
+                for i2 in range(len(name)):
                     print(
-                        'Now Crawling-{}-{}-{}-{}'.format(gn[_i], code[i_].split('/')[-1], item, 'ths'))
-                    data.append([gn[_i], code[i_].split('/')[-1], item, 'ths'])
+                        'Now Crawling-{}-{}-{}-{}'.format(gn[r], code[i2].split('/')[-1], item, 'ths'))
+                    data.append([gn[r], code[i2].split('/')[-1], item, 'ths'])
 
     return pd.DataFrame(data, columns=['blockname',  'code', 'type', 'source']).set_index('code', drop=False)
 
