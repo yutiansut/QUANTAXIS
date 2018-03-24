@@ -27,7 +27,7 @@
     "crawler": "^1.0.2",
     "debug": "~2.6.0",
     "debuglog": "^1.0.1",
-    "ejs": "~2.5.5",
+    "ejs": "^2.5.7",
     "events": "^1.1.1",
     "express": "~4.14.1",
     "fs": "0.0.1-security",
