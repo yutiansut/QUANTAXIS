@@ -9,7 +9,10 @@
   },
   "bin": "./bin/www",
   "pkg": {
-    "assets": ["public/**/*", "views/*"]
+    "assets": [
+      "public/**/*",
+      "views/*"
+    ]
   },
   "dependencies": {
     "accepts": "^1.3.3",
