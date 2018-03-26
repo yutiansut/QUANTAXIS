@@ -3,8 +3,6 @@
     <mu-appbar title="Title">
       <mu-flat-button class="quantaxislogo" href='https://github.com/yutiansut/quantaxis' target="view_window" color="white" style="-webkit-app-region: drag"
         disable slot="left">QUANTAXIS</mu-flat-button>
-
-
       <mu-raised-button slot='right' label="User" ref="button" @click="toggle"/>
       <mu-popover :trigger="trigger" :open="open" @close="handleClose">
           <mu-menu>
