@@ -70,32 +70,33 @@ def QA_fetch_get_stock_day(code, start, end, if_fq='00'):
 
 
 def QA_fetch_get_stock_block():
-    url_list = ['gn', 'dy', 'thshy', 'zjhhy']  # 概念/地域/同花顺板块/证监会板块
-    data = []
-    cookie=input('cookie')
-    for item in url_list:
-        tree = etree.HTML(requests.get(
-            'http://q.10jqka.com.cn/{}/'.format(item), headers=headers_ths).text)
-        gn = tree.xpath('/html/body/div/div/div/div/div/a/text()')
-        gpath = tree.xpath('/html/body/div/div/div/div/div/a/@href')
-        headers_data['cookie']=cookie
-        for r in range(len(gn)):
-            headers_data['Referer'] = 'http://q.10jqka.com.cn/{}/detail/code/{}'.format(
-                item, gpath[r].split('/')[-2])
+    pass
+    # url_list = ['gn', 'dy', 'thshy', 'zjhhy']  # 概念/地域/同花顺板块/证监会板块
+    # data = []
+    # cookie=input('cookie')
+    # for item in url_list:
+    #     tree = etree.HTML(requests.get(
+    #         'http://q.10jqka.com.cn/{}/'.format(item), headers=headers_ths).text)
+    #     gn = tree.xpath('/html/body/div/div/div/div/div/a/text()')
+    #     gpath = tree.xpath('/html/body/div/div/div/div/div/a/@href')
+    #     headers_data['cookie']=cookie
+    #     for r in range(len(gn)):
+    #         headers_data['Referer'] = 'http://q.10jqka.com.cn/{}/detail/code/{}'.format(
+    #             item, gpath[r].split('/')[-2])
 
-            for i in range(1, 15):
+    #         for i in range(1, 15):
 
-                _data = etree.HTML(requests.get(
-                    'http://q.10jqka.com.cn/{}/detail/order/desc/page/{}/ajax/1/code/{}'.format(item, i, gpath[r].split('/')[-2]), headers=headers_data).text)
-                name = _data.xpath('/html/body/table/tbody/tr/td[3]/a/text()')
-                code = _data.xpath('/html/body/table/tbody/tr/td[3]/a/@href')
+    #             _data = etree.HTML(requests.get(
+    #                 'http://q.10jqka.com.cn/{}/detail/order/desc/page/{}/ajax/1/code/{}'.format(item, i, gpath[r].split('/')[-2]), headers=headers_data).text)
+    #             name = _data.xpath('/html/body/table/tbody/tr/td[3]/a/text()')
+    #             code = _data.xpath('/html/body/table/tbody/tr/td[3]/a/@href')
 
-                for i2 in range(len(name)):
-                    print(
-                        'Now Crawling-{}-{}-{}-{}'.format(gn[r], code[i2].split('/')[-1], item, 'ths'))
-                    data.append([gn[r], code[i2].split('/')[-1], item, 'ths'])
+    #             for i2 in range(len(name)):
+    #                 print(
+    #                     'Now Crawling-{}-{}-{}-{}'.format(gn[r], code[i2].split('/')[-1], item, 'ths'))
+    #                 data.append([gn[r], code[i2].split('/')[-1], item, 'ths'])
 
-    return pd.DataFrame(data, columns=['blockname',  'code', 'type', 'source']).set_index('code', drop=False)
+    # return pd.DataFrame(data, columns=['blockname',  'code', 'type', 'source']).set_index('code', drop=False)
 
 
 if __name__ == '__main__':
