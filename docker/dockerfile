@@ -1,0 +1,19 @@
+FROM registry.cn-shanghai.aliyuncs.com/yutiansut/quantaxis
+
+MAINTAINER yutiansut 'yutiansut@qq.com'
+
+
+# Update QUANTAXIS
+
+RUN cd /home/quantaxis && git pull && pip install -e .
+
+
+# RUN cd /root && nohup sh ./startmongod.sh &
+#RUN cd /root/quantaxis/QUANTAXIS_Webkit/backend && forever start ./bin/www
+#RUN cd /root/quantaxis/QUANTAXIS_Webkit/web && forever start ./build/dev-server.js
+
+
+
+EXPOSE 8080 
+EXPOSE 3000
+EXPOSE 8888

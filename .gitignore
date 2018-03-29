@@ -24,12 +24,11 @@ test/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[cod]
+
 *$py.class
 
 #zip
 *.zip
-
 # C extensions
 *.so
 
@@ -38,7 +37,6 @@ __pycache__/
 env/
 
 develop-eggs/
-downloads/
 eggs/
 .eggs/
 lib64/
@@ -134,15 +132,9 @@ ENV/
 
 
 
-# thoughts/
-
-thought/
-.thought/
-.vs/
-
 #jupyter
 
-*.ipynb
+
 
 
 # jupyter-kernel
@@ -152,3 +144,9 @@ kernel*.json
 
 # packge-lock
 
+.\vs
+
+
+
+# sqlite database
+*.db

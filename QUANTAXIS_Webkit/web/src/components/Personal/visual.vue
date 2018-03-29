@@ -9,9 +9,12 @@
       <router-link :to="{name:'history',params: {id:this.data0}}">
         <mu-raised-button label="成交明细" class="demo-raised-button" primary/>
       </router-link>
-      <mu-raised-button v-on:click='ready()' label="行情数据" class="demo-raised-button" secondary/>
+      <mu-raised-button v-on:click='ready()' label="账户表现" class="demo-raised-button" secondary/>
+      <router-link :to="{name:'strategy',params: {id:this.data0}}">
+        <mu-raised-button label="策略查看" class="demo-raised-button" />
+      </router-link>
       <mu-raised-button label="说明" class="demo-raised-button" @click="showToast" />
-      <mu-toast v-if="toast" message="此版本仅适用于0.4.2的回测演示" @close="hideToast" />
+      <mu-toast v-if="toast" message="此版本仅适用于0.5.25的回测演示" @close="hideToast" />
       <mu-divider />
     </div>
     <div>
@@ -206,8 +209,6 @@
             var end_time = data['end_time']
             var profit = data['total_returns']
 
-            //console.log(data)
-
             this.items[0]['alpha'] = data['alpha'].toFixed(3)
             this.items[0]['beta'] = data['beta'].toFixed(4)
             this.items[0]['max_drop'] = data['max_drop'].toFixed(3)
@@ -218,8 +219,6 @@
             this.items[0]['benchmark_vol'] = data['benchmark_vol'].toFixed(5)
             this.items[0]['exist'] = data['exist']
             this.items[0]['win_rate'] = data['win_rate'].toFixed(3)
-            //console.log(this.items)
-
 
             this.chart.setOption({
               title: {
@@ -236,12 +235,9 @@
               if (trade_date.indexOf(market_time[i]) == -1) {
                 trade_date.splice(i, 0, market_time[i])
                 assets.splice(i, 0, assets[i - 1])
-                //console.log()
               }
 
             }
-            //console.log(market_time)
-            //console.log(benchmark_history)
             this.chart.setOption({
               series: [{
                 name: 'benchmark',

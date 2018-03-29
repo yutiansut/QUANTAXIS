@@ -6,11 +6,20 @@ var vueLoaderConfig = require('./vue-loader.conf')
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: {
     app: './src/main.js'
   },
+  // plugins: [
+  //   new CopyWebpackPlugin([
+  //     {
+  //       from: 'node_modules/monaco-editor/min/vs',
+  //       to: 'vs',
+  //     }
+  //   ])
+  // ],
   output: {
     path: config.build.assetsRoot,
     filename: '[name].js',
@@ -25,7 +34,18 @@ module.exports = {
       '@': resolve('src')
     }
   },
+
   module: {
+    loaders: [
+      {
+          test: /\.js$/,
+          exclude: /(node_modules|bower_components)/,
+          loader: 'babel',
+          query: {
+              presets: ['es2015']
+          }
+      }
+  ],
     rules: [
       {
         test: /\.vue$/,

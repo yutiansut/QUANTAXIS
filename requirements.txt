@@ -1,7 +1,5 @@
 pymongo
-celery
 bs4
-tabulate
 pandas
 lxml
 matplotlib
@@ -13,10 +11,9 @@ flask-sockets>=0.2.1
 gevent-websocket>=0.10.1
 apscheduler>=3.3.1
 zenlog
-pytdx>=1.52
 flask-socketio 
 flask
-TA-Lib
 pyecharts
 protobuf>=3.4
 motor>=1.1
+retrying

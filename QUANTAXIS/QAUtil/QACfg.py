@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,18 +23,30 @@
 # SOFTWARE.
 
 
-import os
-import sys
-
 from configparser import ConfigParser
 
 
 def QA_util_cfg_initial(CONFIG_FILE):
+    """[summary]
+    
+    Arguments:
+        CONFIG_FILE {[type]} -- [description]
+    """
 
     pass
 
 
 def QA_util_get_cfg(__file_path, __file_name):
+    """[summary]
+    
+    Arguments:
+        __file_path {[type]} -- [description]
+        __file_name {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+
     __setting_file = ConfigParser()
     try:
         return __setting_file.read(__file_path + __file_name)

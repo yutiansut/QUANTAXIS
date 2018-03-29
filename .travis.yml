@@ -3,7 +3,6 @@ language: python
 sudo: required
 matrix:
   include:
-    - python: 3.4
     - python: 3.5
     - python: 3.6
 
@@ -18,42 +17,14 @@ os: "ubuntu"
 # command to install dependencies
 install: 
 
-- sudo apt-get update
-- wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
-- tar -xzvf ta-lib-0.4.0-src.tar.gz
-- cd ta-lib
-- ./configure --prefix=/usr
-- make
-- sudo make install
-- cd ..
-- pip install TA-Lib
 
-
-- "sudo apt-get install python3-dev"
+- "pip install git+https://github.com/yutiansut/pytdx"
 - "pip install -r requirements.txt"
-- "pip install tushare==0.8.7"
+- "pip install git+https://github.com/yutiansut/tushare"
 # command to build
 script: 
 
-#  添加源
-- sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
-# Ubuntu 12.04
 
-# Ubuntu 14.04
-- echo "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
-
-# 更新源
-- sudo apt-get update
-# 安装MongoDB
-- sudo apt-get install -y mongodb-org
-# 开启MongoDB服务
-- sudo service mongod start
-
-- sudo apt-get install npm
-- sudo npm install n -g
-- sudo n latest
-- sudo npm install npm -g #更新npm
-- "python setup.py install"
+ - "python setup.py install"
 
 
-#after_success:

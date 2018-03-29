@@ -3,8 +3,16 @@
   "version": "0.4.0-alpha",
   "private": true,
   "scripts": {
+    "build": "pkg . -t node8-win-x64 --out-path ./dist",
     "start": "node ./bin/www",
     "debug": "SET DEBUG=nodejsspider:*& npm start"
+  },
+  "bin": "./bin/www",
+  "pkg": {
+    "assets": [
+      "public/**/*",
+      "views/*"
+    ]
   },
   "dependencies": {
     "accepts": "^1.3.3",
@@ -19,7 +27,7 @@
     "crawler": "^1.0.2",
     "debug": "~2.6.0",
     "debuglog": "^1.0.1",
-    "ejs": "~2.5.5",
+    "ejs": "^2.5.7",
     "events": "^1.1.1",
     "express": "~4.14.1",
     "fs": "0.0.1-security",
@@ -51,7 +59,9 @@
   },
   "description": "a nodejs version of quantaxis spider",
   "main": "app.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "pkg": "^4.3.0-beta.5"
+  },
   "keywords": [
     "quantaxis",
     "spider"

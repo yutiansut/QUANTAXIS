@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -40,9 +40,10 @@ import time
 import numpy as np
 import pandas as pd
 import pymongo
-from QUANTAXIS.QAUtil import QA_util_date_valid, QA_util_log_info
-from . import data_list as data_list
 
+from QUANTAXIS.QAUtil import QA_util_date_valid, QA_util_log_info
+
+from QUANTAXIS.QAFetch import data_list as data_list
 
 
 def QA_fetch_get_stock_info(name, startDate, endDate):

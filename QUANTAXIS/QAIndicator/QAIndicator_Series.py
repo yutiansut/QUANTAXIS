@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,15 +23,17 @@
 # SOFTWARE.
 
 
+from functools import reduce
+
 import numpy as np
 import pandas as pd
-from functools import reduce
 
 
 """
 Series 类
 
 这个是下面以DataFrame为输入的基础函数
+return pd.Series format
 """
 
 
@@ -45,10 +47,25 @@ def MA(Series, N):
 # 威廉SMA  参考https://www.joinquant.com/post/867
 
 
-def SMA(Series, N):
-    '威廉SMA'
-    Series = pd.Series(Series).fillna(0)
-    return reduce(lambda x, y: ((N - 1) * x + y) / N, Series)
+def SMA(Series, N, M=1):
+
+    ret = []
+    i = 1
+    length = len(Series)
+    # 跳过X中前面几个 nan 值
+    while i < length:
+        if np.isnan(Series.iloc[i]):
+            i += 1
+        else:
+            break
+    preY = Series.iloc[i]  # Y'
+    ret.append(preY)
+    while i < length:
+        Y = (M * Series.iloc[i] + (N - M) * preY) / float(N)
+        ret.append(Y)
+        preY = Y
+        i += 1
+    return pd.Series(ret)
 
 
 def DIFF(Series, N=1):
@@ -82,7 +99,7 @@ def MIN(A, B):
 
 
 def CROSS(A, B):
-    if A[-2] < B[-2] and A[-1] > B[-1]:
+    if A.iloc[-2] < B.iloc[-2] and A.iloc[-1] > B.iloc[-1]:
         return True
     else:
         return False
@@ -104,6 +121,20 @@ def REF(Series, N):
     return var
 
 
+def LAST(COND, N1, N2):
+    """表达持续性
+
+    Arguments:
+        COND {[type]} -- [description]
+        N1 {[type]} -- [description]
+        N2 {[type]} -- [description]
+    """
+    N2=1 if N2==0 else N2
+    assert N2>0
+    assert N1>N2
+    return COND.iloc[-N1:-N2].all()
+
+
 def STD(Series, N):
     return pd.Series.rolling(Series, N).std()
 
@@ -114,6 +145,9 @@ def AVEDEV(Series, N):
 
 
 def MACD(Series, FAST, SLOW, MID):
+    """macd指标 仅适用于Series
+    对于DATAFRAME的应用请使用QA_indicator_macd
+    """
     EMAFAST = EMA(Series, FAST)
     EMASLOW = EMA(Series, SLOW)
     DIFF = EMAFAST - EMASLOW

@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,29 +31,12 @@ QAFetch is Under [QAStandard#0.0.2@10x] Protocol
 
 
 """
-from . import QAWind as QAWind
-from . import QATushare as QATushare
-from . import QATdx as QATdx
-from . import QAThs as QAThs
-
-#import QAFetch.QAGmsdk as QAGmsdk
-#import QAFetch.QACrawlData as QACD
-
-
-class QA_Fetcher():
-    """
-    一个通用的数据获取方法类
-
-
-    """
-
-    def __init__(self, *args, **kwargs):
-        pass
-
-    @property
-    def security_list(self):
-        return self.security_list
-
+from QUANTAXIS.QAFetch import QAWind as QAWind
+from QUANTAXIS.QAFetch import QATushare as QATushare
+from QUANTAXIS.QAFetch import QATdx as QATdx
+from QUANTAXIS.QAFetch import QAThs as QAThs
+from QUANTAXIS.QAFetch import QACrawler as QACL
+from QUANTAXIS.QAFetch import QAEastMoney as QAEM
 
 def use(package):
     if package in ['wind']:
@@ -68,16 +51,16 @@ def use(package):
         return QAThs
 
 
-def QA_fetch_get_stock_day(package, code, startDate, endDate, if_fq='01', level='day', type_='json'):
+def QA_fetch_get_stock_day(package, code, start, end, if_fq='01', level='day', type_='json'):
     Engine = use(package)
     if package in ['ths', 'THS', 'wind']:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq)
+        return Engine.QA_fetch_get_stock_day(code, start, end, if_fq)
     elif package in ['ts', 'tushare']:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq, type_)
+        return Engine.QA_fetch_get_stock_day(code, start, end, if_fq, type_)
     elif package in ['tdx', 'pytdx']:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq, level)
+        return Engine.QA_fetch_get_stock_day(code, start, end, if_fq, level)
     else:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate)
+        return Engine.QA_fetch_get_stock_day(code, start, end)
 
 
 def QA_fetch_get_stock_realtime(package, code):
@@ -85,14 +68,14 @@ def QA_fetch_get_stock_realtime(package, code):
     return Engine.QA_fetch_get_stock_realtime(code)
 
 
-def QA_fetch_get_stock_indicator(package, code, startDate, endDate):
+def QA_fetch_get_stock_indicator(package, code, start, end):
     Engine = use(package)
-    return Engine.QA_fetch_get_stock_indicator(code, startDate, endDate)
+    return Engine.QA_fetch_get_stock_indicator(code, start, end)
 
 
-def QA_fetch_get_trade_date(package, endDate, exchange):
+def QA_fetch_get_trade_date(package, end, exchange):
     Engine = use(package)
-    return Engine.QA_fetch_get_trade_date(endDate, exchange)
+    return Engine.QA_fetch_get_trade_date(end, exchange)
 
 
 def QA_fetch_get_stock_min(package, code, start, end, level='1min'):
@@ -115,6 +98,14 @@ def QA_fetch_get_stock_transaction(package, code, start, end, retry=2):
     Engine = use(package)
     if package in ['tdx', 'pytdx']:
         return Engine.QA_fetch_get_stock_transaction(code, start, end, retry)
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_stock_transaction_realtime(package, code):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_stock_transaction_realtime(code)
     else:
         return 'Unsupport packages'
 
@@ -159,5 +150,29 @@ def QA_fetch_get_stock_info(package, code):
         return 'Unsupport packages'
 
 
-def QA_fetch_security_bars(code, _type, lens):
-    return QATdx.QA_fetch_security_bars(code, _type, lens)
+def QA_fetch_get_future_list(package,):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_future_list()
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_future_day(package, code, start, end, frequence='day'):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_future_day(code, start, end, frequence=frequence)
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_future_min(package, code, start, end, frequence='1min'):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_future_min(code, start, end, frequence=frequence)
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_security_bars(code, _type, lens):
+    return QATdx.QA_fetch_get_security_bars(code, _type, lens)

@@ -25,7 +25,7 @@
 </template>
 <style lang="css">
 #sign {
-  position: relative;
+
   width: 100%;
   height: 100%;
   display: block;
@@ -33,11 +33,14 @@
 
 #title {
   position: relative;
-  width: 60%;
+  width: 40%;
   height: 100%;
   float: left;
   display: inline-block;
-  margin: 10% 0%;
+  margin: 18% 8% 18% 12%;
+  color: darkgrey;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 1.8em;
 }
 
 #textbox {
@@ -46,7 +49,7 @@
   height: 100%;
   float: left;
   display: inline-block;
-  margin: 15% 0%;
+  margin: 20% 0% 20% 0%;
 }
 
 .demo-popup-top {
@@ -120,6 +123,9 @@ export default {
         .catch(function (error) {
           console.log(error);
         });
+    },
+    logout(){
+      sessionStorage.clear()
     }
   },
   watch: {

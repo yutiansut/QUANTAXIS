@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import msvcrt
-import sys
 import configparser
+import msvcrt
 import os
+import sys
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+
 import TradeX
+
 
 TradeX.OpenTdx()
 
@@ -270,7 +272,6 @@ class QA_Stock():
         else:
             print(result)
             return (result)
-
 
     def QA_trade_stock_get_quote(self, client, stock):
         _errinfo, self.result = client.GetQuote(str(stock),)

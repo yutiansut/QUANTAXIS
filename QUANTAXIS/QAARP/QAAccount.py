@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,277 +22,347 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import datetime
-import random
-import time
+
 import pandas as pd
-import numpy as np
+
+from QUANTAXIS.QAEngine.QAEvent import QA_Worker
+from QUANTAXIS.QAMarket.QAOrder import QA_Order
+from QUANTAXIS.QASU.save_account import save_account, update_account
+from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
+                                          BROKER_TYPE, ENGINE_EVENT, FREQUENCE,
+                                          MARKET_TYPE, TRADE_STATUS)
+from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 # 2017/6/4修改: 去除总资产的动态权益计算
 
 
-class QA_Account():
+class QA_Account(QA_Worker):
+    """[QA_Account]
+
+    2018/1/5 再次修改 改版本去掉了多余的计算 精简账户更新
+    ======================
+
+    - 不再计算总资产/不再计算当前持仓/不再计算交易对照明细表
+    - 不再动态计算账户股票/期货市值
+    - 只维护 cash/history两个字段 剩下的全部惰性计算
+
+
+    QA_Account 是QUANTAXIS的最小不可分割单元之一
+
+    QA_Account是账户类 需要兼容股票/期货/指数
+    QA_Account继承自QA_Worker 可以被事件驱动
+    QA_Account可以直接被QA_Strategy继承
+
+    有三类输入:
+    信息类: 账户绑定的策略名/账户的用户名/账户类别/账户识别码/账户的broker
+    资产类: 现金/可用现金/交易历史/交易对照表
+    规则类: 是否允许卖空/是否允许t0结算
+
+    方法:
+    惰性计算:最新持仓/最新总资产/最新现金/持仓面板
+    生成订单/接受交易结果数据
+    接收新的数据/on_bar/on_tick方法/缓存新数据的market_data
+
+
     """
-    账户类:    
-    记录回测的时候的账户情况(持仓列表,交易历史,利润,报单,可用资金)
 
-
-    新增一个  已委托待成交队列,以及在途资金
-    """
-    # 一个hold改成list模式
-
-    def __init__(self):
-
-        self.hold = [['date', 'code', 'price',
-                      'amount', 'order_id', 'trade_id']]
-        self.sell_available=[['date', 'code', 'price',
-                      'amount', 'order_id', 'trade_id']]
-        self.init_assest = 1000000
-        self.cash = [self.init_assest]
+    def __init__(self, strategy_name=None, user_cookie=None, market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY,
+                 broker=BROKER_TYPE.BACKETEST, portfolio_cookie=None, account_cookie=None,
+                 sell_available=None, init_assets=None, cash=None, history=None,
+                 margin_level=False, allow_t0=False, allow_sellopen=False):
+        super().__init__()
+        self._history_headers = ['datetime', 'code', 'price',
+                                 'amount', 'order_id', 'trade_id', 'account_cookie', 'commission', 'tax']
+        # 信息类:
+        self.strategy_name = strategy_name
+        self.user_cookie = user_cookie
+        self.market_type = market_type
+        self.portfolio_cookie = portfolio_cookie
+        self.account_cookie = QA_util_random_with_topic(
+            'Acc') if account_cookie is None else account_cookie
+        self.broker = broker
+        self.frequence = frequence
+        self.market_data = None
+        self._currenttime = None
+        # 资产类
+        self.init_assets = 1000000 if init_assets is None else init_assets
+        self.cash = [self.init_assets] if cash is None else cash
         self.cash_available = self.cash[-1]  # 可用资金
-        self.order_queue = pd.DataFrame()  # 已委托待成交队列
-        self.history = []
-        self.detail = []
-        self.assets = []
-        self.profit = []
-        self.account_cookie = str()
-        self.message = {}
+        self.sell_available = sell_available
+        self.history = [] if history is None else history
+        self.time_index = []
+        # 规则类
+        # 两个规则
+        # 1.是否允许t+0 及买入及结算
+        # 2.是否允许卖空开仓
+        # 3.是否允许保证金交易/ 如果不是false 就需要制定保证金比例(dict形式)
+        self.allow_t0 = allow_t0
+        self.allow_sellopen = allow_sellopen
+        self.margin_level = margin_level
 
-    def init(self):
-        self.hold = [['date', 'code', 'price',
-                      'amount', 'order_id', 'trade_id']]
-        self.sell_available=[['date', 'code', 'price',
-                      'amount', 'order_id', 'trade_id']]
+    def __repr__(self):
+        return '< QA_Account {}>'.format(self.account_cookie)
+
+    @property
+    def message(self):
+        'the standard message which can be transef'
+        return {
+            'source': 'account',
+            'account_cookie': self.account_cookie,
+            'portfolio_cookie': self.portfolio_cookie,
+            'user_cookie': self.user_cookie,
+            'broker': self.broker,
+            'market_type': self.market_type,
+            'strategy_name': self.strategy_name,
+            'current_time': self._currenttime,
+
+            'allow_sellopen': self.allow_sellopen,
+            'allow_t0': self.allow_t0,
+            'margin_level': self.margin_level,
+            'init_assets': self.init_assets,
+            'cash': self.cash,
+            'history': self.history,
+            'trade_index': self.time_index
+        }
+
+    @property
+    def code(self):
+        """该账户曾交易代码 用set 去重
+        """
+        return list(set([item[1] for item in self.history]))
+
+    @property
+    def start_date(self):
+        return str(self.time_index[0])[0:10]
+
+    @property
+    def end_date(self):
+        return str(self.time_index[-1])[0:10]
+
+    @property
+    def history_table(self):
+        '交易历史的table'
+        return pd.DataFrame(data=self.history, columns=self._history_headers).sort_index()
+
+    @property
+    def cash_table(self):
+        '现金的table'
+        _cash = pd.DataFrame(data=[self.cash[1::], self.time_index], index=[
+                             'cash', 'datetime']).T
+        _cash = _cash.assign(date=_cash.datetime.apply(lambda x: str(x)[0:10])).assign(
+            account_cookie=self.account_cookie)
+
+        return _cash.set_index(['datetime', 'account_cookie'], drop=False).sort_index()
+
+    @property
+    def hold(self):
+        '持仓'
+        return pd.DataFrame(data=self.history, columns=self._history_headers).groupby('code').amount.sum().sort_index()
+
+    @property
+    def trade(self):
+        '每次交易的pivot表'
+        return self.history_table.pivot_table(index=['datetime', 'account_cookie'], columns='code', values='amount').fillna(0).sort_index()
+
+    @property
+    def daily_cash(self):
+        '每日交易结算时的现金表'
+        return self.cash_table.drop_duplicates(subset='date', keep='last').sort_index()
+
+    @property
+    def daily_hold(self):
+        '每日交易结算时的持仓表'
+        data = self.trade.cumsum()
+
+        data = data.assign(account_cookie=self.account_cookie).assign(
+            date=data.index.levels[0])
+        data.date = data.date.apply(lambda x: str(x)[0:10])
+        return data.set_index(['date', 'account_cookie'], drop=False).sort_index()
+
+    # 计算assets的时候 需要一个market_data=QA.QA_fetch_stock_day_adv(list(data.columns),data.index[0],data.index[-1])
+    # (market_data.to_qfq().pivot('close')*data).sum(axis=1)+user_cookie.get_account(a_1).daily_cash.set_index('date').cash
+
+    @property
+    def latest_cash(self):
+        'return the lastest cash'
+        return self.cash[-1]
+
+    @property
+    def current_time(self):
+        'return current time (in backtest/real environment)'
+        return self._currenttime
+
+    def reset_assets(self, init_assets=None):
+        'reset_history/cash/'
+        self.sell_available = None
         self.history = []
-        self.profit = []
-        self.account_cookie = str(random.random())
-        self.assets = [self.init_assest]
-        self.cash = [self.init_assest]
+        self.init_assets = init_assets
+        self.cash = [self.init_assets]
         self.cash_available = self.cash[-1]  # 在途资金
-        self.order_queue = pd.DataFrame()   # 已委托待成交队列
-        self.message = {
-            'header': {
-                'source': 'account',
-                'cookie': self.account_cookie,
-                'session': {
-                    'user': '',
-                    'strategy': ''
-                }
-            },
-            'body': {
-                'account': {
-                    'hold': self.hold,
-                    'cash': self.cash,
-                    'assets': self.cash,
-                    'history': self.history,
-                    'detail': self.detail
-                },
-                'date_stamp': str(time.mktime(datetime.datetime.now().timetuple()))
-            }
-        }
 
-    def QA_account_update(self, __update_message):
-        if str(__update_message['status'])[0] == '2':
+    def receive_deal(self, message):
+        """[用于更新账户]
 
-            # towards>1 买入成功
-            # towards<1 卖出成功
+        [description]
 
-            (__new_code, __new_amount, __new_trade_date, __new_towards,
-                __new_price, __new_order_id,
-                __new_trade_id, __new_trade_fee) = (str(__update_message['bid']['code']),
-                                                    float(__update_message['bid']['amount']), str(
-                                                        __update_message['bid']['datetime']),
-                                                    int(__update_message['bid']['towards']), float(
-                                                        __update_message['bid']['price']),
-                                                    float(__update_message['order_id']), float(
-                                                        __update_message['trade_id']),
-                                                    float(__update_message['fee']['commission']))
-            if int(__update_message['status']) == 203:
-                '委托成功 待交易'
-                self.order_queue.append(
-                    [__new_trade_date, __new_code, __new_price, __new_amount,
-                     __new_order_id, __new_trade_id])
-
-                # 如果是买入的waiting  那么要减少可用资金,增加在途资金
-                # 如果是卖出的waiting 则减少hold_list
-            elif int(__update_message['status']) == 200:
-                '交易成功的处理'
-                self.history.append(
-                    [__new_trade_date, __new_code, __new_price, __new_towards,
-                     __new_amount, __new_order_id, __new_trade_id, __new_trade_fee])
-                # 先计算收益和利润
-
-                # 修改持仓表
-                if int(__new_towards) > 0:
-                    # 买入
-                    self.hold.append(
-                        [__new_trade_date, __new_code, __new_price, __new_amount,
-                         __new_order_id, __new_trade_id])
-                    self.detail.append([__new_trade_date, __new_code, __new_price,
-                                        __new_amount, __new_order_id, __new_trade_id,
-                                        [], [], [], [], __new_amount, __new_trade_fee])
-                # 将交易记录插入历史交易记录
-                else:
-                    # 卖出
-                    __pop_list = []
-                    while __new_amount > 0:
-
-                        if len(self.hold) > 1:
-                            for i in range(0, len(self.hold)):
-
-                                if __new_code in self.hold[i]:
-                                    if float(__new_amount) > (self.hold[i][3]):
-
-                                        __new_amount = __new_amount - \
-                                            self.hold[i][3]
-
-                                        __pop_list.append(i)
-
-                                    elif float(__new_amount) < float(self.hold[i][3]):
-                                        self.hold[i][3] = self.hold[i][3] - \
-                                            __new_amount
-
-                                        for __item_detail in self.detail:
-                                            if __item_detail[5] == self.hold[i][5] and \
-                                                    __new_trade_id not in __item_detail[7]:
-                                                __item_detail[6].append(
-                                                    __new_price)
-                                                __item_detail[7].append(
-                                                    __new_order_id)
-                                                __item_detail[8].append(
-                                                    __new_trade_id)
-                                                __item_detail[9].append(
-                                                    __new_trade_date)
-                                                __item_detail[10] = self.hold[i][3] - \
-                                                    __new_amount
-                                                __item_detail[11] += __new_trade_fee
-                                        __new_amount = 0
-                                    elif float(__new_amount) == float(self.hold[i][3]):
-
-                                        __new_amount = 0
-                                        __pop_list.append(i)
-
-                    __pop_list.sort()
-                    __pop_list.reverse()
-                    for __id in __pop_list:
-
-                        for __item_detail in self.detail:
-                            if __item_detail[5] == self.hold[__id][5] and \
-                                    __new_trade_id not in __item_detail[7]:
-                                __item_detail[6].append(__new_price)
-                                __item_detail[7].append(__new_order_id)
-                                __item_detail[8].append(__new_trade_id)
-                                __item_detail[9].append(__new_trade_date)
-                                __item_detail[10] = 0
-                                __item_detail[11] += __new_trade_fee
-
-                        self.hold.pop(__id)
-                    __del_id = []
-                    for __hold_id in range(1, len(self.hold)):
-                        if int(self.hold[__hold_id][3]) == 0:
-                            __del_id.append(__hold_id)
-                    __del_id.sort()
-                    __del_id.reverse()
-
-                    for __item in __del_id:
-                        self.hold.pop(__item)
-
-            # 将交易记录插入历史交易记录
-        else:
-            pass
-        self.QA_account_calc_profit(__update_message)
-        self.message = {
-            'header': {
-                'source': 'account',
-                'cookie': self.account_cookie,
-                'session': {
-                    'user': __update_message['user'],
-                    'strategy': __update_message['strategy'],
-                    'code': __update_message['bid']['code']
-                }
-
-            },
-            'body': {
-                'account': {
-                    'hold': self.hold,
-                    'history': self.history,
-                    'cash': self.cash,
-                    'assets': self.assets,
-                    'detail': self.detail
-                },
-                'time': str(datetime.datetime.now()),
-                'date_stamp': str(time.mktime(datetime.datetime.now().timetuple()))
-            }
-        }
+        update history and cash
+        """
+        if message['header']['status'] is TRADE_STATUS.SUCCESS:
+            self.time_index.append(str(message['body']['order']['datetime']))
+            self.history.append(
+                [str(message['body']['order']['datetime']), str(message['body']['order']['code']),
+                 float(message['body']['order']['price']), int(message['body']['order']['towards']) *
+                 float(message['body']['order']['amount']), str(
+                     message['header']['order_id']), str(message['header']['trade_id']), str(self.account_cookie),
+                 float(message['body']['fee']['commission']), float(message['body']['fee']['tax'])])
+            self.cash.append(float(self.cash[-1]) - float(message['body']['order']['price']) *
+                             float(message['body']['order']['amount']) * message['body']['order']['towards'] -
+                             float(message['body']['fee']['commission']))
 
         return self.message
 
-    def QA_account_calc_profit(self, __update_message):
-        if __update_message['status'] == 200 and __update_message['bid']['towards'] == 1:
-            # 买入/
-            # 证券价值=买入的证券价值+持有到结算(收盘价)的价值
+    def send_order(self, code, amount, time, towards, price, order_model, amount_model):
+        """[summary]
 
-            # 买入的部分在update_message
+        Arguments:
+            code {[type]} -- [description]
+            amount {[type]} -- [description]
+            time {[type]} -- [description]
+            towards {[type]} -- [description]
+            price {[type]} -- [description]
+            order_model {[type]} -- [description]
+            amount_model {[type]} -- [description]
 
-            # 可用资金=上一期可用资金-买入的资金
-            self.cash.append(float(self.cash[-1]) - float(
-                __update_message['bid']['price']) * float(
-                    __update_message['bid']['amount']) * __update_message['bid']['towards'] - float(__update_message['fee']['commission']))
+        Returns:
+            [type] -- [description]
+        """
 
-        elif __update_message['status'] == 200 and __update_message['bid']['towards'] == -1:
-            # success trade,sell
-            # 证券价值=买入的证券价值+持有到结算(收盘价)的价值
-            # 买入的部分在update_message
+        flag = False
+        date = str(time)[0:10] if len(str(time)) == 19 else str(time)
+        time = str(time) if len(
+            str(time)) == 19 else '{} 09:31:00'.format(str(time)[0:10])
 
-            # 卖出的时候,towards=-1,所以是加上卖出的资产
-            # 可用资金=上一期可用资金+卖出的资金
-            self.cash.append(float(self.cash[-1]) - float(
-                __update_message['bid']['price']) * float(
-                    __update_message['bid']['amount']) * __update_message['bid']['towards'] - float(__update_message['fee']['commission']))
+        amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
+            amount / price)
+        if self.market_type is MARKET_TYPE.STOCK_CN:
+            amount = int(amount / 100) * 100
 
-            # 更新可用资金历史
+        marketvalue = amount * price if amount_model is AMOUNT_MODEL.BY_AMOUNT else amount
 
-            # hold
-        market_value = 0
-        for i in range(1, len(self.hold)):
-            market_value += (float(self.hold[i][2]) * float(self.hold[i][3]))
-        self.assets.append(self.cash[-1] + market_value)
+        amount_model = AMOUNT_MODEL.BY_AMOUNT
+        if int(towards) > 0:
+            # 是买入的情况(包括买入.买开.买平)
+            if self.cash_available >= marketvalue:
+                self.cash_available -= marketvalue
+                flag = True
+        elif int(towards) < 0:
+            if self.allow_sellopen:
+                flag = True
+            if self.sell_available.get(code, 0) >= amount:
+                self.sell_available[code] -= amount
+                flag = True
 
-    def QA_account_receive_deal(self, __message):
-        # 主要是把从market拿到的数据进行解包,一个一个发送给账户进行更新,再把最后的结果反回
-        __data = self.QA_account_update({
-            'code': __message['header']['code'],
-            'status': __message['header']['status'],
-            'user': __message['header']['session']['user'],
-            'strategy': __message['header']['session']['strategy'],
-            'trade_id': __message['header']['trade_id'],
-            'order_id': __message['header']['order_id'],
-            'date_stamp': str(time.mktime(datetime.datetime.now().timetuple())),
-            'bid': __message['body']['bid'],
-            'market': __message['body']['market'],
-            'fee': __message['body']['fee'],
-        })
-        return __data
+        if flag and amount > 0:
+            return QA_Order(user_cookie=self.user_cookie, strategy=self.strategy_name, frequence=self.frequence,
+                            account_cookie=self.account_cookie, code=code, market_type=self.market_type,
+                            date=date, datetime=time, sending_time=time, callback=self.receive_deal,
+                            amount=amount, price=price, order_model=order_model, towards=towards,
+                            amount_model=amount_model)  # init
+        else:
+            return flag
 
-    def QA_account_receive_order(self, __message):
-        
-        # 主要是把从market拿到的数据进行解包,一个一个发送给账户进行更新,再把最后的结果反回
-        __data = self.QA_account_update({
-            'code': __message['header']['code'],
-            'status': __message['header']['status'],
-            'user': __message['header']['session']['user'],
-            'strategy': __message['header']['session']['strategy'],
-            'trade_id': __message['header']['trade_id'],
-            'order_id': __message['header']['order_id'],
-            'date_stamp': str(time.mktime(datetime.datetime.now().timetuple())),
-            'bid': __message['body']['bid'],
-            'market': __message['body']['market'],
-            'fee': __message['body']['fee'],
-        })
-        return __data
-    def QA_account_calc_assets(self):
-        'get the real assets [from cash and market values]'
+    def settle(self):
+        '同步可用资金/可卖股票'
+        self.cash_available = self.cash[-1]
+        self.sell_available = self.hold
 
-        return self.cash[-1] + sum([float(self.hold[i][2]) * float(self.hold[i][3]) for  i in range(1, len(self.hold))])
-class QA_Account_min(QA_Account):
-    pass
+    def on_bar(self, event):
+        'while updating the market data'
+        print(event.market_data)
+
+    def on_tick(self, event):
+        'on tick event'
+        pass
+
+    def from_message(self, message):
+        """resume the account from standard message
+        这个是从数据库恢复账户时需要的"""
+        self.account_cookie = message.get('account_cookie', None)
+        self.portfolio_cookie = message.get('portfolio_cookie', None)
+        self.user_cookie = message.get('user_cookie', None)
+        self.broker = message.get('broker', None)
+        self.market_type = message.get('market_type', None)
+        self.strategy_name = message.get('strategy_name', None)
+        self._currenttime = message.get('current_time', None)
+        self.allow_sellopen = message.get('allow_sellopen', False)
+        self.allow_t0 = message.get('allow_t0', False)
+        self.margin_level = message.get('margin_level', False)
+
+        self.history = message['history']
+        self.cash = message['cash']
+        self.time_index = message['trade_index']
+        self.init_assets = message['init_assets']
+        return self
+
+    @property
+    def table(self):
+        """
+        打印出account的内容
+        """
+        return pd.DataFrame([self.message, ]).set_index('account_cookie', drop=False).T
+
+    def run(self, event):
+        'QA_WORKER method'
+        if event.event_type is ACCOUNT_EVENT.SETTLE:
+            self.settle()
+
+        elif event.event_type is ACCOUNT_EVENT.UPDATE:
+            self.receive_deal(event.message)
+        elif event.event_type is ACCOUNT_EVENT.MAKE_ORDER:
+            """generate order
+            if callback callback the order
+            if not return back the order
+            """
+            data = self.send_order(code=event.code, amount=event.amount, time=event.time,
+                                   amount_model=event.amount_model, towards=event.towards,
+                                   price=event.price, order_model=event.order_model)
+            if event.callback:
+                event.callback(data)
+            else:
+                return data
+        elif event.event_type is ENGINE_EVENT.UPCOMING_DATA:
+            """update the market_data
+            1. update the inside market_data struct
+            2. tell the on_bar methods
+            """
+            self._currenttime = event.market_data.datetime[-1]
+            if self.market_data is None:
+                self.market_data = event.market_data
+            else:
+                self.market_data = self.market_data + event.market_data
+            self.on_bar(event)
+
+            if event.callback:
+                event.callback(event)
+
+    def save(self):
+        save_account(self.message)
+
+    def change_cash(self, money):
+        res = self.cash[-1]+money
+        if res >= 0:
+            # 高危操作
+            self.cash[-1] = res
+
+
+class Account_handler():
+    def __init__(self):
+        pass
+
+    def get_account(self, message):
+        pass
+
+
+if __name__ == '__main__':
+    account = QA_Account()
+    # 创建一个account账户

@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,10 +23,5 @@
 # SOFTWARE.
 
 
-import numpy as np
-import pandas as pd
-
-
-from QUANTAXIS.QAIndicator.QAIndicator_Series import MA, MACD, MAX, MIN
-
-
+def QAAnalysis_Series_slope(data):
+    pass

@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,20 +22,28 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import datetime
+
 import json
 import os
-import sys
-import time
 
-import pymongo
-from pytdx.reader import TdxFileNotFoundException, TdxMinBarReader
-from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_info, QA_util_time_stamp, QA_util_date_stamp
+from pytdx.reader import TdxMinBarReader
+
+from QUANTAXIS.QAUtil import (DATABASE, QA_util_date_stamp, QA_util_log_info,
+                              QA_util_time_stamp)
 
 
-def QA_save_tdx_to_mongo(file_dir, client=QA_Setting.client):
+def QA_save_tdx_to_mongo(file_dir, client=DATABASE):
+    """save file
+    
+    Arguments:
+        file_dir {str:direction} -- 文件的地址
+    
+    Keyword Arguments:
+        client {Mongodb:Connection} -- Mongo Connection (default: {DATABASE})
+    """
+
     reader = TdxMinBarReader()
-    __coll = client.quantaxis.stock_min_five
+    __coll = client.stock_min_five
     for a, v, files in os.walk(file_dir):
 
         for file in files:
@@ -46,7 +54,7 @@ def QA_save_tdx_to_mongo(file_dir, client=QA_Setting.client):
 
                 QA_util_log_info('Now_saving ' + str(file)
                                  [2:8] + '\'s 5 min tick')
-                fname = file_dir + '\\' + file
+                fname = file_dir + os.sep + file
                 df = reader.get_df(fname)
                 df['code'] = str(file)[2:8]
                 df['market'] = str(file)[0:2]
