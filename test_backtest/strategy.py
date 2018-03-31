@@ -4,7 +4,7 @@ from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, MARKET_TYPE,
                                           FREQUENCE, ORDER_DIRECTION,
                                           ORDER_MODEL)
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-
+import time
 class MAStrategy(QA_Strategy):
     def __init__(self):
         super().__init__()
