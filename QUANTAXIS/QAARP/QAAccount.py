@@ -68,7 +68,7 @@ class QA_Account(QA_Worker):
 
     def __init__(self, strategy_name=None, user_cookie=None, market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY,
                  broker=BROKER_TYPE.BACKETEST, portfolio_cookie=None, account_cookie=None,
-                 sell_available=None, init_assets=None, cash=None, history=None,
+                 sell_available={}, init_assets=None, cash=None, history=None,
                  margin_level=False, allow_t0=False, allow_sellopen=False):
         super().__init__()
         self._history_headers = ['datetime', 'code', 'price',
@@ -195,7 +195,7 @@ class QA_Account(QA_Worker):
 
     def reset_assets(self, init_assets=None):
         'reset_history/cash/'
-        self.sell_available = None
+        self.sell_available = {}
         self.history = []
         self.init_assets = init_assets
         self.cash = [self.init_assets]

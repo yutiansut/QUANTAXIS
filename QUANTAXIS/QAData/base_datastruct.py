@@ -349,7 +349,7 @@ class _quotation_base():
     def security_gen(self):
         '返回一个基于代码的迭代器'
         for item in self.index.levels[1]:
-            yield self.data.xs(item, level=1)
+            yield self.new(self.data.xs(item, level=1).set_index(self.index.names, drop=False), dtype=self.type, if_fq=self.if_fq)
 
     @property
     @lru_cache()
