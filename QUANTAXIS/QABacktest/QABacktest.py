@@ -109,10 +109,10 @@ class QA_Backtest():
         # 如果出现了日期的改变 才会进行结算的事件
         
         _date = None
-        for data in self.ingest_data:
-            date = data.date[0]
-            if self.market_type is MARKET_TYPE.STOCK_CN:
-                if _date != date:
+        for data in self.ingest_data:#对于在ingest_data中的数据
+            date = data.date[0]#
+            if self.market_type is MARKET_TYPE.STOCK_CN: #如果是股票市场
+                if _date != date:# 如果新的date
                     self.market._settle(self.broker_name)
             elif self.market_type in [MARKET_TYPE.FUND_CN, MARKET_TYPE.INDEX_CN, MARKET_TYPE.FUTURE_CN]:
                 self.market._settle(self.broker_name)
