@@ -24,7 +24,7 @@
 
 
 import pandas as pd
-
+import datetime
 from QUANTAXIS.QAEngine.QAEvent import QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_Order
 from QUANTAXIS.QASU.save_account import save_account, update_account
@@ -122,7 +122,8 @@ class QA_Account(QA_Worker):
             'init_assets': self.init_assets,
             'cash': self.cash,
             'history': self.history,
-            'trade_index': self.time_index
+            'trade_index': self.time_index,
+            'running_time': datetime.datetime.now()
         }
 
     @property

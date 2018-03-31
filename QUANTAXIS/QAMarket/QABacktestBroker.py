@@ -115,12 +115,7 @@ class QA_BacktestBroker(QA_Broker):
             start = event.start
             end = start if event.end is None else event.end
             market_type = event.market_type
-            try:
-                res = self.broker_data.select_time(
-                    start, end).select_code(code).to_numpy()
-            except:
-                res = self.fetcher[(market_type, frequence)](
-                    code, start, end, frequence=frequence)
+            res = self.query_data(code, start, end, frequence, market_type)
             if event.callback:
                 event.callback(res)
             else:
@@ -151,6 +146,14 @@ class QA_BacktestBroker(QA_Broker):
             self.order_handler.run(event)
             if event.callback:
                 event.callback('settle')
+
+    def query_data(self, code, start, end, frequence, market_type=None):
+        try:
+            return self.broker_data.select_time(
+                start, end).select_code(code).to_numpy()
+        except:
+            return self.fetcher[(market_type, frequence)](
+                code, start, end, frequence=frequence)
 
     def receive_order(self, event):
         """
