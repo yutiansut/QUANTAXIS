@@ -148,6 +148,9 @@ class QA_BacktestBroker(QA_Broker):
                 event.callback('settle')
 
     def query_data(self, code, start, end, frequence, market_type=None):
+        """
+        标准格式是numpy
+        """
         try:
             return self.broker_data.select_time(
                 start, end).select_code(code).to_numpy()

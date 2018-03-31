@@ -29,10 +29,11 @@
 2017/8/12
 
 """
+import datetime
 from abc import abstractmethod
 
 from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Worker
-from QUANTAXIS.QAUtil.QAParameter import EVENT_TYPE
+from QUANTAXIS.QAUtil.QAParameter import EVENT_TYPE, FREQUENCE, ORDER_MODEL
 
 
 class QA_Broker(QA_Worker):
@@ -53,13 +54,90 @@ class QA_Broker(QA_Worker):
     def receive_order(self, event):
         raise NotImplementedError
 
-    def get_data(self, order):
+    def get_market(self, order):
         pass
 
     def warp(self, order):
-        pass
+        """对order/market的封装
 
-    
+        [description]
+
+        Arguments:
+            order {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+
+        # 因为成交模式对时间的封装
+
+        if order.order_model == ORDER_MODEL.MARKET:
+
+            if order.frequence is FREQUENCE.DAY:
+                # exact_time = str(datetime.datetime.strptime(
+                #     str(order.datetime), '%Y-%m-%d %H-%M-%S') + datetime.timedelta(day=1))
+
+                order.date = order.datetime[0:10]
+                order.datetime = '{} 09:30:00'.format(order.date)
+            elif order.frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
+                print(order.datetime)
+                exact_time = str(datetime.datetime.strptime(
+                    str(order.datetime), '%Y-%m-%d %H:%M:%S') + datetime.timedelta(minutes=1))
+                order.date = exact_time[0:10]
+                order.datetime = exact_time
+            self.market_data = self.get_market(order)
+            if self.market_data is None:
+                return order
+            order.price = (float(self.market_data["high"]) +
+                           float(self.market_data["low"])) * 0.5
+        elif order.order_model == ORDER_MODEL.NEXT_OPEN:
+            try:
+                exact_time = str(datetime.datetime.strptime(
+                    str(order.datetime), '%Y-%m-%d %H-%M-%S') + datetime.timedelta(day=1))
+                order.date = exact_time[0:10]
+                order.datetime = '{} 09:30:00'.format(order.date)
+            except:
+                order.datetime = '{} 15:00:00'.format(order.date)
+            self.market_data = self.get_market(order)
+            if self.market_data is None:
+                return order
+            order.price = float(self.market_data["close"])
+        elif order.order_model == ORDER_MODEL.CLOSE:
+
+            try:
+                order.datetime = self.market_data.datetime
+            except:
+                if len(str(order.datetime)) == 19:
+                    pass
+                else:
+                    order.datetime = '{} 15:00:00'.format(order.date)
+            self.market_data = self.get_market(order)
+            if self.market_data is None:
+                return order
+            order.price = float(self.market_data["close"])
+
+        elif order.order_model == ORDER_MODEL.STRICT:
+            '加入严格模式'
+            if order.frequence is FREQUENCE.DAY:
+                exact_time = str(datetime.datetime.strptime(
+                    order.datetime, '%Y-%m-%d %H-%M-%S') + datetime.timedelta(day=1))
+
+                order.date = exact_time[0:10]
+                order.datetime = '{} 09:30:00'.format(order.date)
+            elif order.frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
+                exact_time = str(datetime.datetime.strptime(
+                    order.datetime, '%Y-%m-%d %H-%M-%S') + datetime.timedelta(minute=1))
+                order.date = exact_time[0:10]
+                order.datetime = exact_time
+            self.market_data = self.get_market(order)
+            if self.market_data is None:
+                return order
+            if order.towards == 1:
+                order.price = float(self.market_data["high"])
+            else:
+                order.price = float(self.market_data["low"])
+
+        return order
 
 
 class QA_BROKER_EVENT(QA_Event):
