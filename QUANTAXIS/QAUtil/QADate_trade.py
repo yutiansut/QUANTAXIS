@@ -23,7 +23,7 @@
 # SOFTWARE.
 
 import datetime
-
+from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE
 
 def QA_util_if_trade(day):
     '日期是否交易'
@@ -33,21 +33,36 @@ def QA_util_if_trade(day):
         return False
 
 
-def QA_util_if_tradetime(_time):
+def QA_util_if_tradetime(_time,market=MARKET_TYPE.STOCK_CN,code=None):
     '时间是否交易'
     _time = datetime.datetime.strptime(str(_time)[0:19], '%Y-%m-%d %H:%M:%S')
-    if QA_util_if_trade(str(_time.date())[0:10]):
-        if _time.hour in [10, 13, 14]:
-            return True
-        elif _time.hour in [9] and _time.minute >= 30:
-            return True
-        elif _time.hour in [11] and _time.minute <= 30:
-            return True
+    if market is MARKET_TYPE.STOCK_CN:
+        if QA_util_if_trade(str(_time.date())[0:10]):
+            if _time.hour in [10, 13, 14]:
+                return True
+            elif _time.hour in [9] and _time.minute >= 30:
+                return True
+            elif _time.hour in [11] and _time.minute <= 30:
+                return True
+            else:
+                return False
         else:
             return False
-    else:
-        return False
-
+    elif market is MARKET_TYPE.FUTURE_CN:
+        # 暂时用螺纹
+        if code[0:2] in ['rb','RB']:
+            if QA_util_if_trade(str(_time.date())[0:10]):
+                if _time.hour in [9, 10, 14, 21, 22]:
+                    return True
+                elif _time.hour in [13] and _time.minute >= 30:
+                    return True
+                elif _time.hour in [11] and _time.minute <= 30:
+                    return True
+                else:
+                    return False
+            else:
+                return False
+                
 def QA_util_get_next_day(date,n=1):
     """
     得到下一个(n)交易日
