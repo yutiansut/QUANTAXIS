@@ -131,7 +131,7 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms
                               trade_date_sse, QA_util_if_trade, QA_util_if_tradetime,
                               QA_util_get_real_datelist, QA_util_get_real_date,
                               QA_util_get_trade_range, QA_util_get_trade_gap,
-                              QA_util_save_csv,
+                              QA_util_save_csv, QA_util_code_tostr,
                               QA_util_dict_remove_key,
                               QA_util_multi_demension_list, QA_util_diff_list,
                               QA_util_to_json_from_pandas, QA_util_to_list_from_numpy, QA_util_to_list_from_pandas, QA_util_to_pandas_from_json, QA_util_to_pandas_from_list,
