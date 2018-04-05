@@ -28,20 +28,7 @@
 ![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
 
 
-----------
 
-![happynewyear](http://osnhakmay.bkt.clouddn.com/quantaxishappynewyear.png)
-
-新年寄语:
-
-QUANTAXIS 祝大家在2018年 新年大吉 ~
-
-主要还是要注意身体 (^-^)
-
-@yutiansut 2018/2/16
-
-
----
 
 
 > 欢迎加群讨论: [群链接](https://jq.qq.com/?_wv=1027&k=4CEKGzn) 
@@ -68,6 +55,19 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 	/vscode-markdown-toc-config -->
 <!-- /vscode-markdown-toc -->
 
+## 电脑配置推荐
+
+推荐配置:
+6代以上CPU+ 16/32GB DDR3/DDR4内存+ 256GB以上SSD硬盘
+
+最低配置:
+支持X64位的CPU
+
+因为在存储本地数据的时候,需要存储超过2GB的本地数据,而32位的MONGODB最高只支持2GB左右的数据存储,因此最少需要一个X64位的CPU
+
+如果SSD资源够用,尽量将数据存储在SSD中,增加```wiretiger```写盘的速度
+
+如果是阿里云/腾讯云的服务器,请在最初的时候 选择64位的操作系统
 
 
 ##  1. <a name=''></a>功能
