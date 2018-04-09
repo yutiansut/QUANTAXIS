@@ -59,7 +59,7 @@ class QAAnalysis_trade():
             self.make_deal(item.code, item.datetime, item.amount,
                            item.towards, item.price.item.order_model, item.amount_model)
 
-    def make_deal(self, code, datetime, amount, towards, price, order_model=ORDER_MODEL.MARKET, amount_model=AMOUNT_MODEL.BY_AMOUNT):
+    def make_deal(self, code, datetime, amount=100, towards=ORDER_DIRECTION.BUY, price=0, order_model=ORDER_MODEL.MARKET, amount_model=AMOUNT_MODEL.BY_AMOUNT):
         """
         这是一个一定会成交,并且立刻结转(及t+0)的交易入口
         """
@@ -67,6 +67,7 @@ class QAAnalysis_trade():
             code=code, time=datetime, amount=amount, towards=towards, price=price, order_model=order_model, amount_model=amount_model
         ))))
         self.account.settle()
+
 
 
     # @property
