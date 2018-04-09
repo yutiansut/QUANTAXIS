@@ -39,9 +39,9 @@ from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_index_day,
                                      QA_fetch_get_stock_transaction,
                                      QA_fetch_get_stock_xdxr, select_best_ip)
 from QUANTAXIS.QAFetch.QATushare import QA_fetch_get_stock_time_to_market
-from QUANTAXIS.QAUtil import (DATABASE, QA_util_get_real_date,
-                              QA_util_log_info, QA_util_to_json_from_pandas,
-                              trade_date_sse)
+from QUANTAXIS.QAUtil import (DATABASE, QA_util_get_next_day,
+                              QA_util_get_real_date, QA_util_log_info,
+                              QA_util_to_json_from_pandas, trade_date_sse)
 
 # ip=select_best_ip()
 
@@ -82,7 +82,7 @@ def QA_SU_save_stock_day(client=DATABASE):
                 if start_date != end_date:
                     coll_stock_day.insert_many(
                         QA_util_to_json_from_pandas(
-                            QA_fetch_get_stock_day(str(code), start_date, end_date, '00')[1::]))
+                            QA_fetch_get_stock_day(str(code), QA_util_get_next_day(start_date), end_date, '00')))
             else:
                 start_date = '1990-01-01'
                 QA_util_log_info(' UPDATE_STOCK_DAY \n Trying updating %s from %s to %s' %
@@ -185,10 +185,9 @@ def QA_SU_save_stock_min(client=DATABASE):
                             str(code), start_time, end_time, type)
                         if len(__data) > 1:
                             coll.insert_many(
-                                QA_util_to_json_from_pandas(__data[1::]))
+                                QA_util_to_json_from_pandas(__data)[1::])
                 else:
                     start_time = '2015-01-01'
-
                     QA_util_log_info(
                         '##JOB03.%s Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min', '30min', '60min'].index(type), str(code), start_time, end_time, type))
                     if start_time != end_time:
@@ -234,29 +233,30 @@ def QA_SU_save_index_day(client=DATABASE):
 
     def __saving_work(code, coll):
 
-        try:
+        # try:
 
-            ref_ = coll.find({'code': str(code)[0:6]})
-            end_time = str(now_time())[0:10]
-            if ref_.count() > 0:
-                start_time = ref_[ref_.count() - 1]['date']
+        ref_ = coll.find({'code': str(code)[0:6]})
+        end_time = str(now_time())[0:10]
+        if ref_.count() > 0:
+            start_time = ref_[ref_.count() - 1]['date']
 
-                QA_util_log_info('##JOB04 Now Saving INDEX_DAY==== \n Trying updating %s from %s to %s' %
-                                 (code, start_time, end_time))
+            QA_util_log_info('##JOB04 Now Saving INDEX_DAY==== \n Trying updating %s from %s to %s' %
+                                (code, start_time, end_time))
 
-                if start_time != end_time:
-                    coll.insert_many(
-                        QA_util_to_json_from_pandas(
-                            QA_fetch_get_index_day(str(code), start_time, end_time)[1::]))
-            else:
-                start_time = '1990-01-01'
-                QA_util_log_info('##JOB04 Now Saving INDEX_DAY==== \n Trying updating %s from %s to %s' %
-                                 (code, start_time, end_time))
+            if start_time != end_time:
                 coll.insert_many(
                     QA_util_to_json_from_pandas(
-                        QA_fetch_get_index_day(str(code), start_time, end_time)))
-        except:
-            err.append(str(code))
+                        QA_fetch_get_index_day(str(code), QA_util_get_next_day(start_time), end_time)))
+        else:
+            start_time = '1990-01-01'
+            QA_util_log_info('##JOB04 Now Saving INDEX_DAY==== \n Trying updating %s from %s to %s' %
+                                (code, start_time, end_time))
+            coll.insert_many(
+                QA_util_to_json_from_pandas(
+                    QA_fetch_get_index_day(str(code), start_time, end_time)))
+        # except Exception as e:
+        #     QA_util_log_info(e)
+        #     err.append(str(code))
     for i_ in range(len(__index_list)):
         #__saving_work('000001')
         QA_util_log_info('The %s of Total %s' % (i_, len(__index_list)))
@@ -361,7 +361,7 @@ def QA_SU_save_etf_day(client=DATABASE):
                 if start_time != end_time:
                     coll.insert_many(
                         QA_util_to_json_from_pandas(
-                            QA_fetch_get_index_day(str(code), start_time, end_time)[1::]))
+                            QA_fetch_get_index_day(str(code), QA_util_get_next_day(start_time), end_time)))
             else:
                 start_time = '1990-01-01'
                 QA_util_log_info('##JOB06 Now Saving ETF_DAY==== \n Trying updating %s from %s to %s' %
