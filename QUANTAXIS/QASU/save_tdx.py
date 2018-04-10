@@ -233,30 +233,29 @@ def QA_SU_save_index_day(client=DATABASE):
 
     def __saving_work(code, coll):
 
-        # try:
+        try:
+            ref_ = coll.find({'code': str(code)[0:6]})
+            end_time = str(now_time())[0:10]
+            if ref_.count() > 0:
+                start_time = ref_[ref_.count() - 1]['date']
 
-        ref_ = coll.find({'code': str(code)[0:6]})
-        end_time = str(now_time())[0:10]
-        if ref_.count() > 0:
-            start_time = ref_[ref_.count() - 1]['date']
+                QA_util_log_info('##JOB04 Now Saving INDEX_DAY==== \n Trying updating %s from %s to %s' %
+                                    (code, start_time, end_time))
 
-            QA_util_log_info('##JOB04 Now Saving INDEX_DAY==== \n Trying updating %s from %s to %s' %
-                                (code, start_time, end_time))
-
-            if start_time != end_time:
+                if start_time != end_time:
+                    coll.insert_many(
+                        QA_util_to_json_from_pandas(
+                            QA_fetch_get_index_day(str(code), QA_util_get_next_day(start_time), end_time)))
+            else:
+                start_time = '1990-01-01'
+                QA_util_log_info('##JOB04 Now Saving INDEX_DAY==== \n Trying updating %s from %s to %s' %
+                                    (code, start_time, end_time))
                 coll.insert_many(
                     QA_util_to_json_from_pandas(
-                        QA_fetch_get_index_day(str(code), QA_util_get_next_day(start_time), end_time)))
-        else:
-            start_time = '1990-01-01'
-            QA_util_log_info('##JOB04 Now Saving INDEX_DAY==== \n Trying updating %s from %s to %s' %
-                                (code, start_time, end_time))
-            coll.insert_many(
-                QA_util_to_json_from_pandas(
-                    QA_fetch_get_index_day(str(code), start_time, end_time)))
-        # except Exception as e:
-        #     QA_util_log_info(e)
-        #     err.append(str(code))
+                        QA_fetch_get_index_day(str(code), start_time, end_time)))
+        except Exception as e:
+            QA_util_log_info(e)
+            err.append(str(code))
     for i_ in range(len(__index_list)):
         #__saving_work('000001')
         QA_util_log_info('The %s of Total %s' % (i_, len(__index_list)))
