@@ -14,14 +14,14 @@
 ![presentbyyutiansut](http://osnhakmay.bkt.clouddn.com/yutiansut-logo.png)
 
 
-![version](https://img.shields.io/badge/Version-%201.0.12-orange.svg)
+![version](https://img.shields.io/badge/Version-%201.0.17-orange.svg)
 ![build](https://travis-ci.org/QUANTAXIS/QUANTAXIS.svg?branch=master)
 [![Codefresh build status]( https://g.codefresh.io/api/badges/build?repoOwner=yutiansut&repoName=QUANTAXIS&branch=master&pipelineName=QUANTAXIS&accountName=yutiansut_marketplace&type=cf-1)]( https://g.codefresh.io/repositories/yutiansut/QUANTAXIS/builds?filter=trigger:build;branch:master;service:5a30c1026e9d6c0001c5143b~QUANTAXIS)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d8504e4af33747bb8117579212425af9)](https://www.codacy.com/app/yutiansut/QUANTAXIS?utm_source=github.com&utm_medium=referral&utm_content=yutiansut/QUANTAXIS&utm_campaign=badger)
 [![Stories in Ready](https://badge.waffle.io/yutiansut/QUANTAXIS.svg?label=ready&title=Ready)](http://waffle.io/yutiansut/QUANTAXIS)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.8-brown.svg)
-![Pypi](https://img.shields.io/badge/Pypi-%201.0.12-blue.svg)
+![Pypi](https://img.shields.io/badge/Pypi-%201.0.17-blue.svg)
 ![python](https://img.shields.io/badge/python-%203.6/3.5/3.4/win/ubuntu-darkgrey.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.4.0-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
