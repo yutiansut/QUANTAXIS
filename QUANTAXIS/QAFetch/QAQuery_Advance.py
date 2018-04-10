@@ -24,7 +24,7 @@
 
 import datetime
 import re
-
+import pymongo
 import pandas as pd
 from pandas import DataFrame
 
@@ -277,3 +277,23 @@ def QA_fetch_stock_block_adv(code=None, blockname=None, collections=DATABASE.sto
         data = pd.DataFrame(
             [item for item in collections.find()]).drop(['_id'], axis=1)
         return QA_DataStruct_Stock_block(data.set_index('code', drop=False).drop_duplicates())
+
+
+def QA_fetch_stock_realtime_adv(code=None, num=1, collections=DATABASE.get_collection('realtime_{}'.format(datetime.date.today()))):
+    """
+    返回当日的上下五档, code可以是股票可以是list, num是每个股票获取的数量
+    """
+    if code is not None:
+        if isinstance(code, str):
+            code = list(code)
+
+        elif isinstance(code, list):
+            pass
+        data = pd.DataFrame([item for item in collections.find(
+            {'code': {'$in': code}}, limit=num*len(code), sort=[('datetime', pymongo.DESCENDING)])]).set_index(['datetime', 'code'], drop=False).drop(['_id'], axis=1)
+        return data
+    else:
+        pass
+
+if __name__ == '__main__':
+    QA_fetch_stock_realtime_adv(['000001', '000002'], num=10)
