@@ -75,7 +75,7 @@ def QA_util_get_last_day(date,n=1):
     """
     return QA_util_date_gap(date,n,'lt')
     
-def QA_util_get_real_date(date, trade_list, towards):
+def QA_util_get_real_date(date, trade_list=trade_date_sse, towards=-1):
     """
     获取真实的交易日期,其中,第三个参数towards是表示向前/向后推
     towards=1 日期向后迭代
