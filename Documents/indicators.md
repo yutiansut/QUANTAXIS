@@ -74,5 +74,5 @@ def JLHB(data, m=7, n=5):
         return 0
 
 # 得到指标
-QA.QA_fetch_stock_day_adv('000001','2017-01-01','2017-03-31').to_qfq().add_func(JLHB)
+QA.QA_fetch_stock_day_adv('000001','2017-01-01','2017-05-31').to_qfq().add_func(JLHB)
 ```
