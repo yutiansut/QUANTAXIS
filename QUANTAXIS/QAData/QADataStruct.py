@@ -116,6 +116,19 @@ class QA_DataStruct_Stock_day(_quotation_base):
         '跌停价'
         return self.data.low_limit
 
+    @property
+    def preclose(self):
+        try:
+            return self.data.preclose
+        except:
+            return None
+    
+    @property
+    def price_chg(self):
+        try:
+            return (self.close-self.preclose)/self.preclose
+        except:
+            return None
 
 class QA_DataStruct_Stock_min(_quotation_base):
     def __init__(self, DataFrame, dtype='stock_min', if_fq='bfq'):
