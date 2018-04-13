@@ -42,21 +42,21 @@ from QUANTAXIS.QAFetch.base import _select_market_code, _select_type
 #
 
 
-def ping(ip, type_='stock'):
+def ping(ip,port=7709, type_='stock'):
     api = TdxHq_API()
     apix = TdxExHq_API()
     __time1 = datetime.datetime.now()
     try:
         if type_ in ['stock']:
-            with api.connect(ip, 7709, time_out=0.7):
+            with api.connect(ip, port, time_out=0.7):
                 if len(api.get_security_list(0, 1)) > 800:
                     return datetime.datetime.now() - __time1
                 else:
                     print('Bad STOCKIP REPSONSE %s' % ip)
                     return datetime.timedelta(9, 9, 0)
         elif type_ in ['future']:
-            with apix.connect(ip, 7727, time_out=0.7):
-                if apix.get_instrument_count() > 40000:
+            with apix.connect(ip, port, time_out=0.7):
+                if apix.get_instrument_count() > 10000:
                     return datetime.datetime.now() - __time1
                 else:
                     print('Bad FUTUREIP REPSONSE %s' % ip)
@@ -69,8 +69,8 @@ def ping(ip, type_='stock'):
 def select_best_ip():
     QA_util_log_info('Selecting the Best Server IP of TDX')
 
-    data_stock = [ping(x, 'stock') for x in stock_ip_list]
-    data_future = [ping(x, 'future') for x in future_ip_list]
+    data_stock = [ping(x,7709, 'stock') for x in stock_ip_list]
+    data_future = [ping(x['ip'],x['port'], 'future') for x in future_ip_list]
 
     best_stock_ip = stock_ip_list[data_stock.index(min(data_stock))]
     best_future_ip = future_ip_list[data_future.index(min(data_future))]
@@ -776,7 +776,7 @@ api.get_history_transaction_data(31, "00020", 20170810)
 """
 
 
-def QA_fetch_get_future_list(ip=best_ip['future'], port=7727):
+def QA_fetch_get_future_list(ip=best_ip['future']['ip'], port=best_ip['future']['port']):
     '期货代码list'
     apix = TdxExHq_API()
     with apix.connect(ip, port):
@@ -791,7 +791,7 @@ global extension_market_info
 extension_market_info = None
 
 
-def QA_fetch_get_future_day(code, start_date, end_date, frequence='day', ip=best_ip['future'], port=7727):
+def QA_fetch_get_future_day(code, start_date, end_date, frequence='day', ip=best_ip['future']['ip'], port=best_ip['future']['port']):
     '期货数据 日线'
 
     apix = TdxExHq_API()
@@ -813,7 +813,7 @@ def QA_fetch_get_future_day(code, start_date, end_date, frequence='day', ip=best
         return data.drop(['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1)[start_date:end_date].assign(date=data['date'].apply(lambda x: str(x)[0:10]))
 
 
-def QA_fetch_get_future_min(code, start, end, frequence='1min', ip=best_ip['future'], port=7727):
+def QA_fetch_get_future_min(code, start, end, frequence='1min', ip=best_ip['future']['ip'], port=best_ip['future']['port']):
     '期货数据 分钟线'
     apix = TdxExHq_API()
     type_ = ''
@@ -856,21 +856,21 @@ def QA_fetch_get_future_min(code, start, end, frequence='1min', ip=best_ip['futu
         return data.assign(datetime=data['datetime'].apply(lambda x: str(x)))
 
 
-def QA_fetch_get_future_transaction(ip=best_ip['future'], port=7727):
+def QA_fetch_get_future_transaction(ip=best_ip['future']['ip'], port=best_ip['future']['port']):
     '期货历史成交分笔'
     apix = TdxExHq_API()
     with apix.connect(ip, port):
         pass
 
 
-def QA_fetch_get_future_transaction_realtime(ip=best_ip['future'], port=7727):
+def QA_fetch_get_future_transaction_realtime(ip=best_ip['future']['ip'], port=best_ip['future']['port']):
     '期货历史成交分笔'
     apix = TdxExHq_API()
     with apix.connect(ip, port):
         pass
 
 
-def QA_fetch_get_future_realtime(code, ip=best_ip['future'], port=7727):
+def QA_fetch_get_future_realtime(code, ip=best_ip['future']['ip'], port=best_ip['future']['port']):
     '期货实时价格'
     pass
 
