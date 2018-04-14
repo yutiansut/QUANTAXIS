@@ -24,6 +24,7 @@
 
 
 import QUANTAXIS as QA
+
 """
 该代码旨在给出一个极其容易实现的小回测 高效 无事件驱动
 """
@@ -45,7 +46,7 @@ risk=QA.QA_Risk(AC)
 AC.init_assets = 200000  # 设置初始资金
 
 
-def simple_backtest(code, start, end):
+def simple_backtest(AC, code, start, end):
     DATA = QA.QA_fetch_stock_day_adv(code, start, end)
     for items in DATA.panel_gen:  # 一天过去了
         for item in items.security_gen:
@@ -61,7 +62,7 @@ def simple_backtest(code, start, end):
         AC.settle()
 
 
-simple_backtest(QA.QA_fetch_stock_block_adv(
+simple_backtest(AC, QA.QA_fetch_stock_block_adv(
 ).code[0:10], '2017-01-01', '2018-01-31')
 print(AC.message)
 risk = QA.QA_Risk(AC)
