@@ -134,11 +134,11 @@ class QA_Tdx_Executor():
         data = []
         if self._queue.qsize() < 80:
             for item in stock_ip_list:
-                _sec = self._test_speed(item)
+                _sec = self._test_speed(ip=item['ip'], port=item['port'])
                 if _sec < 0.1:
                     try:
                         self._queue.put(TdxHq_API(heartbeat=False).connect(
-                            ip=item, time_out=0.05))
+                            ip=item['ip'], port=item['port'], time_out=0.05))
                     except:
                         pass
         else:

@@ -69,14 +69,14 @@ def ping(ip,port=7709, type_='stock'):
 def select_best_ip():
     QA_util_log_info('Selecting the Best Server IP of TDX')
 
-    data_stock = [ping(x,7709, 'stock') for x in stock_ip_list]
+    data_stock = [ping(x['ip'],x['port'], 'stock') for x in stock_ip_list]
     data_future = [ping(x['ip'],x['port'], 'future') for x in future_ip_list]
 
     best_stock_ip = stock_ip_list[data_stock.index(min(data_stock))]
     best_future_ip = future_ip_list[data_future.index(min(data_future))]
 
     QA_util_log_info('=== The BEST SERVER ===\n stock_ip {} future_ip {}'.format(
-        best_stock_ip, best_future_ip))
+        best_stock_ip['ip'], best_future_ip['ip']))
     return {'stock': best_stock_ip, 'future': best_future_ip}
 
 
