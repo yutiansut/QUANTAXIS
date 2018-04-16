@@ -42,7 +42,7 @@ from QUANTAXIS.QAFetch.base import _select_market_code, _select_type
 #
 
 
-def ping(ip,port=7709, type_='stock'):
+def ping(ip, port=7709, type_='stock'):
     api = TdxHq_API()
     apix = TdxExHq_API()
     __time1 = datetime.datetime.now()
@@ -69,8 +69,8 @@ def ping(ip,port=7709, type_='stock'):
 def select_best_ip():
     QA_util_log_info('Selecting the Best Server IP of TDX')
 
-    data_stock = [ping(x['ip'],x['port'], 'stock') for x in stock_ip_list]
-    data_future = [ping(x['ip'],x['port'], 'future') for x in future_ip_list]
+    data_stock = [ping(x['ip'], x['port'], 'stock') for x in stock_ip_list]
+    data_future = [ping(x['ip'], x['port'], 'future') for x in future_ip_list]
 
     best_stock_ip = stock_ip_list[data_stock.index(min(data_stock))]
     best_future_ip = future_ip_list[data_future.index(min(data_future))]
@@ -780,7 +780,7 @@ def QA_fetch_get_future_list(ip=best_ip['future']['ip'], port=best_ip['future'][
     '期货代码list'
     apix = TdxExHq_API()
     with apix.connect(ip, port):
-        market_info=apix.get_markets()
+        market_info = apix.get_markets()
         num = apix.get_instrument_count()
         return pd.concat([apix.to_df(
             apix.get_instrument_info((int(num / 500) - i) * 500, 500))
@@ -875,13 +875,13 @@ def QA_fetch_get_future_realtime(code, ip=best_ip['future']['ip'], port=best_ip[
     pass
 
 
-
-
 def QA_fetch_get_wholemarket_list():
-    hq_codelist=QA_fetch_get_stock_list(type_='all').loc[:,['code','name']].set_index(['code','name'],drop=False)
-    kz_codelist=QA_fetch_get_future_list().loc[:,['code','name']].set_index(['code','name'],drop=False)
+    hq_codelist = QA_fetch_get_stock_list(
+        type_='all').loc[:, ['code', 'name']].set_index(['code', 'name'], drop=False)
+    kz_codelist = QA_fetch_get_future_list().loc[:, ['code', 'name']].set_index([
+        'code', 'name'], drop=False)
 
-    return pd.concat([hq_codelist,kz_codelist]).sort_index()
+    return pd.concat([hq_codelist, kz_codelist]).sort_index()
 
 
 if __name__ == '__main__':
