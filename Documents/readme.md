@@ -52,5 +52,38 @@ QAWeb web后台模块
 ## QAS-B 模块
 
 ### QAFetch 数据获取模块
+
+实时获取数据
+
+QA_fetch_get- 
+
+股票日线
+
+QAFetch-001- QA_fetch_get_stock_day
+
+股票分钟线
+
+QAFetch-002- QA_fetch_get_stock_min
+
+股票列表
+
+QAFetch-003- QA_fetch_get_stock_list
+
+股票分笔
+
+QAFetch-004- QA_fetch_get_stock_transaction
+
+股票权息
+
+QAFetch-005- QA_fetch_get_stock_xdxr
+
+股票信息
+
+QAFetch-006- QA_fetch_get_stock_info
+
+股票实时5挡价格
+
+QAFetch-007- QA_fetch_get_stock_realtime
+
 ### QASU 数据存储和更新模块
 ### QAEngine 线程引擎/事件模块
