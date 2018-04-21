@@ -19,24 +19,33 @@ QUANTAXIS致力于提供一个高自由度的渐进式的量化解决方案.
 ```基本模块:```
 
 QAFetch 数据获取模块
+
 QASU 数据存储和更新模块
+
 QAEngine 线程引擎/事件模块
 
 ```处理模块```
+
 QAData 数据处理模块
+
 QAMARKET 交易/回测底层模块
 
 ```应用模块```
+
 QAARP 账户/风险/业绩评价模块
+
 QABacktest 回测模块
 
 QAAnalysis 分析模块
+
 QAIndicator 指标模块
 
 ```辅助及其他模块```
 
 QAUtil 辅助模块
+
 QACmd 命令行交互模块
+
 QAWeb web后台模块
 
 
