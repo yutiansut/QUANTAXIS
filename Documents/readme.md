@@ -38,3 +38,10 @@ QAIndicator 指标模块
 QAUtil 辅助模块
 QACmd 命令行交互模块
 QAWeb web后台模块
+
+
+## QAS-B 模块
+
+### QAFetch 数据获取模块
+### QASU 数据存储和更新模块
+### QAEngine 线程引擎/事件模块
