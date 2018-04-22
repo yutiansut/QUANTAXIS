@@ -78,7 +78,7 @@ cd C:\quantaxis
 python -m pip install -r requirements.txt -i https://pypi.doubanio.com/simple
 python -m pip install tushare
 python -m pip install pytdx
-python -m pip install -e . -i https://pypi.doubanio.com/simple
+python -m pip install -e . 
 ```
 
 完成以后 在命令行输入 ```quantaxis```即可进入QUANTAXIS的cli界面
