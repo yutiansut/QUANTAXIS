@@ -30,7 +30,7 @@ import string
 import sys
 import platform
 import subprocess
-
+import requests
 
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_backtest
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting, QA_util_mongo_initial
@@ -66,18 +66,14 @@ class CLI(cmd.Cmd):
     def do_examples(self, arg):
         QA_util_log_info('QUANTAXIS example')
         now_path = os.getcwd()
-        project_dir = os.path.dirname(os.path.abspath(__file__))
-        file_dir = ''
-
-        if platform.system() == 'Windows':
-            file_dir = project_dir + '\\backtest.py'
-        elif platform.system() in ['Linux', 'Darwin']:
-            file_dir = project_dir + '/backtest.py'
-
-        shutil.copy(file_dir, now_path)
+        #project_dir = os.path.dirname(os.path.abspath(__file__))
+        
+        data=requests.get('https://codeload.github.com/yutiansut/QADemo/zip/master')
+        with open("{}{}QADEMO.zip".format(now_path,os.sep), "wb") as code:
+            code.write(data.content)
 
         QA_util_log_info(
-            'Successfully generate a example strategy in :  ' + now_path)
+            'Successfully generate QADEMO in : {}, for more examples, please visit https://github.com/yutiansut/qademo'.format(now_path))
 
     def help_examples(self):
         print('make a sample backtest framework')
