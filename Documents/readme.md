@@ -70,6 +70,7 @@ QAWeb web后台模块
 | 股票日线 | QA_fetch_get_stock_day | QA_fetch_stock_day | QA_fetch_stock_day_adv |
 | 股票分钟线 | QA_fetch_get_stock_min | QA_fetch_stock_min | QA_fetch_stock_min_adv |
 | 股票列表 | QA_fetch_get_stock_list | QA_fetch_stock_list | QA_fetch_stock_list_adv |
+| 股票版块 | QA_fetch_get_stock_block | QA_fetch_stock_block | QA_fetch_stock_block_adv |
 | 股票分笔 | QA_fetch_get_stock_transaction | | |
 | 股票权息 | QA_fetch_get_stock_xdxr | QA_fetch_stock_xdxr | |
 | 股票信息 | QA_fetch_get_stock_info | QA_fetch_stock_info| |
