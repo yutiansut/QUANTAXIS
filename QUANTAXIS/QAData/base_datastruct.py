@@ -524,7 +524,18 @@ class _quotation_base():
                 return self.data.pivot_table(index='datetime', columns='code', values=column_)
             except:
                 return self.data.pivot_table(index='date', columns='code', values=column_)
+    def selects(self,code,start,end=None):
+        if self.type[-3:] in ['day']:
+            if end is not None:
 
+                return self.new(self.query('code=="{}"'.format(code)).query('date>="{}" and date<="{}"'.format(start, end)).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
+            else:
+                return self.new(self.query('code=="{}"'.format(code)).query('date>="{}"'.format(start)).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
+        elif self.type[-3:] in ['min']:
+            if end is not None:
+                return self.new(self.query('code=="{}"'.format(code)).data[self.data['datetime'] >= start][self.data['datetime'] <= end].set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
+            else:
+                return self.new(self.query('code=="{}"'.format(code)).data[self.data['datetime'] >= start].set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
     def select_time(self, start, end=None):
         if self.type[-3:] in ['day']:
             if end is not None:
