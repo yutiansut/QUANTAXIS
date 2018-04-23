@@ -66,7 +66,7 @@ QAWeb web后台模块
 ###  2.1. <a name='QAFetch'></a>QAFetch 数据获取模块
 
 | 类别 | 实时 | 从数据库中 | QADataStruct格式|
-| --------------- | ------------------- | --------------- |  --------------- | 
+| --------------- | ------------------- | --------------- |  --------------- |
 | 股票日线 | QA_fetch_get_stock_day | QA_fetch_stock_day | QA_fetch_stock_day_adv |
 | 股票分钟线 | QA_fetch_get_stock_min | QA_fetch_stock_min | QA_fetch_stock_min_adv |
 | 股票列表 | QA_fetch_get_stock_list | QA_fetch_stock_list | QA_fetch_stock_list_adv |
