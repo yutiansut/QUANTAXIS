@@ -80,7 +80,7 @@ class _quotation_base():
         """
         for i in range(len(self.index)):
             yield self.data.iloc[i]
-
+            
     def __reversed__(self):
         return self.reverse()
 
