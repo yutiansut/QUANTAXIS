@@ -31,7 +31,7 @@ QUANTAXIS对于本地数据的获取有两种级别的封装:
 QA.QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collection=DATABASE.stock_day)
 ```
 
-- code 输入的股票 类型[str 6位代码]
+- code 输入的股票 类型[str 6位代码]/list
 - start 开始时间 [yyyy-mm-dd]
 - end 结束时间 [yyyy-mm-dd]
 
@@ -41,9 +41,6 @@ QA.QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collect
 
 - collection 指的是数据库连接 默认是本地[127.0.0.1:27017]的quantaxis数据库,可以使用pymongo.MongoClient(ip,port)来修改数据源
 
-```python
-QA.QA_fetch_stocklist_day(stock_list, date_range, collection=DATABASE.stock_day)
-```
 
 - stock_list 股票列表, list类型
 - date_range 起止时间, list格式,可以理解为 [start,end]格式
@@ -57,10 +54,6 @@ QA.QA_fetch_stocklist_day(stock_list, date_range, collection=DATABASE.stock_day)
 QA.QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', collections=DATABASE.stock_min)
 ```
 
-
-```python
-QA.QA_fetch_stocklist_min(stock_list, date_range, frequence='1min', collections=DATABASE.stock_min)
-```
 
 
 ##  2. <a name='_adv'></a>高级封装 *adv
