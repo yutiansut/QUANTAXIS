@@ -271,6 +271,18 @@ def QA_indicator_MA(DataFrame, N):
     return MA(CLOSE, N)
 
 
+def QA_indicator_MACD(DataFrame, short=12, long=26, mid=9):
+    """
+    MACD CALC
+    """
+    CLOSE = DataFrame['close']
+
+    DIF=EMA(CLOSE,short)-EMA(CLOSE,long)
+    DEA=EMA(DIF,mid)
+    MACD=(DIF-DEA)*2
+
+    return {'DIF':DIF,'DEA':DEA,'MACD':MACD}
+
 def QA_indicator_EMA(DataFrame, N):
     CLOSE = DataFrame['close']
     return EMA(CLOSE, N)
