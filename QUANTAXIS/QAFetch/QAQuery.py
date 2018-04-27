@@ -51,10 +51,10 @@ def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collec
     
     # code checking
     if isinstance(code, str):
-        code=[code[0:6]]
+        code=[str(code)[0:6]]
 
     elif isinstance(code, list):
-        code= [item[0:6] for item in code]
+        code= [str(item)[0:6] for item in code]
 
 
 
@@ -69,7 +69,7 @@ def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collec
 
         res=pd.DataFrame([item for item in cursor])
         try:
-            res=res.drop('_id',axis=1).assign(volume=res.vol).assign(date=pd.to_datetime(res.date)).set_index('date', drop=False)
+            res=res.drop('_id',axis=1).assign(volume=res.vol).assign(date=pd.to_datetime(res.date)).drop_duplicates((['date','code'])).set_index('date', drop=False)
             #return res
         except:
             res=None
@@ -103,10 +103,10 @@ def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', colle
     __data = []
         # code checking
     if isinstance(code, str):
-        code=[code[0:6]]
+        code=[str(code)[0:6]]
 
     elif isinstance(code, list):
-        code= [item[0:6] for item in code]
+        code= [str(item)[0:6] for item in code]
 
 
     cursor = collections.find({
@@ -118,7 +118,7 @@ def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', colle
 
     res=pd.DataFrame([item for item in cursor])
     try:
-        res=res.drop('_id',axis=1).assign(volume=res.vol).assign(datetime=pd.to_datetime(res.datetime)).set_index('datetime', drop=False)
+        res=res.drop('_id',axis=1).assign(volume=res.vol).assign(datetime=pd.to_datetime(res.datetime)).drop_duplicates(['datetime','code']).set_index('datetime', drop=False)
         #return res
     except:
         res=None
