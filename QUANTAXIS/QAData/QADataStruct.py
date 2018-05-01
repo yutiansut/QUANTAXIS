@@ -72,6 +72,12 @@ class QA_DataStruct_Stock_day(_quotation_base):
         if 'low_limit' not in self.data.columns:
             self.data['low_limit'] = round(
                 (self.data.close.shift(1) + 0.0002) * 0.9, 2)
+        if 'next_day_high_limit' not in self.data.columns:
+            self.data['next_day_high_limit'] = round(
+                (self.data.close + 0.0002) * 1.1, 2)
+        if 'next_day_low_limit' not in self.data.columns:
+            self.data['next_day_low_limit'] = round(
+                (self.data.close + 0.0002) * 0.9, 2)          
 
     def __repr__(self):
         return '< QA_DataStruct_Stock_day with {} securities >'.format(len(self.code))
@@ -115,6 +121,16 @@ class QA_DataStruct_Stock_day(_quotation_base):
     def low_limit(self):
         '跌停价'
         return self.data.low_limit
+
+    @property
+    def next_day_low_limit(self):
+        "明日跌停价"
+        return self.data.next_day_low_limit
+
+    @property
+    def next_day_high_limit(self):
+        "明日涨停价"
+        return self.data.next_day_high_limit
 
     @property
     def preclose(self):
