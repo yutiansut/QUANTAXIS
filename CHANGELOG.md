@@ -18,3 +18,23 @@
 在偶见的数据库数据重复时,会对数据自动去重并返回结果
 
 
+## 1.0.26
+
+2018-05-02
+
+1.0.26 对于回测进行了一些优化
+
+1. 增加了对于RISK类的参数
+
+增加了```init_assets```, ```last_assets```参数,更方便查看
+
+2. 修改了simple_backtest 函数的逻辑:
+
+- simple_backtest 之前的 重设账户资金的写法错误, 已更正
+
+- simple_backtest 现在会随机下单(增加随机函数)
+
+
+3. 修改了```QADATASTRUCT```中日线结构的参数
+
+增加了 ```next_day_high_limit``` 和 ```next_day_low_limit```参数,方便计算,明日涨跌停
