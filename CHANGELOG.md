@@ -26,7 +26,9 @@
 
 1. 增加了对于RISK类的参数
 
-增加了```init_assets```, ```last_assets```参数,更方便查看
+- 增加了```init_assets```, ```last_assets```参数,更方便查看
+
+- 修改了计算年化收益率的公式
 
 2. 修改了simple_backtest 函数的逻辑:
 
