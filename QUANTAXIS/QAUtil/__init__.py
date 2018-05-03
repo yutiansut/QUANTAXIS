@@ -60,7 +60,7 @@ from QUANTAXIS.QAUtil.QAList import (QA_util_diff_list,
                                      QA_util_multi_demension_list)
 
 # code function
-from QUANTAXIS.QAUtil.QACode import QA_util_code_tostr
+from QUANTAXIS.QAUtil.QACode import QA_util_code_tostr, QA_util_code_tolist
 # dict function
 from QUANTAXIS.QAUtil.QADict import QA_util_dict_remove_key
 # log
