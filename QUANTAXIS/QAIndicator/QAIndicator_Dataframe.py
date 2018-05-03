@@ -101,26 +101,33 @@ DataFrame 类
 """
 
 
-def QA_indicator_OSC(DataFrame, N, M):
-    '变动速率线'
+def QA_indicator_OSC(DataFrame, N=20, M=6):
+    """变动速率线
+
+    震荡量指标OSC，也叫变动速率线。属于超买超卖类指标,是从移动平均线原理派生出来的一种分析指标。
+
+    它反应当日收盘价与一段时间内平均收盘价的差离值,从而测出股价的震荡幅度。
+
+    按照移动平均线原理，根据OSC的值可推断价格的趋势，如果远离平均线，就很可能向平均线回归。
+    """
     C = DataFrame['close']
     OS = (C - MA(C, N)) * 100
     MAOSC = EMA(OS, M)
     DICT = {'OSC': OS, 'MAOSC': MAOSC}
 
-    return DICT
+    return pd.DataFrame(DICT)
 
 
-def QA_indicator_BBI(DataFrame, N1, N2, N3, N4):
+def QA_indicator_BBI(DataFrame, N1=3, N2=6, N3=12, N4=24):
     '多空指标'
     C = DataFrame['close']
     bbi = (MA(C, N1) + MA(C, N2) + MA(C, N3) + MA(C, N4)) / 4
     DICT = {'BBI': bbi}
 
-    return DICT
+    return pd.DataFrame(DICT)
 
 
-def QA_indicator_PBX(DataFrame, N1, N2, N3, N4, N5, N6):
+def QA_indicator_PBX(DataFrame, N1=3, N2=5, N3=8, N4=13, N5=18, N6=24):
     '瀑布线'
     C = DataFrame['close']
     PBX1 = (EMA(C, N1) + EMA(C, 2 * N1) + EMA(C, 4 * N1)) / 3
@@ -132,38 +139,38 @@ def QA_indicator_PBX(DataFrame, N1, N2, N3, N4, N5, N6):
     DICT = {'PBX1': PBX1, 'PBX2': PBX2, 'PBX3': PBX3,
             'PBX4': PBX4, 'PBX5': PBX5, 'PBX6': PBX6}
 
-    return DICT
+    return pd.DataFrame(DICT)
 
 
-def QA_indicator_BOLL(DataFrame, N):
+def QA_indicator_BOLL(DataFrame, N=20, P=2):
     '布林线'
     C = DataFrame['close']
     boll = MA(C, N)
-    UB = boll + 2 * STD(C, N)
-    LB = boll - 2 * STD(C, N)
+    UB = boll + P * STD(C, N)
+    LB = boll - P * STD(C, N)
     DICT = {'BOLL': boll, 'UB': UB, 'LB': LB}
 
-    return DICT
+    return pd.DataFrame(DICT)
 
 
-def QA_indicator_ROC(DataFrame, N, M):
+def QA_indicator_ROC(DataFrame, N=12, M=6):
     '变动率指标'
     C = DataFrame['close']
     roc = 100 * (C - REF(C, N)) / REF(C, N)
-    MAROC = MA(roc, M)
-    DICT = {'ROC': roc, 'MAROC': MAROC}
+    ROCMA = MA(roc, M)
+    DICT = {'ROC': roc, 'ROCMA': ROCMA}
 
-    return DICT
+    return pd.DataFrame(DICT)
 
 
-def QA_indicator_MTM(DataFrame, N, M):
+def QA_indicator_MTM(DataFrame, N=12, M=6):
     '动量线'
     C = DataFrame['close']
     mtm = C - REF(C, N)
     MTMMA = MA(mtm, M)
     DICT = {'MTM': mtm, 'MTMMA': MTMMA}
 
-    return DICT
+    return pd.DataFrame(DICT)
 
 
 def QA_indicator_KDJ(DataFrame, N=9, M1=3, M2=3):
@@ -175,9 +182,8 @@ def QA_indicator_KDJ(DataFrame, N=9, M1=3, M2=3):
     K = SMA(RSV, M1)
     D = SMA(K, M2)
     J = 3 * K - 2 * D
-    #DICT = {'KDJ_K': K, 'KDJ_D': D, 'KDJ_J': J}
-    return pd.DataFrame([K,D,J],index=['KDJ_K','KDJ_D','KDJ_J']).T
-
+    DICT = {'KDJ_K': K, 'KDJ_D': D, 'KDJ_J': J}
+    return pd.DataFrame(DICT)
 
 
 def QA_indicator_MFI(DataFrame, N=14):
@@ -200,7 +206,7 @@ def QA_indicator_MFI(DataFrame, N=14):
     mfi = 100 - (100 / (1 + V1))
     DICT = {'MFI': mfi}
 
-    return DICT
+    return pd.DataFrame(DICT)
 
 
 def QA_indicator_ATR(DataFrame, N):
@@ -221,7 +227,7 @@ def QA_indicator_SKDJ(DataFrame, N, M):
     D = MA(K, M)
     DICT = {'SKDJ_K': K, 'SKDJ_D': D}
 
-    return DICT
+    return pd.DataFrame(DICT)
 
 
 def QA_indicator_WR(DataFrame, N, N1):
@@ -233,7 +239,7 @@ def QA_indicator_WR(DataFrame, N, N1):
     WR2 = 100 * (HHV(HIGH, N1) - CLOSE) / (HHV(HIGH, N1) - LLV(LOW, N1))
     DICT = {'WR1': WR1, 'WR2': WR2}
 
-    return DICT
+    return pd.DataFrame(DICT)
 
 
 def QA_indicator_BIAS(DataFrame, N1, N2, N3):
@@ -244,7 +250,7 @@ def QA_indicator_BIAS(DataFrame, N1, N2, N3):
     BIAS3 = (CLOSE - MA(CLOSE, N3)) / MA(CLOSE, N3) * 100
     DICT = {'BIAS1': BIAS1, 'BIAS2': BIAS2, 'BIAS3': BIAS3}
 
-    return DICT
+    return pd.DataFrame(DICT)
 
 
 def QA_indicator_RSI(DataFrame, N1=12, N2=26, N3=9):
@@ -256,7 +262,7 @@ def QA_indicator_RSI(DataFrame, N1=12, N2=26, N3=9):
     RSI3 = SMA(MAX(CLOSE - LC, 0), N3) / SMA(ABS(CLOSE - LC), N3) * 100
     DICT = {'RSI1': RSI1, 'RSI2': RSI2, 'RSI3': RSI3}
 
-    return DICT
+    return pd.DataFrame(DICT)
 
 
 def QA_indicator_ADTM(DataFrame, N, M):
@@ -274,7 +280,7 @@ def QA_indicator_ADTM(DataFrame, N, M):
     MAADTM = MA(ADTM1, M)
     DICT = {'ADTM': ADTM1, 'MAADTM': MAADTM}
 
-    return DICT
+    return pd.DataFrame(DICT)
 
 
 def QA_indicator_DDI(DataFrame, N, N1, M, M1):
@@ -292,7 +298,7 @@ def QA_indicator_DDI(DataFrame, N, N1, M, M1):
     AD = MA(ADDI, M1)
     DICT = {'DDI': ddi, 'ADDI': ADDI, 'AD': AD}
 
-    return DICT
+    return pd.DataFrame(DICT)
 
 
 def QA_indicator_CCI(DataFrame, N=14):
@@ -342,11 +348,12 @@ def QA_indicator_MACD(DataFrame, short=12, long=26, mid=9):
     """
     CLOSE = DataFrame['close']
 
-    DIF=EMA(CLOSE,short)-EMA(CLOSE,long)
-    DEA=EMA(DIF,mid)
-    MACD=(DIF-DEA)*2
+    DIF = EMA(CLOSE, short)-EMA(CLOSE, long)
+    DEA = EMA(DIF, mid)
+    MACD = (DIF-DEA)*2
 
-    return {'DIF':DIF,'DEA':DEA,'MACD':MACD}
+    return {'DIF': DIF, 'DEA': DEA, 'MACD': MACD}
+
 
 def QA_indicator_EMA(DataFrame, N):
     CLOSE = DataFrame['close']
