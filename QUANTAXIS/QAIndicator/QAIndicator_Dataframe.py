@@ -110,9 +110,9 @@ def QA_indicator_KDJ(DataFrame, N=9, M1=3, M2=3):
     K = SMA(RSV, M1)
     D = SMA(K, M2)
     J = 3 * K - 2 * D
-    DICT = {'KDJ_K': K, 'KDJ_D': D, 'KDJ_J': J}
+    #DICT = {'KDJ_K': K, 'KDJ_D': D, 'KDJ_J': J}
+    return pd.DataFrame([K,D,J],index=['KDJ_K','KDJ_D','KDJ_J']).T
 
-    return DICT
 
 
 def QA_indicator_MFI(DataFrame, N=14):
