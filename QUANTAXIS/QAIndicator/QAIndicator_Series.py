@@ -48,7 +48,13 @@ def MA(Series, N):
 
 
 def SMA(Series, N, M=1):
+    """
+    威廉SMA算法
 
+    本次修正主要是对于返回值的优化,现在的返回值会带上原先输入的索引index
+    2018/5/3
+    @yutiansut
+    """
     ret = []
     i = 1
     length = len(Series)
@@ -65,7 +71,7 @@ def SMA(Series, N, M=1):
         ret.append(Y)
         preY = Y
         i += 1
-    return pd.Series(ret)
+    return pd.Series(ret,index=Series.tail(len(ret)).index)
 
 
 def DIFF(Series, N=1):
