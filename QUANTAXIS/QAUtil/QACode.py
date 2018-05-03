@@ -34,4 +34,12 @@ def QA_util_code_tostr(code):
     因为有时候在csv等转换的时候,诸如 000001的股票会变成office强制转化成数字1
 
     """
-    return '00000{}'.format(code)[-6:]
+    return '00000{}'.format(str(code)[0:6])[-6:]
+
+
+def QA_util_code_tolist(code):
+    if isinstance(code, str):
+        return [QA_util_code_tostr(code)]
+
+    elif isinstance(code, list):
+        return [QA_util_code_tostr(item) for item in code]

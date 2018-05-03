@@ -31,7 +31,7 @@ from pandas import DataFrame
 
 from QUANTAXIS.QAUtil import (DATABASE, QA_Setting, QA_util_date_stamp,
                               QA_util_date_valid, QA_util_dict_remove_key,
-                              QA_util_log_info,
+                              QA_util_log_info, QA_util_code_tolist,
                               QA_util_sql_mongo_sort_DESCENDING,
                               QA_util_time_stamp, QA_util_to_json_from_pandas,
                               trade_date_sse)
@@ -50,14 +50,7 @@ def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collec
     #code= [code] if isinstance(code,str) else code
     
     # code checking
-    if isinstance(code, str):
-        code=['00000{}'.format(str(code)[0:6])[-6:]]
-
-    elif isinstance(code, list):
-
-
-        code= ['00000{}'.format(str(item)[0:6])[-6:] for item in code]
-
+    code = QA_util_code_tolist(code)
 
 
     if QA_util_date_valid(end) == True:
@@ -104,12 +97,7 @@ def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', colle
         frequence = '60min'
     __data = []
         # code checking
-    if isinstance(code, str):
-        code=['00000{}'.format(str(code)[0:6])[-6:]]
-
-    elif isinstance(code, list):
-        code= ['00000{}'.format(str(item)[0:6])[-6:] for item in code]
-
+    code = QA_util_code_tolist(code)
 
     cursor = collections.find({
         'code': {'$in': code}, "time_stamp": {
