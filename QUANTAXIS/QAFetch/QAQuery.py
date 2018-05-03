@@ -51,10 +51,12 @@ def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collec
     
     # code checking
     if isinstance(code, str):
-        code=[str(code)[0:6]]
+        code=['00000{}'.format(str(code)[0:6])[-6:]]
 
     elif isinstance(code, list):
-        code= [str(item)[0:6] for item in code]
+
+
+        code= ['00000{}'.format(str(item)[0:6])[-6:] for item in code]
 
 
 
@@ -103,10 +105,10 @@ def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', colle
     __data = []
         # code checking
     if isinstance(code, str):
-        code=[str(code)[0:6]]
+        code=['00000{}'.format(str(code)[0:6])[-6:]]
 
     elif isinstance(code, list):
-        code= [str(item)[0:6] for item in code]
+        code= ['00000{}'.format(str(item)[0:6])[-6:] for item in code]
 
 
     cursor = collections.find({
