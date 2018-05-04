@@ -366,6 +366,56 @@ def QA_indicator_VSTD(DataFrame, N=10):
     return pd.DataFrame({'VSTD': vstd})
 
 
+"""
+4.	量价指标
+通过成交量和股价变动关系分析未来趋势
+震荡升降指标ASI
+价量趋势PVT
+能量潮OBV
+量价趋势VPT
+主力进出指标ABV
+威廉变异离散量WVAD
+
+"""
+def QA_indicator_ASI(DataFrame, M1=26, M2=10):
+    """
+    LC=REF(CLOSE,1);
+    AA=ABS(HIGH-LC);
+    BB=ABS(LOW-LC);
+    CC=ABS(HIGH-REF(LOW,1));
+    DD=ABS(LC-REF(OPEN,1));
+    R=IF(AA>BB AND AA>CC,AA+BB/2+DD/4,IF(BB>CC AND BB>AA,BB+AA/2+DD/4,CC+DD/4));
+    X=(CLOSE-LC+(CLOSE-OPEN)/2+LC-REF(OPEN,1));
+    SI=16*X/R*MAX(AA,BB);
+    ASI:SUM(SI,M1);
+    ASIT:MA(ASI,M2);
+    """
+    CLOSE = DataFrame['close']
+    HIGH = DataFrame['high']
+    LOW = DataFrame['low']
+    OPEN = DataFrame['open']
+    LC = REF(CLOSE, 1)
+    AA = ABS(HIGH - LC)
+    BB = ABS(LOW-LC)
+    CC = ABS(HIGH - REF(LOW, 1))
+    DD = ABS(LC - REF(OPEN, 1))
+
+    R = IF(AA > BB and AA > CC, AA+BB/2+DD/4,
+           IF(BB > CC and BB > AA, BB+AA/2+DD/4, CC+DD/4))
+    X = (CLOSE - LC + (CLOSE - OPEN) / 2 + LC - REF(OPEN, 1))
+    SI = 16*X/R*MAX(AA, BB)
+    ASI = SUM(SI, M1)
+    ASIT = MA(ASI, M2)
+    return pd.DataFrame({
+        'ASI':ASI,'ASIT':ASIT
+    })
+
+def QA_indicator_PVT(DataFrame):
+    CLOSE=DataFrame.close
+    VOL=DataFrame.volume
+    PVT=SUM((CLOSE-REF(CLOSE,1))/REF(CLOSE,1)*VOL,0)
+    return pd.DataFrame({'PVT':PVT})
+
 def QA_indicator_BBI(DataFrame, N1=3, N2=6, N3=12, N4=24):
     '多空指标'
     C = DataFrame['close']
@@ -448,30 +498,6 @@ def QA_indicator_DDI(DataFrame, N, N1, M, M1):
     return pd.DataFrame(DICT)
 
 
-def QA_indicator_ASI(DataFrame, M1, M2):
-    """
-    LC=REF(CLOSE,1);
-    AA=ABS(HIGH-LC);
-    BB=ABS(LOW-LC);
-    CC=ABS(HIGH-REF(LOW,1));
-    DD=ABS(LC-REF(OPEN,1));
-    R=IF(AA>BB AND AA>CC,AA+BB/2+DD/4,IF(BB>CC AND BB>AA,BB+AA/2+DD/4,CC+DD/4));
-    X=(CLOSE-LC+(CLOSE-OPEN)/2+LC-REF(OPEN,1));
-    SI=16*X/R*MAX(AA,BB);
-    ASI:SUM(SI,M1);
-    ASIT:MA(ASI,M2);
-    """
-    CLOSE = DataFrame['close']
-    HIGH = DataFrame['high']
-    LOW = DataFrame['low']
-    OPEN = DataFrame['open']
-    LC = REF(CLOSE, 1)
-    AA = ABS(HIGH - LC)
-    CC = ABS(HIGH - REF(LOW, 1))
-    DD = ABS(LC - REF(OPEN, 1))
-
-    # R=IF(AA>BB AND AA>CC,AA+BB/2+DD/4,IF(BB>CC AND BB>AA,BB+AA/2+DD/4,CC+DD/4))
-    X = (CLOSE - LC + (CLOSE - OPEN) / 2 + LC - REF(OPEN, 1))
 
 
 def lower_shadow(DataFrame):  # 下影线
@@ -496,3 +522,21 @@ def price_pcg(DataFrame):
 
 def amplitude(DataFrame):
     return (DataFrame.high - DataFrame.low) / DataFrame.low
+
+
+"""
+5.	压力支撑指标
+主要用于分析股价目前收到的压力和支撑
+布林带 BOLL
+麦克指标 MIKE
+抛物转向 SAR
+薛斯通道 XS
+6.	大盘指标
+通过涨跌家数研究大盘指数的走势
+涨跌比率 ADR
+绝对幅度指标 ABI
+新三价率 TBR
+腾落指数 ADL
+广量冲力指标
+指数平滑广量 STIX
+"""
