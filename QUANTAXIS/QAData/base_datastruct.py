@@ -80,7 +80,7 @@ class _quotation_base():
         """
         for i in range(len(self.index)):
             yield self.data.iloc[i]
-            
+
     def __reversed__(self):
         return self.reverse()
 
@@ -508,9 +508,12 @@ class _quotation_base():
             return list(map(lambda x: self.new(
                 self.query('code=="{}"'.format(x)).set_index(['datetime', 'code'], drop=False), self.type, self.if_fq), self.code))
 
+    # def add_func(self, func, *arg, **kwargs):
+    #     return pd.concat(list(map(lambda x: func(
+    #         self.query('code=="{}"'.format(x)), *arg, **kwargs), self.code)))
     def add_func(self, func, *arg, **kwargs):
-        return list(map(lambda x: func(
-            self.query('code=="{}"'.format(x)), *arg, **kwargs), self.code))
+        return pd.concat(list(map(lambda x: func(
+            self.query('code=="{}"'.format(x)), *arg, **kwargs), self.code))).sort_index()
 
     def pivot(self, column_):
         '增加对于多列的支持'
@@ -524,7 +527,8 @@ class _quotation_base():
                 return self.data.pivot_table(index='datetime', columns='code', values=column_)
             except:
                 return self.data.pivot_table(index='date', columns='code', values=column_)
-    def selects(self,code,start,end=None):
+
+    def selects(self, code, start, end=None):
         if self.type[-3:] in ['day']:
             if end is not None:
 
@@ -536,6 +540,7 @@ class _quotation_base():
                 return self.new(self.query('code=="{}"'.format(code)).data[self.data['datetime'] >= start][self.data['datetime'] <= end].set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
             else:
                 return self.new(self.query('code=="{}"'.format(code)).data[self.data['datetime'] >= start].set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
+
     def select_time(self, start, end=None):
         if self.type[-3:] in ['day']:
             if end is not None:
