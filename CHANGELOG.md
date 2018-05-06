@@ -40,3 +40,13 @@
 3. 修改了```QADATASTRUCT```中日线结构的参数
 
 增加了 ```next_day_high_limit``` 和 ```next_day_low_limit```参数,方便计算,明日涨跌停
+
+
+## 1.0.27
+
+2018-05-06
+
+修改并增加了大量的公式,统一成dataframe格式返回,可以被直接concat合并出来
+
+预计将对于indicator类进行重写并缓存/本地存储,方便快速调用
+
