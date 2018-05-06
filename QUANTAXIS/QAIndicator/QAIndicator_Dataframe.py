@@ -516,29 +516,48 @@ def QA_indicator_MFI(DataFrame, N=14):
     return pd.DataFrame(DICT)
 
 
-def QA_indicator_ATR(DataFrame, N):
+def QA_indicator_ATR(DataFrame, N=14):
+    """
+    输出TR:(最高价-最低价)和昨收-最高价的绝对值的较大值和昨收-最低价的绝对值的较大值
+    输出真实波幅:TR的N日简单移动平均
+    算法：今日振幅、今日最高与昨收差价、今日最低与昨收差价中的最大值，为真实波幅，求真实波幅的N日移动平均
+
+    参数：N　天数，一般取14
+
+    """
     C = DataFrame['close']
     H = DataFrame['high']
     L = DataFrame['low']
-    TR1 = MAX(MAX((H - L), ABS(REF(C, 1) - H)), ABS(REF(C, 1) - L))
-    atr = MA(TR1, N)
-    return atr
+    TR = MAX(MAX((H - L), ABS(REF(C, 1) - H)), ABS(REF(C, 1) - L))
+    atr = MA(TR, N)
+    return pd.DataFrame({'TR': TR, 'ATR': atr})
 
 
-def QA_indicator_SKDJ(DataFrame, N, M):
+def QA_indicator_SKDJ(DataFrame, N=9, M=3):
+    """
+    1.指标>80 时，回档机率大；指标<20 时，反弹机率大；
+    2.K在20左右向上交叉D时，视为买进信号参考； 
+    3.K在80左右向下交叉D时，视为卖出信号参考；
+    4.SKDJ波动于50左右的任何讯号，其作用不大。
+
+    """
     CLOSE = DataFrame['close']
     LOWV = LLV(DataFrame['low'], N)
     HIGHV = HHV(DataFrame['high'], N)
     RSV = EMA((CLOSE - LOWV) / (HIGHV - LOWV) * 100, M)
     K = EMA(RSV, M)
     D = MA(K, M)
-    DICT = {'SKDJ_K': K, 'SKDJ_D': D}
+    DICT = {'RSV': RSV, 'SKDJ_K': K, 'SKDJ_D': D}
 
     return pd.DataFrame(DICT)
 
 
-def QA_indicator_DDI(DataFrame, N, N1, M, M1):
+def QA_indicator_DDI(DataFrame, N=13, N1=26, M=1, M1=5):
+    """
     '方向标准离差指数'
+    分析DDI柱状线，由红变绿(正变负)，卖出信号参考；由绿变红，买入信号参考。
+    """
+
     H = DataFrame['high']
     L = DataFrame['low']
     DMZ = IF((H + L) <= (REF(H, 1) + REF(L, 1)), 0,
