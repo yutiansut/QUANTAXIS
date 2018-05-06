@@ -555,6 +555,16 @@ def QA_indicator_DDI(DataFrame, N, N1, M, M1):
     return pd.DataFrame(DICT)
 
 
+def QA_indicator_shadow(DataFrame):
+    """
+    上下影线指标
+    """
+    return {
+        'LOW': lower_shadow(DataFrame), 'UP': upper_shadow(DataFrame),
+        'BODY': body(DataFrame), 'BODY_ABS': body_abs(DataFrame), 'PRICE_PCG': price_pcg(DataFrame)
+    }
+
+
 def lower_shadow(DataFrame):  # 下影线
     return abs(DataFrame.low - MIN(DataFrame.open, DataFrame.close))
 
