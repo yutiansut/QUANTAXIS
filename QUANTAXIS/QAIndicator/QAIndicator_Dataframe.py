@@ -373,10 +373,9 @@ def QA_indicator_VSTD(DataFrame, N=10):
 价量趋势PVT
 能量潮OBV
 量价趋势VPT
-主力进出指标ABV
-威廉变异离散量WVAD
-
 """
+
+
 def QA_indicator_ASI(DataFrame, M1=26, M2=10):
     """
     LC=REF(CLOSE,1);
@@ -407,32 +406,42 @@ def QA_indicator_ASI(DataFrame, M1=26, M2=10):
     ASI = SUM(SI, M1)
     ASIT = MA(ASI, M2)
     return pd.DataFrame({
-        'ASI':ASI,'ASIT':ASIT
+        'ASI': ASI, 'ASIT': ASIT
     })
 
-def QA_indicator_PVT(DataFrame):
-    CLOSE=DataFrame.close
-    VOL=DataFrame.volume
-    PVT=SUM((CLOSE-REF(CLOSE,1))/REF(CLOSE,1)*VOL,0)
-    return pd.DataFrame({'PVT':PVT})
 
+def QA_indicator_PVT(DataFrame):
+    CLOSE = DataFrame.close
+    VOL = DataFrame.volume
+    PVT = SUM((CLOSE-REF(CLOSE, 1))/REF(CLOSE, 1)*VOL, 0)
+    return pd.DataFrame({'PVT': PVT})
 
 
 def QA_indicator_OBV(DataFrame):
     """能量潮"""
     VOL = DataFrame.volume
-    CLOSE=DataFrame.close
+    CLOSE = DataFrame.close
     pd.DataFrame({
-        'OBV':SUM(IF(CLOSE>REF(CLOSE,1),VOL,IF(CLOSE<REF(CLOSE,1),-VOL,0)),0)/10000
+        'OBV': SUM(IF(CLOSE > REF(CLOSE, 1), VOL, IF(CLOSE < REF(CLOSE, 1), -VOL, 0)), 0)/10000
     })
 
-def QA_indicator_BBI(DataFrame, N1=3, N2=6, N3=12, N4=24):
-    '多空指标'
-    C = DataFrame['close']
-    bbi = (MA(C, N1) + MA(C, N2) + MA(C, N3) + MA(C, N4)) / 4
-    DICT = {'BBI': bbi}
 
-    return pd.DataFrame(DICT)
+def QA_indicator_VPT(DataFrame, N=51, M=6):
+    VOL = DataFrame.volume
+    CLOSE = DataFrame.close
+    VPT = SUM(VOL*(CLOSE-REF(CLOSE, 1))/REF(CLOSE, 1), 0)
+    MAVPT = MA(VPT, M)
+    return pd.DataFrame({
+        'VPT': VPT, 'MAVPT': MAVPT
+    })
+
+
+"""
+5.	压力支撑指标
+主要用于分析股价目前收到的压力和支撑
+布林带 BOLL
+麦克指标 MIKE
+"""
 
 
 def QA_indicator_BOLL(DataFrame, N=20, P=2):
@@ -442,6 +451,44 @@ def QA_indicator_BOLL(DataFrame, N=20, P=2):
     UB = boll + P * STD(C, N)
     LB = boll - P * STD(C, N)
     DICT = {'BOLL': boll, 'UB': UB, 'LB': LB}
+
+    return pd.DataFrame(DICT)
+
+
+def QA_indicator_MIKE(DataFrame, N=12):
+    """
+    MIKE指标
+    指标说明
+    MIKE是另外一种形式的路径指标。
+    买卖原则
+    1  WEAK-S，MEDIUM-S，STRONG-S三条线代表初级、中级、强力支撑。
+    2  WEAK-R，MEDIUM-R，STRONG-R三条线代表初级、中级、强力压力。
+    """
+    HIGH = DataFrame.high
+    LOW = DataFrame.low
+    CLOSE = DataFrame.close
+
+    TYP = (HIGH+LOW+CLOSE)/3
+    LL = LLV(LOW, N)
+    HH = HHV(HIGH, N)
+
+    WR = TYP+(TYP-LL)
+    MR = TYP+(HH-LL)
+    SR = 2*HH-LL
+    WS = TYP-(HH-TYP)
+    MS = TYP-(HH-LL)
+    SS = 2*LL-HH
+    return pd.DataFrame({
+        'WR': WR, 'MR': MR, 'SR': SR,
+        'WS': WS, 'MS': MS, 'SS': SS
+    })
+
+
+def QA_indicator_BBI(DataFrame, N1=3, N2=6, N3=12, N4=24):
+    '多空指标'
+    C = DataFrame['close']
+    bbi = (MA(C, N1) + MA(C, N2) + MA(C, N3) + MA(C, N4)) / 4
+    DICT = {'BBI': bbi}
 
     return pd.DataFrame(DICT)
 
@@ -508,8 +555,6 @@ def QA_indicator_DDI(DataFrame, N, N1, M, M1):
     return pd.DataFrame(DICT)
 
 
-
-
 def lower_shadow(DataFrame):  # 下影线
     return abs(DataFrame.low - MIN(DataFrame.open, DataFrame.close))
 
@@ -535,12 +580,7 @@ def amplitude(DataFrame):
 
 
 """
-5.	压力支撑指标
-主要用于分析股价目前收到的压力和支撑
-布林带 BOLL
-麦克指标 MIKE
-抛物转向 SAR
-薛斯通道 XS
+
 6.	大盘指标
 通过涨跌家数研究大盘指数的走势
 涨跌比率 ADR
