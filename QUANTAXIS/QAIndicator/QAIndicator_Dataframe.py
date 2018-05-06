@@ -416,6 +416,16 @@ def QA_indicator_PVT(DataFrame):
     PVT=SUM((CLOSE-REF(CLOSE,1))/REF(CLOSE,1)*VOL,0)
     return pd.DataFrame({'PVT':PVT})
 
+
+
+def QA_indicator_OBV(DataFrame):
+    """能量潮"""
+    VOL = DataFrame.volume
+    CLOSE=DataFrame.close
+    pd.DataFrame({
+        'OBV':SUM(IF(CLOSE>REF(CLOSE,1),VOL,IF(CLOSE<REF(CLOSE,1),-VOL,0)),0)/10000
+    })
+
 def QA_indicator_BBI(DataFrame, N1=3, N2=6, N3=12, N4=24):
     '多空指标'
     C = DataFrame['close']
