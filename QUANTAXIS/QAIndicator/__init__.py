@@ -21,8 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from QUANTAXIS.QAIndicator.indicators import *
-from QUANTAXIS.QAIndicator.QAIndicator_Dataframe import *
-from QUANTAXIS.QAIndicator.QAIndicator_Series import *
+from QUANTAXIS.QAIndicator.base import *
 
 """
 这个模块是对了对应QA_DataStruct
