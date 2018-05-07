@@ -1,0 +1,347 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QUANTAXIS.QAFetch.QAWind &#8212; QUANTAXIS 1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for QUANTAXIS.QAFetch.QAWind</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding:utf-8</span>
+<span class="c1">#</span>
+<span class="c1"># The MIT License (MIT)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2016-2018 yutiansut/QUANTAXIS</span>
+<span class="c1">#</span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1">#</span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">QAWind</span>
+
+<span class="sd">QAWind is a data fetch module just for WIND Institution Version</span>
+
+<span class="sd">QAWind is under the [QAStandard#0.0.2 @101-1],[QAStandard#0.0.2 @501-0] protocol</span>
+
+<span class="sd">@author: yutiansut</span>
+
+<span class="sd">@last modified:2017/4/5</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pymongo</span>
+
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil</span> <span class="k">import</span> <span class="n">QA_util_date_valid</span><span class="p">,</span> <span class="n">QA_util_log_info</span>
+
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAFetch</span> <span class="k">import</span> <span class="n">data_list</span> <span class="k">as</span> <span class="n">data_list</span>
+
+
+<div class="viewcode-block" id="QA_fetch_get_stock_info"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAWind.QA_fetch_get_stock_info">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_get_stock_info</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">startDate</span><span class="p">,</span> <span class="n">endDate</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">WindPy</span> <span class="k">import</span> <span class="n">w</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;No WindPY Module!&#39;</span><span class="p">)</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="c1"># get the all stock list on the endDate</span>
+    <span class="c1"># judge the vaild date</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">QA_util_date_valid</span><span class="p">(</span><span class="n">endDate</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s2">&quot;wrong date&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># tempStr=&#39;date=&#39;+endDate+&quot;;sectorid=a001010100000000&quot;</span>
+        <span class="c1"># data=w.wset(&quot;sectorconstituent&quot;,tempStr)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">wsd</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;sec_name,sec_englishname,ipo_date,exch_city,mkt,</span><span class="se">\</span>
+<span class="s2">                    sec_status,delist_date,issuecurrencycode,curr,RO,parvalue,</span><span class="se">\</span>
+<span class="s2">                    lotsize,tunit,exch_eng,country,concept,marginornot,SHSC,</span><span class="se">\</span>
+<span class="s2">                    parallelcode,sec_type,backdoor,backdoordate,windtype&quot;</span><span class="p">,</span>
+                     <span class="n">startDate</span><span class="p">,</span> <span class="n">endDate</span><span class="p">)</span>
+        <span class="c1"># QA_util_log_info(data)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">ErrorCode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s2">&quot;Connent to Wind successfully&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">Data</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_get_stock_day"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAWind.QA_fetch_get_stock_day">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_get_stock_day</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">startDate</span><span class="p">,</span> <span class="n">endDate</span><span class="p">,</span> <span class="n">if_fq</span><span class="o">=</span><span class="s1">&#39;01&#39;</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">WindPy</span> <span class="k">import</span> <span class="n">w</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;No WindPY Module!&#39;</span><span class="p">)</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">QA_util_date_valid</span><span class="p">(</span><span class="n">endDate</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s2">&quot;wrong date&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">if_fq</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;00&#39;</span><span class="p">,</span> <span class="s1">&#39;bfq&#39;</span><span class="p">]:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">wsd</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;sec_name,pre_close,open,high,low,close,volume&quot;</span><span class="p">,</span>
+                         <span class="n">startDate</span><span class="p">,</span> <span class="n">endDate</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">if_fq</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;01&#39;</span><span class="p">,</span> <span class="s1">&#39;qfq&#39;</span><span class="p">]:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">wsd</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;sec_name,pre_close,open,high,low,close,volume&quot;</span><span class="p">,</span>
+                         <span class="n">startDate</span><span class="p">,</span> <span class="n">endDate</span><span class="p">,</span> <span class="s2">&quot;PriceAdj=F&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">if_fq</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;02&#39;</span><span class="p">,</span> <span class="s1">&#39;hfq&#39;</span><span class="p">]:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">wsd</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;sec_name,pre_close,open,high,low,close,volume&quot;</span><span class="p">,</span>
+                         <span class="n">startDate</span><span class="p">,</span> <span class="n">endDate</span><span class="p">,</span> <span class="s2">&quot;PriceAdj=B&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;wrong fq factor! using qfq&#39;</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">wsd</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;sec_name,pre_close,open,high,low,close,volume&quot;</span><span class="p">,</span>
+                         <span class="n">startDate</span><span class="p">,</span> <span class="n">endDate</span><span class="p">,</span> <span class="s2">&quot;PriceAdj=B&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">ErrorCode</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s2">&quot;Connent to Wind successfully&quot;</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">Data</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">Fields</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">Times</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_get_stock_day_simple"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAWind.QA_fetch_get_stock_day_simple">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_get_stock_day_simple</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">startDate</span><span class="p">,</span> <span class="n">endDate</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">WindPy</span> <span class="k">import</span> <span class="n">w</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;No WindPY Module!&#39;</span><span class="p">)</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">QA_util_date_valid</span><span class="p">(</span><span class="n">endDate</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s2">&quot;wrong date&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">wsd</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;sec_name,preclose,open,high,low,close,volume&quot;</span><span class="p">,</span>
+                     <span class="n">startDate</span><span class="p">,</span> <span class="n">endDate</span><span class="p">,</span> <span class="s2">&quot;Fill=Previous;PriceAdj=F&quot;</span><span class="p">)</span>
+        <span class="c1">#data=w.wsd(&quot;000002.SZ&quot;, &quot;open,high,low,close,volume&quot;, &quot;2017-03-03&quot;, &quot;2017-04-01&quot;, &quot;PriceAdj=B&quot;)</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">ErrorCode</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">ErrorCode</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s2">&quot;Connent to Wind successfully&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">Data</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_get_stock_indicator"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAWind.QA_fetch_get_stock_indicator">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_get_stock_indicator</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">startDate</span><span class="p">,</span> <span class="n">endDate</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">WindPy</span> <span class="k">import</span> <span class="n">w</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;No WindPY Module!&#39;</span><span class="p">)</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">QA_util_date_valid</span><span class="p">(</span><span class="n">endDate</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s2">&quot;wrong date&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># ADTM动态买卖气指标,ATR真实波幅,BBI多空指数,BBIBOLL多空布林线,BIAS乖离率,BOLL布林带,CCI顺势指标,CDP逆势操作,DMA平均线差,</span>
+        <span class="c1"># DMI趋向标准,DPO区间震荡线,ENV,EXPMA指数平滑移动平均,KDJ随机指标,slowKD慢速kd,MA简单移动平均,MACD指数平滑移动平均,MIKE麦克指数,</span>
+        <span class="c1"># MTM动力指标,PRICEOSC价格震荡指标,PVT量价趋势指标,RC变化率指数,ROC变动速率,RSI相对强弱指标,SAR抛物转向,SI摆动指标,SOBV能量潮,</span>
+        <span class="c1"># SRMI MI修正指标,STD 标准差,TAPI 加权指数成交值,TRIX 三重指数平滑平均,VHF纵横指标,VMA量简单移动平均,VMACD量指数平滑移动平均,</span>
+        <span class="c1"># VOSC成交量震荡,WVAD威廉变异离散量,vol_ratio量比</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">wsd</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;ADTM,ATR,BBI,BBIBOLL,BIAS,BOLL,CCI,CDP,</span><span class="se">\</span>
+<span class="s2">                        DMA,DMI,DPO,ENV,EXPMA,KDJ,slowKD,MA,MACD,</span><span class="se">\</span>
+<span class="s2">                        MIKE,MTM,PRICEOSC,PVT,RC,ROC,RSI,SAR,SI,</span><span class="se">\</span>
+<span class="s2">                        SOBV,SRMI,STD,TAPI,TRIX,VHF,VMA,VMACD,VOSC,</span><span class="se">\</span>
+<span class="s2">                        WVAD,vol_ratio&quot;</span><span class="p">,</span> <span class="n">startDate</span><span class="p">,</span> <span class="n">endDate</span><span class="p">,</span>
+                     <span class="s2">&quot;ADTM_N1=23;ADTM_N2=8;ADTM_IO=1;ATR_N=14;ATR_IO=1;</span><span class="se">\</span>
+<span class="s2">                     BBI_N1=3;BBI_N2=6;BBI_N3=12;BBI_N4=24;BBIBOLL_N=10;</span><span class="se">\</span>
+<span class="s2">                     BBIBOLL_Width=3;BBIBOLL_IO=1;BIAS_N=12;BOLL_N=26;</span><span class="se">\</span>
+<span class="s2">                     BOLL_Width=2;BOLL_IO=1;CCI_N=14;CDP_IO=1;DMA_S=10;</span><span class="se">\</span>
+<span class="s2">                     DMA_L=50;DMA_N=10;DMA_IO=1;DMI_N=14;DMI_N1=6;</span><span class="se">\</span>
+<span class="s2">                     DMI_IO=1;DPO_N=20;DPO_M=6;DPO_IO=1;ENV_N=14;ENV_IO=1;</span><span class="se">\</span>
+<span class="s2">                     EXPMA_N=12;KDJ_N=9;KDJ_M1=3;KDJ_M2=3;KDJ_IO=1;SlowKD_N1=9;</span><span class="se">\</span>
+<span class="s2">                     SlowKD_N2=3;SlowKD_N3=3;SlowKD_N4=5;SlowKD_IO=1;MA_N=5;</span><span class="se">\</span>
+<span class="s2">                     MACD_L=26;MACD_S=12;MACD_N=9;MACD_IO=1;MIKE_N=12;MIKE_IO=1;</span><span class="se">\</span>
+<span class="s2">                     MTM_interDay=6;MTM_N=6;MTM_IO=1;PRICEOSC_L=26;PRICEOSC_S=12;</span><span class="se">\</span>
+<span class="s2">                     RC_N=50;ROC_interDay=12;ROC_N=6;ROC_IO=1;RSI_N=6;SAR_N=4;</span><span class="se">\</span>
+<span class="s2">                     SAR_SP=2;SAR_MP=20;SRMI_N=9;STD_N=26;TAPI_N=6;TAPI_IO=1;</span><span class="se">\</span>
+<span class="s2">                     TRIX_N1=12;TRIX_N2=20;TRIX_IO=1;VHF_N=28;VMA_N=5;VMACD_S=12;</span><span class="se">\</span>
+<span class="s2">                     VMACD_L=26;VMACD_N=9;VMACD_IO=1;VOSC_S=12;VOSC_L=26;WVAD_N1=24;</span><span class="se">\</span>
+<span class="s2">                     WVAD_N2=6;WVAD_IO=1;VolumeRatio_N=5&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">ErrorCode</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s2">&quot;Connent to Wind successfully&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">Data</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">Fields</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">Times</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_get_stock_shape"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAWind.QA_fetch_get_stock_shape">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_get_stock_shape</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">startDate</span><span class="p">,</span> <span class="n">endDate</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">WindPy</span> <span class="k">import</span> <span class="n">w</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;No WindPY Module!&#39;</span><span class="p">)</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">QA_util_date_valid</span><span class="p">(</span><span class="n">endDate</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s2">&quot;wrong date&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># history_low近期创历史新低,stage_high近期创阶段新高,history_high近期创历史新高,stage_low近期创阶段新高,up_days连涨天数,down_days连跌天数,breakout_ma向上有效突破均线,breakdown_ma向下有效突破均线,bull_bear_ma均线多空排列看涨看跌</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">wsd</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;history_low,stage_high,history_high,stage_low,up_days,down_days,breakout_ma,breakdown_ma,bull_bear_ma&quot;</span><span class="p">,</span>
+                     <span class="n">startDate</span><span class="p">,</span> <span class="n">endDate</span><span class="p">,</span> <span class="s2">&quot;n=3;m=60;meanLine=60;N1=5;N2=10;N3=20;N4=30;upOrLow=1&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">ErrorCode</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s2">&quot;Connent to Wind successfully&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">Data</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">Fields</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">Times</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_get_stock_risk"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAWind.QA_fetch_get_stock_risk">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_get_stock_risk</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">startDate</span><span class="p">,</span> <span class="n">endDate</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">WindPy</span> <span class="k">import</span> <span class="n">w</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;No WindPY Module!&#39;</span><span class="p">)</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">QA_util_date_valid</span><span class="p">(</span><span class="n">endDate</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s2">&quot;wrong date&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">wsd</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;annualyeild_100w,annualyeild_24m,annualyeild_60m,</span><span class="se">\</span>
+<span class="s2">                    annualstdevr_100w,annualstdevr_24m,annualstdevr_60m,beta_100w,</span><span class="se">\</span>
+<span class="s2">                    beta_24m,beta_60m,avgreturn,avgreturny,stdevry,stdcof,</span><span class="se">\</span>
+<span class="s2">                    risk_nonsysrisk1,r2,alpha2,beta,sharpe,treynor,jensen,jenseny,betadf&quot;</span><span class="p">,</span>
+                     <span class="n">startDate</span><span class="p">,</span> <span class="n">endDate</span><span class="p">,</span> <span class="s2">&quot;period=2;returnType=1;index=000001.SH;yield=1&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">ErrorCode</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s2">&quot;Connent to Wind successfully&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">Data</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">Fields</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">Times</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_get_stock_xueqiu"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAWind.QA_fetch_get_stock_xueqiu">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_get_stock_xueqiu</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">startDate</span><span class="p">,</span> <span class="n">endDate</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">WindPy</span> <span class="k">import</span> <span class="n">w</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;No WindPY Module!&#39;</span><span class="p">)</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">QA_util_date_valid</span><span class="p">(</span><span class="n">endDate</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s2">&quot;wrong date&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">wsd</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;xq_accmfocus,xq_accmcomments,xq_accmshares,</span><span class="se">\</span>
+<span class="s2">                    xq_focusadded,xq_commentsadded,xq_sharesadded,</span><span class="se">\</span>
+<span class="s2">                    xq_WOW_focus,xq_WOW_comments,xq_WOW_shares&quot;</span><span class="p">,</span> <span class="n">startDate</span><span class="p">,</span> <span class="n">endDate</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">ErrorCode</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s2">&quot;Connent to Wind successfully&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">Data</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">Fields</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">Times</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_get_stock_financial"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAWind.QA_fetch_get_stock_financial">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_get_stock_financial</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">startDate</span><span class="p">,</span> <span class="n">endDate</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">WindPy</span> <span class="k">import</span> <span class="n">w</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;No WindPY Module!&#39;</span><span class="p">)</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_get_trade_date"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAWind.QA_fetch_get_trade_date">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_get_trade_date</span><span class="p">(</span><span class="n">endDate</span><span class="p">,</span> <span class="n">exchange</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">WindPy</span> <span class="k">import</span> <span class="n">w</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;No WindPY Module!&#39;</span><span class="p">)</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="n">supportExchanges</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SSE&quot;</span><span class="p">,</span> <span class="s2">&quot;SZSE&quot;</span><span class="p">,</span> <span class="s2">&quot;CFFEX&quot;</span><span class="p">,</span> <span class="s2">&quot;SHFE&quot;</span><span class="p">,</span> <span class="s2">&quot;DCE&quot;</span><span class="p">,</span> <span class="s2">&quot;CZCE&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">exchange</span> <span class="ow">in</span> <span class="n">supportExchanges</span><span class="p">):</span>
+        <span class="c1">#&quot;SSE&quot;,&quot;SZSE&quot;,&quot;CFFEX&quot;,&quot;SHFE&quot;,&quot;DCE&quot;,&quot;CZCE&quot;</span>
+        <span class="c1"># 上海股票交易所,深圳股票交易所,中国金融期货交易所,上海期货交易所,大连商品交易所,郑州期货交易所</span>
+        <span class="n">exchanges</span> <span class="o">=</span> <span class="s2">&quot;TradingCalendar=&quot;</span> <span class="o">+</span> <span class="n">exchange</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">tdays</span><span class="p">(</span><span class="s2">&quot;1990-01-01&quot;</span><span class="p">,</span> <span class="n">endDate</span><span class="p">,</span> <span class="n">exchanges</span><span class="p">)</span>
+        <span class="c1"># QA_util_log_info(data.Data)</span>
+        <span class="n">dates</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">Data</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+                             <span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">Fields</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">Times</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s2">&quot;exchange name problem&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dates</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_get_stock_list"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAWind.QA_fetch_get_stock_list">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_get_stock_list</span><span class="p">(</span><span class="n">date</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">WindPy</span> <span class="k">import</span> <span class="n">w</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;No WindPY Module!&#39;</span><span class="p">)</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">QA_util_date_valid</span><span class="p">(</span><span class="n">date</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s2">&quot;wrong date&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">awgs</span> <span class="o">=</span> <span class="s1">&#39;date=&#39;</span> <span class="o">+</span> <span class="n">date</span> <span class="o">+</span> <span class="s1">&#39;;sectorid=a001010100000000&#39;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">wset</span><span class="p">(</span><span class="s2">&quot;sectorconstituent&quot;</span><span class="p">,</span> <span class="n">awgs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">Data</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">Fields</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">Times</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_get_stock_list_special"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAWind.QA_fetch_get_stock_list_special">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_get_stock_list_special</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">WindPy</span> <span class="k">import</span> <span class="n">w</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;No WindPY Module!&#39;</span><span class="p">)</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">QA_util_date_valid</span><span class="p">(</span><span class="n">date</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s2">&quot;wrong date&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">id</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;big&#39;</span><span class="p">,</span> <span class="s1">&#39;small&#39;</span><span class="p">,</span> <span class="s1">&#39;cixin&#39;</span><span class="p">,</span> <span class="s1">&#39;yujing&#39;</span><span class="p">,</span> <span class="s1">&#39;rzrq&#39;</span><span class="p">,</span> <span class="s1">&#39;rq&#39;</span><span class="p">,</span> <span class="s1">&#39;yj&#39;</span><span class="p">,</span> <span class="s1">&#39;st&#39;</span><span class="p">,</span> <span class="s1">&#39;sst&#39;</span><span class="p">]:</span>
+            <span class="n">awgs</span> <span class="o">=</span> <span class="s1">&#39;date=&#39;</span> <span class="o">+</span> <span class="n">date</span> <span class="o">+</span> <span class="s1">&#39;;sectorid=&#39;</span> <span class="o">+</span> \
+                <span class="n">data_list</span><span class="o">.</span><span class="n">wind_stock_list_special_id</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">wset</span><span class="p">(</span><span class="s2">&quot;sectorconstituent&quot;</span><span class="p">,</span> <span class="n">awgs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">Data</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">Fields</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">Times</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../QAFetch.html">QUANTAXIS.QAFetch</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, yutiansut.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

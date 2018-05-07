@@ -1,0 +1,209 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QUANTAXIS.QAData.data_fq &#8212; QUANTAXIS 1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for QUANTAXIS.QAData.data_fq</h1><div class="highlight"><pre>
+<span></span>
+<span class="c1"># coding:utf-8</span>
+<span class="c1">#</span>
+<span class="c1"># The MIT License (MIT)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2016-2018 yutiansut/QUANTAXIS</span>
+<span class="c1">#</span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1">#</span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+
+
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAFetch</span> <span class="k">import</span> <span class="n">QA_fetch_get_stock_day</span><span class="p">,</span> <span class="n">QA_fetch_get_stock_xdxr</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil</span> <span class="k">import</span> <span class="n">QA_util_log_info</span><span class="p">,</span> <span class="n">DATABASE</span>
+
+
+<div class="viewcode-block" id="QA_data_get_qfq"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAData.html#QUANTAXIS.QAData.data_fq.QA_data_get_qfq">[docs]</a><span class="k">def</span> <span class="nf">QA_data_get_qfq</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
+    <span class="s1">&#39;使用网络数据进行复权/需要联网&#39;</span>
+    <span class="n">xdxr_data</span> <span class="o">=</span> <span class="n">QA_fetch_get_stock_xdxr</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span>
+    <span class="n">bfq_data</span> <span class="o">=</span> <span class="n">QA_fetch_get_stock_day</span><span class="p">(</span>
+        <span class="s1">&#39;tdx&#39;</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="s1">&#39;1990-01-01&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()))</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">QA_data_make_qfq</span><span class="p">(</span><span class="n">bfq_data</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">],</span> <span class="n">xdxr_data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QA_data_get_hfq"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAData.html#QUANTAXIS.QAData.data_fq.QA_data_get_hfq">[docs]</a><span class="k">def</span> <span class="nf">QA_data_get_hfq</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
+    <span class="s1">&#39;使用网络数据进行复权/需要联网&#39;</span>
+    <span class="n">xdxr_data</span> <span class="o">=</span> <span class="n">QA_fetch_get_stock_xdxr</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span>
+    <span class="n">bfq_data</span> <span class="o">=</span> <span class="n">QA_fetch_get_stock_day</span><span class="p">(</span>
+        <span class="s1">&#39;tdx&#39;</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="s1">&#39;1990-01-01&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()))</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">QA_data_make_hfq</span><span class="p">(</span><span class="n">bfq_data</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">],</span> <span class="n">xdxr_data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QA_data_make_qfq"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAData.html#QUANTAXIS.QAData.data_fq.QA_data_make_qfq">[docs]</a><span class="k">def</span> <span class="nf">QA_data_make_qfq</span><span class="p">(</span><span class="n">bfq_data</span><span class="p">,</span> <span class="n">xdxr_data</span><span class="p">):</span>
+    <span class="s1">&#39;使用数据库数据进行复权&#39;</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">xdxr_data</span><span class="p">[</span><span class="n">xdxr_data</span><span class="p">[</span><span class="s1">&#39;category&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">bfq_data</span> <span class="o">=</span> <span class="n">bfq_data</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">if_trade</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">bfq_data</span><span class="p">,</span> <span class="n">info</span><span class="p">[[</span><span class="s1">&#39;category&#39;</span><span class="p">]]</span>
+                      <span class="p">[</span><span class="n">bfq_data</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">bfq_data</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;if_trade&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;ffill&#39;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">data</span><span class="p">,</span> <span class="n">info</span><span class="p">[[</span><span class="s1">&#39;fenhong&#39;</span><span class="p">,</span> <span class="s1">&#39;peigu&#39;</span><span class="p">,</span> <span class="s1">&#39;peigujia&#39;</span><span class="p">,</span>
+                                  <span class="s1">&#39;songzhuangu&#39;</span><span class="p">]][</span><span class="n">bfq_data</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">bfq_data</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;preclose&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;fenhong&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;peigu&#39;</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;peigujia&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="mi">10</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;peigu&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;songzhuangu&#39;</span><span class="p">])</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;adj&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;preclose&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span>
+                   <span class="n">data</span><span class="p">[</span><span class="s1">&#39;close&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">1</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cumprod</span><span class="p">()</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;adj&#39;</span><span class="p">]</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;high&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;high&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;adj&#39;</span><span class="p">]</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;low&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;low&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;adj&#39;</span><span class="p">]</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;close&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;close&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;adj&#39;</span><span class="p">]</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;preclose&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;preclose&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;adj&#39;</span><span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;high_limit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;high_limit&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;adj&#39;</span><span class="p">]</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;low_limit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;high_limit&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;adj&#39;</span><span class="p">]</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;if_trade==1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;fenhong&#39;</span><span class="p">,</span> <span class="s1">&#39;peigu&#39;</span><span class="p">,</span> <span class="s1">&#39;peigujia&#39;</span><span class="p">,</span> <span class="s1">&#39;songzhuangu&#39;</span><span class="p">,</span>
+                                           <span class="s1">&#39;if_trade&#39;</span><span class="p">,</span> <span class="s1">&#39;category&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;open != 0&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QA_data_make_hfq"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAData.html#QUANTAXIS.QAData.data_fq.QA_data_make_hfq">[docs]</a><span class="k">def</span> <span class="nf">QA_data_make_hfq</span><span class="p">(</span><span class="n">bfq_data</span><span class="p">,</span> <span class="n">xdxr_data</span><span class="p">):</span>
+    <span class="s1">&#39;使用数据库数据进行复权&#39;</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">xdxr_data</span><span class="p">[</span><span class="n">xdxr_data</span><span class="p">[</span><span class="s1">&#39;category&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">bfq_data</span> <span class="o">=</span> <span class="n">bfq_data</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">if_trade</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">bfq_data</span><span class="p">,</span> <span class="n">info</span><span class="p">[[</span><span class="s1">&#39;category&#39;</span><span class="p">]]</span>
+                      <span class="p">[</span><span class="n">bfq_data</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">bfq_data</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;if_trade&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;ffill&#39;</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">data</span><span class="p">,</span> <span class="n">info</span><span class="p">[[</span><span class="s1">&#39;fenhong&#39;</span><span class="p">,</span> <span class="s1">&#39;peigu&#39;</span><span class="p">,</span> <span class="s1">&#39;peigujia&#39;</span><span class="p">,</span>
+                                  <span class="s1">&#39;songzhuangu&#39;</span><span class="p">]][</span><span class="n">bfq_data</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">bfq_data</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;preclose&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;close&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;fenhong&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;peigu&#39;</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;peigujia&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="mi">10</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;peigu&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;songzhuangu&#39;</span><span class="p">])</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;adj&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;close&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;preclose&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                   <span class="p">)</span><span class="o">.</span><span class="n">cumprod</span><span class="p">()</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;adj&#39;</span><span class="p">]</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;high&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;high&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;adj&#39;</span><span class="p">]</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;low&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;low&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;adj&#39;</span><span class="p">]</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;close&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;close&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;adj&#39;</span><span class="p">]</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;preclose&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;preclose&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;adj&#39;</span><span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;high_limit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;high_limit&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;adj&#39;</span><span class="p">]</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;low_limit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;high_limit&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;adj&#39;</span><span class="p">]</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;if_trade==1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;fenhong&#39;</span><span class="p">,</span> <span class="s1">&#39;peigu&#39;</span><span class="p">,</span> <span class="s1">&#39;peigujia&#39;</span><span class="p">,</span> <span class="s1">&#39;songzhuangu&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;open != 0&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QA_data_stock_to_fq"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAData.html#QUANTAXIS.QAData.data_fq.QA_data_stock_to_fq">[docs]</a><span class="k">def</span> <span class="nf">QA_data_stock_to_fq</span><span class="p">(</span><span class="n">__data</span><span class="p">,</span> <span class="n">type_</span><span class="o">=</span><span class="s1">&#39;01&#39;</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__QA_fetch_stock_xdxr</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">format_</span><span class="o">=</span><span class="s1">&#39;pd&#39;</span><span class="p">,</span> <span class="n">collections</span><span class="o">=</span><span class="n">DATABASE</span><span class="o">.</span><span class="n">stock_xdxr</span><span class="p">):</span>
+        <span class="s1">&#39;获取股票除权信息/数据库&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">collections</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
+                <span class="p">{</span><span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="n">code</span><span class="p">})])</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;_id&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;code&#39;</span><span class="p">],</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[],</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="s1">&#39;category_meaning&#39;</span><span class="p">,</span> <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;fenhong&#39;</span><span class="p">,</span>
+                                         <span class="s1">&#39;fenshu&#39;</span><span class="p">,</span> <span class="s1">&#39;liquidity_after&#39;</span><span class="p">,</span> <span class="s1">&#39;liquidity_before&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;peigu&#39;</span><span class="p">,</span> <span class="s1">&#39;peigujia&#39;</span><span class="p">,</span>
+                                         <span class="s1">&#39;shares_after&#39;</span><span class="p">,</span> <span class="s1">&#39;shares_before&#39;</span><span class="p">,</span> <span class="s1">&#39;songzhuangu&#39;</span><span class="p">,</span> <span class="s1">&#39;suogu&#39;</span><span class="p">,</span> <span class="s1">&#39;xingquanjia&#39;</span><span class="p">])</span>
+    <span class="s1">&#39;股票 日线/分钟线 动态复权接口&#39;</span>
+    <span class="k">if</span> <span class="n">type_</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;01&#39;</span><span class="p">,</span> <span class="s1">&#39;qfq&#39;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">QA_data_make_qfq</span><span class="p">(</span><span class="n">__data</span><span class="p">,</span> <span class="n">__QA_fetch_stock_xdxr</span><span class="p">(</span><span class="n">__data</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;02&#39;</span><span class="p">,</span> <span class="s1">&#39;hfq&#39;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">QA_data_make_hfq</span><span class="p">(</span><span class="n">__data</span><span class="p">,</span> <span class="n">__QA_fetch_stock_xdxr</span><span class="p">(</span><span class="n">__data</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;wrong fq type! Using qfq&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">QA_data_make_qfq</span><span class="p">(</span><span class="n">__data</span><span class="p">,</span> <span class="n">__QA_fetch_stock_xdxr</span><span class="p">(</span><span class="n">__data</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, yutiansut.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

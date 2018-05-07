@@ -1,0 +1,367 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QUANTAXIS.QAARP.QARisk &#8212; QUANTAXIS 1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for QUANTAXIS.QAARP.QARisk</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding:utf-8</span>
+<span class="c1">#</span>
+<span class="c1"># The MIT License (MIT)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2016-2018 yutiansut/QUANTAXIS</span>
+<span class="c1">#</span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1">#</span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+
+
+<span class="sd">&quot;&quot;&quot;收益性的包括年化收益率、净利润、总盈利、总亏损、有效年化收益率、资金使用率。</span>
+
+<span class="sd">风险性主要包括胜率、平均盈亏比、最大回撤比例、最大连续亏损次数、最大连续盈利次数、持仓时间占比、贝塔。</span>
+
+<span class="sd">综合性指标主要包括风险收益比，夏普比例，波动率，VAR，偏度，峰度等&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">lru_cache</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAFetch.QAQuery_Advance</span> <span class="k">import</span> <span class="p">(</span><span class="n">QA_fetch_index_day_adv</span><span class="p">,</span>
+                                               <span class="n">QA_fetch_stock_day_adv</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QASU.save_account</span> <span class="k">import</span> <span class="n">save_riskanalysis</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QADate_trade</span> <span class="k">import</span> <span class="n">QA_util_get_trade_gap</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QAParameter</span> <span class="k">import</span> <span class="n">MARKET_TYPE</span>
+
+
+<div class="viewcode-block" id="QA_Risk"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QARisk.QA_Risk">[docs]</a><span class="k">class</span> <span class="nc">QA_Risk</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;QARISK 是一个风险插件</span>
+
+<span class="sd">    需要加载一个account/portfolio类进来:</span>
+<span class="sd">    需要有</span>
+<span class="sd">    code,start_date,end_date,daily_cash,daily_hold</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">benchmark_code</span><span class="o">=</span><span class="s1">&#39;000300&#39;</span><span class="p">,</span> <span class="n">benchmark_type</span><span class="o">=</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">INDEX_CN</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">account</span> <span class="o">=</span> <span class="n">account</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">benchmark_code</span> <span class="o">=</span> <span class="n">benchmark_code</span>  <span class="c1"># 默认沪深300</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">benchmark_type</span> <span class="o">=</span> <span class="n">benchmark_type</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fetch</span> <span class="o">=</span> <span class="p">{</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">STOCK_CN</span><span class="p">:</span> <span class="n">QA_fetch_stock_day_adv</span><span class="p">,</span>
+                      <span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">INDEX_CN</span><span class="p">:</span> <span class="n">QA_fetch_index_day_adv</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span> <span class="o">=</span> <span class="n">QA_fetch_stock_day_adv</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">account</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">account</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">account</span><span class="o">.</span><span class="n">end_date</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assets</span> <span class="o">=</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="o">.</span><span class="n">to_qfq</span><span class="p">()</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="s1">&#39;close&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">account</span><span class="o">.</span><span class="n">daily_hold</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">account</span><span class="o">.</span><span class="n">daily_cash</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">cash</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;pad&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_gap</span> <span class="o">=</span> <span class="n">QA_util_get_trade_gap</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">account</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">account</span><span class="o">.</span><span class="n">end_date</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_assets</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">account</span><span class="o">.</span><span class="n">init_assets</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt; QA_RISK ANALYSIS ACCOUNT/PORTFOLIO &gt;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">max_dropback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;最大回撤</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx</span><span class="p">::]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx</span><span class="p">::]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assets</span><span class="p">))])</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">profit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_profit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assets</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">profit_pct</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;利润</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_profitpctchange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assets</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">annualize_return</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;年化收益</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [type] -- [description]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_annualize_return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assets</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_gap</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">volatility</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;波动率</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [type] -- [description]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">profit_pct</span><span class="o">.</span><span class="n">std</span><span class="p">()</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">250</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">message</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;account_cookie&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">account</span><span class="o">.</span><span class="n">account_cookie</span><span class="p">,</span>
+            <span class="s1">&#39;portfolio_cookie&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">account</span><span class="o">.</span><span class="n">portfolio_cookie</span><span class="p">,</span>
+            <span class="s1">&#39;user_cookie&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">account</span><span class="o">.</span><span class="n">user_cookie</span><span class="p">,</span>
+            <span class="s1">&#39;annualize_return&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">annualize_return</span><span class="p">,</span>
+            <span class="s1">&#39;profit&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">profit</span><span class="p">,</span>
+            <span class="s1">&#39;max_dropback&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_dropback</span><span class="p">,</span>
+            <span class="s1">&#39;time_gap&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_gap</span><span class="p">,</span>
+            <span class="s1">&#39;volatility&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">volatility</span><span class="p">,</span>
+            <span class="s1">&#39;benchmark_code&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">benchmark_code</span><span class="p">,</span>
+            <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span>
+            <span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span>
+            <span class="s1">&#39;sharpe&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sharpe</span><span class="p">,</span>
+            <span class="s1">&#39;init_assets&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_assets</span><span class="p">,</span>
+            <span class="s1">&#39;last_assets&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">benchmark_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        基准组合的行情数据(一般是组合,可以调整)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">benchmark_type</span><span class="p">](</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">benchmark_code</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">account</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">account</span><span class="o">.</span><span class="n">end_date</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">benchmark_assets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        基准组合的账户资产队列</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">benchmark_data</span><span class="o">.</span><span class="n">open</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">benchmark_data</span><span class="o">.</span><span class="n">open</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">init_assets</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">benchmark_annualize_return</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;基准组合的年化收益</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [type] -- [description]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_annualize_return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">benchmark_assets</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_gap</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">benchmark_profitpct</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        benchmark 基准组合的收益百分比计算</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_profitpctchange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">benchmark_assets</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">beta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        beta比率 组合的系统性风险</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_beta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profit_pct</span><span class="o">.</span><span class="n">dropna</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">benchmark_profitpct</span><span class="o">.</span><span class="n">dropna</span><span class="p">())</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        alpha比率 与市场基准收益无关的超额收益率</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_alpha</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annualize_return</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">benchmark_annualize_return</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sharpe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        夏普比率</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_sharpe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annualize_return</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">volatility</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sortino</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        索提诺比率 投资组合收益和下行风险比值</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">calmar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        卡玛比率</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="QA_Risk.set_benchmark"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QARisk.QA_Risk.set_benchmark">[docs]</a>    <span class="k">def</span> <span class="nf">set_benchmark</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">market_type</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">benchmark_code</span> <span class="o">=</span> <span class="n">code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">benchmark_type</span> <span class="o">=</span> <span class="n">market_type</span></div>
+
+<div class="viewcode-block" id="QA_Risk.calc_annualize_return"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QARisk.QA_Risk.calc_annualize_return">[docs]</a>    <span class="k">def</span> <span class="nf">calc_annualize_return</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assets</span><span class="p">,</span> <span class="n">days</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">assets</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">assets</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span><span class="mi">1</span> <span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">days</span><span class="p">)</span> <span class="o">/</span><span class="mi">250</span> <span class="p">)</span></div>
+
+    <span class="c1"># def calc_profit(self, assets):</span>
+    <span class="c1">#     return (assets.iloc[-1] / assets.iloc[1]) - 1</span>
+
+<div class="viewcode-block" id="QA_Risk.calc_profitpctchange"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QARisk.QA_Risk.calc_profitpctchange">[docs]</a>    <span class="k">def</span> <span class="nf">calc_profitpctchange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assets</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">assets</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="QA_Risk.calc_beta"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QARisk.QA_Risk.calc_beta">[docs]</a>    <span class="k">def</span> <span class="nf">calc_beta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assest_profit</span><span class="p">,</span> <span class="n">benchmark_profit</span><span class="p">):</span>
+
+        <span class="n">calc_cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">assest_profit</span><span class="p">,</span> <span class="n">benchmark_profit</span><span class="p">)</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="n">calc_cov</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">calc_cov</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">beta</span></div>
+
+<div class="viewcode-block" id="QA_Risk.calc_alpha"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QARisk.QA_Risk.calc_alpha">[docs]</a>    <span class="k">def</span> <span class="nf">calc_alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annualized_returns</span><span class="p">,</span> <span class="n">benchmark_annualized_returns</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mf">0.05</span><span class="p">):</span>
+
+        <span class="n">alpha</span> <span class="o">=</span> <span class="p">(</span><span class="n">annualized_returns</span> <span class="o">-</span> <span class="n">r</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">*</span> \
+            <span class="p">(</span><span class="n">benchmark_annualized_returns</span> <span class="o">-</span> <span class="n">r</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">alpha</span></div>
+
+<div class="viewcode-block" id="QA_Risk.calc_profit"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QARisk.QA_Risk.calc_profit">[docs]</a>    <span class="k">def</span> <span class="nf">calc_profit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assets</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">assets</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">assets</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="o">-</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="QA_Risk.calc_sharpe"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QARisk.QA_Risk.calc_sharpe">[docs]</a>    <span class="k">def</span> <span class="nf">calc_sharpe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annualized_returns</span><span class="p">,</span> <span class="n">volatility_year</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mf">0.05</span><span class="p">):</span>
+        <span class="s1">&#39;计算夏普比率&#39;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">annualized_returns</span> <span class="o">-</span> <span class="n">r</span><span class="p">)</span> <span class="o">/</span> <span class="n">volatility_year</span></div>
+
+<div class="viewcode-block" id="QA_Risk.save"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QARisk.QA_Risk.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;save to mongodb</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">save_riskanalysis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="QA_Performance"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QARisk.QA_Performance">[docs]</a><span class="k">class</span> <span class="nc">QA_Performance</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    QA_Performance是一个绩效分析插件</span>
+
+<span class="sd">    需要加载一个account/portfolio类进来:</span>
+<span class="sd">    需要有</span>
+<span class="sd">    code,start_date,end_date,daily_cash,daily_hold</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">account</span> <span class="o">=</span> <span class="n">account</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_style_title</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;momentum&#39;</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">,</span> <span class="s1">&#39;earning_yield&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;volatility&#39;</span><span class="p">,</span> <span class="s1">&#39;growth&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="s1">&#39;leverage&#39;</span><span class="p">,</span> <span class="s1">&#39;liquidity&#39;</span><span class="p">,</span> <span class="s1">&#39;reversal&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">prefer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">style</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;风格分析</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="QA_Performance.abnormal_active"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QARisk.QA_Performance.abnormal_active">[docs]</a>    <span class="k">def</span> <span class="nf">abnormal_active</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        账户的成交发生异常成交记录的分析</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="QA_Performance.brinson"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QARisk.QA_Performance.brinson">[docs]</a>    <span class="k">def</span> <span class="nf">brinson</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Brinson Model analysis</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="QA_Performance.hold"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QARisk.QA_Performance.hold">[docs]</a>    <span class="k">def</span> <span class="nf">hold</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;持仓分析</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">accumulate_return</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns a pd-Dataframe format accumulate return for different periods</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="QA_Performance.save"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QARisk.QA_Performance.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;save the performance analysis result to database</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, yutiansut.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,423 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QUANTAXIS.QAUtil.QAParameter &#8212; QUANTAXIS 1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for QUANTAXIS.QAUtil.QAParameter</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -* coding: utf-8 -*-</span>
+<span class="c1">#</span>
+<span class="c1"># The MIT License (MIT)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2016-2018 yutiansut/QUANTAXIS</span>
+<span class="c1">#</span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1">#</span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">这里定义的是一些常用常量</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="ORDER_DIRECTION"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QAParameter.ORDER_DIRECTION">[docs]</a><span class="k">class</span> <span class="nc">ORDER_DIRECTION</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;订单的买卖方向</span>
+
+<span class="sd">    BUY 股票 买入</span>
+<span class="sd">    SELL 股票 卖出</span>
+<span class="sd">    BUY_OPEN 期货 多开</span>
+<span class="sd">    BUY_CLOSE 期货 空平(多头平旧仓)</span>
+<span class="sd">    SELL_OPEN 期货 空开</span>
+<span class="sd">    SELL_CLOSE 期货 多平(空头平旧仓)</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">BUY</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">SELL</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">BUY_OPEN</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">BUY_CLOSE</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">SELL_OPEN</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">SELL_CLOSE</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="ORDER_MODEL"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QAParameter.ORDER_MODEL">[docs]</a><span class="k">class</span> <span class="nc">ORDER_MODEL</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;订单的成交模式</span>
+
+<span class="sd">    LIMIT 限价模式</span>
+<span class="sd">    MARKET 市价单 # 目前市价单在回测中是bar的开盘价 /实盘里面是五档剩余最优成交价</span>
+<span class="sd">    CLOSE 收盘单 # 及在bar的收盘时的价格</span>
+<span class="sd">    NEXT_OPEN 下一个bar的开盘价成交</span>
+<span class="sd">    STRICT 严格订单 不推荐/仅限回测/是在当前bar的最高价买入/当前bar的最低价卖出</span>
+
+<span class="sd">    @yutiansut/2017-12-18</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">LIMIT</span> <span class="o">=</span> <span class="s1">&#39;limit&#39;</span>  <span class="c1"># 限价</span>
+    <span class="n">MARKET</span> <span class="o">=</span> <span class="s1">&#39;market&#39;</span>  <span class="c1"># 市价/在回测里是下个bar的开盘价买入/实盘就是五档剩余最优成交价</span>
+    <span class="n">CLOSE</span> <span class="o">=</span> <span class="s1">&#39;close&#39;</span>  <span class="c1"># 当前bar的收盘价买入</span>
+    <span class="n">NEXT_OPEN</span> <span class="o">=</span> <span class="s1">&#39;next_open&#39;</span>  <span class="c1"># 下个bar的开盘价买入</span>
+    <span class="n">STRICT</span> <span class="o">=</span> <span class="s1">&#39;strict&#39;</span>  <span class="c1"># 严格模式/不推荐(仅限回测测试用)</span></div>
+
+
+<div class="viewcode-block" id="ORDER_STATUS"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QAParameter.ORDER_STATUS">[docs]</a><span class="k">class</span> <span class="nc">ORDER_STATUS</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;订单状态</span>
+
+<span class="sd">    status1xx 订单待生成</span>
+<span class="sd">    status3xx 初始化订单  临时扣除资产(可用现金/可卖股份)</span>
+<span class="sd">    status3xx 订单存活(等待交易)</span>
+<span class="sd">    status2xx 订单完全交易/未完全交易</span>
+<span class="sd">    status4xx 主动撤单</span>
+<span class="sd">    status500 订单死亡(每日结算) 恢复临时资产    </span>
+
+<span class="sd">    200 委托成功,完全交易</span>
+<span class="sd">    203 委托成功,未完全成功</span>
+<span class="sd">    300 刚创建订单的时候</span>
+<span class="sd">    400 已撤单</span>
+<span class="sd">    500 服务器撤单/每日结算</span>
+
+<span class="sd">    订单生成(100) -- 进入待成交队列(300) -- 完全成交(200) -- 每日结算(500)-- 死亡</span>
+<span class="sd">    订单生成(100) -- 进入待成交队列(300) -- 部分成交(203) -- 未成交(300) -- 每日结算(500) -- 死亡</span>
+<span class="sd">    订单生成(100) -- 进入待成交队列(300) -- 主动撤单(400) -- 每日结算(500) -- 死亡</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">NEW</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">SUCCESS_ALL</span> <span class="o">=</span> <span class="mi">200</span>
+    <span class="n">SUCCESS_PART</span> <span class="o">=</span> <span class="mi">203</span>
+    <span class="n">QUEUED</span> <span class="o">=</span> <span class="mi">300</span>  <span class="c1"># queued 用于表示在order_queue中 实际表达的意思是订单存活 待成交</span>
+    <span class="n">CANCEL_ALL</span> <span class="o">=</span> <span class="mi">400</span>
+    <span class="n">SETTLED</span> <span class="o">=</span> <span class="mi">500</span></div>
+
+
+<div class="viewcode-block" id="AMOUNT_MODEL"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QAParameter.AMOUNT_MODEL">[docs]</a><span class="k">class</span> <span class="nc">AMOUNT_MODEL</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;订单的成交量</span>
+
+<span class="sd">    by_price是按固定成交总额下单,动态计算成交量</span>
+<span class="sd">    by_amount 按固定成家量下单</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">BY_PRICE</span> <span class="o">=</span> <span class="s1">&#39;by_price&#39;</span>
+    <span class="n">BY_AMOUNT</span> <span class="o">=</span> <span class="s1">&#39;by_amount&#39;</span></div>
+
+
+<div class="viewcode-block" id="RUNNING_ENVIRONMENT"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QAParameter.RUNNING_ENVIRONMENT">[docs]</a><span class="k">class</span> <span class="nc">RUNNING_ENVIRONMENT</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;执行环境</span>
+
+<span class="sd">    回测</span>
+<span class="sd">    模拟</span>
+<span class="sd">    实盘</span>
+<span class="sd">    随机(按算法/分布随机生成行情)/仅用于训练测试</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">BACKETEST</span> <span class="o">=</span> <span class="s1">&#39;backtest&#39;</span>
+    <span class="n">SIMULATION</span> <span class="o">=</span> <span class="s1">&#39;simulation&#39;</span>
+    <span class="n">REAL</span> <span class="o">=</span> <span class="s1">&#39;real&#39;</span>
+    <span class="n">RANODM</span> <span class="o">=</span> <span class="s1">&#39;random&#39;</span></div>
+
+
+<div class="viewcode-block" id="TRADE_STATUS"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QAParameter.TRADE_STATUS">[docs]</a><span class="k">class</span> <span class="nc">TRADE_STATUS</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;交易状态返回值</span>
+
+<span class="sd">    涨跌停限制: 202</span>
+<span class="sd">    成功交易 : 200</span>
+<span class="sd">    当天无交易数据: 500</span>
+<span class="sd">    订单失败(比如买卖价格超过涨跌停价格范围,交易量过大等等):400</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">SUCCESS</span> <span class="o">=</span> <span class="mi">200</span>
+    <span class="n">PRICE_LIMIT</span> <span class="o">=</span> <span class="mi">202</span>
+    <span class="n">NO_MARKET_DATA</span> <span class="o">=</span> <span class="mi">500</span>
+    <span class="n">FAILED</span> <span class="o">=</span> <span class="mi">400</span></div>
+
+
+<div class="viewcode-block" id="MARKET_ERROR"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QAParameter.MARKET_ERROR">[docs]</a><span class="k">class</span> <span class="nc">MARKET_ERROR</span><span class="p">():</span>
+    <span class="n">ACCOUNT_EXIST</span> <span class="o">=</span> <span class="s1">&#39;Account has already exist&#39;</span></div>
+
+
+<div class="viewcode-block" id="MARKET_TYPE"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QAParameter.MARKET_TYPE">[docs]</a><span class="k">class</span> <span class="nc">MARKET_TYPE</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;市场种类</span>
+
+<span class="sd">    日线 尾数01</span>
+<span class="sd">    分钟线 尾数02</span>
+<span class="sd">    tick 尾数03</span>
+
+<span class="sd">    市场:</span>
+<span class="sd">    股票 0</span>
+<span class="sd">    指数/基金 1</span>
+<span class="sd">    期货 2</span>
+<span class="sd">    港股 3</span>
+<span class="sd">    美股 4</span>
+<span class="sd">    比特币/加密货币市场 5</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">STOCK_CN</span> <span class="o">=</span> <span class="s1">&#39;stock_cn&#39;</span>  <span class="c1"># 中国A股</span>
+    <span class="n">STOCK_HK</span> <span class="o">=</span> <span class="s1">&#39;stock_hk&#39;</span>  <span class="c1"># 港股</span>
+    <span class="n">STOCK_US</span> <span class="o">=</span> <span class="s1">&#39;stock_us&#39;</span>  <span class="c1"># 美股</span>
+    <span class="n">FUTURE_CN</span> <span class="o">=</span> <span class="s1">&#39;future_cn&#39;</span>  <span class="c1"># 国内期货</span>
+    <span class="n">OPTION_CN</span> <span class="o">=</span> <span class="s1">&#39;option_cn&#39;</span>  <span class="c1"># 国内期权</span>
+    <span class="n">STOCKOPTION_CN</span> <span class="o">=</span> <span class="s1">&#39;stockoption_cn&#39;</span>  <span class="c1"># 个股期权</span>
+    <span class="c1"># BITCOIN = &#39;bitcoin&#39;  # 比特币</span>
+    <span class="n">CRYPTOCURRENCY</span> <span class="o">=</span> <span class="s1">&#39;cryptocurrency&#39;</span>  <span class="c1"># 加密货币(衍生货币)</span>
+    <span class="n">INDEX_CN</span> <span class="o">=</span> <span class="s1">&#39;index_cn&#39;</span>  <span class="c1"># 中国指数</span>
+    <span class="n">FUND_CN</span> <span class="o">=</span> <span class="s1">&#39;fund_cn&#39;</span>   <span class="c1"># 中国基金</span>
+    <span class="n">BOND_CN</span> <span class="o">=</span> <span class="s1">&#39;bond_cn&#39;</span>  <span class="c1"># 中国债券</span></div>
+
+
+<div class="viewcode-block" id="BROKER_TYPE"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QAParameter.BROKER_TYPE">[docs]</a><span class="k">class</span> <span class="nc">BROKER_TYPE</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;执行环境</span>
+
+<span class="sd">    回测</span>
+<span class="sd">    模拟</span>
+<span class="sd">    实盘</span>
+<span class="sd">    随机(按算法/分布随机生成行情)/仅用于训练测试</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">BACKETEST</span> <span class="o">=</span> <span class="s1">&#39;backtest&#39;</span>
+    <span class="n">SIMULATION</span> <span class="o">=</span> <span class="s1">&#39;simulation&#39;</span>
+    <span class="n">REAL</span> <span class="o">=</span> <span class="s1">&#39;real&#39;</span>
+    <span class="n">RANODM</span> <span class="o">=</span> <span class="s1">&#39;random&#39;</span></div>
+
+
+<div class="viewcode-block" id="EVENT_TYPE"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QAParameter.EVENT_TYPE">[docs]</a><span class="k">class</span> <span class="nc">EVENT_TYPE</span><span class="p">():</span>
+    <span class="n">BROKER_EVENT</span> <span class="o">=</span> <span class="s1">&#39;broker_event&#39;</span>
+    <span class="n">ACCOUNT_EVENT</span> <span class="o">=</span> <span class="s1">&#39;account_event&#39;</span>
+    <span class="n">MARKET_EVENT</span> <span class="o">=</span> <span class="s1">&#39;market_event&#39;</span>
+    <span class="n">TRADE_EVENT</span> <span class="o">=</span> <span class="s1">&#39;trade_event&#39;</span>
+    <span class="n">ENGINE_EVENT</span> <span class="o">=</span> <span class="s1">&#39;engine_event&#39;</span>
+    <span class="n">ORDER_EVENT</span> <span class="o">=</span> <span class="s1">&#39;order_event&#39;</span></div>
+
+
+<div class="viewcode-block" id="MARKET_EVENT"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QAParameter.MARKET_EVENT">[docs]</a><span class="k">class</span> <span class="nc">MARKET_EVENT</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;交易前置事件&quot;&quot;&quot;</span>
+    <span class="n">QUERY_ORDER</span> <span class="o">=</span> <span class="s1">&#39;query_order&#39;</span>
+    <span class="n">QUERY_ASSETS</span> <span class="o">=</span> <span class="s1">&#39;query_assets&#39;</span>
+    <span class="n">QUERY_ACCOUNT</span> <span class="o">=</span> <span class="s1">&#39;query_account&#39;</span>
+    <span class="n">QUERY_CASH</span> <span class="o">=</span> <span class="s1">&#39;query_cash&#39;</span>
+    <span class="n">QUERY_DATA</span> <span class="o">=</span> <span class="s1">&#39;query_data&#39;</span></div>
+
+
+<div class="viewcode-block" id="ENGINE_EVENT"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QAParameter.ENGINE_EVENT">[docs]</a><span class="k">class</span> <span class="nc">ENGINE_EVENT</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;引擎事件&quot;&quot;&quot;</span>
+    <span class="n">MARKET_INIT</span> <span class="o">=</span> <span class="s1">&#39;market_init&#39;</span>
+    <span class="n">UPCOMING_DATA</span> <span class="o">=</span> <span class="s1">&#39;upcoming_data&#39;</span>
+    <span class="n">BAR_SETTLE</span> <span class="o">=</span> <span class="s1">&#39;bar_settle&#39;</span>
+    <span class="n">DAILY_SETTLE</span> <span class="o">=</span> <span class="s1">&#39;daily_settle&#39;</span>
+    <span class="n">UPDATE</span> <span class="o">=</span> <span class="s1">&#39;update&#39;</span></div>
+
+
+<div class="viewcode-block" id="ACCOUNT_EVENT"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QAParameter.ACCOUNT_EVENT">[docs]</a><span class="k">class</span> <span class="nc">ACCOUNT_EVENT</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;账户事件&quot;&quot;&quot;</span>
+    <span class="n">UPDATE</span> <span class="o">=</span> <span class="s1">&#39;account_update&#39;</span>
+    <span class="n">SETTLE</span> <span class="o">=</span> <span class="s1">&#39;account_settle&#39;</span>
+    <span class="n">MAKE_ORDER</span> <span class="o">=</span> <span class="s1">&#39;account_make_order&#39;</span></div>
+
+
+<div class="viewcode-block" id="BROKER_EVENT"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QAParameter.BROKER_EVENT">[docs]</a><span class="k">class</span> <span class="nc">BROKER_EVENT</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;BROKER事件</span>
+<span class="sd">    BROKER </span>
+<span class="sd">    有加载数据的任务 load data</span>
+<span class="sd">    撮合成交的任务 broker_trade</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOAD_DATA</span> <span class="o">=</span> <span class="s1">&#39;load_data&#39;</span>
+    <span class="n">TRADE</span> <span class="o">=</span> <span class="s1">&#39;broker_trade&#39;</span>
+    <span class="n">SETTLE</span> <span class="o">=</span> <span class="s1">&#39;broker_settle&#39;</span>
+    <span class="n">DAILY_SETTLE</span> <span class="o">=</span> <span class="s1">&#39;broker_dailysettle&#39;</span>
+    <span class="n">RECEIVE_ORDER</span> <span class="o">=</span> <span class="s1">&#39;receive_order&#39;</span></div>
+
+
+<div class="viewcode-block" id="ORDER_EVENT"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QAParameter.ORDER_EVENT">[docs]</a><span class="k">class</span> <span class="nc">ORDER_EVENT</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;订单事件</span>
+
+<span class="sd">    创建订单 create</span>
+<span class="sd">    交易 trade</span>
+<span class="sd">    撤单 cancel</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">CREATE</span> <span class="o">=</span> <span class="s1">&#39;create&#39;</span>
+    <span class="n">TRADE</span> <span class="o">=</span> <span class="s1">&#39;trade&#39;</span>
+    <span class="n">CANCEL</span> <span class="o">=</span> <span class="s1">&#39;cancel&#39;</span></div>
+
+
+<div class="viewcode-block" id="FREQUENCE"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QAParameter.FREQUENCE">[docs]</a><span class="k">class</span> <span class="nc">FREQUENCE</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;查询的级别</span>
+
+<span class="sd">    [description]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">YEAR</span> <span class="o">=</span> <span class="s1">&#39;year&#39;</span>  <span class="c1"># 年bar</span>
+    <span class="n">QUARTER</span> <span class="o">=</span> <span class="s1">&#39;quarter&#39;</span>  <span class="c1"># 季度bar</span>
+    <span class="n">MONTH</span> <span class="o">=</span> <span class="s1">&#39;month&#39;</span>  <span class="c1"># 月bar</span>
+    <span class="n">WEEK</span> <span class="o">=</span> <span class="s1">&#39;week&#39;</span>  <span class="c1"># 周bar</span>
+    <span class="n">DAY</span> <span class="o">=</span> <span class="s1">&#39;day&#39;</span>  <span class="c1"># 日bar</span>
+    <span class="n">ONE_MIN</span> <span class="o">=</span> <span class="s1">&#39;1min&#39;</span>  <span class="c1"># 1min bar</span>
+    <span class="n">FIVE_MIN</span> <span class="o">=</span> <span class="s1">&#39;5min&#39;</span>  <span class="c1"># 5min bar</span>
+    <span class="n">FIFTEEN_MIN</span> <span class="o">=</span> <span class="s1">&#39;15min&#39;</span>  <span class="c1"># 15min bar</span>
+    <span class="n">THIRTY_MIN</span> <span class="o">=</span> <span class="s1">&#39;30min&#39;</span>  <span class="c1"># 30min bar</span>
+    <span class="n">HOUR</span> <span class="o">=</span> <span class="s1">&#39;60min&#39;</span>  <span class="c1"># 60min bar</span>
+    <span class="n">SIXTY_MIN</span> <span class="o">=</span> <span class="s1">&#39;60min&#39;</span>  <span class="c1"># 60min bar</span>
+    <span class="n">CURRENT</span> <span class="o">=</span> <span class="s1">&#39;current&#39;</span>  <span class="c1"># 当前bar</span>
+    <span class="n">TICK</span> <span class="o">=</span> <span class="s1">&#39;tick&#39;</span>  <span class="c1"># transaction</span></div>
+
+
+<div class="viewcode-block" id="CURRENCY_TYPE"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QAParameter.CURRENCY_TYPE">[docs]</a><span class="k">class</span> <span class="nc">CURRENCY_TYPE</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;货币种类&quot;&quot;&quot;</span>
+    <span class="n">RMB</span> <span class="o">=</span> <span class="s1">&#39;rmb&#39;</span>  <span class="c1"># 人民币</span>
+    <span class="n">USD</span> <span class="o">=</span> <span class="s1">&#39;usd&#39;</span>  <span class="c1"># 美元</span>
+    <span class="n">EUR</span> <span class="o">=</span> <span class="s1">&#39;eur&#39;</span>  <span class="c1"># 欧元</span>
+    <span class="n">HKD</span> <span class="o">=</span> <span class="s1">&#39;hkd&#39;</span>  <span class="c1"># 港币</span>
+    <span class="n">GBP</span> <span class="o">=</span> <span class="s1">&#39;GBP&#39;</span>  <span class="c1"># 英镑</span>
+    <span class="n">BTC</span> <span class="o">=</span> <span class="s1">&#39;btc&#39;</span>  <span class="c1"># 比特币</span>
+    <span class="n">JPY</span> <span class="o">=</span> <span class="s1">&#39;jpy&#39;</span>  <span class="c1"># 日元</span>
+    <span class="n">AUD</span> <span class="o">=</span> <span class="s1">&#39;aud&#39;</span>  <span class="c1"># 澳元</span>
+    <span class="n">CAD</span> <span class="o">=</span> <span class="s1">&#39;cad&#39;</span>  <span class="c1"># 加拿大元</span></div>
+
+
+<div class="viewcode-block" id="DATASOURCE"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QAParameter.DATASOURCE">[docs]</a><span class="k">class</span> <span class="nc">DATASOURCE</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;数据来源</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">WIND</span> <span class="o">=</span> <span class="s1">&#39;wind&#39;</span> <span class="c1"># wind金融终端</span>
+    <span class="n">TDB</span> <span class="o">=</span> <span class="s1">&#39;tdb&#39;</span> <span class="c1"># wind tdb</span>
+    <span class="n">THS</span> <span class="o">=</span> <span class="s1">&#39;ths&#39;</span> <span class="c1"># 同花顺网页</span>
+    <span class="n">TUSHARE</span> <span class="o">=</span> <span class="s1">&#39;tushare&#39;</span> <span class="c1"># tushare</span>
+    <span class="n">TDX</span> <span class="o">=</span> <span class="s1">&#39;tdx&#39;</span> <span class="c1"># 通达信</span>
+    <span class="n">MONGO</span> <span class="o">=</span> <span class="s1">&#39;mongo&#39;</span> <span class="c1"># 本地/远程Mongodb</span>
+    <span class="n">EASTMONEY</span> <span class="o">=</span> <span class="s1">&#39;eastmoney&#39;</span> <span class="c1"># 东方财富网</span>
+    <span class="n">CHOICE</span> <span class="o">=</span> <span class="s1">&#39;choice&#39;</span> <span class="c1"># choice金融终端</span>
+    <span class="n">CCXT</span> <span class="o">=</span> <span class="s1">&#39;ccxt&#39;</span> <span class="c1"># github/ccxt 虚拟货币</span>
+    <span class="n">LOCALFILE</span> <span class="o">=</span> <span class="s1">&#39;localfile&#39;</span> <span class="c1"># 本地文件</span></div>
+
+
+<div class="viewcode-block" id="OUTPUT_FORMAT"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QAParameter.OUTPUT_FORMAT">[docs]</a><span class="k">class</span> <span class="nc">OUTPUT_FORMAT</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;输出格式</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">DATASTRUCT</span> <span class="o">=</span> <span class="s1">&#39;datastruct&#39;</span>
+    <span class="n">DATAFRAME</span> <span class="o">=</span> <span class="s1">&#39;dataframe&#39;</span>
+    <span class="n">SERIES</span> <span class="o">=</span> <span class="s1">&#39;series&#39;</span>
+    <span class="n">NDARRAY</span> <span class="o">=</span> <span class="s1">&#39;ndarray&#39;</span>
+    <span class="n">LIST</span> <span class="o">=</span> <span class="s1">&#39;list&#39;</span>
+    <span class="n">JSON</span> <span class="o">=</span> <span class="s1">&#39;json&#39;</span></div>
+
+
+<span class="n">DATABASE_TABLE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">STOCK_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">DAY</span><span class="p">):</span> <span class="s1">&#39;stock_day&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">STOCK_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">ONE_MIN</span><span class="p">):</span> <span class="s1">&#39;stock_min&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">STOCK_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">FIVE_MIN</span><span class="p">):</span> <span class="s1">&#39;stock_min&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">STOCK_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">FIFTEEN_MIN</span><span class="p">):</span> <span class="s1">&#39;stock_min&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">STOCK_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">THIRTY_MIN</span><span class="p">):</span> <span class="s1">&#39;stock_min&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">STOCK_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">SIXTY_MIN</span><span class="p">):</span> <span class="s1">&#39;stock_min&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">STOCK_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">HOUR</span><span class="p">):</span> <span class="s1">&#39;stock_min&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">STOCK_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">TICK</span><span class="p">):</span> <span class="s1">&#39;stock_transaction&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">INDEX_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">DAY</span><span class="p">):</span> <span class="s1">&#39;index_day&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">INDEX_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">ONE_MIN</span><span class="p">):</span> <span class="s1">&#39;index_min&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">INDEX_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">FIVE_MIN</span><span class="p">):</span> <span class="s1">&#39;index_min&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">INDEX_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">FIFTEEN_MIN</span><span class="p">):</span> <span class="s1">&#39;index_min&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">INDEX_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">THIRTY_MIN</span><span class="p">):</span> <span class="s1">&#39;index_min&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">INDEX_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">SIXTY_MIN</span><span class="p">):</span> <span class="s1">&#39;index_min&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">INDEX_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">HOUR</span><span class="p">):</span> <span class="s1">&#39;index_min&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">INDEX_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">TICK</span><span class="p">):</span> <span class="s1">&#39;index_transaction&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">FUND_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">DAY</span><span class="p">):</span> <span class="s1">&#39;index_day&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">FUND_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">ONE_MIN</span><span class="p">):</span> <span class="s1">&#39;index_min&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">FUND_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">FIVE_MIN</span><span class="p">):</span> <span class="s1">&#39;index_min&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">FUND_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">FIFTEEN_MIN</span><span class="p">):</span> <span class="s1">&#39;index_min&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">FUND_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">THIRTY_MIN</span><span class="p">):</span> <span class="s1">&#39;index_min&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">FUND_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">SIXTY_MIN</span><span class="p">):</span> <span class="s1">&#39;index_min&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">FUND_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">HOUR</span><span class="p">):</span> <span class="s1">&#39;index_min&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">FUND_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">TICK</span><span class="p">):</span> <span class="s1">&#39;index_transaction&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">FUTURE_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">DAY</span><span class="p">):</span> <span class="s1">&#39;future_day&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">FUTURE_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">ONE_MIN</span><span class="p">):</span> <span class="s1">&#39;future_min&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">FUTURE_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">FIVE_MIN</span><span class="p">):</span> <span class="s1">&#39;future_min&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">FUTURE_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">FIFTEEN_MIN</span><span class="p">):</span> <span class="s1">&#39;future_min&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">FUTURE_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">THIRTY_MIN</span><span class="p">):</span> <span class="s1">&#39;future_min&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">FUTURE_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">SIXTY_MIN</span><span class="p">):</span> <span class="s1">&#39;future_min&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">FUTURE_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">HOUR</span><span class="p">):</span> <span class="s1">&#39;future_min&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">FUTURE_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">TICK</span><span class="p">):</span> <span class="s1">&#39;future_transaction&#39;</span>
+<span class="p">}</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, yutiansut.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

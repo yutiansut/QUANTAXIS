@@ -1,0 +1,361 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QUANTAXIS.QAMarket.shipaneclient &#8212; QUANTAXIS 1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for QUANTAXIS.QAMarket.shipaneclient</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="k">import</span> <span class="n">urlencode</span>
+
+<span class="kn">import</span> <span class="nn">lxml.html</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">six</span>
+<span class="kn">import</span> <span class="nn">tushare</span> <span class="k">as</span> <span class="nn">ts</span>
+<span class="kn">from</span> <span class="nn">lxml</span> <span class="k">import</span> <span class="n">etree</span>
+<span class="kn">from</span> <span class="nn">pandas.compat</span> <span class="k">import</span> <span class="n">StringIO</span>
+<span class="kn">from</span> <span class="nn">requests</span> <span class="k">import</span> <span class="n">Request</span>
+<span class="kn">from</span> <span class="nn">requests.auth</span> <span class="k">import</span> <span class="n">HTTPBasicAuth</span>
+
+
+<div class="viewcode-block" id="MediaType"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.shipaneclient.MediaType">[docs]</a><span class="k">class</span> <span class="nc">MediaType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">DEFAULT</span> <span class="o">=</span> <span class="s1">&#39;application/json&#39;</span>
+    <span class="n">JOIN_QUANT</span> <span class="o">=</span> <span class="s1">&#39;application/vnd.joinquant+json&#39;</span></div>
+
+
+<div class="viewcode-block" id="ConnectionMethod"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.shipaneclient.ConnectionMethod">[docs]</a><span class="k">class</span> <span class="nc">ConnectionMethod</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">DIRECT</span> <span class="o">=</span> <span class="s1">&#39;DIRECT&#39;</span>
+    <span class="n">PROXY</span> <span class="o">=</span> <span class="s1">&#39;PROXY&#39;</span></div>
+
+
+<div class="viewcode-block" id="Client"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.shipaneclient.Client">[docs]</a><span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">KEY_REGEX</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;key=([^&amp;]*)&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">logger</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logger</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">logging</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connection_method</span> <span class="o">=</span> <span class="n">ConnectionMethod</span><span class="p">[</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;connection_method&#39;</span><span class="p">,</span> <span class="s1">&#39;DIRECT&#39;</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connection_method</span> <span class="ow">is</span> <span class="n">ConnectionMethod</span><span class="o">.</span><span class="n">DIRECT</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_host</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;host&#39;</span><span class="p">,</span> <span class="s1">&#39;localhost&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_port</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;port&#39;</span><span class="p">,</span> <span class="mi">8888</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_proxy_base_url</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;proxy_base_url&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_proxy_username</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;proxy_username&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_proxy_password</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;proxy_password&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_instance_id</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;instance_id&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_base_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_base_url</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_key</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;key&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;client&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;timeout&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">host</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host</span>
+
+    <span class="nd">@host</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">host</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_host</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">port</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_port</span>
+
+    <span class="nd">@port</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">port</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_port</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key</span>
+
+    <span class="nd">@key</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_key</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span>
+
+    <span class="nd">@timeout</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">=</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="Client.get_statuses"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.shipaneclient.Client.get_statuses">[docs]</a>    <span class="k">def</span> <span class="nf">get_statuses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_url</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;statuses&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__send_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Client.get_account"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.shipaneclient.Client.get_account">[docs]</a>    <span class="k">def</span> <span class="nf">get_account</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_url</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s1">&#39;accounts&#39;</span><span class="p">))</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__send_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Client.get_positions"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.shipaneclient.Client.get_positions">[docs]</a>    <span class="k">def</span> <span class="nf">get_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">media_type</span><span class="o">=</span><span class="n">MediaType</span><span class="o">.</span><span class="n">DEFAULT</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_url</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s1">&#39;positions&#39;</span><span class="p">))</span>
+        <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Accept&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">media_type</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__send_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
+        <span class="n">json</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">media_type</span> <span class="o">==</span> <span class="n">MediaType</span><span class="o">.</span><span class="n">DEFAULT</span><span class="p">:</span>
+            <span class="n">sub_accounts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;subAccounts&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+            <span class="n">positions</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;dataTable&#39;</span><span class="p">][</span><span class="s1">&#39;rows&#39;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;dataTable&#39;</span><span class="p">][</span><span class="s1">&#39;columns&#39;</span><span class="p">])</span>
+            <span class="n">portfolio</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sub_accounts&#39;</span><span class="p">:</span> <span class="n">sub_accounts</span><span class="p">,</span> <span class="s1">&#39;positions&#39;</span><span class="p">:</span> <span class="n">positions</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">portfolio</span>
+        <span class="k">return</span> <span class="n">json</span></div>
+
+<div class="viewcode-block" id="Client.get_orders"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.shipaneclient.Client.get_orders">[docs]</a>    <span class="k">def</span> <span class="nf">get_orders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_url</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s1">&#39;orders&#39;</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="p">))</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__send_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
+        <span class="n">json</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;dataTable&#39;</span><span class="p">][</span><span class="s1">&#39;rows&#39;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;dataTable&#39;</span><span class="p">][</span><span class="s1">&#39;columns&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">df</span></div>
+
+<div class="viewcode-block" id="Client.buy"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.shipaneclient.Client.buy">[docs]</a>    <span class="k">def</span> <span class="nf">buy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;BUY&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__execute</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Client.sell"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.shipaneclient.Client.sell">[docs]</a>    <span class="k">def</span> <span class="nf">sell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;SELL&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__execute</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Client.ipo"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.shipaneclient.Client.ipo">[docs]</a>    <span class="k">def</span> <span class="nf">ipo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;IPO&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__execute</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Client.execute"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.shipaneclient.Client.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__execute</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Client.cancel"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.shipaneclient.Client.cancel">[docs]</a>    <span class="k">def</span> <span class="nf">cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">order_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="s1">&#39;DELETE&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_order_url</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">order_id</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__send_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Client.cancel_all"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.shipaneclient.Client.cancel_all">[docs]</a>    <span class="k">def</span> <span class="nf">cancel_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="s1">&#39;DELETE&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_order_url</span><span class="p">(</span><span class="n">client</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__send_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Client.query"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.shipaneclient.Client.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">navigation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_url</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">navigation</span><span class="o">=</span><span class="n">navigation</span><span class="p">))</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__send_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
+        <span class="n">json</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;dataTable&#39;</span><span class="p">][</span><span class="s1">&#39;rows&#39;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;dataTable&#39;</span><span class="p">][</span><span class="s1">&#39;columns&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">df</span></div>
+
+<div class="viewcode-block" id="Client.query_new_stocks"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.shipaneclient.Client.query_new_stocks">[docs]</a>    <span class="k">def</span> <span class="nf">query_new_stocks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_new_stocks</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Client.query_convertible_bonds"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.shipaneclient.Client.query_convertible_bonds">[docs]</a>    <span class="k">def</span> <span class="nf">query_convertible_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__query_convertible_bonds</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Client.purchase_new_stocks"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.shipaneclient.Client.purchase_new_stocks">[docs]</a>    <span class="k">def</span> <span class="nf">purchase_new_stocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">today</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">(),</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_new_stocks</span><span class="p">()</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">ipo_date</span> <span class="o">==</span> <span class="n">today</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;今日有[</span><span class="si">{}</span><span class="s1">]支可申购新股&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">order</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">&#39;symbol&#39;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;xcode&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;price&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;amountProportion&#39;</span><span class="p">:</span> <span class="s1">&#39;ALL&#39;</span>
+                <span class="p">}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;申购新股：</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">order</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ipo</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="o">**</span><span class="n">order</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="s1">&#39;客户端[</span><span class="si">{}</span><span class="s1">]申购新股[</span><span class="si">{}</span><span class="s1">(</span><span class="si">{}</span><span class="s1">)]失败</span><span class="se">\n</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">client</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="p">),</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">],</span> <span class="n">e</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Client.purchase_convertible_bonds"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.shipaneclient.Client.purchase_convertible_bonds">[docs]</a>    <span class="k">def</span> <span class="nf">purchase_convertible_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">today</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">(),</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_convertible_bonds</span><span class="p">()</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">ipo_date</span> <span class="o">==</span> <span class="n">today</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;今日有[</span><span class="si">{}</span><span class="s1">]支可申购转债&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">order</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">&#39;symbol&#39;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;xcode&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                    <span class="s1">&#39;amountProportion&#39;</span><span class="p">:</span> <span class="s1">&#39;ALL&#39;</span>
+                <span class="p">}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;申购转债：</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">order</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">buy</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="o">**</span><span class="n">order</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="s1">&#39;客户端[</span><span class="si">{}</span><span class="s1">]申购转债[</span><span class="si">{}</span><span class="s1">(</span><span class="si">{}</span><span class="s1">)]失败</span><span class="se">\n</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">client</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="p">),</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;bname&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;xcode&#39;</span><span class="p">],</span> <span class="n">e</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Client.create_adjustment"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.shipaneclient.Client.create_adjustment">[docs]</a>    <span class="k">def</span> <span class="nf">create_adjustment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">request_json</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_url</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s1">&#39;adjustments&#39;</span><span class="p">),</span> <span class="n">json</span><span class="o">=</span><span class="n">request_json</span><span class="p">)</span>
+        <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MediaType</span><span class="o">.</span><span class="n">JOIN_QUANT</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__send_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
+        <span class="n">json</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">json</span></div>
+
+<div class="viewcode-block" id="Client.start_clients"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.shipaneclient.Client.start_clients">[docs]</a>    <span class="k">def</span> <span class="nf">start_clients</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="s1">&#39;PUT&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_url</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;clients&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__send_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Client.shutdown_clients"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.shipaneclient.Client.shutdown_clients">[docs]</a>    <span class="k">def</span> <span class="nf">shutdown_clients</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="s1">&#39;DELETE&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_url</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;clients&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__send_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">):</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;LIMIT&#39;</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_order_url</span><span class="p">(</span><span class="n">client</span><span class="p">),</span> <span class="n">json</span><span class="o">=</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__send_request</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__query_new_stocks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">DATA_URL</span> <span class="o">=</span> <span class="s1">&#39;http://vip.stock.finance.sina.com.cn/corp/view/vRPD_NewStockIssue.php?page=1&amp;cngem=0&amp;orderBy=NetDate&amp;orderType=desc&#39;</span>
+        <span class="n">html</span> <span class="o">=</span> <span class="n">lxml</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">DATA_URL</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//table[@id=</span><span class="se">\&quot;</span><span class="s1">NewStockTable</span><span class="se">\&quot;</span><span class="s1">]/tr&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">six</span><span class="o">.</span><span class="n">PY2</span><span class="p">:</span>
+            <span class="n">sarr</span> <span class="o">=</span> <span class="p">[</span><span class="n">etree</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">res</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sarr</span> <span class="o">=</span> <span class="p">[</span><span class="n">etree</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">node</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">res</span><span class="p">]</span>
+        <span class="n">sarr</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sarr</span><span class="p">)</span>
+        <span class="n">sarr</span> <span class="o">=</span> <span class="n">sarr</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&lt;font color=&quot;red&quot;&gt;*&lt;/font&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">sarr</span> <span class="o">=</span> <span class="s1">&#39;&lt;table&gt;</span><span class="si">%s</span><span class="s1">&lt;/table&gt;&#39;</span> <span class="o">%</span> <span class="n">sarr</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_html</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">sarr</span><span class="p">),</span> <span class="n">skiprows</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;xcode&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;ipo_date&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">]</span>
+        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;xcode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;xcode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">df</span>
+
+    <span class="k">def</span> <span class="nf">__query_convertible_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">new_cbonds</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">df</span>
+
+    <span class="k">def</span> <span class="nf">__create_order_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">order_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__create_url</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s1">&#39;orders&#39;</span><span class="p">,</span> <span class="n">order_id</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__create_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">resource</span><span class="p">,</span> <span class="n">resource_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+        <span class="n">all_params</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">all_params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="p">(</span><span class="n">client</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="p">))</span>
+        <span class="n">all_params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_key</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">resource_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resource</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">?</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_url</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">urlencode</span><span class="p">(</span><span class="n">all_params</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">url</span>
+
+    <span class="k">def</span> <span class="nf">__create_base_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connection_method</span> <span class="ow">is</span> <span class="n">ConnectionMethod</span><span class="o">.</span><span class="n">DIRECT</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;http://</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proxy_base_url</span>
+
+    <span class="k">def</span> <span class="nf">__send_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connection_method</span> <span class="ow">is</span> <span class="n">ConnectionMethod</span><span class="o">.</span><span class="n">PROXY</span><span class="p">:</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">auth</span> <span class="o">=</span> <span class="n">HTTPBasicAuth</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_proxy_username</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proxy_password</span><span class="p">)</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;X-Instance-ID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance_id</span>
+        <span class="n">prepared_request</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__log_request</span><span class="p">(</span><span class="n">prepared_request</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">requests</span><span class="o">.</span><span class="n">sessions</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">prepared_request</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="p">(</span><span class="n">timeout</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__log_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">response</span>
+
+    <span class="k">def</span> <span class="nf">__log_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prepared_request</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__eliminate_privacy</span><span class="p">(</span><span class="n">prepared_request</span><span class="o">.</span><span class="n">path_url</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">prepared_request</span><span class="o">.</span><span class="n">body</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Request:</span><span class="se">\n</span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prepared_request</span><span class="o">.</span><span class="n">method</span><span class="p">,</span> <span class="n">url</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Request:</span><span class="se">\n</span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="se">\n</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prepared_request</span><span class="o">.</span><span class="n">method</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">prepared_request</span><span class="o">.</span><span class="n">body</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">__log_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;Response:</span><span class="se">\n</span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="se">\n</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">__eliminate_privacy</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">KEY_REGEX</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">url</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">masked_key</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">KEY_REGEX</span><span class="p">,</span> <span class="s2">&quot;key=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">masked_key</span><span class="p">),</span> <span class="n">url</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">url</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, yutiansut.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

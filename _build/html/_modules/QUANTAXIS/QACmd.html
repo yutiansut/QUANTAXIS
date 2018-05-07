@@ -1,0 +1,327 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QUANTAXIS.QACmd &#8212; QUANTAXIS 1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for QUANTAXIS.QACmd</h1><div class="highlight"><pre>
+<span></span><span class="c1"># encoding: UTF-8</span>
+<span class="c1">#</span>
+<span class="c1"># The MIT License (MIT)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2016-2018 yutiansut/QUANTAXIS</span>
+<span class="c1">#</span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1">#</span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+
+<span class="kn">import</span> <span class="nn">cmd</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QABacktest.QAAnalysis</span> <span class="k">import</span> <span class="n">QA_backtest_analysis_backtest</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil</span> <span class="k">import</span> <span class="n">QA_util_log_info</span><span class="p">,</span> <span class="n">QA_Setting</span><span class="p">,</span> <span class="n">QA_util_mongo_initial</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS</span> <span class="k">import</span> <span class="p">(</span><span class="n">QA_SU_save_stock_list</span><span class="p">,</span> <span class="n">QA_SU_save_stock_min</span><span class="p">,</span> <span class="n">QA_SU_save_stock_xdxr</span><span class="p">,</span>
+                       <span class="n">QA_SU_save_stock_block</span><span class="p">,</span> <span class="n">QA_SU_save_stock_info</span><span class="p">,</span>
+                       <span class="n">QA_SU_save_stock_day</span><span class="p">,</span> <span class="n">QA_SU_save_index_day</span><span class="p">,</span> <span class="n">QA_SU_save_index_min</span><span class="p">,</span>
+                       <span class="n">QA_SU_save_etf_day</span><span class="p">,</span> <span class="n">QA_SU_save_etf_min</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">QUANTAXIS</span> <span class="k">import</span> <span class="n">__version__</span>
+
+
+<div class="viewcode-block" id="CLI"><a class="viewcode-back" href="../../source/QUANTAXIS.QACmd.html#QUANTAXIS.QACmd.CLI">[docs]</a><span class="k">class</span> <span class="nc">CLI</span><span class="p">(</span><span class="n">cmd</span><span class="o">.</span><span class="n">Cmd</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">cmd</span><span class="o">.</span><span class="n">Cmd</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span> <span class="o">=</span> <span class="s1">&#39;QUANTAXIS&gt; &#39;</span>    <span class="c1"># 定义命令行提示符</span>
+
+<div class="viewcode-block" id="CLI.do_shell"><a class="viewcode-back" href="../../source/QUANTAXIS.QACmd.html#QUANTAXIS.QACmd.CLI.do_shell">[docs]</a>    <span class="k">def</span> <span class="nf">do_shell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+        <span class="s2">&quot;run a shell commad&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
+        <span class="n">sub_cmd</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">sub_cmd</span><span class="o">.</span><span class="n">communicate</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="CLI.do_version"><a class="viewcode-back" href="../../source/QUANTAXIS.QACmd.html#QUANTAXIS.QACmd.CLI.do_version">[docs]</a>    <span class="k">def</span> <span class="nf">do_version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="n">__version__</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CLI.help_version"><a class="viewcode-back" href="../../source/QUANTAXIS.QACmd.html#QUANTAXIS.QACmd.CLI.help_version">[docs]</a>    <span class="k">def</span> <span class="nf">help_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;syntax: version [message]&quot;</span><span class="p">,)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-- prints a version message&quot;</span><span class="p">)</span></div>
+
+    <span class="c1">#@click.command()</span>
+    <span class="c1">#@click.option(&#39;--e&#39;, default=1, help=&#39;Number of greetings.&#39;)</span>
+<div class="viewcode-block" id="CLI.do_examples"><a class="viewcode-back" href="../../source/QUANTAXIS.QACmd.html#QUANTAXIS.QACmd.CLI.do_examples">[docs]</a>    <span class="k">def</span> <span class="nf">do_examples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;QUANTAXIS example&#39;</span><span class="p">)</span>
+        <span class="n">now_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+        <span class="c1">#project_dir = os.path.dirname(os.path.abspath(__file__))</span>
+        
+        <span class="n">data</span><span class="o">=</span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://codeload.github.com/yutiansut/QADemo/zip/master&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2">QADEMO.zip&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">now_path</span><span class="p">,</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">),</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">code</span><span class="p">:</span>
+            <span class="n">code</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+
+        <span class="n">QA_util_log_info</span><span class="p">(</span>
+            <span class="s1">&#39;Successfully generate QADEMO in : </span><span class="si">{}</span><span class="s1">, for more examples, please visit https://github.com/yutiansut/qademo&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">now_path</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="CLI.help_examples"><a class="viewcode-back" href="../../source/QUANTAXIS.QACmd.html#QUANTAXIS.QACmd.CLI.help_examples">[docs]</a>    <span class="k">def</span> <span class="nf">help_examples</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;make a sample backtest framework&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CLI.do_drop_database"><a class="viewcode-back" href="../../source/QUANTAXIS.QACmd.html#QUANTAXIS.QACmd.CLI.do_drop_database">[docs]</a>    <span class="k">def</span> <span class="nf">do_drop_database</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+        <span class="n">QA_util_mongo_initial</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CLI.help_drop_database"><a class="viewcode-back" href="../../source/QUANTAXIS.QACmd.html#QUANTAXIS.QACmd.CLI.help_drop_database">[docs]</a>    <span class="k">def</span> <span class="nf">help_drop_database</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;drop quantaxis</span><span class="se">\&#39;</span><span class="s1">s databases&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CLI.do_quit"><a class="viewcode-back" href="../../source/QUANTAXIS.QACmd.html#QUANTAXIS.QACmd.CLI.do_quit">[docs]</a>    <span class="k">def</span> <span class="nf">do_quit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>     <span class="c1"># 定义quit命令所执行的操作</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CLI.help_quit"><a class="viewcode-back" href="../../source/QUANTAXIS.QACmd.html#QUANTAXIS.QACmd.CLI.help_quit">[docs]</a>    <span class="k">def</span> <span class="nf">help_quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>        <span class="c1"># 定义quit命令的帮助输出</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;syntax: quit&quot;</span><span class="p">,)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-- terminates the application&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CLI.do_clean"><a class="viewcode-back" href="../../source/QUANTAXIS.QACmd.html#QUANTAXIS.QACmd.CLI.do_clean">[docs]</a>    <span class="k">def</span> <span class="nf">do_clean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Windows&#39;</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="s1">&#39;del back*csv&#39;</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="s1">&#39;del *log&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="s1">&#39;rm -rf back*csv&#39;</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="s1">&#39;rm -rf  *log&#39;</span><span class="p">)</span>
+
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="CLI.help_clean"><a class="viewcode-back" href="../../source/QUANTAXIS.QACmd.html#QUANTAXIS.QACmd.CLI.help_clean">[docs]</a>    <span class="k">def</span> <span class="nf">help_clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;Clean the old backtest reports and logs&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CLI.do_exit"><a class="viewcode-back" href="../../source/QUANTAXIS.QACmd.html#QUANTAXIS.QACmd.CLI.do_exit">[docs]</a>    <span class="k">def</span> <span class="nf">do_exit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>     <span class="c1"># 定义quit命令所执行的操作</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CLI.help_exit"><a class="viewcode-back" href="../../source/QUANTAXIS.QACmd.html#QUANTAXIS.QACmd.CLI.help_exit">[docs]</a>    <span class="k">def</span> <span class="nf">help_exit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;syntax: exit&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-- terminates the application&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CLI.do_save"><a class="viewcode-back" href="../../source/QUANTAXIS.QACmd.html#QUANTAXIS.QACmd.CLI.do_save">[docs]</a>    <span class="k">def</span> <span class="nf">do_save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+        <span class="c1"># 仅仅是为了初始化才在这里插入用户,如果想要注册用户,要到webkit底下注册</span>
+        <span class="k">if</span> <span class="n">arg</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;Usage: </span><span class="se">\n\</span>
+<span class="s2">                save all  : save stock_day/xdxr/ index_day/ stock_list </span><span class="se">\n\</span>
+<span class="s2">                save X|x  : save stock_day/xdxr/min index_day/min etf_day/min stock_list/block </span><span class="se">\n\</span>
+<span class="s2">                save day  : save stock_day/xdxr index_day etf_day stock_list </span><span class="se">\n\</span>
+<span class="s2">                save min  : save stock_min/xdxr index_min etf_min stock_list </span><span class="se">\n\</span>
+<span class="s2">                ------------------------------------------------------------ </span><span class="se">\n\</span>
+<span class="s2">                save stock_day  : save stock_day </span><span class="se">\n\</span>
+<span class="s2">                save stock_xdxr : save stock_xdxr </span><span class="se">\n\</span>
+<span class="s2">                save stock_min  : save stock_min </span><span class="se">\n\</span>
+<span class="s2">                save index_day  : save index_day </span><span class="se">\n\</span>
+<span class="s2">                save index_min  : save index_min </span><span class="se">\n\</span>
+<span class="s2">                save etf_day    : save etf_day </span><span class="se">\n\</span>
+<span class="s2">                save etf_min    : save etf_min </span><span class="se">\n\</span>
+<span class="s2">                save stock_list : save stock_list </span><span class="se">\n\</span>
+<span class="s2">                save stock_block: save stock_block </span><span class="se">\n\</span>
+<span class="s2">                save stock_info : save stock_info </span><span class="se">\n\</span>
+<span class="s2">                ----------------------------------------------------------</span><span class="se">\n\</span>
+<span class="s2">                if you just want to save daily data just</span><span class="se">\n\</span>
+<span class="s2">                    save all+ save stock_block+save stock_info, it about 1G data </span><span class="se">\n\</span>
+<span class="s2">                if you want to save save the fully data including min level </span><span class="se">\n\</span>
+<span class="s2">                    save x + save stock_info </span><span class="se">\n</span><span class="s2"> </span><span class="se">\n\</span>
+<span class="s2">                @yutiansut</span><span class="se">\n\</span>
+<span class="s2">                @QUANTAXIS</span><span class="se">\n\</span>
+<span class="s2">                &quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">arg</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">QA_Setting</span><span class="p">()</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">quantaxis</span><span class="o">.</span><span class="n">user_list</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="s1">&#39;admin&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">QA_Setting</span><span class="p">()</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">quantaxis</span><span class="o">.</span><span class="n">user_list</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+                        <span class="p">{</span><span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="s1">&#39;admin&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span><span class="p">:</span> <span class="s1">&#39;admin&#39;</span><span class="p">})</span>
+                <span class="n">QA_SU_save_stock_day</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">)</span>
+                <span class="n">QA_SU_save_stock_xdxr</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">)</span>
+                <span class="c1"># QA_SU_save_stock_min(&#39;tdx&#39;)</span>
+                <span class="n">QA_SU_save_index_day</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">)</span>
+                <span class="c1"># QA_SU_save_index_min(&#39;tdx&#39;)</span>
+                <span class="c1"># QA_SU_save_etf_day(&#39;tdx&#39;)</span>
+                <span class="c1"># QA_SU_save_etf_min(&#39;tdx&#39;)</span>
+                <span class="n">QA_SU_save_stock_list</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">)</span>
+                <span class="c1"># QA_SU_save_stock_block(&#39;tdx&#39;)</span>
+                <span class="c1"># QA_SU_save_stock_info(&#39;tdx&#39;)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;day&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">QA_Setting</span><span class="p">()</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">quantaxis</span><span class="o">.</span><span class="n">user_list</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="s1">&#39;admin&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">QA_Setting</span><span class="p">()</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">quantaxis</span><span class="o">.</span><span class="n">user_list</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+                        <span class="p">{</span><span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="s1">&#39;admin&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span><span class="p">:</span> <span class="s1">&#39;admin&#39;</span><span class="p">})</span>
+                <span class="n">QA_SU_save_stock_day</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">)</span>
+                <span class="n">QA_SU_save_stock_xdxr</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">)</span>
+                <span class="c1"># QA_SU_save_stock_min(&#39;tdx&#39;)</span>
+                <span class="n">QA_SU_save_index_day</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">)</span>
+                <span class="c1"># QA_SU_save_index_min(&#39;tdx&#39;)</span>
+                <span class="n">QA_SU_save_etf_day</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">)</span>
+                <span class="c1"># QA_SU_save_etf_min(&#39;tdx&#39;)</span>
+                <span class="n">QA_SU_save_stock_list</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">)</span>
+                <span class="n">QA_SU_save_stock_block</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;min&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">QA_Setting</span><span class="p">()</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">quantaxis</span><span class="o">.</span><span class="n">user_list</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="s1">&#39;admin&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">QA_Setting</span><span class="p">()</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">quantaxis</span><span class="o">.</span><span class="n">user_list</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+                        <span class="p">{</span><span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="s1">&#39;admin&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span><span class="p">:</span> <span class="s1">&#39;admin&#39;</span><span class="p">})</span>
+                <span class="c1"># QA_SU_save_stock_day(&#39;tdx&#39;)</span>
+                <span class="n">QA_SU_save_stock_xdxr</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">)</span>
+                <span class="n">QA_SU_save_stock_min</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">)</span>
+                <span class="c1"># QA_SU_save_index_day(&#39;tdx&#39;)</span>
+                <span class="n">QA_SU_save_index_min</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">)</span>
+                <span class="c1"># QA_SU_save_etf_day(&#39;tdx&#39;)</span>
+                <span class="n">QA_SU_save_etf_min</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">)</span>
+                <span class="n">QA_SU_save_stock_list</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">)</span>
+                <span class="c1"># QA_SU_save_stock_block(&#39;tdx&#39;)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">QA_Setting</span><span class="p">()</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">quantaxis</span><span class="o">.</span><span class="n">user_list</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="s1">&#39;admin&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">QA_Setting</span><span class="p">()</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">quantaxis</span><span class="o">.</span><span class="n">user_list</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+                        <span class="p">{</span><span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="s1">&#39;admin&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span><span class="p">:</span> <span class="s1">&#39;admin&#39;</span><span class="p">})</span>
+                <span class="n">QA_SU_save_stock_day</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">)</span>
+                <span class="n">QA_SU_save_stock_xdxr</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">)</span>
+                <span class="n">QA_SU_save_stock_min</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">)</span>
+                <span class="n">QA_SU_save_index_day</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">)</span>
+                <span class="n">QA_SU_save_index_min</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">)</span>
+                <span class="n">QA_SU_save_etf_day</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">)</span>
+                <span class="n">QA_SU_save_etf_min</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">)</span>
+                <span class="n">QA_SU_save_stock_list</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">)</span>
+                <span class="n">QA_SU_save_stock_block</span><span class="p">(</span><span class="s1">&#39;tdx&#39;</span><span class="p">)</span>
+                <span class="c1"># QA_SU_save_stock_info(&#39;tdx&#39;)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">arg</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="s1">&#39;insert_user&#39;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">QA_Setting</span><span class="p">()</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">quantaxis</span><span class="o">.</span><span class="n">user_list</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="s1">&#39;admin&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">QA_Setting</span><span class="p">()</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">quantaxis</span><span class="o">.</span><span class="n">user_list</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+                                <span class="p">{</span><span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="s1">&#39;admin&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span><span class="p">:</span> <span class="s1">&#39;admin&#39;</span><span class="p">})</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;QA_SU_save_</span><span class="si">%s</span><span class="s2">(&#39;tdx&#39;)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="CLI.help_save"><a class="viewcode-back" href="../../source/QUANTAXIS.QACmd.html#QUANTAXIS.QACmd.CLI.help_save">[docs]</a>    <span class="k">def</span> <span class="nf">help_save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;Save all the stock data from pytdx&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CLI.do_fn"><a class="viewcode-back" href="../../source/QUANTAXIS.QACmd.html#QUANTAXIS.QACmd.CLI.do_fn">[docs]</a>    <span class="k">def</span> <span class="nf">do_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">QA_util_log_info</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="ne">Exception</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CLI.do_help"><a class="viewcode-back" href="../../source/QUANTAXIS.QACmd.html#QUANTAXIS.QACmd.CLI.do_help">[docs]</a>    <span class="k">def</span> <span class="nf">do_help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;MORE EXAMPLE on https://github.com/yutiansut/QADemo&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CLI.help"><a class="viewcode-back" href="../../source/QUANTAXIS.QACmd.html#QUANTAXIS.QACmd.CLI.help">[docs]</a>    <span class="k">def</span> <span class="nf">help</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;fn+methods name&#39;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="sourcecpy"><a class="viewcode-back" href="../../source/QUANTAXIS.QACmd.html#QUANTAXIS.QACmd.sourcecpy">[docs]</a><span class="k">def</span> <span class="nf">sourcecpy</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">des</span><span class="p">):</span>
+    <span class="n">src</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+    <span class="n">des</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">des</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">src</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;folder is not exist&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># 获得原始目录中所有的文件，并拼接每个文件的绝对路径</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+    <span class="n">src_file</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">()]</span>
+    <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="n">src_file</span><span class="p">:</span>
+        <span class="c1"># 若是文件</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">des</span><span class="p">)</span>  <span class="c1"># 第一个参数是文件，第二个参数目录</span>
+        <span class="c1"># 若是目录</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+            <span class="n">p</span><span class="p">,</span> <span class="n">src_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+            <span class="n">des</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">des</span><span class="p">,</span> <span class="n">src_name</span><span class="p">)</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">des</span><span class="p">)</span>  <span class="c1"># 第一个参数是目录，第二个参数也是目录</span></div>
+
+<span class="c1"># 创建CLI实例并运行</span>
+
+
+<div class="viewcode-block" id="QA_cmd"><a class="viewcode-back" href="../../source/QUANTAXIS.QACmd.html#QUANTAXIS.QACmd.QA_cmd">[docs]</a><span class="k">def</span> <span class="nf">QA_cmd</span><span class="p">():</span>
+    <span class="n">cli</span> <span class="o">=</span> <span class="n">CLI</span><span class="p">()</span>
+    <span class="n">cli</span><span class="o">.</span><span class="n">cmdloop</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, yutiansut.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

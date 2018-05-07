@@ -1,0 +1,399 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QUANTAXIS.QAMarket.QAMarket &#8212; QUANTAXIS 1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for QUANTAXIS.QAMarket.QAMarket</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding :utf-8</span>
+<span class="c1">#</span>
+<span class="c1"># The MIT License (MIT)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2016-2018 yutiansut/QUANTAXIS</span>
+<span class="c1">#</span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1">#</span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+
+
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAARP.QAAccount</span> <span class="k">import</span> <span class="n">QA_Account</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAEngine.QAEvent</span> <span class="k">import</span> <span class="n">QA_Event</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAEngine.QATask</span> <span class="k">import</span> <span class="n">QA_Task</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAMarket.QABacktestBroker</span> <span class="k">import</span> <span class="n">QA_BacktestBroker</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAMarket.QARandomBroker</span> <span class="k">import</span> <span class="n">QA_RandomBroker</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAMarket.QARealBroker</span> <span class="k">import</span> <span class="n">QA_RealBroker</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAMarket.QASimulatedBroker</span> <span class="k">import</span> <span class="n">QA_SimulatedBroker</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAMarket.QATrade</span> <span class="k">import</span> <span class="n">QA_Trade</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QAParameter</span> <span class="k">import</span> <span class="p">(</span><span class="n">ACCOUNT_EVENT</span><span class="p">,</span> <span class="n">AMOUNT_MODEL</span><span class="p">,</span>
+                                          <span class="n">BROKER_EVENT</span><span class="p">,</span> <span class="n">BROKER_TYPE</span><span class="p">,</span>
+                                          <span class="n">ENGINE_EVENT</span><span class="p">,</span> <span class="n">MARKET_EVENT</span><span class="p">,</span>
+                                          <span class="n">FREQUENCE</span><span class="p">,</span> <span class="n">ORDER_EVENT</span><span class="p">,</span>
+                                          <span class="n">ORDER_MODEL</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QALogs</span> <span class="k">import</span> <span class="n">QA_util_log_info</span>
+
+
+<div class="viewcode-block" id="QA_Market"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market">[docs]</a><span class="k">class</span> <span class="nc">QA_Market</span><span class="p">(</span><span class="n">QA_Trade</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    QUANTAXIS MARKET 部分</span>
+
+<span class="sd">    交易前置/可连接到多个broker中</span>
+
+<span class="sd">    暂时还是采用多线程engine模式</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_broker</span> <span class="o">=</span> <span class="p">{</span><span class="n">BROKER_TYPE</span><span class="o">.</span><span class="n">BACKETEST</span><span class="p">:</span> <span class="n">QA_BacktestBroker</span><span class="p">,</span> <span class="n">BROKER_TYPE</span><span class="o">.</span><span class="n">RANODM</span><span class="p">:</span> <span class="n">QA_RandomBroker</span><span class="p">,</span>
+                        <span class="n">BROKER_TYPE</span><span class="o">.</span><span class="n">REAL</span><span class="p">:</span> <span class="n">QA_RealBroker</span><span class="p">,</span> <span class="n">BROKER_TYPE</span><span class="o">.</span><span class="n">SIMULATION</span><span class="p">:</span> <span class="n">QA_SimulatedBroker</span><span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">broker</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">running_time</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_query_data</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt; QA_MARKET with </span><span class="si">{}</span><span class="s1"> Broker &gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+<div class="viewcode-block" id="QA_Market.upcoming_data"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.upcoming_data">[docs]</a>    <span class="k">def</span> <span class="nf">upcoming_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broker</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="c1"># main thread&#39;</span>
+
+        <span class="c1"># if self.running_time is not None and self.running_time!= data.datetime[0]:</span>
+        <span class="c1">#     for item in self.broker.keys():</span>
+        <span class="c1">#         self._settle(item)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">running_time</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">datetime</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="c1"># session里面是已经注册的account</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">QA_Task</span><span class="p">(</span>
+                <span class="n">worker</span><span class="o">=</span><span class="n">item</span><span class="p">,</span>
+                <span class="n">event</span><span class="o">=</span><span class="n">QA_Event</span><span class="p">(</span>
+                    <span class="n">event_type</span><span class="o">=</span><span class="n">ENGINE_EVENT</span><span class="o">.</span><span class="n">UPCOMING_DATA</span><span class="p">,</span>
+                    <span class="n">market_data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                    <span class="n">broker_name</span><span class="o">=</span><span class="n">broker</span><span class="p">,</span>
+                    <span class="n">send_order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">insert_order</span><span class="p">,</span>
+                    <span class="n">query_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">query_data_no_wait</span><span class="p">,</span>
+                    <span class="n">query_order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">query_order</span><span class="p">,</span>
+                    <span class="n">query_assets</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">query_assets</span><span class="p">,</span>
+                    <span class="n">query_trade</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">query_trade</span>
+                <span class="p">)</span>
+            <span class="p">))</span></div>
+
+<div class="viewcode-block" id="QA_Market.start"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trade_engine</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+        <span class="c1"># self.trade_engine.create_kernal(&#39;MARKET&#39;)</span>
+        <span class="c1"># self.trade_engine.start_kernal(&#39;MARKET&#39;)</span>
+
+<div class="viewcode-block" id="QA_Market.connect"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broker</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">broker</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_broker</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="p">[</span><span class="n">broker</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_broker</span><span class="p">[</span><span class="n">broker</span><span class="p">]()</span>  <span class="c1"># 在这里实例化</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trade_engine</span><span class="o">.</span><span class="n">create_kernal</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">broker</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trade_engine</span><span class="o">.</span><span class="n">start_kernal</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">broker</span><span class="p">))</span>
+            <span class="c1"># 开启trade事件子线程</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="QA_Market.register"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.register">[docs]</a>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broker_name</span><span class="p">,</span> <span class="n">broker</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">broker_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_broker</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="p">[</span><span class="n">broker_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">broker</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trade_engine</span><span class="o">.</span><span class="n">create_kernal</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">broker_name</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trade_engine</span><span class="o">.</span><span class="n">start_kernal</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">broker_name</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="QA_Market.get_account"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.get_account">[docs]</a>    <span class="k">def</span> <span class="nf">get_account</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account_cookie</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="n">account_cookie</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="QA_Market.login"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.login">[docs]</a>    <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broker_name</span><span class="p">,</span> <span class="n">account_cookie</span><span class="p">,</span> <span class="n">account</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">account</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">account_cookie</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="n">account_cookie</span><span class="p">]</span> <span class="o">=</span> <span class="n">QA_Account</span><span class="p">(</span>
+                    <span class="n">account_cookie</span><span class="o">=</span><span class="n">account_cookie</span><span class="p">,</span> <span class="n">broker</span><span class="o">=</span><span class="n">broker_name</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">account_cookie</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">account</span><span class="o">.</span><span class="n">broker</span> <span class="o">=</span> <span class="n">broker_name</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="n">account_cookie</span><span class="p">]</span> <span class="o">=</span> <span class="n">account</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="QA_Market.logout"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.logout">[docs]</a>    <span class="k">def</span> <span class="nf">logout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account_cookie</span><span class="p">,</span> <span class="n">broker_name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">account_cookie</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">account_cookie</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QA_Market.get_trading_day"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.get_trading_day">[docs]</a>    <span class="k">def</span> <span class="nf">get_trading_day</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">running_time</span></div>
+
+<div class="viewcode-block" id="QA_Market.get_account_id"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.get_account_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_account_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="QA_Market.insert_order"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.insert_order">[docs]</a>    <span class="k">def</span> <span class="nf">insert_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account_id</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="n">amount_model</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">order_model</span><span class="p">,</span> <span class="n">towards</span><span class="p">,</span> <span class="n">market_type</span><span class="p">,</span> <span class="n">frequence</span><span class="p">,</span> <span class="n">broker_name</span><span class="p">):</span>
+
+        <span class="n">flag</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">order_model</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ORDER_MODEL</span><span class="o">.</span><span class="n">CLOSE</span><span class="p">,</span> <span class="n">ORDER_MODEL</span><span class="o">.</span><span class="n">NEXT_OPEN</span><span class="p">]:</span>
+            <span class="n">_price</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_data_no_wait</span><span class="p">(</span><span class="n">broker_name</span><span class="o">=</span><span class="n">broker_name</span><span class="p">,</span> <span class="n">frequence</span><span class="o">=</span><span class="n">frequence</span><span class="p">,</span>
+                                             <span class="n">market_type</span><span class="o">=</span><span class="n">market_type</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="n">code</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">_price</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">_price</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">price</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">_price</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">4</span><span class="p">])</span>
+                <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;MARKET WARING: SOMEING WRONG WITH ORDER </span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">)</span>
+                <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;code </span><span class="si">{}</span><span class="s1"> date </span><span class="si">{}</span><span class="s1"> price </span><span class="si">{}</span><span class="s1"> order_model </span><span class="si">{}</span><span class="s1"> amount_model </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">code</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">order_model</span><span class="p">,</span> <span class="n">amount_model</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">order_model</span> <span class="ow">is</span> <span class="n">ORDER_MODEL</span><span class="o">.</span><span class="n">MARKET</span><span class="p">:</span>
+            <span class="n">_price</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_data_no_wait</span><span class="p">(</span><span class="n">broker_name</span><span class="o">=</span><span class="n">broker_name</span><span class="p">,</span> <span class="n">frequence</span><span class="o">=</span><span class="n">frequence</span><span class="p">,</span>
+                                             <span class="n">market_type</span><span class="o">=</span><span class="n">market_type</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="n">code</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">_price</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">_price</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">price</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">_price</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;MARKET WARING: SOMEING WRONG WITH ORDER </span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">)</span>
+                <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;code </span><span class="si">{}</span><span class="s1"> date </span><span class="si">{}</span><span class="s1"> price </span><span class="si">{}</span><span class="s1"> order_model </span><span class="si">{}</span><span class="s1"> amount_model </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">code</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">order_model</span><span class="p">,</span> <span class="n">amount_model</span><span class="p">))</span>
+
+        <span class="k">elif</span> <span class="n">order_model</span> <span class="ow">is</span> <span class="n">ORDER_MODEL</span><span class="o">.</span><span class="n">LIMIT</span><span class="p">:</span>
+            <span class="c1"># if price &gt; self.last_query_data[0][2] or price &lt; self.last_query_data[0][3]:</span>
+            <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
+            <span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_account</span><span class="p">(</span><span class="n">account_id</span><span class="p">)</span><span class="o">.</span><span class="n">send_order</span><span class="p">(</span>
+                <span class="n">amount</span><span class="o">=</span><span class="n">amount</span><span class="p">,</span> <span class="n">amount_model</span><span class="o">=</span><span class="n">amount_model</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="n">code</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="n">price</span><span class="p">,</span>
+                <span class="n">order_model</span><span class="o">=</span><span class="n">order_model</span><span class="p">,</span> <span class="n">towards</span><span class="o">=</span><span class="n">towards</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+                <span class="n">QA_Task</span><span class="p">(</span>
+                    <span class="n">worker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_account</span><span class="p">(</span><span class="n">account_id</span><span class="p">)</span><span class="o">.</span><span class="n">broker</span><span class="p">],</span>
+                    <span class="n">engine</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_account</span><span class="p">(</span><span class="n">account_id</span><span class="p">)</span><span class="o">.</span><span class="n">broker</span><span class="p">,</span>
+                    <span class="n">event</span><span class="o">=</span><span class="n">QA_Event</span><span class="p">(</span>
+                        <span class="n">event_type</span><span class="o">=</span><span class="n">BROKER_EVENT</span><span class="o">.</span><span class="n">RECEIVE_ORDER</span><span class="p">,</span>
+                        <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
+                        <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_insert_order</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="QA_Market.on_insert_order"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.on_insert_order">[docs]</a>    <span class="k">def</span> <span class="nf">on_insert_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">order</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_renew_account</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+                <span class="n">QA_Task</span><span class="p">(</span>
+                    <span class="n">worker</span><span class="o">=</span><span class="n">item</span><span class="p">,</span>
+                    <span class="n">event</span><span class="o">=</span><span class="n">QA_Event</span><span class="p">(</span>
+                        <span class="n">event_type</span><span class="o">=</span><span class="n">ACCOUNT_EVENT</span><span class="o">.</span><span class="n">SETTLE</span><span class="p">)))</span>
+
+<div class="viewcode-block" id="QA_Market.query_order"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.query_order">[docs]</a>    <span class="k">def</span> <span class="nf">query_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broker_name</span><span class="p">,</span> <span class="n">order_id</span><span class="p">):</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+            <span class="n">QA_Task</span><span class="p">(</span>
+                <span class="n">worker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="p">[</span><span class="n">broker_name</span><span class="p">],</span>
+                <span class="n">engine</span><span class="o">=</span><span class="n">broker_name</span><span class="p">,</span>
+                <span class="n">event</span><span class="o">=</span><span class="n">QA_Event</span><span class="p">(</span>
+                    <span class="n">order_id</span><span class="o">=</span><span class="n">order_id</span>
+                <span class="p">)</span>
+            <span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="QA_Market.query_assets"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.query_assets">[docs]</a>    <span class="k">def</span> <span class="nf">query_assets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account_cookie</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_account</span><span class="p">(</span><span class="n">account_cookie</span><span class="p">)</span><span class="o">.</span><span class="n">assets</span></div>
+
+<div class="viewcode-block" id="QA_Market.query_position"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.query_position">[docs]</a>    <span class="k">def</span> <span class="nf">query_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account_cookie</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_account</span><span class="p">(</span><span class="n">account_cookie</span><span class="p">)</span><span class="o">.</span><span class="n">hold</span></div>
+
+<div class="viewcode-block" id="QA_Market.query_cash"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.query_cash">[docs]</a>    <span class="k">def</span> <span class="nf">query_cash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account_cookie</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_account</span><span class="p">(</span><span class="n">account_cookie</span><span class="p">)</span><span class="o">.</span><span class="n">cash_available</span></div>
+
+<div class="viewcode-block" id="QA_Market.query_data_no_wait"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.query_data_no_wait">[docs]</a>    <span class="k">def</span> <span class="nf">query_data_no_wait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broker_name</span><span class="p">,</span> <span class="n">frequence</span><span class="p">,</span> <span class="n">market_type</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="p">[</span><span class="n">broker_name</span><span class="p">]</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="n">QA_Event</span><span class="p">(</span>
+            <span class="n">event_type</span><span class="o">=</span><span class="n">MARKET_EVENT</span><span class="o">.</span><span class="n">QUERY_DATA</span><span class="p">,</span>
+            <span class="n">frequence</span><span class="o">=</span><span class="n">frequence</span><span class="p">,</span>
+            <span class="n">market_type</span><span class="o">=</span><span class="n">market_type</span><span class="p">,</span>
+            <span class="n">code</span><span class="o">=</span><span class="n">code</span><span class="p">,</span>
+            <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
+            <span class="n">end</span><span class="o">=</span><span class="n">end</span>
+        <span class="p">))</span></div>
+
+<div class="viewcode-block" id="QA_Market.query_data"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.query_data">[docs]</a>    <span class="k">def</span> <span class="nf">query_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broker_name</span><span class="p">,</span> <span class="n">frequence</span><span class="p">,</span> <span class="n">market_type</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+            <span class="n">QA_Task</span><span class="p">(</span>
+                <span class="n">worker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="p">[</span><span class="n">broker_name</span><span class="p">],</span>
+                <span class="n">engine</span><span class="o">=</span><span class="n">broker_name</span><span class="p">,</span>
+                <span class="n">event</span><span class="o">=</span><span class="n">QA_Event</span><span class="p">(</span>
+                    <span class="n">event_type</span><span class="o">=</span><span class="n">MARKET_EVENT</span><span class="o">.</span><span class="n">QUERY_DATA</span><span class="p">,</span>
+                    <span class="n">frequence</span><span class="o">=</span><span class="n">frequence</span><span class="p">,</span>
+                    <span class="n">market_type</span><span class="o">=</span><span class="n">market_type</span><span class="p">,</span>
+                    <span class="n">code</span><span class="o">=</span><span class="n">code</span><span class="p">,</span>
+                    <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
+                    <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">,</span>
+                    <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_query_data</span>
+                <span class="p">)</span>
+            <span class="p">))</span></div>
+
+<div class="viewcode-block" id="QA_Market.query_currentbar"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.query_currentbar">[docs]</a>    <span class="k">def</span> <span class="nf">query_currentbar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broker_name</span><span class="p">,</span> <span class="n">market_type</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="p">[</span><span class="n">broker_name</span><span class="p">]</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="n">QA_Event</span><span class="p">(</span>
+            <span class="n">event_type</span><span class="o">=</span><span class="n">MARKET_EVENT</span><span class="o">.</span><span class="n">QUERY_DATA</span><span class="p">,</span>
+            <span class="n">frequence</span><span class="o">=</span><span class="n">FREQUENCE</span><span class="o">.</span><span class="n">CURRENT</span><span class="p">,</span>
+            <span class="n">market_type</span><span class="o">=</span><span class="n">market_type</span><span class="p">,</span>
+            <span class="n">code</span><span class="o">=</span><span class="n">code</span><span class="p">,</span>
+            <span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">running_time</span><span class="p">,</span>
+            <span class="n">end</span><span class="o">=</span><span class="kc">None</span>
+        <span class="p">))</span></div>
+
+<div class="viewcode-block" id="QA_Market.on_query_data"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.on_query_data">[docs]</a>    <span class="k">def</span> <span class="nf">on_query_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ON QUERY&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_query_data</span> <span class="o">=</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="QA_Market.on_trade_event"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.on_trade_event">[docs]</a>    <span class="k">def</span> <span class="nf">on_trade_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ON TRADE&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">res</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_trade</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="s2">&quot;内部函数&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">QA_Task</span><span class="p">(</span>
+            <span class="n">worker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="p">[</span><span class="n">event</span><span class="o">.</span><span class="n">broker_name</span><span class="p">],</span>
+            <span class="n">engine</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">broker_name</span><span class="p">,</span>
+            <span class="n">event</span><span class="o">=</span><span class="n">QA_Event</span><span class="p">(</span>
+                <span class="n">event_type</span><span class="o">=</span><span class="n">BROKER_EVENT</span><span class="o">.</span><span class="n">TRADE</span><span class="p">,</span>
+                <span class="n">broker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="p">[</span><span class="n">event</span><span class="o">.</span><span class="n">broker_name</span><span class="p">],</span>
+                <span class="n">broker_name</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">broker_name</span><span class="p">,</span>
+                <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_trade_event</span>
+            <span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">_settle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broker_name</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="c1"># 向事件线程发送BROKER的SETTLE事件</span>
+
+        <span class="c1"># 向事件线程发送ACCOUNT的SETTLE事件</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">broker</span> <span class="ow">is</span> <span class="n">broker_name</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+                    <span class="n">QA_Task</span><span class="p">(</span>
+                        <span class="n">worker</span><span class="o">=</span><span class="n">item</span><span class="p">,</span>
+                        <span class="n">engine</span><span class="o">=</span><span class="n">broker_name</span><span class="p">,</span>
+                        <span class="n">event</span><span class="o">=</span><span class="n">QA_Event</span><span class="p">(</span>
+                            <span class="n">event_type</span><span class="o">=</span><span class="n">ACCOUNT_EVENT</span><span class="o">.</span><span class="n">SETTLE</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">QA_Task</span><span class="p">(</span>
+            <span class="n">worker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="p">[</span><span class="n">broker_name</span><span class="p">],</span>
+            <span class="n">engine</span><span class="o">=</span><span class="n">broker_name</span><span class="p">,</span>
+            <span class="n">event</span><span class="o">=</span><span class="n">QA_Event</span><span class="p">(</span>
+                <span class="n">event_type</span><span class="o">=</span><span class="n">BROKER_EVENT</span><span class="o">.</span><span class="n">SETTLE</span><span class="p">,</span>
+                <span class="n">broker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="p">[</span><span class="n">broker_name</span><span class="p">],</span>
+                <span class="n">callback</span><span class="o">=</span><span class="n">callback</span><span class="p">)))</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;===== SETTLED </span><span class="si">{}</span><span class="s1"> =====&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">running_time</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="QA_Market.clear"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trade_engine</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+
+    <span class="kn">import</span> <span class="nn">QUANTAXIS</span> <span class="k">as</span> <span class="nn">QA</span>
+
+    <span class="n">user</span> <span class="o">=</span> <span class="n">QA</span><span class="o">.</span><span class="n">QA_Portfolio</span><span class="p">()</span>
+    <span class="c1"># 创建两个account</span>
+
+    <span class="n">a_1</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">new_account</span><span class="p">()</span>
+    <span class="n">a_2</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">new_account</span><span class="p">()</span>
+    <span class="n">market</span> <span class="o">=</span> <span class="n">QA_Market</span><span class="p">()</span>
+
+    <span class="n">market</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">QA</span><span class="o">.</span><span class="n">RUNNING_ENVIRONMENT</span><span class="o">.</span><span class="n">BACKETEST</span><span class="p">)</span>
+    <span class="c1">#</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, yutiansut.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

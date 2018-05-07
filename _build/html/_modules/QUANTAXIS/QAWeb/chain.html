@@ -1,0 +1,358 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QUANTAXIS.QAWeb.chain &#8212; QUANTAXIS 1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for QUANTAXIS.QAWeb.chain</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">time</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="k">import</span> <span class="n">urlparse</span>
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="k">import</span> <span class="n">uuid4</span>
+
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">request</span>
+
+<span class="c1">#from https://github.com/xilibi2003/blockchain/blob/master/blockchain.py</span>
+
+
+<div class="viewcode-block" id="Blockchain"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAWeb.html#QUANTAXIS.QAWeb.chain.Blockchain">[docs]</a><span class="k">class</span> <span class="nc">Blockchain</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_transactions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chain</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+        <span class="c1"># 创建创世块</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_block</span><span class="p">(</span><span class="n">previous_hash</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="n">proof</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Blockchain.register_node"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAWeb.html#QUANTAXIS.QAWeb.chain.Blockchain.register_node">[docs]</a>    <span class="k">def</span> <span class="nf">register_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a new node to the list of nodes</span>
+<span class="sd">        :param address: Address of node. Eg. &#39;http://192.168.0.5:5000&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">parsed_url</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">netloc</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Blockchain.valid_chain"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAWeb.html#QUANTAXIS.QAWeb.chain.Blockchain.valid_chain">[docs]</a>    <span class="k">def</span> <span class="nf">valid_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determine if a given blockchain is valid</span>
+<span class="sd">        :param chain: A blockchain</span>
+<span class="sd">        :return: True if valid, False if not</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">last_block</span> <span class="o">=</span> <span class="n">chain</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">current_index</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">while</span> <span class="n">current_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">chain</span><span class="p">):</span>
+            <span class="n">block</span> <span class="o">=</span> <span class="n">chain</span><span class="p">[</span><span class="n">current_index</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{last_block}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{block}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">-----------</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="c1"># Check that the hash of the block is correct</span>
+            <span class="k">if</span> <span class="n">block</span><span class="p">[</span><span class="s1">&#39;previous_hash&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="n">last_block</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+            <span class="c1"># Check that the Proof of Work is correct</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_proof</span><span class="p">(</span><span class="n">last_block</span><span class="p">[</span><span class="s1">&#39;proof&#39;</span><span class="p">],</span> <span class="n">block</span><span class="p">[</span><span class="s1">&#39;proof&#39;</span><span class="p">]):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+            <span class="n">last_block</span> <span class="o">=</span> <span class="n">block</span>
+            <span class="n">current_index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Blockchain.resolve_conflicts"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAWeb.html#QUANTAXIS.QAWeb.chain.Blockchain.resolve_conflicts">[docs]</a>    <span class="k">def</span> <span class="nf">resolve_conflicts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        共识算法解决冲突</span>
+<span class="sd">        使用网络中最长的链.</span>
+<span class="sd">        :return:  如果链被取代返回 True, 否则为False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">neighbours</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span>
+        <span class="n">new_chain</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># We&#39;re only looking for chains longer than ours</span>
+        <span class="n">max_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="p">)</span>
+
+        <span class="c1"># Grab and verify the chains from all the nodes in our network</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">neighbours</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;http://</span><span class="si">{node}</span><span class="s1">/chain&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+                <span class="n">length</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span>
+                <span class="n">chain</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">&#39;chain&#39;</span><span class="p">]</span>
+
+                <span class="c1"># Check if the length is longer and the chain is valid</span>
+                <span class="k">if</span> <span class="n">length</span> <span class="o">&gt;</span> <span class="n">max_length</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_chain</span><span class="p">(</span><span class="n">chain</span><span class="p">):</span>
+                    <span class="n">max_length</span> <span class="o">=</span> <span class="n">length</span>
+                    <span class="n">new_chain</span> <span class="o">=</span> <span class="n">chain</span>
+
+        <span class="c1"># Replace our chain if we discovered a new, valid chain longer than ours</span>
+        <span class="k">if</span> <span class="n">new_chain</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">chain</span> <span class="o">=</span> <span class="n">new_chain</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Blockchain.new_block"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAWeb.html#QUANTAXIS.QAWeb.chain.Blockchain.new_block">[docs]</a>    <span class="k">def</span> <span class="nf">new_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proof</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">previous_hash</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        生成新块</span>
+<span class="sd">        :param proof: The proof given by the Proof of Work algorithm</span>
+<span class="sd">        :param previous_hash: Hash of previous Block</span>
+<span class="sd">        :return: New Block</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">block</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="n">time</span><span class="p">(),</span>
+            <span class="s1">&#39;transactions&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_transactions</span><span class="p">,</span>
+            <span class="s1">&#39;proof&#39;</span><span class="p">:</span> <span class="n">proof</span><span class="p">,</span>
+            <span class="s1">&#39;previous_hash&#39;</span><span class="p">:</span> <span class="n">previous_hash</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Reset the current list of transactions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_transactions</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">block</span></div>
+
+<div class="viewcode-block" id="Blockchain.new_transaction"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAWeb.html#QUANTAXIS.QAWeb.chain.Blockchain.new_transaction">[docs]</a>    <span class="k">def</span> <span class="nf">new_transaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sender</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">recipient</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">amount</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        生成新交易信息，信息将加入到下一个待挖的区块中</span>
+<span class="sd">        :param sender: Address of the Sender</span>
+<span class="sd">        :param recipient: Address of the Recipient</span>
+<span class="sd">        :param amount: Amount</span>
+<span class="sd">        :return: The index of the Block that will hold this transaction</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_transactions</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s1">&#39;sender&#39;</span><span class="p">:</span> <span class="n">sender</span><span class="p">,</span>
+            <span class="s1">&#39;recipient&#39;</span><span class="p">:</span> <span class="n">recipient</span><span class="p">,</span>
+            <span class="s1">&#39;amount&#39;</span><span class="p">:</span> <span class="n">amount</span><span class="p">,</span>
+        <span class="p">})</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_block</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">last_block</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Blockchain.hash"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAWeb.html#QUANTAXIS.QAWeb.chain.Blockchain.hash">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">hash</span><span class="p">(</span><span class="n">block</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        生成块的 SHA-256 hash值</span>
+<span class="sd">        :param block: Block</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># We must make sure that the Dictionary is Ordered, or we&#39;ll have inconsistent hashes</span>
+        <span class="n">block_string</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">block_string</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Blockchain.proof_of_work"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAWeb.html#QUANTAXIS.QAWeb.chain.Blockchain.proof_of_work">[docs]</a>    <span class="k">def</span> <span class="nf">proof_of_work</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">last_proof</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        简单的工作量证明:</span>
+<span class="sd">         - 查找一个 p&#39; 使得 hash(pp&#39;) 以4个0开头</span>
+<span class="sd">         - p 是上一个块的证明,  p&#39; 是当前的证明</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">proof</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_proof</span><span class="p">(</span><span class="n">last_proof</span><span class="p">,</span> <span class="n">proof</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">proof</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">proof</span></div>
+
+<div class="viewcode-block" id="Blockchain.valid_proof"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAWeb.html#QUANTAXIS.QAWeb.chain.Blockchain.valid_proof">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">valid_proof</span><span class="p">(</span><span class="n">last_proof</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">proof</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        验证证明: 是否hash(last_proof, proof)以4个0开头</span>
+<span class="sd">        :param last_proof: Previous Proof</span>
+<span class="sd">        :param proof: Current Proof</span>
+<span class="sd">        :return: True if correct, False if not.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">guess</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{last_proof}{proof}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+        <span class="n">guess_hash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">guess</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">guess_hash</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;0000&quot;</span></div></div>
+
+
+<span class="c1"># Instantiate the Node</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># Generate a globally unique address for this node</span>
+<span class="n">node_identifier</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">())</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+<span class="c1"># Instantiate the Blockchain</span>
+<span class="n">blockchain</span> <span class="o">=</span> <span class="n">Blockchain</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="mine"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAWeb.html#QUANTAXIS.QAWeb.chain.mine">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/mine&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">mine</span><span class="p">():</span>
+    <span class="c1"># We run the proof of work algorithm to get the next proof...</span>
+    <span class="n">last_block</span> <span class="o">=</span> <span class="n">blockchain</span><span class="o">.</span><span class="n">last_block</span>
+    <span class="n">last_proof</span> <span class="o">=</span> <span class="n">last_block</span><span class="p">[</span><span class="s1">&#39;proof&#39;</span><span class="p">]</span>
+    <span class="n">proof</span> <span class="o">=</span> <span class="n">blockchain</span><span class="o">.</span><span class="n">proof_of_work</span><span class="p">(</span><span class="n">last_proof</span><span class="p">)</span>
+
+    <span class="c1"># 给工作量证明的节点提供奖励.</span>
+    <span class="c1"># 发送者为 &quot;0&quot; 表明是新挖出的币</span>
+    <span class="n">blockchain</span><span class="o">.</span><span class="n">new_transaction</span><span class="p">(</span>
+        <span class="n">sender</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="p">,</span>
+        <span class="n">recipient</span><span class="o">=</span><span class="n">node_identifier</span><span class="p">,</span>
+        <span class="n">amount</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Forge the new Block by adding it to the chain</span>
+    <span class="n">block</span> <span class="o">=</span> <span class="n">blockchain</span><span class="o">.</span><span class="n">new_block</span><span class="p">(</span><span class="n">proof</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s2">&quot;New Block Forged&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="n">block</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;transactions&#39;</span><span class="p">:</span> <span class="n">block</span><span class="p">[</span><span class="s1">&#39;transactions&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;proof&#39;</span><span class="p">:</span> <span class="n">block</span><span class="p">[</span><span class="s1">&#39;proof&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;previous_hash&#39;</span><span class="p">:</span> <span class="n">block</span><span class="p">[</span><span class="s1">&#39;previous_hash&#39;</span><span class="p">],</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">response</span><span class="p">),</span> <span class="mi">200</span></div>
+
+
+<div class="viewcode-block" id="new_transaction"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAWeb.html#QUANTAXIS.QAWeb.chain.new_transaction">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/transactions/new&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">new_transaction</span><span class="p">():</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="c1"># 检查POST数据</span>
+    <span class="n">required</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sender&#39;</span><span class="p">,</span> <span class="s1">&#39;recipient&#39;</span><span class="p">,</span> <span class="s1">&#39;amount&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">k</span> <span class="ow">in</span> <span class="n">values</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">required</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;Missing values&#39;</span><span class="p">,</span> <span class="mi">400</span>
+
+    <span class="c1"># Create a new Transaction</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">blockchain</span><span class="o">.</span><span class="n">new_transaction</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="s1">&#39;sender&#39;</span><span class="p">],</span> <span class="n">values</span><span class="p">[</span><span class="s1">&#39;recipient&#39;</span><span class="p">],</span> <span class="n">values</span><span class="p">[</span><span class="s1">&#39;amount&#39;</span><span class="p">])</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="n">f</span><span class="s1">&#39;Transaction will be added to Block </span><span class="si">{index}</span><span class="s1">&#39;</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">response</span><span class="p">),</span> <span class="mi">201</span></div>
+
+
+<div class="viewcode-block" id="full_chain"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAWeb.html#QUANTAXIS.QAWeb.chain.full_chain">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/chain&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">full_chain</span><span class="p">():</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;chain&#39;</span><span class="p">:</span> <span class="n">blockchain</span><span class="o">.</span><span class="n">chain</span><span class="p">,</span>
+        <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">blockchain</span><span class="o">.</span><span class="n">chain</span><span class="p">),</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">response</span><span class="p">),</span> <span class="mi">200</span></div>
+
+
+<div class="viewcode-block" id="register_nodes"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAWeb.html#QUANTAXIS.QAWeb.chain.register_nodes">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/nodes/register&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">register_nodes</span><span class="p">():</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="n">nodes</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nodes&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">nodes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;Error: Please supply a valid list of nodes&quot;</span><span class="p">,</span> <span class="mi">400</span>
+
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+        <span class="n">blockchain</span><span class="o">.</span><span class="n">register_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;New nodes have been added&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;total_nodes&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">blockchain</span><span class="o">.</span><span class="n">nodes</span><span class="p">),</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">response</span><span class="p">),</span> <span class="mi">201</span></div>
+
+
+<div class="viewcode-block" id="consensus"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAWeb.html#QUANTAXIS.QAWeb.chain.consensus">[docs]</a><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/nodes/resolve&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">consensus</span><span class="p">():</span>
+    <span class="n">replaced</span> <span class="o">=</span> <span class="n">blockchain</span><span class="o">.</span><span class="n">resolve_conflicts</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">replaced</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Our chain was replaced&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;new_chain&#39;</span><span class="p">:</span> <span class="n">blockchain</span><span class="o">.</span><span class="n">chain</span>
+        <span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Our chain is authoritative&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;chain&#39;</span><span class="p">:</span> <span class="n">blockchain</span><span class="o">.</span><span class="n">chain</span>
+        <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">response</span><span class="p">),</span> <span class="mi">200</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">argparse</span> <span class="k">import</span> <span class="n">ArgumentParser</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">ArgumentParser</span><span class="p">()</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="s1">&#39;--port&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;port to listen on&#39;</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">port</span>
+
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, yutiansut.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

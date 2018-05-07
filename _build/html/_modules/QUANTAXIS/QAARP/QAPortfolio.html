@@ -1,0 +1,343 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QUANTAXIS.QAARP.QAPortfolio &#8212; QUANTAXIS 1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for QUANTAXIS.QAARP.QAPortfolio</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding:utf-8</span>
+<span class="c1">#</span>
+<span class="c1"># The MIT License (MIT)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2016-2018 yutiansut/QUANTAXIS</span>
+<span class="c1">#</span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1">#</span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">lru_cache</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAARP.QAAccount</span> <span class="k">import</span> <span class="n">QA_Account</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil</span> <span class="k">import</span> <span class="p">(</span><span class="n">DATABASE</span><span class="p">,</span> <span class="n">QA_util_log_info</span><span class="p">,</span>
+                              <span class="n">QA_util_random_with_topic</span><span class="p">)</span>
+
+<span class="c1"># pylint: disable=old-style-class, too-few-public-methods</span>
+
+
+<div class="viewcode-block" id="QA_Portfolio"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio">[docs]</a><span class="k">class</span> <span class="nc">QA_Portfolio</span><span class="p">():</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    QUANTAXIS 多账户</span>
+<span class="sd">    以及组合管理</span>
+
+<span class="sd">    # 适用 回测/实盘</span>
+
+<span class="sd">    # PORTFOLIO应当作为一个视图来处理,这个视图作为一个静态的观察点 可以去衡量风险 观察业绩等等</span>
+<span class="sd">    @2018/02/26</span>
+
+<span class="sd">    ::::::::::::::::::::::::::::::::::::::::::::::::</span>
+<span class="sd">    ::        ::STRATEGY 1 -- ACCOUNT 1 --{P1,P3} ::</span>
+<span class="sd">    ::  USER  ::STRATEGY 2 -- ACCOUNT 2 --{P1,P2} ::</span>
+<span class="sd">    ::        ::STRATEGY 3 -- ACCOUNT 3 --{P2,P3} ::</span>
+<span class="sd">    ::::::::::::::::::::::::::::::::::::::::::::::::</span>
+
+
+<span class="sd">    PORTFOLIO</span>
+
+<span class="sd">    在portfolio中,我们希望通过cookie来控制account_unit</span>
+
+<span class="sd">    对于account的指标,要进行风险控制,组合成最优的投资组合的量</span>
+
+<span class="sd">    用account的cookie来管理控制account</span>
+
+<span class="sd">    portfolio里面的资产主要考虑的是 资金的分配</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_cookie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">strategy_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_assets</span><span class="o">=</span><span class="mi">1000000</span><span class="p">,</span> <span class="n">cash</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sell_available</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">history</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">portfolio_cookie</span> <span class="o">=</span> <span class="n">QA_util_random_with_topic</span><span class="p">(</span><span class="s1">&#39;Portfolio&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_cookie</span> <span class="o">=</span> <span class="n">user_cookie</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">strategy_name</span> <span class="o">=</span> <span class="n">strategy_name</span>
+        <span class="c1"># 和account一样的资产类</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_assets</span> <span class="o">=</span> <span class="mi">1000000</span> <span class="k">if</span> <span class="n">init_assets</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">init_assets</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cash</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">init_assets</span><span class="p">]</span> <span class="k">if</span> <span class="n">cash</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">cash</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cash_available</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cash</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># 可用资金</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sell_available</span> <span class="o">=</span> <span class="n">sell_available</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">history</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">history</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_index</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">cookie</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="p">[</span><span class="n">cookie</span><span class="p">]</span> <span class="o">=</span> <span class="n">QA_Account</span><span class="p">(</span><span class="n">account_cookie</span><span class="o">=</span><span class="n">cookie</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt; QA_Portfolio </span><span class="si">{}</span><span class="s1"> with </span><span class="si">{}</span><span class="s1"> Accounts &gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">portfolio_cookie</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+<div class="viewcode-block" id="QA_Portfolio.get_portfolio"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.get_portfolio">[docs]</a>    <span class="k">def</span> <span class="nf">get_portfolio</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s1">&#39;return the accounts dict&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span></div>
+
+<div class="viewcode-block" id="QA_Portfolio.add_account"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.add_account">[docs]</a>    <span class="k">def</span> <span class="nf">add_account</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">):</span>
+        <span class="s1">&#39;portfolio add a account/stratetgy&#39;</span>
+        <span class="k">if</span> <span class="n">account</span><span class="o">.</span><span class="n">account_cookie</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">account</span><span class="o">.</span><span class="n">portfolio_cookie</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">portfolio_cookie</span>
+            <span class="n">account</span><span class="o">.</span><span class="n">user_cookie</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_cookie</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="p">[</span><span class="n">account</span><span class="o">.</span><span class="n">account_cookie</span><span class="p">]</span> <span class="o">=</span> <span class="n">account</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="QA_Portfolio.new_account"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.new_account">[docs]</a>    <span class="k">def</span> <span class="nf">new_account</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account_cookie</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="s1">&#39;portfolio create a account/strategy&#39;</span>
+        <span class="k">if</span> <span class="n">account_cookie</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="n">QA_Account</span><span class="p">(</span><span class="n">portfolio_cookie</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">portfolio_cookie</span><span class="p">,</span>
+                              <span class="n">user_cookie</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_cookie</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">temp</span><span class="o">.</span><span class="n">account_cookie</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="p">[</span><span class="n">temp</span><span class="o">.</span><span class="n">account_cookie</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span>
+                <span class="k">return</span> <span class="n">temp</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_account</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">account_cookie</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="p">[</span><span class="n">account_cookie</span><span class="p">]</span> <span class="o">=</span> <span class="n">QA_Account</span><span class="p">(</span><span class="n">portfolio_cookie</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">portfolio_cookie</span><span class="p">,</span>
+                                                           <span class="n">user_cookie</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_cookie</span><span class="p">,</span> <span class="n">account_cookie</span><span class="o">=</span><span class="n">account_cookie</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="p">[</span><span class="n">account_cookie</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_account</span><span class="p">(</span><span class="n">account_cookie</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QA_Portfolio.get_account"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.get_account">[docs]</a>    <span class="k">def</span> <span class="nf">get_account</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cookie</span><span class="p">):</span>
+        <span class="s1">&#39;give the account_cookie and return the account/strategy back&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="p">[</span><span class="n">cookie</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;Can not find this account&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="QA_Portfolio.cookie_mangement"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.cookie_mangement">[docs]</a>    <span class="k">def</span> <span class="nf">cookie_mangement</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">acc</span><span class="o">.</span><span class="n">table</span> <span class="k">for</span> <span class="n">acc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<div class="viewcode-block" id="QA_Portfolio.get_cash"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.get_cash">[docs]</a>    <span class="k">def</span> <span class="nf">get_cash</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;拿到整个portfolio的可用资金</span>
+
+<span class="sd">        统计每一个时间点的时候的cash总和</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="QA_Portfolio.pull"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.pull">[docs]</a>    <span class="k">def</span> <span class="nf">pull</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account_cookie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">collection</span><span class="o">=</span><span class="n">DATABASE</span><span class="o">.</span><span class="n">account</span><span class="p">):</span>
+        <span class="s1">&#39;pull from the databases&#39;</span>
+        <span class="k">if</span> <span class="n">account_cookie</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">message</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s1">&#39;account_cookie&#39;</span><span class="p">:</span> <span class="n">item</span><span class="p">})</span>
+                    <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> sync successfully&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">QA_util_log_info</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> sync wrong </span><span class="se">\\\n</span><span class="s1"> wrong info </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">.</span><span class="n">from_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">find_one</span><span class="p">(</span>
+                    <span class="p">{</span><span class="s1">&#39;account_cookie&#39;</span><span class="p">:</span> <span class="n">account_cookie</span><span class="p">})</span>
+                <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> sync successfully&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">QA_util_log_info</span><span class="p">(</span>
+                    <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> sync wrong </span><span class="se">\\\n</span><span class="s1"> wrong info </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">account_cookie</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="p">[</span><span class="n">account_cookie</span><span class="p">]</span><span class="o">.</span><span class="n">from_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QA_Portfolio.push"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.push">[docs]</a>    <span class="k">def</span> <span class="nf">push</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account_cookie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">collection</span><span class="o">=</span><span class="n">DATABASE</span><span class="o">.</span><span class="n">account</span><span class="p">):</span>
+        <span class="s1">&#39;push to databases&#39;</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="p">[</span><span class="n">account_cookie</span><span class="p">]</span><span class="o">.</span><span class="n">message</span>
+        <span class="k">if</span> <span class="n">account_cookie</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">message</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">find_one_and_update</span><span class="p">(</span>
+                        <span class="p">{</span><span class="s1">&#39;account_cookie&#39;</span><span class="p">:</span> <span class="n">item</span><span class="p">})</span>
+                    <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> sync successfully&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">QA_util_log_info</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> sync wrong </span><span class="se">\\\n</span><span class="s1"> wrong info </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">.</span><span class="n">from_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">find_one</span><span class="p">(</span>
+                    <span class="p">{</span><span class="s1">&#39;account_cookie&#39;</span><span class="p">:</span> <span class="n">account_cookie</span><span class="p">})</span>
+                <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> sync successfully&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">QA_util_log_info</span><span class="p">(</span>
+                    <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> sync wrong </span><span class="se">\\\n</span><span class="s1"> wrong info </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">account_cookie</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="p">[</span><span class="n">account_cookie</span><span class="p">]</span><span class="o">.</span><span class="n">from_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="QA_TEST_MAKEPortfolio"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAPortfolio.QA_TEST_MAKEPortfolio">[docs]</a><span class="k">class</span> <span class="nc">QA_TEST_MAKEPortfolio</span><span class="p">():</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        this is a dict for account_cookie----account instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">account_list</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+<div class="viewcode-block" id="QA_TEST_MAKEPortfolio.make_portfolio"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAPortfolio.QA_TEST_MAKEPortfolio.make_portfolio">[docs]</a>    <span class="k">def</span> <span class="nf">make_portfolio</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account_list</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
+
+
+<div class="viewcode-block" id="QA_PortfolioView"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAPortfolio.QA_PortfolioView">[docs]</a><span class="k">class</span> <span class="nc">QA_PortfolioView</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    对于Portfolio而言,一切都是基于内部的account的信息的变更而变更的</span>
+
+<span class="sd">    Portfolio不应该有过多可以修改的部分(作为一个view存在)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account_list</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                    ||portfolio||</span>
+<span class="sd">        ||acc1_cookie--acc1||acc2-cookie--acc2||...||</span>
+
+
+<span class="sd">        ||cash||assets||hold||history||trade_index||</span>
+
+
+<span class="sd">        ||Risk_analysis||Performace_analysis||</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">account_list</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="nb">zip</span><span class="p">([</span><span class="n">account</span><span class="o">.</span><span class="n">account_cookie</span> <span class="k">for</span> <span class="n">account</span> <span class="ow">in</span> <span class="n">account_list</span><span class="p">],</span> <span class="n">account_list</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">portfolio_cookie</span> <span class="o">=</span> <span class="n">QA_util_random_with_topic</span><span class="p">(</span><span class="s1">&#39;Portfolio&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_cookie</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># self._broker = None</span>
+        <span class="c1"># self.user_cookie = None</span>
+        <span class="c1"># self._market_type = None</span>
+        <span class="c1"># self._strategy_name = None</span>
+        <span class="c1"># self._currenttime = None</span>
+        <span class="c1"># self._init_assets = None</span>
+        <span class="c1"># self._cash = None</span>
+        <span class="c1"># self._history = None</span>
+        <span class="c1"># self._trade_index = None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">account_cookie</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">account</span><span class="o">.</span><span class="n">account_cookie</span> <span class="k">for</span> <span class="n">account</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">accounts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return all accounts inside the portfolio view</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">account_list</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">start_date</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="n">account</span><span class="o">.</span><span class="n">start_date</span> <span class="k">for</span> <span class="n">account</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="p">]))</span><span class="o">.</span><span class="n">min</span><span class="p">())[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">end_date</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="n">account</span><span class="o">.</span><span class="n">end_date</span> <span class="k">for</span> <span class="n">account</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="p">]))</span><span class="o">.</span><span class="n">max</span><span class="p">())[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">account</span><span class="o">.</span><span class="n">code</span><span class="p">)</span> <span class="k">for</span> <span class="n">account</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="p">])</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">init_assets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">account</span><span class="o">.</span><span class="n">init_assets</span> <span class="k">for</span> <span class="n">account</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">daily_cash</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="n">account</span><span class="o">.</span><span class="n">daily_cash</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span>
+            <span class="s1">&#39;datetime&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">cash</span> <span class="k">for</span> <span class="n">account</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="p">]))</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">res</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">daily_hold</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">account</span><span class="o">.</span><span class="n">daily_hold</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">account</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">accounts</span><span class="p">])</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, yutiansut.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

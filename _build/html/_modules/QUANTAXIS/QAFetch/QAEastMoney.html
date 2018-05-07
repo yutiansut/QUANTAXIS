@@ -1,0 +1,157 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QUANTAXIS.QAFetch.QAEastMoney &#8212; QUANTAXIS 1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for QUANTAXIS.QAFetch.QAEastMoney</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding:utf-8</span>
+<span class="c1">#</span>
+<span class="c1"># The MIT License (MIT)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2016-2018 yutiansut/QUANTAXIS</span>
+<span class="c1">#</span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1">#</span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAFetch.base</span> <span class="k">import</span> <span class="n">headers</span><span class="p">,</span> <span class="n">_select_market_code</span>
+
+<span class="n">BusinessAnalysis_url</span> <span class="o">=</span> <span class="s1">&#39;http://emweb.securities.eastmoney.com/PC_HSF10/BusinessAnalysis/BusinessAnalysisAjax?code=</span><span class="si">{}{}</span><span class="s1">&#39;</span>
+<span class="n">headers_em</span> <span class="o">=</span> <span class="n">headers</span>
+<span class="n">headers_em</span><span class="p">[</span><span class="s1">&#39;Host&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;emweb.securities.eastmoney.com&#39;</span>
+
+
+<div class="viewcode-block" id="QA_fetch_get_stock_analysis"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAEastMoney.QA_fetch_get_stock_analysis">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_get_stock_analysis</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &#39;zyfw&#39;, 主营范围 &#39;jyps&#39;#经营评述 &#39;zygcfx&#39; 主营构成分析</span>
+
+<span class="sd">    date 主营构成	主营收入(元)	收入比例cbbl	主营成本(元)	成本比例	主营利润(元)	利润比例	毛利率(%)</span>
+<span class="sd">    行业 /产品/ 区域 hq cp qy</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">market</span> <span class="o">=</span> <span class="s1">&#39;sh&#39;</span> <span class="k">if</span> <span class="n">_select_market_code</span><span class="p">(</span><span class="n">code</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s1">&#39;sz&#39;</span>
+    <span class="n">null</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">BusinessAnalysis_url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">market</span><span class="p">,</span> <span class="n">code</span><span class="p">),</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers_em</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">zyfw</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;zyfw&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+    <span class="n">jyps</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;jyps&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+    <span class="n">zygcfx</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;zygcfx&#39;</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">zygcfx</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data_</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;hy&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;rq&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">classify</span><span class="o">=</span><span class="s1">&#39;hy&#39;</span><span class="p">),</span>
+                               <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;cp&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+                                   <span class="n">date</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;rq&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">classify</span><span class="o">=</span><span class="s1">&#39;cp&#39;</span><span class="p">),</span>
+                               <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;qy&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;rq&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">classify</span><span class="o">=</span><span class="s1">&#39;qy&#39;</span><span class="p">)])</span>
+
+            <span class="n">temp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">res_zyfcfx</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;classify&#39;</span><span class="p">],</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">res_zyfcfx</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="n">zyfw</span><span class="p">,</span> <span class="n">jyps</span><span class="p">,</span> <span class="n">res_zyfcfx</span></div>
+
+
+
+<span class="n">cpbidu</span> <span class="o">=</span> <span class="s1">&#39;http://emweb.securities.eastmoney.com/PC_HSF10/OperationsRequired/OperationsRequiredAjax?times=1&amp;code=sz300059&#39;</span>
+
+<span class="n">headers_em_OperationsRequired</span> <span class="o">=</span> <span class="n">headers</span>
+<span class="n">headers_em_OperationsRequired</span><span class="p">[</span><span class="s1">&#39;Accept&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;*/*&#39;</span>
+<span class="n">headers_em_OperationsRequired</span><span class="p">[</span><span class="s1">&#39;Referer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;http://emweb.securities.eastmoney.com/PC_HSF10/OperationsRequired/Index?type=soft&amp;code=sz300059&#39;</span>
+
+<span class="n">headers_em_OperationsRequired</span><span class="p">[</span><span class="s1">&#39;X-Requested-With&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;XMLHttpRequest&#39;</span>
+
+<span class="n">research_report</span> <span class="o">=</span> <span class="s1">&#39;http://emweb.securities.eastmoney.com/PC_HSF10/ResearchReport/ResearchReportAjax?code=sz300059&amp;icode=447&#39;</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../QAFetch.html">QUANTAXIS.QAFetch</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, yutiansut.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,230 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QUANTAXIS.QAUtil.QABar &#8212; QUANTAXIS 1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for QUANTAXIS.QAUtil.QABar</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding=utf-8</span>
+<span class="c1">#</span>
+<span class="c1"># The MIT License (MIT)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2016-2018 yutiansut/QUANTAXIS</span>
+<span class="c1">#</span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1">#</span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QADate_trade</span> <span class="k">import</span> <span class="p">(</span><span class="n">QA_util_date_gap</span><span class="p">,</span>
+                                           <span class="n">QA_util_get_real_datelist</span><span class="p">,</span>
+                                           <span class="n">QA_util_get_trade_range</span><span class="p">,</span>
+                                           <span class="n">QA_util_if_trade</span><span class="p">,</span> <span class="n">trade_date_sse</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="QA_util_make_min_index"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QABar.QA_util_make_min_index">[docs]</a><span class="k">def</span> <span class="nf">QA_util_make_min_index</span><span class="p">(</span><span class="n">day</span><span class="p">,</span> <span class="n">type_</span><span class="o">=</span><span class="s1">&#39;1min&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;创建股票分钟线的index</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        day {[type]} -- [description]</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        [type] -- [description]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">QA_util_if_trade</span><span class="p">(</span><span class="n">day</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">day</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; 09:30:00&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">day</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; 11:30:00&#39;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">type_</span><span class="p">,</span> <span class="n">closed</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">day</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; 13:00:00&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">day</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; 15:00:00&#39;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">type_</span><span class="p">,</span> <span class="n">closed</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="s1">&#39;No trade&#39;</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="QA_util_make_hour_index"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QABar.QA_util_make_hour_index">[docs]</a><span class="k">def</span> <span class="nf">QA_util_make_hour_index</span><span class="p">(</span><span class="n">day</span><span class="p">,</span> <span class="n">type_</span><span class="o">=</span><span class="s1">&#39;1h&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;创建股票的小时线的index</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        day {[type]} -- [description]</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        [type] -- [description]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">QA_util_if_trade</span><span class="p">(</span><span class="n">day</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">day</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; 09:30:00&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">day</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; 11:30:00&#39;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">type_</span><span class="p">,</span> <span class="n">closed</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">day</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; 13:00:00&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">day</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; 15:00:00&#39;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">type_</span><span class="p">,</span> <span class="n">closed</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="s1">&#39;No trade&#39;</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="QA_util_time_gap"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QABar.QA_util_time_gap">[docs]</a><span class="k">def</span> <span class="nf">QA_util_time_gap</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">gap</span><span class="p">,</span> <span class="n">methods</span><span class="p">,</span> <span class="n">type_</span><span class="p">):</span>
+    <span class="s1">&#39;分钟线回测的时候的gap&#39;</span>
+    <span class="n">min_len</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">240</span> <span class="o">/</span> <span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">type_</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;min&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">day_gap</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">gap</span> <span class="o">/</span> <span class="n">min_len</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">methods</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;gt&#39;</span><span class="p">]:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">QA_util_make_min_index</span><span class="p">(</span><span class="n">day</span><span class="p">,</span> <span class="n">type_</span><span class="p">))</span> <span class="k">for</span> <span class="n">day</span> <span class="ow">in</span> <span class="n">trade_date_sse</span><span class="p">[</span><span class="n">trade_date_sse</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
+            <span class="n">time</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">())):</span><span class="n">trade_date_sse</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()))</span> <span class="o">+</span> <span class="n">day_gap</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">time</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">gap</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">methods</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;&gt;=&#39;</span><span class="p">,</span> <span class="s1">&#39;gte&#39;</span><span class="p">]:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">QA_util_make_min_index</span><span class="p">(</span><span class="n">day</span><span class="p">,</span> <span class="n">type_</span><span class="p">))</span> <span class="k">for</span> <span class="n">day</span> <span class="ow">in</span> <span class="n">trade_date_sse</span><span class="p">[</span><span class="n">trade_date_sse</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
+            <span class="n">time</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">())):</span><span class="n">trade_date_sse</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()))</span> <span class="o">+</span> <span class="n">day_gap</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">time</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">gap</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">methods</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;lt&#39;</span><span class="p">]:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">QA_util_make_min_index</span><span class="p">(</span><span class="n">day</span><span class="p">,</span> <span class="n">type_</span><span class="p">))</span> <span class="k">for</span> <span class="n">day</span> <span class="ow">in</span> <span class="n">trade_date_sse</span><span class="p">[</span><span class="n">trade_date_sse</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
+            <span class="n">time</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()))</span> <span class="o">-</span> <span class="n">day_gap</span><span class="p">:</span><span class="n">trade_date_sse</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()))</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">time</span><span class="p">]</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="n">gap</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">methods</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;&lt;=&#39;</span><span class="p">,</span> <span class="s1">&#39;lte&#39;</span><span class="p">]:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">QA_util_make_min_index</span><span class="p">(</span><span class="n">day</span><span class="p">,</span> <span class="n">type_</span><span class="p">))</span> <span class="k">for</span> <span class="n">day</span> <span class="ow">in</span> <span class="n">trade_date_sse</span><span class="p">[</span><span class="n">trade_date_sse</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
+            <span class="n">time</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()))</span> <span class="o">-</span> <span class="n">day_gap</span><span class="p">:</span><span class="n">trade_date_sse</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()))</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">time</span><span class="p">]</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="n">gap</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">methods</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;==&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="s1">&#39;eq&#39;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">time</span></div>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">期货交易所交易时间：</span>
+<span class="sd"> </span>
+<span class="sd">(一)大连、上海、郑州交易所</span>
+<span class="sd"> </span>
+<span class="sd">集合竞价申报时间：08：55—08：59</span>
+<span class="sd">集合竞价撮合时间：08：59—09：00</span>
+<span class="sd">正常开盘交易时间：09：00－11：30 （小节休息10：15－10：30）</span>
+<span class="sd">13：30－15：00</span>
+
+<span class="sd">提示：客户下单时间为集合竞价时间和正常交易时间。在8：59—9：00竞价结束时间和交易所小节休息时间（上午10:15-10:30）下单，交易系统将不接受指令，并视之为废单。（时间以交易所时钟报时为准）</span>
+
+<span class="sd">(二)上期所夜盘</span>
+<span class="sd"> </span>
+<span class="sd">集合竞价申报时间：20：55—20：59</span>
+<span class="sd">集合竞价撮合时间：20：59—21：00</span>
+<span class="sd">正常开盘交易时间：21：00－02：30 （黄金、白银）</span>
+<span class="sd">21：00－01：00 （铜、铝、铅、锌、镍、锡）</span>
+<span class="sd">21：00－23：00（螺纹钢、热轧卷板、石油沥青、天然橡胶）</span>
+
+<span class="sd">提示：法定节假日的前一日没有夜盘交易。</span>
+
+<span class="sd">（三）大商所夜盘</span>
+<span class="sd"> </span>
+<span class="sd">集合竞价申报时间：20：55—20：59</span>
+<span class="sd">集合竞价撮合时间：20：59—21：00</span>
+<span class="sd">正常开盘交易时间：21：00—23：30 （豆一、豆二、豆油、豆粕、焦煤、焦炭、棕榈油、铁矿石）</span>
+
+<span class="sd">提示：法定节假日的前一日没有夜盘交易。</span>
+<span class="sd"> </span>
+<span class="sd">（四）郑商所夜盘</span>
+<span class="sd"> </span>
+<span class="sd">集合竞价申报时间：20：55—20：59</span>
+<span class="sd">集合竞价撮合时间：20：59—21：00</span>
+<span class="sd">正常开盘交易时间：21：00－23：30 （白糖、棉花、菜粕、甲醇、PTA、菜籽油、玻璃、动力煤）</span>
+
+<span class="sd">提示：法定节假日的前一日没有夜盘交易。</span>
+<span class="sd"> </span>
+<span class="sd">(五)中金所</span>
+
+<span class="sd">股指:集合竞价时间：9：25—9：30</span>
+<span class="sd">正常开盘交易时间：9：30-11：30（第一节）；13：00-15：00（第二节）</span>
+
+<span class="sd">国债：</span>
+<span class="sd">集合竞价时间：9：10-9：15</span>
+<span class="sd">正常开盘交易时间：9：15-11：30（第一节）；13：00-15：15（第二节）</span>
+<span class="sd">最后交易日交易时间：9：15-11：30</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">pass</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, yutiansut.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,340 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QUANTAXIS.QABacktest.QAAnalysis &#8212; QUANTAXIS 1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for QUANTAXIS.QABacktest.QAAnalysis</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Encoding:UTF-8</span>
+<span class="c1">#</span>
+<span class="c1"># The MIT License (MIT)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2016-2018 yutiansut/QUANTAXIS</span>
+<span class="c1">#</span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1">#</span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Analysis Center for Backtest</span>
+<span class="sd">we will give some function</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAFetch.QAQuery</span> <span class="k">import</span> <span class="n">QA_fetch_stock_day</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil</span> <span class="k">import</span> <span class="n">QA_util_log_info</span><span class="p">,</span> <span class="n">trade_date_sse</span>
+
+
+<div class="viewcode-block" id="QA_backtest_analysis_backtest"><a class="viewcode-back" href="../../../source/QUANTAXIS.QABacktest.html#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_analysis_backtest">[docs]</a><span class="k">def</span> <span class="nf">QA_backtest_analysis_backtest</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">code_list</span><span class="p">,</span> <span class="n">assets_d</span><span class="p">,</span> <span class="n">account_days</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">total_date</span><span class="p">,</span> <span class="n">benchmark_data</span><span class="p">):</span>
+    
+    <span class="c1"># 主要要从message_history分析</span>
+    <span class="c1"># 1.收益率</span>
+    <span class="c1"># 2.胜率</span>
+    <span class="c1"># 3.回撤</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Annualized Returns: 策略年化收益率。表示投资期限为一年的预期收益率。</span>
+<span class="sd">    具体计算方式为 (策略最终价值 / 策略初始价值)^(250 / 回测交易日数量) - 1</span>
+
+<span class="sd">    Alpha：阿尔法</span>
+<span class="sd">    具体计算方式为 (策略年化收益 - 无风险收益) - beta × (参考标准年化收益 - 无风险收益)，这里的无风险收益指的是中国固定利率国债收益率曲线上10年期国债的年化到期收益率。</span>
+
+<span class="sd">    Beta：贝塔</span>
+<span class="sd">    具体计算方法为 策略每日收益与参考标准每日收益的协方差 / 参考标准每日收益的方差 。</span>
+
+<span class="sd">    Sharpe Ratio：夏普比率。表示每承受一单位总风险，会产生多少的超额报酬。</span>
+<span class="sd">    具体计算方法为 (策略年化收益率 - 回测起始交易日的无风险利率) / 策略收益波动率 。</span>
+
+<span class="sd">    Volatility：策略收益波动率。用来测量资产的风险性。</span>
+<span class="sd">    具体计算方法为 策略每日收益的年化标准差 。</span>
+
+<span class="sd">    Information Ratio：信息比率。衡量超额风险带来的超额收益。</span>
+<span class="sd">    具体计算方法为 (策略每日收益 - 参考标准每日收益)的年化均值 / 年化标准差 。</span>
+
+<span class="sd">    Max Drawdown：最大回撤。描述策略可能出现的最糟糕的情况。</span>
+<span class="sd">    具体计算方法为 max(1 - 策略当日价值 / 当日之前虚拟账户最高价值)</span>
+
+
+<span class="sd">    单次交易收益</span>
+<span class="sd">    收益/次数的频次直方图</span>
+<span class="sd">    单日最大持仓</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 数据检查</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">benchmark_data</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;Wrong with benchmark data ! &#39;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
+    <span class="c1"># 计算一个benchmark</span>
+    <span class="c1"># 这个benchmark 是在开始的那天 市价买入和策略所选标的一致的所有股票,然后一直持仓</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;account&#39;</span><span class="p">][</span><span class="s1">&#39;history&#39;</span><span class="p">],</span>
+                                   <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">,</span> <span class="s1">&#39;towards&#39;</span><span class="p">,</span> <span class="s1">&#39;amount&#39;</span><span class="p">,</span> <span class="s1">&#39;order_id&#39;</span><span class="p">,</span> <span class="s1">&#39;trade_id&#39;</span><span class="p">,</span> <span class="s1">&#39;commission&#39;</span><span class="p">]),</span>
+                      <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;account&#39;</span><span class="p">][</span><span class="s1">&#39;assets&#39;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;assets&#39;</span><span class="p">])],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">trade_history</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;account&#39;</span><span class="p">][</span><span class="s1">&#39;history&#39;</span><span class="p">]</span>
+    <span class="n">cash</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;account&#39;</span><span class="p">][</span><span class="s1">&#39;cash&#39;</span><span class="p">]</span>
+    <span class="n">assets</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;account&#39;</span><span class="p">][</span><span class="s1">&#39;assets&#39;</span><span class="p">]</span>
+
+    <span class="c1">#assets_= data.resample(&#39;D&#39;).last().dropna()</span>
+    <span class="c1"># 计算交易日</span>
+    <span class="n">trade_date</span> <span class="o">=</span> <span class="n">account_days</span>
+    <span class="c1"># benchmark资产</span>
+    <span class="n">benchmark_assets</span> <span class="o">=</span> <span class="n">QA_backtest_calc_benchmark</span><span class="p">(</span>
+        <span class="n">benchmark_data</span><span class="p">,</span> <span class="n">assets</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="c1"># d2=pd.concat([data.resample(&#39;D&#39;).last(),pd.DataFrame(benchmark_assets,columns=[&#39;benchmark&#39;])])</span>
+    <span class="c1"># benchmark年化收益</span>
+    <span class="n">benchmark_annualized_returns</span> <span class="o">=</span> <span class="n">QA_backtest_calc_profit_per_year</span><span class="p">(</span>
+        <span class="n">benchmark_assets</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">total_date</span><span class="p">))</span>
+    <span class="c1"># 计算账户的收益</span>
+
+    <span class="c1"># days=len(assest_history)-1</span>
+    <span class="c1"># 策略年化收益</span>
+    <span class="n">annualized_returns</span> <span class="o">=</span> <span class="n">QA_backtest_calc_profit_per_year</span><span class="p">(</span>
+        <span class="n">assets_d</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">total_date</span><span class="p">))</span>
+
+    <span class="c1"># 收益矩阵</span>
+    <span class="n">assest_profit</span> <span class="o">=</span> <span class="n">QA_backtest_calc_profit_matrix</span><span class="p">(</span><span class="n">assets</span><span class="p">)</span>
+    <span class="n">benchmark_profit</span> <span class="o">=</span> <span class="n">QA_backtest_calc_profit_matrix</span><span class="p">(</span><span class="n">benchmark_assets</span><span class="p">)</span>
+
+    <span class="c1"># 策略日收益</span>
+    <span class="n">profit_day</span> <span class="o">=</span> <span class="n">QA_backtest_calc_profit_matrix</span><span class="p">(</span><span class="n">assets_d</span><span class="p">)</span>
+    <span class="c1"># 胜率</span>
+    <span class="n">win_rate</span> <span class="o">=</span> <span class="n">QA_backtest_calc_win_rate</span><span class="p">(</span><span class="n">assest_profit</span><span class="p">)</span>
+    <span class="c1"># 日胜率</span>
+    <span class="n">win_rate_day</span> <span class="o">=</span> <span class="n">QA_backtest_calc_win_rate</span><span class="p">(</span><span class="n">profit_day</span><span class="p">)</span>
+    <span class="c1"># 年化波动率</span>
+    <span class="n">volatility_year</span> <span class="o">=</span> <span class="n">QA_backtest_calc_volatility</span><span class="p">(</span><span class="n">profit_day</span><span class="p">)</span>
+    <span class="n">benchmark_volatility_year</span> <span class="o">=</span> <span class="n">QA_backtest_calc_volatility</span><span class="p">(</span><span class="n">benchmark_profit</span><span class="p">)</span>
+    <span class="c1"># 夏普比率</span>
+    <span class="n">sharpe</span> <span class="o">=</span> <span class="n">QA_backtest_calc_sharpe</span><span class="p">(</span>
+        <span class="n">annualized_returns</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">volatility_year</span><span class="p">)</span>
+
+    <span class="c1"># 最大回撤</span>
+    <span class="n">max_drop</span> <span class="o">=</span> <span class="n">QA_backtest_calc_dropback_max</span><span class="p">(</span><span class="n">assets_d</span><span class="p">)</span>
+
+    <span class="c1"># 计算beta</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="n">QA_backtest_calc_beta</span><span class="p">(</span><span class="n">profit_day</span><span class="p">,</span> <span class="n">benchmark_profit</span><span class="p">)</span>
+    <span class="c1"># 计算Alpha</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">QA_backtest_calc_alpha</span><span class="p">(</span>
+        <span class="n">annualized_returns</span><span class="p">,</span> <span class="n">benchmark_annualized_returns</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">)</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="n">code_list</span><span class="p">,</span>
+        <span class="s1">&#39;annualized_returns&#39;</span><span class="p">:</span> <span class="n">annualized_returns</span><span class="p">,</span>
+        <span class="s1">&#39;benchmark_annualized_returns&#39;</span><span class="p">:</span> <span class="n">benchmark_annualized_returns</span><span class="p">,</span>
+        <span class="s1">&#39;assets&#39;</span><span class="p">:</span> <span class="n">assets_d</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span>
+        <span class="s1">&#39;benchmark_assets&#39;</span><span class="p">:</span> <span class="n">benchmark_assets</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span>
+        <span class="s1">&#39;vol&#39;</span><span class="p">:</span> <span class="n">volatility_year</span><span class="p">,</span>
+        <span class="s1">&#39;benchmark_vol&#39;</span><span class="p">:</span> <span class="n">benchmark_volatility_year</span><span class="p">,</span>
+        <span class="s1">&#39;sharpe&#39;</span><span class="p">:</span> <span class="n">sharpe</span><span class="p">,</span>
+        <span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="n">alpha</span><span class="p">,</span>
+        <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="n">beta</span><span class="p">,</span>
+        <span class="s1">&#39;total_date&#39;</span><span class="p">:</span> <span class="n">total_date</span><span class="p">,</span>
+        <span class="s1">&#39;trade_date&#39;</span><span class="p">:</span> <span class="n">trade_date</span><span class="p">,</span>
+        <span class="s1">&#39;max_drop&#39;</span><span class="p">:</span> <span class="n">max_drop</span><span class="p">,</span>
+        <span class="s1">&#39;win_rate&#39;</span><span class="p">:</span> <span class="n">win_rate</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">message</span></div>
+
+
+<div class="viewcode-block" id="QA_backtest_calc_assets"><a class="viewcode-back" href="../../../source/QUANTAXIS.QABacktest.html#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_assets">[docs]</a><span class="k">def</span> <span class="nf">QA_backtest_calc_assets</span><span class="p">(</span><span class="n">trade_history</span><span class="p">,</span> <span class="n">assets</span><span class="p">):</span>
+    <span class="n">assets_d</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">trade_date</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">trade_history</span><span class="p">),</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">trade_history</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">trade_date</span><span class="p">:</span>
+            <span class="n">trade_date</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trade_history</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">assets_d</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">assets</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">assets_d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">assets_d</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">assets</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">assets_d</span></div>
+
+
+<div class="viewcode-block" id="QA_backtest_calc_benchmark"><a class="viewcode-back" href="../../../source/QUANTAXIS.QABacktest.html#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_benchmark">[docs]</a><span class="k">def</span> <span class="nf">QA_backtest_calc_benchmark</span><span class="p">(</span><span class="n">benchmark_data</span><span class="p">,</span> <span class="n">init_assets</span><span class="p">):</span>
+
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">benchmark_data</span><span class="p">[</span><span class="s1">&#39;close&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">benchmark_data</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">init_assets</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="QA_backtest_calc_alpha"><a class="viewcode-back" href="../../../source/QUANTAXIS.QABacktest.html#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_alpha">[docs]</a><span class="k">def</span> <span class="nf">QA_backtest_calc_alpha</span><span class="p">(</span><span class="n">annualized_returns</span><span class="p">,</span> <span class="n">benchmark_annualized_returns</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+
+    <span class="n">alpha</span> <span class="o">=</span> <span class="p">(</span><span class="n">annualized_returns</span> <span class="o">-</span> <span class="n">r</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">*</span> \
+        <span class="p">(</span><span class="n">benchmark_annualized_returns</span> <span class="o">-</span> <span class="n">r</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">alpha</span></div>
+
+
+<div class="viewcode-block" id="QA_backtest_calc_beta"><a class="viewcode-back" href="../../../source/QUANTAXIS.QABacktest.html#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_beta">[docs]</a><span class="k">def</span> <span class="nf">QA_backtest_calc_beta</span><span class="p">(</span><span class="n">assest_profit</span><span class="p">,</span> <span class="n">benchmark_profit</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">assest_profit</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">benchmark_profit</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">benchmark_profit</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">assest_profit</span><span class="p">),</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">assest_profit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">assest_profit</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">benchmark_profit</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">assest_profit</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">benchmark_profit</span><span class="p">),</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">benchmark_profit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">calc_cov</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">assest_profit</span><span class="p">,</span> <span class="n">benchmark_profit</span><span class="p">)</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="n">calc_cov</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">calc_cov</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">beta</span></div>
+
+
+<div class="viewcode-block" id="QA_backtest_calc_profit"><a class="viewcode-back" href="../../../source/QUANTAXIS.QABacktest.html#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_profit">[docs]</a><span class="k">def</span> <span class="nf">QA_backtest_calc_profit</span><span class="p">(</span><span class="n">assest_history</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">assest_history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">assest_history</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="QA_backtest_calc_profit_per_year"><a class="viewcode-back" href="../../../source/QUANTAXIS.QABacktest.html#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_profit_per_year">[docs]</a><span class="k">def</span> <span class="nf">QA_backtest_calc_profit_per_year</span><span class="p">(</span><span class="n">assest_history</span><span class="p">,</span> <span class="n">days</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">assest_history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">assest_history</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="mf">250.0</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">days</span><span class="p">))</span> <span class="o">-</span> <span class="mf">1.0</span></div>
+
+
+<div class="viewcode-block" id="QA_backtest_calc_profit_matrix"><a class="viewcode-back" href="../../../source/QUANTAXIS.QABacktest.html#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_profit_matrix">[docs]</a><span class="k">def</span> <span class="nf">QA_backtest_calc_profit_matrix</span><span class="p">(</span><span class="n">assest_history</span><span class="p">):</span>
+    <span class="n">assest_profit</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">assest_history</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">assest_profit</span> <span class="o">=</span> <span class="p">[</span><span class="n">assest_history</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">assest_history</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span>
+                         <span class="mf">1.0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">assest_history</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">assest_profit</span></div>
+
+
+<div class="viewcode-block" id="QA_backtest_calc_volatility"><a class="viewcode-back" href="../../../source/QUANTAXIS.QABacktest.html#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_volatility">[docs]</a><span class="k">def</span> <span class="nf">QA_backtest_calc_volatility</span><span class="p">(</span><span class="n">assest_profit_matrix</span><span class="p">):</span>
+    <span class="c1"># 策略每日收益的年化标准差</span>
+    <span class="n">assest_profit</span> <span class="o">=</span> <span class="n">assest_profit_matrix</span>
+
+    <span class="n">volatility_day</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">assest_profit</span><span class="p">)</span>
+    <span class="n">volatility_year</span> <span class="o">=</span> <span class="n">volatility_day</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">250</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">volatility_year</span></div>
+
+
+<div class="viewcode-block" id="QA_backtest_calc_dropback_max"><a class="viewcode-back" href="../../../source/QUANTAXIS.QABacktest.html#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_dropback_max">[docs]</a><span class="k">def</span> <span class="nf">QA_backtest_calc_dropback_max</span><span class="p">(</span><span class="n">history</span><span class="p">):</span>
+    <span class="n">drops</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">),</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">maxs</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">history</span><span class="p">[:</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">cur</span> <span class="o">=</span> <span class="n">history</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">drop</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">cur</span> <span class="o">/</span> <span class="n">maxs</span>
+        <span class="n">drops</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">drop</span><span class="p">)</span>
+    <span class="n">max_drop</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">drops</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">max_drop</span></div>
+
+
+<div class="viewcode-block" id="QA_backtest_calc_sharpe"><a class="viewcode-back" href="../../../source/QUANTAXIS.QABacktest.html#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_sharpe">[docs]</a><span class="k">def</span> <span class="nf">QA_backtest_calc_sharpe</span><span class="p">(</span><span class="n">annualized_returns</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">volatility_year</span><span class="p">):</span>
+    <span class="s1">&#39;计算夏普比率&#39;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">annualized_returns</span> <span class="o">-</span> <span class="n">r</span><span class="p">)</span> <span class="o">/</span> <span class="n">volatility_year</span></div>
+
+
+<div class="viewcode-block" id="QA_backtest_calc_trade_date"><a class="viewcode-back" href="../../../source/QUANTAXIS.QABacktest.html#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_trade_date">[docs]</a><span class="k">def</span> <span class="nf">QA_backtest_calc_trade_date</span><span class="p">(</span><span class="n">history</span><span class="p">):</span>
+    <span class="s1">&#39;计算交易日期&#39;</span>
+    <span class="n">trade_date</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># trade_date_sse.index(history[-1][0])-trade_date_sse.index(history[0][0])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">),</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">history</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">trade_date</span><span class="p">:</span>
+            <span class="n">trade_date</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">history</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">trade_date</span></div>
+
+
+<div class="viewcode-block" id="calc_trade_time"><a class="viewcode-back" href="../../../source/QUANTAXIS.QABacktest.html#QUANTAXIS.QABacktest.QAAnalysis.calc_trade_time">[docs]</a><span class="k">def</span> <span class="nf">calc_trade_time</span><span class="p">(</span><span class="n">history</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="calc_every_pnl"><a class="viewcode-back" href="../../../source/QUANTAXIS.QABacktest.html#QUANTAXIS.QABacktest.QAAnalysis.calc_every_pnl">[docs]</a><span class="k">def</span> <span class="nf">calc_every_pnl</span><span class="p">(</span><span class="n">detail</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="QA_backtest_calc_win_rate"><a class="viewcode-back" href="../../../source/QUANTAXIS.QABacktest.html#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_win_rate">[docs]</a><span class="k">def</span> <span class="nf">QA_backtest_calc_win_rate</span><span class="p">(</span><span class="n">profit_day</span><span class="p">):</span>
+    <span class="c1"># 大于0的次数</span>
+    <span class="n">abovez</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">belowz</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">profit_day</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">profit_day</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">abovez</span> <span class="o">=</span> <span class="n">abovez</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">profit_day</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">belowz</span> <span class="o">=</span> <span class="n">belowz</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">belowz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">belowz</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">abovez</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">abovez</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">win_rate</span> <span class="o">=</span> <span class="n">abovez</span> <span class="o">/</span> <span class="p">(</span><span class="n">abovez</span> <span class="o">+</span> <span class="n">belowz</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">win_rate</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, yutiansut.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

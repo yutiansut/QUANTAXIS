@@ -1,0 +1,243 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QUANTAXIS.QABacktest.QABacktest &#8212; QUANTAXIS 1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for QUANTAXIS.QABacktest.QABacktest</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding=utf-8</span>
+<span class="c1">#</span>
+<span class="c1"># The MIT License (MIT)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2016-2018 yutiansut/QUANTAXIS</span>
+<span class="c1">#</span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1">#</span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+
+
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">lru_cache</span>
+
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAARP.QAPortfolio</span> <span class="k">import</span> <span class="n">QA_Portfolio</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAARP.QAUser</span> <span class="k">import</span> <span class="n">QA_User</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAEngine.QAEvent</span> <span class="k">import</span> <span class="n">QA_Event</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAFetch.QAQuery_Advance</span> <span class="k">import</span> <span class="n">QA_fetch_stock_day_adv</span><span class="p">,</span> <span class="n">QA_fetch_stock_min_adv</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAMarket.QABacktestBroker</span> <span class="k">import</span> <span class="n">QA_BacktestBroker</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAMarket.QAMarket</span> <span class="k">import</span> <span class="n">QA_Market</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QAParameter</span> <span class="k">import</span> <span class="p">(</span><span class="n">AMOUNT_MODEL</span><span class="p">,</span> <span class="n">BROKER_EVENT</span><span class="p">,</span>
+                                          <span class="n">BROKER_TYPE</span><span class="p">,</span> <span class="n">ENGINE_EVENT</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="p">,</span>
+                                          <span class="n">MARKET_TYPE</span><span class="p">,</span> <span class="n">ORDER_DIRECTION</span><span class="p">,</span>
+                                          <span class="n">ORDER_MODEL</span><span class="p">)</span>
+
+
+
+<div class="viewcode-block" id="QA_Backtest"><a class="viewcode-back" href="../../../source/QUANTAXIS.QABacktest.html#QUANTAXIS.QABacktest.QABacktest.QA_Backtest">[docs]</a><span class="k">class</span> <span class="nc">QA_Backtest</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;BACKTEST</span>
+
+<span class="sd">    BACKTEST的主要目的:</span>
+
+<span class="sd">    - 引入时间轴环境,获取全部的数据,然后按生成器将数据迭代插入回测的BROKER</span>
+<span class="sd">        (这一个过程是模拟在真实情况中市场的时间变化和价格变化)</span>
+
+<span class="sd">    - BROKER有了新数据以后 会通知MARKET交易前置,MARKET告知已经注册的所有的ACCOUNT 有新的市场数据</span>
+
+<span class="sd">    - ACCOUNT 获取了新的市场函数,并将其插入他已有的数据中(update)</span>
+
+<span class="sd">    - ACCOUNT 底下注册的策略STRATEGY根据新的市场函数,产生新的买卖判断,综合生成信号</span>
+
+<span class="sd">    - 买卖判断通过交易前置发送给对应的BROKER,进行交易</span>
+
+<span class="sd">    - BROKER发送SETTLE指令 结束这一个bar的所有交易,进行清算</span>
+
+<span class="sd">    - 账户也进行清算,更新持仓,可卖,可用现金等</span>
+
+<span class="sd">    - 迭代循环直至结束回测</span>
+
+<span class="sd">    - 回测去计算这段时间的各个账户收益,并给出综合的最终结果</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">market_type</span><span class="p">,</span> <span class="n">frequence</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">code_list</span><span class="p">,</span> <span class="n">commission_fee</span><span class="p">,):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">QA_User</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">if_settled</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">account</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">portfolio</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">market</span> <span class="o">=</span> <span class="n">QA_Market</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">market_type</span> <span class="o">=</span> <span class="n">market_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frequence</span> <span class="o">=</span> <span class="n">frequence</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">broker</span> <span class="o">=</span> <span class="n">QA_BacktestBroker</span><span class="p">(</span><span class="n">commission_fee</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">broker_name</span> <span class="o">=</span> <span class="s1">&#39;backtest_broker&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">start</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">end</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">code_list</span> <span class="o">=</span> <span class="n">code_list</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">market_type</span> <span class="ow">is</span> <span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">STOCK_CN</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequence</span> <span class="ow">is</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">DAY</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ingest_data</span> <span class="o">=</span> <span class="n">QA_fetch_stock_day_adv</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">code_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">)</span><span class="o">.</span><span class="n">to_qfq</span><span class="p">()</span><span class="o">.</span><span class="n">panel_gen</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">market_type</span> <span class="ow">is</span> <span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">STOCK_CN</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequence</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">==</span> <span class="s1">&#39;min&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ingest_data</span> <span class="o">=</span> <span class="n">QA_fetch_stock_min_adv</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">code_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequence</span><span class="p">)</span><span class="o">.</span><span class="n">to_qfq</span><span class="p">()</span><span class="o">.</span><span class="n">panel_gen</span>
+
+    <span class="k">def</span> <span class="nf">_generate_account</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;generate a simple account</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">account</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">portfolio</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">generate_simpleaccount</span><span class="p">()</span>
+
+<div class="viewcode-block" id="QA_Backtest.start_market"><a class="viewcode-back" href="../../../source/QUANTAXIS.QABacktest.html#QUANTAXIS.QABacktest.QABacktest.QA_Backtest.start_market">[docs]</a>    <span class="k">def</span> <span class="nf">start_market</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;start the market thread and register backtest broker thread</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">market</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">market</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broker_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">market</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broker_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">account</span><span class="o">.</span><span class="n">account_cookie</span><span class="p">,</span>
+                          <span class="bp">self</span><span class="o">.</span><span class="n">account</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QA_Backtest.run"><a class="viewcode-back" href="../../../source/QUANTAXIS.QABacktest.html#QUANTAXIS.QABacktest.QABacktest.QA_Backtest.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;generator driven data flow</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 如果出现了日期的改变 才会进行结算的事件</span>
+        
+        <span class="n">_date</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ingest_data</span><span class="p">:</span><span class="c1">#对于在ingest_data中的数据</span>
+            <span class="n">date</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">date</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="c1">#</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">market_type</span> <span class="ow">is</span> <span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">STOCK_CN</span><span class="p">:</span> <span class="c1">#如果是股票市场</span>
+                <span class="k">if</span> <span class="n">_date</span> <span class="o">!=</span> <span class="n">date</span><span class="p">:</span><span class="c1"># 如果新的date</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">market</span><span class="o">.</span><span class="n">_settle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broker_name</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">market_type</span> <span class="ow">in</span> <span class="p">[</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">FUND_CN</span><span class="p">,</span> <span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">INDEX_CN</span><span class="p">,</span> <span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">FUTURE_CN</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">market</span><span class="o">.</span><span class="n">_settle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broker_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">QA_Event</span><span class="p">(</span>
+                <span class="n">event_type</span><span class="o">=</span><span class="n">ENGINE_EVENT</span><span class="o">.</span><span class="n">UPCOMING_DATA</span><span class="p">,</span>
+                <span class="n">market_data</span><span class="o">=</span><span class="n">data</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">market</span><span class="o">.</span><span class="n">upcoming_data</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">broker_name</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">market</span><span class="o">.</span><span class="n">trade_engine</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+            <span class="n">_date</span> <span class="o">=</span> <span class="n">date</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">after_success</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="QA_Backtest.after_success"><a class="viewcode-back" href="../../../source/QUANTAXIS.QABacktest.html#QUANTAXIS.QABacktest.QABacktest.QA_Backtest.after_success">[docs]</a>    <span class="k">def</span> <span class="nf">after_success</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;called when all trading fininshed, for performance analysis</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">po</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">portfolio_list</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">ac</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">get_portfolio</span><span class="p">(</span><span class="n">po</span><span class="p">)</span><span class="o">.</span><span class="n">accounts</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">accounts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">get_portfolio</span><span class="p">(</span><span class="n">po</span><span class="p">)</span><span class="o">.</span><span class="n">get_account</span><span class="p">(</span><span class="n">ac</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">accounts</span><span class="o">.</span><span class="n">hold</span><span class="p">)</span>
+
+                <span class="nb">print</span><span class="p">(</span><span class="n">accounts</span><span class="o">.</span><span class="n">history_table</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="QA_Backtest.stop"><a class="viewcode-back" href="../../../source/QUANTAXIS.QABacktest.html#QUANTAXIS.QABacktest.QABacktest.QA_Backtest.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;stop all the market trade enging threads and all subthreads</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">market</span><span class="o">.</span><span class="n">trade_engine</span><span class="o">.</span><span class="n">stop_all</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">market</span><span class="o">.</span><span class="n">trade_engine</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="BACKTEST_FRAMEWORK"><a class="viewcode-back" href="../../../source/QUANTAXIS.QABacktest.html#QUANTAXIS.QABacktest.QABacktest.BACKTEST_FRAMEWORK">[docs]</a><span class="k">class</span> <span class="nc">BACKTEST_FRAMEWORK</span><span class="p">():</span>
+    <span class="k">pass</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">backtest</span> <span class="o">=</span> <span class="n">QA_Backtest</span><span class="p">(</span><span class="n">market_type</span><span class="o">=</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">STOCK_CN</span><span class="p">,</span>
+                           <span class="n">frequence</span><span class="o">=</span><span class="n">FREQUENCE</span><span class="o">.</span><span class="n">DAY</span><span class="p">,</span>
+                           <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2017-01-01&#39;</span><span class="p">,</span>
+                           <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2017-01-31&#39;</span><span class="p">,</span>
+                           <span class="n">code_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;000001&#39;</span><span class="p">,</span> <span class="s1">&#39;600010&#39;</span><span class="p">],</span>
+                           <span class="n">commission_fee</span><span class="o">=</span><span class="mf">0.00015</span><span class="p">)</span>
+    <span class="n">backtest</span><span class="o">.</span><span class="n">_generate_account</span><span class="p">()</span>
+    <span class="n">backtest</span><span class="o">.</span><span class="n">start_market</span><span class="p">()</span>
+    <span class="n">backtest</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+    <span class="c1"># backtest.run()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, yutiansut.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

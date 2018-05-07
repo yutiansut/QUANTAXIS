@@ -1,0 +1,180 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QUANTAXIS.QAARP.QAUser &#8212; QUANTAXIS 1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for QUANTAXIS.QAARP.QAUser</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding:utf-8</span>
+<span class="c1">#</span>
+<span class="c1"># The MIT License (MIT)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2016-2018 yutiansut/QUANTAXIS</span>
+<span class="c1">#</span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1">#</span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAARP.QAPortfolio</span> <span class="k">import</span> <span class="n">QA_Portfolio</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QALogs</span> <span class="k">import</span> <span class="n">QA_util_log_info</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QARandom</span> <span class="k">import</span> <span class="n">QA_util_random_with_topic</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QASetting</span> <span class="k">import</span> <span class="n">QA_Setting</span>
+
+
+<div class="viewcode-block" id="QA_User"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAUser.QA_User">[docs]</a><span class="k">class</span> <span class="nc">QA_User</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;QA_User </span>
+<span class="sd">    User--Portfolio--Account/Strategy</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setting</span> <span class="o">=</span> <span class="n">QA_Setting</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">portfolio_list</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_cookie</span> <span class="o">=</span> <span class="n">QA_util_random_with_topic</span><span class="p">(</span><span class="s1">&#39;USER&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt; QA_USER </span><span class="si">{}</span><span class="s1"> with </span><span class="si">{}</span><span class="s1"> portfolio &gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_cookie</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">portfolio_list</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">po</span><span class="o">.</span><span class="n">table</span> <span class="k">for</span> <span class="n">po</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">portfolio_list</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<div class="viewcode-block" id="QA_User.client"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAUser.QA_User.client">[docs]</a>    <span class="k">def</span> <span class="nf">client</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s1">&#39;user.client to connect database&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">setting</span><span class="o">.</span><span class="n">client</span></div>
+
+<div class="viewcode-block" id="QA_User.connect_database"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAUser.QA_User.connect_database">[docs]</a>    <span class="k">def</span> <span class="nf">connect_database</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">27017</span><span class="p">):</span>
+        <span class="s1">&#39;connect is also a way to change database from IP_A to IP_B&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setting</span><span class="o">.</span><span class="n">change</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QA_User.login"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAUser.QA_User.login">[docs]</a>    <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_name</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+        <span class="s1">&#39;login to a database&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">setting</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">user_name</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+            <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;SUCCESS&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;FAILD&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QA_User.new_portfolio"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAUser.QA_User.new_portfolio">[docs]</a>    <span class="k">def</span> <span class="nf">new_portfolio</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s1">&#39;create a portfolio&#39;</span>
+        <span class="n">_portfolio</span> <span class="o">=</span> <span class="n">QA_Portfolio</span><span class="p">(</span><span class="n">user_cookie</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_cookie</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_portfolio</span><span class="o">.</span><span class="n">portfolio_cookie</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">portfolio_list</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">portfolio_list</span><span class="p">[</span><span class="n">_portfolio</span><span class="o">.</span><span class="n">portfolio_cookie</span><span class="p">]</span> <span class="o">=</span> <span class="n">_portfolio</span>
+            <span class="k">return</span> <span class="n">_portfolio</span></div>
+
+<div class="viewcode-block" id="QA_User.get_portfolio"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAUser.QA_User.get_portfolio">[docs]</a>    <span class="k">def</span> <span class="nf">get_portfolio</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">portfolio</span><span class="p">):</span>
+        <span class="s1">&#39;get a portfolio&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">portfolio_list</span><span class="p">[</span><span class="n">portfolio</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="QA_User.generate_simpleaccount"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAUser.QA_User.generate_simpleaccount">[docs]</a>    <span class="k">def</span> <span class="nf">generate_simpleaccount</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;make a simple account with a easier way</span>
+<span class="sd">        如果当前user中没有创建portfolio, 则创建一个portfolio,并用此portfolio创建一个account</span>
+<span class="sd">        如果已有一个或多个portfolio,则使用第一个portfolio来创建一个account</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">portfolio_list</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_portfolio</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">po</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">portfolio_list</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ac</span> <span class="o">=</span> <span class="n">po</span><span class="o">.</span><span class="n">new_account</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ac</span><span class="p">,</span> <span class="n">po</span></div>
+
+<div class="viewcode-block" id="QA_User.register_account"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAUser.QA_User.register_account">[docs]</a>    <span class="k">def</span> <span class="nf">register_account</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">portfolio_list</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_portfolio</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">po</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">portfolio_list</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">po</span><span class="o">.</span><span class="n">add_account</span><span class="p">(</span><span class="n">account</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">po</span><span class="p">,</span> <span class="n">account</span><span class="p">)</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">QA_User</span><span class="p">()</span>
+    <span class="n">portfolio1</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">new_portfolio</span><span class="p">()</span>
+    <span class="n">ac1</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">get_portfolio</span><span class="p">(</span><span class="n">portfolio1</span><span class="p">)</span><span class="o">.</span><span class="n">new_account</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">get_portfolio</span><span class="p">(</span><span class="n">portfolio1</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">get_portfolio</span><span class="p">(</span><span class="n">portfolio1</span><span class="p">)</span><span class="o">.</span><span class="n">get_account</span><span class="p">(</span><span class="n">ac1</span><span class="p">))</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, yutiansut.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

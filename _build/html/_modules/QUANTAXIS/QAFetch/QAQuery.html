@@ -1,0 +1,434 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QUANTAXIS.QAFetch.QAQuery &#8212; QUANTAXIS 1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for QUANTAXIS.QAFetch.QAQuery</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding: utf-8</span>
+<span class="c1">#</span>
+<span class="c1"># The MIT License (MIT)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2016-2018 yutiansut/QUANTAXIS</span>
+<span class="c1">#</span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1">#</span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+
+
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">pandas</span> <span class="k">import</span> <span class="n">DataFrame</span>
+
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil</span> <span class="k">import</span> <span class="p">(</span><span class="n">DATABASE</span><span class="p">,</span> <span class="n">QA_Setting</span><span class="p">,</span> <span class="n">QA_util_date_stamp</span><span class="p">,</span>
+                              <span class="n">QA_util_date_valid</span><span class="p">,</span> <span class="n">QA_util_dict_remove_key</span><span class="p">,</span>
+                              <span class="n">QA_util_log_info</span><span class="p">,</span> <span class="n">QA_util_code_tolist</span><span class="p">,</span>
+                              <span class="n">QA_util_sql_mongo_sort_DESCENDING</span><span class="p">,</span>
+                              <span class="n">QA_util_time_stamp</span><span class="p">,</span> <span class="n">QA_util_to_json_from_pandas</span><span class="p">,</span>
+                              <span class="n">trade_date_sse</span><span class="p">)</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">按要求从数据库取数据，并转换成numpy结构</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="QA_fetch_stock_day"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAQuery.QA_fetch_stock_day">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_stock_day</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;numpy&#39;</span><span class="p">,</span> <span class="n">frequence</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="n">collections</span><span class="o">=</span><span class="n">DATABASE</span><span class="o">.</span><span class="n">stock_day</span><span class="p">):</span>
+    <span class="s1">&#39;获取股票日线&#39;</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">start</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+    <span class="c1">#code= [code] if isinstance(code,str) else code</span>
+    
+    <span class="c1"># code checking</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">QA_util_code_tolist</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+
+
+    <span class="k">if</span> <span class="n">QA_util_date_valid</span><span class="p">(</span><span class="n">end</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+
+        <span class="n">__data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">find</span><span class="p">({</span>
+            <span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$in&#39;</span><span class="p">:</span><span class="n">code</span><span class="p">},</span> <span class="s2">&quot;date_stamp&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;$lte&quot;</span><span class="p">:</span> <span class="n">QA_util_date_stamp</span><span class="p">(</span><span class="n">end</span><span class="p">),</span>
+                <span class="s2">&quot;$gte&quot;</span><span class="p">:</span> <span class="n">QA_util_date_stamp</span><span class="p">(</span><span class="n">start</span><span class="p">)}})</span>
+        <span class="c1">#res=[QA_util_dict_remove_key(data, &#39;_id&#39;) for data in cursor]</span>
+
+        <span class="n">res</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">])</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">res</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;_id&#39;</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">volume</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="n">vol</span><span class="p">)</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">date</span><span class="p">))</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(([</span><span class="s1">&#39;date&#39;</span><span class="p">,</span><span class="s1">&#39;code&#39;</span><span class="p">]))</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="c1">#return res</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">res</span><span class="o">=</span><span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;pandas&#39;</span><span class="p">,</span> <span class="s1">&#39;pd&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">res</span>
+        <span class="k">elif</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;json&#39;</span><span class="p">,</span> <span class="s1">&#39;dict&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">QA_util_to_json_from_pandas</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="c1"># 多种数据格式</span>
+        <span class="k">elif</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;numpy&#39;</span><span class="p">]:</span>
+            <span class="k">return</span>  <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;list&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">]:</span>
+            <span class="k">return</span>  <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;something wrong with date&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_stock_min"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAQuery.QA_fetch_stock_min">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_stock_min</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;numpy&#39;</span><span class="p">,</span> <span class="n">frequence</span><span class="o">=</span><span class="s1">&#39;1min&#39;</span><span class="p">,</span> <span class="n">collections</span><span class="o">=</span><span class="n">DATABASE</span><span class="o">.</span><span class="n">stock_min</span><span class="p">):</span>
+    <span class="s1">&#39;获取股票分钟线&#39;</span>
+    <span class="k">if</span> <span class="n">frequence</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;1min&#39;</span><span class="p">,</span> <span class="s1">&#39;1m&#39;</span><span class="p">]:</span>
+        <span class="n">frequence</span> <span class="o">=</span> <span class="s1">&#39;1min&#39;</span>
+    <span class="k">elif</span> <span class="n">frequence</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;5min&#39;</span><span class="p">,</span> <span class="s1">&#39;5m&#39;</span><span class="p">]:</span>
+        <span class="n">frequence</span> <span class="o">=</span> <span class="s1">&#39;5min&#39;</span>
+    <span class="k">elif</span> <span class="n">frequence</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;15min&#39;</span><span class="p">,</span> <span class="s1">&#39;15m&#39;</span><span class="p">]:</span>
+        <span class="n">frequence</span> <span class="o">=</span> <span class="s1">&#39;15min&#39;</span>
+    <span class="k">elif</span> <span class="n">frequence</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;30min&#39;</span><span class="p">,</span> <span class="s1">&#39;30m&#39;</span><span class="p">]:</span>
+        <span class="n">frequence</span> <span class="o">=</span> <span class="s1">&#39;30min&#39;</span>
+    <span class="k">elif</span> <span class="n">frequence</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;60min&#39;</span><span class="p">,</span> <span class="s1">&#39;60m&#39;</span><span class="p">]:</span>
+        <span class="n">frequence</span> <span class="o">=</span> <span class="s1">&#39;60min&#39;</span>
+    <span class="n">__data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># code checking</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">QA_util_code_tolist</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">find</span><span class="p">({</span>
+        <span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$in&#39;</span><span class="p">:</span> <span class="n">code</span><span class="p">},</span> <span class="s2">&quot;time_stamp&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;$gte&quot;</span><span class="p">:</span> <span class="n">QA_util_time_stamp</span><span class="p">(</span><span class="n">start</span><span class="p">),</span>
+            <span class="s2">&quot;$lte&quot;</span><span class="p">:</span> <span class="n">QA_util_time_stamp</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
+        <span class="p">},</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">frequence</span>
+    <span class="p">})</span>
+
+    <span class="n">res</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">])</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">res</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;_id&#39;</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">volume</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="n">vol</span><span class="p">)</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">datetime</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">datetime</span><span class="p">))</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">([</span><span class="s1">&#39;datetime&#39;</span><span class="p">,</span><span class="s1">&#39;code&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1">#return res</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">res</span><span class="o">=</span><span class="kc">None</span>
+    <span class="k">if</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;pandas&#39;</span><span class="p">,</span> <span class="s1">&#39;pd&#39;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">res</span>
+    <span class="k">elif</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;json&#39;</span><span class="p">,</span> <span class="s1">&#39;dict&#39;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">QA_util_to_json_from_pandas</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <span class="c1"># 多种数据格式</span>
+    <span class="k">elif</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;numpy&#39;</span><span class="p">]:</span>
+        <span class="k">return</span>  <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;list&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">]:</span>
+        <span class="k">return</span>  <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="QA_fetch_trade_date"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAQuery.QA_fetch_trade_date">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_trade_date</span><span class="p">():</span>
+    <span class="s1">&#39;获取交易日期&#39;</span>
+    <span class="k">return</span> <span class="n">trade_date_sse</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_stock_list"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAQuery.QA_fetch_stock_list">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_stock_list</span><span class="p">(</span><span class="n">collections</span><span class="o">=</span><span class="n">DATABASE</span><span class="o">.</span><span class="n">stock_list</span><span class="p">):</span>
+    <span class="s1">&#39;获取股票列表&#39;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">collections</span><span class="o">.</span><span class="n">find</span><span class="p">()]</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_stock_full"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAQuery.QA_fetch_stock_full">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_stock_full</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;numpy&#39;</span><span class="p">,</span> <span class="n">collections</span><span class="o">=</span><span class="n">DATABASE</span><span class="o">.</span><span class="n">stock_day</span><span class="p">):</span>
+    <span class="s1">&#39;获取全市场的某一日的数据&#39;</span>
+    <span class="n">Date</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">QA_util_date_valid</span><span class="p">(</span><span class="n">Date</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+
+        <span class="n">__data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">collections</span><span class="o">.</span><span class="n">find</span><span class="p">({</span>
+            <span class="s2">&quot;date_stamp&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;$lte&quot;</span><span class="p">:</span> <span class="n">QA_util_date_stamp</span><span class="p">(</span><span class="n">Date</span><span class="p">),</span>
+                <span class="s2">&quot;$gte&quot;</span><span class="p">:</span> <span class="n">QA_util_date_stamp</span><span class="p">(</span><span class="n">Date</span><span class="p">)}}):</span>
+            <span class="n">__data</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;high&#39;</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span>
+                <span class="n">item</span><span class="p">[</span><span class="s1">&#39;low&#39;</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;close&#39;</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;vol&#39;</span><span class="p">]),</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]])</span>
+        <span class="c1"># 多种数据格式</span>
+        <span class="k">if</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;numpy&#39;</span><span class="p">]:</span>
+            <span class="n">__data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">__data</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;list&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">]:</span>
+            <span class="n">__data</span> <span class="o">=</span> <span class="n">__data</span>
+        <span class="k">elif</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;pandas&#39;</span><span class="p">,</span> <span class="s1">&#39;pd&#39;</span><span class="p">]:</span>
+            <span class="n">__data</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span><span class="n">__data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span>
+                <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">,</span> <span class="s1">&#39;volume&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">])</span>
+            <span class="n">__data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">__data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">])</span>
+            <span class="n">__data</span> <span class="o">=</span> <span class="n">__data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">__data</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;something wrong with date&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="QA_fetch_index_day"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAQuery.QA_fetch_index_day">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_index_day</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;numpy&#39;</span><span class="p">,</span> <span class="n">collections</span><span class="o">=</span><span class="n">DATABASE</span><span class="o">.</span><span class="n">index_day</span><span class="p">):</span>
+    <span class="s1">&#39;获取指数日线&#39;</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">start</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">QA_util_date_valid</span><span class="p">(</span><span class="n">end</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+
+        <span class="n">__data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">find</span><span class="p">({</span>
+            <span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">code</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span> <span class="s2">&quot;date_stamp&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;$lte&quot;</span><span class="p">:</span> <span class="n">QA_util_date_stamp</span><span class="p">(</span><span class="n">end</span><span class="p">),</span>
+                <span class="s2">&quot;$gte&quot;</span><span class="p">:</span> <span class="n">QA_util_date_stamp</span><span class="p">(</span><span class="n">start</span><span class="p">)}})</span>
+        <span class="k">if</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">data</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">:</span>
+
+            <span class="n">__data</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;high&#39;</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span>
+                <span class="n">item</span><span class="p">[</span><span class="s1">&#39;low&#39;</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;close&#39;</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;vol&#39;</span><span class="p">]),</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]])</span>
+
+        <span class="c1"># 多种数据格式</span>
+        <span class="k">if</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;numpy&#39;</span><span class="p">]:</span>
+            <span class="n">__data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">__data</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;list&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">]:</span>
+            <span class="n">__data</span> <span class="o">=</span> <span class="n">__data</span>
+        <span class="k">elif</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;pandas&#39;</span><span class="p">,</span> <span class="s1">&#39;pd&#39;</span><span class="p">]:</span>
+
+            <span class="n">__data</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span><span class="n">__data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span>
+                <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">,</span> <span class="s1">&#39;volume&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">])</span>
+
+            <span class="n">__data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">__data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">])</span>
+            <span class="n">__data</span> <span class="o">=</span> <span class="n">__data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">__data</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;something wrong with date&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_indexlist_day"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAQuery.QA_fetch_indexlist_day">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_indexlist_day</span><span class="p">(</span><span class="n">stock_list</span><span class="p">,</span> <span class="n">date_range</span><span class="p">,</span> <span class="n">collections</span><span class="o">=</span><span class="n">DATABASE</span><span class="o">.</span><span class="n">index_day</span><span class="p">):</span>
+    <span class="s1">&#39;获取多个股票的日线&#39;</span>
+    <span class="n">__data</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">stock_list</span><span class="p">:</span>
+        <span class="n">__data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">QA_fetch_index_day</span><span class="p">(</span>
+            <span class="n">item</span><span class="p">,</span> <span class="n">date_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">date_range</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;pd&#39;</span><span class="p">,</span> <span class="n">collections</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">__data</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_index_min"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAQuery.QA_fetch_index_min">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_index_min</span><span class="p">(</span>
+        <span class="n">code</span><span class="p">,</span>
+        <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;numpy&#39;</span><span class="p">,</span>
+        <span class="n">frequence</span><span class="o">=</span><span class="s1">&#39;1min&#39;</span><span class="p">,</span>
+        <span class="n">collections</span><span class="o">=</span><span class="n">DATABASE</span><span class="o">.</span><span class="n">index_min</span><span class="p">):</span>
+    <span class="s1">&#39;获取股票分钟线&#39;</span>
+    <span class="k">if</span> <span class="n">frequence</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;1min&#39;</span><span class="p">,</span> <span class="s1">&#39;1m&#39;</span><span class="p">]:</span>
+        <span class="n">frequence</span> <span class="o">=</span> <span class="s1">&#39;1min&#39;</span>
+    <span class="k">elif</span> <span class="n">frequence</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;5min&#39;</span><span class="p">,</span> <span class="s1">&#39;5m&#39;</span><span class="p">]:</span>
+        <span class="n">frequence</span> <span class="o">=</span> <span class="s1">&#39;5min&#39;</span>
+    <span class="k">elif</span> <span class="n">frequence</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;15min&#39;</span><span class="p">,</span> <span class="s1">&#39;15m&#39;</span><span class="p">]:</span>
+        <span class="n">frequence</span> <span class="o">=</span> <span class="s1">&#39;15min&#39;</span>
+    <span class="k">elif</span> <span class="n">frequence</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;30min&#39;</span><span class="p">,</span> <span class="s1">&#39;30m&#39;</span><span class="p">]:</span>
+        <span class="n">frequence</span> <span class="o">=</span> <span class="s1">&#39;30min&#39;</span>
+    <span class="k">elif</span> <span class="n">frequence</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;60min&#39;</span><span class="p">,</span> <span class="s1">&#39;60m&#39;</span><span class="p">]:</span>
+        <span class="n">frequence</span> <span class="o">=</span> <span class="s1">&#39;60min&#39;</span>
+    <span class="n">__data</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">find</span><span class="p">({</span>
+        <span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">code</span><span class="p">),</span> <span class="s2">&quot;time_stamp&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;$gte&quot;</span><span class="p">:</span> <span class="n">QA_util_time_stamp</span><span class="p">(</span><span class="n">start</span><span class="p">),</span>
+            <span class="s2">&quot;$lte&quot;</span><span class="p">:</span> <span class="n">QA_util_time_stamp</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
+        <span class="p">},</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">frequence</span>
+    <span class="p">})</span>
+    <span class="k">if</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">data</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">:</span>
+
+        <span class="n">__data</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;high&#39;</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span>
+            <span class="n">item</span><span class="p">[</span><span class="s1">&#39;low&#39;</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;close&#39;</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;vol&#39;</span><span class="p">]),</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">],</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;time_stamp&#39;</span><span class="p">],</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]])</span>
+
+    <span class="n">__data</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span><span class="n">__data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span>
+        <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">,</span> <span class="s1">&#39;volume&#39;</span><span class="p">,</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="s1">&#39;time_stamp&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">])</span>
+
+    <span class="n">__data</span><span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">__data</span><span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">])</span>
+    <span class="n">__data</span> <span class="o">=</span> <span class="n">__data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;numpy&#39;</span><span class="p">,</span> <span class="s1">&#39;np&#39;</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">__data</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;list&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">__data</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;pandas&#39;</span><span class="p">,</span> <span class="s1">&#39;pd&#39;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">__data</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_future_day"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAQuery.QA_fetch_future_day">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_future_day</span><span class="p">():</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_future_min"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAQuery.QA_fetch_future_min">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_future_min</span><span class="p">():</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_future_tick"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAQuery.QA_fetch_future_tick">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_future_tick</span><span class="p">():</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_stock_xdxr"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAQuery.QA_fetch_stock_xdxr">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_stock_xdxr</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;pd&#39;</span><span class="p">,</span> <span class="n">collections</span><span class="o">=</span><span class="n">DATABASE</span><span class="o">.</span><span class="n">stock_xdxr</span><span class="p">):</span>
+    <span class="s1">&#39;获取股票除权信息/数据库&#39;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">collections</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
+        <span class="p">{</span><span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="n">code</span><span class="p">})])</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;_id&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_backtest_info"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAQuery.QA_fetch_backtest_info">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_backtest_info</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">account_cookie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stock_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">collections</span><span class="o">=</span><span class="n">DATABASE</span><span class="o">.</span><span class="n">backtest_info</span><span class="p">):</span>
+
+    <span class="k">return</span> <span class="n">QA_util_to_json_from_pandas</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">collections</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">QA_util_to_json_from_pandas</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">user</span><span class="p">,</span> <span class="n">account_cookie</span><span class="p">,</span> <span class="n">strategy</span><span class="p">,</span> <span class="n">stock_list</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;account_cookie&#39;</span><span class="p">,</span> <span class="s1">&#39;strategy&#39;</span><span class="p">,</span> <span class="s1">&#39;stock_list&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">T</span><span class="p">)[</span><span class="mi">0</span><span class="p">])])</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;_id&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_backtest_history"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAQuery.QA_fetch_backtest_history">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_backtest_history</span><span class="p">(</span><span class="n">cookie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">collections</span><span class="o">=</span><span class="n">DATABASE</span><span class="o">.</span><span class="n">backtest_history</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">QA_util_to_json_from_pandas</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">collections</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">QA_util_to_json_from_pandas</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">cookie</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;cookie&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">T</span><span class="p">)[</span><span class="mi">0</span><span class="p">])])</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;_id&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_stock_block"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAQuery.QA_fetch_stock_block">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_stock_block</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;pd&#39;</span><span class="p">,</span> <span class="n">collections</span><span class="o">=</span><span class="n">DATABASE</span><span class="o">.</span><span class="n">stock_block</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">code</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">collections</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
+            <span class="p">{</span><span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="n">code</span><span class="p">})])</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;_id&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">collections</span><span class="o">.</span><span class="n">find</span><span class="p">()])</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;_id&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_stock_info"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAQuery.QA_fetch_stock_info">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_stock_info</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;pd&#39;</span><span class="p">,</span> <span class="n">collections</span><span class="o">=</span><span class="n">DATABASE</span><span class="o">.</span><span class="n">stock_info</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">collections</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
+            <span class="p">{</span><span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="n">code</span><span class="p">})])</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;_id&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1">#data[&#39;date&#39;] = pd.to_datetime(data[&#39;date&#39;])</span>
+        <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_stock_name"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAQuery.QA_fetch_stock_name">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_stock_name</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">collections</span><span class="o">=</span><span class="n">DATABASE</span><span class="o">.</span><span class="n">stock_list</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">collections</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="n">code</span><span class="p">})[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_quotation"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAQuery.QA_fetch_quotation">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_quotation</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">(),</span> <span class="n">db</span><span class="o">=</span><span class="n">DATABASE</span><span class="p">):</span>
+    <span class="s1">&#39;获取某一只实时5档行情的存储结果&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">collections</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_collection</span><span class="p">(</span>
+            <span class="s1">&#39;realtime_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">date</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">collections</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
+            <span class="p">{</span><span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="n">code</span><span class="p">})])</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;_id&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">e</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_quotations"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAQuery.QA_fetch_quotations">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_quotations</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">(),</span> <span class="n">db</span><span class="o">=</span><span class="n">DATABASE</span><span class="p">):</span>
+    <span class="s1">&#39;获取全部实时5档行情的存储结果&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">collections</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_collection</span><span class="p">(</span>
+            <span class="s1">&#39;realtime_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">date</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">collections</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
+            <span class="p">{})])</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;_id&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">e</span></div>
+
+
+<div class="viewcode-block" id="QA_fetch_account"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QAQuery.QA_fetch_account">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_account</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="p">{},</span> <span class="n">db</span><span class="o">=</span><span class="n">DATABASE</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;get the account</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        query_mes {[type]} -- [description]</span>
+
+<span class="sd">    Keyword Arguments:</span>
+<span class="sd">        collection {[type]} -- [description] (default: {DATABASE})</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        [type] -- [description]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">collection</span> <span class="o">=</span> <span class="n">DATABASE</span><span class="o">.</span><span class="n">account</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">QA_util_dict_remove_key</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="s1">&#39;_id&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">collection</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">message</span><span class="p">)]</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">QA_fetch_quotations</span><span class="p">(</span><span class="s1">&#39;000001&#39;</span><span class="p">))</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../QAFetch.html">QUANTAXIS.QAFetch</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, yutiansut.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

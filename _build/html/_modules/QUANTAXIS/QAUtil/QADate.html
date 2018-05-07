@@ -1,0 +1,440 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QUANTAXIS.QAUtil.QADate &#8212; QUANTAXIS 1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for QUANTAXIS.QAUtil.QADate</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding:utf-8</span>
+<span class="c1">#</span>
+<span class="c1"># The MIT License (MIT)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2016-2018 yutiansut/QUANTAXIS</span>
+<span class="c1">#</span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1">#</span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QALogs</span> <span class="k">import</span> <span class="n">QA_util_log_info</span>
+
+
+<div class="viewcode-block" id="QA_util_time_now"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_time_now">[docs]</a><span class="k">def</span> <span class="nf">QA_util_time_now</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;[summary]</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        [type] -- [description]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="QA_util_date_today"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_date_today">[docs]</a><span class="k">def</span> <span class="nf">QA_util_date_today</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;[summary]</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        [type] -- [description]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="QA_util_date_str2int"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_date_str2int">[docs]</a><span class="k">def</span> <span class="nf">QA_util_date_str2int</span><span class="p">(</span><span class="n">date</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;[summary]</span>
+<span class="sd">    </span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        date {[type]} -- [description]</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        [type] -- [description]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">)[</span><span class="mi">5</span><span class="p">:</span><span class="mi">7</span><span class="p">]</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">)[</span><span class="mi">8</span><span class="p">:</span><span class="mi">10</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="QA_util_date_int2str"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_date_int2str">[docs]</a><span class="k">def</span> <span class="nf">QA_util_date_int2str</span><span class="p">(</span><span class="n">date</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;[summary]</span>
+<span class="sd">    </span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        date {[type]} -- [description]</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        [type] -- [description]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">)[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">)[</span><span class="mi">6</span><span class="p">:</span><span class="mi">8</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="QA_util_to_datetime"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_to_datetime">[docs]</a><span class="k">def</span> <span class="nf">QA_util_to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;[summary]</span>
+<span class="sd">    </span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        time {[type]} -- [description]</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        [type] -- [description]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="p">))</span> <span class="o">==</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="n">_time</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> 00:00:00&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="p">))</span> <span class="o">==</span> <span class="mi">19</span><span class="p">:</span>
+        <span class="n">_time</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;WRONG DATETIME FORMAT </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">_time</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QA_util_date_stamp"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_date_stamp">[docs]</a><span class="k">def</span> <span class="nf">QA_util_date_stamp</span><span class="p">(</span><span class="n">date</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;[summary]</span>
+<span class="sd">    </span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        date {[type]} -- [description]</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        [type] -- [description]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">datestr</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">mktime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">datestr</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">date</span></div>
+
+
+<div class="viewcode-block" id="QA_util_time_stamp"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_time_stamp">[docs]</a><span class="k">def</span> <span class="nf">QA_util_time_stamp</span><span class="p">(</span><span class="n">time_</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    数据格式最好是%Y-%m-%d %H:%M:%S 中间要有空格 </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">time_</span><span class="p">))</span> <span class="o">==</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="c1"># yyyy-mm-dd格式</span>
+        <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">mktime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">time_</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">time_</span><span class="p">))</span> <span class="o">==</span> <span class="mi">16</span><span class="p">:</span>
+            <span class="c1"># yyyy-mm-dd hh:mm格式</span>
+        <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">mktime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">time_</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">timestr</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">time_</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">19</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">mktime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">timestr</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="QA_util_stamp2datetime"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_stamp2datetime">[docs]</a><span class="k">def</span> <span class="nf">QA_util_stamp2datetime</span><span class="p">(</span><span class="n">timestamp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    datestamp转datetime</span>
+
+<span class="sd">    pandas转出来的timestamp是13位整数 要/1000</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">timestamp</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QA_util_ms_stamp"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_ms_stamp">[docs]</a><span class="k">def</span> <span class="nf">QA_util_ms_stamp</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;[summary]</span>
+<span class="sd">    </span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        ms {[type]} -- [description]</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        [type] -- [description]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">ms</span></div>
+
+
+<div class="viewcode-block" id="QA_util_date_valid"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_date_valid">[docs]</a><span class="k">def</span> <span class="nf">QA_util_date_valid</span><span class="p">(</span><span class="n">date</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;[summary]</span>
+<span class="sd">    </span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        date {[type]} -- [description]</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        [type] -- [description]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+
+        <span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="QA_util_realtime"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_realtime">[docs]</a><span class="k">def</span> <span class="nf">QA_util_realtime</span><span class="p">(</span><span class="n">strtime</span><span class="p">,</span> <span class="n">client</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;[summary]</span>
+<span class="sd">    </span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        strtime {[type]} -- [description]</span>
+<span class="sd">        client {[type]} -- [description]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">time_stamp</span> <span class="o">=</span> <span class="n">QA_util_date_stamp</span><span class="p">(</span><span class="n">strtime</span><span class="p">)</span>
+    <span class="n">coll</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">quantaxis</span><span class="o">.</span><span class="n">trade_date</span>
+    <span class="n">temp_str</span> <span class="o">=</span> <span class="n">coll</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s1">&#39;date_stamp&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$gte&quot;</span><span class="p">:</span> <span class="n">time_stamp</span><span class="p">}})</span>
+    <span class="n">time_real</span> <span class="o">=</span> <span class="n">temp_str</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span>
+    <span class="n">time_id</span> <span class="o">=</span> <span class="n">temp_str</span><span class="p">[</span><span class="s1">&#39;num&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;time_real&#39;</span><span class="p">:</span> <span class="n">time_real</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">time_id</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="QA_util_id2date"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_id2date">[docs]</a><span class="k">def</span> <span class="nf">QA_util_id2date</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">client</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;[summary]</span>
+<span class="sd">    </span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        idx {[type]} -- [description]</span>
+<span class="sd">        client {[type]} -- [description]</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        [type] -- [description]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">coll</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">quantaxis</span><span class="o">.</span><span class="n">trade_date</span>
+    <span class="n">temp_str</span> <span class="o">=</span> <span class="n">coll</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s1">&#39;num&#39;</span><span class="p">:</span> <span class="n">idx</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">temp_str</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="QA_util_is_trade"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_is_trade">[docs]</a><span class="k">def</span> <span class="nf">QA_util_is_trade</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">client</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;判断是否是交易日</span>
+<span class="sd">    </span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        date {[type]} -- [description]</span>
+<span class="sd">        code {[type]} -- [description]</span>
+<span class="sd">        client {[type]} -- [description]</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        [type] -- [description]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">coll</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">quantaxis</span><span class="o">.</span><span class="n">stock_day</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+    <span class="n">is_trade</span> <span class="o">=</span> <span class="n">coll</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="n">code</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">date</span><span class="p">})</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">is_trade</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="QA_util_get_date_index"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_get_date_index">[docs]</a><span class="k">def</span> <span class="nf">QA_util_get_date_index</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">trade_list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;返回在trade_list中的index位置</span>
+<span class="sd">    </span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        date {[type]} -- [description]</span>
+<span class="sd">        trade_list {[type]} -- [description]</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        [type] -- [description]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">trade_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">date</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="QA_util_get_index_date"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_get_index_date">[docs]</a><span class="k">def</span> <span class="nf">QA_util_get_index_date</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">trade_list</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">trade_list</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="QA_util_select_hours"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_select_hours">[docs]</a><span class="k">def</span> <span class="nf">QA_util_select_hours</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gte</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lte</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="s1">&#39;quantaxis的时间选择函数,约定时间的范围,比如早上9点到11点&#39;</span>
+    <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">__realtime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">__realtime</span> <span class="o">=</span> <span class="n">time</span>
+
+    <span class="n">fun_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">gt</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fun_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&gt;&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">lt</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fun_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">gte</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fun_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&gt;=&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">lte</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fun_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&lt;=&#39;</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">fun_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="n">true_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">fun_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">item</span> <span class="o">==</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">__realtime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%H&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">gt</span><span class="p">:</span>
+                    <span class="n">true_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">true_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">item</span> <span class="o">==</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">__realtime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%H&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">lt</span><span class="p">:</span>
+                    <span class="n">true_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">true_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">item</span> <span class="o">==</span> <span class="s1">&#39;&gt;=&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">__realtime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%H&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">gte</span><span class="p">:</span>
+                    <span class="n">true_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">true_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">item</span> <span class="o">==</span> <span class="s1">&#39;&lt;=&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">__realtime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%H&#39;</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">lte</span><span class="p">:</span>
+                    <span class="n">true_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">true_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="ne">Exception</span>
+    <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">true_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="QA_util_select_min"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_select_min">[docs]</a><span class="k">def</span> <span class="nf">QA_util_select_min</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gte</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lte</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="s1">&#39;quantaxis的时间选择函数,约定时间的范围,比如30分到59分&#39;</span>
+    <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">__realtime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">__realtime</span> <span class="o">=</span> <span class="n">time</span>
+
+    <span class="n">fun_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">gt</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fun_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&gt;&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">lt</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fun_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">gte</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fun_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&gt;=&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">lte</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fun_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&lt;=&#39;</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">fun_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="n">true_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">fun_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">item</span> <span class="o">==</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">__realtime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%M&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">gt</span><span class="p">:</span>
+                    <span class="n">true_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">true_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">item</span> <span class="o">==</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">__realtime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%M&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">lt</span><span class="p">:</span>
+                    <span class="n">true_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">true_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">item</span> <span class="o">==</span> <span class="s1">&#39;&gt;=&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">__realtime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%M&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">gte</span><span class="p">:</span>
+                    <span class="n">true_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">true_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">item</span> <span class="o">==</span> <span class="s1">&#39;&lt;=&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">__realtime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%M&#39;</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">lte</span><span class="p">:</span>
+                    <span class="n">true_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">true_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="ne">Exception</span>
+    <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">true_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="QA_util_time_delay"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_time_delay">[docs]</a><span class="k">def</span> <span class="nf">QA_util_time_delay</span><span class="p">(</span><span class="n">time_</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="s1">&#39;这是一个用于复用/比如说@装饰器的延时函数</span><span class="se">\</span>
+<span class="s1">    使用threading里面的延时,为了是不阻塞进程</span><span class="se">\</span>
+<span class="s1">    有时候,同时发进去两个函数,第一个函数需要延时</span><span class="se">\</span>
+<span class="s1">    第二个不需要的话,用sleep就会阻塞掉第二个进程&#39;</span>
+    <span class="k">def</span> <span class="nf">_exec</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="n">threading</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="n">time_</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_exec</span></div>
+
+
+<div class="viewcode-block" id="QA_util_calc_time"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_calc_time">[docs]</a><span class="k">def</span> <span class="nf">QA_util_calc_time</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="s1">&#39;耗时长度的装饰器&#39;</span>
+    <span class="n">_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">_time</span><span class="p">)</span></div>
+    <span class="c1"># return datetime.datetime.now() - _time</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">QA_util_time_stamp</span><span class="p">(</span><span class="s1">&#39;2017-01-01 10:25:08&#39;</span><span class="p">))</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, yutiansut.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

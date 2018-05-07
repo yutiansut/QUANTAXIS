@@ -1,0 +1,420 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QUANTAXIS.QAFetch.QATdx_adv &#8212; QUANTAXIS 1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for QUANTAXIS.QAFetch.QATdx_adv</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding:utf-8</span>
+<span class="c1">#</span>
+<span class="c1"># The MIT License (MIT)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2016-2018 yutiansut/QUANTAXIS</span>
+<span class="c1">#</span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1">#</span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+
+
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">queue</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="k">import</span> <span class="n">ThreadPoolExecutor</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="k">import</span> <span class="n">Thread</span><span class="p">,</span> <span class="n">Timer</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">pytdx.hq</span> <span class="k">import</span> <span class="n">TdxHq_API</span>
+
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QADate_trade</span> <span class="k">import</span> <span class="n">QA_util_if_tradetime</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QASetting</span> <span class="k">import</span> <span class="n">DATABASE</span><span class="p">,</span> <span class="n">stock_ip_list</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QASql</span> <span class="k">import</span> <span class="n">QA_util_sql_mongo_sort_ASCENDING</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QATransform</span> <span class="k">import</span> <span class="n">QA_util_to_json_from_pandas</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">准备做一个多连接的连接池执行器Executor</span>
+<span class="sd">当持续获取数据/批量数据的时候,可以减小服务器的压力,并且可以更快的进行并行处理</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="QA_Tdx_Executor"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QATdx_adv.QA_Tdx_Executor">[docs]</a><span class="k">class</span> <span class="nc">QA_Tdx_Executor</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thread_num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thread_num</span> <span class="o">=</span> <span class="n">thread_num</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_no_connection</span> <span class="o">=</span> <span class="n">TdxHq_API</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_worker</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span>
+            <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">api_worker</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;API Worker&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api_worker</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">executor</span> <span class="o">=</span> <span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thread_num</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">api</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_available</span><span class="p">()</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">api</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">res</span>
+            <span class="k">return</span> <span class="n">wrapper</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_queue_clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_test_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">7709</span><span class="p">):</span>
+
+        <span class="n">api</span> <span class="o">=</span> <span class="n">TdxHq_API</span><span class="p">(</span><span class="n">raise_exception</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">auto_retry</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">api</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">time_out</span><span class="o">=</span><span class="mf">0.05</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">get_security_list</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">800</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">_time</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+
+<div class="viewcode-block" id="QA_Tdx_Executor.get_market"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QATdx_adv.QA_Tdx_Executor.get_market">[docs]</a>    <span class="k">def</span> <span class="nf">get_market</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">code</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;5&#39;</span><span class="p">,</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span> <span class="s1">&#39;9&#39;</span><span class="p">]</span> <span class="ow">or</span> <span class="n">code</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;009&quot;</span><span class="p">,</span> <span class="s2">&quot;126&quot;</span><span class="p">,</span> <span class="s2">&quot;110&quot;</span><span class="p">,</span> <span class="s2">&quot;201&quot;</span><span class="p">,</span> <span class="s2">&quot;202&quot;</span><span class="p">,</span> <span class="s2">&quot;203&quot;</span><span class="p">,</span> <span class="s2">&quot;204&quot;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="QA_Tdx_Executor.get_frequence"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QATdx_adv.QA_Tdx_Executor.get_frequence">[docs]</a>    <span class="k">def</span> <span class="nf">get_frequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frequence</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">frequence</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;DAY&#39;</span><span class="p">,</span> <span class="s1">&#39;Day&#39;</span><span class="p">]:</span>
+            <span class="n">frequence</span> <span class="o">=</span> <span class="mi">9</span>
+        <span class="k">elif</span> <span class="n">frequence</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="s1">&#39;W&#39;</span><span class="p">,</span> <span class="s1">&#39;Week&#39;</span><span class="p">,</span> <span class="s1">&#39;week&#39;</span><span class="p">]:</span>
+            <span class="n">frequence</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="k">elif</span> <span class="n">frequence</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;Month&#39;</span><span class="p">]:</span>
+            <span class="n">frequence</span> <span class="o">=</span> <span class="mi">6</span>
+        <span class="k">elif</span> <span class="n">frequence</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;Quarter&#39;</span><span class="p">,</span> <span class="s1">&#39;q&#39;</span><span class="p">]:</span>
+            <span class="n">frequence</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="k">elif</span> <span class="n">frequence</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;Year&#39;</span><span class="p">]:</span>
+            <span class="n">frequence</span> <span class="o">=</span> <span class="mi">11</span>
+        <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">frequence</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;5&#39;</span><span class="p">,</span> <span class="s1">&#39;5m&#39;</span><span class="p">,</span> <span class="s1">&#39;5min&#39;</span><span class="p">,</span> <span class="s1">&#39;five&#39;</span><span class="p">]:</span>
+            <span class="n">frequence</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">frequence</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1m&#39;</span><span class="p">,</span> <span class="s1">&#39;1min&#39;</span><span class="p">,</span> <span class="s1">&#39;one&#39;</span><span class="p">]:</span>
+            <span class="n">frequence</span> <span class="o">=</span> <span class="mi">8</span>
+        <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">frequence</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;15&#39;</span><span class="p">,</span> <span class="s1">&#39;15m&#39;</span><span class="p">,</span> <span class="s1">&#39;15min&#39;</span><span class="p">,</span> <span class="s1">&#39;fifteen&#39;</span><span class="p">]:</span>
+            <span class="n">frequence</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">frequence</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;30&#39;</span><span class="p">,</span> <span class="s1">&#39;30m&#39;</span><span class="p">,</span> <span class="s1">&#39;30min&#39;</span><span class="p">,</span> <span class="s1">&#39;half&#39;</span><span class="p">]:</span>
+            <span class="n">frequence</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">frequence</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;60&#39;</span><span class="p">,</span> <span class="s1">&#39;60m&#39;</span><span class="p">,</span> <span class="s1">&#39;60min&#39;</span><span class="p">,</span> <span class="s1">&#39;1h&#39;</span><span class="p">]:</span>
+            <span class="n">frequence</span> <span class="o">=</span> <span class="mi">3</span>
+
+        <span class="k">return</span> <span class="n">frequence</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ipsize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">qsize</span><span class="p">())</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">api</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_available</span><span class="p">()</span>
+
+<div class="viewcode-block" id="QA_Tdx_Executor.get_available"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QATdx_adv.QA_Tdx_Executor.get_available">[docs]</a>    <span class="k">def</span> <span class="nf">get_available</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">get_nowait</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Timer</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_worker</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="QA_Tdx_Executor.api_worker"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QATdx_adv.QA_Tdx_Executor.api_worker">[docs]</a>    <span class="k">def</span> <span class="nf">api_worker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">qsize</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">80</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">stock_ip_list</span><span class="p">:</span>
+                <span class="n">_sec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_test_speed</span><span class="p">(</span><span class="n">ip</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;ip&#39;</span><span class="p">],</span> <span class="n">port</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;port&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">_sec</span> <span class="o">&lt;</span> <span class="mf">0.1</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">TdxHq_API</span><span class="p">(</span><span class="n">heartbeat</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+                            <span class="n">ip</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;ip&#39;</span><span class="p">],</span> <span class="n">port</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;port&#39;</span><span class="p">],</span> <span class="n">time_out</span><span class="o">=</span><span class="mf">0.05</span><span class="p">))</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_queue_clean</span><span class="p">()</span>
+            <span class="n">Timer</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_worker</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="n">Timer</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_worker</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_singal_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">id_</span><span class="p">,</span> <span class="n">time_out</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_api</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_available</span><span class="p">()</span>
+
+            <span class="n">__data</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_no_connection</span><span class="o">.</span><span class="n">to_df</span><span class="p">(</span><span class="n">_api</span><span class="o">.</span><span class="n">get_security_quotes</span><span class="p">(</span>
+                <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">_select_market_code</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">code</span><span class="p">[</span><span class="mi">80</span> <span class="o">*</span> <span class="n">id_</span><span class="p">:</span><span class="mi">80</span> <span class="o">*</span> <span class="p">(</span><span class="n">id_</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]])))</span>
+            <span class="n">__data</span><span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">_api</span><span class="p">)</span>  <span class="c1"># 加入注销</span>
+            <span class="k">return</span> <span class="n">__data</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">singal_job</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">id_</span><span class="p">)</span>
+
+<div class="viewcode-block" id="QA_Tdx_Executor.get_realtime"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QATdx_adv.QA_Tdx_Executor.get_realtime">[docs]</a>    <span class="k">def</span> <span class="nf">get_realtime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+        <span class="n">code</span> <span class="o">=</span> <span class="p">[</span><span class="n">code</span><span class="p">]</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">code</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span> <span class="k">else</span> <span class="n">code</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">id_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">code</span><span class="p">)</span> <span class="o">/</span> <span class="mi">80</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_singal_job</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">id_</span><span class="p">)</span>
+
+            <span class="n">data</span> <span class="o">=</span> <span class="n">context</span><span class="p">[[</span><span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="s1">&#39;last_close&#39;</span><span class="p">,</span> <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">,</span> <span class="s1">&#39;cur_vol&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;s_vol&#39;</span><span class="p">,</span> <span class="s1">&#39;b_vol&#39;</span><span class="p">,</span> <span class="s1">&#39;vol&#39;</span><span class="p">,</span> <span class="s1">&#39;ask1&#39;</span><span class="p">,</span> <span class="s1">&#39;ask_vol1&#39;</span><span class="p">,</span> <span class="s1">&#39;bid1&#39;</span><span class="p">,</span> <span class="s1">&#39;bid_vol1&#39;</span><span class="p">,</span> <span class="s1">&#39;ask2&#39;</span><span class="p">,</span> <span class="s1">&#39;ask_vol2&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;bid2&#39;</span><span class="p">,</span> <span class="s1">&#39;bid_vol2&#39;</span><span class="p">,</span> <span class="s1">&#39;ask3&#39;</span><span class="p">,</span> <span class="s1">&#39;ask_vol3&#39;</span><span class="p">,</span> <span class="s1">&#39;bid3&#39;</span><span class="p">,</span> <span class="s1">&#39;bid_vol3&#39;</span><span class="p">,</span> <span class="s1">&#39;ask4&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;ask_vol4&#39;</span><span class="p">,</span> <span class="s1">&#39;bid4&#39;</span><span class="p">,</span> <span class="s1">&#39;bid_vol4&#39;</span><span class="p">,</span> <span class="s1">&#39;ask5&#39;</span><span class="p">,</span> <span class="s1">&#39;ask_vol5&#39;</span><span class="p">,</span> <span class="s1">&#39;bid5&#39;</span><span class="p">,</span> <span class="s1">&#39;bid_vol5&#39;</span><span class="p">]]</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="QA_Tdx_Executor.get_realtime_concurrent"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QATdx_adv.QA_Tdx_Executor.get_realtime_concurrent">[docs]</a>    <span class="k">def</span> <span class="nf">get_realtime_concurrent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="p">[</span><span class="n">code</span><span class="p">]</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">code</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span> <span class="k">else</span> <span class="n">code</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_security_quotes</span><span class="p">([(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_market</span><span class="p">(</span>
+                <span class="n">x</span><span class="p">),</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">code</span><span class="p">[</span><span class="mi">80</span> <span class="o">*</span> <span class="n">pos</span><span class="p">:</span><span class="mi">80</span> <span class="o">*</span> <span class="p">(</span><span class="n">pos</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]])</span> <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">code</span><span class="p">)</span> <span class="o">/</span> <span class="mi">80</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)}</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">api_no_connection</span><span class="o">.</span><span class="n">to_df</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">result</span><span class="p">())</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]),</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="QA_Tdx_Executor.get_security_bar_concurrent"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QATdx_adv.QA_Tdx_Executor.get_security_bar_concurrent">[docs]</a>    <span class="k">def</span> <span class="nf">get_security_bar_concurrent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">_type</span><span class="p">,</span> <span class="n">lens</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+
+            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_security_bars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_frequence</span><span class="p">(</span><span class="n">_type</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_market</span><span class="p">(</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">code</span><span class="p">)),</span> <span class="nb">str</span><span class="p">(</span><span class="n">code</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">lens</span><span class="p">)</span> <span class="k">for</span> <span class="n">code</span> <span class="ow">in</span> <span class="n">code</span><span class="p">}</span>
+
+            <span class="k">return</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_security_bars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">_type</span><span class="p">,</span> <span class="n">lens</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_api</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_available</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">lens</span> <span class="o">/</span> <span class="mi">800</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="p">):</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_api</span><span class="o">.</span><span class="n">get_security_bars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_frequence</span><span class="p">(</span>
+                    <span class="n">_type</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_market</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">code</span><span class="p">)),</span> <span class="nb">str</span><span class="p">(</span><span class="n">code</span><span class="p">),</span> <span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">800</span><span class="p">,</span> <span class="mi">800</span><span class="p">))</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">_api</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">context</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_security_bars</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">_type</span><span class="p">,</span> <span class="n">lens</span><span class="p">)</span>
+
+<div class="viewcode-block" id="QA_Tdx_Executor.get_security_bar"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QATdx_adv.QA_Tdx_Executor.get_security_bar">[docs]</a>    <span class="k">def</span> <span class="nf">get_security_bar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">_type</span><span class="p">,</span> <span class="n">lens</span><span class="p">):</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="p">[</span><span class="n">code</span><span class="p">]</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">code</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span> <span class="k">else</span> <span class="n">code</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">code</span><span class="p">:</span>
+                <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_security_bars</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">_type</span><span class="p">,</span> <span class="n">lens</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">context</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">e</span></div>
+
+<div class="viewcode-block" id="QA_Tdx_Executor.save_mongo"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QATdx_adv.QA_Tdx_Executor.save_mongo">[docs]</a>    <span class="k">def</span> <span class="nf">save_mongo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="n">DATABASE</span><span class="p">):</span>
+        <span class="n">database</span> <span class="o">=</span> <span class="n">DATABASE</span><span class="o">.</span><span class="n">get_collection</span><span class="p">(</span>
+            <span class="s1">&#39;realtime_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()))</span>
+
+        <span class="n">database</span><span class="o">.</span><span class="n">insert_many</span><span class="p">(</span><span class="n">QA_util_to_json_from_pandas</span><span class="p">(</span><span class="n">data</span><span class="p">))</span></div></div>
+
+
+<div class="viewcode-block" id="get_bar"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QATdx_adv.get_bar">[docs]</a><span class="k">def</span> <span class="nf">get_bar</span><span class="p">():</span>
+
+    <span class="n">_time1</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="kn">from</span> <span class="nn">QUANTAXIS.QAFetch.QAQuery_Advance</span> <span class="k">import</span> <span class="n">QA_fetch_stock_block_adv</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">QA_fetch_stock_block_adv</span><span class="p">()</span><span class="o">.</span><span class="n">code</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">code</span><span class="p">))</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">QA_Tdx_Executor</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">qsize</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">get_available</span><span class="p">())</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">QA_util_if_tradetime</span><span class="p">(</span><span class="n">_time</span><span class="p">):</span>  <span class="c1"># 如果在交易时间</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">get_security_bar_concurrent</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Time </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">_time</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()))</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Connection Pool NOW LEFT </span><span class="si">{}</span><span class="s1"> Available IP&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">qsize</span><span class="p">()))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Program Last Time </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">_time1</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()))</span>
+
+            <span class="k">return</span> <span class="n">data</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not Trading time </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_time</span><span class="p">))</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_day_once"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QATdx_adv.get_day_once">[docs]</a><span class="k">def</span> <span class="nf">get_day_once</span><span class="p">():</span>
+
+    <span class="n">_time1</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="kn">from</span> <span class="nn">QUANTAXIS.QAFetch.QAQuery_Advance</span> <span class="k">import</span> <span class="n">QA_fetch_stock_block_adv</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">QA_fetch_stock_block_adv</span><span class="p">()</span><span class="o">.</span><span class="n">code</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">QA_Tdx_Executor</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">get_security_bar_concurrent</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="bat"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QATdx_adv.bat">[docs]</a><span class="k">def</span> <span class="nf">bat</span><span class="p">():</span>
+
+    <span class="n">_time1</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="kn">from</span> <span class="nn">QUANTAXIS.QAFetch.QAQuery_Advance</span> <span class="k">import</span> <span class="n">QA_fetch_stock_block_adv</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">QA_fetch_stock_block_adv</span><span class="p">()</span><span class="o">.</span><span class="n">code</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">code</span><span class="p">))</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">QA_Tdx_Executor</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">qsize</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">get_available</span><span class="p">())</span>
+
+    <span class="n">database</span> <span class="o">=</span> <span class="n">DATABASE</span><span class="o">.</span><span class="n">get_collection</span><span class="p">(</span>
+        <span class="s1">&#39;realtime_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">database</span><span class="p">)</span>
+    <span class="n">database</span><span class="o">.</span><span class="n">create_index</span><span class="p">([(</span><span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="n">QA_util_sql_mongo_sort_ASCENDING</span><span class="p">),</span>
+                           <span class="p">(</span><span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="n">QA_util_sql_mongo_sort_ASCENDING</span><span class="p">)])</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100000</span><span class="p">):</span>
+        <span class="n">_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">QA_util_if_tradetime</span><span class="p">(</span><span class="n">_time</span><span class="p">):</span>  <span class="c1"># 如果在交易时间</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">get_realtime_concurrent</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+
+            <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;datetime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">save_mongo</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Time </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">_time</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()))</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Connection Pool NOW LEFT </span><span class="si">{}</span><span class="s1"> Available IP&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">qsize</span><span class="p">()))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Program Last Time </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">_time1</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not Trading time </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_time</span><span class="p">))</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">time</span>
+    <span class="n">_time1</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="kn">from</span> <span class="nn">QUANTAXIS.QAFetch.QAQuery_Advance</span> <span class="k">import</span> <span class="n">QA_fetch_stock_block_adv</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">QA_fetch_stock_block_adv</span><span class="p">()</span><span class="o">.</span><span class="n">code</span>
+
+    <span class="n">DATABASE</span><span class="o">.</span><span class="n">realtime</span><span class="o">.</span><span class="n">create_index</span><span class="p">([(</span><span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="n">QA_util_sql_mongo_sort_ASCENDING</span><span class="p">),</span>
+                                    <span class="p">(</span><span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="n">QA_util_sql_mongo_sort_ASCENDING</span><span class="p">)])</span>
+
+    <span class="c1"># print(len(code))</span>
+    <span class="c1"># x = QA_Tdx_Executor()</span>
+    <span class="c1"># print(x._queue.qsize())</span>
+    <span class="c1"># print(x.get_available())</span>
+    <span class="c1"># #data = x.get_security_bars(code[0], &#39;15min&#39;, 20)</span>
+    <span class="c1"># # print(data)</span>
+    <span class="c1"># # for i in range(5):</span>
+    <span class="c1"># #     print(x.get_realtime_concurrent(code))</span>
+
+    <span class="c1"># for i in range(100000):</span>
+    <span class="c1">#     _time = datetime.datetime.now()</span>
+    <span class="c1">#     if QA_util_if_tradetime(_time):  # 如果在交易时间</span>
+    <span class="c1">#         #data = x.get_realtime(code)</span>
+    <span class="c1">#         data = x.get_realtime_concurrent(code)</span>
+
+    <span class="c1">#         data[0][&#39;datetime&#39;] = data[1]</span>
+    <span class="c1">#         x.save_mongo(data[0])</span>
+    <span class="c1">#         # print(code[0])</span>
+    <span class="c1">#         #data = x.get_security_bars(code, &#39;15min&#39;, 20)</span>
+    <span class="c1">#         # if data is not None:</span>
+    <span class="c1">#         print(len(data[0]))</span>
+    <span class="c1">#         # print(data)</span>
+    <span class="c1">#         print(&#39;Time {}&#39;.format((datetime.datetime.now() - _time).total_seconds()))</span>
+    <span class="c1">#         time.sleep(1)</span>
+    <span class="c1">#         print(&#39;Connection Pool NOW LEFT {} Available IP&#39;.format(x._queue.qsize()))</span>
+    <span class="c1">#         print(&#39;Program Last Time {}&#39;.format(</span>
+    <span class="c1">#             (datetime.datetime.now() - _time1).total_seconds()))</span>
+    <span class="c1">#         # print(threading.enumerate())</span>
+    <span class="c1"># #</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../QAFetch.html">QUANTAXIS.QAFetch</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, yutiansut.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

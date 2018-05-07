@@ -1,0 +1,282 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QUANTAXIS.QAEngine.QAThreadEngine &#8212; QUANTAXIS 1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for QUANTAXIS.QAEngine.QAThreadEngine</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding:utf-8</span>
+
+<span class="c1"># The MIT License (MIT)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2016-2018 yutiansut/QUANTAXIS</span>
+<span class="c1">#</span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1">#</span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">queue</span> <span class="k">import</span> <span class="n">Queue</span>
+
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAEngine.QATask</span> <span class="k">import</span> <span class="n">QA_Task</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil</span> <span class="k">import</span> <span class="n">QA_util_log_info</span><span class="p">,</span> <span class="n">QA_util_random_with_topic</span>
+
+
+<span class="sd">&quot;&quot;&quot;标准化的QUANATAXIS事件分发,可以快速引入和复用</span>
+<span class="sd">每个事件需要携带一个方法,并且是需要立即被执行的时间才能使用这个事件方法&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="QA_Thread"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAThreadEngine.QA_Thread">[docs]</a><span class="k">class</span> <span class="nc">QA_Thread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+    <span class="s1">&#39;这是一个随意新建线程的生产者消费者模型&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queue</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span> <span class="k">if</span> <span class="n">queue</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">queue</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thread_stop</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__flag</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>     <span class="c1"># 用于暂停线程的标识</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__flag</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>       <span class="c1"># 设置为True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__running</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>      <span class="c1"># 用于停止线程的标识</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__running</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>      <span class="c1"># 将running设置为True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">QA_util_random_with_topic</span><span class="p">(</span>
+            <span class="n">topic</span><span class="o">=</span><span class="s1">&#39;QAWorker&#39;</span><span class="p">,</span> <span class="n">lens</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">idle</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt; QA_Thread </span><span class="si">{}</span><span class="s1"> &gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+<div class="viewcode-block" id="QA_Thread.run"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAThreadEngine.QA_Thread.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">__running</span><span class="o">.</span><span class="n">isSet</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__flag</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+            <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_stop</span><span class="p">:</span>
+                <span class="s1">&#39;这是一个阻塞的队列,避免出现消息的遗漏&#39;</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                        <span class="n">_task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>  <span class="c1"># 接收消息</span>
+                        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_task</span><span class="p">,</span> <span class="n">QA_Task</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">_task</span><span class="o">.</span><span class="n">worker</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+
+                            <span class="n">_task</span><span class="o">.</span><span class="n">do</span><span class="p">()</span>
+
+                            <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span>  <span class="c1"># 完成一个任务</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">pass</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">idle</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="QA_Thread.pause"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAThreadEngine.QA_Thread.pause">[docs]</a>    <span class="k">def</span> <span class="nf">pause</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__flag</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="QA_Thread.resume"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAThreadEngine.QA_Thread.resume">[docs]</a>    <span class="k">def</span> <span class="nf">resume</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__flag</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>    <span class="c1"># 设置为True, 让线程停止阻塞</span></div>
+
+<div class="viewcode-block" id="QA_Thread.stop"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAThreadEngine.QA_Thread.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># self.__flag.set()       # 将线程从暂停状态恢复, 如何已经暂停的话</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__running</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thread_stop</span> <span class="o">=</span> <span class="kc">True</span>        <span class="c1"># 设置为False</span></div>
+
+    <span class="k">def</span> <span class="nf">__start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+<div class="viewcode-block" id="QA_Thread.put"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAThreadEngine.QA_Thread.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">task</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QA_Thread.put_nowait"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAThreadEngine.QA_Thread.put_nowait">[docs]</a>    <span class="k">def</span> <span class="nf">put_nowait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">put_nowait</span><span class="p">(</span><span class="n">task</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QA_Thread.get"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAThreadEngine.QA_Thread.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">task</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QA_Thread.get_nowait"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAThreadEngine.QA_Thread.get_nowait">[docs]</a>    <span class="k">def</span> <span class="nf">get_nowait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_nowait</span><span class="p">(</span><span class="n">task</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QA_Thread.qsize"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAThreadEngine.QA_Thread.qsize">[docs]</a>    <span class="k">def</span> <span class="nf">qsize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">qsize</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="QA_Engine"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine">[docs]</a><span class="k">class</span> <span class="nc">QA_Engine</span><span class="p">(</span><span class="n">QA_Thread</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queue</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">queue</span><span class="o">=</span><span class="n">queue</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;QAENGINE&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kernals</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__flag</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>     <span class="c1"># 用于暂停线程的标识</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__flag</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>       <span class="c1"># 设置为True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__running</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>      <span class="c1"># 用于停止线程的标识</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__running</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>      <span class="c1"># 将running设置为True</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39; &lt;QA_ENGINE with </span><span class="si">{}</span><span class="s1"> kernals&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kernals</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">kernel_num</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kernals</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+<div class="viewcode-block" id="QA_Engine.create_kernal"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.create_kernal">[docs]</a>    <span class="k">def</span> <span class="nf">create_kernal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="c1"># ENGINE线程创建一个事件线程</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kernals</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">QA_Thread</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QA_Engine.register_kernal"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.register_kernal">[docs]</a>    <span class="k">def</span> <span class="nf">register_kernal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">kernal</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernals</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kernals</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">kernal</span></div>
+
+<div class="viewcode-block" id="QA_Engine.start_kernal"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.start_kernal">[docs]</a>    <span class="k">def</span> <span class="nf">start_kernal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kernals</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="QA_Engine.stop_kernal"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.stop_kernal">[docs]</a>    <span class="k">def</span> <span class="nf">stop_kernal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kernals</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernals</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="QA_Engine.run_job"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.run_job">[docs]</a>    <span class="k">def</span> <span class="nf">run_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kernals</span><span class="p">[</span><span class="n">task</span><span class="o">.</span><span class="n">engine</span><span class="p">]</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">task</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QA_Engine.stop_all"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.stop_all">[docs]</a>    <span class="k">def</span> <span class="nf">stop_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernals</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kernals</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="QA_Engine.stop"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># self.__flag.set()       # 将线程从暂停状态恢复, 如何已经暂停的话</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__running</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thread_stop</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="QA_Engine.pause"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.pause">[docs]</a>    <span class="k">def</span> <span class="nf">pause</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__flag</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="QA_Engine.resume"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.resume">[docs]</a>    <span class="k">def</span> <span class="nf">resume</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__flag</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>    <span class="c1"># 设置为True, 让线程停止阻塞</span></div>
+
+<div class="viewcode-block" id="QA_Engine.run"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">__running</span><span class="o">.</span><span class="n">isSet</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__flag</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+            <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_stop</span><span class="p">:</span>
+                <span class="s1">&#39;这是一个阻塞的队列,避免出现消息的遗漏&#39;</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                        <span class="n">_task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>  <span class="c1"># 接收消息</span>
+                        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_task</span><span class="p">,</span> <span class="n">QA_Task</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">_task</span><span class="o">.</span><span class="n">engine</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="c1"># 如果不指定线程 就在ENGINE线程中运行</span>
+                            <span class="n">_task</span><span class="o">.</span><span class="n">do</span><span class="p">()</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="c1">#</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">run_job</span><span class="p">(</span><span class="n">_task</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">idle</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">e</span></div>
+                    <span class="c1"># self.run()</span>
+
+<div class="viewcode-block" id="QA_Engine.clear"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernals</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">item</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">item</span><span class="o">.</span><span class="n">idle</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="n">item</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="QA_Engine.join"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.join">[docs]</a>    <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernals</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">join</span><span class="p">()</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">queue</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, yutiansut.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
