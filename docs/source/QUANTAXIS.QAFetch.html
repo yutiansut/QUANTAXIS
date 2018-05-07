@@ -1,34 +1,166 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
-  <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>QUANTAXIS.QAFetch package &#8212; QUANTAXIS 1.0 documentation</title>
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="python" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="python" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>QUANTAXIS.QAFetch package &mdash; QUANTAXIS 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
    
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  <div class="wy-grid-for-nav">
 
-  </head><body>
-  
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+          
+            <a href="../index.html" class="icon icon-home"> QUANTAXIS
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">QUANTAXIS.QAFetch package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.Fetcher">QUANTAXIS.QAFetch.Fetcher module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.QACrawler">QUANTAXIS.QAFetch.QACrawler module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.QAEastMoney">QUANTAXIS.QAFetch.QAEastMoney module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.QAQuery">QUANTAXIS.QAFetch.QAQuery module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.QAQuery_Advance">QUANTAXIS.QAFetch.QAQuery_Advance module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.QATdx">QUANTAXIS.QAFetch.QATdx module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.QATdx_adv">QUANTAXIS.QAFetch.QATdx_adv module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.QAThs">QUANTAXIS.QAFetch.QAThs module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.QATushare">QUANTAXIS.QAFetch.QATushare module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.QAWind">QUANTAXIS.QAFetch.QAWind module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.QAfinancial">QUANTAXIS.QAFetch.QAfinancial module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.base">QUANTAXIS.QAFetch.base module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.data_list">QUANTAXIS.QAFetch.data_list module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.realtime">QUANTAXIS.QAFetch.realtime module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QUANTAXIS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>QUANTAXIS.QAFetch package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/source/QUANTAXIS.QAFetch.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <div class="section" id="quantaxis-qafetch-package">
 <h1>QUANTAXIS.QAFetch package<a class="headerlink" href="#quantaxis-qafetch-package" title="Permalink to this headline">¶</a></h1>
@@ -323,60 +455,60 @@ collections {[type]} -- [description] (default: {DATABASE})</dd>
 <span id="quantaxis-qafetch-qatdx-module"></span><h2>QUANTAXIS.QAFetch.QATdx module<a class="headerlink" href="#module-QUANTAXIS.QAFetch.QATdx" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="QUANTAXIS.QAFetch.QATdx.QA_fetch_depth_market_data">
-<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_depth_market_data</code><span class="sig-paren">(</span><em>code=['000001', '000002'], ip='60.191.117.167', port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_depth_market_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_depth_market_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_depth_market_data</code><span class="sig-paren">(</span><em>code=['000001', '000002'], ip='115.238.90.165', port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_depth_market_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_depth_market_data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="QUANTAXIS.QAFetch.QATdx.QA_fetch_get_future_day">
-<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_future_day</code><span class="sig-paren">(</span><em>code</em>, <em>start_date</em>, <em>end_date</em>, <em>frequence='day'</em>, <em>ip='58.246.109.27'</em>, <em>port=7721</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_future_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_future_day" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_future_day</code><span class="sig-paren">(</span><em>code</em>, <em>start_date</em>, <em>end_date</em>, <em>frequence='day'</em>, <em>ip='124.74.236.94'</em>, <em>port=7721</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_future_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_future_day" title="Permalink to this definition">¶</a></dt>
 <dd><p>期货数据 日线</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="QUANTAXIS.QAFetch.QATdx.QA_fetch_get_future_list">
-<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_future_list</code><span class="sig-paren">(</span><em>ip='58.246.109.27'</em>, <em>port=7721</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_future_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_future_list" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_future_list</code><span class="sig-paren">(</span><em>ip='124.74.236.94'</em>, <em>port=7721</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_future_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_future_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>期货代码list</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="QUANTAXIS.QAFetch.QATdx.QA_fetch_get_future_min">
-<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_future_min</code><span class="sig-paren">(</span><em>code</em>, <em>start</em>, <em>end</em>, <em>frequence='1min'</em>, <em>ip='58.246.109.27'</em>, <em>port=7721</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_future_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_future_min" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_future_min</code><span class="sig-paren">(</span><em>code</em>, <em>start</em>, <em>end</em>, <em>frequence='1min'</em>, <em>ip='124.74.236.94'</em>, <em>port=7721</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_future_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_future_min" title="Permalink to this definition">¶</a></dt>
 <dd><p>期货数据 分钟线</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="QUANTAXIS.QAFetch.QATdx.QA_fetch_get_future_realtime">
-<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_future_realtime</code><span class="sig-paren">(</span><em>code</em>, <em>ip='58.246.109.27'</em>, <em>port=7721</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_future_realtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_future_realtime" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_future_realtime</code><span class="sig-paren">(</span><em>code</em>, <em>ip='124.74.236.94'</em>, <em>port=7721</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_future_realtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_future_realtime" title="Permalink to this definition">¶</a></dt>
 <dd><p>期货实时价格</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="QUANTAXIS.QAFetch.QATdx.QA_fetch_get_future_transaction">
-<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_future_transaction</code><span class="sig-paren">(</span><em>ip='58.246.109.27'</em>, <em>port=7721</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_future_transaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_future_transaction" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_future_transaction</code><span class="sig-paren">(</span><em>ip='124.74.236.94'</em>, <em>port=7721</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_future_transaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_future_transaction" title="Permalink to this definition">¶</a></dt>
 <dd><p>期货历史成交分笔</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="QUANTAXIS.QAFetch.QATdx.QA_fetch_get_future_transaction_realtime">
-<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_future_transaction_realtime</code><span class="sig-paren">(</span><em>ip='58.246.109.27'</em>, <em>port=7721</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_future_transaction_realtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_future_transaction_realtime" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_future_transaction_realtime</code><span class="sig-paren">(</span><em>ip='124.74.236.94'</em>, <em>port=7721</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_future_transaction_realtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_future_transaction_realtime" title="Permalink to this definition">¶</a></dt>
 <dd><p>期货历史成交分笔</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="QUANTAXIS.QAFetch.QATdx.QA_fetch_get_index_day">
-<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_index_day</code><span class="sig-paren">(</span><em>code</em>, <em>start_date</em>, <em>end_date</em>, <em>frequence='day'</em>, <em>ip='60.191.117.167'</em>, <em>port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_index_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_index_day" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_index_day</code><span class="sig-paren">(</span><em>code</em>, <em>start_date</em>, <em>end_date</em>, <em>frequence='day'</em>, <em>ip='115.238.90.165'</em>, <em>port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_index_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_index_day" title="Permalink to this definition">¶</a></dt>
 <dd><p>指数日线</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="QUANTAXIS.QAFetch.QATdx.QA_fetch_get_index_min">
-<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_index_min</code><span class="sig-paren">(</span><em>code</em>, <em>start</em>, <em>end</em>, <em>frequence='1min'</em>, <em>ip='60.191.117.167'</em>, <em>port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_index_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_index_min" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_index_min</code><span class="sig-paren">(</span><em>code</em>, <em>start</em>, <em>end</em>, <em>frequence='1min'</em>, <em>ip='115.238.90.165'</em>, <em>port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_index_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_index_min" title="Permalink to this definition">¶</a></dt>
 <dd><p>指数分钟线</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="QUANTAXIS.QAFetch.QATdx.QA_fetch_get_security_bars">
-<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_security_bars</code><span class="sig-paren">(</span><em>code</em>, <em>_type</em>, <em>lens</em>, <em>ip='60.191.117.167'</em>, <em>port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_security_bars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_security_bars" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_security_bars</code><span class="sig-paren">(</span><em>code</em>, <em>_type</em>, <em>lens</em>, <em>ip='115.238.90.165'</em>, <em>port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_security_bars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_security_bars" title="Permalink to this definition">¶</a></dt>
 <dd><p>按bar长度推算数据</p>
 <dl class="docutils">
 <dt>Arguments:</dt>
@@ -393,13 +525,13 @@ port {[type]} -- [description] (default: {7709})</dd>
 
 <dl class="function">
 <dt id="QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_block">
-<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_stock_block</code><span class="sig-paren">(</span><em>ip='60.191.117.167'</em>, <em>port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_stock_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_block" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_stock_block</code><span class="sig-paren">(</span><em>ip='115.238.90.165'</em>, <em>port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_stock_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_block" title="Permalink to this definition">¶</a></dt>
 <dd><p>板块数据</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_day">
-<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_stock_day</code><span class="sig-paren">(</span><em>code</em>, <em>start_date</em>, <em>end_date</em>, <em>if_fq='00'</em>, <em>frequence='day'</em>, <em>ip='60.191.117.167'</em>, <em>port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_stock_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_day" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_stock_day</code><span class="sig-paren">(</span><em>code</em>, <em>start_date</em>, <em>end_date</em>, <em>if_fq='00'</em>, <em>frequence='day'</em>, <em>ip='115.238.90.165'</em>, <em>port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_stock_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_day" title="Permalink to this definition">¶</a></dt>
 <dd><p>获取日线及以上级别的数据</p>
 <dl class="docutils">
 <dt>Arguments:</dt>
@@ -420,45 +552,45 @@ port {int} -- [description] (default: {7709})</dd>
 
 <dl class="function">
 <dt id="QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_info">
-<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_stock_info</code><span class="sig-paren">(</span><em>code</em>, <em>ip='60.191.117.167'</em>, <em>port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_stock_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_info" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_stock_info</code><span class="sig-paren">(</span><em>code</em>, <em>ip='115.238.90.165'</em>, <em>port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_stock_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>股票基本信息</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_latest">
-<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_stock_latest</code><span class="sig-paren">(</span><em>code</em>, <em>ip='60.191.117.167'</em>, <em>port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_stock_latest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_latest" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_stock_latest</code><span class="sig-paren">(</span><em>code</em>, <em>ip='115.238.90.165'</em>, <em>port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_stock_latest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_latest" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_list">
-<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_stock_list</code><span class="sig-paren">(</span><em>type_='stock'</em>, <em>ip='60.191.117.167'</em>, <em>port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_stock_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_list" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_stock_list</code><span class="sig-paren">(</span><em>type_='stock'</em>, <em>ip='115.238.90.165'</em>, <em>port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_stock_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_list" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_min">
-<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_stock_min</code><span class="sig-paren">(</span><em>code</em>, <em>start</em>, <em>end</em>, <em>frequence='1min'</em>, <em>ip='60.191.117.167'</em>, <em>port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_stock_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_min" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_stock_min</code><span class="sig-paren">(</span><em>code</em>, <em>start</em>, <em>end</em>, <em>frequence='1min'</em>, <em>ip='115.238.90.165'</em>, <em>port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_stock_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_min" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_realtime">
-<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_stock_realtime</code><span class="sig-paren">(</span><em>code=['000001', '000002'], ip='60.191.117.167', port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_stock_realtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_realtime" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_stock_realtime</code><span class="sig-paren">(</span><em>code=['000001', '000002'], ip='115.238.90.165', port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_stock_realtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_realtime" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_transaction">
-<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_stock_transaction</code><span class="sig-paren">(</span><em>code</em>, <em>start</em>, <em>end</em>, <em>retry=2</em>, <em>ip='60.191.117.167'</em>, <em>port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_stock_transaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_transaction" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_stock_transaction</code><span class="sig-paren">(</span><em>code</em>, <em>start</em>, <em>end</em>, <em>retry=2</em>, <em>ip='115.238.90.165'</em>, <em>port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_stock_transaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_transaction" title="Permalink to this definition">¶</a></dt>
 <dd><p>历史逐笔成交 buyorsell 1--sell 0--buy 2--盘前</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_transaction_realtime">
-<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_stock_transaction_realtime</code><span class="sig-paren">(</span><em>code</em>, <em>ip='60.191.117.167'</em>, <em>port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_stock_transaction_realtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_transaction_realtime" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_stock_transaction_realtime</code><span class="sig-paren">(</span><em>code</em>, <em>ip='115.238.90.165'</em>, <em>port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_stock_transaction_realtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_transaction_realtime" title="Permalink to this definition">¶</a></dt>
 <dd><p>实时逐笔成交 包含集合竞价 buyorsell 1--sell 0--buy 2--盘前</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_xdxr">
-<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_stock_xdxr</code><span class="sig-paren">(</span><em>code</em>, <em>ip='60.191.117.167'</em>, <em>port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_stock_xdxr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_xdxr" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QAFetch.QATdx.</code><code class="descname">QA_fetch_get_stock_xdxr</code><span class="sig-paren">(</span><em>code</em>, <em>ip='115.238.90.165'</em>, <em>port=7709</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAFetch/QATdx.html#QA_fetch_get_stock_xdxr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAFetch.QATdx.QA_fetch_get_stock_xdxr" title="Permalink to this definition">¶</a></dt>
 <dd><p>除权除息</p>
 </dd></dl>
 
@@ -833,77 +965,63 @@ port {int} -- [description] (default: {7709})</dd>
 </div>
 
 
+           </div>
+           
           </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, yutiansut.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">QUANTAXIS.QAFetch package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.Fetcher">QUANTAXIS.QAFetch.Fetcher module</a></li>
-<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.QACrawler">QUANTAXIS.QAFetch.QACrawler module</a></li>
-<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.QAEastMoney">QUANTAXIS.QAFetch.QAEastMoney module</a></li>
-<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.QAQuery">QUANTAXIS.QAFetch.QAQuery module</a></li>
-<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.QAQuery_Advance">QUANTAXIS.QAFetch.QAQuery_Advance module</a></li>
-<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.QATdx">QUANTAXIS.QAFetch.QATdx module</a></li>
-<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.QATdx_adv">QUANTAXIS.QAFetch.QATdx_adv module</a></li>
-<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.QAThs">QUANTAXIS.QAFetch.QAThs module</a></li>
-<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.QATushare">QUANTAXIS.QAFetch.QATushare module</a></li>
-<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.QAWind">QUANTAXIS.QAFetch.QAWind module</a></li>
-<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.QAfinancial">QUANTAXIS.QAFetch.QAfinancial module</a></li>
-<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.base">QUANTAXIS.QAFetch.base module</a></li>
-<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.data_list">QUANTAXIS.QAFetch.data_list module</a></li>
-<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch.realtime">QUANTAXIS.QAFetch.realtime module</a></li>
-<li><a class="reference internal" href="#module-QUANTAXIS.QAFetch">Module contents</a></li>
-</ul>
-</li>
-</ul>
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-  </ul></li>
-</ul>
-</div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/source/QUANTAXIS.QAFetch.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2018, yutiansut.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
-      
-      |
-      <a href="../_sources/source/QUANTAXIS.QAFetch.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
 
-    
+    </section>
 
-    
-  </body>
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0',
+            LANGUAGE:'python',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
 </html>
