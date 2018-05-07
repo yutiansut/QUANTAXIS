@@ -22,525 +22,601 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from functools import reduce
+
+import numpy as np
 import pandas as pd
 
-from QUANTAXIS.QAIndicator.QAIndicator_Series import *
+from QUANTAXIS.QAIndicator.base import *
+
+
 """
+DataFrame 类
 
-***********  之后会被合并到QAIndicator_Dataframe里面    ***********
+以下的函数都可以被直接add_func
 
 
-QUANTAXIS  指标计算
-
-分为7类76个指标
-
-- 趋势指标
-- 震荡指标
-- 成交量指标
-- 均价线指标
-- 动量指标
-- 通道型指标
-- 大盘指标
 """
 
 
-"""趋势类"""
+"""
+1.	趋向指标 
+又叫趋势跟踪类指标,主要用于跟踪并预测股价的发展趋势
+
+包含的主要指标
+1. 移动平均线 MA
+2. 指数平滑移动平均线 MACD
+3. 趋向指标 DMI
+4. 瀑布线 PBX
+5. 平均线差 DMA
+6. 动力指标(动量线)  MTM
+7. 指数平均线 EXPMA
+8. 佳庆指标 CHO
+"""
 
 
-# TODO
-# 基于无状态的pd结构的指标
+def QA_indicator_MA(DataFrame, N):
+    CLOSE = DataFrame['close']
+    return pd.DataFrame({'MA': MA(CLOSE, N)})
 
 
-def QA_indicator_dma(data, f=10, s=50, N=10):
+def QA_indicator_EMA(DataFrame, N):
+    CLOSE = DataFrame['close']
+    return pd.DataFrame({'EMA': EMA(CLOSE, N)})
+
+
+def QA_indicator_SMA(DataFrame, N):
+    CLOSE = DataFrame['close']
+    return pd.DataFrame({'SMA': SMA(CLOSE, N)})
+
+
+def QA_indicator_MACD(DataFrame, short=12, long=26, mid=9):
     """
-    平行线差指标
-    中短期指标/趋势指标
-    通过计算两条基准周期不同的移动平均线的差值,来判断当前买入卖出能量的大小和未来价格走势的趋势
+    MACD CALC
     """
-    _dma = pd.Series(data).rolling(f).mean() - \
-        pd.Series(data).rolling(s).mean()
-    _ama = pd.Series(_dma).rolling(N).mean()
+    CLOSE = DataFrame['close']
 
-    return _dma, _ama
+    DIF = EMA(CLOSE, short)-EMA(CLOSE, long)
+    DEA = EMA(DIF, mid)
+    MACD = (DIF-DEA)*2
+
+    return pd.DataFrame({'DIF': DIF, 'DEA': DEA, 'MACD': MACD})
 
 
-def QA_indicator_dmi(data):
+def QA_indicator_DMI(DataFrame, M1=14, M2=6):
     """
-    趋向指标
-    中长期指标
-    用于判断多空力量由于受到价格波动的影响而发生的由均衡到失衡的过程
+    趋向指标 DMI
+    """
+    HIGH = DataFrame.high
+    LOW = DataFrame.low
+    CLOSE = DataFrame.close
+    OPEN = DataFrame.open
+
+    TR = SUM(MAX(MAX(HIGH-LOW, ABS(HIGH-REF(CLOSE, 1))),
+                 ABS(LOW-REF(CLOSE, 1))), M1)
+    HD = HIGH-REF(HIGH, 1)
+    LD = REF(LOW, 1)-LOW
+    DMP = SUM(IF(HD > 0 and HD > LD, HD, 0), M1)
+    DMM = SUM(IF(LD > 0 and LD > HD, LD, 0), M1)
+    DI1 = DMP*100/TR
+    DI2 = DMM*100/TR
+    ADX = MA(ABS(DI2-DI1)/(DI1+DI2)*100, M2)
+    ADXR = (ADX+REF(ADX, M2))/2
+
+    return pd.DataFrame({
+        'DI1': DI1, 'DI2': DI2,
+        'ADX': ADX, 'ADXR': ADXR
+    })
+
+
+def QA_indicator_PBX(DataFrame, N1=3, N2=5, N3=8, N4=13, N5=18, N6=24):
+    '瀑布线'
+    C = DataFrame['close']
+    PBX1 = (EMA(C, N1) + EMA(C, 2 * N1) + EMA(C, 4 * N1)) / 3
+    PBX2 = (EMA(C, N2) + EMA(C, 2 * N2) + EMA(C, 4 * N2)) / 3
+    PBX3 = (EMA(C, N3) + EMA(C, 2 * N3) + EMA(C, 4 * N3)) / 3
+    PBX4 = (EMA(C, N4) + EMA(C, 2 * N4) + EMA(C, 4 * N4)) / 3
+    PBX5 = (EMA(C, N5) + EMA(C, 2 * N5) + EMA(C, 4 * N5)) / 3
+    PBX6 = (EMA(C, N6) + EMA(C, 2 * N6) + EMA(C, 4 * N6)) / 3
+    DICT = {'PBX1': PBX1, 'PBX2': PBX2, 'PBX3': PBX3,
+            'PBX4': PBX4, 'PBX5': PBX5, 'PBX6': PBX6}
+
+    return pd.DataFrame(DICT)
+
+
+def QA_indicator_DMA(DataFrame, M1=10, M2=50, M3=10):
+    """
+    平均线差 DMA
+    """
+    CLOSE = DataFrame.close
+    DDD = MA(CLOSE, M1) - MA(CLOSE, M2)
+    AMA = MA(DDD, M3)
+    return pd.DataFrame({
+        'DDD': DDD, 'AMA': AMA
+    })
+
+
+def QA_indicator_MTM(DataFrame, N=12, M=6):
+    '动量线'
+    C = DataFrame.close
+    mtm = C - REF(C, N)
+    MTMMA = MA(mtm, M)
+    DICT = {'MTM': mtm, 'MTMMA': MTMMA}
+
+    return pd.DataFrame(DICT)
+
+
+def QA_indicator_EXPMA(DataFrame, P1=5, P2=10, P3=20, P4=60):
+    """ 指数平均线 EXPMA"""
+    CLOSE = DataFrame.close
+    MA1 = EMA(CLOSE, P1)
+    MA2 = EMA(CLOSE, P2)
+    MA3 = EMA(CLOSE, P3)
+    MA4 = EMA(CLOSE, P4)
+    return pd.DataFrame({
+        'MA1': MA1, 'MA2': MA2, 'MA3': MA3, 'MA4': MA4
+    })
+
+
+def QA_indicator_CHO(DataFrame, N1=10, N2=20, M=6):
+    """
+    佳庆指标 CHO
+    """
+    HIGH = DataFrame.high
+    LOW = DataFrame.low
+    CLOSE = DataFrame.close
+    VOL = DataFrame.volume
+    MID = SUM(VOL*(2*CLOSE-HIGH-LOW)/(HIGH+LOW), 0)
+    CHO = MA(MID, N1)-MA(MID, N2)
+    MACHO = MA(CHO, M)
+    return pd.DataFrame({
+        'CHO': CHO, 'MACHO': MACHO
+    })
+
+
+"""
+
+2.	反趋向指标
+主要捕捉趋势的转折点
+
+随机指标KDJ
+乖离率 BIAS
+变动速率 ROC
+顺势指标 CCI
+威廉指标 W&R
+震荡量(变动速率) OSC
+相对强弱指标 RSI
+动态买卖指标 ADTM
+
+"""
+
+
+def QA_indicator_KDJ(DataFrame, N=9, M1=3, M2=3):
+    C = DataFrame['close']
+    H = DataFrame['high']
+    L = DataFrame['low']
+
+    RSV = (C - LLV(L, N)) / (HHV(H, N) - LLV(L, N)) * 100
+    K = SMA(RSV, M1)
+    D = SMA(K, M2)
+    J = 3 * K - 2 * D
+    DICT = {'KDJ_K': K, 'KDJ_D': D, 'KDJ_J': J}
+    return pd.DataFrame(DICT)
+
+
+def QA_indicator_BIAS(DataFrame, N1, N2, N3):
+    '乖离率'
+    CLOSE = DataFrame['close']
+    BIAS1 = (CLOSE - MA(CLOSE, N1)) / MA(CLOSE, N1) * 100
+    BIAS2 = (CLOSE - MA(CLOSE, N2)) / MA(CLOSE, N2) * 100
+    BIAS3 = (CLOSE - MA(CLOSE, N3)) / MA(CLOSE, N3) * 100
+    DICT = {'BIAS1': BIAS1, 'BIAS2': BIAS2, 'BIAS3': BIAS3}
+
+    return pd.DataFrame(DICT)
+
+
+def QA_indicator_ROC(DataFrame, N=12, M=6):
+    '变动率指标'
+    C = DataFrame['close']
+    roc = 100 * (C - REF(C, N)) / REF(C, N)
+    ROCMA = MA(roc, M)
+    DICT = {'ROC': roc, 'ROCMA': ROCMA}
+
+    return pd.DataFrame(DICT)
+
+
+def QA_indicator_CCI(DataFrame, N=14):
+    """
+    TYP:=(HIGH+LOW+CLOSE)/3;
+    CCI:(TYP-MA(TYP,N))/(0.015*AVEDEV(TYP,N));
+    """
+    typ = (DataFrame['high'] + DataFrame['low'] + DataFrame['close']) / 3
+    cci = ((typ - MA(typ, N)) / (0.015 * AVEDEV(typ, N)))
+    a = 100
+    b = -100
+
+    return pd.DataFrame({
+        'CCI': cci, 'a': a, 'b': b
+    })
+
+
+def QA_indicator_WR(DataFrame, N, N1):
+    '威廉指标'
+    HIGH = DataFrame['high']
+    LOW = DataFrame['low']
+    CLOSE = DataFrame['close']
+    WR1 = 100 * (HHV(HIGH, N) - CLOSE) / (HHV(HIGH, N) - LLV(LOW, N))
+    WR2 = 100 * (HHV(HIGH, N1) - CLOSE) / (HHV(HIGH, N1) - LLV(LOW, N1))
+    DICT = {'WR1': WR1, 'WR2': WR2}
+
+    return pd.DataFrame(DICT)
+
+
+def QA_indicator_OSC(DataFrame, N=20, M=6):
+    """变动速率线
+
+    震荡量指标OSC，也叫变动速率线。属于超买超卖类指标,是从移动平均线原理派生出来的一种分析指标。
+
+    它反应当日收盘价与一段时间内平均收盘价的差离值,从而测出股价的震荡幅度。
+
+    按照移动平均线原理，根据OSC的值可推断价格的趋势，如果远离平均线，就很可能向平均线回归。
+    """
+    C = DataFrame['close']
+    OS = (C - MA(C, N)) * 100
+    MAOSC = EMA(OS, M)
+    DICT = {'OSC': OS, 'MAOSC': MAOSC}
+
+    return pd.DataFrame(DICT)
+
+
+def QA_indicator_RSI(DataFrame, N1=12, N2=26, N3=9):
+    '相对强弱指标RSI1:SMA(MAX(CLOSE-LC,0),N1,1)/SMA(ABS(CLOSE-LC),N1,1)*100;'
+    CLOSE = DataFrame['close']
+    LC = REF(CLOSE, 1)
+    RSI1 = SMA(MAX(CLOSE - LC, 0), N1) / SMA(ABS(CLOSE - LC), N1) * 100
+    RSI2 = SMA(MAX(CLOSE - LC, 0), N2) / SMA(ABS(CLOSE - LC), N2) * 100
+    RSI3 = SMA(MAX(CLOSE - LC, 0), N3) / SMA(ABS(CLOSE - LC), N3) * 100
+    DICT = {'RSI1': RSI1, 'RSI2': RSI2, 'RSI3': RSI3}
+
+    return pd.DataFrame(DICT)
+
+
+def QA_indicator_ADTM(DataFrame, N=23, M=8):
+    '动态买卖气指标'
+    HIGH = DataFrame.high
+    LOW = DataFrame.low
+    OPEN = DataFrame.open
+    DTM = IF(OPEN <= REF(OPEN, 1), 0, MAX(
+        (HIGH - OPEN), (OPEN - REF(OPEN, 1))))
+    DBM = IF(OPEN >= REF(OPEN, 1), 0, MAX((OPEN - LOW), (OPEN - REF(OPEN, 1))))
+    STM = SUM(DTM, N)
+    SBM = SUM(DBM, N)
+    ADTM1 = IF(STM > SBM, (STM - SBM) / STM,
+               IF(STM == SBM, 0, (STM - SBM) / SBM))
+    MAADTM = MA(ADTM1, M)
+    DICT = {'ADTM': ADTM1, 'MAADTM': MAADTM}
+
+    return pd.DataFrame(DICT)
+
+
+"""
+3.	量能指标
+通过成交量的大小和变化研判趋势变化
+容量指标 VR
+量相对强弱 VRSI
+能量指标 CR
+人气意愿指标 ARBR
+成交量标准差 VSTD"""
+
+
+def QA_indicator_VR(DataFrame, M1=26, M2=100, M3=200):
+    VOL = DataFrame.volume
+    CLOSE = DataFrame.close
+    LC = REF(CLOSE, 1)
+    VR = SUM(IF(CLOSE > LC, VOL, 0), M1)/SUM(IF(CLOSE <= LC, VOL, 0), M1)*100
+    a = M2
+    b = M3
+    return pd.DataFrame({
+        'VR': VR, 'a': a, 'b': b
+    })
+
+
+def QA_indicator_VRSI(DataFrame, N=6):
+
+    VOL = DataFrame.volume
+    vrsi = SMA(MAX(VOL-REF(VOL, 1), 0), N, 1) / \
+        SMA(ABS(VOL-REF(VOL, 1)), N, 1)*100
+
+    return pd.DataFrame({'VRSI': vrsi})
+
+
+def QA_indicator_CR(DataFrame, N=26, M1=5, M2=10, M3=20):
+    HIGH = DataFrame.high
+    LOW = DataFrame.low
+    CLOSE = DataFrame.close
+    VOL = DataFrame.volume
+    MID = (HIGH+LOW+CLOSE)/3
+
+    CR = SUM(MAX(0, HIGH-REF(MID, 1)), N)/SUM(MAX(0, REF(MID, 1)-LOW), N)*100
+    MA1 = REF(MA(CR, M1), M1/2.5+1)
+    MA2 = REF(MA(CR, M2), M2/2.5+1)
+    MA3 = REF(MA(CR, M3), M3/2.5+1)
+    return pd.DataFrame({
+        'CR': CR, 'MA1': MA1, 'MA2': MA2, 'MA3': MA3
+    })
+
+
+def QA_indicator_ARBR(DataFrame, M1=26, M2=70, M3=150):
+    HIGH = DataFrame.high
+    LOW = DataFrame.low
+    CLOSE = DataFrame.close
+    OPEN = DataFrame.open
+    AR = SUM(HIGH-OPEN, M1)/SUM(OPEN-LOW, M1)*100
+    BR = SUM(MAX(0, HIGH-REF(CLOSE, 1)), M1) / \
+        SUM(MAX(0, REF(CLOSE, 1)-LOW), M1)*100
+    a = M2
+    b = M3
+    return pd.DataFrame({
+        'AR': AR, 'BR': BR, 'a': a, 'b': b
+    })
+
+
+def QA_indicator_VSTD(DataFrame, N=10):
+    VOL = DataFrame.volume
+    vstd = STD(VOL, N)
+    return pd.DataFrame({'VSTD': vstd})
+
+
+"""
+4.	量价指标
+通过成交量和股价变动关系分析未来趋势
+震荡升降指标ASI
+价量趋势PVT
+能量潮OBV
+量价趋势VPT
+"""
+
+
+def QA_indicator_ASI(DataFrame, M1=26, M2=10):
+    """
+    LC=REF(CLOSE,1);
+    AA=ABS(HIGH-LC);
+    BB=ABS(LOW-LC);
+    CC=ABS(HIGH-REF(LOW,1));
+    DD=ABS(LC-REF(OPEN,1));
+    R=IF(AA>BB AND AA>CC,AA+BB/2+DD/4,IF(BB>CC AND BB>AA,BB+AA/2+DD/4,CC+DD/4));
+    X=(CLOSE-LC+(CLOSE-OPEN)/2+LC-REF(OPEN,1));
+    SI=16*X/R*MAX(AA,BB);
+    ASI:SUM(SI,M1);
+    ASIT:MA(ASI,M2);
+    """
+    CLOSE = DataFrame['close']
+    HIGH = DataFrame['high']
+    LOW = DataFrame['low']
+    OPEN = DataFrame['open']
+    LC = REF(CLOSE, 1)
+    AA = ABS(HIGH - LC)
+    BB = ABS(LOW-LC)
+    CC = ABS(HIGH - REF(LOW, 1))
+    DD = ABS(LC - REF(OPEN, 1))
+
+    R = IF(AA > BB and AA > CC, AA+BB/2+DD/4,
+           IF(BB > CC and BB > AA, BB+AA/2+DD/4, CC+DD/4))
+    X = (CLOSE - LC + (CLOSE - OPEN) / 2 + LC - REF(OPEN, 1))
+    SI = 16*X/R*MAX(AA, BB)
+    ASI = SUM(SI, M1)
+    ASIT = MA(ASI, M2)
+    return pd.DataFrame({
+        'ASI': ASI, 'ASIT': ASIT
+    })
+
+
+def QA_indicator_PVT(DataFrame):
+    CLOSE = DataFrame.close
+    VOL = DataFrame.volume
+    PVT = SUM((CLOSE-REF(CLOSE, 1))/REF(CLOSE, 1)*VOL, 0)
+    return pd.DataFrame({'PVT': PVT})
+
+
+def QA_indicator_OBV(DataFrame):
+    """能量潮"""
+    VOL = DataFrame.volume
+    CLOSE = DataFrame.close
+    pd.DataFrame({
+        'OBV': SUM(IF(CLOSE > REF(CLOSE, 1), VOL, IF(CLOSE < REF(CLOSE, 1), -VOL, 0)), 0)/10000
+    })
+
+
+def QA_indicator_VPT(DataFrame, N=51, M=6):
+    VOL = DataFrame.volume
+    CLOSE = DataFrame.close
+    VPT = SUM(VOL*(CLOSE-REF(CLOSE, 1))/REF(CLOSE, 1), 0)
+    MAVPT = MA(VPT, M)
+    return pd.DataFrame({
+        'VPT': VPT, 'MAVPT': MAVPT
+    })
+
+
+"""
+5.	压力支撑指标
+主要用于分析股价目前收到的压力和支撑
+布林带 BOLL
+麦克指标 MIKE
+"""
+
+
+def QA_indicator_BOLL(DataFrame, N=20, P=2):
+    '布林线'
+    C = DataFrame['close']
+    boll = MA(C, N)
+    UB = boll + P * STD(C, N)
+    LB = boll - P * STD(C, N)
+    DICT = {'BOLL': boll, 'UB': UB, 'LB': LB}
+
+    return pd.DataFrame(DICT)
+
+
+def QA_indicator_MIKE(DataFrame, N=12):
+    """
+    MIKE指标
+    指标说明
+    MIKE是另外一种形式的路径指标。
+    买卖原则
+    1  WEAK-S，MEDIUM-S，STRONG-S三条线代表初级、中级、强力支撑。
+    2  WEAK-R，MEDIUM-R，STRONG-R三条线代表初级、中级、强力压力。
+    """
+    HIGH = DataFrame.high
+    LOW = DataFrame.low
+    CLOSE = DataFrame.close
+
+    TYP = (HIGH+LOW+CLOSE)/3
+    LL = LLV(LOW, N)
+    HH = HHV(HIGH, N)
+
+    WR = TYP+(TYP-LL)
+    MR = TYP+(HH-LL)
+    SR = 2*HH-LL
+    WS = TYP-(HH-TYP)
+    MS = TYP-(HH-LL)
+    SS = 2*LL-HH
+    return pd.DataFrame({
+        'WR': WR, 'MR': MR, 'SR': SR,
+        'WS': WS, 'MS': MS, 'SS': SS
+    })
+
+
+def QA_indicator_BBI(DataFrame, N1=3, N2=6, N3=12, N4=24):
+    '多空指标'
+    C = DataFrame['close']
+    bbi = (MA(C, N1) + MA(C, N2) + MA(C, N3) + MA(C, N4)) / 4
+    DICT = {'BBI': bbi}
+
+    return pd.DataFrame(DICT)
+
+
+def QA_indicator_MFI(DataFrame, N=14):
+    """
+    资金指标
+    TYP := (HIGH + LOW + CLOSE)/3;
+    V1:=SUM(IF(TYP>REF(TYP,1),TYP*VOL,0),N)/SUM(IF(TYP<REF(TYP,1),TYP*VOL,0),N);
+    MFI:100-(100/(1+V1));
+    赋值: (最高价 + 最低价 + 收盘价)/3
+    V1赋值:如果TYP>1日前的TYP,返回TYP*成交量(手),否则返回0的N日累和/如果TYP<1日前的TYP,返回TYP*成交量(手),否则返回0的N日累和
+    输出资金流量指标:100-(100/(1+V1))
+    """
+    C = DataFrame['close']
+    H = DataFrame['high']
+    L = DataFrame['low']
+    VOL = DataFrame['volume']
+    TYP = (C + H + L) / 3
+    V1 = SUM(IF(TYP > REF(TYP, 1), TYP * VOL, 0), N) / \
+        SUM(IF(TYP < REF(TYP, 1), TYP * VOL, 0), N)
+    mfi = 100 - (100 / (1 + V1))
+    DICT = {'MFI': mfi}
+
+    return pd.DataFrame(DICT)
+
+
+def QA_indicator_ATR(DataFrame, N=14):
+    """
+    输出TR:(最高价-最低价)和昨收-最高价的绝对值的较大值和昨收-最低价的绝对值的较大值
+    输出真实波幅:TR的N日简单移动平均
+    算法：今日振幅、今日最高与昨收差价、今日最低与昨收差价中的最大值，为真实波幅，求真实波幅的N日移动平均
+
+    参数：N　天数，一般取14
 
     """
-    pass
+    C = DataFrame['close']
+    H = DataFrame['high']
+    L = DataFrame['low']
+    TR = MAX(MAX((H - L), ABS(REF(C, 1) - H)), ABS(REF(C, 1) - L))
+    atr = MA(TR, N)
+    return pd.DataFrame({'TR': TR, 'ATR': atr})
 
 
-def QA_indicator_dpo(data, N=20, M=6):
+def QA_indicator_SKDJ(DataFrame, N=9, M=3):
     """
-    区间振荡
-    数个短周波的组合，构成一个长周波。观察短周波的运动规律，可以估计长周波峰谷出现的时机。
-    例如：
-    四个短期循环底部，构成一个长期循环底部。
-    因此，DPO指标刻意忽略较长周期的波动，一方面可以减少周期干扰的混淆，一方面可以凸显个别周期的波动。
+    1.指标>80 时，回档机率大；指标<20 时，反弹机率大；
+    2.K在20左右向上交叉D时，视为买进信号参考； 
+    3.K在80左右向下交叉D时，视为卖出信号参考；
+    4.SKDJ波动于50左右的任何讯号，其作用不大。
 
-
-    一段周期的移动平均线，其周期的二分之一处，是价格重心的聚集点。
-    以20天的周期为例，第10天是整段周期的重心平衡点。
-    移动平均线的形状，很像一条波浪状扭曲的绳子，股价在这条绳子的周围，上下来回穿梭。
-    如果消除扭曲的波动，将这条绳子拉平，重心平衡点视为图表上的0轴。把当日价格与重心平衡点间的差距，绘制于0轴的上下方。
-    如此一来，可以更清楚的显现出短周期的高、低点。
     """
-    _dpo = pd.Series(data) - pd.Series(data).rolling(N / 2 + 1).mean()
-    _madpo = pd.Series(_dpo).rolling(M).mean()
-    return _dpo, _madpo
+    CLOSE = DataFrame['close']
+    LOWV = LLV(DataFrame['low'], N)
+    HIGHV = HHV(DataFrame['high'], N)
+    RSV = EMA((CLOSE - LOWV) / (HIGHV - LOWV) * 100, M)
+    K = EMA(RSV, M)
+    D = MA(K, M)
+    DICT = {'RSV': RSV, 'SKDJ_K': K, 'SKDJ_D': D}
+
+    return pd.DataFrame(DICT)
 
 
-def QA_indicator_jlhb(high, low, close, N=7, M=5):
+def QA_indicator_DDI(DataFrame, N=13, N1=26, M=1, M1=5):
     """
-    绝路航标
-    滞后指标,灵敏性很差,容易出假信号
-    N:=7;M:=5;
-    VAR1:=(CLOSE-LLV(LOW,60))/(HHV(HIGH,60)-LLV(LOW,60))*80;
-    B:SMA(VAR1,N,1);
-    VAR2:SMA(B,M,1);
-    绝路航标:IF(CROSS(B,VAR2) AND B<40,38,0),COLORYELLOW,LINETHICK2;
-    DRAWICON( 绝路航标>0,38,1 );
-
-    计算公式：
-    VAR1:=(CLOSE-LLV(LOW,60))/(HHV(HIGH,60)-LLV(LOW,60))*80;
-    B:SMA(VAR1,N,1);
-    VAR2:SMA(B,M,1);
-    绝路航标:IF(CROSS(B,VAR2) AND B<40,50,0);
-
-    VAR1赋值:(收盘价-60日内最低价的最低值)/(60日内最高价的最高值-60日内最低价的最低值)*80
-    输出 B:VAR1的N日[1日权重]移动平均
-    输出 VAR2:B的M日[1日权重]移动平均
-    输出 绝路航标:如果B上穿VAR2 AND B<40,返回50,否则返回0
-    输入：
-        security_list:股票列表
-        check_date：要查询数据的日期
-        N：统计的天数 N
-        M：统计的天数 M
-    输出：
-        B, VAR2和绝路航标 的值。
-    输出结果类型：
-        字典(dict)：键(key)为股票代码，值(value)为数据。
+    '方向标准离差指数'
+    分析DDI柱状线，由红变绿(正变负)，卖出信号参考；由绿变红，买入信号参考。
     """
-    def JLHB(security_list, check_date, N=7, M=5):
-        '''
-
-
-        import talib
-        import numpy as np
-
-        # 计算SMA(X, N, M)， 即X的N日移动平均，M为权重, 若Y=SMA(X,N,M) 则 Y = (M*X+(N-M)*Y')/N, 其中Y'表示上一周期Y值,N必须大于M。返回一个列表
-        def SMA(X, N, M=1):
-            ret = []
-            i = 1
-            length = len(X)
-            # 跳过X中前面几个 nan 值
-            while i < length:
-                if np.isnan(X[i]):
-                    i += 1
-                else:
-                    break
-            preY = X[i] # Y'
-            ret.append(preY)
-            while i < length:
-                Y = (M * X[i] + (N-M) * preY) / float(N)
-                ret.append(Y)
-                preY = Y
-                i += 1
-            return ret
-
-        # VAR1:=(CLOSE-LLV(LOW,N))/(HHV(HIGH,N)-LLV(LOW,N))*80;
-        # 返回一个列表
-        # 功能等效于talib.STOCHF返回的第一个值
-        def STOCHF(high, low, close, N=60):
-            VAR = []
-            len_total = len(high)
-            i = -len_total
-            # 在N-1天之前，取不到LLV(LOW, N)和(HHV(HIGH,N)，所以VAR的值为nan
-            while i < -(len_total-N + 1):
-                t = np.nan
-                VAR.append(t)
-                i += 1
-            # 终于有了LLV和HHV
-            while i < -1:
-                # 虽然都是+1，但意义不同，一个是弥补-N，一个是因为Python切片只能取到第二个参数所指的数的前一个
-                llv = min(low[i-N+1 : i+1])
-                hhv = max(high[i-N+1 : i+1])
-                t = (close[i]-llv) / (hhv-llv) * 80
-                VAR.append(t)
-                i += 1
-            # 因为low[-x: 0]取不到数值，所以low/high/close中的最后N个要单独处理
-            llv = min(low[i-N+1 :])
-            hhv = max(high[i-N+1 :])
-            t = (close[i]-llv) / (hhv-llv) * 80
-            VAR.append(t)
-            return VAR
-
-        # 计算 JLHB
-        jlhb_b = {} 
-        jlhb_var2 = {}
-        jlhb_jlhb = {}
-        # 修复传入为单只股票的情况
-        if isinstance(security_list, (str,unicode)):
-            security_list = [security_list]
-        for stock in security_list:
-            security_data = get_price(stock, end_date = check_date, frequency = '1d', fields = ['low', 'high', 'close'] , skip_paused = True, count = N * 20)
-            nan_count = list(np.isnan(security_data['close'])).count(True)
-            if nan_count == len(security_data['close']):
-                log.info("股票 %s 输入数据全是 NaN，该股票可能已退市或刚上市，返回 NaN 值数据。" % stock)
-                jlhb_b[stock] = np.nan
-                jlhb_var2[stock] = np.nan
-                jlhb_jlhb[stock] = np.nan
-            else:
-                close_JLHB = security_data['close']
-                high_JLHB = security_data['high']
-                low_JLHB = security_data['low']
 
-                close = np.array(close_JLHB)
-                high = np.array(high_JLHB)
-                low = np.array(low_JLHB)
+    H = DataFrame['high']
+    L = DataFrame['low']
+    DMZ = IF((H + L) <= (REF(H, 1) + REF(L, 1)), 0,
+             MAX(ABS(H - REF(H, 1)), ABS(L - REF(L, 1))))
+    DMF = IF((H + L) >= (REF(H, 1) + REF(L, 1)), 0,
+             MAX(ABS(H - REF(H, 1)), ABS(L - REF(L, 1))))
+    DIZ = SUM(DMZ, N) / (SUM(DMZ, N) + SUM(DMF, N))
+    DIF = SUM(DMF, N) / (SUM(DMF, N) + SUM(DMZ, N))
+    ddi = DIZ - DIF
+    ADDI = SMA(ddi, N1, M)
+    AD = MA(ADDI, M1)
+    DICT = {'DDI': ddi, 'ADDI': ADDI, 'AD': AD}
 
-                # 计算VAR1值
-                var1 = STOCHF(high, low, close)
-                # 计算 B 值
-                b = SMA(var1, N, 1)
-                # 计算 var2 值
-                var2 = SMA(b, M, 1)
-                # 计算 绝路航标
-                jlhb = 0
-                cross = 0
-                if b[-2] < var2[-2] and b[-1] > var2[-1]:
-                    cross = 1
-                if  cross == 1 and b[-1] < 40:
-                    jlhb = 50
+    return pd.DataFrame(DICT)
 
-                jlhb_b[stock] = b[-1]
-                jlhb_var2[stock] = var2[-1]
-                jlhb_jlhb[stock] = jlhb
-        return jlhb_b, jlhb_var2, jlhb_jlhb
 
+def QA_indicator_shadow(DataFrame):
+    """
+    上下影线指标
+    """
+    return {
+        'LOW': lower_shadow(DataFrame), 'UP': upper_shadow(DataFrame),
+        'BODY': body(DataFrame), 'BODY_ABS': body_abs(DataFrame), 'PRICE_PCG': price_pcg(DataFrame)
+    }
 
 
+def lower_shadow(DataFrame):  # 下影线
+    return abs(DataFrame.low - MIN(DataFrame.open, DataFrame.close))
 
 
-    # _var_1 = pd.Series(low)-
+def upper_shadow(DataFrame):  # 上影线
+    return abs(DataFrame.high - MAX(DataFrame.open, DataFrame.close))
 
-    '''
-    pass
 
+def body_abs(DataFrame):
+    return abs(DataFrame.open - DataFrame.close)
 
-# def QA_indicator_cho(data):
-#     pass
 
+def body(DataFrame):
+    return DataFrame.close - DataFrame.open
 
-# def QA_indicator_macd(data):
-#     pass
 
+def price_pcg(DataFrame):
+    return body(DataFrame) / DataFrame.open
 
-# def QA_indicator_emv(data):
-#     pass
 
+def amplitude(DataFrame):
+    return (DataFrame.high - DataFrame.low) / DataFrame.low
 
-# def QA_indicator_trix(data):
-#     pass
 
+"""
 
-# def QA_indicator_gdx(data):
-#     pass
-
-
-# def QA_indicator_qacd(data):
-#     pass
-
-
-# def QA_indicator_uos(data):
-#     pass
-
-
-# def QA_indicator_vpt(data):
-#     pass
-
-
-# def QA_indicator_qr(data):
-#     pass
-
-
-# def QA_indicator_cye(data):
-#     pass
-
-
-# def QA_indicator_js(data):
-#     pass
-
-
-# def QA_indicator_wvad(deta):
-#     pass
-
-
-# """震荡指标"""
-
-
-# def QA_indicator_rsi(data):
-#     pass
-
-
-# def QA_indicator_marsi(data):
-#     pass
-
-
-# def QA_indicator_cci(data):
-#     pass
-
-
-# def QA_indicator_mfi(deta):
-#     pass
-
-
-# def QA_indicator_mtm(data):
-#     pass
-
-
-# def QA_indicator_osc(data):
-#     pass
-
-
-# def QA_indicator_roc(data):
-#     pass
-
-
-# def QA_indicator_kd(data):
-#     pass
-
-
-# def QA_indicator_kdj(data):
-#     pass
-
-
-# def QA_indicator_skdj(data):
-#     pass
-
-
-# def QA_indicator_udl(data):
-#     pass
-
-
-# def QA_indicator_wr(data):
-#     pass
-
-
-# def QA_indicator_lwr(data):
-#     pass
-
-
-# def QA_indicator_bias(data):
-#     pass
-
-
-# def QA_indicator_accer(data):
-#     pass
-
-
-# def QA_indicator_cyd(data):
-#     pass
-
-
-# def QA_indicator_cyf(data):
-#     pass
-
-
-# def QA_indicator_fsl(data):
-#     pass
-
-
-# def QA_indicator_tapi(data):
-#     pass
-
-
-# def QA_indicator_dkx(data):
-#     pass
-
-
-# def QA_indicator_atr(data):
-#     pass
-
-
-# def QA_indicator_adtm(data):
-#     pass
-
-
-# """成交量指标"""
-
-
-# def QA_indicator_vol(data):
-#     pass
-
-
-# def QA_indicator_vrsi(data):
-#     pass
-
-
-# def QA_indicator_obv(data):
-#     pass
-
-
-# def QA_indicator_dblb(data):
-#     pass
-
-
-# def QA_indicator_dbqrv(data):
-#     pass
-
-
-# def QA_indicator_amo(data):
-#     pass
-
-
-# def QA_indicator_hsl(data):
-#     pass
-
-
-# def QA_indicator_hscol(data):
-#     pass
-
-
-# """均价线指标"""
-
-
-# def QA_indicator_ma(data):
-#     pass
-
-
-# def QA_indicator_expma(data):
-#     pass
-
-
-# def QA_indicator_hma(data):
-#     pass
-
-
-# def QA_indicator_lma(data):
-#     pass
-
-
-# def QA_indicator_vma(data):
-#     pass
-
-
-# def QA_indicator_amv(data):
-#     pass
-
-
-# def QA_indicator_acd(data):
-#     pass
-
-
-# def QA_indicator_bbi(data):
-#     pass
-
-
-# """动量指标"""
-
-
-# def QA_indicator_psy(data):
-#     pass
-
-
-# def QA_indicator_vr(data):
-#     pass
-
-
-# def QA_indicator_brar(data):
-#     pass
-
-
-# def QA_indicator_cr(data):
-#     pass
-
-
-# def QA_indicator_mass(data):
-#     pass
-
-
-# def QA_indicator_wad(data):
-#     pass
-
-
-# def QA_indicator_pcnt(data):
-#     pass
-
-
-# def QA_indicator_cyr(data):
-#     pass
-
-
-# """通道型指标"""
-
-
-# def QA_indicator_boll(data):
-#     pass
-
-
-# def QA_indicator_pbx(data):
-#     pass
-
-
-# def QA_indicator_ene(data):
-#     pass
-
-
-# def QA_indicator_mike(data):
-#     pass
-
-
-# def QA_indicator_xs(data):
-#     pass
-
-
-# def QA_indicator_xt(data):
-#     pass
-
-
-# """大盘指标"""
-
-
-# def QA_indicator_adl(data):
-#     pass
-
-
-# def QA_indicator_adr(data):
-#     pass
-
-
-# def QA_indicator_arms(data):
-#     pass
-
-
-# def QA_indicator_abi(data):
-#     pass
-
-
-# def QA_indicator_bti(data):
-#     pass
-
-
-# def QA_indicator_mcl(data):
-#     pass
-
-
-# def QA_indicator_obos(data):
-#     pass
-
-
-# def QA_indicator_stix(data):
-#     pass
-
-
-if __name__ == '__main__':
-    import QUANTAXIS as QA
-    import pymongo
-    data = QA.QA_fetch_stock_day(
-        '600016', '2017-01-01', '2017-07-01').T[1].astype(float)
-    print(QA_indicator_dma(data))
+6.	大盘指标
+通过涨跌家数研究大盘指数的走势
+涨跌比率 ADR
+绝对幅度指标 ABI
+新三价率 TBR
+腾落指数 ADL
+广量冲力指标
+指数平滑广量 STIX
+"""
