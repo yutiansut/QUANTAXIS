@@ -1,0 +1,1208 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QUANTAXIS.QAMarket package &#8212; QUANTAXIS 1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="quantaxis-qamarket-package">
+<h1>QUANTAXIS.QAMarket package<a class="headerlink" href="#quantaxis-qamarket-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="quantaxis-qamarket-broker-calender-module">
+<h2>QUANTAXIS.QAMarket.Broker_Calender module<a class="headerlink" href="#quantaxis-qamarket-broker-calender-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-QUANTAXIS.QAMarket.QABacktestBroker">
+<span id="quantaxis-qamarket-qabacktestbroker-module"></span><h2>QUANTAXIS.QAMarket.QABacktestBroker module<a class="headerlink" href="#module-QUANTAXIS.QAMarket.QABacktestBroker" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="QUANTAXIS.QAMarket.QABacktestBroker.QA_BacktestBroker">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.QABacktestBroker.</code><code class="descname">QA_BacktestBroker</code><span class="sig-paren">(</span><em>commission_fee_coeff=0.0015</em>, <em>if_nondatabase=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QABacktestBroker.html#QA_BacktestBroker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QABacktestBroker.QA_BacktestBroker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#QUANTAXIS.QAMarket.QABroker.QA_Broker" title="QUANTAXIS.QAMarket.QABroker.QA_Broker"><code class="xref py py-class docutils literal notranslate"><span class="pre">QUANTAXIS.QAMarket.QABroker.QA_Broker</span></code></a></p>
+<p>QUANTAXIS Broker 部分</p>
+<p>回测
+股票/指数/期货/债券/ETF/基金
+&#64;yutiansut</p>
+<p>对于不同的市场规则:
+股票市场 t+1
+期货/期权/加密货币市场 t+0</p>
+<p>股票/加密货币市场不允许卖空
+期货/期权市场允许卖空</p>
+<p>t+1的市场是
+当日的买入 更新持仓- 不更新可卖数量- 资金冻结
+当日的卖出 及时更新可用资金</p>
+<p>t+0市场是:
+当日买入 即时更新持仓和可卖
+当日卖出 即时更新</p>
+<p>卖空的规则是
+允许无仓位的时候卖出证券(按市值和保证金比例限制算)</p>
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QABacktestBroker.QA_BacktestBroker.get_market">
+<code class="descname">get_market</code><span class="sig-paren">(</span><em>order</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QABacktestBroker.html#QA_BacktestBroker.get_market"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QABacktestBroker.QA_BacktestBroker.get_market" title="Permalink to this definition">¶</a></dt>
+<dd><p>get_market func</p>
+<p>[description]</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>order {orders} -- [description]</dd>
+<dt>Returns:</dt>
+<dd>[type] -- [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QABacktestBroker.QA_BacktestBroker.query_data">
+<code class="descname">query_data</code><span class="sig-paren">(</span><em>code</em>, <em>start</em>, <em>end</em>, <em>frequence</em>, <em>market_type=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QABacktestBroker.html#QA_BacktestBroker.query_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QABacktestBroker.QA_BacktestBroker.query_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>标准格式是numpy</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QABacktestBroker.QA_BacktestBroker.receive_order">
+<code class="descname">receive_order</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QABacktestBroker.html#QA_BacktestBroker.receive_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QABacktestBroker.QA_BacktestBroker.receive_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the order and choice which market to trade</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QABacktestBroker.QA_BacktestBroker.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QABacktestBroker.html#QA_BacktestBroker.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QABacktestBroker.QA_BacktestBroker.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QABacktestBroker.QA_BacktestBroker.warp">
+<code class="descname">warp</code><span class="sig-paren">(</span><em>order</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QABacktestBroker.html#QA_BacktestBroker.warp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QABacktestBroker.QA_BacktestBroker.warp" title="Permalink to this definition">¶</a></dt>
+<dd><p>对order/market的封装</p>
+<p>[description]</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>order {[type]} -- [description]</dd>
+<dt>Returns:</dt>
+<dd>[type] -- [description]</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QAMarket.QABroker">
+<span id="quantaxis-qamarket-qabroker-module"></span><h2>QUANTAXIS.QAMarket.QABroker module<a class="headerlink" href="#module-QUANTAXIS.QAMarket.QABroker" title="Permalink to this headline">¶</a></h2>
+<p>需要一个可以被修改和继承的基类</p>
+<p>2017/8/12</p>
+<dl class="class">
+<dt id="QUANTAXIS.QAMarket.QABroker.QA_BROKER_EVENT">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.QABroker.</code><code class="descname">QA_BROKER_EVENT</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QABroker.html#QA_BROKER_EVENT"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QABroker.QA_BROKER_EVENT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAEvent.QA_Event" title="QUANTAXIS.QAEngine.QAEvent.QA_Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">QUANTAXIS.QAEngine.QAEvent.QA_Event</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QAMarket.QABroker.QA_Broker">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.QABroker.</code><code class="descname">QA_Broker</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QABroker.html#QA_Broker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QABroker.QA_Broker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAEvent.QA_Worker" title="QUANTAXIS.QAEngine.QAEvent.QA_Worker"><code class="xref py py-class docutils literal notranslate"><span class="pre">QUANTAXIS.QAEngine.QAEvent.QA_Worker</span></code></a></p>
+<p>MARKET ENGINGE ABSTRACT</p>
+<p>receive_order =&gt; warp =&gt; get_data =&gt; engine</p>
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QABroker.QA_Broker.get_market">
+<code class="descname">get_market</code><span class="sig-paren">(</span><em>order</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QABroker.html#QA_Broker.get_market"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QABroker.QA_Broker.get_market" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QABroker.QA_Broker.receive_order">
+<code class="descname">receive_order</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QABroker.html#QA_Broker.receive_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QABroker.QA_Broker.receive_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QABroker.QA_Broker.warp">
+<code class="descname">warp</code><span class="sig-paren">(</span><em>order</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QABroker.html#QA_Broker.warp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QABroker.QA_Broker.warp" title="Permalink to this definition">¶</a></dt>
+<dd><p>对order/market的封装</p>
+<p>[description]</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>order {[type]} -- [description]</dd>
+<dt>Returns:</dt>
+<dd>[type] -- [description]</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QAMarket.QADealer">
+<span id="quantaxis-qamarket-qadealer-module"></span><h2>QUANTAXIS.QAMarket.QADealer module<a class="headerlink" href="#module-QUANTAXIS.QAMarket.QADealer" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="QUANTAXIS.QAMarket.QADealer.QA_Dealer">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.QADealer.</code><code class="descname">QA_Dealer</code><span class="sig-paren">(</span><em>commission_fee_coeff=0.00025</em>, <em>tax_coeff=0.001</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QADealer.html#QA_Dealer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QADealer.QA_Dealer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>[summary]</p>
+<p>对于不同的市场规则:
+股票市场 t+1
+期货/期权/加密货币市场 t+0</p>
+<p>股票/加密货币市场不允许卖空
+期货/期权市场允许卖空</p>
+<p>t+1的市场是
+当日的买入 更新持仓- 不更新可卖数量- 资金冻结
+当日的卖出 及时更新可用资金</p>
+<p>t+0市场是:
+当日买入 即时更新持仓和可卖
+当日卖出 即时更新</p>
+<p>卖空的规则是
+允许无仓位的时候卖出证券(按市值和保证金比例限制算)</p>
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QADealer.QA_Dealer.backtest_stock_dealer">
+<code class="descname">backtest_stock_dealer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QADealer.html#QA_Dealer.backtest_stock_dealer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QADealer.QA_Dealer.backtest_stock_dealer" title="Permalink to this definition">¶</a></dt>
+<dd><p>MARKET ENGINE STOCK</p>
+<p>在拿到市场数据后对于订单的撮合判断 生成成交信息</p>
+<p>trading system
+step1: check self.market_data
+step2: deal
+step3: return callback</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QADealer.QA_Dealer.cal_fee">
+<code class="descname">cal_fee</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QADealer.html#QA_Dealer.cal_fee"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QADealer.QA_Dealer.cal_fee" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QADealer.QA_Dealer.callback_message">
+<code class="descname">callback_message</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QADealer.html#QA_Dealer.callback_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QADealer.QA_Dealer.callback_message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QADealer.QA_Dealer.deal">
+<code class="descname">deal</code><span class="sig-paren">(</span><em>order</em>, <em>market_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QADealer.html#QA_Dealer.deal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QADealer.QA_Dealer.deal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QAMarket.QADealer.Stock_Dealer">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.QADealer.</code><code class="descname">Stock_Dealer</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QADealer.html#Stock_Dealer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QADealer.Stock_Dealer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#QUANTAXIS.QAMarket.QADealer.QA_Dealer" title="QUANTAXIS.QAMarket.QADealer.QA_Dealer"><code class="xref py py-class docutils literal notranslate"><span class="pre">QUANTAXIS.QAMarket.QADealer.QA_Dealer</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QAMarket.QADealer.commission">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.QADealer.</code><code class="descname">commission</code><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QADealer.html#commission"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QADealer.commission" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.QADealer.commission.if_buyside_commission">
+<code class="descname">if_buyside_commission</code><em class="property"> = False</em><a class="headerlink" href="#QUANTAXIS.QAMarket.QADealer.commission.if_buyside_commission" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.QADealer.commission.if_commission">
+<code class="descname">if_commission</code><em class="property"> = False</em><a class="headerlink" href="#QUANTAXIS.QAMarket.QADealer.commission.if_commission" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.QADealer.commission.if_sellside_commission">
+<code class="descname">if_sellside_commission</code><em class="property"> = True</em><a class="headerlink" href="#QUANTAXIS.QAMarket.QADealer.commission.if_sellside_commission" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QAMarket.QADealer.dealer_preset">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.QADealer.</code><code class="descname">dealer_preset</code><span class="sig-paren">(</span><em>market_type</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QADealer.html#dealer_preset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QADealer.dealer_preset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QADealer.dealer_preset.load_preset">
+<code class="descname">load_preset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QADealer.html#dealer_preset.load_preset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QADealer.dealer_preset.load_preset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QAMarket.QAMarket">
+<span id="quantaxis-qamarket-qamarket-module"></span><h2>QUANTAXIS.QAMarket.QAMarket module<a class="headerlink" href="#module-QUANTAXIS.QAMarket.QAMarket" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="QUANTAXIS.QAMarket.QAMarket.QA_Market">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.QAMarket.</code><code class="descname">QA_Market</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade" title="QUANTAXIS.QAMarket.QATrade.QA_Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">QUANTAXIS.QAMarket.QATrade.QA_Trade</span></code></a></p>
+<p>QUANTAXIS MARKET 部分</p>
+<p>交易前置/可连接到多个broker中</p>
+<p>暂时还是采用多线程engine模式</p>
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAMarket.QA_Market.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market.clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAMarket.QA_Market.connect">
+<code class="descname">connect</code><span class="sig-paren">(</span><em>broker</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market.connect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAMarket.QA_Market.get_account">
+<code class="descname">get_account</code><span class="sig-paren">(</span><em>account_cookie</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market.get_account"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market.get_account" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAMarket.QA_Market.get_account_id">
+<code class="descname">get_account_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market.get_account_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market.get_account_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAMarket.QA_Market.get_trading_day">
+<code class="descname">get_trading_day</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market.get_trading_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market.get_trading_day" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAMarket.QA_Market.insert_order">
+<code class="descname">insert_order</code><span class="sig-paren">(</span><em>account_id</em>, <em>amount</em>, <em>amount_model</em>, <em>time</em>, <em>code</em>, <em>price</em>, <em>order_model</em>, <em>towards</em>, <em>market_type</em>, <em>frequence</em>, <em>broker_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market.insert_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market.insert_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAMarket.QA_Market.login">
+<code class="descname">login</code><span class="sig-paren">(</span><em>broker_name</em>, <em>account_cookie</em>, <em>account=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market.login"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market.login" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAMarket.QA_Market.logout">
+<code class="descname">logout</code><span class="sig-paren">(</span><em>account_cookie</em>, <em>broker_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market.logout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market.logout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAMarket.QA_Market.on_insert_order">
+<code class="descname">on_insert_order</code><span class="sig-paren">(</span><em>order</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market.on_insert_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market.on_insert_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAMarket.QA_Market.on_query_data">
+<code class="descname">on_query_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market.on_query_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market.on_query_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAMarket.QA_Market.on_trade_event">
+<code class="descname">on_trade_event</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market.on_trade_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market.on_trade_event" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAMarket.QA_Market.query_assets">
+<code class="descname">query_assets</code><span class="sig-paren">(</span><em>account_cookie</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market.query_assets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market.query_assets" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAMarket.QA_Market.query_cash">
+<code class="descname">query_cash</code><span class="sig-paren">(</span><em>account_cookie</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market.query_cash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market.query_cash" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAMarket.QA_Market.query_currentbar">
+<code class="descname">query_currentbar</code><span class="sig-paren">(</span><em>broker_name</em>, <em>market_type</em>, <em>code</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market.query_currentbar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market.query_currentbar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAMarket.QA_Market.query_data">
+<code class="descname">query_data</code><span class="sig-paren">(</span><em>broker_name</em>, <em>frequence</em>, <em>market_type</em>, <em>code</em>, <em>start</em>, <em>end=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market.query_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market.query_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAMarket.QA_Market.query_data_no_wait">
+<code class="descname">query_data_no_wait</code><span class="sig-paren">(</span><em>broker_name</em>, <em>frequence</em>, <em>market_type</em>, <em>code</em>, <em>start</em>, <em>end=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market.query_data_no_wait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market.query_data_no_wait" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAMarket.QA_Market.query_order">
+<code class="descname">query_order</code><span class="sig-paren">(</span><em>broker_name</em>, <em>order_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market.query_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market.query_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAMarket.QA_Market.query_position">
+<code class="descname">query_position</code><span class="sig-paren">(</span><em>account_cookie</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market.query_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market.query_position" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAMarket.QA_Market.register">
+<code class="descname">register</code><span class="sig-paren">(</span><em>broker_name</em>, <em>broker</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market.register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market.register" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAMarket.QA_Market.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market.start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAMarket.QA_Market.upcoming_data">
+<code class="descname">upcoming_data</code><span class="sig-paren">(</span><em>broker</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market.upcoming_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market.upcoming_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QAMarket.QAOrder">
+<span id="quantaxis-qamarket-qaorder-module"></span><h2>QUANTAXIS.QAMarket.QAOrder module<a class="headerlink" href="#module-QUANTAXIS.QAMarket.QAOrder" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="QUANTAXIS.QAMarket.QAOrder.QA_Order">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.QAOrder.</code><code class="descname">QA_Order</code><span class="sig-paren">(</span><em>price=None</em>, <em>date=None</em>, <em>datetime=None</em>, <em>sending_time=None</em>, <em>transact_time=None</em>, <em>amount=None</em>, <em>market_type=None</em>, <em>frequence=None</em>, <em>towards=None</em>, <em>code=None</em>, <em>user=None</em>, <em>account_cookie=None</em>, <em>strategy=None</em>, <em>order_model=None</em>, <em>amount_model='by_amount'</em>, <em>order_id=None</em>, <em>trade_id=None</em>, <em>status='100'</em>, <em>callback=False</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAOrder.html#QA_Order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_Order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAOrder.QA_Order.from_dict">
+<code class="descname">from_dict</code><span class="sig-paren">(</span><em>order</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAOrder.html#QA_Order.from_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_Order.from_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAOrder.QA_Order.info">
+<code class="descname">info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAOrder.html#QA_Order.info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_Order.info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAOrder.QA_Order.to_df">
+<code class="descname">to_df</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAOrder.html#QA_Order.to_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_Order.to_df" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAOrder.QA_Order.to_dict">
+<code class="descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAOrder.html#QA_Order.to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_Order.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.QAOrder.</code><code class="descname">QA_OrderQueue</code><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAOrder.html#QA_OrderQueue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>一个待成交队列
+这里面都是对于方法的封装</p>
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.insert_order">
+<code class="descname">insert_order</code><span class="sig-paren">(</span><em>order</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAOrder.html#QA_OrderQueue.insert_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.insert_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.order_ids">
+<code class="descname">order_ids</code><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.order_ids" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.pending">
+<code class="descname">pending</code><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.pending" title="Permalink to this definition">¶</a></dt>
+<dd><p>选择待成交列表</p>
+<p>[description]</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>dataframe</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.query_order">
+<code class="descname">query_order</code><span class="sig-paren">(</span><em>order_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAOrder.html#QA_OrderQueue.query_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.query_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.set_status">
+<code class="descname">set_status</code><span class="sig-paren">(</span><em>order_id</em>, <em>new_status</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAOrder.html#QA_OrderQueue.set_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.set_status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.settle">
+<code class="descname">settle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAOrder.html#QA_OrderQueue.settle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.settle" title="Permalink to this definition">¶</a></dt>
+<dd><p>结算</p>
+<p>清空订单簿</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.trade_list">
+<code class="descname">trade_list</code><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.trade_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>批量交易</p>
+<p>[description]</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>list of orders</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QAMarket.QAOrderHandler">
+<span id="quantaxis-qamarket-qaorderhandler-module"></span><h2>QUANTAXIS.QAMarket.QAOrderHandler module<a class="headerlink" href="#module-QUANTAXIS.QAMarket.QAOrderHandler" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="QUANTAXIS.QAMarket.QAOrderHandler.QA_OrderHandler">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.QAOrderHandler.</code><code class="descname">QA_OrderHandler</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAOrderHandler.html#QA_OrderHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrderHandler.QA_OrderHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAEvent.QA_Worker" title="QUANTAXIS.QAEngine.QAEvent.QA_Worker"><code class="xref py py-class docutils literal notranslate"><span class="pre">QUANTAXIS.QAEngine.QAEvent.QA_Worker</span></code></a></p>
+<p>ORDER执行器</p>
+<p>ORDEHANDLDER 归属于MARKET前置</p>
+<p>仅负责一个无状态的执行层</p>
+<p>ORDER执行器的作用是因为 
+在实盘中 当一个订单发送出去的时候,市场不会返回一个更新的订单类回来
+大部分时间都依赖子线程主动查询 或者是一个市场信息来进行判断</p>
+<p>ORDER_Handler的作用就是根据信息更新Order</p>
+<p>用于接受订单 发送给相应的marker_broker 再根据返回的信息 进行更新</p>
+<p>可用的market_broker:
+1.回测盘
+2.实时模拟盘
+3.实盘</p>
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAOrderHandler.QA_OrderHandler.query_order">
+<code class="descname">query_order</code><span class="sig-paren">(</span><em>order_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAOrderHandler.html#QA_OrderHandler.query_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrderHandler.QA_OrderHandler.query_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QAOrderHandler.QA_OrderHandler.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAOrderHandler.html#QA_OrderHandler.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrderHandler.QA_OrderHandler.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QAMarket.QARandomBroker">
+<span id="quantaxis-qamarket-qarandombroker-module"></span><h2>QUANTAXIS.QAMarket.QARandomBroker module<a class="headerlink" href="#module-QUANTAXIS.QAMarket.QARandomBroker" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="QUANTAXIS.QAMarket.QARandomBroker.QA_RandomBroker">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.QARandomBroker.</code><code class="descname">QA_RandomBroker</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QARandomBroker.html#QA_RandomBroker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QARandomBroker.QA_RandomBroker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#QUANTAXIS.QAMarket.QABroker.QA_Broker" title="QUANTAXIS.QAMarket.QABroker.QA_Broker"><code class="xref py py-class docutils literal notranslate"><span class="pre">QUANTAXIS.QAMarket.QABroker.QA_Broker</span></code></a></p>
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QARandomBroker.QA_RandomBroker.get_data">
+<code class="descname">get_data</code><span class="sig-paren">(</span><em>order</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QARandomBroker.html#QA_RandomBroker.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QARandomBroker.QA_RandomBroker.get_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QARandomBroker.QA_RandomBroker.receive_order">
+<code class="descname">receive_order</code><span class="sig-paren">(</span><em>order</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QARandomBroker.html#QA_RandomBroker.receive_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QARandomBroker.QA_RandomBroker.receive_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QARandomBroker.QA_RandomBroker.warp">
+<code class="descname">warp</code><span class="sig-paren">(</span><em>order</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QARandomBroker.html#QA_RandomBroker.warp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QARandomBroker.QA_RandomBroker.warp" title="Permalink to this definition">¶</a></dt>
+<dd><p>对order/market的封装</p>
+<p>[description]</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>order {[type]} -- [description]</dd>
+<dt>Returns:</dt>
+<dd>[type] -- [description]</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QAMarket.QARealBroker">
+<span id="quantaxis-qamarket-qarealbroker-module"></span><h2>QUANTAXIS.QAMarket.QARealBroker module<a class="headerlink" href="#module-QUANTAXIS.QAMarket.QARealBroker" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="QUANTAXIS.QAMarket.QARealBroker.QA_RealBroker">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.QARealBroker.</code><code class="descname">QA_RealBroker</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QARealBroker.html#QA_RealBroker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QARealBroker.QA_RealBroker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#QUANTAXIS.QAMarket.QABroker.QA_Broker" title="QUANTAXIS.QAMarket.QABroker.QA_Broker"><code class="xref py py-class docutils literal notranslate"><span class="pre">QUANTAXIS.QAMarket.QABroker.QA_Broker</span></code></a></p>
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QARealBroker.QA_RealBroker.get_data">
+<code class="descname">get_data</code><span class="sig-paren">(</span><em>order</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QARealBroker.html#QA_RealBroker.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QARealBroker.QA_RealBroker.get_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QARealBroker.QA_RealBroker.receive_order">
+<code class="descname">receive_order</code><span class="sig-paren">(</span><em>order</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QARealBroker.html#QA_RealBroker.receive_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QARealBroker.QA_RealBroker.receive_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QARealBroker.QA_RealBroker.warp">
+<code class="descname">warp</code><span class="sig-paren">(</span><em>order</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QARealBroker.html#QA_RealBroker.warp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QARealBroker.QA_RealBroker.warp" title="Permalink to this definition">¶</a></dt>
+<dd><p>对order/market的封装</p>
+<p>[description]</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>order {[type]} -- [description]</dd>
+<dt>Returns:</dt>
+<dd>[type] -- [description]</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QAMarket.QASimulatedBroker">
+<span id="quantaxis-qamarket-qasimulatedbroker-module"></span><h2>QUANTAXIS.QAMarket.QASimulatedBroker module<a class="headerlink" href="#module-QUANTAXIS.QAMarket.QASimulatedBroker" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="QUANTAXIS.QAMarket.QASimulatedBroker.QA_SimulatedBroker">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.QASimulatedBroker.</code><code class="descname">QA_SimulatedBroker</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QASimulatedBroker.html#QA_SimulatedBroker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QASimulatedBroker.QA_SimulatedBroker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#QUANTAXIS.QAMarket.QABroker.QA_Broker" title="QUANTAXIS.QAMarket.QABroker.QA_Broker"><code class="xref py py-class docutils literal notranslate"><span class="pre">QUANTAXIS.QAMarket.QABroker.QA_Broker</span></code></a></p>
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QASimulatedBroker.QA_SimulatedBroker.get_market">
+<code class="descname">get_market</code><span class="sig-paren">(</span><em>order</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QASimulatedBroker.html#QA_SimulatedBroker.get_market"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QASimulatedBroker.QA_SimulatedBroker.get_market" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QASimulatedBroker.QA_SimulatedBroker.query_data">
+<code class="descname">query_data</code><span class="sig-paren">(</span><em>code</em>, <em>start</em>, <em>end</em>, <em>frequence</em>, <em>market_type=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QASimulatedBroker.html#QA_SimulatedBroker.query_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QASimulatedBroker.QA_SimulatedBroker.query_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>标准格式是numpy</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QASimulatedBroker.QA_SimulatedBroker.receive_order">
+<code class="descname">receive_order</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QASimulatedBroker.html#QA_SimulatedBroker.receive_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QASimulatedBroker.QA_SimulatedBroker.receive_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QAMarket.QATrade">
+<span id="quantaxis-qamarket-qatrade-module"></span><h2>QUANTAXIS.QAMarket.QATrade module<a class="headerlink" href="#module-QUANTAXIS.QAMarket.QATrade" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.QATrade.</code><code class="descname">QA_Trade</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>多线程+generator模式</p>
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.cancel_order">
+<code class="descname">cancel_order</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.cancel_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.cancel_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.connect">
+<code class="descname">connect</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.connect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.get_account_id">
+<code class="descname">get_account_id</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.get_account_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.get_account_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.get_api_last_error">
+<code class="descname">get_api_last_error</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.get_api_last_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.get_api_last_error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.get_api_version">
+<code class="descname">get_api_version</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.get_api_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.get_api_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.get_client_id">
+<code class="descname">get_client_id</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.get_client_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.get_client_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.get_trading_day">
+<code class="descname">get_trading_day</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.get_trading_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.get_trading_day" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.insert_order">
+<code class="descname">insert_order</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.insert_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.insert_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.login">
+<code class="descname">login</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.login"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.login" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.logout">
+<code class="descname">logout</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.logout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.logout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.on_cancel_order">
+<code class="descname">on_cancel_order</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.on_cancel_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.on_cancel_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.on_cancel_order_event">
+<code class="descname">on_cancel_order_event</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.on_cancel_order_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.on_cancel_order_event" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.on_connect">
+<code class="descname">on_connect</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.on_connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.on_connect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.on_error">
+<code class="descname">on_error</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.on_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.on_error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.on_insert_order">
+<code class="descname">on_insert_order</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.on_insert_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.on_insert_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.on_order_event">
+<code class="descname">on_order_event</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.on_order_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.on_order_event" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.on_query_assets">
+<code class="descname">on_query_assets</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.on_query_assets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.on_query_assets" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.on_query_data">
+<code class="descname">on_query_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.on_query_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.on_query_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.on_query_order">
+<code class="descname">on_query_order</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.on_query_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.on_query_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.on_query_position">
+<code class="descname">on_query_position</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.on_query_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.on_query_position" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.on_query_trade">
+<code class="descname">on_query_trade</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.on_query_trade"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.on_query_trade" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.on_trade_event">
+<code class="descname">on_trade_event</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.on_trade_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.on_trade_event" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.query_assets">
+<code class="descname">query_assets</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.query_assets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.query_assets" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.query_data">
+<code class="descname">query_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.query_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.query_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.query_order">
+<code class="descname">query_order</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.query_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.query_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.query_position">
+<code class="descname">query_position</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.query_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.query_position" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.query_trade">
+<code class="descname">query_trade</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.query_trade"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.query_trade" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.register_spi">
+<code class="descname">register_spi</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.register_spi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.register_spi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.release">
+<code class="descname">release</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.release"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.release" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.QATrade.QA_Trade.subscribe_public_topic">
+<code class="descname">subscribe_public_topic</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QATrade.html#QA_Trade.subscribe_public_topic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade.subscribe_public_topic" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QAMarket.shipaneBroker">
+<span id="quantaxis-qamarket-shipanebroker-module"></span><h2>QUANTAXIS.QAMarket.shipaneBroker module<a class="headerlink" href="#module-QUANTAXIS.QAMarket.shipaneBroker" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.shipaneBroker.</code><code class="descname">SPETradeApi</code><span class="sig-paren">(</span><em>endpoint='http://127.0.0.1:8888'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#QUANTAXIS.QAMarket.QABroker.QA_Broker" title="QUANTAXIS.QAMarket.QABroker.QA_Broker"><code class="xref py py-class docutils literal notranslate"><span class="pre">QUANTAXIS.QAMarket.QABroker.QA_Broker</span></code></a></p>
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.call">
+<code class="descname">call</code><span class="sig-paren">(</span><em>func</em>, <em>params=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.call" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.cancel_order">
+<code class="descname">cancel_order</code><span class="sig-paren">(</span><em>client_id</em>, <em>exchange_id</em>, <em>hth</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.cancel_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.cancel_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.data_to_df">
+<code class="descname">data_to_df</code><span class="sig-paren">(</span><em>result</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.data_to_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.data_to_df" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.get_quote">
+<code class="descname">get_quote</code><span class="sig-paren">(</span><em>client_id</em>, <em>code</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.get_quote"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.get_quote" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.logoff">
+<code class="descname">logoff</code><span class="sig-paren">(</span><em>client_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.logoff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.logoff" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.logon">
+<code class="descname">logon</code><span class="sig-paren">(</span><em>ip</em>, <em>port</em>, <em>version</em>, <em>yyb_id</em>, <em>account_id</em>, <em>trade_account</em>, <em>jy_passwrod</em>, <em>tx_password</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.logon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.logon" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.ping">
+<code class="descname">ping</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.ping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.ping" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.query_data">
+<code class="descname">query_data</code><span class="sig-paren">(</span><em>client_id</em>, <em>category</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.query_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.query_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.receive_order">
+<code class="descname">receive_order</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.receive_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.receive_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>0 限价委托； 上海限价委托 / 深圳限价委托
+1 市价委托(深圳对方最优价格)
+2 市价委托(深圳本方最优价格)    
+3 市价委托(深圳即时成交剩余撤销)
+4 市价委托(上海五档即成剩撤 / 深圳五档即成剩撤)
+5 市价委托(深圳全额成交或撤销)
+6 市价委托(上海五档即成转限价)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.repay">
+<code class="descname">repay</code><span class="sig-paren">(</span><em>client_id</em>, <em>amount</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.repay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.repay" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.send_order">
+<code class="descname">send_order</code><span class="sig-paren">(</span><em>client_id</em>, <em>category</em>, <em>price_type</em>, <em>gddm</em>, <em>zqdm</em>, <em>price</em>, <em>quantity</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.send_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.send_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QAMarket.shipaneclient">
+<span id="quantaxis-qamarket-shipaneclient-module"></span><h2>QUANTAXIS.QAMarket.shipaneclient module<a class="headerlink" href="#module-QUANTAXIS.QAMarket.shipaneclient" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.Client">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.shipaneclient.</code><code class="descname">Client</code><span class="sig-paren">(</span><em>logger=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneclient.html#Client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.Client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.Client.KEY_REGEX">
+<code class="descname">KEY_REGEX</code><em class="property"> = 'key=([^&amp;]*)'</em><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.Client.KEY_REGEX" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.Client.buy">
+<code class="descname">buy</code><span class="sig-paren">(</span><em>client=None</em>, <em>timeout=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneclient.html#Client.buy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.Client.buy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.Client.cancel">
+<code class="descname">cancel</code><span class="sig-paren">(</span><em>client=None</em>, <em>order_id=None</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneclient.html#Client.cancel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.Client.cancel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.Client.cancel_all">
+<code class="descname">cancel_all</code><span class="sig-paren">(</span><em>client=None</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneclient.html#Client.cancel_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.Client.cancel_all" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.Client.create_adjustment">
+<code class="descname">create_adjustment</code><span class="sig-paren">(</span><em>client=None</em>, <em>request_json=None</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneclient.html#Client.create_adjustment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.Client.create_adjustment" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.Client.execute">
+<code class="descname">execute</code><span class="sig-paren">(</span><em>client=None</em>, <em>timeout=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneclient.html#Client.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.Client.execute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.Client.get_account">
+<code class="descname">get_account</code><span class="sig-paren">(</span><em>client=None</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneclient.html#Client.get_account"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.Client.get_account" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.Client.get_orders">
+<code class="descname">get_orders</code><span class="sig-paren">(</span><em>client=None</em>, <em>status=''</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneclient.html#Client.get_orders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.Client.get_orders" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.Client.get_positions">
+<code class="descname">get_positions</code><span class="sig-paren">(</span><em>client=None</em>, <em>media_type=&lt;MediaType.DEFAULT: 'application/json'&gt;</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneclient.html#Client.get_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.Client.get_positions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.Client.get_statuses">
+<code class="descname">get_statuses</code><span class="sig-paren">(</span><em>timeout=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneclient.html#Client.get_statuses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.Client.get_statuses" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.Client.host">
+<code class="descname">host</code><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.Client.host" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.Client.ipo">
+<code class="descname">ipo</code><span class="sig-paren">(</span><em>client=None</em>, <em>timeout=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneclient.html#Client.ipo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.Client.ipo" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.Client.key">
+<code class="descname">key</code><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.Client.key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.Client.port">
+<code class="descname">port</code><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.Client.port" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.Client.purchase_convertible_bonds">
+<code class="descname">purchase_convertible_bonds</code><span class="sig-paren">(</span><em>client=None</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneclient.html#Client.purchase_convertible_bonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.Client.purchase_convertible_bonds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.Client.purchase_new_stocks">
+<code class="descname">purchase_new_stocks</code><span class="sig-paren">(</span><em>client=None</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneclient.html#Client.purchase_new_stocks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.Client.purchase_new_stocks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.Client.query">
+<code class="descname">query</code><span class="sig-paren">(</span><em>client=None</em>, <em>navigation=None</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneclient.html#Client.query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.Client.query" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.Client.query_convertible_bonds">
+<code class="descname">query_convertible_bonds</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneclient.html#Client.query_convertible_bonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.Client.query_convertible_bonds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.Client.query_new_stocks">
+<code class="descname">query_new_stocks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneclient.html#Client.query_new_stocks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.Client.query_new_stocks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.Client.sell">
+<code class="descname">sell</code><span class="sig-paren">(</span><em>client=None</em>, <em>timeout=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneclient.html#Client.sell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.Client.sell" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.Client.shutdown_clients">
+<code class="descname">shutdown_clients</code><span class="sig-paren">(</span><em>timeout=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneclient.html#Client.shutdown_clients"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.Client.shutdown_clients" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.Client.start_clients">
+<code class="descname">start_clients</code><span class="sig-paren">(</span><em>timeout=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneclient.html#Client.start_clients"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.Client.start_clients" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.Client.timeout">
+<code class="descname">timeout</code><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.Client.timeout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.ConnectionMethod">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.shipaneclient.</code><code class="descname">ConnectionMethod</code><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneclient.html#ConnectionMethod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.ConnectionMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.ConnectionMethod.DIRECT">
+<code class="descname">DIRECT</code><em class="property"> = 'DIRECT'</em><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.ConnectionMethod.DIRECT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.ConnectionMethod.PROXY">
+<code class="descname">PROXY</code><em class="property"> = 'PROXY'</em><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.ConnectionMethod.PROXY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.MediaType">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.shipaneclient.</code><code class="descname">MediaType</code><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneclient.html#MediaType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.MediaType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.MediaType.DEFAULT">
+<code class="descname">DEFAULT</code><em class="property"> = 'application/json'</em><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.MediaType.DEFAULT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.shipaneclient.MediaType.JOIN_QUANT">
+<code class="descname">JOIN_QUANT</code><em class="property"> = 'application/vnd.joinquant+json'</em><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneclient.MediaType.JOIN_QUANT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QAMarket.tdxRealBroker">
+<span id="quantaxis-qamarket-tdxrealbroker-module"></span><h2>QUANTAXIS.QAMarket.tdxRealBroker module<a class="headerlink" href="#module-QUANTAXIS.QAMarket.tdxRealBroker" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.tdxRealBroker.</code><code class="descname">TDXBroker</code><span class="sig-paren">(</span><em>endpoint='http://127.0.0.1:10092/api'</em>, <em>encoding='utf-8'</em>, <em>enc_key=None</em>, <em>enc_iv=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/tdxRealBroker.html#TDXBroker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#QUANTAXIS.QAMarket.QABroker.QA_Broker" title="QUANTAXIS.QAMarket.QABroker.QA_Broker"><code class="xref py py-class docutils literal notranslate"><span class="pre">QUANTAXIS.QAMarket.QABroker.QA_Broker</span></code></a></p>
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.call">
+<code class="descname">call</code><span class="sig-paren">(</span><em>func</em>, <em>params=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/tdxRealBroker.html#TDXBroker.call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.call" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.cancel_order">
+<code class="descname">cancel_order</code><span class="sig-paren">(</span><em>client_id</em>, <em>exchange_id</em>, <em>hth</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/tdxRealBroker.html#TDXBroker.cancel_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.cancel_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.data_to_df">
+<code class="descname">data_to_df</code><span class="sig-paren">(</span><em>result</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/tdxRealBroker.html#TDXBroker.data_to_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.data_to_df" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.decrypt">
+<code class="descname">decrypt</code><span class="sig-paren">(</span><em>source</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/tdxRealBroker.html#TDXBroker.decrypt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.decrypt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.encrypt">
+<code class="descname">encrypt</code><span class="sig-paren">(</span><em>source_obj</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/tdxRealBroker.html#TDXBroker.encrypt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.encrypt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.get_quote">
+<code class="descname">get_quote</code><span class="sig-paren">(</span><em>client_id</em>, <em>code</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/tdxRealBroker.html#TDXBroker.get_quote"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.get_quote" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.logoff">
+<code class="descname">logoff</code><span class="sig-paren">(</span><em>client_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/tdxRealBroker.html#TDXBroker.logoff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.logoff" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.logon">
+<code class="descname">logon</code><span class="sig-paren">(</span><em>ip</em>, <em>port</em>, <em>version</em>, <em>yyb_id</em>, <em>account_id</em>, <em>trade_account</em>, <em>jy_passwrod</em>, <em>tx_password</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/tdxRealBroker.html#TDXBroker.logon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.logon" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.ping">
+<code class="descname">ping</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/tdxRealBroker.html#TDXBroker.ping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.ping" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.query_data">
+<code class="descname">query_data</code><span class="sig-paren">(</span><em>client_id</em>, <em>category</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/tdxRealBroker.html#TDXBroker.query_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.query_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.receive_order">
+<code class="descname">receive_order</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/tdxRealBroker.html#TDXBroker.receive_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.receive_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>0 限价委托； 上海限价委托 / 深圳限价委托
+1 市价委托(深圳对方最优价格)
+2 市价委托(深圳本方最优价格)    
+3 市价委托(深圳即时成交剩余撤销)
+4 市价委托(上海五档即成剩撤 / 深圳五档即成剩撤)
+5 市价委托(深圳全额成交或撤销)
+6 市价委托(上海五档即成转限价)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.repay">
+<code class="descname">repay</code><span class="sig-paren">(</span><em>client_id</em>, <em>amount</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/tdxRealBroker.html#TDXBroker.repay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.repay" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/tdxRealBroker.html#TDXBroker.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.send_order">
+<code class="descname">send_order</code><span class="sig-paren">(</span><em>client_id</em>, <em>category</em>, <em>price_type</em>, <em>gddm</em>, <em>zqdm</em>, <em>price</em>, <em>quantity</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/tdxRealBroker.html#TDXBroker.send_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.send_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.tdxRealBroker.</code><code class="descname">TdxTradeApiParams</code><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/tdxRealBroker.html#TdxTradeApiParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>0 资金
+1 股份
+2 当日委托
+3 当日成交
+4 可撤单
+5 股东代码
+6 融资余额
+7 融券余额
+8 可融证券
+9
+10
+11
+12 可申购新股查询
+13 新股申购额度查询
+14 配号查询
+15 中签查询</p>
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_BALANCE_OF_MARGIN_LOAN">
+<code class="descname">QUERY_CATEGORY_BALANCE_OF_MARGIN_LOAN</code><em class="property"> = 6</em><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_BALANCE_OF_MARGIN_LOAN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_BALANCE_OF_STOCK_LOAN">
+<code class="descname">QUERY_CATEGORY_BALANCE_OF_STOCK_LOAN</code><em class="property"> = 7</em><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_BALANCE_OF_STOCK_LOAN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_CANCELABLE_ORDER">
+<code class="descname">QUERY_CATEGORY_CANCELABLE_ORDER</code><em class="property"> = 4</em><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_CANCELABLE_ORDER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_CASH">
+<code class="descname">QUERY_CATEGORY_CASH</code><em class="property"> = 0</em><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_CASH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_DEAL_OF_TODAY">
+<code class="descname">QUERY_CATEGORY_DEAL_OF_TODAY</code><em class="property"> = 3</em><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_DEAL_OF_TODAY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_NEW_STOCKS">
+<code class="descname">QUERY_CATEGORY_NEW_STOCKS</code><em class="property"> = 12</em><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_NEW_STOCKS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_NEW_STOCKS_QUOTA">
+<code class="descname">QUERY_CATEGORY_NEW_STOCKS_QUOTA</code><em class="property"> = 13</em><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_NEW_STOCKS_QUOTA" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_NEW_STOCK_HIT">
+<code class="descname">QUERY_CATEGORY_NEW_STOCK_HIT</code><em class="property"> = 15</em><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_NEW_STOCK_HIT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_NEW_STOCK_NUMBER">
+<code class="descname">QUERY_CATEGORY_NEW_STOCK_NUMBER</code><em class="property"> = 14</em><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_NEW_STOCK_NUMBER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_OPERABLE_MARGIN_SOTCK">
+<code class="descname">QUERY_CATEGORY_OPERABLE_MARGIN_SOTCK</code><em class="property"> = 8</em><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_OPERABLE_MARGIN_SOTCK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_ORDER_OF_TODAY">
+<code class="descname">QUERY_CATEGORY_ORDER_OF_TODAY</code><em class="property"> = 2</em><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_ORDER_OF_TODAY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_SHAREHOLDERS_CODE">
+<code class="descname">QUERY_CATEGORY_SHAREHOLDERS_CODE</code><em class="property"> = 5</em><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_SHAREHOLDERS_CODE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_STOCKS">
+<code class="descname">QUERY_CATEGORY_STOCKS</code><em class="property"> = 1</em><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TdxTradeApiParams.QUERY_CATEGORY_STOCKS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QAMarket">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-QUANTAXIS.QAMarket" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">QUANTAXIS.QAMarket package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#quantaxis-qamarket-broker-calender-module">QUANTAXIS.QAMarket.Broker_Calender module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAMarket.QABacktestBroker">QUANTAXIS.QAMarket.QABacktestBroker module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAMarket.QABroker">QUANTAXIS.QAMarket.QABroker module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAMarket.QADealer">QUANTAXIS.QAMarket.QADealer module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAMarket.QAMarket">QUANTAXIS.QAMarket.QAMarket module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAMarket.QAOrder">QUANTAXIS.QAMarket.QAOrder module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAMarket.QAOrderHandler">QUANTAXIS.QAMarket.QAOrderHandler module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAMarket.QARandomBroker">QUANTAXIS.QAMarket.QARandomBroker module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAMarket.QARealBroker">QUANTAXIS.QAMarket.QARealBroker module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAMarket.QASimulatedBroker">QUANTAXIS.QAMarket.QASimulatedBroker module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAMarket.QATrade">QUANTAXIS.QAMarket.QATrade module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAMarket.shipaneBroker">QUANTAXIS.QAMarket.shipaneBroker module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAMarket.shipaneclient">QUANTAXIS.QAMarket.shipaneclient module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAMarket.tdxRealBroker">QUANTAXIS.QAMarket.tdxRealBroker module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAMarket">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/source/QUANTAXIS.QAMarket.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, yutiansut.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/source/QUANTAXIS.QAMarket.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

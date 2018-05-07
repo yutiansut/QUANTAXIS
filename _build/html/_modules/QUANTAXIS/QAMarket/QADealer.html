@@ -1,0 +1,352 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QUANTAXIS.QAMarket.QADealer &#8212; QUANTAXIS 1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for QUANTAXIS.QAMarket.QADealer</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding :utf-8</span>
+<span class="c1">#</span>
+<span class="c1"># The MIT License (MIT)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2016-2018 yutiansut/QUANTAXIS</span>
+<span class="c1">#</span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1">#</span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+
+<span class="c1">#from .market_config import stock_market,future_market,HK_stock_market,US_stock_market</span>
+
+
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil</span> <span class="k">import</span> <span class="n">QA_util_log_info</span><span class="p">,</span> <span class="n">QA_util_random_with_topic</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QAParameter</span> <span class="k">import</span> <span class="n">MARKET_TYPE</span><span class="p">,</span> <span class="n">TRADE_STATUS</span>
+
+
+<span class="sd">&quot;&quot;&quot;撮合类</span>
+
+
+<span class="sd">输入是</span>
+
+<span class="sd">self.market_data</span>
+<span class="sd">self.order</span>
+<span class="sd">rules</span>
+
+<span class="sd">输出是</span>
+
+<span class="sd">standard message</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="commission"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QADealer.commission">[docs]</a><span class="k">class</span> <span class="nc">commission</span><span class="p">():</span>
+    <span class="n">if_buyside_commission</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">if_sellside_commission</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">if_commission</span> <span class="o">=</span> <span class="n">if_buyside_commission</span> <span class="ow">and</span> <span class="n">if_sellside_commission</span></div>
+
+
+<div class="viewcode-block" id="dealer_preset"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QADealer.dealer_preset">[docs]</a><span class="k">class</span> <span class="nc">dealer_preset</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">market_type</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">market_type</span> <span class="o">=</span> <span class="n">market_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">if_price_limit</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># 是否限制涨跌停(美股/加密货币不限制)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">if_commission</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># 是否收手续费(部分合约/部分加密货币不收手续费)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">if_tax</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># 是否收税</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">if_t0</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># 是否t+0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">if_sellopen</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># 是否允许卖空</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trading_time</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># 交易时间</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">commission_coeff</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># 手续费比例</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tax_coeff</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># 费率</span>
+
+<div class="viewcode-block" id="dealer_preset.load_preset"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QADealer.dealer_preset.load_preset">[docs]</a>    <span class="k">def</span> <span class="nf">load_preset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">market_type</span> <span class="ow">is</span> <span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">STOCK_CN</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">if_price_limit</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># 是否限制涨跌停(美股/加密货币不限制)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">if_commission</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># 是否收手续费(部分合约/部分加密货币不收手续费)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">if_tax</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># 是否收税</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">if_t0</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># 是否t+0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">if_sellopen</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># 是否允许卖空</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trading_time</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">930</span><span class="p">,</span> <span class="mi">1130</span><span class="p">],</span> <span class="p">[</span><span class="mi">1300</span><span class="p">,</span> <span class="mi">1500</span><span class="p">]]</span>  <span class="c1"># 交易时间</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">commission_coeff</span> <span class="o">=</span> <span class="mf">0.00025</span>  <span class="c1"># 手续费比例</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tax_coeff</span> <span class="o">=</span> <span class="mf">0.001</span>  <span class="c1"># 费率</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">market_type</span> <span class="ow">is</span> <span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">FUTURE_CN</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">if_price_limit</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># 是否限制涨跌停(美股/加密货币不限制)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">if_commission</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># 是否收手续费(部分合约/部分加密货币不收手续费)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">if_tax</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># 是否收税</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">if_t0</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># 是否t+0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">if_sellopen</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># 是否允许卖空</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trading_time</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">930</span><span class="p">,</span> <span class="mi">1130</span><span class="p">],</span> <span class="p">[</span><span class="mi">1300</span><span class="p">,</span> <span class="mi">1500</span><span class="p">]]</span>  <span class="c1"># 交易时间</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">commission_coeff</span> <span class="o">=</span> <span class="mf">0.00025</span>  <span class="c1"># 手续费比例</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tax_coeff</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 费率</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">return</span> <span class="bp">self</span></div></div>
+
+
+<div class="viewcode-block" id="QA_Dealer"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QADealer.QA_Dealer">[docs]</a><span class="k">class</span> <span class="nc">QA_Dealer</span><span class="p">():</span>
+
+    <span class="sd">&quot;&quot;&quot;[summary]</span>
+
+
+<span class="sd">    对于不同的市场规则:</span>
+<span class="sd">    股票市场 t+1</span>
+<span class="sd">    期货/期权/加密货币市场 t+0</span>
+
+<span class="sd">    股票/加密货币市场不允许卖空</span>
+<span class="sd">    期货/期权市场允许卖空</span>
+
+<span class="sd">    t+1的市场是</span>
+<span class="sd">    当日的买入 更新持仓- 不更新可卖数量- 资金冻结</span>
+<span class="sd">    当日的卖出 及时更新可用资金</span>
+
+<span class="sd">    t+0市场是:</span>
+<span class="sd">    当日买入 即时更新持仓和可卖</span>
+<span class="sd">    当日卖出 即时更新</span>
+
+<span class="sd">    卖空的规则是</span>
+<span class="sd">    允许无仓位的时候卖出证券(按市值和保证金比例限制算)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">commission_fee_coeff</span><span class="o">=</span><span class="mf">0.00025</span><span class="p">,</span> <span class="n">tax_coeff</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">commission_fee_coeff</span> <span class="o">=</span> <span class="n">commission_fee_coeff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tax_coeff</span> <span class="o">=</span> <span class="n">tax_coeff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deal_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deal_engine</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;0x01&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">backtest_stock_dealer</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">commission_fee</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tax</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="QA_Dealer.deal"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QADealer.QA_Dealer.deal">[docs]</a>    <span class="k">def</span> <span class="nf">deal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">market_data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span> <span class="o">=</span> <span class="n">market_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deal_price</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deal_amount</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">market_type</span> <span class="ow">is</span> <span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">STOCK_CN</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">backtest_stock_dealer</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="QA_Dealer.callback_message"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QADealer.QA_Dealer.callback_message">[docs]</a>    <span class="k">def</span> <span class="nf">callback_message</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># 这是标准的return back message</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;header&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;market&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>
+                <span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">code</span><span class="p">,</span>
+                <span class="s1">&#39;session&#39;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s1">&#39;user&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">user</span><span class="p">,</span>
+                    <span class="s1">&#39;strategy&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">strategy</span><span class="p">,</span>
+                    <span class="s1">&#39;account&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">account_cookie</span>
+                <span class="p">},</span>
+                <span class="s1">&#39;order_id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">order_id</span><span class="p">,</span>
+                <span class="s1">&#39;trade_id&#39;</span><span class="p">:</span> <span class="n">QA_util_random_with_topic</span><span class="p">(</span><span class="s1">&#39;Trade&#39;</span><span class="p">)</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;body&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%.2f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deal_price</span><span class="p">)),</span>
+                    <span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">code</span><span class="p">,</span>
+                    <span class="s1">&#39;amount&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">deal_amount</span><span class="p">,</span>
+                    <span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">date</span><span class="p">,</span>
+                    <span class="s1">&#39;datetime&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span>
+                    <span class="s1">&#39;towards&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">towards</span>
+                <span class="p">},</span>
+                <span class="s1">&#39;market&#39;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s1">&#39;open&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;high&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s1">&#39;high&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;low&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s1">&#39;low&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;close&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s1">&#39;close&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;volume&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s1">&#39;volume&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">]</span>
+                <span class="p">},</span>
+                <span class="s1">&#39;fee&#39;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s1">&#39;commission&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">commission_fee</span><span class="p">,</span>
+                    <span class="s1">&#39;tax&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tax</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">message</span></div>
+
+<div class="viewcode-block" id="QA_Dealer.cal_fee"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QADealer.QA_Dealer.cal_fee">[docs]</a>    <span class="k">def</span> <span class="nf">cal_fee</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">market_type</span> <span class="ow">is</span> <span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">STOCK_CN</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">towards</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">commission_fee</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">commission_fee_coeff</span> <span class="o">*</span> \
+                    <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deal_price</span><span class="p">)</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">amount</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">commission_fee</span> <span class="o">=</span> <span class="mi">5</span> <span class="k">if</span> <span class="n">commission_fee</span> <span class="o">&lt;</span> <span class="mi">5</span> <span class="k">else</span> <span class="n">commission_fee</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">tax</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 买入不收印花税</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">commission_fee</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">commission_fee_coeff</span> <span class="o">*</span> \
+                    <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deal_price</span><span class="p">)</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">amount</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">commission_fee</span> <span class="o">=</span> <span class="mi">5</span> <span class="k">if</span> <span class="n">commission_fee</span> <span class="o">&lt;</span> <span class="mi">5</span> <span class="k">else</span> <span class="n">commission_fee</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">tax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tax_coeff</span> <span class="o">*</span> \
+                    <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deal_price</span><span class="p">)</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">amount</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">market_type</span> <span class="ow">is</span> <span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">FUTURE_CN</span><span class="p">:</span>
+            <span class="c1"># 期货不收税</span>
+            <span class="c1"># 双边手续费 也没有最小手续费限制</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">commission_fee</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">commission_fee_coeff</span> <span class="o">*</span> \
+                <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deal_price</span><span class="p">)</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">amount</span><span class="p">)</span>
+            <span class="c1">#self.commission_fee = 5 if commission_fee &lt; 5 else commission_fee</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">tax</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 买入不收印花税</span></div>
+
+<div class="viewcode-block" id="QA_Dealer.backtest_stock_dealer"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QADealer.QA_Dealer.backtest_stock_dealer">[docs]</a>    <span class="k">def</span> <span class="nf">backtest_stock_dealer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># 新增一个__commission_fee_coeff 手续费系数</span>
+        <span class="sd">&quot;&quot;&quot;MARKET ENGINE STOCK</span>
+
+<span class="sd">        在拿到市场数据后对于订单的撮合判断 生成成交信息</span>
+
+
+<span class="sd">        trading system</span>
+<span class="sd">        step1: check self.market_data</span>
+<span class="sd">        step2: deal</span>
+<span class="sd">        step3: return callback</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s1">&#39;high&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s1">&#39;close&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s1">&#39;low&#39;</span><span class="p">]):</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">TRADE_STATUS</span><span class="o">.</span><span class="n">PRICE_LIMIT</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">deal_price</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">deal_amount</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cal_fee</span><span class="p">()</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback_message</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">price</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s2">&quot;high&quot;</span><span class="p">])</span> <span class="ow">and</span>
+                    <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">price</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s2">&quot;low&quot;</span><span class="p">]))</span> <span class="ow">or</span>
+                    <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">price</span><span class="p">)</span> <span class="o">==</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s2">&quot;low&quot;</span><span class="p">])</span> <span class="ow">or</span>
+                    <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">price</span><span class="p">)</span> <span class="o">==</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s1">&#39;high&#39;</span><span class="p">])):</span>
+                <span class="s1">&#39;能成功交易的情况 有滑点调整&#39;</span>
+                <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">amount</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s1">&#39;volume&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">/</span> <span class="mi">16</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">deal_price</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">price</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">deal_amount</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">amount</span>
+                <span class="k">elif</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">amount</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s1">&#39;volume&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">/</span> <span class="mi">16</span> <span class="ow">and</span> \
+                        <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">amount</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s1">&#39;volume&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">/</span> <span class="mi">8</span><span class="p">:</span>
+                    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                    add some slippers</span>
+
+<span class="sd">                    buy_price=mean(max{open,close},high)</span>
+<span class="sd">                    sell_price=mean(min{open,close},low)</span>
+<span class="sd">                    &quot;&quot;&quot;</span>
+                    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">towards</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">deal_price</span> <span class="o">=</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s1">&#39;close&#39;</span><span class="p">]))</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s1">&#39;high&#39;</span><span class="p">]))</span> <span class="o">*</span> <span class="mf">0.5</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">deal_price</span> <span class="o">=</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s1">&#39;close&#39;</span><span class="p">]))</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s1">&#39;low&#39;</span><span class="p">]))</span> <span class="o">*</span> <span class="mf">0.5</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">deal_amount</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">amount</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">deal_amount</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s1">&#39;volume&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="mi">8</span>
+                    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">towards</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">deal_price</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s1">&#39;high&#39;</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">deal_price</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s1">&#39;low&#39;</span><span class="p">])</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">cal_fee</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">TRADE_STATUS</span><span class="o">.</span><span class="n">SUCCESS</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback_message</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">TRADE_STATUS</span><span class="o">.</span><span class="n">FAILED</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">deal_price</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">deal_amount</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cal_fee</span><span class="p">()</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback_message</span><span class="p">()</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;MARKET ENGINE ERROR: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">TRADE_STATUS</span><span class="o">.</span><span class="n">NO_MARKET_DATA</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback_message</span><span class="p">()</span></div></div>
+
+
+
+<div class="viewcode-block" id="Stock_Dealer"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QADealer.Stock_Dealer">[docs]</a><span class="k">class</span> <span class="nc">Stock_Dealer</span><span class="p">(</span><span class="n">QA_Dealer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">pass</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, yutiansut.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

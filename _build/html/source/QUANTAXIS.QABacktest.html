@@ -1,0 +1,340 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QUANTAXIS.QABacktest package &#8212; QUANTAXIS 1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="quantaxis-qabacktest-package">
+<h1>QUANTAXIS.QABacktest package<a class="headerlink" href="#quantaxis-qabacktest-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-QUANTAXIS.QABacktest.QAAnalysis">
+<span id="quantaxis-qabacktest-qaanalysis-module"></span><h2>QUANTAXIS.QABacktest.QAAnalysis module<a class="headerlink" href="#module-QUANTAXIS.QABacktest.QAAnalysis" title="Permalink to this headline">¶</a></h2>
+<p>Analysis Center for Backtest
+we will give some function</p>
+<dl class="function">
+<dt id="QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_analysis_backtest">
+<code class="descclassname">QUANTAXIS.QABacktest.QAAnalysis.</code><code class="descname">QA_backtest_analysis_backtest</code><span class="sig-paren">(</span><em>client</em>, <em>code_list</em>, <em>assets_d</em>, <em>account_days</em>, <em>message</em>, <em>total_date</em>, <em>benchmark_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QAAnalysis.html#QA_backtest_analysis_backtest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_analysis_backtest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Annualized Returns: 策略年化收益率。表示投资期限为一年的预期收益率。
+具体计算方式为 (策略最终价值 / 策略初始价值)^(250 / 回测交易日数量) - 1</p>
+<p>Alpha：阿尔法
+具体计算方式为 (策略年化收益 - 无风险收益) - beta × (参考标准年化收益 - 无风险收益)，这里的无风险收益指的是中国固定利率国债收益率曲线上10年期国债的年化到期收益率。</p>
+<p>Beta：贝塔
+具体计算方法为 策略每日收益与参考标准每日收益的协方差 / 参考标准每日收益的方差 。</p>
+<p>Sharpe Ratio：夏普比率。表示每承受一单位总风险，会产生多少的超额报酬。
+具体计算方法为 (策略年化收益率 - 回测起始交易日的无风险利率) / 策略收益波动率 。</p>
+<p>Volatility：策略收益波动率。用来测量资产的风险性。
+具体计算方法为 策略每日收益的年化标准差 。</p>
+<p>Information Ratio：信息比率。衡量超额风险带来的超额收益。
+具体计算方法为 (策略每日收益 - 参考标准每日收益)的年化均值 / 年化标准差 。</p>
+<p>Max Drawdown：最大回撤。描述策略可能出现的最糟糕的情况。
+具体计算方法为 max(1 - 策略当日价值 / 当日之前虚拟账户最高价值)</p>
+<p>单次交易收益
+收益/次数的频次直方图
+单日最大持仓</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_alpha">
+<code class="descclassname">QUANTAXIS.QABacktest.QAAnalysis.</code><code class="descname">QA_backtest_calc_alpha</code><span class="sig-paren">(</span><em>annualized_returns</em>, <em>benchmark_annualized_returns</em>, <em>beta</em>, <em>r</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QAAnalysis.html#QA_backtest_calc_alpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_alpha" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_assets">
+<code class="descclassname">QUANTAXIS.QABacktest.QAAnalysis.</code><code class="descname">QA_backtest_calc_assets</code><span class="sig-paren">(</span><em>trade_history</em>, <em>assets</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QAAnalysis.html#QA_backtest_calc_assets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_assets" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_benchmark">
+<code class="descclassname">QUANTAXIS.QABacktest.QAAnalysis.</code><code class="descname">QA_backtest_calc_benchmark</code><span class="sig-paren">(</span><em>benchmark_data</em>, <em>init_assets</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QAAnalysis.html#QA_backtest_calc_benchmark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_benchmark" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_beta">
+<code class="descclassname">QUANTAXIS.QABacktest.QAAnalysis.</code><code class="descname">QA_backtest_calc_beta</code><span class="sig-paren">(</span><em>assest_profit</em>, <em>benchmark_profit</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QAAnalysis.html#QA_backtest_calc_beta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_beta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_dropback_max">
+<code class="descclassname">QUANTAXIS.QABacktest.QAAnalysis.</code><code class="descname">QA_backtest_calc_dropback_max</code><span class="sig-paren">(</span><em>history</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QAAnalysis.html#QA_backtest_calc_dropback_max"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_dropback_max" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_profit">
+<code class="descclassname">QUANTAXIS.QABacktest.QAAnalysis.</code><code class="descname">QA_backtest_calc_profit</code><span class="sig-paren">(</span><em>assest_history</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QAAnalysis.html#QA_backtest_calc_profit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_profit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_profit_matrix">
+<code class="descclassname">QUANTAXIS.QABacktest.QAAnalysis.</code><code class="descname">QA_backtest_calc_profit_matrix</code><span class="sig-paren">(</span><em>assest_history</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QAAnalysis.html#QA_backtest_calc_profit_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_profit_matrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_profit_per_year">
+<code class="descclassname">QUANTAXIS.QABacktest.QAAnalysis.</code><code class="descname">QA_backtest_calc_profit_per_year</code><span class="sig-paren">(</span><em>assest_history</em>, <em>days</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QAAnalysis.html#QA_backtest_calc_profit_per_year"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_profit_per_year" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_sharpe">
+<code class="descclassname">QUANTAXIS.QABacktest.QAAnalysis.</code><code class="descname">QA_backtest_calc_sharpe</code><span class="sig-paren">(</span><em>annualized_returns</em>, <em>r</em>, <em>volatility_year</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QAAnalysis.html#QA_backtest_calc_sharpe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_sharpe" title="Permalink to this definition">¶</a></dt>
+<dd><p>计算夏普比率</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_trade_date">
+<code class="descclassname">QUANTAXIS.QABacktest.QAAnalysis.</code><code class="descname">QA_backtest_calc_trade_date</code><span class="sig-paren">(</span><em>history</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QAAnalysis.html#QA_backtest_calc_trade_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_trade_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>计算交易日期</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_volatility">
+<code class="descclassname">QUANTAXIS.QABacktest.QAAnalysis.</code><code class="descname">QA_backtest_calc_volatility</code><span class="sig-paren">(</span><em>assest_profit_matrix</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QAAnalysis.html#QA_backtest_calc_volatility"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_volatility" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_win_rate">
+<code class="descclassname">QUANTAXIS.QABacktest.QAAnalysis.</code><code class="descname">QA_backtest_calc_win_rate</code><span class="sig-paren">(</span><em>profit_day</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QAAnalysis.html#QA_backtest_calc_win_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QAAnalysis.QA_backtest_calc_win_rate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="QUANTAXIS.QABacktest.QAAnalysis.calc_every_pnl">
+<code class="descclassname">QUANTAXIS.QABacktest.QAAnalysis.</code><code class="descname">calc_every_pnl</code><span class="sig-paren">(</span><em>detail</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QAAnalysis.html#calc_every_pnl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QAAnalysis.calc_every_pnl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="QUANTAXIS.QABacktest.QAAnalysis.calc_trade_time">
+<code class="descclassname">QUANTAXIS.QABacktest.QAAnalysis.</code><code class="descname">calc_trade_time</code><span class="sig-paren">(</span><em>history</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QAAnalysis.html#calc_trade_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QAAnalysis.calc_trade_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QABacktest.QABacktest">
+<span id="quantaxis-qabacktest-qabacktest-module"></span><h2>QUANTAXIS.QABacktest.QABacktest module<a class="headerlink" href="#module-QUANTAXIS.QABacktest.QABacktest" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="QUANTAXIS.QABacktest.QABacktest.BACKTEST_FRAMEWORK">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QABacktest.QABacktest.</code><code class="descname">BACKTEST_FRAMEWORK</code><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QABacktest.html#BACKTEST_FRAMEWORK"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QABacktest.BACKTEST_FRAMEWORK" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QABacktest.QABacktest.QA_Backtest">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QABacktest.QABacktest.</code><code class="descname">QA_Backtest</code><span class="sig-paren">(</span><em>market_type</em>, <em>frequence</em>, <em>start</em>, <em>end</em>, <em>code_list</em>, <em>commission_fee</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QABacktest.html#QA_Backtest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QABacktest.QA_Backtest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>BACKTEST</p>
+<p>BACKTEST的主要目的:</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>引入时间轴环境,获取全部的数据,然后按生成器将数据迭代插入回测的BROKER</dt>
+<dd>(这一个过程是模拟在真实情况中市场的时间变化和价格变化)</dd>
+</dl>
+</li>
+<li>BROKER有了新数据以后 会通知MARKET交易前置,MARKET告知已经注册的所有的ACCOUNT 有新的市场数据</li>
+<li>ACCOUNT 获取了新的市场函数,并将其插入他已有的数据中(update)</li>
+<li>ACCOUNT 底下注册的策略STRATEGY根据新的市场函数,产生新的买卖判断,综合生成信号</li>
+<li>买卖判断通过交易前置发送给对应的BROKER,进行交易</li>
+<li>BROKER发送SETTLE指令 结束这一个bar的所有交易,进行清算</li>
+<li>账户也进行清算,更新持仓,可卖,可用现金等</li>
+<li>迭代循环直至结束回测</li>
+<li>回测去计算这段时间的各个账户收益,并给出综合的最终结果</li>
+</ul>
+<dl class="method">
+<dt id="QUANTAXIS.QABacktest.QABacktest.QA_Backtest.after_success">
+<code class="descname">after_success</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QABacktest.html#QA_Backtest.after_success"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QABacktest.QA_Backtest.after_success" title="Permalink to this definition">¶</a></dt>
+<dd><p>called when all trading fininshed, for performance analysis</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QABacktest.QABacktest.QA_Backtest.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QABacktest.html#QA_Backtest.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QABacktest.QA_Backtest.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>generator driven data flow</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QABacktest.QABacktest.QA_Backtest.start_market">
+<code class="descname">start_market</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QABacktest.html#QA_Backtest.start_market"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QABacktest.QA_Backtest.start_market" title="Permalink to this definition">¶</a></dt>
+<dd><p>start the market thread and register backtest broker thread</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QABacktest.QABacktest.QA_Backtest.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QABacktest.html#QA_Backtest.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QABacktest.QA_Backtest.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>stop all the market trade enging threads and all subthreads</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QABacktest.QAResult">
+<span id="quantaxis-qabacktest-qaresult-module"></span><h2>QUANTAXIS.QABacktest.QAResult module<a class="headerlink" href="#module-QUANTAXIS.QABacktest.QAResult" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="QUANTAXIS.QABacktest.QAResult.backtest_result_analyzer">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QABacktest.QAResult.</code><code class="descname">backtest_result_analyzer</code><span class="sig-paren">(</span><em>cookie_id</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QAResult.html#backtest_result_analyzer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QAResult.backtest_result_analyzer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="attribute">
+<dt id="QUANTAXIS.QABacktest.QAResult.backtest_result_analyzer.codes">
+<code class="descname">codes</code><a class="headerlink" href="#QUANTAXIS.QABacktest.QAResult.backtest_result_analyzer.codes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QABacktest.QAResult.backtest_result_analyzer.detail">
+<code class="descname">detail</code><a class="headerlink" href="#QUANTAXIS.QABacktest.QAResult.backtest_result_analyzer.detail" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QABacktest.QAResult.backtest_result_analyzer.get_loss_trade">
+<code class="descname">get_loss_trade</code><span class="sig-paren">(</span><em>num=5</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QAResult.html#backtest_result_analyzer.get_loss_trade"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QAResult.backtest_result_analyzer.get_loss_trade" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QABacktest.QAResult.backtest_result_analyzer.get_profit_trade">
+<code class="descname">get_profit_trade</code><span class="sig-paren">(</span><em>num=5</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QAResult.html#backtest_result_analyzer.get_profit_trade"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QAResult.backtest_result_analyzer.get_profit_trade" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QABacktest.QAResult.backtest_result_analyzer.get_stock_tradedetail">
+<code class="descname">get_stock_tradedetail</code><span class="sig-paren">(</span><em>code</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QAResult.html#backtest_result_analyzer.get_stock_tradedetail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QAResult.backtest_result_analyzer.get_stock_tradedetail" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QABacktest.QAResult.backtest_result_analyzer.get_stock_tradehistory">
+<code class="descname">get_stock_tradehistory</code><span class="sig-paren">(</span><em>code</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QAResult.html#backtest_result_analyzer.get_stock_tradehistory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QAResult.backtest_result_analyzer.get_stock_tradehistory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QABacktest.QAResult.backtest_result_analyzer.get_trade_before_and_after_pnl">
+<code class="descname">get_trade_before_and_after_pnl</code><span class="sig-paren">(</span><em>rx</em>, <em>N=3</em>, <em>M=10</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QAResult.html#backtest_result_analyzer.get_trade_before_and_after_pnl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QAResult.backtest_result_analyzer.get_trade_before_and_after_pnl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QABacktest.QAResult.backtest_result_analyzer.get_trade_marketdata">
+<code class="descname">get_trade_marketdata</code><span class="sig-paren">(</span><em>rx</em>, <em>gap=3</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/QAResult.html#backtest_result_analyzer.get_trade_marketdata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.QAResult.backtest_result_analyzer.get_trade_marketdata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QABacktest.QAResult.backtest_result_analyzer.history">
+<code class="descname">history</code><a class="headerlink" href="#QUANTAXIS.QABacktest.QAResult.backtest_result_analyzer.history" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QABacktest.backtest_setting">
+<span id="quantaxis-qabacktest-backtest-setting-module"></span><h2>QUANTAXIS.QABacktest.backtest_setting module<a class="headerlink" href="#module-QUANTAXIS.QABacktest.backtest_setting" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="QUANTAXIS.QABacktest.backtest_setting.backtest_setting">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QABacktest.backtest_setting.</code><code class="descname">backtest_setting</code><span class="sig-paren">(</span><em>topic</em>, <em>version</em>, <em>backtest_name</em>, <em>sql_setting</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QABacktest/backtest_setting.html#backtest_setting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QABacktest.backtest_setting.backtest_setting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="attribute">
+<dt id="QUANTAXIS.QABacktest.backtest_setting.backtest_setting.absoult_path">
+<code class="descname">absoult_path</code><a class="headerlink" href="#QUANTAXIS.QABacktest.backtest_setting.backtest_setting.absoult_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QABacktest.backtest_setting.backtest_setting.database_uri">
+<code class="descname">database_uri</code><a class="headerlink" href="#QUANTAXIS.QABacktest.backtest_setting.backtest_setting.database_uri" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QABacktest.backtest_setting.backtest_setting.dirs">
+<code class="descname">dirs</code><a class="headerlink" href="#QUANTAXIS.QABacktest.backtest_setting.backtest_setting.dirs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QABacktest">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-QUANTAXIS.QABacktest" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">QUANTAXIS.QABacktest package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QABacktest.QAAnalysis">QUANTAXIS.QABacktest.QAAnalysis module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QABacktest.QABacktest">QUANTAXIS.QABacktest.QABacktest module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QABacktest.QAResult">QUANTAXIS.QABacktest.QAResult module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QABacktest.backtest_setting">QUANTAXIS.QABacktest.backtest_setting module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QABacktest">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/source/QUANTAXIS.QABacktest.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, yutiansut.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/source/QUANTAXIS.QABacktest.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

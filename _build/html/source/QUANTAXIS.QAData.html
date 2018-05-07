@@ -1,0 +1,1096 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QUANTAXIS.QAData package &#8212; QUANTAXIS 1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="quantaxis-qadata-package">
+<h1>QUANTAXIS.QAData package<a class="headerlink" href="#quantaxis-qadata-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="QUANTAXIS.QAData.proto.html">QUANTAXIS.QAData.proto package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="QUANTAXIS.QAData.proto.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="QUANTAXIS.QAData.proto.html#module-QUANTAXIS.QAData.proto.order_pb2">QUANTAXIS.QAData.proto.order_pb2 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="QUANTAXIS.QAData.proto.html#module-QUANTAXIS.QAData.proto.stock_day_pb2">QUANTAXIS.QAData.proto.stock_day_pb2 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="QUANTAXIS.QAData.proto.html#module-QUANTAXIS.QAData.proto.stock_min_pb2">QUANTAXIS.QAData.proto.stock_min_pb2 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="QUANTAXIS.QAData.proto.html#module-QUANTAXIS.QAData.proto">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-QUANTAXIS.QAData.QADataStruct">
+<span id="quantaxis-qadata-qadatastruct-module"></span><h2>QUANTAXIS.QAData.QADataStruct module<a class="headerlink" href="#module-QUANTAXIS.QAData.QADataStruct" title="Permalink to this headline">¶</a></h2>
+<p>定义一些可以扩展的数据结构</p>
+<p>方便序列化/相互转换</p>
+<dl class="class">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Future_day">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAData.QADataStruct.</code><code class="descname">QA_DataStruct_Future_day</code><span class="sig-paren">(</span><em>DataFrame</em>, <em>dtype='future_day'</em>, <em>if_fq=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Future_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Future_day" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QUANTAXIS.QAData.base_datastruct._quotation_base</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Future_min">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAData.QADataStruct.</code><code class="descname">QA_DataStruct_Future_min</code><span class="sig-paren">(</span><em>DataFrame</em>, <em>dtype='future_min'</em>, <em>if_fq=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Future_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Future_min" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QUANTAXIS.QAData.base_datastruct._quotation_base</span></code></p>
+<p>struct for future</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Index_day">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAData.QADataStruct.</code><code class="descname">QA_DataStruct_Index_day</code><span class="sig-paren">(</span><em>DataFrame</em>, <em>dtype='index_day'</em>, <em>if_fq=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Index_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Index_day" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QUANTAXIS.QAData.base_datastruct._quotation_base</span></code></p>
+<p>自定义的日线数据结构</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Index_min">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAData.QADataStruct.</code><code class="descname">QA_DataStruct_Index_min</code><span class="sig-paren">(</span><em>DataFrame</em>, <em>dtype='index_min'</em>, <em>if_fq=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Index_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Index_min" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QUANTAXIS.QAData.base_datastruct._quotation_base</span></code></p>
+<p>自定义的分钟线数据结构</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Security_list">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAData.QADataStruct.</code><code class="descname">QA_DataStruct_Security_list</code><span class="sig-paren">(</span><em>DataFrame</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Security_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Security_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Security_list.code">
+<code class="descname">code</code><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Security_list.code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Security_list.get_etf">
+<code class="descname">get_etf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Security_list.get_etf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Security_list.get_etf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Security_list.get_index">
+<code class="descname">get_index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Security_list.get_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Security_list.get_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Security_list.get_stock">
+<code class="descname">get_stock</code><span class="sig-paren">(</span><em>ST_option</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Security_list.get_stock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Security_list.get_stock" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Security_list.name">
+<code class="descname">name</code><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Security_list.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_block">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAData.QADataStruct.</code><code class="descname">QA_DataStruct_Stock_block</code><span class="sig-paren">(</span><em>DataFrame</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Stock_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_block" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_block.block_name">
+<code class="descname">block_name</code><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_block.block_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>返回所有的板块名</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>[type] -- [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_block.code">
+<code class="descname">code</code><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_block.code" title="Permalink to this definition">¶</a></dt>
+<dd><p>返回唯一的证券代码</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>[type] -- [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_block.get_block">
+<code class="descname">get_block</code><span class="sig-paren">(</span><em>_block_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Stock_block.get_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_block.get_block" title="Permalink to this definition">¶</a></dt>
+<dd><p>getblock 获取板块</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>_block_name {[type]} -- [description]</dd>
+<dt>Returns:</dt>
+<dd>[type] -- [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_block.get_code">
+<code class="descname">get_code</code><span class="sig-paren">(</span><em>code</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Stock_block.get_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_block.get_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>getcode 获取某一只股票的板块</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>code {str} -- 股票代码</dd>
+<dt>Returns:</dt>
+<dd>DataStruct -- [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_block.get_price">
+<code class="descname">get_price</code><span class="sig-paren">(</span><em>_block_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Stock_block.get_price"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_block.get_price" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Keyword Arguments:</dt>
+<dd>_block_name {[type]} -- [description] (default: {None})</dd>
+<dt>Returns:</dt>
+<dd>[type] -- [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_block.getdtype">
+<code class="descname">getdtype</code><span class="sig-paren">(</span><em>dtype</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Stock_block.getdtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_block.getdtype" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Arguments:</dt>
+<dd>dtype {str} -- gn-概念/dy-地域/fg-风格/zs-指数</dd>
+<dt>Returns:</dt>
+<dd>[type] -- [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_block.len">
+<code class="descname">len</code><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_block.len" title="Permalink to this definition">¶</a></dt>
+<dd><p>返回DataStruct的长度</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>[type] -- [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_block.show">
+<code class="descname">show</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Stock_block.show"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_block.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>展示DataStruct</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>dataframe -- [description]</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAData.QADataStruct.</code><code class="descname">QA_DataStruct_Stock_day</code><span class="sig-paren">(</span><em>DataFrame</em>, <em>dtype='stock_day'</em>, <em>if_fq='bfq'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Stock_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QUANTAXIS.QAData.base_datastruct._quotation_base</span></code></p>
+<p>this is a datastruct for stock_day</p>
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day.high_limit">
+<code class="descname">high_limit</code><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day.high_limit" title="Permalink to this definition">¶</a></dt>
+<dd><p>涨停价</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day.low_limit">
+<code class="descname">low_limit</code><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day.low_limit" title="Permalink to this definition">¶</a></dt>
+<dd><p>跌停价</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day.next_day_high_limit">
+<code class="descname">next_day_high_limit</code><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day.next_day_high_limit" title="Permalink to this definition">¶</a></dt>
+<dd><p>明日涨停价</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day.next_day_low_limit">
+<code class="descname">next_day_low_limit</code><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day.next_day_low_limit" title="Permalink to this definition">¶</a></dt>
+<dd><p>明日跌停价</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day.preclose">
+<code class="descname">preclose</code><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day.preclose" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day.price_chg">
+<code class="descname">price_chg</code><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day.price_chg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day.to_hfq">
+<code class="descname">to_hfq</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Stock_day.to_hfq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day.to_hfq" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day.to_qfq">
+<code class="descname">to_qfq</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Stock_day.to_qfq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day.to_qfq" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_min">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAData.QADataStruct.</code><code class="descname">QA_DataStruct_Stock_min</code><span class="sig-paren">(</span><em>DataFrame</em>, <em>dtype='stock_min'</em>, <em>if_fq='bfq'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Stock_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_min" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QUANTAXIS.QAData.base_datastruct._quotation_base</span></code></p>
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_min.high_limit">
+<code class="descname">high_limit</code><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_min.high_limit" title="Permalink to this definition">¶</a></dt>
+<dd><p>涨停价</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_min.low_limit">
+<code class="descname">low_limit</code><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_min.low_limit" title="Permalink to this definition">¶</a></dt>
+<dd><p>跌停价</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_min.to_hfq">
+<code class="descname">to_hfq</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Stock_min.to_hfq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_min.to_hfq" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_min.to_qfq">
+<code class="descname">to_qfq</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Stock_min.to_qfq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_min.to_qfq" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_realtime">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAData.QADataStruct.</code><code class="descname">QA_DataStruct_Stock_realtime</code><span class="sig-paren">(</span><em>market_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Stock_realtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_realtime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QUANTAXIS.QAData.QADataStruct._realtime_base</span></code></p>
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_realtime.ab_board">
+<code class="descname">ab_board</code><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_realtime.ab_board" title="Permalink to this definition">¶</a></dt>
+<dd><p>ask_bid board
+bid3 bid_vol3
+bid2 bid_vol2
+bid1 bid_vol1
+===============
+price /cur_vol
+===============
+ask1 ask_vol1
+ask2 ask_vol2
+ask3 ask_vol3</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_realtime.serialize">
+<code class="descname">serialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Stock_realtime.serialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_realtime.serialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>to_protobuf</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_realtime_series">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAData.QADataStruct.</code><code class="descname">QA_DataStruct_Stock_realtime_series</code><span class="sig-paren">(</span><em>sr_series</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Stock_realtime_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_realtime_series" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAData.QADataStruct.</code><code class="descname">QA_DataStruct_Stock_transaction</code><span class="sig-paren">(</span><em>DataFrame</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Stock_transaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.amount">
+<code class="descname">amount</code><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.amount" title="Permalink to this definition">¶</a></dt>
+<dd><p>return current tick trading amount</p>
+<dl class="docutils">
+<dt>Decorators:</dt>
+<dd>lru_cache</dd>
+<dt>Returns:</dt>
+<dd>[type] -- [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.buyorsell">
+<code class="descname">buyorsell</code><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.buyorsell" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the buy or sell towards 0--buy 1--sell 2--none</p>
+<dl class="docutils">
+<dt>Decorators:</dt>
+<dd>lru_cache</dd>
+<dt>Returns:</dt>
+<dd>[pd.Series] -- [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.date">
+<code class="descname">date</code><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.date" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the date of transaction</p>
+<dl class="docutils">
+<dt>Decorators:</dt>
+<dd>lru_cache</dd>
+<dt>Returns:</dt>
+<dd>pd.Series -- date of transaction</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.datetime">
+<code class="descname">datetime</code><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.datetime" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the datetime of transaction</p>
+<dl class="docutils">
+<dt>Decorators:</dt>
+<dd>lru_cache</dd>
+<dt>Returns:</dt>
+<dd>pd.Series -- [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.get_big_orders">
+<code class="descname">get_big_orders</code><span class="sig-paren">(</span><em>bigamount=1000000</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Stock_transaction.get_big_orders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.get_big_orders" title="Permalink to this definition">¶</a></dt>
+<dd><p>return big order</p>
+<dl class="docutils">
+<dt>Keyword Arguments:</dt>
+<dd>bigamount {[type]} -- [description] (default: {1000000})</dd>
+<dt>Returns:</dt>
+<dd>[type] -- [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.get_medium_order">
+<code class="descname">get_medium_order</code><span class="sig-paren">(</span><em>lower=200000</em>, <em>higher=1000000</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Stock_transaction.get_medium_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.get_medium_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>return medium</p>
+<dl class="docutils">
+<dt>Keyword Arguments:</dt>
+<dd>lower {[type]} -- [description] (default: {200000})
+higher {[type]} -- [description] (default: {1000000})</dd>
+<dt>Returns:</dt>
+<dd>[type] -- [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.get_small_order">
+<code class="descname">get_small_order</code><span class="sig-paren">(</span><em>smallamount=200000</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Stock_transaction.get_small_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.get_small_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>return small level order</p>
+<dl class="docutils">
+<dt>Keyword Arguments:</dt>
+<dd>smallamount {[type]} -- [description] (default: {200000})</dd>
+<dt>Returns:</dt>
+<dd>[type] -- [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.get_time">
+<code class="descname">get_time</code><span class="sig-paren">(</span><em>start</em>, <em>end=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Stock_transaction.get_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.get_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.index">
+<code class="descname">index</code><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the transaction index</p>
+<dl class="docutils">
+<dt>Decorators:</dt>
+<dd>lru_cache</dd>
+<dt>Returns:</dt>
+<dd>[type] -- [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.order">
+<code class="descname">order</code><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.order" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the order num of transaction/ for everyday change</p>
+<dl class="docutils">
+<dt>Decorators:</dt>
+<dd>lru_cache</dd>
+<dt>Returns:</dt>
+<dd>pd.series -- [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.price">
+<code class="descname">price</code><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.price" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the deal price of tick transaction</p>
+<dl class="docutils">
+<dt>Decorators:</dt>
+<dd>lru_cache</dd>
+<dt>Returns:</dt>
+<dd>[type] -- [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.resample">
+<code class="descname">resample</code><span class="sig-paren">(</span><em>type_='1min'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/QADataStruct.html#QA_DataStruct_Stock_transaction.resample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.resample" title="Permalink to this definition">¶</a></dt>
+<dd><p>resample methods</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>[type] -- [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.time">
+<code class="descname">time</code><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.time" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the exact time of transaction(to minute level)</p>
+<dl class="docutils">
+<dt>Decorators:</dt>
+<dd>lru_cache</dd>
+<dt>Returns:</dt>
+<dd>pd.Series -- till minute level</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.vol">
+<code class="descname">vol</code><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.vol" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the deal volume of tick</p>
+<dl class="docutils">
+<dt>Decorators:</dt>
+<dd>lru_cache</dd>
+<dt>Returns:</dt>
+<dd>pd.Series -- volume of transaction</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.volume">
+<code class="descname">volume</code><a class="headerlink" href="#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_transaction.volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the deal volume of tick</p>
+<dl class="docutils">
+<dt>Decorators:</dt>
+<dd>lru_cache</dd>
+<dt>Returns:</dt>
+<dd>pd.Series -- volume of transaction</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QAData.base_datastruct">
+<span id="quantaxis-qadata-base-datastruct-module"></span><h2>QUANTAXIS.QAData.base_datastruct module<a class="headerlink" href="#module-QUANTAXIS.QAData.base_datastruct" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-QUANTAXIS.QAData.data_fq">
+<span id="quantaxis-qadata-data-fq-module"></span><h2>QUANTAXIS.QAData.data_fq module<a class="headerlink" href="#module-QUANTAXIS.QAData.data_fq" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="QUANTAXIS.QAData.data_fq.QA_data_get_hfq">
+<code class="descclassname">QUANTAXIS.QAData.data_fq.</code><code class="descname">QA_data_get_hfq</code><span class="sig-paren">(</span><em>code</em>, <em>start</em>, <em>end</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/data_fq.html#QA_data_get_hfq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.data_fq.QA_data_get_hfq" title="Permalink to this definition">¶</a></dt>
+<dd><p>使用网络数据进行复权/需要联网</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="QUANTAXIS.QAData.data_fq.QA_data_get_qfq">
+<code class="descclassname">QUANTAXIS.QAData.data_fq.</code><code class="descname">QA_data_get_qfq</code><span class="sig-paren">(</span><em>code</em>, <em>start</em>, <em>end</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/data_fq.html#QA_data_get_qfq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.data_fq.QA_data_get_qfq" title="Permalink to this definition">¶</a></dt>
+<dd><p>使用网络数据进行复权/需要联网</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="QUANTAXIS.QAData.data_fq.QA_data_make_hfq">
+<code class="descclassname">QUANTAXIS.QAData.data_fq.</code><code class="descname">QA_data_make_hfq</code><span class="sig-paren">(</span><em>bfq_data</em>, <em>xdxr_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/data_fq.html#QA_data_make_hfq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.data_fq.QA_data_make_hfq" title="Permalink to this definition">¶</a></dt>
+<dd><p>使用数据库数据进行复权</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="QUANTAXIS.QAData.data_fq.QA_data_make_qfq">
+<code class="descclassname">QUANTAXIS.QAData.data_fq.</code><code class="descname">QA_data_make_qfq</code><span class="sig-paren">(</span><em>bfq_data</em>, <em>xdxr_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/data_fq.html#QA_data_make_qfq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.data_fq.QA_data_make_qfq" title="Permalink to this definition">¶</a></dt>
+<dd><p>使用数据库数据进行复权</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="QUANTAXIS.QAData.data_fq.QA_data_stock_to_fq">
+<code class="descclassname">QUANTAXIS.QAData.data_fq.</code><code class="descname">QA_data_stock_to_fq</code><span class="sig-paren">(</span><em>__data</em>, <em>type_='01'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/data_fq.html#QA_data_stock_to_fq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.data_fq.QA_data_stock_to_fq" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QAData.data_resample">
+<span id="quantaxis-qadata-data-resample-module"></span><h2>QUANTAXIS.QAData.data_resample module<a class="headerlink" href="#module-QUANTAXIS.QAData.data_resample" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="QUANTAXIS.QAData.data_resample.QA_data_tick_resample">
+<code class="descclassname">QUANTAXIS.QAData.data_resample.</code><code class="descname">QA_data_tick_resample</code><span class="sig-paren">(</span><em>tick</em>, <em>type_='1min'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/data_resample.html#QA_data_tick_resample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.data_resample.QA_data_tick_resample" title="Permalink to this definition">¶</a></dt>
+<dd><p>tick采样成任意级别分钟线</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>tick {[type]} -- transaction</dd>
+<dt>Returns:</dt>
+<dd>[type] -- [description]</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QAData.dsmethods">
+<span id="quantaxis-qadata-dsmethods-module"></span><h2>QUANTAXIS.QAData.dsmethods module<a class="headerlink" href="#module-QUANTAXIS.QAData.dsmethods" title="Permalink to this headline">¶</a></h2>
+<p>DataStruct的方法</p>
+<dl class="function">
+<dt id="QUANTAXIS.QAData.dsmethods.concat">
+<code class="descclassname">QUANTAXIS.QAData.dsmethods.</code><code class="descname">concat</code><span class="sig-paren">(</span><em>lists</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/dsmethods.html#concat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.dsmethods.concat" title="Permalink to this definition">¶</a></dt>
+<dd><p>类似于pd.concat 用于合并一个list里面的多个DataStruct,会自动去重</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>lists {[type]} -- [DataStruct1,DataStruct2,....,DataStructN]</dd>
+<dt>Returns:</dt>
+<dd>[type] -- new DataStruct</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="QUANTAXIS.QAData.dsmethods.from_tushare">
+<code class="descclassname">QUANTAXIS.QAData.dsmethods.</code><code class="descname">from_tushare</code><span class="sig-paren">(</span><em>dataframe</em>, <em>dtype='day'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/dsmethods.html#from_tushare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.dsmethods.from_tushare" title="Permalink to this definition">¶</a></dt>
+<dd><p>dataframe from tushare</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>dataframe {[type]} -- [description]</dd>
+<dt>Returns:</dt>
+<dd>[type] -- [description]</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="quantaxis-qadata-fundamental-module">
+<h2>QUANTAXIS.QAData.fundamental module<a class="headerlink" href="#quantaxis-qadata-fundamental-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-QUANTAXIS.QAData.realtimedata">
+<span id="quantaxis-qadata-realtimedata-module"></span><h2>QUANTAXIS.QAData.realtimedata module<a class="headerlink" href="#module-QUANTAXIS.QAData.realtimedata" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-QUANTAXIS.QAData.schema">
+<span id="quantaxis-qadata-schema-module"></span><h2>QUANTAXIS.QAData.schema module<a class="headerlink" href="#module-QUANTAXIS.QAData.schema" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="QUANTAXIS.QAData.schema.Shares">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAData.schema.</code><code class="descname">Shares</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/schema.html#Shares"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.schema.Shares" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.Shares.circulation">
+<code class="descname">circulation</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.Shares.circulation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.Shares.effective_date">
+<code class="descname">effective_date</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.Shares.effective_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.Shares.shares">
+<code class="descname">shares</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.Shares.shares" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.Shares.sid">
+<code class="descname">sid</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.Shares.sid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QAData.schema.full">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAData.schema.</code><code class="descname">full</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/schema.html#full"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.schema.full" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.adratio">
+<code class="descname">adratio</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.adratio" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.arturndays">
+<code class="descname">arturndays</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.arturndays" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.arturnover">
+<code class="descname">arturnover</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.arturnover" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.bips">
+<code class="descname">bips</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.bips" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.business_income">
+<code class="descname">business_income</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.business_income" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.bvps">
+<code class="descname">bvps</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.bvps" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.cashflowratio">
+<code class="descname">cashflowratio</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.cashflowratio" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.cashratio">
+<code class="descname">cashratio</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.cashratio" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.cf_liabilities">
+<code class="descname">cf_liabilities</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.cf_liabilities" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.cf_nm">
+<code class="descname">cf_nm</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.cf_nm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.cf_sales">
+<code class="descname">cf_sales</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.cf_sales" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.code">
+<code class="descname">code</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.currentasset_days">
+<code class="descname">currentasset_days</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.currentasset_days" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.currentasset_turnover">
+<code class="descname">currentasset_turnover</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.currentasset_turnover" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.currentratio">
+<code class="descname">currentratio</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.currentratio" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.distrib">
+<code class="descname">distrib</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.distrib" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.epcf">
+<code class="descname">epcf</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.epcf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.eps">
+<code class="descname">eps</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.eps" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.eps_yoy">
+<code class="descname">eps_yoy</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.eps_yoy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.epsg">
+<code class="descname">epsg</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.epsg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.gross_profit_rate">
+<code class="descname">gross_profit_rate</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.gross_profit_rate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.icratio">
+<code class="descname">icratio</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.icratio" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.inventory_days">
+<code class="descname">inventory_days</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.inventory_days" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.inventory_turnover">
+<code class="descname">inventory_turnover</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.inventory_turnover" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.mbrg">
+<code class="descname">mbrg</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.mbrg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.name">
+<code class="descname">name</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.nav">
+<code class="descname">nav</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.nav" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.net_profit_ratio">
+<code class="descname">net_profit_ratio</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.net_profit_ratio" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.net_profits">
+<code class="descname">net_profits</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.net_profits" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.nprg">
+<code class="descname">nprg</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.nprg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.profits_yoy">
+<code class="descname">profits_yoy</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.profits_yoy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.quarter">
+<code class="descname">quarter</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.quarter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.quickratio">
+<code class="descname">quickratio</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.quickratio" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.rateofreturn">
+<code class="descname">rateofreturn</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.rateofreturn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.report_date">
+<code class="descname">report_date</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.report_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.roe">
+<code class="descname">roe</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.roe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.seg">
+<code class="descname">seg</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.seg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.sheqratio">
+<code class="descname">sheqratio</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.sheqratio" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.targ">
+<code class="descname">targ</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.targ" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.full.trade_date">
+<code class="descname">trade_date</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.full.trade_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QAData.schema.fundamental">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAData.schema.</code><code class="descname">fundamental</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAData/schema.html#fundamental"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.adratio">
+<code class="descname">adratio</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.adratio" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.arturndays">
+<code class="descname">arturndays</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.arturndays" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.arturnover">
+<code class="descname">arturnover</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.arturnover" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.bips">
+<code class="descname">bips</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.bips" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.business_income">
+<code class="descname">business_income</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.business_income" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.bvps">
+<code class="descname">bvps</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.bvps" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.cashflowratio">
+<code class="descname">cashflowratio</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.cashflowratio" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.cashratio">
+<code class="descname">cashratio</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.cashratio" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.cf_liabilities">
+<code class="descname">cf_liabilities</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.cf_liabilities" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.cf_nm">
+<code class="descname">cf_nm</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.cf_nm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.cf_sales">
+<code class="descname">cf_sales</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.cf_sales" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.code">
+<code class="descname">code</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.currentasset_days">
+<code class="descname">currentasset_days</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.currentasset_days" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.currentasset_turnover">
+<code class="descname">currentasset_turnover</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.currentasset_turnover" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.currentratio">
+<code class="descname">currentratio</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.currentratio" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.distrib">
+<code class="descname">distrib</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.distrib" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.epcf">
+<code class="descname">epcf</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.epcf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.eps">
+<code class="descname">eps</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.eps" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.eps_yoy">
+<code class="descname">eps_yoy</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.eps_yoy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.epsg">
+<code class="descname">epsg</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.epsg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.gross_profit_rate">
+<code class="descname">gross_profit_rate</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.gross_profit_rate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.icratio">
+<code class="descname">icratio</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.icratio" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.inventory_days">
+<code class="descname">inventory_days</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.inventory_days" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.inventory_turnover">
+<code class="descname">inventory_turnover</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.inventory_turnover" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.mbrg">
+<code class="descname">mbrg</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.mbrg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.name">
+<code class="descname">name</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.nav">
+<code class="descname">nav</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.nav" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.net_profit_ratio">
+<code class="descname">net_profit_ratio</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.net_profit_ratio" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.net_profits">
+<code class="descname">net_profits</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.net_profits" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.nprg">
+<code class="descname">nprg</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.nprg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.profits_yoy">
+<code class="descname">profits_yoy</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.profits_yoy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.quarter">
+<code class="descname">quarter</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.quarter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.quickratio">
+<code class="descname">quickratio</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.quickratio" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.rateofreturn">
+<code class="descname">rateofreturn</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.rateofreturn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.report_date">
+<code class="descname">report_date</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.report_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.roe">
+<code class="descname">roe</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.roe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.seg">
+<code class="descname">seg</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.seg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.sheqratio">
+<code class="descname">sheqratio</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.sheqratio" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAData.schema.fundamental.targ">
+<code class="descname">targ</code><a class="headerlink" href="#QUANTAXIS.QAData.schema.fundamental.targ" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QAData.serialize">
+<span id="quantaxis-qadata-serialize-module"></span><h2>QUANTAXIS.QAData.serialize module<a class="headerlink" href="#module-QUANTAXIS.QAData.serialize" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-QUANTAXIS.QAData">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-QUANTAXIS.QAData" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">QUANTAXIS.QAData package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAData.QADataStruct">QUANTAXIS.QAData.QADataStruct module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAData.base_datastruct">QUANTAXIS.QAData.base_datastruct module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAData.data_fq">QUANTAXIS.QAData.data_fq module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAData.data_resample">QUANTAXIS.QAData.data_resample module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAData.dsmethods">QUANTAXIS.QAData.dsmethods module</a></li>
+<li><a class="reference internal" href="#quantaxis-qadata-fundamental-module">QUANTAXIS.QAData.fundamental module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAData.realtimedata">QUANTAXIS.QAData.realtimedata module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAData.schema">QUANTAXIS.QAData.schema module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAData.serialize">QUANTAXIS.QAData.serialize module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAData">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/source/QUANTAXIS.QAData.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, yutiansut.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/source/QUANTAXIS.QAData.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

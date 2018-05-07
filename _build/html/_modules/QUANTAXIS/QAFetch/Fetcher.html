@@ -1,0 +1,200 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QUANTAXIS.QAFetch.Fetcher &#8212; QUANTAXIS 1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for QUANTAXIS.QAFetch.Fetcher</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding:utf-8</span>
+<span class="c1">#</span>
+<span class="c1"># The MIT License (MIT)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2016-2018 yutiansut/QUANTAXIS</span>
+<span class="c1">#</span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1">#</span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">QA fetch module</span>
+
+<span class="sd">@yutiansut</span>
+
+<span class="sd">QAFetch is Under [QAStandard#0.0.2@10x] Protocol</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAFetch</span> <span class="k">import</span> <span class="n">QAWind</span> <span class="k">as</span> <span class="n">QAWind</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAFetch</span> <span class="k">import</span> <span class="n">QATushare</span> <span class="k">as</span> <span class="n">QATushare</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAFetch</span> <span class="k">import</span> <span class="n">QATdx</span> <span class="k">as</span> <span class="n">QATdx</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAFetch</span> <span class="k">import</span> <span class="n">QAThs</span> <span class="k">as</span> <span class="n">QAThs</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAFetch</span> <span class="k">import</span> <span class="n">QAQuery</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAFetch</span> <span class="k">import</span> <span class="n">QAQuery_Advance</span> <span class="k">as</span> <span class="n">QAQueryAdv</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAFetch</span> <span class="k">import</span> <span class="n">QAEastMoney</span> <span class="k">as</span> <span class="n">QAEM</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QAParameter</span> <span class="k">import</span> <span class="n">FREQUENCE</span><span class="p">,</span> <span class="n">MARKET_TYPE</span><span class="p">,</span> <span class="n">DATASOURCE</span><span class="p">,</span> <span class="n">OUTPUT_FORMAT</span><span class="p">,</span> <span class="n">DATABASE_TABLE</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QASql</span> <span class="k">import</span> <span class="n">QA_util_sql_mongo_setting</span>
+
+
+<div class="viewcode-block" id="QA_Fetcher"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.Fetcher.QA_Fetcher">[docs]</a><span class="k">class</span> <span class="nc">QA_Fetcher</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">27017</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">password</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        初始化的时候 会初始化</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span> <span class="o">=</span> <span class="n">ip</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">database</span> <span class="o">=</span> <span class="n">QA_util_sql_mongo_setting</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span><span class="o">.</span><span class="n">quantaxis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">best_ip</span><span class="o">=</span><span class="n">QATdx</span><span class="o">.</span><span class="n">best_ip</span>
+
+
+<div class="viewcode-block" id="QA_Fetcher.change_ip"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.Fetcher.QA_Fetcher.change_ip">[docs]</a>    <span class="k">def</span> <span class="nf">change_ip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">database</span> <span class="o">=</span> <span class="n">QA_util_sql_mongo_setting</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span><span class="o">.</span><span class="n">quantaxis</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="QA_Fetcher.get_quotation"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.Fetcher.QA_Fetcher.get_quotation">[docs]</a>    <span class="k">def</span> <span class="nf">get_quotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frequence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">market</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;        </span>
+<span class="sd">        Arguments:</span>
+<span class="sd">            code {str/list} -- 证券/股票的代码</span>
+<span class="sd">            start {str} -- 开始日期</span>
+<span class="sd">            end {str} -- 结束日期</span>
+<span class="sd">            frequence {enum} -- 频率 QA.FREQUENCE</span>
+<span class="sd">            market {enum} -- 市场 QA.MARKET_TYPE</span>
+<span class="sd">            source {enum} -- 来源 QA.DATASOURCE</span>
+<span class="sd">            output {enum} -- 输出类型 QA.OUTPUT_FORMAT</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="QA_Fetcher.get_info"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.Fetcher.QA_Fetcher.get_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">code</span><span class="p">,</span><span class="n">frequence</span><span class="p">,</span><span class="n">market</span><span class="p">,</span><span class="n">source</span><span class="p">,</span><span class="n">output</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">source</span> <span class="ow">is</span> <span class="n">DATASOURCE</span><span class="o">.</span><span class="n">TDX</span><span class="p">:</span>
+            <span class="n">res</span><span class="o">=</span><span class="n">QATdx</span><span class="o">.</span><span class="n">QA_fetch_get_stock_info</span><span class="p">(</span><span class="n">code</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">best_ip</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">res</span>
+        <span class="k">elif</span> <span class="n">source</span> <span class="ow">is</span> <span class="n">DATASOURCE</span><span class="o">.</span><span class="n">MONGO</span><span class="p">:</span>
+            <span class="n">res</span><span class="o">=</span><span class="n">QAQuery</span><span class="o">.</span><span class="n">QA_fetch_stock_info</span><span class="p">(</span><span class="n">code</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="n">output</span><span class="p">,</span><span class="n">collections</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">stock_info</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">res</span></div></div>
+
+<div class="viewcode-block" id="QA_quotation"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.Fetcher.QA_quotation">[docs]</a><span class="k">def</span> <span class="nf">QA_quotation</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">frequence</span><span class="p">,</span> <span class="n">market</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;一个统一的fetch</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        code {str/list} -- 证券/股票的代码</span>
+<span class="sd">        start {str} -- 开始日期</span>
+<span class="sd">        end {str} -- 结束日期</span>
+<span class="sd">        frequence {enum} -- 频率 QA.FREQUENCE</span>
+<span class="sd">        market {enum} -- 市场 QA.MARKET_TYPE</span>
+<span class="sd">        source {enum} -- 来源 QA.DATASOURCE</span>
+<span class="sd">        output {enum} -- 输出类型 QA.OUTPUT_FORMAT</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">market</span> <span class="ow">is</span> <span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">STOCK_CN</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">frequence</span> <span class="ow">is</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">DAY</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">source</span> <span class="ow">is</span> <span class="n">DATASOURCE</span><span class="o">.</span><span class="n">MONGO</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">QAQueryAdv</span><span class="o">.</span><span class="n">QA_fetch_stock_day_adv</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">source</span> <span class="ow">is</span> <span class="n">DATASOURCE</span><span class="o">.</span><span class="n">TDX</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">QATdx</span><span class="o">.</span><span class="n">QA_fetch_get_stock_day</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="s1">&#39;00&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">source</span> <span class="ow">is</span> <span class="n">DATASOURCE</span><span class="o">.</span><span class="n">TUSHARE</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">QATushare</span><span class="o">.</span><span class="n">QA_fetch_get_stock_day</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="s1">&#39;00&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">frequence</span> <span class="ow">in</span> <span class="p">[</span><span class="n">FREQUENCE</span><span class="o">.</span><span class="n">ONE_MIN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">FIVE_MIN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">FIFTEEN_MIN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">THIRTY_MIN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">SIXTY_MIN</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">source</span> <span class="ow">is</span> <span class="n">DATASOURCE</span><span class="o">.</span><span class="n">MONGO</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">QAQueryAdv</span><span class="o">.</span><span class="n">QA_fetch_stock_min_adv</span><span class="p">(</span>
+                    <span class="n">code</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">frequence</span><span class="o">=</span><span class="n">frequence</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">source</span> <span class="ow">is</span> <span class="n">DATASOURCE</span><span class="o">.</span><span class="n">TDX</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">QATdx</span><span class="o">.</span><span class="n">QA_fetch_get_stock_min</span><span class="p">(</span>
+                    <span class="n">code</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">frequence</span><span class="o">=</span><span class="n">frequence</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">frequence</span> <span class="ow">is</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">TICK</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">source</span> <span class="ow">is</span> <span class="n">DATASOURCE</span><span class="o">.</span><span class="n">TDX</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">QATdx</span><span class="o">.</span><span class="n">QA_fetch_get_stock_transaction</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">res</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">res</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">QA_quotation</span><span class="p">(</span><span class="s1">&#39;000001&#39;</span><span class="p">,</span> <span class="s1">&#39;2017-01-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2017-01-31&#39;</span><span class="p">,</span> <span class="n">frequence</span><span class="o">=</span><span class="n">FREQUENCE</span><span class="o">.</span><span class="n">DAY</span><span class="p">,</span>
+                       <span class="n">market</span><span class="o">=</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">STOCK_CN</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">DATASOURCE</span><span class="o">.</span><span class="n">TDX</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">OUTPUT_FORMAT</span><span class="o">.</span><span class="n">DATAFRAME</span><span class="p">))</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../QAFetch.html">QUANTAXIS.QAFetch</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, yutiansut.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

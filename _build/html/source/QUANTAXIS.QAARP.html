@@ -1,0 +1,709 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="python">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QUANTAXIS.QAARP package &#8212; QUANTAXIS 1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="quantaxis-qaarp-package">
+<h1>QUANTAXIS.QAARP package<a class="headerlink" href="#quantaxis-qaarp-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-QUANTAXIS.QAARP.QAAccount">
+<span id="quantaxis-qaarp-qaaccount-module"></span><h2>QUANTAXIS.QAARP.QAAccount module<a class="headerlink" href="#module-QUANTAXIS.QAARP.QAAccount" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="QUANTAXIS.QAARP.QAAccount.Account_handler">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAARP.QAAccount.</code><code class="descname">Account_handler</code><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAAccount.html#Account_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.Account_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAAccount.Account_handler.get_account">
+<code class="descname">get_account</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAAccount.html#Account_handler.get_account"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.Account_handler.get_account" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QAARP.QAAccount.QA_Account">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAARP.QAAccount.</code><code class="descname">QA_Account</code><span class="sig-paren">(</span><em>strategy_name=None</em>, <em>user_cookie=None</em>, <em>market_type='stock_cn'</em>, <em>frequence='day'</em>, <em>broker='backtest'</em>, <em>portfolio_cookie=None</em>, <em>account_cookie=None</em>, <em>sell_available={}</em>, <em>init_assets=None</em>, <em>cash=None</em>, <em>history=None</em>, <em>margin_level=False</em>, <em>allow_t0=False</em>, <em>allow_sellopen=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAAccount.html#QA_Account"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.QA_Account" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="QUANTAXIS.QAEngine.html#QUANTAXIS.QAEngine.QAEvent.QA_Worker" title="QUANTAXIS.QAEngine.QAEvent.QA_Worker"><code class="xref py py-class docutils literal notranslate"><span class="pre">QUANTAXIS.QAEngine.QAEvent.QA_Worker</span></code></a></p>
+<p>[QA_Account]</p>
+<ul class="simple">
+<li>不再计算总资产/不再计算当前持仓/不再计算交易对照明细表</li>
+<li>不再动态计算账户股票/期货市值</li>
+<li>只维护 cash/history两个字段 剩下的全部惰性计算</li>
+</ul>
+<p>QA_Account 是QUANTAXIS的最小不可分割单元之一</p>
+<p>QA_Account是账户类 需要兼容股票/期货/指数
+QA_Account继承自QA_Worker 可以被事件驱动
+QA_Account可以直接被QA_Strategy继承</p>
+<p>有三类输入:
+信息类: 账户绑定的策略名/账户的用户名/账户类别/账户识别码/账户的broker
+资产类: 现金/可用现金/交易历史/交易对照表
+规则类: 是否允许卖空/是否允许t0结算</p>
+<p>方法:
+惰性计算:最新持仓/最新总资产/最新现金/持仓面板
+生成订单/接受交易结果数据
+接收新的数据/on_bar/on_tick方法/缓存新数据的market_data</p>
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QAAccount.QA_Account.cash_table">
+<code class="descname">cash_table</code><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.QA_Account.cash_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>现金的table</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAAccount.QA_Account.change_cash">
+<code class="descname">change_cash</code><span class="sig-paren">(</span><em>money</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAAccount.html#QA_Account.change_cash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.QA_Account.change_cash" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QAAccount.QA_Account.code">
+<code class="descname">code</code><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.QA_Account.code" title="Permalink to this definition">¶</a></dt>
+<dd><p>该账户曾交易代码 用set 去重</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QAAccount.QA_Account.current_time">
+<code class="descname">current_time</code><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.QA_Account.current_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>return current time (in backtest/real environment)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QAAccount.QA_Account.daily_cash">
+<code class="descname">daily_cash</code><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.QA_Account.daily_cash" title="Permalink to this definition">¶</a></dt>
+<dd><p>每日交易结算时的现金表</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QAAccount.QA_Account.daily_hold">
+<code class="descname">daily_hold</code><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.QA_Account.daily_hold" title="Permalink to this definition">¶</a></dt>
+<dd><p>每日交易结算时的持仓表</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QAAccount.QA_Account.end_date">
+<code class="descname">end_date</code><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.QA_Account.end_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAAccount.QA_Account.from_message">
+<code class="descname">from_message</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAAccount.html#QA_Account.from_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.QA_Account.from_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>resume the account from standard message
+这个是从数据库恢复账户时需要的</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QAAccount.QA_Account.history_table">
+<code class="descname">history_table</code><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.QA_Account.history_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>交易历史的table</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QAAccount.QA_Account.hold">
+<code class="descname">hold</code><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.QA_Account.hold" title="Permalink to this definition">¶</a></dt>
+<dd><p>持仓</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QAAccount.QA_Account.latest_cash">
+<code class="descname">latest_cash</code><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.QA_Account.latest_cash" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the lastest cash</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QAAccount.QA_Account.message">
+<code class="descname">message</code><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.QA_Account.message" title="Permalink to this definition">¶</a></dt>
+<dd><p>the standard message which can be transef</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAAccount.QA_Account.on_bar">
+<code class="descname">on_bar</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAAccount.html#QA_Account.on_bar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.QA_Account.on_bar" title="Permalink to this definition">¶</a></dt>
+<dd><p>while updating the market data</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAAccount.QA_Account.on_tick">
+<code class="descname">on_tick</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAAccount.html#QA_Account.on_tick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.QA_Account.on_tick" title="Permalink to this definition">¶</a></dt>
+<dd><p>on tick event</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAAccount.QA_Account.receive_deal">
+<code class="descname">receive_deal</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAAccount.html#QA_Account.receive_deal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.QA_Account.receive_deal" title="Permalink to this definition">¶</a></dt>
+<dd><p>[用于更新账户]</p>
+<p>[description]</p>
+<p>update history and cash</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAAccount.QA_Account.reset_assets">
+<code class="descname">reset_assets</code><span class="sig-paren">(</span><em>init_assets=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAAccount.html#QA_Account.reset_assets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.QA_Account.reset_assets" title="Permalink to this definition">¶</a></dt>
+<dd><p>reset_history/cash/</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAAccount.QA_Account.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAAccount.html#QA_Account.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.QA_Account.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>QA_WORKER method</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAAccount.QA_Account.save">
+<code class="descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAAccount.html#QA_Account.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.QA_Account.save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAAccount.QA_Account.send_order">
+<code class="descname">send_order</code><span class="sig-paren">(</span><em>code</em>, <em>amount</em>, <em>time</em>, <em>towards</em>, <em>price</em>, <em>order_model</em>, <em>amount_model</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAAccount.html#QA_Account.send_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.QA_Account.send_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>[summary]</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>code {[type]} -- [description]
+amount {[type]} -- [description]
+time {[type]} -- [description]
+towards {[type]} -- [description]
+price {[type]} -- [description]
+order_model {[type]} -- [description]
+amount_model {[type]} -- [description]</dd>
+<dt>Returns:</dt>
+<dd>[type] -- [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAAccount.QA_Account.settle">
+<code class="descname">settle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAAccount.html#QA_Account.settle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.QA_Account.settle" title="Permalink to this definition">¶</a></dt>
+<dd><p>同步可用资金/可卖股票</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QAAccount.QA_Account.start_date">
+<code class="descname">start_date</code><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.QA_Account.start_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QAAccount.QA_Account.table">
+<code class="descname">table</code><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.QA_Account.table" title="Permalink to this definition">¶</a></dt>
+<dd><p>打印出account的内容</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QAAccount.QA_Account.trade">
+<code class="descname">trade</code><a class="headerlink" href="#QUANTAXIS.QAARP.QAAccount.QA_Account.trade" title="Permalink to this definition">¶</a></dt>
+<dd><p>每次交易的pivot表</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QAARP.QAPortfolio">
+<span id="quantaxis-qaarp-qaportfolio-module"></span><h2>QUANTAXIS.QAARP.QAPortfolio module<a class="headerlink" href="#module-QUANTAXIS.QAARP.QAPortfolio" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAARP.QAPortfolio.</code><code class="descname">QA_Portfolio</code><span class="sig-paren">(</span><em>user_cookie=None</em>, <em>strategy_name=None</em>, <em>init_assets=1000000</em>, <em>cash=None</em>, <em>sell_available=None</em>, <em>history=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAPortfolio.html#QA_Portfolio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>QUANTAXIS 多账户
+以及组合管理</p>
+<p># 适用 回测/实盘</p>
+<p># PORTFOLIO应当作为一个视图来处理,这个视图作为一个静态的观察点 可以去衡量风险 观察业绩等等
+&#64;2018/02/26</p>
+<p>::        ::STRATEGY 1 -- ACCOUNT 1 --{P1,P3} ::
+::  USER  ::STRATEGY 2 -- ACCOUNT 2 --{P1,P2} ::
+::        ::STRATEGY 3 -- ACCOUNT 3 --{P2,P3} ::
+:::::::::::::::::::::::::::::::::::::::::::::::</p>
+<p>PORTFOLIO</p>
+<p>在portfolio中,我们希望通过cookie来控制account_unit</p>
+<p>对于account的指标,要进行风险控制,组合成最优的投资组合的量</p>
+<p>用account的cookie来管理控制account</p>
+<p>portfolio里面的资产主要考虑的是 资金的分配</p>
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.add_account">
+<code class="descname">add_account</code><span class="sig-paren">(</span><em>account</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAPortfolio.html#QA_Portfolio.add_account"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.add_account" title="Permalink to this definition">¶</a></dt>
+<dd><p>portfolio add a account/stratetgy</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.cookie_mangement">
+<code class="descname">cookie_mangement</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAPortfolio.html#QA_Portfolio.cookie_mangement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.cookie_mangement" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.get_account">
+<code class="descname">get_account</code><span class="sig-paren">(</span><em>cookie</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAPortfolio.html#QA_Portfolio.get_account"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.get_account" title="Permalink to this definition">¶</a></dt>
+<dd><p>give the account_cookie and return the account/strategy back</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.get_cash">
+<code class="descname">get_cash</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAPortfolio.html#QA_Portfolio.get_cash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.get_cash" title="Permalink to this definition">¶</a></dt>
+<dd><p>拿到整个portfolio的可用资金</p>
+<p>统计每一个时间点的时候的cash总和</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.get_portfolio">
+<code class="descname">get_portfolio</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAPortfolio.html#QA_Portfolio.get_portfolio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.get_portfolio" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the accounts dict</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.new_account">
+<code class="descname">new_account</code><span class="sig-paren">(</span><em>account_cookie=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAPortfolio.html#QA_Portfolio.new_account"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.new_account" title="Permalink to this definition">¶</a></dt>
+<dd><p>portfolio create a account/strategy</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.pull">
+<code class="descname">pull</code><span class="sig-paren">(</span><em>account_cookie=None, collection=Collection(Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis'), 'account')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAPortfolio.html#QA_Portfolio.pull"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.pull" title="Permalink to this definition">¶</a></dt>
+<dd><p>pull from the databases</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.push">
+<code class="descname">push</code><span class="sig-paren">(</span><em>account_cookie=None, collection=Collection(Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis'), 'account')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAPortfolio.html#QA_Portfolio.push"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.push" title="Permalink to this definition">¶</a></dt>
+<dd><p>push to databases</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.table">
+<code class="descname">table</code><a class="headerlink" href="#QUANTAXIS.QAARP.QAPortfolio.QA_Portfolio.table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QAARP.QAPortfolio.QA_PortfolioView">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAARP.QAPortfolio.</code><code class="descname">QA_PortfolioView</code><span class="sig-paren">(</span><em>account_list</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAPortfolio.html#QA_PortfolioView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAPortfolio.QA_PortfolioView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>对于Portfolio而言,一切都是基于内部的account的信息的变更而变更的</p>
+<p>Portfolio不应该有过多可以修改的部分(作为一个view存在)</p>
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QAPortfolio.QA_PortfolioView.account_cookie">
+<code class="descname">account_cookie</code><a class="headerlink" href="#QUANTAXIS.QAARP.QAPortfolio.QA_PortfolioView.account_cookie" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QAPortfolio.QA_PortfolioView.accounts">
+<code class="descname">accounts</code><a class="headerlink" href="#QUANTAXIS.QAARP.QAPortfolio.QA_PortfolioView.accounts" title="Permalink to this definition">¶</a></dt>
+<dd><p>return all accounts inside the portfolio view</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QAPortfolio.QA_PortfolioView.code">
+<code class="descname">code</code><a class="headerlink" href="#QUANTAXIS.QAARP.QAPortfolio.QA_PortfolioView.code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QAPortfolio.QA_PortfolioView.daily_cash">
+<code class="descname">daily_cash</code><a class="headerlink" href="#QUANTAXIS.QAARP.QAPortfolio.QA_PortfolioView.daily_cash" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QAPortfolio.QA_PortfolioView.daily_hold">
+<code class="descname">daily_hold</code><a class="headerlink" href="#QUANTAXIS.QAARP.QAPortfolio.QA_PortfolioView.daily_hold" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QAPortfolio.QA_PortfolioView.end_date">
+<code class="descname">end_date</code><a class="headerlink" href="#QUANTAXIS.QAARP.QAPortfolio.QA_PortfolioView.end_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QAPortfolio.QA_PortfolioView.init_assets">
+<code class="descname">init_assets</code><a class="headerlink" href="#QUANTAXIS.QAARP.QAPortfolio.QA_PortfolioView.init_assets" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QAPortfolio.QA_PortfolioView.start_date">
+<code class="descname">start_date</code><a class="headerlink" href="#QUANTAXIS.QAARP.QAPortfolio.QA_PortfolioView.start_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QAARP.QAPortfolio.QA_TEST_MAKEPortfolio">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAARP.QAPortfolio.</code><code class="descname">QA_TEST_MAKEPortfolio</code><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAPortfolio.html#QA_TEST_MAKEPortfolio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAPortfolio.QA_TEST_MAKEPortfolio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAPortfolio.QA_TEST_MAKEPortfolio.make_portfolio">
+<code class="descname">make_portfolio</code><span class="sig-paren">(</span><em>account_list</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAPortfolio.html#QA_TEST_MAKEPortfolio.make_portfolio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAPortfolio.QA_TEST_MAKEPortfolio.make_portfolio" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QAARP.QARisk">
+<span id="quantaxis-qaarp-qarisk-module"></span><h2>QUANTAXIS.QAARP.QARisk module<a class="headerlink" href="#module-QUANTAXIS.QAARP.QARisk" title="Permalink to this headline">¶</a></h2>
+<p>收益性的包括年化收益率、净利润、总盈利、总亏损、有效年化收益率、资金使用率。</p>
+<p>风险性主要包括胜率、平均盈亏比、最大回撤比例、最大连续亏损次数、最大连续盈利次数、持仓时间占比、贝塔。</p>
+<p>综合性指标主要包括风险收益比，夏普比例，波动率，VAR，偏度，峰度等</p>
+<dl class="class">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Performance">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAARP.QARisk.</code><code class="descname">QA_Performance</code><span class="sig-paren">(</span><em>account</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QARisk.html#QA_Performance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Performance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>QA_Performance是一个绩效分析插件</p>
+<p>需要加载一个account/portfolio类进来:
+需要有
+code,start_date,end_date,daily_cash,daily_hold</p>
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Performance.abnormal_active">
+<code class="descname">abnormal_active</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QARisk.html#QA_Performance.abnormal_active"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Performance.abnormal_active" title="Permalink to this definition">¶</a></dt>
+<dd><p>账户的成交发生异常成交记录的分析</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Performance.accumulate_return">
+<code class="descname">accumulate_return</code><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Performance.accumulate_return" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns a pd-Dataframe format accumulate return for different periods</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Performance.brinson">
+<code class="descname">brinson</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QARisk.html#QA_Performance.brinson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Performance.brinson" title="Permalink to this definition">¶</a></dt>
+<dd><p>Brinson Model analysis</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Performance.hold">
+<code class="descname">hold</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QARisk.html#QA_Performance.hold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Performance.hold" title="Permalink to this definition">¶</a></dt>
+<dd><p>持仓分析</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Performance.prefer">
+<code class="descname">prefer</code><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Performance.prefer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Performance.save">
+<code class="descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QARisk.html#QA_Performance.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Performance.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>save the performance analysis result to database</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Performance.style">
+<code class="descname">style</code><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Performance.style" title="Permalink to this definition">¶</a></dt>
+<dd><p>风格分析</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Risk">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAARP.QARisk.</code><code class="descname">QA_Risk</code><span class="sig-paren">(</span><em>account</em>, <em>benchmark_code='000300'</em>, <em>benchmark_type='index_cn'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QARisk.html#QA_Risk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Risk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>QARISK 是一个风险插件</p>
+<p>需要加载一个account/portfolio类进来:
+需要有
+code,start_date,end_date,daily_cash,daily_hold</p>
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Risk.alpha">
+<code class="descname">alpha</code><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Risk.alpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>alpha比率 与市场基准收益无关的超额收益率</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Risk.annualize_return">
+<code class="descname">annualize_return</code><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Risk.annualize_return" title="Permalink to this definition">¶</a></dt>
+<dd><p>年化收益</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>[type] -- [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Risk.benchmark_annualize_return">
+<code class="descname">benchmark_annualize_return</code><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Risk.benchmark_annualize_return" title="Permalink to this definition">¶</a></dt>
+<dd><p>基准组合的年化收益</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>[type] -- [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Risk.benchmark_assets">
+<code class="descname">benchmark_assets</code><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Risk.benchmark_assets" title="Permalink to this definition">¶</a></dt>
+<dd><p>基准组合的账户资产队列</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Risk.benchmark_data">
+<code class="descname">benchmark_data</code><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Risk.benchmark_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>基准组合的行情数据(一般是组合,可以调整)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Risk.benchmark_profitpct">
+<code class="descname">benchmark_profitpct</code><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Risk.benchmark_profitpct" title="Permalink to this definition">¶</a></dt>
+<dd><p>benchmark 基准组合的收益百分比计算</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Risk.beta">
+<code class="descname">beta</code><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Risk.beta" title="Permalink to this definition">¶</a></dt>
+<dd><p>beta比率 组合的系统性风险</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Risk.calc_alpha">
+<code class="descname">calc_alpha</code><span class="sig-paren">(</span><em>annualized_returns</em>, <em>benchmark_annualized_returns</em>, <em>beta</em>, <em>r=0.05</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QARisk.html#QA_Risk.calc_alpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Risk.calc_alpha" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Risk.calc_annualize_return">
+<code class="descname">calc_annualize_return</code><span class="sig-paren">(</span><em>assets</em>, <em>days</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QARisk.html#QA_Risk.calc_annualize_return"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Risk.calc_annualize_return" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Risk.calc_beta">
+<code class="descname">calc_beta</code><span class="sig-paren">(</span><em>assest_profit</em>, <em>benchmark_profit</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QARisk.html#QA_Risk.calc_beta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Risk.calc_beta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Risk.calc_profit">
+<code class="descname">calc_profit</code><span class="sig-paren">(</span><em>assets</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QARisk.html#QA_Risk.calc_profit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Risk.calc_profit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Risk.calc_profitpctchange">
+<code class="descname">calc_profitpctchange</code><span class="sig-paren">(</span><em>assets</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QARisk.html#QA_Risk.calc_profitpctchange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Risk.calc_profitpctchange" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Risk.calc_sharpe">
+<code class="descname">calc_sharpe</code><span class="sig-paren">(</span><em>annualized_returns</em>, <em>volatility_year</em>, <em>r=0.05</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QARisk.html#QA_Risk.calc_sharpe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Risk.calc_sharpe" title="Permalink to this definition">¶</a></dt>
+<dd><p>计算夏普比率</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Risk.calmar">
+<code class="descname">calmar</code><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Risk.calmar" title="Permalink to this definition">¶</a></dt>
+<dd><p>卡玛比率</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Risk.max_dropback">
+<code class="descname">max_dropback</code><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Risk.max_dropback" title="Permalink to this definition">¶</a></dt>
+<dd><p>最大回撤</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Risk.message">
+<code class="descname">message</code><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Risk.message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Risk.profit">
+<code class="descname">profit</code><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Risk.profit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Risk.profit_pct">
+<code class="descname">profit_pct</code><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Risk.profit_pct" title="Permalink to this definition">¶</a></dt>
+<dd><p>利润</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Risk.save">
+<code class="descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QARisk.html#QA_Risk.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Risk.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>save to mongodb</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Risk.set_benchmark">
+<code class="descname">set_benchmark</code><span class="sig-paren">(</span><em>code</em>, <em>market_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QARisk.html#QA_Risk.set_benchmark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Risk.set_benchmark" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Risk.sharpe">
+<code class="descname">sharpe</code><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Risk.sharpe" title="Permalink to this definition">¶</a></dt>
+<dd><p>夏普比率</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Risk.sortino">
+<code class="descname">sortino</code><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Risk.sortino" title="Permalink to this definition">¶</a></dt>
+<dd><p>索提诺比率 投资组合收益和下行风险比值</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QARisk.QA_Risk.volatility">
+<code class="descname">volatility</code><a class="headerlink" href="#QUANTAXIS.QAARP.QARisk.QA_Risk.volatility" title="Permalink to this definition">¶</a></dt>
+<dd><p>波动率</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>[type] -- [description]</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QAARP.QAStrategy">
+<span id="quantaxis-qaarp-qastrategy-module"></span><h2>QUANTAXIS.QAARP.QAStrategy module<a class="headerlink" href="#module-QUANTAXIS.QAARP.QAStrategy" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="QUANTAXIS.QAARP.QAStrategy.QA_Strategy">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAARP.QAStrategy.</code><code class="descname">QA_Strategy</code><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAStrategy.html#QA_Strategy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAStrategy.QA_Strategy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#QUANTAXIS.QAARP.QAAccount.QA_Account" title="QUANTAXIS.QAARP.QAAccount.QA_Account"><code class="xref py py-class docutils literal notranslate"><span class="pre">QUANTAXIS.QAARP.QAAccount.QA_Account</span></code></a></p>
+<p>account</p>
+<p>[description]</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QAARP.QAUser">
+<span id="quantaxis-qaarp-qauser-module"></span><h2>QUANTAXIS.QAARP.QAUser module<a class="headerlink" href="#module-QUANTAXIS.QAARP.QAUser" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="QUANTAXIS.QAARP.QAUser.QA_User">
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAARP.QAUser.</code><code class="descname">QA_User</code><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAUser.html#QA_User"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAUser.QA_User" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>User--Portfolio--Account/Strategy</p>
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAUser.QA_User.client">
+<code class="descname">client</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAUser.html#QA_User.client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAUser.QA_User.client" title="Permalink to this definition">¶</a></dt>
+<dd><p>user.client to connect database</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAUser.QA_User.connect_database">
+<code class="descname">connect_database</code><span class="sig-paren">(</span><em>ip='127.0.0.1'</em>, <em>port=27017</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAUser.html#QA_User.connect_database"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAUser.QA_User.connect_database" title="Permalink to this definition">¶</a></dt>
+<dd><p>connect is also a way to change database from IP_A to IP_B</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAUser.QA_User.generate_simpleaccount">
+<code class="descname">generate_simpleaccount</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAUser.html#QA_User.generate_simpleaccount"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAUser.QA_User.generate_simpleaccount" title="Permalink to this definition">¶</a></dt>
+<dd><p>make a simple account with a easier way
+如果当前user中没有创建portfolio, 则创建一个portfolio,并用此portfolio创建一个account
+如果已有一个或多个portfolio,则使用第一个portfolio来创建一个account</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAUser.QA_User.get_portfolio">
+<code class="descname">get_portfolio</code><span class="sig-paren">(</span><em>portfolio</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAUser.html#QA_User.get_portfolio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAUser.QA_User.get_portfolio" title="Permalink to this definition">¶</a></dt>
+<dd><p>get a portfolio</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAUser.QA_User.login">
+<code class="descname">login</code><span class="sig-paren">(</span><em>user_name</em>, <em>password</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAUser.html#QA_User.login"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAUser.QA_User.login" title="Permalink to this definition">¶</a></dt>
+<dd><p>login to a database</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAUser.QA_User.new_portfolio">
+<code class="descname">new_portfolio</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAUser.html#QA_User.new_portfolio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAUser.QA_User.new_portfolio" title="Permalink to this definition">¶</a></dt>
+<dd><p>create a portfolio</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAARP.QAUser.QA_User.register_account">
+<code class="descname">register_account</code><span class="sig-paren">(</span><em>account</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAARP/QAUser.html#QA_User.register_account"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAARP.QAUser.QA_User.register_account" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="QUANTAXIS.QAARP.QAUser.QA_User.table">
+<code class="descname">table</code><a class="headerlink" href="#QUANTAXIS.QAARP.QAUser.QA_User.table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-QUANTAXIS.QAARP">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-QUANTAXIS.QAARP" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">QUANTAXIS.QAARP package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAARP.QAAccount">QUANTAXIS.QAARP.QAAccount module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAARP.QAPortfolio">QUANTAXIS.QAARP.QAPortfolio module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAARP.QARisk">QUANTAXIS.QAARP.QARisk module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAARP.QAStrategy">QUANTAXIS.QAARP.QAStrategy module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAARP.QAUser">QUANTAXIS.QAARP.QAUser module</a></li>
+<li><a class="reference internal" href="#module-QUANTAXIS.QAARP">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/source/QUANTAXIS.QAARP.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, yutiansut.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/source/QUANTAXIS.QAARP.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
