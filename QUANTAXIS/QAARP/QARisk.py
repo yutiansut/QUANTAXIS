@@ -203,9 +203,6 @@ class QA_Risk():
     def calc_annualize_return(self, assets, days):
         return (float(assets.iloc[-1]) / float(assets.iloc[0]) -1 )/(float(days) /250 )
 
-    # def calc_profit(self, assets):
-    #     return (assets.iloc[-1] / assets.iloc[1]) - 1
-
     def calc_profitpctchange(self, assets):
         return self.assets[::-1].pct_change()
 
@@ -222,10 +219,17 @@ class QA_Risk():
         return alpha
 
     def calc_profit(self, assets):
+        """
+        计算账户收益
+        期末资产/期初资产 -1
+        """
         return (float(assets.iloc[-1]) / float(assets.iloc[0])) - 1
 
     def calc_sharpe(self, annualized_returns, volatility_year, r=0.05):
-        '计算夏普比率'
+        """
+        计算夏普比率
+        r是无风险收益
+        """
         return (annualized_returns - r) / volatility_year
 
     def save(self):
