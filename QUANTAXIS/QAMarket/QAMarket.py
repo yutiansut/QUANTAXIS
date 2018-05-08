@@ -279,7 +279,6 @@ class QA_Market(QA_Trade):
 
     def _settle(self, broker_name, callback=False):
         # 向事件线程发送BROKER的SETTLE事件
-
         # 向事件线程发送ACCOUNT的SETTLE事件
         for item in self.session.values():
             if item.broker is broker_name:
