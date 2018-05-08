@@ -31,6 +31,15 @@ from QUANTAXIS.QAUtil.QASetting import QA_Setting
 class QA_User():
     """QA_User 
     User--Portfolio--Account/Strategy
+
+    :: 需要增加对于QA_USER的支持
+
+    USER作为一个单位实体,可以自由创建组合(需要被记录),修改组合
+    
+
+
+    @yutiansut 
+    2018/05/08
     """
 
     def __init__(self):
@@ -90,6 +99,13 @@ class QA_User():
             po = list(self.portfolio_list.values())[0]
         po.add_account(account)
         return (po, account)
+
+
+    def save(self):
+        """
+        将QA_USER的信息存入数据库
+        """
+        pass
 
 
 if __name__ == '__main__':
