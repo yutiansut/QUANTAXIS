@@ -242,6 +242,9 @@ class QA_Account(QA_Worker):
         date = str(time)[0:10] if len(str(time)) == 19 else str(time)
         time = str(time) if len(
             str(time)) == 19 else '{} 09:31:00'.format(str(time)[0:10])
+        # by_price :: amount --钱 如10000元  因此 by_price里面 需要指定价格,来计算实际的股票数
+        # by_amount :: amount --股数 如10000股
+
 
         amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
             amount / price)
