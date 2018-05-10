@@ -68,7 +68,7 @@ class QA_Account(QA_Worker):
 
     def __init__(self, strategy_name=None, user_cookie=None, market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY,
                  broker=BROKER_TYPE.BACKETEST, portfolio_cookie=None, account_cookie=None,
-                 sell_available={}, init_assets=None, cash=None, history=None,
+                 sell_available={}, init_assets=None, cash=None, history=None, commission_coeff=0.00025, tax_coeff=0.0015,
                  margin_level=False, allow_t0=False, allow_sellopen=False):
         super().__init__()
         self._history_headers = ['datetime', 'code', 'price',
@@ -84,6 +84,8 @@ class QA_Account(QA_Worker):
         self.frequence = frequence
         self.market_data = None
         self._currenttime = None
+        self.commission_coeff = commission_coeff
+        self.tax_coeff = tax_coeff
         # 资产类
         self.init_assets = 1000000 if init_assets is None else init_assets
         self.cash = [self.init_assets] if cash is None else cash
@@ -245,13 +247,13 @@ class QA_Account(QA_Worker):
         # by_price :: amount --钱 如10000元  因此 by_price里面 需要指定价格,来计算实际的股票数
         # by_amount :: amount --股数 如10000股
 
-
         amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
             amount / price)
         if self.market_type is MARKET_TYPE.STOCK_CN:
             amount = int(amount / 100) * 100
 
-        marketvalue = amount * price if amount_model is AMOUNT_MODEL.BY_AMOUNT else amount
+        marketvalue = (
+            amount * price)*(1+self.commission_coeff) if amount_model is AMOUNT_MODEL.BY_AMOUNT else amount*(1+self.commission_coeff)
 
         amount_model = AMOUNT_MODEL.BY_AMOUNT
         if int(towards) > 0:
@@ -274,7 +276,7 @@ class QA_Account(QA_Worker):
                             amount_model=amount_model)  # init
         else:
             return False
-            
+
     def settle(self):
         '同步可用资金/可卖股票'
         self.cash_available = self.cash[-1]
