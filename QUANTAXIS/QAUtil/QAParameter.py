@@ -101,7 +101,7 @@ class AMOUNT_MODEL():
     """订单的成交量
 
     by_money是按固定成交总额下单,动态计算成交量
-    by_amount 按固定成家量下单
+    by_amount 按固定数量下单
     """
 
     BY_MONEY = 'by_money'
