@@ -56,13 +56,16 @@
 
 ## 1.0.28
 
+
+ATTENTION CHANGELOG 1.0.28
 修改了Account的send_order方法, 区分按数量下单和按金额下单两种方式
 
-- ORDER_MODEL.BY_PRICE ==> ORDER_MODER.BY_MONEY # 按金额下单
-- ORDER_MODEL.BY_AMOUNT # 按数量下单
+- AMOUNT_MODEL.BY_PRICE ==> AMOUNT_MODEL.BY_MONEY # 按金额下单
+- AMOUNT_MODEL.BY_AMOUNT # 按数量下单
 
 在按金额下单的时候,应给予 money参数
 在按数量下单的时候,应给予 amount参数
+
 
 ```python
 Account=QA.QA_Account()
