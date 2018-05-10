@@ -224,7 +224,7 @@ class QA_Account(QA_Worker):
 
         return self.message
 
-    def send_order(self, code, amount, time, towards, price, order_model, amount_model):
+    def send_order(self, code=None, amount=None, time=None, towards=None, price=None, money=None, order_model=None, amount_model=None):
         """[summary]
 
         Arguments:
@@ -238,28 +238,60 @@ class QA_Account(QA_Worker):
 
         Returns:
             [type] -- [description]
+
+        ATTENTION CHANGELOG 1.0.28
+        修改了Account的send_order方法, 区分按数量下单和按金额下单两种方式
+
+        - ORDER_MODEL.BY_PRICE ==> ORDER_MODER.BY_MONEY # 按金额下单
+        - ORDER_MODEL.BY_AMOUNT # 按数量下单
+
+        在按金额下单的时候,应给予 money参数
+        在按数量下单的时候,应给予 amount参数
+
+        ```python
+        Account=QA.QA_Account()
+
+        Order_bymoney=Account.send_order(code='000001',
+                                        price=11,
+                                        money=0.3*Account.cash_available,
+                                        time='2018-05-09',
+                                        towards=QA.ORDER_DIRECTION.BUY,
+                                        order_model=QA.ORDER_MODEL.MARKET,
+                                        amount_model=QA.AMOUNT_MODEL.BY_MONEY
+                                        )
+
+        Order_byamount=Account.send_order(code='000001',
+                                        price=11,
+                                        amount=100,
+                                        time='2018-05-09',
+                                        towards=QA.ORDER_DIRECTION.BUY,
+                                        order_model=QA.ORDER_MODEL.MARKET,
+                                        amount_model=QA.AMOUNT_MODEL.BY_AMOUNT
+                                        )
+        ```
         """
+        assert code is not None and time is not None and towards is not None and order_model is not None and amount_model is not None
 
         flag = False
         date = str(time)[0:10] if len(str(time)) == 19 else str(time)
         time = str(time) if len(
             str(time)) == 19 else '{} 09:31:00'.format(str(time)[0:10])
-        # by_price :: amount --钱 如10000元  因此 by_price里面 需要指定价格,来计算实际的股票数
+        # BY_MONEY :: amount --钱 如10000元  因此 by_money里面 需要指定价格,来计算实际的股票数
         # by_amount :: amount --股数 如10000股
 
         amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
-            amount / (price*(1+self.commission_coeff)))
+            money / (price*(1+self.commission_coeff)))
 
         if self.market_type is MARKET_TYPE.STOCK_CN:
             amount = int(amount / 100) * 100
 
-        marketvalue = amount * price*(1+self.commission_coeff)
+        money = amount * price*(1+self.commission_coeff)
 
         amount_model = AMOUNT_MODEL.BY_AMOUNT
         if int(towards) > 0:
             # 是买入的情况(包括买入.买开.买平)
-            if self.cash_available >= marketvalue:
-                self.cash_available -= marketvalue
+            if self.cash_available >= money:
+                self.cash_available -= money
                 flag = True
         elif int(towards) < 0:
             if self.allow_sellopen:

@@ -42,18 +42,18 @@ print(market.get_account_id())
 
 
 
-market.insert_order(account_id=a_1, amount=100000,price=None, amount_model=QA.AMOUNT_MODEL.BY_PRICE,time='2017-12-01', code='600010', 
+market.insert_order(account_id=a_1, amount=100000,price=None, amount_model=QA.AMOUNT_MODEL.BY_MONEY,time='2017-12-01', code='600010', 
                     order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY,market_type=QA.MARKET_TYPE.STOCK_CN,
                    data_type=QA.FREQUENCE.DAY,broker_name=QA.BROKER_TYPE.BACKETEST)
 
 
-market.insert_order(account_id=a_1, amount=100000,price=None, amount_model=QA.AMOUNT_MODEL.BY_PRICE,time='2017-12-01', code='000001', 
+market.insert_order(account_id=a_1, amount=100000,price=None, amount_model=QA.AMOUNT_MODEL.BY_MONEY,time='2017-12-01', code='000001', 
                     order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY,market_type=QA.MARKET_TYPE.STOCK_CN,
                    data_type=QA.FREQUENCE.DAY,broker_name=QA.BROKER_TYPE.BACKETEST)
 
 
 
-# market.insert_order(account_id=a_2, amount=100000,price=None, amount_model=QA.AMOUNT_MODEL.BY_PRICE,time='2017-12-14', code='000001', 
+# market.insert_order(account_id=a_2, amount=100000,price=None, amount_model=QA.AMOUNT_MODEL.BY_MONEY,time='2017-12-14', code='000001', 
 #                     order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY,market_type=QA.MARKET_TYPE.STOCK_CN,
 #                    data_type=QA.FREQUENCE.DAY,broker_name=QA.BROKER_TYPE.BACKETEST)
 

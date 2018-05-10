@@ -7,7 +7,7 @@
 Account=QA.QA_Account()
 
 # 全仓买入'000001'
-Order=Account.send_order('000001',Account.cash_available,'2018-05-09',QA.ORDER_DIRECTION.BUY,11,QA.ORDER_MODEL.MARKET,QA.AMOUNT_MODEL.BY_PRICE)
+Order=Account.send_order('000001',Account.cash_available,'2018-05-09',QA.ORDER_DIRECTION.BUY,11,QA.ORDER_MODEL.MARKET,QA.AMOUNT_MODEL.BY_MONEY)
 
 # 打印剩余资金
 Account.cash_available

@@ -50,3 +50,38 @@
 
 预计将对于indicator类进行重写并缓存/本地存储,方便快速调用
 
+修改了QA_Account的下单模式, 修复了下单的判断bug
+
+
+
+## 1.0.28
+
+修改了Account的send_order方法, 区分按数量下单和按金额下单两种方式
+
+- ORDER_MODEL.BY_PRICE ==> ORDER_MODER.BY_MONEY # 按金额下单
+- ORDER_MODEL.BY_AMOUNT # 按数量下单
+
+在按金额下单的时候,应给予 money参数
+在按数量下单的时候,应给予 amount参数
+
+```python
+Account=QA.QA_Account()
+
+Order_bymoney=Account.send_order(code='000001',
+                                price=11,
+                                money=0.3*Account.cash_available,
+                                time='2018-05-09',
+                                towards=QA.ORDER_DIRECTION.BUY,
+                                order_model=QA.ORDER_MODEL.MARKET,
+                                amount_model=QA.AMOUNT_MODEL.BY_MONEY
+                                 )
+
+Order_byamount=Account.send_order(code='000001',
+                                price=11,
+                                amount=100,
+                                time='2018-05-09',
+                                towards=QA.ORDER_DIRECTION.BUY,
+                                order_model=QA.ORDER_MODEL.MARKET,
+                                amount_model=QA.AMOUNT_MODEL.BY_AMOUNT
+                                 )
+```
