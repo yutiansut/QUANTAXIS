@@ -248,12 +248,12 @@ class QA_Account(QA_Worker):
         # by_amount :: amount --股数 如10000股
 
         amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
-            amount / price)
+            amount / (price*(1+self.commission_coeff)))
+
         if self.market_type is MARKET_TYPE.STOCK_CN:
             amount = int(amount / 100) * 100
 
-        marketvalue = (
-            amount * price)*(1+self.commission_coeff) if amount_model is AMOUNT_MODEL.BY_AMOUNT else amount*(1+self.commission_coeff)
+        marketvalue = amount * price*(1+self.commission_coeff)
 
         amount_model = AMOUNT_MODEL.BY_AMOUNT
         if int(towards) > 0:
