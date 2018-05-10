@@ -273,8 +273,8 @@ class QA_Account(QA_Worker):
                             amount=amount, price=price, order_model=order_model, towards=towards,
                             amount_model=amount_model)  # init
         else:
-            return flag
-
+            return False
+            
     def settle(self):
         '同步可用资金/可卖股票'
         self.cash_available = self.cash[-1]
