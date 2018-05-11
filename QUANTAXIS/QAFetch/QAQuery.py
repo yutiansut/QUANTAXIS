@@ -65,8 +65,7 @@ def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collec
         res=pd.DataFrame([item for item in cursor])
         try:
             res=res.drop('_id',axis=1).assign(volume=res.vol).assign(date=pd.to_datetime(res.date)).drop_duplicates((['date','code'])).set_index('date', drop=False)
-            res=res.ix[:, ['code', 'open', 'high', 'low', 'close', 'vol','amount', 'datetime', 'date']]
-            #return res
+            res=res.ix[:, ['code', 'open', 'high', 'low', 'close', 'volume','amount', 'datetime', 'date']]
         except:
             res=None    
         if format in ['P', 'p', 'pandas', 'pd']:
