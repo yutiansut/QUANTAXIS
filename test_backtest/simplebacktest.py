@@ -37,7 +37,7 @@ AC.reset_assets(assets)
 # 发送订单
 Order=AC.send_order(code='000001',amount=1000,time='2018-03-21',towards=QA.ORDER_DIRECTION.BUY,price=0,order_model=QA.ORDER_MODEL.MARKET,amount_model=QA.AMOUNT_MODEL.BY_AMOUNT)
 # 撮合订单
-dealmes=B.receive_order(QA.QA_Event(order=Order))
+dealmes=B.receive_order(QA.QA_Event(order=Order,market_data=data))
 # 更新账户
 AC.receive_deal(dealmes)
 
@@ -50,20 +50,21 @@ risk=QA.QA_Risk(AC)
 AC.reset_assets(20000000) #设置初始资金
 
 def simple_backtest(AC, code, start, end):
-    DATA = QA.QA_fetch_stock_day_adv(code, start, end)
+    DATA = QA.QA_fetch_stock_day_adv(code, start, end).to_qfq()
     for items in DATA.panel_gen:  # 一天过去了
         
         for item in items.security_gen:
             if random.random()>0.5:# 加入一个随机 模拟买卖的
                 if AC.sell_available.get(item.code[0], 0) == 0:
-                    AC.receive_deal(B.receive_order(QA.QA_Event(order=AC.send_order(
+                    order=AC.send_order(
                         code=item.data.code[0], time=item.data.date[0], amount=1000, towards=QA.ORDER_DIRECTION.BUY, price=0, order_model=QA.ORDER_MODEL.MARKET, amount_model=QA.AMOUNT_MODEL.BY_AMOUNT
-                    ))))
+                    )
+                    AC.receive_deal(B.receive_order(QA.QA_Event(order=order,market_data=item)))
 
                 else:
                     AC.receive_deal(B.receive_order(QA.QA_Event(order=AC.send_order(
                         code=item.data.code[0], time=item.data.date[0], amount=1000, towards=QA.ORDER_DIRECTION.SELL, price=0, order_model=QA.ORDER_MODEL.MARKET, amount_model=QA.AMOUNT_MODEL.BY_AMOUNT
-                    ))))
+                    ),market_data=item)))
         AC.settle()
 
 
