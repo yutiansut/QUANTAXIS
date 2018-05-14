@@ -63,7 +63,7 @@ def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collec
 
         res = pd.DataFrame([item for item in cursor])
         try:
-            res = res.drop('_id', axis=1).assign(volume=res.vol).assign(date=pd.to_datetime(
+            res = res.drop('_id', axis=1).assign(volume=res.vol).query('volume>1').assign(date=pd.to_datetime(
                 res.date)).drop_duplicates((['date', 'code'])).set_index('date', drop=False)
             res = res.ix[:, ['code', 'open', 'high', 'low',
                              'close', 'volume', 'amount', 'datetime', 'date']]
@@ -109,7 +109,7 @@ def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', colle
 
     res = pd.DataFrame([item for item in cursor])
     try:
-        res = res.drop('_id', axis=1).assign(volume=res.vol).assign(datetime=pd.to_datetime(
+        res = res.drop('_id', axis=1).assign(volume=res.vol).query('volume>1').assign(datetime=pd.to_datetime(
             res.datetime)).drop_duplicates(['datetime', 'code']).set_index('datetime', drop=False)
         # return res
     except:
@@ -168,12 +168,12 @@ def QA_fetch_index_day(code, start, end, format='numpy', collections=DATABASE.in
     '获取指数日线'
     start = str(start)[0:10]
     end = str(end)[0:10]
-
+    code = QA_util_code_tolist(code)
     if QA_util_date_valid(end) == True:
 
         __data = []
         cursor = collections.find({
-            'code': str(code)[0:6], "date_stamp": {
+            'code': {'$in': code}, "date_stamp": {
                 "$lte": QA_util_date_stamp(end),
                 "$gte": QA_util_date_stamp(start)}})
         if format in ['dict', 'json']:
@@ -200,14 +200,6 @@ def QA_fetch_index_day(code, start, end, format='numpy', collections=DATABASE.in
         QA_util_log_info('something wrong with date')
 
 
-def QA_fetch_indexlist_day(stock_list, date_range, collections=DATABASE.index_day):
-    '获取多个股票的日线'
-    __data = []
-    for item in stock_list:
-        __data.append(QA_fetch_index_day(
-            item, date_range[0], date_range[-1], 'pd', collections))
-    return __data
-
 
 def QA_fetch_index_min(
         code,
@@ -227,9 +219,9 @@ def QA_fetch_index_min(
     elif frequence in ['60min', '60m']:
         frequence = '60min'
     __data = []
-
+    code=QA_util_code_tolist(code)
     cursor = collections.find({
-        'code': str(code), "time_stamp": {
+        'code': {'$in': code}, "time_stamp": {
             "$gte": QA_util_time_stamp(start),
             "$lte": QA_util_time_stamp(end)
         }, 'type': frequence
@@ -286,8 +278,9 @@ def QA_fetch_backtest_history(cookie=None, collections=DATABASE.backtest_history
 
 def QA_fetch_stock_block(code=None, format='pd', collections=DATABASE.stock_block):
     if code is not None:
+        code=QA_util_code_tolist(code)
         data = pd.DataFrame([item for item in collections.find(
-            {'code': code})]).drop(['_id'], axis=1)
+            {'code': {'$in': code}})]).drop(['_id'], axis=1)
         return data.set_index('code', drop=False)
     else:
         data = pd.DataFrame(

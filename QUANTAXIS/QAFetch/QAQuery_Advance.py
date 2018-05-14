@@ -32,7 +32,8 @@ from QUANTAXIS.QAData import (QA_DataStruct_Index_day, QA_DataStruct_Index_min,
                               QA_DataStruct_Stock_block,
                               QA_DataStruct_Stock_day, QA_DataStruct_Stock_min,
                               QA_DataStruct_Stock_transaction)
-from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_indexlist_day,
+from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_index_day,
+                                       QA_fetch_index_min,
                                        QA_fetch_stock_day,
                                        QA_fetch_stock_full,
                                        QA_fetch_stock_min)
@@ -61,7 +62,7 @@ def QA_fetch_stock_day_adv(
         start = '1990-01-01'
         end = str(datetime.date.today())
 
-    return QA_DataStruct_Stock_day(QA_fetch_stock_day(code, start, end, format='pd').query('volume>1').set_index(['date', 'code'], drop=if_drop_index))
+    return QA_DataStruct_Stock_day(QA_fetch_stock_day(code, start, end, format='pd').set_index(['date', 'code'], drop=if_drop_index))
 
 
 def QA_fetch_stock_min_adv(
@@ -89,7 +90,7 @@ def QA_fetch_stock_min_adv(
     if len(end) == 10:
         end = '{} 15:00:00'.format(end)
 
-    return QA_DataStruct_Stock_min(QA_fetch_stock_min(code, start, end, format='pd', frequence=frequence).query('volume>1').set_index(['datetime', 'code'], drop=if_drop_index))
+    return QA_DataStruct_Stock_min(QA_fetch_stock_min(code, start, end, format='pd', frequence=frequence).set_index(['datetime', 'code'], drop=if_drop_index))
 
 
 def QA_fetch_stock_day_full_adv(date):
@@ -106,24 +107,7 @@ def QA_fetch_index_day_adv(
     end = start if end is None else end
     start = str(start)[0:10]
     end = str(end)[0:10]
-    if isinstance(code, str):
-        if QA_util_date_valid(end) == True:
-            __data = []
-            for item in collections.find({
-                'code': str(code)[0:6], "date_stamp": {
-                    "$lte": QA_util_date_stamp(end),
-                    "$gte": QA_util_date_stamp(start)}}):
-                __data.append([str(item['code']), float(item['open']), float(item['high']), float(
-                    item['low']), float(item['close']), float(item['vol']), item['date']])
-            __data = DataFrame(__data, columns=[
-                'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
-            __data['date'] = pd.to_datetime(__data['date'])
-            return QA_DataStruct_Index_day(__data.query('volume>1').set_index(['date', 'code'], drop=if_drop_index))
-        else:
-            QA_util_log_info('something wrong with date')
-
-    elif isinstance(code, list):
-        return QA_DataStruct_Index_day(pd.concat(QA_fetch_indexlist_day(code, [start, end])).query('volume>1').set_index(['date', 'code'], drop=if_drop_index))
+    return QA_DataStruct_Index_day(QA_fetch_index_day(code, start, end, format='pd').set_index(['date', 'code'], drop=if_drop_index))
 
 
 def QA_fetch_index_min_adv(
@@ -149,26 +133,7 @@ def QA_fetch_index_min_adv(
         start = '{} 09:30:00'.format(start)
     if len(end) == 10:
         end = '{} 15:00:00'.format(end)
-    if isinstance(code, str):
-        for item in collections.find({
-            'code': str(code), "time_stamp": {
-                "$gte": QA_util_time_stamp(start),
-                "$lte": QA_util_time_stamp(end)
-            }, 'type': frequence
-        }):
-
-            __data.append([str(item['code']), float(item['open']), float(item['high']), float(
-                item['low']), float(item['close']), float(item['vol']), item['datetime'], item['time_stamp'], item['date']])
-
-        __data = DataFrame(__data, columns=[
-            'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'time_stamp', 'date'])
-
-        __data['datetime'] = pd.to_datetime(__data['datetime'])
-        return QA_DataStruct_Index_min(__data.query('volume>1').set_index(['datetime', 'code'], drop=if_drop_index))
-
-    elif isinstance(code, list):
-        return QA_DataStruct_Index_min(pd.concat([QA_fetch_index_min_adv(code_, start, end, frequence, if_drop_index).data for code_ in code]).set_index(['datetime', 'code'], drop=if_drop_index))
-
+    return QA_DataStruct_Index_min(QA_fetch_index_min(code,start,end,format='pd',frequence=frequence).set_index(['datetime', 'code'], drop=if_drop_index))
 
 def QA_fetch_stock_transaction_adv(
         code,
