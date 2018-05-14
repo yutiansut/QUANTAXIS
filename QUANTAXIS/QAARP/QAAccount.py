@@ -221,6 +221,7 @@ class QA_Account(QA_Worker):
             self.cash.append(float(self.cash[-1]) - float(message['body']['order']['price']) *
                              float(message['body']['order']['amount']) * message['body']['order']['towards'] -
                              float(message['body']['fee']['commission']))
+            self.cash_available = self.cash[-1]  # 资金立刻结转
 
         return self.message
 
@@ -293,12 +294,17 @@ class QA_Account(QA_Worker):
             if self.cash_available >= money:
                 self.cash_available -= money
                 flag = True
+            else:
+                print('可用资金不足')
         elif int(towards) < 0:
-            if self.allow_sellopen:
-                flag = True
+
             if self.sell_available.get(code, 0) >= amount:
                 self.sell_available[code] -= amount
                 flag = True
+            elif self.allow_sellopen:
+                flag = True
+            else:
+                print('资金股份不足/不允许卖空开仓')
 
         if flag and amount > 0:
             return QA_Order(user_cookie=self.user_cookie, strategy=self.strategy_name, frequence=self.frequence,
@@ -307,11 +313,12 @@ class QA_Account(QA_Worker):
                             amount=amount, price=price, order_model=order_model, towards=towards,
                             amount_model=amount_model)  # init
         else:
+            print('ERROR : amount=0')
             return False
 
     def settle(self):
         '同步可用资金/可卖股票'
-        self.cash_available = self.cash[-1]
+
         self.sell_available = self.hold
 
     def on_bar(self, event):
