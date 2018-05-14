@@ -48,35 +48,36 @@ def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collec
     start = str(start)[0:10]
     end = str(end)[0:10]
     #code= [code] if isinstance(code,str) else code
-    
+
     # code checking
     code = QA_util_code_tolist(code)
-
 
     if QA_util_date_valid(end) == True:
 
         __data = []
         cursor = collections.find({
-            'code': {'$in':code}, "date_stamp": {
+            'code': {'$in': code}, "date_stamp": {
                 "$lte": QA_util_date_stamp(end),
                 "$gte": QA_util_date_stamp(start)}})
         #res=[QA_util_dict_remove_key(data, '_id') for data in cursor]
 
-        res=pd.DataFrame([item for item in cursor])
+        res = pd.DataFrame([item for item in cursor])
         try:
-            res=res.drop('_id',axis=1).assign(volume=res.vol).assign(date=pd.to_datetime(res.date)).drop_duplicates((['date','code'])).set_index('date', drop=False)
-            res=res.ix[:, ['code', 'open', 'high', 'low', 'close', 'volume','amount', 'datetime', 'date']]
+            res = res.drop('_id', axis=1).assign(volume=res.vol).assign(date=pd.to_datetime(
+                res.date)).drop_duplicates((['date', 'code'])).set_index('date', drop=False)
+            res = res.ix[:, ['code', 'open', 'high', 'low',
+                             'close', 'volume', 'amount', 'datetime', 'date']]
         except:
-            res=None    
+            res = None
         if format in ['P', 'p', 'pandas', 'pd']:
             return res
         elif format in ['json', 'dict']:
             return QA_util_to_json_from_pandas(res)
         # 多种数据格式
         elif format in ['n', 'N', 'numpy']:
-            return  numpy.asarray(res)
+            return numpy.asarray(res)
         elif format in ['list', 'l', 'L']:
-            return  numpy.asarray(res).tolist()
+            return numpy.asarray(res).tolist()
         else:
             return None
     else:
@@ -96,7 +97,7 @@ def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', colle
     elif frequence in ['60min', '60m']:
         frequence = '60min'
     __data = []
-        # code checking
+    # code checking
     code = QA_util_code_tolist(code)
 
     cursor = collections.find({
@@ -106,24 +107,24 @@ def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', colle
         }, 'type': frequence
     })
 
-    res=pd.DataFrame([item for item in cursor])
+    res = pd.DataFrame([item for item in cursor])
     try:
-        res=res.drop('_id',axis=1).assign(volume=res.vol).assign(datetime=pd.to_datetime(res.datetime)).drop_duplicates(['datetime','code']).set_index('datetime', drop=False)
-        #return res
+        res = res.drop('_id', axis=1).assign(volume=res.vol).assign(datetime=pd.to_datetime(
+            res.datetime)).drop_duplicates(['datetime', 'code']).set_index('datetime', drop=False)
+        # return res
     except:
-        res=None
+        res = None
     if format in ['P', 'p', 'pandas', 'pd']:
         return res
     elif format in ['json', 'dict']:
         return QA_util_to_json_from_pandas(res)
     # 多种数据格式
     elif format in ['n', 'N', 'numpy']:
-        return  numpy.asarray(res)
+        return numpy.asarray(res)
     elif format in ['list', 'l', 'L']:
-        return  numpy.asarray(res).tolist()
+        return numpy.asarray(res).tolist()
     else:
         return None
-
 
 
 def QA_fetch_trade_date():
@@ -161,7 +162,6 @@ def QA_fetch_stock_full(date, format='numpy', collections=DATABASE.stock_day):
         return __data
     else:
         QA_util_log_info('something wrong with date')
-
 
 
 def QA_fetch_index_day(code, start, end, format='numpy', collections=DATABASE.index_day):
@@ -268,8 +268,9 @@ def QA_fetch_future_tick():
 
 def QA_fetch_stock_xdxr(code, format='pd', collections=DATABASE.stock_xdxr):
     '获取股票除权信息/数据库'
+    code = QA_util_code_tolist(code)
     data = pd.DataFrame([item for item in collections.find(
-        {'code': code})]).drop(['_id'], axis=1)
+        {'code':  {'$in': code}})]).drop(['_id'], axis=1)
     data['date'] = pd.to_datetime(data['date'])
     return data.set_index('date', drop=False)
 
