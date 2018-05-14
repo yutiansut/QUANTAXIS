@@ -296,9 +296,10 @@ def QA_fetch_stock_block(code=None, format='pd', collections=DATABASE.stock_bloc
 
 
 def QA_fetch_stock_info(code, format='pd', collections=DATABASE.stock_info):
+    code = QA_util_code_tolist(code)
     try:
         data = pd.DataFrame([item for item in collections.find(
-            {'code': code})]).drop(['_id'], axis=1)
+            {'code':  {'$in': code}})]).drop(['_id'], axis=1)
         #data['date'] = pd.to_datetime(data['date'])
         return data.set_index('code', drop=False)
     except Exception as e:
