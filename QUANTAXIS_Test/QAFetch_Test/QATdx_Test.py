@@ -81,6 +81,8 @@ class Test_QA_Fetch(unittest.TestCase):
         _time1 = datetime.datetime.strptime(str(now)[0:19], '%Y-%m-%d %H:%M:%S')
         if _time1.hour in [0, 1,2,3,4,5,6,7,8,9,10]:
             toDayIsBeforeOpen = True
+        else:
+            toDayIsBeforeOpen = False
 
         prev_trade_day = ""
         if toDayIsTradeDay == False:
@@ -188,8 +190,12 @@ class Test_QA_Fetch(unittest.TestCase):
             for iStockIndex in range(0, longNumberOfStock[0]):
 
                 #修改， fix 没有输出
-                print('共%d个数据 ， 已经读取%d  读取数据中 :%10.8s%s' % (longNumberOfStock[0], iStockIndex, str(iStockIndex / longNumberOfStock[0]), '%'))
+                #print('共%d个数据 ， 已经读取%d  读取数据中 :%10.8s%s' % (longNumberOfStock[0], iStockIndex, str(iStockIndex / longNumberOfStock[0]), '%'))
 
+                i = round((iStockIndex / longNumberOfStock[0]) * 100.0)
+                s1 = "\r读取数据%d%%[%s%s]" % (i, "*" * i, " " * (100 - i))
+                sys.stdout.write(s1)
+                sys.stdout.flush()
 
                 #fileDad.seek(0x10 + iStockIndex * 4 * 0x10);
                 #aStockData = fileDad.read(0x10 * 4);
@@ -296,24 +302,22 @@ class Test_QA_Fetch(unittest.TestCase):
             print(idx_from_df_tdx)
 
             # for idx_from_df_dad in df_from_dad.index:
-
-            open_price1 = df_from_tdx.loc[idx_from_df_tdx, "open"]
+            open_price1  = df_from_tdx.loc[idx_from_df_tdx, "open"]
             close_price1 = df_from_tdx.loc[idx_from_df_tdx, "close"]
-            high_price1 = df_from_tdx.loc[idx_from_df_tdx, "high"]
-            low_price1 = df_from_tdx.loc[idx_from_df_tdx, "low"]
-            volume1 = df_from_tdx.loc[idx_from_df_tdx, "vol"]
-            amount1 = df_from_tdx.loc[idx_from_df_tdx, "amount"]
-            date1 = df_from_tdx.loc[idx_from_df_tdx, "date"]
+            high_price1  = df_from_tdx.loc[idx_from_df_tdx, "high"]
+            low_price1   = df_from_tdx.loc[idx_from_df_tdx, "low"]
+            volume1      = df_from_tdx.loc[idx_from_df_tdx, "vol"]
+            amount1      = df_from_tdx.loc[idx_from_df_tdx, "amount"]
+            date1        = df_from_tdx.loc[idx_from_df_tdx, "date"]
 
             # fix here 构造和 QA_fetch_get_stock_day 返回一样类型的 dataframe 直接比较
-
-            open_price2 = df_from_dad.loc["SZ300439", "open"]
+            open_price2  = df_from_dad.loc["SZ300439", "open"]
             close_price2 = df_from_dad.loc["SZ300439", "close"]
-            high_price2 = df_from_dad.loc["SZ300439", "high"]
-            low_price2 = df_from_dad.loc["SZ300439", "low"]
-            volume2 = df_from_dad.loc["SZ300439", "volumn"]
-            amount2 = df_from_dad.loc["SZ300439", "turn"]
-            date2 = df_from_dad.loc["SZ300439", "date"]
+            high_price2  = df_from_dad.loc["SZ300439", "high"]
+            low_price2   = df_from_dad.loc["SZ300439", "low"]
+            volume2      = df_from_dad.loc["SZ300439", "volumn"]
+            amount2      = df_from_dad.loc["SZ300439", "turn"]
+            date2        = df_from_dad.loc["SZ300439", "date"]
 
             self.assertEqual(open_price1, round(open_price2, 2))
             self.assertEqual(close_price1, round(close_price2, 2))
@@ -325,13 +329,7 @@ class Test_QA_Fetch(unittest.TestCase):
             self.assertEqual(date1, date2)
 
             #print(idx_from_df_dad)
-
-
-
-                #print(type(open_price1), type(close_price1) ,type(high_price1), type(low_price1), type(volume1), type(amount1), type(date1))
-        #QA.QA_fetch_stock_day("")amount
-        #QA.QA_fetch_stock_day()
-        #QA.QA_util_time_now()
+            #print(type(open_price1), type(close_price1) ,type(high_price1), type(low_price1), type(volume1), type(amount1), type(date1))
         pass
 
     pass
