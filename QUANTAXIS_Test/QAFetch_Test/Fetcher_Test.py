@@ -27,10 +27,6 @@ from QUANTAXIS import *;
 
 class Test_Fetcher(unittest.TestCase):
 
-
-
-
-
     def test_QA_quotation(self):
         #print("ok start test")
         df_from_Tdx = QA_quotation('300439', '2018-04-01', '2018-04-10', frequence=FREQUENCE.DAY,
@@ -75,8 +71,6 @@ class Test_Fetcher(unittest.TestCase):
         print("--------------- ")
 
         pass
-
-
 
 if __name__ == '__main__':
     unittest.main()
