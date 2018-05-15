@@ -104,3 +104,41 @@ Order_byamount=Account.send_order(code='000001',
 
 1. 修改了查询股票info的代码, 支持多个股票同时查询
 2. 修改了QA_Account下单时的```cash_available```结算bug
+3. 
+
+## 1.0.31
+
+1.0.31 更新了关于DATAStruct的易用性
+
+1. 增加了一个参数 split_dicts, 以KV对形式拆分DataStruct,可以快速寻找个股的DataStruct
+
+```python
+
+
+[In1]: datafq.split_dicts
+
+{'000014': < QA_DataStruct_Stock_day with 1 securities >,
+ '000037': < QA_DataStruct_Stock_day with 1 securities >,
+ '000555': < QA_DataStruct_Stock_day with 1 securities >,
+ '000670': < QA_DataStruct_Stock_day with 1 securities >,
+ '000677': < QA_DataStruct_Stock_day with 1 securities >,
+ '000681': < QA_DataStruct_Stock_day with 1 securities >,
+ '000687': < QA_DataStruct_Stock_day with 1 securities >,
+ '000801': < QA_DataStruct_Stock_day with 1 securities >,
+ '000868': < QA_DataStruct_Stock_day with 1 securities >,
+ '002068': < QA_DataStruct_Stock_day with 1 securities >,
+ '002077': < QA_DataStruct_Stock_day with 1 securities >,
+ '002137': < QA_DataStruct_Stock_day with 1 securities >,
+ '002203': < QA_DataStruct_Stock_day with 1 securities >,
+ '002258': < QA_DataStruct_Stock_day with 1 securities >,
+ '002371': < QA_DataStruct_Stock_day with 1 securities >,
+ '002376': < QA_DataStruct_Stock_day with 1 securities >}
+```
+
+example:
+
+从一个DataStruct包里面快速拿到000014的股票,选择2018-04-01以前15天的数据,计算这部分数据的MACD
+```python
+R=datafq.split_dicts
+R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_MACD,1,2)
+```
