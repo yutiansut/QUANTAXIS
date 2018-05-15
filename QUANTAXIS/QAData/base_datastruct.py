@@ -375,6 +375,16 @@ class _quotation_base():
         '返回结构的长度'
         return len(self.data)
 
+
+    @property
+    @lru_cache()
+    def split_dicts(self):
+        """
+        拆分成dict code:datastruct模式,方便快速选择.
+        加入缓存
+        """
+        return dict(zip(list(self.code), self.splits()))
+
     def get_data(self, time, code):
         'give the time,code tuple and turn the dict'
         try:
