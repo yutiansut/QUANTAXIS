@@ -21,7 +21,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
+#
+#
 import datetime
 import threading
 import time
@@ -30,61 +31,46 @@ from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 
 
 def QA_util_time_now():
-    """[summary]
-    
-    Returns:
-        [type] -- [description]
     """
-
+    返回当前时间
+    :return: 类型datetime.datetime
+    """
     return datetime.datetime.now()
 
 
 def QA_util_date_today():
-    """[summary]
-    
-    Returns:
-        [type] -- [description]
     """
-
+    返回当前日期
+    :return: 类型datetime.date
+    """
     return datetime.date.today()
 
 
 def QA_util_date_str2int(date):
-    """[summary]
-    
-    Arguments:
-        date {[type]} -- [description]
-    
-    Returns:
-        [type] -- [description]
     """
-
+    日期字符串 '2011-09-11' 变换成 整数 20110911
+    日期字符串 '2018-12-01' 变换成 整数 20181201
+    :param date: str日期字符串
+    :return: 类型int
+    """
     return int(str(date)[0:4] + str(date)[5:7] + str(date)[8:10])
 
 
 def QA_util_date_int2str(date):
-    """[summary]
-    
-    Arguments:
-        date {[type]} -- [description]
-    
-    Returns:
-        [type] -- [description]
     """
-
+    类型datetime.datatime
+    :param date: int 8位整数
+    :return: 类型str
+    """
     return str(str(date)[0:4] + '-' + str(date)[4:6] + '-' + str(date)[6:8])
 
 
 def QA_util_to_datetime(time):
-    """[summary]
-    
-    Arguments:
-        time {[type]} -- [description]
-    
-    Returns:
-        [type] -- [description]
     """
-
+    字符串 '2018-01-01'  转变成 datatime 类型
+    :param time: 字符串str -- 格式必须是 2018-01-01 ，长度10
+    :return: 类型datetime.datatime
+    """
     if len(str(time)) == 10:
         _time = '{} 00:00:00'.format(time)
     elif len(str(time)) == 19:
@@ -95,29 +81,27 @@ def QA_util_to_datetime(time):
 
 
 def QA_util_date_stamp(date):
-    """[summary]
-    
-    Arguments:
-        date {[type]} -- [description]
-    
-    Returns:
-        [type] -- [description]
     """
-
+    字符串 '2018-01-01'  转变成 float 类型时间 类似 time.time() 返回的类型
+    :param date: 字符串str -- 格式必须是 2018-01-01 ，长度10
+    :return: 类型float
+    """
     datestr = str(date)[0:10]
     date = time.mktime(time.strptime(datestr, '%Y-%m-%d'))
     return date
 
 
 def QA_util_time_stamp(time_):
-    '''
-    数据格式最好是%Y-%m-%d %H:%M:%S 中间要有空格 
-    '''
+    """
+    字符串 '2018-01-01 00:00:00'  转变成 float 类型时间 类似 time.time() 返回的类型
+    :param time_: 字符串str -- 数据格式 最好是%Y-%m-%d %H:%M:%S 中间要有空格
+    :return: 类型float
+    """
     if len(str(time_)) == 10:
         # yyyy-mm-dd格式
         return time.mktime(time.strptime(time_, '%Y-%m-%d'))
     elif len(str(time_)) == 16:
-            # yyyy-mm-dd hh:mm格式
+        # yyyy-mm-dd hh:mm格式
         return time.mktime(time.strptime(time_, '%Y-%m-%d %H:%M'))
     else:
         timestr = str(time_)[0:19]
@@ -127,9 +111,11 @@ def QA_util_time_stamp(time_):
 def QA_util_stamp2datetime(timestamp):
     """
     datestamp转datetime
-
     pandas转出来的timestamp是13位整数 要/1000
-
+    It’s common for this to be restricted to years from 1970 through 2038.
+    从1970年开始的纳秒到当前的计数 转变成 float 类型时间 类似 time.time() 返回的类型
+    :param timestamp: long类型
+    :return: 类型float
     """
     try:
         return datetime.datetime.fromtimestamp(timestamp)
@@ -138,30 +124,20 @@ def QA_util_stamp2datetime(timestamp):
 
 
 def QA_util_ms_stamp(ms):
-    """[summary]
-    
-    Arguments:
-        ms {[type]} -- [description]
-    
-    Returns:
-        [type] -- [description]
     """
-
+    直接返回不做处理
+    :param ms:  long类型 -- tick count
+    :return: 返回ms
+    """
     return ms
 
-
 def QA_util_date_valid(date):
-    """[summary]
-    
-    Arguments:
-        date {[type]} -- [description]
-    
-    Returns:
-        [type] -- [description]
     """
-
+    判断字符串是否是 1982-05-11 这种格式
+    :param date: date 字符串str -- 格式 字符串长度10
+    :return: boolean -- 格式是否正确
+    """
     try:
-
         time.strptime(date, "%Y-%m-%d")
         return True
     except:
@@ -169,13 +145,12 @@ def QA_util_date_valid(date):
 
 
 def QA_util_realtime(strtime, client):
-    """[summary]
-    
-    Arguments:
-        strtime {[type]} -- [description]
-        client {[type]} -- [description]
     """
-
+    查询数据库中的数据
+    :param strtime: strtime  str字符串                 -- 1999-12-11 这种格式
+    :param client: client  pymongo.MongoClient类型    -- mongodb 数据库 从 QA_util_sql_mongo_setting 中 QA_util_sql_mongo_setting 获取
+    :return: Dictionary  -- {'time_real': 时间,'id': id}
+    """
     time_stamp = QA_util_date_stamp(strtime)
     coll = client.quantaxis.trade_date
     temp_str = coll.find_one({'date_stamp': {"$gte": time_stamp}})
@@ -185,33 +160,26 @@ def QA_util_realtime(strtime, client):
 
 
 def QA_util_id2date(idx, client):
-    """[summary]
-    
-    Arguments:
-        idx {[type]} -- [description]
-        client {[type]} -- [description]
-    
-    Returns:
-        [type] -- [description]
     """
-
+    从数据库中查询 通达信时间
+    :param idx: 字符串 -- 数据库index
+    :param client: pymongo.MongoClient类型    -- mongodb 数据库 从 QA_util_sql_mongo_setting 中 QA_util_sql_mongo_setting 获取
+    :return:         Str -- 通达信数据库时间
+    """
     coll = client.quantaxis.trade_date
     temp_str = coll.find_one({'num': idx})
     return temp_str['date']
 
 
 def QA_util_is_trade(date, code, client):
-    """判断是否是交易日
-    
-    Arguments:
-        date {[type]} -- [description]
-        code {[type]} -- [description]
-        client {[type]} -- [description]
-    
-    Returns:
-        [type] -- [description]
     """
-
+    判断是否是交易日
+    从数据库中查询
+    :param date: str类型 -- 1999-12-11 这种格式    10位字符串
+    :param code: str类型 -- 股票代码 例如 603658 ， 6位字符串
+    :param client: pymongo.MongoClient类型    -- mongodb 数据库 从 QA_util_sql_mongo_setting 中 QA_util_sql_mongo_setting 获取
+    :return:  Boolean -- 是否是交易时间
+    """
     coll = client.quantaxis.stock_day
     date = str(date)[0:10]
     is_trade = coll.find_one({'code': code, 'date': date})
@@ -223,20 +191,21 @@ def QA_util_is_trade(date, code, client):
 
 
 def QA_util_get_date_index(date, trade_list):
-    """返回在trade_list中的index位置
-    
-    Arguments:
-        date {[type]} -- [description]
-        trade_list {[type]} -- [description]
-    
-    Returns:
-        [type] -- [description]
     """
-
+    返回在trade_list中的index位置
+    :param date: str类型 -- 1999-12-11 这种格式    10位字符串
+    :param trade_list: ？？
+    :return: ？？
+    """
     return trade_list.index(date)
 
 
 def QA_util_get_index_date(id, trade_list):
+    """
+    :param id:  ：？？
+    :param trade_list:  ？？
+    :return: ？？
+    """
     return trade_list[id]
 
 
@@ -291,7 +260,15 @@ def QA_util_select_hours(time=None, gt=None, lt=None, gte=None, lte=None):
 
 
 def QA_util_select_min(time=None, gt=None, lt=None, gte=None, lte=None):
+    """
     'quantaxis的时间选择函数,约定时间的范围,比如30分到59分'
+    :param time:
+    :param gt:
+    :param lt:
+    :param gte:
+    :param lte:
+    :return:
+    """
     if time is None:
         __realtime = datetime.datetime.now()
     else:
@@ -331,7 +308,6 @@ def QA_util_select_min(time=None, gt=None, lt=None, gte=None, lte=None):
                     true_list.append(0)
                 else:
                     true_list.append(1)
-
     except:
         return Exception
     if sum(true_list) > 0:
@@ -341,17 +317,27 @@ def QA_util_select_min(time=None, gt=None, lt=None, gte=None, lte=None):
 
 
 def QA_util_time_delay(time_=0):
+    """
     '这是一个用于复用/比如说@装饰器的延时函数\
     使用threading里面的延时,为了是不阻塞进程\
     有时候,同时发进去两个函数,第一个函数需要延时\
     第二个不需要的话,用sleep就会阻塞掉第二个进程'
+    :param time_:
+    :return:
+    """
     def _exec(func):
         threading.Timer(time_, func)
     return _exec
 
 
 def QA_util_calc_time(func, *args, **kwargs):
+    """
     '耗时长度的装饰器'
+    :param func:
+    :param args:
+    :param kwargs:
+    :return:
+    """
     _time = datetime.datetime.now()
     func(*args, **kwargs)
     print(datetime.datetime.now() - _time)
