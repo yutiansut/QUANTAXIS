@@ -8,9 +8,13 @@ except:
     raise ModuleNotFoundError
 
 
-def get_price(code="000001.XSHE"):
-    return jqdatasdk.get_price(code)
+def get_price(code="600000.XSHG"):
+    return jqdatasdk.get_price(code,end_date='2018-05-14')
 
+
+
+if __name__ =='__main__':
+    print(get_price())
 """
 
 get_price

@@ -150,3 +150,6 @@ kernel*.json
 
 # sqlite database
 *.db
+
+
+*.dad
