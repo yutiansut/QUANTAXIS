@@ -608,7 +608,7 @@ class _quotation_base():
         elif self.type[-3:] in ['min']:
             return self.new(self.data.query('code=="{}"'.format(code)).set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
 
-    def get_bar(self, code, time, if_trade):
+    def get_bar(self, code, time, if_trade=True):
         if self.type[-3:] in ['day']:
             return self.new(self.query('code=="{}" & date=="{}"'.format(code, str(time)[0:10])).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
 
