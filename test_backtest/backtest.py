@@ -58,7 +58,7 @@ def run_daybacktest():
     backtest = Backtest(market_type=MARKET_TYPE.STOCK_CN,
                         frequence=FREQUENCE.DAY,
                         start='2017-01-01',
-                        end='2017-01-10',
+                        end='2018-01-10',
                         code_list=QA.QA_fetch_stock_block_adv().code[0:5],
                         commission_fee=0.00015)
     backtest.start_market()
