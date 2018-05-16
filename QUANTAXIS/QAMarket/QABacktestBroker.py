@@ -171,10 +171,13 @@ class QA_BacktestBroker(QA_Broker):
                 order) if event.market_data is None else event.market_data
         else:
             self.market_data = self.get_market(order)
+        if self.market_data is not None:
+            
+            order = self.warp(order)
 
-        order = self.warp(order)
-
-        return self.dealer.deal(order, self.market_data)
+            return self.dealer.deal(order, self.market_data)
+        else:
+            raise NotImplementedError
 
     def warp(self, order):
         """对order/market的封装
@@ -204,14 +207,11 @@ class QA_BacktestBroker(QA_Broker):
                     str(order.datetime), '%Y-%m-%d %H:%M:%S') + datetime.timedelta(minutes=1))
                 order.date = exact_time[0:10]
                 order.datetime = exact_time
-            self.market_data = self.get_market(order)
-            if self.market_data is None:
-                return order
 
             _original_marketvalue = order.price*order.amount
 
-            order.price = (float(self.market_data["high"]) +
-                           float(self.market_data["low"])) * 0.5
+            order.price = (float(self.market_data.high) +
+                           float(self.market_data.low)) * 0.5
             if order.market_type is MARKET_TYPE.STOCK_CN:
                 order.amount = 100*int(_original_marketvalue/(order.price*100))
         elif order.order_model == ORDER_MODEL.NEXT_OPEN:
@@ -234,13 +234,10 @@ class QA_BacktestBroker(QA_Broker):
                     pass
                 else:
                     order.datetime = '{} 15:00:00'.format(order.date)
-            self.market_data = self.get_market(order)
-            if self.market_data is None:
-                return order
 
             _original_marketvalue = order.price*order.amount
 
-            order.price = float(self.market_data["close"])
+            order.price = float(self.market_data.close)
             if order.market_type is MARKET_TYPE.STOCK_CN:
                 order.amount = 100*int(_original_marketvalue/(order.price*100))
 
@@ -271,17 +268,16 @@ class QA_BacktestBroker(QA_Broker):
                     order.datetime, '%Y-%m-%d %H-%M-%S') + datetime.timedelta(minute=1))
                 order.date = exact_time[0:10]
                 order.datetime = exact_time
-            self.market_data = self.get_market(order)
-            if self.market_data is None:
-                return order
+
             _original_marketvalue = order.price*order.amount
             if order.towards == 1:
-                order.price = float(self.market_data["high"])
+                order.price = float(self.market_data.high)
             else:
-                order.price = float(self.market_data["low"])
+                order.price = float(self.market_data.low)
 
             if order.market_type is MARKET_TYPE.STOCK_CN:
                 order.amount = 100*int(_original_marketvalue/(order.price*100))
+                
         return order
 
     def get_market(self, order):
