@@ -24,7 +24,7 @@
 
 
 import datetime
-
+import pandas as pd
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_future_day,
                                        QA_fetch_future_min, QA_fetch_index_day,
@@ -40,9 +40,10 @@ from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.QADealer import QA_Dealer
 from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
 from QUANTAXIS.QAUtil.QADate import QA_util_to_datetime
+from QUANTAXIS.QAUtil.QATransform import  QA_util_to_json_from_pandas
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_next_day
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT,
+from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT, ORDER_DIRECTION,
                                           BROKER_TYPE, ENGINE_EVENT, FREQUENCE,
                                           MARKET_EVENT, MARKET_TYPE,
                                           ORDER_MODEL)
@@ -76,7 +77,7 @@ class QA_BacktestBroker(QA_Broker):
     允许无仓位的时候卖出证券(按市值和保证金比例限制算)
     """
 
-    def __init__(self, commission_fee_coeff=0.0015, if_nondatabase=False):
+    def __init__(self,if_nondatabase=False):
         """[summary]
 
 
@@ -86,7 +87,7 @@ class QA_BacktestBroker(QA_Broker):
             if_nondatabase {[type]} -- [description] (default: {False})
         """
         super().__init__()
-        self.dealer = QA_Dealer(commission_fee_coeff)
+        self.dealer = QA_Dealer()
         self.order_handler = QA_OrderHandler()
         self.engine = {
             MARKET_TYPE.STOCK_CN: self.dealer.backtest_stock_dealer}
@@ -101,7 +102,7 @@ class QA_BacktestBroker(QA_Broker):
                         (MARKET_TYPE.FUND_CN, FREQUENCE.ONE_MIN): QA_fetch_index_min, (MARKET_TYPE.FUND_CN, FREQUENCE.FIVE_MIN): QA_fetch_index_min,
                         (MARKET_TYPE.FUND_CN, FREQUENCE.THIRTY_MIN): QA_fetch_index_min, (MARKET_TYPE.FUND_CN, FREQUENCE.SIXTY_MIN): QA_fetch_index_min}
 
-        self.commission_fee_coeff = commission_fee_coeff
+
         self.market_data = None
         self.if_nondatabase = if_nondatabase
         self.name = BROKER_TYPE.BACKETEST
@@ -169,12 +170,17 @@ class QA_BacktestBroker(QA_Broker):
         if 'market_data' in event.__dict__.keys():
             self.market_data = self.get_market(
                 order) if event.market_data is None else event.market_data
+            if isinstance(self.market_data,dict):
+                pass
+            elif isinstance(self.market_data,pd.DataFrame):
+                self.market_data=QA_util_to_json_from_pandas(self.market_data)[0]
+            else:
+                self.market_data=self.market_data.to_json()[0]
         else:
             self.market_data = self.get_market(order)
         if self.market_data is not None:
             
             order = self.warp(order)
-
             return self.dealer.deal(order, self.market_data)
         else:
             raise NotImplementedError
@@ -208,12 +214,23 @@ class QA_BacktestBroker(QA_Broker):
                 order.date = exact_time[0:10]
                 order.datetime = exact_time
 
-            _original_marketvalue = order.price*order.amount
+            #_original_marketvalue = order.price*order.amount
 
-            order.price = (float(self.market_data.high) +
-                           float(self.market_data.low)) * 0.5
-            if order.market_type is MARKET_TYPE.STOCK_CN:
-                order.amount = 100*int(_original_marketvalue/(order.price*100))
+            order.price = (float(self.market_data.get('high')) +
+                        float(self.market_data.get('low'))) * 0.5
+
+            #
+            if order.market_type is MARKET_TYPE.STOCK_CN and order.towards is ORDER_DIRECTION.BUY:
+                if order.order_model is AMOUNT_MODEL.BY_MONEY:
+                    amount = order.money/(order.price*(1+order.commission_coeff))
+                    money = order.money
+                else:
+                    amount = order.amount
+                    money = order.amount * order.price*(1+order.commission_coeff)
+
+                order.amount = int(amount / 100) * 100
+                order.money =  money
+
         elif order.order_model == ORDER_MODEL.NEXT_OPEN:
             # try:
             #     order.date = QA_util_get_next_day(str(order.datetime)[0:10])
@@ -237,7 +254,7 @@ class QA_BacktestBroker(QA_Broker):
 
             _original_marketvalue = order.price*order.amount
 
-            order.price = float(self.market_data.close)
+            order.price = float(self.market_data.get('close'))
             if order.market_type is MARKET_TYPE.STOCK_CN:
                 order.amount = 100*int(_original_marketvalue/(order.price*100))
 
@@ -271,9 +288,9 @@ class QA_BacktestBroker(QA_Broker):
 
             _original_marketvalue = order.price*order.amount
             if order.towards == 1:
-                order.price = float(self.market_data.high)
+                order.price = float(self.market_data.get('high'))
             else:
-                order.price = float(self.market_data.low)
+                order.price = float(self.market_data.get('low'))
 
             if order.market_type is MARKET_TYPE.STOCK_CN:
                 order.amount = 100*int(_original_marketvalue/(order.price*100))

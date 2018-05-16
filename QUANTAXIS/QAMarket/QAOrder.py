@@ -52,8 +52,8 @@ order_frame 是一个管理性面板  但是还是需要一个缓存dict
 
 class QA_Order():
     def __init__(self, price=None, date=None, datetime=None, sending_time=None, transact_time=None, amount=None, market_type=None, frequence=None,
-                 towards=None, code=None, user=None, account_cookie=None, strategy=None, order_model=None, amount_model=AMOUNT_MODEL.BY_AMOUNT,
-                 order_id=None, trade_id=None, status='100', callback=False, *args, **kwargs):
+                 towards=None, code=None, user=None, account_cookie=None, strategy=None, order_model=None, money=None, amount_model=AMOUNT_MODEL.BY_AMOUNT,
+                 order_id=None, trade_id=None, status='100', callback=False, commission_coeff=0.00025, tax_coeff=0.001, *args, **kwargs):
         """委托字段
         price 委托的价格
         date 委托的日期
@@ -106,13 +106,16 @@ class QA_Order():
         self.amount_model = amount_model
         self.order_id = QA_util_random_with_topic(
             topic='Order') if order_id is None else order_id
+        self.commission_coeff = commission_coeff
+        self.tax_coeff = tax_coeff
         self.trade_id = trade_id
         self.status = status
         self.callback = callback
+        self.money = money
 
     def __repr__(self):
-        return '< QA_Order datetime:{} code:{} price:{} towards:{} btype:{} order_id:{} account:{} status:{} >'.format(
-            self.datetime, self.code, self.price, self.towards, self.type, self.order_id, self.account_cookie, self.status)
+        return '< QA_Order datetime:{} code:{} amount:{} price:{} towards:{} btype:{} order_id:{} account:{} status:{} >'.format(
+            self.datetime, self.code, self.amount, self.price, self.towards, self.type, self.order_id, self.account_cookie, self.status)
 
     def info(self):
         return vars(self)
@@ -146,6 +149,8 @@ class QA_Order():
             self.order_id = order['order_id']
             self.trade_id = order['trade_id']
             self.callback = order['callback']
+            self.commission_coeff = order['commission_coeff']
+            self.tax_coeff = order['tax_coeff']
             return self
         except Exception as e:
             QA_util_log_info('Failed to tran from dict {}'.format(e))
