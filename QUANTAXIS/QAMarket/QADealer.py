@@ -130,6 +130,8 @@ class QA_Dealer():
         self.market_data = market_data
         self.deal_price = 0
         self.deal_amount = 0
+        self.commission_fee_coeff=order.commission_coeff
+        self.tax_coeff=order.tax_coeff
         if order.market_type is MARKET_TYPE.STOCK_CN:
             return self.backtest_stock_dealer()
 
@@ -157,14 +159,14 @@ class QA_Dealer():
                     'datetime': self.order.datetime,
                     'towards': self.order.towards
                 },
-                'market': {
-                    'open': self.market_data['open'],
-                    'high': self.market_data['high'],
-                    'low': self.market_data['low'],
-                    'close': self.market_data['close'],
-                    'volume': self.market_data['volume'],
-                    'code': self.market_data['code']
-                },
+                # 'market': {
+                #     'open': self.market_data.get('open'),
+                #     'high': self.market_data.get('high'),
+                #     'low': self.market_data.get('low'),
+                #     'close': self.market_data.get('close'),
+                #     'volume': self.market_data.get('volume'),
+                #     'code': self.market_data.get('code')
+                # },
                 'fee': {
                     'commission': self.commission_fee,
                     'tax': self.tax
@@ -211,23 +213,23 @@ class QA_Dealer():
         step3: return callback
         """
         try:
-            if float(self.market_data['open']) == float(self.market_data['high']) == float(self.market_data['close']) == float(self.market_data['low']):
+            if float(self.market_data.get('open')) == float(self.market_data.get('high')) == float(self.market_data.get('close')) == float(self.market_data.get('low')):
 
                 self.status = TRADE_STATUS.PRICE_LIMIT
                 self.deal_price = 0
                 self.deal_amount = 0
                 self.cal_fee()
                 return self.callback_message()
-            elif ((float(self.order.price) < float(self.market_data["high"]) and
-                    float(self.order.price) > float(self.market_data["low"])) or
-                    float(self.order.price) == float(self.market_data["low"]) or
-                    float(self.order.price) == float(self.market_data['high'])):
+            elif ((float(self.order.price) < float(self.market_data.get('high')) and
+                    float(self.order.price) > float(self.market_data.get('low'))) or
+                    float(self.order.price) == float(self.market_data.get('low')) or
+                    float(self.order.price) == float(self.market_data.get('high'))):
                 '能成功交易的情况 有滑点调整'
-                if float(self.order.amount) < float(self.market_data['volume']) * 100 / 16:
+                if float(self.order.amount) < float(self.market_data.get('volume')) * 100 / 16:
                     self.deal_price = self.order.price
                     self.deal_amount = self.order.amount
-                elif float(self.order.amount) >= float(self.market_data['volume']) * 100 / 16 and \
-                        float(self.order.amount) < float(self.market_data['volume']) * 100 / 8:
+                elif float(self.order.amount) >= float(self.market_data.get('volume')) * 100 / 16 and \
+                        float(self.order.amount) < float(self.market_data.get('volume')) * 100 / 8:
                     """
                     add some slippers
 
@@ -235,19 +237,19 @@ class QA_Dealer():
                     sell_price=mean(min{open,close},low)
                     """
                     if int(self.order.towards) > 0:
-                        self.deal_price = (max(float(self.market_data['open']), float(
-                            self.market_data['close'])) + float(self.market_data['high'])) * 0.5
+                        self.deal_price = (max(float(self.market_data.get('open')), float(
+                            self.market_data.get('close'))) + float(self.market_data.get('high'))) * 0.5
                     else:
-                        self.deal_price = (min(float(self.market_data['open']), float(
-                            self.market_data['close'])) + float(self.market_data['low'])) * 0.5
+                        self.deal_price = (min(float(self.market_data.get('open')), float(
+                            self.market_data.get('close'))) + float(self.market_data.get('low'))) * 0.5
                     self.deal_amount = self.order.amount
 
                 else:
-                    self.deal_amount = float(self.market_data['volume']) / 8
+                    self.deal_amount = float(self.market_data.get('volume')) / 8
                     if int(self.order.towards) > 0:
-                        self.deal_price = float(self.market_data['high'])
+                        self.deal_price = float(self.market_data.get('high'))
                     else:
-                        self.deal_price = float(self.market_data['low'])
+                        self.deal_price = float(self.market_data.get('low'))
 
                 self.cal_fee()
                 self.status = TRADE_STATUS.SUCCESS
