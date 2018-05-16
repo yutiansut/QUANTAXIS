@@ -115,14 +115,14 @@ class QA_User():
         #return self.portfolio_list[portfolio]
         return self.portfolio_list[portfolio.portfolio_cookie] #fix here use cookie as key to find value in dict
 
-    def get_portfolio_by_cookie(self, porfolio_cookie):
+    def get_portfolio_by_cookie(self, portfolio_cookie):
         '''
         'get a portfolio'
         从 portfolio_list dict字典中 根据 portfolio key 获取
         :param portfolio: porfolio_cookie string
         :return: QA_Portfolio类型
         '''
-        return self.portfolio_list[porfolio_cookie]
+        return self.portfolio_list[portfolio_cookie]
 
 
     def generate_simpleaccount(self):
