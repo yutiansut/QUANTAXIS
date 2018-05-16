@@ -38,6 +38,9 @@ from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT,
                                           ORDER_MODEL)
 
 
+from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting, QA_util_mongo_initial
+
+
 
 class QA_Backtest():
     """BACKTEST
@@ -66,6 +69,15 @@ class QA_Backtest():
     """
 
     def __init__(self, market_type, frequence, start, end, code_list, commission_fee,):
+        """
+
+        :param market_type: 回测的市场 MARKET_TYPE.STOCK_CN ，
+        :param frequence: 'day' '1min' '5min' '15min' '30min' '60min'
+        :param start:     开始日期
+        :param end:       结束日期
+        :param code_list: 股票代码池
+        :param commission_fee: 交易佣金
+        """
         self.user = QA_User()
         self.if_settled = False
         self.account = None
@@ -87,17 +99,17 @@ class QA_Backtest():
         elif self.market_type is MARKET_TYPE.STOCK_CN and self.frequence[-3:] == 'min':
             self.ingest_data = QA_fetch_stock_min_adv(
                 self.code_list, self.start, self.end, self.frequence).to_qfq().panel_gen
+        else:
+            QA_util_log_info("{} 的市场类型没有实现！".format(market_type));
 
     def _generate_account(self):
         """generate a simple account
         """
-
         self.account, self.portfolio = self.user.generate_simpleaccount()
 
     def start_market(self):
         """start the market thread and register backtest broker thread
         """
-
         self.market.start()
         self.market.register(self.broker_name, self.broker)
         self.market.login(self.broker_name, self.account.account_cookie,
@@ -114,13 +126,11 @@ class QA_Backtest():
             if self.market_type is MARKET_TYPE.STOCK_CN: #如果是股票市场
                 if _date != date:# 如果新的date
                     self.market._settle(self.broker_name)
-            elif self.market_type in [MARKET_TYPE.FUND_CN, MARKET_TYPE.INDEX_CN, MARKET_TYPE.FUTURE_CN]:
-                self.market._settle(self.broker_name)
-            self.broker.run(QA_Event(
-                event_type=ENGINE_EVENT.UPCOMING_DATA,
-                market_data=data))
-            self.market.upcoming_data(
-                self.broker_name, data)
+            elif self.market_type in [MARKET_TYPE.FUND_CN, MARKET_TYPE.INDEX_CN, MARKET_TYPE.FUTURE_CN]: #基金 指数 期货
+                    self.market._settle(self.broker_name)
+
+            self.broker.run(QA_Event(event_type=ENGINE_EVENT.UPCOMING_DATA,market_data=data))
+            self.market.upcoming_data(self.broker_name, data)
             self.market.trade_engine.join()
 
             _date = date
@@ -132,8 +142,8 @@ class QA_Backtest():
         """
 
         for po in self.user.portfolio_list.keys():
-            for ac in self.user.get_portfolio(po).accounts.keys():
-                accounts = self.user.get_portfolio(po).get_account(ac)
+            for ac in self.user.get_portfolio_by_cookie(po).accounts.keys():
+                accounts = self.user.get_portfolio_by_cookie(po).get_account_by_cookie(ac)
                 print(accounts.hold)
 
                 print(accounts.history_table)
