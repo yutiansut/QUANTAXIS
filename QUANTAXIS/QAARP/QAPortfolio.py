@@ -58,6 +58,9 @@ class QA_Portfolio():
     用account的cookie来管理控制account
 
     portfolio里面的资产主要考虑的是 资金的分配
+
+    @2018/05/16
+    fix 通过 cookie 获取 account
     """
 
     def __init__(self, user_cookie=None, strategy_name=None, init_assets=1000000, cash=None, sell_available=None, history=None):
@@ -111,12 +114,43 @@ class QA_Portfolio():
             else:
                 return self.new_account(account_cookie)
 
-    def get_account(self, cookie):
+    def get_account_by_cookie(self, cookie):
+        '''
         'give the account_cookie and return the account/strategy back'
+        :param cookie:
+        :return: QA_Account with cookie if in dict
+                 None not in list
+        '''
         try:
             return self.accounts[cookie]
         except:
             QA_util_log_info('Can not find this account')
+            return None
+
+    def get_account(self, account):
+        '''
+        check the account whether in the protfolio dict or not
+        :param account:  QA_Account
+        :return: QA_Account if in dict
+                 None not in list
+        '''
+        try:
+            return self.accounts[account.account_cookie]
+        except:
+            QA_util_log_info('Can not find this account with cookies %s'% account.account_cookie )
+            return None
+
+    def get_account_by_cookie(self, account_cookie):
+        '''
+        check the account whether in the protfolio dict or not
+        :param account:  QA_Account
+        :return: QA_Account if in dict
+                 None not in list
+        '''
+        try:
+            return self.accounts[account_cookie]
+        except:
+            QA_util_log_info('Can not find this account with cookies %s'% account_cookie)
             return None
 
     def cookie_mangement(self):

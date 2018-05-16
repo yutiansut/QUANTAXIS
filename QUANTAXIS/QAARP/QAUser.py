@@ -30,55 +30,100 @@ from QUANTAXIS.QAUtil.QASetting import QA_Setting
 
 class QA_User():
     """QA_User 
-    User--Portfolio--Account/Strategy
+    User-->Portfolio-->Account/Strategy
 
     :: 需要增加对于QA_USER的支持
 
-    USER作为一个单位实体,可以自由创建组合(需要被记录),修改组合
-    
-
+    USER作为一个单位实体, 可以自由创建 组合Portfolio (需要被记录),修改 组合Portfolio
 
     @yutiansut 
     2018/05/08
+
+    @jerryw  添加注释，和 todo list
+    2018/05/16
     """
 
     def __init__(self):
+        '''
+            随机初始化 user_cookie 的值
+            Acc+4数字id+4位大小写随机
+        '''
         self.setting = QA_Setting()
         self.portfolio_list = {}
         self.user_cookie = QA_util_random_with_topic('USER')
 
     def __repr__(self):
-        return '< QA_USER {} with {} portfolio >'.format(self.user_cookie, len(self.portfolio_list.keys()))
+        return '< QA_USER {} with {} portfolio: {} >'.format(self.user_cookie, len(self.portfolio_list.keys()), self.portfolio_list)
 
     @property
     def table(self):
         return pd.concat([po.table for po in self.portfolio_list.values()], axis=1)
 
     def client(self):
+        '''
         'user.client to connect database'
+        :return: pymongo.MongoClient 数据库连接
+        '''
         return self.setting.client
 
     def connect_database(self, ip='127.0.0.1', port=27017):
-        'connect is also a way to change database from IP_A to IP_B'
+        '''
+        'connect is also a way to change database from IP_A to IP_B
+        :param ip: 连接mongodb ip
+        :param port: 连接mongodb 端口
+        :return: None
+        '''
         self.setting.change(ip, port)
 
+
     def login(self, user_name, password):
-        'login to a database'
+        '''
+        login to a database
+        todo： fix 返回 是否成功
+        :param user_name: 连接 mongodb 的用户名
+        :param password:  连接 mongodb 的密码
+        :return: Boolean 是否成功连接
+        '''
         if self.setting.login(user_name, password):
             QA_util_log_info('SUCCESS')
+            return True
         else:
             QA_util_log_info('FAILD')
+            return False
 
     def new_portfolio(self):
-        'create a portfolio'
+        '''
+            根据 self.user_cookie 创建一个 portfolio
+        :return:
+             如果存在 返回 新建的 QA_Portfolio
+             如果已经存在 不返回 None
+        '''
         _portfolio = QA_Portfolio(user_cookie=self.user_cookie)
         if _portfolio.portfolio_cookie not in self.portfolio_list.keys():
             self.portfolio_list[_portfolio.portfolio_cookie] = _portfolio
             return _portfolio
+        else:
+            print(" prortfolio with user_cookie ", self.user_cookie , " already exist!!")
 
     def get_portfolio(self, portfolio):
+        '''
         'get a portfolio'
-        return self.portfolio_list[portfolio]
+        从 portfolio_list dict字典中 根据 portfolio key 获取
+        :param portfolio: QA_Portfolio类型
+        :return: QA_Portfolio类型
+        '''
+        #return self.portfolio_list[portfolio]
+        return self.portfolio_list[portfolio.portfolio_cookie] #fix here use cookie as key to find value in dict
+
+    def get_portfolio_by_cookie(self, porfolio_cookie):
+        '''
+        'get a portfolio'
+        从 portfolio_list dict字典中 根据 portfolio key 获取
+        :param portfolio: porfolio_cookie string
+        :return: QA_Portfolio类型
+        '''
+        return self.portfolio_list[porfolio_cookie]
+
 
     def generate_simpleaccount(self):
         """make a simple account with a easier way
@@ -93,6 +138,11 @@ class QA_User():
         return ac, po
 
     def register_account(self, account):
+        '''
+        注册一个account到portfolio组合中
+        :param account: 被注册的account
+        :return:
+        '''
         if len(self.portfolio_list.keys()) < 1:
             po = self.new_portfolio()
         else:
@@ -109,6 +159,8 @@ class QA_User():
 
 
 if __name__ == '__main__':
+
+    #测试不对
     user = QA_User()
     portfolio1 = user.new_portfolio()
     ac1 = user.get_portfolio(portfolio1).new_account()
