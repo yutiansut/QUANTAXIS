@@ -216,6 +216,16 @@ class CLI(cmd.Cmd):
             print(Exception)
 
     def do_help(self, arg):
+        QA_util_log_info("Possible commands are:")
+        QA_util_log_info("save")
+        QA_util_log_info("clean")
+        QA_util_log_info("fn")
+        QA_util_log_info("drop_database")
+        QA_util_log_info("examples")
+        QA_util_log_info("shell")
+        QA_util_log_info("version")
+        QA_util_log_info("quit")
+        QA_util_log_info("exit")
         QA_util_log_info('MORE EXAMPLE on https://github.com/yutiansut/QADemo')
 
     def help(self):
