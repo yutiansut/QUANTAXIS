@@ -74,6 +74,12 @@ class _quotation_base():
     def __len__(self):
         return len(self.index)
 
+    # def __getitem__(self,index):
+    #     try:
+    #         return self.data.__getitem__(index)
+    #     except:
+    #         raise ValueError('NONE EXIST INDEX')
+        
     def __iter__(self):
         """
         iter the row one by one
@@ -436,6 +442,12 @@ class _quotation_base():
             webbrowser.open(path_name)
             QA_util_log_info(
                 'The Pic has been saved to your path: {}'.format(path_name))
+    def get(self,name):
+
+        if name in self.data.__dir__(): 
+            return eval('self.{}'.format(name))
+        else:
+            raise ValueError('QADATASTRUCT CANNOT GET THIS PROPERTY')
 
     def query(self, context):
         """
