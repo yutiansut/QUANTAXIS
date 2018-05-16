@@ -142,3 +142,8 @@ example:
 R=datafq.split_dicts
 R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_MACD,1,2)
 ```
+
+## 1.0.32
+
+1. 对于账户的修改: 增加了QA_Account.orders 作为委托/订单记录器
+2. 对于base_datastruct的修改 : 增加了部分代码的注释
