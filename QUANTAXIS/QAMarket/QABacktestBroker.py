@@ -40,6 +40,7 @@ from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.QADealer import QA_Dealer
 from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
 from QUANTAXIS.QAUtil.QADate import QA_util_to_datetime
+from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_next_day
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT,
                                           BROKER_TYPE, ENGINE_EVENT, FREQUENCE,
@@ -206,20 +207,24 @@ class QA_BacktestBroker(QA_Broker):
             self.market_data = self.get_market(order)
             if self.market_data is None:
                 return order
+
+            _original_marketvalue = order.price*order.amount
+
             order.price = (float(self.market_data["high"]) +
                            float(self.market_data["low"])) * 0.5
+            if order.market_type is MARKET_TYPE.STOCK_CN:
+                order.amount = 100*int(_original_marketvalue/(order.price*100))
         elif order.order_model == ORDER_MODEL.NEXT_OPEN:
-            try:
-                exact_time = str(datetime.datetime.strptime(
-                    str(order.datetime), '%Y-%m-%d %H-%M-%S') + datetime.timedelta(day=1))
-                order.date = exact_time[0:10]
-                order.datetime = '{} 09:30:00'.format(order.date)
-            except:
-                order.datetime = '{} 15:00:00'.format(order.date)
-            self.market_data = self.get_market(order)
-            if self.market_data is None:
-                return order
-            order.price = float(self.market_data["close"])
+            # try:
+            #     order.date = QA_util_get_next_day(str(order.datetime)[0:10])
+            #     order.datetime = '{} 09:30:00'.format(order.date)
+            # except:
+            #     order.datetime = '{} 15:00:00'.format(order.date)
+            # self.market_data = self.get_market(order)
+            # if self.market_data is None:
+            #     return order
+            # order.price = float(self.market_data["close"])
+            raise NotImplementedError
         elif order.order_model == ORDER_MODEL.CLOSE:
 
             try:
@@ -232,7 +237,26 @@ class QA_BacktestBroker(QA_Broker):
             self.market_data = self.get_market(order)
             if self.market_data is None:
                 return order
+
+            _original_marketvalue = order.price*order.amount
+
             order.price = float(self.market_data["close"])
+            if order.market_type is MARKET_TYPE.STOCK_CN:
+                order.amount = 100*int(_original_marketvalue/(order.price*100))
+
+        elif order.order_model == ORDER_MODEL.LIMIT:
+            '加入严格模式'
+            if order.frequence is FREQUENCE.DAY:
+                exact_time = str(datetime.datetime.strptime(
+                    order.datetime, '%Y-%m-%d %H-%M-%S') + datetime.timedelta(day=1))
+
+                order.date = exact_time[0:10]
+                order.datetime = '{} 09:30:00'.format(order.date)
+            elif order.frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
+                exact_time = str(datetime.datetime.strptime(
+                    order.datetime, '%Y-%m-%d %H-%M-%S') + datetime.timedelta(minute=1))
+                order.date = exact_time[0:10]
+                order.datetime = exact_time
 
         elif order.order_model == ORDER_MODEL.STRICT:
             '加入严格模式'
@@ -250,11 +274,14 @@ class QA_BacktestBroker(QA_Broker):
             self.market_data = self.get_market(order)
             if self.market_data is None:
                 return order
+            _original_marketvalue = order.price*order.amount
             if order.towards == 1:
                 order.price = float(self.market_data["high"])
             else:
                 order.price = float(self.market_data["low"])
 
+            if order.market_type is MARKET_TYPE.STOCK_CN:
+                order.amount = 100*int(_original_marketvalue/(order.price*100))
         return order
 
     def get_market(self, order):

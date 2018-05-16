@@ -17,6 +17,7 @@
 * [QUANTAXIS的数据获取指南](Documents/DataFetch.md)
 * [QUANTAXIS行情研究](Documents/analysis.md)
 * [QUANTAXIS的账户结构](Documents/account.md)
+* [QUANTAXIS回测委托成交结算的说明](Documents/orderanddeal.md)
 * [QUANTAXIS回测分析](Documents/backtestanalysis.md)
 * [QUANTAXIS WEB API说明](Documents/backendapi.md)
 * [常见策略整理](Documents/strategy.md)

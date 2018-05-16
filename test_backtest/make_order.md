@@ -15,7 +15,7 @@ Order=Account.send_order(code='000001',
                         towards=QA.ORDER_DIRECTION.BUY,
                         order_model=QA.ORDER_MODEL.MARKET,
                         amount_model=QA.AMOUNT_MODEL.BY_MONEY
-                                 )
+                        )
 
 
 # 打印剩余资金
