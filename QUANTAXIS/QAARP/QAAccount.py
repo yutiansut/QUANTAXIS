@@ -221,6 +221,7 @@ class QA_Account(QA_Worker):
                                  float(message['body']['order']['amount']) * message['body']['order']['towards'] -
                                  float(message['body']['fee']['commission']) -
                                  float(message['body']['fee']['tax']))
+
             if self.cash[-1] > trade_amount:
                 self.time_index.append(
                     str(message['body']['order']['datetime']))
@@ -231,11 +232,12 @@ class QA_Account(QA_Worker):
                         message['header']['order_id']), str(message['header']['trade_id']), str(self.account_cookie),
                      float(message['body']['fee']['commission']), float(message['body']['fee']['tax'])])
                 self.cash.append(self.cash[-1]-trade_amount)
-                self.cash_available = self.cash[-1]  # 资金立刻结转
+                self.cash_available = self.cash[-1] 
+                 # 资金立刻结转
             else:
                 print(message)
                 print(self.cash[-1])
-
+                self.cash_available = self.cash[-1] 
         return self.message
 
     def send_order(self, code=None, amount=None, time=None, towards=None, price=None, money=None, order_model=None, amount_model=None):
