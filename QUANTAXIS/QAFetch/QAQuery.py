@@ -66,7 +66,7 @@ def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collec
             res = res.drop('_id', axis=1).assign(volume=res.vol).query('volume>1').assign(date=pd.to_datetime(
                 res.date)).drop_duplicates((['date', 'code'])).set_index('date', drop=False)
             res = res.ix[:, ['code', 'open', 'high', 'low',
-                             'close', 'volume', 'amount', 'datetime', 'date']]
+                             'close', 'volume', 'amount', 'date']]
         except:
             res = None
         if format in ['P', 'p', 'pandas', 'pd']:

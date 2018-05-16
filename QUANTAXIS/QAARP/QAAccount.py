@@ -26,7 +26,7 @@
 import pandas as pd
 import datetime
 from QUANTAXIS.QAEngine.QAEvent import QA_Worker
-from QUANTAXIS.QAMarket.QAOrder import QA_Order
+from QUANTAXIS.QAMarket.QAOrder import QA_Order,QA_OrderQueue
 from QUANTAXIS.QASU.save_account import save_account, update_account
 from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
                                           BROKER_TYPE, ENGINE_EVENT, FREQUENCE,
@@ -87,6 +87,7 @@ class QA_Account(QA_Worker):
         self.commission_coeff = commission_coeff
         self.tax_coeff = tax_coeff
         # 资产类
+        self.orders = QA_OrderQueue()  # 历史委托单
         self.init_assets = 1000000 if init_assets is None else init_assets
         self.cash = [self.init_assets] if cash is None else cash
         self.cash_available = self.cash[-1]  # 可用资金
@@ -163,6 +164,10 @@ class QA_Account(QA_Worker):
         return pd.DataFrame(data=self.history, columns=self._history_headers).groupby('code').amount.sum().sort_index()
 
     @property
+    def order_table(self):
+        """return order trade list"""
+        return self.orders.trade_list
+    @property
     def trade(self):
         '每次交易的pivot表'
         return self.history_table.pivot_table(index=['datetime', 'account_cookie'], columns='code', values='amount').fillna(0).sort_index()
@@ -221,6 +226,7 @@ class QA_Account(QA_Worker):
             self.cash.append(float(self.cash[-1]) - float(message['body']['order']['price']) *
                              float(message['body']['order']['amount']) * message['body']['order']['towards'] -
                              float(message['body']['fee']['commission']))
+            self.cash_available = self.cash[-1]  # 资金立刻结转
 
         return self.message
 
@@ -293,25 +299,33 @@ class QA_Account(QA_Worker):
             if self.cash_available >= money:
                 self.cash_available -= money
                 flag = True
+            else:
+                print('可用资金不足')
         elif int(towards) < 0:
-            if self.allow_sellopen:
-                flag = True
+
             if self.sell_available.get(code, 0) >= amount:
                 self.sell_available[code] -= amount
                 flag = True
+            elif self.allow_sellopen:
+                flag = True
+            else:
+                print('资金股份不足/不允许卖空开仓')
 
         if flag and amount > 0:
-            return QA_Order(user_cookie=self.user_cookie, strategy=self.strategy_name, frequence=self.frequence,
-                            account_cookie=self.account_cookie, code=code, market_type=self.market_type,
-                            date=date, datetime=time, sending_time=time, callback=self.receive_deal,
-                            amount=amount, price=price, order_model=order_model, towards=towards,
-                            amount_model=amount_model)  # init
+            _order = QA_Order(user_cookie=self.user_cookie, strategy=self.strategy_name, frequence=self.frequence,
+                              account_cookie=self.account_cookie, code=code, market_type=self.market_type,
+                              date=date, datetime=time, sending_time=time, callback=self.receive_deal,
+                              amount=amount, price=price, order_model=order_model, towards=towards,
+                              amount_model=amount_model)  # init
+            self.orders.insert_order(_order)  # order状态存储
+            return _order
         else:
+            print('ERROR : amount=0')
             return False
 
     def settle(self):
         '同步可用资金/可卖股票'
-        self.cash_available = self.cash[-1]
+
         self.sell_available = self.hold
 
     def on_bar(self, event):
@@ -384,15 +398,27 @@ class QA_Account(QA_Worker):
                 event.callback(event)
 
     def save(self):
+        """
+        存储账户信息
+        """
         save_account(self.message)
 
     def change_cash(self, money):
+        """
+        外部操作|高危|
+        """
         res = self.cash[-1]+money
         if res >= 0:
             # 高危操作
             self.cash[-1] = res
 
-
+    def get_orders(self,if_today=True):
+        """
+        返回当日委托/历史委托
+        """
+        #self.orders.get_orders.
+        self.orders.queue
+        pass
 class Account_handler():
     def __init__(self):
         pass
