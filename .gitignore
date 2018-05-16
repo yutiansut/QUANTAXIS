@@ -114,6 +114,7 @@ celerybeat-schedule
 # virtualenv
 venv/
 ENV/
+quantaxis_env/
 
 # Spyder project settings
 .spyderproject
@@ -150,3 +151,16 @@ kernel*.json
 
 # sqlite database
 *.db
+QUANTAXIS_Test/QAFetch_Test/wss0507r.dad
+QUANTAXIS_Test/QAFetch_Test/wss0508r.dad
+QUANTAXIS_Test/QAFetch_Test/wss0509r.dad
+QUANTAXIS_Test/QAFetch_Test/wss0510r.dad
+QUANTAXIS_Test/QAFetch_Test/wss0511r.dad
+quantaxis_env/bin/snapshot
+quantaxis_env/lib/python3.6/site-packages/pyecharts_snapshot-0.1.5.dist-info/
+quantaxis_env/lib/python3.6/site-packages/pyecharts_snapshot/__init__.py
+quantaxis_env/lib/python3.6/site-packages/pyecharts_snapshot/environment.py
+quantaxis_env/lib/python3.6/site-packages/pyecharts_snapshot/logger.py
+quantaxis_env/lib/python3.6/site-packages/pyecharts_snapshot/main.py
+quantaxis_env/lib/python3.6/site-packages/pyecharts_snapshot/phantomjs/
+/quantaxis_env/
