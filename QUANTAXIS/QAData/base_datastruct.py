@@ -393,7 +393,7 @@ class _quotation_base():
             raise e
 
     def plot(self, code=None):
-        'plot the market_data'
+        """plot the market_data"""
         if code is None:
             path_name = '.' + os.sep + 'QA_' + self.type + \
                 '_codepackage_' + self.if_fq + '.html'
@@ -438,6 +438,9 @@ class _quotation_base():
                 'The Pic has been saved to your path: {}'.format(path_name))
 
     def query(self, context):
+        """
+        查询data
+        """
         return self.data.query(context)
 
     def new(self, data=None, dtype=None, if_fq=None):
@@ -482,21 +485,39 @@ class _quotation_base():
         return self.new(self.data.head(lens))
 
     def show(self):
+        """
+        打印数据包的内容
+        """
         return QA_util_log_info(self.data)
 
     def to_list(self):
+        """
+        转换DataStruct为list
+        """
         return np.asarray(self.data).tolist()
 
     def to_pd(self):
+        """
+        转换DataStruct为dataframe
+        """
         return self.data
 
     def to_numpy(self):
+        """
+        转换DataStruct为numpy.ndarray
+        """
         return np.asarray(self.data)
 
     def to_json(self):
+        """
+        转换DataStruct为json
+        """
         return QA_util_to_json_from_pandas(self.data)
 
     def to_dict(self, orient='dict'):
+        """
+        转换DataStruct为dict格式
+        """
         return self.data.to_dict(orient)
 
     def to_hdf(self, place, name):
@@ -505,6 +526,9 @@ class _quotation_base():
         return place, name
 
     def is_same(self, DataStruct):
+        """
+        判断是否相同
+        """
         if self.type == DataStruct.type and self.if_fq == DataStruct.if_fq:
             return True
         else:
@@ -526,7 +550,7 @@ class _quotation_base():
             self.query('code=="{}"'.format(x)), *arg, **kwargs), self.code))).sort_index()
 
     def pivot(self, column_):
-        '增加对于多列的支持'
+        """增加对于多列的支持"""
         if isinstance(column_, str):
             try:
                 return self.data.pivot(index='datetime', columns='code', values=column_)
