@@ -44,7 +44,7 @@ def QA_util_if_tradetime(_time,market=MARKET_TYPE.STOCK_CN,code=None):
         if QA_util_if_trade(str(_time.date())[0:10]):
             if _time.hour in [10, 13, 14]:
                 return True
-            elif _time.hour in [9] and _time.minute >= 30:
+            elif _time.hour in [9] and _time.minute >= 15:  #修改成9:15 加入 9:15-9:30的盘前竞价时间
                 return True
             elif _time.hour in [11] and _time.minute <= 30:
                 return True
