@@ -262,13 +262,13 @@ class QA_BacktestBroker(QA_Broker):
             '加入严格模式'
             if order.frequence is FREQUENCE.DAY:
                 exact_time = str(datetime.datetime.strptime(
-                    order.datetime, '%Y-%m-%d %H-%M-%S') + datetime.timedelta(day=1))
+                    order.datetime, '%Y-%m-%d %H:%M:%S') + datetime.timedelta(days=1))
 
                 order.date = exact_time[0:10]
                 order.datetime = '{} 09:30:00'.format(order.date)
             elif order.frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
                 exact_time = str(datetime.datetime.strptime(
-                    order.datetime, '%Y-%m-%d %H-%M-%S') + datetime.timedelta(minute=1))
+                    order.datetime, '%Y-%m-%d %H:%M:%S') + datetime.timedelta(minute=1))
                 order.date = exact_time[0:10]
                 order.datetime = exact_time
 
@@ -276,13 +276,13 @@ class QA_BacktestBroker(QA_Broker):
             '加入严格模式'
             if order.frequence is FREQUENCE.DAY:
                 exact_time = str(datetime.datetime.strptime(
-                    order.datetime, '%Y-%m-%d %H-%M-%S') + datetime.timedelta(day=1))
+                    order.datetime, '%Y-%m-%d %H:%M:%S') + datetime.timedelta(day=1))
 
                 order.date = exact_time[0:10]
                 order.datetime = '{} 09:30:00'.format(order.date)
             elif order.frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
                 exact_time = str(datetime.datetime.strptime(
-                    order.datetime, '%Y-%m-%d %H-%M-%S') + datetime.timedelta(minute=1))
+                    order.datetime, '%Y-%m-%d %H:%M:%S') + datetime.timedelta(minute=1))
                 order.date = exact_time[0:10]
                 order.datetime = exact_time
 

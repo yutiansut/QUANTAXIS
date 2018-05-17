@@ -70,38 +70,60 @@ class QA_Account(QA_Worker):
                  broker=BROKER_TYPE.BACKETEST, portfolio_cookie=None, account_cookie=None,
                  sell_available={}, init_assets=None, cash=None, history=None, commission_coeff=0.00025, tax_coeff=0.0015,
                  margin_level=False, allow_t0=False, allow_sellopen=False):
+        """
+
+        :param strategy_name:
+        :param user_cookie:
+        :param market_type:
+        :param frequence:
+        :param broker:
+        :param portfolio_cookie:
+        :param account_cookie:
+        :param sell_available:
+        :param init_assets:       初始资产  默认 1000000 元 （100万）
+        :param cash:              可用现金  默认 是 初始资产  list 类型
+        :param history:
+        :param commission_coeff:  交易佣金 :默认 万2.5   float 类型
+        :param tax_coeff:         印花税   :默认 千1.5   float 类型
+        :param margin_level:
+        :param allow_t0:
+        :param allow_sellopen:
+        """
         super().__init__()
         self._history_headers = ['datetime', 'code', 'price',
-                                 'amount', 'order_id', 'trade_id', 'account_cookie', 'commission', 'tax']
+                                 'amount', 'order_id', 'trade_id',
+                                 'account_cookie', 'commission', 'tax']
+        ########################################################################
         # 信息类:
-        self.strategy_name = strategy_name
-        self.user_cookie = user_cookie
-        self.market_type = market_type
+        self.strategy_name    = strategy_name
+        self.user_cookie      = user_cookie
+        self.market_type      = market_type
         self.portfolio_cookie = portfolio_cookie
-        self.account_cookie = QA_util_random_with_topic(
-            'Acc') if account_cookie is None else account_cookie
-        self.broker = broker
-        self.frequence = frequence
-        self.market_data = None
-        self._currenttime = None
+        self.account_cookie   = QA_util_random_with_topic('Acc') if account_cookie is None else account_cookie
+        self.broker           = broker
+        self.frequence        = frequence
+        self.market_data      = None
+        self._currenttime     = None
         self.commission_coeff = commission_coeff
-        self.tax_coeff = tax_coeff
+        self.tax_coeff        = tax_coeff
+        ########################################################################
         # 资产类
-        self.orders = QA_OrderQueue()  # 历史委托单
-        self.init_assets = 1000000 if init_assets is None else init_assets
-        self.cash = [self.init_assets] if cash is None else cash
-        self.cash_available = self.cash[-1]  # 可用资金
-        self.sell_available = sell_available
-        self.history = [] if history is None else history
-        self.time_index = []
+        self.orders           = QA_OrderQueue()  # 历史委托单
+        self.init_assets      = 1000000 if init_assets is None else init_assets
+        self.cash             = [self.init_assets] if cash is None else cash
+        self.cash_available   = self.cash[-1]    # 可用资金
+        self.sell_available   = sell_available
+        self.history          = [] if history is None else history
+        self.time_index       = []
+        ########################################################################
         # 规则类
         # 两个规则
         # 1.是否允许t+0 及买入及结算
         # 2.是否允许卖空开仓
         # 3.是否允许保证金交易/ 如果不是false 就需要制定保证金比例(dict形式)
-        self.allow_t0 = allow_t0
+        self.allow_t0       = allow_t0
         self.allow_sellopen = allow_sellopen
-        self.margin_level = margin_level
+        self.margin_level   = margin_level
 
     def __repr__(self):
         return '< QA_Account {}>'.format(self.account_cookie)
@@ -118,7 +140,6 @@ class QA_Account(QA_Worker):
             'market_type': self.market_type,
             'strategy_name': self.strategy_name,
             'current_time': self._currenttime,
-
             'allow_sellopen': self.allow_sellopen,
             'allow_t0': self.allow_t0,
             'margin_level': self.margin_level,
@@ -131,7 +152,8 @@ class QA_Account(QA_Worker):
 
     @property
     def code(self):
-        """该账户曾交易代码 用set 去重
+        """
+        该账户曾交易代码 用set 去重
         """
         return list(set([item[1] for item in self.history]))
 
@@ -151,11 +173,8 @@ class QA_Account(QA_Worker):
     @property
     def cash_table(self):
         '现金的table'
-        _cash = pd.DataFrame(data=[self.cash[1::], self.time_index], index=[
-                             'cash', 'datetime']).T
-        _cash = _cash.assign(date=_cash.datetime.apply(lambda x: str(x)[0:10])).assign(
-            account_cookie=self.account_cookie)
-
+        _cash = pd.DataFrame(data=[self.cash[1::], self.time_index], index=['cash', 'datetime']).T
+        _cash = _cash.assign(date=_cash.datetime.apply(lambda x: str(x)[0:10])).assign(account_cookie=self.account_cookie)
         return _cash.set_index(['datetime', 'account_cookie'], drop=False).sort_index()
 
     @property
@@ -193,7 +212,7 @@ class QA_Account(QA_Worker):
 
     @property
     def latest_cash(self):
-        'return the lastest cash'
+        'return the lastest cash 可用资金'
         return self.cash[-1]
 
     @property
@@ -210,11 +229,11 @@ class QA_Account(QA_Worker):
         self.cash_available = self.cash[-1]  # 在途资金
 
     def receive_deal(self, message):
-        """[用于更新账户]
-
-        [description]
-
+        """
+        用于更新账户
         update history and cash
+        :param message:
+        :return:
         """
         if message['header']['status'] is TRADE_STATUS.SUCCESS:
             trade_amount = float(float(message['body']['order']['price']) *
@@ -241,20 +260,7 @@ class QA_Account(QA_Worker):
         return self.message
 
     def send_order(self, code=None, amount=None, time=None, towards=None, price=None, money=None, order_model=None, amount_model=None):
-        """[summary]
-
-        Arguments:
-            code {[type]} -- [description]
-            amount {[type]} -- [description]
-            time {[type]} -- [description]
-            towards {[type]} -- [description]
-            price {[type]} -- [description]
-            order_model {[type]} -- [description]
-            amount_model {[type]} -- [description]
-
-        Returns:
-            [type] -- [description]
-
+        """
         ATTENTION CHANGELOG 1.0.28
         修改了Account的send_order方法, 区分按数量下单和按金额下单两种方式
 
@@ -264,7 +270,7 @@ class QA_Account(QA_Worker):
         在按金额下单的时候,应给予 money参数
         在按数量下单的时候,应给予 amount参数
 
-        ```python
+        python code:
         Account=QA.QA_Account()
 
         Order_bymoney=Account.send_order(code='000001',
@@ -284,8 +290,18 @@ class QA_Account(QA_Worker):
                                         order_model=QA.ORDER_MODEL.MARKET,
                                         amount_model=QA.AMOUNT_MODEL.BY_AMOUNT
                                         )
-        ```
+
+        :param code:
+        :param amount:
+        :param time:
+        :param towards:
+        :param price:
+        :param money:
+        :param order_model:
+        :param amount_model:
+        :return:
         """
+
         assert code is not None and time is not None and towards is not None and order_model is not None and amount_model is not None
 
         flag = False
