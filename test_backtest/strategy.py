@@ -10,6 +10,8 @@ class MAStrategy(QA_Strategy):
         super().__init__()
         self.frequence = FREQUENCE.DAY
         self.market_type = MARKET_TYPE.STOCK_CN
+        self.commission_coeff=0.00015
+        self.tax_coeff=0.0001
 
     def on_bar(self, event):
         sellavailable=self.sell_available
@@ -19,7 +21,7 @@ class MAStrategy(QA_Strategy):
 
                     event.send_order(account_id=self.account_cookie,
                                      amount=100, amount_model=AMOUNT_MODEL.BY_AMOUNT,
-                                     time=self.current_time, code=item, price=0,
+                                     time=self.current_time, code=item, price=item.high[0],
                                      order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.BUY,
                                      market_type=self.market_type, frequence=self.frequence,
                                      broker_name=self.broker)

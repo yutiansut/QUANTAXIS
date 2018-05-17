@@ -148,3 +148,9 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
 1. 对于账户的修改: 增加了QA_Account.orders 作为委托/订单记录器
 2. 对于base_datastruct的修改 : 增加了部分代码的注释
 3. 对于QA_BACKTESTBROKER做了修改: 增加了对于市价单等的bug修复
+4. 对于QA_BACKTESTBROKER做了修改: 修改了BY_MONEY/BY_AMOUNT的成交机制
+5. 对于QA_DEALER进行了修改,减少成交回报报文,去除MARKET_DATA部分数据
+6. 对于QAUtil.QADate_trade做了修改,更改交易时间为9:15-11:30/1:00-3:00的时间,加入盘前集合竞价的数据
+7. 对于QARisk做了修改,更改了最大回撤的计算
+
+感谢@尧 zhongjy1992@outlook.com 对于该版本做出的巨大贡献

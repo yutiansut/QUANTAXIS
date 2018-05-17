@@ -237,8 +237,8 @@ class QA_Account(QA_Worker):
         """
         if message['header']['status'] is TRADE_STATUS.SUCCESS:
             trade_amount = float(float(message['body']['order']['price']) *
-                                 float(message['body']['order']['amount']) * message['body']['order']['towards'] -
-                                 float(message['body']['fee']['commission']) -
+                                 float(message['body']['order']['amount']) * message['body']['order']['towards'] +
+                                 float(message['body']['fee']['commission']) +
                                  float(message['body']['fee']['tax']))
 
             if self.cash[-1] > trade_amount:
