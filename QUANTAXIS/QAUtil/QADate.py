@@ -56,13 +56,13 @@ def QA_util_date_str2int(date):
     return int(str(date)[0:4] + str(date)[5:7] + str(date)[8:10])
 
 
-def QA_util_date_int2str(date):
+def QA_util_date_int2str(int_date):
     """
     类型datetime.datatime
     :param date: int 8位整数
     :return: 类型str
     """
-    return str(str(date)[0:4] + '-' + str(date)[4:6] + '-' + str(date)[6:8])
+    return str(str(int_date)[0:4] + '-' + str(int_date)[4:6] + '-' + str(int_date)[6:8])
 
 
 def QA_util_to_datetime(time):
@@ -79,6 +79,24 @@ def QA_util_to_datetime(time):
         QA_util_log_info('WRONG DATETIME FORMAT {}'.format(time))
     return datetime.datetime.strptime(_time, '%Y-%m-%d %H:%M:%S')
 
+
+def QA_util_datetime_to_strdate(dt):
+    """
+    :param dt:  pythone datetime.datetime
+    :return:  1999-02-01 string type
+    """
+    strdate = "%04d-%02d-%02d"%(dt.year, dt.month, dt.day)
+    return strdate
+
+
+
+def QA_util_datetime_to_strdatetime(dt):
+    """
+    :param dt:  pythone datetime.datetime
+    :return:  1999-02-01 09:30:91 string type
+    """
+    strdatetime = "%04d-%02d-%02d %02d:%02d:%02d"%(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)
+    return strdatetime
 
 def QA_util_date_stamp(date):
     """
@@ -108,6 +126,24 @@ def QA_util_time_stamp(time_):
         return time.mktime(time.strptime(timestr, '%Y-%m-%d %H:%M:%S'))
 
 
+
+def QA_util_pands_timestamp_to_date(pandsTimestamp):
+    """
+    转换 pandas 的时间戳 到 datetime.date类型
+    :param pandsTimestamp: 类型 pandas._libs.tslib.Timestamp
+    :return: datetime.datetime类型
+    """
+    return pandsTimestamp.to_pydatetime().date()
+
+def QA_util_pands_timestamp_to_datetime(pandsTimestamp):
+    """
+    转换 pandas 的时间戳 到 datetime.datetime类型
+    :param pandsTimestamp: 类型 pandas._libs.tslib.Timestamp
+    :return: datetime.datetime类型
+    """
+    return pandsTimestamp.to_pydatetime()
+
+
 def QA_util_stamp2datetime(timestamp):
     """
     datestamp转datetime
@@ -120,7 +156,8 @@ def QA_util_stamp2datetime(timestamp):
     try:
         return datetime.datetime.fromtimestamp(timestamp)
     except Exception as e:
-        return datetime.datetime.fromtimestamp(timestamp / 1000)
+        return datetime.datetime.fromtimestamp(timestamp / 1000) # it won't work ??
+    #
 
 
 def QA_util_ms_stamp(ms):
