@@ -69,7 +69,6 @@ class Test_QAAccount(unittest.TestCase):
                                            )
 
 
-
                 print('ORDER的占用资金: {}'.format((Order.amount * Order.price) * (1 + Account.commission_coeff)))
                 print('账户剩余资金 :{}'.format(Account.cash_available)) ## ??
                 cash_available = Account.cash_available
