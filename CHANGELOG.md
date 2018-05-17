@@ -154,3 +154,7 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
 7. 对于QARisk做了修改,更改了最大回撤的计算
 
 感谢@尧 zhongjy1992@outlook.com 对于该版本做出的巨大贡献
+
+
+## 1.0.33
+
