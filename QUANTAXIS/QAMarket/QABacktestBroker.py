@@ -200,7 +200,9 @@ class QA_BacktestBroker(QA_Broker):
         # 因为成交模式对时间的封装
 
         if order.order_model == ORDER_MODEL.MARKET:
-
+            """
+            市价单模式
+            """
             if order.frequence is FREQUENCE.DAY:
                 # exact_time = str(datetime.datetime.strptime(
                 #     str(order.datetime), '%Y-%m-%d %H-%M-%S') + datetime.timedelta(day=1))
@@ -208,7 +210,7 @@ class QA_BacktestBroker(QA_Broker):
                 order.date = order.datetime[0:10]
                 order.datetime = '{} 09:30:00'.format(order.date)
             elif order.frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
-                print(order.datetime)
+
                 exact_time = str(datetime.datetime.strptime(
                     str(order.datetime), '%Y-%m-%d %H:%M:%S') + datetime.timedelta(minutes=1))
                 order.date = exact_time[0:10]
@@ -243,7 +245,9 @@ class QA_BacktestBroker(QA_Broker):
             # order.price = float(self.market_data["close"])
             raise NotImplementedError
         elif order.order_model == ORDER_MODEL.CLOSE:
-
+            """
+            收盘价模式
+            """
             try:
                 order.datetime = self.market_data.datetime
             except:
@@ -259,41 +263,53 @@ class QA_BacktestBroker(QA_Broker):
                 order.amount = 100*int(_original_marketvalue/(order.price*100))
 
         elif order.order_model == ORDER_MODEL.LIMIT:
-            '加入严格模式'
+            """
+            限价单模式
+            """
             if order.frequence is FREQUENCE.DAY:
-                exact_time = str(datetime.datetime.strptime(
-                    order.datetime, '%Y-%m-%d %H:%M:%S') + datetime.timedelta(days=1))
+                # exact_time = str(datetime.datetime.strptime(
+                #     str(order.datetime), '%Y-%m-%d %H-%M-%S') + datetime.timedelta(day=1))
 
-                order.date = exact_time[0:10]
+                order.date = order.datetime[0:10]
                 order.datetime = '{} 09:30:00'.format(order.date)
             elif order.frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
+
                 exact_time = str(datetime.datetime.strptime(
-                    order.datetime, '%Y-%m-%d %H:%M:%S') + datetime.timedelta(minute=1))
+                    str(order.datetime), '%Y-%m-%d %H:%M:%S') + datetime.timedelta(minutes=1))
                 order.date = exact_time[0:10]
                 order.datetime = exact_time
-
         elif order.order_model == ORDER_MODEL.STRICT:
-            '加入严格模式'
+            """
+            严格模式
+            """
             if order.frequence is FREQUENCE.DAY:
-                exact_time = str(datetime.datetime.strptime(
-                    order.datetime, '%Y-%m-%d %H:%M:%S') + datetime.timedelta(days=1))
+                # exact_time = str(datetime.datetime.strptime(
+                #     str(order.datetime), '%Y-%m-%d %H-%M-%S') + datetime.timedelta(day=1))
 
-                order.date = exact_time[0:10]
+                order.date = order.datetime[0:10]
                 order.datetime = '{} 09:30:00'.format(order.date)
             elif order.frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
+
                 exact_time = str(datetime.datetime.strptime(
-                    order.datetime, '%Y-%m-%d %H:%M:%S') + datetime.timedelta(minute=1))
+                    str(order.datetime), '%Y-%m-%d %H:%M:%S') + datetime.timedelta(minutes=1))
                 order.date = exact_time[0:10]
                 order.datetime = exact_time
 
-            _original_marketvalue = order.price*order.amount
             if order.towards == 1:
                 order.price = float(self.market_data.get('high'))
             else:
                 order.price = float(self.market_data.get('low'))
 
-            if order.market_type is MARKET_TYPE.STOCK_CN:
-                order.amount = 100*int(_original_marketvalue/(order.price*100))
+            if order.market_type is MARKET_TYPE.STOCK_CN and order.towards is ORDER_DIRECTION.BUY:
+                if order.order_model is AMOUNT_MODEL.BY_MONEY:
+                    amount = order.money/(order.price*(1+order.commission_coeff))
+                    money = order.money
+                else:
+                    amount = order.amount
+                    money = order.amount * order.price*(1+order.commission_coeff)
+
+                order.amount = int(amount / 100) * 100
+                order.money =  money
                 
         return order
 
