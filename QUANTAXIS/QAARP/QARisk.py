@@ -65,7 +65,7 @@ class QA_Risk():
 
         self.time_gap = QA_util_get_trade_gap(
             self.account.start_date, self.account.end_date)
-        self.init_assets= self.account.init_assets
+        self.init_assets = self.account.init_assets
 
     def __repr__(self):
         return '< QA_RISK ANALYSIS ACCOUNT/PORTFOLIO >'
@@ -77,7 +77,7 @@ class QA_Risk():
     def max_dropback(self):
         """最大回撤
         """
-        return max([self.assets.iloc[idx::].max() - self.assets.iloc[idx::].min() for idx in range(len(self.assets))]) / float(self.assets.iloc[0])
+        return max([(self.assets.iloc[idx] - self.assets.iloc[idx::].min())/self.assets.iloc[idx] for idx in range(len(self.assets))])
 
     @property
     def profit(self):
@@ -201,7 +201,7 @@ class QA_Risk():
         self.benchmark_type = market_type
 
     def calc_annualize_return(self, assets, days):
-        return (float(assets.iloc[-1]) / float(assets.iloc[0]) -1 )/(float(days) /250 )
+        return (float(assets.iloc[-1]) / float(assets.iloc[0]) - 1)/(float(days) / 250)
 
     def calc_profitpctchange(self, assets):
         return self.assets[::-1].pct_change()
