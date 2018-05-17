@@ -77,7 +77,7 @@ class QA_Risk():
     def max_dropback(self):
         """最大回撤
         """
-        return max([self.assets.iloc[idx::].max() - self.assets.iloc[idx::].min() for idx in range(len(self.assets))]) / float(self.assets.iloc[0])
+        return max([(self.assets.iloc[idx] - self.assets.iloc[idx::].min())/self.assets.iloc[idx]  for idx in range(len(self.assets))]) 
 
     @property
     def profit(self):
