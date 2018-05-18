@@ -382,7 +382,7 @@ class QA_Account(QA_Worker):
         self.cash = message['cash']
         self.time_index = message['trade_index']
         self.init_assets = message['init_assets']
-        self.running_time =message['running_time']
+        self.running_time =message.get('running_time', None)
         return self
 
     @property
