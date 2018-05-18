@@ -137,20 +137,8 @@ class QA_Portfolio():
         try:
             return self.accounts[account.account_cookie]
         except:
-            QA_util_log_info('Can not find this account with cookies %s'% account.account_cookie )
-            return None
-
-    def get_account_by_cookie(self, account_cookie):
-        '''
-        check the account whether in the protfolio dict or not
-        :param account:  QA_Account
-        :return: QA_Account if in dict
-                 None not in list
-        '''
-        try:
-            return self.accounts[account_cookie]
-        except:
-            QA_util_log_info('Can not find this account with cookies %s'% account_cookie)
+            QA_util_log_info(
+                'Can not find this account with cookies %s' % account.account_cookie)
             return None
 
     def cookie_mangement(self):
