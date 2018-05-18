@@ -216,6 +216,11 @@ R.message
 QA_PortfolioView 是一个组合视角,只要输入account列表,就可以生成一个视角
 
 ```python
+
+# 如果从数据库中获取:
+accounts=[QA.QA_Account().from_message(x) for x in QA.QA_fetch_account()]
+# 中间可以对时间等进行筛选以后再放进来 或者对于持仓股票进行筛选
+
 accounts=[QA_Account1,QA_Account2,....]
 PV=QA.QA_PortfolioView(accounts)
 
