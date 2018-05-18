@@ -35,7 +35,7 @@ from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 # 2017/6/4修改: 去除总资产的动态权益计算
 
-
+# pylint: disable=old-style-class, too-few-public-methods
 class QA_Account(QA_Worker):
     """[QA_Account]
 
