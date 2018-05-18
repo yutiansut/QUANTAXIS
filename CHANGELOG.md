@@ -158,3 +158,4 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
 
 ## 1.0.33
 
+1. 取消初始化quantaxis的时候选择服务器,改成获取事件触发时选取
