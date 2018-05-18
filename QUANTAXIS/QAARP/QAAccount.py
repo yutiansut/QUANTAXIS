@@ -35,7 +35,7 @@ from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 # 2017/6/4修改: 去除总资产的动态权益计算
 
-
+# pylint: disable=old-style-class, too-few-public-methods
 class QA_Account(QA_Worker):
     """[QA_Account]
 
@@ -106,6 +106,7 @@ class QA_Account(QA_Worker):
         self._currenttime     = None
         self.commission_coeff = commission_coeff
         self.tax_coeff        = tax_coeff
+        self.running_time     = datetime.datetime.now()
         ########################################################################
         # 资产类
         self.orders           = QA_OrderQueue()  # 历史委托单
@@ -381,6 +382,7 @@ class QA_Account(QA_Worker):
         self.cash = message['cash']
         self.time_index = message['trade_index']
         self.init_assets = message['init_assets']
+        self.running_time =message.get('running_time', None)
         return self
 
     @property
