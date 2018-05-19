@@ -59,7 +59,7 @@ class QA_User():
         '''
         self.setting = QA_Setting()
         self.portfolio_list = {}
-        # self.user_cookie = QA_util_random_with_topic('USER')
+
         self.user_cookie = QA_util_random_with_topic(
             'USER') if user_cookie is None else user_cookie
 
