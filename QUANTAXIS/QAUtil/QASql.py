@@ -28,9 +28,11 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 
 
-def QA_util_sql_mongo_setting(ip='127.0.0.1', port=27017):
-    client = pymongo.MongoClient(ip, int(port))
-    #QA_util_log_info('ip:{},port:{}'.format(str(ip), str(port)))
+def QA_util_sql_mongo_setting(uri='mongodb://localhost:27017/quantaxis'):
+    # 采用@几何的建议,使用uri代替ip,port的连接方式
+    # 这样可以对mongodb进行加密:
+    # uri=mongodb://user:passwor@ip:port
+    client = pymongo.MongoClient(uri)
     return client
 
 # async
