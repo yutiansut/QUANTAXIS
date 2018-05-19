@@ -22,17 +22,43 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
+import os
+import json
 from QUANTAXIS.QASU.user import QA_user_sign_in
 from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting
 
 
+# quantaxis有一个配置目录存放在 ~/.quantaxis
+# 如果配置目录不存在就创建，主要配置都保存在config.json里面
+# 貌似yutian已经进行了，文件的创建步骤，他还会创建一个setting的dir
+# 需要与yutian讨论具体配置文件的放置位置 author:Will 2018.5.19
+DEFAULT_DB_IP = "127.0.0.1"
+DEFAULT_DB_PORT = 27017
+
 class QA_Setting():
-    def __init__(self, ip='127.0.0.1', port=27017):
-        self.ip = ip
-        self.port = port
+    def __init__(self, ip=None, port=None):
+        self.ip = ip or self.home_config() or self.env_config() or DEFAULT_DB_IP
+        self.port = port or DEFAULT_DB_PORT
         self.username = None
         self.password = None
+
+    def home_config(self):
+        home_dir = os.path.expanduser("~")
+        quantaxis_home = os.path.join(home_dir,'.quantaxis')
+        if os.path.exists(quantaxis_home):
+            os.makedirs(quantaxis_home, exist_ok=True)
+        if os.path.exists(os.path.join(quantaxis_home, 'config.json')):
+            with open(os.path.join(quantaxis_home, 'config.json'), 'r') as f:
+                try:
+                    config = json.load(f)
+                except:
+                    return None
+            return config.get("MONGOURI")
+        else:
+            return None
+
+    def env_config(self):
+        return os.environ.get("MONGOURI", None)
 
     @property
     def client(self):
