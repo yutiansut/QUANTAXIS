@@ -30,6 +30,8 @@ from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting
 
 # quantaxis有一个配置目录存放在 ~/.quantaxis
 # 如果配置目录不存在就创建，主要配置都保存在config.json里面
+# 貌似yutian已经进行了，文件的创建步骤，他还会创建一个setting的dir
+# 需要与yutian讨论具体配置文件的放置位置 author:Will 2018.5.19
 DEFAULT_DB_IP = "127.0.0.1"
 DEFAULT_DB_PORT = 27017
 
