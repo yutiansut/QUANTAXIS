@@ -149,7 +149,8 @@ class QA_Portfolio():
         try:
             return self.accounts[account.account_cookie]
         except:
-            QA_util_log_info('Can not find this account with cookies %s' % account.account_cookie)
+            QA_util_log_info(
+                'Can not find this account with cookies %s' % account.account_cookie)
             return None
 
     def cookie_mangement(self):
