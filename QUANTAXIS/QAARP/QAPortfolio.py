@@ -32,8 +32,15 @@ from QUANTAXIS.QAUtil import (DATABASE, QA_util_log_info,
 
 
 class QA_Portfolio():
+    """QA_Portfolio
+    User-->Portfolio-->Account/Strategy
 
-    """
+    :::::::::::::::::::::::::::::::::::::::::::::::::
+    ::        :: Portfolio 1 -- Account/Strategy 1 ::
+    ::  USER  ::             -- Account/Strategy 2 ::
+    ::        :: Portfolio 2 -- Account/Strategy 3 ::
+    :::::::::::::::::::::::::::::::::::::::::::::::::
+
     QUANTAXIS 多账户
     以及组合管理
 
@@ -61,12 +68,17 @@ class QA_Portfolio():
 
     @2018/05/16
     fix 通过 cookie 获取 account
+
+    @royburns  1.根据指定的user_cookie创建user； 2.添加对应的测试代码； 3.添加注释
+    2018/05/18
     """
 
-    def __init__(self, user_cookie=None, strategy_name=None, init_assets=1000000, cash=None, sell_available=None, history=None):
-        self.accounts = {}
-        self.portfolio_cookie = QA_util_random_with_topic('Portfolio')
+    def __init__(self, user_cookie=None, portfolio_cookie=None, strategy_name=None, init_assets=1000000, cash=None, sell_available=None, history=None):
         self.user_cookie = user_cookie
+        # self.portfolio_cookie = QA_util_random_with_topic('Portfolio')
+        self.portfolio_cookie = QA_util_random_with_topic(
+            'Portfolio') if portfolio_cookie is None else portfolio_cookie
+        self.accounts = {}
         self.strategy_name = strategy_name
         # 和account一样的资产类
         self.init_assets = 1000000 if init_assets is None else init_assets

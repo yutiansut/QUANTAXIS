@@ -32,6 +32,12 @@ class QA_User():
     """QA_User 
     User-->Portfolio-->Account/Strategy
 
+    :::::::::::::::::::::::::::::::::::::::::::::::::
+    ::        :: Portfolio 1 -- Account/Strategy 1 ::
+    ::  USER  ::             -- Account/Strategy 2 ::
+    ::        :: Portfolio 2 -- Account/Strategy 3 ::
+    :::::::::::::::::::::::::::::::::::::::::::::::::
+
     :: 需要增加对于QA_USER的支持
 
     USER作为一个单位实体, 可以自由创建 组合Portfolio (需要被记录),修改 组合Portfolio
@@ -41,16 +47,21 @@ class QA_User():
 
     @jerryw  添加注释，和 todo list
     2018/05/16
+
+    @royburns  1.根据指定的user_cookie创建user； 2.添加对应的测试代码； 3.添加注释
+    2018/05/18
     """
 
-    def __init__(self):
+    def __init__(self, user_cookie=None):
         '''
             随机初始化 user_cookie 的值
             Acc+4数字id+4位大小写随机
         '''
         self.setting = QA_Setting()
         self.portfolio_list = {}
-        self.user_cookie = QA_util_random_with_topic('USER')
+        # self.user_cookie = QA_util_random_with_topic('USER')
+        self.user_cookie = QA_util_random_with_topic(
+            'USER') if user_cookie is None else user_cookie
 
     def __repr__(self):
         return '< QA_USER {} with {} portfolio: {} >'.format(self.user_cookie, len(self.portfolio_list.keys()), self.portfolio_list)
@@ -91,14 +102,14 @@ class QA_User():
             QA_util_log_info('FAILD')
             return False
 
-    def new_portfolio(self):
+    def new_portfolio(self, portfolio_cookie=None):
         '''
             根据 self.user_cookie 创建一个 portfolio
         :return:
              如果存在 返回 新建的 QA_Portfolio
              如果已经存在 不返回 None
         '''
-        _portfolio = QA_Portfolio(user_cookie=self.user_cookie)
+        _portfolio = QA_Portfolio(user_cookie=self.user_cookie, portfolio_cookie=portfolio_cookie)
         if _portfolio.portfolio_cookie not in self.portfolio_list.keys():
             self.portfolio_list[_portfolio.portfolio_cookie] = _portfolio
             return _portfolio
@@ -137,7 +148,7 @@ class QA_User():
         ac = po.new_account()
         return ac, po
 
-    def register_account(self, account):
+    def register_account(self, account, portfolio_cookie=None):
         '''
         注册一个account到portfolio组合中
         :param account: 被注册的account
@@ -145,6 +156,8 @@ class QA_User():
         '''
         if len(self.portfolio_list.keys()) < 1:
             po = self.new_portfolio()
+        elif portfolio_cookie is not None:
+            po = self.portfolio_list[portfolio_cookie]
         else:
             po = list(self.portfolio_list.values())[0]
         po.add_account(account)
@@ -160,11 +173,11 @@ class QA_User():
 
 if __name__ == '__main__':
 
-    #测试不对
-    user = QA_User()
-    portfolio1 = user.new_portfolio()
-    ac1 = user.get_portfolio(portfolio1).new_account()
+    # 测试不对
+    user = QA_User(user_cookie='user_admin')
+    folio = user.new_portfolio('folio_admin')
+    ac1 = user.get_portfolio(folio).new_account('account_admin')
 
     print(user)
-    print(user.get_portfolio(portfolio1))
-    print(user.get_portfolio(portfolio1).get_account(ac1))
+    print(user.get_portfolio(folio))
+    print(user.get_portfolio(folio).get_account(ac1))
