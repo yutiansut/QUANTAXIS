@@ -67,10 +67,11 @@ class QA_Setting():
                     config.write(f)
 
         else:
-            with open(CONFIGFILE_PATH, 'w') as f:
-                config.add_section('MONGODB')
-                config.set('MONGODB', 'uri', DEFAULT_DB_URI)
-                config.write(f)
+            f=open(CONFIGFILE_PATH, 'w')
+            config.add_section('MONGODB')
+            config.set('MONGODB', 'uri', DEFAULT_DB_URI)
+            config.write(f)
+            f.close()
             return DEFAULT_DB_URI
 
     def env_config(self):
