@@ -30,8 +30,3 @@ def make_cache():
     pass
 
 
-def make_dir():
-    os.makedirs(qa_path, exist_ok=True)
-    os.makedirs(setting_path, exist_ok=True)
-    os.makedirs(cache_path, exist_ok=True)
-    os.makedirs(download_path, exist_ok=True)
