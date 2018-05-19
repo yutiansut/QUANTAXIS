@@ -37,7 +37,14 @@ from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 
 class QA_Account(QA_Worker):
-    """[QA_Account]
+    """QA_Account
+    User-->Portfolio-->Account/Strategy
+
+    :::::::::::::::::::::::::::::::::::::::::::::::::
+    ::        :: Portfolio 1 -- Account/Strategy 1 ::
+    ::  USER  ::             -- Account/Strategy 2 ::
+    ::        :: Portfolio 2 -- Account/Strategy 3 ::
+    :::::::::::::::::::::::::::::::::::::::::::::::::
 
     2018/1/5 再次修改 改版本去掉了多余的计算 精简账户更新
     ======================
@@ -63,7 +70,8 @@ class QA_Account(QA_Worker):
     生成订单/接受交易结果数据
     接收新的数据/on_bar/on_tick方法/缓存新数据的market_data
 
-
+    @royburns  1.添加注释
+    2018/05/18
     """
 
     def __init__(self, strategy_name=None, user_cookie=None, market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY,

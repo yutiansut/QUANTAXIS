@@ -40,6 +40,9 @@ class Backtest(QA_Backtest):
         mastrategy = MAStrategy()
         maminstrategy = MAMINStrategy()
         # maminstrategy.reset_assets(1000)
+        # self.portfolio, self.account = self.user.register_account(mastrategy)
+        self.user = QA_User(user_cookie='user_admin')
+        self.portfolio = self.user.new_portfolio('folio_admin')
         self.portfolio, self.account = self.user.register_account(mastrategy)
 
     def after_success(self):
