@@ -236,7 +236,7 @@ class QA_Account(QA_Worker):
         'return current time (in backtest/real environment)'
         return self._currenttime
 
-    def hold_table(self, datetime):
+    def hold_table(self, datetime=None):
         "到某一个时刻的持仓 如果给的是日期,则返回当日开盘前的持仓"
         if datetime is None:
             return self.history_table.set_index('datetime').sort_index().groupby('code').amount.sum().sort_index()
