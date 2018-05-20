@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 
+import numpy as np
 import pandas as pd
 import datetime
 from QUANTAXIS.QAEngine.QAEvent import QA_Worker
@@ -234,10 +235,19 @@ class QA_Account(QA_Worker):
         return self._currenttime
 
     def hold_table(self, datetime):
-        "到某一个时刻的持仓 如果给的是日期,则返回当日收盘是的持仓"
-        if len(datetime) == 10:
-            datetime = '{} 15:00:00'.format(datetime)
-        return self.history_table.set_index('datetime').loc[:datetime].groupby('code').amount.sum().sort_index()
+        "到某一个时刻的持仓 如果给的是日期,则返回当日开盘前的持仓"
+        if datetime is None:
+            return self.history_table.set_index('datetime').sort_index().groupby('code').amount.sum().sort_index()
+        else:
+            return self.history_table.set_index('datetime').sort_index().loc[:datetime].groupby('code').amount.sum().sort_index()
+
+    def hold_price(self, datetime=None):
+        "计算持仓成本  如果给的是日期,则返回当日开盘前的持仓"
+        def weights(x): return np.average(x['price'], weights=x['amount'])
+        if datetime is None:
+            return self.history_table.set_index('datetime').sort_index().groupby('code').apply(weights)
+        else:
+            return self.history_table.set_index('datetime').sort_index().loc[:datetime].groupby('code').apply(weights)
 
     def reset_assets(self, init_assets=None):
         'reset_history/cash/'
@@ -395,14 +405,14 @@ class QA_Account(QA_Worker):
         self.allow_sellopen = message.get('allow_sellopen', False)
         self.allow_t0 = message.get('allow_t0', False)
         self.margin_level = message.get('margin_level', False)
-
+        self.init_assets = message['init_assets']
+        self.commission_coeff= message.get('commission_coeff',0.00015)
+        self.tax_coeff = message.get('tax_coeff',0.0015)
         self.history = message['history']
         self.cash = message['cash']
         self.time_index = message['trade_index']
-        self.init_assets = message['init_assets']
-
         self.running_time = message.get('running_time', None)
-
+        self.settle()
         return self
 
     @property

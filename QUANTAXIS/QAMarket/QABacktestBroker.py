@@ -183,7 +183,7 @@ class QA_BacktestBroker(QA_Broker):
             order = self.warp(order)
             return self.dealer.deal(order, self.market_data)
         else:
-            raise NotImplementedError
+            raise ValueError('MARKET DATA IS NONE CANNOT TRADE')
 
     def warp(self, order):
         """对order/market的封装
