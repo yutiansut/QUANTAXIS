@@ -156,8 +156,8 @@ class QA_Account(QA_Worker):
             'allow_t0': self.allow_t0,
             'margin_level': self.margin_level,
             'init_assets': self.init_assets,
-            'commission_coeff':self.commission_coeff,
-            'tax_coeff':self.tax_coeff,
+            'commission_coeff': self.commission_coeff,
+            'tax_coeff': self.tax_coeff,
             'cash': self.cash,
             'history': self.history,
             'trade_index': self.time_index,
@@ -245,7 +245,11 @@ class QA_Account(QA_Worker):
 
     def hold_price(self, datetime=None):
         "计算持仓成本  如果给的是日期,则返回当日开盘前的持仓"
-        def weights(x): return np.average(x['price'], weights=x['amount'])
+        def weights(x):
+            if sum(x['amount']) != 0:
+                return np.average(x['price'], weights=x['amount'], returned=True)
+            else:
+                return (0, 0)
         if datetime is None:
             return self.history_table.set_index('datetime').sort_index().groupby('code').apply(weights)
         else:
@@ -408,8 +412,8 @@ class QA_Account(QA_Worker):
         self.allow_t0 = message.get('allow_t0', False)
         self.margin_level = message.get('margin_level', False)
         self.init_assets = message['init_assets']
-        self.commission_coeff= message.get('commission_coeff',0.00015)
-        self.tax_coeff = message.get('tax_coeff',0.0015)
+        self.commission_coeff = message.get('commission_coeff', 0.00015)
+        self.tax_coeff = message.get('tax_coeff', 0.0015)
         self.history = message['history']
         self.cash = message['cash']
         self.time_index = message['trade_index']
