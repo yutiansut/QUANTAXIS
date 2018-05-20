@@ -171,3 +171,8 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
 同时可以对于.quantaxis/setting/config.ini进行修改,配置默认数据库
 ```
 4. @taurusWang对于QA的整体注释和代码结构做了系统性的优化
+
+
+## 1.0.35
+
+1. 增加 QA_Account 增加一个方法 account_table(datetime) 方便在复盘的时候查看某一个时间点的账户持仓
