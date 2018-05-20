@@ -33,6 +33,7 @@ from QUANTAXIS.QAMarket.QADealer import QA_Dealer
 from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, FREQUENCE
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 
+
 class QA_SimulatedBroker(QA_Broker):
     def __init__(self, *args, **kwargs):
         self.dealer = QA_Dealer()
@@ -58,8 +59,6 @@ class QA_SimulatedBroker(QA_Broker):
         except Exception as e:
             QA_util_log_info('MARKET_ENGING ERROR: {}'.format(e))
             return None
-
-
 
     def receive_order(self, event):
         order = event.order
