@@ -156,6 +156,8 @@ class QA_Account(QA_Worker):
             'allow_t0': self.allow_t0,
             'margin_level': self.margin_level,
             'init_assets': self.init_assets,
+            'commission_coeff':self.commission_coeff,
+            'tax_coeff':self.tax_coeff,
             'cash': self.cash,
             'history': self.history,
             'trade_index': self.time_index,
