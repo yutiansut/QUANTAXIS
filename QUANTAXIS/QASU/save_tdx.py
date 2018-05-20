@@ -406,12 +406,20 @@ def QA_SU_save_index_day(client=DATABASE):
                         QA_util_to_json_from_pandas(
                             QA_fetch_get_index_day(str(code), QA_util_get_next_day(start_time), end_time)))
             else:
-                start_time = '1990-01-01'
-                QA_util_log_info('##JOB04 Now Saving INDEX_DAY==== \n Trying updating %s from %s to %s' %
-                                    (code, start_time, end_time))
-                coll.insert_many(
-                    QA_util_to_json_from_pandas(
-                        QA_fetch_get_index_day(str(code), start_time, end_time)))
+                try:
+                    start_time = '1990-01-01'
+                    QA_util_log_info('##JOB04 Now Saving INDEX_DAY==== \n Trying updating %s from %s to %s' %
+                                        (code, start_time, end_time))
+                    coll.insert_many(
+                        QA_util_to_json_from_pandas(
+                            QA_fetch_get_index_day(str(code), start_time, end_time)))
+                except:
+                    start_time = '2009-01-01'
+                    QA_util_log_info('##JOB04 Now Saving INDEX_DAY==== \n Trying updating %s from %s to %s' %
+                                        (code, start_time, end_time))
+                    coll.insert_many(
+                        QA_util_to_json_from_pandas(
+                            QA_fetch_get_index_day(str(code), start_time, end_time)))
         except Exception as e:
             QA_util_log_info(e)
             err.append(str(code))
