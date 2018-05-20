@@ -104,36 +104,37 @@ class QA_Account(QA_Worker):
                                  'account_cookie', 'commission', 'tax']
         ########################################################################
         # 信息类:
-        self.strategy_name    = strategy_name
-        self.user_cookie      = user_cookie
-        self.market_type      = market_type
+        self.strategy_name = strategy_name
+        self.user_cookie = user_cookie
+        self.market_type = market_type
         self.portfolio_cookie = portfolio_cookie
-        self.account_cookie   = QA_util_random_with_topic('Acc') if account_cookie is None else account_cookie
-        self.broker           = broker
-        self.frequence        = frequence
-        self.market_data      = None
-        self._currenttime     = None
+        self.account_cookie = QA_util_random_with_topic(
+            'Acc') if account_cookie is None else account_cookie
+        self.broker = broker
+        self.frequence = frequence
+        self.market_data = None
+        self._currenttime = None
         self.commission_coeff = commission_coeff
-        self.tax_coeff        = tax_coeff
-        self.running_time     = datetime.datetime.now()
+        self.tax_coeff = tax_coeff
+        self.running_time = datetime.datetime.now()
         ########################################################################
         # 资产类
-        self.orders           = QA_OrderQueue()  # 历史委托单
-        self.init_assets      = 1000000 if init_assets is None else init_assets
-        self.cash             = [self.init_assets] if cash is None else cash
-        self.cash_available   = self.cash[-1]    # 可用资金
-        self.sell_available   = sell_available
-        self.history          = [] if history is None else history
-        self.time_index       = []
+        self.orders = QA_OrderQueue()  # 历史委托单
+        self.init_assets = 1000000 if init_assets is None else init_assets
+        self.cash = [self.init_assets] if cash is None else cash
+        self.cash_available = self.cash[-1]    # 可用资金
+        self.sell_available = sell_available
+        self.history = [] if history is None else history
+        self.time_index = []
         ########################################################################
         # 规则类
         # 两个规则
         # 1.是否允许t+0 及买入及结算
         # 2.是否允许卖空开仓
         # 3.是否允许保证金交易/ 如果不是false 就需要制定保证金比例(dict形式)
-        self.allow_t0       = allow_t0
+        self.allow_t0 = allow_t0
         self.allow_sellopen = allow_sellopen
-        self.margin_level   = margin_level
+        self.margin_level = margin_level
 
     def __repr__(self):
         return '< QA_Account {}>'.format(self.account_cookie)
@@ -183,8 +184,10 @@ class QA_Account(QA_Worker):
     @property
     def cash_table(self):
         '现金的table'
-        _cash = pd.DataFrame(data=[self.cash[1::], self.time_index], index=['cash', 'datetime']).T
-        _cash = _cash.assign(date=_cash.datetime.apply(lambda x: str(x)[0:10])).assign(account_cookie=self.account_cookie)
+        _cash = pd.DataFrame(data=[self.cash[1::], self.time_index], index=[
+                             'cash', 'datetime']).T
+        _cash = _cash.assign(date=_cash.datetime.apply(lambda x: str(x)[0:10])).assign(
+            account_cookie=self.account_cookie)
         return _cash.set_index(['datetime', 'account_cookie'], drop=False).sort_index()
 
     @property
@@ -230,6 +233,12 @@ class QA_Account(QA_Worker):
         'return current time (in backtest/real environment)'
         return self._currenttime
 
+    def hold_table(self, datetime):
+        "到某一个时刻的持仓 如果给的是日期,则返回当日收盘是的持仓"
+        if len(datetime) == 10:
+            datetime = '{} 15:00:00'.format(datetime)
+        return self.history_table.set_index('datetime').loc[:datetime].groupby('code').amount.sum().sort_index()
+
     def reset_assets(self, init_assets=None):
         'reset_history/cash/'
         self.sell_available = {}
@@ -261,12 +270,12 @@ class QA_Account(QA_Worker):
                         message['header']['order_id']), str(message['header']['trade_id']), str(self.account_cookie),
                      float(message['body']['fee']['commission']), float(message['body']['fee']['tax'])])
                 self.cash.append(self.cash[-1]-trade_amount)
-                self.cash_available = self.cash[-1] 
-                 # 资金立刻结转
+                self.cash_available = self.cash[-1]
+                # 资金立刻结转
             else:
                 print(message)
                 print(self.cash[-1])
-                self.cash_available = self.cash[-1] 
+                self.cash_available = self.cash[-1]
         return self.message
 
     def send_order(self, code=None, amount=None, time=None, towards=None, price=None, money=None, order_model=None, amount_model=None):
@@ -332,7 +341,7 @@ class QA_Account(QA_Worker):
             # 是买入的情况(包括买入.买开.买平)
             if self.cash_available >= money:
                 self.cash_available -= money
-                if self.market_type is MARKET_TYPE.STOCK_CN:# 如果是股票 买入的时候有100股的最小限制
+                if self.market_type is MARKET_TYPE.STOCK_CN:  # 如果是股票 买入的时候有100股的最小限制
                     amount = int(amount / 100) * 100
                 flag = True
             else:
