@@ -159,6 +159,6 @@ if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6]:
 
 
 
-QA_util_log_info('Welcome to QUANTAXIS, the Version is {}'.format(__version__))
+print('Welcome to QUANTAXIS, the Version is {}'.format(__version__))
 
-QA_util_log_info(logo)
+print(logo)
