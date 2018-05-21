@@ -177,3 +177,4 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
 
 1. 增加 QA_Account 增加一个方法 hold_table(datetime) 方便在复盘的时候查看某一个时间点的账户持仓
 2. 增加 QA_Account 增加一个方法 hold_price(datetime) 使用vwap成交量加权算法计算持仓均价
+3. 增加 QA_Account 增加一个属性 trade_range 返回账户的交易时间段(所有交易日)
