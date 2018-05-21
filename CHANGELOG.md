@@ -196,3 +196,9 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
  - self.kurt
  - self.pct_change
  - self.mad
+
+ ## 1.0.36
+
+ 对于策略示例做了一些适当性的调整
+
+ 

@@ -82,22 +82,22 @@ class QA_Account(QA_Worker):
                  margin_level=False, allow_t0=False, allow_sellopen=False):
         """
 
-        :param strategy_name:
-        :param user_cookie:
-        :param market_type:
-        :param frequence:
-        :param broker:
-        :param portfolio_cookie:
-        :param account_cookie:
-        :param sell_available:
+        :param strategy_name:  策略名称
+        :param user_cookie:   用户cookie
+        :param market_type:   市场类别 默认QA.MARKET_TYPE.STOCK_CN A股股票
+        :param frequence:     账户级别 默认日线QA.FREQUENCE.DAY
+        :param broker:        BROEKR类 默认回测 QA.BROKER_TYPE.BACKTEST
+        :param portfolio_cookie: 组合cookie
+        :param account_cookie:   账户cookie
+        :param sell_available:   可卖股票数
         :param init_assets:       初始资产  默认 1000000 元 （100万）
         :param cash:              可用现金  默认 是 初始资产  list 类型
-        :param history:
+        :param history:           交易历史
         :param commission_coeff:  交易佣金 :默认 万2.5   float 类型
         :param tax_coeff:         印花税   :默认 千1.5   float 类型
-        :param margin_level:
-        :param allow_t0:
-        :param allow_sellopen:
+        :param margin_level:      保证金比例 默认False
+        :param allow_t0:          是否允许t+0交易  默认False
+        :param allow_sellopen:    是否允许卖空开仓  默认False
         """
         super().__init__()
         self._history_headers = ['datetime', 'code', 'price',
