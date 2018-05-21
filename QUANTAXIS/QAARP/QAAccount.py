@@ -33,7 +33,7 @@ from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
                                           BROKER_TYPE, ENGINE_EVENT, FREQUENCE,
                                           MARKET_TYPE, TRADE_STATUS)
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
-
+from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_trade_range
 # 2017/6/4修改: 去除总资产的动态权益计算
 
 
@@ -173,11 +173,15 @@ class QA_Account(QA_Worker):
 
     @property
     def start_date(self):
-        return str(self.time_index[0])[0:10]
+        return min(self.time_index)[0:10]
 
     @property
     def end_date(self):
-        return str(self.time_index[-1])[0:10]
+        return max(self.time_index)[0:10]
+
+    @property
+    def trade_range(self):
+        return QA_util_get_trade_range(self.start_date, self.end_date)
 
     @property
     def history_table(self):
