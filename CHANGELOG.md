@@ -200,5 +200,7 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
  ## 1.0.36
 
  对于策略示例做了一些适当性的调整
-
  
+ ## 1.0.37
+
+ 1. 将log文件都放入~/.quantaxis/log目录中 (* 在windows中,users/username/.quantaxis/log),减少log文件的垃圾输出
