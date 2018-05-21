@@ -198,7 +198,6 @@ class QA_BacktestBroker(QA_Broker):
         """
 
         # 因为成交模式对时间的封装
-
         if order.order_model == ORDER_MODEL.MARKET:
             """
             市价单模式
@@ -220,18 +219,6 @@ class QA_BacktestBroker(QA_Broker):
 
             order.price = (float(self.market_data.get('high')) +
                         float(self.market_data.get('low'))) * 0.5
-
-            #
-            if order.market_type is MARKET_TYPE.STOCK_CN and order.towards is ORDER_DIRECTION.BUY:
-                if order.order_model is AMOUNT_MODEL.BY_MONEY:
-                    amount = order.money/(order.price*(1+order.commission_coeff))
-                    money = order.money
-                else:
-                    amount = order.amount
-                    money = order.amount * order.price*(1+order.commission_coeff)
-
-                order.amount = int(amount / 100) * 100
-                order.money =  money
 
         elif order.order_model == ORDER_MODEL.NEXT_OPEN:
             # try:
@@ -256,11 +243,7 @@ class QA_BacktestBroker(QA_Broker):
                 else:
                     order.datetime = '{} 15:00:00'.format(order.date)
 
-            _original_marketvalue = order.price*order.amount
-
             order.price = float(self.market_data.get('close'))
-            if order.market_type is MARKET_TYPE.STOCK_CN:
-                order.amount = 100*int(_original_marketvalue/(order.price*100))
 
         elif order.order_model == ORDER_MODEL.LIMIT:
             """
@@ -300,17 +283,30 @@ class QA_BacktestBroker(QA_Broker):
             else:
                 order.price = float(self.market_data.get('low'))
 
-            if order.market_type is MARKET_TYPE.STOCK_CN and order.towards is ORDER_DIRECTION.BUY:
-                if order.order_model is AMOUNT_MODEL.BY_MONEY:
+
+        if order.market_type == MARKET_TYPE.STOCK_CN:
+            if order.towards == ORDER_DIRECTION.BUY:
+                if order.order_model == AMOUNT_MODEL.BY_MONEY:
                     amount = order.money/(order.price*(1+order.commission_coeff))
                     money = order.money
                 else:
+
                     amount = order.amount
                     money = order.amount * order.price*(1+order.commission_coeff)
 
                 order.amount = int(amount / 100) * 100
                 order.money =  money
-                
+            elif order.towards == ORDER_DIRECTION.SELL:
+                if order.order_model == AMOUNT_MODEL.BY_MONEY:
+                    amount = order.money/(order.price*(1+order.commission_coeff+order.tax_coeff))
+                    money = order.money
+                else:
+
+                    amount = order.amount
+                    money = order.amount * order.price*(1+order.commission_coeff+order.tax_coeff)
+
+                order.amount = amount
+                order.money =  money
         return order
 
     def get_market(self, order):
