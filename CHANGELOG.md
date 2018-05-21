@@ -158,3 +158,47 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
 
 ## 1.0.33
 
+1. 取消初始化quantaxis的时候选择服务器,改成获取事件触发时选取
+
+
+## 1.0.34 
+
+1. 增加: QA_Account增加一个属性 running_time 用于记录该账户的运行时间(会同步到数据库,所以从数据库取出的account也是当时运行的时间)
+2. @Roy T.Burns 对于QAUSER的修改 增加了自定义user_cookie的功能
+3. @几何提出的对于MONGODB uri以及本地文件设置的问题 
+```
+1.0.34会在本地创建一个.quantaxis目录,用于存储设置等
+同时可以对于.quantaxis/setting/config.ini进行修改,配置默认数据库
+```
+4. @taurusWang对于QA的整体注释和代码结构做了系统性的优化
+
+
+## 1.0.35
+
+1. 增加 QA_Account 增加一个方法 hold_table(datetime) 方便在复盘的时候查看某一个时间点的账户持仓
+2. 增加 QA_Account 增加一个方法 hold_price(datetime) 使用vwap成交量加权算法计算持仓均价
+3. 增加 QA_Account 增加一个属性 trade_range 返回账户的交易时间段(所有交易日)
+4. 修改 base_datastruct 修改以便兼容多个股票的DataStruct的指标计算
+
+受影响的方法/属性
+ - self.max
+ - self.min
+ - self.mean
+ - self.price_diff
+ - self.pvariance
+ - self.variance
+ - self.stdev
+ - self.pstdev
+ - self.mode
+ - self.mean_harmonic
+ - self.amplitude
+ - self.skew
+ - self.kurt
+ - self.pct_change
+ - self.mad
+
+ ## 1.0.36
+
+ 对于策略示例做了一些适当性的调整
+
+ 
