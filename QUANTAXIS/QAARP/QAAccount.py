@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 
+import numpy as np
 import pandas as pd
 import datetime
 from QUANTAXIS.QAEngine.QAEvent import QA_Worker
@@ -32,12 +33,20 @@ from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
                                           BROKER_TYPE, ENGINE_EVENT, FREQUENCE,
                                           MARKET_TYPE, TRADE_STATUS)
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
-
+from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_trade_range
 # 2017/6/4修改: 去除总资产的动态权益计算
 
 
+# pylint: disable=old-style-class, too-few-public-methods
 class QA_Account(QA_Worker):
-    """[QA_Account]
+    """QA_Account
+    User-->Portfolio-->Account/Strategy
+
+    :::::::::::::::::::::::::::::::::::::::::::::::::
+    ::        :: Portfolio 1 -- Account/Strategy 1 ::
+    ::  USER  ::             -- Account/Strategy 2 ::
+    ::        :: Portfolio 2 -- Account/Strategy 3 ::
+    :::::::::::::::::::::::::::::::::::::::::::::::::
 
     2018/1/5 再次修改 改版本去掉了多余的计算 精简账户更新
     ======================
@@ -63,7 +72,8 @@ class QA_Account(QA_Worker):
     生成订单/接受交易结果数据
     接收新的数据/on_bar/on_tick方法/缓存新数据的market_data
 
-
+    @royburns  1.添加注释
+    2018/05/18
     """
 
     def __init__(self, strategy_name=None, user_cookie=None, market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY,
@@ -72,22 +82,22 @@ class QA_Account(QA_Worker):
                  margin_level=False, allow_t0=False, allow_sellopen=False):
         """
 
-        :param strategy_name:
-        :param user_cookie:
-        :param market_type:
-        :param frequence:
-        :param broker:
-        :param portfolio_cookie:
-        :param account_cookie:
-        :param sell_available:
+        :param strategy_name:  策略名称
+        :param user_cookie:   用户cookie
+        :param market_type:   市场类别 默认QA.MARKET_TYPE.STOCK_CN A股股票
+        :param frequence:     账户级别 默认日线QA.FREQUENCE.DAY
+        :param broker:        BROEKR类 默认回测 QA.BROKER_TYPE.BACKTEST
+        :param portfolio_cookie: 组合cookie
+        :param account_cookie:   账户cookie
+        :param sell_available:   可卖股票数
         :param init_assets:       初始资产  默认 1000000 元 （100万）
         :param cash:              可用现金  默认 是 初始资产  list 类型
-        :param history:
+        :param history:           交易历史
         :param commission_coeff:  交易佣金 :默认 万2.5   float 类型
         :param tax_coeff:         印花税   :默认 千1.5   float 类型
-        :param margin_level:
-        :param allow_t0:
-        :param allow_sellopen:
+        :param margin_level:      保证金比例 默认False
+        :param allow_t0:          是否允许t+0交易  默认False
+        :param allow_sellopen:    是否允许卖空开仓  默认False
         """
         super().__init__()
         self._history_headers = ['datetime', 'code', 'price',
@@ -95,35 +105,37 @@ class QA_Account(QA_Worker):
                                  'account_cookie', 'commission', 'tax']
         ########################################################################
         # 信息类:
-        self.strategy_name    = strategy_name
-        self.user_cookie      = user_cookie
-        self.market_type      = market_type
+        self.strategy_name = strategy_name
+        self.user_cookie = user_cookie
+        self.market_type = market_type
         self.portfolio_cookie = portfolio_cookie
-        self.account_cookie   = QA_util_random_with_topic('Acc') if account_cookie is None else account_cookie
-        self.broker           = broker
-        self.frequence        = frequence
-        self.market_data      = None
-        self._currenttime     = None
+        self.account_cookie = QA_util_random_with_topic(
+            'Acc') if account_cookie is None else account_cookie
+        self.broker = broker
+        self.frequence = frequence
+        self.market_data = None
+        self._currenttime = None
         self.commission_coeff = commission_coeff
-        self.tax_coeff        = tax_coeff
+        self.tax_coeff = tax_coeff
+        self.running_time = datetime.datetime.now()
         ########################################################################
         # 资产类
-        self.orders           = QA_OrderQueue()  # 历史委托单
-        self.init_assets      = 1000000 if init_assets is None else init_assets
-        self.cash             = [self.init_assets] if cash is None else cash
-        self.cash_available   = self.cash[-1]    # 可用资金
-        self.sell_available   = sell_available
-        self.history          = [] if history is None else history
-        self.time_index       = []
+        self.orders = QA_OrderQueue()  # 历史委托单
+        self.init_assets = 1000000 if init_assets is None else init_assets
+        self.cash = [self.init_assets] if cash is None else cash
+        self.cash_available = self.cash[-1]    # 可用资金
+        self.sell_available = sell_available
+        self.history = [] if history is None else history
+        self.time_index = []
         ########################################################################
         # 规则类
         # 两个规则
         # 1.是否允许t+0 及买入及结算
         # 2.是否允许卖空开仓
         # 3.是否允许保证金交易/ 如果不是false 就需要制定保证金比例(dict形式)
-        self.allow_t0       = allow_t0
+        self.allow_t0 = allow_t0
         self.allow_sellopen = allow_sellopen
-        self.margin_level   = margin_level
+        self.margin_level = margin_level
 
     def __repr__(self):
         return '< QA_Account {}>'.format(self.account_cookie)
@@ -144,6 +156,8 @@ class QA_Account(QA_Worker):
             'allow_t0': self.allow_t0,
             'margin_level': self.margin_level,
             'init_assets': self.init_assets,
+            'commission_coeff': self.commission_coeff,
+            'tax_coeff': self.tax_coeff,
             'cash': self.cash,
             'history': self.history,
             'trade_index': self.time_index,
@@ -159,11 +173,15 @@ class QA_Account(QA_Worker):
 
     @property
     def start_date(self):
-        return str(self.time_index[0])[0:10]
+        return min(self.time_index)[0:10]
 
     @property
     def end_date(self):
-        return str(self.time_index[-1])[0:10]
+        return max(self.time_index)[0:10]
+
+    @property
+    def trade_range(self):
+        return QA_util_get_trade_range(self.start_date, self.end_date)
 
     @property
     def history_table(self):
@@ -173,8 +191,10 @@ class QA_Account(QA_Worker):
     @property
     def cash_table(self):
         '现金的table'
-        _cash = pd.DataFrame(data=[self.cash[1::], self.time_index], index=['cash', 'datetime']).T
-        _cash = _cash.assign(date=_cash.datetime.apply(lambda x: str(x)[0:10])).assign(account_cookie=self.account_cookie)
+        _cash = pd.DataFrame(data=[self.cash[1::], self.time_index], index=[
+                             'cash', 'datetime']).T
+        _cash = _cash.assign(date=_cash.datetime.apply(lambda x: str(x)[0:10])).assign(
+            account_cookie=self.account_cookie)
         return _cash.set_index(['datetime', 'account_cookie'], drop=False).sort_index()
 
     @property
@@ -220,6 +240,25 @@ class QA_Account(QA_Worker):
         'return current time (in backtest/real environment)'
         return self._currenttime
 
+    def hold_table(self, datetime=None):
+        "到某一个时刻的持仓 如果给的是日期,则返回当日开盘前的持仓"
+        if datetime is None:
+            return self.history_table.set_index('datetime').sort_index().groupby('code').amount.sum().sort_index()
+        else:
+            return self.history_table.set_index('datetime').sort_index().loc[:datetime].groupby('code').amount.sum().sort_index()
+
+    def hold_price(self, datetime=None):
+        "计算持仓成本  如果给的是日期,则返回当日开盘前的持仓"
+        def weights(x):
+            if sum(x['amount']) != 0:
+                return np.average(x['price'], weights=x['amount'], returned=True)
+            else:
+                return (0, 0)
+        if datetime is None:
+            return self.history_table.set_index('datetime').sort_index().groupby('code').apply(weights)
+        else:
+            return self.history_table.set_index('datetime').sort_index().loc[:datetime].groupby('code').apply(weights)
+
     def reset_assets(self, init_assets=None):
         'reset_history/cash/'
         self.sell_available = {}
@@ -251,12 +290,12 @@ class QA_Account(QA_Worker):
                         message['header']['order_id']), str(message['header']['trade_id']), str(self.account_cookie),
                      float(message['body']['fee']['commission']), float(message['body']['fee']['tax'])])
                 self.cash.append(self.cash[-1]-trade_amount)
-                self.cash_available = self.cash[-1] 
-                 # 资金立刻结转
+                self.cash_available = self.cash[-1]
+                # 资金立刻结转
             else:
                 print(message)
                 print(self.cash[-1])
-                self.cash_available = self.cash[-1] 
+                self.cash_available = self.cash[-1]
         return self.message
 
     def send_order(self, code=None, amount=None, time=None, towards=None, price=None, money=None, order_model=None, amount_model=None):
@@ -322,7 +361,7 @@ class QA_Account(QA_Worker):
             # 是买入的情况(包括买入.买开.买平)
             if self.cash_available >= money:
                 self.cash_available -= money
-                if self.market_type is MARKET_TYPE.STOCK_CN:# 如果是股票 买入的时候有100股的最小限制
+                if self.market_type is MARKET_TYPE.STOCK_CN:  # 如果是股票 买入的时候有100股的最小限制
                     amount = int(amount / 100) * 100
                 flag = True
             else:
@@ -376,11 +415,14 @@ class QA_Account(QA_Worker):
         self.allow_sellopen = message.get('allow_sellopen', False)
         self.allow_t0 = message.get('allow_t0', False)
         self.margin_level = message.get('margin_level', False)
-
+        self.init_assets = message['init_assets']
+        self.commission_coeff = message.get('commission_coeff', 0.00015)
+        self.tax_coeff = message.get('tax_coeff', 0.0015)
         self.history = message['history']
         self.cash = message['cash']
         self.time_index = message['trade_index']
-        self.init_assets = message['init_assets']
+        self.running_time = message.get('running_time', None)
+        self.settle()
         return self
 
     @property

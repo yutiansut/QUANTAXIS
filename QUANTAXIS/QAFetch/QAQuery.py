@@ -345,5 +345,21 @@ def QA_fetch_account(message={}, db=DATABASE):
     return [QA_util_dict_remove_key(res, '_id') for res in collection.find(message)]
 
 
+def QA_fetch_user(user_cookie,db=DATABASE):
+    """
+    get the user
+
+    Arguments:
+        user_cookie : str the unique cookie_id for a user
+    Keyword Arguments:
+        db: database for query
+
+    Returns:
+        list ---  [ACCOUNT]
+    """
+    collection = DATABASE.account
+
+    return [QA_util_dict_remove_key(res, '_id') for res in collection.find({'user_cookie':user_cookie})]
+
 if __name__ == '__main__':
     print(QA_fetch_quotations('000001'))
