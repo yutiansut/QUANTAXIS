@@ -33,16 +33,16 @@ QA_util_log_expection()
 """
 
 import datetime
-
+import os
 from zenlog import logging
-
+from QUANTAXIS.QAUtil.QALocalize import log_path
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s QUANTAXIS>>> %(message)s',
                     datefmt='%H:%M:%S',
-                    filename='quantaxis-' +
-                    str(datetime.datetime.now().strftime(
-                        '%Y-%m-%d-%H-%M-%S')) + '-.log',
-                    filemode='w')
+                    filename='{}{}quantaxis-{}-.log'.format(log_path,os.sep,str(datetime.datetime.now().strftime(
+                        '%Y-%m-%d-%H-%M-%S'))),
+                    filemode='w',
+                    )
 console = logging.StreamHandler()
 console.setLevel(logging.INFO)
 formatter = logging.Formatter('QUANTAXIS>> %(message)s')
