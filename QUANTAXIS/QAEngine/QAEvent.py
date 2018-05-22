@@ -36,7 +36,7 @@ class QA_Worker(object):
         self.type = None
 
     def __repr__(self):
-        return '< QA_Worker {} >'.format(self.type)
+        return '< QA_Worker {} id = {} >'.format(self.type,id(self))
 
     @abstractmethod
     def run(self, event):
@@ -52,3 +52,7 @@ class QA_Event(object):
 
         for item in kwargs.keys():
             exec('self.{}=kwargs[item]'.format(item))
+
+    #for debug purpose
+    def __repr__(self):
+        return "< QA_Event {} {} {} , id = {} >".format(self.event_type , self.message, self.callback, id(self))

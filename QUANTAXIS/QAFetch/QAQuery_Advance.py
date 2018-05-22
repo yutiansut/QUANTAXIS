@@ -162,28 +162,23 @@ def QA_fetch_stock_list_adv(collections=DATABASE.stock_list):
 
 
 def QA_fetch_stock_block_adv(code=None, blockname=None, collections=DATABASE.stock_block):
-    """返回板块
-
-    Keyword Arguments:
-        code {[type]} -- [description] (default: {None})
-        blockname {[type]} -- [descrioption] (default : {None})
-        collections {[type]} -- [description] (default: {DATABASE})
-
-    Returns:
-        [type] -- [description]
-    """
-
+    '''
+    返回板块
+    :param code:
+    :param blockname:
+    :param collections: 默认数据库 stock_block
+    :return:
+    '''
     if code is not None and blockname is None:
-        data = pd.DataFrame([item for item in collections.find(
-            {'code': code})]).drop(['_id'], axis=1)
+        # 根据代码 和 板块名称 查找
+        data = pd.DataFrame([item for item in collections.find({'code': code})]).drop(['_id'], axis=1)
         return QA_DataStruct_Stock_block(data.set_index('code', drop=False).drop_duplicates())
     elif blockname is not None and code is None:
-
-        data = pd.DataFrame([item for item in collections.find(
-            {'blockname': re.compile(blockname)})]).drop(['_id'], axis=1)
+        # 板块名称 查找
+        data = pd.DataFrame([item for item in collections.find({'blockname': re.compile(blockname)})]).drop(['_id'], axis=1)
     else:
-        data = pd.DataFrame(
-            [item for item in collections.find()]).drop(['_id'], axis=1)
+        # ？？
+        data = pd.DataFrame([item for item in collections.find()]).drop(['_id'], axis=1)
         return QA_DataStruct_Stock_block(data.set_index('code', drop=False).drop_duplicates())
 
 

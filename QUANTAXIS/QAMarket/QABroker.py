@@ -48,7 +48,7 @@ class QA_Broker(QA_Worker):
         self.name = None
 
     def __repr__(self):
-        return '< QA_MARKET >'
+        return '< QA_Broker >'
 
     @abstractmethod
     def receive_order(self, event):
