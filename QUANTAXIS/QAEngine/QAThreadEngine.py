@@ -160,11 +160,12 @@ class QA_Engine(QA_Thread):
             self.__flag.wait()
             while not self.thread_stop:
                 '这是一个阻塞的队列,避免出现消息的遗漏'
-
                 try:
                     if self.queue.empty() is False:
                         _task = self.queue.get()  # 接收消息
+                        #print("queue left %d"%self.queue.qsize())
                         assert isinstance(_task, QA_Task)
+                        #print(_task)
                         if _task.engine is None:
                             # 如果不指定线程 就在ENGINE线程中运行
                             _task.do()
