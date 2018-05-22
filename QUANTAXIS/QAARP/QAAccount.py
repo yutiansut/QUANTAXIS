@@ -296,6 +296,7 @@ class QA_Account(QA_Worker):
                 print(message)
                 print(self.cash[-1])
                 self.cash_available = self.cash[-1]
+                print('NOT ENOUGH MONEY FOR {}'.format(message['body']['order']))
         return self.message
 
     def send_order(self, code=None, amount=None, time=None, towards=None, price=None, money=None, order_model=None, amount_model=None):
@@ -433,6 +434,12 @@ class QA_Account(QA_Worker):
         return pd.DataFrame([self.message, ]).set_index('account_cookie', drop=False).T
 
     def run(self, event):
+        '''
+        这个方法是被 QA_ThreadEngine 处理队列时候调用的， QA_Task 中 do 方法调用 run （在其它线程中）
+ -      'QA_WORKER method 重载'
+        :param event: 事件类型 QA_Event
+        :return:
+        '''
         'QA_WORKER method'
         if event.event_type is ACCOUNT_EVENT.SETTLE:
             self.settle()
