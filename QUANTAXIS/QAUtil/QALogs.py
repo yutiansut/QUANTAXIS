@@ -32,14 +32,48 @@ QA_util_log_debug()
 QA_util_log_expection()
 """
 
+import configparser
 import datetime
 import os
+
 from zenlog import logging
-from QUANTAXIS.QAUtil.QALocalize import log_path
+
+from QUANTAXIS.QAUtil.QALocalize import log_path, setting_path
+
+CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
+
+
+def get_config():
+    config = configparser.ConfigParser()
+    if os.path.exists(CONFIGFILE_PATH):
+        config.read(CONFIGFILE_PATH)
+        try:
+            return config.get('LOG', 'path')
+        except configparser.NoSectionError:
+            config.add_section('LOG')
+            config.set('LOG', 'path', log_path)
+            return log_path
+        except configparser.NoOptionError:
+            config.set('LOG', 'path', log_path)
+            return log_path
+        finally:
+
+            with open(CONFIGFILE_PATH, 'w') as f:
+                config.write(f)
+
+    else:
+        f = open(CONFIGFILE_PATH, 'w')
+        config.add_section('LOG')
+        config.set('LOG', 'path', log_path)
+        config.write(f)
+        f.close()
+        return log_path
+
+
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s QUANTAXIS>>> %(message)s',
                     datefmt='%H:%M:%S',
-                    filename='{}{}quantaxis-{}-.log'.format(log_path,os.sep,str(datetime.datetime.now().strftime(
+                    filename='{}{}quantaxis-{}-.log'.format(get_config(), os.sep, str(datetime.datetime.now().strftime(
                         '%Y-%m-%d-%H-%M-%S'))),
                     filemode='w',
                     )
