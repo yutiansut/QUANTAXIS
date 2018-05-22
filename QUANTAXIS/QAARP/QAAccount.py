@@ -295,7 +295,9 @@ class QA_Account(QA_Worker):
             else:
                 print(message)
                 print(self.cash[-1])
+                
                 self.cash_available = self.cash[-1]
+                print('NOT ENOUGH MONEY FOR {}'.format(message['body']['order']))
         return self.message
 
     def send_order(self, code=None, amount=None, time=None, towards=None, price=None, money=None, order_model=None, amount_model=None):
