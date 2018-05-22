@@ -183,6 +183,9 @@ class QA_OrderQueue():   # also the order tree
             pass
 
     def insert_order(self, order):
+
+        #print("     *>> QAOrder!insert_order  {}".format(order))
+
         order.status = ORDER_STATUS.QUEUED
         self.queue = self.queue.append(
             order.to_df(), ignore_index=True)

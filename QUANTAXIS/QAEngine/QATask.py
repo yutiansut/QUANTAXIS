@@ -37,6 +37,9 @@ class QA_Task():
         self.task_id = QA_util_random_with_topic('Task')
         self.engine = engine
 
+    def __repr__(self):
+        return '< QA_Task engine {} , worker {} , event {},  id = {} >'.format(self.engine,self.worker, self.event, id(self))
+
     def do(self):
         self.res = self.worker.run(self.event)
         if self.callback:

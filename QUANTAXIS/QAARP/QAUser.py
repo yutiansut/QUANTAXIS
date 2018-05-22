@@ -151,15 +151,18 @@ class QA_User():
     def register_account(self, account, portfolio_cookie=None):
         '''
         注册一个account到portfolio组合中
+        account 也可以是一个策略类，实现其 on_bar 方法
         :param account: 被注册的account
         :return:
         '''
+        #查找 portfolio
         if len(self.portfolio_list.keys()) < 1:
             po = self.new_portfolio()
         elif portfolio_cookie is not None:
             po = self.portfolio_list[portfolio_cookie]
         else:
             po = list(self.portfolio_list.values())[0]
+        #把account 添加到 portfolio中去
         po.add_account(account)
         return (po, account)
 

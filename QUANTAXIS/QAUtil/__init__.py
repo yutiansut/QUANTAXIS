@@ -25,8 +25,8 @@
 yutiansut
 util tool
 """
-
-
+# path
+from QUANTAXIS.QAUtil.QALocalize import qa_path, setting_path, cache_path, download_path, log_path
 # bar
 from QUANTAXIS.QAUtil.QABar import (QA_util_make_hour_index,
                                     QA_util_make_min_index, QA_util_time_gap)
@@ -78,7 +78,7 @@ from QUANTAXIS.QAUtil.QAParameter import (MARKET_TYPE, ORDER_STATUS, TRADE_STATU
 # RANDOM class
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 # QUANTAXIS Setting
-from QUANTAXIS.QAUtil.QALocalize import qa_path, setting_path, cache_path, download_path
+
 from QUANTAXIS.QAUtil.QASetting import (QA_Setting, DATABASE, future_ip_list,
                                         info_ip_list, stock_ip_list)
 # sql
