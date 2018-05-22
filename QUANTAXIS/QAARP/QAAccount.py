@@ -225,8 +225,8 @@ class QA_Account(QA_Worker):
         data = data.assign(account_cookie=self.account_cookie).assign(
             date=data.index.levels[0])
         data.date = data.date.apply(lambda x: str(x)[0:10])
-        return data.set_index(['date', 'account_cookie'], drop=False).sort_index()
-
+        data=data.set_index(['date', 'account_cookie'])
+        return data[~data.index.duplicated(keep='last')].sort_index()
     # 计算assets的时候 需要一个market_data=QA.QA_fetch_stock_day_adv(list(data.columns),data.index[0],data.index[-1])
     # (market_data.to_qfq().pivot('close')*data).sum(axis=1)+user_cookie.get_account(a_1).daily_cash.set_index('date').cash
 
@@ -295,9 +295,7 @@ class QA_Account(QA_Worker):
             else:
                 print(message)
                 print(self.cash[-1])
-
                 self.cash_available = self.cash[-1]
-                print('NOT ENOUGH MONEY FOR {}'.format(message['body']['order']))
         return self.message
 
     def send_order(self, code=None, amount=None, time=None, towards=None, price=None, money=None, order_model=None, amount_model=None):
@@ -435,12 +433,7 @@ class QA_Account(QA_Worker):
         return pd.DataFrame([self.message, ]).set_index('account_cookie', drop=False).T
 
     def run(self, event):
-        '''
-        这个方法是被 QA_ThreadEngine 处理队列时候调用的， QA_Task 中 do 方法调用 run （在其它线程中）
-        'QA_WORKER method 重载'
-        :param event:  事件类型 QA_Event
-        :return: None
-        '''
+        'QA_WORKER method'
         if event.event_type is ACCOUNT_EVENT.SETTLE:
             self.settle()
 
