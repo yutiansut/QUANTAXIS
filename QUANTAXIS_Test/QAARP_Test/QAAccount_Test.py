@@ -12,6 +12,16 @@ import pandas as pd
 
 class Test_QAAccount(unittest.TestCase):
 
+
+    def test_BuyAndSell(self):
+        # 测试买卖事件
+
+        QA_Account()
+
+
+        pass
+
+
     def test_QAAccount_class(self):
 
         #测试流程 获取 美康生物 300439 的走势 从 2017年10月01日开始 到 2018年 4月30日
@@ -61,7 +71,7 @@ class Test_QAAccount(unittest.TestCase):
                 Order = Account.send_order(code=test_stock_code,
                                            price=buy_price,
                                            amount=100,
-                                           money=Account.cash_available,  # 全仓买入， AMOUNT_MODEL.BY_AMOUNT 忽略该产生
+                                           money=Account.cash_available,  # 全仓买入， AMOUNT_MODEL.BY_AMOUNT 忽略该参数
                                            time=date_time_to_buy,
                                            towards=QA.ORDER_DIRECTION.BUY,
                                            order_model=QA.ORDER_MODEL.LIMIT,

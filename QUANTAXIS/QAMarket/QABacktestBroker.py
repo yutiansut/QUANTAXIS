@@ -48,6 +48,7 @@ from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT, ORDER_DIRE
                                           MARKET_EVENT, MARKET_TYPE,
                                           ORDER_MODEL)
 
+from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 class QA_BacktestBroker(QA_Broker):
     """
@@ -110,6 +111,9 @@ class QA_BacktestBroker(QA_Broker):
         self.broker_data = None
 
     def run(self, event):
+        #strDbg = QA_util_random_with_topic("QABacktestBroker.run")
+        #print("         >-----------------------QABacktestBroker.run----------------------------->", strDbg,'evt->', event)
+
         if event.event_type is MARKET_EVENT.QUERY_DATA:
             # 查询数据部分
             code = event.code
@@ -125,6 +129,7 @@ class QA_BacktestBroker(QA_Broker):
         elif event.event_type is MARKET_EVENT.QUERY_ORDER:
             self.order_handler.run(event)
         elif event.event_type is ENGINE_EVENT.UPCOMING_DATA:
+            # QABacktest 回测发出的事件
             new_marketdata_dict = event.market_data.dicts
             for item in new_marketdata_dict.keys():
                 if item not in self._quotation.keys():
@@ -140,7 +145,6 @@ class QA_BacktestBroker(QA_Broker):
             self.run(QA_Event(event_type=BROKER_EVENT.TRADE, broker=self))
         elif event.event_type is BROKER_EVENT.TRADE:
             event = self.order_handler.run(event)
-
             event.message = 'trade'
             if event.callback:
                 event.callback(event)
@@ -148,6 +152,8 @@ class QA_BacktestBroker(QA_Broker):
             self.order_handler.run(event)
             if event.callback:
                 event.callback('settle')
+        #print("         <-----------------------QABacktestBroker.run-----------------------------<",strDbg,'evt->',event)
+
 
     def query_data(self, code, start, end, frequence, market_type=None):
         """
@@ -209,7 +215,7 @@ class QA_BacktestBroker(QA_Broker):
                 order.date = order.datetime[0:10]
                 order.datetime = '{} 09:30:00'.format(order.date)
             elif order.frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
-                
+
                 exact_time = str(datetime.datetime.strptime(
                     str(order.datetime), '%Y-%m-%d %H:%M:%S') + datetime.timedelta(minutes=1))
                 order.date = exact_time[0:10]
@@ -257,7 +263,7 @@ class QA_BacktestBroker(QA_Broker):
                 order.date = order.datetime[0:10]
                 order.datetime = '{} 09:30:00'.format(order.date)
             elif order.frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
-                
+
                 exact_time = str(datetime.datetime.strptime(
                     str(order.datetime), '%Y-%m-%d %H:%M:%S') + datetime.timedelta(minutes=1))
                 order.date = exact_time[0:10]
@@ -273,7 +279,7 @@ class QA_BacktestBroker(QA_Broker):
                 order.date = order.datetime[0:10]
                 order.datetime = '{} 09:30:00'.format(order.date)
             elif order.frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
-                
+
                 exact_time = str(datetime.datetime.strptime(
                     str(order.datetime), '%Y-%m-%d %H:%M:%S') + datetime.timedelta(minutes=1))
                 order.date = exact_time[0:10]
