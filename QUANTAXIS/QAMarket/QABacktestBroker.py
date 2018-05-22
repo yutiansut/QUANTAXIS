@@ -242,7 +242,8 @@ class QA_BacktestBroker(QA_Broker):
             收盘价模式
             """
             try:
-                order.datetime = self.market_data.datetime
+                order.date = order.datetime[0:10]
+                order.datetime = '{} 15:00:00'.format(order.date)
             except:
                 if len(str(order.datetime)) == 19:
                     pass
