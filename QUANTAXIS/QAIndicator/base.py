@@ -113,13 +113,18 @@ def SINGLE_CROSS(A, B):
 
 def CROSS(A, B):
     var = np.where(A<B, 1, 0)
-    return (pd.Series(var, index=A.index).diff()<0).apply(int)
+    return (pd.Series(var, index=var.index).diff()<0).apply(int)
 
 
 def COUNT(COND, N):
-    var = np.where(COND, 1, 0)
-    return var[-N:].sum()
+    """
+    2018/05/23 修改
 
+    参考https://github.com/QUANTAXIS/QUANTAXIS/issues/429
+
+    现在返回的是series
+    """
+    return pd.Series(np.where(COND,1,0),index=COND.index).rolling(N).sum()
 
 def IF(COND, V1, V2):
     var = np.where(COND, V1, V2)
