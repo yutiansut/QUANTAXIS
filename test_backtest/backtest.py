@@ -33,6 +33,10 @@ from test_backtest.strategy import MAStrategy
 
 
 class Backtest(QA_Backtest):
+    '''
+    多线程模式回测示例
+
+    '''
 
     def __init__(self, market_type, frequence, start, end, code_list, commission_fee):
         super().__init__(market_type,  frequence, start, end, code_list, commission_fee)
