@@ -29,6 +29,34 @@ import time
 
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 
+#todo 时间函数 建议使用这些
+#  字符串 和 datetime date time 类型之间的转换
+#  QA_util__str_to_dateime
+#
+#  QA_util__datetime_to_str19
+#  QA_util__datetime_to_str10
+
+#  QA_util__str10_to_datetime
+#  QA_util__str19_to_datetime
+
+#  QA_util__int10_to_datetime
+#  QA_util__int19_to_datetime
+
+#  QA_util__date_to_str10
+#  QA_util__date_to_str19
+
+#  QA_util__time_to_str10
+#  QA_util__time_to_str19
+
+#  QA_util__str10_to_date
+#  QA_util__str10_to_time
+
+#  QA_util__str19_to_time
+#  QA_util__str19_to_date
+
+# 或者有更好的方案
+
+
 
 def QA_util_time_now():
     """
@@ -45,6 +73,14 @@ def QA_util_date_today():
     """
     return datetime.date.today()
 
+def QA_util_today_str():
+    """
+    返回今天的日期字符串
+    :return: 类型字符串 2011-11-11
+    """
+    dt = QA_util_date_today()
+    str = QA_util_datetime_to_strdate(dt)
+    return str
 
 def QA_util_date_str2int(date):
     """
