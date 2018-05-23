@@ -113,7 +113,7 @@ def SINGLE_CROSS(A, B):
 
 def CROSS(A, B):
     var = np.where(A<B, 1, 0)
-    return (pd.Series(var, index=var.index).diff()<0).apply(int)
+    return (pd.Series(var, index=A.index).diff()<0).apply(int)
 
 
 def COUNT(COND, N):
