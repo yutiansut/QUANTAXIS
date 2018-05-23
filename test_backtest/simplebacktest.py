@@ -26,6 +26,7 @@
 import QUANTAXIS as QA
 import random
 """
+单线程模式回测示例
 该代码旨在给出一个极其容易实现的小回测 高效 无事件驱动
 """
 B = QA.QA_BacktestBroker()
