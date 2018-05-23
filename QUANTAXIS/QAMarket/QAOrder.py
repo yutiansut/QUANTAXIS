@@ -78,19 +78,21 @@ class QA_Order():
 
         self.price = price
         self.datetime = None
+
+        #todo 移动到 Util 类中 时间处理函数
         if datetime is None and date is not None:
             self.date = date
             self.datetime = '{} 09:31:00'.format(self.date)
-
         elif date is None and datetime is not None:
             self.date = datetime[0:10]
             self.datetime = datetime
-
         elif date is not None and datetime is not None:
             self.date = date
             self.datetime = datetime
         else:
             pass
+
+
         self.sending_time = self.datetime if sending_time is None else sending_time  # 下单时间
         self.transact_time = transact_time
         self.amount = amount
@@ -185,10 +187,8 @@ class QA_OrderQueue():   # also the order tree
     def insert_order(self, order):
 
         #print("     *>> QAOrder!insert_order  {}".format(order))
-
         order.status = ORDER_STATUS.QUEUED
-        self.queue = self.queue.append(
-            order.to_df(), ignore_index=True)
+        self.queue = self.queue.append(order.to_df(), ignore_index=True)
         self.queue.set_index('order_id', drop=False, inplace=True)
         self._queue[order.order_id] = order
         return order
