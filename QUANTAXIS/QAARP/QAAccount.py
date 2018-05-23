@@ -193,7 +193,7 @@ class QA_Account(QA_Worker):
         '现金的table'
         _cash = pd.DataFrame(data=[self.cash[1::], self.time_index], index=[
                              'cash', 'datetime']).T
-        _cash = _cash.assign(date=_cash.datetime.apply(lambda x: str(x)[0:10])).assign(
+        _cash = _cash.assign(date=_cash.datetime.apply(lambda x: pd.to_datetime(str(x)[0:10]))).assign(
             account_cookie=self.account_cookie)
         return _cash.set_index(['datetime', 'account_cookie'], drop=False).sort_index()
 
