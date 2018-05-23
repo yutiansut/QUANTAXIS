@@ -24,6 +24,42 @@
 
 import random
 
+def QA_util_random_with_zh_stock_code(stockNumber = 10):
+    '''
+    随机生成股票代码
+    :param stockNumber: 生成个数
+    :return:  ['60XXXX', '00XXXX', '300XXX']
+    '''
+    codeList = []
+    pt = 0
+    for i in range(stockNumber):
+        if pt == 0:
+            #print("random 60XXXX")
+            iCode = random.randint(600000, 609999)
+            aCode = "%06d"%iCode
+
+        elif pt == 1:
+            #print("random 00XXXX")
+            iCode = random.randint(600000, 600999)
+            aCode = "%06d" % iCode
+
+        elif pt == 2:
+            #print("random 00XXXX")
+            iCode = random.randint(2000, 9999)
+            aCode = "%06d"%iCode
+
+        elif pt == 3:
+            #print("random 300XXX")
+            iCode = random.randint(300000, 300999)
+            aCode = "%06d"%iCode
+
+        elif pt == 4:
+            #print("random 00XXXX")
+            iCode = random.randint(2000, 2999)
+            aCode = "%06d" % iCode
+        pt = (pt + 1) % 5
+        codeList.append(aCode)
+    return codeList
 
 def QA_util_random_with_topic(topic='Acc', lens=8):
     """

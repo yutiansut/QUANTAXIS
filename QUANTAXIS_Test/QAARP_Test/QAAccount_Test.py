@@ -1,32 +1,58 @@
 import unittest;
 
 from QUANTAXIS.QAUtil import (QADate)
-from QUANTAXIS.QAARP import ( QAAccount )
-from QUANTAXIS import *;
+from QUANTAXIS.QAUtil import (QARandom)
 import QUANTAXIS as QA
 import random as rnd
-
-import numpy as np
-import pandas as pd
-
 
 class Test_QAAccount(unittest.TestCase):
 
 
     def test_BuyAndSell(self):
         # 测试买卖事件
+        #测试流程，
+        #随机选中一组股票
+        #随机选中几个交易日
+        #随机卖出
+        #随机买入
+        #发送订单
+        #从队列中取回订单
+        #比较
+        codeCount = 10
+        codeList = QARandom.QA_util_random_with_zh_stock_code(codeCount)
+        #print(codeList)
+        # { code: QA_DataStruct_Stock_day }
+        # 如果代码不存在 则 code：None
+        codeForDate = {}
+        for codeIndex in range(0,codeCount):
+            aStockDataStructDay = QA.QA_fetch_stock_day_adv(codeList[codeIndex])
+            codeForDate[codeList[codeIndex]] = aStockDataStructDay
+        #print(codeForDate)
 
-        QA_Account()
+        str = QADate.QA_util_today_str()
+        timestamp = QADate.QA_util_to_datetime(str)
 
+        account = QA.QA_Account(strategy_name="TEST策略", user_cookie=None)
 
+        for a_stock_code in codeForDate.keys():
+            account.send_order(code=a_stock_code,
+                                 amount=100,
+                                 time = timestamp,
+                                 towards= 1,
+                                 price= 8.8,
+                                 order_model= QA.ORDER_MODEL.LIMIT,
+                                 amount_model=QA.AMOUNT_MODEL.BY_AMOUNT)
+
+        orderQueue = account.get_orders()
+        print(orderQueue)
+
+        self.assertEqual(len(orderQueue.queue) , codeCount)
         pass
-
 
     def test_QAAccount_class(self):
 
         #测试流程 获取 美康生物 300439 的走势 从 2017年10月01日开始 到 2018年 4月30日
         #
-
         test_stock_code = '300439'
         stock_price_list = QA.QA_fetch_stock_day(code = test_stock_code, start = '2017-10-01', end = '2018-04-30')
         #buy_list = []
@@ -66,8 +92,6 @@ class Test_QAAccount(unittest.TestCase):
                 buy_price = price_low + price_diff * rand_value
                 print("{} 申报买入的成交价格 {}".format(dt, buy_price))
                 #每天随机在开盘价格和收盘价格直接买入
-
-
                 Order = Account.send_order(code=test_stock_code,
                                            price=buy_price,
                                            amount=100,
@@ -77,14 +101,10 @@ class Test_QAAccount(unittest.TestCase):
                                            order_model=QA.ORDER_MODEL.LIMIT,
                                            amount_model=QA.AMOUNT_MODEL.BY_AMOUNT
                                            )
-
-
-
                 print('ORDER的占用资金: {}'.format((Order.amount * Order.price) * (1 + Account.commission_coeff)))
                 print('账户剩余资金 :{}'.format(Account.cash_available)) ## ??
                 cash_available = Account.cash_available
                 print(cash_available)
-
 
                 rec_mes=B.receive_order(QA.QA_Event(order=Order))
                 print(rec_mes)
@@ -99,7 +119,3 @@ class Test_QAAccount(unittest.TestCase):
 
                 print('账户的可用资金 {}'.format(Account.cash_available))
                 print('-----------------------------------------------')
-
-
-
-        

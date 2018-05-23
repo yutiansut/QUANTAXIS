@@ -53,6 +53,14 @@ def QA_fetch_stock_day_adv(
         start='all', end=None,
         if_drop_index=False,
         collections=DATABASE.stock_day):
+    '''
+    :param code:  股票代码
+    :param start: 开始日期
+    :param end:   结束日期
+    :param if_drop_index:
+    :param collections: 默认数据库
+    :return: 如果股票代码不存 或者开始结束日期不存在 在返回 None ，合法返回 QA_DataStruct_Stock_day 数据
+    '''
     '获取股票日线'
     end = start if end is None else end
     start = str(start)[0:10]
@@ -62,7 +70,12 @@ def QA_fetch_stock_day_adv(
         start = '1990-01-01'
         end = str(datetime.date.today())
 
-    return QA_DataStruct_Stock_day(QA_fetch_stock_day(code, start, end, format='pd').set_index(['date', 'code'], drop=if_drop_index))
+    res = QA_fetch_stock_day(code, start, end, format='pd')
+    if res is None:
+        print("code=%s , start=%s, end=%s QA_fetch_stock_day return None"%(code,start,end))
+        return None
+    else:
+        return QA_DataStruct_Stock_day(res.set_index(['date', 'code'], drop=if_drop_index))
 
 
 def QA_fetch_stock_min_adv(

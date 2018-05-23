@@ -331,33 +331,41 @@ class QA_Account(QA_Worker):
                                         amount_model=QA.AMOUNT_MODEL.BY_AMOUNT
                                         )
 
-        :param code:
-        :param amount:
-        :param time:
-        :param towards:
-        :param price:
-        :param money:
-        :param order_model:
-        :param amount_model:
+        :param code: 证券代码
+        :param amount: 买卖 数量多数股
+        :param time:  Timestamp 对象 下单时间
+        :param towards: int , towards>0 买入 towards<0 卖出
+        :param price: 买入，卖出 标的证券的价格
+        :param money: 买卖 价格
+        :param order_model: 类型 QA.ORDER_MODE
+        :param amount_model:类型 QA.AMOUNT_MODEL
         :return:
         """
 
         assert code is not None and time is not None and towards is not None and order_model is not None and amount_model is not None
 
-        flag = False
+        #todo 移到Utils类中，  时间转换
+        # date 字符串 2011-10-11 长度10
         date = str(time)[0:10] if len(str(time)) == 19 else str(time)
-        time = str(time) if len(
-            str(time)) == 19 else '{} 09:31:00'.format(str(time)[0:10])
+        # time 字符串 20011-10-11 09:02:00  长度 19
+        time = str(time) if len(str(time)) == 19 else '{} 09:31:00'.format(str(time)[0:10])
+
+        #todo 移到Utils类中，  amount_to_money 成交量转金额
         # BY_MONEY :: amount --钱 如10000元  因此 by_money里面 需要指定价格,来计算实际的股票数
         # by_amount :: amount --股数 如10000股
-
         amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
             money / (price*(1+self.commission_coeff)))
 
+        #todo 移到Utils类中，  money_to_amount 金额转成交量
         money = amount * price * \
             (1+self.commission_coeff) if amount_model is AMOUNT_MODEL.BY_AMOUNT else money
 
         # amount_model = AMOUNT_MODEL.BY_AMOUNT
+
+        # flag 判断买卖 数量和价格以及买卖方向是否正确
+        flag = False
+
+        assert (int(towards) != 0)
         if int(towards) > 0:
             # 是买入的情况(包括买入.买开.买平)
             if self.cash_available >= money:
@@ -368,13 +376,15 @@ class QA_Account(QA_Worker):
             else:
                 print('可用资金不足')
         elif int(towards) < 0:
-
+            # 是卖出的情况(包括卖出，卖出开仓allow_sellopen如果允许. 卖出平仓)
             if self.sell_available.get(code, 0) >= amount:
                 self.sell_available[code] -= amount
                 flag = True
             elif self.allow_sellopen:
-                if self.cash_available > money:  # 卖空的市值小于现金
+                if self.cash_available > money:  # 卖空的市值小于现金（有担保的卖空）， 不允许裸卖空
                     flag = True
+                else:
+                    print("卖空资金不足/不允许裸卖空")
             else:
                 print('资金股份不足/不允许卖空开仓')
 
@@ -384,7 +394,7 @@ class QA_Account(QA_Worker):
                               date=date, datetime=time, sending_time=time, callback=self.receive_deal,
                               amount=amount, price=price, order_model=order_model, towards=towards, money=money,
                               amount_model=amount_model, commission_coeff=self.commission_coeff, tax_coeff=self.tax_coeff)  # init
-            self.orders.insert_order(_order)  # order状态存储
+            self.orders.insert_order(_order)  # 历史委托order状态存储， 保存到 QA_Order 对象中的队列中
             return _order
         else:
             print('ERROR : amount=0')
@@ -392,15 +402,25 @@ class QA_Account(QA_Worker):
 
     def settle(self):
         '同步可用资金/可卖股票'
-
         self.sell_available = self.hold
 
     def on_bar(self, event):
+        '''
+        策略事件
+        :param event:
+        :return:
+        '''
         'while updating the market data'
-        print(event.market_data)
+        print("on_bar ",event.market_data)
 
     def on_tick(self, event):
+        '''
+        策略事件
+        :param event:
+        :return:
+        '''
         'on tick event'
+        print("on_tick ",event.market_data)
         pass
 
     def from_message(self, message):
@@ -489,12 +509,13 @@ class QA_Account(QA_Worker):
             self.cash[-1] = res
 
     def get_orders(self, if_today=True):
-        """
+        '''
         返回当日委托/历史委托
-        """
-        # self.orders.get_orders.
-        self.orders.queue
-        pass
+        :param if_today: true 只返回今天的订单
+        :return: QA_OrderQueue
+        '''
+        #todo 筛选其它不是今天的订单返回
+        return self.orders
 
 
 class Account_handler():
