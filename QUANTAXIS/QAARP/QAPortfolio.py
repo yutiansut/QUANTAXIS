@@ -245,6 +245,7 @@ class QA_PortfolioView():
 
         ||Risk_analysis||Performace_analysis||
         """
+        self.account_cookie = QA_util_random_with_topic('PVIEW', 3)
         self.account_list = dict(
             zip([account.account_cookie for account in account_list], account_list))
         self.portfolio_cookie = QA_util_random_with_topic('Portfolio')
@@ -259,8 +260,20 @@ class QA_PortfolioView():
         # self._history = None
         # self._trade_index = None
 
+    def __repr__(self):
+        return '< QA_PortfolioVIEW {} with {} Accounts >'.format(self.account_cookie, len(self.accounts))
+
     @property
-    def account_cookie(self):
+    def contained_cookie(self):
+        """
+
+        CHANGED in 1.0.38
+        2018-05-23
+
+        portfolio-view 含有的account_cookie使用contained_cookie来承载
+
+        原先的account_cookie 使用 PVIEW_xxx 代替
+        """
         return [account.account_cookie for account in self.accounts]
 
     @property
@@ -296,4 +309,4 @@ class QA_PortfolioView():
 
     @property
     def daily_hold(self):
-        return pd.concat([account.daily_hold.set_index('date') for account in self.accounts]).groupby('date').sum()
+        return pd.concat([account.daily_hold.xs(account.account_cookie, level=1) for account in self.accounts]).groupby('date').sum()

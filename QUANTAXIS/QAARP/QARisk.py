@@ -59,7 +59,6 @@ class QA_Risk():
                       MARKET_TYPE.INDEX_CN: QA_fetch_index_day_adv}
         self.market_data = QA_fetch_stock_day_adv(
             self.account.code, self.account.start_date, self.account.end_date)
-
         self.assets = ((self.market_data.to_qfq().pivot('close') * self.account.daily_hold).sum(
             axis=1) + self.account.daily_cash.set_index('date').cash).fillna(method='pad')
 
