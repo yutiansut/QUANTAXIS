@@ -31,7 +31,8 @@
 
 import math
 from functools import lru_cache
-
+import matplotlib.patches as mpatches
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
@@ -59,7 +60,7 @@ class QA_Risk():
                       MARKET_TYPE.INDEX_CN: QA_fetch_index_day_adv}
         self.market_data = QA_fetch_stock_day_adv(
             self.account.code, self.account.start_date, self.account.end_date)
-        self.assets = ((self.market_data.to_qfq().pivot('close') * self.account.daily_hold).sum(
+        self._assets = ((self.market_data.to_qfq().pivot('close') * self.account.daily_hold).sum(
             axis=1) + self.account.daily_cash.set_index('date').cash).fillna(method='pad')
 
         self.time_gap = QA_util_get_trade_gap(
@@ -71,6 +72,11 @@ class QA_Risk():
 
     def __call__(self):
         return pd.DataFrame([self.message])
+
+    @property
+    def assets(self):
+        x1 = self._assets.reset_index()
+        return x1.assign(date=pd.to_datetime(x1.date)).set_index('date')[0]
 
     @property
     def max_dropback(self):
@@ -236,6 +242,18 @@ class QA_Risk():
 
         """
         save_riskanalysis(self.message)
+
+    def plot_asset_curve(self,length=8,width=6):
+        plt.figure(figsize=(length, width))
+        plt.style.use('ggplot')
+        x1 = self.assets.plot()
+        x2 = self.benchmark_assets.xs(self.benchmark_code, level=1).plot()
+
+        asset_p = mpatches.Patch(color='red', label='{}'.format(self.account.account_cookie))
+        asset_b = mpatches.Patch(label='benchmark {}'.format(self.benchmark_code))
+        plt.legend(handles=[asset_p, asset_b], loc=1)
+        plt.title('ASSET AND BENCKMARK')
+        plt.show()
 
 
 class QA_Performance():
