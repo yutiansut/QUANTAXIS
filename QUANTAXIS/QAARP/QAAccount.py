@@ -23,17 +23,20 @@
 # SOFTWARE.
 
 
+import datetime
+
 import numpy as np
 import pandas as pd
-import datetime
+
 from QUANTAXIS.QAEngine.QAEvent import QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
 from QUANTAXIS.QASU.save_account import save_account, update_account
+from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_trade_range
 from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
                                           BROKER_TYPE, ENGINE_EVENT, FREQUENCE,
                                           MARKET_TYPE, TRADE_STATUS)
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
-from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_trade_range
+
 # 2017/6/4修改: 去除总资产的动态权益计算
 
 
