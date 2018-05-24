@@ -214,3 +214,9 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
  4. @taurusWang 对于代码进行了大量的注释
  5. @royburns 提供了金叉死叉的回测代码 test_backtest/目录下
  6. 修改了QA_RISK 增加了一个画图方法: plot_assets_curve()方法
+
+
+ ## 1.0.39
+
+ 1. 增加seaborn依赖项  需要pip install seaborn 
+ 2. QA_Risk 增加两个画图方法: plot_dailyhold() plot_signal()
