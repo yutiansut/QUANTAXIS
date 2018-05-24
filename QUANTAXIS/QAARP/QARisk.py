@@ -33,6 +33,7 @@ import math
 from functools import lru_cache
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
+import seaborn as sns
 import numpy as np
 import pandas as pd
 
@@ -250,7 +251,8 @@ class QA_Risk():
         """
         资金曲线叠加图
         """
-        plt.figure(figsize=(length, 1.5))
+        plt.figure(figsize=(length, height))
+        #plt.figure(figsize=(length, 1.5))
         plt.subplot(211)
         plt.title('BASIC INFO',fontsize=12)
         plt.axis([0, length, 0, 0.6])
