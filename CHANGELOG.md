@@ -220,4 +220,6 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
 
  1. 增加seaborn依赖项  需要pip install seaborn 
  2. QA_Risk 增加两个画图方法: plot_dailyhold() plot_signal()
- 3. 修改base的函数 AVEDEV 返回SERIES
+
+ ## 1.0.40
+ 1. 修改base的函数 AVEDEV 返回SERIES
