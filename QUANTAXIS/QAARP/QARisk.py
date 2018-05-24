@@ -251,8 +251,8 @@ class QA_Risk():
         """
         资金曲线叠加图
         """
+        plt.style.use('ggplot')
         plt.figure(figsize=(length, height))
-        #plt.figure(figsize=(length, 1.5))
         plt.subplot(211)
         plt.title('BASIC INFO',fontsize=12)
         plt.axis([0, length, 0, 0.6])
@@ -277,9 +277,7 @@ class QA_Risk():
         for item in ['alpha','beta','sharpe']:
             plt.text(i, 0.1, '{} : {}'.format(item,self.message[item]), ha='left', fontsize=10,rotation=0, wrap=True)
             i+=length/2.8
-        #plt.figure(figsize=(length, height))
         plt.subplot(212)
-        plt.style.use('ggplot')
         self.assets.plot()
         self.benchmark_assets.xs(self.benchmark_code, level=1).plot()
 
@@ -293,6 +291,9 @@ class QA_Risk():
 
 
     def plot_dailyhold(self, start=None, end=None):
+        """
+        使用热力图画出每日持仓
+        """
         start=self.account.start_date if start is None else start
         end=self.account.end_date if end is None else end
         f, ax = plt.subplots(figsize = (20, 8))
@@ -303,6 +304,9 @@ class QA_Risk():
         plt.show()
 
     def plot_signal(self, start=None, end=None):
+        """
+        使用热力图画出买卖信号
+        """
         start=self.account.start_date if start is None else start
         end=self.account.end_date if end is None else end
         f, ax = plt.subplots(figsize = (20, 18))
@@ -312,6 +316,13 @@ class QA_Risk():
         ax.set_ylabel('DATETIME')
         plt.show()
 
+    def generate_plots(self):
+        """
+        生成图像
+        """
+        self.plot_assets_curve()
+        self.plot_dailyhold()
+        self.plot_signal()
 class QA_Performance():
     """
     QA_Performance是一个绩效分析插件
