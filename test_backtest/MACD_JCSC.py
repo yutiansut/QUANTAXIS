@@ -79,6 +79,8 @@ Risk=QA.QA_Risk(Account)
 print(Risk.message)
 print(Risk.assets)
 Risk.plot_assets_curve()
+Risk.plot_dailyhold()
+Risk.plot_signal()
 # Risk.assets.plot()
 # Risk.benchmark_assets.plot()
 
