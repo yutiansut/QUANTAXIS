@@ -292,6 +292,26 @@ class QA_Risk():
         plt.show()
 
 
+    def plot_dailyhold(self, start=None, end=None):
+        start=self.account.start_date if start is None else start
+        end=self.account.end_date if end is None else end
+        f, ax = plt.subplots(figsize = (20, 8))
+        sns.heatmap(self.account.daily_hold.reset_index().drop('account_cookie',axis=1).set_index('date').loc[start:end], cmap="YlGnBu",linewidths = 0.05, ax = ax)
+        ax.set_title('HOLD TABLE --ACCOUNT: {}'.format(self.account.account_cookie))
+        ax.set_xlabel('Code')
+        ax.set_ylabel('DATETIME')
+        plt.show()
+
+    def plot_signal(self, start=None, end=None):
+        start=self.account.start_date if start is None else start
+        end=self.account.end_date if end is None else end
+        f, ax = plt.subplots(figsize = (20, 18))
+        sns.heatmap(self.account.trade.reset_index().drop('account_cookie',axis=1).set_index('datetime').loc[start:end], cmap="YlGnBu",linewidths = 0.05, ax = ax)
+        ax.set_title('SIGNAL TABLE --ACCOUNT: {}'.format(self.account.account_cookie))
+        ax.set_xlabel('Code')
+        ax.set_ylabel('DATETIME')
+        plt.show()
+
 class QA_Performance():
     """
     QA_Performance是一个绩效分析插件
