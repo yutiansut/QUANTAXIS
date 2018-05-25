@@ -23,7 +23,9 @@
 # SOFTWARE.
 
 from functools import lru_cache
+
 import pandas as pd
+
 from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAUtil import (DATABASE, QA_util_log_info,
                               QA_util_random_with_topic)

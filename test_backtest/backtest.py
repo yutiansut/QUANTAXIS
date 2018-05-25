@@ -90,7 +90,7 @@ def run_minbacktest():
 
 if __name__ == '__main__':
     run_daybacktest()
-    #run_minbacktest()
+    # run_minbacktest()
     # backtest._settle()
 
     # backtest.run()

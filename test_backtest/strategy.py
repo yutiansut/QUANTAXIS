@@ -1,20 +1,22 @@
 # utf-8
-from QUANTAXIS.QAARP.QAStrategy import QA_Strategy
-from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, MARKET_TYPE,
-                                          FREQUENCE, ORDER_DIRECTION,
-                                          ORDER_MODEL)
-from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 import time
+
+from QUANTAXIS.QAARP.QAStrategy import QA_Strategy
+from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
+from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, FREQUENCE, MARKET_TYPE,
+                                          ORDER_DIRECTION, ORDER_MODEL)
+
+
 class MAStrategy(QA_Strategy):
     def __init__(self):
         super().__init__()
         self.frequence = FREQUENCE.DAY
         self.market_type = MARKET_TYPE.STOCK_CN
-        self.commission_coeff=0.00015
-        self.tax_coeff=0.0001
+        self.commission_coeff = 0.00015
+        self.tax_coeff = 0.0001
 
     def on_bar(self, event):
-        sellavailable=self.sell_available
+        sellavailable = self.sell_available
         try:
             for item in event.market_data.code:
                 if sellavailable is None:
@@ -45,5 +47,3 @@ class MAStrategy(QA_Strategy):
 
         except:
             pass
-
-

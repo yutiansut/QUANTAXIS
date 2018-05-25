@@ -156,8 +156,13 @@ def STD(Series, N):
 
 
 def AVEDEV(Series, N):
-    '平均绝对偏差 mean absolute deviation'
-    return pd.Series(Series).tail(N).mad()
+    """
+    平均绝对偏差 mean absolute deviation
+    修正: 2018-05-25 
+
+    之前用mad的计算模式依然返回的是单值
+    """
+    return Series.rolling(N).apply(lambda x: (np.abs(x - x.mean())).mean(), raw=True)
 
 
 def MACD(Series, FAST, SLOW, MID):

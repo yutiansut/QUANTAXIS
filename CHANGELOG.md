@@ -209,3 +209,17 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
  ## 1.0.38
 
  1. 修改了COUNT函数,现在返回series格式 在@musicx的[ISSUE 429](https://github.com/QUANTAXIS/QUANTAXIS/issues/429)问题上进行了改进
+ 2. 修改了PortfolioView类,修改account_cookie为PVIEW_xxx,增加contained_cookie 作为承载的account的cookie集合
+ 3. @taurusWang 对于QA_fetch_stock_day_adv的异常值进行了修改
+ 4. @taurusWang 对于代码进行了大量的注释
+ 5. @royburns 提供了金叉死叉的回测代码 test_backtest/目录下
+ 6. 修改了QA_RISK 增加了一个画图方法: plot_assets_curve()方法
+
+
+ ## 1.0.39
+
+ 1. 增加seaborn依赖项  需要pip install seaborn 
+ 2. QA_Risk 增加两个画图方法: plot_dailyhold() plot_signal()
+
+ ## 1.0.40
+ 1. 修改base的函数 AVEDEV 返回SERIES
