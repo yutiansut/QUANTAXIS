@@ -197,6 +197,15 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
     一个待成交队列
     queue是一个dataframe
     这里面都是对于方法的封装
+    queue_df 的意图
+    对orderqueue进行管理 这是一个dataframe
+    然后等到要恢复订单的时候 再去用orderid恢复他
+    就好比 你下了个单子
+    你就在小本本上记一笔
+    然后成交了你打个勾
+    撤单了你打个叉
+    你看看你还有多少单子在委托你就数数小本子
+    这个小本子 就是orderqueue的dataframe
     """
     def __init__(self):
 
@@ -278,7 +287,7 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
         @modified by JerryW 2018/05/25
         根据 order_id 查询队列中的记录， 并且转换成 order 对象
         :param order_id:  str 类型 Order_开头的随机数  eg：Order_KQymhXWu
-        :return:
+        :return QA_Order类型:
         '''
         anOrderRec = self.queue_df.loc[[order_id]]
         rec_dict = anOrderRec.to_dict('records')
