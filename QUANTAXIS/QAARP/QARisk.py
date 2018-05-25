@@ -32,8 +32,11 @@
 import math
 from functools import lru_cache
 
+import matplotlib.patches as mpatches
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import seaborn as sns
 
 from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_index_day_adv,
                                                QA_fetch_stock_day_adv)
@@ -59,7 +62,7 @@ class QA_Risk():
                       MARKET_TYPE.INDEX_CN: QA_fetch_index_day_adv}
         self.market_data = QA_fetch_stock_day_adv(
             self.account.code, self.account.start_date, self.account.end_date)
-        self.assets = ((self.market_data.to_qfq().pivot('close') * self.account.daily_hold).sum(
+        self._assets = ((self.market_data.to_qfq().pivot('close') * self.account.daily_hold).sum(
             axis=1) + self.account.daily_cash.set_index('date').cash).fillna(method='pad')
 
         self.time_gap = QA_util_get_trade_gap(
@@ -73,14 +76,19 @@ class QA_Risk():
         return pd.DataFrame([self.message])
 
     @property
+    def assets(self):
+        x1 = self._assets.reset_index()
+        return x1.assign(date=pd.to_datetime(x1.date)).set_index('date')[0]
+
+    @property
     def max_dropback(self):
         """最大回撤
         """
-        return max([(self.assets.iloc[idx] - self.assets.iloc[idx::].min())/self.assets.iloc[idx] for idx in range(len(self.assets))])
+        return round(float(max([(self.assets.iloc[idx] - self.assets.iloc[idx::].min())/self.assets.iloc[idx] for idx in range(len(self.assets))])), 2)
 
     @property
     def profit(self):
-        return self.calc_profit(self.assets)
+        return round(float(self.calc_profit(self.assets)), 2)
 
     @property
     def profit_pct(self):
@@ -96,7 +104,7 @@ class QA_Risk():
             [type] -- [description]
         """
 
-        return self.calc_annualize_return(self.assets, self.time_gap)
+        return round(float(self.calc_annualize_return(self.assets, self.time_gap)), 2)
 
     @property
     def volatility(self):
@@ -105,9 +113,10 @@ class QA_Risk():
         Returns:
             [type] -- [description]
         """
-        return self.profit_pct.std() * math.sqrt(250)
+        return round(float(self.profit_pct.std() * math.sqrt(250)), 2)
 
     @property
+    @lru_cache()
     def message(self):
         return {
             'account_cookie': self.account.account_cookie,
@@ -119,11 +128,12 @@ class QA_Risk():
             'time_gap': self.time_gap,
             'volatility': self.volatility,
             'benchmark_code': self.benchmark_code,
+            'bm_annualizereturn': self.benchmark_annualize_return,
             'beta': self.beta,
             'alpha': self.alpha,
             'sharpe': self.sharpe,
-            'init_assets': self.init_assets,
-            'last_assets': self.assets.iloc[-1]
+            'init_assets': round(float(self.init_assets), 2),
+            'last_assets': round(float(self.assets.iloc[-1]), 2)
         }
 
     @property
@@ -149,7 +159,7 @@ class QA_Risk():
             [type] -- [description]
         """
 
-        return self.calc_annualize_return(self.benchmark_assets, self.time_gap)
+        return round(float(self.calc_annualize_return(self.benchmark_assets, self.time_gap)), 2)
 
     @property
     def benchmark_profitpct(self):
@@ -163,14 +173,14 @@ class QA_Risk():
         """
         beta比率 组合的系统性风险
         """
-        return self.calc_beta(self.profit_pct.dropna(), self.benchmark_profitpct.dropna())
+        return round(float(self.calc_beta(self.profit_pct.dropna(), self.benchmark_profitpct.dropna())), 2)
 
     @property
     def alpha(self):
         """
         alpha比率 与市场基准收益无关的超额收益率
         """
-        return self.calc_alpha(self.annualize_return, self.benchmark_annualize_return, self.beta, 0.05)
+        return round(float(self.calc_alpha(self.annualize_return, self.benchmark_annualize_return, self.beta, 0.05)), 2)
 
     @property
     def sharpe(self):
@@ -178,7 +188,7 @@ class QA_Risk():
         夏普比率
 
         """
-        return self.calc_sharpe(self.annualize_return, self.volatility, 0.05)
+        return round(float(self.calc_sharpe(self.annualize_return, self.volatility, 0.05)), 2)
 
     @property
     def sortino(self):
@@ -236,6 +246,91 @@ class QA_Risk():
 
         """
         save_riskanalysis(self.message)
+
+    def plot_assets_curve(self, length=14, height=12):
+        """
+        资金曲线叠加图
+        """
+        plt.style.use('ggplot')
+        plt.figure(figsize=(length, height))
+        plt.subplot(211)
+        plt.title('BASIC INFO', fontsize=12)
+        plt.axis([0, length, 0, 0.6])
+        plt.axis('off')
+        i = 0
+        for item in ['account_cookie', 'portfolio_cookie', 'user_cookie']:
+            plt.text(i, 0.5, '{} : {}'.format(
+                item, self.message[item]), fontsize=10, rotation=0, wrap=True)
+            i += (length/2.8)
+        i = 0
+        for item in ['benchmark_code', 'time_gap', 'max_dropback']:
+            plt.text(i, 0.4, '{} : {}'.format(
+                item, self.message[item]), fontsize=10, ha='left', rotation=0, wrap=True)
+            i += (length/2.8)
+        i = 0
+        for item in ['annualize_return', 'bm_annualizereturn', 'profit']:
+            plt.text(i, 0.3, '{} : {} %'.format(item, self.message.get(
+                item, 0)), fontsize=10, ha='left', rotation=0, wrap=True)
+            i += length/2.8
+        i = 0
+        for item in ['init_assets', 'last_assets', 'volatility']:
+            plt.text(i, 0.2, '{} : {} '.format(
+                item, self.message[item]), fontsize=10, ha='left', rotation=0, wrap=True)
+            i += length/2.8
+        i = 0
+        for item in ['alpha', 'beta', 'sharpe']:
+            plt.text(i, 0.1, '{} : {}'.format(
+                item, self.message[item]), ha='left', fontsize=10, rotation=0, wrap=True)
+            i += length/2.8
+        plt.subplot(212)
+        self.assets.plot()
+        self.benchmark_assets.xs(self.benchmark_code, level=1).plot()
+
+        asset_p = mpatches.Patch(
+            color='red', label='{}'.format(self.account.account_cookie))
+        asset_b = mpatches.Patch(
+            label='benchmark {}'.format(self.benchmark_code))
+        plt.legend(handles=[asset_p, asset_b], loc=1)
+        plt.title('ASSET AND BENCKMARK')
+        plt.show()
+
+    def plot_dailyhold(self, start=None, end=None):
+        """
+        使用热力图画出每日持仓
+        """
+        start = self.account.start_date if start is None else start
+        end = self.account.end_date if end is None else end
+        f, ax = plt.subplots(figsize=(20, 8))
+        sns.heatmap(self.account.daily_hold.reset_index().drop('account_cookie', axis=1).set_index(
+            'date').loc[start:end], cmap="YlGnBu", linewidths=0.05, ax=ax)
+        ax.set_title(
+            'HOLD TABLE --ACCOUNT: {}'.format(self.account.account_cookie))
+        ax.set_xlabel('Code')
+        ax.set_ylabel('DATETIME')
+        plt.show()
+
+    def plot_signal(self, start=None, end=None):
+        """
+        使用热力图画出买卖信号
+        """
+        start = self.account.start_date if start is None else start
+        end = self.account.end_date if end is None else end
+        f, ax = plt.subplots(figsize=(20, 18))
+        sns.heatmap(self.account.trade.reset_index().drop('account_cookie', axis=1).set_index(
+            'datetime').loc[start:end], cmap="YlGnBu", linewidths=0.05, ax=ax)
+        ax.set_title(
+            'SIGNAL TABLE --ACCOUNT: {}'.format(self.account.account_cookie))
+        ax.set_xlabel('Code')
+        ax.set_ylabel('DATETIME')
+        plt.show()
+
+    def generate_plots(self):
+        """
+        生成图像
+        """
+        self.plot_assets_curve()
+        self.plot_dailyhold()
+        self.plot_signal()
 
 
 class QA_Performance():
