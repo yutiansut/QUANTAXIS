@@ -87,4 +87,4 @@ class QA_OrderHandler(QA_Worker):
             return self.query_order(event.order_id)
 
     def query_order(self, order_id):
-        return self.order_queue.queue.query()
+        return self.order_queue.queue_df.query()
