@@ -52,6 +52,11 @@ class QA_Broker(QA_Worker):
 
     @abstractmethod
     def receive_order(self, event):
+        '''
+        QA_Broker 是一个抽象类，必须实现这个方法
+        :param event:
+        :return:
+        '''
         raise NotImplementedError
 
     def get_market(self, order):
