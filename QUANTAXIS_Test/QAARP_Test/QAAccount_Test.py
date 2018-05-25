@@ -12,7 +12,7 @@ class Test_QAAccount(unittest.TestCase):
         # 测试买卖事件
         #测试流程，
         #随机选中一组股票
-        #随机选中几个交易日
+        #随机选中几个交易日 (只测试当前日期）
         #随机卖出
         #随机买入
         #发送订单
@@ -34,22 +34,55 @@ class Test_QAAccount(unittest.TestCase):
 
         account = QA.QA_Account(strategy_name="TEST策略", user_cookie=None)
 
+        orderList = []
         for a_stock_code in codeForDate.keys():
-            account.send_order(code=a_stock_code,
+            anOrder = account.send_order(code=a_stock_code,
                                  amount=100,
                                  time = timestamp,
                                  towards= 1,
                                  price= 8.8,
                                  order_model= QA.ORDER_MODEL.LIMIT,
                                  amount_model=QA.AMOUNT_MODEL.BY_AMOUNT)
+            orderList.append(anOrder)
 
         orderQueue = account.get_orders()
         print(orderQueue)
 
-        self.assertEqual(len(orderQueue.queue) , codeCount)
+        self.assertEqual(len(orderQueue.queue_df) , codeCount)
+
+        orderList2 = []
+        print(orderQueue.queue_df)
+        for orderId in orderQueue.queue_df.index:
+            anOrder2 = orderQueue.query_order(orderId)
+            orderList2.append(anOrder2)
+
+        self.assertEqual( len(orderList),len(orderList2) )
+
+        orderCount = len(orderList)
+        for i in range(orderCount):
+
+            order_01 = orderList[i]
+            order_02 = orderList2[i]
+
+            #总是不正确
+            #b = order_01 is order_02
+            #b = order_01 == order_02
+            #b = (order_01.__dict__ == order_02.__dict__)
+
+            dict1 = order_01.__dict__
+            for key in dict1.keys():
+                v1 = order_01.__dict__[key]
+                v2 = order_02.__dict__[key]
+                if v1 != v2:
+                    print(key)
+                    print(v1)
+                    print(v2)
+                    self.fail("订单数据不正确")
+            #todo 继续研究为何不正确
+            #self.assertEqual(order_01, order_02)
         pass
 
-    def test_QAAccount_class(self):
+    def n0_test_QAAccount_class(self):
 
         #测试流程 获取 美康生物 300439 的走势 从 2017年10月01日开始 到 2018年 4月30日
         #
