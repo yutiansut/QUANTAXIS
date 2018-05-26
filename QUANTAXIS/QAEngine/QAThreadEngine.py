@@ -36,7 +36,11 @@ from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_random_with_topic
 
 
 class QA_Thread(threading.Thread):
-    '这是一个随意新建线程的生产者消费者模型'
+    '''
+        '这是一个随意新建线程的生产者消费者模型'
+        其实有个队列， 队列中保存的是 QA_Task 对象 ， callback 很重要，指定任务的时候可以绑定 函数执行
+        QA_Engine 继承这个类。
+    '''
 
     def __init__(self, queue=None, name=None):
         threading.Thread.__init__(self)
@@ -46,19 +50,17 @@ class QA_Thread(threading.Thread):
         self.__flag.set()       # 设置为True
         self.__running = threading.Event()      # 用于停止线程的标识
         self.__running.set()      # 将running设置为True
-        self.name = QA_util_random_with_topic(
-            topic='QAWorker', lens=3) if name is None else name
+        self.name = QA_util_random_with_topic(topic='QA_Thread', lens=3) if name is None else name
         self.idle = False
 
     def __repr__(self):
-        return '< QA_Thread {} >'.format(self.name)
+        return '<QA_Thread{}  id={}>'.format(self.name, id(self))
 
     def run(self):
         while self.__running.isSet():
             self.__flag.wait()
             while not self.thread_stop:
                 '这是一个阻塞的队列,避免出现消息的遗漏'
-
                 try:
                     if self.queue.empty() is False:
                         _task = self.queue.get()  # 接收消息
@@ -106,43 +108,56 @@ class QA_Thread(threading.Thread):
 
 
 class QA_Engine(QA_Thread):
+    '''
+        QA_Thread的区别是，
+        QA_Thread 只是单纯一个线程，里面有个队列执行 QA_Task 的do 方法
+
+        QA_Engine 有 kernals_dict词典，可以指定 {名字：QA_Thread}，
+        QA_Engine自己有一个线程可以 遍历kernals_dict中QA_Thread 中的多个线程去执行
+    '''
     def __init__(self, queue=None, *args, **kwargs):
-        super().__init__(queue=queue, name='QAENGINE')
-        self.kernals = {}
+        super().__init__(queue=queue, name='QA_Engine')
+        self.kernals_dict = {}
         self.__flag = threading.Event()     # 用于暂停线程的标识
         self.__flag.set()       # 设置为True
         self.__running = threading.Event()      # 用于停止线程的标识
         self.__running.set()      # 将running设置为True
 
     def __repr__(self):
-        return ' <QA_ENGINE with {} kernals>'.format(list(self.kernals.keys()))
+        return ' <QA_ENGINE with {} kernals>'.format(list(self.kernals_dict.keys()))
 
     @property
     def kernel_num(self):
-        return len(self.kernals.keys())
+        return len(self.kernals_dict.keys())
 
     def create_kernal(self, name):
         # ENGINE线程创建一个事件线程
-        self.kernals[name] = QA_Thread(name=name)
+        self.kernals_dict[name] = QA_Thread(name=name)
 
     def register_kernal(self, name, kernal):
-        if name not in self.kernals.keys():
-            self.kernals[name] = kernal
+        if name not in self.kernals_dict.keys():
+            self.kernals_dict[name] = kernal
 
     def start_kernal(self, name):
-        self.kernals[name].start()
+        self.kernals_dict[name].start()
 
     def stop_kernal(self, name):
-        self.kernals[name].stop()
-        del self.kernals[name]
+        self.kernals_dict[name].stop()
+        del self.kernals_dict[name]
 
     def run_job(self, task):
-        self.kernals[task.engine].put(task)
+        '''
+        把QA_Task 放到 kerneals_dict 词典中的task.engine 名字， 对应的 QA_Thread中的队列中，
+        :param task:  type str 字符串
+        :return: None
+        '''
+        # todo 建议把 engine 变量名字 改成  engine_in_kerneals_dict_name, 便于理解
+        self.kernals_dict[task.engine].put(task)
 
     def stop_all(self):
-        for item in self.kernals.values():
+        for item in self.kernals_dict.values():
             item.stop()
-        self.kernals = {}
+        self.kernals_dict = {}
 
     def stop(self):
         # self.__flag.set()       # 将线程从暂停状态恢复, 如何已经暂停的话
@@ -166,12 +181,14 @@ class QA_Engine(QA_Thread):
                         #print("queue left %d"%self.queue.qsize())
                         assert isinstance(_task, QA_Task)
                         #print(_task)
-                        if _task.engine is None:
+
+                        # todo 建议把 engine 变量名字 改成  engine_in_kerneals_dict_name, 便于理解
+                        if _task.engine is None:  # _task.engine 是字符串，对于的是 kernals_dict 中的 线程对象
                             # 如果不指定线程 就在ENGINE线程中运行
                             _task.do()
                             self.queue.task_done()
                         else:
-                            #
+                            # 把当前任务，用_task.engin名字对应的  kernals_dict 线程去执行
                             self.run_job(_task)
                             self.queue.task_done()
                     else:
@@ -182,7 +199,7 @@ class QA_Engine(QA_Thread):
 
     def clear(self):
         res = True
-        for item in self.kernals.values():
+        for item in self.kernals_dict.values():
             if not item.queue.empty():
                 res = False
             if not item.idle:
@@ -195,7 +212,7 @@ class QA_Engine(QA_Thread):
         return res
 
     def join(self):
-        for item in self.kernals.values():
+        for item in self.kernals_dict.values():
             item.queue.join()
         self.queue.join()
 
