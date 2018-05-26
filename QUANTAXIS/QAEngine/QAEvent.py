@@ -30,7 +30,12 @@ EVENT 是会被推送进QUEUE的任务class
 
 
 class QA_Worker(object):
-    """JOB是worker 需要接受QA_EVENT 需要完善RUN方法"""
+    """JOB是worker 需要接受QA_EVENT 需要完善RUN方法
+        👻QA_Broker 继承这个类
+        👻QA_Account 继承这个类
+        👻QA_OrderHandler 继承这个类
+        这些类都要实现run方法✅，在其它线程🌀中允许自己的业务代码
+    """
 
     def __init__(self):
         self.type = None
@@ -40,6 +45,11 @@ class QA_Worker(object):
 
     @abstractmethod
     def run(self, event):
+        '''
+        QA_Work是一个抽象类， 继承这个类，需要实现具体的run方法✅， 在其它线程🌀中执行
+        :param event: QA_Event 类型
+        :return:
+        '''
         raise NotImplementedError
 
 
