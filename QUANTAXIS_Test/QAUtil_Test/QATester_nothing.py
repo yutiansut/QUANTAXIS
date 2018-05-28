@@ -48,7 +48,7 @@ class QA_Test(unittest.TestCase):
     def setTear(self):
         pass
 
-    def test_QA(self):
+    def nottest_QA(self):
         fileDad = open("wss0507r.dad", 'rb')
         fileDad.seek(0, 0)
 
