@@ -375,9 +375,7 @@ class QA_Performance():
             elif data.amount < 0:
                 while True:
                     l = X[data.code].get()
-                    print(l)
                     if l[1] == abs(data.amount):
-
                         pair_table.append(
                             [data.code, data.datetime, l[0], abs(data.amount), data.price, l[2]])
                         break
@@ -433,6 +431,20 @@ class QA_Performance():
                          1)
         pnl = pnl.assign(pnl_money=pnl.pnl_ratio*pnl.amount)
         return pnl
+
+    def plot_pnlratio(self, pnl):
+        """
+        画出pnl比率散点图
+        """
+        plt.scatter(x=pnl.sell_date, y=pnl.pnl_ratio)
+        plt.show()
+
+    def plot_pnlmoney(self, pnl):
+        """
+        画出pnl盈亏额散点图
+        """
+        plt.scatter(x=pnl.sell_date, y=pnl.pnl_money)
+        plt.show()
 
     def abnormal_active(self):
         """
