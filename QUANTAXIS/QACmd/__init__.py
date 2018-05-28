@@ -68,12 +68,12 @@ class CLI(cmd.Cmd):
         now_path = os.getcwd()
         #project_dir = os.path.dirname(os.path.abspath(__file__))
         
-        data=requests.get('https://codeload.github.com/yutiansut/QADemo/zip/master')
+        data=requests.get('https://codeload.github.com/quantaxis/QADemo/zip/master')
         with open("{}{}QADEMO.zip".format(now_path,os.sep), "wb") as code:
             code.write(data.content)
 
         QA_util_log_info(
-            'Successfully generate QADEMO in : {}, for more examples, please visit https://github.com/yutiansut/qademo'.format(now_path))
+            'Successfully generate QADEMO in : {}, for more examples, please visit https://github.com/quantaxis/qademo'.format(now_path))
 
     def help_examples(self):
         print('make a sample backtest framework')
