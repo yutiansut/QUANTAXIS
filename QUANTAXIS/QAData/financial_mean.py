@@ -10,6 +10,8 @@ financial_dict = {
     '净资产收益率': 'ROE',
     '每股经营现金流量': 'operatingCashFlowPerShare',
     ## 资产负债表
+    ### 资产
+    #### 流动资产
     '货币资金': 'moneyFunds',
     '交易性金融资产': 'tradingFinancialAssets',
     '应收票据': 'billsReceivables',
@@ -24,6 +26,7 @@ financial_dict = {
     '一年内到期的非流动资产': 'noncurrentAssetsDueWithinOneYear',
     '其他流动资产': 'otherLiquidAssets',
     '流动资产合计': 'totalLiquidAssets',
+    #### 非流动资产
     '可供出售金融资产': 'availableForSaleSecurities',
     '持有至到期投资': 'heldToMaturityInvestments',
     '长期应收款': 'longTermReceivables',
@@ -43,6 +46,8 @@ financial_dict = {
     '其他非流动资产': 'otherNonCurrentAssets',
     '非流动资产合计': 'totalNonCurrentAssets',
     '资产总计': 'totalAssets',
+    ### 负债
+    #### 流动负债
     '短期借款': 'shortTermLoan',
     '交易性金融负债': 'tradingFinancialLiabilities',
     '应付票据': 'billsPayable',
@@ -57,6 +62,7 @@ financial_dict = {
     '一年内到期的非流动负债': 'noncurrentLiabilitiesDueWithinOneYear',
     '其他流动负债': 'otherCurrentLiabilities',
     '流动负债合计': 'totalCurrentLiabilities',
+    #### 非流动负债
     '长期借款': 'longTermLoans',
     '应付债券': 'bondsPayable',
     '长期应付款': 'longTermPayable',
@@ -66,6 +72,7 @@ financial_dict = {
     '其他非流动负债': 'otherNonCurrentLiabilities',
     '非流动负债合计': 'totalNonCurrentLiabilities',
     '负债合计': 'totalLiabilities',
+    ### 所有者权益
     '实收资本（或股本）': 'totalShare',
     '资本公积': 'capitalReserve',
     '盈余公积': 'surplusReserve',
