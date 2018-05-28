@@ -34,8 +34,6 @@ from collections import deque
 from functools import lru_cache
 from queue import LifoQueue
 
-import matplotlib.patches as mpatches
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -45,6 +43,20 @@ from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_index_day_adv,
 from QUANTAXIS.QASU.save_account import save_riskanalysis
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_trade_gap
 from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE
+
+try:
+
+    import matplotlib.patches as mpatches
+    import matplotlib.pyplot as plt
+except ModuleNotFoundError:
+    """
+    在无GUI的电脑上,会遇到找不到_tkinter的情况 兼容处理
+    @尧 2018/05/28
+    """
+    import matplotlib as mpl
+    mpl.use('Agg')
+    import matplotlib.patches as mpatches
+    import matplotlib.pyplot as plt
 
 
 class QA_Risk():
