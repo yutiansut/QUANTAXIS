@@ -253,6 +253,9 @@ class QA_Risk():
         计算夏普比率
         r是无风险收益
         """
+        #会出现0
+        if volatility_year == 0:
+            return 0
         return (annualized_returns - r) / volatility_year
 
     def save(self):
