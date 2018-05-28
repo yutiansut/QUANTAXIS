@@ -136,7 +136,7 @@ git clone https://github.com/yutiansut/quantaxis --depth 1
 参见 
 
 
-* [QUANTAXIS的使用示例](https://github.com/yutiansut/QADemo)
+* [QUANTAXIS的使用示例](https://github.com/quantaxis/QADemo)
 
 * [QUANTAXIS回测API](Documents/backtest_api.md)
 * [QUANTAXIS的数据结构](Documents/DataStruct.md)

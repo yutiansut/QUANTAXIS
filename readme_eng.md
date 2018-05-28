@@ -136,7 +136,7 @@ See also [Docker](Documents/docker.md)
 See also
 
 
-* [Example of using QUANTAXIS](https://github.com/yutiansut/QADemo)
+* [Example of using QUANTAXIS](https://github.com/quantaxis/QADemo)
 
 * [QUANTAXIS Testing API](Documents/backtest_api.md)
 * [Data Structure of QUANTAXIS](Documents/DataStruct.md)
