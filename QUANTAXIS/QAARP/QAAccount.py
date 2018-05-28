@@ -347,19 +347,19 @@ class QA_Account(QA_Worker):
 
         assert code is not None and time is not None and towards is not None and order_model is not None and amount_model is not None
 
-        #todo 移到Utils类中，  时间转换
+        #🛠todo 移到Utils类中，  时间转换
         # date 字符串 2011-10-11 长度10
         date = str(time)[0:10] if len(str(time)) == 19 else str(time)
         # time 字符串 20011-10-11 09:02:00  长度 19
         time = str(time) if len(str(time)) == 19 else '{} 09:31:00'.format(str(time)[0:10])
 
-        #todo 移到Utils类中，  amount_to_money 成交量转金额
+        #🛠todo 移到Utils类中，  amount_to_money 成交量转金额
         # BY_MONEY :: amount --钱 如10000元  因此 by_money里面 需要指定价格,来计算实际的股票数
         # by_amount :: amount --股数 如10000股
         amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
             money / (price*(1+self.commission_coeff)))
 
-        #todo 移到Utils类中，  money_to_amount 金额转成交量
+        #🛠todo 移到Utils类中，  money_to_amount 金额转成交量
         money = amount * price * \
             (1+self.commission_coeff) if amount_model is AMOUNT_MODEL.BY_AMOUNT else money
 
@@ -517,7 +517,7 @@ class QA_Account(QA_Worker):
         :param if_today: true 只返回今天的订单
         :return: QA_OrderQueue
         '''
-        #todo 筛选其它不是今天的订单返回
+        #🛠todo 筛选其它不是今天的订单返回
         return self.orders
 
 
