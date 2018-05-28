@@ -17,7 +17,7 @@
 
 ![version](https://img.shields.io/pypi/v/quantaxis.svg)
 ![build](https://travis-ci.org/QUANTAXIS/QUANTAXIS.svg?branch=master)
-[![Codefresh build status]( https://g.codefresh.io/api/badges/build?repoOwner=yutiansut&repoName=QUANTAXIS&branch=master&pipelineName=QUANTAXIS&accountName=yutiansut_marketplace&type=cf-1)]( https://g.codefresh. Io/repositories/yutiansut/QUANTAXIS/builds?filter=trigger:build;branch:master;service:5a30c1026e9d6c0001c5143b~QUANTAXIS)
+[![Codefresh build status](https://g.codefresh.io/api/badges/build?repoOwner=yutiansut&repoName=QUANTAXIS&branch=master&pipelineName=QUANTAXIS&accountName=yutiansut_marketplace&type=cf-1)]( https://g.codefresh.Io/repositories/yutiansut/QUANTAXIS/builds?filter=trigger:build;branch:master;service:5a30c1026e9d6c0001c5143b~QUANTAXIS)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d8504e4af33747bb8117579212425af9)](https://www.codacy.com/app/yutiansut/QUANTAXIS?utm_source=github.com&utm_medium=referral&utm_content =yutiansut/QUANTAXIS&utm_campaign=badger)
 [![Stories in Ready](https://badge.waffle.io/yutiansut/QUANTAXIS.svg?label=ready&title=Ready)](http://waffle.io/yutiansut/QUANTAXIS)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
@@ -26,32 +26,32 @@
 ![Npm](https://img.shields.io/badge/Npm-%200.4.0-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
 ![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS.svg?type=shield)](https://app.fossa.io/projects /git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS?ref=badge_shield)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS?ref=badge_shield)
 
 
 
 
 > Welcome to group discussion: [group link](https://jq.qq.com/?_wv=1027&k=4CEKGzn)
 
-> Welcome to the public number: ![Public] (http://osnhakmay.bkt.clouddn.com/qrcode_for_gh_bbb47e0550f7_258%20%281%29.jpg)
+> Welcome to the public number: ![Public](http://osnhakmay.bkt.clouddn.com/qrcode_for_gh_bbb47e0550f7_258%20%281%29.jpg)
 
 > Many questions can be found in [GITHUB ISSUE](https://github.com/QUANTAXIS/QUANTAXIS/issues), you can make a new issue
 
 QUANTAXIS Quantitative Financial Strategy Framework is a quantitative analysis solution for small and medium-sized strategic teams. We can quickly realize scenario-oriented customized solutions through highly decoupled modular and standardized protocols. QUANTAXIS is a progressive openness. With the framework, you can introduce your own data, analysis plans, and visualization processes according to your own needs. You can also quickly achieve multi-person LAN/WAN collaboration through RESTful interfaces.
 
 <!-- vscode-markdown-toc -->
-* 1. [Function] (#)
-* 2. [Document] (#-1)
-* 3. [Installation and Deployment] (#-1)
-* 4. [Update] (#-1)
-* 5. [Docker] (#Docker)
-* 6. [Instructions for use] (#-1)
-* 7. [Jupyter example] (#Jupyter)
-* 8. [Development Plan] (#-1)
-* 9. [FAQ FAQ] (#FAQ)
-* 10. [Project donation] (#-1)
-* 11. [Backtesting Webkit Plugin Overview] (#Webkit)
-* 12. [QUANTAXIS Standardization Agreement and Future Agreements] (#QUANTAXIS)
+* 1. [Function](#)
+* 2. [Document](#-1)
+* 3. [Installation and Deployment](#-1)
+* 4. [Update](#-1)
+* 5. [Docker](#Docker)
+* 6. [Instructions for use](#-1)
+* 7. [Jupyter example](#Jupyter)
+* 8. [Development Plan](#-1)
+* 9. [FAQ FAQ](#FAQ)
+* 10. [Project donation](#-1)
+* 11. [Backtesting Webkit Plugin Overview](#Webkit)
+* 12. [QUANTAXIS Standardization Agreement and Future Agreements](#QUANTAXIS)
 
 <!-- vscode-markdown-toc-config
 Numbering=true
@@ -102,11 +102,11 @@ Expected to achieve:
 
 - [] Document Updates
 - [] Futures Backtesting
-- [ ] firm
+- [x] firm
 - [] Analysis Module (quotation/block analysis)
 - [] Multiple database support
-- [ ] authority management
-- [ ] Transaction Recorder
+- [x] authority management
+- [x] Transaction Recorder
 
 - [QUANTAXIS 2018 Development Schedule] (job_list.md)
 
@@ -125,10 +125,10 @@ Download document manual
 Git clone https://github.com/yutiansut/quantaxis --depth 1
 ```
 
-See Installation Instructions (Documents/install.md)
+See also [Installation Instructions](Documents/install.md)
 
 ## 4. <a name='-1'></a> Update
-See Update Instructions (Documents/update.md)
+See also [Update Instructions](Documents/update.md)
 
 ## 5. <a name='Docker'></a>Docker
 See also [Docker](Documents/docker.md)
