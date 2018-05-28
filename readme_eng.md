@@ -75,7 +75,7 @@ If it is an Alibaba Cloud/Tencent Cloud server, please select the 64-bit operati
 
 
 ## 1. <a name=''></a> Features
-======
+
 
 ![](http://osnhakmay.bkt.clouddn.com/framework.png)
 
