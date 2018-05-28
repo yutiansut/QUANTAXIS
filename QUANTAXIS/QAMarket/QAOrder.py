@@ -90,7 +90,7 @@ class QA_Order():
         self.price = price
         self.datetime = None
 
-        #todo 移动到 Util 类中 时间处理函数
+        #🛠todo 移动到 Util 类中 时间处理函数
         if datetime is None and date is not None:
             self.date = date
             self.datetime = '{} 09:31:00'.format(self.date)
@@ -133,7 +133,7 @@ class QA_Order():
         return '< QA_Order datetime:{} code:{} amount:{} price:{} towards:{} btype:{} order_id:{} account:{} status:{} >'.format(
             self.datetime, self.code, self.amount, self.price, self.towards, self.type, self.order_id, self.account_cookie, self.status)
 
-    #todo 建议取消，直接调用var
+    #🛠todo 建议取消，直接调用var
     def info(self):
         '''
         :return:
@@ -145,7 +145,7 @@ class QA_Order():
         return pd.DataFrame([vars(self), ])
 
 
-    #todo 建议取消，直接调用var？
+    #🛠todo 建议取消，直接调用var？
     def to_dict(self):
         '''
         把对象中的属性转变成字典类型
@@ -211,9 +211,9 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
 
         self.order_list = []
 
-        # todo 是为了速度快把order对象转换成 df 对象的吗？
-        # todo 维护两个变量queue，代价很大
-        # todo 建议直接保存 QA_Order， 速度慢？
+        #🛠 todo 是为了速度快把order对象转换成 df 对象的吗？
+        #🛠 todo 维护两个变量queue，代价很大
+        #🛠 todo 建议直接保存 QA_Order， 速度慢？
         self.queue_df = pd.DataFrame()
         self._queue_dict = {}
 
@@ -237,7 +237,7 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
         '''
         #print("     *>> QAOrder!insert_order  {}".format(order))
         order.status = ORDER_STATUS.QUEUED #    QUEUED = 300  # queued 用于表示在order_queue中 实际表达的意思是订单存活 待成交
-        # todo 是为了速度快把order对象转换成 df 对象的吗？
+        #🛠 todo 是为了速度快把order对象转换成 df 对象的吗？
         self.queue_df = self.queue_df.append(order.to_df(), ignore_index=True)
         self.queue_df.set_index('order_id', drop=False, inplace=True)
         self._queue_dict[order.order_id] = order
@@ -295,7 +295,7 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
         anOrderObj.from_dict(rec_dict[0])
         return anOrderObj
 
-    #todo 订单队列
+    #🛠todo 订单队列
     def set_status(self, order_id, new_status):
         try:
             if order_id in self.order_ids:
