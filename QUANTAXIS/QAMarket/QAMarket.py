@@ -69,7 +69,7 @@ class QA_Market(QA_Trade):
         '''
                 输出market市场对象的字符串
         '''
-        return '< QA_MARKET with {} Broker >'.format(list(self.broker.keys()))
+        return '<QA_Market with {} QA_Broker >'.format(list(self.broker.keys()))
 
 
     def upcoming_data(self, broker, data):
@@ -93,7 +93,7 @@ class QA_Market(QA_Trade):
                     # args 附加的参数
                     market_data=data,
                     broker_name=broker,
-                    send_order=self.insert_order,  # todo insert_order = insert_order
+                    send_order=self.insert_order,  # 🛠todo insert_order = insert_order
                     query_data=self.query_data_no_wait,
                     query_order=self.query_order,
                     query_assets=self.query_assets,

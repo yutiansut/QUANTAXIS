@@ -46,7 +46,7 @@ class QA_User():
     @yutiansut 
     2018/05/08
 
-    @jerryw  添加注释，和 todo list
+    @jerryw  添加注释，和 🛠todo list
     2018/05/16
 
     @royburns  1.根据指定的user_cookie创建user； 2.添加对应的测试代码； 3.添加注释
@@ -90,7 +90,7 @@ class QA_User():
     def login(self, user_name, password):
         '''
         login to a database
-        todo： fix 返回 是否成功
+        🛠todo： fix 返回 是否成功
         :param user_name: 连接 mongodb 的用户名
         :param password:  连接 mongodb 的密码
         :return: Boolean 是否成功连接
