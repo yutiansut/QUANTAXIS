@@ -136,24 +136,24 @@ See also [Docker](Documents/docker.md)
 See also
 
 
-* [Example of using QUANTAXIS] (https://github.com/yutiansut/QADemo)
+* [Example of using QUANTAXIS](https://github.com/yutiansut/QADemo)
 
-* [QUANTAXIS Testing API] (Documents/backtest_api.md)
-* [Data Structure of QUANTAXIS] (Documents/DataStruct.md)
-* [QUANTAXIS Indicator System] (Documents/indicators.md)
-* [QUANTAXIS Data Acquisition Guide] (Documents/DataFetch.md)
-* [QUANTAXIS Quotes Research] (Documents/analysis.md)
-* [QUANTAXIS Backtest Analysis] (Documents/backtestanalysis.md)
-* [Common Strategy Order] (Documents/strategy.md)
+* [QUANTAXIS Testing API](Documents/backtest_api.md)
+* [Data Structure of QUANTAXIS](Documents/DataStruct.md)
+* [QUANTAXIS Indicator System](Documents/indicators.md)
+* [QUANTAXIS Data Acquisition Guide](Documents/DataFetch.md)
+* [QUANTAXIS Quotes Research](Documents/analysis.md)
+* [QUANTAXIS Backtest Analysis](Documents/backtestanalysis.md)
+* [Common Strategy Order](Documents/strategy.md)
 
 ## 7. <a name='Jupyter'></a>Jupyter Examples
-See [Jupyter example] (jupyterexample)
+See [Jupyter example](jupyterexample)
 
 
 ## 8. <a name='-1'></a> Development Plan
-See [Development Plan] (job_list.md)
+See [Development Plan](job_list.md)
 ## 9. <a name='FAQ'></a> Frequently Asked Questions FAQ
-See [FAQ] (Documents/FAQ.md)
+See [FAQ](Documents/FAQ.md)
 
 ## 10. <a name='-1'></a> Project Donation
 
@@ -164,7 +164,7 @@ Writing code is not easy... Please ask the author for a cup of coffee?
 
 (PS: When you pay, please bring your name/nickname. Will maintain a sponsorship list~)
 
-[Donation list] (CONTRIBUTING.md)
+[Donation list](CONTRIBUTING.md)
 
 
 
@@ -190,4 +190,4 @@ For details, see [QUANATXISProtocol](Documents/readme.md)
 
 
 ## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS.svg?type=large)](https://app.fossa.io/projects /git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS?ref=badge_large)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS?ref=badge_large)
