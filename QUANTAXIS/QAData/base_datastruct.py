@@ -23,55 +23,95 @@
 # SOFTWARE.
 
 import datetime
-import itertools
 import os
-import platform
 import statistics
-import sys
-import time
 import webbrowser
 from copy import copy
-from functools import lru_cache, partial, reduce
+from functools import lru_cache
+
+from abc import abstractmethod
 
 import numpy as np
 import pandas as pd
 from pyecharts import Kline
 
-from QUANTAXIS.QAData.data_fq import QA_data_stock_to_fq
-from QUANTAXIS.QAData.data_resample import QA_data_tick_resample
-from QUANTAXIS.QAData.proto import stock_day_pb2  # protobuf import
-from QUANTAXIS.QAData.proto import stock_min_pb2
-from QUANTAXIS.QAFetch.QATdx import QA_fetch_get_stock_realtime
-from QUANTAXIS.QAIndicator import EMA, HHV, LLV, SMA
-from QUANTAXIS.QAUtil import (DATABASE, QA_util_log_info,
+from QUANTAXIS.QAUtil import (QA_util_log_info,
                               QA_util_random_with_topic,
-                              QA_util_to_json_from_pandas,
-                              QA_util_to_pandas_from_json, trade_date_sse)
+                              QA_util_to_json_from_pandas)
+
 from QUANTAXIS.QAUtil.QADate import QA_util_to_datetime
-from QUANTAXIS.QAUtil.QAParameter import FREQUENCE, MARKET_TYPE
 
-
+#todo 🛠基类名字 _quotation_base 小写是因为 不直接初始化， 建议改成抽象类
 class _quotation_base():
-    '一个自适应股票/期货/指数的基础类'
+    '''
+    一个自适应股票/期货/指数的基础类 , 抽象类， 不能直接初始化，必须通过下面的类继承实现
+    🥑index_day  字符串 初始化  👤👥QA_DataStruct_Index_day继承
+    🥑index_min  字符串 初始化  👤👥QA_DataStruct_Index_min继承
+    🥑stock_day  字符串 初始化  👤👥QA_DataStruct_Stock_day继承
+    🥑stock_min  字符串 初始化  👤👥QA_DataStruct_Stock_min继承
+    🥑future_min 字符串 初始化  👤👥QA_DataStruct_Future_min继承
+    🥑future_day 字符串 初始化  👤👥QA_DataStruct_Future_day继承
+    '''
 
+    # 🛠todo  DataFrame 改成 df 变量名字
     def __init__(self, DataFrame, dtype='undefined', if_fq='bfq', marketdata_type='None'):
+        '''
+        :param df: DataFrame 类型
+        :param dtype: 数据
+        :param if_fq: 是否复权
+        :param marketdata_type:
+        '''
+
+        #🛠todo 判断DataFame 对象字段的合法性，是否正确
         self.data = DataFrame.sort_index(level=1)
+
+        #🛠todo 该变量没有用到， 是不是 self.data_type = marketdata_type ??
         self.data_type = dtype
+
+        #数据类型 可能的取值
+
         self.type = dtype
         self.data_id = QA_util_random_with_topic('DATA', lens=3)
+
+        #默认是不复权
         self.if_fq = if_fq
-        self.mongo_coll = eval(
-            'DATABASE.{}'.format(self.type))
+
+        # dtype 参数 指定类 mongo 中 collection 的名字   ，
+        # 🛠todo 检查 dtype 字符串是否合法， 放到抽象类中，用子类指定数据库， 后期可以支持mongodb分片集群
+        # 🛠todo 子类中没有用到mongodb的数据是通过， QA_data_stock_to_fq  实现数据复权的
+        # 🛠todo ❌
+        # 等价执行 例如：type='stock_min' 则执行 DATABASE.stock_min
+        #self.mongo_coll = eval('DATABASE.{}'.format(self.type))
+        self.choose_db()
+
+    #不能直接实例化这个类
+    @abstractmethod
+    def choose_db(self):
+        pass
 
     def __repr__(self):
-        return '< QA_Base_DataStruct with %s securities >' % len(self.code)
+        return '< QA_Base_DataStruct with %d securities >' % len(self.code)
 
     def __call__(self):
+        '''
+        Emulating callable objects
+        object.__call__(self[, args…])
+        Called when the instance is “called” as a function;
+        if this method is defined, x(arg1, arg2, ...) is a shorthand for x.__call__(arg1, arg2, ...).
+        比如
+        obj =  _quotation_base() 调用 __init__
+        df = obj()  调用 __call__
+        等同 df = obj.__call__()
+        :return:  DataFrame类型
+        '''
         return self.data
 
     __str__ = __repr__
 
     def __len__(self):
+        '''
+        :return: dataframe 的index 的数量
+        '''
         return len(self.index)
 
     # def __getitem__(self,index):
@@ -112,8 +152,7 @@ class _quotation_base():
         # try:
         #     self.new(data=self.data.__getattr__(attr), dtype=self.type, if_fq=self.if_fq)
         # except:
-        raise AttributeError(
-            'QA CLASS Currently has no attribute {}'.format(attr))
+        raise AttributeError('QA CLASS Currently has no attribute {}'.format(attr))
 
     def ix(self, key):
         return self.new(data=self.data.ix(key), dtype=self.type, if_fq=self.if_fq)
