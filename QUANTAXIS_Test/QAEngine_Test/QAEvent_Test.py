@@ -30,8 +30,8 @@ class Test_QAEvent(unittest.TestCase):
         engine = QA.QA_Engine()  # 创建一个QA_Engine
         engine.start()  # engine 开启
 
-        engine.create_kernal('backtest')  # engine创建一个叫 backtest的线程
-        engine.start_kernal ('backtest')  # engine 启动该线程
+        engine.create_kernel('backtest')  # engine创建一个叫 backtest的线程
+        engine.start_kernel ('backtest')  # engine 启动该线程
 
         # 创建一个类,继承QA_Worker
         jobx = job()  # 实例化这个类
