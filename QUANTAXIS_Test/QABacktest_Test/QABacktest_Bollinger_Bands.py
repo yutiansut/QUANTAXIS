@@ -7,34 +7,134 @@ from QUANTAXIS.QAARP.QAStrategy import QA_Strategy
 from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, MARKET_TYPE, FREQUENCE, ORDER_DIRECTION, ORDER_MODEL,DATASOURCE, OUTPUT_FORMAT)
 
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
+from QUANTAXIS.QAFetch import QAQuery_Advance
 
+from QUANTAXIS.QAIndicator import QA_indicator_BOLL
 import time
+import pandas as pd
 
 class BollingerBandsStrategy(QA_Strategy):
     '''
     布林带策略：
-    初始位置买入 5% 的仓位
-    股价运行中间轨道，下轨道， 持仓20% ， 最多不超过30%， 先抛后买， 靠近中轨道附近 卖出
-    股价运行中间轨道，上轨道， 持仓10% ， 最多不超过20%， 先买后抛， 靠近中轨道附近 买入
-
-    %b指标
-        （一）计算公式：（收盘价-布林线下轨价格）/（布林线上轨价格-布林线下轨价格）
     股价运行
     '''
     def __init__(self):
         super().__init__()
         self.frequence = FREQUENCE.DAY
         self.market_type = MARKET_TYPE.STOCK_CN
+        self.backtest_stock_code = '300439'
+        self.stock_day_data = QAQuery_Advance.QA_fetch_stock_day_adv(self.backtest_stock_code)
+        self.stock_day_data_qfq = self.stock_day_data.to_qfq()
 
-        pass
+        #print(self.stock_day_data)
+        self.stock_bollinger_bands= QA_indicator_BOLL(self.stock_day_data_qfq())
+        #print(len(self.stock_bollinger_bands))
+        #print(self.stock_bollinger_bands)
+
+        self.current_state = 0
 
     def on_bar(self, event):
+        # print("on bar 当前日期是:", current_date )
+
+        today_on_bar = pd.Timestamp(self.current_time.date());
+
+
         for item in event.market_data.code:
             market_data = event.market_data
-            print(market_data)
-            print(item)
-            print()
-        time.sleep(1)
+            # QA_DataStruct_Stock_day
+
+            # print( market_data.high )
+            # print( market_data.low  )
+            # print( market_data.open )
+            # print( market_data.close )
+
+            # pandas 不熟悉 可能有更加好的 方法获取数据
+            bollingerBandsSeries = self.stock_bollinger_bands.xs((today_on_bar,'300439'))
+            bollValue = bollingerBandsSeries.to_dict()
+            print(bollValue)
+            #{'BOLL': 55.32273295612507, 'LB': 26.899453479933527, 'UB': 83.74601243231662}
+            middlePrice = bollValue['BOLL']
+            lowPrice = bollValue['LB']
+            highPrice = bollValue['UB']
+
+            market_data_type = type(market_data)
+            closePrice_type = type(market_data.close)
+
+            closePriceDict = market_data.close.to_dict()
+            closePrice = closePriceDict[(today_on_bar,'300439')]
+
+            last_state = self.current_state
+
+            if closePrice > middlePrice:
+                #print(today_on_bar,closePrice,"中轨上方运行",middlePrice)
+                self.current_state = 1;
+
+            elif closePrice < middlePrice:
+                #print(today_on_bar,closePrice,"中轨下方运行",middlePrice)
+                self.current_state = -1;
+
+            else:
+                #print(today_on_bar,closePrice,"中轨价格",middlePrice)
+                pass
+
+
+            if last_state == -1 and self.current_state == 1:
+                print(today_on_bar,"上穿中轨道")
+
+                if self.sell_available is not None and self.sell_available.get(item, 0) == 0:
+                    event.send_order(account_id=self.account_cookie,
+                                     amount=10000,
+                                     amount_model=AMOUNT_MODEL.BY_AMOUNT,
+                                     time=self.current_time,
+                                     code=item,
+                                     price=0,
+                                     order_model=ORDER_MODEL.MARKET,
+                                     towards=ORDER_DIRECTION.BUY,
+                                     market_type=self.market_type,
+                                     frequence=self.frequence,
+                                     broker_name=self.broker)
+
+
+            elif last_state == 1 and self.current_state == -1:
+                print(today_on_bar,"下穿中轨道")
+
+                if self.sell_available is not None and self.sell_available.get(item, 0) > 0:
+                    event.send_order(account_id=self.account_cookie,
+                                 amount=self.sell_available[item],
+                                 amount_model=AMOUNT_MODEL.BY_AMOUNT,
+                                 time=self.current_time,
+                                 code=item,
+                                 price=0,
+                                 order_model=ORDER_MODEL.MARKET,
+                                 towards=ORDER_DIRECTION.SELL,
+                                 market_type=self.market_type,
+                                 frequence=self.frequence,
+                                 broker_name=self.broker)
+
+            #最后一天卖出
+            #last_dau_on_bar = pd.Timestamp('2018-05-20')
+            type1 = type(self.current_time.date())
+            date1 = self.current_time.date()
+            #todo 🛠 改成日期函数的比较
+            if date1.year == 2018 and date1.month == 5 and date1.day == 16:
+                if self.sell_available is not None and self.sell_available.get(item, 0) > 0:
+                    event.send_order(account_id=self.account_cookie,
+                                 amount=self.sell_available[item],
+                                 amount_model=AMOUNT_MODEL.BY_AMOUNT,
+                                 time=self.current_time,
+                                 code=item,
+                                 price=0,
+                                 order_model=ORDER_MODEL.MARKET,
+                                 towards=ORDER_DIRECTION.SELL,
+                                 market_type=self.market_type,
+                                 frequence=self.frequence,
+                                 broker_name=self.broker)
+                print("结束回测，卖出所有股份！")
+
+                    # print(up)
+            # print(lb)
+
+        #time.sleep(1)
         pass
 
 
@@ -43,8 +143,8 @@ class BacktestBollingerBands(QA_Backtest):
     def __init__(self, market_type, frequence, start, end, code_list, commission_fee):
         super().__init__(market_type,  frequence, start, end, code_list, commission_fee)
         self.user = QA_User()
-        mastrategy = BollingerBandsStrategy()
-        self.portfolio, self.account = self.user.register_account(mastrategy)
+        bool_strategy = BollingerBandsStrategy()
+        self.portfolio, self.account = self.user.register_account(bool_strategy)
 
     def after_success(self):
         QA_util_log_info(self.account.history_table)
@@ -60,10 +160,14 @@ class BacktestBollingerBands(QA_Backtest):
 
 class Test_QABacktest_BollingerBands(unittest.TestCase):
 
+    def setUp(self):
+        #准备数据
+        self.time_to_Market_300439 = '2016-05-01'
+        self.time_to_day           = '2018-05-17'
+
     def testBacktestBollingerBands(self):
 
-        self.time_to_Market_300439 = '2015-09-22'
-        self.time_to_day = '2016-05-01'
+
 
         backtest = BacktestBollingerBands(market_type=MARKET_TYPE.STOCK_CN,
                             frequence=FREQUENCE.DAY,

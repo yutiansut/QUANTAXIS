@@ -77,6 +77,7 @@ class QA_Thread(threading.Thread):
                 except Exception as e:
                     pass
 
+
     def pause(self):
         self.__flag.clear()
 
@@ -196,6 +197,8 @@ class QA_Engine(QA_Thread):
                 except Exception as e:
                     raise e
                     # self.run()
+
+
 
     def clear(self):
         res = True
