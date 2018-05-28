@@ -59,8 +59,9 @@ PACKAGES = ["QUANTAXIS", "QUANTAXIS.QAFetch", "QUANTAXIS.QACmd", "QUANTAXIS.QAMa
 
 DESCRIPTION = "QUANTAXIS:Quantitative Financial Strategy Framework"
 
+with open("README_ENG.md", "r") as fh:
+    LONG_DESCRIPTION = fh.read()
 
-LONG_DESCRIPTION = read("README.rst")
 """
 参见read方法说明
 """
