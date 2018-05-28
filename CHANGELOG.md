@@ -227,4 +227,8 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
  3. QA_Performance 增加两个属性 pnl_lifo, pnl_fifo
  4. QA_Performance 增加两个方法 plot_pnlmoney.plot_pnlratio
  5. @尧 在无GUI的电脑上的matplotlib引入时报错的兼容处理
- 6. 测试用例里添加布林带中轨策略的简单示列
+ 6. @yehonghao 增加了龙虎榜数据的获取和存储
+
+ ## 1.0.41 (unreleased)
+ 1. 增加了财务表的注释和翻译QAData/financial_means.py
+ 2. @喜欢你 更新了布林带的回测示例

@@ -1,5 +1,5 @@
 import unittest
-from QUANTAXIS.QAARP.QARisk import QA_Risk
+from QUANTAXIS.QAARP.QARisk import QA_Risk,QA_Performance
 from QUANTAXIS.QAARP.QAUser import QA_User
 
 from QUANTAXIS.QABacktest.QABacktest import QA_Backtest
@@ -29,16 +29,16 @@ class MAStrategy(QA_Strategy):
         # print(self.time_to_Market_300439)
         #print(self.time_to_day)
 
-        self.time_to_Market_300439 = '2015-04-22';
+        self.time_to_Market_300439 = '2015-04-22'
         self.time_to_day = '2018-05-01'
 
         self.df_from_Tdx = QA_fetch_get_stock_day('300439', self.time_to_Market_300439, self.time_to_day, '01')
         #print(self.df_from_Tdx)
 
-        self.ma05 = QA_indicator_MA(self.df_from_Tdx, 5);
-        self.ma10 = QA_indicator_MA(self.df_from_Tdx, 10);
-        self.ma15 = QA_indicator_MA(self.df_from_Tdx, 15);
-        self.ma20 = QA_indicator_MA(self.df_from_Tdx, 20);
+        self.ma05 = QA_indicator_MA(self.df_from_Tdx, 5)
+        self.ma10 = QA_indicator_MA(self.df_from_Tdx, 10)
+        self.ma15 = QA_indicator_MA(self.df_from_Tdx, 15)
+        self.ma20 = QA_indicator_MA(self.df_from_Tdx, 20)
         #print(self.df5)
 
     def on_bar(self, event):
@@ -122,7 +122,12 @@ class Backtest(QA_Backtest):
 
         risk = QA_Risk(self.account, benchmark_code='000300', benchmark_type=MARKET_TYPE.INDEX_CN)
         print(risk().T)
-
+        risk.plot_assets_curve()
+        risk.plot_dailyhold()
+        risk.plot_signal()
+        performance=QA_Performance(self.account)
+        performance.plot_pnlmoney(performance.pnl_fifo)
+        performance.plot_pnlratio(performance.pnl_fifo)
         self.account.save()
         risk.save()
 
@@ -160,3 +165,7 @@ class Test_QABacktest(unittest.TestCase):
         backtest.stop()
         print("结束回测！")
 
+
+
+if __name__ == '__main__':
+    Test_QABacktest().testBacktraceTest()
