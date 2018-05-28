@@ -192,7 +192,7 @@ class QA_Engine(QA_Thread):
 
 
                         # 🛠todo 建议把 engine 变量名字 改成  engine_in_kernels_dict_name, 便于理解
-                        if _task.engine is None:  # _task.engine 是字符串，对于的是 kernals_dict 中的 线程对象
+                        if _task.engine is None:  # _task.engine 是字符串，对于的是 kernls_dict 中的 线程对象
 
                             # 如果不指定线程 就在ENGINE线程中运行
                             _task.do()
