@@ -223,3 +223,4 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
 
  ## 1.0.40
  1. 修改base的函数 AVEDEV 返回SERIES
+ 2. 修改kernal,kernal_dict --> kernel, kernel_dict  
