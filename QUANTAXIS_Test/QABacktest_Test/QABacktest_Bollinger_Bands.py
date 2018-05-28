@@ -1,5 +1,5 @@
 import unittest
-from QUANTAXIS.QAARP.QARisk import QA_Risk
+from QUANTAXIS.QAARP.QARisk import QA_Risk,QA_Performance
 from QUANTAXIS.QAARP.QAUser import QA_User
 
 from QUANTAXIS.QABacktest.QABacktest import QA_Backtest
@@ -36,7 +36,7 @@ class BollingerBandsStrategy(QA_Strategy):
     def on_bar(self, event):
         # print("on bar 当前日期是:", current_date )
 
-        today_on_bar = pd.Timestamp(self.current_time.date());
+        today_on_bar = pd.Timestamp(self.current_time.date())
 
 
         for item in event.market_data.code:
@@ -67,11 +67,11 @@ class BollingerBandsStrategy(QA_Strategy):
 
             if closePrice > middlePrice:
                 #print(today_on_bar,closePrice,"中轨上方运行",middlePrice)
-                self.current_state = 1;
+                self.current_state = 1
 
             elif closePrice < middlePrice:
                 #print(today_on_bar,closePrice,"中轨下方运行",middlePrice)
-                self.current_state = -1;
+                self.current_state = -1
 
             else:
                 #print(today_on_bar,closePrice,"中轨价格",middlePrice)
@@ -154,7 +154,12 @@ class BacktestBollingerBands(QA_Backtest):
             return
         risk = QA_Risk(self.account, benchmark_code='000300', benchmark_type=MARKET_TYPE.INDEX_CN)
         print(risk().T)
-
+        risk.plot_assets_curve()
+        risk.plot_dailyhold()
+        risk.plot_signal()
+        performance=QA_Performance(self.account)
+        performance.plot_pnlmoney(performance.pnl_fifo)
+        performance.plot_pnlratio(performance.pnl_fifo)
         self.account.save()
         risk.save()
 
@@ -182,3 +187,8 @@ class Test_QABacktest_BollingerBands(unittest.TestCase):
         print("结束回测！")
 
         pass
+
+if __name__ == '__main__':
+    t=Test_QABacktest_BollingerBands()
+    t.setUp()
+    t.testBacktestBollingerBands()
