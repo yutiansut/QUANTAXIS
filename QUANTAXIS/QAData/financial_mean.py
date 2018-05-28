@@ -1,7 +1,7 @@
 # coding:utf-8
 
 financial_dict = {
-    ## 每股指标
+    ## 1.每股指标
     '基本每股收益': 'EPS',
     '扣除非经常性损益每股收益': 'deductEPS',
     '每股未分配利润': 'undistributedProfitPerShare',
@@ -9,9 +9,9 @@ financial_dict = {
     '每股资本公积金': 'capitalReservePerShare',
     '净资产收益率': 'ROE',
     '每股经营现金流量': 'operatingCashFlowPerShare',
-    ## 资产负债表
-    ### 资产
-    #### 流动资产
+    ## 2. 资产负债表 BALANCE SHEET
+    ### 2.1 资产
+    #### 2.1.1 流动资产
     '货币资金': 'moneyFunds',
     '交易性金融资产': 'tradingFinancialAssets',
     '应收票据': 'billsReceivables',
@@ -26,7 +26,7 @@ financial_dict = {
     '一年内到期的非流动资产': 'noncurrentAssetsDueWithinOneYear',
     '其他流动资产': 'otherLiquidAssets',
     '流动资产合计': 'totalLiquidAssets',
-    #### 非流动资产
+    #### 2.1.2 非流动资产
     '可供出售金融资产': 'availableForSaleSecurities',
     '持有至到期投资': 'heldToMaturityInvestments',
     '长期应收款': 'longTermReceivables',
@@ -46,8 +46,8 @@ financial_dict = {
     '其他非流动资产': 'otherNonCurrentAssets',
     '非流动资产合计': 'totalNonCurrentAssets',
     '资产总计': 'totalAssets',
-    ### 负债
-    #### 流动负债
+    ### 2.2 负债
+    #### 2.2.1 流动负债
     '短期借款': 'shortTermLoan',
     '交易性金融负债': 'tradingFinancialLiabilities',
     '应付票据': 'billsPayable',
@@ -62,7 +62,7 @@ financial_dict = {
     '一年内到期的非流动负债': 'noncurrentLiabilitiesDueWithinOneYear',
     '其他流动负债': 'otherCurrentLiabilities',
     '流动负债合计': 'totalCurrentLiabilities',
-    #### 非流动负债
+    #### 2.2.2 非流动负债
     '长期借款': 'longTermLoans',
     '应付债券': 'bondsPayable',
     '长期应付款': 'longTermPayable',
@@ -72,7 +72,7 @@ financial_dict = {
     '其他非流动负债': 'otherNonCurrentLiabilities',
     '非流动负债合计': 'totalNonCurrentLiabilities',
     '负债合计': 'totalLiabilities',
-    ### 所有者权益
+    ### 2.3 所有者权益
     '实收资本（或股本）': 'totalShare',
     '资本公积': 'capitalReserve',
     '盈余公积': 'surplusReserve',
@@ -83,7 +83,7 @@ financial_dict = {
     '非正常经营项目收益调整': 'abnormalBusinessProjectEarningsAdjustment',
     '所有者权益（或股东权益）合计': 'totalOwnersEquity',
     '负债和所有者（或股东权益）合计': 'totalLiabilitiesAndOwnersEquity',
-    ## 利润表
+    ## 3. 利润表
     '其中：营业收入': 'operatingRevenue',
     '其中：营业成本': 'operatingCosts',
     '营业税金及附加': 'taxAndSurcharges',
@@ -109,9 +109,9 @@ financial_dict = {
     '归属于母公司所有者的净利润': 'netProfitsBelongToParentCompanyOwner',
     '少数股东损益': 'minorityProfitAndLoss',
 
-    ## 现金流量表
-    ### 经营活动 Operating
-    '销售商品、提供劳务收到的现金': 'cashFromGoodsSalesAndServicesProvided',
+    ## 4. 现金流量表
+    ### 4.1 经营活动 Operating
+    '销售商品、提供劳务收到的现金': 'cashFromGoodsSalesorOrRenderingOfServices',
     '收到的税费返还': 'refundOfTaxAndFeeReceived',
     '收到其他与经营活动有关的现金': 'otherCashRelatedBusinessActivitiesReceived',
     '经营活动现金流入小计': 'cashInflowsFromOperatingActivities',
@@ -121,7 +121,7 @@ financial_dict = {
     '支付其他与经营活动有关的现金': 'paymentOfOtherCashRelatedToBusinessActivities',
     '经营活动现金流出小计': 'cashOutflowsFromOperatingActivities',
     '经营活动产生的现金流量净额': 'netCashFlowsFromOperatingActivities',
-    ### 投资活动 Investment
+    ### 4.2 投资活动 Investment
     '收回投资收到的现金': 'cashReceivedFromInvestmentReceived',
     '取得投资收益收到的现金': 'cashReceivedFromInvestmentIncome',
     '处置固定资产、无形资产和其他长期资产收回的现金净额': 'disposalOfNetCashForRecoveryOfFixedAssetsIntangibleAssetsAndOtherLongTermAssets',
@@ -134,7 +134,7 @@ financial_dict = {
     '支付其他与投资活动有关的现金': 'otherCashPaidRelatingToInvestingActivities',
     '投资活动现金流出小计': 'cashOutflowsFromInvestmentActivities',
     '投资活动产生的现金流量净额':'netCashFlowsFromInvestingActivities',
-    ### 筹资活动 Financing
+    ### 4.3 筹资活动 Financing
     '吸收投资收到的现金':'cashReceivedFromInvestors',
     '取得借款收到的现金':'cashFromBorrowings',
     '收到其他与筹资活动有关的现金':'otherCashReceivedRelatingToFinancingActivities',
@@ -144,39 +144,44 @@ financial_dict = {
     '支付其他与筹资活动有关的现金':'otherCashPaymentRelatingToFinancingActivities',
     '筹资活动现金流出小计':'cashOutflowsFromFinancingActivities',
     '筹资活动产生的现金流量净额':'netCashFlowsFromFinancingActivities',
-    ### 汇率变动
+    ### 4.4 汇率变动
     '四、汇率变动对现金的影响':'effectOfForeignExchangRateChangesOnCash',
     '四(2)、其他原因对现金的影响':'effectOfOtherReasonOnCash',
-    ### 现金及现金等价物净增加
+    ### 4.5 现金及现金等价物净增加
     '五、现金及现金等价物净增加额':'netIncreaseInCashAndCashEquivalents',
     '期初现金及现金等价物余额':'initialCashAndCashEquivalentsBalance',
-    ### 期末现金及现金等价物余额
+    ### 4.6 期末现金及现金等价物余额
     '期末现金及现金等价物余额':'theFinalCashAndCashEquivalentsBalance',
-    '净利润':'',
-    '加：资产减值准备':'',
-    '固定资产折旧、油气资产折耗、生产性生物资产折旧':'',
-    '无形资产摊销':'',
-    '长期待摊费用摊销':'',
-    '处置固定资产、无形资产和其他长期资产的损失':'',
-    '固定资产报废损失':'',
+    ### 4.x 补充项目 Supplementary Schedule：
+    ### 现金流量附表项目    Indirect Method
+    #### 4.x.1 将净利润调节为经营活动现金流量 Convert net profit to cash flow from operating activities
+    '净利润':'netProfit',
+    '加：资产减值准备':'provisionForAssetsLosses',
+    '固定资产折旧、油气资产折耗、生产性生物资产折旧':'depreciationForFixedAssets',
+    '无形资产摊销':'amortizationOfIntangibleAssets',
+    '长期待摊费用摊销':'amortizationOfLong-termDeferredExpenses',
+    '处置固定资产、无形资产和其他长期资产的损失':'lossOfDisposingFixedAssetsIntangibleAssetsAndOtherLong-termAssets',
+    '固定资产报废损失':'scrapLossOfFixedAssets',
     '公允价值变动损失':'',
-    '财务费用':'',
-    '投资损失':'',
-    '递延所得税资产减少':'',
-    '递延所得税负债增加':'',
-    '存货的减少':'',
-    '经营性应收项目的减少':'',
-    '经营性应付项目的增加':'',
-    '其他':'',
-    '经营活动产生的现金流量净额2':'',
-    '债务转为资本':'',
-    '一年内到期的可转换公司债券':'',
-    '融资租入固定资产':'',
-    '现金的期末余额':'',
-    '减：现金的期初余额':'',
-    '加：现金等价物的期末余额':'',
-    '减：现金等价物的期初余额':'',
-    '现金及现金等价物净增加额':'',
+    '财务费用':'financialExpenses',
+    '投资损失':'investmentLosses',
+    '递延所得税资产减少':'decreaseOfDeferredTaxAssets',
+    '递延所得税负债增加':'increaseOfDeferredTaxLiabilities',
+    '存货的减少':'decreaseOfInventory',
+    '经营性应收项目的减少':'decreaseOfOperationReceivables',
+    '经营性应付项目的增加':'increaseOfOperationPayables',
+    '其他':'others',
+    '经营活动产生的现金流量净额2':'netCashFromOperatingActivities2',
+    #### 4.x.2 不涉及现金收支的投资和筹资活动 Investing and financing activities not involved in cash
+    '债务转为资本':'debtConvertedToCSapital',
+    '一年内到期的可转换公司债券':'convertibleBondMaturityWithinOneYear',
+    '融资租入固定资产':'leaseholdImprovements',
+    #### 4.x.3 现金及现金等价物净增加情况 Net increase of cash and cash equivalents
+    '现金的期末余额':'cashEndingBal',
+    '减：现金的期初余额':'cashBeginingBal',
+    '加：现金等价物的期末余额':'cashEquivalentsEndingBal',
+    '减：现金等价物的期初余额':'cashEquivalentsBeginningBal',
+    '现金及现金等价物净增加额':'netIncreaseOfCashAndCashEquivalents',
     ## 偿债能力分析
     '流动比率':'',
     '速动比率':'',
