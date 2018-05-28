@@ -1,4 +1,4 @@
-# QUANTAXIS Quantitative Financial Policy Framework
+# QUANTAXIS Quantitative Financial Framework
 
 
 
