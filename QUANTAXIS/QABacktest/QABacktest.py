@@ -121,7 +121,7 @@ class QA_Backtest():
         # 启动 trade_engine 线程
         self.market.start()
 
-        # 注册 backtest_broker ，并且启动和它关联线程QAThread 存放在 kernals 词典中， { 'broker_name': QAThread }
+        # 注册 backtest_broker ，并且启动和它关联线程QAThread 存放在 kernels 词典中， { 'broker_name': QAThread }
         self.market.register(self.broker_name, self.broker)
 
         # 通过 broke名字 新建立一个 QAAccount 放在的中 session字典中 session 是 { 'cookie' , QAAccount }

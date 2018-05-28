@@ -74,9 +74,6 @@ class QA_Thread(threading.Thread):
                             pass
                     else:
                         self.idle = True
-
-                        # Mac book下风扇狂转，如果sleep cpu 占用率回下降
-                        # time.sleep(0.01)
                 except Exception as e:
                     pass
 
@@ -154,7 +151,7 @@ class QA_Engine(QA_Thread):
         :param task:  type str 字符串
         :return: None
         '''
-        # 🛠todo 建议把 engine 变量名字 改成  engine_in_kerneals_dict_name, 便于理解
+        # todo 建议把 engine 变量名字 改成  engine_in_kerneals_dict_name, 便于理解
         self.kernals_dict[task.engine].put(task)
 
     def stop_all(self):
@@ -185,7 +182,7 @@ class QA_Engine(QA_Thread):
                         assert isinstance(_task, QA_Task)
                         #print(_task)
 
-                        # 🛠todo 建议把 engine 变量名字 改成  engine_in_kerneals_dict_name, 便于理解
+                        # todo 建议把 engine 变量名字 改成  engine_in_kerneals_dict_name, 便于理解
                         if _task.engine is None:  # _task.engine 是字符串，对于的是 kernals_dict 中的 线程对象
                             # 如果不指定线程 就在ENGINE线程中运行
                             _task.do()
@@ -196,10 +193,6 @@ class QA_Engine(QA_Thread):
                             self.queue.task_done()
                     else:
                         self.idle = True
-
-                    #Mac book下风扇狂转，如果sleep cpu 占用率回下降
-                    #time.sleep(0.01)
-
                 except Exception as e:
                     raise e
                     # self.run()
