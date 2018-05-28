@@ -32,7 +32,8 @@ import tushare as ts
 from QUANTAXIS.QAFetch.QATushare import (QA_fetch_get_stock_day,
                                          QA_fetch_get_stock_info,
                                          QA_fetch_get_stock_list,
-                                         QA_fetch_get_trade_date)
+                                         QA_fetch_get_trade_date,
+                                         QA_fetch_get_lhb)
 from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_log_info,
                               QA_util_time_stamp, QA_util_to_json_from_pandas,
                               trade_date_sse)
@@ -138,6 +139,36 @@ def QA_save_stock_day_with_fqfactor(client=DATABASE):
     QA_util_log_info('Saving Process has been done !')
     return 0
 
+def QA_save_lhb(client=DATABASE):
+    __coll = client.lhb
+    __coll.ensure_index('code')
 
+    start = datetime.datetime.strptime("2006-07-01", "%Y-%m-%d").date()
+    end = datetime.date.today();
+    i = 0;
+    while start < end:
+        i = i + 1
+        start = start + datetime.timedelta(days=1);
+        try:
+            pd = QA_fetch_get_lhb(start.isoformat())
+            if pd is None:
+                continue;
+            data=   pd\
+            .assign(pchange=pd.pchange.apply(float))\
+            .assign(amount=pd.amount.apply(float))\
+            .assign(bratio=pd.bratio.apply(float))\
+            .assign(sratio=pd.sratio.apply(float))\
+            .assign(buy=pd.buy.apply(float))\
+            .assign(sell=pd.sell.apply(float))
+            # __coll.insert_many(QA_util_to_json_from_pandas(data))
+            for i in range(0, len(data)):
+             __coll.update({"code":data.iloc[i]['code'],"date":data.iloc[i]['date']},{"$set":QA_util_to_json_from_pandas(data)[i]},upsert=True)
+            time.sleep(2)
+            if i % 10 == 0:
+                time.sleep(60)
+        except Exception as e:
+            print("error codes:")
+            time.sleep(2)
+            continue
 if __name__ == '__main__':
-    QA_save_stock_day_with_fqfactor()
+    QA_save_lhb()
