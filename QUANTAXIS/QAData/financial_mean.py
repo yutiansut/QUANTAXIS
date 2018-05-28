@@ -183,13 +183,13 @@ financial_dict = {
     '减：现金等价物的期初余额':'cashEquivalentsBeginningBal',
     '现金及现金等价物净增加额':'netIncreaseOfCashAndCashEquivalents',
     ## 偿债能力分析
-    '流动比率':'',
-    '速动比率':'',
-    '现金比率(%)':'',
-    '利息保障倍数':'',
-    '非流动负债比率(%)':'',
-    '流动负债比率(%)':'',
-    '现金到期债务比率(%)':'',
+    '流动比率':'liquidityRatio',#流动资产/流动负债
+    '速动比率':'acidTestRatio',#(流动资产-存货）/流动负债
+    '现金比率(%)':'cashRatio',#(货币资金+有价证券)÷流动负债
+    '利息保障倍数':'interestCoverageRatio',#(利润总额+财务费用（仅指利息费用部份）)/利息费用
+    '非流动负债比率(%)':'noncurrentLiabilitiesRatio',
+    '流动负债比率(%)':'currentLiabilitiesRatio',
+    '现金到期债务比率(%)':'cashDebtRatio',#企业经营现金净流入/(本期到期长期负债+本期应付票据)
     '有形资产净值债务率(%)':'',
     '权益乘数(%)':'',
     '股东的权益/负债合计(%)':'',
