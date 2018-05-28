@@ -361,5 +361,14 @@ def QA_fetch_user(user_cookie,db=DATABASE):
 
     return [QA_util_dict_remove_key(res, '_id') for res in collection.find({'user_cookie':user_cookie})]
 
+
+def QA_fetch_lhb(date, db=DATABASE):
+    '获取某一天龙虎榜数据'
+    try:
+        collections = db.lhb
+        return pd.DataFrame([item for item in collections.find(
+            {'date': date})]).drop(['_id'], axis=1).set_index('code', drop=False).sort_index()
+    except Exception as e:
+        raise e
 if __name__ == '__main__':
-    print(QA_fetch_quotations('000001'))
+    print(QA_fetch_lhb('2006-07-03'))
