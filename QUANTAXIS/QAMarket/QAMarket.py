@@ -120,8 +120,8 @@ class QA_Market(QA_Trade):
     def register(self, broker_name, broker):
         if broker_name not in self._broker.keys():
             self.broker[broker_name] = broker
-            self.trade_engine.create_kernel('{}'.format(broker_name))
-            self.trade_engine.start_kernel('{}'.format(broker_name))
+            self.trade_engine.create_kernal('{}'.format(broker_name))
+            self.trade_engine.start_kernal('{}'.format(broker_name))
             return True
         else:
             return False
