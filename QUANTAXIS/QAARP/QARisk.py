@@ -30,7 +30,9 @@
 综合性指标主要包括风险收益比，夏普比例，波动率，VAR，偏度，峰度等"""
 
 import math
+from collections import deque
 from functools import lru_cache
+from queue import LifoQueue
 
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
@@ -357,6 +359,80 @@ class QA_Performance():
         """风格分析
         """
         pass
+
+    @property
+    @lru_cache()
+    def pnl_lifo(self):
+        """
+        使用后进先出法配对成交记录
+        """
+        X = dict(zip(self.account.code, [LifoQueue()
+                                         for i in range(len(self.account.code))]))
+        pair_table = []
+        for _, data in self.account.history_table.iterrows():
+            if data.amount > 0:
+                X[data.code].put((data.datetime, data.amount, data.price))
+            elif data.amount < 0:
+                while True:
+                    l = X[data.code].get()
+                    print(l)
+                    if l[1] == abs(data.amount):
+
+                        pair_table.append(
+                            [data.code, data.datetime, l[0], abs(data.amount), data.price, l[2]])
+                        break
+                    if l[1] > abs(data.amount):
+                        temp = (l[0], l[1]+data.amount, l[2])
+                        X[data.code].put_nowait(temp)
+                        pair_table.append(
+                            [data.code, data.datetime, l[0], abs(data.amount), data.price, l[2]])
+                        break
+                    elif l[1] < (abs(data.amount)):
+                        data.amount = data.amount+l[1]
+                        pair_table.append(
+                            [data.code, data.datetime, l[0], l[1], data.price, l[2]])
+        pair_title = ['code', 'sell_date', 'buy_date',
+                      'amount', 'sell_price', 'buy_price']
+        pnl = pd.DataFrame(pair_table, columns=pair_title).set_index('code')
+        pnl = pnl.assign(pnl_ratio=(pnl.sell_price/pnl.buy_price) -
+                         1)
+        pnl = pnl.assign(pnl_money=pnl.pnl_ratio*pnl.amount)
+        return pnl
+
+    @property
+    @lru_cache()
+    def pnl_fifo(self):
+        X = dict(zip(self.account.code, [deque()
+                                         for i in range(len(self.account.code))]))
+        pair_table = []
+        for _, data in self.account.history_table.iterrows():
+            if data.amount > 0:
+                X[data.code].append((data.datetime, data.amount, data.price))
+            elif data.amount < 0:
+                while True:
+                    l = X[data.code].popleft()
+                    if l[1] == abs(data.amount):
+                        pair_table.append(
+                            [data.code, data.datetime, l[0], abs(data.amount), data.price, l[2]])
+                        break
+                    if l[1] > abs(data.amount):
+                        temp = (l[0], l[1]+data.amount, l[2])
+                        X[data.code].appendleft(temp)
+                        pair_table.append(
+                            [data.code, data.datetime, l[0], abs(data.amount), data.price, l[2]])
+                        break
+                    elif l[1] < (abs(data.amount)):
+                        data.amount = data.amount+l[1]
+                        pair_table.append(
+                            [data.code, data.datetime, l[0], l[1], data.price, l[2]])
+
+        pair_title = ['code', 'sell_date', 'buy_date',
+                      'amount', 'sell_price', 'buy_price']
+        pnl = pd.DataFrame(pair_table, columns=pair_title).set_index('code')
+        pnl = pnl.assign(pnl_ratio=(pnl.sell_price/pnl.buy_price) -
+                         1)
+        pnl = pnl.assign(pnl_money=pnl.pnl_ratio*pnl.amount)
+        return pnl
 
     def abnormal_active(self):
         """
