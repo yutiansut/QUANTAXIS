@@ -224,3 +224,5 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
  ## 1.0.40 (unreleased)
  1. 修改base的函数 AVEDEV 返回SERIES
  2. @宋 @喜欢你 修改kernal,kernal_dict --> kernel, kernel_dict
+ 3. QA_Performance 增加两个属性 pnl_lifo, pnl_fifo
+ 4. QA_Performance 增加两个方法 plot_pnlmoney.plot_pnlratio
