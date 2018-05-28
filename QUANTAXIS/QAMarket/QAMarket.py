@@ -103,15 +103,15 @@ class QA_Market(QA_Trade):
 
     def start(self):
         self.trade_engine.start()
-        # self.trade_engine.create_kernal('MARKET')
-        # self.trade_engine.start_kernal('MARKET')
+        # self.trade_engine.create_kernel('MARKET')
+        # self.trade_engine.start_kernel('MARKET')
 
     def connect(self, broker):
         if broker in self._broker.keys():
 
             self.broker[broker] = self._broker[broker]()  # 在这里实例化
-            self.trade_engine.create_kernal('{}'.format(broker))
-            self.trade_engine.start_kernal('{}'.format(broker))
+            self.trade_engine.create_kernel('{}'.format(broker))
+            self.trade_engine.start_kernel('{}'.format(broker))
             # 开启trade事件子线程
             return True
         else:
@@ -120,8 +120,8 @@ class QA_Market(QA_Trade):
     def register(self, broker_name, broker):
         if broker_name not in self._broker.keys():
             self.broker[broker_name] = broker
-            self.trade_engine.create_kernal('{}'.format(broker_name))
-            self.trade_engine.start_kernal('{}'.format(broker_name))
+            self.trade_engine.create_kernel('{}'.format(broker_name))
+            self.trade_engine.start_kernel('{}'.format(broker_name))
             return True
         else:
             return False
