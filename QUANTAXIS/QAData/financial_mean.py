@@ -190,25 +190,25 @@ financial_dict = {
     '非流动负债比率(%)':'noncurrentLiabilitiesRatio',
     '流动负债比率(%)':'currentLiabilitiesRatio',
     '现金到期债务比率(%)':'cashDebtRatio',#企业经营现金净流入/(本期到期长期负债+本期应付票据)
-    '有形资产净值债务率(%)':'',
-    '权益乘数(%)':'',
-    '股东的权益/负债合计(%)':'',
-    '有形资产/负债合计(%)':'',
-    '经营活动产生的现金流量净额/负债合计(%)':'',
+    '有形资产净值债务率(%)':'debtToTangibleAssetsRatio',
+    '权益乘数(%)':'equityMultiplier',#资产总额/股东权益总额 
+    '股东的权益/负债合计(%)':'equityDebtRatio',#权益负债率
+    '有形资产/负债合计(%)':'tangibleAssetDebtRatio ',#有形资产负债率
+    '经营活动产生的现金流量净额/负债合计(%)':'netCashFlowsFromOperatingActivitiesDebtRatio',
     'EBITDA/负债合计(%)':'',
     ## 6. 经营效率分析
     '应收帐款周转率':'turnoverRatioOfReceivable;',#销售收入÷平均应收账款=销售收入\(0.5 x(应收账款期初+期末))
     '存货周转率':'turnoverRatioOfInventory',
     '运营资金周转率':'turnoverRatioOfOperatingAssets',#(存货周转天数+应收帐款周转天数-应付帐款周转天数+预付帐款周转天数-预收帐款周转天数)/365
-    '总资产周转率':'',
-    '固定资产周转率':'',
-    '应收帐款周转天数':'',
-    '存货周转天数':'',
-    '流动资产周转率':'',
-    '流动资产周转天数':'',
-    '总资产周转天数':'',
-    '股东权益周转率':'',
-    '营业收入增长率(%)':'',
+    '总资产周转率':'turnoverRatioOfTotalAssets',
+    '固定资产周转率':'turnoverRatioOfFixedAssets',#企业销售收入与固定资产净值的比率
+    '应收帐款周转天数':'daysSalesOutstanding',#企业从取得应收账款的权利到收回款项、转换为现金所需要的时间
+    '存货周转天数':'daysSalesOfInventory',#企业从取得存货开始，至消耗、销售为止所经历的天数
+    '流动资产周转率':'turnoverRatioOfCurrentAssets',#流动资产周转率(次)=主营业务收入/平均流动资产总额
+    '流动资产周转天数':'daysSalesofCurrentAssets',
+    '总资产周转天数':'daysSalesofTotalAssets',
+    '股东权益周转率':'equityTurnover',#销售收入/平均股东权益
+    '营业收入增长率(%)':'operatingIncomeGrowth',
     ## 7. 发展能力分析
     '净利润增长率(%)':'',
     '净资产增长率(%)':'',
