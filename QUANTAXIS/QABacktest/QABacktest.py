@@ -82,7 +82,7 @@ class QA_Backtest():
         self.account = None
         self.portfolio = None
 
-        #todo market_type 应该放在 QA_Market对象里的一个属性
+        #🛠todo market_type 应该放在 QA_Market对象里的一个属性
         self.market = QA_Market()
         self.market_type = market_type
 
@@ -94,8 +94,8 @@ class QA_Backtest():
         self.end   = end
         self.code_list = code_list
 
-        #todo 检查start日期和结束end日期是否正确
-        #todo 检查code list 是否合法
+        #🛠todo 检查start日期和结束end日期是否正确
+        #🛠todo 检查code list 是否合法
 
         #根据 市场类型，回测周期频率， 和股票代码列表 获取回测数据
         if self.market_type is MARKET_TYPE.STOCK_CN and self.frequence is FREQUENCE.DAY:
