@@ -105,6 +105,9 @@ def QA_fetch_get_trade_date(end, exchange):
                'exchangeName': exchangeName, 'date_stamp': data_stamp}
         message.append(mes)
     return message
+
+def QA_fetch_get_lhb(date):
+  return  QATs.top_list(date)
 # test
 
 # print(get_stock_day("000001",'2001-01-01','2010-01-01'))
