@@ -46,10 +46,10 @@ def concat(lists):
 
 def from_tushare(dataframe, dtype='day'):
     """dataframe from tushare
-    
+
     Arguments:
         dataframe {[type]} -- [description]
-    
+
     Returns:
         [type] -- [description]
     """
@@ -60,3 +60,30 @@ def from_tushare(dataframe, dtype='day'):
         return QA_DataStruct_Stock_min(dataframe.set_index(['datetime', 'code'], drop=False), dtype='stock_min')
 
 
+def QDS_StockDayWarpper(func):
+    """
+    日线QDS装饰器
+    """
+    def warpper(*args, **kwargs):
+        data = func(*args, **kwargs)
+        if isinstance(data.index, pd.MultiIndex):
+
+            return QA_DataStruct_Stock_day(data)
+        else:
+            return QA_DataStruct_Stock_day(data.set_index(['date', 'code'], drop=False), dtype='stock_day')
+    return warpper
+
+
+def QDS_StockMinWarpper(func, *args, **kwargs):
+    """
+    分钟线QDS装饰器
+    """
+    data = func(*args, **kwargs)
+    def warpper(*args, **kwargs):
+        data = func(*args, **kwargs)
+        if isinstance(data.index, pd.MultiIndex):
+
+            return QA_DataStruct_Stock_min(data)
+        else:
+            return QA_DataStruct_Stock_min(data.set_index(['datetime', 'code'], drop=False), dtype='stock_min')
+    return warpper
