@@ -275,6 +275,7 @@ class QA_Risk():
     def plot_assets_curve(self, length=14, height=12):
         """
         资金曲线叠加图
+        @Roy T.Burns 2018/05/29 修改百分比显示错误
         """
         plt.style.use('ggplot')
         plt.figure(figsize=(length, height))
@@ -295,7 +296,7 @@ class QA_Risk():
         i = 0
         for item in ['annualize_return', 'bm_annualizereturn', 'profit']:
             plt.text(i, 0.3, '{} : {} %'.format(item, self.message.get(
-                item, 0)), fontsize=10, ha='left', rotation=0, wrap=True)
+                item, 0))*100, fontsize=10, ha='left', rotation=0, wrap=True)
             i += length/2.8
         i = 0
         for item in ['init_assets', 'last_assets', 'volatility']:
