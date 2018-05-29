@@ -161,8 +161,8 @@ class QA_Risk():
             'account_cookie': self.account.account_cookie,
             'portfolio_cookie': self.account.portfolio_cookie,
             'user_cookie': self.account.user_cookie,
-            'annualize_return': round(self.annualize_return,2),
-            'profit': round(self.profit,2),
+            'annualize_return': self.annualize_return,
+            'profit': self.profit,
             'max_dropback': self.max_dropback,
             'time_gap': self.time_gap,
             'volatility': self.volatility,
@@ -172,11 +172,8 @@ class QA_Risk():
             'beta': self.beta,
             'alpha': self.alpha,
             'sharpe': self.sharpe,
-            'init_assets':"%0.2f"%(float(self.init_assets)),
-            'last_assets':"%0.2f"% (float(self.assets.iloc[-1]))
-
-            #'init_assets': round(float(self.init_assets), 2),
-            #'last_assets': round(float(self.assets.iloc[-1]), 2)
+            'init_assets': round(float(self.init_assets), 2),
+            'last_assets': round(float(self.assets.iloc[-1]), 2)
         }
 
     @property

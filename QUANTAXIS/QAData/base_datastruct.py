@@ -79,6 +79,7 @@ class _quotation_base():
         # dtype 参数 指定类 mongo 中 collection 的名字   ，
         # 🛠todo 检查 dtype 字符串是否合法， 放到抽象类中，用子类指定数据库， 后期可以支持mongodb分片集群
         # 🛠todo 子类中没有用到mongodb的数据是通过， QA_data_stock_to_fq  实现数据复权的
+        # 🛠todo ❌
         # 等价执行 例如：type='stock_min' 则执行 DATABASE.stock_min
         #self.mongo_coll = eval('DATABASE.{}'.format(self.type))
         self.choose_db()
@@ -93,7 +94,6 @@ class _quotation_base():
 
     def __call__(self):
         '''
-        ✅如果需要暴露 DataFrame 内部数据对象，就用() 来转换出 data （DataFrame）
         Emulating callable objects
         object.__call__(self[, args…])
         Called when the instance is “called” as a function;
@@ -110,7 +110,6 @@ class _quotation_base():
 
     def __len__(self):
         '''
-        返回记录的数目
         :return: dataframe 的index 的数量
         '''
         return len(self.index)
@@ -123,12 +122,6 @@ class _quotation_base():
         
     def __iter__(self):
         """
-        📌关于 yield 的问题
-        A yield statement is semantically equivalent to a yield expression.
-        yield 的作用就是把一个函数变成一个 generator，
-        带有 yield 的函数不再是一个普通函数，Python 解释器会将其视为一个 generator
-        📌关于__iter__ 的问题
-        Return an iterator object
         iter the row one by one
         """
         for i in range(len(self.index)):
