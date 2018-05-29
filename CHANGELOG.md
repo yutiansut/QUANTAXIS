@@ -197,16 +197,16 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
  - self.pct_change
  - self.mad
 
- ## 1.0.36
+## 1.0.36
 
  对于策略示例做了一些适当性的调整
  
- ## 1.0.37
+## 1.0.37
 
  1. @yssource将log文件都放入~/.quantaxis/log目录中 (* 在windows中,users/username/.quantaxis/log),减少log文件的垃圾输出
  2. @cc/pchaos 的建议: 将log的位置放在setting文件中
 
- ## 1.0.38
+## 1.0.38
 
  1. 修改了COUNT函数,现在返回series格式 在@musicx的[ISSUE 429](https://github.com/QUANTAXIS/QUANTAXIS/issues/429)问题上进行了改进
  2. 修改了PortfolioView类,修改account_cookie为PVIEW_xxx,增加contained_cookie 作为承载的account的cookie集合
@@ -216,12 +216,12 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
  6. 修改了QA_RISK 增加了一个画图方法: plot_assets_curve()方法
 
 
- ## 1.0.39
+## 1.0.39
 
  1. 增加seaborn依赖项  需要pip install seaborn 
  2. QA_Risk 增加两个画图方法: plot_dailyhold() plot_signal()
 
- ## 1.0.40
+## 1.0.40
  1. 修改base的函数 AVEDEV 返回SERIES
  2. @宋 @喜欢你 修改kernal,kernal_dict --> kernel, kernel_dict
  3. QA_Performance 增加两个属性 pnl_lifo, pnl_fifo
@@ -229,7 +229,7 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
  5. @尧 在无GUI的电脑上的matplotlib引入时报错的兼容处理
  6. @yehonghao 增加了龙虎榜数据的获取和存储
 
- ## 1.0.41 (unreleased)
+## 1.0.41
  1. 增加了财务表的注释和翻译QAData/financial_means.py
  2. @喜欢你 更新了布林带的回测示例
  3. @Roy T.Burns 提交了关于回测Risk插件画图的显示错误
@@ -241,7 +241,7 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
  @QDS_StockMinWarpper
  ```
  7. 将QDS的方法暴露出来 [concat,from_tushare](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/QUANTAXIS/QAData/dsmethods.py)
- 8. 按照test_backtest中的MACD_JCSC.py的写法移植到了unittest来运行，后期加入assert来自动测试
+
 QDS的装饰器主要是用于将别处获取的数据之间转化为QDS格式
  ```
 import QUANTAXIS as QA
@@ -261,4 +261,7 @@ print(get_stockday_adv('000001','2018-05-01','2018-05-21'))
 print(get_stockday_ts('000001','2018-05-01','2018-05-21'))
 
 ```
- 8. @喜欢你 修改了QA_Risk的显示,以及更新PR说明
+ 8. @喜欢你 按照test_backtest中的MACD_JCSC.py的写法移植到了unittest来运行，后期加入assert来自动测试
+ 9. @喜欢你 修改了QA_Risk的显示,以及更新PR说明
+
+## 1.0.42 (unreleased)
