@@ -73,6 +73,10 @@ class QA_Risk():
     需要加载一个account/portfolio类进来:
     需要有
     code,start_date,end_date,daily_cash,daily_hold
+
+    TODO:
+    资金利用率 反应资金的利用程度
+    股票周转率 反应股票的持仓天数
     """
 
     def __init__(self, account, benchmark_code='000300', benchmark_type=MARKET_TYPE.INDEX_CN):
