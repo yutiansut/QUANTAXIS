@@ -36,7 +36,6 @@ from queue import LifoQueue
 
 import numpy as np
 import pandas as pd
-import seaborn as sns
 
 from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_index_day_adv,
                                                QA_fetch_stock_day_adv)
@@ -48,15 +47,24 @@ try:
 
     import matplotlib.patches as mpatches
     import matplotlib.pyplot as plt
+    import seaborn as sns
 except ModuleNotFoundError:
     """
     在无GUI的电脑上,会遇到找不到_tkinter的情况 兼容处理
     @尧 2018/05/28
+    @喜欢你 @尧 2018/05/29
     """
-    import matplotlib as mpl
-    mpl.use('Agg')
+    import matplotlib
+    matplotlib.use('Agg')
     import matplotlib.patches as mpatches
     import matplotlib.pyplot as plt
+    import seaborn as sns
+    """
+    matplotlib可用模式:
+     ['GTK', 'GTKAgg', 'GTKCairo', 'MacOSX', 'Qt4Agg', 'Qt5Agg', 'TkAgg', 'WX', 
+     'WXAgg', 'GTK3Cairo', 'GTK3Agg', 'WebAgg', 'nbAgg', 'agg', 'cairo', 
+     'gdk', 'pdf', 'pgf', 'ps', 'svg', 'template']
+    """
 
 
 class QA_Risk():
@@ -253,7 +261,7 @@ class QA_Risk():
         计算夏普比率
         r是无风险收益
         """
-        #会出现0
+        # 会出现0
         if volatility_year == 0:
             return 0
         return (annualized_returns - r) / volatility_year
@@ -267,6 +275,7 @@ class QA_Risk():
     def plot_assets_curve(self, length=14, height=12):
         """
         资金曲线叠加图
+        @Roy T.Burns 2018/05/29 修改百分比显示错误
         """
         plt.style.use('ggplot')
         plt.figure(figsize=(length, height))
@@ -287,7 +296,7 @@ class QA_Risk():
         i = 0
         for item in ['annualize_return', 'bm_annualizereturn', 'profit']:
             plt.text(i, 0.3, '{} : {} %'.format(item, self.message.get(
-                item, 0)), fontsize=10, ha='left', rotation=0, wrap=True)
+                item, 0))*100, fontsize=10, ha='left', rotation=0, wrap=True)
             i += length/2.8
         i = 0
         for item in ['init_assets', 'last_assets', 'volatility']:
