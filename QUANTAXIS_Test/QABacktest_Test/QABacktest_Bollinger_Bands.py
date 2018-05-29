@@ -174,7 +174,8 @@ class Test_QABacktest_BollingerBands(unittest.TestCase):
 
 
 
-        backtest = BacktestBollingerBands(market_type=MARKET_TYPE.STOCK_CN,
+        backtest = BacktestBollingerBands(
+                            market_type=MARKET_TYPE.STOCK_CN,
                             frequence=FREQUENCE.DAY,
                             start=self.time_to_Market_300439,
                             end=self.time_to_day,
