@@ -267,3 +267,4 @@ print(get_stockday_ts('000001','2018-05-01','2018-05-21'))
 ## 1.0.42 (unreleased)
 
 1. QDS的DataStruct 删除 __reversed__ 和 reverse方法
+2. QDS增加回__reversed__方法 但是会raise NotImplementError,方便在reversed内置方法调用时报错
