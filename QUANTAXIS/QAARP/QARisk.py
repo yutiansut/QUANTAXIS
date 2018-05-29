@@ -178,6 +178,13 @@ class QA_Risk():
         return (self.benchmark_data.open / float(self.benchmark_data.open.iloc[0]) * float(self.init_assets))
 
     @property
+    def benchmark_profit(self):
+        """
+        基准组合的收益
+        """
+        return round(float(self.calc_profit(self.benchmark_assets)), 2)
+
+    @property
     def benchmark_annualize_return(self):
         """基准组合的年化收益
 
