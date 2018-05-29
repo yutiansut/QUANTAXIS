@@ -73,6 +73,10 @@ class QA_Risk():
     需要加载一个account/portfolio类进来:
     需要有
     code,start_date,end_date,daily_cash,daily_hold
+
+    TODO:
+    资金利用率 反应资金的利用程度
+    股票周转率 反应股票的持仓天数
     """
 
     def __init__(self, account, benchmark_code='000300', benchmark_type=MARKET_TYPE.INDEX_CN):
@@ -151,6 +155,7 @@ class QA_Risk():
             'volatility': self.volatility,
             'benchmark_code': self.benchmark_code,
             'bm_annualizereturn': self.benchmark_annualize_return,
+            'bn_profit': self.benchmark_profit,
             'beta': self.beta,
             'alpha': self.alpha,
             'sharpe': self.sharpe,
@@ -172,6 +177,13 @@ class QA_Risk():
         基准组合的账户资产队列
         """
         return (self.benchmark_data.open / float(self.benchmark_data.open.iloc[0]) * float(self.init_assets))
+
+    @property
+    def benchmark_profit(self):
+        """
+        基准组合的收益
+        """
+        return round(float(self.calc_profit(self.benchmark_assets)), 2)
 
     @property
     def benchmark_annualize_return(self):
