@@ -60,16 +60,18 @@ def from_tushare(dataframe, dtype='day'):
         return QA_DataStruct_Stock_min(dataframe.set_index(['datetime', 'code'], drop=False), dtype='stock_min')
 
 
-def QDS_StockDayWarpper(func, *args, **kwargs):
+def QDS_StockDayWarpper(func):
     """
     日线QDS装饰器
     """
-    data = func(*args, **kwargs)
-    if isinstance(data.index, pd.MultiIndex):
+    def warpper(*args, **kwargs):
+        data = func(*args, **kwargs)
+        if isinstance(data.index, pd.MultiIndex):
 
-        return QA_DataStruct_Stock_day(data)
-    else:
-        return QA_DataStruct_Stock_day(data.set_index(['date', 'code'], drop=False), dtype='stock_day')
+            return QA_DataStruct_Stock_day(data)
+        else:
+            return QA_DataStruct_Stock_day(data.set_index(['date', 'code'], drop=False), dtype='stock_day')
+    return warpper
 
 
 def QDS_StockMinWarpper(func, *args, **kwargs):
@@ -77,8 +79,11 @@ def QDS_StockMinWarpper(func, *args, **kwargs):
     分钟线QDS装饰器
     """
     data = func(*args, **kwargs)
-    if isinstance(data.index, pd.MultiIndex):
+    def warpper(*args, **kwargs):
+        data = func(*args, **kwargs)
+        if isinstance(data.index, pd.MultiIndex):
 
-        return QA_DataStruct_Stock_min(data)
-    else:
-        return QA_DataStruct_Stock_min(data.set_index(['datetime', 'code'], drop=False), dtype='stock_min')
+            return QA_DataStruct_Stock_min(data)
+        else:
+            return QA_DataStruct_Stock_min(data.set_index(['datetime', 'code'], drop=False), dtype='stock_min')
+    return warpper
