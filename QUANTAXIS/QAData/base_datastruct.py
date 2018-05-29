@@ -134,8 +134,8 @@ class _quotation_base():
         for i in range(len(self.index)):
             yield self.data.iloc[i]
 
-    def __reversed__(self):
-        return self.reverse()
+    # def __reversed__(self):
+    #     return self.reverse()
 
     def __add__(self, DataStruct):
         assert isinstance(DataStruct, _quotation_base)
@@ -514,8 +514,8 @@ class _quotation_base():
         temp.__init__(data, dtype, if_fq)
         return temp
 
-    def reverse(self):
-        return self.new(self.data[::-1])
+    # def reverse(self):
+    #     return self.new(self.data[::-1])
 
     def tail(self, lens):
         """返回最后Lens个值的DataStruct
