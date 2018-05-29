@@ -18,12 +18,12 @@ class BollingerBandsStrategy(QA_Strategy):
     布林带策略：
     股价运行
     '''
-    def __init__(self):
+    def __init__(self,code,start,end):
         super().__init__()
         self.frequence = FREQUENCE.DAY
         self.market_type = MARKET_TYPE.STOCK_CN
-        self.backtest_stock_code = '300439'
-        self.stock_day_data = QAQuery_Advance.QA_fetch_stock_day_adv(self.backtest_stock_code)
+        self.backtest_stock_code = code
+        self.stock_day_data = QAQuery_Advance.QA_fetch_stock_day_adv(self.backtest_stock_code,start,end)
         self.stock_day_data_qfq = self.stock_day_data.to_qfq()
 
         #print(self.stock_day_data)
@@ -42,14 +42,14 @@ class BollingerBandsStrategy(QA_Strategy):
         for item in event.market_data.code:
             market_data = event.market_data
             # QA_DataStruct_Stock_day
-
+            print()
             # print( market_data.high )
             # print( market_data.low  )
             # print( market_data.open )
             # print( market_data.close )
 
             # pandas 不熟悉 可能有更加好的 方法获取数据
-            bollingerBandsSeries = self.stock_bollinger_bands.xs((today_on_bar,'300439'))
+            bollingerBandsSeries = self.stock_bollinger_bands.xs((today_on_bar,item))
             bollValue = bollingerBandsSeries.to_dict()
             print(bollValue)
             #{'BOLL': 55.32273295612507, 'LB': 26.899453479933527, 'UB': 83.74601243231662}
@@ -61,7 +61,7 @@ class BollingerBandsStrategy(QA_Strategy):
             closePrice_type = type(market_data.close)
 
             closePriceDict = market_data.close.to_dict()
-            closePrice = closePriceDict[(today_on_bar,'300439')]
+            closePrice = closePriceDict[(today_on_bar,item)]
 
             last_state = self.current_state
 
@@ -83,7 +83,7 @@ class BollingerBandsStrategy(QA_Strategy):
 
                 if self.sell_available is not None and self.sell_available.get(item, 0) == 0:
                     event.send_order(account_id=self.account_cookie,
-                                     amount=10000,
+                                     amount=1000,
                                      amount_model=AMOUNT_MODEL.BY_AMOUNT,
                                      time=self.current_time,
                                      code=item,
@@ -143,7 +143,7 @@ class BacktestBollingerBands(QA_Backtest):
     def __init__(self, market_type, frequence, start, end, code_list, commission_fee):
         super().__init__(market_type,  frequence, start, end, code_list, commission_fee)
         self.user = QA_User()
-        bool_strategy = BollingerBandsStrategy()
+        bool_strategy = BollingerBandsStrategy(code=code_list,start=start,end=end)
         self.portfolio, self.account = self.user.register_account(bool_strategy)
 
     def after_success(self):
@@ -178,7 +178,8 @@ class Test_QABacktest_BollingerBands(unittest.TestCase):
                             frequence=FREQUENCE.DAY,
                             start=self.time_to_Market_300439,
                             end=self.time_to_day,
-                            code_list=['300439'],
+                            code_list=['300439','000001',
+                            '600000','600426','600637'],
                             commission_fee=0.00015)
         backtest.start_market()
 
