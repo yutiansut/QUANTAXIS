@@ -296,7 +296,7 @@ class QA_Risk():
         i = 0
         for item in ['annualize_return', 'bm_annualizereturn', 'profit']:
             plt.text(i, 0.3, '{} : {} %'.format(item, self.message.get(
-                item, 0))*100, fontsize=10, ha='left', rotation=0, wrap=True)
+                item, 0)*100), fontsize=10, ha='left', rotation=0, wrap=True)
             i += length/2.8
         i = 0
         for item in ['init_assets', 'last_assets', 'volatility']:
