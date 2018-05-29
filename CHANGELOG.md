@@ -234,3 +234,4 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
  2. @喜欢你 更新了布林带的回测示例
  3. @Roy T.Burns 提交了关于回测Risk插件画图的显示错误
  4. @尧 对于无GUI的机器引入matplotlib做了测试和修改
+ 5. 增加 QARisk的 benchmark_profit
