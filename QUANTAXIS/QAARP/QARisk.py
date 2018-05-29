@@ -43,28 +43,39 @@ from QUANTAXIS.QASU.save_account import save_riskanalysis
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_trade_gap
 from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE
 
-try:
-
-    import matplotlib.patches as mpatches
-    import matplotlib.pyplot as plt
-    import seaborn as sns
-except ModuleNotFoundError:
-    """
-    在无GUI的电脑上,会遇到找不到_tkinter的情况 兼容处理
-    @尧 2018/05/28
-    @喜欢你 @尧 2018/05/29
-    """
-    import matplotlib
+# FIXED: no display found
+"""
+在无GUI的电脑上,会遇到找不到_tkinter的情况 兼容处理
+@尧 2018/05/28
+@喜欢你 @尧 2018/05/29
+"""
+import os
+import matplotlib
+if os.environ.get('DISPLAY','') == '':
+    print('no display found. Using non-interactive Agg backend')
+    print("if you use ssh, you can use ssh with -X parmas to avoid this issue")
     matplotlib.use('Agg')
-    import matplotlib.patches as mpatches
-    import matplotlib.pyplot as plt
-    import seaborn as sns
     """
     matplotlib可用模式:
      ['GTK', 'GTKAgg', 'GTKCairo', 'MacOSX', 'Qt4Agg', 'Qt5Agg', 'TkAgg', 'WX', 
      'WXAgg', 'GTK3Cairo', 'GTK3Agg', 'WebAgg', 'nbAgg', 'agg', 'cairo', 
      'gdk', 'pdf', 'pgf', 'ps', 'svg', 'template']
     """
+try:
+    pd.Series([1,23,4]).plot()
+except ModuleNotFoundError:
+    '''
+    ModuleNotFoundError: No module named 'tkinter'
+    maybe you should install tk, tcl library
+    '''
+    print("ModuleNotFoundError: No module named 'tkinter'")
+    print("centos 6: sudo yum install tk-devel tcl-devel sqlite-devel gdbm-devel xz-devel readline-devel")
+    print("cnetos 7: sudo yum install tk-devel tcl-devel sqlite-devel gdbm-devel xz-devel readline-devel python3-tk")
+    print("ubuntu: sudo apt install python3-tk")
+finally:
+    import matplotlib.patches as mpatches
+    import matplotlib.pyplot as plt
+    import seaborn as sns
 
 
 class QA_Risk():
