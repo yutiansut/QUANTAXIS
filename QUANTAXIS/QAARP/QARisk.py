@@ -30,10 +30,13 @@
 综合性指标主要包括风险收益比，夏普比例，波动率，VAR，偏度，峰度等"""
 
 import math
+import os
+import platform
 from collections import deque
 from functools import lru_cache
 from queue import LifoQueue
 
+import matplotlib
 import numpy as np
 import pandas as pd
 
@@ -49,20 +52,19 @@ from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE
 @尧 2018/05/28
 @喜欢你 @尧 2018/05/29
 """
-import os
-import matplotlib
-if os.environ.get('DISPLAY','') == '':
-    print('no display found. Using non-interactive Agg backend')
-    print("if you use ssh, you can use ssh with -X parmas to avoid this issue")
-    matplotlib.use('Agg')
-    """
-    matplotlib可用模式:
-     ['GTK', 'GTKAgg', 'GTKCairo', 'MacOSX', 'Qt4Agg', 'Qt5Agg', 'TkAgg', 'WX', 
-     'WXAgg', 'GTK3Cairo', 'GTK3Agg', 'WebAgg', 'nbAgg', 'agg', 'cairo', 
-     'gdk', 'pdf', 'pgf', 'ps', 'svg', 'template']
-    """
+if platform.system() != 'Windows':
+    if os.environ.get('DISPLAY', '') == '':
+        print('no display found. Using non-interactive Agg backend')
+        print("if you use ssh, you can use ssh with -X parmas to avoid this issue")
+        matplotlib.use('Agg')
+        """
+        matplotlib可用模式:
+        ['GTK', 'GTKAgg', 'GTKCairo', 'MacOSX', 'Qt4Agg', 'Qt5Agg', 'TkAgg', 'WX', 
+        'WXAgg', 'GTK3Cairo', 'GTK3Agg', 'WebAgg', 'nbAgg', 'agg', 'cairo', 
+        'gdk', 'pdf', 'pgf', 'ps', 'svg', 'template']
+        """
 try:
-    pd.Series([1,23,4]).plot()
+    pd.Series([1, 23, 4]).plot()
 except ModuleNotFoundError:
     '''
     ModuleNotFoundError: No module named 'tkinter'
