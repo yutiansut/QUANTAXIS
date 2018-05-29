@@ -235,3 +235,5 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
  3. @Roy T.Burns 提交了关于回测Risk插件画图的显示错误
  4. @尧 对于无GUI的机器引入matplotlib做了测试和修改
  5. 增加 QARisk的 benchmark_profit
+ 6. 新增两个装饰器 关于QUANTAXIS DATAStruct ==> 简称QDS @QDS_StockDayWarpper @QDS_StockMinWarpper
+ 7. 将QDS的方法暴露出来 [concat,from_tushare](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/QUANTAXIS/QAData/dsmethods.py)
