@@ -241,7 +241,7 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
  @QDS_StockMinWarpper
  ```
  7. 将QDS的方法暴露出来 [concat,from_tushare](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/QUANTAXIS/QAData/dsmethods.py)
-
+ 8. 按照test_backtest中的MACD_JCSC.py的写法移植到了unittest来运行，后期加入assert来自动测试
 QDS的装饰器主要是用于将别处获取的数据之间转化为QDS格式
  ```
 import QUANTAXIS as QA
