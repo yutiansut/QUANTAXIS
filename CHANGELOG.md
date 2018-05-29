@@ -265,3 +265,5 @@ print(get_stockday_ts('000001','2018-05-01','2018-05-21'))
  9. @喜欢你 修改了QA_Risk的显示,以及更新PR说明
 
 ## 1.0.42 (unreleased)
+
+1. QDS的DataStruct 删除 __reversed__ 和 reverse方法
