@@ -232,3 +232,32 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
  ## 1.0.41 (unreleased)
  1. 增加了财务表的注释和翻译QAData/financial_means.py
  2. @喜欢你 更新了布林带的回测示例
+ 3. @Roy T.Burns 提交了关于回测Risk插件画图的显示错误
+ 4. @尧 对于无GUI的机器引入matplotlib做了测试和修改
+ 5. 增加 QARisk的 benchmark_profit
+ 6. 新增两个装饰器 关于QUANTAXIS DATAStruct ==> 简称QDS 
+ ```
+ @QDS_StockDayWarpper 
+ @QDS_StockMinWarpper
+ ```
+ 7. 将QDS的方法暴露出来 [concat,from_tushare](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/QUANTAXIS/QAData/dsmethods.py)
+
+QDS的装饰器主要是用于将别处获取的数据之间转化为QDS格式
+ ```
+import QUANTAXIS as QA
+import tushare as ts
+
+
+@QA.QDS_StockDayWarpper
+def get_stockday_adv(code,start,end):
+    return QA.QA_fetch_get_stock_day('tdx',code,start,end)
+
+
+@QA.QDS_StockDayWarpper
+def get_stockday_ts(code,start,end):
+    return ts.get_k_data(code,start,end)
+
+print(get_stockday_adv('000001','2018-05-01','2018-05-21'))
+print(get_stockday_ts('000001','2018-05-01','2018-05-21'))
+
+```

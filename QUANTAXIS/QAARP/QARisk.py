@@ -30,13 +30,15 @@
 综合性指标主要包括风险收益比，夏普比例，波动率，VAR，偏度，峰度等"""
 
 import math
+import os
+import platform
 from collections import deque
 from functools import lru_cache
 from queue import LifoQueue
 
+import matplotlib
 import numpy as np
 import pandas as pd
-import seaborn as sns
 
 from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_index_day_adv,
                                                QA_fetch_stock_day_adv)
@@ -44,19 +46,38 @@ from QUANTAXIS.QASU.save_account import save_riskanalysis
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_trade_gap
 from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE
 
+# FIXED: no display found
+"""
+在无GUI的电脑上,会遇到找不到_tkinter的情况 兼容处理
+@尧 2018/05/28
+@喜欢你 @尧 2018/05/29
+"""
+if platform.system() != 'Windows':
+    if os.environ.get('DISPLAY', '') == '':
+        print('no display found. Using non-interactive Agg backend')
+        print("if you use ssh, you can use ssh with -X parmas to avoid this issue")
+        matplotlib.use('Agg')
+        """
+        matplotlib可用模式:
+        ['GTK', 'GTKAgg', 'GTKCairo', 'MacOSX', 'Qt4Agg', 'Qt5Agg', 'TkAgg', 'WX', 
+        'WXAgg', 'GTK3Cairo', 'GTK3Agg', 'WebAgg', 'nbAgg', 'agg', 'cairo', 
+        'gdk', 'pdf', 'pgf', 'ps', 'svg', 'template']
+        """
 try:
-
-    import matplotlib.patches as mpatches
-    import matplotlib.pyplot as plt
+    pd.Series([1, 23, 4]).plot()
 except ModuleNotFoundError:
-    """
-    在无GUI的电脑上,会遇到找不到_tkinter的情况 兼容处理
-    @尧 2018/05/28
-    """
-    import matplotlib as mpl
-    mpl.use('Agg')
+    '''
+    ModuleNotFoundError: No module named 'tkinter'
+    maybe you should install tk, tcl library
+    '''
+    print("ModuleNotFoundError: No module named 'tkinter'")
+    print("centos 6: sudo yum install tk-devel tcl-devel sqlite-devel gdbm-devel xz-devel readline-devel")
+    print("cnetos 7: sudo yum install tk-devel tcl-devel sqlite-devel gdbm-devel xz-devel readline-devel python3-tk")
+    print("ubuntu: sudo apt install python3-tk")
+finally:
     import matplotlib.patches as mpatches
     import matplotlib.pyplot as plt
+    import seaborn as sns
 
 
 class QA_Risk():
@@ -65,6 +86,10 @@ class QA_Risk():
     需要加载一个account/portfolio类进来:
     需要有
     code,start_date,end_date,daily_cash,daily_hold
+
+    TODO:
+    资金利用率 反应资金的利用程度
+    股票周转率 反应股票的持仓天数
     """
 
     def __init__(self, account, benchmark_code='000300', benchmark_type=MARKET_TYPE.INDEX_CN):
@@ -143,6 +168,7 @@ class QA_Risk():
             'volatility': self.volatility,
             'benchmark_code': self.benchmark_code,
             'bm_annualizereturn': self.benchmark_annualize_return,
+            'bn_profit': self.benchmark_profit,
             'beta': self.beta,
             'alpha': self.alpha,
             'sharpe': self.sharpe,
@@ -167,6 +193,13 @@ class QA_Risk():
         基准组合的账户资产队列
         """
         return (self.benchmark_data.open / float(self.benchmark_data.open.iloc[0]) * float(self.init_assets))
+
+    @property
+    def benchmark_profit(self):
+        """
+        基准组合的收益
+        """
+        return round(float(self.calc_profit(self.benchmark_assets)), 2)
 
     @property
     def benchmark_annualize_return(self):
@@ -256,7 +289,7 @@ class QA_Risk():
         计算夏普比率
         r是无风险收益
         """
-        #会出现0
+        # 会出现0
         if volatility_year == 0:
             return 0
         return (annualized_returns - r) / volatility_year
@@ -270,6 +303,7 @@ class QA_Risk():
     def plot_assets_curve(self, length=14, height=12):
         """
         资金曲线叠加图
+        @Roy T.Burns 2018/05/29 修改百分比显示错误
         """
         plt.style.use('ggplot')
         plt.figure(figsize=(length, height))
@@ -290,7 +324,7 @@ class QA_Risk():
         i = 0
         for item in ['annualize_return', 'bm_annualizereturn', 'profit']:
             plt.text(i, 0.3, '{} : {} %'.format(item, self.message.get(
-                item, 0)), fontsize=10, ha='left', rotation=0, wrap=True)
+                item, 0)*100), fontsize=10, ha='left', rotation=0, wrap=True)
             i += length/2.8
         i = 0
         for item in ['init_assets', 'last_assets', 'volatility']:
