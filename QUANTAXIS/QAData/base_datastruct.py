@@ -134,8 +134,8 @@ class _quotation_base():
         for i in range(len(self.index)):
             yield self.data.iloc[i]
 
-    # def __reversed__(self):
-    #     return self.reverse()
+    def __reversed__(self):
+        raise NotImplementedError('QUANTAXIS DATASTRUCT CURRENTLY NOT SUPPORT reversed ACTION')
 
     def __add__(self, DataStruct):
         assert isinstance(DataStruct, _quotation_base)
