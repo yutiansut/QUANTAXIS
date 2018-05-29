@@ -2,7 +2,7 @@
 
 * [关于QUANTAXIS](README.md)
 * [捐赠感谢](CONTRIBUTING.md)
-
+* [版本更新记录](CHANGELOG.md)
 
 * [部署](Documents/install.md)
 * [windows 安装](Documents/install_for_windows.md)
