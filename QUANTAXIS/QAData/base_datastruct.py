@@ -127,26 +127,59 @@ class _quotation_base():
         A yield statement is semantically equivalent to a yield expression.
         yield 的作用就是把一个函数变成一个 generator，
         带有 yield 的函数不再是一个普通函数，Python 解释器会将其视为一个 generator
+        for iterObj in ThisObj
         📌关于__iter__ 的问题
+        可以不被 __next__ 使用
         Return an iterator object
         iter the row one by one
+        :return:  class 'generator'
         """
         for i in range(len(self.index)):
             yield self.data.iloc[i]
 
+    #🛠todo == 操作比较数据
+    #def __eq__(self, other):
+    #    return self.data == other.data
+
+
+    #初始化的时候会重新排序
     def __reversed__(self):
+        """
+        If the __reversed__() method is not provided,
+        the reversed() built-in will fall back to using the sequence protocol (__len__() and __getitem__()).
+        Objects that support the sequence protocol should only provide __reversed__()
+        if they can provide an implementation that is more efficient than the one provided by reversed().
+        如果__reversed__() 方法没有提供，
+        则调用内建的reversed()方法会退回到使用序列协议（ __len__条目数量 和 获取条目__getitem__ ）方法。
+        对象如果支持实现序列协议应该只提供__reversed__方法，如果比上述reversed提供的方式更加有效率 （自己实现一个反向迭代)
+
+        self.new(self.data[::-1])
+        :return:
+        """
         raise NotImplementedError('QUANTAXIS DATASTRUCT CURRENTLY NOT SUPPORT reversed ACTION')
 
     def __add__(self, DataStruct):
+        '''
+        ➕合并数据，重复的数据drop
+        :param DataStruct: _quotation_base 继承的子类  QA_DataStruct_XXXX
+        :return: _quotation_base 继承的子类  QA_DataStruct_XXXX
+        '''
         assert isinstance(DataStruct, _quotation_base)
         assert self.is_same(DataStruct)
+        # 🛠todo 继承的子类  QA_DataStruct_XXXX 类型的 判断必须是同一种类型才可以操作
         return self.new(data=self.data.append(DataStruct.data).drop_duplicates().set_index(self.index.names, drop=False), dtype=self.type, if_fq=self.if_fq)
 
     __radd__ = __add__
 
     def __sub__(self, DataStruct):
+        '''
+        ⛔️不是提取公共数据， 去掉 DataStruct 中指定的数据
+        :param DataStruct:  _quotation_base 继承的子类  QA_DataStruct_XXXX
+        :return: _quotation_base 继承的子类  QA_DataStruct_XXXX
+        '''
         assert isinstance(DataStruct, _quotation_base)
         assert self.is_same(DataStruct)
+        # 🛠todo 继承的子类  QA_DataStruct_XXXX 类型的 判断必须是同一种类型才可以操作
         return self.new(data=self.data.drop(DataStruct.index).set_index(self.index.names, drop=False), dtype=self.type, if_fq=self.if_fq)
 
     __rsub__ = __sub__
@@ -514,8 +547,8 @@ class _quotation_base():
         temp.__init__(data, dtype, if_fq)
         return temp
 
-    # def reverse(self):
-    #     return self.new(self.data[::-1])
+    def reverse(self):
+        return self.new(self.data[::-1])
 
     def tail(self, lens):
         """返回最后Lens个值的DataStruct
