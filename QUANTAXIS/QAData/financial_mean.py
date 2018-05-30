@@ -300,18 +300,18 @@ financial_dict = {
     '年金持股量': 'pensionInsuranceAgencyShareholfing',
     # 14.新增指标
     # [注：季度报告中，若股东同时持有非流通A股性质的股份(如同时持有流通A股和流通B股），取的是包含同时持有非流通A股性质的流通股数]
-    '十大流通股东中持有A股合计(股)': '',
-    '第一大流通股东持股量(股)': '',
+    '十大流通股东中持有A股合计(股)': 'totalNumberOfTopTenCirculationShareholders',
+    '第一大流通股东持股量(股)': 'firstLargeCirculationShareholdersNumber',
     # [注：1.自由流通股=已流通A股-十大流通股东5%以上的A股；2.季度报告中，若股东同时持有非流通A股性质的股份(如同时持有流通A股和流通H股），5%以上的持股取的是不包含同时持有非流通A股性质的流通股数，结果可能偏大； 3.指标按报告期展示，新股在上市日的下个报告期才有数据]
-    '自由流通股(股)': '',
-    '受限流通A股(股)': '',
-    '一般风险准备(金融类)': '',
-    '其他综合收益(利润表)': '',
-    '综合收益总额(利润表)': '',
-    '归属于母公司股东权益(资产负债表)': '',
-    '银行机构数(家)(机构持股)': '',
-    '银行持股量(股)(机构持股)': '',
-    '一般法人机构数(家)(机构持股)': '',
-    '一般法人持股量(股)(机构持股)': '',
-    '近一年净利润(元)': ''
+    '自由流通股(股)': 'freeCirculationStock',
+    '受限流通A股(股)': 'limitedCirculationAShares',
+    '一般风险准备(金融类)': 'generalRiskPreparation',
+    '其他综合收益(利润表)': 'otherComprehensiveIncome',
+    '综合收益总额(利润表)': 'totalComprehensiveIncome',
+    '归属于母公司股东权益(资产负债表)': 'shareholdersOwnershipOfAParentCompany ',
+    '银行机构数(家)(机构持股)': 'bankInstutionNumber',
+    '银行持股量(股)(机构持股)': 'bankInstutionShareholding',
+    '一般法人机构数(家)(机构持股)': 'corporationNumber',
+    '一般法人持股量(股)(机构持股)': 'corporationShareholding',
+    '近一年净利润(元)': 'netProfitLastYear'
 }
