@@ -27,6 +27,8 @@ import os
 import statistics
 import webbrowser
 from copy import copy
+from copy import deepcopy
+
 from functools import lru_cache
 
 from abc import abstractmethod
@@ -156,7 +158,7 @@ class _quotation_base():
         self.new(self.data[::-1])
         :return:
         """
-        raise NotImplementedError('QUANTAXIS DATASTRUCT CURRENTLY NOT SUPPORT reversed ACTION')
+        raise NotImplementedError('QA_DataStruct_* CURRENT CURRENTLY NOT SUPPORT reversed ACTION')
 
     def __add__(self, DataStruct):
         '''
@@ -185,14 +187,27 @@ class _quotation_base():
     __rsub__ = __sub__
 
     def __getitem__(self, key):
-        return self.new(data=self.data.__getitem__(key), dtype=self.type, if_fq=self.if_fq)
+        '''
+        # 🛠todo 进一步研究 DataFrame __getitem__ 的意义。
+        DataFrame调用__getitem__调用(key)
+        :param key:
+        :return:
+        '''
+        data_to_init = self.data.__getitem__(key)
+        if isinstance(data_to_init, pd.DataFrame) == True:
+            # 重新构建一个 QA_DataStruct_XXXX，
+            return self.new(data=data_to_init, dtype=self.type, if_fq=self.if_fq)
+        elif isinstance(data_to_init, pd.Series) == True:
+            # 返回 QA_DataStruct_XXXX DataFrame 中的一个 序列Series
+            return data_to_init
+
 
     def __getattr__(self, attr):
 
         # try:
         #     self.new(data=self.data.__getattr__(attr), dtype=self.type, if_fq=self.if_fq)
         # except:
-        raise AttributeError('QA CLASS Currently has no attribute {}'.format(attr))
+        raise AttributeError('QA_DataStruct_* Class Currently has no attribute {}'.format(attr))
 
     def ix(self, key):
         return self.new(data=self.data.ix(key), dtype=self.type, if_fq=self.if_fq)
