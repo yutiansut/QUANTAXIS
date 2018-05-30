@@ -22,6 +22,7 @@
 * [QUANTAXIS WEB API说明](Documents/backendapi.md)
 * [常见策略整理](Documents/strategy.md)
 * [QUANTAXIS的开发列表](job_list.md)
+* [QUANTAXIS财务指标](Documents/financial_means.md)
 
 * [FAQ](Documents/FAQ.md)
 * [协议](Documents/readme.md)
