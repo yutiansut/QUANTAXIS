@@ -195,7 +195,7 @@ financial_dict = {
     '股东的权益/负债合计(%)': 'equityDebtRatio',  # 权益负债率
     '有形资产/负债合计(%)': 'tangibleAssetDebtRatio ',  # 有形资产负债率
     '经营活动产生的现金流量净额/负债合计(%)': 'netCashFlowsFromOperatingActivitiesDebtRatio',
-    'EBITDA/负债合计(%)': '',
+    'EBITDA/负债合计(%)': 'EBITDA/Liabilities',
     # 6. 经营效率分析
     # 销售收入÷平均应收账款=销售收入\(0.5 x(应收账款期初+期末))
     '应收帐款周转率': 'turnoverRatioOfReceivable;',
@@ -240,7 +240,7 @@ financial_dict = {
     '息税折旧摊销前利润(EBITDA)': 'EBITDA',
     'EBITDA/营业总收入(%)': 'EBITDA/GrossRevenueRate',
     # 9. 资本结构分析
-    '资产负债率(%)': 'assetsLiabilityRatio',
+    '资产负债率(%)': 'assetsLiabilitiesRatio',
     '流动资产比率': 'liquidityRatio',
     '货币资金比率': 'monetaryFundRatio',
     '存货比率': 'inventoryRatio',
@@ -250,17 +250,17 @@ financial_dict = {
     '股东的权益/带息债务(%)': 'shareholdersInterest/InterestRateDebtRatio',
     '有形资产/净债务(%)': 'tangibleAssets/NetDebtRatio',
     # 10. 现金流量分析
-    '每股经营性现金流(元)': '',
-    '营业收入现金含量(%)': '',
+    '每股经营性现金流(元)': 'operatingCashFlowPerShare',
+    '营业收入现金含量(%)': 'cashOfOperatingIncome',
     '经营活动产生的现金流量净额/经营活动净收益(%)': '',
     '销售商品提供劳务收到的现金/营业收入(%)': '',
     '经营活动产生的现金流量净额/营业收入': '',
-    '资本支出/折旧和摊销': '',
-    '每股现金流量净额(元)': '',
-    '经营净现金比率（短期债务）': '',
-    '经营净现金比率（全部债务）': '',
-    '经营活动现金净流量与净利润比率': '',
-    '全部资产现金回收率': '',
+    '资本支出/折旧和摊销': 'capitalExpenditure/DepreciationAndAmortization',
+    '每股现金流量净额(元)': 'netCashFlowPerShare',
+    '经营净现金比率（短期债务）': 'operatingCashFlow/ShortTermDebtRatio',
+    '经营净现金比率（全部债务）': 'operatingCashFlow/LongTermDebtRatio',
+    '经营活动现金净流量与净利润比率': 'cashFlowRateAndNetProfitRatioOfOperatingActivities',
+    '全部资产现金回收率': 'cashRecoveryForAllAssets',
     # 11. 单季度财务指标
     '营业收入': 'operatingRevenue',
     '营业利润': 'operatingProfit',
