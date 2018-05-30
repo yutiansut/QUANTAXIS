@@ -2,7 +2,7 @@
 
 * [关于QUANTAXIS](README.md)
 * [捐赠感谢](CONTRIBUTING.md)
-
+* [版本更新记录](CHANGELOG.md)
 
 * [部署](Documents/install.md)
 * [windows 安装](Documents/install_for_windows.md)
@@ -22,6 +22,7 @@
 * [QUANTAXIS WEB API说明](Documents/backendapi.md)
 * [常见策略整理](Documents/strategy.md)
 * [QUANTAXIS的开发列表](job_list.md)
+* [QUANTAXIS财务指标](Documents/financial_means.md)
 
 * [FAQ](Documents/FAQ.md)
 * [协议](Documents/readme.md)
