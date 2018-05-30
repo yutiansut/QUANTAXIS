@@ -162,7 +162,7 @@ financial_dict = {
     '长期待摊费用摊销': 'amortizationOfLong-termDeferredExpenses',
     '处置固定资产、无形资产和其他长期资产的损失': 'lossOfDisposingFixedAssetsIntangibleAssetsAndOtherLong-termAssets',
     '固定资产报废损失': 'scrapLossOfFixedAssets',
-    '公允价值变动损失': '',
+    '公允价值变动损失': 'lossFromFairValueChange',
     '财务费用': 'financialExpenses',
     '投资损失': 'investmentLosses',
     '递延所得税资产减少': 'decreaseOfDeferredTaxAssets',
