@@ -1,23 +1,58 @@
 # coding:utf-8
 
-
-import requests
+import os
+import base64
+import configparser
 import json
 import urllib
-import base64
+
 import pandas as pd
+import requests
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
+from QUANTAXIS.QAUtil.QASetting import setting_path
+
 try:
     from pytdx.log import log
 except ImportError:
     def log(x):
         return None
 
+CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
+DEFAULT_SHIPANE_URL = 'http://127.0.0.1:8888'
+
+
+def get_config_SPE():
+    config = configparser.ConfigParser()
+    if os.path.exists(CONFIGFILE_PATH):
+        config.read(CONFIGFILE_PATH)
+        try:
+            return config.get('SPE', 'uri')
+        except configparser.NoSectionError:
+            config.add_section('SPE')
+            config.set('SPE', 'uri', DEFAULT_SHIPANE_URL)
+            return DEFAULT_SHIPANE_URL
+        except configparser.NoOptionError:
+            config.set('SPE', 'uri', DEFAULT_SHIPANE_URL)
+            return DEFAULT_SHIPANE_URL
+        finally:
+
+            with open(CONFIGFILE_PATH, 'w') as f:
+                config.write(f)
+
+    else:
+        f = open(CONFIGFILE_PATH, 'w')
+        config.add_section('SPE')
+        config.set('SPE', 'uri', DEFAULT_SHIPANE_URL)
+        config.write(f)
+        f.close()
+        return DEFAULT_SHIPANE_URL
+
 
 class SPETradeApi(QA_Broker):
-    def __init__(self, endpoint="http://127.0.0.1:8888"):
+    def __init__(self, endpoint=get_config_SPE()):
 
         self._endpoint = endpoint
         self._session = requests.Session()
