@@ -16,7 +16,7 @@ financial_dict = {
     '交易性金融资产': 'tradingFinancialAssets',
     '应收票据': 'billsReceivables',
     '应收账款': 'accountsReceivables',
-    '预付款项': 'Prepayments',
+    '预付款项': 'prepayments',
     '其他应收款': 'otherReceivables',
     '应收关联公司款': 'interCompanyReceivables',
     '应收利息': 'interestReceivables',
