@@ -195,7 +195,7 @@ financial_dict = {
     '股东的权益/负债合计(%)': 'equityDebtRatio',  # 权益负债率
     '有形资产/负债合计(%)': 'tangibleAssetDebtRatio ',  # 有形资产负债率
     '经营活动产生的现金流量净额/负债合计(%)': 'netCashFlowsFromOperatingActivitiesDebtRatio',
-    'EBITDA/负债合计(%)': '',
+    'EBITDA/负债合计(%)': 'EBITDA/Liabilities',
     # 6. 经营效率分析
     # 销售收入÷平均应收账款=销售收入\(0.5 x(应收账款期初+期末))
     '应收帐款周转率': 'turnoverRatioOfReceivable;',
@@ -240,7 +240,7 @@ financial_dict = {
     '息税折旧摊销前利润(EBITDA)': 'EBITDA',
     'EBITDA/营业总收入(%)': 'EBITDA/GrossRevenueRate',
     # 9. 资本结构分析
-    '资产负债率(%)': 'assetsLiabilityRatio',
+    '资产负债率(%)': 'assetsLiabilitiesRatio',
     '流动资产比率': 'liquidityRatio',
     '货币资金比率': 'monetaryFundRatio',
     '存货比率': 'inventoryRatio',
@@ -250,17 +250,17 @@ financial_dict = {
     '股东的权益/带息债务(%)': 'shareholdersInterest/InterestRateDebtRatio',
     '有形资产/净债务(%)': 'tangibleAssets/NetDebtRatio',
     # 10. 现金流量分析
-    '每股经营性现金流(元)': '',
-    '营业收入现金含量(%)': '',
+    '每股经营性现金流(元)': 'operatingCashFlowPerShare',
+    '营业收入现金含量(%)': 'cashOfOperatingIncome',
     '经营活动产生的现金流量净额/经营活动净收益(%)': '',
     '销售商品提供劳务收到的现金/营业收入(%)': '',
     '经营活动产生的现金流量净额/营业收入': '',
-    '资本支出/折旧和摊销': '',
-    '每股现金流量净额(元)': '',
-    '经营净现金比率（短期债务）': '',
-    '经营净现金比率（全部债务）': '',
-    '经营活动现金净流量与净利润比率': '',
-    '全部资产现金回收率': '',
+    '资本支出/折旧和摊销': 'capitalExpenditure/DepreciationAndAmortization',
+    '每股现金流量净额(元)': 'netCashFlowPerShare',
+    '经营净现金比率（短期债务）': 'operatingCashFlow/ShortTermDebtRatio',
+    '经营净现金比率（全部债务）': 'operatingCashFlow/LongTermDebtRatio',
+    '经营活动现金净流量与净利润比率': 'cashFlowRateAndNetProfitRatioOfOperatingActivities',
+    '全部资产现金回收率': 'cashRecoveryForAllAssets',
     # 11. 单季度财务指标
     '营业收入': 'operatingRevenue',
     '营业利润': 'operatingProfit',
@@ -300,18 +300,18 @@ financial_dict = {
     '年金持股量': 'pensionInsuranceAgencyShareholfing',
     # 14.新增指标
     # [注：季度报告中，若股东同时持有非流通A股性质的股份(如同时持有流通A股和流通B股），取的是包含同时持有非流通A股性质的流通股数]
-    '十大流通股东中持有A股合计(股)': '',
-    '第一大流通股东持股量(股)': '',
+    '十大流通股东中持有A股合计(股)': 'totalNumberOfTopTenCirculationShareholders',
+    '第一大流通股东持股量(股)': 'firstLargeCirculationShareholdersNumber',
     # [注：1.自由流通股=已流通A股-十大流通股东5%以上的A股；2.季度报告中，若股东同时持有非流通A股性质的股份(如同时持有流通A股和流通H股），5%以上的持股取的是不包含同时持有非流通A股性质的流通股数，结果可能偏大； 3.指标按报告期展示，新股在上市日的下个报告期才有数据]
-    '自由流通股(股)': '',
-    '受限流通A股(股)': '',
-    '一般风险准备(金融类)': '',
-    '其他综合收益(利润表)': '',
-    '综合收益总额(利润表)': '',
-    '归属于母公司股东权益(资产负债表)': '',
-    '银行机构数(家)(机构持股)': '',
-    '银行持股量(股)(机构持股)': '',
-    '一般法人机构数(家)(机构持股)': '',
-    '一般法人持股量(股)(机构持股)': '',
-    '近一年净利润(元)': ''
+    '自由流通股(股)': 'freeCirculationStock',
+    '受限流通A股(股)': 'limitedCirculationAShares',
+    '一般风险准备(金融类)': 'generalRiskPreparation',
+    '其他综合收益(利润表)': 'otherComprehensiveIncome',
+    '综合收益总额(利润表)': 'totalComprehensiveIncome',
+    '归属于母公司股东权益(资产负债表)': 'shareholdersOwnershipOfAParentCompany ',
+    '银行机构数(家)(机构持股)': 'bankInstutionNumber',
+    '银行持股量(股)(机构持股)': 'bankInstutionShareholding',
+    '一般法人机构数(家)(机构持股)': 'corporationNumber',
+    '一般法人持股量(股)(机构持股)': 'corporationShareholding',
+    '近一年净利润(元)': 'netProfitLastYear'
 }
