@@ -137,8 +137,13 @@ class _quotation_base():
         for i in range(len(self.index)):
             yield self.data.iloc[i]
 
+    #🛠todo == 操作比较数据
+    #def __eq__(self, other):
+    #    return self.data == other.data
+
+
     #初始化的时候会重新排序
-    #def __reversed__(self):
+    def __reversed__(self):
         """
         If the __reversed__() method is not provided,
         the reversed() built-in will fall back to using the sequence protocol (__len__() and __getitem__()).
@@ -151,11 +156,7 @@ class _quotation_base():
         self.new(self.data[::-1])
         :return:
         """
-        #return self.reverse()
-
-
-    #def __eq__(self, other):
-    #    return self.data == other.data
+        raise NotImplementedError('QUANTAXIS DATASTRUCT CURRENTLY NOT SUPPORT reversed ACTION')
 
     def __add__(self, DataStruct):
         '''
@@ -546,9 +547,8 @@ class _quotation_base():
         temp.__init__(data, dtype, if_fq)
         return temp
 
-    #def reverse(self):
-        ##顺序相反操作
-    #    return self.new(self.data[::-1])
+    def reverse(self):
+        return self.new(self.data[::-1])
 
     def tail(self, lens):
         """返回最后Lens个值的DataStruct
