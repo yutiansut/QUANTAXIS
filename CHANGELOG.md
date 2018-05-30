@@ -243,7 +243,6 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
  7. 将QDS的方法暴露出来 [concat,from_tushare](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/QUANTAXIS/QAData/dsmethods.py)
 
 QDS的装饰器主要是用于将别处获取的数据之间转化为QDS格式
- 9. _quotation_base 类中 __add__ __sub__ 的测试代码
  ```
 import QUANTAXIS as QA
 import tushare as ts
@@ -269,3 +268,5 @@ print(get_stockday_ts('000001','2018-05-01','2018-05-21'))
 
 1. QDS的DataStruct 删除 __reversed__ 和 reverse方法
 2. QDS增加回__reversed__方法 但是会raise NotImplementError,方便在reversed内置方法调用时报错
+3. _quotation_base 类中 __add__ __sub__ 的测试代码
+4. _quotation_base 类中 __getitem__  类型判断，的测试代码 
