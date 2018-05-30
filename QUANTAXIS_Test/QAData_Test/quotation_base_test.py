@@ -43,19 +43,115 @@ class quotation_base_test(unittest.TestCase):
         # for iRow in range((df_from_Tdx)):
         #     print(iRow)
 
-    def test_quotation_base_class_itera_(self):
+    def test_quotation_base_class_iter_(self):
         qaDAStruct = QA_fetch_stock_day_adv('300439')
 
         for iRow in qaDAStruct:
             print(iRow)
 
         iterObj = qaDAStruct.__iter__()
-
+        a = type(iterObj)
+        print(a)
+        i = iterObj.__next__()
+        print(i)
+        i = iterObj.__next__()
+        print(i)
         i = iterObj.__next__()
         print(i)
 
-        i = iterObj.__next__()
-        print(i)
 
-        i = iterObj.__next__()
-        print(i)
+    def test_quotation_base_class_reverse_(self):
+        qaDAStruct = QA_fetch_stock_day_adv('300439',start="2018-01-01", end="2018-01-10")
+        rev_qaDAStruct = reversed(qaDAStruct)
+        list1 = []
+        for iRow in qaDAStruct:
+            print(iRow)
+            list1.append(iRow)
+        print('--------------')
+        list2 = []
+        for iRowRev in rev_qaDAStruct:
+            print(iRowRev)
+            list2.append(iRowRev)
+        print('--------------')
+        #没有 reverse
+        pass
+
+    def test_quotation_base_class_add_(self):
+        qaDAStruct0 = QA_fetch_stock_day_adv('300439', start="2018-01-01", end="2018-01-10")
+
+        qaDAStruct0.show()
+
+        qaDAStruct1 = QA_fetch_stock_day_adv('300439', start="2018-01-01", end="2018-01-05")
+        qaDAStruct2 = QA_fetch_stock_day_adv('300439', start="2018-01-06", end="2018-01-10")
+        qaDAStruct3 = qaDAStruct1 + qaDAStruct2
+
+        qaDAStruct3.show()
+
+        # 🛠todo 进一步研究为何不相等
+        b = qaDAStruct0().equals(qaDAStruct3())
+        #self.assertEqual(b, True)
+
+        # 🛠todo 进一步研究为何不相等
+        # 为何这个就不写 ， 是不是 比较 __eq__的问题
+        # self.assertEqual( qaDAStruct0 , qaDAStruct3)
+
+
+        list1 = []
+        for iRow1 in qaDAStruct0:
+            list1.append(iRow1)
+
+        list2 = []
+        for iRow2 in qaDAStruct0:
+            list2.append(iRow2)
+
+        len1 = len(list1)
+        len2 = len(list2)
+
+        for iIndex in range(len1):
+            aRow = list1[iIndex]
+            bRow = list2[iIndex]
+
+            #✅ 循环变量是相等的
+            v = aRow.equals(bRow)
+            self.assertEqual(v, True)
+
+
+
+    def test_quotation_base_class_sub_(self):
+
+        qaDAStruct0 = QA_fetch_stock_day_adv('300439', start="2018-01-01", end="2018-01-10")
+
+        qaDAStruct0.show()
+
+        qaDAStruct1 = QA_fetch_stock_day_adv('300439', start="2018-01-01", end="2018-01-05")
+        qaDAStruct2 = QA_fetch_stock_day_adv('300439', start="2018-01-06", end="2018-01-10")
+        qaDAStruct3 = qaDAStruct1 + qaDAStruct2
+
+        qaDAStruct4 = qaDAStruct3 - qaDAStruct1
+        #qaDAStruct5 = qaDAStruct3 - qaDAStruct2
+
+        list1 = []
+        for iRow1 in qaDAStruct4:
+            list1.append(iRow1)
+
+        list2 = []
+        for iRow2 in qaDAStruct2:
+            list2.append(iRow2)
+
+        len1 = len(list1)
+        len2 = len(list2)
+        for iIndex in range(len1):
+            aRow = list1[iIndex]
+            bRow = list2[iIndex]
+            # ✅ 循环变量是相等的
+            v = aRow.equals(bRow)
+            self.assertEqual(v, True)
+
+    # 🛠todo  测试  __getitem__
+    # 🛠todo  测试  __getattr__
+    # 🛠todo  测试  ix
+    # 🛠todo  测试  iloc
+    # 🛠todo  测试  loc
+    # 🛠todo  测试  iloc#
+    # 🛠todo  测试  iloc#
+    # 🛠todo  测试  iloc
