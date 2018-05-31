@@ -57,48 +57,29 @@ class SPETradeApi(QA_Broker):
         self._endpoint = endpoint
         self._session = requests.Session()
 
-    def call(self, func, params=None):
+    def call(self, func, params=''):
 
-        json_obj = {
-            "func": func
-        }
-
-        if params is not None:
-            json_obj["params"] = params
-
-        response = self._session.post(self._endpoint, json=json_obj)
+        response = self._session.post(
+            '{}/api/v1.0/{}'.format(self._endpoint, func), params)
 
         text = response.text
 
         return json.loads(text)
 
     def data_to_df(self, result):
-        if 'data' in result:
-            data = result['data']
-            return pd.DataFrame(data=data)
+        return pd.DataFrame(data=result)
 
     #------ functions
 
     def ping(self):
-
         return self.call("ping", {})
 
-    def logon(self, ip, port, version, yyb_id, account_id, trade_account, jy_passwrod, tx_password):
-        return self.call("logon", {
-            "ip": ip,
-            "port": port,
-            "version": version,
-            "yyb_id": yyb_id,
-            "account_no": account_id,
-            "trade_account": trade_account,
-            "jy_password": jy_passwrod,
-            "tx_password": tx_password
+    def query_accounts(self, accounts):
+        return self.call("accounts", {
         })
 
-    def logoff(self, client_id):
-        return self.call("logoff", {
-            "client_id": client_id
-        })
+    def query_holdings(self):
+        return self.call('positions', {})
 
     def query_data(self, client_id, category):
         return self.call("query_data", {
@@ -155,19 +136,10 @@ class SPETradeApi(QA_Broker):
 
 if __name__ == "__main__":
     import os
-    api = SPETradeApi(endpoint="http://10.11.5.175:10092/api",
-                      enc_key=b"4f1cf3fec4c84c84", enc_iv=b"0c78abc083b011e7")
+    api = SPETradeApi(endpoint="http://10.11.5.175:10092/api")
     #api = SPETradeApi(endpoint="http://10.11.5.175:10092/api")
     print("---Ping---")
     result = api.ping()
-    print(result)
-
-    print("---登入---")
-    acc = os.getenv("TDX_ACCOUNT", "")
-    password = os.getenv("TDX_PASS", "")
-    result = api.logon("202.108.253.186", 7708,
-                       "8.23", 32,
-                       acc, acc, password, "")
 
     print(result)
 
