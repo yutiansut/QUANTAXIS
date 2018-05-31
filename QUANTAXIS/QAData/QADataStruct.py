@@ -67,7 +67,7 @@ class QA_DataStruct_Stock_day(_quotation_base):
     def __init__(self, init_data_by_df, dtype='stock_day', if_fq='bfq'):
         '''
         # 🛠 todo dtype=stock_day 和 QA_DataStruct_Stock_day 类的名字是对应的 不变的不需要指定 ，容易出错，建议改成常量 ❌
-        :param init_data_by_df:  DataFrame 类型的数据
+        :param init_data_by_df:  DataFrame 类型的数据，包含了数据，用来初始化这个类
         :param dtype:  stock_day 🛠 todo 改成常量
         :param if_fq:  是否复权
         '''
@@ -169,12 +169,14 @@ class QA_DataStruct_Stock_day(_quotation_base):
 class QA_DataStruct_Stock_min(_quotation_base):
     def __init__(self, DataFrame, dtype='stock_min', if_fq='bfq'):
         super().__init__(DataFrame, dtype, if_fq)
+
         try:
             self.data = DataFrame.ix[:, [
                 'code', 'open', 'high', 'low', 'close', 'volume', 'preclose', 'datetime', 'date']]
         except:
             self.data = DataFrame.ix[:, [
                 'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'date']]
+
         if 'high_limit' not in self.data.columns:
             self.data['high_limit'] = round(
                 (self.data.close.shift(1) + 0.0002) * 1.1, 2)
