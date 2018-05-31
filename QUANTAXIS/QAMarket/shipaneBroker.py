@@ -14,11 +14,6 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAUtil.QASetting import setting_path
 
-try:
-    from pytdx.log import log
-except ImportError:
-    def log(x):
-        return None
 
 CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
 DEFAULT_SHIPANE_URL = 'http://127.0.0.1:8888'

@@ -37,11 +37,11 @@ class QA_Portfolio():
     """QA_Portfolio
     User-->Portfolio-->Account/Strategy
 
-    :::::::::::::::::::::::::::::::::::::::::::::::::
-    ::        :: Portfolio 1 -- Account/Strategy 1 ::
-    ::  USER  ::             -- Account/Strategy 2 ::
-    ::        :: Portfolio 2 -- Account/Strategy 3 ::
-    :::::::::::::::::::::::::::::::::::::::::::::::::
+    ::::::::::::::::::::::::::::::::::::::::::::::::::
+    ::        :: Portfolio 1 -- Account/Strategy 1  ::
+    ::  USER  ::             -- Account/Strategy 2  ::
+    ::        :: Portfolio 2 -- Account/Strategy 3  ::
+    ::::::::::::::::::::::::::::::::::::::::::::::::::
 
     QUANTAXIS 多账户
     以及组合管理

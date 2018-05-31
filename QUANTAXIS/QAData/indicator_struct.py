@@ -30,3 +30,9 @@
 class QA_DataStruct_Indicators():
     def __init__(self,data):
         self.data=data
+
+
+    def __repr__(self):
+        return 'QA_DATASTRUCT_INDICATOR'
+
+    
