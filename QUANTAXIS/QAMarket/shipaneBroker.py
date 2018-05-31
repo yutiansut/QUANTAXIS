@@ -129,24 +129,3 @@ class SPETradeApi(QA_Broker):
         pass
 
 
-if __name__ == "__main__":
-    import os
-    api = SPETradeApi(endpoint="http://10.11.5.175:10092/api")
-    #api = SPETradeApi(endpoint="http://10.11.5.175:10092/api")
-    print("---Ping---")
-    result = api.ping()
-
-    print(result)
-
-    if result["success"]:
-        client_id = result["data"]["client_id"]
-
-        for i in (0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 13, 14, 15):
-            print("---查询信息 cate=%d--" % i)
-            print(api.data_to_df(api.query_data(client_id, i)))
-
-        print("---查询报价---")
-        print(api.data_to_df(api.get_quote(client_id, '600315')))
-
-        print("---登出---")
-        print(api.logoff(client_id))
