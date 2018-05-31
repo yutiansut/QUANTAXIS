@@ -79,9 +79,10 @@ def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collec
         elif format in ['list', 'l', 'L']:
             return numpy.asarray(res).tolist()
         else:
+            print("💢 Error QA_fetch_stock_day format parameter %s is none of  \"P, p, pandas, pd , json, dict , n, N, numpy, list, l, L, !\" "%format)
             return None
     else:
-        QA_util_log_info('something wrong with date')
+        QA_util_log_info('💢 Error QA_fetch_stock_day data parameter start=%s end=%s is not right'%(start,end))
 
 
 def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', collections=DATABASE.stock_min):
@@ -96,6 +97,9 @@ def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', colle
         frequence = '30min'
     elif frequence in ['60min', '60m']:
         frequence = '60min'
+    else:
+        print("💢 Error QA_fetch_stock_min parameter frequence=%s is none of 1min 1m 5min 5m 15min 15m 30min 30m 60min 60m"%frequence)
+
     __data = []
     # code checking
     code = QA_util_code_tolist(code)
@@ -124,6 +128,7 @@ def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', colle
     elif format in ['list', 'l', 'L']:
         return numpy.asarray(res).tolist()
     else:
+        print("💢 Error QA_fetch_stock_min format parameter %s is none of  \"P, p, pandas, pd , json, dict , n, N, numpy, list, l, L, !\" " % format)
         return None
 
 
@@ -159,9 +164,12 @@ def QA_fetch_stock_full(date, format='numpy', collections=DATABASE.stock_day):
                 'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
             __data['date'] = pd.to_datetime(__data['date'])
             __data = __data.set_index('date', drop=False)
+        else:
+            print("💢 Error QA_fetch_stock_full format parameter %s is none of  \"P, p, pandas, pd , json, dict , n, N, numpy, list, l, L, !\" " % format)
+
         return __data
     else:
-        QA_util_log_info('something wrong with date')
+        QA_util_log_info('💢 Error QA_fetch_stock_full data parameter date=%s not right'%date)
 
 
 def QA_fetch_index_day(code, start, end, format='numpy', collections=DATABASE.index_day):
@@ -189,15 +197,14 @@ def QA_fetch_index_day(code, start, end, format='numpy', collections=DATABASE.in
         elif format in ['list', 'l', 'L']:
             __data = __data
         elif format in ['P', 'p', 'pandas', 'pd']:
-
-            __data = DataFrame(__data, columns=[
-                'code', 'open', 'high', 'low', 'close', 'volume', 'date'])
-
+            __data = DataFrame(__data, columns=['code', 'open', 'high', 'low', 'close', 'volume', 'date'])
             __data['date'] = pd.to_datetime(__data['date'])
             __data = __data.set_index('date', drop=False)
+        else:
+            print("💢 Error QA_fetch_index_day format parameter %s is none of  \"P, p, pandas, pd , n, N, numpy !\" " % format)
         return __data
     else:
-        QA_util_log_info('something wrong with date')
+        QA_util_log_info('💢 something wrong with date')
 
 
 
@@ -370,5 +377,6 @@ def QA_fetch_lhb(date, db=DATABASE):
             {'date': date})]).drop(['_id'], axis=1).set_index('code', drop=False).sort_index()
     except Exception as e:
         raise e
+
 if __name__ == '__main__':
     print(QA_fetch_lhb('2006-07-03'))
