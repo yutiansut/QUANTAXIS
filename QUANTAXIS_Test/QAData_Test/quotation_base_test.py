@@ -154,12 +154,11 @@ class quotation_base_test(unittest.TestCase):
     def test_GetItem(self):
         print("ok get item")
         qaDAStruct0 = QA_fetch_stock_day_adv('300439', start="2018-01-01", end="2018-01-10")
-
         #for iRow int qaDAStruct0.index:
-
         closePrices = qaDAStruct0.__getitem__('close')
-
         print(closePrices)
+
+
 
 
     # 🛠todo  测试  __getattr__
