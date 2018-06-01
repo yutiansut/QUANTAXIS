@@ -199,7 +199,9 @@ def QA_fetch_index_day_adv(
         print("💢 Error QA_fetch_index_day_adv parameter code=%s start=%s end=%s call QA_fetch_index_day return None"%(code,start,end))
     else:
         res_set_index = res.set_index(['date', 'code'], drop=if_drop_index)
-        print("💢 Error QA_fetch_index_day_adv set index 'date, code' return None")
+        if res_set_index is None:
+            print("💢 Error QA_fetch_index_day_adv set index 'date, code' return None")
+            return None
         return QA_DataStruct_Index_day(res_set_index)
 
 
