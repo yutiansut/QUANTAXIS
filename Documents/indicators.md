@@ -91,7 +91,7 @@ def MACD_JCSC(dataframe, SHORT=12, LONG=26, M=9):
     return pd.DataFrame({'DIFF': DIFF, 'DEA': DEA, 'MACD': MACD, 'CROSS_JC': CROSS_JC, 'CROSS_SC': CROSS_SC, 'ZERO': ZERO})
 ```
 
-# 得到指标
+### 得到指标
 
 QA.QA_fetch_stock_day_adv('000001','2017-01-01','2017-05-31').to_qfq().add_func(JLHB)
 
