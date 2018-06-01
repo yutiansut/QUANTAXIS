@@ -59,9 +59,8 @@ class quotation_base_test(unittest.TestCase):
         i = iterObj.__next__()
         print(i)
 
-
-    def test_quotation_base_class_reverse_(self):
-        qaDAStruct = QA_fetch_stock_day_adv('300439',start="2018-01-01", end="2018-01-10")
+    def do0_ReverseAttributes_test(self):
+        qaDAStruct = QA_fetch_stock_day_adv('300439', start="2018-01-01", end="2018-01-10")
         rev_qaDAStruct = reversed(qaDAStruct)
         list1 = []
         for iRow in qaDAStruct:
@@ -73,8 +72,12 @@ class quotation_base_test(unittest.TestCase):
             print(iRowRev)
             list2.append(iRowRev)
         print('--------------')
+
+    def test_quotation_base_class_reverse_(self):
+
         #没有 reverse
-        pass
+        self.assertRaises(NotImplementedError,self.do0_ReverseAttributes_test)
+
 
     def test_quotation_base_class_add_(self):
         qaDAStruct0 = QA_fetch_stock_day_adv('300439', start="2018-01-01", end="2018-01-10")
@@ -148,6 +151,16 @@ class quotation_base_test(unittest.TestCase):
             self.assertEqual(v, True)
 
     # 🛠todo  测试  __getitem__
+    def test_GetItem(self):
+        print("ok get item")
+        qaDAStruct0 = QA_fetch_stock_day_adv('300439', start="2018-01-01", end="2018-01-10")
+        #for iRow int qaDAStruct0.index:
+        closePrices = qaDAStruct0.__getitem__('close')
+        print(closePrices)
+
+
+
+
     # 🛠todo  测试  __getattr__
     # 🛠todo  测试  ix
     # 🛠todo  测试  iloc

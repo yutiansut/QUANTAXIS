@@ -27,6 +27,8 @@ import os
 import statistics
 import webbrowser
 from copy import copy
+from copy import deepcopy
+
 from functools import lru_cache
 
 from abc import abstractmethod
@@ -156,7 +158,7 @@ class _quotation_base():
         self.new(self.data[::-1])
         :return:
         """
-        raise NotImplementedError('QUANTAXIS DATASTRUCT CURRENTLY NOT SUPPORT reversed ACTION')
+        raise NotImplementedError('QA_DataStruct_* CURRENT CURRENTLY NOT SUPPORT reversed ACTION')
 
     def __add__(self, DataStruct):
         '''
@@ -185,15 +187,37 @@ class _quotation_base():
     __rsub__ = __sub__
 
     def __getitem__(self, key):
-        return self.new(data=self.data.__getitem__(key), dtype=self.type, if_fq=self.if_fq)
+        '''
+        # 🛠todo 进一步研究 DataFrame __getitem__ 的意义。
+        DataFrame调用__getitem__调用(key)
+        :param key:
+        :return:
+        '''
+        data_to_init = self.data.__getitem__(key)
+        if isinstance(data_to_init, pd.DataFrame) == True:
+            # 重新构建一个 QA_DataStruct_XXXX，
+            return self.new(data=data_to_init, dtype=self.type, if_fq=self.if_fq)
+        elif isinstance(data_to_init, pd.Series) == True:
+            # 返回 QA_DataStruct_XXXX DataFrame 中的一个 序列Series
+            return data_to_init
+
 
     def __getattr__(self, attr):
-
+        '''
+        # 🛠todo 为何不支持 __getattr__ ？？
+        :param attr:
+        :return:
+        '''
         # try:
         #     self.new(data=self.data.__getattr__(attr), dtype=self.type, if_fq=self.if_fq)
         # except:
-        raise AttributeError('QA CLASS Currently has no attribute {}'.format(attr))
+        raise AttributeError('QA_DataStruct_* Class Currently has no attribute {}'.format(attr))
 
+
+    '''
+    ########################################################################################################
+    获取序列
+    '''
     def ix(self, key):
         return self.new(data=self.data.ix(key), dtype=self.type, if_fq=self.if_fq)
 
@@ -203,6 +227,12 @@ class _quotation_base():
     def loc(self, key):
         return self.new(data=self.data.loc(key), dtype=self.type, if_fq=self.if_fq)
 
+
+    '''
+    ########################################################################################################
+    获取序列
+    使用 LRU (least recently used) cache 
+    '''
     @property
     @lru_cache()
     def open(self):
@@ -263,6 +293,8 @@ class _quotation_base():
     VOL = vol
     Vol = vol
 
+    #OPEN = open
+    #Open = open
     @property
     @lru_cache()
     def OPEN(self):
@@ -273,11 +305,13 @@ class _quotation_base():
     def Open(self):
         return self.open
 
+    # 开盘 收盘 最高 最低 的 平均价
     @property
     @lru_cache()
     def price(self):
         return (self.open + self.high + self.low + self.close) / 4
 
+    # ？？
     @property
     @lru_cache()
     def trade(self):
@@ -285,7 +319,7 @@ class _quotation_base():
             return self.data.trade
         else:
             return None
-
+    # ？？
     @property
     @lru_cache()
     def position(self):
@@ -294,6 +328,7 @@ class _quotation_base():
         else:
             return None
 
+    # 交易日期
     @property
     @lru_cache()
     def date(self):
@@ -308,6 +343,11 @@ class _quotation_base():
         '分钟线结构返回datetime 日线结构返回date'
         return self.data.index.levels[0]
 
+
+    '''
+    ########################################################################################################
+    计算统计相关的
+    '''
     @property
     @lru_cache()
     def max(self):
@@ -469,8 +509,13 @@ class _quotation_base():
         """
         return dict(zip(list(self.code), self.splits()))
 
-    def get_data(self, time, code):
+    def get_dict(self, time, code):
+        '''
         'give the time,code tuple and turn the dict'
+        :param time:
+        :param code:
+        :return:  字典dict 类型
+        '''
         try:
             return self.dicts[(QA_util_to_datetime(time), str(code))]
         except Exception as e:
@@ -537,12 +582,14 @@ class _quotation_base():
         """
         创建一个新的DataStruct
         data 默认是self.data
-        inplace 是否是对于原类的修改
-
+        🛠todo 没有这个？？ inplace 是否是对于原类的修改 ？？
         """
         data = self.data if data is None else data
         dtype = self.type if dtype is None else dtype
         if_fq = self.if_fq if if_fq is None else if_fq
+
+        #🛠todo 不是很理解这样做的意图， 已经copy了，还用data初始化
+        #🛠todo deepcopy 实现 ？还是 ？
         temp = copy(self)
         temp.__init__(data, dtype, if_fq)
         return temp
