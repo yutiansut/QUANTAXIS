@@ -60,12 +60,15 @@ def simple_backtest(AC, code, start, end):
                     order=AC.send_order(
                         code=item.data.code[0], time=item.data.date[0], amount=1000, towards=QA.ORDER_DIRECTION.BUY, price=0, order_model=QA.ORDER_MODEL.MARKET, amount_model=QA.AMOUNT_MODEL.BY_AMOUNT
                     )
-                    AC.receive_deal(B.receive_order(QA.QA_Event(order=order,market_data=item)))
+                    if order:
+                        AC.receive_deal(B.receive_order(QA.QA_Event(order=order,market_data=item)))
 
                 else:
-                    AC.receive_deal(B.receive_order(QA.QA_Event(order=AC.send_order(
+                    order=AC.send_order(
                         code=item.data.code[0], time=item.data.date[0], amount=1000, towards=QA.ORDER_DIRECTION.SELL, price=0, order_model=QA.ORDER_MODEL.MARKET, amount_model=QA.AMOUNT_MODEL.BY_AMOUNT
-                    ),market_data=item)))
+                    )
+                    if order:
+                        AC.receive_deal(B.receive_order(QA.QA_Event(order=order,market_data=item)))
         AC.settle()
 
 
