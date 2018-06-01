@@ -89,9 +89,9 @@ def QA_fetch_stock_day_adv(
         return None
     else:
         res_reset_index = res.set_index(['date', 'code'], drop=if_drop_index)
-        if res_reset_index is None:
-            print("💢 Error QA_fetch_stock_day_adv set index 'datetime, code' return None")
-            return None
+        # if res_reset_index is None:
+        #     print("💢 Error QA_fetch_stock_day_adv set index 'datetime, code' return None")
+        #     return None
         return QA_DataStruct_Stock_day(res_reset_index);
 
 
@@ -148,9 +148,9 @@ def QA_fetch_stock_min_adv(
         return None
     else:
         res_set_index = res.set_index(['datetime', 'code'],drop=if_drop_index)
-        if res_set_index is None:
-            print("💢 Error QA_fetch_stock_min_adv set index 'datetime, code' return None")
-            return None
+        # if res_set_index is None:
+        #     print("💢 Error QA_fetch_stock_min_adv set index 'datetime, code' return None")
+        #     return None
         return QA_DataStruct_Stock_min(res_set_index)
 
 
@@ -167,8 +167,8 @@ def QA_fetch_stock_day_full_adv(date):
         return None
     else:
         res_set_index = res.set_index().set_index(['date', 'code'], drop=False)
-        if res_set_index in None:
-            print("💢 Error QA_fetch_stock_day_full set index 'date, code' return None")
+        # if res_set_index is None:
+        #     print("💢 Error QA_fetch_stock_day_full set index 'date, code' return None")
         return QA_DataStruct_Stock_day(res_set_index)
 
 
@@ -199,7 +199,9 @@ def QA_fetch_index_day_adv(
         print("💢 Error QA_fetch_index_day_adv parameter code=%s start=%s end=%s call QA_fetch_index_day return None"%(code,start,end))
     else:
         res_set_index = res.set_index(['date', 'code'], drop=if_drop_index)
-        print("💢 Error QA_fetch_index_day_adv set index 'date, code' return None")
+        # if res_set_index is None:
+        #     print("💢 Error QA_fetch_index_day_adv set index 'date, code' return None")
+        #     return None
         return QA_DataStruct_Index_day(res_set_index)
 
 
@@ -241,8 +243,8 @@ def QA_fetch_index_min_adv(
         print("💢 Error QA_fetch_index_min_adv parameter code=%s start=%s end=%s frequence=%s call QA_fetch_index_min return None"%(code,start,end,frequence))
     else:
         res_reset_index = res.set_index(['datetime', 'code'], drop=if_drop_index)
-        if res_reset_index is None:
-            print("💢 Error QA_fetch_index_min_adv set index 'date, code' return None")
+        # if res_reset_index is None:
+        #     print("💢 Error QA_fetch_index_min_adv set index 'date, code' return None")
         return QA_DataStruct_Index_min(res_reset_index)
 
 def QA_fetch_stock_transaction_adv(code,start, end=None,if_drop_index=False,collections=DATABASE.stock_transaction):
