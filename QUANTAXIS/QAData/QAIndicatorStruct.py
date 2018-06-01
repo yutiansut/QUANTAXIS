@@ -38,22 +38,31 @@ class QA_DataStruct_Indicators():
         self.data = data
 
     def __repr__(self):
-        return 'QA_DATASTRUCT_INDICATOR'
+        return '<QA_DATASTRUCT_INDICATOR>'
 
-    def get_indicator(self, code, time):
+    def get_indicator(self, time, code):
+        """
+        获取某一时间的某一只股票的指标
+        """
         try:
             return self.data.loc[(pd.Timestamp(time), code)]
         except:
             raise ValueError('CANNOT FOUND THIS DATE&CODE')
 
     def get_code(self, code):
+        """
+        获取某一只股票的指标序列
+        """
         try:
-            return self.data.xs(code, level=1, drop_level=False)
+            return self.data.loc[(slice(None), slice(code)), :]
         except:
             return ValueError('CANNOT FOUND THIS CODE')
 
-    def get_timerange(self, start, end):
+    def get_timerange(self, start, end, code=None):
+        """
+        获取某一段时间的某一只股票的指标
+        """
         try:
-            return self.data.loc[pd.Timestamp(start):pd.Timestamp(end), slice(None)]
+            return self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), slice(code)), :]
         except:
             return ValueError('CANNOT FOUND THIS TIME RANGE')
