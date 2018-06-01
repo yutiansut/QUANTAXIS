@@ -67,7 +67,7 @@ class _quotation_base():
         '''
 
         #🛠todo 判断DataFame 对象字段的合法性，是否正确
-        self.data = DataFrame.sort_index(level=1)
+        self.data = DataFrame.sort_index()
 
         #🛠todo 该变量没有用到， 是不是 self.data_type = marketdata_type ??
         self.data_type = dtype
