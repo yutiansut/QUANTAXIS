@@ -159,6 +159,10 @@ class quotation_base_test(unittest.TestCase):
         print(closePrices)
 
 
+    def test_00(self):
+      res =   QA.QA_fetch_index_day('000300', '2017-01-01', '2018-01-05')
+      print(res)
+
 
 
     # 🛠todo  测试  __getattr__
