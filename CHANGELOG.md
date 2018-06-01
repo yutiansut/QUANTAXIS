@@ -273,4 +273,4 @@ print(get_stockday_ts('000001','2018-05-01','2018-05-21'))
 5. QAQuery_Advance 中函数获取数据的参数检查
 6. QA_DataStruct_Indicators 增加指标类
 7. QADATASTRUCT 的selects, select_time,get_bar函数的速度更新
-8. QADataStruct_Indicators 指标类的索引速度更新
+8. QADataStruct_Indicators 指标类的索引速度更新(详见 [QUANTAXIS INDICATOR](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/Documents/indicators.md))
