@@ -92,8 +92,9 @@ def MACD_JCSC(dataframe, SHORT=12, LONG=26, M=9):
 ```
 
 # 得到指标
+
 QA.QA_fetch_stock_day_adv('000001','2017-01-01','2017-05-31').to_qfq().add_func(JLHB)
-```
+
 
 
 ## QUANTAXIS的指标类 QA_DataStruct_Indicators()
