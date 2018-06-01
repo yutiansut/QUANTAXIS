@@ -27,6 +27,7 @@
 
 """
 import pandas as pd
+
 from QUANTAXIS.QAData.financial_mean import financial_dict
 
 
