@@ -1,7 +1,7 @@
 # QUANTAXIS的指标系统
 
 ## 指标计算入口
-QUANTAXIS的核心数据结构有一个方法叫add_func(func,*args,**kwargs),作为一个指标入口,会返回一个和DataStruct中股票数量一致长度的list
+QUANTAXIS的核心数据结构有一个方法叫add_func(func,*args,**kwargs),作为一个指标入口,会返回一个和DataStruct中股票数量一致长度的Dataframe
 
 QUANTAXIS有两种类型的指标:
 
