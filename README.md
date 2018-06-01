@@ -121,8 +121,23 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 ##  3. <a name='-1'></a>安装和部署
 
+直接上手~
+
+```
+pip install quantaxis -U
+```
+
+本地安装
 ```
 git clone https://github.com/yutiansut/quantaxis --depth 1
+```
+
+代码提交式安装
+
+- fork QUANTAXIS 到你的github账户
+
+```
+git clone https://github.com/你的账户名/quantaxis
 ```
 
 参见 [安装说明](Documents/install.md)
