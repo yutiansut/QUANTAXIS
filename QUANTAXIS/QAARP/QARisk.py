@@ -161,8 +161,8 @@ class QA_Risk():
             'account_cookie': self.account.account_cookie,
             'portfolio_cookie': self.account.portfolio_cookie,
             'user_cookie': self.account.user_cookie,
-            'annualize_return': round(self.annualize_return,2),
-            'profit': round(self.profit,2),
+            'annualize_return': round(self.annualize_return, 2),
+            'profit': round(self.profit, 2),
             'max_dropback': self.max_dropback,
             'time_gap': self.time_gap,
             'volatility': self.volatility,
@@ -172,8 +172,8 @@ class QA_Risk():
             'beta': self.beta,
             'alpha': self.alpha,
             'sharpe': self.sharpe,
-            'init_assets':"%0.2f"%(float(self.init_assets)),
-            'last_assets':"%0.2f"% (float(self.assets.iloc[-1]))
+            'init_assets': "%0.2f" % (float(self.init_assets)),
+            'last_assets': "%0.2f" % (float(self.assets.iloc[-1]))
 
             #'init_assets': round(float(self.init_assets), 2),
             #'last_assets': round(float(self.assets.iloc[-1]), 2)
@@ -354,7 +354,7 @@ class QA_Risk():
         """
         start = self.account.start_date if start is None else start
         end = self.account.end_date if end is None else end
-        f, ax = plt.subplots(figsize=(20, 8))
+        _, ax = plt.subplots(figsize=(20, 8))
         sns.heatmap(self.account.daily_hold.reset_index().drop('account_cookie', axis=1).set_index(
             'date').loc[start:end], cmap="YlGnBu", linewidths=0.05, ax=ax)
         ax.set_title(
@@ -369,7 +369,7 @@ class QA_Risk():
         """
         start = self.account.start_date if start is None else start
         end = self.account.end_date if end is None else end
-        f, ax = plt.subplots(figsize=(20, 18))
+        _, ax = plt.subplots(figsize=(20, 18))
         sns.heatmap(self.account.trade.reset_index().drop('account_cookie', axis=1).set_index(
             'datetime').loc[start:end], cmap="YlGnBu", linewidths=0.05, ax=ax)
         ax.set_title(

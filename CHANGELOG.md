@@ -271,3 +271,4 @@ print(get_stockday_ts('000001','2018-05-01','2018-05-21'))
 3. _quotation_base 类中 __add__ __sub__ 的测试代码
 4. _quotation_base 类中 __getitem__  类型判断，的测试代码 
 5. QA_fetch_stock_min_adv 时间参数的检查， 以及注释等
+6. QA_DataStruct_Indicators 增加指标类
