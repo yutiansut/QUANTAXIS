@@ -26,13 +26,34 @@
 指标结构
 
 """
+import pandas as pd
+
 
 class QA_DataStruct_Indicators():
-    def __init__(self,data):
-        self.data=data
+    """
+    指标的结构
+    """
 
+    def __init__(self, data):
+        self.data = data
 
     def __repr__(self):
         return 'QA_DATASTRUCT_INDICATOR'
 
-    
+    def get_indicator(self, code, time):
+        try:
+            return self.data.loc[(pd.Timestamp(time), code)]
+        except:
+            raise ValueError('CANNOT FOUND THIS DATE&CODE')
+
+    def get_code(self, code):
+        try:
+            return self.data.xs(code, level=1, drop_level=False)
+        except:
+            return ValueError('CANNOT FOUND THIS CODE')
+
+    def get_timerange(self, start, end):
+        try:
+            return self.data.loc[pd.Timestamp(start):pd.Timestamp(end), slice(None)]
+        except:
+            return ValueError('CANNOT FOUND THIS TIME RANGE')
