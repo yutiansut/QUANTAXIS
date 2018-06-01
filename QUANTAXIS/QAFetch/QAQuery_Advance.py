@@ -44,6 +44,16 @@ from QUANTAXIS.QAUtil import (DATABASE, QA_Setting, QA_util_date_stamp,
 """
 按要求从数据库取数据，并转换成numpy结构
 
+总体思路：
+⚙️QA_fetch_***_adv
+📍⚙️QA_fetch_*** 🐌 获取数据collections从mongodb中 🐌 返回DataFrame , 
+📍📍⚙️用返回的 DataFrame 初始化 ️QA_DataStruct_***
+
+类型***有
+_Stock_day
+_Stock_min
+_Index_day
+_Index_min
 """
 # start='1990-01-01',end=str(datetime.date.today())
 
@@ -52,8 +62,10 @@ def QA_fetch_stock_day_adv(
         code,
         start='all', end=None,
         if_drop_index=False,
+        # 🛠 todo collections 参数没有用到， 且数据库是固定的， 这个变量后期去掉
         collections=DATABASE.stock_day):
     '''
+
     :param code:  股票代码
     :param start: 开始日期
     :param end:   结束日期
@@ -72,7 +84,8 @@ def QA_fetch_stock_day_adv(
 
     res = QA_fetch_stock_day(code, start, end, format='pd')
     if res is None:
-        print("code=%s , start=%s, end=%s QA_fetch_stock_day return None"%(code,start,end))
+        # 🛠 todo 报告是代码不合法，还是日期不合法
+        print("💢 Error QA_fetch_stock_day_adv parameter code=%s , start=%s, end=%s call QA_fetch_stock_day return None"%(code,start,end))
         return None
     else:
         return QA_DataStruct_Stock_day(res.set_index(['date', 'code'], drop=if_drop_index))
@@ -83,8 +96,18 @@ def QA_fetch_stock_min_adv(
         start, end=None,
         frequence='1min',
         if_drop_index=False,
+        # 🛠 todo collections 参数没有用到， 且数据库是固定的， 这个变量后期去掉
         collections=DATABASE.stock_min):
+    '''
     '获取股票分钟线'
+    :param code:  字符串str eg 600085
+    :param start: 字符串str 开始日期 eg 2011-01-01
+    :param end:   字符串str 结束日期 eg 2011-05-01
+    :param frequence: 字符串str 分钟线的类型 支持 1min 1m 5min 5m 15min 15m 30min 30m 60min 60m 类型
+    :param if_drop_index: Ture False ， dataframe drop index or not
+    :param collections: mongodb 数据库
+    :return:
+    '''
     if frequence in ['1min', '1m']:
         frequence = '1min'
     elif frequence in ['5min', '5m']:
@@ -95,15 +118,34 @@ def QA_fetch_stock_min_adv(
         frequence = '30min'
     elif frequence in ['60min', '60m']:
         frequence = '60min'
-    __data = []
+    else:
+        print("💢 Error QA_fetch_stock_min_adv parameter frequence=%s is none of 1min 1m 5min 5m 15min 15m 30min 30m 60min 60m"%frequence)
+        return None
+
+    #__data = [] 未使用
 
     end = start if end is None else end
     if len(start) == 10:
         start = '{} 09:30:00'.format(start)
+
     if len(end) == 10:
         end = '{} 15:00:00'.format(end)
 
-    return QA_DataStruct_Stock_min(QA_fetch_stock_min(code, start, end, format='pd', frequence=frequence).set_index(['datetime', 'code'], drop=if_drop_index))
+    if start == end:
+        print("💢 Error QA_fetch_stock_min_adv parameter code=%s , start=%s, end=%s is equal, should have time span! "%(code,start,end))
+        return None
+
+    res = QA_fetch_stock_min(code, start, end, format='pd', frequence=frequence)
+    if res is None:
+        print("💢 Error QA_fetch_stock_min_adv parameter code=%s , start=%s, end=%s frequence=%s call QA_fetch_stock_min return None"%(code,start,end,frequence))
+        return None
+    else:
+        res_set_index = res.set_index(['datetime', 'code'],drop=if_drop_index)
+        if res_set_index is None:
+            print("💢 Error QA_fetch_stock_min_adv set index 'datetime, code' return None")
+            return None
+        else:
+            return QA_DataStruct_Stock_min(res_set_index)
 
 
 def QA_fetch_stock_day_full_adv(date):
