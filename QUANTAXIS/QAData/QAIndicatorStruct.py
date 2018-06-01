@@ -38,14 +38,14 @@ class QA_DataStruct_Indicators():
         self.data = data
 
     def __repr__(self):
-        return '<QA_DATASTRUCT_INDICATOR>'
+        return '< QA_DATASTRUCT_INDICATOR FROM {} TO {} WITH {} CODES >'.format(self.data.index.levels[0][0],self.data.index.levels[0][-1],len(self.data.index.levels[1]))
 
-    def get_indicator(self, time, code):
+    def get_indicator(self, time, code, indicator_name=None):
         """
         获取某一时间的某一只股票的指标
         """
         try:
-            return self.data.loc[(pd.Timestamp(time), code)]
+            return self.data.loc[(pd.Timestamp(time), code),slice(indicator_name)]
         except:
             raise ValueError('CANNOT FOUND THIS DATE&CODE')
 
@@ -54,7 +54,7 @@ class QA_DataStruct_Indicators():
         获取某一只股票的指标序列
         """
         try:
-            return self.data.loc[(slice(None), slice(code)), :]
+            return self.data.loc[(slice(None), code), :]
         except:
             return ValueError('CANNOT FOUND THIS CODE')
 
