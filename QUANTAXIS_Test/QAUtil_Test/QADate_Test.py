@@ -12,3 +12,4 @@ class Test_QA_Date(unittest.TestCase):
         today = QADate.QA_util_date_today()
         self.assertEquals(today.day, now.day)
 
+
