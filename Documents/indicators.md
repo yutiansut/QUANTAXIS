@@ -72,6 +72,24 @@ def JLHB(data, m=7, n=5):
         return 1
     else:
         return 0
+```
+金叉死叉
+```python        
+def MACD_JCSC(dataframe, SHORT=12, LONG=26, M=9):
+    """
+    1.DIF向上突破DEA，买入信号参考。
+    2.DIF向下跌破DEA，卖出信号参考。
+    """
+    CLOSE = dataframe.close
+    DIFF = QA.EMA(CLOSE, SHORT) - QA.EMA(CLOSE, LONG)
+    DEA = QA.EMA(DIFF, M)
+    MACD = 2*(DIFF-DEA)
+
+    CROSS_JC = QA.CROSS(DIFF, DEA)
+    CROSS_SC = QA.CROSS(DEA, DIFF)
+    ZERO = 0
+    return pd.DataFrame({'DIFF': DIFF, 'DEA': DEA, 'MACD': MACD, 'CROSS_JC': CROSS_JC, 'CROSS_SC': CROSS_SC, 'ZERO': ZERO})
+```
 
 # 得到指标
 QA.QA_fetch_stock_day_adv('000001','2017-01-01','2017-05-31').to_qfq().add_func(JLHB)
@@ -95,7 +113,7 @@ inc
 ```
 
 ### 获取一段时段时间的某个股票的指标序列
-```
+```python
 inc.get_timerange('2018-01-07','2018-01-12','000001')
 		                WR1	        WR2
 date	code		
@@ -107,7 +125,7 @@ date	code
 ```
 ### 获取一个股票的指标序列
 
-```
+```python
 inc.get_code('000002')
 
                     WR1	        WR2
@@ -137,14 +155,14 @@ date	code
 ```
 
 ### 获取某一个时刻的某个股票的某个指标值
-```
+```python
 inc.get_indicator('2018-01-12','000001','WR1')
 
 WR1    48.148148
 Name: (2018-01-12 00:00:00, 000001), dtype: float64
 ```
 ### 获取某个时刻某个股票的所有指标值
-```
+```python
 inc.get_indicator('2018-01-12','000001')
 
 WR1    48.148148
