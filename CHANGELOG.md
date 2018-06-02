@@ -297,8 +297,14 @@ released in :May 30, 2018
 6. QA_DataStruct_Indicators 增加指标类
 7. QADATASTRUCT 的selects, select_time,get_bar函数的速度更新
 8. QADataStruct_Indicators 指标类的索引速度更新(详见 [QUANTAXIS INDICATOR](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/Documents/indicators.md))
+
 released in :JUNE 01, 2018
 
 
-## 1.0.43 (unreleased)
+## 1.0.43
 1. quantaxis 命令行 save 命令错误的 异常处理
+2. QA_Risk 插件增加对于assets计算的修改(如果撮合按不复权撮合,risk也按不复权去计算assets)
+
+released in :JUNE 03, 2018
+
+## 1.0.44  (unreleased)
