@@ -629,8 +629,9 @@ def QA_SU_save_stock_list(client=DATABASE):
 
     try:
         QA_util_log_info('##JOB08 Now Saving STOCK_LIST ====')
-        coll.insert_many(QA_util_to_json_from_pandas(
-            QA_fetch_get_stock_list()))
+        stock_list_from_tdx = QA_fetch_get_stock_list()
+        pandas_data = QA_util_to_json_from_pandas(stock_list_from_tdx)
+        coll.insert_many(pandas_data)
     except:
         pass
 

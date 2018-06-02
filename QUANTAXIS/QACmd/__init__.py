@@ -143,6 +143,7 @@ class CLI(cmd.Cmd):
                 ")
         else:
             arg = arg.split(' ')
+
             if len(arg) == 1 and arg[0] == 'all':
                 if QA_Setting().client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
                     QA_Setting().client.quantaxis.user_list.insert(
@@ -204,7 +205,35 @@ class CLI(cmd.Cmd):
                             QA_Setting().client.quantaxis.user_list.insert(
                                 {'username': 'admin', 'password': 'admin'})
                     else:
-                        eval("QA_SU_save_%s('tdx')" % (i))
+
+
+                        '''
+                        save stock_day  : save stock_day 
+                        save stock_xdxr : save stock_xdxr 
+                        save stock_min  : save stock_min 
+                        save index_day  : save index_day 
+                        save index_min  : save index_min 
+                        save etf_day    : save etf_day 
+                        save etf_min    : save etf_min 
+                        save stock_list : save stock_list
+                        save stock_block: save stock_block
+                        save stock_info : save stock_info
+                        '''
+
+                        try:
+                            eval("QA_SU_save_%s('tdx')" % (i))
+                        except:
+                            print("Save Command Error ! Possible Command List is ")
+                            print("save stock_day")
+                            print("save stock_xdxr")
+                            print("save stock_min")
+                            print("save index_day")
+                            print("save index_min")
+                            print("save etf_day")
+                            print("save etf_min")
+                            print("save stock_list")
+                            print("save stock_block")
+                            print("save stock_info")
 
     def help_save(self):
         QA_util_log_info('Save all the stock data from pytdx')
