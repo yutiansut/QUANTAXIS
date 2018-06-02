@@ -170,23 +170,17 @@ def QA_SU_save_stock_block(engine, client=DATABASE):
 
 
 def select_save_engine(engine):
-    """select save_engine
-    
-    Arguments:
-        engine {[type]} -- [description]
-    
-    Returns:
-        [type] -- [description]
-    """
-
-
+    '''
+    select save_engine , tushare ts Tushare 使用 Tushare 免费数据接口， tdx 使用通达信数据接口
+    :param engine: 字符串Str
+    :return: sts means save_tushare_py  or stdx means save_tdx_py
+    '''
     if engine in ['tushare', 'ts', 'Tushare']:
         return sts
     elif engine in ['tdx']:
         return stdx
-
-
-
+    else:
+        print('💢 Error QASU.main.py call select_save_engine with parameter %s is None of  thshare, ts, Thshare, or tdx',engine)
 
 def QA_SU_save_stock_min_5(file_dir, client=DATABASE):
     """save stock_min5

@@ -211,7 +211,16 @@ def QA_fetch_index_min_adv(
         frequence='1min',
         if_drop_index=False,
         collections=DATABASE.index_min):
+    '''
     '获取股票分钟线'
+    :param code:
+    :param start:
+    :param end:
+    :param frequence:
+    :param if_drop_index:
+    :param collections:
+    :return:
+    '''
     if frequence in ['1min', '1m']:
         frequence = '1min'
     elif frequence in ['5min', '5m']:
@@ -248,6 +257,15 @@ def QA_fetch_index_min_adv(
         return QA_DataStruct_Index_min(res_reset_index)
 
 def QA_fetch_stock_transaction_adv(code,start, end=None,if_drop_index=False,collections=DATABASE.stock_transaction):
+    '''
+
+    :param code:
+    :param start:
+    :param end:
+    :param if_drop_index:
+    :param collections:
+    :return:
+    '''
     end = start if end is None else end
     data = DataFrame([item for item in collections.find({
         'code': str(code), "date": {
@@ -270,7 +288,13 @@ def QA_fetch_stock_list_adv(collections=DATABASE.stock_list):
     :param collections: mongodb 数据库
     :return: DataFrame
     '''
-    return pd.DataFrame([item for item in collections.find()]).drop('_id', axis=1, inplace=False)
+    stock_list_items = [item for item in collections.find()];
+    if stock_list_items is None:
+        print("💢 Error QA_fetch_stock_list_adv return None, maybe the DATABASE.stock_list have no DATA!")
+        return None
+    if len(stock_list_items) == 0:
+        print("💢 Error QA_fetch_stock_list_adv call item for item in collections.find() return 0 item, maybe the DATABASE.stock_list is empty!")
+    return pd.DataFrame(stock_list_items).drop('_id', axis=1, inplace=False)
 
 
 def QA_fetch_stock_block_adv(code=None, blockname=None, collections=DATABASE.stock_block):
