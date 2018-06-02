@@ -121,3 +121,76 @@ class Test_QA_None(unittest.TestCase):
         # pass
 
 
+    def test_make_Series(self):
+        #demo the series
+        obj = pd.Series([1,2,3,4])
+        print(obj.index)
+        print(obj.values)
+        print("-------------------------------------------")
+        obj2 = pd.Series([1,2,3,4], index=['a','b','c','d'])
+        print(obj2)
+        print(obj2.index)
+        print(obj2.values)
+        print("-------------------------------------------")
+        # another way to think about a Series is as a fixed-length, ordered dict, as it is a mapping of index value to data values.
+        # it can be substituted into many functions that expect a dict
+        sdata = { 'Ohio': 3000, 'Texas': 71000, 'Oregon': 1600, 'Utah': 5000}
+        obj4 = pd.Series(sdata)
+        print(obj4)
+        print("-------------------------------------------")
+        state = ['California', 'Ohio', 'Oregon', 'Taxes']
+        obj4 = pd.Series(sdata, index = state)
+        print(obj4)
+        print("-------------------------------------------")
+        print(pd.isnull(obj4))
+        print("-------------------------------------------")
+        print(pd.notnull(obj4))
+        print("-------------------------------------------")
+
+        obj_01 = pd.Series([1,2,3,4])
+        obj_o2 = pd.Series([11,22,33,44], index=['aa','bb','cc','dd'])
+        obj_03 = pd.Series([55,66,77,88], index=['bb','cc','dd','ee'])
+        print(obj_01)
+        print(obj_o2)
+        print("-------------------------------------------")
+        print(obj_01 + obj_o2)
+        print("-------------------------------------------")
+        print(obj_o2 + obj_03)
+
+
+    def test_make_dataframe(self):
+        # the dataframe has both a row and column index
+        dict_data = {
+            'state': ['Ohio', 'Ohio', 'Ohio', 'Nevada', 'Nevada'],
+            'year': [2000, 2001, 2002, 2001, 2002],
+            'pop': [1.4,1.7,3.6,2.4,2.9]
+        }
+
+        frame = pd.DataFrame(dict_data)
+        print(frame)
+        print("-------------------------------------------")
+
+        frame2 = pd.DataFrame(dict_data, columns=['year','state','pop', 'area'])
+        print(frame2)
+        print("-------------------------------------------")
+
+        print(frame2.index)
+        print("-------------------------------------------")
+
+        print(frame2.ix[0])
+        print("-------------------------------------------")
+
+        print(frame2.iloc[0])
+
+        print("-------------------------------------------")
+        print(frame2.loc[[0]])
+        print("-------------------------------------------")
+
+        print(frame2.T)
+        print("-------------------------------------------")
+
+        pop = { 'Nevada' : {2001: 2.4, 2002: 2.9}, "Ohio": {2000: 1.4,2000: 1.7, 2002: 3.4}}
+        frame3 = pd.DataFrame(pop)
+        print(frame3)
+
+        
