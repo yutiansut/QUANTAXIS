@@ -92,7 +92,10 @@ class QA_Risk():
     股票周转率 反应股票的持仓天数
     """
 
-    def __init__(self, account, benchmark_code='000300', benchmark_type=MARKET_TYPE.INDEX_CN):
+    def __init__(self, account, benchmark_code='000300', benchmark_type=MARKET_TYPE.INDEX_CN,if_fq=True):
+        """
+        if_qf选项是@尧提出的,关于回测的时候成交价格问题(如果按不复权撮合 应该按不复权价格计算assets)
+        """
         self.account = account
         self.benchmark_code = benchmark_code  # 默认沪深300
         self.benchmark_type = benchmark_type
@@ -101,9 +104,12 @@ class QA_Risk():
                       MARKET_TYPE.INDEX_CN: QA_fetch_index_day_adv}
         self.market_data = QA_fetch_stock_day_adv(
             self.account.code, self.account.start_date, self.account.end_date)
-        self._assets = ((self.market_data.to_qfq().pivot('close') * self.account.daily_hold).sum(
-            axis=1) + self.account.daily_cash.set_index('date').cash).fillna(method='pad')
-
+        if if_fq:
+            self._assets = ((self.market_data.to_qfq().pivot('close') * self.account.daily_hold).sum(
+                axis=1) + self.account.daily_cash.set_index('date').cash).fillna(method='pad')
+        else:
+            self._assets = ((self.market_data.pivot('close') * self.account.daily_hold).sum(
+                axis=1) + self.account.daily_cash.set_index('date').cash).fillna(method='pad')
         self.time_gap = QA_util_get_trade_gap(
             self.account.start_date, self.account.end_date)
         self.init_assets = self.account.init_assets
