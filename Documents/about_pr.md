@@ -22,3 +22,7 @@ git push origin master
 5. 在QUANTAXIS/QUANTAXIS页面上点击 pull request
 6. 提交代码
 7. 等待审核通过
+
+![](http://osnhakmay.bkt.clouddn.com/PR1.png)
+![](http://osnhakmay.bkt.clouddn.com/PR2.png)
+![](http://osnhakmay.bkt.clouddn.com/PR3.png)
