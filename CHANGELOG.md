@@ -17,7 +17,7 @@
 
 在偶见的数据库数据重复时,会对数据自动去重并返回结果
 
-
+released in :Apr 27, 2018
 ## 1.0.26
 
 2018-05-02
@@ -41,6 +41,7 @@
 
 增加了 ```next_day_high_limit``` 和 ```next_day_low_limit```参数,方便计算,明日涨跌停
 
+released in :May 02, 2018
 
 ## 1.0.27
 
@@ -52,7 +53,7 @@
 
 修改了QA_Account的下单模式, 修复了下单的判断bug
 
-
+released in :May 10, 2018
 
 ## 1.0.28
 
@@ -89,6 +90,7 @@ Order_byamount=Account.send_order(code='000001',
                                  )
 ```
 
+released in :May 10, 2018
 
 ## 1.0.29
 
@@ -98,6 +100,8 @@ Order_byamount=Account.send_order(code='000001',
 2. 更新了查询权息数据库的代码,现在支持多个股票同时查询
 3. 加速了复权的效率
 
+released in :May 14, 2018
+
 ## 1.0.30
 
 1.0.30更新了关于回测和数据查询的代码
@@ -105,6 +109,8 @@ Order_byamount=Account.send_order(code='000001',
 1. 修改了查询股票info的代码, 支持多个股票同时查询
 2. 修改了QA_Account下单时的```cash_available```结算bug
 3. 
+
+released in :May 14, 2018
 
 ## 1.0.31
 
@@ -142,6 +148,7 @@ example:
 R=datafq.split_dicts
 R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_MACD,1,2)
 ```
+released in :May 15, 2018
 
 ## 1.0.32
 
@@ -155,11 +162,13 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
 
 感谢@尧 zhongjy1992@outlook.com 对于该版本做出的巨大贡献
 
+released in :May 17, 2018
 
 ## 1.0.33
 
 1. 取消初始化quantaxis的时候选择服务器,改成获取事件触发时选取
 
+released in :May 18, 2018
 
 ## 1.0.34 
 
@@ -172,6 +181,7 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
 ```
 4. @taurusWang对于QA的整体注释和代码结构做了系统性的优化
 
+released in :May 19, 2018
 
 ## 1.0.35
 
@@ -197,14 +207,20 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
  - self.pct_change
  - self.mad
 
+released in :May 21, 2018
+
 ## 1.0.36
 
  对于策略示例做了一些适当性的调整
+
+released in :May 21, 2018
  
 ## 1.0.37
 
  1. @yssource将log文件都放入~/.quantaxis/log目录中 (* 在windows中,users/username/.quantaxis/log),减少log文件的垃圾输出
  2. @cc/pchaos 的建议: 将log的位置放在setting文件中
+
+released in :May 22, 2018
 
 ## 1.0.38
 
@@ -215,11 +231,14 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
  5. @royburns 提供了金叉死叉的回测代码 test_backtest/目录下
  6. 修改了QA_RISK 增加了一个画图方法: plot_assets_curve()方法
 
+released in :May 23, 2018
 
 ## 1.0.39
 
  1. 增加seaborn依赖项  需要pip install seaborn 
  2. QA_Risk 增加两个画图方法: plot_dailyhold() plot_signal()
+
+released in :May 24, 2018
 
 ## 1.0.40
  1. 修改base的函数 AVEDEV 返回SERIES
@@ -228,6 +247,8 @@ R['000014'].select_time_with_gap('2018-04-01',15,'<=').add_func(QA.QA_indicator_
  4. QA_Performance 增加两个方法 plot_pnlmoney.plot_pnlratio
  5. @尧 在无GUI的电脑上的matplotlib引入时报错的兼容处理
  6. @yehonghao 增加了龙虎榜数据的获取和存储
+
+released in :May 28, 2018
 
 ## 1.0.41
  1. 增加了财务表的注释和翻译QAData/financial_means.py
@@ -264,7 +285,9 @@ print(get_stockday_ts('000001','2018-05-01','2018-05-21'))
  8. @喜欢你 按照test_backtest中的MACD_JCSC.py的写法移植到了unittest来运行，后期加入assert来自动测试
  9. @喜欢你 修改了QA_Risk的显示,以及更新PR说明
 
-## 1.0.42 (unreleased)
+released in :May 30, 2018
+
+## 1.0.42 
 
 1. QDS的DataStruct 删除 __reversed__ 和 reverse方法
 2. QDS增加回__reversed__方法 但是会raise NotImplementError,方便在reversed内置方法调用时报错
@@ -272,4 +295,10 @@ print(get_stockday_ts('000001','2018-05-01','2018-05-21'))
 4. _quotation_base 类中 __getitem__  类型判断，的测试代码 
 5. QAQuery_Advance 中函数获取数据的参数检查
 6. QA_DataStruct_Indicators 增加指标类
+7. QADATASTRUCT 的selects, select_time,get_bar函数的速度更新
+8. QADataStruct_Indicators 指标类的索引速度更新(详见 [QUANTAXIS INDICATOR](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/Documents/indicators.md))
 
+released in :JUNE 01, 2018
+
+
+## 1.0.43 (unreleased)
