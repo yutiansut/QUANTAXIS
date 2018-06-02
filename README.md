@@ -132,7 +132,7 @@ pip install quantaxis -U
 git clone https://github.com/yutiansut/quantaxis --depth 1
 ```
 
-代码提交式安装
+代码提交式安装 代码提交参见[代码提交](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/Documents/about_pr.md)
 
 - fork QUANTAXIS 到你的github账户
 
