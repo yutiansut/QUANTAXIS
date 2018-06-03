@@ -307,4 +307,12 @@ released in :JUNE 01, 2018
 
 released in :JUNE 03, 2018
 
-## 1.0.44  (unreleased)
+## 1.0.44
+
+1. @2018/06/03 pandas 的索引问题导致
+https://github.com/pandas-dev/pandas/issues/21299
+
+因此先用set_index去重做一次index
+影响的有selects,select_time,select_month,get_bar
+
+## 1.0.45 (unreleased)
