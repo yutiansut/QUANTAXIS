@@ -315,6 +315,18 @@ https://github.com/pandas-dev/pandas/issues/21299
 因此先用set_index去重做一次index
 影响的有selects,select_time,select_month,get_bar
 
-## 1.0.45 (unreleased)
+released in :JUNE 03, 2018
+
+## 1.0.45 
 
 1. 在安装完毕后,会弹出一个浏览器页面,告知最新更新
+2. 修复1.0.42出现的一个bug (select_code的问题), 同时兼顾1.0.44的写法进行修改
+
+```
+因此先用set_index去重做一次index
+影响的有selects,select_time,select_month,get_bar,select_code
+```
+
+released in :JUNE 03, 2018
+
+## 1.0.46 (unreleased)
