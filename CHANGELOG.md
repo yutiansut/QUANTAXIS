@@ -297,8 +297,36 @@ released in :May 30, 2018
 6. QA_DataStruct_Indicators 增加指标类
 7. QADATASTRUCT 的selects, select_time,get_bar函数的速度更新
 8. QADataStruct_Indicators 指标类的索引速度更新(详见 [QUANTAXIS INDICATOR](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/Documents/indicators.md))
+
 released in :JUNE 01, 2018
 
 
-## 1.0.43 (unreleased)
+## 1.0.43
 1. quantaxis 命令行 save 命令错误的 异常处理
+2. QA_Risk 插件增加对于assets计算的修改(如果撮合按不复权撮合,risk也按不复权去计算assets)
+
+released in :JUNE 03, 2018
+
+## 1.0.44
+
+1. @2018/06/03 pandas 的索引问题导致
+https://github.com/pandas-dev/pandas/issues/21299
+
+因此先用set_index去重做一次index
+影响的有selects,select_time,select_month,get_bar
+
+released in :JUNE 03, 2018
+
+## 1.0.45 
+
+1. 在安装完毕后,会弹出一个浏览器页面,告知最新更新
+2. 修复1.0.42出现的一个bug (select_code的问题), 同时兼顾1.0.44的写法进行修改
+
+```
+因此先用set_index去重做一次index
+影响的有selects,select_time,select_month,get_bar,select_code
+```
+
+released in :JUNE 03, 2018
+
+## 1.0.46 (unreleased)
