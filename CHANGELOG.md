@@ -330,3 +330,4 @@ released in :JUNE 03, 2018
 released in :JUNE 03, 2018
 
 ## 1.0.46 (unreleased)
+命令行中 添加了 save stock_info_tushare 保存tushare股票列表的信息到数据库中

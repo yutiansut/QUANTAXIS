@@ -43,6 +43,21 @@ def QA_SU_save_stock_info(engine, client=DATABASE):
     engine.QA_SU_save_stock_info(client=client)
 
 
+def QA_SU_save_stock_info_tushare(engine="tushare", client=DATABASE):
+    '''
+
+    :param engine: tushare
+    :param client:
+    :return: None
+    '''
+
+    # only support the tushare
+    engine = select_save_engine("tushare")
+    engine.QA_SU_save_stock_info_tushare()
+
+    pass
+
+
 def QA_SU_save_stock_list(engine, client=DATABASE):
     """save stock_list
     

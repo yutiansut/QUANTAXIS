@@ -52,17 +52,17 @@ def ping(ip, port=7709, type_='stock'):
                 if len(api.get_security_list(0, 1)) > 800:
                     return datetime.datetime.now() - __time1
                 else:
-                    print('Bad STOCKIP REPSONSE %s' % ip)
+                    print('😩Bad STOCKIP REPSONSE %s' % ip)
                     return datetime.timedelta(9, 9, 0)
         elif type_ in ['future']:
             with apix.connect(ip, port, time_out=0.7):
                 if apix.get_instrument_count() > 10000:
                     return datetime.datetime.now() - __time1
                 else:
-                    print('Bad FUTUREIP REPSONSE %s' % ip)
+                    print('😩😩️Bad FUTUREIP REPSONSE %s' % ip)
                     return datetime.timedelta(9, 9, 0)
     except:
-        print('Bad REPSONSE %s' % ip)
+        print('😩😩️Bad REPSONSE %s' % ip)
         return datetime.timedelta(9, 9, 0)
 
 
@@ -75,7 +75,7 @@ def select_best_ip():
     best_stock_ip = stock_ip_list[data_stock.index(min(data_stock))]
     best_future_ip = future_ip_list[data_future.index(min(data_future))]
 
-    QA_util_log_info('=== The BEST SERVER ===\n stock_ip {} future_ip {}'.format(
+    QA_util_log_info('🤑=== The BEST SERVER ===\n 🤑stock_ip {} future_ip {}'.format(
         best_stock_ip['ip'], best_future_ip['ip']))
     return {'stock': best_stock_ip, 'future': best_future_ip}
 

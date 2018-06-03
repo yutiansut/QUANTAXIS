@@ -19,6 +19,8 @@ from QUANTAXIS.QASU.main import (select_save_engine)
 class Test_Query_Advance(unittest.TestCase):
     '''
     读取钱龙数据库进行比对
+    读取同花顺数据库进行比对
+    读取通达信数据库进行比对
     '''
 
     def setUp(self):
@@ -37,6 +39,8 @@ class Test_Query_Advance(unittest.TestCase):
 
     def test_QA_fetch_stock_min_adv(self):
         dataStruct = QA_fetch_stock_min_adv(start='2018-05-28 00:00:00',code = '300439')
+        print("获取1分钟数据")
+        print(dataStruct)
         #dataStruct.show()
         pass
 
@@ -50,8 +54,8 @@ class Test_Query_Advance(unittest.TestCase):
         # print(data)
         # print("-----------------------------------------------------------------------")
 
-        engine = select_save_engine(engine="Tushare")
-        engine.QA_SU_save_stock_list(client=DATABASE)
+        #engine = select_save_engine(engine="Tushare")
+        #engine.QA_SU_save_stock_list(client=DATABASE)
 
         # date = str(datetime.date.today())
         # date_stamp = QA_util_date_stamp(date)
