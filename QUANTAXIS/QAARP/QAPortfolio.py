@@ -176,7 +176,7 @@ class QA_Portfolio():
             for item in self.accounts.keys():
                 try:
                     message = collection.find_one({'account_cookie': item})
-                    QA_util_log_info('{} sync successfully'.format(item))
+                    QA_util_log_info('{} sync successfully ✅'.format(item))
                 except Exception as e:
                     QA_util_log_info(
                         '{} sync wrong \\\n wrong info {}'.format(item, e))
@@ -186,7 +186,7 @@ class QA_Portfolio():
             try:
                 message = collection.find_one(
                     {'account_cookie': account_cookie})
-                QA_util_log_info('{} sync successfully'.format(item))
+                QA_util_log_info('{} sync successfully ✅'.format(item))
             except Exception as e:
                 QA_util_log_info(
                     '{} sync wrong \\\n wrong info {}'.format(account_cookie, e))
@@ -200,7 +200,7 @@ class QA_Portfolio():
                 try:
                     message = collection.find_one_and_update(
                         {'account_cookie': item})
-                    QA_util_log_info('{} sync successfully'.format(item))
+                    QA_util_log_info('{} sync successfully ✅'.format(item))
                 except Exception as e:
                     QA_util_log_info(
                         '{} sync wrong \\\n wrong info {}'.format(item, e))
@@ -210,7 +210,7 @@ class QA_Portfolio():
             try:
                 message = collection.find_one(
                     {'account_cookie': account_cookie})
-                QA_util_log_info('{} sync successfully'.format(item))
+                QA_util_log_info('{} sync successfully ✅'.format(item))
             except Exception as e:
                 QA_util_log_info(
                     '{} sync wrong \\\n wrong info {}'.format(account_cookie, e))
