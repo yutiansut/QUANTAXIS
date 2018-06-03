@@ -68,7 +68,7 @@ def QA_SU_save_stock_day(client=DATABASE):
     def __saving_work(code, coll_stock_day):
         try:
             QA_util_log_info(
-                '##JOB01 Now Saving STOCK_DAY==== %s' % (str(code)))
+                '##JOB01 📝Now Saving STOCK_DAY==== %s' % (str(code)))
 
             ref = coll_stock_day.find({'code': str(code)[0:6]})
             end_date = str(now_time())[0:10]
@@ -77,7 +77,7 @@ def QA_SU_save_stock_day(client=DATABASE):
 
                 start_date = ref[ref.count() - 1]['date']
 
-                QA_util_log_info(' UPDATE_STOCK_DAY \n Trying updating %s from %s to %s' %
+                QA_util_log_info(' 🛵📜UPDATE_STOCK_DAY \n Trying updating %s from %s to %s' %
                                  (code, start_date, end_date))
                 if start_date != end_date:
                     coll_stock_day.insert_many(
@@ -85,7 +85,7 @@ def QA_SU_save_stock_day(client=DATABASE):
                             QA_fetch_get_stock_day(str(code), QA_util_get_next_day(start_date), end_date, '00')))
             else:
                 start_date = '1990-01-01'
-                QA_util_log_info(' UPDATE_STOCK_DAY \n Trying updating %s from %s to %s' %
+                QA_util_log_info(' 🛵📜UPDATE_STOCK_DAY \n Trying updating %s from %s to %s' %
                                  (code, start_date, end_date))
                 if start_date != end_date:
                     coll_stock_day.insert_many(
@@ -96,14 +96,14 @@ def QA_SU_save_stock_day(client=DATABASE):
     for item in range(len(stock_list)):
         QA_util_log_info('The %s of Total %s' %
                          (item, len(stock_list)))
-        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
+        QA_util_log_info('⏳DOWNLOAD PROGRESS %s ' % str(
             float(item / len(stock_list) * 100))[0:4] + '%')
 
         __saving_work(stock_list.index[item], coll_stock_day)
     if len(err) < 1:
-        QA_util_log_info('SUCCESS')
+        QA_util_log_info('SUCCESS✅')
     else:
-        QA_util_log_info('ERROR CODE \n ')
+        QA_util_log_info('💢 ERROR CODE \n ')
         QA_util_log_info(err)
 
 def QA_SU_save_stock_week(client=DATABASE):
@@ -122,7 +122,7 @@ def QA_SU_save_stock_week(client=DATABASE):
     def __saving_work(code, coll_stock_week):
         try:
             QA_util_log_info(
-                '##JOB01 Now Saving STOCK_WEEK==== %s' % (str(code)))
+                '##JOB01 📝Now Saving STOCK_WEEK==== %s' % (str(code)))
 
             ref = coll_stock_week.find({'code': str(code)[0:6]})
             end_date = str(now_time())[0:10]
@@ -131,7 +131,7 @@ def QA_SU_save_stock_week(client=DATABASE):
 
                 start_date = ref[ref.count() - 1]['date']
 
-                QA_util_log_info(' UPDATE_STOCK_WEEK \n Trying updating %s from %s to %s' %
+                QA_util_log_info(' 🛵📜UPDATE_STOCK_WEEK \n Trying updating %s from %s to %s' %
                                  (code, start_date, end_date))
                 if start_date != end_date:
                     coll_stock_week.insert_many(
@@ -139,7 +139,7 @@ def QA_SU_save_stock_week(client=DATABASE):
                             QA_fetch_get_stock_day(str(code), QA_util_get_next_day(start_date), end_date, '00',frequence='week')))
             else:
                 start_date = '1990-01-01'
-                QA_util_log_info(' UPDATE_STOCK_WEEK \n Trying updating %s from %s to %s' %
+                QA_util_log_info(' 🛵📜UPDATE_STOCK_WEEK \n Trying updating %s from %s to %s' %
                                  (code, start_date, end_date))
                 if start_date != end_date:
                     coll_stock_week.insert_many(
@@ -150,15 +150,16 @@ def QA_SU_save_stock_week(client=DATABASE):
     for item in range(len(stock_list)):
         QA_util_log_info('The %s of Total %s' %
                          (item, len(stock_list)))
-        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
+        QA_util_log_info('⏳DOWNLOAD PROGRESS %s ' % str(
             float(item / len(stock_list) * 100))[0:4] + '%')
 
         __saving_work(stock_list.index[item], coll_stock_week)
     if len(err) < 1:
-        QA_util_log_info('SUCCESS')
+        QA_util_log_info('SUCCESS✅')
     else:
-        QA_util_log_info('ERROR CODE \n ')
+        QA_util_log_info('💢 ERROR CODE \n ')
         QA_util_log_info(err)
+
 def QA_SU_save_stock_month(client=DATABASE):
     """save stock_month
 
@@ -175,7 +176,7 @@ def QA_SU_save_stock_month(client=DATABASE):
     def __saving_work(code, coll_stock_month):
         try:
             QA_util_log_info(
-                '##JOB01 Now Saving STOCK_MONTH==== %s' % (str(code)))
+                '##JOB01 📝Now Saving STOCK_MONTH==== %s' % (str(code)))
 
             ref = coll_stock_month.find({'code': str(code)[0:6]})
             end_date = str(now_time())[0:10]
@@ -184,7 +185,7 @@ def QA_SU_save_stock_month(client=DATABASE):
 
                 start_date = ref[ref.count() - 1]['date']
 
-                QA_util_log_info(' UPDATE_STOCK_MONTH \n Trying updating %s from %s to %s' %
+                QA_util_log_info(' 🛵📜UPDATE_STOCK_MONTH \n Trying updating %s from %s to %s' %
                                  (code, start_date, end_date))
                 if start_date != end_date:
                     coll_stock_month.insert_many(
@@ -192,7 +193,7 @@ def QA_SU_save_stock_month(client=DATABASE):
                             QA_fetch_get_stock_day(str(code), QA_util_get_next_day(start_date), end_date, '00',frequence='month')))
             else:
                 start_date = '1990-01-01'
-                QA_util_log_info(' UPDATE_STOCK_MONTH \n Trying updating %s from %s to %s' %
+                QA_util_log_info(' 🛵📜UPDATE_STOCK_MONTH \n Trying updating %s from %s to %s' %
                                  (code, start_date, end_date))
                 if start_date != end_date:
                     coll_stock_month.insert_many(
@@ -203,14 +204,14 @@ def QA_SU_save_stock_month(client=DATABASE):
     for item in range(len(stock_list)):
         QA_util_log_info('The %s of Total %s' %
                          (item, len(stock_list)))
-        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
+        QA_util_log_info('⏳DOWNLOAD PROGRESS %s ' % str(
             float(item / len(stock_list) * 100))[0:4] + '%')
 
         __saving_work(stock_list.index[item], coll_stock_month)
     if len(err) < 1:
-        QA_util_log_info('SUCCESS')
+        QA_util_log_info('SUCCESS✅')
     else:
-        QA_util_log_info('ERROR CODE \n ')
+        QA_util_log_info('💢 ERROR CODE \n ')
         QA_util_log_info(err)
 
 def QA_SU_save_stock_year(client=DATABASE):
@@ -229,7 +230,7 @@ def QA_SU_save_stock_year(client=DATABASE):
     def __saving_work(code, coll_stock_year):
         try:
             QA_util_log_info(
-                '##JOB01 Now Saving STOCK_YEAR==== %s' % (str(code)))
+                '##JOB01 📝Now Saving STOCK_YEAR==== %s' % (str(code)))
 
             ref = coll_stock_year.find({'code': str(code)[0:6]})
             end_date = str(now_time())[0:10]
@@ -238,7 +239,7 @@ def QA_SU_save_stock_year(client=DATABASE):
 
                 start_date = ref[ref.count() - 1]['date']
 
-                QA_util_log_info(' UPDATE_STOCK_YEAR \n Trying updating %s from %s to %s' %
+                QA_util_log_info(' 🛵📜UPDATE_STOCK_YEAR \n Trying updating %s from %s to %s' %
                                  (code, start_date, end_date))
                 if start_date != end_date:
                     coll_stock_year.insert_many(
@@ -246,7 +247,7 @@ def QA_SU_save_stock_year(client=DATABASE):
                             QA_fetch_get_stock_day(str(code), QA_util_get_next_day(start_date), end_date, '00',frequence='year')))
             else:
                 start_date = '1990-01-01'
-                QA_util_log_info(' UPDATE_STOCK_YEAR \n Trying updating %s from %s to %s' %
+                QA_util_log_info(' 🛵📜UPDATE_STOCK_YEAR \n Trying updating %s from %s to %s' %
                                  (code, start_date, end_date))
                 if start_date != end_date:
                     coll_stock_year.insert_many(
@@ -257,15 +258,17 @@ def QA_SU_save_stock_year(client=DATABASE):
     for item in range(len(stock_list)):
         QA_util_log_info('The %s of Total %s' %
                          (item, len(stock_list)))
-        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
+        QA_util_log_info('⏳DOWNLOAD PROGRESS %s ' % str(
             float(item / len(stock_list) * 100))[0:4] + '%')
 
         __saving_work(stock_list.index[item], coll_stock_year)
     if len(err) < 1:
-        QA_util_log_info('SUCCESS')
+        QA_util_log_info('SUCCESS✅')
     else:
-        QA_util_log_info('ERROR CODE \n ')
+        QA_util_log_info('💢 ERROR CODE \n ')
         QA_util_log_info(err)
+
+
 def QA_SU_save_stock_xdxr(client=DATABASE):
     """[summary]
 
@@ -281,7 +284,7 @@ def QA_SU_save_stock_xdxr(client=DATABASE):
     err = []
 
     def __saving_work(code, coll):
-        QA_util_log_info('##JOB02 Now Saving XDXR INFO ==== %s' % (str(code)))
+        QA_util_log_info('##JOB02 📝Now Saving XDXR INFO ==== %s' % (str(code)))
         try:
             coll.insert_many(
                 QA_util_to_json_from_pandas(
@@ -292,11 +295,11 @@ def QA_SU_save_stock_xdxr(client=DATABASE):
             err.append(str(code))
     for i_ in range(len(stock_list)):
         QA_util_log_info('The %s of Total %s' % (i_, len(stock_list)))
-        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
+        QA_util_log_info('⏳DOWNLOAD PROGRESS %s ' % str(
             float(i_ / len(stock_list) * 100))[0:4] + '%')
         __saving_work(stock_list.index[i_], coll)
     if len(err) < 1:
-        QA_util_log_info('SUCCESS')
+        QA_util_log_info('SUCCESS✅')
     else:
 
         try_code = err
@@ -304,13 +307,13 @@ def QA_SU_save_stock_xdxr(client=DATABASE):
         QA_util_log_info('Try to get stock xdxr info in erro list! \n')
         for i__ in range(len(try_code)):
             QA_util_log_info('The %s of Total %s' % (i__, len(try_code)))
-            QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
+            QA_util_log_info('⏳DOWNLOAD PROGRESS %s ' % str(
                 float(i__ / len(try_code) * 100))[0:4] + '%')
             __saving_work(try_code[i__], coll)
         if len(err) < 1:
-            QA_util_log_info('SUCCESS')
+            QA_util_log_info('SUCCESS✅')
         else:
-            QA_util_log_info('ERROR CODE \n ')
+            QA_util_log_info('💢 ERROR CODE \n ')
             QA_util_log_info(err)
 
 
@@ -328,7 +331,7 @@ def QA_SU_save_stock_min(client=DATABASE):
     err = []
 
     def __saving_work(code, coll):
-        QA_util_log_info('##JOB03 Now Saving STOCK_MIN ==== %s' % (str(code)))
+        QA_util_log_info('##JOB03 📝Now Saving STOCK_MIN ==== %s' % (str(code)))
         try:
             for type in ['1min', '5min', '15min', '30min', '60min']:
                 ref_ = coll.find(
@@ -338,7 +341,7 @@ def QA_SU_save_stock_min(client=DATABASE):
                     start_time = ref_[ref_.count() - 1]['datetime']
 
                     QA_util_log_info(
-                        '##JOB03.%s Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min', '30min', '60min'].index(type), str(code), start_time, end_time, type))
+                        '##JOB03.%s 📝Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min', '30min', '60min'].index(type), str(code), start_time, end_time, type))
                     if start_time != end_time:
                         __data = QA_fetch_get_stock_min(
                             str(code), start_time, end_time, type)
@@ -348,7 +351,7 @@ def QA_SU_save_stock_min(client=DATABASE):
                 else:
                     start_time = '2015-01-01'
                     QA_util_log_info(
-                        '##JOB03.%s Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min', '30min', '60min'].index(type), str(code), start_time, end_time, type))
+                        '##JOB03.%s 📝Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min', '30min', '60min'].index(type), str(code), start_time, end_time, type))
                     if start_time != end_time:
                         __data = QA_fetch_get_stock_min(
                             str(code), start_time, end_time, type)
@@ -367,13 +370,13 @@ def QA_SU_save_stock_min(client=DATABASE):
     count = 0
     for i_ in concurrent.futures.as_completed(res):
         QA_util_log_info('The %s of Total %s' % (count, len(stock_list)))
-        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
+        QA_util_log_info('⏳DOWNLOAD PROGRESS %s ' % str(
             float(count / len(stock_list) * 100))[0:4] + '%')
         count = count + 1
     if len(err) < 1:
-        QA_util_log_info('SUCCESS')
+        QA_util_log_info('SUCCESS✅')
     else:
-        QA_util_log_info('ERROR CODE \n ')
+        QA_util_log_info('💢 ERROR CODE \n ')
         QA_util_log_info(err)
 
 
@@ -398,7 +401,7 @@ def QA_SU_save_index_day(client=DATABASE):
             if ref_.count() > 0:
                 start_time = ref_[ref_.count() - 1]['date']
 
-                QA_util_log_info('##JOB04 Now Saving INDEX_DAY==== \n Trying updating %s from %s to %s' %
+                QA_util_log_info('##JOB04 📝Now Saving INDEX_DAY==== \n Trying updating %s from %s to %s' %
                                     (code, start_time, end_time))
 
                 if start_time != end_time:
@@ -408,14 +411,14 @@ def QA_SU_save_index_day(client=DATABASE):
             else:
                 try:
                     start_time = '1990-01-01'
-                    QA_util_log_info('##JOB04 Now Saving INDEX_DAY==== \n Trying updating %s from %s to %s' %
+                    QA_util_log_info('##JOB04 📝Now Saving INDEX_DAY==== \n Trying updating %s from %s to %s' %
                                         (code, start_time, end_time))
                     coll.insert_many(
                         QA_util_to_json_from_pandas(
                             QA_fetch_get_index_day(str(code), start_time, end_time)))
                 except:
                     start_time = '2009-01-01'
-                    QA_util_log_info('##JOB04 Now Saving INDEX_DAY==== \n Trying updating %s from %s to %s' %
+                    QA_util_log_info('##JOB04 📝Now Saving INDEX_DAY==== \n Trying updating %s from %s to %s' %
                                         (code, start_time, end_time))
                     coll.insert_many(
                         QA_util_to_json_from_pandas(
@@ -426,13 +429,13 @@ def QA_SU_save_index_day(client=DATABASE):
     for i_ in range(len(__index_list)):
         #__saving_work('000001')
         QA_util_log_info('The %s of Total %s' % (i_, len(__index_list)))
-        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
+        QA_util_log_info('⏳DOWNLOAD PROGRESS %s ' % str(
             float(i_ / len(__index_list) * 100))[0:4] + '%')
         __saving_work(__index_list.index[i_][0], coll)
     if len(err) < 1:
-        QA_util_log_info('SUCCESS')
+        QA_util_log_info('SUCCESS✅')
     else:
-        QA_util_log_info('ERROR CODE \n ')
+        QA_util_log_info('💢 ERROR CODE \n ')
         QA_util_log_info(err)
 
 
@@ -451,7 +454,7 @@ def QA_SU_save_index_min(client=DATABASE):
 
     def __saving_work(code, coll):
 
-        QA_util_log_info('##JOB05 Now Saving Index_MIN ==== %s' % (str(code)))
+        QA_util_log_info('##JOB05 📝Now Saving Index_MIN ==== %s' % (str(code)))
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
@@ -462,7 +465,7 @@ def QA_SU_save_index_min(client=DATABASE):
                     start_time = ref_[ref_.count() - 1]['datetime']
 
                     QA_util_log_info(
-                        '##JOB05.%s Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min', '30min', '60min'].index(type), str(code), start_time, end_time, type))
+                        '##JOB05.%s 📝Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min', '30min', '60min'].index(type), str(code), start_time, end_time, type))
                     if start_time != end_time:
                         __data = QA_fetch_get_index_min(
                             str(code), start_time, end_time, type)
@@ -472,7 +475,7 @@ def QA_SU_save_index_min(client=DATABASE):
                 else:
                     start_time = '2015-01-01'
                     QA_util_log_info(
-                        '##JOB05.%s Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min', '30min', '60min'].index(type), str(code), start_time, end_time, type))
+                        '##JOB05.%s 📝Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min', '30min', '60min'].index(type), str(code), start_time, end_time, type))
                     if start_time != end_time:
                         __data = QA_fetch_get_index_min(
                             str(code), start_time, end_time, type)
@@ -489,13 +492,13 @@ def QA_SU_save_index_min(client=DATABASE):
     count = 0
     for i_ in concurrent.futures.as_completed(res):
         QA_util_log_info('The %s of Total %s' % (count, len(__index_list)))
-        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
+        QA_util_log_info('⏳DOWNLOAD PROGRESS %s ' % str(
             float(count / len(__index_list) * 100))[0:4] + '%')
         count = count + 1
     if len(err) < 1:
-        QA_util_log_info('SUCCESS')
+        QA_util_log_info('SUCCESS✅')
     else:
-        QA_util_log_info('ERROR CODE \n ')
+        QA_util_log_info('💢 ERROR CODE \n ')
         QA_util_log_info(err)
 
 
@@ -521,7 +524,7 @@ def QA_SU_save_etf_day(client=DATABASE):
             if ref_.count() > 0:
                 start_time = ref_[ref_.count() - 1]['date']
 
-                QA_util_log_info('##JOB06 Now Saving ETF_DAY==== \n Trying updating %s from %s to %s' %
+                QA_util_log_info('##JOB06 📝Now Saving ETF_DAY==== \n Trying updating %s from %s to %s' %
                                  (code, start_time, end_time))
 
                 if start_time != end_time:
@@ -530,7 +533,7 @@ def QA_SU_save_etf_day(client=DATABASE):
                             QA_fetch_get_index_day(str(code), QA_util_get_next_day(start_time), end_time)))
             else:
                 start_time = '1990-01-01'
-                QA_util_log_info('##JOB06 Now Saving ETF_DAY==== \n Trying updating %s from %s to %s' %
+                QA_util_log_info('##JOB06 📝Now Saving ETF_DAY==== \n Trying updating %s from %s to %s' %
                                  (code, start_time, end_time))
 
                 if start_time != end_time:
@@ -542,13 +545,13 @@ def QA_SU_save_etf_day(client=DATABASE):
     for i_ in range(len(__index_list)):
         #__saving_work('000001')
         QA_util_log_info('The %s of Total %s' % (i_, len(__index_list)))
-        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
+        QA_util_log_info('⏳DOWNLOAD PROGRESS %s ' % str(
             float(i_ / len(__index_list) * 100))[0:4] + '%')
         __saving_work(__index_list.index[i_][0], coll)
     if len(err) < 1:
-        QA_util_log_info('SUCCESS')
+        QA_util_log_info('SUCCESS✅')
     else:
-        QA_util_log_info('ERROR CODE \n ')
+        QA_util_log_info('💢 ERROR CODE \n ')
         QA_util_log_info(err)
 
 
@@ -567,7 +570,7 @@ def QA_SU_save_etf_min(client=DATABASE):
 
     def __saving_work(code, coll):
 
-        QA_util_log_info('##JOB07 Now Saving ETF_MIN ==== %s' % (str(code)))
+        QA_util_log_info('##JOB07 📝Now Saving ETF_MIN ==== %s' % (str(code)))
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
@@ -578,7 +581,7 @@ def QA_SU_save_etf_min(client=DATABASE):
                     start_time = ref_[ref_.count() - 1]['datetime']
 
                     QA_util_log_info(
-                        '##JOB07.%s Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min', '30min', '60min'].index(type), str(code), start_time, end_time, type))
+                        '##JOB07.%s 📝Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min', '30min', '60min'].index(type), str(code), start_time, end_time, type))
                     if start_time != end_time:
                         __data = QA_fetch_get_index_min(
                             str(code), start_time, end_time, type)
@@ -588,7 +591,7 @@ def QA_SU_save_etf_min(client=DATABASE):
                 else:
                     start_time = '2015-01-01'
                     QA_util_log_info(
-                        '##JOB07.%s Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min', '30min', '60min'].index(type), str(code), start_time, end_time, type))
+                        '##JOB07.%s 📝Now Saving %s from %s to %s ==%s ' % (['1min', '5min', '15min', '30min', '60min'].index(type), str(code), start_time, end_time, type))
                     if start_time != end_time:
                         __data = QA_fetch_get_index_min(
                             str(code), start_time, end_time, type)
@@ -605,13 +608,13 @@ def QA_SU_save_etf_min(client=DATABASE):
     count = 0
     for i_ in concurrent.futures.as_completed(res):
         QA_util_log_info('The %s of Total %s' % (count, len(__index_list)))
-        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
+        QA_util_log_info('⏳DOWNLOAD PROGRESS %s ' % str(
             float(count / len(__index_list) * 100))[0:4] + '%')
         count = count + 1
     if len(err) < 1:
-        QA_util_log_info('SUCCESS')
+        QA_util_log_info('SUCCESS✅')
     else:
-        QA_util_log_info('ERROR CODE \n ')
+        QA_util_log_info('💢 ERROR CODE \n ')
         QA_util_log_info(err)
 
 
@@ -628,11 +631,13 @@ def QA_SU_save_stock_list(client=DATABASE):
     err = []
 
     try:
-        QA_util_log_info('##JOB08 Now Saving STOCK_LIST ====')
+        QA_util_log_info('##JOB08 📝Now Saving STOCK_LIST ====')
         stock_list_from_tdx = QA_fetch_get_stock_list()
         pandas_data = QA_util_to_json_from_pandas(stock_list_from_tdx)
         coll.insert_many(pandas_data)
+        QA_util_log_info("完成股票列表获取✅")
     except:
+        print("💢 Error save_tdx.QA_SU_save_stock_list exception!")
         pass
 
 
@@ -648,7 +653,7 @@ def QA_SU_save_stock_block(client=DATABASE):
     coll.create_index('code')
     err = []
     try:
-        QA_util_log_info('##JOB09 Now Saving STOCK_BlOCK ====')
+        QA_util_log_info('##JOB09 📝Now Saving STOCK_BlOCK ====')
         coll.insert_many(QA_util_to_json_from_pandas(
             QA_fetch_get_stock_block('tdx')))
         coll.insert_many(QA_util_to_json_from_pandas(
@@ -672,7 +677,7 @@ def QA_SU_save_stock_info(client=DATABASE):
 
     def __saving_work(code, coll):
         QA_util_log_info(
-            '##JOB010 Now Saving STOCK INFO ==== %s' % (str(code)))
+            '##JOB010 📝Now Saving STOCK INFO ==== %s' % (str(code)))
         try:
             coll.insert_many(
                 QA_util_to_json_from_pandas(
@@ -683,13 +688,13 @@ def QA_SU_save_stock_info(client=DATABASE):
     for i_ in range(len(stock_list)):
         #__saving_work('000001')
         QA_util_log_info('The %s of Total %s' % (i_, len(stock_list)))
-        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
+        QA_util_log_info('⏳DOWNLOAD PROGRESS %s ' % str(
             float(i_ / len(stock_list) * 100))[0:4] + '%')
         __saving_work(stock_list.index[i_], coll)
     if len(err) < 1:
-        QA_util_log_info('SUCCESS')
+        QA_util_log_info('SUCCESS✅')
     else:
-        QA_util_log_info('ERROR CODE \n ')
+        QA_util_log_info('💢 ERROR CODE \n ')
         QA_util_log_info(err)
 
 
@@ -707,7 +712,7 @@ def QA_SU_save_stock_transaction(client=DATABASE):
 
     def __saving_work(code):
         QA_util_log_info(
-            '##JOB10 Now Saving STOCK_TRANSACTION ==== %s' % (str(code)))
+            '##JOB10 📝Now Saving STOCK_TRANSACTION ==== %s' % (str(code)))
         try:
             coll.insert_many(
                 QA_util_to_json_from_pandas(
@@ -717,13 +722,13 @@ def QA_SU_save_stock_transaction(client=DATABASE):
     for i_ in range(len(stock_list)):
         #__saving_work('000001')
         QA_util_log_info('The %s of Total %s' % (i_, len(stock_list)))
-        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
+        QA_util_log_info('⏳DOWNLOAD PROGRESS %s ' % str(
             float(i_ / len(stock_list) * 100))[0:4] + '%')
         __saving_work(stock_list.index[i_])
     if len(err) < 1:
-        QA_util_log_info('SUCCESS')
+        QA_util_log_info('SUCCESS✅')
     else:
-        QA_util_log_info('ERROR CODE \n ')
+        QA_util_log_info('💢 ERROR CODE \n ')
         QA_util_log_info(err)
 
 
