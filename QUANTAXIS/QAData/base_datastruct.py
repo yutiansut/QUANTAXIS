@@ -806,8 +806,12 @@ class _quotation_base():
             return self.new(pd.concat(list(map(lambda x: __eq(x), self.splits()))), self.type, self.if_fq)
 
     def select_code(self, code):
-
-        return self.new(self.data.loc[slice(None), code], self.type, self.if_fq)
+        def _select_code(code):
+            return self.data.loc[(slice(None), code),:]
+        if self.type[-3:] in ['day']:
+            return self.new(_select_code(code).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
+        elif self.type[-3:] in ['min']:
+            return self.new(_select_code(code).set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
 
     def get_bar(self, code, time, if_trade=True):
         # if self.type[-3:] in ['day']:
