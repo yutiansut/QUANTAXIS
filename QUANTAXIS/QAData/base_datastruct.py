@@ -705,14 +705,24 @@ class _quotation_base():
         """
 
         如果end不填写,默认获取到结尾
-        """
 
-        # if self.type[-3:] in ['day']:
-        if end is not None:
-            #self.query('code=="{}"'.format(code)).query('date>="{}" and date<="{}"'.format(start, end)).set_index(['date', 'code'], drop=False)
-            return self.new(self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), slice(code)), :], self.type, self.if_fq)
-        else:
-            return self.new(self.data.loc[(slice(pd.Timestamp(start), None), slice(code)), :], self.type, self.if_fq)
+        @2018/06/03 pandas 的索引问题导致
+        https://github.com/pandas-dev/pandas/issues/21299
+
+        因此先用set_index去重做一次index
+        影响的有selects,select_time,select_month,get_bar
+        """
+        def _selects(code, start, end):
+            # if self.type[-3:] in ['day']:
+            if end is not None:
+                #self.query('code=="{}"'.format(code)).query('date>="{}" and date<="{}"'.format(start, end)).set_index(['date', 'code'], drop=False)
+                return self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), slice(code)), :]
+            else:
+                return self.data.loc[(slice(pd.Timestamp(start), None), slice(code)), :]
+        if self.type[-3:] in ['day']:
+            return self.new(_selects(code, start, end).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
+        elif self.type[-3:] in ['min']:
+            return self.new(_selects(code, start, end).set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
             # return self.new(self.query('code=="{}"'.format(code)).query('date>="{}"'.format(start)).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
         # elif self.type[-3:] in ['min']:
         #     if end is not None:
@@ -721,12 +731,17 @@ class _quotation_base():
         #         return self.new(self.query('code=="{}"'.format(code)).data[self.data['datetime'] >= start].set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
 
     def select_time(self, start, end=None):
+        def _select_time(start, end):
+            if end is not None:
+                #self.query('code=="{}"'.format(code)).query('date>="{}" and date<="{}"'.format(start, end)).set_index(['date', 'code'], drop=False)
+                return self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), slice(None)), :]
+            else:
+                return self.data.loc[(slice(pd.Timestamp(start), None), slice(None)), :]
+        if self.type[-3:] in ['day']:
+            return self.new(_select_time(start, end).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
+        elif self.type[-3:] in ['min']:
+            return self.new(_select_time(start, end).set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
 
-        if end is not None:
-            #self.query('code=="{}"'.format(code)).query('date>="{}" and date<="{}"'.format(start, end)).set_index(['date', 'code'], drop=False)
-            return self.new(self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), slice(None)), :], self.type, self.if_fq)
-        else:
-            return self.new(self.data.loc[(slice(pd.Timestamp(start), None), slice(None)), :], self.type, self.if_fq)
         # if self.type[-3:] in ['day']:
         #     if end is not None:
 
@@ -740,7 +755,12 @@ class _quotation_base():
         #         return self.new(self.data[self.data['datetime'] >= start].set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
 
     def select_month(self, month):
-        return self.new(self.data.loc[month, slice(None)], self.type, self.if_fq)
+        def _select_month(month):
+            return self.data.loc[month, slice(None)]
+        if self.type[-3:] in ['day']:
+            return self.new(_select_month(month).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
+        elif self.type[-3:] in ['min']:
+            return self.new(_select_month(month).set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
 
     def select_time_with_gap(self, time, gap, method):
 
@@ -795,8 +815,13 @@ class _quotation_base():
 
         # elif self.type[-3:] in ['min']:
         #     return self.new(self.query('code=="{}"'.format(code))[self.data['datetime'] == str(time)].set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
+        def _get_bar(code, time, if_trade):
+            return self.data.loc[pd.Timestamp(time), code]
         try:
-            return self.new(self.data.loc[pd.Timestamp(time), code], self.type, self.if_fq)
+            if self.type[-3:] in ['day']:
+                return self.new(_get_bar(code, time, if_trade).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
+            elif self.type[-3:] in ['min']:
+                return self.new(_get_bar(code, time, if_trade).set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
         except:
             raise ValueError(
                 'DATASTRUCT CURRENTLY CANNOT FIND THIS BAR WITH {} {}'.format(code, time))
