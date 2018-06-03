@@ -113,5 +113,7 @@ setup(
     include_package_data=True,
     zip_safe=True,
 )
+import webbrowser
 
+webbrowser.open('https://github.com/QUANTAXIS/QUANTAXIS/blob/master/CHANGELOG.md')
 # 把上面的变量填入了一个setup()中即可。
