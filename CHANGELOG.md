@@ -316,3 +316,5 @@ https://github.com/pandas-dev/pandas/issues/21299
 影响的有selects,select_time,select_month,get_bar
 
 ## 1.0.45 (unreleased)
+
+1. 在安装完毕后,会弹出一个浏览器页面,告知最新更新
