@@ -9,7 +9,6 @@ import numpy as np
 
 from config import *
 
-api = cdll.LoadLibrary('E:\\research\\strategry\\crerathapi\\hqdll.dll')
 lock = threading.Lock()
 # def get_timingprice(*instrument_list):
 #
