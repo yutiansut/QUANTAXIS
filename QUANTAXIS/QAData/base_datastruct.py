@@ -26,21 +26,16 @@ import datetime
 import os
 import statistics
 import webbrowser
-from copy import copy
-from copy import deepcopy
-
-from functools import lru_cache
-
 from abc import abstractmethod
+from copy import copy, deepcopy
+from functools import lru_cache
 
 import numpy as np
 import pandas as pd
 from pyecharts import Kline
 
-from QUANTAXIS.QAUtil import (QA_util_log_info,
-                              QA_util_random_with_topic,
+from QUANTAXIS.QAUtil import (QA_util_log_info, QA_util_random_with_topic,
                               QA_util_to_json_from_pandas)
-
 from QUANTAXIS.QAUtil.QADate import QA_util_to_datetime
 
 # todo 🛠基类名字 _quotation_base 小写是因为 不直接初始化， 建议改成抽象类
@@ -719,10 +714,17 @@ class _quotation_base():
                 return self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), slice(code)), :]
             else:
                 return self.data.loc[(slice(pd.Timestamp(start), None), slice(code)), :]
-        if self.type[-3:] in ['day']:
-            return self.new(_selects(code, start, end).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
-        elif self.type[-3:] in ['min']:
-            return self.new(_selects(code, start, end).set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
+
+        try:
+            res = _selects(code, start, end)
+
+            if self.type[-3:] in ['day']:
+                return self.new(res.set_index(['date', 'code'], drop=False), self.type, self.if_fq)
+            elif self.type[-3:] in ['min']:
+                return self.new(res.set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
+        except:
+            raise ValueError(
+                'QA CANNOT GET THIS CODE {}/START {}/END{} '.format(code, start, end))
             # return self.new(self.query('code=="{}"'.format(code)).query('date>="{}"'.format(start)).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
         # elif self.type[-3:] in ['min']:
         #     if end is not None:
@@ -737,10 +739,15 @@ class _quotation_base():
                 return self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), slice(None)), :]
             else:
                 return self.data.loc[(slice(pd.Timestamp(start), None), slice(None)), :]
-        if self.type[-3:] in ['day']:
-            return self.new(_select_time(start, end).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
-        elif self.type[-3:] in ['min']:
-            return self.new(_select_time(start, end).set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
+        try:
+            res = _select_time(start, end)
+            if self.type[-3:] in ['day']:
+                return self.new(res.set_index(['date', 'code'], drop=False), self.type, self.if_fq)
+            elif self.type[-3:] in ['min']:
+                return self.new(res.set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
+        except:
+            raise ValueError(
+                'QA CANNOT GET THIS START {}/END{} '.format(start, end))
 
         # if self.type[-3:] in ['day']:
         #     if end is not None:
@@ -757,10 +764,16 @@ class _quotation_base():
     def select_month(self, month):
         def _select_month(month):
             return self.data.loc[month, slice(None)]
-        if self.type[-3:] in ['day']:
-            return self.new(_select_month(month).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
-        elif self.type[-3:] in ['min']:
-            return self.new(_select_month(month).set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
+
+        try:
+            res = _select_month(month)
+
+            if self.type[-3:] in ['day']:
+                return self.new(res.set_index(['date', 'code'], drop=False), self.type, self.if_fq)
+            elif self.type[-3:] in ['min']:
+                return self.new(res.set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
+        except:
+            raise ValueError('QA CANNOT GET THIS Month{} '.format(month))
 
     def select_time_with_gap(self, time, gap, method):
 
@@ -807,11 +820,15 @@ class _quotation_base():
 
     def select_code(self, code):
         def _select_code(code):
-            return self.data.loc[(slice(None), code),:]
-        if self.type[-3:] in ['day']:
-            return self.new(_select_code(code).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
-        elif self.type[-3:] in ['min']:
-            return self.new(_select_code(code).set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
+            return self.data.loc[(slice(None), code), :]
+        try:
+            res = _select_code(code)
+            if self.type[-3:] in ['day']:
+                return self.new(res.set_index(['date', 'code'], drop=False), self.type, self.if_fq)
+            elif self.type[-3:] in ['min']:
+                return self.new(res.set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
+        except:
+            raise ValueError('QA CANNOT FIND THIS CODE {}'.format(code))
 
     def get_bar(self, code, time, if_trade=True):
         # if self.type[-3:] in ['day']:
