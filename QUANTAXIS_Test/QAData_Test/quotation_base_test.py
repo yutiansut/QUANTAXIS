@@ -163,9 +163,5 @@ class quotation_base_test(unittest.TestCase):
     # 🛠todo  测试  iloc#
     # 🛠todo  测试  iloc
 
-
 if __name__ == '__main__':
-
-    t = quotation_base_test()
-    t.setUp()
-    #t.testBacktestBollingerBands()
+    unittest.main()
