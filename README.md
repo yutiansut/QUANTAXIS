@@ -7,6 +7,8 @@
 [![GitHub forks](https://img.shields.io/github/forks/quantaxis/quantaxis.svg?style=social&label=Fork&)](https://github.com/quantaxis/quantaxis/fork)
 
 
+> ENGLISH DOCUMENTS PLEASE CLICK [THIS](README_ENG.md)
+
 [点击右上角Star和Watch来跟踪项目进展! 点击Fork来创建属于你的QUANTAXIS!]
 
 ![post201802](http://osnhakmay.bkt.clouddn.com/quantaxis-post201802.png)
