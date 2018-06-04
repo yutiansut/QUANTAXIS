@@ -1,19 +1,26 @@
+import ctypes
 import os
 import sys
-import ctypes
-import numpy as np
 import time
 from ctypes import *
 
-class FullMarketInfo(Structure):
-    _fields_ = [('BidPrice1', c_double),('BidVolume1',c_int),('AskPrice1', c_double),('AskVolume1',c_int),
-                ('BidPrice2', c_double),('BidVolume2', c_int),('AskPrice2', c_double),('AskVolume2', c_int),
-                ('BidPrice3', c_double), ('BidVolume3', c_int), ('AskPrice3', c_double), ('AskVolume3', c_int),
-                ('BidPrice4', c_double), ('BidVolume4', c_int), ('AskPrice4', c_double), ('AskVolume4', c_int),
-                ('BidPrice5', c_double), ('BidVolume5', c_int), ('AskPrice5', c_double), ('AskVolume5', c_int),
-                ]
-fullmarketinfo = FullMarketInfo()
+import numpy as np
 
+
+class FullMarketInfo(Structure):
+    _fields_ = [('BidPrice1', c_double), ('BidVolume1', c_int), ('AskPrice1', c_double), ('AskVolume1', c_int),
+                ('BidPrice2', c_double), ('BidVolume2',
+                                          c_int), ('AskPrice2', c_double), ('AskVolume2', c_int),
+                ('BidPrice3', c_double), ('BidVolume3',
+                                          c_int), ('AskPrice3', c_double), ('AskVolume3', c_int),
+                ('BidPrice4', c_double), ('BidVolume4',
+                                          c_int), ('AskPrice4', c_double), ('AskVolume4', c_int),
+                ('BidPrice5', c_double), ('BidVolume5',
+                                          c_int), ('AskPrice5', c_double), ('AskVolume5', c_int),
+                ]
+
+
+fullmarketinfo = FullMarketInfo()
 
 
 # # 获取账户权益信息
