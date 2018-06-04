@@ -33,6 +33,7 @@
 1. 命令行中 添加了 save stock_info_tushare 保存tushare股票列表的信息到数据库中
 2. 修改了实盘易 broker 增加对接
 3. 修改了base_datastruct的 selects,select_time,select_month,get_bar,select_code,增加异常处理(ValueError)
+4. 基于pandas的反馈,使用remove_unused_levels来对索引进行更新
 
 
 
