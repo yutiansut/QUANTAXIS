@@ -35,7 +35,7 @@
 3. 修改了base_datastruct的 selects,select_time,select_month,get_bar,select_code,增加异常处理(ValueError)
 4. 基于pandas的反馈,使用remove_unused_levels来对索引进行更新
 5. 大幅修改 base_datastruct方法的 select_time_by_gap, splits, add_func方法,优化性能
-
+6. 增加了一个期货下单接口(QUANTAXIS_trade/WYFFuture)
 
 ## 1.0.45 
 
