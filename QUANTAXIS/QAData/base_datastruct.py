@@ -311,6 +311,9 @@ class _quotation_base():
     @property
     @lru_cache()
     def trade(self):
+        """
+        期货中
+        """
         if 'trade' in self.data.columns:
             return self.data.trade
         else:
@@ -463,26 +466,26 @@ class _quotation_base():
     def panel_gen(self):
         '返回一个基于bar的面板迭代器'
         for item in self.index.levels[0]:
-            yield self.new(self.data.xs(item, level=0).set_index(self.index.names, drop=False), dtype=self.type, if_fq=self.if_fq)
+            yield self.new(self.data.xs(item, level=0, drop_level=False), dtype=self.type, if_fq=self.if_fq)
 
     @property
     @lru_cache()
     def security_gen(self):
         '返回一个基于代码的迭代器'
         for item in self.index.levels[1]:
-            yield self.new(self.data.xs(item, level=1).set_index(self.index.names, drop=False), dtype=self.type, if_fq=self.if_fq)
+            yield self.new(self.data.xs(item, level=1, drop_level=False), dtype=self.type, if_fq=self.if_fq)
 
     @property
     @lru_cache()
     def index(self):
         '返回结构体的索引'
-        return self.data.index
+        return self.data.index.remove_unused_levels()
 
     @property
     @lru_cache()
     def code(self):
         '返回结构体中的代码'
-        return self.data.index.levels[1]
+        return self.index.levels[1]
 
     @property
     @lru_cache()
@@ -671,16 +674,14 @@ class _quotation_base():
             return False
 
     def splits(self):
-        if self.type[-3:] in ['day']:
-            return list(map(lambda x: self.new(
-                self.query('code=="{}"'.format(x)).set_index(['date', 'code'], drop=False)), self.code))
-        elif self.type[-3:] in ['min']:
-            return list(map(lambda x: self.new(
-                self.query('code=="{}"'.format(x)).set_index(['datetime', 'code'], drop=False), self.type, self.if_fq), self.code))
+        """
+        将一个DataStruct按code分解为N个DataStruct
+        """
+        return list(map(lambda x: self.select_code(x), self.code))
 
     def add_func(self, func, *arg, **kwargs):
         return pd.concat(list(map(lambda x: func(
-            self.query('code=="{}"'.format(x)), *arg, **kwargs), self.code))).sort_index()
+            self.data.loc[(slice(None), x), :], *arg, **kwargs), self.code))).sort_index()
 
     def pivot(self, column_):
         """增加对于多列的支持"""
@@ -813,46 +814,28 @@ class _quotation_base():
     def select_time_with_gap(self, time, gap, method):
 
         if method in ['gt', '>']:
-
-            def __gt(_data):
-                if self.type[-3:] in ['day']:
-
-                    return _data.query('date>"{}"'.format(time)).head(gap).set_index(['date', 'code'], drop=False)
-                elif self.type[-3:] in ['min']:
-
-                    return _data.data[_data.data['datetime'] > time].head(gap).set_index(['datetime', 'code'], drop=False)
-            return self.new(pd.concat(list(map(lambda x: __gt(x), self.splits()))), self.type, self.if_fq)
+            def gt(data):
+                return data.loc[(slice(pd.Timestamp(time), None), slice(None)), :].groupby('code',axis=0,as_index=False,sort=False,group_keys=False).apply(lambda x: x.iloc[1:gap+1])
+            return self.new(gt(self.data), self.type, self.if_fq)
 
         elif method in ['gte', '>=']:
-            def __gte(_data):
-                if self.type[-3:] in ['day']:
-                    return _data.query('date>="{}"'.format(time)).head(gap).set_index(['date', 'code'], drop=False)
-                elif self.type[-3:] in ['min']:
-                    return _data.data[_data.data['datetime'] >= time].head(gap).set_index(['datetime', 'code'], drop=False)
-            return self.new(pd.concat(list(map(lambda x: __gte(x), self.splits()))), self.type, self.if_fq)
-        elif method in ['lt', '<']:
-            def __lt(_data):
-                if self.type[-3:] in ['day']:
-                    return _data.query('date<"{}"'.format(time)).tail(gap).set_index(['date', 'code'], drop=False)
-                elif self.type[-3:] in ['min']:
-                    return _data.data[_data.data['datetime'] <= time].tail(gap).set_index(['datetime', 'code'], drop=False)
-
-            return self.new(pd.concat(list(map(lambda x: __lt(x), self.splits()))), self.type, self.if_fq)
+            def gte(data):
+                return data.loc[(slice(pd.Timestamp(time), None), slice(None)), :].groupby('code',axis=0,as_index=False,sort=False,group_keys=False).apply(lambda x: x.iloc[0:gap])
+            return self.new(gte(self.data), self.type, self.if_fq)
+        elif method in ['lt', '<=']:
+            def lt(data):
+                return data.loc[(slice(None, pd.Timestamp(time)), slice(None)), :].groupby('code',axis=0,as_index=False,sort=False,group_keys=False).apply(lambda x: x.iloc[-gap-1:-1])
+            return self.new(lt(self.data), self.type, self.if_fq)
         elif method in ['lte', '<=']:
-            def __lte(_data):
-                if self.type[-3:] in ['day']:
-                    return _data.query('date<="{}"'.format(time)).tail(gap).set_index(['date', 'code'], drop=False)
-                elif self.type[-3:] in ['min']:
-                    return _data.data[_data.data['datetime'] <= time].tail(gap).set_index(['datetime', 'code'], drop=False)
-            return self.new(pd.concat(list(map(lambda x: __lte(x), self.splits()))), self.type, self.if_fq)
-        elif method in ['e', '==', '=', 'equal']:
-            def __eq(_data):
-                if self.type[-3:] in ['day']:
-                    return _data.query('date=="{}"'.format(time)).head(gap).set_index(['date', 'code'], drop=False)
-                elif self.type[-3:] in ['min']:
-                    return _data.data[_data.data['datetime'] == time].head(gap).set_index(['datetime', 'code'], drop=False)
-            return self.new(pd.concat(list(map(lambda x: __eq(x), self.splits()))), self.type, self.if_fq)
-
+            def lte(data):
+                return data.loc[(slice(None, pd.Timestamp(time)), slice(None)), :].groupby('code',axis=0,as_index=False,sort=False,group_keys=False).apply(lambda x: x.tail(gap))
+            return self.new(lte(self.data), self.type, self.if_fq)
+        elif method in ['eq', '==', '=', 'equal','e']:
+            def eq(data):
+                return data.loc[(pd.Timestamp(time), slice(None)), :]
+            return self.new(eq(self.data), self.type, self.if_fq)
+        else:
+            raise ValueError('QA CURRENTLY DONOT HAVE THIS METHODS {}'.format(method))
     def find_bar(self, code, time):
         if len(time) == 10:
             return self.dicts[(datetime.datetime.strptime(time, '%Y-%m-%d'), code)]
