@@ -17,7 +17,7 @@ lock = threading.Lock()
 
 
 def strategy_triup_down(instrument):
-    api = cdll.LoadLibrary('E:\\research\\strategry\\crerathapi\\hqdll.dll')
+
     p1, p2, p3 = 0, 0, 0
     times = 0
     api.getdealstatus.restype = c_double
