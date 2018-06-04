@@ -1,18 +1,19 @@
+import ctypes
 import os
 import sys
-import ctypes
-import numpy as np
-import time
 import threading
+import time
 from ctypes import *
 
+import numpy as np
+
 api = cdll.LoadLibrary('E:\\research\\strategry\\crerathapi\\hqdll.dll')
-ip_hq      = 'tcp://180.168.146.187:10011'
-ip_trade   = 'tcp://180.168.146.187:10001'
-broker_id  = "9999"
-account    =input("account")
-pwd        =input("pwd")
-instrument_list = ['j1809','rb1810']
+ip_hq = 'tcp://180.168.146.187:10011'
+ip_trade = 'tcp://180.168.146.187:10001'
+broker_id = "9999"
+account = input("account")
+pwd = input("pwd")
+instrument_list = ['j1809', 'rb1810']
 count = len(instrument_list)
 
 instrument_list_bytes = []
@@ -21,7 +22,8 @@ for items in instrument_list:
 
 # 转成c++需要的数据格式
 instrument = (c_char_p * len(instrument_list))(*instrument_list_bytes)
-api.init(c_char_p(bytes(ip_hq, 'utf-8')),c_char_p(bytes(ip_trade, 'utf-8')),c_char_p(bytes(broker_id, 'utf-8')),c_char_p(bytes(account, 'utf-8')),c_char_p(bytes(pwd, 'utf-8')),instrument,c_int(count))
+api.init(c_char_p(bytes(ip_hq, 'utf-8')), c_char_p(bytes(ip_trade, 'utf-8')), c_char_p(bytes(broker_id,
+                                                                                             'utf-8')), c_char_p(bytes(account, 'utf-8')), c_char_p(bytes(pwd, 'utf-8')), instrument, c_int(count))
 api.creattradeapi()
 
 # 确认账户

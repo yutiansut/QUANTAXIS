@@ -1,16 +1,20 @@
+import ctypes
 import os
 import sys
-import ctypes
-import numpy as np
-import time
 import threading
-from tradeapi import *
+import time
 from multiprocessing import Pool
+
+import numpy as np
+
+from tradeapi import *
+
 lock = threading.Lock()
 
 # lock.acquire()
 # return_list.append(close_return)
 # lock.release()
+
 
 def strategy_triup_down(instrument):
     api = cdll.LoadLibrary('E:\\research\\strategry\\crerathapi\\hqdll.dll')
@@ -33,18 +37,17 @@ def strategy_triup_down(instrument):
             time.sleep(1)
             times = times + 1
             # 调整的价格必须是期货品种的跳数
-            if p3 > p2 and p2 > p1 :
+            if p3 > p2 and p2 > p1:
 
                 lock.acquire()
                 orderid = get_orderid()
                 innerid = orderid
                 lock.release()
 
-                print(instrument,':',orderid)
+                print(instrument, ':', orderid)
                 api.tradeorder(c_char_p(bytes(instrument, 'utf-8')), c_int(1), c_int(2), c_int(0), c_double(price),
-                           c_char_p(bytes(orderid, 'utf-8')))
+                               c_char_p(bytes(orderid, 'utf-8')))
                 direction = -1
-
 
             elif p3 < p2 and p2 < p1:
 
@@ -52,10 +55,9 @@ def strategy_triup_down(instrument):
                 orderid = get_orderid()
                 lock.release()
 
-                api.tradeorder(c_char_p(bytes(instrument, 'utf-8')), c_int(-1), c_int(2),c_int(0), c_double(price),
+                api.tradeorder(c_char_p(bytes(instrument, 'utf-8')), c_int(-1), c_int(2), c_int(0), c_double(price),
                                c_char_p(bytes(orderid, 'utf-8')))
                 direction = 1
-
 
             # 撤掉上一笔没有成交的报单
             time.sleep(1)
@@ -65,15 +67,16 @@ def strategy_triup_down(instrument):
 
             try:
                 deal_num = api.getdealstatus(c_char_p(bytes(innerid, 'utf-8')))
-                status   = api.getorderstatus(c_char_p(bytes(innerid, 'utf-8')))
+                status = api.getorderstatus(c_char_p(bytes(innerid, 'utf-8')))
             except Exception as e:
                 # print(e)
                 pass
 
-            if deal_num < 5 and status != 5.0 and status != -1.0 :
+            if deal_num < 5 and status != 5.0 and status != -1.0:
 
                 try:
-                    api.cancelorder(c_char_p(bytes(instrument, 'utf-8')), c_char_p(bytes(innerid, 'utf-8')))
+                    api.cancelorder(
+                        c_char_p(bytes(instrument, 'utf-8')), c_char_p(bytes(innerid, 'utf-8')))
                 except Exception as e:
                     pass
 
@@ -98,8 +101,8 @@ def strategy_triup_down(instrument):
                     orderid = get_orderid()
                     lock.release()
 
-                    api.tradeorder(c_char_p(bytes(instrument, 'utf-8')), c_int(int(direction)), c_int(int(deal_num)), c_int(3),c_double(instrument_price[instrument]),
-                               c_char_p(bytes(orderid, 'utf-8')))
+                    api.tradeorder(c_char_p(bytes(instrument, 'utf-8')), c_int(int(direction)), c_int(int(deal_num)), c_int(3), c_double(instrument_price[instrument]),
+                                   c_char_p(bytes(orderid, 'utf-8')))
                 except Exception as e:
                     print(e)
                     pass
@@ -107,6 +110,7 @@ def strategy_triup_down(instrument):
         except Exception as e:
             print(e)
             print("error")
+
 
 if __name__ == "__main__":
 
@@ -119,11 +123,12 @@ if __name__ == "__main__":
 
     # 启动获取实时价格服务
     if hq_service_start:
-        getprice = threading.Thread(target = get_instrument_timingprice, args = (instrument_list,))
+        getprice = threading.Thread(
+            target=get_instrument_timingprice, args=(instrument_list,))
         getprice.start()
 
     # 生成唯一的下单orderid
-    getorderid = threading.Thread(target = get_orderid,args = (8,))
+    getorderid = threading.Thread(target=get_orderid, args=(8,))
     getorderid.start()
 
     # 启动交易服务
@@ -135,9 +140,10 @@ if __name__ == "__main__":
 
     orderid = ''
     # 策略逻辑
-    for instrument in instrument_list :
+    for instrument in instrument_list:
         time.sleep(0.2)
-        strtegy = threading.Thread(target = strategy_triup_down, args = (instrument,))
+        strtegy = threading.Thread(
+            target=strategy_triup_down, args=(instrument,))
         strtegy.start()
 
     # with Pool(2) as p:
