@@ -815,26 +815,27 @@ class _quotation_base():
 
         if method in ['gt', '>']:
             def gt(data):
-                return data.loc[(slice(pd.Timestamp(time), None), slice(None)), :].groupby('code').apply(lambda x: x.iloc[1:gap+1])
+                return data.loc[(slice(pd.Timestamp(time), None), slice(None)), :].groupby('code',axis=0,as_index=False,sort=False,group_keys=False).apply(lambda x: x.iloc[1:gap+1])
             return self.new(gt(self.data), self.type, self.if_fq)
 
         elif method in ['gte', '>=']:
             def gte(data):
-                return data.loc[(slice(pd.Timestamp(time), None), slice(None)), :].groupby('code').apply(lambda x: x.iloc[0:gap])
+                return data.loc[(slice(pd.Timestamp(time), None), slice(None)), :].groupby('code',axis=0,as_index=False,sort=False,group_keys=False).apply(lambda x: x.iloc[0:gap])
             return self.new(gte(self.data), self.type, self.if_fq)
         elif method in ['lt', '<=']:
             def lt(data):
-                return data.loc[(slice(None, pd.Timestamp(time)), slice(None)), :].groupby('code').apply(lambda x: x.iloc[-gap-1:-1])
+                return data.loc[(slice(None, pd.Timestamp(time)), slice(None)), :].groupby('code',axis=0,as_index=False,sort=False,group_keys=False).apply(lambda x: x.iloc[-gap-1:-1])
             return self.new(lt(self.data), self.type, self.if_fq)
         elif method in ['lte', '<=']:
             def lte(data):
-                return data.loc[(slice(None, pd.Timestamp(time)), slice(None)), :].groupby('code').apply(lambda x: x.tail(gap))
+                return data.loc[(slice(None, pd.Timestamp(time)), slice(None)), :].groupby('code',axis=0,as_index=False,sort=False,group_keys=False).apply(lambda x: x.tail(gap))
             return self.new(lte(self.data), self.type, self.if_fq)
-        elif method in ['e', '==', '=', 'equal']:
+        elif method in ['eq', '==', '=', 'equal','e']:
             def eq(data):
                 return data.loc[(pd.Timestamp(time), slice(None)), :]
             return self.new(eq(self.data), self.type, self.if_fq)
-
+        else:
+            raise ValueError('QA CURRENTLY DONOT HAVE THIS METHODS {}'.format(method))
     def find_bar(self, code, time):
         if len(time) == 10:
             return self.dicts[(datetime.datetime.strptime(time, '%Y-%m-%d'), code)]
