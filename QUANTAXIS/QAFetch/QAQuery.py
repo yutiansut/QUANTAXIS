@@ -182,6 +182,17 @@ def QA_fetch_stock_basic_info_tushare(collections=DATABASE.stock_info_tushare):
     return items
 
 
+def QA_fetch_stock_to_market_date(stock_code):
+    '''
+    根据tushare 的数据库查找上市的日期
+    :param stock_code: '600001'
+    :return: string 上市日期 eg： '2018-05-15'
+    '''
+    items = QA_fetch_stock_basic_info_tushare()
+    for row in items:
+        if row['code'] == stock_code:
+            return row['timeToMarket']
+
 
 def QA_fetch_stock_full(date, format='numpy', collections=DATABASE.stock_day):
     '获取全市场的某一日的数据'
