@@ -153,3 +153,8 @@ kernel*.json
 
 
 *.dad
+
+
+#future connections
+
+*.con
