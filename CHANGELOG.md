@@ -330,4 +330,6 @@ released in :JUNE 03, 2018
 released in :JUNE 03, 2018
 
 ## 1.0.46 (unreleased)
-命令行中 添加了 save stock_info_tushare 保存tushare股票列表的信息到数据库中
+1. 命令行中 添加了 save stock_info_tushare 保存tushare股票列表的信息到数据库中
+2. 修改了实盘易 broker 增加对接
+3. 修改了base_datastruct的 selects,select_time,select_month,get_bar,select_code,增加异常处理(ValueError)
