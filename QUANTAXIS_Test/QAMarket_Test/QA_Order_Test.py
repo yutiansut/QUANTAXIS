@@ -12,4 +12,3 @@ class QA_OrderTest(unittest.TestCase):
 
     def testQAOrder(self):
         print(" test QAOrder !")
-
