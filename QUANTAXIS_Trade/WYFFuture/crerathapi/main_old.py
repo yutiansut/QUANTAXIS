@@ -17,8 +17,8 @@ def get_timingprice(*instrument_list):
 ip_hq      = 'tcp://180.168.146.187:10011'
 ip_trade   = 'tcp://180.168.146.187:10001'
 broker_id  = "9999"
-account    = "112310"
-pwd        = "123456"
+account    = input("account")
+pwd        = input("pwd")
 instrument_list = ['j1809','rb1810']
 count = len(instrument_list)
 api = cdll.LoadLibrary('E:\\research\\strategry\\crerathapi\\hqdll.dll')
