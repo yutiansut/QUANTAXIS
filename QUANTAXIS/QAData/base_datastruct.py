@@ -714,13 +714,10 @@ class _quotation_base():
         全部恢复
         """
         def _selects(code, start, end):
-            # if self.type[-3:] in ['day']:
             if end is not None:
-                #self.query('code=="{}"'.format(code)).query('date>="{}" and date<="{}"'.format(start, end)).set_index(['date', 'code'], drop=False)
                 return self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), slice(code)), :]
             else:
                 return self.data.loc[(slice(pd.Timestamp(start), None), slice(code)), :]
-
         try:
             return self.new(_selects(code, start, end), self.type, self.if_fq)
         except:
@@ -730,13 +727,22 @@ class _quotation_base():
     def select_time(self, start, end=None):
         """
         选择起始时间
-
         如果end不填写,默认获取到结尾
-    
+
+        @2018/06/03 pandas 的索引问题导致
+        https://github.com/pandas-dev/pandas/issues/21299
+
+        因此先用set_index去重做一次index
+        影响的有selects,select_time,select_month,get_bar
+
+        @2018/06/04
+        当选择的时间越界/股票不存在,raise ValueError
+
+        @2018/06/04 pandas索引问题已经解决
+        全部恢复
         """
         def _select_time(start, end):
             if end is not None:
-                #self.query('code=="{}"'.format(code)).query('date>="{}" and date<="{}"'.format(start, end)).set_index(['date', 'code'], drop=False)
                 return self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), slice(None)), :]
             else:
                 return self.data.loc[(slice(pd.Timestamp(start), None), slice(None)), :]
@@ -747,6 +753,21 @@ class _quotation_base():
                 'QA CANNOT GET THIS START {}/END{} '.format(start, end))
 
     def select_month(self, month):
+        """
+        选择月份
+
+        @2018/06/03 pandas 的索引问题导致
+        https://github.com/pandas-dev/pandas/issues/21299
+
+        因此先用set_index去重做一次index
+        影响的有selects,select_time,select_month,get_bar
+
+        @2018/06/04
+        当选择的时间越界/股票不存在,raise ValueError
+
+        @2018/06/04 pandas索引问题已经解决
+        全部恢复
+        """
         def _select_month(month):
             return self.data.loc[month, slice(None)]
         try:
@@ -755,6 +776,21 @@ class _quotation_base():
             raise ValueError('QA CANNOT GET THIS Month{} '.format(month))
 
     def select_code(self, code):
+        """
+        选择股票
+
+        @2018/06/03 pandas 的索引问题导致
+        https://github.com/pandas-dev/pandas/issues/21299
+
+        因此先用set_index去重做一次index
+        影响的有selects,select_time,select_month,get_bar
+
+        @2018/06/04
+        当选择的时间越界/股票不存在,raise ValueError
+
+        @2018/06/04 pandas索引问题已经解决
+        全部恢复
+        """
         def _select_code(code):
             return self.data.loc[(slice(None), code), :]
         try:
@@ -762,7 +798,12 @@ class _quotation_base():
         except:
             raise ValueError('QA CANNOT FIND THIS CODE {}'.format(code))
 
-    def get_bar(self, code, time, if_trade=True):
+    def get_bar(self, code, time):
+        """
+        获取一个bar的数据
+        返回一个series
+        如果不存在,raise ValueError
+        """
         try:
             return self.data.loc[(pd.Timestamp(time), code)]
         except:
