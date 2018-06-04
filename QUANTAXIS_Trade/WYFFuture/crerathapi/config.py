@@ -2,8 +2,9 @@ account_info = dict()
 account_info['ip_hq']      = 'tcp://180.168.146.187:10011'
 account_info['ip_trade']   = 'tcp://180.168.146.187:10001'
 account_info['broker_id']  = "9999"
-account_info['account']    = "112310"
-account_info['pwd']        = "123456"
+
+account_info['account']    = input('account')
+account_info['pwd']        = input('password')
 
 
 
