@@ -1,13 +1,12 @@
+import datetime
+import struct
+import time
 import unittest
-
 #from urllib import request
 import urllib
 import urllib.request
-import datetime;
-import struct;
-import time
-import pandas as pd
 
+import pandas as pd
 
 #from QUANTAXIS import QUANTAXIS as QA
 
@@ -33,6 +32,8 @@ import pandas as pd
     字节串转16进制表示,固定两个字符表示: str(binascii.b2a_hex(b'\x01\x0212'))[2:-1]  ==>  01023132
     字节串转16进制数组: [hex(x) for x in bytes(b'\x01\x0212')]  ==>  ['0x1', '0x2', '0x31', '0x32']
 '''
+
+
 class QA_Test(unittest.TestCase):
     def setUp(self):
         today = datetime.date.today()
@@ -40,7 +41,7 @@ class QA_Test(unittest.TestCase):
         print(today.year)
         print(today.month)
         print(today.day)
-        str = "%04d-%02d-%02d"%(today.year,today.month,today.day)
+        str = "%04d-%02d-%02d" % (today.year, today.month, today.day)
         print(str)
 
         pass
@@ -59,27 +60,27 @@ class QA_Test(unittest.TestCase):
                           index=["code"])
 
         if first4Bytes[0] == 0x8c and first4Bytes[1] == 0x19 and first4Bytes[2] == 0xfc and first4Bytes[3] == 0x33:
-            fileDad.seek(0x08);
-            byteNumberOfStock = fileDad.read(0x04);
+            fileDad.seek(0x08)
+            byteNumberOfStock = fileDad.read(0x04)
             longNumberOfStock = struct.unpack('<L', byteNumberOfStock)
-            #print(longNumberOfStock);
+            # print(longNumberOfStock);
 
             for iStockIndex in range(0, longNumberOfStock[0]):
-                fileDad.seek(0x10 + iStockIndex * 4 * 0x10);
+                fileDad.seek(0x10 + iStockIndex * 4 * 0x10)
 
-                aStockData = fileDad.read(0x10 * 4);
+                aStockData = fileDad.read(0x10 * 4)
 
                 if aStockData[0] == 0xFF and aStockData[1] == 0xFF and aStockData[2] == 0xFF and aStockData[3] == 0xFF:
 
                     codeNameByte = aStockData[4:0x10]
-                    #print(codeNameByte)
-                    strCodeName = codeNameByte.decode('gbk');
-                    #print(strCodeName);
+                    # print(codeNameByte)
+                    strCodeName = codeNameByte.decode('gbk')
+                    # print(strCodeName);
 
                     stockNameByte = aStockData[0x14: 0x20]
-                    #print(stockNameByte);
-                    strStockName = stockNameByte.decode('gbk');
-                    #print(strStockName);
+                    # print(stockNameByte);
+                    strStockName = stockNameByte.decode('gbk')
+                    # print(strStockName);
 
                     stockTime = aStockData[0x20: 0x24]
                     stockTimeNumber = struct.unpack('<L', stockTime)
@@ -88,49 +89,60 @@ class QA_Test(unittest.TestCase):
                     #dt = time.strftime("%Y-%m-%d %H:%M:%S", time_local)
                     dt = time.strftime("%Y-%m-%d", time_local)
 
-                    #print(dt);
+                    # print(dt);
 
-                    i=1
-                    byte_stock_open   = aStockData[0x20+(i * 4): 0x20+((i+1) * 4)];i = 2;
-                    byte_stock_close  = aStockData[0x20+(i * 4): 0x20+((i+1) * 4)];i = 3;
-                    byte_stock_low    = aStockData[0x20+(i * 4): 0x20+((i+1) * 4)];i = 4;
-                    byte_stock_high   = aStockData[0x20+(i * 4): 0x20+((i+1) * 4)];i = 5;
-                    byte_stock_volume = aStockData[0x20+(i * 4): 0x20+((i+1) * 4)];i = 6;
-                    byte_stock_turn   = aStockData[0x20+(i * 4): 0x20+((i+1) * 4)];i = 7;
+                    i = 1
+                    byte_stock_open = aStockData[0x20 +
+                                                 (i * 4): 0x20+((i+1) * 4)]
+                    i = 2
+                    byte_stock_close = aStockData[0x20 +
+                                                  (i * 4): 0x20+((i+1) * 4)]
+                    i = 3
+                    byte_stock_low = aStockData[0x20+(i * 4): 0x20+((i+1) * 4)]
+                    i = 4
+                    byte_stock_high = aStockData[0x20 +
+                                                 (i * 4): 0x20+((i+1) * 4)]
+                    i = 5
+                    byte_stock_volume = aStockData[0x20 +
+                                                   (i * 4): 0x20+((i+1) * 4)]
+                    i = 6
+                    byte_stock_turn = aStockData[0x20 +
+                                                 (i * 4): 0x20+((i+1) * 4)]
+                    i = 7
 
                     v1 = struct.unpack('<f', byte_stock_open)
-                    stock_open = v1[0];
+                    stock_open = v1[0]
 
                     v1 = struct.unpack('<f', byte_stock_close)
-                    stock_close = v1[0];
+                    stock_close = v1[0]
 
                     v1 = struct.unpack('<f', byte_stock_low)
-                    stock_low = v1[0];
+                    stock_low = v1[0]
 
                     v1 = struct.unpack('<f', byte_stock_high)
-                    stock_high = v1[0];
+                    stock_high = v1[0]
 
                     v1 = struct.unpack('<f', byte_stock_volume)
-                    stock_volume = v1[0];
+                    stock_volume = v1[0]
 
                     v1 = struct.unpack('<f', byte_stock_turn)
-                    stock_turn = v1[0];
+                    stock_turn = v1[0]
 
                     #print("%f %f %f %f %f %f "%(stock_open, stock_close, stock_high,stock_low, stock_volume, stock_turn))
-                    #print("------")
+                    # print("------")
 
                     df.index.astype(str)
 
-                    df.loc[strCodeName] = [strStockName, dt, stock_open, stock_close, stock_low, stock_high, stock_volume, stock_turn]
+                    df.loc[strCodeName] = [strStockName, dt, stock_open,
+                                           stock_close, stock_low, stock_high, stock_volume, stock_turn]
 
                     pass
                 pass
 
         fileDad.close()
 
-
         print(df)
 
-        return df;
+        return df
 
     pass
