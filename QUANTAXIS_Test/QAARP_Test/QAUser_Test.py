@@ -1,5 +1,6 @@
-import QUANTAXIS as QA
 import unittest
+
+import QUANTAXIS as QA
 
 
 class Test_QAUser(unittest.TestCase):
@@ -21,9 +22,8 @@ class Test_QAUser(unittest.TestCase):
             p2 = user.get_portfolio(portfolio1)
             ac2 = user.get_portfolio(portfolio1).get_account(ac1)
 
-            self.assertEqual(p2,p)
-            self.assertEqual(ac1,ac2)
+            self.assertEqual(p2, p)
+            self.assertEqual(ac1, ac2)
 
         except:
             print("Error")
-
