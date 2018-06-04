@@ -24,7 +24,9 @@
 
 
 import datetime
+
 import pandas as pd
+
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_future_day,
                                        QA_fetch_future_min, QA_fetch_index_day,
@@ -40,15 +42,15 @@ from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.QADealer import QA_Dealer
 from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
 from QUANTAXIS.QAUtil.QADate import QA_util_to_datetime
-from QUANTAXIS.QAUtil.QATransform import  QA_util_to_json_from_pandas
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_next_day
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT, ORDER_DIRECTION,
+from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT,
                                           BROKER_TYPE, ENGINE_EVENT, FREQUENCE,
                                           MARKET_EVENT, MARKET_TYPE,
-                                          ORDER_MODEL)
-
+                                          ORDER_DIRECTION, ORDER_MODEL)
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
+from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
+
 
 class QA_BacktestBroker(QA_Broker):
     """

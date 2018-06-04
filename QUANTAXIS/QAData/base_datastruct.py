@@ -26,21 +26,16 @@ import datetime
 import os
 import statistics
 import webbrowser
-from copy import copy
-from copy import deepcopy
-
-from functools import lru_cache
-
 from abc import abstractmethod
+from copy import copy, deepcopy
+from functools import lru_cache
 
 import numpy as np
 import pandas as pd
 from pyecharts import Kline
 
-from QUANTAXIS.QAUtil import (QA_util_log_info,
-                              QA_util_random_with_topic,
+from QUANTAXIS.QAUtil import (QA_util_log_info, QA_util_random_with_topic,
                               QA_util_to_json_from_pandas)
-
 from QUANTAXIS.QAUtil.QADate import QA_util_to_datetime
 
 # todo 🛠基类名字 _quotation_base 小写是因为 不直接初始化， 建议改成抽象类
@@ -68,7 +63,7 @@ class _quotation_base():
 
         #🛠todo 判断DataFame 对象字段的合法性，是否正确
         self.data = DataFrame.sort_index()
-
+        self.data.index = self.data.index.remove_unused_levels()
         #🛠todo 该变量没有用到， 是不是 self.data_type = marketdata_type ??
         self.data_type = dtype
 
@@ -316,6 +311,9 @@ class _quotation_base():
     @property
     @lru_cache()
     def trade(self):
+        """
+        期货中
+        """
         if 'trade' in self.data.columns:
             return self.data.trade
         else:
@@ -468,26 +466,26 @@ class _quotation_base():
     def panel_gen(self):
         '返回一个基于bar的面板迭代器'
         for item in self.index.levels[0]:
-            yield self.new(self.data.xs(item, level=0).set_index(self.index.names, drop=False), dtype=self.type, if_fq=self.if_fq)
+            yield self.new(self.data.xs(item, level=0, drop_level=False), dtype=self.type, if_fq=self.if_fq)
 
     @property
     @lru_cache()
     def security_gen(self):
         '返回一个基于代码的迭代器'
         for item in self.index.levels[1]:
-            yield self.new(self.data.xs(item, level=1).set_index(self.index.names, drop=False), dtype=self.type, if_fq=self.if_fq)
+            yield self.new(self.data.xs(item, level=1, drop_level=False), dtype=self.type, if_fq=self.if_fq)
 
     @property
     @lru_cache()
     def index(self):
         '返回结构体的索引'
-        return self.data.index
+        return self.data.index.remove_unused_levels()
 
     @property
     @lru_cache()
     def code(self):
         '返回结构体中的代码'
-        return self.data.index.levels[1]
+        return self.index.levels[1]
 
     @property
     @lru_cache()
@@ -587,6 +585,8 @@ class _quotation_base():
         🛠todo 没有这个？？ inplace 是否是对于原类的修改 ？？
         """
         data = self.data if data is None else data
+        #data.index= data.index.remove_unused_levels()
+
         dtype = self.type if dtype is None else dtype
         if_fq = self.if_fq if if_fq is None else if_fq
 
@@ -674,19 +674,14 @@ class _quotation_base():
             return False
 
     def splits(self):
-        if self.type[-3:] in ['day']:
-            return list(map(lambda x: self.new(
-                self.query('code=="{}"'.format(x)).set_index(['date', 'code'], drop=False)), self.code))
-        elif self.type[-3:] in ['min']:
-            return list(map(lambda x: self.new(
-                self.query('code=="{}"'.format(x)).set_index(['datetime', 'code'], drop=False), self.type, self.if_fq), self.code))
+        """
+        将一个DataStruct按code分解为N个DataStruct
+        """
+        return list(map(lambda x: self.select_code(x), self.code))
 
-    # def add_func(self, func, *arg, **kwargs):
-    #     return pd.concat(list(map(lambda x: func(
-    #         self.query('code=="{}"'.format(x)), *arg, **kwargs), self.code)))
     def add_func(self, func, *arg, **kwargs):
         return pd.concat(list(map(lambda x: func(
-            self.query('code=="{}"'.format(x)), *arg, **kwargs), self.code))).sort_index()
+            self.data.loc[(slice(None), x), :], *arg, **kwargs), self.code))).sort_index()
 
     def pivot(self, column_):
         """增加对于多列的支持"""
@@ -703,6 +698,7 @@ class _quotation_base():
 
     def selects(self, code, start, end=None):
         """
+        选择code,start,end
 
         如果end不填写,默认获取到结尾
 
@@ -711,125 +707,135 @@ class _quotation_base():
 
         因此先用set_index去重做一次index
         影响的有selects,select_time,select_month,get_bar
+
+        @2018/06/04
+        当选择的时间越界/股票不存在,raise ValueError
+
+        @2018/06/04 pandas索引问题已经解决
+        全部恢复
         """
         def _selects(code, start, end):
-            # if self.type[-3:] in ['day']:
             if end is not None:
-                #self.query('code=="{}"'.format(code)).query('date>="{}" and date<="{}"'.format(start, end)).set_index(['date', 'code'], drop=False)
                 return self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), slice(code)), :]
             else:
                 return self.data.loc[(slice(pd.Timestamp(start), None), slice(code)), :]
-        if self.type[-3:] in ['day']:
-            return self.new(_selects(code, start, end).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
-        elif self.type[-3:] in ['min']:
-            return self.new(_selects(code, start, end).set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
-            # return self.new(self.query('code=="{}"'.format(code)).query('date>="{}"'.format(start)).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
-        # elif self.type[-3:] in ['min']:
-        #     if end is not None:
-        #         return self.new(self.query('code=="{}"'.format(code)).data[self.data['datetime'] >= start][self.data['datetime'] <= end].set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
-        #     else:
-        #         return self.new(self.query('code=="{}"'.format(code)).data[self.data['datetime'] >= start].set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
+        try:
+            return self.new(_selects(code, start, end), self.type, self.if_fq)
+        except:
+            raise ValueError(
+                'QA CANNOT GET THIS CODE {}/START {}/END{} '.format(code, start, end))
 
     def select_time(self, start, end=None):
+        """
+        选择起始时间
+        如果end不填写,默认获取到结尾
+
+        @2018/06/03 pandas 的索引问题导致
+        https://github.com/pandas-dev/pandas/issues/21299
+
+        因此先用set_index去重做一次index
+        影响的有selects,select_time,select_month,get_bar
+
+        @2018/06/04
+        当选择的时间越界/股票不存在,raise ValueError
+
+        @2018/06/04 pandas索引问题已经解决
+        全部恢复
+        """
         def _select_time(start, end):
             if end is not None:
-                #self.query('code=="{}"'.format(code)).query('date>="{}" and date<="{}"'.format(start, end)).set_index(['date', 'code'], drop=False)
                 return self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), slice(None)), :]
             else:
                 return self.data.loc[(slice(pd.Timestamp(start), None), slice(None)), :]
-        if self.type[-3:] in ['day']:
-            return self.new(_select_time(start, end).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
-        elif self.type[-3:] in ['min']:
-            return self.new(_select_time(start, end).set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
-
-        # if self.type[-3:] in ['day']:
-        #     if end is not None:
-
-        #         return self.new(self.query('date>="{}" and date<="{}"'.format(start, end)).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
-        #     else:
-        #         return self.new(self.query('date>="{}"'.format(start)).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
-        # elif self.type[-3:] in ['min']:
-        #     if end is not None:
-        #         return self.new(self.data[self.data['datetime'] >= start][self.data['datetime'] <= end].set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
-        #     else:
-        #         return self.new(self.data[self.data['datetime'] >= start].set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
+        try:
+            return self.new(_select_time(start, end), self.type, self.if_fq)
+        except:
+            raise ValueError(
+                'QA CANNOT GET THIS START {}/END{} '.format(start, end))
 
     def select_month(self, month):
+        """
+        选择月份
+
+        @2018/06/03 pandas 的索引问题导致
+        https://github.com/pandas-dev/pandas/issues/21299
+
+        因此先用set_index去重做一次index
+        影响的有selects,select_time,select_month,get_bar
+
+        @2018/06/04
+        当选择的时间越界/股票不存在,raise ValueError
+
+        @2018/06/04 pandas索引问题已经解决
+        全部恢复
+        """
         def _select_month(month):
             return self.data.loc[month, slice(None)]
-        if self.type[-3:] in ['day']:
-            return self.new(_select_month(month).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
-        elif self.type[-3:] in ['min']:
-            return self.new(_select_month(month).set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
-
-    def select_time_with_gap(self, time, gap, method):
-
-        if method in ['gt', '>']:
-
-            def __gt(_data):
-                if self.type[-3:] in ['day']:
-
-                    return _data.query('date>"{}"'.format(time)).head(gap).set_index(['date', 'code'], drop=False)
-                elif self.type[-3:] in ['min']:
-
-                    return _data.data[_data.data['datetime'] > time].head(gap).set_index(['datetime', 'code'], drop=False)
-            return self.new(pd.concat(list(map(lambda x: __gt(x), self.splits()))), self.type, self.if_fq)
-
-        elif method in ['gte', '>=']:
-            def __gte(_data):
-                if self.type[-3:] in ['day']:
-                    return _data.query('date>="{}"'.format(time)).head(gap).set_index(['date', 'code'], drop=False)
-                elif self.type[-3:] in ['min']:
-                    return _data.data[_data.data['datetime'] >= time].head(gap).set_index(['datetime', 'code'], drop=False)
-            return self.new(pd.concat(list(map(lambda x: __gte(x), self.splits()))), self.type, self.if_fq)
-        elif method in ['lt', '<']:
-            def __lt(_data):
-                if self.type[-3:] in ['day']:
-                    return _data.query('date<"{}"'.format(time)).tail(gap).set_index(['date', 'code'], drop=False)
-                elif self.type[-3:] in ['min']:
-                    return _data.data[_data.data['datetime'] <= time].tail(gap).set_index(['datetime', 'code'], drop=False)
-
-            return self.new(pd.concat(list(map(lambda x: __lt(x), self.splits()))), self.type, self.if_fq)
-        elif method in ['lte', '<=']:
-            def __lte(_data):
-                if self.type[-3:] in ['day']:
-                    return _data.query('date<="{}"'.format(time)).tail(gap).set_index(['date', 'code'], drop=False)
-                elif self.type[-3:] in ['min']:
-                    return _data.data[_data.data['datetime'] <= time].tail(gap).set_index(['datetime', 'code'], drop=False)
-            return self.new(pd.concat(list(map(lambda x: __lte(x), self.splits()))), self.type, self.if_fq)
-        elif method in ['e', '==', '=', 'equal']:
-            def __eq(_data):
-                if self.type[-3:] in ['day']:
-                    return _data.query('date=="{}"'.format(time)).head(gap).set_index(['date', 'code'], drop=False)
-                elif self.type[-3:] in ['min']:
-                    return _data.data[_data.data['datetime'] == time].head(gap).set_index(['datetime', 'code'], drop=False)
-            return self.new(pd.concat(list(map(lambda x: __eq(x), self.splits()))), self.type, self.if_fq)
+        try:
+            return self.new(_select_month(month), self.type, self.if_fq)
+        except:
+            raise ValueError('QA CANNOT GET THIS Month{} '.format(month))
 
     def select_code(self, code):
+        """
+        选择股票
+
+        @2018/06/03 pandas 的索引问题导致
+        https://github.com/pandas-dev/pandas/issues/21299
+
+        因此先用set_index去重做一次index
+        影响的有selects,select_time,select_month,get_bar
+
+        @2018/06/04
+        当选择的时间越界/股票不存在,raise ValueError
+
+        @2018/06/04 pandas索引问题已经解决
+        全部恢复
+        """
         def _select_code(code):
-            return self.data.loc[(slice(None), code),:]
-        if self.type[-3:] in ['day']:
-            return self.new(_select_code(code).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
-        elif self.type[-3:] in ['min']:
-            return self.new(_select_code(code).set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
-
-    def get_bar(self, code, time, if_trade=True):
-        # if self.type[-3:] in ['day']:
-        #     return self.new(self.query('code=="{}" & date=="{}"'.format(code, str(time)[0:10])).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
-
-        # elif self.type[-3:] in ['min']:
-        #     return self.new(self.query('code=="{}"'.format(code))[self.data['datetime'] == str(time)].set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
-        def _get_bar(code, time, if_trade):
-            return self.data.loc[pd.Timestamp(time), code]
+            return self.data.loc[(slice(None), code), :]
         try:
-            if self.type[-3:] in ['day']:
-                return self.new(_get_bar(code, time, if_trade).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
-            elif self.type[-3:] in ['min']:
-                return self.new(_get_bar(code, time, if_trade).set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
+            return self.new(_select_code(code), self.type, self.if_fq)
+        except:
+            raise ValueError('QA CANNOT FIND THIS CODE {}'.format(code))
+
+    def get_bar(self, code, time):
+        """
+        获取一个bar的数据
+        返回一个series
+        如果不存在,raise ValueError
+        """
+        try:
+            return self.data.loc[(pd.Timestamp(time), code)]
         except:
             raise ValueError(
                 'DATASTRUCT CURRENTLY CANNOT FIND THIS BAR WITH {} {}'.format(code, time))
 
+    def select_time_with_gap(self, time, gap, method):
+
+        if method in ['gt', '>']:
+            def gt(data):
+                return data.loc[(slice(pd.Timestamp(time), None), slice(None)), :].groupby('code',axis=0,as_index=False,sort=False,group_keys=False).apply(lambda x: x.iloc[1:gap+1])
+            return self.new(gt(self.data), self.type, self.if_fq)
+
+        elif method in ['gte', '>=']:
+            def gte(data):
+                return data.loc[(slice(pd.Timestamp(time), None), slice(None)), :].groupby('code',axis=0,as_index=False,sort=False,group_keys=False).apply(lambda x: x.iloc[0:gap])
+            return self.new(gte(self.data), self.type, self.if_fq)
+        elif method in ['lt', '<=']:
+            def lt(data):
+                return data.loc[(slice(None, pd.Timestamp(time)), slice(None)), :].groupby('code',axis=0,as_index=False,sort=False,group_keys=False).apply(lambda x: x.iloc[-gap-1:-1])
+            return self.new(lt(self.data), self.type, self.if_fq)
+        elif method in ['lte', '<=']:
+            def lte(data):
+                return data.loc[(slice(None, pd.Timestamp(time)), slice(None)), :].groupby('code',axis=0,as_index=False,sort=False,group_keys=False).apply(lambda x: x.tail(gap))
+            return self.new(lte(self.data), self.type, self.if_fq)
+        elif method in ['eq', '==', '=', 'equal','e']:
+            def eq(data):
+                return data.loc[(pd.Timestamp(time), slice(None)), :]
+            return self.new(eq(self.data), self.type, self.if_fq)
+        else:
+            raise ValueError('QA CURRENTLY DONOT HAVE THIS METHODS {}'.format(method))
     def find_bar(self, code, time):
         if len(time) == 10:
             return self.dicts[(datetime.datetime.strptime(time, '%Y-%m-%d'), code)]
