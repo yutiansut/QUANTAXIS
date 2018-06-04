@@ -50,11 +50,29 @@ class SPETradeApi(QA_Broker):
     def __init__(self, endpoint=get_config_SPE()):
 
         self._endpoint = endpoint
-        self._session = requests.Session()
+        self._session = requests
 
     def call(self, func, params=''):
 
+        response = self._session.get(
+            '{}/api/v1.0/{}'.format(self._endpoint, func), params)
+
+        text = response.text
+
+        return json.loads(text)
+
+    def call_post(self, func, params=''):
+
         response = self._session.post(
+            '{}/api/v1.0/{}'.format(self._endpoint, func), params)
+
+        text = response.text
+
+        return json.loads(text)
+
+    def call_delete(self, func, params=''):
+
+        response = self._session.delete(
             '{}/api/v1.0/{}'.format(self._endpoint, func), params)
 
         text = response.text
@@ -71,61 +89,38 @@ class SPETradeApi(QA_Broker):
 
     def query_accounts(self, accounts):
         return self.call("accounts", {
+            'client': accounts
         })
 
-    def query_holdings(self):
-        return self.call('positions', {})
-
-    def query_data(self, client_id, category):
-        return self.call("query_data", {
-            "client_id": client_id,
-            "category": category
+    def query_positions(self, accounts):
+        return self.call("positions", {
+            'client': accounts
         })
 
-    def send_order(self, client_id, category, price_type, gddm, zqdm, price, quantity):
-        return self.call("send_order", {
-            'client_id': client_id,
-            'category': category,
-            'price_type': price_type,
-            'gddm': gddm,
-            'zqdm': zqdm,
-            'price': price,
-            'quantity': quantity
+    def query_orders(self, accounts, status='filled'):
+        return self.call("orders", {
+            'client': accounts,
+            'status': status
         })
 
-    def cancel_order(self, client_id, exchange_id, hth):
-        return self.call("cancel_order", {
-            'client_id': client_id,
-            'exchange_id': exchange_id,
-            'hth': hth
-        })
+    def send_order(self, accounts):
+        return self.call_post('orders', json.dumps({
+            'clients': accounts,
+            "action": "BUY",
+            "symbol": "000001",
+            "type": "LIMIT",
+            "priceType": 0,
+            "price": 9.18,
+            "amount": 100
 
-    def get_quote(self, client_id, code):
-        return self.call("get_quote", {
-            'client_id': client_id,
-            'code': code,
-        })
+        }))
 
-    def repay(self, client_id, amount):
-        return self.call("repay", {
-            'client_id': client_id,
-            'amount': amount
-        })
+    def cancel_order(self, accounts, orderid):
+        return self.call_delete('orders/{}'.format(orderid), json.dumps({
+            'clients': accounts
+        }))
 
-    def receive_order(self, event):
-        """
-        0 限价委托； 上海限价委托 / 深圳限价委托
-        1 市价委托(深圳对方最优价格)
-        2 市价委托(深圳本方最优价格)    
-        3 市价委托(深圳即时成交剩余撤销)
-        4 市价委托(上海五档即成剩撤 / 深圳五档即成剩撤)
-        5 市价委托(深圳全额成交或撤销)
-        6 市价委托(上海五档即成转限价)
-        """
-        return self.send_order(event.client_id, event.category, event.price_type, event.gddm, event.zqdm, event.price, event.quantity)
-        #client_id, category, price_type, gddm, zqdm, price, quantity
-
-    def run(self, event):
-        pass
-
-
+    def cancel_all(self, accounts):
+        return self.call_delete('orders', json.dumps({
+            'clients': accounts
+        }))
