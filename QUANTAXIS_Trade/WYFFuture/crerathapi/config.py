@@ -13,7 +13,7 @@ account_info['broker_id'] = "9999"
 account_info['account'] = input('account')
 account_info['pwd'] = input('password')
 
-api = cdll.LoadLibrary('hqdll.dll')
+api = cdll.LoadLibrary('{}/hqdll.dll'.format(os.path.dirname(__file__)))
 
 # 下单唯一标号
 OrderId = 0
