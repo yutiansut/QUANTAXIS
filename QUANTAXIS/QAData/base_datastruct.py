@@ -63,7 +63,7 @@ class _quotation_base():
 
         #🛠todo 判断DataFame 对象字段的合法性，是否正确
         self.data = DataFrame.sort_index()
-
+        self.data.index = self.data.index.remove_unused_levels()
         #🛠todo 该变量没有用到， 是不是 self.data_type = marketdata_type ??
         self.data_type = dtype
 
@@ -582,6 +582,8 @@ class _quotation_base():
         🛠todo 没有这个？？ inplace 是否是对于原类的修改 ？？
         """
         data = self.data if data is None else data
+        #data.index= data.index.remove_unused_levels()
+
         dtype = self.type if dtype is None else dtype
         if_fq = self.if_fq if if_fq is None else if_fq
 
@@ -676,9 +678,6 @@ class _quotation_base():
             return list(map(lambda x: self.new(
                 self.query('code=="{}"'.format(x)).set_index(['datetime', 'code'], drop=False), self.type, self.if_fq), self.code))
 
-    # def add_func(self, func, *arg, **kwargs):
-    #     return pd.concat(list(map(lambda x: func(
-    #         self.query('code=="{}"'.format(x)), *arg, **kwargs), self.code)))
     def add_func(self, func, *arg, **kwargs):
         return pd.concat(list(map(lambda x: func(
             self.query('code=="{}"'.format(x)), *arg, **kwargs), self.code))).sort_index()
@@ -698,6 +697,7 @@ class _quotation_base():
 
     def selects(self, code, start, end=None):
         """
+        选择code,start,end
 
         如果end不填写,默认获取到结尾
 
@@ -706,6 +706,12 @@ class _quotation_base():
 
         因此先用set_index去重做一次index
         影响的有selects,select_time,select_month,get_bar
+
+        @2018/06/04
+        当选择的时间越界/股票不存在,raise ValueError
+
+        @2018/06/04 pandas索引问题已经解决
+        全部恢复
         """
         def _selects(code, start, end):
             # if self.type[-3:] in ['day']:
@@ -716,23 +722,18 @@ class _quotation_base():
                 return self.data.loc[(slice(pd.Timestamp(start), None), slice(code)), :]
 
         try:
-            res = _selects(code, start, end)
-
-            if self.type[-3:] in ['day']:
-                return self.new(res.set_index(['date', 'code'], drop=False), self.type, self.if_fq)
-            elif self.type[-3:] in ['min']:
-                return self.new(res.set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
+            return self.new(_selects(code, start, end), self.type, self.if_fq)
         except:
             raise ValueError(
                 'QA CANNOT GET THIS CODE {}/START {}/END{} '.format(code, start, end))
-            # return self.new(self.query('code=="{}"'.format(code)).query('date>="{}"'.format(start)).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
-        # elif self.type[-3:] in ['min']:
-        #     if end is not None:
-        #         return self.new(self.query('code=="{}"'.format(code)).data[self.data['datetime'] >= start][self.data['datetime'] <= end].set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
-        #     else:
-        #         return self.new(self.query('code=="{}"'.format(code)).data[self.data['datetime'] >= start].set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
 
     def select_time(self, start, end=None):
+        """
+        选择起始时间
+
+        如果end不填写,默认获取到结尾
+    
+        """
         def _select_time(start, end):
             if end is not None:
                 #self.query('code=="{}"'.format(code)).query('date>="{}" and date<="{}"'.format(start, end)).set_index(['date', 'code'], drop=False)
@@ -740,40 +741,33 @@ class _quotation_base():
             else:
                 return self.data.loc[(slice(pd.Timestamp(start), None), slice(None)), :]
         try:
-            res = _select_time(start, end)
-            if self.type[-3:] in ['day']:
-                return self.new(res.set_index(['date', 'code'], drop=False), self.type, self.if_fq)
-            elif self.type[-3:] in ['min']:
-                return self.new(res.set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
+            return self.new(_select_time(start, end), self.type, self.if_fq)
         except:
             raise ValueError(
                 'QA CANNOT GET THIS START {}/END{} '.format(start, end))
 
-        # if self.type[-3:] in ['day']:
-        #     if end is not None:
-
-        #         return self.new(self.query('date>="{}" and date<="{}"'.format(start, end)).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
-        #     else:
-        #         return self.new(self.query('date>="{}"'.format(start)).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
-        # elif self.type[-3:] in ['min']:
-        #     if end is not None:
-        #         return self.new(self.data[self.data['datetime'] >= start][self.data['datetime'] <= end].set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
-        #     else:
-        #         return self.new(self.data[self.data['datetime'] >= start].set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
-
     def select_month(self, month):
         def _select_month(month):
             return self.data.loc[month, slice(None)]
-
         try:
-            res = _select_month(month)
-
-            if self.type[-3:] in ['day']:
-                return self.new(res.set_index(['date', 'code'], drop=False), self.type, self.if_fq)
-            elif self.type[-3:] in ['min']:
-                return self.new(res.set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
+            return self.new(_select_month(month), self.type, self.if_fq)
         except:
             raise ValueError('QA CANNOT GET THIS Month{} '.format(month))
+
+    def select_code(self, code):
+        def _select_code(code):
+            return self.data.loc[(slice(None), code), :]
+        try:
+            return self.new(_select_code(code), self.type, self.if_fq)
+        except:
+            raise ValueError('QA CANNOT FIND THIS CODE {}'.format(code))
+
+    def get_bar(self, code, time, if_trade=True):
+        try:
+            return self.data.loc[(pd.Timestamp(time), code)]
+        except:
+            raise ValueError(
+                'DATASTRUCT CURRENTLY CANNOT FIND THIS BAR WITH {} {}'.format(code, time))
 
     def select_time_with_gap(self, time, gap, method):
 
@@ -817,35 +811,6 @@ class _quotation_base():
                 elif self.type[-3:] in ['min']:
                     return _data.data[_data.data['datetime'] == time].head(gap).set_index(['datetime', 'code'], drop=False)
             return self.new(pd.concat(list(map(lambda x: __eq(x), self.splits()))), self.type, self.if_fq)
-
-    def select_code(self, code):
-        def _select_code(code):
-            return self.data.loc[(slice(None), code), :]
-        try:
-            res = _select_code(code)
-            if self.type[-3:] in ['day']:
-                return self.new(res.set_index(['date', 'code'], drop=False), self.type, self.if_fq)
-            elif self.type[-3:] in ['min']:
-                return self.new(res.set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
-        except:
-            raise ValueError('QA CANNOT FIND THIS CODE {}'.format(code))
-
-    def get_bar(self, code, time, if_trade=True):
-        # if self.type[-3:] in ['day']:
-        #     return self.new(self.query('code=="{}" & date=="{}"'.format(code, str(time)[0:10])).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
-
-        # elif self.type[-3:] in ['min']:
-        #     return self.new(self.query('code=="{}"'.format(code))[self.data['datetime'] == str(time)].set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
-        def _get_bar(code, time, if_trade):
-            return self.data.loc[pd.Timestamp(time), code]
-        try:
-            if self.type[-3:] in ['day']:
-                return self.new(_get_bar(code, time, if_trade).set_index(['date', 'code'], drop=False), self.type, self.if_fq)
-            elif self.type[-3:] in ['min']:
-                return self.new(_get_bar(code, time, if_trade).set_index(['datetime', 'code'], drop=False), self.type, self.if_fq)
-        except:
-            raise ValueError(
-                'DATASTRUCT CURRENTLY CANNOT FIND THIS BAR WITH {} {}'.format(code, time))
 
     def find_bar(self, code, time):
         if len(time) == 10:
