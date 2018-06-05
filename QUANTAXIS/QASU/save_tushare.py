@@ -115,9 +115,10 @@ def QA_SU_save_stock_info_tushare(client=DATABASE):
     print("📡 Get stock info from tushare,stock count is %d"% len(df))
     coll = client.stock_info_tushare
     client.drop_collection(coll)
-    json_data =  json.loads(df.to_json(orient='records'))
+    json_data =  json.loads(df.reset_index().to_json(orient='records'))
     coll.insert(json_data)
     print("📝 Save data to stock_info_tushare collection， OK✅")
+
 
 
 def QA_SU_save_trade_date_all(client=DATABASE):
