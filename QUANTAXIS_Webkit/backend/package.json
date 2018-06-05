@@ -45,7 +45,7 @@
     "pug": "2.0.3",
     "request": "2.87.0",
     "require_optional": "1.0.1",
-    "serve-favicon": "2.3.2",
+    "serve-favicon": "2.5.0",
     "socket.io": "1.7.4",
     "superagent": "3.8.3",
     "superagent-charset": "1.2.0",
