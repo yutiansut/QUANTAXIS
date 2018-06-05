@@ -113,12 +113,14 @@ class RUNNING_ENVIRONMENT():
 
     回测
     模拟
+    t0
     实盘
     随机(按算法/分布随机生成行情)/仅用于训练测试
     """
 
     BACKETEST = 'backtest'
     SIMULATION = 'simulation'
+    TZERO = 't0'
     REAL = 'real'
     RANODM = 'random'
 
