@@ -109,7 +109,16 @@ class Test_Query_Advance(unittest.TestCase):
 
 
     def setUp(self):
+
+        #替换 运行环境下本地路径
         self.strQianLong_QLDATA_ = '/Users/jerryw/.wine/drive_c/qianlong/jindian/QLDATA/'
+
+
+        isExists = os.path.exists(self.strQianLong_QLDATA_)
+        if not isExists:
+            print("🔍查找路径不存在 %s ⛔️"%self.strQianLong_QLDATA_)
+            return
+
 
         self.strQianLong_SHASE_day    = self.strQianLong_QLDATA_ + ('history/SHASE/day/')
         self.strQianLong_SHASE_weight = self.strQianLong_QLDATA_ + ('history/SHASE/weight/')
@@ -137,11 +146,11 @@ class Test_Query_Advance(unittest.TestCase):
             # 创建目录操作函数
             os.makedirs(path_for_save_data)
 
-            print(path_for_save_data + ' 创建成功')
+            print(path_for_save_data + ' 创建成功😊')
             #return True
         else:
             # 如果目录存在则不创建，并提示目录已存在
-            print(path_for_save_data + ' 目录已存在')
+            print(path_for_save_data + ' 目录已存在😅')
             #return False
 
         # path1.mkdir()
