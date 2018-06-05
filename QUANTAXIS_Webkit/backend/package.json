@@ -19,7 +19,7 @@
     "agentkeepalive": "3.4.1",
     "axios": "0.15.3",
     "bluebird": "3.5.1",
-    "body-parser": "1.16.1",
+    "body-parser": "1.18.3",
     "bson": "1.0.6",
     "cheerio": "0.22.0",
     "child-process": "1.0.2",
