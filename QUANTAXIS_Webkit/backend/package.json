@@ -20,7 +20,7 @@
     "axios": "0.18.0",
     "bluebird": "3.5.1",
     "body-parser": "1.18.3",
-    "bson": "1.0.6",
+    "bson": "2.0.7",
     "cheerio": "0.22.0",
     "child-process": "1.0.2",
     "cookie-parser": "1.4.3",
