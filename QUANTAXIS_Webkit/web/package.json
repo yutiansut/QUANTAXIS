@@ -28,7 +28,7 @@
     "util-deprecate": "1.0.2",
     "vue": "2.5.16",
     "vue-monaco-editor": "0.0.19",
-    "vue-router": "2.8.1",
+    "vue-router": "3.0.1",
     "vue-simplemde": "0.4.8"
   },
   "devDependencies": {
