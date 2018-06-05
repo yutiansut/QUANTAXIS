@@ -13,7 +13,7 @@
     "axios": "0.16.2",
     "bluebird": "3.5.1",
     "buffer-shims": "1.0.0",
-    "caniuse-lite": "1.0.30000848",
+    "caniuse-lite": "1.0.30000849",
     "echarts": "4.1.0",
     "es2015": "0.0.0",
     "fs": "0.0.1-security",
