@@ -53,17 +53,17 @@ def QA_data_make_qfq(bfq_data, xdxr_data):
     info = xdxr_data[xdxr_data['category'] == 1]
     bfq_data = bfq_data.assign(if_trade=1)
 
-    if len(info)>0:
+    if len(info) > 0:
 
         data = pd.concat([bfq_data, info[['category']]
-                        [bfq_data.index[0]:bfq_data.index[-1]]], axis=1)
+                          [bfq_data.index[0]:bfq_data.index[-1]]], axis=1)
         data['if_trade'].fillna(value=0, inplace=True)
         data = data.fillna(method='ffill')
         data = pd.concat([data, info[['fenhong', 'peigu', 'peigujia',
-                                    'songzhuangu']][bfq_data.index[0]:bfq_data.index[-1]]], axis=1)
+                                      'songzhuangu']][bfq_data.index[0]:bfq_data.index[-1]]], axis=1)
     else:
-        data = pd.concat([bfq_data, info[['category','fenhong', 'peigu', 'peigujia',
-                                    'songzhuangu']]], axis=1)
+        data = pd.concat([bfq_data, info[['category', 'fenhong', 'peigu', 'peigujia',
+                                          'songzhuangu']]], axis=1)
     data = data.fillna(0)
     data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
                         * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
@@ -74,6 +74,7 @@ def QA_data_make_qfq(bfq_data, xdxr_data):
     data['low'] = data['low'] * data['adj']
     data['close'] = data['close'] * data['adj']
     data['preclose'] = data['preclose'] * data['adj']
+    data['volume'] = data['volume']/data['adj']
     try:
         data['high_limit'] = data['high_limit'] * data['adj']
         data['low_limit'] = data['high_limit'] * data['adj']
@@ -88,18 +89,18 @@ def QA_data_make_hfq(bfq_data, xdxr_data):
     info = xdxr_data[xdxr_data['category'] == 1]
     bfq_data = bfq_data.assign(if_trade=1)
 
-    if len(info)>0:
+    if len(info) > 0:
         data = pd.concat([bfq_data, info[['category']]
-                        [bfq_data.index[0]:bfq_data.index[-1]]], axis=1)
+                          [bfq_data.index[0]:bfq_data.index[-1]]], axis=1)
 
         data['if_trade'].fillna(value=0, inplace=True)
         data = data.fillna(method='ffill')
 
         data = pd.concat([data, info[['fenhong', 'peigu', 'peigujia',
-                                    'songzhuangu']][bfq_data.index[0]:bfq_data.index[-1]]], axis=1)
+                                      'songzhuangu']][bfq_data.index[0]:bfq_data.index[-1]]], axis=1)
     else:
-        data = pd.concat([bfq_data, info[['category','fenhong', 'peigu', 'peigujia',
-                                    'songzhuangu']]], axis=1)
+        data = pd.concat([bfq_data, info[['category', 'fenhong', 'peigu', 'peigujia',
+                                          'songzhuangu']]], axis=1)
     data = data.fillna(0)
     data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
                         * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
@@ -110,6 +111,7 @@ def QA_data_make_hfq(bfq_data, xdxr_data):
     data['low'] = data['low'] * data['adj']
     data['close'] = data['close'] * data['adj']
     data['preclose'] = data['preclose'] * data['adj']
+    
     try:
         data['high_limit'] = data['high_limit'] * data['adj']
         data['low_limit'] = data['high_limit'] * data['adj']
@@ -128,9 +130,9 @@ def QA_data_stock_to_fq(__data, type_='01'):
             data['date'] = pd.to_datetime(data['date'])
             return data.set_index(['date', 'code'], drop=False)
         except:
-            return pd.DataFrame(data=[],columns=['category', 'category_meaning', 'code', 'date', 'fenhong',
-                                         'fenshu', 'liquidity_after', 'liquidity_before', 'name', 'peigu', 'peigujia',
-                                         'shares_after', 'shares_before', 'songzhuangu', 'suogu', 'xingquanjia'])
+            return pd.DataFrame(data=[], columns=['category', 'category_meaning', 'code', 'date', 'fenhong',
+                                                  'fenshu', 'liquidity_after', 'liquidity_before', 'name', 'peigu', 'peigujia',
+                                                  'shares_after', 'shares_before', 'songzhuangu', 'suogu', 'xingquanjia'])
     '股票 日线/分钟线 动态复权接口'
     if type_ in ['01', 'qfq']:
         return QA_data_make_qfq(__data, __QA_fetch_stock_xdxr(__data['code'][0]))
