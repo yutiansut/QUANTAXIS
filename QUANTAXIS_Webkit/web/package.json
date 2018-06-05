@@ -22,7 +22,7 @@
     "glob": "7.1.2",
     "highlight.js": "9.12.0",
     "muse-ui": "2.1.0",
-    "process-nextick-args": "1.0.7",
+    "process-nextick-args": "2.0.0",
     "simplemde": "1.11.2",
     "simplemde-theme-base": "0.2.1",
     "util-deprecate": "1.0.2",
