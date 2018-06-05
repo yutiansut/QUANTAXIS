@@ -10,7 +10,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "axios": "0.16.2",
+    "axios": "0.18.0",
     "bluebird": "3.5.1",
     "buffer-shims": "1.0.0",
     "caniuse-lite": "1.0.30000849",
