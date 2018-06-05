@@ -54,7 +54,7 @@
     "whatwg-fetch": "1.1.1",
     "with": "5.1.1",
     "wordwrap": "1.0.0",
-    "xpath": "0.0.23",
+    "xpath": "0.0.27",
     "yargs": "6.6.0"
   },
   "description": "a nodejs version of quantaxis spider",
