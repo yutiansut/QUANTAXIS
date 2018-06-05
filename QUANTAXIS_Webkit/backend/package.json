@@ -46,7 +46,7 @@
     "request": "2.87.0",
     "require_optional": "1.0.1",
     "serve-favicon": "2.5.0",
-    "socket.io": "1.7.4",
+    "socket.io": "2.1.1",
     "superagent": "3.8.3",
     "superagent-charset": "1.2.0",
     "url": "0.11.0",
