@@ -16,7 +16,7 @@
     "caniuse-lite": "1.0.30000849",
     "echarts": "4.1.0",
     "es2015": "0.0.0",
-    "fs": "0.0.1-security",
+    "fs": "0.0.2",
     "fs.realpath": "1.0.0",
     "github-markdown-css": "2.10.0",
     "glob": "7.1.2",
