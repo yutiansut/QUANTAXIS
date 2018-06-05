@@ -74,7 +74,8 @@ def QA_data_make_qfq(bfq_data, xdxr_data):
     data['low'] = data['low'] * data['adj']
     data['close'] = data['close'] * data['adj']
     data['preclose'] = data['preclose'] * data['adj']
-    data['volume'] = data['volume']/data['adj']
+    data['volume'] = data['volume'] / \
+        data['adj'] if 'volume' in data.columns else data['vol']/data['adj']
     try:
         data['high_limit'] = data['high_limit'] * data['adj']
         data['low_limit'] = data['high_limit'] * data['adj']
@@ -111,7 +112,8 @@ def QA_data_make_hfq(bfq_data, xdxr_data):
     data['low'] = data['low'] * data['adj']
     data['close'] = data['close'] * data['adj']
     data['preclose'] = data['preclose'] * data['adj']
-    
+    data['volume'] = data['volume'] / \
+        data['adj'] if 'volume' in data.columns else data['vol']/data['adj']
     try:
         data['high_limit'] = data['high_limit'] * data['adj']
         data['low_limit'] = data['high_limit'] * data['adj']
