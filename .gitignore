@@ -158,3 +158,5 @@ kernel*.json
 #future connections
 
 *.con
+/QUANTAXIS_Test/QAFetch_Test/data/
+*.sqlite_db
