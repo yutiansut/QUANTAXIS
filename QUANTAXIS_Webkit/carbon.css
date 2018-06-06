@@ -1,0 +1,556 @@
+.mu-appbar {
+  background-color: #474a4f;
+  color: #ffffff;
+}
+.mu-avatar {
+  color: #ffffff;
+  background-color: #bdbdbd;
+}
+.mu-badge {
+  background-color: #bbbfc4;
+  color: #ffffff;
+}
+.mu-badge-primary {
+  background-color: #7e848c;
+  color: #ffffff;
+}
+.mu-badge-secondary {
+  background-color: #ff5252;
+  color: #ffffff;
+}
+body {
+  background-color: #ffffff;
+  color: #474a4f;
+  font-family: Roboto, Lato, sans-serif;
+}
+a {
+  color: #ff5252;
+}
+.mu-bottom-nav {
+  background-color: #ffffff;
+}
+.mu-bottom-nav-shift {
+  background-color: #474a4f;
+}
+.mu-buttom-item {
+  color: #7e848c;
+}
+.mu-bottom-nav-shift .mu-buttom-item {
+  color: rgba(255, 255, 255, 0.7);
+}
+.mu-bottom-item-active .mu-bottom-item-text {
+  color: #474a4f;
+}
+.mu-bottom-nav-shift .mu-bottom-item-active .mu-bottom-item-text {
+  color: #ffffff;
+}
+.mu-bottom-item-active .mu-bottom-item-icon {
+  color: #474a4f;
+}
+.mu-bottom-nav-shift .mu-bottom-item-active .mu-bottom-item-icon {
+  color: #ffffff;
+}
+.mu-bottom-sheet {
+  background-color: #ffffff;
+}
+.mu-card {
+  background-color: #ffffff;
+}
+.mu-card-header-title .mu-card-title {
+  color: rgba(71, 74, 79, 0.87);
+}
+.mu-card-header-title .mu-card-sub-title {
+  color: rgba(71, 74, 79, 0.54);
+}
+.mu-card-media-title {
+  background-color: rgba(0, 0, 0, 0.54);
+}
+.mu-card-media-title .mu-card-title {
+  color: rgba(255, 255, 255, 0.87);
+}
+.mu-card-media-title .mu-card-sub-title {
+  color: rgba(255, 255, 255, 0.54);
+}
+.mu-card-title-container .mu-card-title {
+  color: rgba(71, 74, 79, 0.87);
+}
+.mu-card-title-container .mu-card-sub-title {
+  color: rgba(71, 74, 79, 0.54);
+}
+.mu-card-text {
+  color: #474a4f;
+}
+.mu-checkbox input[type="checkbox"]:checked + .mu-checkbox-wrapper .mu-checkbox-icon-uncheck {
+  color: #ff5252;
+}
+.mu-checkbox input[type="checkbox"]:checked + .mu-checkbox-wrapper .mu-checkbox-ripple-wrapper {
+  color: #ff5252;
+}
+.mu-checkbox-label {
+  color: #474a4f;
+}
+.mu-checkbox.disabled .mu-checkbox-label {
+  color: #d3d6db;
+}
+.mu-checkbox-icon-uncheck {
+  color: #7e848c;
+}
+.mu-checkbox.disabled .mu-checkbox-icon-uncheck {
+  color: #d3d6db;
+}
+.mu-checkbox-icon-checked {
+  color: #ff5252;
+}
+.mu-checkbox.disabled .mu-checkbox-icon-checked {
+  color: #d3d6db;
+}
+.mu-chip {
+  background-color: #e0e0e0;
+  color: rgba(71, 74, 79, 0.87);
+}
+.mu-chip.hover {
+  background-color: #cecece;
+  cursor: pointer;
+}
+.mu-chip.hover .mu-chip-delete-icon {
+  color: rgba(71, 74, 79, 0.4);
+}
+.mu-chip-delete-icon {
+  color: rgba(71, 74, 79, 0.26);
+}
+.mu-circular-progress-determinate-path {
+  stroke: #474a4f;
+}
+.mu-calendar {
+  color: #474a4f;
+}
+.mu-calendar-year {
+  background-color: #ffffff;
+}
+.mu-date-display {
+  background-color: #474a4f;
+  color: #ffffff;
+}
+.mu-day-button-bg {
+  background-color: #ff5252;
+}
+.mu-day-button-text {
+  font-weight: 400;
+  position: relative;
+  color: #474a4f;
+}
+.mu-day-button.now .mu-day-button-text {
+  color: #ff5252;
+}
+.mu-day-button.hover .mu-day-button-text,
+.mu-day-button.selected .mu-day-button-text {
+  color: #ffffff;
+}
+.mu-year-button-text {
+  color: #474a4f;
+}
+.mu-year-button.selected .mu-year-button-text {
+  color: #ff5252;
+}
+.mu-year-button.hover .mu-year-button-text {
+  color: #ff5252;
+}
+.mu-dialog {
+  background-color: #ffffff;
+}
+.mu-dialog-footer.scrollable,
+.mu-dialog-header.scrollable {
+  border-bottom-color: #edeff2;
+}
+.mu-dialog-title {
+  color: #474a4f;
+}
+.mu-dialog-body {
+  color: rgba(71, 74, 79, 0.6);
+}
+.mu-dropDown-menu-text {
+  color: #474a4f;
+}
+.mu-dropDown-menu-icon {
+  color: #edeff2;
+}
+.mu-dropDown-menu-line {
+  background-color: #edeff2;
+}
+.mu-flat-button {
+  color: #474a4f;
+  background-color: transparent;
+}
+.mu-flat-button .mu-circle-ripple {
+  color: #474a4f;
+}
+.mu-flat-button-primary {
+  color: #ff5252;
+}
+.mu-flat-button-secondary {
+  color: #ff5252;
+}
+.mu-float-button {
+  background-color: #474a4f;
+  color: #ffffff;
+}
+.mu-float-button.disabled {
+  color: rgba(71, 74, 79, 0.3);
+  cursor: default;
+  background-color: #e0e0e0;
+}
+.mu-float-button.hover .mu-float-button-wrapper,
+.mu-float-button:active .mu-float-button-wrapper {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+.mu-float-button-secondary {
+  background-color: #ff5252;
+  color: #ffffff;
+}
+.mu-grid-tile-titlebar {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.mu-grid-tile-title-container {
+  color: #ffffff;
+}
+.mu-grid-tile-action .mu-icon {
+  color: #ffffff;
+}
+.mu-circle-spinner {
+  border-color: #ff5252;
+}
+.mu-circle-secondary {
+  border-color: #ff5252;
+}
+.mu-linear-progress {
+  background-color: #bbbfc4;
+}
+.mu-linear-progress-indeterminate {
+  background-color: #ff5252;
+}
+.mu-linear-progress-determinate {
+  background-color: #ff5252;
+}
+.mu-item-wrapper.hover {
+  background-color: rgba(71, 74, 79, 0.1);
+}
+.mu-item {
+  color: #474a4f;
+}
+.mu-item.selected {
+  color: #474a4f;
+}
+.mu-item-link-icon {
+  color: #757575;
+}
+.mu-item-left {
+  color: #757575;
+}
+.mu-item-right {
+  color: #757575;
+}
+.mu-item-after {
+  color: #7e848c;
+}
+.mu-item-text {
+  color: #7e848c;
+}
+.mu-menu-item-wrapper {
+  color: #474a4f;
+}
+.mu-menu-item-wrapper.active {
+  color: #ff5252;
+}
+.mu-menu-item-wrapper.hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.mu-menu-item-wrapper.disabled {
+  color: #d3d6db;
+}
+.mu-menu-item-left-icon {
+  color: #757575;
+}
+.mu-menu-item-right-icon {
+  color: #757575;
+}
+.mu-pagination-item {
+  color: #474a4f;
+}
+.mu-pagination-item.hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.mu-pagination-item.active {
+  color: #ffffff;
+  background-color: #474a4f;
+}
+.mu-pagination-item.disabled {
+  color: #d3d6db;
+}
+.mu-paper {
+  background-color: #ffffff;
+  color: #474a4f;
+}
+.mu-picker {
+  background-color: #ffffff;
+}
+.mu-picker-center-highlight::before,
+.mu-picker-center-highlight::after {
+  background-color: #edeff2;
+}
+.mu-picker-slot.mu-picker-slot-divider {
+  color: #474a4f;
+}
+.mu-picker-item {
+  color: #7e848c;
+}
+.mu-picker-item.selected {
+  color: #474a4f;
+}
+.mu-popover {
+  background-color: #ffffff;
+}
+.mu-popup {
+  background-color: #ffffff;
+}
+.mu-radio input[type="radio"]:checked + .mu-radio-wrapper .mu-radio-icon-uncheck {
+  color: #ff5252;
+}
+.mu-radio input[type="radio"]:checked + .mu-radio-wrapper .mu-radio-ripple-wrapper {
+  color: #ff5252;
+}
+.mu-radio-label {
+  color: #474a4f;
+}
+.mu-radio.disabled .mu-radio-label {
+  color: #d3d6db;
+}
+.mu-radio-icon-uncheck {
+  color: #7e848c;
+}
+.mu-radio.disabled .mu-radio-icon-uncheck {
+  color: #d3d6db;
+}
+.mu-radio-icon-checked {
+  color: #ff5252;
+}
+.mu-radio.disabled .mu-radio-icon-checked {
+  color: #d3d6db;
+}
+.mu-raised-button {
+  background-color: #474a4f;
+  color: #ffffff;
+}
+.mu-raised-button.hover .mu-raised-button-wrapper {
+  background-color: #474a4f;
+}
+.mu-raised-button.disabled {
+  color: rgba(71, 74, 79, 0.3);
+  background-color: #e6e6e6;
+}
+.mu-raised-button-primary {
+  background-color: #7e848c;
+}
+.mu-raised-button-secondary {
+  background-color: #ff5252;
+}
+.mu-refresh-control {
+  color: #ff5252;
+}
+.mu-slider-track {
+  background-color: #bbbfc4;
+}
+.mu-slider-fill {
+  background-color: #ff5252;
+}
+.mu-slider-fill.disabled {
+  background-color: #bbbfc4;
+}
+.mu-slider-thumb {
+  background-color: #ff5252;
+  color: #ff5252;
+}
+.mu-slider.zero .mu-slider-thumb,
+.mu-slider.disabled .mu-slider-thumb {
+  border-color: #bbbfc4;
+  color: #bbbfc4;
+  background-color: #ffffff;
+}
+.mu-snackbar {
+  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.87);
+}
+.mu-step-button {
+  background-color: transparent;
+}
+.mu-step-button.hover {
+  background-color: rgba(71, 74, 79, 0.06);
+}
+.mu-step-connector-line {
+  border-color: #bdbdbd;
+}
+.mu-stepper-vertical .mu-step-content {
+  border-left: 1px solid #bdbdbd;
+}
+.mu-step-label {
+  color: #474a4f;
+}
+.mu-step-label.disabled {
+  color: #d3d6db;
+}
+.mu-step-label-icon {
+  color: #9e9e9e;
+}
+.mu-step-label.disabled .mu-step-label-icon {
+  color: #9e9e9e;
+}
+.mu-step-label.completed .mu-step-label-icon,
+.mu-step-label.active .mu-step-label-icon {
+  color: #ff5252;
+}
+.mu-step-label-circle {
+  background-color: #9e9e9e;
+  color: #ffffff;
+}
+.mu-step-label.disabled .mu-step-label-circle {
+  background-color: #9e9e9e;
+}
+.mu-step-label.completed .mu-step-label-circle,
+.mu-step-label.active .mu-step-label-circle {
+  background-color: #ff5252;
+}
+.mu-sub-header {
+  color: #7e848c;
+}
+.mu-switch input[type="checkbox"]:checked + .mu-switch-wrapper .mu-switch-track {
+  background-color: rgba(255, 82, 82, 0.5);
+}
+.mu-switch input[type="checkbox"]:checked + .mu-switch-wrapper .mu-switch-thumb {
+  background-color: #ff5252;
+  color: #ff5252;
+}
+.mu-switch.disabled input[type="checkbox"]:checked + .mu-switch-wrapper .mu-switch-track {
+  background-color: #bbbfc4;
+}
+.mu-switch.disabled input[type="checkbox"]:checked + .mu-switch-wrapper .mu-switch-thumb {
+  background-color: #e0e0e0;
+}
+.mu-switch-label {
+  color: #474a4f;
+}
+.mu-switch.disabled .mu-switch-label {
+  color: #d3d6db;
+}
+.mu-switch-track {
+  background-color: #bbbfc4;
+}
+.mu-switch.disabled .mu-switch-track {
+  background-color: #bbbfc4;
+}
+.mu-switch-thumb {
+  color: #474a4f;
+  background-color: #f5f5f5;
+}
+.mu-switch.disabled .mu-switch-thumb {
+  background-color: #e0e0e0;
+}
+.mu-table {
+  background-color: #ffffff;
+}
+.mu-thead {
+  border-bottom-color: #edeff2;
+}
+.mu-th {
+  color: #7e848c;
+}
+.mu-tr {
+  border-bottom-color: #edeff2;
+  color: #474a4f;
+}
+.mu-tr.selected {
+  background-color: #f5f5f5;
+}
+.mu-tr.hover {
+  background-color: #eeeeee;
+}
+.mu-tr.stripe {
+  background-color: rgba(200, 202, 205, 0.4);
+}
+.mu-tfoot .mu-tr {
+  border-top-color: #edeff2;
+}
+.mu-tabs {
+  background-color: #474a4f;
+}
+.mu-tab-link-highlight {
+  background-color: #ff5252;
+}
+.mu-tab-link {
+  color: rgba(255, 255, 255, 0.7);
+}
+.mu-tab-active {
+  color: #ffffff;
+}
+.mu-text-field {
+  color: #7e848c;
+}
+.mu-text-field.focus-state {
+  color: #ff5252;
+}
+.mu-text-field.focus-state.error {
+  color: #f44336;
+}
+.mu-text-field.disabled {
+  color: #d3d6db;
+}
+.mu-text-field-input {
+  color: #474a4f;
+}
+.mu-text-field.error .mu-text-field-help {
+  color: #f44336;
+}
+.mu-text-field-line {
+  background-color: #edeff2;
+}
+.mu-text-field-line.disabled {
+  border-color: #d3d6db;
+}
+.mu-text-field-focus-line {
+  background-color: #ff5252;
+}
+.mu-text-field-focus-line.error {
+  background-color: #f44336;
+}
+.mu-text-field-hint {
+  color: #d3d6db;
+}
+.mu-text-field.has-label .mu-text-field-label.float {
+  color: #d3d6db;
+}
+.mu-clock-circle {
+  background-color: rgba(0, 0, 0, 0.07);
+}
+.mu-time-display {
+  background-color: #474a4f;
+  color: #ffffff;
+}
+.mu-clock-number.selected {
+  background-color: #ff5252;
+  color: #ffffff;
+}
+.mu-clock-pointer {
+  background-color: #ff5252;
+}
+.mu-clock-pointer-mark {
+  background-color: #ffffff;
+  border-color: #ff5252;
+}
+.mu-toast {
+  background-color: rgba(0, 0, 0, 0.87);
+  color: #ffffff;
+}
+.mu-tooltip {
+  color: #ffffff;
+}
+.mu-tooltip-ripple.when-shown {
+  background-color: #616161;
+}
