@@ -28,7 +28,7 @@
     "util-deprecate": "1.0.2",
     "vue": "2.5.16",
     "vue-monaco-editor": "0.0.19",
-    "vue-router": "2.8.1",
+    "vue-router": "3.0.1",
     "vue-simplemde": "0.4.8"
   },
   "devDependencies": {
@@ -59,11 +59,11 @@
     "shelljs": "0.8.2",
     "url-loader": "0.6.2",
     "vue-loader": "15.2.4",
-    "vue-style-loader": "3.1.2",
+    "vue-style-loader": "4.1.0",
     "vue-template-compiler": "2.5.16",
-    "webpack": "2.7.0",
+    "webpack": "4.11.0",
     "webpack-bundle-analyzer": "2.13.1",
-    "webpack-dev-middleware": "1.12.2",
+    "webpack-dev-middleware": "3.1.3",
     "webpack-hot-middleware": "2.22.2",
     "webpack-merge": "4.1.2"
   },
