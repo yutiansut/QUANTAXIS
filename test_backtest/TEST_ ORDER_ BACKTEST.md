@@ -5,18 +5,7 @@ import QUANTAXIS as QA
 ```
 
     QUANTAXIS>> start QUANTAXIS
-    QUANTAXIS>> Selecting the Best Server IP of TDX
-    
-
-    Bad REPSONSE 60.28.29.69
-    Bad REPSONSE 180.153.18.17
-    Bad REPSONSE 59.173.18.69
-    Bad REPSONSE 61.153.144.179
-    
-
-    QUANTAXIS>> === The BEST SERVER ===
-     stock_ip 60.191.117.167 future_ip 58.246.109.27
-    QUANTAXIS>> Welcome to QUANTAXIS, the Version is 1.0.30
+    QUANTAXIS>> Welcome to QUANTAXIS, the Version is 1.0.46
     QUANTAXIS>>  
      ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` 
       ``########`````##````````##``````````##`````````####````````##```##########````````#``````##``````###```##`````######`` 
@@ -32,7 +21,7 @@ import QUANTAXIS as QA
       ``#########``````########```##``````````````###`##``````````##```````##``##````````````##`##``````##````##`````###``### 
       ````````#####`````````````````````````````````````````````````````````````````````````````````````````````````````##`` 
       ``````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` 
-      ``````````````````````````Copyright``yutiansut``2017``````QUANTITATIVE FINANCIAL FRAMEWORK````````````````````````````` 
+      ``````````````````````````Copyright``yutiansut``2018``````QUANTITATIVE FINANCIAL FRAMEWORK````````````````````````````` 
       ``````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` 
      ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` 
      ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` 
@@ -89,7 +78,7 @@ print('ORDER的占用资金: {}'.format((Order.amount*Order.price)*(1+Account.co
 print('账户剩余资金 :{}'.format(Account.cash_available))
 ```
 
-    账户剩余资金 :950.2999999999302
+    账户剩余资金 :0
     
 
 此时的账户cash并未减少,因为此过程为申报订单(已委托 未成交状态)
@@ -102,7 +91,7 @@ rec_mes=B.receive_order(QA.QA_Event(order=Order))
 print(rec_mes)
 ```
 
-    {'header': {'source': 'market', 'status': 200, 'code': '000001', 'session': {'user': None, 'strategy': None, 'account': 'Acc_b6DI7PfB'}, 'order_id': 'Order_kOhmiyR9', 'trade_id': 'Trade_7A4Y2wG6'}, 'body': {'order': {'price': 10.96, 'code': '000001', 'amount': 90800, 'date': '2018-05-09', 'datetime': '2018-05-09 09:30:00', 'towards': 1}, 'market': {'open': 10.98, 'high': 11.03, 'low': 10.88, 'close': 10.97, 'volume': 627656.0, 'code': '000001'}, 'fee': {'commission': 1492.071, 'tax': 0}}}
+    {'header': {'source': 'market', 'status': 200, 'code': '000001', 'session': {'user': None, 'strategy': None, 'account': 'Acc_fSyZbDFk'}, 'order_id': 'Order_aVQ0MYie', 'trade_id': 'Trade_iGenJ6wM'}, 'body': {'order': {'price': 10.96, 'code': '000001', 'amount': 90800, 'date': '2018-05-09', 'datetime': '2018-05-09 09:30:00', 'towards': 1}, 'fee': {'commission': 248.67849999999999, 'tax': 0}}}
     
 
 账户类接收到回测返回的回报信息,更新账户
@@ -116,7 +105,7 @@ Account.receive_deal(rec_mes)
 
 
     {'source': 'account',
-     'account_cookie': 'Acc_b6DI7PfB',
+     'account_cookie': 'Acc_fSyZbDFk',
      'portfolio_cookie': None,
      'user_cookie': None,
      'broker': 'backtest',
@@ -127,18 +116,20 @@ Account.receive_deal(rec_mes)
      'allow_t0': False,
      'margin_level': False,
      'init_assets': 1000000,
-     'cash': [1000000, 3339.9289999998837],
+     'commission_coeff': 0.00025,
+     'tax_coeff': 0.0015,
+     'cash': [1000000, 4583.321499999845],
      'history': [['2018-05-09 09:30:00',
        '000001',
        10.96,
        90800.0,
-       'Order_kOhmiyR9',
-       'Trade_7A4Y2wG6',
-       'Acc_b6DI7PfB',
-       1492.071,
+       'Order_aVQ0MYie',
+       'Trade_iGenJ6wM',
+       'Acc_fSyZbDFk',
+       248.67849999999999,
        0.0]],
      'trade_index': ['2018-05-09 09:30:00'],
-     'running_time': datetime.datetime(2018, 5, 14, 23, 24, 46, 518098)}
+     'running_time': datetime.datetime(2018, 6, 6, 13, 52, 16, 692993)}
 
 
 
@@ -149,7 +140,7 @@ Account.receive_deal(rec_mes)
 print('账户的可用资金 {}'.format(Account.cash_available))
 ```
 
-    账户的可用资金 3339.9289999998837
+    账户的可用资金 4583.321499999845
     
 
 我们注意到 当最初申报订单的时候,可用资金只有950.2999999999302元,而买入成功后,可用资金有3339.9289999998837元,原因是下单的时候模式是市价单模式(QA.ORDER_MODEL.MARKET),故实际成交金额为10.96元
@@ -180,7 +171,7 @@ Account.cash
 
 
 
-    [1000000, 3339.9289999998837]
+    [1000000, 4583.321499999845]
 
 
 
@@ -215,7 +206,7 @@ Account.cash
 
 
 
-    [1000000, 3339.9289999998837]
+    [1000000, 4583.321499999845]
 
 
 
@@ -227,7 +218,7 @@ Account.cash_available
 
 
 
-    3339.9289999998837
+    4583.321499999845
 
 
 
@@ -303,7 +294,7 @@ Order
 
 
 
-    < QA_Order datetime:2018-05-10 09:31:00 code:000001 price:11 towards:-1 btype:stock_cn order_id:Order_4nV1lmEp account:Acc_b6DI7PfB status:100 >
+    < QA_Order datetime:2018-05-10 09:31:00 code:000001 amount:90800.0 price:11 towards:-1 btype:stock_cn order_id:Order_YPtDn4sI account:Acc_fSyZbDFk status:300 >
 
 
 
@@ -315,7 +306,7 @@ Account.cash_available  # 因为此时订单尚未申报成功 可用现金不�
 
 
 
-    3339.9289999998837
+    4583.321499999845
 
 
 
@@ -325,7 +316,7 @@ rec_mes=B.receive_order(QA.QA_Event(order=Order))
 print(rec_mes)
 ```
 
-    {'header': {'source': 'market', 'status': 200, 'code': '000001', 'session': {'user': None, 'strategy': None, 'account': 'Acc_b6DI7PfB'}, 'order_id': 'Order_4nV1lmEp', 'trade_id': 'Trade_RZ7KDGbE'}, 'body': {'order': {'price': 11.0, 'code': '000001', 'amount': 90800, 'date': '2018-05-10', 'datetime': '2018-05-10 09:30:00', 'towards': -1}, 'market': {'open': 11.03, 'high': 11.09, 'low': 10.91, 'close': 11.01, 'volume': 552735.0, 'code': '000001'}, 'fee': {'commission': 1498.2, 'tax': 998.8}}}
+    {'header': {'source': 'market', 'status': 200, 'code': '000001', 'session': {'user': None, 'strategy': None, 'account': 'Acc_fSyZbDFk'}, 'order_id': 'Order_YPtDn4sI', 'trade_id': 'Trade_CfR4JzXB'}, 'body': {'order': {'price': 11.0, 'code': '000001', 'amount': 90800.0, 'date': '2018-05-10', 'datetime': '2018-05-10 09:30:00', 'towards': -1}, 'fee': {'commission': 249.7, 'tax': 1498.2}}}
     
 
 
@@ -337,7 +328,7 @@ Account.receive_deal(rec_mes)
 
 
     {'source': 'account',
-     'account_cookie': 'Acc_b6DI7PfB',
+     'account_cookie': 'Acc_fSyZbDFk',
      'portfolio_cookie': None,
      'user_cookie': None,
      'broker': 'backtest',
@@ -348,27 +339,29 @@ Account.receive_deal(rec_mes)
      'allow_t0': False,
      'margin_level': False,
      'init_assets': 1000000,
-     'cash': [1000000, 3339.9289999998837, 1000641.7289999999],
+     'commission_coeff': 0.00025,
+     'tax_coeff': 0.0015,
+     'cash': [1000000, 4583.321499999845, 1001635.4214999999],
      'history': [['2018-05-09 09:30:00',
        '000001',
        10.96,
        90800.0,
-       'Order_kOhmiyR9',
-       'Trade_7A4Y2wG6',
-       'Acc_b6DI7PfB',
-       1492.071,
+       'Order_aVQ0MYie',
+       'Trade_iGenJ6wM',
+       'Acc_fSyZbDFk',
+       248.67849999999999,
        0.0],
       ['2018-05-10 09:30:00',
        '000001',
        11.0,
        -90800.0,
-       'Order_4nV1lmEp',
-       'Trade_RZ7KDGbE',
-       'Acc_b6DI7PfB',
-       1498.2,
-       998.8]],
+       'Order_YPtDn4sI',
+       'Trade_CfR4JzXB',
+       'Acc_fSyZbDFk',
+       249.7,
+       1498.2]],
      'trade_index': ['2018-05-09 09:30:00', '2018-05-10 09:30:00'],
-     'running_time': datetime.datetime(2018, 5, 14, 23, 24, 46, 640769)}
+     'running_time': datetime.datetime(2018, 6, 6, 13, 52, 16, 856556)}
 
 
 
@@ -380,6 +373,191 @@ Account.cash_available # 此时订单已成交 cash_available立刻结转
 
 
 
-    1000641.7289999999
+    1001635.4214999999
+
+
+
+
+```python
+Account.history_table
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>datetime</th>
+      <th>code</th>
+      <th>price</th>
+      <th>amount</th>
+      <th>order_id</th>
+      <th>trade_id</th>
+      <th>account_cookie</th>
+      <th>commission</th>
+      <th>tax</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2018-05-09 09:30:00</td>
+      <td>000001</td>
+      <td>10.96</td>
+      <td>90800.0</td>
+      <td>Order_aVQ0MYie</td>
+      <td>Trade_iGenJ6wM</td>
+      <td>Acc_fSyZbDFk</td>
+      <td>248.6785</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2018-05-10 09:30:00</td>
+      <td>000001</td>
+      <td>11.00</td>
+      <td>-90800.0</td>
+      <td>Order_YPtDn4sI</td>
+      <td>Trade_CfR4JzXB</td>
+      <td>Acc_fSyZbDFk</td>
+      <td>249.7000</td>
+      <td>1498.2</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+Account.orders
+```
+
+
+
+
+    < QA_OrderQueue AMOUNT 2 WAITING TRADE 2 >
+
+
+
+
+```python
+Account.orders.queue_df.query('date=="2018-05-09"')
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>account_cookie</th>
+      <th>amount</th>
+      <th>amount_model</th>
+      <th>callback</th>
+      <th>code</th>
+      <th>commission_coeff</th>
+      <th>date</th>
+      <th>datetime</th>
+      <th>frequence</th>
+      <th>market_type</th>
+      <th>...</th>
+      <th>price</th>
+      <th>sending_time</th>
+      <th>status</th>
+      <th>strategy</th>
+      <th>tax_coeff</th>
+      <th>towards</th>
+      <th>trade_id</th>
+      <th>transact_time</th>
+      <th>type</th>
+      <th>user</th>
+    </tr>
+    <tr>
+      <th>order_id</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Order_aVQ0MYie</th>
+      <td>Acc_fSyZbDFk</td>
+      <td>90800.0</td>
+      <td>by_money</td>
+      <td>&lt;bound method QA_Account.receive_deal of &lt; QA_...</td>
+      <td>000001</td>
+      <td>0.00025</td>
+      <td>2018-05-09</td>
+      <td>2018-05-09 09:31:00</td>
+      <td>day</td>
+      <td>stock_cn</td>
+      <td>...</td>
+      <td>11</td>
+      <td>2018-05-09 09:31:00</td>
+      <td>300</td>
+      <td>None</td>
+      <td>0.0015</td>
+      <td>1</td>
+      <td>None</td>
+      <td>None</td>
+      <td>stock_cn</td>
+      <td>None</td>
+    </tr>
+  </tbody>
+</table>
+<p>1 rows × 23 columns</p>
+</div>
 
 
