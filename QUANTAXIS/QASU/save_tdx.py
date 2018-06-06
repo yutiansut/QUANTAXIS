@@ -68,7 +68,7 @@ def QA_SU_save_stock_day(client=DATABASE):
     def __saving_work(code, coll_stock_day):
         try:
             QA_util_log_info(
-                '##JOB01 Now Saving STOCK_DAY==== {}'(str(code)))
+                '##JOB01 Now Saving STOCK_DAY==== {}'.format(str(code)))
 
             ref = coll_stock_day.find({'code': str(code)[0:6]})
             end_date = str(now_time())[0:10]
@@ -78,7 +78,7 @@ def QA_SU_save_stock_day(client=DATABASE):
                 start_date = ref[ref.count() - 1]['date']
 
                 QA_util_log_info('UPDATE_STOCK_DAY \n Trying updating {} from {} to {}'.format(
-                                 (code, start_date, end_date)))
+                                 code, start_date, end_date))
                 if start_date != end_date:
                     coll_stock_day.insert_many(
                         QA_util_to_json_from_pandas(
