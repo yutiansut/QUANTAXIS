@@ -8,6 +8,10 @@ import matplotlib as mpl
 #from pandas import Series
 import pandas as pd
 
+'''
+ 这个文件的代码 都是 实验性质的。 scribble code！
+'''
+
 #from QUANTAXIS.QAFetch import (QATdx );
 from QUANTAXIS.QAUtil import QADate, QADate_trade
 

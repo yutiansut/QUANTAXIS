@@ -63,8 +63,8 @@ quantaxis__db_description= [
             {"yingshouzhangkuan": "营收账款"},
             {"yingyelirun": "营业利润"},
             {"touzishouyu": "投资收益"},
-            {"jingyingxianjinliu": ""},
-            {"zongxianjinliu": ""},
+            {"jingyingxianjinliu": "经营现金流"},
+            {"zongxianjinliu": "总现金流"},
             {"cunhuo": "存货"},
             {"lirunzonghe": "利润总和"},
             {"shuihoulirun": "税后利润"},
@@ -72,7 +72,6 @@ quantaxis__db_description= [
             {"weifenpeilirun": "未分配利润"},
             {"meigujingzichan": "每股净资产"},
             {"baoliu2": "保留"}
-
         ]
     }
 

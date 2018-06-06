@@ -68,11 +68,215 @@ class Test_Query_Advance(unittest.TestCase):
     其余12字节未使用
 
 
-通达信数据文件格式
+    通达信数据文件格式
 
-    ？？
+    文件名称：sh601318.day(中国平安示例)
+    路径：vipdoc\sh\lday  ---上海
+         vipdoc\sz\lday   ---深圳
+    内容格式：
+    每32个字节为一天数据
+    每4个字节为一个字段，每个字段内低字节在前
+    00 ~ 03 字节：年月日, 整型
+    04 ~ 07 字节：开盘价*100， 整型
+    08 ~ 11 字节：最高价*100,  整型
+    12 ~ 15 字节：最低价*100,  整型
+    16 ~ 19 字节：收盘价*100,  整型
+    20 ~ 23 字节：成交额（元），float型
+    24 ~ 27 字节：成交量（手），整型
+    28 ~ 31 字节：上日收盘*100, 整型股
+    通达信常用文件说明一览(通达信文件结构)
+
+    通达信目录下T0002pad目录中，随你拷贝或复制
+    数据下载Vipdoc
+    自选股票T0002blocknewZXG.blk
+    自编公式T0002PriGS.DAT
+    自编模板T0002PriPack.DAT
+    系统设置(常用指标)T0002user.配置设置
+    通达信目录结构:
+　　
+　　 vipdoc:下载或缓存的历史数据目录
+　　 diary:投资日志目录
+　　 RemoteSH:缓存的上海F10
+　　 RemoteSZ:缓存的深圳F10
+　　 Ycinf缓存的公告消息
+　 　安装目录下的SZ.*,SH.*是缓存的盘中数据文件
+　
+　　 T0002:个人信息目录,内有公式和自选股,个人设置等信息
+　　 Advhq.dat 星空图相关个性化数据
+　　 Block.cfg 板块设置文件
+　　 cbset.dat 筹码分析个性化数据
+　　 colwarn3.dat 行情栏目和预警个性化数据
+　　 colwarnTj.dat 条件预警个性化数据
+　　 CoolInfo.Txt 系统备忘录
+　　 Line.dat 画线工具数据
+　　 MyFavZX.dat 资讯收藏夹数据
+　　 newmodem.ini 交易客户端个性化数据
+　　 padinfo.dat 定制版面个性化数据
+　　 PriCS.dat,PriGS.dat,PriText.dat 公式相关数据
+　　 recentsearch.dat 最近资讯搜索数据
+　　 Scheme.dat 配色方案
+　　 tmptdx.css 临时网页CSS文件
+　　 user.ini 全局个性化数据
+　　 userfx.dat K线图个性化数据
+　　
+　　 [blocknew] 板块目录
+　　 [cache] 系统数据高速缓存
+　　 [zst_cache] 分时图数据高速缓存
+　　 [coolinfo] 系统备忘录目录
+　　 [Invest] 个人理财数据目录
+      SUPERSTK下的文件:SYS.DTA 存放系统提供的公式;
+      USERDATA下的文件：AUTOBLK.CFG:自动板块设定;SELF.DTA 存放用户自编的公式;
+      BLOCK文件夹下的文件： *.IBK 板块指数定义;*.BLK 板块定义;*.EBK 条件选股结果;
+      SELF 文件夹下的文件：   *.WSV 保存页面文件;ALERT.DAT 历史预警纪录;EXTDATA.INF 扩展数据定义;
+    *.CEP 保存组合条件选股条件;TEMPCMPD.CEP测试附加条件;
+    *.INV 用户个人投资纪录;*.TPT 保存指标模板;SELF年月日.DTA 每日自动公式备份文件;
+          TEST 文件夹下的文件： *.TST 存放系统测试结果;*.OPT 存放参数优化的结果;
+      PARAM参数指引文件夹: *.PRM 存放参数指引的结果;
+      TABLE文件夹下的文件：*.ESS数据表文件;*.ESD数据表文件（带数据保存）;　　　
+      SelfData文件夹下的文件：*.str　字符串数据;*.oth 与股票无关序列值数据;
+      Pattern 文件夹下的文件:  *.PIN 模式匹配设计;*.PWT模式匹配方法;
+      SpotAna文件夹下的文件:  *.SPT 定位分析结果;
+      Relate文件夹下的文件:     *.RTL　相关分析结果;
+      Posible文件夹下的文件:    *.PSB　预测分布设计;
+      DATA件夹下的文件：       DAY.DAT 日线数据;EXTDAY.DAT 扩展数据;MIN.DAT 5分钟线数据;REPORT.DAT
+                             当天的分笔成交数据;STKINFO.DAT 代码表/即时行情数据/财务数据/除权数据;
+                             *.PRP历史回忆数据，一天一个文件;
+       NEWS文件夹下的文件：*.TXT 财经报道、上交所公告、深交所公告
+
+
+
+==========2014.10.18补充
+5.85和5.86版本可能被服务器拒绝了，都考虑换5.87B版本吧，把T0002文件夹内容根据需要复制到新版本中。
+如果单要恢复公式，可复制黏贴其下2个文件，PriCS.dat,PriGS.dat,PriText.dat 公式相关数据。
+T0002:个别信息目录,内有公式和自选股,个别设备等信息
+　　Advhq.dat 星空图相关性格化数据
+　　Block.cfg 板块设备文件
+　　cbset.dat 筹码分析性格化数据
+　　colwarn3.dat 行情栏目和预警性格化数据
+　　colwarnTj.dat 条件预警性格化数据
+　　CoolInfo.Txt 体系备忘录
+　　Line.dat 画线用具数据
+　　MyFavZX.dat 资讯收藏夹数据
+　　newmodem.ini 业务客户端性格化数据
+　　padinfo.dat 定制版面性格化数据
+　　PriCS.dat,PriGS.dat,PriText.dat 公式相关数据
+　　recentsearch.dat 最近资讯包罗数据
+　　Scheme.dat 配色方案
+　　tmptdx.css 权且网页CSS文件
+　　user.ini 全局性格化数据
+　　userfx.dat K线图性格化数据
+　　[blocknew] 板块目录
+　　[cache] 体系数据高速缓存
+　　[zst_cache] 分时图数据高速缓存
+　　[coolinfo] 体系备忘录目录
+　　[Invest] 个别理财数据目录
+自选股放在通达信软件 \T0002\blocknew/zxg.blk
+
+
+通达信股本变迁文件（gbbq）解密方法
+数据哪里来呢？当然是拿来主义。。。问券商的交易软件要呗
+到处查资料，得知通达信的权息文件数据齐全，不仅含有除权除息数据，还含有限售解禁、增发、可转债上市等股本变化数据
+——这对于某些对成交量变化敏感的交易模型是非常重要的
+
+然而，gbbq文件是加密的，网上找不到解密算法，说不得只好请出尘封已久的ollydebug大侠咯~
+
+1、在fopen函数下个条件断点，esp寄存器指向的第一个参数是文件名指针地址，若文件名含有“gbbq”，断之
+2、很容易找到后续代码里连续调用了2次fread，第一次只读4字节，很明显是文件包含的记录数
+3、跟踪第二次fread，发现将数据存入内存后，开始与另一块内存中的数据进行反复相加、异或操作，最后完成解密
+4、另一块内存中的数据经多次加载对比，发现内容固定，长度4176字节，应该是自带的密码表
+5、没有必要搞明白密码表是哪来的，直接从内存dump出来存为文件就行了
+6、每条记录29字节，前24字节是加密的，后5字节未加密，因为他用的加密算法是固定64位，一次加密8字节
+7、解密过程汇编代码很长，但仔细分析后可以转换为16次循环，64位对称加密，16次循环，呵呵，DES嘛
+
+ while (len)
+ {
+  for (i = 0; i < 3; i++)
+  {
+   eax = *((int*)(pCodeNow + 0x44));
+   ebx=*((int*)(pDataNow));
+   num = eax^ebx;
+   numold = *((int*)(pDataNow + 0x4));
+
+   for (j = 0x40; j > 0; j = j - 4)
+   {
+    ebx = (num & 0xff0000) >> 16;
+    eax = *((int*)(pCodeNow + ebx * 4 + 0x448));
+    ebx = num >> 24;
+    eax += *((int*)(pCodeNow + ebx * 4 + 0x48));
+    ebx = (num & 0xff00) >> 8;
+    eax ^= *((int*)(pCodeNow + ebx * 4 + 0x848));
+    ebx = num & 0xff;
+    eax += *((int*)(pCodeNow + ebx * 4 + 0xC48));
+    eax ^= *((int*)(pCodeNow + j));
+
+    ebx = num;
+    num = numold^eax;
+    numold = ebx;
+   }
+   numold ^= *((int*)pCodeNow);
+   pInt = (unsigned int*)pDataNow;
+   *pInt = numold;
+   pInt = (unsigned int*)(pDataNow+4);
+   *pInt = num;
+   pDataNow = pDataNow + 8;
+  }
+  pDataNow = pDataNow + 5;
+  len--;
+ }
+
+
+
+搞定~
+
+Python读取通达信本地数据
+囚徒 囚徒 2015-06-21 01:36:14
+通达信本地数据格式：
+每32个字节为一个5分钟数据，每字段内低字节在前
+00 ~ 01 字节：日期，整型，设其值为num，则日期计算方法为：
+                        year=floor(num/2048)+2004;
+                        month=floor(mod(num,2048)/100);
+                        day=mod(mod(num,2048),100);
+02 ~ 03 字节： 从0点开始至目前的分钟数，整型
+04 ~ 07 字节：开盘价*100，整型
+08 ~ 11 字节：最高价*100，整型
+12 ~ 15 字节：最低价*100，整型
+16 ~ 19 字节：收盘价*100，整型
+20 ~ 23 字节：成交额*100，float型
+24 ~ 27 字节：成交量（股），整型
+28 ~ 31 字节：（保留）
+
+每32个字节为一天数据
+每4个字节为一个字段，每个字段内低字节在前
+00 ~ 03 字节：年月日, 整型
+04 ~ 07 字节：开盘价*100， 整型
+08 ~ 11 字节：最高价*100,  整型
+12 ~ 15 字节：最低价*100,  整型
+16 ~ 19 字节：收盘价*100,  整型
+20 ~ 23 字节：成交额（元），float型
+24 ~ 27 字节：成交量（股），整型
+28 ~ 31 字节：（保留）
+
+读取需要加载struct模块，unpack之后得到一个元组。
+日线读取：
+fn="code.day";
+fid=open(fn,"rb");
+list=fid.read(32)
+ulist=struct.unpack("iiiiifii", list)
+5分钟线读取也是一样。
+
+本地数据未除权。
+
+struct模块的pack、unpack示例
+
+除权数据
+
+在通达信安装目录下的\T0002\hq_cache目录有个gbbq和gbbq.map的文件，是关于所有沪深市场上市证券的股本变动信息的文件。目前没有找到相关资料。
+
+
+
 
 同花顺数据文件格式
+    https://sourceforge.net/projects/ociathena/
 
     '''
 
