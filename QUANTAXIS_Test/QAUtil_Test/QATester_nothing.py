@@ -8,6 +8,10 @@ import urllib.request
 
 import pandas as pd
 
+'''
+ 这个文件的代码 都是 实验性质的。 scribble code！
+'''
+
 #from QUANTAXIS import QUANTAXIS as QA
 
 '''
