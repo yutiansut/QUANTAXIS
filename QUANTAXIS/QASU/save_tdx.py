@@ -68,7 +68,7 @@ def QA_SU_save_stock_day(client=DATABASE):
     def __saving_work(code, coll_stock_day):
         try:
             QA_util_log_info(
-                '##JOB01 Now Saving STOCK_DAY==== {}'(str(code)))
+                '##JOB01 Now Saving STOCK_DAY==== {}'.format(str(code)))
 
             ref = coll_stock_day.find({'code': str(code)[0:6]})
             end_date = str(now_time())[0:10]
