@@ -3,34 +3,10 @@
 ```python
 import QUANTAXIS as QA
 try:
-    assert QA.__version__>='1.0.39'
+    assert QA.__version__>='1.0.45'
 except AssertionError:
-    print('pip install QUANTAXIS >= 1.0.39 请升级QUANTAXIS后再运行此示例')
+    print('pip install QUANTAXIS >= 1.0.45 请升级QUANTAXIS后再运行此示例')
 ```
-
-    QUANTAXIS>> start QUANTAXIS
-    QUANTAXIS>> Welcome to QUANTAXIS, the Version is 1.0.39
-    QUANTAXIS>>  
-     ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` 
-      ``########`````##````````##``````````##`````````####````````##```##########````````#``````##``````###```##`````######`` 
-      `##``````## ```##````````##`````````####````````##`##```````##```````##```````````###``````##````##`````##```##`````##` 
-      ##````````##```##````````##````````##`##````````##``##``````##```````##``````````####```````#```##``````##```##``````## 
-      ##````````##```##````````##```````##```##```````##```##`````##```````##`````````##`##```````##`##```````##````##``````` 
-      ##````````##```##````````##``````##`````##``````##````##````##```````##````````##``###```````###````````##`````##`````` 
-      ##````````##```##````````##``````##``````##`````##`````##```##```````##```````##````##```````###````````##``````###```` 
-      ##````````##```##````````##`````##````````##````##``````##``##```````##``````##``````##`````##`##```````##````````##``` 
-      ##````````##```##````````##````#############````##```````##`##```````##`````###########`````##``##``````##`````````##`` 
-      ###```````##```##````````##```##```````````##```##```````##`##```````##````##`````````##```##```##``````##```##`````##` 
-      `##``````###````##``````###``##`````````````##``##````````####```````##```##``````````##``###````##`````##````##`````## 
-      ``#########``````########```##``````````````###`##``````````##```````##``##````````````##`##``````##````##`````###``### 
-      ````````#####`````````````````````````````````````````````````````````````````````````````````````````````````````##`` 
-      ``````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` 
-      ``````````````````````````Copyright``yutiansut``2018``````QUANTITATIVE FINANCIAL FRAMEWORK````````````````````````````` 
-      ``````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` 
-     ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` 
-     ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` 
-     
-    
 
 
 ```python
@@ -90,7 +66,7 @@ except:
 print(Account.message)
 ```
 
-    {'account_cookie': 'Acc_0OgkXdoC',
+    {'account_cookie': 'Acc_CgcMzSZD',
      'allow_sellopen': False,
      'allow_t0': False,
      'broker': 'backtest',
@@ -102,7 +78,7 @@ print(Account.message)
      'margin_level': False,
      'market_type': 'stock_cn',
      'portfolio_cookie': None,
-     'running_time': datetime.datetime(2018, 5, 24, 11, 59, 31, 680426),
+     'running_time': datetime.datetime(2018, 6, 6, 13, 57, 58, 389135),
      'source': 'account',
      'strategy_name': None,
      'tax_coeff': 0.0015,
@@ -254,7 +230,7 @@ ind.xs('000001',level=1)['2018-01'].plot()
 
 
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x22308e7c240>
+    <matplotlib.axes._subplots.AxesSubplot at 0x1cf0d591d68>
 
 
 
@@ -1181,8 +1157,8 @@ Account.history
       '000001',
       13.7,
       1000.0,
-      'Order_nYjqFNL2',
-      'Trade_vlZ0pr2E',
+      'Order_eJFI3mwU',
+      'Trade_4rcWX3PS',
       'JCSC_EXAMPLE',
       5.0,
       0.0],
@@ -1190,8 +1166,8 @@ Account.history
       '000001',
       13.53,
       -1000.0,
-      'Order_7ysbKxYR',
-      'Trade_MC9saXJW',
+      'Order_Qxc4Mboq',
+      'Trade_yVUrBc4g',
       'JCSC_EXAMPLE',
       5.0,
       20.295],
@@ -1199,8 +1175,8 @@ Account.history
       '600000',
       12.66,
       1000.0,
-      'Order_Kc06DedQ',
-      'Trade_axbUtoKH',
+      'Order_ETydAzu6',
+      'Trade_8y9dKuJc',
       'JCSC_EXAMPLE',
       5.0,
       0.0],
@@ -1208,8 +1184,8 @@ Account.history
       '000001',
       13.55,
       1000.0,
-      'Order_oda107Ru',
-      'Trade_9LMPQv4m',
+      'Order_Qgns5xvq',
+      'Trade_tUu08RE2',
       'JCSC_EXAMPLE',
       5.0,
       0.0],
@@ -1217,8 +1193,8 @@ Account.history
       '000004',
       22.08,
       1000.0,
-      'Order_zEVOZ8CS',
-      'Trade_vmO4nMfT',
+      'Order_xDeQcwGY',
+      'Trade_fuE3mx4g',
       'JCSC_EXAMPLE',
       5.52,
       0.0],
@@ -1226,8 +1202,8 @@ Account.history
       '000001',
       13.93,
       -1000.0,
-      'Order_KFqsUovp',
-      'Trade_oeKBu5cZ',
+      'Order_EVhsUR0D',
+      'Trade_G3UQJiSx',
       'JCSC_EXAMPLE',
       5.0,
       20.8875],
@@ -1235,8 +1211,8 @@ Account.history
       '000004',
       20.73,
       -1000.0,
-      'Order_LXxumF5I',
-      'Trade_hDkTsBJq',
+      'Order_dKPcMH5R',
+      'Trade_MyRfepw0',
       'JCSC_EXAMPLE',
       5.18375,
       31.1025],
@@ -1244,8 +1220,8 @@ Account.history
       '600000',
       13.1,
       -1000.0,
-      'Order_Swf5ZgGv',
-      'Trade_WdkIfHrD',
+      'Order_RE4l1ZvW',
+      'Trade_18MjFeYl',
       'JCSC_EXAMPLE',
       5.0,
       19.650000000000002],
@@ -1253,8 +1229,8 @@ Account.history
       '600000',
       13.49,
       1000.0,
-      'Order_dHlXwaCF',
-      'Trade_aolMFeKZ',
+      'Order_crPzt1EF',
+      'Trade_3g1vTaoK',
       'JCSC_EXAMPLE',
       5.0,
       0.0],
@@ -1262,8 +1238,8 @@ Account.history
       '600000',
       13.18,
       -1000.0,
-      'Order_dhH63GB9',
-      'Trade_Zjb6sHpt',
+      'Order_KU6dzHiW',
+      'Trade_bQmzWVvx',
       'JCSC_EXAMPLE',
       5.0,
       19.762500000000003],
@@ -1271,8 +1247,8 @@ Account.history
       '000004',
       20.1,
       1000.0,
-      'Order_A7Eo90Oa',
-      'Trade_xQ4YGk0N',
+      'Order_paEsc3nM',
+      'Trade_5Tfcn4NK',
       'JCSC_EXAMPLE',
       5.025000000000001,
       0.0],
@@ -1280,8 +1256,8 @@ Account.history
       '000001',
       12.11,
       1000.0,
-      'Order_otpbwPL5',
-      'Trade_NlAXYuHV',
+      'Order_POiBVAKq',
+      'Trade_jiyxQFkf',
       'JCSC_EXAMPLE',
       5.0,
       0.0],
@@ -1289,8 +1265,8 @@ Account.history
       '000002',
       33.64,
       1000.0,
-      'Order_8FpomHzN',
-      'Trade_bvOh2rYo',
+      'Order_Lt1FEkS8',
+      'Trade_E4U1r3jB',
       'JCSC_EXAMPLE',
       8.41,
       0.0],
@@ -1298,8 +1274,8 @@ Account.history
       '000002',
       32.05,
       -1000.0,
-      'Order_5XhL2For',
-      'Trade_o7Uxp2j3',
+      'Order_FRkfdiPC',
+      'Trade_a7hFtQqY',
       'JCSC_EXAMPLE',
       8.0125,
       48.075],
@@ -1307,8 +1283,8 @@ Account.history
       '000001',
       11.03,
       -1000.0,
-      'Order_Z0T6QLPp',
-      'Trade_98fOUX1A',
+      'Order_WvZc9Sig',
+      'Trade_Mw6Ch1aY',
       'JCSC_EXAMPLE',
       5.0,
       16.545],
@@ -1316,8 +1292,8 @@ Account.history
       '000002',
       34.16,
       1000.0,
-      'Order_ivoTnsjU',
-      'Trade_LcGPndZA',
+      'Order_Afvx0KSs',
+      'Trade_BD1L6zpm',
       'JCSC_EXAMPLE',
       8.54,
       0.0],
@@ -1325,8 +1301,8 @@ Account.history
       '000004',
       22.7,
       -1000.0,
-      'Order_TUyfok0M',
-      'Trade_D6rLU03o',
+      'Order_CKbxZqWv',
+      'Trade_CwnGxfQU',
       'JCSC_EXAMPLE',
       5.67625,
       34.0575],
@@ -1334,8 +1310,8 @@ Account.history
       '000001',
       11.42,
       1000.0,
-      'Order_zqS6Rhgi',
-      'Trade_3tDL7rEf',
+      'Order_MJfXHLSj',
+      'Trade_QdgUj8WT',
       'JCSC_EXAMPLE',
       5.0,
       0.0],
@@ -1343,8 +1319,8 @@ Account.history
       '600000',
       11.91,
       1000.0,
-      'Order_d74GR185',
-      'Trade_p0oO8Ghu',
+      'Order_M3SDGLW7',
+      'Trade_GdcCbXa2',
       'JCSC_EXAMPLE',
       5.0,
       0.0],
@@ -1352,8 +1328,8 @@ Account.history
       '000002',
       30.39,
       -1000.0,
-      'Order_PeVaQT4g',
-      'Trade_h3BLEKkH',
+      'Order_k2YQsO5h',
+      'Trade_twRnvpfL',
       'JCSC_EXAMPLE',
       7.598750000000001,
       45.5925]]
@@ -1404,8 +1380,8 @@ Account.history_table
       <td>000001</td>
       <td>13.70</td>
       <td>1000.0</td>
-      <td>Order_nYjqFNL2</td>
-      <td>Trade_vlZ0pr2E</td>
+      <td>Order_eJFI3mwU</td>
+      <td>Trade_4rcWX3PS</td>
       <td>JCSC_EXAMPLE</td>
       <td>5.00000</td>
       <td>0.0000</td>
@@ -1416,8 +1392,8 @@ Account.history_table
       <td>000001</td>
       <td>13.53</td>
       <td>-1000.0</td>
-      <td>Order_7ysbKxYR</td>
-      <td>Trade_MC9saXJW</td>
+      <td>Order_Qxc4Mboq</td>
+      <td>Trade_yVUrBc4g</td>
       <td>JCSC_EXAMPLE</td>
       <td>5.00000</td>
       <td>20.2950</td>
@@ -1428,8 +1404,8 @@ Account.history_table
       <td>600000</td>
       <td>12.66</td>
       <td>1000.0</td>
-      <td>Order_Kc06DedQ</td>
-      <td>Trade_axbUtoKH</td>
+      <td>Order_ETydAzu6</td>
+      <td>Trade_8y9dKuJc</td>
       <td>JCSC_EXAMPLE</td>
       <td>5.00000</td>
       <td>0.0000</td>
@@ -1440,8 +1416,8 @@ Account.history_table
       <td>000001</td>
       <td>13.55</td>
       <td>1000.0</td>
-      <td>Order_oda107Ru</td>
-      <td>Trade_9LMPQv4m</td>
+      <td>Order_Qgns5xvq</td>
+      <td>Trade_tUu08RE2</td>
       <td>JCSC_EXAMPLE</td>
       <td>5.00000</td>
       <td>0.0000</td>
@@ -1452,8 +1428,8 @@ Account.history_table
       <td>000004</td>
       <td>22.08</td>
       <td>1000.0</td>
-      <td>Order_zEVOZ8CS</td>
-      <td>Trade_vmO4nMfT</td>
+      <td>Order_xDeQcwGY</td>
+      <td>Trade_fuE3mx4g</td>
       <td>JCSC_EXAMPLE</td>
       <td>5.52000</td>
       <td>0.0000</td>
@@ -1464,8 +1440,8 @@ Account.history_table
       <td>000001</td>
       <td>13.93</td>
       <td>-1000.0</td>
-      <td>Order_KFqsUovp</td>
-      <td>Trade_oeKBu5cZ</td>
+      <td>Order_EVhsUR0D</td>
+      <td>Trade_G3UQJiSx</td>
       <td>JCSC_EXAMPLE</td>
       <td>5.00000</td>
       <td>20.8875</td>
@@ -1476,8 +1452,8 @@ Account.history_table
       <td>000004</td>
       <td>20.73</td>
       <td>-1000.0</td>
-      <td>Order_LXxumF5I</td>
-      <td>Trade_hDkTsBJq</td>
+      <td>Order_dKPcMH5R</td>
+      <td>Trade_MyRfepw0</td>
       <td>JCSC_EXAMPLE</td>
       <td>5.18375</td>
       <td>31.1025</td>
@@ -1488,8 +1464,8 @@ Account.history_table
       <td>600000</td>
       <td>13.10</td>
       <td>-1000.0</td>
-      <td>Order_Swf5ZgGv</td>
-      <td>Trade_WdkIfHrD</td>
+      <td>Order_RE4l1ZvW</td>
+      <td>Trade_18MjFeYl</td>
       <td>JCSC_EXAMPLE</td>
       <td>5.00000</td>
       <td>19.6500</td>
@@ -1500,8 +1476,8 @@ Account.history_table
       <td>600000</td>
       <td>13.49</td>
       <td>1000.0</td>
-      <td>Order_dHlXwaCF</td>
-      <td>Trade_aolMFeKZ</td>
+      <td>Order_crPzt1EF</td>
+      <td>Trade_3g1vTaoK</td>
       <td>JCSC_EXAMPLE</td>
       <td>5.00000</td>
       <td>0.0000</td>
@@ -1512,8 +1488,8 @@ Account.history_table
       <td>600000</td>
       <td>13.18</td>
       <td>-1000.0</td>
-      <td>Order_dhH63GB9</td>
-      <td>Trade_Zjb6sHpt</td>
+      <td>Order_KU6dzHiW</td>
+      <td>Trade_bQmzWVvx</td>
       <td>JCSC_EXAMPLE</td>
       <td>5.00000</td>
       <td>19.7625</td>
@@ -1524,8 +1500,8 @@ Account.history_table
       <td>000004</td>
       <td>20.10</td>
       <td>1000.0</td>
-      <td>Order_A7Eo90Oa</td>
-      <td>Trade_xQ4YGk0N</td>
+      <td>Order_paEsc3nM</td>
+      <td>Trade_5Tfcn4NK</td>
       <td>JCSC_EXAMPLE</td>
       <td>5.02500</td>
       <td>0.0000</td>
@@ -1536,8 +1512,8 @@ Account.history_table
       <td>000001</td>
       <td>12.11</td>
       <td>1000.0</td>
-      <td>Order_otpbwPL5</td>
-      <td>Trade_NlAXYuHV</td>
+      <td>Order_POiBVAKq</td>
+      <td>Trade_jiyxQFkf</td>
       <td>JCSC_EXAMPLE</td>
       <td>5.00000</td>
       <td>0.0000</td>
@@ -1548,8 +1524,8 @@ Account.history_table
       <td>000002</td>
       <td>33.64</td>
       <td>1000.0</td>
-      <td>Order_8FpomHzN</td>
-      <td>Trade_bvOh2rYo</td>
+      <td>Order_Lt1FEkS8</td>
+      <td>Trade_E4U1r3jB</td>
       <td>JCSC_EXAMPLE</td>
       <td>8.41000</td>
       <td>0.0000</td>
@@ -1560,8 +1536,8 @@ Account.history_table
       <td>000002</td>
       <td>32.05</td>
       <td>-1000.0</td>
-      <td>Order_5XhL2For</td>
-      <td>Trade_o7Uxp2j3</td>
+      <td>Order_FRkfdiPC</td>
+      <td>Trade_a7hFtQqY</td>
       <td>JCSC_EXAMPLE</td>
       <td>8.01250</td>
       <td>48.0750</td>
@@ -1572,8 +1548,8 @@ Account.history_table
       <td>000001</td>
       <td>11.03</td>
       <td>-1000.0</td>
-      <td>Order_Z0T6QLPp</td>
-      <td>Trade_98fOUX1A</td>
+      <td>Order_WvZc9Sig</td>
+      <td>Trade_Mw6Ch1aY</td>
       <td>JCSC_EXAMPLE</td>
       <td>5.00000</td>
       <td>16.5450</td>
@@ -1584,8 +1560,8 @@ Account.history_table
       <td>000002</td>
       <td>34.16</td>
       <td>1000.0</td>
-      <td>Order_ivoTnsjU</td>
-      <td>Trade_LcGPndZA</td>
+      <td>Order_Afvx0KSs</td>
+      <td>Trade_BD1L6zpm</td>
       <td>JCSC_EXAMPLE</td>
       <td>8.54000</td>
       <td>0.0000</td>
@@ -1596,8 +1572,8 @@ Account.history_table
       <td>000004</td>
       <td>22.70</td>
       <td>-1000.0</td>
-      <td>Order_TUyfok0M</td>
-      <td>Trade_D6rLU03o</td>
+      <td>Order_CKbxZqWv</td>
+      <td>Trade_CwnGxfQU</td>
       <td>JCSC_EXAMPLE</td>
       <td>5.67625</td>
       <td>34.0575</td>
@@ -1608,8 +1584,8 @@ Account.history_table
       <td>000001</td>
       <td>11.42</td>
       <td>1000.0</td>
-      <td>Order_zqS6Rhgi</td>
-      <td>Trade_3tDL7rEf</td>
+      <td>Order_MJfXHLSj</td>
+      <td>Trade_QdgUj8WT</td>
       <td>JCSC_EXAMPLE</td>
       <td>5.00000</td>
       <td>0.0000</td>
@@ -1620,8 +1596,8 @@ Account.history_table
       <td>600000</td>
       <td>11.91</td>
       <td>1000.0</td>
-      <td>Order_d74GR185</td>
-      <td>Trade_p0oO8Ghu</td>
+      <td>Order_M3SDGLW7</td>
+      <td>Trade_GdcCbXa2</td>
       <td>JCSC_EXAMPLE</td>
       <td>5.00000</td>
       <td>0.0000</td>
@@ -1632,8 +1608,8 @@ Account.history_table
       <td>000002</td>
       <td>30.39</td>
       <td>-1000.0</td>
-      <td>Order_PeVaQT4g</td>
-      <td>Trade_h3BLEKkH</td>
+      <td>Order_k2YQsO5h</td>
+      <td>Trade_twRnvpfL</td>
       <td>JCSC_EXAMPLE</td>
       <td>7.59875</td>
       <td>45.5925</td>
@@ -1867,11 +1843,12 @@ Risk.message
      'volatility': 0.09,
      'benchmark_code': '000300',
      'bm_annualizereturn': -0.17,
+     'bn_profit': -0.05,
      'beta': 1.0,
      'alpha': 0.06,
      'sharpe': -1.78,
-     'init_assets': 200000.0,
-     'last_assets': 194100.07}
+     'init_assets': '200000.00',
+     'last_assets': '194100.07'}
 
 
 
@@ -1915,7 +1892,7 @@ Risk.assets.plot()
 
 
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x2230957c4a8>
+    <matplotlib.axes._subplots.AxesSubplot at 0x1cf0d8fe898>
 
 
 
@@ -1931,7 +1908,7 @@ Risk.benchmark_assets.plot()
 
 
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x2230a241208>
+    <matplotlib.axes._subplots.AxesSubplot at 0x1cf0fffb7b8>
 
 
 
@@ -1964,6 +1941,20 @@ Risk.plot_signal()
 
 
 ![png](output_38_0.png)
+
+
+
+```python
+Performance=QA.QA_Performance(Account)
+```
+
+
+```python
+Performance.plot_pnlmoney(Performance.pnl_fifo)
+```
+
+
+![png](output_40_0.png)
 
 
 ## STEP6: 存储结果
