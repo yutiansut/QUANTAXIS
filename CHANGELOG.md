@@ -36,6 +36,9 @@
 4. 基于pandas的反馈,使用remove_unused_levels来对索引进行更新
 5. 大幅修改 base_datastruct方法的 select_time_by_gap, splits, add_func方法,优化性能
 6. 增加了一个期货下单接口(QUANTAXIS_trade/WYFFuture)
+7. 成交量复权修正
+8. 实盘易下单对接(单账户)
+
 
 ## 1.0.45 
 
