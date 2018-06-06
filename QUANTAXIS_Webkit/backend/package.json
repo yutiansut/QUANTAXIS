@@ -37,7 +37,7 @@
     "js-base64": "2.4.5",
     "jstransformer": "1.0.0",
     "moment": "2.22.2",
-    "mongodb": "2.2.35",
+    "mongodb": "3.0.10",
     "morgan": "1.9.0",
     "no-fetch": "1.6.2",
     "nodemon": "1.17.5",
