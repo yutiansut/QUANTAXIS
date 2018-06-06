@@ -4,7 +4,9 @@ MAINTAINER yutiansut 'yutiansut@qq.com'
 
 
 # Update QUANTAXIS
-
+RUN cd /home
+RUN rm -rf quantaxis
+RUN git clone https://github.com/quantaxis/quantaxis
 RUN cd /home/quantaxis && git pull && pip install -e .
 
 
