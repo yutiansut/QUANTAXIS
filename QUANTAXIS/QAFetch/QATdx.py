@@ -52,17 +52,17 @@ def ping(ip, port=7709, type_='stock'):
                 if len(api.get_security_list(0, 1)) > 800:
                     return datetime.datetime.now() - __time1
                 else:
-                    print('Bad STOCKIP REPSONSE %s' % ip)
+                    print('BAD RESPONSE {}'.format(ip))
                     return datetime.timedelta(9, 9, 0)
         elif type_ in ['future']:
             with apix.connect(ip, port, time_out=0.7):
                 if apix.get_instrument_count() > 10000:
                     return datetime.datetime.now() - __time1
                 else:
-                    print('️Bad FUTUREIP REPSONSE %s' % ip)
+                    print('️Bad FUTUREIP REPSONSE {}'.format(ip))
                     return datetime.timedelta(9, 9, 0)
     except:
-        print('️Bad REPSONSE %s' % ip)
+        print('BAD RESPONSE {}'.format(ip))
         return datetime.timedelta(9, 9, 0)
 
 
@@ -714,10 +714,10 @@ def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=None, port=None
                 if len(data_) < 1:
                     return None
             except:
-                QA_util_log_info('Wrong in Getting %s history transaction data in day %s' % (
+                QA_util_log_info('Wrong in Getting {} history transaction data in day {}'.format(
                     code, trade_date_sse[index_]))
             else:
-                QA_util_log_info('Successfully Getting %s history transaction data in day %s' % (
+                QA_util_log_info('Successfully Getting {} history transaction data in day {}'.format(
                     code, trade_date_sse[index_]))
                 data = data.append(data_)
         if len(data) > 0:
