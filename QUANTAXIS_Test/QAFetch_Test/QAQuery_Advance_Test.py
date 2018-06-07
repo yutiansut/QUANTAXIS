@@ -11,25 +11,14 @@ import unittest
 
 import fnmatch
 import os
-import time
 import struct
-
-import pathlib
-
-import sqlite3
-
-
-
 from QUANTAXIS import *;
 import sqlite3
-import tushare as QATs
-#from QUANTAXIS.QASU.main import (QA_SU_save_stock_list)
-from QUANTAXIS.QASU.main import (select_save_engine)
 
+import ctypes
 
-
-class Test_Query_Advance(unittest.TestCase):
-    '''
+'''
+  
     mac or linux 可以使用wine 来运行 ， 需要指定字符集防止乱码
     安装
     env LC_ALL=zh_CN.UTF-8 wine instjd_1000.exe
@@ -37,13 +26,19 @@ class Test_Query_Advance(unittest.TestCase):
     env LC_ALL=zh_CN.UTF-8 wine ~/.wine/drive_c/qianlong/jindian/JD/JD.exe
 
     设置 钱龙金典 数据下载目录 http://download2.ql18.com.cn/download/software/instjd_1000.exe
-
+    
+    new_tdx.exe 通达信也可安装上述方法
+    
+    同花顺 运行 wine 需要特殊配置。
+    后期研究后发表。暂时用虚拟机共享目录的方式读取。
+    
+    --------------------------------------------------------------------------------------------
     读取 钱龙软件   本地数据文件进行比对 ✅
-    读取 同花顺软件  本地数据文件进行比对⭕️
-    读取 通达信     本地数据文件进行比对⭕️
+    读取 同花顺软件  本地数据文件进行比对 ⭕️
+    读取 通达信     本地数据文件进行比对  ⭕️
 
-钱龙数据文件格式
 
+    📛钱龙数据文件格式
     上海日线存储路径为:\ml30\data\shase\day,文件扩展名为:.day
     上海周线存储路径为:\ml30\data\shase\week,文件扩展名为: .wek
     上海月线存储路径为:\ml30\data\shase\month,文件扩展名为: .mnt
@@ -66,9 +61,148 @@ class Test_Query_Advance(unittest.TestCase):
     21-24字节为成交量(手)
     25-28字节为成交金额
     其余12字节未使用
+    
+    
+    钱龙数据结构及vb分析代码  
 
+    钱龙数据结构及vb分析代码[存档]
+    Public Type QLday '日线数据day的数据格式
+        Rq As Long '十进制日期
+        Op As Long '/1000=开盘价
+        Hi As Long '/1000=最高价
+        Lo As Long '/1000=最低价
+        CL As Long '/1000=收盘价
+        Am As Long '/10=成交金额(万元)
+        Vo As Long '=成交量(手)
+        t1 As Long '备用
+        t2 As Long '备用
+        t3 As Long '备用
+    End Type
 
-    通达信数据文件格式
+    Public Type QLQX '权息数据WGT的数据格式
+        Rq As Long   '日期-是一个21位(bit)的数,占用4个字节(32位),前12位表示年,接着的4位表示月,接着的5位表示日,剩下的位未使用。
+        Sgs As Long '送股数- /10000=每10股送股数
+        Pgs As Long '配股数- /10000=每10股配股数
+        Pgj As Long '配股价- /1000
+        HL As Long '红利   - /1000
+        Zzs As Long '转增数- /10000
+        Zgb As Long '总股本- 单位是万股
+        LTG As Long '流通股- 单位是万股
+        Memo As Long '备注
+    End Type
+
+    Public Function RqQLQX(QXrq As Long) As Long '将权息数据的日期格式转换为long
+    Dim QLDate0 As String, QLDate As String, QLYear As Long, QLMonth As Long, QLday As Long
+    If QXrq = 0 Then
+        RqQLQX = 0
+    Else
+        QLDate0 = DecimalToBinary(QXrq, 32)
+        QLYear = BinaryToDecimal(Mid(QLDate0, 1, 12))
+        QLMonth = BinaryToDecimal(Mid(QLDate0, 13, 4))
+        QLday = BinaryToDecimal(Mid(QLDate0, 17, 5))
+        QLDate = Format(QLYear, "0000") & Format(QLMonth, "00") & Format(QLday, "00")
+        RqQLQX = Val(QLDate)
+    End If
+    End Function
+    
+    Public Function Date2Long(Date1 As Date) As Long
+    Date2Long = Val(Format(Date1, "yyyymmdd"))
+    End Function
+    Public Function Long2Date(D1 As Long) As Date '"yyyymmdd"
+    Dim S1 As String
+    S1 = Trim(Str(D1))
+    Long2Date = CDate(Left(S1, 4) & "-" & Mid(S1, 5, 2) & "-" & Right(S1, 2))
+    End Function
+    
+    Public Function DCPrice(i As Integer, DateLong As Long, CodeName1 As String) As QLday
+    '读取某日某股票:价格,i=1-上海 2-深圳
+    Dim DayPath(2) As String '钱龙day数据目录  1-上海 2-深圳
+    Dim QLday2 As QLday, Flag1 As Integer
+    DayPath(1) = QLPathDaySH & CodeName1 & ".day"
+    DayPath(2) = QLPathDaySZ & CodeName1 & ".day"
+    Flag1 = 0
+    Open DayPath(i) For Binary As #6
+    Do While Not EOF(6)
+        Get #6, , QLday2
+        If QLday2.Rq < DateLong Then
+        ElseIf QLday2.Rq = DateLong Then
+            DCPrice = QLday2
+            Flag1 = 1
+            Exit Do
+        Else
+            Exit Do
+        End If
+    Loop
+    Close #6
+    If Flag1 <> 1 Then
+        DCPrice.Rq = 0: DCPrice.Op = 0: DCPrice.Hi = 0: DCPrice.Lo = 0
+        DCPrice.CL = 0: DCPrice.Am = 0: DCPrice.Vo = 0
+    End If
+    End Function
+    
+    Public Function DCLTG(i As Integer, DateLong As Long, CodeName1 As String) As Long
+    '读取某日某股票:流通股,i=1-上海 2-深圳
+    Dim WeightPath(2) As String '钱龙weight数据目录  1-上海 2-深圳
+    Dim fso As New FileSystemObject
+    Dim QLQX2 As QLQX, Flag1 As Integer, Tmp1 As Long
+    Dim Rq1 As Long
+    WeightPath(1) = QLPathWeightSH & CodeName1 & ".wgt"
+    WeightPath(2) = QLPathWeightSZ & CodeName1 & ".wgt"
+    DCLTG = 0
+    If fso.FileExists(WeightPath(i)) = True Then
+        Open WeightPath(i) For Binary As #7
+        Do While Not EOF(7)
+            Get #7, , QLQX2
+            Rq1 = RqQLQX(QLQX2.Rq) '转换为长整形日期格式
+            If Rq1 <= DateLong And Rq1 > 0 Then
+                Tmp1 = QLQX2.LTG
+            Else
+                Exit Do
+            End If
+        Loop
+        Close #7
+        If Tmp1 > 0 Then
+            DCLTG = Tmp1
+        End If
+    End If
+    End Function
+    
+    Public Function DecimalToBinary(DecimalValue As Long, MinimumDigits As Integer) As String
+    ' Returns a string containing the binary
+    ' representation of a positive integer.
+    Dim result As String
+    Dim ExtraDigitsNeeded As Integer
+    ' Make sure value is not negative.
+    DecimalValue = Abs(DecimalValue)
+    ' Construct the binary value.
+    Do
+        result = CStr(DecimalValue Mod 2) & result
+        DecimalValue = DecimalValue \ 2
+    Loop While DecimalValue > 0
+    ' Add leading zeros if needed.
+    ExtraDigitsNeeded = MinimumDigits - Len(result)
+    If ExtraDigitsNeeded > 0 Then
+        result = String(ExtraDigitsNeeded, "0") & result
+    End If
+    DecimalToBinary = result
+    End Function
+    
+    Public Function BinaryToDecimal(BinaryValue As String) As Long
+    ' Returns the decimal equivalent of a binary number.
+    Dim idx As Integer
+    Dim tmp As String
+    Dim result As Long
+    Dim digits As Integer
+    digits = Len(BinaryValue)
+    For idx = digits To 1 Step -1
+        tmp = Mid(BinaryValue, idx, 1)
+        If tmp = "1" Then result = result + 2 ^ (digits - idx)
+    Next
+    BinaryToDecimal = result
+    End Function
+    
+    --------------------------------------------------------------------------------------------
+    📛通达信数据文件格式
 
     文件名称：sh601318.day(中国平安示例)
     路径：vipdoc\sh\lday  ---上海
@@ -223,13 +357,9 @@ T0002:个别信息目录,内有公式和自选股,个别设备等信息
   pDataNow = pDataNow + 5;
   len--;
  }
-
-
-
-搞定~
-
+搞定~ok
+--------------------------------------------------------------------------------------------
 Python读取通达信本地数据
-囚徒 囚徒 2015-06-21 01:36:14
 通达信本地数据格式：
 每32个字节为一个5分钟数据，每字段内低字节在前
 00 ~ 01 字节：日期，整型，设其值为num，则日期计算方法为：
@@ -268,20 +398,48 @@ ulist=struct.unpack("iiiiifii", list)
 
 struct模块的pack、unpack示例
 
-除权数据
+除权数据 （加密，需要解密操作）
 
 在通达信安装目录下的\T0002\hq_cache目录有个gbbq和gbbq.map的文件，是关于所有沪深市场上市证券的股本变动信息的文件。目前没有找到相关资料。
+--------------------------------------------------------------------------------------------
 
-
-
-
-同花顺数据文件格式
+📛同花顺数据文件格式， 参考 c# 的实现
     https://sourceforge.net/projects/ociathena/
 
-    '''
+'''
+
+
+class Test_Query_Advance(unittest.TestCase):
+
+    def check_qilong_dir_exist(self):
+        # 替换 运行环境下本地路径
+        self.strQianLong_QLDATA_ = '/Users/jerryw/.wine/drive_c/qianlong/jindian/QLDATA/'
+
+        isExists = os.path.exists(self.strQianLong_QLDATA_)
+        if not isExists:
+            print("🔍查找路径不存在 %s ⛔️" % self.strQianLong_QLDATA_)
+            return False
+        else:
+
+            # 初始化 钱龙 数据目录
+            self.strQianLong_SHASE_day_dir = self.strQianLong_QLDATA_ + ('history/SHASE/day/')
+            self.strQianLong_SHASE_weight_dir = self.strQianLong_QLDATA_ + ('history/SHASE/weight/')
+            self.strQianLong_SHASE_nmn_dir = self.strQianLong_QLDATA_ + ('history/SHASE/nmn/')
+
+            self.strQianLong_SZNSE_day_dir = self.strQianLong_QLDATA_ + ('history/SZNSE/day/')
+            self.strQianLong_SZNSE_weight_dir = self.strQianLong_QLDATA_ + ('history/SZNSE/weight/')
+            self.strQianLong_SZNSE_nmn_dir = self.strQianLong_QLDATA_ + ('history/SZNSE/nmn/')
+            return True
 
 
     def parse_day_file_to_mysql_lite_db(self, day_file_path, db_file_save_dir, day_file):
+        '''
+
+        :param day_file_path:
+        :param db_file_save_dir:
+        :param day_file:
+        :return:
+        '''
         #time.sleep(1)
         file_size = os.path.getsize(day_file_path)
         assert((file_size % 40) == 0)
@@ -312,36 +470,20 @@ struct模块的pack、unpack示例
         pass
 
 
-    def setUp(self):
 
-        #替换 运行环境下本地路径
-        self.strQianLong_QLDATA_ = '/Users/jerryw/.wine/drive_c/qianlong/jindian/QLDATA/'
-
-
-        isExists = os.path.exists(self.strQianLong_QLDATA_)
-        if not isExists:
-            print("🔍查找路径不存在 %s ⛔️"%self.strQianLong_QLDATA_)
+    def read_all_day_file_directory_to_sql_lite(self):
+        '''
+        # 获取目录文件名，股票代码
+        # 读取数据
+        # 写到sqllite
+        :return:
+        '''
+        if self.check_qilong_dir_exist() == False:
             return
 
-
-        self.strQianLong_SHASE_day    = self.strQianLong_QLDATA_ + ('history/SHASE/day/')
-        self.strQianLong_SHASE_weight = self.strQianLong_QLDATA_ + ('history/SHASE/weight/')
-        self.strQianLong_SHASE_nmn    = self.strQianLong_QLDATA_ + ('history/SHASE/nmn/')
-
-        self.strQianLong_SZNSE_day    = self.strQianLong_QLDATA_ + ('history/SZNSE/day/')
-        self.strQianLong_SZNSE_weight = self.strQianLong_QLDATA_ + ('history/SZNSE/weight/')
-        self.strQianLong_SZNSE_nmn    = self.strQianLong_QLDATA_ + ('history/SZNSE/nmn/')
-
-        #获取目录文件名，股票代码
-        #读取数据
-        #写到sqllite
-
-        # current_dir = os.path.curdir
-        # curdir= os.path.dirname(current_dir)
-        #
         curdir = os.getcwd()
-        print("📊准备写入📝db🗃文件到目录📂%s"%(curdir+"/data"))
-        path_for_save_data = curdir + "/data"
+        print("📊准备写入📝db🗃文件到目录📂%s" % (curdir + "/qianglong_data_sh"))
+        path_for_save_data = curdir + "/qianglong_data_sh"
         path_for_save_data = path_for_save_data.rstrip("\\")
         isExists = os.path.exists(path_for_save_data)
         # 判断结果
@@ -349,40 +491,207 @@ struct模块的pack、unpack示例
             # 如果不存在则创建目录
             # 创建目录操作函数
             os.makedirs(path_for_save_data)
-
             print(path_for_save_data + ' 创建成功😊')
-            #return True
         else:
             # 如果目录存在则不创建，并提示目录已存在
             print(path_for_save_data + ' 目录已存在😅')
-            #return False
 
-        # path1.mkdir()
-        # bExist = pathlib.Path.exists(path1)
-        # assert(bExist)
-        #os.path(curdir+"/data")
-
-        stock_count = len(os.listdir(self.strQianLong_SHASE_day))
+        stock_count = len(os.listdir(self.strQianLong_SHASE_day_dir))
         iCount = 0
-        for day_file in os.listdir(self.strQianLong_SHASE_day):
+        for day_file in os.listdir(self.strQianLong_SHASE_day_dir):
 
             iii = round((iCount / stock_count) * 100.0)
-            s1 = "\r🐌读取股票数据%s %d%%[%s%s]" % (day_file, iii, "*" * iii, " " * (100 - iii))
+            s1 = "\r🚀读取 上海证券交易所 股票数据%s %d%%[%s%s]" % (day_file, iii, "🐌" * iii, " " * (100 - iii))
             sys.stdout.write(s1)
             sys.stdout.flush()
 
             if fnmatch.fnmatch(day_file, '*.day'):
-                fullPathFileName = self.strQianLong_SHASE_day + day_file
-                #print("解析文件 ", fullPathFileName)
+                fullPathFileName = self.strQianLong_SHASE_day_dir + day_file
                 self.parse_day_file_to_mysql_lite_db(fullPathFileName, path_for_save_data, day_file)
+                iCount = iCount + 1
+        print("\n😇读取  上海证券交易所 日线数据完成")
+
+        #todo 🛠读取深圳日线数据 到 sqllite保存
+
+    # https://stackoverflow.com/questions/5832982/how-to-get-the-logical-right-binary-shift-in-python/5833119#5833119
+    def rshift(val, n):
+        return val >> n if val >= 0 else (val + 0x100000000) >> n
+
+    # 解析 weight 文件
+    def parse_weight_file_to_mysql_lite_db(self, weight_file_path, db_file_save_dir, weight_file):
+        '''
+        :param weight_file_path:  weight 文件全路径文件名
+        :param db_file_save_dir: sqlite 数据库保存的目录
+        :param weight_file: 读取的 *.wgt 文件的名字
+        :return:
+        '''
+
+        if self.check_qilong_dir_exist() == False:
+            return
+
+        # time.sleep(1)
+        file_size = os.path.getsize(weight_file_path)
+        '''
+        Rq As Long   '日期-是一个21位(bit)的数,占用4个字节(32位),前12位表示年,接着的4位表示月,接着的5位表示日,剩下的位未使用。
+        Sgs As Long '送股数- /10000=每10股送股数
+        Pgs As Long '配股数- /10000=每10股配股数
+        Pgj As Long '配股价- /1000
+        HL As Long '红利   - /1000
+        Zzs As Long '转增数- /10000
+        Zgb As Long '总股本- 单位是万股
+        LTG As Long '流通股- 单位是万股
+        Memo As Long '备注
+        '''
+        assert ((file_size % (9*4)) == 0)
+
+        #print(("%s 文件大小 %d Bytes"%(weight_file_path, file_size)) + ("40Bytes/recrod, found %d records!"%(file_size / (9*4))))
+        item_len = file_size // (9*4);
+
+
+        db_file_save_file = db_file_save_dir
+        db_file_save_file = db_file_save_file + "/" + weight_file[0:6] + '.wgt.sqlite_db'
+
+        conn = sqlite3.connect(db_file_save_file)
+        c = conn.cursor()
+
+        c.execute('''DROP TABLE IF EXISTS stocks_weight''')
+        c.execute(
+            '''CREATE TABLE stocks_weight (date int, shares_dividend real, shares_rationed real, shares_rationed_price real, cash_bonus real, transferOfstock real, totalStockIssue int,outstandingShares int, memo int )''')
+
+
+        with open(file=weight_file_path, mode='rb') as f:
+        #     # 读取每条记录， 然后写到 mysql lite 数据库中
+            for i in range(item_len):
+                read_data_section = f.read((9*4))
+                values = struct.unpack('<LLLLLLLLL', read_data_section)
+
+                date_raw = values[0]
+                #print(type(date_raw))
+                #print('%#x' % date_raw)
+
+                year = date_raw >> (32-12) #前12位表示年
+                #print('%#x' % (date_raw >> (32-12)) )
+                #print(year)
+                #
+                # # https://stackoverflow.com/questions/12163875/python-left-shift-sign-issue
+                # # https://stackoverflow.com/questions/5832982/how-to-get-the-logical-right-binary-shift-in-python/5833119#5833119
+                # month = (date_raw << (12)) >> (64 - 4)  # 前12位表示年
+                #print('%#x' % (date_raw << (12)))
+                #print('%#x' % (date_raw << (12+4*100)))
+                #😱奇怪的shift 操作，0x7c8b80000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+                # python 的数据类型 长度无限大 ？
+
+                month = (date_raw & (0x000F0000)) >> (32 - (12+4))
+                #print(month)
+
+                day = (date_raw & (0x0000F800)) >> (32 - (12+4+5))
+                #print(day)
+                #print('%04d-%02d-%02d'%(year, month,day))
+
+                #送股数
+                shares_dividend = values[1] / 10000
+                #print('送股%f'% shares_dividend)
+                #配股数
+                shares_rationed = values[2] / 10000
+                #print('配股%f' % shares_rationed)
+                #配股价
+                shares_rationed_price = values[3] / 1000
+                #print('配股价%f' % shares_rationed_price)
+                #红利
+                cash_bonus = values[4] / 1000
+                #print('现金红利%f' % cash_bonus)
+                #转增数
+                transferOfstock = values[5] / 10000
+                #print('转增数%f' % transferOfstock)
+
+                #总股本
+                totalStockIssue = values[6]
+                #print('总股本%d' % totalStockIssue)
+
+                outstandingShares = values[7]
+                #print('流通股%d' % outstandingShares)
+
+                memo = values[8]
+                #print('备注%d' % memo)
+
+                day_number = year*10000 + month*100 + day
+
+                c.execute(
+                    "INSERT INTO stocks_weight(date,shares_dividend,shares_rationed,shares_rationed_price,cash_bonus,transferOfstock,totalStockIssue,outstandingShares,memo)  "
+                    " VALUES (%d,%f,%f,%f,%f,%f,%d,%d,%d)"
+                    % (day_number,shares_dividend,shares_rationed,shares_rationed_price,cash_bonus,transferOfstock,totalStockIssue,outstandingShares,memo ))
+
+                #流通股
+                #备注
+        #         read_data_section = f.read(40)
+        #         values = struct.unpack("<LLLLLLL", read_data_section[0:28])
+        #         c.execute(
+        #             "INSERT INTO stocks(date,open_price,high_price,low_price,close_price,volumn,amount)  VALUES (%d,%f,%f,%f,%f,%d,%d)"
+        #             % (values[0], values[1] / 1000, values[2] / 1000, values[3] / 1000, values[4] / 1000, values[5],
+        #                values[6]))
+            f.closed
+        conn.commit()
+        c.close()
+        conn.close()
+
+        pass
+
+    #读取 钱龙股本变动文件
+    def read_all_weight_file_directory_to_sql_lite(self):
+
+        if self.check_qilong_dir_exist() == False:
+            return
+
+        curdir = os.getcwd()
+        print("📊准备写入📝day🗃文件到目录📂%s" % (curdir + "/qianglong_weight_data_sh"))
+        path_for_save_data = curdir + "/qianglong_weight_data_sh"
+        path_for_save_data = path_for_save_data.rstrip("\\")
+        isExists = os.path.exists(path_for_save_data)
+        # 判断结果
+        if not isExists:
+            # 如果不存在则创建目录
+            # 创建目录操作函数
+            os.makedirs(path_for_save_data)
+            print(path_for_save_data + ' 创建成功😊')
+        else:
+            # 如果目录存在则不创建，并提示目录已存在
+            print(path_for_save_data + ' 目录已存在😅')
+
+        weight_count = len(os.listdir(self.strQianLong_SHASE_weight_dir))
+
+        iCount = 0
+        for weight_file in os.listdir(self.strQianLong_SHASE_weight_dir):
+
+            iii = round((iCount / weight_count) * 100.0)
+            s1 = "\r🚀读取 上海证券交易所 股份变动数据%s %d%%[%s%s]" % (weight_file, iii, "🐌" * iii, " " * (100 - iii))
+            sys.stdout.write(s1)
+            sys.stdout.flush()
+
+            if fnmatch.fnmatch(weight_file, '*.wgt'):
+                fullPathFileName = self.strQianLong_SHASE_weight_dir + weight_file
+                self.parse_weight_file_to_mysql_lite_db(fullPathFileName, path_for_save_data, weight_file)
+
+                #self.parse_weight_file_to_mysql_lite_db(self.strQianLong_SHASE_weight_dir+'600000.wgt', path_for_save_data, '600000.wgt')
 
                 iCount = iCount + 1
-        print("\n😇读取数据完成")
+        print("\n😇读取  上海证券交易所 日线数据完成")
+
+        #todo 🛠读取深圳 股份变动文件数据 到 sqllite保存
         pass
 
-    def tearDown(self):
 
-        pass
+
+    # 对比 stock_day 数据库
+    def test_MongoDB_DAY_collection_with_QiLong_DAY_File(self):
+        self.read_all_day_file_directory_to_sql_lite()
+        # todo 🛠 对比数据库去中数据
+
+    # 对比 stock_xdxr 数据库
+    def test_MongoDB_DAY_XDXR_data_with_QiLong_DAY(self):
+        self.read_all_weight_file_directory_to_sql_lite()
+        # todo 🛠 对比数据库去中数据
+
+
 
     def test_QA_fetch_stock_min_adv(self):
         # dataStruct = QA_fetch_stock_min_adv(start='2018-05-28 00:00:00',code = '300439')
@@ -413,6 +722,17 @@ struct模块的pack、unpack示例
         # coll.insert({'date': date, 'date_stamp': date_stamp,
         #              'stock': {'code': data}})
         #return list(df.index)
+        pass
+
+
+
+
+    def setUp(self):
+        #每次执行 test_XX 函数都会重复执行setUP
+        pass
+
+    def tearDown(self):
+        #每次执行 test_XX tearDown
         pass
 
 
