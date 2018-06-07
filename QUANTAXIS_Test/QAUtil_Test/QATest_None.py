@@ -71,9 +71,7 @@ class MyCache:
         """
         return len(self.cache)
 
-
-class Test_QA_None(unittest.TestCase):
-
+class Test_LRU(unittest.TestCase):
     def test_LRU(self):
         # 测试缓存
         keys = ['test', 'red', 'fox', 'fence', 'junk',
@@ -102,97 +100,75 @@ class Test_QA_None(unittest.TestCase):
         self.fab(10)
 
     def test_None(self):
+        pass
 
-        print("----------------------------")
-        obj = pd.Series([3, 4, -2, 2])
-        print(obj)
-
-        pd.Series([1, 23, 4]).plot()
-
-        #now = QADate.QA_util_time_now()
-        #print( type(now) )
-
-        #today = QADate.QA_util_date_today()
-        #print( type(today))
-
-        #print("okok---> do the task")
-
-        # for i in range(101):
-        #     s1 = "\r%d%%[%s%s]" % (i, "*" * i, " " * (100 - i))
-        #     time.sleep(1)
-        #     sys.stdout.write(s1)
-        #     sys.stdout.flush()
-        # pass
-
+class Test_DataFrame_0(unittest.TestCase):
     def test_make_Series(self):
-        # demo the series
-        obj = pd.Series([1, 2, 3, 4])
-        print(obj.index)
-        print(obj.values)
-        print("-------------------------------------------")
-        obj2 = pd.Series([1, 2, 3, 4], index=['a', 'b', 'c', 'd'])
-        print(obj2)
-        print(obj2.index)
-        print(obj2.values)
-        print("-------------------------------------------")
-        # another way to think about a Series is as a fixed-length, ordered dict, as it is a mapping of index value to data values.
-        # it can be substituted into many functions that expect a dict
-        sdata = {'Ohio': 3000, 'Texas': 71000, 'Oregon': 1600, 'Utah': 5000}
-        obj4 = pd.Series(sdata)
-        print(obj4)
-        print("-------------------------------------------")
-        state = ['California', 'Ohio', 'Oregon', 'Taxes']
-        obj4 = pd.Series(sdata, index=state)
-        print(obj4)
-        print("-------------------------------------------")
-        print(pd.isnull(obj4))
-        print("-------------------------------------------")
-        print(pd.notnull(obj4))
-        print("-------------------------------------------")
+        pass
 
-        obj_01 = pd.Series([1, 2, 3, 4])
-        obj_o2 = pd.Series([11, 22, 33, 44], index=['aa', 'bb', 'cc', 'dd'])
-        obj_03 = pd.Series([55, 66, 77, 88], index=['bb', 'cc', 'dd', 'ee'])
-        print(obj_01)
-        print(obj_o2)
-        print("-------------------------------------------")
-        print(obj_01 + obj_o2)
-        print("-------------------------------------------")
-        print(obj_o2 + obj_03)
 
     def test_make_dataframe(self):
-        # the dataframe has both a row and column index
-        dict_data = {
+        '''
+        possible data inputs to dataframe constructor
+        2d ndarray
+        dict of array, list, or tuples
+        numpy stuctured / record array
+        dict of series
+        dict of dict
+        list of dict or series
+        list of list or tuples
+        another DataFrame
+        Numpy masked
+        :return:
+        '''
+
+
+        # demo the dict of dict
+        self.pop = {'Nevada': {2001:2.4, 2002:2.9}, 'Ohio': {2000:1.5, 2001:1.7, 2002:6.6}}
+        frame3 = pd.DataFrame(self.pop)
+        print(frame3)
+
+        frame3 = pd.DataFrame(self.pop, index=[2000, 2001, 2002])
+        print(frame3)
+
+        frame3 = pd.DataFrame(self.pop, index = [2000,2001, 2002, 2003])
+        print(frame3)
+
+        pass
+
+
+
+    def test_assign_serial_to_data_frame(self):
+
+        # when you assign list or arrays to columns, the value's length must match the length of the DataFrame.
+        self.data = {
             'state': ['Ohio', 'Ohio', 'Ohio', 'Nevada', 'Nevada'],
             'year': [2000, 2001, 2002, 2001, 2002],
-            'pop': [1.4, 1.7, 3.6, 2.4, 2.9]
+            'pop': [1.5, 1.7, 3.6, 2.4, 2.9]
         }
 
-        frame = pd.DataFrame(dict_data)
-        print(frame)
-        print("-------------------------------------------")
+        frame2 = pd.DataFrame(self.data,
+                              columns=['year', 'state', 'pop', 'debt'],
+                              index = ['one', 'two', 'three', 'four','five'])
 
-        frame2 = pd.DataFrame(dict_data, columns=[
-                              'year', 'state', 'pop', 'area'])
+        val = pd.Series([-1.2,-1.5,-1.7,None], index=['two','four','five1','ss'])
+        frame2['debt'] = val
         print(frame2)
-        print("-------------------------------------------")
 
-        print(frame2.index)
-        print("-------------------------------------------")
+        frame2['eastern'] = frame2.state == 'Ohio'
+        print(frame2)
+        del frame2['eastern']
+        print(frame2)
 
-        print(frame2.ix[0])
-        print("-------------------------------------------")
+        pass
 
-        print(frame2.iloc[0])
 
-        print("-------------------------------------------")
-        print(frame2.loc[[0]])
-        print("-------------------------------------------")
 
-        print(frame2.T)
-        print("-------------------------------------------")
+    def test_index_object(self):
+        #pandas's index objects are responsible for holding the axis labels nd other metadata ( like the axis name or names)
+        obj = pd.Series(range(3), index = ['a','b','c'])
+        index = obj.index
+        print(index)
+        print(index[:1])
 
-        pop = {'Nevada': {2001: 2.4, 2002: 2.9},
-               "Ohio": {2000: 1.4, 2000: 1.7, 2002: 3.4}}
-        frame3 = pd.DataFrame(pop)
-        print(frame3)
+        pass
