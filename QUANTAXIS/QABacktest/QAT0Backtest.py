@@ -9,13 +9,16 @@ from QUANTAXIS.QABacktest.QABacktest import QA_Backtest
 2. 核查每日可用股票,以及是否平仓(及如果尾盘没有买回去,要在结转的时候自动买回/卖出)
 3. t0是搭载在股票市场上, 而且必须是分钟线(tick也可以)
 4. t0不存在卖空,是先指定底仓
-5. 限额限制
+5. 限额限制(ACCOUNT的sell_available, 以及结算事件)
 """
+
 
 class QAT0Backtest(QA_Backtest):
 
-    def __init__(self, market_type, frequence, start, end, code_list, commission_fee):
+    def __init__(self, market_type, frequence, start, end, code_list, raw_holding, commission_fee):
         super().__init__(market_type, frequence, start, end, code_list, commission_fee)
+        
+        self.raw_holding = raw_holding  # 初始持仓
 
     def _settle(self):
         pass
@@ -37,5 +40,5 @@ class QAT0Backtest(QA_Backtest):
 
         # 账户初始化
         # t0 需要初始化账户(股票/现金)
-        
+
         self.account.hold
