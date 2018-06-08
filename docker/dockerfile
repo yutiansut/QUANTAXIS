@@ -16,6 +16,6 @@ RUN cd /home/quantaxis && git pull && pip install -e .
 
 
 
-EXPOSE 8080 
+EXPOSE 8080
 EXPOSE 3000
 EXPOSE 8888
