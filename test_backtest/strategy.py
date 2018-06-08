@@ -22,19 +22,19 @@ class MAStrategy(QA_Strategy):
 
                 if sellavailable.get(item, 0) > 0:
                     event.send_order(account_id=self.account_cookie,
-                                        amount=sellavailable[item], amount_model=AMOUNT_MODEL.BY_AMOUNT,
-                                        time=self.current_time, code=item, price=0,
-                                        order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.SELL,
-                                        market_type=self.market_type, frequence=self.frequence,
-                                        broker_name=self.broker
-                                        )
+                                     amount=sellavailable[item], amount_model=AMOUNT_MODEL.BY_AMOUNT,
+                                     time=self.current_time, code=item, price=0,
+                                     order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.SELL,
+                                     market_type=self.market_type, frequence=self.frequence,
+                                     broker_name=self.broker
+                                     )
                 else:
                     event.send_order(account_id=self.account_cookie,
-                                        amount=100, amount_model=AMOUNT_MODEL.BY_AMOUNT,
-                                        time=self.current_time, code=item, price=0,
-                                        order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.BUY,
-                                        market_type=self.market_type, frequence=self.frequence,
-                                        broker_name=self.broker)
+                                     amount=100, amount_model=AMOUNT_MODEL.BY_AMOUNT,
+                                     time=self.current_time, code=item, price=0,
+                                     order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.BUY,
+                                     market_type=self.market_type, frequence=self.frequence,
+                                     broker_name=self.broker)
 
         except:
             pass
