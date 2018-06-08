@@ -171,11 +171,14 @@ class QA_DataStruct_Stock_min(_quotation_base):
         super().__init__(DataFrame, dtype, if_fq)
 
         try:
-            self.data = DataFrame.ix[:, [
-                'code', 'open', 'high', 'low', 'close', 'volume', 'preclose', 'datetime', 'date']]
-        except:
-            self.data = DataFrame.ix[:, [
-                'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'date']]
+            if 'preclose' in DataFrame.columns:
+                self.data = DataFrame.ix[:, [
+                    'code', 'open', 'high', 'low', 'close', 'volume', 'preclose', 'datetime', 'date']]
+            else:
+                self.data = DataFrame.ix[:, [
+                    'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'date']]
+        except Exception as e:
+            raise e
 
         if 'high_limit' not in self.data.columns:
             self.data['high_limit'] = round(
