@@ -44,7 +44,7 @@
 12. 修改存储打印
 13. 修改了分钟线初始化的column请求,使用if in columns来代替
 14. 修改了Backtest内部在获取_quotation时候的dict匹配,使用pd.Timestamp来代替
-
+15. 修改了threadeng, 使用raise error 报错
 
 ## 1.0.45 
 
