@@ -105,6 +105,7 @@ class QA_Backtest():
             # 获取分钟级别的回测数据
             self.ingest_data = QA_fetch_stock_min_adv(
                 self.code_list, self.start, self.end, self.frequence).to_qfq().panel_gen
+
         else:
             QA_util_log_info("{} 的市场类型没有实现！".format(market_type))
 
@@ -139,6 +140,7 @@ class QA_Backtest():
             date = data.date[0]
             if self.market_type is MARKET_TYPE.STOCK_CN:  # 如果是股票市场
                 if _date != date:  # 如果新的date
+
                     # 前一天的交易日已经过去
                     # 往 broker 和 account 发送 settle 事件
                     self.market._settle(self.broker_name)
@@ -149,7 +151,9 @@ class QA_Backtest():
             self.broker.run(
                 QA_Event(event_type=ENGINE_EVENT.UPCOMING_DATA, market_data=data))
             # 生成 UPCOMING_DATA 事件放到 队列中去执行
+
             self.market.upcoming_data(self.broker_name, data)
+
             self.market.trade_engine.join()
 
             _date = date

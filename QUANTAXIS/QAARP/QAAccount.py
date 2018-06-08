@@ -486,7 +486,10 @@ class QA_Account(QA_Worker):
             1. update the inside market_data struct
             2. tell the on_bar methods
             """
-            self._currenttime = event.market_data.datetime[-1]
+
+            ## BUG FIX: 这里的datatime不能用[-1],因为index索引的问题 2018-06-08
+            self._currenttime = event.market_data.datetime[0]
+
             if self.market_data is None:
                 self.market_data = event.market_data
             else:
