@@ -199,15 +199,15 @@ class QA_Market(QA_Trade):
             #print("时间戳" )
             #print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))  # 日期格式化
             #print("<-------------------------------------------------")
-
-            self.event_queue.put(
-                QA_Task(
-                    worker=self.broker[self.get_account(account_id).broker],
-                    engine=self.get_account(account_id).broker,
-                    event=QA_Event(
-                        event_type=BROKER_EVENT.RECEIVE_ORDER,
-                        order=order,
-                        callback=self.on_insert_order)))
+            if order:
+                self.event_queue.put(
+                    QA_Task(
+                        worker=self.broker[self.get_account(account_id).broker],
+                        engine=self.get_account(account_id).broker,
+                        event=QA_Event(
+                            event_type=BROKER_EVENT.RECEIVE_ORDER,
+                            order=order,
+                            callback=self.on_insert_order)))
         else:
             pass
 
