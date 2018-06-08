@@ -132,7 +132,9 @@ class QA_Account(QA_Worker):
         self.init_assets = 1000000 if init_assets is None else init_assets
         self.cash = [self.init_assets] if cash is None else cash
         self.cash_available = self.cash[-1]    # 可用资金
-        self.sell_available = pd.Series(sell_available, name='amount')
+        assert isinstance(sell_available, (dict, pd.Series))
+        self.sell_available = pd.Series(sell_available, name='amount') if isinstance(
+            sell_available, dict) else sell_available
         self.history = [] if history is None else history
         self.time_index = []
         ########################################################################
