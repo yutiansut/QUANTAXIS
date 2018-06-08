@@ -78,7 +78,7 @@ class QA_Thread(threading.Thread):
                         # Mac book下风扇狂转，如果sleep cpu 占用率回下降
                         # time.sleep(0.01)
                 except Exception as e:
-                    pass
+                    raise e
 
     def pause(self):
         self.__flag.clear()

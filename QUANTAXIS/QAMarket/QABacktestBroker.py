@@ -174,7 +174,6 @@ class QA_BacktestBroker(QA_Broker):
 
         """
         order = event.order
-
         if 'market_data' in event.__dict__.keys():
             self.market_data = self.get_market(
                 order) if event.market_data is None else event.market_data
@@ -331,9 +330,8 @@ class QA_BacktestBroker(QA_Broker):
         """
 
         # 首先判断是否在_quotation里面
-
-        if (order.datetime, order.code) in self._quotation.keys():
-            return self._quotation[(QA_util_to_datetime(order.datetime), order.code)]
+        if (pd.Timestamp(order.datetime), order.code) in self._quotation.keys():
+            return self._quotation[(pd.Timestamp(order.datetime), order.code)]
 
         else:
             try:
