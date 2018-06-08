@@ -19,31 +19,22 @@ class MAStrategy(QA_Strategy):
         sellavailable = self.sell_available
         try:
             for item in event.market_data.code:
-                if sellavailable is None:
 
+                if sellavailable.get(item, 0) > 0:
                     event.send_order(account_id=self.account_cookie,
-                                     amount=100, amount_model=AMOUNT_MODEL.BY_AMOUNT,
-                                     time=self.current_time, code=item, price=item.high[0],
-                                     order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.BUY,
-                                     market_type=self.market_type, frequence=self.frequence,
-                                     broker_name=self.broker)
-
+                                        amount=sellavailable[item], amount_model=AMOUNT_MODEL.BY_AMOUNT,
+                                        time=self.current_time, code=item, price=0,
+                                        order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.SELL,
+                                        market_type=self.market_type, frequence=self.frequence,
+                                        broker_name=self.broker
+                                        )
                 else:
-                    if sellavailable.get(item, 0) > 0:
-                        event.send_order(account_id=self.account_cookie,
-                                         amount=sellavailable[item], amount_model=AMOUNT_MODEL.BY_AMOUNT,
-                                         time=self.current_time, code=item, price=0,
-                                         order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.SELL,
-                                         market_type=self.market_type, frequence=self.frequence,
-                                         broker_name=self.broker
-                                         )
-                    else:
-                        event.send_order(account_id=self.account_cookie,
-                                         amount=100, amount_model=AMOUNT_MODEL.BY_AMOUNT,
-                                         time=self.current_time, code=item, price=0,
-                                         order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.BUY,
-                                         market_type=self.market_type, frequence=self.frequence,
-                                         broker_name=self.broker)
+                    event.send_order(account_id=self.account_cookie,
+                                        amount=100, amount_model=AMOUNT_MODEL.BY_AMOUNT,
+                                        time=self.current_time, code=item, price=0,
+                                        order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.BUY,
+                                        market_type=self.market_type, frequence=self.frequence,
+                                        broker_name=self.broker)
 
         except:
             pass
