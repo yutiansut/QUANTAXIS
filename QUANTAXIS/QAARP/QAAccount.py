@@ -32,7 +32,7 @@ from QUANTAXIS.QAEngine.QAEvent import QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
 from QUANTAXIS.QASU.save_account import save_account, update_account
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_trade_range
-from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
+from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL, RUNNING_ENVIRONMENT,
                                           BROKER_TYPE, ENGINE_EVENT, FREQUENCE,
                                           MARKET_TYPE, TRADE_STATUS)
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
@@ -77,12 +77,16 @@ class QA_Account(QA_Worker):
 
     @royburns  1.添加注释
     2018/05/18
+
+    T0交易的sell_available和正常的sell_available不一样:
+
+    T0交易中, 当买入一笔/卖出一笔, 当天操作额度都会下降
     """
 
     def __init__(self, strategy_name=None, user_cookie=None, market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY,
                  broker=BROKER_TYPE.BACKETEST, portfolio_cookie=None, account_cookie=None,
                  sell_available={}, init_assets=None, cash=None, history=None, commission_coeff=0.00025, tax_coeff=0.0015,
-                 margin_level=False, allow_t0=False, allow_sellopen=False):
+                 margin_level=False, allow_t0=False, allow_sellopen=False, running_environment=RUNNING_ENVIRONMENT.BACKETEST):
         """
 
         :param strategy_name:  策略名称
@@ -101,6 +105,7 @@ class QA_Account(QA_Worker):
         :param margin_level:      保证金比例 默认False
         :param allow_t0:          是否允许t+0交易  默认False
         :param allow_sellopen:    是否允许卖空开仓  默认False
+        :param running_environment 当前运行环境 默认Backtest
         """
         super().__init__()
         self._history_headers = ['datetime', 'code', 'price',
@@ -127,7 +132,7 @@ class QA_Account(QA_Worker):
         self.init_assets = 1000000 if init_assets is None else init_assets
         self.cash = [self.init_assets] if cash is None else cash
         self.cash_available = self.cash[-1]    # 可用资金
-        self.sell_available = sell_available
+        self.sell_available = pd.Series(sell_available, name='amount')
         self.history = [] if history is None else history
         self.time_index = []
         ########################################################################
@@ -139,6 +144,7 @@ class QA_Account(QA_Worker):
         self.allow_t0 = allow_t0
         self.allow_sellopen = allow_sellopen
         self.margin_level = margin_level
+        self.running_environment = running_environment
 
     def __repr__(self):
         return '< QA_Account {}>'.format(self.account_cookie)
@@ -228,7 +234,7 @@ class QA_Account(QA_Worker):
         data = data.assign(account_cookie=self.account_cookie).assign(
             date=data.index.levels[0])
         data.date = data.date.apply(lambda x: str(x)[0:10])
-        data=data.set_index(['date', 'account_cookie'])
+        data = data.set_index(['date', 'account_cookie'])
         return data[~data.index.duplicated(keep='last')].sort_index()
     # 计算assets的时候 需要一个market_data=QA.QA_fetch_stock_day_adv(list(data.columns),data.index[0],data.index[-1])
     # (market_data.to_qfq().pivot('close')*data).sum(axis=1)+user_cookie.get_account(a_1).daily_cash.set_index('date').cash
@@ -264,7 +270,7 @@ class QA_Account(QA_Worker):
 
     def reset_assets(self, init_assets=None):
         'reset_history/cash/'
-        self.sell_available = {}
+        self.sell_available = pd.Series({}, name='amount')
         self.history = []
         self.init_assets = init_assets
         self.cash = [self.init_assets]
@@ -299,7 +305,8 @@ class QA_Account(QA_Worker):
                 print(message)
                 print(self.cash[-1])
                 self.cash_available = self.cash[-1]
-                print('NOT ENOUGH MONEY FOR {}'.format(message['body']['order']))
+                print('NOT ENOUGH MONEY FOR {}'.format(
+                    message['body']['order']))
         return self.message
 
     def send_order(self, code=None, amount=None, time=None, towards=None, price=None, money=None, order_model=None, amount_model=None):
@@ -351,7 +358,8 @@ class QA_Account(QA_Worker):
         # date 字符串 2011-10-11 长度10
         date = str(time)[0:10] if len(str(time)) == 19 else str(time)
         # time 字符串 20011-10-11 09:02:00  长度 19
-        time = str(time) if len(str(time)) == 19 else '{} 09:31:00'.format(str(time)[0:10])
+        time = str(time) if len(
+            str(time)) == 19 else '{} 09:31:00'.format(str(time)[0:10])
 
         #🛠todo 移到Utils类中，  amount_to_money 成交量转金额
         # BY_MONEY :: amount --钱 如10000元  因此 by_money里面 需要指定价格,来计算实际的股票数
@@ -397,7 +405,8 @@ class QA_Account(QA_Worker):
                               date=date, datetime=time, sending_time=time, callback=self.receive_deal,
                               amount=amount, price=price, order_model=order_model, towards=towards, money=money,
                               amount_model=amount_model, commission_coeff=self.commission_coeff, tax_coeff=self.tax_coeff)  # init
-            self.orders.insert_order(_order)  # 历史委托order状态存储， 保存到 QA_Order 对象中的队列中
+            # 历史委托order状态存储， 保存到 QA_Order 对象中的队列中
+            self.orders.insert_order(_order)
             return _order
         else:
             print('ERROR : amount=0')
@@ -414,7 +423,7 @@ class QA_Account(QA_Worker):
         :return:
         '''
         'while updating the market data'
-        print("on_bar ",event.market_data)
+        print("on_bar ", event.market_data)
 
     def on_tick(self, event):
         '''
@@ -423,7 +432,7 @@ class QA_Account(QA_Worker):
         :return:
         '''
         'on tick event'
-        print("on_tick ",event.market_data)
+        print("on_tick ", event.market_data)
         pass
 
     def from_message(self, message):
@@ -487,7 +496,6 @@ class QA_Account(QA_Worker):
             2. tell the on_bar methods
             """
 
-            
             self._currenttime = event.market_data.datetime[0]
             if self.market_data is None:
                 self.market_data = event.market_data
