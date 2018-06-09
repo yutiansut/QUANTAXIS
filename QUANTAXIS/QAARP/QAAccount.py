@@ -132,9 +132,9 @@ class QA_Account(QA_Worker):
         self.orders = QA_OrderQueue()  # 历史委托单
         self.init_assets = 1000000 if init_assets is None else init_assets
 
-        if cash is None and ini:
+        if cash is None and init_cash is None:
             self.cash = [self.init_assets]
-            self.init_cash
+            self.init_cash = self.init_assets
         self.cash = [self.init_assets] if cash is None else cash
         self.cash_available = self.cash[-1]    # 可用资金
 
