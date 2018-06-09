@@ -84,8 +84,8 @@ class QA_Account(QA_Worker):
     """
 
     def __init__(self, strategy_name=None, user_cookie=None, market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY,
-                 broker=BROKER_TYPE.BACKETEST, portfolio_cookie=None, account_cookie=None,
-                 sell_available={}, init_assets=None, cash=None, history=None, commission_coeff=0.00025, tax_coeff=0.0015,
+                 broker=BROKER_TYPE.BACKETEST, portfolio_cookie=None, account_cookie=None, init_hold={},
+                 init_assets=None, cash=None, history=None, commission_coeff=0.00025, tax_coeff=0.0015,
                  margin_level=False, allow_t0=False, allow_sellopen=False, running_environment=RUNNING_ENVIRONMENT.BACKETEST):
         """
 
@@ -132,9 +132,39 @@ class QA_Account(QA_Worker):
         self.init_assets = 1000000 if init_assets is None else init_assets
         self.cash = [self.init_assets] if cash is None else cash
         self.cash_available = self.cash[-1]    # 可用资金
-        assert isinstance(sell_available, (dict, pd.Series))
-        self.sell_available = pd.Series(sell_available, name='amount') if isinstance(
-            sell_available, dict) else sell_available
+
+        """
+        实验性质
+        @2018-06-09
+
+        ## 对于账户持仓的分解
+
+        1. 真实持仓real_hold:
+
+        正常模式/TZero模式:
+            real_hold = 历史持仓(init_hold)+ 初始化账户后发生的所有交易导致的持仓(hold)
+
+        动态持仓(初始化账户后的持仓)hold:
+            self.history 计算而得
+
+        2. 账户的可卖额度(sell_available)
+
+        正常模式:
+            sell_available 
+                结算前: init_hold+ 买卖交易(卖-)
+                结算后: init_hold+ 买卖交易(买+ 卖-)
+        TZero模式:
+            sell_available
+                结算前: init_hold - 买卖交易占用的额度(abs(买+ 卖-))
+                结算过程 是为了补平(等于让hold={})
+                结算后: init_hold
+
+        """
+
+        self.raw_holding = pd.Series(raw_holding, name='amount') if isinstance(
+            raw_holding, dict) else raw_holding
+        # assert isinstance(sell_available, (dict, pd.Series))
+        self.sell_available =self.raw_holding
         self.history = [] if history is None else history
         self.time_index = []
         ########################################################################
