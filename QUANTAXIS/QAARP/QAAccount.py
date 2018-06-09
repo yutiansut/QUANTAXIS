@@ -85,7 +85,7 @@ class QA_Account(QA_Worker):
 
     def __init__(self, strategy_name=None, user_cookie=None, market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY,
                  broker=BROKER_TYPE.BACKETEST, portfolio_cookie=None, account_cookie=None, init_hold={},
-                 init_assets=None, cash=None, history=None, commission_coeff=0.00025, tax_coeff=0.0015,
+                 init_assets=None,init_cash=None, cash=None, history=None, commission_coeff=0.00025, tax_coeff=0.0015,
                  margin_level=False, allow_t0=False, allow_sellopen=False, running_environment=RUNNING_ENVIRONMENT.BACKETEST):
         """
 
@@ -97,7 +97,8 @@ class QA_Account(QA_Worker):
         :param portfolio_cookie: 组合cookie
         :param account_cookie:   账户cookie
         :param init_hold         初始化时的股票资产
-        :param init_assets:       初始现金资产  默认 1000000 元 （100万）
+        :param init_assets: list       初始资产  默认 1000000 元 （100万）
+        :param init_cash:         初始化资金
         :param cash:              可用现金  默认 是 初始资产  list 类型
         :param history:           交易历史
         :param commission_coeff:  交易佣金 :默认 万2.5   float 类型
@@ -130,6 +131,10 @@ class QA_Account(QA_Worker):
         # 资产类
         self.orders = QA_OrderQueue()  # 历史委托单
         self.init_assets = 1000000 if init_assets is None else init_assets
+
+        if cash is None and ini:
+            self.cash = [self.init_assets]
+            self.init_cash
         self.cash = [self.init_assets] if cash is None else cash
         self.cash_available = self.cash[-1]    # 可用资金
 
