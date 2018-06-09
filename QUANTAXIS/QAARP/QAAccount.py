@@ -96,8 +96,8 @@ class QA_Account(QA_Worker):
         :param broker:        BROEKR类 默认回测 QA.BROKER_TYPE.BACKTEST
         :param portfolio_cookie: 组合cookie
         :param account_cookie:   账户cookie
-        :param sell_available:   可卖股票数
-        :param init_assets:       初始资产  默认 1000000 元 （100万）
+        :param init_hold         初始化时的股票资产
+        :param init_assets:       初始现金资产  默认 1000000 元 （100万）
         :param cash:              可用现金  默认 是 初始资产  list 类型
         :param history:           交易历史
         :param commission_coeff:  交易佣金 :默认 万2.5   float 类型
@@ -161,10 +161,10 @@ class QA_Account(QA_Worker):
 
         """
 
-        self.raw_holding = pd.Series(raw_holding, name='amount') if isinstance(
-            raw_holding, dict) else raw_holding
+        self.init_hold = pd.Series(init_hold, name='amount') if isinstance(
+            init_hold, dict) else init_hold
         # assert isinstance(sell_available, (dict, pd.Series))
-        self.sell_available =self.raw_holding
+        self.sell_available =self.init_hold
         self.history = [] if history is None else history
         self.time_index = []
         ########################################################################
