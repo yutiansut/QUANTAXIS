@@ -158,7 +158,8 @@ class QA_Account(QA_Worker):
                 结算前: init_hold - 买卖交易占用的额度(abs(买+ 卖-))
                 结算过程 是为了补平(等于让hold={})
                 结算后: init_hold
-
+                
+        TODO: init_assets 是否要修改为初始化现金资产,及init_cash
         """
 
         self.init_hold = pd.Series(init_hold, name='amount') if isinstance(
