@@ -89,6 +89,7 @@ class QA_Risk():
     TODO:
     资金利用率 反应资金的利用程度
     股票周转率 反应股票的持仓天数
+    预期PNL/统计学PNL
     """
 
     def __init__(self, account, benchmark_code='000300', benchmark_type=MARKET_TYPE.INDEX_CN,if_fq=True):

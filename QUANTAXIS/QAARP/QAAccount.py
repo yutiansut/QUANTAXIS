@@ -81,6 +81,8 @@ class QA_Account(QA_Worker):
     T0交易的sell_available和正常的sell_available不一样:
 
     T0交易中, 当买入一笔/卖出一笔, 当天操作额度都会下降
+
+    T0的订单-账户对应系统
     """
 
     def __init__(self, strategy_name=None, user_cookie=None, market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY,
