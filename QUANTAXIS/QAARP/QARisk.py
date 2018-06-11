@@ -311,7 +311,7 @@ class QA_Risk():
         self.benchmark_type = market_type
 
     def calc_annualize_return(self, assets, days):
-        return (float(assets.iloc[-1]) / float(assets.iloc[0]) - 1)/(float(days) / 250)
+        return round((float(assets.iloc[-1]) / float(assets.iloc[0]) - 1)/(float(days) / 250),2)
 
     def calc_profitpctchange(self, assets):
         return self.assets[::-1].pct_change()
