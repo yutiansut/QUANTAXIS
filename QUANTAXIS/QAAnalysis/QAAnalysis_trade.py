@@ -47,8 +47,8 @@ class QAAnalysis_trade():
     当我们只有一个成交记录的时候,我们会创建一个账户单元
     """
 
-    def __init__(self, init_assets, *args, **kwargs):
-        self.account = QA_Account(init_assets=init_assets)
+    def __init__(self, init_cash, *args, **kwargs):
+        self.account = QA_Account(init_cash=init_cash)
         self.backtest_broker = QA_BacktestBroker()
 
     def import_trade(self, trade):

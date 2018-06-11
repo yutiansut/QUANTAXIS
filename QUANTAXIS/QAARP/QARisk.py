@@ -112,7 +112,7 @@ class QA_Risk():
                 axis=1) + self.account.daily_cash.set_index('date').cash).fillna(method='pad')
         self.time_gap = QA_util_get_trade_gap(
             self.account.start_date, self.account.end_date)
-        self.init_assets = self.account.init_assets
+        self.init_cash = self.account.init_cash
 
     def __repr__(self):
         return '< QA_RISK ANALYSIS ACCOUNT/PORTFOLIO >'
@@ -178,7 +178,7 @@ class QA_Risk():
             'beta': self.beta,
             'alpha': self.alpha,
             'sharpe': self.sharpe,
-            'init_assets': "%0.2f" % (float(self.init_assets)),
+            'init_cash': "%0.2f" % (float(self.init_cash)),
             'last_assets': "%0.2f" % (float(self.assets.iloc[-1]))
 
             #'init_assets': round(float(self.init_assets), 2),
@@ -198,7 +198,7 @@ class QA_Risk():
         """
         基准组合的账户资产队列
         """
-        return (self.benchmark_data.open / float(self.benchmark_data.open.iloc[0]) * float(self.init_assets))
+        return (self.benchmark_data.open / float(self.benchmark_data.open.iloc[0]) * float(self.init_cash))
 
     @property
     def benchmark_profit(self):
@@ -333,7 +333,7 @@ class QA_Risk():
                 item, 0)*100), fontsize=10, ha='left', rotation=0, wrap=True)
             i += length/2.8
         i = 0
-        for item in ['init_assets', 'last_assets', 'volatility']:
+        for item in ['init_cash', 'last_assets', 'volatility']:
             plt.text(i, 0.2, '{} : {} '.format(
                 item, self.message[item]), fontsize=10, ha='left', rotation=0, wrap=True)
             i += length/2.8

@@ -331,12 +331,12 @@ class QA_Account(QA_Worker):
         else:
             return self.history_table.set_index('datetime').sort_index().loc[:datetime].groupby('code').apply(weights)
 
-    def reset_assets(self, init_assets=None):
+    def reset_assets(self, init_cash=None):
         'reset_history/cash/'
         self.sell_available = pd.Series({}, name='amount')
         self.history = []
-        self.init_assets = init_assets
-        self.cash = [self.init_assets]
+        self.init_cash = init_cash
+        self.cash = [self.init_cash]
         self.cash_available = self.cash[-1]  # 在途资金
 
     def receive_deal(self, message):

@@ -73,9 +73,12 @@ class QA_Portfolio():
 
     @royburns  1.根据指定的user_cookie创建user； 2.添加对应的测试代码； 3.添加注释
     2018/05/18
+
+    @yutiansut
+    修改init_assets ==> init_cash ,删除cash,history在初始的输入
     """
 
-    def __init__(self, user_cookie=None, portfolio_cookie=None, strategy_name=None, init_assets=1000000, cash=None, sell_available=None, history=None):
+    def __init__(self, user_cookie=None, portfolio_cookie=None, strategy_name=None, init_cash=1000000, sell_available=None):
         self.user_cookie = user_cookie
         # self.portfolio_cookie = QA_util_random_with_topic('Portfolio')
         self.portfolio_cookie = QA_util_random_with_topic(
@@ -83,11 +86,11 @@ class QA_Portfolio():
         self.accounts = {}
         self.strategy_name = strategy_name
         # 和account一样的资产类
-        self.init_assets = 1000000 if init_assets is None else init_assets
-        self.cash = [self.init_assets] if cash is None else cash
+        self.init_cash =init_cash
+        self.cash = [self.init_cash]
         self.cash_available = self.cash[-1]  # 可用资金
         self.sell_available = sell_available
-        self.history = [] if history is None else history
+        self.history = []
         self.time_index = []
 
         for cookie in self.accounts.keys():
@@ -252,15 +255,7 @@ class QA_PortfolioView():
             zip([account.account_cookie for account in account_list], account_list))
         self.portfolio_cookie = QA_util_random_with_topic('Portfolio')
         self.user_cookie = None
-        # self._broker = None
-        # self.user_cookie = None
-        # self._market_type = None
-        # self._strategy_name = None
-        # self._currenttime = None
-        # self._init_assets = None
-        # self._cash = None
-        # self._history = None
-        # self._trade_index = None
+
 
     def __repr__(self):
         return '< QA_PortfolioVIEW {} with {} Accounts >'.format(self.account_cookie, len(self.accounts))
@@ -298,8 +293,8 @@ class QA_PortfolioView():
         return pd.concat([pd.Series(account.code) for account in self.accounts]).drop_duplicates().tolist()
 
     @property
-    def init_assets(self):
-        return sum([account.init_assets for account in self.accounts])
+    def init_cash(self):
+        return sum([account.init_cash for account in self.accounts])
 
     @property
     def daily_cash(self):
