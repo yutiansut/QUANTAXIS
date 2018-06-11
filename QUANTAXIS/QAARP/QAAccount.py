@@ -25,7 +25,7 @@
 
 import datetime
 import warnings
-
+import copy
 import numpy as np
 import pandas as pd
 
@@ -101,7 +101,6 @@ class QA_Account(QA_Worker):
 
         :param [str] strategy_name:  策略名称
         :param [str] user_cookie:   用户cookie
-
         :param [str] portfolio_cookie: 组合cookie
         :param [str] account_cookie:   账户cookie
 
@@ -133,7 +132,7 @@ class QA_Account(QA_Worker):
         """
         super().__init__()
         warnings.warn('QUANTAXIS 1.0.47 has changed the init_assets ==> init_cash, please pay attention to this change if you using init_cash to initial an account class,\
-                ', DeprecationWarning)
+                ', DeprecationWarning,stacklevel=2)
         self._history_headers = ['datetime', 'code', 'price',
                                  'amount', 'order_id', 'trade_id',
                                  'account_cookie', 'commission', 'tax']
@@ -141,58 +140,31 @@ class QA_Account(QA_Worker):
         # 信息类:
         self.strategy_name = strategy_name
         self.user_cookie = user_cookie
-        self.market_type = market_type
         self.portfolio_cookie = portfolio_cookie
         self.account_cookie = QA_util_random_with_topic(
             'Acc') if account_cookie is None else account_cookie
+
+        self.market_type = market_type
         self.broker = broker
         self.frequence = frequence
+        self.running_environment = running_environment
+        ########################################################################
         self.market_data = None
         self._currenttime = None
         self.commission_coeff = commission_coeff
         self.tax_coeff = tax_coeff
         self.running_time = datetime.datetime.now()
+        self.quantaxis_version = __version__
         ########################################################################
         # 资产类
         self.orders = QA_OrderQueue()  # 历史委托单
-        #self.init_assets = 1000000 if init_assets is None else init_assets
         self.init_cash = init_cash
-        self.cash = [self.init_cash]
-        self.cash_available = self.cash[-1]    # 可用资金
-
-        """
-        实验性质
-        @2018-06-09
-
-        ## 对于账户持仓的分解
-
-        1. 真实持仓real_hold:
-
-        正常模式/TZero模式:
-            real_hold = 历史持仓(init_hold)+ 初始化账户后发生的所有交易导致的持仓(hold)
-
-        动态持仓(初始化账户后的持仓)hold:
-            self.history 计算而得
-
-        2. 账户的可卖额度(sell_available)
-
-        正常模式:
-            sell_available 
-                结算前: init_hold+ 买卖交易(卖-)
-                结算后: init_hold+ 买卖交易(买+ 卖-)
-        TZero模式:
-            sell_available
-                结算前: init_hold - 买卖交易占用的额度(abs(买+ 卖-))
-                结算过程 是为了补平(等于让hold={})
-                结算后: init_hold
-                
-        TODO: init_assets 是否要修改为初始化现金资产,及init_cash
-        """
-
         self.init_hold = pd.Series(init_hold, name='amount') if isinstance(
             init_hold, dict) else init_hold
-        # assert isinstance(sell_available, (dict, pd.Series))
-        self.sell_available = self.init_hold
+        self.init_hold.index.name='code'
+        self.cash = [self.init_cash]
+        self.cash_available = self.cash[-1]    # 可用资金
+        self.sell_available = copy.deepcopy(self.init_hold)
         self.history = []
         self.time_index = []
         ########################################################################
@@ -204,14 +176,15 @@ class QA_Account(QA_Worker):
         self.allow_t0 = allow_t0
         self.allow_sellopen = allow_sellopen
         self.margin_level = margin_level
-        self.running_environment = running_environment
+
+
 
     def __repr__(self):
         return '< QA_Account {}>'.format(self.account_cookie)
 
     @property
     def message(self):
-        'the standard message which can be transef'
+        'the standard message which can be transfer'
         return {
             'source': 'account',
             'account_cookie': self.account_cookie,
@@ -230,7 +203,9 @@ class QA_Account(QA_Worker):
             'cash': self.cash,
             'history': self.history,
             'trade_index': self.time_index,
-            'running_time': datetime.datetime.now()
+            'running_time': datetime.datetime.now(),
+            'quantaxis_version': self.quantaxis_version,
+            'running_environment': self.running_environment
         }
 
     @property
@@ -307,9 +282,43 @@ class QA_Account(QA_Worker):
             account_cookie=self.account_cookie)
         return _cash.set_index(['datetime', 'account_cookie'], drop=False).sort_index()
 
+        """
+        实验性质
+        @2018-06-09
+
+        ## 对于账户持仓的分解
+
+        1. 真实持仓real_hold:
+
+        正常模式/TZero模式:
+            real_hold = 历史持仓(init_hold)+ 初始化账户后发生的所有交易导致的持仓(hold)
+
+        动态持仓(初始化账户后的持仓)hold:
+            self.history 计算而得
+
+        2. 账户的可卖额度(sell_available)
+
+        正常模式:
+            sell_available 
+                结算前: init_hold+ 买卖交易(卖-)
+                结算后: init_hold+ 买卖交易(买+ 卖-)
+        TZero模式:
+            sell_available
+                结算前: init_hold - 买卖交易占用的额度(abs(买+ 卖-))
+                结算过程 是为了补平(等于让hold={})
+                结算后: init_hold
+        """
     @property
     def hold(self):
-        '持仓'
+        """真实持仓
+        """
+        return pd.concat([self.init_hold,self.hold_available]).groupby('code').sum()
+        
+
+    @property
+    def hold_available(self):
+        """可用持仓
+        """
         return pd.DataFrame(data=self.history, columns=self._history_headers).groupby('code').amount.sum().sort_index()
 
     @property
@@ -556,6 +565,8 @@ class QA_Account(QA_Worker):
         self.cash = message['cash']
         self.time_index = message['trade_index']
         self.running_time = message.get('running_time', None)
+        self.quantaxis_version = message.get('quantaxis_version', None)
+        self.running_environment= message.get('running_environment',RUNNING_ENVIRONMENT.BACKETEST)
         self.settle()
         return self
 
