@@ -37,7 +37,7 @@ from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_trade_range
 from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
                                           BROKER_TYPE, ENGINE_EVENT, FREQUENCE,
                                           MARKET_TYPE, RUNNING_ENVIRONMENT,
-                                          TRADE_STATUS)
+                                          TRADE_STATUS, ORDER_DIRECTION)
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 # 2017/6/4修改: 去除总资产的动态权益计算
@@ -132,7 +132,7 @@ class QA_Account(QA_Worker):
         """
         super().__init__()
         warnings.warn('QUANTAXIS 1.0.47 has changed the init_assets ==> init_cash, please pay attention to this change if you using init_cash to initial an account class,\
-                ', DeprecationWarning,stacklevel=2)
+                ', DeprecationWarning, stacklevel=2)
         self._history_headers = ['datetime', 'code', 'price',
                                  'amount', 'order_id', 'trade_id',
                                  'account_cookie', 'commission', 'tax']
@@ -161,7 +161,7 @@ class QA_Account(QA_Worker):
         self.init_cash = init_cash
         self.init_hold = pd.Series(init_hold, name='amount') if isinstance(
             init_hold, dict) else init_hold
-        self.init_hold.index.name='code'
+        self.init_hold.index.name = 'code'
         self.cash = [self.init_cash]
         self.cash_available = self.cash[-1]    # 可用资金
         self.sell_available = copy.deepcopy(self.init_hold)
@@ -176,8 +176,6 @@ class QA_Account(QA_Worker):
         self.allow_t0 = allow_t0
         self.allow_sellopen = allow_sellopen
         self.margin_level = margin_level
-
-
 
     def __repr__(self):
         return '< QA_Account {}>'.format(self.account_cookie)
@@ -312,8 +310,7 @@ class QA_Account(QA_Worker):
     def hold(self):
         """真实持仓
         """
-        return pd.concat([self.init_hold,self.hold_available]).groupby('code').sum()
-        
+        return pd.concat([self.init_hold, self.hold_available]).groupby('code').sum()
 
     @property
     def hold_available(self):
@@ -522,8 +519,37 @@ class QA_Account(QA_Worker):
             print('ERROR : amount=0')
             return False
 
+    def close_positions_order(self):
+        """平仓单
+        
+        Raises:
+            RuntimeError -- [description]
+        
+        Returns:
+            [type] -- [description]
+        """
+
+        order_list = []
+        if self.running_environment == RUNNING_ENVIRONMENT.TZERO:
+            for code, amount in self.hold_available.iteritems():
+                if amount < 0:
+                    # 先卖出的单子 买平
+                    order = self.send_order(code=code, amount=abs(
+                        amount), time=self.running_time, towards=ORDER_DIRECTION.BUY_CLOSE)
+                elif amount > 0:
+                    # 先买入的单子, 卖平
+                    order = self.send_order(code=code, amount=abs(
+                        amount), time=self.running_time, towards=ORDER_DIRECTION.SELL_CLOSE)
+                order_list.append(order)
+            return order_list
+        else:
+            raise RuntimeError('QAACCOUNT with {} environments cannot use this methods'.format(
+                self.running_environment))
+
     def settle(self):
         '同步可用资金/可卖股票'
+        if self.running_environment == RUNNING_ENVIRONMENT.TZERO and self.hold_available.sum() != 0:
+            warnings.warn('QAACCOUNT: 该T0账户未当日仓位,请平仓',RuntimeWarning, stacklevel=2)
         self.sell_available = self.hold
 
     def on_bar(self, event):
@@ -566,7 +592,8 @@ class QA_Account(QA_Worker):
         self.time_index = message['trade_index']
         self.running_time = message.get('running_time', None)
         self.quantaxis_version = message.get('quantaxis_version', None)
-        self.running_environment= message.get('running_environment',RUNNING_ENVIRONMENT.BACKETEST)
+        self.running_environment = message.get(
+            'running_environment', RUNNING_ENVIRONMENT.BACKETEST)
         self.settle()
         return self
 
