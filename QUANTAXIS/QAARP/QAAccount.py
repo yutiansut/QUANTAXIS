@@ -280,7 +280,6 @@ class QA_Account(QA_Worker):
         else:
             raise RuntimeWarning(
                 'QAACCOUNT: THIS ACCOUNT DOESNOT HAVE ANY TRADE')
-            return None
 
     @property
     def trade_range(self):
