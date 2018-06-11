@@ -23,9 +23,10 @@
 # SOFTWARE.
 
 
+import copy
 import datetime
 import warnings
-import copy
+
 import numpy as np
 import pandas as pd
 
@@ -33,11 +34,13 @@ from QUANTAXIS import __version__
 from QUANTAXIS.QAEngine.QAEvent import QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
 from QUANTAXIS.QASU.save_account import save_account, update_account
-from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_trade_range
+from QUANTAXIS.QAUtil.QADate_trade import (QA_util_get_next_day,
+                                           QA_util_get_trade_range)
 from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
                                           BROKER_TYPE, ENGINE_EVENT, FREQUENCE,
-                                          MARKET_TYPE, RUNNING_ENVIRONMENT,
-                                          TRADE_STATUS, ORDER_DIRECTION)
+                                          MARKET_TYPE, ORDER_DIRECTION,
+                                          ORDER_MODEL, RUNNING_ENVIRONMENT,
+                                          TRADE_STATUS)
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 # 2017/6/4修改: 去除总资产的动态权益计算
@@ -153,6 +156,7 @@ class QA_Account(QA_Worker):
         self._currenttime = None
         self.commission_coeff = commission_coeff
         self.tax_coeff = tax_coeff
+        self.datetime = None
         self.running_time = datetime.datetime.now()
         self.quantaxis_version = __version__
         ########################################################################
@@ -225,6 +229,22 @@ class QA_Account(QA_Worker):
         该账户曾交易代码 用set 去重
         """
         return list(set([item[1] for item in self.history]))
+
+    @property
+    def date(self):
+        """账户运行的日期
+        
+        Arguments:
+            self {[type]} -- [description]
+        
+        Returns:
+            [type] -- [description]
+        """
+
+        if self.datetime is not None:
+            return str(self.datetime)[0:10]
+        else:
+            return None
 
     @property
     def start_date(self):
@@ -310,7 +330,7 @@ class QA_Account(QA_Worker):
     def hold(self):
         """真实持仓
         """
-        return pd.concat([self.init_hold, self.hold_available]).groupby('code').sum()
+        return pd.concat([self.init_hold, self.hold_available]).groupby('code').sum().sort_index()
 
     @property
     def hold_available(self):
@@ -359,9 +379,11 @@ class QA_Account(QA_Worker):
     def hold_table(self, datetime=None):
         "到某一个时刻的持仓 如果给的是日期,则返回当日开盘前的持仓"
         if datetime is None:
-            return self.history_table.set_index('datetime').sort_index().groupby('code').amount.sum().sort_index()
+            hold_available= self.history_table.set_index('datetime').sort_index().groupby('code').amount.sum().sort_index()
         else:
-            return self.history_table.set_index('datetime').sort_index().loc[:datetime].groupby('code').amount.sum().sort_index()
+            hold_available= self.history_table.set_index('datetime').sort_index().loc[:datetime].groupby('code').amount.sum().sort_index()
+
+        return pd.concat([self.init_hold, hold_available]).groupby('code').sum().sort_index()
 
     def hold_price(self, datetime=None):
         "计算持仓成本  如果给的是日期,则返回当日开盘前的持仓"
@@ -377,7 +399,7 @@ class QA_Account(QA_Worker):
 
     def reset_assets(self, init_cash=None):
         'reset_history/cash/'
-        self.sell_available = pd.Series({}, name='amount')
+        self.sell_available = copy.deepcopy(self.init_hold)
         self.history = []
         self.init_cash = init_cash
         self.cash = [self.init_cash]
@@ -414,6 +436,7 @@ class QA_Account(QA_Worker):
                 self.cash_available = self.cash[-1]
                 print('NOT ENOUGH MONEY FOR {}'.format(
                     message['body']['order']))
+        self.datetime=message['body']['order']['datetime']
         return self.message
 
     def send_order(self, code=None, amount=None, time=None, towards=None, price=None, money=None, order_model=None, amount_model=None):
@@ -513,33 +536,38 @@ class QA_Account(QA_Worker):
                               amount=amount, price=price, order_model=order_model, towards=towards, money=money,
                               amount_model=amount_model, commission_coeff=self.commission_coeff, tax_coeff=self.tax_coeff)  # init
             # 历史委托order状态存储， 保存到 QA_Order 对象中的队列中
+            self.datetime = time
             self.orders.insert_order(_order)
             return _order
         else:
             print('ERROR : amount=0')
             return False
 
+    @property
     def close_positions_order(self):
         """平仓单
         
         Raises:
-            RuntimeError -- [description]
+            RuntimeError -- if ACCOUNT.RUNNING_ENVIRONMENT is NOT TZERO
         
         Returns:
-            [type] -- [description]
+            list -- list with order
         """
 
         order_list = []
+        time='{} 15:00:00'.format(self.date)
         if self.running_environment == RUNNING_ENVIRONMENT.TZERO:
             for code, amount in self.hold_available.iteritems():
                 if amount < 0:
                     # 先卖出的单子 买平
-                    order = self.send_order(code=code, amount=abs(
-                        amount), time=self.running_time, towards=ORDER_DIRECTION.BUY_CLOSE)
+                    order = self.send_order(code=code, price=0,amount=abs(
+                        amount), time=time, towards=ORDER_DIRECTION.BUY_CLOSE,
+                        order_model=ORDER_MODEL.CLOSE,amount_model=AMOUNT_MODEL.BY_AMOUNT)
                 elif amount > 0:
                     # 先买入的单子, 卖平
-                    order = self.send_order(code=code, amount=abs(
-                        amount), time=self.running_time, towards=ORDER_DIRECTION.SELL_CLOSE)
+                    order = self.send_order(code=code,price=0, amount=abs(
+                        amount), time=time, towards=ORDER_DIRECTION.SELL_CLOSE,
+                        order_model=ORDER_MODEL.CLOSE,amount_model=AMOUNT_MODEL.BY_AMOUNT)
                 order_list.append(order)
             return order_list
         else:
@@ -548,9 +576,11 @@ class QA_Account(QA_Worker):
 
     def settle(self):
         '同步可用资金/可卖股票'
+        
         if self.running_environment == RUNNING_ENVIRONMENT.TZERO and self.hold_available.sum() != 0:
-            warnings.warn('QAACCOUNT: 该T0账户未当日仓位,请平仓',RuntimeWarning, stacklevel=2)
+            raise RuntimeError('QAACCOUNT: 该T0账户未当日仓位,请平仓')
         self.sell_available = self.hold
+        self.datetime = '{} 09:30:00'.format(QA_util_get_next_day(self.date)) if self.date is not None else None
 
     def on_bar(self, event):
         '''
