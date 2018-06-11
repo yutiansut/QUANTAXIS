@@ -24,17 +24,20 @@
 
 
 import datetime
+import warnings
 
 import numpy as np
 import pandas as pd
 
+from QUANTAXIS import __version__
 from QUANTAXIS.QAEngine.QAEvent import QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
 from QUANTAXIS.QASU.save_account import save_account, update_account
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_trade_range
-from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL, RUNNING_ENVIRONMENT,
+from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
                                           BROKER_TYPE, ENGINE_EVENT, FREQUENCE,
-                                          MARKET_TYPE, TRADE_STATUS)
+                                          MARKET_TYPE, RUNNING_ENVIRONMENT,
+                                          TRADE_STATUS)
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 # 2017/6/4修改: 去除总资产的动态权益计算
@@ -125,6 +128,8 @@ class QA_Account(QA_Worker):
 
         """
         super().__init__()
+        warnings.warn('QUANTAXIS 1.0.47 has changed the init_assets ==> init_cash, please pay attention to this change if you using init_cash to initial an account class,\
+                ', DeprecationWarning)
         self._history_headers = ['datetime', 'code', 'price',
                                  'amount', 'order_id', 'trade_id',
                                  'account_cookie', 'commission', 'tax']
@@ -227,15 +232,16 @@ class QA_Account(QA_Worker):
     @property
     def init_assets(self):
         """初始化账户资产
-        
+
         Returns:
             dict -- 2keys-cash,hold
         """
 
         return {
             'cash': self.init_cash,
-            'hold': self.init_hold
+            'hold': self.init_hold.to_dict()
         }
+
     @property
     def code(self):
         """
@@ -245,11 +251,39 @@ class QA_Account(QA_Worker):
 
     @property
     def start_date(self):
-        return min(self.time_index)[0:10]
+        """账户的起始交易日期
+
+        Raises:
+            RuntimeWarning -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+
+        if len(self.time_index) > 0:
+            return min(self.time_index)[0:10]
+        else:
+            raise RuntimeWarning(
+                'QAACCOUNT: THIS ACCOUNT DOESNOT HAVE ANY TRADE')
+            return None
 
     @property
     def end_date(self):
-        return max(self.time_index)[0:10]
+        """账户的交易结束日期
+
+        Raises:
+            RuntimeWarning -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+
+        if len(self.time_index) > 0:
+            return max(self.time_index)[0:10]
+        else:
+            raise RuntimeWarning(
+                'QAACCOUNT: THIS ACCOUNT DOESNOT HAVE ANY TRADE')
+            return None
 
     @property
     def trade_range(self):
@@ -511,7 +545,7 @@ class QA_Account(QA_Worker):
         self.allow_sellopen = message.get('allow_sellopen', False)
         self.allow_t0 = message.get('allow_t0', False)
         self.margin_level = message.get('margin_level', False)
-        self.init_assets = message['init_assets']
+        self.init_cash = message.get('init_cash', 'init_assets')  # 兼容修改
         self.commission_coeff = message.get('commission_coeff', 0.00015)
         self.tax_coeff = message.get('tax_coeff', 0.0015)
         self.history = message['history']
