@@ -83,6 +83,10 @@ class QA_Account(QA_Worker):
     T0交易中, 当买入一笔/卖出一笔, 当天操作额度都会下降
 
     T0的订单-账户对应系统
+
+
+    @2018/06/11
+    QA_Account不会基于行情计算市值,因此都只会对应记录证券数量和现金资产
     """
 
     def __init__(self, strategy_name=None, user_cookie=None, market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY,
@@ -91,24 +95,24 @@ class QA_Account(QA_Worker):
                  margin_level=False, allow_t0=False, allow_sellopen=False, running_environment=RUNNING_ENVIRONMENT.BACKETEST):
         """
 
-        :param strategy_name:  策略名称
-        :param user_cookie:   用户cookie
-        :param market_type:   市场类别 默认QA.MARKET_TYPE.STOCK_CN A股股票
-        :param frequence:     账户级别 默认日线QA.FREQUENCE.DAY
-        :param broker:        BROEKR类 默认回测 QA.BROKER_TYPE.BACKTEST
-        :param portfolio_cookie: 组合cookie
-        :param account_cookie:   账户cookie
-        :param init_hold         初始化时的股票资产
-        :param init_assets: list       初始资产  默认 1000000 元 （100万）
-        :param init_cash:         初始化资金
-        :param cash:              可用现金  默认 是 初始资产  list 类型
-        :param history:           交易历史
-        :param commission_coeff:  交易佣金 :默认 万2.5   float 类型
-        :param tax_coeff:         印花税   :默认 千1.5   float 类型
-        :param margin_level:      保证金比例 默认False
-        :param allow_t0:          是否允许t+0交易  默认False
-        :param allow_sellopen:    是否允许卖空开仓  默认False
-        :param running_environment 当前运行环境 默认Backtest
+        :param [str] strategy_name:  策略名称
+        :param [str] user_cookie:   用户cookie
+        :param [QA.PARAM] market_type:   市场类别 默认QA.MARKET_TYPE.STOCK_CN A股股票
+        :param [QA.PARAM] frequence:     账户级别 默认日线QA.FREQUENCE.DAY
+        :param [QA.PARAM] broker:        BROEKR类 默认回测 QA.BROKER_TYPE.BACKTEST
+        :param [str] portfolio_cookie: 组合cookie
+        :param [str] account_cookie:   账户cookie
+        :param [dict] init_hold         初始化时的股票资产
+        :param [float] init_assets: list       初始资产  默认 1000000 元 （100万）
+        :param [float] init_cash:         初始化资金
+        :param [list] cash:              可用现金  默认 是 初始资产  list 类型
+        :param [list] history:           交易历史
+        :param [float] commission_coeff:  交易佣金 :默认 万2.5   float 类型
+        :param [float] tax_coeff:         印花税   :默认 千1.5   float 类型
+        :param [Bool] margin_level:      保证金比例 默认False
+        :param [Bool] allow_t0:          是否允许t+0交易  默认False
+        :param [Bool] allow_sellopen:    是否允许卖空开仓  默认False
+        :param [QA.PARAM] running_environment 当前运行环境 默认Backtest
         """
         super().__init__()
         self._history_headers = ['datetime', 'code', 'price',
