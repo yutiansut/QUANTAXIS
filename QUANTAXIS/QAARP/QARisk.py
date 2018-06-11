@@ -104,12 +104,11 @@ class QA_Risk():
                       MARKET_TYPE.INDEX_CN: QA_fetch_index_day_adv}
         self.market_data = QA_fetch_stock_day_adv(
             self.account.code, self.account.start_date, self.account.end_date)
-        if if_fq:
-            self._assets = ((self.market_data.to_qfq().pivot('close') * self.account.daily_hold).sum(
-                axis=1) + self.account.daily_cash.set_index('date').cash).fillna(method='pad')
-        else:
-            self._assets = ((self.market_data.pivot('close') * self.account.daily_hold).sum(
-                axis=1) + self.account.daily_cash.set_index('date').cash).fillna(method='pad')
+        self.if_fq = if_fq
+
+        self._assets = (self.market_value.sum(
+            axis=1) + self.account.daily_cash.set_index('date').cash).fillna(method='pad')
+
         self.time_gap = QA_util_get_trade_gap(
             self.account.start_date, self.account.end_date)
         self.init_cash = self.account.init_cash
@@ -120,6 +119,20 @@ class QA_Risk():
 
     def __call__(self):
         return pd.DataFrame([self.message])
+
+    @property
+    @lru_cache()
+    def market_value(self):
+        """市值表
+
+        Returns:
+            pd.DataFrame -- 市值表
+        """
+
+        if self.if_fq:
+            return self.market_data.to_qfq().pivot('close') * self.account.daily_hold
+        else:
+            self.market_data.pivot('close') * self.account.daily_hold
 
     @property
     def assets(self):
@@ -136,44 +149,45 @@ class QA_Risk():
     def total_commission(self):
         """总手续费
         """
-        return -abs(round(self.account.history_table.commission.sum(),2))
+        return -abs(round(self.account.history_table.commission.sum(), 2))
+
     @property
     def total_tax(self):
         """总印花税
-        
+
         """
 
-        return -abs(round(self.account.history_table.tax.sum(),2))
+        return -abs(round(self.account.history_table.tax.sum(), 2))
 
     @property
     def profit_construct(self):
         """利润构成
-        
+
         Returns:
             dict -- 利润构成表
         """
 
         return {
-            'total_buyandsell':round(self.profit_money-self.total_commission-self.total_tax,2),
-            'total_tax':self.total_tax,
-            'total_commission':self.total_commission,
-            'total_profit':self.profit_money
+            'total_buyandsell': round(self.profit_money-self.total_commission-self.total_tax, 2),
+            'total_tax': self.total_tax,
+            'total_commission': self.total_commission,
+            'total_profit': self.profit_money
         }
 
     @property
     def profit_money(self):
         """盈利额
-        
+
         Returns:
             [type] -- [description]
         """
 
-        return round(self.assets.iloc[-1]-self.init_cash,2)
+        return round(self.assets.iloc[-1]-self.init_cash, 2)
 
     @property
     def profit(self):
         """盈利率(百分比)
-        
+
         Returns:
             [type] -- [description]
         """
@@ -311,7 +325,7 @@ class QA_Risk():
         self.benchmark_type = market_type
 
     def calc_annualize_return(self, assets, days):
-        return round((float(assets.iloc[-1]) / float(assets.iloc[0]) - 1)/(float(days) / 250),2)
+        return round((float(assets.iloc[-1]) / float(assets.iloc[0]) - 1)/(float(days) / 250), 2)
 
     def calc_profitpctchange(self, assets):
         return self.assets[::-1].pct_change()

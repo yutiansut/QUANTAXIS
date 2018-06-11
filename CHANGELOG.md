@@ -54,6 +54,8 @@
 22. QA_RISK 修改了利润的计算模式,以及benchmark的assets(改为从收盘价计算资产)
 23. QA_RISK 增加一个利润构成表 risk.profit_construct
 24. QA_RISK 增加总手续费,总印花税(risk.total_commission,risk.total_tax)
+25. QA_RISK 增加市值表计算(risk.market_value)
+26. 修复了QA_Account的一个计算daily_cash的bug
 
 
 ## 1.0.45 

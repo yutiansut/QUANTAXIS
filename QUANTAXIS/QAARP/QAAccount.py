@@ -297,8 +297,7 @@ class QA_Account(QA_Worker):
                              'cash', 'datetime']).T
         _cash = _cash.assign(date=_cash.datetime.apply(lambda x: pd.to_datetime(str(x)[0:10]))).assign(
             account_cookie=self.account_cookie)
-        return _cash.set_index(['datetime', 'account_cookie'], drop=False).sort_index()
-
+        return _cash.set_index(['datetime', 'account_cookie'], drop=False)
         """
         实验性质
         @2018-06-09
@@ -350,7 +349,7 @@ class QA_Account(QA_Worker):
     @property
     def daily_cash(self):
         '每日交易结算时的现金表'
-        return self.cash_table.drop_duplicates(subset='date', keep='last').sort_index()
+        return self.cash_table.drop_duplicates(subset='date', keep='last').set_index(['date', 'account_cookie'],drop=False).sort_index()
 
     @property
     def daily_hold(self):
