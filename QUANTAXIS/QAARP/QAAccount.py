@@ -106,10 +106,7 @@ class QA_Account(QA_Worker):
         :param [str] portfolio_cookie: 组合cookie
         :param [str] account_cookie:   账户cookie
         :param [dict] init_hold         初始化时的股票资产
-        :param [float] init_assets:       初始资产  默认 1000000 元 （100万）
         :param [float] init_cash:         初始化资金
-        # :param [list] cash:              可用现金  默认 是 初始资产  list 类型
-        # :param [list] history:           交易历史
         :param [float] commission_coeff:  交易佣金 :默认 万2.5   float 类型
         :param [float] tax_coeff:         印花税   :默认 千1.5   float 类型
         :param [Bool] margin_level:      保证金比例 默认False
@@ -118,6 +115,7 @@ class QA_Account(QA_Worker):
         :param [QA.PARAM] running_environment 当前运行环境 默认Backtest
 
         # 2018/06/11 init_assets 从float变为dict,并且不作为输入,作为只读属性
+        #  :param [float] init_assets:       初始资产  默认 1000000 元 （100万）
         init_assets:{
             cash: xxx,
             stock: {'000001':2000},
@@ -125,7 +123,8 @@ class QA_Account(QA_Worker):
             init_datetime: '2018-02-05 15:00:00'
         }
         # 2018/06/11 取消在初始化的时候的cash和history输入
-
+        # :param [list] cash:              可用现金  默认 是 初始资产  list 类型
+        # :param [list] history:           交易历史
         """
         super().__init__()
         warnings.warn('QUANTAXIS 1.0.47 has changed the init_assets ==> init_cash, please pay attention to this change if you using init_cash to initial an account class,\
