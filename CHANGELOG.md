@@ -3,7 +3,8 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.0.46 (unreleased)](#1046-unreleased)
+    - [1.0.47 (unreleased)](#1047-unreleased)
+    - [1.0.46](#1046)
     - [1.0.45](#1045)
     - [1.0.44](#1044)
     - [1.0.43](#1043)
@@ -27,9 +28,9 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
+## 1.0.47 (unreleased)
 
-
-## 1.0.46 (unreleased)
+## 1.0.46 
 1. 命令行中 添加了 save stock_info_tushare 保存tushare股票列表的信息到数据库中
 2. 修改了实盘易 broker 增加对接
 3. 修改了base_datastruct的 selects,select_time,select_month,get_bar,select_code,增加异常处理(ValueError)
@@ -57,6 +58,7 @@
 25. QA_RISK 增加市值表计算(risk.market_value)
 26. 修复了QA_Account的一个计算daily_cash的bug
 
+released in : JUNE 11, 2018
 
 ## 1.0.45 
 
