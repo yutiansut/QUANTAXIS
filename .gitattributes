@@ -1,1 +1,2 @@
 *.html linguist-language=QUANTAXIS
+*.ipynb linguist-language=python
