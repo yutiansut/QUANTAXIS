@@ -45,6 +45,9 @@
 13. 修改了分钟线初始化的column请求,使用if in columns来代替
 14. 修改了Backtest内部在获取_quotation时候的dict匹配,使用pd.Timestamp来代替
 15. 修改了threadeng, 使用raise error 报错
+16. 修改了QA_Account/QA_Portfolio的账户初始化过程, init_assets==> init_cash, 新版的init_assets(只读属性)会返回一个dict{'cash':xx,'hold':{}}
+17. 删除了初始化过程中cash/history的输入
+
 
 ## 1.0.45 
 

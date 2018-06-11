@@ -92,7 +92,7 @@ class QA_Risk():
     预期PNL/统计学PNL
     """
 
-    def __init__(self, account, benchmark_code='000300', benchmark_type=MARKET_TYPE.INDEX_CN,if_fq=True):
+    def __init__(self, account, benchmark_code='000300', benchmark_type=MARKET_TYPE.INDEX_CN, if_fq=True):
         """
         if_qf选项是@尧提出的,关于回测的时候成交价格问题(如果按不复权撮合 应该按不复权价格计算assets)
         """
@@ -113,6 +113,7 @@ class QA_Risk():
         self.time_gap = QA_util_get_trade_gap(
             self.account.start_date, self.account.end_date)
         self.init_cash = self.account.init_cash
+        self.init_assets = self.account.init_assets
 
     def __repr__(self):
         return '< QA_RISK ANALYSIS ACCOUNT/PORTFOLIO >'
