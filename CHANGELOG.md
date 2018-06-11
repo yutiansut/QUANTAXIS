@@ -50,7 +50,7 @@
 18. QA_Account 增加两个property self.datetime/self.date 均为account运行的时候的实时时间和日期
 19. QA_Account 增加一个close_positions_order 属性, 仅限T0账户使用, 返回一个list,里面都是封装好的QA_Order
 20. 对于QA_Account的T0模式增加一系列适配
-
+21. 修改一个example,展示T0的使用,更多文档正在补充
 
 ## 1.0.45 
 
