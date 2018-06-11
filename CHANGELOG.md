@@ -47,6 +47,9 @@
 15. 修改了threadeng, 使用raise error 报错
 16. 修改了QA_Account/QA_Portfolio的账户初始化过程, init_assets==> init_cash, 新版的init_assets(只读属性)会返回一个dict{'cash':xx,'hold':{}}
 17. 删除了初始化过程中cash/history的输入
+18. QA_Account 增加两个property self.datetime/self.date 均为account运行的时候的实时时间和日期
+19. QA_Account 增加一个close_positions_order 属性, 仅限T0账户使用, 返回一个list,里面都是封装好的QA_Order
+20. 对于QA_Account的T0模式增加一系列适配
 
 
 ## 1.0.45 
