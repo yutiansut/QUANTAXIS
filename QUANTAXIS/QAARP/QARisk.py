@@ -89,9 +89,10 @@ class QA_Risk():
     TODO:
     资金利用率 反应资金的利用程度
     股票周转率 反应股票的持仓天数
+    预期PNL/统计学PNL
     """
 
-    def __init__(self, account, benchmark_code='000300', benchmark_type=MARKET_TYPE.INDEX_CN,if_fq=True):
+    def __init__(self, account, benchmark_code='000300', benchmark_type=MARKET_TYPE.INDEX_CN, if_fq=True):
         """
         if_qf选项是@尧提出的,关于回测的时候成交价格问题(如果按不复权撮合 应该按不复权价格计算assets)
         """
@@ -103,14 +104,14 @@ class QA_Risk():
                       MARKET_TYPE.INDEX_CN: QA_fetch_index_day_adv}
         self.market_data = QA_fetch_stock_day_adv(
             self.account.code, self.account.start_date, self.account.end_date)
-        if if_fq:
-            self._assets = ((self.market_data.to_qfq().pivot('close') * self.account.daily_hold).sum(
-                axis=1) + self.account.daily_cash.set_index('date').cash).fillna(method='pad')
-        else:
-            self._assets = ((self.market_data.pivot('close') * self.account.daily_hold).sum(
-                axis=1) + self.account.daily_cash.set_index('date').cash).fillna(method='pad')
+        self.if_fq = if_fq
+
+        self._assets = (self.market_value.sum(
+            axis=1) + self.account.daily_cash.set_index('date').cash).fillna(method='pad')
+
         self.time_gap = QA_util_get_trade_gap(
             self.account.start_date, self.account.end_date)
+        self.init_cash = self.account.init_cash
         self.init_assets = self.account.init_assets
 
     def __repr__(self):
@@ -118,6 +119,20 @@ class QA_Risk():
 
     def __call__(self):
         return pd.DataFrame([self.message])
+
+    @property
+    @lru_cache()
+    def market_value(self):
+        """市值表
+
+        Returns:
+            pd.DataFrame -- 市值表
+        """
+
+        if self.if_fq:
+            return self.market_data.to_qfq().pivot('close') * self.account.daily_hold
+        else:
+            self.market_data.pivot('close') * self.account.daily_hold
 
     @property
     def assets(self):
@@ -131,7 +146,52 @@ class QA_Risk():
         return round(float(max([(self.assets.iloc[idx] - self.assets.iloc[idx::].min())/self.assets.iloc[idx] for idx in range(len(self.assets))])), 2)
 
     @property
+    def total_commission(self):
+        """总手续费
+        """
+        return -abs(round(self.account.history_table.commission.sum(), 2))
+
+    @property
+    def total_tax(self):
+        """总印花税
+
+        """
+
+        return -abs(round(self.account.history_table.tax.sum(), 2))
+
+    @property
+    def profit_construct(self):
+        """利润构成
+
+        Returns:
+            dict -- 利润构成表
+        """
+
+        return {
+            'total_buyandsell': round(self.profit_money-self.total_commission-self.total_tax, 2),
+            'total_tax': self.total_tax,
+            'total_commission': self.total_commission,
+            'total_profit': self.profit_money
+        }
+
+    @property
+    def profit_money(self):
+        """盈利额
+
+        Returns:
+            [type] -- [description]
+        """
+
+        return round(self.assets.iloc[-1]-self.init_cash, 2)
+
+    @property
     def profit(self):
+        """盈利率(百分比)
+
+        Returns:
+            [type] -- [description]
+        """
+
         return round(float(self.calc_profit(self.assets)), 2)
 
     @property
@@ -177,7 +237,7 @@ class QA_Risk():
             'beta': self.beta,
             'alpha': self.alpha,
             'sharpe': self.sharpe,
-            'init_assets': "%0.2f" % (float(self.init_assets)),
+            'init_cash': "%0.2f" % (float(self.init_cash)),
             'last_assets': "%0.2f" % (float(self.assets.iloc[-1]))
 
             #'init_assets': round(float(self.init_assets), 2),
@@ -197,7 +257,7 @@ class QA_Risk():
         """
         基准组合的账户资产队列
         """
-        return (self.benchmark_data.open / float(self.benchmark_data.open.iloc[0]) * float(self.init_assets))
+        return (self.benchmark_data.close / float(self.benchmark_data.open.iloc[0]) * float(self.init_cash))
 
     @property
     def benchmark_profit(self):
@@ -265,7 +325,7 @@ class QA_Risk():
         self.benchmark_type = market_type
 
     def calc_annualize_return(self, assets, days):
-        return (float(assets.iloc[-1]) / float(assets.iloc[0]) - 1)/(float(days) / 250)
+        return round((float(assets.iloc[-1]) / float(assets.iloc[0]) - 1)/(float(days) / 250), 2)
 
     def calc_profitpctchange(self, assets):
         return self.assets[::-1].pct_change()
@@ -287,7 +347,7 @@ class QA_Risk():
         计算账户收益
         期末资产/期初资产 -1
         """
-        return (float(assets.iloc[-1]) / float(assets.iloc[0])) - 1
+        return (float(assets.iloc[-1]) / float(self.init_cash)) - 1
 
     def calc_sharpe(self, annualized_returns, volatility_year, r=0.05):
         """
@@ -332,7 +392,7 @@ class QA_Risk():
                 item, 0)*100), fontsize=10, ha='left', rotation=0, wrap=True)
             i += length/2.8
         i = 0
-        for item in ['init_assets', 'last_assets', 'volatility']:
+        for item in ['init_cash', 'last_assets', 'volatility']:
             plt.text(i, 0.2, '{} : {} '.format(
                 item, self.message[item]), fontsize=10, ha='left', rotation=0, wrap=True)
             i += length/2.8

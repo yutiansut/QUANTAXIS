@@ -3,7 +3,8 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.0.46 (unreleased)](#1046-unreleased)
+    - [1.0.47 (unreleased)](#1047-unreleased)
+    - [1.0.46](#1046)
     - [1.0.45](#1045)
     - [1.0.44](#1044)
     - [1.0.43](#1043)
@@ -27,9 +28,9 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
+## 1.0.47 (unreleased)
 
-
-## 1.0.46 (unreleased)
+## 1.0.46 
 1. 命令行中 添加了 save stock_info_tushare 保存tushare股票列表的信息到数据库中
 2. 修改了实盘易 broker 增加对接
 3. 修改了base_datastruct的 selects,select_time,select_month,get_bar,select_code,增加异常处理(ValueError)
@@ -45,6 +46,19 @@
 13. 修改了分钟线初始化的column请求,使用if in columns来代替
 14. 修改了Backtest内部在获取_quotation时候的dict匹配,使用pd.Timestamp来代替
 15. 修改了threadeng, 使用raise error 报错
+16. 修改了QA_Account/QA_Portfolio的账户初始化过程, init_assets==> init_cash, 新版的init_assets(只读属性)会返回一个dict{'cash':xx,'hold':{}}
+17. 删除了初始化过程中cash/history的输入
+18. QA_Account 增加两个property self.datetime/self.date 均为account运行的时候的实时时间和日期
+19. QA_Account 增加一个close_positions_order 属性, 仅限T0账户使用, 返回一个list,里面都是封装好的QA_Order
+20. 对于QA_Account的T0模式增加一系列适配
+21. 修改一个example,展示T0的使用,更多文档正在补充
+22. QA_RISK 修改了利润的计算模式,以及benchmark的assets(改为从收盘价计算资产)
+23. QA_RISK 增加一个利润构成表 risk.profit_construct
+24. QA_RISK 增加总手续费,总印花税(risk.total_commission,risk.total_tax)
+25. QA_RISK 增加市值表计算(risk.market_value)
+26. 修复了QA_Account的一个计算daily_cash的bug
+
+released in : JUNE 11, 2018
 
 ## 1.0.45 
 
