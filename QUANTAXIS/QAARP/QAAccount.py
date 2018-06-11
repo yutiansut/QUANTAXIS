@@ -184,7 +184,7 @@ class QA_Account(QA_Worker):
             init_hold, dict) else init_hold
         # assert isinstance(sell_available, (dict, pd.Series))
         self.sell_available = self.init_hold
-        self.history = [] if history is None else history
+        self.history = []
         self.time_index = []
         ########################################################################
         # 规则类
@@ -224,6 +224,18 @@ class QA_Account(QA_Worker):
             'running_time': datetime.datetime.now()
         }
 
+    @property
+    def init_assets(self):
+        """初始化账户资产
+        
+        Returns:
+            dict -- 2keys-cash,hold
+        """
+
+        return {
+            'cash': self.init_cash,
+            'hold': self.init_hold
+        }
     @property
     def code(self):
         """
