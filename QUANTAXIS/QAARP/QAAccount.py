@@ -92,26 +92,31 @@ class QA_Account(QA_Worker):
     QA_Account不会基于行情计算市值,因此都只会对应记录证券数量和现金资产 
     """
 
-    def __init__(self, strategy_name=None, user_cookie=None, market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY,
-                 broker=BROKER_TYPE.BACKETEST, portfolio_cookie=None, account_cookie=None, init_hold={},
-                 init_cash=1000000, commission_coeff=0.00025, tax_coeff=0.0015,
-                 margin_level=False, allow_t0=False, allow_sellopen=False, running_environment=RUNNING_ENVIRONMENT.BACKETEST):
+    def __init__(self, strategy_name=None, user_cookie=None, portfolio_cookie=None, account_cookie=None,
+                 market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY, broker=BROKER_TYPE.BACKETEST,
+                 init_hold={}, init_cash=1000000, commission_coeff=0.00025, tax_coeff=0.0015,
+                 margin_level=False, allow_t0=False, allow_sellopen=False,
+                 running_environment=RUNNING_ENVIRONMENT.BACKETEST):
         """
 
         :param [str] strategy_name:  策略名称
         :param [str] user_cookie:   用户cookie
-        :param [QA.PARAM] market_type:   市场类别 默认QA.MARKET_TYPE.STOCK_CN A股股票
-        :param [QA.PARAM] frequence:     账户级别 默认日线QA.FREQUENCE.DAY
-        :param [QA.PARAM] broker:        BROEKR类 默认回测 QA.BROKER_TYPE.BACKTEST
+
         :param [str] portfolio_cookie: 组合cookie
         :param [str] account_cookie:   账户cookie
+
         :param [dict] init_hold         初始化时的股票资产
         :param [float] init_cash:         初始化资金
         :param [float] commission_coeff:  交易佣金 :默认 万2.5   float 类型
         :param [float] tax_coeff:         印花税   :默认 千1.5   float 类型
+
         :param [Bool] margin_level:      保证金比例 默认False
         :param [Bool] allow_t0:          是否允许t+0交易  默认False
         :param [Bool] allow_sellopen:    是否允许卖空开仓  默认False
+
+        :param [QA.PARAM] market_type:   市场类别 默认QA.MARKET_TYPE.STOCK_CN A股股票
+        :param [QA.PARAM] frequence:     账户级别 默认日线QA.FREQUENCE.DAY
+        :param [QA.PARAM] broker:        BROEKR类 默认回测 QA.BROKER_TYPE.BACKTEST
         :param [QA.PARAM] running_environment 当前运行环境 默认Backtest
 
         # 2018/06/11 init_assets 从float变为dict,并且不作为输入,作为只读属性
