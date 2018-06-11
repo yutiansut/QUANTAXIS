@@ -86,12 +86,12 @@ class QA_Account(QA_Worker):
 
 
     @2018/06/11
-    QA_Account不会基于行情计算市值,因此都只会对应记录证券数量和现金资产
+    QA_Account不会基于行情计算市值,因此都只会对应记录证券数量和现金资产 
     """
 
     def __init__(self, strategy_name=None, user_cookie=None, market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY,
                  broker=BROKER_TYPE.BACKETEST, portfolio_cookie=None, account_cookie=None, init_hold={},
-                 init_assets=None,init_cash=None, cash=None, history=None, commission_coeff=0.00025, tax_coeff=0.0015,
+                 init_cash=None, commission_coeff=0.00025, tax_coeff=0.0015,
                  margin_level=False, allow_t0=False, allow_sellopen=False, running_environment=RUNNING_ENVIRONMENT.BACKETEST):
         """
 
@@ -103,16 +103,26 @@ class QA_Account(QA_Worker):
         :param [str] portfolio_cookie: 组合cookie
         :param [str] account_cookie:   账户cookie
         :param [dict] init_hold         初始化时的股票资产
-        :param [float] init_assets: list       初始资产  默认 1000000 元 （100万）
+        :param [float] init_assets:       初始资产  默认 1000000 元 （100万）
         :param [float] init_cash:         初始化资金
-        :param [list] cash:              可用现金  默认 是 初始资产  list 类型
-        :param [list] history:           交易历史
+        # :param [list] cash:              可用现金  默认 是 初始资产  list 类型
+        # :param [list] history:           交易历史
         :param [float] commission_coeff:  交易佣金 :默认 万2.5   float 类型
         :param [float] tax_coeff:         印花税   :默认 千1.5   float 类型
         :param [Bool] margin_level:      保证金比例 默认False
         :param [Bool] allow_t0:          是否允许t+0交易  默认False
         :param [Bool] allow_sellopen:    是否允许卖空开仓  默认False
         :param [QA.PARAM] running_environment 当前运行环境 默认Backtest
+
+        # 2018/06/11 init_assets 从float变为dict,并且不作为输入,作为只读属性
+        init_assets:{
+            cash: xxx,
+            stock: {'000001':2000},
+            init_date: '2018-02-05',
+            init_datetime: '2018-02-05 15:00:00'
+        }
+        # 2018/06/11 取消在初始化的时候的cash和history输入
+
         """
         super().__init__()
         self._history_headers = ['datetime', 'code', 'price',
@@ -136,12 +146,9 @@ class QA_Account(QA_Worker):
         ########################################################################
         # 资产类
         self.orders = QA_OrderQueue()  # 历史委托单
-        self.init_assets = 1000000 if init_assets is None else init_assets
-
-        if cash is None and init_cash is None:
-            self.cash = [self.init_assets]
-            self.init_cash = self.init_assets
-        self.cash = [self.init_assets] if cash is None else cash
+        #self.init_assets = 1000000 if init_assets is None else init_assets
+        self.init_cash = init_cash
+        self.cash = [self.init_cash]
         self.cash_available = self.cash[-1]    # 可用资金
 
         """
@@ -176,7 +183,7 @@ class QA_Account(QA_Worker):
         self.init_hold = pd.Series(init_hold, name='amount') if isinstance(
             init_hold, dict) else init_hold
         # assert isinstance(sell_available, (dict, pd.Series))
-        self.sell_available =self.init_hold
+        self.sell_available = self.init_hold
         self.history = [] if history is None else history
         self.time_index = []
         ########################################################################
