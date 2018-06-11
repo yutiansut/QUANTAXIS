@@ -133,7 +133,51 @@ class QA_Risk():
         return round(float(max([(self.assets.iloc[idx] - self.assets.iloc[idx::].min())/self.assets.iloc[idx] for idx in range(len(self.assets))])), 2)
 
     @property
+    def total_commission(self):
+        """总手续费
+        """
+        return -abs(round(self.account.history_table.commission.sum(),2))
+    @property
+    def total_tax(self):
+        """总印花税
+        
+        """
+
+        return -abs(round(self.account.history_table.tax.sum(),2))
+
+    @property
+    def profit_construct(self):
+        """利润构成
+        
+        Returns:
+            dict -- 利润构成表
+        """
+
+        return {
+            'total_buyandsell':round(self.profit_money-self.total_commission-self.total_tax,2),
+            'total_tax':self.total_tax,
+            'total_commission':self.total_commission,
+            'total_profit':self.profit_money
+        }
+
+    @property
+    def profit_money(self):
+        """盈利额
+        
+        Returns:
+            [type] -- [description]
+        """
+
+        return round(self.assets.iloc[-1]-self.init_cash,2)
+
+    @property
     def profit(self):
+        """盈利率(百分比)
+        
+        Returns:
+            [type] -- [description]
+        """
+
         return round(float(self.calc_profit(self.assets)), 2)
 
     @property
@@ -199,7 +243,7 @@ class QA_Risk():
         """
         基准组合的账户资产队列
         """
-        return (self.benchmark_data.open / float(self.benchmark_data.open.iloc[0]) * float(self.init_cash))
+        return (self.benchmark_data.close / float(self.benchmark_data.open.iloc[0]) * float(self.init_cash))
 
     @property
     def benchmark_profit(self):
@@ -289,7 +333,7 @@ class QA_Risk():
         计算账户收益
         期末资产/期初资产 -1
         """
-        return (float(assets.iloc[-1]) / float(assets.iloc[0])) - 1
+        return (float(assets.iloc[-1]) / float(self.init_cash)) - 1
 
     def calc_sharpe(self, annualized_returns, volatility_year, r=0.05):
         """
