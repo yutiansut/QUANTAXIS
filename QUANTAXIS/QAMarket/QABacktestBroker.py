@@ -217,11 +217,7 @@ class QA_BacktestBroker(QA_Broker):
                 order.datetime = '{} 09:30:00'.format(order.date)
             elif order.frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
 
-                exact_time = str(datetime.datetime.strptime(
-                    str(order.datetime), '%Y-%m-%d %H:%M:%S') + datetime.timedelta(minutes=1))
-                order.date = exact_time[0:10]
-                order.datetime = exact_time
-
+                order.date = str(order.datetime)[0:10]
             #_original_marketvalue = order.price*order.amount
 
             order.price = (float(self.market_data.get('high')) +
@@ -265,10 +261,7 @@ class QA_BacktestBroker(QA_Broker):
                 order.datetime = '{} 09:30:00'.format(order.date)
             elif order.frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
 
-                exact_time = str(datetime.datetime.strptime(
-                    str(order.datetime), '%Y-%m-%d %H:%M:%S') + datetime.timedelta(minutes=1))
-                order.date = exact_time[0:10]
-                order.datetime = exact_time
+                order.date = str(order.datetime)[0:10]
         elif order.order_model == ORDER_MODEL.STRICT:
             """
             严格模式
@@ -281,10 +274,7 @@ class QA_BacktestBroker(QA_Broker):
                 order.datetime = '{} 09:30:00'.format(order.date)
             elif order.frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
 
-                exact_time = str(datetime.datetime.strptime(
-                    str(order.datetime), '%Y-%m-%d %H:%M:%S') + datetime.timedelta(minutes=1))
-                order.date = exact_time[0:10]
-                order.datetime = exact_time
+                order.date = str(order.datetime)[0:10]
 
             if order.towards == 1:
                 order.price = float(self.market_data.get('high'))

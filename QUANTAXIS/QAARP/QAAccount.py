@@ -169,6 +169,7 @@ class QA_Account(QA_Worker):
         self.cash = [self.init_cash]
         self.cash_available = self.cash[-1]    # 可用资金
         self.sell_available = copy.deepcopy(self.init_hold)
+        self.buy_available = copy.deepcopy(self.init_hold)
         self.history = []
         self.time_index = []
         ########################################################################
@@ -233,10 +234,10 @@ class QA_Account(QA_Worker):
     @property
     def date(self):
         """账户运行的日期
-        
+
         Arguments:
             self {[type]} -- [description]
-        
+
         Returns:
             [type] -- [description]
         """
@@ -304,18 +305,18 @@ class QA_Account(QA_Worker):
 
         ## 对于账户持仓的分解
 
-        1. 真实持仓real_hold:
+        1. 真实持仓hold:
 
         正常模式/TZero模式:
-            real_hold = 历史持仓(init_hold)+ 初始化账户后发生的所有交易导致的持仓(hold)
+            hold = 历史持仓(init_hold)+ 初始化账户后发生的所有交易导致的持仓(hold_available)
 
-        动态持仓(初始化账户后的持仓)hold:
+        动态持仓(初始化账户后的持仓)hold_available:
             self.history 计算而得
 
         2. 账户的可卖额度(sell_available)
 
         正常模式:
-            sell_available 
+            sell_available
                 结算前: init_hold+ 买卖交易(卖-)
                 结算后: init_hold+ 买卖交易(买+ 卖-)
         TZero模式:
@@ -349,7 +350,7 @@ class QA_Account(QA_Worker):
     @property
     def daily_cash(self):
         '每日交易结算时的现金表'
-        return self.cash_table.drop_duplicates(subset='date', keep='last').set_index(['date', 'account_cookie'],drop=False).sort_index()
+        return self.cash_table.drop_duplicates(subset='date', keep='last').set_index(['date', 'account_cookie'], drop=False).sort_index()
 
     @property
     def daily_hold(self):
@@ -377,9 +378,11 @@ class QA_Account(QA_Worker):
     def hold_table(self, datetime=None):
         "到某一个时刻的持仓 如果给的是日期,则返回当日开盘前的持仓"
         if datetime is None:
-            hold_available= self.history_table.set_index('datetime').sort_index().groupby('code').amount.sum().sort_index()
+            hold_available = self.history_table.set_index(
+                'datetime').sort_index().groupby('code').amount.sum().sort_index()
         else:
-            hold_available= self.history_table.set_index('datetime').sort_index().loc[:datetime].groupby('code').amount.sum().sort_index()
+            hold_available = self.history_table.set_index('datetime').sort_index(
+            ).loc[:datetime].groupby('code').amount.sum().sort_index()
 
         return pd.concat([self.init_hold, hold_available]).groupby('code').sum().sort_index()
 
@@ -434,7 +437,7 @@ class QA_Account(QA_Worker):
                 self.cash_available = self.cash[-1]
                 print('NOT ENOUGH MONEY FOR {}'.format(
                     message['body']['order']))
-        self.datetime=message['body']['order']['datetime']
+        self.datetime = message['body']['order']['datetime']
         return self.message
 
     def send_order(self, code=None, amount=None, time=None, towards=None, price=None, money=None, order_model=None, amount_model=None):
@@ -514,8 +517,17 @@ class QA_Account(QA_Worker):
                 flag = True
             else:
                 print('可用资金不足')
+            if self.running_environment == RUNNING_ENVIRONMENT.TZERO:
+                
+                if self.buy_available.get(code, 0)>= amount:
+                    flag = True
+                    self.buy_available -= amount
+                else:
+                    flag = False
+                    print('T0交易买入超出限额')
         elif int(towards) < 0:
             # 是卖出的情况(包括卖出，卖出开仓allow_sellopen如果允许. 卖出平仓)
+
             if self.sell_available.get(code, 0) >= amount:
                 self.sell_available[code] -= amount
                 flag = True
@@ -544,29 +556,31 @@ class QA_Account(QA_Worker):
     @property
     def close_positions_order(self):
         """平仓单
-        
+
         Raises:
             RuntimeError -- if ACCOUNT.RUNNING_ENVIRONMENT is NOT TZERO
-        
+
         Returns:
             list -- list with order
         """
 
         order_list = []
-        time='{} 15:00:00'.format(self.date)
+        time = '{} 15:00:00'.format(self.date)
         if self.running_environment == RUNNING_ENVIRONMENT.TZERO:
             for code, amount in self.hold_available.iteritems():
+                order=False
                 if amount < 0:
                     # 先卖出的单子 买平
-                    order = self.send_order(code=code, price=0,amount=abs(
+                    order = self.send_order(code=code, price=0, amount=abs(
                         amount), time=time, towards=ORDER_DIRECTION.BUY_CLOSE,
-                        order_model=ORDER_MODEL.CLOSE,amount_model=AMOUNT_MODEL.BY_AMOUNT)
+                        order_model=ORDER_MODEL.CLOSE, amount_model=AMOUNT_MODEL.BY_AMOUNT)
                 elif amount > 0:
                     # 先买入的单子, 卖平
-                    order = self.send_order(code=code,price=0, amount=abs(
+                    order = self.send_order(code=code, price=0, amount=abs(
                         amount), time=time, towards=ORDER_DIRECTION.SELL_CLOSE,
-                        order_model=ORDER_MODEL.CLOSE,amount_model=AMOUNT_MODEL.BY_AMOUNT)
-                order_list.append(order)
+                        order_model=ORDER_MODEL.CLOSE, amount_model=AMOUNT_MODEL.BY_AMOUNT)
+                if order:
+                    order_list.append(order)
             return order_list
         else:
             raise RuntimeError('QAACCOUNT with {} environments cannot use this methods'.format(
@@ -574,11 +588,14 @@ class QA_Account(QA_Worker):
 
     def settle(self):
         '同步可用资金/可卖股票'
-        
+
         if self.running_environment == RUNNING_ENVIRONMENT.TZERO and self.hold_available.sum() != 0:
-            raise RuntimeError('QAACCOUNT: 该T0账户未当日仓位,请平仓 {}'.format(self.hold_available.to_dict()))
+            raise RuntimeError('QAACCOUNT: 该T0账户未当日仓位,请平仓 {}'.format(
+                self.hold_available.to_dict()))
         self.sell_available = self.hold
-        self.datetime = '{} 09:30:00'.format(QA_util_get_next_day(self.date)) if self.date is not None else None
+        self.buy_available = self.hold
+        self.datetime = '{} 09:30:00'.format(QA_util_get_next_day(
+            self.date)) if self.date is not None else None
 
     def on_bar(self, event):
         '''

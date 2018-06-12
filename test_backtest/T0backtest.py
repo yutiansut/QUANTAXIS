@@ -99,7 +99,7 @@ import QUANTAXIS as QA
 backtest = Backtest(market_type=MARKET_TYPE.STOCK_CN,
                     frequence=FREQUENCE.FIFTEEN_MIN,
                     start='2017-11-01',
-                    end='2018-11-10',
+                    end='2017-12-10',
                     code_list=['000001'],
                     commission_fee=0.00015)
 backtest.start_market()
