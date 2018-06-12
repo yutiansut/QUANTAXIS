@@ -4,6 +4,7 @@
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
     - [1.0.47 (unreleased)](#1047-unreleased)
+    - [1.0.47](#1047)
     - [1.0.46](#1046)
     - [1.0.45](#1045)
     - [1.0.44](#1044)
@@ -30,6 +31,10 @@
 <!-- /TOC -->
 ## 1.0.47 (unreleased)
 
+1. 修改了QA_Portfolio, 增加init_hold, init_hold_table 字段,可以查看组合的初始化持仓,以及带account的初始化持仓
+
+## 1.0.47 
+
 1. 修改了QAMARKET 适配t0回测
 2. 增加t0回测示例
 3. 分钟线撮合不再加一分钟
@@ -37,6 +42,9 @@
 5. 修改示例,使用随机买卖来测试框架 https://github.com/QUANTAXIS/QUANTAXIS/blob/master/test_backtest/T0backtest.ipynb
 6. 增加对于多个标的的t0账户的支持
 7. 修复一个QA_Account下计算account.trade因为pivot_table默认使用np.mean作为arg_func的bug,该bug会导致在相同时间开了方向相反的仓位,会被计算成平均数
+8. 修复了一个QA_fetch_stock_day_full()中set_index的bug
+
+released in : JUNE 12, 2018
 
 ## 1.0.46 
 1. 命令行中 添加了 save stock_info_tushare 保存tushare股票列表的信息到数据库中
