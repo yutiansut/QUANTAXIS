@@ -86,7 +86,7 @@ class QA_Portfolio():
         self.accounts = {}
         self.strategy_name = strategy_name
         # 和account一样的资产类
-        self.init_cash =init_cash
+        self.init_cash = init_cash
         self.cash = [self.init_cash]
         self.cash_available = self.cash[-1]  # 可用资金
         self.sell_available = sell_available
@@ -98,6 +98,14 @@ class QA_Portfolio():
 
     def __repr__(self):
         return '< QA_Portfolio {} with {} Accounts >'.format(self.portfolio_cookie, len(self.accounts.keys()))
+
+    @property
+    def init_hold_table(self):
+        return pd.concat([account.init_hold_with_account for account in list(self.accounts.values())])
+
+    @property
+    def init_hold(self):
+        return self.init_hold_table.groupby('code').sum()
 
     def get_portfolio(self):
         'return the accounts dict'
@@ -179,7 +187,7 @@ class QA_Portfolio():
             for item in self.accounts.keys():
                 try:
                     message = collection.find_one({'account_cookie': item})
-                    QA_util_log_info('{} sync successfully ✅'.format(item))
+                    QA_util_log_info('{} sync successfully'.format(item))
                 except Exception as e:
                     QA_util_log_info(
                         '{} sync wrong \\\n wrong info {}'.format(item, e))
@@ -189,7 +197,7 @@ class QA_Portfolio():
             try:
                 message = collection.find_one(
                     {'account_cookie': account_cookie})
-                QA_util_log_info('{} sync successfully ✅'.format(item))
+                QA_util_log_info('{} sync successfully'.format(item))
             except Exception as e:
                 QA_util_log_info(
                     '{} sync wrong \\\n wrong info {}'.format(account_cookie, e))
@@ -203,7 +211,7 @@ class QA_Portfolio():
                 try:
                     message = collection.find_one_and_update(
                         {'account_cookie': item})
-                    QA_util_log_info('{} sync successfully ✅'.format(item))
+                    QA_util_log_info('{} sync successfully'.format(item))
                 except Exception as e:
                     QA_util_log_info(
                         '{} sync wrong \\\n wrong info {}'.format(item, e))
@@ -213,7 +221,7 @@ class QA_Portfolio():
             try:
                 message = collection.find_one(
                     {'account_cookie': account_cookie})
-                QA_util_log_info('{} sync successfully ✅'.format(item))
+                QA_util_log_info('{} sync successfully'.format(item))
             except Exception as e:
                 QA_util_log_info(
                     '{} sync wrong \\\n wrong info {}'.format(account_cookie, e))
@@ -255,7 +263,6 @@ class QA_PortfolioView():
             zip([account.account_cookie for account in account_list], account_list))
         self.portfolio_cookie = QA_util_random_with_topic('Portfolio')
         self.user_cookie = None
-
 
     def __repr__(self):
         return '< QA_PortfolioVIEW {} with {} Accounts >'.format(self.account_cookie, len(self.accounts))
