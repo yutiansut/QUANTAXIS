@@ -30,6 +30,9 @@
 <!-- /TOC -->
 ## 1.0.47 (unreleased)
 
+1. 修改了QAMARKET 适配t0回测
+2. 增加t0回测示例
+
 ## 1.0.46 
 1. 命令行中 添加了 save stock_info_tushare 保存tushare股票列表的信息到数据库中
 2. 修改了实盘易 broker 增加对接
