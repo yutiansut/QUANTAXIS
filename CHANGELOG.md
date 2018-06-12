@@ -35,6 +35,8 @@
 3. 分钟线撮合不再加一分钟
 4. T0回测买入限额,QA_Account.buy_available
 5. 修改示例,使用随机买卖来测试框架 https://github.com/QUANTAXIS/QUANTAXIS/blob/master/test_backtest/T0backtest.ipynb
+6. 增加对于多个标的的t0账户的支持
+7. 修复一个QA_Account下计算account.trade因为pivot_table默认使用np.mean作为arg_func的bug,该bug会导致在相同时间开了方向相反的仓位,会被计算成平均数
 
 ## 1.0.46 
 1. 命令行中 添加了 save stock_info_tushare 保存tushare股票列表的信息到数据库中
