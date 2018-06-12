@@ -3,7 +3,8 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.0.48 (unreleased)](#1048-unreleased)
+    - [1.0.49 (unreleased)](#1049-unreleased)
+    - [1.0.48](#1048)
     - [1.0.47](#1047)
     - [1.0.46](#1046)
     - [1.0.45](#1045)
@@ -29,9 +30,15 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
-## 1.0.48 (unreleased)
+## 1.0.49 (unreleased)
+
+
+## 1.0.48 
 
 1. 修改了QA_Portfolio, 增加init_hold, init_hold_table 字段,可以查看组合的初始化持仓,以及带account的初始化持仓
+2. 修改了QA_Risk的引入, 测试引入import tkinter
+
+released in : JUNE 12, 2018
 
 ## 1.0.47 
 
