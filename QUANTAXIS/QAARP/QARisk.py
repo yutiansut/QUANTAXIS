@@ -63,7 +63,7 @@ if platform.system() != 'Windows' and os.environ.get('DISPLAY', '') == '':
     'gdk', 'pdf', 'pgf', 'ps', 'svg', 'template']
     """
 try:
-    pd.Series([1, 23, 4]).plot()
+    import tkinter
 except ModuleNotFoundError:
     '''
     ModuleNotFoundError: No module named 'tkinter'
