@@ -344,8 +344,15 @@ class QA_Account(QA_Worker):
 
     @property
     def trade(self):
-        '每次交易的pivot表'
-        return self.history_table.pivot_table(index=['datetime', 'account_cookie'], columns='code', values='amount').fillna(0).sort_index()
+        """每次交易的pivot表
+        
+        Returns:
+            pd.DataFrame
+
+            此处的pivot_table一定要用np.sum
+        """
+
+        return self.history_table.pivot_table(index=['datetime', 'account_cookie'], columns='code', values='amount',aggfunc=np.sum).fillna(0).sort_index()
 
     @property
     def daily_cash(self):
