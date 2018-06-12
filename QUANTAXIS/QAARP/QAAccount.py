@@ -511,20 +511,25 @@ class QA_Account(QA_Worker):
         if int(towards) > 0:
             # 是买入的情况(包括买入.买开.买平)
             if self.cash_available >= money:
-                self.cash_available -= money
+
                 if self.market_type is MARKET_TYPE.STOCK_CN:  # 如果是股票 买入的时候有100股的最小限制
                     amount = int(amount / 100) * 100
-                flag = True
+
+                if self.running_environment == RUNNING_ENVIRONMENT.TZERO:
+
+                    if self.buy_available.get(code, 0) >= amount:
+                        flag = True
+                        self.cash_available -= money
+                        self.buy_available[code] -= amount
+                    else:
+                        flag = False
+                        print('T0交易买入超出限额')
+                else:
+                    self.cash_available -= money
+                    flag = True
             else:
                 print('可用资金不足')
-            if self.running_environment == RUNNING_ENVIRONMENT.TZERO:
-                
-                if self.buy_available.get(code, 0)>= amount:
-                    flag = True
-                    self.buy_available -= amount
-                else:
-                    flag = False
-                    print('T0交易买入超出限额')
+
         elif int(towards) < 0:
             # 是卖出的情况(包括卖出，卖出开仓allow_sellopen如果允许. 卖出平仓)
 
@@ -568,7 +573,7 @@ class QA_Account(QA_Worker):
         time = '{} 15:00:00'.format(self.date)
         if self.running_environment == RUNNING_ENVIRONMENT.TZERO:
             for code, amount in self.hold_available.iteritems():
-                order=False
+                order = False
                 if amount < 0:
                     # 先卖出的单子 买平
                     order = self.send_order(code=code, price=0, amount=abs(
