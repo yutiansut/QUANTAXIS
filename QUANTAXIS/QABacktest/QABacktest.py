@@ -145,7 +145,7 @@ class QA_Backtest():
                     # 往 broker 和 account 发送 settle 事件
                     try:
                         self.market.trade_engine.join()
-                        time.sleep(2)
+                        #time.sleep(2)
                         self.market._settle(self.broker_name)
 
                     except Exception as e:
