@@ -3,7 +3,7 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.0.47 (unreleased)](#1047-unreleased)
+    - [1.0.48 (unreleased)](#1048-unreleased)
     - [1.0.47](#1047)
     - [1.0.46](#1046)
     - [1.0.45](#1045)
@@ -29,7 +29,7 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
-## 1.0.47 (unreleased)
+## 1.0.48 (unreleased)
 
 1. 修改了QA_Portfolio, 增加init_hold, init_hold_table 字段,可以查看组合的初始化持仓,以及带account的初始化持仓
 
