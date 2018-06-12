@@ -1,15 +1,15 @@
 # utf-8
 import time
 
-from QUANTAXIS.QAARP.QAStrategy import QA_Strategy
+from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, FREQUENCE, MARKET_TYPE,
                                           ORDER_DIRECTION, ORDER_MODEL)
 
 
-class MAStrategy(QA_Strategy):
-    def __init__(self):
-        super().__init__()
+class MAStrategy(QA_Account):
+    def __init__(self,init_cash=100000,init_hold={}):
+        super().__init__(init_cash=init_cash,init_hold=init_hold)
         self.frequence = FREQUENCE.DAY
         self.market_type = MARKET_TYPE.STOCK_CN
         self.commission_coeff = 0.00015
