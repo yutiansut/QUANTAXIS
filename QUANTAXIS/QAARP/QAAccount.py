@@ -212,6 +212,16 @@ class QA_Account(QA_Worker):
         }
 
     @property
+    def init_hold_with_account(self):
+        """带account_id的初始化持仓
+        
+        Returns:
+            [type] -- [description]
+        """
+
+        return self.init_hold.reset_index().assign(account_cookie=self.account_cookie).set_index(['code', 'account_cookie'])
+
+    @property
     def init_assets(self):
         """初始化账户资产
 
@@ -345,14 +355,14 @@ class QA_Account(QA_Worker):
     @property
     def trade(self):
         """每次交易的pivot表
-        
+
         Returns:
             pd.DataFrame
 
             此处的pivot_table一定要用np.sum
         """
 
-        return self.history_table.pivot_table(index=['datetime', 'account_cookie'], columns='code', values='amount',aggfunc=np.sum).fillna(0).sort_index()
+        return self.history_table.pivot_table(index=['datetime', 'account_cookie'], columns='code', values='amount', aggfunc=np.sum).fillna(0).sort_index()
 
     @property
     def daily_cash(self):
