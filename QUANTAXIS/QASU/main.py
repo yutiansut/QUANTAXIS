@@ -26,6 +26,7 @@ from QUANTAXIS.QASU import save_tdx_file as tdx_file
 from QUANTAXIS.QASU import save_tushare as sts
 from QUANTAXIS.QAUtil import DATABASE
 
+from QUANTAXIS.QASU import crawl_eastmoney as crawl_eastmoney_file
 
 
 
@@ -211,3 +212,13 @@ def QA_SU_save_stock_min_5(file_dir, client=DATABASE):
     """
 
     return tdx_file.QA_save_tdx_to_mongo(file_dir, client)
+
+
+def QA_SU_crawl_eastmoney(action="zjlx",stockCode=None):
+    '''
+
+    :param action: zjlx 后期支持其他的操作类型
+    :param stockCode: 股票代码
+    :return:
+    '''
+    return crawl_eastmoney_file.QA_read_eastmoney_zjlx_web_page_to_sqllite(stockCode)
