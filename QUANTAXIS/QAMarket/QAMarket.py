@@ -35,11 +35,12 @@ from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
                                           BROKER_EVENT, BROKER_TYPE,
                                           ENGINE_EVENT, MARKET_EVENT,
                                           FREQUENCE, ORDER_EVENT,
-                                          ORDER_MODEL)
+                                          ORDER_MODEL, RUNNING_ENVIRONMENT)
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 import datetime
+
 
 class QA_Market(QA_Trade):
     """
@@ -55,22 +56,20 @@ class QA_Market(QA_Trade):
         super().__init__()
         self.session = {}
         self._broker = {
-                        BROKER_TYPE.BACKETEST: QA_BacktestBroker,
-                        BROKER_TYPE.RANODM: QA_RandomBroker,
-                        BROKER_TYPE.REAL: QA_RealBroker,
-                        BROKER_TYPE.SIMULATION: QA_SimulatedBroker
+            BROKER_TYPE.BACKETEST: QA_BacktestBroker,
+            BROKER_TYPE.RANODM: QA_RandomBroker,
+            BROKER_TYPE.REAL: QA_RealBroker,
+            BROKER_TYPE.SIMULATION: QA_SimulatedBroker
         }
         self.broker = {}
         self.running_time = None
         self.last_query_data = None
-
 
     def __repr__(self):
         '''
                 输出market市场对象的字符串
         '''
         return '<QA_Market with {} QA_Broker >'.format(list(self.broker.keys()))
-
 
     def upcoming_data(self, broker, data):
         '''
@@ -87,7 +86,7 @@ class QA_Market(QA_Trade):
         for item in self.session.values():
             # session里面是已经注册的account
             self.event_queue.put(QA_Task(
-                worker=item, # item 是Account 类型， 是 QA_Work类型， 处理这个 事件
+                worker=item,  # item 是Account 类型， 是 QA_Work类型， 处理这个 事件
                 event=QA_Event(
                     event_type=ENGINE_EVENT.UPCOMING_DATA,
                     # args 附加的参数
@@ -157,7 +156,6 @@ class QA_Market(QA_Trade):
     def get_account_id(self):
         return list(self.session.keys())
 
-
     def insert_order(self, account_id, amount, amount_model, time, code, price, order_model, towards, market_type, frequence, broker_name):
         #strDbg = QA_util_random_with_topic("QA_Market.insert_order")
         #print(">-----------------------insert_order----------------------------->", strDbg)
@@ -193,16 +191,17 @@ class QA_Market(QA_Trade):
                 amount=amount, amount_model=amount_model, time=time, code=code, price=price,
                 order_model=order_model, towards=towards)
 
-            #print("------------------------------------------------->")
+            # print("------------------------------------------------->")
             #print("order 排队")
-            #print(order)
+            # print(order)
             #print("时间戳" )
-            #print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))  # 日期格式化
-            #print("<-------------------------------------------------")
+            # print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))  # 日期格式化
+            # print("<-------------------------------------------------")
             if order:
-                self.event_queue.put(
+                self.event_queue.put_nowait(
                     QA_Task(
-                        worker=self.broker[self.get_account(account_id).broker],
+                        worker=self.broker[self.get_account(
+                            account_id).broker],
                         engine=self.get_account(account_id).broker,
                         event=QA_Event(
                             event_type=BROKER_EVENT.RECEIVE_ORDER,
@@ -213,17 +212,15 @@ class QA_Market(QA_Trade):
 
         #print("<-----------------------insert_order-----------------------------<", strDbg)
 
-
     def on_insert_order(self, order):
         print(order)
         pass
 
     def _renew_account(self):
-        for item in self.session.values():
-
+        for account in self.session.values():
             self.event_queue.put(
                 QA_Task(
-                    worker=item,
+                    worker=account,
                     event=QA_Event(
                         event_type=ACCOUNT_EVENT.SETTLE)))
 
@@ -313,11 +310,26 @@ class QA_Market(QA_Trade):
 
         # 向事件线程发送BROKER的SETTLE事件
         # 向事件线程发送ACCOUNT的SETTLE事件
-        for item in self.session.values():
-            if item.broker is broker_name:
+
+        for account in self.session.values():
+            
+            if account.running_environment == RUNNING_ENVIRONMENT.TZERO:
+                
+                for order in account.close_positions_order:
+                    
+                    self.event_queue.put(
+                        QA_Task(
+                            worker=self.broker[account.broker],
+                            engine=account.broker,
+                            event=QA_Event(
+                                event_type=BROKER_EVENT.RECEIVE_ORDER,
+                                order=order,
+                                callback=self.on_insert_order)))
+
+            if account.broker == broker_name:
                 self.event_queue.put(
                     QA_Task(
-                        worker=item,
+                        worker=account,
                         engine=broker_name,
                         event=QA_Event(
                             event_type=ACCOUNT_EVENT.SETTLE)))
