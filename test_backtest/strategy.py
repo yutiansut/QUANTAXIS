@@ -15,6 +15,8 @@ class MAStrategy(QA_Account):
         self.commission_coeff = 0.00015
         self.tax_coeff = 0.0001
 
+        self.reset_assets(100000)# 这是第二种修改办法
+
     def on_bar(self, event):
         sellavailable = self.sell_available
         try:
