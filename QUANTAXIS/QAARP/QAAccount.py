@@ -576,7 +576,7 @@ class QA_Account(QA_Worker):
         '同步可用资金/可卖股票'
         
         if self.running_environment == RUNNING_ENVIRONMENT.TZERO and self.hold_available.sum() != 0:
-            raise RuntimeError('QAACCOUNT: 该T0账户未当日仓位,请平仓')
+            raise RuntimeError('QAACCOUNT: 该T0账户未当日仓位,请平仓 {}'.format(self.hold_available.to_dict()))
         self.sell_available = self.hold
         self.datetime = '{} 09:30:00'.format(QA_util_get_next_day(self.date)) if self.date is not None else None
 
@@ -635,7 +635,7 @@ class QA_Account(QA_Worker):
     def run(self, event):
         '''
         这个方法是被 QA_ThreadEngine 处理队列时候调用的， QA_Task 中 do 方法调用 run （在其它线程中）
- -      'QA_WORKER method 重载'
+       'QA_WORKER method 重载'
         :param event: 事件类型 QA_Event
         :return:
         '''

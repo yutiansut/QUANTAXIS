@@ -143,7 +143,13 @@ class QA_Backtest():
 
                     # 前一天的交易日已经过去
                     # 往 broker 和 account 发送 settle 事件
-                    self.market._settle(self.broker_name)
+                    try:
+                        self.market.trade_engine.join()
+                        time.sleep(2)
+                        self.market._settle(self.broker_name)
+
+                    except Exception as e:
+                        raise e
             # 基金 指数 期货
             elif self.market_type in [MARKET_TYPE.FUND_CN, MARKET_TYPE.INDEX_CN, MARKET_TYPE.FUTURE_CN]:
                 self.market._settle(self.broker_name)
