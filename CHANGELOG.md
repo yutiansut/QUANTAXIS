@@ -34,6 +34,7 @@
 2. 增加t0回测示例
 3. 分钟线撮合不再加一分钟
 4. T0回测买入限额,QA_Account.buy_available
+5. 修改示例,使用随机买卖来测试框架 https://github.com/QUANTAXIS/QUANTAXIS/blob/master/test_backtest/T0backtest.ipynb
 
 ## 1.0.46 
 1. 命令行中 添加了 save stock_info_tushare 保存tushare股票列表的信息到数据库中
