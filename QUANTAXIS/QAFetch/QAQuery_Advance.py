@@ -166,7 +166,7 @@ def QA_fetch_stock_day_full_adv(date):
         print("💢 Error QA_fetch_stock_day_full_adv parameter date=%s call QA_fetch_stock_full return None"%(date))
         return None
     else:
-        res_set_index = res.set_index().set_index(['date', 'code'], drop=False)
+        res_set_index = res.set_index(['date', 'code'], drop=False)
         # if res_set_index is None:
         #     print("💢 Error QA_fetch_stock_day_full set index 'date, code' return None")
         return QA_DataStruct_Stock_day(res_set_index)
