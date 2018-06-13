@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>QUANTAXIS.QASU.user &mdash; QUANTAXIS 1.0 documentation</title>
+  <title>QUANTAXIS.QASU.user &mdash; QUANTAXIS 1.0.39 documentation</title>
   
 
   
@@ -55,6 +55,10 @@
 
           
             
+            
+              <div class="version">
+                1.0.39
+              </div>
             
           
 
@@ -172,7 +176,7 @@
     <span class="n">coll</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">quantaxis</span><span class="o">.</span><span class="n">user_list</span>
     <span class="n">cursor</span><span class="o">=</span><span class="n">coll</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span><span class="p">:</span> <span class="n">password</span><span class="p">})</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
-        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;success login! your username is:&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;✅success login! your username is:&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">cursor</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;Failed to login,please check your password &#39;</span><span class="p">)</span>
@@ -186,7 +190,7 @@
         <span class="k">return</span> <span class="kc">False</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">coll</span><span class="o">.</span><span class="n">insert</span><span class="p">({</span><span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span><span class="p">:</span> <span class="n">password</span><span class="p">})</span>
-        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;Success sign in! please login &#39;</span><span class="p">)</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;✅Success sign in! please login &#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 </pre></div>
 
@@ -222,7 +226,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'1.0',
+            VERSION:'1.0.39',
             LANGUAGE:'python',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

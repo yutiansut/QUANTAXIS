@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>QUANTAXIS.QAWeb package &mdash; QUANTAXIS 1.0 documentation</title>
+  <title>QUANTAXIS.QAWeb package &mdash; QUANTAXIS 1.0.39 documentation</title>
   
 
   
@@ -56,6 +56,10 @@
           
             
             
+              <div class="version">
+                1.0.39
+              </div>
+            
           
 
           
@@ -82,7 +86,7 @@
 <li><a class="reference internal" href="#">QUANTAXIS.QAWeb package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-QUANTAXIS.QAWeb.QA_Web">QUANTAXIS.QAWeb.QA_Web module</a></li>
-<li><a class="reference internal" href="#module-QUANTAXIS.QAWeb.chain">QUANTAXIS.QAWeb.chain module</a></li>
+<li><a class="reference internal" href="#quantaxis-qaweb-chain-module">QUANTAXIS.QAWeb.chain module</a></li>
 <li><a class="reference internal" href="#module-QUANTAXIS.QAWeb">Module contents</a></li>
 </ul>
 </li>
@@ -243,115 +247,8 @@
 <dd></dd></dl>
 
 </div>
-<div class="section" id="module-QUANTAXIS.QAWeb.chain">
-<span id="quantaxis-qaweb-chain-module"></span><h2>QUANTAXIS.QAWeb.chain module<a class="headerlink" href="#module-QUANTAXIS.QAWeb.chain" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="QUANTAXIS.QAWeb.chain.Blockchain">
-<em class="property">class </em><code class="descclassname">QUANTAXIS.QAWeb.chain.</code><code class="descname">Blockchain</code><a class="reference internal" href="../_modules/QUANTAXIS/QAWeb/chain.html#Blockchain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAWeb.chain.Blockchain" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<dl class="staticmethod">
-<dt id="QUANTAXIS.QAWeb.chain.Blockchain.hash">
-<em class="property">static </em><code class="descname">hash</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/QUANTAXIS/QAWeb/chain.html#Blockchain.hash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAWeb.chain.Blockchain.hash" title="Permalink to this definition">¶</a></dt>
-<dd><p>生成块的 SHA-256 hash值
-:param block: Block</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="QUANTAXIS.QAWeb.chain.Blockchain.last_block">
-<code class="descname">last_block</code><a class="headerlink" href="#QUANTAXIS.QAWeb.chain.Blockchain.last_block" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="QUANTAXIS.QAWeb.chain.Blockchain.new_block">
-<code class="descname">new_block</code><span class="sig-paren">(</span><em>proof: int, previous_hash: Union[str, NoneType]</em><span class="sig-paren">)</span> &#x2192; Dict[str, Any]<a class="reference internal" href="../_modules/QUANTAXIS/QAWeb/chain.html#Blockchain.new_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAWeb.chain.Blockchain.new_block" title="Permalink to this definition">¶</a></dt>
-<dd><p>生成新块
-:param proof: The proof given by the Proof of Work algorithm
-:param previous_hash: Hash of previous Block
-:return: New Block</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="QUANTAXIS.QAWeb.chain.Blockchain.new_transaction">
-<code class="descname">new_transaction</code><span class="sig-paren">(</span><em>sender: str</em>, <em>recipient: str</em>, <em>amount: int</em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../_modules/QUANTAXIS/QAWeb/chain.html#Blockchain.new_transaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAWeb.chain.Blockchain.new_transaction" title="Permalink to this definition">¶</a></dt>
-<dd><p>生成新交易信息，信息将加入到下一个待挖的区块中
-:param sender: Address of the Sender
-:param recipient: Address of the Recipient
-:param amount: Amount
-:return: The index of the Block that will hold this transaction</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="QUANTAXIS.QAWeb.chain.Blockchain.proof_of_work">
-<code class="descname">proof_of_work</code><span class="sig-paren">(</span><em>last_proof: int</em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../_modules/QUANTAXIS/QAWeb/chain.html#Blockchain.proof_of_work"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAWeb.chain.Blockchain.proof_of_work" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>简单的工作量证明:</dt>
-<dd><ul class="first last simple">
-<li>查找一个 p' 使得 hash(pp') 以4个0开头</li>
-<li>p 是上一个块的证明,  p' 是当前的证明</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="QUANTAXIS.QAWeb.chain.Blockchain.register_node">
-<code class="descname">register_node</code><span class="sig-paren">(</span><em>address: str</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/QUANTAXIS/QAWeb/chain.html#Blockchain.register_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAWeb.chain.Blockchain.register_node" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a new node to the list of nodes
-:param address: Address of node. Eg. '<a class="reference external" href="http://192.168.0.5:5000">http://192.168.0.5:5000</a>'</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="QUANTAXIS.QAWeb.chain.Blockchain.resolve_conflicts">
-<code class="descname">resolve_conflicts</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/QUANTAXIS/QAWeb/chain.html#Blockchain.resolve_conflicts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAWeb.chain.Blockchain.resolve_conflicts" title="Permalink to this definition">¶</a></dt>
-<dd><p>共识算法解决冲突
-使用网络中最长的链.
-:return:  如果链被取代返回 True, 否则为False</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="QUANTAXIS.QAWeb.chain.Blockchain.valid_chain">
-<code class="descname">valid_chain</code><span class="sig-paren">(</span><em>chain: List[Dict[str, Any]]</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/QUANTAXIS/QAWeb/chain.html#Blockchain.valid_chain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAWeb.chain.Blockchain.valid_chain" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine if a given blockchain is valid
-:param chain: A blockchain
-:return: True if valid, False if not</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="QUANTAXIS.QAWeb.chain.Blockchain.valid_proof">
-<em class="property">static </em><code class="descname">valid_proof</code><span class="sig-paren">(</span><em>proof: int</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/QUANTAXIS/QAWeb/chain.html#Blockchain.valid_proof"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAWeb.chain.Blockchain.valid_proof" title="Permalink to this definition">¶</a></dt>
-<dd><p>验证证明: 是否hash(last_proof, proof)以4个0开头
-:param last_proof: Previous Proof
-:param proof: Current Proof
-:return: True if correct, False if not.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="QUANTAXIS.QAWeb.chain.consensus">
-<code class="descclassname">QUANTAXIS.QAWeb.chain.</code><code class="descname">consensus</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAWeb/chain.html#consensus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAWeb.chain.consensus" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="QUANTAXIS.QAWeb.chain.full_chain">
-<code class="descclassname">QUANTAXIS.QAWeb.chain.</code><code class="descname">full_chain</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAWeb/chain.html#full_chain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAWeb.chain.full_chain" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="QUANTAXIS.QAWeb.chain.mine">
-<code class="descclassname">QUANTAXIS.QAWeb.chain.</code><code class="descname">mine</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAWeb/chain.html#mine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAWeb.chain.mine" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="QUANTAXIS.QAWeb.chain.new_transaction">
-<code class="descclassname">QUANTAXIS.QAWeb.chain.</code><code class="descname">new_transaction</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAWeb/chain.html#new_transaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAWeb.chain.new_transaction" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="QUANTAXIS.QAWeb.chain.register_nodes">
-<code class="descclassname">QUANTAXIS.QAWeb.chain.</code><code class="descname">register_nodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAWeb/chain.html#register_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAWeb.chain.register_nodes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<div class="section" id="quantaxis-qaweb-chain-module">
+<h2>QUANTAXIS.QAWeb.chain module<a class="headerlink" href="#quantaxis-qaweb-chain-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-QUANTAXIS.QAWeb">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-QUANTAXIS.QAWeb" title="Permalink to this headline">¶</a></h2>
@@ -391,7 +288,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.0',
+            VERSION:'1.0.39',
             LANGUAGE:'python',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
