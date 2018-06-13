@@ -64,7 +64,7 @@ if platform.system() != 'Windows' and os.environ.get('DISPLAY', '') == '':
     """
 try:
     import tkinter
-except ModuleNotFoundError:
+except ImportError:
     '''
     ModuleNotFoundError: No module named 'tkinter'
     maybe you should install tk, tcl library
