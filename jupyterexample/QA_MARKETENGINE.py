@@ -128,8 +128,8 @@ market.query_data(broker_name=QA.BROKER_TYPE.BACKETEST,data_type=QA.FREQUENCE.DA
 # In[21]:
 
 
-market.query_data_no_wait(broker_name=QA.BROKER_TYPE.BACKETEST,data_type=QA.FREQUENCE.DAY,market_type=QA.MARKET_TYPE.STOCK_CN,
-                 code='000001',start='2017-12-14')
+#market.query_data_no_wait(broker_name=QA.BROKER_TYPE.BACKETEST,data_type=QA.FREQUENCE.DAY,market_type=QA.MARKET_TYPE.STOCK_CN,
+                 #code='000001',start='2017-12-14')
 
 
 # In[22]:
