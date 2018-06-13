@@ -6,8 +6,7 @@
     - [QUANTAXIS的镜像](#quantaxis的镜像)
     - [1.获取QUANTAIS镜像](#1获取quantais镜像)
         - [1.1 执行以下命令获取镜像(2选1)](#11-执行以下命令获取镜像2选1)
-        - [1.2 运行镜像(2选1)](#12-运行镜像2选1)
-        - [1.3 在docker中执行命令(启动服务)](#13-在docker中执行命令启动服务)
+        - [1.2 运行镜像](#12-运行镜像)
         - [在浏览器中打开以下链接](#在浏览器中打开以下链接)
         - [其他注意选项](#其他注意选项)
 
@@ -39,16 +38,16 @@ docker pull quantaxis/quantaxis
 ![执行时的命令行](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20171213102629.png)
 
 
-### 1.2 运行镜像(2选1)
+### 1.2 运行镜像
 
 ```
-# 选择你下载的镜像
 docker run -it -e GRANT_SUDO=yes --user root -p 8080:8080 quantaxis/quantaxis bash
 
+jupyter notebook --allow-root
+(jupyter notebook 密码是 quantaxis)
 ```
 
 
-### 1.3 在docker中执行命令(启动服务)
 
 
 ### 在浏览器中打开以下链接
