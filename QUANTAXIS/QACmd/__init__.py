@@ -120,13 +120,13 @@ class CLI(cmd.Cmd):
         print(
             "Usage: \n\
             ----------------------------------------------------------------------------------------------------------------------\n\
-            ⌨️命令格式：crawl eastmoney zjlx  6位股票代码 : 🦀抓取 东方财富 💹资金流向          ❤️鸣谢❤️ www.eastmoney.com 📃网页提供数据！\n\
-            ⌨️命令格式：crawl jrj       zjlx  6位股票代码 : 🦀抓取 金融界   💹资金流向          ❤️鸣谢❤️ www.jrj.com.cn    📃网页提供数据！\n\
-            ⌨️命令格式：crawl 10jqka    funds 6位股票代码 : 🦀抓取 同花顺   💹资金流向          ❤️鸣谢❤️ www.10jqka.com.cn 📃网页提供数据！\n\
+            ⌨️命令格式：crawl eastmoney zjlx  6位股票代码 : 抓取 东方财富 资金流向          ❤️鸣谢❤️ www.eastmoney.com 网页提供数据！\n\
+            ⌨️命令格式：crawl jrj       zjlx  6位股票代码 : 抓取 金融界   资金流向          ❤️鸣谢❤️ www.jrj.com.cn    网页提供数据！\n\
+            ⌨️命令格式：crawl 10jqka    funds 6位股票代码 : 抓取 同花顺   资金流向          ❤️鸣谢❤️ www.10jqka.com.cn 网页提供数据！\n\
             -----------------------------------------------------------------------------------------------------------------------\n\
-            ⌨️命令格式：crawl eastmoney zjlx  all        : 🦀抓取 东方财富 💹所有股票资金流向   ❤️鸣谢❤️ www.eastmoney.com 📃网页提供数据！\n\
-            ⌨️命令格式：crawl jrj       zjlx  all        : 🦀抓取 金融界   💹所有股票资金流向   ❤️鸣谢❤️ www.jrj.com.cn    📃网页提供数据！\n\
-            ⌨️命令格式：crawl 10jqka    funds all        : 🦀抓取 同花顺   💹所有股票资金流向   ❤️鸣谢❤️ www.10jqka.com.cn 📃网页提供数据！\n\
+            ⌨️命令格式：crawl eastmoney zjlx  all        : 抓取 东方财富 所有股票资金流向   ❤️鸣谢❤️ www.eastmoney.com 网页提供数据！\n\
+            ⌨️命令格式：crawl jrj       zjlx  all        : 抓取 金融界   所有股票资金流向   ❤️鸣谢❤️ www.jrj.com.cn    网页提供数据！\n\
+            ⌨️命令格式：crawl 10jqka    funds all        : 抓取 同花顺   所有股票资金流向   ❤️鸣谢❤️ www.10jqka.com.cn 网页提供数据！\n\
             -----------------------------------------------------------------------------------------------------------------------\n\
             @yutiansut\n\
             @QUANTAXIS\n\
@@ -139,7 +139,7 @@ class CLI(cmd.Cmd):
         else:
             arg = arg.split(' ')
             if len(arg) == 3 and arg[0] == 'eastmoney' and arg[1] == 'zjlx' and arg[2] != 'all':
-                print(" 🦀 准备抓取东方财富资金流向数据 💹")
+                print("  准备抓取东方财富资金流向数据 ")
                 QA_SU_crawl_eastmoney(action=arg[1],stockCode=arg[2])
             elif len(arg) == 3 and arg[0] == 'jrj' and arg[1] == 'zjlx' and arg[2] != 'all':
                 print("❌crawl jrj zjlx XXXXXX !没有实现")
@@ -159,21 +159,21 @@ class CLI(cmd.Cmd):
     def print_save_usage(self):
         print(
             "Usage: \n\
-            ⌨️命令格式：save all  : save stock_day/xdxr/ index_day/ stock_list \n\
-            ⌨️命令格式：save X|x  : save stock_day/xdxr/min index_day/min etf_day/min stock_list/block \n\
-            ⌨️命令格式：save day  : save stock_day/xdxr index_day etf_day stock_list \n\
-            ⌨️命令格式：save min  : save stock_min/xdxr index_min etf_min stock_list \n\
+            命令格式：save all  : save stock_day/xdxr/ index_day/ stock_list \n\
+            命令格式：save X|x  : save stock_day/xdxr/min index_day/min etf_day/min stock_list/block \n\
+            命令格式：save day  : save stock_day/xdxr index_day etf_day stock_list \n\
+            命令格式：save min  : save stock_min/xdxr index_min etf_min stock_list \n\
             ------------------------------------------------------------ \n\
-            ⌨️命令格式：save stock_day  : 📊保存日线数据 \n\
-            ⌨️命令格式：save stock_xdxr : 📊保存日除权出息数据 \n\
-            ⌨️命令格式：save stock_min  : 📊保存分钟线数据 \n\
-            ⌨️命令格式：save index_day  : 📊保存指数数据 \n\
-            ⌨️命令格式：save index_min  : 📊保存指数线数据 \n\
-            ⌨️命令格式：save etf_day    : 📊保存ETF日线数据 \n\
-            ⌨️命令格式：save etf_min    : 📊保存ET分钟数据 \n\
-            ⌨️命令格式：save stock_list : 📊保存股票列表 \n\
-            ⌨️命令格式：save stock_block: 📊保存板块 \n\
-            ⌨️命令格式：save stock_info : 📊保存tushare数据接口获取的股票列表 \n\
+            命令格式：save stock_day  : 保存日线数据 \n\
+            命令格式：save stock_xdxr : 保存日除权出息数据 \n\
+            命令格式：save stock_min  : 保存分钟线数据 \n\
+            命令格式：save index_day  : 保存指数数据 \n\
+            命令格式：save index_min  : 保存指数线数据 \n\
+            命令格式：save etf_day    : 保存ETF日线数据 \n\
+            命令格式：save etf_min    : 保存ET分钟数据 \n\
+            命令格式：save stock_list : 保存股票列表 \n\
+            命令格式：save stock_block: 保存板块 \n\
+            命令格式：save stock_info : 保存tushare数据接口获取的股票列表 \n\
              ----------------------------------------------------------\n\
             if you just want to save daily data just\n\
                 save all+ save stock_block+save stock_info, it about 1G data \n\
