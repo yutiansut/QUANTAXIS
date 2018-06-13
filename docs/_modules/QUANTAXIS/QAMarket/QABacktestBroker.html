@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>QUANTAXIS.QAMarket.QABacktestBroker &mdash; QUANTAXIS 1.0 documentation</title>
+  <title>QUANTAXIS.QAMarket.QABacktestBroker &mdash; QUANTAXIS 1.0.39 documentation</title>
   
 
   
@@ -55,6 +55,10 @@
 
           
             
+            
+              <div class="version">
+                1.0.39
+              </div>
             
           
 
@@ -167,6 +171,8 @@
 
 <span class="kn">import</span> <span class="nn">datetime</span>
 
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
 <span class="kn">from</span> <span class="nn">QUANTAXIS.QAEngine.QAEvent</span> <span class="k">import</span> <span class="n">QA_Event</span>
 <span class="kn">from</span> <span class="nn">QUANTAXIS.QAFetch.QAQuery</span> <span class="k">import</span> <span class="p">(</span><span class="n">QA_fetch_future_day</span><span class="p">,</span>
                                        <span class="n">QA_fetch_future_min</span><span class="p">,</span> <span class="n">QA_fetch_index_day</span><span class="p">,</span>
@@ -182,11 +188,14 @@
 <span class="kn">from</span> <span class="nn">QUANTAXIS.QAMarket.QADealer</span> <span class="k">import</span> <span class="n">QA_Dealer</span>
 <span class="kn">from</span> <span class="nn">QUANTAXIS.QAMarket.QAOrderHandler</span> <span class="k">import</span> <span class="n">QA_OrderHandler</span>
 <span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QADate</span> <span class="k">import</span> <span class="n">QA_util_to_datetime</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QADate_trade</span> <span class="k">import</span> <span class="n">QA_util_get_next_day</span>
 <span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QALogs</span> <span class="k">import</span> <span class="n">QA_util_log_info</span>
 <span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QAParameter</span> <span class="k">import</span> <span class="p">(</span><span class="n">AMOUNT_MODEL</span><span class="p">,</span> <span class="n">BROKER_EVENT</span><span class="p">,</span>
                                           <span class="n">BROKER_TYPE</span><span class="p">,</span> <span class="n">ENGINE_EVENT</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="p">,</span>
                                           <span class="n">MARKET_EVENT</span><span class="p">,</span> <span class="n">MARKET_TYPE</span><span class="p">,</span>
-                                          <span class="n">ORDER_MODEL</span><span class="p">)</span>
+                                          <span class="n">ORDER_DIRECTION</span><span class="p">,</span> <span class="n">ORDER_MODEL</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QARandom</span> <span class="k">import</span> <span class="n">QA_util_random_with_topic</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QATransform</span> <span class="k">import</span> <span class="n">QA_util_to_json_from_pandas</span>
 
 
 <div class="viewcode-block" id="QA_BacktestBroker"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QABacktestBroker.QA_BacktestBroker">[docs]</a><span class="k">class</span> <span class="nc">QA_BacktestBroker</span><span class="p">(</span><span class="n">QA_Broker</span><span class="p">):</span>
@@ -217,7 +226,7 @@
 <span class="sd">    允许无仓位的时候卖出证券(按市值和保证金比例限制算)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">commission_fee_coeff</span><span class="o">=</span><span class="mf">0.0015</span><span class="p">,</span> <span class="n">if_nondatabase</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">if_nondatabase</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;[summary]</span>
 
 
@@ -227,7 +236,7 @@
 <span class="sd">            if_nondatabase {[type]} -- [description] (default: {False})</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dealer</span> <span class="o">=</span> <span class="n">QA_Dealer</span><span class="p">(</span><span class="n">commission_fee_coeff</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dealer</span> <span class="o">=</span> <span class="n">QA_Dealer</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">order_handler</span> <span class="o">=</span> <span class="n">QA_OrderHandler</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">engine</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">STOCK_CN</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dealer</span><span class="o">.</span><span class="n">backtest_stock_dealer</span><span class="p">}</span>
@@ -242,7 +251,7 @@
                         <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">FUND_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">ONE_MIN</span><span class="p">):</span> <span class="n">QA_fetch_index_min</span><span class="p">,</span> <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">FUND_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">FIVE_MIN</span><span class="p">):</span> <span class="n">QA_fetch_index_min</span><span class="p">,</span>
                         <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">FUND_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">THIRTY_MIN</span><span class="p">):</span> <span class="n">QA_fetch_index_min</span><span class="p">,</span> <span class="p">(</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">FUND_CN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">SIXTY_MIN</span><span class="p">):</span> <span class="n">QA_fetch_index_min</span><span class="p">}</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">commission_fee_coeff</span> <span class="o">=</span> <span class="n">commission_fee_coeff</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">if_nondatabase</span> <span class="o">=</span> <span class="n">if_nondatabase</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">BROKER_TYPE</span><span class="o">.</span><span class="n">BACKETEST</span>
@@ -250,6 +259,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">broker_data</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="QA_BacktestBroker.run"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QABacktestBroker.QA_BacktestBroker.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="c1">#strDbg = QA_util_random_with_topic(&quot;QABacktestBroker.run&quot;)</span>
+        <span class="c1">#print(&quot;         &gt;-----------------------QABacktestBroker.run-----------------------------&gt;&quot;, strDbg,&#39;evt-&gt;&#39;, event)</span>
+
         <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">event_type</span> <span class="ow">is</span> <span class="n">MARKET_EVENT</span><span class="o">.</span><span class="n">QUERY_DATA</span><span class="p">:</span>
             <span class="c1"># 查询数据部分</span>
             <span class="n">code</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">code</span>
@@ -265,6 +277,7 @@
         <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">event_type</span> <span class="ow">is</span> <span class="n">MARKET_EVENT</span><span class="o">.</span><span class="n">QUERY_ORDER</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">order_handler</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">event_type</span> <span class="ow">is</span> <span class="n">ENGINE_EVENT</span><span class="o">.</span><span class="n">UPCOMING_DATA</span><span class="p">:</span>
+            <span class="c1"># QABacktest 回测发出的事件</span>
             <span class="n">new_marketdata_dict</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">market_data</span><span class="o">.</span><span class="n">dicts</span>
             <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">new_marketdata_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">item</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quotation</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -280,7 +293,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">QA_Event</span><span class="p">(</span><span class="n">event_type</span><span class="o">=</span><span class="n">BROKER_EVENT</span><span class="o">.</span><span class="n">TRADE</span><span class="p">,</span> <span class="n">broker</span><span class="o">=</span><span class="bp">self</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">event_type</span> <span class="ow">is</span> <span class="n">BROKER_EVENT</span><span class="o">.</span><span class="n">TRADE</span><span class="p">:</span>
             <span class="n">event</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_handler</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
-
             <span class="n">event</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;trade&#39;</span>
             <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">callback</span><span class="p">:</span>
                 <span class="n">event</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
@@ -288,6 +300,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">order_handler</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">callback</span><span class="p">:</span>
                 <span class="n">event</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="s1">&#39;settle&#39;</span><span class="p">)</span></div>
+        <span class="c1">#print(&quot;         &lt;-----------------------QABacktestBroker.run-----------------------------&lt;&quot;,strDbg,&#39;evt-&gt;&#39;,event)</span>
+
 
 <div class="viewcode-block" id="QA_BacktestBroker.query_data"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QABacktestBroker.QA_BacktestBroker.query_data">[docs]</a>    <span class="k">def</span> <span class="nf">query_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">frequence</span><span class="p">,</span> <span class="n">market_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -306,16 +320,23 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">order</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">order</span>
-
         <span class="k">if</span> <span class="s1">&#39;market_data&#39;</span> <span class="ow">in</span> <span class="n">event</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_market</span><span class="p">(</span>
                 <span class="n">order</span><span class="p">)</span> <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">market_data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">event</span><span class="o">.</span><span class="n">market_data</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">,</span><span class="nb">dict</span><span class="p">):</span>
+                <span class="k">pass</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">,</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="o">=</span><span class="n">QA_util_to_json_from_pandas</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="o">.</span><span class="n">to_json</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_market</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
-
-        <span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">warp</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dealer</span><span class="o">.</span><span class="n">deal</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            
+            <span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">warp</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dealer</span><span class="o">.</span><span class="n">deal</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;MARKET DATA IS NONE CANNOT TRADE&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="QA_BacktestBroker.warp"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QABacktestBroker.QA_BacktestBroker.warp">[docs]</a>    <span class="k">def</span> <span class="nf">warp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;对order/market的封装</span>
@@ -330,9 +351,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># 因为成交模式对时间的封装</span>
-
         <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">order_model</span> <span class="o">==</span> <span class="n">ORDER_MODEL</span><span class="o">.</span><span class="n">MARKET</span><span class="p">:</span>
-
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            市价单模式</span>
+<span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">frequence</span> <span class="ow">is</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">DAY</span><span class="p">:</span>
                 <span class="c1"># exact_time = str(datetime.datetime.strptime(</span>
                 <span class="c1">#     str(order.datetime), &#39;%Y-%m-%d %H-%M-%S&#39;) + datetime.timedelta(day=1))</span>
@@ -340,63 +362,95 @@
                 <span class="n">order</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">datetime</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
                 <span class="n">order</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> 09:30:00&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">date</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">order</span><span class="o">.</span><span class="n">frequence</span> <span class="ow">in</span> <span class="p">[</span><span class="n">FREQUENCE</span><span class="o">.</span><span class="n">ONE_MIN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">FIVE_MIN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">FIFTEEN_MIN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">THIRTY_MIN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">SIXTY_MIN</span><span class="p">]:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span>
-                <span class="n">exact_time</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
-                    <span class="nb">str</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">datetime</span><span class="p">),</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-                <span class="n">order</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">exact_time</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
-                <span class="n">order</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="n">exact_time</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_market</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">order</span>
-            <span class="n">order</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s2">&quot;high&quot;</span><span class="p">])</span> <span class="o">+</span>
-                           <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s2">&quot;low&quot;</span><span class="p">]))</span> <span class="o">*</span> <span class="mf">0.5</span>
-        <span class="k">elif</span> <span class="n">order</span><span class="o">.</span><span class="n">order_model</span> <span class="o">==</span> <span class="n">ORDER_MODEL</span><span class="o">.</span><span class="n">NEXT_OPEN</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">exact_time</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
-                    <span class="nb">str</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">datetime</span><span class="p">),</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H-%M-%S&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-                <span class="n">order</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">exact_time</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
-                <span class="n">order</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> 09:30:00&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">date</span><span class="p">)</span>
-            <span class="k">except</span><span class="p">:</span>
-                <span class="n">order</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> 15:00:00&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">date</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_market</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">order</span>
-            <span class="n">order</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s2">&quot;close&quot;</span><span class="p">])</span>
-        <span class="k">elif</span> <span class="n">order</span><span class="o">.</span><span class="n">order_model</span> <span class="o">==</span> <span class="n">ORDER_MODEL</span><span class="o">.</span><span class="n">CLOSE</span><span class="p">:</span>
 
+                <span class="n">order</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">datetime</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+            <span class="c1">#_original_marketvalue = order.price*order.amount</span>
+
+            <span class="n">order</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;high&#39;</span><span class="p">))</span> <span class="o">+</span>
+                        <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;low&#39;</span><span class="p">)))</span> <span class="o">*</span> <span class="mf">0.5</span>
+
+        <span class="k">elif</span> <span class="n">order</span><span class="o">.</span><span class="n">order_model</span> <span class="o">==</span> <span class="n">ORDER_MODEL</span><span class="o">.</span><span class="n">NEXT_OPEN</span><span class="p">:</span>
+            <span class="c1"># try:</span>
+            <span class="c1">#     order.date = QA_util_get_next_day(str(order.datetime)[0:10])</span>
+            <span class="c1">#     order.datetime = &#39;{} 09:30:00&#39;.format(order.date)</span>
+            <span class="c1"># except:</span>
+            <span class="c1">#     order.datetime = &#39;{} 15:00:00&#39;.format(order.date)</span>
+            <span class="c1"># self.market_data = self.get_market(order)</span>
+            <span class="c1"># if self.market_data is None:</span>
+            <span class="c1">#     return order</span>
+            <span class="c1"># order.price = float(self.market_data[&quot;close&quot;])</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="k">elif</span> <span class="n">order</span><span class="o">.</span><span class="n">order_model</span> <span class="o">==</span> <span class="n">ORDER_MODEL</span><span class="o">.</span><span class="n">CLOSE</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            收盘价模式</span>
+<span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">order</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="o">.</span><span class="n">datetime</span>
+                <span class="n">order</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">datetime</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+                <span class="n">order</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> 15:00:00&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">date</span><span class="p">)</span>
             <span class="k">except</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">datetime</span><span class="p">))</span> <span class="o">==</span> <span class="mi">19</span><span class="p">:</span>
                     <span class="k">pass</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">order</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> 15:00:00&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">date</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_market</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">order</span>
-            <span class="n">order</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s2">&quot;close&quot;</span><span class="p">])</span>
 
-        <span class="k">elif</span> <span class="n">order</span><span class="o">.</span><span class="n">order_model</span> <span class="o">==</span> <span class="n">ORDER_MODEL</span><span class="o">.</span><span class="n">STRICT</span><span class="p">:</span>
-            <span class="s1">&#39;加入严格模式&#39;</span>
+            <span class="n">order</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;close&#39;</span><span class="p">))</span>
+
+        <span class="k">elif</span> <span class="n">order</span><span class="o">.</span><span class="n">order_model</span> <span class="o">==</span> <span class="n">ORDER_MODEL</span><span class="o">.</span><span class="n">LIMIT</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            限价单模式</span>
+<span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">frequence</span> <span class="ow">is</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">DAY</span><span class="p">:</span>
-                <span class="n">exact_time</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
-                    <span class="n">order</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H-%M-%S&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">day</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+                <span class="c1"># exact_time = str(datetime.datetime.strptime(</span>
+                <span class="c1">#     str(order.datetime), &#39;%Y-%m-%d %H-%M-%S&#39;) + datetime.timedelta(day=1))</span>
 
-                <span class="n">order</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">exact_time</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+                <span class="n">order</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">datetime</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
                 <span class="n">order</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> 09:30:00&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">date</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">order</span><span class="o">.</span><span class="n">frequence</span> <span class="ow">in</span> <span class="p">[</span><span class="n">FREQUENCE</span><span class="o">.</span><span class="n">ONE_MIN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">FIVE_MIN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">FIFTEEN_MIN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">THIRTY_MIN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">SIXTY_MIN</span><span class="p">]:</span>
-                <span class="n">exact_time</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
-                    <span class="n">order</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H-%M-%S&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">minute</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-                <span class="n">order</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">exact_time</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
-                <span class="n">order</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="n">exact_time</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_market</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">order</span>
-            <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">towards</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">order</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s2">&quot;high&quot;</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">order</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="p">[</span><span class="s2">&quot;low&quot;</span><span class="p">])</span>
 
+                <span class="n">order</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">datetime</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">order</span><span class="o">.</span><span class="n">order_model</span> <span class="o">==</span> <span class="n">ORDER_MODEL</span><span class="o">.</span><span class="n">STRICT</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            严格模式</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">frequence</span> <span class="ow">is</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">DAY</span><span class="p">:</span>
+                <span class="c1"># exact_time = str(datetime.datetime.strptime(</span>
+                <span class="c1">#     str(order.datetime), &#39;%Y-%m-%d %H-%M-%S&#39;) + datetime.timedelta(day=1))</span>
+
+                <span class="n">order</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">datetime</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+                <span class="n">order</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> 09:30:00&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">date</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">order</span><span class="o">.</span><span class="n">frequence</span> <span class="ow">in</span> <span class="p">[</span><span class="n">FREQUENCE</span><span class="o">.</span><span class="n">ONE_MIN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">FIVE_MIN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">FIFTEEN_MIN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">THIRTY_MIN</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">SIXTY_MIN</span><span class="p">]:</span>
+
+                <span class="n">order</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">datetime</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">towards</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">order</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;high&#39;</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">order</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">market_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;low&#39;</span><span class="p">))</span>
+
+
+        <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">market_type</span> <span class="o">==</span> <span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">STOCK_CN</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">towards</span> <span class="o">==</span> <span class="n">ORDER_DIRECTION</span><span class="o">.</span><span class="n">BUY</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">order_model</span> <span class="o">==</span> <span class="n">AMOUNT_MODEL</span><span class="o">.</span><span class="n">BY_MONEY</span><span class="p">:</span>
+                    <span class="n">amount</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">money</span><span class="o">/</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">price</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">order</span><span class="o">.</span><span class="n">commission_coeff</span><span class="p">))</span>
+                    <span class="n">money</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">money</span>
+                <span class="k">else</span><span class="p">:</span>
+
+                    <span class="n">amount</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">amount</span>
+                    <span class="n">money</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">amount</span> <span class="o">*</span> <span class="n">order</span><span class="o">.</span><span class="n">price</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">order</span><span class="o">.</span><span class="n">commission_coeff</span><span class="p">)</span>
+
+                <span class="n">order</span><span class="o">.</span><span class="n">amount</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">amount</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+                <span class="n">order</span><span class="o">.</span><span class="n">money</span> <span class="o">=</span>  <span class="n">money</span>
+            <span class="k">elif</span> <span class="n">order</span><span class="o">.</span><span class="n">towards</span> <span class="o">==</span> <span class="n">ORDER_DIRECTION</span><span class="o">.</span><span class="n">SELL</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">order_model</span> <span class="o">==</span> <span class="n">AMOUNT_MODEL</span><span class="o">.</span><span class="n">BY_MONEY</span><span class="p">:</span>
+                    <span class="n">amount</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">money</span><span class="o">/</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">price</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">order</span><span class="o">.</span><span class="n">commission_coeff</span><span class="o">+</span><span class="n">order</span><span class="o">.</span><span class="n">tax_coeff</span><span class="p">))</span>
+                    <span class="n">money</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">money</span>
+                <span class="k">else</span><span class="p">:</span>
+
+                    <span class="n">amount</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">amount</span>
+                    <span class="n">money</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">amount</span> <span class="o">*</span> <span class="n">order</span><span class="o">.</span><span class="n">price</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">order</span><span class="o">.</span><span class="n">commission_coeff</span><span class="o">+</span><span class="n">order</span><span class="o">.</span><span class="n">tax_coeff</span><span class="p">)</span>
+
+                <span class="n">order</span><span class="o">.</span><span class="n">amount</span> <span class="o">=</span> <span class="n">amount</span>
+                <span class="n">order</span><span class="o">.</span><span class="n">money</span> <span class="o">=</span>  <span class="n">money</span>
         <span class="k">return</span> <span class="n">order</span></div>
 
 <div class="viewcode-block" id="QA_BacktestBroker.get_market"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QABacktestBroker.QA_BacktestBroker.get_market">[docs]</a>    <span class="k">def</span> <span class="nf">get_market</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">):</span>
@@ -412,9 +466,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># 首先判断是否在_quotation里面</span>
-
-        <span class="k">if</span> <span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">order</span><span class="o">.</span><span class="n">code</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quotation</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quotation</span><span class="p">[(</span><span class="n">QA_util_to_datetime</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">datetime</span><span class="p">),</span> <span class="n">order</span><span class="o">.</span><span class="n">code</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">datetime</span><span class="p">),</span> <span class="n">order</span><span class="o">.</span><span class="n">code</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quotation</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quotation</span><span class="p">[(</span><span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">datetime</span><span class="p">),</span> <span class="n">order</span><span class="o">.</span><span class="n">code</span><span class="p">)]</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
@@ -462,7 +515,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'1.0',
+            VERSION:'1.0.39',
             LANGUAGE:'python',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

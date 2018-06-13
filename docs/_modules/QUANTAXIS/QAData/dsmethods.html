@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>QUANTAXIS.QAData.dsmethods &mdash; QUANTAXIS 1.0 documentation</title>
+  <title>QUANTAXIS.QAData.dsmethods &mdash; QUANTAXIS 1.0.39 documentation</title>
   
 
   
@@ -55,6 +55,10 @@
 
           
             
+            
+              <div class="version">
+                1.0.39
+              </div>
             
           
 
@@ -188,10 +192,10 @@
 
 <div class="viewcode-block" id="from_tushare"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAData.html#QUANTAXIS.QAData.dsmethods.from_tushare">[docs]</a><span class="k">def</span> <span class="nf">from_tushare</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;dataframe from tushare</span>
-<span class="sd">    </span>
+
 <span class="sd">    Arguments:</span>
 <span class="sd">        dataframe {[type]} -- [description]</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        [type] -- [description]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -202,6 +206,33 @@
         <span class="k">return</span> <span class="n">QA_DataStruct_Stock_min</span><span class="p">(</span><span class="n">dataframe</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="s1">&#39;code&#39;</span><span class="p">],</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;stock_min&#39;</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="QDS_StockDayWarpper"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAData.html#QUANTAXIS.QAData.dsmethods.QDS_StockDayWarpper">[docs]</a><span class="k">def</span> <span class="nf">QDS_StockDayWarpper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    日线QDS装饰器</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">warpper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">):</span>
+
+            <span class="k">return</span> <span class="n">QA_DataStruct_Stock_day</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">QA_DataStruct_Stock_day</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;code&#39;</span><span class="p">],</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;stock_day&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">warpper</span></div>
+
+
+<div class="viewcode-block" id="QDS_StockMinWarpper"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAData.html#QUANTAXIS.QAData.dsmethods.QDS_StockMinWarpper">[docs]</a><span class="k">def</span> <span class="nf">QDS_StockMinWarpper</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    分钟线QDS装饰器</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">warpper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">):</span>
+
+            <span class="k">return</span> <span class="n">QA_DataStruct_Stock_min</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">QA_DataStruct_Stock_min</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="s1">&#39;code&#39;</span><span class="p">],</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;stock_min&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">warpper</span></div>
 </pre></div>
 
            </div>
@@ -236,7 +267,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'1.0',
+            VERSION:'1.0.39',
             LANGUAGE:'python',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>QUANTAXIS.QAFetch.QACrawler &mdash; QUANTAXIS 1.0 documentation</title>
+  <title>QUANTAXIS.QAFetch.QACrawler &mdash; QUANTAXIS 1.0.39 documentation</title>
   
 
   
@@ -55,6 +55,10 @@
 
           
             
+            
+              <div class="version">
+                1.0.39
+              </div>
             
           
 
@@ -206,6 +210,13 @@
     <span class="k">if</span> <span class="n">date</span> <span class="ow">in</span> <span class="n">trade_date_sse</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">_sz_url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">date</span><span class="p">))</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">)</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">sse</span><span class="o">=</span><span class="s1">&#39;sz&#39;</span><span class="p">)</span></div>
 
+<span class="c1">#http://data.eastmoney.com/zjlx/002433.html</span>
+<div class="viewcode-block" id="QA_fetch_zjlx"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.QACrawler.QA_fetch_zjlx">[docs]</a><span class="k">def</span> <span class="nf">QA_fetch_zjlx</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1">#获取资金流向</span>
+
+
+
+    <span class="k">pass</span></div>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">QA_fetch_get_sz_margin</span><span class="p">(</span><span class="s1">&#39;2018-01-25&#39;</span><span class="p">))</span>
@@ -244,7 +255,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'1.0',
+            VERSION:'1.0.39',
             LANGUAGE:'python',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

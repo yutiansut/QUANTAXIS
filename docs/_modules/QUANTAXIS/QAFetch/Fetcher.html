@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>QUANTAXIS.QAFetch.Fetcher &mdash; QUANTAXIS 1.0 documentation</title>
+  <title>QUANTAXIS.QAFetch.Fetcher &mdash; QUANTAXIS 1.0.39 documentation</title>
   
 
   
@@ -55,6 +55,10 @@
 
           
             
+            
+              <div class="version">
+                1.0.39
+              </div>
             
           
 
@@ -187,7 +191,7 @@
 
 
 <div class="viewcode-block" id="QA_Fetcher"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.Fetcher.QA_Fetcher">[docs]</a><span class="k">class</span> <span class="nc">QA_Fetcher</span><span class="p">():</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">27017</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">password</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">27017</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">password</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        初始化的时候 会初始化</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -195,9 +199,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">database</span> <span class="o">=</span> <span class="n">QA_util_sql_mongo_setting</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span><span class="o">.</span><span class="n">quantaxis</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="p">{}</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">best_ip</span><span class="o">=</span><span class="n">QATdx</span><span class="o">.</span><span class="n">best_ip</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">best_ip</span><span class="o">=</span><span class="n">QATdx</span><span class="o">.</span><span class="n">select_best_ip</span><span class="p">()</span>
 
 <div class="viewcode-block" id="QA_Fetcher.change_ip"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAFetch.html#QUANTAXIS.QAFetch.Fetcher.QA_Fetcher.change_ip">[docs]</a>    <span class="k">def</span> <span class="nf">change_ip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">database</span> <span class="o">=</span> <span class="n">QA_util_sql_mongo_setting</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span><span class="o">.</span><span class="n">quantaxis</span>
@@ -255,7 +257,7 @@
         <span class="k">elif</span> <span class="n">frequence</span> <span class="ow">is</span> <span class="n">FREQUENCE</span><span class="o">.</span><span class="n">TICK</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">source</span> <span class="ow">is</span> <span class="n">DATASOURCE</span><span class="o">.</span><span class="n">TDX</span><span class="p">:</span>
                 <span class="n">res</span> <span class="o">=</span> <span class="n">QATdx</span><span class="o">.</span><span class="n">QA_fetch_get_stock_transaction</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">res</span><span class="p">))</span>
+    <span class="c1">#print(type(res))</span>
     <span class="k">return</span> <span class="n">res</span></div>
 
 
@@ -296,7 +298,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'1.0',
+            VERSION:'1.0.39',
             LANGUAGE:'python',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
