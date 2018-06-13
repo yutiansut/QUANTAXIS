@@ -3,7 +3,7 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.0.49 (unreleased)](#1049-unreleased)
+    - [1.0.49](#1049)
     - [1.0.48](#1048)
     - [1.0.47](#1047)
     - [1.0.46](#1046)
@@ -30,8 +30,13 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
-## 1.0.49 (unreleased)
+## 1.0.49 
 
+1. @喜欢你 提交了资金流向爬虫(QUANTAXIS CLI/ crawl)
+2. 修复1.0.48-2的引入,使用ImportError错误项
+3. dockerfile更新
+
+released in : JUNE 14, 2018
 
 ## 1.0.48 
 
