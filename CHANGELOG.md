@@ -28,16 +28,33 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
-## 1.0.47 (unreleased)
+## 1.0.49 (unreleased)
+3. 添加了获取东方财富个股资金流向保存到sqlite的命令， windows 和 mac 下测试过
+4. crawl eastmoney zjlx 6位股票代码 命令 和获取所有股票资金流向 crawl eastmoney zjlx all 的命令，
+5. 添加了 QUANTAXIS_CRAWLY 目录，一个scrapy的空的项目，后期支持 各种经济新闻，证券报刊信息，热点咨询的获取
+
+
+
+## 1.0.48
+
+1. 修改了QA_Portfolio, 增加init_hold, init_hold_table 字段,可以查看组合的初始化持仓,以及带account的初始化持仓
+2. 修改了QA_Risk的引入, 测试引入import tkinter
+
+released in : JUNE 12, 2018
+
+## 1.0.47
 
 1. 修改了QAMARKET 适配t0回测
 2. 增加t0回测示例
-3. 添加了获取东方财富个股资金流向保存到sqlite的命令， windows 和 mac 下测试过
-4. crawl eastmoney zjlx 6位股票代码 命令 和获取所有股票资金流向 crawl eastmoney zjlx all 的命令，
-5. 添加了 QUANTAXIS_CRAWLY 目录，一个scrapy 的空的项目，后期支持 各种经济新闻，证券报刊信息，热点咨询的获取
+3. 分钟线撮合不再加一分钟
+4. T0回测买入限额,QA_Account.buy_available
+5. 修改示例,使用随机买卖来测试框架 https://github.com/QUANTAXIS/QUANTAXIS/blob/master/test_backtest/T0backtest.ipynb
+6. 增加对于多个标的的t0账户的支持
+7. 修复一个QA_Account下计算account.trade因为pivot_table默认使用np.mean作为arg_func的bug,该bug会导致在相同时间开了方向相反的仓位,会被计算成平均数
+8. 修复了一个QA_fetch_stock_day_full()中set_index的bug
 
-
-## 1.0.46 
+released in : JUNE 12, 2018
+## 1.0.46
 1. 命令行中 添加了 save stock_info_tushare 保存tushare股票列表的信息到数据库中
 2. 修改了实盘易 broker 增加对接
 3. 修改了base_datastruct的 selects,select_time,select_month,get_bar,select_code,增加异常处理(ValueError)

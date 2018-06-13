@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>QUANTAXIS.QAARP.QAAccount &mdash; QUANTAXIS 1.0 documentation</title>
+  <title>QUANTAXIS.QAARP.QAAccount &mdash; QUANTAXIS 1.0.39 documentation</title>
   
 
   
@@ -55,6 +55,10 @@
 
           
             
+            
+              <div class="version">
+                1.0.39
+              </div>
             
           
 
@@ -165,21 +169,39 @@
 <span class="c1"># SOFTWARE.</span>
 
 
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">QUANTAXIS</span> <span class="k">import</span> <span class="n">__version__</span>
 <span class="kn">from</span> <span class="nn">QUANTAXIS.QAEngine.QAEvent</span> <span class="k">import</span> <span class="n">QA_Worker</span>
-<span class="kn">from</span> <span class="nn">QUANTAXIS.QAMarket.QAOrder</span> <span class="k">import</span> <span class="n">QA_Order</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAMarket.QAOrder</span> <span class="k">import</span> <span class="n">QA_Order</span><span class="p">,</span> <span class="n">QA_OrderQueue</span>
 <span class="kn">from</span> <span class="nn">QUANTAXIS.QASU.save_account</span> <span class="k">import</span> <span class="n">save_account</span><span class="p">,</span> <span class="n">update_account</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QADate_trade</span> <span class="k">import</span> <span class="p">(</span><span class="n">QA_util_get_next_day</span><span class="p">,</span>
+                                           <span class="n">QA_util_get_trade_range</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QAParameter</span> <span class="k">import</span> <span class="p">(</span><span class="n">ACCOUNT_EVENT</span><span class="p">,</span> <span class="n">AMOUNT_MODEL</span><span class="p">,</span>
                                           <span class="n">BROKER_TYPE</span><span class="p">,</span> <span class="n">ENGINE_EVENT</span><span class="p">,</span> <span class="n">FREQUENCE</span><span class="p">,</span>
-                                          <span class="n">MARKET_TYPE</span><span class="p">,</span> <span class="n">TRADE_STATUS</span><span class="p">)</span>
+                                          <span class="n">MARKET_TYPE</span><span class="p">,</span> <span class="n">ORDER_DIRECTION</span><span class="p">,</span>
+                                          <span class="n">ORDER_MODEL</span><span class="p">,</span> <span class="n">RUNNING_ENVIRONMENT</span><span class="p">,</span>
+                                          <span class="n">TRADE_STATUS</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QARandom</span> <span class="k">import</span> <span class="n">QA_util_random_with_topic</span>
 
 <span class="c1"># 2017/6/4修改: 去除总资产的动态权益计算</span>
 
 
+<span class="c1"># pylint: disable=old-style-class, too-few-public-methods</span>
 <div class="viewcode-block" id="QA_Account"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAAccount.QA_Account">[docs]</a><span class="k">class</span> <span class="nc">QA_Account</span><span class="p">(</span><span class="n">QA_Worker</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;[QA_Account]</span>
+    <span class="sd">&quot;&quot;&quot;QA_Account</span>
+<span class="sd">    User--&gt;Portfolio--&gt;Account/Strategy</span>
+
+<span class="sd">    :::::::::::::::::::::::::::::::::::::::::::::::::</span>
+<span class="sd">    ::        :: Portfolio 1 -- Account/Strategy 1 ::</span>
+<span class="sd">    ::  USER  ::             -- Account/Strategy 2 ::</span>
+<span class="sd">    ::        :: Portfolio 2 -- Account/Strategy 3 ::</span>
+<span class="sd">    :::::::::::::::::::::::::::::::::::::::::::::::::</span>
 
 <span class="sd">    2018/1/5 再次修改 改版本去掉了多余的计算 精简账户更新</span>
 <span class="sd">    ======================</span>
@@ -205,34 +227,98 @@
 <span class="sd">    生成订单/接受交易结果数据</span>
 <span class="sd">    接收新的数据/on_bar/on_tick方法/缓存新数据的market_data</span>
 
+<span class="sd">    @royburns  1.添加注释</span>
+<span class="sd">    2018/05/18</span>
 
+<span class="sd">    T0交易的sell_available和正常的sell_available不一样:</span>
+
+<span class="sd">    T0交易中, 当买入一笔/卖出一笔, 当天操作额度都会下降</span>
+
+<span class="sd">    T0的订单-账户对应系统</span>
+
+
+<span class="sd">    @2018/06/11</span>
+<span class="sd">    QA_Account不会基于行情计算市值,因此都只会对应记录证券数量和现金资产 </span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strategy_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">user_cookie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">market_type</span><span class="o">=</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">STOCK_CN</span><span class="p">,</span> <span class="n">frequence</span><span class="o">=</span><span class="n">FREQUENCE</span><span class="o">.</span><span class="n">DAY</span><span class="p">,</span>
-                 <span class="n">broker</span><span class="o">=</span><span class="n">BROKER_TYPE</span><span class="o">.</span><span class="n">BACKETEST</span><span class="p">,</span> <span class="n">portfolio_cookie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">account_cookie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">sell_available</span><span class="o">=</span><span class="p">{},</span> <span class="n">init_assets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cash</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">history</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">margin_level</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">allow_t0</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">allow_sellopen</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strategy_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">user_cookie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">portfolio_cookie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">account_cookie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">market_type</span><span class="o">=</span><span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">STOCK_CN</span><span class="p">,</span> <span class="n">frequence</span><span class="o">=</span><span class="n">FREQUENCE</span><span class="o">.</span><span class="n">DAY</span><span class="p">,</span> <span class="n">broker</span><span class="o">=</span><span class="n">BROKER_TYPE</span><span class="o">.</span><span class="n">BACKETEST</span><span class="p">,</span>
+                 <span class="n">init_hold</span><span class="o">=</span><span class="p">{},</span> <span class="n">init_cash</span><span class="o">=</span><span class="mi">1000000</span><span class="p">,</span> <span class="n">commission_coeff</span><span class="o">=</span><span class="mf">0.00025</span><span class="p">,</span> <span class="n">tax_coeff</span><span class="o">=</span><span class="mf">0.0015</span><span class="p">,</span>
+                 <span class="n">margin_level</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">allow_t0</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">allow_sellopen</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">running_environment</span><span class="o">=</span><span class="n">RUNNING_ENVIRONMENT</span><span class="o">.</span><span class="n">BACKETEST</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param [str] strategy_name:  策略名称</span>
+<span class="sd">        :param [str] user_cookie:   用户cookie</span>
+<span class="sd">        :param [str] portfolio_cookie: 组合cookie</span>
+<span class="sd">        :param [str] account_cookie:   账户cookie</span>
+
+<span class="sd">        :param [dict] init_hold         初始化时的股票资产</span>
+<span class="sd">        :param [float] init_cash:         初始化资金</span>
+<span class="sd">        :param [float] commission_coeff:  交易佣金 :默认 万2.5   float 类型</span>
+<span class="sd">        :param [float] tax_coeff:         印花税   :默认 千1.5   float 类型</span>
+
+<span class="sd">        :param [Bool] margin_level:      保证金比例 默认False</span>
+<span class="sd">        :param [Bool] allow_t0:          是否允许t+0交易  默认False</span>
+<span class="sd">        :param [Bool] allow_sellopen:    是否允许卖空开仓  默认False</span>
+
+<span class="sd">        :param [QA.PARAM] market_type:   市场类别 默认QA.MARKET_TYPE.STOCK_CN A股股票</span>
+<span class="sd">        :param [QA.PARAM] frequence:     账户级别 默认日线QA.FREQUENCE.DAY</span>
+<span class="sd">        :param [QA.PARAM] broker:        BROEKR类 默认回测 QA.BROKER_TYPE.BACKTEST</span>
+<span class="sd">        :param [QA.PARAM] running_environment 当前运行环境 默认Backtest</span>
+
+<span class="sd">        # 2018/06/11 init_assets 从float变为dict,并且不作为输入,作为只读属性</span>
+<span class="sd">        #  :param [float] init_assets:       初始资产  默认 1000000 元 （100万）</span>
+<span class="sd">        init_assets:{</span>
+<span class="sd">            cash: xxx,</span>
+<span class="sd">            stock: {&#39;000001&#39;:2000},</span>
+<span class="sd">            init_date: &#39;2018-02-05&#39;,</span>
+<span class="sd">            init_datetime: &#39;2018-02-05 15:00:00&#39;</span>
+<span class="sd">        }</span>
+<span class="sd">        # 2018/06/11 取消在初始化的时候的cash和history输入</span>
+<span class="sd">        # :param [list] cash:              可用现金  默认 是 初始资产  list 类型</span>
+<span class="sd">        # :param [list] history:           交易历史</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;QUANTAXIS 1.0.46 has changed the init_assets ==&gt; init_cash, please pay attention to this change if you using init_cash to initial an account class,</span><span class="se">\</span>
+<span class="s1">                &#39;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_history_headers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">,</span>
-                                 <span class="s1">&#39;amount&#39;</span><span class="p">,</span> <span class="s1">&#39;order_id&#39;</span><span class="p">,</span> <span class="s1">&#39;trade_id&#39;</span><span class="p">,</span> <span class="s1">&#39;account_cookie&#39;</span><span class="p">,</span> <span class="s1">&#39;commission&#39;</span><span class="p">,</span> <span class="s1">&#39;tax&#39;</span><span class="p">]</span>
+                                 <span class="s1">&#39;amount&#39;</span><span class="p">,</span> <span class="s1">&#39;order_id&#39;</span><span class="p">,</span> <span class="s1">&#39;trade_id&#39;</span><span class="p">,</span>
+                                 <span class="s1">&#39;account_cookie&#39;</span><span class="p">,</span> <span class="s1">&#39;commission&#39;</span><span class="p">,</span> <span class="s1">&#39;tax&#39;</span><span class="p">]</span>
+        <span class="c1">########################################################################</span>
         <span class="c1"># 信息类:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">strategy_name</span> <span class="o">=</span> <span class="n">strategy_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">user_cookie</span> <span class="o">=</span> <span class="n">user_cookie</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">market_type</span> <span class="o">=</span> <span class="n">market_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">portfolio_cookie</span> <span class="o">=</span> <span class="n">portfolio_cookie</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">account_cookie</span> <span class="o">=</span> <span class="n">QA_util_random_with_topic</span><span class="p">(</span>
             <span class="s1">&#39;Acc&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">account_cookie</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">account_cookie</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">market_type</span> <span class="o">=</span> <span class="n">market_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">broker</span> <span class="o">=</span> <span class="n">broker</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frequence</span> <span class="o">=</span> <span class="n">frequence</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">running_environment</span> <span class="o">=</span> <span class="n">running_environment</span>
+        <span class="c1">########################################################################</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_currenttime</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">commission_coeff</span> <span class="o">=</span> <span class="n">commission_coeff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tax_coeff</span> <span class="o">=</span> <span class="n">tax_coeff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">running_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">quantaxis_version</span> <span class="o">=</span> <span class="n">__version__</span>
+        <span class="c1">########################################################################</span>
         <span class="c1"># 资产类</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">init_assets</span> <span class="o">=</span> <span class="mi">1000000</span> <span class="k">if</span> <span class="n">init_assets</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">init_assets</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cash</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">init_assets</span><span class="p">]</span> <span class="k">if</span> <span class="n">cash</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">cash</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cash_available</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cash</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># 可用资金</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sell_available</span> <span class="o">=</span> <span class="n">sell_available</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">history</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">history</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orders</span> <span class="o">=</span> <span class="n">QA_OrderQueue</span><span class="p">()</span>  <span class="c1"># 历史委托单</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_cash</span> <span class="o">=</span> <span class="n">init_cash</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_hold</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">init_hold</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;amount&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">init_hold</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="n">init_hold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_hold</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;code&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cash</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">init_cash</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cash_available</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cash</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>    <span class="c1"># 可用资金</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sell_available</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">init_hold</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buy_available</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">init_hold</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time_index</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1">########################################################################</span>
         <span class="c1"># 规则类</span>
         <span class="c1"># 两个规则</span>
         <span class="c1"># 1.是否允许t+0 及买入及结算</span>
@@ -247,7 +333,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">message</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="s1">&#39;the standard message which can be transef&#39;</span>
+        <span class="s1">&#39;the standard message which can be transfer&#39;</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;account&#39;</span><span class="p">,</span>
             <span class="s1">&#39;account_cookie&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">account_cookie</span><span class="p">,</span>
@@ -257,30 +343,104 @@
             <span class="s1">&#39;market_type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">market_type</span><span class="p">,</span>
             <span class="s1">&#39;strategy_name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategy_name</span><span class="p">,</span>
             <span class="s1">&#39;current_time&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_currenttime</span><span class="p">,</span>
-
             <span class="s1">&#39;allow_sellopen&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">allow_sellopen</span><span class="p">,</span>
             <span class="s1">&#39;allow_t0&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">allow_t0</span><span class="p">,</span>
             <span class="s1">&#39;margin_level&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin_level</span><span class="p">,</span>
             <span class="s1">&#39;init_assets&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_assets</span><span class="p">,</span>
+            <span class="s1">&#39;commission_coeff&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">commission_coeff</span><span class="p">,</span>
+            <span class="s1">&#39;tax_coeff&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tax_coeff</span><span class="p">,</span>
             <span class="s1">&#39;cash&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cash</span><span class="p">,</span>
             <span class="s1">&#39;history&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">,</span>
             <span class="s1">&#39;trade_index&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_index</span><span class="p">,</span>
-            <span class="s1">&#39;running_time&#39;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+            <span class="s1">&#39;running_time&#39;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+            <span class="s1">&#39;quantaxis_version&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">quantaxis_version</span><span class="p">,</span>
+            <span class="s1">&#39;running_environment&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">running_environment</span>
+        <span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">init_hold_with_account</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;带account_id的初始化持仓</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            [type] -- [description]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_hold</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">account_cookie</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">account_cookie</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;account_cookie&#39;</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">init_assets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;初始化账户资产</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict -- 2keys-cash,hold</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;cash&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_cash</span><span class="p">,</span>
+            <span class="s1">&#39;hold&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_hold</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
         <span class="p">}</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;该账户曾交易代码 用set 去重</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        该账户曾交易代码 用set 去重</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">]))</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">date</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;账户运行的日期</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            self {[type]} -- [description]</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [type] -- [description]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">datetime</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datetime</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">start_date</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_index</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+        <span class="sd">&quot;&quot;&quot;账户的起始交易日期</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeWarning -- [description]</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [type] -- [description]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_index</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_index</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeWarning</span><span class="p">(</span>
+                <span class="s1">&#39;QAACCOUNT: THIS ACCOUNT DOESNOT HAVE ANY TRADE&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">end_date</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+        <span class="sd">&quot;&quot;&quot;账户的交易结束日期</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeWarning -- [description]</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [type] -- [description]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_index</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_index</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeWarning</span><span class="p">(</span>
+                <span class="s1">&#39;QAACCOUNT: THIS ACCOUNT DOESNOT HAVE ANY TRADE&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">trade_range</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">QA_util_get_trade_range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_date</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">history_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -292,25 +452,68 @@
         <span class="s1">&#39;现金的table&#39;</span>
         <span class="n">_cash</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cash</span><span class="p">[</span><span class="mi">1</span><span class="p">::],</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_index</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span>
                              <span class="s1">&#39;cash&#39;</span><span class="p">,</span> <span class="s1">&#39;datetime&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
-        <span class="n">_cash</span> <span class="o">=</span> <span class="n">_cash</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="n">_cash</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]))</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+        <span class="n">_cash</span> <span class="o">=</span> <span class="n">_cash</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="n">_cash</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">])))</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
             <span class="n">account_cookie</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">account_cookie</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_cash</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="s1">&#39;account_cookie&#39;</span><span class="p">],</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        实验性质</span>
+<span class="sd">        @2018-06-09</span>
 
-        <span class="k">return</span> <span class="n">_cash</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="s1">&#39;account_cookie&#39;</span><span class="p">],</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+<span class="sd">        ## 对于账户持仓的分解</span>
 
+<span class="sd">        1. 真实持仓hold:</span>
+
+<span class="sd">        正常模式/TZero模式:</span>
+<span class="sd">            hold = 历史持仓(init_hold)+ 初始化账户后发生的所有交易导致的持仓(hold_available)</span>
+
+<span class="sd">        动态持仓(初始化账户后的持仓)hold_available:</span>
+<span class="sd">            self.history 计算而得</span>
+
+<span class="sd">        2. 账户的可卖额度(sell_available)</span>
+
+<span class="sd">        正常模式:</span>
+<span class="sd">            sell_available</span>
+<span class="sd">                结算前: init_hold+ 买卖交易(卖-)</span>
+<span class="sd">                结算后: init_hold+ 买卖交易(买+ 卖-)</span>
+<span class="sd">        TZero模式:</span>
+<span class="sd">            sell_available</span>
+<span class="sd">                结算前: init_hold - 买卖交易占用的额度(abs(买+ 卖-))</span>
+<span class="sd">                结算过程 是为了补平(等于让hold={})</span>
+<span class="sd">                结算后: init_hold</span>
+<span class="sd">        &quot;&quot;&quot;</span>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">hold</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="s1">&#39;持仓&#39;</span>
+        <span class="sd">&quot;&quot;&quot;真实持仓</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">init_hold</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hold_available</span><span class="p">])</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;code&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">hold_available</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;可用持仓</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_history_headers</span><span class="p">)</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;code&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">amount</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">order_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;return order trade list&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">orders</span><span class="o">.</span><span class="n">trade_list</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">trade</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="s1">&#39;每次交易的pivot表&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">history_table</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="s1">&#39;account_cookie&#39;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;amount&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+        <span class="sd">&quot;&quot;&quot;每次交易的pivot表</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            pd.DataFrame</span>
+
+<span class="sd">            此处的pivot_table一定要用np.sum</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">history_table</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="s1">&#39;account_cookie&#39;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;amount&#39;</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">daily_cash</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="s1">&#39;每日交易结算时的现金表&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cash_table</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cash_table</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;account_cookie&#39;</span><span class="p">],</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">daily_hold</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -320,14 +523,14 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">account_cookie</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">account_cookie</span><span class="p">)</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
             <span class="n">date</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">data</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;account_cookie&#39;</span><span class="p">],</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
-
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;account_cookie&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="o">~</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">duplicated</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">)]</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
     <span class="c1"># 计算assets的时候 需要一个market_data=QA.QA_fetch_stock_day_adv(list(data.columns),data.index[0],data.index[-1])</span>
     <span class="c1"># (market_data.to_qfq().pivot(&#39;close&#39;)*data).sum(axis=1)+user_cookie.get_account(a_1).daily_cash.set_index(&#39;date&#39;).cash</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">latest_cash</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="s1">&#39;return the lastest cash&#39;</span>
+        <span class="s1">&#39;return the lastest cash 可用资金&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cash</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
     <span class="nd">@property</span>
@@ -335,96 +538,250 @@
         <span class="s1">&#39;return current time (in backtest/real environment)&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_currenttime</span>
 
-<div class="viewcode-block" id="QA_Account.reset_assets"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAAccount.QA_Account.reset_assets">[docs]</a>    <span class="k">def</span> <span class="nf">reset_assets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">init_assets</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="QA_Account.hold_table"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAAccount.QA_Account.hold_table">[docs]</a>    <span class="k">def</span> <span class="nf">hold_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datetime</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="s2">&quot;到某一个时刻的持仓 如果给的是日期,则返回当日开盘前的持仓&quot;</span>
+        <span class="k">if</span> <span class="n">datetime</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">hold_available</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">history_table</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span>
+                <span class="s1">&#39;datetime&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;code&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">amount</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">hold_available</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">history_table</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;datetime&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">loc</span><span class="p">[:</span><span class="n">datetime</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;code&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">amount</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">init_hold</span><span class="p">,</span> <span class="n">hold_available</span><span class="p">])</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;code&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="QA_Account.hold_price"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAAccount.QA_Account.hold_price">[docs]</a>    <span class="k">def</span> <span class="nf">hold_price</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datetime</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="s2">&quot;计算持仓成本  如果给的是日期,则返回当日开盘前的持仓&quot;</span>
+        <span class="k">def</span> <span class="nf">weights</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;amount&#39;</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;price&#39;</span><span class="p">],</span> <span class="n">weights</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;amount&#39;</span><span class="p">],</span> <span class="n">returned</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">datetime</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">history_table</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;datetime&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;code&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">history_table</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;datetime&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span><span class="o">.</span><span class="n">loc</span><span class="p">[:</span><span class="n">datetime</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;code&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QA_Account.reset_assets"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAAccount.QA_Account.reset_assets">[docs]</a>    <span class="k">def</span> <span class="nf">reset_assets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">init_cash</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="s1">&#39;reset_history/cash/&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sell_available</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sell_available</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">init_hold</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">init_assets</span> <span class="o">=</span> <span class="n">init_assets</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cash</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">init_assets</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_cash</span> <span class="o">=</span> <span class="n">init_cash</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cash</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">init_cash</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cash_available</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cash</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># 在途资金</span></div>
 
 <div class="viewcode-block" id="QA_Account.receive_deal"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAAccount.QA_Account.receive_deal">[docs]</a>    <span class="k">def</span> <span class="nf">receive_deal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;[用于更新账户]</span>
-
-<span class="sd">        [description]</span>
-
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        用于更新账户</span>
 <span class="sd">        update history and cash</span>
+<span class="sd">        :param message:</span>
+<span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;header&#39;</span><span class="p">][</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="n">TRADE_STATUS</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">time_index</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;order&#39;</span><span class="p">][</span><span class="s1">&#39;datetime&#39;</span><span class="p">]))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;order&#39;</span><span class="p">][</span><span class="s1">&#39;datetime&#39;</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;order&#39;</span><span class="p">][</span><span class="s1">&#39;code&#39;</span><span class="p">]),</span>
-                 <span class="nb">float</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;order&#39;</span><span class="p">][</span><span class="s1">&#39;price&#39;</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;order&#39;</span><span class="p">][</span><span class="s1">&#39;towards&#39;</span><span class="p">])</span> <span class="o">*</span>
-                 <span class="nb">float</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;order&#39;</span><span class="p">][</span><span class="s1">&#39;amount&#39;</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span>
-                     <span class="n">message</span><span class="p">[</span><span class="s1">&#39;header&#39;</span><span class="p">][</span><span class="s1">&#39;order_id&#39;</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;header&#39;</span><span class="p">][</span><span class="s1">&#39;trade_id&#39;</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">account_cookie</span><span class="p">),</span>
-                 <span class="nb">float</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;fee&#39;</span><span class="p">][</span><span class="s1">&#39;commission&#39;</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;fee&#39;</span><span class="p">][</span><span class="s1">&#39;tax&#39;</span><span class="p">])])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cash</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cash</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;order&#39;</span><span class="p">][</span><span class="s1">&#39;price&#39;</span><span class="p">])</span> <span class="o">*</span>
-                             <span class="nb">float</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;order&#39;</span><span class="p">][</span><span class="s1">&#39;amount&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;order&#39;</span><span class="p">][</span><span class="s1">&#39;towards&#39;</span><span class="p">]</span> <span class="o">-</span>
-                             <span class="nb">float</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;fee&#39;</span><span class="p">][</span><span class="s1">&#39;commission&#39;</span><span class="p">]))</span>
+            <span class="n">trade_amount</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;order&#39;</span><span class="p">][</span><span class="s1">&#39;price&#39;</span><span class="p">])</span> <span class="o">*</span>
+                                 <span class="nb">float</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;order&#39;</span><span class="p">][</span><span class="s1">&#39;amount&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;order&#39;</span><span class="p">][</span><span class="s1">&#39;towards&#39;</span><span class="p">]</span> <span class="o">+</span>
+                                 <span class="nb">float</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;fee&#39;</span><span class="p">][</span><span class="s1">&#39;commission&#39;</span><span class="p">])</span> <span class="o">+</span>
+                                 <span class="nb">float</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;fee&#39;</span><span class="p">][</span><span class="s1">&#39;tax&#39;</span><span class="p">]))</span>
 
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cash</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">trade_amount</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">time_index</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;order&#39;</span><span class="p">][</span><span class="s1">&#39;datetime&#39;</span><span class="p">]))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;order&#39;</span><span class="p">][</span><span class="s1">&#39;datetime&#39;</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;order&#39;</span><span class="p">][</span><span class="s1">&#39;code&#39;</span><span class="p">]),</span>
+                     <span class="nb">float</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;order&#39;</span><span class="p">][</span><span class="s1">&#39;price&#39;</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;order&#39;</span><span class="p">][</span><span class="s1">&#39;towards&#39;</span><span class="p">])</span> <span class="o">*</span>
+                     <span class="nb">float</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;order&#39;</span><span class="p">][</span><span class="s1">&#39;amount&#39;</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span>
+                        <span class="n">message</span><span class="p">[</span><span class="s1">&#39;header&#39;</span><span class="p">][</span><span class="s1">&#39;order_id&#39;</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;header&#39;</span><span class="p">][</span><span class="s1">&#39;trade_id&#39;</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">account_cookie</span><span class="p">),</span>
+                     <span class="nb">float</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;fee&#39;</span><span class="p">][</span><span class="s1">&#39;commission&#39;</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;fee&#39;</span><span class="p">][</span><span class="s1">&#39;tax&#39;</span><span class="p">])])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cash</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cash</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">trade_amount</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cash_available</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cash</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="c1"># 资金立刻结转</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cash</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cash_available</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cash</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;NOT ENOUGH MONEY FOR </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;order&#39;</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">][</span><span class="s1">&#39;order&#39;</span><span class="p">][</span><span class="s1">&#39;datetime&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span></div>
 
-<div class="viewcode-block" id="QA_Account.send_order"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAAccount.QA_Account.send_order">[docs]</a>    <span class="k">def</span> <span class="nf">send_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">towards</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">order_model</span><span class="p">,</span> <span class="n">amount_model</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;[summary]</span>
+<div class="viewcode-block" id="QA_Account.send_order"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAAccount.QA_Account.send_order">[docs]</a>    <span class="k">def</span> <span class="nf">send_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">amount</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">towards</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">money</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">order_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">amount_model</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ATTENTION CHANGELOG 1.0.28</span>
+<span class="sd">        修改了Account的send_order方法, 区分按数量下单和按金额下单两种方式</span>
 
-<span class="sd">        Arguments:</span>
-<span class="sd">            code {[type]} -- [description]</span>
-<span class="sd">            amount {[type]} -- [description]</span>
-<span class="sd">            time {[type]} -- [description]</span>
-<span class="sd">            towards {[type]} -- [description]</span>
-<span class="sd">            price {[type]} -- [description]</span>
-<span class="sd">            order_model {[type]} -- [description]</span>
-<span class="sd">            amount_model {[type]} -- [description]</span>
+<span class="sd">        - AMOUNT_MODEL.BY_PRICE ==&gt; AMOUNT_MODEL.BY_MONEY # 按金额下单</span>
+<span class="sd">        - AMOUNT_MODEL.BY_AMOUNT # 按数量下单</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            [type] -- [description]</span>
+<span class="sd">        在按金额下单的时候,应给予 money参数</span>
+<span class="sd">        在按数量下单的时候,应给予 amount参数</span>
+
+<span class="sd">        python code:</span>
+<span class="sd">        Account=QA.QA_Account()</span>
+
+<span class="sd">        Order_bymoney=Account.send_order(code=&#39;000001&#39;,</span>
+<span class="sd">                                        price=11,</span>
+<span class="sd">                                        money=0.3*Account.cash_available,</span>
+<span class="sd">                                        time=&#39;2018-05-09&#39;,</span>
+<span class="sd">                                        towards=QA.ORDER_DIRECTION.BUY,</span>
+<span class="sd">                                        order_model=QA.ORDER_MODEL.MARKET,</span>
+<span class="sd">                                        amount_model=QA.AMOUNT_MODEL.BY_MONEY</span>
+<span class="sd">                                        )</span>
+
+<span class="sd">        Order_byamount=Account.send_order(code=&#39;000001&#39;,</span>
+<span class="sd">                                        price=11,</span>
+<span class="sd">                                        amount=100,</span>
+<span class="sd">                                        time=&#39;2018-05-09&#39;,</span>
+<span class="sd">                                        towards=QA.ORDER_DIRECTION.BUY,</span>
+<span class="sd">                                        order_model=QA.ORDER_MODEL.MARKET,</span>
+<span class="sd">                                        amount_model=QA.AMOUNT_MODEL.BY_AMOUNT</span>
+<span class="sd">                                        )</span>
+
+<span class="sd">        :param code: 证券代码</span>
+<span class="sd">        :param amount: 买卖 数量多数股</span>
+<span class="sd">        :param time:  Timestamp 对象 下单时间</span>
+<span class="sd">        :param towards: int , towards&gt;0 买入 towards&lt;0 卖出</span>
+<span class="sd">        :param price: 买入，卖出 标的证券的价格</span>
+<span class="sd">        :param money: 买卖 价格</span>
+<span class="sd">        :param order_model: 类型 QA.ORDER_MODE</span>
+<span class="sd">        :param amount_model:类型 QA.AMOUNT_MODEL</span>
+<span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">flag</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">assert</span> <span class="n">code</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">towards</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">order_model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">amount_model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+        <span class="c1">#🛠todo 移到Utils类中，  时间转换</span>
+        <span class="c1"># date 字符串 2011-10-11 长度10</span>
         <span class="n">date</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="p">))</span> <span class="o">==</span> <span class="mi">19</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+        <span class="c1"># time 字符串 20011-10-11 09:02:00  长度 19</span>
         <span class="n">time</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span>
             <span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="p">))</span> <span class="o">==</span> <span class="mi">19</span> <span class="k">else</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> 09:31:00&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">])</span>
 
+        <span class="c1">#🛠todo 移到Utils类中，  amount_to_money 成交量转金额</span>
+        <span class="c1"># BY_MONEY :: amount --钱 如10000元  因此 by_money里面 需要指定价格,来计算实际的股票数</span>
+        <span class="c1"># by_amount :: amount --股数 如10000股</span>
         <span class="n">amount</span> <span class="o">=</span> <span class="n">amount</span> <span class="k">if</span> <span class="n">amount_model</span> <span class="ow">is</span> <span class="n">AMOUNT_MODEL</span><span class="o">.</span><span class="n">BY_AMOUNT</span> <span class="k">else</span> <span class="nb">int</span><span class="p">(</span>
-            <span class="n">amount</span> <span class="o">/</span> <span class="n">price</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">market_type</span> <span class="ow">is</span> <span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">STOCK_CN</span><span class="p">:</span>
-            <span class="n">amount</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">amount</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+            <span class="n">money</span> <span class="o">/</span> <span class="p">(</span><span class="n">price</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">commission_coeff</span><span class="p">)))</span>
 
-        <span class="n">marketvalue</span> <span class="o">=</span> <span class="n">amount</span> <span class="o">*</span> <span class="n">price</span> <span class="k">if</span> <span class="n">amount_model</span> <span class="ow">is</span> <span class="n">AMOUNT_MODEL</span><span class="o">.</span><span class="n">BY_AMOUNT</span> <span class="k">else</span> <span class="n">amount</span>
+        <span class="c1">#🛠todo 移到Utils类中，  money_to_amount 金额转成交量</span>
+        <span class="n">money</span> <span class="o">=</span> <span class="n">amount</span> <span class="o">*</span> <span class="n">price</span> <span class="o">*</span> \
+            <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">commission_coeff</span><span class="p">)</span> <span class="k">if</span> <span class="n">amount_model</span> <span class="ow">is</span> <span class="n">AMOUNT_MODEL</span><span class="o">.</span><span class="n">BY_AMOUNT</span> <span class="k">else</span> <span class="n">money</span>
 
-        <span class="n">amount_model</span> <span class="o">=</span> <span class="n">AMOUNT_MODEL</span><span class="o">.</span><span class="n">BY_AMOUNT</span>
+        <span class="c1"># amount_model = AMOUNT_MODEL.BY_AMOUNT</span>
+
+        <span class="c1"># flag 判断买卖 数量和价格以及买卖方向是否正确</span>
+        <span class="n">flag</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">assert</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">towards</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">towards</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># 是买入的情况(包括买入.买开.买平)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cash_available</span> <span class="o">&gt;=</span> <span class="n">marketvalue</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">cash_available</span> <span class="o">-=</span> <span class="n">marketvalue</span>
-                <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cash_available</span> <span class="o">&gt;=</span> <span class="n">money</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">market_type</span> <span class="ow">is</span> <span class="n">MARKET_TYPE</span><span class="o">.</span><span class="n">STOCK_CN</span><span class="p">:</span>  <span class="c1"># 如果是股票 买入的时候有100股的最小限制</span>
+                    <span class="n">amount</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">amount</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">running_environment</span> <span class="o">==</span> <span class="n">RUNNING_ENVIRONMENT</span><span class="o">.</span><span class="n">TZERO</span><span class="p">:</span>
+
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">buy_available</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">amount</span><span class="p">:</span>
+                        <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">cash_available</span> <span class="o">-=</span> <span class="n">money</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">buy_available</span><span class="p">[</span><span class="n">code</span><span class="p">]</span> <span class="o">-=</span> <span class="n">amount</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">flag</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;T0交易买入超出限额&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">cash_available</span> <span class="o">-=</span> <span class="n">money</span>
+                    <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;可用资金不足&#39;</span><span class="p">)</span>
+
         <span class="k">elif</span> <span class="nb">int</span><span class="p">(</span><span class="n">towards</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">allow_sellopen</span><span class="p">:</span>
-                <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="c1"># 是卖出的情况(包括卖出，卖出开仓allow_sellopen如果允许. 卖出平仓)</span>
+
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sell_available</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">amount</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">sell_available</span><span class="p">[</span><span class="n">code</span><span class="p">]</span> <span class="o">-=</span> <span class="n">amount</span>
                 <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">allow_sellopen</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cash_available</span> <span class="o">&gt;</span> <span class="n">money</span><span class="p">:</span>  <span class="c1"># 卖空的市值小于现金（有担保的卖空）， 不允许裸卖空</span>
+                    <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;卖空资金不足/不允许裸卖空&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;资金股份不足/不允许卖空开仓&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">flag</span> <span class="ow">and</span> <span class="n">amount</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">QA_Order</span><span class="p">(</span><span class="n">user_cookie</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_cookie</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">strategy_name</span><span class="p">,</span> <span class="n">frequence</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frequence</span><span class="p">,</span>
-                            <span class="n">account_cookie</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">account_cookie</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="n">code</span><span class="p">,</span> <span class="n">market_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">market_type</span><span class="p">,</span>
-                            <span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">,</span> <span class="n">datetime</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">sending_time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">receive_deal</span><span class="p">,</span>
-                            <span class="n">amount</span><span class="o">=</span><span class="n">amount</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="n">price</span><span class="p">,</span> <span class="n">order_model</span><span class="o">=</span><span class="n">order_model</span><span class="p">,</span> <span class="n">towards</span><span class="o">=</span><span class="n">towards</span><span class="p">,</span>
-                            <span class="n">amount_model</span><span class="o">=</span><span class="n">amount_model</span><span class="p">)</span>  <span class="c1"># init</span>
+            <span class="n">_order</span> <span class="o">=</span> <span class="n">QA_Order</span><span class="p">(</span><span class="n">user_cookie</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_cookie</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">strategy_name</span><span class="p">,</span> <span class="n">frequence</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frequence</span><span class="p">,</span>
+                              <span class="n">account_cookie</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">account_cookie</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="n">code</span><span class="p">,</span> <span class="n">market_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">market_type</span><span class="p">,</span>
+                              <span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">,</span> <span class="n">datetime</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">sending_time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">receive_deal</span><span class="p">,</span>
+                              <span class="n">amount</span><span class="o">=</span><span class="n">amount</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="n">price</span><span class="p">,</span> <span class="n">order_model</span><span class="o">=</span><span class="n">order_model</span><span class="p">,</span> <span class="n">towards</span><span class="o">=</span><span class="n">towards</span><span class="p">,</span> <span class="n">money</span><span class="o">=</span><span class="n">money</span><span class="p">,</span>
+                              <span class="n">amount_model</span><span class="o">=</span><span class="n">amount_model</span><span class="p">,</span> <span class="n">commission_coeff</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">commission_coeff</span><span class="p">,</span> <span class="n">tax_coeff</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tax_coeff</span><span class="p">)</span>  <span class="c1"># init</span>
+            <span class="c1"># 历史委托order状态存储， 保存到 QA_Order 对象中的队列中</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="n">time</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">orders</span><span class="o">.</span><span class="n">insert_order</span><span class="p">(</span><span class="n">_order</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">_order</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">flag</span></div>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ERROR : amount=0&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">close_positions_order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;平仓单</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError -- if ACCOUNT.RUNNING_ENVIRONMENT is NOT TZERO</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list -- list with order</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">order_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> 15:00:00&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">running_environment</span> <span class="o">==</span> <span class="n">RUNNING_ENVIRONMENT</span><span class="o">.</span><span class="n">TZERO</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">code</span><span class="p">,</span> <span class="n">amount</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hold_available</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="n">order</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">if</span> <span class="n">amount</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># 先卖出的单子 买平</span>
+                    <span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_order</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">code</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">amount</span><span class="o">=</span><span class="nb">abs</span><span class="p">(</span>
+                        <span class="n">amount</span><span class="p">),</span> <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">towards</span><span class="o">=</span><span class="n">ORDER_DIRECTION</span><span class="o">.</span><span class="n">BUY_CLOSE</span><span class="p">,</span>
+                        <span class="n">order_model</span><span class="o">=</span><span class="n">ORDER_MODEL</span><span class="o">.</span><span class="n">CLOSE</span><span class="p">,</span> <span class="n">amount_model</span><span class="o">=</span><span class="n">AMOUNT_MODEL</span><span class="o">.</span><span class="n">BY_AMOUNT</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">amount</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># 先买入的单子, 卖平</span>
+                    <span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_order</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">code</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">amount</span><span class="o">=</span><span class="nb">abs</span><span class="p">(</span>
+                        <span class="n">amount</span><span class="p">),</span> <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">towards</span><span class="o">=</span><span class="n">ORDER_DIRECTION</span><span class="o">.</span><span class="n">SELL_CLOSE</span><span class="p">,</span>
+                        <span class="n">order_model</span><span class="o">=</span><span class="n">ORDER_MODEL</span><span class="o">.</span><span class="n">CLOSE</span><span class="p">,</span> <span class="n">amount_model</span><span class="o">=</span><span class="n">AMOUNT_MODEL</span><span class="o">.</span><span class="n">BY_AMOUNT</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">order</span><span class="p">:</span>
+                    <span class="n">order_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">order_list</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;QAACCOUNT with </span><span class="si">{}</span><span class="s1"> environments cannot use this methods&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">running_environment</span><span class="p">))</span>
 
 <div class="viewcode-block" id="QA_Account.settle"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAAccount.QA_Account.settle">[docs]</a>    <span class="k">def</span> <span class="nf">settle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="s1">&#39;同步可用资金/可卖股票&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cash_available</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cash</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sell_available</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hold</span></div>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">running_environment</span> <span class="o">==</span> <span class="n">RUNNING_ENVIRONMENT</span><span class="o">.</span><span class="n">TZERO</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">hold_available</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;QAACCOUNT: 该T0账户未当日仓位,请平仓 </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">hold_available</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sell_available</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buy_available</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> 09:30:00&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">QA_util_get_next_day</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">))</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">date</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="QA_Account.on_bar"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAAccount.QA_Account.on_bar">[docs]</a>    <span class="k">def</span> <span class="nf">on_bar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        策略事件</span>
+<span class="sd">        :param event:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="s1">&#39;while updating the market data&#39;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">market_data</span><span class="p">)</span></div>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;on_bar &quot;</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">market_data</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="QA_Account.on_tick"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAAccount.QA_Account.on_tick">[docs]</a>    <span class="k">def</span> <span class="nf">on_tick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        策略事件</span>
+<span class="sd">        :param event:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="s1">&#39;on tick event&#39;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;on_tick &quot;</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">market_data</span><span class="p">)</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="QA_Account.from_message"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAAccount.QA_Account.from_message">[docs]</a>    <span class="k">def</span> <span class="nf">from_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
@@ -440,11 +797,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">allow_sellopen</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;allow_sellopen&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">allow_t0</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;allow_t0&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">margin_level</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;margin_level&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_cash</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;init_cash&#39;</span><span class="p">,</span> <span class="s1">&#39;init_assets&#39;</span><span class="p">)</span>  <span class="c1"># 兼容修改</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">commission_coeff</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;commission_coeff&#39;</span><span class="p">,</span> <span class="mf">0.00015</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tax_coeff</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tax_coeff&#39;</span><span class="p">,</span> <span class="mf">0.0015</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;history&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cash</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;cash&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time_index</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;trade_index&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">init_assets</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;init_assets&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">running_time</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;running_time&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">quantaxis_version</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;quantaxis_version&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">running_environment</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s1">&#39;running_environment&#39;</span><span class="p">,</span> <span class="n">RUNNING_ENVIRONMENT</span><span class="o">.</span><span class="n">BACKETEST</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settle</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
     <span class="nd">@property</span>
@@ -455,6 +818,12 @@
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">,</span> <span class="p">])</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;account_cookie&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
 
 <div class="viewcode-block" id="QA_Account.run"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAAccount.QA_Account.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        这个方法是被 QA_ThreadEngine 处理队列时候调用的， QA_Task 中 do 方法调用 run （在其它线程中）</span>
+<span class="sd">       &#39;QA_WORKER method 重载&#39;</span>
+<span class="sd">        :param event: 事件类型 QA_Event</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="s1">&#39;QA_WORKER method&#39;</span>
         <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">event_type</span> <span class="ow">is</span> <span class="n">ACCOUNT_EVENT</span><span class="o">.</span><span class="n">SETTLE</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">settle</span><span class="p">()</span>
@@ -478,7 +847,8 @@
 <span class="sd">            1. update the inside market_data struct</span>
 <span class="sd">            2. tell the on_bar methods</span>
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_currenttime</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">market_data</span><span class="o">.</span><span class="n">datetime</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_currenttime</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">market_data</span><span class="o">.</span><span class="n">datetime</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">market_data</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">market_data</span>
             <span class="k">else</span><span class="p">:</span>
@@ -489,13 +859,28 @@
                 <span class="n">event</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="QA_Account.save"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAAccount.QA_Account.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        存储账户信息</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">save_account</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="QA_Account.change_cash"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAAccount.QA_Account.change_cash">[docs]</a>    <span class="k">def</span> <span class="nf">change_cash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">money</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        外部操作|高危|</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cash</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">money</span>
         <span class="k">if</span> <span class="n">res</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># 高危操作</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cash</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cash</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="QA_Account.get_orders"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAAccount.QA_Account.get_orders">[docs]</a>    <span class="k">def</span> <span class="nf">get_orders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">if_today</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        返回当日委托/历史委托</span>
+<span class="sd">        :param if_today: true 只返回今天的订单</span>
+<span class="sd">        :return: QA_OrderQueue</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1">#🛠todo 筛选其它不是今天的订单返回</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">orders</span></div></div>
 
 
 <div class="viewcode-block" id="Account_handler"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAARP.html#QUANTAXIS.QAARP.QAAccount.Account_handler">[docs]</a><span class="k">class</span> <span class="nc">Account_handler</span><span class="p">():</span>
@@ -543,7 +928,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'1.0',
+            VERSION:'1.0.39',
             LANGUAGE:'python',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
