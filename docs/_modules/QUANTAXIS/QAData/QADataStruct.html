@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>QUANTAXIS.QAData.QADataStruct &mdash; QUANTAXIS 1.0 documentation</title>
+  <title>QUANTAXIS.QAData.QADataStruct &mdash; QUANTAXIS 1.0.39 documentation</title>
   
 
   
@@ -55,6 +55,10 @@
 
           
             
+            
+              <div class="version">
+                1.0.39
+              </div>
             
           
 
@@ -202,18 +206,31 @@
 
 
 <div class="viewcode-block" id="QA_DataStruct_Stock_day"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAData.html#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day">[docs]</a><span class="k">class</span> <span class="nc">QA_DataStruct_Stock_day</span><span class="p">(</span><span class="n">_quotation_base</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    this is a datastruct for stock_day</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&#39;&#39;&#39;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;stock_day&#39;</span><span class="p">,</span> <span class="n">if_fq</span><span class="o">=</span><span class="s1">&#39;bfq&#39;</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">if_fq</span><span class="p">)</span>
+<span class="sd">        股票日线数据</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">init_data_by_df</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;stock_day&#39;</span><span class="p">,</span> <span class="n">if_fq</span><span class="o">=</span><span class="s1">&#39;bfq&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        # 🛠 todo dtype=stock_day 和 QA_DataStruct_Stock_day 类的名字是对应的 不变的不需要指定 ，容易出错，建议改成常量 ❌</span>
+<span class="sd">        :param init_data_by_df:  DataFrame 类型的数据，包含了数据，用来初始化这个类</span>
+<span class="sd">        :param dtype:  stock_day 🛠 todo 改成常量</span>
+<span class="sd">        :param if_fq:  是否复权</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">init_data_by_df</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">if_fq</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">init_data_by_df</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;💢Error init_data_by_df is not kind of DataFrame type !&quot;</span><span class="p">)</span>
+
+
+        <span class="c1">#根据 根据前一天收盘价 补齐 当天最高最低价</span>
         <span class="k">if</span> <span class="s1">&#39;high_limit&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;high_limit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span>
                 <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">close</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.0002</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="k">if</span> <span class="s1">&#39;low_limit&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;low_limit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span>
                 <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">close</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.0002</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="c1">#根据 根据今天收盘价 补齐 明天最高最低价</span>
         <span class="k">if</span> <span class="s1">&#39;next_day_high_limit&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;next_day_high_limit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span>
                 <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">close</span> <span class="o">+</span> <span class="mf">0.0002</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
@@ -221,10 +238,15 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;next_day_low_limit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span>
                 <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">close</span> <span class="o">+</span> <span class="mf">0.0002</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
+    <span class="c1">#抽象类继承</span>
+<div class="viewcode-block" id="QA_DataStruct_Stock_day.choose_db"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAData.html#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day.choose_db">[docs]</a>    <span class="k">def</span> <span class="nf">choose_db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mongo_coll</span> <span class="o">=</span> <span class="n">DATABASE</span><span class="o">.</span><span class="n">stock_day</span></div>
+
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;&lt; QA_DataStruct_Stock_day with </span><span class="si">{}</span><span class="s1"> securities &gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="p">))</span>
     <span class="fm">__str__</span> <span class="o">=</span> <span class="fm">__repr__</span>
 
+    <span class="c1">#前复权</span>
 <div class="viewcode-block" id="QA_DataStruct_Stock_day.to_qfq"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAData.html#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day.to_qfq">[docs]</a>    <span class="k">def</span> <span class="nf">to_qfq</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">if_fq</span> <span class="ow">is</span> <span class="s1">&#39;bfq&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -241,6 +263,7 @@
                 <span class="s1">&#39;none support type for qfq Current type is: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">if_fq</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">self</span></div>
 
+    <span class="c1">#后复权</span>
 <div class="viewcode-block" id="QA_DataStruct_Stock_day.to_hfq"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAData.html#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day.to_hfq">[docs]</a>    <span class="k">def</span> <span class="nf">to_hfq</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">if_fq</span> <span class="ow">is</span> <span class="s1">&#39;bfq&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -292,12 +315,17 @@
 <div class="viewcode-block" id="QA_DataStruct_Stock_min"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAData.html#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_min">[docs]</a><span class="k">class</span> <span class="nc">QA_DataStruct_Stock_min</span><span class="p">(</span><span class="n">_quotation_base</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;stock_min&#39;</span><span class="p">,</span> <span class="n">if_fq</span><span class="o">=</span><span class="s1">&#39;bfq&#39;</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">if_fq</span><span class="p">)</span>
+
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="o">.</span><span class="n">ix</span><span class="p">[:,</span> <span class="p">[</span>
-                <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">,</span> <span class="s1">&#39;volume&#39;</span><span class="p">,</span> <span class="s1">&#39;preclose&#39;</span><span class="p">,</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">]]</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="o">.</span><span class="n">ix</span><span class="p">[:,</span> <span class="p">[</span>
-                <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">,</span> <span class="s1">&#39;volume&#39;</span><span class="p">,</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="s1">&#39;preclose&#39;</span> <span class="ow">in</span> <span class="n">DataFrame</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="o">.</span><span class="n">ix</span><span class="p">[:,</span> <span class="p">[</span>
+                    <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">,</span> <span class="s1">&#39;volume&#39;</span><span class="p">,</span> <span class="s1">&#39;preclose&#39;</span><span class="p">,</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">]]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="o">.</span><span class="n">ix</span><span class="p">[:,</span> <span class="p">[</span>
+                    <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">,</span> <span class="s1">&#39;volume&#39;</span><span class="p">,</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">]]</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">e</span>
+
         <span class="k">if</span> <span class="s1">&#39;high_limit&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;high_limit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span>
                 <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">close</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.0002</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
@@ -306,7 +334,11 @@
                 <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">close</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.0002</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">dtype</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">if_fq</span> <span class="o">=</span> <span class="n">if_fq</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mongo_coll</span> <span class="o">=</span> <span class="n">DATABASE</span><span class="o">.</span><span class="n">stock_min</span>
+
+    <span class="c1">#抽象类继承</span>
+<div class="viewcode-block" id="QA_DataStruct_Stock_min.choose_db"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAData.html#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_min.choose_db">[docs]</a>    <span class="k">def</span> <span class="nf">choose_db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mongo_coll</span> <span class="o">=</span> <span class="n">DATABASE</span><span class="o">.</span><span class="n">stock_min</span></div>
+
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;&lt; QA_DataStruct_Stock_Min with </span><span class="si">{}</span><span class="s1"> securities &gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="p">))</span>
@@ -362,7 +394,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s1">&#39;future_day&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="o">.</span><span class="n">ix</span><span class="p">[:,</span> <span class="p">[</span>
             <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">,</span> <span class="s1">&#39;trade&#39;</span><span class="p">,</span> <span class="s1">&#39;position&#39;</span><span class="p">,</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">]]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mongo_coll</span> <span class="o">=</span> <span class="n">DATABASE</span><span class="o">.</span><span class="n">future_day</span>
+
+    <span class="c1">#抽象类继承</span>
+<div class="viewcode-block" id="QA_DataStruct_Future_day.choose_db"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAData.html#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Future_day.choose_db">[docs]</a>    <span class="k">def</span> <span class="nf">choose_db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mongo_coll</span> <span class="o">=</span> <span class="n">DATABASE</span><span class="o">.</span><span class="n">future_day</span></div>
+
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;&lt; QA_DataStruct_Future_day with </span><span class="si">{}</span><span class="s1"> securities &gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="p">))</span>
@@ -374,11 +410,16 @@
 <span class="sd">    struct for future</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;future_min&#39;</span><span class="p">,</span> <span class="n">if_fq</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="c1"># 🛠todo  期货分钟数据线的维护， 暂时用日线代替分钟线</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s1">&#39;future_day&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="o">.</span><span class="n">ix</span><span class="p">[:,</span> <span class="p">[</span>
             <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">,</span> <span class="s1">&#39;trade&#39;</span><span class="p">,</span> <span class="s1">&#39;position&#39;</span><span class="p">,</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">]]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mongo_coll</span> <span class="o">=</span> <span class="n">DATABASE</span><span class="o">.</span><span class="n">future_min</span>
+
+    <span class="c1"># 抽象类继承</span>
+<div class="viewcode-block" id="QA_DataStruct_Future_min.choose_db"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAData.html#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Future_min.choose_db">[docs]</a>    <span class="k">def</span> <span class="nf">choose_db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mongo_coll</span> <span class="o">=</span> <span class="n">DATABASE</span><span class="o">.</span><span class="n">future_min</span></div>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;&lt; QA_DataStruct_Future_min with </span><span class="si">{}</span><span class="s1"> securities &gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="p">))</span>
@@ -392,8 +433,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">DataFrame</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">dtype</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">if_fq</span> <span class="o">=</span> <span class="n">if_fq</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mongo_coll</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span>
-            <span class="s1">&#39;DATABASE.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">))</span>
+        <span class="c1">#self.mongo_coll = eval(</span>
+        <span class="c1">#    &#39;DATABASE.{}&#39;.format(self.type))</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    def __add__(self,DataStruct):</span>
 <span class="sd">        &#39;add func with merge list and reindex&#39;</span>
@@ -401,6 +442,10 @@
 <span class="sd">        if self.if_fq==DataStruct.if_fq:</span>
 <span class="sd">            self.sync_status(pd.concat())</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># 抽象类继承</span>
+<div class="viewcode-block" id="QA_DataStruct_Index_day.choose_db"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAData.html#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Index_day.choose_db">[docs]</a>    <span class="k">def</span> <span class="nf">choose_db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mongo_coll</span> <span class="o">=</span> <span class="n">DATABASE</span><span class="o">.</span><span class="n">index_day</span></div>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;&lt; QA_DataStruct_Index_day with </span><span class="si">{}</span><span class="s1"> securities &gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="p">))</span>
@@ -415,7 +460,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">if_fq</span> <span class="o">=</span> <span class="n">if_fq</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="o">.</span><span class="n">ix</span><span class="p">[:,</span> <span class="p">[</span>
             <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">,</span> <span class="s1">&#39;volume&#39;</span><span class="p">,</span> <span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">]]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mongo_coll</span> <span class="o">=</span> <span class="n">DATABASE</span><span class="o">.</span><span class="n">index_min</span>
+        <span class="c1">#self.mongo_coll = DATABASE.index_min</span>
+
+    <span class="c1"># 抽象类继承</span>
+<div class="viewcode-block" id="QA_DataStruct_Index_min.choose_db"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAData.html#QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Index_min.choose_db">[docs]</a>    <span class="k">def</span> <span class="nf">choose_db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mongo_coll</span> <span class="o">=</span> <span class="n">DATABASE</span><span class="o">.</span><span class="n">index_min</span></div>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;&lt; QA_DataStruct_Index_Min with </span><span class="si">%s</span><span class="s1"> securities &gt;&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="p">)</span>
@@ -1037,7 +1086,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'1.0',
+            VERSION:'1.0.39',
             LANGUAGE:'python',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

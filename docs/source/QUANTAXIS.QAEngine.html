@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>QUANTAXIS.QAEngine package &mdash; QUANTAXIS 1.0 documentation</title>
+  <title>QUANTAXIS.QAEngine package &mdash; QUANTAXIS 1.0.39 documentation</title>
   
 
   
@@ -55,6 +55,10 @@
 
           
             
+            
+              <div class="version">
+                1.0.39
+              </div>
             
           
 
@@ -162,17 +166,25 @@
 <dt id="QUANTAXIS.QAEngine.QAEvent.QA_Event">
 <em class="property">class </em><code class="descclassname">QUANTAXIS.QAEngine.QAEvent.</code><code class="descname">QA_Event</code><span class="sig-paren">(</span><em>event_type=None</em>, <em>func=None</em>, <em>message=None</em>, <em>callback=False</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAEngine/QAEvent.html#QA_Event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAEngine.QAEvent.QA_Event" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>QA_Event 事件</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="QUANTAXIS.QAEngine.QAEvent.QA_Worker">
 <em class="property">class </em><code class="descclassname">QUANTAXIS.QAEngine.QAEvent.</code><code class="descname">QA_Worker</code><a class="reference internal" href="../_modules/QUANTAXIS/QAEngine/QAEvent.html#QA_Worker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAEngine.QAEvent.QA_Worker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>JOB是worker 需要接受QA_EVENT 需要完善RUN方法</p>
+<p>JOB是worker 需要接受QA_EVENT 需要完善RUN方法
+👻QA_Broker 继承这个类
+👻QA_Account 继承这个类
+👻QA_OrderHandler 继承这个类
+这些类都要实现run方法✅，在其它线程🌀中允许自己的业务代码</p>
 <dl class="method">
 <dt id="QUANTAXIS.QAEngine.QAEvent.QA_Worker.run">
 <code class="descname">run</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAEngine/QAEvent.html#QA_Worker.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAEngine.QAEvent.QA_Worker.run" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>QA_Work是一个抽象类， 继承这个类，需要实现具体的run方法✅， 在其它线程🌀中执行
+:param event: QA_Event 类型
+:return: None</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -202,14 +214,19 @@
 <dt id="QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine">
 <em class="property">class </em><code class="descclassname">QUANTAXIS.QAEngine.QAThreadEngine.</code><code class="descname">QA_Engine</code><span class="sig-paren">(</span><em>queue=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAEngine/QAThreadEngine.html#QA_Engine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#QUANTAXIS.QAEngine.QAThreadEngine.QA_Thread" title="QUANTAXIS.QAEngine.QAThreadEngine.QA_Thread"><code class="xref py py-class docutils literal notranslate"><span class="pre">QUANTAXIS.QAEngine.QAThreadEngine.QA_Thread</span></code></a></p>
+<p>QA_Thread的区别是，
+QA_Thread 只是单纯一个线程，里面有个队列执行 QA_Task 的do 方法</p>
+<p>QA_Engine 有 kernels_dict词典，可以指定 {名字：QA_Thread}，
+QA_Engine自己有一个线程可以 遍历kernels_dict中QA_Thread 中的多个线程去执行</p>
+<p>kernel 已更正(之前误写成kernal) &#64;2018/05/28</p>
 <dl class="method">
 <dt id="QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.clear">
 <code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAEngine/QAThreadEngine.html#QA_Engine.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.clear" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.create_kernal">
-<code class="descname">create_kernal</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAEngine/QAThreadEngine.html#QA_Engine.create_kernal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.create_kernal" title="Permalink to this definition">¶</a></dt>
+<dt id="QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.create_kernel">
+<code class="descname">create_kernel</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAEngine/QAThreadEngine.html#QA_Engine.create_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.create_kernel" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -244,8 +261,8 @@ exception.</p>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.register_kernal">
-<code class="descname">register_kernal</code><span class="sig-paren">(</span><em>name</em>, <em>kernal</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAEngine/QAThreadEngine.html#QA_Engine.register_kernal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.register_kernal" title="Permalink to this definition">¶</a></dt>
+<dt id="QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.register_kernel">
+<code class="descname">register_kernel</code><span class="sig-paren">(</span><em>name</em>, <em>kernel</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAEngine/QAThreadEngine.html#QA_Engine.register_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.register_kernel" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -266,11 +283,14 @@ from the args and kwargs arguments, respectively.</p>
 <dl class="method">
 <dt id="QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.run_job">
 <code class="descname">run_job</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAEngine/QAThreadEngine.html#QA_Engine.run_job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.run_job" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>把QA_Task 放到 kerneals_dict 词典中的task.engine 名字， 对应的 QA_Thread中的队列中，
+:param task:  type str 字符串
+:return: None</p>
+</dd></dl>
 
 <dl class="method">
-<dt id="QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.start_kernal">
-<code class="descname">start_kernal</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAEngine/QAThreadEngine.html#QA_Engine.start_kernal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.start_kernal" title="Permalink to this definition">¶</a></dt>
+<dt id="QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.start_kernel">
+<code class="descname">start_kernel</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAEngine/QAThreadEngine.html#QA_Engine.start_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.start_kernel" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -284,8 +304,8 @@ from the args and kwargs arguments, respectively.</p>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.stop_kernal">
-<code class="descname">stop_kernal</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAEngine/QAThreadEngine.html#QA_Engine.stop_kernal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.stop_kernal" title="Permalink to this definition">¶</a></dt>
+<dt id="QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.stop_kernel">
+<code class="descname">stop_kernel</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAEngine/QAThreadEngine.html#QA_Engine.stop_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAEngine.QAThreadEngine.QA_Engine.stop_kernel" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -294,7 +314,9 @@ from the args and kwargs arguments, respectively.</p>
 <dt id="QUANTAXIS.QAEngine.QAThreadEngine.QA_Thread">
 <em class="property">class </em><code class="descclassname">QUANTAXIS.QAEngine.QAThreadEngine.</code><code class="descname">QA_Thread</code><span class="sig-paren">(</span><em>queue=None</em>, <em>name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAEngine/QAThreadEngine.html#QA_Thread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAEngine.QAThreadEngine.QA_Thread" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/threading.html#threading.Thread" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">threading.Thread</span></code></a></p>
-<p>这是一个随意新建线程的生产者消费者模型</p>
+<p>'这是一个随意新建线程的生产者消费者模型'
+其实有个队列， 队列中保存的是 QA_Task 对象 ， callback 很重要，指定任务的时候可以绑定 函数执行
+QA_Engine 继承这个类。</p>
 <dl class="method">
 <dt id="QUANTAXIS.QAEngine.QAThreadEngine.QA_Thread.get">
 <code class="descname">get</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAEngine/QAThreadEngine.html#QA_Thread.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAEngine.QAThreadEngine.QA_Thread.get" title="Permalink to this definition">¶</a></dt>
@@ -386,7 +408,7 @@ from the args and kwargs arguments, respectively.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.0',
+            VERSION:'1.0.39',
             LANGUAGE:'python',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

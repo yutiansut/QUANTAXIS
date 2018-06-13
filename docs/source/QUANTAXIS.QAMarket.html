@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>QUANTAXIS.QAMarket package &mdash; QUANTAXIS 1.0 documentation</title>
+  <title>QUANTAXIS.QAMarket package &mdash; QUANTAXIS 1.0.39 documentation</title>
   
 
   
@@ -55,6 +55,10 @@
 
           
             
+            
+              <div class="version">
+                1.0.39
+              </div>
             
           
 
@@ -174,7 +178,7 @@
 <span id="quantaxis-qamarket-qabacktestbroker-module"></span><h2>QUANTAXIS.QAMarket.QABacktestBroker module<a class="headerlink" href="#module-QUANTAXIS.QAMarket.QABacktestBroker" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="QUANTAXIS.QAMarket.QABacktestBroker.QA_BacktestBroker">
-<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.QABacktestBroker.</code><code class="descname">QA_BacktestBroker</code><span class="sig-paren">(</span><em>commission_fee_coeff=0.0015</em>, <em>if_nondatabase=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QABacktestBroker.html#QA_BacktestBroker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QABacktestBroker.QA_BacktestBroker" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.QABacktestBroker.</code><code class="descname">QA_BacktestBroker</code><span class="sig-paren">(</span><em>if_nondatabase=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QABacktestBroker.html#QA_BacktestBroker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QABacktestBroker.QA_BacktestBroker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#QUANTAXIS.QAMarket.QABroker.QA_Broker" title="QUANTAXIS.QAMarket.QABroker.QA_Broker"><code class="xref py py-class docutils literal notranslate"><span class="pre">QUANTAXIS.QAMarket.QABroker.QA_Broker</span></code></a></p>
 <p>QUANTAXIS Broker 部分</p>
 <p>回测
@@ -221,7 +225,10 @@
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.QABacktestBroker.QA_BacktestBroker.run">
 <code class="descname">run</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QABacktestBroker.html#QA_BacktestBroker.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QABacktestBroker.QA_BacktestBroker.run" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>QA_Work是一个抽象类， 继承这个类，需要实现具体的run方法✅， 在其它线程🌀中执行
+:param event: QA_Event 类型
+:return: None</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.QABacktestBroker.QA_BacktestBroker.warp">
@@ -263,7 +270,10 @@
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.QABroker.QA_Broker.receive_order">
 <code class="descname">receive_order</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QABroker.html#QA_Broker.receive_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QABroker.QA_Broker.receive_order" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>QA_Broker 是一个抽象类，必须实现这个方法
+:param event:
+:return:</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.QABroker.QA_Broker.warp">
@@ -317,9 +327,9 @@ step3: return callback</p>
 <code class="descname">cal_fee</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QADealer.html#QA_Dealer.cal_fee"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QADealer.QA_Dealer.cal_fee" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="attribute">
 <dt id="QUANTAXIS.QAMarket.QADealer.QA_Dealer.callback_message">
-<code class="descname">callback_message</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QADealer.html#QA_Dealer.callback_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QADealer.QA_Dealer.callback_message" title="Permalink to this definition">¶</a></dt>
+<code class="descname">callback_message</code><a class="headerlink" href="#QUANTAXIS.QAMarket.QADealer.QA_Dealer.callback_message" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -375,8 +385,9 @@ step3: return callback</p>
 <em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.QAMarket.</code><code class="descname">QA_Market</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#QUANTAXIS.QAMarket.QATrade.QA_Trade" title="QUANTAXIS.QAMarket.QATrade.QA_Trade"><code class="xref py py-class docutils literal notranslate"><span class="pre">QUANTAXIS.QAMarket.QATrade.QA_Trade</span></code></a></p>
 <p>QUANTAXIS MARKET 部分</p>
-<p>交易前置/可连接到多个broker中</p>
-<p>暂时还是采用多线程engine模式</p>
+<p>交易前置/可连接到多个broker中
+暂时还是采用多线程engine模式</p>
+<p>session 保存的是 QAAccout 对象</p>
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.QAMarket.QA_Market.clear">
 <code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market.clear" title="Permalink to this definition">¶</a></dt>
@@ -480,7 +491,11 @@ step3: return callback</p>
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.QAMarket.QA_Market.upcoming_data">
 <code class="descname">upcoming_data</code><span class="sig-paren">(</span><em>broker</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAMarket.html#QA_Market.upcoming_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAMarket.QA_Market.upcoming_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>更新市场数据
+broker 为名字，
+data 是市场数据
+被 QABacktest 中run 方法调用 upcoming_data</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -489,17 +504,29 @@ step3: return callback</p>
 <span id="quantaxis-qamarket-qaorder-module"></span><h2>QUANTAXIS.QAMarket.QAOrder module<a class="headerlink" href="#module-QUANTAXIS.QAMarket.QAOrder" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="QUANTAXIS.QAMarket.QAOrder.QA_Order">
-<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.QAOrder.</code><code class="descname">QA_Order</code><span class="sig-paren">(</span><em>price=None</em>, <em>date=None</em>, <em>datetime=None</em>, <em>sending_time=None</em>, <em>transact_time=None</em>, <em>amount=None</em>, <em>market_type=None</em>, <em>frequence=None</em>, <em>towards=None</em>, <em>code=None</em>, <em>user=None</em>, <em>account_cookie=None</em>, <em>strategy=None</em>, <em>order_model=None</em>, <em>amount_model='by_amount'</em>, <em>order_id=None</em>, <em>trade_id=None</em>, <em>status='100'</em>, <em>callback=False</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAOrder.html#QA_Order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_Order" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.QAOrder.</code><code class="descname">QA_Order</code><span class="sig-paren">(</span><em>price=None</em>, <em>date=None</em>, <em>datetime=None</em>, <em>sending_time=None</em>, <em>transact_time=None</em>, <em>amount=None</em>, <em>market_type=None</em>, <em>frequence=None</em>, <em>towards=None</em>, <em>code=None</em>, <em>user=None</em>, <em>account_cookie=None</em>, <em>strategy=None</em>, <em>order_model=None</em>, <em>money=None</em>, <em>amount_model='by_amount'</em>, <em>order_id=None</em>, <em>trade_id=None</em>, <em>status='100'</em>, <em>callback=False</em>, <em>commission_coeff=0.00025</em>, <em>tax_coeff=0.001</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAOrder.html#QA_Order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_Order" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>记录order</p>
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.QAOrder.QA_Order.from_dict">
-<code class="descname">from_dict</code><span class="sig-paren">(</span><em>order</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAOrder.html#QA_Order.from_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_Order.from_dict" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">from_dict</code><span class="sig-paren">(</span><em>order_dict</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAOrder.html#QA_Order.from_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_Order.from_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>从字段类型的字段 填充 对象的字段
+:param order_dict:  dict 类型
+:return: self QA_Order</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.QAOrder.QA_Order.info">
 <code class="descname">info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAOrder.html#QA_Order.info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_Order.info" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.QAOrder.QA_Order.to_df">
@@ -509,7 +536,9 @@ step3: return callback</p>
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.QAOrder.QA_Order.to_dict">
 <code class="descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAOrder.html#QA_Order.to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_Order.to_dict" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>把对象中的属性转变成字典类型
+:return: dict</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -518,11 +547,31 @@ step3: return callback</p>
 <em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.QAOrder.</code><code class="descname">QA_OrderQueue</code><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAOrder.html#QA_OrderQueue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>一个待成交队列
-这里面都是对于方法的封装</p>
+queue是一个dataframe
+这里面都是对于方法的封装
+queue_df 的意图
+对orderqueue进行管理 这是一个dataframe
+然后等到要恢复订单的时候 再去用orderid恢复他
+就好比 你下了个单子
+你就在小本本上记一笔
+然后成交了你打个勾
+撤单了你打个叉
+你看看你还有多少单子在委托你就数数小本子
+这个小本子 就是orderqueue的dataframe</p>
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.insert_order">
 <code class="descname">insert_order</code><span class="sig-paren">(</span><em>order</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAOrder.html#QA_OrderQueue.insert_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.insert_order" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>order</strong> -- QA_Order类型</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.order_ids">
@@ -532,18 +581,26 @@ step3: return callback</p>
 <dl class="attribute">
 <dt id="QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.pending">
 <code class="descname">pending</code><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.pending" title="Permalink to this definition">¶</a></dt>
-<dd><p>选择待成交列表</p>
-<p>[description]</p>
-<dl class="docutils">
-<dt>Returns:</dt>
-<dd>dataframe</dd>
-</dl>
+<dd><p>200 委托成功,完全交易
+203 委托成功,未完全成功
+300 刚创建订单的时候
+400 已撤单
+500 服务器撤单/每日结算
+订单生成(100) -- 进入待成交队列(300) -- 完全成交(200) -- 每日结算(500)-- 死亡
+订单生成(100) -- 进入待成交队列(300) -- 部分成交(203) -- 未成交(300) -- 每日结算(500) -- 死亡
+订单生成(100) -- 进入待成交队列(300) -- 主动撤单(400) -- 每日结算(500) -- 死亡
+选择待成交列表
+:return: dataframe</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.query_order">
 <code class="descname">query_order</code><span class="sig-paren">(</span><em>order_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAOrder.html#QA_OrderQueue.query_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.query_order" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>&#64;modified by JerryW 2018/05/25
+根据 order_id 查询队列中的记录， 并且转换成 order 对象
+:param order_id:  str 类型 Order_开头的随机数  eg：Order_KQymhXWu
+:return QA_Order类型:</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.set_status">
@@ -553,19 +610,15 @@ step3: return callback</p>
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.settle">
 <code class="descname">settle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAOrder.html#QA_OrderQueue.settle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.settle" title="Permalink to this definition">¶</a></dt>
-<dd><p>结算</p>
-<p>清空订单簿</p>
+<dd><p>结算
+清空订单簿</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.trade_list">
 <code class="descname">trade_list</code><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.trade_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>批量交易</p>
-<p>[description]</p>
-<dl class="docutils">
-<dt>Returns:</dt>
-<dd>list of orders</dd>
-</dl>
+<dd><p>批量交易
+:return:</p>
 </dd></dl>
 
 </dd></dl>
@@ -597,7 +650,10 @@ step3: return callback</p>
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.QAOrderHandler.QA_OrderHandler.run">
 <code class="descname">run</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QAOrderHandler.html#QA_OrderHandler.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QAOrderHandler.QA_OrderHandler.run" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>QA_Work是一个抽象类， 继承这个类，需要实现具体的run方法✅， 在其它线程🌀中执行
+:param event: QA_Event 类型
+:return: None</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -616,7 +672,10 @@ step3: return callback</p>
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.QARandomBroker.QA_RandomBroker.receive_order">
 <code class="descname">receive_order</code><span class="sig-paren">(</span><em>order</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QARandomBroker.html#QA_RandomBroker.receive_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QARandomBroker.QA_RandomBroker.receive_order" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>QA_Broker 是一个抽象类，必须实现这个方法
+:param event:
+:return:</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.QARandomBroker.QA_RandomBroker.warp">
@@ -648,7 +707,10 @@ step3: return callback</p>
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.QARealBroker.QA_RealBroker.receive_order">
 <code class="descname">receive_order</code><span class="sig-paren">(</span><em>order</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QARealBroker.html#QA_RealBroker.receive_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QARealBroker.QA_RealBroker.receive_order" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>QA_Broker 是一个抽象类，必须实现这个方法
+:param event:
+:return:</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.QARealBroker.QA_RealBroker.warp">
@@ -686,7 +748,10 @@ step3: return callback</p>
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.QASimulatedBroker.QA_SimulatedBroker.receive_order">
 <code class="descname">receive_order</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/QASimulatedBroker.html#QA_SimulatedBroker.receive_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.QASimulatedBroker.QA_SimulatedBroker.receive_order" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>QA_Broker 是一个抽象类，必须实现这个方法
+:param event:
+:return:</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -855,16 +920,31 @@ step3: return callback</p>
 <span id="quantaxis-qamarket-shipanebroker-module"></span><h2>QUANTAXIS.QAMarket.shipaneBroker module<a class="headerlink" href="#module-QUANTAXIS.QAMarket.shipaneBroker" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi">
-<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.shipaneBroker.</code><code class="descname">SPETradeApi</code><span class="sig-paren">(</span><em>endpoint='http://127.0.0.1:8888'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">QUANTAXIS.QAMarket.shipaneBroker.</code><code class="descname">SPETradeApi</code><span class="sig-paren">(</span><em>endpoint='http://127.0.0.1:8288'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#QUANTAXIS.QAMarket.QABroker.QA_Broker" title="QUANTAXIS.QAMarket.QABroker.QA_Broker"><code class="xref py py-class docutils literal notranslate"><span class="pre">QUANTAXIS.QAMarket.QABroker.QA_Broker</span></code></a></p>
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.call">
-<code class="descname">call</code><span class="sig-paren">(</span><em>func</em>, <em>params=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.call" title="Permalink to this definition">¶</a></dt>
+<code class="descname">call</code><span class="sig-paren">(</span><em>func</em>, <em>params=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.call" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.call_delete">
+<code class="descname">call_delete</code><span class="sig-paren">(</span><em>func</em>, <em>params=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.call_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.call_delete" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.call_post">
+<code class="descname">call_post</code><span class="sig-paren">(</span><em>func</em>, <em>params=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.call_post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.call_post" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.cancel_all">
+<code class="descname">cancel_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.cancel_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.cancel_all" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.cancel_order">
-<code class="descname">cancel_order</code><span class="sig-paren">(</span><em>client_id</em>, <em>exchange_id</em>, <em>hth</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.cancel_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.cancel_order" title="Permalink to this definition">¶</a></dt>
+<code class="descname">cancel_order</code><span class="sig-paren">(</span><em>accounts</em>, <em>orderid</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.cancel_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.cancel_order" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -873,58 +953,36 @@ step3: return callback</p>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.get_quote">
-<code class="descname">get_quote</code><span class="sig-paren">(</span><em>client_id</em>, <em>code</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.get_quote"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.get_quote" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.logoff">
-<code class="descname">logoff</code><span class="sig-paren">(</span><em>client_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.logoff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.logoff" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.logon">
-<code class="descname">logon</code><span class="sig-paren">(</span><em>ip</em>, <em>port</em>, <em>version</em>, <em>yyb_id</em>, <em>account_id</em>, <em>trade_account</em>, <em>jy_passwrod</em>, <em>tx_password</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.logon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.logon" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.ping">
 <code class="descname">ping</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.ping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.ping" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.query_data">
-<code class="descname">query_data</code><span class="sig-paren">(</span><em>client_id</em>, <em>category</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.query_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.query_data" title="Permalink to this definition">¶</a></dt>
+<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.query_accounts">
+<code class="descname">query_accounts</code><span class="sig-paren">(</span><em>accounts</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.query_accounts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.query_accounts" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.receive_order">
-<code class="descname">receive_order</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.receive_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.receive_order" title="Permalink to this definition">¶</a></dt>
-<dd><p>0 限价委托； 上海限价委托 / 深圳限价委托
-1 市价委托(深圳对方最优价格)
-2 市价委托(深圳本方最优价格)    
-3 市价委托(深圳即时成交剩余撤销)
-4 市价委托(上海五档即成剩撤 / 深圳五档即成剩撤)
-5 市价委托(深圳全额成交或撤销)
-6 市价委托(上海五档即成转限价)</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.repay">
-<code class="descname">repay</code><span class="sig-paren">(</span><em>client_id</em>, <em>amount</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.repay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.repay" title="Permalink to this definition">¶</a></dt>
+<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.query_orders">
+<code class="descname">query_orders</code><span class="sig-paren">(</span><em>accounts</em>, <em>status='filled'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.query_orders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.query_orders" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.run" title="Permalink to this definition">¶</a></dt>
+<dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.query_positions">
+<code class="descname">query_positions</code><span class="sig-paren">(</span><em>accounts</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.query_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.query_positions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.send_order">
-<code class="descname">send_order</code><span class="sig-paren">(</span><em>client_id</em>, <em>category</em>, <em>price_type</em>, <em>gddm</em>, <em>zqdm</em>, <em>price</em>, <em>quantity</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.send_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.send_order" title="Permalink to this definition">¶</a></dt>
+<code class="descname">send_order</code><span class="sig-paren">(</span><em>accounts</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#SPETradeApi.send_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.SPETradeApi.send_order" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
+
+<dl class="function">
+<dt id="QUANTAXIS.QAMarket.shipaneBroker.get_config_SPE">
+<code class="descclassname">QUANTAXIS.QAMarket.shipaneBroker.</code><code class="descname">get_config_SPE</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/shipaneBroker.html#get_config_SPE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.shipaneBroker.get_config_SPE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 <div class="section" id="module-QUANTAXIS.QAMarket.shipaneclient">
@@ -1161,7 +1219,10 @@ step3: return callback</p>
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.run">
 <code class="descname">run</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAMarket/tdxRealBroker.html#TDXBroker.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.run" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>QA_Work是一个抽象类， 继承这个类，需要实现具体的run方法✅， 在其它线程🌀中执行
+:param event: QA_Event 类型
+:return: None</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="QUANTAXIS.QAMarket.tdxRealBroker.TDXBroker.send_order">
@@ -1296,7 +1357,7 @@ step3: return callback</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.0',
+            VERSION:'1.0.39',
             LANGUAGE:'python',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
