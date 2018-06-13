@@ -18,7 +18,7 @@ def read_east_money_page_zjlx_to_sqllite(stockCode, save_sqlite_full_path_name):
         browser = webdriver.Chrome('./selenium_driver/windows/chromedriver')
     elif sys.platform == 'linux':
         browser = webdriver.Chrome('./selenium_driver/linux/chromedriver')
-        #todo 🛠  linux 下没有测试， linux 下 非gui环境下，用chrome headless driver 
+        #todo 🛠  linux 下没有测试， linux 下 非gui环境下，用chrome headless driver
         print("🎃")
         print("🎃./selenium_driver/linux/chromedrive   linux 平台上的的      🤖chromedriver 的路径")
         print("🎃./selenium_driver/windows/chromedrive windows 平台上的的    🤖chromedriver 的路径")
