@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>QUANTAXIS.QASU package &mdash; QUANTAXIS 1.0 documentation</title>
+  <title>QUANTAXIS.QASU package &mdash; QUANTAXIS 1.0.39 documentation</title>
   
 
   
@@ -55,6 +55,10 @@
 
           
             
+            
+              <div class="version">
+                1.0.39
+              </div>
             
           
 
@@ -164,8 +168,28 @@
 <div class="section" id="module-QUANTAXIS.QASU.main">
 <span id="quantaxis-qasu-main-module"></span><h2>QUANTAXIS.QASU.main module<a class="headerlink" href="#module-QUANTAXIS.QASU.main" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
+<dt id="QUANTAXIS.QASU.main.QA_SU_crawl_eastmoney">
+<code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">QA_SU_crawl_eastmoney</code><span class="sig-paren">(</span><em>action='zjlx'</em>, <em>stockCode=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#QA_SU_crawl_eastmoney"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.QA_SU_crawl_eastmoney" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>action</strong> -- zjlx 后期支持其他的操作类型</li>
+<li><strong>stockCode</strong> -- 股票代码</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="QUANTAXIS.QASU.main.QA_SU_save_etf_day">
-<code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">QA_SU_save_etf_day</code><span class="sig-paren">(</span><em>engine, client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#QA_SU_save_etf_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.QA_SU_save_etf_day" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">QA_SU_save_etf_day</code><span class="sig-paren">(</span><em>engine, client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#QA_SU_save_etf_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.QA_SU_save_etf_day" title="Permalink to this definition">¶</a></dt>
 <dd><p>save etf_day</p>
 <dl class="docutils">
 <dt>Arguments:</dt>
@@ -177,7 +201,7 @@
 
 <dl class="function">
 <dt id="QUANTAXIS.QASU.main.QA_SU_save_etf_min">
-<code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">QA_SU_save_etf_min</code><span class="sig-paren">(</span><em>engine, client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#QA_SU_save_etf_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.QA_SU_save_etf_min" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">QA_SU_save_etf_min</code><span class="sig-paren">(</span><em>engine, client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#QA_SU_save_etf_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.QA_SU_save_etf_min" title="Permalink to this definition">¶</a></dt>
 <dd><p>save etf_min</p>
 <dl class="docutils">
 <dt>Arguments:</dt>
@@ -189,7 +213,7 @@
 
 <dl class="function">
 <dt id="QUANTAXIS.QASU.main.QA_SU_save_index_day">
-<code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">QA_SU_save_index_day</code><span class="sig-paren">(</span><em>engine, client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#QA_SU_save_index_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.QA_SU_save_index_day" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">QA_SU_save_index_day</code><span class="sig-paren">(</span><em>engine, client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#QA_SU_save_index_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.QA_SU_save_index_day" title="Permalink to this definition">¶</a></dt>
 <dd><p>save index_day</p>
 <dl class="docutils">
 <dt>Arguments:</dt>
@@ -201,7 +225,7 @@
 
 <dl class="function">
 <dt id="QUANTAXIS.QASU.main.QA_SU_save_index_min">
-<code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">QA_SU_save_index_min</code><span class="sig-paren">(</span><em>engine, client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#QA_SU_save_index_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.QA_SU_save_index_min" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">QA_SU_save_index_min</code><span class="sig-paren">(</span><em>engine, client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#QA_SU_save_index_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.QA_SU_save_index_min" title="Permalink to this definition">¶</a></dt>
 <dd><p>save index_min</p>
 <dl class="docutils">
 <dt>Arguments:</dt>
@@ -213,7 +237,7 @@
 
 <dl class="function">
 <dt id="QUANTAXIS.QASU.main.QA_SU_save_stock_block">
-<code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">QA_SU_save_stock_block</code><span class="sig-paren">(</span><em>engine, client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#QA_SU_save_stock_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.QA_SU_save_stock_block" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">QA_SU_save_stock_block</code><span class="sig-paren">(</span><em>engine, client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#QA_SU_save_stock_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.QA_SU_save_stock_block" title="Permalink to this definition">¶</a></dt>
 <dd><p>save stock_block</p>
 <dl class="docutils">
 <dt>Arguments:</dt>
@@ -225,7 +249,7 @@
 
 <dl class="function">
 <dt id="QUANTAXIS.QASU.main.QA_SU_save_stock_day">
-<code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">QA_SU_save_stock_day</code><span class="sig-paren">(</span><em>engine, client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#QA_SU_save_stock_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.QA_SU_save_stock_day" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">QA_SU_save_stock_day</code><span class="sig-paren">(</span><em>engine, client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#QA_SU_save_stock_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.QA_SU_save_stock_day" title="Permalink to this definition">¶</a></dt>
 <dd><p>save stock_day</p>
 <dl class="docutils">
 <dt>Arguments:</dt>
@@ -237,7 +261,7 @@
 
 <dl class="function">
 <dt id="QUANTAXIS.QASU.main.QA_SU_save_stock_info">
-<code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">QA_SU_save_stock_info</code><span class="sig-paren">(</span><em>engine, client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#QA_SU_save_stock_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.QA_SU_save_stock_info" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">QA_SU_save_stock_info</code><span class="sig-paren">(</span><em>engine, client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#QA_SU_save_stock_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.QA_SU_save_stock_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>save stock info</p>
 <dl class="docutils">
 <dt>Arguments:</dt>
@@ -248,8 +272,28 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="QUANTAXIS.QASU.main.QA_SU_save_stock_info_tushare">
+<code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">QA_SU_save_stock_info_tushare</code><span class="sig-paren">(</span><em>engine='tushare', client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#QA_SU_save_stock_info_tushare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.QA_SU_save_stock_info_tushare" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>engine</strong> -- tushare</li>
+<li><strong>client</strong> -- </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="QUANTAXIS.QASU.main.QA_SU_save_stock_list">
-<code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">QA_SU_save_stock_list</code><span class="sig-paren">(</span><em>engine, client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#QA_SU_save_stock_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.QA_SU_save_stock_list" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">QA_SU_save_stock_list</code><span class="sig-paren">(</span><em>engine, client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#QA_SU_save_stock_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.QA_SU_save_stock_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>save stock_list</p>
 <dl class="docutils">
 <dt>Arguments:</dt>
@@ -261,7 +305,7 @@
 
 <dl class="function">
 <dt id="QUANTAXIS.QASU.main.QA_SU_save_stock_min">
-<code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">QA_SU_save_stock_min</code><span class="sig-paren">(</span><em>engine, client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#QA_SU_save_stock_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.QA_SU_save_stock_min" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">QA_SU_save_stock_min</code><span class="sig-paren">(</span><em>engine, client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#QA_SU_save_stock_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.QA_SU_save_stock_min" title="Permalink to this definition">¶</a></dt>
 <dd><p>save stock_min</p>
 <dl class="docutils">
 <dt>Arguments:</dt>
@@ -273,7 +317,7 @@
 
 <dl class="function">
 <dt id="QUANTAXIS.QASU.main.QA_SU_save_stock_min_5">
-<code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">QA_SU_save_stock_min_5</code><span class="sig-paren">(</span><em>file_dir, client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#QA_SU_save_stock_min_5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.QA_SU_save_stock_min_5" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">QA_SU_save_stock_min_5</code><span class="sig-paren">(</span><em>file_dir, client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#QA_SU_save_stock_min_5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.QA_SU_save_stock_min_5" title="Permalink to this definition">¶</a></dt>
 <dd><p>save stock_min5</p>
 <dl class="docutils">
 <dt>Arguments:</dt>
@@ -287,7 +331,7 @@
 
 <dl class="function">
 <dt id="QUANTAXIS.QASU.main.QA_SU_save_stock_xdxr">
-<code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">QA_SU_save_stock_xdxr</code><span class="sig-paren">(</span><em>engine, client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#QA_SU_save_stock_xdxr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.QA_SU_save_stock_xdxr" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">QA_SU_save_stock_xdxr</code><span class="sig-paren">(</span><em>engine, client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#QA_SU_save_stock_xdxr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.QA_SU_save_stock_xdxr" title="Permalink to this definition">¶</a></dt>
 <dd><p>save stock_xdxr</p>
 <dl class="docutils">
 <dt>Arguments:</dt>
@@ -300,13 +344,9 @@
 <dl class="function">
 <dt id="QUANTAXIS.QASU.main.select_save_engine">
 <code class="descclassname">QUANTAXIS.QASU.main.</code><code class="descname">select_save_engine</code><span class="sig-paren">(</span><em>engine</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/main.html#select_save_engine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.main.select_save_engine" title="Permalink to this definition">¶</a></dt>
-<dd><p>select save_engine</p>
-<dl class="docutils">
-<dt>Arguments:</dt>
-<dd>engine {[type]} -- [description]</dd>
-<dt>Returns:</dt>
-<dd>[type] -- [description]</dd>
-</dl>
+<dd><p>select save_engine , tushare ts Tushare 使用 Tushare 免费数据接口， tdx 使用通达信数据接口
+:param engine: 字符串Str
+:return: sts means save_tushare_py  or stdx means save_tdx_py</p>
 </dd></dl>
 
 </div>
@@ -314,7 +354,7 @@
 <span id="quantaxis-qasu-save-account-module"></span><h2>QUANTAXIS.QASU.save_account module<a class="headerlink" href="#module-QUANTAXIS.QASU.save_account" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="QUANTAXIS.QASU.save_account.save_account">
-<code class="descclassname">QUANTAXIS.QASU.save_account.</code><code class="descname">save_account</code><span class="sig-paren">(</span><em>message, collection=Collection(Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis'), 'account')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_account.html#save_account"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_account.save_account" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.save_account.</code><code class="descname">save_account</code><span class="sig-paren">(</span><em>message, collection=Collection(Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis'), 'account')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_account.html#save_account"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_account.save_account" title="Permalink to this definition">¶</a></dt>
 <dd><p>save account</p>
 <dl class="docutils">
 <dt>Arguments:</dt>
@@ -326,12 +366,12 @@
 
 <dl class="function">
 <dt id="QUANTAXIS.QASU.save_account.save_riskanalysis">
-<code class="descclassname">QUANTAXIS.QASU.save_account.</code><code class="descname">save_riskanalysis</code><span class="sig-paren">(</span><em>message, collection=Collection(Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis'), 'risk')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_account.html#save_riskanalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_account.save_riskanalysis" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.save_account.</code><code class="descname">save_riskanalysis</code><span class="sig-paren">(</span><em>message, collection=Collection(Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis'), 'risk')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_account.html#save_riskanalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_account.save_riskanalysis" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="QUANTAXIS.QASU.save_account.update_account">
-<code class="descclassname">QUANTAXIS.QASU.save_account.</code><code class="descname">update_account</code><span class="sig-paren">(</span><em>mes, collection=Collection(Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis'), 'account')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_account.html#update_account"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_account.update_account" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.save_account.</code><code class="descname">update_account</code><span class="sig-paren">(</span><em>mes, collection=Collection(Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis'), 'account')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_account.html#update_account"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_account.update_account" title="Permalink to this definition">¶</a></dt>
 <dd><p>update the account with account message</p>
 <dl class="docutils">
 <dt>Arguments:</dt>
@@ -372,17 +412,12 @@
 <code class="descclassname">QUANTAXIS.QASU.save_local.</code><code class="descname">make_cache</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_local.html#make_cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_local.make_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="function">
-<dt id="QUANTAXIS.QASU.save_local.make_dir">
-<code class="descclassname">QUANTAXIS.QASU.save_local.</code><code class="descname">make_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_local.html#make_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_local.make_dir" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </div>
 <div class="section" id="module-QUANTAXIS.QASU.save_tdx">
 <span id="quantaxis-qasu-save-tdx-module"></span><h2>QUANTAXIS.QASU.save_tdx module<a class="headerlink" href="#module-QUANTAXIS.QASU.save_tdx" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="QUANTAXIS.QASU.save_tdx.QA_SU_save_etf_day">
-<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_etf_day</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_etf_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_etf_day" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_etf_day</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_etf_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_etf_day" title="Permalink to this definition">¶</a></dt>
 <dd><p>save etf_day</p>
 <dl class="docutils">
 <dt>Keyword Arguments:</dt>
@@ -392,7 +427,7 @@
 
 <dl class="function">
 <dt id="QUANTAXIS.QASU.save_tdx.QA_SU_save_etf_min">
-<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_etf_min</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_etf_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_etf_min" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_etf_min</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_etf_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_etf_min" title="Permalink to this definition">¶</a></dt>
 <dd><p>save etf_min</p>
 <dl class="docutils">
 <dt>Keyword Arguments:</dt>
@@ -402,7 +437,7 @@
 
 <dl class="function">
 <dt id="QUANTAXIS.QASU.save_tdx.QA_SU_save_index_day">
-<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_index_day</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_index_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_index_day" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_index_day</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_index_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_index_day" title="Permalink to this definition">¶</a></dt>
 <dd><p>save index_day</p>
 <dl class="docutils">
 <dt>Keyword Arguments:</dt>
@@ -412,7 +447,7 @@
 
 <dl class="function">
 <dt id="QUANTAXIS.QASU.save_tdx.QA_SU_save_index_min">
-<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_index_min</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_index_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_index_min" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_index_min</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_index_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_index_min" title="Permalink to this definition">¶</a></dt>
 <dd><p>save index_min</p>
 <dl class="docutils">
 <dt>Keyword Arguments:</dt>
@@ -422,7 +457,7 @@
 
 <dl class="function">
 <dt id="QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_block">
-<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_stock_block</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_stock_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_block" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_stock_block</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_stock_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_block" title="Permalink to this definition">¶</a></dt>
 <dd><p>save stock_block</p>
 <dl class="docutils">
 <dt>Keyword Arguments:</dt>
@@ -432,7 +467,7 @@
 
 <dl class="function">
 <dt id="QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_day">
-<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_stock_day</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_stock_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_day" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_stock_day</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_stock_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_day" title="Permalink to this definition">¶</a></dt>
 <dd><p>save stock_day</p>
 <dl class="docutils">
 <dt>Keyword Arguments:</dt>
@@ -442,7 +477,7 @@
 
 <dl class="function">
 <dt id="QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_info">
-<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_stock_info</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_stock_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_info" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_stock_info</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_stock_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>save stock_info</p>
 <dl class="docutils">
 <dt>Keyword Arguments:</dt>
@@ -452,7 +487,7 @@
 
 <dl class="function">
 <dt id="QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_list">
-<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_stock_list</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_stock_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_list" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_stock_list</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_stock_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>save stock_list</p>
 <dl class="docutils">
 <dt>Keyword Arguments:</dt>
@@ -462,7 +497,7 @@
 
 <dl class="function">
 <dt id="QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_min">
-<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_stock_min</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_stock_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_min" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_stock_min</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_stock_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_min" title="Permalink to this definition">¶</a></dt>
 <dd><p>save stock_min</p>
 <dl class="docutils">
 <dt>Keyword Arguments:</dt>
@@ -471,8 +506,18 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_month">
+<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_stock_month</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_stock_month"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_month" title="Permalink to this definition">¶</a></dt>
+<dd><p>save stock_month</p>
+<dl class="docutils">
+<dt>Keyword Arguments:</dt>
+<dd>client {[type]} -- [description] (default: {DATABASE})</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
 <dt id="QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_transaction">
-<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_stock_transaction</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_stock_transaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_transaction" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_stock_transaction</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_stock_transaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_transaction" title="Permalink to this definition">¶</a></dt>
 <dd><p>save stock_transaction</p>
 <dl class="docutils">
 <dt>Keyword Arguments:</dt>
@@ -481,9 +526,29 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_week">
+<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_stock_week</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_stock_week"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_week" title="Permalink to this definition">¶</a></dt>
+<dd><p>save stock_week</p>
+<dl class="docutils">
+<dt>Keyword Arguments:</dt>
+<dd>client {[type]} -- [description] (default: {DATABASE})</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
 <dt id="QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_xdxr">
-<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_stock_xdxr</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_stock_xdxr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_xdxr" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_stock_xdxr</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_stock_xdxr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_xdxr" title="Permalink to this definition">¶</a></dt>
 <dd><p>[summary]</p>
+<dl class="docutils">
+<dt>Keyword Arguments:</dt>
+<dd>client {[type]} -- [description] (default: {DATABASE})</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_year">
+<code class="descclassname">QUANTAXIS.QASU.save_tdx.</code><code class="descname">QA_SU_save_stock_year</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx.html#QA_SU_save_stock_year"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx.QA_SU_save_stock_year" title="Permalink to this definition">¶</a></dt>
+<dd><p>save stock_year</p>
 <dl class="docutils">
 <dt>Keyword Arguments:</dt>
 <dd>client {[type]} -- [description] (default: {DATABASE})</dd>
@@ -500,7 +565,7 @@
 <span id="quantaxis-qasu-save-tdx-file-module"></span><h2>QUANTAXIS.QASU.save_tdx_file module<a class="headerlink" href="#module-QUANTAXIS.QASU.save_tdx_file" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="QUANTAXIS.QASU.save_tdx_file.QA_save_tdx_to_mongo">
-<code class="descclassname">QUANTAXIS.QASU.save_tdx_file.</code><code class="descname">QA_save_tdx_to_mongo</code><span class="sig-paren">(</span><em>file_dir, client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx_file.html#QA_save_tdx_to_mongo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx_file.QA_save_tdx_to_mongo" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.save_tdx_file.</code><code class="descname">QA_save_tdx_to_mongo</code><span class="sig-paren">(</span><em>file_dir, client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tdx_file.html#QA_save_tdx_to_mongo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tdx_file.QA_save_tdx_to_mongo" title="Permalink to this definition">¶</a></dt>
 <dd><p>save file</p>
 <dl class="docutils">
 <dt>Arguments:</dt>
@@ -515,32 +580,72 @@
 <span id="quantaxis-qasu-save-tushare-module"></span><h2>QUANTAXIS.QASU.save_tushare module<a class="headerlink" href="#module-QUANTAXIS.QASU.save_tushare" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="QUANTAXIS.QASU.save_tushare.QA_SU_save_stock_info">
-<code class="descclassname">QUANTAXIS.QASU.save_tushare.</code><code class="descname">QA_SU_save_stock_info</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tushare.html#QA_SU_save_stock_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tushare.QA_SU_save_stock_info" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.save_tushare.</code><code class="descname">QA_SU_save_stock_info</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tushare.html#QA_SU_save_stock_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tushare.QA_SU_save_stock_info" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="QUANTAXIS.QASU.save_tushare.QA_SU_save_stock_info_tushare">
+<code class="descclassname">QUANTAXIS.QASU.save_tushare.</code><code class="descname">QA_SU_save_stock_info_tushare</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tushare.html#QA_SU_save_stock_info_tushare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tushare.QA_SU_save_stock_info_tushare" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>获取 股票的 基本信息，包含股票的如下信息</p>
+<p>code,代码
+name,名称
+industry,所属行业
+area,地区
+pe,市盈率
+outstanding,流通股本(亿)
+totals,总股本(亿)
+totalAssets,总资产(万)
+liquidAssets,流动资产
+fixedAssets,固定资产
+reserved,公积金
+reservedPerShare,每股公积金
+esp,每股收益
+bvps,每股净资
+pb,市净率
+timeToMarket,上市日期
+undp,未分利润
+perundp, 每股未分配
+rev,收入同比(%)
+profit,利润同比(%)
+gpr,毛利率(%)
+npr,净利润率(%)
+holders,股东人数</p>
+<p>add by tauruswang</p>
+</div></blockquote>
+<p>在命令行工具 quantaxis 中输入 save stock_info_tushare 中的命令
+:param client:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="QUANTAXIS.QASU.save_tushare.QA_SU_save_stock_list">
-<code class="descclassname">QUANTAXIS.QASU.save_tushare.</code><code class="descname">QA_SU_save_stock_list</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tushare.html#QA_SU_save_stock_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tushare.QA_SU_save_stock_list" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.save_tushare.</code><code class="descname">QA_SU_save_stock_list</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tushare.html#QA_SU_save_stock_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tushare.QA_SU_save_stock_list" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="QUANTAXIS.QASU.save_tushare.QA_SU_save_trade_date_all">
-<code class="descclassname">QUANTAXIS.QASU.save_tushare.</code><code class="descname">QA_SU_save_trade_date_all</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tushare.html#QA_SU_save_trade_date_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tushare.QA_SU_save_trade_date_all" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.save_tushare.</code><code class="descname">QA_SU_save_trade_date_all</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tushare.html#QA_SU_save_trade_date_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tushare.QA_SU_save_trade_date_all" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="QUANTAXIS.QASU.save_tushare.QA_save_lhb">
+<code class="descclassname">QUANTAXIS.QASU.save_tushare.</code><code class="descname">QA_save_lhb</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tushare.html#QA_save_lhb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tushare.QA_save_lhb" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="QUANTAXIS.QASU.save_tushare.QA_save_stock_day_all">
-<code class="descclassname">QUANTAXIS.QASU.save_tushare.</code><code class="descname">QA_save_stock_day_all</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tushare.html#QA_save_stock_day_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tushare.QA_save_stock_day_all" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.save_tushare.</code><code class="descname">QA_save_stock_day_all</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tushare.html#QA_save_stock_day_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tushare.QA_save_stock_day_all" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="QUANTAXIS.QASU.save_tushare.QA_save_stock_day_all_bfq">
-<code class="descclassname">QUANTAXIS.QASU.save_tushare.</code><code class="descname">QA_save_stock_day_all_bfq</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tushare.html#QA_save_stock_day_all_bfq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tushare.QA_save_stock_day_all_bfq" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.save_tushare.</code><code class="descname">QA_save_stock_day_all_bfq</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tushare.html#QA_save_stock_day_all_bfq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tushare.QA_save_stock_day_all_bfq" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="QUANTAXIS.QASU.save_tushare.QA_save_stock_day_with_fqfactor">
-<code class="descclassname">QUANTAXIS.QASU.save_tushare.</code><code class="descname">QA_save_stock_day_with_fqfactor</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['127.0.0.1:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tushare.html#QA_save_stock_day_with_fqfactor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tushare.QA_save_stock_day_with_fqfactor" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QUANTAXIS.QASU.save_tushare.</code><code class="descname">QA_save_stock_day_with_fqfactor</code><span class="sig-paren">(</span><em>client=Database(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True), 'quantaxis')</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QASU/save_tushare.html#QA_save_stock_day_with_fqfactor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QASU.save_tushare.QA_save_stock_day_with_fqfactor" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -595,7 +700,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.0',
+            VERSION:'1.0.39',
             LANGUAGE:'python',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

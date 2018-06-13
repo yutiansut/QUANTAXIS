@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>QUANTAXIS.QASU.save_tushare &mdash; QUANTAXIS 1.0 documentation</title>
+  <title>QUANTAXIS.QASU.save_tushare &mdash; QUANTAXIS 1.0.39 documentation</title>
   
 
   
@@ -55,6 +55,10 @@
 
           
             
+            
+              <div class="version">
+                1.0.39
+              </div>
             
           
 
@@ -174,11 +178,15 @@
 <span class="kn">from</span> <span class="nn">QUANTAXIS.QAFetch.QATushare</span> <span class="k">import</span> <span class="p">(</span><span class="n">QA_fetch_get_stock_day</span><span class="p">,</span>
                                          <span class="n">QA_fetch_get_stock_info</span><span class="p">,</span>
                                          <span class="n">QA_fetch_get_stock_list</span><span class="p">,</span>
-                                         <span class="n">QA_fetch_get_trade_date</span><span class="p">)</span>
+                                         <span class="n">QA_fetch_get_trade_date</span><span class="p">,</span>
+                                         <span class="n">QA_fetch_get_lhb</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil</span> <span class="k">import</span> <span class="p">(</span><span class="n">QA_util_date_stamp</span><span class="p">,</span> <span class="n">QA_util_log_info</span><span class="p">,</span>
                               <span class="n">QA_util_time_stamp</span><span class="p">,</span> <span class="n">QA_util_to_json_from_pandas</span><span class="p">,</span>
                               <span class="n">trade_date_sse</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QASetting</span> <span class="k">import</span> <span class="n">DATABASE</span>
+
+
+<span class="kn">import</span> <span class="nn">tushare</span> <span class="k">as</span> <span class="nn">QATs</span>
 
 
 <div class="viewcode-block" id="QA_save_stock_day_all"><a class="viewcode-back" href="../../../source/QUANTAXIS.QASU.html#QUANTAXIS.QASU.save_tushare.QA_save_stock_day_all">[docs]</a><span class="k">def</span> <span class="nf">QA_save_stock_day_all</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="n">DATABASE</span><span class="p">):</span>
@@ -187,7 +195,7 @@
     <span class="n">__coll</span><span class="o">.</span><span class="n">ensure_index</span><span class="p">(</span><span class="s1">&#39;code&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">saving_work</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
-        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;Now Saving ==== </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">))</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;📝Now Saving ==== </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">))</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">data_json</span> <span class="o">=</span> <span class="n">QA_fetch_get_stock_day</span><span class="p">(</span>
                 <span class="n">i</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;1990-01-01&#39;</span><span class="p">)</span>
@@ -198,7 +206,7 @@
 
     <span class="k">for</span> <span class="n">i_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)):</span>
         <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;The </span><span class="si">%s</span><span class="s1"> of Total </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i_</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)))</span>
-        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;DOWNLOAD PROGRESS </span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;⏳DOWNLOAD PROGRESS </span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span>
             <span class="nb">float</span><span class="p">(</span><span class="n">i_</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;%&#39;</span><span class="p">)</span>
         <span class="n">saving_work</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">i_</span><span class="p">])</span>
 
@@ -210,9 +218,53 @@
     <span class="n">data</span> <span class="o">=</span> <span class="n">QA_fetch_get_stock_list</span><span class="p">()</span>
     <span class="n">date</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">())</span>
     <span class="n">date_stamp</span> <span class="o">=</span> <span class="n">QA_util_date_stamp</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
-    <span class="n">coll</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">stock_list</span>
+    <span class="n">coll</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">stock_info_tushare</span>
     <span class="n">coll</span><span class="o">.</span><span class="n">insert</span><span class="p">({</span><span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span> <span class="s1">&#39;date_stamp&#39;</span><span class="p">:</span> <span class="n">date_stamp</span><span class="p">,</span>
                  <span class="s1">&#39;stock&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">}})</span></div>
+
+
+<div class="viewcode-block" id="QA_SU_save_stock_info_tushare"><a class="viewcode-back" href="../../../source/QUANTAXIS.QASU.html#QUANTAXIS.QASU.save_tushare.QA_SU_save_stock_info_tushare">[docs]</a><span class="k">def</span> <span class="nf">QA_SU_save_stock_info_tushare</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="n">DATABASE</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        获取 股票的 基本信息，包含股票的如下信息</span>
+
+<span class="sd">        code,代码</span>
+<span class="sd">        name,名称</span>
+<span class="sd">        industry,所属行业</span>
+<span class="sd">        area,地区</span>
+<span class="sd">        pe,市盈率</span>
+<span class="sd">        outstanding,流通股本(亿)</span>
+<span class="sd">        totals,总股本(亿)</span>
+<span class="sd">        totalAssets,总资产(万)</span>
+<span class="sd">        liquidAssets,流动资产</span>
+<span class="sd">        fixedAssets,固定资产</span>
+<span class="sd">        reserved,公积金</span>
+<span class="sd">        reservedPerShare,每股公积金</span>
+<span class="sd">        esp,每股收益</span>
+<span class="sd">        bvps,每股净资</span>
+<span class="sd">        pb,市净率</span>
+<span class="sd">        timeToMarket,上市日期</span>
+<span class="sd">        undp,未分利润</span>
+<span class="sd">        perundp, 每股未分配</span>
+<span class="sd">        rev,收入同比(%)</span>
+<span class="sd">        profit,利润同比(%)</span>
+<span class="sd">        gpr,毛利率(%)</span>
+<span class="sd">        npr,净利润率(%)</span>
+<span class="sd">        holders,股东人数</span>
+
+<span class="sd">        add by tauruswang</span>
+
+<span class="sd">    在命令行工具 quantaxis 中输入 save stock_info_tushare 中的命令</span>
+<span class="sd">    :param client:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">QATs</span><span class="o">.</span><span class="n">get_stock_basics</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;📡 Get stock info from tushare,stock count is </span><span class="si">%d</span><span class="s2">&quot;</span><span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
+    <span class="n">coll</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">stock_info_tushare</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">drop_collection</span><span class="p">(</span><span class="n">coll</span><span class="p">)</span>
+    <span class="n">json_data</span> <span class="o">=</span>  <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s1">&#39;records&#39;</span><span class="p">))</span>
+    <span class="n">coll</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">json_data</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;📝 Save data to stock_info_tushare collection， OK✅&quot;</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="QA_SU_save_trade_date_all"><a class="viewcode-back" href="../../../source/QUANTAXIS.QASU.html#QUANTAXIS.QASU.save_tushare.QA_SU_save_trade_date_all">[docs]</a><span class="k">def</span> <span class="nf">QA_SU_save_trade_date_all</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="n">DATABASE</span><span class="p">):</span>
@@ -234,7 +286,7 @@
     <span class="n">__coll</span><span class="o">.</span><span class="n">ensure_index</span><span class="p">(</span><span class="s1">&#39;code&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">saving_work</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
-        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;Now Saving ==== </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">))</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;📝Now Saving ==== </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">))</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">data_json</span> <span class="o">=</span> <span class="n">QA_fetch_get_stock_day</span><span class="p">(</span>
                 <span class="n">i</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;1990-01-01&#39;</span><span class="p">,</span> <span class="n">if_fq</span><span class="o">=</span><span class="s1">&#39;00&#39;</span><span class="p">)</span>
@@ -245,7 +297,7 @@
 
     <span class="k">for</span> <span class="n">i_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)):</span>
         <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;The </span><span class="si">%s</span><span class="s1"> of Total </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i_</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)))</span>
-        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;DOWNLOAD PROGRESS </span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;⏳DOWNLOAD PROGRESS </span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span>
             <span class="nb">float</span><span class="p">(</span><span class="n">i_</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;%&#39;</span><span class="p">)</span>
         <span class="n">saving_work</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">i_</span><span class="p">])</span>
 
@@ -260,7 +312,7 @@
     <span class="n">__coll</span><span class="o">.</span><span class="n">ensure_index</span><span class="p">(</span><span class="s1">&#39;code&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">saving_work</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
-        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;Now Saving ==== </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">))</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;📝Now Saving ==== </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">))</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">data_hfq</span> <span class="o">=</span> <span class="n">QA_fetch_get_stock_day</span><span class="p">(</span>
                 <span class="n">i</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;1990-01-01&#39;</span><span class="p">,</span> <span class="n">if_fq</span><span class="o">=</span><span class="s1">&#39;02&#39;</span><span class="p">,</span> <span class="n">type_</span><span class="o">=</span><span class="s1">&#39;pd&#39;</span><span class="p">)</span>
@@ -270,7 +322,7 @@
             <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;error in saving ==== </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">i_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)):</span>
         <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;The </span><span class="si">%s</span><span class="s1"> of Total </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i_</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)))</span>
-        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;DOWNLOAD PROGRESS </span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span>
+        <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;⏳DOWNLOAD PROGRESS </span><span class="si">%s</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span>
             <span class="nb">float</span><span class="p">(</span><span class="n">i_</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;%&#39;</span><span class="p">)</span>
         <span class="n">saving_work</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">i_</span><span class="p">])</span>
 
@@ -280,9 +332,39 @@
     <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;Saving Process has been done !&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="mi">0</span></div>
 
+<div class="viewcode-block" id="QA_save_lhb"><a class="viewcode-back" href="../../../source/QUANTAXIS.QASU.html#QUANTAXIS.QASU.save_tushare.QA_save_lhb">[docs]</a><span class="k">def</span> <span class="nf">QA_save_lhb</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="n">DATABASE</span><span class="p">):</span>
+    <span class="n">__coll</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">lhb</span>
+    <span class="n">__coll</span><span class="o">.</span><span class="n">ensure_index</span><span class="p">(</span><span class="s1">&#39;code&#39;</span><span class="p">)</span>
 
+    <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="s2">&quot;2006-07-01&quot;</span><span class="p">,</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">();</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">while</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">end</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pd</span> <span class="o">=</span> <span class="n">QA_fetch_get_lhb</span><span class="p">(</span><span class="n">start</span><span class="o">.</span><span class="n">isoformat</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">pd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span><span class="p">;</span>
+            <span class="n">data</span><span class="o">=</span>   <span class="n">pd</span>\
+            <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">pchange</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">pchange</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">float</span><span class="p">))</span>\
+            <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">amount</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">amount</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">float</span><span class="p">))</span>\
+            <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">bratio</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">bratio</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">float</span><span class="p">))</span>\
+            <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">sratio</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">sratio</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">float</span><span class="p">))</span>\
+            <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">buy</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">buy</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">float</span><span class="p">))</span>\
+            <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">sell</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">sell</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">float</span><span class="p">))</span>
+            <span class="c1"># __coll.insert_many(QA_util_to_json_from_pandas(data))</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+             <span class="n">__coll</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;code&quot;</span><span class="p">:</span><span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;code&#39;</span><span class="p">],</span><span class="s2">&quot;date&quot;</span><span class="p">:</span><span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;date&#39;</span><span class="p">]},{</span><span class="s2">&quot;$set&quot;</span><span class="p">:</span><span class="n">QA_util_to_json_from_pandas</span><span class="p">(</span><span class="n">data</span><span class="p">)[</span><span class="n">i</span><span class="p">]},</span><span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error codes:&quot;</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">continue</span></div>
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">QA_save_stock_day_with_fqfactor</span><span class="p">()</span>
+    <span class="n">QA_save_lhb</span><span class="p">()</span>
 </pre></div>
 
            </div>
@@ -317,7 +399,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'1.0',
+            VERSION:'1.0.39',
             LANGUAGE:'python',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
