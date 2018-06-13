@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>QUANTAXIS.QAUtil.QARandom &mdash; QUANTAXIS 1.0 documentation</title>
+  <title>QUANTAXIS.QAUtil.QARandom &mdash; QUANTAXIS 1.0.39 documentation</title>
   
 
   
@@ -55,6 +55,10 @@
 
           
             
+            
+              <div class="version">
+                1.0.39
+              </div>
             
           
 
@@ -166,6 +170,42 @@
 
 <span class="kn">import</span> <span class="nn">random</span>
 
+<div class="viewcode-block" id="QA_util_random_with_zh_stock_code"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QARandom.QA_util_random_with_zh_stock_code">[docs]</a><span class="k">def</span> <span class="nf">QA_util_random_with_zh_stock_code</span><span class="p">(</span><span class="n">stockNumber</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    随机生成股票代码</span>
+<span class="sd">    :param stockNumber: 生成个数</span>
+<span class="sd">    :return:  [&#39;60XXXX&#39;, &#39;00XXXX&#39;, &#39;300XXX&#39;]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">codeList</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">pt</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">stockNumber</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">pt</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1">#print(&quot;random 60XXXX&quot;)</span>
+            <span class="n">iCode</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">600000</span><span class="p">,</span> <span class="mi">609999</span><span class="p">)</span>
+            <span class="n">aCode</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%06d</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">iCode</span>
+
+        <span class="k">elif</span> <span class="n">pt</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1">#print(&quot;random 00XXXX&quot;)</span>
+            <span class="n">iCode</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">600000</span><span class="p">,</span> <span class="mi">600999</span><span class="p">)</span>
+            <span class="n">aCode</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%06d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">iCode</span>
+
+        <span class="k">elif</span> <span class="n">pt</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1">#print(&quot;random 00XXXX&quot;)</span>
+            <span class="n">iCode</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">9999</span><span class="p">)</span>
+            <span class="n">aCode</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%06d</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">iCode</span>
+
+        <span class="k">elif</span> <span class="n">pt</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="c1">#print(&quot;random 300XXX&quot;)</span>
+            <span class="n">iCode</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">300000</span><span class="p">,</span> <span class="mi">300999</span><span class="p">)</span>
+            <span class="n">aCode</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%06d</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">iCode</span>
+
+        <span class="k">elif</span> <span class="n">pt</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="c1">#print(&quot;random 00XXXX&quot;)</span>
+            <span class="n">iCode</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">2999</span><span class="p">)</span>
+            <span class="n">aCode</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%06d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">iCode</span>
+        <span class="n">pt</span> <span class="o">=</span> <span class="p">(</span><span class="n">pt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">5</span>
+        <span class="n">codeList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">aCode</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">codeList</span></div>
 
 <div class="viewcode-block" id="QA_util_random_with_topic"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QARandom.QA_util_random_with_topic">[docs]</a><span class="k">def</span> <span class="nf">QA_util_random_with_topic</span><span class="p">(</span><span class="n">topic</span><span class="o">=</span><span class="s1">&#39;Acc&#39;</span><span class="p">,</span> <span class="n">lens</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -217,7 +257,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'1.0',
+            VERSION:'1.0.39',
             LANGUAGE:'python',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

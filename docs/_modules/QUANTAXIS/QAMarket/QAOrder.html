@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>QUANTAXIS.QAMarket.QAOrder &mdash; QUANTAXIS 1.0 documentation</title>
+  <title>QUANTAXIS.QAMarket.QAOrder &mdash; QUANTAXIS 1.0.39 documentation</title>
   
 
   
@@ -55,6 +55,10 @@
 
           
             
+            
+              <div class="version">
+                1.0.39
+              </div>
             
           
 
@@ -167,8 +171,7 @@
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
-<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil</span> <span class="k">import</span> <span class="p">(</span><span class="n">QA_util_log_info</span><span class="p">,</span> <span class="n">QA_util_random_with_topic</span><span class="p">,</span>
-                              <span class="n">QA_util_to_json_from_pandas</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil</span> <span class="k">import</span> <span class="p">(</span><span class="n">QA_util_log_info</span><span class="p">,</span> <span class="n">QA_util_random_with_topic</span><span class="p">,</span><span class="n">QA_util_to_json_from_pandas</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QAParameter</span> <span class="k">import</span> <span class="n">AMOUNT_MODEL</span><span class="p">,</span> <span class="n">ORDER_STATUS</span>
 
 
@@ -185,54 +188,67 @@
 
 
 <span class="sd">@2018/1/9</span>
-<span class="sd">需要重新考虑 order的重复创建耗时问题</span>
+<span class="sd">需要重新考虑 order的重复创建耗时问题？</span>
 
-<span class="sd">order_frame 是一个管理性面板  但是还是需要一个缓存dict</span>
+<span class="sd">order_frame 是一个管理性面板  但是还是需要一个缓存dict？</span>
+
+
+<span class="sd">@2018/05/25</span>
+<span class="sd">不建议保存两份变量， 维护起来很麻烦，容易出错。</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-
 <div class="viewcode-block" id="QA_Order"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAOrder.QA_Order">[docs]</a><span class="k">class</span> <span class="nc">QA_Order</span><span class="p">():</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datetime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sending_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">transact_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">amount</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">market_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frequence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">towards</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">account_cookie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">order_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">amount_model</span><span class="o">=</span><span class="n">AMOUNT_MODEL</span><span class="o">.</span><span class="n">BY_AMOUNT</span><span class="p">,</span>
-                 <span class="n">order_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">trade_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;100&#39;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;委托字段</span>
-<span class="sd">        price 委托的价格</span>
-<span class="sd">        date 委托的日期</span>
-<span class="sd">        datetime 委托的时间</span>
-<span class="sd">        sending_time 发送委托单的时间</span>
-<span class="sd">        transact_time 委托成交的时间</span>
-<span class="sd">        amount 委托量</span>
-<span class="sd">        market_type 委托的市场</span>
-<span class="sd">        frequence 频率</span>
-<span class="sd">        towards 委托方向</span>
-<span class="sd">        code 委托代码</span>
-<span class="sd">        user 委托股东</span>
-<span class="sd">        account_cookie 委托账户的cookie</span>
-<span class="sd">        strategy 策略名</span>
-<span class="sd">        order_model 委托方式(限价/市价/下一个bar/)</span>
-<span class="sd">        amount_model 委托量模式(按量委托/按总成交额委托)</span>
-<span class="sd">        order_id 委托单id</span>
-<span class="sd">        trade_id 成交id</span>
-<span class="sd">        status 订单状态</span>
-<span class="sd">        callback 回调函数</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        记录order</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="kc">None</span> <span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datetime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sending_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">transact_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">amount</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">market_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frequence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">towards</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">account_cookie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">order_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">money</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">amount_model</span><span class="o">=</span><span class="n">AMOUNT_MODEL</span><span class="o">.</span><span class="n">BY_AMOUNT</span><span class="p">,</span>
+                 <span class="n">order_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">trade_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;100&#39;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">commission_coeff</span><span class="o">=</span><span class="mf">0.00025</span><span class="p">,</span> <span class="n">tax_coeff</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        QA_Order 对象表示一个委托业务， 有如下字段</span>
+<span class="sd">        :param price:           委托的价格        type float</span>
+<span class="sd">        :param date:            委托的日期        type str , eg 2018-11-11</span>
+<span class="sd">        :param datetime:        委托的时间        type str , eg 2018-11-11 00:00:00</span>
+<span class="sd">        :param sending_time:    发送委托单的时间   type str , eg 2018-11-11 00:00:00</span>
+<span class="sd">        :param transact_time:   委托成交的时间</span>
+<span class="sd">        :param amount:          委托量               type int</span>
+<span class="sd">        :param market_type:     委托的市场            type str eg &#39;stock_cn&#39;</span>
+<span class="sd">        :param frequence:       频率                 type str &#39;day&#39;</span>
+<span class="sd">        :param towards:         委托方向              type int</span>
+<span class="sd">        :param code:            委托代码              type str</span>
+<span class="sd">        :param user:            委托股东</span>
+<span class="sd">        :param account_cookie:  委托账户的cookietype          type str eg &#39;Acc_4UckWFG3&#39;</span>
+<span class="sd">        :param strategy:        策略名                        type str</span>
+<span class="sd">        :param order_model:     委托方式(限价/市价/下一个bar/)  type str eg &#39;limit&#39;</span>
+<span class="sd">        :param money:           金额                           type float</span>
+<span class="sd">        :param amount_model:    委托量模式(按量委托/按总成交额委托) type str &#39;by_amount&#39;</span>
+<span class="sd">        :param order_id:        委托单id</span>
+<span class="sd">        :param trade_id:        成交id</span>
+<span class="sd">        :param status:          订单状态   type str &#39;100&#39; &#39;200&#39; &#39;300&#39;</span>
+<span class="sd">        :param callback:        回调函数   type bound method  eg  QA_Account.receive_deal</span>
+<span class="sd">        :param commission_coeff: 默认 0.00025  type float</span>
+<span class="sd">        :param tax_coeff:        默认 0.0015  type float</span>
+<span class="sd">        :param args: type tuple</span>
+<span class="sd">        :param kwargs: type dict</span>
+<span class="sd">        &#39;&#39;&#39;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="n">price</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1">#🛠todo 移动到 Util 类中 时间处理函数</span>
         <span class="k">if</span> <span class="n">datetime</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">date</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">date</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> 09:31:00&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">)</span>
-
         <span class="k">elif</span> <span class="n">date</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">datetime</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="n">datetime</span>
-
         <span class="k">elif</span> <span class="n">date</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">datetime</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">date</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="n">datetime</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">pass</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">sending_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datetime</span> <span class="k">if</span> <span class="n">sending_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">sending_time</span>  <span class="c1"># 下单时间</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transact_time</span> <span class="o">=</span> <span class="n">transact_time</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">amount</span> <span class="o">=</span> <span class="n">amount</span>
@@ -248,132 +264,189 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">amount_model</span> <span class="o">=</span> <span class="n">amount_model</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">order_id</span> <span class="o">=</span> <span class="n">QA_util_random_with_topic</span><span class="p">(</span>
             <span class="n">topic</span><span class="o">=</span><span class="s1">&#39;Order&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">order_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">order_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">commission_coeff</span> <span class="o">=</span> <span class="n">commission_coeff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tax_coeff</span> <span class="o">=</span> <span class="n">tax_coeff</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trade_id</span> <span class="o">=</span> <span class="n">trade_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">status</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">money</span> <span class="o">=</span> <span class="n">money</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;&lt; QA_Order datetime:</span><span class="si">{}</span><span class="s1"> code:</span><span class="si">{}</span><span class="s1"> price:</span><span class="si">{}</span><span class="s1"> towards:</span><span class="si">{}</span><span class="s1"> btype:</span><span class="si">{}</span><span class="s1"> order_id:</span><span class="si">{}</span><span class="s1"> account:</span><span class="si">{}</span><span class="s1"> status:</span><span class="si">{}</span><span class="s1"> &gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">price</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">towards</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">account_cookie</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">)</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        输出格式化对象</span>
+<span class="sd">        :return:  字符串</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt; QA_Order datetime:</span><span class="si">{}</span><span class="s1"> code:</span><span class="si">{}</span><span class="s1"> amount:</span><span class="si">{}</span><span class="s1"> price:</span><span class="si">{}</span><span class="s1"> towards:</span><span class="si">{}</span><span class="s1"> btype:</span><span class="si">{}</span><span class="s1"> order_id:</span><span class="si">{}</span><span class="s1"> account:</span><span class="si">{}</span><span class="s1"> status:</span><span class="si">{}</span><span class="s1"> &gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">amount</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">price</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">towards</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">account_cookie</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">)</span>
 
+    <span class="c1">#🛠todo 建议取消，直接调用var</span>
 <div class="viewcode-block" id="QA_Order.info"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAOrder.QA_Order.info">[docs]</a>    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
+    <span class="c1">#对象转变成 dfs</span>
 <div class="viewcode-block" id="QA_Order.to_df"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAOrder.QA_Order.to_df">[docs]</a>    <span class="k">def</span> <span class="nf">to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">])</span></div>
 
+
+    <span class="c1">#🛠todo 建议取消，直接调用var？</span>
 <div class="viewcode-block" id="QA_Order.to_dict"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAOrder.QA_Order.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        把对象中的属性转变成字典类型</span>
+<span class="sd">        :return: dict</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="QA_Order.from_dict"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAOrder.QA_Order.from_dict">[docs]</a>    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">):</span>
+<div class="viewcode-block" id="QA_Order.from_dict"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAOrder.QA_Order.from_dict">[docs]</a>    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_dict</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        从字段类型的字段 填充 对象的字段</span>
+<span class="sd">        :param order_dict:  dict 类型</span>
+<span class="sd">        :return: self QA_Order</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># QA_util_log_info(&#39;QA_ORDER CHANGE: from {} change to {}&#39;.format(</span>
             <span class="c1">#     self.order_id, order[&#39;order_id&#39;]))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="s1">&#39;price&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sending_time</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="s1">&#39;sending_time&#39;</span><span class="p">]</span>  <span class="c1"># 下单时间</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">transact_time</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="s1">&#39;transact_time&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">amount</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="s1">&#39;amount&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">frequence</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="s1">&#39;frequence&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">market_type</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="s1">&#39;market_type&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">towards</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="s1">&#39;towards&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">code</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">account_cookie</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="s1">&#39;account_cookie&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">strategy</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="s1">&#39;strategy&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">order_model</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="s1">&#39;order_model&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">amount_model</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="s1">&#39;amount_model&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">order_id</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="s1">&#39;order_id&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">trade_id</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="s1">&#39;trade_id&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="s1">&#39;callback&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="n">order_dict</span><span class="p">[</span><span class="s1">&#39;price&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">order_dict</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="n">order_dict</span><span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sending_time</span> <span class="o">=</span> <span class="n">order_dict</span><span class="p">[</span><span class="s1">&#39;sending_time&#39;</span><span class="p">]</span>  <span class="c1"># 下单时间</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transact_time</span> <span class="o">=</span> <span class="n">order_dict</span><span class="p">[</span><span class="s1">&#39;transact_time&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">amount</span> <span class="o">=</span> <span class="n">order_dict</span><span class="p">[</span><span class="s1">&#39;amount&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frequence</span> <span class="o">=</span> <span class="n">order_dict</span><span class="p">[</span><span class="s1">&#39;frequence&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">market_type</span> <span class="o">=</span> <span class="n">order_dict</span><span class="p">[</span><span class="s1">&#39;market_type&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">towards</span> <span class="o">=</span> <span class="n">order_dict</span><span class="p">[</span><span class="s1">&#39;towards&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">code</span> <span class="o">=</span> <span class="n">order_dict</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">order_dict</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">account_cookie</span> <span class="o">=</span> <span class="n">order_dict</span><span class="p">[</span><span class="s1">&#39;account_cookie&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">strategy</span> <span class="o">=</span> <span class="n">order_dict</span><span class="p">[</span><span class="s1">&#39;strategy&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">order_dict</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">order_model</span> <span class="o">=</span> <span class="n">order_dict</span><span class="p">[</span><span class="s1">&#39;order_model&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">amount_model</span> <span class="o">=</span> <span class="n">order_dict</span><span class="p">[</span><span class="s1">&#39;amount_model&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">order_id</span> <span class="o">=</span> <span class="n">order_dict</span><span class="p">[</span><span class="s1">&#39;order_id&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trade_id</span> <span class="o">=</span> <span class="n">order_dict</span><span class="p">[</span><span class="s1">&#39;trade_id&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">order_dict</span><span class="p">[</span><span class="s1">&#39;callback&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">commission_coeff</span> <span class="o">=</span> <span class="n">order_dict</span><span class="p">[</span><span class="s1">&#39;commission_coeff&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tax_coeff</span> <span class="o">=</span> <span class="n">order_dict</span><span class="p">[</span><span class="s1">&#39;tax_coeff&#39;</span><span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">money</span> <span class="o">=</span> <span class="n">order_dict</span><span class="p">[</span><span class="s1">&#39;money&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">order_dict</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span>
+
             <span class="k">return</span> <span class="bp">self</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;Failed to tran from dict </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div></div>
 
 
-<div class="viewcode-block" id="QA_OrderQueue"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue">[docs]</a><span class="k">class</span> <span class="nc">QA_OrderQueue</span><span class="p">():</span>   <span class="c1"># also the order tree</span>
+<div class="viewcode-block" id="QA_OrderQueue"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue">[docs]</a><span class="k">class</span> <span class="nc">QA_OrderQueue</span><span class="p">():</span>   <span class="c1"># also the order tree ？？ what&#39;s the tree means?</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    一个待成交队列</span>
+<span class="sd">    queue是一个dataframe</span>
 <span class="sd">    这里面都是对于方法的封装</span>
-
+<span class="sd">    queue_df 的意图</span>
+<span class="sd">    对orderqueue进行管理 这是一个dataframe</span>
+<span class="sd">    然后等到要恢复订单的时候 再去用orderid恢复他</span>
+<span class="sd">    就好比 你下了个单子</span>
+<span class="sd">    你就在小本本上记一笔</span>
+<span class="sd">    然后成交了你打个勾</span>
+<span class="sd">    撤单了你打个叉</span>
+<span class="sd">    你看看你还有多少单子在委托你就数数小本子</span>
+<span class="sd">    这个小本子 就是orderqueue的dataframe</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">order_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1">#🛠 todo 是为了速度快把order对象转换成 df 对象的吗？</span>
+        <span class="c1">#🛠 todo 维护两个变量queue，代价很大</span>
+        <span class="c1">#🛠 todo 建议直接保存 QA_Order， 速度慢？</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_queue_dict</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;&lt; QA_OrderQueue AMOUNT </span><span class="si">{}</span><span class="s1"> WAITING TRADE </span><span class="si">{}</span><span class="s1"> &gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pending</span><span class="p">))</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt; QA_OrderQueue AMOUNT </span><span class="si">{}</span><span class="s1"> WAITING TRADE </span><span class="si">{}</span><span class="s1"> &gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">queue_df</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pending</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue_df</span>
 
     <span class="k">def</span> <span class="nf">_from_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">order_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">QA_Order</span><span class="p">()</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-                               <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">QA_util_to_json_from_pandas</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">order_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">QA_Order</span><span class="p">()</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">QA_util_to_json_from_pandas</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)]</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_list</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="k">pass</span>
 
 <div class="viewcode-block" id="QA_OrderQueue.insert_order"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.insert_order">[docs]</a>    <span class="k">def</span> <span class="nf">insert_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">):</span>
-        <span class="n">order</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">ORDER_STATUS</span><span class="o">.</span><span class="n">QUEUED</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">order</span><span class="o">.</span><span class="n">to_df</span><span class="p">(),</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;order_id&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">order_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">order</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        :param order: QA_Order类型</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1">#print(&quot;     *&gt;&gt; QAOrder!insert_order  {}&quot;.format(order))</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">ORDER_STATUS</span><span class="o">.</span><span class="n">QUEUED</span> <span class="c1">#    QUEUED = 300  # queued 用于表示在order_queue中 实际表达的意思是订单存活 待成交</span>
+        <span class="c1">#🛠 todo 是为了速度快把order对象转换成 df 对象的吗？</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue_df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">to_df</span><span class="p">(),</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;order_id&#39;</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_queue_dict</span><span class="p">[</span><span class="n">order</span><span class="o">.</span><span class="n">order_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">order</span>
         <span class="k">return</span> <span class="n">order</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">order_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">index</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue_df</span><span class="o">.</span><span class="n">index</span>
 
 <div class="viewcode-block" id="QA_OrderQueue.settle"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.settle">[docs]</a>    <span class="k">def</span> <span class="nf">settle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;结算</span>
-
 <span class="sd">        清空订单簿</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span> <span class="o">=</span> <span class="p">{}</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_queue_dict</span> <span class="o">=</span> <span class="p">{}</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">pending</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;选择待成交列表</span>
-
-<span class="sd">        [description]</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            dataframe</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        200 委托成功,完全交易</span>
+<span class="sd">        203 委托成功,未完全成功</span>
+<span class="sd">        300 刚创建订单的时候</span>
+<span class="sd">        400 已撤单</span>
+<span class="sd">        500 服务器撤单/每日结算</span>
+<span class="sd">        订单生成(100) -- 进入待成交队列(300) -- 完全成交(200) -- 每日结算(500)-- 死亡</span>
+<span class="sd">        订单生成(100) -- 进入待成交队列(300) -- 部分成交(203) -- 未成交(300) -- 每日结算(500) -- 死亡</span>
+<span class="sd">        订单生成(100) -- 进入待成交队列(300) -- 主动撤单(400) -- 每日结算(500) -- 死亡</span>
+<span class="sd">        选择待成交列表</span>
+<span class="sd">        :return: dataframe</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;status!=200&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;status!=500&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;status!=400&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue_df</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;status!=200&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;status!=500&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;status!=400&#39;</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">trade_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;批量交易</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        批量交易</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_queue_dict</span><span class="p">[</span><span class="n">order_id</span><span class="p">]</span> <span class="k">for</span> <span class="n">order_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pending</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
 
-<span class="sd">        [description]</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            list of orders</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="p">[</span><span class="n">order_id</span><span class="p">]</span> <span class="k">for</span> <span class="n">order_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pending</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
 
 <div class="viewcode-block" id="QA_OrderQueue.query_order"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.query_order">[docs]</a>    <span class="k">def</span> <span class="nf">query_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_id</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        @modified by JerryW 2018/05/25</span>
+<span class="sd">        根据 order_id 查询队列中的记录， 并且转换成 order 对象</span>
+<span class="sd">        :param order_id:  str 类型 Order_开头的随机数  eg：Order_KQymhXWu</span>
+<span class="sd">        :return QA_Order类型:</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">anOrderRec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="n">order_id</span><span class="p">]]</span>
+        <span class="n">rec_dict</span> <span class="o">=</span> <span class="n">anOrderRec</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="s1">&#39;records&#39;</span><span class="p">)</span>
+        <span class="n">anOrderObj</span> <span class="o">=</span> <span class="n">QA_Order</span><span class="p">()</span>
+        <span class="n">anOrderObj</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">rec_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">anOrderObj</span></div>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">order_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
-
+    <span class="c1">#🛠todo 订单队列</span>
 <div class="viewcode-block" id="QA_OrderQueue.set_status"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAOrder.QA_OrderQueue.set_status">[docs]</a>    <span class="k">def</span> <span class="nf">set_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_id</span><span class="p">,</span> <span class="n">new_status</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">order_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_ids</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">order_id</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_status</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="p">[</span><span class="n">order_id</span><span class="p">]</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">new_status</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">queue_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">order_id</span><span class="p">,</span> <span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_status</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_queue_dict</span><span class="p">[</span><span class="n">order_id</span><span class="p">]</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">new_status</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">pass</span>
         <span class="k">except</span><span class="p">:</span>
@@ -419,7 +492,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'1.0',
+            VERSION:'1.0.39',
             LANGUAGE:'python',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>QUANTAXIS.QAMarket.QASimulatedBroker &mdash; QUANTAXIS 1.0 documentation</title>
+  <title>QUANTAXIS.QAMarket.QASimulatedBroker &mdash; QUANTAXIS 1.0.39 documentation</title>
   
 
   
@@ -55,6 +55,10 @@
 
           
             
+            
+              <div class="version">
+                1.0.39
+              </div>
             
           
 
@@ -175,6 +179,7 @@
 <span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QAParameter</span> <span class="k">import</span> <span class="n">MARKET_TYPE</span><span class="p">,</span> <span class="n">FREQUENCE</span>
 <span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QALogs</span> <span class="k">import</span> <span class="n">QA_util_log_info</span>
 
+
 <div class="viewcode-block" id="QA_SimulatedBroker"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QASimulatedBroker.QA_SimulatedBroker">[docs]</a><span class="k">class</span> <span class="nc">QA_SimulatedBroker</span><span class="p">(</span><span class="n">QA_Broker</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dealer</span> <span class="o">=</span> <span class="n">QA_Dealer</span><span class="p">()</span>
@@ -200,8 +205,6 @@
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">QA_util_log_info</span><span class="p">(</span><span class="s1">&#39;MARKET_ENGING ERROR: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
             <span class="k">return</span> <span class="kc">None</span></div>
-
-
 
 <div class="viewcode-block" id="QA_SimulatedBroker.receive_order"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QASimulatedBroker.QA_SimulatedBroker.receive_order">[docs]</a>    <span class="k">def</span> <span class="nf">receive_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="n">order</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">order</span>
@@ -259,7 +262,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'1.0',
+            VERSION:'1.0.39',
             LANGUAGE:'python',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

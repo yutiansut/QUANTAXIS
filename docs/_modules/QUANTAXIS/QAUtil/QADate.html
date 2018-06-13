@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>QUANTAXIS.QAUtil.QADate &mdash; QUANTAXIS 1.0 documentation</title>
+  <title>QUANTAXIS.QAUtil.QADate &mdash; QUANTAXIS 1.0.39 documentation</title>
   
 
   
@@ -55,6 +55,10 @@
 
           
             
+            
+              <div class="version">
+                1.0.39
+              </div>
             
           
 
@@ -163,70 +167,92 @@
 <span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
-
+<span class="c1">#</span>
+<span class="c1">#</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">time</span>
 
 <span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QALogs</span> <span class="k">import</span> <span class="n">QA_util_log_info</span>
 
+<span class="c1">#🛠todo 时间函数 建议使用这些</span>
+<span class="c1">#  字符串 和 datetime date time 类型之间的转换</span>
+<span class="c1">#  QA_util__str_to_dateime</span>
+<span class="c1">#</span>
+<span class="c1">#  QA_util__datetime_to_str19</span>
+<span class="c1">#  QA_util__datetime_to_str10</span>
+
+<span class="c1">#  QA_util__str10_to_datetime</span>
+<span class="c1">#  QA_util__str19_to_datetime</span>
+
+<span class="c1">#  QA_util__int10_to_datetime</span>
+<span class="c1">#  QA_util__int19_to_datetime</span>
+
+<span class="c1">#  QA_util__date_to_str10</span>
+<span class="c1">#  QA_util__date_to_str19</span>
+
+<span class="c1">#  QA_util__time_to_str10</span>
+<span class="c1">#  QA_util__time_to_str19</span>
+
+<span class="c1">#  QA_util__str10_to_date</span>
+<span class="c1">#  QA_util__str10_to_time</span>
+
+<span class="c1">#  QA_util__str19_to_time</span>
+<span class="c1">#  QA_util__str19_to_date</span>
+
+<span class="c1"># 或者有更好的方案</span>
+
+
 
 <div class="viewcode-block" id="QA_util_time_now"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_time_now">[docs]</a><span class="k">def</span> <span class="nf">QA_util_time_now</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;[summary]</span>
-<span class="sd">    </span>
-<span class="sd">    Returns:</span>
-<span class="sd">        [type] -- [description]</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    返回当前时间</span>
+<span class="sd">    :return: 类型datetime.datetime</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="QA_util_date_today"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_date_today">[docs]</a><span class="k">def</span> <span class="nf">QA_util_date_today</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;[summary]</span>
-<span class="sd">    </span>
-<span class="sd">    Returns:</span>
-<span class="sd">        [type] -- [description]</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    返回当前日期</span>
+<span class="sd">    :return: 类型datetime.date</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span></div>
 
+<div class="viewcode-block" id="QA_util_today_str"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_today_str">[docs]</a><span class="k">def</span> <span class="nf">QA_util_today_str</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    返回今天的日期字符串</span>
+<span class="sd">    :return: 类型字符串 2011-11-11</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dt</span> <span class="o">=</span> <span class="n">QA_util_date_today</span><span class="p">()</span>
+    <span class="nb">str</span> <span class="o">=</span> <span class="n">QA_util_datetime_to_strdate</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">str</span></div>
 
 <div class="viewcode-block" id="QA_util_date_str2int"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_date_str2int">[docs]</a><span class="k">def</span> <span class="nf">QA_util_date_str2int</span><span class="p">(</span><span class="n">date</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;[summary]</span>
-<span class="sd">    </span>
-<span class="sd">    Arguments:</span>
-<span class="sd">        date {[type]} -- [description]</span>
-<span class="sd">    </span>
-<span class="sd">    Returns:</span>
-<span class="sd">        [type] -- [description]</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    日期字符串 &#39;2011-09-11&#39; 变换成 整数 20110911</span>
+<span class="sd">    日期字符串 &#39;2018-12-01&#39; 变换成 整数 20181201</span>
+<span class="sd">    :param date: str日期字符串</span>
+<span class="sd">    :return: 类型int</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">)[</span><span class="mi">5</span><span class="p">:</span><span class="mi">7</span><span class="p">]</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">)[</span><span class="mi">8</span><span class="p">:</span><span class="mi">10</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="QA_util_date_int2str"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_date_int2str">[docs]</a><span class="k">def</span> <span class="nf">QA_util_date_int2str</span><span class="p">(</span><span class="n">date</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;[summary]</span>
-<span class="sd">    </span>
-<span class="sd">    Arguments:</span>
-<span class="sd">        date {[type]} -- [description]</span>
-<span class="sd">    </span>
-<span class="sd">    Returns:</span>
-<span class="sd">        [type] -- [description]</span>
+<div class="viewcode-block" id="QA_util_date_int2str"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_date_int2str">[docs]</a><span class="k">def</span> <span class="nf">QA_util_date_int2str</span><span class="p">(</span><span class="n">int_date</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    类型datetime.datatime</span>
+<span class="sd">    :param date: int 8位整数</span>
+<span class="sd">    :return: 类型str</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">)[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">)[</span><span class="mi">6</span><span class="p">:</span><span class="mi">8</span><span class="p">])</span></div>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">int_date</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">int_date</span><span class="p">)[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">int_date</span><span class="p">)[</span><span class="mi">6</span><span class="p">:</span><span class="mi">8</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="QA_util_to_datetime"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_to_datetime">[docs]</a><span class="k">def</span> <span class="nf">QA_util_to_datetime</span><span class="p">(</span><span class="n">time</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;[summary]</span>
-<span class="sd">    </span>
-<span class="sd">    Arguments:</span>
-<span class="sd">        time {[type]} -- [description]</span>
-<span class="sd">    </span>
-<span class="sd">    Returns:</span>
-<span class="sd">        [type] -- [description]</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    字符串 &#39;2018-01-01&#39;  转变成 datatime 类型</span>
+<span class="sd">    :param time: 字符串str -- 格式必须是 2018-01-01 ，长度10</span>
+<span class="sd">    :return: 类型datetime.datatime</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="p">))</span> <span class="o">==</span> <span class="mi">10</span><span class="p">:</span>
         <span class="n">_time</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> 00:00:00&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="p">))</span> <span class="o">==</span> <span class="mi">19</span><span class="p">:</span>
@@ -236,74 +262,101 @@
     <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">_time</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="QA_util_date_stamp"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_date_stamp">[docs]</a><span class="k">def</span> <span class="nf">QA_util_date_stamp</span><span class="p">(</span><span class="n">date</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;[summary]</span>
-<span class="sd">    </span>
-<span class="sd">    Arguments:</span>
-<span class="sd">        date {[type]} -- [description]</span>
-<span class="sd">    </span>
-<span class="sd">    Returns:</span>
-<span class="sd">        [type] -- [description]</span>
+<div class="viewcode-block" id="QA_util_datetime_to_strdate"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_datetime_to_strdate">[docs]</a><span class="k">def</span> <span class="nf">QA_util_datetime_to_strdate</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param dt:  pythone datetime.datetime</span>
+<span class="sd">    :return:  1999-02-01 string type</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">strdate</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%04d</span><span class="s2">-</span><span class="si">%02d</span><span class="s2">-</span><span class="si">%02d</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">day</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">strdate</span></div>
 
+
+
+<div class="viewcode-block" id="QA_util_datetime_to_strdatetime"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_datetime_to_strdatetime">[docs]</a><span class="k">def</span> <span class="nf">QA_util_datetime_to_strdatetime</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param dt:  pythone datetime.datetime</span>
+<span class="sd">    :return:  1999-02-01 09:30:91 string type</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">strdatetime</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%04d</span><span class="s2">-</span><span class="si">%02d</span><span class="s2">-</span><span class="si">%02d</span><span class="s2"> </span><span class="si">%02d</span><span class="s2">:</span><span class="si">%02d</span><span class="s2">:</span><span class="si">%02d</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">day</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">hour</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">minute</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">second</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">strdatetime</span></div>
+
+<div class="viewcode-block" id="QA_util_date_stamp"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_date_stamp">[docs]</a><span class="k">def</span> <span class="nf">QA_util_date_stamp</span><span class="p">(</span><span class="n">date</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    字符串 &#39;2018-01-01&#39;  转变成 float 类型时间 类似 time.time() 返回的类型</span>
+<span class="sd">    :param date: 字符串str -- 格式必须是 2018-01-01 ，长度10</span>
+<span class="sd">    :return: 类型float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">datestr</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
     <span class="n">date</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">mktime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">datestr</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">date</span></div>
 
 
 <div class="viewcode-block" id="QA_util_time_stamp"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_time_stamp">[docs]</a><span class="k">def</span> <span class="nf">QA_util_time_stamp</span><span class="p">(</span><span class="n">time_</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    数据格式最好是%Y-%m-%d %H:%M:%S 中间要有空格 </span>
-<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    字符串 &#39;2018-01-01 00:00:00&#39;  转变成 float 类型时间 类似 time.time() 返回的类型</span>
+<span class="sd">    :param time_: 字符串str -- 数据格式 最好是%Y-%m-%d %H:%M:%S 中间要有空格</span>
+<span class="sd">    :return: 类型float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">time_</span><span class="p">))</span> <span class="o">==</span> <span class="mi">10</span><span class="p">:</span>
         <span class="c1"># yyyy-mm-dd格式</span>
         <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">mktime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">time_</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">))</span>
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">time_</span><span class="p">))</span> <span class="o">==</span> <span class="mi">16</span><span class="p">:</span>
-            <span class="c1"># yyyy-mm-dd hh:mm格式</span>
+        <span class="c1"># yyyy-mm-dd hh:mm格式</span>
         <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">mktime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">time_</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">timestr</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">time_</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">19</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">mktime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">timestr</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">))</span></div>
 
 
+
+<div class="viewcode-block" id="QA_util_pands_timestamp_to_date"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_pands_timestamp_to_date">[docs]</a><span class="k">def</span> <span class="nf">QA_util_pands_timestamp_to_date</span><span class="p">(</span><span class="n">pandsTimestamp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    转换 pandas 的时间戳 到 datetime.date类型</span>
+<span class="sd">    :param pandsTimestamp: 类型 pandas._libs.tslib.Timestamp</span>
+<span class="sd">    :return: datetime.datetime类型</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">pandsTimestamp</span><span class="o">.</span><span class="n">to_pydatetime</span><span class="p">()</span><span class="o">.</span><span class="n">date</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="QA_util_pands_timestamp_to_datetime"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_pands_timestamp_to_datetime">[docs]</a><span class="k">def</span> <span class="nf">QA_util_pands_timestamp_to_datetime</span><span class="p">(</span><span class="n">pandsTimestamp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    转换 pandas 的时间戳 到 datetime.datetime类型</span>
+<span class="sd">    :param pandsTimestamp: 类型 pandas._libs.tslib.Timestamp</span>
+<span class="sd">    :return: datetime.datetime类型</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">pandsTimestamp</span><span class="o">.</span><span class="n">to_pydatetime</span><span class="p">()</span></div>
+
+
 <div class="viewcode-block" id="QA_util_stamp2datetime"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_stamp2datetime">[docs]</a><span class="k">def</span> <span class="nf">QA_util_stamp2datetime</span><span class="p">(</span><span class="n">timestamp</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    datestamp转datetime</span>
-
 <span class="sd">    pandas转出来的timestamp是13位整数 要/1000</span>
-
+<span class="sd">    It’s common for this to be restricted to years from 1970 through 2038.</span>
+<span class="sd">    从1970年开始的纳秒到当前的计数 转变成 float 类型时间 类似 time.time() 返回的类型</span>
+<span class="sd">    :param timestamp: long类型</span>
+<span class="sd">    :return: 类型float</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">timestamp</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">timestamp</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span> <span class="c1"># it won&#39;t work ??</span></div>
+    <span class="c1">#</span>
 
 
 <div class="viewcode-block" id="QA_util_ms_stamp"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_ms_stamp">[docs]</a><span class="k">def</span> <span class="nf">QA_util_ms_stamp</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;[summary]</span>
-<span class="sd">    </span>
-<span class="sd">    Arguments:</span>
-<span class="sd">        ms {[type]} -- [description]</span>
-<span class="sd">    </span>
-<span class="sd">    Returns:</span>
-<span class="sd">        [type] -- [description]</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    直接返回不做处理</span>
+<span class="sd">    :param ms:  long类型 -- tick count</span>
+<span class="sd">    :return: 返回ms</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">return</span> <span class="n">ms</span></div>
 
-
 <div class="viewcode-block" id="QA_util_date_valid"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_date_valid">[docs]</a><span class="k">def</span> <span class="nf">QA_util_date_valid</span><span class="p">(</span><span class="n">date</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;[summary]</span>
-<span class="sd">    </span>
-<span class="sd">    Arguments:</span>
-<span class="sd">        date {[type]} -- [description]</span>
-<span class="sd">    </span>
-<span class="sd">    Returns:</span>
-<span class="sd">        [type] -- [description]</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    判断字符串是否是 1982-05-11 这种格式</span>
+<span class="sd">    :param date: date 字符串str -- 格式 字符串长度10</span>
+<span class="sd">    :return: boolean -- 格式是否正确</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">try</span><span class="p">:</span>
-
         <span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">except</span><span class="p">:</span>
@@ -311,13 +364,12 @@
 
 
 <div class="viewcode-block" id="QA_util_realtime"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_realtime">[docs]</a><span class="k">def</span> <span class="nf">QA_util_realtime</span><span class="p">(</span><span class="n">strtime</span><span class="p">,</span> <span class="n">client</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;[summary]</span>
-<span class="sd">    </span>
-<span class="sd">    Arguments:</span>
-<span class="sd">        strtime {[type]} -- [description]</span>
-<span class="sd">        client {[type]} -- [description]</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    查询数据库中的数据</span>
+<span class="sd">    :param strtime: strtime  str字符串                 -- 1999-12-11 这种格式</span>
+<span class="sd">    :param client: client  pymongo.MongoClient类型    -- mongodb 数据库 从 QA_util_sql_mongo_setting 中 QA_util_sql_mongo_setting 获取</span>
+<span class="sd">    :return: Dictionary  -- {&#39;time_real&#39;: 时间,&#39;id&#39;: id}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">time_stamp</span> <span class="o">=</span> <span class="n">QA_util_date_stamp</span><span class="p">(</span><span class="n">strtime</span><span class="p">)</span>
     <span class="n">coll</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">quantaxis</span><span class="o">.</span><span class="n">trade_date</span>
     <span class="n">temp_str</span> <span class="o">=</span> <span class="n">coll</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s1">&#39;date_stamp&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$gte&quot;</span><span class="p">:</span> <span class="n">time_stamp</span><span class="p">}})</span>
@@ -327,33 +379,26 @@
 
 
 <div class="viewcode-block" id="QA_util_id2date"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_id2date">[docs]</a><span class="k">def</span> <span class="nf">QA_util_id2date</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">client</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;[summary]</span>
-<span class="sd">    </span>
-<span class="sd">    Arguments:</span>
-<span class="sd">        idx {[type]} -- [description]</span>
-<span class="sd">        client {[type]} -- [description]</span>
-<span class="sd">    </span>
-<span class="sd">    Returns:</span>
-<span class="sd">        [type] -- [description]</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    从数据库中查询 通达信时间</span>
+<span class="sd">    :param idx: 字符串 -- 数据库index</span>
+<span class="sd">    :param client: pymongo.MongoClient类型    -- mongodb 数据库 从 QA_util_sql_mongo_setting 中 QA_util_sql_mongo_setting 获取</span>
+<span class="sd">    :return:         Str -- 通达信数据库时间</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">coll</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">quantaxis</span><span class="o">.</span><span class="n">trade_date</span>
     <span class="n">temp_str</span> <span class="o">=</span> <span class="n">coll</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s1">&#39;num&#39;</span><span class="p">:</span> <span class="n">idx</span><span class="p">})</span>
     <span class="k">return</span> <span class="n">temp_str</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="QA_util_is_trade"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_is_trade">[docs]</a><span class="k">def</span> <span class="nf">QA_util_is_trade</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">client</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;判断是否是交易日</span>
-<span class="sd">    </span>
-<span class="sd">    Arguments:</span>
-<span class="sd">        date {[type]} -- [description]</span>
-<span class="sd">        code {[type]} -- [description]</span>
-<span class="sd">        client {[type]} -- [description]</span>
-<span class="sd">    </span>
-<span class="sd">    Returns:</span>
-<span class="sd">        [type] -- [description]</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    判断是否是交易日</span>
+<span class="sd">    从数据库中查询</span>
+<span class="sd">    :param date: str类型 -- 1999-12-11 这种格式    10位字符串</span>
+<span class="sd">    :param code: str类型 -- 股票代码 例如 603658 ， 6位字符串</span>
+<span class="sd">    :param client: pymongo.MongoClient类型    -- mongodb 数据库 从 QA_util_sql_mongo_setting 中 QA_util_sql_mongo_setting 获取</span>
+<span class="sd">    :return:  Boolean -- 是否是交易时间</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">coll</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">quantaxis</span><span class="o">.</span><span class="n">stock_day</span>
     <span class="n">date</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
     <span class="n">is_trade</span> <span class="o">=</span> <span class="n">coll</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="n">code</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">date</span><span class="p">})</span>
@@ -365,20 +410,21 @@
 
 
 <div class="viewcode-block" id="QA_util_get_date_index"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_get_date_index">[docs]</a><span class="k">def</span> <span class="nf">QA_util_get_date_index</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">trade_list</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;返回在trade_list中的index位置</span>
-<span class="sd">    </span>
-<span class="sd">    Arguments:</span>
-<span class="sd">        date {[type]} -- [description]</span>
-<span class="sd">        trade_list {[type]} -- [description]</span>
-<span class="sd">    </span>
-<span class="sd">    Returns:</span>
-<span class="sd">        [type] -- [description]</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    返回在trade_list中的index位置</span>
+<span class="sd">    :param date: str类型 -- 1999-12-11 这种格式    10位字符串</span>
+<span class="sd">    :param trade_list: ？？</span>
+<span class="sd">    :return: ？？</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">return</span> <span class="n">trade_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">date</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="QA_util_get_index_date"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_get_index_date">[docs]</a><span class="k">def</span> <span class="nf">QA_util_get_index_date</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">trade_list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param id:  ：？？</span>
+<span class="sd">    :param trade_list:  ？？</span>
+<span class="sd">    :return: ？？</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">trade_list</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span></div>
 
 
@@ -433,7 +479,15 @@
 
 
 <div class="viewcode-block" id="QA_util_select_min"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_select_min">[docs]</a><span class="k">def</span> <span class="nf">QA_util_select_min</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gte</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lte</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="s1">&#39;quantaxis的时间选择函数,约定时间的范围,比如30分到59分&#39;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &#39;quantaxis的时间选择函数,约定时间的范围,比如30分到59分&#39;</span>
+<span class="sd">    :param time:</span>
+<span class="sd">    :param gt:</span>
+<span class="sd">    :param lt:</span>
+<span class="sd">    :param gte:</span>
+<span class="sd">    :param lte:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">__realtime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
@@ -473,7 +527,6 @@
                     <span class="n">true_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">true_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-
     <span class="k">except</span><span class="p">:</span>
         <span class="k">return</span> <span class="ne">Exception</span>
     <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">true_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -483,17 +536,27 @@
 
 
 <div class="viewcode-block" id="QA_util_time_delay"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_time_delay">[docs]</a><span class="k">def</span> <span class="nf">QA_util_time_delay</span><span class="p">(</span><span class="n">time_</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-    <span class="s1">&#39;这是一个用于复用/比如说@装饰器的延时函数</span><span class="se">\</span>
-<span class="s1">    使用threading里面的延时,为了是不阻塞进程</span><span class="se">\</span>
-<span class="s1">    有时候,同时发进去两个函数,第一个函数需要延时</span><span class="se">\</span>
-<span class="s1">    第二个不需要的话,用sleep就会阻塞掉第二个进程&#39;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &#39;这是一个用于复用/比如说@装饰器的延时函数\</span>
+<span class="sd">    使用threading里面的延时,为了是不阻塞进程\</span>
+<span class="sd">    有时候,同时发进去两个函数,第一个函数需要延时\</span>
+<span class="sd">    第二个不需要的话,用sleep就会阻塞掉第二个进程&#39;</span>
+<span class="sd">    :param time_:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">_exec</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
         <span class="n">threading</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="n">time_</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_exec</span></div>
 
 
 <div class="viewcode-block" id="QA_util_calc_time"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAUtil.html#QUANTAXIS.QAUtil.QADate.QA_util_calc_time">[docs]</a><span class="k">def</span> <span class="nf">QA_util_calc_time</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="s1">&#39;耗时长度的装饰器&#39;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &#39;耗时长度的装饰器&#39;</span>
+<span class="sd">    :param func:</span>
+<span class="sd">    :param args:</span>
+<span class="sd">    :param kwargs:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
     <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">_time</span><span class="p">)</span></div>
@@ -536,7 +599,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'1.0',
+            VERSION:'1.0.39',
             LANGUAGE:'python',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
