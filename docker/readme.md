@@ -146,3 +146,6 @@ root@f22b5357dc6e:/#
 
 ```
 
+
+
+ docker run -it --rm jupyter/base-notebook start.sh --user root bash
