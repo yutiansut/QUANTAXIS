@@ -51,27 +51,30 @@ class SPETradeApi(QA_Broker):
 
         self._endpoint = endpoint
         self._session = requests
+        self.fillorder_headers = ['name', 'datetime', 'towards', 'price',
+                                  'amount', 'money', 'trade_id', 'order_id', 'code', 'shareholder', 'other']
+        self.holding_headers = ['code', 'name', 'hoding_price', 'price', 'pnl', 'amount',
+                                'sell_available', 'pnl_money', 'holdings', 'total_amount', 'lastest_amounts', 'shareholder']
+        self.askorder_headers = ['code', 'towards', 'price', 'amount', 'transaction_price',
+                                 'transaction_amount', 'status', 'order_time', 'order_id', 'id', 'code', 'shareholders']
 
     def call(self, func, params=''):
-        print('{}/api/v1.0/{}'.format(self._endpoint, func))
-        print(params)
         response = self._session.get(
             '{}/api/v1.0/{}'.format(self._endpoint, func), params)
 
         text = response.text
-        
+
         return json.loads(text)
 
-    def call_post(self,func,params=''):
-        print(params)
-        response = self._session.post(
-            '{}/api/v1.0/{}'.format(self._endpoint, func), params)
+    def call_post(self, func, params=''):
 
+        uri = '{}/api/v1.0/{}?client={}'.format(
+            self._endpoint, func, params.pop('client'))
+        response = self._session.post(uri, params)
         text = response.text
-        print(text)
         return json.loads(text)
-    def call_delete(self,func,params=''):
-        print(params)
+
+    def call_delete(self, func, params=''):
         response = self._session.delete(
             '{}/api/v1.0/{}'.format(self._endpoint, func))
 
@@ -92,42 +95,47 @@ class SPETradeApi(QA_Broker):
 
     def query_accounts(self, accounts):
         return self.call("accounts", {
-            'client':accounts
+            'client': accounts
         })
+
     def query_positions(self, accounts):
         return self.call("positions", {
-            'client':accounts
+            'client': accounts
         })
-    def query_orders(self,accounts,status='filled'):
+
+    def query_orders(self, accounts, status='filled'):
         return self.call("orders", {
-            'client':accounts,
-            'status':status
+            'client': accounts,
+            'status': status
         })
-    def send_order(self,accounts):
-        return self.call_post('orders',json.dumps({
-            'client':accounts,
+
+    def send_order(self, accounts):
+        return self.call_post('orders', json.dumps({
+            'client': accounts,
             "action": "BUY",
-            "symbol" : "000001",
+            "symbol": "000001",
             "type": "LIMIT",
-            "priceType" : 0,
-            "price" : 9.26,
-            "amount" : 100
+            "priceType": 0,
+            "price": 9.26,
+            "amount": 100
 
         }))
-    def cancel_order(self,accounts,orderid):
-        return self.call_delete('orders/{}'.format(orderid),json.dumps({
-            'client':accounts
+
+    def cancel_order(self, accounts, orderid):
+        return self.call_delete('orders/{}'.format(orderid), json.dumps({
+            'client': accounts
         }))
+
     def cancel_all(self):
         return self.call_delete('orders')
-        
 
 
-if __name__=='__main__':
-    a=SPETradeApi()
+if __name__ == '__main__':
+    a = SPETradeApi()
     a.query_accounts('account:1363350141')
     a.query_orders('account:141')
-    a.query_orders('account:141','open')
+    a.query_orders('account:141', 'open')
     a.send_order('account:141')
     a.cancel_all()
-    #a.cancel_order('account:141','919')
+
+    # a.cancel_order('account:141','919')
