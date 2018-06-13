@@ -32,6 +32,10 @@
 
 1. 修改了QAMARKET 适配t0回测
 2. 增加t0回测示例
+3. 添加了获取东方财富个股资金流向保存到sqlite的命令， windows 和 mac 下测试过
+4. crawl eastmoney zjlx 6位股票代码 命令 和获取所有股票资金流向 crawl eastmoney zjlx all 的命令，
+5. 添加了 QUANTAXIS_CRAWLY 目录，一个scrapy 的空的项目，后期支持 各种经济新闻，证券报刊信息，热点咨询的获取
+
 
 ## 1.0.46 
 1. 命令行中 添加了 save stock_info_tushare 保存tushare股票列表的信息到数据库中
@@ -402,4 +406,3 @@ released in :May 02, 2018
 released in :Apr 27, 2018
 
 
-3. 添加了获取东方财富个股资金流向保存到sqlitte的命令
