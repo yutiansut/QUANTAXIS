@@ -14,15 +14,15 @@ def read_east_money_page_zjlx_to_sqllite(stockCode, save_sqlite_full_path_name):
 
     if sys.platform == 'darwin':
         browser = webdriver.Chrome('./selenium_driver/macos/chromedriver')
-
-    else:
-        #todo 🛠  添加其他os， 不知道 linux 和 windows 下 sys.platform == '' 啥字符串，需要测试
-        #browser = webdriver.Chrome('./selenium_driver/windows/chromedriver')
-        #browser = webdriver.Chrome('./selenium_driver/linux/chromedriver')
+    elif sys.platform == 'win32':
+        browser = webdriver.Chrome('./selenium_driver/windows/chromedriver')
+    elif sys.platform == 'linux':
+        browser = webdriver.Chrome('./selenium_driver/linux/chromedriver')
+        #todo 🛠  linux 下没有测试， linux 下 非gui环境下，用chrome headless driver 
         print("🎃")
-        print("🎃./selenium_driver/linux/chromedrive   linux 平台上的的   🤖chromedriver 的路径")
-        print("🎃./selenium_driver/windows/chromedrive windows 平台上的的 🤖chromedriver 的路径")
-        print("🎃https://npm.taobao.org/mirrors/chromedriver/            🤖chromedriver下载地址 ")
+        print("🎃./selenium_driver/linux/chromedrive   linux 平台上的的      🤖chromedriver 的路径")
+        print("🎃./selenium_driver/windows/chromedrive windows 平台上的的    🤖chromedriver 的路径")
+        print("🎃   https://npm.taobao.org/mirrors/chromedriver/            🤖chromedriver下载地址")
         print("🎃")
         return
 
