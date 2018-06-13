@@ -5,6 +5,8 @@ RUN apt update
 # 修改docker的时区
 RUN apt install tzdata
 RUN cp /usr/share/zoneinfo/Asia/Shanghai  /etc/localtime
+# 安装tkinter
+RUN apt install python3-tk
 
 RUN pip install pip -U -i https://pypi.doubanio.com/simple
 RUN pip install -r https://raw.githubusercontent.com/yutiansut/QUANTAXIS/master/requirements.txt -i https://pypi.doubanio.com/simple
