@@ -18,3 +18,5 @@ protobuf>=3.4
 motor>=1.1
 retrying
 seaborn>=0.8.1
+selenium
+
