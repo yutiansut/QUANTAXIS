@@ -8,6 +8,11 @@ import matplotlib as mpl
 #from pandas import Series
 import pandas as pd
 
+import numpy as np
+from pandas_datareader import data as wb
+import matplotlib.pyplot as plt
+
+
 '''
  这个文件的代码 都是 实验性质的。 scribble code！
 '''
@@ -166,9 +171,113 @@ class Test_DataFrame_0(unittest.TestCase):
 
     def test_index_object(self):
         #pandas's index objects are responsible for holding the axis labels nd other metadata ( like the axis name or names)
+
+        # index
+        # Int64Index
+        # MultiIndex
+        # DatetimeIndex
+        # PeriodIndex
+
         obj = pd.Series(range(3), index = ['a','b','c'])
         index = obj.index
         print(index)
         print(index[:1])
 
+        obj2 = pd.Series(range(6,9,1), index = ['d','e','f'])
+
+        #index append index
+        print(obj2)
+        newIndex = obj.index.append( obj2.index  )
+        print(newIndex)
+
+
+        print(obj)
+
+        pass
+
+    def test_essential_functionality(self):
+        obj = pd.Series([4.5, 7.22, -5.3, 3.88], index=['d','e','a','c'])
+        print(obj)
+        obj = obj.reindex(['a','b','c','d','e'])
+        print(obj)
+
+        obj3 = pd.Series(['blue','purple','yellow'], index = [0,2,4])
+        print(obj3)
+        obj4 = obj3.reindex( range(6), method='ffill' )
+        print(obj4)
+
+        frame2 = pd.DataFrame(np.arange(9).reshape((3,3)), index = ['a','c','d'], columns=['Ohio','Texas','California'])
+        print(frame2)
+
+        states = ['Texas', 'Utah', 'California']
+        frame2.ix[['a', 'b', 'c', 'd'], states]
+        print(frame2)
+        pass
+
+    def test_dropping_entire(self):
+        obj = pd.Series(np.arange(5.), index=['a','b','c','d','e'])
+        # new_obj = obj.drop('c')
+        # print(obj)
+        # print(new_obj)
+        #
+        # new_obj2 = obj.drop(['d','c'])
+        # print(new_obj2)
+        #
+        # new_obj3 = pd.Series(np.arange(5.), index=['a','b','c','d','es'])
+        # print(new_obj3)
+        # print(new_obj3['b'])
+
+        data = pd.DataFrame(np.arange(16).reshape((4,4)), index=['Ohio','Colorado','Utha','New York'], columns=['one','two','three','four'])
+        # d2=data.drop(['Colorado','Ohio'])
+        # print(d2)
+        #
+        # d3=data.drop(['two','three'],axis=1)
+        # print(d3)
+        #
+        # d4 = data.drop(['Ohio'], axis=0)
+        # print(d4)
+        #
+        # pp = data.ix['Colorado', ['two', 'three']]
+        # print(pp)
+        ppp = data['two']
+        print(ppp)
+        kkk = data[0:2]
+        print(kkk)
+
+        jjj = data.ix['Colorado']
+        print(jjj)
+
+        jjjj = data.iloc[[0,1,2]]
+        print(jjjj)
+
+        cccc = data.loc[['Utha']]
+        print(cccc)
+
+
+    def test_Arithmetic_data_Alignment(self):
+
+        s1 = pd.Series([7.3, -2.5, 3.4, 1.5], index=['a', 'c', 'd', 'e'])
+        s2 = pd.Series([-2.1, 3.6, -1.5, 4, 3.1], index=['a', 'c', 'e', 'f', 'g'])
+        print(s1+s2)
+
+        df1 = pd.DataFrame(np.arange(9.0).reshape((3,3)), columns=list('bcd'), index=['Ohio','Texas','Colorado'])
+        print(df1)
+        df2 = pd.DataFrame(np.arange(12.).reshape((4,3)), columns=list('bde'), index=['Utah','Ohio','Texas','Oregon'])
+        print(df2)
+        print(df1+df2)
+
+        print(df1.add(df2,fill_value=0))
+
+    def test_Function_application_and_Mapping(self):
+        
+
+
+        pass
+
+    def test_data_reader(self):
+        # PG = wb.DataReader('PG', data_source = 'quandl', start="1995-1-1")
+        # head0 = PG.head()
+        # tail0 = PG.tail()
+        # print(head0)
+        # print(tail0)
         pass

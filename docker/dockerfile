@@ -1,21 +1,18 @@
-FROM registry.cn-shanghai.aliyuncs.com/yutiansut/quantaxis
-
+FROM jupyter/base-notebook
 MAINTAINER yutiansut 'yutiansut@qq.com'
 
 
-# Update QUANTAXIS
-RUN cd /home
-RUN rm -rf quantaxis
-RUN git clone https://github.com/quantaxis/quantaxis
-RUN cd /home/quantaxis && git pull && pip install -e .
+# 修改docker的时区
+RUN apt update \
+    && apt install tzdata \
+    && cp /usr/share/zoneinfo/Asia/Shanghai  /etc/localtime \
+    && apt install python3-tk \
+    && pip install pip -U -i https://pypi.doubanio.com/simple \
+    && pip install -r https://raw.githubusercontent.com/yutiansut/QUANTAXIS/master/requirements.txt -i https://pypi.doubanio.com/simple \
+    && pip install tushare \
+    && pip install pytdx \
+    && pip install quantaxis
 
 
-# RUN cd /root && nohup sh ./startmongod.sh &
-#RUN cd /root/quantaxis/QUANTAXIS_Webkit/backend && forever start ./bin/www
-#RUN cd /root/quantaxis/QUANTAXIS_Webkit/web && forever start ./build/dev-server.js
 
-
-
-EXPOSE 8080
-EXPOSE 3000
 EXPOSE 8888

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>QUANTAXIS.QAMarket.QAMarket &mdash; QUANTAXIS 1.0 documentation</title>
+  <title>QUANTAXIS.QAMarket.QAMarket &mdash; QUANTAXIS 1.0.39 documentation</title>
   
 
   
@@ -55,6 +55,10 @@
 
           
             
+            
+              <div class="version">
+                1.0.39
+              </div>
             
           
 
@@ -177,8 +181,11 @@
                                           <span class="n">BROKER_EVENT</span><span class="p">,</span> <span class="n">BROKER_TYPE</span><span class="p">,</span>
                                           <span class="n">ENGINE_EVENT</span><span class="p">,</span> <span class="n">MARKET_EVENT</span><span class="p">,</span>
                                           <span class="n">FREQUENCE</span><span class="p">,</span> <span class="n">ORDER_EVENT</span><span class="p">,</span>
-                                          <span class="n">ORDER_MODEL</span><span class="p">)</span>
+                                          <span class="n">ORDER_MODEL</span><span class="p">,</span> <span class="n">RUNNING_ENVIRONMENT</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QALogs</span> <span class="k">import</span> <span class="n">QA_util_log_info</span>
+<span class="kn">from</span> <span class="nn">QUANTAXIS.QAUtil.QARandom</span> <span class="k">import</span> <span class="n">QA_util_random_with_topic</span>
+
+<span class="kn">import</span> <span class="nn">datetime</span>
 
 
 <div class="viewcode-block" id="QA_Market"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market">[docs]</a><span class="k">class</span> <span class="nc">QA_Market</span><span class="p">(</span><span class="n">QA_Trade</span><span class="p">):</span>
@@ -186,41 +193,52 @@
 <span class="sd">    QUANTAXIS MARKET 部分</span>
 
 <span class="sd">    交易前置/可连接到多个broker中</span>
-
 <span class="sd">    暂时还是采用多线程engine模式</span>
 
+<span class="sd">    session 保存的是 QAAccout 对象</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_broker</span> <span class="o">=</span> <span class="p">{</span><span class="n">BROKER_TYPE</span><span class="o">.</span><span class="n">BACKETEST</span><span class="p">:</span> <span class="n">QA_BacktestBroker</span><span class="p">,</span> <span class="n">BROKER_TYPE</span><span class="o">.</span><span class="n">RANODM</span><span class="p">:</span> <span class="n">QA_RandomBroker</span><span class="p">,</span>
-                        <span class="n">BROKER_TYPE</span><span class="o">.</span><span class="n">REAL</span><span class="p">:</span> <span class="n">QA_RealBroker</span><span class="p">,</span> <span class="n">BROKER_TYPE</span><span class="o">.</span><span class="n">SIMULATION</span><span class="p">:</span> <span class="n">QA_SimulatedBroker</span><span class="p">}</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_broker</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">BROKER_TYPE</span><span class="o">.</span><span class="n">BACKETEST</span><span class="p">:</span> <span class="n">QA_BacktestBroker</span><span class="p">,</span>
+            <span class="n">BROKER_TYPE</span><span class="o">.</span><span class="n">RANODM</span><span class="p">:</span> <span class="n">QA_RandomBroker</span><span class="p">,</span>
+            <span class="n">BROKER_TYPE</span><span class="o">.</span><span class="n">REAL</span><span class="p">:</span> <span class="n">QA_RealBroker</span><span class="p">,</span>
+            <span class="n">BROKER_TYPE</span><span class="o">.</span><span class="n">SIMULATION</span><span class="p">:</span> <span class="n">QA_SimulatedBroker</span>
+        <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">broker</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">running_time</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_query_data</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;&lt; QA_MARKET with </span><span class="si">{}</span><span class="s1"> Broker &gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">                输出market市场对象的字符串</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt;QA_Market with </span><span class="si">{}</span><span class="s1"> QA_Broker &gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
 
 <div class="viewcode-block" id="QA_Market.upcoming_data"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.upcoming_data">[docs]</a>    <span class="k">def</span> <span class="nf">upcoming_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broker</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">                更新市场数据</span>
+<span class="sd">                broker 为名字，</span>
+<span class="sd">                data 是市场数据</span>
+<span class="sd">                被 QABacktest 中run 方法调用 upcoming_data</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="c1"># main thread&#39;</span>
-
         <span class="c1"># if self.running_time is not None and self.running_time!= data.datetime[0]:</span>
         <span class="c1">#     for item in self.broker.keys():</span>
         <span class="c1">#         self._settle(item)</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">running_time</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">datetime</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="c1"># session里面是已经注册的account</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">QA_Task</span><span class="p">(</span>
-                <span class="n">worker</span><span class="o">=</span><span class="n">item</span><span class="p">,</span>
+                <span class="n">worker</span><span class="o">=</span><span class="n">item</span><span class="p">,</span>  <span class="c1"># item 是Account 类型， 是 QA_Work类型， 处理这个 事件</span>
                 <span class="n">event</span><span class="o">=</span><span class="n">QA_Event</span><span class="p">(</span>
                     <span class="n">event_type</span><span class="o">=</span><span class="n">ENGINE_EVENT</span><span class="o">.</span><span class="n">UPCOMING_DATA</span><span class="p">,</span>
+                    <span class="c1"># args 附加的参数</span>
                     <span class="n">market_data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
                     <span class="n">broker_name</span><span class="o">=</span><span class="n">broker</span><span class="p">,</span>
-                    <span class="n">send_order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">insert_order</span><span class="p">,</span>
+                    <span class="n">send_order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">insert_order</span><span class="p">,</span>  <span class="c1"># 🛠todo insert_order = insert_order</span>
                     <span class="n">query_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">query_data_no_wait</span><span class="p">,</span>
                     <span class="n">query_order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">query_order</span><span class="p">,</span>
                     <span class="n">query_assets</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">query_assets</span><span class="p">,</span>
@@ -230,15 +248,15 @@
 
 <div class="viewcode-block" id="QA_Market.start"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trade_engine</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
-        <span class="c1"># self.trade_engine.create_kernal(&#39;MARKET&#39;)</span>
-        <span class="c1"># self.trade_engine.start_kernal(&#39;MARKET&#39;)</span>
+        <span class="c1"># self.trade_engine.create_kernel(&#39;MARKET&#39;)</span>
+        <span class="c1"># self.trade_engine.start_kernel(&#39;MARKET&#39;)</span>
 
 <div class="viewcode-block" id="QA_Market.connect"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broker</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">broker</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_broker</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="p">[</span><span class="n">broker</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_broker</span><span class="p">[</span><span class="n">broker</span><span class="p">]()</span>  <span class="c1"># 在这里实例化</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">trade_engine</span><span class="o">.</span><span class="n">create_kernal</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">broker</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">trade_engine</span><span class="o">.</span><span class="n">start_kernal</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">broker</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trade_engine</span><span class="o">.</span><span class="n">create_kernel</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">broker</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trade_engine</span><span class="o">.</span><span class="n">start_kernel</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">broker</span><span class="p">))</span>
             <span class="c1"># 开启trade事件子线程</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
@@ -247,8 +265,8 @@
 <div class="viewcode-block" id="QA_Market.register"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.register">[docs]</a>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broker_name</span><span class="p">,</span> <span class="n">broker</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">broker_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_broker</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="p">[</span><span class="n">broker_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">broker</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">trade_engine</span><span class="o">.</span><span class="n">create_kernal</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">broker_name</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">trade_engine</span><span class="o">.</span><span class="n">start_kernal</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">broker_name</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trade_engine</span><span class="o">.</span><span class="n">create_kernel</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">broker_name</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trade_engine</span><span class="o">.</span><span class="n">start_kernel</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">broker_name</span><span class="p">))</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span></div>
@@ -285,6 +303,8 @@
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="QA_Market.insert_order"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.insert_order">[docs]</a>    <span class="k">def</span> <span class="nf">insert_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account_id</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="n">amount_model</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">order_model</span><span class="p">,</span> <span class="n">towards</span><span class="p">,</span> <span class="n">market_type</span><span class="p">,</span> <span class="n">frequence</span><span class="p">,</span> <span class="n">broker_name</span><span class="p">):</span>
+        <span class="c1">#strDbg = QA_util_random_with_topic(&quot;QA_Market.insert_order&quot;)</span>
+        <span class="c1">#print(&quot;&gt;-----------------------insert_order-----------------------------&gt;&quot;, strDbg)</span>
 
         <span class="n">flag</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">order_model</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ORDER_MODEL</span><span class="o">.</span><span class="n">CLOSE</span><span class="p">,</span> <span class="n">ORDER_MODEL</span><span class="o">.</span><span class="n">NEXT_OPEN</span><span class="p">]:</span>
@@ -316,26 +336,37 @@
             <span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_account</span><span class="p">(</span><span class="n">account_id</span><span class="p">)</span><span class="o">.</span><span class="n">send_order</span><span class="p">(</span>
                 <span class="n">amount</span><span class="o">=</span><span class="n">amount</span><span class="p">,</span> <span class="n">amount_model</span><span class="o">=</span><span class="n">amount_model</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="n">code</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="n">price</span><span class="p">,</span>
                 <span class="n">order_model</span><span class="o">=</span><span class="n">order_model</span><span class="p">,</span> <span class="n">towards</span><span class="o">=</span><span class="n">towards</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
-                <span class="n">QA_Task</span><span class="p">(</span>
-                    <span class="n">worker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_account</span><span class="p">(</span><span class="n">account_id</span><span class="p">)</span><span class="o">.</span><span class="n">broker</span><span class="p">],</span>
-                    <span class="n">engine</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_account</span><span class="p">(</span><span class="n">account_id</span><span class="p">)</span><span class="o">.</span><span class="n">broker</span><span class="p">,</span>
-                    <span class="n">event</span><span class="o">=</span><span class="n">QA_Event</span><span class="p">(</span>
-                        <span class="n">event_type</span><span class="o">=</span><span class="n">BROKER_EVENT</span><span class="o">.</span><span class="n">RECEIVE_ORDER</span><span class="p">,</span>
-                        <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
-                        <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_insert_order</span><span class="p">)))</span>
+
+            <span class="c1"># print(&quot;-------------------------------------------------&gt;&quot;)</span>
+            <span class="c1">#print(&quot;order 排队&quot;)</span>
+            <span class="c1"># print(order)</span>
+            <span class="c1">#print(&quot;时间戳&quot; )</span>
+            <span class="c1"># print(datetime.datetime.now().strftime(&#39;%Y-%m-%d %H:%M:%S&#39;))  # 日期格式化</span>
+            <span class="c1"># print(&quot;&lt;-------------------------------------------------&quot;)</span>
+            <span class="k">if</span> <span class="n">order</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span><span class="o">.</span><span class="n">put_nowait</span><span class="p">(</span>
+                    <span class="n">QA_Task</span><span class="p">(</span>
+                        <span class="n">worker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_account</span><span class="p">(</span>
+                            <span class="n">account_id</span><span class="p">)</span><span class="o">.</span><span class="n">broker</span><span class="p">],</span>
+                        <span class="n">engine</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_account</span><span class="p">(</span><span class="n">account_id</span><span class="p">)</span><span class="o">.</span><span class="n">broker</span><span class="p">,</span>
+                        <span class="n">event</span><span class="o">=</span><span class="n">QA_Event</span><span class="p">(</span>
+                            <span class="n">event_type</span><span class="o">=</span><span class="n">BROKER_EVENT</span><span class="o">.</span><span class="n">RECEIVE_ORDER</span><span class="p">,</span>
+                            <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
+                            <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_insert_order</span><span class="p">)))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">pass</span></div>
 
+        <span class="c1">#print(&quot;&lt;-----------------------insert_order-----------------------------&lt;&quot;, strDbg)</span>
+
 <div class="viewcode-block" id="QA_Market.on_insert_order"><a class="viewcode-back" href="../../../source/QUANTAXIS.QAMarket.html#QUANTAXIS.QAMarket.QAMarket.QA_Market.on_insert_order">[docs]</a>    <span class="k">def</span> <span class="nf">on_insert_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">order</span><span class="p">)</span></div>
+        <span class="nb">print</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+        <span class="k">pass</span></div>
 
     <span class="k">def</span> <span class="nf">_renew_account</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-
+        <span class="k">for</span> <span class="n">account</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
                 <span class="n">QA_Task</span><span class="p">(</span>
-                    <span class="n">worker</span><span class="o">=</span><span class="n">item</span><span class="p">,</span>
+                    <span class="n">worker</span><span class="o">=</span><span class="n">account</span><span class="p">,</span>
                     <span class="n">event</span><span class="o">=</span><span class="n">QA_Event</span><span class="p">(</span>
                         <span class="n">event_type</span><span class="o">=</span><span class="n">ACCOUNT_EVENT</span><span class="o">.</span><span class="n">SETTLE</span><span class="p">)))</span>
 
@@ -420,14 +451,31 @@
             <span class="p">)))</span>
 
     <span class="k">def</span> <span class="nf">_settle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">broker_name</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="c1"># 向事件线程发送BROKER的SETTLE事件</span>
+        <span class="c1">#strDbg = QA_util_random_with_topic(&quot;QA_Market._settle&quot;)</span>
+        <span class="c1">#print(&quot;&gt;-----------------------_settle-----------------------------&gt;&quot;, strDbg)</span>
 
+        <span class="c1"># 向事件线程发送BROKER的SETTLE事件</span>
         <span class="c1"># 向事件线程发送ACCOUNT的SETTLE事件</span>
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">broker</span> <span class="ow">is</span> <span class="n">broker_name</span><span class="p">:</span>
+
+        <span class="k">for</span> <span class="n">account</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            
+            <span class="k">if</span> <span class="n">account</span><span class="o">.</span><span class="n">running_environment</span> <span class="o">==</span> <span class="n">RUNNING_ENVIRONMENT</span><span class="o">.</span><span class="n">TZERO</span><span class="p">:</span>
+                
+                <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">account</span><span class="o">.</span><span class="n">close_positions_order</span><span class="p">:</span>
+                    
+                    <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+                        <span class="n">QA_Task</span><span class="p">(</span>
+                            <span class="n">worker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">broker</span><span class="p">[</span><span class="n">account</span><span class="o">.</span><span class="n">broker</span><span class="p">],</span>
+                            <span class="n">engine</span><span class="o">=</span><span class="n">account</span><span class="o">.</span><span class="n">broker</span><span class="p">,</span>
+                            <span class="n">event</span><span class="o">=</span><span class="n">QA_Event</span><span class="p">(</span>
+                                <span class="n">event_type</span><span class="o">=</span><span class="n">BROKER_EVENT</span><span class="o">.</span><span class="n">RECEIVE_ORDER</span><span class="p">,</span>
+                                <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
+                                <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_insert_order</span><span class="p">)))</span>
+
+            <span class="k">if</span> <span class="n">account</span><span class="o">.</span><span class="n">broker</span> <span class="o">==</span> <span class="n">broker_name</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
                     <span class="n">QA_Task</span><span class="p">(</span>
-                        <span class="n">worker</span><span class="o">=</span><span class="n">item</span><span class="p">,</span>
+                        <span class="n">worker</span><span class="o">=</span><span class="n">account</span><span class="p">,</span>
                         <span class="n">engine</span><span class="o">=</span><span class="n">broker_name</span><span class="p">,</span>
                         <span class="n">event</span><span class="o">=</span><span class="n">QA_Event</span><span class="p">(</span>
                             <span class="n">event_type</span><span class="o">=</span><span class="n">ACCOUNT_EVENT</span><span class="o">.</span><span class="n">SETTLE</span><span class="p">)))</span>
@@ -440,6 +488,9 @@
                 <span class="n">callback</span><span class="o">=</span><span class="n">callback</span><span class="p">)))</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;===== SETTLED </span><span class="si">{}</span><span class="s1"> =====&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">running_time</span><span class="p">))</span>
+
+        <span class="c1">#strDbg = QA_util_random_with_topic(&quot;MAStrategy.on_bar call&quot;)</span>
+        <span class="c1">#print(&quot;&lt;-----------------------_settle-----------------------------&lt;&quot;, strDbg)</span>
 
     <span class="k">def</span> <span class="nf">_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
@@ -495,7 +546,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'1.0',
+            VERSION:'1.0.39',
             LANGUAGE:'python',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
