@@ -21,7 +21,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from tornado.web import asynchronous
+
 from tornado.web import RequestHandler
 from tornado.websocket import WebSocketHandler
 
@@ -36,11 +36,10 @@ class QABaseHandler(RequestHandler):
         self.set_header('content-type', '*')
         self.set_header('Server', 'QUANTAXISBACKEND')
         # self.Content-Type: text/html; charset=utf-8
-    @asynchronous 
+
     def post(self):
         self.write('some post')
 
-    @asynchronous 
     def get(self):
         self.write('some get')
     
@@ -65,11 +64,3 @@ class QAWebSocketHandler(WebSocketHandler):
 
     def open(self):
         self.write_message('x')
-
-    @asynchronous 
-    def get(self):
-        self.write('some get')
-
-    @asynchronous 
-    def post(self):
-        self.write('some post')

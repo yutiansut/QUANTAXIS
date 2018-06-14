@@ -55,7 +55,7 @@ class INDEX(QABaseHandler):
 
 class RealtimeSocketHandler(QAWebSocketHandler):
     def open(self):
-        self.write_message('socket start')
+        self.write_message('realtime socket start')
 
     def on_message(self, message):
         #assert isinstance(message,str)
@@ -65,11 +65,11 @@ class RealtimeSocketHandler(QAWebSocketHandler):
             try:
                 current = [QA.QA_util_dict_remove_key(item, '_id') for item in database.find({'code': message}, limit=1, sort=[
                     ('datetime', pymongo.DESCENDING)])]
-
+                
                 self.write_message(current[0])
                 time.sleep(1)
             except WebSocketClosedError:
-                break
+                print(1)
     def on_close(self):
         print('connection close')
 
