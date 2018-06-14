@@ -211,9 +211,9 @@ http://[ip]:[port]/marketdata/future/day?code=[]&start=[]&end=[]
 ```
 http://[ip]:[port]/marketdata/future/min?code=[]&start=[]&end=[]
 ```
-###  4.4. <a name='quotation'></a>实时行情推送 /quotation
+###  4.4. <a name='quotation'></a>实时行情推送 /realtime
 ```
-/quotation 推送指的是 建立一个websocket链接:
+/realtime 推送指的是 建立一个websocket链接:
 ```
 1. user login [Handler]
 
