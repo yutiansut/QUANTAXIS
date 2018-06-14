@@ -77,10 +77,10 @@ class RealtimeSocketHandler(WebSocketHandler):
         print(message)
         while True:
 
-            current = database.find({'code': message}, limit=1, sort=[
-                                    ('datetime', pymongo.DESCENDING)])
-            current = QA.QA_util_dict_remove_key(current, '_id')
-            self.write_message(current)
+            current = [QA.QA_util_dict_remove_key(item, '_id') for item in database.find({'code': message}, limit=1, sort=[
+                ('datetime', pymongo.DESCENDING)])]
+
+            self.write_message(current[0])
             time.sleep(1)
 
     def on_close(self):
