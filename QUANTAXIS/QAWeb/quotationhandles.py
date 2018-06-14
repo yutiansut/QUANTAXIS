@@ -32,7 +32,7 @@ import tornado
 from tornado.web import Application, RequestHandler, authenticated
 
 import QUANTAXIS as QA
-from QUANTAXIS.QAWeb.util.handles import BaseHandler
+from QUANTAXIS.QAWeb.basehandles import BaseHandler
 
 
 """
@@ -47,7 +47,7 @@ from QUANTAXIS.QAWeb.util.handles import BaseHandler
 
 class INDEX(BaseHandler):
     def get(self):
-        self.render("index.html")
+        self.render("./index.html")
 
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
