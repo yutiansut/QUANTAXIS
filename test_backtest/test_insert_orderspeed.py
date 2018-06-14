@@ -23,7 +23,7 @@ print(market)
 
 
 market.login(QA.BROKER_TYPE.BACKETEST, a_1.account_cookie, a_1)
-for code in ['000001', '000002', '000004', '600010', '000007']:
+for code in ['000001', '000002', '000004', '600010', '000007','000008']:
     market.insert_order(account_id=a_1.account_cookie, amount=100, price=0, amount_model=QA.AMOUNT_MODEL.BY_AMOUNT, time='2018-06-12 09:45:00', code=code,
                         order_model=QA.ORDER_MODEL.MARKET, towards=QA.ORDER_DIRECTION.BUY, market_type=QA.MARKET_TYPE.STOCK_CN,
                         frequence=QA.FREQUENCE.FIFTEEN_MIN, broker_name=QA.BROKER_TYPE.BACKETEST)
