@@ -32,7 +32,7 @@ from tornado.websocket import WebSocketHandler
 from QUANTAXIS.QASU.user import QA_user_sign_in, QA_user_sign_up
 from QUANTAXIS.QAUtil.QASetting import DATABASE
 from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting
-from QUANTAXIS.QAWeb.util.handles import BaseHandler
+from QUANTAXIS.QAWeb.basehandles import BaseHandler
 
 
 class SignupHandler(BaseHandler):
