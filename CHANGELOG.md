@@ -3,7 +3,8 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.0.50 (unreleased)](#1050-unreleased)
+    - [1.0.51 (unreleased)](#1051-unreleased)
+    - [1.0.50](#1050)
     - [1.0.49](#1049)
     - [1.0.48](#1048)
     - [1.0.47](#1047)
@@ -31,9 +32,10 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
+## 1.0.51 (unreleased)
 
 
-## 1.0.50 (unreleased)
+## 1.0.50 
 1. 添加了获取东方财富个股资金流向保存到sqlite的命令， windows 和 mac 下测试过
 2. crawl eastmoney zjlx 6位股票代码 命令 和获取所有股票资金流向 crawl eastmoney zjlx all 的命令，
 3. 添加了 QUANTAXIS_CRAWLY 目录，一个scrapy的空的项目，后期支持 各种经济新闻，证券报刊信息，热点咨询的获取
@@ -41,6 +43,7 @@
 5. 基于websocket的实时数据推送
 6. 期货历史tick,期货实时数据支持
 
+released in : JUNE 14, 2018
 
 ## 1.0.49 
 
