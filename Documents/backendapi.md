@@ -93,7 +93,7 @@ class BaseHandler(tornado.web.RequestHandler):
         self.set_header("Access-Control-Allow-Origin", "*") # 这个地方可以写域名
         self.set_header("Access-Control-Allow-Headers", "x-requested-with")
         self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
-
+	self.set_header('Server', 'QUANTAXISBACKEND')
     def post(self):
         self.write('some post')
 
