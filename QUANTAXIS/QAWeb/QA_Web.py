@@ -33,7 +33,7 @@ from QUANTAXIS.QAWeb.util.handles import BaseHandler
 
 class INDEX(BaseHandler):
     def get(self):
-        self.render("index.html")
+        self.render("./index.html")
 
 
 def main():
