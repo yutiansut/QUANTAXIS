@@ -40,9 +40,9 @@ def main():
     apps = Application(
         handlers=[
             (r"/", INDEX),
-            (r"/stock/day", StockdayHandler),
-            (r"/stock/min", StockminHandler),
-            (r"/stock/block", StockBlockHandler),
+            (r"/marketdata/stock/day", StockdayHandler),
+            (r"/marketdata/stock/min", StockminHandler),
+            (r"/marketdata/stock/block", StockBlockHandler),
             (r"/user/signin", SigninHandler),
             (r"/user/signup", SignupHandler),
             (r"/user/blocksetting", PersonBlockHandler),
