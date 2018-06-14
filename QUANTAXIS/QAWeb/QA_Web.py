@@ -24,16 +24,16 @@
 import tornado
 from tornado.web import Application, RequestHandler, authenticated
 
-from QUANTAXIS.QAWeb.data.handles import StockdayHandler, StockminHandler,StockBlockHandler
-from QUANTAXIS.QAWeb.quotation.handles import (RealtimeSocketHandler,
+from QUANTAXIS.QAWeb.datahandles import StockdayHandler, StockminHandler,StockBlockHandler
+from QUANTAXIS.QAWeb.quotationhandles import (RealtimeSocketHandler,
                                SimulateSocketHandler,MonitorSocketHandler)
-from QUANTAXIS.QAWeb.user.handles import SigninHandler, SignupHandler, PersonBlockHandler
-from QUANTAXIS.QAWeb.util.handles import BaseHandler
+from QUANTAXIS.QAWeb.userhandles import SigninHandler, SignupHandler, PersonBlockHandler
+from QUANTAXIS.QAWeb.basehandles import QABaseHandler
 
 
-class INDEX(BaseHandler):
+class INDEX(QABaseHandler):
     def get(self):
-        self.render("index.html")
+        self.render(".\index.html")
 
 
 def main():

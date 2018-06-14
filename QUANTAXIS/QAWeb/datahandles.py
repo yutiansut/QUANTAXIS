@@ -32,11 +32,11 @@ from tornado.websocket import WebSocketHandler
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day, QA_fetch_stock_min
 from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_day_adv
 from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
-from QUANTAXIS.QAWeb.util.fetch_block import get_block, get_name
-from QUANTAXIS.QAWeb.util.handles import BaseHandler
+from QUANTAXIS.QAWeb.fetch_block import get_block, get_name
+from QUANTAXIS.QAWeb.basehandles import QABaseHandler
 
 
-class StockdayHandler(BaseHandler):
+class StockdayHandler(QABaseHandler):
     def get(self):
         """
         采用了get_arguents来获取参数
@@ -52,7 +52,7 @@ class StockdayHandler(BaseHandler):
         self.write({'result': data})
 
 
-class StockminHandler(BaseHandler):
+class StockminHandler(QABaseHandler):
     def get(self):
         """
         采用了get_arguents来获取参数
@@ -69,7 +69,7 @@ class StockminHandler(BaseHandler):
         self.write({'result': data})
 
 
-class StockBlockHandler(BaseHandler):
+class StockBlockHandler(QABaseHandler):
     def get(self):
         block_name = self.get_argument('block', default=[])
         print(block_name)

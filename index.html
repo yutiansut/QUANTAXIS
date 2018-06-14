@@ -2,7 +2,7 @@
 
 <head>
     <script type="text/javascript">  
-        var ws = new WebSocket("ws://localhost:8010/simulate");
+        var ws = new WebSocket("ws://localhost:8010/realtime");
         ws.onmessage = function (event) {
             var div1 = document.createElement("div");
             div1.innerHTML = event.data;
@@ -10,7 +10,10 @@
         }
         function send() {
             ws.send(document.getElementById('chat').value);
-        }  
+        }
+        function stop() {
+            ws.send('stop')
+        }
     </script>
 </head>
 
