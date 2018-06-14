@@ -22,7 +22,7 @@ def QA_SU_save_binance(frequency):
         QA_util_log_info('The {} of Total {}'.format
                          (symbol_info['symbol'], len(symbol_list)))
         QA_util_log_info('DOWNLOAD PROGRESS {} '.format(str(
-            float(index / len(symbol_info) * 100))[0:4] + '%')
+            float(index / len(symbol_list) * 100))[0:4] + '%')
         )
         ref = col.find({"symbol":symbol_info['symbol']})
 
