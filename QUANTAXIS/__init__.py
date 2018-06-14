@@ -144,7 +144,8 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms
 
 from QUANTAXIS.QAIndicator import *
 #from QUANTAXIS.QAFetch.QATdx_adv import bat
-#from QUANTAXIS.QAWeb import QA_Web
+from QUANTAXIS.QAWeb import SigninHandler, SignupHandler, SimulateSocketHandler, StockdayHandler, StockminHandler, RealtimeSocketHandler, BaseHandler
+from QUANTAXIS.QAWeb.QA_Web import main
 # CMD and Cli
 import QUANTAXIS.QACmd
 from QUANTAXIS.QACmd import QA_cmd
