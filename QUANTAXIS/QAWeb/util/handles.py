@@ -21,9 +21,25 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+from tornado.web import RequestHandler
 
-from QUANTAXIS.QAWeb.data.handles import StockdayHandler, StockminHandler
-from QUANTAXIS.QAWeb.quotation.handles import RealtimeSocketHandler, SimulateSocketHandler
-from QUANTAXIS.QAWeb.user.handles import SigninHandler, SignupHandler
-from QUANTAXIS.QAWeb.util.handles import BaseHandler
-from QUANTAXIS.QAWeb.QA_Web import main
+
+class BaseHandler(RequestHandler):
+
+    def set_default_headers(self):
+        self.set_header("Access-Control-Allow-Origin", "*")  # 这个地方可以写域名
+        #self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+        self.set_header('Access-Control-Allow-Headers', '*')
+        self.set_header('content-type', '*')
+        #self.Content-Type: text/html; charset=utf-8
+    def post(self):
+        self.write('some post')
+
+    def get(self):
+        self.write('some get')
+
+    def options(self):
+        # no body
+        self.set_status(204)
+        self.finish()
