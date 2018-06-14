@@ -51,9 +51,6 @@ class INDEX(QABaseHandler):
         self.render("./index.html")
 
 
-
-
-
 class RealtimeSocketHandler(QAWebSocketHandler):
     client = set() 
     def open(self):
@@ -65,7 +62,7 @@ class RealtimeSocketHandler(QAWebSocketHandler):
         #assert isinstance(message,str)
 
         try:
-            print(self.client)
+            
             database = QA.DATABASE.get_collection(
                 'realtime_{}'.format(datetime.date.today()))
             current = [QA.QA_util_dict_remove_key(item, '_id') for item in database.find({'code': message}, limit=1, sort=[
