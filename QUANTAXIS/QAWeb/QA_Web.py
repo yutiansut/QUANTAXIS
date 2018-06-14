@@ -52,7 +52,7 @@ def main():
         ],
         debug=True
     )
-    apps.listen(8012)
+    apps.listen(8010)
     tornado.ioloop.IOLoop.instance().start()
 
 
