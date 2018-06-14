@@ -32,8 +32,8 @@ import tornado
 from tornado.web import Application, RequestHandler, authenticated
 
 import QUANTAXIS as QA
-from QUANTAXIS.QAWeb.util.handles import BaseHandler
-
+from QUANTAXIS.QAWeb.basehandles import QABaseHandler,QAWebSocketHandler
+from tornado.websocket import WebSocketClosedError
 
 """
 要实现2个api
@@ -45,28 +45,15 @@ from QUANTAXIS.QAWeb.util.handles import BaseHandler
 """
 
 
-class INDEX(BaseHandler):
+class INDEX(QABaseHandler):
     def get(self):
-        self.render("index.html")
+        self.render("./index.html")
 
 
-class WebSocketHandler(tornado.websocket.WebSocketHandler):
-
-    def check_origin(self, origin):
-        return True
-
-    def set_default_headers(self):
-        self.set_header('Access-Control-Allow-Origin', '*')
-        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
-        self.set_header('Access-Control-Max-Age',
-                        999999999999999999999999999999999)
-        self.set_header('Access-Control-Allow-Headers', '*')
-
-    def open(self):
-        self.write_message('x')
 
 
-class RealtimeSocketHandler(WebSocketHandler):
+
+class RealtimeSocketHandler(QAWebSocketHandler):
     def open(self):
         self.write_message('socket start')
 
@@ -74,20 +61,20 @@ class RealtimeSocketHandler(WebSocketHandler):
         #assert isinstance(message,str)
         database = QA.DATABASE.get_collection(
             'realtime_{}'.format(datetime.date.today()))
-        print(message)
         while True:
+            try:
+                current = [QA.QA_util_dict_remove_key(item, '_id') for item in database.find({'code': message}, limit=1, sort=[
+                    ('datetime', pymongo.DESCENDING)])]
 
-            current = [QA.QA_util_dict_remove_key(item, '_id') for item in database.find({'code': message}, limit=1, sort=[
-                ('datetime', pymongo.DESCENDING)])]
-
-            self.write_message(current[0])
-            time.sleep(1)
-
+                self.write_message(current[0])
+                time.sleep(1)
+            except WebSocketClosedError:
+                break
     def on_close(self):
         print('connection close')
 
 
-class SimulateSocketHandler(WebSocketHandler):
+class SimulateSocketHandler(QAWebSocketHandler):
     def open(self):
         self.write_message('start')
 
@@ -103,7 +90,7 @@ class SimulateSocketHandler(WebSocketHandler):
         print('connection close')
 
 
-class MonitorSocketHandler(WebSocketHandler):
+class MonitorSocketHandler(QAWebSocketHandler):
     def open(self):
         self.write_message('start')
 

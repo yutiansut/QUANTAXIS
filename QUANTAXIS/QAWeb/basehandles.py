@@ -21,10 +21,12 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+from tornado.web import asynchronous
 from tornado.web import RequestHandler
+from tornado.websocket import WebSocketHandler
 
 
-class BaseHandler(RequestHandler):
+class QABaseHandler(RequestHandler):
 
     def set_default_headers(self):
         self.set_header("Access-Control-Allow-Origin", "*")  # 这个地方可以写域名
@@ -32,14 +34,42 @@ class BaseHandler(RequestHandler):
         self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
         self.set_header('Access-Control-Allow-Headers', '*')
         self.set_header('content-type', '*')
-        #self.Content-Type: text/html; charset=utf-8
+        self.set_header('Server', 'QUANTAXISBACKEND')
+        # self.Content-Type: text/html; charset=utf-8
+    @asynchronous 
     def post(self):
         self.write('some post')
 
+    @asynchronous 
     def get(self):
         self.write('some get')
-
+    
     def options(self):
         # no body
         self.set_status(204)
         self.finish()
+
+
+class QAWebSocketHandler(WebSocketHandler):
+
+    def check_origin(self, origin):
+        return True
+
+    def set_default_headers(self):
+        self.set_header('Access-Control-Allow-Origin', '*')
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+        self.set_header('Access-Control-Max-Age',
+                        999999999999999999999999999999999)
+        self.set_header('Access-Control-Allow-Headers', '*')
+        self.set_header('Server', 'QUANTAXISBACKEND')
+
+    def open(self):
+        self.write_message('x')
+
+    @asynchronous 
+    def get(self):
+        self.write('some get')
+
+    @asynchronous 
+    def post(self):
+        self.write('some post')
