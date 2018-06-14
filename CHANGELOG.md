@@ -3,7 +3,8 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.0.51 (unreleased)](#1051-unreleased)
+    - [1.0.52 (unreleased)](#1052-unreleased)
+    - [1.0.51](#1051)
     - [1.0.50](#1050)
     - [1.0.49](#1049)
     - [1.0.48](#1048)
@@ -32,8 +33,15 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
-## 1.0.51 (unreleased)
+## 1.0.52 (unreleased)
 
+
+
+## 1.0.51 
+
+1. 增加三个函数到QA主函数中: QA_fetch_get_future_transaction, QA_fetch_get_future_transaction_realtime, QA_fetch_get_future_realtime
+
+released in : JUNE 14, 2018
 
 ## 1.0.50 
 1. 添加了获取东方财富个股资金流向保存到sqlite的命令， windows 和 mac 下测试过
