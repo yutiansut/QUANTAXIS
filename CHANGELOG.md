@@ -38,6 +38,7 @@
 2. crawl eastmoney zjlx 6位股票代码 命令 和获取所有股票资金流向 crawl eastmoney zjlx all 的命令，
 3. 添加了 QUANTAXIS_CRAWLY 目录，一个scrapy的空的项目，后期支持 各种经济新闻，证券报刊信息，热点咨询的获取
 4. QUANTAXIS/QAWeb 用tornado的后台重写
+5. 基于websocket的实时数据推送
 
 ## 1.0.49 
 
