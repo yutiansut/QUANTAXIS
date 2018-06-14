@@ -24,9 +24,10 @@
 
 import codecs
 import os
+import io
+import re
 import sys
 
-import QUANTAXIS
 
 try:
     from setuptools import setup
@@ -40,6 +41,10 @@ if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6]:
     print('wrong version, should be 3.4/3.5/3.6 version')
     sys.exit()
 
+with io.open('QUANTAXIS/__init__.py', 'rt', encoding='utf8') as f:
+    context = f.read()
+    VERSION = re.search(r'__version__ = \'(.*?)\'', context).group(1)
+    AUTHOR = re.search(r'__author__ = \'(.*?)\'', context).group(1)
 
 def read(fname):
 
@@ -71,12 +76,10 @@ KEYWORDS = ["quantaxis", "quant", "finance", "Backtest", 'Framework']
 关于当前包的一些关键字，方便PyPI进行分类。
 """
 
-AUTHOR = QUANTAXIS.__author__
 AUTHOR_EMAIL = "yutiansut@qq.com"
 
 URL = "http://www.yutiansut.com"
 
-VERSION = QUANTAXIS.__version__
 
 
 LICENSE = "MIT"

@@ -28,7 +28,7 @@ def QA_SU_save_binance(frequency):
         ref = col.find({"symbol": symbol_info['symbol']}).sort("start_time", -1)
 
         if ref.count() > 0:
-            start_stamp = ref.next()['start_time']/1000
+            start_stamp = ref.next()['start_time'] / 1000
             start_time = datetime.datetime.fromtimestamp(start_stamp)
             QA_util_log_info('UPDATE_SYMBOL \n Trying updating {} from {} to {}'.format(
                 symbol_info['symbol'], start_time, end))
