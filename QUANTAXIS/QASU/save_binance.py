@@ -61,7 +61,7 @@ def QA_SU_save_binance_1hour():
 def QA_SU_save_symbols():
     symbols = QA_fetch_symbol()
     col = QASETTING.client.binance.symbols
-    if col.find().count() != len(symbols['symbols']):
+    if col.find().count() == len(symbols):
         QA_util_log_info("SYMBOLS are already existed and no more to update")
     else:
         QA_util_log_info("Delete the original symbols collections")
