@@ -39,6 +39,8 @@
 3. 添加了 QUANTAXIS_CRAWLY 目录，一个scrapy的空的项目，后期支持 各种经济新闻，证券报刊信息，热点咨询的获取
 4. QUANTAXIS/QAWeb 用tornado的后台重写
 5. 基于websocket的实时数据推送
+6. 期货历史tick,期货实时数据支持
+
 
 ## 1.0.49 
 
