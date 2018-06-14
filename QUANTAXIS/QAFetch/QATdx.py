@@ -687,7 +687,7 @@ def __QA_fetch_get_stock_transaction(code, day, retry, api):
 
 
 def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=None, port=None):
-    '历史逐笔成交 buyorsell 1--sell 0--buy 2--盘前'
+    '历史分笔成交 buyorsell 1--sell 0--buy 2--盘前'
     global best_ip
     if ip is None and port is None and best_ip['stock']['ip'] is None and best_ip['stock']['port'] is None:
         best_ip = select_best_ip()
@@ -728,7 +728,7 @@ def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=None, port=None
 
 
 def QA_fetch_get_stock_transaction_realtime(code, ip=None, port=None):
-    '实时逐笔成交 包含集合竞价 buyorsell 1--sell 0--buy 2--盘前'
+    '实时分笔成交 包含集合竞价 buyorsell 1--sell 0--buy 2--盘前'
     global best_ip
     if ip is None and port is None and best_ip['stock']['ip'] is None and best_ip['stock']['port'] is None:
         best_ip = select_best_ip()
