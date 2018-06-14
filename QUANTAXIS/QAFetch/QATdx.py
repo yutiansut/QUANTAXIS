@@ -79,13 +79,14 @@ def select_best_ip():
         best_stock_ip['ip'], best_future_ip['ip']))
     return {'stock': best_stock_ip, 'future': best_future_ip}
 
+
 global best_ip
-best_ip={
-    'stock':{
-        'ip':None,'port':None
+best_ip = {
+    'stock': {
+        'ip': None, 'port': None
     },
-    'future':{
-        'ip':None,'port':None
+    'future': {
+        'ip': None, 'port': None
     }
 }
 # return 1 if sh, 0 if sz
@@ -109,10 +110,10 @@ def QA_fetch_get_security_bars(code, _type, lens, ip=None, port=None):
     global best_ip
     if ip is None and port is None and best_ip['stock']['ip'] is None and best_ip['stock']['port'] is None:
         best_ip = select_best_ip()
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     elif ip is None and port is None and best_ip['stock']['ip'] is not None and best_ip['stock']['port'] is not None:
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     else:
         pass
@@ -158,10 +159,10 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', frequence='da
     global best_ip
     if ip is None and port is None and best_ip['stock']['ip'] is None and best_ip['stock']['port'] is None:
         best_ip = select_best_ip()
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     elif ip is None and port is None and best_ip['stock']['ip'] is not None and best_ip['stock']['port'] is not None:
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     else:
         pass
@@ -348,10 +349,10 @@ def QA_fetch_get_stock_min(code, start, end, frequence='1min', ip=None, port=Non
     global best_ip
     if ip is None and port is None and best_ip['stock']['ip'] is None and best_ip['stock']['port'] is None:
         best_ip = select_best_ip()
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     elif ip is None and port is None and best_ip['stock']['ip'] is not None and best_ip['stock']['port'] is not None:
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     else:
         pass
@@ -395,10 +396,10 @@ def QA_fetch_get_stock_latest(code, ip=None, port=None):
     global best_ip
     if ip is None and port is None and best_ip['stock']['ip'] is None and best_ip['stock']['port'] is None:
         best_ip = select_best_ip()
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     elif ip is None and port is None and best_ip['stock']['ip'] is not None and best_ip['stock']['port'] is not None:
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     else:
         pass
@@ -419,10 +420,10 @@ def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=None, port=None):
     global best_ip
     if ip is None and port is None and best_ip['stock']['ip'] is None and best_ip['stock']['port'] is None:
         best_ip = select_best_ip()
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     elif ip is None and port is None and best_ip['stock']['ip'] is not None and best_ip['stock']['port'] is not None:
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     else:
         pass
@@ -445,10 +446,10 @@ def QA_fetch_depth_market_data(code=['000001', '000002'], ip=None, port=None):
     global best_ip
     if ip is None and port is None and best_ip['stock']['ip'] is None and best_ip['stock']['port'] is None:
         best_ip = select_best_ip()
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     elif ip is None and port is None and best_ip['stock']['ip'] is not None and best_ip['stock']['port'] is not None:
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     else:
         pass
@@ -527,10 +528,10 @@ def QA_fetch_get_stock_list(type_='stock', ip=None, port=None):
     global best_ip
     if ip is None and port is None and best_ip['stock']['ip'] is None and best_ip['stock']['port'] is None:
         best_ip = select_best_ip()
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     elif ip is None and port is None and best_ip['stock']['ip'] is not None and best_ip['stock']['port'] is not None:
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     else:
         pass
@@ -568,10 +569,10 @@ def QA_fetch_get_index_day(code, start_date, end_date, frequence='day', ip=None,
     global best_ip
     if ip is None and port is None and best_ip['stock']['ip'] is None and best_ip['stock']['port'] is None:
         best_ip = select_best_ip()
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     elif ip is None and port is None and best_ip['stock']['ip'] is not None and best_ip['stock']['port'] is not None:
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     else:
         pass
@@ -613,10 +614,10 @@ def QA_fetch_get_index_min(code, start, end, frequence='1min', ip=None, port=Non
     global best_ip
     if ip is None and port is None and best_ip['stock']['ip'] is None and best_ip['stock']['port'] is None:
         best_ip = select_best_ip()
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     elif ip is None and port is None and best_ip['stock']['ip'] is not None and best_ip['stock']['port'] is not None:
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     else:
         pass
@@ -691,10 +692,10 @@ def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=None, port=None
     global best_ip
     if ip is None and port is None and best_ip['stock']['ip'] is None and best_ip['stock']['port'] is None:
         best_ip = select_best_ip()
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     elif ip is None and port is None and best_ip['stock']['ip'] is not None and best_ip['stock']['port'] is not None:
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     else:
         pass
@@ -732,10 +733,10 @@ def QA_fetch_get_stock_transaction_realtime(code, ip=None, port=None):
     global best_ip
     if ip is None and port is None and best_ip['stock']['ip'] is None and best_ip['stock']['port'] is None:
         best_ip = select_best_ip()
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     elif ip is None and port is None and best_ip['stock']['ip'] is not None and best_ip['stock']['port'] is not None:
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     else:
         pass
@@ -760,10 +761,10 @@ def QA_fetch_get_stock_xdxr(code, ip=None, port=None):
     global best_ip
     if ip is None and port is None and best_ip['stock']['ip'] is None and best_ip['stock']['port'] is None:
         best_ip = select_best_ip()
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     elif ip is None and port is None and best_ip['stock']['ip'] is not None and best_ip['stock']['port'] is not None:
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     else:
         pass
@@ -795,10 +796,10 @@ def QA_fetch_get_stock_info(code, ip=None, port=None):
     global best_ip
     if ip is None and port is None and best_ip['stock']['ip'] is None and best_ip['stock']['port'] is None:
         best_ip = select_best_ip()
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     elif ip is None and port is None and best_ip['stock']['ip'] is not None and best_ip['stock']['port'] is not None:
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     else:
         pass
@@ -813,10 +814,10 @@ def QA_fetch_get_stock_block(ip=None, port=None):
     global best_ip
     if ip is None and port is None and best_ip['stock']['ip'] is None and best_ip['stock']['port'] is None:
         best_ip = select_best_ip()
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     elif ip is None and port is None and best_ip['stock']['ip'] is not None and best_ip['stock']['port'] is not None:
-        ip= best_ip['stock']['ip']
+        ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     else:
         pass
@@ -924,10 +925,10 @@ def QA_fetch_get_future_list(ip=None, port=None):
     global best_ip
     if ip is None and port is None and best_ip['future']['ip'] is None and best_ip['future']['port'] is None:
         best_ip = select_best_ip()
-        ip= best_ip['future']['ip']
+        ip = best_ip['future']['ip']
         port = best_ip['future']['port']
     elif ip is None and port is None and best_ip['future']['ip'] is not None and best_ip['future']['port'] is not None:
-        ip= best_ip['future']['ip']
+        ip = best_ip['future']['ip']
         port = best_ip['future']['port']
     else:
         pass
@@ -949,10 +950,10 @@ def QA_fetch_get_future_day(code, start_date, end_date, frequence='day', ip=None
     global best_ip
     if ip is None and port is None and best_ip['future']['ip'] is None and best_ip['future']['port'] is None:
         best_ip = select_best_ip()
-        ip= best_ip['future']['ip']
+        ip = best_ip['future']['ip']
         port = best_ip['future']['port']
     elif ip is None and port is None and best_ip['future']['ip'] is not None and best_ip['future']['port'] is not None:
-        ip= best_ip['future']['ip']
+        ip = best_ip['future']['ip']
         port = best_ip['future']['port']
     else:
         pass
@@ -980,10 +981,10 @@ def QA_fetch_get_future_min(code, start, end, frequence='1min', ip=None, port=No
     global best_ip
     if ip is None and port is None and best_ip['future']['ip'] is None and best_ip['future']['port'] is None:
         best_ip = select_best_ip()
-        ip= best_ip['future']['ip']
+        ip = best_ip['future']['ip']
         port = best_ip['future']['port']
     elif ip is None and port is None and best_ip['future']['ip'] is not None and best_ip['future']['port'] is not None:
-        ip= best_ip['future']['ip']
+        ip = best_ip['future']['ip']
         port = best_ip['future']['port']
     else:
         pass
@@ -1028,43 +1029,128 @@ def QA_fetch_get_future_min(code, start, end, frequence='1min', ip=None, port=No
         return data.assign(datetime=data['datetime'].apply(lambda x: str(x)))
 
 
-def QA_fetch_get_future_transaction(ip=None, port=None):
+def __QA_fetch_get_future_transaction(code, day, retry, code_market, apix):
+    batch_size = 1800  # 800 or 2000 ? 2000 maybe also works
+    data_arr = []
+    max_offset = 40
+    cur_offset = 0
+
+    while cur_offset <= max_offset:
+        one_chunk = apix.get_history_transaction_data(
+            code_market, str(code), QA_util_date_str2int(day), cur_offset * batch_size)
+        
+        if one_chunk is None or one_chunk == []:
+            break
+        data_arr = one_chunk + data_arr
+        cur_offset += 1
+    data_ = apix.to_df(data_arr)
+
+    for _ in range(retry):
+        if len(data_) < 2:
+            return __QA_fetch_get_stock_transaction(code, day, 0, apix)
+        else:
+            return data_.assign(datetime=pd.to_datetime(data_['date'])).assign(date=str(day))\
+                        .assign(code=str(code)).assign(order=range(len(data_.index))).set_index('datetime', drop=False, inplace=False)
+
+
+def QA_fetch_get_future_transaction(code, start, end, retry=2, ip=None, port=None):
     '期货历史成交分笔'
     global best_ip
     if ip is None and port is None and best_ip['future']['ip'] is None and best_ip['future']['port'] is None:
         best_ip = select_best_ip()
-        ip= best_ip['future']['ip']
+        ip = best_ip['future']['ip']
         port = best_ip['future']['port']
     elif ip is None and port is None and best_ip['future']['ip'] is not None and best_ip['future']['port'] is not None:
-        ip= best_ip['future']['ip']
+        ip = best_ip['future']['ip']
         port = best_ip['future']['port']
     else:
         pass
     apix = TdxExHq_API()
+    global extension_market_info
+    extension_market_info = QA_fetch_get_future_list(
+    ) if extension_market_info is None else extension_market_info
+    real_start, real_end = QA_util_get_real_datelist(start, end)
+    if real_start is None:
+        return None
+    real_id_range = []
     with apix.connect(ip, port):
-        pass
+        code_market = extension_market_info.query('code=="{}"'.format(code))
+        data = pd.DataFrame()
+        for index_ in range(trade_date_sse.index(real_start), trade_date_sse.index(real_end) + 1):
+
+            try:
+                data_ = __QA_fetch_get_future_transaction(
+                    code, trade_date_sse[index_], retry,int(code_market.market), apix)
+                if len(data_) < 1:
+                    return None
+            except Exception as e:
+                QA_util_log_info('Wrong in Getting {} history transaction data in day {}'.format(
+                    code, trade_date_sse[index_]))
+            else:
+                QA_util_log_info('Successfully Getting {} history transaction data in day {}'.format(
+                    code, trade_date_sse[index_]))
+                data = data.append(data_)
+        if len(data) > 0:
+
+            return data.assign(datetime=data['datetime'].apply(lambda x: str(x)[0:19]))
+        else:
+            return None
 
 
-def QA_fetch_get_future_transaction_realtime(ip=None, port=None):
+def QA_fetch_get_future_transaction_realtime(code,ip=None, port=None):
     '期货历史成交分笔'
     global best_ip
     if ip is None and port is None and best_ip['future']['ip'] is None and best_ip['future']['port'] is None:
         best_ip = select_best_ip()
-        ip= best_ip['future']['ip']
+        ip = best_ip['future']['ip']
         port = best_ip['future']['port']
     elif ip is None and port is None and best_ip['future']['ip'] is not None and best_ip['future']['port'] is not None:
-        ip= best_ip['future']['ip']
+        ip = best_ip['future']['ip']
         port = best_ip['future']['port']
     else:
         pass
     apix = TdxExHq_API()
+    global extension_market_info
+    extension_market_info = QA_fetch_get_future_list(
+    ) if extension_market_info is None else extension_market_info
+
+    code_market = extension_market_info.query('code=="{}"'.format(code))
     with apix.connect(ip, port):
-        pass
+        data = pd.DataFrame()
+        data = pd.concat([apix.to_df(apix.get_transaction_data(
+            int(code_market.market), code, (30 - i) * 1800)) for i in range(31)], axis=0)
+        return data.assign(datetime=pd.to_datetime(data['date'])).assign(date=lambda x: str(x)[0:10])\
+                        .assign(code=str(code)).assign(order=range(len(data.index))).set_index('datetime', drop=False, inplace=False)
 
 
 def QA_fetch_get_future_realtime(code, ip=None, port=None):
     '期货实时价格'
-    pass
+    global best_ip
+    if ip is None and port is None and best_ip['future']['ip'] is None and best_ip['future']['port'] is None:
+        best_ip = select_best_ip()
+        ip = best_ip['future']['ip']
+        port = best_ip['future']['port']
+    elif ip is None and port is None and best_ip['future']['ip'] is not None and best_ip['future']['port'] is not None:
+        ip = best_ip['future']['ip']
+        port = best_ip['future']['port']
+    else:
+        pass
+    apix = TdxExHq_API()
+    global extension_market_info
+    extension_market_info = QA_fetch_get_future_list(
+    ) if extension_market_info is None else extension_market_info
+    __data = pd.DataFrame()
+    code_market = extension_market_info.query('code=="{}"'.format(code))
+    with apix.connect(ip, port):
+        __data = apix.to_df(apix.get_instrument_quote(
+                int(code_market.market),code))
+        __data['datetime'] = datetime.datetime.now()
+
+        # data = __data[['datetime', 'active1', 'active2', 'last_close', 'code', 'open', 'high', 'low', 'price', 'cur_vol',
+        #                's_vol', 'b_vol', 'vol', 'ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',
+        #                'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3', 'ask4',
+        #                'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
+        return _data.set_index('code', drop=False, inplace=False)
 
 
 def QA_fetch_get_wholemarket_list():
@@ -1077,10 +1163,10 @@ def QA_fetch_get_wholemarket_list():
 
 
 if __name__ == '__main__':
-    print(QA_fetch_get_stock_day('000001','2017-07-03','2017-07-10'))
+    print(QA_fetch_get_stock_day('000001', '2017-07-03', '2017-07-10'))
     print(QA_fetch_get_stock_day('000001', '2013-07-01', '2013-07-09'))
-    #print(QA_fetch_get_stock_realtime('000001'))
+    # print(QA_fetch_get_stock_realtime('000001'))
     #print(QA_fetch_get_index_day('000001', '2017-01-01', '2017-07-01'))
     # print(QA_fetch_get_stock_transaction('000001', '2017-07-03', '2017-07-10'))
 
-    #print(QA_fetch_get_stock_info('600116'))
+    # print(QA_fetch_get_stock_info('600116'))
