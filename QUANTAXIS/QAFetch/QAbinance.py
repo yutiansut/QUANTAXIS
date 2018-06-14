@@ -17,8 +17,8 @@ LIMIT_BAR = 1000
 TIMEOUT = 10
 
 columne_names = ['start_time', 'open', 'high', 'low', 'close', 'volume', 'close_time',
-       'quote_asset_volume', 'num_trades', 'buy_base_asset_volume',
-       'buy_quote_asset_volume', 'Ignore']
+                 'quote_asset_volume', 'num_trades', 'buy_base_asset_volume',
+                 'buy_quote_asset_volume', 'Ignore']
 
 MESSAGE_NOTICE = "同学！！你知道什么叫做科学上网么？ 如果你不知道的话，那么就加油吧！"
 
@@ -41,8 +41,8 @@ def QA_fetch_kline(symbol, start_time, end_time, frequency):
         url = urljoin(Binance_base_url, "/api/v1/klines")
         try:
             req = requests.get(url, params={"symbol": symbol, "interval": frequency,
-                                        "startTime": int(start_time),
-                                        "endTime": int(end_time)}, timeout=TIMEOUT)
+                                            "startTime": int(start_time),
+                                            "endTime": int(end_time)}, timeout=TIMEOUT)
         except ConnectTimeout:
             raise ConnectTimeout(MESSAGE_NOTICE)
         klines = json.loads(req.content)
