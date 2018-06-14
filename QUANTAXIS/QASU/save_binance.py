@@ -10,40 +10,53 @@ import pymongo
 # binance的历史数据只是从2017年7月开始有，以前的貌似都没有保留 . author:Will
 BINANCE_MIN_DATE = datetime.datetime(2017, 7, 1)
 
+
 def QA_SU_save_binance(frequency):
     symbol_list = QA_fetch_symbol()
     col = QASETTING.client.binance[frequency]
     col.create_index(
         [("symbol", pymongo.ASCENDING), ("start_time", pymongo.ASCENDING)])
 
-    end = datetime.datetime(2018,1,1).replace(hour=0, minute=0, second=0,microsecond=0)
+    end = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
 
     for index, symbol_info in enumerate(symbol_list):
         QA_util_log_info('The {} of Total {}'.format
                          (symbol_info['symbol'], len(symbol_list)))
         QA_util_log_info('DOWNLOAD PROGRESS {} '.format(str(
             float(index / len(symbol_list) * 100))[0:4] + '%')
-        )
-        ref = col.find({"symbol":symbol_info['symbol']})
+                         )
+        ref = col.find({"symbol": symbol_info['symbol']}).sort("start_time", 1)
 
-        if ref.count()>0:
-            start_date = ref[ref.count()-1]['date']
+        if ref.count() > 0:
+            start_stamp = ref.next()['start_time']/1000
+            start_time = datetime.datetime.fromtimestamp(start_stamp)
             QA_util_log_info('UPDATE_SYMBOL \n Trying updating {} from {} to {}'.format(
-                symbol_info['symbol'], start_date, end))
+                symbol_info['symbol'], start_time, end))
         else:
             start_time = BINANCE_MIN_DATE
-            data = QA_fetch_kline(symbol_info['symbol'], time.mktime(start_time.timetuple()), time.mktime(end.timetuple()), frequency)
-            col.insert_many(data)
+            QA_util_log_info('NEW_SYMBOL \n Trying downloading {} from {} to {}'.format(
+                symbol_info['symbol'], start_time, end))
+
+        data = QA_fetch_kline(symbol_info['symbol'],
+                              time.mktime(start_time.timetuple()), time.mktime(end.timetuple()), frequency)
+        if len(data) == 0:
+            QA_util_log_info('SYMBOL {} from {} to {} has no data'.format(
+                symbol_info['symbol'], start_time, end))
+            continue
+        col.insert_many(data)
 
 
 def QA_SU_save_binance_1min():
     QA_SU_save_binance('1m')
 
+
 def QA_SU_save_binance_1day():
     QA_SU_save_binance("1d")
 
+
 def QA_SU_save_binance_1hour():
     QA_SU_save_binance("1h")
+
 
 def QA_SU_save_symbols():
     symbols = QA_fetch_symbol()
