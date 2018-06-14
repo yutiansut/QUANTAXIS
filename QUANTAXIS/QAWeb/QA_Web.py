@@ -28,10 +28,10 @@ from QUANTAXIS.QAWeb.datahandles import StockdayHandler, StockminHandler,StockBl
 from QUANTAXIS.QAWeb.quotationhandles import (RealtimeSocketHandler,
                                SimulateSocketHandler,MonitorSocketHandler)
 from QUANTAXIS.QAWeb.userhandles import SigninHandler, SignupHandler, PersonBlockHandler
-from QUANTAXIS.QAWeb.basehandles import BaseHandler
+from QUANTAXIS.QAWeb.basehandles import QABaseHandler
 
 
-class INDEX(BaseHandler):
+class INDEX(QABaseHandler):
     def get(self):
         self.render(".\index.html")
 
