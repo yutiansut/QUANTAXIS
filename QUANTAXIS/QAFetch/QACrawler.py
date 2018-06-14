@@ -62,6 +62,13 @@ def QA_fetch_get_sz_margin(date):
     if date in trade_date_sse:
         return pd.read_excel(_sz_url.format(date)).assign(date=date).assign(sse='sz')
 
+#http://data.eastmoney.com/zjlx/002433.html
+def QA_fetch_zjlx(code=None):
+    #获取资金流向
+
+
+
+    pass
 
 if __name__ == "__main__":
     print(QA_fetch_get_sz_margin('2018-01-25'))

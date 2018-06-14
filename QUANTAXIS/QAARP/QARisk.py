@@ -64,7 +64,7 @@ if platform.system() != 'Windows' and os.environ.get('DISPLAY', '') == '':
     """
 try:
     import tkinter
-except ModuleNotFoundError:
+except ImportError:
     '''
     ModuleNotFoundError: No module named 'tkinter'
     maybe you should install tk, tcl library
@@ -94,7 +94,11 @@ class QA_Risk():
 
     def __init__(self, account, benchmark_code='000300', benchmark_type=MARKET_TYPE.INDEX_CN, if_fq=True):
         """
-        if_qf选项是@尧提出的,关于回测的时候成交价格问题(如果按不复权撮合 应该按不复权价格计算assets)
+        account: QA_Account类/QA_PortfolioView类
+        benchmark_code: [str]对照参数代码
+        benchmark_type: [QA.PARAM]对照参数的市场
+        if_fq: [Bool]原account是否使用复权数据
+        if_fq选项是@尧提出的,关于回测的时候成交价格问题(如果按不复权撮合 应该按不复权价格计算assets)
         """
         self.account = account
         self.benchmark_code = benchmark_code  # 默认沪深300
@@ -123,7 +127,7 @@ class QA_Risk():
     @property
     @lru_cache()
     def market_value(self):
-        """市值表
+        """每日持仓市值表
 
         Returns:
             pd.DataFrame -- 市值表
@@ -238,7 +242,10 @@ class QA_Risk():
             'alpha': self.alpha,
             'sharpe': self.sharpe,
             'init_cash': "%0.2f" % (float(self.init_cash)),
-            'last_assets': "%0.2f" % (float(self.assets.iloc[-1]))
+            'last_assets': "%0.2f" % (float(self.assets.iloc[-1])),
+            'total_tax': self.total_tax,
+            'total_commission':self.total_commission,
+            'profit_money':self.profit_money
 
             #'init_assets': round(float(self.init_assets), 2),
             #'last_assets': round(float(self.assets.iloc[-1]), 2)

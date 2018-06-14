@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>QUANTAXIS.QAIndicator package &mdash; QUANTAXIS 1.0 documentation</title>
+  <title>QUANTAXIS.QAIndicator package &mdash; QUANTAXIS 1.0.39 documentation</title>
   
 
   
@@ -55,6 +55,10 @@
 
           
             
+            
+              <div class="version">
+                1.0.39
+              </div>
             
           
 
@@ -165,7 +169,9 @@
 <dl class="function">
 <dt id="QUANTAXIS.QAIndicator.base.AVEDEV">
 <code class="descclassname">QUANTAXIS.QAIndicator.base.</code><code class="descname">AVEDEV</code><span class="sig-paren">(</span><em>Series</em>, <em>N</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAIndicator/base.html#AVEDEV"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAIndicator.base.AVEDEV" title="Permalink to this definition">¶</a></dt>
-<dd><p>平均绝对偏差 mean absolute deviation</p>
+<dd><p>平均绝对偏差 mean absolute deviation
+修正: 2018-05-25</p>
+<p>之前用mad的计算模式依然返回的是单值</p>
 </dd></dl>
 
 <dl class="function">
@@ -182,7 +188,10 @@
 <dl class="function">
 <dt id="QUANTAXIS.QAIndicator.base.COUNT">
 <code class="descclassname">QUANTAXIS.QAIndicator.base.</code><code class="descname">COUNT</code><span class="sig-paren">(</span><em>COND</em>, <em>N</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAIndicator/base.html#COUNT"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAIndicator.base.COUNT" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>2018/05/23 修改</p>
+<p>参考https://github.com/QUANTAXIS/QUANTAXIS/issues/429</p>
+<p>现在返回的是series</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="QUANTAXIS.QAIndicator.base.CROSS">
@@ -251,6 +260,11 @@ N2 {[type]} -- [description]</dd>
 <dl class="function">
 <dt id="QUANTAXIS.QAIndicator.base.REF">
 <code class="descclassname">QUANTAXIS.QAIndicator.base.</code><code class="descname">REF</code><span class="sig-paren">(</span><em>Series</em>, <em>N</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAIndicator/base.html#REF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAIndicator.base.REF" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="QUANTAXIS.QAIndicator.base.SINGLE_CROSS">
+<code class="descclassname">QUANTAXIS.QAIndicator.base.</code><code class="descname">SINGLE_CROSS</code><span class="sig-paren">(</span><em>A</em>, <em>B</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/QUANTAXIS/QAIndicator/base.html#SINGLE_CROSS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#QUANTAXIS.QAIndicator.base.SINGLE_CROSS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -574,7 +588,7 @@ MIKE是另外一种形式的路径指标。
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.0',
+            VERSION:'1.0.39',
             LANGUAGE:'python',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

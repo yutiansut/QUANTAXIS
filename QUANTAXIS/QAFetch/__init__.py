@@ -40,9 +40,12 @@ from QUANTAXIS.QAFetch import QAEastMoney as QAEM
 
 def use(package):
     if package in ['wind']:
-        from WindPy import w
-        # w.start()
-        return QAWind
+        try:
+            from WindPy import w
+            # w.start()
+            return QAWind
+        except ModuleNotFoundError:
+            print('NO WIND CLIENT FOUND')
     elif package in ['tushare', 'ts']:
         return QATushare
     elif package in ['tdx', 'pytdx']:
@@ -176,3 +179,25 @@ def QA_fetch_get_future_min(package, code, start, end, frequence='1min'):
 
 def QA_fetch_get_security_bars(code, _type, lens):
     return QATdx.QA_fetch_get_security_bars(code, _type, lens)
+
+
+def QA_fetch_get_future_transaction(package,code,start,end):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_future_transaction(code,start,end)
+    else:
+        return 'Unsupport packages'
+
+
+
+def QA_fetch_get_future_transaction_realtime(package,code,start,end):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_future_transaction_realtime(code)
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_future_realtime(package, code):
+    Engine = use(package)
+    return Engine.QA_fetch_get_future_realtime(code)
