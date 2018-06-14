@@ -33,7 +33,7 @@ from tornado.web import Application, RequestHandler, authenticated
 
 import QUANTAXIS as QA
 from QUANTAXIS.QAWeb.basehandles import QABaseHandler,QAWebSocketHandler
-
+from tornado.websocket import WebSocketClosedError
 
 """
 要实现2个api
@@ -62,13 +62,14 @@ class RealtimeSocketHandler(QAWebSocketHandler):
         database = QA.DATABASE.get_collection(
             'realtime_{}'.format(datetime.date.today()))
         while True:
+            try:
+                current = [QA.QA_util_dict_remove_key(item, '_id') for item in database.find({'code': message}, limit=1, sort=[
+                    ('datetime', pymongo.DESCENDING)])]
 
-            current = [QA.QA_util_dict_remove_key(item, '_id') for item in database.find({'code': message}, limit=1, sort=[
-                ('datetime', pymongo.DESCENDING)])]
-
-            self.write_message(current[0])
-            time.sleep(1)
-
+                self.write_message(current[0])
+                time.sleep(1)
+            except WebSocketClosedError:
+                break
     def on_close(self):
         print('connection close')
 
