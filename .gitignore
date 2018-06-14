@@ -160,3 +160,5 @@ kernel*.json
 *.con
 /QUANTAXIS_Test/QAFetch_Test/data/
 *.sqlite_db
+
+selenium_driver/*
