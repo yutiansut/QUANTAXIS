@@ -60,7 +60,8 @@ from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day, QA_fetch_get_trade_date, 
                                QA_fetch_get_stock_indicator, QA_fetch_get_stock_realtime, QA_fetch_get_stock_transaction,
                                QA_fetch_get_index_day, QA_fetch_get_index_min, QA_fetch_get_stock_list, QA_fetch_get_stock_info,
                                QA_fetch_get_stock_block, QA_fetch_get_stock_transaction_realtime, QA_fetch_get_security_bars,
-                               QA_fetch_get_future_day, QA_fetch_get_future_min, QA_fetch_get_future_list)
+                               QA_fetch_get_future_day, QA_fetch_get_future_min, QA_fetch_get_future_list,QA_fetch_get_future_transaction,
+                               QA_fetch_get_future_transaction_realtime,QA_fetch_get_future_realtime)
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_trade_date, QA_fetch_account,
                                        QA_fetch_stock_day, QA_fetch_stock_min,
                                        QA_fetch_index_day, QA_fetch_index_min,
