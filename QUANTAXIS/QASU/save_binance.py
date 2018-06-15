@@ -12,20 +12,20 @@ import pymongo
 # binance的历史数据只是从2017年7月开始有，以前的貌似都没有保留 . author:Will
 BINANCE_MIN_DATE = datetime.datetime(2017, 7, 1, tzinfo=tzutc())
 
-FREQUANCY_DICT ={
-    "1m":relativedelta(minutes=-1),
-    "1d":relativedelta(days=-1),
-    "1h":relativedelta(hours=-1)
+FREQUANCY_DICT = {
+    "1m": relativedelta(minutes=-1),
+    "1d": relativedelta(days=-1),
+    "1h": relativedelta(hours=-1)
 }
+
 
 def QA_SU_save_binance(frequency):
     symbol_list = QA_fetch_symbol()
     col = QASETTING.client.binance[frequency]
     col.create_index(
-        [("symbol", pymongo.ASCENDING), ("start_time", pymongo.ASCENDING)],unique=True)
+        [("symbol", pymongo.ASCENDING), ("start_time", pymongo.ASCENDING)], unique=True)
 
-    end = datetime.datetime.now(tzutc())
-    end += FREQUANCY_DICT.get(frequency)
+    end = datetime.datetime.now(tzutc()) + FREQUANCY_DICT.get(frequency)
 
     for index, symbol_info in enumerate(symbol_list):
         QA_util_log_info('The {} of Total {}'.format
