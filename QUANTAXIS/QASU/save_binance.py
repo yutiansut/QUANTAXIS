@@ -37,7 +37,7 @@ def QA_SU_save_binance(frequency):
 
         if ref.count() > 0:
             start_stamp = ref.next()['close_time'] / 1000
-            start_time = datetime.datetime.fromtimestamp(start_stamp, tz=tzutc())+ relativedelta(microseconds=+1000)
+            start_time = datetime.datetime.fromtimestamp(start_stamp)
             QA_util_log_info('UPDATE_SYMBOL {} Trying updating {} from {} to {}'.format(
                 frequency, symbol_info['symbol'], start_time, end))
         else:
