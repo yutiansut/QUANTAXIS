@@ -21,6 +21,7 @@
 * [QUANTAXIS回测委托成交结算的说明](Documents/orderanddeal.md)
 * [QUANTAXIS回测分析](Documents/backtestanalysis.md)
 * [QUANTAXIS WEB API说明](Documents/backendapi.md)
+* [QUANTAXIS WEB 爬虫](Documents/crawler.md)
 * [常见策略整理](Documents/strategy.md)
 * [QUANTAXIS的开发列表](job_list.md)
 * [QUANTAXIS财务指标](Documents/financial_means.md)

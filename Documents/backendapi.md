@@ -93,7 +93,7 @@ class BaseHandler(tornado.web.RequestHandler):
         self.set_header("Access-Control-Allow-Origin", "*") # 这个地方可以写域名
         self.set_header("Access-Control-Allow-Headers", "x-requested-with")
         self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
-
+	self.set_header('Server', 'QUANTAXISBACKEND')
     def post(self):
         self.write('some post')
 
@@ -211,9 +211,9 @@ http://[ip]:[port]/marketdata/future/day?code=[]&start=[]&end=[]
 ```
 http://[ip]:[port]/marketdata/future/min?code=[]&start=[]&end=[]
 ```
-###  4.4. <a name='quotation'></a>实时行情推送 /quotation
+###  4.4. <a name='quotation'></a>实时行情推送 /realtime
 ```
-/quotation 推送指的是 建立一个websocket链接:
+/realtime 推送指的是 建立一个websocket链接:
 ```
 1. user login [Handler]
 
