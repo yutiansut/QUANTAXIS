@@ -25,7 +25,7 @@ def QA_SU_save_binance(frequency):
     col.create_index(
         [("symbol", pymongo.ASCENDING), ("start_time", pymongo.ASCENDING)], unique=True)
 
-    end = datetime.datetime.now(tzutc()) + FREQUANCY_DICT.get(frequency)
+    end = datetime.datetime.now(tzutc()) + relativedelta(days=-1, hour=0, minute=0, second=0, microsecond=0)
 
     for index, symbol_info in enumerate(symbol_list):
         QA_util_log_info('The {} of Total {}'.format
