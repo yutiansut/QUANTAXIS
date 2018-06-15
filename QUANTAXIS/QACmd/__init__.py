@@ -39,7 +39,7 @@ from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_min, QA
                        QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_index_min,
                        QA_SU_save_etf_day, QA_SU_save_etf_min)
 from QUANTAXIS.QASU.save_binance import QA_SU_save_symbols, QA_SU_save_binance_1hour, \
-                        QA_SU_save_binance_1day, QA_SU_save_binance_1min
+                        QA_SU_save_binance_1day, QA_SU_save_binance_1min, QA_SU_save_binance
 
 
 #东方财富爬虫
@@ -253,6 +253,9 @@ class CLI(cmd.Cmd):
                 QA_SU_save_binance_1day()
                 QA_SU_save_binance_1hour()
                 QA_SU_save_binance_1min()
+            elif len(arg) == 2 and arg[0] == "binance":
+                frequency = arg[1]
+                QA_SU_save_binance(frequency)
             else:
                 for i in arg:
                     if i == 'insert_user':
