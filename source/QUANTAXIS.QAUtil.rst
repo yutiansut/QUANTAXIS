@@ -167,7 +167,7 @@ QUANTAXIS.QAUtil.QATransform module
 QUANTAXIS.QAUtil.QAWeb module
 -----------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QAWeb
+.. automodule:: QUANTAXIS.QAUtil.QAWebutil
     :members:
     :undoc-members:
     :show-inheritance:

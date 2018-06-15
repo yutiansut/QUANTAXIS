@@ -24,9 +24,10 @@
 
 import codecs
 import os
+import io
+import re
 import sys
 
-import QUANTAXIS
 
 try:
     from setuptools import setup
@@ -40,6 +41,10 @@ if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6]:
     print('wrong version, should be 3.4/3.5/3.6 version')
     sys.exit()
 
+with io.open('QUANTAXIS/__init__.py', 'rt', encoding='utf8') as f:
+    context = f.read()
+    VERSION = re.search(r'__version__ = \'(.*?)\'', context).group(1)
+    AUTHOR = re.search(r'__author__ = \'(.*?)\'', context).group(1)
 
 def read(fname):
 
@@ -71,12 +76,10 @@ KEYWORDS = ["quantaxis", "quant", "finance", "Backtest", 'Framework']
 关于当前包的一些关键字，方便PyPI进行分类。
 """
 
-AUTHOR = QUANTAXIS.__author__
 AUTHOR_EMAIL = "yutiansut@qq.com"
 
 URL = "http://www.yutiansut.com"
 
-VERSION = QUANTAXIS.__version__
 
 
 LICENSE = "MIT"
@@ -93,8 +96,8 @@ setup(
         'Operating System :: OS Independent',
     ],
     install_requires=['pandas>=0.20.3', 'numpy>=1.12.0', 'tushare', 'flask_socketio>=2.9.0 ', 'motor>=1.1', 'seaborn>=0.8.1',
-                      'lxml>=4.0', ' beautifulsoup4', 'flask-socketio', 'flask', 'matplotlib', 'requests',
-                      'pymongo>=3.4', 'six>=1.10.0', 'tabulate>=0.7.7', 'pytdx>=1.57', 'retrying>=1.3.3',
+                      'lxml>=4.0', ' beautifulsoup4', 'flask-socketio', 'flask', 'matplotlib', 'requests', 'selenium', 'tornado',
+                      'pymongo>=3.4', 'six>=1.10.0', 'tabulate>=0.7.7', 'pytdx>=1.57', 'retrying>=1.3.3', 'scrapy',
                       'zenlog>=1.1', 'delegator.py>=0.0.12', 'flask>=0.12.2', 'pyecharts>=0.2.4', 'protobuf>=3.4.0'],
     entry_points={
         'console_scripts': [

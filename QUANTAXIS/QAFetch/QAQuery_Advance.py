@@ -288,12 +288,10 @@ def QA_fetch_stock_list_adv(collections=DATABASE.stock_list):
     :param collections: mongodb 数据库
     :return: DataFrame
     '''
-    stock_list_items = [item for item in collections.find()];
-    if stock_list_items is None:
-        print("💢 Error QA_fetch_stock_list_adv return None, maybe the DATABASE.stock_list have no DATA!")
-        return None
+    stock_list_items = [item for item in collections.find()]
     if len(stock_list_items) == 0:
         print("💢 Error QA_fetch_stock_list_adv call item for item in collections.find() return 0 item, maybe the DATABASE.stock_list is empty!")
+        return
     return pd.DataFrame(stock_list_items).drop('_id', axis=1, inplace=False)
 
 

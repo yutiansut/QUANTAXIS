@@ -98,8 +98,8 @@ class QA_Setting():
         else:
             return False
 
-
-DATABASE = QA_Setting().client.quantaxis
+QASETTING = QA_Setting()
+DATABASE = QASETTING.client.quantaxis
 
 
 info_ip_list = [{'ip': '101.227.73.20', 'port': 7709}, {'ip': '101.227.77.254', 'port': 7709},
