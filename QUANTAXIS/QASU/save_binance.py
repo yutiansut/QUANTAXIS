@@ -30,16 +30,16 @@ def QA_SU_save_binance(frequency):
         if ref.count() > 0:
             start_stamp = ref.next()['start_time'] / 1000
             start_time = datetime.datetime.fromtimestamp(start_stamp)
-            QA_util_log_info('UPDATE_SYMBOL \n Trying updating {} from {} to {}'.format(
-                symbol_info['symbol'], start_time, end))
+            QA_util_log_info('UPDATE_SYMBOL {} Trying updating {} from {} to {}'.format(
+                frequency, symbol_info['symbol'], start_time, end))
         else:
             start_time = BINANCE_MIN_DATE
-            QA_util_log_info('NEW_SYMBOL \n Trying downloading {} from {} to {}'.format(
-                symbol_info['symbol'], start_time, end))
+            QA_util_log_info('NEW_SYMBOL {} Trying downloading {} from {} to {}'.format(
+                frequency, symbol_info['symbol'], start_time, end))
 
         data = QA_fetch_kline(symbol_info['symbol'],
                               time.mktime(start_time.timetuple()), time.mktime(end.timetuple()), frequency)
-        if len(data) == 0:
+        if data is None:
             QA_util_log_info('SYMBOL {} from {} to {} has no data'.format(
                 symbol_info['symbol'], start_time, end))
             continue

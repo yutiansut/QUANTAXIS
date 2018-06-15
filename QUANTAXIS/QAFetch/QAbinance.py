@@ -47,9 +47,11 @@ def QA_fetch_kline(symbol, start_time, end_time, frequency):
             raise ConnectTimeout(MESSAGE_NOTICE)
         klines = json.loads(req.content)
         if len(klines) == 0:
-            return datas
+            break
         datas.extend(klines)
         start_time = klines[-1][6]
+    if len(datas) == 0:
+        return None
     frame = pd.DataFrame(datas)
     frame.columns = columne_names
     frame['symbol'] = symbol
@@ -65,8 +67,8 @@ if __name__ == '__main__':
 
     url = urljoin(Binance_base_url, "/api/v1/klines")
     start = time.mktime(datetime.datetime(2017, 6, 1).timetuple())
-    end = time.mktime(datetime.datetime(2017, 7, 1).timetuple())
+    end = time.mktime(datetime.datetime(2017, 8, 1).timetuple())
     print(start * 1000)
     print(end * 1000)
-    datas = QA_fetch_kline("ETHBTC", start, end)
-    print(len(datas))
+    data = QA_fetch_kline("ETHBTC", start, end, '1h')
+    print(data[0])
