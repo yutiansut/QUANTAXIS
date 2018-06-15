@@ -146,7 +146,10 @@ class CLI(cmd.Cmd):
             elif len(arg) == 3 and arg[0] == '10jqka' and arg[1] == 'funds' and arg[2] != 'all':
                 print("❌crawl 10jqka funds XXXXXX !没有实现")
             elif len(arg) == 3 and arg[0] == 'eastmoney' and arg[1] == 'zjlx' and arg[2] == 'all':
-                print("❌crawl eastmoney zjlx all !没有实现")
+                #print("❌crawl eastmoney zjlx all !没有实现")
+                print("  准备抓取东方财富资金流向数据 ")
+                QA_SU_crawl_eastmoney(action=arg[1],stockCode=arg[2])
+
             elif len(arg) == 3 and arg[0] == 'jrj' and arg[1] == 'zjlx' and arg[2] == 'all':
                 print("❌crawl jrj zjlx all !没有实现")
             elif len(arg) == 3 and arg[0] == '10jqka' and arg[1] == 'funds' and arg[2] == 'all':
