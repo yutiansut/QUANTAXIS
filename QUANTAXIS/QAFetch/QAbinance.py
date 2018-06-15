@@ -66,9 +66,10 @@ if __name__ == '__main__':
     # print(json.loads(a.content))
     import pytz
     from dateutil.tz import *
+
     tz = pytz.timezone("Asia/Shanghai")
     url = urljoin(Binance_base_url, "/api/v1/klines")
-    start = time.mktime(datetime.datetime(2018, 6, 13,tzinfo=tzutc()).timetuple())
+    start = time.mktime(datetime.datetime(2018, 6, 13, tzinfo=tzutc()).timetuple())
     end = time.mktime(datetime.datetime(2018, 6, 14, tzinfo=tzutc()).timetuple())
     print(start * 1000)
     print(end * 1000)
