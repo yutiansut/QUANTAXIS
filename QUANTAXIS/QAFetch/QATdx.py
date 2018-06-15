@@ -918,7 +918,21 @@ api.get_history_transaction_data(31, "00020", 20170810)
 首先会初始化/存储一个代码对应表 extension_market_info
 
 """
-
+def QA_fetch_get_extensionmarket_info(ip=None,port=None):
+    global best_ip
+    if ip is None and port is None and best_ip['future']['ip'] is None and best_ip['future']['port'] is None:
+        best_ip = select_best_ip()
+        ip = best_ip['future']['ip']
+        port = best_ip['future']['port']
+    elif ip is None and port is None and best_ip['future']['ip'] is not None and best_ip['future']['port'] is not None:
+        ip = best_ip['future']['ip']
+        port = best_ip['future']['port']
+    else:
+        pass
+    apix = TdxExHq_API()
+    with apix.connect(ip, port):
+        market_info = apix.to_df(apix.get_markets())
+        return market_info
 
 def QA_fetch_get_future_list(ip=None, port=None):
     '期货代码list'
@@ -1150,7 +1164,7 @@ def QA_fetch_get_future_realtime(code, ip=None, port=None):
         #                's_vol', 'b_vol', 'vol', 'ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',
         #                'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3', 'ask4',
         #                'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
-        return _data.set_index('code', drop=False, inplace=False)
+        return __data.set_index('code', drop=False, inplace=False)
 
 
 def QA_fetch_get_wholemarket_list():
