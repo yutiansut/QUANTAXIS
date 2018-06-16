@@ -35,7 +35,8 @@
 <!-- /TOC -->
 ## 1.0.52 (unreleased)
 
-
+1. @几何提交了 比特币部分的爬虫
+2. QAWEB部分后台增加了基于account_cookie的查询(ip:port/accounts?account_cookie=xxx)
 
 ## 1.0.51 
 

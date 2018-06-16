@@ -42,7 +42,7 @@ class AccountHandler(QABaseHandler):
         """
         采用了get_arguents来获取参数
         默认参数: code-->000001 start-->2017-01-01 09:00:00 end-->now
-
+        accounts?account_cookie=xxx
         """
         account_cookie= self.get_argument('account_cookie', default='admin')
         
