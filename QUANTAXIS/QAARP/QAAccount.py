@@ -196,7 +196,7 @@ class QA_Account(QA_Worker):
             'broker': self.broker,
             'market_type': self.market_type,
             'strategy_name': self.strategy_name,
-            'current_time': self._currenttime,
+            'current_time': str(self._currenttime),
             'allow_sellopen': self.allow_sellopen,
             'allow_t0': self.allow_t0,
             'margin_level': self.margin_level,
@@ -206,7 +206,7 @@ class QA_Account(QA_Worker):
             'cash': self.cash,
             'history': self.history,
             'trade_index': self.time_index,
-            'running_time': datetime.datetime.now(),
+            'running_time': str(datetime.datetime.now()) if self.running_time is None else str(self.running_time),
             'quantaxis_version': self.quantaxis_version,
             'running_environment': self.running_environment
         }
@@ -651,7 +651,7 @@ class QA_Account(QA_Worker):
         self.allow_sellopen = message.get('allow_sellopen', False)
         self.allow_t0 = message.get('allow_t0', False)
         self.margin_level = message.get('margin_level', False)
-        self.init_cash = message.get('init_cash', 'init_assets')  # 兼容修改
+        self.init_cash = message.get('init_cash',message.get('init_assets',1000000))  # 兼容修改
         self.commission_coeff = message.get('commission_coeff', 0.00015)
         self.tax_coeff = message.get('tax_coeff', 0.0015)
         self.history = message['history']
