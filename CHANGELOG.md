@@ -3,7 +3,10 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.0.53 (unreleased)](#1053-unreleased)
+    - [1.0.56 (unreleased)](#1056-unreleased)
+    - [1.0.55](#1055)
+    - [1.0.54](#1054)
+    - [1.0.53](#1053)
     - [1.0.52](#1052)
     - [1.0.51](#1051)
     - [1.0.50](#1050)
@@ -34,7 +37,22 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
-## 1.0.53 (unreleased)
+## 1.0.56 (unreleased)
+
+## 1.0.55
+
+优化了save financialfiles 的逻辑
+released in : JUNE 18, 2018
+
+## 1.0.54
+
+优化了save financialfiles 的逻辑
+released in : JUNE 17, 2018
+
+## 1.0.53
+
+优化了save financialfiles 的逻辑
+released in : JUNE 17, 2018
 
 ## 1.0.52 
 
