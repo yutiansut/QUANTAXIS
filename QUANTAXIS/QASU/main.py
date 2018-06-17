@@ -24,6 +24,7 @@
 from QUANTAXIS.QASU import save_tdx as stdx
 from QUANTAXIS.QASU import save_tdx_file as tdx_file
 from QUANTAXIS.QASU import save_tushare as sts
+from QUANTAXIS.QASU import save_local
 from QUANTAXIS.QAUtil import DATABASE
 
 from QUANTAXIS.QASU import crawl_eastmoney as crawl_eastmoney_file
@@ -236,3 +237,7 @@ def QA_SU_crawl_eastmoney(action="zjlx",stockCode=None):
     else:
         #todo 检查股票代码是否合法
         return crawl_eastmoney_file.QA_read_eastmoney_zjlx_web_page_to_sqllite(stockCode=stockCode)
+
+
+def QA_SU_save_financialfiles():
+    return save_local.QA_SU_save_financial_files()
