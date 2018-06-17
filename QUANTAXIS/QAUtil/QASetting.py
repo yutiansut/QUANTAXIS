@@ -28,7 +28,7 @@ import configparser
 from QUANTAXIS.QASU.user import QA_user_sign_in
 from QUANTAXIS.QAUtil.QALocalize import qa_path, setting_path
 from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting
-from QUANTAXIS.QASU.save_local import qa_path
+
 
 
 # quantaxis有一个配置目录存放在 ~/.quantaxis

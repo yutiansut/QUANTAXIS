@@ -28,7 +28,7 @@ import requests
 from pytdx.reader.history_financial_reader import HistoryFinancialReader
 from pytdx.crawler.history_financial_crawler import HistoryFinancialCrawler, HistoryFinancialListCrawler
 
-from QUANTAXIS.QASU.save_local import qa_path
+from QUANTAXIS.QAUtil.QALocalize import qa_path
 """
 参见PYTDX 1.65
 """

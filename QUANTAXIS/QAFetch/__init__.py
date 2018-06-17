@@ -37,7 +37,7 @@ from QUANTAXIS.QAFetch import QATdx as QATdx
 from QUANTAXIS.QAFetch import QAThs as QAThs
 from QUANTAXIS.QAFetch import QACrawler as QACL
 from QUANTAXIS.QAFetch import QAEastMoney as QAEM
-
+from QUANTAXIS.QAFetch import QAfinancial
 def use(package):
     if package in ['wind']:
         try:
