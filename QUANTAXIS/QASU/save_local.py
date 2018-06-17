@@ -24,7 +24,7 @@
 import os
 import sys
 import pymongo
-from QUANTAXIS.QAFetch.QAfinancial import parse_all
+from QUANTAXIS.QAFetch.QAfinancial import parse_all, download_financialzip,parse_filelist
 
 from QUANTAXIS.QAUtil.QALocalize import (cache_path, download_path, qa_path,
                                          setting_path)
@@ -32,16 +32,21 @@ from QUANTAXIS.QAUtil.QASql import ASCENDING, DESCENDING
 from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
 from QUANTAXIS.QAUtil import DATABASE
 
-def save_financial_files():
+
+def QA_SU_save_financial_files():
     """本地存储financialdata
     """
+    filename=download_financialzip()
+    if len(filename)>0:
+        data = QA_util_to_json_from_pandas(parse_filelist(filename).reset_index(
+        ).drop_duplicates(subset=['code', 'report_date']).sort_index())
 
-    data=QA_util_to_json_from_pandas(parse_all().reset_index().drop_duplicates(subset=['code','report_date']).sort_index())
-
-    coll=DATABASE.financial
-    coll.create_index(
-        [("code", ASCENDING), ("report_date", ASCENDING)],unique=True)
-    try:
-        coll.insert_many(data,ordered=False)
-    except pymongo.bulk.BulkWriteError:
-        pass
+        coll = DATABASE.financial
+        coll.create_index(
+            [("code", ASCENDING), ("report_date", ASCENDING)], unique=True)
+        try:
+            coll.insert_many(data, ordered=False)
+        except pymongo.bulk.BulkWriteError:
+            pass
+    else:
+        print('SUCCESSFULLY SAVE/UPDATE FINANCIAL DATA')
