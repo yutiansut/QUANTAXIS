@@ -89,8 +89,11 @@ def QA_util_date_str2int(date):
     :param date: str日期字符串
     :return: 类型int
     """
-    return int(str(date)[0:4] + str(date)[5:7] + str(date)[8:10])
-
+    #return int(str(date)[0:4] + str(date)[5:7] + str(date)[8:10])
+    if isinstance(date,str):
+        return int(str().join('date'.split('-')))
+    elif isinstance(date,int):
+        return date
 
 def QA_util_date_int2str(int_date):
     """
@@ -98,7 +101,10 @@ def QA_util_date_int2str(int_date):
     :param date: int 8位整数
     :return: 类型str
     """
-    return str(str(int_date)[0:4] + '-' + str(int_date)[4:6] + '-' + str(int_date)[6:8])
+    if isinstance(int_date,int):
+        return str(str(int_date)[0:4] + '-' + str(int_date)[4:6] + '-' + str(int_date)[6:8])
+    elif isinstance(int_date,str):
+        return int_date
 
 
 def QA_util_to_datetime(time):
