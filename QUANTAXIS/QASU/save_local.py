@@ -45,7 +45,8 @@ def QA_SU_save_financial_files():
         coll.create_index(
             [("code", ASCENDING), ("report_date", ASCENDING)], unique=True)
         try:
-            coll.insert_many(data, ordered=False)
+            coll.insert_many(data, ordered=True)
+
         except pymongo.bulk.BulkWriteError:
             pass
     else:
