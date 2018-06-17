@@ -433,9 +433,26 @@ def QA_fetch_lhb(date, db=DATABASE):
         raise e
 
 
-def QA_fetch_financial_report(code, report_date, ltype='CH', db=DATABASE):
+def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
+    """获取专业财务报表
+    
+    Arguments:
+        code {[type]} -- [description]
+        report_date {[type]} -- [description]
+    
+    Keyword Arguments:
+        ltype {str} -- [description] (default: {'EN'})
+        db {[type]} -- [description] (default: {DATABASE})
+    
+    Raises:
+        e -- [description]
+    
+    Returns:
+        pd.DataFrame -- [description]
+    """
+
     if isinstance(code, str):
-        code = list(code)
+        code = [code]
     if isinstance(report_date, str):
         report_date = [QA_util_date_str2int(report_date)]
     elif isinstance(report_date, int):
@@ -452,6 +469,7 @@ def QA_fetch_financial_report(code, report_date, ltype='CH', db=DATABASE):
     EN_columns.extend(['277', '278', '279', '280', '281', '282', '_id', 'code',
                        'report_date'])
     EN_columns = pd.Index(EN_columns)
+
     try:
         if code is not None and report_date is not None:
             data = [item for item in collection.find(
@@ -463,13 +481,16 @@ def QA_fetch_financial_report(code, report_date, ltype='CH', db=DATABASE):
             data = [item for item in collection.find({'code': {'$in': code}})]
         else:
             data = [item for item in collection.find()]
+        if len(data)>0:
+            res_pd = pd.DataFrame(data)
 
-        res_pd = pd.DataFrame([data])
-        if ltype is 'CH':
-            res_pd.columns=CH_columns
-        elif ltype is 'EN':
-            res_pd.columns=EN_columns
-        return res_pd
+            if ltype in ['CH','CN']:
+                res_pd.columns=CH_columns
+            elif ltype is 'EN':
+                res_pd.columns=EN_columns
+            return res_pd
+        else:
+            return None
     except Exception as e:
         raise e
 
