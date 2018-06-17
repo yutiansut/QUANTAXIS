@@ -30,22 +30,25 @@ from QUANTAXIS.QAUtil.QALocalize import (cache_path, download_path, qa_path,
                                          setting_path)
 from QUANTAXIS.QAUtil.QASql import ASCENDING, DESCENDING
 from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
-from QUANTAXIS.QAUtil import DATABASE
+from QUANTAXIS.QAUtil import DATABASE,QA_util_date_int2str
 
 
 def QA_SU_save_financial_files():
     """本地存储financialdata
     """
-    filename=download_financialzip()
-    if len(filename)>0:
-        for item in filename:
-            print('NOW SAVING {}'.format(item))
+    download_financialzip()
+    coll = DATABASE.financial
+    coll.create_index(
+        [("code", ASCENDING), ("report_date", ASCENDING)], unique=True)
+    for item in os.listdir(download_path):
+        
+        date=int(item.split('.')[0][-8:])
+        print('QUANTAXIS NOW SAVING {}'.format(date))
+        if coll.find({'report_date':date}).count()<100:
+
+            print(coll.find({'report_date':date}).count())
             data = QA_util_to_json_from_pandas(parse_filelist([item]).reset_index(
             ).drop_duplicates(subset=['code', 'report_date']).sort_index())
-
-            coll = DATABASE.financial
-            coll.create_index(
-                [("code", ASCENDING), ("report_date", ASCENDING)], unique=True)
             try:
                 coll.insert_many(data, ordered=False)
 
@@ -54,6 +57,8 @@ def QA_SU_save_financial_files():
                     coll.insert_many(data, ordered=True)
                 elif isinstance(e,pymongo.bulk.BulkWriteError):
                     pass
-            
         else:
-            print('SUCCESSFULLY SAVE/UPDATE FINANCIAL DATA')
+            print('ALL READY IN DATABASE')
+        
+
+    print('SUCCESSFULLY SAVE/UPDATE FINANCIAL DATA')
