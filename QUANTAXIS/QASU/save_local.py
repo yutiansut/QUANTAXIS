@@ -23,10 +23,25 @@
 # SOFTWARE.
 import os
 import sys
-from QUANTAXIS.QAUtil.QALocalize import qa_path, setting_path, cache_path, download_path
+import pymongo
+from QUANTAXIS.QAFetch.QAfinancial import parse_all
 
+from QUANTAXIS.QAUtil.QALocalize import (cache_path, download_path, qa_path,
+                                         setting_path)
+from QUANTAXIS.QAUtil.QASql import ASCENDING, DESCENDING
+from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
+from QUANTAXIS.QAUtil import DATABASE
 
-def make_cache():
-    pass
+def save_financial_files():
+    """本地存储financialdata
+    """
 
+    data=QA_util_to_json_from_pandas(parse_all().reset_index())
 
+    coll=DATABASE.financial
+    coll.create_index(
+        [("code", ASCENDING), ("report_date", ASCENDING)],unique=True)
+    try:
+        coll.insert_many(data,ordered=False)
+    except pymongo.bulk.BulkWriteError:
+        pass
