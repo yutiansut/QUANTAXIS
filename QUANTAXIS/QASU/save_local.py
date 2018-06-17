@@ -38,15 +38,22 @@ def QA_SU_save_financial_files():
     """
     filename=download_financialzip()
     if len(filename)>0:
-        data = QA_util_to_json_from_pandas(parse_filelist(filename).reset_index(
-        ).drop_duplicates(subset=['code', 'report_date']).sort_index())
+        for item in filename:
+            print('NOW SAVING {}'.format(item))
+            data = QA_util_to_json_from_pandas(parse_filelist([item]).reset_index(
+            ).drop_duplicates(subset=['code', 'report_date']).sort_index())
 
-        coll = DATABASE.financial
-        coll.create_index(
-            [("code", ASCENDING), ("report_date", ASCENDING)], unique=True)
-        try:
-            coll.insert_many(data, ordered=False)
-        except pymongo.bulk.BulkWriteError:
-            pass
-    else:
-        print('SUCCESSFULLY SAVE/UPDATE FINANCIAL DATA')
+            coll = DATABASE.financial
+            coll.create_index(
+                [("code", ASCENDING), ("report_date", ASCENDING)], unique=True)
+            try:
+                coll.insert_many(data, ordered=False)
+
+            except Exception as e:
+                if isinstance(e,MemoryError):
+                    coll.insert_many(data, ordered=True)
+                elif isinstance(e,pymongo.bulk.BulkWriteError):
+                    pass
+            
+        else:
+            print('SUCCESSFULLY SAVE/UPDATE FINANCIAL DATA')
