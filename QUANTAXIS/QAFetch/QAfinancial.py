@@ -25,10 +25,11 @@
 import os
 import sys
 import requests
+import pandas as pd
 from pytdx.reader.history_financial_reader import HistoryFinancialReader
 from pytdx.crawler.history_financial_crawler import HistoryFinancialCrawler, HistoryFinancialListCrawler
 
-from QUANTAXIS.QASU.save_local import qa_path
+from QUANTAXIS.QAUtil.QALocalize import qa_path,download_path
 """
 参见PYTDX 1.65
 """
@@ -60,17 +61,16 @@ def get_and_parse(filename):
     return HistoryFinancialReader().get_df(filename)
 
 
-def prase_all():
+def parse_all():
     """
     解析目录下的所有文件
     """
     filepath = '{}{}{}{}'.format(qa_path, os.sep, 'downloads', os.sep)
     filename = os.listdir(filepath)
-    data = []
-    for item in filename:
-        file = '{}{}{}{}{}'.format(qa_path, os.sep, 'downloads', os.sep, item)
-        data += get_and_parse(file)
-    return data
+
+    return pd.concat([get_and_parse('{}{}{}'.format(download_path,os.sep, item)) for item in filename],sort=False)
+
+
 
 
 financialmeans = ['基本每股收益',
