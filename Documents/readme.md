@@ -85,6 +85,7 @@ QAWeb web后台模块
 | 期货历史分笔 | QA_fetch_get_future_transaction | | |
 | 期货实时分笔 | QA_fetch_get_future_transaction_realtime | | |
 | 期货列表 | QA_fetch_get_future_list | | |
+
 ###  2.2. QASU 数据存储和更新模块
 
 存储/更新模块在QASU, 按获取函数对应
