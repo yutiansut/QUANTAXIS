@@ -91,7 +91,7 @@ def QA_util_date_str2int(date):
     """
     #return int(str(date)[0:4] + str(date)[5:7] + str(date)[8:10])
     if isinstance(date,str):
-        return int(str().join('date'.split('-')))
+        return int(str().join(date.split('-')))
     elif isinstance(date,int):
         return date
 
