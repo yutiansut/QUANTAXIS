@@ -31,11 +31,11 @@ from pandas import DataFrame
 
 from QUANTAXIS.QAUtil import (DATABASE, QA_Setting, QA_util_date_stamp,
                               QA_util_date_valid, QA_util_dict_remove_key,
-                              QA_util_log_info, QA_util_code_tolist,
+                              QA_util_log_info, QA_util_code_tolist, QA_util_date_str2int,
                               QA_util_sql_mongo_sort_DESCENDING,
                               QA_util_time_stamp, QA_util_to_json_from_pandas,
                               trade_date_sse)
-
+from QUANTAXIS.QAData.financial_mean import financial_dict
 
 """
 按要求从数据库取数据，并转换成numpy结构
@@ -79,10 +79,11 @@ def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collec
         elif format in ['list', 'l', 'L']:
             return numpy.asarray(res).tolist()
         else:
-            print("💢 Error QA_fetch_stock_day format parameter %s is none of  \"P, p, pandas, pd , json, dict , n, N, numpy, list, l, L, !\" "%format)
+            print("💢 Error QA_fetch_stock_day format parameter %s is none of  \"P, p, pandas, pd , json, dict , n, N, numpy, list, l, L, !\" " % format)
             return None
     else:
-        QA_util_log_info('💢 Error QA_fetch_stock_day data parameter start=%s end=%s is not right'%(start,end))
+        QA_util_log_info(
+            '💢 Error QA_fetch_stock_day data parameter start=%s end=%s is not right' % (start, end))
 
 
 def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', collections=DATABASE.stock_min):
@@ -98,7 +99,7 @@ def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', colle
     elif frequence in ['60min', '60m']:
         frequence = '60min'
     else:
-        print("💢 Error QA_fetch_stock_min parameter frequence=%s is none of 1min 1m 5min 5m 15min 15m 30min 30m 60min 60m"%frequence)
+        print("💢 Error QA_fetch_stock_min parameter frequence=%s is none of 1min 1m 5min 5m 15min 15m 30min 30m 60min 60m" % frequence)
 
     __data = []
     # code checking
@@ -221,7 +222,8 @@ def QA_fetch_stock_full(date, format='numpy', collections=DATABASE.stock_day):
 
         return __data
     else:
-        QA_util_log_info('💢 Error QA_fetch_stock_full data parameter date=%s not right'%date)
+        QA_util_log_info(
+            '💢 Error QA_fetch_stock_full data parameter date=%s not right' % date)
 
 
 def QA_fetch_index_day(code, start, end, format='numpy', collections=DATABASE.index_day):
@@ -249,7 +251,8 @@ def QA_fetch_index_day(code, start, end, format='numpy', collections=DATABASE.in
         elif format in ['list', 'l', 'L']:
             __data = __data
         elif format in ['P', 'p', 'pandas', 'pd']:
-            __data = DataFrame(__data, columns=['code', 'open', 'high', 'low', 'close', 'volume', 'date'])
+            __data = DataFrame(
+                __data, columns=['code', 'open', 'high', 'low', 'close', 'volume', 'date'])
             __data['date'] = pd.to_datetime(__data['date'])
             __data = __data.set_index('date', drop=False)
         else:
@@ -257,7 +260,6 @@ def QA_fetch_index_day(code, start, end, format='numpy', collections=DATABASE.in
         return __data
     else:
         QA_util_log_info('💢 something wrong with date')
-
 
 
 def QA_fetch_index_min(
@@ -278,7 +280,7 @@ def QA_fetch_index_min(
     elif frequence in ['60min', '60m']:
         frequence = '60min'
     __data = []
-    code=QA_util_code_tolist(code)
+    code = QA_util_code_tolist(code)
     cursor = collections.find({
         'code': {'$in': code}, "time_stamp": {
             "$gte": QA_util_time_stamp(start),
@@ -337,7 +339,7 @@ def QA_fetch_backtest_history(cookie=None, collections=DATABASE.backtest_history
 
 def QA_fetch_stock_block(code=None, format='pd', collections=DATABASE.stock_block):
     if code is not None:
-        code=QA_util_code_tolist(code)
+        code = QA_util_code_tolist(code)
         data = pd.DataFrame([item for item in collections.find(
             {'code': {'$in': code}})]).drop(['_id'], axis=1)
         return data.set_index('code', drop=False)
@@ -404,7 +406,7 @@ def QA_fetch_account(message={}, db=DATABASE):
     return [QA_util_dict_remove_key(res, '_id') for res in collection.find(message)]
 
 
-def QA_fetch_user(user_cookie,db=DATABASE):
+def QA_fetch_user(user_cookie, db=DATABASE):
     """
     get the user
 
@@ -418,7 +420,7 @@ def QA_fetch_user(user_cookie,db=DATABASE):
     """
     collection = DATABASE.account
 
-    return [QA_util_dict_remove_key(res, '_id') for res in collection.find({'user_cookie':user_cookie})]
+    return [QA_util_dict_remove_key(res, '_id') for res in collection.find({'user_cookie': user_cookie})]
 
 
 def QA_fetch_lhb(date, db=DATABASE):
@@ -427,6 +429,47 @@ def QA_fetch_lhb(date, db=DATABASE):
         collections = db.lhb
         return pd.DataFrame([item for item in collections.find(
             {'date': date})]).drop(['_id'], axis=1).set_index('code', drop=False).sort_index()
+    except Exception as e:
+        raise e
+
+
+def QA_fetch_financial_report(code, report_date, ltype='CH', db=DATABASE):
+    if isinstance(code, str):
+        code = list(code)
+    if isinstance(report_date, str):
+        report_date = [QA_util_date_str2int(report_date)]
+    elif isinstance(report_date, int):
+        report_date = [report_date]
+    elif isinstance(report_date, list):
+        report_date = [QA_util_date_str2int(item) for item in report_date]
+
+    collection = db.financial
+    CH_columns = [item[3:] for item in list(financial_dict.keys())]
+    CH_columns.extend(['277', '278', '279', '280', '281', '282', '_id', 'code',
+                       'report_date'])
+    CH_columns = pd.Index(CH_columns)
+    EN_columns = list(financial_dict.values())
+    EN_columns.extend(['277', '278', '279', '280', '281', '282', '_id', 'code',
+                       'report_date'])
+    EN_columns = pd.Index(EN_columns)
+    try:
+        if code is not None and report_date is not None:
+            data = [item for item in collection.find(
+                {'code': {'$in': code}, 'report_date': {'$in': report_date}})]
+        elif code is None and report_date is not None:
+            data = [item for item in collection.find(
+                {'report_date': {'$in': report_date}})]
+        elif code is not None and report_date is None:
+            data = [item for item in collection.find({'code': {'$in': code}})]
+        else:
+            data = [item for item in collection.find()]
+
+        res_pd = pd.DataFrame([data])
+        if ltype is 'CH':
+            res_pd.columns=CH_columns
+        elif ltype is 'EN':
+            res_pd.columns=EN_columns
+        return res_pd
     except Exception as e:
         raise e
 
