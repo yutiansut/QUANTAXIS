@@ -37,6 +37,7 @@
 
 1. @几何提交了 比特币部分的爬虫
 2. QAWEB部分后台增加了基于account_cookie的查询(ip:port/accounts?account_cookie=xxx)
+3. 财务数据的存储
 
 ## 1.0.51 
 
