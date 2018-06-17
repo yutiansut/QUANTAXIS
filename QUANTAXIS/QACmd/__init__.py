@@ -35,14 +35,14 @@ import requests
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_backtest
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting, QA_util_mongo_initial
 from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_min, QA_SU_save_stock_xdxr,
-                       QA_SU_save_stock_block, QA_SU_save_stock_info,QA_SU_save_stock_info_tushare,
-                       QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_index_min,
-                       QA_SU_save_etf_day, QA_SU_save_etf_min)
+                                 QA_SU_save_stock_block, QA_SU_save_stock_info, QA_SU_save_stock_info_tushare,
+                                 QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_index_min,
+                                 QA_SU_save_etf_day, QA_SU_save_etf_min, QA_SU_save_financialfiles)
 from QUANTAXIS.QASU.save_binance import QA_SU_save_symbols, QA_SU_save_binance_1hour, \
-                        QA_SU_save_binance_1day, QA_SU_save_binance_1min
+    QA_SU_save_binance_1day, QA_SU_save_binance_1min
 
 
-#东方财富爬虫
+# 东方财富爬虫
 from QUANTAXIS.QASU.main import (QA_SU_crawl_eastmoney)
 
 from QUANTAXIS import __version__
@@ -74,8 +74,9 @@ class CLI(cmd.Cmd):
         now_path = os.getcwd()
         #project_dir = os.path.dirname(os.path.abspath(__file__))
 
-        data=requests.get('https://codeload.github.com/quantaxis/QADemo/zip/master')
-        with open("{}{}QADEMO.zip".format(now_path,os.sep), "wb") as code:
+        data = requests.get(
+            'https://codeload.github.com/quantaxis/QADemo/zip/master')
+        with open("{}{}QADEMO.zip".format(now_path, os.sep), "wb") as code:
             code.write(data.content)
 
         QA_util_log_info(
@@ -123,41 +124,40 @@ class CLI(cmd.Cmd):
         print(
             "Usage: \n\
             ----------------------------------------------------------------------------------------------------------------------\n\
-            ⌨️命令格式：crawl eastmoney zjlx  6位股票代码 : 抓取 东方财富 资金流向          ❤️鸣谢❤️ www.eastmoney.com 网页提供数据！\n\
-            ⌨️命令格式：crawl jrj       zjlx  6位股票代码 : 抓取 金融界   资金流向          ❤️鸣谢❤️ www.jrj.com.cn    网页提供数据！\n\
-            ⌨️命令格式：crawl 10jqka    funds 6位股票代码 : 抓取 同花顺   资金流向          ❤️鸣谢❤️ www.10jqka.com.cn 网页提供数据！\n\
+            命令格式：crawl eastmoney zjlx  6位股票代码 : 抓取 东方财富 资金流向          鸣谢 www.eastmoney.com 网页提供数据！\n\
+            命令格式：crawl jrj       zjlx  6位股票代码 : 抓取 金融界   资金流向          鸣谢 www.jrj.com.cn    网页提供数据！\n\
+            命令格式：crawl 10jqka    funds 6位股票代码 : 抓取 同花顺   资金流向          鸣谢 www.10jqka.com.cn 网页提供数据！\n\
             -----------------------------------------------------------------------------------------------------------------------\n\
-            ⌨️命令格式：crawl eastmoney zjlx  all        : 抓取 东方财富 所有股票资金流向   ❤️鸣谢❤️ www.eastmoney.com 网页提供数据！\n\
-            ⌨️命令格式：crawl jrj       zjlx  all        : 抓取 金融界   所有股票资金流向   ❤️鸣谢❤️ www.jrj.com.cn    网页提供数据！\n\
-            ⌨️命令格式：crawl 10jqka    funds all        : 抓取 同花顺   所有股票资金流向   ❤️鸣谢❤️ www.10jqka.com.cn 网页提供数据！\n\
+            命令格式：crawl eastmoney zjlx  all        : 抓取 东方财富 所有股票资金流向   鸣谢 www.eastmoney.com 网页提供数据！\n\
+            命令格式：crawl jrj       zjlx  all        : 抓取 金融界   所有股票资金流向   鸣谢 www.jrj.com.cn    网页提供数据！\n\
+            命令格式：crawl 10jqka    funds all        : 抓取 同花顺   所有股票资金流向   鸣谢 www.10jqka.com.cn 网页提供数据！\n\
             -----------------------------------------------------------------------------------------------------------------------\n\
             @yutiansut\n\
             @QUANTAXIS\n\
             请访问 https://book.yutiansut.com/\n\
             ")
 
-    def do_crawl(self,arg):
+    def do_crawl(self, arg):
         if arg == '':
             self.print_crawl_usage()
         else:
             arg = arg.split(' ')
             if len(arg) == 3 and arg[0] == 'eastmoney' and arg[1] == 'zjlx' and arg[2] != 'all':
                 print("  准备抓取东方财富资金流向数据 ")
-                QA_SU_crawl_eastmoney(action=arg[1],stockCode=arg[2])
+                QA_SU_crawl_eastmoney(action=arg[1], stockCode=arg[2])
             elif len(arg) == 3 and arg[0] == 'jrj' and arg[1] == 'zjlx' and arg[2] != 'all':
-                print("❌crawl jrj zjlx XXXXXX !没有实现")
+                print("crawl jrj zjlx XXXXXX !没有实现")
             elif len(arg) == 3 and arg[0] == '10jqka' and arg[1] == 'funds' and arg[2] != 'all':
-                print("❌crawl 10jqka funds XXXXXX !没有实现")
+                print("crawl 10jqka funds XXXXXX !没有实现")
             elif len(arg) == 3 and arg[0] == 'eastmoney' and arg[1] == 'zjlx' and arg[2] == 'all':
-                print("❌crawl eastmoney zjlx all !没有实现")
+                print("crawl eastmoney zjlx all !没有实现")
             elif len(arg) == 3 and arg[0] == 'jrj' and arg[1] == 'zjlx' and arg[2] == 'all':
-                print("❌crawl jrj zjlx all !没有实现")
+                print("crawl jrj zjlx all !没有实现")
             elif len(arg) == 3 and arg[0] == '10jqka' and arg[1] == 'funds' and arg[2] == 'all':
-                print("❌crawl 10jqka funds all !没有实现")
+                print("crawl 10jqka funds all !没有实现")
             else:
-                print("❌crawl 命令格式不正确！")
+                print("crawl 命令格式不正确！")
                 self.print_crawl_usage()
-
 
     def print_save_usage(self):
         print(
@@ -177,6 +177,7 @@ class CLI(cmd.Cmd):
             命令格式：save stock_list : 保存股票列表 \n\
             命令格式：save stock_block: 保存板块 \n\
             命令格式：save stock_info : 保存tushare数据接口获取的股票列表 \n\
+            命令格式: save financialfiles: 保存从1996-2018的财务数据 \n\
              ----------------------------------------------------------\n\
             if you just want to save daily data just\n\
                 save all+ save stock_block+save stock_info, it about 1G data \n\
@@ -253,6 +254,8 @@ class CLI(cmd.Cmd):
                 QA_SU_save_binance_1day()
                 QA_SU_save_binance_1hour()
                 QA_SU_save_binance_1min()
+            elif len(arg) == 1 and arg[0] == "financialfiles":
+                QA_SU_save_financialfiles()
             else:
                 for i in arg:
                     if i == 'insert_user':
@@ -275,7 +278,7 @@ class CLI(cmd.Cmd):
                         try:
                             eval("QA_SU_save_%s('tdx')" % (i))
                         except:
-                            print("❌命令格式不正确！")
+                            print("命令格式不正确！")
                             self.print_save_usage()
 
     def help_save(self):
