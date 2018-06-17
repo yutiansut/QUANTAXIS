@@ -3,7 +3,8 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.0.52 (unreleased)](#1052-unreleased)
+    - [1.0.53 (unreleased)](#1053-unreleased)
+    - [1.0.52](#1052)
     - [1.0.51](#1051)
     - [1.0.50](#1050)
     - [1.0.49](#1049)
@@ -33,11 +34,19 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
-## 1.0.52 (unreleased)
+## 1.0.53 (unreleased)
+
+## 1.0.52 
 
 1. @几何提交了 比特币部分的爬虫
 2. QAWEB部分后台增加了基于account_cookie的查询(ip:port/accounts?account_cookie=xxx)
-3. 财务数据的存储
+3. @几何 优化了setup.py文件
+4. 财务数据的存储,获取
+5. QA_fetch_financial_report
+6. QACLI--> save financialfile
+7. QASU.QA_SU_save_financial_files()
+
+released in : JUNE 17, 2018
 
 ## 1.0.51 
 
