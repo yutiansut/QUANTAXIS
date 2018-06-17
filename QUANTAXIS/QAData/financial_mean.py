@@ -1,6 +1,7 @@
 # coding:utf-8
 
 financial_dict = {
+    '000报告日期':'reportDate',
     # 1.每股指标
     '001基本每股收益': 'EPS',
     '002扣除非经常性损益每股收益': 'deductEPS',
