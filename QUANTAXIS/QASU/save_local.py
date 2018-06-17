@@ -36,7 +36,7 @@ def save_financial_files():
     """本地存储financialdata
     """
 
-    data=QA_util_to_json_from_pandas(parse_all().reset_index())
+    data=QA_util_to_json_from_pandas(parse_all().reset_index().drop_duplicates(subset=['code','report_date']).sort_index())
 
     coll=DATABASE.financial
     coll.create_index(
