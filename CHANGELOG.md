@@ -61,7 +61,7 @@ released in : JUNE 17, 2018
 3. @几何 优化了setup.py文件
 4. 财务数据的存储,获取
 5. QA_fetch_financial_report
-6. QACLI--> save financialfile
+6. QACLI--> save financialfiles
 7. QASU.QA_SU_save_financial_files()
 
 released in : JUNE 17, 2018
