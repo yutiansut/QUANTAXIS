@@ -1,5 +1,7 @@
 import datetime
 import time
+from dateutil.tz import tzutc
+from dateutil.relativedelta import relativedelta
 from QUANTAXIS.QAUtil import (DATABASE, QASETTING,
                               QA_util_get_real_date, QA_util_log_info,
                               QA_util_to_json_from_pandas, trade_date_sse)
@@ -8,16 +10,22 @@ from QUANTAXIS.QAFetch.QAbinance import QA_fetch_symbol, QA_fetch_kline
 import pymongo
 
 # binance的历史数据只是从2017年7月开始有，以前的貌似都没有保留 . author:Will
-BINANCE_MIN_DATE = datetime.datetime(2017, 7, 1)
+BINANCE_MIN_DATE = datetime.datetime(2017, 7, 1, tzinfo=tzutc())
 
+FREQUANCY_DICT ={
+    "1m":relativedelta(minutes=-1),
+    "1d":relativedelta(days=-1),
+    "1h":relativedelta(hours=-1)
+}
 
 def QA_SU_save_binance(frequency):
     symbol_list = QA_fetch_symbol()
     col = QASETTING.client.binance[frequency]
     col.create_index(
-        [("symbol", pymongo.ASCENDING), ("start_time", pymongo.ASCENDING)])
+        [("symbol", pymongo.ASCENDING), ("start_time", pymongo.ASCENDING)],unique=True)
 
-    end = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    end = datetime.datetime.now(tzutc())
+    end += FREQUANCY_DICT.get(frequency)
 
     for index, symbol_info in enumerate(symbol_list):
         QA_util_log_info('The {} of Total {}'.format
@@ -28,18 +36,18 @@ def QA_SU_save_binance(frequency):
         ref = col.find({"symbol": symbol_info['symbol']}).sort("start_time", -1)
 
         if ref.count() > 0:
-            start_stamp = ref.next()['start_time'] / 1000
-            start_time = datetime.datetime.fromtimestamp(start_stamp)
-            QA_util_log_info('UPDATE_SYMBOL \n Trying updating {} from {} to {}'.format(
-                symbol_info['symbol'], start_time, end))
+            start_stamp = ref.next()['close_time'] / 1000
+            start_time = datetime.datetime.fromtimestamp(start_stamp, tz=tzutc())
+            QA_util_log_info('UPDATE_SYMBOL {} Trying updating {} from {} to {}'.format(
+                frequency, symbol_info['symbol'], start_time, end))
         else:
             start_time = BINANCE_MIN_DATE
-            QA_util_log_info('NEW_SYMBOL \n Trying downloading {} from {} to {}'.format(
-                symbol_info['symbol'], start_time, end))
+            QA_util_log_info('NEW_SYMBOL {} Trying downloading {} from {} to {}'.format(
+                frequency, symbol_info['symbol'], start_time, end))
 
         data = QA_fetch_kline(symbol_info['symbol'],
-                              time.mktime(start_time.timetuple()), time.mktime(end.timetuple()), frequency)
-        if len(data) == 0:
+                              time.mktime(start_time.utctimetuple()), time.mktime(end.utctimetuple()), frequency)
+        if data is None:
             QA_util_log_info('SYMBOL {} from {} to {} has no data'.format(
                 symbol_info['symbol'], start_time, end))
             continue

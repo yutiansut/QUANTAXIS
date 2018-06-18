@@ -251,8 +251,8 @@ class CLI(cmd.Cmd):
                 # QA_SU_save_stock_info('tdx')
             elif len(arg) == 1 and arg[0] == "binance":
                 QA_SU_save_symbols()
-                QA_SU_save_binance_1hour()
                 QA_SU_save_binance_1day()
+                QA_SU_save_binance_1hour()
                 QA_SU_save_binance_1min()
             elif len(arg) == 1 and arg[0] == "financialfiles":
                 QA_SU_save_financialfiles()
