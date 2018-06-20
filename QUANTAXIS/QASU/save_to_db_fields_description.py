@@ -73,6 +73,25 @@ quantaxis__db_description= [
             {"meigujingzichan": "每股净资产"},
             {"baoliu2": "保留"}
         ]
+    },
+    {
+        'eastmoney_stock_zjlx':
+        [
+            {"stock_code" : "股票代码"},
+            {"date" : "日期"},
+            {"zljll_je_wy" : "主力资金流入（金额）单位万元"},
+            {"zljll_jzb_bfb" : "主力资金流入（净占比）%"},
+            {"cddjll_je_wy" : "超级大单流入（金额）单位万元"},
+            {"cddjll_je_jzb" : "超级大单流入（净占比）"},
+            {"ddjll_je_wy" : "大单资金流入（金额）单位万元"},
+            {"ddjll_je_jzb" : "大单资金流入（净占比）%"},
+            {"zdjll_je_wy" : "中单资金流入（金额）单位万元"},
+            {"zdjll_je_jzb" : "中单资金流入（净占比）%"},
+            {"xdjll_je_wy" : "小单资金流入（金额）单位万元"},
+            {"xdjll_je_jzb" : "小单资金流入（净占比）"},
+            {"close_price" : "收盘价"},
+            {"change_price" : "涨跌幅"}
+        ]
     }
 
 
