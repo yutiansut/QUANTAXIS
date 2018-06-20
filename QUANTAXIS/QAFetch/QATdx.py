@@ -32,7 +32,7 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_str2int,
                               QA_util_date_valid, QA_util_get_real_date,
                               QA_util_get_real_datelist, QA_util_get_trade_gap,
                               QA_util_log_info, QA_util_time_stamp,
-                              QA_util_web_ping, future_ip_list, stock_ip_list,
+                              QA_util_web_ping, future_ip_list, stock_ip_list, exclude_from_stock_ip_list, QA_Setting,
                               trade_date_sse)
 
 from QUANTAXIS.QAFetch.base import _select_market_code, _select_type
@@ -68,6 +68,15 @@ def ping(ip, port=7709, type_='stock'):
 
 def select_best_ip():
     QA_util_log_info('Selecting the Best Server IP of TDX')
+
+    # 删除exclude ip
+    import json
+    qasetting = QA_Setting()
+    excludejson = {'ip': '1.1.1.1', 'port': 7709}
+    alist = []
+    alist.append(excludejson)
+    ipexclude = qasetting.get_config(section='IPLIST', option='exclude', default_value=alist)
+    exclude_from_stock_ip_list(json.loads(ipexclude))
 
     data_stock = [ping(x['ip'], x['port'], 'stock') for x in stock_ip_list]
     data_future = [ping(x['ip'], x['port'], 'future') for x in future_ip_list]
