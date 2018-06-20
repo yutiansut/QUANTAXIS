@@ -243,3 +243,7 @@ def QA_SU_crawl_eastmoney(action="zjlx",stockCode=None):
         code_list.append(stockCode)
         return crawl_eastmoney_file.QA_request_eastmoney_zjlx(param_stock_code_list=code_list)
 
+
+
+def QA_SU_save_financialfiles():
+    return save_local.QA_SU_save_financial_files()
