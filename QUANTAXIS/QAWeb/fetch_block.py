@@ -4,10 +4,13 @@
 import QUANTAXIS as QA
 import pandas as pd
 import re
-block_tdx = QA.DATABASE.stock_block
-block_ths = QA.DATABASE.stock_block_ths
-codelist = QA.QA_fetch_stock_list_adv()
 
+try:
+    block_tdx = QA.DATABASE.stock_block
+    block_ths = QA.DATABASE.stock_block_ths
+    codelist = QA.QA_fetch_stock_list_adv()
+except:
+    pass
 
 def get_block(block):
     block = [block] if isinstance(block, str) else block
