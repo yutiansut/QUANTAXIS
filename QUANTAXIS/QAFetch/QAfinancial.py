@@ -25,15 +25,54 @@
 import os
 import sys
 import requests
+import pandas as pd
 from pytdx.reader.history_financial_reader import HistoryFinancialReader
-from pytdx.crawler.history_financial_crawler import HistoryFinancialCrawler, HistoryFinancialListCrawler
+from pytdx.crawler.history_financial_crawler import HistoryFinancialCrawler
 
-from QUANTAXIS.QASU.save_local import qa_path
+from QUANTAXIS.QAUtil.QALocalize import qa_path, download_path
 """
 参见PYTDX 1.65
 """
 
 FINANCIAL_URL = 'http://down.tdx.com.cn:8001/fin/gpcw.txt'
+
+
+class QAHistoryFinancialCrawler(HistoryFinancialCrawler):
+
+    def to_df(self, data):
+        if len(data) == 0:
+            return None
+
+        total_lengh = len(data[0])
+        col = ['code', 'report_date']
+
+        length = total_lengh - 2
+        for i in range(0, length):
+            col.append('00{}'.format(str(i + 1))[-3:])
+
+        df = pd.DataFrame(data=data, columns=col)
+        df.set_index('code', inplace=True)
+        return df
+
+
+class QAHistoryFinancialReader(HistoryFinancialReader):
+
+    def get_df(self, data_file):
+        """
+        读取历史财务数据文件，并返回pandas结果 ， 类似gpcw20171231.zip格式，具体字段含义参考
+
+        https://github.com/rainx/pytdx/issues/133
+
+        :param data_file: 数据文件地址， 数据文件类型可以为 .zip 文件，也可以为解压后的 .dat
+        :return: pandas DataFrame格式的历史财务数据
+        """
+
+        crawler = QAHistoryFinancialCrawler()
+
+        with open(data_file, 'rb') as df:
+            data = crawler.parse(download_file=df)
+
+        return crawler.to_df(data)
 
 
 def get_filename():
@@ -43,34 +82,43 @@ def get_filename():
     return [l[0] for l in [line.strip().split(",") for line in requests.get(FINANCIAL_URL).text.strip().split('\n')]]
 
 
-def download():
+def download_financialzip():
     """
     会创建一个download/文件夹
     """
     result = get_filename()
+    res = []
     for item in result:
-        r = requests.get('http://down.tdx.com.cn:8001/fin/{}'.format(item))
+        if item in os.listdir(download_path):
+            print('FILE {} is already in {}'.format(item, download_path))
+        else:
+            r = requests.get('http://down.tdx.com.cn:8001/fin/{}'.format(item))
 
-        file = '{}{}{}{}{}'.format(qa_path, os.sep, 'downloads', os.sep, item)
-        with open(file, "wb") as code:
-            code.write(r.content)
+            file = '{}{}{}'.format(download_path, os.sep, item)
+
+            with open(file, "wb") as code:
+                code.write(r.content)
+            res.append(item)
+    return res
 
 
 def get_and_parse(filename):
-    return HistoryFinancialReader().get_df(filename)
+    return QAHistoryFinancialReader().get_df(filename)
 
 
-def prase_all():
+def parse_filelist(filelist):
+    
+    return pd.concat([get_and_parse('{}{}{}'.format(download_path, os.sep, item)) for item in filelist], sort=False)
+
+
+def parse_all():
     """
     解析目录下的所有文件
     """
-    filepath = '{}{}{}{}'.format(qa_path, os.sep, 'downloads', os.sep)
-    filename = os.listdir(filepath)
-    data = []
-    for item in filename:
-        file = '{}{}{}{}{}'.format(qa_path, os.sep, 'downloads', os.sep, item)
-        data += get_and_parse(file)
-    return data
+    #filepath = '{}{}{}{}'.format(qa_path, os.sep, 'downloads', os.sep)
+    filename = os.listdir(download_path)
+
+    return parse_filelist(filename)
 
 
 financialmeans = ['基本每股收益',
@@ -351,4 +399,4 @@ financialmeans = ['基本每股收益',
                   '近一年净利润(元)']
 if __name__ == '__main__':
     # download()
-    prase_all()
+    parse_all()

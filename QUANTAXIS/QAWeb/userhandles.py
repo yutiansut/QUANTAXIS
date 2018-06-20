@@ -37,6 +37,17 @@ from QUANTAXIS.QAWeb.basehandles import QABaseHandler
 
 class SignupHandler(QABaseHandler):
     def get(self):
+        """注册接口
+        
+        Arguments:
+            QABaseHandler {[type]} -- [description]
+
+            user/signin?user=xxx&password=xx
+        Return 
+            'SUCCESS' if success
+            'WRONG' if wrong
+        """
+
         username = self.get_argument('user', default='admin')
         password = self.get_argument('password', default='admin')
         if QA_user_sign_up(username, password, client=QA_util_sql_mongo_setting()):
@@ -47,6 +58,17 @@ class SignupHandler(QABaseHandler):
 
 class SigninHandler(QABaseHandler):
     def get(self):
+        """登陆接口
+        
+        Arguments:
+            QABaseHandler {[type]} -- [description]
+
+            user/signup?user=xxx&password=xx
+        Return 
+            'SUCCESS' if success
+            'WRONG' if wrong
+        """
+
         username = self.get_argument('user', default='admin')
         password = self.get_argument('password', default='admin')
         res = QA_user_sign_in(username, password,
