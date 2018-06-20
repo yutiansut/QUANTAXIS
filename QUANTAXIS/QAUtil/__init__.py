@@ -80,7 +80,7 @@ from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 # QUANTAXIS Setting
 
 from QUANTAXIS.QAUtil.QASetting import (QA_Setting, DATABASE, future_ip_list, QASETTING,
-                                        info_ip_list, stock_ip_list)
+                                        info_ip_list, stock_ip_list, exclude_from_stock_ip_list)
 # sql
 from QUANTAXIS.QAUtil.QASql import (QA_util_sql_async_mongo_setting,
                                     QA_util_sql_mongo_setting,
