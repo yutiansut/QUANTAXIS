@@ -23,11 +23,11 @@
 # SOFTWARE.
 
 import codecs
-import os
 import io
+import os
 import re
 import sys
-
+import webbrowser
 
 try:
     from setuptools import setup
@@ -45,6 +45,15 @@ with io.open('QUANTAXIS/__init__.py', 'rt', encoding='utf8') as f:
     context = f.read()
     VERSION = re.search(r'__version__ = \'(.*?)\'', context).group(1)
     AUTHOR = re.search(r'__author__ = \'(.*?)\'', context).group(1)
+
+
+try:
+    print(webbrowser.open(
+        'https://github.com/QUANTAXIS/QUANTAXIS/blob/master/CHANGELOG.md'))
+    print('finish install')
+except:
+    pass
+
 
 def read(fname):
 
@@ -81,7 +90,6 @@ AUTHOR_EMAIL = "yutiansut@qq.com"
 URL = "http://www.yutiansut.com"
 
 
-
 LICENSE = "MIT"
 
 setup(
@@ -116,11 +124,5 @@ setup(
     include_package_data=True,
     zip_safe=True
 )
-import webbrowser
-try:
-    print(webbrowser.open(
-        'https://github.com/QUANTAXIS/QUANTAXIS/blob/master/CHANGELOG.md'))
-    print('finish install')
-except:
-    pass
+
 # 把上面的变量填入了一个setup()中即可。
