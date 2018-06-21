@@ -28,6 +28,7 @@ import os
 import re
 import sys
 import webbrowser
+import platform
 
 try:
     from setuptools import setup
@@ -48,9 +49,10 @@ with io.open('QUANTAXIS/__init__.py', 'rt', encoding='utf8') as f:
 
 
 try:
-    print(webbrowser.open(
-        'https://github.com/QUANTAXIS/QUANTAXIS/blob/master/CHANGELOG.md'))
-    print('finish install')
+    if sys.platform is not 'linux':
+        print(webbrowser.open(
+            'https://github.com/QUANTAXIS/QUANTAXIS/blob/master/CHANGELOG.md'))
+        print('finish install')
 except:
     pass
 
