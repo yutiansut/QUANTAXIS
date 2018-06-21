@@ -137,7 +137,7 @@ class QA_Account(QA_Worker):
         warnings.warn('QUANTAXIS 1.0.46 has changed the init_assets ==> init_cash, please pay attention to this change if you using init_cash to initial an account class,\
                 ', DeprecationWarning, stacklevel=2)
         self._history_headers = ['datetime', 'code', 'price',
-                                 'amount', 'order_id', 'trade_id',
+                                 'amount', 'cash', 'order_id', 'trade_id',
                                  'account_cookie', 'commission', 'tax']
         ########################################################################
         # 信息类:
@@ -442,7 +442,7 @@ class QA_Account(QA_Worker):
                 self.history.append(
                     [str(message['body']['order']['datetime']), str(message['body']['order']['code']),
                      float(message['body']['order']['price']), int(message['body']['order']['towards']) *
-                     float(message['body']['order']['amount']), str(
+                     float(message['body']['order']['amount']), self.cash[-1]-trade_amount,str(
                         message['header']['order_id']), str(message['header']['trade_id']), str(self.account_cookie),
                      float(message['body']['fee']['commission']), float(message['body']['fee']['tax'])])
                 self.cash.append(self.cash[-1]-trade_amount)
