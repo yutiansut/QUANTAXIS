@@ -273,7 +273,7 @@ class QA_Account(QA_Worker):
         else:
             raise RuntimeWarning(
                 'QAACCOUNT: THIS ACCOUNT DOESNOT HAVE ANY TRADE')
-            return None
+
 
     @property
     def end_date(self):
@@ -307,7 +307,7 @@ class QA_Account(QA_Worker):
         _cash = pd.DataFrame(data=[self.cash[1::], self.time_index], index=[
                              'cash', 'datetime']).T
         _cash = _cash.assign(date=_cash.datetime.apply(lambda x: pd.to_datetime(str(x)[0:10]))).assign(
-            account_cookie=self.account_cookie)
+            account_cookie=self.account_cookie)#.sort_values('datetime')
         return _cash.set_index(['datetime', 'account_cookie'], drop=False)
         """
         实验性质
