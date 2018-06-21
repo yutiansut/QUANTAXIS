@@ -43,6 +43,8 @@
 3. 实盘易单账户测试完毕
 4. 期货实时tick的接口修复
 5. 数据获取QAFetch的jupyter例子更新(jupyterexample/QAFetch.ipynb)
+6. 修改ORDER_MODEL 中的对应values为 大写
+7. 增加实盘易broker的query_clients方法
 
 
 
