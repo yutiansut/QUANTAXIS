@@ -49,8 +49,7 @@ with io.open('QUANTAXIS/__init__.py', 'rt', encoding='utf8') as f:
 
 
 try:
-    print(sys.platform is not 'linux')
-    if sys.platform is not 'linux':
+    if sys.platform in ['win32','darwin']:
         print(webbrowser.open(
             'https://github.com/QUANTAXIS/QUANTAXIS/blob/master/CHANGELOG.md'))
         print('finish install')
