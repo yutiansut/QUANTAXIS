@@ -66,11 +66,10 @@ class SPETradeApi(QA_Broker):
 
         return json.loads(text)
 
-    def call_post(self, func, params=''):
-
+    def call_post(self, func, params={}):
         uri = '{}/api/v1.0/{}?client={}'.format(
             self._endpoint, func, params.pop('client'))
-        response = self._session.post(uri, params)
+        response = self._session.post(uri, json=params)
         text = response.text
         return json.loads(text)
 
@@ -110,7 +109,7 @@ class SPETradeApi(QA_Broker):
         })
 
     def send_order(self, accounts):
-        return self.call_post('orders', json.dumps({
+        return self.call_post('orders', {
             'client': accounts,
             "action": "BUY",
             "symbol": "000001",
@@ -119,7 +118,7 @@ class SPETradeApi(QA_Broker):
             "price": 9.26,
             "amount": 100
 
-        }))
+        })
 
     def cancel_order(self, accounts, orderid):
         return self.call_delete('orders/{}'.format(orderid), json.dumps({
