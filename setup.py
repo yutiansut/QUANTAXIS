@@ -114,12 +114,12 @@ setup(
     license=LICENSE,
     packages=PACKAGES,
     include_package_data=True,
-    zip_safe=True,
+    zip_safe=True
 )
 import webbrowser
 try:
-    webbrowser.open(
-        'https://github.com/QUANTAXIS/QUANTAXIS/blob/master/CHANGELOG.md')
+    print(webbrowser.open(
+        'https://github.com/QUANTAXIS/QUANTAXIS/blob/master/CHANGELOG.md'))
     print('finish install')
 except:
     pass
