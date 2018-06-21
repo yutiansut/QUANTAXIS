@@ -101,7 +101,8 @@ class SPETradeApi(QA_Broker):
         return self.call("positions", {
             'client': accounts
         })
-
+    def query_clients(self):
+        return self.call("clients")
     def query_orders(self, accounts, status='filled'):
         return self.call("orders", {
             'client': accounts,
@@ -119,7 +120,7 @@ class SPETradeApi(QA_Broker):
             "amount": 100
 
         })
-
+    
     def cancel_order(self, accounts, orderid):
         return self.call_delete('orders/{}'.format(orderid), json.dumps({
             'client': accounts
