@@ -13,7 +13,7 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAUtil.QASetting import setting_path
-
+from QUANTAXIS.QAUtil.QAParameter import ORDER_DIRECTION, ORDER_MODEL
 
 CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
 DEFAULT_SHIPANE_URL = 'http://127.0.0.1:8888'
@@ -101,26 +101,73 @@ class SPETradeApi(QA_Broker):
         return self.call("positions", {
             'client': accounts
         })
+
     def query_clients(self):
         return self.call("clients")
+
     def query_orders(self, accounts, status='filled'):
+        """查询订单
+        
+        Arguments:
+            accounts {[type]} -- [description]
+        
+        Keyword Arguments:
+            status {str} -- [description] (default: {'filled'})
+        
+        Returns:
+            [type] -- [description]
+        """
+
         return self.call("orders", {
             'client': accounts,
             'status': status
         })
 
-    def send_order(self, accounts):
+    def send_order(self, accounts, code='000001', price=9, amount=100, order_direction=ORDER_DIRECTION.BUY, order_model=ORDER_MODEL.LIMIT):
+        """[summary]
+
+        Arguments:
+            accounts {[type]} -- [description]
+            code {[type]} -- [description]
+            price {[type]} -- [description]
+            amount {[type]} -- [description]
+
+        Keyword Arguments:
+            order_direction {[type]} -- [description] (default: {ORDER_DIRECTION.BUY})
+            order_model {[type]} -- [description] (default: {ORDER_MODEL.LIMIT})
+
+
+
+        priceType 可选择： 上海交易所：
+
+            0 - 限价委托
+            4 - 五档即时成交剩余撤销
+            6 - 五档即时成交剩余转限
+
+        深圳交易所：
+
+            0 - 限价委托
+            1 - 对手方最优价格委托
+            2 - 本方最优价格委托
+            3 - 即时成交剩余撤销委托
+            4 - 五档即时成交剩余撤销
+            5 - 全额成交或撤销委托
+
+        Returns:
+            [type] -- [description]
+        """
+
         return self.call_post('orders', {
             'client': accounts,
-            "action": "BUY",
-            "symbol": "000001",
-            "type": "LIMIT",
-            "priceType": 0,
-            "price": 9.26,
-            "amount": 100
+            "action": 'BUY' if order_direction == 1 else 'SELL',
+            "symbol": code,
+            "type": order_model,
+            "priceType": 0 if order_model == ORDER_MODEL.LIMIT else 4,
+            "price": price,
+            "amount": amount
 
         })
-    
+
     def cancel_order(self, accounts, orderid):
         return self.call_delete('orders/{}'.format(orderid), json.dumps({
             'client': accounts
@@ -132,10 +179,11 @@ class SPETradeApi(QA_Broker):
 
 if __name__ == '__main__':
     a = SPETradeApi()
-    a.query_accounts('account:1363350141')
-    a.query_orders('account:141')
-    a.query_orders('account:141', 'open')
-    a.send_order('account:141')
-    a.cancel_all()
+    a.query_accounts('account:1391')
+    a.query_orders('account:1391')
+    a.query_orders('account:1391', 'open')
+    #a.send_order('account:141')
+
+    #a.cancel_all()
 
     # a.cancel_order('account:141','919')
