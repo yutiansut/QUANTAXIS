@@ -41,6 +41,9 @@
 1. 优化了 'crawl eastmoney zjlx all' 获取东方财富资金流向的操作，保存到mongodb数据库中
 2. @pchaos 完善了通过配置文件排除ip(某些ip长期BAD RESPONSE),同时补充一个requirements
 3. 实盘易单账户测试完毕
+4. 期货实时tick的接口修复
+5. 数据获取QAFetch的jupyter例子更新(jupyterexample/QAFetch.ipynb)
+
 
 
 ## 1.0.55
