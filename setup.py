@@ -120,6 +120,7 @@ import webbrowser
 try:
     webbrowser.open(
         'https://github.com/QUANTAXIS/QUANTAXIS/blob/master/CHANGELOG.md')
+    print('finish install')
 except:
     pass
 # 把上面的变量填入了一个setup()中即可。
