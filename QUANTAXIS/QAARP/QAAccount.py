@@ -401,7 +401,7 @@ class QA_Account(QA_Worker):
             hold_available = self.history_table.set_index('datetime').sort_index(
             ).loc[:datetime].groupby('code').amount.sum().sort_index()
 
-        return pd.concat([self.init_hold, hold_available]).groupby('code').sum().sort_index()
+        return pd.concat([self.init_hold, hold_available]).groupby('code').sum().sort_index().apply(lambda x : x if x >0 else None).dropna()
 
     def hold_price(self, datetime=None):
         "计算持仓成本  如果给的是日期,则返回当日开盘前的持仓"
@@ -736,6 +736,15 @@ class QA_Account(QA_Worker):
         #🛠todo 筛选其它不是今天的订单返回
         return self.orders
 
+    def get_history(self,start,end):
+        """返回历史成交
+        
+        Arguments:
+            start {str} -- [description]
+            end {str]} -- [description]
+        """
+        return self.history_table.set_index('datetime',drop=False).loc[slice(pd.Timestamp(start),pd.Timestamp(end))]
+    
 
 class Account_handler():
     def __init__(self):
