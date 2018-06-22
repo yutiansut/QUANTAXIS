@@ -46,7 +46,8 @@
 6. 修改ORDER_MODEL 中的对应values为 大写
 7. 增加实盘易broker的query_clients方法
 8. 修改了QAWeb的获取数据优先级,避免在无mongodb的时候的```connection timeout```问题
-
+9. QA_Account 修改了两个函数(```account.get_history(start,end)``` 获取历史成交,```hold_table``` 修改去除0持仓的股票 )
+10. QA_Risk 增加一个property(```risk.daily_market_value```每日总市值)
 
 
 ## 1.0.55

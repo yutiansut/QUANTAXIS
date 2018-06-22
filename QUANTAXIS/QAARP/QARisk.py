@@ -127,16 +127,27 @@ class QA_Risk():
     @property
     @lru_cache()
     def market_value(self):
-        """每日持仓市值表
+        """每日每个股票持仓市值表
 
         Returns:
             pd.DataFrame -- 市值表
         """
 
         if self.if_fq:
-            return self.market_data.to_qfq().pivot('close') * self.account.daily_hold
+            return self.market_data.to_qfq().pivot('close').fillna(method='ffill') * self.account.daily_hold
         else:
-            self.market_data.pivot('close') * self.account.daily_hold
+            self.market_data.pivot('close').fillna(method='ffill') * self.account.daily_hold
+
+    @property
+    @lru_cache()
+    def daily_market_value(self):
+        """每日持仓总市值表
+
+        Returns:
+            pd.DataFrame -- 市值表
+        """
+
+        return self.market_value.sum(axis=1)
 
     @property
     def assets(self):
