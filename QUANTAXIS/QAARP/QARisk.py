@@ -551,23 +551,24 @@ class QA_Performance():
         pair_title = ['code', 'sell_date', 'buy_date',
                       'amount', 'sell_price', 'buy_price']
         pnl = pd.DataFrame(pair_table, columns=pair_title).set_index('code')
+
         pnl = pnl.assign(pnl_ratio=(pnl.sell_price/pnl.buy_price) -
-                         1)
-        pnl = pnl.assign(pnl_money=pnl.pnl_ratio*pnl.amount)
+                         1).assign(buy_date=pd.to_datetime(pnl.buy_date)).assign(sell_date=pd.to_datetime(pnl.sell_date))
+        pnl = pnl.assign(pnl_money=(pnl.sell_price-pnl.buy_price)*pnl.amount)
         return pnl
 
     def plot_pnlratio(self, pnl):
         """
         画出pnl比率散点图
         """
-        plt.scatter(x=pnl.sell_date, y=pnl.pnl_ratio)
+        plt.scatter(x=pnl.sell_date.apply(str), y=pnl.pnl_ratio)
         plt.show()
 
     def plot_pnlmoney(self, pnl):
         """
         画出pnl盈亏额散点图
         """
-        plt.scatter(x=pnl.sell_date, y=pnl.pnl_money)
+        plt.scatter(x=pnl.sell_date.apply(str), y=pnl.pnl_money)
         plt.show()
 
     def abnormal_active(self):
