@@ -105,9 +105,9 @@ setup(
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
     ],
-    install_requires=['pandas>=0.20.3', 'numpy>=1.12.0', 'tushare', 'flask_socketio>=2.9.0 ', 'motor>=1.1', 'seaborn>=0.8.1',,''
+    install_requires=['pandas>=0.20.3', 'numpy>=1.12.0', 'tushare', 'flask_socketio>=2.9.0 ', 'motor>=1.1', 'seaborn>=0.8.1',
                       'lxml>=4.0', ' beautifulsoup4', 'flask-socketio', 'flask', 'matplotlib', 'requests', 'selenium', 'tornado',
-                      'pymongo>=3.4', 'six>=1.10.0', 'tabulate>=0.7.7', 'pytdx>=1.57', 'retrying>=1.3.3', 'scrapy',
+                      'pymongo>=3.4', 'six>=1.10.0', 'tabulate>=0.7.7', 'pytdx>=1.67', 'retrying>=1.3.3', 'scrapy',
                       'zenlog>=1.1', 'delegator.py>=0.0.12', 'flask>=0.12.2', 'pyecharts==0.2.4', 'protobuf>=3.4.0'],
     entry_points={
         'console_scripts': [
