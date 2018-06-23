@@ -175,12 +175,15 @@ class QA_BacktestBroker(QA_Broker):
         """
         order = event.order
         if 'market_data' in event.__dict__.keys():
+            
             self.market_data = self.get_market(
                 order) if event.market_data is None else event.market_data
             if isinstance(self.market_data,dict):
                 pass
             elif isinstance(self.market_data,pd.DataFrame):
                 self.market_data=QA_util_to_json_from_pandas(self.market_data)[0]
+            elif isinstance(self.market_data,pd.core.series.Series):
+                self.market_data=self.market_data.to_dict()
             else:
                 self.market_data=self.market_data.to_json()[0]
         else:
