@@ -304,7 +304,7 @@ class CLI(cmd.Cmd):
         QA_util_log_info("version")
         QA_util_log_info("quit")
         QA_util_log_info("exit")
-        QA_util_log_info('MORE EXAMPLE on https://github.com/yutiansut/QADemo')
+        QA_util_log_info('MORE EXAMPLE on https://github.com/QUANTAXIS/QADemo')
 
     def help(self):
         QA_util_log_info('fn+methods name')
