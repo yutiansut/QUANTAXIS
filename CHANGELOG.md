@@ -37,7 +37,10 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
-## 1.0.56 (unreleased)
+## 1.0.57 (unreleased)
+
+
+## 1.0.56 
 1. 优化了 'crawl eastmoney zjlx all' 获取东方财富资金流向的操作，保存到mongodb数据库中
 2. @pchaos 完善了通过配置文件排除ip(某些ip长期BAD RESPONSE),同时补充一个requirements
 3. 实盘易单账户测试完毕
@@ -49,7 +52,7 @@
 9. QA_Account 修改了两个函数(```account.get_history(start,end)``` 获取历史成交,```hold_table``` 修改去除0持仓的股票 )
 10. QA_Risk 增加一个property(```risk.daily_market_value```每日总市值)
 11. 优化了Backtest_broker的market_data的判定,加入series的支持
-
+released in : JUNE 24, 2018
 
 ## 1.0.55
 
