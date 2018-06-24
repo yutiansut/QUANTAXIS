@@ -4,20 +4,19 @@
 * 1. [python](#python)
 * 2. [QUANTAXIS](#QUANTAXIS)
 * 3. [MONGODB](#MONGODB)
-* 4. [NODEJS](#NODEJS)
-* 5. [QUANTAXIS_WEBKIT](#QUANTAXIS_WEBKIT)
+
 
 <!-- vscode-markdown-toc-config
 	numbering=true
 	autoSave=true
 	/vscode-markdown-toc-config -->
 <!-- /vscode-markdown-toc -->
-##  1. <a name='python'></a>python
+##  1. python
 ```
 brew install python3
 ```
 
-##  2. <a name='QUANTAXIS'></a>QUANTAXIS
+##  2. QUANTAXIS
 
 ```
 git clone https://github.com/yutiansut/quantaxis --depth 1
@@ -30,7 +29,7 @@ python3.6 -m pip install -e .
 ```
 
 
-##  3. <a name='MONGODB'></a>MONGODB
+##  3. MONGODB
 
 安装mongodb:
 ```
@@ -52,22 +51,3 @@ sudo mongod
 ```
 继续输入你的密码
 
-
-##  4. <a name='NODEJS'></a>NODEJS
-
-```
-brew install node
-
-sudo npm install cnpm -g
-sudo npm install forever -g
-```
-
-##  5. <a name='QUANTAXIS_WEBKIT'></a>QUANTAXIS_WEBKIT
-
-```
-cd QUANTAXIS_WEBKIT\web 
-cnpm install
-
-cd QUANTAXIS_WEBKIT\backend
-cnpm install
-```

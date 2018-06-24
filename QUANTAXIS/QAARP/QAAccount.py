@@ -404,16 +404,33 @@ class QA_Account(QA_Worker):
         return pd.concat([self.init_hold, hold_available]).groupby('code').sum().sort_index().apply(lambda x : x if x >0 else None).dropna()
 
     def hold_price(self, datetime=None):
-        "计算持仓成本  如果给的是日期,则返回当日开盘前的持仓"
+        """计算持仓成本  如果给的是日期,则返回当日开盘前的持仓
+        
+        Keyword Arguments:
+            datetime {[type]} -- [description] (default: {None})
+        
+        Returns:
+            [type] -- [description]
+        """
+        
         def weights(x):
             if sum(x['amount']) != 0:
                 return np.average(x['price'], weights=x['amount'], returned=True)
             else:
-                return (0, 0)
+                return (np.nan, np.nan)
         if datetime is None:
-            return self.history_table.set_index('datetime').sort_index().groupby('code').apply(weights)
+            return self.history_table.set_index('datetime').sort_index().groupby('code').apply(weights).dropna()
         else:
-            return self.history_table.set_index('datetime').sort_index().loc[:datetime].groupby('code').apply(weights)
+            return self.history_table.set_index('datetime').sort_index().loc[:datetime].groupby('code').apply(weights).dropna()
+
+    def hold_time(self,datetime=None):
+        """持仓时间
+        
+        Keyword Arguments:
+            datetime {[type]} -- [description] (default: {None})
+        """
+        
+        pass
 
     def reset_assets(self, init_cash=None):
         'reset_history/cash/'
