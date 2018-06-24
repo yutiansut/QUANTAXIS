@@ -2,8 +2,10 @@
 
 <!-- TOC -->
 
-- [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.0.56 (unreleased)](#1056-unreleased)
+- [QUANTAXIS 更新纪要](#quantaxis-%E6%9B%B4%E6%96%B0%E7%BA%AA%E8%A6%81)
+    - [1.0.58 (unreleased)](#1058-unreleased)
+    - [1.0.57](#1057)
+    - [1.0.56](#1056)
     - [1.0.55](#1055)
     - [1.0.54](#1054)
     - [1.0.53](#1053)
@@ -37,8 +39,13 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
-## 1.0.57 (unreleased)
 
+## 1.0.58 (unreleased)
+
+## 1.0.57 
+
+1. 重新修改了依赖项
+released in : JUNE 24, 2018
 
 ## 1.0.56 
 1. 优化了 'crawl eastmoney zjlx all' 获取东方财富资金流向的操作，保存到mongodb数据库中
