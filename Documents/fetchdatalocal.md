@@ -1,17 +1,16 @@
 # QUANTAXIS 对于本地数据的获取
 
-<!-- vscode-markdown-toc -->
-* 1. [一般封装 QA_fetch_类](#QA_fetch_)
-	* 1.1. [股票日线 | STOCK_CN/DAY](#STOCK_CNDAY)
-	* 1.2. [股票分钟线 | STOCK_CN/MIN](#STOCK_CNMIN)
-* 2. [高级封装 **_adv类](#_adv)
-	* 2.1. [股票日线 | STOCK_CN/DAY](#STOCK_CNDAY-1)
+<!-- TOC -->
 
-<!-- vscode-markdown-toc-config
-	numbering=true
-	autoSave=true
-	/vscode-markdown-toc-config -->
-<!-- /vscode-markdown-toc -->
+- [QUANTAXIS 对于本地数据的获取](#quantaxis-对于本地数据的获取)
+    - [1. 一般封装 QA_fetch_类](#1-一般封装-qa_fetch_类)
+        - [1.1. 股票日线 | STOCK_CN/DAY](#11-股票日线--stock_cnday)
+        - [1.2.股票分钟线 | STOCK_CN/MIN](#12股票分钟线--stock_cnmin)
+    - [2. 高级封装 *adv](#2-高级封装-adv)
+        - [2.1. 股票日线 | STOCK_CN/DAY](#21-股票日线--stock_cnday)
+        - [](#)
+
+<!-- /TOC -->
 
 QUANTAXIS虽然对于从web获取做了许多的封装,但核心归根到底,quantaxis在获取数据的时候,主要还是要获取本地的数据(从稳定性和速度考虑).
 
@@ -23,10 +22,10 @@ QUANTAXIS对于本地数据的获取有两种级别的封装:
 (自定义格式可以和别的格式相互转换)
 
 
-##  1. <a name='QA_fetch_'></a>一般封装 QA_fetch_类
+##  1. 一般封装 QA_fetch_类
 
 
-###  1.1. <a name='STOCK_CNDAY'></a>股票日线 | STOCK_CN/DAY
+###  1.1. 股票日线 | STOCK_CN/DAY
 ```python
 QA.QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collection=DATABASE.stock_day)
 ```
@@ -49,16 +48,16 @@ QA.QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collect
 
 返回格式是list格式[dataframe1,dataframe2,...,dataframen],可以用pd.Concat(data,axis=0)
 
-###  1.2. <a name='STOCK_CNMIN'></a>股票分钟线 | STOCK_CN/MIN
+###  1.2.股票分钟线 | STOCK_CN/MIN
 ```python
 QA.QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', collections=DATABASE.stock_min)
 ```
 
 
 
-##  2. <a name='_adv'></a>高级封装 *adv
+##  2. 高级封装 *adv
 
-###  2.1. <a name='STOCK_CNDAY-1'></a>股票日线 | STOCK_CN/DAY
+###  2.1. 股票日线 | STOCK_CN/DAY
 
 ```python
 QA.QA_fetch_stock_day_adv(code, start='all', end=None, if_drop_index=False, collections=DATABASE.stock_day)
