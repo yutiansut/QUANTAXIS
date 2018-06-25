@@ -42,6 +42,7 @@
 
 ## 1.0.58 (unreleased)
 1. QA_Account 增加hold_time属性, 显示持仓时间
+2. 对于QA_Query 的 QA_fetch_financialfiles进行修改, 优化返回结果
 
 ## 1.0.57 
 
