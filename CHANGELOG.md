@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [QUANTAXIS 更新纪要](#quantaxis-%E6%9B%B4%E6%96%B0%E7%BA%AA%E8%A6%81)
+- [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
     - [1.0.58 (unreleased)](#1058-unreleased)
     - [1.0.57](#1057)
     - [1.0.56](#1056)
@@ -41,6 +41,7 @@
 <!-- /TOC -->
 
 ## 1.0.58 (unreleased)
+1. QA_Account 增加hold_time属性, 显示持仓时间
 
 ## 1.0.57 
 
