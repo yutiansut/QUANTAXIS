@@ -329,6 +329,7 @@ class QA_DataStruct_Index_min(_quotation_base):
 class QA_DataStruct_Stock_block():
     def __init__(self, DataFrame):
         self.data = DataFrame
+        #self.data.index = self.data.index.remove_unused_levels()
 
     def __repr__(self):
         return '< QA_DataStruct_Stock_Block >'
@@ -397,7 +398,7 @@ class QA_DataStruct_Stock_block():
             [type] -- [description]
         """
         block_name = [block_name] if isinstance(block_name,str) else block_name
-        return QA_DataStruct_Stock_block(self.data.blockname.apply(lambda x: x in block_name))
+        return QA_DataStruct_Stock_block(self.data[self.data.blockname.apply(lambda x: x in block_name)])
 
     def getdtype(self, dtype):
         """getdtype
