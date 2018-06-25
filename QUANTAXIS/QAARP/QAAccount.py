@@ -338,13 +338,13 @@ class QA_Account(QA_Worker):
     def hold(self):
         """真实持仓
         """
-        return pd.concat([self.init_hold, self.hold_available]).groupby('code').sum().replace(0,np.nan).dropna().sort_index()
+        return pd.concat([self.init_hold, self.hold_available]).groupby('code').sum().replace(0, np.nan).dropna().sort_index()
 
     @property
     def hold_available(self):
         """可用持仓
         """
-        return pd.DataFrame(data=self.history, columns=self._history_headers).groupby('code').amount.sum().replace(0,np.nan).dropna().sort_index()
+        return pd.DataFrame(data=self.history, columns=self._history_headers).groupby('code').amount.sum().replace(0, np.nan).dropna().sort_index()
 
     @property
     def order_table(self):
@@ -418,9 +418,9 @@ class QA_Account(QA_Worker):
             else:
                 return np.nan
         if datetime is None:
-            return self.history_table.set_index('datetime',drop=False).sort_index().groupby('code').apply(weights).dropna()
+            return self.history_table.set_index('datetime', drop=False).sort_index().groupby('code').apply(weights).dropna()
         else:
-            return self.history_table.set_index('datetime',drop=False).sort_index().loc[:datetime].groupby('code').apply(weights).dropna()
+            return self.history_table.set_index('datetime', drop=False).sort_index().loc[:datetime].groupby('code').apply(weights).dropna()
 
     @property
     def hold_time(self, datetime=None):
@@ -429,8 +429,16 @@ class QA_Account(QA_Worker):
         Keyword Arguments:
             datetime {[type]} -- [description] (default: {None})
         """
-        return pd.Timestamp(self.datetime)-pd.to_datetime(self.history_table.query('amount>0').sort_index().groupby('code').datetime.max())
 
+        def weights(x):
+            if sum(x['amount']) != 0:
+                return pd.Timestamp(self.datetime)-pd.to_datetime(x.datetime.max())
+            else:
+                return np.nan
+        if datetime is None:
+            return self.history_table.set_index('datetime', drop=False).sort_index().groupby('code').apply(weights).dropna()
+        else:
+            return self.history_table.set_index('datetime', drop=False).sort_index().loc[:datetime].groupby('code').apply(weights).dropna()
 
     def reset_assets(self, init_cash=None):
         'reset_history/cash/'
@@ -562,11 +570,11 @@ class QA_Account(QA_Worker):
                     self.cash_available -= money
                     flag = True
             else:
-                print('可用资金不足 {} {} {} {}'.format(code,time,amount,towards))
+                print('可用资金不足 {} {} {} {}'.format(code, time, amount, towards))
 
         elif int(towards) < 0:
             # 是卖出的情况(包括卖出，卖出开仓allow_sellopen如果允许. 卖出平仓)
-
+            print(self.sell_available[code])
             if self.sell_available.get(code, 0) >= amount:
                 self.sell_available[code] -= amount
                 flag = True
@@ -589,7 +597,8 @@ class QA_Account(QA_Worker):
             self.orders.insert_order(_order)
             return _order
         else:
-            print('ERROR : amount=0 {} {} {} {}'.format(code,time,amount,towards))
+            print('ERROR : amount=0 {} {} {} {}'.format(
+                code, time, amount, towards))
             return False
 
     @property
