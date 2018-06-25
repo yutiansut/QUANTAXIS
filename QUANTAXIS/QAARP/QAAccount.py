@@ -574,7 +574,7 @@ class QA_Account(QA_Worker):
 
         elif int(towards) < 0:
             # 是卖出的情况(包括卖出，卖出开仓allow_sellopen如果允许. 卖出平仓)
-            print(self.sell_available[code])
+            #print(self.sell_available[code])
             if self.sell_available.get(code, 0) >= amount:
                 self.sell_available[code] -= amount
                 flag = True
