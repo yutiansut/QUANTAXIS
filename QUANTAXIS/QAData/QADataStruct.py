@@ -387,17 +387,17 @@ class QA_DataStruct_Stock_block():
 
         return QA_DataStruct_Stock_block(self.data[self.data['code'] == code])
 
-    def get_block(self, _block_name):
-        """getblock 获取板块
+    def get_block(self, block_name):
+        """getblock 获取板块, block_name是list或者是单个str
 
         Arguments:
-            _block_name {[type]} -- [description]
+            block_name {[type]} -- [description]
 
         Returns:
             [type] -- [description]
         """
-
-        return QA_DataStruct_Stock_block(self.data[self.data['blockname'] == _block_name])
+        block_name = [block_name] if isinstance(block_name,str) else block_name
+        return QA_DataStruct_Stock_block(self.data.blockname.apply(lambda x: x in block_name))
 
     def getdtype(self, dtype):
         """getdtype

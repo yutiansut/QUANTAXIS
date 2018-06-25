@@ -156,7 +156,7 @@ financial_dict = {
     # 4.x 补充项目 Supplementary Schedule：
     # 现金流量附表项目    Indirect Method
     # 4.x.1 将净利润调节为经营活动现金流量 Convert net profit to cash flow from operating activities
-    '134净利润': 'netProfit',
+    '134净利润': 'netProfitFromOperatingActivities',
     '135资产减值准备': 'provisionForAssetsLosses',
     '136固定资产折旧、油气资产折耗、生产性生物资产折旧': 'depreciationForFixedAssets',
     '137无形资产摊销': 'amortizationOfIntangibleAssets',
