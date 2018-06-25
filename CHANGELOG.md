@@ -43,6 +43,8 @@
 ## 1.0.58 (unreleased)
 1. QA_Account 增加hold_time属性, 显示持仓时间
 2. 对于QA_Query 的 QA_fetch_financialfiles进行修改, 优化返回结果
+3. QA_DataStruct_Block 修改了get_block方法, 可以获取多个block_name
+4. 修改了financialdicts里面,两个重复的净利润,将现金流量表中的改成netProfitFromOperatingActivities
 
 ## 1.0.57 
 
