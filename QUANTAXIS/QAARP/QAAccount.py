@@ -214,7 +214,7 @@ class QA_Account(QA_Worker):
     @property
     def init_hold_with_account(self):
         """带account_id的初始化持仓
-        
+
         Returns:
             [type] -- [description]
         """
@@ -274,7 +274,6 @@ class QA_Account(QA_Worker):
             raise RuntimeWarning(
                 'QAACCOUNT: THIS ACCOUNT DOESNOT HAVE ANY TRADE')
 
-
     @property
     def end_date(self):
         """账户的交易结束日期
@@ -307,7 +306,7 @@ class QA_Account(QA_Worker):
         _cash = pd.DataFrame(data=[self.cash[1::], self.time_index], index=[
                              'cash', 'datetime']).T
         _cash = _cash.assign(date=_cash.datetime.apply(lambda x: pd.to_datetime(str(x)[0:10]))).assign(
-            account_cookie=self.account_cookie)#.sort_values('datetime')
+            account_cookie=self.account_cookie)  # .sort_values('datetime')
         return _cash.set_index(['datetime', 'account_cookie'], drop=False)
         """
         实验性质
@@ -401,18 +400,18 @@ class QA_Account(QA_Worker):
             hold_available = self.history_table.set_index('datetime').sort_index(
             ).loc[:datetime].groupby('code').amount.sum().sort_index()
 
-        return pd.concat([self.init_hold, hold_available]).groupby('code').sum().sort_index().apply(lambda x : x if x >0 else None).dropna()
+        return pd.concat([self.init_hold, hold_available]).groupby('code').sum().sort_index().apply(lambda x: x if x > 0 else None).dropna()
 
     def hold_price(self, datetime=None):
         """计算持仓成本  如果给的是日期,则返回当日开盘前的持仓
-        
+
         Keyword Arguments:
             datetime {[type]} -- [description] (default: {None})
-        
+
         Returns:
             [type] -- [description]
         """
-        
+
         def weights(x):
             if sum(x['amount']) != 0:
                 return np.average(x['price'], weights=x['amount'], returned=True)
@@ -423,14 +422,15 @@ class QA_Account(QA_Worker):
         else:
             return self.history_table.set_index('datetime').sort_index().loc[:datetime].groupby('code').apply(weights).dropna()
 
-    def hold_time(self,datetime=None):
+    @property
+    def hold_time(self, datetime=None):
         """持仓时间
-        
+
         Keyword Arguments:
             datetime {[type]} -- [description] (default: {None})
         """
-        
-        pass
+        return pd.Timestamp(self.datetime)-pd.to_datetime(self.history_table.query('amount>0').sort_index().groupby('code').datetime.max())
+
 
     def reset_assets(self, init_cash=None):
         'reset_history/cash/'
@@ -459,7 +459,7 @@ class QA_Account(QA_Worker):
                 self.history.append(
                     [str(message['body']['order']['datetime']), str(message['body']['order']['code']),
                      float(message['body']['order']['price']), int(message['body']['order']['towards']) *
-                     float(message['body']['order']['amount']), self.cash[-1]-trade_amount,str(
+                     float(message['body']['order']['amount']), self.cash[-1]-trade_amount, str(
                         message['header']['order_id']), str(message['header']['trade_id']), str(self.account_cookie),
                      float(message['body']['fee']['commission']), float(message['body']['fee']['tax'])])
                 self.cash.append(self.cash[-1]-trade_amount)
@@ -519,20 +519,20 @@ class QA_Account(QA_Worker):
 
         assert code is not None and time is not None and towards is not None and order_model is not None and amount_model is not None
 
-        #🛠todo 移到Utils类中，  时间转换
+        # 🛠todo 移到Utils类中，  时间转换
         # date 字符串 2011-10-11 长度10
         date = str(time)[0:10] if len(str(time)) == 19 else str(time)
         # time 字符串 20011-10-11 09:02:00  长度 19
         time = str(time) if len(
             str(time)) == 19 else '{} 09:31:00'.format(str(time)[0:10])
 
-        #🛠todo 移到Utils类中，  amount_to_money 成交量转金额
+        # 🛠todo 移到Utils类中，  amount_to_money 成交量转金额
         # BY_MONEY :: amount --钱 如10000元  因此 by_money里面 需要指定价格,来计算实际的股票数
         # by_amount :: amount --股数 如10000股
         amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
             money / (price*(1+self.commission_coeff)))
 
-        #🛠todo 移到Utils类中，  money_to_amount 金额转成交量
+        # 🛠todo 移到Utils类中，  money_to_amount 金额转成交量
         money = amount * price * \
             (1+self.commission_coeff) if amount_model is AMOUNT_MODEL.BY_AMOUNT else money
 
@@ -668,7 +668,8 @@ class QA_Account(QA_Worker):
         self.allow_sellopen = message.get('allow_sellopen', False)
         self.allow_t0 = message.get('allow_t0', False)
         self.margin_level = message.get('margin_level', False)
-        self.init_cash = message.get('init_cash',message.get('init_assets',1000000))  # 兼容修改
+        self.init_cash = message.get(
+            'init_cash', message.get('init_assets', 1000000))  # 兼容修改
         self.commission_coeff = message.get('commission_coeff', 0.00015)
         self.tax_coeff = message.get('tax_coeff', 0.0015)
         self.history = message['history']
@@ -750,18 +751,18 @@ class QA_Account(QA_Worker):
         :param if_today: true 只返回今天的订单
         :return: QA_OrderQueue
         '''
-        #🛠todo 筛选其它不是今天的订单返回
+        # 🛠todo 筛选其它不是今天的订单返回
         return self.orders
 
-    def get_history(self,start,end):
+    def get_history(self, start, end):
         """返回历史成交
-        
+
         Arguments:
             start {str} -- [description]
             end {str]} -- [description]
         """
-        return self.history_table.set_index('datetime',drop=False).loc[slice(pd.Timestamp(start),pd.Timestamp(end))]
-    
+        return self.history_table.set_index('datetime', drop=False).loc[slice(pd.Timestamp(start), pd.Timestamp(end))]
+
 
 class Account_handler():
     def __init__(self):
