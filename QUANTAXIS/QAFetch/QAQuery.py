@@ -488,7 +488,7 @@ def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
                 res_pd.columns=CH_columns
             elif ltype is 'EN':
                 res_pd.columns=EN_columns
-            return res_pd
+            return res_pd.replace(-4.039810335e+34,numpy.nan).set_index(['report_date','code'],drop=False)
         else:
             return None
     except Exception as e:
