@@ -1,3 +1,4 @@
+[![BCH compliance](https://bettercodehub.com/edge/badge/QUANTAXIS/QUANTAXIS?branch=master)](https://bettercodehub.com/)
 # QUANTAXIS 量化金融策略框架
 
 
