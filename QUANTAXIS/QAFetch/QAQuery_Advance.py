@@ -92,7 +92,7 @@ def QA_fetch_stock_day_adv(
         # if res_reset_index is None:
         #     print("💢 Error QA_fetch_stock_day_adv set index 'datetime, code' return None")
         #     return None
-        return QA_DataStruct_Stock_day(res_reset_index);
+        return QA_DataStruct_Stock_day(res_reset_index)
 
 
 def QA_fetch_stock_min_adv(
