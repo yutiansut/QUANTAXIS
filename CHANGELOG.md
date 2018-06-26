@@ -49,6 +49,7 @@
 6. QAAnalysis_Block细微修改,增加__repr__
 7. 文档增加回测和测试账户部分(Documents/)
 8. 增加指数装饰器@QDS_IndexDayWarpper, @QDS_IndexMinWarpper
+9. 更新jupyter的文档(Documents/usejupyter.md)
 
 ## 1.0.57 
 
