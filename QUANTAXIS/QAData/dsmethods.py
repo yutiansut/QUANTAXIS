@@ -26,7 +26,11 @@
 """DataStruct的方法
 """
 import pandas as pd
-from QUANTAXIS.QAData.QADataStruct import QA_DataStruct_Stock_day, QA_DataStruct_Stock_min
+
+from QUANTAXIS.QAData.QADataStruct import (QA_DataStruct_Index_day,
+                                           QA_DataStruct_Index_min,
+                                           QA_DataStruct_Stock_day,
+                                           QA_DataStruct_Stock_min)
 
 
 def concat(lists):
@@ -78,7 +82,7 @@ def QDS_StockMinWarpper(func, *args, **kwargs):
     """
     分钟线QDS装饰器
     """
-    data = func(*args, **kwargs)
+
     def warpper(*args, **kwargs):
         data = func(*args, **kwargs)
         if isinstance(data.index, pd.MultiIndex):
@@ -87,3 +91,56 @@ def QDS_StockMinWarpper(func, *args, **kwargs):
         else:
             return QA_DataStruct_Stock_min(data.set_index(['datetime', 'code'], drop=False), dtype='stock_min')
     return warpper
+
+def QDS_IndexDayWarpper(func, *args, **kwargs):
+    """
+    指数日线QDS装饰器
+    """
+
+    def warpper(*args, **kwargs):
+        data = func(*args, **kwargs)
+        if isinstance(data.index, pd.MultiIndex):
+
+            return QA_DataStruct_Index_day(data)
+        else:
+            return QA_DataStruct_Index_day(data.set_index(['datetime', 'code'], drop=False), dtype='index_min')
+    return warpper
+
+
+def QDS_IndexMinWarpper(func, *args, **kwargs):
+    """
+    分钟线QDS装饰器
+    """
+
+    def warpper(*args, **kwargs):
+        data = func(*args, **kwargs)
+        if isinstance(data.index, pd.MultiIndex):
+
+            return QA_DataStruct_Index_min(data)
+        else:
+            return QA_DataStruct_Index_min(data.set_index(['datetime', 'code'], drop=False), dtype='index_min')
+    return warpper
+
+
+if __name__ =='__main__':
+    """演示QDS装饰器
+    
+    Returns:
+        [type] -- [description]
+    """
+
+    # import QUANTAXIS as QA
+
+    # @QA.QDS_StockDayWarpper
+    # def fetch(code,start,end):
+    #     return QA.QA_fetch_get_stock_day('tdx',code,start,end,'bfq')
+
+    # print(fetch('000001','2018-01-01','2018-06-26'))
+    """演示tushare获取数据的转化
+    """
+
+    import tushare as ts
+    print(from_tushare(ts.get_k_data('000001','2018-01-01','2018-06-26')))
+
+    """[summary]
+    """
