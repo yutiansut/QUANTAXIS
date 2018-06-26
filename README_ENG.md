@@ -9,10 +9,10 @@
 
 [Click on Star and Watch in the upper right corner to track project progress! Click on Fork to create your own QUANTAXIS!]
 
-![post201802](http://osnhakmay.bkt.clouddn.com/quantaxis-post201802.png)
-![main_1](http://osnhakmay.bkt.clouddn.com/Main_1.gif)
-![logo](http://osnhakmay.bkt.clouddn.com/QUANTAXIS-small.png)
-![presentbyyutiansut](http://osnhakmay.bkt.clouddn.com/yutiansut-logo.png)
+![post201802](http://pic.yutiansut.comquantaxis-post201802.png)
+![main_1](http://pic.yutiansut.comMain_1.gif)
+![logo](http://pic.yutiansut.comQUANTAXIS-small.png)
+![presentbyyutiansut](http://pic.yutiansut.comyutiansut-logo.png)
 
 
 ![version](https://img.shields.io/pypi/v/quantaxis.svg)
@@ -33,7 +33,7 @@
 
 > Welcome to group discussion: [group link](https://jq.qq.com/?_wv=1027&k=4CEKGzn)
 
-> Welcome to the public number: ![Public](http://osnhakmay.bkt.clouddn.com/qrcode_for_gh_bbb47e0550f7_258%20%281%29.jpg)
+> Welcome to the public number: ![Public](http://pic.yutiansut.comqrcode_for_gh_bbb47e0550f7_258%20%281%29.jpg)
 
 > Many questions can be found in [GITHUB ISSUE](https://github.com/QUANTAXIS/QUANTAXIS/issues), you can make a new issue
 
@@ -77,7 +77,7 @@ If it is an Alibaba Cloud/Tencent Cloud server, please select the 64-bit operati
 ## 1. <a name=''></a> Features
 
 
-![](http://osnhakmay.bkt.clouddn.com/framework.png)
+![](http://pic.yutiansut.comframework.png)
 
 Already achieved:
 
@@ -160,7 +160,7 @@ See [FAQ](Documents/FAQ.md)
 Writing code is not easy... Please ask the author for a cup of coffee?
 
 
-![](http://osnhakmay.bkt.clouddn.com/alipay.png)
+![](http://pic.yutiansut.comalipay.png)
 
 (PS: When you pay, please bring your name/nickname. Will maintain a sponsorship list~)
 
@@ -170,15 +170,15 @@ Writing code is not easy... Please ask the author for a cup of coffee?
 
 ## 11. <a name='Webkit'></a> Backtesting Webkit Plugin Overview
 
-![](http://osnhakmay.bkt.clouddn.com/homepage.png)
-![](http://osnhakmay.bkt.clouddn.com/loginpage.png)
-![](http://osnhakmay.bkt.clouddn.com/adminpage.png)
-![](http://osnhakmay.bkt.clouddn.com/backtestpage.png)
-![](http://osnhakmay.bkt.clouddn.com/rebacktest.png)
-![](http://osnhakmay.bkt.clouddn.com/backtestpic.png)
-![](http://osnhakmay.bkt.clouddn.com/strategy.png)
-![](http://osnhakmay.bkt.clouddn.com/kline.png)
-![](http://osnhakmay.bkt.clouddn.com/settings.png)
+![](http://pic.yutiansut.comhomepage.png)
+![](http://pic.yutiansut.comloginpage.png)
+![](http://pic.yutiansut.comadminpage.png)
+![](http://pic.yutiansut.combacktestpage.png)
+![](http://pic.yutiansut.comrebacktest.png)
+![](http://pic.yutiansut.combacktestpic.png)
+![](http://pic.yutiansut.comstrategy.png)
+![](http://pic.yutiansut.comkline.png)
+![](http://pic.yutiansut.comsettings.png)
 
 
 ## 12. <a name='QUANTAXIS'></a>QUANTAXIS Standardization Agreement and Future Agreement

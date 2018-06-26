@@ -3,7 +3,7 @@
 写代码不易...请作者喝杯咖啡呗?
 
 
-![](http://osnhakmay.bkt.clouddn.com/alipay.png)
+![](http://pic.yutiansut.comalipay.png)
 
 (PS: 支付的时候 请带上你的名字/昵称呀 会维护一个赞助列表~ )
 

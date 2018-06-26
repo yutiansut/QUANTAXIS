@@ -68,18 +68,18 @@ python  backtest.py
 ## 启动jupyter 来运行QUANTAXIS
 
 ### 1.在命令行启动jupyter
-![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180626231059.png)
+![](http://pic.yutiansut.comQQ%E6%88%AA%E5%9B%BE20180626231059.png)
 
 
 ### 2.在产生的网页上新建一个notebook
-![](http://osnhakmay.bkt.clouddn.com/QQ%E5%9B%BE%E7%89%8720180626231143.png)
+![](http://pic.yutiansut.comQQ%E5%9B%BE%E7%89%8720180626231143.png)
 
 ### 3.在notebook中运行代码
-![](http://osnhakmay.bkt.clouddn.com/QQ%E5%9B%BE%E7%89%8720180626231307.png)
+![](http://pic.yutiansut.comQQ%E5%9B%BE%E7%89%8720180626231307.png)
 
 
 ### 4.保存notebook为可运行的python文件
-![](http://osnhakmay.bkt.clouddn.com/QQ%E5%9B%BE%E7%89%8720180626231353.png)
+![](http://pic.yutiansut.comQQ%E5%9B%BE%E7%89%8720180626231353.png)
 参见(usejupyter.md)
 
 ## 启动QUANTAXIS_Webkit来查看回测的结果
@@ -106,8 +106,8 @@ cd web
 登录后点击左上角 <模拟回测> 在模拟回测的选择界面的用户名搜索框输入回测的时候的用户名(默认是admin),回车
 
 选择和你回测策略中名称一致的结果即可进入可视化界面
-![开启web](http://osnhakmay.bkt.clouddn.com/quantaxis%E5%BC%80%E5%90%AF.gif)
-![web操作](http://osnhakmay.bkt.clouddn.com/quantaxisweb.gif)
+![开启web](http://pic.yutiansut.comquantaxis%E5%BC%80%E5%90%AF.gif)
+![web操作](http://pic.yutiansut.comquantaxisweb.gif)
 (web操作的图太大 github上无法显示, 可以点进链接查看)
 
 ## 更新QUANTAXIS
