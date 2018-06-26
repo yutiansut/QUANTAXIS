@@ -9,6 +9,7 @@
 * [linux 安装](Documents/install_for_ubuntu.md)
 * [mac 安装](Documents/install_for_mac.md)
 * [Docker一键部署](Documents/docker.md)
+* [在jupyter中调试QUANTAXIS](Documents/usejupyter.md)
 * [更新](Documents/update.md)
 
 

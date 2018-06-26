@@ -7,6 +7,11 @@
     - [部署问题:](#部署问题)
     - [安装](#安装)
     - [启动QUANTAXIS CLI 并进行数据的初始化存储](#启动quantaxis-cli-并进行数据的初始化存储)
+    - [启动jupyter 来运行QUANTAXIS](#启动jupyter-来运行quantaxis)
+        - [1.在命令行启动jupyter](#1在命令行启动jupyter)
+        - [2.在产生的网页上新建一个notebook](#2在产生的网页上新建一个notebook)
+        - [3.在notebook中运行代码](#3在notebook中运行代码)
+        - [4.保存notebook为可运行的python文件](#4保存notebook为可运行的python文件)
     - [启动QUANTAXIS_Webkit来查看回测的结果](#启动quantaxis_webkit来查看回测的结果)
     - [更新QUANTAXIS](#更新quantaxis)
 
@@ -60,6 +65,22 @@ python  backtest.py
 
 一般而言 日线4个组合的回测(一年)在14-17秒左右 5min级别4个组合的回测(一年)在3-4分钟左右
 
+## 启动jupyter 来运行QUANTAXIS
+
+### 1.在命令行启动jupyter
+![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20180626231059.png)
+
+
+### 2.在产生的网页上新建一个notebook
+![](http://osnhakmay.bkt.clouddn.com/QQ%E5%9B%BE%E7%89%8720180626231143.png)
+
+### 3.在notebook中运行代码
+![](http://osnhakmay.bkt.clouddn.com/QQ%E5%9B%BE%E7%89%8720180626231307.png)
+
+
+### 4.保存notebook为可运行的python文件
+![](http://osnhakmay.bkt.clouddn.com/QQ%E5%9B%BE%E7%89%8720180626231353.png)
+参见(usejupyter.md)
 
 ## 启动QUANTAXIS_Webkit来查看回测的结果
 
