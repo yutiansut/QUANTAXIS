@@ -59,9 +59,9 @@ def from_tushare(dataframe, dtype='day'):
     """
 
     if dtype in ['day']:
-        return QA_DataStruct_Stock_day(dataframe.assign(date=pd.to_datetime(data.date)).set_index(['date', 'code'], drop=False), dtype='stock_day')
+        return QA_DataStruct_Stock_day(dataframe.assign(date=pd.to_datetime(dataframe.date)).set_index(['date', 'code'], drop=False), dtype='stock_day')
     elif dtype in ['min']:
-        return QA_DataStruct_Stock_min(dataframe.assign(datetime=pd.to_datetime(data.datetime)).set_index(['datetime', 'code'], drop=False), dtype='stock_min')
+        return QA_DataStruct_Stock_min(dataframe.assign(datetime=pd.to_datetime(dataframe.datetime)).set_index(['datetime', 'code'], drop=False), dtype='stock_min')
 
 
 def QDS_StockDayWarpper(func):
@@ -70,6 +70,8 @@ def QDS_StockDayWarpper(func):
     """
     def warpper(*args, **kwargs):
         data = func(*args, **kwargs)
+
+
         if isinstance(data.index, pd.MultiIndex):
 
             return QA_DataStruct_Stock_day(data)
