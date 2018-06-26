@@ -308,15 +308,15 @@ def QA_fetch_index_min(
 
 
 def QA_fetch_future_day():
-    pass
+    raise NotImplementedError
 
 
 def QA_fetch_future_min():
-    pass
+    raise NotImplementedError
 
 
 def QA_fetch_future_tick():
-    pass
+    raise NotImplementedError
 
 
 def QA_fetch_stock_xdxr(code, format='pd', collections=DATABASE.stock_xdxr):

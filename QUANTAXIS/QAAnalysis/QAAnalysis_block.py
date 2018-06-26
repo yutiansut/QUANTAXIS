@@ -130,7 +130,7 @@ if __name__ == "__main__":
 
     x = []
     y = []
-    block = QA.QA_fetch_stock_block_adv().get_type('gn').block_name
+    block = QA.QA_fetch_stock_block_adv().getdtype('gn').block_name
     for item in block:
         print(item)
         data = QAAnalysis_block(block_name=item)
