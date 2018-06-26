@@ -35,7 +35,7 @@ docker pull quantaxis/quantaxis
 ```
 
 
-![执行时的命令行](http://pic.yutiansut.comQQ%E6%88%AA%E5%9B%BE20171213102629.png)
+![执行时的命令行](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20171213102629.png)
 
 
 ### 1.2 运行镜像

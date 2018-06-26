@@ -11,10 +11,10 @@
 
 [点击右上角Star和Watch来跟踪项目进展! 点击Fork来创建属于你的QUANTAXIS!]
 
-![post201802](http://pic.yutiansut.comquantaxis-post201802.png)
-![main_1](http://pic.yutiansut.comMain_1.gif)
-![logo](http://pic.yutiansut.comQUANTAXIS-small.png)
-![presentbyyutiansut](http://pic.yutiansut.comyutiansut-logo.png)
+![post201802](http://pic.yutiansut.com/quantaxis-post201802.png)
+![main_1](http://pic.yutiansut.com/Main_1.gif)
+![logo](http://pic.yutiansut.com/QUANTAXIS-small.png)
+![presentbyyutiansut](http://pic.yutiansut.com/yutiansut-logo.png)
 
 
 ![version](https://img.shields.io/pypi/v/quantaxis.svg)
@@ -35,7 +35,7 @@
 
 > 欢迎加群讨论: 563280067 [群链接](https://jq.qq.com/?_wv=1027&k=4CEKGzn) 
 
-> 欢迎关注公众号: ![公众号](http://pic.yutiansut.comqrcode_for_gh_bbb47e0550f7_258%20%281%29.jpg)
+> 欢迎关注公众号: ![公众号](http://pic.yutiansut.com/qrcode_for_gh_bbb47e0550f7_258%20%281%29.jpg)
 
 > 许多问题 可以在 [GITHUB ISSUE](https://github.com/QUANTAXIS/QUANTAXIS/issues)中找到, 你可以提出新的issue
 
@@ -79,7 +79,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 ##  1. <a name=''></a>功能
 ======
 
-![](http://pic.yutiansut.comframework.png)
+![](http://pic.yutiansut.com/framework.png)
 
 已经实现：
 
@@ -182,7 +182,7 @@ git clone https://github.com/你的账户名/quantaxis
 写代码不易...请作者喝杯咖啡呗?
 
 
-![](http://pic.yutiansut.comalipay.png)
+![](http://pic.yutiansut.com/alipay.png)
 
 (PS: 支付的时候 请带上你的名字/昵称呀 会维护一个赞助列表~ )
 
@@ -192,15 +192,15 @@ git clone https://github.com/你的账户名/quantaxis
 
 ##  11. <a name='Webkit'></a>回测Webkit插件概览
 
-![](http://pic.yutiansut.comhomepage.png)
-![](http://pic.yutiansut.comloginpage.png)
-![](http://pic.yutiansut.comadminpage.png)
-![](http://pic.yutiansut.combacktestpage.png)
-![](http://pic.yutiansut.comrebacktest.png)
-![](http://pic.yutiansut.combacktestpic.png)
-![](http://pic.yutiansut.comstrategy.png)
-![](http://pic.yutiansut.comkline.png)
-![](http://pic.yutiansut.comsettings.png)
+![](http://pic.yutiansut.com/homepage.png)
+![](http://pic.yutiansut.com/loginpage.png)
+![](http://pic.yutiansut.com/adminpage.png)
+![](http://pic.yutiansut.com/backtestpage.png)
+![](http://pic.yutiansut.com/rebacktest.png)
+![](http://pic.yutiansut.com/backtestpic.png)
+![](http://pic.yutiansut.com/strategy.png)
+![](http://pic.yutiansut.com/kline.png)
+![](http://pic.yutiansut.com/settings.png)
 
 
 ##  12. <a name='QUANTAXIS'></a>QUANTAXIS 标准化协议和未来协议
