@@ -74,7 +74,7 @@ from QUANTAXIS.QAFetch.QACrawler import QA_fetch_get_sh_margin, QA_fetch_get_sz_
 from QUANTAXIS.QAFetch.QAQuery_Advance import *
 
 # save
-from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_index_min,
+from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_index_min, QA_SU_save_stock_info_tushare,
                                  QA_SU_save_stock_min, QA_SU_save_stock_xdxr, QA_SU_save_stock_info, QA_SU_save_stock_min_5,
                                  QA_SU_save_stock_block, QA_SU_save_etf_day, QA_SU_save_etf_min, QA_SU_save_financialfiles)
 
