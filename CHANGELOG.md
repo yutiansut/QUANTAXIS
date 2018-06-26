@@ -45,6 +45,8 @@
 2. 对于QA_Query 的 QA_fetch_financialfiles进行修改, 优化返回结果
 3. QA_DataStruct_Block 修改了get_block方法, 可以获取多个block_name
 4. 修改了financialdicts里面,两个重复的净利润,将现金流量表中的改成netProfitFromOperatingActivities
+5. QA_SU_save_stock_info_tushare加到主函数中
+6. QAAnalysis_Block细微修改,增加__repr__
 
 ## 1.0.57 
 

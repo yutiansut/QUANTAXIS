@@ -28,11 +28,11 @@ from QUANTAXIS.QAData.data_fq import (QA_data_get_hfq, QA_data_get_qfq,
 from QUANTAXIS.QAData.data_resample import QA_data_tick_resample
 from QUANTAXIS.QAData.QADataStruct import (QA_DataStruct_Index_day,
                                            QA_DataStruct_Index_min,
-                                           QA_DataStruct_Stock_block,
                                            QA_DataStruct_Stock_day,
                                            QA_DataStruct_Stock_min,
                                            QA_DataStruct_Future_day,
                                            QA_DataStruct_Future_min,
                                            QA_DataStruct_Stock_transaction)
+from QUANTAXIS.QAData.QABlockStruct import QA_DataStruct_Stock_block                                           
 from QUANTAXIS.QAData.QAIndicatorStruct import QA_DataStruct_Indicators
 from QUANTAXIS.QAData.dsmethods import QDS_StockDayWarpper, QDS_StockMinWarpper, from_tushare, concat
