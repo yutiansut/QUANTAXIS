@@ -182,7 +182,7 @@ if __name__ == '__main__':
     a.query_accounts('account:1391')
     a.query_orders('account:1391')
     a.query_orders('account:1391', 'open')
-    #a.send_order('account:141')
+    a.send_order('account:1391')
 
     #a.cancel_all()
 

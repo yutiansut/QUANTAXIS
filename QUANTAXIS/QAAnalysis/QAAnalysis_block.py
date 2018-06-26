@@ -35,6 +35,10 @@ class QAAnalysis_block():
         self.lens = lens
         # self.Executor=QA_Tdx_Executor()
 
+
+    def __repr__(self):
+        return '< QAAnalysis_Block >'
+
     def market_data(self, start, end, _type='day'):
         return QA_fetch_stock_day_adv(self.block_code, start, end)
 
