@@ -59,9 +59,9 @@ def from_tushare(dataframe, dtype='day'):
     """
 
     if dtype in ['day']:
-        return QA_DataStruct_Stock_day(dataframe.set_index(['date', 'code'], drop=False), dtype='stock_day')
+        return QA_DataStruct_Stock_day(dataframe.assign(date=pd.to_datetime(data.date)).set_index(['date', 'code'], drop=False), dtype='stock_day')
     elif dtype in ['min']:
-        return QA_DataStruct_Stock_min(dataframe.set_index(['datetime', 'code'], drop=False), dtype='stock_min')
+        return QA_DataStruct_Stock_min(dataframe.assign(datetime=pd.to_datetime(data.datetime)).set_index(['datetime', 'code'], drop=False), dtype='stock_min')
 
 
 def QDS_StockDayWarpper(func):
@@ -74,7 +74,7 @@ def QDS_StockDayWarpper(func):
 
             return QA_DataStruct_Stock_day(data)
         else:
-            return QA_DataStruct_Stock_day(data.set_index(['date', 'code'], drop=False), dtype='stock_day')
+            return QA_DataStruct_Stock_day(data.assign(date=pd.to_datetime(data.date)).set_index(['date', 'code'], drop=False), dtype='stock_day')
     return warpper
 
 
@@ -89,7 +89,7 @@ def QDS_StockMinWarpper(func, *args, **kwargs):
 
             return QA_DataStruct_Stock_min(data)
         else:
-            return QA_DataStruct_Stock_min(data.set_index(['datetime', 'code'], drop=False), dtype='stock_min')
+            return QA_DataStruct_Stock_min(data.assign(datetime=pd.to_datetime(data.datetime)).set_index(['datetime', 'code'], drop=False), dtype='stock_min')
     return warpper
 
 def QDS_IndexDayWarpper(func, *args, **kwargs):
@@ -103,7 +103,7 @@ def QDS_IndexDayWarpper(func, *args, **kwargs):
 
             return QA_DataStruct_Index_day(data)
         else:
-            return QA_DataStruct_Index_day(data.set_index(['datetime', 'code'], drop=False), dtype='index_min')
+            return QA_DataStruct_Index_day(data.assign(date=pd.to_datetime(data.date)).set_index(['datetime', 'code'], drop=False), dtype='index_min')
     return warpper
 
 
@@ -118,7 +118,7 @@ def QDS_IndexMinWarpper(func, *args, **kwargs):
 
             return QA_DataStruct_Index_min(data)
         else:
-            return QA_DataStruct_Index_min(data.set_index(['datetime', 'code'], drop=False), dtype='index_min')
+            return QA_DataStruct_Index_min(data.assign(datetime=pd.to_datetime(data.datetime)).set_index(['datetime', 'code'], drop=False), dtype='index_min')
     return warpper
 
 
