@@ -58,8 +58,9 @@ QA_DataStruct_Stock_block
 
 - (属性)该类下的所有板块名称 block_name
 - 查询某一只股票所在的所有板块 get_code(code)
-- 查询某一个板块下的所有股票 get_block(block)
+- 查询某一个/多个板块下的所有股票 get_block(blockname)
 - 展示当前类下的所有数据 show
+
 
 
 
