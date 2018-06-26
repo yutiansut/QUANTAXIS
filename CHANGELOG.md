@@ -47,6 +47,8 @@
 4. 修改了financialdicts里面,两个重复的净利润,将现金流量表中的改成netProfitFromOperatingActivities
 5. QA_SU_save_stock_info_tushare加到主函数中
 6. QAAnalysis_Block细微修改,增加__repr__
+7. 文档增加回测和测试账户部分(Documents/)
+8. 增加指数装饰器@QDS_IndexDayWarpper, @QDS_IndexMinWarpper
 
 ## 1.0.57 
 
