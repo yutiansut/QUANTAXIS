@@ -60,7 +60,8 @@ class _quotation_base():
         :param if_fq: 是否复权
         :param marketdata_type:
         '''
-
+        if 'volume' not in DataFrame.columns and 'vol' in DataFrame.columns:
+            DataFrame=DataFrame.assign(volume=DataFrame.vol)
         #🛠todo 判断DataFame 对象字段的合法性，是否正确
         self.data = DataFrame.sort_index()
         self.data.index = self.data.index.remove_unused_levels()
