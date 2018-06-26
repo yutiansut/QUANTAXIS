@@ -33,6 +33,6 @@ from QUANTAXIS.QAData.QADataStruct import (QA_DataStruct_Index_day,
                                            QA_DataStruct_Future_day,
                                            QA_DataStruct_Future_min,
                                            QA_DataStruct_Stock_transaction)
-from QUANTAXIS.QAData.QABlockStruct import QA_DataStruct_Stock_block                                           
+from QUANTAXIS.QAData.QABlockStruct import QA_DataStruct_Stock_block
 from QUANTAXIS.QAData.QAIndicatorStruct import QA_DataStruct_Indicators
-from QUANTAXIS.QAData.dsmethods import QDS_StockDayWarpper, QDS_StockMinWarpper, from_tushare, concat
+from QUANTAXIS.QAData.dsmethods import QDS_StockDayWarpper, QDS_StockMinWarpper, QDS_IndexDayWarpper, QDS_IndexMinWarpper, from_tushare, concat
