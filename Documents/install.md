@@ -80,7 +80,8 @@ python  backtest.py
 
 ### 4.保存notebook为可运行的python文件
 ![](http://pic.yutiansut.com/QQ%E5%9B%BE%E7%89%8720180626231353.png)
-参见(usejupyter.md)
+
+参见 [userjupyter](usejupyter.md)
 
 ## 启动QUANTAXIS_Webkit来查看回测的结果
 
