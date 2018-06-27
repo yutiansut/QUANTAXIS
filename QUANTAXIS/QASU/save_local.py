@@ -41,8 +41,8 @@ def QA_SU_save_financial_files():
     coll.create_index(
         [("code", ASCENDING), ("report_date", ASCENDING)], unique=True)
     for item in os.listdir(download_path):
-        if len( item ) !=  len('gpcw20180331.zip'):
-            print("file " ,item , " is not financial file , ignore!")
+        if item[0:4] == 'gpcw':
+            print("file " ,item , " is not start with gpcw , seems not a financial file , ignore!")
             continue;
 
         date=int(item.split('.')[0][-8:])
