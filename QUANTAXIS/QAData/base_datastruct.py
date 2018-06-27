@@ -353,38 +353,38 @@ class _quotation_base():
     @property
     @lru_cache()
     def max(self):
-        return self.price.groupby('code').apply(lambda x: x.max())
+        return self.price.groupby(level=1).apply(lambda x: x.max())
 
     @property
     @lru_cache()
     def min(self):
-        return self.price.groupby('code').apply(lambda x: x.min())
+        return self.price.groupby(level=1).apply(lambda x: x.min())
 
     @property
     @lru_cache()
     def mean(self):
-        return self.price.groupby('code').apply(lambda x: x.mean())
+        return self.price.groupby(level=1).apply(lambda x: x.mean())
     # 一阶差分序列
 
     @property
     @lru_cache()
     def price_diff(self):
         '返回DataStruct.price的一阶差分'
-        return self.price.groupby('code').apply(lambda x: x.diff(1))
+        return self.price.groupby(level=1).apply(lambda x: x.diff(1))
     # 样本方差(无偏估计) population variance
 
     @property
     @lru_cache()
     def pvariance(self):
         '返回DataStruct.price的方差 variance'
-        return self.price.groupby('code').apply(lambda x: statistics.pvariance(x))
+        return self.price.groupby(level=1).apply(lambda x: statistics.pvariance(x))
 
     # 方差
     @property
     @lru_cache()
     def variance(self):
         '返回DataStruct.price的方差 variance'
-        return self.price.groupby('code').apply(lambda x: statistics.variance(x))
+        return self.price.groupby(level=1).apply(lambda x: statistics.variance(x))
     # 标准差
 
     @property
@@ -403,21 +403,21 @@ class _quotation_base():
     @lru_cache()
     def stdev(self):
         '返回DataStruct.price的样本标准差 Sample standard deviation'
-        return self.price.groupby('code').apply(lambda x: statistics.stdev(x))
+        return self.price.groupby(level=1).apply(lambda x: statistics.stdev(x))
     # 总体标准差
 
     @property
     @lru_cache()
     def pstdev(self):
         '返回DataStruct.price的总体标准差 Population standard deviation'
-        return self.price.groupby('code').apply(lambda x: statistics.pstdev(x))
+        return self.price.groupby(level=1).apply(lambda x: statistics.pstdev(x))
 
     # 调和平均数
     @property
     @lru_cache()
     def mean_harmonic(self):
         '返回DataStruct.price的调和平均数'
-        return self.price.groupby('code').apply(lambda x: statistics.harmonic_mean(x))
+        return self.price.groupby(level=1).apply(lambda x: statistics.harmonic_mean(x))
 
     # 众数
     @property
@@ -425,7 +425,7 @@ class _quotation_base():
     def mode(self):
         '返回DataStruct.price的众数'
         try:
-            return self.price.groupby('code').apply(lambda x: statistics.mode(x))
+            return self.price.groupby(level=1).apply(lambda x: statistics.mode(x))
         except:
             return None
 
@@ -434,35 +434,35 @@ class _quotation_base():
     @lru_cache()
     def amplitude(self):
         '返回DataStruct.price的百分比变化'
-        return self.price.groupby('code').apply(lambda x: x.max()-x.min())
+        return self.price.groupby(level=1).apply(lambda x: x.max()-x.min())
     # 偏度 Skewness
 
     @property
     @lru_cache()
     def skew(self):
         '返回DataStruct.price的偏度'
-        return self.price.groupby('code').apply(lambda x: x.skew())
+        return self.price.groupby(level=1).apply(lambda x: x.skew())
     # 峰度Kurtosis
 
     @property
     @lru_cache()
     def kurt(self):
         '返回DataStruct.price的峰度'
-        return self.price.groupby('code').apply(lambda x: x.kurt())
+        return self.price.groupby(level=1).apply(lambda x: x.kurt())
     # 百分数变化
 
     @property
     @lru_cache()
     def pct_change(self):
         '返回DataStruct.price的百分比变化'
-        return self.price.groupby('code').apply(lambda x: x.pct_change())
+        return self.price.groupby(level=1).apply(lambda x: x.pct_change())
 
     # 平均绝对偏差
     @property
     @lru_cache()
     def mad(self):
         '平均绝对偏差'
-        return self.price.groupby('code').apply(lambda x: x.mad())
+        return self.price.groupby(level=1).apply(lambda x: x.mad())
 
     @property
     @lru_cache()
@@ -586,6 +586,30 @@ class _quotation_base():
             print('QA CANNOT QUERY THIS {}'.format(context))
             pass
 
+    def groupby(self,by=None, axis=0, level=None, as_index=True, sort=True, group_keys=True, squeeze=False, observed=False, **kwargs):
+        """仿dataframe的groupby写法,但控制了by的code和datetime
+        
+        Keyword Arguments:
+            by {[type]} -- [description] (default: {None})
+            axis {int} -- [description] (default: {0})
+            level {[type]} -- [description] (default: {None})
+            as_index {bool} -- [description] (default: {True})
+            sort {bool} -- [description] (default: {True})
+            group_keys {bool} -- [description] (default: {True})
+            squeeze {bool} -- [description] (default: {False})
+            observed {bool} -- [description] (default: {False})
+        
+        Returns:
+            [type] -- [description]
+        """
+
+        if by==self.index.names[1]:
+            by=None
+            level=1
+        elif by== self.index.names[0]:
+            by =None
+            level=0
+        return self.data.groupby(by=by,axis=axis,level=level,as_index=as_index,sort=sort,group_keys=group_keys,squeeze=squeeze,observed=observed)
 
 
     def new(self, data=None, dtype=None, if_fq=None):
@@ -827,20 +851,20 @@ class _quotation_base():
 
         if method in ['gt', '>']:
             def gt(data):
-                return data.loc[(slice(pd.Timestamp(time), None), slice(None)), :].groupby('code',axis=0,as_index=False,sort=False,group_keys=False).apply(lambda x: x.iloc[1:gap+1])
+                return data.loc[(slice(pd.Timestamp(time), None), slice(None)), :].groupby(level=1,axis=0,as_index=False,sort=False,group_keys=False).apply(lambda x: x.iloc[1:gap+1])
             return self.new(gt(self.data), self.type, self.if_fq)
 
         elif method in ['gte', '>=']:
             def gte(data):
-                return data.loc[(slice(pd.Timestamp(time), None), slice(None)), :].groupby('code',axis=0,as_index=False,sort=False,group_keys=False).apply(lambda x: x.iloc[0:gap])
+                return data.loc[(slice(pd.Timestamp(time), None), slice(None)), :].groupby(level=1,axis=0,as_index=False,sort=False,group_keys=False).apply(lambda x: x.iloc[0:gap])
             return self.new(gte(self.data), self.type, self.if_fq)
         elif method in ['lt', '<=']:
             def lt(data):
-                return data.loc[(slice(None, pd.Timestamp(time)), slice(None)), :].groupby('code',axis=0,as_index=False,sort=False,group_keys=False).apply(lambda x: x.iloc[-gap-1:-1])
+                return data.loc[(slice(None, pd.Timestamp(time)), slice(None)), :].groupby(level=1,axis=0,as_index=False,sort=False,group_keys=False).apply(lambda x: x.iloc[-gap-1:-1])
             return self.new(lt(self.data), self.type, self.if_fq)
         elif method in ['lte', '<=']:
             def lte(data):
-                return data.loc[(slice(None, pd.Timestamp(time)), slice(None)), :].groupby('code',axis=0,as_index=False,sort=False,group_keys=False).apply(lambda x: x.tail(gap))
+                return data.loc[(slice(None, pd.Timestamp(time)), slice(None)), :].groupby(level=1,axis=0,as_index=False,sort=False,group_keys=False).apply(lambda x: x.tail(gap))
             return self.new(lte(self.data), self.type, self.if_fq)
         elif method in ['eq', '==', '=', 'equal','e']:
             def eq(data):

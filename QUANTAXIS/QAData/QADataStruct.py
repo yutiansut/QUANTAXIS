@@ -96,7 +96,7 @@ class QA_DataStruct_Stock_day(_quotation_base):
                     lambda x: QA_data_stock_to_fq(self.data[self.data['code'] == x]), self.code))), self.type, 'qfq')
             else:
                 return self.new(
-                    self.data.groupby('code').apply(QA_data_stock_to_fq), self.type, 'qfq')
+                    self.data.groupby(level=1).apply(QA_data_stock_to_fq), self.type, 'qfq')
         else:
             QA_util_log_info(
                 'none support type for qfq Current type is: %s' % self.if_fq)
@@ -120,13 +120,13 @@ class QA_DataStruct_Stock_day(_quotation_base):
     @lru_cache()
     def high_limit(self):
         '涨停价'
-        return self.data.groupby('code').close.apply(lambda x: round((x.shift(1) + 0.0002)*1.1, 2))
+        return self.data.groupby(level=1).close.apply(lambda x: round((x.shift(1) + 0.0002)*1.1, 2))
 
     @property
     @lru_cache()
     def low_limit(self):
         '跌停价'
-        return self.data.groupby('code').close.apply(lambda x: round((x.shift(1) + 0.0002)*0.9, 2))
+        return self.data.groupby(level=1).close.apply(lambda x: round((x.shift(1) + 0.0002)*0.9, 2))
 
     @property
     @lru_cache()
@@ -198,7 +198,7 @@ class QA_DataStruct_Stock_min(_quotation_base):
                 return data
             else:
                 data = QA_DataStruct_Stock_min(
-                    self.data.groupby('code').apply(QA_data_stock_to_fq))
+                    self.data.groupby(level=1).apply(QA_data_stock_to_fq))
                 return data
         else:
             QA_util_log_info(
