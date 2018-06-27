@@ -156,17 +156,19 @@ class SPETradeApi(QA_Broker):
         Returns:
             [type] -- [description]
         """
-
-        return self.call_post('orders', {
-            'client': accounts,
-            "action": 'BUY' if order_direction == 1 else 'SELL',
-            "symbol": code,
-            "type": order_model,
-            "priceType": 0 if order_model == ORDER_MODEL.LIMIT else 4,
-            "price": price,
-            "amount": amount
-
-        })
+        try:
+            return self.call_post('orders', {
+                'client': accounts,
+                "action": 'BUY' if order_direction == 1 else 'SELL',
+                "symbol": code,
+                "type": order_model,
+                "priceType": 0 if order_model == ORDER_MODEL.LIMIT else 4,
+                "price": price,
+                "amount": amount
+            })
+        except json.decoder.JSONDecodeError:
+            print(RuntimeError('TRADE ERROR'))
+            return None
 
     def cancel_order(self, accounts, orderid):
         return self.call_delete('orders/{}'.format(orderid), json.dumps({
@@ -179,11 +181,14 @@ class SPETradeApi(QA_Broker):
 
 if __name__ == '__main__':
     a = SPETradeApi()
-    a.query_accounts('account:1391')
-    a.query_orders('account:1391')
-    a.query_orders('account:1391', 'open')
-    a.send_order('account:1391')
+    print(a.query_accounts('account:1391'))
+    print(a.query_orders('account:1391'))
+    print(a.query_orders('account:1391', 'open'))
+    """多账户同时下单测试
+    """
 
+    print(a.send_order('account:1391'))
+    #print(a.send_order('account:141',price=8.95))
     #a.cancel_all()
 
     # a.cancel_order('account:141','919')
