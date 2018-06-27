@@ -51,6 +51,7 @@
     - 修复了多code的时候的bug
 
 2. 修改了groupby写法, 增加的QADataStruct的groupby参数
+3. 修改了前复权等各种涉及groupby('code')可能报错的情况,改成level层面的操作,以后不会出现warning
     
 released in : JUNE 27, 2018
 
