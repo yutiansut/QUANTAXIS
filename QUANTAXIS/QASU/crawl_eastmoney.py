@@ -272,24 +272,24 @@ def QA_read_eastmoney_zjlx_web_page_to_sqllite(stockCodeList = None):
         print(os.getcwd()+"/QUANTAXIS_WEBDRIVER"," 目录存在 😁")
     print("")
 
-    path_for_save_data = QALocalize.download_path + "/eastmoney_stock_zjlx"
-    isExists = os.path.exists(path_for_save_data)
-    if isExists == False:
-        os.mkdir(path_for_save_data)
-        isExists = os.path.exists(path_for_save_data)
-        if isExists == True:
-            print(path_for_save_data,"目录不存在！ 成功建立目录 😢")
-        else:
-            print(path_for_save_data,"目录不存在！ 失败建立目录 🤮, 可能没有权限 🈲")
-            return
-    else:
-        print(path_for_save_data,"目录存在！准备读取数据 😋")
+    # path_for_save_data = QALocalize.download_path + "/eastmoney_stock_zjlx"
+    # isExists = os.path.exists(path_for_save_data)
+    # if isExists == False:
+    #     os.mkdir(path_for_save_data)
+    #     isExists = os.path.exists(path_for_save_data)
+    #     if isExists == True:
+    #         print(path_for_save_data,"目录不存在！ 成功建立目录 😢")
+    #     else:
+    #         print(path_for_save_data,"目录不存在！ 失败建立目录 🤮, 可能没有权限 🈲")
+    #         return
+    # else:
+    #     print(path_for_save_data,"目录存在！准备读取数据 😋")
 
     browser = open_chrome_driver()
 
     for indexCode in range(len(stockCodeList)):
-        full_path_name = path_for_save_data + "/" + stockCodeList[indexCode] + "_zjlx.sqlite.db"
-        read_east_money_page_zjlx_to_sqllite(stockCodeList[indexCode],full_path_name, browser)
+        #full_path_name = path_for_save_data + "/" + stockCodeList[indexCode] + "_zjlx.sqlite.db"
+        read_east_money_page_zjlx_to_sqllite(stockCodeList[indexCode], browser)
 
     close_chrome_dirver(browser)
     #创建目录
