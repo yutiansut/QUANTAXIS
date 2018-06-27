@@ -586,7 +586,7 @@ class _quotation_base():
             print('QA CANNOT QUERY THIS {}'.format(context))
             pass
 
-    def groupby(self,by=None, axis=0, level=None, as_index=True, sort=True, group_keys=True, squeeze=False, observed=False, **kwargs):
+    def groupby(self,by=None, axis=0, level=None, as_index=True, sort=False, group_keys=True, squeeze=False, observed=False, **kwargs):
         """仿dataframe的groupby写法,但控制了by的code和datetime
         
         Keyword Arguments:
@@ -713,9 +713,12 @@ class _quotation_base():
         """
         return list(map(lambda x: self.select_code(x), self.code))
 
+    # def add_func(self, func, *arg, **kwargs):
+    #     return pd.concat(list(map(lambda x: func(
+    #         self.data.loc[(slice(None), x), :], *arg, **kwargs), self.code))).sort_index()
+
     def add_func(self, func, *arg, **kwargs):
-        return pd.concat(list(map(lambda x: func(
-            self.data.loc[(slice(None), x), :], *arg, **kwargs), self.code))).sort_index()
+        return self.groupby(level=1,sort=False).apply(func,*arg,**kwargs)   
 
     def pivot(self, column_):
         """增加对于多列的支持"""
