@@ -3,7 +3,8 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.0.58 (unreleased)](#1058-unreleased)
+    - [1.0.59 (unreleased)](#1059-unreleased)
+    - [1.0.58](#1058)
     - [1.0.57](#1057)
     - [1.0.56](#1056)
     - [1.0.55](#1055)
@@ -40,7 +41,9 @@
 
 <!-- /TOC -->
 
-## 1.0.58 (unreleased)
+## 1.0.59 (unreleased)
+
+## 1.0.58 
 1. QA_Account 增加hold_time属性, 显示持仓时间
 2. 对于QA_Query 的 QA_fetch_financialfiles进行修改, 优化返回结果
 3. QA_DataStruct_Block 修改了get_block方法, 可以获取多个block_name
@@ -50,6 +53,10 @@
 7. 文档增加回测和测试账户部分(Documents/)
 8. 增加指数装饰器@QDS_IndexDayWarpper, @QDS_IndexMinWarpper
 9. 更新jupyter的文档(Documents/usejupyter.md)
+10. DataStruct的high_limit和low_limit的bug修复
+11. @喜欢你 更新了mac下的financialfiles存储问题
+
+released in : JUNE 27, 2018
 
 ## 1.0.57 
 
