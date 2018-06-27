@@ -603,10 +603,10 @@ class _quotation_base():
             [type] -- [description]
         """
 
-        if by==self.index.levels[1]:
+        if by==self.index.names[1]:
             by=None
             level=1
-        elif by== self.index.levels[0]:
+        elif by== self.index.names[0]:
             by =None
             level=0
         return self.data.groupby(by=by,axis=axis,level=level,as_index=as_index,sort=sort,group_keys=group_keys,squeeze=squeeze,observed=observed)
