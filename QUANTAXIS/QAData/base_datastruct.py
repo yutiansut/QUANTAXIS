@@ -579,7 +579,14 @@ class _quotation_base():
         """
         查询data
         """
-        return self.data.query(context)
+        try:
+            return self.data.query(context)
+            
+        except pd.core.computation.ops.UndefinedVariableError:
+            print('QA CANNOT QUERY THIS {}'.format(context))
+            pass
+
+
 
     def new(self, data=None, dtype=None, if_fq=None):
         """
@@ -698,6 +705,8 @@ class _quotation_base():
                 return self.data.pivot_table(index='datetime', columns='code', values=column_)
             except:
                 return self.data.pivot_table(index='date', columns='code', values=column_)
+
+
 
     def selects(self, code, start, end=None):
         """

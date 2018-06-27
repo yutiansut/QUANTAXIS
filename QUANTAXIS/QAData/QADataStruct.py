@@ -63,6 +63,7 @@ class QA_DataStruct_Stock_day(_quotation_base):
 
         股票日线数据
     '''
+
     def __init__(self, init_data_by_df, dtype='stock_day', if_fq='bfq'):
         '''
         # 🛠 todo dtype=stock_day 和 QA_DataStruct_Stock_day 类的名字是对应的 不变的不需要指定 ，容易出错，建议改成常量 ❌
@@ -75,23 +76,8 @@ class QA_DataStruct_Stock_day(_quotation_base):
         if isinstance(init_data_by_df, pd.DataFrame) == False:
             print("💢Error init_data_by_df is not kind of DataFrame type !")
 
+    # 抽象类继承
 
-        #根据 根据前一天收盘价 补齐 当天最高最低价
-        #if 'high_limit' not in self.data.columns:
-        self.data['high_limit'] = round(
-            (self.data.close.shift(1) + 0.0002) * 1.1, 2)
-        #if 'low_limit' not in self.data.columns:
-        self.data['low_limit'] = round(
-            (self.data.close.shift(1) + 0.0002) * 0.9, 2)
-        #根据 根据今天收盘价 补齐 明天最高最低价
-        #if 'next_day_high_limit' not in self.data.columns:
-        self.data['next_day_high_limit'] = round(
-            (self.data.close + 0.0002) * 1.1, 2)
-        #if 'next_day_low_limit' not in self.data.columns:
-        self.data['next_day_low_limit'] = round(
-            (self.data.close + 0.0002) * 0.9, 2)
-
-    #抽象类继承
     def choose_db(self):
         self.mongo_coll = DATABASE.stock_day
 
@@ -99,7 +85,7 @@ class QA_DataStruct_Stock_day(_quotation_base):
         return '< QA_DataStruct_Stock_day with {} securities >'.format(len(self.code))
     __str__ = __repr__
 
-    #前复权
+    # 前复权
     def to_qfq(self):
         if self.if_fq is 'bfq':
             if len(self.code) < 1:
@@ -116,7 +102,7 @@ class QA_DataStruct_Stock_day(_quotation_base):
                 'none support type for qfq Current type is: %s' % self.if_fq)
             return self
 
-    #后复权
+    # 后复权
     def to_hfq(self):
         if self.if_fq is 'bfq':
             if len(self.code) < 1:
@@ -131,24 +117,28 @@ class QA_DataStruct_Stock_day(_quotation_base):
             return self
 
     @property
+    @lru_cache()
     def high_limit(self):
         '涨停价'
-        return self.data.high_limit
+        return self.data.groupby('code').close.apply(lambda x: round((x.shift(1) + 0.0002)*1.1, 2))
 
     @property
+    @lru_cache()
     def low_limit(self):
         '跌停价'
-        return self.data.low_limit
+        return self.data.groupby('code').close.apply(lambda x: round((x.shift(1) + 0.0002)*0.9, 2))
 
     @property
+    @lru_cache()
     def next_day_low_limit(self):
         "明日跌停价"
-        return self.data.next_day_low_limit
+        return round((self.data.close + 0.0002) * 1.1, 2)
 
     @property
+    @lru_cache()
     def next_day_high_limit(self):
         "明日涨停价"
-        return self.data.next_day_high_limit
+        return round((self.data.close + 0.0002) * 0.9, 2)
 
     @property
     def preclose(self):
@@ -188,10 +178,9 @@ class QA_DataStruct_Stock_min(_quotation_base):
         self.type = dtype
         self.if_fq = if_fq
 
-    #抽象类继承
+    # 抽象类继承
     def choose_db(self):
         self.mongo_coll = DATABASE.stock_min
-
 
     def __repr__(self):
         return '< QA_DataStruct_Stock_Min with {} securities >'.format(len(self.code))
@@ -248,10 +237,9 @@ class QA_DataStruct_Future_day(_quotation_base):
         self.data = DataFrame.ix[:, [
             'code', 'open', 'high', 'low', 'close', 'trade', 'position', 'datetime', 'date']]
 
-    #抽象类继承
+    # 抽象类继承
     def choose_db(self):
         self.mongo_coll = DATABASE.future_day
-
 
     def __repr__(self):
         return '< QA_DataStruct_Future_day with {} securities >'.format(len(self.code))
@@ -262,7 +250,6 @@ class QA_DataStruct_Future_min(_quotation_base):
     """
     struct for future
     """
-
 
     def __init__(self, DataFrame, dtype='future_min', if_fq=''):
         # 🛠todo  期货分钟数据线的维护， 暂时用日线代替分钟线
@@ -286,7 +273,7 @@ class QA_DataStruct_Index_day(_quotation_base):
         self.data = DataFrame
         self.type = dtype
         self.if_fq = if_fq
-        #self.mongo_coll = eval(
+        # self.mongo_coll = eval(
         #    'DATABASE.{}'.format(self.type))
     """
     def __add__(self,DataStruct):
@@ -323,7 +310,6 @@ class QA_DataStruct_Index_min(_quotation_base):
         return '< QA_DataStruct_Index_Min with %s securities >' % len(self.code)
 
     __str__ = __repr__
-
 
 
 class QA_DataStruct_Stock_transaction():
