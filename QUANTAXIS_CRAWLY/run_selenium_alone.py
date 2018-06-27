@@ -34,7 +34,7 @@ def open_chrome_driver():
 def close_chrome_dirver(browser):
     browser.quit()
 
-def read_east_money_page_zjlx_to_sqllite(stockCode, save_sqlite_full_path_name, browser):
+def read_east_money_page_zjlx_to_sqllite(stockCode, browser):
 
     urls = 'http://data.eastmoney.com/zjlx/{}.html'.format(stockCode)
     pa=re.compile(r'\w+')
