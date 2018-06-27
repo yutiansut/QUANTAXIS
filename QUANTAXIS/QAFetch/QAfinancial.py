@@ -108,7 +108,7 @@ def get_and_parse(filename):
 
 def parse_filelist(filelist):
 
-    return pd.concat([get_and_parse('{}{}{}'.format(download_path, os.sep, item)) for item in filelist], sort=False)
+    return pd.concat([get_and_parse('{}{}{}'.format(download_path, os.sep, item)) for item in filelist])
 
 
 def parse_all():
