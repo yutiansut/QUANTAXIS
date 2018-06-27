@@ -44,7 +44,8 @@
 ## 1.0.60 (unreleased)
 
 1. groupy 默认参数中 sort设置为false
-2. 加速指标运算/前后复权
+2. 加速指标运算/前后复权 (视股票数量而定,3000多只股票提速20倍)
+3. 回测加速(test_backtest/MACD_JCSC.py) 从14秒提速到2秒
 
 
 
