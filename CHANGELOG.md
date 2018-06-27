@@ -49,8 +49,12 @@
 1. 修改了DataStruct的high_limit和low_limit的计算方式
     - 惰性计算,取消在初始化的时候的计算
     - 修复了多code的时候的bug
+
+2. 修改了groupby写法, 增加的QADataStruct的groupby参数
     
 released in : JUNE 27, 2018
+
+
 ## 1.0.58 
 1. QA_Account 增加hold_time属性, 显示持仓时间
 2. 对于QA_Query 的 QA_fetch_financialfiles进行修改, 优化返回结果
