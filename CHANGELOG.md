@@ -3,7 +3,8 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.0.59 (unreleased)](#1059-unreleased)
+    - [1.0.60 (unreleased)](#1060-unreleased)
+    - [1.0.59](#1059)
     - [1.0.58](#1058)
     - [1.0.57](#1057)
     - [1.0.56](#1056)
@@ -40,9 +41,16 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
+## 1.0.60 (unreleased)
 
-## 1.0.59 (unreleased)
 
+## 1.0.59 
+
+1. 修改了DataStruct的high_limit和low_limit的计算方式
+    - 惰性计算,取消在初始化的时候的计算
+    - 修复了多code的时候的bug
+    
+released in : JUNE 27, 2018
 ## 1.0.58 
 1. QA_Account 增加hold_time属性, 显示持仓时间
 2. 对于QA_Query 的 QA_fetch_financialfiles进行修改, 优化返回结果
