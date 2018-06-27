@@ -77,19 +77,19 @@ class QA_DataStruct_Stock_day(_quotation_base):
 
 
         #根据 根据前一天收盘价 补齐 当天最高最低价
-        if 'high_limit' not in self.data.columns:
-            self.data['high_limit'] = round(
-                (self.data.close.shift(1) + 0.0002) * 1.1, 2)
-        if 'low_limit' not in self.data.columns:
-            self.data['low_limit'] = round(
-                (self.data.close.shift(1) + 0.0002) * 0.9, 2)
+        #if 'high_limit' not in self.data.columns:
+        self.data['high_limit'] = round(
+            (self.data.close.shift(1) + 0.0002) * 1.1, 2)
+        #if 'low_limit' not in self.data.columns:
+        self.data['low_limit'] = round(
+            (self.data.close.shift(1) + 0.0002) * 0.9, 2)
         #根据 根据今天收盘价 补齐 明天最高最低价
-        if 'next_day_high_limit' not in self.data.columns:
-            self.data['next_day_high_limit'] = round(
-                (self.data.close + 0.0002) * 1.1, 2)
-        if 'next_day_low_limit' not in self.data.columns:
-            self.data['next_day_low_limit'] = round(
-                (self.data.close + 0.0002) * 0.9, 2)
+        #if 'next_day_high_limit' not in self.data.columns:
+        self.data['next_day_high_limit'] = round(
+            (self.data.close + 0.0002) * 1.1, 2)
+        #if 'next_day_low_limit' not in self.data.columns:
+        self.data['next_day_low_limit'] = round(
+            (self.data.close + 0.0002) * 0.9, 2)
 
     #抽象类继承
     def choose_db(self):
