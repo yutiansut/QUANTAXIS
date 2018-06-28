@@ -79,6 +79,7 @@ finally:
     import seaborn as sns
 
 
+
 class QA_Risk():
     """QARISK 是一个风险插件
 
@@ -136,7 +137,8 @@ class QA_Risk():
         if self.if_fq:
             return self.market_data.to_qfq().pivot('close').fillna(method='ffill') * self.account.daily_hold
         else:
-            self.market_data.pivot('close').fillna(method='ffill') * self.account.daily_hold
+            self.market_data.pivot('close').fillna(
+                method='ffill') * self.account.daily_hold
 
     @property
     @lru_cache()
@@ -255,11 +257,11 @@ class QA_Risk():
             'init_cash': "%0.2f" % (float(self.init_cash)),
             'last_assets': "%0.2f" % (float(self.assets.iloc[-1])),
             'total_tax': self.total_tax,
-            'total_commission':self.total_commission,
-            'profit_money':self.profit_money
+            'total_commission': self.total_commission,
+            'profit_money': self.profit_money
 
-            #'init_assets': round(float(self.init_assets), 2),
-            #'last_assets': round(float(self.assets.iloc[-1]), 2)
+            # 'init_assets': round(float(self.init_assets), 2),
+            # 'last_assets': round(float(self.assets.iloc[-1]), 2)
         }
 
     @property
@@ -377,6 +379,62 @@ class QA_Risk():
             return 0
         return (annualized_returns - r) / volatility_year
 
+    @property
+    def max_holdmarketvalue(self):
+        """最大持仓市值
+
+        Returns:
+            [type] -- [description]
+        """
+        
+        return self.daily_market_value.max()
+
+
+    @property
+    def min_holdmarketvalue(self):
+        """最小持仓市值
+
+        Returns:
+            [type] -- [description]
+        """
+        
+        return self.daily_market_value.min()
+
+    @property
+    def average_holdmarketvalue(self):
+        """平均持仓市值
+
+        Returns:
+            [type] -- [description]
+        """
+        
+        return self.daily_market_value.mean()
+
+    @property
+    def max_cashhold(self):
+        """最大闲置资金
+        """
+
+        return self.account.daily_cash.cash.max()
+
+    @property
+    def min_cashhold(self):
+        """最小闲置资金
+        """
+
+        return self.account.daily_cash.cash.min()
+
+
+    @property
+    def average_cashhold(self):
+        """平均闲置资金
+
+        Returns:
+            [type] -- [description]
+        """
+        
+        return self.account.daily_cash.cash.mean()
+
     def save(self):
         """save to mongodb
 
@@ -484,6 +542,9 @@ class QA_Performance():
         self.account = account
         self._style_title = ['beta', 'momentum', 'size', 'earning_yield',
                              'volatility', 'growth', 'value', 'leverage', 'liquidity', 'reversal']
+
+    def __repr__(self):
+        return 'QA_PERFORMANCE ANYLYSIS PLUGIN'
 
     @property
     def prefer(self):
@@ -597,6 +658,19 @@ class QA_Performance():
         """持仓分析
         """
         pass
+
+    def win_rate(self, methods='FIFO'):
+        """胜率
+
+        胜率
+        盈利次数/总次数
+        """
+        data = self.pnl_lifo if methods in ['LIFO', 'lifo'] else self.pnl_fifo
+        return round(len(data.query('pnl_money>0'))/len(data), 2)
+
+    def average_profit(self, methods='FIFO'):
+        data = self.pnl_lifo if methods in ['LIFO', 'lifo'] else self.pnl_fifo
+        return (data.pnl_money.mean())
 
     @property
     def accumulate_return(self):

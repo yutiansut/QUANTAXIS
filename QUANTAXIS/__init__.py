@@ -61,7 +61,15 @@ from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day, QA_fetch_get_trade_date, 
                                QA_fetch_get_index_day, QA_fetch_get_index_min, QA_fetch_get_stock_list, QA_fetch_get_stock_info,
                                QA_fetch_get_stock_block, QA_fetch_get_stock_transaction_realtime, QA_fetch_get_security_bars,
                                QA_fetch_get_future_day, QA_fetch_get_future_min, QA_fetch_get_future_list, QA_fetch_get_future_transaction,
-                               QA_fetch_get_future_transaction_realtime, QA_fetch_get_future_realtime)
+                               QA_fetch_get_future_transaction_realtime, QA_fetch_get_future_realtime,
+                               QA_fetch_get_hkfund_list, QA_fetch_get_hkfund_day, QA_fetch_get_hkfund_min,
+                               QA_fetch_get_hkindex_list, QA_fetch_get_hkindex_day,QA_fetch_get_hkindex_min,
+                               QA_fetch_get_hkstock_list, QA_fetch_get_hkstock_day, QA_fetch_get_hkstock_min,
+                               QA_fetch_get_usstock_list, QA_fetch_get_usstock_day, QA_fetch_get_usstock_min,
+                               QA_fetch_get_option_list, QA_fetch_get_option_day, QA_fetch_get_option_min,
+                               QA_fetch_get_macroindex_list, QA_fetch_get_macroindex_day, QA_fetch_get_macroindex_min,
+                               QA_fetch_get_exchangerate_list, QA_fetch_get_exchangerate_day, QA_fetch_get_exchangerate_min,
+                               QA_fetch_get_globalfuture_list, QA_fetch_get_globalfuture_day, QA_fetch_get_globalfuture_min)
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_trade_date, QA_fetch_account, QA_fetch_financial_report,
                                        QA_fetch_stock_day, QA_fetch_stock_min,
                                        QA_fetch_index_day, QA_fetch_index_min,
@@ -112,7 +120,7 @@ from QUANTAXIS.QAData import (QA_data_tick_resample, QA_data_get_hfq, QA_data_ge
                               QA_DataStruct_Future_day, QA_DataStruct_Future_min,
                               QA_DataStruct_Index_day, QA_DataStruct_Index_min, QA_DataStruct_Indicators,
                               QA_DataStruct_Stock_transaction, QA_DataStruct_Stock_block,
-                              from_tushare, QDS_StockMinWarpper, QDS_StockDayWarpper,QDS_IndexDayWarpper, QDS_IndexMinWarpper)
+                              from_tushare, QDS_StockMinWarpper, QDS_StockDayWarpper, QDS_IndexDayWarpper, QDS_IndexMinWarpper)
 from QUANTAXIS.QAData.dsmethods import *
 # Analysis
 from QUANTAXIS.QAAnalysis import *
