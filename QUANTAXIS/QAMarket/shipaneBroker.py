@@ -78,8 +78,10 @@ class SPETradeApi(QA_Broker):
         return json.loads(text)
 
     def call_delete(self, func, params=''):
-        response = self._session.delete(
-            '{}/api/v1.0/{}'.format(self._endpoint, func))
+        uri = '{}/api/v1.0/{}?client={}'.format(
+            self._endpoint, func, params.pop('client'))
+
+        response = self._session.delete(uri)
 
         text = response.text
         print(text)
@@ -175,12 +177,14 @@ class SPETradeApi(QA_Broker):
             return None
 
     def cancel_order(self, accounts, orderid):
-        return self.call_delete('orders/{}'.format(orderid), json.dumps({
+        return self.call_delete('orders/{}'.format(orderid), {
             'client': accounts
-        }))
+        })
 
-    def cancel_all(self):
-        return self.call_delete('orders')
+    def cancel_all(self,accounts):
+        return self.call_delete('orders',{
+            'client': accounts
+        })
 
 
 if __name__ == '__main__':
@@ -191,10 +195,10 @@ if __name__ == '__main__':
     """多账户同时下单测试
     """
 
-    print(a.send_order('account:1391'))
+    print(a.send_order('account:1391',price=8.5))
     print(a.query_orders('account:1391', 'open'))
     print(a.query_orders('account:1391', 'filled'))
     #print(a.send_order('account:141',price=8.95))
-    #a.cancel_all()
+    print(a.cancel_all('account:1391'))
 
-    # a.cancel_order('account:141','919')
+    print(a.cancel_order('account:1391','910954549'))
