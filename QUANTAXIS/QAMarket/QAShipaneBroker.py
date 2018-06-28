@@ -46,7 +46,7 @@ def get_config_SPE():
         return DEFAULT_SHIPANE_URL
 
 
-class SPETradeApi(QA_Broker):
+class QA_SPEBroker(QA_Broker):
     def __init__(self, endpoint=get_config_SPE()):
 
         self._endpoint = endpoint
@@ -188,7 +188,7 @@ class SPETradeApi(QA_Broker):
 
 
 if __name__ == '__main__':
-    a = SPETradeApi()
+    a = QA_SPEBroker()
     print(a.query_accounts('account:1391'))
     print(a.query_orders('account:1391'))
     print(a.query_orders('account:1391', 'open'))

@@ -46,7 +46,46 @@
 1. groupy 默认参数中 sort设置为false
 2. 加速指标运算/前后复权 (视股票数量而定,3000多只股票提速20倍)
 3. 回测加速(test_backtest/MACD_JCSC.py) 从14秒提速到2秒
+4. QA_Risk 增加
 
+> max_holdmarketvalue 最大持仓市值,min_holdmarketvalue 最小持仓市值, average_holdmarketvalue 平均持仓市值
+> max_cashhold 最大闲置现金, min_cashhold 最小持仓现金, average_cashhold 平均持仓现金
+
+5. QA_Performance 增加:
+
+> win_rate(methods='FIFO') 胜率
+> average_profit(methods='FIFO') 平均利润
+
+6. 增加QA_Trade模块,QATrade_Realtime类(未完成)
+
+7. 支持 期权数据/ 港股数据获取/ 部分美股数据/ 国际期货数据/ 宏观指标/ 汇率数据/
+
+- QA_fetch_get_option_list 获取期权列表(郑州商品期权/大连商品期权/上海商品期权/中金所期权/上海股票期权)
+- QA_fetch_get_globalfuture_list 获取国际期货列表(伦敦金属/伦敦石油/纽约商品/纽约石油/芝加哥谷/东京工业品/纽约期货/新加坡期货/马来期货)
+- QA_fetch_get_hkstock_list 获取香港主板/创业板股票
+- QA_fetch_get_hkfund_list  获取香港基金列表
+- QA_fetch_get_hkindex_list 获取香港指数列表
+- QA_fetch_get_usstock_list 获取美股股票列表
+- QA_fetch_get_macroindex_list 获取宏观指数列表
+- QA_fetch_get_exchangerate_list 获取汇率数据(基础汇率/交叉汇率)
+
+- QA_fetch_get_option_day 获取期权(郑州商品期权/大连商品期权/上海商品期权/中金所期权/上海股票期权)日线
+- QA_fetch_get_globalfuture_day 获取国际期货日线(伦敦金属/伦敦石油/纽约商品/纽约石油/芝加哥谷/东京工业品/纽约期货/新加坡期货/马来期货)
+- QA_fetch_get_hkstock_day 获取香港主板/创业板股票日线
+- QA_fetch_get_hkfund_day  获取香港基金日线
+- QA_fetch_get_hkindex_day 获取香港指数日线
+- QA_fetch_get_usstock_day 获取美股股票日线
+- QA_fetch_get_macroindex_day 获取宏观指数日线
+- QA_fetch_get_exchangerate_day 获取汇率数据(基础汇率/交叉汇率)日线
+
+- QA_fetch_get_option_min 获取期权(郑州商品期权/大连商品期权/上海商品期权/中金所期权/上海股票期权)分钟线
+- QA_fetch_get_globalfuture_min 获取国际期货分钟线(伦敦金属/伦敦石油/纽约商品/纽约石油/芝加哥谷/东京工业品/纽约期货/新加坡期货/马来期货)
+- QA_fetch_get_hkstock_min 获取香港主板/创业板股票分钟线
+- QA_fetch_get_hkfund_min  获取香港基金分钟线
+- QA_fetch_get_hkindex_min 获取香港指数分钟线
+- QA_fetch_get_usstock_min 获取美股股票分钟线
+- QA_fetch_get_macroindex_min 获取宏观指数分钟线
+- QA_fetch_get_exchangerate_min 获取汇率数据(基础汇率/交叉汇率)分钟线
 
 
 ## 1.0.59 

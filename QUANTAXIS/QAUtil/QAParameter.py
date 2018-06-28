@@ -141,7 +141,18 @@ class TRADE_STATUS():
 
 
 class MARKET_ERROR():
-    ACCOUNT_EXIST = 'Account has already exist'
+    """市场类的错误
+
+    1. 账户以及存在(不能重复注册)
+    2. 网络中断
+    3. 数据库连接丢失
+    4. 数值/索引不存在
+    """
+
+    ACCOUNT_EXIST = 'ACCOUNT EXIST {}'
+    NETWORK_BROKERN = 'NETWORK BROKEN {}'
+    DATABSECONNECT_LOST = 'DATABASECONNECTION LOST {}'
+    VALUE_NOT_FOUND = 'VALUE_NOT_FOUND'
 
 
 class MARKET_TYPE():
