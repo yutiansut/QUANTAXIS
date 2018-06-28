@@ -46,7 +46,17 @@
 1. groupy 默认参数中 sort设置为false
 2. 加速指标运算/前后复权 (视股票数量而定,3000多只股票提速20倍)
 3. 回测加速(test_backtest/MACD_JCSC.py) 从14秒提速到2秒
+4. QA_Risk 增加
 
+> max_holdmarketvalue 最大持仓市值,min_holdmarketvalue 最小持仓市值, average_holdmarketvalue 平均持仓市值
+> max_cashhold 最大闲置现金, min_cashhold 最小持仓现金, average_cashhold 平均持仓现金
+
+5. QA_Performance 增加:
+
+> win_rate(methods='FIFO') 胜率
+> average_profit(methods='FIFO') 平均利润
+
+6. 增加QA_Trade模块,QATrade_Realtime类
 
 
 ## 1.0.59 
