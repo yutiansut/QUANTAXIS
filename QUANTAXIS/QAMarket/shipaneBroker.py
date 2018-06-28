@@ -59,12 +59,16 @@ class SPETradeApi(QA_Broker):
                                  'transaction_amount', 'status', 'order_time', 'order_id', 'id', 'code', 'shareholders']
 
     def call(self, func, params=''):
-        response = self._session.get(
-            '{}/api/v1.0/{}'.format(self._endpoint, func), params)
+        try:
+            response = self._session.get(
+                '{}/api/v1.0/{}'.format(self._endpoint, func), params)
 
-        text = response.text
-
-        return json.loads(text)
+            text = response.text
+            
+            return json.loads(text)
+        except:
+            print("ERROR")
+            return None
 
     def call_post(self, func, params={}):
         uri = '{}/api/v1.0/{}?client={}'.format(
@@ -188,6 +192,8 @@ if __name__ == '__main__':
     """
 
     print(a.send_order('account:1391'))
+    print(a.query_orders('account:1391', 'open'))
+    print(a.query_orders('account:1391', 'filled'))
     #print(a.send_order('account:141',price=8.95))
     #a.cancel_all()
 
