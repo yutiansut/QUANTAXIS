@@ -17,15 +17,15 @@ from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT,
                                           BROKER_TYPE, ENGINE_EVENT, FREQUENCE,
                                           MARKET_TYPE, ORDER_DIRECTION,
                                           ORDER_MODEL)
+from QUANTAXIS.QAUtil.QADate_trade import QA_util_if_tradetime
 
 
 class QATrade_Realtime():
-    def __init__(self,market_type,frequence,):
+    def __init__(self, market_type, frequence,):
         self.user = QA_User()
         self.if_settled = False
         self.account = None
         self.portfolio = None
-
 
         self.market = QA_Market()
         self.market_type = market_type
@@ -33,16 +33,16 @@ class QATrade_Realtime():
         self.frequence = frequence
         self.broker = QA_SPEBroker()
         self.broker_name = 'shipane_broker'
-        
-        self.ingest_data= None
+
+        self.ingest_data = None
 
     @property
     def now(self):
         return datetime.datetime.now()
-        
-    def load_account(self,account):
-        pass
 
+    def load_account(self, account):
+        # 通过 broke名字 新建立一个 QAAccount 放在的中 session字典中 session 是 { 'cookie' , QAAccount }
+        self.market.login(self.broker_name, account.account_cookie, account)
 
     def start_market(self):
         """
@@ -55,43 +55,38 @@ class QATrade_Realtime():
         # 注册 backtest_broker ，并且启动和它关联线程QAThread 存放在 kernels 词典中， { 'broker_name': QAThread }
         self.market.register(self.broker_name, self.broker)
 
-        # 通过 broke名字 新建立一个 QAAccount 放在的中 session字典中 session 是 { 'cookie' , QAAccount }
-        self.market.login(self.broker_name,
-                          self.account.account_cookie, self.account)
-
-
     def run(self):
         """generator driven data flow
         """
         # 如果出现了日期的改变 才会进行结算的事件
         _date = None
-        for data in self.ingest_data:  # 对于在ingest_data中的数据
-            #<class 'QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day'>
-            date = data.date[0]
-            if self.market_type is MARKET_TYPE.STOCK_CN:  # 如果是股票市场
-                if _date != date:  # 如果新的date
 
-                    # 前一天的交易日已经过去
-                    # 往 broker 和 account 发送 settle 事件
-                    try:
-                        self.market.trade_engine.join()
-                        #time.sleep(2)
-                        self.market._settle(self.broker_name)
+        while QA_util_if_tradetime(self.now):
+            for data in self.ingest_data:  # 对于在ingest_data中的数据
+                # <class 'QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day'>
+                date = data.date[0]
+                if self.market_type is MARKET_TYPE.STOCK_CN:  # 如果是股票市场
+                    if _date != date:  # 如果新的date
 
-                    except Exception as e:
-                        raise e
-            # 基金 指数 期货
-            elif self.market_type in [MARKET_TYPE.FUND_CN, MARKET_TYPE.INDEX_CN, MARKET_TYPE.FUTURE_CN]:
-                self.market._settle(self.broker_name)
-            # print(data)
-            self.broker.run(
-                QA_Event(event_type=ENGINE_EVENT.UPCOMING_DATA, market_data=data))
-            # 生成 UPCOMING_DATA 事件放到 队列中去执行
+                        # 前一天的交易日已经过去
+                        # 往 broker 和 account 发送 settle 事件
+                        try:
+                            self.market.trade_engine.join()
+                            # time.sleep(2)
+                            self.market._settle(self.broker_name)
 
-            self.market.upcoming_data(self.broker_name, data)
+                        except Exception as e:
+                            raise e
+                # 基金 指数 期货
+                elif self.market_type in [MARKET_TYPE.FUND_CN, MARKET_TYPE.INDEX_CN, MARKET_TYPE.FUTURE_CN]:
+                    self.market._settle(self.broker_name)
+                # print(data)
+                self.broker.run(
+                    QA_Event(event_type=ENGINE_EVENT.UPCOMING_DATA, market_data=data))
+                # 生成 UPCOMING_DATA 事件放到 队列中去执行
 
-            self.market.trade_engine.join()
+                self.market.upcoming_data(self.broker_name, data)
 
-            _date = date
+                self.market.trade_engine.join()
 
-        self.after_success()
+                _date = date
