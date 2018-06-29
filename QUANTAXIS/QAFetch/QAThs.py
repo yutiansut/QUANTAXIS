@@ -98,6 +98,9 @@ def QA_fetch_get_stock_block():
 
     # return pd.DataFrame(data, columns=['blockname',  'code', 'type', 'source']).set_index('code', drop=False)
 
+def QA_fetch_get_stock_highlimit_reason(code):
+    http://basic.10jqka.com.cn/300139/
+
 
 if __name__ == '__main__':
     # print(get_k_data_year('000001','2016','01'))
