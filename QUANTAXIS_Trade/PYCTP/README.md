@@ -6,9 +6,12 @@ CTP接口的python3封装。使用swig直接转换，接口使用和c++的CTP完
 
 1. 按照ctp的动态链接库
 
+
   ```
-  cp ./api/thostmduserapi.so /usr/lib/libthostmduserapi.so
-  cp ./api/thosttraderapi.so /usr/lib/libthosttraderapi.so
+  sudo apt-get install gcc
+  sudo apt-get install g++
+  sudo cp ./api/thostmduserapi.so /usr/lib/libthostmduserapi.so
+  sudo cp ./api/thosttraderapi.so /usr/lib/libthosttraderapi.so
   ```
 
 2. 使用pip安装PyCTP
