@@ -73,7 +73,7 @@ docker pull registry.cn-shanghai.aliyuncs.com/yutiansut/quantaxis
 ```
 
 
-![执行时的命令行](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20171213102629.png)
+![执行时的命令行](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20171213102629.png)
 
 
 ###  2.2. <a name='-1'></a>1.2 运行镜像(2选1)
@@ -104,7 +104,7 @@ cd /home/quantaxis/config && nohup sh ./startjupyter.sh &
 
 ```
 
-![启动命令](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20171213104144.png)
+![启动命令](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20171213104144.png)
 
 
 

@@ -9,6 +9,7 @@
 * [linux 安装](Documents/install_for_ubuntu.md)
 * [mac 安装](Documents/install_for_mac.md)
 * [Docker一键部署](Documents/docker.md)
+* [在jupyter中调试QUANTAXIS](Documents/usejupyter.md)
 * [更新](Documents/update.md)
 
 
@@ -25,6 +26,8 @@
 * [常见策略整理](Documents/strategy.md)
 * [QUANTAXIS的开发列表](job_list.md)
 * [QUANTAXIS财务指标](Documents/financial_means.md)
+* [简单策略回测详解](Documents/QUANTAXIS回测分析全过程讲解.md)
+* [T0交易的账户详解](Documents/TEST_ORDER_BACKTEST_T0.md)
 
 * [FAQ](Documents/FAQ.md)
 * [协议](Documents/readme.md)

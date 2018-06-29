@@ -32,7 +32,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.0.52'
+__version__ = '1.0.60'
 __author__ = 'yutiansut'
 logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
@@ -60,9 +60,17 @@ from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day, QA_fetch_get_trade_date, 
                                QA_fetch_get_stock_indicator, QA_fetch_get_stock_realtime, QA_fetch_get_stock_transaction,
                                QA_fetch_get_index_day, QA_fetch_get_index_min, QA_fetch_get_stock_list, QA_fetch_get_stock_info,
                                QA_fetch_get_stock_block, QA_fetch_get_stock_transaction_realtime, QA_fetch_get_security_bars,
-                               QA_fetch_get_future_day, QA_fetch_get_future_min, QA_fetch_get_future_list,QA_fetch_get_future_transaction,
-                               QA_fetch_get_future_transaction_realtime,QA_fetch_get_future_realtime)
-from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_trade_date, QA_fetch_account,
+                               QA_fetch_get_future_day, QA_fetch_get_future_min, QA_fetch_get_future_list, QA_fetch_get_future_transaction,
+                               QA_fetch_get_future_transaction_realtime, QA_fetch_get_future_realtime,
+                               QA_fetch_get_hkfund_list, QA_fetch_get_hkfund_day, QA_fetch_get_hkfund_min,
+                               QA_fetch_get_hkindex_list, QA_fetch_get_hkindex_day,QA_fetch_get_hkindex_min,
+                               QA_fetch_get_hkstock_list, QA_fetch_get_hkstock_day, QA_fetch_get_hkstock_min,
+                               QA_fetch_get_usstock_list, QA_fetch_get_usstock_day, QA_fetch_get_usstock_min,
+                               QA_fetch_get_option_list, QA_fetch_get_option_day, QA_fetch_get_option_min,
+                               QA_fetch_get_macroindex_list, QA_fetch_get_macroindex_day, QA_fetch_get_macroindex_min,
+                               QA_fetch_get_exchangerate_list, QA_fetch_get_exchangerate_day, QA_fetch_get_exchangerate_min,
+                               QA_fetch_get_globalfuture_list, QA_fetch_get_globalfuture_day, QA_fetch_get_globalfuture_min)
+from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_trade_date, QA_fetch_account, QA_fetch_financial_report,
                                        QA_fetch_stock_day, QA_fetch_stock_min,
                                        QA_fetch_index_day, QA_fetch_index_min,
                                        QA_fetch_future_min, QA_fetch_future_day,
@@ -74,9 +82,9 @@ from QUANTAXIS.QAFetch.QACrawler import QA_fetch_get_sh_margin, QA_fetch_get_sz_
 from QUANTAXIS.QAFetch.QAQuery_Advance import *
 
 # save
-from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_index_min,
+from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_index_min, QA_SU_save_stock_info_tushare,
                                  QA_SU_save_stock_min, QA_SU_save_stock_xdxr, QA_SU_save_stock_info, QA_SU_save_stock_min_5,
-                                 QA_SU_save_stock_block, QA_SU_save_etf_day, QA_SU_save_etf_min)
+                                 QA_SU_save_stock_block, QA_SU_save_etf_day, QA_SU_save_etf_min, QA_SU_save_financialfiles)
 
 from QUANTAXIS.QASU.save_backtest import (
     QA_SU_save_account_message, QA_SU_save_backtest_message, QA_SU_save_account_to_csv)
@@ -112,7 +120,7 @@ from QUANTAXIS.QAData import (QA_data_tick_resample, QA_data_get_hfq, QA_data_ge
                               QA_DataStruct_Future_day, QA_DataStruct_Future_min,
                               QA_DataStruct_Index_day, QA_DataStruct_Index_min, QA_DataStruct_Indicators,
                               QA_DataStruct_Stock_transaction, QA_DataStruct_Stock_block,
-                              from_tushare, dsmethods, QDS_StockMinWarpper, QDS_StockDayWarpper)
+                              from_tushare, QDS_StockMinWarpper, QDS_StockDayWarpper, QDS_IndexDayWarpper, QDS_IndexMinWarpper)
 from QUANTAXIS.QAData.dsmethods import *
 # Analysis
 from QUANTAXIS.QAAnalysis import *

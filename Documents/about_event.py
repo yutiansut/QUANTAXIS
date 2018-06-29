@@ -27,6 +27,7 @@ class job(QA.QA_Worker):
     def run(self, event):
         if event.event_type is 'selfdesign':
             print(vars(event))
+            print( )
             if event.callback:
                 event.callback(event.message)
         else:
@@ -50,14 +51,17 @@ thread.put(task)  # 向thread线程推送任务
 
 engine.run_job(task)  # 向engine推送任务
 
+engine.stop_all()
+
+engine.join()
+
+thread.join()
+thread.stop()
 
 """ 运行结果
-PS C:\quantaxis> & python c:/quantaxis/Documents/QA_ENGINE.py
+PS E:\quantaxis> & python e:/quantaxis/Documents/about_event.py
 QUANTAXIS>> start QUANTAXIS
-QUANTAXIS>> Selecting the Best Server IP of TDX
-QUANTAXIS>> === The BEST SERVER ===
- stock_ip 218.75.126.9 future_ip 61.152.107.141
-QUANTAXIS>> Welcome to QUANTAXIS, the Version is remake-version
+QUANTAXIS>> Welcome to QUANTAXIS, the Version is 1.0.58
 QUANTAXIS>>
  ````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
   ``########`````##````````##``````````##`````````####````````##```##########````````#``````##``````###```##`````######``
@@ -70,21 +74,20 @@ QUANTAXIS>>
   ##````````##```##````````##````#############````##```````##`##```````##`````###########`````##``##``````##`````````##``
   ###```````##```##````````##```##```````````##```##```````##`##```````##````##`````````##```##```##``````##```##`````##`
   `##``````###````##``````###``##`````````````##``##````````####```````##```##``````````##``###````##`````##````##`````##
-  ``#########``````########```##``````````````###`##``````````##```````##``##````````````##`##``````##````##`````##````##
-  ````````#####`````````````````````````````````````````````````````````````````````````````````````````````````````####`
+  ``#########``````########```##``````````````###`##``````````##```````##``##````````````##`##``````##````##`````###``###
+  ````````#####`````````````````````````````````````````````````````````````````````````````````````````````````````##``
   ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
-  ``````````````````````````Copyright``yutiansut``2017``````QUANTITATIVE FINANCIAL FRAMEWORK`````````````````````````````
+  ``````````````````````````Copyright``yutiansut``2018``````QUANTITATIVE FINANCIAL FRAMEWORK`````````````````````````````
   ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
  ````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
  ````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
 
-{'task_id': 'Task_4h5eLdKy', 'result': None}
-QUANTAXIS>> From Engine < QA_Thread backtest >: There are still 1 tasks to do
-{'event_type': 'selfdesign', 'func': None, 'message': 'ssss', 'callback': <built-in function print>}QUANTAXIS>> From Engine <
-QA_Thread QAWorker_A3y >: There are still 1 tasks to do
+{'task_id': 'Task_YWSF2Psa', 'result': None}
+{'event_type': 'selfdesign', 'func': None, 'message': 'ssss', 'callback': <built-in function print>}{'event_type': 'selfdesign', 'func': None, 'message': 'ssss', 'callback': <built-in function print>}
+
+
 ssss
 
-{'event_type': 'selfdesign', 'func': None, 'message': 'ssss', 'callback': <built-in function print>}
 ssss
 
 

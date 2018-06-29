@@ -1,7 +1,7 @@
 # QUANTAXIS的核心数据结构以及方法
 
 
-![datastruct](http://osnhakmay.bkt.clouddn.com/datastruct.png)
+![datastruct](http://pic.yutiansut.com/datastruct.png)
 
 属性用@property装饰器装饰,进行懒运算 提高效率
 <!-- vscode-markdown-toc -->
@@ -58,8 +58,9 @@ QA_DataStruct_Stock_block
 
 - (属性)该类下的所有板块名称 block_name
 - 查询某一只股票所在的所有板块 get_code(code)
-- 查询某一个板块下的所有股票 get_block(block)
+- 查询某一个/多个板块下的所有股票 get_block(blockname)
 - 展示当前类下的所有数据 show
+
 
 
 
@@ -301,7 +302,7 @@ QUANTAXIS>> The Pic has been saved to your path: .\QA_stock_day_000001_bfq.html
 
 ```
 
-![](http://osnhakmay.bkt.clouddn.com/QQ%E6%88%AA%E5%9B%BE20171004125336.png)
+![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20171004125336.png)
 
 ##  14. <a name='-1'></a>统计学部分
 

@@ -42,7 +42,8 @@ from QUANTAXIS.QASU.save_binance import QA_SU_save_binance_symbol, QA_SU_save_bi
                         QA_SU_save_binance_1day, QA_SU_save_binance_1min, QA_SU_save_binance
 
 
-#东方财富爬虫
+
+# 东方财富爬虫
 from QUANTAXIS.QASU.main import (QA_SU_crawl_eastmoney)
 
 from QUANTAXIS import __version__
@@ -67,15 +68,16 @@ class CLI(cmd.Cmd):
         print("syntax: version [message]",)
         print("-- prints a version message")
 
-    #@click.command()
-    #@click.option('--e', default=1, help='Number of greetings.')
+    # @click.command()
+    # @click.option('--e', default=1, help='Number of greetings.')
     def do_examples(self, arg):
         QA_util_log_info('QUANTAXIS example')
         now_path = os.getcwd()
         #project_dir = os.path.dirname(os.path.abspath(__file__))
 
-        data=requests.get('https://codeload.github.com/quantaxis/QADemo/zip/master')
-        with open("{}{}QADEMO.zip".format(now_path,os.sep), "wb") as code:
+        data = requests.get(
+            'https://codeload.github.com/quantaxis/QADemo/zip/master')
+        with open("{}{}QADEMO.zip".format(now_path, os.sep), "wb") as code:
             code.write(data.content)
 
         QA_util_log_info(
@@ -136,20 +138,23 @@ class CLI(cmd.Cmd):
             请访问 https://book.yutiansut.com/\n\
             ")
 
-    def do_crawl(self,arg):
+    def do_crawl(self, arg):
         if arg == '':
             self.print_crawl_usage()
         else:
             arg = arg.split(' ')
             if len(arg) == 3 and arg[0] == 'eastmoney' and arg[1] == 'zjlx' and arg[2] != 'all':
                 print("  准备抓取东方财富资金流向数据 ")
-                QA_SU_crawl_eastmoney(action=arg[1],stockCode=arg[2])
+                QA_SU_crawl_eastmoney(action=arg[1], stockCode=arg[2])
             elif len(arg) == 3 and arg[0] == 'jrj' and arg[1] == 'zjlx' and arg[2] != 'all':
                 print("❌crawl jrj zjlx XXXXXX !没有实现")
             elif len(arg) == 3 and arg[0] == '10jqka' and arg[1] == 'funds' and arg[2] != 'all':
                 print("❌crawl 10jqka funds XXXXXX !没有实现")
             elif len(arg) == 3 and arg[0] == 'eastmoney' and arg[1] == 'zjlx' and arg[2] == 'all':
-                print("❌crawl eastmoney zjlx all !没有实现")
+                #print("❌crawl eastmoney zjlx all !没有实现")
+                print("  准备抓取东方财富资金流向数据 ")
+                QA_SU_crawl_eastmoney(action=arg[1], stockCode=arg[2])
+
             elif len(arg) == 3 and arg[0] == 'jrj' and arg[1] == 'zjlx' and arg[2] == 'all':
                 print("❌crawl jrj zjlx all !没有实现")
             elif len(arg) == 3 and arg[0] == '10jqka' and arg[1] == 'funds' and arg[2] == 'all':
@@ -157,7 +162,6 @@ class CLI(cmd.Cmd):
             else:
                 print("❌crawl 命令格式不正确！")
                 self.print_crawl_usage()
-
 
     def print_save_usage(self):
         print(
@@ -177,6 +181,7 @@ class CLI(cmd.Cmd):
             命令格式：save stock_list : 保存股票列表 \n\
             命令格式：save stock_block: 保存板块 \n\
             命令格式：save stock_info : 保存tushare数据接口获取的股票列表 \n\
+            命令格式：save financialfiles : 保存高级财务数据(自1996年开始) \n\
              ----------------------------------------------------------\n\
             if you just want to save daily data just\n\
                 save all+ save stock_block+save stock_info, it about 1G data \n\
@@ -252,6 +257,7 @@ class CLI(cmd.Cmd):
                 QA_SU_save_binance_symbol()
                 QA_SU_save_binance_1day()
                 QA_SU_save_binance_1hour()
+                QA_SU_save_binance_1day()
                 QA_SU_save_binance_1min()
             elif len(arg) == 2 and arg[0] == "binance":
                 frequency = arg[1]
@@ -303,7 +309,7 @@ class CLI(cmd.Cmd):
         QA_util_log_info("version")
         QA_util_log_info("quit")
         QA_util_log_info("exit")
-        QA_util_log_info('MORE EXAMPLE on https://github.com/yutiansut/QADemo')
+        QA_util_log_info('MORE EXAMPLE on https://github.com/QUANTAXIS/QADemo')
 
     def help(self):
         QA_util_log_info('fn+methods name')

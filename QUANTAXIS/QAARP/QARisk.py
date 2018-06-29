@@ -79,6 +79,7 @@ finally:
     import seaborn as sns
 
 
+
 class QA_Risk():
     """QARISK 是一个风险插件
 
@@ -127,16 +128,28 @@ class QA_Risk():
     @property
     @lru_cache()
     def market_value(self):
-        """每日持仓市值表
+        """每日每个股票持仓市值表
 
         Returns:
             pd.DataFrame -- 市值表
         """
 
         if self.if_fq:
-            return self.market_data.to_qfq().pivot('close') * self.account.daily_hold
+            return self.market_data.to_qfq().pivot('close').fillna(method='ffill') * self.account.daily_hold
         else:
-            self.market_data.pivot('close') * self.account.daily_hold
+            self.market_data.pivot('close').fillna(
+                method='ffill') * self.account.daily_hold
+
+    @property
+    @lru_cache()
+    def daily_market_value(self):
+        """每日持仓总市值表
+
+        Returns:
+            pd.DataFrame -- 市值表
+        """
+
+        return self.market_value.sum(axis=1)
 
     @property
     def assets(self):
@@ -244,11 +257,11 @@ class QA_Risk():
             'init_cash': "%0.2f" % (float(self.init_cash)),
             'last_assets': "%0.2f" % (float(self.assets.iloc[-1])),
             'total_tax': self.total_tax,
-            'total_commission':self.total_commission,
-            'profit_money':self.profit_money
+            'total_commission': self.total_commission,
+            'profit_money': self.profit_money
 
-            #'init_assets': round(float(self.init_assets), 2),
-            #'last_assets': round(float(self.assets.iloc[-1]), 2)
+            # 'init_assets': round(float(self.init_assets), 2),
+            # 'last_assets': round(float(self.assets.iloc[-1]), 2)
         }
 
     @property
@@ -366,6 +379,62 @@ class QA_Risk():
             return 0
         return (annualized_returns - r) / volatility_year
 
+    @property
+    def max_holdmarketvalue(self):
+        """最大持仓市值
+
+        Returns:
+            [type] -- [description]
+        """
+        
+        return self.daily_market_value.max()
+
+
+    @property
+    def min_holdmarketvalue(self):
+        """最小持仓市值
+
+        Returns:
+            [type] -- [description]
+        """
+        
+        return self.daily_market_value.min()
+
+    @property
+    def average_holdmarketvalue(self):
+        """平均持仓市值
+
+        Returns:
+            [type] -- [description]
+        """
+        
+        return self.daily_market_value.mean()
+
+    @property
+    def max_cashhold(self):
+        """最大闲置资金
+        """
+
+        return self.account.daily_cash.cash.max()
+
+    @property
+    def min_cashhold(self):
+        """最小闲置资金
+        """
+
+        return self.account.daily_cash.cash.min()
+
+
+    @property
+    def average_cashhold(self):
+        """平均闲置资金
+
+        Returns:
+            [type] -- [description]
+        """
+        
+        return self.account.daily_cash.cash.mean()
+
     def save(self):
         """save to mongodb
 
@@ -474,6 +543,9 @@ class QA_Performance():
         self._style_title = ['beta', 'momentum', 'size', 'earning_yield',
                              'volatility', 'growth', 'value', 'leverage', 'liquidity', 'reversal']
 
+    def __repr__(self):
+        return 'QA_PERFORMANCE ANYLYSIS PLUGIN'
+
     @property
     def prefer(self):
         pass
@@ -551,23 +623,24 @@ class QA_Performance():
         pair_title = ['code', 'sell_date', 'buy_date',
                       'amount', 'sell_price', 'buy_price']
         pnl = pd.DataFrame(pair_table, columns=pair_title).set_index('code')
+
         pnl = pnl.assign(pnl_ratio=(pnl.sell_price/pnl.buy_price) -
-                         1)
-        pnl = pnl.assign(pnl_money=pnl.pnl_ratio*pnl.amount)
+                         1).assign(buy_date=pd.to_datetime(pnl.buy_date)).assign(sell_date=pd.to_datetime(pnl.sell_date))
+        pnl = pnl.assign(pnl_money=(pnl.sell_price-pnl.buy_price)*pnl.amount)
         return pnl
 
     def plot_pnlratio(self, pnl):
         """
         画出pnl比率散点图
         """
-        plt.scatter(x=pnl.sell_date, y=pnl.pnl_ratio)
+        plt.scatter(x=pnl.sell_date.apply(str), y=pnl.pnl_ratio)
         plt.show()
 
     def plot_pnlmoney(self, pnl):
         """
         画出pnl盈亏额散点图
         """
-        plt.scatter(x=pnl.sell_date, y=pnl.pnl_money)
+        plt.scatter(x=pnl.sell_date.apply(str), y=pnl.pnl_money)
         plt.show()
 
     def abnormal_active(self):
@@ -585,6 +658,19 @@ class QA_Performance():
         """持仓分析
         """
         pass
+
+    def win_rate(self, methods='FIFO'):
+        """胜率
+
+        胜率
+        盈利次数/总次数
+        """
+        data = self.pnl_lifo if methods in ['LIFO', 'lifo'] else self.pnl_fifo
+        return round(len(data.query('pnl_money>0'))/len(data), 2)
+
+    def average_profit(self, methods='FIFO'):
+        data = self.pnl_lifo if methods in ['LIFO', 'lifo'] else self.pnl_fifo
+        return (data.pnl_money.mean())
 
     @property
     def accumulate_return(self):

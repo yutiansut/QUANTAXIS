@@ -1,34 +1,29 @@
 # QUANTAXIS 的安装 Ubuntu篇
-<!-- vscode-markdown-toc -->
-* 1. [一键部署](#)
-* 2. [手动部署](#-1)
-* 3. [换源](#-1)
-* 4. [安装python](#python)
-* 5. [安装git](#git)
-* 6. [下载安装quantaxis](#quantaxis)
-* 7. [安装mongo](#mongo)
-* 8. [安装nodejs](#nodejs)
-* 9. [安装QUANTAXIS_WEBKIT](#QUANTAXIS_WEBKIT)
+<!-- TOC -->
 
-<!-- vscode-markdown-toc-config
-	numbering=true
-	autoSave=true
-	/vscode-markdown-toc-config -->
-<!-- /vscode-markdown-toc -->
+- [QUANTAXIS 的安装 Ubuntu篇](#quantaxis-的安装-ubuntu篇)
+    - [1. 一键部署](#1-一键部署)
+    - [2. 手动部署](#2-手动部署)
+    - [3. 换源](#3-换源)
+    - [4. 安装python](#4-安装python)
+    - [5. 安装git](#5-安装git)
+    - [6. 下载安装quantaxis](#6-下载安装quantaxis)
+    - [7. 安装mongo](#7-安装mongo)
 
-##  1. <a name=''></a>一键部署
+<!-- /TOC -->
+##  1. 一键部署
 
 ```
-wget https://raw.githubusercontent.com/yutiansut/QUANTAXIS/master/config/ubuntu16.sh
+wget https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/config/ubuntu16.sh
 sudo bash ./ubuntu16.sh
 ```
 
 在脚本运行中,遇到输入的时候 一律选```yes```或者 ```y```
 
 
-##  2. <a name='-1'></a>手动部署
+##  2. 手动部署
 
-##  3. <a name='-1'></a>换源
+##  3. 换源
 ```
 echo "deb-src http://archive.ubuntu.com/ubuntu xenial main restricted #Added by software-properties
 deb http://mirrors.aliyun.com/ubuntu/ xenial main restricted
@@ -51,7 +46,7 @@ deb http://mirrors.aliyun.com/ubuntu/ xenial-security multiverse " | tee /etc/ap
 
 apt-get update
 ```
-##  4. <a name='python'></a>安装python
+##  4. 安装python
 ```
 apt install software-properties-common
 
@@ -64,13 +59,13 @@ wget https://bootstrap.pypa.io/get-pip.py
 python3.6 get-pip.py
 ```
 
-##  5. <a name='git'></a>安装git
+##  5. 安装git
 
 ```
 apt-get install git
 ```
 
-##  6. <a name='quantaxis'></a>下载安装quantaxis
+##  6. 下载安装quantaxis
 
 ```
 cd ~
@@ -84,7 +79,7 @@ python3.6 -m pip install -e .
 ```
 
 
-##  7. <a name='mongo'></a>安装mongo
+##  7. 安装mongo
 ```
 apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
 # Ubuntu 16.04
@@ -94,28 +89,5 @@ echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongod
 apt-get update
 # 安装MongoDB
 apt-get install -y mongodb-org --allow-unauthenticated
-
-```
-
-##  8. <a name='nodejs'></a>安装nodejs
-
-```
-curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-apt-get install -y nodejs
-apt-get install npm
-npm install npm -g #更新npm
-npm install forever -g #安装一个全局的forever 用于之后启动
-npm install cnpm -g
-```
-
-##  9. <a name='QUANTAXIS_WEBKIT'></a>安装QUANTAXIS_WEBKIT
-
-```
-cd ~/quantaxis/QUANTAXIS_Webkit/backend
-npm install
-
-
-cd ~/quantaxis/QUANTAXIS_Webkit/web
-npm install
 
 ```

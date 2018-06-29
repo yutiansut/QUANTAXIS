@@ -49,7 +49,6 @@ from QUANTAXIS.QAData.data_fq import QA_data_stock_to_fq
 from QUANTAXIS.QAData.data_resample import QA_data_tick_resample
 from QUANTAXIS.QAData.proto import stock_day_pb2  # protobuf import
 from QUANTAXIS.QAData.proto import stock_min_pb2
-from QUANTAXIS.QAFetch.QATdx import QA_fetch_get_stock_realtime
 from QUANTAXIS.QAIndicator import EMA, HHV, LLV, SMA
 from QUANTAXIS.QAUtil import (DATABASE, QA_util_log_info,
                               QA_util_random_with_topic,
@@ -64,6 +63,7 @@ class QA_DataStruct_Stock_day(_quotation_base):
 
         股票日线数据
     '''
+
     def __init__(self, init_data_by_df, dtype='stock_day', if_fq='bfq'):
         '''
         # 🛠 todo dtype=stock_day 和 QA_DataStruct_Stock_day 类的名字是对应的 不变的不需要指定 ，容易出错，建议改成常量 ❌
@@ -76,23 +76,8 @@ class QA_DataStruct_Stock_day(_quotation_base):
         if isinstance(init_data_by_df, pd.DataFrame) == False:
             print("💢Error init_data_by_df is not kind of DataFrame type !")
 
+    # 抽象类继承
 
-        #根据 根据前一天收盘价 补齐 当天最高最低价
-        if 'high_limit' not in self.data.columns:
-            self.data['high_limit'] = round(
-                (self.data.close.shift(1) + 0.0002) * 1.1, 2)
-        if 'low_limit' not in self.data.columns:
-            self.data['low_limit'] = round(
-                (self.data.close.shift(1) + 0.0002) * 0.9, 2)
-        #根据 根据今天收盘价 补齐 明天最高最低价
-        if 'next_day_high_limit' not in self.data.columns:
-            self.data['next_day_high_limit'] = round(
-                (self.data.close + 0.0002) * 1.1, 2)
-        if 'next_day_low_limit' not in self.data.columns:
-            self.data['next_day_low_limit'] = round(
-                (self.data.close + 0.0002) * 0.9, 2)
-
-    #抽象类继承
     def choose_db(self):
         self.mongo_coll = DATABASE.stock_day
 
@@ -100,56 +85,62 @@ class QA_DataStruct_Stock_day(_quotation_base):
         return '< QA_DataStruct_Stock_day with {} securities >'.format(len(self.code))
     __str__ = __repr__
 
-    #前复权
+    # 前复权
     def to_qfq(self):
         if self.if_fq is 'bfq':
             if len(self.code) < 1:
                 self.if_fq = 'qfq'
                 return self
-            elif len(self.code) < 20:
-                return self.new(pd.concat(list(map(
-                    lambda x: QA_data_stock_to_fq(self.data[self.data['code'] == x]), self.code))), self.type, 'qfq')
+            # elif len(self.code) < 20:
+            #     return self.new(pd.concat(list(map(
+            #         lambda x: QA_data_stock_to_fq(self.data[self.data['code'] == x]), self.code))), self.type, 'qfq')
             else:
                 return self.new(
-                    self.data.groupby('code').apply(QA_data_stock_to_fq), self.type, 'qfq')
+                    self.groupby(level=1).apply(QA_data_stock_to_fq), self.type, 'qfq')
         else:
             QA_util_log_info(
                 'none support type for qfq Current type is: %s' % self.if_fq)
             return self
 
-    #后复权
+    # 后复权
     def to_hfq(self):
         if self.if_fq is 'bfq':
             if len(self.code) < 1:
                 self.if_fq = 'hfq'
                 return self
             else:
-                return self.new(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
-                    self.data[self.data['code'] == x], 'hfq'), self.code))), self.type, 'hfq')
+                return self.new(
+                    self.groupby(level=1).apply(QA_data_stock_to_fq), self.type, 'hfq')
+                # return self.new(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
+                #     self.data[self.data['code'] == x], 'hfq'), self.code))), self.type, 'hfq')
         else:
             QA_util_log_info(
                 'none support type for qfq Current type is: %s' % self.if_fq)
             return self
 
     @property
+    @lru_cache()
     def high_limit(self):
         '涨停价'
-        return self.data.high_limit
+        return self.groupby(level=1).close.apply(lambda x: round((x.shift(1) + 0.0002)*1.1, 2))
 
     @property
+    @lru_cache()
     def low_limit(self):
         '跌停价'
-        return self.data.low_limit
+        return self.groupby(level=1).close.apply(lambda x: round((x.shift(1) + 0.0002)*0.9, 2))
 
     @property
+    @lru_cache()
     def next_day_low_limit(self):
         "明日跌停价"
-        return self.data.next_day_low_limit
+        return round((self.data.close + 0.0002) * 1.1, 2)
 
     @property
+    @lru_cache()
     def next_day_high_limit(self):
         "明日涨停价"
-        return self.data.next_day_high_limit
+        return round((self.data.close + 0.0002) * 0.9, 2)
 
     @property
     def preclose(self):
@@ -189,10 +180,9 @@ class QA_DataStruct_Stock_min(_quotation_base):
         self.type = dtype
         self.if_fq = if_fq
 
-    #抽象类继承
+    # 抽象类继承
     def choose_db(self):
         self.mongo_coll = DATABASE.stock_min
-
 
     def __repr__(self):
         return '< QA_DataStruct_Stock_Min with {} securities >'.format(len(self.code))
@@ -203,15 +193,15 @@ class QA_DataStruct_Stock_min(_quotation_base):
             if len(self.code) < 1:
                 self.if_fq = 'qfq'
                 return self
-            elif len(self.code) < 20:
-                data = QA_DataStruct_Stock_min(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
-                    self.data[self.data['code'] == x]), self.code))).set_index(['datetime', 'code'], drop=False))
-                data.if_fq = 'qfq'
-                return data
+            # elif len(self.code) < 20:
+            #     data = QA_DataStruct_Stock_min(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
+            #         self.data[self.data['code'] == x]), self.code))).set_index(['datetime', 'code'], drop=False))
+            #     data.if_fq = 'qfq'
+            #     return data
             else:
-                data = QA_DataStruct_Stock_min(
-                    self.data.groupby('code').apply(QA_data_stock_to_fq))
-                return data
+                return self.new(
+                    self.groupby(level=1).apply(QA_data_stock_to_fq), self.type, 'qfq')
+
         else:
             QA_util_log_info(
                 'none support type for qfq Current type is:%s' % self.if_fq)
@@ -223,10 +213,12 @@ class QA_DataStruct_Stock_min(_quotation_base):
                 self.if_fq = 'hfq'
                 return self
             else:
-                data = QA_DataStruct_Stock_min(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
-                    self.data[self.data['code'] == x], 'hfq'), self.code))).set_index(['datetime', 'code'], drop=False))
-                data.if_fq = 'hfq'
-                return data
+                return self.new(
+                    self.groupby(level=1).apply(QA_data_stock_to_fq), self.type, 'hfq')
+                # data = QA_DataStruct_Stock_min(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
+                #     self.data[self.data['code'] == x], 'hfq'), self.code))).set_index(['datetime', 'code'], drop=False))
+                # data.if_fq = 'hfq'
+                # return data
         else:
             QA_util_log_info(
                 'none support type for qfq Current type is:%s' % self.if_fq)
@@ -249,10 +241,9 @@ class QA_DataStruct_Future_day(_quotation_base):
         self.data = DataFrame.ix[:, [
             'code', 'open', 'high', 'low', 'close', 'trade', 'position', 'datetime', 'date']]
 
-    #抽象类继承
+    # 抽象类继承
     def choose_db(self):
         self.mongo_coll = DATABASE.future_day
-
 
     def __repr__(self):
         return '< QA_DataStruct_Future_day with {} securities >'.format(len(self.code))
@@ -263,7 +254,6 @@ class QA_DataStruct_Future_min(_quotation_base):
     """
     struct for future
     """
-
 
     def __init__(self, DataFrame, dtype='future_min', if_fq=''):
         # 🛠todo  期货分钟数据线的维护， 暂时用日线代替分钟线
@@ -287,7 +277,7 @@ class QA_DataStruct_Index_day(_quotation_base):
         self.data = DataFrame
         self.type = dtype
         self.if_fq = if_fq
-        #self.mongo_coll = eval(
+        # self.mongo_coll = eval(
         #    'DATABASE.{}'.format(self.type))
     """
     def __add__(self,DataStruct):
@@ -324,115 +314,6 @@ class QA_DataStruct_Index_min(_quotation_base):
         return '< QA_DataStruct_Index_Min with %s securities >' % len(self.code)
 
     __str__ = __repr__
-
-
-class QA_DataStruct_Stock_block():
-    def __init__(self, DataFrame):
-        self.data = DataFrame
-
-    def __repr__(self):
-        return '< QA_DataStruct_Stock_Block >'
-
-    def __call__(self):
-        return self.data
-
-    @property
-    def len(self):
-        """返回DataStruct的长度
-
-        Returns:
-            [type] -- [description]
-        """
-
-        return len(self.data)
-
-    @property
-    def block_name(self):
-        """返回所有的板块名
-
-        Returns:
-            [type] -- [description]
-        """
-
-        return self.data.groupby('blockname').sum().index.unique().tolist()
-
-    @property
-    def code(self):
-        """返回唯一的证券代码
-
-        Returns:
-            [type] -- [description]
-        """
-
-        return self.data.code.unique().tolist()
-
-    def show(self):
-        """展示DataStruct
-
-        Returns:
-            dataframe -- [description]
-        """
-
-        return self.data
-
-    def get_code(self, code):
-        """getcode 获取某一只股票的板块
-
-        Arguments:
-            code {str} -- 股票代码
-
-        Returns:
-            DataStruct -- [description]
-        """
-
-        return QA_DataStruct_Stock_block(self.data[self.data['code'] == code])
-
-    def get_block(self, _block_name):
-        """getblock 获取板块
-
-        Arguments:
-            _block_name {[type]} -- [description]
-
-        Returns:
-            [type] -- [description]
-        """
-
-        return QA_DataStruct_Stock_block(self.data[self.data['blockname'] == _block_name])
-
-    def getdtype(self, dtype):
-        """getdtype
-
-        Arguments:
-            dtype {str} -- gn-概念/dy-地域/fg-风格/zs-指数
-
-        Returns:
-            [type] -- [description]
-        """
-
-        return QA_DataStruct_Stock_block(self.data[self.data['type'] == dtype])
-
-    def get_price(self, _block_name=None):
-        """get_price
-
-        Keyword Arguments:
-            _block_name {[type]} -- [description] (default: {None})
-
-        Returns:
-            [type] -- [description]
-        """
-
-        if _block_name is not None:
-            try:
-                code = self.data[self.data['blockname']
-                                 == _block_name].code.unique().tolist()
-                # try to get a datastruct package of lastest price
-                return QA_fetch_get_stock_realtime(code)
-
-            except:
-                return "Wrong Block Name! Please Check"
-        else:
-            code = self.data.code.unique().tolist()
-            return QA_fetch_get_stock_realtime(code)
 
 
 class QA_DataStruct_Stock_transaction():
