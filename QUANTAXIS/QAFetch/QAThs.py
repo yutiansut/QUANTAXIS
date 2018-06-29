@@ -99,7 +99,8 @@ def QA_fetch_get_stock_block():
     # return pd.DataFrame(data, columns=['blockname',  'code', 'type', 'source']).set_index('code', drop=False)
 
 def QA_fetch_get_stock_highlimit_reason(code):
-    http://basic.10jqka.com.cn/300139/
+    #http://basic.10jqka.com.cn/300139/
+    pass
 
 
 if __name__ == '__main__':
