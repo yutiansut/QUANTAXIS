@@ -39,7 +39,7 @@ def sell_close(instrument):
     if market_data :
         trader.ReqOrderInsert(
                     instrument, DirectionType.SELL, ActionType.CLOSE,
-                    1, market_data['BidPrice'])
+                    1, market_data['BidPrice'],True)
 
 
 
