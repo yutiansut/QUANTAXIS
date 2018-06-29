@@ -1,3 +1,4 @@
+
 # QUANTAXIS 量化金融策略框架
 
 
@@ -11,15 +12,16 @@
 
 [点击右上角Star和Watch来跟踪项目进展! 点击Fork来创建属于你的QUANTAXIS!]
 
-![post201802](http://osnhakmay.bkt.clouddn.com/quantaxis-post201802.png)
-![main_1](http://osnhakmay.bkt.clouddn.com/Main_1.gif)
-![logo](http://osnhakmay.bkt.clouddn.com/QUANTAXIS-small.png)
-![presentbyyutiansut](http://osnhakmay.bkt.clouddn.com/yutiansut-logo.png)
+![post201802](http://pic.yutiansut.com/quantaxis-post201802.png)
+![main_1](http://pic.yutiansut.com/Main_1.gif)
+![logo](http://pic.yutiansut.com/QUANTAXIS-small.png)
+![presentbyyutiansut](http://pic.yutiansut.com/yutiansut-logo.png)
 
 
 ![version](https://img.shields.io/pypi/v/quantaxis.svg)
 ![build](https://travis-ci.org/QUANTAXIS/QUANTAXIS.svg?branch=master)
 [![Codefresh build status]( https://g.codefresh.io/api/badges/build?repoOwner=yutiansut&repoName=QUANTAXIS&branch=master&pipelineName=QUANTAXIS&accountName=yutiansut_marketplace&type=cf-1)]( https://g.codefresh.io/repositories/yutiansut/QUANTAXIS/builds?filter=trigger:build;branch:master;service:5a30c1026e9d6c0001c5143b~QUANTAXIS)
+[![BCH compliance](https://bettercodehub.com/edge/badge/QUANTAXIS/QUANTAXIS?branch=master)](https://bettercodehub.com/)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d8504e4af33747bb8117579212425af9)](https://www.codacy.com/app/yutiansut/QUANTAXIS?utm_source=github.com&utm_medium=referral&utm_content=yutiansut/QUANTAXIS&utm_campaign=badger)
 [![Stories in Ready](https://badge.waffle.io/yutiansut/QUANTAXIS.svg?label=ready&title=Ready)](http://waffle.io/yutiansut/QUANTAXIS)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
@@ -35,31 +37,31 @@
 
 > 欢迎加群讨论: 563280067 [群链接](https://jq.qq.com/?_wv=1027&k=4CEKGzn) 
 
-> 欢迎关注公众号: ![公众号](http://osnhakmay.bkt.clouddn.com/qrcode_for_gh_bbb47e0550f7_258%20%281%29.jpg)
+> 欢迎关注公众号: ![公众号](http://pic.yutiansut.com/qrcode_for_gh_bbb47e0550f7_258%20%281%29.jpg)
 
 > 许多问题 可以在 [GITHUB ISSUE](https://github.com/QUANTAXIS/QUANTAXIS/issues)中找到, 你可以提出新的issue
 
 QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化分析解决方案. 我们通过高度解耦的模块化以及标准化协议,可以快速的实现面向场景的定制化解决方案.QUANTAXIS是一个渐进式的开放式框架,你可以根据自己的需要,引入自己的数据,分析方案,可视化过程等,也可以通过RESTful接口,快速实现多人局域网/广域网内的协作.
 
-<!-- vscode-markdown-toc -->
-* 1. [功能](#)
-* 2. [文档](#-1)
-* 3. [安装和部署](#-1)
-* 4. [更新](#-1)
-* 5. [Docker](#Docker)
-* 6. [使用说明](#-1)
-* 7. [Jupyter示例](#Jupyter)
-* 8. [开发计划](#-1)
-* 9. [常见问题FAQ](#FAQ)
-* 10. [项目捐赠](#-1)
-* 11. [回测Webkit插件概览](#Webkit)
-* 12. [QUANTAXIS 标准化协议和未来协议](#QUANTAXIS)
+<!-- TOC -->
 
-<!-- vscode-markdown-toc-config
-	numbering=true
-	autoSave=true
-	/vscode-markdown-toc-config -->
-<!-- /vscode-markdown-toc -->
+- [QUANTAXIS 量化金融策略框架](#quantaxis-量化金融策略框架)
+    - [电脑配置推荐](#电脑配置推荐)
+    - [1. 功能](#1-功能)
+    - [2. 文档](#2-文档)
+    - [3. 安装和部署](#3-安装和部署)
+    - [4. 更新](#4-更新)
+    - [5. Docker](#5-docker)
+    - [6. 使用说明](#6-使用说明)
+    - [7. Jupyter示例](#7-jupyter示例)
+    - [8. 开发计划](#8-开发计划)
+    - [9. 常见问题FAQ](#9-常见问题faq)
+    - [10. 项目捐赠](#10-项目捐赠)
+    - [11. 回测Webkit插件概览](#11-回测webkit插件概览)
+    - [12. QUANTAXIS 标准化协议和未来协议](#12-quantaxis-标准化协议和未来协议)
+    - [License](#license)
+
+<!-- /TOC -->
 
 ## 电脑配置推荐
 
@@ -76,10 +78,10 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 如果是阿里云/腾讯云的服务器,请在最初的时候 选择64位的操作系统
 
 
-##  1. <a name=''></a>功能
+##  1. 功能
 ======
 
-![](http://osnhakmay.bkt.clouddn.com/framework.png)
+![](http://pic.yutiansut.com/framework.png)
 
 已经实现：
 
@@ -103,21 +105,32 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - [x] 指标类(1.0.42新增)
 - [x] 成交记录分析器
 - [x] T0交易(股票日内做T)回测分析框架(1.0.46)
+- [x] 1996至今的每一季度的财务数据(1.0.52)
+- [x] 文档更新
+- [x] 数据库权限管理
+- [x] 期货数据(郑州/大连/上海/上期/中金)
+- [x] 现货数据(渤海商品期货/齐鲁商品期货/上海T+D黄金(伦敦金交割))
+- [x] 期权数据(郑州商品期权/大连商品期权/上海商品期权/中金所期权/上海股票期权)
+- [x] 港股数据(港股主板/港股创业板/港股指数/港股基金)
+- [x] 美股数据
+- [x] 国际期货数据(伦敦金属/伦敦石油/纽约商品/纽约石油/芝加哥谷/东京工业品/纽约期货/新加坡期货/马来期货)
+- [x] 宏观指标
+- [x] 汇率数据(基础汇率/交叉汇率)
+- [x] python3 CTP接口 [WINDOWS/LINUX]
 
 预计实现:
 
-- [ ] 文档更新
 - [ ] 期货回测
 - [ ] 实盘
 - [ ] 分析模块(行情分析/板块分析)
 - [ ] 多数据库支持
-- [ ] 权限管理
+
 
 
 - [QUANTAXIS 2018开发计划表](job_list.md)
 
 
-##  2. <a name='-1'></a>文档
+##  2. 文档
 
 文档参见: [book](http://book.yutiansut.com)
 
@@ -125,7 +138,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 [PDF](https://www.gitbook.com/download/pdf/book/quantaxis/quantaxis) | [MOBI](https://www.gitbook.com/download/mobi/book/quantaxis/quantaxis) | [EPUB](https://www.gitbook.com/download/epub/book/quantaxis/quantaxis)
 
-##  3. <a name='-1'></a>安装和部署
+##  3. 安装和部署
 
 直接上手~
 
@@ -148,12 +161,12 @@ git clone https://github.com/你的账户名/quantaxis
 
 参见 [安装说明](Documents/install.md)
 
-##  4. <a name='-1'></a>更新
+##  4. 更新
 参见 [更新说明](Documents/update.md)
 
-##  5. <a name='Docker'></a>Docker
+##  5. Docker
 参见 [Docker](Documents/docker.md)
-##  6. <a name='-1'></a>使用说明
+##  6. 使用说明
 参见 
 
 
@@ -167,21 +180,21 @@ git clone https://github.com/你的账户名/quantaxis
 * [QUANTAXIS回测分析](Documents/backtestanalysis.md)
 * [常见策略整理](Documents/strategy.md)
 
-##  7. <a name='Jupyter'></a>Jupyter示例
+##  7. Jupyter示例
 参见 [Jupyter示例](jupyterexample)
 
 
-##  8. <a name='-1'></a>开发计划
+##  8. 开发计划
 参见 [开发计划](job_list.md)
-##  9. <a name='FAQ'></a>常见问题FAQ
+##  9. 常见问题FAQ
 参见 [FAQ](Documents/FAQ.md)
 
-##  10. <a name='-1'></a>项目捐赠
+##  10. 项目捐赠
 
 写代码不易...请作者喝杯咖啡呗?
 
 
-![](http://osnhakmay.bkt.clouddn.com/alipay.png)
+![](http://pic.yutiansut.com/alipay.png)
 
 (PS: 支付的时候 请带上你的名字/昵称呀 会维护一个赞助列表~ )
 
@@ -189,20 +202,20 @@ git clone https://github.com/你的账户名/quantaxis
 
 
 
-##  11. <a name='Webkit'></a>回测Webkit插件概览
+##  11. 回测Webkit插件概览
 
-![](http://osnhakmay.bkt.clouddn.com/homepage.png)
-![](http://osnhakmay.bkt.clouddn.com/loginpage.png)
-![](http://osnhakmay.bkt.clouddn.com/adminpage.png)
-![](http://osnhakmay.bkt.clouddn.com/backtestpage.png)
-![](http://osnhakmay.bkt.clouddn.com/rebacktest.png)
-![](http://osnhakmay.bkt.clouddn.com/backtestpic.png)
-![](http://osnhakmay.bkt.clouddn.com/strategy.png)
-![](http://osnhakmay.bkt.clouddn.com/kline.png)
-![](http://osnhakmay.bkt.clouddn.com/settings.png)
+![](http://pic.yutiansut.com/homepage.png)
+![](http://pic.yutiansut.com/loginpage.png)
+![](http://pic.yutiansut.com/adminpage.png)
+![](http://pic.yutiansut.com/backtestpage.png)
+![](http://pic.yutiansut.com/rebacktest.png)
+![](http://pic.yutiansut.com/backtestpic.png)
+![](http://pic.yutiansut.com/strategy.png)
+![](http://pic.yutiansut.com/kline.png)
+![](http://pic.yutiansut.com/settings.png)
 
 
-##  12. <a name='QUANTAXIS'></a>QUANTAXIS 标准化协议和未来协议
+##  12. QUANTAXIS 标准化协议和未来协议
 
 
 QUANTAXIS-Stardand-Protocol 版本号0.0.8

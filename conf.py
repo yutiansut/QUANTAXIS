@@ -15,6 +15,7 @@
 import sphinx_rtd_theme
 import os
 import sys
+import QUANTAXIS as QA
 # sys.path.insert(0, os.path.abspath('.'))
 
 
@@ -25,9 +26,9 @@ copyright = '2018, yutiansut'
 author = 'yutiansut'
 
 # The short X.Y version
-version = '1.0.39'
+version = QA.__version__
 # The full version, including alpha/beta/rc tags
-release = '1.0.39'
+release = QA.__version__
 
 
 # -- General configuration ---------------------------------------------------
