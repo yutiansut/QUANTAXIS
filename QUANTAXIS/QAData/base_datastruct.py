@@ -862,7 +862,7 @@ class _quotation_base():
             def gte(data):
                 return data.loc[(slice(pd.Timestamp(time), None), slice(None)), :].groupby(level=1,axis=0,as_index=False,sort=False,group_keys=False).apply(lambda x: x.iloc[0:gap])
             return self.new(gte(self.data), self.type, self.if_fq)
-        elif method in ['lt', '<=']:
+        elif method in ['lt', '<']:
             def lt(data):
                 return data.loc[(slice(None, pd.Timestamp(time)), slice(None)), :].groupby(level=1,axis=0,as_index=False,sort=False,group_keys=False).apply(lambda x: x.iloc[-gap-1:-1])
             return self.new(lt(self.data), self.type, self.if_fq)

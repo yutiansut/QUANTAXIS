@@ -8,11 +8,11 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
-account=input('account')
-password=input('password')
+account=bytes(input('account'),encoding='UTF-8')
+password=bytes(input('password'),encoding='UTF-8')
 
 
-trader=CTPTraderSpi(b'./co',b'tcp://180.168.146.187:10000',b'9999',b'{}'.format(account),b'{}'.format(password))
+trader=CTPTraderSpi(b'./co',b'tcp://180.168.146.187:10000',b'9999',account,password)
 trader.Connect()
 trader.ReqUserLogin()
 def buy_open(instrument):
@@ -39,7 +39,7 @@ def sell_close(instrument):
     if market_data :
         trader.ReqOrderInsert(
                     instrument, DirectionType.SELL, ActionType.CLOSE,
-                    1, market_data['BidPrice'])
+                    1, market_data['BidPrice'],True)
 
 
 
@@ -57,10 +57,9 @@ def query_order():
 
 if __name__=="__main__":
     for i in range(1000):
-        
-        buy_open('IF1711')
+        buy_open('rb1810')
         time.sleep(1)
-        sell_close('IF1711')
+        sell_close('rb1810')
         time.sleep(1)
     time.sleep(100)
     print(query_order())
