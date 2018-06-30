@@ -1,7 +1,7 @@
 import typing
 from datetime import datetime
 
-import DataStruct
+from DataStruct import DataStruct
 
 
 class EventType:
