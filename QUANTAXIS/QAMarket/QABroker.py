@@ -34,7 +34,7 @@ from abc import abstractmethod
 
 from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Worker
 from QUANTAXIS.QAUtil.QAParameter import EVENT_TYPE, FREQUENCE, ORDER_MODEL
-
+from QUANTAXIS.QAMarket.QAOrder import QA_Order
 
 class QA_Broker(QA_Worker):
     """MARKET ENGINGE ABSTRACT
@@ -58,6 +58,38 @@ class QA_Broker(QA_Worker):
         :return:
         '''
         raise NotImplementedError
+
+    def standard_back(self, order):
+
+        message = {
+            'header': {
+                'source': 'market',
+                'status': None,
+                'code': order.code,
+                'session': {
+                    'user':order.get('user_cookie', None),
+                    'strategy': order.get('strategy_cookie', None),
+                    'account':  order.get('account_cookie', None)
+                },
+                'order_id':  order.get('order_id', None),
+                'trade_id': order.get('trade_id', None)
+            },
+            'body': {
+                'order': {
+                    'price': order.price,
+                    'code': order.code,
+                    'amount': order.amount,
+                    'date': str(datetime.date.today()),
+                    'datetime': str(datetime.datetime.now()),
+                    'towards': order.towards,
+                },
+                'fee': {
+                    'commission': order.get('commission', None),
+                    'tax': order.get('tax', None)
+                }
+            }
+        }
+        return message
 
     def get_market(self, order):
         pass

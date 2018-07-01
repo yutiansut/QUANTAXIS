@@ -133,6 +133,11 @@ class QA_Order():
         return '< QA_Order datetime:{} code:{} amount:{} price:{} towards:{} btype:{} order_id:{} account:{} status:{} >'.format(
             self.datetime, self.code, self.amount, self.price, self.towards, self.type, self.order_id, self.account_cookie, self.status)
 
+    def get(self,key,exception=None):
+        try:
+            return eval('self.{}'.format(key))
+        except:
+            return exception
     #🛠todo 建议取消，直接调用var
     def info(self):
         '''

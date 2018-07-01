@@ -62,6 +62,7 @@ class QATrade_Realtime():
         _date = None
 
         while QA_util_if_tradetime(self.now):
+
             for data in self.ingest_data:  # 对于在ingest_data中的数据
                 # <class 'QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day'>
                 date = data.date[0]
