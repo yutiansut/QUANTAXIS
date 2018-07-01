@@ -434,7 +434,8 @@ class _quotation_base():
     @lru_cache()
     def amplitude(self):
         '返回DataStruct.price的百分比变化'
-        return self.price.groupby(level=1).apply(lambda x: x.max()-x.min())
+        return self.price.groupby(level=1).apply(lambda x: (x.max()-x.min())/x.min())
+
     # 偏度 Skewness
 
     @property
