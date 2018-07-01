@@ -170,7 +170,7 @@ class QA_SPEBroker(QA_Broker):
                 hold_available = pd.DataFrame(
                     res['rows'], columns=hold_headers)
 
-        return {'cash_available':cash_available, 'hold_available': hold_available.loc[:,['code','amount']].set_index('code').amount.to_dict() }
+        return {'cash_available':cash_available, 'hold_available': hold_available.loc[:,['code','amount']].set_index('code').amount }
 
     def query_clients(self):
         return self.call("clients")
