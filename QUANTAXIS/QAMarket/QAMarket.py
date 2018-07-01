@@ -77,10 +77,10 @@ class QA_Market(QA_Trade):
 
     def upcoming_data(self, broker, data):
         '''
-                更新市场数据
-                broker 为名字，
-                data 是市场数据
-                被 QABacktest 中run 方法调用 upcoming_data
+        更新市场数据
+        broker 为名字，
+        data 是市场数据
+        被 QABacktest 中run 方法调用 upcoming_data
         '''
         # main thread'
         # if self.running_time is not None and self.running_time!= data.datetime[0]:
