@@ -90,7 +90,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - [x] 股指期货日线(T+0)/指数日线/ETF日线
 - [x] 股指期货分钟线(T+0) / 指数分钟线/ETF分钟线 [1min/5min/15min/30min/60min]
 - [x] 期货日线/分钟线(期货指数/期货主连/期货合约)
-- [x] 基于[pytdx](https://github.com/rainx/pytdx)/[tushare](https://github.com/waditu/tushare)以及各种爬虫的数据源 
+- [x] 自定义切换以及增加数据源 
 - [x] 实时交易数据,实时tick
 - [x] 基于Vue.js的前端网站
 - [x] 自定义的数据结构QADataStruct
