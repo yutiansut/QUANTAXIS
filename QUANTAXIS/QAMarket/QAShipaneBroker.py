@@ -12,8 +12,9 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
+from QUANTAXIS.QAMarket.common import cn_en_compare
 from QUANTAXIS.QAUtil.QASetting import setting_path
-from QUANTAXIS.QAUtil.QAParameter import ORDER_DIRECTION, ORDER_MODEL,ORDER_STATUS
+from QUANTAXIS.QAUtil.QAParameter import ORDER_DIRECTION, ORDER_MODEL, ORDER_STATUS
 
 CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
 DEFAULT_SHIPANE_URL = 'http://127.0.0.1:8888'
@@ -67,14 +68,17 @@ class QA_SPEBroker(QA_Broker):
         self._endpoint = self.setting.uri
         self.key = self.setting.key
 
+        #self.account_headers = ['forzen_cash','balance_available','cash_available','pnl_money_today','total_assets','pnl_holding','market_value','money_available']
         self.fillorder_headers = ['name', 'datetime', 'towards', 'price',
                                   'amount', 'money', 'trade_id', 'order_id', 'code', 'shareholder', 'other']
         self.holding_headers = ['code', 'name', 'hoding_price', 'price', 'pnl', 'amount',
                                 'sell_available', 'pnl_money', 'holdings', 'total_amount', 'lastest_amounts', 'shareholder']
         self.askorder_headers = ['code', 'towards', 'price', 'amount', 'transaction_price',
                                  'transaction_amount', 'status', 'order_time', 'order_id', 'id', 'code', 'shareholders']
+
     def __repr__(self):
         return ' <QA_BROKER SHIPANE> '
+
     def call(self, func, params=''):
         try:
             if self.key == '':
@@ -115,9 +119,15 @@ class QA_SPEBroker(QA_Broker):
         response = self._session.delete(uri)
 
         text = response.text
-        print(text)
         try:
-            return json.loads(text)
+            if text =='':
+                print('success')
+                return True
+            elif text =='获取提示对话框超时，因为：组件为空':
+                print('do not query too fast')
+                return False
+            else:
+                return json.loads(text)
         except:
             return text
 
@@ -135,9 +145,32 @@ class QA_SPEBroker(QA_Broker):
         })
 
     def query_positions(self, accounts):
-        return self.call("positions", {
+        """查询现金和持仓
+        
+        Arguments:
+            accounts {[type]} -- [description]
+        
+        Returns:
+            dict-- {'cash':xxx,'position':xxx}
+        """
+
+        data = self.call("positions", {
             'client': accounts
         })
+
+        cash_part = data.get('subAccounts', {}).get('人民币', False)
+        if cash_part:
+            cash_available = cash_part.get('可用金额')
+        position_part = data.get('dataTable', False)
+        if position_part:
+            res = data.get('dataTable', False)
+            if res:
+                hold_headers = res['columns']
+                hold_headers = [cn_en_compare[item] for item in hold_headers]
+                hold_available = pd.DataFrame(
+                    res['rows'], columns=hold_headers)
+
+        return {'cash_available':cash_available, 'hold_available': hold_available.loc[:,['code','amount']].set_index('code').amount.to_dict() }
 
     def query_clients(self):
         return self.call("clients")
@@ -217,17 +250,16 @@ class QA_SPEBroker(QA_Broker):
             'client': accounts
         })
 
+    def receive_order(self, event):
+        order = event.order
+        callback = self.send_order(accounts=order.account_cookie, code=order.code,
+                                   amount=order.amount, order_direction=order.towards, order_model=order.order_model)
+        order.trade_id = callback['id']
+        order.status = ORDER_STATUS.QUEUED
+        print('success receive order')
 
-    def receive_order(self,event):
-        order=event.order
-        callback= self.send_order(accounts=order.account_cookie,code=order.code,amount=order.amount,order_direction=order.towards,order_model=order.order_model)
-        order.trade_id=callback['id']
-        order.status=ORDER_STATUS.QUEUED
-        print(order)
-        print(order.get('trade_id',1))
-        return self.standard_back(order)
-        
         #self.dealer.deal(order, self.market_data)
+
 
 if __name__ == '__main__':
     a = QA_SPEBroker()
