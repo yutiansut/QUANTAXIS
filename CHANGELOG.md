@@ -88,6 +88,7 @@
 - QA_fetch_get_exchangerate_min 获取汇率数据(基础汇率/交叉汇率)分钟线
 
 8. python3 CTP接口 [WINDOWS/LINUX]
+9. shipane broker增加key参数, 安全性保障
 
 ## 1.0.59 
 
