@@ -196,6 +196,7 @@ class BROKER_TYPE():
     SIMULATION = 'simulation'
     REAL = 'real'
     RANODM = 'random'
+    SHIPANE = 'shipane'
 
 
 class EVENT_TYPE():
