@@ -129,20 +129,61 @@ class QA_Market(QA_Trade):
         return self.session[account_cookie]
 
     def login(self, broker_name, account_cookie, account=None):
+        """login 登录到交易前置
+
+        2018-07-02 在实盘中,登录到交易前置后,需要同步资产状态
+
+        Arguments:
+            broker_name {[type]} -- [description]
+            account_cookie {[type]} -- [description]
+
+        Keyword Arguments:
+            account {[type]} -- [description] (default: {None})
+
+        Returns:
+            [type] -- [description]
+        """
+        res=False
         if account is None:
             if account_cookie not in self.session.keys():
                 self.session[account_cookie] = QA_Account(
                     account_cookie=account_cookie, broker=broker_name)
-                return True
-            else:
-                return False
+                if self.sync_account(broker_name,account_cookie):
+                    res=True
+
         else:
             if account_cookie not in self.session.keys():
                 account.broker = broker_name
                 self.session[account_cookie] = account
-                return True
+                if self.sync_account(broker_name,account_cookie):
+                    res= True
+                
+        if res:
+            return res
+        else:
+            try:
+                self.session.pop(account_cookie)
+            except:
+                pass
+            return False
+
+    def sync_account(self, broker_name, account_cookie):
+        """同步账户信息
+
+        Arguments:
+            broker_id {[type]} -- [description]
+            account_id {[type]} -- [description]
+        """
+        try:
+            if isinstance(self.broker[broker_name],QA_BacktestBroker):
+                pass
             else:
-                return False
+                self.session[account_cookie].sync_account(
+                    self.broker[broker_name].query_positions(account_cookie))
+            return True
+        except Exception as e:
+            print(e)
+            return False
 
     def logout(self, account_cookie, broker_name):
         if account_cookie not in self.session.keys():
@@ -312,11 +353,11 @@ class QA_Market(QA_Trade):
         # 向事件线程发送ACCOUNT的SETTLE事件
 
         for account in self.session.values():
-            
+
             if account.running_environment == RUNNING_ENVIRONMENT.TZERO:
-                
+
                 for order in account.close_positions_order:
-                    
+
                     self.event_queue.put(
                         QA_Task(
                             worker=self.broker[account.broker],

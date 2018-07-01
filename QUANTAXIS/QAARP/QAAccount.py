@@ -745,6 +745,21 @@ class QA_Account(QA_Worker):
         """
         save_account(self.message)
 
+
+    def sync_account(self,sync_message):
+        """同步账户
+        
+        Arguments:
+            sync_message {[type]} -- [description]
+        """
+
+        self.init_hold=sync_message['hold_available']
+        self.init_cash= sync_message['cash_available']
+
+        self.sell_available = copy.deepcopy(self.init_hold)
+        self.history = []
+        self.cash = [self.init_cash]
+        self.cash_available = self.cash[-1]  # 在途资金
     def change_cash(self, money):
         """
         外部操作|高危|
