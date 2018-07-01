@@ -13,7 +13,7 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAUtil.QASetting import setting_path
-from QUANTAXIS.QAUtil.QAParameter import ORDER_DIRECTION, ORDER_MODEL
+from QUANTAXIS.QAUtil.QAParameter import ORDER_DIRECTION, ORDER_MODEL,ORDER_STATUS
 
 CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
 DEFAULT_SHIPANE_URL = 'http://127.0.0.1:8888'
@@ -73,7 +73,8 @@ class QA_SPEBroker(QA_Broker):
                                 'sell_available', 'pnl_money', 'holdings', 'total_amount', 'lastest_amounts', 'shareholder']
         self.askorder_headers = ['code', 'towards', 'price', 'amount', 'transaction_price',
                                  'transaction_amount', 'status', 'order_time', 'order_id', 'id', 'code', 'shareholders']
-
+    def __repr__(self):
+        return ' <QA_BROKER SHIPANE> '
     def call(self, func, params=''):
         try:
             if self.key == '':
@@ -216,6 +217,17 @@ class QA_SPEBroker(QA_Broker):
             'client': accounts
         })
 
+
+    def receive_order(self,event):
+        order=event.order
+        callback= self.send_order(accounts=order.account_cookie,code=order.code,amount=order.amount,order_direction=order.towards,order_model=order.order_model)
+        order.trade_id=callback['id']
+        order.status=ORDER_STATUS.QUEUED
+        print(order)
+        print(order.get('trade_id',1))
+        return self.standard_back(order)
+        
+        #self.dealer.deal(order, self.market_data)
 
 if __name__ == '__main__':
     a = QA_SPEBroker()
