@@ -12,26 +12,39 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
+from QUANTAXIS.QAMarket.common import cn_en_compare
 from QUANTAXIS.QAUtil.QASetting import setting_path
-from QUANTAXIS.QAUtil.QAParameter import ORDER_DIRECTION, ORDER_MODEL
+from QUANTAXIS.QAUtil.QAParameter import ORDER_DIRECTION, ORDER_MODEL, ORDER_STATUS
 
 CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
 DEFAULT_SHIPANE_URL = 'http://127.0.0.1:8888'
+DEFAULT_SHIPANE_KEY = ''
+
+
+class SPE_CONFIG():
+    def __init__(self, uri=DEFAULT_SHIPANE_URL, key=DEFAULT_SHIPANE_KEY):
+        self.key = key
+        self.uri = uri
 
 
 def get_config_SPE():
     config = configparser.ConfigParser()
+
     if os.path.exists(CONFIGFILE_PATH):
         config.read(CONFIGFILE_PATH)
         try:
-            return config.get('SPE', 'uri')
+
+            return SPE_CONFIG(config.get('SPE', 'uri'), config.get('SPE', 'key'))
+
         except configparser.NoSectionError:
             config.add_section('SPE')
             config.set('SPE', 'uri', DEFAULT_SHIPANE_URL)
-            return DEFAULT_SHIPANE_URL
+            config.set('SPE', 'key', DEFAULT_SHIPANE_KEY)
+            return SPE_CONFIG()
         except configparser.NoOptionError:
             config.set('SPE', 'uri', DEFAULT_SHIPANE_URL)
-            return DEFAULT_SHIPANE_URL
+            config.set('SPE', 'key', DEFAULT_SHIPANE_KEY)
+            return SPE_CONFIG()
         finally:
 
             with open(CONFIGFILE_PATH, 'w') as f:
@@ -41,16 +54,21 @@ def get_config_SPE():
         f = open(CONFIGFILE_PATH, 'w')
         config.add_section('SPE')
         config.set('SPE', 'uri', DEFAULT_SHIPANE_URL)
+        config.set('SPE', 'key', DEFAULT_SHIPANE_KEY)
         config.write(f)
         f.close()
         return DEFAULT_SHIPANE_URL
 
 
 class QA_SPEBroker(QA_Broker):
-    def __init__(self, endpoint=get_config_SPE()):
+    def __init__(self):
 
-        self._endpoint = endpoint
+        self.setting = get_config_SPE()
         self._session = requests
+        self._endpoint = self.setting.uri
+        self.key = self.setting.key
+
+        #self.account_headers = ['forzen_cash','balance_available','cash_available','pnl_money_today','total_assets','pnl_holding','market_value','money_available']
         self.fillorder_headers = ['name', 'datetime', 'towards', 'price',
                                   'amount', 'money', 'trade_id', 'order_id', 'code', 'shareholder', 'other']
         self.holding_headers = ['code', 'name', 'hoding_price', 'price', 'pnl', 'amount',
@@ -58,35 +76,58 @@ class QA_SPEBroker(QA_Broker):
         self.askorder_headers = ['code', 'towards', 'price', 'amount', 'transaction_price',
                                  'transaction_amount', 'status', 'order_time', 'order_id', 'id', 'code', 'shareholders']
 
+    def __repr__(self):
+        return ' <QA_BROKER SHIPANE> '
+
     def call(self, func, params=''):
         try:
-            response = self._session.get(
-                '{}/api/v1.0/{}'.format(self._endpoint, func), params)
-
+            if self.key == '':
+                uri = '{}/api/v1.0/{}?client={}'.format(
+                    self._endpoint, func, params.pop('client'))
+            else:
+                uri = '{}/api/v1.0/{}?key={}&client={}'.format(
+                    self._endpoint, func, self.key, params.pop('client'))
+            print(uri)
+            response = self._session.get(uri, params)
             text = response.text
-            
+
             return json.loads(text)
-        except:
-            print("ERROR")
+        except Exception as e:
+            print(e)
             return None
 
     def call_post(self, func, params={}):
-        uri = '{}/api/v1.0/{}?client={}'.format(
-            self._endpoint, func, params.pop('client'))
+        if self.key == '':
+            uri = '{}/api/v1.0/{}?client={}'.format(
+                self._endpoint, func, params.pop('client'))
+        else:
+            uri = '{}/api/v1.0/{}?key={}&client={}'.format(
+                self._endpoint, func, self.key, params.pop('client'))
         response = self._session.post(uri, json=params)
         text = response.text
         return json.loads(text)
 
     def call_delete(self, func, params=''):
-        uri = '{}/api/v1.0/{}?client={}'.format(
-            self._endpoint, func, params.pop('client'))
+
+        if self.key == '':
+            uri = '{}/api/v1.0/{}?client={}'.format(
+                self._endpoint, func, params.pop('client'))
+        else:
+            uri = '{}/api/v1.0/{}?key={}&client={}'.format(
+                self._endpoint, func, self.key, params.pop('client'))
 
         response = self._session.delete(uri)
 
         text = response.text
-        print(text)
         try:
-            return json.loads(text)
+            if text =='':
+                print('success')
+                return True
+            elif text =='获取提示对话框超时，因为：组件为空':
+                print('do not query too fast')
+                return False
+            else:
+                return json.loads(text)
         except:
             return text
 
@@ -104,22 +145,45 @@ class QA_SPEBroker(QA_Broker):
         })
 
     def query_positions(self, accounts):
-        return self.call("positions", {
+        """查询现金和持仓
+        
+        Arguments:
+            accounts {[type]} -- [description]
+        
+        Returns:
+            dict-- {'cash':xxx,'position':xxx}
+        """
+
+        data = self.call("positions", {
             'client': accounts
         })
+
+        cash_part = data.get('subAccounts', {}).get('人民币', False)
+        if cash_part:
+            cash_available = cash_part.get('可用金额')
+        position_part = data.get('dataTable', False)
+        if position_part:
+            res = data.get('dataTable', False)
+            if res:
+                hold_headers = res['columns']
+                hold_headers = [cn_en_compare[item] for item in hold_headers]
+                hold_available = pd.DataFrame(
+                    res['rows'], columns=hold_headers)
+
+        return {'cash_available':cash_available, 'hold_available': hold_available.loc[:,['code','amount']].set_index('code').amount }
 
     def query_clients(self):
         return self.call("clients")
 
     def query_orders(self, accounts, status='filled'):
         """查询订单
-        
+
         Arguments:
             accounts {[type]} -- [description]
-        
+
         Keyword Arguments:
             status {str} -- [description] (default: {'filled'})
-        
+
         Returns:
             [type] -- [description]
         """
@@ -181,24 +245,40 @@ class QA_SPEBroker(QA_Broker):
             'client': accounts
         })
 
-    def cancel_all(self,accounts):
-        return self.call_delete('orders',{
+    def cancel_all(self, accounts):
+        return self.call_delete('orders', {
             'client': accounts
         })
+
+    def receive_order(self, event):
+        order = event.order
+        callback = self.send_order(accounts=order.account_cookie, code=order.code,
+                                   amount=order.amount, order_direction=order.towards, order_model=order.order_model)
+        order.trade_id = callback['id']
+        order.status = ORDER_STATUS.QUEUED
+        print('success receive order')
+
+        #self.dealer.deal(order, self.market_data)
 
 
 if __name__ == '__main__':
     a = QA_SPEBroker()
+    print('查询账户')
     print(a.query_accounts('account:1391'))
+    print('查询所有订单')
     print(a.query_orders('account:1391'))
+    print('查询未成交订单')
     print(a.query_orders('account:1391', 'open'))
     """多账户同时下单测试
     """
-
-    print(a.send_order('account:1391',price=8.5))
+    print('下单测试')
+    print(a.send_order('account:1391', price=8.5))
+    print('查询新的未成交订单')
     print(a.query_orders('account:1391', 'open'))
+    print('查询已成交订单')
     print(a.query_orders('account:1391', 'filled'))
-    #print(a.send_order('account:141',price=8.95))
+    # print(a.send_order('account:141',price=8.95))
+    print('一键全部撤单')
     print(a.cancel_all('account:1391'))
 
-    print(a.cancel_order('account:1391','910954549'))
+    #print(a.cancel_order('account:1391', '910954549'))

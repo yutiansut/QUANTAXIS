@@ -88,6 +88,11 @@
 - QA_fetch_get_exchangerate_min 获取汇率数据(基础汇率/交叉汇率)分钟线
 
 8. python3 CTP接口 [WINDOWS/LINUX]
+9. shipane broker增加key参数, 安全性保障
+10. QA_MARKET 增加在注册账户的时候的交易同步(实盘/模拟盘)
+11. @yehoha 增加了对QA_DATASTRUCT的振幅的修改
+12. @zsluedem 对虚拟货币币安交易所的数据进行了优化
+
 
 ## 1.0.59 
 
