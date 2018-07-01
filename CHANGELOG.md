@@ -89,6 +89,7 @@
 
 8. python3 CTP接口 [WINDOWS/LINUX]
 9. shipane broker增加key参数, 安全性保障
+10. QA_MARKET 增加在注册账户的时候的交易同步(实盘/模拟盘)
 
 ## 1.0.59 
 
