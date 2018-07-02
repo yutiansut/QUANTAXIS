@@ -24,7 +24,7 @@
 import tornado
 from tornado.web import Application, RequestHandler, authenticated
 
-from QUANTAXIS.QAWeb.datahandles import StockdayHandler, StockminHandler,StockBlockHandler
+from QUANTAXIS.QAWeb.datahandles import StockdayHandler, StockminHandler,StockBlockHandler,StockPriceHandler
 from QUANTAXIS.QAWeb.quotationhandles import (RealtimeSocketHandler,
                                SimulateSocketHandler,MonitorSocketHandler)
 from QUANTAXIS.QAWeb.userhandles import SigninHandler, SignupHandler, PersonBlockHandler
@@ -43,6 +43,7 @@ def main():
             (r"/marketdata/stock/day", StockdayHandler),
             (r"/marketdata/stock/min", StockminHandler),
             (r"/marketdata/stock/block", StockBlockHandler),
+            (r"/marketdata/stock/price", StockPriceHandler),
             (r"/user/signin", SigninHandler),
             (r"/user/signup", SignupHandler),
             (r"/user/blocksetting", PersonBlockHandler),
@@ -64,6 +65,7 @@ if __name__ == '__main__':
             (r"/marketdata/stock/day", StockdayHandler),
             (r"/marketdata/stock/min", StockminHandler),
             (r"/marketdata/stock/block", StockBlockHandler),
+            (r"/marketdata/stock/price", StockPriceHandler),
             (r"/user/signin", SigninHandler),
             (r"/user/signup", SignupHandler),
             (r"/user/blocksetting", PersonBlockHandler),

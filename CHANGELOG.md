@@ -92,6 +92,7 @@
 10. QA_MARKET 增加在注册账户的时候的交易同步(实盘/模拟盘)
 11. @yehoha 增加了对QA_DATASTRUCT的振幅的修改
 12. @zsluedem 对虚拟货币币安交易所的数据进行了优化
+13. QA_WEB 增加本地实时5挡行情接口 ip:port/marketdata/stock/price?code=xxxxxx
 
 
 ## 1.0.59 
