@@ -23,7 +23,7 @@
             - [4.3.1. URI总规则 GENERAL URI RULE](#431-uri总规则-general-uri-rule)
             - [4.3.2. 股票日线 STOCK DAY](#432-股票日线-stock-day)
             - [4.3.3. 股票分钟线 STOCK MINDATA](#433-股票分钟线-stock-mindata)
-            - [4.3.4. 股票实时上下五档 STOCK REALTIME 5-ASK/BID](#434-股票实时上下五档-stock-realtime-5-askbid)
+            - [4.3.4. 股票实时上下五档 STOCK REALTIME PRICE 5-ASK/BID](#434-股票实时上下五档-stock-realtime-price-5-askbid)
             - [4.3.5. 股票分笔数据 STOCK TRANSACTION](#435-股票分笔数据-stock-transaction)
             - [4.3.6. 股票财务数据](#436-股票财务数据)
             - [4.3.7. 期货日线](#437-期货日线)
@@ -180,9 +180,9 @@ http://[ip]:[port]/marketdata/stock/min?code=[]&start=[]&end=[]
 
 当不给定结束日期的时候,返回的就是直到当前的数据
 
-####  4.3.4. 股票实时上下五档 STOCK REALTIME 5-ASK/BID
+####  4.3.4. 股票实时上下五档 STOCK REALTIME PRICE 5-ASK/BID
 ```
-http://[ip]:[port]/marketdata/stock/realtime?code=[]
+http://[ip]:[port]/marketdata/stock/price?code=xxxxxx
 ```
 
 实时返回股票的L1上下五档的行情数据
