@@ -24,14 +24,16 @@
 
 import datetime
 import json
-
+import pymongo
 import tornado
 from tornado.web import Application, RequestHandler, authenticated
 from tornado.websocket import WebSocketHandler
 
-from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day, QA_fetch_stock_min
+from QUANTAXIS.QAUtil.QASetting import DATABASE
+from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day, QA_fetch_stock_min, QA_fetch_stock_to_market_date
 from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_day_adv
 from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
+from QUANTAXIS.QAUtil.QADict import QA_util_dict_remove_key
 from QUANTAXIS.QAWeb.fetch_block import get_block, get_name
 from QUANTAXIS.QAWeb.basehandles import QABaseHandler
 
@@ -76,6 +78,22 @@ class StockBlockHandler(QABaseHandler):
         monitor_list = get_name(get_block(block_name))
         self.write({'result': monitor_list})
 
+class StockPriceHandler(QABaseHandler):
+    def get(self):
+        try:
+            code = self.get_argument('code', default='000001')[0:6]
+
+            database = DATABASE.get_collection(
+                    'realtime_{}'.format(datetime.date.today()))
+            
+            current = [QA_util_dict_remove_key(item, '_id') for item in database.find({'code': code}, limit=1, sort=[
+                ('datetime', pymongo.DESCENDING)])]
+            
+            self.write(current[0])
+        except:
+            self.write('wrong')
+        # monitor_list =QA
+        # self.write({'result': monitor_list})
 
 if __name__ == "__main__":
 
