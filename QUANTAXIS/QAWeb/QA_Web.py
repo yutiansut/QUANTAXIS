@@ -53,7 +53,7 @@ def main():
         ],
         debug=True
     )
-    apps.listen(8010)
+    apps.listen(8010,address='0.0.0.0')
     tornado.ioloop.IOLoop.instance().start()
 
 
@@ -74,5 +74,5 @@ if __name__ == '__main__':
         ],
         debug=True
     )
-    app.listen(8010)
+    app.listen(8010,address='0.0.0.0')
     tornado.ioloop.IOLoop.instance().start()
