@@ -29,6 +29,7 @@ from QUANTAXIS.QAEngine.QATask import QA_Task
 from QUANTAXIS.QAMarket.QABacktestBroker import QA_BacktestBroker
 from QUANTAXIS.QAMarket.QARandomBroker import QA_RandomBroker
 from QUANTAXIS.QAMarket.QARealBroker import QA_RealBroker
+from QUANTAXIS.QAMarket.QAShipaneBroker import QA_SPEBroker
 from QUANTAXIS.QAMarket.QASimulatedBroker import QA_SimulatedBroker
 from QUANTAXIS.QAMarket.QATrade import QA_Trade
 from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
@@ -54,12 +55,15 @@ class QA_Market(QA_Trade):
 
     def __init__(self, *args, **kwargs):
         super().__init__()
+        # 以下是待初始化的账户session
         self.session = {}
+        # 以下都是官方支持的交易前置
         self._broker = {
             BROKER_TYPE.BACKETEST: QA_BacktestBroker,
             BROKER_TYPE.RANODM: QA_RandomBroker,
             BROKER_TYPE.REAL: QA_RealBroker,
-            BROKER_TYPE.SIMULATION: QA_SimulatedBroker
+            BROKER_TYPE.SIMULATION: QA_SimulatedBroker,
+            BROKER_TYPE.SHIPANE: QA_SPEBroker
         }
         self.broker = {}
         self.running_time = None
@@ -73,10 +77,10 @@ class QA_Market(QA_Trade):
 
     def upcoming_data(self, broker, data):
         '''
-                更新市场数据
-                broker 为名字，
-                data 是市场数据
-                被 QABacktest 中run 方法调用 upcoming_data
+        更新市场数据
+        broker 为名字，
+        data 是市场数据
+        被 QABacktest 中run 方法调用 upcoming_data
         '''
         # main thread'
         # if self.running_time is not None and self.running_time!= data.datetime[0]:
