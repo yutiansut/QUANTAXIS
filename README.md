@@ -12,7 +12,6 @@
 
 [点击右上角Star和Watch来跟踪项目进展! 点击Fork来创建属于你的QUANTAXIS!]
 
-![post201802](http://pic.yutiansut.com/quantaxis-post201802.png)
 ![main_1](http://pic.yutiansut.com/Main_1.gif)
 ![logo](http://pic.yutiansut.com/QUANTAXIS-small.png)
 ![presentbyyutiansut](http://pic.yutiansut.com/yutiansut-logo.png)
