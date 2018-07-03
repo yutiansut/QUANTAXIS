@@ -44,6 +44,9 @@
 <!-- /TOC -->
 ## 1.0.61 (unreleased)
 
+1. QA_MARKET 增加订单查询子线程函数```start_order_threading```,线程名称('ORDER') (如股票无回报,需要另外开线程查询是否成交)[如果需要在初始化的时候开启: if_start_orderthreading=True]
+2. QA_ORDER 增加一个 ```realorder_id ``` 用于记录订单在报给交易所后返回的order_id
+
 
 ## 1.0.60 
 
