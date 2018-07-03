@@ -45,7 +45,6 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 <!-- TOC -->
 
 - [QUANTAXIS 量化金融策略框架](#quantaxis-量化金融策略框架)
-    - [电脑配置推荐](#电脑配置推荐)
     - [1. 功能](#1-功能)
         - [行情服务](#行情服务)
             - [股票/期货/期权/美股/外汇/宏观的历史/实时行情(日线/分钟线/tick/实时五档)服务](#股票期货期权美股外汇宏观的历史实时行情日线分钟线tick实时五档服务)
@@ -71,29 +70,15 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
     - [10. 项目捐赠](#10-项目捐赠)
     - [11. 回测Webkit插件概览](#11-回测webkit插件概览)
     - [12. QUANTAXIS 标准化协议和未来协议](#12-quantaxis-标准化协议和未来协议)
+    - [13. 电脑配置推荐](#13-电脑配置推荐)
     - [License](#license)
 
 <!-- /TOC -->
-
-## 电脑配置推荐
-
-推荐配置:
-6代以上CPU+ 16/32GB DDR3/DDR4内存+ 256GB以上SSD硬盘
-
-最低配置:
-支持X64位的CPU
-
-因为在存储本地数据的时候,需要存储超过2GB的本地数据,而32位的MONGODB最高只支持2GB左右的数据存储,因此最少需要一个X64位的CPU
-
-如果SSD资源够用,尽量将数据存储在SSD中,增加```wiretiger```写盘的速度
-
-如果是阿里云/腾讯云的服务器,请在最初的时候 选择64位的操作系统
 
 
 ##  1. 功能
 ======
 
-![](http://pic.yutiansut.com/framework.png)
 
 已经实现：
 
@@ -164,6 +149,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - [ ] 分析模块(行情分析/板块分析)
 - [ ] 多数据库支持
 
+![](http://pic.yutiansut.com/framework.png)
 
 
 - [QUANTAXIS 2018开发计划表](job_list.md)
@@ -261,6 +247,20 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.8
 
 详情参见  [QUANATXISProtocol](Documents/readme.md)
 
+
+##  13. 电脑配置推荐
+
+推荐配置:
+6代以上CPU+ 16/32GB DDR3/DDR4内存+ 256GB以上SSD硬盘
+
+最低配置:
+支持X64位的CPU
+
+因为在存储本地数据的时候,需要存储超过2GB的本地数据,而32位的MONGODB最高只支持2GB左右的数据存储,因此最少需要一个X64位的CPU
+
+如果SSD资源够用,尽量将数据存储在SSD中,增加```wiretiger```写盘的速度
+
+如果是阿里云/腾讯云的服务器,请在最初的时候 选择64位的操作系统
 
 ## License
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS?ref=badge_large)
