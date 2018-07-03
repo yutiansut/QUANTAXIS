@@ -93,6 +93,7 @@
 11. @yehoha 增加了对QA_DATASTRUCT的振幅的修改
 12. @zsluedem 对虚拟货币币安交易所的数据进行了优化
 13. QA_WEB 增加本地实时5挡行情接口 ip:port/marketdata/stock/price?code=xxxxxx
+14. QA_WEB 增加了对于非windows下的机器多进程的支持
 
 
 ## 1.0.59 
