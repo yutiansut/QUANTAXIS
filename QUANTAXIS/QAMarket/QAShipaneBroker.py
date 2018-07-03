@@ -1,9 +1,9 @@
 # coding:utf-8
 
-import os
 import base64
 import configparser
 import json
+import os
 import urllib
 
 import pandas as pd
@@ -11,10 +11,12 @@ import requests
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.common import cn_en_compare
+from QUANTAXIS.QAMarket.QABroker import QA_Broker
+from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
+from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, ORDER_DIRECTION,
+                                          ORDER_MODEL, ORDER_STATUS)
 from QUANTAXIS.QAUtil.QASetting import setting_path
-from QUANTAXIS.QAUtil.QAParameter import ORDER_DIRECTION, ORDER_MODEL, ORDER_STATUS
 
 CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
 DEFAULT_SHIPANE_URL = 'http://127.0.0.1:8888'
@@ -62,7 +64,7 @@ def get_config_SPE():
 
 class QA_SPEBroker(QA_Broker):
     def __init__(self):
-
+        self.order_handler = QA_OrderHandler()
         self.setting = get_config_SPE()
         self._session = requests
         self._endpoint = self.setting.uri
@@ -78,6 +80,22 @@ class QA_SPEBroker(QA_Broker):
 
     def __repr__(self):
         return ' <QA_BROKER SHIPANE> '
+
+    def run(self, event):
+        if event.event_type is BROKER_EVENT.RECEIVE_ORDER:
+            self.order_handler.run(event)
+            self.run(QA_Event(event_type=BROKER_EVENT.TRADE, broker=self))
+        elif event.event_type is BROKER_EVENT.TRADE:
+            """实盘交易部分!!!!! ATTENTION
+            这里需要开一个子线程去查询是否成交
+
+            ATTENTION
+            """
+
+            event = self.order_handler.run(event)
+            event.message = 'trade'
+            if event.callback:
+                event.callback(event)
 
     def call(self, func, params=''):
         try:
@@ -120,10 +138,10 @@ class QA_SPEBroker(QA_Broker):
 
         text = response.text
         try:
-            if text =='':
+            if text == '':
                 print('success')
                 return True
-            elif text =='获取提示对话框超时，因为：组件为空':
+            elif text == '获取提示对话框超时，因为：组件为空':
                 print('do not query too fast')
                 return False
             else:
@@ -146,10 +164,10 @@ class QA_SPEBroker(QA_Broker):
 
     def query_positions(self, accounts):
         """查询现金和持仓
-        
+
         Arguments:
             accounts {[type]} -- [description]
-        
+
         Returns:
             dict-- {'cash':xxx,'position':xxx}
         """
@@ -170,7 +188,7 @@ class QA_SPEBroker(QA_Broker):
                 hold_available = pd.DataFrame(
                     res['rows'], columns=hold_headers)
 
-        return {'cash_available':cash_available, 'hold_available': hold_available.loc[:,['code','amount']].set_index('code').amount }
+        return {'cash_available': cash_available, 'hold_available': hold_available.loc[:, ['code', 'amount']].set_index('code').amount}
 
     def query_clients(self):
         return self.call("clients")
