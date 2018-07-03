@@ -261,6 +261,10 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
     def order_ids(self):
         return self.queue_df.index
 
+    @property
+    def len(self):
+        return len(self._queue_dict)
+        
     def settle(self):
         """结算
         清空订单簿

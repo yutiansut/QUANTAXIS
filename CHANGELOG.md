@@ -4,47 +4,27 @@
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
     - [1.0.61 (unreleased)](#1061-unreleased)
-    - [1.0.60](#1060)
-    - [1.0.59](#1059)
-    - [1.0.58](#1058)
-    - [1.0.57](#1057)
-    - [1.0.56](#1056)
-    - [1.0.55](#1055)
-    - [1.0.54](#1054)
-    - [1.0.53](#1053)
-    - [1.0.52](#1052)
-    - [1.0.51](#1051)
-    - [1.0.50](#1050)
-    - [1.0.49](#1049)
-    - [1.0.48](#1048)
-    - [1.0.47](#1047)
-    - [1.0.46](#1046)
-    - [1.0.45](#1045)
-    - [1.0.44](#1044)
-    - [1.0.43](#1043)
-    - [1.0.42](#1042)
-    - [1.0.41](#1041)
-    - [1.0.40](#1040)
-    - [1.0.39](#1039)
-    - [1.0.38](#1038)
-    - [1.0.37](#1037)
-    - [1.0.36](#1036)
-    - [1.0.35](#1035)
-    - [1.0.34](#1034)
-    - [1.0.33](#1033)
-    - [1.0.32](#1032)
-    - [1.0.31](#1031)
-    - [1.0.30](#1030)
-    - [1.0.29](#1029)
-    - [1.0.28](#1028)
-    - [1.0.27](#1027)
-    - [1.0.26](#1026)
-    - [1.0.25](#1025)
 
 <!-- /TOC -->
 ## 1.0.61 (unreleased)
 
 1. QA_MARKET 增加订单查询子线程函数```start_order_threading```,线程名称('ORDER') (如股票无回报,需要另外开线程查询是否成交)[如果需要在初始化的时候开启: if_start_orderthreading=True]
+
+```python
+threading.enumerate()
+[<_MainThread(MainThread, started 23780)>,
+ <Thread(Thread-4, started daemon 4504)>,
+ <Heartbeat(Thread-5, started daemon 7760)>,
+ <HistorySavingThread(IPythonHistorySavingThread, started 23764)>,
+ <ParentPollerWindows(Thread-3, started daemon 17028)>,
+ <Thread(pymongo_server_monitor_thread, started daemon 20440)>,
+ <Thread(pymongo_kill_cursors_thread, started daemon 20216)>,
+  <QA_ENGINE with ['ORDER', 'SPE_BROKER', 'BACKTEST_BROKER'] kernels>,
+ <QA_ThreadORDER  id=2226925613408>,
+ <QA_ThreadSPE_BROKER  id=2226855623648>,
+ <QA_ThreadBACKTEST_BROKER  id=2226925616992>]
+ ```
+ 
 2. QA_ORDER 增加一个 ```realorder_id ``` 用于记录订单在报给交易所后返回的order_id
 
 

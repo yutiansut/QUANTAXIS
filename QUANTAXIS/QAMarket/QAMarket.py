@@ -32,6 +32,7 @@ from QUANTAXIS.QAMarket.QARealBroker import QA_RealBroker
 from QUANTAXIS.QAMarket.QAShipaneBroker import QA_SPEBroker
 from QUANTAXIS.QAMarket.QASimulatedBroker import QA_SimulatedBroker
 from QUANTAXIS.QAMarket.QATrade import QA_Trade
+from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
 from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
                                           BROKER_EVENT, BROKER_TYPE,
                                           ENGINE_EVENT, MARKET_EVENT,
@@ -75,7 +76,7 @@ class QA_Market(QA_Trade):
         self.running_time = None
         self.last_query_data = None
         self.if_start_orderthreading = if_start_orderthreading
-
+        self.order_handler = False
     def __repr__(self):
         '''
                 输出market市场对象的字符串
@@ -146,6 +147,7 @@ class QA_Market(QA_Trade):
         """
 
         self.if_start_orderthreading = True
+        self.order_handler=QA_OrderHandler()
         self.trade_engine.create_kernel('ORDER')
         self.trade_engine.start_kernel('ORDER')
 
