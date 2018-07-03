@@ -86,5 +86,13 @@ class QA_OrderHandler(QA_Worker):
         elif event.event_type is MARKET_EVENT.QUERY_ORDER:
             return self.query_order(event.order_id)
 
+        elif event.event_type is BROKER_EVENT.QUERY_DEAL:
+            while self.order_queue.len >0:
+                waiting_realorder_id=[order.realorder_id for order in self.order_queue.trade_list]
+                result=event.broker.query_deal
+
+
+
+
     def query_order(self, order_id):
         return self.order_queue.queue_df.query()

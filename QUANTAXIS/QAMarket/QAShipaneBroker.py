@@ -92,7 +92,7 @@ class QA_SPEBroker(QA_Broker):
 
             ATTENTION
             """
-
+            
             event = self.order_handler.run(event)
             event.message = 'trade'
             if event.callback:
@@ -201,7 +201,7 @@ class QA_SPEBroker(QA_Broker):
             accounts {[type]} -- [description]
 
         Keyword Arguments:
-            status {str} -- [description] (default: {'filled'})
+            status {str} -- 'open' 待成交 'filled' 成交 (default: {'filled'})
 
         Returns:
             [type] -- [description]
@@ -211,6 +211,9 @@ class QA_SPEBroker(QA_Broker):
             'client': accounts,
             'status': status
         })
+
+
+
 
     def send_order(self, accounts, code='000001', price=9, amount=100, order_direction=ORDER_DIRECTION.BUY, order_model=ORDER_MODEL.LIMIT):
         """[summary]
