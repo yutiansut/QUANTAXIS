@@ -3,7 +3,8 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.0.60 (unreleased)](#1060-unreleased)
+    - [1.0.61 (unreleased)](#1061-unreleased)
+    - [1.0.60](#1060)
     - [1.0.59](#1059)
     - [1.0.58](#1058)
     - [1.0.57](#1057)
@@ -41,7 +42,10 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
-## 1.0.60 (unreleased)
+## 1.0.61 (unreleased)
+
+
+## 1.0.60 
 
 1. groupy 默认参数中 sort设置为false
 2. 加速指标运算/前后复权 (视股票数量而定,3000多只股票提速20倍)
@@ -93,6 +97,7 @@
 11. @yehoha 增加了对QA_DATASTRUCT的振幅的修改
 12. @zsluedem 对虚拟货币币安交易所的数据进行了优化
 13. QA_WEB 增加本地实时5挡行情接口 ip:port/marketdata/stock/price?code=xxxxxx
+14. QA_WEB 增加了对于非windows下的机器多进程的支持
 
 
 ## 1.0.59 
