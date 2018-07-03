@@ -25,7 +25,8 @@
 
 import pandas as pd
 
-from QUANTAXIS.QAUtil import (QA_util_log_info, QA_util_random_with_topic,QA_util_to_json_from_pandas)
+from QUANTAXIS.QAUtil import (
+    QA_util_log_info, QA_util_random_with_topic, QA_util_to_json_from_pandas)
 from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_STATUS
 
 
@@ -52,11 +53,13 @@ order_frame 是一个管理性面板  但是还是需要一个缓存dict？
 
 """
 
+
 class QA_Order():
     '''
         记录order
     '''
-    def __init__(self, price=None , date=None, datetime=None, sending_time=None, transact_time=None, amount=None, market_type=None, frequence=None,
+
+    def __init__(self, price=None, date=None, datetime=None, sending_time=None, transact_time=None, amount=None, market_type=None, frequence=None,
                  towards=None, code=None, user=None, account_cookie=None, strategy=None, order_model=None, money=None, amount_model=AMOUNT_MODEL.BY_AMOUNT,
                  order_id=None, trade_id=None, status='100', callback=False, commission_coeff=0.00025, tax_coeff=0.001, *args, **kwargs):
         '''
@@ -90,7 +93,7 @@ class QA_Order():
         self.price = price
         self.datetime = None
 
-        #🛠todo 移动到 Util 类中 时间处理函数
+        # 🛠todo 移动到 Util 类中 时间处理函数
         if datetime is None and date is not None:
             self.date = date
             self.datetime = '{} 09:31:00'.format(self.date)
@@ -118,6 +121,7 @@ class QA_Order():
         self.amount_model = amount_model
         self.order_id = QA_util_random_with_topic(
             topic='Order') if order_id is None else order_id
+        self.realorder_id = self.order_id
         self.commission_coeff = commission_coeff
         self.tax_coeff = tax_coeff
         self.trade_id = trade_id
@@ -130,27 +134,28 @@ class QA_Order():
         输出格式化对象
         :return:  字符串
         '''
-        return '< QA_Order datetime:{} code:{} amount:{} price:{} towards:{} btype:{} order_id:{} account:{} status:{} >'.format(
-            self.datetime, self.code, self.amount, self.price, self.towards, self.type, self.order_id, self.account_cookie, self.status)
+        return '< QA_Order realorder_id {} datetime:{} code:{} amount:{} price:{} towards:{} btype:{} order_id:{} account:{} status:{} >'.format(
+            self.realorder_id, self.datetime, self.code, self.amount, self.price, self.towards, self.type, self.order_id, self.account_cookie, self.status)
 
-    def get(self,key,exception=None):
+    def get(self, key, exception=None):
         try:
             return eval('self.{}'.format(key))
         except:
             return exception
-    #🛠todo 建议取消，直接调用var
+    # 🛠todo 建议取消，直接调用var
+
     def info(self):
         '''
         :return:
         '''
         return vars(self)
 
-    #对象转变成 dfs
+    # 对象转变成 dfs
     def to_df(self):
         return pd.DataFrame([vars(self), ])
 
+    # 🛠todo 建议取消，直接调用var？
 
-    #🛠todo 建议取消，直接调用var？
     def to_dict(self):
         '''
         把对象中的属性转变成字典类型
@@ -184,6 +189,7 @@ class QA_Order():
             self.order_model = order_dict['order_model']
             self.amount_model = order_dict['amount_model']
             self.order_id = order_dict['order_id']
+            self.realorder_id = order_dict['realorder_id']
             self.trade_id = order_dict['trade_id']
             self.callback = order_dict['callback']
             self.commission_coeff = order_dict['commission_coeff']
@@ -212,13 +218,14 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
     你看看你还有多少单子在委托你就数数小本子
     这个小本子 就是orderqueue的dataframe
     """
+
     def __init__(self):
 
         self.order_list = []
 
-        #🛠 todo 是为了速度快把order对象转换成 df 对象的吗？
-        #🛠 todo 维护两个变量queue，代价很大
-        #🛠 todo 建议直接保存 QA_Order， 速度慢？
+        # 🛠 todo 是为了速度快把order对象转换成 df 对象的吗？
+        # 🛠 todo 维护两个变量queue，代价很大
+        # 🛠 todo 建议直接保存 QA_Order， 速度慢？
         self.queue_df = pd.DataFrame()
         self._queue_dict = {}
 
@@ -230,7 +237,8 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
 
     def _from_dataframe(self, dataframe):
         try:
-            self.order_list = [QA_Order().from_dict(item) for item in QA_util_to_json_from_pandas(dataframe)]
+            self.order_list = [QA_Order().from_dict(item)
+                               for item in QA_util_to_json_from_pandas(dataframe)]
             return self.order_list
         except:
             pass
@@ -241,8 +249,9 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
         :return:
         '''
         #print("     *>> QAOrder!insert_order  {}".format(order))
-        order.status = ORDER_STATUS.QUEUED #    QUEUED = 300  # queued 用于表示在order_queue中 实际表达的意思是订单存活 待成交
-        #🛠 todo 是为了速度快把order对象转换成 df 对象的吗？
+        # QUEUED = 300  # queued 用于表示在order_queue中 实际表达的意思是订单存活 待成交
+        order.status = ORDER_STATUS.QUEUED
+        # 🛠 todo 是为了速度快把order对象转换成 df 对象的吗？
         self.queue_df = self.queue_df.append(order.to_df(), ignore_index=True)
         self.queue_df.set_index('order_id', drop=False, inplace=True)
         self._queue_dict[order.order_id] = order
@@ -286,7 +295,6 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
         '''
         return [self._queue_dict[order_id] for order_id in self.pending.index]
 
-
     def query_order(self, order_id):
         '''
         @modified by JerryW 2018/05/25
@@ -300,7 +308,7 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
         anOrderObj.from_dict(rec_dict[0])
         return anOrderObj
 
-    #🛠todo 订单队列
+    # 🛠todo 订单队列
     def set_status(self, order_id, new_status):
         try:
             if order_id in self.order_ids:

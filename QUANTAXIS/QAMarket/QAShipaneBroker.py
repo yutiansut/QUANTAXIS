@@ -16,6 +16,7 @@ from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
 from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, ORDER_DIRECTION,
                                           ORDER_MODEL, ORDER_STATUS)
+from QUANTAXIS.QAEngine.QAEvent import QA_Event
 from QUANTAXIS.QAUtil.QASetting import setting_path
 
 CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
@@ -272,9 +273,9 @@ class QA_SPEBroker(QA_Broker):
         order = event.order
         callback = self.send_order(accounts=order.account_cookie, code=order.code,
                                    amount=order.amount, order_direction=order.towards, order_model=order.order_model)
-        order.trade_id = callback['id']
+        order.realorder_id = callback['id']
         order.status = ORDER_STATUS.QUEUED
-        print('success receive order')
+        print('success receive order {}'.format(order.realorder_id))
 
         #self.dealer.deal(order, self.market_data)
 
