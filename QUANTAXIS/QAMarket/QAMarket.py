@@ -55,7 +55,7 @@ class QA_Market(QA_Trade):
 
     def __init__(self, if_start_orderthreading=False, *args, **kwargs):
         """[summary]
-        
+
         Keyword Arguments:
             if_start_orderthreading {bool} -- 是否在初始化的时候开启查询子线程(实盘需要) (default: {False})
         """

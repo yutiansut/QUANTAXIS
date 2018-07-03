@@ -11,12 +11,12 @@ import requests
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
+from QUANTAXIS.QAEngine.QAEvent import QA_Event
 from QUANTAXIS.QAMarket.common import cn_en_compare
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
 from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, ORDER_DIRECTION,
                                           ORDER_MODEL, ORDER_STATUS)
-from QUANTAXIS.QAEngine.QAEvent import QA_Event
 from QUANTAXIS.QAUtil.QASetting import setting_path
 
 CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
