@@ -139,12 +139,10 @@ class QA_SPEBroker(QA_Broker):
 
         text = response.text
         try:
-            if text == '':
+            if text == '' or '获取提示对话框超时，因为：组件为空':
                 print('success')
                 return True
-            elif text == '获取提示对话框超时，因为：组件为空':
-                print('do not query too fast')
-                return False
+
             else:
                 return json.loads(text)
         except:
@@ -285,22 +283,22 @@ class QA_SPEBroker(QA_Broker):
 
 if __name__ == '__main__':
     a = QA_SPEBroker()
-    print('查询账户')
-    print(a.query_accounts('account:1391'))
-    print('查询所有订单')
-    print(a.query_orders('account:1391'))
-    print('查询未成交订单')
-    print(a.query_orders('account:1391', 'open'))
-    """多账户同时下单测试
-    """
-    print('下单测试')
-    print(a.send_order('account:1391', price=8.5))
-    print('查询新的未成交订单')
-    print(a.query_orders('account:1391', 'open'))
-    print('查询已成交订单')
-    print(a.query_orders('account:1391', 'filled'))
-    # print(a.send_order('account:141',price=8.95))
-    print('一键全部撤单')
-    print(a.cancel_all('account:1391'))
+    # print('查询账户')
+    # print(a.query_accounts('account:1391'))
+    # print('查询所有订单')
+    # print(a.query_orders('account:1391'))
+    # print('查询未成交订单')
+    # print(a.query_orders('account:1391', 'open'))
+    # """多账户同时下单测试
+    # """
+    # print('下单测试')
+    # print(a.send_order('account:1391', price=8.5))
+    # print('查询新的未成交订单')
+    # print(a.query_orders('account:1391', 'open'))
+    # print('查询已成交订单')
+    # print(a.query_orders('account:1391', 'filled'))
+    # # print(a.send_order('account:141',price=8.95))
+    # print('一键全部撤单')
+    # print(a.cancel_all('account:1391'))
 
-    #print(a.cancel_order('account:1391', '910954549'))
+    print(a.cancel_order('account:141', '1703'))
