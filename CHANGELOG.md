@@ -58,7 +58,7 @@
     <Thread(Thread-4, started daemon 4504)>,
     <Heartbeat(Thread-5, started daemon 7760)>,
     <HistorySavingThread(IPythonHistorySavingThread, started 23764)>,
-    <ParentPollerWindows(Thread-3, started daemon 17028)>,
+    <ParentPollerWindows(Thread-3, started daemon 17028)>,  
     <Thread(pymongo_server_monitor_thread, started daemon 20440)>,
     <Thread(pymongo_kill_cursors_thread, started daemon 20216)>,
     <QA_ENGINE with ['ORDER', 'SPE_BROKER', 'BACKTEST_BROKER'] kernels>,
