@@ -66,6 +66,26 @@ class QA_DataStruct_Stock_block():
 
         return self.data.code.unique().tolist()
 
+    @property
+    def view_code(self):
+        """按股票排列的查看blockname的视图
+        
+        Returns:
+            [type] -- [description]
+        """
+
+        return self.data.groupby(level=0).apply(lambda x: [item for item in x.blockname])
+        
+    @property
+    def view_block(self):
+        """按版块排列查看的code的视图
+        
+        Returns:
+            [type] -- [description]
+        """
+
+        return self.data.groupby('blockname').apply(lambda x: [item for item in x.code])
+
     def show(self):
         """展示DataStruct
 
@@ -96,8 +116,11 @@ class QA_DataStruct_Stock_block():
         Returns:
             [type] -- [description]
         """
-        block_name = [block_name] if isinstance(block_name,str) else block_name
+        block_name = [block_name] if isinstance(
+            block_name, str) else block_name
         return QA_DataStruct_Stock_block(self.data[self.data.blockname.apply(lambda x: x in block_name)])
+
+
 
     def getdtype(self, dtype):
         """getdtype

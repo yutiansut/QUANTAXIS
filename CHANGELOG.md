@@ -45,6 +45,9 @@
 <!-- /TOC -->
 ## 1.0.62 (unreleased)
 
+1. QA_DataStruct_Indicator 类增加 ```groupby``` 函数和  ```add_func```函数 ,用法和QA_DataStruct_xxxx_DAY/MIN 一致
+2. QA_DataStruct_Block 增加两个视图 ```view_code``` 和 ```view_block```
+
 ## 1.0.61 
 
 1. QA_MARKET 增加订单查询子线程函数```start_order_threading```,线程名称('ORDER') (如股票无回报,需要另外开线程查询是否成交)[如果需要在初始化的时候开启: if_start_orderthreading=True]
