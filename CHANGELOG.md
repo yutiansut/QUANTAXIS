@@ -3,7 +3,8 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.0.61 (unreleased)](#1061-unreleased)
+    - [1.0.62 (unreleased)](#1062-unreleased)
+    - [1.0.61](#1061)
     - [1.0.60](#1060)
     - [1.0.59](#1059)
     - [1.0.58](#1058)
@@ -42,8 +43,31 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
-## 1.0.61 (unreleased)
+## 1.0.62 (unreleased)
 
+## 1.0.61 
+
+1. QA_MARKET 增加订单查询子线程函数```start_order_threading```,线程名称('ORDER') (如股票无回报,需要另外开线程查询是否成交)[如果需要在初始化的时候开启: if_start_orderthreading=True]
+
+    ```python
+    threading.enumerate()
+    [<_MainThread(MainThread, started 23780)>,
+    <Thread(Thread-4, started daemon 4504)>,
+    <Heartbeat(Thread-5, started daemon 7760)>,
+    <HistorySavingThread(IPythonHistorySavingThread, started 23764)>,
+    <ParentPollerWindows(Thread-3, started daemon 17028)>,
+    <Thread(pymongo_server_monitor_thread, started daemon 20440)>,
+    <Thread(pymongo_kill_cursors_thread, started daemon 20216)>,
+    <QA_ENGINE with ['ORDER', 'SPE_BROKER', 'BACKTEST_BROKER'] kernels>,
+    <QA_ThreadORDER  id=2226925613408>,
+    <QA_ThreadSPE_BROKER  id=2226855623648>,
+    <QA_ThreadBACKTEST_BROKER  id=2226925616992>]
+    ```
+    
+2. QA_ORDER 增加一个 ```realorder_id ``` 用于记录订单在报给交易所后返回的order_id
+3. 修复了QA_fetch_get_exchangerate_list的bug
+
+released in : JULY 4, 2018
 
 ## 1.0.60 
 
@@ -99,6 +123,7 @@
 13. QA_WEB 增加本地实时5挡行情接口 ip:port/marketdata/stock/price?code=xxxxxx
 14. QA_WEB 增加了对于非windows下的机器多进程的支持
 
+released in : JULY 4, 2018
 
 ## 1.0.59 
 
