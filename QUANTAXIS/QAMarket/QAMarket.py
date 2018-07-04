@@ -32,6 +32,7 @@ from QUANTAXIS.QAMarket.QARealBroker import QA_RealBroker
 from QUANTAXIS.QAMarket.QAShipaneBroker import QA_SPEBroker
 from QUANTAXIS.QAMarket.QASimulatedBroker import QA_SimulatedBroker
 from QUANTAXIS.QAMarket.QATrade import QA_Trade
+from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
 from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
                                           BROKER_EVENT, BROKER_TYPE,
                                           ENGINE_EVENT, MARKET_EVENT,
@@ -53,7 +54,13 @@ class QA_Market(QA_Trade):
     session 保存的是 QAAccout 对象
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, if_start_orderthreading=False, *args, **kwargs):
+        """[summary]
+
+        Keyword Arguments:
+            if_start_orderthreading {bool} -- 是否在初始化的时候开启查询子线程(实盘需要) (default: {False})
+        """
+
         super().__init__()
         # 以下是待初始化的账户session
         self.session = {}
@@ -68,7 +75,8 @@ class QA_Market(QA_Trade):
         self.broker = {}
         self.running_time = None
         self.last_query_data = None
-
+        self.if_start_orderthreading = if_start_orderthreading
+        self.order_handler = False
     def __repr__(self):
         '''
                 输出market市场对象的字符串
@@ -106,6 +114,11 @@ class QA_Market(QA_Trade):
 
     def start(self):
         self.trade_engine.start()
+        if self.if_start_orderthreading:
+            """查询子线程开关
+            """
+            self.start_order_threading()
+
         # self.trade_engine.create_kernel('MARKET')
         # self.trade_engine.start_kernel('MARKET')
 
@@ -129,6 +142,15 @@ class QA_Market(QA_Trade):
         else:
             return False
 
+    def start_order_threading(self):
+        """开启查询子线程(实盘中用)
+        """
+
+        self.if_start_orderthreading = True
+        self.order_handler=QA_OrderHandler()
+        self.trade_engine.create_kernel('ORDER')
+        self.trade_engine.start_kernel('ORDER')
+
     def get_account(self, account_cookie):
         return self.session[account_cookie]
 
@@ -147,21 +169,21 @@ class QA_Market(QA_Trade):
         Returns:
             [type] -- [description]
         """
-        res=False
+        res = False
         if account is None:
             if account_cookie not in self.session.keys():
                 self.session[account_cookie] = QA_Account(
                     account_cookie=account_cookie, broker=broker_name)
-                if self.sync_account(broker_name,account_cookie):
-                    res=True
+                if self.sync_account(broker_name, account_cookie):
+                    res = True
 
         else:
             if account_cookie not in self.session.keys():
                 account.broker = broker_name
                 self.session[account_cookie] = account
-                if self.sync_account(broker_name,account_cookie):
-                    res= True
-                
+                if self.sync_account(broker_name, account_cookie):
+                    res = True
+
         if res:
             return res
         else:
@@ -179,7 +201,7 @@ class QA_Market(QA_Trade):
             account_id {[type]} -- [description]
         """
         try:
-            if isinstance(self.broker[broker_name],QA_BacktestBroker):
+            if isinstance(self.broker[broker_name], QA_BacktestBroker):
                 pass
             else:
                 self.session[account_cookie].sync_account(

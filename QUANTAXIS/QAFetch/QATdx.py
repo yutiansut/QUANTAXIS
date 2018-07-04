@@ -1106,7 +1106,7 @@ def QA_fetch_get_exchangerate_list(ip=None, port=None):
     extension_market_list = QA_fetch_get_extensionmarket_list(
     ) if extension_market_list is None else extension_market_list
 
-    return extension_market_list.query('category==10 or category==11')
+    return extension_market_list.query('market==10 or market==11').query('category==4')
 
 
     
