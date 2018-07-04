@@ -97,4 +97,4 @@ class QA_DataStruct_Indicators():
         return self.data.groupby(by=by,axis=axis,level=level,as_index=as_index,sort=sort,group_keys=group_keys,squeeze=squeeze,observed=observed)
 
     def add_func(self,func,*args,**kwargs):
-        return self.groupby(level=1).apply(func,*args,**kwargs)
+        return self.groupby(level=1,as_index=False,group_keys=False).apply(func,*args,**kwargs)
