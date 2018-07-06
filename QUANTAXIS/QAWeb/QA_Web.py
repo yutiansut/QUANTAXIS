@@ -34,7 +34,7 @@ from QUANTAXIS.QAWeb.arphandles import AccountHandler
 
 class INDEX(QABaseHandler):
     def get(self):
-        self.render('{}{}'.format(os.sep,"index.html"))
+        self.render('.{}{}'.format(os.sep,"index.html"))
 
 
 def main():
