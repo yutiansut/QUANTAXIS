@@ -627,7 +627,7 @@ class _quotation_base():
 
         #🛠todo 不是很理解这样做的意图， 已经copy了，还用data初始化
         #🛠todo deepcopy 实现 ？还是 ？
-        temp = deepcopy(self)
+        temp = copy(self)
         temp.__init__(data, dtype, if_fq)
         return temp
 
