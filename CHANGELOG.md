@@ -47,6 +47,7 @@
 
 1. QA_DataStruct_Indicator 类增加 ```groupby``` 函数和  ```add_func```函数 ,用法和QA_DataStruct_xxxx_DAY/MIN 一致
 2. QA_DataStruct_Block 增加两个视图 ```view_code``` 和 ```view_block```
+3. 添加了 save option_day 保存50etf期权的命令到数据库中
 
 ## 1.0.61 
 
