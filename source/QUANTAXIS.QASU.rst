@@ -31,7 +31,7 @@ QUANTAXIS.QASU.save\_backtest module
 QUANTAXIS.QASU.save\_local module
 ---------------------------------
 
-.. automodule:: QUANTAXIS.QASU.save_local
+.. automodule:: QUANTAXIS.QASU.save_financialfiles
     :members:
     :undoc-members:
     :show-inheritance:
