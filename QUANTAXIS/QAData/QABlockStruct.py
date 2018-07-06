@@ -21,7 +21,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from copy import deepcopy
+from copy import deepcopy, copy
 
 import pandas as pd
 
@@ -55,7 +55,7 @@ class QA_DataStruct_Stock_block():
         Returns:
             [type] -- [description]
         """
-        temp = deepcopy(self)
+        temp = copy(self)
         temp.__init__(data)
         return temp
 
