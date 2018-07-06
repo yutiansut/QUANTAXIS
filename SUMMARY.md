@@ -11,7 +11,7 @@
 * [Docker一键部署](Documents/docker.md)
 * [在jupyter中调试QUANTAXIS](Documents/usejupyter.md)
 * [更新](Documents/update.md)
-
+* [WINDOWS数据自动更新](config/windows_autojob_updatedata.md)
 
 * [QUANTAXIS的数据结构](Documents/DataStruct.md)
 * [QUANTAXIS指标系统](Documents/indicators.md)
