@@ -26,7 +26,7 @@ from QUANTAXIS.QASU import crawl_eastmoney as crawl_eastmoney_file
 from QUANTAXIS.QASU import save_tdx as stdx
 from QUANTAXIS.QASU import save_tdx_file as tdx_file
 from QUANTAXIS.QASU import save_tushare as sts
-from QUANTAXIS.QASU import save_local
+from QUANTAXIS.QASU import save_financialfiles
 from QUANTAXIS.QAUtil import DATABASE
 
 
@@ -258,4 +258,4 @@ def QA_SU_crawl_eastmoney(action="zjlx", stockCode=None):
 
 
 def QA_SU_save_financialfiles():
-    return save_local.QA_SU_save_financial_files()
+    return save_financialfiles.QA_SU_save_financial_files()
