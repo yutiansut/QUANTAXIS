@@ -881,3 +881,7 @@ class _quotation_base():
             return self.dicts[(datetime.datetime.strptime(time, '%Y-%m-%d'), code)]
         elif len(time) == 19:
             return self.dicts[(datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S'), code)]
+
+
+    def fast_moving(self,pct):
+        return self.bar_pct_change[self.bar_pct_change>0.03].sort_index()

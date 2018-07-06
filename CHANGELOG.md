@@ -47,7 +47,68 @@
 
 1. QA_DataStruct_Indicator 类增加 ```groupby``` 函数和  ```add_func```函数 ,用法和QA_DataStruct_xxxx_DAY/MIN 一致
 2. QA_DataStruct_Block 增加两个视图 ```view_code``` 和 ```view_block```
-3. 添加了 save option_day 保存50etf期权的命令到数据库中
+3. QA_DataStruct_xxx_Day/Min 增加一个 ```fast_moving(pct)``` 函数, 用于表达bar的快速涨跌幅(返回series)
+4. QA_Data 增加一个 QA_DataStruct_Series() 类, 用于分析行情的series数据
+5. QA_DataStruct_Block 重写, 改成Multiindex驱动的数据格式
+6. 实现了一个快速分析全市场一段时间内异动的代码
+    ```python
+    # 引入QUANTAXIS
+    import QUANTAXIS as QA
+    # 获取全市场版块
+    block=QA.QA_fetch_stock_block_adv()
+    # 获取全市场股票
+    code=QA.QA_fetch_stock_list_adv().code.tolist()
+    # 获取全市场2018-07-05的1分钟线
+    min_data=QA.QA_fetch_stock_min_adv(code,'2018-07-05','2018-07-05','1min')
+    # 查找1分钟线bar涨幅超过3%的股票
+    L=min_data.fast_moving(0.03)
+    # 使用SeriesDataStruct加载结果
+    L1=QA.QA_DataStruct_Series(L)
+    # 查看某一个时刻的股票代码
+    L1.select_time('2018-07-05 09:33:00').code
+    # 使用版块查找这个时段的代码归属版块
+    block.get_code(L1.select_time('2018-07-05 09:31:00').code).view_block
+    block.get_code(L1.select_time('2018-07-05 09:31:00','2018-07-05 09:41:00').code).view_block
+    ```
+
+    返回
+    ```text
+    blockname
+    IP变现                     [300426]
+    ST板块                     [000953]
+    上周强势                     [300547]
+    两年新股             [002808, 300547]
+    低市净率                     [002541]
+    军民融合                     [300265]
+    创业300            [300278, 300426]
+    参股金融                     [000953]
+    国防军工             [300265, 300278]
+    小盘股              [002808, 300265]
+    已高送转             [002541, 300547]
+    户数减少                     [300042]
+    户数增加             [300278, 300547]
+    新能源车                     [300547]
+    昨日振荡                     [300265]
+    昨日涨停                     [300426]
+    昨曾涨停                     [300265]
+    昨高换手                     [601990]
+    智能机器                     [300278]
+    次新开板                     [601990]
+    次新股                      [601990]
+    皖江区域                     [002541]
+    破净资产                     [002541]
+    股权激励             [300278, 300547]
+    股权转让             [000953, 300042]
+    近期新低                     [002541]
+    送转潜力                     [300042]
+    送转超跌             [002808, 300426]
+    高质押股     [300042, 300265, 300278]
+    ```
+7. 修复了save financialfiles的代码
+8. 修复了QAWEB在非windows机器上的bug
+9. 添加了 save option_day 保存50etf期权的命令到数据库中
+
+
 
 ## 1.0.61 
 
