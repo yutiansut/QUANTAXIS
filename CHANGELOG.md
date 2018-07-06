@@ -105,7 +105,7 @@
     高质押股     [300042, 300265, 300278]
     ```
 7. 修复了save financialfiles的代码
-
+8. 修复了QAWEB在非windows机器上的bug
 
 
 
