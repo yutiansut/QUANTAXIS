@@ -1089,6 +1089,34 @@ def QA_fetch_get_option_list(ip=None, port=None):
 
     return extension_market_list.query('category==12 and market!=1')
 
+
+def QA_fetch_get_50etf_option_contract_time_to_market():
+    '''
+    #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
+    去掉商品期权，保留510050开头的50ETF期权,只获取50ETF期权
+    :return: list Series
+    '''
+    result = QA_fetch_get_option_list('tdx')
+    # pprint.pprint(result)
+    #  category  market code name desc  code
+
+    # df = pd.DataFrame()
+    rows = []
+    for idx in result.index:
+        # pprint.pprint((idx))
+        strCategory = result.loc[idx, "category"]
+        strMarket = result.loc[idx, "market"]
+        strCode = result.loc[idx, "code"]  #10001215
+        strName = result.loc[idx, 'name']  #510050C9M03200
+        strDesc = result.loc[idx, 'desc']  #10001215
+        if strName.startswith("510050"):
+            # print(strCategory,' ', strMarket, ' ', strCode, ' ', strName, ' ', strDesc, )
+            row = result.loc[idx];
+            rows.append(row)
+    return rows
+
+
+
 def QA_fetch_get_exchangerate_list(ip=None, port=None):
     """汇率列表
 
@@ -1125,8 +1153,13 @@ def QA_fetch_get_future_day(code, start_date, end_date, frequence='day', ip=None
     with apix.connect(ip, port):
         code_market = extension_market_list.query('code=="{}"'.format(code))
 
-        data = pd.concat([apix.to_df(apix.get_instrument_bars(_select_type(
-            frequence), int(code_market.market), str(code), (int(lens / 700) - i) * 700, 700))for i in range(int(lens / 700) + 1)], axis=0)
+        data = pd.concat(
+            [apix.to_df(apix.get_instrument_bars(
+            _select_type(frequence),
+            int(code_market.market),
+            str(code),
+            (int(lens / 700) - i) * 700, 700))for i in range(int(lens / 700) + 1)],
+            axis=0)
         data = data.assign(date=data['datetime'].apply(lambda x: str(x[0:10]))).assign(code=str(code))\
             .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10]))).set_index('date', drop=False, inplace=False)
 

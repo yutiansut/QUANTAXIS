@@ -106,6 +106,7 @@
     ```
 7. 修复了save financialfiles的代码
 8. 修复了QAWEB在非windows机器上的bug
+9. 添加了 save option_day 保存50etf期权的命令到数据库中
 
 
 

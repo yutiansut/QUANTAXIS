@@ -3,6 +3,7 @@ import unittest
 import sys
 import os
 import struct
+import QUANTAXIS as QA
 
 class QAData_fq_test(unittest.TestCase):
 
@@ -183,6 +184,14 @@ close     1     0.6    0.7    0.8     0.6
         读取通达信股票数据
         :return:
         '''
+
+        codelist = self.qa_data = QA.QA_fetch_stock_list_adv().code.tolist();
+
+        QA.QA_fetch_stock_block_adv()
+        codelist = QA.QA_fetch_stock_block_adv().get_block('云计算').code
+        bockList = QA.QA_fetch_stock_block_adv()
+        #data = QA.QA_fetch_stock_day_adv(codelist, '2017-09-01', '2018-05-20')
+
 
         if sys.platform == 'darwin':
             self.tdxPath_SH_lday = '/Users/jerryw/.wine/drive_c/new_tdx/vipdoc/sh/lday'
