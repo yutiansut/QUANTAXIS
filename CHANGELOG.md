@@ -50,6 +50,30 @@
 3. QA_DataStruct_xxx_Day/Min 增加一个 ```fast_moving(pct)``` 函数, 用于表达bar的快速涨跌幅(返回series)
 4. QA_Data 增加一个 QA_DataStruct_Series() 类, 用于分析行情的series数据
 5. QA_DataStruct_Block 重写, 改成Multiindex驱动的数据格式
+6. 实现了一个快速分析全市场一段时间内异动的代码
+    ```python
+    # 引入QUANTAXIS
+    import QUANTAXIS as QA
+    # 获取全市场版块
+    block=QA.QA_fetch_stock_block_adv()
+    # 获取全市场股票
+    code=QA.QA_fetch_stock_list_adv().code.tolist()
+    # 获取全市场2018-07-05的1分钟线
+    min_data=QA.QA_fetch_stock_min_adv(code,'2018-07-05','2018-07-05','1min')
+    # 查找1分钟线bar涨幅超过3%的股票
+    L=min_data.fast_moving(0.03)
+    # 使用SeriesDataStruct加载结果
+    L1=QA.QA_DataStruct_Series(L)
+    # 查看某一个时刻的股票代码
+    L1.select_time('2018-07-05 09:33:00').code
+    # 使用版块查找这个时段的代码归属版块
+    block.get_code(L1.select_time('2018-07-05 09:31:00').code).view_block
+    block.get_code(L1.select_time('2018-07-05 09:31:00','2018-07-05 09:41:00').code).view_block
+    ```
+7. 修复了save financialfiles的代码
+
+
+
 
 ## 1.0.61 
 
