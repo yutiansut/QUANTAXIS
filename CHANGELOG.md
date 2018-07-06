@@ -47,6 +47,9 @@
 
 1. QA_DataStruct_Indicator 类增加 ```groupby``` 函数和  ```add_func```函数 ,用法和QA_DataStruct_xxxx_DAY/MIN 一致
 2. QA_DataStruct_Block 增加两个视图 ```view_code``` 和 ```view_block```
+3. QA_DataStruct_xxx_Day/Min 增加一个 ```fast_moving(pct)``` 函数, 用于表达bar的快速涨跌幅(返回series)
+4. QA_Data 增加一个 QA_DataStruct_Series() 类, 用于分析行情的series数据
+5. QA_DataStruct_Block 重写, 改成Multiindex驱动的数据格式
 
 ## 1.0.61 
 

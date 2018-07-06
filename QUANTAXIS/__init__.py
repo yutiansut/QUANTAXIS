@@ -119,7 +119,7 @@ from QUANTAXIS.QAData import (QA_data_tick_resample, QA_data_get_hfq, QA_data_ge
                               QA_data_make_hfq, QA_DataStruct_Stock_day, QA_DataStruct_Stock_min,
                               QA_DataStruct_Future_day, QA_DataStruct_Future_min,
                               QA_DataStruct_Index_day, QA_DataStruct_Index_min, QA_DataStruct_Indicators,
-                              QA_DataStruct_Stock_transaction, QA_DataStruct_Stock_block,
+                              QA_DataStruct_Stock_transaction, QA_DataStruct_Stock_block, QA_DataStruct_Series,
                               from_tushare, QDS_StockMinWarpper, QDS_StockDayWarpper, QDS_IndexDayWarpper, QDS_IndexMinWarpper)
 from QUANTAXIS.QAData.dsmethods import *
 # Analysis
