@@ -22,7 +22,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import tornado
-import platform
 import os
 from tornado.web import Application, RequestHandler, authenticated
 
@@ -60,11 +59,11 @@ def main():
     http_server.bind(8010,address='0.0.0.0')
     """增加了对于非windows下的机器多进程的支持
     """
-
-    if platform.system() != 'Windows':
-        http_server.start(0)
-    else:
-        http_server.start(1)
+    http_server.start(1)
+    # if platform.system() != 'Windows':
+    #     http_server.start(0)
+    # else:
+    #     http_server.start(1)
     #tornado.ioloop.IOLoop.instance().start()
     tornado.ioloop.IOLoop.current().start()
 
