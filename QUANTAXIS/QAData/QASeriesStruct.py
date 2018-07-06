@@ -1,4 +1,4 @@
-# coding=utf-8
+# coding:utf-8
 #
 # The MIT License (MIT)
 #
@@ -21,31 +21,45 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+from copy import deepcopy
 
-
-import csv
+import numpy as np
 import pandas as pd
-import QUANTAXIS as QA
 
 
-_haitong_traderecord = ['成交日期', '证券代码', '证券名称', '买卖标志', '成交价格', '成交数量', '成交金额', '印花税(￥)', '交易征费￥)',
-                        '交易费(￥)', '股份交收费(￥)', '佣金(￥)', '交易系统使用费(￥)', '总费用(￥)', '成交编号', '股东代码', '成交时间']
+class QA_DataStruct_Series():
+    def __init__(self, series):
+        self.series = series.sort_index()
+        self.index = series.index.remove_unused_levels()
 
+    def __repr__(self):
+        return '< QA_DATASTRUCT_SEIRES >'
 
-_haitong_traderecord_eng = ['date', 'code', 'name', 'towards', 'price', 'volume', 'money', 'tax_fee', 'sectrade_fee', 'trde_fee', 'stock_fee',
-                            'stock_settlement_fee', 'commission_fee', 'tradesys_fee', 'total_fee', 'trade_id', 'shareholder', 'datetime']
+    def __call__(self):
+        return self.series
 
+    @property
+    def code(self):
+        return self.index.levels[1].tolist()
 
-def QA_fetch_get_tdxtraderecord(file):
-    """
-    QUANTAXIS 读取历史交易记录 通达信 历史成交-输出-xlsfile--转换csvfile
-    """
-    try:
-        with open('./20180606.csv', 'r') as f:
-            l = csv.reader(f)
-            data = [item for item in l]
+    @property
+    def datetime(self):
+        return self.index.levels[0].tolist()
 
-        res = pd.DataFrame(data[1:], columns=data[0])
-        return res
-    except:
-        raise IOError('QA CANNOT READ THIS RECORD')
+    @property
+    def date(self):
+        return np.unique(self.index.levels[0].date).tolist()
+
+    def new(self, series):
+        temp = deepcopy(self)
+        temp.__init__(series)
+        return temp
+
+    def select_code(self, code):
+        return self.new(self.series.loc[(slice(None), code)])
+
+    def select_time(self, start, end=None):
+        if end is None:
+            return self.new(self.series.loc[(pd.Timestamp(start), slice(None))])
+        else:
+            return self.new(self.series.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), slice(None))])

@@ -627,7 +627,7 @@ class _quotation_base():
 
         #🛠todo 不是很理解这样做的意图， 已经copy了，还用data初始化
         #🛠todo deepcopy 实现 ？还是 ？
-        temp = copy(self)
+        temp = deepcopy(self)
         temp.__init__(data, dtype, if_fq)
         return temp
 
@@ -881,3 +881,7 @@ class _quotation_base():
             return self.dicts[(datetime.datetime.strptime(time, '%Y-%m-%d'), code)]
         elif len(time) == 19:
             return self.dicts[(datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S'), code)]
+
+
+    def fast_moving(self,pct):
+        return self.bar_pct_change[self.bar_pct_change>0.03].sort_index()

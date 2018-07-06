@@ -22,6 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from QUANTAXIS.QAData.QASeriesStruct import QA_DataStruct_Series
 from QUANTAXIS.QAData.data_fq import (QA_data_get_hfq, QA_data_get_qfq,
                                       QA_data_make_hfq, QA_data_make_qfq,
                                       QA_data_stock_to_fq)
