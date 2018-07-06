@@ -21,24 +21,43 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+from copy import deepcopy
+
 import pandas as pd
+
 from QUANTAXIS.QAFetch.QATdx import QA_fetch_get_stock_realtime
 
 
 class QA_DataStruct_Stock_block():
     def __init__(self, DataFrame):
         self.data = DataFrame
-        #assert isinstance(DataFrame.index, pd.MultiIndex)
-        #self.index = self.data.index.remove_unused_levels()
+        assert isinstance(DataFrame.index, pd.MultiIndex)
+        self.index = self.data.index.remove_unused_levels()
 
     def __repr__(self):
         return '< QA_DataStruct_Stock_Block >'
 
     def __call__(self):
+        """调用直接返回内部的数据
+
+        Returns:
+            [type] -- [description]
+        """
+
         return self.data
 
+    def new(self, data):
+        """通过data新建一个stock_block
 
+        Arguments:
+            data {[type]} -- [description]
 
+        Returns:
+            [type] -- [description]
+        """
+        temp = deepcopy(self)
+        temp.__init__(data)
+        return temp
 
     @property
     def len(self):
@@ -58,7 +77,7 @@ class QA_DataStruct_Stock_block():
             [type] -- [description]
         """
 
-        return self.data.groupby('blockname').sum().index.unique().tolist()
+        return self.index.levels[0].tolist()
 
     @property
     def code(self):
@@ -68,7 +87,7 @@ class QA_DataStruct_Stock_block():
             [type] -- [description]
         """
 
-        return self.data.code.unique().tolist()
+        return self.index.levels[1].tolist()
 
     @property
     def view_code(self):
@@ -78,7 +97,7 @@ class QA_DataStruct_Stock_block():
             [type] -- [description]
         """
 
-        return self.data.groupby(level=0).apply(lambda x: [item for item in x.blockname])
+        return self.data.groupby(level=1).apply(lambda x: [item for item in x.index.remove_unused_levels().levels[0]])
 
     @property
     def view_block(self):
@@ -88,7 +107,7 @@ class QA_DataStruct_Stock_block():
             [type] -- [description]
         """
 
-        return self.data.groupby('blockname').apply(lambda x: [item for item in x.code])
+        return self.data.groupby(level=0).apply(lambda x: [item for item in x.index.remove_unused_levels().levels[1]])
 
     def show(self):
         """展示DataStruct
@@ -109,7 +128,7 @@ class QA_DataStruct_Stock_block():
             DataStruct -- [description]
         """
         # code= [code] if isinstance(code,str) else
-        return QA_DataStruct_Stock_block(self.data.loc[(slice(None), code), :])
+        return self.new(self.data.loc[(slice(None), code), :])
 
     def get_block(self, block_name):
         """getblock 获取板块, block_name是list或者是单个str
@@ -124,39 +143,39 @@ class QA_DataStruct_Stock_block():
         #     block_name, str) else block_name
         # return QA_DataStruct_Stock_block(self.data[self.data.blockname.apply(lambda x: x in block_name)])
 
-        return QA_DataStruct_Stock_block(self.data.loc[(block_name, slice(None)), :])
+        return self.new(self.data.loc[(block_name, slice(None)), :])
 
-    def getdtype(self, dtype):
-        """getdtype
+    # def getdtype(self, dtype):
+    #     """getdtype
 
-        Arguments:
-            dtype {str} -- gn-概念/dy-地域/fg-风格/zs-指数
+    #     Arguments:
+    #         dtype {str} -- gn-概念/dy-地域/fg-风格/zs-指数
 
-        Returns:
-            [type] -- [description]
-        """
+    #     Returns:
+    #         [type] -- [description]
+    #     """
 
-        return QA_DataStruct_Stock_block(self.data[self.data['type'] == dtype])
+    #     return QA_DataStruct_Stock_block(self.data[self.data['type'] == dtype])
 
-    def get_price(self, _block_name=None):
-        """get_price
+    # def get_price(self, _block_name=None):
+    #     """get_price
 
-        Keyword Arguments:
-            _block_name {[type]} -- [description] (default: {None})
+    #     Keyword Arguments:
+    #         _block_name {[type]} -- [description] (default: {None})
 
-        Returns:
-            [type] -- [description]
-        """
+    #     Returns:
+    #         [type] -- [description]
+    #     """
 
-        if _block_name is not None:
-            try:
-                code = self.data[self.data['blockname']
-                                 == _block_name].code.unique().tolist()
-                # try to get a datastruct package of lastest price
-                return QA_fetch_get_stock_realtime(code)
+    #     if _block_name is not None:
+    #         try:
+    #             code = self.data[self.data['blockname']
+    #                              == _block_name].code.unique().tolist()
+    #             # try to get a datastruct package of lastest price
+    #             return QA_fetch_get_stock_realtime(code)
 
-            except:
-                return "Wrong Block Name! Please Check"
-        else:
-            code = self.data.code.unique().tolist()
-            return QA_fetch_get_stock_realtime(code)
+    #         except:
+    #             return "Wrong Block Name! Please Check"
+    #     else:
+    #         code = self.data.code.unique().tolist()
+    #         return QA_fetch_get_stock_realtime(code)

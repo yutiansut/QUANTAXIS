@@ -306,7 +306,7 @@ def QA_fetch_stock_block_adv(code=None, blockname=None, collections=DATABASE.sto
     if code is not None and blockname is None:
         # 返回这个股票代码所属的板块
         data = pd.DataFrame([item for item in collections.find({'code': code})]).drop(['_id'], axis=1)
-        return QA_DataStruct_Stock_block(data.set_index('code', drop=False).drop_duplicates())
+        return QA_DataStruct_Stock_block(data.set_index(['blockname','code'], drop=True).drop_duplicates())
     elif blockname is not None and code is None:
         # 返回该板块所属的股票
         items_from_collections = [item for item in collections.find({'blockname': re.compile(blockname)})]
@@ -316,7 +316,7 @@ def QA_fetch_stock_block_adv(code=None, blockname=None, collections=DATABASE.sto
     else:
         # 🛠 todo 返回 判断 这个股票是否和属于该板块
         data = pd.DataFrame([item for item in collections.find()]).drop(['_id'], axis=1)
-        data_set_index = data.set_index('code', drop=False).drop_duplicates()
+        data_set_index = data.set_index(['blockname','code'], drop=True)
         return QA_DataStruct_Stock_block(data_set_index)
 
 
