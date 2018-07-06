@@ -70,7 +70,7 @@ def QA_SU_save_option_day(client=DATABASE):
 
     def __saving_work(code,coll_option_day):
         try:
-            QA_util_log_info('##JOB01 Now Saving OPTION_DAY==== {}'.format(str(code)))
+            QA_util_log_info('##JOB12 Now Saving OPTION_DAY==== {}'.format(str(code)))
 
 
             # 首选查找数据库 是否 有 这个代码的数据
