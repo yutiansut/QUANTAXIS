@@ -21,20 +21,24 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
+import pandas as pd
 from QUANTAXIS.QAFetch.QATdx import QA_fetch_get_stock_realtime
 
 
 class QA_DataStruct_Stock_block():
     def __init__(self, DataFrame):
         self.data = DataFrame
-        #self.data.index = self.data.index.remove_unused_levels()
+        #assert isinstance(DataFrame.index, pd.MultiIndex)
+        #self.index = self.data.index.remove_unused_levels()
 
     def __repr__(self):
         return '< QA_DataStruct_Stock_Block >'
 
     def __call__(self):
         return self.data
+
+
+
 
     @property
     def len(self):
@@ -69,17 +73,17 @@ class QA_DataStruct_Stock_block():
     @property
     def view_code(self):
         """按股票排列的查看blockname的视图
-        
+
         Returns:
             [type] -- [description]
         """
 
         return self.data.groupby(level=0).apply(lambda x: [item for item in x.blockname])
-        
+
     @property
     def view_block(self):
         """按版块排列查看的code的视图
-        
+
         Returns:
             [type] -- [description]
         """
@@ -104,8 +108,8 @@ class QA_DataStruct_Stock_block():
         Returns:
             DataStruct -- [description]
         """
-
-        return QA_DataStruct_Stock_block(self.data[self.data['code'] == code])
+        # code= [code] if isinstance(code,str) else
+        return QA_DataStruct_Stock_block(self.data.loc[(slice(None), code), :])
 
     def get_block(self, block_name):
         """getblock 获取板块, block_name是list或者是单个str
@@ -116,11 +120,11 @@ class QA_DataStruct_Stock_block():
         Returns:
             [type] -- [description]
         """
-        block_name = [block_name] if isinstance(
-            block_name, str) else block_name
-        return QA_DataStruct_Stock_block(self.data[self.data.blockname.apply(lambda x: x in block_name)])
+        # block_name = [block_name] if isinstance(
+        #     block_name, str) else block_name
+        # return QA_DataStruct_Stock_block(self.data[self.data.blockname.apply(lambda x: x in block_name)])
 
-
+        return QA_DataStruct_Stock_block(self.data.loc[(block_name, slice(None)), :])
 
     def getdtype(self, dtype):
         """getdtype
