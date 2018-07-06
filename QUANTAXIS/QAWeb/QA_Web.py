@@ -23,6 +23,7 @@
 # SOFTWARE.
 import tornado
 import platform
+import os
 from tornado.web import Application, RequestHandler, authenticated
 
 from QUANTAXIS.QAWeb.datahandles import StockdayHandler, StockminHandler,StockBlockHandler,StockPriceHandler
@@ -34,7 +35,7 @@ from QUANTAXIS.QAWeb.arphandles import AccountHandler
 
 class INDEX(QABaseHandler):
     def get(self):
-        self.render(".\index.html")
+        self.render('{}{}'.format(os.sep,"index.html"))
 
 
 def main():
@@ -68,22 +69,4 @@ def main():
     tornado.ioloop.IOLoop.current().start()
 
 if __name__ == '__main__':
-    app = Application(
-        handlers=[
-            (r"/", INDEX),
-            (r"/marketdata/stock/day", StockdayHandler),
-            (r"/marketdata/stock/min", StockminHandler),
-            (r"/marketdata/stock/block", StockBlockHandler),
-            (r"/marketdata/stock/price", StockPriceHandler),
-            (r"/user/signin", SigninHandler),
-            (r"/user/signup", SignupHandler),
-            (r"/user/blocksetting", PersonBlockHandler),
-            (r"/realtime", RealtimeSocketHandler),
-            (r"/simulate", SimulateSocketHandler),
-            (r"/monitor", MonitorSocketHandler),
-            (r"/accounts",AccountHandler)
-        ],
-        debug=True
-    )
-    app.listen(8010,address='0.0.0.0')
-    tornado.ioloop.IOLoop.instance().start()
+    main()
