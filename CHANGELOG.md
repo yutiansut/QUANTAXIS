@@ -107,6 +107,7 @@
 7. 修复了save financialfiles的代码
 8. 修复了QAWEB在非windows机器上的bug
 9. 添加了 save option_day 保存50etf期权的命令到数据库中
+10. 增加了config文件的 update_all.py 和 update_x.py 文件, 用于自动化任务管理
 
 
 
