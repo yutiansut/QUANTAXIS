@@ -1,5 +1,5 @@
 import os
-from QUANTAXIS.QAUtil import QALocalize
+from QUANTAXIS.QASetting import QALocalize
 from QUANTAXIS_CRAWLY.run_selenium_alone import (read_east_money_page_zjlx_to_sqllite, open_chrome_driver, close_chrome_dirver)
 import urllib
 import pandas as pd

@@ -37,9 +37,20 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_str2int,
 
 from QUANTAXIS.QAFetch.base import _select_market_code, _select_type
 
+
+
 # 基于Pytdx的数据接口,好处是可以在linux/mac上联入通达信行情
 # 具体参见rainx的pytdx(https://github.com/rainx/pytdx)
 #
+
+
+
+def init_fetcher():
+    """初始化获取
+    """
+
+
+    pass
 
 
 def ping(ip, port=7709, type_='stock'):
@@ -117,6 +128,17 @@ def get_extensionmarket_ip(ip, port):
 
 
 def get_mainmarket_ip(ip, port):
+    """[summary]
+    
+    Arguments:
+        ip {[type]} -- [description]
+        port {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+
+
     global best_ip
     if ip is None and port is None and best_ip['stock']['ip'] is None and best_ip['stock']['port'] is None:
         best_ip = select_best_ip()

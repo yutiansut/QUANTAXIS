@@ -26,7 +26,7 @@ yutiansut
 util tool
 """
 # path
-from QUANTAXIS.QAUtil.QALocalize import qa_path, setting_path, cache_path, download_path, log_path
+
 # bar
 from QUANTAXIS.QAUtil.QABar import (QA_util_make_hour_index,
                                     QA_util_make_min_index, QA_util_time_gap)
