@@ -474,7 +474,29 @@ def QA_fetch_depth_market_data(code=['000001', '000002'], ip=None, port=None):
 737×××新股配售；
 900×××B股。
 
+
 深市
+第1位	第二位	第3-6位	含义
+0	0	XXXX	A股证券
+0	3	XXXX	A股A2权证
+0	7	XXXX	A股增发
+0	8	XXXX	A股A1权证
+0	9	XXXX	A股转配
+1	0	XXXX	国债现货
+1	1	XXXX	债券
+1	2	XXXX	可转换债券
+1	3	XXXX	国债回购
+1	7	XXXX	原有投资基金
+1	8	XXXX	证券投资基金
+2	0	XXXX	B股证券
+2	7	XXXX	B股增发
+2	8	XXXX	B股权证
+3	0	XXXX	创业板证券
+3	7	XXXX	创业板增发
+3	8	XXXX	创业板权证
+3	9	XXXX	综合指数/成份指数
+
+
 深市A股票买卖的代码是以000打头，如：顺鑫农业：股票代码是000860。
 B股买卖的代码是以200打头，如：深中冠B股，代码是200018。
 中小板股票代码以002打头，如：东华合创股票代码是002065。
@@ -487,12 +509,30 @@ B股买卖的代码是以200打头，如：深中冠B股，代码是200018。
 
 
 def for_sz(code):
+    """深市代码分类
+    
+    Arguments:
+        code {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+
     if str(code)[0:2] in ['00', '30', '02']:
         return 'stock_cn'
     elif str(code)[0:2] in ['39']:
         return 'index_cn'
     elif str(code)[0:2] in ['15']:
         return 'etf_cn'
+    elif str(code)[0:2] in ['10','11','12','13']:
+        # 10xxxx 国债现货
+        # 11xxxx 债券
+        # 12xxxx 可转换债券
+        # 12xxxx 国债回购
+        return 'bond_cn'
+
+    elif str(code)[0:2] in ['20']:
+        return 'stockB_cn'
     else:
         return 'undefined'
 
@@ -537,6 +577,39 @@ def QA_fetch_get_stock_list(type_='stock', ip=None, port=None):
             return data.assign(code=data['code'].apply(lambda x: str(x))).assign(name=data['name'].apply(lambda x: str(x)[0:6]))
             # .assign(szm=data['name'].apply(lambda x: ''.join([y[0] for y in lazy_pinyin(x)])))\
             #    .assign(quanpin=data['name'].apply(lambda x: ''.join(lazy_pinyin(x))))
+
+def QA_fetch_get_index_list(ip=None, port=None):
+    """获取指数列表
+    
+    Keyword Arguments:
+        ip {[type]} -- [description] (default: {None})
+        port {[type]} -- [description] (default: {None})
+    
+    Returns:
+        [type] -- [description]
+    """
+
+    ip, port = get_mainmarket_ip(ip, port)
+    api = TdxHq_API()
+    with api.connect(ip, port):
+        data = pd.concat([pd.concat([api.to_df(api.get_security_list(j, i * 1000)).assign(sse='sz' if j == 0 else 'sh').set_index(
+            ['code', 'sse'], drop=False) for i in range(int(api.get_security_count(j) / 1000) + 1)], axis=0) for j in range(2)], axis=0)
+        #data.code = data.code.apply(int)
+        sz = data.query('sse=="sz"')
+        sh = data.query('sse=="sh"')
+
+        sz = sz.assign(sec=sz.code.apply(for_sz))
+        sh = sh.assign(sec=sh.code.apply(for_sh))
+        return pd.concat([sz, sh]).query('sec=="index_cn"').sort_index().assign(name=data['name'].apply(lambda x: str(x)[0:6]))
+
+def QA_fetch_get_bond_list(ip=None,port=None):
+    """bond
+    
+    Keyword Arguments:
+        ip {[type]} -- [description] (default: {None})
+        port {[type]} -- [description] (default: {None})
+    """
+    pass
 
 
 def QA_fetch_get_index_day(code, start_date, end_date, frequence='day', ip=None, port=None):
