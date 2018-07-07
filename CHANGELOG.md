@@ -3,7 +3,8 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-%E6%9B%B4%E6%96%B0%E7%BA%AA%E8%A6%81)
-    - [1.0.62 (unreleased)](#1062-unreleased)
+    - [1.0.63 (unreleased)](#1063-unreleased)
+    - [1.0.62](#1062)
     - [1.0.61](#1061)
     - [1.0.60](#1060)
     - [1.0.59](#1059)
@@ -43,7 +44,11 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
-## 1.0.62 (unreleased)
+
+## 1.0.63 (unreleased)
+
+
+## 1.0.62 
 
 1. QA_DataStruct_Indicator 类增加 ```groupby``` 函数和  ```add_func```函数 ,用法和QA_DataStruct_xxxx_DAY/MIN 一致
 2. QA_DataStruct_Block 增加两个视图 ```view_code``` 和 ```view_block```
@@ -109,6 +114,8 @@
 9. 添加了 save option_day 保存50etf期权的命令到数据库中
 10. 增加了config文件的 update_all.py 和 update_x.py 文件, 用于自动化任务管理
 11. 增加QASetting模块, 用于QUANTAXIS的设置/配置/任务管理
+
+released in : JULY 8, 2018
 
 
 ## 1.0.61 
