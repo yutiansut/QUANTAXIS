@@ -1,15 +1,29 @@
 # coding:utf-8
 import os
 
+"""创建本地文件夹
+"""
+
+
 path = os.path.expanduser('~')
 qa_path = '{}{}{}'.format(path, os.sep, '.quantaxis')
-setting_path = '{}{}{}'.format(qa_path, os.sep, 'setting')
-cache_path = '{}{}{}'.format(qa_path, os.sep, 'cache')
-log_path = '{}{}{}'.format(qa_path, os.sep, 'log')
-download_path = '{}{}{}'.format(qa_path, os.sep, 'downloads')
 
-os.makedirs(qa_path, exist_ok=True)
-os.makedirs(setting_path, exist_ok=True)
-os.makedirs(cache_path, exist_ok=True)
-os.makedirs(download_path, exist_ok=True)
-os.makedirs(log_path, exist_ok=True)
+
+def generate_path(name):
+    return '{}{}{}'.format(qa_path, os.sep, name)
+
+
+def make_dir(path,exist_ok=True):
+    os.makedirs(path, exist_ok=exist_ok)
+
+
+setting_path = generate_path('setting')
+cache_path = generate_path('cache')
+log_path = generate_path('log')
+download_path = generate_path('downloads')
+
+make_dir(qa_path, exist_ok=True)
+make_dir(setting_path, exist_ok=True)
+make_dir(cache_path, exist_ok=True)
+make_dir(download_path, exist_ok=True)
+make_dir(log_path, exist_ok=True)
