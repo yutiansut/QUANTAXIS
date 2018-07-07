@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
+- [QUANTAXIS 更新纪要](#quantaxis-%E6%9B%B4%E6%96%B0%E7%BA%AA%E8%A6%81)
     - [1.0.62 (unreleased)](#1062-unreleased)
     - [1.0.61](#1061)
     - [1.0.60](#1060)
@@ -108,7 +108,7 @@
 8. 修复了QAWEB在非windows机器上的bug
 9. 添加了 save option_day 保存50etf期权的命令到数据库中
 10. 增加了config文件的 update_all.py 和 update_x.py 文件, 用于自动化任务管理
-
+11. 增加QASetting模块, 用于QUANTAXIS的设置/配置/任务管理
 
 
 ## 1.0.61 

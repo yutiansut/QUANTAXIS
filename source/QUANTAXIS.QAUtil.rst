@@ -76,10 +76,10 @@ QUANTAXIS.QAUtil.QAList module
     :undoc-members:
     :show-inheritance:
 
-QUANTAXIS.QAUtil.QALocalize module
+QUANTAXIS.QASetting.QALocalize module
 ----------------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QALocalize
+.. automodule:: QUANTAXIS.QASetting.QALocalize
     :members:
     :undoc-members:
     :show-inheritance:

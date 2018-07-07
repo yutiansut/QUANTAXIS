@@ -29,7 +29,7 @@ import pandas as pd
 from pytdx.reader.history_financial_reader import HistoryFinancialReader
 from pytdx.crawler.history_financial_crawler import HistoryFinancialCrawler
 
-from QUANTAXIS.QAUtil.QALocalize import qa_path, download_path
+from QUANTAXIS.QASetting.QALocalize import qa_path, download_path
 """
 参见PYTDX 1.65
 """
