@@ -49,12 +49,14 @@ def execute(command, shell=None, working_dir=".", echo=False, echo_indent=0):
     if shell is None:
         shell = True if isinstance(command, basestring) else False
 
-    p = Popen(command, stdin=PIPE, stdout=PIPE, stderr=STDOUT, shell=shell, cwd=working_dir)
+    p = Popen(command, stdin=PIPE, stdout=PIPE,
+              stderr=STDOUT, shell=shell, cwd=working_dir)
 
     if echo:
         stdout = ""
         while p.poll() is None:
-            line = p.stdout.readline()  # This blocks until it receives a newline.
+            # This blocks until it receives a newline.
+            line = p.stdout.readline()
             print(" " * echo_indent, line, end="")
             stdout += line
 
