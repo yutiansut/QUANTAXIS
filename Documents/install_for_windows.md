@@ -36,6 +36,13 @@ QUANATXIS 支持的安装环境是python3以上 优先推荐3.6环境
 
 [清华镜像ANACONDA链接](https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/)
 
+
+anaconda安装的时候 注意:
+
+敲黑板! 一定都要选上, 不然需要自己手动配置path, 如果不是很了解path的童靴一定要都选上
+
+![](http://pic.yutiansut.com/anaconda_install_win.png)
+
 ##  3. 安装(可以跳过)
 
 在安装ANACONDA的过程中,注意勾选```add to path```选项,将python的执行路径加入系统路径中
@@ -51,7 +58,7 @@ Python 3.6.3 :: Anaconda, Inc.
 
 QUANTAXIS的代码托管在github,你需要经常用过```git pull```来更新代码,所以请勿直接在网站上下载zip压缩包
 
-[git 下载地址](http://rj.baidu.com/soft/detail/40642.html)
+[git 下载地址](https://pc.qq.com/search.html#!keyword=git)
 
 同样,在安装的时候 选择```add to path```
 

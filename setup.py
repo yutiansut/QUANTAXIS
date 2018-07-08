@@ -89,7 +89,7 @@ KEYWORDS = ["quantaxis", "quant", "finance", "Backtest", 'Framework']
 
 AUTHOR_EMAIL = "yutiansut@qq.com"
 
-URL = "http://www.yutiansut.com"
+URL = "https://github.com/quantaxis/quantaxis"
 
 
 LICENSE = "MIT"
