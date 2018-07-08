@@ -223,7 +223,7 @@ class QA_Market(QA_Trade):
     def get_account_id(self):
         return list(self.session.keys())
 
-    def insert_order(self, account_id, amount, amount_model, time, code, price, order_model, towards, market_type, frequence, broker_name):
+    def insert_order(self, account_id, amount, amount_model, time, code, price, order_model, towards, market_type, frequence, broker_name, money=None):
         #strDbg = QA_util_random_with_topic("QA_Market.insert_order")
         #print(">-----------------------insert_order----------------------------->", strDbg)
 
@@ -256,7 +256,7 @@ class QA_Market(QA_Trade):
         if flag:
             order = self.get_account(account_id).send_order(
                 amount=amount, amount_model=amount_model, time=time, code=code, price=price,
-                order_model=order_model, towards=towards)
+                order_model=order_model, towards=towards , money=money)
 
             # print("------------------------------------------------->")
             #print("order 排队")
