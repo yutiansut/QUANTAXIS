@@ -12,7 +12,6 @@
         - [2.在产生的网页上新建一个notebook](#2在产生的网页上新建一个notebook)
         - [3.在notebook中运行代码](#3在notebook中运行代码)
         - [4.保存notebook为可运行的python文件](#4保存notebook为可运行的python文件)
-    - [启动QUANTAXIS_Webkit来查看回测的结果](#启动quantaxis_webkit来查看回测的结果)
     - [更新QUANTAXIS](#更新quantaxis)
 
 <!-- /TOC -->
@@ -20,9 +19,8 @@
 
 - Windows/Linux(ubuntu)/Mac 已测试通过
 - python3.6(开发环境) python2 回测框架不兼容(attention! 之后会逐步用更多高级语法)   [*] 如果需要交易,请下载32位的python3.6
-- nodejs 需要安装>7的版本,来支持es6语法
 - mongodb是必须要装的
-- 强烈推荐mongodb的可视化库  robomongo 百度即可下载
+- 强烈推荐mongodb的可视化库  robomongo (百度即可下载,QQ群文件也有)
 
 一个简易demo(需要先安装并启动mongodb,python版本需要大于3)
 
@@ -83,7 +81,7 @@ python  backtest.py
 
 参见 [userjupyter](usejupyter.md)
 
-## 启动QUANTAXIS_Webkit来查看回测的结果
+<!-- ## 启动QUANTAXIS_Webkit来查看回测的结果
 
 
 启动网络插件(nodejs 版本号需要大于6,最好是7)
@@ -109,7 +107,7 @@ cd web
 选择和你回测策略中名称一致的结果即可进入可视化界面
 ![开启web](http://pic.yutiansut.com/quantaxis%E5%BC%80%E5%90%AF.gif)
 ![web操作](http://pic.yutiansut.com/quantaxisweb.gif)
-(web操作的图太大 github上无法显示, 可以点进链接查看)
+(web操作的图太大 github上无法显示, 可以点进链接查看) -->
 
 ## 更新QUANTAXIS
 
