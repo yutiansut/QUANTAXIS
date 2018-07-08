@@ -8,6 +8,7 @@
     - [安装quantaxis](#安装quantaxis)
     - [安装数据库](#安装数据库)
     - [使用jupyter调试你的代码](#使用jupyter调试你的代码)
+    - [自动更新数据](#自动更新数据)
 
 <!-- /TOC -->
 
@@ -160,3 +161,31 @@ net start MongoDB
 
 4. 保存notebook为可运行的python文件
 ![](http://pic.yutiansut.com/QQ%E5%9B%BE%E7%89%8720180626231353.png)
+
+
+## 自动更新数据
+
+
+我们使用计划任务来开启自动更新任务:
+
+
+1. 打开控制面板-系统和安全-管理工具
+![](http://pic.yutiansut.com/management.png)
+
+2. 打开计划任务程序
+![](http://pic.yutiansut.com/management2.png)
+
+3. 在计划任务程序中,新建任务
+![](http://pic.yutiansut.com/task1.png)
+
+4. 创建QUANTAXIS_Update任务
+![](http://pic.yutiansut.com/task2.png)
+
+5. 选择运行时间/频率
+![](http://pic.yutiansut.com/task3.png)
+
+6. 选择执行的命令
+![](http://pic.yutiansut.com/task4.png)
+
+7. 配置完毕
+![](http://pic.yutiansut.com/task5.png)
