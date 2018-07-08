@@ -1,5 +1,17 @@
 # QUANTAXIS的小白级别教程
 
+<!-- TOC -->
+
+- [QUANTAXIS的小白级别教程](#quantaxis的小白级别教程)
+    - [了解windows命令行:](#了解windows命令行)
+    - [安装python](#安装python)
+    - [安装quantaxis](#安装quantaxis)
+    - [安装数据库](#安装数据库)
+    - [使用jupyter调试你的代码](#使用jupyter调试你的代码)
+
+<!-- /TOC -->
+
+
 此篇安装纯粹写给刚学习编程/对python不熟悉/金融系的童靴们, 如果已经有一定的基础,知道怎么倒腾系统,路径,命令行,git等操作,可以直接去[install](install.md)
 
 作者本来也是金融系出身,代码这些属于自己摸索,清楚一路上的艰难,所以我们一切从最简单的说起:
@@ -97,5 +109,54 @@ pip install quantaxis -i https://pypi.doubanio.com/simple
 ## 安装数据库
 
 
+QUANTAXIS使用MONGODB数据库作为数据存储,需要下载数据库
+
+下载地址
+[下载地址 MongoDB 64位 3.4.7](https://www.mongodb.com/dr/fastdl.mongodb.org/win32/mongodb-win32-x86_64-2008plus-ssl-3.4.7-signed.msi)
+
+安装以后,需要在本地新建一个文件夹作为数据存储的文件夹,示例中,我们建在D盘
+
+```
+# 打开Powershell(Win键+R 在运行中输入Powershell)
+cd D:
+md data
+# 然后在data目录下 新建一个data目录用于存放mongo的数据,log目录用于存放log
+cd data
+md data
+md log
+# 到Mongo的程序文件夹下,使用命令
+cd C:\Program Files\MongoDB\Server\3.4\bin
+# 用mongod 命令安装
+.\mongod.exe --dbpath  D:\data\data  --logpath D:\data\log\mongo.log --httpinterface --rest --serviceName 'MongoDB' --install
 
 
+# 如果你下载了3.6版本以上的mongodb 则使用
+
+.\mongod.exe --dbpath  D:\data\data  --logpath D:\data\log\mongo.log --serviceName 'MongoDB' --install
+```
+
+开启数据库服务
+
+```
+# 启动mongodb服务
+net start MongoDB
+```
+
+
+
+
+## 使用jupyter调试你的代码
+
+1. 在命令行启动jupyter
+![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20180626231059.png)
+
+
+2. 在产生的网页上新建一个notebook
+![](http://pic.yutiansut.com/QQ%E5%9B%BE%E7%89%8720180626231143.png)
+
+3. 在notebook中运行代码
+![](http://pic.yutiansut.com/QQ%E5%9B%BE%E7%89%8720180626231307.png)
+
+
+4. 保存notebook为可运行的python文件
+![](http://pic.yutiansut.com/QQ%E5%9B%BE%E7%89%8720180626231353.png)
