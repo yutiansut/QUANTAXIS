@@ -4,6 +4,8 @@
 * [捐赠感谢](CONTRIBUTING.md)
 * [版本更新记录](CHANGELOG.md)
 
+
+* [小白上手教程WIN](Documents/install_for_new_to_coding.md)
 * [部署](Documents/install.md)
 * [windows 安装](Documents/install_for_windows.md)
 * [linux 安装](Documents/install_for_ubuntu.md)
