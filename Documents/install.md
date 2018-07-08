@@ -19,9 +19,8 @@
 
 - Windows/Linux(ubuntu)/Mac 已测试通过
 - python3.6(开发环境) python2 回测框架不兼容(attention! 之后会逐步用更多高级语法)   [*] 如果需要交易,请下载32位的python3.6
-- nodejs 需要安装>7的版本,来支持es6语法
 - mongodb是必须要装的
-- 强烈推荐mongodb的可视化库  robomongo 百度即可下载
+- 强烈推荐mongodb的可视化库  robomongo (百度即可下载,QQ群文件也有)
 
 一个简易demo(需要先安装并启动mongodb,python版本需要大于3)
 
