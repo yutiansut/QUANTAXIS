@@ -182,7 +182,7 @@ def QA_SU_save_stock_day(client=DATABASE):
         QA_util_log_info('DOWNLOAD PROGRESS {} '.format(str(
             float(item / len(stock_list) * 100))[0:4] + '%')
         )
-        __saving_work(stock_list.index[item], coll_stock_day)
+        __saving_work( stock_list[item], coll_stock_day)
     if len(err) < 1:
         QA_util_log_info('SUCCESS save stock day ^_^')
     else:
@@ -237,7 +237,7 @@ def QA_SU_save_stock_week(client=DATABASE):
         QA_util_log_info('DOWNLOAD PROGRESS {} '.format(str(
             float(item / len(stock_list) * 100))[0:4] + '%'))
 
-        __saving_work(stock_list.index[item], coll_stock_week)
+        __saving_work( stock_list[item], coll_stock_week)
     if len(err) < 1:
         QA_util_log_info('SUCCESS')
     else:
@@ -292,7 +292,7 @@ def QA_SU_save_stock_month(client=DATABASE):
         QA_util_log_info('DOWNLOAD PROGRESS {} '.format(str(
             float(item / len(stock_list) * 100))[0:4] + '%')
         )
-        __saving_work(stock_list.index[item], coll_stock_month)
+        __saving_work( stock_list[item], coll_stock_month)
     if len(err) < 1:
         QA_util_log_info('SUCCESS')
     else:
@@ -347,7 +347,7 @@ def QA_SU_save_stock_year(client=DATABASE):
         QA_util_log_info('DOWNLOAD PROGRESS {} '.format(str(
             float(item / len(stock_list) * 100))[0:4] + '%'))
 
-        __saving_work(stock_list.index[item], coll_stock_year)
+        __saving_work( stock_list[item], coll_stock_year)
     if len(err) < 1:
         QA_util_log_info('SUCCESS')
     else:
@@ -384,7 +384,7 @@ def QA_SU_save_stock_xdxr(client=DATABASE):
         QA_util_log_info('The {} of Total {}'.format(i_, len(stock_list)))
         QA_util_log_info('DOWNLOAD PROGRESS {} '.format(str(
             float(i_ / len(stock_list) * 100))[0:4] + '%'))
-        __saving_work(stock_list.index[i_], coll)
+        __saving_work( stock_list[i_], coll)
     if len(err) < 1:
         QA_util_log_info('SUCCESS')
     else:
@@ -452,9 +452,9 @@ def QA_SU_save_stock_min(client=DATABASE):
             err.append(code)
 
     executor = ThreadPoolExecutor(max_workers=4)
-    #executor.map((__saving_work, stock_list.index[i_], coll),URLS)
+    #executor.map((__saving_work,  stock_list[i_], coll),URLS)
     res = {executor.submit(
-        __saving_work, stock_list.index[i_], coll) for i_ in range(len(stock_list))}
+        __saving_work,  stock_list[i_], coll) for i_ in range(len(stock_list))}
     count = 0
     for i_ in concurrent.futures.as_completed(res):
         QA_util_log_info('The {} of Total {}'.format(count, len(stock_list)))
@@ -780,7 +780,7 @@ def QA_SU_save_stock_info(client=DATABASE):
         QA_util_log_info('The {} of Total {}'.format(i_, len(stock_list)))
         QA_util_log_info('DOWNLOAD PROGRESS {} '.format(str(
             float(i_ / len(stock_list) * 100))[0:4] + '%'))
-        __saving_work(stock_list.index[i_], coll)
+        __saving_work( stock_list[i_], coll)
     if len(err) < 1:
         QA_util_log_info('SUCCESS')
     else:
@@ -814,7 +814,7 @@ def QA_SU_save_stock_transaction(client=DATABASE):
         QA_util_log_info('The {} of Total {}'.format(i_, len(stock_list)))
         QA_util_log_info('DOWNLOAD PROGRESS {} '.format(str(
             float(i_ / len(stock_list) * 100))[0:4] + '%'))
-        __saving_work(stock_list.index[i_])
+        __saving_work( stock_list[i_])
     if len(err) < 1:
         QA_util_log_info('SUCCESS')
     else:
