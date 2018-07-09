@@ -66,6 +66,11 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
             - [1.7.1 网站后台标准化接口](#171-网站后台标准化接口)
     - [2. 文档](#2-文档)
     - [3. 安装和部署](#3-安装和部署)
+        - [3.0 安装说明](#30-安装说明)
+        - [3.1 小白式上手](#31-小白式上手)
+        - [3.2 部署式安装](#32-部署式安装)
+        - [3.3  本地代码 开发式安装](#33--本地代码-开发式安装)
+        - [3.4 代码提交式安装](#34-代码提交式安装)
     - [4. 更新](#4-更新)
     - [5. Docker](#5-docker)
     - [6. 使用说明](#6-使用说明)
@@ -171,16 +176,31 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 ##  3. 安装和部署
 
-直接上手~
+### 3.0 安装说明
+参见 [安装说明](Documents/install.md)
+
+### 3.1 小白式上手
+
+
+参见 [小白上手教程WIN](Documents/install_for_new_to_coding.md)
+
+### 3.2 部署式安装
+
 
 ```
 pip install quantaxis -U
 ```
+### 3.3  本地代码 开发式安装
 
 本地安装
 ```
-git clone https://github.com/yutiansut/quantaxis --depth 1
+git clone https://github.com/quantaxis/quantaxis --depth 1
+
+cd quantaxis
+
+pip install -e .
 ```
+### 3.4 代码提交式安装
 
 代码提交式安装 代码提交参见  [代码提交](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/Documents/about_pr.md)
 
@@ -189,8 +209,6 @@ git clone https://github.com/yutiansut/quantaxis --depth 1
 ```
 git clone https://github.com/你的账户名/quantaxis
 ```
-
-参见 [安装说明](Documents/install.md)
 
 ##  4. 更新
 参见 [更新说明](Documents/update.md)
@@ -203,13 +221,6 @@ git clone https://github.com/你的账户名/quantaxis
 
 * [QUANTAXIS的使用示例](https://github.com/quantaxis/QADemo)
 
-* [QUANTAXIS回测API](Documents/backtest_api.md)
-* [QUANTAXIS的数据结构](Documents/DataStruct.md)
-* [QUANTAXIS指标系统及指标类](Documents/indicators.md)
-* [QUANTAXIS的数据获取指南](Documents/DataFetch.md)
-* [QUANTAXIS行情研究](Documents/analysis.md)
-* [QUANTAXIS回测分析](Documents/backtestanalysis.md)
-* [常见策略整理](Documents/strategy.md)
 
 ##  7. Jupyter示例
 参见 [Jupyter示例](jupyterexample)
@@ -217,7 +228,9 @@ git clone https://github.com/你的账户名/quantaxis
 
 ##  8. 开发计划
 参见 [开发计划](job_list.md)
+
 ##  9. 常见问题FAQ
+
 参见 [FAQ](Documents/FAQ.md)
 
 ##  10. 项目捐赠
