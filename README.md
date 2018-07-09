@@ -110,7 +110,6 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 #### 专门为A股股票数据适配的数据结构
 
 参见 [QUANTAXIS的数据结构](Documents/DataStruct.md)
-参见 [QABlockStruct]
 参见 [QUANTAXIS行情研究](Documents/analysis.md)
 
 #### 精心为A股指标计算适配的指标类
