@@ -116,6 +116,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 #### 1.3.1 专门为A股股票数据适配的数据结构
 
 参见 [QUANTAXIS的数据结构](Documents/DataStruct.md)
+
 参见 [QUANTAXIS行情研究](Documents/analysis.md)
 
 #### 1.3.2 精心为A股指标计算适配的指标类
@@ -133,11 +134,17 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 #### 1.5.1 股票/日内t0/ 的日线/分钟线级别回测
 
 参见 [QUANTAXIS的账户结构](Documents/account.md)
+
 参见 [QUANTAXIS 账户风险分析插件指南](Documents/risk.md)
+
 参见 [QUANTAXIS回测委托成交结算的说明](Documents/orderanddeal.md)
+
 参见 [QUANTAXIS回测分析](Documents/backtestanalysis.md)
+
 参见 [常见策略整理](Documents/strategy.md)
+
 参见 [简单策略回测详解](Documents/QUANTAXIS回测分析全过程讲解.md)
+
 参见 [T0交易的账户详解](Documents/TEST_ORDER_BACKTEST_T0.md)
 
 ### 1.6 实盘
@@ -145,11 +152,13 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 #### 1.6.1 股票(实盘易)
 
 实盘易插件 参见[实盘易](http://www.iguuu.com/e?x=18839)
+
 实盘易安装注意 参见[安装注意](shipane_install_memo.md)
 
 #### 1.6.2 期货(python3 CTP win/mac/linux)
 
 参见 [LINUX CTP](QUANTAXIS_Trade/LINUXCTP)
+
 参见 [WINDOWS CTP](QUANTAXIS_Trade/WindowsCTP)
 
 ### 1.7 网站HTTP服务
