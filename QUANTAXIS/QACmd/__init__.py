@@ -182,7 +182,8 @@ class CLI(cmd.Cmd):
             命令格式：save stock_block: 保存板块 \n\
             命令格式：save stock_info : 保存tushare数据接口获取的股票列表 \n\
             命令格式：save financialfiles : 保存高级财务数据(自1996年开始) \n\
-             ----------------------------------------------------------\n\
+            命令格式：save option_day : 保存50ETF期权日线数据（不包括已经摘牌的数据） \n\
+            ----------------------------------------------------------\n\
             if you just want to save daily data just\n\
                 save all+ save stock_block+save stock_info, it about 1G data \n\
             if you want to save save the fully data including min level \n\
