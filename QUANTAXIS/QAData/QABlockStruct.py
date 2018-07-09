@@ -145,6 +145,22 @@ class QA_DataStruct_Stock_block():
 
         return self.new(self.data.loc[(block_name, slice(None)), :])
 
+
+    def get_both_code(self,code):
+        """get_both_code 获取几个股票相同的版块
+        
+        Arguments:
+            code {[type]} -- [description]
+        
+        Returns:
+            [type] -- [description]
+        """
+
+        return self.new(self.data.loc[(slice(None), code), :])
+
+
+    def get_both_block(self, block_name):
+        pass
     # def getdtype(self, dtype):
     #     """getdtype
 
