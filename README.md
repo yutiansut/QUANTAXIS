@@ -52,9 +52,11 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
             - [股票/期货/期权/美股/外汇/宏观的历史/实时行情(日线/分钟线/tick/实时五档)服务](#股票期货期权美股外汇宏观的历史实时行情日线分钟线tick实时五档服务)
             - [财务/基本面/宏观数据](#财务基本面宏观数据)
             - [自定义数据源的数据](#自定义数据源的数据)
+        - [数据运维服务](#数据运维服务)
         - [分析服务](#分析服务)
             - [专门为A股股票数据适配的数据结构](#专门为a股股票数据适配的数据结构)
             - [精心为A股指标计算适配的指标类](#精心为a股指标计算适配的指标类)
+        - [可扩展事件驱动框架](#可扩展事件驱动框架)
         - [回测服务](#回测服务)
             - [股票/日内t0/ 的日线/分钟线级别回测](#股票日内t0-的日线分钟线级别回测)
         - [实盘](#实盘)
@@ -88,68 +90,65 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 #### 股票/期货/期权/美股/外汇/宏观的历史/实时行情(日线/分钟线/tick/实时五档)服务
 
+参见 [QUANTAXIS的数据获取指南](Documents/DataFetch.md)
+
 #### 财务/基本面/宏观数据
 
+参见 [QUANTAXIS财务指标](Documents/financial_means.md)
+
 #### 自定义数据源的数据
+
+参见 [QUANTAXIS WEB 爬虫](Documents/crawler.md)
+
+### 数据运维服务
+
+一键更新 参见[WINDOWS数据自动更新](config/windows_autojob_updatedata.md)
+
 
 ### 分析服务
 
 #### 专门为A股股票数据适配的数据结构
+
+参见 [QUANTAXIS的数据结构](Documents/DataStruct.md)
+参见 [QABlockStruct]
+参见 [QUANTAXIS行情研究](Documents/analysis.md)
+
 #### 精心为A股指标计算适配的指标类
+
+参见 [QUANTAXIS指标系统](Documents/indicators.md)
+
+
+### 可扩展事件驱动框架
+
+参见 [QUANTAXIS事件框架](Documents/about_event.md)
+
 
 ### 回测服务
 
 #### 股票/日内t0/ 的日线/分钟线级别回测
 
+参见 [QUANTAXIS的账户结构](Documents/account.md)
+参见 [QUANTAXIS 账户风险分析插件指南](Documents/risk.md)
+参见 [QUANTAXIS回测委托成交结算的说明](Documents/orderanddeal.md)
+参见 [QUANTAXIS回测分析](Documents/backtestanalysis.md)
+参见 [常见策略整理](Documents/strategy.md)
+参见 [简单策略回测详解](Documents/QUANTAXIS回测分析全过程讲解.md)
+参见 [T0交易的账户详解](Documents/TEST_ORDER_BACKTEST_T0.md)
 ### 实盘
 
 #### 股票(实盘易)/期货(python3 CTP win/mac/linux) 实盘
+
+实盘易插件 参见[实盘易](http://www.iguuu.com/e?x=18839)
+实盘易安装注意 参见[安装注意](shipane_install_memo.md)
 
 
 ### 网站HTTP服务
 
 #### 网站后台标准化接口
 
+[QUANTAXIS WEB API说明](Documents/backendapi.md)
 
-- [x] 日线（自1990年）回测 [定点复权] (T+1)
-- [x] 分钟线 [1min/5min/15min/30min/60min]回测 (T+1)
-- [x] 股指期货日线(T+0)/指数日线/ETF日线
-- [x] 股指期货分钟线(T+0) / 指数分钟线/ETF分钟线 [1min/5min/15min/30min/60min]
-- [x] 期货日线/分钟线(期货指数/期货主连/期货合约)
-- [x] 自定义切换以及增加数据源 
-- [x] 实时交易数据,实时tick
-- [x] 基于Vue.js的前端网站
-- [x] 自定义的数据结构QADataStruct
-- [x] 指标计算QAIndicator
-- [x] 板块数据(0.5.1新增)/同花顺,通达信板块
-- [x] 基本面数据(部分 最新一期财务报表)
-- [x] 行情分发
-- [x] 自定义账户类/组合类/用户类
-- [x] 自定义市场类/可接入的下单接口(BROKER)
-- [x] 分布式数据库连接(mongodb集群)/带权限数据库
-- [x] 用户分析模块/风控,表现插件
-- [x] 指标类(1.0.42新增)
-- [x] 成交记录分析器
-- [x] T0交易(股票日内做T)回测分析框架(1.0.46)
-- [x] 1996至今的每一季度的财务数据(1.0.52)
-- [x] 文档更新
-- [x] 数据库权限管理
-- [x] 期货数据(郑州/大连/上海/上期/中金)
-- [x] 现货数据(渤海商品期货/齐鲁商品期货/上海T+D黄金(伦敦金交割))
-- [x] 期权数据(郑州商品期权/大连商品期权/上海商品期权/中金所期权/上海股票期权)
-- [x] 港股数据(港股主板/港股创业板/港股指数/港股基金)
-- [x] 美股数据
-- [x] 国际期货数据(伦敦金属/伦敦石油/纽约商品/纽约石油/芝加哥谷/东京工业品/纽约期货/新加坡期货/马来期货)
-- [x] 宏观指标
-- [x] 汇率数据(基础汇率/交叉汇率)
-- [x] python3 CTP接口 [WINDOWS/LINUX]
 
-预计实现:
-
-- [ ] 期货回测
-- [ ] 实盘
-- [ ] 分析模块(行情分析/板块分析)
-- [ ] 多数据库支持
 
 ![](http://pic.yutiansut.com/framework.png)
 
