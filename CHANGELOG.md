@@ -2,8 +2,9 @@
 
 <!-- TOC -->
 
-- [QUANTAXIS 更新纪要](#quantaxis-%E6%9B%B4%E6%96%B0%E7%BA%AA%E8%A6%81)
-    - [1.0.63 (unreleased)](#1063-unreleased)
+- [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
+    - [1.0.64 (unreleased)](#1064-unreleased)
+    - [1.0.63](#1063)
     - [1.0.62](#1062)
     - [1.0.61](#1061)
     - [1.0.60](#1060)
@@ -44,8 +45,13 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
+## 1.0.64 (unreleased)
 
-## 1.0.63 (unreleased)
+
+## 1.0.63 
+
+1. 紧急修复因为ts.get_stock_basics()获取error导致的无法存储问题
+2. 增加了对于选股的需求(选股模块.md)
 
 
 ## 1.0.62 
