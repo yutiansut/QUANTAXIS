@@ -5,11 +5,12 @@
     - [1. 部署问题:](#1-部署问题)
     - [2. 下载PYTHON(可以跳过)](#2-下载python可以跳过)
     - [3. 安装(可以跳过)](#3-安装可以跳过)
-    - [4. 下载git](#4-下载git)
-    - [5. 使用git下载QUANTAXIS](#5-使用git下载quantaxis)
-    - [6. 安装QUANTAXIS的依赖项](#6-安装quantaxis的依赖项)
-    - [7. 下载安装数据库](#7-下载安装数据库)
-    - [8. 安装完成后 参见部署](#8-安装完成后-参见部署)
+    - [4. 下载git[新手/以及不想自己改代码的注意 此段跳过]](#4-下载git新手以及不想自己改代码的注意-此段跳过)
+    - [5. 使用git下载QUANTAXIS [新手/以及不想自己改代码的注意 此段跳过]](#5-使用git下载quantaxis-新手以及不想自己改代码的注意-此段跳过)
+    - [6. 安装QUANTAXIS的依赖项 [新手/以及不想自己改代码的注意 此段跳过]](#6-安装quantaxis的依赖项-新手以及不想自己改代码的注意-此段跳过)
+    - [7. 直接安装quantaxis [仅供新手/直接安装 使用]](#7-直接安装quantaxis-仅供新手直接安装-使用)
+    - [8. 下载安装数据库](#8-下载安装数据库)
+    - [9. 安装完成后 参见部署](#9-安装完成后-参见部署)
 
 <!-- /TOC -->
 ##  1. 部署问题:
@@ -36,6 +37,13 @@ QUANATXIS 支持的安装环境是python3以上 优先推荐3.6环境
 
 [清华镜像ANACONDA链接](https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/)
 
+
+anaconda安装的时候 注意:
+
+敲黑板! 一定都要选上, 不然需要自己手动配置path, 如果不是很了解path的童靴一定要都选上
+
+![](http://pic.yutiansut.com/anaconda_install_win.png)
+
 ##  3. 安装(可以跳过)
 
 在安装ANACONDA的过程中,注意勾选```add to path```选项,将python的执行路径加入系统路径中
@@ -47,15 +55,21 @@ QUANATXIS 支持的安装环境是python3以上 优先推荐3.6环境
 Python 3.6.3 :: Anaconda, Inc.
 ```
 
-##  4. 下载git
+##  4. 下载git[新手/以及不想自己改代码的注意 此段跳过]
 
 QUANTAXIS的代码托管在github,你需要经常用过```git pull```来更新代码,所以请勿直接在网站上下载zip压缩包
 
-[git 下载地址](http://rj.baidu.com/soft/detail/40642.html)
+[git 下载地址](https://pc.qq.com/search.html#!keyword=git)
 
 同样,在安装的时候 选择```add to path```
 
-##  5. 使用git下载QUANTAXIS
+![](http://pic.yutiansut.com/git1.png)
+![](http://pic.yutiansut.com/git2.png)
+![](http://pic.yutiansut.com/git3.png)
+![](http://pic.yutiansut.com/git4.png)
+![](http://pic.yutiansut.com/git5.png)
+
+##  5. 使用git下载QUANTAXIS [新手/以及不想自己改代码的注意 此段跳过]
 
 打开命令行(推荐使用powershell) 选择你想要的目录 下载quantaxis
 
@@ -67,7 +81,7 @@ cd C:\
 git clone https://github.com/yutiansut/quantaxis --depth 1 
 ```
 
-##  6. 安装QUANTAXIS的依赖项
+##  6. 安装QUANTAXIS的依赖项 [新手/以及不想自己改代码的注意 此段跳过]
 
 ```
 cd C:\quantaxis
@@ -91,7 +105,13 @@ QUANTAXIS>
 ```
 
 
-##  7. 下载安装数据库
+## 7. 直接安装quantaxis [仅供新手/直接安装 使用]
+
+```
+pip install quantaxis
+```
+
+##  8. 下载安装数据库
 
 QUANTAXIS使用MONGODB数据库作为数据存储,需要下载数据库
 
@@ -127,6 +147,6 @@ net start MongoDB
 ```
 
 
-##  8. 安装完成后 参见部署
+##  9. 安装完成后 参见部署
 
 [部署](install.md#%E5%90%AF%E5%8A%A8quantaxis-cli-%E5%B9%B6%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E5%AD%98%E5%82%A8)

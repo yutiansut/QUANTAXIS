@@ -173,6 +173,8 @@ class MARKET_TYPE():
     比特币/加密货币市场 5
     """
     STOCK_CN = 'stock_cn'  # 中国A股
+    STOCK_CN_B = 'stock_cn_b' # 中国B股
+    STOCK_CN_D = 'stock_cn_d' # 中国D股 沪伦通
     STOCK_HK = 'stock_hk'  # 港股
     STOCK_US = 'stock_us'  # 美股
     FUTURE_CN = 'future_cn'  # 国内期货
@@ -183,6 +185,8 @@ class MARKET_TYPE():
     INDEX_CN = 'index_cn'  # 中国指数
     FUND_CN = 'fund_cn'   # 中国基金
     BOND_CN = 'bond_cn'  # 中国债券
+
+    
 
 
 class BROKER_TYPE():

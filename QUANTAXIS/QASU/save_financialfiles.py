@@ -26,7 +26,7 @@ import sys
 import pymongo
 from QUANTAXIS.QAFetch.QAfinancial import parse_all, download_financialzip,parse_filelist
 
-from QUANTAXIS.QAUtil.QALocalize import (cache_path, download_path, qa_path,
+from QUANTAXIS.QASetting.QALocalize import (cache_path, download_path, qa_path,
                                          setting_path)
 from QUANTAXIS.QAUtil.QASql import ASCENDING, DESCENDING
 from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas

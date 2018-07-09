@@ -66,7 +66,7 @@ NAME = "quantaxis"
 """
 名字，一般放你包的名字即可
 """
-PACKAGES = ["QUANTAXIS", "QUANTAXIS.QAFetch", "QUANTAXIS.QACmd", "QUANTAXIS.QAMarket", 'QUANTAXIS.QAWeb', 'QUANTAXIS.QATrade',
+PACKAGES = ["QUANTAXIS", "QUANTAXIS.QAFetch", "QUANTAXIS.QACmd", "QUANTAXIS.QAMarket", 'QUANTAXIS.QAWeb', 'QUANTAXIS.QATrade', 'QUANTAXIS.QASetting',
             "QUANTAXIS.QABacktest", "QUANTAXIS.QAEngine", "QUANTAXIS.QAData", 'QUANTAXIS.QAData.proto', "QUANTAXIS.QAAnalysis",
             "QUANTAXIS.QASU", "QUANTAXIS.QAUtil", "QUANTAXIS.QAARP", "QUANTAXIS.QAIndicator", "QUANTAXIS_CRAWLY"]
 """
@@ -89,7 +89,7 @@ KEYWORDS = ["quantaxis", "quant", "finance", "Backtest", 'Framework']
 
 AUTHOR_EMAIL = "yutiansut@qq.com"
 
-URL = "http://www.yutiansut.com"
+URL = "https://github.com/quantaxis/quantaxis"
 
 
 LICENSE = "MIT"

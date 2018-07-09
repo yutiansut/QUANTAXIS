@@ -303,11 +303,11 @@ def bat():
 if __name__ == '__main__':
     import time
     _time1 = datetime.datetime.now()
-    from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_block_adv
-    code = QA_fetch_stock_block_adv().code
+    from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_list_adv
+    code = QA_fetch_stock_list_adv().code.tolist()
 
-    DATABASE.realtime.create_index([('code', QA_util_sql_mongo_sort_ASCENDING),
-                                    ('datetime', QA_util_sql_mongo_sort_ASCENDING)])
+    # DATABASE.realtime.create_index([('code', QA_util_sql_mongo_sort_ASCENDING),
+    #                                 ('datetime', QA_util_sql_mongo_sort_ASCENDING)])
 
     # print(len(code))
     # x = QA_Tdx_Executor()

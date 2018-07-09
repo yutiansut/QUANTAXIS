@@ -4,6 +4,8 @@
 * [捐赠感谢](CONTRIBUTING.md)
 * [版本更新记录](CHANGELOG.md)
 
+
+* [小白上手教程WIN](Documents/install_for_new_to_coding.md)
 * [部署](Documents/install.md)
 * [windows 安装](Documents/install_for_windows.md)
 * [linux 安装](Documents/install_for_ubuntu.md)
@@ -11,7 +13,7 @@
 * [Docker一键部署](Documents/docker.md)
 * [在jupyter中调试QUANTAXIS](Documents/usejupyter.md)
 * [更新](Documents/update.md)
-
+* [WINDOWS数据自动更新](config/windows_autojob_updatedata.md)
 
 * [QUANTAXIS的数据结构](Documents/DataStruct.md)
 * [QUANTAXIS指标系统](Documents/indicators.md)
