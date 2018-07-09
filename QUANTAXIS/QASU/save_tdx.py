@@ -40,7 +40,6 @@ from QUANTAXIS.QAFetch.QATdx import (
                                      QA_fetch_get_stock_min,
                                      QA_fetch_get_stock_transaction,
                                      QA_fetch_get_stock_xdxr, select_best_ip)
-from QUANTAXIS.QAFetch.QATushare import (QA_fetch_get_stock_time_to_market )
 from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_50etf_option_contract_time_to_market)
 from QUANTAXIS.QAUtil import (DATABASE, QA_util_get_next_day,
                               QA_util_get_real_date, QA_util_log_info,
@@ -136,7 +135,7 @@ def QA_SU_save_stock_day(client=DATABASE):
         client {[type]} -- [description] (default: {DATABASE})
     """
 
-    stock_list = QA_fetch_get_stock_time_to_market()
+    stock_list = QA_fetch_get_stock_list().code.unique().tolist()
     coll_stock_day = client.stock_day
     coll_stock_day.create_index([("code", pymongo.ASCENDING), ("date_stamp", pymongo.ASCENDING)])
     err = []
@@ -198,7 +197,7 @@ def QA_SU_save_stock_week(client=DATABASE):
         client {[type]} -- [description] (default: {DATABASE})
     """
 
-    stock_list = QA_fetch_get_stock_time_to_market()
+    stock_list =  QA_fetch_get_stock_list().code.unique().tolist()
     coll_stock_week = client.stock_week
     coll_stock_week.create_index(
         [("code", pymongo.ASCENDING), ("date_stamp", pymongo.ASCENDING)])
@@ -253,7 +252,7 @@ def QA_SU_save_stock_month(client=DATABASE):
         client {[type]} -- [description] (default: {DATABASE})
     """
 
-    stock_list = QA_fetch_get_stock_time_to_market()
+    stock_list =  QA_fetch_get_stock_list().code.unique().tolist()
     coll_stock_month = client.stock_month
     coll_stock_month.create_index(
         [("code", pymongo.ASCENDING), ("date_stamp", pymongo.ASCENDING)])
@@ -308,7 +307,7 @@ def QA_SU_save_stock_year(client=DATABASE):
         client {[type]} -- [description] (default: {DATABASE})
     """
 
-    stock_list = QA_fetch_get_stock_time_to_market()
+    stock_list =  QA_fetch_get_stock_list().code.unique().tolist()
     coll_stock_year = client.stock_year
     coll_stock_year.create_index(
         [("code", pymongo.ASCENDING), ("date_stamp", pymongo.ASCENDING)])
@@ -364,7 +363,7 @@ def QA_SU_save_stock_xdxr(client=DATABASE):
     """
 
     client.drop_collection('stock_xdxr')
-    stock_list = QA_fetch_get_stock_time_to_market()
+    stock_list =  QA_fetch_get_stock_list().code.unique().tolist()
     coll = client.stock_xdxr
     coll.create_index([('code', pymongo.ASCENDING),
                        ('date', pymongo.ASCENDING)])
@@ -412,7 +411,7 @@ def QA_SU_save_stock_min(client=DATABASE):
         client {[type]} -- [description] (default: {DATABASE})
     """
 
-    stock_list = QA_fetch_get_stock_time_to_market()
+    stock_list =  QA_fetch_get_stock_list().code.unique().tolist()
     coll = client.stock_min
     coll.create_index([('code', pymongo.ASCENDING), ('time_stamp',
                                                      pymongo.ASCENDING), ('date_stamp', pymongo.ASCENDING)])
@@ -761,7 +760,7 @@ def QA_SU_save_stock_info(client=DATABASE):
     """
 
     client.drop_collection('stock_info')
-    stock_list = QA_fetch_get_stock_time_to_market()
+    stock_list =  QA_fetch_get_stock_list().code.unique().tolist()
     coll = client.stock_info
     coll.create_index('code')
     err = []
@@ -796,7 +795,7 @@ def QA_SU_save_stock_transaction(client=DATABASE):
         client {[type]} -- [description] (default: {DATABASE})
     """
 
-    stock_list = QA_fetch_get_stock_time_to_market()
+    stock_list =  QA_fetch_get_stock_list().code.unique().tolist()
     coll = client.stock_transaction
     coll.create_index('code')
     err = []
