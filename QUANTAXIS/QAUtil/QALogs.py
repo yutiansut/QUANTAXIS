@@ -38,7 +38,7 @@ import os
 
 from zenlog import logging
 
-from QUANTAXIS.QAUtil.QALocalize import log_path, setting_path
+from QUANTAXIS.QASetting.QALocalize import log_path, setting_path
 
 CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
 
