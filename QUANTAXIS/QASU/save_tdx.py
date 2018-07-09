@@ -40,7 +40,6 @@ from QUANTAXIS.QAFetch.QATdx import (
                                      QA_fetch_get_stock_min,
                                      QA_fetch_get_stock_transaction,
                                      QA_fetch_get_stock_xdxr, select_best_ip)
-from QUANTAXIS.QAFetch.QATushare import (QA_fetch_get_stock_time_to_market )
 from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_50etf_option_contract_time_to_market)
 from QUANTAXIS.QAUtil import (DATABASE, QA_util_get_next_day,
                               QA_util_get_real_date, QA_util_log_info,
@@ -136,7 +135,7 @@ def QA_SU_save_stock_day(client=DATABASE):
         client {[type]} -- [description] (default: {DATABASE})
     """
 
-    stock_list = QA_fetch_get_stock_time_to_market()
+    stock_list = QA_fetch_get_stock_list().code.unique().tolist()
     coll_stock_day = client.stock_day
     coll_stock_day.create_index([("code", pymongo.ASCENDING), ("date_stamp", pymongo.ASCENDING)])
     err = []
@@ -183,7 +182,7 @@ def QA_SU_save_stock_day(client=DATABASE):
         QA_util_log_info('DOWNLOAD PROGRESS {} '.format(str(
             float(item / len(stock_list) * 100))[0:4] + '%')
         )
-        __saving_work(stock_list.index[item], coll_stock_day)
+        __saving_work( stock_list[item], coll_stock_day)
     if len(err) < 1:
         QA_util_log_info('SUCCESS save stock day ^_^')
     else:
@@ -198,7 +197,7 @@ def QA_SU_save_stock_week(client=DATABASE):
         client {[type]} -- [description] (default: {DATABASE})
     """
 
-    stock_list = QA_fetch_get_stock_time_to_market()
+    stock_list =  QA_fetch_get_stock_list().code.unique().tolist()
     coll_stock_week = client.stock_week
     coll_stock_week.create_index(
         [("code", pymongo.ASCENDING), ("date_stamp", pymongo.ASCENDING)])
@@ -238,7 +237,7 @@ def QA_SU_save_stock_week(client=DATABASE):
         QA_util_log_info('DOWNLOAD PROGRESS {} '.format(str(
             float(item / len(stock_list) * 100))[0:4] + '%'))
 
-        __saving_work(stock_list.index[item], coll_stock_week)
+        __saving_work( stock_list[item], coll_stock_week)
     if len(err) < 1:
         QA_util_log_info('SUCCESS')
     else:
@@ -253,7 +252,7 @@ def QA_SU_save_stock_month(client=DATABASE):
         client {[type]} -- [description] (default: {DATABASE})
     """
 
-    stock_list = QA_fetch_get_stock_time_to_market()
+    stock_list =  QA_fetch_get_stock_list().code.unique().tolist()
     coll_stock_month = client.stock_month
     coll_stock_month.create_index(
         [("code", pymongo.ASCENDING), ("date_stamp", pymongo.ASCENDING)])
@@ -293,7 +292,7 @@ def QA_SU_save_stock_month(client=DATABASE):
         QA_util_log_info('DOWNLOAD PROGRESS {} '.format(str(
             float(item / len(stock_list) * 100))[0:4] + '%')
         )
-        __saving_work(stock_list.index[item], coll_stock_month)
+        __saving_work( stock_list[item], coll_stock_month)
     if len(err) < 1:
         QA_util_log_info('SUCCESS')
     else:
@@ -308,7 +307,7 @@ def QA_SU_save_stock_year(client=DATABASE):
         client {[type]} -- [description] (default: {DATABASE})
     """
 
-    stock_list = QA_fetch_get_stock_time_to_market()
+    stock_list =  QA_fetch_get_stock_list().code.unique().tolist()
     coll_stock_year = client.stock_year
     coll_stock_year.create_index(
         [("code", pymongo.ASCENDING), ("date_stamp", pymongo.ASCENDING)])
@@ -348,7 +347,7 @@ def QA_SU_save_stock_year(client=DATABASE):
         QA_util_log_info('DOWNLOAD PROGRESS {} '.format(str(
             float(item / len(stock_list) * 100))[0:4] + '%'))
 
-        __saving_work(stock_list.index[item], coll_stock_year)
+        __saving_work( stock_list[item], coll_stock_year)
     if len(err) < 1:
         QA_util_log_info('SUCCESS')
     else:
@@ -364,7 +363,7 @@ def QA_SU_save_stock_xdxr(client=DATABASE):
     """
 
     client.drop_collection('stock_xdxr')
-    stock_list = QA_fetch_get_stock_time_to_market()
+    stock_list =  QA_fetch_get_stock_list().code.unique().tolist()
     coll = client.stock_xdxr
     coll.create_index([('code', pymongo.ASCENDING),
                        ('date', pymongo.ASCENDING)])
@@ -385,7 +384,7 @@ def QA_SU_save_stock_xdxr(client=DATABASE):
         QA_util_log_info('The {} of Total {}'.format(i_, len(stock_list)))
         QA_util_log_info('DOWNLOAD PROGRESS {} '.format(str(
             float(i_ / len(stock_list) * 100))[0:4] + '%'))
-        __saving_work(stock_list.index[i_], coll)
+        __saving_work( stock_list[i_], coll)
     if len(err) < 1:
         QA_util_log_info('SUCCESS')
     else:
@@ -412,7 +411,7 @@ def QA_SU_save_stock_min(client=DATABASE):
         client {[type]} -- [description] (default: {DATABASE})
     """
 
-    stock_list = QA_fetch_get_stock_time_to_market()
+    stock_list =  QA_fetch_get_stock_list().code.unique().tolist()
     coll = client.stock_min
     coll.create_index([('code', pymongo.ASCENDING), ('time_stamp',
                                                      pymongo.ASCENDING), ('date_stamp', pymongo.ASCENDING)])
@@ -453,9 +452,9 @@ def QA_SU_save_stock_min(client=DATABASE):
             err.append(code)
 
     executor = ThreadPoolExecutor(max_workers=4)
-    #executor.map((__saving_work, stock_list.index[i_], coll),URLS)
+    #executor.map((__saving_work,  stock_list[i_], coll),URLS)
     res = {executor.submit(
-        __saving_work, stock_list.index[i_], coll) for i_ in range(len(stock_list))}
+        __saving_work,  stock_list[i_], coll) for i_ in range(len(stock_list))}
     count = 0
     for i_ in concurrent.futures.as_completed(res):
         QA_util_log_info('The {} of Total {}'.format(count, len(stock_list)))
@@ -761,7 +760,7 @@ def QA_SU_save_stock_info(client=DATABASE):
     """
 
     client.drop_collection('stock_info')
-    stock_list = QA_fetch_get_stock_time_to_market()
+    stock_list =  QA_fetch_get_stock_list().code.unique().tolist()
     coll = client.stock_info
     coll.create_index('code')
     err = []
@@ -781,7 +780,7 @@ def QA_SU_save_stock_info(client=DATABASE):
         QA_util_log_info('The {} of Total {}'.format(i_, len(stock_list)))
         QA_util_log_info('DOWNLOAD PROGRESS {} '.format(str(
             float(i_ / len(stock_list) * 100))[0:4] + '%'))
-        __saving_work(stock_list.index[i_], coll)
+        __saving_work( stock_list[i_], coll)
     if len(err) < 1:
         QA_util_log_info('SUCCESS')
     else:
@@ -796,7 +795,7 @@ def QA_SU_save_stock_transaction(client=DATABASE):
         client {[type]} -- [description] (default: {DATABASE})
     """
 
-    stock_list = QA_fetch_get_stock_time_to_market()
+    stock_list =  QA_fetch_get_stock_list().code.unique().tolist()
     coll = client.stock_transaction
     coll.create_index('code')
     err = []
@@ -815,7 +814,7 @@ def QA_SU_save_stock_transaction(client=DATABASE):
         QA_util_log_info('The {} of Total {}'.format(i_, len(stock_list)))
         QA_util_log_info('DOWNLOAD PROGRESS {} '.format(str(
             float(i_ / len(stock_list) * 100))[0:4] + '%'))
-        __saving_work(stock_list.index[i_])
+        __saving_work( stock_list[i_])
     if len(err) < 1:
         QA_util_log_info('SUCCESS')
     else:
