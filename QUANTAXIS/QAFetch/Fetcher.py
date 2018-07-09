@@ -78,6 +78,7 @@ class QA_Fetcher():
             res=QAQuery.QA_fetch_stock_info(code,format=output,collections=self.database.stock_info)
             return res
 
+# todo 🛠 output 参数没有用到， 默认返回的 是 QA_DataStruct
 def QA_quotation(code, start, end, frequence, market, source, output):
     """一个统一的fetch
 
@@ -109,6 +110,16 @@ def QA_quotation(code, start, end, frequence, market, source, output):
         elif frequence is FREQUENCE.TICK:
             if source is DATASOURCE.TDX:
                 res = QATdx.QA_fetch_get_stock_transaction(code, start, end)
+
+    #指数代码和股票代码是冲突重复的，  sh000001 上证指数  000001 是不同的
+    elif market is MARKET_TYPE.INDEX_CN:
+        if frequence is FREQUENCE.DAY:
+            if source is DATASOURCE.MONGO:
+                res = QAQueryAdv.QA_fetch_index_day_adv(code, start, end)
+
+    elif market is MARKET_TYPE.OPTION_CN:
+        if source is DATABASE_TABLE.MONGO:
+            res = QAQueryAdv.QA_fetch_option_day_adv(code,start,end);
     #print(type(res))
     return res
 
