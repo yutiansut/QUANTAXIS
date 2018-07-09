@@ -94,7 +94,7 @@ def QA_SU_save_option_day(client=DATABASE):
                     QA_util_log_info("日期从开始{}-结束{} , 合约代码{} , 返回了{}条记录 , 准备写入数据库".format(start_date0,end_date,code,retCount))
                     coll_option_day.insert_many(QA_util_to_json_from_pandas(df0))
                 else:
-                    QA_util_log_info("^已经获取过来这天的数据^ {}".format(start_date))
+                    QA_util_log_info("^已经获取过这天的数据了^ {}".format(start_date))
 
             else:
                 start_date = '1990-01-01'
@@ -106,7 +106,7 @@ def QA_SU_save_option_day(client=DATABASE):
                     QA_util_log_info("日期从开始{}-结束{} , 合约代码{} , 获取了{}条记录 , 准备写入数据库^_^ ".format(start_date,end_date,code,retCount))
                     coll_option_day.insert_many(QA_util_to_json_from_pandas(df0))
                 else:
-                    QA_util_log_info("*已经获取过来这天的数据* {}".format(start_date))
+                    QA_util_log_info("*已经获取过这天的数据了* {}".format(start_date))
 
         except Exception as error0:
            print(error0)
