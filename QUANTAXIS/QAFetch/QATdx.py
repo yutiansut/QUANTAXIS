@@ -36,7 +36,7 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_str2int,
                               trade_date_sse)
 
 from QUANTAXIS.QAFetch.base import _select_market_code, _select_type
-
+from QUANTAXIS.QAUtil.QASetting import QASETTING
 
 
 # 基于Pytdx的数据接口,好处是可以在linux/mac上联入通达信行情
@@ -82,23 +82,49 @@ def select_best_ip():
 
     # 删除exclude ip
     import json
-    qasetting = QA_Setting()
-    excludejson = {'ip': '1.1.1.1', 'port': 7709}
+    null=None
+    qasetting = QASETTING
+    exclude_ip = {'ip': '1.1.1.1', 'port': 7709}
+    default_ip={'stock':{'ip':None,'port':None},'future':{'ip':None,'port':None}}
     alist = []
-    alist.append(excludejson)
-    ipexclude = qasetting.get_config(
+    alist.append(exclude_ip)
+    
+    ipexclude = qasetting.get_config(             
         section='IPLIST', option='exclude', default_value=alist)
     exclude_from_stock_ip_list(json.loads(ipexclude))
 
-    data_stock = [ping(x['ip'], x['port'], 'stock') for x in stock_ip_list]
-    data_future = [ping(x['ip'], x['port'], 'future') for x in future_ip_list]
+    ipdefault = qasetting.get_config(section='IPLIST', option='default', default_value=default_ip)
+    ipdefault=eval(ipdefault) if isinstance(ipdefault,str) else ipdefault
+    assert isinstance(ipdefault,dict)
+    if ipdefault['stock']['ip'] == None:
 
-    best_stock_ip = stock_ip_list[data_stock.index(min(data_stock))]
-    best_future_ip = future_ip_list[data_future.index(min(data_future))]
-
+        data_stock = [ping(x['ip'], x['port'], 'stock') for x in stock_ip_list]
+        best_stock_ip = stock_ip_list[data_stock.index(min(data_stock))]
+    else:
+        if ping(ipdefault['stock']['ip'], ipdefault['stock']['port'], 'stock') < datetime.timedelta(0,1):
+            print('USING DEFAULT STOCK IP')
+            best_stock_ip = ipdefault['stock']
+        else:
+            print('DEFAULT STOCK IP is BAD, RETESTING')
+            data_stock = [ping(x['ip'], x['port'], 'stock') for x in stock_ip_list]
+            best_stock_ip = stock_ip_list[data_stock.index(min(data_stock))]
+    if ipdefault['future']['ip'] == None:
+        
+        data_future = [ping(x['ip'], x['port'], 'future') for x in future_ip_list]
+        best_future_ip = future_ip_list[data_future.index(min(data_future))]
+    else:
+        if ping(ipdefault['future']['ip'], ipdefault['future']['port'], 'future')<datetime.timedelta(0,1):
+            print('USING DEFAULT FUTURE IP')
+            best_future_ip = ipdefault['future']
+        else:
+            print('DEFAULT FUTURE IP is BAD, RETESTING')
+            data_future = [ping(x['ip'], x['port'], 'future') for x in future_ip_list]
+            best_future_ip = future_ip_list[data_future.index(min(data_future))]
+    ipbest={'stock': best_stock_ip, 'future': best_future_ip}
+    qasetting.set_config(section='IPLIST',option='default', default_value=ipbest)
     QA_util_log_info('=== The BEST SERVER ===\n stock_ip {} future_ip {}'.format(
         best_stock_ip['ip'], best_future_ip['ip']))
-    return {'stock': best_stock_ip, 'future': best_future_ip}
+    return ipbest
 
 
 global best_ip
@@ -264,12 +290,13 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', frequence='da
                                     * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
                 data['adj'] = (data['preclose'].shift(-1) /
                                data['close']).fillna(1)[::-1].cumprod()
-                data['open'] = data['open'] * data['adj']
-                data['high'] = data['high'] * data['adj']
-                data['low'] = data['low'] * data['adj']
-                data['close'] = data['close'] * data['adj']
-                data['preclose'] = data['preclose'] * data['adj']
-
+                data['open'] = data['open'] / data['adj']
+                data['high'] = data['high'] / data['adj']
+                data['low'] = data['low'] / data['adj']
+                data['close'] = data['close'] / data['adj']
+                data['preclose'] = data['preclose'] / data['adj']
+                data['volume'] = data['volume'] * \
+                    data['adj'] if 'volume' in data.columns else data['vol']/data['adj']
                 data = data[data['if_trade']]
                 return data.drop(['fenhong', 'peigu', 'peigujia', 'songzhuangu', 'if_trade', 'category'], axis=1)[data['open'] != 0].assign(date=data['date'].apply(lambda x: str(x)[0:10]))[start_date:end_date]
             else:
