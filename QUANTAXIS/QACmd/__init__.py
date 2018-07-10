@@ -265,6 +265,8 @@ class CLI(cmd.Cmd):
                 QA_SU_save_binance(frequency)
             elif len(arg) == 1 and arg[0] == "huobi":
                 pass
+            elif len(arg) == 1 and arg[0] == "financialfiles":
+                QA_SU_save_financialfiles()
             else:
                 for i in arg:
                     if i == 'insert_user':
