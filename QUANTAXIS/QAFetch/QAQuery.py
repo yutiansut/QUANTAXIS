@@ -373,9 +373,11 @@ def QA_fetch_quotation(code, date=datetime.date.today(), db=DATABASE):
     try:
         collections = db.get_collection(
             'realtime_{}'.format(date))
-        data=pd.DataFrame([item for item in collections.find(
+        data = pd.DataFrame([item for item in collections.find(
             {'code': code})]).drop(['_id'], axis=1)
-        return data.assign(date=data.datetime.apply(lambda x: str(x)[0:10])).assign(datetime=pd.to_datetime(data.datetime)).set_index('datetime', drop=False).sort_index()
+        return data.assign(date=data.datetime.apply(lambda x: str(x)[0:10])) \
+            .assign(datetime=pd.to_datetime(data.datetime)) \
+            .set_index('datetime', drop=False).sort_index()
     except Exception as e:
         raise e
 
@@ -437,18 +439,18 @@ def QA_fetch_lhb(date, db=DATABASE):
 
 def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
     """获取专业财务报表
-    
+
     Arguments:
         code {[type]} -- [description]
         report_date {[type]} -- [description]
-    
+
     Keyword Arguments:
         ltype {str} -- [description] (default: {'EN'})
         db {[type]} -- [description] (default: {DATABASE})
-    
+
     Raises:
         e -- [description]
-    
+
     Returns:
         pd.DataFrame -- [description]
     """
@@ -483,18 +485,19 @@ def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
             data = [item for item in collection.find({'code': {'$in': code}})]
         else:
             data = [item for item in collection.find()]
-        if len(data)>0:
+        if len(data) > 0:
             res_pd = pd.DataFrame(data)
 
-            if ltype in ['CH','CN']:
-                res_pd.columns=CH_columns
+            if ltype in ['CH', 'CN']:
+                res_pd.columns = CH_columns
             elif ltype is 'EN':
-                res_pd.columns=EN_columns
-            return res_pd.replace(-4.039810335e+34,numpy.nan).set_index(['report_date','code'],drop=False)
+                res_pd.columns = EN_columns
+            return res_pd.replace(-4.039810335e+34, numpy.nan).set_index(['report_date', 'code'], drop=False)
         else:
             return None
     except Exception as e:
         raise e
+
 
 if __name__ == '__main__':
     print(QA_fetch_lhb('2006-07-03'))
