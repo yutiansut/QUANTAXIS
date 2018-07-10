@@ -49,7 +49,10 @@
 
 1. 修复了QA_RISK的bug
 2. 实时采集的数据,支持实时采样 (QA_fetch_quotation/QA_data_tick_resample)
+3. 修复后复权bug
+4. 增加一个default(默认ip的选项),可以在qadir/setting/config.ini中进行修改, 避免不必要的多次重复测速
 
+released in : JULY 11, 2018
 
 ## 1.0.63 
 
