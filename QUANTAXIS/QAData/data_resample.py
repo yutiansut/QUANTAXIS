@@ -57,7 +57,7 @@ def QA_data_tick_resample(tick, type_='1min'):
     data['datetime'] = data.index
     data['date'] = data['datetime'].apply(lambda x: str(x)[0:10])
 
-    return data.fillna(method='ffill').set_index(['datetime', 'code'], drop=False)
+    return data.fillna(method='ffill').set_index(['datetime', 'code'], drop=False).drop_duplicates()
 
 
 if __name__ == '__main__':
