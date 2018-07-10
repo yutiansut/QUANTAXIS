@@ -47,6 +47,9 @@
 <!-- /TOC -->
 ## 1.0.64 (unreleased)
 
+1. 修复了QA_RISK的bug
+2. 实时采集的数据,支持实时采样 (QA_fetch_quotation/QA_data_tick_resample)
+
 
 ## 1.0.63 
 
