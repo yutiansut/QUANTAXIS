@@ -137,8 +137,9 @@ class QA_Risk():
         if self.if_fq:
             return self.market_data.to_qfq().pivot('close').fillna(method='ffill') * self.account.daily_hold
         else:
-            self.market_data.pivot('close').fillna(
+            return self.market_data.pivot('close').fillna(
                 method='ffill') * self.account.daily_hold
+            
 
     @property
     @lru_cache()
