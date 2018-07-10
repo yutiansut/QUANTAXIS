@@ -47,12 +47,16 @@
 <!-- /TOC -->
 ## 1.0.64 (unreleased)
 
+1. 修复了QA_RISK的bug
+2. 实时采集的数据,支持实时采样 (QA_fetch_quotation/QA_data_tick_resample)
+
 
 ## 1.0.63 
 
 1. 紧急修复因为ts.get_stock_basics()获取error导致的无法存储问题
 2. 增加了对于选股的需求(选股模块.md)
 
+released in : JULY 9, 2018
 
 ## 1.0.62 
 
