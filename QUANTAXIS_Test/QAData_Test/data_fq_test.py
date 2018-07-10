@@ -3,7 +3,10 @@ import unittest
 import sys
 import os
 import struct
+import sqlite3
 import QUANTAXIS as QA
+import QUANTAXIS.QAUtil.QADate as QAUtilDate
+from QUANTAXIS.QAUtil.QAParameter import FREQUENCE, MARKET_TYPE, DATASOURCE, OUTPUT_FORMAT, DATABASE_TABLE
 
 class QAData_fq_test(unittest.TestCase):
 
@@ -131,17 +134,13 @@ open      1     0.5    0.6    0.7     0.53
 close     1     0.6    0.7    0.8     0.6
 送股      无    10送10   无    10送5    无
 
-
-
-
-
-
-     用递归 计算复权价
+    用递归 计算复权价
     '''
     def testFQ(self):
         print("测试复权")
         pass
     pass
+
 
 
     '''
@@ -163,25 +162,66 @@ close     1     0.6    0.7    0.8     0.6
     '''
 
 
-    def parse_a_lday_file_to_df(self, lday_fullpath):
+    def parse_a_lday_file_to_df(self, lday_fullpath, lday_fileName):
         #
+        #print("读取文件 "+ lday_fullpath)
 
-        print("读取文件 "+ lday_fullpath)
+        fsize = os.path.getsize(lday_fullpath)
+
+        if fsize % 32 != 0:
+            print("💔文件长度不是 32 字节的整数倍")
+
+        nStockCount = fsize // 32;
+        print("🦖准备读取{}文件共{}个日线数据🛸".format(lday_fullpath, nStockCount))
+
         with open(file=lday_fullpath, mode='rb') as f:
 
-            read_data_section = f.read(32)
-            values = struct.unpack("<LLLLLfLL", read_data_section)
+            curdir = os.getcwd()
+            print("📊准备写入📝db🗃文件到目录📂%s" % (curdir + "/tdx_days"))
+            path_for_save_data = curdir + "/tdx_days"
+            path_for_save_data = path_for_save_data.rstrip("\\")
+            isExists = os.path.exists(path_for_save_data)
+            if isExists == False:
+                os.mkdir(path_for_save_data)
+                print("新建文件夹",path_for_save_data)
 
-            print(values)
+            db_file_save_file = path_for_save_data
+            db_file_save_file = db_file_save_file + "/" + lday_fileName + '.db'
 
+            conn = sqlite3.connect(db_file_save_file)
+            c = conn.cursor()
+
+            c.execute('''DROP TABLE IF EXISTS stock_days''')
+            c.execute(
+                '''CREATE TABLE stock_days (date int, open int, high int, low int, close int, amount real, vol int,lastclose int )''')
+
+            for iCount in range( nStockCount ):
+
+                #进度条显示
+                iii = round((iCount / nStockCount) * 100.0)
+                s1 = "\r🚀%s %d%%[%s%s]" % (lday_fullpath, iii, "🐌" * iii, " " * (100 - iii))
+                sys.stdout.write(s1)
+                sys.stdout.flush()
+
+                # todo 🛠 判断，通达信本地数据是否完整！
+                read_data_section = f.read(32)
+                values = struct.unpack("<LLLLLfLL", read_data_section)
+
+                c.execute(
+                    "INSERT INTO stock_days(date, open, high, low, close, amount, vol ,lastclose)  "
+                    " VALUES (%d,%d,%d,%d,%d,%f,%d,%d)"
+                    % (values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7]))
+
+
+            conn.commit()
+            c.close()
+            conn.close()
             f.closed
 
 
-
-
-    def setUp(self):
+    def testLocalTdxDayFileData(self):
         '''
-        读取通达信股票数据
+        读取通达信股票数据,到 sqllite 文件中去
         :return:
         '''
 
@@ -192,24 +232,109 @@ close     1     0.6    0.7    0.8     0.6
         bockList = QA.QA_fetch_stock_block_adv()
         #data = QA.QA_fetch_stock_day_adv(codelist, '2017-09-01', '2018-05-20')
 
+        self.tdxPath_SH_lday = ''
+        self.tdxPath_SZ_lday = ''
 
         if sys.platform == 'darwin':
-            self.tdxPath_SH_lday = '/Users/jerryw/.wine/drive_c/new_tdx/vipdoc/sh/lday'
-            self.tdxPath_SZ_lday = '/Users/jerryw/.wine/drive_c/new_tdx/vipdoc/sz/lday'
+            home_dir = os.path.expandvars('$HOME');
+            self.tdxPath_SH_lday = home_dir + '/.wine/drive_c/new_tdx/vipdoc/sh/lday'
+            self.tdxPath_SZ_lday = home_dir + '/.wine/drive_c/new_tdx/vipdoc/sz/lday'
 
+            bExist1 = os.path.exists(self.tdxPath_SH_lday)
+            bExist2 = os.path.exists(self.tdxPath_SZ_lday)
+
+            if bExist1 == True and bExist2 == True:
+                print("读取通达信 日线数据 ")
         else:
-            print("请指定通达信目录")
+
+            # todo 🛠 windows 环境下 读取注册获取通达信安装位置
+            print("😞请指定通达信目录💔")
             self.tdxPath_SH_lday = ''
             self.tdxPath_SZ_lday = ''
+            return
+
+        lday_sh_filelist = os.listdir(self.tdxPath_SH_lday);
+        sh_stock_count = len(lday_sh_filelist)
+        lday_sh_filelist.sort()
+        print("准备读取上海交易所证券日线数据 共{}个股票".format(sh_stock_count))
+        for iIndex in range(sh_stock_count):
+            print(' 进度 {}/{} '.format(iIndex, sh_stock_count));
+            self.parse_a_lday_file_to_df(self.tdxPath_SH_lday + "/" + lday_sh_filelist[iIndex], lday_sh_filelist[iIndex])
 
 
-        bExist1 = os.path.exists(self.tdxPath_SH_lday)
-        bExist2 = os.path.exists(self.tdxPath_SZ_lday)
+        lday_sz_filelist = os.listdir(self.tdxPath_SZ_lday);
+        sz_stock_count = len(lday_sz_filelist)
+        lday_sz_filelist.sort()
+        print("准备读取深圳交易所证券日线数据 共{}个股票".format(sz_stock_count))
+        for iIndex in range(sz_stock_count):
+            print(' 进度 {}/{} '.format(iIndex, sz_stock_count));
+            self.parse_a_lday_file_to_df(self.tdxPath_SZ_lday + "/" + lday_sz_filelist[iIndex],lday_sz_filelist[iIndex])
 
-        if bExist1 == True and bExist2 == True:
-            print("读取通达信 日线数据 ")
+    #测试mongodb 数据库， 不复权的日线数据
+    def test_mongodb_day_data(self):
 
-            lday_list = os.listdir(self.tdxPath_SH_lday);
-            print('一个日线数据 ：',len(lday_list));
-            self.parse_a_lday_file_to_df(self.tdxPath_SH_lday + "/" +lday_list[0])
+        #读取本地 sqllite 数据
 
+        curdir = os.getcwd()
+        print("📊准备读取📝db🗃文件，目录位置📂%s" % (curdir + "/tdx_days"))
+        path_for_saved_data = curdir + "/tdx_days"
+        path_for_saved_data = path_for_saved_data.rstrip("\\")
+        isExists = os.path.exists(path_for_saved_data)
+        if isExists == False:
+            print("数据库目录不存在， 请线运行 testLocalTdxDayFileData 测试 ，获取日线数据！💔")
+        #读取通达信数据库文件
+
+        saved_sqllite_file = os.listdir(path_for_saved_data);
+        sqllite_file_count = len(saved_sqllite_file)
+
+        saved_sqllite_file.sort()
+
+        for iIndexSQLLiteFile in range(sqllite_file_count):
+            sqlLiteFile = path_for_saved_data + '/' + saved_sqllite_file[iIndexSQLLiteFile]
+            print("📝⛓⚙️🔬📈📉📊️读取SQLLite文件{}比对数据".format(sqlLiteFile))
+
+            conn = sqlite3.connect(sqlLiteFile)
+            cur = conn.cursor()
+            result = cur.execute('''select * from stock_days''');
+
+            allrows = result.fetchall()
+
+            for arow in allrows:
+                print(arow)
+
+                strCode = saved_sqllite_file[iIndexSQLLiteFile]
+                isSz =  strCode.startswith('sh');
+                strCode = strCode[2:8]
+                isStartWith000 = strCode.startswith('000');
+                intDate = arow[0];
+                strDate = QAUtilDate.QA_util_date_int2str(intDate)
+
+                if isSz == True and  isStartWith000 == True :
+                    qaDataStructDay = QA.QA_quotation(code = strCode, start = strDate, end = strDate, frequence = FREQUENCE.DAY, market=MARKET_TYPE.INDEX_CN, source= DATASOURCE.MONGO,output=None  )
+                else:
+                    qaDataStructDay = QA.QA_quotation(code = strCode, start = strDate, end = strDate, frequence = FREQUENCE.DAY, market=MARKET_TYPE.STOCK_CN, source= DATASOURCE.MONGO,output=None  )
+
+                #print(type(qaDataStructDay))
+                vhigh = (qaDataStructDay.high).item()
+                vlow =  (qaDataStructDay.low).item()
+                vopen =(qaDataStructDay.open).item()
+                vclose = (qaDataStructDay.close).item()
+                #(qaDataStructDay.to_list())
+
+                fopen  =  (arow[1] /100.0)
+                fhigh  =  (arow[2] /100.0)
+                flow   =  (arow[3] /100.0)
+                fclose =  (arow[4] /100.0)
+
+                self.assertEqual(fopen,  vopen)
+                self.assertEqual(fhigh,  vhigh)
+                self.assertEqual(flow,   vlow)
+                self.assertEqual(fclose, vclose)
+
+                # todo 🛠 总是有小数点误差，不能简单的用 assertEqual 去比较， 要允许一定的误差。。。
+
+            cur.close()
+            conn.close()
+        #获取改天的数据对比
+
+        pass
