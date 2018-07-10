@@ -107,12 +107,12 @@ def QA_data_make_hfq(bfq_data, xdxr_data):
                         * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
     data['adj'] = (data['close'] / data['preclose'].shift(-1)
                    ).cumprod().shift(1).fillna(1)
-    data['open'] = data['open'] * data['adj']
-    data['high'] = data['high'] * data['adj']
-    data['low'] = data['low'] * data['adj']
-    data['close'] = data['close'] * data['adj']
-    data['preclose'] = data['preclose'] * data['adj']
-    data['volume'] = data['volume'] / \
+    data['open'] = data['open'] / data['adj']
+    data['high'] = data['high'] / data['adj']
+    data['low'] = data['low'] / data['adj']
+    data['close'] = data['close'] / data['adj']
+    data['preclose'] = data['preclose'] / data['adj']
+    data['volume'] = data['volume'] * \
         data['adj'] if 'volume' in data.columns else data['vol']/data['adj']
     try:
         data['high_limit'] = data['high_limit'] * data['adj']
