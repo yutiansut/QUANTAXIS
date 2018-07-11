@@ -60,6 +60,17 @@ def QA_data_tick_resample(tick, type_='1min'):
     return data.fillna(method='ffill').set_index(['datetime', 'code'], drop=False).drop_duplicates()
 
 
+def QA_data_min_resample(min, raw_type, new_type):
+    """分钟线采样成大周期
+    
+    Arguments:
+        min {[type]} -- [description]
+        raw_type {[type]} -- [description]
+        new_type {[type]} -- [description]
+    """
+    pass
+
+
 if __name__ == '__main__':
     tickz = QA_fetch_get_stock_transaction(
         'tdx', '000001', '2017-01-03', '2017-01-05')
