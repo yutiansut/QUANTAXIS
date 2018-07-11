@@ -44,20 +44,62 @@ def QA_data_tick_resample(tick, type_='1min'):
 
     data['volume'] = tick['vol'].resample(
         type_, label='right', closed='left').sum()
-    data['code'] = tick['code'][0]
+    data['code'] = tick.code.iloc[1].unique()[0]
+    if 'date' not in tick.columns:
+        tick=tick.assign(date=tick.datetime.apply(lambda x: str(x)[0:10]))
 
-    #data = pd.DataFrame()
+    resx=pd.DataFrame()
     _temp = tick.drop_duplicates('date')['date']
     for item in _temp:
         _data = data[item]
         _data = _data[time(9, 31):time(11, 30)].append(
             _data[time(13, 1):time(15, 0)])
-        data = data.append(_data)
+        resx = resx.append(_data)
 
-    data['datetime'] = data.index
-    data['date'] = data['datetime'].apply(lambda x: str(x)[0:10])
+    data=resx.reset_index().assign(date=resx['datetime'].apply(lambda x: str(x)[0:10]))
 
     return data.fillna(method='ffill').set_index(['datetime', 'code'], drop=False).drop_duplicates()
+
+
+def QA_data_min_resample(min_data,  type_='5min'):
+    """分钟线采样成大周期
+    
+
+    分钟线采样成子级别的分钟线
+
+
+    time+ OHLC==> resample
+    Arguments:
+        min {[type]} -- [description]
+        raw_type {[type]} -- [description]
+        new_type {[type]} -- [description]
+    """
+    
+    ohlc_data=min_data.loc[:,['open','high','low','close']].stack().reset_index().rename(columns={0:'price'}).drop(['level_2'],axis=1).set_index('datetime',drop=False)
+    vol=min_data.assign(vol1=0).assign(vol2=0).assign(vol3=0)
+    L2=vol.loc[:,['volume','vol1','vol2','vol3']].stack().reset_index().rename(columns={0:'vol'}).drop(['level_2'],axis=1).set_index('datetime')
+    tick=pd.concat([ohlc_data,L2.vol],axis=1)
+    data = tick['price'].resample(
+        type_, label='right', closed='left').ohlc()
+
+    data['volume'] = tick['vol'].resample(
+        type_, label='right', closed='left').sum()
+    data['code'] = tick.code.iloc[1]
+    if 'date' not in tick.columns:
+        tick=tick.assign(date=tick.datetime.apply(lambda x: str(x)[0:10]))
+
+    resx=pd.DataFrame()
+    _temp = tick.drop_duplicates('date')['date']
+    for item in _temp:
+        _data = data[item]
+        _data = _data[time(9, 31):time(11, 30)].append(
+            _data[time(13, 1):time(15, 0)])
+        resx = resx.append(_data)
+
+    data=resx.reset_index().assign(date=resx['datetime'].apply(lambda x: str(x)[0:10]))
+
+    return data.fillna(method='ffill').set_index(['datetime', 'code'], drop=False).drop_duplicates()
+
 
 
 if __name__ == '__main__':
