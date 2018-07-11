@@ -70,7 +70,17 @@ def QA_fetch_get_stock_day(code, start, end, if_fq='00'):
 
 
 def QA_fetch_get_stock_block():
-    pass
+    """ths的版块数据
+    
+    Returns:
+        [type] -- [description]
+    """
+
+    url='https://gitee.com/yutiansut/QADATA/raw/master/ths_block.csv'
+    try:
+        return pd.read_csv(url).set_index('code', drop=False)
+    except:
+        return None
     # url_list = ['gn', 'dy', 'thshy', 'zjhhy']  # 概念/地域/同花顺板块/证监会板块
     # data = []
     # cookie=input('cookie')
