@@ -6,10 +6,16 @@ QUANTAXIS致力于一个全生态链的闭环实现,因此, 当我们实现了�
 QUANTAXIS给出了如下的解决方案:
 
 
-- 基于多线程的全市场5挡行情快照扫描
-- 数据采样工具
-- 数据重采样工具
-- 数据合并/拆分工具
+<!-- TOC -->
+
+- [QUANTAXIS RUNTIME](#quantaxis-runtime)
+    - [便捷开启实时行情快照收集](#便捷开启实时行情快照收集)
+    - [数据采样:](#数据采样)
+    - [数据重采样:](#数据重采样)
+    - [数据合并 (QADataStruct 对于实时的支持)](#数据合并-qadatastruct-对于实时的支持)
+    - [数据拆分 (QADataStruct 对于实时的支持)](#数据拆分-qadatastruct-对于实时的支持)
+
+<!-- /TOC -->
 
 基于以上, 我们就可以对于实时的行情,进行分析和处理
 
@@ -36,10 +42,10 @@ QUANTAXIS给出了如下的解决方案:
 1分钟级别--合成其他分钟级别
 
 
-## 数据合并
+## 数据合并 (QADataStruct 对于实时的支持)
 
 使用 QA.concat([QADataStruct1,QADataStruct2,....])可以将数据合并, 如 先收集好的分钟线数据+ 刚合成的数据--一起缓存
 
-## 数据拆分
+## 数据拆分 (QADataStruct 对于实时的支持)
 
 使用 ```QA.QADataStruct.select_time/select_code/seletime_time_with_gap```都可以讲数据的任意时间段/股票选出来 实现数据拆分
