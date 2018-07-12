@@ -96,7 +96,7 @@ class QA_DataStruct_Stock_day(_quotation_base):
             #         lambda x: QA_data_stock_to_fq(self.data[self.data['code'] == x]), self.code))), self.type, 'qfq')
             else:
                 return self.new(
-                    self.groupby(level=1).apply(QA_data_stock_to_fq), self.type, 'qfq')
+                    self.groupby(level=1).apply(QA_data_stock_to_fq, 'qfq'), self.type, 'qfq')
         else:
             QA_util_log_info(
                 'none support type for qfq Current type is: %s' % self.if_fq)
@@ -110,7 +110,7 @@ class QA_DataStruct_Stock_day(_quotation_base):
                 return self
             else:
                 return self.new(
-                    self.groupby(level=1).apply(QA_data_stock_to_fq), self.type, 'hfq')
+                    self.groupby(level=1).apply(QA_data_stock_to_fq, 'hfq'), self.type, 'hfq')
                 # return self.new(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
                 #     self.data[self.data['code'] == x], 'hfq'), self.code))), self.type, 'hfq')
         else:
@@ -200,7 +200,7 @@ class QA_DataStruct_Stock_min(_quotation_base):
             #     return data
             else:
                 return self.new(
-                    self.groupby(level=1).apply(QA_data_stock_to_fq), self.type, 'qfq')
+                    self.groupby(level=1).apply(QA_data_stock_to_fq, 'qfq'), self.type, 'qfq')
 
         else:
             QA_util_log_info(
@@ -214,7 +214,7 @@ class QA_DataStruct_Stock_min(_quotation_base):
                 return self
             else:
                 return self.new(
-                    self.groupby(level=1).apply(QA_data_stock_to_fq), self.type, 'hfq')
+                    self.groupby(level=1).apply(QA_data_stock_to_fq, 'hfq'), self.type, 'hfq')
                 # data = QA_DataStruct_Stock_min(pd.concat(list(map(lambda x: QA_data_stock_to_fq(
                 #     self.data[self.data['code'] == x], 'hfq'), self.code))).set_index(['datetime', 'code'], drop=False))
                 # data.if_fq = 'hfq'
