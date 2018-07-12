@@ -884,4 +884,13 @@ class _quotation_base():
 
 
     def fast_moving(self,pct):
-        return self.bar_pct_change[self.bar_pct_change>0.03].sort_index()
+        """bar快速上涨的股票(输入pct 百分比)
+        
+        Arguments:
+            pct {[type]} -- [description]
+        
+        Returns:
+            [type] -- [description]
+        """
+
+        return self.bar_pct_change[self.bar_pct_change>pct].sort_index()
