@@ -51,6 +51,7 @@
 1. 更新了同花顺版块爬虫, 集成进```save stock_block```中
 
 
+
 ## 1.0.64
 
 1. 修复了QA_RISK的bug
@@ -425,7 +426,7 @@ released in :JUNE 01, 2018
     ```
  7. 将QDS的方法暴露出来 [concat,from_tushare](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/QUANTAXIS/QAData/dsmethods.py)
     QDS的装饰器主要是用于将别处获取的数据之间转化为QDS格式
-    ```
+    ```python
     import QUANTAXIS as QA
     import tushare as ts
 
