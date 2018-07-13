@@ -587,7 +587,7 @@ class _quotation_base():
             print('QA CANNOT QUERY THIS {}'.format(context))
             pass
 
-    def groupby(self,by=None, axis=0, level=None, as_index=False, sort=False, group_keys=False, squeeze=False, observed=False, **kwargs):
+    def groupby(self,by=None, axis=0, level=None, as_index=True, sort=False, group_keys=True, squeeze=False, observed=False, **kwargs):
         """仿dataframe的groupby写法,但控制了by的code和datetime
         
         Keyword Arguments:
