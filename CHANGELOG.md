@@ -3,7 +3,8 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.0.64 (unreleased)](#1064-unreleased)
+    - [1.0.65 (unreleased)](#1065-unreleased)
+    - [1.0.64](#1064)
     - [1.0.63](#1063)
     - [1.0.62](#1062)
     - [1.0.61](#1061)
@@ -45,11 +46,21 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
-## 1.0.64 (unreleased)
+## 1.0.65 (unreleased)
+
+1. 更新了同花顺版块爬虫, 集成进```save stock_block```中
+
+
+
+## 1.0.64
 
 1. 修复了QA_RISK的bug
 2. 实时采集的数据,支持实时采样 (QA_fetch_quotation/QA_data_tick_resample)
+3. 修复后复权bug
+4. 增加一个default(默认ip的选项),可以在qadir/setting/config.ini中进行修改, 避免不必要的多次重复测速
+5. QA_Setting 增加 ```set_config``` 函数, 用于设置config.ini的值
 
+released in : JULY 11, 2018
 
 ## 1.0.63 
 
@@ -415,7 +426,7 @@ released in :JUNE 01, 2018
     ```
  7. 将QDS的方法暴露出来 [concat,from_tushare](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/QUANTAXIS/QAData/dsmethods.py)
     QDS的装饰器主要是用于将别处获取的数据之间转化为QDS格式
-    ```
+    ```python
     import QUANTAXIS as QA
     import tushare as ts
 
