@@ -506,5 +506,7 @@ def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
         raise e
 
 
+
+
 if __name__ == '__main__':
     print(QA_fetch_lhb('2006-07-03'))

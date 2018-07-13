@@ -31,7 +31,7 @@ from QUANTAXIS.QAUtil import (QA_util_date_int2str, QA_util_date_stamp,
                               QA_util_log_info, QA_util_to_json_from_pandas)
 
 
-def QA_fetch_get_stock_day(name, start='', end='', if_fq='01', type_='json'):
+def QA_fetch_get_stock_day(name, start='', end='', if_fq='01', type_='pd'):
     if (len(name) != 6):
         name = str(name)[0:6]
 
