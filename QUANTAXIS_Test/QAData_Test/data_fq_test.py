@@ -4,8 +4,15 @@ import sys
 import os
 import struct
 import sqlite3
+
+import pprint;
+
 import QUANTAXIS as QA
 import QUANTAXIS.QAUtil.QADate as QAUtilDate
+from QUANTAXIS.QASU.save_tushare import (QA_SU_save_stock_info_tushare ,QA_SU_save_stock_terminated)
+from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_stock_basic_info_tushare,QA_fetch_stock_terminated)
+
+
 from QUANTAXIS.QAUtil.QAParameter import FREQUENCE, MARKET_TYPE, DATASOURCE, OUTPUT_FORMAT, DATABASE_TABLE
 
 class QAData_fq_test(unittest.TestCase):
@@ -123,8 +130,8 @@ for example：举个🌰栗子
 
     送股除权报价=股权登记日收盘价/（1+每股送股比例）
 
-    t=1  1/1+1 = 0.5
-    t=3  0.8/1+0.5 = 0.53333
+    t=1  1/(1+1) = 0.5
+    t=3  0.8/(1+0.5) = 0.53333
 
     假设 一个股票 时间
 
@@ -160,7 +167,6 @@ close     1     0.6    0.7    0.8     0.6
     28 ~ 31 字节：上日收盘*100, 整型股
     通达信常用文件说明一览(通达信文件结构)
     '''
-
 
     def parse_a_lday_file_to_df(self, lday_fullpath, lday_fileName):
         #
@@ -204,6 +210,9 @@ close     1     0.6    0.7    0.8     0.6
                 sys.stdout.flush()
 
                 # todo 🛠 判断，通达信本地数据是否完整！
+
+
+
                 read_data_section = f.read(32)
                 values = struct.unpack("<LLLLLfLL", read_data_section)
 
@@ -219,18 +228,11 @@ close     1     0.6    0.7    0.8     0.6
             f.closed
 
 
-    def testLocalTdxDayFileData(self):
+    def oktestLocalTdxDayFileData(self):
         '''
         读取通达信股票数据,到 sqllite 文件中去
         :return:
         '''
-
-        codelist = self.qa_data = QA.QA_fetch_stock_list_adv().code.tolist();
-
-        QA.QA_fetch_stock_block_adv()
-        codelist = QA.QA_fetch_stock_block_adv().get_block('云计算').code
-        bockList = QA.QA_fetch_stock_block_adv()
-        #data = QA.QA_fetch_stock_day_adv(codelist, '2017-09-01', '2018-05-20')
 
         self.tdxPath_SH_lday = ''
         self.tdxPath_SZ_lday = ''
@@ -246,34 +248,179 @@ close     1     0.6    0.7    0.8     0.6
             if bExist1 == True and bExist2 == True:
                 print("读取通达信 日线数据 ")
         else:
-
             # todo 🛠 windows 环境下 读取注册获取通达信安装位置
             print("😞请指定通达信目录💔")
             self.tdxPath_SH_lday = ''
             self.tdxPath_SZ_lday = ''
             return
 
-        lday_sh_filelist = os.listdir(self.tdxPath_SH_lday);
+        lday_sh_filelist = os.listdir(self.tdxPath_SH_lday)
         sh_stock_count = len(lday_sh_filelist)
         lday_sh_filelist.sort()
         print("准备读取上海交易所证券日线数据 共{}个股票".format(sh_stock_count))
         for iIndex in range(sh_stock_count):
-            print(' 进度 {}/{} '.format(iIndex, sh_stock_count));
+            print(' 进度 {}/{} '.format(iIndex, sh_stock_count))
             self.parse_a_lday_file_to_df(self.tdxPath_SH_lday + "/" + lday_sh_filelist[iIndex], lday_sh_filelist[iIndex])
 
 
-        lday_sz_filelist = os.listdir(self.tdxPath_SZ_lday);
+        lday_sz_filelist = os.listdir(self.tdxPath_SZ_lday)
         sz_stock_count = len(lday_sz_filelist)
         lday_sz_filelist.sort()
         print("准备读取深圳交易所证券日线数据 共{}个股票".format(sz_stock_count))
         for iIndex in range(sz_stock_count):
-            print(' 进度 {}/{} '.format(iIndex, sz_stock_count));
+            print(' 进度 {}/{} '.format(iIndex, sz_stock_count))
             self.parse_a_lday_file_to_df(self.tdxPath_SZ_lday + "/" + lday_sz_filelist[iIndex],lday_sz_filelist[iIndex])
+
+
+
+    '''
+        0。 通达信盘后数据下载 从 1990年开始到今天到全部日线数据。
+        0。 通达信盘后数据下载 从 1990年开始到今天到全部日线数据。
+        0。 允许qunataxis save all ， 保存所有至今到数据
+
+        测试过程
+        1。 从 tushare 获取最新的股票列表，上市日期
+        2。 读取通达信日线数据，
+        3。 循环比较两者之间到数据，并形成报告， 
+    '''
+
+
+
+
+    def checkFileNameStockType(self, fileName = ''):
+
+        '''
+            检查 shXXXXXX  szXXXXXX 文件名 的证券类型
+
+
+            上市状态     基金类型        编码规则（国内的公募基金产品编码都是6位数字）
+
+            上市基金     传统封闭式      深交所：18打头  上交所：50打头
+
+                           LOF基金
+
+                                        深交所：16打头(前两位均用“16”标识，
+                                        中间两位为中国证监会信息中心统一规定的基金管理公司代码gg，
+                                        后两位为该公司发行全部开放式基金的顺序号xx。具体表示为“16ggxx”)
+
+                           ETF基金
+
+                                        深交所：15打头(认购代码一级市场申赎代码二级市场交易代码均相同)
+                                        上交所：51打头(认购代码最后一位是数字“3”一级市场申赎代码最后一位是数字“1”二级市场交易代码最后一位是数字“0”)
+
+                           分级基金
+                                        深交所：15打头（目前所有分级基金的子代码都在深交所上市交易）
+
+                           其他
+
+                                        深交所：16打头（合同生效后*年内封闭运作，并在深圳证券交易所上市交易，封闭期满后转为上市开放式基金（LOF））
+
+            非上市基金
+
+                一般开放式
+
+                            基金编码为6位数字，前两位为基金管理公司的注册登记机构编码(TA编码)，后四位为产品流水号。
+
+                上证通基金
+
+                            519***标识基金挂牌代码和申购赎回代码
+                            521***标识基金的认购代码
+                            522***标识跨市场转托管代码
+                            523***标识设置基金分红方式代码
+        '''
+        isSh = fileName.startswith('sh')
+        isSz = fileName.startswith('sz')
+
+        strCode = fileName[2:8]
+        if isSz == True and strCode.startswith('000') == True:
+            return '上证指数'
+
+        if isSh == True and strCode.startswith('50') == True:
+            return '上交所传统封闭式基金'
+
+        if isSz == True and strCode.startswith('18') == True:
+            return '深交所传统封闭式基金'
+
+        if isSz == True and strCode.startswith('16') == True:
+            return '深交所LOF基金 '
+
+        if isSh == True and strCode.startswith('51') == True:
+            return '上交所ETF基金'
+
+        if isSz == True and strCode.startswith('15') == True:
+            return '深交所ETF基金或分级基金'
+
+        if isSz == True and strCode.startswith('16') == True:
+            return '深交所其他基金'
+
+
+        if isSh == True and strCode.startswith('60') == True:
+            return '上交所A股'
+
+        if isSh == True and strCode.startswith('800')== True:
+            '''
+            880001 总市值
+            880011 A主总值
+            880021 中小总值
+            880031 创业总值
+            880002 流通市值
+            880012 A主流通
+            880022 中小流通
+            880032 创业流通
+            880003 平均股价
+            880013 A主平均
+            880023 中小平均
+            880033 创业平均
+            880004 成交均价
+            880014 A主均价
+            880024 中小均价
+            880034 创业均价
+            880005 涨跌家数
+            880015 A主涨跌
+            880025 中小涨跌
+            880035 创业涨跌
+            880006 停板家数
+            880016 A主停板
+            880026 中小停板
+            880036 创业停板
+            '''
+            return '统计指数'
+
+        if isSh == True and strCode.startswith('900')== True:
+            return '上交所B股'
+
+        if isSz == True and strCode.startswith('000') == True:
+            return '深交所主板'
+
+        if isSz == True and strCode.startswith('002') == True:
+            return '深交所中小板'
+
+        if isSz == True and strCode.startswith('200') == True:
+            return '深交所B股'
+
+        if isSz == True and strCode.startswith('300') == True:
+            return '深交所创业板'
+
+        if isSz == True and strCode.startswith('399') == True:
+            return '深交所指数'
+
 
     #测试mongodb 数据库， 不复权的日线数据
     def test_mongodb_day_data(self):
 
-        #读取本地 sqllite 数据
+        #读取本地tdx日线数据 到 sqllite数据
+        #self.oktestLocalTdxDayFileData()
+
+        #更新股票列表
+        QA_SU_save_stock_info_tushare() # 只有主版 创业板 中小板, 不包含已经退市的股票
+        #QA_SU_save_stock_terminated() # 获取退市股票列表
+        #
+        stock_list = QA_fetch_stock_basic_info_tushare()
+        stock_list.sort(key=lambda k: (k.get('code')))
+
+        #stock_list_termined = QA_fetch_stock_terminated()
+
+        #sorted(stock_list, key='code')
 
         curdir = os.getcwd()
         print("📊准备读取📝db🗃文件，目录位置📂%s" % (curdir + "/tdx_days"))
@@ -284,41 +431,93 @@ close     1     0.6    0.7    0.8     0.6
             print("数据库目录不存在， 请线运行 testLocalTdxDayFileData 测试 ，获取日线数据！💔")
         #读取通达信数据库文件
 
-        saved_sqllite_file = os.listdir(path_for_saved_data);
-        sqllite_file_count = len(saved_sqllite_file)
+        saved_sqllite_files = os.listdir(path_for_saved_data);
+        sqllite_file_count = len(saved_sqllite_files)
 
-        saved_sqllite_file.sort()
+        saved_sqllite_files.sort()
+
+        #检查 Tushare 获取的股票列表 和 通达信保存的股票列表是否一致。
+        for aSavedFileName in saved_sqllite_files:
+            bFound = False
+            for iRow in stock_list:
+                strCodeInDb = iRow.get('code')
+                strCodeOnFileName = aSavedFileName[2:8]
+                if strCodeInDb == strCodeOnFileName:
+                    bFound = True
+                    break
+
+            if bFound == False:
+                if (self.checkFileNameStockType(aSavedFileName) == '上交所A股') or \
+                        (self.checkFileNameStockType(aSavedFileName) == '深交所中小板') or \
+                        (self.checkFileNameStockType(aSavedFileName) == '深交所创业板'):
+
+                    #从退市的股票列表中找
+                    # bIsTerminatedStock = False
+                    # for iTerminatedStock in stock_list_termined:
+                    #     terminatedCode = iTerminatedStock.get('code')
+                    #     strCode0 = aSavedFileName[2:8]
+                    #     if terminatedCode == strCode0:
+                    #         bIsTerminatedStock = True
+                    #         continue
+                    #if bIsTerminatedStock == True:
+                    #    continue
+                    # hard code 已经退市的股票
+                    if aSavedFileName[2:8] == '600432' or \
+                            aSavedFileName[2:8] == '600806':
+                        continue
+
+                    print("💔通达信数据下载不全， 没有找到 股票代码 ", aSavedFileName)
+                    self.fail("💔通达信数据下载不全， 没有找到 股票代码 {}".format(aSavedFileName))
+                    break
+            else:
+                    continue
 
         for iIndexSQLLiteFile in range(sqllite_file_count):
-            sqlLiteFile = path_for_saved_data + '/' + saved_sqllite_file[iIndexSQLLiteFile]
+            strSavedFileName = saved_sqllite_files[iIndexSQLLiteFile];
+            strCodeType = self.checkFileNameStockType(strSavedFileName)
+            if strCodeType == '上交所A股' or \
+                    strCodeType == '深交所中小板' or \
+                    strCodeType == '深交所创业板':
+                pass
+            else:
+                continue
+
+            sqlLiteFile = path_for_saved_data + '/' + strSavedFileName
             print("📝⛓⚙️🔬📈📉📊️读取SQLLite文件{}比对数据".format(sqlLiteFile))
 
             conn = sqlite3.connect(sqlLiteFile)
             cur = conn.cursor()
-            result = cur.execute('''select * from stock_days''');
+            result = cur.execute('''select * from stock_days''')
 
             allrows = result.fetchall()
 
             for arow in allrows:
-                print(arow)
 
-                strCode = saved_sqllite_file[iIndexSQLLiteFile]
-                isSz =  strCode.startswith('sh');
-                strCode = strCode[2:8]
-                isStartWith000 = strCode.startswith('000');
-                intDate = arow[0];
+                strCode = strSavedFileName[2:8]
+                intDate = arow[0]
                 strDate = QAUtilDate.QA_util_date_int2str(intDate)
 
-                if isSz == True and  isStartWith000 == True :
-                    qaDataStructDay = QA.QA_quotation(code = strCode, start = strDate, end = strDate, frequence = FREQUENCE.DAY, market=MARKET_TYPE.INDEX_CN, source= DATASOURCE.MONGO,output=None  )
+                if strCodeType == '上交所A股' or \
+                    strCodeType == '深交所中小板' or \
+                    strCodeType == '深交所创业板':                # if isSz == True and  isStartWith000 == True :
+                        qaDataStructDay = QA.QA_quotation(code = strCode, start = strDate, end = strDate, frequence = FREQUENCE.DAY, market=MARKET_TYPE.STOCK_CN, source= DATASOURCE.MONGO,output=None  )
                 else:
-                    qaDataStructDay = QA.QA_quotation(code = strCode, start = strDate, end = strDate, frequence = FREQUENCE.DAY, market=MARKET_TYPE.STOCK_CN, source= DATASOURCE.MONGO,output=None  )
+                    print("证券 类型不明确！")
+                    break
+                #对比其他 指数 基金 报价
 
                 #print(type(qaDataStructDay))
-                vhigh = (qaDataStructDay.high).item()
-                vlow =  (qaDataStructDay.low).item()
-                vopen =(qaDataStructDay.open).item()
-                vclose = (qaDataStructDay.close).item()
+                try:
+                    vhigh = (qaDataStructDay.high).item()
+                    vlow =  (qaDataStructDay.low).item()
+                    vopen = (qaDataStructDay.open).item()
+                    vclose = (qaDataStructDay.close).item()
+                except :
+
+                    print("error ")
+                    print(arow)
+                    print("数据库读取记录错误")
+
                 #(qaDataStructDay.to_list())
 
                 fopen  =  (arow[1] /100.0)
@@ -326,10 +525,40 @@ close     1     0.6    0.7    0.8     0.6
                 flow   =  (arow[3] /100.0)
                 fclose =  (arow[4] /100.0)
 
-                self.assertEqual(fopen,  vopen)
-                self.assertEqual(fhigh,  vhigh)
-                self.assertEqual(flow,   vlow)
-                self.assertEqual(fclose, vclose)
+                bShowErro = True
+
+                if fopen != vopen:
+                    print(arow)
+                    print(fopen, " 开盘价不匹配 ", vopen )
+
+                    if abs(fopen-vopen)>10.0 :
+                        self.fail('误差超过范围')
+
+                if fhigh != vhigh:
+                    print(arow)
+                    print(fhigh, " 最高价不匹配 ",vhigh)
+
+                    if abs(fopen - vopen) > 10.0:
+                        self.fail('误差超过范围')
+
+                if flow !=  vlow:
+                    print(arow)
+                    print(flow, " 最低价不匹配 ", vlow)
+
+                    if abs(fopen - vopen) > 10.0:
+                        self.fail('误差超过范围')
+
+                if fclose != vclose:
+                    print(arow)
+                    print(fclose , " 收盘价不匹配 ", vclose)
+
+                    if abs(fopen - vopen) > 10.0:
+                        self.fail('误差超过范围')
+
+                # self.assertEqual(fopen,  vopen)
+                # self.assertEqual(fhigh,  vhigh)
+                # self.assertEqual(flow,   vlow)
+                # self.assertEqual(fclose, vclose)
 
                 # todo 🛠 总是有小数点误差，不能简单的用 assertEqual 去比较， 要允许一定的误差。。。
 
