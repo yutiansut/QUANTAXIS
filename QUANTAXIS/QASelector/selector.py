@@ -31,4 +31,3 @@ class QA_Selector():
         return QA_fetch_stock_block_adv(code=self.code_list)
 
     
-
