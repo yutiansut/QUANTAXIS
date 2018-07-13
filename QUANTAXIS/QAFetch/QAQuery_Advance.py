@@ -36,7 +36,9 @@ from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_index_day,
                                        QA_fetch_index_min,
                                        QA_fetch_stock_day,
                                        QA_fetch_stock_full,
-                                       QA_fetch_stock_min)
+                                       QA_fetch_stock_min,
+                                       QA_fetch_financial_report
+                                       )
 from QUANTAXIS.QAUtil import (DATABASE, QA_Setting, QA_util_date_stamp,
                               QA_util_date_valid, QA_util_log_info,
                               QA_util_time_stamp)
@@ -362,6 +364,9 @@ def QA_fetch_stock_realtime_adv(code=None,
     else:
         print("💢 Error QA_fetch_stock_realtime_adv parameter code is None")
 
+
+def QA_fetch_financial_report_adv(code,start,end):
+    pass
 
 if __name__ == '__main__':
     QA_fetch_stock_realtime_adv(['000001', '000002'], num=10)
