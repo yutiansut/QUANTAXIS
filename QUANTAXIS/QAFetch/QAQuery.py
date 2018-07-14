@@ -209,9 +209,7 @@ def QA_fetch_stock_full(date, format='numpy', collections=DATABASE.stock_day):
 
         __data = []
         for item in collections.find({
-            "date_stamp": {
-                "$lte": QA_util_date_stamp(Date),
-                "$gte": QA_util_date_stamp(Date)}}):
+            "date_stamp": QA_util_date_stamp(Date)}):
             __data.append([str(item['code']), float(item['open']), float(item['high']), float(
                 item['low']), float(item['close']), float(item['vol']), item['date']])
         # 多种数据格式
