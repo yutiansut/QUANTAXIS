@@ -7,6 +7,11 @@ import urllib
 import urllib.request
 
 import pandas as pd
+import sys
+import trace
+import cProfile
+import re
+
 
 '''
  这个文件的代码 都是 实验性质的。 scribble code！
@@ -49,6 +54,52 @@ class QA_Test(unittest.TestCase):
         print(str)
 
         pass
+
+    def testProfile(self):
+        cProfile.run('import cProfile;import re;re.compile("foo|bar")')
+
+    def testLambda(self):
+        #simple list
+        lst = [('d',82),('a',21),('a',4),('f',29),('q',12),('j',21),('k',99)]
+        lst.sort(key=lambda k:k[1])
+        print(lst)
+
+        lst.sort(key=lambda k:k[0])
+        print(lst)
+
+        lst.sort(key=lambda k:(k[1], k[0]))
+        print(lst)
+
+        # 复杂的dict，按照dict对象中某一个属性进行排序
+        lst = [{'level': 19, 'star': 36, 'time': 1},
+               {'level': 20, 'star': 40, 'time': 2},
+               {'level': 20, 'star': 40, 'time': 3},
+               {'level': 20, 'star': 40, 'time': 4},
+               {'level': 20, 'star': 40, 'time': 5},
+               {'level': 18, 'star': 40, 'time': 1}]
+
+        # 需求:
+        # level越大越靠前;
+        # level相同, star越大越靠前;
+        # level和star相同, time越小越靠前;
+
+        # 先按time排序
+        lst.sort(key=lambda k: (k.get('time', 0)))
+
+        t1 = trace.Trace(ignoredirs=[sys.prefix, sys.exec_prefix],trace=0,count=1)
+        t1.run('''lst = [{'level': 19, 'star': 36, 'time': 1},{'level': 20, 'star': 40, 'time': 2},{'level': 20, 'star': 40, 'time': 3},{'level': 20, 'star': 40, 'time': 4},{'level': 20, 'star': 40, 'time': 5},{'level': 18, 'star': 40, 'time': 1}];lst.sort(key=lambda k: (k.get('time', 0)))''');
+        r = t1.results()
+        r.write_results(show_missing=True, coverdir=".")
+
+        cProfile.run('''lst = [{'level': 19, 'star': 36, 'time': 1},{'level': 20, 'star': 40, 'time': 2},{'level': 20, 'star': 40, 'time': 3},{'level': 20, 'star': 40, 'time': 4},{'level': 20, 'star': 40, 'time': 5},{'level': 18, 'star': 40, 'time': 1}];lst.sort(key=lambda k: (k.get('time', 0)))''');
+
+
+        # 再按照level和star顺序
+        # reverse=True表示反序排列，默认正序排列
+        lst.sort(key=lambda k: (k.get('level', 0), k.get('star', 0)), reverse=True)
+
+        for idx, r in enumerate(lst):
+            print('idx[%d]\tlevel: %d\t star: %d\t time: %d\t' % (idx, r['level'], r['star'], r['time']))
 
     def setTear(self):
         pass

@@ -143,6 +143,13 @@ def QA_fetch_stock_list(collections=DATABASE.stock_list):
     return [item for item in collections.find()]
 
 
+def QA_fetch_stock_terminated(collections=DATABASE.stock_terminated):
+    '获取股票基本信息 , 已经退市的股票列表'
+    items = [item for item in collections.find()]
+    # 🛠todo  转变成 dataframe 类型数据
+    return items
+
+
 def QA_fetch_stock_basic_info_tushare(collections=DATABASE.stock_info_tushare):
     '''
     purpose:
