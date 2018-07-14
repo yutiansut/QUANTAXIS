@@ -23,9 +23,13 @@
 # SOFTWARE.
 
 
-from motor.motor_asyncio import AsyncIOMotorClient,AsyncIOMotorCollection,AsyncIOMotorCursor
 import asyncio
-from QUANTAXIS.QAUtil.QASetting import DATABASE_ASYNC,DATABASE
+
+from motor.motor_asyncio import (AsyncIOMotorClient, AsyncIOMotorCollection,
+                                 AsyncIOMotorCursor)
+
+from QUANTAXIS.QAUtil.QASetting import DATABASE, DATABASE_ASYNC
+
 
 async def do_find_one():
     data= DATABASE_ASYNC.stock_day.find({'code':'000001'})
