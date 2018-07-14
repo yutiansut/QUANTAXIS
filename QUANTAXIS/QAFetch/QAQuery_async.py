@@ -22,41 +22,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import pymongo
-from motor.motor_asyncio import AsyncIOMotorClient
-from motor import MotorClient
-from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
+
+from motor.motor_asyncio import AsyncIOMotorClient,AsyncIOMotorCollection,AsyncIOMotorCursor
+import asyncio
+from QUANTAXIS.QAUtil.QASetting import DATABASE_ASYNC,DATABASE
+
+async def do_find_one():
+    data= DATABASE_ASYNC.stock_day.find({'code':'000001'})
+    for res in await data.to_list(length=10000):
+        print(res)
 
 
-def QA_util_sql_mongo_setting(uri='mongodb://localhost:27017/quantaxis'):
-    # 采用@几何的建议,使用uri代替ip,port的连接方式
-    # 这样可以对mongodb进行加密:
-    # uri=mongodb://user:passwor@ip:port
-    client = pymongo.MongoClient(uri)
-    return client
-
-# async
-
-
-def QA_util_sql_async_mongo_setting(uri='mongodb://localhost:27017/quantaxis'):
-    """异步mongo示例
-    
-    Keyword Arguments:
-        uri {str} -- [description] (default: {'mongodb://localhost:27017/quantaxis'})
-    
-    Returns:
-        [type] -- [description]
-    """
-
-    return AsyncIOMotorClient(uri)
-
-
-ASCENDING = pymongo.ASCENDING
-DESCENDING = pymongo.DESCENDING
-QA_util_sql_mongo_sort_ASCENDING = pymongo.ASCENDING
-QA_util_sql_mongo_sort_DESCENDING = pymongo.DESCENDING
-
-if __name__ == '__main__':
-    # test async_mongo
-    client = QA_util_sql_async_mongo_setting().quantaxis.stock_day
-    print(client)
+loop = asyncio.get_event_loop()
+loop.run_until_complete(do_find_one())
