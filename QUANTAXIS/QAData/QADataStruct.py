@@ -122,13 +122,13 @@ class QA_DataStruct_Stock_day(_quotation_base):
     @lru_cache()
     def high_limit(self):
         '涨停价'
-        return self.groupby(level=1).close.apply(lambda x: round((x.shift(1) + 0.0002)*1.1, 2))
+        return self.groupby(level=1).close.apply(lambda x: round((x.shift(1) + 0.0002)*1.1, 2)).sort_index()
 
     @property
     @lru_cache()
     def low_limit(self):
         '跌停价'
-        return self.groupby(level=1).close.apply(lambda x: round((x.shift(1) + 0.0002)*0.9, 2))
+        return self.groupby(level=1).close.apply(lambda x: round((x.shift(1) + 0.0002)*0.9, 2)).sort_index()
 
     @property
     @lru_cache()

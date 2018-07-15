@@ -27,7 +27,7 @@ import os
 import configparser
 from QUANTAXIS.QASU.user import QA_user_sign_in
 from QUANTAXIS.QASetting.QALocalize import qa_path, setting_path
-from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting
+from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting,QA_util_sql_async_mongo_setting
 
 
 # quantaxis有一个配置目录存放在 ~/.quantaxis
@@ -35,7 +35,7 @@ from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting
 # 貌似yutian已经进行了，文件的创建步骤，他还会创建一个setting的dir
 # 需要与yutian讨论具体配置文件的放置位置 author:Will 2018.5.19
 
-DEFAULT_DB_URI = 'mongodb://localhost:27017/quantaxis'
+DEFAULT_DB_URI = 'mongodb://localhost:27017'
 CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
 
 
@@ -150,6 +150,10 @@ class QA_Setting():
     def client(self):
         return QA_util_sql_mongo_setting(self.mongo_uri)
 
+    @property
+    def client_async(self):
+        return QA_util_sql_async_mongo_setting(self.mongo_uri)
+
     def change(self, ip, port):
         self.ip = ip
         self.port = port
@@ -170,7 +174,7 @@ class QA_Setting():
 
 QASETTING = QA_Setting()
 DATABASE = QASETTING.client.quantaxis
-
+DATABASE_ASYNC = QASETTING.client_async.quantaxis
 
 def exclude_from_stock_ip_list(exclude_ip_list):
     """ 从stock_ip_list删除列表exclude_ip_list中的ip
