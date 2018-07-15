@@ -132,7 +132,7 @@ async def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min',
 
 
 if __name__=="__main__":
-
+    
     loop = asyncio.get_event_loop()
     res=loop.run_until_complete(asyncio.gather(
         QA_fetch_stock_day('000001', '2016-07-01', '2018-07-15'),
