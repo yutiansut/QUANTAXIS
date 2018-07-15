@@ -30,7 +30,13 @@ import pandas as pd
 class QA_DataStruct_Series():
     def __init__(self, series):
         self.series = series.sort_index()
-        self.index = series.index.remove_unused_levels()
+
+        if isinstance(series.index, pd.core.indexes.multi.MultiIndex):
+            self.if_multiindex=True
+            self.index = series.index.remove_unused_levels()
+        else:
+            self.if_multiindex=False
+            self.index = series.index
 
     def __repr__(self):
         return '< QA_DATASTRUCT_SEIRES >'
@@ -40,15 +46,28 @@ class QA_DataStruct_Series():
 
     @property
     def code(self):
-        return self.index.levels[1].tolist()
+        if self.if_multiindex:
+            return self.index.levels[1].tolist()
+        else:
+            return None
 
     @property
     def datetime(self):
-        return self.index.levels[0].tolist()
+        if self.if_multiindex:
+            return self.index.levels[0].tolist()
+        elif (self.index,pd.core.indexes.datetimes.DatetimeIndex):
+            return self.index
+        else:
+            return None
 
     @property
     def date(self):
-        return np.unique(self.index.levels[0].date).tolist()
+        if self.if_multiindex:
+            return np.unique(self.index.levels[0].date).tolist()
+        elif (self.index,pd.core.indexes.datetimes.DatetimeIndex):
+            return np.unique(self.index.date).tolist()
+        else:
+            return None
 
     def new(self, series):
         temp = deepcopy(self)
@@ -56,7 +75,7 @@ class QA_DataStruct_Series():
         return temp
 
     def select_code(self, code):
-        return self.new(self.series.loc[(slice(None), code)])
+        return self.new(self.series.loc[(slice(None), code),:])
 
     def select_time(self, start, end=None):
         if end is None:
