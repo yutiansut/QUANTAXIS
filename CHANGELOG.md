@@ -49,6 +49,8 @@
 <!-- /TOC -->
 ## 1.0.66 (unreleased)
 
+1. 修改series_struct 适配单个index的情景
+2. 增加马科维茨有效前沿的研究/ 增加盘中涨停分析的研究 (research/)
 
 ## 1.0.65 
 
