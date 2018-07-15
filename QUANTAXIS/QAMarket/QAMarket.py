@@ -232,7 +232,7 @@ class QA_Market(QA_Trade):
             _price = self.query_data_no_wait(broker_name=broker_name, frequence=frequence,
                                              market_type=market_type, code=code, start=time)
 
-            if _price is not None and len(_price) > 0:
+            if _price != None and len(_price) > 0:
                 price = float(_price[0][4])
                 flag = True
             else:
@@ -242,7 +242,7 @@ class QA_Market(QA_Trade):
         elif order_model is ORDER_MODEL.MARKET:
             _price = self.query_data_no_wait(broker_name=broker_name, frequence=frequence,
                                              market_type=market_type, code=code, start=time)
-            if _price is not None and len(_price) > 0:
+            if _price != None and len(_price) > 0:
                 price = float(_price[0][1])
                 flag = True
             else:
