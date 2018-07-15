@@ -84,9 +84,61 @@ async def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', 
             '💢 Error QA_fetch_stock_day data parameter start=%s end=%s is not right' % (start, end))
 
 
+async def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', collections=DATABASE_ASYNC.stock_min):
+    '获取股票分钟线'
+    if frequence in ['1min', '1m']:
+        frequence = '1min'
+    elif frequence in ['5min', '5m']:
+        frequence = '5min'
+    elif frequence in ['15min', '15m']:
+        frequence = '15min'
+    elif frequence in ['30min', '30m']:
+        frequence = '30min'
+    elif frequence in ['60min', '60m']:
+        frequence = '60min'
+    else:
+        print("💢 Error QA_fetch_stock_min parameter frequence=%s is none of 1min 1m 5min 5m 15min 15m 30min 30m 60min 60m" % frequence)
+
+    __data = []
+    # code checking
+    code = QA_util_code_tolist(code)
+
+    cursor = collections.find({
+        'code': {'$in': code}, "time_stamp": {
+            "$gte": QA_util_time_stamp(start),
+            "$lte": QA_util_time_stamp(end)
+        }, 'type': frequence
+    })
+
+    res = pd.DataFrame([item for item in await cursor.to_list(length=100)])
+    try:
+        res = res.drop('_id', axis=1).assign(volume=res.vol).query('volume>1').assign(datetime=pd.to_datetime(
+            res.datetime)).drop_duplicates(['datetime', 'code']).set_index('datetime', drop=False)
+        # return res
+    except:
+        res = None
+    if format in ['P', 'p', 'pandas', 'pd']:
+        return res
+    elif format in ['json', 'dict']:
+        return QA_util_to_json_from_pandas(res)
+    # 多种数据格式
+    elif format in ['n', 'N', 'numpy']:
+        return numpy.asarray(res)
+    elif format in ['list', 'l', 'L']:
+        return numpy.asarray(res).tolist()
+    else:
+        print("💢 Error QA_fetch_stock_min format parameter %s is none of  \"P, p, pandas, pd , json, dict , n, N, numpy, list, l, L, !\" " % format)
+        return None
 
 
-loop = asyncio.get_event_loop()
-res=loop.run_until_complete(
-    QA_fetch_stock_day('000001', '2018-07-01', '2018-07-15'))
-print(res)
+if __name__=="__main__":
+
+    loop = asyncio.get_event_loop()
+    res=loop.run_until_complete(asyncio.gather(
+        QA_fetch_stock_day('000001', '2016-07-01', '2018-07-15'),
+        QA_fetch_stock_min('000002', '2016-07-01', '2018-07-15')
+    ))
+        
+    print(res)
+
+
