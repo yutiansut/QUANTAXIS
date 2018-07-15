@@ -75,7 +75,7 @@ class QA_DataStruct_Series():
         return temp
 
     def select_code(self, code):
-        return self.new(self.series.loc[(slice(None), code),:])
+        return self.new(self.series.loc[(slice(None), code)])
 
     def select_time(self, start, end=None):
         if end is None:
