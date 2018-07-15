@@ -894,3 +894,4 @@ class _quotation_base():
         """
 
         return self.bar_pct_change[self.bar_pct_change>pct].sort_index()
+
