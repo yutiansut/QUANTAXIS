@@ -52,7 +52,7 @@ def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collec
     # code checking
     code = QA_util_code_tolist(code)
 
-    if QA_util_date_valid(end) == True:
+    if QA_util_date_valid(end):
 
         __data = []
         cursor = collections.find({
