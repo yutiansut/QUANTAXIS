@@ -60,6 +60,7 @@ QA.concat([QA.QA_DataStruct_Stock_min(QA.QA_DataStruct_Stock_realtime(QA.QA_fetc
 ```
 4. 修改了QA.QAFetch.QATushare.QA_fetch_get_stock_info(name)的返回结果
 5. @逝去的亮光 增加了LINUX环境下的CTP撤单接口
+6. 增加了日线数据的降采样 QA.QA_data_day_resample(data,'w')
 
 
 ## 1.0.65 
