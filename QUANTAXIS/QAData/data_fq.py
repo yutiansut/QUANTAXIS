@@ -86,20 +86,19 @@ def QA_data_make_qfq(bfq_data, xdxr_data):
 
 def QA_data_make_hfq(bfq_data, xdxr_data):
     '使用数据库数据进行复权'
-    info = xdxr_data[xdxr_data['category'] == 1]
+    info = xdxr_data.query('category==1')
     bfq_data = bfq_data.assign(if_trade=1)
 
     if len(info) > 0:
-        data = pd.concat([bfq_data, info[['category']]
-                          [bfq_data.index[0]:bfq_data.index[-1]]], axis=1)
+        data = pd.concat([bfq_data, info.loc[bfq_data.index[0]:bfq_data.index[-1],['category']]], axis=1)
 
         data['if_trade'].fillna(value=0, inplace=True)
         data = data.fillna(method='ffill')
 
-        data = pd.concat([data, info[['fenhong', 'peigu', 'peigujia',
-                                      'songzhuangu']][bfq_data.index[0]:bfq_data.index[-1]]], axis=1)
+        data = pd.concat([data, info.loc[bfq_data.index[0]:bfq_data.index[-1],['fenhong', 'peigu', 'peigujia',
+                                      'songzhuangu']]], axis=1)
     else:
-        data = pd.concat([bfq_data, info[['category', 'fenhong', 'peigu', 'peigujia',
+        data = pd.concat([bfq_data, info.loc[:,['category', 'fenhong', 'peigu', 'peigujia',
                                           'songzhuangu']]], axis=1)
     data = data.fillna(0)
     data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
