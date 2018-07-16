@@ -47,13 +47,12 @@ class QA_Fetcher():
         """
         初始化的时候 会初始化
         """
-        self.ip = ip
-        self.port = port
+
         self.database = QA_util_sql_mongo_setting(uri).quantaxis
         self.history = {}
         self.best_ip=QATdx.select_best_ip()
 
-    def change_ip(self, ip, port):
+    def change_ip(self, uri):
         self.database = QA_util_sql_mongo_setting(uri).quantaxis
         return self
 
@@ -118,8 +117,8 @@ def QA_quotation(code, start, end, frequence, market, source, output):
                 res = QAQueryAdv.QA_fetch_index_day_adv(code, start, end)
 
     elif market is MARKET_TYPE.OPTION_CN:
-        if source is DATABASE_TABLE.MONGO:
-            res = QAQueryAdv.QA_fetch_option_day_adv(code,start,end);
+        if source is DATASOURCE.MONGO:
+            res = QAQueryAdv.QA_fetch_option_day_adv(code,start,end)
     #print(type(res))
     return res
 

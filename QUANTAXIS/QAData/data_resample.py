@@ -44,7 +44,7 @@ def QA_data_tick_resample(tick, type_='1min'):
 
     data['volume'] = tick['vol'].resample(
         type_, label='right', closed='left').sum()
-    data['code'] = tick.code.iloc[1].unique()[0]
+    data['code'] = tick.code.iloc[1]
     if 'date' not in tick.columns:
         tick=tick.assign(date=tick.datetime.apply(lambda x: str(x)[0:10]))
 
@@ -55,8 +55,8 @@ def QA_data_tick_resample(tick, type_='1min'):
         _data = _data[time(9, 31):time(11, 30)].append(
             _data[time(13, 1):time(15, 0)])
         resx = resx.append(_data)
-
-    data=resx.reset_index().assign(date=resx['datetime'].apply(lambda x: str(x)[0:10]))
+    resx=resx.reset_index()
+    data=resx.assign(date=resx['datetime'].apply(lambda x: str(x)[0:10]))
 
     return data.fillna(method='ffill').set_index(['datetime', 'code'], drop=False).drop_duplicates()
 
