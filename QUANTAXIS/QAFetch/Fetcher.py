@@ -43,18 +43,18 @@ from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting
 
 
 class QA_Fetcher():
-    def __init__(self, ip='127.0.0.1', port=27017, username='',password=''):
+    def __init__(self, uri='mongodb://192.168.4.248:27017/quantaxis', username='',password=''):
         """
         初始化的时候 会初始化
         """
         self.ip = ip
         self.port = port
-        self.database = QA_util_sql_mongo_setting(ip, port).quantaxis
+        self.database = QA_util_sql_mongo_setting(uri).quantaxis
         self.history = {}
         self.best_ip=QATdx.select_best_ip()
 
     def change_ip(self, ip, port):
-        self.database = QA_util_sql_mongo_setting(ip, port).quantaxis
+        self.database = QA_util_sql_mongo_setting(uri).quantaxis
         return self
 
     def get_quotation(self, code=None, start=None, end=None, frequence=None, market=None, source=None, output=None):
