@@ -584,149 +584,146 @@ class _realtime_base():
         """
 
         if isinstance(market_data, dict):
-            self.market_data = market_data
+            self.data = market_data
         elif isinstance(market_data, pd.DataFrame):
-            self.market_data = QA_util_to_json_from_pandas(market_data)
+            self.data = QA_util_to_json_from_pandas(market_data)
 
     @property
     def open(self):
-        return self.market_data.get('open', None)
+        return self.data.get('open', None)
 
     @property
     def price(self):
-        return self.market_data.get('price', None)
+        return self.data.get('price', None)
 
     @property
     def datetime(self):
-        return self.market_data.get('datetime', None)
+        return self.data.get('datetime', None)
 
     @property
     def high(self):
-        return self.market_data.get('high', None)
+        return self.data.get('high', None)
 
     @property
     def low(self):
-        return self.market_data.get('low', None)
+        return self.data.get('low', None)
 
     @property
     def code(self):
-        return self.market_data.get('code', None)
+        return self.data.get('code', None)
 
     @property
     def last_close(self):
-        return self.market_data.get('last_close', None)
+        return self.data.get('last_close', None)
 
     @property
     def cur_vol(self):
-        return self.market_data.get('cur_vol', None)
+        return self.data.get('cur_vol', None)
 
     @property
     def bid1(self):
-        return self.market_data.get('bid1', None)
+        return self.data.get('bid1', None)
 
     @property
     def bid_vol1(self):
-        return self.market_data.get('bid_vol1', None)
+        return self.data.get('bid_vol1', None)
 
     @property
     def bid2(self):
-        return self.market_data.get('bid2', None)
+        return self.data.get('bid2', None)
 
     @property
     def bid_vol2(self):
-        return self.market_data.get('bid_vol2', None)
+        return self.data.get('bid_vol2', None)
 
     @property
     def bid3(self):
-        return self.market_data.get('bid3', None)
+        return self.data.get('bid3', None)
 
     @property
     def bid_vol3(self):
-        return self.market_data.get('bid_vol3', None)
+        return self.data.get('bid_vol3', None)
 
     @property
     def bid4(self):
-        return self.market_data.get('bid4', None)
+        return self.data.get('bid4', None)
 
     @property
     def bid_vol4(self):
-        return self.market_data.get('bid_vol4', None)
+        return self.data.get('bid_vol4', None)
 
     @property
     def bid5(self):
-        return self.market_data.get('bid5', None)
+        return self.data.get('bid5', None)
 
     @property
     def bid_vol5(self):
-        return self.market_data.get('bid_vol5', None)
+        return self.data.get('bid_vol5', None)
 
     @property
     def ask1(self):
-        return self.market_data.get('ask1', None)
+        return self.data.get('ask1', None)
 
     @property
     def ask_vol1(self):
-        return self.market_data.get('ask_vol1', None)
+        return self.data.get('ask_vol1', None)
 
     @property
     def ask2(self):
-        return self.market_data.get('ask2', None)
+        return self.data.get('ask2', None)
 
     @property
     def ask_vol2(self):
-        return self.market_data.get('ask_vol2', None)
+        return self.data.get('ask_vol2', None)
 
     @property
     def ask3(self):
-        return self.market_data.get('ask3', None)
+        return self.data.get('ask3', None)
 
     @property
     def ask_vol3(self):
-        return self.market_data.get('ask_vol3', None)
+        return self.data.get('ask_vol3', None)
 
     @property
     def ask4(self):
-        return self.market_data.get('ask4', None)
+        return self.data.get('ask4', None)
 
     @property
     def ask_vol4(self):
-        return self.market_data.get('ask_vol4', None)
+        return self.data.get('ask_vol4', None)
 
     @property
     def ask5(self):
-        return self.market_data.get('ask5', None)
+        return self.data.get('ask5', None)
 
     @property
     def ask_vol5(self):
-        return self.market_data.get('ask_vol5', None)
+        return self.data.get('ask_vol5', None)
 
 
 class QA_DataStruct_Stock_realtime(_realtime_base):
-    def __init__(self, market_data):
-        if isinstance(market_data, dict):
-            self.market_data = market_data
-        elif isinstance(market_data, pd.DataFrame):
-            self.market_data = QA_util_to_json_from_pandas(market_data)
+    def __init__(self, data):
+        self.data=data
 
     def __repr__(self):
-        return '< QA_REALTIME_STRUCT {}{} >'.format(self.code, self.datetime)
+        return '< QA_REALTIME_STRUCT code {} start {} end {} >'.format(self.code.unique(), self.datetime.iloc[1],self.datetime.iloc[-1])
 
     # @property
     # def ask_list(self):
-    #     return self.market_data.ix[:, ['ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',
+    #     return self.data.ix[:, ['ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',
     #                                    'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3', 'ask4',
     #                                    'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
 
     # @property
     # def bid_list(self):
-    #     return self.market_data.ix[:, ['bid1', 'bid_vol1', 'bid2', 'bid_vol2',  'bid3', 'bid_vol3', 'bid4', 'bid_vol4', 'bid5', 'bid_vol5']]
+    #     return self.data.ix[:, ['bid1', 'bid_vol1', 'bid2', 'bid_vol2',  'bid3', 'bid_vol3', 'bid4', 'bid_vol4', 'bid5', 'bid_vol5']]
 
     @property
     def _data(self):
         """
         return a dataframe-type result
         """
-        return pd.DataFrame(self.market_data)
+        return pd.DataFrame(self.data)
 
     @property
     def ab_board(self):
@@ -753,6 +750,9 @@ class QA_DataStruct_Stock_realtime(_realtime_base):
         """to_protobuf
         """
         pass
+
+    def resample(self, level):
+        return QA_data_tick_resample(self.data, level)
 
 
 class QA_DataStruct_Stock_realtime_series():
