@@ -26,7 +26,7 @@ from QUANTAXIS.QAData.QASeriesStruct import QA_DataStruct_Series
 from QUANTAXIS.QAData.data_fq import (QA_data_get_hfq, QA_data_get_qfq,
                                       QA_data_make_hfq, QA_data_make_qfq,
                                       QA_data_stock_to_fq)
-from QUANTAXIS.QAData.data_resample import QA_data_tick_resample
+from QUANTAXIS.QAData.data_resample import QA_data_tick_resample,QA_data_min_resample,QA_data_day_resample
 from QUANTAXIS.QAData.QADataStruct import (QA_DataStruct_Index_day,
                                            QA_DataStruct_Index_min,
                                            QA_DataStruct_Stock_day,
