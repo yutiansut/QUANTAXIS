@@ -3,7 +3,8 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.0.66 (unreleased)](#1066-unreleased)
+    - [1.0.67 (unreleased)](#1067-unreleased)
+    - [1.0.66](#1066)
     - [1.0.65](#1065)
     - [1.0.64](#1064)
     - [1.0.63](#1063)
@@ -47,7 +48,9 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
-## 1.0.66 (unreleased)
+## 1.0.67 (unreleased)
+
+## 1.0.66 
 
 1. 修改series_struct 适配单个index的情景
 2. 增加马科维茨有效前沿的研究/ 增加盘中涨停分析的研究 (research/)
@@ -62,6 +65,7 @@ QA.concat([QA.QA_DataStruct_Stock_min(QA.QA_DataStruct_Stock_realtime(QA.QA_fetc
 5. @逝去的亮光 增加了LINUX环境下的CTP撤单接口
 6. 增加了日线数据的降采样 QA.QA_data_day_resample(data,'w')
 
+released in : JULY 17, 2018
 
 ## 1.0.65 
 
