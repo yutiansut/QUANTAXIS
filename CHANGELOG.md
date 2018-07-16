@@ -51,6 +51,16 @@
 
 1. 修改series_struct 适配单个index的情景
 2. 增加马科维茨有效前沿的研究/ 增加盘中涨停分析的研究 (research/)
+3. QA_DataStruct_Stock_realtime 类发布, 支持自采样
+
+```python
+# 给一个完整版的 (包含 DataStruct合并, DataStruct包装, DataStruct_Realtime采样)
+QA.concat([QA.QA_DataStruct_Stock_min(QA.QA_DataStruct_Stock_realtime(QA.QA_fetch_quotation('000636')).resample('1min')),
+          QA.QA_DataStruct_Stock_min(QA.QA_DataStruct_Stock_realtime(QA.QA_fetch_quotation('000001')).resample('1min'))])
+```
+4. 修改了QA.QAFetch.QATushare.QA_fetch_get_stock_info(name)的返回结果
+5. @逝去的亮光 增加了LINUX环境下的CTP撤单接口
+
 
 ## 1.0.65 
 

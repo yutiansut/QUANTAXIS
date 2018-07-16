@@ -631,3 +631,55 @@ class CTPTraderSpi(PyCTP.CThostFtdcTraderSpi):
         if _is_last:
             logging.info('qry commission rate({}) DONE'.format(instrument))
             self.eventSet()
+
+    def ReqOrderAction(self, 
+                        _instrument_id: bytes,
+                        _orderref: bytes, 
+                        _ordersysid:bytes,
+                        _exchangeid:bytes ) -> typing.Union[bool, dict]:
+
+        req = PyCTP.CThostFtdcInputOrderActionField()
+        
+        req.InstrumentID = _instrument_id
+        req.OrderRef = _orderref
+        req.OrderSysID = _ordersysid
+        req.ExchangeID = _exchangeid
+        
+        req.BrokerID = self.broker_id
+        req.InvestorID = self.user_id
+        req.FrontID = self.front_id
+        req.ActionFlag = PyCTP.THOST_FTDC_AF_Delete
+
+        self.eventClear()
+        self.ret_data = False
+        logging.info('order cancel TRY!')
+        if self.api.ReqOrderAction(req, self.incRequestID()):
+            logging.info('order cancel FAILED!')
+            return False
+
+        ret = self.eventWait(self.TIME_OUT)
+        if ret is False:
+            return False
+        return self.ret_data
+
+    def OnRspOrderAction(self,_OrderAction: PyCTP.CThostFtdcOrderActionField,
+                            _rsp_info: PyCTP.CThostFtdcRspInfoField,
+                            _request_id: int, _is_last: bool
+                            ):
+        
+        self.ret_data = {
+                'OrderRef': int(_OrderAction.OrderRef),
+                'OrderSysID': _OrderAction.OrderSysID,
+                'InstrumentID': _OrderAction.InstrumentID.decode('gb2312'),
+                'OrderActionRef': _OrderAction.OrderActionRef,
+                'Action': _OrderAction.ActionFlag,
+                'Price': _OrderAction.LimitPrice,
+                'Volume': _OrderAction.VolumeChange,
+                'FrontID': _OrderAction.FrontID,
+                'SessionID': _OrderAction.SessionID,
+                'ActionDate': _OrderAction.ActionDate.decode('gb2312'),
+                'ActionTime': _OrderAction.ActionTime.decode('gb2312'),
+        }
+        if _is_last:
+            logging.info('cancel order DONE!')
+            self.eventSet()
