@@ -63,7 +63,7 @@ _Index_min
 def QA_fetch_option_day_adv(
     code,
     start='all', end=None,
-    if_drop_index=False,
+    if_drop_index=True,
     # 🛠 todo collections 参数没有用到， 且数据库是固定的， 这个变量后期去掉
     collections=DATABASE.stock_day):
     '''
@@ -75,7 +75,7 @@ def QA_fetch_option_day_adv(
 def QA_fetch_stock_day_adv(
         code,
         start='all', end=None,
-        if_drop_index=False,
+        if_drop_index=True,
         # 🛠 todo collections 参数没有用到， 且数据库是固定的， 这个变量后期去掉
         collections=DATABASE.stock_day):
     '''
@@ -113,7 +113,7 @@ def QA_fetch_stock_min_adv(
         code,
         start, end=None,
         frequence='1min',
-        if_drop_index=False,
+        if_drop_index=True,
         # 🛠 todo collections 参数没有用到， 且数据库是固定的， 这个变量后期去掉
         collections=DATABASE.stock_min):
     '''
@@ -180,7 +180,7 @@ def QA_fetch_stock_day_full_adv(date):
         print("💢 Error QA_fetch_stock_day_full_adv parameter date=%s call QA_fetch_stock_full return None"%(date))
         return None
     else:
-        res_set_index = res.set_index(['date', 'code'], drop=False)
+        res_set_index = res.set_index(['date', 'code'])
         # if res_set_index is None:
         #     print("💢 Error QA_fetch_stock_day_full set index 'date, code' return None")
         return QA_DataStruct_Stock_day(res_set_index)
@@ -189,7 +189,7 @@ def QA_fetch_stock_day_full_adv(date):
 def QA_fetch_index_day_adv(
         code,
         start, end=None,
-        if_drop_index=False,
+        if_drop_index=True,
         # 🛠 todo collections 参数没有用到， 且数据库是固定的， 这个变量后期去掉
         collections=DATABASE.index_day):
     '''
@@ -212,7 +212,7 @@ def QA_fetch_index_day_adv(
     if res is None:
         print("💢 Error QA_fetch_index_day_adv parameter code=%s start=%s end=%s call QA_fetch_index_day return None"%(code,start,end))
     else:
-        res_set_index = res.set_index(['date', 'code'], drop=if_drop_index)
+        res_set_index = res.set_index(['date', 'code'])
         # if res_set_index is None:
         #     print("💢 Error QA_fetch_index_day_adv set index 'date, code' return None")
         #     return None
@@ -223,7 +223,7 @@ def QA_fetch_index_min_adv(
         code,
         start, end=None,
         frequence='1min',
-        if_drop_index=False,
+        if_drop_index=True,
         collections=DATABASE.index_min):
     '''
     '获取股票分钟线'
@@ -270,7 +270,7 @@ def QA_fetch_index_min_adv(
         #     print("💢 Error QA_fetch_index_min_adv set index 'date, code' return None")
         return QA_DataStruct_Index_min(res_reset_index)
 
-def QA_fetch_stock_transaction_adv(code,start, end=None,if_drop_index=False,collections=DATABASE.stock_transaction):
+def QA_fetch_stock_transaction_adv(code,start, end=None,if_drop_index=True,collections=DATABASE.stock_transaction):
     '''
 
     :param code:
