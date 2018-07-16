@@ -29,7 +29,7 @@ import datetime
 import pandas as pd
 
 from QUANTAXIS.QAFetch import QA_fetch_get_stock_day, QA_fetch_get_stock_xdxr
-from QUANTAXIS.QAUtil import QA_util_log_info, DATABASE
+from QUANTAXIS.QAUtil import DATABASE, QA_util_log_info
 
 
 def QA_data_get_qfq(code, start, end):
@@ -37,7 +37,7 @@ def QA_data_get_qfq(code, start, end):
     xdxr_data = QA_fetch_get_stock_xdxr('tdx', code)
     bfq_data = QA_fetch_get_stock_day(
         'tdx', code, '1990-01-01', str(datetime.date.today())).dropna(axis=0)
-    return QA_data_make_qfq(bfq_data[start:end], xdxr_data)
+    return QA_data_make_qfq(bfq_data.loc[start:end], xdxr_data)
 
 
 def QA_data_get_hfq(code, start, end):
@@ -45,7 +45,7 @@ def QA_data_get_hfq(code, start, end):
     xdxr_data = QA_fetch_get_stock_xdxr('tdx', code)
     bfq_data = QA_fetch_get_stock_day(
         'tdx', code, '1990-01-01', str(datetime.date.today())).dropna(axis=0)
-    return QA_data_make_hfq(bfq_data[start:end], xdxr_data)
+    return QA_data_make_hfq(bfq_data.loc[start:end], xdxr_data)
 
 
 def QA_data_make_qfq(bfq_data, xdxr_data):
@@ -55,14 +55,15 @@ def QA_data_make_qfq(bfq_data, xdxr_data):
 
     if len(info) > 0:
 
-        data = pd.concat([bfq_data, info.loc[bfq_data.index[0]:bfq_data.index[-1],['category']]], axis=1)
+        data = pd.concat([bfq_data, info.loc[bfq_data.index[0]
+                         :bfq_data.index[-1], ['category']]], axis=1)
         data['if_trade'].fillna(value=0, inplace=True)
         data = data.fillna(method='ffill')
-        data = pd.concat([data, info.loc[bfq_data.index[0]:bfq_data.index[-1],['fenhong', 'peigu', 'peigujia',
-                                      'songzhuangu']]], axis=1)
+        data = pd.concat([data, info.loc[bfq_data.index[0]:bfq_data.index[-1], ['fenhong', 'peigu', 'peigujia',
+                                                                                'songzhuangu']]], axis=1)
     else:
-        data = pd.concat([bfq_data, info.loc[:,['category', 'fenhong', 'peigu', 'peigujia',
-                                          'songzhuangu']]], axis=1)
+        data = pd.concat([bfq_data, info.loc[:, ['category', 'fenhong', 'peigu', 'peigujia',
+                                                 'songzhuangu']]], axis=1)
     data = data.fillna(0)
     data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
                         * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
@@ -90,16 +91,17 @@ def QA_data_make_hfq(bfq_data, xdxr_data):
     bfq_data = bfq_data.assign(if_trade=1)
 
     if len(info) > 0:
-        data = pd.concat([bfq_data, info.loc[bfq_data.index[0]:bfq_data.index[-1],['category']]], axis=1)
+        data = pd.concat([bfq_data, info.loc[bfq_data.index[0]
+                         :bfq_data.index[-1], ['category']]], axis=1)
 
         data['if_trade'].fillna(value=0, inplace=True)
         data = data.fillna(method='ffill')
 
-        data = pd.concat([data, info.loc[bfq_data.index[0]:bfq_data.index[-1],['fenhong', 'peigu', 'peigujia',
-                                      'songzhuangu']]], axis=1)
+        data = pd.concat([data, info.loc[bfq_data.index[0]:bfq_data.index[-1], ['fenhong', 'peigu', 'peigujia',
+                                                                                'songzhuangu']]], axis=1)
     else:
-        data = pd.concat([bfq_data, info.loc[:,['category', 'fenhong', 'peigu', 'peigujia',
-                                          'songzhuangu']]], axis=1)
+        data = pd.concat([bfq_data, info.loc[:, ['category', 'fenhong', 'peigu', 'peigujia',
+                                                 'songzhuangu']]], axis=1)
     data = data.fillna(0)
     data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
                         * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
@@ -135,7 +137,8 @@ def QA_data_stock_to_fq(__data, type_='01'):
                                                   'shares_after', 'shares_before', 'songzhuangu', 'suogu', 'xingquanjia'])
     '股票 日线/分钟线 动态复权接口'
 
-    code = __data.index.levels[1][0] if isinstance(__data.index, pd.core.indexes.multi.MultiIndex) else __data['code'][0]
+    code = __data.index.levels[1][0] if isinstance(
+        __data.index, pd.core.indexes.multi.MultiIndex) else __data['code'][0]
     if type_ in ['01', 'qfq']:
         return QA_data_make_qfq(__data, __QA_fetch_stock_xdxr(code))
     elif type_ in ['02', 'hfq']:
