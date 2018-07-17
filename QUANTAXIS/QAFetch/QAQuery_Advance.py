@@ -99,12 +99,12 @@ def QA_fetch_stock_day_adv(
     res = QA_fetch_stock_day(code, start, end, format='pd')
     if res is None:
         # 🛠 todo 报告是代码不合法，还是日期不合法
-        print("💢 Error QA_fetch_stock_day_adv parameter code=%s , start=%s, end=%s call QA_fetch_stock_day return None"%(code,start,end))
+        print("QA Error QA_fetch_stock_day_adv parameter code=%s , start=%s, end=%s call QA_fetch_stock_day return None"%(code,start,end))
         return None
     else:
         res_reset_index = res.set_index(['date', 'code'], drop=if_drop_index)
         # if res_reset_index is None:
-        #     print("💢 Error QA_fetch_stock_day_adv set index 'datetime, code' return None")
+        #     print("QA Error QA_fetch_stock_day_adv set index 'datetime, code' return None")
         #     return None
         return QA_DataStruct_Stock_day(res_reset_index)
 
@@ -137,7 +137,7 @@ def QA_fetch_stock_min_adv(
     elif frequence in ['60min', '60m']:
         frequence = '60min'
     else:
-        print("💢 Error QA_fetch_stock_min_adv parameter frequence=%s is none of 1min 1m 5min 5m 15min 15m 30min 30m 60min 60m"%frequence)
+        print("QA Error QA_fetch_stock_min_adv parameter frequence=%s is none of 1min 1m 5min 5m 15min 15m 30min 30m 60min 60m"%frequence)
         return None
 
     #__data = [] 未使用
@@ -151,19 +151,19 @@ def QA_fetch_stock_min_adv(
 
     if start == end:
         # 🛠 todo 如果相等，根据 frequence 获取开始时间的 时间段 QA_fetch_stock_min， 不支持start end是相等的
-        print("💢 Error QA_fetch_stock_min_adv parameter code=%s , start=%s, end=%s is equal, should have time span! "%(code,start,end))
+        print("QA Error QA_fetch_stock_min_adv parameter code=%s , start=%s, end=%s is equal, should have time span! "%(code,start,end))
         return None
 
     # 🛠 todo 报告错误 如果开始时间 在 结束时间之后
 
     res = QA_fetch_stock_min(code, start, end, format='pd', frequence=frequence)
     if res is None:
-        print("💢 Error QA_fetch_stock_min_adv parameter code=%s , start=%s, end=%s frequence=%s call QA_fetch_stock_min return None"%(code,start,end,frequence))
+        print("QA Error QA_fetch_stock_min_adv parameter code=%s , start=%s, end=%s frequence=%s call QA_fetch_stock_min return None"%(code,start,end,frequence))
         return None
     else:
         res_set_index = res.set_index(['datetime', 'code'],drop=if_drop_index)
         # if res_set_index is None:
-        #     print("💢 Error QA_fetch_stock_min_adv set index 'datetime, code' return None")
+        #     print("QA Error QA_fetch_stock_min_adv set index 'datetime, code' return None")
         #     return None
         return QA_DataStruct_Stock_min(res_set_index)
 
@@ -177,12 +177,12 @@ def QA_fetch_stock_day_full_adv(date):
     # 🛠 todo 检查日期data参数
     res = QA_fetch_stock_full(date, 'pd')
     if res is None:
-        print("💢 Error QA_fetch_stock_day_full_adv parameter date=%s call QA_fetch_stock_full return None"%(date))
+        print("QA Error QA_fetch_stock_day_full_adv parameter date=%s call QA_fetch_stock_full return None"%(date))
         return None
     else:
         res_set_index = res.set_index(['date', 'code'])
         # if res_set_index is None:
-        #     print("💢 Error QA_fetch_stock_day_full set index 'date, code' return None")
+        #     print("QA Error QA_fetch_stock_day_full set index 'date, code' return None")
         return QA_DataStruct_Stock_day(res_set_index)
 
 
@@ -210,11 +210,11 @@ def QA_fetch_index_day_adv(
 
     res = QA_fetch_index_day(code, start, end, format='pd')
     if res is None:
-        print("💢 Error QA_fetch_index_day_adv parameter code=%s start=%s end=%s call QA_fetch_index_day return None"%(code,start,end))
+        print("QA Error QA_fetch_index_day_adv parameter code=%s start=%s end=%s call QA_fetch_index_day return None"%(code,start,end))
     else:
         res_set_index = res.set_index(['date', 'code'])
         # if res_set_index is None:
-        #     print("💢 Error QA_fetch_index_day_adv set index 'date, code' return None")
+        #     print("QA Error QA_fetch_index_day_adv set index 'date, code' return None")
         #     return None
         return QA_DataStruct_Index_day(res_set_index)
 
@@ -258,16 +258,16 @@ def QA_fetch_index_min_adv(
 
     #if start == end:
     # 🛠 todo 如果相等，根据 frequence 获取开始时间的 时间段 QA_fetch_index_min_adv， 不支持start end是相等的
-    #print("💢 Error QA_fetch_index_min_adv parameter code=%s , start=%s, end=%s is equal, should have time span! " % (code, start, end))
+    #print("QA Error QA_fetch_index_min_adv parameter code=%s , start=%s, end=%s is equal, should have time span! " % (code, start, end))
     #return None
 
     res =  QA_fetch_index_min(code,start,end,format='pd',frequence=frequence)
     if res is None:
-        print("💢 Error QA_fetch_index_min_adv parameter code=%s start=%s end=%s frequence=%s call QA_fetch_index_min return None"%(code,start,end,frequence))
+        print("QA Error QA_fetch_index_min_adv parameter code=%s start=%s end=%s frequence=%s call QA_fetch_index_min return None"%(code,start,end,frequence))
     else:
         res_reset_index = res.set_index(['datetime', 'code'], drop=if_drop_index)
         # if res_reset_index is None:
-        #     print("💢 Error QA_fetch_index_min_adv set index 'date, code' return None")
+        #     print("QA Error QA_fetch_index_min_adv set index 'date, code' return None")
         return QA_DataStruct_Index_min(res_reset_index)
 
 def QA_fetch_stock_transaction_adv(code,start, end=None,if_drop_index=True,collections=DATABASE.stock_transaction):
@@ -304,7 +304,7 @@ def QA_fetch_stock_list_adv(collections=DATABASE.stock_list):
     '''
     stock_list_items = [item for item in collections.find()]
     if len(stock_list_items) == 0:
-        print("💢 Error QA_fetch_stock_list_adv call item for item in collections.find() return 0 item, maybe the DATABASE.stock_list is empty!")
+        print("QA Error QA_fetch_stock_list_adv call item for item in collections.find() return 0 item, maybe the DATABASE.stock_list is empty!")
         return
     return pd.DataFrame(stock_list_items).drop('_id', axis=1, inplace=False)
 
@@ -326,7 +326,7 @@ def QA_fetch_stock_block_adv(code=None, blockname=None, collections=DATABASE.sto
         items_from_collections = [item for item in collections.find({'blockname': re.compile(blockname)})]
         data = pd.DataFrame(items_from_collections).drop(['_id'], axis=1)
         # 🛠 todo 返回 这个板块所有的股票
-        print("💢 Error blockname is Not none code none, return all code from its block name have not implemented yet !")
+        print("QA Error blockname is Not none code none, return all code from its block name have not implemented yet !")
     else:
         # 🛠 todo 返回 判断 这个股票是否和属于该板块
         data = pd.DataFrame([item for item in collections.find()]).drop(['_id'], axis=1)
@@ -351,18 +351,18 @@ def QA_fetch_stock_realtime_adv(code=None,
         elif isinstance(code, list):
             pass
         else:
-            print("💢 Error QA_fetch_stock_realtime_adv parameter code is not List type or String type")
+            print("QA Error QA_fetch_stock_realtime_adv parameter code is not List type or String type")
 
         items_from_collections = [item for item in collections.find({'code': {'$in': code}}, limit=num*len(code), sort=[('datetime', pymongo.DESCENDING)])]
         if items_from_collections is None:
-            print("💢 Error QA_fetch_stock_realtime_adv find parameter code={} num={} collection={} return NOne".format(code,num,collections))
+            print("QA Error QA_fetch_stock_realtime_adv find parameter code={} num={} collection={} return NOne".format(code,num,collections))
             return
 
         data = pd.DataFrame(items_from_collections)
         data_set_index = data.set_index(['datetime', 'code'], drop=False).drop(['_id'], axis=1)
         return data_set_index
     else:
-        print("💢 Error QA_fetch_stock_realtime_adv parameter code is None")
+        print("QA Error QA_fetch_stock_realtime_adv parameter code is None")
 
 
 def QA_fetch_financial_report_adv(code,start,end):

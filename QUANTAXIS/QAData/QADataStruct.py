@@ -74,7 +74,7 @@ class QA_DataStruct_Stock_day(_quotation_base):
         super().__init__(init_data_by_df, dtype, if_fq)
 
         if isinstance(init_data_by_df, pd.DataFrame) == False:
-            print("💢Error init_data_by_df is not kind of DataFrame type !")
+            print("QAError init_data_by_df is not kind of DataFrame type !")
 
     # 抽象类继承
 
