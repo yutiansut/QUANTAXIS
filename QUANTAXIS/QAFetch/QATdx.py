@@ -369,6 +369,7 @@ def QA_fetch_depth_market_data(code=['000001', '000002'], ip=None, port=None):
 
 '''
 沪市
+010xxx 国债
 001×××国债现货；
 110×××120×××企业债券；
 129×××100×××可转换债券；
@@ -530,7 +531,23 @@ def QA_fetch_get_bond_list(ip=None, port=None):
 
 
 def QA_fetch_get_index_day(code, start_date, end_date, frequence='day', ip=None, port=None):
-    '指数日线'
+    """指数日线
+    1- sh
+    0 -sz
+    Arguments:
+        code {[type]} -- [description]
+        start_date {[type]} -- [description]
+        end_date {[type]} -- [description]
+    
+    Keyword Arguments:
+        frequence {str} -- [description] (default: {'day'})
+        ip {[type]} -- [description] (default: {None})
+        port {[type]} -- [description] (default: {None})
+    
+    Returns:
+        [type] -- [description]
+    """
+
     ip, port = get_mainmarket_ip(ip, port)
     api = TdxHq_API()
     if frequence in ['day', 'd', 'D', 'DAY', 'Day']:
