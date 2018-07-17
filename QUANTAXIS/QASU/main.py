@@ -207,7 +207,7 @@ def select_save_engine(engine):
     elif engine in ['tdx']:
         return stdx
     else:
-        print('💢 Error QASU.main.py call select_save_engine with parameter %s is None of  thshare, ts, Thshare, or tdx', engine)
+        print('QA Error QASU.main.py call select_save_engine with parameter %s is None of  thshare, ts, Thshare, or tdx', engine)
 
 
 def QA_SU_save_stock_min_5(file_dir, client=DATABASE):
