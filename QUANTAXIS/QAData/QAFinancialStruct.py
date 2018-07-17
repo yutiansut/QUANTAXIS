@@ -44,8 +44,8 @@ class QA_DataStruct_Financial():
     def get_report_by_date(self, code, date):
         return self.data.loc[pd.Timestamp(date), code]
 
-    def get_key(self, code, reportdate, values):
+    def get_key(self, code, reportdate, key):
         if isinstance(reportdate, list):
-            return self.data.loc[(slice(pd.Timestamp(reportdate[0]), pd.Timestamp(reportdate[-1])), code), values]
+            return self.data.loc[(slice(pd.Timestamp(reportdate[0]), pd.Timestamp(reportdate[-1])), code), key]
         else:
-            return self.data.loc[(pd.Timestamp(reportdate), code), values]
+            return self.data.loc[(pd.Timestamp(reportdate), code), key]
