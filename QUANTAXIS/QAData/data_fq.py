@@ -27,25 +27,10 @@
 import datetime
 
 import pandas as pd
-
-from QUANTAXIS.QAFetch import QA_fetch_get_stock_day, QA_fetch_get_stock_xdxr
 from QUANTAXIS.QAUtil import DATABASE, QA_util_log_info
 
 
-def QA_data_get_qfq(code, start, end):
-    '使用网络数据进行复权/需要联网'
-    xdxr_data = QA_fetch_get_stock_xdxr('tdx', code)
-    bfq_data = QA_fetch_get_stock_day(
-        'tdx', code, '1990-01-01', str(datetime.date.today())).dropna(axis=0)
-    return QA_data_make_qfq(bfq_data.loc[start:end], xdxr_data)
-
-
-def QA_data_get_hfq(code, start, end):
-    '使用网络数据进行复权/需要联网'
-    xdxr_data = QA_fetch_get_stock_xdxr('tdx', code)
-    bfq_data = QA_fetch_get_stock_day(
-        'tdx', code, '1990-01-01', str(datetime.date.today())).dropna(axis=0)
-    return QA_data_make_hfq(bfq_data.loc[start:end], xdxr_data)
+import pandas as pd
 
 
 def QA_data_make_qfq(bfq_data, xdxr_data):
@@ -55,8 +40,7 @@ def QA_data_make_qfq(bfq_data, xdxr_data):
 
     if len(info) > 0:
 
-        data = pd.concat([bfq_data, info.loc[bfq_data.index[0]
-                         :bfq_data.index[-1], ['category']]], axis=1)
+        data = pd.concat([bfq_data, info.loc[bfq_data.index[0]:bfq_data.index[-1], ['category']]], axis=1)
         data['if_trade'].fillna(value=0, inplace=True)
         data = data.fillna(method='ffill')
         data = pd.concat([data, info.loc[bfq_data.index[0]:bfq_data.index[-1], ['fenhong', 'peigu', 'peigujia',
@@ -91,8 +75,7 @@ def QA_data_make_hfq(bfq_data, xdxr_data):
     bfq_data = bfq_data.assign(if_trade=1)
 
     if len(info) > 0:
-        data = pd.concat([bfq_data, info.loc[bfq_data.index[0]
-                         :bfq_data.index[-1], ['category']]], axis=1)
+        data = pd.concat([bfq_data, info.loc[bfq_data.index[0]:bfq_data.index[-1], ['category']]], axis=1)
 
         data['if_trade'].fillna(value=0, inplace=True)
         data = data.fillna(method='ffill')

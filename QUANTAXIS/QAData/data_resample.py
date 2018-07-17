@@ -26,8 +26,6 @@ from datetime import time
 
 import pandas as pd
 
-from QUANTAXIS.QAFetch import QA_fetch_get_stock_transaction
-
 
 def QA_data_tick_resample(tick, type_='1min'):
     """tick采样成任意级别分钟线
@@ -124,7 +122,3 @@ def QA_data_day_resample(day_data,  type_='w'):
                 .assign(amount=day_data.amount.resample(type_).sum()).dropna().set_index('date')
 
 
-if __name__ == '__main__':
-    tickz = QA_fetch_get_stock_transaction(
-        'tdx', '000001', '2017-01-03', '2017-01-05')
-    print(QA_data_tick_resample(tickz))
