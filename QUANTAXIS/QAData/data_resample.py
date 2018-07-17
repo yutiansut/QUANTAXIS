@@ -114,14 +114,14 @@ def QA_data_day_resample(day_data,  type_='w'):
     """
 
     try:
-        day_data=day_data.reset_index().set_index('date')
+        day_data=day_data.reset_index().set_index('date',drop=False)
     except:
-        day_data=day_data.set_index('date')
+        day_data=day_data.set_index('date',drop=False)
 
     day_data_p = day_data.resample(type_).last()
     return day_data_p.assign(open=day_data.open.resample(type_).first()).assign(high=day_data.high.resample(type_).max()).assign(low=day_data.low.resample(type_).min())\
                 .assign(vol=day_data.vol.resample(type_).sum() if 'vol' in day_data.columns else day_data.volume.resample(type_).sum())\
-                .assign(amount=day_data.amount.resample(type_).sum()).dropna()
+                .assign(amount=day_data.amount.resample(type_).sum()).dropna().set_index('date')
 
 
 if __name__ == '__main__':
