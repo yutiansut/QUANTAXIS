@@ -51,6 +51,30 @@
 <!-- /TOC -->
 ## 1.0.68 (unreleased)
 
+1. 更新了财务方法/财务类 QA_DataStruct_Financial
+
+    - QA.QA_fetch_financial_report(code,report_date)
+
+    其中, report_date 是需要手动指定的财务时间, 可以是单个时间,也可以是一列时间:
+    > '2018-03-31'  或者['2017-03-31','2017-06-30','2017-09-31','2017-12-31','2018-03-31']
+    > 此方法的意义在于指定特定的财务时间(如年报)
+    
+    返回的是一个MultiIndex的dataframe
+    
+    - QA.QA_fetch_financial_report_adv(code,start,end)
+
+    支持随意的跨时间索引, start 和end不用刻意指定
+
+    如果end不写,则start参数等同于report_date的用法
+
+    返回的是QA_DataStruct_Financial 类
+
+    - QA_DataStruct_Financial 类, 可以直接加载在基础方法返回的dataframe中
+
+    > QDF.get_report_by_date(code,date) 返回某个股票的某个时间点的财报
+
+    > QDF.get_key(code,date,key) 返回某个股票某个时间点的财报的某个指标
+
 
 ## 1.0.67 
 
