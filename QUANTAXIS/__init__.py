@@ -32,7 +32,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.0.67'
+__version__ = '1.0.68'
 __author__ = 'yutiansut'
 logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
@@ -116,8 +116,8 @@ from QUANTAXIS.QAEngine import QA_Thread, QA_Event, QA_Worker, QA_Task, QA_Engin
 
 # Data
 from QUANTAXIS.QAData import (QA_data_tick_resample, QA_data_day_resample, QA_data_min_resample,
-                              QA_data_get_hfq, QA_data_get_qfq, QA_data_make_qfq, QA_data_stock_to_fq,
-                              QA_data_make_hfq, QA_DataStruct_Stock_day, QA_DataStruct_Stock_min,
+                              QA_data_make_qfq, QA_data_stock_to_fq, QA_data_make_hfq,
+                              QA_DataStruct_Stock_day, QA_DataStruct_Stock_min,
                               QA_DataStruct_Future_day, QA_DataStruct_Future_min,
                               QA_DataStruct_Index_day, QA_DataStruct_Index_min, QA_DataStruct_Indicators, QA_DataStruct_Stock_realtime,
                               QA_DataStruct_Stock_transaction, QA_DataStruct_Stock_block, QA_DataStruct_Series,
@@ -170,8 +170,8 @@ import argparse
 
 # check
 import sys
-if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6]:
-    print('wrong version, should be 3.4/3.5/3.6 version')
+if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6, 7, 8]:
+    print('wrong version, should be 3.4/3.5/3.6/3.7/3.8 version')
     sys.exit()
 
 
