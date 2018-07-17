@@ -37,18 +37,16 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_str2int,
 
 from QUANTAXIS.QAFetch.base import _select_market_code, _select_type
 from QUANTAXIS.QAUtil.QASetting import QASETTING
-
+#from QUANTAXIS.QAData.data_fq import QA_data_make_qfq, QA_data_make_hfq
 
 # 基于Pytdx的数据接口,好处是可以在linux/mac上联入通达信行情
 # 具体参见rainx的pytdx(https://github.com/rainx/pytdx)
 #
 
 
-
 def init_fetcher():
     """初始化获取
     """
-
 
     pass
 
@@ -82,46 +80,53 @@ def select_best_ip():
 
     # 删除exclude ip
     import json
-    null=None
+    null = None
     qasetting = QASETTING
     exclude_ip = {'ip': '1.1.1.1', 'port': 7709}
-    default_ip={'stock':{'ip':None,'port':None},'future':{'ip':None,'port':None}}
+    default_ip = {'stock': {'ip': None, 'port': None},
+                  'future': {'ip': None, 'port': None}}
     alist = []
     alist.append(exclude_ip)
-    
-    ipexclude = qasetting.get_config(             
+
+    ipexclude = qasetting.get_config(
         section='IPLIST', option='exclude', default_value=alist)
     exclude_from_stock_ip_list(json.loads(ipexclude))
 
-    ipdefault = qasetting.get_config(section='IPLIST', option='default', default_value=default_ip)
-    ipdefault=eval(ipdefault) if isinstance(ipdefault,str) else ipdefault
-    assert isinstance(ipdefault,dict)
+    ipdefault = qasetting.get_config(
+        section='IPLIST', option='default', default_value=default_ip)
+    ipdefault = eval(ipdefault) if isinstance(ipdefault, str) else ipdefault
+    assert isinstance(ipdefault, dict)
     if ipdefault['stock']['ip'] == None:
 
         data_stock = [ping(x['ip'], x['port'], 'stock') for x in stock_ip_list]
         best_stock_ip = stock_ip_list[data_stock.index(min(data_stock))]
     else:
-        if ping(ipdefault['stock']['ip'], ipdefault['stock']['port'], 'stock') < datetime.timedelta(0,1):
+        if ping(ipdefault['stock']['ip'], ipdefault['stock']['port'], 'stock') < datetime.timedelta(0, 1):
             print('USING DEFAULT STOCK IP')
             best_stock_ip = ipdefault['stock']
         else:
             print('DEFAULT STOCK IP is BAD, RETESTING')
-            data_stock = [ping(x['ip'], x['port'], 'stock') for x in stock_ip_list]
+            data_stock = [ping(x['ip'], x['port'], 'stock')
+                          for x in stock_ip_list]
             best_stock_ip = stock_ip_list[data_stock.index(min(data_stock))]
     if ipdefault['future']['ip'] == None:
-        
-        data_future = [ping(x['ip'], x['port'], 'future') for x in future_ip_list]
+
+        data_future = [ping(x['ip'], x['port'], 'future')
+                       for x in future_ip_list]
         best_future_ip = future_ip_list[data_future.index(min(data_future))]
     else:
-        if ping(ipdefault['future']['ip'], ipdefault['future']['port'], 'future')<datetime.timedelta(0,1):
+        if ping(ipdefault['future']['ip'], ipdefault['future']['port'], 'future') < datetime.timedelta(0, 1):
             print('USING DEFAULT FUTURE IP')
             best_future_ip = ipdefault['future']
         else:
             print('DEFAULT FUTURE IP is BAD, RETESTING')
-            data_future = [ping(x['ip'], x['port'], 'future') for x in future_ip_list]
-            best_future_ip = future_ip_list[data_future.index(min(data_future))]
-    ipbest={'stock': best_stock_ip, 'future': best_future_ip}
-    qasetting.set_config(section='IPLIST',option='default', default_value=ipbest)
+            data_future = [ping(x['ip'], x['port'], 'future')
+                           for x in future_ip_list]
+            best_future_ip = future_ip_list[data_future.index(
+                min(data_future))]
+    ipbest = {'stock': best_stock_ip, 'future': best_future_ip}
+    qasetting.set_config(
+        section='IPLIST', option='default', default_value=ipbest)
     QA_util_log_info('=== The BEST SERVER ===\n stock_ip {} future_ip {}'.format(
         best_stock_ip['ip'], best_future_ip['ip']))
     return ipbest
@@ -155,15 +160,14 @@ def get_extensionmarket_ip(ip, port):
 
 def get_mainmarket_ip(ip, port):
     """[summary]
-    
+
     Arguments:
         ip {[type]} -- [description]
         port {[type]} -- [description]
-    
+
     Returns:
         [type] -- [description]
     """
-
 
     global best_ip
     if ip is None and port is None and best_ip['stock']['ip'] is None and best_ip['stock']['port'] is None:
@@ -259,159 +263,21 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', frequence='da
             return None
         data = data[data['open'] != 0]
 
-        if if_fq in ['00', 'bfq']:
-            data = data.assign(date=data['datetime'].apply(lambda x: str(x[0:10]))).assign(code=str(code))\
-                .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10]))).set_index('date', drop=False, inplace=False)
 
-            return data.drop(['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1)[start_date:end_date].assign(date=data['date'].apply(lambda x: str(x)[0:10]))[start_date:end_date]
+        data = data.assign(date=data['datetime'].apply(lambda x: str(x[0:10]))).assign(code=str(code))\
+            .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10]))).set_index('date', drop=False, inplace=False)
 
-        elif if_fq in ['01', 'qfq']:
-
-            xdxr_data = QA_fetch_get_stock_xdxr(code)
-            bfq_data = data.assign(date=pd.to_datetime(data['datetime'].apply(lambda x: str(x[0:10])))).assign(code=str(code))\
-                .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10]))).set_index('date', drop=False, inplace=False)
-            bfq_data = bfq_data.drop(
-                ['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1)
-            #
-            if xdxr_data is not None:
-                info = xdxr_data[xdxr_data['category'] == 1]
-                bfq_data['if_trade'] = True
-                data = pd.concat([bfq_data, info[['category']]
-                                  [bfq_data.index[0]:]], axis=1)
-
-                data['date'] = data.index
-                data['if_trade'].fillna(value=False, inplace=True)
-                data = data.fillna(method='ffill')
-                data = pd.concat([data, info[['fenhong', 'peigu', 'peigujia',
-                                              'songzhuangu']][bfq_data.index[0]:]], axis=1)
-                data = data.fillna(0)
-
-                data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
-                                    * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
-                data['adj'] = (data['preclose'].shift(-1) /
-                               data['close']).fillna(1)[::-1].cumprod()
-                data['open'] = data['open'] / data['adj']
-                data['high'] = data['high'] / data['adj']
-                data['low'] = data['low'] / data['adj']
-                data['close'] = data['close'] / data['adj']
-                data['preclose'] = data['preclose'] / data['adj']
-                data['volume'] = data['volume'] * \
-                    data['adj'] if 'volume' in data.columns else data['vol']/data['adj']
-                data = data[data['if_trade']]
-                return data.drop(['fenhong', 'peigu', 'peigujia', 'songzhuangu', 'if_trade', 'category'], axis=1)[data['open'] != 0].assign(date=data['date'].apply(lambda x: str(x)[0:10]))[start_date:end_date]
-            else:
-
-                bfq_data['preclose'] = bfq_data['close'].shift(1)
-                bfq_data['adj'] = 1
-                return bfq_data[start_date:end_date]
-        elif if_fq in ['03', 'ddqfq']:
-            xdxr_data = QA_fetch_get_stock_xdxr(code)
-
-            info = xdxr_data[xdxr_data['category'] == 1]
-
-            bfq_data = data\
-                .assign(date=pd.to_datetime(data['datetime'].apply(lambda x: x[0:10])))\
-                .assign(code=str(code))\
-                .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10])))\
-                .set_index('date', drop=False, inplace=False)\
-                .drop(['year', 'month', 'day', 'hour',
-                       'minute', 'datetime'], axis=1)
-
-            bfq_data['if_trade'] = True
-            data = pd.concat([bfq_data, info[['category']]
-                              [bfq_data.index[0]:end_date]], axis=1)
-
-            data['date'] = data.index
-            data['if_trade'].fillna(value=False, inplace=True)
-            data = data.fillna(method='ffill')
-            data = pd.concat([data, info[['fenhong', 'peigu', 'peigujia',
-                                          'songzhuangu']][bfq_data.index[0]:end_date]], axis=1)
-            data = data.fillna(0)
-
-            data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
-                                * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
-            data['adj'] = (data['preclose'].shift(-1) /
-                           data['close']).fillna(1)[::-1].cumprod()
-            data['open'] = data['open'] * data['adj']
-            data['high'] = data['high'] * data['adj']
-            data['low'] = data['low'] * data['adj']
-            data['close'] = data['close'] * data['adj']
-            data['preclose'] = data['preclose'] * data['adj']
-
-            data = data[data['if_trade']]
-            return data.drop(['fenhong', 'peigu', 'peigujia', 'songzhuangu', 'if_trade', 'category'], axis=1)[data['open'] != 0].assign(date=data['date'].apply(lambda x: str(x)[0:10]))[start_date:end_date]
-
-        elif if_fq in ['02', 'hfq']:
-            xdxr_data = QA_fetch_get_stock_xdxr(code)
-
-            info = xdxr_data[xdxr_data['category'] == 1]
-
-            bfq_data = data\
-                .assign(date=pd.to_datetime(data['datetime'].apply(lambda x: x[0:10])))\
-                .assign(code=str(code))\
-                .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10])))\
-                .set_index('date', drop=False, inplace=False)\
-                .drop(['year', 'month', 'day', 'hour',
-                       'minute', 'datetime'], axis=1)
-
-            bfq_data['if_trade'] = True
-            data = pd.concat([bfq_data, info[['category']]
-                              [bfq_data.index[0]:]], axis=1)
-
-            data['date'] = data.index
-            data['if_trade'].fillna(value=False, inplace=True)
-            data = data.fillna(method='ffill')
-            data = pd.concat([data, info[['fenhong', 'peigu', 'peigujia',
-                                          'songzhuangu']][bfq_data.index[0]:]], axis=1)
-            data = data.fillna(0)
-
-            data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
-                                * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
-            data['adj'] = (data['preclose'].shift(-1) /
-                           data['close']).fillna(1).cumprod()
-            data['open'] = data['open'] / data['adj']
-            data['high'] = data['high'] / data['adj']
-            data['low'] = data['low'] / data['adj']
-            data['close'] = data['close'] / data['adj']
-            data['preclose'] = data['preclose'] / data['adj']
-            data = data[data['if_trade']]
-            return data.drop(['fenhong', 'peigu', 'peigujia', 'songzhuangu', 'if_trade', 'category'], axis=1)[data['open'] != 0].assign(date=data['date'].apply(lambda x: str(x)[0:10]))[start_date:end_date]
-
-        elif if_fq in ['04', 'ddhfq']:
-            xdxr_data = QA_fetch_get_stock_xdxr(code)
-
-            info = xdxr_data[xdxr_data['category'] == 1]
-
-            bfq_data = data\
-                .assign(date=pd.to_datetime(data['datetime'].apply(lambda x: x[0:10])))\
-                .assign(code=str(code))\
-                .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10])))\
-                .set_index('date', drop=False, inplace=False)\
-                .drop(['year', 'month', 'day', 'hour',
-                       'minute', 'datetime'], axis=1)
-
-            bfq_data['if_trade'] = True
-            data = pd.concat([bfq_data, info[['category']]
-                              [bfq_data.index[0]:end_date]], axis=1)
-
-            data['date'] = data.index
-            data['if_trade'].fillna(value=False, inplace=True)
-            data = data.fillna(method='ffill')
-            data = pd.concat([data, info[['fenhong', 'peigu', 'peigujia',
-                                          'songzhuangu']][bfq_data.index[0]:end_date]], axis=1)
-            data = data.fillna(0)
-
-            data['preclose'] = (data['close'].shift(1) * 10 - data['fenhong'] + data['peigu']
-                                * data['peigujia']) / (10 + data['peigu'] + data['songzhuangu'])
-            data['adj'] = (data['preclose'].shift(-1) /
-                           data['close']).fillna(1).cumprod()
-            data['open'] = data['open'] / data['adj']
-            data['high'] = data['high'] / data['adj']
-            data['low'] = data['low'] / data['adj']
-            data['close'] = data['close'] / data['adj']
-            data['preclose'] = data['preclose'] / data['adj']
-            data = data[data['if_trade']]
-            return data.drop(['fenhong', 'peigu', 'peigujia', 'songzhuangu', 'if_trade', 'category'], axis=1)[data['open'] != 0].assign(date=data['date'].apply(lambda x: str(x)[0:10]))[start_date:end_date]
+        data = data.drop(['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1)[start_date:end_date].assign(date=data['date'].apply(lambda x: str(x)[0:10]))[start_date:end_date]
+        if if_fq in ['00','bfq']:
+            return data
+        else:
+            print('CURRENTLY NOT SUPPORT REALTIME FUQUAN')
+            return None
+            # xdxr = QA_fetch_get_stock_xdxr(code)
+            # if if_fq in ['01','qfq']:
+            #     return QA_data_make_qfq(data,xdxr)
+            # elif if_fq in ['02','hfq']:
+            #     return QA_data_make_hfq(data,xdxr)
 
 
 def QA_fetch_get_stock_min(code, start, end, frequence='1min', ip=None, port=None):
@@ -559,10 +425,10 @@ B股买卖的代码是以200打头，如：深中冠B股，代码是200018。
 
 def for_sz(code):
     """深市代码分类
-    
+
     Arguments:
         code {[type]} -- [description]
-    
+
     Returns:
         [type] -- [description]
     """
@@ -573,7 +439,7 @@ def for_sz(code):
         return 'index_cn'
     elif str(code)[0:2] in ['15']:
         return 'etf_cn'
-    elif str(code)[0:2] in ['10','11','12','13']:
+    elif str(code)[0:2] in ['10', '11', '12', '13']:
         # 10xxxx 国债现货
         # 11xxxx 债券
         # 12xxxx 可转换债券
@@ -627,13 +493,14 @@ def QA_fetch_get_stock_list(type_='stock', ip=None, port=None):
             # .assign(szm=data['name'].apply(lambda x: ''.join([y[0] for y in lazy_pinyin(x)])))\
             #    .assign(quanpin=data['name'].apply(lambda x: ''.join(lazy_pinyin(x))))
 
+
 def QA_fetch_get_index_list(ip=None, port=None):
     """获取指数列表
-    
+
     Keyword Arguments:
         ip {[type]} -- [description] (default: {None})
         port {[type]} -- [description] (default: {None})
-    
+
     Returns:
         [type] -- [description]
     """
@@ -651,9 +518,10 @@ def QA_fetch_get_index_list(ip=None, port=None):
         sh = sh.assign(sec=sh.code.apply(for_sh))
         return pd.concat([sz, sh]).query('sec=="index_cn"').sort_index().assign(name=data['name'].apply(lambda x: str(x)[0:6]))
 
-def QA_fetch_get_bond_list(ip=None,port=None):
+
+def QA_fetch_get_bond_list(ip=None, port=None):
     """bond
-    
+
     Keyword Arguments:
         ip {[type]} -- [description] (default: {None})
         port {[type]} -- [description] (default: {None})
@@ -1148,6 +1016,7 @@ def QA_fetch_get_hkfund_list(ip=None, port=None):
 
     return extension_market_list.query('market==49')
 
+
 def QA_fetch_get_usstock_list(ip=None, port=None):
     """[summary]
 
@@ -1186,6 +1055,7 @@ def QA_fetch_get_macroindex_list(ip=None, port=None):
     ) if extension_market_list is None else extension_market_list
 
     return extension_market_list.query('market==38')
+
 
 def QA_fetch_get_option_list(ip=None, port=None):
     """期权列表
@@ -1228,15 +1098,14 @@ def QA_fetch_get_50etf_option_contract_time_to_market():
         # pprint.pprint((idx))
         strCategory = result.loc[idx, "category"]
         strMarket = result.loc[idx, "market"]
-        strCode = result.loc[idx, "code"]  #10001215
-        strName = result.loc[idx, 'name']  #510050C9M03200
-        strDesc = result.loc[idx, 'desc']  #10001215
+        strCode = result.loc[idx, "code"]  # 10001215
+        strName = result.loc[idx, 'name']  # 510050C9M03200
+        strDesc = result.loc[idx, 'desc']  # 10001215
         if strName.startswith("510050"):
             # print(strCategory,' ', strMarket, ' ', strCode, ' ', strName, ' ', strDesc, )
-            row = result.loc[idx];
+            row = result.loc[idx]
             rows.append(row)
     return rows
-
 
 
 def QA_fetch_get_exchangerate_list(ip=None, port=None):
@@ -1259,8 +1128,6 @@ def QA_fetch_get_exchangerate_list(ip=None, port=None):
     return extension_market_list.query('market==10 or market==11').query('category==4')
 
 
-    
-
 def QA_fetch_get_future_day(code, start_date, end_date, frequence='day', ip=None, port=None):
     '期货数据 日线'
     ip, port = get_extensionmarket_ip(ip, port)
@@ -1277,10 +1144,10 @@ def QA_fetch_get_future_day(code, start_date, end_date, frequence='day', ip=None
 
         data = pd.concat(
             [apix.to_df(apix.get_instrument_bars(
-            _select_type(frequence),
-            int(code_market.market),
-            str(code),
-            (int(lens / 700) - i) * 700, 700))for i in range(int(lens / 700) + 1)],
+                _select_type(frequence),
+                int(code_market.market),
+                str(code),
+                (int(lens / 700) - i) * 700, 700))for i in range(int(lens / 700) + 1)],
             axis=0)
         data = data.assign(date=data['datetime'].apply(lambda x: str(x[0:10]))).assign(code=str(code))\
             .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10]))).set_index('date', drop=False, inplace=False)
@@ -1456,7 +1323,6 @@ QA_fetch_get_exchangerate_min = QA_fetch_get_future_min
 
 QA_fetch_get_macroindex_day = QA_fetch_get_future_day
 QA_fetch_get_macroindex_min = QA_fetch_get_future_min
-
 
 
 def QA_fetch_get_wholemarket_list():
