@@ -27,10 +27,8 @@
 import datetime
 
 import pandas as pd
+
 from QUANTAXIS.QAUtil import DATABASE, QA_util_log_info
-
-
-import pandas as pd
 
 
 def QA_data_make_qfq(bfq_data, xdxr_data):
