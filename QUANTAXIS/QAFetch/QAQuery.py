@@ -31,7 +31,7 @@ from pandas import DataFrame
 
 from QUANTAXIS.QAUtil import (DATABASE, QA_Setting, QA_util_date_stamp,
                               QA_util_date_valid, QA_util_dict_remove_key,
-                              QA_util_log_info, QA_util_code_tolist, QA_util_date_str2int,
+                              QA_util_log_info, QA_util_code_tolist, QA_util_date_str2int, QA_util_date_int2str,
                               QA_util_sql_mongo_sort_DESCENDING,
                               QA_util_time_stamp, QA_util_to_json_from_pandas,
                               trade_date_sse)
@@ -497,6 +497,12 @@ def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
                 res_pd.columns = CH_columns
             elif ltype is 'EN':
                 res_pd.columns = EN_columns
+            
+            if res_pd.report_date.dtype==numpy.int64:
+                res_pd.report_date=pd.to_datetime(res_pd.report_date.apply(QA_util_date_int2str))
+            else:
+                res_pd.report_date=pd.to_datetime(res_pd.report_date)
+            
             return res_pd.replace(-4.039810335e+34, numpy.nan).set_index(['report_date', 'code'], drop=False)
         else:
             return None

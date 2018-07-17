@@ -46,7 +46,7 @@ from pyecharts import Kline
 
 from QUANTAXIS.QAData.base_datastruct import _quotation_base
 from QUANTAXIS.QAData.data_fq import QA_data_stock_to_fq
-from QUANTAXIS.QAData.data_resample import QA_data_tick_resample
+from QUANTAXIS.QAData.data_resample import QA_data_tick_resample, QA_data_day_resample, QA_data_min_resample
 from QUANTAXIS.QAData.proto import stock_day_pb2  # protobuf import
 from QUANTAXIS.QAData.proto import stock_min_pb2
 from QUANTAXIS.QAIndicator import EMA, HHV, LLV, SMA
@@ -156,6 +156,12 @@ class QA_DataStruct_Stock_day(_quotation_base):
         except:
             return None
 
+    def resample(self,level):
+        try:
+            return self.add_func(QA_data_day_resample,level)
+        except Exception as e:
+            print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
+            return None
 
 class QA_DataStruct_Stock_min(_quotation_base):
     def __init__(self, DataFrame, dtype='stock_min', if_fq='bfq'):
@@ -234,6 +240,12 @@ class QA_DataStruct_Stock_min(_quotation_base):
         '跌停价'
         return self.data.low_limit
 
+    def resample(self,level):
+        try:
+            return self.add_func(QA_data_min_resample,level)
+        except Exception as e:
+            print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
+            return None
 
 class QA_DataStruct_Future_day(_quotation_base):
     def __init__(self, DataFrame, dtype='future_day', if_fq=''):
