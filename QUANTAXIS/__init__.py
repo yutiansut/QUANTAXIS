@@ -32,7 +32,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.0.66'
+__version__ = '1.0.68'
 __author__ = 'yutiansut'
 logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
@@ -115,11 +115,12 @@ from QUANTAXIS.QABacktest.QAResult import backtest_result_analyzer
 from QUANTAXIS.QAEngine import QA_Thread, QA_Event, QA_Worker, QA_Task, QA_Engine
 
 # Data
-from QUANTAXIS.QAData import (QA_data_tick_resample, QA_data_get_hfq, QA_data_get_qfq, QA_data_make_qfq, QA_data_stock_to_fq,
-                              QA_data_make_hfq, QA_DataStruct_Stock_day, QA_DataStruct_Stock_min,
+from QUANTAXIS.QAData import (QA_data_tick_resample, QA_data_day_resample, QA_data_min_resample,
+                              QA_data_make_qfq, QA_data_stock_to_fq, QA_data_make_hfq,
+                              QA_DataStruct_Stock_day, QA_DataStruct_Stock_min,
                               QA_DataStruct_Future_day, QA_DataStruct_Future_min,
                               QA_DataStruct_Index_day, QA_DataStruct_Index_min, QA_DataStruct_Indicators, QA_DataStruct_Stock_realtime,
-                              QA_DataStruct_Stock_transaction, QA_DataStruct_Stock_block, QA_DataStruct_Series,
+                              QA_DataStruct_Stock_transaction, QA_DataStruct_Stock_block, QA_DataStruct_Series, QA_DataStruct_Financial,
                               from_tushare, QDS_StockMinWarpper, QDS_StockDayWarpper, QDS_IndexDayWarpper, QDS_IndexMinWarpper)
 from QUANTAXIS.QAData.dsmethods import *
 # Analysis
@@ -169,8 +170,8 @@ import argparse
 
 # check
 import sys
-if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6]:
-    print('wrong version, should be 3.4/3.5/3.6 version')
+if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6, 7, 8]:
+    print('wrong version, should be 3.4/3.5/3.6/3.7/3.8 version')
     sys.exit()
 
 
