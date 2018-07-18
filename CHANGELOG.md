@@ -75,6 +75,10 @@
 
     > QDF.get_key(code,date,key) 返回某个股票某个时间点的财报的某个指标
 
+2. 更改了两个财务字段:
+
+        - 159 流动比率: liquidityRatio  ==> currentRatio
+        - 211 流动资产比率:  liquidityRatio  ==> currentAssetsRatio
 
 ## 1.0.67 
 
