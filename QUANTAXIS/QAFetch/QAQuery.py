@@ -31,7 +31,7 @@ from pandas import DataFrame
 
 from QUANTAXIS.QAUtil import (DATABASE, QA_Setting, QA_util_date_stamp,
                               QA_util_date_valid, QA_util_dict_remove_key,
-                              QA_util_log_info, QA_util_code_tolist, QA_util_date_str2int,
+                              QA_util_log_info, QA_util_code_tolist, QA_util_date_str2int, QA_util_date_int2str,
                               QA_util_sql_mongo_sort_DESCENDING,
                               QA_util_time_stamp, QA_util_to_json_from_pandas,
                               trade_date_sse)
@@ -79,11 +79,11 @@ def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collec
         elif format in ['list', 'l', 'L']:
             return numpy.asarray(res).tolist()
         else:
-            print("💢 Error QA_fetch_stock_day format parameter %s is none of  \"P, p, pandas, pd , json, dict , n, N, numpy, list, l, L, !\" " % format)
+            print("QA Error QA_fetch_stock_day format parameter %s is none of  \"P, p, pandas, pd , json, dict , n, N, numpy, list, l, L, !\" " % format)
             return None
     else:
         QA_util_log_info(
-            '💢 Error QA_fetch_stock_day data parameter start=%s end=%s is not right' % (start, end))
+            'QA Error QA_fetch_stock_day data parameter start=%s end=%s is not right' % (start, end))
 
 
 def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', collections=DATABASE.stock_min):
@@ -99,7 +99,7 @@ def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', colle
     elif frequence in ['60min', '60m']:
         frequence = '60min'
     else:
-        print("💢 Error QA_fetch_stock_min parameter frequence=%s is none of 1min 1m 5min 5m 15min 15m 30min 30m 60min 60m" % frequence)
+        print("QA Error QA_fetch_stock_min parameter frequence=%s is none of 1min 1m 5min 5m 15min 15m 30min 30m 60min 60m" % frequence)
 
     __data = []
     # code checking
@@ -129,7 +129,7 @@ def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', colle
     elif format in ['list', 'l', 'L']:
         return numpy.asarray(res).tolist()
     else:
-        print("💢 Error QA_fetch_stock_min format parameter %s is none of  \"P, p, pandas, pd , json, dict , n, N, numpy, list, l, L, !\" " % format)
+        print("QA Error QA_fetch_stock_min format parameter %s is none of  \"P, p, pandas, pd , json, dict , n, N, numpy, list, l, L, !\" " % format)
         return None
 
 
@@ -223,12 +223,12 @@ def QA_fetch_stock_full(date, format='numpy', collections=DATABASE.stock_day):
             __data['date'] = pd.to_datetime(__data['date'])
             __data = __data.set_index('date', drop=False)
         else:
-            print("💢 Error QA_fetch_stock_full format parameter %s is none of  \"P, p, pandas, pd , json, dict , n, N, numpy, list, l, L, !\" " % format)
+            print("QA Error QA_fetch_stock_full format parameter %s is none of  \"P, p, pandas, pd , json, dict , n, N, numpy, list, l, L, !\" " % format)
 
         return __data
     else:
         QA_util_log_info(
-            '💢 Error QA_fetch_stock_full data parameter date=%s not right' % date)
+            'QA Error QA_fetch_stock_full data parameter date=%s not right' % date)
 
 
 def QA_fetch_index_day(code, start, end, format='numpy', collections=DATABASE.index_day):
@@ -261,10 +261,10 @@ def QA_fetch_index_day(code, start, end, format='numpy', collections=DATABASE.in
             __data['date'] = pd.to_datetime(__data['date'])
             __data = __data.set_index('date', drop=False)
         else:
-            print("💢 Error QA_fetch_index_day format parameter %s is none of  \"P, p, pandas, pd , n, N, numpy !\" " % format)
+            print("QA Error QA_fetch_index_day format parameter %s is none of  \"P, p, pandas, pd , n, N, numpy !\" " % format)
         return __data
     else:
-        QA_util_log_info('💢 something wrong with date')
+        QA_util_log_info('QA something wrong with date')
 
 
 def QA_fetch_index_min(
@@ -497,6 +497,12 @@ def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
                 res_pd.columns = CH_columns
             elif ltype is 'EN':
                 res_pd.columns = EN_columns
+            
+            if res_pd.report_date.dtype==numpy.int64:
+                res_pd.report_date=pd.to_datetime(res_pd.report_date.apply(QA_util_date_int2str))
+            else:
+                res_pd.report_date=pd.to_datetime(res_pd.report_date)
+            
             return res_pd.replace(-4.039810335e+34, numpy.nan).set_index(['report_date', 'code'], drop=False)
         else:
             return None
