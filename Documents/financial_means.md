@@ -393,7 +393,7 @@
 
 ## 5. 偿债能力分析
 
-'159流动比率': 'liquidityRatio',  # 流动资产/流动负债
+'159流动比率': 'currentRatio',  # 流动资产/流动负债
 
 '160速动比率': 'acidTestRatio',  # (流动资产-存货）/流动负债
 
@@ -509,7 +509,7 @@
 
 '210资产负债率(%)': 'assetsLiabilitiesRatio',
 
-'211流动资产比率': 'liquidityRatio',
+'211流动资产比率': 'currentAssetsRatio',
 
 '212货币资金比率': 'monetaryFundRatio',
 
