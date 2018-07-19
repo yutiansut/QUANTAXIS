@@ -80,7 +80,7 @@ def select_best_ip():
 
     # 删除exclude ip
     import json
-    null = None
+    #null = None
     qasetting = QASETTING
     exclude_ip = {'ip': '1.1.1.1', 'port': 7709}
     default_ip = {'stock': {'ip': None, 'port': None},
@@ -94,8 +94,11 @@ def select_best_ip():
 
     ipdefault = qasetting.get_config(
         section='IPLIST', option='default', default_value=default_ip)
+
     ipdefault = eval(ipdefault) if isinstance(ipdefault, str) else ipdefault
     assert isinstance(ipdefault, dict)
+
+
     if ipdefault['stock']['ip'] == None:
 
         data_stock = [ping(x['ip'], x['port'], 'stock') for x in stock_ip_list]
@@ -125,8 +128,8 @@ def select_best_ip():
             best_future_ip = future_ip_list[data_future.index(
                 min(data_future))]
     ipbest = {'stock': best_stock_ip, 'future': best_future_ip}
-    qasetting.set_config(
-        section='IPLIST', option='default', default_value=ipbest)
+    qasetting.set_config(section='IPLIST', option='default', default_value=ipbest)
+
     QA_util_log_info('=== The BEST SERVER ===\n stock_ip {} future_ip {}'.format(
         best_stock_ip['ip'], best_future_ip['ip']))
     return ipbest

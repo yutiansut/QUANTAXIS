@@ -128,13 +128,16 @@ def QA_SU_save_option_day(client=DATABASE):
 
 
 
-def QA_SU_save_stock_day(client=DATABASE):
-    """save stock_day
-
-    Keyword Arguments:
-        client {[type]} -- [description] (default: {DATABASE})
-    """
-
+def QA_SU_save_stock_day(client=DATABASE, ui_log = None, ui_progress = None):
+    '''
+     save stock_day
+    保存日线数据
+    :param client:
+    :param ui_log:  给GUI qt 界面使用
+    :param ui_progress: 给GUI qt 界面使用
+    :param ui_progress_int_value: 给GUI qt 界面使用
+    :return:
+    '''
     stock_list = QA_fetch_get_stock_list().code.unique().tolist()
     coll_stock_day = client.stock_day
     coll_stock_day.create_index([("code", pymongo.ASCENDING), ("date_stamp", pymongo.ASCENDING)])
@@ -143,7 +146,7 @@ def QA_SU_save_stock_day(client=DATABASE):
     def __saving_work(code, coll_stock_day):
         try:
             QA_util_log_info(
-                '##JOB01 Now Saving STOCK_DAY==== {}'.format(str(code)))
+                '##JOB01 Now Saving STOCK_DAY==== {}'.format(str(code)), ui_log)
 
             #首选查找数据库 是否 有 这个代码的数据
             ref = coll_stock_day.find({'code': str(code)[0:6]})
@@ -157,7 +160,7 @@ def QA_SU_save_stock_day(client=DATABASE):
                 start_date = ref[ref.count() - 1]['date']
 
                 QA_util_log_info('UPDATE_STOCK_DAY \n Trying updating {} from {} to {}'.format(
-                                 code, start_date, end_date))
+                                 code, start_date, end_date),  ui_log)
                 if start_date != end_date:
                     coll_stock_day.insert_many(
                         QA_util_to_json_from_pandas(
@@ -167,7 +170,7 @@ def QA_SU_save_stock_day(client=DATABASE):
             else:
                 start_date = '1990-01-01'
                 QA_util_log_info('UPDATE_STOCK_DAY \n Trying updating {} from {} to {}'.format
-                                 (code, start_date, end_date))
+                                 (code, start_date, end_date),  ui_log)
                 if start_date != end_date:
                     coll_stock_day.insert_many(
                         QA_util_to_json_from_pandas(
@@ -179,18 +182,21 @@ def QA_SU_save_stock_day(client=DATABASE):
     for item in range(len(stock_list)):
         QA_util_log_info('The {} of Total {}'.format
                          (item, len(stock_list)))
-        QA_util_log_info('DOWNLOAD PROGRESS {} '.format(str(
-            float(item / len(stock_list) * 100))[0:4] + '%')
-        )
+
+        strProgressToLog = 'DOWNLOAD PROGRESS {} '.format(str(float(item / len(stock_list) * 100))[0:4] + '%', ui_log)
+        intProgressToLog = int(float(item / len(stock_list) * 100))
+        QA_util_log_info(strProgressToLog, ui_log= ui_log, ui_progress= ui_progress, ui_progress_int_value= intProgressToLog)
+
         __saving_work( stock_list[item], coll_stock_day)
+
     if len(err) < 1:
-        QA_util_log_info('SUCCESS save stock day ^_^')
+        QA_util_log_info('SUCCESS save stock day ^_^',  ui_log)
     else:
-        QA_util_log_info(' ERROR CODE \n ')
-        QA_util_log_info(err)
+        QA_util_log_info(' ERROR CODE \n ',  ui_log)
+        QA_util_log_info(err, ui_log)
 
 
-def QA_SU_save_stock_week(client=DATABASE):
+def QA_SU_save_stock_week(client=DATABASE, ui_log = None, ui_progress = None):
     """save stock_week
 
     Keyword Arguments:
@@ -205,8 +211,7 @@ def QA_SU_save_stock_week(client=DATABASE):
 
     def __saving_work(code, coll_stock_week):
         try:
-            QA_util_log_info(
-                '##JOB01 Now Saving STOCK_WEEK==== {}'.format(str(code)))
+            QA_util_log_info('##JOB01 Now Saving STOCK_WEEK==== {}'.format(str(code)), ui_log=ui_log)
 
             ref = coll_stock_week.find({'code': str(code)[0:6]})
             end_date = str(now_time())[0:10]
@@ -216,7 +221,7 @@ def QA_SU_save_stock_week(client=DATABASE):
                 start_date = ref[ref.count() - 1]['date']
 
                 QA_util_log_info('UPDATE_STOCK_WEEK \n Trying updating {} from {} to {}'.format
-                                 (code, start_date, end_date))
+                                 (code, start_date, end_date), ui_log=ui_log)
                 if start_date != end_date:
                     coll_stock_week.insert_many(
                         QA_util_to_json_from_pandas(
@@ -224,7 +229,7 @@ def QA_SU_save_stock_week(client=DATABASE):
             else:
                 start_date = '1990-01-01'
                 QA_util_log_info('UPDATE_STOCK_WEEK \n Trying updating {} from {} to {}'.format
-                                 (code, start_date, end_date))
+                                 (code, start_date, end_date),ui_log=ui_log)
                 if start_date != end_date:
                     coll_stock_week.insert_many(
                         QA_util_to_json_from_pandas(
@@ -233,19 +238,20 @@ def QA_SU_save_stock_week(client=DATABASE):
             err.append(str(code))
     for item in range(len(stock_list)):
         QA_util_log_info('The {} of Total {}'.format
-                         (item, len(stock_list)))
-        QA_util_log_info('DOWNLOAD PROGRESS {} '.format(str(
-            float(item / len(stock_list) * 100))[0:4] + '%'))
+                         (item, len(stock_list)), ui_log=ui_log)
+        strProgress = 'DOWNLOAD PROGRESS {} '.format(str(float(item / len(stock_list) * 100))[0:4] + '%')
+        intProgress = int(float(item / len(stock_list) * 100))
+        QA_util_log_info(strProgress, ui_log=ui_log, ui_progress=ui_progress, ui_progress_int_value= intProgress)
 
         __saving_work( stock_list[item], coll_stock_week)
     if len(err) < 1:
-        QA_util_log_info('SUCCESS')
+        QA_util_log_info('SUCCESS', ui_log=ui_log)
     else:
-        QA_util_log_info(' ERROR CODE \n ')
-        QA_util_log_info(err)
+        QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
+        QA_util_log_info(err, ui_log=ui_log)
 
 
-def QA_SU_save_stock_month(client=DATABASE):
+def QA_SU_save_stock_month(client=DATABASE, ui_log = None, ui_progress = None):
     """save stock_month
 
     Keyword Arguments:
@@ -260,8 +266,7 @@ def QA_SU_save_stock_month(client=DATABASE):
 
     def __saving_work(code, coll_stock_month):
         try:
-            QA_util_log_info(
-                '##JOB01 Now Saving STOCK_MONTH==== {}'.format(str(code)))
+            QA_util_log_info('##JOB01 Now Saving STOCK_MONTH==== {}'.format(str(code)), ui_log = ui_log)
 
             ref = coll_stock_month.find({'code': str(code)[0:6]})
             end_date = str(now_time())[0:10]
@@ -271,7 +276,7 @@ def QA_SU_save_stock_month(client=DATABASE):
                 start_date = ref[ref.count() - 1]['date']
 
                 QA_util_log_info('UPDATE_STOCK_MONTH \n Trying updating {} from {} to {}'.format
-                                 (code, start_date, end_date))
+                                 (code, start_date, end_date), ui_log = ui_log)
                 if start_date != end_date:
                     coll_stock_month.insert_many(
                         QA_util_to_json_from_pandas(
@@ -279,7 +284,7 @@ def QA_SU_save_stock_month(client=DATABASE):
             else:
                 start_date = '1990-01-01'
                 QA_util_log_info('UPDATE_STOCK_MONTH \n Trying updating {} from {} to {}'.format
-                                 (code, start_date, end_date))
+                                    (code, start_date, end_date),  ui_log = ui_log)
                 if start_date != end_date:
                     coll_stock_month.insert_many(
                         QA_util_to_json_from_pandas(
@@ -287,20 +292,20 @@ def QA_SU_save_stock_month(client=DATABASE):
         except:
             err.append(str(code))
     for item in range(len(stock_list)):
-        QA_util_log_info('The {} of Total {}'.format
-                         (item, len(stock_list)))
-        QA_util_log_info('DOWNLOAD PROGRESS {} '.format(str(
-            float(item / len(stock_list) * 100))[0:4] + '%')
-        )
+        QA_util_log_info('The {} of Total {}'.format(item, len(stock_list)),  ui_log = ui_log)
+        strProgress = 'DOWNLOAD PROGRESS {} '.format(str(float(item / len(stock_list) * 100))[0:4] + '%')
+        intProgress = int(float(item / len(stock_list) * 100))
+        QA_util_log_info(strProgress, ui_log=ui_log, ui_progress=ui_progress, ui_progress_int_value=intProgress)
+
         __saving_work( stock_list[item], coll_stock_month)
     if len(err) < 1:
-        QA_util_log_info('SUCCESS')
+        QA_util_log_info('SUCCESS', ui_log=ui_log)
     else:
-        QA_util_log_info('ERROR CODE \n ')
-        QA_util_log_info(err)
+        QA_util_log_info('ERROR CODE \n ', ui_log=ui_log)
+        QA_util_log_info(err, ui_log=ui_log)
 
 
-def QA_SU_save_stock_year(client=DATABASE):
+def QA_SU_save_stock_year(client=DATABASE, ui_log = None, ui_progress = None):
     """save stock_year
 
     Keyword Arguments:
@@ -316,7 +321,7 @@ def QA_SU_save_stock_year(client=DATABASE):
     def __saving_work(code, coll_stock_year):
         try:
             QA_util_log_info(
-                '##JOB01 Now Saving STOCK_YEAR==== {}'.format(str(code)))
+                '##JOB01 Now Saving STOCK_YEAR==== {}'.format(str(code)), ui_log=ui_log)
 
             ref = coll_stock_year.find({'code': str(code)[0:6]})
             end_date = str(now_time())[0:10]
@@ -326,7 +331,7 @@ def QA_SU_save_stock_year(client=DATABASE):
                 start_date = ref[ref.count() - 1]['date']
 
                 QA_util_log_info('UPDATE_STOCK_YEAR \n Trying updating {} from {} to {}'.format
-                                 (code, start_date, end_date))
+                                 (code, start_date, end_date), ui_log=ui_log)
                 if start_date != end_date:
                     coll_stock_year.insert_many(
                         QA_util_to_json_from_pandas(
@@ -334,7 +339,7 @@ def QA_SU_save_stock_year(client=DATABASE):
             else:
                 start_date = '1990-01-01'
                 QA_util_log_info('UPDATE_STOCK_YEAR \n Trying updating {} from {} to {}'.format
-                                 (code, start_date, end_date))
+                                 (code, start_date, end_date), ui_log=ui_log)
                 if start_date != end_date:
                     coll_stock_year.insert_many(
                         QA_util_to_json_from_pandas(
@@ -342,17 +347,18 @@ def QA_SU_save_stock_year(client=DATABASE):
         except:
             err.append(str(code))
     for item in range(len(stock_list)):
-        QA_util_log_info('The {} of Total {}'.format
-                         (item, len(stock_list)))
-        QA_util_log_info('DOWNLOAD PROGRESS {} '.format(str(
-            float(item / len(stock_list) * 100))[0:4] + '%'))
+        QA_util_log_info('The {} of Total {}'.format(item, len(stock_list)), ui_log=ui_log)
+
+        strProgress = 'DOWNLOAD PROGRESS {} '.format(str(float(item / len(stock_list) * 100))[0:4] + '%')
+        intProgress = int(float(item / len(stock_list) * 100))
+        QA_util_log_info(strProgress, ui_log= ui_log, ui_progress= ui_progress, ui_progress_int_value= intProgress)
 
         __saving_work( stock_list[item], coll_stock_year)
     if len(err) < 1:
-        QA_util_log_info('SUCCESS')
+        QA_util_log_info('SUCCESS', ui_log= ui_log)
     else:
-        QA_util_log_info(' ERROR CODE \n ')
-        QA_util_log_info(err)
+        QA_util_log_info(' ERROR CODE \n ',ui_log= ui_log)
+        QA_util_log_info(err, ui_log= ui_log)
 
 
 def QA_SU_save_stock_xdxr(client=DATABASE):
