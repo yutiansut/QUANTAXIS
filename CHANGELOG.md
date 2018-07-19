@@ -79,6 +79,9 @@
 
         - 159 流动比率: liquidityRatio  ==> currentRatio
         - 211 流动资产比率:  liquidityRatio  ==> currentAssetsRatio
+        
+3. 使用md5计算财报数据包的更新状况,确保财报是最新状态
+
 
 ## 1.0.67 
 
