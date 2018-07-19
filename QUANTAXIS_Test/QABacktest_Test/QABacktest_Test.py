@@ -8,7 +8,7 @@ from QUANTAXIS.QAARP.QARisk import QA_Performance, QA_Risk
 from QUANTAXIS.QAARP.QAStrategy import QA_Strategy
 from QUANTAXIS.QAARP.QAUser import QA_User
 from QUANTAXIS.QABacktest.QABacktest import QA_Backtest
-from QUANTAXIS.QAFetch.QATdx import QA_fetch_get_stock_day
+from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day
 from QUANTAXIS.QAIndicator import QA_indicator_MA
 from QUANTAXIS.QAUtil.QADate import QA_util_datetime_to_strdate
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
@@ -33,11 +33,12 @@ class MAStrategy(QA_Strategy):
         self.time_to_Market_300439 = '2015-04-22'
         self.time_to_day = '2018-05-01'
 
-        self.df_from_Tdx = QA_fetch_get_stock_day(
-            '300439', self.time_to_Market_300439, self.time_to_day, '01')
+        self.df_from_Tdx = QA_fetch_stock_day(
+            '300439', self.time_to_Market_300439, self.time_to_day, 'pd')
         # print(self.df_from_Tdx)
 
         self.ma05 = QA_indicator_MA(self.df_from_Tdx, 5)
+
         self.ma10 = QA_indicator_MA(self.df_from_Tdx, 10)
         self.ma15 = QA_indicator_MA(self.df_from_Tdx, 15)
         self.ma20 = QA_indicator_MA(self.df_from_Tdx, 20)
