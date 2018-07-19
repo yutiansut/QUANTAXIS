@@ -22,3 +22,4 @@ seaborn>=0.8.1
 selenium
 scrapy
 pyecharts_snapshot
+attrs>=17.4.0
