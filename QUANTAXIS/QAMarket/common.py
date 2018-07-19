@@ -2,6 +2,7 @@
 # shipane
 cn_en_compare = {'明细': 'id',
                  '证券代码': 'code',
+                 '市场代码': 'market_code',
                  '证券名称': 'name',
                  '股票余额': 'amount',
                  '可用余额': 'sell_available',
@@ -24,7 +25,10 @@ cn_en_compare = {'明细': 'id',
                  '委托编号': 'realorder_id',
                  '批次号': 'pc_id',
                  '盈亏': 'pnl',
+                 '成本金额':'cost',
+                 '盈亏估算':'pnl_prob',
                  '成本价': 'hold_price',
+                 '实现盈亏':'pnl_money_already',
                  '盈亏比例(%)': 'pnl_ratio',
                  '市价': 'price',
                  '市值': 'market_value',
@@ -41,6 +45,7 @@ cn_en_compare = {'明细': 'id',
                  '卖出在途数量': 'sell_onway'}
 
 trade_status_cn_en_dict={
+                 '场内废单':'failled',
                  '场外撤单': 'cancel_outside',
                  '场内撤单': 'cancel_inside',
                  '未成交': 'pending',
