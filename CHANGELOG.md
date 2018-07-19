@@ -77,10 +77,23 @@
 
 2. 更改了两个财务字段:
 
-        - 159 流动比率: liquidityRatio  ==> currentRatio
-        - 211 流动资产比率:  liquidityRatio  ==> currentAssetsRatio
+    - 159 流动比率: liquidityRatio  ==> currentRatio
+    - 211 流动资产比率:  liquidityRatio  ==> currentAssetsRatio
         
 3. 使用md5计算财报数据包的更新状况,确保财报是最新状态
+4. DataStruct 更新自动降采样字段:
+
+    - DataStruct_Stock_day 增加
+        + week
+        + month
+        + year
+    - DataStruct_Stock_min 增加
+        + min5
+        + min15
+        + min30
+        + min60
+        
+    直接调用以后及可返回,如果失败,则返回None
 
 
 ## 1.0.67 

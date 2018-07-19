@@ -156,12 +156,28 @@ class QA_DataStruct_Stock_day(_quotation_base):
         except:
             return None
 
-    def resample(self,level):
+    @property
+    @lru_cache()
+    def week(self):
+        return self.resample('w')
+
+    @property
+    @lru_cache()
+    def month(self):
+        return self.resample('M')
+
+    @property
+    @lru_cache()
+    def year(self):
+        return self.resample('Y')
+
+    def resample(self, level):
         try:
-            return self.add_func(QA_data_day_resample,level)
+            return self.add_func(QA_data_day_resample, level).sort_index()
         except Exception as e:
             print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
             return None
+
 
 class QA_DataStruct_Stock_min(_quotation_base):
     def __init__(self, DataFrame, dtype='stock_min', if_fq='bfq'):
@@ -240,12 +256,33 @@ class QA_DataStruct_Stock_min(_quotation_base):
         '跌停价'
         return self.data.low_limit
 
-    def resample(self,level):
+    def resample(self, level):
         try:
-            return self.add_func(QA_data_min_resample,level)
+            return self.add_func(QA_data_min_resample, level).sort_index()
         except Exception as e:
             print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
             return None
+
+    @property
+    @lru_cache()
+    def min5(self):
+        return self.resample('5min')
+
+    @property
+    @lru_cache()
+    def min15(self):
+        return self.resample('15min')
+
+    @property
+    @lru_cache()
+    def min30(self):
+        return self.resample('30min')
+
+    @property
+    @lru_cache()
+    def min60(self):
+        return self.resample('60min')
+
 
 class QA_DataStruct_Future_day(_quotation_base):
     def __init__(self, DataFrame, dtype='future_day', if_fq=''):
@@ -715,10 +752,10 @@ class _realtime_base():
 
 class QA_DataStruct_Stock_realtime(_realtime_base):
     def __init__(self, data):
-        self.data=data
+        self.data = data
 
     def __repr__(self):
-        return '< QA_REALTIME_STRUCT code {} start {} end {} >'.format(self.code.unique(), self.datetime.iloc[1],self.datetime.iloc[-1])
+        return '< QA_REALTIME_STRUCT code {} start {} end {} >'.format(self.code.unique(), self.datetime.iloc[1], self.datetime.iloc[-1])
 
     # @property
     # def ask_list(self):
