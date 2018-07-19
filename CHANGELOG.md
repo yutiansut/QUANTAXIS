@@ -98,6 +98,9 @@
 5. QADataStruct.pivot代码更新
 
 
+6. 添加了 QUANTAXIS_Monitor_GUI 目录，初步实现了 日周月年线下载的 PYQT5 界面。
+
+
 ## 1.0.67 
 
 1. 修改了版本限制 增加3.7,3.8的支持
