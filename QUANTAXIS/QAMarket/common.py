@@ -45,6 +45,7 @@ cn_en_compare = {'明细': 'id',
                  '卖出在途数量': 'sell_onway'}
 
 trade_status_cn_en_dict={
+                 '场内废单':'failled',
                  '场外撤单': 'cancel_outside',
                  '场内撤单': 'cancel_inside',
                  '未成交': 'pending',
