@@ -167,7 +167,7 @@ class _quotation_base():
         assert isinstance(DataStruct, _quotation_base)
         assert self.is_same(DataStruct)
         # 🛠todo 继承的子类  QA_DataStruct_XXXX 类型的 判断必须是同一种类型才可以操作
-        return self.new(data=self.data.append(DataStruct.data).drop_duplicates().set_index(self.index.names, drop=False), dtype=self.type, if_fq=self.if_fq)
+        return self.new(data=self.data.append(DataStruct.data).drop_duplicates(), dtype=self.type, if_fq=self.if_fq)
 
     __radd__ = __add__
 
@@ -180,7 +180,10 @@ class _quotation_base():
         assert isinstance(DataStruct, _quotation_base)
         assert self.is_same(DataStruct)
         # 🛠todo 继承的子类  QA_DataStruct_XXXX 类型的 判断必须是同一种类型才可以操作
-        return self.new(data=self.data.drop(DataStruct.index).set_index(self.index.names, drop=False), dtype=self.type, if_fq=self.if_fq)
+        try:
+            return self.new(data=self.data.drop(DataStruct.index), dtype=self.type, if_fq=self.if_fq)
+        except Exception as e:
+            print(e)
 
     __rsub__ = __sub__
 
@@ -725,14 +728,14 @@ class _quotation_base():
         """增加对于多列的支持"""
         if isinstance(column_, str):
             try:
-                return self.data.pivot(index='datetime', columns='code', values=column_)
+                return self.data.reset_index().pivot(index='datetime', columns='code', values=column_)
             except:
-                return self.data.pivot(index='date', columns='code', values=column_)
+                return self.data.reset_index().pivot(index='date', columns='code', values=column_)
         elif isinstance(column_, list):
             try:
-                return self.data.pivot_table(index='datetime', columns='code', values=column_)
+                return self.data.reset_index().pivot_table(index='datetime', columns='code', values=column_)
             except:
-                return self.data.pivot_table(index='date', columns='code', values=column_)
+                return self.data.reset_index().pivot_table(index='date', columns='code', values=column_)
 
 
 
