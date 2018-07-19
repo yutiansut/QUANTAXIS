@@ -37,7 +37,6 @@ def QA_data_make_qfq(bfq_data, xdxr_data):
     bfq_data = bfq_data.assign(if_trade=1)
 
     if len(info) > 0:
-
         data = pd.concat([bfq_data, info.loc[bfq_data.index[0]:bfq_data.index[-1], ['category']]], axis=1)
         data['if_trade'].fillna(value=0, inplace=True)
         data = data.fillna(method='ffill')
@@ -118,7 +117,7 @@ def QA_data_stock_to_fq(__data, type_='01'):
                                                   'shares_after', 'shares_before', 'songzhuangu', 'suogu', 'xingquanjia'])
     '股票 日线/分钟线 动态复权接口'
 
-    code = __data.index.levels[1][0] if isinstance(
+    code = __data.index.remove_unused_levels().levels[1][0] if isinstance(
         __data.index, pd.core.indexes.multi.MultiIndex) else __data['code'][0]
     if type_ in ['01', 'qfq']:
         return QA_data_make_qfq(__data, __QA_fetch_stock_xdxr(code))
