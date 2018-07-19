@@ -100,6 +100,9 @@
 
 ( 此处切记:: 使用groupby之后的 data的index 一定要先做 remove_unused_levels()!!!)
 
+6. 添加了 QUANTAXIS_Monitor_GUI 目录，初步实现了 日周月年线下载的 PYQT5 界面。
+
+
 ## 1.0.67 
 
 1. 修改了版本限制 增加3.7,3.8的支持
