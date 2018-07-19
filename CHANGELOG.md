@@ -96,7 +96,9 @@
     直接调用以后及可返回,如果失败,则返回None
 
 5. QADataStruct.pivot代码更新
+6. QADataStruct.to_qfq/hfq 更新
 
+( 此处切记:: 使用groupby之后的 data的index 一定要先做 remove_unused_levels()!!!)
 
 6. 添加了 QUANTAXIS_Monitor_GUI 目录，初步实现了 日周月年线下载的 PYQT5 界面。
 
