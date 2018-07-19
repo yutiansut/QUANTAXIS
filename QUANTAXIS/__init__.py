@@ -153,7 +153,7 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms
                               QA_util_to_json_from_pandas, QA_util_to_list_from_numpy, QA_util_to_list_from_pandas, QA_util_to_pandas_from_json, QA_util_to_pandas_from_list,
                               QA_util_mongo_initial,  QA_util_mongo_status, QA_util_mongo_infos,
                               QA_util_make_min_index, QA_util_make_hour_index,
-                              QA_util_random_with_topic,
+                              QA_util_random_with_topic, QA_util_file_md5,
                               MARKET_TYPE, ORDER_STATUS, TRADE_STATUS, MARKET_ERROR, AMOUNT_MODEL, ORDER_DIRECTION, ORDER_MODEL, ORDER_EVENT,
                               MARKET_EVENT, ENGINE_EVENT, RUNNING_ENVIRONMENT, FREQUENCE, BROKER_EVENT, BROKER_TYPE, DATASOURCE, OUTPUT_FORMAT)  # QAPARAMETER
 
