@@ -101,7 +101,11 @@
 ( 此处切记:: 使用groupby之后的 data的index 一定要先做 remove_unused_levels()!!!)
 
 6. 添加了 QUANTAXIS_Monitor_GUI 目录，初步实现了 日周月年线下载的 PYQT5 界面。
+7. 对于DataStruct的stock_min的初始化进行了修改,之前有对datetime/code的选取, 现已经删除(patch 1)
 
+released in : July 19, 2018
+
+patch1 released in : July 20, 2018
 
 ## 1.0.67 
 
