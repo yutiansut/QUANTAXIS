@@ -73,7 +73,7 @@ def QA_SU_save_stock_list(engine, client=DATABASE):
     engine.QA_SU_save_stock_list(client=client)
 
 
-def QA_SU_save_stock_day(engine, client=DATABASE, ui_log = None, ui_progress = None, ui_progress_int_value = None):
+def QA_SU_save_stock_day(engine, client=DATABASE):
     """save stock_day
 
     Arguments:
@@ -84,7 +84,7 @@ def QA_SU_save_stock_day(engine, client=DATABASE, ui_log = None, ui_progress = N
     """
 
     engine = select_save_engine(engine)
-    engine.QA_SU_save_stock_day(client=client,ui_log=  ui_log, ui_progress = ui_progress, ui_progress_int_value = ui_progress_int_value)
+    engine.QA_SU_save_stock_day(client=client)
 
 
 def QA_SU_save_option_day(engine,client=DATABASE):
