@@ -80,7 +80,7 @@ def select_best_ip():
 
     # 删除exclude ip
     import json
-    #null = None
+    null = None
     qasetting = QASETTING
     exclude_ip = {'ip': '1.1.1.1', 'port': 7709}
     default_ip = {'stock': {'ip': None, 'port': None},
