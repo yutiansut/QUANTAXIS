@@ -3,7 +3,8 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.0.68 (unreleased)](#1068-unreleased)
+    - [1.0.69 (unreleased)](#1069-unreleased)
+    - [1.0.68](#1068)
     - [1.0.67](#1067)
     - [1.0.66](#1066)
     - [1.0.65](#1065)
@@ -49,7 +50,11 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
-## 1.0.68 (unreleased)
+## 1.0.69 (unreleased)
+
+
+
+## 1.0.68 
 
 1. 更新了财务方法/财务类 QA_DataStruct_Financial
 
@@ -101,7 +106,11 @@
 ( 此处切记:: 使用groupby之后的 data的index 一定要先做 remove_unused_levels()!!!)
 
 6. 添加了 QUANTAXIS_Monitor_GUI 目录，初步实现了 日周月年线下载的 PYQT5 界面。
+7. 对于DataStruct的stock_min的初始化进行了修改,之前有对datetime/code的选取, 现已经删除(dev 1)
 
+released in : July 19, 2018
+
+dev1 released in : July 20, 2018
 
 ## 1.0.67 
 

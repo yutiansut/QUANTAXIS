@@ -32,6 +32,7 @@
 import math
 import os
 import platform
+
 from collections import deque
 from functools import lru_cache
 from queue import LifoQueue
@@ -77,7 +78,6 @@ finally:
     import matplotlib.patches as mpatches
     import matplotlib.pyplot as plt
     import seaborn as sns
-
 
 
 class QA_Risk():
@@ -139,7 +139,6 @@ class QA_Risk():
         else:
             return self.market_data.pivot('close').fillna(
                 method='ffill') * self.account.daily_hold
-            
 
     @property
     @lru_cache()
@@ -387,9 +386,8 @@ class QA_Risk():
         Returns:
             [type] -- [description]
         """
-        
-        return self.daily_market_value.max()
 
+        return self.daily_market_value.max()
 
     @property
     def min_holdmarketvalue(self):
@@ -398,7 +396,7 @@ class QA_Risk():
         Returns:
             [type] -- [description]
         """
-        
+
         return self.daily_market_value.min()
 
     @property
@@ -408,7 +406,7 @@ class QA_Risk():
         Returns:
             [type] -- [description]
         """
-        
+
         return self.daily_market_value.mean()
 
     @property
@@ -425,7 +423,6 @@ class QA_Risk():
 
         return self.account.daily_cash.cash.min()
 
-
     @property
     def average_cashhold(self):
         """平均闲置资金
@@ -433,7 +430,7 @@ class QA_Risk():
         Returns:
             [type] -- [description]
         """
-        
+
         return self.account.daily_cash.cash.mean()
 
     def save(self):
@@ -488,7 +485,8 @@ class QA_Risk():
             label='benchmark {}'.format(self.benchmark_code))
         plt.legend(handles=[asset_p, asset_b], loc=1)
         plt.title('ASSET AND BENCKMARK')
-        plt.show()
+
+        return plt
 
     def plot_dailyhold(self, start=None, end=None):
         """
@@ -503,7 +501,8 @@ class QA_Risk():
             'HOLD TABLE --ACCOUNT: {}'.format(self.account.account_cookie))
         ax.set_xlabel('Code')
         ax.set_ylabel('DATETIME')
-        plt.show()
+
+        return plt
 
     def plot_signal(self, start=None, end=None):
         """
@@ -518,7 +517,7 @@ class QA_Risk():
             'SIGNAL TABLE --ACCOUNT: {}'.format(self.account.account_cookie))
         ax.set_xlabel('Code')
         ax.set_ylabel('DATETIME')
-        plt.show()
+        return plt
 
     def generate_plots(self):
         """
@@ -635,7 +634,7 @@ class QA_Performance():
         画出pnl比率散点图
         """
         plt.scatter(x=pnl.sell_date.apply(str), y=pnl.pnl_ratio)
-        plt.show()
+        return plt
 
     def plot_pnlmoney(self, pnl):
         """
@@ -643,6 +642,7 @@ class QA_Performance():
         """
         plt.scatter(x=pnl.sell_date.apply(str), y=pnl.pnl_money)
         plt.show()
+        return plt
 
     def abnormal_active(self):
         """

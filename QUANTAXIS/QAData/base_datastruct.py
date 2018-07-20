@@ -879,6 +879,7 @@ class _quotation_base():
             return self.new(eq(self.data), self.type, self.if_fq)
         else:
             raise ValueError('QA CURRENTLY DONOT HAVE THIS METHODS {}'.format(method))
+            
     def find_bar(self, code, time):
         if len(time) == 10:
             return self.dicts[(datetime.datetime.strptime(time, '%Y-%m-%d'), code)]
