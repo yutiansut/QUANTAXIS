@@ -6,12 +6,11 @@ import time
 
 from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_backtest
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting, QA_util_mongo_initial
-from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_min, QA_SU_save_stock_xdxr,
-                       QA_SU_save_stock_block, QA_SU_save_stock_info,QA_SU_save_stock_info_tushare,
-                       QA_SU_save_stock_day,QA_SU_save_index_day, QA_SU_save_index_min,
-                       QA_SU_save_etf_day, QA_SU_save_etf_min, QA_SU_save_option_day, QA_SU_save_financialfiles)
 
-from QUANTAXIS.QASU.save_tdx import  (QA_SU_save_stock_week, QA_SU_save_stock_month, QA_SU_save_stock_year)
+from QUANTAXIS.QASU.save_tdx import  (QA_SU_save_stock_day,
+                                      QA_SU_save_stock_week,
+                                      QA_SU_save_stock_month,
+                                      QA_SU_save_stock_year)
 
 from QUANTAXIS.QASU.save_binance import QA_SU_save_binance_symbol, QA_SU_save_binance_1hour, \
                         QA_SU_save_binance_1day, QA_SU_save_binance_1min, QA_SU_save_binance
@@ -50,7 +49,7 @@ class QA_GUI_DateFetch_SU_job01_stock_day(QA_GUI_Date_Fetch_Task):
 
     def run(self):
         self.trigger_start_task_begin.emit("begin")
-        QA_SU_save_stock_day('tdx', client=DATABASE, ui_log=self.trigger_new_log, ui_progress= self.trigger_new_progress)
+        QA_SU_save_stock_day(client=DATABASE, ui_log=self.trigger_new_log, ui_progress= self.trigger_new_progress)
         self.trigger_start_task_done.emit("end")
 
 
