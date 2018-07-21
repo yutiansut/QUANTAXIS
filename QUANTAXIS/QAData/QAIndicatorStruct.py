@@ -71,7 +71,7 @@ class QA_DataStruct_Indicators():
         except:
             return ValueError('CANNOT FOUND THIS TIME RANGE')
 
-    def groupby(self,by=None, axis=0, level=None, as_index=True, sort=False, group_keys=True, squeeze=False, observed=False, **kwargs):
+    def groupby(self,by=None, axis=0, level=None, as_index=True, sort=False, group_keys=True, squeeze=False, **kwargs):
         """仿dataframe的groupby写法,但控制了by的code和datetime
         
         Keyword Arguments:
@@ -94,7 +94,7 @@ class QA_DataStruct_Indicators():
         elif by== self.index.names[0]:
             by =None
             level=0
-        return self.data.groupby(by=by,axis=axis,level=level,as_index=as_index,sort=sort,group_keys=group_keys,squeeze=squeeze,observed=observed)
+        return self.data.groupby(by=by,axis=axis,level=level,as_index=as_index,sort=sort,group_keys=group_keys,squeeze=squeeze)
 
     def add_func(self,func,*args,**kwargs):
         return self.groupby(level=1,as_index=False,group_keys=False).apply(func,*args,**kwargs)

@@ -131,12 +131,12 @@ class QA_Setting():
                 return val
 
         except configparser.NoSectionError:
-            print('section error')
+            print('NO SECTION "{}" FOUND, Initialize...'.format(section))
             config.add_section(section)
             config.set(section, option, val)
             return val
         except configparser.NoOptionError:
-            print('option error')
+            print('NO OPTION "{}" FOUND, Initialize...'.format(option))
             config.set(section, option, val)
             return val
         finally:
