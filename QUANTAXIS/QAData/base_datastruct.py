@@ -759,9 +759,9 @@ class _quotation_base():
         """
         def _selects(code, start, end):
             if end is not None:
-                return self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), slice(code)), :]
+                return self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), code), :]
             else:
-                return self.data.loc[(slice(pd.Timestamp(start), None), slice(code)), :]
+                return self.data.loc[(slice(pd.Timestamp(start), None), code), :]
         try:
             return self.new(_selects(code, start, end), self.type, self.if_fq)
         except:
