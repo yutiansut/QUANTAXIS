@@ -81,6 +81,7 @@ def QA_util_get_next_day(date,n=1):
     :param n:  整形
     :return: 字符串 str eg: 2018-11-12
     '''
+    date=str(date)[0:10]
     return QA_util_date_gap(date,n,'gt')
 
 def QA_util_get_last_day(date,n=1):
@@ -90,6 +91,7 @@ def QA_util_get_last_day(date,n=1):
     :param n:  整形
     :return: 字符串 str eg: 2018-11-10
     '''
+    date=str(date)[0:10]
     return QA_util_date_gap(date,n,'lt')
     
 def QA_util_get_real_date(date, trade_list=trade_date_sse, towards=-1):
@@ -100,6 +102,7 @@ def QA_util_get_real_date(date, trade_list=trade_date_sse, towards=-1):
     @ yutiansut
 
     """
+    date=str(date)[0:10]
     if towards == 1:
         while date not in trade_list:
             date = str(datetime.datetime.strptime(
