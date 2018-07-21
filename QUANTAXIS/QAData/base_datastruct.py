@@ -590,7 +590,7 @@ class _quotation_base():
             print('QA CANNOT QUERY THIS {}'.format(context))
             pass
 
-    def groupby(self,by=None, axis=0, level=None, as_index=True, sort=False, group_keys=False, squeeze=False, observed=False, **kwargs):
+    def groupby(self,by=None, axis=0, level=None, as_index=True, sort=False, group_keys=False, squeeze=False, **kwargs):
         """仿dataframe的groupby写法,但控制了by的code和datetime
         
         Keyword Arguments:
@@ -613,7 +613,7 @@ class _quotation_base():
         elif by== self.index.names[0]:
             by =None
             level=0
-        return self.data.groupby(by=by,axis=axis,level=level,as_index=as_index,sort=sort,group_keys=group_keys,squeeze=squeeze,observed=observed)
+        return self.data.groupby(by=by,axis=axis,level=level,as_index=as_index,sort=sort,group_keys=group_keys,squeeze=squeeze)
 
 
     def new(self, data=None, dtype=None, if_fq=None):
@@ -759,9 +759,9 @@ class _quotation_base():
         """
         def _selects(code, start, end):
             if end is not None:
-                return self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), slice(code)), :]
+                return self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), code), :]
             else:
-                return self.data.loc[(slice(pd.Timestamp(start), None), slice(code)), :]
+                return self.data.loc[(slice(pd.Timestamp(start), None), code), :]
         try:
             return self.new(_selects(code, start, end), self.type, self.if_fq)
         except:
