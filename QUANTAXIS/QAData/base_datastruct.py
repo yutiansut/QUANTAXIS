@@ -541,7 +541,7 @@ class _quotation_base():
                 data = []
                 axis = []
                 for dates, row in data_splits[i_].data.iterrows():
-                    open, high, low, close = row[1:5]
+                    open, high, low, close = row[0:4]
                     datas = [open, close, low, high]
                     axis.append(dates[0])
                     data.append(datas)
@@ -556,7 +556,7 @@ class _quotation_base():
             data = []
             axis = []
             for dates, row in self.select_code(code).data.iterrows():
-                open, high, low, close = row[1:5]
+                open, high, low, close = row[0:4]
                 datas = [open, close, low, high]
                 axis.append(dates[0])
                 data.append(datas)
