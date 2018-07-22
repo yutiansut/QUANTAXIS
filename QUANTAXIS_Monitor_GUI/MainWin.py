@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
 '''
-    【简介】
-    PyQt5中 QTabWidget 例子
-
-
+  GUI 实现 QuantAxis 的基本功能
+  author： tauruswang
+  date： 2018-07-21
 '''
 
 import sys
