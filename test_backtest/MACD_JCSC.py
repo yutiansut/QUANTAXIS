@@ -49,8 +49,8 @@ for items in data_forbacktest.panel_gen:
         daily_ind = ind.loc[item.index]
         if daily_ind.CROSS_JC.iloc[0] > 0:
             order = Account.send_order(
-                code=item.data.code[0],
-                time=item.data.date[0],
+                code=item.code[0],
+                time=item.date[0],
                 amount=1000,
                 towards=QA.ORDER_DIRECTION.BUY,
                 price=0,
@@ -62,8 +62,8 @@ for items in data_forbacktest.panel_gen:
         elif daily_ind.CROSS_SC.iloc[0] > 0:
             if Account.sell_available.get(item.code[0], 0) > 0:
                 order = Account.send_order(
-                    code=item.data.code[0],
-                    time=item.data.date[0],
+                    code=item.code[0],
+                    time=item.date[0],
                     amount=Account.sell_available.get(item.code[0], 0),
                     towards=QA.ORDER_DIRECTION.SELL,
                     price=0,
@@ -83,8 +83,14 @@ Risk = QA.QA_Risk(Account)
 print(Risk.message)
 print(Risk.assets)
 Risk.plot_assets_curve()
-Risk.plot_dailyhold()
-Risk.plot_signal()
+plt=Risk.plot_dailyhold()
+plt.show()
+plt1=Risk.plot_signal()
+plt.show()
+
+performance=QA.QA_Performance(Account)
+plt=performance.plot_pnlmoney(performance.pnl_fifo)
+plt.show()
 # Risk.assets.plot()
 # Risk.benchmark_assets.plot()
 

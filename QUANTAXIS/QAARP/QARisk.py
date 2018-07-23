@@ -634,6 +634,7 @@ class QA_Performance():
         画出pnl比率散点图
         """
         plt.scatter(x=pnl.sell_date.apply(str), y=pnl.pnl_ratio)
+        plt.gcf().autofmt_xdate()
         return plt
 
     def plot_pnlmoney(self, pnl):
@@ -641,7 +642,7 @@ class QA_Performance():
         画出pnl盈亏额散点图
         """
         plt.scatter(x=pnl.sell_date.apply(str), y=pnl.pnl_money)
-        plt.show()
+        plt.gcf().autofmt_xdate()
         return plt
 
     def abnormal_active(self):
