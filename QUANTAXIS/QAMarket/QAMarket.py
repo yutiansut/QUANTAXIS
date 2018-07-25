@@ -319,7 +319,7 @@ class QA_Market(QA_Trade):
 
     def query_order(self, account_id, order_id):
 
-        res = self.event_queue.put(
+        res = self.event_queue.put_nowait(
             QA_Task(
                 worker=self.broker[self.get_account(
                             account_id).broker],
