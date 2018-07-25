@@ -97,8 +97,8 @@ def QA_data_min_resample(min_data,  type_='5min'):
         _data = _data[time(9, 31):time(11, 30)].append(
             _data[time(13, 1):time(15, 0)])
         resx = resx.append(_data)
-
-    data=resx.reset_index().assign(date=resx['datetime'].apply(lambda x: str(x)[0:10]))
+    resx=resx.reset_index()
+    data=resx.assign(date=resx['datetime'].apply(lambda x: str(x)[0:10]))
 
     return data.fillna(method='ffill').set_index(['datetime', 'code'], drop=False).drop_duplicates()
 
