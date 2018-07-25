@@ -296,7 +296,7 @@ class QA_Market(QA_Trade):
                         engine=self.get_account(account_id).broker,
                         event=QA_Event(
                             broker=self.broker[self.get_account(
-                            account_id).broker],
+                                account_id).broker],
                             event_type=BROKER_EVENT.RECEIVE_ORDER,
                             order=order,
                             callback=self.on_insert_order)))
@@ -322,12 +322,12 @@ class QA_Market(QA_Trade):
         res = self.event_queue.put_nowait(
             QA_Task(
                 worker=self.broker[self.get_account(
-                            account_id).broker],
+                    account_id).broker],
                 engine=self.get_account(
-                            account_id).broker,
+                    account_id).broker,
                 event=QA_Event(
                     broker=self.broker[self.get_account(
-                            account_id).broker],
+                        account_id).broker],
                     order_id=order_id
                 )
             ))

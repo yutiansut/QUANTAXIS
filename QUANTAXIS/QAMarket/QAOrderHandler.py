@@ -62,20 +62,19 @@ class QA_OrderHandler(QA_Worker):
     def run(self, event):
         if event.event_type is BROKER_EVENT.RECEIVE_ORDER:
             # 此时的message应该是订单类
-            order=event.order
-            order=event.broker.receive_order(
-                        QA_Event(event_type=BROKER_EVENT.TRADE, order=event.order))
+            order = event.order
+            order = event.broker.receive_order(
+                QA_Event(event_type=BROKER_EVENT.TRADE, order=event.order))
 
-           
             order = self.order_queue.insert_order(order)
             if event.callback:
                 event.callback(order)
 
         elif event.event_type is BROKER_EVENT.TRADE:
 
-            res=[]
+            res = []
             for item in self.order_queue.trade_list:
-                result= event.broker.query_order(item.realorder_id)
+                result = event.broker.query_order(item.realorder_id)
                 self.order_queue.set_status(
                     item.order_id, result['header']['status'])
                 if item.callback:
@@ -83,7 +82,6 @@ class QA_OrderHandler(QA_Worker):
                 res.append(result)
             event.res = res
 
-            
             return event
 
         elif event.event_type is BROKER_EVENT.SETTLE:
@@ -92,14 +90,11 @@ class QA_OrderHandler(QA_Worker):
         elif event.event_type is MARKET_EVENT.QUERY_ORDER:
             return event.broker.query_order(event.order_id)
 
-
         elif event.event_type is BROKER_EVENT.QUERY_DEAL:
-            while self.order_queue.len >0:
-                waiting_realorder_id=[order.realorder_id for order in self.order_queue.trade_list]
-                result=event.broker.query_deal
-
-
-
+            while self.order_queue.len > 0:
+                waiting_realorder_id = [
+                    order.realorder_id for order in self.order_queue.trade_list]
+                result = event.broker.query_deal
 
     def query_order(self, order_id):
         return self.order_queue.queue_df.query()
