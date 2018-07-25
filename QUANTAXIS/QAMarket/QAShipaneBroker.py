@@ -86,14 +86,14 @@ class QA_SPEBroker(QA_Broker):
     def run(self, event):
         if event.event_type is BROKER_EVENT.RECEIVE_ORDER:
             self.order_handler.run(event)
-            self.run(QA_Event(event_type=BROKER_EVENT.TRADE, broker=self))
+            #self.run(QA_Event(event_type=BROKER_EVENT.TRADE, broker=self))
         elif event.event_type is BROKER_EVENT.TRADE:
             """实盘交易部分!!!!! ATTENTION
             这里需要开一个子线程去查询是否成交
 
             ATTENTION
             """
-            
+
             event = self.order_handler.run(event)
             event.message = 'trade'
             if event.callback:
@@ -210,9 +210,6 @@ class QA_SPEBroker(QA_Broker):
             'status': status
         })
 
-
-
-
     def send_order(self, accounts, code='000001', price=9, amount=100, order_direction=ORDER_DIRECTION.BUY, order_model=ORDER_MODEL.LIMIT):
         """[summary]
 
@@ -273,11 +270,13 @@ class QA_SPEBroker(QA_Broker):
     def receive_order(self, event):
         order = event.order
         res = self.send_order(accounts=order.account_cookie, code=order.code,
-                                   amount=order.amount, order_direction=order.towards, order_model=order.order_model)
+                              amount=order.amount, order_direction=order.towards, order_model=order.order_model)
         if res is not None:
             order.realorder_id = res['id']
             order.status = ORDER_STATUS.QUEUED
             print('success receive order {}'.format(order.realorder_id))
+
+            return order
 
         #self.dealer.deal(order, self.market_data)
 
@@ -285,7 +284,7 @@ class QA_SPEBroker(QA_Broker):
 if __name__ == '__main__':
     a = QA_SPEBroker()
     print('查询账户')
-    acc='account:282'
+    acc = 'account:282'
     print(a.query_positions(acc))
     print('查询所有订单')
     print(a.query_orders(acc))

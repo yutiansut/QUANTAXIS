@@ -111,6 +111,7 @@ class QA_BacktestBroker(QA_Broker):
         self.name = BROKER_TYPE.BACKETEST
         self._quotation = {}  # 一个可以缓存数据的dict
         self.broker_data = None
+        self.deal_message = {}
 
     def run(self, event):
         #strDbg = QA_util_random_with_topic("QABacktestBroker.run")
@@ -151,6 +152,7 @@ class QA_BacktestBroker(QA_Broker):
             if event.callback:
                 event.callback(event)
         elif event.event_type is BROKER_EVENT.SETTLE:
+            self.deal_message = {}
             self.order_handler.run(event)
             if event.callback:
                 event.callback('settle')
@@ -192,9 +194,14 @@ class QA_BacktestBroker(QA_Broker):
         if self.market_data is not None:
 
             order = self.warp(order)
-            return self.dealer.deal(order, self.market_data)
+            self.deal_message[order.order_id]=self.dealer.deal(order, self.market_data)
+            return order
         else:
             raise ValueError('MARKET DATA IS NONE CANNOT TRADE')
+
+
+    def query_order(self, order_id):
+        return self.deal_message.get(order_id,None)
 
     def warp(self, order):
         """对order/market的封装

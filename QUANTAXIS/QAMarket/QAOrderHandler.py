@@ -25,7 +25,7 @@
 
 from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_OrderQueue
-from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, EVENT_TYPE,
+from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, EVENT_TYPE, BROKER_TYPE,
                                           MARKET_EVENT, ORDER_EVENT)
 
 
@@ -62,21 +62,27 @@ class QA_OrderHandler(QA_Worker):
     def run(self, event):
         if event.event_type is BROKER_EVENT.RECEIVE_ORDER:
             # 此时的message应该是订单类
-            order = self.order_queue.insert_order(event.order)
+            order=event.order
+            order=event.broker.receive_order(
+                        QA_Event(event_type=BROKER_EVENT.TRADE, order=event.order))
+
+           
+            order = self.order_queue.insert_order(order)
             if event.callback:
                 event.callback(order)
 
         elif event.event_type is BROKER_EVENT.TRADE:
+
             res=[]
             for item in self.order_queue.trade_list:
-                result=event.broker.receive_order(
-                    QA_Event(event_type=BROKER_EVENT.TRADE, order=item))
+                result= event.broker.query_order(item.realorder_id)
                 self.order_queue.set_status(
                     item.order_id, result['header']['status'])
                 if item.callback:
                     item.callback(result)
                 res.append(result)
             event.res = res
+
             
             return event
 
@@ -84,7 +90,8 @@ class QA_OrderHandler(QA_Worker):
             self.order_queue.settle()
 
         elif event.event_type is MARKET_EVENT.QUERY_ORDER:
-            return self.query_order(event.order_id)
+            return event.broker.query_order(event.order_id)
+
 
         elif event.event_type is BROKER_EVENT.QUERY_DEAL:
             while self.order_queue.len >0:
