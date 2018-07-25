@@ -55,7 +55,7 @@ DataFrame 类
 """
 
 
-def QA_indicator_MA(DataFrame,**kwargs):
+def QA_indicator_MA(DataFrame,*args,**kwargs):
     """MA
     
     Arguments:
@@ -66,7 +66,7 @@ def QA_indicator_MA(DataFrame,**kwargs):
     """
 
     CLOSE = DataFrame['close']
-    return pd.DataFrame({'MA{}'.format(N): MA(CLOSE, N)  for N in list(kwargs.items())})
+    return pd.DataFrame({'MA{}'.format(N): MA(CLOSE, N)  for N in list(args)})
 
 
 def QA_indicator_EMA(DataFrame, N):
