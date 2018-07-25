@@ -106,7 +106,7 @@ class QA_SPEBroker(QA_Broker):
             else:
                 uri = '{}/api/v1.0/{}?key={}&client={}'.format(
                     self._endpoint, func, self.key, params.pop('client'))
-            print(uri)
+            #print(uri)
             response = self._session.get(uri, params)
             text = response.text
 
@@ -304,4 +304,4 @@ if __name__ == '__main__':
     print('一键全部撤单')
     print(a.cancel_all(acc))
 
-    print(a.cancel_order('account:141', '1703'))
+    #print(a.cancel_order('account:141', '1703'))
