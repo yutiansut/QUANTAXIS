@@ -42,9 +42,7 @@ cn_en_compare = {'明细': 'id',
                  '成本价港币': 'hold_price_hk',
                  '买入成本价港币': 'buy_price_hk',
                  '买入在途数量': 'buy_onway',
-                 '卖出在途数量': 'sell_onway'}
-
-trade_status_cn_en_dict={
+                 '卖出在途数量': 'sell_onway',
                  '场内废单':'failled',
                  '场外撤单': 'cancel_outside',
                  '场内撤单': 'cancel_inside',
