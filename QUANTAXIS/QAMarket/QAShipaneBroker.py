@@ -205,15 +205,15 @@ class QA_SPEBroker(QA_Broker):
             [type] -- [description]
         """
 
-        data=self.call("orders", {
+        data = self.call("orders", {
             'client': accounts,
             'status': status
         })
-        orders=data.get('dataTable',False)
+        orders = data.get('dataTable', False)
         if orders:
-            order_headers=orders['columns']
-            order_headers= [cn_en_compare[item] for item in order_headers]
-            order_all =pd.DataFrame(orders['rows'],columns=order_headers)
+            order_headers = orders['columns']
+            order_headers = [cn_en_compare[item] for item in order_headers]
+            order_all = pd.DataFrame(orders['rows'], columns=order_headers)
             return order_all
 
     def send_order(self, accounts, code='000001', price=9, amount=100, order_direction=ORDER_DIRECTION.BUY, order_model=ORDER_MODEL.LIMIT):

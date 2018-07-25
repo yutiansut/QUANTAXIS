@@ -194,14 +194,14 @@ class QA_BacktestBroker(QA_Broker):
         if self.market_data is not None:
 
             order = self.warp(order)
-            self.deal_message[order.order_id]=self.dealer.deal(order, self.market_data)
+            self.deal_message[order.order_id] = self.dealer.deal(
+                order, self.market_data)
             return order
         else:
             raise ValueError('MARKET DATA IS NONE CANNOT TRADE')
 
-
     def query_order(self, order_id):
-        return self.deal_message.get(order_id,None)
+        return self.deal_message.get(order_id, None)
 
     def warp(self, order):
         """对order/market的封装
