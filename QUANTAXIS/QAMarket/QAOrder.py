@@ -141,7 +141,7 @@ class QA_Order():
         try:
             if key is None:
                 print("key is none , return none!")
-                return None;
+                return None
             return eval('self.{}'.format(key))
         except:
             return exception

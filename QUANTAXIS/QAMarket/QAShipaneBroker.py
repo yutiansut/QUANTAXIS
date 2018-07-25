@@ -5,7 +5,8 @@ import configparser
 import json
 import os
 import urllib
-
+import future
+import asyncio
 import pandas as pd
 import requests
 from cryptography.hazmat.backends import default_backend
@@ -106,7 +107,6 @@ class QA_SPEBroker(QA_Broker):
             else:
                 uri = '{}/api/v1.0/{}?key={}&client={}'.format(
                     self._endpoint, func, self.key, params.pop('client'))
-            #print(uri)
             response = self._session.get(uri, params)
             text = response.text
 
@@ -272,11 +272,12 @@ class QA_SPEBroker(QA_Broker):
 
     def receive_order(self, event):
         order = event.order
-        callback = self.send_order(accounts=order.account_cookie, code=order.code,
+        res = self.send_order(accounts=order.account_cookie, code=order.code,
                                    amount=order.amount, order_direction=order.towards, order_model=order.order_model)
-        order.realorder_id = callback['id']
-        order.status = ORDER_STATUS.QUEUED
-        print('success receive order {}'.format(order.realorder_id))
+        if res is not None:
+            order.realorder_id = res['id']
+            order.status = ORDER_STATUS.QUEUED
+            print('success receive order {}'.format(order.realorder_id))
 
         #self.dealer.deal(order, self.market_data)
 

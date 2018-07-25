@@ -73,7 +73,7 @@ class QA_OrderHandler(QA_Worker):
                     QA_Event(event_type=BROKER_EVENT.TRADE, order=item))
                 self.order_queue.set_status(
                     item.order_id, result['header']['status'])
-                if item.callback:       
+                if item.callback:
                     item.callback(result)
                 res.append(result)
             event.res = res
