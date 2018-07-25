@@ -40,7 +40,11 @@ def QA_data_tick_resample(tick, type_='1min'):
     data = tick['price'].resample(
         type_, label='right', closed='left').ohlc()
 
-    data['volume'] = tick['vol'].resample(
+    if 'cur_vol' in tick.columns:
+        vol=tick['cur_vol']
+    else:
+        vol=tick['vol']
+    data['volume'] = vol.resample(
         type_, label='right', closed='left').sum()
     data['code'] = tick.code.iloc[1]
     if 'date' not in tick.columns:
