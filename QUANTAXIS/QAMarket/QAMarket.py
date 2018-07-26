@@ -151,6 +151,7 @@ class QA_Market(QA_Trade):
 
         self.if_start_orderthreading = True
         self.order_handler = QA_OrderHandler()
+        self.order_handler.if_start_orderquery = True
         self.trade_engine.create_kernel('ORDER')
         self.trade_engine.start_kernel('ORDER')
 
@@ -316,6 +317,19 @@ class QA_Market(QA_Trade):
                     worker=account,
                     event=QA_Event(
                         event_type=ACCOUNT_EVENT.SETTLE)))
+
+    def _update_orders(self):
+        self.event_queue.put_nowait(
+            QA_Task(
+                worker=self.order_handler,
+                #engine='ORDER',
+                event=QA_Event(
+                    event_type=MARKET_EVENT.QUERY_ORDER,
+                    account_cookie=list(self.session.keys()),
+                    broker=[self.broker[item.broker] for item in self.session.values()]
+                )
+            )
+        )
 
     def query_order(self, account_id, order_id):
 

@@ -79,6 +79,8 @@ class QA_SPEBroker(QA_Broker):
                                 'sell_available', 'pnl_money', 'holdings', 'total_amount', 'lastest_amounts', 'shareholder']
         self.askorder_headers = ['code', 'towards', 'price', 'amount', 'transaction_price',
                                  'transaction_amount', 'status', 'order_time', 'order_id', 'id', 'code', 'shareholders']
+        self.orderstatus_headers = ['client', 'order_time', 'code', 'name', 'towards',
+                                    'status', 'order_amount', 'trade_amount', 'cancel_amount', 'realorder_id']
 
     def __repr__(self):
         return ' <QA_BROKER SHIPANE> '
@@ -107,6 +109,7 @@ class QA_SPEBroker(QA_Broker):
             else:
                 uri = '{}/api/v1.0/{}?key={}&client={}'.format(
                     self._endpoint, func, self.key, params.pop('client'))
+            #print(uri)
             response = self._session.get(uri, params)
             text = response.text
 
@@ -213,8 +216,9 @@ class QA_SPEBroker(QA_Broker):
         if orders:
             order_headers = orders['columns']
             order_headers = [cn_en_compare[item] for item in order_headers]
-            order_all = pd.DataFrame(orders['rows'], columns=order_headers)
-            return order_all
+            order_all = pd.DataFrame(
+                orders['rows'], columns=order_headers).assign(client=accounts)
+            return order_all.loc[:, self.orderstatus_headers]
 
     def send_order(self, accounts, code='000001', price=9, amount=100, order_direction=ORDER_DIRECTION.BUY, order_model=ORDER_MODEL.LIMIT):
         """[summary]

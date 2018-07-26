@@ -22,7 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
+import time
+import pandas as pd
 from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_OrderQueue
 from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, EVENT_TYPE, BROKER_TYPE,
@@ -58,6 +59,8 @@ class QA_OrderHandler(QA_Worker):
         self.type = EVENT_TYPE.MARKET_EVENT
 
         self.event = QA_Event()
+        self.order_status = pd.DataFrame()
+        self.if_start_orderquery = False
 
     def run(self, event):
         if event.event_type is BROKER_EVENT.RECEIVE_ORDER:
@@ -74,7 +77,8 @@ class QA_OrderHandler(QA_Worker):
 
             res = []
             for item in self.order_queue.trade_list:
-                result = event.broker.query_order(item.realorder_id)
+                result = event.broker.query_orders(
+                    item.account_cookie, item.realorder_id)
                 self.order_queue.set_status(
                     item.order_id, result['header']['status'])
                 if item.callback:
@@ -88,13 +92,21 @@ class QA_OrderHandler(QA_Worker):
             self.order_queue.settle()
 
         elif event.event_type is MARKET_EVENT.QUERY_ORDER:
-            return event.broker.query_order(event.order_id)
+
+            while self.if_start_orderquery:
+                self.order_status = [event.broker[i].query_orders(
+                    event.account_cookie[i], '') for i in range(len(event.account_cookie))]
+                self.order_status = pd.concat(self.order_status, axis=0) if len(
+                    self.order_status) > 0 else pd.DataFrame()
+                #print(self.order_status)
+                #print('UPDATE ORDERS')
 
         elif event.event_type is BROKER_EVENT.QUERY_DEAL:
             while self.order_queue.len > 0:
                 waiting_realorder_id = [
                     order.realorder_id for order in self.order_queue.trade_list]
                 result = event.broker.query_deal
+                time.sleep(1)
 
     def query_order(self, order_id):
         return self.order_queue.queue_df.query()

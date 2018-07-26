@@ -1,5 +1,8 @@
 
 # shipane
+
+#"申报时间", "证券代码", "证券名称", "操作", "委托状态", "委托数量", "成交数量", "撤消数量", , "委托价格", "成交均价", "合同编号", "委托子业务", "约定号", "对方账户", "参考汇率", "结算币种", "交易币种", "证券中文名", "出错信息
+
 cn_en_compare = {'明细': 'id',
                  '证券代码': 'code',
                  '市场代码': 'market_code',
@@ -28,6 +31,7 @@ cn_en_compare = {'明细': 'id',
                  '委托编号': 'realorder_id',
                  '批次号': 'pc_id',
                  '盈亏': 'pnl',
+                 "": 'None',
                  '成本金额': 'cost',
                  '盈亏估算': 'pnl_prob',
                  '成本价': 'hold_price',
@@ -55,7 +59,7 @@ cn_en_compare = {'明细': 'id',
                  '成交均价': 'trade_avgprice',
                  '成交金额': 'trade_money',
                  '成交编号': 'trade_id',
-                 '委托状态': 'order_status',
+                 '委托状态': 'status',
                  '申报时间': 'order_time',
                  '委托日期': 'order_date',
                  '委托子业务': 'order_subjob',
@@ -64,6 +68,6 @@ cn_en_compare = {'明细': 'id',
                  '参考汇率': 'refer_exchange',
                  '结算币种': 'settlement_currency',
                  '交易币种': 'trade_currency',
-                 '证券中文名': 'name',
+                 '证券中文名': 'CNname',
                  '出错信息': 'error',
                  '成交时间': 'trade_time'}

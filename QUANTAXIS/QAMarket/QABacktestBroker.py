@@ -200,7 +200,7 @@ class QA_BacktestBroker(QA_Broker):
         else:
             raise ValueError('MARKET DATA IS NONE CANNOT TRADE')
 
-    def query_order(self, order_id):
+    def query_orders(self, account, order_id):
         return self.deal_message.get(order_id, None)
 
     def warp(self, order):
