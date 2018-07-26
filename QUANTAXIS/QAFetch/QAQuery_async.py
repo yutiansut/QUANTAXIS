@@ -134,11 +134,14 @@ async def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min',
 if __name__=="__main__":
     
     loop = asyncio.get_event_loop()
+    print(id(loop))
     res=loop.run_until_complete(asyncio.gather(
         QA_fetch_stock_day('000001', '2016-07-01', '2018-07-15'),
         QA_fetch_stock_min('000002', '2016-07-01', '2018-07-15')
     ))
-        
+    
     print(res)
 
-
+    # loop = asyncio.get_event_loop()
+    # print(id(loop))
+    # loop 内存地址一样 没有被销毁
