@@ -98,7 +98,8 @@ class QA_OrderHandler(QA_Worker):
                     event.account_cookie[i], '') for i in range(len(event.account_cookie))]
                 self.order_status = pd.concat(self.order_status, axis=0) if len(
                     self.order_status) > 0 else pd.DataFrame()
-                #print(self.order_status)
+                time.sleep(15)
+                # print(self.order_status)
                 #print('UPDATE ORDERS')
 
         elif event.event_type is BROKER_EVENT.QUERY_DEAL:
@@ -106,7 +107,7 @@ class QA_OrderHandler(QA_Worker):
                 waiting_realorder_id = [
                     order.realorder_id for order in self.order_queue.trade_list]
                 result = event.broker.query_deal
-                time.sleep(1)
+                time.sleep(3)
 
     def query_order(self, order_id):
         return self.order_queue.queue_df.query()

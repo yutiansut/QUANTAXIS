@@ -125,6 +125,7 @@ class QA_SPEBroker(QA_Broker):
         else:
             uri = '{}/api/v1.0/{}?key={}&client={}'.format(
                 self._endpoint, func, self.key, params.pop('client'))
+        
         response = self._session.post(uri, json=params)
         text = response.text
         return json.loads(text)
