@@ -651,7 +651,8 @@ class QA_Account(QA_Worker):
         :return:
         '''
         'while updating the market data'
-        print("on_bar ", event.market_data)
+
+        print("on_bar account {} ".format(self.account_cookie), event.market_data)
 
     def on_tick(self, event):
         '''
