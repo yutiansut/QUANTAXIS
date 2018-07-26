@@ -23,11 +23,14 @@
 # SOFTWARE.
 
 import time
+
 import pandas as pd
+
 from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_OrderQueue
-from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, EVENT_TYPE, BROKER_TYPE,
-                                          MARKET_EVENT, ORDER_EVENT)
+from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, BROKER_TYPE,
+                                          EVENT_TYPE, MARKET_EVENT,
+                                          ORDER_EVENT)
 
 
 class QA_OrderHandler(QA_Worker):
@@ -93,14 +96,16 @@ class QA_OrderHandler(QA_Worker):
 
         elif event.event_type is MARKET_EVENT.QUERY_ORDER:
 
-            while self.if_start_orderquery:
+            if self.if_start_orderquery:
                 self.order_status = [event.broker[i].query_orders(
                     event.account_cookie[i], '') for i in range(len(event.account_cookie))]
                 self.order_status = pd.concat(self.order_status, axis=0) if len(
                     self.order_status) > 0 else pd.DataFrame()
-                time.sleep(15)
-                # print(self.order_status)
-                #print('UPDATE ORDERS')
+            time.sleep(5)
+            self.run(event)
+
+            # print(self.order_status)
+            #print('UPDATE ORDERS')
 
         elif event.event_type is BROKER_EVENT.QUERY_DEAL:
             while self.order_queue.len > 0:

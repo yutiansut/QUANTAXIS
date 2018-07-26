@@ -322,7 +322,7 @@ class QA_Market(QA_Trade):
         self.event_queue.put_nowait(
             QA_Task(
                 worker=self.order_handler,
-                #engine='ORDER',
+                engine='ORDER',
                 event=QA_Event(
                     event_type=MARKET_EVENT.QUERY_ORDER,
                     account_cookie=list(self.session.keys()),
