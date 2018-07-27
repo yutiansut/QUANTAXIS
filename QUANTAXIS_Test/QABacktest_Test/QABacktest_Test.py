@@ -56,10 +56,10 @@ class MAStrategy(QA_Strategy):
 
             today_T = pd.Timestamp(current_date)
 
-            vma05 = self.ma05.at[today_T, 'MA']
-            vma10 = self.ma10.at[today_T, 'MA']
-            vma15 = self.ma15.at[today_T, 'MA']
-            vma20 = self.ma20.at[today_T, 'MA']
+            vma05 = self.ma05.at[today_T, 'MA5']
+            vma10 = self.ma10.at[today_T, 'MA10']
+            vma15 = self.ma15.at[today_T, 'MA15']
+            vma20 = self.ma20.at[today_T, 'MA20']
 
             if vma05 > vma10 and vma10 > vma15 and vma15 > vma20:
                 # print("均线多头排列")
