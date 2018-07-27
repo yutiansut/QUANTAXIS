@@ -333,20 +333,20 @@ class QA_Market(QA_Trade):
 
     def query_order(self, account_id, order_id):
 
-        res = self.event_queue.put_nowait(
-            QA_Task(
-                worker=self.broker[self.get_account(
-                    account_id).broker],
-                engine=self.get_account(
-                    account_id).broker,
-                event=QA_Event(
-                    broker=self.broker[self.get_account(
-                        account_id).broker],
-                    order_id=order_id
-                )
-            ))
+        # res = self.event_queue.put_nowait(
+        #     QA_Task(
+        #         worker=self.broker[self.get_account(
+        #             account_id).broker],
+        #         engine=self.get_account(
+        #             account_id).broker,
+        #         event=QA_Event(
+        #             broker=self.broker[self.get_account(
+        #                 account_id).broker],
+        #             order_id=order_id
+        #         )
+        #     ))
 
-        return res
+        return self.order_handler.order_status.query('client=="{}" and realorder_id=="{}"'.format(account_id,order_id))
 
     def query_assets(self, account_cookie):
         return self.get_account(account_cookie).assets
