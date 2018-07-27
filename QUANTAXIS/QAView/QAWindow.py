@@ -244,6 +244,10 @@ class QAWindow(QMainWindow):
         print("timer")
 
 
+def view():
+    app = QApplication(sys.argv)
+    win = QAWindow()
+    sys.exit(app.exec_())
 if __name__=="__main__":
     app = QApplication(sys.argv)
     win = QAWindow()

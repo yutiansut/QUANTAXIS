@@ -113,7 +113,8 @@ setup(
         'console_scripts': [
             'quantaxis=QUANTAXIS.QACmd:QA_cmd',
             'quantaxisd=QUANTAXIS.QAWeb.QA_Web:main',
-            'quantaxisq=QUANTAXIS.QAFetch.QATdx_adv:bat'
+            'quantaxisq=QUANTAXIS.QAFetch.QATdx_adv:bat',
+            'quantaxisv=QUANTAXIS.QAView.QAWindow:view'
         ]
     },
     # install_requires=requirements,
