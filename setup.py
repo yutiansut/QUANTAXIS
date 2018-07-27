@@ -38,8 +38,8 @@ except:
 打包的用的setup必须引入，
 """
 
-if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6]:
-    print('wrong version, should be 3.4/3.5/3.6 version')
+if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6, 7, 8]:
+    print('wrong version, should be 3.4/3.5/3.6/3.7/3.8 version')
     sys.exit()
 
 with io.open('QUANTAXIS/__init__.py', 'rt', encoding='utf8') as f:
