@@ -79,7 +79,7 @@ class QA_SPEBroker(QA_Broker):
                                 'sell_available', 'pnl_money', 'holdings', 'total_amount', 'lastest_amounts', 'shareholder']
         self.askorder_headers = ['code', 'towards', 'price', 'amount', 'transaction_price',
                                  'transaction_amount', 'status', 'order_time', 'order_id', 'id', 'code', 'shareholders']
-        self.orderstatus_headers = ['client', 'order_time', 'code', 'name', 'towards',
+        self.orderstatus_headers = ['account_cookie', 'order_time', 'code', 'name', 'towards',
                                     'status', 'order_amount', 'trade_amount', 'cancel_amount', 'realorder_id']
 
     def __repr__(self):
@@ -219,7 +219,7 @@ class QA_SPEBroker(QA_Broker):
             order_headers = [cn_en_compare[item] for item in order_headers]
             order_all = pd.DataFrame(
                 orders['rows'], columns=order_headers).assign(client=accounts)
-            return order_all.loc[:, self.orderstatus_headers]
+            return order_all.loc[:, self.orderstatus_headers].set_index(['account_cookie','realorder_id']).sort_index()
 
     def send_order(self, accounts, code='000001', price=9, amount=100, order_direction=ORDER_DIRECTION.BUY, order_model=ORDER_MODEL.LIMIT):
         """[summary]

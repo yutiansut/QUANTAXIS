@@ -183,7 +183,7 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log = None, ui_progress = None):
         QA_util_log_info('The {} of Total {}'.format
                          (item, len(stock_list)))
 
-        strProgressToLog = 'DOWNLOAD PROGRESS {} '.format(str(float(item / len(stock_list) * 100))[0:4] + '%', ui_log)
+        strProgressToLog = 'DOWNLOAD PROGRESS {}'.format(str(float(item / len(stock_list) * 100))[0:4] + '%', ui_log)
         intProgressToLog = int(float(item / len(stock_list) * 100))
         QA_util_log_info(strProgressToLog, ui_log= ui_log, ui_progress= ui_progress, ui_progress_int_value= intProgressToLog)
 
@@ -733,7 +733,7 @@ def QA_SU_save_stock_list(client=DATABASE):
         coll.insert_many(pandas_data)
         QA_util_log_info("完成股票列表获取")
     except:
-        print(" Error save_tdx.QA_SU_save_stock_list exception!")
+        print("Error save_tdx.QA_SU_save_stock_list exception!")
         pass
 
 
