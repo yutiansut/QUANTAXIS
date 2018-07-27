@@ -1,2 +1,2 @@
-from QUANTAXIS.QAWindow.QAKLineChart import (KlineChartSignal,KlineChart)
-from QUANTAXIS.QAWindow.QAMACD import (MACDChartSignal,MACDChart)
+from QUANTAXIS.QAView.QAKLineChart import (KlineChartSignal,KlineChart)
+from QUANTAXIS.QAView.QAMACD import (MACDChartSignal,MACDChart)

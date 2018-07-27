@@ -5,8 +5,8 @@ from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 import QUANTAXIS as QA
-from QUANTAXIS.QAWindow.QAKLineChart import *
-from QUANTAXIS.QAWindow.QAMACD import *
+from QUANTAXIS.QAView.QAKLineChart import *
+from QUANTAXIS.QAView.QAMACD import *
 
 class QAWindow(QMainWindow):
 
