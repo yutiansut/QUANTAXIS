@@ -59,7 +59,7 @@ async def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', 
                 "$gte": QA_util_date_stamp(start)}})
         #res=[QA_util_dict_remove_key(data, '_id') for data in cursor]
 
-        res = pd.DataFrame([item for item in await cursor.to_list(length=100)])
+        res = pd.DataFrame([item async for item in cursor])
         try:
             res = res.drop('_id', axis=1).assign(volume=res.vol).query('volume>1').assign(date=pd.to_datetime(
                 res.date)).drop_duplicates((['date', 'code'])).set_index('date', drop=False)
@@ -110,7 +110,7 @@ async def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min',
         }, 'type': frequence
     })
 
-    res = pd.DataFrame([item for item in await cursor.to_list(length=100)])
+    res = pd.DataFrame([item async for item in cursor])
     try:
         res = res.drop('_id', axis=1).assign(volume=res.vol).query('volume>1').assign(datetime=pd.to_datetime(
             res.datetime)).drop_duplicates(['datetime', 'code']).set_index('datetime', drop=False)
