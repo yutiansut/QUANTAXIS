@@ -18,12 +18,41 @@ class QAAsync():
         self.elthread.start()
 
     def submit(self,func,*args,**kwargs):
+
         self.job=asyncio.run_coroutine_threadsafe(func(*args,**kwargs),self.event_loop)
-        self.callback()
+        #self.callback()
 
     def callback(self):
-        print(self.job.result(7))
+        r=self.job.result(9)
+        print(datetime.datetime.now()-time)
+        print(len(r))
 
 
 QAE=QAAsync()
-QAE.submit(QA_fetch_stock_day,'000001','2018-01-01', '2018-01-31')
+
+time=datetime.datetime.now()
+QAE.submit(QA_fetch_stock_day,'000001','2008-01-01', '2018-07-31')
+QAE.submit(QA_fetch_stock_day,'000002','2008-01-01', '2018-07-31')
+QAE.submit(QA_fetch_stock_day,'000009','2008-01-01', '2018-07-31')
+QAE.submit(QA_fetch_stock_day,'000004','2008-01-01', '2018-07-31')
+QAE.submit(QA_fetch_stock_day,'000005','2008-01-01', '2018-07-31')
+print(datetime.datetime.now()-time)
+
+import QUANTAXIS as QA
+time=datetime.datetime.now()
+r=QA.QA_fetch_stock_day('000008','2008-01-01', '2018-07-31')
+print(len(r))
+print(datetime.datetime.now()-time)
+r=QA.QA_fetch_stock_day('000009','2008-01-01', '2018-07-31')
+print(len(r))
+print(datetime.datetime.now()-time)
+r=QA.QA_fetch_stock_day('600000','2008-01-01', '2018-07-31')
+print(len(r))
+print(datetime.datetime.now()-time)
+r=QA.QA_fetch_stock_day('000001','2008-01-01', '2018-07-31')
+print(len(r))
+print(datetime.datetime.now()-time)
+r=QA.QA_fetch_stock_day('600010','2008-01-01', '2018-07-31')
+print(len(r))
+print(datetime.datetime.now()-time)
+#print(datetime.datetime.now()-time)
