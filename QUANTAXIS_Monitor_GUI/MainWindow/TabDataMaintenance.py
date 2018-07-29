@@ -72,7 +72,7 @@ class TabDataMaintenance(QWidget):
         # 🛠todo 继承QWidget ， 写一个类， 里面有 进度条， checkbox ，和绑定到线程
 
         self.qCheckBoxJob01_save_stock_day = QCheckBox(self);
-        self.qCheckBoxJob01_save_stock_day.setText("save stock_day JOB01 日线数据 📊")
+        self.qCheckBoxJob01_save_stock_day.setText("save stock_day JOB01 日线数据 ")
         self.qProgressJob01_save_stock_day = QProgressBar(self);
         self.qProgressJob01_save_stock_day.setMaximum(100)
 
@@ -96,7 +96,7 @@ class TabDataMaintenance(QWidget):
         ##################################################################################################
 
         self.qCheckBoxJob01_save_stock_week = QCheckBox(self);
-        self.qCheckBoxJob01_save_stock_week.setText("save stock_week JOB01 周线数据 📊")
+        self.qCheckBoxJob01_save_stock_week.setText("save stock_week JOB01 周线数据 ")
         self.qProgressJob01_save_stock_week = QProgressBar(self)
 
         self.job01_save_stock_week = QA_GUI_DateFetch_SU_job01_stock_week()
@@ -115,7 +115,7 @@ class TabDataMaintenance(QWidget):
         ##################################################################################################
 
         self.qCheckBoxJob01_save_stock_month = QCheckBox(self)
-        self.qCheckBoxJob01_save_stock_month.setText("save stock_month JOB01 月线数据 📊")
+        self.qCheckBoxJob01_save_stock_month.setText("save stock_month JOB01 月线数据 ")
         self.qProgressJob01_save_stock_month = QProgressBar(self)
 
         self.job01_save_stock_month = QA_GUI_DateFetch_SU_job01_stock_month()
@@ -134,7 +134,7 @@ class TabDataMaintenance(QWidget):
         ##################################################################################################
 
         self.qCheckBoxJob01_save_stock_year = QCheckBox(self)
-        self.qCheckBoxJob01_save_stock_year.setText("save stock_year JOB01 年线数据 📊")
+        self.qCheckBoxJob01_save_stock_year.setText("save stock_year JOB01 年线数据 ")
         self.qProgressJob01_save_stock_year = QProgressBar(self)
 
         self.job01_save_stock_year = QA_GUI_DateFetch_SU_job01_stock_month()
