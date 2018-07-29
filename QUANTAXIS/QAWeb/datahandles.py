@@ -60,7 +60,8 @@ class StockdayHandler(QABaseHandler):
         future= Future()
         
      
-        yield future    
+        yield future 
+           
     def get_data(self,code,start,end,if_fq):
 
         if if_fq:
