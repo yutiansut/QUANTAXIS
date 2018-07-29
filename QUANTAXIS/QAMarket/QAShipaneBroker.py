@@ -101,6 +101,10 @@ class QA_SPEBroker(QA_Broker):
             if event.callback:
                 event.callback(event)
 
+        elif event.event_type is BROKER_EVENT.SETTLE:
+            self.order_handler.run(event)
+            if event.callback:
+                event.callback('settle')
     def call(self, func, params=''):
         try:
             if self.key == '':

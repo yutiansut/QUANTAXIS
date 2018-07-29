@@ -344,7 +344,7 @@ class QA_Market(QA_Trade):
         except Exception as e:
             print(e)
 
-    def query_order(self, account_cookie, order_id):
+    def query_order(self, account_cookie, realorder_id):
 
         # res = self.event_queue.put_nowait(
         #     QA_Task(
@@ -359,7 +359,7 @@ class QA_Market(QA_Trade):
         #         )
         #     ))
 
-        return self.order_handler.order_status.query('client=="{}" and realorder_id=="{}"'.format(account_cookie, order_id))
+        return self.order_handler.order_status.loc[account_cookie,realorder_id]
 
     def query_assets(self, account_cookie):
         return self.get_account(account_cookie).assets

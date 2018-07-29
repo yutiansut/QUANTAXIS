@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 import time
+import random
 
 import pandas as pd
 
@@ -60,6 +61,11 @@ class QA_OrderHandler(QA_Worker):
 
     设定机制: 2秒查询1次
     持久化: 2秒一次
+
+    2018-07-29
+
+
+
     """
 
     def __init__(self, *args, **kwargs):
@@ -112,7 +118,9 @@ class QA_OrderHandler(QA_Worker):
                 self.order_status = pd.concat(self.order_status, axis=0) if len(
                     self.order_status) > 0 else pd.DataFrame()
                 #print(self.order_status)
-            time.sleep(1)
+
+            # 这里加入随机的睡眠时间 以免被发现固定的刷新请求
+            time.sleep(random.randint(2,5))
             self.run(event)
 
             # print(self.order_status)
@@ -123,7 +131,7 @@ class QA_OrderHandler(QA_Worker):
                 waiting_realorder_id = [
                     order.realorder_id for order in self.order_queue.trade_list]
                 result = event.broker.query_deal
-                time.sleep(3)
+                time.sleep(1)
 
     def query_order(self, order_id):
         return self.order_queue.queue_df.query()
