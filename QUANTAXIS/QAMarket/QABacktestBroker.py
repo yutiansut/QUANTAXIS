@@ -112,6 +112,8 @@ class QA_BacktestBroker(QA_Broker):
         self._quotation = {}  # 一个可以缓存数据的dict
         self.broker_data = None
         self.deal_message = {}
+        self.orderstatus_headers = ['account_cookie', 'order_time', 'code', 'name', 'towards', 'trade_price', 'order_price',
+                                    'status', 'order_amount', 'trade_amount', 'cancel_amount', 'realorder_id']
 
     def run(self, event):
         #strDbg = QA_util_random_with_topic("QABacktestBroker.run")
@@ -200,8 +202,12 @@ class QA_BacktestBroker(QA_Broker):
         else:
             raise ValueError('MARKET DATA IS NONE CANNOT TRADE')
 
-    def query_orders(self, account, order_id):
-        return self.deal_message.get(order_id, None)
+    def query_orders(self, account, status=''):
+
+        if status=='':
+            return pd.DataFrame(list(B.deal_message.values()),columns=B.orderstatus_headers).set_index(['account_cookie','realorder_id'])
+        elif status=='filled':
+            pass
 
     def warp(self, order):
         """对order/market的封装

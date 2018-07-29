@@ -134,8 +134,8 @@ class QA_Account(QA_Worker):
         # :param [list] history:           交易历史
         """
         super().__init__()
-        warnings.warn('QUANTAXIS 1.0.46 has changed the init_assets ==> init_cash, please pay attention to this change if you using init_cash to initial an account class,\
-                ', DeprecationWarning, stacklevel=2)
+        # warnings.warn('QUANTAXIS 1.0.46 has changed the init_assets ==> init_cash, please pay attention to this change if you using init_cash to initial an account class,\
+        #         ', DeprecationWarning, stacklevel=2)
         self._history_headers = ['datetime', 'code', 'price',
                                  'amount', 'cash', 'order_id', 'trade_id',
                                  'account_cookie', 'commission', 'tax']

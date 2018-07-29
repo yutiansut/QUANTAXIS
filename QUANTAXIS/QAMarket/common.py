@@ -56,7 +56,7 @@ cn_en_compare = {'明细': 'id',
                  '未成交': 'pending',
                  '已成交': 'finished',
                  '全部撤单': 'cancel_all',
-                 '成交均价': 'trade_avgprice',
+                 '成交均价': 'trade_price', # 成交价
                  '成交金额': 'trade_money',
                  '成交编号': 'trade_id',
                  '委托状态': 'status',
