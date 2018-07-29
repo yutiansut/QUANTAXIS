@@ -109,7 +109,7 @@ class QA_SPEBroker(QA_Broker):
             else:
                 uri = '{}/api/v1.0/{}?key={}&client={}'.format(
                     self._endpoint, func, self.key, params.pop('client'))
-            #print(uri)
+            # print(uri)
             response = self._session.get(uri, params)
             text = response.text
 
@@ -282,13 +282,20 @@ class QA_SPEBroker(QA_Broker):
         order = event.order
         res = self.send_order(accounts=order.account_cookie, code=order.code,
                               amount=order.amount, order_direction=order.towards, order_model=order.order_model)
-        if res is not None:
+
+        if res is not None and 'id' in res.keys():
+
             order.realorder_id = res['id']
             order.status = ORDER_STATUS.QUEUED
+            #order.text = 'SUCCESS'
             print('success receive order {}'.format(order.realorder_id))
 
-            return order
+        else:
+            order.status = ORDER_STATUS.FAILED
+            print('FAILED FOR CREATE ORDER {} {}'.format(order.account_cookie,order.status))
+            print(res)
 
+        return order
         #self.dealer.deal(order, self.market_data)
 
 
