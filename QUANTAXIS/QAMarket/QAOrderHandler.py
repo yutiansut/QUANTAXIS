@@ -54,6 +54,12 @@ class QA_OrderHandler(QA_Worker):
     2.实时模拟盘
     3.实盘
 
+
+
+    ORDERHANDLER 持久化问题:
+
+    设定机制: 2秒查询1次
+    持久化: 2秒一次
     """
 
     def __init__(self, *args, **kwargs):

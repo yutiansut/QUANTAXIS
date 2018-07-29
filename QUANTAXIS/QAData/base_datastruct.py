@@ -93,7 +93,7 @@ class _quotation_base():
 
     def __call__(self):
         '''
-        ✅如果需要暴露 DataFrame 内部数据对象，就用() 来转换出 data （DataFrame）
+        如果需要暴露 DataFrame 内部数据对象，就用() 来转换出 data （DataFrame）
         Emulating callable objects
         object.__call__(self[, args…])
         Called when the instance is “called” as a function;

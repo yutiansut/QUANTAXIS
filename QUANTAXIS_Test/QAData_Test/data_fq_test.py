@@ -183,7 +183,7 @@ close     1     0.6    0.7    0.8     0.6
         with open(file=lday_fullpath, mode='rb') as f:
 
             curdir = os.getcwd()
-            print("📊准备写入📝db🗃文件到目录📂%s" % (curdir + "/tdx_days"))
+            print("准备写入db🗃文件到目录%s" % (curdir + "/tdx_days"))
             path_for_save_data = curdir + "/tdx_days"
             path_for_save_data = path_for_save_data.rstrip("\\")
             isExists = os.path.exists(path_for_save_data)
@@ -205,7 +205,7 @@ close     1     0.6    0.7    0.8     0.6
 
                 #进度条显示
                 iii = round((iCount / nStockCount) * 100.0)
-                s1 = "\r🚀%s %d%%[%s%s]" % (lday_fullpath, iii, "🐌" * iii, " " * (100 - iii))
+                s1 = "\r%s %d%%[%s%s]" % (lday_fullpath, iii, "🐌" * iii, " " * (100 - iii))
                 sys.stdout.write(s1)
                 sys.stdout.flush()
 
@@ -423,7 +423,7 @@ close     1     0.6    0.7    0.8     0.6
         #sorted(stock_list, key='code')
 
         curdir = os.getcwd()
-        print("📊准备读取📝db🗃文件，目录位置📂%s" % (curdir + "/tdx_days"))
+        print("准备读取db🗃文件，目录位置%s" % (curdir + "/tdx_days"))
         path_for_saved_data = curdir + "/tdx_days"
         path_for_saved_data = path_for_saved_data.rstrip("\\")
         isExists = os.path.exists(path_for_saved_data)
@@ -483,7 +483,7 @@ close     1     0.6    0.7    0.8     0.6
                 continue
 
             sqlLiteFile = path_for_saved_data + '/' + strSavedFileName
-            print("📝⛓⚙️🔬📈📉📊️读取SQLLite文件{}比对数据".format(sqlLiteFile))
+            print("⛓⚙️🔬📈📉️读取SQLLite文件{}比对数据".format(sqlLiteFile))
 
             conn = sqlite3.connect(sqlLiteFile)
             cur = conn.cursor()
@@ -612,12 +612,12 @@ QUANTAXIS>>
  ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` 
  ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` 
  
-📡 Get stock info from tushare,stock count is 3533
+ Get stock info from tushare,stock count is 3533
 /Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS/QASU/save_tushare.py:142: DeprecationWarning: insert is deprecated. Use insert_one or insert_many instead.
   coll.insert(json_data)
-📝 Save data to stock_info_tushare collection， OK✅
-📊准备读取📝db🗃文件，目录位置📂/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days
-📝⛓⚙️🔬📈📉📊️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600000.day.db比对数据
+ Save data to stock_info_tushare collection， OK
+准备读取db🗃文件，目录位置/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days
+⛓⚙️🔬📈📉️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600000.day.db比对数据
 /Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS/QAFetch/QAQuery.py:68: DeprecationWarning: 
 .ix is deprecated. Please use
 .loc for label based indexing or
@@ -686,7 +686,7 @@ error
 9.5  最低价不匹配  9.22
 (20180710, 961, 965, 950, 957, 118668136.0, 12402837, 65536)
 9.57  收盘价不匹配  9.26
-📝⛓⚙️🔬📈📉📊️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600004.day.db比对数据
+⛓⚙️🔬📈📉️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600004.day.db比对数据
 (20030715, 912, 925, 908, 916, 52158256.0, 5684894, 913)
 9.16  收盘价不匹配  9.17
  Error QA_fetch_stock_day_adv parameter code=600004 , start=2018-07-06, end=2018-07-06 call QA_fetch_stock_day return None
@@ -725,7 +725,7 @@ error
 13.99  最低价不匹配  12.86
 (20180710, 1399, 1465, 1399, 1428, 288483008.0, 20118802, 65536)
 14.28  收盘价不匹配  12.93
-📝⛓⚙️🔬📈📉📊️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600006.day.db比对数据
+⛓⚙️🔬📈📉️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600006.day.db比对数据
  Error QA_fetch_stock_day_adv parameter code=600006 , start=2001-06-25, end=2001-06-25 call QA_fetch_stock_day return None
 error 
 (20010625, 983, 1005, 983, 1005, 39266808.0, 3935300, 988)
@@ -794,7 +794,7 @@ error
 3.91  最低价不匹配  3.81
 (20180710, 392, 397, 391, 395, 12712953.0, 3225950, 65536)
 3.95  收盘价不匹配  3.82
-📝⛓⚙️🔬📈📉📊️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600007.day.db比对数据
+⛓⚙️🔬📈📉️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600007.day.db比对数据
  Error QA_fetch_stock_day_adv parameter code=600007 , start=2001-06-25, end=2001-06-25 call QA_fetch_stock_day return None
 error 
 (20010625, 1225, 1238, 1215, 1236, 11407816.0, 931000, 1223)
@@ -859,7 +859,7 @@ error
 14.26  最低价不匹配  13.75
 (20180710, 1435, 1443, 1426, 1431, 4082487.0, 284800, 65536)
 14.31  收盘价不匹配  13.85
-📝⛓⚙️🔬📈📉📊️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600008.day.db比对数据
+⛓⚙️🔬📈📉️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600008.day.db比对数据
  Error QA_fetch_stock_day_adv parameter code=600008 , start=2001-06-25, end=2001-06-25 call QA_fetch_stock_day return None
 error 
 (20010625, 2050, 2080, 2022, 2055, 36964504.0, 1802600, 2040)
@@ -922,7 +922,7 @@ error
 4.18  最低价不匹配  4.13
 (20180710, 422, 425, 418, 422, 49840248.0, 11830708, 65536)
 4.22  收盘价不匹配  4.19
-📝⛓⚙️🔬📈📉📊️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600009.day.db比对数据
+⛓⚙️🔬📈📉️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600009.day.db比对数据
  Error QA_fetch_stock_day_adv parameter code=600009 , start=2001-06-25, end=2001-06-25 call QA_fetch_stock_day return None
 error 
 (20010625, 1040, 1048, 1035, 1048, 27798452.0, 2666400, 1037)
@@ -985,7 +985,7 @@ error
 57.05  最低价不匹配  55.91
 (20180710, 5705, 6020, 5705, 6018, 471883008.0, 7931726, 65536)
 60.18  收盘价不匹配  57.38
-📝⛓⚙️🔬📈📉📊️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600010.day.db比对数据
+⛓⚙️🔬📈📉️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600010.day.db比对数据
  Error QA_fetch_stock_day_adv parameter code=600010 , start=2001-06-25, end=2001-06-25 call QA_fetch_stock_day return None
 error 
 (20010625, 725, 740, 723, 728, 69837312.0, 9539700, 723)

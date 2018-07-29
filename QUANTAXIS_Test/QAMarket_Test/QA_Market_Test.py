@@ -19,7 +19,10 @@ if market.login(QA.BROKER_TYPE.SHIPANE, haitong_acc) and market.login(QA.BROKER_
                                frequence=QA.FREQUENCE.CURRENT, broker_name=QA.BROKER_TYPE.SHIPANE, market_type=QA.MARKET_TYPE.STOCK_CN,
                                towards=QA.ORDER_DIRECTION.BUY, price=9, time=datetime.datetime.now())
 
-    while True:
-        print(market.order_handler.order_status)
 
-        time.sleep(1)
+    print(market.order_handler.order_status)
+
+    time.sleep(1)
+    
+
+
