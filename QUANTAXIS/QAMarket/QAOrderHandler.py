@@ -134,4 +134,4 @@ class QA_OrderHandler(QA_Worker):
                 time.sleep(1)
 
     def query_order(self, order_id):
-        return self.order_queue.queue_df.query()
+        pass
