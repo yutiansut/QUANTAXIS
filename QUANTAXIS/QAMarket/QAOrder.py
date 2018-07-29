@@ -253,7 +253,7 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
         '''
         #print("     *>> QAOrder!insert_order  {}".format(order))
         # QUEUED = 300  # queued 用于表示在order_queue中 实际表达的意思是订单存活 待成交
-        order.status = ORDER_STATUS.QUEUED
+        #order.status = ORDER_STATUS.QUEUED
         # 🛠 todo 是为了速度快把order对象转换成 df 对象的吗？
         self.queue_df = self.queue_df.append(order.to_df(), ignore_index=True)
         self.queue_df.set_index('order_id', drop=False, inplace=True)
