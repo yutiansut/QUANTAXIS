@@ -125,7 +125,7 @@ class QA_SPEBroker(QA_Broker):
         else:
             uri = '{}/api/v1.0/{}?key={}&client={}'.format(
                 self._endpoint, func, self.key, params.pop('client'))
-        
+
         response = self._session.post(uri, json=params)
         text = response.text
         return json.loads(text)
@@ -178,7 +178,6 @@ class QA_SPEBroker(QA_Broker):
         data = self.call("positions", {
             'client': accounts
         })
-
         cash_part = data.get('subAccounts', {}).get('人民币', False)
         if cash_part:
             cash_available = cash_part.get('可用金额')
@@ -214,12 +213,13 @@ class QA_SPEBroker(QA_Broker):
             'status': status
         })
         orders = data.get('dataTable', False)
+
         if orders:
             order_headers = orders['columns']
             order_headers = [cn_en_compare[item] for item in order_headers]
             order_all = pd.DataFrame(
-                orders['rows'], columns=order_headers).assign(client=accounts)
-            return order_all.loc[:, self.orderstatus_headers].set_index(['account_cookie','realorder_id']).sort_index()
+                orders['rows'], columns=order_headers).assign(account_cookie=accounts)
+            return order_all.loc[:, self.orderstatus_headers].set_index(['account_cookie', 'realorder_id']).sort_index()
 
     def send_order(self, accounts, code='000001', price=9, amount=100, order_direction=ORDER_DIRECTION.BUY, order_model=ORDER_MODEL.LIMIT):
         """[summary]

@@ -78,7 +78,7 @@ class QA_Market(QA_Trade):
         self.running_time = None
         self.last_query_data = None
         self.if_start_orderthreading = if_start_orderthreading
-        self.order_handler = False
+        self.order_handler = QA_OrderHandler()
 
     def __repr__(self):
         '''
@@ -150,10 +150,12 @@ class QA_Market(QA_Trade):
         """
 
         self.if_start_orderthreading = True
-        self.order_handler = QA_OrderHandler()
+        
         self.order_handler.if_start_orderquery = True
         self.trade_engine.create_kernel('ORDER')
         self.trade_engine.start_kernel('ORDER')
+        #self._update_orders()
+
 
     def get_account(self, account_cookie):
         return self.session[account_cookie]
