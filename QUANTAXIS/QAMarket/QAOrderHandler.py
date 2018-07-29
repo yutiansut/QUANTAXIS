@@ -97,11 +97,16 @@ class QA_OrderHandler(QA_Worker):
         elif event.event_type is MARKET_EVENT.QUERY_ORDER:
 
             if self.if_start_orderquery:
+
+                #print(event.broker)
+                #print(event.account_cookie)
                 self.order_status = [event.broker[i].query_orders(
                     event.account_cookie[i], '') for i in range(len(event.account_cookie))]
+                #print(self.order_status)
                 self.order_status = pd.concat(self.order_status, axis=0) if len(
                     self.order_status) > 0 else pd.DataFrame()
-            time.sleep(5)
+                #print(self.order_status)
+            time.sleep(1)
             self.run(event)
 
             # print(self.order_status)
