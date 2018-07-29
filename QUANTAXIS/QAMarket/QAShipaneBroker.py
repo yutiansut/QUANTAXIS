@@ -79,7 +79,7 @@ class QA_SPEBroker(QA_Broker):
                                 'sell_available', 'pnl_money', 'holdings', 'total_amount', 'lastest_amounts', 'shareholder']
         self.askorder_headers = ['code', 'towards', 'price', 'amount', 'transaction_price',
                                  'transaction_amount', 'status', 'order_time', 'order_id', 'id', 'code', 'shareholders']
-        self.orderstatus_headers = ['account_cookie', 'order_time', 'code', 'name', 'towards',
+        self.orderstatus_headers = ['account_cookie', 'order_time', 'code', 'name', 'towards', 'trade_price', 'order_price',
                                     'status', 'order_amount', 'trade_amount', 'cancel_amount', 'realorder_id']
 
     def __repr__(self):
@@ -105,6 +105,7 @@ class QA_SPEBroker(QA_Broker):
             self.order_handler.run(event)
             if event.callback:
                 event.callback('settle')
+
     def call(self, func, params=''):
         try:
             if self.key == '':
@@ -296,7 +297,8 @@ class QA_SPEBroker(QA_Broker):
 
         else:
             order.status = ORDER_STATUS.FAILED
-            print('FAILED FOR CREATE ORDER {} {}'.format(order.account_cookie,order.status))
+            print('FAILED FOR CREATE ORDER {} {}'.format(
+                order.account_cookie, order.status))
             print(res)
 
         return order
