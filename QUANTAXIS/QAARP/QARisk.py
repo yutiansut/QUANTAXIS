@@ -367,7 +367,7 @@ class QA_Risk():
         计算账户收益
         期末资产/期初资产 -1
         """
-        return (float(assets.iloc[-1]) / float(self.init_cash)) - 1
+        return (float(assets.iloc[-1]) / float(self.init_cash['cash'])) - 1
 
     def calc_sharpe(self, annualized_returns, volatility_year, r=0.05):
         """
