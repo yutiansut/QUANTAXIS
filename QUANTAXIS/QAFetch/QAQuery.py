@@ -40,6 +40,8 @@ from QUANTAXIS.QAData.financial_mean import financial_dict
 """
 按要求从数据库取数据，并转换成numpy结构
 
+2018-07-30 修改 增加batch_size  可以做到8MB/S-30mb/s的传输速度
+
 """
 
 
@@ -58,13 +60,13 @@ def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collec
         cursor = collections.find({
             'code': {'$in': code}, "date_stamp": {
                 "$lte": QA_util_date_stamp(end),
-                "$gte": QA_util_date_stamp(start)}})
+                "$gte": QA_util_date_stamp(start)}}, batch_size=10000)
         #res=[QA_util_dict_remove_key(data, '_id') for data in cursor]
 
         res = pd.DataFrame([item for item in cursor])
         try:
-            res = res.drop('_id', axis=1).assign(volume=res.vol).query('volume>1').assign(date=pd.to_datetime(
-                res.date)).drop_duplicates((['date', 'code'])).set_index('date', drop=False)
+            res = res.drop('_id', axis=1).assign(volume=res.vol, date=pd.to_datetime(
+                res.date)).drop_duplicates((['date', 'code'])).query('volume>1').set_index('date', drop=False)
             res = res.ix[:, ['code', 'open', 'high', 'low',
                              'close', 'volume', 'amount', 'date']]
         except:
@@ -110,12 +112,12 @@ def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', colle
             "$gte": QA_util_time_stamp(start),
             "$lte": QA_util_time_stamp(end)
         }, 'type': frequence
-    })
+    }, batch_size=10000)
 
     res = pd.DataFrame([item for item in cursor])
     try:
-        res = res.drop('_id', axis=1).assign(volume=res.vol).query('volume>1').assign(datetime=pd.to_datetime(
-            res.datetime)).drop_duplicates(['datetime', 'code']).set_index('datetime', drop=False)
+        res = res.drop('_id', axis=1).assign(volume=res.vol, datetime=pd.to_datetime(
+            res.datetime)).query('volume>1').drop_duplicates(['datetime', 'code']).set_index('datetime', drop=False)
         # return res
     except:
         res = None
@@ -209,7 +211,7 @@ def QA_fetch_stock_full(date, format='numpy', collections=DATABASE.stock_day):
 
         __data = []
         for item in collections.find({
-            "date_stamp": QA_util_date_stamp(Date)}):
+                "date_stamp": QA_util_date_stamp(Date)}, batch_size=10000):
             __data.append([str(item['code']), float(item['open']), float(item['high']), float(
                 item['low']), float(item['close']), float(item['vol']), item['date']])
         # 多种数据格式
@@ -242,7 +244,7 @@ def QA_fetch_index_day(code, start, end, format='numpy', collections=DATABASE.in
         cursor = collections.find({
             'code': {'$in': code}, "date_stamp": {
                 "$lte": QA_util_date_stamp(end),
-                "$gte": QA_util_date_stamp(start)}})
+                "$gte": QA_util_date_stamp(start)}}, batch_size=10000)
         if format in ['dict', 'json']:
             return [data for data in cursor]
         for item in cursor:
@@ -291,7 +293,7 @@ def QA_fetch_index_min(
             "$gte": QA_util_time_stamp(start),
             "$lte": QA_util_time_stamp(end)
         }, 'type': frequence
-    })
+    }, batch_size=10000)
     if format in ['dict', 'json']:
         return [data for data in cursor]
     for item in cursor:
@@ -328,7 +330,7 @@ def QA_fetch_stock_xdxr(code, format='pd', collections=DATABASE.stock_xdxr):
     '获取股票除权信息/数据库'
     code = QA_util_code_tolist(code)
     data = pd.DataFrame([item for item in collections.find(
-        {'code':  {'$in': code}})]).drop(['_id'], axis=1)
+        {'code':  {'$in': code}}, batch_size=10000)]).drop(['_id'], axis=1)
     data['date'] = pd.to_datetime(data['date'])
     return data.set_index('date', drop=False)
 
@@ -346,7 +348,7 @@ def QA_fetch_stock_block(code=None, format='pd', collections=DATABASE.stock_bloc
     if code is not None:
         code = QA_util_code_tolist(code)
         data = pd.DataFrame([item for item in collections.find(
-            {'code': {'$in': code}})]).drop(['_id'], axis=1)
+            {'code': {'$in': code}}, batch_size=10000)]).drop(['_id'], axis=1)
         return data.set_index('code', drop=False)
     else:
         data = pd.DataFrame(
@@ -358,7 +360,7 @@ def QA_fetch_stock_info(code, format='pd', collections=DATABASE.stock_info):
     code = QA_util_code_tolist(code)
     try:
         data = pd.DataFrame([item for item in collections.find(
-            {'code':  {'$in': code}})]).drop(['_id'], axis=1)
+            {'code':  {'$in': code}}, batch_size=10000)]).drop(['_id'], axis=1)
         #data['date'] = pd.to_datetime(data['date'])
         return data.set_index('code', drop=False)
     except Exception as e:
@@ -379,9 +381,8 @@ def QA_fetch_quotation(code, date=datetime.date.today(), db=DATABASE):
         collections = db.get_collection(
             'realtime_{}'.format(date))
         data = pd.DataFrame([item for item in collections.find(
-            {'code': code})]).drop(['_id'], axis=1)
-        return data.assign(date=data.datetime.apply(lambda x: str(x)[0:10])) \
-            .assign(datetime=pd.to_datetime(data.datetime)) \
+            {'code': code}, batch_size=10000)]).drop(['_id'], axis=1)
+        return data.assign(date=data.datetime.apply(lambda x: str(x)[0:10]), datetime=pd.to_datetime(data.datetime)) \
             .set_index('datetime', drop=False).sort_index()
     except Exception as e:
         raise e
@@ -393,7 +394,7 @@ def QA_fetch_quotations(date=datetime.date.today(), db=DATABASE):
         collections = db.get_collection(
             'realtime_{}'.format(date))
         data = pd.DataFrame([item for item in collections.find(
-            {})]).drop(['_id'], axis=1)
+            {}, batch_size=10000)]).drop(['_id'], axis=1)
         return data.assign(date=data.datetime.apply(lambda x: str(x)[0:10])).assign(datetime=pd.to_datetime(data.datetime)).set_index('datetime', drop=False).sort_index()
     except Exception as e:
         raise e
@@ -482,12 +483,13 @@ def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
     try:
         if code is not None and report_date is not None:
             data = [item for item in collection.find(
-                {'code': {'$in': code}, 'report_date': {'$in': report_date}})]
+                {'code': {'$in': code}, 'report_date': {'$in': report_date}}, batch_size=10000)]
         elif code is None and report_date is not None:
             data = [item for item in collection.find(
-                {'report_date': {'$in': report_date}})]
+                {'report_date': {'$in': report_date}}, batch_size=10000)]
         elif code is not None and report_date is None:
-            data = [item for item in collection.find({'code': {'$in': code}})]
+            data = [item for item in collection.find(
+                {'code': {'$in': code}}, batch_size=10000)]
         else:
             data = [item for item in collection.find()]
         if len(data) > 0:
@@ -497,19 +499,18 @@ def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
                 res_pd.columns = CH_columns
             elif ltype is 'EN':
                 res_pd.columns = EN_columns
-            
-            if res_pd.report_date.dtype==numpy.int64:
-                res_pd.report_date=pd.to_datetime(res_pd.report_date.apply(QA_util_date_int2str))
+
+            if res_pd.report_date.dtype == numpy.int64:
+                res_pd.report_date = pd.to_datetime(
+                    res_pd.report_date.apply(QA_util_date_int2str))
             else:
-                res_pd.report_date=pd.to_datetime(res_pd.report_date)
-            
+                res_pd.report_date = pd.to_datetime(res_pd.report_date)
+
             return res_pd.replace(-4.039810335e+34, numpy.nan).set_index(['report_date', 'code'], drop=False)
         else:
             return None
     except Exception as e:
         raise e
-
-
 
 
 if __name__ == '__main__':
