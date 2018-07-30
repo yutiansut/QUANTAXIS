@@ -199,7 +199,7 @@ class QA_Risk():
             [type] -- [description]
         """
 
-        return round(self.assets.iloc[-1]-self.init_cash, 2)
+        return round(self.assets.iloc[-1]-self.init_cash['cash'], 2)
 
     @property
     def profit(self):
@@ -254,7 +254,7 @@ class QA_Risk():
             'beta': self.beta,
             'alpha': self.alpha,
             'sharpe': self.sharpe,
-            'init_cash': "%0.2f" % (float(self.init_cash)),
+            'init_cash': "%0.2f" % (float(self.init_cash['cash'])),
             'last_assets': "%0.2f" % (float(self.assets.iloc[-1])),
             'total_tax': self.total_tax,
             'total_commission': self.total_commission,
@@ -277,7 +277,7 @@ class QA_Risk():
         """
         基准组合的账户资产队列
         """
-        return (self.benchmark_data.close / float(self.benchmark_data.open.iloc[0]) * float(self.init_cash))
+        return (self.benchmark_data.close / float(self.benchmark_data.open.iloc[0]) * float(self.init_cash['cash']))
 
     @property
     def benchmark_profit(self):
