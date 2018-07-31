@@ -4,7 +4,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from QUANTAXIS_Monitor_GUI.MainWindow.QA_Gui_DateFetch_Task import *
+from QUANTAXIS_Monitor_GUI.MainTabWindows.QA_Gui_DateFetch_Task import   *
 
 #https://www.cnblogs.com/gaigaige/p/7883713.html 改改哥
 class EmittingStream(QtCore.QObject):
@@ -84,6 +84,13 @@ class TabDataMaintenance(QWidget):
 
         # 🛠todo this is really stupid 01 02 03 04,... should use template ? does python have some template feature like c++
         ##################################################################################################
+        self.create_job_08_save_stock_list()
+        ##################################################################################################
+        self.create_job_09_save_stock_block()
+        ##################################################################################################
+        self.create_job_10_save_stock_info()
+        ##################################################################################################
+        ##################################################################################################
         self.create_job_01_save_stock_day()
         ##################################################################################################
         #self.create_job01_save_stock_week()
@@ -103,12 +110,6 @@ class TabDataMaintenance(QWidget):
         self.create_job_06_save_etf_day()
         ##################################################################################################
         self.create_job_07_save_etf_min()
-        ##################################################################################################
-        self.create_job_08_save_stock_list()
-        ##################################################################################################
-        self.create_job_09_save_stock_block()
-        ##################################################################################################
-        self.create_job_10_save_stock_info()
         ##################################################################################################
         #self.create_job_11_save_stock_transaction()
         ##################################################################################################
