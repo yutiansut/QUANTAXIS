@@ -321,6 +321,13 @@ class QA_Market(QA_Trade):
                     event=QA_Event(
                         event_type=ACCOUNT_EVENT.SETTLE)))
 
+
+    def _sync_position(self):
+        pass
+
+    def _sync_deals(self):
+        pass
+
     def _update_orders(self):
         self.event_queue.put_nowait(
             QA_Task(
