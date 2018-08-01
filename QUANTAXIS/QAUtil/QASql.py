@@ -40,10 +40,10 @@ def QA_util_sql_mongo_setting(uri='mongodb://localhost:27017/quantaxis'):
 
 def QA_util_sql_async_mongo_setting(uri='mongodb://localhost:27017/quantaxis'):
     """异步mongo示例
-    
+
     Keyword Arguments:
         uri {str} -- [description] (default: {'mongodb://localhost:27017/quantaxis'})
-    
+
     Returns:
         [type] -- [description]
     """
@@ -51,6 +51,12 @@ def QA_util_sql_async_mongo_setting(uri='mongodb://localhost:27017/quantaxis'):
     return AsyncIOMotorClient(uri)
 
 
+try:
+    from influxdb import InfluxDBClient
+except:
+    pass
+
+    
 ASCENDING = pymongo.ASCENDING
 DESCENDING = pymongo.DESCENDING
 QA_util_sql_mongo_sort_ASCENDING = pymongo.ASCENDING
