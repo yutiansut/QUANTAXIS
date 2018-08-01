@@ -14,7 +14,7 @@ class QAAsync():
         self.event_loop = asyncio.get_event_loop()
         self.elthread = threading.Thread(target=self.event_loop.run_forever)
 
-        #self.elthread.setDaemon(True)
+        # self.elthread.setDaemon(True)
         self.elthread.start()
 
     def submit(self, func, callback, *args, **kwargs):
@@ -43,7 +43,6 @@ if __name__ == '__main__':
     time = datetime.datetime.now()
     QAE = QAAsync()
 
-    
     print(datetime.datetime.now()-time)
     QAE.submit(QA_fetch_stock_day, callback,
                '000001', '1990-01-01', '2018-01-31')

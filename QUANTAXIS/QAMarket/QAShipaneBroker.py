@@ -114,7 +114,7 @@ class QA_SPEBroker(QA_Broker):
             else:
                 uri = '{}/api/v1.0/{}?key={}&client={}'.format(
                     self._endpoint, func, self.key, params.pop('client'))
-            # print(uri)
+            #print(uri)
             response = self._session.get(uri, params)
             text = response.text
 

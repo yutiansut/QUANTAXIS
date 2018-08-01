@@ -70,6 +70,8 @@ class QA_Order():
         :param sending_time:    发送委托单的时间   type str , eg 2018-11-11 00:00:00
         :param transact_time:   委托成交的时间
         :param amount:          委托量               type int
+        :param trade_amount     成交数量
+        :param cancel_amount    撤销数量
         :param market_type:     委托的市场            type str eg 'stock_cn'
         :param frequence:       频率                 type str 'day'
         :param towards:         委托方向              type int
@@ -109,6 +111,8 @@ class QA_Order():
         self.sending_time = self.datetime if sending_time is None else sending_time  # 下单时间
         self.transact_time = transact_time
         self.amount = amount
+        self.trade_amount = 0 # 成交数量
+        self.cancel_amount = 0 # 撤销数量
         self.towards = towards  # side
         self.code = code
         self.user = user
@@ -128,6 +132,7 @@ class QA_Order():
         self.status = status
         self.callback = callback
         self.money = money
+        self.reason = None # 原因列表
 
     def __repr__(self):
         '''
@@ -331,7 +336,7 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
     def set_status(self, order_id, new_status):
         try:
             if order_id in self.order_ids:
-                self.queue_df.loc[order_id, 'status'] = new_status
+                
                 self.order_list[order_id].status = new_status
             else:
                 pass

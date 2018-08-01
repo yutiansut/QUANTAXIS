@@ -107,6 +107,16 @@ class QA_OrderHandler(QA_Worker):
             self.order_queue.settle()
 
         elif event.event_type is MARKET_EVENT.QUERY_ORDER:
+            """query_order和query_deal 需要联动使用 
+
+            query_order 得到所有的订单列表
+
+            query_deal 判断订单状态--> 运行callback函数
+
+
+            实盘涉及到外部订单问题: 
+            及 订单的来源 不完全从QUANTAXIS中发出, 则QA无法记录来源 (标记为外部订单)
+            """
 
             if self.if_start_orderquery:
 
@@ -127,11 +137,15 @@ class QA_OrderHandler(QA_Worker):
             #print('UPDATE ORDERS')
 
         elif event.event_type is BROKER_EVENT.QUERY_DEAL:
-            while self.order_queue.len > 0:
-                waiting_realorder_id = [
-                    order.realorder_id for order in self.order_queue.trade_list]
-                result = event.broker.query_deal
-                time.sleep(1)
+
+
+            if len(self.order_queue.pending) > 0:
+                for item in self.order_queue.pending:
+                    #self.query
+                    waiting_realorder_id = [
+                        order.realorder_id for order in self.order_queue.trade_list]
+                    result = event.broker.query_deal
+                    time.sleep(1)
 
     def query_order(self, order_id):
         pass
