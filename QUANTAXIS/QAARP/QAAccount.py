@@ -600,6 +600,17 @@ class QA_Account(QA_Worker):
                 code, time, amount, towards))
             return False
 
+
+    def cancel_order(self,order):
+        if order.towards in [ORDER_DIRECTION.BUY,ORDER_DIRECTION.BUY_OPEN,ORDER_DIRECTION.BUY_CLOSE]:
+            if order.amount_model is AMOUNT_MODEL.BY_MONEY:
+                self.cash_available+=order.money
+            elif order.amount_model is AMOUNT_MODEL.BY_AMOUNT:
+                self.cash_available+=order.price*order.amount
+        elif order.towards in [ORDER_DIRECTION.SELL,ORDER_DIRECTION.SELL_CLOSE,ORDER_DIRECTION.SELL_OPEN]:
+            self.sell_available[order.code]+=order.amount
+            
+        #self.sell_available[]
     @property
     def close_positions_order(self):
         """平仓单

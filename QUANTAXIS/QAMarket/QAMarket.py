@@ -38,7 +38,7 @@ from QUANTAXIS.QAMarket.QAShipaneBroker import QA_SPEBroker
 from QUANTAXIS.QAMarket.QASimulatedBroker import QA_SimulatedBroker
 from QUANTAXIS.QAMarket.QATrade import QA_Trade
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
+from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL, ORDER_STATUS,
                                           BROKER_EVENT, BROKER_TYPE,
                                           ENGINE_EVENT, FREQUENCE,
                                           MARKET_EVENT, ORDER_EVENT,
@@ -311,7 +311,16 @@ class QA_Market(QA_Trade):
         print('on_insert_order')
         print(order)
         print(order.status)
-        pass
+        if order.status == ORDER_STATUS.FAILED:
+            """如果订单创建失败, 恢复状态
+
+            如果是买入单  恢复金钱 money
+
+            如果是卖出单  恢复股数 sell_available
+            """
+            
+
+            self.session[order.account_cookie].cancel_order(order)
 
     def _renew_account(self):
         for account in self.session.values():
@@ -320,7 +329,6 @@ class QA_Market(QA_Trade):
                     worker=account,
                     event=QA_Event(
                         event_type=ACCOUNT_EVENT.SETTLE)))
-
 
     def _sync_position(self):
         pass
@@ -366,7 +374,7 @@ class QA_Market(QA_Trade):
         #         )
         #     ))
 
-        return self.order_handler.order_status.loc[account_cookie,realorder_id]
+        return self.order_handler.order_status.loc[account_cookie, realorder_id]
 
     def query_assets(self, account_cookie):
         return self.get_account(account_cookie).assets
