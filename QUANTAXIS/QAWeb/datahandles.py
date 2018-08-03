@@ -153,7 +153,7 @@ class StockCodeHandler(QABaseHandler):
     def get(self):
         try:
             code = self.get_argument('code', default='000001')[0:6]
-            res = DATABASE.stock_list.find_one({'code': '000001'})
+            res = DATABASE.stock_list.find_one({'code': code})
 
             if res is None:
                 self.write('wrong')
