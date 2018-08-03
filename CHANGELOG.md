@@ -4,7 +4,6 @@
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
     - [1.1.0](#110)
-    - [1.0.69 (unreleased)](#1069-unreleased)
     - [1.0.68](#1068)
     - [1.0.67](#1067)
     - [1.0.66](#1066)
@@ -59,10 +58,6 @@
 2. 增加了账户的cancel_order方法
 3. 增加对于实盘易的支持
 4. QAWEB 增加查询股票名称的接口 http://ip:port/marketdata/stock/code?code=xxxxx
-
-## 1.0.69 (unreleased)
-
-
 
 ## 1.0.68 
 
