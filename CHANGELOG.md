@@ -53,11 +53,24 @@
 
 ## 1.1.0 
 
+[QAData]
 
 1. 修改了采样函数的写法
-2. 增加了账户的cancel_order方法
-3. 增加对于实盘易的支持
-4. QAWEB 增加查询股票名称的接口 http://ip:port/marketdata/stock/code?code=xxxxx
+2. 修复了tick采样成60min的bug
+
+[QAMARKET]
+
+
+1. 增加对于实盘易的支持
+
+
+[QAARP]
+
+1. QA_Account 增加 cancel_order方法 撤单操作
+
+[QAWEB]
+
+1. QAWEB 增加查询股票名称的接口 http://ip:port/marketdata/stock/code?code=xxxxx
 
 ## 1.0.68 
 
