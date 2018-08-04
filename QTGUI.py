@@ -1,12 +1,14 @@
 import sys
 
 #from PyQt5.QtCore import *
-from PyQt5.QtCore import Qt, QRect, QPoint
-from PyQt5.QtGui import (QBrush, QLinearGradient, QPainter, QPainterPath,
-                         QPalette, QPen)
-from PyQt5.QtWidgets import (QApplication, QBoxLayout, QComboBox, QFrame,
-                             QGridLayout, QLabel, QPushButton, QSpinBox,
-                             QSplitter, QStackedWidget, QVBoxLayout, QWidget)
+from PyQt5.QtCore import QPoint, QRect, Qt
+from PyQt5.QtGui import (QBrush, QConicalGradient, QLinearGradient, QPainter,
+                         QPainterPath, QPalette, QPen, QPixmap, QPolygon,
+                         QRadialGradient)
+from PyQt5.QtWidgets import (QApplication, QBoxLayout, QColorDialog, QComboBox,
+                             QFrame, QGridLayout, QLabel, QPushButton,
+                             QSpinBox, QSplitter, QStackedWidget, QVBoxLayout,
+                             QWidget)
 
 
 class StockDialog(QWidget):
