@@ -114,7 +114,7 @@ class QA_SPEBroker(QA_Broker):
             else:
                 uri = '{}/api/v1.0/{}?key={}&client={}'.format(
                     self._endpoint, func, self.key, params.pop('client'))
-            #print(uri)
+            # print(uri)
             response = self._session.get(uri, params)
             text = response.text
 
@@ -147,8 +147,9 @@ class QA_SPEBroker(QA_Broker):
         response = self._session.delete(uri)
 
         text = response.text
+        #print(text)
         try:
-            if text == '' or '获取提示对话框超时，因为：组件为空':
+            if text in ['','获取提示对话框超时，因为：组件为空']:
                 print('success')
                 return True
 
@@ -179,23 +180,30 @@ class QA_SPEBroker(QA_Broker):
         Returns:
             dict-- {'cash':xxx,'position':xxx}
         """
+        try:
+            data = self.call("positions", {
+                'client': accounts
+            })
 
-        data = self.call("positions", {
-            'client': accounts
-        })
-        cash_part = data.get('subAccounts', {}).get('人民币', False)
-        if cash_part:
-            cash_available = cash_part.get('可用金额')
-        position_part = data.get('dataTable', False)
-        if position_part:
-            res = data.get('dataTable', False)
-            if res:
-                hold_headers = res['columns']
-                hold_headers = [cn_en_compare[item] for item in hold_headers]
-                hold_available = pd.DataFrame(
-                    res['rows'], columns=hold_headers)
+            if data is not None:
+                cash_part = data.get('subAccounts', {}).get('人民币', False)
+                if cash_part:
+                    cash_available = cash_part.get('可用金额')
+                position_part = data.get('dataTable', False)
+                if position_part:
+                    res = data.get('dataTable', False)
+                    if res:
+                        hold_headers = res['columns']
+                        hold_headers = [cn_en_compare[item]
+                                        for item in hold_headers]
+                        hold_available = pd.DataFrame(
+                            res['rows'], columns=hold_headers)
 
-        return {'cash_available': cash_available, 'hold_available': hold_available.assign(amount=hold_available.amount.apply(float)).loc[:, ['code', 'amount']].set_index('code').amount}
+                return {'cash_available': cash_available, 'hold_available': hold_available.assign(amount=hold_available.amount.apply(float)).loc[:, ['code', 'amount']].set_index('code').amount}
+            else:
+                return False, 'None ACCOUNT'
+        except:
+            return False
 
     def query_clients(self):
         return self.call("clients")
@@ -212,19 +220,24 @@ class QA_SPEBroker(QA_Broker):
         Returns:
             [type] -- [description]
         """
+        try:
+            data = self.call("orders", {
+                'client': accounts,
+                'status': status
+            })
 
-        data = self.call("orders", {
-            'client': accounts,
-            'status': status
-        })
-        orders = data.get('dataTable', False)
+            if data is not None:
+                orders = data.get('dataTable', False)
 
-        if orders:
-            order_headers = orders['columns']
-            order_headers = [cn_en_compare[item] for item in order_headers]
-            order_all = pd.DataFrame(
-                orders['rows'], columns=order_headers).assign(account_cookie=accounts)
-            return order_all.loc[:, self.orderstatus_headers].set_index(['account_cookie', 'realorder_id']).sort_index()
+                order_headers = orders['columns']
+                order_headers = [cn_en_compare[item] for item in order_headers]
+                order_all = pd.DataFrame(
+                    orders['rows'], columns=order_headers).assign(account_cookie=accounts)
+                return order_all.loc[:, self.orderstatus_headers].set_index(['account_cookie', 'realorder_id']).sort_index()
+            else:
+                return False
+        except:
+            return False
 
     def send_order(self, accounts, code='000001', price=9, amount=100, order_direction=ORDER_DIRECTION.BUY, order_model=ORDER_MODEL.LIMIT):
         """[summary]
@@ -287,31 +300,82 @@ class QA_SPEBroker(QA_Broker):
         order = event.order
         res = self.send_order(accounts=order.account_cookie, code=order.code,
                               amount=order.amount, order_direction=order.towards, order_model=order.order_model)
+        try:
+            if res is not None and 'id' in res.keys():
 
-        if res is not None and 'id' in res.keys():
+                order.realorder_id = res['id']
+                order.status = ORDER_STATUS.QUEUED
+                #order.text = 'SUCCESS'
+                print('success receive order {}'.format(order.realorder_id))
+                return order
 
-            order.realorder_id = res['id']
-            order.status = ORDER_STATUS.QUEUED
-            #order.text = 'SUCCESS'
-            print('success receive order {}'.format(order.realorder_id))
-
-        else:
+        except:
             order.status = ORDER_STATUS.FAILED
             print('FAILED FOR CREATE ORDER {} {}'.format(
                 order.account_cookie, order.status))
             print(res)
 
-        return order
+            return order
         #self.dealer.deal(order, self.market_data)
 
 
 if __name__ == '__main__':
     a = QA_SPEBroker()
+
+    """
+    1. 查询账户:
+
+    如果有该账户, 返回可用资金和持仓
+
+    如果当前market不存在或异常, 返回False
+
+    2. 查询所有订单:
+
+    如果成功 返回一个DataFrame
+    如果失败 返回False
+
+    3. 查询未成交订单
+
+    如果成功 返回DataFrame
+    如果失败 返回False
+
+    4. 查询已成交订单
+
+    如果成功 返回DataFramne
+    如果失败 返回False
+
+
+    5. 下单 receive_order/send_order
+
+
+    receive_order(QAMARKET 用法):
+    输入一个QA_ORDER类
+    
+    如果下单成功 返回带realorder_id, ORDER_STATUS.QUEUED状态值 的QA_Order
+    如果下单失败 返回带 ORDER_STATUS.FAILED状态值的  QA_Order
+
+    send_order(测试用法)
+
+
+
+    6. 撤单 cancel_order
+
+    如果撤单成功 返回 True
+
+    如果撤单失败 返回 具体的原因 dict/json格式
+
+    7. 全撤
+
+    如果成功 返回True
+
+
+    """
+
     print('查询账户')
-    acc = 'account:1391'
+    acc = 'account:141'
     print(a.query_positions(acc))
     print('查询所有订单')
-    print(a.query_orders(acc))
+    print(a.query_orders(acc, ''))
     print('查询未成交订单')
     print(a.query_orders(acc, 'open'))
     print('查询已成交订单')
@@ -319,12 +383,19 @@ if __name__ == '__main__':
     """多账户同时下单测试
     """
     print('下单测试')
-    print(a.send_order(acc, price=9))
+    res=a.send_order(acc, price=9)
+    #a.send_order(acc, price=9)
+    #a.send_order(acc, price=9)
+    #print(res)
     print('查询新的未成交订单')
     print(a.query_orders(acc, 'open'))
+
+    print('撤单')
+
+    print(a.cancel_order(acc, res['id']))
     print('查询已成交订单')
     print(a.query_orders(acc, 'filled'))
-    # print(a.send_order('account:141',price=8.95))
+    #print(a.send_order('account:141',price=8.95))
     print('一键全部撤单')
     print(a.cancel_all(acc))
 
