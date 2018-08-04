@@ -65,6 +65,55 @@ def get_config_SPE():
 
 
 class QA_SPEBroker(QA_Broker):
+    """
+    1. 查询账户:
+
+    如果有该账户, 返回可用资金和持仓
+
+    如果当前market不存在或异常, 返回False
+
+    2. 查询所有订单:
+
+    如果成功 返回一个DataFrame
+    如果失败 返回False
+
+    3. 查询未成交订单
+
+    如果成功 返回DataFrame
+    如果失败 返回False
+
+    4. 查询已成交订单
+
+    如果成功 返回DataFramne
+    如果失败 返回False
+
+
+    5. 下单 receive_order/send_order
+
+
+    receive_order(QAMARKET 用法):
+    输入一个QA_ORDER类
+
+    如果下单成功 返回带realorder_id, ORDER_STATUS.QUEUED状态值 的QA_Order
+    如果下单失败 返回带 ORDER_STATUS.FAILED状态值的  QA_Order
+
+    send_order(测试用法)
+
+
+
+    6. 撤单 cancel_order
+
+    如果撤单成功 返回 True
+
+    如果撤单失败 返回 具体的原因 dict/json格式
+
+    7. 全撤
+
+    如果成功 返回True
+
+
+    """
+
     def __init__(self):
         self.order_handler = QA_OrderHandler()
         self.setting = get_config_SPE()
@@ -147,9 +196,9 @@ class QA_SPEBroker(QA_Broker):
         response = self._session.delete(uri)
 
         text = response.text
-        #print(text)
+        # print(text)
         try:
-            if text in ['','获取提示对话框超时，因为：组件为空']:
+            if text in ['', '获取提示对话框超时，因为：组件为空']:
                 print('success')
                 return True
 
@@ -322,55 +371,6 @@ class QA_SPEBroker(QA_Broker):
 if __name__ == '__main__':
     a = QA_SPEBroker()
 
-    """
-    1. 查询账户:
-
-    如果有该账户, 返回可用资金和持仓
-
-    如果当前market不存在或异常, 返回False
-
-    2. 查询所有订单:
-
-    如果成功 返回一个DataFrame
-    如果失败 返回False
-
-    3. 查询未成交订单
-
-    如果成功 返回DataFrame
-    如果失败 返回False
-
-    4. 查询已成交订单
-
-    如果成功 返回DataFramne
-    如果失败 返回False
-
-
-    5. 下单 receive_order/send_order
-
-
-    receive_order(QAMARKET 用法):
-    输入一个QA_ORDER类
-    
-    如果下单成功 返回带realorder_id, ORDER_STATUS.QUEUED状态值 的QA_Order
-    如果下单失败 返回带 ORDER_STATUS.FAILED状态值的  QA_Order
-
-    send_order(测试用法)
-
-
-
-    6. 撤单 cancel_order
-
-    如果撤单成功 返回 True
-
-    如果撤单失败 返回 具体的原因 dict/json格式
-
-    7. 全撤
-
-    如果成功 返回True
-
-
-    """
-
     print('查询账户')
     acc = 'account:141'
     print(a.query_positions(acc))
@@ -383,10 +383,10 @@ if __name__ == '__main__':
     """多账户同时下单测试
     """
     print('下单测试')
-    res=a.send_order(acc, price=9)
+    res = a.send_order(acc, price=9)
     #a.send_order(acc, price=9)
     #a.send_order(acc, price=9)
-    #print(res)
+    # print(res)
     print('查询新的未成交订单')
     print(a.query_orders(acc, 'open'))
 
@@ -395,7 +395,7 @@ if __name__ == '__main__':
     print(a.cancel_order(acc, res['id']))
     print('查询已成交订单')
     print(a.query_orders(acc, 'filled'))
-    #print(a.send_order('account:141',price=8.95))
+    # print(a.send_order('account:141',price=8.95))
     print('一键全部撤单')
     print(a.cancel_all(acc))
 
