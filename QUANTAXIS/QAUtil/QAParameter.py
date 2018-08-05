@@ -97,6 +97,7 @@ class ORDER_STATUS():
     CANCEL_ALL = 400
     CANCEL_PART = 401
     SETTLED = 500
+    FAILED = 600
 
 
 class AMOUNT_MODEL():

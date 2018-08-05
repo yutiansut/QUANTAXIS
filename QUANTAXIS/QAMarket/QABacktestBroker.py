@@ -45,7 +45,7 @@ from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
 from QUANTAXIS.QAUtil.QADate import QA_util_to_datetime
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_next_day
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT,
+from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT, ORDER_STATUS,
                                           BROKER_TYPE, ENGINE_EVENT, FREQUENCE,
                                           MARKET_EVENT, MARKET_TYPE,
                                           ORDER_DIRECTION, ORDER_MODEL)
@@ -111,6 +111,9 @@ class QA_BacktestBroker(QA_Broker):
         self.name = BROKER_TYPE.BACKETEST
         self._quotation = {}  # 一个可以缓存数据的dict
         self.broker_data = None
+        self.deal_message = {}
+        self.orderstatus_headers = ['account_cookie', 'order_time', 'code', 'name', 'towards', 'trade_price', 'order_price',
+                                    'status', 'order_amount', 'trade_amount', 'cancel_amount', 'realorder_id']
 
     def run(self, event):
         #strDbg = QA_util_random_with_topic("QABacktestBroker.run")
@@ -144,13 +147,14 @@ class QA_BacktestBroker(QA_Broker):
 
         elif event.event_type is BROKER_EVENT.RECEIVE_ORDER:
             self.order_handler.run(event)
-            self.run(QA_Event(event_type=BROKER_EVENT.TRADE, broker=self))
+            #self.run(QA_Event(event_type=BROKER_EVENT.TRADE, broker=self))
         elif event.event_type is BROKER_EVENT.TRADE:
             event = self.order_handler.run(event)
             event.message = 'trade'
             if event.callback:
                 event.callback(event)
         elif event.event_type is BROKER_EVENT.SETTLE:
+            #self.deal_message = {}
             self.order_handler.run(event)
             if event.callback:
                 event.callback('settle')
@@ -174,6 +178,7 @@ class QA_BacktestBroker(QA_Broker):
 
         """
         order = event.order
+        # print(order)
         if 'market_data' in event.__dict__.keys():
 
             self.market_data = self.get_market(
@@ -192,9 +197,22 @@ class QA_BacktestBroker(QA_Broker):
         if self.market_data is not None:
 
             order = self.warp(order)
-            return self.dealer.deal(order, self.market_data)
+            self.deal_message[order.order_id] = self.dealer.deal(
+                order, self.market_data)
+            order.status = ORDER_STATUS.QUEUED
+
         else:
-            raise ValueError('MARKET DATA IS NONE CANNOT TRADE')
+
+            order.status = ORDER_STATUS.FAILED
+            #raise ValueError('MARKET DATA IS NONE CANNOT TRADE')
+        return order
+
+    def query_orders(self, account, status=''):
+
+        if status == '':
+            return pd.DataFrame(list(self.deal_message.values()), columns=self.orderstatus_headers).set_index(['account_cookie', 'realorder_id'])
+        elif status == 'filled':
+            pass
 
     def warp(self, order):
         """对order/market的封装

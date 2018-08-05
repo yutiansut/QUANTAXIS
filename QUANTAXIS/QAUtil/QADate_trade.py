@@ -173,3 +173,31 @@ def QA_util_date_gap(date, gap, methods):
 
     except:
         return 'wrong date'
+
+def future_change(df):
+    for i in range(len(df)):
+
+        weekday=df.datetime[i].weekday()
+
+        if df.loc[i,'inttime']>1500:#after 2400,no need to change
+
+            delta=1
+
+        if weekday==0:#周一为0，周日为6；其它情形皆为前一日，即delta=1
+
+            delta=3
+
+        df.loc[i,'datetime']=df.datetime[i]-datetime.timedelta(days=delta)
+
+        if df.loc[i,'inttime']<900:#after 2400,no need to change，but monday's data should be Saturdays'
+
+            if weekday==0:#改为周六
+
+                delta=2
+
+            df.loc[i,'datetime']=df.datetime[i]-datetime.timedelta(days=delta)
+
+
+        df=df.sort_values('datetime',ascending=False)
+
+        df=df.set_index('datetime')

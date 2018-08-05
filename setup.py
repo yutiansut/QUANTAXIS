@@ -38,8 +38,8 @@ except:
 打包的用的setup必须引入，
 """
 
-if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6]:
-    print('wrong version, should be 3.4/3.5/3.6 version')
+if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6, 7, 8]:
+    print('wrong version, should be 3.4/3.5/3.6/3.7/3.8 version')
     sys.exit()
 
 with io.open('QUANTAXIS/__init__.py', 'rt', encoding='utf8') as f:
@@ -68,7 +68,7 @@ NAME = "quantaxis"
 """
 PACKAGES = ["QUANTAXIS", "QUANTAXIS.QAFetch", "QUANTAXIS.QACmd", "QUANTAXIS.QAMarket", 'QUANTAXIS.QAWeb', 'QUANTAXIS.QATrade', 'QUANTAXIS.QASetting',
             "QUANTAXIS.QABacktest", "QUANTAXIS.QAEngine", "QUANTAXIS.QAData", 'QUANTAXIS.QAData.proto', "QUANTAXIS.QAAnalysis", 'QUANTAXIS.QASelector',
-            "QUANTAXIS.QASU", "QUANTAXIS.QAUtil", "QUANTAXIS.QAARP", "QUANTAXIS.QAIndicator", "QUANTAXIS_CRAWLY"]
+            "QUANTAXIS.QASU", "QUANTAXIS.QAUtil", "QUANTAXIS.QAARP", "QUANTAXIS.QAIndicator", "QUANTAXIS_CRAWLY", "QUANTAXIS.QAView"]
 """
 包含的包，可以多个，这是一个列表
 """
@@ -113,7 +113,8 @@ setup(
         'console_scripts': [
             'quantaxis=QUANTAXIS.QACmd:QA_cmd',
             'quantaxisd=QUANTAXIS.QAWeb.QA_Web:main',
-            'quantaxisq=QUANTAXIS.QAFetch.QATdx_adv:bat'
+            'quantaxisq=QUANTAXIS.QAFetch.QATdx_adv:bat',
+            'quantaxisv=QUANTAXIS.QAView.QAWindow:view'
         ]
     },
     # install_requires=requirements,

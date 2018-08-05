@@ -130,49 +130,54 @@ class QA_Dealer():
         self.market_data = market_data
         self.deal_price = 0
         self.deal_amount = 0
-        self.commission_fee_coeff=order.commission_coeff
-        self.tax_coeff=order.tax_coeff
+        self.commission_fee_coeff = order.commission_coeff
+        self.tax_coeff = order.tax_coeff
         if order.market_type == MARKET_TYPE.STOCK_CN:
             return self.backtest_stock_dealer()
+
     @property
     def callback_message(self):
         # 这是标准的return back message
-        message = {
-            'header': {
-                'source': 'market',
-                'status': self.status,
-                'code': self.order.code,
-                'session': {
-                    'user': self.order.user,
-                    'strategy': self.order.strategy,
-                    'account': self.order.account_cookie
-                },
-                'order_id': self.order.order_id,
-                'trade_id': QA_util_random_with_topic('Trade')
-            },
-            'body': {
-                'order': {
-                    'price': float("%.2f" % float(self.deal_price)),
-                    'code': self.order.code,
-                    'amount': self.deal_amount,
-                    'date': self.order.date,
-                    'datetime': self.order.datetime,
-                    'towards': self.order.towards
-                },
-                # 'market': {
-                #     'open': self.market_data.get('open'),
-                #     'high': self.market_data.get('high'),
-                #     'low': self.market_data.get('low'),
-                #     'close': self.market_data.get('close'),
-                #     'volume': self.market_data.get('volume'),
-                #     'code': self.market_data.get('code')
-                # },
-                'fee': {
-                    'commission': self.commission_fee,
-                    'tax': self.tax
-                }
-            }
-        }
+
+
+        message = [self.order.account_cookie, self.order.sending_time, self.order.code, None, self.order.towards, float("%.2f" % float(self.deal_price)),
+                   self.order.price, self.order.status, self.order.amount, self.deal_amount, 0, QA_util_random_with_topic('Trade')]
+        # message = {
+        #     'header': {
+        #         'source': 'market',
+        #         'status': self.status,
+        #         'code': self.order.code,
+        #         'session': {
+        #             'user': self.order.user,
+        #             'strategy': self.order.strategy,
+        #             'account': self.order.account_cookie
+        #         },
+        #         'order_id': self.order.order_id,
+        #         'trade_id': QA_util_random_with_topic('Trade')
+        #     },
+        #     'body': {
+        #         'order': {
+        #             'price': float("%.2f" % float(self.deal_price)),
+        #             'code': self.order.code,
+        #             'amount': self.deal_amount,
+        #             'date': self.order.date,
+        #             'datetime': self.order.datetime,
+        #             'towards': self.order.towards
+        #         },
+        #         # 'market': {
+        #         #     'open': self.market_data.get('open'),
+        #         #     'high': self.market_data.get('high'),
+        #         #     'low': self.market_data.get('low'),
+        #         #     'close': self.market_data.get('close'),
+        #         #     'volume': self.market_data.get('volume'),
+        #         #     'code': self.market_data.get('code')
+        #         # },
+        #         'fee': {
+        #             'commission': self.commission_fee,
+        #             'tax': self.tax
+        #         }
+        #     }
+        # }
         return message
 
     def cal_fee(self):
@@ -245,7 +250,8 @@ class QA_Dealer():
                     self.deal_amount = self.order.amount
 
                 else:
-                    self.deal_amount = float(self.market_data.get('volume')) / 8
+                    self.deal_amount = float(
+                        self.market_data.get('volume')) / 8
                     if int(self.order.towards) > 0:
                         self.deal_price = float(self.market_data.get('high'))
                     else:
@@ -267,10 +273,10 @@ class QA_Dealer():
             return self.callback_message
 
 
-
 class Stock_Dealer(QA_Dealer):
     def __init__(self, *args, **kwargs):
         super().__init__()
+
 
 if __name__ == '__main__':
     pass

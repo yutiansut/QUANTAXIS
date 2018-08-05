@@ -38,7 +38,7 @@ from QUANTAXIS.QAMarket.QAShipaneBroker import QA_SPEBroker
 from QUANTAXIS.QAMarket.QASimulatedBroker import QA_SimulatedBroker
 from QUANTAXIS.QAMarket.QATrade import QA_Trade
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL,
+from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL, ORDER_STATUS,
                                           BROKER_EVENT, BROKER_TYPE,
                                           ENGINE_EVENT, FREQUENCE,
                                           MARKET_EVENT, ORDER_EVENT,
@@ -78,7 +78,7 @@ class QA_Market(QA_Trade):
         self.running_time = None
         self.last_query_data = None
         self.if_start_orderthreading = if_start_orderthreading
-        self.order_handler = False
+        self.order_handler = QA_OrderHandler()
 
     def __repr__(self):
         '''
@@ -150,9 +150,11 @@ class QA_Market(QA_Trade):
         """
 
         self.if_start_orderthreading = True
-        self.order_handler = QA_OrderHandler()
+
+        self.order_handler.if_start_orderquery = True
         self.trade_engine.create_kernel('ORDER')
         self.trade_engine.start_kernel('ORDER')
+        # self._update_orders()
 
     def get_account(self, account_cookie):
         return self.session[account_cookie]
@@ -201,7 +203,7 @@ class QA_Market(QA_Trade):
 
         Arguments:
             broker_id {[type]} -- [description]
-            account_id {[type]} -- [description]
+            account_cookie {[type]} -- [description]
         """
         try:
             if isinstance(self.broker[broker_name], QA_BacktestBroker):
@@ -226,7 +228,7 @@ class QA_Market(QA_Trade):
     def get_account_id(self):
         return list(self.session.keys())
 
-    def insert_order(self, account_id, amount, amount_model, time, code, price, order_model, towards, market_type, frequence, broker_name, money=None):
+    def insert_order(self, account_cookie, amount, amount_model, time, code, price, order_model, towards, market_type, frequence, broker_name, money=None):
         #strDbg = QA_util_random_with_topic("QA_Market.insert_order")
         #print(">-----------------------insert_order----------------------------->", strDbg)
 
@@ -278,7 +280,7 @@ class QA_Market(QA_Trade):
             # if price > self.last_query_data[0][2] or price < self.last_query_data[0][3]:
             flag = True
         if flag:
-            order = self.get_account(account_id).send_order(
+            order = self.get_account(account_cookie).send_order(
                 amount=amount, amount_model=amount_model, time=time, code=code, price=price,
                 order_model=order_model, towards=towards, money=money)
 
@@ -292,9 +294,11 @@ class QA_Market(QA_Trade):
                 self.event_queue.put_nowait(
                     QA_Task(
                         worker=self.broker[self.get_account(
-                            account_id).broker],
-                        engine=self.get_account(account_id).broker,
+                            account_cookie).broker],
+                        engine=self.get_account(account_cookie).broker,
                         event=QA_Event(
+                            broker=self.broker[self.get_account(
+                                account_cookie).broker],
                             event_type=BROKER_EVENT.RECEIVE_ORDER,
                             order=order,
                             callback=self.on_insert_order)))
@@ -304,8 +308,19 @@ class QA_Market(QA_Trade):
         #print("<-----------------------insert_order-----------------------------<", strDbg)
 
     def on_insert_order(self, order):
+        print('on_insert_order')
         print(order)
-        pass
+        print(order.status)
+        if order.status == ORDER_STATUS.FAILED:
+            """如果订单创建失败, 恢复状态
+
+            如果是买入单  恢复金钱 money
+
+            如果是卖出单  恢复股数 sell_available
+            """
+            
+
+            self.session[order.account_cookie].cancel_order(order)
 
     def _renew_account(self):
         for account in self.session.values():
@@ -315,18 +330,51 @@ class QA_Market(QA_Trade):
                     event=QA_Event(
                         event_type=ACCOUNT_EVENT.SETTLE)))
 
-    def query_order(self, broker_name, order_id):
+    def _sync_position(self):
+        pass
 
-        res = self.event_queue.put(
+    def _sync_deals(self):
+        pass
+
+    def _update_orders(self):
+        self.event_queue.put_nowait(
             QA_Task(
-                worker=self.broker[broker_name],
-                engine=broker_name,
+                worker=self.order_handler,
+                engine='ORDER',
                 event=QA_Event(
-                    order_id=order_id
+                    event_type=MARKET_EVENT.QUERY_ORDER,
+                    account_cookie=list(self.session.keys()),
+                    broker=[self.broker[item.broker]
+                            for item in self.session.values()]
                 )
-            ))
+            )
+        )
 
-        return res
+    def cancel_order(self):
+        pass
+
+    def cancel_all(self, broker_name, account_cookie):
+        try:
+            self.broker[broker_name].cancel_all(account_cookie)
+        except Exception as e:
+            print(e)
+
+    def query_order(self, account_cookie, realorder_id):
+
+        # res = self.event_queue.put_nowait(
+        #     QA_Task(
+        #         worker=self.broker[self.get_account(
+        #             account_cookie).broker],
+        #         engine=self.get_account(
+        #             account_cookie).broker,
+        #         event=QA_Event(
+        #             broker=self.broker[self.get_account(
+        #                 account_cookie).broker],
+        #             order_id=order_id
+        #         )
+        #     ))
+
+        return self.order_handler.order_status.loc[account_cookie, realorder_id]
 
     def query_assets(self, account_cookie):
         return self.get_account(account_cookie).assets

@@ -45,7 +45,7 @@ from QUANTAXIS.QAWeb.fetch_block import get_block, get_name
 
 
 class StockdayHandler(QABaseHandler):
-    @gen.coroutine
+    # @gen.coroutine
     def get(self):
         """
         采用了get_arguents来获取参数
@@ -57,11 +57,12 @@ class StockdayHandler(QABaseHandler):
         end = self.get_argument('end', default=str(datetime.date.today()))
         if_fq = self.get_argument('if_fq', default=False)
 
-        future= Future()
-        
-     
-        yield future    
-    def get_data(self,code,start,end,if_fq):
+        # future = Future()
+
+        # yield future
+        return self.get_data(code, start, end, if_fq)
+
+    def get_data(self, code, start, end, if_fq):
 
         if if_fq:
             data = QA_util_to_json_from_pandas(
@@ -138,6 +139,27 @@ class StockPriceHandler(QABaseHandler):
                 ('datetime', pymongo.DESCENDING)])]
 
             self.write(current[0])
+        except:
+            self.write('wrong')
+
+
+class StockCodeHandler(QABaseHandler):
+    """return STOCK LIST/NAME
+
+    Arguments:
+        QABaseHandler {[type]} -- [description]
+    """
+
+    def get(self):
+        try:
+            code = self.get_argument('code', default='000001')[0:6]
+            res = DATABASE.stock_list.find_one({'code': code})
+
+            if res is None:
+                self.write('wrong')
+
+            else:
+                self.write(res['name'].encode('gbk'))
         except:
             self.write('wrong')
 

@@ -22,11 +22,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import time
+import random
+
+import pandas as pd
 
 from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_OrderQueue
-from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, EVENT_TYPE,
-                                          MARKET_EVENT, ORDER_EVENT)
+from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, BROKER_TYPE,
+                                          EVENT_TYPE, MARKET_EVENT,
+                                          ORDER_EVENT)
 
 
 class QA_OrderHandler(QA_Worker):
@@ -50,6 +55,17 @@ class QA_OrderHandler(QA_Worker):
     2.实时模拟盘
     3.实盘
 
+
+
+    ORDERHANDLER 持久化问题:
+
+    设定机制: 2秒查询1次
+    持久化: 2秒一次
+
+    2018-07-29
+
+
+
     """
 
     def __init__(self, *args, **kwargs):
@@ -58,41 +74,78 @@ class QA_OrderHandler(QA_Worker):
         self.type = EVENT_TYPE.MARKET_EVENT
 
         self.event = QA_Event()
+        self.order_status = pd.DataFrame()
+        self.if_start_orderquery = False
 
     def run(self, event):
         if event.event_type is BROKER_EVENT.RECEIVE_ORDER:
             # 此时的message应该是订单类
-            order = self.order_queue.insert_order(event.order)
+            order = event.order
+            order = event.broker.receive_order(
+                QA_Event(event_type=BROKER_EVENT.TRADE, order=event.order))
+
+            order = self.order_queue.insert_order(order)
             if event.callback:
                 event.callback(order)
 
         elif event.event_type is BROKER_EVENT.TRADE:
-            res=[]
+
+            res = []
             for item in self.order_queue.trade_list:
-                result=event.broker.receive_order(
-                    QA_Event(event_type=BROKER_EVENT.TRADE, order=item))
+                result = event.broker.query_orders(
+                    item.account_cookie, item.realorder_id)
                 self.order_queue.set_status(
                     item.order_id, result['header']['status'])
-                if item.callback:       
+                if item.callback:
                     item.callback(result)
                 res.append(result)
             event.res = res
-            
+
             return event
 
         elif event.event_type is BROKER_EVENT.SETTLE:
             self.order_queue.settle()
 
         elif event.event_type is MARKET_EVENT.QUERY_ORDER:
-            return self.query_order(event.order_id)
+            """query_order和query_deal 需要联动使用 
+
+            query_order 得到所有的订单列表
+
+            query_deal 判断订单状态--> 运行callback函数
+
+
+            实盘涉及到外部订单问题: 
+            及 订单的来源 不完全从QUANTAXIS中发出, 则QA无法记录来源 (标记为外部订单)
+            """
+
+            if self.if_start_orderquery:
+
+                #print(event.broker)
+                #print(event.account_cookie)
+                self.order_status = [event.broker[i].query_orders(
+                    event.account_cookie[i], '') for i in range(len(event.account_cookie))]
+                #print(self.order_status)
+                self.order_status = pd.concat(self.order_status, axis=0) if len(
+                    self.order_status) > 0 else pd.DataFrame()
+                #print(self.order_status)
+
+            # 这里加入随机的睡眠时间 以免被发现固定的刷新请求
+            time.sleep(random.randint(2,5))
+            self.run(event)
+
+            # print(self.order_status)
+            #print('UPDATE ORDERS')
 
         elif event.event_type is BROKER_EVENT.QUERY_DEAL:
-            while self.order_queue.len >0:
-                waiting_realorder_id=[order.realorder_id for order in self.order_queue.trade_list]
-                result=event.broker.query_deal
 
 
-
+            if len(self.order_queue.pending) > 0:
+                for item in self.order_queue.pending:
+                    #self.query
+                    waiting_realorder_id = [
+                        order.realorder_id for order in self.order_queue.trade_list]
+                    result = event.broker.query_deal
+                    time.sleep(1)
 
     def query_order(self, order_id):
-        return self.order_queue.queue_df.query()
+        pass

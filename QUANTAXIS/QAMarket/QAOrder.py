@@ -70,6 +70,8 @@ class QA_Order():
         :param sending_time:    发送委托单的时间   type str , eg 2018-11-11 00:00:00
         :param transact_time:   委托成交的时间
         :param amount:          委托量               type int
+        :param trade_amount     成交数量
+        :param cancel_amount    撤销数量
         :param market_type:     委托的市场            type str eg 'stock_cn'
         :param frequence:       频率                 type str 'day'
         :param towards:         委托方向              type int
@@ -109,6 +111,8 @@ class QA_Order():
         self.sending_time = self.datetime if sending_time is None else sending_time  # 下单时间
         self.transact_time = transact_time
         self.amount = amount
+        self.trade_amount = 0 # 成交数量
+        self.cancel_amount = 0 # 撤销数量
         self.towards = towards  # side
         self.code = code
         self.user = user
@@ -128,6 +132,7 @@ class QA_Order():
         self.status = status
         self.callback = callback
         self.money = money
+        self.reason = None # 原因列表
 
     def __repr__(self):
         '''
@@ -141,7 +146,7 @@ class QA_Order():
         try:
             if key is None:
                 print("key is none , return none!")
-                return None;
+                return None
             return eval('self.{}'.format(key))
         except:
             return exception
@@ -223,28 +228,30 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
     """
 
     def __init__(self):
+        """重新修改 优化性能
 
-        self.order_list = []
+        1. 维护两个dict
+           order_list 是一天的所有订单
+           deal_list 是历史的成交单(settle以后 , 把order_list append进去)
+        """
 
-        # 🛠 todo 是为了速度快把order对象转换成 df 对象的吗？
-        # 🛠 todo 维护两个变量queue，代价很大
-        # 🛠 todo 建议直接保存 QA_Order， 速度慢？
-        self.queue_df = pd.DataFrame()
-        self._queue_dict = {}
+        self.order_list = {}
+        self.deal_list = {}
 
     def __repr__(self):
-        return '< QA_OrderQueue AMOUNT {} WAITING TRADE {} >'.format(len(self.queue_df), len(self.pending))
+        return '<QA_ORDERQueue>'
+        #return '< QA_OrderQueue AMOUNT {} WAITING TRADE {} >'.format(len(self.queue_df), len(self.pending))
 
     def __call__(self):
-        return self.queue_df
+        return self.order_list
 
-    def _from_dataframe(self, dataframe):
-        try:
-            self.order_list = [QA_Order().from_dict(item)
-                               for item in QA_util_to_json_from_pandas(dataframe)]
-            return self.order_list
-        except:
-            pass
+    # def _from_dataframe(self, dataframe):
+    #     try:
+    #         self.order_list = [QA_Order().from_dict(item)
+    #                            for item in QA_util_to_json_from_pandas(dataframe)]
+    #         return self.order_list
+    #     except:
+    #         pass
 
     def insert_order(self, order):
         '''
@@ -253,36 +260,44 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
         '''
         #print("     *>> QAOrder!insert_order  {}".format(order))
         # QUEUED = 300  # queued 用于表示在order_queue中 实际表达的意思是订单存活 待成交
-        order.status = ORDER_STATUS.QUEUED
+        #order.status = ORDER_STATUS.QUEUED
         # 🛠 todo 是为了速度快把order对象转换成 df 对象的吗？
-        self.queue_df = self.queue_df.append(order.to_df(), ignore_index=True)
-        self.queue_df.set_index('order_id', drop=False, inplace=True)
-        self._queue_dict[order.order_id] = order
+        #self.queue_df = self.queue_df.append(order.to_df(), ignore_index=True)
+        #self.queue_df.set_index('order_id', drop=True, inplace=True)
+        self.order_list[order.order_id] = order
         return order
+
+    def update_order(self,order):
+        self.order_list[order.order_id] = order
 
     @property
     def order_ids(self):
-        return self.queue_df.index
+        return list(self.order_list.keys())
+
 
     @property
     def len(self):
-        return len(self._queue_dict)
-        
+        return len(self.order_list)
+
     def settle(self):
         """结算
         清空订单簿
         """
-        self.queue_df = pd.DataFrame()
-        self._queue_dict = {}
+        self.deal_list.update(self.order_list)
+        self.order_list = {}
 
     @property
     def pending(self):
         '''
+        600 废单 未委托成功
         200 委托成功,完全交易
         203 委托成功,未完全成功
-        300 刚创建订单的时候
+        300 委托队列 待成交
         400 已撤单
         500 服务器撤单/每日结算
+
+
+        订单生成(100) -- 废单(600)
         订单生成(100) -- 进入待成交队列(300) -- 完全成交(200) -- 每日结算(500)-- 死亡
         订单生成(100) -- 进入待成交队列(300) -- 部分成交(203) -- 未成交(300) -- 每日结算(500) -- 死亡
         订单生成(100) -- 进入待成交队列(300) -- 主动撤单(400) -- 每日结算(500) -- 死亡
@@ -290,9 +305,11 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
         :return: dataframe
         '''
         try:
-            return self.queue_df.query('status!=200').query('status!=500').query('status!=400')
+            return [item for item in self.order_list.values() if item.status in [ORDER_STATUS.QUEUED,ORDER_STATUS.SUCCESS_PART]]
         except:
-            return pd.DataFrame()
+            return []
+
+
 
     @property
     def trade_list(self):
@@ -300,7 +317,7 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
         批量交易
         :return:
         '''
-        return [self._queue_dict[order_id] for order_id in self.pending.index]
+        return [self.order_list[order_id] for order_id in self.pending.index]
 
     def query_order(self, order_id):
         '''
@@ -319,8 +336,8 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
     def set_status(self, order_id, new_status):
         try:
             if order_id in self.order_ids:
-                self.queue_df.loc[order_id, 'status'] = new_status
-                self._queue_dict[order_id].status = new_status
+                
+                self.order_list[order_id].status = new_status
             else:
                 pass
         except:
