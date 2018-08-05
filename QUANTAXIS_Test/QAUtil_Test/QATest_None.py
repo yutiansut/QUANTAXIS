@@ -11,7 +11,7 @@ import pandas as pd
 import numpy as np
 from pandas_datareader import data as wb
 import matplotlib.pyplot as plt
-
+import subprocess
 
 '''
  这个文件的代码 都是 实验性质的。 scribble code！
@@ -281,3 +281,18 @@ class Test_DataFrame_0(unittest.TestCase):
         # print(head0)
         # print(tail0)
         pass
+
+
+class Test_sub_process_0(unittest.TestCase):
+    def testRunSub(self):
+        p = subprocess.Popen('cat', stdin=subprocess.PIPE)
+        # for x in self.xrange(100):
+        p.stdin.write(b'Line number %d.\n' % 1)
+        p.stdin.write(b'Line number %d.\n' % 1)
+
+        p.stdin.write(b'Line number %d.\n' % 1)
+        p.stdin.write(b'Line number %d.\n' % 1)
+
+        p.stdin.close()
+        p.wait()
+
