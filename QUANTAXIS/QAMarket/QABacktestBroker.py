@@ -214,6 +214,9 @@ class QA_BacktestBroker(QA_Broker):
         elif status == 'filled':
             pass
 
+    def query_deal(self,account):
+        pass
+
     def warp(self, order):
         """对order/market的封装
 

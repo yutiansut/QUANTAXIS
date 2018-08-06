@@ -115,6 +115,7 @@ class QA_SPEBroker(QA_Broker):
     """
 
     def __init__(self):
+        super().__init__()
         self.order_handler = QA_OrderHandler()
         self.setting = get_config_SPE()
         self._session = requests
@@ -122,14 +123,6 @@ class QA_SPEBroker(QA_Broker):
         self.key = self.setting.key
 
         #self.account_headers = ['forzen_cash','balance_available','cash_available','pnl_money_today','total_assets','pnl_holding','market_value','money_available']
-        self.fillorder_headers = ['name', 'datetime', 'towards', 'price',
-                                  'amount', 'money', 'trade_id', 'order_id', 'code', 'shareholder', 'other']
-        self.holding_headers = ['code', 'name', 'hoding_price', 'price', 'pnl', 'amount',
-                                'sell_available', 'pnl_money', 'holdings', 'total_amount', 'lastest_amounts', 'shareholder']
-        self.askorder_headers = ['code', 'towards', 'price', 'amount', 'transaction_price',
-                                 'transaction_amount', 'status', 'order_time', 'order_id', 'id', 'code', 'shareholders']
-        self.orderstatus_headers = ['account_cookie', 'order_time', 'code', 'name', 'towards', 'trade_price', 'order_price',
-                                    'status', 'order_amount', 'trade_amount', 'cancel_amount', 'realorder_id']
 
     def __repr__(self):
         return ' <QA_BROKER SHIPANE> '
@@ -170,6 +163,7 @@ class QA_SPEBroker(QA_Broker):
             return json.loads(text)
         except Exception as e:
             print(e)
+            # print(uri)
             return None
 
     def call_post(self, func, params={}):
@@ -250,6 +244,7 @@ class QA_SPEBroker(QA_Broker):
 
                 return {'cash_available': cash_available, 'hold_available': hold_available.assign(amount=hold_available.amount.apply(float)).loc[:, ['code', 'amount']].set_index('code').amount}
             else:
+                print(data)
                 return False, 'None ACCOUNT'
         except:
             return False
@@ -282,10 +277,15 @@ class QA_SPEBroker(QA_Broker):
                 order_headers = [cn_en_compare[item] for item in order_headers]
                 order_all = pd.DataFrame(
                     orders['rows'], columns=order_headers).assign(account_cookie=accounts)
-                return order_all.loc[:, self.orderstatus_headers].set_index(['account_cookie', 'realorder_id']).sort_index()
+                if status is 'filled':
+                    return order_all.loc[:, self.dealstatus_headers].set_index(['account_cookie', 'realorder_id']).sort_index()
+                else:
+                    return order_all.loc[:, self.orderstatus_headers].set_index(['account_cookie', 'realorder_id']).sort_index()
             else:
+                print('response is None')
                 return False
-        except:
+        except Exception as e:
+            print(e)
             return False
 
     def send_order(self, accounts, code='000001', price=9, amount=100, order_direction=ORDER_DIRECTION.BUY, order_model=ORDER_MODEL.LIMIT):
