@@ -481,6 +481,8 @@ class QA_Account(QA_Worker):
         self.datetime = message['body']['order']['datetime']
         if message['header']['status'] is TRADE_STATUS.PRICE_LIMIT:
             return False
+        if message['header']['status'] is TRADE_STATUS.FAILED:
+            return False
         return self.message
 
     def send_order(self, code=None, amount=None, time=None, towards=None, price=None, money=None, order_model=None, amount_model=None):
