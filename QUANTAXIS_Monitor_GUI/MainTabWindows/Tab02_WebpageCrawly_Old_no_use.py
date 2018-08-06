@@ -16,20 +16,16 @@ from datetime import datetime
 
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_list
 '''
-
     spaghetti code 🍝,  really need to more modulize
     
     main approach is:
-    
         launch the sepearte process to fire the chromedirver to fetch the eastmoney zjlx
-        use the socket communicate with the main GUI process
-        
-        
+        use the socket communicate with the main GUI process 
+     
     抓取东方财富的资金流向
     
     日期	收盘价	涨跌幅	    主力净流入	超大单净流入     	大单净流入	中单净流入	小单净流入
                 净额	净占比	净额	净占比	净额	净占比	净额	净占比	净额	净占比
-    
 '''
 
 processNum = 8
@@ -103,6 +99,9 @@ class Worker(QThread):
                 if (cmd == 'finished'):
                     #print('finish')
                     #print(cmdArry[1].encode('utf-8'))
+                    strLogStr = cmdArry[1]
+                    self.trigger_new_sub_process_log.emit(strLogStr)
+
                     break;
         except Exception as ee:
             print(ee)
@@ -122,7 +121,12 @@ class Worker(QThread):
     trigger_new_sub_process_progress = pyqtSignal(int)
 
     def handleNewSubProcessLog(self, vLog):
+
         self.progressLabel.setText(vLog)
+
+        #filter the log message
+        if '股票资金流向' in vLog:
+            return
 
         rowCount = self.logTbl.rowCount()
         newItem1 = QTableWidgetItem(vLog)
@@ -149,7 +153,6 @@ class Worker(QThread):
         '''
         Your code goes in this function
         '''
-
         try:
 
             stockList = QA_fetch_stock_list()
@@ -185,7 +188,15 @@ class Worker(QThread):
                         aStock = stockList[thread_num * quotient + i]
                         subStockList.append(aStock)
 
-            #print("thread_Port%d,一共获取股票%d个,  当前线程分配 %d， from %d to %d"%(self.process_port, stockCount, len(subStockList), fromStock, toStock))
+
+            subStockList.reverse()
+
+            for i in range(50):
+                if i < len(subStockList[i]):
+                    subStockList.remove(subStockList[i])
+
+
+            print("thread_Port%d,一共获取股票%d个,  当前线程分配 %d， from %d to %d"%(self.process_port, stockCount, len(subStockList), fromStock, toStock))
 
         except Exception as ee:
             print(ee)
@@ -301,9 +312,14 @@ class TabWebpageCrawly(QWidget):
         self.Thread_List = []
         # print("")
 
-        self.logTbl.setColumnCount(1);
-        self.logTbl.setHorizontalHeaderLabels(['日志内容'])
-        self.logTbl.setColumnWidth(0, 700)
+        self.logTbl.setColumnCount(5);
+        self.logTbl.setHorizontalHeaderLabels(['股票代码','记录数','开始日期','结束日期','是否需要更新'])
+        self.logTbl.setColumnWidth(0, 28)
+        self.logTbl.setColumnWidth(1, 28)
+        self.logTbl.setColumnWidth(2, 28)
+        self.logTbl.setColumnWidth(3, 28)
+        self.logTbl.setColumnWidth(4, 28)
+
 
         self.timer = QTimer(self)  # 初始化一个定时器
         self.timer.timeout.connect(self.updateTotalProgress)  # 计时结束调用operate()方法
@@ -381,7 +397,7 @@ class TabWebpageCrawly(QWidget):
                 # print('sending {!r}'.format(message))
 
                 # print('closing socket')
-                sock.close()
+                #sock.close()
             except Exception as ee:
                 # print(ee)
                 pass
@@ -411,12 +427,20 @@ class TabWebpageCrawly(QWidget):
         labelAll = "%d/%d,还剩:%d,进度:%f,剩余小时:%s"%(0,stockCountAll,stockCountAll,0.0,'未知')
         self.labelAllProgress.setText(labelAll)
 
+        # 🛠todo
         #print("启动服务进程")
+
+        # xxxx/QUANTAXIS/QUANTAXIS_Monitor_GUI/MainTables/__file__
+        realPath = os.path.realpath(__file__) # xxxx/QUANTAXIS/QUANTAXIS_Monitor_GUI/MainTables/__file__
+        realDir0 = os.path.dirname(realPath); # xxxx/QUANTAXIS/QUANTAXIS_Monitor_GUI/MainTables
+        realDir1 = os.path.dirname(realDir0); # xxxx/QUANTAXIS/QUANTAXIS_Monitor_GUI
+        realDir2 = os.path.dirname(realDir1);
+
         for i in range(processNum):
             process_port = str(port_number_start + i)
             p = subprocess.Popen(
-                ['python', './QUANTAXIS_Monitor_GUI/MainTabWindows/SubSeleniumProcess.py', process_port],
-                cwd='/Users/jerryw/MyCode/QUANTAXIS')
+                ['python', './QUANTAXIS_Monitor_GUI/TasksByProcess/SubSeleniumProcess.py', process_port],
+                cwd=realDir2)
                 #stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             #print(p)
             time.sleep(1)
@@ -450,7 +474,7 @@ class TabWebpageCrawly(QWidget):
 
                 #self.threadpool.start(self.worker)
                 #todo  fix here 没有用到赞的
-                #self.Thread_List.append(worker)
+                self.Thread_List.append(worker)
 
                 worker.start()
 
@@ -489,9 +513,8 @@ class TabWebpageCrawly(QWidget):
                 message = strMsg.encode()
                 sock.sendall(message)
                 #print('sending {!r}'.format(message))
-
                 #print('closing socket')
-                sock.close()
+                #sock.close()
             except Exception as ee:
                     #print(ee)
                 pass
@@ -502,8 +525,13 @@ class TabWebpageCrawly(QWidget):
         # 🛠todo mac 下面无效，
         os.system("kill -9 $(ps -ef | grep chromedriver | awk '$0 !~/grep/ {print $2}' | tr -s '\n' ' ')")
 
+        time.sleep(10)
+        #
 
-        #self.Thread_List.clear()
+        for iThread in self.Thread_List:
+            iThread.terminate()
+
+        self.Thread_List.clear()
 
         self.bntStop.setEnabled(True)
         self.bntStart.setEnabled(True)
