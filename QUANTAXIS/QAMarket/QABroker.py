@@ -36,6 +36,7 @@ from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Worker
 from QUANTAXIS.QAUtil.QAParameter import EVENT_TYPE, FREQUENCE, ORDER_MODEL
 from QUANTAXIS.QAMarket.QAOrder import QA_Order
 
+
 class QA_Broker(QA_Worker):
     """MARKET ENGINGE ABSTRACT
 
@@ -46,6 +47,17 @@ class QA_Broker(QA_Worker):
         super().__init__()
         self.type = EVENT_TYPE.BROKER_EVENT
         self.name = None
+        self.fillorder_headers = ['name', 'datetime', 'towards', 'price',
+                                  'amount', 'money', 'trade_id', 'order_id', 'code', 'shareholder', 'other']
+        self.holding_headers = ['code', 'name', 'hoding_price', 'price', 'pnl', 'amount',
+                                'sell_available', 'pnl_money', 'holdings', 'total_amount', 'lastest_amounts', 'shareholder']
+        self.askorder_headers = ['code', 'towards', 'price', 'amount', 'transaction_price',
+                                 'transaction_amount', 'status', 'order_time', 'order_id', 'id', 'code', 'shareholders']
+        self.orderstatus_headers = ['account_cookie', 'order_time', 'code', 'name', 'towards', 'trade_price', 'order_price',
+                                    'status', 'order_amount', 'trade_amount', 'cancel_amount', 'realorder_id']
+        self.dealstatus_headers = ['account_cookie', 'trade_time', 'code', 'name', 'towards',
+                                   'trade_amount', 'trade_price', 'trade_money', 'realorder_id', 'trade_id']
+
 
     def __repr__(self):
         return '< QA_Broker >'
@@ -67,7 +79,7 @@ class QA_Broker(QA_Worker):
                 'status': None,
                 'code': order.code,
                 'session': {
-                    'user':order.get('user_cookie', None),
+                    'user': order.get('user_cookie', None),
                     'strategy': order.get('strategy_cookie', None),
                     'account':  order.get('account_cookie', None)
                 },
@@ -93,6 +105,12 @@ class QA_Broker(QA_Worker):
 
     def get_market(self, order):
         pass
+
+    def query_orders(self, account_cookie, order_id):
+        raise NotImplementedError
+
+    def query_deal(self, account_cookie, order_id):
+        raise NotImplementedError
 
     def warp(self, order):
         """对order/market的封装
