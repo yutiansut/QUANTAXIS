@@ -157,7 +157,7 @@ def QA_util_date_gap(date, gap, methods):
     :param date: 字符串起始日 类型 str eg: 2018-11-11
     :param gap: 整数 间隔多数个交易日
     :param methods:  gt大于 ，gte 大于等于， 小于lt ，小于等于lte ， 等于===
-    :return:
+    :return: 字符串 eg：2000-01-01
     '''
     try:
         if methods in ['>', 'gt']:
