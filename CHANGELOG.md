@@ -63,7 +63,11 @@
 
 1. 增加对于实盘易的支持
 2. 将一些基础解析字段挪至基类QABroker中
+3. 基于QAMarket创建的broker/order线程全部变成后台线程
 
+[QAEngine]
+
+1. QAThread 初始化增加 daemon选项, 用于创建守护线程
 
 [QAARP]
 

@@ -61,6 +61,8 @@ class QA_Market(QA_Trade):
 
         Keyword Arguments:
             if_start_orderthreading {bool} -- 是否在初始化的时候开启查询子线程(实盘需要) (default: {False})
+
+        @2018-08-06 change : 子线程全部变成后台线程 market线程崩了 子线程全部结束
         """
 
         super().__init__()
@@ -129,7 +131,8 @@ class QA_Market(QA_Trade):
         if broker in self._broker.keys():
 
             self.broker[broker] = self._broker[broker]()  # 在这里实例化
-            self.trade_engine.create_kernel('{}'.format(broker))
+            ## 2018-08-06 change : 子线程全部变成后台线程 market线程崩了 子线程全部结束
+            self.trade_engine.create_kernel('{}'.format(broker),daemon=True)
             self.trade_engine.start_kernel('{}'.format(broker))
             # 开启trade事件子线程
             return True
@@ -139,7 +142,7 @@ class QA_Market(QA_Trade):
     def register(self, broker_name, broker):
         if broker_name not in self._broker.keys():
             self.broker[broker_name] = broker
-            self.trade_engine.create_kernel('{}'.format(broker_name))
+            self.trade_engine.create_kernel('{}'.format(broker_name),daemon=True)
             self.trade_engine.start_kernel('{}'.format(broker_name))
             return True
         else:
@@ -152,7 +155,7 @@ class QA_Market(QA_Trade):
         self.if_start_orderthreading = True
 
         self.order_handler.if_start_orderquery = True
-        self.trade_engine.create_kernel('ORDER')
+        self.trade_engine.create_kernel('ORDER',daemon=True)
         self.trade_engine.start_kernel('ORDER')
         # self._update_orders()
 
@@ -291,6 +294,7 @@ class QA_Market(QA_Trade):
             # print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))  # 日期格式化
             # print("<-------------------------------------------------")
             if order:
+                print(order)
                 self.event_queue.put_nowait(
                     QA_Task(
                         worker=self.broker[self.get_account(
