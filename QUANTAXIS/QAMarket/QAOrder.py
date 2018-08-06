@@ -264,8 +264,11 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
         # 🛠 todo 是为了速度快把order对象转换成 df 对象的吗？
         #self.queue_df = self.queue_df.append(order.to_df(), ignore_index=True)
         #self.queue_df.set_index('order_id', drop=True, inplace=True)
-        self.order_list[order.order_id] = order
-        return order
+        if order is not None:
+            self.order_list[order.order_id] = order
+            return order
+        else:
+            print('QAERROR Wrong for get None type while insert order to Queue')
 
     def update_order(self,order):
         self.order_list[order.order_id] = order

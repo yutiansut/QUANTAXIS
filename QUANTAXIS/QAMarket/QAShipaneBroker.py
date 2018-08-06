@@ -322,6 +322,7 @@ class QA_SPEBroker(QA_Broker):
             [type] -- [description]
         """
         try:
+            #print(code, price, amount)
             return self.call_post('orders', {
                 'client': accounts,
                 "action": 'BUY' if order_direction == 1 else 'SELL',
@@ -347,23 +348,26 @@ class QA_SPEBroker(QA_Broker):
 
     def receive_order(self, event):
         order = event.order
-        res = self.send_order(accounts=order.account_cookie, code=order.code,
+        res = self.send_order(accounts=order.account_cookie, code=order.code, price=order.price,
                               amount=order.amount, order_direction=order.towards, order_model=order.order_model)
         try:
-            if res is not None and 'id' in res.keys():
+            # if res is not None and 'id' in res.keys():
 
-                order.realorder_id = res['id']
-                order.status = ORDER_STATUS.QUEUED
-                #order.text = 'SUCCESS'
-                print('success receive order {}'.format(order.realorder_id))
-                return order
+            order.realorder_id = res['id']
+            order.status = ORDER_STATUS.QUEUED
+            order.text = 'SUCCESS'
+            print('success receive order {}'.format(order.realorder_id))
+            return order
+            # else:
 
         except:
             order.status = ORDER_STATUS.FAILED
+
+            order.text = 'WRONG' if res is None else res.get(
+                'message', 'WRONG')
             print('FAILED FOR CREATE ORDER {} {}'.format(
                 order.account_cookie, order.status))
             print(res)
-
             return order
         #self.dealer.deal(order, self.market_data)
 

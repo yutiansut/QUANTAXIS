@@ -42,7 +42,7 @@ class QA_Thread(threading.Thread):
         QA_Engine 继承这个类。
     '''
 
-    def __init__(self, queue=None, name=None):
+    def __init__(self, queue=None, name=None, daemon=False):
         threading.Thread.__init__(self)
         self.queue = Queue() if queue is None else queue
         self.thread_stop = False
@@ -53,6 +53,7 @@ class QA_Thread(threading.Thread):
         self.name = QA_util_random_with_topic(
             topic='QA_Thread', lens=3) if name is None else name
         self.idle = False
+        self.daemon=daemon
 
     def __repr__(self):
         return '<QA_Thread{}  id={} ident {}>'.format(self.name, id(self), self.ident)
@@ -138,9 +139,9 @@ class QA_Engine(QA_Thread):
     def kernel_num(self):
         return len(self.kernels_dict.keys())
 
-    def create_kernel(self, name):
+    def create_kernel(self, name, daemon=False):
         # ENGINE线程创建一个事件线程
-        self.kernels_dict[name] = QA_Thread(name=name)
+        self.kernels_dict[name] = QA_Thread(name=name,daemon=daemon)
 
     def register_kernel(self, name, kernel):
         if name not in self.kernels_dict.keys():

@@ -33,14 +33,30 @@ import datetime
 from abc import abstractmethod
 
 from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Worker
-from QUANTAXIS.QAUtil.QAParameter import EVENT_TYPE, FREQUENCE, ORDER_MODEL
 from QUANTAXIS.QAMarket.QAOrder import QA_Order
+from QUANTAXIS.QAUtil.QAParameter import EVENT_TYPE, FREQUENCE, ORDER_MODEL
 
 
 class QA_Broker(QA_Worker):
     """MARKET ENGINGE ABSTRACT
 
     receive_order => warp => get_data => engine
+
+
+
+    作为一个标准的broker:(官方/自定义  需要实现以下几个函数)
+    broker首先在初始化的时候 super().__init__() 来继承一些参数
+
+    run() <-- 继承自QA_Worker
+
+    receive_order
+
+    query_orders
+
+    query_deals
+
+    query_positions [实盘需要]
+
     """
 
     def __init__(self, *args, **kwargs):
@@ -57,7 +73,6 @@ class QA_Broker(QA_Worker):
                                     'status', 'order_amount', 'trade_amount', 'cancel_amount', 'realorder_id']
         self.dealstatus_headers = ['account_cookie', 'trade_time', 'code', 'name', 'towards',
                                    'trade_amount', 'trade_price', 'trade_money', 'realorder_id', 'trade_id']
-
 
     def __repr__(self):
         return '< QA_Broker >'
@@ -110,6 +125,9 @@ class QA_Broker(QA_Worker):
         raise NotImplementedError
 
     def query_deal(self, account_cookie, order_id):
+        raise NotImplementedError
+
+    def query_positions(self, account_cookie):
         raise NotImplementedError
 
     def warp(self, order):
