@@ -219,6 +219,16 @@ class QA_Market(QA_Trade):
             print(e)
             return False
 
+
+    def sync_strategy(self,broker_name,account_cookie):
+        """同步  账户/委托/成交
+        
+        Arguments:
+            broker_name {[type]} -- [description]
+            account_cookie {[type]} -- [description]
+        """
+        pass
+
     def logout(self, account_cookie, broker_name):
         if account_cookie not in self.session.keys():
             return False
@@ -335,12 +345,36 @@ class QA_Market(QA_Trade):
                         event_type=ACCOUNT_EVENT.SETTLE)))
 
     def _sync_position(self):
-        pass
+        self.event_queue.put_nowait(
+            QA_Task(
+                worker=self.order_handler,
+                engine='ORDER',
+                event=QA_Event(
+                    event_type=MARKET_EVENT.QUERY_POSTIOION,
+                    account_cookie=list(self.session.keys()),
+                    broker=[self.broker[item.broker]
+                            for item in self.session.values()]
+                )
+            )
+        )
+
 
     def _sync_deals(self):
-        pass
+        self.event_queue.put_nowait(
+            QA_Task(
+                worker=self.order_handler,
+                engine='ORDER',
+                event=QA_Event(
+                    event_type=MARKET_EVENT.QUERY_DEAL,
+                    account_cookie=list(self.session.keys()),
+                    broker=[self.broker[item.broker]
+                            for item in self.session.values()]
+                )
+            )
+        )
 
-    def _update_orders(self):
+
+    def _sync_orders(self):
         self.event_queue.put_nowait(
             QA_Task(
                 worker=self.order_handler,
