@@ -1,16 +1,11 @@
 
-from PyQt5.QtCore import QTimer, QThread, pyqtSignal
-import os
 import time
-import sys
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore
 
-from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_backtest
-from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting, QA_util_mongo_initial
 
 from QUANTAXIS.QASU.save_tdx import  (QA_SU_save_stock_day,
                                       QA_SU_save_stock_week,
@@ -38,7 +33,7 @@ https://martinfitzpatrick.name/article/multithreading-pyqt-applications-with-qth
 '''
 
 
-class QA_GUI_Date_Fetch_Task(QThread ):
+class QA_GUI_Date_Fetch_Task(QThread):
     #todo fix here 不会执行 __init__的  QThread  是一个很特别的对象。
     #
     #def __int__(self, qParentWidget):
@@ -75,9 +70,14 @@ class QA_GUI_Date_Fetch_Task(QThread ):
 
 
     #abstract method
-    def changeRunningTaskColor(self, qColor=QtCore.Qt.black):
+    def changeRunningTaskColor0(self, qColor=None):
         palette = self.qCheckBox.palette()
-        palette.setColor(QPalette.Active, QPalette.WindowText, qColor)
+
+        if qColor == None:
+            palette.setColor(QPalette.Active, QPalette.WindowText, Qt.black)
+        else:
+            palette.setColor(QPalette.Active, QPalette.WindowText, qColor)
+
         self.qCheckBox.setPalette(palette)
         pass
 
@@ -109,12 +109,12 @@ class QA_GUI_DateFetch_SU_job01_stock_day(QA_GUI_Date_Fetch_Task):
         #self.qProgressBar = qParentWidget.qProgressJob01_save_stock_day;
 
     def startTaskTriggerHandler(self, info_str):
-        self.changeRunningTaskColor( QtCore.Qt.red)
+        self.changeRunningTaskColor0(QtCore.Qt.red)
         pass
 
     def doneTaskTriggerHandler(self, info_str):
         #
-        self.changeRunningTaskColor(QtCore.Qt.black)
+        self.changeRunningTaskColor0(QtCore.Qt.black)
         pass
 
     def updateLogTriggerHandler(self, log):
@@ -152,12 +152,12 @@ class QA_GUI_DateFetch_SU_job01_stock_week(QA_GUI_Date_Fetch_Task):
     #     super(QA_GUI_DateFetch_SU_job01_stock_week, self).__init__()
 
     def startTaskTriggerHandler(self, info_str):
-        self.changeRunningTaskColor(QtCore.Qt.yellow)
+        self.changeRunningTaskColor0(QtCore.Qt.yellow)
         pass
 
     def doneTaskTriggerHandler(self, info_str):
         #
-        self.changeRunningTaskColor(QtCore.Qt.green)
+        self.changeRunningTaskColor0(QtCore.Qt.green)
         pass
 
     def updateLogTriggerHandler(self, log):
@@ -195,12 +195,12 @@ class QA_GUI_DateFetch_SU_job01_stock_month(QA_GUI_Date_Fetch_Task):
 
 
     def startTaskTriggerHandler(self, info_str):
-        self.changeRunningTaskColor(QtCore.Qt.blue)
+        self.changeRunningTaskColor0(QtCore.Qt.blue)
         pass
 
     def doneTaskTriggerHandler(self, info_str):
         #
-        self.changeRunningTaskColor(QtCore.Qt.green)
+        self.changeRunningTaskColor0(QtCore.Qt.green)
         pass
 
     def updateLogTriggerHandler(self, log):
@@ -236,12 +236,12 @@ class QA_GUI_DateFetch_SU_job01_stock_year(QA_GUI_Date_Fetch_Task):
     #     super(QA_GUI_DateFetch_SU_job01_stock_year, self).__init__()
 
     def startTaskTriggerHandler(self, info_str):
-        self.changeRunningTaskColor(QtCore.Qt.magenta)
+        self.changeRunningTaskColor0(QtCore.Qt.magenta)
         pass
 
     def doneTaskTriggerHandler(self, info_str):
         #
-        self.changeRunningTaskColor(QtCore.Qt.green)
+        self.changeRunningTaskColor0(QtCore.Qt.green)
         pass
 
     def updateProgressTriggerHandler(self, progress):
@@ -277,12 +277,12 @@ class QA_GUI_DateFetch_SU_job02_stock_xdxr(QA_GUI_Date_Fetch_Task):
     #     super(QA_GUI_DateFetch_SU_job02_stock_xdxr, self).__init__()
 
     def startTaskTriggerHandler(self, info_str):
-        self.changeRunningTaskColor(QtCore.Qt.red)
+        self.changeRunningTaskColor0(QtCore.Qt.red)
         pass
 
     def doneTaskTriggerHandler(self, info_str):
         #
-        self.changeRunningTaskColor(QtCore.Qt.green)
+        self.changeRunningTaskColor0(QtCore.Qt.green)
         pass
 
     def updateProgressTriggerHandler(self, progress):
@@ -314,12 +314,12 @@ class QA_GUI_DateFetch_SU_job02_stock_xdxr(QA_GUI_Date_Fetch_Task):
 
 class QA_GUI_DateFetch_SU_job03_stock_min(QA_GUI_Date_Fetch_Task):
     def startTaskTriggerHandler(self, info_str):
-        self.changeRunningTaskColor(QtCore.Qt.red)
+        self.changeRunningTaskColor0(QtCore.Qt.red)
         pass
 
     def doneTaskTriggerHandler(self, info_str):
         #
-        self.changeRunningTaskColor(QtCore.Qt.green)
+        self.changeRunningTaskColor0(QtCore.Qt.green)
         pass
 
     def updateProgressTriggerHandler(self, progress):
@@ -349,12 +349,12 @@ class QA_GUI_DateFetch_SU_job03_stock_min(QA_GUI_Date_Fetch_Task):
 
 class QA_GUI_DateFetch_SU_job04_index_day(QA_GUI_Date_Fetch_Task):
     def startTaskTriggerHandler(self, info_str):
-        self.changeRunningTaskColor(QtCore.Qt.red)
+        self.changeRunningTaskColor0(QtCore.Qt.red)
         pass
 
     def doneTaskTriggerHandler(self, info_str):
         #
-        self.changeRunningTaskColor(QtCore.Qt.green)
+        self.changeRunningTaskColor0(QtCore.Qt.green)
         pass
 
     def updateProgressTriggerHandler(self, progress):
@@ -385,12 +385,12 @@ class QA_GUI_DateFetch_SU_job04_index_day(QA_GUI_Date_Fetch_Task):
 
 class QA_GUI_DateFetch_SU_job05_index_min(QA_GUI_Date_Fetch_Task):
     def startTaskTriggerHandler(self, info_str):
-        self.changeRunningTaskColor(QtCore.Qt.red)
+        self.changeRunningTaskColor0(QtCore.Qt.red)
         pass
 
     def doneTaskTriggerHandler(self, info_str):
         #
-        self.changeRunningTaskColor(QtCore.Qt.green)
+        self.changeRunningTaskColor0(QtCore.Qt.green)
         pass
 
     def updateProgressTriggerHandler(self, progress):
@@ -421,12 +421,12 @@ class QA_GUI_DateFetch_SU_job05_index_min(QA_GUI_Date_Fetch_Task):
 
 class QA_GUI_DateFetch_SU_job06_etf_day(QA_GUI_Date_Fetch_Task):
     def startTaskTriggerHandler(self, info_str):
-        self.changeRunningTaskColor(QtCore.Qt.red)
+        self.changeRunningTaskColor0(QtCore.Qt.red)
         pass
 
     def doneTaskTriggerHandler(self, info_str):
         #
-        self.changeRunningTaskColor(QtCore.Qt.green)
+        self.changeRunningTaskColor0(QtCore.Qt.green)
         pass
 
     def updateProgressTriggerHandler(self, progress):
@@ -456,12 +456,12 @@ class QA_GUI_DateFetch_SU_job06_etf_day(QA_GUI_Date_Fetch_Task):
 ###################################################################################################################
 class QA_GUI_DateFetch_SU_job07_etf_min(QA_GUI_Date_Fetch_Task):
     def startTaskTriggerHandler(self, info_str):
-        self.changeRunningTaskColor(QtCore.Qt.red)
+        self.changeRunningTaskColor0(QtCore.Qt.red)
         pass
 
     def doneTaskTriggerHandler(self, info_str):
         #
-        self.changeRunningTaskColor(QtCore.Qt.green)
+        self.changeRunningTaskColor0(QtCore.Qt.green)
         pass
 
     def updateProgressTriggerHandler(self, progress):
@@ -491,12 +491,12 @@ class QA_GUI_DateFetch_SU_job07_etf_min(QA_GUI_Date_Fetch_Task):
 ###################################################################################################################
 class QA_GUI_DateFetch_SU_job08_stock_list(QA_GUI_Date_Fetch_Task):
     def startTaskTriggerHandler(self, info_str):
-        self.changeRunningTaskColor(QtCore.Qt.red)
+        self.changeRunningTaskColor0(QtCore.Qt.red)
         pass
 
     def doneTaskTriggerHandler(self, info_str):
         #
-        self.changeRunningTaskColor(QtCore.Qt.green)
+        self.changeRunningTaskColor0(QtCore.Qt.green)
         pass
 
     def updateProgressTriggerHandler(self, progress):
@@ -527,12 +527,12 @@ class QA_GUI_DateFetch_SU_job08_stock_list(QA_GUI_Date_Fetch_Task):
 
 class QA_GUI_DateFetch_SU_job09_stock_block(QA_GUI_Date_Fetch_Task):
     def startTaskTriggerHandler(self, info_str):
-        self.changeRunningTaskColor(QtCore.Qt.red)
+        self.changeRunningTaskColor0(QtCore.Qt.red)
         pass
 
     def doneTaskTriggerHandler(self, info_str):
         #
-        self.changeRunningTaskColor(QtCore.Qt.green)
+        self.changeRunningTaskColor0(QtCore.Qt.green)
         pass
 
     def updateProgressTriggerHandler(self, progress):
@@ -561,12 +561,12 @@ class QA_GUI_DateFetch_SU_job09_stock_block(QA_GUI_Date_Fetch_Task):
 
 class QA_GUI_DateFetch_SU_job10_stock_info(QA_GUI_Date_Fetch_Task):
     def startTaskTriggerHandler(self, info_str):
-        self.changeRunningTaskColor(QtCore.Qt.red)
+        self.changeRunningTaskColor0(QtCore.Qt.red)
         pass
 
     def doneTaskTriggerHandler(self, info_str):
         #
-        self.changeRunningTaskColor(QtCore.Qt.green)
+        self.changeRunningTaskColor0(QtCore.Qt.green)
         pass
 
     def updateProgressTriggerHandler(self, progress):
@@ -596,12 +596,12 @@ class QA_GUI_DateFetch_SU_job10_stock_info(QA_GUI_Date_Fetch_Task):
 
 class QA_GUI_DateFetch_SU_job11_stock_transaction(QA_GUI_Date_Fetch_Task):
     def startTaskTriggerHandler(self, info_str):
-        self.changeRunningTaskColor(QtCore.Qt.red)
+        self.changeRunningTaskColor0(QtCore.Qt.red)
         pass
 
     def doneTaskTriggerHandler(self, info_str):
         #
-        self.changeRunningTaskColor(QtCore.Qt.green)
+        self.changeRunningTaskColor0(QtCore.Qt.green)
         pass
 
     def updateProgressTriggerHandler(self, progress):
@@ -632,12 +632,12 @@ class QA_GUI_DateFetch_SU_job11_stock_transaction(QA_GUI_Date_Fetch_Task):
 
 class QA_GUI_DateFetch_SU_job12_option_day(QA_GUI_Date_Fetch_Task):
     def startTaskTriggerHandler(self, info_str):
-        self.changeRunningTaskColor(QtCore.Qt.red)
+        self.changeRunningTaskColor0(QtCore.Qt.red)
         pass
 
     def doneTaskTriggerHandler(self, info_str):
         #
-        self.changeRunningTaskColor(QtCore.Qt.green)
+        self.changeRunningTaskColor0(QtCore.Qt.green)
         pass
 
     def updateProgressTriggerHandler(self, progress):
