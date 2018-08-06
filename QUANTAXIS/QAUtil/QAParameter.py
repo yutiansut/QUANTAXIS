@@ -174,8 +174,8 @@ class MARKET_TYPE():
     比特币/加密货币市场 5
     """
     STOCK_CN = 'stock_cn'  # 中国A股
-    STOCK_CN_B = 'stock_cn_b' # 中国B股
-    STOCK_CN_D = 'stock_cn_d' # 中国D股 沪伦通
+    STOCK_CN_B = 'stock_cn_b'  # 中国B股
+    STOCK_CN_D = 'stock_cn_d'  # 中国D股 沪伦通
     STOCK_HK = 'stock_hk'  # 港股
     STOCK_US = 'stock_us'  # 美股
     FUTURE_CN = 'future_cn'  # 国内期货
@@ -186,8 +186,6 @@ class MARKET_TYPE():
     INDEX_CN = 'index_cn'  # 中国指数
     FUND_CN = 'fund_cn'   # 中国基金
     BOND_CN = 'bond_cn'  # 中国债券
-
-    
 
 
 class BROKER_TYPE():
@@ -207,6 +205,9 @@ class BROKER_TYPE():
 
 
 class EVENT_TYPE():
+    """[summary]
+    """
+
     BROKER_EVENT = 'broker_event'
     ACCOUNT_EVENT = 'account_event'
     MARKET_EVENT = 'market_event'
@@ -216,13 +217,23 @@ class EVENT_TYPE():
 
 
 class MARKET_EVENT():
-    """交易前置事件"""
+    """交易前置事件
+    query_order 查询订单
+    query_assets 查询账户资产
+    query_account 查询账户
+    query_cash 查询账户现金
+    query_data 请求数据
+    query_deal 查询成交记录
+    query_position 查询持仓
+    """
+
     QUERY_ORDER = 'query_order'
     QUERY_ASSETS = 'query_assets'
     QUERY_ACCOUNT = 'query_account'
     QUERY_CASH = 'query_cash'
     QUERY_DATA = 'query_data'
     QUERY_DEAL = 'query_deal'
+    QUERY_POSITION = 'query_position'
 
 
 class ENGINE_EVENT():
@@ -331,7 +342,6 @@ class OUTPUT_FORMAT():
     NDARRAY = 'ndarray'
     LIST = 'list'
     JSON = 'json'
-
 
 
 DATABASE_TABLE = {

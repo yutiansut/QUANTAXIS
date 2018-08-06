@@ -136,8 +136,14 @@ class QA_OrderHandler(QA_Worker):
             # print(self.order_status)
             #print('UPDATE ORDERS')
 
-        elif event.event_type is BROKER_EVENT.QUERY_DEAL:
+        elif event.event_type is MARKET_EVENT.QUERY_DEAL:
 
+            """order_handler- query_deal
+
+            将order_handler订单队列中的订单---和deal中匹配起来
+
+            
+            """
 
             if len(self.order_queue.pending) > 0:
                 for item in self.order_queue.pending:
@@ -147,5 +153,7 @@ class QA_OrderHandler(QA_Worker):
                     result = event.broker.query_deal
                     time.sleep(1)
 
+        elif event.event_type is MARKET_EVENT.QUERY_POSITION:
+            pass
     def query_order(self, order_id):
         pass

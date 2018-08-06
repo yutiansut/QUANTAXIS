@@ -10,9 +10,9 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.backends.backend_qt5agg import \
     FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import *
-from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMenu,
+from AnyQt import QtCore, QtWidgets
+from AnyQt.QtWidgets import *
+from AnyQt.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMenu,
                              QMessageBox, QSizePolicy, QVBoxLayout, QWidget)
 
 # Make sure that we are using QT5
