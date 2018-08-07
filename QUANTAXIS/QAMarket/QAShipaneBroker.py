@@ -376,7 +376,7 @@ if __name__ == '__main__':
     a = QA_SPEBroker()
 
     print('查询账户')
-    acc = 'account:141'
+    acc = 'account:813'
     print(a.query_positions(acc))
     print('查询所有订单')
     print(a.query_orders(acc, ''))
