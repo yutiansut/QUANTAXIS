@@ -32,6 +32,7 @@ from QUANTAXIS.QAMarket.QAOrder import QA_OrderQueue
 from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, BROKER_TYPE,
                                           EVENT_TYPE, MARKET_EVENT,
                                           ORDER_EVENT)
+from QUANTAXIS.QAUtil.QADate_trade import QA_util_if_tradetime
 
 
 class QA_OrderHandler(QA_Worker):
@@ -75,6 +76,7 @@ class QA_OrderHandler(QA_Worker):
 
         self.event = QA_Event()
         self.order_status = pd.DataFrame()
+        self.deal_status = pd.DataFrame()
         self.if_start_orderquery = False
 
     def run(self, event):
@@ -119,19 +121,34 @@ class QA_OrderHandler(QA_Worker):
             """
 
             if self.if_start_orderquery:
+                if QA_util_if_tradetime:
 
-                #print(event.broker)
-                #print(event.account_cookie)
-                self.order_status = [event.broker[i].query_orders(
-                    event.account_cookie[i], '') for i in range(len(event.account_cookie))]
-                #print(self.order_status)
-                self.order_status = pd.concat(self.order_status, axis=0) if len(
-                    self.order_status) > 0 else pd.DataFrame()
-                #print(self.order_status)
+                    # print(event.broker)
+                    # print(event.account_cookie)
+                    try:
+                        res = [event.broker[i].query_orders(
+                            event.account_cookie[i], '') for i in range(len(event.account_cookie))]
+                        # print(self.order_status)
+                        res = pd.concat(res, axis=0) if len(
+                            res) > 0 else None
+
+                    except:
+                        time.sleep(1)
+
+                    self.order_status = res if res is not None else self.order_status
+                else:
+                    time.sleep(1)
+                # print(self.order_status)
 
             # 这里加入随机的睡眠时间 以免被发现固定的刷新请求
-            time.sleep(random.randint(2,5))
+            # event=event
+            event.event_type = MARKET_EVENT.QUERY_DEAL
+            time.sleep(random.randint(1, 2))
             self.run(event)
+            # time.sleep(random.randint(2,5))
+            # print(event.event_type)
+            # print(event2.event_type)
+            # self.run(event)
 
             # print(self.order_status)
             #print('UPDATE ORDERS')
@@ -142,18 +159,35 @@ class QA_OrderHandler(QA_Worker):
 
             将order_handler订单队列中的订单---和deal中匹配起来
 
-            
+
             """
 
-            if len(self.order_queue.pending) > 0:
-                for item in self.order_queue.pending:
-                    #self.query
-                    waiting_realorder_id = [
-                        order.realorder_id for order in self.order_queue.trade_list]
-                    result = event.broker.query_deal
-                    time.sleep(1)
+            # if len(self.order_queue.pending) > 0:
+            #     for item in self.order_queue.pending:
+            #         #self.query
+            #         waiting_realorder_id = [
+            #             order.realorder_id for order in self.order_queue.trade_list]
+            #         result = event.broker.query_deal
+            #         time.sleep(1)
+            if self.if_start_orderquery:
+
+                # print(event.broker)
+                # print(event.account_cookie)
+                self.deal_status = [event.broker[i].query_orders(
+                    event.account_cookie[i], 'filled') for i in range(len(event.account_cookie))]
+                # print(self.order_status)
+                self.deal_status = pd.concat(self.deal_status, axis=0) if len(
+                    self.deal_status) > 0 else pd.DataFrame()
+                # print(self.order_status)
+
+            # 这里加入随机的睡眠时间 以免被发现固定的刷新请求
+            time.sleep(random.randint(2, 5))
+            event.event_type = MARKET_EVENT.QUERY_ORDER
+            self.run(event)
+            # self.run(event)
 
         elif event.event_type is MARKET_EVENT.QUERY_POSITION:
             pass
+
     def query_order(self, order_id):
         pass
