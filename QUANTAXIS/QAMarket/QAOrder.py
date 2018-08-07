@@ -314,13 +314,13 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
 
 
 
-    @property
-    def trade_list(self):
-        '''
-        批量交易
-        :return:
-        '''
-        return [self.order_list[order_id] for order_id in self.pending.index]
+    # @property
+    # def trade_list(self):
+    #     '''
+    #     批量交易
+    #     :return:
+    #     '''
+    #     return [self.order_list[order_id] for order_id in self.pending.index]
 
     def query_order(self, order_id):
         '''
