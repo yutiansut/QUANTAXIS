@@ -82,6 +82,19 @@ class QA_OrderHandler(QA_Worker):
     def run(self, event):
         if event.event_type is BROKER_EVENT.RECEIVE_ORDER:
             # 此时的message应该是订单类
+            """
+            OrderHandler 收到订单
+
+            orderhandler 调控转发给broker
+
+            broker返回发单结果(成功/失败)
+
+            orderhandler.order_queue 插入一个订单
+
+            执行回调
+
+            """
+
             order = event.order
             order = event.broker.receive_order(
                 QA_Event(event_type=BROKER_EVENT.TRADE, order=event.order))
@@ -91,15 +104,17 @@ class QA_OrderHandler(QA_Worker):
                 event.callback(order)
 
         elif event.event_type is BROKER_EVENT.TRADE:
+            # 实盘和本地 同步执行
+
 
             res = []
-            for item in self.order_queue.trade_list:
+            for order in self.order_queue.pending:
                 result = event.broker.query_orders(
-                    item.account_cookie, item.realorder_id)
+                    order.account_cookie, order.realorder_id)
                 self.order_queue.set_status(
-                    item.order_id, result['header']['status'])
-                if item.callback:
-                    item.callback(result)
+                    order.order_id, result['header']['status'])
+                if order.callback:
+                    order.callback(result)
                 res.append(result)
             event.res = res
 
@@ -126,9 +141,9 @@ class QA_OrderHandler(QA_Worker):
                     # print(event.broker)
                     # print(event.account_cookie)
                     try:
+                        # 做一些容错处理
                         res = [event.broker[i].query_orders(
                             event.account_cookie[i], '') for i in range(len(event.account_cookie))]
-                        # print(self.order_status)
                         res = pd.concat(res, axis=0) if len(
                             res) > 0 else None
 
@@ -138,7 +153,6 @@ class QA_OrderHandler(QA_Worker):
                     self.order_status = res if res is not None else self.order_status
                 else:
                     time.sleep(1)
-                # print(self.order_status)
 
             # 这里加入随机的睡眠时间 以免被发现固定的刷新请求
             # event=event
@@ -163,7 +177,7 @@ class QA_OrderHandler(QA_Worker):
             """
 
             # if len(self.order_queue.pending) > 0:
-            #     for item in self.order_queue.pending:
+            #     for order in self.order_queue.pending:
             #         #self.query
             #         waiting_realorder_id = [
             #             order.realorder_id for order in self.order_queue.trade_list]
