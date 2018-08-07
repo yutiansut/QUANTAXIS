@@ -322,18 +322,18 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
     #     '''
     #     return [self.order_list[order_id] for order_id in self.pending.index]
 
-    def query_order(self, order_id):
-        '''
-        @modified by JerryW 2018/05/25
-        根据 order_id 查询队列中的记录， 并且转换成 order 对象
-        :param order_id:  str 类型 Order_开头的随机数  eg：Order_KQymhXWu
-        :return QA_Order类型:
-        '''
-        anOrderRec = self.queue_df.loc[[order_id]]
-        rec_dict = anOrderRec.to_dict('records')
-        anOrderObj = QA_Order()
-        anOrderObj.from_dict(rec_dict[0])
-        return anOrderObj
+    # def query_order(self, order_id):
+    #     '''
+    #     @modified by JerryW 2018/05/25
+    #     根据 order_id 查询队列中的记录， 并且转换成 order 对象
+    #     :param order_id:  str 类型 Order_开头的随机数  eg：Order_KQymhXWu
+    #     :return QA_Order类型:
+    #     '''
+    #     anOrderRec = self.queue_df.loc[[order_id]]
+    #     rec_dict = anOrderRec.to_dict('records')
+    #     anOrderObj = QA_Order()
+    #     anOrderObj.from_dict(rec_dict[0])
+    #     return anOrderObj
 
     # 🛠todo 订单队列
     def set_status(self, order_id, new_status):

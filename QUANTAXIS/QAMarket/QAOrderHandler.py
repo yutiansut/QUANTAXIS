@@ -24,10 +24,12 @@
 
 import time
 import random
-
+import sched
 import pandas as pd
+import threading
 
 from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Worker
+from QUANTAXIS.QAEngine.QATask import QA_Task
 from QUANTAXIS.QAMarket.QAOrder import QA_OrderQueue
 from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, BROKER_TYPE,
                                           EVENT_TYPE, MARKET_EVENT,
@@ -96,17 +98,16 @@ class QA_OrderHandler(QA_Worker):
             """
 
             order = event.order
+            print(event.broker)
             order = event.broker.receive_order(
                 QA_Event(event_type=BROKER_EVENT.TRADE, order=event.order))
-
+            print(threading.current_thread().ident)
             order = self.order_queue.insert_order(order)
             if event.callback:
                 event.callback(order)
 
         elif event.event_type is BROKER_EVENT.TRADE:
             # 实盘和本地 同步执行
-
-
             res = []
             for order in self.order_queue.pending:
                 result = event.broker.query_orders(
@@ -157,8 +158,18 @@ class QA_OrderHandler(QA_Worker):
             # 这里加入随机的睡眠时间 以免被发现固定的刷新请求
             # event=event
             event.event_type = MARKET_EVENT.QUERY_DEAL
-            time.sleep(random.randint(1, 2))
-            self.run(event)
+            if event.callback.qsize()<1:
+                time.sleep(random.randint(1, 2))
+
+
+            # 非阻塞    
+            event.callback.put(
+                QA_Task(
+                    worker=self,
+                    engine='ORDER',
+                    event=event
+                )
+            )
             # time.sleep(random.randint(2,5))
             # print(event.event_type)
             # print(event2.event_type)
@@ -194,10 +205,22 @@ class QA_OrderHandler(QA_Worker):
                     self.deal_status) > 0 else pd.DataFrame()
                 # print(self.order_status)
 
+            
+
             # 这里加入随机的睡眠时间 以免被发现固定的刷新请求
-            time.sleep(random.randint(2, 5))
+            if event.callback.qsize()<1:
+                time.sleep(random.randint(2, 5))
             event.event_type = MARKET_EVENT.QUERY_ORDER
-            self.run(event)
+
+
+            event.callback.put(
+                QA_Task(
+                    worker=self,
+                    engine='ORDER',
+                    event=event
+                )
+            )
+            #self.run(event)
             # self.run(event)
 
         elif event.event_type is MARKET_EVENT.QUERY_POSITION:
