@@ -146,25 +146,25 @@ class QA_OrderHandler(QA_Worker):
             """
 
             if self.if_start_orderquery:
-                if QA_util_if_tradetime:
+                #if QA_util_if_tradetime(datetime.datetime.now()):
 
                     # print(event.broker)
                     # print(event.account_cookie)
-                    try:
-                        # 做一些容错处理
-                        res = [event.broker[i].query_orders(
-                            event.account_cookie[i], '') for i in range(len(event.account_cookie))]
-                        res = pd.concat(res, axis=0) if len(
-                            res) > 0 else None
+                try:
+                    # 做一些容错处理
+                    res = [event.broker[i].query_orders(
+                        event.account_cookie[i], '') for i in range(len(event.account_cookie))]
+                    res = pd.concat(res, axis=0) if len(
+                        res) > 0 else None
 
-                    except:
-                        time.sleep(1)
-
-                    self.order_status = res if res is not None else self.order_status
-                    if len(self.order_status) > 0:
-                        QA_SU_save_order(self.order_status)
-                else:
+                except:
                     time.sleep(1)
+
+                self.order_status = res if res is not None else self.order_status
+                if len(self.order_status) > 0:
+                    QA_SU_save_order(self.order_status)
+                # else:
+                #     time.sleep(1)
 
             # 这里加入随机的睡眠时间 以免被发现固定的刷新请求
             # event=event

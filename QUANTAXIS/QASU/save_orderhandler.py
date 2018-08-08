@@ -22,9 +22,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
+import datetime
 from QUANTAXIS.QAUtil import DATABASE, QA_util_to_json_from_pandas
 from QUANTAXIS.QAUtil.QASql import ASCENDING, DESCENDING
+from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_order_day
 
 
 def QA_SU_save_order(orderlist, client=DATABASE):
@@ -43,10 +44,11 @@ def QA_SU_save_order(orderlist, client=DATABASE):
         [('account_cookie', ASCENDING), ('realorder_id', ASCENDING)], unique=True)
     try:
         for item in orderlist:
-            collection.update({'account_cookie': item.pop('account_cookie'), 'realorder_id': item.pop('realorder_id')},
-                              {'$inc': {'$set': {item}}}, upsert=True)
+            item['date']= QA_util_get_order_day()
+            collection.update_one({'account_cookie': item.get('account_cookie'), 'realorder_id': item.get('realorder_id')},
+                              {'$set': item}, upsert=True)
     except Exception as e:
-
+        print(e)
         pass
 
 
@@ -59,11 +61,33 @@ def QA_SU_save_deal(dealist, client=DATABASE):
     Keyword Arguments:
         client {[type]} -- [description] (default: {DATABASE})
     """
-    dealist = QA_util_to_json_from_pandas(dealist.reset_index())
+    dealist = QA_util_to_json_from_pandas(dealist.assign(date=QA_util_get_order_day()).reset_index())
     collection = client.deal
+
     collection.create_index(
         [('account_cookie', ASCENDING), ('realorder_id', ASCENDING)], unique=True)
     try:
         collection.insert_many(dealist)
     except Exception as e:
         pass
+
+
+def QA_SU_save_order_queue(order_queue, client=DATABASE):
+    """增量存储order_queue
+
+    Arguments:
+        order_queue {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+    collection = client.order_queue
+    collection.create_index(
+        [('account_cookie', ASCENDING), ('order_id', ASCENDING)], unique=True)
+    for order in order_queue.values():
+        order_json = order.to_dict()
+        try:
+            collection.update_one({'account_cookie': order_json.get('account_cookie'), 'order_id': order_json.get('order_id')},
+                              {'$set': order_json}, upsert=True)
+        except Exception as e:
+            print(e)
