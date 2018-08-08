@@ -135,7 +135,7 @@ from QUANTAXIS.QASetting.QALocalize import qa_path, setting_path, cache_path, do
 
 
 from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms_stamp, QA_util_date_valid, QA_util_calc_time,
-                              QA_util_realtime, QA_util_id2date, QA_util_is_trade, QA_util_get_date_index, QA_util_get_last_day, QA_util_get_next_day,
+                              QA_util_realtime, QA_util_id2date, QA_util_is_trade, QA_util_get_date_index, QA_util_get_last_day, QA_util_get_next_day, QA_util_get_order_day,
                               QA_util_get_index_date, QA_util_select_hours, QA_util_date_gap, QA_util_time_gap,
                               QA_util_select_min, QA_util_time_delay, QA_util_time_now, QA_util_date_str2int,
                               QA_util_date_int2str, QA_util_date_today, QA_util_to_datetime,
