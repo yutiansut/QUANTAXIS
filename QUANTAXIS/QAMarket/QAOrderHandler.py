@@ -31,6 +31,7 @@ import threading
 from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Worker
 from QUANTAXIS.QAEngine.QATask import QA_Task
 from QUANTAXIS.QAMarket.QAOrder import QA_OrderQueue
+from QUANTAXIS.QASU.save_orderhandler import QA_SU_save_deal
 from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, BROKER_TYPE,
                                           EVENT_TYPE, MARKET_EVENT,
                                           ORDER_EVENT)
@@ -66,6 +67,13 @@ class QA_OrderHandler(QA_Worker):
     持久化: 2秒一次
 
     2018-07-29
+
+
+    # 重新设置ORDERHADLER的运行模式:
+
+    -- 常规检查 5秒一次
+
+    -- 如果出现订单 则2-3秒 对账户轮询(直到出现订单成交/撤单为止)
 
 
 
@@ -158,11 +166,10 @@ class QA_OrderHandler(QA_Worker):
             # 这里加入随机的睡眠时间 以免被发现固定的刷新请求
             # event=event
             event.event_type = MARKET_EVENT.QUERY_DEAL
-            if event.callback.qsize()<1:
+            if event.callback.qsize() < 1:
                 time.sleep(random.randint(1, 2))
 
-
-            # 非阻塞    
+            # 非阻塞
             event.callback.put(
                 QA_Task(
                     worker=self,
@@ -205,13 +212,10 @@ class QA_OrderHandler(QA_Worker):
                     self.deal_status) > 0 else pd.DataFrame()
                 # print(self.order_status)
 
-            
-
             # 这里加入随机的睡眠时间 以免被发现固定的刷新请求
-            if event.callback.qsize()<1:
+            if event.callback.qsize() < 1:
                 time.sleep(random.randint(2, 5))
             event.event_type = MARKET_EVENT.QUERY_ORDER
-
 
             event.callback.put(
                 QA_Task(
@@ -220,7 +224,7 @@ class QA_OrderHandler(QA_Worker):
                     event=event
                 )
             )
-            #self.run(event)
+            # self.run(event)
             # self.run(event)
 
         elif event.event_type is MARKET_EVENT.QUERY_POSITION:
