@@ -64,6 +64,7 @@
 1. 增加对于实盘易的支持
 2. 将一些基础解析字段挪至基类QABroker中
 3. 基于QAMarket创建的broker/order线程全部变成后台线程
+4. QA_OrderHandler 增加持久化 订单/成交单部分
 
 [QAEngine]
 
@@ -77,6 +78,10 @@
 [QASU]
 
 1. save_orderhandler.py 增加 QA_SU_save_order/ QA_SU_save_deal 方法
+
+[QAUtil]
+
+1. QADate_Trade 增加QA_util_get_order_day() 用于获取委托的真实日期
 
 [QAWEB]
 
