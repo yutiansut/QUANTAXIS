@@ -73,6 +73,11 @@
 
 1. QA_Account 增加 cancel_order方法 撤单操作
 
+
+[QASU]
+
+1. save_orderhandler.py 增加 QA_SU_save_order/ QA_SU_save_deal 方法
+
 [QAWEB]
 
 1. QAWEB 增加查询股票名称的接口 http://ip:port/marketdata/stock/code?code=xxxxx
