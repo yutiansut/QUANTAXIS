@@ -174,6 +174,21 @@ def QA_util_date_gap(date, gap, methods):
     except:
         return 'wrong date'
 
+
+def QA_util_get_order_day():
+    """委托的真实日期
+    
+    Returns:
+        [type] -- [description]
+    """
+
+    dt= datetime.datetime.now()
+
+    if QA_util_if_trade(str(dt.date())) and dt.time()<datetime.time(15,0,0):
+        return str(dt.date())
+    else:
+        return QA_util_get_real_date(str(dt.date()),trade_date_sse,1)
+
 def future_change(df):
     for i in range(len(df)):
 
