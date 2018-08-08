@@ -23,11 +23,21 @@
 # SOFTWARE.
 
 
-from QUANTAXIS.QAUtil import DATABASE, QA_util_date_int2str
-from QUANTAXIS.QAUtil.QASql import DESCENDING, ASCENDING
+from QUANTAXIS.QAUtil import DATABASE, QA_util_to_json_from_pandas
+from QUANTAXIS.QAUtil.QASql import ASCENDING, DESCENDING
 
 
 def QA_SU_save_order(orderlist, client=DATABASE):
+    """存储order_handler的order_status
+
+    Arguments:
+        orderlist {[dataframe]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    orderlist = QA_util_to_json_from_pandas(orderlist.reset_index())
     collection = client.order
     collection.create_index(
         [('account_cookie', ASCENDING), ('realorder_id', ASCENDING)], unique=True)
@@ -41,6 +51,15 @@ def QA_SU_save_order(orderlist, client=DATABASE):
 
 
 def QA_SU_save_deal(dealist, client=DATABASE):
+    """存储order_handler的deal_status
+
+    Arguments:
+        dealist {[dataframe]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+    dealist = QA_util_to_json_from_pandas(dealist.reset_index())
     collection = client.deal
     collection.create_index(
         [('account_cookie', ASCENDING), ('realorder_id', ASCENDING)], unique=True)

@@ -22,20 +22,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import time
 import random
 import sched
-import pandas as pd
 import threading
+import time
+
+import pandas as pd
 
 from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Worker
 from QUANTAXIS.QAEngine.QATask import QA_Task
 from QUANTAXIS.QAMarket.QAOrder import QA_OrderQueue
-from QUANTAXIS.QASU.save_orderhandler import QA_SU_save_deal
+from QUANTAXIS.QASU.save_orderhandler import QA_SU_save_deal, QA_SU_save_order
+from QUANTAXIS.QAUtil.QADate_trade import QA_util_if_tradetime
 from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, BROKER_TYPE,
                                           EVENT_TYPE, MARKET_EVENT,
                                           ORDER_EVENT)
-from QUANTAXIS.QAUtil.QADate_trade import QA_util_if_tradetime
 
 
 class QA_OrderHandler(QA_Worker):
@@ -160,6 +161,8 @@ class QA_OrderHandler(QA_Worker):
                         time.sleep(1)
 
                     self.order_status = res if res is not None else self.order_status
+                    if len(self.order_status) > 0:
+                        QA_SU_save_order(self.order_status)
                 else:
                     time.sleep(1)
 
@@ -210,6 +213,8 @@ class QA_OrderHandler(QA_Worker):
                 # print(self.order_status)
                 self.deal_status = pd.concat(self.deal_status, axis=0) if len(
                     self.deal_status) > 0 else pd.DataFrame()
+                if len(self.deal_status) > 0:
+                    QA_SU_save_deal(self.deal_status)
                 # print(self.order_status)
 
             # 这里加入随机的睡眠时间 以免被发现固定的刷新请求
