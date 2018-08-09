@@ -65,10 +65,11 @@ def QA_SU_save_deal(dealist, client=DATABASE):
     collection = client.deal
 
     collection.create_index(
-        [('account_cookie', ASCENDING), ('realorder_id', ASCENDING)], unique=True)
+        [('account_cookie', ASCENDING), ('trade_id', ASCENDING)], unique=True)
     try:
-        collection.insert_many(dealist)
+        collection.insert_many(dealist,ordered=False)
     except Exception as e:
+
         pass
 
 

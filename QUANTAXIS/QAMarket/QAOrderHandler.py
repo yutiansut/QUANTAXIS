@@ -205,9 +205,6 @@ class QA_OrderHandler(QA_Worker):
             #         result = event.broker.query_deal
             #         time.sleep(1)
             if self.if_start_orderquery:
-
-                # print(event.broker)
-                # print(event.account_cookie)
                 self.deal_status = [event.broker[i].query_orders(
                     event.account_cookie[i], 'filled') for i in range(len(event.account_cookie))]
                 # print(self.order_status)
