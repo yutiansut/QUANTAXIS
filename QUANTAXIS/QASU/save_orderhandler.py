@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 import datetime
+import pandas as pd
 from QUANTAXIS.QAUtil import DATABASE, QA_util_to_json_from_pandas
 from QUANTAXIS.QAUtil.QASql import ASCENDING, DESCENDING
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_order_day
@@ -61,16 +62,18 @@ def QA_SU_save_deal(dealist, client=DATABASE):
     Keyword Arguments:
         client {[type]} -- [description] (default: {DATABASE})
     """
-    dealist = QA_util_to_json_from_pandas(dealist.assign(date=QA_util_get_order_day()).reset_index())
-    collection = client.deal
 
-    collection.create_index(
-        [('account_cookie', ASCENDING), ('trade_id', ASCENDING)], unique=True)
-    try:
-        collection.insert_many(dealist,ordered=False)
-    except Exception as e:
+    if isinstance(dealist,pd.DataFrame):
+        dealist = QA_util_to_json_from_pandas(dealist.assign(date=QA_util_get_order_day()).reset_index())
+        collection = client.deal
 
-        pass
+        collection.create_index(
+            [('account_cookie', ASCENDING), ('trade_id', ASCENDING)], unique=True)
+        try:
+            collection.insert_many(dealist,ordered=False)
+        except Exception as e:
+
+            pass
 
 
 def QA_SU_save_order_queue(order_queue, client=DATABASE):
