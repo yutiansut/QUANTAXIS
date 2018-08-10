@@ -78,6 +78,7 @@
 [QASU]
 
 1. save_orderhandler.py 增加 QA_SU_save_order/ QA_SU_save_deal 方法
+2. 增加对于运行时出错的容错处理
 
 [QAUtil]
 
