@@ -125,6 +125,11 @@ def praseWebPage(code, browser, connection):
         #计算时间
         nowTime0 = datetime.datetime.now()
 
+
+        #1##########################################################################################################
+        #nowTime_find_date_table_start = datetime.datetime.now()
+        #1##########################################################################################################
+
         # result = []
         zjlxtable = browser.find_element_by_id('content_zjlxtable')
         table_elements = zjlxtable.find_element_by_tag_name('table')
@@ -166,20 +171,55 @@ def praseWebPage(code, browser, connection):
             print("error !!!!!!!!")
             raise WebDriverException("网页数据错误8")
 
+        #1##########################################################################################################
+        #nowTime_find_date_table_end = datetime.datetime.now()
+        #secondsUsed_for_find_date_table = (nowTime_find_date_table_end - nowTime_find_date_table_start).seconds
+        #print("❤️计算时间1 查找table_body2 list 使用了%d秒 ️🖼👍"%secondsUsed_for_find_date_table)
+        #1##########################################################################################################
+
+
+        #2##########################################################################################################
+        #nowTime_loop_list_for_table_body2_start = datetime.datetime.now()
+        #2##########################################################################################################
+
         row1_list = []
         if isinstance(table_body2, list) == True:
 
+            #3##########################################################################################################
+            #t0_find_element_by_tag_start = datetime.datetime.now()
+            #3##########################################################################################################
+
             table_body_row = table_body2[0].find_elements_by_tag_name('tr')
             print("🖼 成功获取 %d 天的资金流向数据️" % (len(table_body_row)))
-
-
             row_length = len(table_body_row)
+
+            #3##########################################################################################################
+            #t0_find_element_by_tag_end = datetime.datetime.now()
+            #t0_find_element_by_tag_used_second= (t0_find_element_by_tag_end - t0_find_element_by_tag_start).microseconds
+            #print("❤️计算时间0 find_elements_by_tag_name tr 使用了%d m秒 ️🖼👍" % t0_find_element_by_tag_used_second)
+            #3##########################################################################################################
+
+
             for i in range(row_length):
+
+                #4##########################################################################################################
+                #t4_find_element_by_tag_start = datetime.datetime.now()
+                #4##########################################################################################################
+
                 table_body_cell = table_body_row[i].find_elements_by_tag_name('td')
                 #assert (len(table_body_cell) == 13)
                 if (len(table_body_cell) == 13) == False:
                     raise WebDriverException("网页数据错误2")
 
+                #4##########################################################################################################
+                #t4_find_element_by_tag_end = datetime.datetime.now()
+                #t4_find_element_by_tag_used_second = (t4_find_element_by_tag_end - t4_find_element_by_tag_start).microseconds
+                #print("❤️计算时间4 find_elements_by_tag_name td 使用了%d m秒 ️🖼👍" % t4_find_element_by_tag_used_second)
+                #4##########################################################################################################
+
+                #5##########################################################################################################
+                #t5_get_table_data_start = datetime.datetime.now()
+                #5##########################################################################################################
                 dict_row = {}
                 dict_row['stock_code'] = code
 
@@ -199,14 +239,21 @@ def praseWebPage(code, browser, connection):
 
                 row1_list.append(dict_row)
 
+                #5##########################################################################################################
+                #t5_get_table_data_end = datetime.datetime.now()
+                #t5_get_table_data_end_used_second = (t5_get_table_data_end - t5_get_table_data_start).microseconds
+                #print("❤️计算时间5 get_table_data 使用了%d m秒 ️🖼👍" % t5_get_table_data_end_used_second)
+                #5##########################################################################################################
+
                 # todo 🛠  循环获取网页速度非常慢， 进一步学习 selenium 的操作， 批量一次获取数据
                 iPct = round((i / row_length) * 100.0)
                 #s1 = "\r读取数据%d%%[%s%s]" % (iPct, "🐢" * iPct, " " * (100 - iPct))
                 #sys.stdout.write(s1)
                 #sys.stdout.flush()
 
-
-                #############################################################
+                #6##########################################################################################################
+                #t6_send_newwork_date_start = datetime.datetime.now()
+                #6############################################################
                 strMsg0 = "state@progress@%f"%iPct
                 #print("🦀 网页进度 🦀",strMsg0)
                 bytes_content = strMsg0.encode()
@@ -228,8 +275,11 @@ def praseWebPage(code, browser, connection):
 
                 # 🛠todo fix 128 个byte 很傻
                 connection.sendall(bytes_content)
-                #############################################################
-
+                #6############################################################
+                #t6_send_newwork_date_end = datetime.datetime.now()
+                #t6_send_newwork_date_used_second = (t6_send_newwork_date_end - t6_send_newwork_date_start).microseconds
+                #print("❤️计算时间6 send_newwork_date 使用了%d m秒 ️🖼👍" % t6_send_newwork_date_used_second)
+                #6##########################################################################################################
                 # v = []
                 # v.append() # 日期
                 # v.append(table_body_cell[1].text) # 收盘价
@@ -253,17 +303,23 @@ def praseWebPage(code, browser, connection):
             raise WebDriverException("网页数据错误23")
             pass
 
+        #2##########################################################################################################
+        #nowTime_loop_list_for_table_body2_end = datetime.datetime.now()
+        #secondsUsed_for_loop = (nowTime_loop_list_for_table_body2_end - nowTime_loop_list_for_table_body2_start).seconds
+        #print("❤️❤️🖼 循环获取 列表 使用了 %d秒 ️🖼👍👍"%secondsUsed_for_loop)
+        #2##########################################################################################################
+
         # assert (len(row1_list) != 0)
         # assert (len(head1_list) != 0)
         # assert (len(head2_list) != 0)
 
         ActionChains(browser).key_down(Keys.CONTROL).send_keys("w").key_up(Keys.CONTROL).perform()
 
-        nowTime1 = datetime.datetime.now()
-
-        secondsUsed = (nowTime1 - nowTime0).seconds
-        print("❤️❤️🖼 完成网页解析使用了%d秒 ️🖼👍👍"%secondsUsed)
-
+        ##1##########################################################################################################
+        #nowTime1 = datetime.datetime.now()
+        #secondsUsed = (nowTime1 - nowTime0).seconds
+        #print("❤️❤️🖼 完成网页解析使用了%d秒 ️🖼👍👍"%secondsUsed)
+        #1##########################################################################################################
 
         client = DATABASE
         coll_stock_zjlx = client.eastmoney_stock_zjlx
@@ -332,280 +388,6 @@ def praseWebPage(code, browser, connection):
 
         return [strErroMsg,new_rec]
 
-
-#
-# def doLoop(strPort):
-#
-#     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#
-#     # Bind the socket to the port
-#     server_address = ('localhost', int(strPort))
-#     print('starting up on {} port {}'.format(*server_address))
-#     sock.bind(server_address)
-#
-#     # Listen for incoming connections
-#     sock.listen(1)
-#     working_browser = None
-#
-#
-#
-#     while True:
-#         try:
-#
-#             connection, client_address = sock.accept()
-#             print('incoming connection is {}, client_address is {}'.format(connection, client_address))
-#             print("process is running， wait accept command ,listen port is ", strPort)
-#
-#             data = connection.recv(128)
-#             print('received {!r}'.format(data))
-#             if data:
-#                 if len(data) == 128:
-#                     cmdString = data.decode('utf-8');
-#                     cmdString = cmdString.strip('0')
-#                     cmdArry = cmdString.split('@')
-#
-#                     print('cmd is {}'.format(cmdArry[0]))
-#                     if cmdArry[0] == 'start_chrome_driver':
-#
-#                         print("🕹>>>>>>do start_chrome_driver_begin>>>>>");
-#
-#                         working_browser = open_chrome_driver()
-#                         if working_browser is not None:
-#                             #############################################################
-#                             strMsg0 = "state@start_chrome_driver_ok"
-#                             bytes_content = strMsg0.encode()
-#                             bytes_content = bytes_content.zfill(128)
-#                             assert (len(bytes_content) == 128)
-#                             # 🛠todo fix 128 个byte 很傻
-#                             connection.sendall(bytes_content)
-#                             #############################################################
-#                             print("🕹>>>>>>do start_chrome_driver_ok>>>>>>>✅");
-#                         else:
-#                             #############################################################
-#                             strMsg0 = "state@start_chrome_driver_failed@%s"%start_up_chrome_driver_error_message
-#                             bytes_content = strMsg0.encode()
-#                             bytes_content = bytes_content.zfill(128)
-#                             assert (len(bytes_content) == 128)
-#                             # 🛠todo fix 128 个byte 很傻
-#                             connection.sendall(bytes_content)
-#                             #############################################################
-#                             print("🕹>>>>>>do start_chrome_driver_failed>>>>>>>❌");
-#
-#                         #time.sleep(2)
-#
-#
-#                         continue
-#
-#                     if cmdArry[0] == 'shutdown_chrome_driver':
-#
-#                         if working_browser is not None:
-#                             working_browser.quit()
-#                             #############################################################
-#                             strMsg0 = "state@shutdown_chrome_driver_ok"
-#                             bytes_content = strMsg0.encode()
-#                             bytes_content = bytes_content.zfill(128)
-#                             assert (len(bytes_content) == 128)
-#                             # 🛠todo fix 128 个byte 很傻
-#                             connection.sendall(bytes_content)
-#                             #############################################################
-#                             print("🕹>>>>>>do shutdown_chrome_driver_ok>>>>>>>✅");
-#
-#                         else:
-#                             print("❌working_browser is None❌")
-#                             print("🕹>>>>>>do shutdown_chrome_driver_failed>>>>>>>❌");
-#
-#                         continue
-#
-#                     if cmdArry[0] == 'fetch_a_stock_data_to_mongodb':
-#
-#                         assert(len(cmdArry) == 2)
-#                         strCodeToOpenPage = cmdArry[1]
-#
-#                         retMsg = do_open_web_page(strCodeToOpenPage, working_browser)
-#                         if retMsg == "😇Ok成功打开网页😇":
-#                             #############################################################
-#                             strMsg0 = "state@fetch_a_stock_data_to_mongodb_open_web_page_ok"
-#                             bytes_content = strMsg0.encode()
-#                             bytes_content = bytes_content.zfill(128)
-#                             assert (len(bytes_content) == 128)
-#                             # 🛠todo fix 128 个byte 很傻
-#                             connection.sendall(bytes_content)
-#                             #############################################################
-#
-#                             print("🕹>>>>>>doing fetch_a_stock_data_to_mongodb>>>>>>>>");
-#
-#                             retMsg2 = praseWebPage(strCodeToOpenPage, working_browser, connection)
-#                             if retMsg2[0] == "😇Ok成功解析网页😇":
-#
-#                                 #############################################################
-#                                 strMsg0 = "state@fetch_a_stock_data_to_mongodb_prase_web_page_ok@{}".format(retMsg2[1])
-#                                 bytes_content = strMsg0.encode()
-#                                 bytes_content = bytes_content.zfill(128)
-#                                 assert (len(bytes_content) == 128)
-#                                 # 🛠todo fix 128 个byte 很傻
-#                                 connection.sendall(bytes_content)
-#                                 #############################################################
-#                             else:
-#                                 #############################################################
-#                                 strMsg0 = "state@fetch_a_stock_data_to_mongodb_prase_web_page_failed@%s"%retMsg2[0]
-#                                 bytes_content = strMsg0.encode()
-#                                 bytes_content = bytes_content.zfill(128)
-#                                 assert (len(bytes_content) == 128)
-#                                 # 🛠todo fix 128 个byte 很傻
-#                                 connection.sendall(bytes_content)
-#                                 #############################################################
-#
-#                         else:
-#                             #############################################################
-#                             strMsg0 = "state@fetch_a_stock_data_to_mongodb_open_web_page_failed@%s"%retMsg
-#                             bytes_content = strMsg0.encode()
-#                             bytes_content = bytes_content.zfill(128)
-#                             assert (len(bytes_content) == 128)
-#                             # 🛠todo fix 128 个byte 很傻
-#                             connection.sendall(bytes_content)
-#                             #############################################################
-#
-#                             print("🕹>>>>>>finish fetch_a_stock_data_to_mongodb>>>>>>>>");
-#
-#                         continue;
-#
-#                     if cmdArry[0] == 'shutdown_process':
-#                         #############################################################
-#                         strMsg0 = "state@shutdown_procceed"
-#                         bytes_content = strMsg0.encode()
-#                         bytes_content = bytes_content.zfill(128)
-#                         assert (len(bytes_content) == 128)
-#                         # 🛠todo fix 128 个byte 很傻
-#                         connection.sendall(bytes_content)
-#                         #############################################################
-#                         print("🕹>>>>>>do shutdown_process>>>>>>>");
-#                         break
-#                 else:
-#                     print("continue ❌data length is not 128 , continue recv...❌")
-#                     print('continue no data from', client_address)
-#                     continue
-#
-#         except Exception as ee:
-#             print(ee)
-#             strErroMsgGeneral = ee.__str__()
-#             #############################################################
-#             strMsg0 = "state@error_general_2@%s" % strErroMsgGeneral
-#             bytes_content = strMsg0.encode()
-#             bytes_content = bytes_content.zfill(128)
-#             assert (len(bytes_content) == 128)
-#             # 🛠todo fix 128 个byte 很傻
-#             connection.sendall(bytes_content)
-#             #############################################################
-#
-#         finally:
-#             pass
-#
-#     # Clean up the connection
-#     connection.close()
-#     sock.close()
-#     print('connect closed', client_address)
-#
-#
-#
-# def doBigLoop(strPort):
-#
-#     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#
-#     # Bind the socket to the port
-#     server_address = ('localhost', int(strPort))
-#     print('starting up on {} port {}'.format(*server_address))
-#     sock.bind(server_address)
-#
-#     # Listen for incoming connections
-#     sock.listen(1)
-#     working_browser = None
-#
-#
-#     # #############################################################
-#     # strMsg0 = "state@process_start_ok"
-#     # bytes_content = strMsg0.encode()
-#     # bytes_content = bytes_content.zfill(128)
-#     # assert (len(bytes_content) == 128)
-#     # # 🛠todo fix 128 个byte 很傻
-#     # connection.sendall(bytes_content)
-#     # #############################################################
-#     # print("🕹>>>>>>do process startup ok !>>>>>>>✅");
-#
-#
-#     while True:
-#         connection, client_address = sock.accept()
-#
-#         data = connection.recv(128)
-#         if data:
-#             print('received {!r}'.format(data))
-#
-#             cmdString = data.decode('utf-8');
-#             cmdString = cmdString.strip('0')
-#             cmdArry = cmdString.split('@')
-#
-#             print('cmd is {}'.format(cmdArry[0]))
-#             if cmdArry[0] == 'start_chrome_driver':
-#
-#                 print("🕹>>>>>>do start_chrome_driver_begin>>>>>");
-#
-#                 working_browser = open_chrome_driver()
-#                 if working_browser is not None:
-#                     #############################################################
-#                     strMsg0 = "state@start_chrome_driver_ok"
-#                     bytes_content = strMsg0.encode()
-#                     bytes_content = bytes_content.zfill(128)
-#                     assert (len(bytes_content) == 128)
-#                     # 🛠todo fix 128 个byte 很傻
-#                     connection.sendall(bytes_content)
-#                     #############################################################
-#                     print("🕹>>>>>>do start_chrome_driver_ok>>>>>>>✅");
-#                 else:
-#                     #############################################################
-#                     strMsg0 = "state@start_chrome_driver_failed@%s" % start_up_chrome_driver_error_message
-#                     bytes_content = strMsg0.encode()
-#                     bytes_content = bytes_content.zfill(128)
-#                     assert (len(bytes_content) == 128)
-#                     # 🛠todo fix 128 个byte 很傻
-#                     connection.sendall(bytes_content)
-#                     #############################################################
-#                     print("🕹>>>>>>do start_chrome_driver_failed>>>>>>>❌");
-#
-#                 # time.sleep(2)
-#                 continue
-#
-#
-#             if cmdArry[0] == 'shutdown_chrome_driver':
-#
-#                 if working_browser is not None:
-#                     working_browser.quit()
-#                     #############################################################
-#                     strMsg0 = "state@shutdown_chrome_driver_ok"
-#                     bytes_content = strMsg0.encode()
-#                     bytes_content = bytes_content.zfill(128)
-#                     assert (len(bytes_content) == 128)
-#                     # 🛠todo fix 128 个byte 很傻
-#                     connection.sendall(bytes_content)
-#                     #############################################################
-#                     print("🕹>>>>>>do shutdown_chrome_driver_ok>>>>>>>✅");
-#                 continue
-#
-#             if cmdArry[0] == 'shutdown_process':
-#                 #############################################################
-#                 strMsg0 = "state@shutdown_procceed"
-#                 bytes_content = strMsg0.encode()
-#                 bytes_content = bytes_content.zfill(128)
-#                 assert (len(bytes_content) == 128)
-#                 # 🛠todo fix 128 个byte 很傻
-#                 connection.sendall(bytes_content)
-#                 #############################################################
-#                 print("🕹>>>>>>do shutdown_process>>>>>>>");
-#                 connection.close()
-#                 exit(0)
-#                 return
-#         pass
-
-
-# globale
 
 working_browser = None
 

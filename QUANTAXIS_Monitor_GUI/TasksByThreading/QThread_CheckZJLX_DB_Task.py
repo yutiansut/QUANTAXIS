@@ -57,6 +57,7 @@ class QThread_Check_ZJLX_DB_Status(QThread_RootClass):
             return elem['_id']
         items.sort(key=takeId_sort)
 
+        #停牌的股票，过滤
         strToday = QADate.QA_util_today_str()
         strLastTradeDate = QADate_trade.QA_util_get_real_date(strToday)
         strLastTradeDate = QADate_trade.QA_util_get_last_day(strLastTradeDate) #网页版资金流向只更新到前一天
