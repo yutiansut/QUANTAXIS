@@ -135,6 +135,9 @@ class QA_Dealer():
         if order.market_type == MARKET_TYPE.STOCK_CN:
             return self.backtest_stock_dealer()
 
+        elif order.market_type == MARKET_TYPE.FUTURE_CN:
+            return self.backtest_future_dealer()
+
     @property
     def callback_message(self):
         # 这是标准的return back message
@@ -142,42 +145,7 @@ class QA_Dealer():
 
         message = [self.order.account_cookie, self.order.sending_time, self.order.code, None, self.order.towards, float("%.2f" % float(self.deal_price)),
                    self.order.price, self.order.status, self.order.amount, self.deal_amount, 0, QA_util_random_with_topic('Trade')]
-        # message = {
-        #     'header': {
-        #         'source': 'market',
-        #         'status': self.status,
-        #         'code': self.order.code,
-        #         'session': {
-        #             'user': self.order.user,
-        #             'strategy': self.order.strategy,
-        #             'account': self.order.account_cookie
-        #         },
-        #         'order_id': self.order.order_id,
-        #         'trade_id': QA_util_random_with_topic('Trade')
-        #     },
-        #     'body': {
-        #         'order': {
-        #             'price': float("%.2f" % float(self.deal_price)),
-        #             'code': self.order.code,
-        #             'amount': self.deal_amount,
-        #             'date': self.order.date,
-        #             'datetime': self.order.datetime,
-        #             'towards': self.order.towards
-        #         },
-        #         # 'market': {
-        #         #     'open': self.market_data.get('open'),
-        #         #     'high': self.market_data.get('high'),
-        #         #     'low': self.market_data.get('low'),
-        #         #     'close': self.market_data.get('close'),
-        #         #     'volume': self.market_data.get('volume'),
-        #         #     'code': self.market_data.get('code')
-        #         # },
-        #         'fee': {
-        #             'commission': self.commission_fee,
-        #             'tax': self.tax
-        #         }
-        #     }
-        # }
+
         return message
 
     def cal_fee(self):
@@ -272,6 +240,8 @@ class QA_Dealer():
             self.status = TRADE_STATUS.NO_MARKET_DATA
             return self.callback_message
 
+    def backtest_future_dealer(self):
+        raise NotImplementedError
 
 class Stock_Dealer(QA_Dealer):
     def __init__(self, *args, **kwargs):
