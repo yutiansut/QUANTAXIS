@@ -65,6 +65,8 @@ class MyTableModel(QAbstractTableModel):
     def __init__(self,stock_block_list=None, parent=None, *args):
 
         QAbstractTableModel.__init__(self, parent, *args)
+
+        # 🛠 todo 实现排序，
         self.arraydata = [
                     ['22',  '44', '55', '22'],
                     ['050', '01', '02', '33'],
@@ -137,6 +139,8 @@ class MyTableModel(QAbstractTableModel):
                 aQVariant = QVariant(strMsg)
             return aQVariant
 
+
+    # 🛠 todo 实现排序，
     def sort(self, Ncol, order):
         """Sort table by given column number.
         """
