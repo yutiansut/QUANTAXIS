@@ -213,6 +213,8 @@ class QA_BacktestBroker(QA_Broker):
             return pd.DataFrame(list(self.deal_message.values()), columns=self.orderstatus_headers).set_index(['account_cookie', 'realorder_id'])
         elif status == 'filled':
             pass
+        elif status == 'open':
+            pass
 
     def query_deal(self,account):
         pass
