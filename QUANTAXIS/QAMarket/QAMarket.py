@@ -381,7 +381,8 @@ class QA_Market(QA_Trade):
                     event_type=MARKET_EVENT.QUERY_DEAL,
                     account_cookie=list(self.session.keys()),
                     broker=[self.broker[item.broker]
-                            for item in self.session.values()]
+                            for item in self.session.values()],
+                    event_queue=self.trade_engine.kernels_dict['ORDER'].queue
                 )
             ), nowait=True
         )
@@ -399,7 +400,7 @@ class QA_Market(QA_Trade):
                     # 注意: 一定要给子线程的队列@@@!!!
                     # 2018-08-08 yutiansut
                     # 这个callback实现了子线程方法的自我驱动和异步任务
-                    callback=self.trade_engine.kernels_dict['ORDER'].queue
+                    event_queue=self.trade_engine.kernels_dict['ORDER'].queue
                 )
             ), nowait=True
         )

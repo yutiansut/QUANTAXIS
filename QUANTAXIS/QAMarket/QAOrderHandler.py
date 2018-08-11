@@ -107,10 +107,10 @@ class QA_OrderHandler(QA_Worker):
             """
 
             order = event.order
-            print(event.broker)
+            # print(event.broker)
             order = event.broker.receive_order(
                 QA_Event(event_type=BROKER_EVENT.TRADE, order=event.order))
-            print(threading.current_thread().ident)
+            # print(threading.current_thread().ident)
             order = self.order_queue.insert_order(order)
             if event.callback:
                 event.callback(order)
@@ -146,7 +146,7 @@ class QA_OrderHandler(QA_Worker):
             """
 
             if self.if_start_orderquery:
-                #if QA_util_if_tradetime(datetime.datetime.now()):
+                # if QA_util_if_tradetime(datetime.datetime.now()):
 
                     # print(event.broker)
                     # print(event.account_cookie)
@@ -169,11 +169,11 @@ class QA_OrderHandler(QA_Worker):
             # 这里加入随机的睡眠时间 以免被发现固定的刷新请求
             # event=event
             event.event_type = MARKET_EVENT.QUERY_DEAL
-            if event.callback.qsize() < 1:
+            if event.event_queue.qsize() < 1:
                 time.sleep(random.randint(1, 2))
 
             # 非阻塞
-            event.callback.put(
+            event.event_queue.put(
                 QA_Task(
                     worker=self,
                     engine='ORDER',
@@ -186,7 +186,7 @@ class QA_OrderHandler(QA_Worker):
             # self.run(event)
 
             # print(self.order_status)
-            #print('UPDATE ORDERS')
+            # print('UPDATE ORDERS')
 
         elif event.event_type is MARKET_EVENT.QUERY_DEAL:
 
@@ -215,11 +215,11 @@ class QA_OrderHandler(QA_Worker):
                 # print(self.order_status)
 
             # 这里加入随机的睡眠时间 以免被发现固定的刷新请求
-            if event.callback.qsize() < 1:
+            if event.event_queue.qsize() < 1:
                 time.sleep(random.randint(2, 5))
             event.event_type = MARKET_EVENT.QUERY_ORDER
 
-            event.callback.put(
+            event.event_queue.put(
                 QA_Task(
                     worker=self,
                     engine='ORDER',
