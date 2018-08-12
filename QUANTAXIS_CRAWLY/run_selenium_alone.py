@@ -17,6 +17,8 @@ import timeit
 from QUANTAXIS.QAUtil import (DATABASE)
 
 def open_chrome_driver():
+
+
     if sys.platform == 'darwin':
         browser = webdriver.Chrome('./QUANTAXIS_WEBDRIVER/macos/chromedriver')
     elif sys.platform == 'win32':
@@ -33,6 +35,10 @@ def open_chrome_driver():
 
 def close_chrome_dirver(browser):
     browser.quit()
+
+
+
+
 
 def read_east_money_page_zjlx_to_sqllite(stockCode, browser):
 

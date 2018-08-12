@@ -183,7 +183,7 @@ close     1     0.6    0.7    0.8     0.6
         with open(file=lday_fullpath, mode='rb') as f:
 
             curdir = os.getcwd()
-            print("📊准备写入📝db🗃文件到目录📂%s" % (curdir + "/tdx_days"))
+            print("准备写入db🗃文件到目录%s" % (curdir + "/tdx_days"))
             path_for_save_data = curdir + "/tdx_days"
             path_for_save_data = path_for_save_data.rstrip("\\")
             isExists = os.path.exists(path_for_save_data)
@@ -205,7 +205,7 @@ close     1     0.6    0.7    0.8     0.6
 
                 #进度条显示
                 iii = round((iCount / nStockCount) * 100.0)
-                s1 = "\r🚀%s %d%%[%s%s]" % (lday_fullpath, iii, "🐌" * iii, " " * (100 - iii))
+                s1 = "\r%s %d%%[%s%s]" % (lday_fullpath, iii, "🐌" * iii, " " * (100 - iii))
                 sys.stdout.write(s1)
                 sys.stdout.flush()
 
@@ -423,7 +423,7 @@ close     1     0.6    0.7    0.8     0.6
         #sorted(stock_list, key='code')
 
         curdir = os.getcwd()
-        print("📊准备读取📝db🗃文件，目录位置📂%s" % (curdir + "/tdx_days"))
+        print("准备读取db🗃文件，目录位置%s" % (curdir + "/tdx_days"))
         path_for_saved_data = curdir + "/tdx_days"
         path_for_saved_data = path_for_saved_data.rstrip("\\")
         isExists = os.path.exists(path_for_saved_data)
@@ -483,7 +483,7 @@ close     1     0.6    0.7    0.8     0.6
                 continue
 
             sqlLiteFile = path_for_saved_data + '/' + strSavedFileName
-            print("📝⛓⚙️🔬📈📉📊️读取SQLLite文件{}比对数据".format(sqlLiteFile))
+            print("⛓⚙️🔬📈📉️读取SQLLite文件{}比对数据".format(sqlLiteFile))
 
             conn = sqlite3.connect(sqlLiteFile)
             cur = conn.cursor()
@@ -612,12 +612,12 @@ QUANTAXIS>>
  ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` 
  ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` 
  
-📡 Get stock info from tushare,stock count is 3533
+ Get stock info from tushare,stock count is 3533
 /Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS/QASU/save_tushare.py:142: DeprecationWarning: insert is deprecated. Use insert_one or insert_many instead.
   coll.insert(json_data)
-📝 Save data to stock_info_tushare collection， OK✅
-📊准备读取📝db🗃文件，目录位置📂/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days
-📝⛓⚙️🔬📈📉📊️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600000.day.db比对数据
+ Save data to stock_info_tushare collection， OK
+准备读取db🗃文件，目录位置/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days
+⛓⚙️🔬📈📉️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600000.day.db比对数据
 /Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS/QAFetch/QAQuery.py:68: DeprecationWarning: 
 .ix is deprecated. Please use
 .loc for label based indexing or
@@ -626,7 +626,7 @@ QUANTAXIS>>
 See the documentation here:
 http://pandas.pydata.org/pandas-docs/stable/indexing.html#ix-indexer-is-deprecated
   res = res.ix[:, ['code', 'open', 'high', 'low',
-💢 Error QA_fetch_stock_day_adv parameter code=600000 , start=2001-06-25, end=2001-06-25 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600000 , start=2001-06-25, end=2001-06-25 call QA_fetch_stock_day return None
 error 
 (20010625, 2025, 2030, 2005, 2021, 19141800.0, 949300, 2021)
 数据库读取记录错误
@@ -634,7 +634,7 @@ error
 20.25  开盘价不匹配  20.17
 (20010625, 2025, 2030, 2005, 2021, 19141800.0, 949300, 2021)
 20.3  最高价不匹配  20.23
-💢 Error QA_fetch_stock_day_adv parameter code=600000 , start=2001-08-16, end=2001-08-16 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600000 , start=2001-08-16, end=2001-08-16 call QA_fetch_stock_day return None
 error 
 (20010816, 1588, 1595, 1560, 1564, 9489000.0, 600700, 1588)
 数据库读取记录错误
@@ -650,7 +650,7 @@ error
 17.34  收盘价不匹配  17.31
 (20030827, 1050, 1050, 1027, 1032, 35389780.0, 3419950, 1035)
 10.32  收盘价不匹配  10.33
-💢 Error QA_fetch_stock_day_adv parameter code=600000 , start=2018-07-06, end=2018-07-06 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600000 , start=2018-07-06, end=2018-07-06 call QA_fetch_stock_day return None
 error 
 (20180706, 931, 943, 917, 937, 210564112.0, 22594443, 65536)
 数据库读取记录错误
@@ -662,7 +662,7 @@ error
 9.17  最低价不匹配  9.22
 (20180706, 931, 943, 917, 937, 210564112.0, 22594443, 65536)
 9.37  收盘价不匹配  9.26
-💢 Error QA_fetch_stock_day_adv parameter code=600000 , start=2018-07-09, end=2018-07-09 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600000 , start=2018-07-09, end=2018-07-09 call QA_fetch_stock_day return None
 error 
 (20180709, 937, 963, 937, 960, 212109328.0, 22172565, 65536)
 数据库读取记录错误
@@ -674,7 +674,7 @@ error
 9.37  最低价不匹配  9.22
 (20180709, 937, 963, 937, 960, 212109328.0, 22172565, 65536)
 9.6  收盘价不匹配  9.26
-💢 Error QA_fetch_stock_day_adv parameter code=600000 , start=2018-07-10, end=2018-07-10 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600000 , start=2018-07-10, end=2018-07-10 call QA_fetch_stock_day return None
 error 
 (20180710, 961, 965, 950, 957, 118668136.0, 12402837, 65536)
 数据库读取记录错误
@@ -686,10 +686,10 @@ error
 9.5  最低价不匹配  9.22
 (20180710, 961, 965, 950, 957, 118668136.0, 12402837, 65536)
 9.57  收盘价不匹配  9.26
-📝⛓⚙️🔬📈📉📊️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600004.day.db比对数据
+⛓⚙️🔬📈📉️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600004.day.db比对数据
 (20030715, 912, 925, 908, 916, 52158256.0, 5684894, 913)
 9.16  收盘价不匹配  9.17
-💢 Error QA_fetch_stock_day_adv parameter code=600004 , start=2018-07-06, end=2018-07-06 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600004 , start=2018-07-06, end=2018-07-06 call QA_fetch_stock_day return None
 error 
 (20180706, 1295, 1344, 1282, 1327, 209779264.0, 15927074, 65536)
 数据库读取记录错误
@@ -701,7 +701,7 @@ error
 12.82  最低价不匹配  12.86
 (20180706, 1295, 1344, 1282, 1327, 209779264.0, 15927074, 65536)
 13.27  收盘价不匹配  12.93
-💢 Error QA_fetch_stock_day_adv parameter code=600004 , start=2018-07-09, end=2018-07-09 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600004 , start=2018-07-09, end=2018-07-09 call QA_fetch_stock_day return None
 error 
 (20180709, 1330, 1410, 1321, 1395, 210136768.0, 15306820, 65536)
 数据库读取记录错误
@@ -713,7 +713,7 @@ error
 13.21  最低价不匹配  12.86
 (20180709, 1330, 1410, 1321, 1395, 210136768.0, 15306820, 65536)
 13.95  收盘价不匹配  12.93
-💢 Error QA_fetch_stock_day_adv parameter code=600004 , start=2018-07-10, end=2018-07-10 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600004 , start=2018-07-10, end=2018-07-10 call QA_fetch_stock_day return None
 error 
 (20180710, 1399, 1465, 1399, 1428, 288483008.0, 20118802, 65536)
 数据库读取记录错误
@@ -725,8 +725,8 @@ error
 13.99  最低价不匹配  12.86
 (20180710, 1399, 1465, 1399, 1428, 288483008.0, 20118802, 65536)
 14.28  收盘价不匹配  12.93
-📝⛓⚙️🔬📈📉📊️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600006.day.db比对数据
-💢 Error QA_fetch_stock_day_adv parameter code=600006 , start=2001-06-25, end=2001-06-25 call QA_fetch_stock_day return None
+⛓⚙️🔬📈📉️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600006.day.db比对数据
+ Error QA_fetch_stock_day_adv parameter code=600006 , start=2001-06-25, end=2001-06-25 call QA_fetch_stock_day return None
 error 
 (20010625, 983, 1005, 983, 1005, 39266808.0, 3935300, 988)
 数据库读取记录错误
@@ -738,7 +738,7 @@ error
 9.83  最低价不匹配  9.81
 (20010625, 983, 1005, 983, 1005, 39266808.0, 3935300, 988)
 10.05  收盘价不匹配  9.88
-💢 Error QA_fetch_stock_day_adv parameter code=600006 , start=2001-08-16, end=2001-08-16 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600006 , start=2001-08-16, end=2001-08-16 call QA_fetch_stock_day return None
 error 
 (20010816, 1006, 1006, 980, 980, 8620000.0, 870500, 1000)
 数据库读取记录错误
@@ -758,7 +758,7 @@ error
 10.93  收盘价不匹配  10.94
 (20031013, 1081, 1110, 1070, 1084, 2748873.0, 252331, 1094)
 10.84  收盘价不匹配  10.9
-💢 Error QA_fetch_stock_day_adv parameter code=600006 , start=2018-07-06, end=2018-07-06 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600006 , start=2018-07-06, end=2018-07-06 call QA_fetch_stock_day return None
 error 
 (20180706, 383, 390, 376, 387, 24013064.0, 6237196, 65536)
 数据库读取记录错误
@@ -770,7 +770,7 @@ error
 3.76  最低价不匹配  3.81
 (20180706, 383, 390, 376, 387, 24013064.0, 6237196, 65536)
 3.87  收盘价不匹配  3.82
-💢 Error QA_fetch_stock_day_adv parameter code=600006 , start=2018-07-09, end=2018-07-09 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600006 , start=2018-07-09, end=2018-07-09 call QA_fetch_stock_day return None
 error 
 (20180709, 387, 395, 386, 395, 22124384.0, 5653076, 65536)
 数据库读取记录错误
@@ -782,7 +782,7 @@ error
 3.86  最低价不匹配  3.81
 (20180709, 387, 395, 386, 395, 22124384.0, 5653076, 65536)
 3.95  收盘价不匹配  3.82
-💢 Error QA_fetch_stock_day_adv parameter code=600006 , start=2018-07-10, end=2018-07-10 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600006 , start=2018-07-10, end=2018-07-10 call QA_fetch_stock_day return None
 error 
 (20180710, 392, 397, 391, 395, 12712953.0, 3225950, 65536)
 数据库读取记录错误
@@ -794,8 +794,8 @@ error
 3.91  最低价不匹配  3.81
 (20180710, 392, 397, 391, 395, 12712953.0, 3225950, 65536)
 3.95  收盘价不匹配  3.82
-📝⛓⚙️🔬📈📉📊️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600007.day.db比对数据
-💢 Error QA_fetch_stock_day_adv parameter code=600007 , start=2001-06-25, end=2001-06-25 call QA_fetch_stock_day return None
+⛓⚙️🔬📈📉️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600007.day.db比对数据
+ Error QA_fetch_stock_day_adv parameter code=600007 , start=2001-06-25, end=2001-06-25 call QA_fetch_stock_day return None
 error 
 (20010625, 1225, 1238, 1215, 1236, 11407816.0, 931000, 1223)
 数据库读取记录错误
@@ -807,7 +807,7 @@ error
 12.15  最低价不匹配  12.05
 (20010625, 1225, 1238, 1215, 1236, 11407816.0, 931000, 1223)
 12.36  收盘价不匹配  12.23
-💢 Error QA_fetch_stock_day_adv parameter code=600007 , start=2001-08-16, end=2001-08-16 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600007 , start=2001-08-16, end=2001-08-16 call QA_fetch_stock_day return None
 error 
 (20010816, 1110, 1110, 1086, 1087, 4842000.0, 442300, 1103)
 数据库读取记录错误
@@ -823,7 +823,7 @@ error
 6.78  收盘价不匹配  6.79
 (20031009, 650, 652, 633, 634, 2022967.0, 314300, 648)
 6.34  收盘价不匹配  6.35
-💢 Error QA_fetch_stock_day_adv parameter code=600007 , start=2018-07-06, end=2018-07-06 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600007 , start=2018-07-06, end=2018-07-06 call QA_fetch_stock_day return None
 error 
 (20180706, 1385, 1412, 1376, 1405, 5784274.0, 415398, 65536)
 数据库读取记录错误
@@ -835,7 +835,7 @@ error
 13.76  最低价不匹配  13.75
 (20180706, 1385, 1412, 1376, 1405, 5784274.0, 415398, 65536)
 14.05  收盘价不匹配  13.85
-💢 Error QA_fetch_stock_day_adv parameter code=600007 , start=2018-07-09, end=2018-07-09 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600007 , start=2018-07-09, end=2018-07-09 call QA_fetch_stock_day return None
 error 
 (20180709, 1409, 1440, 1394, 1435, 7855905.0, 550900, 65536)
 数据库读取记录错误
@@ -847,7 +847,7 @@ error
 13.94  最低价不匹配  13.75
 (20180709, 1409, 1440, 1394, 1435, 7855905.0, 550900, 65536)
 14.35  收盘价不匹配  13.85
-💢 Error QA_fetch_stock_day_adv parameter code=600007 , start=2018-07-10, end=2018-07-10 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600007 , start=2018-07-10, end=2018-07-10 call QA_fetch_stock_day return None
 error 
 (20180710, 1435, 1443, 1426, 1431, 4082487.0, 284800, 65536)
 数据库读取记录错误
@@ -859,8 +859,8 @@ error
 14.26  最低价不匹配  13.75
 (20180710, 1435, 1443, 1426, 1431, 4082487.0, 284800, 65536)
 14.31  收盘价不匹配  13.85
-📝⛓⚙️🔬📈📉📊️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600008.day.db比对数据
-💢 Error QA_fetch_stock_day_adv parameter code=600008 , start=2001-06-25, end=2001-06-25 call QA_fetch_stock_day return None
+⛓⚙️🔬📈📉️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600008.day.db比对数据
+ Error QA_fetch_stock_day_adv parameter code=600008 , start=2001-06-25, end=2001-06-25 call QA_fetch_stock_day return None
 error 
 (20010625, 2050, 2080, 2022, 2055, 36964504.0, 1802600, 2040)
 数据库读取记录错误
@@ -872,7 +872,7 @@ error
 20.22  最低价不匹配  20.18
 (20010625, 2050, 2080, 2022, 2055, 36964504.0, 1802600, 2040)
 20.55  收盘价不匹配  20.4
-💢 Error QA_fetch_stock_day_adv parameter code=600008 , start=2001-08-16, end=2001-08-16 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600008 , start=2001-08-16, end=2001-08-16 call QA_fetch_stock_day return None
 error 
 (20010816, 1861, 1861, 1799, 1810, 17556000.0, 965700, 1850)
 数据库读取记录错误
@@ -888,7 +888,7 @@ error
 13.74  收盘价不匹配  13.75
 (20030715, 1098, 1098, 1080, 1094, 8865431.0, 814947, 1086)
 10.94  收盘价不匹配  10.93
-💢 Error QA_fetch_stock_day_adv parameter code=600008 , start=2018-07-06, end=2018-07-06 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600008 , start=2018-07-06, end=2018-07-06 call QA_fetch_stock_day return None
 error 
 (20180706, 418, 420, 410, 418, 55594440.0, 13370113, 65536)
 数据库读取记录错误
@@ -898,7 +898,7 @@ error
 4.1  最低价不匹配  4.13
 (20180706, 418, 420, 410, 418, 55594440.0, 13370113, 65536)
 4.18  收盘价不匹配  4.19
-💢 Error QA_fetch_stock_day_adv parameter code=600008 , start=2018-07-09, end=2018-07-09 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600008 , start=2018-07-09, end=2018-07-09 call QA_fetch_stock_day return None
 error 
 (20180709, 420, 423, 418, 421, 52399204.0, 12461261, 65536)
 数据库读取记录错误
@@ -910,7 +910,7 @@ error
 4.18  最低价不匹配  4.13
 (20180709, 420, 423, 418, 421, 52399204.0, 12461261, 65536)
 4.21  收盘价不匹配  4.19
-💢 Error QA_fetch_stock_day_adv parameter code=600008 , start=2018-07-10, end=2018-07-10 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600008 , start=2018-07-10, end=2018-07-10 call QA_fetch_stock_day return None
 error 
 (20180710, 422, 425, 418, 422, 49840248.0, 11830708, 65536)
 数据库读取记录错误
@@ -922,8 +922,8 @@ error
 4.18  最低价不匹配  4.13
 (20180710, 422, 425, 418, 422, 49840248.0, 11830708, 65536)
 4.22  收盘价不匹配  4.19
-📝⛓⚙️🔬📈📉📊️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600009.day.db比对数据
-💢 Error QA_fetch_stock_day_adv parameter code=600009 , start=2001-06-25, end=2001-06-25 call QA_fetch_stock_day return None
+⛓⚙️🔬📈📉️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600009.day.db比对数据
+ Error QA_fetch_stock_day_adv parameter code=600009 , start=2001-06-25, end=2001-06-25 call QA_fetch_stock_day return None
 error 
 (20010625, 1040, 1048, 1035, 1048, 27798452.0, 2666400, 1037)
 数据库读取记录错误
@@ -935,7 +935,7 @@ error
 10.35  最低价不匹配  10.19
 (20010625, 1040, 1048, 1035, 1048, 27798452.0, 2666400, 1037)
 10.48  收盘价不匹配  10.37
-💢 Error QA_fetch_stock_day_adv parameter code=600009 , start=2001-08-16, end=2001-08-16 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600009 , start=2001-08-16, end=2001-08-16 call QA_fetch_stock_day return None
 error 
 (20010816, 920, 922, 910, 911, 3601000.0, 394800, 919)
 数据库读取记录错误
@@ -949,7 +949,7 @@ error
 9.11  收盘价不匹配  9.19
 (20030715, 1130, 1154, 1129, 1143, 103606064.0, 9040788, 1130)
 11.43  收盘价不匹配  11.44
-💢 Error QA_fetch_stock_day_adv parameter code=600009 , start=2018-07-06, end=2018-07-06 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600009 , start=2018-07-06, end=2018-07-06 call QA_fetch_stock_day return None
 error 
 (20180706, 5738, 5755, 5483, 5589, 264316880.0, 4734517, 65536)
 数据库读取记录错误
@@ -961,7 +961,7 @@ error
 54.83  最低价不匹配  55.91
 (20180706, 5738, 5755, 5483, 5589, 264316880.0, 4734517, 65536)
 55.89  收盘价不匹配  57.38
-💢 Error QA_fetch_stock_day_adv parameter code=600009 , start=2018-07-09, end=2018-07-09 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600009 , start=2018-07-09, end=2018-07-09 call QA_fetch_stock_day return None
 error 
 (20180709, 5680, 5718, 5608, 5704, 238465936.0, 4201977, 65536)
 数据库读取记录错误
@@ -973,7 +973,7 @@ error
 56.08  最低价不匹配  55.91
 (20180709, 5680, 5718, 5608, 5704, 238465936.0, 4201977, 65536)
 57.04  收盘价不匹配  57.38
-💢 Error QA_fetch_stock_day_adv parameter code=600009 , start=2018-07-10, end=2018-07-10 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600009 , start=2018-07-10, end=2018-07-10 call QA_fetch_stock_day return None
 error 
 (20180710, 5705, 6020, 5705, 6018, 471883008.0, 7931726, 65536)
 数据库读取记录错误
@@ -985,8 +985,8 @@ error
 57.05  最低价不匹配  55.91
 (20180710, 5705, 6020, 5705, 6018, 471883008.0, 7931726, 65536)
 60.18  收盘价不匹配  57.38
-📝⛓⚙️🔬📈📉📊️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600010.day.db比对数据
-💢 Error QA_fetch_stock_day_adv parameter code=600010 , start=2001-06-25, end=2001-06-25 call QA_fetch_stock_day return None
+⛓⚙️🔬📈📉️读取SQLLite文件/Users/jerryw/MyCode/QUANTAXIS/QUANTAXIS_Test/QAData_Test/tdx_days/sh600010.day.db比对数据
+ Error QA_fetch_stock_day_adv parameter code=600010 , start=2001-06-25, end=2001-06-25 call QA_fetch_stock_day return None
 error 
 (20010625, 725, 740, 723, 728, 69837312.0, 9539700, 723)
 数据库读取记录错误
@@ -998,7 +998,7 @@ error
 7.23  最低价不匹配  7.1
 (20010625, 725, 740, 723, 728, 69837312.0, 9539700, 723)
 7.28  收盘价不匹配  7.23
-💢 Error QA_fetch_stock_day_adv parameter code=600010 , start=2001-08-16, end=2001-08-16 call QA_fetch_stock_day return None
+ Error QA_fetch_stock_day_adv parameter code=600010 , start=2001-08-16, end=2001-08-16 call QA_fetch_stock_day return None
 error 
 (20010816, 656, 657, 645, 645, 6574000.0, 1015100, 656)
 数据库读取记录错误

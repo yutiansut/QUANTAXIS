@@ -63,6 +63,9 @@ class QA_Order():
                  towards=None, code=None, user=None, account_cookie=None, strategy=None, order_model=None, money=None, amount_model=AMOUNT_MODEL.BY_AMOUNT,
                  order_id=None, trade_id=None, status='100', callback=False, commission_coeff=0.00025, tax_coeff=0.001, *args, **kwargs):
         '''
+
+
+
         QA_Order 对象表示一个委托业务， 有如下字段
         :param price:           委托的价格        type float
         :param date:            委托的日期        type str , eg 2018-11-11
@@ -70,6 +73,8 @@ class QA_Order():
         :param sending_time:    发送委托单的时间   type str , eg 2018-11-11 00:00:00
         :param transact_time:   委托成交的时间
         :param amount:          委托量               type int
+        :param trade_amount     成交数量
+        :param cancel_amount    撤销数量
         :param market_type:     委托的市场            type str eg 'stock_cn'
         :param frequence:       频率                 type str 'day'
         :param towards:         委托方向              type int
@@ -88,6 +93,18 @@ class QA_Order():
         :param tax_coeff:        默认 0.0015  type float
         :param args: type tuple
         :param kwargs: type dict
+
+        # 2018-08-12 把order变成一个状态机>
+        # 以前的order只是一个信息承载的工具,现在需要让他具备状态的方法
+
+        NEW = 100
+        SUCCESS_ALL = 200
+        SUCCESS_PART = 203 # success_part 是部分成交 一个中间状态 剩余的订单还在委托队列中
+        QUEUED = 300  # queued 用于表示在order_queue中 实际表达的意思是订单存活 待成交
+        CANCEL = 400
+        CANCEL_PART = 402 # cancel_part是部分撤单(及 下单后成交了一部分 剩余的被撤单 这是一个最终状态)
+        SETTLED = 500
+        FAILED = 600
         '''
 
         self.price = price
@@ -105,15 +122,16 @@ class QA_Order():
             self.datetime = datetime
         else:
             pass
-
         self.sending_time = self.datetime if sending_time is None else sending_time  # 下单时间
-        self.transact_time = transact_time
-        self.amount = amount
+        self.transact_time = transact_time  # 成交时间
+        self.amount = amount  # 委托数量
+        self.trade_amount = 0  # 成交数量
+        self.cancel_amount = 0  # 撤销数量
         self.towards = towards  # side
-        self.code = code
-        self.user = user
-        self.market_type = market_type
-        self.frequence = frequence
+        self.code = code  # 委托证券代码
+        self.user = user  # 委托用户
+        self.market_type = market_type  # 委托市场类别
+        self.frequence = frequence  # 委托所在的频率(回测用)
         self.account_cookie = account_cookie
         self.strategy = strategy
         self.type = market_type  # see below
@@ -125,9 +143,13 @@ class QA_Order():
         self.commission_coeff = commission_coeff
         self.tax_coeff = tax_coeff
         self.trade_id = trade_id
-        self.status = status
-        self.callback = callback
-        self.money = money
+        self.callback = callback  # 委托成功的callback
+        self.money = money  # 委托需要的金钱
+        self.reason = None  # 原因列表
+
+    @property
+    def pending_amount(self):
+        return self.amount-self.cancel_amount-self.trade_amount
 
     def __repr__(self):
         '''
@@ -137,15 +159,83 @@ class QA_Order():
         return '< QA_Order realorder_id {} datetime:{} code:{} amount:{} price:{} towards:{} btype:{} order_id:{} account:{} status:{} >'.format(
             self.realorder_id, self.datetime, self.code, self.amount, self.price, self.towards, self.type, self.order_id, self.account_cookie, self.status)
 
+    @property
+    def status(self):
+
+        # 以下几个都是最终状态 并且是外部动作导致的
+        if self._status in [ORDER_STATUS.FAILED,ORDER_STATUS.SETTLED,ORDER_STATUS.CANCEL_ALL,ORDER_STATUS.CANCEL_PART]:
+            return self._status
+
+        if self.pending_amount <= 0:
+            self._status = ORDER_STATUS.SUCCESS_ALL
+            return self._status
+        elif self.pending_amount > 0 and self.trade_amount > 0:
+            self._status = ORDER_STATUS.SUCCESS_PART
+            return self._status
+        elif self.trade_amount == 0:
+            self._status = ORDER_STATUS.QUEUED
+
+    def create(self):
+        """创建订单
+        """
+
+        self._status = ORDER_STATUS.NEW
+
+    def cancel(self):
+        """撤单
+        
+        Arguments:
+            amount {int} -- 撤单数量
+        """
+
+        self.cancel_amount= self.amount- self.trade_amount
+        if self.trade_amount==0:
+            self._status= ORDER_STATUS.CANCEL_ALL
+        else:
+            self._status= ORDER_STATUS.CANCEL_PART
+
+    def failed(self, reason=None):
+        """失败订单(未成功创建入broker)
+        
+        Arguments:
+            reason {str} -- 失败原因
+        """
+
+        self._status = ORDER_STATUS.FAILED
+        self.reason = str(reason)
+
+    def trade(self, amount):
+        """trade 状态
+
+        Arguments:
+            amount {[type]} -- [description]
+        """
+
+        self.trade_amount += amount
+
+
+    def settle(self):
+        self._status = ORDER_STATUS.SETTLED
+
     def get(self, key, exception=None):
         try:
             if key is None:
                 print("key is none , return none!")
-                return None;
+                return None
             return eval('self.{}'.format(key))
         except:
             return exception
     # 🛠todo 建议取消，直接调用var
+
+    def callingback(self):
+        """回调函数
+        
+        Returns:
+            [type] -- [description]
+        """
+
+        if self.callback:
+            return self.callback
 
     def info(self):
         '''
@@ -223,28 +313,30 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
     """
 
     def __init__(self):
+        """重新修改 优化性能
 
-        self.order_list = []
+        1. 维护两个dict
+           order_list 是一天的所有订单
+           deal_list 是历史的成交单(settle以后 , 把order_list append进去)
+        """
 
-        # 🛠 todo 是为了速度快把order对象转换成 df 对象的吗？
-        # 🛠 todo 维护两个变量queue，代价很大
-        # 🛠 todo 建议直接保存 QA_Order， 速度慢？
-        self.queue_df = pd.DataFrame()
-        self._queue_dict = {}
+        self.order_list = {}
+        self.deal_list = {}
 
     def __repr__(self):
-        return '< QA_OrderQueue AMOUNT {} WAITING TRADE {} >'.format(len(self.queue_df), len(self.pending))
+        return '<QA_ORDERQueue>'
+        # return '< QA_OrderQueue AMOUNT {} WAITING TRADE {} >'.format(len(self.queue_df), len(self.pending))
 
     def __call__(self):
-        return self.queue_df
+        return self.order_list
 
-    def _from_dataframe(self, dataframe):
-        try:
-            self.order_list = [QA_Order().from_dict(item)
-                               for item in QA_util_to_json_from_pandas(dataframe)]
-            return self.order_list
-        except:
-            pass
+    # def _from_dataframe(self, dataframe):
+    #     try:
+    #         self.order_list = [QA_Order().from_dict(item)
+    #                            for item in QA_util_to_json_from_pandas(dataframe)]
+    #         return self.order_list
+    #     except:
+    #         pass
 
     def insert_order(self, order):
         '''
@@ -253,36 +345,46 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
         '''
         #print("     *>> QAOrder!insert_order  {}".format(order))
         # QUEUED = 300  # queued 用于表示在order_queue中 实际表达的意思是订单存活 待成交
-        order.status = ORDER_STATUS.QUEUED
+        #order.status = ORDER_STATUS.QUEUED
         # 🛠 todo 是为了速度快把order对象转换成 df 对象的吗？
-        self.queue_df = self.queue_df.append(order.to_df(), ignore_index=True)
-        self.queue_df.set_index('order_id', drop=False, inplace=True)
-        self._queue_dict[order.order_id] = order
-        return order
+        #self.queue_df = self.queue_df.append(order.to_df(), ignore_index=True)
+        #self.queue_df.set_index('order_id', drop=True, inplace=True)
+        if order is not None:
+            self.order_list[order.order_id] = order
+            return order
+        else:
+            print('QAERROR Wrong for get None type while insert order to Queue')
+
+    def update_order(self, order):
+        self.order_list[order.order_id] = order
 
     @property
     def order_ids(self):
-        return self.queue_df.index
+        return list(self.order_list.keys())
 
     @property
     def len(self):
-        return len(self._queue_dict)
-        
+        return len(self.order_list)
+
     def settle(self):
         """结算
         清空订单簿
         """
-        self.queue_df = pd.DataFrame()
-        self._queue_dict = {}
+        self.deal_list.update(self.order_list)
+        self.order_list = {}
 
     @property
     def pending(self):
         '''
+        600 废单 未委托成功
         200 委托成功,完全交易
         203 委托成功,未完全成功
-        300 刚创建订单的时候
+        300 委托队列 待成交
         400 已撤单
         500 服务器撤单/每日结算
+
+
+        订单生成(100) -- 废单(600)
         订单生成(100) -- 进入待成交队列(300) -- 完全成交(200) -- 每日结算(500)-- 死亡
         订单生成(100) -- 进入待成交队列(300) -- 部分成交(203) -- 未成交(300) -- 每日结算(500) -- 死亡
         订单生成(100) -- 进入待成交队列(300) -- 主动撤单(400) -- 每日结算(500) -- 死亡
@@ -290,37 +392,38 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
         :return: dataframe
         '''
         try:
-            return self.queue_df.query('status!=200').query('status!=500').query('status!=400')
+            return [item for item in self.order_list.values() if item.status in [ORDER_STATUS.QUEUED, ORDER_STATUS.SUCCESS_PART]]
         except:
-            return pd.DataFrame()
+            return []
 
-    @property
-    def trade_list(self):
-        '''
-        批量交易
-        :return:
-        '''
-        return [self._queue_dict[order_id] for order_id in self.pending.index]
+    # @property
+    # def trade_list(self):
+    #     '''
+    #     批量交易
+    #     :return:
+    #     '''
+    #     return [self.order_list[order_id] for order_id in self.pending.index]
 
-    def query_order(self, order_id):
-        '''
-        @modified by JerryW 2018/05/25
-        根据 order_id 查询队列中的记录， 并且转换成 order 对象
-        :param order_id:  str 类型 Order_开头的随机数  eg：Order_KQymhXWu
-        :return QA_Order类型:
-        '''
-        anOrderRec = self.queue_df.loc[[order_id]]
-        rec_dict = anOrderRec.to_dict('records')
-        anOrderObj = QA_Order()
-        anOrderObj.from_dict(rec_dict[0])
-        return anOrderObj
+    # def query_order(self, order_id):
+    #     '''
+    #     @modified by JerryW 2018/05/25
+    #     根据 order_id 查询队列中的记录， 并且转换成 order 对象
+    #     :param order_id:  str 类型 Order_开头的随机数  eg：Order_KQymhXWu
+    #     :return QA_Order类型:
+    #     '''
+    #     anOrderRec = self.queue_df.loc[[order_id]]
+    #     rec_dict = anOrderRec.to_dict('records')
+    #     anOrderObj = QA_Order()
+    #     anOrderObj.from_dict(rec_dict[0])
+    #     return anOrderObj
 
     # 🛠todo 订单队列
+
     def set_status(self, order_id, new_status):
         try:
             if order_id in self.order_ids:
-                self.queue_df.loc[order_id, 'status'] = new_status
-                self._queue_dict[order_id].status = new_status
+
+                self.order_list[order_id].status = new_status
             else:
                 pass
         except:

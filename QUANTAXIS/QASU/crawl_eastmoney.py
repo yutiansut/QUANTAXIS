@@ -1,6 +1,7 @@
 import os
 from QUANTAXIS.QASetting import QALocalize
-from QUANTAXIS_CRAWLY.run_selenium_alone import (read_east_money_page_zjlx_to_sqllite, open_chrome_driver, close_chrome_dirver)
+#from QUANTAXIS_CRAWLY.run_selenium_alone import (read_east_money_page_zjlx_to_sqllite, open_chrome_driver, close_chrome_dirver)
+from QUANTAXIS_CRAWLY.run_selenium_alone import *
 import urllib
 import pandas as pd
 import time
@@ -290,7 +291,7 @@ def QA_read_eastmoney_zjlx_web_page_to_sqllite(stockCodeList = None):
     for indexCode in range(len(stockCodeList)):
         #full_path_name = path_for_save_data + "/" + stockCodeList[indexCode] + "_zjlx.sqlite.db"
         read_east_money_page_zjlx_to_sqllite(stockCodeList[indexCode], browser)
-
+        pass
     close_chrome_dirver(browser)
     #创建目录
     #启动线程读取网页，写入数据库

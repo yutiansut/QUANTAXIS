@@ -104,7 +104,7 @@ class quotation_base_test(unittest.TestCase):
             aRow = list1[iIndex]
             bRow = list2[iIndex]
 
-            #✅ 循环变量是相等的
+            # 循环变量是相等的
             v = aRow.equals(bRow)
             self.assertEqual(v, True)
 
@@ -136,7 +136,7 @@ class quotation_base_test(unittest.TestCase):
         for iIndex in range(len1):
             aRow = list1[iIndex]
             bRow = list2[iIndex]
-            # ✅ 循环变量是相等的
+            #  循环变量是相等的
             v = aRow.equals(bRow)
             self.assertEqual(v, True)
 

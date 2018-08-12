@@ -96,7 +96,7 @@ class QA_User():
         :return: Boolean 是否成功连接
         '''
         if self.setting.login(user_name, password):
-            QA_util_log_info('✅SUCCESS')
+            QA_util_log_info('SUCCESS')
             return True
         else:
             QA_util_log_info('FAILD')

@@ -22,11 +22,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import random
+import sched
+import threading
+import time
+
+import pandas as pd
 
 from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Worker
+from QUANTAXIS.QAEngine.QATask import QA_Task
 from QUANTAXIS.QAMarket.QAOrder import QA_OrderQueue
-from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, EVENT_TYPE,
-                                          MARKET_EVENT, ORDER_EVENT)
+from QUANTAXIS.QASU.save_orderhandler import QA_SU_save_deal, QA_SU_save_order
+from QUANTAXIS.QAUtil.QADate_trade import QA_util_if_tradetime
+from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, BROKER_TYPE,
+                                          EVENT_TYPE, MARKET_EVENT,
+                                          ORDER_EVENT)
 
 
 class QA_OrderHandler(QA_Worker):
@@ -50,6 +60,24 @@ class QA_OrderHandler(QA_Worker):
     2.实时模拟盘
     3.实盘
 
+
+
+    ORDERHANDLER 持久化问题:
+
+    设定机制: 2秒查询1次
+    持久化: 2秒一次
+
+    2018-07-29
+
+
+    # 重新设置ORDERHADLER的运行模式:
+
+    -- 常规检查 5秒一次
+
+    -- 如果出现订单 则2-3秒 对账户轮询(直到出现订单成交/撤单为止)
+
+
+
     """
 
     def __init__(self, *args, **kwargs):
@@ -58,41 +86,151 @@ class QA_OrderHandler(QA_Worker):
         self.type = EVENT_TYPE.MARKET_EVENT
 
         self.event = QA_Event()
+        self.order_status = pd.DataFrame()
+        self.deal_status = pd.DataFrame()
+        self.if_start_orderquery = False
 
     def run(self, event):
         if event.event_type is BROKER_EVENT.RECEIVE_ORDER:
             # 此时的message应该是订单类
-            order = self.order_queue.insert_order(event.order)
+            """
+            OrderHandler 收到订单
+
+            orderhandler 调控转发给broker
+
+            broker返回发单结果(成功/失败)
+
+            orderhandler.order_queue 插入一个订单
+
+            执行回调
+
+            """
+
+            order = event.order
+            # print(event.broker)
+            order = event.broker.receive_order(
+                QA_Event(event_type=BROKER_EVENT.TRADE, order=event.order))
+            # print(threading.current_thread().ident)
+            order = self.order_queue.insert_order(order)
             if event.callback:
                 event.callback(order)
 
         elif event.event_type is BROKER_EVENT.TRADE:
-            res=[]
-            for item in self.order_queue.trade_list:
-                result=event.broker.receive_order(
-                    QA_Event(event_type=BROKER_EVENT.TRADE, order=item))
+            # 实盘和本地 同步执行
+            res = []
+            for order in self.order_queue.pending:
+                result = event.broker.query_orders(
+                    order.account_cookie, order.realorder_id)
                 self.order_queue.set_status(
-                    item.order_id, result['header']['status'])
-                if item.callback:       
-                    item.callback(result)
+                    order.order_id, result['header']['status'])
+                if order.callback:
+                    order.callback(result)
                 res.append(result)
             event.res = res
-            
+
             return event
 
         elif event.event_type is BROKER_EVENT.SETTLE:
             self.order_queue.settle()
 
         elif event.event_type is MARKET_EVENT.QUERY_ORDER:
-            return self.query_order(event.order_id)
+            """query_order和query_deal 需要联动使用 
 
-        elif event.event_type is BROKER_EVENT.QUERY_DEAL:
-            while self.order_queue.len >0:
-                waiting_realorder_id=[order.realorder_id for order in self.order_queue.trade_list]
-                result=event.broker.query_deal
+            query_order 得到所有的订单列表
 
+            query_deal 判断订单状态--> 运行callback函数
 
 
+            实盘涉及到外部订单问题: 
+            及 订单的来源 不完全从QUANTAXIS中发出, 则QA无法记录来源 (标记为外部订单)
+            """
+
+            if self.if_start_orderquery:
+                # if QA_util_if_tradetime(datetime.datetime.now()):
+
+                    # print(event.broker)
+                    # print(event.account_cookie)
+                try:
+                    # 做一些容错处理
+                    res = [event.broker[i].query_orders(
+                        event.account_cookie[i], '') for i in range(len(event.account_cookie))]
+                    res = pd.concat(res, axis=0) if len(
+                        res) > 0 else None
+
+                except:
+                    time.sleep(1)
+
+                self.order_status = res if res is not None else self.order_status
+                if len(self.order_status) > 0:
+                    QA_SU_save_order(self.order_status)
+                # else:
+                #     time.sleep(1)
+
+            # 这里加入随机的睡眠时间 以免被发现固定的刷新请求
+            # event=event
+            event.event_type = MARKET_EVENT.QUERY_DEAL
+            if event.event_queue.qsize() < 1:
+                time.sleep(random.randint(1, 2))
+
+            # 非阻塞
+            event.event_queue.put(
+                QA_Task(
+                    worker=self,
+                    engine='ORDER',
+                    event=event
+                )
+            )
+            # time.sleep(random.randint(2,5))
+            # print(event.event_type)
+            # print(event2.event_type)
+            # self.run(event)
+
+            # print(self.order_status)
+            # print('UPDATE ORDERS')
+
+        elif event.event_type is MARKET_EVENT.QUERY_DEAL:
+
+            """order_handler- query_deal
+
+            将order_handler订单队列中的订单---和deal中匹配起来
+
+
+            """
+
+            # if len(self.order_queue.pending) > 0:
+            #     for order in self.order_queue.pending:
+            #         #self.query
+            #         waiting_realorder_id = [
+            #             order.realorder_id for order in self.order_queue.trade_list]
+            #         result = event.broker.query_deal
+            #         time.sleep(1)
+            if self.if_start_orderquery:
+                self.deal_status = [event.broker[i].query_orders(
+                    event.account_cookie[i], 'filled') for i in range(len(event.account_cookie))]
+                # print(self.order_status)
+                self.deal_status = pd.concat(self.deal_status, axis=0) if len(
+                    self.deal_status) > 0 else pd.DataFrame()
+                if len(self.deal_status) > 0:
+                    QA_SU_save_deal(self.deal_status)
+                # print(self.order_status)
+
+            # 这里加入随机的睡眠时间 以免被发现固定的刷新请求
+            if event.event_queue.qsize() < 1:
+                time.sleep(random.randint(2, 5))
+            event.event_type = MARKET_EVENT.QUERY_ORDER
+
+            event.event_queue.put(
+                QA_Task(
+                    worker=self,
+                    engine='ORDER',
+                    event=event
+                )
+            )
+            # self.run(event)
+            # self.run(event)
+
+        elif event.event_type is MARKET_EVENT.QUERY_POSITION:
+            pass
 
     def query_order(self, order_id):
-        return self.order_queue.queue_df.query()
+        pass

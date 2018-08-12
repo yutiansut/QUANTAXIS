@@ -134,8 +134,8 @@ class QA_Account(QA_Worker):
         # :param [list] history:           交易历史
         """
         super().__init__()
-        warnings.warn('QUANTAXIS 1.0.46 has changed the init_assets ==> init_cash, please pay attention to this change if you using init_cash to initial an account class,\
-                ', DeprecationWarning, stacklevel=2)
+        # warnings.warn('QUANTAXIS 1.0.46 has changed the init_assets ==> init_cash, please pay attention to this change if you using init_cash to initial an account class,\
+        #         ', DeprecationWarning, stacklevel=2)
         self._history_headers = ['datetime', 'code', 'price',
                                  'amount', 'cash', 'order_id', 'trade_id',
                                  'account_cookie', 'commission', 'tax']
@@ -536,8 +536,11 @@ class QA_Account(QA_Worker):
         # 🛠todo 移到Utils类中，  amount_to_money 成交量转金额
         # BY_MONEY :: amount --钱 如10000元  因此 by_money里面 需要指定价格,来计算实际的股票数
         # by_amount :: amount --股数 如10000股
+        # amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
+        #     money / (price*(1+self.commission_coeff)))
+
         amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
-            money / (price*(1+self.commission_coeff)))
+            money / (price*(1+self.commission_coeff))/100) * 100
 
         # 🛠todo 移到Utils类中，  money_to_amount 金额转成交量
         money = amount * price * \
@@ -573,7 +576,7 @@ class QA_Account(QA_Worker):
 
         elif int(towards) < 0:
             # 是卖出的情况(包括卖出，卖出开仓allow_sellopen如果允许. 卖出平仓)
-            #print(self.sell_available[code])
+            # print(self.sell_available[code])
             if self.sell_available.get(code, 0) >= amount:
                 self.sell_available[code] -= amount
                 flag = True
@@ -600,6 +603,16 @@ class QA_Account(QA_Worker):
                 code, time, amount, towards))
             return False
 
+    def cancel_order(self, order):
+        if order.towards in [ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE]:
+            if order.amount_model is AMOUNT_MODEL.BY_MONEY:
+                self.cash_available += order.money
+            elif order.amount_model is AMOUNT_MODEL.BY_AMOUNT:
+                self.cash_available += order.price*order.amount
+        elif order.towards in [ORDER_DIRECTION.SELL, ORDER_DIRECTION.SELL_CLOSE, ORDER_DIRECTION.SELL_OPEN]:
+            self.sell_available[order.code] += order.amount
+
+        # self.sell_available[]
     @property
     def close_positions_order(self):
         """平仓单
@@ -651,7 +664,9 @@ class QA_Account(QA_Worker):
         :return:
         '''
         'while updating the market data'
-        print("on_bar ", event.market_data)
+
+        print("on_bar account {} ".format(
+            self.account_cookie), event.market_data)
 
     def on_tick(self, event):
         '''
@@ -744,21 +759,21 @@ class QA_Account(QA_Worker):
         """
         save_account(self.message)
 
-
-    def sync_account(self,sync_message):
+    def sync_account(self, sync_message):
         """同步账户
-        
+
         Arguments:
             sync_message {[type]} -- [description]
         """
 
-        self.init_hold=sync_message['hold_available']
-        self.init_cash= sync_message['cash_available']
+        self.init_hold = sync_message['hold_available']
+        self.init_cash = sync_message['cash_available']
 
         self.sell_available = copy.deepcopy(self.init_hold)
         self.history = []
         self.cash = [self.init_cash]
         self.cash_available = self.cash[-1]  # 在途资金
+
     def change_cash(self, money):
         """
         外部操作|高危|
