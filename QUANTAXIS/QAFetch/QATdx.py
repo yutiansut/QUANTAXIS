@@ -33,7 +33,7 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_str2int,
                               QA_util_get_real_datelist, QA_util_get_trade_gap,
                               QA_util_log_info, QA_util_time_stamp,
                               QA_util_web_ping, future_ip_list, stock_ip_list, exclude_from_stock_ip_list, QA_Setting,
-                              trade_date_sse)
+                              trade_date_sse, QA_util_date_int2str, QA_util_date_today)
 
 from QUANTAXIS.QAFetch.base import _select_market_code, _select_type
 from QUANTAXIS.QAUtil.QASetting import QASETTING
@@ -271,6 +271,7 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', frequence='da
             .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10]))).set_index('date', drop=False, inplace=False)
 
         data = data.drop(['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1)[start_date:end_date].assign(date=data['date'].apply(lambda x: str(x)[0:10]))[start_date:end_date]
+        data['dsdt'] = QA_util_date_int2str(QA_util_date_today())
         if if_fq in ['00','bfq']:
             return data
         else:
@@ -367,6 +368,7 @@ def QA_fetch_depth_market_data(code=['000001', '000002'], ip=None, port=None):
                        's_vol', 'b_vol', 'vol', 'ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',
                        'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3', 'ask4',
                        'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
+        data['dsdt'] = QA_util_date_int2str(QA_util_date_today())
         return data.set_index(['datetime', 'code'], drop=False, inplace=False)
 
 
@@ -582,6 +584,7 @@ def QA_fetch_get_index_day(code, start_date, end_date, frequence='day', ip=None,
             .assign(code=code)\
             .drop(['year', 'month', 'day', 'hour',
                    'minute', 'datetime'], axis=1)[start_date:end_date]
+        data['dsdt'] = QA_util_date_int2str(QA_util_date_today())
         return data.assign(date=data['date'].apply(lambda x: str(x)[0:10]))
 
 
@@ -680,7 +683,7 @@ def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=None, port=None
                     code, trade_date_sse[index_]))
                 data = data.append(data_)
         if len(data) > 0:
-
+            data['dsdt'] = QA_util_date_int2str(QA_util_date_today())
             return data.assign(datetime=data['datetime'].apply(lambda x: str(x)[0:19]))
         else:
             return None
@@ -726,6 +729,7 @@ def QA_fetch_get_stock_xdxr(code, ip=None, port=None):
                                             'panqianliutong': 'liquidity_before', 'houzongguben': 'shares_after',
                                             'qianzongguben': 'shares_before'})\
                 .set_index('date', drop=False, inplace=False)
+            data['dsdt'] = QA_util_date_int2str(QA_util_date_today())
             return data.assign(date=data['date'].apply(lambda x: str(x)[0:10]))
         else:
             return None
