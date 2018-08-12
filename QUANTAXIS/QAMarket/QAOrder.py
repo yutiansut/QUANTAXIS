@@ -99,9 +99,10 @@ class QA_Order():
 
         NEW = 100
         SUCCESS_ALL = 200
-        SUCCESS_PART = 203
+        SUCCESS_PART = 203 # success_part 是部分成交 一个中间状态 剩余的订单还在委托队列中
         QUEUED = 300  # queued 用于表示在order_queue中 实际表达的意思是订单存活 待成交
-        CANCEL_ALL = 400
+        CANCEL = 400
+        CANCEL_PART = 402 # cancel_part是部分撤单(及 下单后成交了一部分 剩余的被撤单 这是一个最终状态)
         SETTLED = 500
         FAILED = 600
         '''
@@ -160,6 +161,11 @@ class QA_Order():
 
     @property
     def status(self):
+
+        # 以下几个都是最终状态 并且是外部动作导致的
+        if self._status in [ORDER_STATUS.FAILED,ORDER_STATUS.SETTLED,ORDER_STATUS.CANCEL_ALL,ORDER_STATUS.CANCEL_PART]:
+            return self._status
+
         if self.pending_amount <= 0:
             self._status = ORDER_STATUS.SUCCESS_ALL
             return self._status
@@ -175,14 +181,18 @@ class QA_Order():
 
         self._status = ORDER_STATUS.NEW
 
-    def cancel(self, amount):
+    def cancel(self):
         """撤单
         
         Arguments:
             amount {int} -- 撤单数量
         """
 
-        self.cancel_amount += amouSETTLED
+        self.cancel_amount= self.amount- self.trade_amount
+        if self.trade_amount==0:
+            self._status= ORDER_STATUS.CANCEL_ALL
+        else:
+            self._status= ORDER_STATUS.CANCEL_PART
 
     def failed(self, reason=None):
         """失败订单(未成功创建入broker)
