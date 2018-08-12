@@ -95,6 +95,7 @@ class ORDER_STATUS():
     SUCCESS_PART = 203
     QUEUED = 300  # queued 用于表示在order_queue中 实际表达的意思是订单存活 待成交
     CANCEL_ALL = 400
+    CANCEL_PART = 402
     SETTLED = 500
     FAILED = 600
 
