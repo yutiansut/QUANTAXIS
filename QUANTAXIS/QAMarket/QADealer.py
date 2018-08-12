@@ -31,6 +31,7 @@ from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, TRADE_STATUS
 
 """撮合类
 
+一个无状态的 Serverless Dealer
 
 输入是
 
