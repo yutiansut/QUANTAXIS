@@ -30,14 +30,14 @@ from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, FREQUENCE, MARKET_TYPE,
 
 class QA_Strategy(QA_Account):
     """account
-    
+
     [description]
     """
-    def __init__(self,*args,**kwargs):
-        super().__init__(*args,**kwargs)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.frequence = FREQUENCE.FIFTEEN_MIN
         self.market_type = MARKET_TYPE.STOCK_CN
-
 
     def on_bar(self, event):
         try:

@@ -536,8 +536,11 @@ class QA_Account(QA_Worker):
         # 🛠todo 移到Utils类中，  amount_to_money 成交量转金额
         # BY_MONEY :: amount --钱 如10000元  因此 by_money里面 需要指定价格,来计算实际的股票数
         # by_amount :: amount --股数 如10000股
+        # amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
+        #     money / (price*(1+self.commission_coeff)))
+
         amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
-            money / (price*(1+self.commission_coeff)))
+            money / (price*(1+self.commission_coeff))/100) * 100
 
         # 🛠todo 移到Utils类中，  money_to_amount 金额转成交量
         money = amount * price * \
