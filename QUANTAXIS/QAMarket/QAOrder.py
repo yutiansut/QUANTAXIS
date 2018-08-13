@@ -163,7 +163,7 @@ class QA_Order():
     def status(self):
 
         # 以下几个都是最终状态 并且是外部动作导致的
-        if self._status in [ORDER_STATUS.FAILED,ORDER_STATUS.SETTLED,ORDER_STATUS.CANCEL_ALL,ORDER_STATUS.CANCEL_PART]:
+        if self._status in [ORDER_STATUS.FAILED, ORDER_STATUS.SETTLED, ORDER_STATUS.CANCEL_ALL, ORDER_STATUS.CANCEL_PART]:
             return self._status
 
         if self.pending_amount <= 0:
@@ -183,20 +183,20 @@ class QA_Order():
 
     def cancel(self):
         """撤单
-        
+
         Arguments:
             amount {int} -- 撤单数量
         """
 
-        self.cancel_amount= self.amount- self.trade_amount
-        if self.trade_amount==0:
-            self._status= ORDER_STATUS.CANCEL_ALL
+        self.cancel_amount = self.amount - self.trade_amount
+        if self.trade_amount == 0:
+            self._status = ORDER_STATUS.CANCEL_ALL
         else:
-            self._status= ORDER_STATUS.CANCEL_PART
+            self._status = ORDER_STATUS.CANCEL_PART
 
     def failed(self, reason=None):
         """失败订单(未成功创建入broker)
-        
+
         Arguments:
             reason {str} -- 失败原因
         """
@@ -213,6 +213,9 @@ class QA_Order():
 
         self.trade_amount += amount
 
+    def queued(self, realorder_id):
+        self.realorder_id = realorder_id
+        self._status = ORDER_STATUS.QUEUED
 
     def settle(self):
         self._status = ORDER_STATUS.SETTLED
@@ -229,7 +232,7 @@ class QA_Order():
 
     def callingback(self):
         """回调函数
-        
+
         Returns:
             [type] -- [description]
         """
