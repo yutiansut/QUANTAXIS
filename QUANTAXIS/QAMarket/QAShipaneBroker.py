@@ -16,7 +16,7 @@ from QUANTAXIS.QAEngine.QAEvent import QA_Event
 from QUANTAXIS.QAMarket.common import cn_en_compare
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
-from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, ORDER_DIRECTION,
+from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, ORDER_DIRECTION, BROKER_TYPE,
                                           ORDER_MODEL, ORDER_STATUS)
 from QUANTAXIS.QAUtil.QASetting import setting_path
 
@@ -116,6 +116,7 @@ class QA_SPEBroker(QA_Broker):
 
     def __init__(self):
         super().__init__()
+        self.name = BROKER_TYPE.SHIPANE
         self.order_handler = QA_OrderHandler()
         self.setting = get_config_SPE()
         self._session = requests
@@ -124,8 +125,6 @@ class QA_SPEBroker(QA_Broker):
 
         #self.account_headers = ['forzen_cash','balance_available','cash_available','pnl_money_today','total_assets','pnl_holding','market_value','money_available']
 
-    def __repr__(self):
-        return ' <QA_BROKER SHIPANE> '
 
     def run(self, event):
         if event.event_type is BROKER_EVENT.RECEIVE_ORDER:
@@ -353,18 +352,21 @@ class QA_SPEBroker(QA_Broker):
         try:
             # if res is not None and 'id' in res.keys():
 
-            order.realorder_id = res['id']
-            order.status = ORDER_STATUS.QUEUED
-            order.text = 'SUCCESS'
+
+            # order.status = ORDER_STATUS.QUEUED
+            # order.text = 'SUCCESS'
+            order.queued(realorder_id = res['id'])
             print('success receive order {}'.format(order.realorder_id))
             return order
             # else:
 
         except:
-            order.status = ORDER_STATUS.FAILED
 
-            order.text = 'WRONG' if res is None else res.get(
+            text = 'WRONG' if res is None else res.get(
                 'message', 'WRONG')
+
+            order.failed(text)
+
             print('FAILED FOR CREATE ORDER {} {}'.format(
                 order.account_cookie, order.status))
             print(res)

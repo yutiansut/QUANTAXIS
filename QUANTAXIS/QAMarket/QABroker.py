@@ -31,7 +31,7 @@
 """
 import datetime
 from abc import abstractmethod
-
+import threading
 from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_Order
 from QUANTAXIS.QAUtil.QAParameter import EVENT_TYPE, FREQUENCE, ORDER_MODEL
@@ -75,7 +75,7 @@ class QA_Broker(QA_Worker):
                                    'trade_amount', 'trade_price', 'trade_money', 'realorder_id', 'trade_id']
 
     def __repr__(self):
-        return '< QA_Broker >'
+        return '< QA_Broker {} thread {} >'.format(self.name, threading.current_thread().ident())
 
     @abstractmethod
     def receive_order(self, event):
