@@ -61,7 +61,7 @@ class QA_Order():
 
     def __init__(self, price=None, date=None, datetime=None, sending_time=None, transact_time=None, amount=None, market_type=None, frequence=None,
                  towards=None, code=None, user=None, account_cookie=None, strategy=None, order_model=None, money=None, amount_model=AMOUNT_MODEL.BY_AMOUNT,
-                 order_id=None, trade_id=None, status='100', callback=False, commission_coeff=0.00025, tax_coeff=0.001, *args, **kwargs):
+                 order_id=None, trade_id=[], status='100', callback=False, commission_coeff=0.00025, tax_coeff=0.001, *args, **kwargs):
         '''
 
 
@@ -143,6 +143,7 @@ class QA_Order():
         self.commission_coeff = commission_coeff
         self.tax_coeff = tax_coeff
         self.trade_id = trade_id
+        self.trade_price = 0  # 成交均价
         self.callback = callback  # 委托成功的callback
         self.money = money  # 委托需要的金钱
         self.reason = None  # 原因列表
@@ -174,6 +175,7 @@ class QA_Order():
             return self._status
         elif self.trade_amount == 0:
             self._status = ORDER_STATUS.QUEUED
+            return self._status
 
     def create(self):
         """创建订单
@@ -204,14 +206,16 @@ class QA_Order():
         self._status = ORDER_STATUS.FAILED
         self.reason = str(reason)
 
-    def trade(self, amount):
+    def trade(self, trade_id, trade_price, trade_amount):
         """trade 状态
 
         Arguments:
             amount {[type]} -- [description]
         """
-
-        self.trade_amount += amount
+        self.trade_id.append(trade_id)
+        self.trade_price = (self.trade_price*self.trade_amount +
+                            trade_price*trade_amount)/(self.trade_amount+trade_amount)
+        self.trade_amount += trade_amount
 
     def queued(self, realorder_id):
         self.realorder_id = realorder_id
