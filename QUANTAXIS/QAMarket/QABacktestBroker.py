@@ -209,7 +209,6 @@ class QA_BacktestBroker(QA_Broker):
         if status == '':
             return self.dealer.deal_df.query('account_cookie=="{}"'.format(account)).loc[:,self.orderstatus_headers].set_index(['account_cookie', 'realorder_id'])
         elif status == 'filled':
-            print('gilled')
             return self.dealer.deal_df.query('account_cookie=="{}"'.format(account)).loc[:,self.dealstatus_headers].set_index(['account_cookie', 'realorder_id'])
         elif status == 'open':
             pass
