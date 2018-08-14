@@ -413,6 +413,20 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
         except:
             return []
 
+    @property
+    def failed(self):
+        try:
+            return [item for item in self.order_list.values() if item.status in [ORDER_STATUS.FAILED]]
+        except:
+            return []
+
+    @property
+    def canceled(self):
+        try:
+            return [item for item in self.order_list.values() if item.status in [ORDER_STATUS.CANCEL_ALL, ORDER_STATUS.CANCEL_PART]]
+        except:
+            return []
+
     # @property
     # def trade_list(self):
     #     '''
