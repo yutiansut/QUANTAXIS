@@ -296,7 +296,12 @@ class QA_Order():
             self.tax_coeff = order_dict['tax_coeff']
 
             self.money = order_dict['money']
-            self.status = order_dict['status']
+            self._status = order_dict['status']
+
+            self.cancel_amount = order_dict['cancel_amount']
+            self.trade_amount = order_dict['trade_amount']
+            self.trade_price = order_dict['trade_price']
+            self.reason = order_dict['reason']
 
             return self
         except Exception as e:
