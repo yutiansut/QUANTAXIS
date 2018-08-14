@@ -199,11 +199,11 @@ class QA_BacktestBroker(QA_Broker):
             order = self.warp(order)
             self.deal_message[order.order_id] = self.dealer.deal(
                 order, self.market_data)
-            order.status = ORDER_STATUS.QUEUED
+            order.queued(order.order_id) # 模拟的order_id 和 realorder_id 一致
 
         else:
 
-            order.status = ORDER_STATUS.FAILED
+            order.failed('MARKET DATA IS NONE')
             #raise ValueError('MARKET DATA IS NONE CANNOT TRADE')
         return order
 
