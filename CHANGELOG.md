@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
+- [QUANTAXIS 更新纪要](#quantaxis-%E6%9B%B4%E6%96%B0%E7%BA%AA%E8%A6%81)
     - [1.1.0](#110)
     - [1.0.68](#1068)
     - [1.0.67](#1067)
@@ -65,6 +65,10 @@
 2. 将一些基础解析字段挪至基类QABroker中
 3. 基于QAMarket创建的broker/order线程全部变成后台线程
 4. QA_OrderHandler 增加持久化 订单/成交单部分
+5. 修改QAOrder 变成有限状态机, 通过状态机的动作自动改变Order的状态
+6. 修改QABacktest_Broker 适配新的order类
+7. 优化QABroker的状态显示
+
 
 [QAEngine]
 
@@ -83,6 +87,7 @@
 [QAUtil]
 
 1. QADate_Trade 增加QA_util_get_order_day() 用于获取委托的真实日期
+2. QA_Parameter 修改订单状态
 
 [QAWEB]
 

@@ -90,14 +90,23 @@ class ORDER_STATUS():
     订单生成(100) -- 进入待成交队列(300) -- 主动撤单(400) -- 每日结算(500) -- 死亡
     """
 
-    NEW = 100
-    SUCCESS_ALL = 200
-    SUCCESS_PART = 203
-    QUEUED = 300  # queued 用于表示在order_queue中 实际表达的意思是订单存活 待成交
-    CANCEL_ALL = 400
-    CANCEL_PART = 402
-    SETTLED = 500
-    FAILED = 600
+    # NEW = 100
+    # SUCCESS_ALL = 200
+    # SUCCESS_PART = 203
+    # QUEUED = 300  # queued 用于表示在order_queue中 实际表达的意思是订单存活 待成交
+    # CANCEL_ALL = 400
+    # CANCEL_PART = 402
+    # SETTLED = 500
+    # FAILED = 600
+
+    NEW = 'new'
+    SUCCESS_ALL = 'success_all'
+    SUCCESS_PART = 'success_part'
+    QUEUED = 'queued'  # queued 用于表示在order_queue中 实际表达的意思是订单存活 待成交
+    CANCEL_ALL = 'cancel_all'
+    CANCEL_PART = 'cancel_part'
+    SETTLED = 'settled'
+    FAILED = 'failed'
 
 
 class AMOUNT_MODEL():

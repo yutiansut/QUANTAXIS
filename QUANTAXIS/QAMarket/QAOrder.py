@@ -61,7 +61,7 @@ class QA_Order():
 
     def __init__(self, price=None, date=None, datetime=None, sending_time=None, transact_time=None, amount=None, market_type=None, frequence=None,
                  towards=None, code=None, user=None, account_cookie=None, strategy=None, order_model=None, money=None, amount_model=AMOUNT_MODEL.BY_AMOUNT,
-                 order_id=None, trade_id=[], status='100', callback=False, commission_coeff=0.00025, tax_coeff=0.001, *args, **kwargs):
+                 order_id=None, trade_id=[], _status=ORDER_STATUS.NEW, callback=False, commission_coeff=0.00025, tax_coeff=0.001, *args, **kwargs):
         '''
 
 
@@ -87,7 +87,7 @@ class QA_Order():
         :param amount_model:    委托量模式(按量委托/按总成交额委托) type str 'by_amount'
         :param order_id:        委托单id
         :param trade_id:        成交id
-        :param status:          订单状态   type str '100' '200' '300'
+        :param _status:          订单状态   type str '100' '200' '300'
         :param callback:        回调函数   type bound method  eg  QA_Account.receive_deal
         :param commission_coeff: 默认 0.00025  type float
         :param tax_coeff:        默认 0.0015  type float
@@ -123,6 +123,7 @@ class QA_Order():
         else:
             pass
         self.sending_time = self.datetime if sending_time is None else sending_time  # 下单时间
+
         self.transact_time = transact_time  # 成交时间
         self.amount = amount  # 委托数量
         self.trade_amount = 0  # 成交数量
@@ -147,6 +148,8 @@ class QA_Order():
         self.callback = callback  # 委托成功的callback
         self.money = money  # 委托需要的金钱
         self.reason = None  # 原因列表
+
+        self._status = _status
 
     @property
     def pending_amount(self):
@@ -180,7 +183,7 @@ class QA_Order():
     def create(self):
         """创建订单
         """
-
+        # 创建一笔订单(未进入委托队列-- 在创建的时候调用)
         self._status = ORDER_STATUS.NEW
 
     def cancel(self):
@@ -192,8 +195,10 @@ class QA_Order():
 
         self.cancel_amount = self.amount - self.trade_amount
         if self.trade_amount == 0:
+            # 未交易  直接订单全撤
             self._status = ORDER_STATUS.CANCEL_ALL
         else:
+            # 部分交易 剩余订单全撤
             self._status = ORDER_STATUS.CANCEL_PART
 
     def failed(self, reason=None):
@@ -202,7 +207,7 @@ class QA_Order():
         Arguments:
             reason {str} -- 失败原因
         """
-
+        # 订单创建失败(如废单/场外废单/价格高于涨停价/价格低于跌停价/通讯失败)
         self._status = ORDER_STATUS.FAILED
         self.reason = str(reason)
 
@@ -296,7 +301,7 @@ class QA_Order():
             self.tax_coeff = order_dict['tax_coeff']
 
             self.money = order_dict['money']
-            self._status = order_dict['status']
+            self._status = order_dict['_status']
 
             self.cancel_amount = order_dict['cancel_amount']
             self.trade_amount = order_dict['trade_amount']
