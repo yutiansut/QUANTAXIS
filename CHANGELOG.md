@@ -68,6 +68,7 @@
 5. 修改QAOrder 变成有限状态机, 通过状态机的动作自动改变Order的状态
 6. 修改QABacktest_Broker 适配新的order类
 7. 优化QABroker的状态显示
+8. 将撮合缓存字典重构进QADealer, dealer加入 deal_message(dict) 和deal_df(dataframe),并增加dealer的settle函数
 
 
 [QAEngine]

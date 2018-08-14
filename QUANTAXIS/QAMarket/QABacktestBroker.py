@@ -112,8 +112,6 @@ class QA_BacktestBroker(QA_Broker):
         self._quotation = {}  # 一个可以缓存数据的dict
         self.broker_data = None
         self.deal_message = {}
-        self.orderstatus_headers = ['account_cookie', 'order_time', 'code', 'name', 'towards', 'trade_price', 'order_price',
-                                    'status', 'order_amount', 'trade_amount', 'cancel_amount', 'realorder_id']
 
     def run(self, event):
         #strDbg = QA_util_random_with_topic("QABacktestBroker.run")
@@ -197,8 +195,7 @@ class QA_BacktestBroker(QA_Broker):
         if self.market_data is not None:
 
             order = self.warp(order)
-            self.deal_message[order.order_id] = self.dealer.deal(
-                order, self.market_data)
+            self.dealer.deal(order, self.market_data)
             order.queued(order.order_id) # 模拟的order_id 和 realorder_id 一致
 
         else:
@@ -210,9 +207,10 @@ class QA_BacktestBroker(QA_Broker):
     def query_orders(self, account, status=''):
 
         if status == '':
-            return pd.DataFrame(list(self.deal_message.values()), columns=self.orderstatus_headers).set_index(['account_cookie', 'realorder_id'])
+            return self.dealer.deal_df.query('account_cookie=="{}"'.format(account)).loc[:,self.orderstatus_headers].set_index(['account_cookie', 'realorder_id'])
         elif status == 'filled':
-            pass
+            print('gilled')
+            return self.dealer.deal_df.query('account_cookie=="{}"'.format(account)).loc[:,self.dealstatus_headers].set_index(['account_cookie', 'realorder_id'])
         elif status == 'open':
             pass
 
