@@ -146,10 +146,10 @@ class TRADE_STATUS():
     订单失败(比如买卖价格超过涨跌停价格范围,交易量过大等等):400
     """
 
-    SUCCESS = 200
-    PRICE_LIMIT = 202
-    NO_MARKET_DATA = 500
-    FAILED = 400
+    SUCCESS = 'trade_success'
+    PRICE_LIMIT = 'trade_price_limit' # 只是未成交
+    NO_MARKET_DATA = 'trade_no_market_data'
+    FAILED = 'trade_failed'
 
 
 class MARKET_ERROR():
