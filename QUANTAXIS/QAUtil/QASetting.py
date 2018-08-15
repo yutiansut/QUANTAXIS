@@ -25,10 +25,9 @@
 import json
 import os
 import configparser
-import json
 from QUANTAXIS.QASU.user import QA_user_sign_in
 from QUANTAXIS.QASetting.QALocalize import qa_path, setting_path
-from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting
+from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting,QA_util_sql_async_mongo_setting
 
 
 # quantaxis有一个配置目录存放在 ~/.quantaxis
@@ -36,7 +35,7 @@ from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting
 # 貌似yutian已经进行了，文件的创建步骤，他还会创建一个setting的dir
 # 需要与yutian讨论具体配置文件的放置位置 author:Will 2018.5.19
 
-DEFAULT_DB_URI = 'mongodb://localhost:27017/quantaxis'
+DEFAULT_DB_URI = 'mongodb://localhost:27017'
 CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
 
 
@@ -132,12 +131,12 @@ class QA_Setting():
                 return val
 
         except configparser.NoSectionError:
-            print('section error')
+            print('NO SECTION "{}" FOUND, Initialize...'.format(section))
             config.add_section(section)
             config.set(section, option, val)
             return val
         except configparser.NoOptionError:
-            print('option error')
+            print('NO OPTION "{}" FOUND, Initialize...'.format(option))
             config.set(section, option, val)
             return val
         finally:
@@ -150,6 +149,10 @@ class QA_Setting():
     @property
     def client(self):
         return QA_util_sql_mongo_setting(self.mongo_uri)
+
+    @property
+    def client_async(self):
+        return QA_util_sql_async_mongo_setting(self.mongo_uri)
 
     def change(self, ip, port):
         self.ip = ip
@@ -171,7 +174,7 @@ class QA_Setting():
 
 QASETTING = QA_Setting()
 DATABASE = QASETTING.client.quantaxis
-
+DATABASE_ASYNC = QASETTING.client_async.quantaxis
 
 def exclude_from_stock_ip_list(exclude_ip_list):
     """ 从stock_ip_list删除列表exclude_ip_list中的ip
@@ -205,6 +208,7 @@ info_ip_list = [{'ip': '101.227.73.20', 'port': 7709}, {'ip': '101.227.77.254', 
 
 
 stock_ip_list = [
+    {'ip': '61.152.107.168','port':7721 },
     {'ip': '114.80.80.222', 'port': 7709},
     {'ip': '123.125.108.24', 'port': 7709},
     {'ip': '123.125.108.23', 'port': 7709},
@@ -234,7 +238,8 @@ stock_ip_list = [
         'ip': '61.153.209.139', 'port': 7709},
     {'ip': 'hq1.daton.com.cn', 'port': 7709}, {
         'ip': '119.29.51.30', 'port': 7709},
-    {'ip': '114.67.61.70', 'port': 7709}, {'ip': '14.17.75.11', 'port': 7709},
+    {'ip': '114.67.61.70', 'port': 7709},
+    {'ip': '14.17.75.11', 'port': 7709},
     {'ip': '121.14.104.70', 'port': 7709}, {
         'ip': '121.14.104.72', 'port': 7709},
     {'ip': '112.95.140.74', 'port': 7709}, {

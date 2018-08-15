@@ -3,7 +3,11 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.0.65 (unreleased)](#1065-unreleased)
+    - [1.0.69 (unreleased)](#1069-unreleased)
+    - [1.0.68](#1068)
+    - [1.0.67](#1067)
+    - [1.0.66](#1066)
+    - [1.0.65](#1065)
     - [1.0.64](#1064)
     - [1.0.63](#1063)
     - [1.0.62](#1062)
@@ -46,11 +50,102 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
-## 1.0.65 (unreleased)
+## 1.0.69 (unreleased)
+
+
+
+## 1.0.68 
+
+1. 更新了财务方法/财务类 QA_DataStruct_Financial
+
+    - QA.QA_fetch_financial_report(code,report_date)
+
+    其中, report_date 是需要手动指定的财务时间, 可以是单个时间,也可以是一列时间:
+    > '2018-03-31'  或者['2017-03-31','2017-06-30','2017-09-31','2017-12-31','2018-03-31']
+    > 此方法的意义在于指定特定的财务时间(如年报)
+    
+    返回的是一个MultiIndex的dataframe
+    
+    - QA.QA_fetch_financial_report_adv(code,start,end)
+
+    支持随意的跨时间索引, start 和end不用刻意指定
+
+    如果end不写,则start参数等同于report_date的用法
+
+    返回的是QA_DataStruct_Financial 类
+
+    - QA_DataStruct_Financial 类, 可以直接加载在基础方法返回的dataframe中
+
+    > QDF.get_report_by_date(code,date) 返回某个股票的某个时间点的财报
+
+    > QDF.get_key(code,date,key) 返回某个股票某个时间点的财报的某个指标
+
+2. 更改了两个财务字段:
+
+    - 159 流动比率: liquidityRatio  ==> currentRatio
+    - 211 流动资产比率:  liquidityRatio  ==> currentAssetsRatio
+        
+3. 使用md5计算财报数据包的更新状况,确保财报是最新状态
+4. DataStruct 更新自动降采样字段:
+
+    - DataStruct_Stock_day 增加
+        + week
+        + month
+        + year
+    - DataStruct_Stock_min 增加
+        + min5
+        + min15
+        + min30
+        + min60
+        
+    直接调用以后及可返回,如果失败,则返回None
+
+5. QADataStruct.pivot代码更新
+6. QADataStruct.to_qfq/hfq 更新
+
+( 此处切记:: 使用groupby之后的 data的index 一定要先做 remove_unused_levels()!!!)
+
+6. 添加了 QUANTAXIS_Monitor_GUI 目录，初步实现了 日周月年线下载的 PYQT5 界面。
+7. 对于DataStruct的stock_min的初始化进行了修改,之前有对datetime/code的选取, 现已经删除(dev 1)
+
+released in : July 19, 2018
+
+dev1 released in : July 20, 2018
+
+## 1.0.67 
+
+1. 修改了版本限制 增加3.7,3.8的支持
+2. 修改qatdx, 在获取部分不加入复权处理
+3. 修改reample, 和通达信的周线.月线标准一致
+
+released in : JULY 17, 2018
+
+## 1.0.66 
+
+1. 修改series_struct 适配单个index的情景
+2. 增加马科维茨有效前沿的研究/ 增加盘中涨停分析的研究 (research/)
+3. QA_DataStruct_Stock_realtime 类发布, 支持自采样
+
+```python
+# 给一个完整版的 (包含 DataStruct合并, DataStruct包装, DataStruct_Realtime采样)
+QA.concat([QA.QA_DataStruct_Stock_min(QA.QA_DataStruct_Stock_realtime(QA.QA_fetch_quotation('000636')).resample('1min')),
+          QA.QA_DataStruct_Stock_min(QA.QA_DataStruct_Stock_realtime(QA.QA_fetch_quotation('000001')).resample('1min'))])
+```
+4. 修改了QA.QAFetch.QATushare.QA_fetch_get_stock_info(name)的返回结果
+5. @逝去的亮光 增加了LINUX环境下的CTP撤单接口
+6. 增加了日线数据的降采样 QA.QA_data_day_resample(data,'w')
+
+released in : JULY 17, 2018
+
+## 1.0.65 
 
 1. 更新了同花顺版块爬虫, 集成进```save stock_block```中
+2. 完善了读取本地通达信软件下载的数据的日线数据对比
+3. 加入对于多周期采样的处理
+4. 加入对于异步数据查询的支持(测试)
+5. 修复了一个因为数据库无数据导致返回为None, 又被np.asarray加载成 None,导致无法识别为None且无法被len()加载的问题
 
-
+released in : JULY 15, 2018
 
 ## 1.0.64
 

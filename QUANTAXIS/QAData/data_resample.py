@@ -26,8 +26,6 @@ from datetime import time
 
 import pandas as pd
 
-from QUANTAXIS.QAFetch import QA_fetch_get_stock_transaction
-
 
 def QA_data_tick_resample(tick, type_='1min'):
     """tick采样成任意级别分钟线
@@ -44,7 +42,7 @@ def QA_data_tick_resample(tick, type_='1min'):
 
     data['volume'] = tick['vol'].resample(
         type_, label='right', closed='left').sum()
-    data['code'] = tick.code.iloc[1].unique()[0]
+    data['code'] = tick.code.iloc[1]
     if 'date' not in tick.columns:
         tick=tick.assign(date=tick.datetime.apply(lambda x: str(x)[0:10]))
 
@@ -55,8 +53,8 @@ def QA_data_tick_resample(tick, type_='1min'):
         _data = _data[time(9, 31):time(11, 30)].append(
             _data[time(13, 1):time(15, 0)])
         resx = resx.append(_data)
-
-    data=resx.reset_index().assign(date=resx['datetime'].apply(lambda x: str(x)[0:10]))
+    resx=resx.reset_index()
+    data=resx.assign(date=resx['datetime'].apply(lambda x: str(x)[0:10]))
 
     return data.fillna(method='ffill').set_index(['datetime', 'code'], drop=False).drop_duplicates()
 
@@ -100,9 +98,27 @@ def QA_data_min_resample(min_data,  type_='5min'):
 
     return data.fillna(method='ffill').set_index(['datetime', 'code'], drop=False).drop_duplicates()
 
+def QA_data_day_resample(day_data,  type_='w'):
+    """日线降采样
+    
+    Arguments:
+        day_data {[type]} -- [description]
+    
+    Keyword Arguments:
+        type_ {str} -- [description] (default: {'w'})
+    
+    Returns:
+        [type] -- [description]
+    """
+
+    try:
+        day_data=day_data.reset_index().set_index('date',drop=False)
+    except:
+        day_data=day_data.set_index('date',drop=False)
+
+    day_data_p = day_data.resample(type_).last()
+    return day_data_p.assign(open=day_data.open.resample(type_).first()).assign(high=day_data.high.resample(type_).max()).assign(low=day_data.low.resample(type_).min())\
+                .assign(vol=day_data.vol.resample(type_).sum() if 'vol' in day_data.columns else day_data.volume.resample(type_).sum())\
+                .assign(amount=day_data.amount.resample(type_).sum()).dropna().set_index('date')
 
 
-if __name__ == '__main__':
-    tickz = QA_fetch_get_stock_transaction(
-        'tdx', '000001', '2017-01-03', '2017-01-05')
-    print(QA_data_tick_resample(tickz))

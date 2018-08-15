@@ -81,6 +81,7 @@ def QA_util_get_next_day(date,n=1):
     :param n:  整形
     :return: 字符串 str eg: 2018-11-12
     '''
+    date=str(date)[0:10]
     return QA_util_date_gap(date,n,'gt')
 
 def QA_util_get_last_day(date,n=1):
@@ -90,6 +91,7 @@ def QA_util_get_last_day(date,n=1):
     :param n:  整形
     :return: 字符串 str eg: 2018-11-10
     '''
+    date=str(date)[0:10]
     return QA_util_date_gap(date,n,'lt')
     
 def QA_util_get_real_date(date, trade_list=trade_date_sse, towards=-1):
@@ -100,6 +102,7 @@ def QA_util_get_real_date(date, trade_list=trade_date_sse, towards=-1):
     @ yutiansut
 
     """
+    date=str(date)[0:10]
     if towards == 1:
         while date not in trade_list:
             date = str(datetime.datetime.strptime(
@@ -154,7 +157,7 @@ def QA_util_date_gap(date, gap, methods):
     :param date: 字符串起始日 类型 str eg: 2018-11-11
     :param gap: 整数 间隔多数个交易日
     :param methods:  gt大于 ，gte 大于等于， 小于lt ，小于等于lte ， 等于===
-    :return:
+    :return: 字符串 eg：2000-01-01
     '''
     try:
         if methods in ['>', 'gt']:

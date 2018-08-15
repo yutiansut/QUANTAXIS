@@ -32,7 +32,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.0.65'
+__version__ = '1.0.69.dev3'
 __author__ = 'yutiansut'
 logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
@@ -63,7 +63,7 @@ from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day, QA_fetch_get_trade_date, 
                                QA_fetch_get_future_day, QA_fetch_get_future_min, QA_fetch_get_future_list, QA_fetch_get_future_transaction,
                                QA_fetch_get_future_transaction_realtime, QA_fetch_get_future_realtime,
                                QA_fetch_get_hkfund_list, QA_fetch_get_hkfund_day, QA_fetch_get_hkfund_min,
-                               QA_fetch_get_hkindex_list, QA_fetch_get_hkindex_day,QA_fetch_get_hkindex_min,
+                               QA_fetch_get_hkindex_list, QA_fetch_get_hkindex_day, QA_fetch_get_hkindex_min,
                                QA_fetch_get_hkstock_list, QA_fetch_get_hkstock_day, QA_fetch_get_hkstock_min,
                                QA_fetch_get_usstock_list, QA_fetch_get_usstock_day, QA_fetch_get_usstock_min,
                                QA_fetch_get_option_list, QA_fetch_get_option_day, QA_fetch_get_option_min,
@@ -115,11 +115,12 @@ from QUANTAXIS.QABacktest.QAResult import backtest_result_analyzer
 from QUANTAXIS.QAEngine import QA_Thread, QA_Event, QA_Worker, QA_Task, QA_Engine
 
 # Data
-from QUANTAXIS.QAData import (QA_data_tick_resample, QA_data_get_hfq, QA_data_get_qfq, QA_data_make_qfq, QA_data_stock_to_fq,
-                              QA_data_make_hfq, QA_DataStruct_Stock_day, QA_DataStruct_Stock_min,
+from QUANTAXIS.QAData import (QA_data_tick_resample, QA_data_day_resample, QA_data_min_resample,
+                              QA_data_make_qfq, QA_data_stock_to_fq, QA_data_make_hfq,
+                              QA_DataStruct_Stock_day, QA_DataStruct_Stock_min,
                               QA_DataStruct_Future_day, QA_DataStruct_Future_min,
-                              QA_DataStruct_Index_day, QA_DataStruct_Index_min, QA_DataStruct_Indicators,
-                              QA_DataStruct_Stock_transaction, QA_DataStruct_Stock_block, QA_DataStruct_Series,
+                              QA_DataStruct_Index_day, QA_DataStruct_Index_min, QA_DataStruct_Indicators, QA_DataStruct_Stock_realtime,
+                              QA_DataStruct_Stock_transaction, QA_DataStruct_Stock_block, QA_DataStruct_Series, QA_DataStruct_Financial,
                               from_tushare, QDS_StockMinWarpper, QDS_StockDayWarpper, QDS_IndexDayWarpper, QDS_IndexMinWarpper)
 from QUANTAXIS.QAData.dsmethods import *
 # Analysis
@@ -127,7 +128,7 @@ from QUANTAXIS.QAAnalysis import *
 
 # Setting
 
-from QUANTAXIS.QASetting.QALocalize import  qa_path, setting_path, cache_path, download_path, log_path
+from QUANTAXIS.QASetting.QALocalize import qa_path, setting_path, cache_path, download_path, log_path
 
 
 # Util
@@ -152,7 +153,7 @@ from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms
                               QA_util_to_json_from_pandas, QA_util_to_list_from_numpy, QA_util_to_list_from_pandas, QA_util_to_pandas_from_json, QA_util_to_pandas_from_list,
                               QA_util_mongo_initial,  QA_util_mongo_status, QA_util_mongo_infos,
                               QA_util_make_min_index, QA_util_make_hour_index,
-                              QA_util_random_with_topic,
+                              QA_util_random_with_topic, QA_util_file_md5,
                               MARKET_TYPE, ORDER_STATUS, TRADE_STATUS, MARKET_ERROR, AMOUNT_MODEL, ORDER_DIRECTION, ORDER_MODEL, ORDER_EVENT,
                               MARKET_EVENT, ENGINE_EVENT, RUNNING_ENVIRONMENT, FREQUENCE, BROKER_EVENT, BROKER_TYPE, DATASOURCE, OUTPUT_FORMAT)  # QAPARAMETER
 
@@ -169,8 +170,8 @@ import argparse
 
 # check
 import sys
-if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6]:
-    print('wrong version, should be 3.4/3.5/3.6 version')
+if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6, 7, 8]:
+    print('wrong version, should be 3.4/3.5/3.6/3.7/3.8 version')
     sys.exit()
 
 

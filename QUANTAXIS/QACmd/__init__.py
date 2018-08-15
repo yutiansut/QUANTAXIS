@@ -86,6 +86,20 @@ class CLI(cmd.Cmd):
     def help_examples(self):
         print('make a sample backtest framework')
 
+    def do_download_updatex(self,arg):
+        now_path = os.getcwd()
+        data = requests.get(
+            'https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/config/update_x.py')
+        with open("{}{}update_x.py".format(now_path, os.sep), "wb") as code:
+            code.write(data.content)
+            
+    def do_download_updateall(self,arg):
+        now_path = os.getcwd()
+        data = requests.get(
+            'https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/config/update_all.py')
+        with open("{}{}update_all.py".format(now_path, os.sep), "wb") as code:
+            code.write(data.content)
+
     def do_drop_database(self, arg):
         QA_util_mongo_initial()
 
