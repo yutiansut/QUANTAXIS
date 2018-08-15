@@ -1,6 +1,12 @@
 
 # QUANTAXIS 量化金融策略框架
 
+Quantitative Financial FrameWork
+
+从数据爬取-清洗存储-分析回测-可视化-交易复盘的本地一站式解决方案
+
+-------------------------------------------------------------
+
 
 
 [![Github workers](https://img.shields.io/github/watchers/quantaxis/quantaxis.svg?style=social&label=Watchers&)](https://github.com/quantaxis/quantaxis/watchers)

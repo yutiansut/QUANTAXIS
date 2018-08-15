@@ -24,21 +24,28 @@
 
 import datetime
 import json
+import time
+
 import pymongo
 import tornado
+from tornado import gen
+from tornado.concurrent import Future
 from tornado.web import Application, RequestHandler, authenticated
 from tornado.websocket import WebSocketHandler
 
-from QUANTAXIS.QAUtil.QASetting import DATABASE
-from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day, QA_fetch_stock_min, QA_fetch_stock_to_market_date
-from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_day_adv, QA_fetch_stock_min_adv
-from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
+from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_stock_day, QA_fetch_stock_min,
+                                       QA_fetch_stock_to_market_date)
+from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_stock_day_adv,
+                                               QA_fetch_stock_min_adv)
 from QUANTAXIS.QAUtil.QADict import QA_util_dict_remove_key
-from QUANTAXIS.QAWeb.fetch_block import get_block, get_name
+from QUANTAXIS.QAUtil.QASetting import DATABASE
+from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
 from QUANTAXIS.QAWeb.basehandles import QABaseHandler
+from QUANTAXIS.QAWeb.fetch_block import get_block, get_name
 
 
 class StockdayHandler(QABaseHandler):
+    @gen.coroutine
     def get(self):
         """
         采用了get_arguents来获取参数
@@ -49,6 +56,13 @@ class StockdayHandler(QABaseHandler):
         start = self.get_argument('start', default='2017-01-01')
         end = self.get_argument('end', default=str(datetime.date.today()))
         if_fq = self.get_argument('if_fq', default=False)
+
+        future= Future()
+        
+     
+        yield future    
+    def get_data(self,code,start,end,if_fq):
+
         if if_fq:
             data = QA_util_to_json_from_pandas(
                 QA_fetch_stock_day_adv(code, start, end).to_qfq().data)

@@ -332,6 +332,7 @@ class OUTPUT_FORMAT():
     JSON = 'json'
 
 
+
 DATABASE_TABLE = {
     (MARKET_TYPE.STOCK_CN, FREQUENCE.DAY): 'stock_day',
     (MARKET_TYPE.STOCK_CN, FREQUENCE.ONE_MIN): 'stock_min',

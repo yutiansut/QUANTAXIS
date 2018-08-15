@@ -139,6 +139,9 @@ class QA_Order():
 
     def get(self, key, exception=None):
         try:
+            if key is None:
+                print("key is none , return none!")
+                return None;
             return eval('self.{}'.format(key))
         except:
             return exception

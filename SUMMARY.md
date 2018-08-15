@@ -19,6 +19,8 @@
 * [QUANTAXIS指标系统](Documents/indicators.md)
 * [QUANTAXIS的数据获取指南](Documents/DataFetch.md)
 * [QUANTAXIS行情研究](Documents/analysis.md)
+* [QUANTAXIS的高级财务获取方法](Documents/QA_FINANCIAL.md)
+* [QUANTAXIS财务指标](Documents/financial_means.md)
 * [QUANTAXIS的账户结构](Documents/account.md)
 * [QUANTAXIS 账户风险分析插件指南](Documents/risk.md)
 * [QUANTAXIS回测委托成交结算的说明](Documents/orderanddeal.md)
@@ -27,7 +29,6 @@
 * [QUANTAXIS WEB 爬虫](Documents/crawler.md)
 * [常见策略整理](Documents/strategy.md)
 * [QUANTAXIS的开发列表](job_list.md)
-* [QUANTAXIS财务指标](Documents/financial_means.md)
 * [简单策略回测详解](Documents/QUANTAXIS回测分析全过程讲解.md)
 * [T0交易的账户详解](Documents/TEST_ORDER_BACKTEST_T0.md)
 

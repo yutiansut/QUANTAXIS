@@ -28,7 +28,8 @@ import ctypes
     设置 钱龙金典 数据下载目录 http://download2.ql18.com.cn/download/software/instjd_1000.exe
     
     new_tdx.exe 通达信也可安装上述方法
-    
+    env LC_ALL=zh_CN.UTF-8 wine ~/.wine/drive_c/new_tdx/TdxW.exe 
+
     同花顺 运行 wine 需要特殊配置。
     后期研究后发表。暂时用虚拟机共享目录的方式读取。
     

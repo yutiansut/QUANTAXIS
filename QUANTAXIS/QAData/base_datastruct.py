@@ -167,7 +167,7 @@ class _quotation_base():
         assert isinstance(DataStruct, _quotation_base)
         assert self.is_same(DataStruct)
         # 🛠todo 继承的子类  QA_DataStruct_XXXX 类型的 判断必须是同一种类型才可以操作
-        return self.new(data=self.data.append(DataStruct.data).drop_duplicates().set_index(self.index.names, drop=False), dtype=self.type, if_fq=self.if_fq)
+        return self.new(data=self.data.append(DataStruct.data).drop_duplicates(), dtype=self.type, if_fq=self.if_fq)
 
     __radd__ = __add__
 
@@ -180,7 +180,10 @@ class _quotation_base():
         assert isinstance(DataStruct, _quotation_base)
         assert self.is_same(DataStruct)
         # 🛠todo 继承的子类  QA_DataStruct_XXXX 类型的 判断必须是同一种类型才可以操作
-        return self.new(data=self.data.drop(DataStruct.index).set_index(self.index.names, drop=False), dtype=self.type, if_fq=self.if_fq)
+        try:
+            return self.new(data=self.data.drop(DataStruct.index), dtype=self.type, if_fq=self.if_fq)
+        except Exception as e:
+            print(e)
 
     __rsub__ = __sub__
 
@@ -538,7 +541,7 @@ class _quotation_base():
                 data = []
                 axis = []
                 for dates, row in data_splits[i_].data.iterrows():
-                    open, high, low, close = row[1:5]
+                    open, high, low, close = row[0:4]
                     datas = [open, close, low, high]
                     axis.append(dates[0])
                     data.append(datas)
@@ -553,7 +556,7 @@ class _quotation_base():
             data = []
             axis = []
             for dates, row in self.select_code(code).data.iterrows():
-                open, high, low, close = row[1:5]
+                open, high, low, close = row[0:4]
                 datas = [open, close, low, high]
                 axis.append(dates[0])
                 data.append(datas)
@@ -587,7 +590,7 @@ class _quotation_base():
             print('QA CANNOT QUERY THIS {}'.format(context))
             pass
 
-    def groupby(self,by=None, axis=0, level=None, as_index=True, sort=False, group_keys=True, squeeze=False, observed=False, **kwargs):
+    def groupby(self,by=None, axis=0, level=None, as_index=True, sort=False, group_keys=False, squeeze=False, **kwargs):
         """仿dataframe的groupby写法,但控制了by的code和datetime
         
         Keyword Arguments:
@@ -610,7 +613,7 @@ class _quotation_base():
         elif by== self.index.names[0]:
             by =None
             level=0
-        return self.data.groupby(by=by,axis=axis,level=level,as_index=as_index,sort=sort,group_keys=group_keys,squeeze=squeeze,observed=observed)
+        return self.data.groupby(by=by,axis=axis,level=level,as_index=as_index,sort=sort,group_keys=group_keys,squeeze=squeeze)
 
 
     def new(self, data=None, dtype=None, if_fq=None):
@@ -725,14 +728,14 @@ class _quotation_base():
         """增加对于多列的支持"""
         if isinstance(column_, str):
             try:
-                return self.data.pivot(index='datetime', columns='code', values=column_)
+                return self.data.reset_index().pivot(index='datetime', columns='code', values=column_)
             except:
-                return self.data.pivot(index='date', columns='code', values=column_)
+                return self.data.reset_index().pivot(index='date', columns='code', values=column_)
         elif isinstance(column_, list):
             try:
-                return self.data.pivot_table(index='datetime', columns='code', values=column_)
+                return self.data.reset_index().pivot_table(index='datetime', columns='code', values=column_)
             except:
-                return self.data.pivot_table(index='date', columns='code', values=column_)
+                return self.data.reset_index().pivot_table(index='date', columns='code', values=column_)
 
 
 
@@ -756,9 +759,9 @@ class _quotation_base():
         """
         def _selects(code, start, end):
             if end is not None:
-                return self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), slice(code)), :]
+                return self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), code), :]
             else:
-                return self.data.loc[(slice(pd.Timestamp(start), None), slice(code)), :]
+                return self.data.loc[(slice(pd.Timestamp(start), None), code), :]
         try:
             return self.new(_selects(code, start, end), self.type, self.if_fq)
         except:
@@ -876,6 +879,7 @@ class _quotation_base():
             return self.new(eq(self.data), self.type, self.if_fq)
         else:
             raise ValueError('QA CURRENTLY DONOT HAVE THIS METHODS {}'.format(method))
+            
     def find_bar(self, code, time):
         if len(time) == 10:
             return self.dicts[(datetime.datetime.strptime(time, '%Y-%m-%d'), code)]
@@ -894,3 +898,4 @@ class _quotation_base():
         """
 
         return self.bar_pct_change[self.bar_pct_change>pct].sort_index()
+

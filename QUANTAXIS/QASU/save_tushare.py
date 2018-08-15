@@ -77,6 +77,29 @@ def QA_SU_save_stock_list(client=DATABASE):
                  'stock': {'code': data}})
 
 
+
+def QA_SU_save_stock_terminated(client=DATABASE):
+    '''
+    获取已经被终止上市的股票列表，数据从上交所获取，目前只有在上海证券交易所交易被终止的股票。
+    collection：
+        code：股票代码 name：股票名称 oDate:上市日期 tDate:终止上市日期
+    :param client:
+    :return: None
+    '''
+
+    # 🛠todo 已经失效从wind 资讯里获取
+    #这个函数已经失效
+    print("！！！ tushare 这个函数已经失效！！！")
+    df = QATs.get_terminated()
+    #df = QATs.get_suspended()
+    print("📡 Get stock terminated from tushare,stock count is %d  (终止上市股票列表)" % len(df))
+    coll = client.stock_terminated
+    client.drop_collection(coll)
+    json_data = json.loads(df.reset_index().to_json(orient='records'))
+    coll.insert(json_data)
+    print("📝 保存终止上市股票列表 到 stock_terminated collection， OK✅")
+
+
 def QA_SU_save_stock_info_tushare(client=DATABASE):
     '''
         获取 股票的 基本信息，包含股票的如下信息
