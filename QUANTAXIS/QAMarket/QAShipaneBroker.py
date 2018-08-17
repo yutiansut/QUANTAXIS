@@ -14,7 +14,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
-from QUANTAXIS.QAMarket.common import cn_en_compare, trade_towards_cn_en
+from QUANTAXIS.QAMarket.common import cn_en_compare, trade_towards_cn_en, order_status_cn_en
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
 from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, ORDER_DIRECTION, BROKER_TYPE,
@@ -281,8 +281,10 @@ class QA_SPEBroker(QA_Broker):
 
                 order_all.towards = order_all.towards.apply(
                     lambda x: trade_towards_cn_en[x])
+                
                 if 'order_time' in order_headers:
                     # 这是order_status
+                    order_all.status = order_all.status.apply(lambda x: order_status_cn_en[x])
                     if 'order_date' not in order_headers:
                         order_all.order_time = order_all.order_time.apply(
                             lambda x: QA_util_get_order_datetime(dt='{} {}'.format(datetime.date.today(), x)))
