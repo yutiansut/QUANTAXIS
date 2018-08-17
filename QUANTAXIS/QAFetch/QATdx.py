@@ -315,12 +315,12 @@ def QA_fetch_get_stock_min(code, start, end, frequence='1min', ip=None, port=Non
         data = pd.concat([api.to_df(api.get_security_bars(frequence, _select_market_code(
             str(code)), str(code), (int(lens / 800) - i) * 800, 800)) for i in range(int(lens / 800) + 1)], axis=0)
         data = data\
-            .assign(datetime=pd.to_datetime(data['datetime']), code=str(code))\
             .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1, inplace=False)\
-            .assign(date=data['datetime'].apply(lambda x: str(x)[0:10]))\
-            .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(x)))\
-            .assign(time_stamp=data['datetime'].apply(lambda x: QA_util_time_stamp(x)))\
-            .assign(type=type_).set_index('datetime', drop=False, inplace=False)[start:end]
+            .assign(datetime=pd.to_datetime(data['datetime']), code=str(code),\
+                    date=data['datetime'].apply(lambda x: str(x)[0:10]),\
+                    date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(x)),\
+                    time_stamp=data['datetime'].apply(lambda x: QA_util_time_stamp(x)),\
+                    type=type_).set_index('datetime', drop=False, inplace=False)[start:end]
         return data.assign(datetime=data['datetime'].apply(lambda x: str(x)))
 
 
