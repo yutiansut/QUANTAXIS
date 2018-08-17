@@ -218,20 +218,25 @@ class QA_Order():
             amount {[type]} -- [description]
         """
         # 先做强制类型转换
+
+
         trade_amount = int(trade_amount)
 
-        trade_price = float(trade_price)
-        trade_id = str(trade_id)
-        trade_time = str(trade_time)
+        if trade_amount <1:
+            pass
+        else:
+            trade_price = float(trade_price)
+            trade_id = str(trade_id)
+            trade_time = str(trade_time)
 
-        self.trade_id.append(trade_id)
-        self.trade_price = (self.trade_price*self.trade_amount +
-                            trade_price*trade_amount)/(self.trade_amount+trade_amount)
-        self.trade_amount += trade_amount
-        self.trade_time.append(trade_time)
-        # code:str, trade_id:str,order_id:str,realorder_id:str,trade_price:float, trade_amount:int,trade_towards:int,trade_time:str
-        self.callback(self.code, trade_id, self.order_id, self.realorder_id,
-                      trade_price, trade_amount, self.towards, trade_time)
+            self.trade_id.append(trade_id)
+            self.trade_price = (self.trade_price*self.trade_amount +
+                                trade_price*trade_amount)/(self.trade_amount+trade_amount)
+            self.trade_amount += trade_amount
+            self.trade_time.append(trade_time)
+            # code:str, trade_id:str,order_id:str,realorder_id:str,trade_price:float, trade_amount:int,trade_towards:int,trade_time:str
+            self.callback(self.code, trade_id, self.order_id, self.realorder_id,
+                        trade_price, trade_amount, self.towards, trade_time)
 
     def queued(self, realorder_id):
         self.realorder_id = realorder_id
