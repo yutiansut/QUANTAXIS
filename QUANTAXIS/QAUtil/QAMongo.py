@@ -40,6 +40,7 @@ def QA_util_mongo_initial(db=DATABASE):
     db.drop_collection('stock_min')
     db.drop_collection('stock_transaction')
     db.drop_collection('stock_xdxr')
+    db.drop_collection('report_calendar')
 
 
 

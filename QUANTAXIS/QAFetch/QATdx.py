@@ -206,13 +206,12 @@ def QA_fetch_get_security_bars(code, _type, lens, ip=None, port=None):
         data = pd.concat([api.to_df(api.get_security_bars(_select_type(_type), _select_market_code(
             code), code, (i - 1) * 800, 800)) for i in range(1, int(lens / 800) + 2)], axis=0)
         data = data\
+            .assign(datetime=pd.to_datetime(data['datetime']), code=str(code))\
             .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1, inplace=False)\
-            .assign(datetime=pd.to_datetime(data['datetime']),\
-                    date=data['datetime'].apply(lambda x: str(x)[0:10]),\
-                    date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(x)),\
-                    time_stamp=data['datetime'].apply(lambda x: QA_util_time_stamp(x)),\
-                    type=_type, code=str(code))\
-                    .set_index('datetime', drop=False, inplace=False).tail(lens)
+            .assign(date=data['datetime'].apply(lambda x: str(x)[0:10]))\
+            .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(x)))\
+            .assign(time_stamp=data['datetime'].apply(lambda x: QA_util_time_stamp(x)))\
+            .assign(type=_type).set_index('datetime', drop=False, inplace=False).tail(lens)
         if data is not None:
             return data
         else:
@@ -268,12 +267,10 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', frequence='da
         data = data[data['open'] != 0]
 
 
-        data = data.assign(date=data['datetime'].apply(lambda x: str(x[0:10])),
-                           code=str(code),\
-                           date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10])))\
-                           .set_index('date', drop=False, inplace=False)
+        data = data.assign(date=data['datetime'].apply(lambda x: str(x[0:10]))).assign(code=str(code))\
+            .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10]))).set_index('date', drop=False, inplace=False)
 
-        data = data.drop(['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1)[start_date:end_date]
+        data = data.drop(['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1)[start_date:end_date].assign(date=data['date'].apply(lambda x: str(x)[0:10]))[start_date:end_date]
         if if_fq in ['00','bfq']:
             return data
         else:
@@ -658,16 +655,6 @@ def __QA_fetch_get_stock_transaction(code, day, retry, api):
 
 
 def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=None, port=None):
-    '''
-
-    :param code: 股票代码
-    :param start: 开始日期
-    :param end:  结束日期
-    :param retry: 重新尝试次数
-    :param ip: 地址
-    :param port: 端口
-    :return:
-    '''
     '历史分笔成交 buyorsell 1--sell 0--buy 2--盘前'
     ip, port = get_mainmarket_ip(ip, port)
     api = TdxHq_API()
@@ -1228,7 +1215,7 @@ def QA_fetch_get_future_min(code, start, end, frequence='1min', ip=None, port=No
             .assign(date=data['datetime'].apply(lambda x: str(x)[0:10]))\
             .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(x)))\
             .assign(time_stamp=data['datetime'].apply(lambda x: QA_util_time_stamp(x)))\
-            .assign(type=type_).set_index('datetime', drop=False, inplace=False)
+            .assign(type=type_).set_index('datetime', drop=False, inplace=False)[start:end]
         return data.assign(datetime=data['datetime'].apply(lambda x: str(x)))
 
 
