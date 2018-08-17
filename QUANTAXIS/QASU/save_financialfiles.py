@@ -50,7 +50,7 @@ def QA_SU_save_financial_files():
 
         date = int(item.split('.')[0][-8:])
         print('QUANTAXIS NOW SAVING {}'.format(date))
-        if coll.find({'report_date': date}).count() < 100:
+        if coll.find({'report_date': date}).count() < 3600:
 
             print(coll.find({'report_date': date}).count())
             data = QA_util_to_json_from_pandas(parse_filelist([item]).reset_index(
