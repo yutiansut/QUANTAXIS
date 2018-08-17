@@ -26,7 +26,7 @@ import datetime
 import pandas as pd
 from QUANTAXIS.QAUtil import DATABASE, QA_util_to_json_from_pandas
 from QUANTAXIS.QAUtil.QASql import ASCENDING, DESCENDING
-from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_order_day
+
 
 
 def QA_SU_save_order(orderlist, client=DATABASE):
@@ -45,7 +45,7 @@ def QA_SU_save_order(orderlist, client=DATABASE):
         [('account_cookie', ASCENDING), ('realorder_id', ASCENDING)], unique=True)
     try:
         for item in orderlist:
-            item['date']= QA_util_get_order_day()
+            #item['date']= QA_util_get_order_day()
             collection.update_one({'account_cookie': item.get('account_cookie'), 'realorder_id': item.get('realorder_id')},
                               {'$set': item}, upsert=True)
     except Exception as e:
@@ -64,7 +64,7 @@ def QA_SU_save_deal(dealist, client=DATABASE):
     """
 
     if isinstance(dealist,pd.DataFrame):
-        dealist = QA_util_to_json_from_pandas(dealist.assign(date=QA_util_get_order_day()).reset_index())
+        dealist = QA_util_to_json_from_pandas(dealist.reset_index())
         collection = client.deal
 
         collection.create_index(

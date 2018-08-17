@@ -2,7 +2,7 @@
 # shipane
 
 #"申报时间", "证券代码", "证券名称", "操作", "委托状态", "委托数量", "成交数量", "撤消数量", , "委托价格", "成交均价", "合同编号", "委托子业务", "约定号", "对方账户", "参考汇率", "结算币种", "交易币种", "证券中文名", "出错信息
-
+from QUANTAXIS.QAUtil.QAParameter import ORDER_DIRECTION,TRADE_STATUS,ORDER_STATUS
 cn_en_compare = {'明细': 'id',
                  '证券代码': 'code',
                  '市场代码': 'market_code',
@@ -71,6 +71,27 @@ cn_en_compare = {'明细': 'id',
                  '证券中文名': 'CNname',
                  '出错信息': 'error',
                  '成交时间': 'trade_time'}
+
+
+trade_towards_cn_en={
+    '买入': ORDER_DIRECTION.BUY,
+    '买': ORDER_DIRECTION.BUY,
+    '卖出':ORDER_DIRECTION.SELL,
+    '卖': ORDER_DIRECTION.SELL,
+    '申购':ORDER_DIRECTION.ASK,
+    '申':ORDER_DIRECTION.ASK,
+    '证券买入':ORDER_DIRECTION.BUY,
+    '证券卖出':ORDER_DIRECTION.SELL
+}
+
+order_status_cn_en={
+    '已报': ORDER_STATUS.QUEUED,
+    '场内废单': ORDER_STATUS.FAILED,
+    '场外废单': ORDER_STATUS.FAILED,
+    '已成交': ORDER_STATUS.SUCCESS_ALL,
+    '已撤单': ORDER_STATUS.CANCEL_ALL,
+    
+}
 
 
 """'已报'　　　　委托已经被交易端接受了
