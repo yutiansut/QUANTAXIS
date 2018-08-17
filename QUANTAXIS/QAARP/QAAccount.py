@@ -612,7 +612,7 @@ class QA_Account(QA_Worker):
             self.orders.insert_order(_order)
             return _order
         else:
-            print('ERROR : amount=0 {} {} {} {}'.format(
+            print('ERROR : CODE {} TIME {}  AMOUNT {} TOWARDS {}'.format(
                 code, time, amount, towards))
             return False
 
