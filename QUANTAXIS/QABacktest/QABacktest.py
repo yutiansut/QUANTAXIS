@@ -82,8 +82,9 @@ class QA_Backtest():
         self.portfolio = None
 
         # 🛠todo market_type 应该放在 QA_Market对象里的一个属性
-        self.market = QA_Market()
+        self.market = QA_Market(if_start_orderthreading=True)
         self.market_type = market_type
+        
 
         self.frequence = frequence
         self.broker = QA_BacktestBroker(commission_fee)
@@ -123,12 +124,16 @@ class QA_Backtest():
         # 启动 trade_engine 线程
         self.market.start()
 
+        
+
         # 注册 backtest_broker ，并且启动和它关联线程QAThread 存放在 kernels 词典中， { 'broker_name': QAThread }
         self.market.register(self.broker_name, self.broker)
 
         # 通过 broke名字 新建立一个 QAAccount 放在的中 session字典中 session 是 { 'cookie' , QAAccount }
         self.market.login(self.broker_name,
                           self.account.account_cookie, self.account)
+
+        self.market._sync_orders()
 
     def run(self):
         """generator driven data flow
