@@ -229,7 +229,8 @@ class QA_OrderHandler(QA_Worker):
                     #
                     res=self.deal_status.loc[order.account_cookie,order.realorder_id]
 
-                    if isinstance(res,pd.Series):
+                    if len(res)==1:
+                        res=res.iloc[0]
                         order.trade(str(res.trade_id),float(res.trade_price),int(res.trade_amount),str(res.trade_time))
                     else:
                         for _, deal in res.iterrows:
