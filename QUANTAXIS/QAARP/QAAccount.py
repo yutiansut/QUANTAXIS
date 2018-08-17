@@ -345,10 +345,10 @@ class QA_Account(QA_Worker):
         """
         return pd.DataFrame(data=self.history, columns=self._history_headers).groupby('code').amount.sum().replace(0, np.nan).dropna().sort_index()
 
-    @property
-    def order_table(self):
-        """return order trade list"""
-        return self.orders.trade_list
+    # @property
+    # def order_table(self):
+    #     """return order trade list"""
+    #     return self.orders.trade_list
 
     @property
     def trade(self):

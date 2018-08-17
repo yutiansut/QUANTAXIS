@@ -175,19 +175,39 @@ def QA_util_date_gap(date, gap, methods):
         return 'wrong date'
 
 
-def QA_util_get_order_day():
+def QA_util_get_trade_datetime(dt=datetime.datetime.now()):
+    """交易的真实日期
+    
+    Returns:
+        [type] -- [description]
+    """
+
+    #dt= datetime.datetime.now()
+
+    
+
+    if QA_util_if_trade(str(dt.date())) and dt.time()<datetime.time(15,0,0):
+        return str(dt.date())
+    else:
+        return QA_util_get_real_date(str(dt.date()),trade_date_sse,1)
+
+def QA_util_get_order_datetime(dt):
     """委托的真实日期
     
     Returns:
         [type] -- [description]
     """
 
-    dt= datetime.datetime.now()
+    #dt= datetime.datetime.now()
+    dt = datetime.datetime.strptime(str(dt)[0:19], '%Y-%m-%d %H:%M:%S')
 
-    if QA_util_if_trade(str(dt.date())) and dt.time()<datetime.time(15,0,0):
-        return str(dt.date())
+    if QA_util_if_trade(str(dt.date())) and dt.time()<datetime.time(15,0,0) :
+        return str(dt)
     else:
-        return QA_util_get_real_date(str(dt.date()),trade_date_sse,1)
+        #print('before')
+        #print(QA_util_date_gap(str(dt.date()),1,'lt'))
+        return '{} {}'.format(QA_util_date_gap(str(dt.date()),1,'lt'),dt.time())
+
 
 def future_change(df):
     for i in range(len(df)):

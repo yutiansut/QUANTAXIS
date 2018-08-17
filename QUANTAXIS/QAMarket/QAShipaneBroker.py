@@ -9,15 +9,18 @@ import future
 import asyncio
 import pandas as pd
 import requests
+import datetime
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
-from QUANTAXIS.QAMarket.common import cn_en_compare
+from QUANTAXIS.QAMarket.common import cn_en_compare, trade_towards_cn_en
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
 from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, ORDER_DIRECTION, BROKER_TYPE,
                                           ORDER_MODEL, ORDER_STATUS)
+from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_order_datetime
+from QUANTAXIS.QAUtil.QADate import QA_util_date_int2str
 from QUANTAXIS.QAUtil.QASetting import setting_path
 
 CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
@@ -124,7 +127,6 @@ class QA_SPEBroker(QA_Broker):
         self.key = self.setting.key
 
         #self.account_headers = ['forzen_cash','balance_available','cash_available','pnl_money_today','total_assets','pnl_holding','market_value','money_available']
-
 
     def run(self, event):
         if event.event_type is BROKER_EVENT.RECEIVE_ORDER:
@@ -276,6 +278,22 @@ class QA_SPEBroker(QA_Broker):
                 order_headers = [cn_en_compare[item] for item in order_headers]
                 order_all = pd.DataFrame(
                     orders['rows'], columns=order_headers).assign(account_cookie=accounts)
+
+                order_all.towards = order_all.towards.apply(
+                    lambda x: trade_towards_cn_en[x])
+                if 'order_time' in order_headers:
+                    # 这是order_status
+                    if 'order_date' not in order_headers:
+                        order_all.order_time = order_all.order_time.apply(
+                            lambda x: QA_util_get_order_datetime(dt='{} {}'.format(datetime.date.today(), x)))
+                    else:
+                        order_all = order_all.assign(order_time=order_all.order_date.apply(QA_util_date_int2str)+' '+order_all.order_time)
+
+                if 'trade_time' in order_headers:
+
+                    order_all.trade_time = order_all.trade_time.apply(
+                        lambda x: '{} {}'.format(datetime.date.today(), x))
+
                 if status is 'filled':
                     return order_all.loc[:, self.dealstatus_headers].set_index(['account_cookie', 'realorder_id']).sort_index()
                 else:
@@ -352,10 +370,9 @@ class QA_SPEBroker(QA_Broker):
         try:
             # if res is not None and 'id' in res.keys():
 
-
             # order.status = ORDER_STATUS.QUEUED
             # order.text = 'SUCCESS'
-            order.queued(realorder_id = res['id'])
+            order.queued(realorder_id=res['id'])
             print('success receive order {}'.format(order.realorder_id))
             return order
             # else:

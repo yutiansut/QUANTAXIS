@@ -38,7 +38,7 @@ class ORDER_DIRECTION():
     SELL_OPEN 期货 空开
     SELL_CLOSE 期货 多平(空头平旧仓)
 
-
+    ASK  申购
     """
 
     BUY = 1
@@ -47,6 +47,7 @@ class ORDER_DIRECTION():
     BUY_CLOSE = 1
     SELL_OPEN = -1
     SELL_CLOSE = -1
+    ASK = 0
 
 
 class ORDER_MODEL():
