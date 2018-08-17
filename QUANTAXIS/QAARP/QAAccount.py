@@ -137,7 +137,7 @@ class QA_Account(QA_Worker):
         # warnings.warn('QUANTAXIS 1.0.46 has changed the init_assets ==> init_cash, please pay attention to this change if you using init_cash to initial an account class,\
         #         ', DeprecationWarning, stacklevel=2)
         self._history_headers = ['datetime', 'code', 'price',
-                                 'amount', 'cash', 'order_id', 'trade_id',
+                                 'amount', 'cash', 'order_id', 'realorder_id','trade_id',
                                  'account_cookie', 'commission', 'tax']
         ########################################################################
         # 信息类:
@@ -447,38 +447,51 @@ class QA_Account(QA_Worker):
         self.cash = [self.init_cash]
         self.cash_available = self.cash[-1]  # 在途资金
 
-    def receive_deal(self, message):
+    def receive_deal(self,code:str, trade_id:str,order_id:str,realorder_id:str,trade_price:float, trade_amount:int,trade_towards:int,trade_time:str):
+        """更新deal
+        
+        Arguments:
+            code {str} -- [description]
+            trade_id {str} -- [description]
+            order_id {str} -- [description]
+            realorder_id {str} -- [description]
+            trade_price {float} -- [description]
+            trade_amount {int} -- [description]
+            trade_towards {int} -- [description]
+            trade_time {str} -- [description]
+        
+        Returns:
+            [type] -- [description]
         """
-        用于更新账户
-        update history and cash
-        :param message:
-        :return:
-        """
-        if message['header']['status'] is TRADE_STATUS.SUCCESS:
-            trade_amount = float(float(message['body']['order']['price']) *
-                                 float(message['body']['order']['amount']) * message['body']['order']['towards'] +
-                                 float(message['body']['fee']['commission']) +
-                                 float(message['body']['fee']['tax']))
+        print('receive deal')
 
-            if self.cash[-1] > trade_amount:
-                self.time_index.append(
-                    str(message['body']['order']['datetime']))
-                self.history.append(
-                    [str(message['body']['order']['datetime']), str(message['body']['order']['code']),
-                     float(message['body']['order']['price']), int(message['body']['order']['towards']) *
-                     float(message['body']['order']['amount']), self.cash[-1]-trade_amount, str(
-                        message['header']['order_id']), str(message['header']['trade_id']), str(self.account_cookie),
-                     float(message['body']['fee']['commission']), float(message['body']['fee']['tax'])])
-                self.cash.append(self.cash[-1]-trade_amount)
-                self.cash_available = self.cash[-1]
-                # 资金立刻结转
-            else:
-                print(message)
-                print(self.cash[-1])
-                self.cash_available = self.cash[-1]
-                print('NOT ENOUGH MONEY FOR {}'.format(
-                    message['body']['order']))
-        self.datetime = message['body']['order']['datetime']
+        trade_time = str(trade_time)
+        code = str(code)
+        trade_price=float(trade_price)
+        trade_towards =int(trade_towards)
+        realorder_id=str(realorder_id)
+        trade_id = str(trade_id)
+        order_id= str(order_id)
+        trade_money = trade_price*int(trade_amount)*trade_towards
+        commission_fee= trade_money*self.commission_coeff
+        tax_fee = trade_money * self.tax_coeff
+        trade_money+=(commission_fee+tax_fee)
+
+        if self.cash[-1]>trade_money:
+            self.time_index.append(trade_time)
+            self.history.append(
+                [trade_time,code,trade_price,trade_towards*trade_amount, self.cash[-1]-trade_money, order_id,realorder_id, trade_id, self.account_cookie,
+                    commission_fee, tax_fee])
+            self.cash.append(self.cash[-1]-trade_money)
+            self.cash_available = self.cash[-1]
+        else:
+            print(self.cash[-1])
+            self.cash_available = self.cash[-1]
+            print('NOT ENOUGH MONEY FOR {}'.format(
+                order_id))
+
+
+        self.datetime = trade_time
         return self.message
 
     def send_order(self, code=None, amount=None, time=None, towards=None, price=None, money=None, order_model=None, amount_model=None):

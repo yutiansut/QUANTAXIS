@@ -205,14 +205,36 @@ class QA_OrderHandler(QA_Worker):
             #         result = event.broker.query_deal
             #         time.sleep(1)
             if self.if_start_orderquery:
-                self.deal_status = [event.broker[i].query_orders(
+                res = [event.broker[i].query_orders(
                     event.account_cookie[i], 'filled') for i in range(len(event.account_cookie))]
                 # print(self.order_status)
-                self.deal_status = pd.concat(self.deal_status, axis=0) if len(
-                    self.deal_status) > 0 else pd.DataFrame()
+
+                try:
+                    #res=[pd.DataFrame() if not isinstance(item,pd.DataFrame) else item for item in res]
+                    res=pd.concat(res, axis=0) if len(
+                    res) > 0 else pd.DataFrame()
+                except:
+                    res=None
+
+                self.deal_status = res if res is not None else self.deal_status
                 if len(self.deal_status) > 0:
                     QA_SU_save_deal(self.deal_status)
                 # print(self.order_status)
+
+            # 检查pending订单, 更新订单状态
+
+            for order in self.order_queue.pending:
+                if order.realorder_id in self.deal_status.index.levels[1]:
+                    # 此时有成交推送(但可能是多条)
+                    #
+                    res=self.deal_status.loc[order.account_cookie,order.realorder_id]
+
+                    if isinstance(res,pd.Series):
+                        order.trade(str(res.trade_id),float(res.trade_price),int(res.trade_amount),str(res.trade_time))
+                    else:
+                        for _, deal in res.iterrows:
+                            order.trade(str(deal.trade_id),float(deal.trade_price),int(deal.trade_amount),str(deal.trade_time))
+                        
 
             # 这里加入随机的睡眠时间 以免被发现固定的刷新请求
             if event.event_queue.qsize() < 1:
