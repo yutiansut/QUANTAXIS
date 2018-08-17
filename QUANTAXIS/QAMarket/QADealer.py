@@ -53,8 +53,6 @@ class commission():
     if_commission = if_buyside_commission and if_sellside_commission
 
 
-
-
 class QA_Dealer():
 
     """[summary]
@@ -92,7 +90,7 @@ class QA_Dealer():
         self.trade_money = 0
         self.dealheader = ['account_cookie', 'order_time', 'trade_time', 'code', 'name', 'towards', 'trade_price', 'order_price',
                            'status', 'order_amount', 'trade_amount', 'trade_money', 'cancel_amount', 'realorder_id', 'trade_id']
-        self.deal_message ={}
+        self.deal_message = {}
 
     def deal(self, order, market_data):
         self.order = order
@@ -102,26 +100,22 @@ class QA_Dealer():
         self.order.tax_coeff = order.tax_coeff
         if order.market_type == MARKET_TYPE.STOCK_CN:
 
-            res=self.backtest_stock_dealer()
-            #print(res)
-            self.deal_message[self.order.order_id]= res
-            
+            res = self.backtest_stock_dealer()
+            # print(res)
+            self.deal_message[self.order.order_id] = res
 
         elif order.market_type == MARKET_TYPE.FUTURE_CN:
             return self.backtest_future_dealer()
 
     @property
     def deal_df(self):
-        return pd.DataFrame(data=list(self.deal_message.values()),columns=self.dealheader)
-
-
+        return pd.DataFrame(data=list(self.deal_message.values()), columns=self.dealheader)
 
     def settle(self):
         """撮合部分settle事件
         """
 
-        self.deal_message={}
-
+        self.deal_message = {}
 
     @property
     def callback_message(self):
@@ -172,7 +166,9 @@ class QA_Dealer():
         step3: return callback
         """
         try:
-            if float(self.market_data.get('open')) == float(self.market_data.get('high')) == float(self.market_data.get('close')) == float(self.market_data.get('low')):
+            if float(self.market_data.get('open')) == float(self.market_data.get('high')) == float(self.market_data.get('close')) == float(self.market_data.get('low')) and \
+                    self.market_data.get('volume') < 4*self.order.amount:
+                # 调整 : 分钟线 经常处于一个价位 但不代表不能交易 所以加入量的判断(但是不能影响市场, 所以加上4倍量限制)
 
                 self.status = TRADE_STATUS.PRICE_LIMIT
                 self.deal_price = 0
@@ -210,8 +206,8 @@ class QA_Dealer():
                     else:
                         self.deal_price = float(self.market_data.get('low'))
                 self.status = TRADE_STATUS.SUCCESS
-                #print(self.market_data)
-                self.trade_time = self.market_data.get('datetime','date')
+                # print(self.market_data)
+                self.trade_time = self.market_data.get('datetime', 'date')
             else:
                 self.status = TRADE_STATUS.FAILED
                 self.deal_price = 0

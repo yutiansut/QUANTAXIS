@@ -59,7 +59,7 @@ class QA_Order():
         记录order
     '''
 
-    def __init__(self, price=None, date=None, datetime=None, sending_time=None, transact_time=None, amount=None, market_type=None, frequence=None,
+    def __init__(self, price=None, date=None, datetime=None, sending_time=None, trade_time=[], amount=None, market_type=None, frequence=None,
                  towards=None, code=None, user=None, account_cookie=None, strategy=None, order_model=None, money=None, amount_model=AMOUNT_MODEL.BY_AMOUNT,
                  order_id=None, trade_id=[], _status=ORDER_STATUS.NEW, callback=False, commission_coeff=0.00025, tax_coeff=0.001, *args, **kwargs):
         '''
@@ -71,7 +71,7 @@ class QA_Order():
         :param date:            委托的日期        type str , eg 2018-11-11
         :param datetime:        委托的时间        type str , eg 2018-11-11 00:00:00
         :param sending_time:    发送委托单的时间   type str , eg 2018-11-11 00:00:00
-        :param transact_time:   委托成交的时间
+        :param trade_time:   委托成交的时间
         :param amount:          委托量               type int
         :param trade_amount     成交数量
         :param cancel_amount    撤销数量
@@ -124,7 +124,7 @@ class QA_Order():
             pass
         self.sending_time = self.datetime if sending_time is None else sending_time  # 下单时间
 
-        self.transact_time = transact_time  # 成交时间
+        self.trade_time = trade_time  # 成交时间
         self.amount = amount  # 委托数量
         self.trade_amount = 0  # 成交数量
         self.cancel_amount = 0  # 撤销数量
@@ -211,16 +211,32 @@ class QA_Order():
         self._status = ORDER_STATUS.FAILED
         self.reason = str(reason)
 
-    def trade(self, trade_id, trade_price, trade_amount):
+    def trade(self, trade_id, trade_price, trade_amount, trade_time):
         """trade 状态
 
         Arguments:
             amount {[type]} -- [description]
         """
-        self.trade_id.append(trade_id)
-        self.trade_price = (self.trade_price*self.trade_amount +
-                            trade_price*trade_amount)/(self.trade_amount+trade_amount)
-        self.trade_amount += trade_amount
+        # 先做强制类型转换
+
+
+        trade_amount = int(trade_amount)
+
+        if trade_amount <1:
+            pass
+        else:
+            trade_price = float(trade_price)
+            trade_id = str(trade_id)
+            trade_time = str(trade_time)
+
+            self.trade_id.append(trade_id)
+            self.trade_price = (self.trade_price*self.trade_amount +
+                                trade_price*trade_amount)/(self.trade_amount+trade_amount)
+            self.trade_amount += trade_amount
+            self.trade_time.append(trade_time)
+            # code:str, trade_id:str,order_id:str,realorder_id:str,trade_price:float, trade_amount:int,trade_towards:int,trade_time:str
+            self.callback(self.code, trade_id, self.order_id, self.realorder_id,
+                        trade_price, trade_amount, self.towards, trade_time)
 
     def queued(self, realorder_id):
         self.realorder_id = realorder_id
@@ -281,7 +297,7 @@ class QA_Order():
             self.date = order_dict['date']
             self.datetime = order_dict['datetime']
             self.sending_time = order_dict['sending_time']  # 下单时间
-            self.transact_time = order_dict['transact_time']
+            self.trade_time = order_dict['trade_time']
             self.amount = order_dict['amount']
             self.frequence = order_dict['frequence']
             self.market_type = order_dict['market_type']
