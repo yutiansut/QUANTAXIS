@@ -222,20 +222,29 @@ class QA_OrderHandler(QA_Worker):
                 # print(self.order_status)
 
             # 检查pending订单, 更新订单状态
-
-            for order in self.order_queue.pending:
-                if order.realorder_id in self.deal_status.index.levels[1]:
-                    # 此时有成交推送(但可能是多条)
-                    #
-                    res=self.deal_status.loc[order.account_cookie,order.realorder_id]
-
-                    if len(res)==1:
-                        res=res.iloc[0]
-                        order.trade(str(res.trade_id),float(res.trade_price),int(res.trade_amount),str(res.trade_time))
-                    else:
-                        for _, deal in res.iterrows:
-                            order.trade(str(deal.trade_id),float(deal.trade_price),int(deal.trade_amount),str(deal.trade_time))
+            try:
+                for order in self.order_queue.pending:
+                    if order.realorder_id in self.deal_status.index.levels[1]:
+                        # 此时有成交推送(但可能是多条)
+                        #
+                        res=self.deal_status.loc[order.account_cookie,order.realorder_id]
                         
+                        if isinstance(res,pd.Series):
+                            order.trade(str(res.trade_id),float(res.trade_price),int(res.trade_amount),str(res.trade_time))
+                        elif isinstance(res,pd.DataFrame):
+                            if len(res)==1:
+                                res=res.iloc[0]
+                                order.trade(str(res.trade_id),float(res.trade_price),int(res.trade_amount),str(res.trade_time))
+                            else:
+                                print(res)
+                                print(len(res))
+                                for _, deal in res.iterrows:
+                                    order.trade(str(deal.trade_id),float(deal.trade_price),int(deal.trade_amount),str(deal.trade_time))
+            except Exception as e:
+                print(e)
+                print(self.order_queue.order_list)
+                print(self.deal_status.index) 
+                print(self.order_status)        
 
             # 这里加入随机的睡眠时间 以免被发现固定的刷新请求
             if event.event_queue.qsize() < 1:
