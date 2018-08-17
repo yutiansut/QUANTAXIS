@@ -97,6 +97,7 @@ order_status_cn_en = {
     '全部成交': ORDER_STATUS.SUCCESS_ALL,
     '部成': ORDER_STATUS.SUCCESS_PART,  # 委托已经成交了一部份
     '已撤单': ORDER_STATUS.CANCEL_ALL,
+    '全部撤单': ORDER_STATUS.CANCEL_ALL,
     '已撤': ORDER_STATUS.CANCEL_ALL,
     '已报待撤': ORDER_STATUS.QUEUED,  # 已经申报了撤单，交易端也已接受，但目前可能因为还没在交易时间段，所以还在等待撤消
 }
