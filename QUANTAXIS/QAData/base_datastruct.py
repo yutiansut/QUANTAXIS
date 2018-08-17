@@ -689,7 +689,7 @@ class _quotation_base():
         """
         转换DataStruct为json
         """
-        return QA_util_to_json_from_pandas(self.data)
+        return QA_util_to_json_from_pandas(self.data.reset_index())
 
     def to_dict(self, orient='dict'):
         """

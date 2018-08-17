@@ -57,6 +57,7 @@
 
 1. 修改了采样函数的写法
 2. 修复了tick采样成60min的bug
+3. 修复了因为multiindex导致的QA_DataStruct.to_json方法缺失 datetime/code 字段的问题
 
 [QAMARKET]
 
@@ -69,6 +70,9 @@
 6. 修改QABacktest_Broker 适配新的order类
 7. 优化QABroker的状态显示
 8. 将撮合缓存字典重构进QADealer, dealer加入 deal_message(dict) 和deal_df(dataframe),并增加dealer的settle函数
+9. 大量更新QABacktest_Broker方法,使之适配新版本回测
+10. 适配实盘,增加字段解析 trade_towards_cn_en, order_status_cn_en
+11. 修改order的撮合机制, 使用创建order时的callback回调来更新账户
 
 
 [QAEngine]
@@ -78,6 +82,7 @@
 [QAARP]
 
 1. QA_Account 增加 cancel_order方法 撤单操作
+2. 重写QA_Account的receive_deal方法, 适配新版本更新账户
 
 
 [QASU]
@@ -87,7 +92,7 @@
 
 [QAUtil]
 
-1. QADate_Trade 增加QA_util_get_order_day() 用于获取委托的真实日期
+1. QADate_Trade 增加QA_util_get_order_datetime() 用于获取委托的真实日期 QA_util_get_trade_datetime() 用于获取成交的真实日期
 2. QA_Parameter 修改订单状态
 
 [QAWEB]
