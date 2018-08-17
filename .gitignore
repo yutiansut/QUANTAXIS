@@ -1,6 +1,7 @@
 
 # Self-defined ignore
-
+_data_/
+_notebooks_/
 *.pyc
 node_modules/
 .vscode/
