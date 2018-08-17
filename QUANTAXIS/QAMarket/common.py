@@ -1,8 +1,8 @@
 
 # shipane
 
-#"申报时间", "证券代码", "证券名称", "操作", "委托状态", "委托数量", "成交数量", "撤消数量", , "委托价格", "成交均价", "合同编号", "委托子业务", "约定号", "对方账户", "参考汇率", "结算币种", "交易币种", "证券中文名", "出错信息
-from QUANTAXIS.QAUtil.QAParameter import ORDER_DIRECTION,TRADE_STATUS,ORDER_STATUS
+# "申报时间", "证券代码", "证券名称", "操作", "委托状态", "委托数量", "成交数量", "撤消数量", , "委托价格", "成交均价", "合同编号", "委托子业务", "约定号", "对方账户", "参考汇率", "结算币种", "交易币种", "证券中文名", "出错信息
+from QUANTAXIS.QAUtil.QAParameter import ORDER_DIRECTION, TRADE_STATUS, ORDER_STATUS
 cn_en_compare = {'明细': 'id',
                  '证券代码': 'code',
                  '市场代码': 'market_code',
@@ -56,7 +56,7 @@ cn_en_compare = {'明细': 'id',
                  '未成交': 'pending',
                  '已成交': 'finished',
                  '全部撤单': 'cancel_all',
-                 '成交均价': 'trade_price', # 成交价
+                 '成交均价': 'trade_price',  # 成交价
                  '成交金额': 'trade_money',
                  '成交编号': 'trade_id',
                  '委托状态': 'status',
@@ -73,33 +73,31 @@ cn_en_compare = {'明细': 'id',
                  '成交时间': 'trade_time'}
 
 
-trade_towards_cn_en={
+trade_towards_cn_en = {
     '买入': ORDER_DIRECTION.BUY,
     '买': ORDER_DIRECTION.BUY,
-    '卖出':ORDER_DIRECTION.SELL,
+    '卖出': ORDER_DIRECTION.SELL,
     '卖': ORDER_DIRECTION.SELL,
-    '申购':ORDER_DIRECTION.ASK,
-    '申':ORDER_DIRECTION.ASK,
-    '证券买入':ORDER_DIRECTION.BUY,
-    '证券卖出':ORDER_DIRECTION.SELL
+    '申购': ORDER_DIRECTION.ASK,
+    '申': ORDER_DIRECTION.ASK,
+    '证券买入': ORDER_DIRECTION.BUY,
+    '证券卖出': ORDER_DIRECTION.SELL
 }
 
-order_status_cn_en={
-    '已报': ORDER_STATUS.QUEUED,
+order_status_cn_en = {
+    '已报': ORDER_STATUS.QUEUED,  # 　委托已经被交易端接受了
+    '未成交': ORDER_STATUS.QUEUED,
+    '已确认': ORDER_STATUS.QUEUED,  # 新股申购已经被交易端接受
     '场内废单': ORDER_STATUS.FAILED,
+    '废单': ORDER_STATUS.FAILED,  # 委托不符合交易规则，被交易端拒绝了
+    '未报': ORDER_STATUS.FAILED,  # 委托还没有被交易端接受
     '场外废单': ORDER_STATUS.FAILED,
     '已成交': ORDER_STATUS.SUCCESS_ALL,
+    '已成': ORDER_STATUS.SUCCESS_ALL,
+    '全部成交': ORDER_STATUS.SUCCESS_ALL,
+    '部成': ORDER_STATUS.SUCCESS_PART,  # 委托已经成交了一部份
     '已撤单': ORDER_STATUS.CANCEL_ALL,
-    
+    '已撤': ORDER_STATUS.CANCEL_ALL,
+    '已报待撤': ORDER_STATUS.QUEUED,  # 已经申报了撤单，交易端也已接受，但目前可能因为还没在交易时间段，所以还在等待撤消
 }
 
-
-"""'已报'　　　　委托已经被交易端接受了
-'未报'　　　　委托还没有被交易端接受
-'部成'　　　　委托已经成交了一部份
-'已成'　　　　委托已经全部成交
-'已撤'　　　　委托已经撤消了
-'已确认'　　　新股申购已经被交易端接受
-'废单'　　　　委托不符合交易规则，被交易端拒绝了
-'已报待撤'　　已经申报了撤单，交易端也已接受，但目前可能因为还没在交易时间段，所以还在等待撤消
-"""
