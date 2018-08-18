@@ -1,10 +1,6 @@
 import sys
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5 import QtCore, QtGui, QtWidgets
 
-from QUANTAXIS_Monitor_GUI.MainTabWindows.QA_Gui_DateFetch_Task import   *
+from QUANTAXIS_Monitor_GUI.TasksByThreading.QA_Gui_DateFetch_Task import   *
 
 #https://www.cnblogs.com/gaigaige/p/7883713.html 改改哥
 class EmittingStream(QtCore.QObject):
