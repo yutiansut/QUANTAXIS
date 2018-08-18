@@ -87,8 +87,12 @@ class QABacktestSimple_Test(unittest.TestCase):
                         order_model=QA.ORDER_MODEL.CLOSE,
                         amount_model=QA.AMOUNT_MODEL.BY_AMOUNT
                     )
-                    self.Account.receive_deal(self.Broker.receive_order(
-                        QA.QA_Event(order=order, market_data=item)))
+                    if order:
+                        Broker.receive_order(QA.QA_Event(order=order, market_data=item))
+                        trade_mes = Broker.query_orders(AC.account_cookie, 'filled')
+                        res = trade_mes.loc[order.account_cookie, order.realorder_id]
+                        order.trade(res.trade_id, res.trade_price,
+                                    res.trade_amount, res.trade_time)
                 elif daily_ind.CROSS_SC.iloc[0] > 0:
                     if self.Account.sell_available.get(item.code[0], 0) > 0:
                         order = self.Account.send_order(
@@ -101,6 +105,10 @@ class QABacktestSimple_Test(unittest.TestCase):
                             order_model=QA.ORDER_MODEL.MARKET,
                             amount_model=QA.AMOUNT_MODEL.BY_AMOUNT
                         )
-                        self.Account.receive_deal(self.Broker.receive_order(
-                            QA.QA_Event(order=order, market_data=item)))
+                        if order:
+                            Broker.receive_order(QA.QA_Event(order=order, market_data=item))
+                            trade_mes = Broker.query_orders(AC.account_cookie, 'filled')
+                            res = trade_mes.loc[order.account_cookie, order.realorder_id]
+                            order.trade(res.trade_id, res.trade_price,
+                                        res.trade_amount, res.trade_time)
         self.Account.settle()
