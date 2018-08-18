@@ -8,14 +8,14 @@ from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, FREQUENCE, MARKET_TYPE,
 
 
 class MAStrategy(QA_Account):
-    def __init__(self,init_cash=100000,init_hold={}):
-        super().__init__(init_cash=init_cash,init_hold=init_hold)
+    def __init__(self, init_cash=100000, init_hold={}):
+        super().__init__(init_cash=init_cash, init_hold=init_hold)
         self.frequence = FREQUENCE.DAY
         self.market_type = MARKET_TYPE.STOCK_CN
         self.commission_coeff = 0.00015
         self.tax_coeff = 0.0001
 
-        self.reset_assets(100000)# 这是第二种修改办法
+        self.reset_assets(100000)  # 这是第二种修改办法
 
     def on_bar(self, event):
         sellavailable = self.sell_available
