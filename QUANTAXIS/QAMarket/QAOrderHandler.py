@@ -90,6 +90,8 @@ class QA_OrderHandler(QA_Worker):
         self.deal_status = pd.DataFrame()
         self.if_start_orderquery = False
 
+        self.monitor = {}  # 1.1新增 用于监控订单
+
     def run(self, event):
         if event.event_type is BROKER_EVENT.RECEIVE_ORDER:
             # 此时的message应该是订单类
@@ -154,8 +156,9 @@ class QA_OrderHandler(QA_Worker):
                     # print(event.account_cookie)
                 try:
                     # 做一些容错处理
-                    res = [event.broker[i].query_orders(
-                        event.account_cookie[i], '') for i in range(len(event.account_cookie))]
+                    res = [self.monitor[account].query_orders(
+                        account.account_cookie, '') for account in list(self.monitor.keys())]
+
                     res = pd.concat(res, axis=0) if len(
                         res) > 0 else None
 
@@ -207,9 +210,8 @@ class QA_OrderHandler(QA_Worker):
             #         result = event.broker.query_deal
             #         time.sleep(1)
             if self.if_start_orderquery:
-                res = [event.broker[i].query_orders(
-                    event.account_cookie[i], 'filled') for i in range(len(event.account_cookie))]
-                # print(self.order_status)
+                res = [self.monitor[account].query_orders(
+                    account.account_cookie, 'filled') for account in list(self.monitor.keys())]
 
                 try:
                     #res=[pd.DataFrame() if not isinstance(item,pd.DataFrame) else item for item in res]
@@ -226,26 +228,30 @@ class QA_OrderHandler(QA_Worker):
             # 检查pending订单, 更新订单状态
             try:
                 for order in self.order_queue.pending:
-                    if order.realorder_id in self.deal_status.index.levels[1]:
-                        # 此时有成交推送(但可能是多条)
-                        #
-                        res = self.deal_status.loc[order.account_cookie,
-                                                   order.realorder_id]
+                    if len(self.deal_status)>0:
+                        if order.realorder_id in self.deal_status.index.levels[1]:
+                            # 此时有成交推送(但可能是多条)
+                            #
+                            res = self.deal_status.loc[order.account_cookie,
+                                                    order.realorder_id]
 
-                        if isinstance(res, pd.Series):
-                            order.trade(str(res.trade_id), float(res.trade_price), int(
-                                res.trade_amount), str(res.trade_time))
-                        elif isinstance(res, pd.DataFrame):
-                            if len(res) == 1:
-                                res = res.iloc[0]
+                            if isinstance(res, pd.Series):
                                 order.trade(str(res.trade_id), float(res.trade_price), int(
                                     res.trade_amount), str(res.trade_time))
-                            else:
-                                print(res)
-                                print(len(res))
-                                for _, deal in res.iterrows:
-                                    order.trade(str(deal.trade_id), float(deal.trade_price), int(
-                                        deal.trade_amount), str(deal.trade_time))
+                            elif isinstance(res, pd.DataFrame):
+                                if len(res)==0:
+                                    pass
+
+                                elif len(res) == 1:
+                                    res = res.iloc[0]
+                                    order.trade(str(res.trade_id), float(res.trade_price), int(
+                                        res.trade_amount), str(res.trade_time))
+                                else:
+                                    print(res)
+                                    print(len(res))
+                                    for _, deal in res.iterrows:
+                                        order.trade(str(deal.trade_id), float(deal.trade_price), int(
+                                            deal.trade_amount), str(deal.trade_time))
             except Exception as e:
                 print(e)
                 print(self.order_queue.order_list)
@@ -270,5 +276,12 @@ class QA_OrderHandler(QA_Worker):
         elif event.event_type is MARKET_EVENT.QUERY_POSITION:
             pass
 
-    def query_order(self, order_id):
-        pass
+    def subscribe(self, account, broker):
+        print('subscribe')
+        self.monitor[account] = broker
+
+    def unsubscribe(self, account, broker):
+        try:
+            self.monitor.pop(account)
+        except:
+            print('failled to unscribe {}'.format(account.account_cookie))
