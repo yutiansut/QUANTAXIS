@@ -83,6 +83,7 @@
 
 1. QA_Account 增加 cancel_order方法 撤单操作
 2. 重写QA_Account的receive_deal方法, 适配新版本更新账户
+3. 优化和修改QA_Portfolio 增加对于history/history_table的支持
 
 
 [QASU]
