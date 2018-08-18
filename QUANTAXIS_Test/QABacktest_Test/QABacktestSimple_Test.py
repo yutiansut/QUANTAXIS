@@ -79,8 +79,8 @@ class QABacktestSimple_Test(unittest.TestCase):
                 daily_ind = self.ind.loc[item.index]
                 if daily_ind.CROSS_JC.iloc[0] > 0:
                     order = self.Account.send_order(
-                        code=item.data.code[0],
-                        time=item.data.date[0],
+                        code=item.code[0],
+                        time=item.date[0],
                         amount=1000,
                         towards=QA.ORDER_DIRECTION.BUY,
                         price=0,
@@ -92,8 +92,8 @@ class QABacktestSimple_Test(unittest.TestCase):
                 elif daily_ind.CROSS_SC.iloc[0] > 0:
                     if self.Account.sell_available.get(item.code[0], 0) > 0:
                         order = self.Account.send_order(
-                            code=item.data.code[0],
-                            time=item.data.date[0],
+                            code=item.code[0],
+                            time=item.date[0],
                             amount=self.Account.sell_available.get(
                                 item.code[0], 0),
                             towards=QA.ORDER_DIRECTION.SELL,

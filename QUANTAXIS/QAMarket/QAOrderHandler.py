@@ -109,9 +109,6 @@ class QA_OrderHandler(QA_Worker):
             """
 
             order = event.order
-            print('rece order')
-            print(event.order)
-
             order = event.broker.receive_order(
                 QA_Event(event_type=BROKER_EVENT.TRADE, order=event.order, market_data=event.market_data))
             # print(threading.current_thread().ident)
@@ -150,15 +147,14 @@ class QA_OrderHandler(QA_Worker):
                 self._trade()
             else:
                 
-                print(self._trade())
-                print(self.order_queue.untrade)
+                self._trade()
+                # print(self.order_queue.untrade)
 
             self.order_queue.settle()
 
             self.order_status = pd.DataFrame()
             self.deal_status = pd.DataFrame()
-            print('settled')
-            print(vars(event))
+
             try:
                 event.event_queue.task_done()
             except:
