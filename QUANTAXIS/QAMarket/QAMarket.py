@@ -211,12 +211,22 @@ class QA_Market(QA_Trade):
                 if self.sync_account(broker_name, account_cookie):
                     res = True
 
+                if self.if_start_orderthreading:
+                    # 
+                    print('sub')
+                    self.order_handler.subscribe(self.session[account_cookie],self.broker[broker_name])
+
+
         else:
             if account_cookie not in self.session.keys():
                 account.broker = broker_name
                 self.session[account_cookie] = account
                 if self.sync_account(broker_name, account_cookie):
                     res = True
+                if self.if_start_orderthreading:
+                    # 
+                    print('sub')
+                    self.order_handler.subscribe(account,self.broker[broker_name])
 
         if res:
             return res
@@ -256,7 +266,9 @@ class QA_Market(QA_Trade):
         if account_cookie not in self.session.keys():
             return False
         else:
+            self.order_handler.unsubscribe(self.session[account_cookie],self.broker[broker_name])
             self.session.pop(account_cookie)
+            
 
     def get_trading_day(self):
         return self.running_time
@@ -401,9 +413,9 @@ class QA_Market(QA_Trade):
                 engine='ORDER',
                 event=QA_Event(
                     event_type=MARKET_EVENT.QUERY_ORDER,
-                    account_cookie=list(self.session.keys()),
-                    broker=[self.broker[item.broker]
-                            for item in self.session.values()],
+                    # account_cookie=list(self.session.keys()),
+                    # broker=[self.broker[item.broker]
+                    #         for item in self.session.values()],
                     # 注意: 一定要给子线程的队列@@@!!!
                     # 2018-08-08 yutiansut
                     # 这个callback实现了子线程方法的自我驱动和异步任务
