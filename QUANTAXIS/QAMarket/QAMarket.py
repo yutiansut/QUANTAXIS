@@ -57,7 +57,7 @@ class QA_Market(QA_Trade):
     session 保存的是 QAAccout 对象
     """
 
-    def __init__(self, if_start_orderthreading=False, *args, **kwargs):
+    def __init__(self, if_start_orderthreading=True, *args, **kwargs):
         """[summary]
 
         Keyword Arguments:
@@ -433,7 +433,7 @@ class QA_Market(QA_Trade):
         """
         pass
 
-    def cancel_order(self):
+    def cancel_order(self,broker_name,account_cookie, order_id):
         pass
 
     def cancel_all(self, broker_name, account_cookie):
