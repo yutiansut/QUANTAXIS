@@ -88,8 +88,8 @@ class QABacktestSimple_Test(unittest.TestCase):
                         amount_model=QA.AMOUNT_MODEL.BY_AMOUNT
                     )
                     if order:
-                        Broker.receive_order(QA.QA_Event(order=order, market_data=item))
-                        trade_mes = Broker.query_orders(AC.account_cookie, 'filled')
+                        self.Broker.receive_order(QA.QA_Event(order=order, market_data=item))
+                        trade_mes = self.Broker.query_orders(self.Account.account_cookie, 'filled')
                         res = trade_mes.loc[order.account_cookie, order.realorder_id]
                         order.trade(res.trade_id, res.trade_price,
                                     res.trade_amount, res.trade_time)
@@ -106,8 +106,8 @@ class QABacktestSimple_Test(unittest.TestCase):
                             amount_model=QA.AMOUNT_MODEL.BY_AMOUNT
                         )
                         if order:
-                            Broker.receive_order(QA.QA_Event(order=order, market_data=item))
-                            trade_mes = Broker.query_orders(AC.account_cookie, 'filled')
+                            self.Broker.receive_order(QA.QA_Event(order=order, market_data=item))
+                            trade_mes = self.Broker.query_orders(self.Account.account_cookie, 'filled')
                             res = trade_mes.loc[order.account_cookie, order.realorder_id]
                             order.trade(res.trade_id, res.trade_price,
                                         res.trade_amount, res.trade_time)
