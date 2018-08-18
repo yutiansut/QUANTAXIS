@@ -81,7 +81,10 @@ class QA_Thread(threading.Thread):
                         # Mac book下风扇狂转，如果sleep cpu 占用率回下降
                         # time.sleep(0.01)
                 except Exception as e:
-                    raise e
+                    if isinstance(e,ValueError):
+                        pass
+                    else:
+                        raise e
 
     def pause(self):
         self.__flag.clear()
@@ -210,7 +213,10 @@ class QA_Engine(QA_Thread):
                     # time.sleep(0.01)
 
                 except Exception as e:
-                    raise e
+                    if isinstance(e,ValueError):
+                        pass
+                    else:
+                        raise e
                     # self.run()
 
     def clear(self):
@@ -220,8 +226,8 @@ class QA_Engine(QA_Thread):
                 res = False
             if not item.idle:
                 res = False
-
-            item.queue.join()
+            
+            #item.queue.join()
         if not self.queue.empty():
             res = False
 

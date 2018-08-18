@@ -79,12 +79,6 @@ class ORDER_STATUS():
     status4xx 主动撤单
     status500 订单死亡(每日结算) 恢复临时资产    
 
-    200 委托成功,完全交易
-    203 委托成功,未完全成功
-    300 刚创建订单的时候
-    400 已撤单
-    401 部分撤单(比如剩余五档转撤)
-    500 服务器撤单/每日结算
 
     订单生成(100) -- 进入待成交队列(300) -- 完全成交(200) -- 每日结算(500)-- 死亡
     订单生成(100) -- 进入待成交队列(300) -- 部分成交(203) -- 未成交(300) -- 每日结算(500) -- 死亡
@@ -108,6 +102,7 @@ class ORDER_STATUS():
     CANCEL_PART = 'cancel_part'
     SETTLED = 'settled'
     FAILED = 'failed'
+    NEXT = 'next'  # 当前bar未成交,下一个bar继续等待
 
 
 class AMOUNT_MODEL():
@@ -148,7 +143,7 @@ class TRADE_STATUS():
     """
 
     SUCCESS = 'trade_success'
-    PRICE_LIMIT = 'trade_price_limit' # 只是未成交
+    PRICE_LIMIT = 'trade_price_limit'  # 只是未成交
     NO_MARKET_DATA = 'trade_no_market_data'
     FAILED = 'trade_failed'
 

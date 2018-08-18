@@ -116,7 +116,7 @@ class QA_Market(QA_Trade):
                     query_assets=self.query_assets,
                     query_trade=self.query_trade
                 )
-            ))
+            ), nowait=True)
 
     def submit(self, QATask, nowait=False):
         """submit 一个任务给QAMarket的event_queue
@@ -212,10 +212,9 @@ class QA_Market(QA_Trade):
                     res = True
 
                 if self.if_start_orderthreading:
-                    # 
-                    print('sub')
-                    self.order_handler.subscribe(self.session[account_cookie],self.broker[broker_name])
-
+                    #
+                    self.order_handler.subscribe(
+                        self.session[account_cookie], self.broker[broker_name])
 
         else:
             if account_cookie not in self.session.keys():
@@ -224,9 +223,9 @@ class QA_Market(QA_Trade):
                 if self.sync_account(broker_name, account_cookie):
                     res = True
                 if self.if_start_orderthreading:
-                    # 
-                    print('sub')
-                    self.order_handler.subscribe(account,self.broker[broker_name])
+                    #
+                    self.order_handler.subscribe(
+                        account, self.broker[broker_name])
 
         if res:
             return res
@@ -266,9 +265,9 @@ class QA_Market(QA_Trade):
         if account_cookie not in self.session.keys():
             return False
         else:
-            self.order_handler.unsubscribe(self.session[account_cookie],self.broker[broker_name])
+            self.order_handler.unsubscribe(
+                self.session[account_cookie], self.broker[broker_name])
             self.session.pop(account_cookie)
-            
 
     def get_trading_day(self):
         return self.running_time
@@ -281,21 +280,31 @@ class QA_Market(QA_Trade):
         #print(">-----------------------insert_order----------------------------->", strDbg)
 
         flag = False
+        price_slice = self.query_data_no_wait(broker_name=broker_name, frequence=frequence,
+                                         market_type=market_type, code=code, start=time)[0]
+
         if order_model in [ORDER_MODEL.CLOSE, ORDER_MODEL.NEXT_OPEN]:
-            _price = self.query_data_no_wait(broker_name=broker_name, frequence=frequence,
-                                             market_type=market_type, code=code, start=time)
-            if isinstance(_price, np.ndarray):
-                if (_price != np.array(None)).any():
-                    price = float(_price[0][4])
+            if isinstance(price_slice, np.ndarray):
+                if (price_slice != np.array(None)).any():
+                    price = float(price_slice[4])
                     flag = True
                 else:
                     QA_util_log_info(
                         'MARKET WARING: SOMEING WRONG WITH ORDER \n ')
                     QA_util_log_info('code {} date {} price {} order_model {} amount_model {}'.format(
                         code, time, price, order_model, amount_model))
-            else:
-                if _price is not None and len(_price) > 0:
-                    price = float(_price[0][4])
+            elif isinstance(price_slice,dict):
+                if price_slice is not None:
+                    price = float(price_slice['close'])
+                    flag = True
+                else:
+                    QA_util_log_info(
+                        'MARKET WARING: SOMEING WRONG WITH ORDER \n ')
+                    QA_util_log_info('code {} date {} price {} order_model {} amount_model {}'.format(
+                        code, time, price, order_model, amount_model))
+            elif isinstance(price_slice,list):
+                if price_slice is not None:
+                    price = float(price_slice[4])
                     flag = True
                 else:
                     QA_util_log_info(
@@ -304,20 +313,19 @@ class QA_Market(QA_Trade):
                         code, time, price, order_model, amount_model))
 
         elif order_model is ORDER_MODEL.MARKET:
-            _price = self.query_data_no_wait(broker_name=broker_name, frequence=frequence,
-                                             market_type=market_type, code=code, start=time)
-            if isinstance(_price, np.ndarray):
-                if (_price != np.array(None)).any():
-                    price = float(_price[0][1])
+            if isinstance(price_slice, np.ndarray):
+                if (price_slice != np.array(None)).any():
+                    price = float(price_slice[1])
                     flag = True
                 else:
                     QA_util_log_info(
                         'MARKET WARING: SOMEING WRONG WITH ORDER \n ')
                     QA_util_log_info('code {} date {} price {} order_model {} amount_model {}'.format(
                         code, time, price, order_model, amount_model))
-            else:
-                if _price is not None and len(_price) > 0:
-                    price = float(_price[0][1])
+            elif isinstance(price_slice, dict):
+
+                if price_slice is not None:
+                    price = float(price_slice['open'])
                     flag = True
                 else:
                     QA_util_log_info(
@@ -325,7 +333,6 @@ class QA_Market(QA_Trade):
                     QA_util_log_info('code {} date {} price {} order_model {} amount_model {}'.format(
                         code, time, price, order_model, amount_model))
         elif order_model is ORDER_MODEL.LIMIT:
-            # if price > self.last_query_data[0][2] or price < self.last_query_data[0][3]:
             flag = True
         if flag:
             order = self.get_account(account_cookie).send_order(
@@ -349,6 +356,7 @@ class QA_Market(QA_Trade):
                                 account_cookie).broker],
                             event_type=BROKER_EVENT.RECEIVE_ORDER,
                             order=order,
+                            market_data=price_slice,
                             callback=self.on_insert_order)), nowait=True)
         else:
             pass
@@ -433,7 +441,7 @@ class QA_Market(QA_Trade):
         """
         pass
 
-    def cancel_order(self,broker_name,account_cookie, order_id):
+    def cancel_order(self, broker_name, account_cookie, order_id):
         pass
 
     def cancel_all(self, broker_name, account_cookie):
@@ -548,48 +556,47 @@ class QA_Market(QA_Trade):
                                 callback=self.on_insert_order)))
             """broker中账户结算
             """
-
             if account.broker == broker_name:
                 self.submit(
                     QA_Task(
                         worker=account,
                         engine=broker_name,
                         event=QA_Event(
-                            event_type=ACCOUNT_EVENT.SETTLE)))
+                            event_type=ACCOUNT_EVENT.SETTLE)), nowait=True)
 
         """broker线程结算
         """
-
         self.submit(QA_Task(
             worker=self.broker[broker_name],
             engine=broker_name,
             event=QA_Event(
                 event_type=BROKER_EVENT.SETTLE,
                 broker=self.broker[broker_name],
-                callback=callback)))
+                callback=callback)), nowait=True)
 
-        if self.if_start_orderthreading:
-            self.submit(
-                QA_Task(
-                    worker=self.order_handler,
-                    engine='ORDER',
-                    event=QA_Event(
-                        event_type=BROKER_EVENT.SETTLE,
-                    )
-                )
-            )
-
+        self.settle_order()
         print('===== SETTLED {} ====='.format(self.running_time))
 
-
-    def settle(self):
+    def settle_order(self):
         """交易前置结算
 
         1. 回测: 交易队列清空,待交易队列标记SETTLE
         2. 账户每日结算
         3. broker结算更新
         """
-        pass
+
+        if self.if_start_orderthreading:
+            # print('setttle_order')
+            self.submit(
+                QA_Task(
+                    worker=self.order_handler,
+                    engine='ORDER',
+                    event=QA_Event(
+                        event_type=BROKER_EVENT.SETTLE,
+                        event_queue=self.trade_engine.kernels_dict['ORDER'].queue
+                    )
+                ), nowait=True
+            )
 
     def every_day_start(self):
         """盘前准备

@@ -149,26 +149,31 @@ class QA_Backtest():
                     # 前一天的交易日已经过去
                     # 往 broker 和 account 发送 settle 事件
                     try:
-                        self.market.trade_engine.join()
-                        # time.sleep(2)
                         self.market._settle(self.broker_name)
+                        self.market.trade_engine.join()
+                        
+                        # time.sleep(2)
+                        
 
                     except Exception as e:
                         raise e
             # 基金 指数 期货
             elif self.market_type in [MARKET_TYPE.FUND_CN, MARKET_TYPE.INDEX_CN, MARKET_TYPE.FUTURE_CN]:
                 self.market._settle(self.broker_name)
-            # print(data)
+
             self.broker.run(
                 QA_Event(event_type=ENGINE_EVENT.UPCOMING_DATA, market_data=data))
             # 生成 UPCOMING_DATA 事件放到 队列中去执行
-
             self.market.upcoming_data(self.broker_name, data)
 
             self.market.trade_engine.join()
 
             _date = date
 
+
+        self.market._settle(self.broker_name)
+        self.market.trade_engine.join()
+        
         self.after_success()
 
     def after_success(self):
