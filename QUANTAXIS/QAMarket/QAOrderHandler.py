@@ -132,6 +132,8 @@ class QA_OrderHandler(QA_Worker):
 
         elif event.event_type is BROKER_EVENT.SETTLE:
             self.order_queue.settle()
+            self.order_status = pd.DataFrame()
+            self.deal_status = pd.DataFrame()
 
         elif event.event_type is MARKET_EVENT.QUERY_ORDER:
             """query_order和query_deal 需要联动使用 
@@ -211,10 +213,10 @@ class QA_OrderHandler(QA_Worker):
 
                 try:
                     #res=[pd.DataFrame() if not isinstance(item,pd.DataFrame) else item for item in res]
-                    res=pd.concat(res, axis=0) if len(
-                    res) > 0 else pd.DataFrame()
+                    res = pd.concat(res, axis=0) if len(
+                        res) > 0 else pd.DataFrame()
                 except:
-                    res=None
+                    res = None
 
                 self.deal_status = res if res is not None else self.deal_status
                 if len(self.deal_status) > 0:
@@ -227,24 +229,28 @@ class QA_OrderHandler(QA_Worker):
                     if order.realorder_id in self.deal_status.index.levels[1]:
                         # 此时有成交推送(但可能是多条)
                         #
-                        res=self.deal_status.loc[order.account_cookie,order.realorder_id]
-                        
-                        if isinstance(res,pd.Series):
-                            order.trade(str(res.trade_id),float(res.trade_price),int(res.trade_amount),str(res.trade_time))
-                        elif isinstance(res,pd.DataFrame):
-                            if len(res)==1:
-                                res=res.iloc[0]
-                                order.trade(str(res.trade_id),float(res.trade_price),int(res.trade_amount),str(res.trade_time))
+                        res = self.deal_status.loc[order.account_cookie,
+                                                   order.realorder_id]
+
+                        if isinstance(res, pd.Series):
+                            order.trade(str(res.trade_id), float(res.trade_price), int(
+                                res.trade_amount), str(res.trade_time))
+                        elif isinstance(res, pd.DataFrame):
+                            if len(res) == 1:
+                                res = res.iloc[0]
+                                order.trade(str(res.trade_id), float(res.trade_price), int(
+                                    res.trade_amount), str(res.trade_time))
                             else:
                                 print(res)
                                 print(len(res))
                                 for _, deal in res.iterrows:
-                                    order.trade(str(deal.trade_id),float(deal.trade_price),int(deal.trade_amount),str(deal.trade_time))
+                                    order.trade(str(deal.trade_id), float(deal.trade_price), int(
+                                        deal.trade_amount), str(deal.trade_time))
             except Exception as e:
                 print(e)
                 print(self.order_queue.order_list)
-                print(self.deal_status.index) 
-                print(self.order_status)        
+                print(self.deal_status.index)
+                print(self.order_status)
 
             # 这里加入随机的睡眠时间 以免被发现固定的刷新请求
             if event.event_queue.qsize() < 1:

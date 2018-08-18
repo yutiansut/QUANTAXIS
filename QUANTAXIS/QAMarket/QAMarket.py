@@ -569,8 +569,6 @@ class QA_Market(QA_Trade):
 
         print('===== SETTLED {} ====='.format(self.running_time))
 
-        #strDbg = QA_util_random_with_topic("MAStrategy.on_bar call")
-        #print("<-----------------------_settle-----------------------------<", strDbg)
 
     def settle(self):
         """交易前置结算
