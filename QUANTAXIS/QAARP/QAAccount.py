@@ -463,6 +463,7 @@ class QA_Account(QA_Worker):
         Returns:
             [type] -- [description]
         """
+
         print('receive deal')
 
         trade_time = str(trade_time)
@@ -492,6 +493,7 @@ class QA_Account(QA_Worker):
 
 
         self.datetime = trade_time
+
         return self.message
 
     def send_order(self, code=None, amount=None, time=None, towards=None, price=None, money=None, order_model=None, amount_model=None):
@@ -553,7 +555,9 @@ class QA_Account(QA_Worker):
         #     money / (price*(1+self.commission_coeff)))
 
         amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
+
             money / (price*(1+self.commission_coeff))/100) * 100
+
 
         # 🛠todo 移到Utils类中，  money_to_amount 金额转成交量
         money = amount * price * \
