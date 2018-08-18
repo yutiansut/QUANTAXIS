@@ -522,6 +522,8 @@ class QA_Market(QA_Trade):
         # 向事件线程发送ACCOUNT的SETTLE事件
 
         for account in self.session.values():
+            """t0账户先结算当日仓位
+            """
             if account.running_environment == RUNNING_ENVIRONMENT.TZERO:
                 for order in account.close_positions_order:
                     self.submit(
@@ -532,6 +534,8 @@ class QA_Market(QA_Trade):
                                 event_type=BROKER_EVENT.RECEIVE_ORDER,
                                 order=order,
                                 callback=self.on_insert_order)))
+            """broker中账户结算
+            """
 
             if account.broker == broker_name:
                 self.submit(
@@ -540,6 +544,10 @@ class QA_Market(QA_Trade):
                         engine=broker_name,
                         event=QA_Event(
                             event_type=ACCOUNT_EVENT.SETTLE)))
+
+        """broker线程结算
+        """
+
         self.submit(QA_Task(
             worker=self.broker[broker_name],
             engine=broker_name,
@@ -548,10 +556,38 @@ class QA_Market(QA_Trade):
                 broker=self.broker[broker_name],
                 callback=callback)))
 
+        if self.if_start_orderthreading:
+            self.submit(
+                QA_Task(
+                    worker=self.order_handler,
+                    engine='ORDER',
+                    event=QA_Event(
+                        event_type=BROKER_EVENT.SETTLE,
+                    )
+                )
+            )
+
         print('===== SETTLED {} ====='.format(self.running_time))
 
         #strDbg = QA_util_random_with_topic("MAStrategy.on_bar call")
         #print("<-----------------------_settle-----------------------------<", strDbg)
+
+    def settle(self):
+        """交易前置结算
+
+        1. 回测: 交易队列清空,待交易队列标记SETTLE
+        2. 账户每日结算
+        3. broker结算更新
+        """
+        pass
+
+    def every_day_start(self):
+        """盘前准备
+
+        1. 计算盘前信号
+        2. 账户同步
+        """
+        pass
 
     def _close(self):
         pass
