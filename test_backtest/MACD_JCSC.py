@@ -78,8 +78,6 @@ for items in data_forbacktest.panel_gen:
                     )
                 #print
                 Broker.receive_order(QA.QA_Event(order=order,market_data=item))
-                
-                
                 trade_mes=Broker.query_orders(Account.account_cookie,'filled')
                 res=trade_mes.loc[order.account_cookie,order.realorder_id]
                 order.trade(res.trade_id,res.trade_price,res.trade_amount,res.trade_time)

@@ -5,10 +5,10 @@
 
 
 from QUANTAXIS.QAARP.QAStrategy import QA_Strategy
-from QUANTAXIS.QAARP.QAAccount import  QA_Account
+from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, MARKET_TYPE,
                                           FREQUENCE, ORDER_DIRECTION,
-                                          ORDER_MODEL,RUNNING_ENVIRONMENT)
+                                          ORDER_MODEL, RUNNING_ENVIRONMENT)
 
 
 import random
@@ -18,10 +18,10 @@ import random
 
 
 class MAMINT0Strategy(QA_Account):
-    def __init__(self,init_hold={'000001':10000}):
+    def __init__(self, init_hold={'000001': 10000}):
         super().__init__(init_hold=init_hold)
         self.account_cookie = 'T0BACKTEST'
-        self.running_environment=RUNNING_ENVIRONMENT.TZERO
+        self.running_environment = RUNNING_ENVIRONMENT.TZERO
         self.frequence = FREQUENCE.FIFTEEN_MIN
         self.market_type = MARKET_TYPE.STOCK_CN
 
@@ -35,25 +35,24 @@ class MAMINT0Strategy(QA_Account):
                 print(self.hold_available)
                 if self.sell_available.get(item, 0) > 0:
                     event.send_order(account_id=self.account_cookie,
-                                        amount=self.sell_available[item], amount_model=AMOUNT_MODEL.BY_AMOUNT,
-                                        time=self.current_time, code=item, price=0,
-                                        order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.SELL,
-                                        market_type=self.market_type, frequence=self.frequence,
-                                        broker_name=self.broker
-                                        )
+                                     amount=self.sell_available[item], amount_model=AMOUNT_MODEL.BY_AMOUNT,
+                                     time=self.current_time, code=item, price=0,
+                                     order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.SELL,
+                                     market_type=self.market_type, frequence=self.frequence,
+                                     broker_name=self.broker
+                                     )
                 else:
                     event.send_order(account_id=self.account_cookie,
-                                        amount=100, amount_model=AMOUNT_MODEL.BY_AMOUNT,
-                                        time=self.current_time, code=item, price=0,
-                                        order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.BUY,
-                                        market_type=self.market_type, frequence=self.frequence,
-                                        broker_name=self.broker)
+                                     amount=100, amount_model=AMOUNT_MODEL.BY_AMOUNT,
+                                     time=self.current_time, code=item, price=0,
+                                     order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.BUY,
+                                     market_type=self.market_type, frequence=self.frequence,
+                                     broker_name=self.broker)
         except:
             pass
 
 
 # In[3]:
-
 
 
 from QUANTAXIS.QAARP.QARisk import QA_Risk
@@ -72,7 +71,7 @@ class Backtest(QA_Backtest):
     def __init__(self, market_type, frequence, start, end, code_list, commission_fee):
         super().__init__(market_type,  frequence, start, end, code_list, commission_fee)
         self.user = QA_User()
-        t0strategy=MAMINT0Strategy()
+        t0strategy = MAMINT0Strategy()
         # maminstrategy.reset_assets(1000)
         # self.portfolio, self.account = self.user.register_account(mastrategy)
         self.user = QA_User(user_cookie='user_admin')
@@ -112,4 +111,3 @@ backtest.stop()
 
 
 backtest.account.history_table
-
