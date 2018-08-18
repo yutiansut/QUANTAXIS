@@ -670,6 +670,7 @@ class QA_Account(QA_Worker):
         self.datetime = '{} 09:30:00'.format(QA_util_get_next_day(
             self.date)) if self.date is not None else None
 
+
     def on_bar(self, event):
         '''
         策略事件

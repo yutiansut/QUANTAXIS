@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
+import threading
 import pandas as pd
 
 from QUANTAXIS.QAUtil import (
@@ -167,7 +167,7 @@ class QA_Order():
     def status(self):
 
         # 以下几个都是最终状态 并且是外部动作导致的
-        if self._status in [ORDER_STATUS.FAILED, ORDER_STATUS.SETTLED, ORDER_STATUS.CANCEL_ALL, ORDER_STATUS.CANCEL_PART]:
+        if self._status in [ORDER_STATUS.FAILED, ORDER_STATUS.NEXT, ORDER_STATUS.SETTLED, ORDER_STATUS.CANCEL_ALL, ORDER_STATUS.CANCEL_PART]:
             return self._status
 
         if self.pending_amount <= 0:
@@ -218,16 +218,18 @@ class QA_Order():
             amount {[type]} -- [description]
         """
         # 先做强制类型转换
-
-
+        print(threading.current_thread().ident)
         trade_amount = int(trade_amount)
         trade_id = str(trade_id)
-        if trade_amount <1:
-            pass
+        #print(self.code, trade_amount)
+
+        if trade_amount < 1:
+
+            self._status = ORDER_STATUS.NEXT
         else:
             if trade_id not in self.trade_id:
                 trade_price = float(trade_price)
-                
+
                 trade_time = str(trade_time)
 
                 self.trade_id.append(trade_id)
@@ -237,7 +239,7 @@ class QA_Order():
                 self.trade_time.append(trade_time)
                 # code:str, trade_id:str,order_id:str,realorder_id:str,trade_price:float, trade_amount:int,trade_towards:int,trade_time:str
                 self.callback(self.code, trade_id, self.order_id, self.realorder_id,
-                            trade_price, trade_amount, self.towards, trade_time)
+                              trade_price, trade_amount, self.towards, trade_time)
             else:
                 pass
 
@@ -428,7 +430,7 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
         :return: dataframe
         '''
         try:
-            return [item for item in self.order_list.values() if item.status in [ORDER_STATUS.QUEUED, ORDER_STATUS.SUCCESS_PART]]
+            return [item for item in self.order_list.values() if item.status in [ORDER_STATUS.QUEUED, ORDER_STATUS.NEXT, ORDER_STATUS.SUCCESS_PART]]
         except:
             return []
 
@@ -443,6 +445,13 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
     def canceled(self):
         try:
             return [item for item in self.order_list.values() if item.status in [ORDER_STATUS.CANCEL_ALL, ORDER_STATUS.CANCEL_PART]]
+        except:
+            return []
+
+    @property
+    def untrade(self):
+        try:
+            return [item for item in self.order_list.values() if item.status in [ORDER_STATUS.QUEUED]]
         except:
             return []
 
