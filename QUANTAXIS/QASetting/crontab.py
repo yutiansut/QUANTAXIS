@@ -24,9 +24,9 @@
 
 
 
-import md5
+import hashlib
 import time
-from .external.crontab import CronTab as _CronTab
+
 from QUANTAXIS.QASetting.cache import get_cache
 
 
@@ -74,7 +74,7 @@ class CronTab(object):
         self.jobs = []
 
         for job in jobs:
-            m = md5.new()
+            m = hashlib.md5()
             m.update(job["description"])
             m.update(job["command"])
             m.update(job["cron-job"])
