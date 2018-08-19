@@ -58,6 +58,7 @@
 1. 修改了采样函数的写法
 2. 修复了tick采样成60min的bug
 3. 修复了因为multiindex导致的QA_DataStruct.to_json方法缺失 datetime/code 字段的问题
+4. 优化了QADataStruct的plot方法
 
 [QAMARKET]
 
