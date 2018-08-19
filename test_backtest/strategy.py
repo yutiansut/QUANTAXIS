@@ -8,22 +8,20 @@ from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, FREQUENCE, MARKET_TYPE,
 
 
 class MAStrategy(QA_Account):
-    def __init__(self,init_cash=100000,init_hold={}):
-        super().__init__(init_cash=init_cash,init_hold=init_hold)
+    def __init__(self, init_cash=100000, init_hold={}):
+        super().__init__(init_cash=init_cash, init_hold=init_hold)
         self.frequence = FREQUENCE.DAY
         self.market_type = MARKET_TYPE.STOCK_CN
         self.commission_coeff = 0.00015
         self.tax_coeff = 0.0001
-
-        self.reset_assets(100000)# 这是第二种修改办法
+        self.reset_assets(100000)  # 这是第二种修改办法
 
     def on_bar(self, event):
         sellavailable = self.sell_available
         try:
             for item in event.market_data.code:
-
                 if sellavailable.get(item, 0) > 0:
-                    event.send_order(account_id=self.account_cookie,
+                    event.send_order(account_cookie=self.account_cookie,
                                      amount=sellavailable[item], amount_model=AMOUNT_MODEL.BY_AMOUNT,
                                      time=self.current_time, code=item, price=0,
                                      order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.SELL,
@@ -31,12 +29,12 @@ class MAStrategy(QA_Account):
                                      broker_name=self.broker
                                      )
                 else:
-                    event.send_order(account_id=self.account_cookie,
+                    event.send_order(account_cookie=self.account_cookie,
                                      amount=100, amount_model=AMOUNT_MODEL.BY_AMOUNT,
                                      time=self.current_time, code=item, price=0,
                                      order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.BUY,
                                      market_type=self.market_type, frequence=self.frequence,
                                      broker_name=self.broker)
 
-        except:
-            pass
+        except Exception as e:
+            print(e)

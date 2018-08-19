@@ -25,16 +25,17 @@ import tornado
 import os
 from tornado.web import Application, RequestHandler, authenticated
 
-from QUANTAXIS.QAWeb.datahandles import StockdayHandler, StockminHandler,StockBlockHandler,StockPriceHandler
+from QUANTAXIS.QAWeb.datahandles import StockdayHandler, StockminHandler, StockBlockHandler, StockPriceHandler, StockCodeHandler
 from QUANTAXIS.QAWeb.quotationhandles import (RealtimeSocketHandler,
-                               SimulateSocketHandler,MonitorSocketHandler)
+                                              SimulateSocketHandler, MonitorSocketHandler)
 from QUANTAXIS.QAWeb.userhandles import SigninHandler, SignupHandler, PersonBlockHandler
 from QUANTAXIS.QAWeb.basehandles import QABaseHandler
 from QUANTAXIS.QAWeb.arphandles import AccountHandler
 
+
 class INDEX(QABaseHandler):
     def get(self):
-        self.render('.{}{}'.format(os.sep,"index.html"))
+        self.render('.{}{}'.format(os.sep, "index.html"))
 
 
 def main():
@@ -45,18 +46,19 @@ def main():
             (r"/marketdata/stock/min", StockminHandler),
             (r"/marketdata/stock/block", StockBlockHandler),
             (r"/marketdata/stock/price", StockPriceHandler),
+            (r"/marketdata/stock/code", StockCodeHandler),
             (r"/user/signin", SigninHandler),
             (r"/user/signup", SignupHandler),
             (r"/user/blocksetting", PersonBlockHandler),
             (r"/realtime", RealtimeSocketHandler),
             (r"/simulate", SimulateSocketHandler),
             (r"/monitor", MonitorSocketHandler),
-            (r"/accounts",AccountHandler)
+            (r"/accounts", AccountHandler)
         ],
         debug=True
     )
-    http_server = tornado.httpserver.HTTPServer(apps) 
-    http_server.bind(8010,address='0.0.0.0')
+    http_server = tornado.httpserver.HTTPServer(apps)
+    http_server.bind(8010, address='0.0.0.0')
     """增加了对于非windows下的机器多进程的支持
     """
     http_server.start(1)
@@ -64,8 +66,9 @@ def main():
     #     http_server.start(0)
     # else:
     #     http_server.start(1)
-    #tornado.ioloop.IOLoop.instance().start()
+    # tornado.ioloop.IOLoop.instance().start()
     tornado.ioloop.IOLoop.current().start()
+
 
 if __name__ == '__main__':
     main()

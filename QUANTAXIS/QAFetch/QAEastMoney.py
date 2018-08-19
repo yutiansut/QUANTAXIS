@@ -27,6 +27,7 @@ import pandas as pd
 from QUANTAXIS.QAFetch.base import headers, _select_market_code
 
 BusinessAnalysis_url = 'http://emweb.securities.eastmoney.com/PC_HSF10/BusinessAnalysis/BusinessAnalysisAjax?code={}{}'
+
 headers_em = headers
 headers_em['Host'] = 'emweb.securities.eastmoney.com'
 
@@ -63,7 +64,6 @@ def QA_fetch_get_stock_analysis(code):
         res_zyfcfx = None
 
     return zyfw, jyps, res_zyfcfx
-
 
 
 cpbidu = 'http://emweb.securities.eastmoney.com/PC_HSF10/OperationsRequired/OperationsRequiredAjax?times=1&code=sz300059'

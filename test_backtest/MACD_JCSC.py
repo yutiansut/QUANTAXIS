@@ -42,38 +42,47 @@ data = data.to_qfq()
 ind = data.add_func(MACD_JCSC)
 # ind.xs('000001',level=1)['2018-01'].plot()
 
-data_forbacktest = data.select_time('2018-01-01', '2018-05-20')
+data_forbacktest=data.select_time('2018-01-01','2018-05-01')
+
 
 for items in data_forbacktest.panel_gen:
     for item in items.security_gen:
-        daily_ind = ind.loc[item.index]
-        if daily_ind.CROSS_JC.iloc[0] > 0:
-            order = Account.send_order(
-                code=item.data.code[0],
-                time=item.data.date[0],
-                amount=1000,
-                towards=QA.ORDER_DIRECTION.BUY,
-                price=0,
-                order_model=QA.ORDER_MODEL.CLOSE,
-                amount_model=QA.AMOUNT_MODEL.BY_AMOUNT
-            )
-            Account.receive_deal(Broker.receive_order(
-                QA.QA_Event(order=order, market_data=item)))
-        elif daily_ind.CROSS_SC.iloc[0] > 0:
-            if Account.sell_available.get(item.code[0], 0) > 0:
-                order = Account.send_order(
-                    code=item.data.code[0],
-                    time=item.data.date[0],
-                    amount=Account.sell_available.get(item.code[0], 0),
-                    towards=QA.ORDER_DIRECTION.SELL,
-                    price=0,
-                    order_model=QA.ORDER_MODEL.MARKET,
-                    amount_model=QA.AMOUNT_MODEL.BY_AMOUNT
-                )
-                Account.receive_deal(Broker.receive_order(
-                    QA.QA_Event(order=order, market_data=item)))
-    Account.settle()
+        daily_ind=ind.loc[item.index]
 
+        if daily_ind.CROSS_JC.iloc[0]>0:
+            order=Account.send_order(
+                code=item.code[0], 
+                time=item.date[0], 
+                amount=1000, 
+                towards=QA.ORDER_DIRECTION.BUY, 
+                price=0, 
+                order_model=QA.ORDER_MODEL.CLOSE, 
+                amount_model=QA.AMOUNT_MODEL.BY_AMOUNT
+                )
+            #print(item.to_json()[0])
+            Broker.receive_order(QA.QA_Event(order=order,market_data=item))
+            trade_mes=Broker.query_orders(Account.account_cookie,'filled')
+            res=trade_mes.loc[order.account_cookie,order.realorder_id]
+            order.trade(res.trade_id,res.trade_price,res.trade_amount,res.trade_time)
+        elif daily_ind.CROSS_SC.iloc[0]>0:
+            #print(item.code)
+            if Account.sell_available.get(item.code[0], 0)>0:
+                order=Account.send_order(
+                    code=item.code[0], 
+                    time=item.date[0], 
+                    amount=Account.sell_available.get(item.code[0], 0), 
+                    towards=QA.ORDER_DIRECTION.SELL, 
+                    price=0, 
+                    order_model=QA.ORDER_MODEL.MARKET, 
+                    amount_model=QA.AMOUNT_MODEL.BY_AMOUNT
+                    )
+                #print
+                Broker.receive_order(QA.QA_Event(order=order,market_data=item))
+                trade_mes=Broker.query_orders(Account.account_cookie,'filled')
+                res=trade_mes.loc[order.account_cookie,order.realorder_id]
+                order.trade(res.trade_id,res.trade_price,res.trade_amount,res.trade_time)
+    Account.settle()
+            
 print(Account.history)
 print(Account.history_table)
 print(Account.daily_hold)
@@ -83,8 +92,14 @@ Risk = QA.QA_Risk(Account)
 print(Risk.message)
 print(Risk.assets)
 Risk.plot_assets_curve()
-Risk.plot_dailyhold()
-Risk.plot_signal()
+plt=Risk.plot_dailyhold()
+plt.show()
+plt1=Risk.plot_signal()
+plt.show()
+
+performance=QA.QA_Performance(Account)
+plt=performance.plot_pnlmoney(performance.pnl_fifo)
+plt.show()
 # Risk.assets.plot()
 # Risk.benchmark_assets.plot()
 
