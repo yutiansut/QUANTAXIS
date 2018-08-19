@@ -339,7 +339,7 @@ class Mediator:
             #time.sleep(10)
         pass
 
-
+    #todo fixhere 放到公用类里去
     def stockListSeperateToListCount(self, taskNumber, stockCounts):
         # for i in stock_list_length:
 
@@ -368,7 +368,7 @@ class Mediator:
 
         return counts_list
 
-
+    #todo fixhere 放到公用类里去
     '''
         to list in list
     '''
@@ -391,6 +391,7 @@ class Mediator:
     
     '''
 
+    #todo fixhere 放到公用类里去
     def assignStockListSegment(self, parentWnd):
 
         self.currentNeedUpdateStockCodeList.clear()
