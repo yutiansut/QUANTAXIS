@@ -110,7 +110,7 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log = None, ui_progress = None):
         QA_util_log_info('The {} of Total {}'.format
                          (item, len(stock_list)))
 
-        strProgressToLog = 'DOWNLOAD PROGRESS {} '.format(str(float(item / len(stock_list) * 100))[0:4] + '%', ui_log)
+        strProgressToLog = 'DOWNLOAD PROGRESS {}'.format(str(float(item / len(stock_list) * 100))[0:4] + '%', ui_log)
         intProgressToLog = int(float(item / len(stock_list) * 100))
         QA_util_log_info(strProgressToLog, ui_log= ui_log, ui_progress= ui_progress, ui_progress_int_value= intProgressToLog)
 
@@ -698,6 +698,7 @@ def QA_SU_save_stock_list(client=DATABASE, ui_log= None, ui_progress = None):
     except Exception as e:
         QA_util_log_info(e, ui_log=ui_log)
         print(" Error save_tdx.QA_SU_save_stock_list exception!")
+
         pass
 
 

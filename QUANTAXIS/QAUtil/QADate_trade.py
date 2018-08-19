@@ -173,3 +173,66 @@ def QA_util_date_gap(date, gap, methods):
 
     except:
         return 'wrong date'
+
+
+def QA_util_get_trade_datetime(dt=datetime.datetime.now()):
+    """交易的真实日期
+    
+    Returns:
+        [type] -- [description]
+    """
+
+    #dt= datetime.datetime.now()
+
+    
+
+    if QA_util_if_trade(str(dt.date())) and dt.time()<datetime.time(15,0,0):
+        return str(dt.date())
+    else:
+        return QA_util_get_real_date(str(dt.date()),trade_date_sse,1)
+
+def QA_util_get_order_datetime(dt):
+    """委托的真实日期
+    
+    Returns:
+        [type] -- [description]
+    """
+
+    #dt= datetime.datetime.now()
+    dt = datetime.datetime.strptime(str(dt)[0:19], '%Y-%m-%d %H:%M:%S')
+
+    if QA_util_if_trade(str(dt.date())) and dt.time()<datetime.time(15,0,0) :
+        return str(dt)
+    else:
+        #print('before')
+        #print(QA_util_date_gap(str(dt.date()),1,'lt'))
+        return '{} {}'.format(QA_util_date_gap(str(dt.date()),1,'lt'),dt.time())
+
+
+def future_change(df):
+    for i in range(len(df)):
+
+        weekday=df.datetime[i].weekday()
+
+        if df.loc[i,'inttime']>1500:#after 2400,no need to change
+
+            delta=1
+
+        if weekday==0:#周一为0，周日为6；其它情形皆为前一日，即delta=1
+
+            delta=3
+
+        df.loc[i,'datetime']=df.datetime[i]-datetime.timedelta(days=delta)
+
+        if df.loc[i,'inttime']<900:#after 2400,no need to change，but monday's data should be Saturdays'
+
+            if weekday==0:#改为周六
+
+                delta=2
+
+            df.loc[i,'datetime']=df.datetime[i]-datetime.timedelta(days=delta)
+
+
+        df=df.sort_values('datetime',ascending=False)
+
+        df=df.set_index('datetime')

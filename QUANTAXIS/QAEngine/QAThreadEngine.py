@@ -42,7 +42,7 @@ class QA_Thread(threading.Thread):
         QA_Engine 继承这个类。
     '''
 
-    def __init__(self, queue=None, name=None):
+    def __init__(self, queue=None, name=None, daemon=False):
         threading.Thread.__init__(self)
         self.queue = Queue() if queue is None else queue
         self.thread_stop = False
@@ -50,11 +50,13 @@ class QA_Thread(threading.Thread):
         self.__flag.set()       # 设置为True
         self.__running = threading.Event()      # 用于停止线程的标识
         self.__running.set()      # 将running设置为True
-        self.name = QA_util_random_with_topic(topic='QA_Thread', lens=3) if name is None else name
+        self.name = QA_util_random_with_topic(
+            topic='QA_Thread', lens=3) if name is None else name
         self.idle = False
+        self.daemon=daemon
 
     def __repr__(self):
-        return '<QA_Thread{}  id={}>'.format(self.name, id(self))
+        return '<QA_Thread{}  id={} ident {}>'.format(self.name, id(self), self.ident)
 
     def run(self):
         while self.__running.isSet():
@@ -64,6 +66,7 @@ class QA_Thread(threading.Thread):
                 try:
                     if self.queue.empty() is False:
                         _task = self.queue.get()  # 接收消息
+                        #print(_task.worker, self.name)
                         assert isinstance(_task, QA_Task)
                         if _task.worker != None:
 
@@ -78,7 +81,10 @@ class QA_Thread(threading.Thread):
                         # Mac book下风扇狂转，如果sleep cpu 占用率回下降
                         # time.sleep(0.01)
                 except Exception as e:
-                    raise e
+                    if isinstance(e,ValueError):
+                        pass
+                    else:
+                        raise e
 
     def pause(self):
         self.__flag.clear()
@@ -120,6 +126,7 @@ class QA_Engine(QA_Thread):
 
         kernel 已更正(之前误写成kernal) @2018/05/28
     '''
+
     def __init__(self, queue=None, *args, **kwargs):
         super().__init__(queue=queue, name='QA_Engine')
         self.kernels_dict = {}
@@ -129,15 +136,15 @@ class QA_Engine(QA_Thread):
         self.__running.set()      # 将running设置为True
 
     def __repr__(self):
-        return ' <QA_ENGINE with {} kernels>'.format(list(self.kernels_dict.keys()))
+        return ' <QA_ENGINE with {} kernels ident {}>'.format(list(self.kernels_dict.keys()), self.ident)
 
     @property
     def kernel_num(self):
         return len(self.kernels_dict.keys())
 
-    def create_kernel(self, name):
+    def create_kernel(self, name, daemon=False):
         # ENGINE线程创建一个事件线程
-        self.kernels_dict[name] = QA_Thread(name=name)
+        self.kernels_dict[name] = QA_Thread(name=name,daemon=daemon)
 
     def register_kernel(self, name, kernel):
         if name not in self.kernels_dict.keys():
@@ -160,7 +167,6 @@ class QA_Engine(QA_Thread):
         # 🛠todo 建议把 engine 变量名字 改成  engine_in_kerneals_dict_name, 便于理解
 
         self.kernels_dict[task.engine].put(task)
-
 
     def stop_all(self):
         for item in self.kernels_dict.values():
@@ -188,8 +194,7 @@ class QA_Engine(QA_Thread):
                         _task = self.queue.get()  # 接收消息
                         #print("queue left %d"%self.queue.qsize())
                         assert isinstance(_task, QA_Task)
-                        #print(_task)
-
+                        # print(_task)
 
                         # 🛠todo 建议把 engine 变量名字 改成  engine_in_kernels_dict_name, 便于理解
                         if _task.engine is None:  # _task.engine 是字符串，对于的是 kernels_dict 中的 线程对象
@@ -204,11 +209,14 @@ class QA_Engine(QA_Thread):
                     else:
                         self.idle = True
 
-                    #Mac book下风扇狂转，如果sleep cpu 占用率回下降
-                    #time.sleep(0.01)
+                    # Mac book下风扇狂转，如果sleep cpu 占用率回下降
+                    # time.sleep(0.01)
 
                 except Exception as e:
-                    raise e
+                    if isinstance(e,ValueError):
+                        pass
+                    else:
+                        raise e
                     # self.run()
 
     def clear(self):
@@ -218,8 +226,8 @@ class QA_Engine(QA_Thread):
                 res = False
             if not item.idle:
                 res = False
-
-            item.queue.join()
+            
+            #item.queue.join()
         if not self.queue.empty():
             res = False
 

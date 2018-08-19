@@ -55,9 +55,12 @@ class Backtest(QA_Backtest):
                        benchmark_type=MARKET_TYPE.INDEX_CN)
 
         print(risk().T)
-        risk.plot_assets_curve()
-        risk.plot_dailyhold()
-        risk.plot_signal()
+        fig=risk.plot_assets_curve()
+        fig.show()
+        fig=risk.plot_dailyhold()
+        fig.show()
+        fig=risk.plot_signal()
+        fig.show()
         self.account.save()
         risk.save()
 

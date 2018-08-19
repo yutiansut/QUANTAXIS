@@ -29,7 +29,7 @@ import random
 单线程模式回测示例
 该代码旨在给出一个极其容易实现的小回测 高效 无事件驱动
 """
-B = QA.QA_BacktestBroker()
+Broker = QA.QA_BacktestBroker()
 AC = QA.QA_Account()
 """
 # 账户设置初始资金
@@ -48,31 +48,41 @@ risk=QA.QA_Risk(AC)
 
 """
 
-AC.reset_assets(20000000) #设置初始资金
+AC.reset_assets(20000000)  # 设置初始资金
+
 
 def simple_backtest(AC, code, start, end):
     DATA = QA.QA_fetch_stock_day_adv(code, start, end).to_qfq()
     for items in DATA.panel_gen:  # 一天过去了
-        
+
         for item in items.security_gen:
-            if random.random()>0.5:# 加入一个随机 模拟买卖的
+            if random.random() > 0.5:  # 加入一个随机 模拟买卖的
                 if AC.sell_available.get(item.code[0], 0) == 0:
-                    order=AC.send_order(
-                        code=item.data.code[0], time=item.data.date[0], amount=1000, towards=QA.ORDER_DIRECTION.BUY, price=0, order_model=QA.ORDER_MODEL.MARKET, amount_model=QA.AMOUNT_MODEL.BY_AMOUNT
+                    order = AC.send_order(
+                        code=item.code[0], time=item.date[0], amount=1000, towards=QA.ORDER_DIRECTION.BUY, price=0, order_model=QA.ORDER_MODEL.MARKET, amount_model=QA.AMOUNT_MODEL.BY_AMOUNT
                     )
                     if order:
-                        AC.receive_deal(B.receive_order(QA.QA_Event(order=order,market_data=item)))
+                        Broker.receive_order(QA.QA_Event(order=order, market_data=item))
+                        trade_mes = Broker.query_orders(AC.account_cookie, 'filled')
+                        res = trade_mes.loc[order.account_cookie, order.realorder_id]
+                        order.trade(res.trade_id, res.trade_price,
+                                    res.trade_amount, res.trade_time)
 
                 else:
-                    order=AC.send_order(
-                        code=item.data.code[0], time=item.data.date[0], amount=1000, towards=QA.ORDER_DIRECTION.SELL, price=0, order_model=QA.ORDER_MODEL.MARKET, amount_model=QA.AMOUNT_MODEL.BY_AMOUNT
+                    order = AC.send_order(
+                        code=item.code[0], time=item.date[0], amount=1000, towards=QA.ORDER_DIRECTION.SELL, price=0, order_model=QA.ORDER_MODEL.MARKET, amount_model=QA.AMOUNT_MODEL.BY_AMOUNT
                     )
                     if order:
-                        AC.receive_deal(B.receive_order(QA.QA_Event(order=order,market_data=item)))
+                        Broker.receive_order(QA.QA_Event(order=order, market_data=item))
+                        trade_mes = Broker.query_orders(AC.account_cookie, 'filled')
+                        res = trade_mes.loc[order.account_cookie, order.realorder_id]
+                        order.trade(res.trade_id, res.trade_price,
+                                    res.trade_amount, res.trade_time)
         AC.settle()
 
 
-simple_backtest(AC, QA.QA_fetch_stock_block_adv().code[0:10], '2017-01-01', '2018-01-31')
+simple_backtest(AC, QA.QA_fetch_stock_block_adv(
+).code[0:10], '2017-01-01', '2018-01-31')
 print(AC.message)
 AC.save()
 risk = QA.QA_Risk(AC)
