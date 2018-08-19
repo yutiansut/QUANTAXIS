@@ -81,9 +81,10 @@ class QA_Backtest():
         self.account = None
         self.portfolio = None
 
-        #🛠todo market_type 应该放在 QA_Market对象里的一个属性
-        self.market = QA_Market()
+        # 🛠todo market_type 应该放在 QA_Market对象里的一个属性
+        self.market = QA_Market(if_start_orderthreading=True)
         self.market_type = market_type
+        
 
         self.frequence = frequence
         self.broker = QA_BacktestBroker(commission_fee)
@@ -93,8 +94,8 @@ class QA_Backtest():
         self.end = end
         self.code_list = code_list
 
-        #🛠todo 检查start日期和结束end日期是否正确
-        #🛠todo 检查code list 是否合法
+        # 🛠todo 检查start日期和结束end日期是否正确
+        # 🛠todo 检查code list 是否合法
 
         # 根据 市场类型，回测周期频率， 和股票代码列表 获取回测数据
         if self.market_type is MARKET_TYPE.STOCK_CN and self.frequence is FREQUENCE.DAY:
@@ -123,6 +124,8 @@ class QA_Backtest():
         # 启动 trade_engine 线程
         self.market.start()
 
+        
+
         # 注册 backtest_broker ，并且启动和它关联线程QAThread 存放在 kernels 词典中， { 'broker_name': QAThread }
         self.market.register(self.broker_name, self.broker)
 
@@ -130,13 +133,15 @@ class QA_Backtest():
         self.market.login(self.broker_name,
                           self.account.account_cookie, self.account)
 
+        self.market._sync_orders()
+
     def run(self):
         """generator driven data flow
         """
         # 如果出现了日期的改变 才会进行结算的事件
         _date = None
         for data in self.ingest_data:  # 对于在ingest_data中的数据
-            #<class 'QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day'>
+            # <class 'QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day'>
             date = data.date[0]
             if self.market_type is MARKET_TYPE.STOCK_CN:  # 如果是股票市场
                 if _date != date:  # 如果新的date
@@ -144,26 +149,31 @@ class QA_Backtest():
                     # 前一天的交易日已经过去
                     # 往 broker 和 account 发送 settle 事件
                     try:
-                        self.market.trade_engine.join()
-                        #time.sleep(2)
                         self.market._settle(self.broker_name)
+                        self.market.trade_engine.join()
+                        
+                        # time.sleep(2)
+                        
 
                     except Exception as e:
                         raise e
             # 基金 指数 期货
             elif self.market_type in [MARKET_TYPE.FUND_CN, MARKET_TYPE.INDEX_CN, MARKET_TYPE.FUTURE_CN]:
                 self.market._settle(self.broker_name)
-            # print(data)
+
             self.broker.run(
                 QA_Event(event_type=ENGINE_EVENT.UPCOMING_DATA, market_data=data))
             # 生成 UPCOMING_DATA 事件放到 队列中去执行
-
             self.market.upcoming_data(self.broker_name, data)
 
             self.market.trade_engine.join()
 
             _date = date
 
+
+        self.market._settle(self.broker_name)
+        self.market.trade_engine.join()
+        
         self.after_success()
 
     def after_success(self):

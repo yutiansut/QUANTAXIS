@@ -134,10 +134,10 @@ class QA_Account(QA_Worker):
         # :param [list] history:           交易历史
         """
         super().__init__()
-        warnings.warn('QUANTAXIS 1.0.46 has changed the init_assets ==> init_cash, please pay attention to this change if you using init_cash to initial an account class,\
-                ', DeprecationWarning, stacklevel=2)
+        # warnings.warn('QUANTAXIS 1.0.46 has changed the init_assets ==> init_cash, please pay attention to this change if you using init_cash to initial an account class,\
+        #         ', DeprecationWarning, stacklevel=2)
         self._history_headers = ['datetime', 'code', 'price',
-                                 'amount', 'cash', 'order_id', 'trade_id',
+                                 'amount', 'cash', 'order_id', 'realorder_id','trade_id',
                                  'account_cookie', 'commission', 'tax']
         ########################################################################
         # 信息类:
@@ -345,10 +345,10 @@ class QA_Account(QA_Worker):
         """
         return pd.DataFrame(data=self.history, columns=self._history_headers).groupby('code').amount.sum().replace(0, np.nan).dropna().sort_index()
 
-    @property
-    def order_table(self):
-        """return order trade list"""
-        return self.orders.trade_list
+    # @property
+    # def order_table(self):
+    #     """return order trade list"""
+    #     return self.orders.trade_list
 
     @property
     def trade(self):
@@ -447,40 +447,53 @@ class QA_Account(QA_Worker):
         self.cash = [self.init_cash]
         self.cash_available = self.cash[-1]  # 在途资金
 
-    def receive_deal(self, message):
+    def receive_deal(self,code:str, trade_id:str,order_id:str,realorder_id:str,trade_price:float, trade_amount:int,trade_towards:int,trade_time:str):
+        """更新deal
+        
+        Arguments:
+            code {str} -- [description]
+            trade_id {str} -- [description]
+            order_id {str} -- [description]
+            realorder_id {str} -- [description]
+            trade_price {float} -- [description]
+            trade_amount {int} -- [description]
+            trade_towards {int} -- [description]
+            trade_time {str} -- [description]
+        
+        Returns:
+            [type] -- [description]
         """
-        用于更新账户
-        update history and cash
-        :param message:
-        :return:
-        """
-        if message['header']['status'] is TRADE_STATUS.SUCCESS:
-            trade_amount = float(float(message['body']['order']['price']) *
-                                 float(message['body']['order']['amount']) * message['body']['order']['towards'] +
-                                 float(message['body']['fee']['commission']) +
-                                 float(message['body']['fee']['tax']))
 
-            if self.cash[-1] > trade_amount:
-                self.time_index.append(
-                    str(message['body']['order']['datetime']))
-                self.history.append(
-                    [str(message['body']['order']['datetime']), str(message['body']['order']['code']),
-                     float(message['body']['order']['price']), int(message['body']['order']['towards']) *
-                     float(message['body']['order']['amount']), self.cash[-1]-trade_amount, str(
-                        message['header']['order_id']), str(message['header']['trade_id']), str(self.account_cookie),
-                     float(message['body']['fee']['commission']), float(message['body']['fee']['tax'])])
-                self.cash.append(self.cash[-1]-trade_amount)
-                self.cash_available = self.cash[-1]
-                # 资金立刻结转
-            else:
-                print(message)
-                print(self.cash[-1])
-                self.cash_available = self.cash[-1]
-                print('NOT ENOUGH MONEY FOR {}'.format(
-                    message['body']['order']))
-        self.datetime = message['body']['order']['datetime']
-        if message['header']['status'] is TRADE_STATUS.PRICE_LIMIT:
-            return False
+        print('receive deal')
+
+        trade_time = str(trade_time)
+        code = str(code)
+        trade_price=float(trade_price)
+        trade_towards =int(trade_towards)
+        realorder_id=str(realorder_id)
+        trade_id = str(trade_id)
+        order_id= str(order_id)
+        trade_money = trade_price*int(trade_amount)*trade_towards
+        commission_fee= trade_money*self.commission_coeff
+        tax_fee = trade_money * self.tax_coeff
+        trade_money+=(commission_fee+tax_fee)
+
+        if self.cash[-1]>trade_money:
+            self.time_index.append(trade_time)
+            self.history.append(
+                [trade_time,code,trade_price,trade_towards*trade_amount, self.cash[-1]-trade_money, order_id,realorder_id, trade_id, self.account_cookie,
+                    commission_fee, tax_fee])
+            self.cash.append(self.cash[-1]-trade_money)
+            self.cash_available = self.cash[-1]
+        else:
+            print(self.cash[-1])
+            self.cash_available = self.cash[-1]
+            print('NOT ENOUGH MONEY FOR {}'.format(
+                order_id))
+
+
+        self.datetime = trade_time
+
         return self.message
 
     def send_order(self, code=None, amount=None, time=None, towards=None, price=None, money=None, order_model=None, amount_model=None):
@@ -538,8 +551,13 @@ class QA_Account(QA_Worker):
         # 🛠todo 移到Utils类中，  amount_to_money 成交量转金额
         # BY_MONEY :: amount --钱 如10000元  因此 by_money里面 需要指定价格,来计算实际的股票数
         # by_amount :: amount --股数 如10000股
+        # amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
+        #     money / (price*(1+self.commission_coeff)))
+
         amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
-            money / (price*(1+self.commission_coeff))/100)*100
+
+            money / (price*(1+self.commission_coeff))/100) * 100
+
 
         # 🛠todo 移到Utils类中，  money_to_amount 金额转成交量
         money = amount * price * \
@@ -575,7 +593,7 @@ class QA_Account(QA_Worker):
 
         elif int(towards) < 0:
             # 是卖出的情况(包括卖出，卖出开仓allow_sellopen如果允许. 卖出平仓)
-            #print(self.sell_available[code])
+            # print(self.sell_available[code])
             if self.sell_available.get(code, 0) >= amount:
                 self.sell_available[code] -= amount
                 flag = True
@@ -598,10 +616,20 @@ class QA_Account(QA_Worker):
             self.orders.insert_order(_order)
             return _order
         else:
-            print('ERROR : amount=0 {} {} {} {}'.format(
+            print('ERROR : CODE {} TIME {}  AMOUNT {} TOWARDS {}'.format(
                 code, time, amount, towards))
             return False
 
+    def cancel_order(self, order):
+        if order.towards in [ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE]:
+            if order.amount_model is AMOUNT_MODEL.BY_MONEY:
+                self.cash_available += order.money
+            elif order.amount_model is AMOUNT_MODEL.BY_AMOUNT:
+                self.cash_available += order.price*order.amount
+        elif order.towards in [ORDER_DIRECTION.SELL, ORDER_DIRECTION.SELL_CLOSE, ORDER_DIRECTION.SELL_OPEN]:
+            self.sell_available[order.code] += order.amount
+
+        # self.sell_available[]
     @property
     def close_positions_order(self):
         """平仓单
@@ -646,6 +674,7 @@ class QA_Account(QA_Worker):
         self.datetime = '{} 09:30:00'.format(QA_util_get_next_day(
             self.date)) if self.date is not None else None
 
+
     def on_bar(self, event):
         '''
         策略事件
@@ -653,7 +682,9 @@ class QA_Account(QA_Worker):
         :return:
         '''
         'while updating the market data'
-        print("on_bar ", event.market_data)
+
+        print("on_bar account {} ".format(
+            self.account_cookie), event.market_data)
 
     def on_tick(self, event):
         '''
@@ -746,21 +777,21 @@ class QA_Account(QA_Worker):
         """
         save_account(self.message)
 
-
-    def sync_account(self,sync_message):
+    def sync_account(self, sync_message):
         """同步账户
-        
+
         Arguments:
             sync_message {[type]} -- [description]
         """
 
-        self.init_hold=sync_message['hold_available']
-        self.init_cash= sync_message['cash_available']
+        self.init_hold = sync_message['hold_available']
+        self.init_cash = sync_message['cash_available']
 
         self.sell_available = copy.deepcopy(self.init_hold)
         self.history = []
         self.cash = [self.init_cash]
         self.cash_available = self.cash[-1]  # 在途资金
+
     def change_cash(self, money):
         """
         外部操作|高危|
