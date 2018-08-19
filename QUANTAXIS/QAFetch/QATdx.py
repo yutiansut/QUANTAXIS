@@ -58,20 +58,33 @@ def ping(ip, port=7709, type_='stock'):
     try:
         if type_ in ['stock']:
             with api.connect(ip, port, time_out=0.7):
-                if len(api.get_security_list(0, 1)) > 800:
-                    return datetime.datetime.now() - __time1
+                res=api.get_security_list(0, 1)
+
+                if res is not None:
+                    if len(api.get_security_list(0, 1)) > 800:
+                        return datetime.datetime.now() - __time1
+                    else:
+                        print('BAD RESPONSE {}'.format(ip))
+                        return datetime.timedelta(9, 9, 0)
                 else:
+
                     print('BAD RESPONSE {}'.format(ip))
                     return datetime.timedelta(9, 9, 0)
         elif type_ in ['future']:
             with apix.connect(ip, port, time_out=0.7):
-                if apix.get_instrument_count() > 40000:
-                    return datetime.datetime.now() - __time1
+                res=apix.get_instrument_count()
+                if res is not None:
+                    if res > 40000:
+                        return datetime.datetime.now() - __time1
+                    else:
+                        print('️Bad FUTUREIP REPSONSE {}'.format(ip))
+                        return datetime.timedelta(9, 9, 0)
                 else:
                     print('️Bad FUTUREIP REPSONSE {}'.format(ip))
                     return datetime.timedelta(9, 9, 0)
     except Exception as e:
         if isinstance(e, TypeError):
+            print(e)
             print('Tushare内置的pytdx版本和QUANTAXIS使用的pytdx 版本不同, 请重新安装pytdx以解决此问题')
             print('pip uninstall pytdx')
             print('pip install pytdx')

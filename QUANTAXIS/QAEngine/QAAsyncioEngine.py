@@ -9,6 +9,13 @@ import future
 from QUANTAXIS.QAFetch.QAQuery_Async import QA_fetch_stock_day
 
 
+"""quantaxis 异步引擎
+
+
+"""
+
+
+
 class QAAsync():
     def __init__(self):
         self.event_loop = asyncio.get_event_loop()
