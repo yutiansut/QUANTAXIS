@@ -527,6 +527,10 @@ class _quotation_base():
             raise e
 
     def plot(self, code=None):
+
+        def kline_formater(param):
+            return param.name + ':' + vars(param)
+
         """plot the market_data"""
         if code is None:
             path_name = '.' + os.sep + 'QA_' + self.type + \
@@ -544,12 +548,13 @@ class _quotation_base():
                     datetime = np.array(ds.date.map(str))
                 else:
                     datetime = np.array(ds.datetime.map(str))
-                ohlc = np.array(ds.data.loc[:, ['open', 'close', 'low', 'high']])
+                ohlc = np.array(
+                    ds.data.loc[:, ['open', 'close', 'low', 'high']])
                 #amount = np.array(ds.amount)
                 #vol = np.array(ds.volume)
 
                 kline.add(ds.code[0], datetime, ohlc, mark_point=[
-                          "max", "min"], is_datazoom_show=True, datazoom_orient='horizontal')
+                          "max", "min"], is_datazoom_show=False, datazoom_orient='horizontal')
 
             kline.render(path_name)
             webbrowser.open(path_name)
@@ -572,20 +577,28 @@ class _quotation_base():
             kline = Kline('{}__{}__{}'.format(code, self.if_fq, self.type),
                           width=1360, height=700, page_title='QUANTAXIS')
             bar = Bar()
-            kline.add(self.code, datetime, ohlc, mark_point=[
-                "max", "min"], is_datazoom_show=True, datazoom_orient='horizontal')
+            kline.add(self.code, datetime, ohlc, 
+                mark_point=["max", "min"],
+                #is_label_show=True,
+                is_datazoom_show=True,
+                is_xaxis_show=False,
+                #is_toolbox_show=True,
+                tooltip_formatter='{b}:{c}',#kline_formater,
+                #is_more_utils=True,
+                datazoom_orient='horizontal')
 
             bar.add(self.code, datetime, vol,
-                    is_datazoom_show=True, datazoom_xaxis_index=[0, 1])
+                    is_datazoom_show=True,
+                    datazoom_xaxis_index=[0, 1])
             path_name = '.{}QA_{}_{}_{}.html'.format(
                 os.sep, self.type, code, self.if_fq)
 
             # kline.add(code, axis, data, mark_point=[
             #           "max", "min"], is_datazoom_show=True, datazoom_orient='horizontal')
 
-            grid = Grid()
-            grid.add(bar, grid_top="60%")
-            grid.add(kline, grid_bottom="60%")
+            grid = Grid(width=1360, height=700, page_title='QUANTAXIS')
+            grid.add(bar, grid_top="80%")
+            grid.add(kline, grid_bottom="30%")
             grid.render(path_name)
 
             webbrowser.open(path_name)
