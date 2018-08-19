@@ -90,7 +90,7 @@ class QA_Portfolio():
         self.cash = [self.init_cash]
         self.cash_available = self.cash[-1]  # 可用资金
         self.sell_available = sell_available
-        self.history = []
+        #self.history = []
         self.time_index = []
 
         for cookie in self.accounts.keys():
@@ -227,6 +227,18 @@ class QA_Portfolio():
                     '{} sync wrong \\\n wrong info {}'.format(account_cookie, e))
             self.accounts[account_cookie].from_message(message)
 
+    @property
+    def history(self):
+        res=[]
+        ids=[]
+        for account in list(self.accounts.values()):
+            res.append(account.history)
+            ids.append(account.account_cookie)
+        return res,ids
+    
+    @property
+    def history_table(self):
+        return pd.concat([account.history_table for account in list(self.accounts.values())])
 
 class QA_TEST_MAKEPortfolio():
 

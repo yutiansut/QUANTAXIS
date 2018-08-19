@@ -59,7 +59,7 @@ async def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', 
                 "$gte": QA_util_date_stamp(start)}})
         #res=[QA_util_dict_remove_key(data, '_id') for data in cursor]
 
-        res = pd.DataFrame([item for item in await cursor.to_list(length=100)])
+        res = pd.DataFrame([item async for item in cursor])
         try:
             res = res.drop('_id', axis=1).assign(volume=res.vol).query('volume>1').assign(date=pd.to_datetime(
                 res.date)).drop_duplicates((['date', 'code'])).set_index('date', drop=False)
@@ -110,7 +110,7 @@ async def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min',
         }, 'type': frequence
     })
 
-    res = pd.DataFrame([item for item in await cursor.to_list(length=100)])
+    res = pd.DataFrame([item async for item in cursor])
     try:
         res = res.drop('_id', axis=1).assign(volume=res.vol).query('volume>1').assign(datetime=pd.to_datetime(
             res.datetime)).drop_duplicates(['datetime', 'code']).set_index('datetime', drop=False)
@@ -131,14 +131,17 @@ async def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min',
         return None
 
 
-if __name__=="__main__":
-    
+if __name__ == "__main__":
+
     loop = asyncio.get_event_loop()
-    res=loop.run_until_complete(asyncio.gather(
+    print(id(loop))
+    res = loop.run_until_complete(asyncio.gather(
         QA_fetch_stock_day('000001', '2016-07-01', '2018-07-15'),
         QA_fetch_stock_min('000002', '2016-07-01', '2018-07-15')
     ))
-        
+
     print(res)
 
-
+    # loop = asyncio.get_event_loop()
+    # print(id(loop))
+    # loop 内存地址一样 没有被销毁

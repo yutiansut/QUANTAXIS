@@ -2,8 +2,8 @@
 
 <!-- TOC -->
 
-- [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.0.69 (unreleased)](#1069-unreleased)
+- [QUANTAXIS 更新纪要](#quantaxis-%E6%9B%B4%E6%96%B0%E7%BA%AA%E8%A6%81)
+    - [1.1.0](#110)
     - [1.0.68](#1068)
     - [1.0.67](#1067)
     - [1.0.66](#1066)
@@ -50,9 +50,55 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
-## 1.0.69 (unreleased)
+
+## 1.1.0 
+
+[QAData]
+
+1. 修改了采样函数的写法
+2. 修复了tick采样成60min的bug
+3. 修复了因为multiindex导致的QA_DataStruct.to_json方法缺失 datetime/code 字段的问题
+
+[QAMARKET]
 
 
+1. 增加对于实盘易的支持
+2. 将一些基础解析字段挪至基类QABroker中
+3. 基于QAMarket创建的broker/order线程全部变成后台线程
+4. QA_OrderHandler 增加持久化 订单/成交单部分
+5. 修改QAOrder 变成有限状态机, 通过状态机的动作自动改变Order的状态
+6. 修改QABacktest_Broker 适配新的order类
+7. 优化QABroker的状态显示
+8. 将撮合缓存字典重构进QADealer, dealer加入 deal_message(dict) 和deal_df(dataframe),并增加dealer的settle函数
+9. 大量更新QABacktest_Broker方法,使之适配新版本回测
+10. 适配实盘,增加字段解析 trade_towards_cn_en, order_status_cn_en
+11. 修改order的撮合机制, 使用创建order时的callback回调来更新账户
+
+
+[QAEngine]
+
+1. QAThread 初始化增加 daemon选项, 用于创建守护线程
+
+[QAARP]
+
+1. QA_Account 增加 cancel_order方法 撤单操作
+2. 重写QA_Account的receive_deal方法, 适配新版本更新账户
+3. 优化和修改QA_Portfolio 增加对于history/history_table的支持
+
+
+[QASU]
+
+1. save_orderhandler.py 增加 QA_SU_save_order/ QA_SU_save_deal 方法
+2. 增加对于运行时出错的容错处理
+
+[QAUtil]
+
+1. QADate_Trade 增加QA_util_get_order_datetime() 用于获取委托的真实日期 QA_util_get_trade_datetime() 用于获取成交的真实日期
+2. QA_Parameter 修改订单状态
+
+[QAWEB]
+
+1. QAWEB 增加查询股票名称的接口 http://ip:port/marketdata/stock/code?code=xxxxx
 
 ## 1.0.68 
 
