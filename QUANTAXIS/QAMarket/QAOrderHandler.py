@@ -184,12 +184,13 @@ class QA_OrderHandler(QA_Worker):
 
                     res = pd.concat(res, axis=0) if len(
                         res) > 0 else None
-
+                    print(res)
                 except:
                     time.sleep(1)
 
                 self.order_status = res if res is not None else self.order_status
                 if len(self.order_status) > 0:
+                    print(self.order_status)
                     QA_SU_save_order(self.order_status)
                 # else:
                 #     time.sleep(1)

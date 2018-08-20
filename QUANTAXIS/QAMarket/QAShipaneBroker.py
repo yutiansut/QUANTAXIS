@@ -163,7 +163,12 @@ class QA_SPEBroker(QA_Broker):
 
             return json.loads(text)
         except Exception as e:
-            print(e)
+            #print(e)
+            if isinstance(e,ConnectionRefusedError):
+                print('与主机失去连接')
+                print(e)
+            else:
+                print(e)
             # print(uri)
             return None
 
