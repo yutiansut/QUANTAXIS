@@ -45,9 +45,10 @@ def QA_SU_save_order(orderlist, client=DATABASE):
         [('account_cookie', ASCENDING), ('realorder_id', ASCENDING)], unique=True)
     try:
         for item in orderlist:
+            if item:
             #item['date']= QA_util_get_order_day()
-            collection.update_one({'account_cookie': item.get('account_cookie'), 'realorder_id': item.get('realorder_id')},
-                              {'$set': item}, upsert=True)
+                collection.update_one({'account_cookie': item.get('account_cookie'), 'realorder_id': item.get('realorder_id')},
+                                {'$set': item}, upsert=True)
     except Exception as e:
         print(e)
         pass
