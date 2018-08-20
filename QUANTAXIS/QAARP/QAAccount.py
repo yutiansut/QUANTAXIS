@@ -741,8 +741,8 @@ class QA_Account(QA_Worker):
         if event.event_type is ACCOUNT_EVENT.SETTLE:
             self.settle()
 
-        elif event.event_type is ACCOUNT_EVENT.UPDATE:
-            self.receive_deal(event.message)
+        # elif event.event_type is ACCOUNT_EVENT.UPDATE:
+        #     self.receive_deal(event.message)
         elif event.event_type is ACCOUNT_EVENT.MAKE_ORDER:
             """generate order
             if callback callback the order
