@@ -115,7 +115,7 @@ from QUANTAXIS.QABacktest.QAResult import backtest_result_analyzer
 from QUANTAXIS.QAEngine import QA_Thread, QA_Event, QA_Worker, QA_Task, QA_Engine
 
 # Data
-from QUANTAXIS.QAData import (QA_data_tick_resample, QA_data_day_resample, QA_data_min_resample, QA_data_calc_marketvalue,
+from QUANTAXIS.QAData import (QA_data_tick_resample, QA_data_day_resample, QA_data_min_resample, QA_data_calc_marketvalue, QA_data_marketvalue,
                               QA_data_make_qfq, QA_data_stock_to_fq, QA_data_make_hfq,
                               QA_DataStruct_Stock_day, QA_DataStruct_Stock_min,
                               QA_DataStruct_Future_day, QA_DataStruct_Future_min,
