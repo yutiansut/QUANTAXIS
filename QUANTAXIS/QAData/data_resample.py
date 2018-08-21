@@ -103,6 +103,7 @@ def QA_data_min_resample(min_data,  type_='5min'):
 
 
     for item in set(min_data.index.date):
+        min_data_p=min_data.loc[item]
         d = min_data_p[:time(11, 30)].resample(
             type_, base=30, closed='right', loffset=type_).apply(CONVERSION)
         f = min_data_p[time(13, 0):].resample(
