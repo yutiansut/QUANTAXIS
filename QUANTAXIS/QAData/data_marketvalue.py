@@ -35,9 +35,30 @@ def QA_data_calc_marketvalue(data, xdxr):
     '使用数据库数据计算复权'
     mv = xdxr.loc[:, ['shares_after', 'liquidity_after']].dropna()
     #
-    res = pd.concat([data.reset_index().set_index('date'), mv], axis=1)
+    res = pd.concat([data, mv], axis=1)
+    
     res = res.assign(
-        shares=res.shares_after.fillna(method='ffill').resample('D').ffill(),
-        lshares=res.liquidity_after.fillna(method='ffill').resample('D').ffill())
+        shares=res.shares_after.fillna(method='ffill'),
+        lshares=res.liquidity_after.fillna(method='ffill'))
+    #print(res)
+    return res.assign(mv=res.close*res.shares*10000, liquidity_mv=res.close*res.lshares*10000).drop(['shares_after', 'liquidity_after'], axis=1).dropna()
 
-    return res.assign(mv=res.close*res.shares_after*10000, liquidity_mv=res.close*res.shares_after*10000).dropna().drop(['shares_after', 'liquidity_after'], axis=1)
+
+def QA_data_marketvalue(data):
+    def __QA_fetch_stock_xdxr(code, format_='pd', collections=DATABASE.stock_xdxr):
+        #print(code)
+        '获取股票除权信息/数据库'
+        try:
+            data = pd.DataFrame([item for item in collections.find(
+                {'code': code})]).drop(['_id'], axis=1)
+            data['date'] = pd.to_datetime(data['date'])
+            return data.set_index(['date', 'code'], drop=False)
+        except:
+            return pd.DataFrame(data=[], columns=['category', 'category_meaning', 'code', 'date', 'fenhong',
+                                                  'fenshu', 'liquidity_after', 'liquidity_before', 'name', 'peigu', 'peigujia',
+                                                  'shares_after', 'shares_before', 'songzhuangu', 'suogu', 'xingquanjia'])
+
+    code = data.index.remove_unused_levels().levels[1][0] if isinstance(
+        data.index, pd.core.indexes.multi.MultiIndex) else data['code'][0]
+    #print(QA_data_calc_marketvalue(data, __QA_fetch_stock_xdxr(code)))
+    return QA_data_calc_marketvalue(data, __QA_fetch_stock_xdxr(code))

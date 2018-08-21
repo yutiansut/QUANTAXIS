@@ -59,6 +59,7 @@
 2. 修复了tick采样成60min的bug
 3. 修复了因为multiindex导致的QA_DataStruct.to_json方法缺失 datetime/code 字段的问题
 4. 优化了QADataStruct的plot方法
+5. 新增自动计算任意时间 流动市值/总市值函数 QA_data_marketvalue  使用不复权DataStruct(DataStruct.add_func(QA_data_marketvalue))
 
 [QAMARKET]
 
