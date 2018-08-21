@@ -111,7 +111,7 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
         QA_util_log_info('The {} of Total {}'.format
                          (item, len(stock_list)))
 
-        strProgressToLog = 'DOWNLOAD PROGRESS {}'.format(
+        strProgressToLog = 'DOWNLOAD PROGRESS {} {}'.format(
             str(float(item / len(stock_list) * 100))[0:4] + '%', ui_log)
         intProgressToLog = int(float(item / len(stock_list) * 100))
         QA_util_log_info(strProgressToLog, ui_log=ui_log,
