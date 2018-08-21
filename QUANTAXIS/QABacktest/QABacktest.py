@@ -123,7 +123,7 @@ class QA_Backtest():
         """
         # 启动 trade_engine 线程
         self.market.start()
-
+        print('market start')
         
 
         # 注册 backtest_broker ，并且启动和它关联线程QAThread 存放在 kernels 词典中， { 'broker_name': QAThread }
