@@ -104,10 +104,11 @@ def QA_util_date_int2str(int_date):
     :return: 类型str
     """
     #int_date=int()
-    if len(int_date)==8:
-        return str(str(int_date)[0:4] + '-' + str(int_date)[4:6] + '-' + str(int_date)[6:8])
-    elif len(int_date)==10:
-        return str(int_date)
+    date=str(int_date)
+    if len(date)==8:
+        return str(date[0:4] + '-' + date[4:6] + '-' + date[6:8])
+    elif len(date)==10:
+        return date
 
 
 def QA_util_to_datetime(time):
