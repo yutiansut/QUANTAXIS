@@ -97,7 +97,7 @@ class QAAnalysis_block():
     def block_turnover(self):
         return self.stock_turnover().groupby(level=0).mean()
 
-    def plot_index(self):
+    def plot_index(self, methods='mv'):
         block_index=self.block_index('close')
         def format_date(x, pos=None):
             # 保证下标不越界,很重要,越界会导致最终plot坐标轴label无显示
