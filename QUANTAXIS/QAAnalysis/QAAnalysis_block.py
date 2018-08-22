@@ -34,7 +34,7 @@ class QAAnalysis_block():
         self.end = end
         self.frequence = frequence
         self.name = name
-        
+
         # self.font = {'sans-serif': 'SimHei',
         #              'weight': 'bold',
         #              'size': '16'}
@@ -99,7 +99,8 @@ class QAAnalysis_block():
     def plot_index(self):
         plt.figure(figsize=(14, 12))
         plt.style.use('ggplot')
-        plt.title(self.name,fontproperties="SimHei")
+        plt.title('QUANTAXIS BLOCK ANA {}'.format(
+            self.name), fontproperties="SimHei")
         self.block_index('mv').plot()
         self.block_index('lv').plot()
         self.block_index('close').plot()
@@ -112,4 +113,8 @@ if __name__ == "__main__":
     import QUANTAXIS as QA
     ana = QAAnalysis_block(
         QA.QA_fetch_stock_block_adv().get_block('国产软件').code, '国产软件', '2018-01-01', '2018-08-21')
+    ana.plot_index()
+
+    ana = QAAnalysis_block(['000001', '000002', '600356'],
+                           '自定义', '2018-01-01', '2018-08-21')
     ana.plot_index()
