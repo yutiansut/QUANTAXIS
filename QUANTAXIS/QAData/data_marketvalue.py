@@ -41,7 +41,8 @@ def QA_data_calc_marketvalue(data, xdxr):
         shares=res.shares_after.fillna(method='ffill'),
         lshares=res.liquidity_after.fillna(method='ffill'))
     #print(res)
-    return res.assign(mv=res.close*res.shares*10000, liquidity_mv=res.close*res.lshares*10000).drop(['shares_after', 'liquidity_after'], axis=1).dropna()
+    return res.assign(mv=res.close*res.shares*10000, liquidity_mv=res.close*res.lshares*10000).drop(['shares_after', 'liquidity_after'], axis=1)\
+            .loc[(slice(data.index.remove_unused_levels().levels[0][0],data.index.remove_unused_levels().levels[0][-1]),slice(None)),:]
 
 
 def QA_data_marketvalue(data):
