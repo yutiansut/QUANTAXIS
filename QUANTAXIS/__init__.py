@@ -115,7 +115,7 @@ from QUANTAXIS.QABacktest.QAResult import backtest_result_analyzer
 from QUANTAXIS.QAEngine import QA_Thread, QA_Event, QA_Worker, QA_Task, QA_Engine
 
 # Data
-from QUANTAXIS.QAData import (QA_data_tick_resample, QA_data_day_resample, QA_data_min_resample,
+from QUANTAXIS.QAData import (QA_data_tick_resample, QA_data_day_resample, QA_data_min_resample, QA_data_calc_marketvalue, QA_data_marketvalue,
                               QA_data_make_qfq, QA_data_stock_to_fq, QA_data_make_hfq,
                               QA_DataStruct_Stock_day, QA_DataStruct_Stock_min,
                               QA_DataStruct_Future_day, QA_DataStruct_Future_min,
@@ -135,7 +135,7 @@ from QUANTAXIS.QASetting.QALocalize import qa_path, setting_path, cache_path, do
 
 
 from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms_stamp, QA_util_date_valid, QA_util_calc_time,
-                              QA_util_realtime, QA_util_id2date, QA_util_is_trade, QA_util_get_date_index, QA_util_get_last_day, QA_util_get_next_day, QA_util_get_order_datetime,QA_util_get_trade_datetime,
+                              QA_util_realtime, QA_util_id2date, QA_util_is_trade, QA_util_get_date_index, QA_util_get_last_day, QA_util_get_next_day, QA_util_get_order_datetime, QA_util_get_trade_datetime,
                               QA_util_get_index_date, QA_util_select_hours, QA_util_date_gap, QA_util_time_gap,
                               QA_util_select_min, QA_util_time_delay, QA_util_time_now, QA_util_date_str2int,
                               QA_util_date_int2str, QA_util_date_today, QA_util_to_datetime,
