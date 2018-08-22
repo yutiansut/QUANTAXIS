@@ -53,6 +53,10 @@
 
 ## 1.1.0 
 
+[QAAnalysis]
+
+1. QA_Analysis_Block 修改 支持板块指数/自定义指数 以及4种计算方法
+
 [QAData]
 
 1. 修改了采样函数的写法
