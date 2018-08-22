@@ -240,11 +240,11 @@ class QA_Market(QA_Trade):
             return False
 
     def sync_order_and_deal(self):
-        self.orderhandler.if_start_orderquery = True
-        # self._sync_orders()
+        self.order_handler.if_start_orderquery = True
+        self._sync_orders()
 
     def stop_sync_order_and_deal(self):
-        self.orderhandler.if_start_orderquery = False
+        self.order_handler.if_start_orderquery = False
 
     def sync_account(self, broker_name, account_cookie):
         """同步账户信息
