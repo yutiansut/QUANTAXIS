@@ -4,6 +4,7 @@ import datetime
 from functools import lru_cache
 
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 import numpy as np
 import pandas as pd
 
@@ -97,14 +98,24 @@ class QAAnalysis_block():
         return self.stock_turnover().groupby(level=0).mean()
 
     def plot_index(self):
-        plt.figure(figsize=(14, 12))
+        block_index=self.block_index('close')
+        def format_date(x, pos=None):
+            # 保证下标不越界,很重要,越界会导致最终plot坐标轴label无显示
+            thisind = np.clip(int(x+0.5), 0, N-1)
+            # print(thisind)
+            return block_index.index[thisind].strftime('%Y-%m-%d %H:%M')
+        fig = plt.figure(figsize=(14, 12))
+        ax = fig.add_subplot(1, 1, 1)
         plt.style.use('ggplot')
+
         plt.title('QUANTAXIS BLOCK ANA {}'.format(
             self.name), fontproperties="SimHei")
-        self.block_index('mv').plot()
-        self.block_index('lv').plot()
-        self.block_index('close').plot()
-        self.block_index('volume').plot()
+        N = len(block_index)
+        block_index.reset_index()[0].plot()
+        self.block_index('lv').reset_index()[0].plot()
+        self.block_index('close').reset_index()[0].plot()
+        self.block_index('volume').reset_index()[0].plot()
+        ax.xaxis.set_major_formatter(ticker.FuncFormatter(format_date))
         plt.legend(['market_value', 'liquidity_value', 'close', 'volume'])
         plt.show()
 
@@ -117,4 +128,8 @@ if __name__ == "__main__":
 
     ana = QAAnalysis_block(['000001', '000002', '600356'],
                            '自定义', '2018-01-01', '2018-08-21')
+    ana.plot_index()
+
+    ana = QAAnalysis_block(['000001', '000002', '600356'],
+                           '自定义15分钟级别指数', '2018-08-01', '2018-08-21', FREQUENCE.FIFTEEN_MIN)
     ana.plot_index()
