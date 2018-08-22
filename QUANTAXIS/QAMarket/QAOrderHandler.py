@@ -202,14 +202,14 @@ class QA_OrderHandler(QA_Worker):
                 time.sleep(random.randint(1, 2))
             # event.event_queue.task_done()
             # 非阻塞
-            #if self.if_start_orderquery:
-            event.event_queue.put(
-                QA_Task(
-                    worker=self,
-                    engine='ORDER',
-                    event=event
+            if self.if_start_orderquery:
+                event.event_queue.put(
+                    QA_Task(
+                        worker=self,
+                        engine='ORDER',
+                        event=event
+                    )
                 )
-            )
             # time.sleep(random.randint(2,5))
             # print(event.event_type)
             # print(event2.event_type)
@@ -287,14 +287,14 @@ class QA_OrderHandler(QA_Worker):
             if event.event_queue.qsize() < 1:
                 time.sleep(random.randint(2, 5))
             event.event_type = MARKET_EVENT.QUERY_ORDER
-            #if self.if_start_orderquery:
-            event.event_queue.put(
-                QA_Task(
-                    worker=self,
-                    engine='ORDER',
-                    event=event
+            if self.if_start_orderquery:
+                event.event_queue.put(
+                    QA_Task(
+                        worker=self,
+                        engine='ORDER',
+                        event=event
+                    )
                 )
-            )
             # self.run(event)
             # self.run(event)
 
