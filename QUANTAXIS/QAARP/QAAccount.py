@@ -177,6 +177,9 @@ class QA_Account(QA_Worker):
         # 1.是否允许t+0 及买入及结算
         # 2.是否允许卖空开仓
         # 3.是否允许保证金交易/ 如果不是false 就需要制定保证金比例(dict形式)
+
+        # 期货: allow_t0 True allow_sellopen True
+        # 
         self.allow_t0 = allow_t0
         self.allow_sellopen = allow_sellopen
         self.margin_level = margin_level
@@ -589,7 +592,7 @@ class QA_Account(QA_Worker):
                     self.cash_available -= money
                     flag = True
             else:
-                print('可用资金不足 {} {} {} {}'.format(code, time, amount, towards))
+                print('QAACCOUNT: 可用资金不足 cash_available {}  code {} time {} amount {} towards {}'.format(self.cash_available,code, time, amount, towards))
 
         elif int(towards) < 0:
             # 是卖出的情况(包括卖出，卖出开仓allow_sellopen如果允许. 卖出平仓)
