@@ -13,9 +13,11 @@ class MAMINStrategy(QA_Strategy):
 
     def on_bar(self, event):
         try:
+            # 新数据推送进来
             for item in event.market_data.code:
-
+                # 如果持仓
                 if self.sell_available.get(item, 0) > 0:
+                    # 全部卖出
                     event.send_order(account_id=self.account_cookie,
                                      amount=self.sell_available[item], amount_model=AMOUNT_MODEL.BY_AMOUNT,
                                      time=self.current_time, code=item, price=0,
@@ -23,7 +25,8 @@ class MAMINStrategy(QA_Strategy):
                                      market_type=self.market_type, frequence=self.frequence,
                                      broker_name=self.broker
                                      )
-                else:
+                else:  # 如果不持仓
+                    # 买入1000股
                     event.send_order(account_id=self.account_cookie,
                                      amount=100, amount_model=AMOUNT_MODEL.BY_AMOUNT,
                                      time=self.current_time, code=item, price=0,
