@@ -233,7 +233,7 @@ class QA_SPEBroker(QA_Broker):
             data = self.call("positions", {
                 'client': accounts
             })
-
+            #print(data)
             if data is not None:
                 cash_part = data.get('subAccounts', {}).get('人民币', False)
                 if cash_part:
