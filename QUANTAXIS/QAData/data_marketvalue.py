@@ -33,7 +33,7 @@ from QUANTAXIS.QAUtil import DATABASE, QA_util_log_info
 
 def QA_data_calc_marketvalue(data, xdxr):
     '使用数据库数据计算复权'
-    mv = xdxr.loc[:, ['shares_after', 'liquidity_after']].dropna()
+    mv = xdxr.query('category!=6').loc[:, ['shares_after', 'liquidity_after']].dropna()
     #
     res = pd.concat([data, mv], axis=1)
     
@@ -53,7 +53,8 @@ def QA_data_marketvalue(data):
             data = pd.DataFrame([item for item in collections.find(
                 {'code': code})]).drop(['_id'], axis=1)
             data['date'] = pd.to_datetime(data['date'])
-            return data.set_index(['date', 'code'], drop=False)
+
+            return data.drop_duplicates('date',keep='last').set_index(['date', 'code'], drop=False)
         except:
             return pd.DataFrame(data=[], columns=['category', 'category_meaning', 'code', 'date', 'fenhong',
                                                   'fenshu', 'liquidity_after', 'liquidity_before', 'name', 'peigu', 'peigujia',
