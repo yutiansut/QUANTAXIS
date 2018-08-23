@@ -48,7 +48,8 @@ class ORDER_DIRECTION():
     SELL_OPEN = -1
     SELL_CLOSE = -1
     ASK = 0
-
+    XDXR = 5
+    OTHER = 6
 
 class ORDER_MODEL():
     """订单的成交模式

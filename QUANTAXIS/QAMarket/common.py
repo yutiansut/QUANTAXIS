@@ -81,7 +81,9 @@ trade_towards_cn_en = {
     '申购': ORDER_DIRECTION.ASK,
     '申': ORDER_DIRECTION.ASK,
     '证券买入': ORDER_DIRECTION.BUY,
-    '证券卖出': ORDER_DIRECTION.SELL
+    '证券卖出': ORDER_DIRECTION.SELL,
+    '派息': ORDER_DIRECTION.XDXR,
+    '': ORDER_DIRECTION.OTHER
 }
 
 order_status_cn_en = {
@@ -102,4 +104,3 @@ order_status_cn_en = {
     '已报待撤': ORDER_STATUS.QUEUED,  # 已经申报了撤单，交易端也已接受，但目前可能因为还没在交易时间段，所以还在等待撤消
     '场内撤单': ORDER_STATUS.CANCEL_ALL,
 }
-
