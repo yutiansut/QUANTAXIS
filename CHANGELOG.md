@@ -51,6 +51,13 @@
 
 <!-- /TOC -->
 
+## 1.1.1.dev1
+
+[QAData]
+
+1. 修改了market_value的计算, 对于一日内出现多个权息事件的股票做了兼容处理
+
+
 ## 1.1.0 
 
 [QAAnalysis]
@@ -105,6 +112,8 @@
 [QAWEB]
 
 1. QAWEB 增加查询股票名称的接口 http://ip:port/marketdata/stock/code?code=xxxxx
+
+released in 2018/08/23
 
 ## 1.0.68 
 
