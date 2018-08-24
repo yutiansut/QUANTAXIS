@@ -272,8 +272,8 @@ class QA_OrderHandler(QA_Worker):
                                     order.trade(str(res.trade_id), float(res.trade_price), int(
                                         res.trade_amount), str(res.trade_time))
                                 else:
-                                    print(res)
-                                    print(len(res))
+                                    # print(res)
+                                    # print(len(res))
                                     for _, deal in res.iterrows:
                                         order.trade(str(deal.trade_id), float(deal.trade_price), int(
                                             deal.trade_amount), str(deal.trade_time))
@@ -347,8 +347,8 @@ class QA_OrderHandler(QA_Worker):
                             order.trade(str(res.trade_id), float(res.trade_price), int(
                                 res.trade_amount), str(res.trade_time))
                         else:
-                            print(res)
-                            print(len(res))
+                            #print(res)
+                            #print(len(res))
                             for _, deal in res.iterrows:
                                 order.trade(str(deal.trade_id), float(deal.trade_price), int(
                                     deal.trade_amount), str(deal.trade_time))

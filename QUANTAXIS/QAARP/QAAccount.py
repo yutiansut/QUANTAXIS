@@ -137,7 +137,7 @@ class QA_Account(QA_Worker):
         # warnings.warn('QUANTAXIS 1.0.46 has changed the init_assets ==> init_cash, please pay attention to this change if you using init_cash to initial an account class,\
         #         ', DeprecationWarning, stacklevel=2)
         self._history_headers = ['datetime', 'code', 'price',
-                                 'amount', 'cash', 'order_id', 'realorder_id','trade_id',
+                                 'amount', 'cash', 'order_id', 'realorder_id', 'trade_id',
                                  'account_cookie', 'commission', 'tax']
         ########################################################################
         # 信息类:
@@ -179,7 +179,7 @@ class QA_Account(QA_Worker):
         # 3.是否允许保证金交易/ 如果不是false 就需要制定保证金比例(dict形式)
 
         # 期货: allow_t0 True allow_sellopen True
-        # 
+        #
         self.allow_t0 = allow_t0
         self.allow_sellopen = allow_sellopen
         self.margin_level = margin_level
@@ -450,9 +450,9 @@ class QA_Account(QA_Worker):
         self.cash = [self.init_cash]
         self.cash_available = self.cash[-1]  # 在途资金
 
-    def receive_deal(self,code:str, trade_id:str,order_id:str,realorder_id:str,trade_price:float, trade_amount:int,trade_towards:int,trade_time:str):
+    def receive_deal(self, code: str, trade_id: str, order_id: str, realorder_id: str, trade_price: float, trade_amount: int, trade_towards: int, trade_time: str):
         """更新deal
-        
+
         Arguments:
             code {str} -- [description]
             trade_id {str} -- [description]
@@ -462,7 +462,7 @@ class QA_Account(QA_Worker):
             trade_amount {int} -- [description]
             trade_towards {int} -- [description]
             trade_time {str} -- [description]
-        
+
         Returns:
             [type] -- [description]
         """
@@ -471,20 +471,52 @@ class QA_Account(QA_Worker):
 
         trade_time = str(trade_time)
         code = str(code)
-        trade_price=float(trade_price)
-        trade_towards =int(trade_towards)
-        realorder_id=str(realorder_id)
+        trade_price = float(trade_price)
+        trade_towards = int(trade_towards)
+        realorder_id = str(realorder_id)
         trade_id = str(trade_id)
-        order_id= str(order_id)
-        trade_money = trade_price*int(trade_amount)*trade_towards
-        commission_fee= trade_money*self.commission_coeff
-        tax_fee = trade_money * self.tax_coeff
-        trade_money+=(commission_fee+tax_fee)
+        trade_amount = int(trade_amount)
+        order_id = str(order_id)
+        trade_money = trade_price*trade_amount*trade_towards
+        commission_fee = trade_money*self.commission_coeff
 
-        if self.cash[-1]>trade_money:
+        if self.market_type == MARKET_TYPE.STOCK_CN:
+            if trade_towards > 0:
+                commission_fee = self.commission_coeff * \
+                    trade_price * trade_amount
+
+                commission_fee = 5 if commission_fee < 5 else commission_fee
+
+                tax_fee = 0  # 买入不收印花税
+            else:
+                commission_fee = self.commission_coeff * \
+                    trade_price * trade_amount
+
+                commission_fee = 5 if commission_fee < 5 else commission_fee
+
+                tax_fee = self.tax_coeff * \
+                    trade_price * trade_amount
+
+            # self.trade_money = self.deal_price * \
+            #     self.deal_amount + self.commission_fee + self.tax
+        elif self.market_type == MARKET_TYPE.FUTURE_CN:
+            # 期货不收税
+            # 双边手续费 也没有最小手续费限制
+            commission_fee = self.commission_coeff * \
+                trade_price * trade_amount
+
+            commission_fee = 5 if commission_fee < 5 else commission_fee
+
+            #self.commission_fee = 5 if commission_fee < 5 else commission_fee
+
+            tax_fee = 0  # 买入不收印花税
+
+        trade_money += (commission_fee+tax_fee)
+
+        if self.cash[-1] > trade_money:
             self.time_index.append(trade_time)
             self.history.append(
-                [trade_time,code,trade_price,trade_towards*trade_amount, self.cash[-1]-trade_money, order_id,realorder_id, trade_id, self.account_cookie,
+                [trade_time, code, trade_price, trade_towards*trade_amount, self.cash[-1]-trade_money, order_id, realorder_id, trade_id, self.account_cookie,
                     commission_fee, tax_fee])
             self.cash.append(self.cash[-1]-trade_money)
             self.cash_available = self.cash[-1]
@@ -493,7 +525,6 @@ class QA_Account(QA_Worker):
             self.cash_available = self.cash[-1]
             print('NOT ENOUGH MONEY FOR {}'.format(
                 order_id))
-
 
         self.datetime = trade_time
 
@@ -561,7 +592,6 @@ class QA_Account(QA_Worker):
 
             money / (price*(1+self.commission_coeff))/100) * 100
 
-
         # 🛠todo 移到Utils类中，  money_to_amount 金额转成交量
         money = amount * price * \
             (1+self.commission_coeff) if amount_model is AMOUNT_MODEL.BY_AMOUNT else money
@@ -592,7 +622,8 @@ class QA_Account(QA_Worker):
                     self.cash_available -= money
                     flag = True
             else:
-                print('QAACCOUNT: 可用资金不足 cash_available {}  code {} time {} amount {} towards {}'.format(self.cash_available,code, time, amount, towards))
+                print('QAACCOUNT: 可用资金不足 cash_available {}  code {} time {} amount {} towards {}'.format(
+                    self.cash_available, code, time, amount, towards))
 
         elif int(towards) < 0:
             # 是卖出的情况(包括卖出，卖出开仓allow_sellopen如果允许. 卖出平仓)
@@ -676,7 +707,6 @@ class QA_Account(QA_Worker):
         self.buy_available = self.hold
         self.datetime = '{} 09:30:00'.format(QA_util_get_next_day(
             self.date)) if self.date is not None else None
-
 
     def on_bar(self, event):
         '''

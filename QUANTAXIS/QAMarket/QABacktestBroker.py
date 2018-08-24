@@ -93,8 +93,6 @@ class QA_BacktestBroker(QA_Broker):
         super().__init__()
         self.dealer = QA_Dealer()
         self.order_handler = QA_OrderHandler()
-        self.engine = {
-            MARKET_TYPE.STOCK_CN: self.dealer.backtest_stock_dealer}
 
         self.fetcher = {(MARKET_TYPE.STOCK_CN, FREQUENCE.DAY): QA_fetch_stock_day, (MARKET_TYPE.STOCK_CN, FREQUENCE.FIFTEEN_MIN): QA_fetch_stock_min,
                         (MARKET_TYPE.STOCK_CN, FREQUENCE.ONE_MIN): QA_fetch_stock_min, (MARKET_TYPE.STOCK_CN, FREQUENCE.FIVE_MIN): QA_fetch_stock_min,
@@ -199,7 +197,7 @@ class QA_BacktestBroker(QA_Broker):
         else:
             self.market_data = self.get_market(order)
         if self.market_data is not None:
-            print(self.market_data)
+            # print(self.market_data)
             order = self.warp(order)
             self.dealer.deal(order, self.market_data)
             order.queued(order.order_id)  # 模拟的order_id 和 realorder_id 一致
