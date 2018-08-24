@@ -79,7 +79,6 @@ class QA_Dealer():
 
     def __init__(self, *args, **kwargs):
         self.deal_name = ''
-        self.deal_engine = {'0x01': self.backtest_stock_dealer}
         self.session = {}
         self.order = None
         self.market_data = None
@@ -98,14 +97,14 @@ class QA_Dealer():
         self.deal_price = 0
         self.deal_amount = 0
         self.order.tax_coeff = order.tax_coeff
-        if order.market_type == MARKET_TYPE.STOCK_CN:
+        # if order.market_type == MARKET_TYPE.STOCK_CN:
 
-            res = self.backtest_stock_dealer()
-            # print(res)
-            self.deal_message[self.order.order_id] = res
+        res = self.backtest_dealer()
+        # print(res)
+        self.deal_message[self.order.order_id] = res
 
-        elif order.market_type == MARKET_TYPE.FUTURE_CN:
-            return self.backtest_future_dealer()
+        # elif order.market_type == MARKET_TYPE.FUTURE_CN:
+        #     return self.backtest_future_dealer()
 
     @property
     def deal_df(self):
@@ -153,7 +152,7 @@ class QA_Dealer():
 
             self.tax = 0  # 买入不收印花税
 
-    def backtest_stock_dealer(self):
+    def backtest_dealer(self):
         # 新增一个__commission_fee_coeff 手续费系数
         """MARKET ENGINE STOCK
 
@@ -207,7 +206,8 @@ class QA_Dealer():
                         self.deal_price = float(self.market_data.get('low'))
                 self.status = TRADE_STATUS.SUCCESS
                 # print(self.market_data)
-                self.trade_time = self.market_data.get('datetime', self.market_data.get('date',None))
+                self.trade_time = self.market_data.get(
+                    'datetime', self.market_data.get('date', None))
             else:
                 self.status = TRADE_STATUS.FAILED
                 self.deal_price = 0
@@ -221,14 +221,6 @@ class QA_Dealer():
             QA_util_log_info('MARKET ENGINE ERROR: {}'.format(e))
             self.status = TRADE_STATUS.NO_MARKET_DATA
             return self.callback_message
-
-    def backtest_future_dealer(self):
-        raise NotImplementedError
-
-
-class Stock_Dealer(QA_Dealer):
-    def __init__(self, *args, **kwargs):
-        super().__init__()
 
 
 if __name__ == '__main__':
