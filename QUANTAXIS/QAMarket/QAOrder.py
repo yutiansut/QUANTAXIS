@@ -217,8 +217,10 @@ class QA_Order():
         Arguments:
             amount {[type]} -- [description]
         """
+        # print(trade_id, trade_amount, trade_price,
+        #       trade_time, self.order_id, self.code)
         # 先做强制类型转换
-        print(threading.current_thread().ident)
+        # print(threading.current_thread().ident)
         trade_amount = int(trade_amount)
         trade_id = str(trade_id)
         #print(self.code, trade_amount)
