@@ -32,7 +32,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.1.1.dev1'
+__version__ = '1.1.1.dev2'
 __author__ = 'yutiansut'
 logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
@@ -61,7 +61,7 @@ from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day, QA_fetch_get_trade_date, 
                                QA_fetch_get_index_day, QA_fetch_get_index_min, QA_fetch_get_stock_list, QA_fetch_get_stock_info,
                                QA_fetch_get_stock_block, QA_fetch_get_stock_transaction_realtime, QA_fetch_get_security_bars,
                                QA_fetch_get_future_day, QA_fetch_get_future_min, QA_fetch_get_future_list, QA_fetch_get_future_transaction,
-                               QA_fetch_get_future_transaction_realtime, QA_fetch_get_future_realtime,
+                               QA_fetch_get_future_transaction_realtime, QA_fetch_get_future_realtime, QA_fetch_get_bond_list, QA_fetch_get_index_list,
                                QA_fetch_get_hkfund_list, QA_fetch_get_hkfund_day, QA_fetch_get_hkfund_min,
                                QA_fetch_get_hkindex_list, QA_fetch_get_hkindex_day, QA_fetch_get_hkindex_min,
                                QA_fetch_get_hkstock_list, QA_fetch_get_hkstock_day, QA_fetch_get_hkstock_min,
