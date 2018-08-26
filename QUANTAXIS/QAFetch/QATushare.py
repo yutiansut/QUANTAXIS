@@ -25,10 +25,19 @@
 import json
 
 import pandas as pd
-import tushare as QATs
+import tushare as ts
 
 from QUANTAXIS.QAUtil import (QA_util_date_int2str, QA_util_date_stamp,
                               QA_util_log_info, QA_util_to_json_from_pandas)
+
+# try:
+#     pro = ts.pro_api()
+# except Exception as e:
+#     if isinstance(e, NameError):
+#         print('请设置tushare pro的token凭证码')
+#     else:
+#         print('请升级tushare 至最新版本 pip install tushare -U')
+#         print(e)
 
 
 def QA_fetch_get_stock_day(name, start='', end='', if_fq='01', type_='pd'):
@@ -45,7 +54,8 @@ def QA_fetch_get_stock_day(name, start='', end='', if_fq='01', type_='pd'):
         QA_util_log_info('wrong with fq_factor! using qfq')
         if_fq = 'qfq'
 
-    data = QATs.get_k_data(str(name), start, end, ktype='D', autype=if_fq, retry_count=200, pause=0.005).sort_index()
+    data = ts.get_k_data(str(name), start, end, ktype='D',
+                         autype=if_fq, retry_count=200, pause=0.005).sort_index()
 
     data['date_stamp'] = data['date'].apply(lambda x: QA_util_date_stamp(x))
     data['fqtype'] = if_fq
@@ -60,36 +70,37 @@ def QA_fetch_get_stock_day(name, start='', end='', if_fq='01', type_='pd'):
 
 
 def QA_fetch_get_stock_realtime():
-    data = QATs.get_today_all()
+    data = ts.get_today_all()
     data_json = QA_util_to_json_from_pandas(data)
     return data_json
 
 
 def QA_fetch_get_stock_info(name):
-    data = QATs.get_stock_basics()
+    data = ts.get_stock_basics()
     try:
         return data.loc[name]
     except:
         return None
 
+
 def QA_fetch_get_stock_tick(name, date):
     if (len(name) != 6):
         name = str(name)[0:6]
-    return QATs.get_tick_data(name, date)
+    return ts.get_tick_data(name, date)
 
 
 def QA_fetch_get_stock_list():
-    df = QATs.get_stock_basics()
+    df = ts.get_stock_basics()
     return list(df.index)
 
 
 def QA_fetch_get_stock_time_to_market():
-    data = QATs.get_stock_basics()
+    data = ts.get_stock_basics()
     return data[data['timeToMarket'] != 0]['timeToMarket'].apply(lambda x: QA_util_date_int2str(x))
 
 
 def QA_fetch_get_trade_date(end, exchange):
-    data = QATs.trade_cal()
+    data = ts.trade_cal()
     da = data[data.isOpen > 0]
     data_json = QA_util_to_json_from_pandas(data)
     message = []
@@ -103,8 +114,9 @@ def QA_fetch_get_trade_date(end, exchange):
         message.append(mes)
     return message
 
+
 def QA_fetch_get_lhb(date):
-  return  QATs.top_list(date)
+    return ts.top_list(date)
 # test
 
 # print(get_stock_day("000001",'2001-01-01','2010-01-01'))

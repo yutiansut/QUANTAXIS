@@ -194,6 +194,9 @@ class MARKET_TYPE():
     BOND_CN = 'bond_cn'  # 中国债券
 
 
+
+
+
 class BROKER_TYPE():
     """执行环境
 
@@ -384,3 +387,8 @@ DATABASE_TABLE = {
     (MARKET_TYPE.FUTURE_CN, FREQUENCE.HOUR): 'future_min',
     (MARKET_TYPE.FUTURE_CN, FREQUENCE.TICK): 'future_transaction'
 }
+
+
+
+
+    
