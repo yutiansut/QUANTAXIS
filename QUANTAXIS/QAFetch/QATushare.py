@@ -30,14 +30,14 @@ import tushare as ts
 from QUANTAXIS.QAUtil import (QA_util_date_int2str, QA_util_date_stamp,
                               QA_util_log_info, QA_util_to_json_from_pandas)
 
-try:
-    pro = ts.pro_api()
-except Exception as e:
-    if isinstance(e, NameError):
-        print('请设置tushare pro的token凭证码')
-    else:
-        print('请升级tushare 至最新版本 pip install tushare -U')
-        print(e)
+# try:
+#     pro = ts.pro_api()
+# except Exception as e:
+#     if isinstance(e, NameError):
+#         print('请设置tushare pro的token凭证码')
+#     else:
+#         print('请升级tushare 至最新版本 pip install tushare -U')
+#         print(e)
 
 
 def QA_fetch_get_stock_day(name, start='', end='', if_fq='01', type_='pd'):
