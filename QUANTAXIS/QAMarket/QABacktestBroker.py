@@ -197,7 +197,7 @@ class QA_BacktestBroker(QA_Broker):
         else:
             self.market_data = self.get_market(order)
         if self.market_data is not None:
-            # print(self.market_data)
+            
             order = self.warp(order)
             self.dealer.deal(order, self.market_data)
             order.queued(order.order_id)  # 模拟的order_id 和 realorder_id 一致

@@ -214,7 +214,7 @@ class QA_Dealer():
                 self.deal_amount = 0
 
             self.cal_fee()
-            #print(self.callback_message)
+            # print(self.callback_message)
             return self.callback_message
 
         except Exception as e:
