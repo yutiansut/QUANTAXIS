@@ -29,7 +29,7 @@ sig2=QA.CROSS(res.KDJ_K,res.KDJ_J)
 # In[8]:
 
 
-Account = QA.QA_Account(init_cash=100000,init_hold={})
+Account = QA.QA_Account(init_cash=100000,init_hold={},frequence=QA.FREQUENCE.THIRTY_MIN)
 Broker = QA.QA_BacktestBroker()
 
 Account.account_cookie = 'user_admin_macd'
