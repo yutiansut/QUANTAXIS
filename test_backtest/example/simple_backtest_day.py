@@ -9,9 +9,11 @@ import QUANTAXIS as QA
 from indicator.macd import MACD_JCSC
 
 try:
-    versions = QA.__version__.split('.')
-    assert int(versions[0]) >= 1
-    assert int(versions[1]) >= 1
+    if QA.__version__>'1.1.0':
+        pass
+    else:
+        print('quantaxis version < 1.1.0; please upgrade quantaxis.\npip install quantaxis==1.1.0')
+        exit()
 except Exception as e:
     print('quantaxis version < 1.1.0; please upgrade quantaxis.\npip install quantaxis==1.1.0')
     exit()
@@ -157,9 +159,15 @@ if __name__ == '__main__':
 
     # 结果
     print(AC.message)
+    print(AC.history_table)
+
+
 
     # 分析
     risk = QA.QA_Risk(account=AC, benchmark_code=benchmark_code, benchmark_type=QA.MARKET_TYPE.INDEX_CN, if_fq=False)
     risk.save()
 
     print(risk.message)
+    fig=risk.plot_assets_curve()
+
+    fig.plot()
