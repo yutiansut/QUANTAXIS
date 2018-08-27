@@ -97,7 +97,7 @@ class QA_Account(QA_Worker):
 
     def __init__(self, strategy_name=None, user_cookie=None, portfolio_cookie=None, account_cookie=None,
                  market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY, broker=BROKER_TYPE.BACKETEST,
-                 init_hold={}, init_cash=1000000, commission_coeff=0.00025, tax_coeff=0.0015,
+                 init_hold={}, init_cash=1000000, commission_coeff=0.00025, tax_coeff=0.001,
                  margin_level=False, allow_t0=False, allow_sellopen=False,
                  running_environment=RUNNING_ENVIRONMENT.BACKETEST):
         """
