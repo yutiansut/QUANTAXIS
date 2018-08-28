@@ -1,6 +1,6 @@
 # coding:utf-8
 
-from QUANTAXIS.QABacktest.QABacktest import QA_Backtest
+from QUANTAXIS.QAApplication.QABacktest import QA_Backtest
 
 """
 日内t0的回测框架
