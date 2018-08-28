@@ -8,7 +8,7 @@ import pandas as pd
 from QUANTAXIS.QAARP.QARisk import QA_Performance, QA_Risk
 from QUANTAXIS.QAARP.QAStrategy import QA_Strategy
 from QUANTAXIS.QAARP.QAUser import QA_User
-from QUANTAXIS.QABacktest.QABacktest import QA_Backtest
+from QUANTAXIS.QAApplication.QABacktest import QA_Backtest
 from QUANTAXIS.QAFetch import QAQuery_Advance
 from QUANTAXIS.QAIndicator import QA_indicator_BOLL
 from QUANTAXIS.QAUtil.QADate_trade import (QA_util_get_last_day,

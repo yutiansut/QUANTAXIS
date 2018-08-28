@@ -57,7 +57,7 @@ class MAMINT0Strategy(QA_Account):
 
 from QUANTAXIS.QAARP.QARisk import QA_Risk
 from QUANTAXIS.QAARP.QAUser import QA_User
-from QUANTAXIS.QABacktest.QABacktest import QA_Backtest
+from QUANTAXIS.QAApplication.QABacktest import QA_Backtest
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QAParameter import FREQUENCE, MARKET_TYPE
 
