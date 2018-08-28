@@ -32,7 +32,7 @@ import platform
 import subprocess
 import requests
 
-from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_backtest
+from QUANTAXIS.QAApplication.QAAnalysis import QA_backtest_analysis_backtest
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting, QA_util_mongo_initial
 from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_min, QA_SU_save_stock_xdxr,
                        QA_SU_save_stock_block, QA_SU_save_stock_info,QA_SU_save_stock_info_tushare,

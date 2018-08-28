@@ -27,17 +27,52 @@ import json
 import pandas as pd
 import tushare as ts
 
-from QUANTAXIS.QAUtil import (QA_util_date_int2str, QA_util_date_stamp,
+from QUANTAXIS.QAUtil import (QA_util_date_int2str, QA_util_date_stamp, QASETTING,
                               QA_util_log_info, QA_util_to_json_from_pandas)
 
-# try:
-#     pro = ts.pro_api()
-# except Exception as e:
-#     if isinstance(e, NameError):
-#         print('请设置tushare pro的token凭证码')
-#     else:
-#         print('请升级tushare 至最新版本 pip install tushare -U')
-#         print(e)
+
+def set_token(token=None):
+    try:
+        if token is None:
+            token = QASETTING.get_config('TSPRO', 'token', None)
+        else:
+            QASETTING.set_config('TSPRO', 'token', token)
+        ts.set_token(token)
+    except:
+        print('请升级tushare 至最新版本 pip install tushare -U')
+
+
+def get_pro():
+    try:
+        set_token()
+        pro = ts.pro_api()
+    except Exception as e:
+        if isinstance(e, NameError):
+            print('请设置tushare pro的token凭证码')
+        else:
+            print('请升级tushare 至最新版本 pip install tushare -U')
+            print(e)
+        pro = None
+    return pro
+
+
+def QA_fetch_get_stock_adj(code, end=''):
+    """获取股票的复权因子
+    
+    Arguments:
+        code {[type]} -- [description]
+    
+    Keyword Arguments:
+        end {str} -- [description] (default: {''})
+    
+    Returns:
+        [type] -- [description]
+    """
+
+
+    pro = get_pro()
+    adj = pro.adj_factor(ts_code=code, trade_date=end)
+    return adj
 
 
 def QA_fetch_get_stock_day(name, start='', end='', if_fq='01', type_='pd'):

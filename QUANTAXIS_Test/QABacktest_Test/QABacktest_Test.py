@@ -7,7 +7,7 @@ from QUANTAXIS import QUANTAXIS as QA
 from QUANTAXIS.QAARP.QARisk import QA_Performance, QA_Risk
 from QUANTAXIS.QAARP.QAStrategy import QA_Strategy
 from QUANTAXIS.QAARP.QAUser import QA_User
-from QUANTAXIS.QABacktest.QABacktest import QA_Backtest
+from QUANTAXIS.QAApplication.QABacktest import QA_Backtest
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day
 from QUANTAXIS.QAIndicator import QA_indicator_MA
 from QUANTAXIS.QAUtil.QADate import QA_util_datetime_to_strdate

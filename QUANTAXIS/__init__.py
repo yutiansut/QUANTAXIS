@@ -106,10 +106,10 @@ from QUANTAXIS.QAARP.QARisk import QA_Performance, QA_Risk
 from QUANTAXIS.QAARP.QAUser import QA_User
 from QUANTAXIS.QAARP.QAStrategy import QA_Strategy
 # Backtest
-from QUANTAXIS.QABacktest.QABacktest import QA_Backtest
+from QUANTAXIS.QAApplication.QABacktest import QA_Backtest
 
-from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_backtest
-from QUANTAXIS.QABacktest.QAResult import backtest_result_analyzer
+from QUANTAXIS.QAApplication.QAAnalysis import QA_backtest_analysis_backtest
+from QUANTAXIS.QAApplication.QAResult import backtest_result_analyzer
 
 # ENGINE
 from QUANTAXIS.QAEngine import QA_Thread, QA_Event, QA_Worker, QA_Task, QA_Engine
