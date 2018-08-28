@@ -577,15 +577,15 @@ class _quotation_base():
             kline = Kline('{}__{}__{}'.format(code, self.if_fq, self.type),
                           width=1360, height=700, page_title='QUANTAXIS')
             bar = Bar()
-            kline.add(self.code, datetime, ohlc, 
-                mark_point=["max", "min"],
-                #is_label_show=True,
-                is_datazoom_show=True,
-                is_xaxis_show=False,
-                #is_toolbox_show=True,
-                tooltip_formatter='{b}:{c}',#kline_formater,
-                #is_more_utils=True,
-                datazoom_orient='horizontal')
+            kline.add(self.code, datetime, ohlc,
+                      mark_point=["max", "min"],
+                      # is_label_show=True,
+                      is_datazoom_show=True,
+                      is_xaxis_show=False,
+                      # is_toolbox_show=True,
+                      tooltip_formatter='{b}:{c}',  # kline_formater,
+                      # is_more_utils=True,
+                      datazoom_orient='horizontal')
 
             bar.add(self.code, datetime, vol,
                     is_datazoom_show=True,
@@ -826,6 +826,26 @@ class _quotation_base():
             raise ValueError(
                 'QA CANNOT GET THIS START {}/END{} '.format(start, end))
 
+    def select_day(self, day):
+        """选取日期(一般用于分钟线)
+
+        Arguments:
+            day {[type]} -- [description]
+
+        Raises:
+            ValueError -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+
+        def _select_day(day):
+            return self.data.loc[day, slice(None)]
+        try:
+            return self.new(_select_day(day), self.type, self.if_fq)
+        except:
+            raise ValueError('QA CANNOT GET THIS Day {} '.format(day))
+
     def select_month(self, month):
         """
         选择月份
@@ -847,7 +867,7 @@ class _quotation_base():
         try:
             return self.new(_select_month(month), self.type, self.if_fq)
         except:
-            raise ValueError('QA CANNOT GET THIS Month{} '.format(month))
+            raise ValueError('QA CANNOT GET THIS Month {} '.format(month))
 
     def select_code(self, code):
         """
