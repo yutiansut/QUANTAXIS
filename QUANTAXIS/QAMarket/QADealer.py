@@ -166,7 +166,7 @@ class QA_Dealer():
         """
         try:
             if float(self.market_data.get('open')) == float(self.market_data.get('high')) == float(self.market_data.get('close')) == float(self.market_data.get('low')) and \
-                    self.market_data.get('volume') < 4*self.order.amount:
+                    self.market_data.get('volume',self.market_data.get('position')) < 4*self.order.amount:
                 # 调整 : 分钟线 经常处于一个价位 但不代表不能交易 所以加入量的判断(但是不能影响市场, 所以加上4倍量限制)
 
                 self.status = TRADE_STATUS.PRICE_LIMIT
@@ -178,11 +178,11 @@ class QA_Dealer():
                     float(self.order.price) == float(self.market_data.get('low')) or
                     float(self.order.price) == float(self.market_data.get('high'))):
                 '能成功交易的情况 有滑点调整'
-                if float(self.order.amount) < float(self.market_data.get('volume')) * 100 / 16:
+                if float(self.order.amount) < float(self.market_data.get('volume',self.market_data.get('position'))) * 100 / 16:
                     self.deal_price = self.order.price
                     self.deal_amount = self.order.amount
-                elif float(self.order.amount) >= float(self.market_data.get('volume')) * 100 / 16 and \
-                        float(self.order.amount) < float(self.market_data.get('volume')) * 100 / 8:
+                elif float(self.order.amount) >= float(self.market_data.get('volume',self.market_data.get('position'))) * 100 / 16 and \
+                        float(self.order.amount) < float(self.market_data.get('volume',self.market_data.get('position'))) * 100 / 8:
                     """
                     add some slippers
 
@@ -199,7 +199,7 @@ class QA_Dealer():
 
                 else:
                     self.deal_amount = float(
-                        self.market_data.get('volume')) / 8
+                        self.market_data.get('volume',self.market_data.get('position'))) / 8
                     if int(self.order.towards) > 0:
                         self.deal_price = float(self.market_data.get('high'))
                     else:
@@ -221,7 +221,6 @@ class QA_Dealer():
             QA_util_log_info('MARKET ENGINE ERROR: {}'.format(e))
             self.status = TRADE_STATUS.NO_MARKET_DATA
             return self.callback_message
-
 
 if __name__ == '__main__':
     pass
