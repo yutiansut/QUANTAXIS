@@ -52,6 +52,25 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
+## 1.1.2 
+
+[QAData]
+
+1. 修复分钟线降采样bug
+2. QADataStruct_Future_day/min 修改
+
+[QAMarket]
+
+1. 修改QADealer以支持期货回测
+
+[QARisk]
+
+1. 修改QARisk 以支持期货账户分析
+
+[test_backtest]
+
+1. 增加期货回测(日线) 简单回测示例
+
 ## 1.1.1.dev2
 
 [QAARP]
