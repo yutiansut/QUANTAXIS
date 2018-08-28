@@ -364,7 +364,7 @@ def QA_fetch_stock_realtime_adv(code=None,
     if code is not None:
         # code 必须转换成list 去查询数据库
         if isinstance(code, str):
-            code = list(code)
+            code = [code]
         elif isinstance(code, list):
             pass
         else:
