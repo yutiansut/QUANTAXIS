@@ -337,7 +337,7 @@ class _quotation_base():
     def date(self):
         index = self.data.index.remove_unused_levels()
         try:
-            return index.levels[0] if 'date' in self.data.index.names else pd.to_datetime(index.levels[0].date)
+            return index.levels[0] if 'date' in self.data.index.names else self.datetime.date
         except:
             return None
 
@@ -346,7 +346,7 @@ class _quotation_base():
     def datetime(self):
         '分钟线结构返回datetime 日线结构返回date'
         index = self.data.index.remove_unused_levels()
-        return index.levels[0]
+        return pd.to_datetime(index.levels[0])
 
     '''
     ########################################################################################################
