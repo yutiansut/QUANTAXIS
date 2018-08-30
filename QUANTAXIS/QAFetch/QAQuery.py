@@ -250,7 +250,7 @@ def QA_fetch_index_day(code, start, end, format='numpy', collections=DATABASE.in
         for item in cursor:
 
             __data.append([str(item['code']), float(item['open']), float(item['high']), float(
-                item['low']), float(item['close']), float(item['vol']), item['date']])
+                item['low']), float(item['close']), int(item['up_count']), int(item['down_count']), float(item['vol']), float(item['amount']), item['date']])
 
         # 多种数据格式
         if format in ['n', 'N', 'numpy']:
@@ -259,7 +259,7 @@ def QA_fetch_index_day(code, start, end, format='numpy', collections=DATABASE.in
             __data = __data
         elif format in ['P', 'p', 'pandas', 'pd']:
             __data = DataFrame(
-                __data, columns=['code', 'open', 'high', 'low', 'close', 'volume', 'date'])
+                __data, columns=['code', 'open', 'high', 'low', 'close', 'up_count', 'down_count', 'volume', 'amount', 'date'])
             __data['date'] = pd.to_datetime(__data['date'])
             __data = __data.set_index('date', drop=False)
         else:
@@ -299,10 +299,10 @@ def QA_fetch_index_min(
     for item in cursor:
 
         __data.append([str(item['code']), float(item['open']), float(item['high']), float(
-            item['low']), float(item['close']), float(item['vol']), item['datetime'], item['time_stamp'], item['date']])
+            item['low']), float(item['close']), int(item['up_count']), int(item['down_count']), float(item['vol']), item['datetime'], item['time_stamp'], item['date']])
 
     __data = DataFrame(__data, columns=[
-        'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'time_stamp', 'date'])
+        'code', 'open', 'high', 'low', 'close', 'up_count', 'down_count', 'volume', 'datetime', 'time_stamp', 'date'])
 
     __data['datetime'] = pd.to_datetime(__data['datetime'])
     __data = __data.set_index('datetime', drop=False)
