@@ -73,6 +73,34 @@ def QA_SU_save_stock_list(engine, client=DATABASE):
     engine.QA_SU_save_stock_list(client=client)
 
 
+def QA_SU_save_index_list(engine, client=DATABASE):
+    """save index_list
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_index_list(client=client)
+
+
+def QA_SU_save_future_list(engine, client=DATABASE):
+    """save future_list
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_future_list(client=client)
+
+
 def QA_SU_save_stock_day(engine, client=DATABASE):
     """save stock_day
 
@@ -87,14 +115,14 @@ def QA_SU_save_stock_day(engine, client=DATABASE):
     engine.QA_SU_save_stock_day(client=client)
 
 
-def QA_SU_save_option_day(engine,client=DATABASE):
+def QA_SU_save_option_day(engine, client=DATABASE):
     '''
 
     :param engine:
     :param client:
     :return:
     '''
-    engine = select_save_engine(engine);
+    engine = select_save_engine(engine)
     engine.QA_SU_save_option_day(client=client)
 
 
