@@ -65,8 +65,7 @@ class _quotation_base():
         # 🛠todo 判断DataFame 对象字段的合法性，是否正确
         self.data = DataFrame.sort_index()
         self.data.index = self.data.index.remove_unused_levels()
-        # 🛠todo 该变量没有用到， 是不是 self.data_type = marketdata_type ??
-        self.data_type = dtype
+        # 🛠todo 该变量没有用到， 是不是 self.type = marketdata_type ??
 
         # 数据类型 可能的取值
 
@@ -544,7 +543,7 @@ class _quotation_base():
             for ds in data_splits:
                 data = []
                 axis = []
-                if ds.data_type[-3:] == 'day':
+                if ds.type[-3:] == 'day':
                     datetime = np.array(ds.date.map(str))
                 else:
                     datetime = np.array(ds.datetime.map(str))
@@ -566,7 +565,7 @@ class _quotation_base():
             ds = self.select_code(code)
             data = []
             #axis = []
-            if self.data_type[-3:] == 'day':
+            if self.type[-3:] == 'day':
                 datetime = np.array(ds.date.map(str))
             else:
                 datetime = np.array(ds.datetime.map(str))
@@ -891,6 +890,21 @@ class _quotation_base():
             return self.new(_select_code(code), self.type, self.if_fq)
         except:
             raise ValueError('QA CANNOT FIND THIS CODE {}'.format(code))
+
+    def select_columns(self, columns):
+        if isinstance(columns,list):
+            columns=columns
+        elif isinstance(columns, str):
+            columns=[columns]
+        else:
+            print('wrong columns')
+
+
+        try:
+            return self.data.loc[:,columns]
+        except:
+            pass
+
 
     def get_bar(self, code, time):
         """

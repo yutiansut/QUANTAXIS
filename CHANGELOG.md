@@ -3,6 +3,8 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-%E6%9B%B4%E6%96%B0%E7%BA%AA%E8%A6%81)
+    - [1.1.2.dev1](#112dev1)
+    - [1.1.2](#112)
     - [1.1.1.dev2](#111dev2)
     - [1.1.1.dev1](#111dev1)
     - [1.1.0](#110)
@@ -52,6 +54,20 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
+
+## 1.1.2.dev1
+
+[QAFetch]
+
+
+1. QA_Query 优化对于指数数据的字段
+
+[QAData]
+
+1. base_datastruct 优化对于指数DataStruct的支持
+
+
+
 ## 1.1.2 
 
 [QAData]

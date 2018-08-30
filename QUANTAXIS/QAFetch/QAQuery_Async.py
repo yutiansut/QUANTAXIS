@@ -40,6 +40,8 @@ from QUANTAXIS.QAUtil import (QA_Setting, QA_util_code_tolist,
 from QUANTAXIS.QAUtil.QASetting import DATABASE, DATABASE_ASYNC
 
 
+
+
 async def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collections=DATABASE_ASYNC.stock_day):
 
     '获取股票日线'
@@ -58,8 +60,11 @@ async def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', 
                 "$lte": QA_util_date_stamp(end),
                 "$gte": QA_util_date_stamp(start)}})
         #res=[QA_util_dict_remove_key(data, '_id') for data in cursor]
-
-        res = pd.DataFrame([item async for item in cursor])
+        try:
+            res = pd.DataFrame([item async for item in cursor])
+        except SyntaxError:
+            print('THIS PYTHON VERSION NOT SUPPORT "async for" function')
+            pass
         try:
             res = res.drop('_id', axis=1).assign(volume=res.vol).query('volume>1').assign(date=pd.to_datetime(
                 res.date)).drop_duplicates((['date', 'code'])).set_index('date', drop=False)
@@ -110,7 +115,11 @@ async def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min',
         }, 'type': frequence
     })
 
-    res = pd.DataFrame([item async for item in cursor])
+    try:
+        res = pd.DataFrame([item async for item in cursor])
+    except SyntaxError:
+        print('THIS PYTHON VERSION NOT SUPPORT "async for" function')
+        pass
     try:
         res = res.drop('_id', axis=1).assign(volume=res.vol).query('volume>1').assign(datetime=pd.to_datetime(
             res.datetime)).drop_duplicates(['datetime', 'code']).set_index('datetime', drop=False)
