@@ -309,7 +309,7 @@ class QA_DataStruct_Future_min(_quotation_base):
         # 🛠todo  期货分钟数据线的维护， 暂时用日线代替分钟线
         self.type = 'future_day'
         self.data = DataFrame.loc[:, [
-           'open', 'high', 'low', 'close', 'trade', 'position', 'price']]
+            'open', 'high', 'low', 'close', 'trade', 'position', 'price']]
         self.if_fq = if_fq
 
     # 抽象类继承
@@ -354,7 +354,7 @@ class QA_DataStruct_Index_min(_quotation_base):
         self.type = dtype
         self.if_fq = if_fq
         self.data = DataFrame.loc[:, [
-            'code', 'open', 'high', 'low', 'close', 'volume', 'amount']]
+            'open', 'high', 'low', 'close', 'up_count', 'down_count', 'volume', 'amount']]
         #self.mongo_coll = DATABASE.index_min
 
     # 抽象类继承
