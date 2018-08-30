@@ -32,7 +32,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.1.3.dev2'
+__version__ = '1.1.3.dev3'
 __author__ = 'yutiansut'
 logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
@@ -72,8 +72,8 @@ from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day, QA_fetch_get_trade_date, 
                                QA_fetch_get_globalfuture_list, QA_fetch_get_globalfuture_day, QA_fetch_get_globalfuture_min)
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_trade_date, QA_fetch_account, QA_fetch_financial_report,
                                        QA_fetch_stock_day, QA_fetch_stock_min,
-                                       QA_fetch_index_day, QA_fetch_index_min,
-                                       QA_fetch_future_min, QA_fetch_future_day,
+                                       QA_fetch_index_day, QA_fetch_index_min, QA_fetch_index_list,
+                                       QA_fetch_future_min, QA_fetch_future_day, QA_fetch_future_list,
                                        QA_fetch_future_tick, QA_fetch_stock_list, QA_fetch_stock_full, QA_fetch_stock_xdxr,
                                        QA_fetch_backtest_info, QA_fetch_backtest_history, QA_fetch_stock_block, QA_fetch_stock_info,
                                        QA_fetch_stock_name, QA_fetch_quotation, QA_fetch_quotations)
