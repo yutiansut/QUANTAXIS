@@ -58,6 +58,7 @@
 ## 1.1.3.dev2
 
 1. 修复index_cn的列表获取
+
 2. 增加save index_list和save future_list 选项
 
 
