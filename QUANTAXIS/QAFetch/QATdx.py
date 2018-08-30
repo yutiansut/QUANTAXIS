@@ -503,7 +503,7 @@ def for_sz(code):
 def for_sh(code):
     if str(code)[0] == '6':
         return 'stock_cn'
-    elif str(code)[0] == '0':
+    elif str(code)[0:3] in ['000','880']:
         return 'index_cn'
     elif str(code)[0:2] == '51':
         return 'etf_cn'
