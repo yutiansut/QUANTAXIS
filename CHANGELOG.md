@@ -55,6 +55,23 @@
 
 <!-- /TOC -->
 
+## 1.1.3.dev2
+
+1. 修复index_cn的列表获取
+2. 增加save index_list和save future_list 选项
+
+
+
+## 1.1.3.dev1
+
+1. 增加 async for 在3.5上的兼容问题
+
+
+## 1.1.3
+
+1. 增加对于期货分钟线回测的支持
+
+
 ## 1.1.2.dev1
 
 [QAFetch]
