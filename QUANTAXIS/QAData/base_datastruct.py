@@ -891,6 +891,21 @@ class _quotation_base():
         except:
             raise ValueError('QA CANNOT FIND THIS CODE {}'.format(code))
 
+    def select_columns(self, columns):
+        if isinstance(columns,list):
+            columns=columns
+        elif isinstance(columns, str):
+            columns=[columns]
+        else:
+            print('wrong columns')
+
+
+        try:
+            return self.data.loc[:,columns]
+        except:
+            pass
+
+
     def get_bar(self, code, time):
         """
         获取一个bar的数据
