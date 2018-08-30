@@ -32,7 +32,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.1.3.dev1'
+__version__ = '1.1.3.dev2'
 __author__ = 'yutiansut'
 logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
@@ -83,7 +83,7 @@ from QUANTAXIS.QAFetch.QAQuery_Advance import *
 
 # save
 from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_index_min, QA_SU_save_stock_info_tushare,
-                                 QA_SU_save_stock_min, QA_SU_save_stock_xdxr, QA_SU_save_stock_info, QA_SU_save_stock_min_5,
+                                 QA_SU_save_stock_min, QA_SU_save_stock_xdxr, QA_SU_save_stock_info, QA_SU_save_stock_min_5, QA_SU_save_index_list, QA_SU_save_future_list,
                                  QA_SU_save_stock_block, QA_SU_save_etf_day, QA_SU_save_etf_min, QA_SU_save_financialfiles)
 
 # from QUANTAXIS.QASU.save_backtest import (

@@ -37,6 +37,10 @@ from QUANTAXIS.QAFetch.QATdx import (
     QA_fetch_get_stock_day,
     QA_fetch_get_stock_info,
     QA_fetch_get_stock_list,
+    QA_fetch_get_future_list,
+    QA_fetch_get_index_list,
+    QA_fetch_get_future_day,
+    QA_fetch_get_future_min,
     QA_fetch_get_stock_min,
     QA_fetch_get_stock_transaction,
     QA_fetch_get_stock_xdxr, select_best_ip)
@@ -943,6 +947,33 @@ def QA_SU_save_option_day(client=DATABASE, ui_log=None, ui_progress=None):
         QA_util_log_info(err, ui_log=ui_log)
 
 
+
+def QA_SU_save_future_list(client=DATABASE, ui_log=None, ui_progress=None):
+    future_list=QA_fetch_get_future_list()
+    coll_future_list = client.future_list
+    coll_future_list.create_index("code", unique=True)
+    try:
+        coll_future_list.insert_many(QA_util_to_json_from_pandas(future_list),ordered=False)
+    except:
+        pass
+
+def QA_SU_save_index_list(client=DATABASE, ui_log=None, ui_progress=None):
+    index_list=QA_fetch_get_index_list()
+    coll_index_list = client.index_list
+    coll_index_list.create_index("code", unique=True)
+
+    try:
+        coll_index_list.insert_many(QA_util_to_json_from_pandas(index_list),ordered=False)
+    except:
+        pass
+
+def QA_SU_save_future_day(client=DATABASE, ui_log=None, ui_progress=None):
+    pass
+
+def QA_SU_save_future_min(client=DATABASE, ui_log=None, ui_progress=None):
+    pass
+
+
 if __name__ == '__main__':
     # QA_SU_save_stock_day()
     # QA_SU_save_stock_xdxr()
@@ -951,4 +982,5 @@ if __name__ == '__main__':
     # QA_SU_save_index_day()
     # QA_SU_save_stock_list()
     # QA_SU_save_index_min()
-    pass
+    QA_SU_save_index_list()
+    QA_SU_save_future_list()
