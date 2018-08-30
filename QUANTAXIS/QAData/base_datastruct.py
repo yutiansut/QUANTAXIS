@@ -592,9 +592,6 @@ class _quotation_base():
             path_name = '.{}QA_{}_{}_{}.html'.format(
                 os.sep, self.type, code, self.if_fq)
 
-            # kline.add(code, axis, data, mark_point=[
-            #           "max", "min"], is_datazoom_show=True, datazoom_orient='horizontal')
-
             grid = Grid(width=1360, height=700, page_title='QUANTAXIS')
             grid.add(bar, grid_top="80%")
             grid.add(kline, grid_bottom="30%")
