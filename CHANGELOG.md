@@ -55,6 +55,19 @@
 
 <!-- /TOC -->
 
+## 1.1.3.dev3
+
+1. 增加对于list获取的支持:
+
+QA_fetch_index_list()
+
+QA_fetch_index_list_adv()
+
+QA_fetch_future_list()
+
+QA_fetch_future_list_adv()
+
+
 ## 1.1.3.dev2
 
 1. 修复index_cn的列表获取
