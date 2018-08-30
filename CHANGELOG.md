@@ -2,7 +2,11 @@
 
 <!-- TOC -->
 
-- [QUANTAXIS 更新纪要](#quantaxis-%E6%9B%B4%E6%96%B0%E7%BA%AA%E8%A6%81)
+- [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
+    - [1.1.3.dev3](#113dev3)
+    - [1.1.3.dev2](#113dev2)
+    - [1.1.3.dev1](#113dev1)
+    - [1.1.3](#113)
     - [1.1.2.dev1](#112dev1)
     - [1.1.2](#112)
     - [1.1.1.dev2](#111dev2)
@@ -59,13 +63,13 @@
 
 1. 增加对于list获取的支持:
 
-QA_fetch_index_list()
+    QA_fetch_index_list()
 
-QA_fetch_index_list_adv()
+    QA_fetch_index_list_adv()
 
-QA_fetch_future_list()
+    QA_fetch_future_list()
 
-QA_fetch_future_list_adv()
+    QA_fetch_future_list_adv()
 
 
 ## 1.1.3.dev2
