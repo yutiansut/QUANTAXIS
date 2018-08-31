@@ -71,6 +71,8 @@
 
     QA_fetch_future_list_adv()
 
+2. 优化 QA_DataStruct的返回Series的名称
+3. 删除实盘易broker的TRADE_Event(已弃用)
 
 ## 1.1.3.dev2
 

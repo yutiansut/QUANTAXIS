@@ -132,17 +132,17 @@ class QA_SPEBroker(QA_Broker):
         if event.event_type is BROKER_EVENT.RECEIVE_ORDER:
             self.order_handler.run(event)
             #self.run(QA_Event(event_type=BROKER_EVENT.TRADE, broker=self))
-        elif event.event_type is BROKER_EVENT.TRADE:
-            """实盘交易部分!!!!! ATTENTION
-            这里需要开一个子线程去查询是否成交
+        # elif event.event_type is BROKER_EVENT.TRADE:
+        #     """实盘交易部分!!!!! ATTENTION
+        #     这里需要开一个子线程去查询是否成交
 
-            ATTENTION
-            """
+        #     ATTENTION
+        #     """
 
-            event = self.order_handler.run(event)
-            event.message = 'trade'
-            if event.callback:
-                event.callback(event)
+        #     event = self.order_handler.run(event)
+        #     event.message = 'trade'
+        #     if event.callback:
+        #         event.callback(event)
 
         elif event.event_type is BROKER_EVENT.SETTLE:
             self.order_handler.run(event)
