@@ -39,11 +39,12 @@ def QA_SU_save_order(orderlist, client=DATABASE):
         client {[type]} -- [description] (default: {DATABASE})
     """
 
-    orderlist = QA_util_to_json_from_pandas(orderlist.reset_index())
+    
     collection = client.order
     collection.create_index(
         [('account_cookie', ASCENDING), ('realorder_id', ASCENDING)], unique=True)
     try:
+        orderlist = QA_util_to_json_from_pandas(orderlist.reset_index())
         for item in orderlist:
             if item:
             #item['date']= QA_util_get_order_day()
@@ -65,12 +66,13 @@ def QA_SU_save_deal(dealist, client=DATABASE):
     """
 
     if isinstance(dealist,pd.DataFrame):
-        dealist = QA_util_to_json_from_pandas(dealist.reset_index())
+        
         collection = client.deal
 
         collection.create_index(
             [('account_cookie', ASCENDING), ('trade_id', ASCENDING)], unique=True)
         try:
+            dealist = QA_util_to_json_from_pandas(dealist.reset_index())
             collection.insert_many(dealist,ordered=False)
         except Exception as e:
 
