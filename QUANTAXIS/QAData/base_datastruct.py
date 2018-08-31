@@ -307,7 +307,10 @@ class _quotation_base():
     @property
     @lru_cache()
     def price(self):
-        return (self.open + self.high + self.low + self.close) / 4
+
+        res = (self.open + self.high + self.low + self.close) / 4
+        res.name = 'price'
+        return res
 
     # ？？
     @property
@@ -354,71 +357,92 @@ class _quotation_base():
     @property
     @lru_cache()
     def max(self):
-        return self.price.groupby(level=1).apply(lambda x: x.max())
+        res = self.price.groupby(level=1).apply(lambda x: x.max())
+        res.name = 'max'
 
     @property
     @lru_cache()
     def min(self):
-        return self.price.groupby(level=1).apply(lambda x: x.min())
+        res = self.price.groupby(level=1).apply(lambda x: x.min())
+        res.name = 'min'
+        return res
 
     @property
     @lru_cache()
     def mean(self):
-        return self.price.groupby(level=1).apply(lambda x: x.mean())
+        res = self.price.groupby(level=1).apply(lambda x: x.mean())
+        res.name ='mean'
+        return res
     # 一阶差分序列
 
     @property
     @lru_cache()
     def price_diff(self):
         '返回DataStruct.price的一阶差分'
-        return self.price.groupby(level=1).apply(lambda x: x.diff(1))
+        res = self.price.groupby(level=1).apply(lambda x: x.diff(1))
+        res.name = 'price_diff'
+        return res
     # 样本方差(无偏估计) population variance
 
     @property
     @lru_cache()
     def pvariance(self):
         '返回DataStruct.price的方差 variance'
-        return self.price.groupby(level=1).apply(lambda x: statistics.pvariance(x))
+        res = self.price.groupby(level=1).apply(lambda x: statistics.pvariance(x))
+        res.name = 'pvariance'
+        return res
 
     # 方差
     @property
     @lru_cache()
     def variance(self):
         '返回DataStruct.price的方差 variance'
-        return self.price.groupby(level=1).apply(lambda x: statistics.variance(x))
+        res = self.price.groupby(level=1).apply(lambda x: statistics.variance(x))
+        res.name = 'variance'
+        return res
     # 标准差
 
     @property
     @lru_cache()
     def bar_pct_change(self):
         '返回bar的涨跌幅'
-        return (self.close - self.open) / self.open
+        res = (self.close - self.open) / self.open
+        res.name = 'bar_pct_change'
+        return res
 
     @property
     @lru_cache()
     def bar_amplitude(self):
         "返回bar振幅"
-        return (self.high-self.low)/self.low
+        res=(self.high-self.low)/self.low
+        res.name = 'bar_amplitude'
+        return res
 
     @property
     @lru_cache()
     def stdev(self):
         '返回DataStruct.price的样本标准差 Sample standard deviation'
-        return self.price.groupby(level=1).apply(lambda x: statistics.stdev(x))
+        res = self.price.groupby(level=1).apply(lambda x: statistics.stdev(x))
+        res.name = 'stdev'
+        return res
     # 总体标准差
 
     @property
     @lru_cache()
     def pstdev(self):
         '返回DataStruct.price的总体标准差 Population standard deviation'
-        return self.price.groupby(level=1).apply(lambda x: statistics.pstdev(x))
+        res = self.price.groupby(level=1).apply(lambda x: statistics.pstdev(x))
+        res.name = 'pstdev'
+        return res
 
     # 调和平均数
     @property
     @lru_cache()
     def mean_harmonic(self):
         '返回DataStruct.price的调和平均数'
-        return self.price.groupby(level=1).apply(lambda x: statistics.harmonic_mean(x))
+        res = self.price.groupby(level=1).apply(lambda x: statistics.harmonic_mean(x))
+        res.name = 'mean_harmonic'
+        return res
 
     # 众数
     @property
@@ -426,7 +450,9 @@ class _quotation_base():
     def mode(self):
         '返回DataStruct.price的众数'
         try:
-            return self.price.groupby(level=1).apply(lambda x: statistics.mode(x))
+            res = self.price.groupby(level=1).apply(lambda x: statistics.mode(x))
+            res.name ='mode'
+            return res
         except:
             return None
 
@@ -435,7 +461,9 @@ class _quotation_base():
     @lru_cache()
     def amplitude(self):
         '返回DataStruct.price的百分比变化'
-        return self.price.groupby(level=1).apply(lambda x: (x.max()-x.min())/x.min())
+        res = self.price.groupby(level=1).apply(lambda x: (x.max()-x.min())/x.min())
+        res.name = 'amplitude'
+        return res
 
     # 偏度 Skewness
 
@@ -443,28 +471,36 @@ class _quotation_base():
     @lru_cache()
     def skew(self):
         '返回DataStruct.price的偏度'
-        return self.price.groupby(level=1).apply(lambda x: x.skew())
+        res = self.price.groupby(level=1).apply(lambda x: x.skew())
+        res.name = 'skew'
+        return res
     # 峰度Kurtosis
 
     @property
     @lru_cache()
     def kurt(self):
         '返回DataStruct.price的峰度'
-        return self.price.groupby(level=1).apply(lambda x: x.kurt())
+        res = self.price.groupby(level=1).apply(lambda x: x.kurt())
+        res.name = 'kurt'
+        return res
     # 百分数变化
 
     @property
     @lru_cache()
     def pct_change(self):
         '返回DataStruct.price的百分比变化'
-        return self.price.groupby(level=1).apply(lambda x: x.pct_change())
+        res = self.price.groupby(level=1).apply(lambda x: x.pct_change())
+        res.name ='pct_change'
+        return res
 
     # 平均绝对偏差
     @property
     @lru_cache()
     def mad(self):
         '平均绝对偏差'
-        return self.price.groupby(level=1).apply(lambda x: x.mad())
+        res = self.price.groupby(level=1).apply(lambda x: x.mad())
+        res.name ='mad'
+        return res
 
     @property
     @lru_cache()
