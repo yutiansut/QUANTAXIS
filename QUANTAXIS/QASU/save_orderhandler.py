@@ -28,7 +28,6 @@ from QUANTAXIS.QAUtil import DATABASE, QA_util_to_json_from_pandas
 from QUANTAXIS.QAUtil.QASql import ASCENDING, DESCENDING
 
 
-
 def QA_SU_save_order(orderlist, client=DATABASE):
     """存储order_handler的order_status
 
@@ -38,20 +37,23 @@ def QA_SU_save_order(orderlist, client=DATABASE):
     Keyword Arguments:
         client {[type]} -- [description] (default: {DATABASE})
     """
+    if isinstance(orderlist, pd.DataFrame):
 
-    orderlist = QA_util_to_json_from_pandas(orderlist.reset_index())
-    collection = client.order
-    collection.create_index(
-        [('account_cookie', ASCENDING), ('realorder_id', ASCENDING)], unique=True)
-    try:
-        for item in orderlist:
-            if item:
-            #item['date']= QA_util_get_order_day()
-                collection.update_one({'account_cookie': item.get('account_cookie'), 'realorder_id': item.get('realorder_id')},
-                                {'$set': item}, upsert=True)
-    except Exception as e:
-        print(e)
-        pass
+        collection = client.order
+        collection.create_index(
+            [('account_cookie', ASCENDING), ('realorder_id', ASCENDING)], unique=True)
+        try:
+
+            orderlist = QA_util_to_json_from_pandas(orderlist.reset_index())
+
+            for item in orderlist:
+                if item:
+                    #item['date']= QA_util_get_order_day()
+                    collection.update_one({'account_cookie': item.get('account_cookie'), 'realorder_id': item.get('realorder_id')},
+                                          {'$set': item}, upsert=True)
+        except Exception as e:
+            print(e)
+            pass
 
 
 def QA_SU_save_deal(dealist, client=DATABASE):
@@ -64,14 +66,15 @@ def QA_SU_save_deal(dealist, client=DATABASE):
         client {[type]} -- [description] (default: {DATABASE})
     """
 
-    if isinstance(dealist,pd.DataFrame):
-        dealist = QA_util_to_json_from_pandas(dealist.reset_index())
+    if isinstance(dealist, pd.DataFrame):
+
         collection = client.deal
 
         collection.create_index(
             [('account_cookie', ASCENDING), ('trade_id', ASCENDING)], unique=True)
         try:
-            collection.insert_many(dealist,ordered=False)
+            dealist = QA_util_to_json_from_pandas(dealist.reset_index())
+            collection.insert_many(dealist, ordered=False)
         except Exception as e:
 
             pass
@@ -93,6 +96,6 @@ def QA_SU_save_order_queue(order_queue, client=DATABASE):
         order_json = order.to_dict()
         try:
             collection.update_one({'account_cookie': order_json.get('account_cookie'), 'order_id': order_json.get('order_id')},
-                              {'$set': order_json}, upsert=True)
+                                  {'$set': order_json}, upsert=True)
         except Exception as e:
             print(e)
