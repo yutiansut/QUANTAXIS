@@ -36,10 +36,6 @@ class QAAnalysis_block():
         self.frequence = frequence
         self.name = name
 
-        # self.font = {'sans-serif': 'SimHei',
-        #              'weight': 'bold',
-        #              'size': '16'}
-
     def __repr__(self):
         return '< QAAnalysis_Block {} with {} code >'.format(self.name, len(self.code))
 
