@@ -44,12 +44,16 @@ def QA_SU_save_order(orderlist, client=DATABASE):
     collection.create_index(
         [('account_cookie', ASCENDING), ('realorder_id', ASCENDING)], unique=True)
     try:
-        orderlist = QA_util_to_json_from_pandas(orderlist.reset_index())
-        for item in orderlist:
-            if item:
-            #item['date']= QA_util_get_order_day()
-                collection.update_one({'account_cookie': item.get('account_cookie'), 'realorder_id': item.get('realorder_id')},
-                                {'$set': item}, upsert=True)
+        if isinstance(orderlist,list):
+            pass
+        else:
+            orderlist = QA_util_to_json_from_pandas(orderlist.reset_index())
+
+            for item in orderlist:
+                if item:
+                #item['date']= QA_util_get_order_day()
+                    collection.update_one({'account_cookie': item.get('account_cookie'), 'realorder_id': item.get('realorder_id')},
+                                    {'$set': item}, upsert=True)
     except Exception as e:
         print(e)
         pass
