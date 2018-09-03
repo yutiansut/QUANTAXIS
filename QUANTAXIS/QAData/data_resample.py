@@ -49,7 +49,7 @@ def QA_data_tick_resample(tick, type_='1min'):
 
         resx = resx.append(_data1).append(_data2)
 
-    return resx.reset_index().drop_duplicates()
+    return resx.reset_index().drop_duplicates().set_index(['datetime','code'])
 
 
 def QA_data_min_resample(min_data,  type_='5min'):
@@ -107,7 +107,7 @@ def QA_data_min_resample(min_data,  type_='5min'):
         f = min_data_p['{} 13:00:00'.format(item):].resample(
             type_, closed='right', loffset=type_).apply(CONVERSION)
         resx = resx.append(d).append(f)
-    return resx.dropna().reset_index().set_index('datetime')
+    return resx.dropna().reset_index().set_index(['datetime','code'])
 
 
 def QA_data_day_resample(day_data,  type_='w'):
@@ -130,12 +130,10 @@ def QA_data_day_resample(day_data,  type_='w'):
     except:
         day_data = day_data.set_index('date', drop=False)
 
-    day_data_p = day_data.resample(type_).last()
-
     CONVERSION = {'code': 'first', 'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last', 'vol': 'sum', 'amount': 'sum'} if 'vol' in day_data.columns else {
         'code': 'first', 'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last', 'volume': 'sum', 'amount': 'sum'}
 
-    return day_data.resample(type_, closed='right').apply(CONVERSION)
+    return day_data.resample(type_, closed='right').apply(CONVERSION).dropna().reset_index().set_index(['date','code'])
 
 
 if __name__ == '__main__':

@@ -59,8 +59,8 @@ if platform.system() != 'Windows' and os.environ.get('DISPLAY', '') == '':
     matplotlib.use('Agg')
     """
     matplotlib可用模式:
-    ['GTK', 'GTKAgg', 'GTKCairo', 'MacOSX', 'Qt4Agg', 'Qt5Agg', 'TkAgg', 'WX', 
-    'WXAgg', 'GTK3Cairo', 'GTK3Agg', 'WebAgg', 'nbAgg', 'agg', 'cairo', 
+    ['GTK', 'GTKAgg', 'GTKCairo', 'MacOSX', 'Qt4Agg', 'Qt5Agg', 'TkAgg', 'WX',
+    'WXAgg', 'GTK3Cairo', 'GTK3Agg', 'WebAgg', 'nbAgg', 'agg', 'cairo',
     'gdk', 'pdf', 'pgf', 'ps', 'svg', 'template']
     """
 try:
@@ -114,8 +114,12 @@ class QA_Risk():
             self.market_data = market_data
         self.if_fq = if_fq
 
-        self._assets = (self.market_value.sum(
-            axis=1) + self.account.daily_cash.set_index('date').cash).fillna(method='pad')
+        if self.market_value is not None:
+            self._assets = (self.market_value.sum(
+                axis=1) + self.account.daily_cash.set_index('date').cash).fillna(method='pad')
+        else:
+            self._assets = self.account.daily_cash.set_index(
+                'date').cash.fillna(method='pad')
 
         self.time_gap = QA_util_get_trade_gap(
             self.account.start_date, self.account.end_date)
@@ -136,12 +140,15 @@ class QA_Risk():
         Returns:
             pd.DataFrame -- 市值表
         """
+        if self.account.daily_hold is not None:
+            if self.if_fq:
 
-        if self.if_fq:
-            return self.market_data.to_qfq().pivot('close').fillna(method='ffill') * self.account.daily_hold
+                return self.market_data.to_qfq().pivot('close').fillna(method='ffill') * self.account.daily_hold
+            else:
+                return self.market_data.pivot('close').fillna(
+                    method='ffill') * self.account.daily_hold
         else:
-            return self.market_data.pivot('close').fillna(
-                method='ffill') * self.account.daily_hold
+            return None
 
     @property
     @lru_cache()
@@ -151,8 +158,10 @@ class QA_Risk():
         Returns:
             pd.DataFrame -- 市值表
         """
-
-        return self.market_value.sum(axis=1)
+        if self.market_value is not None:
+            return self.market_value.sum(axis=1)
+        else:
+            return None
 
     @property
     def assets(self):
@@ -330,7 +339,7 @@ class QA_Risk():
 
     @property
     def sortino(self):
-        """ 
+        """
         索提诺比率 投资组合收益和下行风险比值
 
         """
@@ -361,7 +370,7 @@ class QA_Risk():
 
     def calc_alpha(self, annualized_returns, benchmark_annualized_returns, beta, r=0.05):
 
-        alpha = (annualized_returns - r) - (beta) * \
+        alpha = (annualized_returns - r) - (beta) *\
             (benchmark_annualized_returns - r)
         return alpha
 
@@ -389,8 +398,10 @@ class QA_Risk():
         Returns:
             [type] -- [description]
         """
-
-        return self.daily_market_value.max()
+        if self.daily_market_value is not None:
+            return self.daily_market_value.max()
+        else:
+            return 0
 
     @property
     def min_holdmarketvalue(self):
@@ -399,8 +410,10 @@ class QA_Risk():
         Returns:
             [type] -- [description]
         """
-
-        return self.daily_market_value.min()
+        if self.daily_market_value is not None:
+            return self.daily_market_value.min()
+        else:
+            return 0
 
     @property
     def average_holdmarketvalue(self):
@@ -409,8 +422,10 @@ class QA_Risk():
         Returns:
             [type] -- [description]
         """
-
-        return self.daily_market_value.mean()
+        if self.daily_market_value is not None:
+            return self.daily_market_value.mean()
+        else:
+            return 0
 
     @property
     def max_cashhold(self):

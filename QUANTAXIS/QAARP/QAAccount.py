@@ -374,12 +374,14 @@ class QA_Account(QA_Worker):
     def daily_hold(self):
         '每日交易结算时的持仓表'
         data = self.trade.cumsum()
-
-        data = data.assign(account_cookie=self.account_cookie).assign(
-            date=data.index.levels[0])
-        data.date = data.date.apply(lambda x: str(x)[0:10])
-        data = data.set_index(['date', 'account_cookie'])
-        return data[~data.index.duplicated(keep='last')].sort_index()
+        if len(data)<1:
+            return None
+        else:
+            data = data.assign(account_cookie=self.account_cookie).assign(
+                date=data.index.levels[0])
+            data.date = data.date.apply(lambda x: str(x)[0:10])
+            data = data.set_index(['date', 'account_cookie'])
+            return data[~data.index.duplicated(keep='last')].sort_index()
     # 计算assets的时候 需要一个market_data=QA.QA_fetch_stock_day_adv(list(data.columns),data.index[0],data.index[-1])
     # (market_data.to_qfq().pivot('close')*data).sum(axis=1)+user_cookie.get_account(a_1).daily_cash.set_index('date').cash
 

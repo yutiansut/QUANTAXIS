@@ -186,10 +186,10 @@ class QA_DataStruct_Stock_min(_quotation_base):
         try:
             if 'preclose' in DataFrame.columns:
                 self.data = DataFrame.loc[:, [
-                    'open', 'high', 'low', 'close', 'volume', 'amount', 'preclose', 'date']]
+                    'open', 'high', 'low', 'close', 'volume', 'amount', 'preclose']]
             else:
                 self.data = DataFrame.loc[:, [
-                    'open', 'high', 'low', 'close', 'volume', 'amount',  'date']]
+                    'open', 'high', 'low', 'close', 'volume', 'amount']]
         except Exception as e:
             raise e
 
