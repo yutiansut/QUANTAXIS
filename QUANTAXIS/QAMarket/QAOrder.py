@@ -217,13 +217,9 @@ class QA_Order():
         Arguments:
             amount {[type]} -- [description]
         """
-        # print(trade_id, trade_amount, trade_price,
-        #       trade_time, self.order_id, self.code)
-        # 先做强制类型转换
-        # print(threading.current_thread().ident)
+
         trade_amount = int(trade_amount)
         trade_id = str(trade_id)
-        #print(self.code, trade_amount)
 
         if trade_amount < 1:
 
@@ -239,7 +235,6 @@ class QA_Order():
                                     trade_price*trade_amount)/(self.trade_amount+trade_amount)
                 self.trade_amount += trade_amount
                 self.trade_time.append(trade_time)
-                # code:str, trade_id:str,order_id:str,realorder_id:str,trade_price:float, trade_amount:int,trade_towards:int,trade_time:str
                 self.callback(self.code, trade_id, self.order_id, self.realorder_id,
                               trade_price, trade_amount, self.towards, trade_time)
             else:
@@ -258,7 +253,7 @@ class QA_Order():
                 print("key is none , return none!")
                 return None
             return eval('self.{}'.format(key))
-        except:
+        except Exception as e:
             return exception
     # 🛠todo 建议取消，直接调用var
 
@@ -456,27 +451,6 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
             return [item for item in self.order_list.values() if item.status in [ORDER_STATUS.QUEUED]]
         except:
             return []
-
-    # @property
-    # def trade_list(self):
-    #     '''
-    #     批量交易
-    #     :return:
-    #     '''
-    #     return [self.order_list[order_id] for order_id in self.pending.index]
-
-    # def query_order(self, order_id):
-    #     '''
-    #     @modified by JerryW 2018/05/25
-    #     根据 order_id 查询队列中的记录， 并且转换成 order 对象
-    #     :param order_id:  str 类型 Order_开头的随机数  eg：Order_KQymhXWu
-    #     :return QA_Order类型:
-    #     '''
-    #     anOrderRec = self.queue_df.loc[[order_id]]
-    #     rec_dict = anOrderRec.to_dict('records')
-    #     anOrderObj = QA_Order()
-    #     anOrderObj.from_dict(rec_dict[0])
-    #     return anOrderObj
 
     # 🛠todo 订单队列
 

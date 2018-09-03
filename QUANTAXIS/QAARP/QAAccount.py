@@ -374,7 +374,7 @@ class QA_Account(QA_Worker):
     def daily_hold(self):
         '每日交易结算时的持仓表'
         data = self.trade.cumsum()
-        if len(data)<1:
+        if len(data) < 1:
             return None
         else:
             data = data.assign(account_cookie=self.account_cookie).assign(
