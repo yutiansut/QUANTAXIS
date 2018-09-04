@@ -166,6 +166,19 @@ class QA_DataStruct_Stock_day(_quotation_base):
     def month(self):
         return self.resample('M')
 
+
+    @property
+    @lru_cache()
+    def quarter(self):
+        return self.resample('Q')
+
+
+    # @property
+    # @lru_cache()
+    # def semiannual(self):
+    #     return self.resample('SA')
+
+
     @property
     @lru_cache()
     def year(self):
