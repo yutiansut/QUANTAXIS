@@ -59,9 +59,9 @@ class QA_Order():
         记录order
     '''
 
-    def __init__(self, price=None, date=None, datetime=None, sending_time=None, trade_time=[], amount=None, market_type=None, frequence=None,
+    def __init__(self, price=None, date=None, datetime=None, sending_time=None, trade_time=False, amount=None, market_type=None, frequence=None,
                  towards=None, code=None, user=None, account_cookie=None, strategy=None, order_model=None, money=None, amount_model=AMOUNT_MODEL.BY_AMOUNT,
-                 order_id=None, trade_id=[], _status=ORDER_STATUS.NEW, callback=False, commission_coeff=0.00025, tax_coeff=0.001, *args, **kwargs):
+                 order_id=None, trade_id=False, _status=ORDER_STATUS.NEW, callback=False, commission_coeff=0.00025, tax_coeff=0.001, *args, **kwargs):
         '''
 
 
@@ -124,7 +124,7 @@ class QA_Order():
             pass
         self.sending_time = self.datetime if sending_time is None else sending_time  # 下单时间
 
-        self.trade_time = trade_time  # 成交时间
+        self.trade_time = trade_time if trade_time else [] # 成交时间
         self.amount = amount  # 委托数量
         self.trade_amount = 0  # 成交数量
         self.cancel_amount = 0  # 撤销数量
@@ -143,7 +143,8 @@ class QA_Order():
         self.realorder_id = self.order_id
         self.commission_coeff = commission_coeff
         self.tax_coeff = tax_coeff
-        self.trade_id = trade_id
+        self.trade_id = trade_id if trade_id else []
+
         self.trade_price = 0  # 成交均价
         self.callback = callback  # 委托成功的callback
         self.money = money  # 委托需要的金钱

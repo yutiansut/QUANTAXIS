@@ -522,6 +522,10 @@ class QA_Account(QA_Worker):
                     commission_fee, tax_fee])
             self.cash.append(self.cash[-1]-trade_money)
             self.cash_available = self.cash[-1]
+
+
+            if self.allow_t0:
+                self.sell_available[code]+=trade_towards*trade_amount
         else:
             print(self.cash[-1])
             self.cash_available = self.cash[-1]
@@ -630,13 +634,23 @@ class QA_Account(QA_Worker):
         elif int(towards) < 0:
             # 是卖出的情况(包括卖出，卖出开仓allow_sellopen如果允许. 卖出平仓)
             # print(self.sell_available[code])
-            if self.sell_available.get(code, 0) >= amount:
+            _hold=self.sell_available.get(code, 0)
+
+            if  _hold>= amount:
                 self.sell_available[code] -= amount
                 flag = True
             elif self.allow_sellopen:
-                if self.cash_available > money:  # 卖空的市值小于现金（有担保的卖空）， 不允许裸卖空
+                left_amount=amount-_hold
+                _money=left_amount * price + amount*price*self.commission_coeff
+
+
+                if self.cash_available > _money:  # 卖空的市值小于现金（有担保的卖空）， 不允许裸卖空
                     flag = True
                 else:
+                    print(amount)
+                    print(left_amount)
+                    print(_money)
+                    print(self.cash_available)
                     print("卖空资金不足/不允许裸卖空")
             else:
                 print('资金股份不足/不允许卖空开仓')

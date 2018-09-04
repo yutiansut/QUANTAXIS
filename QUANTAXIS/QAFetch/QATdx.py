@@ -1319,11 +1319,13 @@ def QA_fetch_get_future_min(code, start, end, frequence='1min', ip=None, port=No
         lens = 4 * lens
     if lens > 20800:
         lens = 20800
+
+    #print(lens)
     with apix.connect(ip, port):
         code_market = extension_market_list.query('code=="{}"'.format(code))
         data = pd.concat([apix.to_df(apix.get_instrument_bars(frequence, int(code_market.market), str(
             code), (int(lens / 700) - i) * 700, 700)) for i in range(int(lens / 700) + 1)], axis=0)
-
+        #print(data)
         data = data\
             .assign(datetime=pd.to_datetime(data['datetime']), code=str(code))\
             .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1, inplace=False)\
