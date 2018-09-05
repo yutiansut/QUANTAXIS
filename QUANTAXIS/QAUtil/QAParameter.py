@@ -43,10 +43,10 @@ class ORDER_DIRECTION():
 
     BUY = 1
     SELL = -1
-    BUY_OPEN = 1
-    BUY_CLOSE = 1
-    SELL_OPEN = -1
-    SELL_CLOSE = -1
+    BUY_OPEN = 2
+    BUY_CLOSE = 3
+    SELL_OPEN = -2
+    SELL_CLOSE = -3
     ASK = 0
     XDXR = 5
     OTHER = 6
