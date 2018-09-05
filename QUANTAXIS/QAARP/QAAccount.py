@@ -525,7 +525,8 @@ class QA_Account(QA_Worker):
 
 
             if self.allow_t0:
-                self.sell_available[code]+=trade_towards*trade_amount
+                self.sell_available = self.hold
+                self.buy_available = self.hold
         else:
             print(self.cash[-1])
             self.cash_available = self.cash[-1]
