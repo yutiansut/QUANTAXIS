@@ -339,7 +339,7 @@ class _quotation_base():
     def date(self):
         index = self.data.index.remove_unused_levels()
         try:
-            return index.levels[0] if 'date' in self.data.index.names else self.datetime.date
+            return index.levels[0] if 'date' in self.data.index.names else list(set(self.datetime.date))
         except:
             return None
 

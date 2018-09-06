@@ -49,7 +49,7 @@ class QA_DataStruct_Indicators():
         获取某一时间的某一只股票的指标
         """
         try:
-            return self.data.loc[(pd.Timestamp(time), code),slice(indicator_name)]
+            return self.data.loc[(pd.Timestamp(time), code),indicator_name]
         except:
             raise ValueError('CANNOT FOUND THIS DATE&CODE')
 

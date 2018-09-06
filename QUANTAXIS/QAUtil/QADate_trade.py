@@ -44,7 +44,7 @@ def QA_util_if_trade(day):
         return False
 
 
-def QA_util_if_tradetime(_time,market=MARKET_TYPE.STOCK_CN,code=None):
+def QA_util_if_tradetime(_time=datetime.datetime.now(),market=MARKET_TYPE.STOCK_CN,code=None):
     '时间是否交易'
     _time = datetime.datetime.strptime(str(_time)[0:19], '%Y-%m-%d %H:%M:%S')
     if market is MARKET_TYPE.STOCK_CN:
