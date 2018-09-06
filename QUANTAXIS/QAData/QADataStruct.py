@@ -166,6 +166,19 @@ class QA_DataStruct_Stock_day(_quotation_base):
     def month(self):
         return self.resample('M')
 
+
+    @property
+    @lru_cache()
+    def quarter(self):
+        return self.resample('Q')
+
+
+    # @property
+    # @lru_cache()
+    # def semiannual(self):
+    #     return self.resample('SA')
+
+
     @property
     @lru_cache()
     def year(self):
@@ -186,10 +199,10 @@ class QA_DataStruct_Stock_min(_quotation_base):
         try:
             if 'preclose' in DataFrame.columns:
                 self.data = DataFrame.loc[:, [
-                    'open', 'high', 'low', 'close', 'volume', 'amount', 'preclose', 'date']]
+                    'open', 'high', 'low', 'close', 'volume', 'amount', 'preclose']]
             else:
                 self.data = DataFrame.loc[:, [
-                    'open', 'high', 'low', 'close', 'volume', 'amount',  'date']]
+                    'open', 'high', 'low', 'close', 'volume', 'amount']]
         except Exception as e:
             raise e
 

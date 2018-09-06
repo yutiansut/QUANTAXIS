@@ -479,9 +479,7 @@ class QA_Account(QA_Worker):
         trade_id = str(trade_id)
         trade_amount = int(trade_amount)
         order_id = str(order_id)
-
-        market_towards =1 if trade_towards>0 else -1
-        trade_money = trade_price*trade_amount*market_towards
+        trade_money = trade_price*trade_amount*trade_towards
         commission_fee = trade_money*self.commission_coeff
 
         if self.market_type == MARKET_TYPE.STOCK_CN:
@@ -519,27 +517,15 @@ class QA_Account(QA_Worker):
 
         if self.cash[-1] > trade_money:
             self.time_index.append(trade_time)
-            if self.allow_sellopen:
-                if trade_towards in [ORDER_DIRECTION.BUY_OPEN,ORDER_DIRECTION.SELL_OPEN]:
-                    # 开仓单占用现金
-                    self.cash.append(self.cash[-1]-abs(trade_money))
-                    self.cash_available = self.cash[-1]
-                elif trade_towards in [ORDER_DIRECTION.BUY_CLOSE,ORDER_DIRECTION.SELL_CLOSE]:
-                    # 平仓单释放现金
-                    self.cash.append(self.cash[-1]+abs(trade_money))
-                    self.cash_available = self.cash[-1]
-            else:        
-                self.cash.append(self.cash[-1]-trade_money)
-                self.cash_available = self.cash[-1]
+            self.history.append(
+                [trade_time, code, trade_price, trade_towards*trade_amount, self.cash[-1]-trade_money, order_id, realorder_id, trade_id, self.account_cookie,
+                    commission_fee, tax_fee])
+            self.cash.append(self.cash[-1]-trade_money)
+            self.cash_available = self.cash[-1]
 
             if self.allow_t0:
-
                 self.sell_available = self.hold
                 self.buy_available = self.hold
-
-            self.history.append(
-                [trade_time, code, trade_price, market_towards*trade_amount, self.cash[-1], order_id, realorder_id, trade_id, self.account_cookie,
-                    commission_fee, tax_fee])
         else:
             print(self.cash[-1])
             self.cash_available = self.cash[-1]
@@ -622,7 +608,7 @@ class QA_Account(QA_Worker):
         flag = False
 
         assert (int(towards) != 0)
-        if int(towards) in [1, 2, 3]:
+        if int(towards) > 0:
             # 是买入的情况(包括买入.买开.买平)
             if self.cash_available >= money:
 
@@ -643,20 +629,15 @@ class QA_Account(QA_Worker):
                     flag = True
             else:
                 # 如果有负持仓-- 允许卖空的时候
-                if self.allow_sellopen and towards==3:# 多平
+                if self.allow_sellopen:
                     _hold = self.sell_available.get(code, 0)
                     left_amount = amount+_hold if _hold < 0 else amount
-                    _money = float(left_amount * price + amount *
-                                   price*self.commission_coeff)
-                    if self.cash_available >= _money:
-                        self.cash_available -= _money
-                        flag = True
-                else:
+                    
 
-                    print('QAACCOUNT: 可用资金不足 cash_available {}  code {} time {} amount {} towards {}'.format(
-                        self.cash_available, code, time, amount, towards))
+                print('QAACCOUNT: 可用资金不足 cash_available {}  code {} time {} amount {} towards {}'.format(
+                    self.cash_available, code, time, amount, towards))
 
-        elif int(towards) in [-1, -2, -3]:
+        elif int(towards) < 0:
             # 是卖出的情况(包括卖出，卖出开仓allow_sellopen如果允许. 卖出平仓)
             # print(self.sell_available[code])
             _hold = self.sell_available.get(code, 0)  # _hold 是你的持仓
@@ -665,7 +646,6 @@ class QA_Account(QA_Worker):
             # 持仓数量>卖出数量
             if _hold >= amount:
                 self.sell_available[code] -= amount
-                #towards = ORDER_DIRECTION.SELL
                 flag = True
             # 如果持仓数量<卖出数量
 
@@ -674,21 +654,20 @@ class QA_Account(QA_Worker):
                 # 如果是允许卖空开仓 实际计算时  先减去持仓(正持仓) 再计算 负持仓 就按原先的占用金额计算
                 if self.allow_sellopen:
 
-                    # left_amount = amount-_hold if _hold > 0 else amount  # 如果仓位是反的
-                    # _money = float(left_amount * price + amount *
-                    #                price*self.commission_coeff)
-                    if towards == -2:  # 卖开
-                        if self.cash_available >= money:  # 卖空的市值小于现金（有担保的卖空）， 不允许裸卖空
-                            #self.cash_available -= money
-                            flag = True
-                        else:
-                            print('sellavailable', _hold)
-                            print('amount', amount)
-                            print('aqureMoney', money)
-                            print('cash', self.cash_available)
-                            print("卖空资金不足/不允许裸卖空")
-            # else:
-            #     print('资金股份不足/不允许卖空开仓')
+                    left_amount = amount-_hold if _hold > 0 else amount  # 如果仓位是反的
+                    _money = float(left_amount * price + amount *
+                                   price*self.commission_coeff)
+                    if self.cash_available > _money:  # 卖空的市值小于现金（有担保的卖空）， 不允许裸卖空
+                        flag = True
+                    else:
+                        print('sellavailable', _hold)
+                        print('amount', amount)
+                        print('left', left_amount)
+                        print('aqureMoney', _money)
+                        print('cash', self.cash_available)
+                        print("卖空资金不足/不允许裸卖空")
+                else:
+                    print('资金股份不足/不允许卖空开仓')
 
         if flag and amount > 0:
             _order = QA_Order(user_cookie=self.user_cookie, strategy=self.strategy_name, frequence=self.frequence,

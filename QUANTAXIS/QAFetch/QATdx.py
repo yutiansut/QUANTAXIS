@@ -21,6 +21,13 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+ 
+#from QUANTAXIS.QAData.data_fq import QA_data_make_qfq, QA_data_make_hfq
+
+# 基于Pytdx的数据接口,好处是可以在linux/mac上联入通达信行情
+# 具体参见rainx的pytdx(https://github.com/rainx/pytdx)
+#
+
 import datetime
 
 import numpy as np
@@ -28,20 +35,15 @@ import pandas as pd
 from pytdx.exhq import TdxExHq_API
 from pytdx.hq import TdxHq_API
 
-from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_date_str2int,
-                              QA_util_date_valid, QA_util_get_real_date,
-                              QA_util_get_real_datelist, QA_util_get_trade_gap,
-                              QA_util_log_info, QA_util_time_stamp,
-                              QA_util_web_ping, future_ip_list, stock_ip_list, exclude_from_stock_ip_list, QA_Setting,
-                              trade_date_sse)
-
 from QUANTAXIS.QAFetch.base import _select_market_code, _select_type
+from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
+                              QA_util_date_str2int, QA_util_date_valid,
+                              QA_util_get_real_date, QA_util_get_real_datelist,
+                              QA_util_get_trade_gap, QA_util_log_info,
+                              QA_util_time_stamp, QA_util_web_ping,
+                              exclude_from_stock_ip_list, future_ip_list,
+                              stock_ip_list, trade_date_sse)
 from QUANTAXIS.QAUtil.QASetting import QASETTING
-#from QUANTAXIS.QAData.data_fq import QA_data_make_qfq, QA_data_make_hfq
-
-# 基于Pytdx的数据接口,好处是可以在linux/mac上联入通达信行情
-# 具体参见rainx的pytdx(https://github.com/rainx/pytdx)
-#
 
 
 def init_fetcher():
@@ -1304,26 +1306,30 @@ def QA_fetch_get_future_min(code, start, end, frequence='1min', ip=None, port=No
 
     if str(frequence) in ['5', '5m', '5min', 'five']:
         frequence, type_ = 0, '5min'
-        lens = 48 * lens
+        lens = 48 * lens *2.5
     elif str(frequence) in ['1', '1m', '1min', 'one']:
         frequence, type_ = 8, '1min'
-        lens = 240 * lens
+        lens = 240 * lens *2.5
     elif str(frequence) in ['15', '15m', '15min', 'fifteen']:
         frequence, type_ = 1, '15min'
-        lens = 16 * lens
+        lens = 16 * lens *2.5
     elif str(frequence) in ['30', '30m', '30min', 'half']:
         frequence, type_ = 2, '30min'
-        lens = 8 * lens
+        lens = 8 * lens *2.5
     elif str(frequence) in ['60', '60m', '60min', '1h']:
         frequence, type_ = 3, '60min'
-        lens = 4 * lens
+        lens = 4 * lens *2.5
     if lens > 20800:
         lens = 20800
+
+    #print(lens)
     with apix.connect(ip, port):
+
+
         code_market = extension_market_list.query('code=="{}"'.format(code))
         data = pd.concat([apix.to_df(apix.get_instrument_bars(frequence, int(code_market.market), str(
             code), (int(lens / 700) - i) * 700, 700)) for i in range(int(lens / 700) + 1)], axis=0)
-
+        #print(data)
         data = data\
             .assign(datetime=pd.to_datetime(data['datetime']), code=str(code))\
             .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1, inplace=False)\
@@ -1331,7 +1337,7 @@ def QA_fetch_get_future_min(code, start, end, frequence='1min', ip=None, port=No
             .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(x)))\
             .assign(time_stamp=data['datetime'].apply(lambda x: QA_util_time_stamp(x)))\
             .assign(type=type_).set_index('datetime', drop=False, inplace=False)
-        return data.assign(datetime=data['datetime'].apply(lambda x: str(x)))
+        return data.assign(datetime=data['datetime'].apply(lambda x: str(x)))[start:end]
 
 
 def __QA_fetch_get_future_transaction(code, day, retry, code_market, apix):

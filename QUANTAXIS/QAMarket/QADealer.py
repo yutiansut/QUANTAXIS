@@ -209,6 +209,9 @@ class QA_Dealer():
                 self.trade_time = self.market_data.get(
                     'datetime', self.market_data.get('date', None))
             else:
+
+                print(self.order.price)
+                print(self.market_data)
                 self.status = TRADE_STATUS.FAILED
                 self.deal_price = 0
                 self.deal_amount = 0
