@@ -521,10 +521,12 @@ class QA_Account(QA_Worker):
             self.time_index.append(trade_time)
             if self.allow_sellopen:
                 if trade_towards in [ORDER_DIRECTION.BUY_OPEN,ORDER_DIRECTION.SELL_OPEN]:
+                    # 开仓单占用现金
                     self.cash.append(self.cash[-1]-abs(trade_money))
                     self.cash_available = self.cash[-1]
                 elif trade_towards in [ORDER_DIRECTION.BUY_CLOSE,ORDER_DIRECTION.SELL_CLOSE]:
-                    self.cash.append(self.cash[-1]-trade_money)
+                    # 平仓单释放现金
+                    self.cash.append(self.cash[-1]+abs(trade_money))
                     self.cash_available = self.cash[-1]
             else:        
                 self.cash.append(self.cash[-1]-trade_money)
