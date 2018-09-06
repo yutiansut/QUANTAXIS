@@ -641,17 +641,18 @@ class QA_Account(QA_Worker):
                     flag = True
             else:
                 # 如果有负持仓-- 允许卖空的时候
-                # if self.allow_sellopen:
-                #     _hold = self.sell_available.get(code, 0)
-                #     left_amount = amount+_hold if _hold < 0 else amount
-                #     _money = float(left_amount * price + amount *
-                #                    price*self.commission_coeff)
-                #     if self.cash_available >= _money:
-                #         self.cash_available -= _money
-                #         flag = True
+                if self.allow_sellopen and towards==3:# 多平
+                    _hold = self.sell_available.get(code, 0)
+                    left_amount = amount+_hold if _hold < 0 else amount
+                    _money = float(left_amount * price + amount *
+                                   price*self.commission_coeff)
+                    if self.cash_available >= _money:
+                        self.cash_available -= _money
+                        flag = True
+                else:
 
-                print('QAACCOUNT: 可用资金不足 cash_available {}  code {} time {} amount {} towards {}'.format(
-                    self.cash_available, code, time, amount, towards))
+                    print('QAACCOUNT: 可用资金不足 cash_available {}  code {} time {} amount {} towards {}'.format(
+                        self.cash_available, code, time, amount, towards))
 
         elif int(towards) in [-1, -2, -3]:
             # 是卖出的情况(包括卖出，卖出开仓allow_sellopen如果允许. 卖出平仓)
