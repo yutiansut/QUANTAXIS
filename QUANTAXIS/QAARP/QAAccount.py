@@ -97,7 +97,7 @@ class QA_Account(QA_Worker):
 
     def __init__(self, strategy_name=None, user_cookie=None, portfolio_cookie=None, account_cookie=None,
                  market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY, broker=BROKER_TYPE.BACKETEST,
-                 init_hold={}, init_cash=1000000, commission_coeff=0.00025, tax_coeff=0.0015,
+                 init_hold={}, init_cash=1000000, commission_coeff=0.00025, tax_coeff=0.001,
                  margin_level=False, allow_t0=False, allow_sellopen=False,
                  running_environment=RUNNING_ENVIRONMENT.BACKETEST):
         """
@@ -137,7 +137,7 @@ class QA_Account(QA_Worker):
         # warnings.warn('QUANTAXIS 1.0.46 has changed the init_assets ==> init_cash, please pay attention to this change if you using init_cash to initial an account class,\
         #         ', DeprecationWarning, stacklevel=2)
         self._history_headers = ['datetime', 'code', 'price',
-                                 'amount', 'cash', 'order_id', 'realorder_id','trade_id',
+                                 'amount', 'cash', 'order_id', 'realorder_id', 'trade_id',
                                  'account_cookie', 'commission', 'tax']
         ########################################################################
         # 信息类:
@@ -177,6 +177,9 @@ class QA_Account(QA_Worker):
         # 1.是否允许t+0 及买入及结算
         # 2.是否允许卖空开仓
         # 3.是否允许保证金交易/ 如果不是false 就需要制定保证金比例(dict形式)
+
+        # 期货: allow_t0 True allow_sellopen True
+        #
         self.allow_t0 = allow_t0
         self.allow_sellopen = allow_sellopen
         self.margin_level = margin_level
@@ -371,12 +374,14 @@ class QA_Account(QA_Worker):
     def daily_hold(self):
         '每日交易结算时的持仓表'
         data = self.trade.cumsum()
-
-        data = data.assign(account_cookie=self.account_cookie).assign(
-            date=data.index.levels[0])
-        data.date = data.date.apply(lambda x: str(x)[0:10])
-        data = data.set_index(['date', 'account_cookie'])
-        return data[~data.index.duplicated(keep='last')].sort_index()
+        if len(data) < 1:
+            return None
+        else:
+            data = data.assign(account_cookie=self.account_cookie).assign(
+                date=data.index.levels[0])
+            data.date = data.date.apply(lambda x: str(x)[0:10])
+            data = data.set_index(['date', 'account_cookie'])
+            return data[~data.index.duplicated(keep='last')].sort_index()
     # 计算assets的时候 需要一个market_data=QA.QA_fetch_stock_day_adv(list(data.columns),data.index[0],data.index[-1])
     # (market_data.to_qfq().pivot('close')*data).sum(axis=1)+user_cookie.get_account(a_1).daily_cash.set_index('date').cash
 
@@ -447,9 +452,9 @@ class QA_Account(QA_Worker):
         self.cash = [self.init_cash]
         self.cash_available = self.cash[-1]  # 在途资金
 
-    def receive_deal(self,code:str, trade_id:str,order_id:str,realorder_id:str,trade_price:float, trade_amount:int,trade_towards:int,trade_time:str):
+    def receive_deal(self, code: str, trade_id: str, order_id: str, realorder_id: str, trade_price: float, trade_amount: int, trade_towards: int, trade_time: str):
         """更新deal
-        
+
         Arguments:
             code {str} -- [description]
             trade_id {str} -- [description]
@@ -459,7 +464,7 @@ class QA_Account(QA_Worker):
             trade_amount {int} -- [description]
             trade_towards {int} -- [description]
             trade_time {str} -- [description]
-        
+
         Returns:
             [type] -- [description]
         """
@@ -468,29 +473,79 @@ class QA_Account(QA_Worker):
 
         trade_time = str(trade_time)
         code = str(code)
-        trade_price=float(trade_price)
-        trade_towards =int(trade_towards)
-        realorder_id=str(realorder_id)
+        trade_price = float(trade_price)
+        trade_towards = int(trade_towards)
+        realorder_id = str(realorder_id)
         trade_id = str(trade_id)
-        order_id= str(order_id)
-        trade_money = trade_price*int(trade_amount)*trade_towards
-        commission_fee= trade_money*self.commission_coeff
-        tax_fee = trade_money * self.tax_coeff
-        trade_money+=(commission_fee+tax_fee)
+        trade_amount = int(trade_amount)
+        order_id = str(order_id)
 
-        if self.cash[-1]>trade_money:
+        market_towards = 1 if trade_towards > 0 else -1
+        trade_money = trade_price*trade_amount*market_towards
+        commission_fee = trade_money*self.commission_coeff
+
+        if self.market_type == MARKET_TYPE.STOCK_CN:
+            if trade_towards > 0:
+                commission_fee = self.commission_coeff * \
+                    trade_price * trade_amount
+
+                commission_fee = 5 if commission_fee < 5 else commission_fee
+
+                tax_fee = 0  # 买入不收印花税
+            else:
+                commission_fee = self.commission_coeff * \
+                    trade_price * trade_amount
+
+                commission_fee = 5 if commission_fee < 5 else commission_fee
+
+                tax_fee = self.tax_coeff * \
+                    trade_price * trade_amount
+
+            # self.trade_money = self.deal_price * \
+            #     self.deal_amount + self.commission_fee + self.tax
+        elif self.market_type == MARKET_TYPE.FUTURE_CN:
+            # 期货不收税
+            # 双边手续费 也没有最小手续费限制
+            commission_fee = self.commission_coeff * \
+                trade_price * trade_amount
+
+            commission_fee = 5 if commission_fee < 5 else commission_fee
+
+            #self.commission_fee = 5 if commission_fee < 5 else commission_fee
+
+            tax_fee = 0  # 买入不收印花税
+
+        trade_money += (commission_fee+tax_fee)
+
+        if self.cash[-1] > trade_money:
             self.time_index.append(trade_time)
+            # TODO: 目前还不支持期货的锁仓
+            if self.allow_sellopen:
+                if trade_towards in [ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN]:
+                    # 开仓单占用现金
+                    self.cash.append(self.cash[-1]-abs(trade_money))
+                    self.cash_available = self.cash[-1]
+                elif trade_towards in [ORDER_DIRECTION.BUY_CLOSE, ORDER_DIRECTION.SELL_CLOSE]:
+                    # 平仓单释放现金
+                    self.cash.append(self.cash[-1]+abs(trade_money))
+                    self.cash_available = self.cash[-1]
+            else:
+                self.cash.append(self.cash[-1]-trade_money)
+                self.cash_available = self.cash[-1]
+
+            if self.allow_t0:
+
+                self.sell_available = self.hold
+                self.buy_available = self.hold
+
             self.history.append(
-                [trade_time,code,trade_price,trade_towards*trade_amount, self.cash[-1]-trade_money, order_id,realorder_id, trade_id, self.account_cookie,
+                [trade_time, code, trade_price, market_towards*trade_amount, self.cash[-1], order_id, realorder_id, trade_id, self.account_cookie,
                     commission_fee, tax_fee])
-            self.cash.append(self.cash[-1]-trade_money)
-            self.cash_available = self.cash[-1]
         else:
             print(self.cash[-1])
             self.cash_available = self.cash[-1]
             print('NOT ENOUGH MONEY FOR {}'.format(
                 order_id))
-
 
         self.datetime = trade_time
 
@@ -558,7 +613,6 @@ class QA_Account(QA_Worker):
 
             money / (price*(1+self.commission_coeff))/100) * 100
 
-
         # 🛠todo 移到Utils类中，  money_to_amount 金额转成交量
         money = amount * price * \
             (1+self.commission_coeff) if amount_model is AMOUNT_MODEL.BY_AMOUNT else money
@@ -569,7 +623,7 @@ class QA_Account(QA_Worker):
         flag = False
 
         assert (int(towards) != 0)
-        if int(towards) > 0:
+        if int(towards) in [1, 2, 3]:
             # 是买入的情况(包括买入.买开.买平)
             if self.cash_available >= money:
 
@@ -589,21 +643,53 @@ class QA_Account(QA_Worker):
                     self.cash_available -= money
                     flag = True
             else:
-                print('可用资金不足 {} {} {} {}'.format(code, time, amount, towards))
+                # 如果有负持仓-- 允许卖空的时候
+                if self.allow_sellopen and towards == 3:  # 多平
+                    _hold = self.sell_available.get(code, 0)
+                    left_amount = amount+_hold if _hold < 0 else amount
+                    _money = float(left_amount * price + amount *
+                                   price*self.commission_coeff)
+                    if self.cash_available >= _money:
+                        self.cash_available -= _money
+                        flag = True
+                else:
 
-        elif int(towards) < 0:
+                    print('QAACCOUNT: 可用资金不足 cash_available {}  code {} time {} amount {} towards {}'.format(
+                        self.cash_available, code, time, amount, towards))
+
+        elif int(towards) in [-1, -2, -3]:
             # 是卖出的情况(包括卖出，卖出开仓allow_sellopen如果允许. 卖出平仓)
             # print(self.sell_available[code])
-            if self.sell_available.get(code, 0) >= amount:
+            _hold = self.sell_available.get(code, 0)  # _hold 是你的持仓
+
+            # 如果你的hold> amount>0
+            # 持仓数量>卖出数量
+            if _hold >= amount:
                 self.sell_available[code] -= amount
+                #towards = ORDER_DIRECTION.SELL
                 flag = True
-            elif self.allow_sellopen:
-                if self.cash_available > money:  # 卖空的市值小于现金（有担保的卖空）， 不允许裸卖空
-                    flag = True
-                else:
-                    print("卖空资金不足/不允许裸卖空")
+            # 如果持仓数量<卖出数量
+
             else:
-                print('资金股份不足/不允许卖空开仓')
+
+                # 如果是允许卖空开仓 实际计算时  先减去持仓(正持仓) 再计算 负持仓 就按原先的占用金额计算
+                if self.allow_sellopen:
+
+                    # left_amount = amount-_hold if _hold > 0 else amount  # 如果仓位是反的
+                    # _money = float(left_amount * price + amount *
+                    #                price*self.commission_coeff)
+                    if towards == -2:  # 卖开
+                        if self.cash_available >= money:  # 卖空的市值小于现金（有担保的卖空）， 不允许裸卖空
+                            #self.cash_available -= money
+                            flag = True
+                        else:
+                            print('sellavailable', _hold)
+                            print('amount', amount)
+                            print('aqureMoney', money)
+                            print('cash', self.cash_available)
+                            print("卖空资金不足/不允许裸卖空")
+            # else:
+            #     print('资金股份不足/不允许卖空开仓')
 
         if flag and amount > 0:
             _order = QA_Order(user_cookie=self.user_cookie, strategy=self.strategy_name, frequence=self.frequence,
@@ -674,7 +760,6 @@ class QA_Account(QA_Worker):
         self.datetime = '{} 09:30:00'.format(QA_util_get_next_day(
             self.date)) if self.date is not None else None
 
-
     def on_bar(self, event):
         '''
         策略事件
@@ -741,8 +826,8 @@ class QA_Account(QA_Worker):
         if event.event_type is ACCOUNT_EVENT.SETTLE:
             self.settle()
 
-        elif event.event_type is ACCOUNT_EVENT.UPDATE:
-            self.receive_deal(event.message)
+        # elif event.event_type is ACCOUNT_EVENT.UPDATE:
+        #     self.receive_deal(event.message)
         elif event.event_type is ACCOUNT_EVENT.MAKE_ORDER:
             """generate order
             if callback callback the order

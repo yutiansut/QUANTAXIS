@@ -32,15 +32,14 @@ import platform
 import subprocess
 import requests
 
-from QUANTAXIS.QABacktest.QAAnalysis import QA_backtest_analysis_backtest
+from QUANTAXIS.QAApplication.QAAnalysis import QA_backtest_analysis_backtest
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting, QA_util_mongo_initial
 from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_min, QA_SU_save_stock_xdxr,
-                       QA_SU_save_stock_block, QA_SU_save_stock_info,QA_SU_save_stock_info_tushare,
-                       QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_index_min,
-                       QA_SU_save_etf_day, QA_SU_save_etf_min, QA_SU_save_option_day, QA_SU_save_financialfiles)
+                                 QA_SU_save_stock_block, QA_SU_save_stock_info, QA_SU_save_stock_info_tushare,
+                                 QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_index_min, QA_SU_save_future_list, QA_SU_save_index_list,
+                                 QA_SU_save_etf_day, QA_SU_save_etf_min, QA_SU_save_option_day, QA_SU_save_financialfiles)
 from QUANTAXIS.QASU.save_binance import QA_SU_save_binance_symbol, QA_SU_save_binance_1hour, \
-                        QA_SU_save_binance_1day, QA_SU_save_binance_1min, QA_SU_save_binance
-
+    QA_SU_save_binance_1day, QA_SU_save_binance_1min, QA_SU_save_binance
 
 
 # 东方财富爬虫
@@ -86,14 +85,14 @@ class CLI(cmd.Cmd):
     def help_examples(self):
         print('make a sample backtest framework')
 
-    def do_download_updatex(self,arg):
+    def do_download_updatex(self, arg):
         now_path = os.getcwd()
         data = requests.get(
             'https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/config/update_x.py')
         with open("{}{}update_x.py".format(now_path, os.sep), "wb") as code:
             code.write(data.content)
-            
-    def do_download_updateall(self,arg):
+
+    def do_download_updateall(self, arg):
         now_path = os.getcwd()
         data = requests.get(
             'https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/config/update_all.py')
@@ -180,10 +179,10 @@ class CLI(cmd.Cmd):
     def print_save_usage(self):
         print(
             "Usage: \n\
-            命令格式：save all  : save stock_day/xdxr/ index_day/ stock_list \n\
-            命令格式：save X|x  : save stock_day/xdxr/min index_day/min etf_day/min stock_list/block \n\
-            命令格式：save day  : save stock_day/xdxr index_day etf_day stock_list \n\
-            命令格式：save min  : save stock_min/xdxr index_min etf_min stock_list \n\
+            命令格式：save all  : save stock_day/xdxr/ index_day/ stock_list/index_list \n\
+            命令格式：save X|x  : save stock_day/xdxr/min index_day/min etf_day/min stock_list/index_list/block \n\
+            命令格式：save day  : save stock_day/xdxr index_day etf_day stock_list/index_list \n\
+            命令格式：save min  : save stock_min/xdxr index_min etf_min stock_list/index_list \n\
             ------------------------------------------------------------ \n\
             命令格式：save stock_day  : 保存日线数据 \n\
             命令格式：save stock_xdxr : 保存日除权出息数据 \n\
@@ -197,6 +196,8 @@ class CLI(cmd.Cmd):
             命令格式：save stock_info : 保存tushare数据接口获取的股票列表 \n\
             命令格式：save financialfiles : 保存高级财务数据(自1996年开始) \n\
             命令格式：save option_day : 保存50ETF期权日线数据（不包括已经摘牌的数据） \n\
+            命令格式: save index_list : 保存指数列表 \n\
+            命令格式: save future_list : 保存期货列表 \n\
             ----------------------------------------------------------\n\
             if you just want to save daily data just\n\
                 save all+ save stock_block+save stock_info, it about 1G data \n\
@@ -225,6 +226,7 @@ class CLI(cmd.Cmd):
                 # QA_SU_save_index_min('tdx')
                 # QA_SU_save_etf_day('tdx')
                 # QA_SU_save_etf_min('tdx')
+                QA_SU_save_index_list('tdx')
                 QA_SU_save_stock_list('tdx')
                 QA_SU_save_stock_block('tdx')
                 # QA_SU_save_stock_info('tdx')
@@ -239,6 +241,7 @@ class CLI(cmd.Cmd):
                 # QA_SU_save_index_min('tdx')
                 QA_SU_save_etf_day('tdx')
                 # QA_SU_save_etf_min('tdx')
+                QA_SU_save_index_list('tdx')
                 QA_SU_save_stock_list('tdx')
                 QA_SU_save_stock_block('tdx')
             elif len(arg) == 1 and arg[0] == 'min':
@@ -253,6 +256,7 @@ class CLI(cmd.Cmd):
                 # QA_SU_save_etf_day('tdx')
                 QA_SU_save_etf_min('tdx')
                 QA_SU_save_stock_list('tdx')
+                QA_SU_save_index_list('tdx')
                 # QA_SU_save_stock_block('tdx')
             elif len(arg) == 1 and arg[0] in ['X', 'x']:
                 if QA_Setting().client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
@@ -266,7 +270,9 @@ class CLI(cmd.Cmd):
                 QA_SU_save_etf_day('tdx')
                 QA_SU_save_etf_min('tdx')
                 QA_SU_save_stock_list('tdx')
+                QA_SU_save_index_list('tdx')
                 QA_SU_save_stock_block('tdx')
+                QA_SU_save_future_list('tdx')
                 # QA_SU_save_stock_info('tdx')
             elif len(arg) == 1 and arg[0] == "binance":
                 QA_SU_save_binance_symbol()
@@ -299,6 +305,8 @@ class CLI(cmd.Cmd):
                         save stock_list : save stock_list
                         save stock_block: save stock_block
                         save stock_info : save stock_info
+                        save index_list : save index_list
+                        save future_list : save future_list
                         '''
                         try:
                             eval("QA_SU_save_%s('tdx')" % (i))

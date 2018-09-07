@@ -1,37 +1,37 @@
-QUANTAXIS.QABacktest package
+QUANTAXIS.QAApplication package
 ============================
 
 Submodules
 ----------
 
-QUANTAXIS.QABacktest.QAAnalysis module
+QUANTAXIS.QAApplication.QAAnalysis module
 --------------------------------------
 
-.. automodule:: QUANTAXIS.QABacktest.QAAnalysis
+.. automodule:: QUANTAXIS.QAApplication.QAAnalysis
     :members:
     :undoc-members:
     :show-inheritance:
 
-QUANTAXIS.QABacktest.QABacktest module
+QUANTAXIS.QAApplication.QABacktest module
 --------------------------------------
 
-.. automodule:: QUANTAXIS.QABacktest.QABacktest
+.. automodule:: QUANTAXIS.QAApplication.QABacktest
     :members:
     :undoc-members:
     :show-inheritance:
 
-QUANTAXIS.QABacktest.QAResult module
+QUANTAXIS.QAApplication.QAResult module
 ------------------------------------
 
-.. automodule:: QUANTAXIS.QABacktest.QAResult
+.. automodule:: QUANTAXIS.QAApplication.QAResult
     :members:
     :undoc-members:
     :show-inheritance:
 
-QUANTAXIS.QABacktest.backtest\_setting module
+QUANTAXIS.QAApplication.backtest\_setting module
 ---------------------------------------------
 
-.. automodule:: QUANTAXIS.QABacktest.backtest_setting
+.. automodule:: QUANTAXIS.QAApplication.backtest_setting
     :members:
     :undoc-members:
     :show-inheritance:
@@ -40,7 +40,7 @@ QUANTAXIS.QABacktest.backtest\_setting module
 Module contents
 ---------------
 
-.. automodule:: QUANTAXIS.QABacktest
+.. automodule:: QUANTAXIS.QAApplication
     :members:
     :undoc-members:
     :show-inheritance:

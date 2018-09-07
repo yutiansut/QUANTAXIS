@@ -186,7 +186,10 @@ class QA_Market(QA_Trade):
         # self._update_orders()
 
     def get_account(self, account_cookie):
-        return self.session[account_cookie]
+        try:
+            return self.session[account_cookie]
+        except KeyError:
+            print('QAMARKET: this account {} is logoff, please login and retry'.format(account_cookie))
 
     def login(self, broker_name, account_cookie, account=None):
         """login 登录到交易前置
@@ -211,7 +214,7 @@ class QA_Market(QA_Trade):
                 if self.sync_account(broker_name, account_cookie):
                     res = True
 
-                if self.if_start_orderthreading:
+                if self.if_start_orderthreading and res:
                     #
                     self.order_handler.subscribe(
                         self.session[account_cookie], self.broker[broker_name])
@@ -222,7 +225,7 @@ class QA_Market(QA_Trade):
                 self.session[account_cookie] = account
                 if self.sync_account(broker_name, account_cookie):
                     res = True
-                if self.if_start_orderthreading:
+                if self.if_start_orderthreading and res:
                     #
                     self.order_handler.subscribe(
                         account, self.broker[broker_name])
@@ -237,11 +240,11 @@ class QA_Market(QA_Trade):
             return False
 
     def sync_order_and_deal(self):
-        self.if_start_orderquery = True
-        # self._sync_orders()
+        self.order_handler.if_start_orderquery = True
+        self._sync_orders()
 
     def stop_sync_order_and_deal(self):
-        self.if_start_orderquery = False
+        self.order_handler.if_start_orderquery = False
 
     def sync_account(self, broker_name, account_cookie):
         """同步账户信息
@@ -280,8 +283,13 @@ class QA_Market(QA_Trade):
         #print(">-----------------------insert_order----------------------------->", strDbg)
 
         flag = False
+
+        #行情切片 bar/tick/realtime 
+
+
         price_slice = self.query_data_no_wait(broker_name=broker_name, frequence=frequence,
-                                         market_type=market_type, code=code, start=time)[0]
+                                         market_type=market_type, code=code, start=time)
+        price_slice = price_slice if price_slice is None else price_slice[0]
 
         if order_model in [ORDER_MODEL.CLOSE, ORDER_MODEL.NEXT_OPEN]:
             if isinstance(price_slice, np.ndarray):
@@ -338,13 +346,6 @@ class QA_Market(QA_Trade):
             order = self.get_account(account_cookie).send_order(
                 amount=amount, amount_model=amount_model, time=time, code=code, price=price,
                 order_model=order_model, towards=towards, money=money)
-
-            # print("------------------------------------------------->")
-            #print("order 排队")
-            # print(order)
-            #print("时间戳" )
-            # print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))  # 日期格式化
-            # print("<-------------------------------------------------")
             if order:
                 # print(order)
                 self.submit(

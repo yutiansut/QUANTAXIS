@@ -43,12 +43,13 @@ class ORDER_DIRECTION():
 
     BUY = 1
     SELL = -1
-    BUY_OPEN = 1
-    BUY_CLOSE = 1
-    SELL_OPEN = -1
-    SELL_CLOSE = -1
+    BUY_OPEN = 2
+    BUY_CLOSE = 3
+    SELL_OPEN = -2
+    SELL_CLOSE = -3
     ASK = 0
-
+    XDXR = 5
+    OTHER = 6
 
 class ORDER_MODEL():
     """订单的成交模式
@@ -191,6 +192,9 @@ class MARKET_TYPE():
     INDEX_CN = 'index_cn'  # 中国指数
     FUND_CN = 'fund_cn'   # 中国基金
     BOND_CN = 'bond_cn'  # 中国债券
+
+
+
 
 
 class BROKER_TYPE():
@@ -383,3 +387,8 @@ DATABASE_TABLE = {
     (MARKET_TYPE.FUTURE_CN, FREQUENCE.HOUR): 'future_min',
     (MARKET_TYPE.FUTURE_CN, FREQUENCE.TICK): 'future_transaction'
 }
+
+
+
+
+    

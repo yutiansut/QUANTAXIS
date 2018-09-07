@@ -173,10 +173,6 @@ class QA_OrderHandler(QA_Worker):
             """
 
             if self.if_start_orderquery:
-                # if QA_util_if_tradetime(datetime.datetime.now()):
-
-                    # print(event.broker)
-                    # print(event.account_cookie)
                 try:
                     # 做一些容错处理
                     res = [self.monitor[account].query_orders(
@@ -184,22 +180,22 @@ class QA_OrderHandler(QA_Worker):
 
                     res = pd.concat(res, axis=0) if len(
                         res) > 0 else None
-
+                    #print(res)
                 except:
                     time.sleep(1)
 
                 self.order_status = res if res is not None else self.order_status
                 if len(self.order_status) > 0:
+                    #print(self.order_status)
                     QA_SU_save_order(self.order_status)
                 # else:
                 #     time.sleep(1)
 
             # 这里加入随机的睡眠时间 以免被发现固定的刷新请求
-            # event=event
             event.event_type = MARKET_EVENT.QUERY_DEAL
             if event.event_queue.qsize() < 1:
                 time.sleep(random.randint(1, 2))
-            # event.event_queue.task_done()
+
             # 非阻塞
             if self.if_start_orderquery:
                 event.event_queue.put(
@@ -209,13 +205,7 @@ class QA_OrderHandler(QA_Worker):
                         event=event
                     )
                 )
-            # time.sleep(random.randint(2,5))
-            # print(event.event_type)
-            # print(event2.event_type)
-            # self.run(event)
 
-            # print(self.order_status)
-            # print('UPDATE ORDERS')
 
         elif event.event_type is MARKET_EVENT.QUERY_DEAL:
 
@@ -226,13 +216,6 @@ class QA_OrderHandler(QA_Worker):
 
             """
 
-            # if len(self.order_queue.pending) > 0:
-            #     for order in self.order_queue.pending:
-            #         #self.query
-            #         waiting_realorder_id = [
-            #             order.realorder_id for order in self.order_queue.trade_list]
-            #         result = event.broker.query_deal
-            #         time.sleep(1)
             if self.if_start_orderquery:
                 res = [self.monitor[account].query_orders(
                     account.account_cookie, 'filled') for account in list(self.monitor.keys())]
@@ -271,8 +254,8 @@ class QA_OrderHandler(QA_Worker):
                                     order.trade(str(res.trade_id), float(res.trade_price), int(
                                         res.trade_amount), str(res.trade_time))
                                 else:
-                                    print(res)
-                                    print(len(res))
+                                    # print(res)
+                                    # print(len(res))
                                     for _, deal in res.iterrows:
                                         order.trade(str(deal.trade_id), float(deal.trade_price), int(
                                             deal.trade_amount), str(deal.trade_time))
@@ -346,8 +329,8 @@ class QA_OrderHandler(QA_Worker):
                             order.trade(str(res.trade_id), float(res.trade_price), int(
                                 res.trade_amount), str(res.trade_time))
                         else:
-                            print(res)
-                            print(len(res))
+                            #print(res)
+                            #print(len(res))
                             for _, deal in res.iterrows:
                                 order.trade(str(deal.trade_id), float(deal.trade_price), int(
                                     deal.trade_amount), str(deal.trade_time))

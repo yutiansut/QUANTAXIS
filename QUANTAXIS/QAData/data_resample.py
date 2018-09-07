@@ -42,15 +42,14 @@ def QA_data_tick_resample(tick, type_='1min'):
     for item in _temp:
         _data = tick.loc[str(item)]
         _data1 = _data[time(9, 31):time(11, 30)].resample(
-            type_,closed='right', base=30, loffset=type_ ).apply({'price': 'ohlc', 'vol': 'sum'})
+            type_, closed='right', base=30, loffset=type_).apply({'price': 'ohlc', 'vol': 'sum'})
 
-
-        _data2 = _data[time(13, 1):time(15,0 )].resample(
-            type_,closed='right', loffset=type_).apply({'price': 'ohlc', 'vol': 'sum'})
+        _data2 = _data[time(13, 1):time(15, 0)].resample(
+            type_, closed='right', loffset=type_).apply({'price': 'ohlc', 'vol': 'sum'})
 
         resx = resx.append(_data1).append(_data2)
 
-    return resx.reset_index().drop_duplicates()
+    return resx.reset_index().drop_duplicates().set_index(['datetime','code'])
 
 
 def QA_data_min_resample(min_data,  type_='5min'):
@@ -97,18 +96,18 @@ def QA_data_min_resample(min_data,  type_='5min'):
     except:
         min_data = min_data.set_index('datetime', drop=False)
 
-    CONVERSION = {'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last', 'vol': 'sum'} if 'vol' in day_data.columns else {
-        'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last', 'volume': 'sum'}
+    CONVERSION = {'code': 'first', 'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last', 'vol': 'sum', 'amount': 'sum'} if 'vol' in min_data.columns else {
+        'code': 'first', 'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last', 'volume': 'sum', 'amount': 'sum'}
     resx = pd.DataFrame()
 
-
     for item in set(min_data.index.date):
-        d = min_data_p[:time(11, 30)].resample(
+        min_data_p = min_data.loc[str(item)]
+        d = min_data_p[:'{} 11:30:00'.format(item)].resample(
             type_, base=30, closed='right', loffset=type_).apply(CONVERSION)
-        f = min_data_p[time(13, 0):].resample(
+        f = min_data_p['{} 13:00:00'.format(item):].resample(
             type_, closed='right', loffset=type_).apply(CONVERSION)
         resx = resx.append(d).append(f)
-    return resx.dropna().set_index('datetime')
+    return resx.dropna().reset_index().set_index(['datetime','code'])
 
 
 def QA_data_day_resample(day_data,  type_='w'):
@@ -131,17 +130,16 @@ def QA_data_day_resample(day_data,  type_='w'):
     except:
         day_data = day_data.set_index('date', drop=False)
 
-    day_data_p = day_data.resample(type_).last()
+    CONVERSION = {'code': 'first', 'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last', 'vol': 'sum', 'amount': 'sum'} if 'vol' in day_data.columns else {
+        'code': 'first', 'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last', 'volume': 'sum', 'amount': 'sum'}
 
-    CONVERSION = {'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last', 'vol': 'sum'} if 'vol' in day_data.columns else {
-        'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last', 'volume': 'sum'}
-
-    return day_data.resample(type_, closed='right').apply(CONVERSION)
+    return day_data.resample(type_, closed='right').apply(CONVERSION).dropna().reset_index().set_index(['date','code'])
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     import QUANTAXIS as QA
-    tick=QA.QA_fetch_get_stock_transaction('tdx','000001','2018-08-01','2018-08-02')
-    print(QA_data_tick_resample(tick,'60min'))
-    print(QA_data_tick_resample(tick,'15min'))
-    print(QA_data_tick_resample(tick,'35min'))
+    tick = QA.QA_fetch_get_stock_transaction(
+        'tdx', '000001', '2018-08-01', '2018-08-02')
+    print(QA_data_tick_resample(tick, '60min'))
+    print(QA_data_tick_resample(tick, '15min'))
+    print(QA_data_tick_resample(tick, '35min'))

@@ -93,8 +93,6 @@ class QA_BacktestBroker(QA_Broker):
         super().__init__()
         self.dealer = QA_Dealer()
         self.order_handler = QA_OrderHandler()
-        self.engine = {
-            MARKET_TYPE.STOCK_CN: self.dealer.backtest_stock_dealer}
 
         self.fetcher = {(MARKET_TYPE.STOCK_CN, FREQUENCE.DAY): QA_fetch_stock_day, (MARKET_TYPE.STOCK_CN, FREQUENCE.FIFTEEN_MIN): QA_fetch_stock_min,
                         (MARKET_TYPE.STOCK_CN, FREQUENCE.ONE_MIN): QA_fetch_stock_min, (MARKET_TYPE.STOCK_CN, FREQUENCE.FIVE_MIN): QA_fetch_stock_min,
@@ -133,7 +131,7 @@ class QA_BacktestBroker(QA_Broker):
             self.order_handler.run(event)
         elif event.event_type is ENGINE_EVENT.UPCOMING_DATA:
             # QABacktest 回测发出的事件
-            
+
             new_marketdata_dict = event.market_data.dicts
             for item in new_marketdata_dict.keys():
                 if item not in self._quotation.keys():
@@ -154,7 +152,7 @@ class QA_BacktestBroker(QA_Broker):
                 event.callback(event)
         elif event.event_type is BROKER_EVENT.SETTLE:
             #self.deal_message = {}
-            #self.order_handler.run(event)
+            # self.order_handler.run(event)
             if event.callback:
                 event.callback('settle')
         #print("         <-----------------------QABacktestBroker.run-----------------------------<",strDbg,'evt->',event)
@@ -169,7 +167,7 @@ class QA_BacktestBroker(QA_Broker):
 
         except:
             return self.fetcher[(market_type, frequence)](
-                code, start, end, frequence=frequence,format='json')
+                code, start, end, frequence=frequence, format='json')
 
     def receive_order(self, event):
         """
@@ -177,14 +175,13 @@ class QA_BacktestBroker(QA_Broker):
 
         """
         order = event.order
-        print(event.market_data)
+        # print(event.market_data)
         # print(order)
         if 'market_data' in event.__dict__.keys():
 
             self.market_data = self.get_market(
                 order) if event.market_data is None else event.market_data
 
-            
             if isinstance(self.market_data, dict):
                 pass
             elif isinstance(self.market_data, pd.DataFrame):
@@ -193,17 +190,17 @@ class QA_BacktestBroker(QA_Broker):
             elif isinstance(self.market_data, pd.core.series.Series):
                 self.market_data = self.market_data.to_dict()
             elif isinstance(self.market_data, np.ndarray):
-                data=self.market_data[0]
+                data = self.market_data[0]
 
             else:
                 self.market_data = self.market_data.to_json()[0]
         else:
             self.market_data = self.get_market(order)
         if self.market_data is not None:
-            print(self.market_data)
+            
             order = self.warp(order)
             self.dealer.deal(order, self.market_data)
-            order.queued(order.order_id) # 模拟的order_id 和 realorder_id 一致
+            order.queued(order.order_id)  # 模拟的order_id 和 realorder_id 一致
 
         else:
 
@@ -214,13 +211,13 @@ class QA_BacktestBroker(QA_Broker):
     def query_orders(self, account, status=''):
 
         if status == '':
-            return self.dealer.deal_df.query('account_cookie=="{}"'.format(account)).loc[:,self.orderstatus_headers].set_index(['account_cookie', 'realorder_id'])
+            return self.dealer.deal_df.query('account_cookie=="{}"'.format(account)).loc[:, self.orderstatus_headers].set_index(['account_cookie', 'realorder_id'])
         elif status == 'filled':
-            return self.dealer.deal_df.query('account_cookie=="{}"'.format(account)).loc[:,self.dealstatus_headers].set_index(['account_cookie', 'realorder_id'])
+            return self.dealer.deal_df.query('account_cookie=="{}"'.format(account)).loc[:, self.dealstatus_headers].set_index(['account_cookie', 'realorder_id'])
         elif status == 'open':
             pass
 
-    def query_deal(self,account):
+    def query_deal(self, account):
         pass
 
     def warp(self, order):

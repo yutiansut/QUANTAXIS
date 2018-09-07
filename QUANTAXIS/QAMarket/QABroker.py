@@ -86,37 +86,37 @@ class QA_Broker(QA_Worker):
         '''
         raise NotImplementedError
 
-    def standard_back(self, order):
+    # def standard_back(self, order):
 
-        message = {
-            'header': {
-                'source': 'market',
-                'status': None,
-                'code': order.code,
-                'session': {
-                    'user': order.get('user_cookie', None),
-                    'strategy': order.get('strategy_cookie', None),
-                    'account':  order.get('account_cookie', None)
-                },
-                'order_id':  order.get('order_id', None),
-                'trade_id': order.get('trade_id', None)
-            },
-            'body': {
-                'order': {
-                    'price': order.price,
-                    'code': order.code,
-                    'amount': order.amount,
-                    'date': str(datetime.date.today()),
-                    'datetime': str(datetime.datetime.now()),
-                    'towards': order.towards,
-                },
-                'fee': {
-                    'commission': order.get('commission', None),
-                    'tax': order.get('tax', None)
-                }
-            }
-        }
-        return message
+    #     message = {
+    #         'header': {
+    #             'source': 'market',
+    #             'status': None,
+    #             'code': order.code,
+    #             'session': {
+    #                 'user': order.get('user_cookie', None),
+    #                 'strategy': order.get('strategy_cookie', None),
+    #                 'account':  order.get('account_cookie', None)
+    #             },
+    #             'order_id':  order.get('order_id', None),
+    #             'trade_id': order.get('trade_id', None)
+    #         },
+    #         'body': {
+    #             'order': {
+    #                 'price': order.price,
+    #                 'code': order.code,
+    #                 'amount': order.amount,
+    #                 'date': str(datetime.date.today()),
+    #                 'datetime': str(datetime.datetime.now()),
+    #                 'towards': order.towards,
+    #             },
+    #             'fee': {
+    #                 'commission': order.get('commission', None),
+    #                 'tax': order.get('tax', None)
+    #             }
+    #         }
+    #     }
+    #     return message
 
     def get_market(self, order):
         pass
@@ -153,7 +153,6 @@ class QA_Broker(QA_Worker):
                 order.date = order.datetime[0:10]
                 order.datetime = '{} 09:30:00'.format(order.date)
             elif order.frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
-                print(order.datetime)
                 exact_time = str(datetime.datetime.strptime(
                     str(order.datetime), '%Y-%m-%d %H:%M:%S') + datetime.timedelta(minutes=1))
                 order.date = exact_time[0:10]

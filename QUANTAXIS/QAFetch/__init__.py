@@ -39,6 +39,7 @@ from QUANTAXIS.QAFetch import QACrawler as QACL
 from QUANTAXIS.QAFetch import QAEastMoney as QAEM
 from QUANTAXIS.QAFetch import QAfinancial
 
+
 def use(package):
     if package in ['wind']:
         try:
@@ -86,14 +87,6 @@ def QA_fetch_get_stock_min(package, code, start, end, level='1min'):
     Engine = use(package)
     if package in ['tdx', 'pytdx']:
         return Engine.QA_fetch_get_stock_min(code, start, end, level)
-    else:
-        return 'Unsupport packages'
-
-
-def QA_fetch_get_stock_list(package, type_='stock'):
-    Engine = use(package)
-    if package in ['tdx', 'pytdx']:
-        return Engine.QA_fetch_get_stock_list(type_)
     else:
         return 'Unsupport packages'
 
@@ -153,37 +146,31 @@ def QA_fetch_get_stock_info(package, code):
     else:
         return 'Unsupport packages'
 
+# LIST
 
 
-
-
-def QA_fetch_get_security_bars(code, _type, lens):
-    return QATdx.QA_fetch_get_security_bars(code, _type, lens)
-
-
-def QA_fetch_get_future_transaction(package,code,start,end):
+def QA_fetch_get_stock_list(package, type_='stock'):
     Engine = use(package)
     if package in ['tdx', 'pytdx']:
-        return Engine.QA_fetch_get_future_transaction(code,start,end)
+        return Engine.QA_fetch_get_stock_list(type_)
     else:
         return 'Unsupport packages'
 
 
-
-def QA_fetch_get_future_transaction_realtime(package,code):
-    """
-    期货实时tick
-    """
+def QA_fetch_get_bond_list(package):
     Engine = use(package)
     if package in ['tdx', 'pytdx']:
-        return Engine.QA_fetch_get_future_transaction_realtime(code)
+        return Engine.QA_fetch_get_bond_list()
     else:
         return 'Unsupport packages'
 
 
-def QA_fetch_get_future_realtime(package, code):
+def QA_fetch_get_index_list(package):
     Engine = use(package)
-    return Engine.QA_fetch_get_future_realtime(code)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_index_list()
+    else:   
+        return 'Unsupport packages'
 
 
 def QA_fetch_get_future_list(package,):
@@ -192,6 +179,7 @@ def QA_fetch_get_future_list(package,):
         return Engine.QA_fetch_get_future_list()
     else:
         return 'Unsupport packages'
+
 
 def QA_fetch_get_option_list(package,):
     Engine = use(package)
@@ -207,6 +195,7 @@ def QA_fetch_get_globalfuture_list(package,):
         return Engine.QA_fetch_get_globalfuture_list()
     else:
         return 'Unsupport packages'
+
 
 def QA_fetch_get_hkstock_list(package,):
     Engine = use(package)
@@ -231,12 +220,14 @@ def QA_fetch_get_hkindex_list(package,):
     else:
         return 'Unsupport packages'
 
+
 def QA_fetch_get_usstock_list(package,):
     Engine = use(package)
     if package in ['tdx', 'pytdx']:
         return Engine.QA_fetch_get_usstock_list()
     else:
         return 'Unsupport packages'
+
 
 def QA_fetch_get_macroindex_list(package,):
     Engine = use(package)
@@ -245,6 +236,7 @@ def QA_fetch_get_macroindex_list(package,):
     else:
         return 'Unsupport packages'
 
+
 def QA_fetch_get_exchangerate_list(package,):
     Engine = use(package)
     if package in ['tdx', 'pytdx']:
@@ -252,6 +244,36 @@ def QA_fetch_get_exchangerate_list(package,):
     else:
         return 'Unsupport packages'
 
+
+#######################
+
+
+def QA_fetch_get_security_bars(code, _type, lens):
+    return QATdx.QA_fetch_get_security_bars(code, _type, lens)
+
+
+def QA_fetch_get_future_transaction(package, code, start, end):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_future_transaction(code, start, end)
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_future_transaction_realtime(package, code):
+    """
+    期货实时tick
+    """
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_future_transaction_realtime(code)
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_future_realtime(package, code):
+    Engine = use(package)
+    return Engine.QA_fetch_get_future_realtime(code)
 
 
 def QA_fetch_get_future_day(package, code, start, end, frequence='day'):
