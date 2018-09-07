@@ -2,7 +2,8 @@
 
 <!-- TOC -->
 
-- [QUANTAXIS 更新纪要](#quantaxis-%E6%9B%B4%E6%96%B0%E7%BA%AA%E8%A6%81)
+- [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
+    - [1.1.4.dev1](#114dev1)
     - [1.1.4](#114)
     - [1.1.3.dev3](#113dev3)
     - [1.1.3.dev2](#113dev2)
@@ -59,6 +60,11 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
+
+## 1.1.4.dev1
+
+1. base_datastruct 增加了 avg 和 money 字段
+
 
 ## 1.1.4
 

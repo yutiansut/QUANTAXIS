@@ -480,7 +480,7 @@ class QA_Account(QA_Worker):
         trade_amount = int(trade_amount)
         order_id = str(order_id)
 
-        market_towards =1 if trade_towards>0 else -1
+        market_towards = 1 if trade_towards > 0 else -1
         trade_money = trade_price*trade_amount*market_towards
         commission_fee = trade_money*self.commission_coeff
 
@@ -519,16 +519,17 @@ class QA_Account(QA_Worker):
 
         if self.cash[-1] > trade_money:
             self.time_index.append(trade_time)
+            # TODO: 目前还不支持期货的锁仓
             if self.allow_sellopen:
-                if trade_towards in [ORDER_DIRECTION.BUY_OPEN,ORDER_DIRECTION.SELL_OPEN]:
+                if trade_towards in [ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN]:
                     # 开仓单占用现金
                     self.cash.append(self.cash[-1]-abs(trade_money))
                     self.cash_available = self.cash[-1]
-                elif trade_towards in [ORDER_DIRECTION.BUY_CLOSE,ORDER_DIRECTION.SELL_CLOSE]:
+                elif trade_towards in [ORDER_DIRECTION.BUY_CLOSE, ORDER_DIRECTION.SELL_CLOSE]:
                     # 平仓单释放现金
                     self.cash.append(self.cash[-1]+abs(trade_money))
                     self.cash_available = self.cash[-1]
-            else:        
+            else:
                 self.cash.append(self.cash[-1]-trade_money)
                 self.cash_available = self.cash[-1]
 
@@ -643,7 +644,7 @@ class QA_Account(QA_Worker):
                     flag = True
             else:
                 # 如果有负持仓-- 允许卖空的时候
-                if self.allow_sellopen and towards==3:# 多平
+                if self.allow_sellopen and towards == 3:  # 多平
                     _hold = self.sell_available.get(code, 0)
                     left_amount = amount+_hold if _hold < 0 else amount
                     _money = float(left_amount * price + amount *
