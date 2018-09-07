@@ -46,24 +46,24 @@ class QA_Backtest():
 
     BACKTEST的主要目的:
 
-    - 引入时间轴环境,获取全部的数据,然后按生成器将数据迭代插入回测的BROKER
-        (这一个过程是模拟在真实情况中市场的时间变化和价格变化)
+        - 引入时间轴环境,获取全部的数据,然后按生成器将数据迭代插入回测的BROKER
+            (这一个过程是模拟在真实情况中市场的时间变化和价格变化)
 
-    - BROKER有了新数据以后 会通知MARKET交易前置,MARKET告知已经注册的所有的ACCOUNT 有新的市场数据
+        - BROKER有了新数据以后 会通知MARKET交易前置,MARKET告知已经注册的所有的ACCOUNT 有新的市场数据
 
-    - ACCOUNT 获取了新的市场函数,并将其插入他已有的数据中(update)
+        - ACCOUNT 获取了新的市场函数,并将其插入他已有的数据中(update)
 
-    - ACCOUNT 底下注册的策略STRATEGY根据新的市场函数,产生新的买卖判断,综合生成信号
+        - ACCOUNT 底下注册的策略STRATEGY根据新的市场函数,产生新的买卖判断,综合生成信号
 
-    - 买卖判断通过交易前置发送给对应的BROKER,进行交易
+        - 买卖判断通过交易前置发送给对应的BROKER,进行交易
 
-    - BROKER发送SETTLE指令 结束这一个bar的所有交易,进行清算
+        - BROKER发送SETTLE指令 结束这一个bar的所有交易,进行清算
 
-    - 账户也进行清算,更新持仓,可卖,可用现金等
+        - 账户也进行清算,更新持仓,可卖,可用现金等
 
-    - 迭代循环直至结束回测
+        - 迭代循环直至结束回测
 
-    - 回测去计算这段时间的各个账户收益,并给出综合的最终结果
+        - 回测去计算这段时间的各个账户收益,并给出综合的最终结果
 
     """
 
@@ -123,7 +123,7 @@ class QA_Backtest():
         """
         # 启动 trade_engine 线程
         self.market.start()
-
+        print('market start')
         
 
         # 注册 backtest_broker ，并且启动和它关联线程QAThread 存放在 kernels 词典中， { 'broker_name': QAThread }

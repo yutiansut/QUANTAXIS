@@ -2,7 +2,17 @@
 
 <!-- TOC -->
 
-- [QUANTAXIS 更新纪要](#quantaxis-%E6%9B%B4%E6%96%B0%E7%BA%AA%E8%A6%81)
+- [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
+    - [1.1.4.dev1](#114dev1)
+    - [1.1.4](#114)
+    - [1.1.3.dev3](#113dev3)
+    - [1.1.3.dev2](#113dev2)
+    - [1.1.3.dev1](#113dev1)
+    - [1.1.3](#113)
+    - [1.1.2.dev1](#112dev1)
+    - [1.1.2](#112)
+    - [1.1.1.dev2](#111dev2)
+    - [1.1.1.dev1](#111dev1)
     - [1.1.0](#110)
     - [1.0.68](#1068)
     - [1.0.67](#1067)
@@ -51,13 +61,121 @@
 
 <!-- /TOC -->
 
+## 1.1.4.dev1
+
+1. base_datastruct 增加了 avg 和 money 字段
+
+
+## 1.1.4
+
+1. 修复了期货分钟线的获取bug(期货一天的交易时间超过4小时 不能用股票的bar数量)
+2. 修复了QAAccount的Allow_t0规则下的交易结转
+
+
+## 1.1.3.dev3
+
+1. 增加对于list获取的支持:
+
+    QA_fetch_index_list()
+
+    QA_fetch_index_list_adv()
+
+    QA_fetch_future_list()
+
+    QA_fetch_future_list_adv()
+
+2. 优化 QA_DataStruct的返回Series的名称
+3. 删除实盘易broker的TRADE_Event(已弃用)
+
+## 1.1.3.dev2
+
+1. 修复index_cn的列表获取
+
+2. 增加save index_list和save future_list 选项
+
+
+
+## 1.1.3.dev1
+
+1. 增加 async for 在3.5上的兼容问题
+
+
+## 1.1.3
+
+1. 增加对于期货分钟线回测的支持
+
+
+## 1.1.2.dev1
+
+[QAFetch]
+
+
+1. QA_Query 优化对于指数数据的字段
+
+[QAData]
+
+1. base_datastruct 优化对于指数DataStruct的支持
+
+
+
+## 1.1.2 
+
+[QAData]
+
+1. 修复分钟线降采样bug
+2. QADataStruct_Future_day/min 修改
+
+[QAMarket]
+
+1. 修改QADealer以支持期货回测
+
+[QARisk]
+
+1. 修改QARisk 以支持期货账户分析
+
+[test_backtest]
+
+1. 增加期货回测(日线) 简单回测示例
+
+## 1.1.1.dev2
+
+[QAARP]
+
+1. QA_Account 修改默认印花税 千1.5 ==> 千1
+
+[QAData]
+
+1. QA_DataStruct_xxx_day/min 增加 select_day(day) 函数, 一般用于分钟线选取某一日
+
+[test_backtest]
+
+1. 增加分钟线简单回测(单线程) 
+2. @尧 提供了一个日线级 多线程的带指标回测
+
+
+
+
+
+## 1.1.1.dev1
+
+[QAData]
+
+1. 修改了market_value的计算, 对于一日内出现多个权息事件的股票做了兼容处理
+
+
 ## 1.1.0 
+
+[QAAnalysis]
+
+1. QA_Analysis_Block 修改 支持板块指数/自定义指数 以及4种计算方法
 
 [QAData]
 
 1. 修改了采样函数的写法
 2. 修复了tick采样成60min的bug
 3. 修复了因为multiindex导致的QA_DataStruct.to_json方法缺失 datetime/code 字段的问题
+4. 优化了QADataStruct的plot方法
+5. 新增自动计算任意时间 流动市值/总市值函数 QA_data_marketvalue  使用不复权DataStruct(DataStruct.add_func(QA_data_marketvalue))
 
 [QAMARKET]
 
@@ -99,6 +217,8 @@
 [QAWEB]
 
 1. QAWEB 增加查询股票名称的接口 http://ip:port/marketdata/stock/code?code=xxxxx
+
+released in 2018/08/23
 
 ## 1.0.68 
 

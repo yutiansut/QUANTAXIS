@@ -1,13 +1,16 @@
 # coding:utf-8
 
-# 输入一个stock_list/stock_block
-# 生成相关因子
-
 import datetime
+from functools import lru_cache
 
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+import numpy as np
 import pandas as pd
 
 from QUANTAXIS.QAAnalysis.QAAnalysis_dataframe import QAAnalysis_stock
+from QUANTAXIS.QAData.data_marketvalue import QA_data_marketvalue
+from QUANTAXIS.QAFetch.Fetcher import QA_quotation
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_info
 from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_stock_block_adv,
                                                QA_fetch_stock_day_adv,
@@ -15,6 +18,8 @@ from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_stock_block_adv,
 from QUANTAXIS.QAFetch.QATdx import QA_fetch_get_stock_info
 from QUANTAXIS.QAFetch.QATdx_adv import QA_Tdx_Executor
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_real_datelist
+from QUANTAXIS.QAUtil.QAParameter import (DATASOURCE, FREQUENCE, MARKET_TYPE,
+                                          OUTPUT_FORMAT)
 
 
 def get_gap_trade(gap):
@@ -23,122 +28,104 @@ def get_gap_trade(gap):
 
 #from QUANTAXIS.QAAnalysis.QAAnalysis_dataframe import QAAnalysis_stock
 class QAAnalysis_block():
-    def __init__(self, block=None, block_name=None, lens=90, *args, **kwargs):
+    def __init__(self, code=[], name=None, start=None, end=None, frequence=FREQUENCE.DAY,  *args, **kwargs):
 
-        try:
-            self.block_code = block.code
-        except:
-            self.block_code = block
-
-        if block_name is not None:
-            self.block_code = QA_fetch_stock_block_adv().get_block(block_name).code
-        self.lens = lens
-        # self.Executor=QA_Tdx_Executor()
-
+        self.code = code
+        self.start = start
+        self.end = end
+        self.frequence = frequence
+        self.name = name
 
     def __repr__(self):
-        return '< QAAnalysis_Block >'
+        return '< QAAnalysis_Block {} with {} code >'.format(self.name, len(self.code))
 
-    def market_data(self, start, end, _type='day'):
-        return QA_fetch_stock_day_adv(self.block_code, start, end)
+    @property
+    @lru_cache()
+    def market_data(self):
+        return QA_quotation(self.code, self.start, self.end, self.frequence,
+                            market=MARKET_TYPE.STOCK_CN, source=DATASOURCE.MONGO, output=OUTPUT_FORMAT.DATASTRUCT)
+
+    @property
+    @lru_cache()
+    def market_value(self):
+        return self.market_data.add_func(QA_data_marketvalue)
 
     @property
     def week_data(self):
         'this weekly data'
         'return a QUANTAXIS DATASTRUCT'
-        _start, _end = get_gap_trade(7)
-        return self.market_data(_start, _end)
+
+        return self.market_data.to_week()
 
     @property
     def month_data(self):
         'this monthly data'
         'return a QUANTAXIS DATASTRUCT'
-        _start, _end = get_gap_trade(90)
-        return self.market_data(_start, _end)
 
-    @property
-    def _data(self):
-        _start, _end = get_gap_trade(self.lens)
-        return self.market_data(_start, _end)
+        return self.market_data.to_month()
 
-    def block_price(self, market_data=None):
-        if market_data is None:
-            market_data = self._data.to_qfq()
+    def block_index(self, methods='mv'):
+
+        if methods == 'mv':
+            res = self.market_value.groupby(level=0).apply(
+                lambda x: np.average(x.close, weights=x.shares))
+        elif methods == 'lv':
+            res = self.market_value.groupby(level=0).apply(
+                lambda x: np.average(x.close, weights=x.lshares))
+        elif methods == 'close':
+            res = self.market_value.groupby(level=0).apply(
+                lambda x: np.average(x.close))
+        elif methods == 'volume':
+            res = self.market_value.groupby(level=0).apply(
+                lambda x: np.average(x.close, weights=x.volume))
         else:
-            market_data = market_data.to_qfq()
-        return QAAnalysis_stock(market_data).price.groupby('date').mean()
+            res = self.market_value.groupby(level=0).apply(
+                lambda x: np.average(x.close, weights=x.shares))
+            print(
+                'wrong methods: only support [mv,lv,close,volume] methods \n use default mv methods')
 
-    def block_pcg(self, market_data=None):
-        if market_data is None:
-            market_data = self._data.to_qfq()
-        else:
-            market_data = market_data.to_qfq()
-        return QAAnalysis_stock(market_data).day_pct_change.groupby('date').mean()
+        return res/res.iloc[0]*1000
 
-    def stock_turnover(self, market_data=None):
-        if market_data is None:
-            market_data = self._data.to_qfq()
-        else:
-            market_data = market_data.to_qfq()
-        _data = market_data.data
-        _info = self.stock_info()
-        _data['ltgb'] = _data.code.apply(lambda x: _info.liutongguben[x])
-        _data['turnover'] = 100 * _data['volume'] / _data['ltgb']
-        return _data
+    def stock_turnover(self):
 
-    def block_turnover(self, market_data=None):
-        return self.stock_turnover(market_data).turnover.groupby('date').mean()
+        return 100*self.market_value.volume/self.market_value.lshare
 
-    def stock_info(self):
-        data = []
+    def block_turnover(self):
+        return self.stock_turnover().groupby(level=0).mean()
 
-        for item in self.block_code:
-            try:
-                _data = QA_fetch_stock_info(item)
-            except:
-                _data = QA_fetch_get_stock_info(item)
-            data.append(_data)
+    def plot_index(self, methods='mv'):
+        block_index=self.block_index('close')
+        def format_date(x, pos=None):
+            # 保证下标不越界,很重要,越界会导致最终plot坐标轴label无显示
+            thisind = np.clip(int(x+0.5), 0, N-1)
+            # print(thisind)
+            return block_index.index[thisind].strftime('%Y-%m-%d %H:%M')
+        fig = plt.figure(figsize=(14, 12))
+        ax = fig.add_subplot(1, 1, 1)
+        plt.style.use('ggplot')
 
-        return pd.concat(data).set_index('code', drop=False)
-
-    def res(self):
-        import matplotlib.pyplot as plt
-        self.block_pcg().plot()
-        self.block_turnover().plot()
+        plt.title('QUANTAXIS BLOCK ANA {}'.format(
+            self.name), fontproperties="SimHei")
+        N = len(block_index)
+        block_index.reset_index()[0].plot()
+        self.block_index('lv').reset_index()[0].plot()
+        self.block_index('close').reset_index()[0].plot()
+        self.block_index('volume').reset_index()[0].plot()
+        ax.xaxis.set_major_formatter(ticker.FuncFormatter(format_date))
+        plt.legend(['market_value', 'liquidity_value', 'close', 'volume'])
         plt.show()
-
-
-
-class QAAnalysis_codewithblock():
-    def __init__(self, block):
-        self.block = block
-        self.code = block.code
-
-
-
 
 
 if __name__ == "__main__":
     import QUANTAXIS as QA
-    # print(get_this_week())
     ana = QAAnalysis_block(
-        QA.QA_fetch_stock_block_adv().get_block('昨日涨停').code)
+        QA.QA_fetch_stock_block_adv().get_block('国产软件').code, '国产软件', '2018-01-01', '2018-08-21')
+    ana.plot_index()
 
-    """
-    计算换手率
-    d=QA.QA_fetch_get_stock_day('tdx','000001','2017-11-14','2017-11-15','00').vol.values[0]*100  # 一手100股
-    f=QA.QA_fetch_get_stock_info('tdx','000001').liutongguben.values[0]
-    turnover=d/f
-    """
-    # print(js)
+    ana = QAAnalysis_block(['000001', '000002', '600356'],
+                           '自定义', '2018-01-01', '2018-08-21')
+    ana.plot_index()
 
-    x = []
-    y = []
-    block = QA.QA_fetch_stock_block_adv().getdtype('gn').block_name
-    for item in block:
-        print(item)
-        data = QAAnalysis_block(block_name=item)
-        x.append(data.block_pcg())
-        y.append(data.block_turnover())
-    print(len(x))
-    print(len(y))
+    ana = QAAnalysis_block(['000001', '000002', '600356'],
+                           '自定义15分钟级别指数', '2018-08-01', '2018-08-21', FREQUENCE.FIFTEEN_MIN)
+    ana.plot_index()

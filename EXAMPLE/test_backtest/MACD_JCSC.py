@@ -7,8 +7,8 @@
 import QUANTAXIS as QA
 import numpy as np
 import pandas as pd
-
-
+import datetime
+st1=datetime.datetime.now()
 # define the MACD strategy
 def MACD_JCSC(dataframe, SHORT=12, LONG=26, M=9):
     """
@@ -82,7 +82,8 @@ for items in data_forbacktest.panel_gen:
                 res=trade_mes.loc[order.account_cookie,order.realorder_id]
                 order.trade(res.trade_id,res.trade_price,res.trade_amount,res.trade_time)
     Account.settle()
-            
+
+print('TIME -- {}'.format(datetime.datetime.now()-st1))
 print(Account.history)
 print(Account.history_table)
 print(Account.daily_hold)

@@ -134,13 +134,13 @@ class QA_DataStruct_Stock_day(_quotation_base):
     @lru_cache()
     def next_day_low_limit(self):
         "明日跌停价"
-        return round((self.data.close + 0.0002) * 1.1, 2)
+        return round((self.data.close + 0.0002) * 0.9, 2)
 
     @property
     @lru_cache()
     def next_day_high_limit(self):
         "明日涨停价"
-        return round((self.data.close + 0.0002) * 0.9, 2)
+        return round((self.data.close + 0.0002) * 1.1, 2)
 
     @property
     def preclose(self):
@@ -148,6 +148,9 @@ class QA_DataStruct_Stock_day(_quotation_base):
             return self.data.preclose
         except:
             return None
+
+    pre_close=preclose
+
 
     @property
     def price_chg(self):
@@ -165,6 +168,19 @@ class QA_DataStruct_Stock_day(_quotation_base):
     @lru_cache()
     def month(self):
         return self.resample('M')
+
+
+    @property
+    @lru_cache()
+    def quarter(self):
+        return self.resample('Q')
+
+
+    # @property
+    # @lru_cache()
+    # def semiannual(self):
+    #     return self.resample('SA')
+
 
     @property
     @lru_cache()
@@ -185,11 +201,11 @@ class QA_DataStruct_Stock_min(_quotation_base):
 
         try:
             if 'preclose' in DataFrame.columns:
-                self.data = DataFrame.ix[:, [
-                    'open', 'high', 'low', 'close', 'volume', 'preclose', 'date']]
+                self.data = DataFrame.loc[:, [
+                    'open', 'high', 'low', 'close', 'volume', 'amount', 'preclose']]
             else:
-                self.data = DataFrame.ix[:, [
-                    'open', 'high', 'low', 'close', 'volume', 'date']]
+                self.data = DataFrame.loc[:, [
+                    'open', 'high', 'low', 'close', 'volume', 'amount']]
         except Exception as e:
             raise e
 
@@ -287,8 +303,9 @@ class QA_DataStruct_Stock_min(_quotation_base):
 class QA_DataStruct_Future_day(_quotation_base):
     def __init__(self, DataFrame, dtype='future_day', if_fq=''):
         self.type = 'future_day'
-        self.data = DataFrame.ix[:, [
-            'code', 'open', 'high', 'low', 'close', 'trade', 'position', 'datetime', 'date']]
+        self.data = DataFrame.loc[:, [
+            'open', 'high', 'low', 'close', 'trade', 'position', 'price']]
+        self.if_fq = if_fq
 
     # 抽象类继承
     def choose_db(self):
@@ -307,8 +324,9 @@ class QA_DataStruct_Future_min(_quotation_base):
     def __init__(self, DataFrame, dtype='future_min', if_fq=''):
         # 🛠todo  期货分钟数据线的维护， 暂时用日线代替分钟线
         self.type = 'future_day'
-        self.data = DataFrame.ix[:, [
-            'code', 'open', 'high', 'low', 'close', 'trade', 'position', 'datetime', 'date']]
+        self.data = DataFrame.loc[:, [
+            'open', 'high', 'low', 'close', 'trade', 'position', 'price']]
+        self.if_fq = if_fq
 
     # 抽象类继承
     def choose_db(self):
@@ -351,8 +369,8 @@ class QA_DataStruct_Index_min(_quotation_base):
     def __init__(self, DataFrame, dtype='index_min', if_fq=''):
         self.type = dtype
         self.if_fq = if_fq
-        self.data = DataFrame.ix[:, [
-            'code', 'open', 'high', 'low', 'close', 'volume', 'datetime', 'date']]
+        self.data = DataFrame.loc[:, [
+            'open', 'high', 'low', 'close', 'up_count', 'down_count', 'volume', 'amount']]
         #self.mongo_coll = DATABASE.index_min
 
     # 抽象类继承
@@ -759,13 +777,13 @@ class QA_DataStruct_Stock_realtime(_realtime_base):
 
     # @property
     # def ask_list(self):
-    #     return self.data.ix[:, ['ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',
+    #     return self.data.loc[:, ['ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',
     #                                    'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3', 'ask4',
     #                                    'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
 
     # @property
     # def bid_list(self):
-    #     return self.data.ix[:, ['bid1', 'bid_vol1', 'bid2', 'bid_vol2',  'bid3', 'bid_vol3', 'bid4', 'bid_vol4', 'bid5', 'bid_vol5']]
+    #     return self.data.loc[:, ['bid1', 'bid_vol1', 'bid2', 'bid_vol2',  'bid3', 'bid_vol3', 'bid4', 'bid_vol4', 'bid5', 'bid_vol5']]
 
     @property
     def _data(self):

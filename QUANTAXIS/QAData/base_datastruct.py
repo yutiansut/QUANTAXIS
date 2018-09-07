@@ -65,8 +65,7 @@ class _quotation_base():
         # 🛠todo 判断DataFame 对象字段的合法性，是否正确
         self.data = DataFrame.sort_index()
         self.data.index = self.data.index.remove_unused_levels()
-        # 🛠todo 该变量没有用到， 是不是 self.data_type = marketdata_type ??
-        self.data_type = dtype
+        # 🛠todo 该变量没有用到， 是不是 self.type = marketdata_type ??
 
         # 数据类型 可能的取值
 
@@ -308,7 +307,10 @@ class _quotation_base():
     @property
     @lru_cache()
     def price(self):
-        return (self.open + self.high + self.low + self.close) / 4
+
+        res = (self.open + self.high + self.low + self.close) / 4
+        res.name = 'price'
+        return res
 
     # ？？
     @property
@@ -337,7 +339,7 @@ class _quotation_base():
     def date(self):
         index = self.data.index.remove_unused_levels()
         try:
-            return index.levels[0] if 'date' in self.data.index.names else pd.to_datetime(index.levels[0].date)
+            return index.levels[0] if 'date' in self.data.index.names else list(set(self.datetime.date))
         except:
             return None
 
@@ -346,7 +348,24 @@ class _quotation_base():
     def datetime(self):
         '分钟线结构返回datetime 日线结构返回date'
         index = self.data.index.remove_unused_levels()
-        return index.levels[0]
+        return pd.to_datetime(index.levels[0])
+
+    @property
+    @lru_cache()
+    def money(self):
+        res = self.data.amount
+        res.name = 'money'
+        return res
+
+    @property
+    @lru_cache()
+    def avg(self):
+        try:
+            res = self.amount/self.volume
+            res.name = 'avg'
+            return res
+        except:
+            return None
 
     '''
     ########################################################################################################
@@ -355,71 +374,95 @@ class _quotation_base():
     @property
     @lru_cache()
     def max(self):
-        return self.price.groupby(level=1).apply(lambda x: x.max())
+        res = self.price.groupby(level=1).apply(lambda x: x.max())
+        res.name = 'max'
 
     @property
     @lru_cache()
     def min(self):
-        return self.price.groupby(level=1).apply(lambda x: x.min())
+        res = self.price.groupby(level=1).apply(lambda x: x.min())
+        res.name = 'min'
+        return res
 
     @property
     @lru_cache()
     def mean(self):
-        return self.price.groupby(level=1).apply(lambda x: x.mean())
+        res = self.price.groupby(level=1).apply(lambda x: x.mean())
+        res.name = 'mean'
+        return res
     # 一阶差分序列
 
     @property
     @lru_cache()
     def price_diff(self):
         '返回DataStruct.price的一阶差分'
-        return self.price.groupby(level=1).apply(lambda x: x.diff(1))
+        res = self.price.groupby(level=1).apply(lambda x: x.diff(1))
+        res.name = 'price_diff'
+        return res
     # 样本方差(无偏估计) population variance
 
     @property
     @lru_cache()
     def pvariance(self):
         '返回DataStruct.price的方差 variance'
-        return self.price.groupby(level=1).apply(lambda x: statistics.pvariance(x))
+        res = self.price.groupby(level=1).apply(
+            lambda x: statistics.pvariance(x))
+        res.name = 'pvariance'
+        return res
 
     # 方差
     @property
     @lru_cache()
     def variance(self):
         '返回DataStruct.price的方差 variance'
-        return self.price.groupby(level=1).apply(lambda x: statistics.variance(x))
+        res = self.price.groupby(level=1).apply(
+            lambda x: statistics.variance(x))
+        res.name = 'variance'
+        return res
     # 标准差
 
     @property
     @lru_cache()
     def bar_pct_change(self):
         '返回bar的涨跌幅'
-        return (self.close - self.open) / self.open
+        res = (self.close - self.open) / self.open
+        res.name = 'bar_pct_change'
+        return res
 
     @property
     @lru_cache()
     def bar_amplitude(self):
         "返回bar振幅"
-        return (self.high-self.low)/self.low
+        res = (self.high-self.low)/self.low
+        res.name = 'bar_amplitude'
+        return res
 
     @property
     @lru_cache()
     def stdev(self):
         '返回DataStruct.price的样本标准差 Sample standard deviation'
-        return self.price.groupby(level=1).apply(lambda x: statistics.stdev(x))
+        res = self.price.groupby(level=1).apply(lambda x: statistics.stdev(x))
+        res.name = 'stdev'
+        return res
     # 总体标准差
 
     @property
     @lru_cache()
     def pstdev(self):
         '返回DataStruct.price的总体标准差 Population standard deviation'
-        return self.price.groupby(level=1).apply(lambda x: statistics.pstdev(x))
+        res = self.price.groupby(level=1).apply(lambda x: statistics.pstdev(x))
+        res.name = 'pstdev'
+        return res
 
     # 调和平均数
     @property
     @lru_cache()
     def mean_harmonic(self):
         '返回DataStruct.price的调和平均数'
-        return self.price.groupby(level=1).apply(lambda x: statistics.harmonic_mean(x))
+        res = self.price.groupby(level=1).apply(
+            lambda x: statistics.harmonic_mean(x))
+        res.name = 'mean_harmonic'
+        return res
 
     # 众数
     @property
@@ -427,7 +470,10 @@ class _quotation_base():
     def mode(self):
         '返回DataStruct.price的众数'
         try:
-            return self.price.groupby(level=1).apply(lambda x: statistics.mode(x))
+            res = self.price.groupby(level=1).apply(
+                lambda x: statistics.mode(x))
+            res.name = 'mode'
+            return res
         except:
             return None
 
@@ -436,7 +482,10 @@ class _quotation_base():
     @lru_cache()
     def amplitude(self):
         '返回DataStruct.price的百分比变化'
-        return self.price.groupby(level=1).apply(lambda x: (x.max()-x.min())/x.min())
+        res = self.price.groupby(level=1).apply(
+            lambda x: (x.max()-x.min())/x.min())
+        res.name = 'amplitude'
+        return res
 
     # 偏度 Skewness
 
@@ -444,28 +493,36 @@ class _quotation_base():
     @lru_cache()
     def skew(self):
         '返回DataStruct.price的偏度'
-        return self.price.groupby(level=1).apply(lambda x: x.skew())
+        res = self.price.groupby(level=1).apply(lambda x: x.skew())
+        res.name = 'skew'
+        return res
     # 峰度Kurtosis
 
     @property
     @lru_cache()
     def kurt(self):
         '返回DataStruct.price的峰度'
-        return self.price.groupby(level=1).apply(lambda x: x.kurt())
+        res = self.price.groupby(level=1).apply(lambda x: x.kurt())
+        res.name = 'kurt'
+        return res
     # 百分数变化
 
     @property
     @lru_cache()
     def pct_change(self):
         '返回DataStruct.price的百分比变化'
-        return self.price.groupby(level=1).apply(lambda x: x.pct_change())
+        res = self.price.groupby(level=1).apply(lambda x: x.pct_change())
+        res.name = 'pct_change'
+        return res
 
     # 平均绝对偏差
     @property
     @lru_cache()
     def mad(self):
         '平均绝对偏差'
-        return self.price.groupby(level=1).apply(lambda x: x.mad())
+        res = self.price.groupby(level=1).apply(lambda x: x.mad())
+        res.name = 'mad'
+        return res
 
     @property
     @lru_cache()
@@ -527,6 +584,10 @@ class _quotation_base():
             raise e
 
     def plot(self, code=None):
+
+        def kline_formater(param):
+            return param.name + ':' + vars(param)
+
         """plot the market_data"""
         if code is None:
             path_name = '.' + os.sep + 'QA_' + self.type + \
@@ -540,16 +601,17 @@ class _quotation_base():
             for ds in data_splits:
                 data = []
                 axis = []
-                if ds.data_type[-3:] == 'day':
+                if ds.type[-3:] == 'day':
                     datetime = np.array(ds.date.map(str))
                 else:
                     datetime = np.array(ds.datetime.map(str))
-                ohlc = np.array(ds.data.loc[:, ['open', 'close', 'low', 'high']])
+                ohlc = np.array(
+                    ds.data.loc[:, ['open', 'close', 'low', 'high']])
                 #amount = np.array(ds.amount)
                 #vol = np.array(ds.volume)
 
                 kline.add(ds.code[0], datetime, ohlc, mark_point=[
-                          "max", "min"], is_datazoom_show=True, datazoom_orient='horizontal')
+                          "max", "min"], is_datazoom_show=False, datazoom_orient='horizontal')
 
             kline.render(path_name)
             webbrowser.open(path_name)
@@ -561,7 +623,7 @@ class _quotation_base():
             ds = self.select_code(code)
             data = []
             #axis = []
-            if self.data_type[-3:] == 'day':
+            if self.type[-3:] == 'day':
                 datetime = np.array(ds.date.map(str))
             else:
                 datetime = np.array(ds.datetime.map(str))
@@ -572,20 +634,25 @@ class _quotation_base():
             kline = Kline('{}__{}__{}'.format(code, self.if_fq, self.type),
                           width=1360, height=700, page_title='QUANTAXIS')
             bar = Bar()
-            kline.add(self.code, datetime, ohlc, mark_point=[
-                "max", "min"], is_datazoom_show=True, datazoom_orient='horizontal')
+            kline.add(self.code, datetime, ohlc,
+                      mark_point=["max", "min"],
+                      # is_label_show=True,
+                      is_datazoom_show=True,
+                      is_xaxis_show=False,
+                      # is_toolbox_show=True,
+                      tooltip_formatter='{b}:{c}',  # kline_formater,
+                      # is_more_utils=True,
+                      datazoom_orient='horizontal')
 
             bar.add(self.code, datetime, vol,
-                    is_datazoom_show=True, datazoom_xaxis_index=[0, 1])
+                    is_datazoom_show=True,
+                    datazoom_xaxis_index=[0, 1])
             path_name = '.{}QA_{}_{}_{}.html'.format(
                 os.sep, self.type, code, self.if_fq)
 
-            # kline.add(code, axis, data, mark_point=[
-            #           "max", "min"], is_datazoom_show=True, datazoom_orient='horizontal')
-
-            grid = Grid()
-            grid.add(bar, grid_top="60%")
-            grid.add(kline, grid_bottom="60%")
+            grid = Grid(width=1360, height=700, page_title='QUANTAXIS')
+            grid.add(bar, grid_top="80%")
+            grid.add(kline, grid_bottom="30%")
             grid.render(path_name)
 
             webbrowser.open(path_name)
@@ -813,6 +880,26 @@ class _quotation_base():
             raise ValueError(
                 'QA CANNOT GET THIS START {}/END{} '.format(start, end))
 
+    def select_day(self, day):
+        """选取日期(一般用于分钟线)
+
+        Arguments:
+            day {[type]} -- [description]
+
+        Raises:
+            ValueError -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+
+        def _select_day(day):
+            return self.data.loc[day, slice(None)]
+        try:
+            return self.new(_select_day(day), self.type, self.if_fq)
+        except:
+            raise ValueError('QA CANNOT GET THIS Day {} '.format(day))
+
     def select_month(self, month):
         """
         选择月份
@@ -834,7 +921,7 @@ class _quotation_base():
         try:
             return self.new(_select_month(month), self.type, self.if_fq)
         except:
-            raise ValueError('QA CANNOT GET THIS Month{} '.format(month))
+            raise ValueError('QA CANNOT GET THIS Month {} '.format(month))
 
     def select_code(self, code):
         """
@@ -858,6 +945,19 @@ class _quotation_base():
             return self.new(_select_code(code), self.type, self.if_fq)
         except:
             raise ValueError('QA CANNOT FIND THIS CODE {}'.format(code))
+
+    def select_columns(self, columns):
+        if isinstance(columns, list):
+            columns = columns
+        elif isinstance(columns, str):
+            columns = [columns]
+        else:
+            print('wrong columns')
+
+        try:
+            return self.data.loc[:, columns]
+        except:
+            pass
 
     def get_bar(self, code, time):
         """

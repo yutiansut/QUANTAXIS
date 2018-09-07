@@ -44,19 +44,20 @@ from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT,
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_if_tradetime
 
 
-class QATrade_Realtime():
-    def __init__(self, market_type, frequence,):
+class QA_RealTrade():
+    def __init__(self, code, market_type, frequence, broker_name=BROKER_TYPE.SHIPANE, broker=None,):
         self.user = QA_User()
         self.if_settled = False
         self.account = None
         self.portfolio = None
 
-        self.market = QA_Market()
+        self.market = QA_Market(if_start_orderthreading=True)
         self.market_type = market_type
 
         self.frequence = frequence
-        self.broker = QA_SPEBroker()
-        self.broker_name = 'shipane_broker'
+
+        #self.broker = QA_SPEBroker()
+        self.broker_name = broker_name
 
         self.ingest_data = None
 
@@ -77,7 +78,8 @@ class QATrade_Realtime():
         self.market.start()
 
         # 注册 backtest_broker ，并且启动和它关联线程QAThread 存放在 kernels 词典中， { 'broker_name': QAThread }
-        self.market.register(self.broker_name, self.broker)
+        #self.market.register(self.broker_name, self.broker)
+        self.market.connect(self.broker_name)
 
     def run(self):
         """generator driven data flow
@@ -86,6 +88,11 @@ class QATrade_Realtime():
         _date = None
 
         while QA_util_if_tradetime(self.now):
+
+            
+
+            
+
 
             for data in self.ingest_data:  # 对于在ingest_data中的数据
                 # <class 'QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day'>
