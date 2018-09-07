@@ -134,13 +134,13 @@ class QA_DataStruct_Stock_day(_quotation_base):
     @lru_cache()
     def next_day_low_limit(self):
         "明日跌停价"
-        return round((self.data.close + 0.0002) * 1.1, 2)
+        return round((self.data.close + 0.0002) * 0.9, 2)
 
     @property
     @lru_cache()
     def next_day_high_limit(self):
         "明日涨停价"
-        return round((self.data.close + 0.0002) * 0.9, 2)
+        return round((self.data.close + 0.0002) * 1.1, 2)
 
     @property
     def preclose(self):
@@ -148,6 +148,9 @@ class QA_DataStruct_Stock_day(_quotation_base):
             return self.data.preclose
         except:
             return None
+
+    pre_close=preclose
+
 
     @property
     def price_chg(self):
