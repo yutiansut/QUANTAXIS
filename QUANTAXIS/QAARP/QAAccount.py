@@ -533,14 +533,13 @@ class QA_Account(QA_Worker):
                 self.cash.append(self.cash[-1]-trade_money)
                 self.cash_available = self.cash[-1]
 
+            self.history.append(
+                [trade_time, code, trade_price, market_towards*trade_amount, self.cash[-1], order_id, realorder_id, trade_id, self.account_cookie,
+                    commission_fee, tax_fee])
             if self.allow_t0:
 
                 self.sell_available = self.hold
                 self.buy_available = self.hold
-
-            self.history.append(
-                [trade_time, code, trade_price, market_towards*trade_amount, self.cash[-1], order_id, realorder_id, trade_id, self.account_cookie,
-                    commission_fee, tax_fee])
         else:
             print(self.cash[-1])
             self.cash_available = self.cash[-1]
