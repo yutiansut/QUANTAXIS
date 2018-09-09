@@ -16,6 +16,7 @@
         - [1.10. 实时上下五档 STOCK_CN/QUOTATION](#110-实时上下五档-stock_cnquotation)
         - [1.11. 分笔数据 | STOCK_CN/TRANSACTION](#111-分笔数据--stock_cntransaction)
         - [1.12. 版块数据 | STOCK_CN/BLOCK](#112-版块数据--stock_cnblock)
+        - [1.13 期货分钟线 | Future_Min](#113-期货分钟线--future_min)
     - [2. 从数据库获取 | FROM LOCALHOST](#2-从数据库获取--from-localhost)
         - [2.1. 股票日线 | STOCK_CN/DAY](#21-股票日线--stock_cnday)
         - [2.2. 股票分钟线 | STOCK_CN/MIN](#22-股票分钟线--stock_cnmin)
@@ -25,7 +26,7 @@
 
 <!-- /TOC -->
 
-具体可以参见[jupyter notebook](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/jupyterexample/QAFetch.ipynb)
+具体可以参见[jupyter notebook](https://github.com/QUANTAXIS/QUANTAXIS/tree/master/EXAMPLE/1_%E6%95%B0%E6%8D%AE%E8%8E%B7%E5%8F%96/QAFetch.ipynb)
 
 
 ##  1. 从网上获取 | FROM WEBSITE
@@ -117,7 +118,14 @@ data=QA.QAFetch.QATdx.QA_fetch_get_index_min('000001','2017-07-01','2017-08-01',
 
 ```python
 
+QA.QA_util_log_info('期货日线')
+
+QA.QAFetch.QATdx.QA_fetch_get_future_day('RBL8','2018-08-01','2018-08-30')
+
 ```
+
+
+
 
 ###  1.9. 最新交易价格STOCK | LAST PRICE
 ```python
@@ -152,8 +160,12 @@ QA.QA_util_log_info('板块数据')
 data=QA.QAFetch.QATdx.QA_fetch_get_stock_block()
 ```
 
+### 1.13 期货分钟线 | Future_Min
 
+```python
 
+QA.QAFetch.QATdx.QA_fetch_get_future_min('RBL8','2018-08-30','2018-09-06','1min')
+```
 
 ##  2. 从数据库获取 | FROM LOCALHOST
 
