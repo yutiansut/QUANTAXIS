@@ -311,12 +311,18 @@ def QA_SU_save_stock_xdxr(client=DATABASE, ui_log=None, ui_progress=None):
     Keyword Arguments:
         client {[type]} -- [description] (default: {DATABASE})
     """
-
-    # client.drop_collection('stock_xdxr')
     stock_list = QA_fetch_get_stock_list().code.unique().tolist()
-    coll = client.stock_xdxr
-    coll.create_index([('code', pymongo.ASCENDING),
-                       ('date', pymongo.ASCENDING)], unique=True)
+    #client.drop_collection('stock_xdxr')
+    try:
+        
+        coll = client.stock_xdxr
+        coll.create_index([('code', pymongo.ASCENDING),
+                        ('date', pymongo.ASCENDING)], unique=True)
+    except:
+        client.drop_collection('stock_xdxr')
+        coll = client.stock_xdxr
+        coll.create_index([('code', pymongo.ASCENDING),
+                        ('date', pymongo.ASCENDING)], unique=True)
     err = []
 
     def __saving_work(code, coll):
