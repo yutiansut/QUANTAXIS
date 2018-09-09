@@ -312,11 +312,11 @@ def QA_SU_save_stock_xdxr(client=DATABASE, ui_log=None, ui_progress=None):
         client {[type]} -- [description] (default: {DATABASE})
     """
 
-    client.drop_collection('stock_xdxr')
+    # client.drop_collection('stock_xdxr')
     stock_list = QA_fetch_get_stock_list().code.unique().tolist()
     coll = client.stock_xdxr
     coll.create_index([('code', pymongo.ASCENDING),
-                       ('date', pymongo.ASCENDING)])
+                       ('date', pymongo.ASCENDING)], unique=True)
     err = []
 
     def __saving_work(code, coll):
@@ -325,7 +325,7 @@ def QA_SU_save_stock_xdxr(client=DATABASE, ui_log=None, ui_progress=None):
         try:
             coll.insert_many(
                 QA_util_to_json_from_pandas(
-                    QA_fetch_get_stock_xdxr(str(code))))
+                    QA_fetch_get_stock_xdxr(str(code))), ordered=False)
 
         except:
 
@@ -339,26 +339,6 @@ def QA_SU_save_stock_xdxr(client=DATABASE, ui_log=None, ui_progress=None):
         QA_util_log_info(strLogInfo, ui_log=ui_log,
                          ui_progress=ui_progress, ui_progress_int_value=intLogProgress)
         __saving_work(stock_list[i_], coll)
-
-    if len(err) < 1:
-        QA_util_log_info('^_SUCCESS_^', ui_log=ui_log)
-    else:
-
-        try_code = err
-        err = []
-        QA_util_log_info(
-            'Try to get stock xdxr info in erro list! \n', ui_log=ui_log)
-        for i__ in range(len(try_code)):
-            QA_util_log_info('The {} of Total {}'.format(
-                i__, len(try_code)), ui_log=ui_log)
-            QA_util_log_info('DOWNLOAD PROGRESS {} '.format(
-                str(float(i__ / len(try_code) * 100))[0:4] + '%'), ui_log=ui_log)
-            __saving_work(try_code[i__], coll)
-        if len(err) < 1:
-            QA_util_log_info('^_SUCCESS^_', ui_log=ui_log)
-        else:
-            QA_util_log_info('^_ ERROR CODE ^_\n ', ui_log=ui_log)
-            QA_util_log_info(err, ui_log=ui_log)
 
 
 def QA_SU_save_stock_min(client=DATABASE, ui_log=None, ui_progress=None):
@@ -723,7 +703,6 @@ def QA_SU_save_stock_list(client=DATABASE, ui_log=None, ui_progress=None):
     client.drop_collection('stock_list')
     coll = client.stock_list
     coll.create_index('code')
-    err = []
 
     try:
         # 🛠todo 这个应该是第一个任务 JOB01， 先更新股票列表！！
@@ -751,7 +730,7 @@ def QA_SU_save_stock_block(client=DATABASE, ui_log=None, ui_progress=None):
     client.drop_collection('stock_block')
     coll = client.stock_block
     coll.create_index('code')
-    err = []
+
     try:
         QA_util_log_info('##JOB09 Now Saving STOCK_BlOCK ====', ui_log=ui_log,
                          ui_progress=ui_progress, ui_progress_int_value=5000)
@@ -947,28 +926,32 @@ def QA_SU_save_option_day(client=DATABASE, ui_log=None, ui_progress=None):
         QA_util_log_info(err, ui_log=ui_log)
 
 
-
 def QA_SU_save_future_list(client=DATABASE, ui_log=None, ui_progress=None):
-    future_list=QA_fetch_get_future_list()
+    future_list = QA_fetch_get_future_list()
     coll_future_list = client.future_list
     coll_future_list.create_index("code", unique=True)
     try:
-        coll_future_list.insert_many(QA_util_to_json_from_pandas(future_list),ordered=False)
+        coll_future_list.insert_many(
+            QA_util_to_json_from_pandas(future_list), ordered=False)
     except:
         pass
 
+
 def QA_SU_save_index_list(client=DATABASE, ui_log=None, ui_progress=None):
-    index_list=QA_fetch_get_index_list()
+    index_list = QA_fetch_get_index_list()
     coll_index_list = client.index_list
     coll_index_list.create_index("code", unique=True)
 
     try:
-        coll_index_list.insert_many(QA_util_to_json_from_pandas(index_list),ordered=False)
+        coll_index_list.insert_many(
+            QA_util_to_json_from_pandas(index_list), ordered=False)
     except:
         pass
 
+
 def QA_SU_save_future_day(client=DATABASE, ui_log=None, ui_progress=None):
     pass
+
 
 def QA_SU_save_future_min(client=DATABASE, ui_log=None, ui_progress=None):
     pass
