@@ -339,6 +339,9 @@ class CLI(cmd.Cmd):
     def help(self):
         QA_util_log_info('fn+methods name')
 
+    def do_ls(self, arg):
+        QA_util_log_info(os.path.dirname(os.path.abspath(__file__)))
+
 
 def sourcecpy(src, des):
     src = os.path.normpath(src)
