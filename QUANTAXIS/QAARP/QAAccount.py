@@ -509,7 +509,7 @@ class QA_Account(QA_Worker):
             commission_fee = self.commission_coeff * \
                 trade_price * trade_amount
 
-            commission_fee = 5 if commission_fee < 5 else commission_fee
+            # commission_fee = 5 if commission_fee < 5 else commission_fee
 
             #self.commission_fee = 5 if commission_fee < 5 else commission_fee
 
