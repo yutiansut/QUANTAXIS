@@ -138,7 +138,7 @@ class QA_Account(QA_Worker):
         #         ', DeprecationWarning, stacklevel=2)
         self._history_headers = ['datetime', 'code', 'price',
                                  'amount', 'cash', 'order_id', 'realorder_id', 'trade_id',
-                                 'account_cookie', 'commission', 'tax']
+                                 'account_cookie', 'commission', 'tax', 'message']
         ########################################################################
         # 信息类:
         self.strategy_name = strategy_name
@@ -452,7 +452,7 @@ class QA_Account(QA_Worker):
         self.cash = [self.init_cash]
         self.cash_available = self.cash[-1]  # 在途资金
 
-    def receive_deal(self, code: str, trade_id: str, order_id: str, realorder_id: str, trade_price: float, trade_amount: int, trade_towards: int, trade_time: str):
+    def receive_deal(self, code: str, trade_id: str, order_id: str, realorder_id: str, trade_price: float, trade_amount: int, trade_towards: int, trade_time: str, message=None):
         """更新deal
 
         Arguments:
@@ -535,7 +535,7 @@ class QA_Account(QA_Worker):
 
             self.history.append(
                 [trade_time, code, trade_price, market_towards*trade_amount, self.cash[-1], order_id, realorder_id, trade_id, self.account_cookie,
-                    commission_fee, tax_fee])
+                    commission_fee, tax_fee, message])
             if self.allow_t0:
 
                 self.sell_available = self.hold
