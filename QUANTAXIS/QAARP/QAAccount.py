@@ -454,7 +454,51 @@ class QA_Account(QA_Worker):
         self.cash_available = self.cash[-1]  # 在途资金
 
     def receive_simpledeal(self,code,price,amount,towards,time,message):
-        pass
+
+        market_towards = 1 if towards > 0 else -1
+        trade_money = price*amount*market_towards+(commission_fee+tax_fee)
+        if self.market_type == MARKET_TYPE.FUTURE_CN:
+            # 期货不收税
+            # 双边手续费 也没有最小手续费限制
+            commission_fee = self.commission_coeff * \
+                abs(trade_money)
+            tax_fee = 0 
+
+    
+        if self.cash[-1] > trade_money:
+            self.time_index.append(time)
+            # TODO: 目前还不支持期货的锁仓
+            if self.allow_sellopen:
+                if towards in [ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN]:
+                    # 开仓单占用现金
+                    self.cash.append(self.cash[-1]-abs(trade_money))
+                    self.cash_available = self.cash[-1]
+
+
+                elif towards in [ORDER_DIRECTION.BUY_CLOSE, ORDER_DIRECTION.SELL_CLOSE]:
+                    # 平仓单释放现金
+                    self.cash.append(self.cash[-1]+abs(trade_money))
+                    self.cash_available = self.cash[-1]
+            else:
+                self.cash.append(self.cash[-1]-trade_money)
+                self.cash_available = self.cash[-1]
+
+            if self.allow_t0:
+
+                self.sell_available[code]=self.sell_available.get(code)+amount*market_towards
+                self.buy_available = self.sell_available
+
+            self.history.append(
+                    [time, code, price, market_towards*amount, self.cash[-1], None,None,None, self.account_cookie,
+                        commission_fee, tax_fee, message])
+
+        else:
+            #print(self.cash[-1])
+            self.cash_available = self.cash[-1]
+            #print('NOT ENOUGH MONEY FOR {}'.format(order_id))
+
+
+
 
     def receive_deal(self, code: str, trade_id: str, order_id: str, realorder_id: str, trade_price: float, trade_amount: int, trade_towards: int, trade_time: str, message=None):
         """更新deal
@@ -491,19 +535,24 @@ class QA_Account(QA_Worker):
         if self.market_type == MARKET_TYPE.STOCK_CN:
             if trade_towards > 0:
                 commission_fee = self.commission_coeff * \
-                    trade_price * trade_amount
+                    abs(trade_money)
 
                 commission_fee = 5 if commission_fee < 5 else commission_fee
 
                 tax_fee = 0  # 买入不收印花税
+                if self.allow_t0:
+
+                    self.sell_available = self.hold
+                    self.buy_available = self.hold
+
             else:
                 commission_fee = self.commission_coeff * \
-                    trade_price * trade_amount
+                    abs(trade_money)
 
                 commission_fee = 5 if commission_fee < 5 else commission_fee
 
                 tax_fee = self.tax_coeff * \
-                    trade_price * trade_amount
+                    abs(trade_money)
 
             # self.trade_money = self.deal_price * \
             #     self.deal_amount + self.commission_fee + self.tax
@@ -511,7 +560,7 @@ class QA_Account(QA_Worker):
             # 期货不收税
             # 双边手续费 也没有最小手续费限制
             commission_fee = self.commission_coeff * \
-                trade_price * trade_amount
+                abs(trade_money)
 
             # commission_fee = 5 if commission_fee < 5 else commission_fee
 
