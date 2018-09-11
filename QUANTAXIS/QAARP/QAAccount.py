@@ -488,8 +488,7 @@ class QA_Account(QA_Worker):
                 self.sell_available[code]=self.sell_available.get(code,0)+trade_amount*market_towards
                 self.buy_available = self.sell_available
 
-            self.history.append(
-                    [trade_time, code, trade_price, market_towards*trade_amount, self.cash[-1], None,None,None, self.account_cookie,
+            self.history.append([trade_time, code, trade_price, market_towards*trade_amount, self.cash[-1], None,None,None, self.account_cookie,
                         commission_fee, tax_fee, message])
 
         else:
