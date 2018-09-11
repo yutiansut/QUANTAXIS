@@ -453,29 +453,29 @@ class QA_Account(QA_Worker):
         self.cash = [self.init_cash]
         self.cash_available = self.cash[-1]  # 在途资金
 
-    def receive_simpledeal(self,code,price,amount,towards,time,message):
+    def receive_simpledeal(self,code,trade_price,trade_amount,trade_towards,trade_time,message):
 
-        market_towards = 1 if towards > 0 else -1
-        trade_money = price*amount*market_towards+(commission_fee+tax_fee)
+        market_towards = 1 if trade_towards > 0 else -1
+        trade_money = trade_price*trade_amount*market_towards
         if self.market_type == MARKET_TYPE.FUTURE_CN:
             # 期货不收税
             # 双边手续费 也没有最小手续费限制
             commission_fee = self.commission_coeff * \
                 abs(trade_money)
             tax_fee = 0 
-
-    
+        
+        trade_money+=(commission_fee+tax_fee)
         if self.cash[-1] > trade_money:
-            self.time_index.append(time)
+            self.time_index.append(trade_time)
             # TODO: 目前还不支持期货的锁仓
             if self.allow_sellopen:
-                if towards in [ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN]:
+                if trade_towards in [ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN]:
                     # 开仓单占用现金
                     self.cash.append(self.cash[-1]-abs(trade_money))
                     self.cash_available = self.cash[-1]
 
 
-                elif towards in [ORDER_DIRECTION.BUY_CLOSE, ORDER_DIRECTION.SELL_CLOSE]:
+                elif trade_towards in [ORDER_DIRECTION.BUY_CLOSE, ORDER_DIRECTION.SELL_CLOSE]:
                     # 平仓单释放现金
                     self.cash.append(self.cash[-1]+abs(trade_money))
                     self.cash_available = self.cash[-1]
@@ -485,11 +485,11 @@ class QA_Account(QA_Worker):
 
             if self.allow_t0:
 
-                self.sell_available[code]=self.sell_available.get(code)+amount*market_towards
+                self.sell_available[code]=self.sell_available.get(code,0)+trade_amount*market_towards
                 self.buy_available = self.sell_available
 
             self.history.append(
-                    [time, code, price, market_towards*amount, self.cash[-1], None,None,None, self.account_cookie,
+                    [trade_time, code, trade_price, market_towards*trade_amount, self.cash[-1], None,None,None, self.account_cookie,
                         commission_fee, tax_fee, message])
 
         else:
