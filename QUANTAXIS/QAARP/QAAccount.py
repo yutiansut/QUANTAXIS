@@ -548,7 +548,7 @@ class QA_Account(QA_Worker):
 
         self.datetime = trade_time
 
-        return self.message
+        # return self.message
 
     def send_order(self, code=None, amount=None, time=None, towards=None, price=None, money=None, order_model=None, amount_model=None):
         """
