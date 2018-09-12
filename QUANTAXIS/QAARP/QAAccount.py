@@ -271,7 +271,7 @@ class QA_Account(QA_Worker):
         """
 
         if len(self.time_index) > 0:
-            return min(self.time_index)[0:10]
+            return str(min(self.time_index))[0:10]
         else:
             raise RuntimeWarning(
                 'QAACCOUNT: THIS ACCOUNT DOESNOT HAVE ANY TRADE')
@@ -288,7 +288,7 @@ class QA_Account(QA_Worker):
         """
 
         if len(self.time_index) > 0:
-            return max(self.time_index)[0:10]
+            return str(max(self.time_index))[0:10]
         else:
             raise RuntimeWarning(
                 'QAACCOUNT: THIS ACCOUNT DOESNOT HAVE ANY TRADE')
@@ -427,7 +427,7 @@ class QA_Account(QA_Worker):
         else:
             return self.history_table.set_index('datetime', drop=False).sort_index().loc[:datetime].groupby('code').apply(weights).dropna()
 
-    @property
+    #@property
     def hold_time(self, datetime=None):
         """持仓时间
 
@@ -453,18 +453,26 @@ class QA_Account(QA_Worker):
         self.cash = [self.init_cash]
         self.cash_available = self.cash[-1]  # 在途资金
 
-    def receive_simpledeal(self,code,trade_price,trade_amount,trade_towards,trade_time,message):
+    def receive_simpledeal(self,code,trade_price,trade_amount,trade_towards,trade_time,message=None):
+        self.datetime=trade_time
 
         market_towards = 1 if trade_towards > 0 else -1
-        trade_money = trade_price*trade_amount*market_towards
+        trade_money = float(trade_price*trade_amount*market_towards)
+        #trade_price
         if self.market_type == MARKET_TYPE.FUTURE_CN:
             # 期货不收税
             # 双边手续费 也没有最小手续费限制
             commission_fee = self.commission_coeff * \
                 abs(trade_money)
             tax_fee = 0 
+        elif self.market_type == MARKET_TYPE.STOCK_CN:
+            commission_fee = self.commission_coeff * \
+                abs(trade_money)
+            tax_fee = self.tax_coeff * \
+                    abs(trade_money)
         
         trade_money+=(commission_fee+tax_fee)
+        #print(self.cash[-1])
         if self.cash[-1] > trade_money:
             self.time_index.append(trade_time)
             # TODO: 目前还不支持期货的锁仓
