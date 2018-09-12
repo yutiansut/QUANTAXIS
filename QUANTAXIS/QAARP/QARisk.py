@@ -178,7 +178,7 @@ class QA_Risk():
     def total_commission(self):
         """总手续费
         """
-        return -abs(round(self.account.history_table.commission.sum(), 2))
+        return float(-abs(round(self.account.history_table.commission.sum(), 2)))
 
     @property
     def total_tax(self):
@@ -186,7 +186,7 @@ class QA_Risk():
 
         """
 
-        return -abs(round(self.account.history_table.tax.sum(), 2))
+        return float(-abs(round(self.account.history_table.tax.sum(), 2)))
 
     @property
     def profit_construct(self):
@@ -211,7 +211,7 @@ class QA_Risk():
             [type] -- [description]
         """
 
-        return round(self.assets.iloc[-1]-self.init_cash, 2)
+        return float(round(self.assets.iloc[-1]-self.init_cash, 2))
 
     @property
     def profit(self):
