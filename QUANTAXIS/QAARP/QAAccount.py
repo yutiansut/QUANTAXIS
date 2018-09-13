@@ -300,7 +300,12 @@ class QA_Account(QA_Worker):
     @property
     def history_table(self):
         '交易历史的table'
-        return pd.DataFrame(data=self.history, columns=self._history_headers).sort_index()
+        if len(self.history)>0:
+            lens=len(self.history[0])
+        else:
+            lens=len(self._history_headers)
+
+        return pd.DataFrame(data=self.history, columns=self._history_headers[:lens]).sort_index()
 
     @property
     def cash_table(self):
@@ -346,7 +351,7 @@ class QA_Account(QA_Worker):
     def hold_available(self):
         """可用持仓
         """
-        return pd.DataFrame(data=self.history, columns=self._history_headers).groupby('code').amount.sum().replace(0, np.nan).dropna().sort_index()
+        return self.history_table.groupby('code').amount.sum().replace(0, np.nan).dropna().sort_index()
 
     # @property
     # def order_table(self):
