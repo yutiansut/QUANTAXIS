@@ -348,7 +348,6 @@ class QA_Account(QA_Worker):
         """
         return pd.DataFrame(data=self.history, columns=self._history_headers).groupby('code').amount.sum().replace(0, np.nan).dropna().sort_index()
 
-
     # @property
     # def order_table(self):
     #     """return order trade list"""
@@ -427,7 +426,7 @@ class QA_Account(QA_Worker):
         else:
             return self.history_table.set_index('datetime', drop=False).sort_index().loc[:datetime].groupby('code').apply(weights).dropna()
 
-    #@property
+    # @property
     def hold_time(self, datetime=None):
         """持仓时间
 
@@ -453,26 +452,39 @@ class QA_Account(QA_Worker):
         self.cash = [self.init_cash]
         self.cash_available = self.cash[-1]  # 在途资金
 
-    def receive_simpledeal(self,code,trade_price,trade_amount,trade_towards,trade_time,message=None):
-        self.datetime=trade_time
+    def receive_simpledeal(self, code, trade_price, trade_amount, trade_towards, trade_time, message=None):
+        """快速撮合成交接口
+        
+        Arguments:
+            code {[type]} -- [description]
+            trade_price {[type]} -- [description]
+            trade_amount {[type]} -- [description]
+            trade_towards {[type]} -- [description]
+            trade_time {[type]} -- [description]
+        
+        Keyword Arguments:
+            message {[type]} -- [description] (default: {None})
+        """
+
+        self.datetime = trade_time
 
         market_towards = 1 if trade_towards > 0 else -1
         trade_money = float(trade_price*trade_amount*market_towards)
-        #trade_price
+        # trade_price
         if self.market_type == MARKET_TYPE.FUTURE_CN:
             # 期货不收税
             # 双边手续费 也没有最小手续费限制
             commission_fee = self.commission_coeff * \
                 abs(trade_money)
-            tax_fee = 0 
+            tax_fee = 0
         elif self.market_type == MARKET_TYPE.STOCK_CN:
             commission_fee = self.commission_coeff * \
                 abs(trade_money)
             tax_fee = self.tax_coeff * \
-                    abs(trade_money)
-        
-        trade_money+=(commission_fee+tax_fee)
-        #print(self.cash[-1])
+                abs(trade_money)
+
+        trade_money += (commission_fee+tax_fee)
+        # print(self.cash[-1])
         if self.cash[-1] > trade_money:
             self.time_index.append(trade_time)
             # TODO: 目前还不支持期货的锁仓
@@ -481,7 +493,6 @@ class QA_Account(QA_Worker):
                     # 开仓单占用现金
                     self.cash.append(self.cash[-1]-abs(trade_money))
                     self.cash_available = self.cash[-1]
-
 
                 elif trade_towards in [ORDER_DIRECTION.BUY_CLOSE, ORDER_DIRECTION.SELL_CLOSE]:
                     # 平仓单释放现金
@@ -493,19 +504,17 @@ class QA_Account(QA_Worker):
 
             if self.allow_t0:
 
-                self.sell_available[code]=self.sell_available.get(code,0)+trade_amount*market_towards
+                self.sell_available[code] = self.sell_available.get(
+                    code, 0)+trade_amount*market_towards
                 self.buy_available = self.sell_available
 
-            self.history.append([trade_time, code, trade_price, market_towards*trade_amount, self.cash[-1], None,None,None, self.account_cookie,
-                        commission_fee, tax_fee, message])
+            self.history.append([trade_time, code, trade_price, market_towards*trade_amount, self.cash[-1], None, None, None, self.account_cookie,
+                                 commission_fee, tax_fee, message])
 
         else:
-            #print(self.cash[-1])
+            # print(self.cash[-1])
             self.cash_available = self.cash[-1]
             #print('NOT ENOUGH MONEY FOR {}'.format(order_id))
-
-
-
 
     def receive_deal(self, code: str, trade_id: str, order_id: str, realorder_id: str, trade_price: float, trade_amount: int, trade_towards: int, trade_time: str, message=None):
         """更新deal

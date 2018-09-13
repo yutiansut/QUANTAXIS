@@ -144,9 +144,11 @@ def QA_fetch_stock_list(collections=DATABASE.stock_list):
     '获取股票列表'
     return [item for item in collections.find()]
 
+
 def QA_fetch_index_list(collections=DATABASE.index_list):
     '获取指数列表'
     return [item for item in collections.find()]
+
 
 def QA_fetch_stock_terminated(collections=DATABASE.stock_terminated):
     '获取股票基本信息 , 已经退市的股票列表'
@@ -329,6 +331,7 @@ def QA_fetch_future_list(collections=DATABASE.future_list):
     '获取期货列表'
     return [item for item in collections.find()]
 
+
 def QA_fetch_future_tick():
     raise NotImplementedError
 
@@ -420,6 +423,22 @@ def QA_fetch_account(message={}, db=DATABASE):
         [type] -- [description]
     """
     collection = DATABASE.account
+    return [QA_util_dict_remove_key(res, '_id') for res in collection.find(message)]
+
+
+def QA_fetch_risk(message={}, db=DATABASE):
+    """get the risk message
+
+    Arguments:
+        query_mes {[type]} -- [description]
+
+    Keyword Arguments:
+        collection {[type]} -- [description] (default: {DATABASE})
+
+    Returns:
+        [type] -- [description]
+    """
+    collection = DATABASE.risk
     return [QA_util_dict_remove_key(res, '_id') for res in collection.find(message)]
 
 

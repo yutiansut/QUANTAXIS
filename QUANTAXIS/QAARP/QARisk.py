@@ -277,7 +277,7 @@ class QA_Risk():
             'profit_money': self.profit_money,
             'assets': list(self.assets),
             'benchmark_assets': list(self.benchmark_assets),
-            'timeindex':list(self.assets.index.map(str)),
+            'timeindex': list(self.assets.index.map(str)),
             'ir': self.ir
             # 'init_assets': round(float(self.init_assets), 2),
             # 'last_assets': round(float(self.assets.iloc[-1]), 2)
@@ -383,7 +383,7 @@ class QA_Risk():
 
     def calc_IR(self):
         """计算信息比率
-        
+
         Returns:
             [type] -- [description]
         """
