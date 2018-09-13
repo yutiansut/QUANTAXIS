@@ -270,7 +270,10 @@ class QA_Risk():
             'last_assets': "%0.2f" % (float(self.assets.iloc[-1])),
             'total_tax': self.total_tax,
             'total_commission': self.total_commission,
-            'profit_money': self.profit_money
+            'profit_money': self.profit_money,
+            'assets': list(self.assets),
+            'benchmark_assets': list(self.benchmark_assets),
+            'timeindex':list(self.assets.index.map(str)),
 
             # 'init_assets': round(float(self.init_assets), 2),
             # 'last_assets': round(float(self.assets.iloc[-1]), 2)
