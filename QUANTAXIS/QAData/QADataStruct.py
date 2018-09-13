@@ -218,6 +218,8 @@ class QA_DataStruct_Stock_min(_quotation_base):
         self.type = dtype
         self.if_fq = if_fq
 
+        self.data=self.data.sort_index()
+
     # 抽象类继承
     def choose_db(self):
         self.mongo_coll = DATABASE.stock_min
