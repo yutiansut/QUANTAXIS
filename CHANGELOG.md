@@ -3,6 +3,7 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
+    - [1.1.5(unreleased)](#115unreleased)
     - [1.1.4.dev1](#114dev1)
     - [1.1.4](#114)
     - [1.1.3.dev3](#113dev3)
@@ -60,6 +61,20 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
+
+## 1.1.5(unreleased)
+
+
+1. 修复了QA_Account的history_header在以前版本的不兼容问题
+2. 增加receive_simpledeal函数接口,方便快速成交
+3. QA_Parameter中ORDER_DIRECTION的买开买平卖开卖平的字段修改
+4. 修复QA_data_tick_resample中的bug
+5. 增加了对于QA_Risk中存储的Risk_message的字段
+6. 增加了对于QA_Risk的存储兼容
+7. 增加了存储策略的代码
+8. 修改QAWeb, 增加了一个Rest的handler
+
+
 
 ## 1.1.4.dev1
 
