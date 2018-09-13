@@ -249,6 +249,10 @@ class QA_Risk():
         return round(float(self.profit_pct.std() * math.sqrt(250)), 2)
 
     @property
+    def ir(self):
+        return self.calc_IR()
+
+    @property
     @lru_cache()
     def message(self):
         return {
@@ -274,7 +278,7 @@ class QA_Risk():
             'assets': list(self.assets),
             'benchmark_assets': list(self.benchmark_assets),
             'timeindex':list(self.assets.index.map(str)),
-
+            'ir': self.ir
             # 'init_assets': round(float(self.init_assets), 2),
             # 'last_assets': round(float(self.assets.iloc[-1]), 2)
         }
@@ -376,6 +380,15 @@ class QA_Risk():
         alpha = (annualized_returns - r) - (beta) *\
             (benchmark_annualized_returns - r)
         return alpha
+
+    def calc_IR(self):
+        """计算信息比率
+        
+        Returns:
+            [type] -- [description]
+        """
+
+        return self.annualize_return/self.volatility
 
     def calc_profit(self, assets):
         """
