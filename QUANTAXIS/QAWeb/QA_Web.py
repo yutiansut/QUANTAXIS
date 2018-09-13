@@ -30,7 +30,7 @@ from QUANTAXIS.QAWeb.quotationhandles import (RealtimeSocketHandler,
                                               SimulateSocketHandler, MonitorSocketHandler)
 from QUANTAXIS.QAWeb.userhandles import SigninHandler, SignupHandler, PersonBlockHandler
 from QUANTAXIS.QAWeb.basehandles import QABaseHandler
-from QUANTAXIS.QAWeb.arphandles import AccountHandler
+from QUANTAXIS.QAWeb.arphandles import AccountHandler,RiskHandler
 
 
 class INDEX(QABaseHandler):
@@ -53,7 +53,8 @@ def main():
             (r"/realtime", RealtimeSocketHandler),
             (r"/simulate", SimulateSocketHandler),
             (r"/monitor", MonitorSocketHandler),
-            (r"/accounts", AccountHandler)
+            (r"/accounts", AccountHandler),
+            (r"/risk",RiskHandler)
         ],
         debug=True
     )
