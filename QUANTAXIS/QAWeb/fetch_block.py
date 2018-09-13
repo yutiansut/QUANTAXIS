@@ -6,19 +6,12 @@ import pandas as pd
 import re
 
 
-
 def get_block(block):
-    block_tdx = QA.DATABASE.stock_block
-    block_ths = QA.DATABASE.stock_block_ths
-    codelist = QA.QA_fetch_stock_list_adv()
+    block_db = QA.DATABASE.stock_block
     block = [block] if isinstance(block, str) else block
-
-    code_tdx = pd.DataFrame(
-        [item for item in block_tdx.find({'blockname': {'$in': block}})])
-    code_ths = pd.DataFrame(
-        [item for item in block_ths.find({'blockname': {'$in': block}})])
-
-    return pd.concat([code_tdx, code_ths], axis=0).code.drop_duplicates().tolist()
+    block_df = pd.DataFrame(
+        [item for item in block_db.find({'blockname': {'$in': block}})])
+    return block_df.code.drop_duplicates().tolist()
 
 
 def get_name(code):
