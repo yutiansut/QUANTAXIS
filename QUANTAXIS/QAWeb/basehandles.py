@@ -171,7 +171,7 @@ def delete(*params, **kwparams):
     return method
 
 
-class RestHandler(RequestHandler):
+class QARestHandler(RequestHandler):
     def get(self):
         """ Executes get method """
         self._exe('GET')
@@ -373,7 +373,7 @@ class RestHandler(RequestHandler):
         return svs
 
 
-class RestService(tornado.web.Application):
+class QARestService(tornado.web.Application):
     """ Class to create Rest services in tornado web server """
     resource = None
 
@@ -400,7 +400,7 @@ class RestService(tornado.web.Application):
         return svs
 
 
-class WSGIRestService(tornado.wsgi.WSGIApplication):
+class QAWSGIRestService(tornado.wsgi.WSGIApplication):
     """ Class to create WSGI Rest services in tornado web server """
     resource = None
 
