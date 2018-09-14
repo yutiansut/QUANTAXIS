@@ -73,7 +73,7 @@
 6. 增加了对于QA_Risk的存储兼容
 7. 增加了存储策略的代码
 8. 修改QAWeb, 增加了一个Rest的handler
-9. QA_DataStruct 增加 normalize 归一化方法, 支持多品种多周期
+9. QA_DataStruct 增加 normalized 归一化方法, 支持多品种多周期
 
 
 
