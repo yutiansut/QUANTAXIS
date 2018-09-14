@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
+- [QUANTAXIS 更新纪要](#quantaxis-%E6%9B%B4%E6%96%B0%E7%BA%AA%E8%A6%81)
     - [1.1.5(unreleased)](#115unreleased)
     - [1.1.4.dev1](#114dev1)
     - [1.1.4](#114)
@@ -73,6 +73,7 @@
 6. 增加了对于QA_Risk的存储兼容
 7. 增加了存储策略的代码
 8. 修改QAWeb, 增加了一个Rest的handler
+9. QA_DataStruct 增加 normalize 归一化方法, 支持多品种多周期
 
 
 

@@ -524,6 +524,14 @@ class _quotation_base():
         res.name = 'mad'
         return res
 
+    # 归一化(此处的归一化不能使用 MinMax方法, 会引入未来数据)
+    @property
+    @lru_cache()
+    def normalize(self):
+        '归一化'
+        res = self.groupby('code').apply(lambda x: x/x.iloc[0])
+        return res
+
     @property
     @lru_cache()
     def panel_gen(self):
