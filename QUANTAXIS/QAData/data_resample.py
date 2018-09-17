@@ -36,7 +36,7 @@ def QA_data_tick_resample(tick, type_='1min'):
     Returns:
         [type] -- [description]
     """
-    tick=tick.assign(amount=tick.price*tick.num)
+    tick=tick.assign(amount=tick.price*tick.vol)
     resx = pd.DataFrame()
     _temp = set(tick.index.date)
     
