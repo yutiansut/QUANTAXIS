@@ -79,11 +79,5 @@ npm install npm -g #更新npm
 npm install forever -g #安装一个全局的forever 用于之后启动
 npm install cnpm -g
 
-cd ~/quantaxis/QUANTAXIS_Webkit/backend
-npm install
-
-
-cd ~/quantaxis/QUANTAXIS_Webkit/web
-npm install
 
 
