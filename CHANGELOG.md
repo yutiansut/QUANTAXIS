@@ -74,6 +74,7 @@
 7. 增加了存储策略的代码
 8. 修改QAWeb, 增加了一个Rest的handler
 9. QA_DataStruct 增加 normalized 归一化方法, 支持多品种多周期
+10. 升级了linux一键安装文件, 升级一键安装的mongodb版本到4.0 删除nodejs的安装
 
 
 
