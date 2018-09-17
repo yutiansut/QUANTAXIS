@@ -48,6 +48,7 @@ chmod -R 777 ./quantaxis
 cd ~/quantaxis
 
 python -m pip install pip==9.0.1 # 降级
+python -m pip install pyecharts_jupyter_installer
 python -m pip install pillow -i https://pypi.doubanio.com/simple
 python -m pip install -r requirements.txt -i https://pypi.doubanio.com/simple
 python -m pip install tushare
