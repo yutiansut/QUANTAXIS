@@ -46,11 +46,13 @@ git clone https://github.com/yutiansut/quantaxis
 # add some permission for quantaxis
 chmod -R 777 ./quantaxis
 cd ~/quantaxis
+
+python -m pip install pip==9.0.1 # 降级
 python -m pip install pillow -i https://pypi.doubanio.com/simple
 python -m pip install -r requirements.txt -i https://pypi.doubanio.com/simple
 python -m pip install tushare
 python -m pip install pytdx
-python -m pip install -e .
+python -m pip install -e . -i https://pypi.doubanio.com/simple
 
 
 
@@ -71,19 +73,13 @@ mkdir log
 # 开启MongoDB服务
 service mongod start
 
-apt-get install curl
-curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-apt-get install -y nodejs
-apt-get install npm
-npm install npm -g #更新npm
-npm install forever -g #安装一个全局的forever 用于之后启动
-npm install cnpm -g
+# apt-get install curl
+# curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+# apt-get install -y nodejs
+# apt-get install npm
+# npm install npm -g #更新npm
+# npm install forever -g #安装一个全局的forever 用于之后启动
+# npm install cnpm -g
 
-cd ~/quantaxis/QUANTAXIS_Webkit/backend
-npm install
-
-
-cd ~/quantaxis/QUANTAXIS_Webkit/web
-npm install
 
 
