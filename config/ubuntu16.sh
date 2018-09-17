@@ -42,7 +42,7 @@ python get-pip.py
 apt-get install libxml2-dev libxslt-dev
 apt-get install git
 cd ~
-git clone https://github.com/yutiansut/quantaxis
+git clone https://github.com/yutiansut/quantaxis --
 # add some permission for quantaxis
 chmod -R 777 ./quantaxis
 cd ~/quantaxis
