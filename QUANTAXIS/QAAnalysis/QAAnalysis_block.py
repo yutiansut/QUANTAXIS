@@ -88,7 +88,7 @@ class QAAnalysis_block():
 
     def stock_turnover(self):
 
-        return 100*self.market_value.volume/self.market_value.lshare
+        return 100*self.market_value.volume/self.market_value.lshares
 
     def block_turnover(self):
         return self.stock_turnover().groupby(level=0).mean()
