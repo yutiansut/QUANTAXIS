@@ -34,4 +34,8 @@ class AccountResource(QARestHandler):
         account = QA_Account()
         account.account_cookie = account_cookie
 
-        return account
+        return account.message
+
+
+
+
