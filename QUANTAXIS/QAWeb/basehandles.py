@@ -42,6 +42,13 @@ from QUANTAXIS.QAWeb.util import (APPLICATION_JSON, APPLICATION_XML, TEXT_XML,
 
 
 class QABaseHandler(RequestHandler):
+    @property
+    def db(self):
+        return self.application.db
+
+    @property
+    def redis(self):
+        return self.application.redis
 
     def set_default_headers(self):
         self.set_header("Access-Control-Allow-Origin", "*")  # 这个地方可以写域名
@@ -62,6 +69,15 @@ class QABaseHandler(RequestHandler):
         # no body
         self.set_status(204)
         self.finish()
+
+    def wirte_error(self, status_code, **kwargs):
+        pass
+
+    def initialize(self):
+        pass
+
+    def on_finish(self):
+        pass
 
 
 class QAWebSocketHandler(WebSocketHandler):
