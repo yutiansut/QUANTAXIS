@@ -27,8 +27,8 @@ import tornado
 from tornado.web import Application, RequestHandler, authenticated
 from tornado.websocket import WebSocketHandler
 
-from QUANTAXIS.QAFetch.QAQuery import QA_fetch_account,QA_fetch_risk
-from QUANTAXIS.QASU.save_account import  save_account
+from QUANTAXIS.QAFetch.QAQuery import QA_fetch_account, QA_fetch_risk
+from QUANTAXIS.QASU.save_account import save_account
 from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAARP.QARisk import QA_Performance, QA_Risk
 from QUANTAXIS.QASU.user import QA_user_sign_in, QA_user_sign_up
@@ -37,6 +37,26 @@ from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting
 from QUANTAXIS.QAWeb.basehandles import QABaseHandler
 from QUANTAXIS.QAWeb.util import CJsonEncoder
 
+
+class MemberHandler(QABaseHandler):
+    def get(self):
+        """
+        采用了get_arguents来获取参数
+        默认参数: code-->000001 start-->2017-01-01 09:00:00 end-->now
+        accounts?account_cookie=xxx
+        """
+        #account_cookie= self.get_argument('account_cookie', default='admin')
+
+        query_account = QA_fetch_account()
+        # data = [res for res in query_account]
+        if len(query_account) > 0:
+            #data = [QA.QA_Account().from_message(x) for x in query_account]
+
+            self.write({'result': query_account})
+        else:
+            self.write('WRONG')
+
+
 class AccountHandler(QABaseHandler):
     def get(self):
         """
@@ -44,32 +64,27 @@ class AccountHandler(QABaseHandler):
         默认参数: code-->000001 start-->2017-01-01 09:00:00 end-->now
         accounts?account_cookie=xxx
         """
-        account_cookie= self.get_argument('account_cookie', default='admin')
-        
-        query_account= QA_fetch_account({'account_cookie':account_cookie})
-        data = [QA_Account().from_message(x) for x in query_account]
-        if len(query_account)>0:
-            #data = [QA.QA_Account().from_message(x) for x in query_account]
-             
+        account_cookie = self.get_argument('account_cookie', default='admin')
 
-            self.write({'result':[data.message for data in data]})
+        query_account = QA_fetch_account({'account_cookie': account_cookie})
+        #data = [QA_Account().from_message(x) for x in query_account]
+        if len(query_account) > 0:
+            #data = [QA.QA_Account().from_message(x) for x in query_account]
+
+            self.write({'result': query_account})
         else:
             self.write('WRONG')
 
 
 class RiskHandler(QABaseHandler):
     def get(self):
-        account_cookie= self.get_argument('account_cookie', default='admin')
+        account_cookie = self.get_argument('account_cookie', default='admin')
 
-
-        query_account= QA_fetch_risk({'account_cookie':account_cookie})
+        query_account = QA_fetch_risk({'account_cookie': account_cookie})
         #data = [QA_Account().from_message(x) for x in query_account]
-        if len(query_account)>0:
+        if len(query_account) > 0:
             #data = [QA.QA_Account().from_message(x) for x in query_account]
-             
 
-            self.write({'result':query_account})
+            self.write({'result': query_account})
         else:
             self.write('WRONG')
-
-
