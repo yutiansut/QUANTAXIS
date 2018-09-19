@@ -175,6 +175,6 @@ if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6, 7, 8]:
     sys.exit()
 
 
-QA_util_log_info('Welcome to QUANTAXIS, the Version is {}'.format(__version__))
+#QA_util_log_info('Welcome to QUANTAXIS, the Version is {}'.format(__version__))
 
-QA_util_log_info(logo)
+#QA_util_log_info(logo)
