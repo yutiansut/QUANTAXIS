@@ -135,7 +135,7 @@ class QA_Risk():
     @property
     @lru_cache()
     def total_timeindex(self):
-        return QA_util_get_trade_range(self.account.start,self.account.end)
+        return self.account.trade_range
 
     @property
     @lru_cache()
@@ -271,7 +271,7 @@ class QA_Risk():
             'volatility': self.volatility,
             'benchmark_code': self.benchmark_code,
             'bm_annualizereturn': self.benchmark_annualize_return,
-            'bn_profit': self.benchmark_profit,
+            'bm_profit': self.benchmark_profit,
             'beta': self.beta,
             'alpha': self.alpha,
             'sharpe': self.sharpe,
@@ -282,7 +282,7 @@ class QA_Risk():
             'profit_money': self.profit_money,
             'assets': list(self.assets),
             'benchmark_assets': list(self.benchmark_assets),
-            'timeindex': list(self.assets.index.map(str)),
+            'timeindex': self.account.trade_day,
             'totaltimeindex': self.total_timeindex,
             'ir': self.ir
             # 'init_assets': round(float(self.init_assets), 2),
