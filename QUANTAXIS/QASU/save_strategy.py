@@ -31,14 +31,14 @@ import sys
 """
 
 
-def QA_SU_save_strategy(name, topic='default', version=1, if_save=False):
+def QA_SU_save_strategy(name, portfolio_cookie='default',account_cookie='default', version=1, if_save=False):
     absoult_path = '{}{}strategy_{}.py'.format(strategy_path, os.sep, name)
     with open(sys.argv[0], 'rb') as p:
         data = p.read()
         collection = DATABASE.strategy
-        collection.insert({'name': name,
-                           'topic': topic, 'version': version,
-                           'last_modify_time': datetime.datetime.now(),
+        collection.insert({'name': name,'account_cookie':account_cookie,
+                           'portfolio_cookie': portfolio_cookie, 'version': version,
+                           'last_modify_time': str(datetime.datetime.now()),
                            'content': data.decode('utf-8'),
                            'absoultpath': absoult_path})
         if if_save:
