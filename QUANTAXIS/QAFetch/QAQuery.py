@@ -458,6 +458,21 @@ def QA_fetch_user(user_cookie, db=DATABASE):
 
     return [QA_util_dict_remove_key(res, '_id') for res in collection.find({'user_cookie': user_cookie})]
 
+def QA_fetch_strategy(message={}, db=DATABASE):
+    """get the account
+
+    Arguments:
+        query_mes {[type]} -- [description]
+
+    Keyword Arguments:
+        collection {[type]} -- [description] (default: {DATABASE})
+
+    Returns:
+        [type] -- [description]
+    """
+    collection = DATABASE.strategy
+    return [QA_util_dict_remove_key(res, '_id') for res in collection.find(message)]
+
 
 def QA_fetch_lhb(date, db=DATABASE):
     '获取某一天龙虎榜数据'

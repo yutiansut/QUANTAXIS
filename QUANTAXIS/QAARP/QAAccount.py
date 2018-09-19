@@ -210,7 +210,9 @@ class QA_Account(QA_Worker):
             'trade_index': self.time_index,
             'running_time': str(datetime.datetime.now()) if self.running_time is None else str(self.running_time),
             'quantaxis_version': self.quantaxis_version,
-            'running_environment': self.running_environment
+            'running_environment': self.running_environment,
+            'start_date': self.start_date,
+            'end_date': self.end_date
         }
 
     @property
@@ -296,6 +298,11 @@ class QA_Account(QA_Worker):
     @property
     def trade_range(self):
         return QA_util_get_trade_range(self.start_date, self.end_date)
+
+
+    @property
+    def trade_day(self):
+        return list(pd.Series(self.time_index).apply(lambda x: str(x)[0:10]).unique())
 
     @property
     def history_table(self):
