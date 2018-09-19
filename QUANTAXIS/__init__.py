@@ -90,7 +90,7 @@ from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_day, QA
 #     QA_SU_save_account_message, QA_SU_save_backtest_message, QA_SU_save_account_to_csv)
 
 from QUANTAXIS.QASU.user import (QA_user_sign_in, QA_user_sign_up)
-
+from QUANTAXIS.QASU.save_strategy import QA_SU_save_strategy
 # event driver
 
 # market
