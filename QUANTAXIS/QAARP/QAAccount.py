@@ -297,6 +297,11 @@ class QA_Account(QA_Worker):
     def trade_range(self):
         return QA_util_get_trade_range(self.start_date, self.end_date)
 
+
+    @property
+    def trade_day(self):
+        return list(pd.Series(self.time_index).apply(lambda x: str(x)[0:10]).unique())
+
     @property
     def history_table(self):
         '交易历史的table'
