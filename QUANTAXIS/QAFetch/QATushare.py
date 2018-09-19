@@ -152,6 +152,13 @@ def QA_fetch_get_trade_date(end, exchange):
 
 def QA_fetch_get_lhb(date):
     return ts.top_list(date)
+
+
+
+def QA_fetch_get_stock_money():
+    pass
+
+
 # test
 
 # print(get_stock_day("000001",'2001-01-01','2010-01-01'))
