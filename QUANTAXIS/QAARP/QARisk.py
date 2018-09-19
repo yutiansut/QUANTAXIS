@@ -44,7 +44,7 @@ import pandas as pd
 from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_index_day_adv,
                                                QA_fetch_stock_day_adv)
 from QUANTAXIS.QASU.save_account import save_riskanalysis
-from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_trade_gap
+from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_trade_gap, QA_util_get_trade_range
 from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE
 
 # FIXED: no display found
@@ -131,6 +131,11 @@ class QA_Risk():
 
     def __call__(self):
         return pd.DataFrame([self.message])
+
+    @property
+    @lru_cache()
+    def total_timeindex(self):
+        return self.account.trade_range
 
     @property
     @lru_cache()
@@ -266,7 +271,7 @@ class QA_Risk():
             'volatility': self.volatility,
             'benchmark_code': self.benchmark_code,
             'bm_annualizereturn': self.benchmark_annualize_return,
-            'bn_profit': self.benchmark_profit,
+            'bm_profit': self.benchmark_profit,
             'beta': self.beta,
             'alpha': self.alpha,
             'sharpe': self.sharpe,
@@ -277,7 +282,8 @@ class QA_Risk():
             'profit_money': self.profit_money,
             'assets': list(self.assets),
             'benchmark_assets': list(self.benchmark_assets),
-            'timeindex': list(self.assets.index.map(str)),
+            'timeindex': self.account.trade_day,
+            'totaltimeindex': self.total_timeindex,
             'ir': self.ir
             # 'init_assets': round(float(self.init_assets), 2),
             # 'last_assets': round(float(self.assets.iloc[-1]), 2)
