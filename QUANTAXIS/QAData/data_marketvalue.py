@@ -34,20 +34,17 @@ from QUANTAXIS.QAUtil import DATABASE, QA_util_log_info
 def QA_data_calc_marketvalue(data, xdxr):
     '使用数据库数据计算复权'
     mv = xdxr.query('category!=6').loc[:, ['shares_after', 'liquidity_after']].dropna()
-    #
     res = pd.concat([data, mv], axis=1)
     
     res = res.assign(
         shares=res.shares_after.fillna(method='ffill'),
         lshares=res.liquidity_after.fillna(method='ffill'))
-    #print(res)
     return res.assign(mv=res.close*res.shares*10000, liquidity_mv=res.close*res.lshares*10000).drop(['shares_after', 'liquidity_after'], axis=1)\
             .loc[(slice(data.index.remove_unused_levels().levels[0][0],data.index.remove_unused_levels().levels[0][-1]),slice(None)),:]
 
 
 def QA_data_marketvalue(data):
     def __QA_fetch_stock_xdxr(code, format_='pd', collections=DATABASE.stock_xdxr):
-        #print(code)
         '获取股票除权信息/数据库'
         try:
             data = pd.DataFrame([item for item in collections.find(
@@ -62,5 +59,4 @@ def QA_data_marketvalue(data):
 
     code = data.index.remove_unused_levels().levels[1][0] if isinstance(
         data.index, pd.core.indexes.multi.MultiIndex) else data['code'][0]
-    #print(QA_data_calc_marketvalue(data, __QA_fetch_stock_xdxr(code)))
     return QA_data_calc_marketvalue(data, __QA_fetch_stock_xdxr(code))
