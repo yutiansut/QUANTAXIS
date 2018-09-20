@@ -458,6 +458,7 @@ def QA_fetch_user(user_cookie, db=DATABASE):
 
     return [QA_util_dict_remove_key(res, '_id') for res in collection.find({'user_cookie': user_cookie})]
 
+
 def QA_fetch_strategy(message={}, db=DATABASE):
     """get the account
 
@@ -513,12 +514,10 @@ def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
 
     collection = db.financial
     CH_columns = [item[3:] for item in list(financial_dict.keys())]
-    CH_columns.extend(['277', '278', '279', '280', '281', '282', '_id', 'code',
-                       'report_date'])
+    CH_columns.extend(['283', '_id', 'code', 'report_date'])
     CH_columns = pd.Index(CH_columns)
     EN_columns = list(financial_dict.values())
-    EN_columns.extend(['277', '278', '279', '280', '281', '282', '_id', 'code',
-                       'report_date'])
+    EN_columns.extend(['283', '_id', 'code', 'report_date'])
     EN_columns = pd.Index(EN_columns)
 
     try:
