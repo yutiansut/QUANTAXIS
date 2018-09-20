@@ -513,12 +513,19 @@ def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
         report_date = [QA_util_date_str2int(item) for item in report_date]
 
     collection = db.financial
+    num_columns= [item[:3] for item in list(financial_dict.keys())]
     CH_columns = [item[3:] for item in list(financial_dict.keys())]
-    CH_columns.extend(['283', '_id', 'code', 'report_date'])
-    CH_columns = pd.Index(CH_columns)
     EN_columns = list(financial_dict.values())
-    EN_columns.extend(['283', '_id', 'code', 'report_date'])
-    EN_columns = pd.Index(EN_columns)
+    #num_columns.extend(['283', '_id', 'code', 'report_date'])
+   # CH_columns.extend(['283', '_id', 'code', 'report_date'])
+    #CH_columns = pd.Index(CH_columns)
+    #EN_columns = list(financial_dict.values())
+    #EN_columns.extend(['283', '_id', 'code', 'report_date'])
+    #EN_columns = pd.Index(EN_columns)
+
+
+
+    
 
     try:
         if code is not None and report_date is not None:
@@ -536,9 +543,21 @@ def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
             res_pd = pd.DataFrame(data)
 
             if ltype in ['CH', 'CN']:
-                res_pd.columns = CH_columns
+
+                cndict=dict(zip(num_columns,CH_columns))
+
+                cndict['283']='283'
+                cndict['_id']='_id'
+                cndict['code']='code'
+                cndict['report_date']='report_date'
+                res_pd.columns = res_pd.columns.map(lambda x: cndict[x])
             elif ltype is 'EN':
-                res_pd.columns = EN_columns
+                endict=dict(zip(num_columns,EN_columns))
+                endict['283']='283'
+                endict['_id']='_id'
+                endict['code']='code'
+                endict['report_date']='report_date'
+                res_pd.columns = res_pd.columns.map(lambda x: endict[x])
 
             if res_pd.report_date.dtype == numpy.int64:
                 res_pd.report_date = pd.to_datetime(
