@@ -31,7 +31,7 @@ Account = QA.QA_Account()
 Broker = QA.QA_BacktestBroker()
 
 Account.reset_assets(1000000)
-Account.account_cookie = 'user_admin_macd'
+Account.account_cookie = 'macd_stock'
 
 # get data from mongodb
 data = QA.QA_fetch_stock_day_adv(
@@ -107,7 +107,8 @@ plt.show()
 # save result
 Account.save()
 Risk.save()
+QA.QA_SU_save_strategy('MACD_JCSC','Indicator',Account.account_cookie)
 
-account_info = QA.QA_fetch_account({'account_cookie': 'user_admin_macd'})
-account = QA.QA_Account().from_message(account_info[0])
-print(account)
+#account_info = QA.QA_fetch_account({'account_cookie': 'user_admin_macd'})
+#account = QA.QA_Account().from_message(account_info[0])
+#print(account)
