@@ -242,7 +242,7 @@ financial_dict = {
     '209EBITDA/营业总收入(%)': 'EBITDA/GrossRevenueRate',
     # 9. 资本结构分析
     '210资产负债率(%)': 'assetsLiabilitiesRatio',
-    '211流动资产比率': 'currentAssetsRatio',# 期末的流动资产除以所有者权益
+    '211流动资产比率': 'currentAssetsRatio',  # 期末的流动资产除以所有者权益
     '212货币资金比率': 'monetaryFundRatio',
     '213存货比率': 'inventoryRatio',
     '214固定资产比率': 'fixedAssetsRatio',
@@ -314,5 +314,11 @@ financial_dict = {
     '273银行持股量(股)(机构持股)': 'bankInstutionShareholding',
     '274一般法人机构数(家)(机构持股)': 'corporationNumber',
     '275一般法人持股量(股)(机构持股)': 'corporationShareholding',
-    '276近一年净利润(元)': 'netProfitLastYear'
+    '276近一年净利润(元)': 'netProfitLastYear',
+    '277信托机构数(家)(机构持股)': 'trustInstitutionNumber',
+    '278信托持股量(股)(机构持股)': 'trustInstitutionShareholding',
+    '279特殊法人机构数(家)(机构持股)': 'specialCorporationNumber',
+    '280特殊法人持股量(股)(机构持股)': 'specialCorporationShareholding',
+    '281加权净资产收益率(每股指标)': 'weightedROE',
+    '282扣非每股收益(单季度财务指标)': 'nonEPSSingle',
 }

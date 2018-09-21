@@ -660,3 +660,15 @@
 '275一般法人持股量(股)(机构持股)': 'corporationShareholding',
 
 '276近一年净利润(元)': 'netProfitLastYear'
+
+'277信托机构数(家)(机构持股)': 'trustInstitutionNumber',
+
+'278信托持股量(股)(机构持股)': 'trustInstitutionShareholding',
+
+'279特殊法人机构数(家)(机构持股)': 'specialCorporationNumber',
+
+'280特殊法人持股量(股)(机构持股)': 'specialCorporationShareholding',
+
+'281加权净资产收益率(每股指标)': 'weightedROE',
+
+'282扣非每股收益(单季度财务指标)': 'nonEPSSingle',
