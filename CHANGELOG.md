@@ -69,7 +69,7 @@
 3. 优化QARisk/QAAccount的存储
 4. 增加客户端 QUANTAXIS/QADesktop, 版本0.0.3
 5. 优化QAFinancial的字段解析
-
+6. 增加期货主连数据存储
 
 ## 1.1.5
 
