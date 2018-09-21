@@ -3,7 +3,8 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-%E6%9B%B4%E6%96%B0%E7%BA%AA%E8%A6%81)
-    - [1.1.5(unreleased)](#115unreleased)
+    - [1.1.6(unreleased)](#116unreleased)
+    - [1.1.5](#115)
     - [1.1.4.dev1](#114dev1)
     - [1.1.4](#114)
     - [1.1.3.dev3](#113dev3)
@@ -61,9 +62,16 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
+## 1.1.6(unreleased)
 
-## 1.1.5(unreleased)
+1. 优化QAWeb
+2. 增加QASU中的QA_SU_save_strategy,用于保存策略
+3. 优化QARisk/QAAccount的存储
+4. 增加客户端 QUANTAXIS/QADesktop, 版本0.0.3
+5. 优化QAFinancial的字段解析
 
+
+## 1.1.5
 
 1. 修复了QA_Account的history_header在以前版本的不兼容问题
 2. 增加receive_simpledeal函数接口,方便快速成交
@@ -75,7 +83,7 @@
 8. 修改QAWeb, 增加了一个Rest的handler
 9. QA_DataStruct 增加 normalized 归一化方法, 支持多品种多周期
 10. 升级了linux一键安装文件, 升级一键安装的mongodb版本到4.0 删除nodejs的安装
-
+11. 删除quantaxis的logo和启动显示
 
 
 ## 1.1.4.dev1
