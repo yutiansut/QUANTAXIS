@@ -291,9 +291,9 @@ class CLI(cmd.Cmd):
                 QA_SU_save_financialfiles()
 
             elif len(arg) == 1 and arg[0] == "future":
-                QA_SU_save_future_day()
-                QA_SU_save_future_min()
-                QA_SU_save_future_list()
+                QA_SU_save_future_day('tdx')
+                QA_SU_save_future_min('tdx')
+                QA_SU_save_future_list('tdx')
 
             else:
                 for i in arg:
