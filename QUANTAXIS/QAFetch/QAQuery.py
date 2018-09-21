@@ -336,7 +336,7 @@ def QA_fetch_future_day(code, start, end, format='numpy', collections=DATABASE.f
         for item in cursor:
 
             __data.append([str(item['code']), float(item['open']), float(item['high']), float(
-                item['low']), float(item['close']), int(item['position']), int(item['price']), float(item['trade']), item['date']])
+                item['low']), float(item['close']), float(item['position']), float(item['price']), float(item['trade']), item['date']])
 
         # 多种数据格式
         if format in ['n', 'N', 'numpy']:
@@ -355,8 +355,50 @@ def QA_fetch_future_day(code, start, end, format='numpy', collections=DATABASE.f
         QA_util_log_info('QA something wrong with date')
 
 
-def QA_fetch_future_min():
-    raise NotImplementedError
+def QA_fetch_future_min(
+        code,
+        start, end,
+        format='numpy',
+        frequence='1min',
+        collections=DATABASE.future_min):
+    '获取股票分钟线'
+    if frequence in ['1min', '1m']:
+        frequence = '1min'
+    elif frequence in ['5min', '5m']:
+        frequence = '5min'
+    elif frequence in ['15min', '15m']:
+        frequence = '15min'
+    elif frequence in ['30min', '30m']:
+        frequence = '30min'
+    elif frequence in ['60min', '60m']:
+        frequence = '60min'
+    __data = []
+    code = QA_util_code_tolist(code,auto_fill=False)
+    cursor = collections.find({
+        'code': {'$in': code}, "time_stamp": {
+            "$gte": QA_util_time_stamp(start),
+            "$lte": QA_util_time_stamp(end)
+        }, 'type': frequence
+    }, batch_size=10000)
+    if format in ['dict', 'json']:
+        return [data for data in cursor]
+    for item in cursor:
+
+        __data.append([str(item['code']), float(item['open']), float(item['high']), float(
+            item['low']), float(item['close']), float(item['position']), float(item['price']), float(item['trade']),
+            item['datetime'], item['time_stamp'], item['date']])
+
+    __data = DataFrame(__data, columns=[
+        'code', 'open', 'high', 'low', 'close',  'position', 'price', 'trade', 'datetime', 'time_stamp', 'date'])
+
+    __data['datetime'] = pd.to_datetime(__data['datetime'])
+    __data = __data.set_index('datetime', drop=False)
+    if format in ['numpy', 'np', 'n']:
+        return numpy.asarray(__data)
+    elif format in ['list', 'l', 'L']:
+        return numpy.asarray(__data).tolist()
+    elif format in ['P', 'p', 'pandas', 'pd']:
+        return __data
 
 
 def QA_fetch_future_list(collections=DATABASE.future_list):
