@@ -38,7 +38,9 @@ from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_min, QA
                                  QA_SU_save_stock_block, QA_SU_save_stock_info, QA_SU_save_stock_info_tushare,
                                  QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_index_min, QA_SU_save_future_list, QA_SU_save_index_list,
                                  QA_SU_save_etf_day, QA_SU_save_etf_min, QA_SU_save_option_day, QA_SU_save_financialfiles,
-                                 QA_SU_save_future_day, QA_SU_save_future_min)
+                                 QA_SU_save_future_day, QA_SU_save_future_min,QA_SU_save_report_calendar_day,
+                                 QA_SU_save_report_calendar_his,QA_SU_save_stock_divyield_day,
+                                 QA_SU_save_stock_divyield_his)
 from QUANTAXIS.QASU.save_binance import QA_SU_save_binance_symbol, QA_SU_save_binance_1hour, \
     QA_SU_save_binance_1day, QA_SU_save_binance_1min, QA_SU_save_binance
 
@@ -232,6 +234,9 @@ class CLI(cmd.Cmd):
                 QA_SU_save_stock_list('tdx')
                 QA_SU_save_stock_block('tdx')
                 # QA_SU_save_stock_info('tdx')
+                QA_SU_save_report_calendar_his()
+                QA_SU_save_stock_divyield_his()
+
             elif len(arg) == 1 and arg[0] == 'day':
                 if QA_Setting().client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
                     QA_Setting().client.quantaxis.user_list.insert(
@@ -246,6 +251,9 @@ class CLI(cmd.Cmd):
                 QA_SU_save_index_list('tdx')
                 QA_SU_save_stock_list('tdx')
                 QA_SU_save_stock_block('tdx')
+                QA_SU_save_stock_divyield_day()
+                QA_SU_save_report_calendar_day()
+
             elif len(arg) == 1 and arg[0] == 'min':
                 if QA_Setting().client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
                     QA_Setting().client.quantaxis.user_list.insert(
