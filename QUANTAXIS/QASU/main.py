@@ -100,6 +100,33 @@ def QA_SU_save_future_list(engine, client=DATABASE):
     engine = select_save_engine(engine)
     engine.QA_SU_save_future_list(client=client)
 
+def QA_SU_save_future_day(engine, client=DATABASE):
+    """save future_day
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_future_day(client=client)
+
+
+def QA_SU_save_future_min(engine, client=DATABASE):
+    """save future_min
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_future_day(client=client)
+
+
 
 def QA_SU_save_stock_day(engine, client=DATABASE):
     """save stock_day
