@@ -124,7 +124,7 @@ def QA_SU_save_future_min(engine, client=DATABASE):
     """
 
     engine = select_save_engine(engine)
-    engine.QA_SU_save_future_day(client=client)
+    engine.QA_SU_save_future_min(client=client)
 
 
 
