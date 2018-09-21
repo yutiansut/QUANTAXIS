@@ -22,10 +22,34 @@ class MAMINT0Strategy(QA_Account):
         super().__init__(init_hold=init_hold)
         self.account_cookie = 'T0BACKTEST'
         self.running_environment = RUNNING_ENVIRONMENT.TZERO
-        self.frequence = FREQUENCE.FIFTEEN_MIN
+        self.frequence = FREQUENCE.ONE_MIN
         self.market_type = MARKET_TYPE.STOCK_CN
 
+        self.result= {}
+
     def on_bar(self, event):
+
+        # min5= self.market_data.min5
+        # min15= self.market_data.min15
+        
+        # min5macd=QA.QA_indicator_MACD(min5)
+        # min15macd=QA.QA_indicator_MACD(min15)
+        # self.result['min5macd']=min5macd
+
+        # self.cash_available # 当前剩余现金
+        # self.sell_available # 当前可卖股票
+        # self.history_table  # 当前的历史交易
+        # self.hold_time      # 当前的持仓时间
+        # self.hold_price     # 当前持仓的成本价格
+        # self.get_orders     # 获取历史订单
+        # self.allow_sellopen # 账户是否允许卖空
+        # self.allow_t0       # 账户是否允许t0
+        # self.commission_coeff  # 账户的手续费(可自行调整)
+
+
+
+
+        
         try:
             for item in event.market_data.code:
 
