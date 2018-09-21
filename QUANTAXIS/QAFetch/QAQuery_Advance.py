@@ -362,7 +362,8 @@ def QA_fetch_stock_block_adv(code=None, blockname=None, collections=DATABASE.sto
     if code is not None and blockname is None:
         # 返回这个股票代码所属的板块
         data = pd.DataFrame([item for item in collections.find(
-            {'code': code})]).drop(['_id'], axis=1)
+            {'code': {'$in': code}})])
+        data = data.drop(['_id'], axis=1)
 
         return QA_DataStruct_Stock_block(data.set_index(['blockname', 'code'], drop=True).drop_duplicates())
     elif blockname is not None and code is None:
