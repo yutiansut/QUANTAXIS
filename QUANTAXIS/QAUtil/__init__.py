@@ -58,6 +58,8 @@ from QUANTAXIS.QAUtil.QADate_trade import (QA_util_date_gap,
                                            QA_util_get_next_datetime,
                                            QA_util_get_order_datetime,
                                            QA_util_get_trade_datetime,
+                                           QA_util_future_to_realdatetime,
+                                           QA_util_future_to_tradedatetime,
                                            trade_date_sse)
 # list function
 from QUANTAXIS.QAUtil.QAList import (QA_util_diff_list,
