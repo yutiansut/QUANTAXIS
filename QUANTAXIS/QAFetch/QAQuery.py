@@ -559,7 +559,7 @@ def QA_fetch_lhb(date, db=DATABASE):
         raise e
 
 
-def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
+def QA_fetch_financial_report(code, report_date, type ='report', ltype='EN', db=DATABASE):
     """获取专业财务报表
 
     Arguments:
@@ -597,36 +597,55 @@ def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
     #EN_columns.extend(['283', '_id', 'code', 'report_date'])
     #EN_columns = pd.Index(EN_columns)
 
+
     try:
-        if code is not None and report_date is not None:
-            data = [item for item in collection.find(
-                {'code': {'$in': code}, 'report_date': {'$in': report_date}}, batch_size=10000)]
-        elif code is None and report_date is not None:
-            data = [item for item in collection.find(
-                {'report_date': {'$in': report_date}}, batch_size=10000)]
-        elif code is not None and report_date is None:
-            data = [item for item in collection.find(
-                {'code': {'$in': code}}, batch_size=10000)]
+        if type == 'report':
+            if code is not None and report_date is not None:
+                data = [item for item in collection.find(
+                    {'code': {'$in': code}, 'report_date': {'$in': report_date}}, batch_size=10000)]
+            elif code is None and report_date is not None:
+                data = [item for item in collection.find(
+                    {'report_date': {'$in': report_date}}, batch_size=10000)]
+            elif code is not None and report_date is None:
+                data = [item for item in collection.find(
+                    {'code': {'$in': code}}, batch_size=10000)]
+            else:
+                data = [item for item in collection.find()]
+
+        elif type == 'date':
+            if code is not None and report_date is not None:
+                data = [item for item in collection.find(
+                    {'code': {'$in': code}, 'crawl_date': {'$in': report_date}}, batch_size=10000)]
+            elif code is None and report_date is not None:
+                data = [item for item in collection.find(
+                    {'crawl_date': {'$in': report_date}}, batch_size=10000)]
+            elif code is not None and report_date is None:
+                data = [item for item in collection.find(
+                    {'code': {'$in': code}}, batch_size=10000)]
+            else:
+                data = [item for item in collection.find()]
         else:
-            data = [item for item in collection.find()]
+            print("type must be date or report")
+
         if len(data) > 0:
             res_pd = pd.DataFrame(data)
 
             if ltype in ['CH', 'CN']:
 
                 cndict = dict(zip(num_columns, CH_columns))
-
-                cndict['283'] = '283'
-                cndict['_id'] = '_id'
-                cndict['code'] = 'code'
-                cndict['report_date'] = 'report_date'
+                cndict['283']='283'
+                cndict['_id']='_id'
+                cndict['code']='code'
+                cndict['report_date']='report_date'
+                cndict['crawl_date']='crawl_date'
                 res_pd.columns = res_pd.columns.map(lambda x: cndict[x])
             elif ltype is 'EN':
-                endict = dict(zip(num_columns, EN_columns))
-                endict['283'] = '283'
-                endict['_id'] = '_id'
-                endict['code'] = 'code'
-                endict['report_date'] = 'report_date'
+                endict=dict(zip(num_columns,EN_columns))
+                endict['283']='283'
+                endict['_id']='_id'
+                endict['code']='code'
+                endict['report_date']='report_date'
+                endict['crawl_date']='crawl_date'
                 res_pd.columns = res_pd.columns.map(lambda x: endict[x])
 
             if res_pd.report_date.dtype == numpy.int64:
@@ -641,6 +660,82 @@ def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
     except Exception as e:
         raise e
 
+
+def QA_fetch_stock_financial_calendar(code, start, end = None, format='pd', collections=DATABASE.report_calendar):
+    '获取股票日线'
+    #code= [code] if isinstance(code,str) else code
+    # code checking
+    code = QA_util_code_tolist(code)
+
+    if QA_util_date_valid(end):
+
+        __data = []
+        cursor = collections.find({
+            'code': {'$in': code}, "real_date": {
+                "$lte": end,
+                "$gte": start}}, batch_size=10000)
+        #res=[QA_util_dict_remove_key(data, '_id') for data in cursor]
+
+        res = pd.DataFrame([item for item in cursor])
+        try:
+            res = res.drop('_id', axis=1).drop_duplicates((['report_date', 'code']))
+            res = res.ix[:, ['code','name','pre_date','first_date','second_date','third_date','real_date','codes', 'report_date', 'crawl_date']]
+        except:
+            res = None
+        if format in ['P', 'p', 'pandas', 'pd']:
+            return res
+        elif format in ['json', 'dict']:
+            return QA_util_to_json_from_pandas(res)
+        # 多种数据格式
+        elif format in ['n', 'N', 'numpy']:
+            return numpy.asarray(res)
+        elif format in ['list', 'l', 'L']:
+            return numpy.asarray(res).tolist()
+        else:
+            print("QA Error QA_fetch_stock_financial_calendar format parameter %s is none of  \"P, p, pandas, pd , json, dict , n, N, numpy, list, l, L, !\" " % format)
+            return None
+    else:
+        QA_util_log_info(
+            'QA Error QA_fetch_stock_financial_calendar data parameter start=%s end=%s is not right' % (start, end))
+
+def QA_fetch_stock_divyield(code, start, end = None, format='pd', collections=DATABASE.stock_divyield):
+    '获取股票日线'
+    #code= [code] if isinstance(code,str) else code
+    # code checking
+    code = QA_util_code_tolist(code)
+
+    if QA_util_date_valid(end):
+
+        __data = []
+        cursor = collections.find({
+            'a_stockcode': {'$in': code}, "dir_dcl_date": {
+                "$lte": end,
+                "$gte": start}}, batch_size=10000)
+        #res=[QA_util_dict_remove_key(data, '_id') for data in cursor]
+
+        res = pd.DataFrame([item for item in cursor])
+        try:
+            res = res.drop('_id', axis=1).drop_duplicates((['dir_dcl_date', 'a_stockcode']))
+            res = res.ix[:, ['a_stockcode','a_stocksname','div_info','div_type_code','bonus_shr',
+                             'cash_bt','cap_shr','epsp','ps_cr','ps_up','reg_date','dir_dcl_date',
+                             'a_stockcode1','ex_divi_date','prg']]
+        except:
+            res = None
+        if format in ['P', 'p', 'pandas', 'pd']:
+            return res
+        elif format in ['json', 'dict']:
+            return QA_util_to_json_from_pandas(res)
+        # 多种数据格式
+        elif format in ['n', 'N', 'numpy']:
+            return numpy.asarray(res)
+        elif format in ['list', 'l', 'L']:
+            return numpy.asarray(res).tolist()
+        else:
+            print("QA Error QA_fetch_stock_divyield format parameter %s is none of  \"P, p, pandas, pd , json, dict , n, N, numpy, list, l, L, !\" " % format)
+            return None
+    else:
+        QA_util_log_info(
+            'QA Error QA_fetch_stock_divyield data parameter start=%s end=%s is not right' % (start, end))
 
 if __name__ == '__main__':
     print(QA_fetch_lhb('2006-07-03'))
