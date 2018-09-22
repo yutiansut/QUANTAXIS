@@ -319,12 +319,86 @@ def QA_fetch_index_min(
         return __data
 
 
-def QA_fetch_future_day():
-    raise NotImplementedError
+def QA_fetch_future_day(code, start, end, format='numpy', collections=DATABASE.future_day):
+    start = str(start)[0:10]
+    end = str(end)[0:10]
+    code = QA_util_code_tolist(code, auto_fill=False)
+
+    if QA_util_date_valid(end) == True:
+
+        __data = []
+        cursor = collections.find({
+            'code': {'$in': code}, "date_stamp": {
+                "$lte": QA_util_date_stamp(end),
+                "$gte": QA_util_date_stamp(start)}}, batch_size=10000)
+        if format in ['dict', 'json']:
+            return [data for data in cursor]
+        for item in cursor:
+
+            __data.append([str(item['code']), float(item['open']), float(item['high']), float(
+                item['low']), float(item['close']), float(item['position']), float(item['price']), float(item['trade']), item['date']])
+
+        # 多种数据格式
+        if format in ['n', 'N', 'numpy']:
+            __data = numpy.asarray(__data)
+        elif format in ['list', 'l', 'L']:
+            __data = __data
+        elif format in ['P', 'p', 'pandas', 'pd']:
+            __data = DataFrame(
+                __data, columns=['code', 'open', 'high', 'low', 'close', 'position', 'price', 'trade', 'date'])
+            __data['date'] = pd.to_datetime(__data['date'])
+            __data = __data.set_index('date', drop=False)
+        else:
+            print("QA Error QA_fetch_future_day format parameter %s is none of  \"P, p, pandas, pd , n, N, numpy !\" " % format)
+        return __data
+    else:
+        QA_util_log_info('QA something wrong with date')
 
 
-def QA_fetch_future_min():
-    raise NotImplementedError
+def QA_fetch_future_min(
+        code,
+        start, end,
+        format='numpy',
+        frequence='1min',
+        collections=DATABASE.future_min):
+    '获取股票分钟线'
+    if frequence in ['1min', '1m']:
+        frequence = '1min'
+    elif frequence in ['5min', '5m']:
+        frequence = '5min'
+    elif frequence in ['15min', '15m']:
+        frequence = '15min'
+    elif frequence in ['30min', '30m']:
+        frequence = '30min'
+    elif frequence in ['60min', '60m']:
+        frequence = '60min'
+    __data = []
+    code = QA_util_code_tolist(code,auto_fill=False)
+    cursor = collections.find({
+        'code': {'$in': code}, "time_stamp": {
+            "$gte": QA_util_time_stamp(start),
+            "$lte": QA_util_time_stamp(end)
+        }, 'type': frequence
+    }, batch_size=10000)
+    if format in ['dict', 'json']:
+        return [data for data in cursor]
+    for item in cursor:
+
+        __data.append([str(item['code']), float(item['open']), float(item['high']), float(
+            item['low']), float(item['close']), float(item['position']), float(item['price']), float(item['trade']),
+            item['datetime'], item['time_stamp'], item['date']])
+
+    __data = DataFrame(__data, columns=[
+        'code', 'open', 'high', 'low', 'close',  'position', 'price', 'trade', 'datetime', 'time_stamp', 'date'])
+
+    __data['datetime'] = pd.to_datetime(__data['datetime'])
+    __data = __data.set_index('datetime', drop=False)
+    if format in ['numpy', 'np', 'n']:
+        return numpy.asarray(__data)
+    elif format in ['list', 'l', 'L']:
+        return numpy.asarray(__data).tolist()
+    elif format in ['P', 'p', 'pandas', 'pd']:
+        return __data
 
 
 def QA_fetch_future_list(collections=DATABASE.future_list):
@@ -513,7 +587,7 @@ def QA_fetch_financial_report(code, report_date, type ='report', ltype='EN', db=
         report_date = [QA_util_date_str2int(item) for item in report_date]
 
     collection = db.financial
-    num_columns= [item[:3] for item in list(financial_dict.keys())]
+    num_columns = [item[:3] for item in list(financial_dict.keys())]
     CH_columns = [item[3:] for item in list(financial_dict.keys())]
     EN_columns = list(financial_dict.values())
     #num_columns.extend(['283', '_id', 'code', 'report_date'])
@@ -522,9 +596,6 @@ def QA_fetch_financial_report(code, report_date, type ='report', ltype='EN', db=
     #EN_columns = list(financial_dict.values())
     #EN_columns.extend(['283', '_id', 'code', 'report_date'])
     #EN_columns = pd.Index(EN_columns)
-
-
-
 
 
     try:
@@ -561,8 +632,7 @@ def QA_fetch_financial_report(code, report_date, type ='report', ltype='EN', db=
 
             if ltype in ['CH', 'CN']:
 
-                cndict=dict(zip(num_columns,CH_columns))
-
+                cndict = dict(zip(num_columns, CH_columns))
                 cndict['283']='283'
                 cndict['_id']='_id'
                 cndict['code']='code'
