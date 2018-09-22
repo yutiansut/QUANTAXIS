@@ -93,7 +93,16 @@ def QA_util_get_last_day(date,n=1):
     '''
     date=str(date)[0:10]
     return QA_util_date_gap(date,n,'lt')
-    
+
+def QA_util_get_last_datetime(datetime,day=1):
+    date=str(datetime)[0:10]
+    return '{} {}'.format(QA_util_date_gap(date,day,'lt'),str(datetime)[11:])
+
+
+def QA_util_get_next_datetime(datetime,day=1):
+    date=str(datetime)[0:10]
+    return '{} {}'.format(QA_util_date_gap(date,day,'gt'),str(datetime)[11:])
+
 def QA_util_get_real_date(date, trade_list=trade_date_sse, towards=-1):
     """
     获取真实的交易日期,其中,第三个参数towards是表示向前/向后推
