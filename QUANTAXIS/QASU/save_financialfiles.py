@@ -33,6 +33,7 @@ from QUANTAXIS.QASetting.QALocalize import (cache_path, download_path, qa_path,
 from QUANTAXIS.QAUtil import DATABASE, QA_util_date_int2str
 from QUANTAXIS.QAUtil.QASql import ASCENDING, DESCENDING
 from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
+import datetime
 
 
 def QA_SU_save_financial_files():
@@ -55,6 +56,7 @@ def QA_SU_save_financial_files():
             print(coll.find({'report_date': date}).count())
             data = QA_util_to_json_from_pandas(parse_filelist([item]).reset_index(
             ).drop_duplicates(subset=['code', 'report_date']).sort_index())
+            data["crawl_date"] = str(datetime.date.today())
             try:
                 coll.insert_many(data, ordered=False)
 

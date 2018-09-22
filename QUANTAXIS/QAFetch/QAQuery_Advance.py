@@ -40,12 +40,15 @@ from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_index_day,
                                        QA_fetch_financial_report,
                                        QA_fetch_stock_list,
                                        QA_fetch_index_list,
-                                       QA_fetch_future_list
+                                       QA_fetch_future_list,
+                                       QA_fetch_stock_financial_calendar,
+                                       QA_fetch_stock_divyield
                                        )
 from QUANTAXIS.QAUtil.QADate import month_data
 from QUANTAXIS.QAUtil import (DATABASE, QA_Setting, QA_util_date_stamp,
                               QA_util_date_valid, QA_util_log_info,
-                              QA_util_time_stamp)
+                              QA_util_time_stamp, QA_util_getBetweenQuarter,
+                              QA_util_datetime_to_strdate,QA_util_add_months)
 
 """
 按要求从数据库取数据，并转换成numpy结构
@@ -359,7 +362,8 @@ def QA_fetch_stock_block_adv(code=None, blockname=None, collections=DATABASE.sto
     if code is not None and blockname is None:
         # 返回这个股票代码所属的板块
         data = pd.DataFrame([item for item in collections.find(
-            {'code': code})]).drop(['_id'], axis=1)
+            {'code': {'$in': code}})])
+        data = data.drop(['_id'], axis=1)
 
         return QA_DataStruct_Stock_block(data.set_index(['blockname', 'code'], drop=True).drop_duplicates())
     elif blockname is not None and code is None:
@@ -417,7 +421,7 @@ def QA_fetch_stock_realtime_adv(code=None,
         print("QA Error QA_fetch_stock_realtime_adv parameter code is None")
 
 
-def QA_fetch_financial_report_adv(code, start, end=None):
+def QA_fetch_financial_report_adv(code, start= 'all',type ='report', end=None):
     """高级财务查询接口
 
     Arguments:
@@ -427,16 +431,70 @@ def QA_fetch_financial_report_adv(code, start, end=None):
     Keyword Arguments:
         end {[type]} -- [description] (default: {None})
     """
+    end = start if end is None else end
+    start = str(start)[0:10]
+    end = str(end)[0:10]
+
+    if start == 'all':
+        start = '1990-01-01'
+        end = str(datetime.date.today())
+
+    if end is None:
+        end = str(datetime.date.today())
+        date_list = list(pd.DataFrame.from_dict(QA_util_getBetweenQuarter(start,QA_util_datetime_to_strdate(QA_util_add_months(end,-3)))).T.iloc[:,1])
+        if type == 'report':
+            return QA_DataStruct_Financial(QA_fetch_financial_report(code, date_list))
+        elif type == 'date':
+            return QA_DataStruct_Financial(QA_fetch_financial_report(code, date_list, type = 'date'))
+    else:
+        daterange = pd.date_range(start,end)
+        timerange = [item.strftime('%Y-%m-%d') for item in list(daterange)]
+        if type == 'report':
+            return QA_DataStruct_Financial(QA_fetch_financial_report(code, timerange))
+        elif type == 'date':
+            return QA_DataStruct_Financial(QA_fetch_financial_report(code, timerange, type = 'date'))
+
+def QA_fetch_stock_financial_calendar_adv(code, start = "all", end = None, format='pd', collections=DATABASE.report_calendar):
+    '获取股票日线'
+    #code= [code] if isinstance(code,str) else code
+    end = start if end is None else end
+    start = str(start)[0:10]
+    end = str(end)[0:10]
+
+    # code checking
+    if start == 'all':
+        start = '1990-01-01'
+        end = str(datetime.date.today())
 
     if end is None:
 
-        return QA_DataStruct_Financial(QA_fetch_financial_report(code, start))
+        return QA_DataStruct_Financial( QA_fetch_stock_financial_calendar(code, start, str(datetime.date.today())))
     else:
         series = pd.Series(
             data=month_data, index=pd.to_datetime(month_data), name='date')
         timerange = series.loc[start:end].tolist()
-        return QA_DataStruct_Financial(QA_fetch_financial_report(code, timerange))
+        return QA_DataStruct_Financial( QA_fetch_stock_financial_calendar(code, start, end))
 
+def QA_fetch_stock_divyield_adv(code, start = "all", end = None, format='pd', collections=DATABASE.report_calendar):
+    '获取股票日线'
+    #code= [code] if isinstance(code,str) else code
+    end = start if end is None else end
+    start = str(start)[0:10]
+    end = str(end)[0:10]
+
+    # code checking
+    if start == 'all':
+        start = '1990-01-01'
+        end = str(datetime.date.today())
+
+    if end is None:
+
+        return QA_DataStruct_Financial( QA_fetch_stock_divyield(code, start, str(datetime.date.today())))
+    else:
+        series = pd.Series(
+            data=month_data, index=pd.to_datetime(month_data), name='date')
+        timerange = series.loc[start:end].tolist()
+        return QA_DataStruct_Financial( QA_fetch_stock_divyield(code, start, end))
 
 if __name__ == '__main__':
     QA_fetch_stock_realtime_adv(['000001', '000002'], num=10)
