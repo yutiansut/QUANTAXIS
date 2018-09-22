@@ -218,30 +218,34 @@ def QA_util_get_order_datetime(dt):
         return '{} {}'.format(QA_util_date_gap(str(dt.date()),1,'lt'),dt.time())
 
 
-def future_change(df):
-    for i in range(len(df)):
+def QA_util_future_to_tradedatetime(real_datetime):
+    """输入是真实交易时间,返回按期货交易所规定的时间* 适用于tb/文华/博弈的转换
+    
+    Arguments:
+        real_datetime {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+    if len(str(real_datetime))==19:
+        dt = datetime.datetime.strptime(str(real_datetime)[0:19], '%Y-%m-%d %H:%M:%S')
+        return dt if dt.time()<datetime.time(21,0) else QA_util_get_next_datetime(dt,1)
+    elif len(str(real_datetime))==16:
+        dt = datetime.datetime.strptime(str(real_datetime)[0:16], '%Y-%m-%d %H:%M')
+        return dt if dt.time()<datetime.time(21,0) else QA_util_get_next_datetime(dt,1)
 
-        weekday=df.datetime[i].weekday()
-
-        if df.loc[i,'inttime']>1500:#after 2400,no need to change
-
-            delta=1
-
-        if weekday==0:#周一为0，周日为6；其它情形皆为前一日，即delta=1
-
-            delta=3
-
-        df.loc[i,'datetime']=df.datetime[i]-datetime.timedelta(days=delta)
-
-        if df.loc[i,'inttime']<900:#after 2400,no need to change，but monday's data should be Saturdays'
-
-            if weekday==0:#改为周六
-
-                delta=2
-
-            df.loc[i,'datetime']=df.datetime[i]-datetime.timedelta(days=delta)
-
-
-        df=df.sort_values('datetime',ascending=False)
-
-        df=df.set_index('datetime')
+def QA_util_future_to_realdatetime(trade_datetime):
+    """输入是交易所规定的时间,返回真实时间*适用于通达信的时间转换
+    
+    Arguments:
+        trade_datetime {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+    if len(str(trade_datetime))==19:
+        dt = datetime.datetime.strptime(str(trade_datetime)[0:19], '%Y-%m-%d %H:%M:%S')
+        return dt if dt.time()<datetime.time(21,0) else QA_util_get_last_datetime(dt,1)
+    elif len(str(trade_datetime))==16:
+        dt = datetime.datetime.strptime(str(trade_datetime)[0:16], '%Y-%m-%d %H:%M')
+        return dt if dt.time()<datetime.time(21,0) else QA_util_get_last_datetime(dt,1)
