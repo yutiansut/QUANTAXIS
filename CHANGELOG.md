@@ -2,7 +2,7 @@
 
 <!-- TOC -->
 
-- [QUANTAXIS 更新纪要](#quantaxis-%E6%9B%B4%E6%96%B0%E7%BA%AA%E8%A6%81)
+- [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
     - [1.1.6(unreleased)](#116unreleased)
     - [1.1.5](#115)
     - [1.1.4.dev1](#114dev1)
@@ -70,6 +70,7 @@
 4. 增加客户端 QUANTAXIS/QADesktop, 版本0.0.3
 5. 优化QAFinancial的字段解析
 6. 增加期货主连数据存储
+7. 增加期货数据本地获取(QA_fetch_future_day/QA_fetch_future_list)
 
 ## 1.1.5
 
