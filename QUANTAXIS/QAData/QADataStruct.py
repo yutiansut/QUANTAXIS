@@ -334,6 +334,41 @@ class QA_DataStruct_Future_min(_quotation_base):
     def choose_db(self):
         self.mongo_coll = DATABASE.future_min
 
+
+    @property
+    @lru_cache()
+    def trade_date(self):
+        """返回交易所日历下的日期
+        
+        Returns:
+            [type] -- [description]
+        """
+
+        try:
+            return self.data.trade_date
+        except:
+            return None
+        
+    @property
+    @lru_cache()
+    def min5(self):
+        return self.resample('5min')
+
+    @property
+    @lru_cache()
+    def min15(self):
+        return self.resample('15min')
+
+    @property
+    @lru_cache()
+    def min30(self):
+        return self.resample('30min')
+
+    @property
+    @lru_cache()
+    def min60(self):
+        return self.resample('60min')
+
     def __repr__(self):
         return '< QA_DataStruct_Future_min with {} securities >'.format(len(self.code))
     __str__ = __repr__
@@ -381,6 +416,26 @@ class QA_DataStruct_Index_min(_quotation_base):
 
     def __repr__(self):
         return '< QA_DataStruct_Index_Min with %s securities >' % len(self.code)
+        
+    @property
+    @lru_cache()
+    def min5(self):
+        return self.resample('5min')
+
+    @property
+    @lru_cache()
+    def min15(self):
+        return self.resample('15min')
+
+    @property
+    @lru_cache()
+    def min30(self):
+        return self.resample('30min')
+
+    @property
+    @lru_cache()
+    def min60(self):
+        return self.resample('60min')
 
     __str__ = __repr__
 
