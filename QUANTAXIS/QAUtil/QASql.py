@@ -27,7 +27,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from motor import MotorClient
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from sqlalchemy import create_engine
-import pymssql
+
 
 
 def QA_util_sql_mongo_setting(uri='mongodb://localhost:27017/quantaxis'):
@@ -54,6 +54,7 @@ def QA_util_sql_async_mongo_setting(uri='mongodb://localhost:27017/quantaxis'):
 
 
 try:
+    import pymssql
     from influxdb import InfluxDBClient
 except:
     pass
