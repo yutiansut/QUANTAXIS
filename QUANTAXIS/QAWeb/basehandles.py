@@ -40,7 +40,9 @@ from tornado.websocket import WebSocketHandler
 from QUANTAXIS.QAWeb.util import (APPLICATION_JSON, APPLICATION_XML, TEXT_XML,
                                   convert)
 
-
+"""
+基础类
+"""
 class QABaseHandler(RequestHandler):
     @property
     def db(self):

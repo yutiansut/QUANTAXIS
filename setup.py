@@ -68,7 +68,7 @@ NAME = "quantaxis"
 """
 PACKAGES = ["QUANTAXIS", "QUANTAXIS.QAFetch", "QUANTAXIS.QACmd", "QUANTAXIS.QAMarket", 'QUANTAXIS.QAWeb', 'QUANTAXIS.QASetting',
             "QUANTAXIS.QAApplication", "QUANTAXIS.QAEngine", "QUANTAXIS.QAData", 'QUANTAXIS.QAData.proto', "QUANTAXIS.QAAnalysis", 'QUANTAXIS.QASelector',
-            "QUANTAXIS.QASU", "QUANTAXIS.QAUtil", "QUANTAXIS.QAARP", "QUANTAXIS.QAIndicator", "QUANTAXIS_CRAWLY", "QUANTAXIS.QAView"]
+            "QUANTAXIS.QASU", "QUANTAXIS.QAUtil", "QUANTAXIS.QAARP", "QUANTAXIS.QAIndicator", "QUANTAXIS_CRAWLY"]
 """
 包含的包，可以多个，这是一个列表
 """
