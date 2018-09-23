@@ -430,9 +430,6 @@ def QA_fetch_future_min_adv(
         return QA_DataStruct_Future_min(res_reset_index)
 
 
-
-
-
 def QA_fetch_future_list_adv(collections=DATABASE.future_list):
     '''
     '获取股票列表'
