@@ -3,7 +3,8 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.1.6(unreleased)](#116unreleased)
+    - [1.1.7 (unreleased)](#117-unreleased)
+    - [1.1.6](#116)
     - [1.1.5](#115)
     - [1.1.4.dev1](#114dev1)
     - [1.1.4](#114)
@@ -62,7 +63,18 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
-## 1.1.6(unreleased)
+## 1.1.7 (unreleased)
+
+1. 优化 QA_DataStruct_future_day/min
+2. 增加了QA_fetch_xxx_adv系列中的  QA_fetch_future_day_adv/QA_fetch_future_min_adv函数
+
+
+to do:
+
+- 我们考虑在未来将QA_Crawl项目单独列出, 以免过多的无用依赖项
+
+
+## 1.1.6
 
 1. 优化QAWeb
 2. 增加QASU中的QA_SU_save_strategy,用于保存策略
@@ -71,6 +83,7 @@
 5. 优化QAFinancial的字段解析
 6. 增加期货主连数据存储
 7. 增加期货数据本地获取(QA_fetch_future_day/QA_fetch_future_list)
+8. 修复了回测中账户的计算的bug,该bug会导致账户长期持仓/空仓的时候缺少记录
 
 ## 1.1.5
 
