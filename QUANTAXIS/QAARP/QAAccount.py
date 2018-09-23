@@ -299,7 +299,6 @@ class QA_Account(QA_Worker):
     def trade_range(self):
         return QA_util_get_trade_range(self.start_date, self.end_date)
 
-
     @property
     def trade_day(self):
         return list(pd.Series(self.time_index).apply(lambda x: str(x)[0:10]).unique())
@@ -307,10 +306,10 @@ class QA_Account(QA_Worker):
     @property
     def history_table(self):
         '交易历史的table'
-        if len(self.history)>0:
-            lens=len(self.history[0])
+        if len(self.history) > 0:
+            lens = len(self.history[0])
         else:
-            lens=len(self._history_headers)
+            lens = len(self._history_headers)
 
         return pd.DataFrame(data=self.history, columns=self._history_headers[:lens]).sort_index()
 
@@ -380,7 +379,10 @@ class QA_Account(QA_Worker):
     @property
     def daily_cash(self):
         '每日交易结算时的现金表'
-        return self.cash_table.drop_duplicates(subset='date', keep='last').set_index(['date', 'account_cookie'], drop=False).sort_index()
+        res = self.cash_table.drop_duplicates(subset='date', keep='last')
+
+        return pd.concat([res.set_index('date'), pd.Series(data=None, index=pd.to_datetime(self.trade_range).set_names('date'), name='predrop')], axis=1)\
+            .ffill().drop(['predrop'], axis=1).reset_index().set_index(['date', 'account_cookie'], drop=False).sort_index()
 
     @property
     def daily_hold(self):
@@ -391,9 +393,13 @@ class QA_Account(QA_Worker):
         else:
             data = data.assign(account_cookie=self.account_cookie).assign(
                 date=data.index.levels[0])
-            data.date = data.date.apply(lambda x: str(x)[0:10])
+
+            data.date = pd.to_datetime(data.date)
             data = data.set_index(['date', 'account_cookie'])
-            return data[~data.index.duplicated(keep='last')].sort_index()
+            res = data[~data.index.duplicated(keep='last')].sort_index()
+
+            return pd.concat([res.reset_index().set_index('date'), pd.Series(data=None, index=pd.to_datetime(self.trade_range).set_names('date'), name='predrop')], axis=1)\
+                        .ffill().drop(['predrop'], axis=1).reset_index().set_index(['date', 'account_cookie']).sort_index()
     # 计算assets的时候 需要一个market_data=QA.QA_fetch_stock_day_adv(list(data.columns),data.index[0],data.index[-1])
     # (market_data.to_qfq().pivot('close')*data).sum(axis=1)+user_cookie.get_account(a_1).daily_cash.set_index('date').cash
 
@@ -466,14 +472,14 @@ class QA_Account(QA_Worker):
 
     def receive_simpledeal(self, code, trade_price, trade_amount, trade_towards, trade_time, message=None):
         """快速撮合成交接口
-        
+
         Arguments:
             code {[type]} -- [description]
             trade_price {[type]} -- [description]
             trade_amount {[type]} -- [description]
             trade_towards {[type]} -- [description]
             trade_time {[type]} -- [description]
-        
+
         Keyword Arguments:
             message {[type]} -- [description] (default: {None})
         """
