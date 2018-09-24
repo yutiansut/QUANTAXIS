@@ -24,6 +24,7 @@
 
 import json
 import tornado
+import datetime
 from tornado.web import Application, RequestHandler, authenticated
 from tornado.websocket import WebSocketHandler
 
@@ -39,6 +40,9 @@ from QUANTAXIS.QAWeb.util import CJsonEncoder
 
 
 class MemberHandler(QABaseHandler):
+    """
+    获得所有的回测member
+    """
     def get(self):
         """
         采用了get_arguents来获取参数
@@ -51,6 +55,10 @@ class MemberHandler(QABaseHandler):
         # data = [res for res in query_account]
         if len(query_account) > 0:
             #data = [QA.QA_Account().from_message(x) for x in query_account]
+            warpper=lambda x: str(x) if isinstance(x,datetime.datetime) else x
+            for item in query_account:
+                item['trade_index']=list(map(str,item['trade_index']))
+                item['history']=[list(map(warpper,itemd)) for itemd in item['history']]
 
             self.write({'result': query_account})
         else:
@@ -58,6 +66,9 @@ class MemberHandler(QABaseHandler):
 
 
 class AccountHandler(QABaseHandler):
+    """
+    对于某个回测账户
+    """
     def get(self):
         """
         采用了get_arguents来获取参数
@@ -68,8 +79,14 @@ class AccountHandler(QABaseHandler):
 
         query_account = QA_fetch_account({'account_cookie': account_cookie})
         #data = [QA_Account().from_message(x) for x in query_account]
+
         if len(query_account) > 0:
             #data = [QA.QA_Account().from_message(x) for x in query_account]
+            warpper=lambda x: str(x) if isinstance(x,datetime.datetime) else x
+            for item in query_account:
+                item['trade_index']=list(map(str,item['trade_index']))
+                item['history']=[list(map(warpper,itemd)) for itemd in item['history']]
+
 
             self.write({'result': query_account})
         else:
@@ -77,6 +94,9 @@ class AccountHandler(QABaseHandler):
 
 
 class RiskHandler(QABaseHandler):
+    """
+    回测账户的风险评价
+    """
     def get(self):
         account_cookie = self.get_argument('account_cookie', default='admin')
 

@@ -38,3 +38,9 @@ from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting
 from QUANTAXIS.QAWeb.basehandles import QABaseHandler
 
 
+"""
+希望做成可以api连接的网页版回测接口
+
+具备websocket实时查看回测状态的功能
+
+"""

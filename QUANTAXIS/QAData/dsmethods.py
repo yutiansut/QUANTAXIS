@@ -26,11 +26,14 @@
 """DataStruct的方法
 """
 import pandas as pd
-
+import numpy as np
 from QUANTAXIS.QAData.QADataStruct import (QA_DataStruct_Index_day,
                                            QA_DataStruct_Index_min,
+                                           QA_DataStruct_Future_day,
+                                           QA_DataStruct_Future_min,
                                            QA_DataStruct_Stock_day,
                                            QA_DataStruct_Stock_min)
+from QUANTAXIS.QAUtil.QAParameter import FREQUENCE, MARKET_TYPE
 
 
 def concat(lists):
@@ -46,6 +49,66 @@ def concat(lists):
     """
 
     return lists[0].new(pd.concat([lists.data for lists in lists]).drop_duplicates())
+
+
+def datastruct_formater(data, frequence=FREQUENCE.DAY, market_type=MARKET_TYPE.STOCK_CN, default_header=[]):
+    """一个任意格式转化为DataStruct的方法
+    
+    Arguments:
+        data {[type]} -- [description]
+    
+    Keyword Arguments:
+        frequence {[type]} -- [description] (default: {FREQUENCE.DAY})
+        market_type {[type]} -- [description] (default: {MARKET_TYPE.STOCK_CN})
+        default_header {list} -- [description] (default: {[]})
+    
+    Returns:
+        [type] -- [description]
+    """
+
+    if isinstance(data, list):
+        try:
+            res = pd.DataFrame(data, columns=default_header)
+            if frequence is FREQUENCE.DAY:
+                if market_type is MARKET_TYPE.STOCK_CN:
+                    return QA_DataStruct_Stock_day(
+                        res.assign(date=pd.to_datetime(res.date)).set_index(
+                            ['date', 'code'], drop=False),
+                        dtype='stock_day')
+            elif frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
+                if market_type is MARKET_TYPE.STOCK_CN:
+                    return QA_DataStruct_Stock_min(
+                        res.assign(datetime=pd.to_datetime(res.datetime)).set_index(
+                            ['datetime', 'code'], drop=False),
+                        dtype='stock_min')
+        except:
+            pass
+    elif isinstance(data, np.ndarray):
+        try:
+            res = pd.DataFrame(data, columns=default_header)
+            if frequence is FREQUENCE.DAY:
+                if market_type is MARKET_TYPE.STOCK_CN:
+                    return QA_DataStruct_Stock_day(
+                        res.assign(date=pd.to_datetime(res.date)).set_index(
+                            ['date', 'code'], drop=False),
+                        dtype='stock_day')
+            elif frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
+                if market_type is MARKET_TYPE.STOCK_CN:
+                    return QA_DataStruct_Stock_min(
+                        res.assign(datetime=pd.to_datetime(res.datetime)).set_index(
+                            ['datetime', 'code'], drop=False),
+                        dtype='stock_min')
+        except:
+            pass
+
+    elif isinstance(data, pd.DataFrame):
+        index = data.index
+        if isinstance(index, pd.MultiIndex):
+            pass
+        elif isinstance(index, pd.DatetimeIndex):
+            pass
+        elif isinstance(index, pd.Index):
+            pass
 
 
 def from_tushare(dataframe, dtype='day'):
@@ -71,7 +134,6 @@ def QDS_StockDayWarpper(func):
     def warpper(*args, **kwargs):
         data = func(*args, **kwargs)
 
-
         if isinstance(data.index, pd.MultiIndex):
 
             return QA_DataStruct_Stock_day(data)
@@ -93,6 +155,7 @@ def QDS_StockMinWarpper(func, *args, **kwargs):
         else:
             return QA_DataStruct_Stock_min(data.assign(datetime=pd.to_datetime(data.datetime)).set_index(['datetime', 'code'], drop=False), dtype='stock_min')
     return warpper
+
 
 def QDS_IndexDayWarpper(func, *args, **kwargs):
     """
@@ -124,9 +187,9 @@ def QDS_IndexMinWarpper(func, *args, **kwargs):
     return warpper
 
 
-if __name__ =='__main__':
+if __name__ == '__main__':
     """演示QDS装饰器
-    
+
     Returns:
         [type] -- [description]
     """
@@ -142,7 +205,7 @@ if __name__ =='__main__':
     """
 
     import tushare as ts
-    print(from_tushare(ts.get_k_data('000001','2018-01-01','2018-06-26')))
+    print(from_tushare(ts.get_k_data('000001', '2018-01-01', '2018-06-26')))
 
     """[summary]
     """
