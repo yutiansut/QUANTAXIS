@@ -239,7 +239,7 @@ http://[ip]:[port]/marketdata/future/min?code=[]&start=[]&end=[]
 
 
 ```
-http://[ip]:[port]/accounts
+http://[ip]:[port]/accounts/all
 ```
 
 #### 4.5.2 单个账户查询
