@@ -43,7 +43,7 @@ class QAAnalysis_block():
     @lru_cache()
     def market_data(self):
         return QA_quotation(self.code, self.start, self.end, self.frequence,
-                            market=MARKET_TYPE.STOCK_CN, source=DATASOURCE.MONGO, output=OUTPUT_FORMAT.DATASTRUCT)
+                            market=MARKET_TYPE.STOCK_CN, source=DATASOURCE.MONGO, output=OUTPUT_FORMAT.DATASTRUCT).to_qfq()
 
     @property
     @lru_cache()
