@@ -152,7 +152,7 @@ class QA_Account(QA_Worker):
         self.frequence = frequence
         self.running_environment = running_environment
         ########################################################################
-        self.market_data = None
+        self._market_data = None
         self._currenttime = None
         self.commission_coeff = commission_coeff
         self.tax_coeff = tax_coeff
@@ -294,6 +294,10 @@ class QA_Account(QA_Worker):
         else:
             raise RuntimeWarning(
                 'QAACCOUNT: THIS ACCOUNT DOESNOT HAVE ANY TRADE')
+
+    @property
+    def market_data(self):
+        return self._market_data
 
     @property
     def trade_range(self):
@@ -930,13 +934,17 @@ class QA_Account(QA_Worker):
             """update the market_data
             1. update the inside market_data struct
             2. tell the on_bar methods
+
+            # 这样有点慢
+
+            
             """
 
             self._currenttime = event.market_data.datetime[0]
-            if self.market_data is None:
-                self.market_data = event.market_data
+            if self._market_data is None:
+                self._market_data = event.market_data
             else:
-                self.market_data = self.market_data + event.market_data
+                self._market_data = self._market_data + event.market_data
             self.on_bar(event)
 
             if event.callback:
