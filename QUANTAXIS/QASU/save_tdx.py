@@ -1073,7 +1073,7 @@ def QA_SU_save_future_min(client=DATABASE, ui_log=None, ui_progress=None):
                     start_time = '2015-01-01'
 
                     QA_util_log_info(
-                        '##JOB13. Future min{} Now Saving Future {} from {} to {} =={} '
+                        '##JOB13.{} Now Saving Future {} from {} to {} =={} '
                         .format(['1min', '5min', '15min', '30min', '60min']
                                 .index(type), str(code), start_time, end_time, type), ui_log=ui_log)
 
