@@ -30,8 +30,9 @@ from QUANTAXIS.QAWeb.quotationhandles import (RealtimeSocketHandler,
                                               SimulateSocketHandler, MonitorSocketHandler)
 from QUANTAXIS.QAWeb.userhandles import SigninHandler, SignupHandler, PersonBlockHandler
 from QUANTAXIS.QAWeb.basehandles import QABaseHandler
-from QUANTAXIS.QAWeb.arphandles import AccountHandler,RiskHandler,MemberHandler
+from QUANTAXIS.QAWeb.arphandles import AccountHandler, RiskHandler, MemberHandler
 from QUANTAXIS.QAWeb.strategyhandlers import StrategyHandler
+
 
 class INDEX(QABaseHandler):
     def get(self):
@@ -48,15 +49,15 @@ def main():
             (r"/marketdata/stock/price", StockPriceHandler),
             (r"/marketdata/stock/code", StockCodeHandler),
             (r"/user/signin", SigninHandler),
-            (r"/user/signup", SignupHandler),
+            (r"/user/signup", SignupHandler),   
             (r"/user/blocksetting", PersonBlockHandler),
-            (r"/strategy/content",StrategyHandler),
+            (r"/strategy/content", StrategyHandler),
             (r"/realtime", RealtimeSocketHandler),
             (r"/simulate", SimulateSocketHandler),
             (r"/monitor", MonitorSocketHandler),
             (r"/accounts", AccountHandler),
-            (r"/accounts/all",MemberHandler),
-            (r"/risk",RiskHandler)
+            (r"/accounts/all", MemberHandler),
+            (r"/risk", RiskHandler)
         ],
         debug=True
     )
