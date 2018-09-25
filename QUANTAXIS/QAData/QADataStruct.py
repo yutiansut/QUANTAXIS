@@ -304,7 +304,7 @@ class QA_DataStruct_Future_day(_quotation_base):
     def __init__(self, DataFrame, dtype='future_day', if_fq=''):
         super().__init__(DataFrame, dtype, if_fq)
         self.type = 'future_day'
-        self.data = DataFrame.loc[:, [
+        self.data = self.data.loc[:, [
             'open', 'high', 'low', 'close', 'trade', 'position', 'price']]
         self.if_fq = if_fq
 
@@ -379,7 +379,7 @@ class QA_DataStruct_Index_day(_quotation_base):
 
     def __init__(self, DataFrame, dtype='index_day', if_fq=''):
         super().__init__(DataFrame, dtype, if_fq)
-        self.data = DataFrame
+        # self.data = DataFrame
         self.type = dtype
         self.if_fq = if_fq
         # self.mongo_coll = eval(
@@ -408,7 +408,7 @@ class QA_DataStruct_Index_min(_quotation_base):
         super().__init__(DataFrame, dtype, if_fq)
         self.type = dtype
         self.if_fq = if_fq
-        self.data = DataFrame.loc[:, [
+        self.data = self.data.loc[:, [
             'open', 'high', 'low', 'close', 'up_count', 'down_count', 'volume', 'amount']]
         #self.mongo_coll = DATABASE.index_min
 
