@@ -302,6 +302,7 @@ class QA_DataStruct_Stock_min(_quotation_base):
 
 class QA_DataStruct_Future_day(_quotation_base):
     def __init__(self, DataFrame, dtype='future_day', if_fq=''):
+        super().__init__(DataFrame, dtype, if_fq)
         self.type = 'future_day'
         self.data = DataFrame.loc[:, [
             'open', 'high', 'low', 'close', 'trade', 'position', 'price']]
@@ -323,9 +324,10 @@ class QA_DataStruct_Future_min(_quotation_base):
 
     def __init__(self, DataFrame, dtype='future_min', if_fq=''):
         # 🛠todo  期货分钟数据线的维护， 暂时用日线代替分钟线
+        super().__init__(DataFrame, dtype, if_fq)
         self.type = 'future_day'
-        self.data = DataFrame.loc[:, [
-            'open', 'high', 'low', 'close', 'trade', 'position', 'price']]
+        self.data = self.data.loc[:, [
+            'open', 'high', 'low', 'close', 'trade', 'position', 'price','tradetime']]
         self.if_fq = if_fq
 
     # 抽象类继承
@@ -376,6 +378,7 @@ class QA_DataStruct_Index_day(_quotation_base):
     '自定义的日线数据结构'
 
     def __init__(self, DataFrame, dtype='index_day', if_fq=''):
+        super().__init__(DataFrame, dtype, if_fq)
         self.data = DataFrame
         self.type = dtype
         self.if_fq = if_fq
@@ -402,6 +405,7 @@ class QA_DataStruct_Index_min(_quotation_base):
     '自定义的分钟线数据结构'
 
     def __init__(self, DataFrame, dtype='index_min', if_fq=''):
+        super().__init__(DataFrame, dtype, if_fq)
         self.type = dtype
         self.if_fq = if_fq
         self.data = DataFrame.loc[:, [
