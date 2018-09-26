@@ -406,7 +406,7 @@ def QA_fetch_future_min_adv(
 
     end = start if end is None else end
     if len(start) == 10:
-        start = '{} 09:30:00'.format(start)
+        start = '{} 00:00:00'.format(start)
     if len(end) == 10:
         end = '{} 15:00:00'.format(end)
 
