@@ -27,8 +27,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from motor import MotorClient
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from sqlalchemy import create_engine
-
-
+import asyncio
 
 def QA_util_sql_mongo_setting(uri='mongodb://localhost:27017/quantaxis'):
     # 采用@几何的建议,使用uri代替ip,port的连接方式
@@ -49,9 +48,12 @@ def QA_util_sql_async_mongo_setting(uri='mongodb://localhost:27017/quantaxis'):
     Returns:
         [type] -- [description]
     """
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
 
-    return AsyncIOMotorClient(uri)
-
+    async def client():
+        return AsyncIOMotorClient(uri, io_loop=loop)
+    return loop.run_until_complete(client())
 
 try:
     import pymssql
