@@ -396,7 +396,7 @@ class QA_Account(QA_Worker):
             return None
         else:
             data = data.assign(account_cookie=self.account_cookie).assign(
-                date=data.index.levels[0])
+                date=data.index.levels[0].)
 
             data.date = pd.to_datetime(data.date)
             data = data.set_index(['date', 'account_cookie'])
