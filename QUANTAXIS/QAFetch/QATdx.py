@@ -1333,7 +1333,7 @@ def QA_fetch_get_future_min(code, start, end, frequence='1min', ip=None, port=No
         # print(data)
         # print(data.datetime)
         data = data\
-            .assign(tradetime=pd.to_datetime(data['datetime']), code=str(code))\
+            .assign(tradetime=data['datetime'].apply(str), code=str(code))\
             .assign(datetime=pd.to_datetime(data['datetime'].apply(QA_util_future_to_realdatetime, 1)))\
             .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1, inplace=False)\
             .assign(date=data['datetime'].apply(lambda x: str(x)[0:10]))\

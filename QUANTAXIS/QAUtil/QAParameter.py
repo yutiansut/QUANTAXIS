@@ -131,7 +131,7 @@ class RUNNING_ENVIRONMENT():
     SIMULATION = 'simulation'
     TZERO = 't0'
     REAL = 'real'
-    RANODM = 'random'
+    RANDOM = 'random'
 
 
 class TRADE_STATUS():
@@ -209,7 +209,7 @@ class BROKER_TYPE():
     BACKETEST = 'backtest'
     SIMULATION = 'simulation'
     REAL = 'real'
-    RANODM = 'random'
+    RANDOM = 'random'
     SHIPANE = 'shipane'
 
 

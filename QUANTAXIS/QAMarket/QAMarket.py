@@ -72,7 +72,7 @@ class QA_Market(QA_Trade):
         # 以下都是官方支持的交易前置
         self._broker = {
             BROKER_TYPE.BACKETEST: QA_BacktestBroker,
-            BROKER_TYPE.RANODM: QA_RandomBroker,
+            BROKER_TYPE.RANDOM: QA_RandomBroker,
             BROKER_TYPE.REAL: QA_RealBroker,
             BROKER_TYPE.SIMULATION: QA_SimulatedBroker,
             BROKER_TYPE.SHIPANE: QA_SPEBroker
