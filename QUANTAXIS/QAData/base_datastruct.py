@@ -785,6 +785,12 @@ class _quotation_base():
         """
         return QA_util_to_json_from_pandas(self.data.reset_index())
 
+    def to_csv(self,*args,**kwargs):
+        """datastruct 存本地csv
+        """
+
+        self.data.to_csv(*args,**kwargs)
+
     def to_dict(self, orient='dict'):
         """
         转换DataStruct为dict格式
