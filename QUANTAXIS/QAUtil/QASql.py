@@ -53,7 +53,7 @@ def QA_util_sql_async_mongo_setting(uri='mongodb://localhost:27017/quantaxis'):
     # asyncio.set_event_loop(loop)
     try:
         loop = asyncio.get_event_loop()
-    except:
+    except RuntimeError:
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 
