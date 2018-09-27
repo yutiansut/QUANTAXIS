@@ -559,20 +559,118 @@ def QA_fetch_lhb(date, db=DATABASE):
         raise e
 
 
-def QA_fetch_financial_report(code, report_date, type ='report', ltype='EN', db=DATABASE):
-    """获取专业财务报表
+# def QA_fetch_financial_report(code, report_date, type ='report', ltype='EN', db=DATABASE):
+#     """获取专业财务报表
 
+#     Arguments:
+#         code {[type]} -- [description]
+#         report_date {[type]} -- [description]
+
+#     Keyword Arguments:
+#         ltype {str} -- [description] (default: {'EN'})
+#         db {[type]} -- [description] (default: {DATABASE})
+
+#     Raises:
+#         e -- [description]
+
+#     Returns:
+#         pd.DataFrame -- [description]
+#     """
+
+#     if isinstance(code, str):
+#         code = [code]
+#     if isinstance(report_date, str):
+#         report_date = [QA_util_date_str2int(report_date)]
+#     elif isinstance(report_date, int):
+#         report_date = [report_date]
+#     elif isinstance(report_date, list):
+#         report_date = [QA_util_date_str2int(item) for item in report_date]
+
+#     collection = db.financial
+#     num_columns = [item[:3] for item in list(financial_dict.keys())]
+#     CH_columns = [item[3:] for item in list(financial_dict.keys())]
+#     EN_columns = list(financial_dict.values())
+#     #num_columns.extend(['283', '_id', 'code', 'report_date'])
+#    # CH_columns.extend(['283', '_id', 'code', 'report_date'])
+#     #CH_columns = pd.Index(CH_columns)
+#     #EN_columns = list(financial_dict.values())
+#     #EN_columns.extend(['283', '_id', 'code', 'report_date'])
+#     #EN_columns = pd.Index(EN_columns)
+
+
+#     try:
+#         if type == 'report':
+#             if code is not None and report_date is not None:
+#                 data = [item for item in collection.find(
+#                     {'code': {'$in': code}, 'report_date': {'$in': report_date}}, batch_size=10000)]
+#             elif code is None and report_date is not None:
+#                 data = [item for item in collection.find(
+#                     {'report_date': {'$in': report_date}}, batch_size=10000)]
+#             elif code is not None and report_date is None:
+#                 data = [item for item in collection.find(
+#                     {'code': {'$in': code}}, batch_size=10000)]
+#             else:
+#                 data = [item for item in collection.find()]
+
+#         elif type == 'date':
+#             if code is not None and report_date is not None:
+#                 data = [item for item in collection.find(
+#                     {'code': {'$in': code}, 'crawl_date': {'$in': report_date}}, batch_size=10000)]
+#             elif code is None and report_date is not None:
+#                 data = [item for item in collection.find(
+#                     {'crawl_date': {'$in': report_date}}, batch_size=10000)]
+#             elif code is not None and report_date is None:
+#                 data = [item for item in collection.find(
+#                     {'code': {'$in': code}}, batch_size=10000)]
+#             else:
+#                 data = [item for item in collection.find()]
+#         else:
+#             print("type must be date or report")
+
+#         if len(data) > 0:
+#             res_pd = pd.DataFrame(data)
+
+#             if ltype in ['CH', 'CN']:
+
+#                 cndict = dict(zip(num_columns, CH_columns))
+#                 cndict['283']='283'
+#                 cndict['_id']='_id'
+#                 cndict['code']='code'
+#                 cndict['report_date']='report_date'
+
+#                 res_pd.columns = res_pd.columns.map(lambda x: cndict[x])
+#             elif ltype is 'EN':
+#                 endict=dict(zip(num_columns,EN_columns))
+#                 endict['283']='283'
+#                 endict['_id']='_id'
+#                 endict['code']='code'
+#                 endict['report_date']='report_date'
+
+#                 res_pd.columns = res_pd.columns.map(lambda x: endict[x])
+
+#             if res_pd.report_date.dtype == numpy.int64:
+#                 res_pd.report_date = pd.to_datetime(
+#                     res_pd.report_date.apply(QA_util_date_int2str))
+#             else:
+#                 res_pd.report_date = pd.to_datetime(res_pd.report_date)
+
+#             return res_pd.replace(-4.039810335e+34, numpy.nan).set_index(['report_date', 'code'], drop=False)
+#         else:
+#             return None
+#     except Exception as e:
+#         raise e
+
+
+def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
+    """获取专业财务报表
     Arguments:
         code {[type]} -- [description]
         report_date {[type]} -- [description]
-
     Keyword Arguments:
         ltype {str} -- [description] (default: {'EN'})
         db {[type]} -- [description] (default: {DATABASE})
-
     Raises:
         e -- [description]
-
     Returns:
         pd.DataFrame -- [description]
     """
@@ -597,55 +695,36 @@ def QA_fetch_financial_report(code, report_date, type ='report', ltype='EN', db=
     #EN_columns.extend(['283', '_id', 'code', 'report_date'])
     #EN_columns = pd.Index(EN_columns)
 
-
     try:
-        if type == 'report':
-            if code is not None and report_date is not None:
-                data = [item for item in collection.find(
-                    {'code': {'$in': code}, 'report_date': {'$in': report_date}}, batch_size=10000)]
-            elif code is None and report_date is not None:
-                data = [item for item in collection.find(
-                    {'report_date': {'$in': report_date}}, batch_size=10000)]
-            elif code is not None and report_date is None:
-                data = [item for item in collection.find(
-                    {'code': {'$in': code}}, batch_size=10000)]
-            else:
-                data = [item for item in collection.find()]
-
-        elif type == 'date':
-            if code is not None and report_date is not None:
-                data = [item for item in collection.find(
-                    {'code': {'$in': code}, 'crawl_date': {'$in': report_date}}, batch_size=10000)]
-            elif code is None and report_date is not None:
-                data = [item for item in collection.find(
-                    {'crawl_date': {'$in': report_date}}, batch_size=10000)]
-            elif code is not None and report_date is None:
-                data = [item for item in collection.find(
-                    {'code': {'$in': code}}, batch_size=10000)]
-            else:
-                data = [item for item in collection.find()]
+        if code is not None and report_date is not None:
+            data = [item for item in collection.find(
+                {'code': {'$in': code}, 'report_date': {'$in': report_date}}, batch_size=10000)]
+        elif code is None and report_date is not None:
+            data = [item for item in collection.find(
+                {'report_date': {'$in': report_date}}, batch_size=10000)]
+        elif code is not None and report_date is None:
+            data = [item for item in collection.find(
+                {'code': {'$in': code}}, batch_size=10000)]
         else:
-            print("type must be date or report")
-
+            data = [item for item in collection.find()]
         if len(data) > 0:
             res_pd = pd.DataFrame(data)
 
             if ltype in ['CH', 'CN']:
 
                 cndict = dict(zip(num_columns, CH_columns))
-                cndict['283']='283'
-                cndict['_id']='_id'
-                cndict['code']='code'
-                cndict['report_date']='report_date'
-                cndict['crawl_date']='crawl_date'
+
+                cndict['283'] = '283'
+                cndict['_id'] = '_id'
+                cndict['code'] = 'code'
+                cndict['report_date'] = 'report_date'
                 res_pd.columns = res_pd.columns.map(lambda x: cndict[x])
             elif ltype is 'EN':
-                endict=dict(zip(num_columns,EN_columns))
-                endict['283']='283'
-                endict['_id']='_id'
-                endict['code']='code'
-                endict['report_date']='report_date'
-                endict['crawl_date']='crawl_date'
+                endict = dict(zip(num_columns, EN_columns))
+                endict['283'] = '283'
+                endict['_id'] = '_id'
+                endict['code'] = 'code'
+                endict['report_date'] = 'report_date'
                 res_pd.columns = res_pd.columns.map(lambda x: endict[x])
 
             if res_pd.report_date.dtype == numpy.int64:
