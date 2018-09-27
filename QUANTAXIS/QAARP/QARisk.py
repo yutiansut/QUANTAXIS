@@ -393,8 +393,10 @@ class QA_Risk():
         Returns:
             [type] -- [description]
         """
-
-        return self.annualize_return/self.volatility
+        if self.volatility == 0:
+            return 0
+        else:
+            return self.annualize_return/self.volatility
 
     def calc_profit(self, assets):
         """
