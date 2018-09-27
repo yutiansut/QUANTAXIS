@@ -395,8 +395,9 @@ class QA_Account(QA_Worker):
         if len(data) < 1:
             return None
         else:
+            #print(data.index.levels[0])
             data = data.assign(account_cookie=self.account_cookie).assign(
-                date=data.index.levels[0].date)
+                date=pd.to_datetime(data.index.levels[0]).date)
 
             data.date = pd.to_datetime(data.date)
             data = data.set_index(['date', 'account_cookie'])
