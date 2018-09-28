@@ -38,9 +38,20 @@ AC.reset_assets(assets)
 # 发送订单
 Order=AC.send_order(code='000001',amount=1000,time='2018-03-21',towards=QA.ORDER_DIRECTION.BUY,price=0,order_model=QA.ORDER_MODEL.MARKET,amount_model=QA.AMOUNT_MODEL.BY_AMOUNT)
 # 撮合订单
-dealmes=B.receive_order(QA.QA_Event(order=Order,market_data=data))
-# 更新账户
-AC.receive_deal(dealmes)
+B.receive_order(QA.QA_Event(order=Order,market_data=data))
+
+# 查询账户的订单状态
+trade_mes=Broker.query_orders(AC.account_cookie, 'filled')
+res=trade_mes.loc[order.account_cookie, order.realorder_id]
+
+# 更新订单
+
+order.trade(res.trade_id, res.trade_price,res.trade_amount, res.trade_time)
+
+# 查询订单的状态
+
+order.status
+
 
 # 分析结果
 
