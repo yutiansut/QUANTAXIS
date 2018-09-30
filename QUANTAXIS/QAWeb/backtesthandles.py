@@ -35,12 +35,27 @@ from QUANTAXIS.QAARP.QARisk import QA_Performance, QA_Risk
 from QUANTAXIS.QASU.user import QA_user_sign_in, QA_user_sign_up
 from QUANTAXIS.QAUtil.QASetting import DATABASE
 from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting
-from QUANTAXIS.QAWeb.basehandles import QABaseHandler
+from QUANTAXIS.QAWeb.basehandles import QABaseHandler,QAWebSocketHandler
 
 
 """
 希望做成可以api连接的网页版回测接口
-
 具备websocket实时查看回测状态的功能
-
 """
+
+
+class BacktestHandler(QAWebSocketHandler):
+
+    client={}
+    def open(self):
+        self.client.add(self)
+        self.write_message('realtime socket start')
+
+    def on_message(self, message):
+        try:
+            self.write_message('pass')
+        except Exception as e:
+            print(e)
+
+    def on_close(self):
+        print('connection close')
