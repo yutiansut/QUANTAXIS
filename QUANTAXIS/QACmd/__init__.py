@@ -234,8 +234,8 @@ class CLI(cmd.Cmd):
                 QA_SU_save_stock_list('tdx')
                 QA_SU_save_stock_block('tdx')
                 # QA_SU_save_stock_info('tdx')
-                QA_SU_save_report_calendar_his()
-                QA_SU_save_stock_divyield_his()
+                # QA_SU_save_report_calendar_his()
+                # QA_SU_save_stock_divyield_his()
 
             elif len(arg) == 1 and arg[0] == 'day':
                 if QA_Setting().client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
@@ -251,8 +251,8 @@ class CLI(cmd.Cmd):
                 QA_SU_save_index_list('tdx')
                 QA_SU_save_stock_list('tdx')
                 QA_SU_save_stock_block('tdx')
-                QA_SU_save_stock_divyield_day()
-                QA_SU_save_report_calendar_day()
+                # QA_SU_save_stock_divyield_day()
+                # QA_SU_save_report_calendar_day()
 
             elif len(arg) == 1 and arg[0] == 'min':
                 if QA_Setting().client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
