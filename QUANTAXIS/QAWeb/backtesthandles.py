@@ -45,7 +45,7 @@ from QUANTAXIS.QAWeb.basehandles import QABaseHandler,QAWebSocketHandler
 
 
 class BacktestHandler(QAWebSocketHandler):
-
+    
     client={}
     def open(self):
         self.client.add(self)
