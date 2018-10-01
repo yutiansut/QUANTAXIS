@@ -58,6 +58,6 @@ QA_SU_save_etf_min('tdx')
 QA_SU_save_stock_list('tdx')
 QA_SU_save_stock_block('tdx')
 QA_SU_save_stock_info('tdx')
-QA_SU_save_stock_divyield_day()
-QA_SU_save_report_calendar_day()
+# QA_SU_save_stock_divyield_day()
+# QA_SU_save_report_calendar_day()
 
