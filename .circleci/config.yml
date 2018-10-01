@@ -13,7 +13,7 @@ jobs:
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
+      - image: - image: circleci/mongo:4.1.3-xenial
 
     working_directory: ~/repo
 
