@@ -32,7 +32,7 @@ class QAAsync():
         return task
 
 
-    def submit2(self, coro):
+    def submit(self, coro):
         return asyncio.run_coroutine_threadsafe(coro, self.event_loop)
 
 
