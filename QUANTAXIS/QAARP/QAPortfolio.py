@@ -275,6 +275,7 @@ class QA_PortfolioView():
             zip([account.account_cookie for account in account_list], account_list))
         self.portfolio_cookie = QA_util_random_with_topic('Portfolio')
         self.user_cookie = None
+        self.market_type = account_list[0].market_type
 
     def __repr__(self):
         return '< QA_PortfolioVIEW {} with {} Accounts >'.format(self.account_cookie, len(self.accounts))
