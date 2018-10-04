@@ -15,22 +15,25 @@ from QUANTAXIS.QAFetch.QAQuery_Async import QA_fetch_stock_day
 """
 
 
-
 class QAAsync():
     def __init__(self):
-        self.event_loop = asyncio.get_event_loop()
+        self.event_loop = asyncio.new_event_loop()
         self.elthread = threading.Thread(target=self.event_loop.run_forever)
 
         # self.elthread.setDaemon(True)
         self.elthread.start()
 
-    def submit(self, func, callback, *args, **kwargs):
+    def create_task(self, func, callback, *args, **kwargs):
+        # schedule a task
 
-        # self.job=asyncio.run_coroutine_threadsafe(func(*args,**kwargs),self.event_loop)
-
+        #task = self.event_loop.create_task(func(*args,**kwargs))
         task = asyncio.ensure_future(func(*args, **kwargs))
         task.add_done_callback(callback)
-        #print('get job async {}'.format(args))
+        return task
+
+
+    def submit(self, coro):
+        return asyncio.run_coroutine_threadsafe(coro, self.event_loop)
 
 
 def callback(future):

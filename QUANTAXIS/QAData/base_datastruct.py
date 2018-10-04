@@ -731,6 +731,28 @@ class _quotation_base():
     def reverse(self):
         return self.new(self.data[::-1])
 
+    def reindex(self, ind):
+        """reindex
+        
+        Arguments:
+            ind {[type]} -- [description]
+        
+        Raises:
+            RuntimeError -- [description]
+            RuntimeError -- [description]
+        
+        Returns:
+            [type] -- [description]
+        """
+
+        if isinstance(ind,pd.MultiIndex):
+            try:
+                return self.new(self.data.reindex(ind))
+            except:
+                raise RuntimeError('QADATASTRUCT ERROR: CANNOT REINDEX')
+        else:
+            raise RuntimeError('QADATASTRUCT ERROR: ONLY ACCEPT MULTI-INDEX FORMAT')
+
     def tail(self, lens):
         """返回最后Lens个值的DataStruct
 
