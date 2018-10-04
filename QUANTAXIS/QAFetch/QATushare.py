@@ -23,7 +23,6 @@
 # SOFTWARE.
 
 import json
-
 import pandas as pd
 import tushare as ts
 
