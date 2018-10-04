@@ -1247,6 +1247,115 @@ def QA_fetch_get_50etf_option_contract_time_to_market():
     return rows
 
 
+'''
+    铜期权  CU 开头   上期证
+    豆粕    M开头     大商所
+    白糖    SR开头    郑商所
+    测试中发现，行情不太稳定 ？ 是 通达信 IP 的问题 ？
+'''
+
+def QA_fetch_get_commodity_option_CU_contract_time_to_market():
+    '''
+    #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
+    去掉商品期权，保留510050开头的50ETF期权,只获取50ETF期权
+    :return: list Series
+    '''
+    result = QA_fetch_get_option_list('tdx')
+    # pprint.pprint(result)
+    #  category  market code name desc  code
+
+    # df = pd.DataFrame()
+    rows = []
+    for idx in result.index:
+        # pprint.pprint((idx))
+        strCategory = result.loc[idx, "category"]
+        strMarket = result.loc[idx, "market"]
+        strCode = result.loc[idx, "code"]  #
+        strName = result.loc[idx, 'name']  #
+        strDesc = result.loc[idx, 'desc']  #
+
+
+        # 如果同时获取， 不同的 期货交易所数据， pytdx 会 保 connection close 连接中断？
+        #if strName.startswith("CU") or strName.startswith("M") or strName.startswith('SR'):
+        if strName.startswith("CU"):
+            # print(strCategory,' ', strMarket, ' ', strCode, ' ', strName, ' ', strDesc, )
+            row = result.loc[idx]
+            rows.append(row)
+
+    return rows
+
+
+def QA_fetch_get_commodity_option_M_contract_time_to_market():
+    '''
+    #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
+    去掉商品期权，保留510050开头的50ETF期权,只获取50ETF期权
+    :return: list Series
+    '''
+    result = QA_fetch_get_option_list('tdx')
+    # pprint.pprint(result)
+    #  category  market code name desc  code
+    '''
+    铜期权  CU 开头   上期证
+    豆粕    M开头     大商所
+    白糖    SR开头    郑商所
+
+    '''
+    # df = pd.DataFrame()
+    rows = []
+    for idx in result.index:
+        # pprint.pprint((idx))
+        strCategory = result.loc[idx, "category"]
+        strMarket = result.loc[idx, "market"]
+        strCode = result.loc[idx, "code"]  #
+        strName = result.loc[idx, 'name']  #
+        strDesc = result.loc[idx, 'desc']  #
+
+        # 如果同时获取， 不同的 期货交易所数据， pytdx 会 保 connection close 连接中断？
+        # if strName.startswith("CU") or strName.startswith("M") or strName.startswith('SR'):
+        if strName.startswith("M"):
+            # print(strCategory,' ', strMarket, ' ', strCode, ' ', strName, ' ', strDesc, )
+            row = result.loc[idx]
+            rows.append(row)
+
+    return rows
+
+
+
+def QA_fetch_get_commodity_option_SR_contract_time_to_market():
+    '''
+    #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
+    去掉商品期权，保留510050开头的50ETF期权,只获取50ETF期权
+    :return: list Series
+    '''
+    result = QA_fetch_get_option_list('tdx')
+    # pprint.pprint(result)
+    #  category  market code name desc  code
+    '''
+    铜期权  CU 开头   上期证
+    豆粕    M开头     大商所
+    白糖    SR开头    郑商所
+
+    '''
+    # df = pd.DataFrame()
+    rows = []
+    for idx in result.index:
+        # pprint.pprint((idx))
+        strCategory = result.loc[idx, "category"]
+        strMarket = result.loc[idx, "market"]
+        strCode = result.loc[idx, "code"]  #
+        strName = result.loc[idx, 'name']  #
+        strDesc = result.loc[idx, 'desc']  #
+
+        # 如果同时获取， 不同的 期货交易所数据， pytdx 会 保 connection close 连接中断？
+        # if strName.startswith("CU") or strName.startswith("M") or strName.startswith('SR'):
+        if strName.startswith("SR"):
+            # print(strCategory,' ', strMarket, ' ', strCode, ' ', strName, ' ', strDesc, )
+            row = result.loc[idx]
+            rows.append(row)
+
+    return rows
+
+
 def QA_fetch_get_exchangerate_list(ip=None, port=None):
     """汇率列表
 
@@ -1288,8 +1397,18 @@ def QA_fetch_get_future_day(code, start_date, end_date, frequence='day', ip=None
                 str(code),
                 (int(lens / 700) - i) * 700, 700))for i in range(int(lens / 700) + 1)],
             axis=0)
-        data = data.assign(date=data['datetime'].apply(lambda x: str(x[0:10]))).assign(code=str(code))\
-            .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10]))).set_index('date', drop=False, inplace=False)
+
+
+        try:
+
+            #获取商品期货 的适合 会报None
+            data = data.assign(date=data['datetime'].apply(lambda x: str(x[0:10]))).assign(code=str(code))\
+                .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10]))).set_index('date', drop=False, inplace=False)
+
+        except Exception as exp:
+            print("code is ",code)
+            print(exp.__str__)
+            return None
 
         return data.drop(['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1)[start_date:end_date].assign(date=data['date'].apply(lambda x: str(x)[0:10]))
 
@@ -1455,9 +1574,6 @@ QA_fetch_get_hkindex_min = QA_fetch_get_future_min
 QA_fetch_get_usstock_day = QA_fetch_get_future_day
 QA_fetch_get_usstock_min = QA_fetch_get_future_min
 
-QA_fetch_get_option_day = QA_fetch_get_future_day
-QA_fetch_get_option_min = QA_fetch_get_future_min
-
 QA_fetch_get_globalfuture_day = QA_fetch_get_future_day
 QA_fetch_get_globalfuture_min = QA_fetch_get_future_min
 
@@ -1479,6 +1595,9 @@ def QA_fetch_get_wholemarket_list():
 
 
 if __name__ == '__main__':
+    rows = QA_fetch_get_commodity_option_CU_contract_time_to_market()
+    print(rows)
+
     print(QA_fetch_get_stock_day('000001', '2017-07-03', '2017-07-10'))
     print(QA_fetch_get_stock_day('000001', '2013-07-01', '2013-07-09'))
     # print(QA_fetch_get_stock_realtime('000001'))
