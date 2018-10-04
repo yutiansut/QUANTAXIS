@@ -32,6 +32,7 @@ import pymongo
 from QUANTAXIS.QAFetch import QA_fetch_get_stock_block
 from QUANTAXIS.QAFetch.QATdx import (
     QA_fetch_get_option_day,
+    QA_fetch_get_option_min,
     QA_fetch_get_index_day,
     QA_fetch_get_index_min,
     QA_fetch_get_stock_day,
@@ -45,7 +46,12 @@ from QUANTAXIS.QAFetch.QATdx import (
     QA_fetch_get_stock_transaction,
     QA_fetch_get_stock_xdxr, select_best_ip)
 from QUANTAXIS.QAFetch.QATdx import (
-    QA_fetch_get_50etf_option_contract_time_to_market)
+    QA_fetch_get_50etf_option_contract_time_to_market,
+    QA_fetch_get_commodity_option_CU_contract_time_to_market,
+    QA_fetch_get_commodity_option_SR_contract_time_to_market,
+    QA_fetch_get_commodity_option_M_contract_time_to_market,
+    QA_fetch_get_50etf_option_contract_time_to_market,
+)
 from QUANTAXIS.QAUtil import (DATABASE, QA_util_get_next_day,
                               QA_util_get_real_date, QA_util_log_info,
                               QA_util_to_json_from_pandas, trade_date_sse)
@@ -840,6 +846,271 @@ def QA_SU_save_stock_transaction(client=DATABASE, ui_log=None, ui_progress=None)
     else:
         QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
         QA_util_log_info(err, ui_log=ui_log)
+
+
+
+def _save_option_commodity_sr_day(client=DATABASE, ui_log=None, ui_progress=None):
+    ##################### sr 白糖 ############################################################################
+    option_sr_contract_list = QA_fetch_get_commodity_option_SR_contract_time_to_market()
+    coll_option_commodity_sr_day = client.option_commodity_sr_day
+    coll_option_commodity_sr_day.create_index(
+        [("code", pymongo.ASCENDING), ("date_stamp", pymongo.ASCENDING)])
+    err = []
+
+    def __saving_work(code, coll_option_commodity_sr_day):
+        try:
+            QA_util_log_info('##JOB12 Now Saving OPTION_DAY_COMMODITY_SR 白糖 ==== {}'.format(
+                str(code)), ui_log=ui_log)
+
+            # 首选查找数据库 是否 有 这个代码的数据
+            # 期权代码 从 10000001 开始编码  10001228
+            ref = coll_option_commodity_sr_day.find({'code': str(code)[0:8]})
+            end_date = str(now_time())[0:10]
+
+            # 当前数据库已经包含了这个代码的数据， 继续增量更新
+            # 加入这个判断的原因是因为如果是刚上市的 数据库会没有数据 所以会有负索引问题出现
+            if ref.count() > 0:
+
+                # 接着上次获取的日期继续更新
+                start_date = ref[ref.count() - 1]['date']
+                QA_util_log_info(' 上次获取期权sr白糖日线数据的最后日期是 {}'.format(
+                    start_date), ui_log=ui_log)
+
+                QA_util_log_info('UPDATE_OPTION_M_DAY \n 从上一次下载数据开始继续 Trying update {} from {} to {}'.format(
+                    code, start_date, end_date), ui_log=ui_log)
+                if start_date != end_date:
+
+                    start_date0 = QA_util_get_next_day(start_date)
+                    df0 = QA_fetch_get_option_day(code=code, start_date=start_date0, end_date=end_date,
+                                                  frequence='day', ip=None, port=None)
+                    retCount = df0.iloc[:, 0].size
+                    QA_util_log_info("日期从开始{}-结束{} , 合约代码{} , 返回了{}条记录 , 准备写入数据库"
+                                     .format(start_date0, end_date, code, retCount), ui_log=ui_log)
+                    coll_option_commodity_sr_day.insert_many(
+                        QA_util_to_json_from_pandas(df0))
+                else:
+                    QA_util_log_info("^已经获取过这天的数据了^ {}".format(
+                        start_date), ui_log=ui_log)
+
+            else:
+                start_date = '1990-01-01'
+                QA_util_log_info('UPDATE_M_OPTION_DAY \n 从新开始下载数据 Trying update {} from {} to {}'.format
+                                 (code, start_date, end_date), ui_log=ui_log)
+                if start_date != end_date:
+
+                    df0 = QA_fetch_get_option_day(code=code, start_date=start_date, end_date=end_date,
+                                                  frequence='day', ip=None, port=None)
+                    retCount = df0.iloc[:, 0].size
+                    QA_util_log_info("日期从开始{}-结束{} , 合约代码{} , 获取了{}条记录 , 准备写入数据库^_^ "
+                                     .format(start_date, end_date, code, retCount),
+                                     ui_log=ui_log)
+
+                    coll_option_commodity_sr_day.insert_many(
+                        QA_util_to_json_from_pandas(df0))
+                else:
+                    QA_util_log_info(
+                        "*已经获取过这天的数据了* {}".format(start_date), ui_log=ui_log)
+
+        except Exception as error0:
+            print(error0)
+            err.append(str(code))
+
+    for item in range(len(option_sr_contract_list)):
+        QA_util_log_info('The {} of Total {}'.format(
+            item, len(option_sr_contract_list)), ui_log=ui_log)
+
+        strLogProgress = 'DOWNLOAD PROGRESS {} '.format(
+            str(float(item / len(option_sr_contract_list) * 100))[0:4] + '%')
+        intLogProgress = int(float(item / len(option_sr_contract_list) * 10000.0))
+        QA_util_log_info(strLogProgress, ui_log=ui_log,
+                         ui_progress=ui_progress, ui_progress_int_value=intLogProgress)
+
+        __saving_work(option_sr_contract_list[item].code, coll_option_commodity_sr_day)
+
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS save option sr day ^_^ ', ui_log=ui_log)
+    else:
+        QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
+        QA_util_log_info(err, ui_log=ui_log)
+
+
+def _save_option_commodity_m_day(client=DATABASE, ui_log=None, ui_progress=None):
+    ##################### M 豆粕 ############################################################################
+    option_m_contract_list = QA_fetch_get_commodity_option_M_contract_time_to_market()
+    coll_option_commodity_m_day = client.option_commodity_m_day
+    coll_option_commodity_m_day.create_index(
+        [("code", pymongo.ASCENDING), ("date_stamp", pymongo.ASCENDING)])
+    err = []
+
+    def __saving_work(code, coll_option_commodity_m_day):
+        try:
+            QA_util_log_info('##JOB12 Now Saving OPTION_DAY_COMMODITY_M 豆粕 ==== {}'.format(
+                str(code)), ui_log=ui_log)
+
+            # 首选查找数据库 是否 有 这个代码的数据
+            # 期权代码 从 10000001 开始编码  10001228
+            ref = coll_option_commodity_m_day.find({'code': str(code)[0:8]})
+            end_date = str(now_time())[0:10]
+
+            # 当前数据库已经包含了这个代码的数据， 继续增量更新
+            # 加入这个判断的原因是因为如果是刚上市的 数据库会没有数据 所以会有负索引问题出现
+            if ref.count() > 0:
+
+                # 接着上次获取的日期继续更新
+                start_date = ref[ref.count() - 1]['date']
+                QA_util_log_info(' 上次获取期权M豆粕日线数据的最后日期是 {}'.format(
+                    start_date), ui_log=ui_log)
+
+                QA_util_log_info('UPDATE_OPTION_M_DAY \n 从上一次下载数据开始继续 Trying update {} from {} to {}'.format(
+                    code, start_date, end_date), ui_log=ui_log)
+                if start_date != end_date:
+
+                    start_date0 = QA_util_get_next_day(start_date)
+                    df0 = QA_fetch_get_option_day(code=code, start_date=start_date0, end_date=end_date,
+                                                  frequence='day', ip=None, port=None)
+                    retCount = df0.iloc[:, 0].size
+                    QA_util_log_info("日期从开始{}-结束{} , 合约代码{} , 返回了{}条记录 , 准备写入数据库"
+                                     .format(start_date0, end_date, code, retCount), ui_log=ui_log)
+                    coll_option_commodity_m_day.insert_many(
+                        QA_util_to_json_from_pandas(df0))
+                else:
+                    QA_util_log_info("^已经获取过这天的数据了^ {}".format(
+                        start_date), ui_log=ui_log)
+
+            else:
+                start_date = '1990-01-01'
+                QA_util_log_info('UPDATE_M_OPTION_DAY \n 从新开始下载数据 Trying update {} from {} to {}'.format
+                                 (code, start_date, end_date), ui_log=ui_log)
+                if start_date != end_date:
+
+                    df0 = QA_fetch_get_option_day(code=code, start_date=start_date, end_date=end_date,
+                                                  frequence='day', ip=None, port=None)
+                    retCount = df0.iloc[:, 0].size
+                    QA_util_log_info("日期从开始{}-结束{} , 合约代码{} , 获取了{}条记录 , 准备写入数据库^_^ "
+                                     .format(start_date, end_date, code, retCount),
+                                     ui_log=ui_log)
+
+                    coll_option_commodity_m_day.insert_many(
+                        QA_util_to_json_from_pandas(df0))
+                else:
+                    QA_util_log_info(
+                        "*已经获取过这天的数据了* {}".format(start_date), ui_log=ui_log)
+
+        except Exception as error0:
+            print(error0)
+            err.append(str(code))
+
+    for item in range(len(option_m_contract_list)):
+        QA_util_log_info('The {} of Total {}'.format(
+            item, len(option_m_contract_list)), ui_log=ui_log)
+
+        strLogProgress = 'DOWNLOAD PROGRESS {} '.format(
+            str(float(item / len(option_m_contract_list) * 100))[0:4] + '%')
+        intLogProgress = int(float(item / len(option_m_contract_list) * 10000.0))
+        QA_util_log_info(strLogProgress, ui_log=ui_log,
+                         ui_progress=ui_progress, ui_progress_int_value=intLogProgress)
+
+        __saving_work(option_m_contract_list[item].code, coll_option_commodity_m_day)
+
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS save option m day ^_^ ', ui_log=ui_log)
+    else:
+        QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
+        QA_util_log_info(err, ui_log=ui_log)
+
+
+def _save_option_commodity_cu_day(client=DATABASE, ui_log=None, ui_progress=None):
+    ##################### CU 铜 ############################################################################
+    option_cu_contract_list = QA_fetch_get_commodity_option_CU_contract_time_to_market()
+    coll_option_commodity_cu_day = client.option_commodity_cu_day
+    coll_option_commodity_cu_day.create_index(
+        [("code", pymongo.ASCENDING), ("date_stamp", pymongo.ASCENDING)])
+    err = []
+
+    def __saving_work(code, coll_option_commodity_cu_day):
+        try:
+            QA_util_log_info('##JOB12 Now Saving OPTION_DAY_COMMODITY_CU 铜 ==== {}'.format(
+                str(code)), ui_log=ui_log)
+
+            # 首选查找数据库 是否 有 这个代码的数据
+            # 期权代码 从 10000001 开始编码  10001228
+            ref = coll_option_commodity_cu_day.find({'code': str(code)[0:8]})
+            end_date = str(now_time())[0:10]
+
+            # 当前数据库已经包含了这个代码的数据， 继续增量更新
+            # 加入这个判断的原因是因为如果是刚上市的 数据库会没有数据 所以会有负索引问题出现
+            if ref.count() > 0:
+
+                # 接着上次获取的日期继续更新
+                start_date = ref[ref.count() - 1]['date']
+                QA_util_log_info(' 上次获取期权CU日线数据的最后日期是 {}'.format(
+                    start_date), ui_log=ui_log)
+
+                QA_util_log_info('UPDATE_OPTION_CU_DAY \n 从上一次下载数据开始继续 Trying update {} from {} to {}'.format(
+                    code, start_date, end_date), ui_log=ui_log)
+                if start_date != end_date:
+
+                    start_date0 = QA_util_get_next_day(start_date)
+                    df0 = QA_fetch_get_option_day(code=code, start_date=start_date0, end_date=end_date,
+                                                  frequence='day', ip=None, port=None)
+                    retCount = df0.iloc[:, 0].size
+                    QA_util_log_info("日期从开始{}-结束{} , 合约代码{} , 返回了{}条记录 , 准备写入数据库"
+                                     .format(start_date0, end_date, code, retCount), ui_log=ui_log)
+                    coll_option_commodity_cu_day.insert_many(
+                        QA_util_to_json_from_pandas(df0))
+                else:
+                    QA_util_log_info("^已经获取过这天的数据了^ {}".format(
+                        start_date), ui_log=ui_log)
+
+            else:
+                start_date = '1990-01-01'
+                QA_util_log_info('UPDATE_CU_OPTION_DAY \n 从新开始下载数据 Trying update {} from {} to {}'.format
+                                 (code, start_date, end_date), ui_log=ui_log)
+                if start_date != end_date:
+
+                    df0 = QA_fetch_get_option_day(code=code, start_date=start_date, end_date=end_date,
+                                                  frequence='day', ip=None, port=None)
+                    retCount = df0.iloc[:, 0].size
+                    QA_util_log_info("日期从开始{}-结束{} , 合约代码{} , 获取了{}条记录 , 准备写入数据库^_^ "
+                                     .format(start_date, end_date, code, retCount),
+                                     ui_log=ui_log)
+
+                    coll_option_commodity_cu_day.insert_many(
+                        QA_util_to_json_from_pandas(df0))
+                else:
+                    QA_util_log_info(
+                        "*已经获取过这天的数据了* {}".format(start_date), ui_log=ui_log)
+
+        except Exception as error0:
+            print(error0)
+            err.append(str(code))
+
+    for item in range(len(option_cu_contract_list)):
+        QA_util_log_info('The {} of Total {}'.format(
+            item, len(option_cu_contract_list)), ui_log=ui_log)
+
+        strLogProgress = 'DOWNLOAD PROGRESS {} '.format(
+            str(float(item / len(option_cu_contract_list) * 100))[0:4] + '%')
+        intLogProgress = int(float(item / len(option_cu_contract_list) * 10000.0))
+        QA_util_log_info(strLogProgress, ui_log=ui_log,
+                         ui_progress=ui_progress, ui_progress_int_value=intLogProgress)
+
+        __saving_work(option_cu_contract_list[item].code, coll_option_commodity_cu_day)
+
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS save option cu day ^_^ ', ui_log=ui_log)
+    else:
+        QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
+        QA_util_log_info(err, ui_log=ui_log)
+
+def QA_SU_save_option_commodity_day(client=DATABASE, ui_log=None, ui_progress=None):
+    '''
+        :param client:
+        :return:
+    '''
+    _save_option_commodity_cu_day(client=client,ui_log=ui_log,ui_progress=ui_progress)
+    _save_option_commodity_m_day(client=client,ui_log=ui_log,ui_progress=ui_progress)
+    _save_option_commodity_sr_day(client=client,ui_log=ui_log,ui_progress=ui_progress)
 
 
 def QA_SU_save_option_day(client=DATABASE, ui_log=None, ui_progress=None):
