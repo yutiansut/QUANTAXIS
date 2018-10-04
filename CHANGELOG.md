@@ -3,7 +3,8 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.1.7 (unreleased)](#117-unreleased)
+    - [1.1.8(unreleased)](#118unreleased)
+    - [1.1.7](#117)
     - [1.1.6](#116)
     - [1.1.5](#115)
     - [1.1.4.dev1](#114dev1)
@@ -63,11 +64,14 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
-## 1.1.7 (unreleased)
+## 1.1.8(unreleased)
+
+## 1.1.7 
 
 1. 优化 QA_DataStruct_future_day/min
 2. 增加了QA_fetch_xxx_adv系列中的  QA_fetch_future_day_adv/QA_fetch_future_min_adv函数
-
+3. 增加了QA_DataStruct的reindex方法, 方便从指标中提取部分行情
+4. 增加了商品期权的支持
 
 to do:
 
