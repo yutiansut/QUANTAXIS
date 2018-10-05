@@ -38,7 +38,7 @@ from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_min, QA
                                  QA_SU_save_stock_block, QA_SU_save_stock_info, QA_SU_save_stock_info_tushare,
                                  QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_index_min, QA_SU_save_future_list, QA_SU_save_index_list,
                                  QA_SU_save_etf_day, QA_SU_save_etf_min, QA_SU_save_financialfiles,
-                                 QA_SU_save_option_day, QA_SU_save_option_commodity_day,
+                                 QA_SU_save_option_day, QA_SU_save_option_min, QA_SU_save_option_commodity_day, QA_SU_save_option_commodity_min,
                                  QA_SU_save_future_day, QA_SU_save_future_min,QA_SU_save_report_calendar_day,
                                  QA_SU_save_report_calendar_his,QA_SU_save_stock_divyield_day,
                                  QA_SU_save_stock_divyield_his)
