@@ -203,6 +203,8 @@ class QA_Account(QA_Worker):
             'allow_t0': self.allow_t0,
             'margin_level': self.margin_level,
             'init_assets': self.init_assets,
+            'init_cash': self.init_cash,
+            'init_hold': self.init_hold.to_dict(),
             'commission_coeff': self.commission_coeff,
             'tax_coeff': self.tax_coeff,
             'cash': self.cash,
@@ -395,7 +397,7 @@ class QA_Account(QA_Worker):
         if len(data) < 1:
             return None
         else:
-            #print(data.index.levels[0])
+            # print(data.index.levels[0])
             data = data.assign(account_cookie=self.account_cookie).assign(
                 date=pd.to_datetime(data.index.levels[0]).date)
 
@@ -404,7 +406,7 @@ class QA_Account(QA_Worker):
             res = data[~data.index.duplicated(keep='last')].sort_index()
 
             return pd.concat([res.reset_index().set_index('date'), pd.Series(data=None, index=pd.to_datetime(self.trade_range).set_names('date'), name='predrop')], axis=1)\
-                        .ffill().drop(['predrop'], axis=1).reset_index().set_index(['date', 'account_cookie']).sort_index()
+                .ffill().drop(['predrop'], axis=1).reset_index().set_index(['date', 'account_cookie']).sort_index()
     # 计算assets的时候 需要一个market_data=QA.QA_fetch_stock_day_adv(list(data.columns),data.index[0],data.index[-1])
     # (market_data.to_qfq().pivot('close')*data).sum(axis=1)+user_cookie.get_account(a_1).daily_cash.set_index('date').cash
 
@@ -887,6 +889,8 @@ class QA_Account(QA_Worker):
         self.margin_level = message.get('margin_level', False)
         self.init_cash = message.get(
             'init_cash', message.get('init_assets', 1000000))  # 兼容修改
+        self.init_hold = pd.Series(message.get('init_hold', {}), name='amount')
+        self.init_hold.index.name = 'code'
         self.commission_coeff = message.get('commission_coeff', 0.00015)
         self.tax_coeff = message.get('tax_coeff', 0.0015)
         self.history = message['history']
@@ -938,7 +942,7 @@ class QA_Account(QA_Worker):
 
             # 这样有点慢
 
-            
+
             """
 
             self._currenttime = event.market_data.datetime[0]
