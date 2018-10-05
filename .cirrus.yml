@@ -1,6 +1,6 @@
 container:
-  image: python:latest
-
+  image: python:3.6
+  
 test_task:
   pip_cache:
     folder: ~/.cache/pip
