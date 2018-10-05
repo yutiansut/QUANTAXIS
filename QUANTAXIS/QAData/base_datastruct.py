@@ -733,25 +733,55 @@ class _quotation_base():
 
     def reindex(self, ind):
         """reindex
-        
+
         Arguments:
             ind {[type]} -- [description]
-        
+
         Raises:
             RuntimeError -- [description]
             RuntimeError -- [description]
-        
+
         Returns:
             [type] -- [description]
         """
 
-        if isinstance(ind,pd.MultiIndex):
+        if isinstance(ind, pd.MultiIndex):
             try:
                 return self.new(self.data.reindex(ind))
             except:
                 raise RuntimeError('QADATASTRUCT ERROR: CANNOT REINDEX')
         else:
-            raise RuntimeError('QADATASTRUCT ERROR: ONLY ACCEPT MULTI-INDEX FORMAT')
+            raise RuntimeError(
+                'QADATASTRUCT ERROR: ONLY ACCEPT MULTI-INDEX FORMAT')
+
+    def reindex_time(self, ind):
+        if isinstance(ind, pd.DatetimeIndex):
+            try:
+                return self.new(self.data.loc[(ind, slice(None)), :])
+            except:
+                raise RuntimeError('QADATASTRUCT ERROR: CANNOT REINDEX')
+
+        else:
+            raise RuntimeError(
+                'QADATASTRUCT ERROR: ONLY ACCEPT DATETIME-INDEX FORMAT')
+
+    def iterrows(self):
+        return self.data.iterrows()
+
+    def iteritems(self):
+        return self.data.iteritems()
+
+    def itertuples(self):
+        return self.data.itertuples()
+
+    def abs(self):
+        return self.new(self.data.abs())
+
+    def agg(self, func, axis=0, *args, **kwargs):
+        return self.new(self.data.agg(func, axis=0, *args, **kwargs))
+
+    def aggregate(self, func, axis=0, *args, **kwargs):
+        return self.new(self.data.aggregate(func, axis=0, *args, **kwargs))
 
     def tail(self, lens):
         """返回最后Lens个值的DataStruct
@@ -807,11 +837,11 @@ class _quotation_base():
         """
         return QA_util_to_json_from_pandas(self.data.reset_index())
 
-    def to_csv(self,*args,**kwargs):
+    def to_csv(self, *args, **kwargs):
         """datastruct 存本地csv
         """
 
-        self.data.to_csv(*args,**kwargs)
+        self.data.to_csv(*args, **kwargs)
 
     def to_dict(self, orient='dict'):
         """
