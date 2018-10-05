@@ -1,0 +1,9 @@
+container:
+  image: python:latest
+
+test_task:
+  pip_cache:
+    folder: ~/.cache/pip
+    fingerprint_script: echo $PYTHON_VERSION && cat requirements.txt
+    populate_script: pip install -r requirements.txt
+  test_script: python setup.py install
