@@ -9,7 +9,7 @@ from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, FREQUENCE, MARKET_TYPE,
                                           ORDER_DIRECTION, ORDER_MODEL)
 from QUANTAXIS.QASU.save_strategy import QA_SU_save_strategy
 
-QA_SU_save_strategy('MA_strategy_day',topic='stock',version=1.5,if_save=True)
+QA_SU_save_strategy('MA_strategy_day',portfolio_cookie='stock',version=1.5,if_save=True)
 
 class MAStrategy(QA_Strategy):
     def __init__(self):
