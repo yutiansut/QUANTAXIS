@@ -88,18 +88,11 @@ class QA_RealTrade():
         _date = None
 
         while QA_util_if_tradetime(self.now):
-
-            
-
-            
-
-
             for data in self.ingest_data:  # 对于在ingest_data中的数据
                 # <class 'QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day'>
                 date = data.date[0]
                 if self.market_type is MARKET_TYPE.STOCK_CN:  # 如果是股票市场
                     if _date != date:  # 如果新的date
-
                         # 前一天的交易日已经过去
                         # 往 broker 和 account 发送 settle 事件
                         try:

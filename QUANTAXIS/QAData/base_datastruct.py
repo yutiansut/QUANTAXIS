@@ -367,6 +367,11 @@ class _quotation_base():
         except:
             return None
 
+    @property
+    @lru_cache()
+    def ndarray(self):
+        return self.to_numpy()
+
     '''
     ########################################################################################################
     计算统计相关的
@@ -590,6 +595,12 @@ class _quotation_base():
             return self.dicts[(QA_util_to_datetime(time), str(code))]
         except Exception as e:
             raise e
+
+    def reset_index(self):
+        return self.data.reset_index()
+
+    def rolling(self, N):
+        return self.groupby('code').rolling(N)
 
     def plot(self, code=None):
 
@@ -829,7 +840,7 @@ class _quotation_base():
         """
         转换DataStruct为numpy.ndarray
         """
-        return np.asarray(self.data)
+        return np.asarray(self.data.reset_index())
 
     def to_json(self):
         """
@@ -874,7 +885,7 @@ class _quotation_base():
     #         self.data.loc[(slice(None), x), :], *arg, **kwargs), self.code))).sort_index()
 
     def add_func(self, func, *arg, **kwargs):
-        return self.groupby(level=1, sort=False).apply(func, *arg, **kwargs)
+        return self.groupby(level=1, sort=False).apply(func, raw=True, *arg, **kwargs)
 
     def pivot(self, column_):
         """增加对于多列的支持"""
