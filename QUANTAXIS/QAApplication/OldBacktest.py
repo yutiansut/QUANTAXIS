@@ -6,6 +6,7 @@ import datetime
 import sys
 import random
 
+
 class backtest():
     """依据回测场景的建模
 
@@ -19,7 +20,7 @@ class backtest():
         self.init_cach = init_cash
         self.time_ = None
         self.market_data_ = None
-        self.res= False
+        self.res = False
 
     @property
     def position(self):

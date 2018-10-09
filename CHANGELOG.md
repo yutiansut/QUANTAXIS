@@ -69,7 +69,9 @@
 1. 增加了商品期权的分钟线获取
 2. 优化了QA_Account的存储
 3. 修复了QA_PortfolioView的bug
-4. DataStruct 增加了 rolling(N)的方法
+4. DataStruct 增加了 rolling(N), ndarray的方法
+5. QAWEB增加对策略的存储功能
+6. QADataStruct增加get_data函数,方便获取各种格式的数据
 
 
 ## 1.1.7 
