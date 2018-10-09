@@ -885,7 +885,7 @@ class _quotation_base():
     #         self.data.loc[(slice(None), x), :], *arg, **kwargs), self.code))).sort_index()
 
     def add_func(self, func, *arg, **kwargs):
-        return self.groupby(level=1, sort=False).apply(func, *arg, **kwargs)
+        return self.groupby(level=1, sort=False).apply(func, raw=True, *arg, **kwargs)
 
     def pivot(self, column_):
         """增加对于多列的支持"""
