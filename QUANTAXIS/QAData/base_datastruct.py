@@ -885,7 +885,47 @@ class _quotation_base():
     #         self.data.loc[(slice(None), x), :], *arg, **kwargs), self.code))).sort_index()
 
     def add_func(self, func, *arg, **kwargs):
-        return self.groupby(level=1, sort=False).apply(func, raw=True, *arg, **kwargs)
+        """QADATASTRUCT的指标/函数apply入口
+        
+        Arguments:
+            func {[type]} -- [description]
+        
+        Returns:
+            [type] -- [description]
+        """
+
+        return self.groupby(level=1, sort=False).apply(func, *arg, **kwargs)
+
+    def get_data(self, columns, type='ndarray', with_index=False):
+        """获取不同格式的数据
+        
+        Arguments:
+            columns {[type]} -- [description]
+        
+        Keyword Arguments:
+            type {str} -- [description] (default: {'ndarray'})
+            with_index {bool} -- [description] (default: {False})
+        
+        Returns:
+            [type] -- [description]
+        """
+
+        res = self.select_columns(columns)
+        if type == 'ndarray':
+            if with_index:
+                return np.asarray(res.reset_index())
+            else:
+                return np.asarray(res)
+        elif type == 'list':
+            if with_index:
+                return np.asarray(res.reset_index()).tolist()
+            else:
+                return np.asarray(res).tolist()
+        elif type == 'dataframe':
+            if with_index:
+                return res.reset_index()
+            else:
+                return res
 
     def pivot(self, column_):
         """增加对于多列的支持"""
