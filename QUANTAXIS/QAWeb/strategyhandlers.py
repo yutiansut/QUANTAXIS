@@ -24,6 +24,7 @@
 
 import json
 import tornado
+import os
 from tornado.web import Application, RequestHandler, authenticated
 from tornado.websocket import WebSocketHandler
 
@@ -33,9 +34,11 @@ from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAARP.QARisk import QA_Performance, QA_Risk
 from QUANTAXIS.QASU.user import QA_user_sign_in, QA_user_sign_up
 from QUANTAXIS.QAUtil.QASetting import DATABASE
+from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting
 from QUANTAXIS.QAWeb.basehandles import QABaseHandler
 from QUANTAXIS.QAWeb.util import CJsonEncoder
+from QUANTAXIS.QASetting.QALocalize import cache_path
 
 class StrategyHandler(QABaseHandler):
     def get(self):
@@ -56,3 +59,17 @@ class StrategyHandler(QABaseHandler):
         else:
             self.write('WRONG')
 
+class BacktestHandler(QABaseHandler):
+    def get(self):
+        """[summary]
+        
+        Arguments:
+            QABaseHandler {[type]} -- [description]
+        """
+        backtest_content=self.get_argument('strategy_content')
+        try:
+            with open('{}{}{}.py'.format(cache_path,os.sep,QA_util_random_with_topic('strategy')),'w') as f:
+                f.write(backtest_content)
+            self.write('ok')
+        except Exception as e:
+            self.write(e)
