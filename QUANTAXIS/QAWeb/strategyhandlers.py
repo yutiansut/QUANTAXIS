@@ -73,3 +73,8 @@ class BacktestHandler(QABaseHandler):
             self.write('ok')
         except Exception as e:
             self.write(e)
+
+
+class BacktestFileHandler(QABaseHandler):
+    def get(self):
+        backtest_content=self.get_argument('strategy_content')
