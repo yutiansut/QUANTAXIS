@@ -79,11 +79,11 @@ def DIFF(Series, N=1):
 
 
 def HHV(Series, N):
-    return pd.Series(Series).rolling(N).max().values
+    return pd.Series(Series).rolling(N).max()
 
 
 def LLV(Series, N):
-    return pd.Series(Series).rolling(N).min().values
+    return pd.Series(Series).rolling(N).min()
 
 
 def SUM(Series, N):
