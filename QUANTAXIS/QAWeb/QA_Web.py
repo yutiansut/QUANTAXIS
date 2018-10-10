@@ -53,6 +53,7 @@ def main():
             (r"/user/blocksetting", PersonBlockHandler),
             (r"/strategy/content", StrategyHandler),
             (r"/backtest/write",BacktestHandler),
+            #(r"/backtest/save"
             (r"/realtime", RealtimeSocketHandler),
             (r"/simulate", SimulateSocketHandler),
             (r"/monitor", MonitorSocketHandler),

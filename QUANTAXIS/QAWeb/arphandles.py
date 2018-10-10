@@ -56,11 +56,12 @@ class MemberHandler(QABaseHandler):
         if len(query_account) > 0:
             #data = [QA.QA_Account().from_message(x) for x in query_account]
             warpper=lambda x: str(x) if isinstance(x,datetime.datetime) else x
+            res=[]
             for item in query_account:
-                item['trade_index']=list(map(str,item['trade_index']))
-                item['history']=[list(map(warpper,itemd)) for itemd in item['history']]
+                res.append([item['portfolio_cookie'],item['account_cookie'],str(item['start_date']),
+                str(item['end_date']),'market_type'])
 
-            self.write({'result': query_account})
+            self.write({'result': res})
         else:
             self.write('WRONG')
 
