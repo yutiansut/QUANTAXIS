@@ -884,8 +884,8 @@ class _quotation_base():
     #     return pd.concat(list(map(lambda x: func(
     #         self.data.loc[(slice(None), x), :], *arg, **kwargs), self.code))).sort_index()
 
-    def add_func(self, func, *arg, **kwargs):
-        """QADATASTRUCT的指标/函数apply入口
+    def apply(self, func, *arg, **kwargs):
+        """func(DataStruct)
         
         Arguments:
             func {[type]} -- [description]
@@ -894,18 +894,30 @@ class _quotation_base():
             [type] -- [description]
         """
 
+        return func(self, *arg, **kwargs)
+
+    def add_func(self, func, *arg, **kwargs):
+        """QADATASTRUCT的指标/函数apply入口
+
+        Arguments:
+            func {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+
         return self.groupby(level=1, sort=False).apply(func, *arg, **kwargs)
 
     def get_data(self, columns, type='ndarray', with_index=False):
         """获取不同格式的数据
-        
+
         Arguments:
             columns {[type]} -- [description]
-        
+
         Keyword Arguments:
             type {str} -- [description] (default: {'ndarray'})
             with_index {bool} -- [description] (default: {False})
-        
+
         Returns:
             [type] -- [description]
         """
