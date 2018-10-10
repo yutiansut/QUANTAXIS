@@ -828,7 +828,7 @@ class _quotation_base():
         """
         转换DataStruct为list
         """
-        return np.asarray(self.data).tolist()
+        return self.data.reset_index().values.tolist()
 
     def to_pd(self):
         """
@@ -840,7 +840,7 @@ class _quotation_base():
         """
         转换DataStruct为numpy.ndarray
         """
-        return np.asarray(self.data.reset_index())
+        return self.data.reset_index().values
 
     def to_json(self):
         """
@@ -886,10 +886,10 @@ class _quotation_base():
 
     def apply(self, func, *arg, **kwargs):
         """func(DataStruct)
-        
+
         Arguments:
             func {[type]} -- [description]
-        
+
         Returns:
             [type] -- [description]
         """
@@ -925,14 +925,14 @@ class _quotation_base():
         res = self.select_columns(columns)
         if type == 'ndarray':
             if with_index:
-                return np.asarray(res.reset_index())
+                return res.reset_index().values
             else:
-                return np.asarray(res)
+                return res.values
         elif type == 'list':
             if with_index:
-                return np.asarray(res.reset_index()).tolist()
+                return res.reset_index().values.tolist()
             else:
-                return np.asarray(res).tolist()
+                return res.values.tolist()
         elif type == 'dataframe':
             if with_index:
                 return res.reset_index()
