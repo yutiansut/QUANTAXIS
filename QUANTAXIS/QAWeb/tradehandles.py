@@ -28,7 +28,7 @@ import json
 import tornado
 from tornado.web import Application, RequestHandler, authenticated
 from tornado.websocket import WebSocketHandler
-
+from QUANTAXIS.QAARP import QA_Account, QA_Portfolio, QA_User
 from QUANTAXIS.QAWeb.basehandles import QABaseHandler, QAWebSocketHandler
 """
 GET http://localhost:8888/accounts
@@ -39,6 +39,26 @@ DELETE http://localhost:8888/orders/O1234
 GET http://localhost:8888/clients
 """
 
-class TradeHandles(QABaseHandler):
-    def get(self):
-        pass
+
+class AccModelHandler(QAWebSocketHandler):
+    port=QA_Portfolio()
+
+    def open(self):
+        self.client.add(self)
+        self.write_message('realtime socket start')
+
+    def on_message(self, message):
+        #assert isinstance(message,str)
+
+        try:
+            if message =='create_account':
+
+                account=self.port.new_account()
+                #account = self.port.add_account()
+                self.write_message('CREATE ACCOUNT: {}'.format(account.account_cookie))
+
+        except Exception as e:
+            print(e)
+
+    def on_close(self):
+        print('connection close')
