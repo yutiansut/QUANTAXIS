@@ -608,25 +608,53 @@ class QA_Performance():
                                          for i in range(len(self.account.code))]))
         pair_table = []
         for _, data in self.account.history_table.iterrows():
-            if data.amount > 0:
-                X[data.code].put((data.datetime, data.amount, data.price))
-            elif data.amount < 0:
-                while True:
+            while True:
+                if X[data.code].qsize() == 0:
+                    X[data.code].put(
+                        (data.datetime, data.amount, data.price))
+                    break
+                else:
                     l = X[data.code].get()
-                    if l[1] == abs(data.amount):
-                        pair_table.append(
-                            [data.code, data.datetime, l[0], abs(data.amount), data.price, l[2]])
+                    if (l[1]*data.amount) < 0:
+                        # 原有多仓/ 平仓 或者原有空仓/平仓
+
+                        if abs(l[1]) > abs(data.amount):
+                            temp = (l[0], l[1]+data.amount, l[2])
+                            X[data.code].put_nowait(temp)
+                            if data.amount < 0:
+                                pair_table.append(
+                                    [data.code, data.datetime, l[0], abs(data.amount), data.price, l[2]])
+                                break
+                            else:
+                                pair_table.append(
+                                    [data.code, l[0], data.datetime, abs(data.amount), data.price, l[2]])
+                                break
+
+                        elif abs(l[1]) < abs(data.amount):
+                            data.amount = data.amount+l[1]
+
+                            if data.amount < 0:
+                                pair_table.append(
+                                    [data.code, data.datetime, l[0], l[1], data.price, l[2]])
+                            else:
+                                pair_table.append(
+                                    [data.code, l[0], data.datetime,  l[1], data.price, l[2]])
+                        else:
+                            if data.amount < 0:
+                                pair_table.append(
+                                    [data.code, data.datetime, l[0], abs(data.amount), data.price, l[2]])
+                                break
+                            else:
+                                pair_table.append(
+                                    [data.code, l[0], data.datetime, abs(data.amount), data.price, l[2]])
+                                break
+
+                    else:
+                        X[data.code].put_nowait(l)
+                        X[data.code].put_nowait(
+                            (data.datetime, data.amount, data.price))
                         break
-                    if l[1] > abs(data.amount):
-                        temp = (l[0], l[1]+data.amount, l[2])
-                        X[data.code].put_nowait(temp)
-                        pair_table.append(
-                            [data.code, data.datetime, l[0], abs(data.amount), data.price, l[2]])
-                        break
-                    elif l[1] < (abs(data.amount)):
-                        data.amount = data.amount+l[1]
-                        pair_table.append(
-                            [data.code, data.datetime, l[0], l[1], data.price, l[2]])
+
         pair_title = ['code', 'sell_date', 'buy_date',
                       'amount', 'sell_price', 'buy_price']
         pnl = pd.DataFrame(pair_table, columns=pair_title).set_index('code')
@@ -642,25 +670,52 @@ class QA_Performance():
                                          for i in range(len(self.account.code))]))
         pair_table = []
         for _, data in self.account.history_table.iterrows():
-            if data.amount > 0:
-                X[data.code].append((data.datetime, data.amount, data.price))
-            elif data.amount < 0:
-                while True:
+            while True:
+                if len(X[data.code]) == 0:
+                    X[data.code].append(
+                        (data.datetime, data.amount, data.price))
+                    break
+                else:
                     l = X[data.code].popleft()
-                    if l[1] == abs(data.amount):
-                        pair_table.append(
-                            [data.code, data.datetime, l[0], abs(data.amount), data.price, l[2]])
+                    if (l[1]*data.amount) < 0:
+                        # 原有多仓/ 平仓 或者原有空仓/平仓
+
+                        if abs(l[1]) > abs(data.amount):
+                            temp = (l[0], l[1]+data.amount, l[2])
+                            X[data.code].appendleft(temp)
+                            if data.amount < 0:
+                                pair_table.append(
+                                    [data.code, data.datetime, l[0], abs(data.amount), data.price, l[2]])
+                                break
+                            else:
+                                pair_table.append(
+                                    [data.code, l[0], data.datetime, abs(data.amount), data.price, l[2]])
+                                break
+
+                        elif abs(l[1]) < abs(data.amount):
+                            data.amount = data.amount+l[1]
+
+                            if data.amount < 0:
+                                pair_table.append(
+                                    [data.code, data.datetime, l[0], l[1], data.price, l[2]])
+                            else:
+                                pair_table.append(
+                                    [data.code, l[0], data.datetime,  l[1], data.price, l[2]])
+                        else:
+                            if data.amount < 0:
+                                pair_table.append(
+                                    [data.code, data.datetime, l[0], abs(data.amount), data.price, l[2]])
+                                break
+                            else:
+                                pair_table.append(
+                                    [data.code, l[0], data.datetime, abs(data.amount), data.price, l[2]])
+                                break
+
+                    else:
+                        X[data.code].appendleft(l)
+                        X[data.code].appendleft(
+                            (data.datetime, data.amount, data.price))
                         break
-                    if l[1] > abs(data.amount):
-                        temp = (l[0], l[1]+data.amount, l[2])
-                        X[data.code].appendleft(temp)
-                        pair_table.append(
-                            [data.code, data.datetime, l[0], abs(data.amount), data.price, l[2]])
-                        break
-                    elif l[1] < (abs(data.amount)):
-                        data.amount = data.amount+l[1]
-                        pair_table.append(
-                            [data.code, data.datetime, l[0], l[1], data.price, l[2]])
 
         pair_title = ['code', 'sell_date', 'buy_date',
                       'amount', 'sell_price', 'buy_price']
