@@ -109,3 +109,6 @@ class RiskHandler(QABaseHandler):
             self.write({'result': query_account})
         else:
             self.write('WRONG')
+
+
+
