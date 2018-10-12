@@ -74,6 +74,8 @@
 6. QADataStruct增加get_data函数,方便获取各种格式的数据
 7. QADataStruct增加 apply函数 方便对自己应用函数
 8. 增加了对于QA_Performance插件中先卖后买算差价的支持
+9. QAMarket=QAShipaneBroker 支持通达信模拟客户端
+10. QAIndicator 增加Talib的形态识别指标
 
 不兼容修改:
 
