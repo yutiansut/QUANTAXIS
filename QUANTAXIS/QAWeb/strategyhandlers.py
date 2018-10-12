@@ -74,7 +74,8 @@ class BacktestHandler(QABaseHandler):
         backtest_name = self.get_argument('strategy_name','all')
         if backtest_name =='all':
             res=os.listdir(cache_path)
-            print(res)
+            #print(res)
+            res = [item[0:-3] for item in res if item[-2:]=='py' ]
             self.write({'result':res})
             return
         try:
