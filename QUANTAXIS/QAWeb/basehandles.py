@@ -57,8 +57,9 @@ class QABaseHandler(RequestHandler):
         #self.set_header("Access-Control-Allow-Headers", "x-requested-with")
         self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
         self.set_header('Access-Control-Allow-Headers', '*')
-        self.set_header('content-type', '*')
+        self.set_header('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
         self.set_header('Server', 'QUANTAXISBACKEND')
+        #headers.set('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
         # self.Content-Type: text/html; charset=utf-8
 
     def post(self):
