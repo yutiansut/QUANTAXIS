@@ -233,11 +233,12 @@ class QA_SPEBroker(QA_Broker):
             data = self.call("positions", {
                 'client': accounts
             })
-            #print(data)
+            # print(data)
             if data is not None:
                 cash_part = data.get('subAccounts', {}).get('人民币', False)
                 if cash_part:
-                    cash_available = cash_part.get('可用金额')
+                    cash_available = cash_part.get('可用金额',cash_part.get('可用'))
+                    
                 position_part = data.get('dataTable', False)
                 if position_part:
                     res = data.get('dataTable', False)
@@ -247,7 +248,8 @@ class QA_SPEBroker(QA_Broker):
                                         for item in hold_headers]
                         hold_available = pd.DataFrame(
                             res['rows'], columns=hold_headers)
-
+                if len(hold_available)==1 and hold_available.amount[0] in [None, '', 0]:
+                    hold_available=pd.DataFrame(data=None,columns=hold_headers)
                 return {'cash_available': cash_available, 'hold_available': hold_available.assign(amount=hold_available.amount.apply(float)).loc[:, ['code', 'amount']].set_index('code').amount}
             else:
                 print(data)
@@ -280,16 +282,18 @@ class QA_SPEBroker(QA_Broker):
                 orders = data.get('dataTable', False)
 
                 order_headers = orders['columns']
+                if ('成交状态' or '状态说明' in order_headers) and ('备注' in order_headers):
+                    order_headers[order_headers.index('备注')]='废弃'
+                
                 order_headers = [cn_en_compare[item] for item in order_headers]
                 order_all = pd.DataFrame(
                     orders['rows'], columns=order_headers).assign(account_cookie=accounts)
 
                 order_all.towards = order_all.towards.apply(
                     lambda x: trade_towards_cn_en[x])
-                
                 if 'order_time' in order_headers:
                     # 这是order_status
-                    order_all.status = order_all.status.apply(lambda x: order_status_cn_en[x])
+                    order_all['status'] = order_all.status.apply(lambda x: order_status_cn_en[x])
                     if 'order_date' not in order_headers:
                         order_all.order_time = order_all.order_time.apply(
                             lambda x: QA_util_get_order_datetime(dt='{} {}'.format(datetime.date.today(), x)))
@@ -402,7 +406,7 @@ if __name__ == '__main__':
     a = QA_SPEBroker()
 
     print('查询账户')
-    acc = 'account:813'
+    acc = 'account:9173'
     print(a.query_positions(acc))
     print('查询所有订单')
     print(a.query_orders(acc, ''))
@@ -429,4 +433,4 @@ if __name__ == '__main__':
     print('一键全部撤单')
     print(a.cancel_all(acc))
 
-    #print(a.cancel_order('account:141', '1703'))
+    print(a.cancel_order('account:141', '1703'))
