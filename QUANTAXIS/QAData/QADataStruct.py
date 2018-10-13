@@ -147,8 +147,7 @@ class QA_DataStruct_Stock_day(_quotation_base):
         except:
             return None
 
-    pre_close=preclose
-
+    pre_close = preclose
 
     @property
     def price_chg(self):
@@ -167,18 +166,15 @@ class QA_DataStruct_Stock_day(_quotation_base):
     def month(self):
         return self.resample('M')
 
-
     @property
     @lru_cache()
     def quarter(self):
         return self.resample('Q')
 
-
     # @property
     # @lru_cache()
     # def semiannual(self):
     #     return self.resample('SA')
-
 
     @property
     @lru_cache()
@@ -216,7 +212,7 @@ class QA_DataStruct_Stock_min(_quotation_base):
         self.type = dtype
         self.if_fq = if_fq
 
-        self.data=self.data.sort_index()
+        self.data = self.data.sort_index()
 
     # 抽象类继承
     def choose_db(self):
@@ -316,6 +312,38 @@ class QA_DataStruct_Future_day(_quotation_base):
         return '< QA_DataStruct_Future_day with {} securities >'.format(len(self.code))
     __str__ = __repr__
 
+    @property
+    @lru_cache()
+    def week(self):
+        return self.resample('w')
+
+    @property
+    @lru_cache()
+    def month(self):
+        return self.resample('M')
+
+    @property
+    @lru_cache()
+    def quarter(self):
+        return self.resample('Q')
+
+    # @property
+    # @lru_cache()
+    # def semiannual(self):
+    #     return self.resample('SA')
+
+    @property
+    @lru_cache()
+    def year(self):
+        return self.resample('Y')
+
+    def resample(self, level):
+        try:
+            return self.add_func(QA_data_day_resample, level).sort_index()
+        except Exception as e:
+            print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
+            return None
+
 
 class QA_DataStruct_Future_min(_quotation_base):
     """
@@ -327,19 +355,18 @@ class QA_DataStruct_Future_min(_quotation_base):
         super().__init__(DataFrame, dtype, if_fq)
         self.type = 'future_day'
         self.data = self.data.loc[:, [
-            'open', 'high', 'low', 'close', 'trade', 'position', 'price','tradetime']]
+            'open', 'high', 'low', 'close', 'trade', 'position', 'price', 'tradetime']]
         self.if_fq = if_fq
 
     # 抽象类继承
     def choose_db(self):
         self.mongo_coll = DATABASE.future_min
 
-
     @property
     @lru_cache()
     def trade_date(self):
         """返回交易所日历下的日期
-        
+
         Returns:
             [type] -- [description]
         """
@@ -348,7 +375,7 @@ class QA_DataStruct_Future_min(_quotation_base):
             return self.data.trade_date
         except:
             return None
-        
+
     @property
     @lru_cache()
     def min5(self):
@@ -372,6 +399,13 @@ class QA_DataStruct_Future_min(_quotation_base):
     def __repr__(self):
         return '< QA_DataStruct_Future_min with {} securities >'.format(len(self.code))
     __str__ = __repr__
+
+    def resample(self, level):
+        try:
+            return self.add_func(QA_data_min_resample, level).sort_index()
+        except Exception as e:
+            print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
+            return None
 
 
 class QA_DataStruct_Index_day(_quotation_base):
@@ -400,6 +434,38 @@ class QA_DataStruct_Index_day(_quotation_base):
         return '< QA_DataStruct_Index_day with {} securities >'.format(len(self.code))
     __str__ = __repr__
 
+    @property
+    @lru_cache()
+    def week(self):
+        return self.resample('w')
+
+    @property
+    @lru_cache()
+    def month(self):
+        return self.resample('M')
+
+    @property
+    @lru_cache()
+    def quarter(self):
+        return self.resample('Q')
+
+    # @property
+    # @lru_cache()
+    # def semiannual(self):
+    #     return self.resample('SA')
+
+    @property
+    @lru_cache()
+    def year(self):
+        return self.resample('Y')
+
+    def resample(self, level):
+        try:
+            return self.add_func(QA_data_day_resample, level).sort_index()
+        except Exception as e:
+            print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
+            return None
+
 
 class QA_DataStruct_Index_min(_quotation_base):
     '自定义的分钟线数据结构'
@@ -418,7 +484,7 @@ class QA_DataStruct_Index_min(_quotation_base):
 
     def __repr__(self):
         return '< QA_DataStruct_Index_Min with %s securities >' % len(self.code)
-        
+
     @property
     @lru_cache()
     def min5(self):
@@ -438,6 +504,13 @@ class QA_DataStruct_Index_min(_quotation_base):
     @lru_cache()
     def min60(self):
         return self.resample('60min')
+
+    def resample(self, level):
+        try:
+            return self.add_func(QA_data_min_resample, level).sort_index()
+        except Exception as e:
+            print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
+            return None
 
     __str__ = __repr__
 
