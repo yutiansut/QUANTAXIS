@@ -269,7 +269,7 @@ git clone https://github.com/你的账户名/quantaxis
 ![](http://pic.yutiansut.com/qad4.png)
 ![](http://pic.yutiansut.com/qad5.png)
 ![](http://pic.yutiansut.com/qad6.png)
-![](http://pic.yutiansut.com/qad7.png)
+![](http://pic.yutiansut.com/qad8.png)
 
 
 ##  12. QUANTAXIS 标准化协议和未来协议
