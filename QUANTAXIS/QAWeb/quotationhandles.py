@@ -29,12 +29,12 @@ import time
 import pandas as pd
 import pymongo
 import tornado
+from tornado.iostream import StreamClosedError
 from tornado.web import Application, RequestHandler, authenticated
+from tornado.websocket import WebSocketClosedError
 
 import QUANTAXIS as QA
-from QUANTAXIS.QAWeb.basehandles import QABaseHandler,QAWebSocketHandler
-from tornado.websocket import WebSocketClosedError
-from tornado.iostream import StreamClosedError
+from QUANTAXIS.QAWeb.basehandles import QABaseHandler, QAWebSocketHandler
 
 """
 要实现2个api
@@ -44,7 +44,8 @@ from tornado.iostream import StreamClosedError
 2. REALTIME WEBSOCKET
 
 """
-client = set() 
+client = set()
+
 
 class INDEX(QABaseHandler):
     def get(self):
@@ -52,22 +53,22 @@ class INDEX(QABaseHandler):
 
 
 class RealtimeSocketHandler(QAWebSocketHandler):
-    client = set() 
+    client = set()
+
     def open(self):
         self.client.add(self)
         self.write_message('realtime socket start')
 
-    
     def on_message(self, message):
         #assert isinstance(message,str)
 
         try:
-            
+
             database = QA.DATABASE.get_collection(
                 'realtime_{}'.format(datetime.date.today()))
             current = [QA.QA_util_dict_remove_key(item, '_id') for item in database.find({'code': message}, limit=1, sort=[
                 ('datetime', pymongo.DESCENDING)])]
-            
+
             self.write_message(current[0])
 
         except Exception as e:

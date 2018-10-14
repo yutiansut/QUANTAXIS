@@ -73,9 +73,12 @@ def simple_backtest(AC, code, start, end):
                         code=item.code[0], time=item.date[0], amount=1000, towards=QA.ORDER_DIRECTION.BUY, price=0, order_model=QA.ORDER_MODEL.MARKET, amount_model=QA.AMOUNT_MODEL.BY_AMOUNT
                     )
                     if order:
-                        Broker.receive_order(QA.QA_Event(order=order, market_data=item))
-                        trade_mes = Broker.query_orders(AC.account_cookie, 'filled')
-                        res = trade_mes.loc[order.account_cookie, order.realorder_id]
+                        Broker.receive_order(QA.QA_Event(
+                            order=order, market_data=item))
+                        trade_mes = Broker.query_orders(
+                            AC.account_cookie, 'filled')
+                        res = trade_mes.loc[order.account_cookie,
+                                            order.realorder_id]
                         order.trade(res.trade_id, res.trade_price,
                                     res.trade_amount, res.trade_time)
 
@@ -84,9 +87,12 @@ def simple_backtest(AC, code, start, end):
                         code=item.code[0], time=item.date[0], amount=1000, towards=QA.ORDER_DIRECTION.SELL, price=0, order_model=QA.ORDER_MODEL.MARKET, amount_model=QA.AMOUNT_MODEL.BY_AMOUNT
                     )
                     if order:
-                        Broker.receive_order(QA.QA_Event(order=order, market_data=item))
-                        trade_mes = Broker.query_orders(AC.account_cookie, 'filled')
-                        res = trade_mes.loc[order.account_cookie, order.realorder_id]
+                        Broker.receive_order(QA.QA_Event(
+                            order=order, market_data=item))
+                        trade_mes = Broker.query_orders(
+                            AC.account_cookie, 'filled')
+                        res = trade_mes.loc[order.account_cookie,
+                                            order.realorder_id]
                         order.trade(res.trade_id, res.trade_price,
                                     res.trade_amount, res.trade_time)
         AC.settle()

@@ -32,6 +32,8 @@ import platform
 import subprocess
 import requests
 
+
+from QUANTAXIS.QACmd.runner import run_backtest, run
 from QUANTAXIS.QAApplication.QAAnalysis import QA_backtest_analysis_backtest
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting, QA_util_mongo_initial
 from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_min, QA_SU_save_stock_xdxr,
@@ -39,8 +41,8 @@ from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_min, QA
                                  QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_index_min, QA_SU_save_future_list, QA_SU_save_index_list,
                                  QA_SU_save_etf_day, QA_SU_save_etf_min, QA_SU_save_financialfiles,
                                  QA_SU_save_option_day, QA_SU_save_option_min, QA_SU_save_option_commodity_day, QA_SU_save_option_commodity_min,
-                                 QA_SU_save_future_day, QA_SU_save_future_min,QA_SU_save_report_calendar_day,
-                                 QA_SU_save_report_calendar_his,QA_SU_save_stock_divyield_day,
+                                 QA_SU_save_future_day, QA_SU_save_future_min, QA_SU_save_report_calendar_day,
+                                 QA_SU_save_report_calendar_his, QA_SU_save_stock_divyield_day,
                                  QA_SU_save_stock_divyield_his)
 from QUANTAXIS.QASU.save_binance import QA_SU_save_binance_symbol, QA_SU_save_binance_1hour, \
     QA_SU_save_binance_1day, QA_SU_save_binance_1min, QA_SU_save_binance
