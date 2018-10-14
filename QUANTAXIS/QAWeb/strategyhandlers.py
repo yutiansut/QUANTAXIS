@@ -23,22 +23,24 @@
 # SOFTWARE.
 
 import json
-import tornado
 import os
+
+import tornado
 from tornado.web import Application, RequestHandler, authenticated
 from tornado.websocket import WebSocketHandler
 
-from QUANTAXIS.QAFetch.QAQuery import QA_fetch_account, QA_fetch_risk, QA_fetch_strategy
-from QUANTAXIS.QASU.save_account import save_account
 from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAARP.QARisk import QA_Performance, QA_Risk
+from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_account, QA_fetch_risk,
+                                       QA_fetch_strategy)
+from QUANTAXIS.QASetting.QALocalize import cache_path
+from QUANTAXIS.QASU.save_account import save_account
 from QUANTAXIS.QASU.user import QA_user_sign_in, QA_user_sign_up
-from QUANTAXIS.QAUtil.QASetting import DATABASE
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
+from QUANTAXIS.QAUtil.QASetting import DATABASE
 from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting
 from QUANTAXIS.QAWeb.basehandles import QABaseHandler
 from QUANTAXIS.QAWeb.util import CJsonEncoder
-from QUANTAXIS.QASetting.QALocalize import cache_path
 
 
 class StrategyHandler(QABaseHandler):
@@ -60,10 +62,6 @@ class StrategyHandler(QABaseHandler):
             self.write('WRONG')
 
 
-
-
-
-
 class BacktestHandler(QABaseHandler):
     def get(self):
         """[summary]
@@ -71,12 +69,12 @@ class BacktestHandler(QABaseHandler):
         Arguments:
             QABaseHandler {[type]} -- [description]
         """
-        backtest_name = self.get_argument('strategy_name','all')
-        if backtest_name =='all':
-            res=os.listdir(cache_path)
-            #print(res)
-            res = [item[0:-3] for item in res if item[-2:]=='py' ]
-            self.write({'result':res})
+        backtest_name = self.get_argument('strategy_name', 'all')
+        if backtest_name == 'all':
+            res = os.listdir(cache_path)
+            # print(res)
+            res = [item[0:-3] for item in res if item[-2:] == 'py']
+            self.write({'result': res})
             return
         try:
             with open('{}{}{}.py'.format(cache_path, os.sep, backtest_name), 'r') as f:

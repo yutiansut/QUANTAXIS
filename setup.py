@@ -66,7 +66,7 @@ NAME = "quantaxis"
 """
 名字，一般放你包的名字即可
 """
-PACKAGES = ["QUANTAXIS", "QUANTAXIS.QAFetch", "QUANTAXIS.QACmd", "QUANTAXIS.QAMarket", 'QUANTAXIS.QAWeb', 'QUANTAXIS.QASetting',
+PACKAGES = ["QUANTAXIS", "QUANTAXIS.QAFetch", "QUANTAXIS.QACmd", "QUANTAXIS.QAMarket", 'QUANTAXIS.QAWeb', 'QUANTAXIS.QASetting',"QUANTAXIS.QACmd",
             "QUANTAXIS.QAApplication", "QUANTAXIS.QAEngine", "QUANTAXIS.QAData", 'QUANTAXIS.QAData.proto', "QUANTAXIS.QAAnalysis", 'QUANTAXIS.QASelector',
             "QUANTAXIS.QASU", "QUANTAXIS.QAUtil", "QUANTAXIS.QAARP", "QUANTAXIS.QAIndicator", "QUANTAXIS_CRAWLY"]
 """
@@ -115,7 +115,7 @@ setup(
             'quantaxis=QUANTAXIS.QACmd:QA_cmd',
             'quantaxisd=QUANTAXIS.QAWeb.QA_Web:main',
             'quantaxisq=QUANTAXIS.QAFetch.QATdx_adv:bat',
-            'quantaxisv=QUANTAXIS.QAView.QAWindow:view'
+            'qarun=QUANTAXIS.QACmd.runner:run'
         ]
     },
     # install_requires=requirements,
