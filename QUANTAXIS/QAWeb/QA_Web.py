@@ -21,19 +21,25 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-import tornado
 import os
+
+import tornado
 from tornado.web import Application, RequestHandler, authenticated
 
-from QUANTAXIS.QAWeb.datahandles import StockdayHandler, StockminHandler, StockBlockHandler, StockPriceHandler, StockCodeHandler
-from QUANTAXIS.QAWeb.quotationhandles import (RealtimeSocketHandler,
-                                              SimulateSocketHandler, MonitorSocketHandler)
-from QUANTAXIS.QAWeb.userhandles import SigninHandler, SignupHandler, PersonBlockHandler
+from QUANTAXIS.QAWeb.arphandles import (AccountHandler, MemberHandler,
+                                        RiskHandler)
 from QUANTAXIS.QAWeb.basehandles import QABaseHandler
-from QUANTAXIS.QAWeb.arphandles import AccountHandler, RiskHandler, MemberHandler
-from QUANTAXIS.QAWeb.strategyhandlers import StrategyHandler, BacktestHandler
+from QUANTAXIS.QAWeb.commandhandler import CommandHandler, RunnerHandler
+from QUANTAXIS.QAWeb.datahandles import (StockBlockHandler, StockCodeHandler,
+                                         StockdayHandler, StockminHandler,
+                                         StockPriceHandler)
+from QUANTAXIS.QAWeb.quotationhandles import (MonitorSocketHandler,
+                                              RealtimeSocketHandler,
+                                              SimulateSocketHandler)
+from QUANTAXIS.QAWeb.strategyhandlers import BacktestHandler, StrategyHandler
 from QUANTAXIS.QAWeb.tradehandles import AccModelHandler
-from QUANTAXIS.QAWeb.commandhandler import CommandHandler
+from QUANTAXIS.QAWeb.userhandles import (PersonBlockHandler, SigninHandler,
+                                         SignupHandler)
 
 
 class INDEX(QABaseHandler):
@@ -62,7 +68,8 @@ def main():
             (r"/accounts", AccountHandler),
             (r"/accounts/all", MemberHandler),
             (r"/risk", RiskHandler),
-            (r"/command/run", CommandHandler)
+            (r"/command/run", CommandHandler),
+            (r"/command/runbacktest", RunnerHandler)
         ],
         debug=True
     )
