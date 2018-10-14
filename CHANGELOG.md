@@ -77,7 +77,8 @@
 9. QAMarket=QAShipaneBroker 支持通达信模拟客户端
 10. QAIndicator 增加Talib的形态识别指标
 11. 增加了qarun.exe 直接运行策略,实时输出
-12. QAWEB 增加了command/run
+12. QAWEB 增加了/command/run?command=xxxx的命令行
+13. QAWeb 增加了一个socket端口 /command/runbacktest
 
 不兼容修改:
 
