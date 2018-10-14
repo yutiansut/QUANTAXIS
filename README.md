@@ -84,7 +84,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
     - [8. 开发计划](#8-开发计划)
     - [9. 常见问题FAQ](#9-常见问题faq)
     - [10. 项目捐赠](#10-项目捐赠)
-    - [11. 回测Webkit插件概览](#11-回测webkit插件概览)
+    - [11. QUANTAXIS 桌面级产品(全平台 WIN/MAC/LINUX)](#11-quantaxis-桌面级产品全平台-winmaclinux)
     - [12. QUANTAXIS 标准化协议和未来协议](#12-quantaxis-标准化协议和未来协议)
     - [13. 电脑配置推荐](#13-电脑配置推荐)
     - [License](#license)
@@ -261,17 +261,15 @@ git clone https://github.com/你的账户名/quantaxis
 
 
 
-##  11. 回测Webkit插件概览
+##  11. QUANTAXIS 桌面级产品(全平台 WIN/MAC/LINUX)
 
-![](http://pic.yutiansut.com/homepage.png)
-![](http://pic.yutiansut.com/loginpage.png)
-![](http://pic.yutiansut.com/adminpage.png)
-![](http://pic.yutiansut.com/backtestpage.png)
-![](http://pic.yutiansut.com/rebacktest.png)
-![](http://pic.yutiansut.com/backtestpic.png)
-![](http://pic.yutiansut.com/strategy.png)
-![](http://pic.yutiansut.com/kline.png)
-![](http://pic.yutiansut.com/settings.png)
+![](http://pic.yutiansut.com/qad1.png)
+![](http://pic.yutiansut.com/qad2.png)
+![](http://pic.yutiansut.com/qad3.png)
+![](http://pic.yutiansut.com/qad4.png)
+![](http://pic.yutiansut.com/qad5.png)
+![](http://pic.yutiansut.com/qad6.png)
+![](http://pic.yutiansut.com/qad7.png)
 
 
 ##  12. QUANTAXIS 标准化协议和未来协议
