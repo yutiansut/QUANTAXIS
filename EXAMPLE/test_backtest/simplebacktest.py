@@ -79,6 +79,8 @@ def simple_backtest(AC, code, start, end):
                             AC.account_cookie, 'filled')
                         res = trade_mes.loc[order.account_cookie,
                                             order.realorder_id]
+                        print('order {} {} {} {}'.format(
+                            res.trade_id, res.trade_price, res.trade_amount, res.trade_time))
                         order.trade(res.trade_id, res.trade_price,
                                     res.trade_amount, res.trade_time)
 
@@ -93,6 +95,8 @@ def simple_backtest(AC, code, start, end):
                             AC.account_cookie, 'filled')
                         res = trade_mes.loc[order.account_cookie,
                                             order.realorder_id]
+                        print('order {} {} {} {}'.format(
+                            res.trade_id, res.trade_price, res.trade_amount, res.trade_time))
                         order.trade(res.trade_id, res.trade_price,
                                     res.trade_amount, res.trade_time)
         AC.settle()
