@@ -33,6 +33,7 @@ from QUANTAXIS.QAWeb.basehandles import QABaseHandler
 from QUANTAXIS.QAWeb.arphandles import AccountHandler, RiskHandler, MemberHandler
 from QUANTAXIS.QAWeb.strategyhandlers import StrategyHandler, BacktestHandler
 from QUANTAXIS.QAWeb.tradehandles import AccModelHandler
+from QUANTAXIS.QAWeb.commandhandler import CommandHandler
 
 
 class INDEX(QABaseHandler):
@@ -60,7 +61,8 @@ def main():
             (r"/monitor", MonitorSocketHandler),
             (r"/accounts", AccountHandler),
             (r"/accounts/all", MemberHandler),
-            (r"/risk", RiskHandler)
+            (r"/risk", RiskHandler),
+            (r"/command/run", CommandHandler)
         ],
         debug=True
     )
