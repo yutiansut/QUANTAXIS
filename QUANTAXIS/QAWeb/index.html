@@ -2,7 +2,7 @@
 
 <head>
     <script type="text/javascript">  
-        var ws = new WebSocket("ws://localhost:8010/realtime");
+        var ws = new WebSocket("ws://localhost:8010/command/runbacktest");
         ws.onmessage = function (event) {
             var div1 = document.createElement("div");
             div1.innerHTML = event.data;
