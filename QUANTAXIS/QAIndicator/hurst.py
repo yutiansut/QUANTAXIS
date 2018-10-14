@@ -122,7 +122,6 @@ class RSanalysis:
 
         slope, intercept = np.polyfit(sizeRangeLog, rescaledRangeLog, 1)
 
-        # graphic results working, but not implemented
         ablineValues = [slope * i + intercept for i in sizeRangeLog]
 
         plt.plot(sizeRangeLog, rescaledRangeLog, '--')
