@@ -44,7 +44,7 @@ from QUANTAXIS.QAWeb.userhandles import (PersonBlockHandler, SigninHandler,
 
 class INDEX(QABaseHandler):
     def get(self):
-        self.render('.{}{}'.format(os.sep, "index.html"))
+        self.finish('.{}{}'.format(os.sep, "index.html"))
 
 
 def main():
