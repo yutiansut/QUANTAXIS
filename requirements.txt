@@ -25,4 +25,3 @@ pyecharts_snapshot
 attrs>=17.4.0
 pyconvert>=0.6.3
 demjson>=2.2.4
-pymssql>=2.1.4

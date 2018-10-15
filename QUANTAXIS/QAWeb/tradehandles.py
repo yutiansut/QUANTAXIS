@@ -28,8 +28,11 @@ import json
 import tornado
 from tornado.web import Application, RequestHandler, authenticated
 from tornado.websocket import WebSocketHandler
+
 from QUANTAXIS.QAARP import QA_Account, QA_Portfolio, QA_User
 from QUANTAXIS.QAWeb.basehandles import QABaseHandler, QAWebSocketHandler
+
+
 """
 GET http://localhost:8888/accounts
 GET http://localhost:8888/positions
@@ -41,21 +44,29 @@ GET http://localhost:8888/clients
 
 
 class AccModelHandler(QAWebSocketHandler):
-    port=QA_Portfolio()
+    port = QA_Portfolio()
 
     def open(self):
-        self.client.add(self)
         self.write_message('realtime socket start')
 
     def on_message(self, message):
-        #assert isinstance(message,str)
-
         try:
-            if message =='create_account':
-
-                account=self.port.new_account()
-                #account = self.port.add_account()
-                self.write_message('CREATE ACCOUNT: {}'.format(account.account_cookie))
+            if message == 'create_account':
+                self.account = self.port.new_account()
+                self.write_message(
+                    'CREATE ACCOUNT: {}'.format(self.account.account_cookie))
+                self.write_message(self.account.init_assets)
+            elif message == 'query_portfolio':
+                self.write_message({'result': list(self.port.accounts.keys())})
+            elif message == 'query_history':
+                self.write_message({'result': self.account.history})
+            elif message[0:5] == 'trade':
+                data = message.split('_')
+                print(data)
+                self.account.receive_simpledeal(
+                    code=str(data[1]), trade_price=float(data[2]),
+                    trade_amount=int(data[3]), trade_towards=int(data[4]), trade_time=str(data[5]))
+                self.write_message({'input_param': data})
 
         except Exception as e:
             print(e)
