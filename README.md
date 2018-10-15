@@ -263,6 +263,9 @@ git clone https://github.com/你的账户名/quantaxis
 
 ##  11. QUANTAXIS 桌面级产品(全平台 WIN/MAC/LINUX)
 
+
+参见 [QUANTAXIS/QADESKTOP](https://github.com/quantaxis/qadesktop)
+
 ![](http://pic.yutiansut.com/qad1.png)
 ![](http://pic.yutiansut.com/qad2.png)
 ![](http://pic.yutiansut.com/qad3.png)
