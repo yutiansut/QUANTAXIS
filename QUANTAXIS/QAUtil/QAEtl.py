@@ -1,7 +1,10 @@
+try:
+    import pymssql
+except:
+    print('no module named mssql')
 
-import pymssql
 
-def QA_util_process_financial(deal_date, type = 'all'):
+def QA_util_process_financial(deal_date, type='all'):
 
     sql1 = '''
     with f as (
@@ -246,7 +249,7 @@ def QA_util_process_financial(deal_date, type = 'all'):
                     ;
                     '''
 
-    sql2='''
+    sql2 = '''
     with t as (
                 select   code
                 , report_date
@@ -485,7 +488,7 @@ def QA_util_process_financial(deal_date, type = 'all'):
                   left join stock_info f
                   on a.code = f.code;
                     '''
-    sql3="""
+    sql3 = """
             select CONVERT(varchar(100), a.date, 23) as date, a.[open] as opens, a.high as high, a.low as low, a.[close] as closes,a.volume * 100 as volume,a.code,
             b.shares_after * 10000 as shares,
             round(a.[close]*b.shares_after * 10000,2) AS total_market
@@ -658,7 +661,8 @@ def QA_util_process_financial(deal_date, type = 'all'):
             and c.end_date >= CONVERT(varchar(100), a.date, 23);
         """
 
-    conn = pymssql.connect(user="sa",password="123456",host="localhost",database="quantaxis",charset="utf8")
+    conn = pymssql.connect(user="sa", password="123456",
+                           host="localhost", database="quantaxis", charset="utf8")
     cursor = conn.cursor()
     if type == 'all' or type == 'financial':
         cursor.execute('''drop table stock_financial_TTM;''')
@@ -681,4 +685,3 @@ def QA_util_process_financial(deal_date, type = 'all'):
 
 def to_mongo_data():
     pass
-
