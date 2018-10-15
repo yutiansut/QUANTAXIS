@@ -61,7 +61,7 @@ def main():
             (r"/user/blocksetting", PersonBlockHandler),
             (r"/strategy/content", StrategyHandler),
             (r"/backtest/content", BacktestHandler),
-            (r"trade/account", AccModelHandler),
+            (r"/trade", AccModelHandler),
             (r"/realtime", RealtimeSocketHandler),
             (r"/simulate", SimulateSocketHandler),
             (r"/monitor", MonitorSocketHandler),
