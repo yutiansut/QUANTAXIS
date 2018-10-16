@@ -1,26 +1,29 @@
 # coding:utf-8
 
+import asyncio
 import base64
 import configparser
+import datetime
 import json
 import os
 import urllib
+
 import future
-import asyncio
 import pandas as pd
 import requests
-import datetime
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
-from QUANTAXIS.QAMarket.common import cn_en_compare, trade_towards_cn_en, order_status_cn_en
+from QUANTAXIS.QAMarket.common import (cn_en_compare, order_status_cn_en,
+                                       trade_towards_cn_en)
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
-from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, ORDER_DIRECTION, BROKER_TYPE,
-                                          ORDER_MODEL, ORDER_STATUS)
-from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_order_datetime
 from QUANTAXIS.QAUtil.QADate import QA_util_date_int2str
+from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_order_datetime
+from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, BROKER_TYPE,
+                                          ORDER_DIRECTION, ORDER_MODEL,
+                                          ORDER_STATUS)
 from QUANTAXIS.QAUtil.QASetting import setting_path
 
 CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
@@ -131,18 +134,6 @@ class QA_SPEBroker(QA_Broker):
     def run(self, event):
         if event.event_type is BROKER_EVENT.RECEIVE_ORDER:
             self.order_handler.run(event)
-            #self.run(QA_Event(event_type=BROKER_EVENT.TRADE, broker=self))
-        # elif event.event_type is BROKER_EVENT.TRADE:
-        #     """实盘交易部分!!!!! ATTENTION
-        #     这里需要开一个子线程去查询是否成交
-
-        #     ATTENTION
-        #     """
-
-        #     event = self.order_handler.run(event)
-        #     event.message = 'trade'
-        #     if event.callback:
-        #         event.callback(event)
 
         elif event.event_type is BROKER_EVENT.SETTLE:
             self.order_handler.run(event)
@@ -163,8 +154,8 @@ class QA_SPEBroker(QA_Broker):
 
             return json.loads(text)
         except Exception as e:
-            #print(e)
-            if isinstance(e,ConnectionRefusedError):
+            # print(e)
+            if isinstance(e, ConnectionRefusedError):
                 print('与主机失去连接')
                 print(e)
             else:
@@ -227,18 +218,17 @@ class QA_SPEBroker(QA_Broker):
             accounts {[type]} -- [description]
 
         Returns:
-            dict-- {'cash':xxx,'position':xxx}
+            dict-- {'cash_available':xxx,'hold_available':xxx}
         """
         try:
             data = self.call("positions", {
                 'client': accounts
             })
-            # print(data)
             if data is not None:
                 cash_part = data.get('subAccounts', {}).get('人民币', False)
                 if cash_part:
-                    cash_available = cash_part.get('可用金额',cash_part.get('可用'))
-                    
+                    cash_available = cash_part.get('可用金额', cash_part.get('可用'))
+
                 position_part = data.get('dataTable', False)
                 if position_part:
                     res = data.get('dataTable', False)
@@ -248,8 +238,9 @@ class QA_SPEBroker(QA_Broker):
                                         for item in hold_headers]
                         hold_available = pd.DataFrame(
                             res['rows'], columns=hold_headers)
-                if len(hold_available)==1 and hold_available.amount[0] in [None, '', 0]:
-                    hold_available=pd.DataFrame(data=None,columns=hold_headers)
+                if len(hold_available) == 1 and hold_available.amount[0] in [None, '', 0]:
+                    hold_available = pd.DataFrame(
+                        data=None, columns=hold_headers)
                 return {'cash_available': cash_available, 'hold_available': hold_available.assign(amount=hold_available.amount.apply(float)).loc[:, ['code', 'amount']].set_index('code').amount}
             else:
                 print(data)
@@ -258,7 +249,22 @@ class QA_SPEBroker(QA_Broker):
             return False
 
     def query_clients(self):
-        return self.call("clients")
+        """查询clients
+
+        Returns:
+            [type] -- [description]
+        """
+
+        try:
+            data = self.call("clients", {
+                'client': 'None'
+            })
+            if len(data) > 0:
+                return pd.DataFrame(data).drop(['commandLine', 'processId'], axis=1)
+            else:
+                return pd.DataFrame(None, columns=['id', 'name', 'windowsTitle', 'accountInfo', 'status'])
+        except Exception as e:
+            return False, e
 
     def query_orders(self, accounts, status='filled'):
         """查询订单
@@ -282,9 +288,9 @@ class QA_SPEBroker(QA_Broker):
                 orders = data.get('dataTable', False)
 
                 order_headers = orders['columns']
-                if ('成交状态' or '状态说明' in order_headers) and ('备注' in order_headers):
-                    order_headers[order_headers.index('备注')]='废弃'
-                
+                if ('成交状态' in order_headers or '状态说明' in order_headers) and ('备注' in order_headers):
+                    order_headers[order_headers.index('备注')] = '废弃'
+
                 order_headers = [cn_en_compare[item] for item in order_headers]
                 order_all = pd.DataFrame(
                     orders['rows'], columns=order_headers).assign(account_cookie=accounts)
@@ -293,12 +299,14 @@ class QA_SPEBroker(QA_Broker):
                     lambda x: trade_towards_cn_en[x])
                 if 'order_time' in order_headers:
                     # 这是order_status
-                    order_all['status'] = order_all.status.apply(lambda x: order_status_cn_en[x])
+                    order_all['status'] = order_all.status.apply(
+                        lambda x: order_status_cn_en[x])
                     if 'order_date' not in order_headers:
                         order_all.order_time = order_all.order_time.apply(
                             lambda x: QA_util_get_order_datetime(dt='{} {}'.format(datetime.date.today(), x)))
                     else:
-                        order_all = order_all.assign(order_time=order_all.order_date.apply(QA_util_date_int2str)+' '+order_all.order_time)
+                        order_all = order_all.assign(order_time=order_all.order_date.apply(
+                            QA_util_date_int2str)+' '+order_all.order_time)
 
                 if 'trade_time' in order_headers:
 
@@ -404,9 +412,10 @@ class QA_SPEBroker(QA_Broker):
 
 if __name__ == '__main__':
     a = QA_SPEBroker()
+    print(a.query_clients())
 
     print('查询账户')
-    acc = 'account:9173'
+    acc = 'account:1391'
     print(a.query_positions(acc))
     print('查询所有订单')
     print(a.query_orders(acc, ''))
@@ -414,23 +423,23 @@ if __name__ == '__main__':
     print(a.query_orders(acc, 'open'))
     print('查询已成交订单')
     print(a.query_orders(acc, 'filled'))
-    """多账户同时下单测试
-    """
-    print('下单测试')
-    res = a.send_order(acc, price=9)
-    #a.send_order(acc, price=9)
-    #a.send_order(acc, price=9)
-    # print(res)
-    print('查询新的未成交订单')
-    print(a.query_orders(acc, 'open'))
+    # """多账户同时下单测试
+    # """
+    # print('下单测试')
+    # res = a.send_order(acc, price=9)
+    # #a.send_order(acc, price=9)
+    # #a.send_order(acc, price=9)
+    # # print(res)
+    # print('查询新的未成交订单')
+    # print(a.query_orders(acc, 'open'))
 
-    print('撤单')
+    # print('撤单')
 
-    print(a.cancel_order(acc, res['id']))
-    print('查询已成交订单')
-    print(a.query_orders(acc, 'filled'))
-    # print(a.send_order('account:141',price=8.95))
-    print('一键全部撤单')
-    print(a.cancel_all(acc))
+    # print(a.cancel_order(acc, res['id']))
+    # print('查询已成交订单')
+    # print(a.query_orders(acc, 'filled'))
+    # # print(a.send_order('account:141',price=8.95))
+    # print('一键全部撤单')
+    # print(a.cancel_all(acc))
 
-    print(a.cancel_order('account:141', '1703'))
+    # print(a.cancel_order('account:141', '1703'))
