@@ -44,6 +44,20 @@ GET http://localhost:8888/clients
 
 
 class TradeInfoHandler(QABaseHandler):
+    """trade 信息查询句柄
+
+    Arguments:
+        QABaseHandler {[type]} -- [description]
+
+    ?func=ping  ping 服务器
+    ?func=clients 查询当前的可用客户端
+    ?func=accounts 查询当前的账户
+    ?func=positions&account=xxx 查询账户持仓
+    ?func=orders&status 查询订单
+
+    下单/撤单功能不在此handler提供
+    """
+
     broker = QA_SPEBroker()
 
     def funcs(self, func, account, *args, **kwargs):
@@ -68,7 +82,7 @@ class TradeInfoHandler(QABaseHandler):
         elif func == 'cancel_order':
             orderid = self.get_argument('orderid')
             return self.broker.cancel_order(account, orderid)
-
+    
     def get(self):
         func = self.get_argument('func', 'ping')
         account = self.get_argument('account', None)
