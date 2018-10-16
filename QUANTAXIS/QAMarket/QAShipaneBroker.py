@@ -131,18 +131,6 @@ class QA_SPEBroker(QA_Broker):
     def run(self, event):
         if event.event_type is BROKER_EVENT.RECEIVE_ORDER:
             self.order_handler.run(event)
-            #self.run(QA_Event(event_type=BROKER_EVENT.TRADE, broker=self))
-        # elif event.event_type is BROKER_EVENT.TRADE:
-        #     """实盘交易部分!!!!! ATTENTION
-        #     这里需要开一个子线程去查询是否成交
-
-        #     ATTENTION
-        #     """
-
-        #     event = self.order_handler.run(event)
-        #     event.message = 'trade'
-        #     if event.callback:
-        #         event.callback(event)
 
         elif event.event_type is BROKER_EVENT.SETTLE:
             self.order_handler.run(event)
@@ -233,7 +221,6 @@ class QA_SPEBroker(QA_Broker):
             data = self.call("positions", {
                 'client': accounts
             })
-            # print(data)
             if data is not None:
                 cash_part = data.get('subAccounts', {}).get('人民币', False)
                 if cash_part:
@@ -282,7 +269,7 @@ class QA_SPEBroker(QA_Broker):
                 orders = data.get('dataTable', False)
 
                 order_headers = orders['columns']
-                if ('成交状态' or '状态说明' in order_headers) and ('备注' in order_headers):
+                if ('成交状态' in order_headers or '状态说明' in order_headers) and ('备注' in order_headers):
                     order_headers[order_headers.index('备注')]='废弃'
                 
                 order_headers = [cn_en_compare[item] for item in order_headers]
@@ -404,33 +391,34 @@ class QA_SPEBroker(QA_Broker):
 
 if __name__ == '__main__':
     a = QA_SPEBroker()
+    print(a.query_clients())
 
-    print('查询账户')
-    acc = 'account:9173'
-    print(a.query_positions(acc))
-    print('查询所有订单')
-    print(a.query_orders(acc, ''))
-    print('查询未成交订单')
-    print(a.query_orders(acc, 'open'))
-    print('查询已成交订单')
-    print(a.query_orders(acc, 'filled'))
-    """多账户同时下单测试
-    """
-    print('下单测试')
-    res = a.send_order(acc, price=9)
-    #a.send_order(acc, price=9)
-    #a.send_order(acc, price=9)
-    # print(res)
-    print('查询新的未成交订单')
-    print(a.query_orders(acc, 'open'))
+    # print('查询账户')
+    # acc = 'account:9173'
+    # print(a.query_positions(acc))
+    # print('查询所有订单')
+    # print(a.query_orders(acc, ''))
+    # print('查询未成交订单')
+    # print(a.query_orders(acc, 'open'))
+    # print('查询已成交订单')
+    # print(a.query_orders(acc, 'filled'))
+    # """多账户同时下单测试
+    # """
+    # print('下单测试')
+    # res = a.send_order(acc, price=9)
+    # #a.send_order(acc, price=9)
+    # #a.send_order(acc, price=9)
+    # # print(res)
+    # print('查询新的未成交订单')
+    # print(a.query_orders(acc, 'open'))
 
-    print('撤单')
+    # print('撤单')
 
-    print(a.cancel_order(acc, res['id']))
-    print('查询已成交订单')
-    print(a.query_orders(acc, 'filled'))
-    # print(a.send_order('account:141',price=8.95))
-    print('一键全部撤单')
-    print(a.cancel_all(acc))
+    # print(a.cancel_order(acc, res['id']))
+    # print('查询已成交订单')
+    # print(a.query_orders(acc, 'filled'))
+    # # print(a.send_order('account:141',price=8.95))
+    # print('一键全部撤单')
+    # print(a.cancel_all(acc))
 
-    print(a.cancel_order('account:141', '1703'))
+    # print(a.cancel_order('account:141', '1703'))
