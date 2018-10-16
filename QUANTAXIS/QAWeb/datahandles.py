@@ -56,10 +56,6 @@ class StockdayHandler(QABaseHandler):
         start = self.get_argument('start', default='2017-01-01')
         end = self.get_argument('end', default=str(datetime.date.today()))
         if_fq = self.get_argument('if_fq', default=False)
-
-        # future = Future()
-
-        # yield future
         return self.get_data(code, start, end, if_fq)
 
     def get_data(self, code, start, end, if_fq):

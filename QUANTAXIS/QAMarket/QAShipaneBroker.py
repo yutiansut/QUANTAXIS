@@ -412,7 +412,7 @@ if __name__ == '__main__':
     print(a.query_clients())
 
     print('查询账户')
-    acc = 'account:141'
+    acc = 'account:1391'
     print(a.query_positions(acc))
     print('查询所有订单')
     print(a.query_orders(acc, ''))
