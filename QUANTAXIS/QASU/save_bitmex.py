@@ -51,7 +51,6 @@ def QA_SU_save_bitmex(frequency):
             QA_util_log_info('SYMBOL {} from {} to {} has no data'.format(
                 symbol_info['symbol'], start_time, end))
             continue
-        print(data)
         col.insert_many(data)
 
 
