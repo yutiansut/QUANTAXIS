@@ -151,8 +151,8 @@ class QA_SPEBroker(QA_Broker):
 
             return json.loads(text)
         except Exception as e:
-            #print(e)
-            if isinstance(e,ConnectionRefusedError):
+            # print(e)
+            if isinstance(e, ConnectionRefusedError):
                 print('与主机失去连接')
                 print(e)
             else:
@@ -224,8 +224,8 @@ class QA_SPEBroker(QA_Broker):
             if data is not None:
                 cash_part = data.get('subAccounts', {}).get('人民币', False)
                 if cash_part:
-                    cash_available = cash_part.get('可用金额',cash_part.get('可用'))
-                    
+                    cash_available = cash_part.get('可用金额', cash_part.get('可用'))
+
                 position_part = data.get('dataTable', False)
                 if position_part:
                     res = data.get('dataTable', False)
@@ -235,8 +235,9 @@ class QA_SPEBroker(QA_Broker):
                                         for item in hold_headers]
                         hold_available = pd.DataFrame(
                             res['rows'], columns=hold_headers)
-                if len(hold_available)==1 and hold_available.amount[0] in [None, '', 0]:
-                    hold_available=pd.DataFrame(data=None,columns=hold_headers)
+                if len(hold_available) == 1 and hold_available.amount[0] in [None, '', 0]:
+                    hold_available = pd.DataFrame(
+                        data=None, columns=hold_headers)
                 return {'cash_available': cash_available, 'hold_available': hold_available.assign(amount=hold_available.amount.apply(float)).loc[:, ['code', 'amount']].set_index('code').amount}
             else:
                 print(data)
@@ -245,7 +246,22 @@ class QA_SPEBroker(QA_Broker):
             return False
 
     def query_clients(self):
-        return self.call("clients")
+        """查询clients
+        
+        Returns:
+            [type] -- [description]
+        """
+
+        try:
+            data = self.call("clients", {
+                'client': 'None'
+            })
+            if len(data) > 0:
+                return pd.DataFrame(data).drop(['commandLine', 'processId'], axis=1)
+            else:
+                return pd.DataFrame(None, columns=['id', 'name', 'windowsTitle', 'accountInfo', 'status'])
+        except Exception as e:
+            return False, e
 
     def query_orders(self, accounts, status='filled'):
         """查询订单
@@ -270,8 +286,8 @@ class QA_SPEBroker(QA_Broker):
 
                 order_headers = orders['columns']
                 if ('成交状态' in order_headers or '状态说明' in order_headers) and ('备注' in order_headers):
-                    order_headers[order_headers.index('备注')]='废弃'
-                
+                    order_headers[order_headers.index('备注')] = '废弃'
+
                 order_headers = [cn_en_compare[item] for item in order_headers]
                 order_all = pd.DataFrame(
                     orders['rows'], columns=order_headers).assign(account_cookie=accounts)
@@ -280,12 +296,14 @@ class QA_SPEBroker(QA_Broker):
                     lambda x: trade_towards_cn_en[x])
                 if 'order_time' in order_headers:
                     # 这是order_status
-                    order_all['status'] = order_all.status.apply(lambda x: order_status_cn_en[x])
+                    order_all['status'] = order_all.status.apply(
+                        lambda x: order_status_cn_en[x])
                     if 'order_date' not in order_headers:
                         order_all.order_time = order_all.order_time.apply(
                             lambda x: QA_util_get_order_datetime(dt='{} {}'.format(datetime.date.today(), x)))
                     else:
-                        order_all = order_all.assign(order_time=order_all.order_date.apply(QA_util_date_int2str)+' '+order_all.order_time)
+                        order_all = order_all.assign(order_time=order_all.order_date.apply(
+                            QA_util_date_int2str)+' '+order_all.order_time)
 
                 if 'trade_time' in order_headers:
 
