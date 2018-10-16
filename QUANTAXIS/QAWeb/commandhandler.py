@@ -27,7 +27,7 @@ class RunnerHandler(QAWebSocketHandler):
 
     def on_message(self, shell_cmd):
         shell_cmd = 'python "{}"'.format(shell_cmd)
-        self.write_message({'QUANTAXIS RUN ':shell_cmd})
+        self.write_message({'QUANTAXIS RUN ': shell_cmd})
         cmd = shlex.split(shell_cmd)
         p = subprocess.Popen(
             cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -47,7 +47,7 @@ class RunnerHandler(QAWebSocketHandler):
 
     def on_close(self):
         pass
-        #self.write_message('close')
+        # self.write_message('close')
 
 
 if __name__ == "__main__":
