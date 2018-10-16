@@ -215,7 +215,7 @@ class QA_SPEBroker(QA_Broker):
             accounts {[type]} -- [description]
 
         Returns:
-            dict-- {'cash':xxx,'position':xxx}
+            dict-- {'cash_available':xxx,'hold_available':xxx}
         """
         try:
             data = self.call("positions", {
@@ -247,7 +247,7 @@ class QA_SPEBroker(QA_Broker):
 
     def query_clients(self):
         """查询clients
-        
+
         Returns:
             [type] -- [description]
         """
@@ -411,15 +411,15 @@ if __name__ == '__main__':
     a = QA_SPEBroker()
     print(a.query_clients())
 
-    # print('查询账户')
-    # acc = 'account:9173'
-    # print(a.query_positions(acc))
-    # print('查询所有订单')
-    # print(a.query_orders(acc, ''))
-    # print('查询未成交订单')
-    # print(a.query_orders(acc, 'open'))
-    # print('查询已成交订单')
-    # print(a.query_orders(acc, 'filled'))
+    print('查询账户')
+    acc = 'account:141'
+    print(a.query_positions(acc))
+    print('查询所有订单')
+    print(a.query_orders(acc, ''))
+    print('查询未成交订单')
+    print(a.query_orders(acc, 'open'))
+    print('查询已成交订单')
+    print(a.query_orders(acc, 'filled'))
     # """多账户同时下单测试
     # """
     # print('下单测试')

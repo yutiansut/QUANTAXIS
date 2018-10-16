@@ -24,15 +24,15 @@
 
 import datetime
 import json
-
+import pandas as pd
 import tornado
 from tornado.web import Application, RequestHandler, authenticated
 from tornado.websocket import WebSocketHandler
 
 from QUANTAXIS.QAARP import QA_Account, QA_Portfolio, QA_User
 from QUANTAXIS.QAWeb.basehandles import QABaseHandler, QAWebSocketHandler
-
-
+from QUANTAXIS.QAMarket.QAShipaneBroker import QA_SPEBroker
+from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
 """
 GET http://localhost:8888/accounts
 GET http://localhost:8888/positions
@@ -41,6 +41,45 @@ POST http://localhost:8888/orders
 DELETE http://localhost:8888/orders/O1234
 GET http://localhost:8888/clients
 """
+
+
+class TradeInfoHandler(QABaseHandler):
+    broker = QA_SPEBroker()
+
+    def funcs(self, func, account, *args, **kwargs):
+        if func == 'ping':
+            data = self.broker.query_clients()
+            return data
+        elif func == 'clients':
+            data = self.broker.query_clients()
+            return data
+        elif func == 'accounts':
+            data = self.broker.query_accounts(account)
+            return data
+        elif func == 'positions':
+            data = self.broker.query_positions(account)
+            if isinstance(data, dict):
+                data['hold_available'] = data['hold_available'].to_dict()
+            return data
+        elif func == 'orders':
+            status = self.get_argument('status', '')
+            return self.broker.query_orders(account, status)
+
+        elif func == 'cancel_order':
+            orderid = self.get_argument('orderid')
+            return self.broker.cancel_order(account, orderid)
+
+    def get(self):
+        func = self.get_argument('func', 'ping')
+        account = self.get_argument('account', None)
+        print(account)
+        print(func)
+        data = self.funcs(func, account)
+        print(data)
+        if isinstance(data, pd.DataFrame):
+            self.write({'result': QA_util_to_json_from_pandas(data)})
+        else:
+            self.write({'result': data})
 
 
 class AccModelHandler(QAWebSocketHandler):
