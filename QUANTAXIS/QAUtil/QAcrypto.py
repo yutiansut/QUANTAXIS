@@ -11,7 +11,7 @@ def QA_SU_save_symbols(fetch_symnol_func, exchange):
         QA_util_log_info("{} SYMBOLS are already existed and no more to update".format(exchange))
     else:
         QA_util_log_info("Delete the original {} symbols collections".format(exchange))
-        QASETTING.client.binance.drop_collection("symbols")
+        QASETTING.client.exchange.drop_collection("symbols")
         QA_util_log_info("Downloading the new symbols")
         col.insert_many(symbols)
         QA_util_log_info("{} Symbols download is done! Thank you man!".format(exchange))
