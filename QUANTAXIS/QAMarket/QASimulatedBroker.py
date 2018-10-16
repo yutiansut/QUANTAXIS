@@ -22,16 +22,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_future_day,
                                      QA_fetch_get_future_min,
                                      QA_fetch_get_index_day,
                                      QA_fetch_get_index_min,
                                      QA_fetch_get_stock_day,
                                      QA_fetch_get_stock_min)
+from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.QADealer import QA_Dealer
-from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, FREQUENCE
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
+from QUANTAXIS.QAUtil.QAParameter import FREQUENCE, MARKET_TYPE
 
 
 class QA_SimulatedBroker(QA_Broker):
