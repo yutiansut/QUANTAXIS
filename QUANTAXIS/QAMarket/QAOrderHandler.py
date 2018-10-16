@@ -137,7 +137,6 @@ class QA_OrderHandler(QA_Worker):
             else:
 
                 self._trade()
-                # print(self.order_queue.untrade)
 
             self.order_queue.settle()
 
@@ -206,7 +205,6 @@ class QA_OrderHandler(QA_Worker):
                     account.account_cookie, 'filled') for account in list(self.monitor.keys())]
 
                 try:
-                    #res=[pd.DataFrame() if not isinstance(item,pd.DataFrame) else item for item in res]
                     res = pd.concat(res, axis=0) if len(
                         res) > 0 else pd.DataFrame()
                 except:
@@ -215,7 +213,6 @@ class QA_OrderHandler(QA_Worker):
                 self.deal_status = res if res is not None else self.deal_status
                 if len(self.deal_status) > 0:
                     QA_SU_save_deal(self.deal_status)
-                # print(self.order_status)
 
             # 检查pending订单, 更新订单状态
             try:
@@ -223,7 +220,6 @@ class QA_OrderHandler(QA_Worker):
                     if len(self.deal_status) > 0:
                         if order.realorder_id in self.deal_status.index.levels[1]:
                             # 此时有成交推送(但可能是多条)
-                            #
                             res = self.deal_status.loc[order.account_cookie,
                                                        order.realorder_id]
 
@@ -239,8 +235,6 @@ class QA_OrderHandler(QA_Worker):
                                     order.trade(str(res.trade_id), float(res.trade_price), int(
                                         res.trade_amount), str(res.trade_time))
                                 else:
-                                    # print(res)
-                                    # print(len(res))
                                     for _, deal in res.iterrows:
                                         order.trade(str(deal.trade_id), float(deal.trade_price), int(
                                             deal.trade_amount), str(deal.trade_time))
@@ -262,8 +256,6 @@ class QA_OrderHandler(QA_Worker):
                         event=event
                     )
                 )
-            # self.run(event)
-            # self.run(event)
 
         elif event.event_type is MARKET_EVENT.QUERY_POSITION:
             pass
