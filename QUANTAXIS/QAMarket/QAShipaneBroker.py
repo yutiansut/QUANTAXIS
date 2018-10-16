@@ -1,26 +1,29 @@
 # coding:utf-8
 
+import asyncio
 import base64
 import configparser
+import datetime
 import json
 import os
 import urllib
+
 import future
-import asyncio
 import pandas as pd
 import requests
-import datetime
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
-from QUANTAXIS.QAMarket.common import cn_en_compare, trade_towards_cn_en, order_status_cn_en
+from QUANTAXIS.QAMarket.common import (cn_en_compare, order_status_cn_en,
+                                       trade_towards_cn_en)
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
-from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, ORDER_DIRECTION, BROKER_TYPE,
-                                          ORDER_MODEL, ORDER_STATUS)
-from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_order_datetime
 from QUANTAXIS.QAUtil.QADate import QA_util_date_int2str
+from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_order_datetime
+from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, BROKER_TYPE,
+                                          ORDER_DIRECTION, ORDER_MODEL,
+                                          ORDER_STATUS)
 from QUANTAXIS.QAUtil.QASetting import setting_path
 
 CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
