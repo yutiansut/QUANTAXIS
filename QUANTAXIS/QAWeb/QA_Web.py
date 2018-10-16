@@ -37,7 +37,7 @@ from QUANTAXIS.QAWeb.quotationhandles import (MonitorSocketHandler,
                                               RealtimeSocketHandler,
                                               SimulateSocketHandler)
 from QUANTAXIS.QAWeb.strategyhandlers import BacktestHandler, StrategyHandler
-from QUANTAXIS.QAWeb.tradehandles import AccModelHandler
+from QUANTAXIS.QAWeb.tradehandles import AccModelHandler, TradeInfoHandler
 from QUANTAXIS.QAWeb.userhandles import (PersonBlockHandler, SigninHandler,
                                          SignupHandler)
 
@@ -62,6 +62,7 @@ def main():
             (r"/strategy/content", StrategyHandler),
             (r"/backtest/content", BacktestHandler),
             (r"/trade", AccModelHandler),
+            (r"/tradeinfo", TradeInfoHandler),
             (r"/realtime", RealtimeSocketHandler),
             (r"/simulate", SimulateSocketHandler),
             (r"/monitor", MonitorSocketHandler),
