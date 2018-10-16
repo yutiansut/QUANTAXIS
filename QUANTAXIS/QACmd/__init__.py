@@ -46,6 +46,7 @@ from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_min, QA
                                  QA_SU_save_stock_divyield_his)
 from QUANTAXIS.QASU.save_binance import QA_SU_save_binance_symbol, QA_SU_save_binance_1hour, \
     QA_SU_save_binance_1day, QA_SU_save_binance_1min, QA_SU_save_binance
+from QUANTAXIS.QASU.save_bitmex import QA_SU_save_bitmex_symbol, QA_SU_save_bitmex
 
 
 # 东方财富爬虫
@@ -299,6 +300,11 @@ class CLI(cmd.Cmd):
             elif len(arg) == 2 and arg[0] == "binance":
                 frequency = arg[1]
                 QA_SU_save_binance(frequency)
+            elif len(arg) == 1 and arg[0] == "bitmex":
+                QA_SU_save_bitmex_symbol()
+                QA_SU_save_bitmex('1m')
+                QA_SU_save_bitmex('1h')
+                QA_SU_save_bitmex('1d')
             elif len(arg) == 1 and arg[0] == "huobi":
                 pass
             elif len(arg) == 1 and arg[0] == "financialfiles":
