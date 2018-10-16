@@ -78,11 +78,6 @@ def main():
     """增加了对于非windows下的机器多进程的支持
     """
     http_server.start(1)
-    # if platform.system() != 'Windows':
-    #     http_server.start(0)
-    # else:
-    #     http_server.start(1)
-    # tornado.ioloop.IOLoop.instance().start()
     tornado.ioloop.IOLoop.current().start()
 
 
