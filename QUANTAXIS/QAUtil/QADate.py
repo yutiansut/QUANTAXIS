@@ -52,8 +52,7 @@ def QA_util_today_str():
     :return: 类型字符串 2011-11-11
     """
     dt = QA_util_date_today()
-    str = QA_util_datetime_to_strdate(dt)
-    return str
+    return QA_util_datetime_to_strdate(dt)
 
 
 def QA_util_date_str2int(date):
