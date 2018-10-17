@@ -82,7 +82,7 @@ class TradeInfoHandler(QABaseHandler):
         elif func == 'cancel_order':
             orderid = self.get_argument('orderid')
             return self.broker.cancel_order(account, orderid)
-    
+
     def get(self):
         func = self.get_argument('func', 'ping')
         account = self.get_argument('account', None)
@@ -104,22 +104,26 @@ class AccModelHandler(QAWebSocketHandler):
 
     def on_message(self, message):
         try:
-            if message == 'create_account':
-                self.account = self.port.new_account()
-                self.write_message(
-                    'CREATE ACCOUNT: {}'.format(self.account.account_cookie))
-                self.write_message(self.account.init_assets)
-            elif message == 'query_portfolio':
-                self.write_message({'result': list(self.port.accounts.keys())})
-            elif message == 'query_history':
-                self.write_message({'result': self.account.history})
-            elif message[0:5] == 'trade':
-                data = message.split('_')
-                print(data)
+            message = message.split('_')
+            self.write_message({'input_param': message})
+            if message[0] == 'create':
+                if message[1] == 'account':
+                    self.account = self.port.new_account()
+                    self.write_message(
+                        'CREATE ACCOUNT: {}'.format(self.account.account_cookie))
+                    self.write_message(self.account.init_assets)
+            elif message[0] == 'query':
+                if message[1] == 'portfolio':
+                    self.write_message(
+                        {'result': list(self.port.accounts.keys())})
+                elif message[1] == 'history':
+                    self.write_message({'result': self.account.history})
+            elif message[0] == 'trade':
+                """code/price/amount/towards/time
+                """
                 self.account.receive_simpledeal(
-                    code=str(data[1]), trade_price=float(data[2]),
-                    trade_amount=int(data[3]), trade_towards=int(data[4]), trade_time=str(data[5]))
-                self.write_message({'input_param': data})
+                    code=str(message[1]), trade_price=float(message[2]),
+                    trade_amount=int(message[3]), trade_towards=int(message[4]), trade_time=str(message[5]))
 
         except Exception as e:
             print(e)
