@@ -55,7 +55,7 @@ class QABaseHandler(RequestHandler):
     def set_default_headers(self):
         self.set_header("Access-Control-Allow-Origin", "*")  # 这个地方可以写域名
         #self.set_header("Access-Control-Allow-Headers", "x-requested-with")
-        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, DELETE')
         self.set_header('Access-Control-Allow-Headers', '*')
         self.set_header('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
         self.set_header('Server', 'QUANTAXISBACKEND')
@@ -90,7 +90,7 @@ class QAWebSocketHandler(WebSocketHandler):
 
     def set_default_headers(self):
         self.set_header('Access-Control-Allow-Origin', '*')
-        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, DELETE')
         self.set_header('Access-Control-Max-Age',
                         999999999999999999999999999999999)
         self.set_header('Access-Control-Allow-Headers', '*')

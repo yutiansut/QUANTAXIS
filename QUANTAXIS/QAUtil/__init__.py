@@ -44,7 +44,7 @@ from QUANTAXIS.QAUtil.QADate import (QA_util_date_int2str, QA_util_date_stamp,
                                      QA_util_realtime, QA_util_select_hours,
                                      QA_util_select_min, QA_util_time_delay,
                                      QA_util_time_now, QA_util_time_stamp,
-                                     QA_util_today_str,QA_util_datetime_to_strdate)
+                                     QA_util_today_str, QA_util_datetime_to_strdate)
 # trade date
 from QUANTAXIS.QAUtil.QADate_trade import (QA_util_date_gap,
                                            QA_util_get_real_date,
@@ -110,8 +110,8 @@ from QUANTAXIS.QAUtil.QAFile import QA_util_file_md5
 
 # datetolls
 from QUANTAXIS.QAUtil.QADateTools import (
-    QA_util_getBetweenQuarter,QA_util_get_1st_of_next_month,
-    QA_util_add_months,QA_util_getBetweenMonth
+    QA_util_getBetweenQuarter, QA_util_get_1st_of_next_month,
+    QA_util_add_months, QA_util_getBetweenMonth
 )
 
 # SQL数据库相关
