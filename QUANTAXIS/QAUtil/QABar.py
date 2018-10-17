@@ -34,7 +34,6 @@ from QUANTAXIS.QAUtil.QADate_trade import (QA_util_date_gap,
                                            QA_util_if_trade, trade_date_sse)
 
 
-
 def QA_util_make_futuremin_index(day, type_='1min'):
     """创建股票分钟线的index
 
@@ -50,7 +49,6 @@ def QA_util_make_futuremin_index(day, type_='1min'):
             pd.date_range(str(day) + ' 13:00:00', str(day) + ' 15:00:00', freq=type_, closed='right'))
     else:
         return pd.DataFrame(['No trade'])
-
 
 
 def QA_util_make_min_index(day, type_='1min'):
