@@ -24,56 +24,19 @@ def QA_request_eastmoney_zjlx( param_stock_code_list ):
     strings = content.decode("utf-8", "ignore")
     string_lines = strings.split("\r\n")
 
-    #for aline in string_lines:
-        # aline = aline.strip()
-        # if '_stockCode' in aline:
-        #     _stockCode = aline[len('var _stockCode = '):]
-        #     _stockCode = _stockCode.strip("\"\"\,")
-
-        # if '_stockMarke' in aline:
-        #     _stockMarke = aline[len('_stockMarke = '):]
-        #     _stockMarke = _stockMarke.strip("\"\"\,")
-        # # 60XXXX ,
-        #_stockMarke = 1
-
-        # 00XXXX ,
-        # _stockMarke = 2
-
-        # 30XXXX ,
-        # _stockMarke = 2
-
-        # if '_stockName' in aline:
-        #     _stockName = aline[len('_stockName = '):]
-        #     _stockName = _stockName.strip("\"\"\,")
-
-        # if '_market' in aline:
-        #     _market = aline[len('_market = '):]
-        #     _market = _market.strip("\"\"\,")
-        #     break
-        #_market= 'hsa'
-
-    # print(_stockCode)
-    # print(_stockMarke)
-    # print(_stockName)
-    # print(_market)
-
     values = []
     for aline in string_lines:
         aline = aline.strip()
         if 'EM_CapitalFlowInterface' in aline:
-            # print(aline)
-            # print('------------------')
             aline = aline.strip()
             if aline.startswith('var strUrl = '):
                 if 'var strUrl = ' in aline:
                     aline = aline[len('var strUrl = '):]
                     values = aline.split('+')
-                    # print(values)
+
             break
-            # print('------------------')
 
     print(values)
-
 
     for iStockCode in range(len(param_stock_code_list)):
         requestStr = ""
@@ -100,25 +63,19 @@ def QA_request_eastmoney_zjlx( param_stock_code_list ):
                     iItem = iItem.rstrip(' "')
                     requestStr = requestStr + iItem
 
-        # print(requestStr)
         # 延时
         time.sleep(1.456)
 
         response = urllib.request.urlopen(requestStr)
         content2 = response.read()
 
-        # print(content2)
         strings = content2.decode("utf-8", "ignore")
-
-        # print(strings)
 
         list_data_zjlx = []
 
         if 'var aff_data=({data:[["' in strings:
             leftChars = strings[len('var aff_data=({data:[["'):]
-            # print(leftChars)
             dataArrays = leftChars.split(',')
-            # print(dataArrays)
             for aItemIndex in range(0, len(dataArrays), 13):
                 '''
                 日期
@@ -135,88 +92,74 @@ def QA_request_eastmoney_zjlx( param_stock_code_list ):
                 dict_row['stock_code'] = param_stock_code_list[iStockCode]
 
                 # 日期
-                # print(aItemIndex)
                 data01 = dataArrays[aItemIndex]
                 data01 = data01.strip('"')
-                # print('日期',data01)
 
                 dict_row['date'] = data01
 
                 # 主力净流入 净额
                 data02 = dataArrays[aItemIndex + 1]
                 data02 = data02.strip('"')
-                # print('主力净流入 净额',data02)
 
                 dict_row['zljll_je_wy'] = data02
 
                 # 主力净流入 净占比
                 data03 = dataArrays[aItemIndex + 2]
                 data03 = data03.strip('"')
-                # print('主力净流入 净占比',data03)
-                # date01 = aItemData.strip('[\'\'')
 
                 dict_row['zljll_jzb_bfb'] = data03
 
                 # 超大单净流入 净额
                 data04 = dataArrays[aItemIndex + 3]
                 data04 = data04.strip('"')
-                # print('超大单净流入 净额',data04)
 
                 dict_row['cddjll_je_wy'] = data04
 
                 # 超大单净流入 净占比
                 data05 = dataArrays[aItemIndex + 4]
                 data05 = data05.strip('"')
-                # print('超大单净流入 净占比',data05)
 
                 dict_row['cddjll_je_jzb'] = data05
 
                 # 大单净流入 净额
                 data06 = dataArrays[aItemIndex + 5]
                 data06 = data06.strip('"')
-                # print('大单净流入 净额',data06)
 
                 dict_row['ddjll_je_wy'] = data06
 
                 # 大单净流入 净占比
                 data07 = dataArrays[aItemIndex + 6]
                 data07 = data07.strip('"')
-                # print('大单净流入 净占比',data07)
 
                 dict_row['ddjll_je_jzb'] = data07
 
                 # 中单净流入	 净额
                 data08 = dataArrays[aItemIndex + 7]
                 data08 = data08.strip('"')
-                # print('中单净流入	 净额',data08)
 
                 dict_row['zdjll_je_wy'] = data08
 
                 # 中单净流入	 净占比
                 data09 = dataArrays[aItemIndex + 8]
                 data09 = data09.strip('"')
-                # print('中单净流入	 净占比',data09)
 
                 dict_row['zdjll_je_jzb'] = data09
 
                 # 小单净流入	 净额
                 data10 = dataArrays[aItemIndex + 9]
                 data10 = data10.strip('"')
-                # print('小单净流入	 净额',data10)
 
                 dict_row['xdjll_je_wy'] = data10
 
                 # 小单净流入	 净占比
                 data11 = dataArrays[aItemIndex + 10]
                 data11 = data11.strip('"')
-                # print('小单净流入	 净占比',data11)
 
                 dict_row['xdjll_je_jzb'] = data11
 
                 # 收盘价
                 data12 = dataArrays[aItemIndex + 11]
                 data12 = data12.strip('"')
-                # print('收盘价',data12)
 
                 dict_row['close_price'] = data12
 
@@ -224,13 +167,10 @@ def QA_request_eastmoney_zjlx( param_stock_code_list ):
                 data13 = dataArrays[aItemIndex + 12]
                 data13 = data13.strip('"')
                 data13 = data13.strip('"]]})')
-                # print('涨跌幅',data13)
 
                 dict_row['change_price'] = data13
 
-                # 读取一条记录成功
-                # print("成功读取一条记录")
-                # print(dict_row)
+                # 读取一条记录成功 
                 list_data_zjlx.append(dict_row)
 
         # print(list_data_zjlx)

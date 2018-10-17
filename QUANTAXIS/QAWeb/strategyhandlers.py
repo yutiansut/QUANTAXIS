@@ -94,6 +94,15 @@ class BacktestHandler(QABaseHandler):
         except Exception as e:
             self.write(e)
 
+    def delete(self):
+        backtest_name = self.get_argument('strategy_name', None)
+        filename = '{}{}{}.py'.format(cache_path, os.sep, backtest_name)
+        if os.path.exists(filename):
+            os.remove(filename)
+            self.write('success')
+        else:
+            self.write('wrong')
+
 
 class BacktestFileHandler(QABaseHandler):
     def get(self):
