@@ -100,7 +100,7 @@ class AccModelHandler(QAWebSocketHandler):
     port = QA_Portfolio()
 
     def open(self):
-        self.write_message('realtime socket start')
+        self.write_message('QUANTAXIS BACKEND: realtime socket start')
 
     def on_message(self, message):
         try:
