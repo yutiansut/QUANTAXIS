@@ -59,7 +59,7 @@ class StrategyHandler(QABaseHandler):
 
             self.write({'result': query_account})
         else:
-            self.write('WRONG')
+            self.write('wrong')
 
 
 class BacktestHandler(QABaseHandler):
@@ -81,7 +81,7 @@ class BacktestHandler(QABaseHandler):
                 res = f.read()
                 self.write(res)
         except Exception as e:
-            self.write(e)
+            self.write('wrong')
 
     def post(self):
         backtest_name = self.get_argument(
@@ -92,7 +92,7 @@ class BacktestHandler(QABaseHandler):
                 f.write(backtest_content)
             self.write('ok')
         except Exception as e:
-            self.write(e)
+            self.write('wrong')
 
     def delete(self):
         backtest_name = self.get_argument('strategy_name', None)
