@@ -87,7 +87,7 @@ class JOBHandler(QABaseHandler):
             self.write({'result': [QA_util_dict_remove_key(
                 item, '_id') for item in query_result()]})
         else:
-            self.wirte({'result': [QA_util_dict_remove_key(
+            self.write({'result': [QA_util_dict_remove_key(
                 item, '_id') for item in query_onejob(job_id)]})
 
 
