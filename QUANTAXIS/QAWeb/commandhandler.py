@@ -11,6 +11,7 @@ from tornado.websocket import WebSocketHandler
 from QUANTAXIS.QAWeb.basehandles import QABaseHandler, QAWebSocketHandler
 from QUANTAXIS.QAUtil.QADict import QA_util_dict_remove_key
 
+from QUANTAXIS.QAUtil.QASetting import DATABASE
 
 class CommandHandler(QABaseHandler):
     def get(self):
@@ -70,7 +71,9 @@ class JOBHandler(QABaseHandler):
         if files:
             #self.wirte({'QUANTAXIS RUN': files})
             res = quantaxis_run.delay(files, program)
+            DATABASE.joblist.insert({'program':program,'files':files,'status':'running','job_id':str(res.id)})
             self.write({'status': 'pending', 'job_id': str(res.id)})
+            
         else:
             self.write({'status': 'error'})
 
