@@ -41,7 +41,7 @@ from QUANTAXIS.QAWeb.tradehandles import AccModelHandler, TradeInfoHandler
 from QUANTAXIS.QAWeb.userhandles import (PersonBlockHandler, SigninHandler,
                                          SignupHandler)
 
-
+from QUANTAXIS.QAWeb.jobhandler import JOBHandler
 class INDEX(QABaseHandler):
     def get(self):
         self.finish('.{}{}'.format(os.sep, "index.html"))
