@@ -77,7 +77,7 @@ class BacktestHandler(QABaseHandler):
             self.write({'result': res})
             return
         try:
-            with open('{}{}{}.py'.format(cache_path, os.sep, backtest_name), 'r') as f:
+            with open('{}{}{}.py'.format(cache_path, os.sep, backtest_name), 'r', encoding='utf-8') as f:
                 res = f.read()
                 self.write(res)
         except Exception as e:
@@ -87,12 +87,14 @@ class BacktestHandler(QABaseHandler):
         backtest_name = self.get_argument(
             'strategy_name', QA_util_random_with_topic('strategy'))
         backtest_content = self.get_argument('strategy_content')
+        filex = '{}{}{}.py'.format(cache_path, os.sep, backtest_name)
         try:
-            with open('{}{}{}.py'.format(cache_path, os.sep, backtest_name), 'w') as f:
+            with open(filex, 'w', encoding='utf-8') as f:
                 f.write(backtest_content)
-            self.write('ok')
+            self.write({'status': 'success', 'filepath': filex})
+
         except Exception as e:
-            self.write('wrong')
+            self.write({'status': 'wrong', 'filepath': ''})
 
     def delete(self):
         backtest_name = self.get_argument('strategy_name', None)

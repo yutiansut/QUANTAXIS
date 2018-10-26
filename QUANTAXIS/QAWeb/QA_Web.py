@@ -29,7 +29,7 @@ from tornado.web import Application, RequestHandler, authenticated
 from QUANTAXIS.QAWeb.arphandles import (AccountHandler, MemberHandler,
                                         RiskHandler)
 from QUANTAXIS.QAWeb.basehandles import QABaseHandler
-from QUANTAXIS.QAWeb.commandhandler import CommandHandler, RunnerHandler, JOBHandler
+from QUANTAXIS.QAWeb.commandhandler import CommandHandler, RunnerHandler
 from QUANTAXIS.QAWeb.datahandles import (StockBlockHandler, StockCodeHandler,
                                          StockdayHandler, StockminHandler,
                                          StockPriceHandler)
@@ -41,7 +41,7 @@ from QUANTAXIS.QAWeb.tradehandles import AccModelHandler, TradeInfoHandler
 from QUANTAXIS.QAWeb.userhandles import (PersonBlockHandler, SigninHandler,
                                          SignupHandler)
 
-
+from QUANTAXIS.QAWeb.jobhandler import JOBHandler
 class INDEX(QABaseHandler):
     def get(self):
         self.finish('.{}{}'.format(os.sep, "index.html"))
