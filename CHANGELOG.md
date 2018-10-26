@@ -3,7 +3,8 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.1.10(unreleased)](#1110unreleased)
+    - [1.2.0(unreleased)](#120unreleased)
+    - [1.1.10](#1110)
     - [1.1.9](#119)
     - [1.1.8](#118)
     - [1.1.7](#117)
@@ -68,13 +69,22 @@
 <!-- /TOC -->
 
 
-## 1.1.10(unreleased)
+## 1.2.0(unreleased)
+
+
+
+
+## 1.1.10
 
 1. 减少了一个深圳主站的服务器ip
 2. 优化精简无用代码
 3. 删除pymssql依赖
 4. 优化了实盘易broker的一个小bug
 5. 添加bitmex数据下载
+6. 增加期权部分的列表等修改
+7. 增加了命令行操作
+8. 增加了分布式worker quantaxis_run (单独更新[QUANTAXIS/QUANTAXIS_RUN](https://github/quantaxis/quantaxis_run))
+9. QAWEB 单独拆分成独立项目 [QUANTAXIS/QUANTAXIS_WEBSERVER](https://github.com/QUANTAXIS/QUANTAXIS_WEBSERVER)
 
 ## 1.1.9
 
