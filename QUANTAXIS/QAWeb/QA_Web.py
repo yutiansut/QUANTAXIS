@@ -29,7 +29,7 @@ from tornado.web import Application, RequestHandler, authenticated
 from QUANTAXIS.QAWeb.arphandles import (AccountHandler, MemberHandler,
                                         RiskHandler)
 from QUANTAXIS.QAWeb.basehandles import QABaseHandler
-from QUANTAXIS.QAWeb.commandhandler import CommandHandler, RunnerHandler, JOBHandler
+from QUANTAXIS.QAWeb.commandhandler import CommandHandler, RunnerHandler
 from QUANTAXIS.QAWeb.datahandles import (StockBlockHandler, StockCodeHandler,
                                          StockdayHandler, StockminHandler,
                                          StockPriceHandler)
