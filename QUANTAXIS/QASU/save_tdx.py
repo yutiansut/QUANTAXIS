@@ -25,7 +25,7 @@
 import concurrent
 import datetime
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
-
+import json
 import pandas as pd
 import pymongo
 
@@ -63,6 +63,8 @@ def now_time():
     return str(QA_util_get_real_date(str(datetime.date.today() - datetime.timedelta(days=1)), trade_date_sse, -1)) + \
         ' 17:00:00' if datetime.datetime.now().hour < 15 else str(QA_util_get_real_date(
             str(datetime.date.today()), trade_date_sse, -1)) + ' 15:00:00'
+
+
 
 
 def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
@@ -1561,6 +1563,86 @@ def QA_SU_save_option_day(client=DATABASE, ui_log=None, ui_progress=None):
     else:
         QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
         QA_util_log_info(err, ui_log=ui_log)
+
+
+def QA_SU_save_option_contract_list(client=DATABASE, ui_log=None, ui_progress=None):
+
+    rows50etf = QA_fetch_get_50etf_option_contract_time_to_market()
+    rows_cu = QA_fetch_get_commodity_option_CU_contract_time_to_market()
+    rows_m = QA_fetch_get_commodity_option_M_contract_time_to_market()
+    rows_sr = QA_fetch_get_commodity_option_SR_contract_time_to_market()
+
+
+
+    try:
+        # 🛠todo 这个应该是第一个任务 JOB01， 先更新股票列表！！
+        QA_util_log_info('##JOB15 Now Saving OPTION_CONTRACT_LIST ====', ui_log=ui_log,
+                         ui_progress=ui_progress, ui_progress_int_value=5000)
+
+        coll = client.option_contract_list
+        coll.create_index([('desc', pymongo.ASCENDING)], unique=True )
+
+        # todo fixhere
+        # from_items is deprecated. Please use DataFrame.from_dict(dict(items), ...) instead. DataFrame.from_dict
+
+        try:
+
+            df = pd.DataFrame.from_items([(s.desc, s) for s in rows50etf])
+            df = (df.T)
+            js = QA_util_to_json_from_pandas(df)
+            result0 = coll.insert_many(js)
+
+        except pymongo.errors.BulkWriteError as e:
+            #https://ask.helplib.com/python/post_12740530
+            panic = filter(lambda x: x['code'] != 11000, e.details['writeErrors'])
+            if len(panic) > 0:
+                print
+                "really panic"
+
+
+        try:
+            df = pd.DataFrame.from_items([(s.desc, s) for s in rows_cu])
+            df = (df.T)
+            js = QA_util_to_json_from_pandas(df)
+            coll.insert_many(js)
+        except pymongo.errors.BulkWriteError as e:
+            #https://ask.helplib.com/python/post_12740530
+            panic = filter(lambda x: x['code'] != 11000, e.details['writeErrors'])
+            if len(panic) > 0:
+                print("really panic")
+        try:
+            df = pd.DataFrame.from_items([(s.desc, s) for s in rows_m])
+            df = (df.T)
+            js = QA_util_to_json_from_pandas(df)
+            coll.insert_many(js)
+        except pymongo.errors.BulkWriteError as e:
+            #https://ask.helplib.com/python/post_12740530
+            panic = filter(lambda x: x['code'] != 11000, e.details['writeErrors'])
+            if len(panic) > 0:
+                print("really panic")
+
+
+        try:
+            df = pd.DataFrame.from_items([(s.desc, s) for s in rows_sr])
+            df = (df.T)
+            js = QA_util_to_json_from_pandas(df)
+            coll.insert_many(js)
+
+        except pymongo.errors.BulkWriteError as e:
+            #https://ask.helplib.com/python/post_12740530
+            panic = filter(lambda x: x['code'] != 11000, e.details['writeErrors'])
+            if len(panic) > 0:
+                print("really panic")
+
+        QA_util_log_info("完成合约列表更新", ui_log=ui_log,
+                         ui_progress=ui_progress, ui_progress_int_value=10000)
+    except Exception as e:
+        QA_util_log_info(e, ui_log=ui_log)
+        print(" Error save_tdx.QA_SU_save_option_contract_list exception!")
+
+
+
+
 
 
 def QA_SU_save_future_list(client=DATABASE, ui_log=None, ui_progress=None):
