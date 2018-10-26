@@ -144,6 +144,17 @@ def QA_SU_save_stock_day(engine, client=DATABASE):
     engine.QA_SU_save_stock_day(client=client)
 
 
+def QA_SU_save_option_contract_list(engine, client=DATABASE):
+    '''
+    
+    :param engine: 
+    :param client: 
+    :return: 
+    '''
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_option_contract_list(client=client)
+
+
 def QA_SU_save_option_day(engine, client=DATABASE):
     '''
 
