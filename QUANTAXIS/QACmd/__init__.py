@@ -41,6 +41,7 @@ from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_min, QA
                                  QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_index_min, QA_SU_save_future_list, QA_SU_save_index_list,
                                  QA_SU_save_etf_day, QA_SU_save_etf_min, QA_SU_save_financialfiles,
                                  QA_SU_save_option_day, QA_SU_save_option_min, QA_SU_save_option_commodity_day, QA_SU_save_option_commodity_min,
+                                 QA_SU_save_option_contract_list,
                                  QA_SU_save_future_day, QA_SU_save_future_min, QA_SU_save_report_calendar_day,
                                  QA_SU_save_report_calendar_his, QA_SU_save_stock_divyield_day,
                                  QA_SU_save_stock_divyield_his)
@@ -203,6 +204,7 @@ class CLI(cmd.Cmd):
             命令格式：save stock_block: 保存板块 \n\
             命令格式：save stock_info : 保存tushare数据接口获取的股票列表 \n\
             命令格式：save financialfiles : 保存高级财务数据(自1996年开始) \n\
+            命令格式：save option_contract_list 保存上市的期权合约信息（不包括已经过期摘牌的合约数据）\n\
             命令格式：save option_day : 保存50ETF期权日线数据（不包括已经过期摘牌的数据） \n\
             命令格式：save option_min : 保存50ETF期权分钟线数据（不包括已经过期摘牌的数据） \n\
             命令格式：save option_commodity_day : 保存商品期权日线数据（不包括已经过期摘牌的数据） \n\
@@ -337,8 +339,9 @@ class CLI(cmd.Cmd):
                         save future_list :对应输入命令 save future_list
                         save option_day :对应输入命令 save option day
                         save option_min :对应输入命令 save option_min
-                        save option_commodity_day :对应输入命令 save commodity option day
-                        save option_commodity_min :对应输入命令 save commodity option min
+                        save option_commodity_day :对应输入命令 save commodity_option_day
+                        save option_commodity_min :对应输入命令 save commodity_option_min
+                        save  option_contract_list :对应输入命令 save option_contract_list
                         '''
                         try:
                             eval("QA_SU_save_%s('tdx')" % (i))

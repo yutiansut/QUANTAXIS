@@ -64,7 +64,7 @@ class CanvasGMMA:
             painter.save()
 
             pen = QPen();
-            pen.setStyle(Qt.DashDotDotLine)
+            pen.setStyle(Qt.SolidLine)
             pen.setBrush(QBrush(Qt.blue));  # 设置笔刷，
 
             painter.setPen(pen)
@@ -74,69 +74,123 @@ class CanvasGMMA:
                     painter.drawLine(iIndex *kLineDayWidth, self.pointsY_Ma03[iIndex], \
                                      iIndex*kLineDayWidth + kLineDayWidth, self.pointsY_Ma03[iIndex+1])
 
-            for iIndex in range(self.showDayInGauges - 1):
+                    #
                 if iIndex < len(self.pointsY_Ma05) and iIndex+1 < len(self.pointsY_Ma05):
                     painter.drawLine(iIndex * kLineDayWidth, self.pointsY_Ma05[iIndex], \
                                  iIndex * kLineDayWidth + kLineDayWidth, self.pointsY_Ma05[iIndex + 1])
 
-            for iIndex in range(self.showDayInGauges - 1):
                 if iIndex < len(self.pointsY_Ma08) and iIndex + 1 < len(self.pointsY_Ma08):
                     painter.drawLine(iIndex * kLineDayWidth, self.pointsY_Ma08[iIndex], \
                                      iIndex * kLineDayWidth + kLineDayWidth, self.pointsY_Ma08[iIndex + 1])
 
-            for iIndex in range(self.showDayInGauges - 1):
                 if iIndex < len(self.pointsY_Ma10) and iIndex + 1 < len(self.pointsY_Ma10):
                     painter.drawLine(iIndex * kLineDayWidth, self.pointsY_Ma10[iIndex], \
                                      iIndex * kLineDayWidth + kLineDayWidth, self.pointsY_Ma10[iIndex + 1])
 
-            for iIndex in range(self.showDayInGauges - 1):
                 if iIndex < len(self.pointsY_Ma12) and iIndex + 1 < len(self.pointsY_Ma12):
                     painter.drawLine(iIndex * kLineDayWidth, self.pointsY_Ma12[iIndex], \
                                      iIndex * kLineDayWidth + kLineDayWidth, self.pointsY_Ma12[iIndex + 1])
+
+                    #ppp = QPoint((iIndex * kLineDayWidth), (self.pointsY_Ma12[iIndex])+20)
+
+                if iIndex < len(self.pointsY_Ma15) and iIndex + 1 < len(self.pointsY_Ma15):
+                    painter.drawLine(iIndex * kLineDayWidth, self.pointsY_Ma15[iIndex], \
+                                     iIndex * kLineDayWidth + kLineDayWidth, self.pointsY_Ma15[iIndex + 1])
+
+
 
 
             painter.restore()
 
             pen = QPen();
-            pen.setStyle(Qt.DashDotDotLine)
-            pen.setBrush(QBrush(Qt.darkGreen));  # 设置笔刷，
+            pen.setStyle(Qt.SolidLine)
+            pen.setBrush(QBrush(Qt.red));  # 设置笔刷，
 
             painter.setPen(pen)
 
             painter.save()
 
 
+            currentState = 0
+            previousState = 0
+
+
             for iIndex in range(self.showDayInGauges - 1):
                 if iIndex < len(self.pointsY_Ma30) and iIndex + 1 < len(self.pointsY_Ma30):
                     painter.drawLine(iIndex * kLineDayWidth, self.pointsY_Ma30[iIndex], \
                                      iIndex * kLineDayWidth + kLineDayWidth, self.pointsY_Ma30[iIndex + 1])
+                    ppp = QPoint((iIndex * kLineDayWidth), (self.pointsY_Ma30[iIndex]) + 20)
 
-            for iIndex in range(self.showDayInGauges - 1):
                 if iIndex < len(self.pointsY_Ma35) and iIndex + 1 < len(self.pointsY_Ma35):
                     painter.drawLine(iIndex * kLineDayWidth, self.pointsY_Ma35[iIndex], \
                                      iIndex * kLineDayWidth + kLineDayWidth, self.pointsY_Ma35[iIndex + 1])
 
-            for iIndex in range(self.showDayInGauges - 1):
                 if iIndex < len(self.pointsY_Ma40) and iIndex + 1 < len(self.pointsY_Ma40):
                     painter.drawLine(iIndex * kLineDayWidth, self.pointsY_Ma40[iIndex], \
                                      iIndex * kLineDayWidth + kLineDayWidth, self.pointsY_Ma40[iIndex + 1])
 
-            for iIndex in range(self.showDayInGauges - 1):
                 if iIndex < len(self.pointsY_Ma45) and iIndex + 1 < len(self.pointsY_Ma45):
                     painter.drawLine(iIndex * kLineDayWidth, self.pointsY_Ma45[iIndex], \
                                      iIndex * kLineDayWidth + kLineDayWidth, self.pointsY_Ma45[iIndex + 1])
 
-            for iIndex in range(self.showDayInGauges - 1):
                 if iIndex < len(self.pointsY_Ma50) and iIndex + 1 < len(self.pointsY_Ma50):
                     painter.drawLine(iIndex * kLineDayWidth, self.pointsY_Ma50[iIndex], \
                                      iIndex * kLineDayWidth + kLineDayWidth, self.pointsY_Ma50[iIndex + 1])
 
-            for iIndex in range(self.showDayInGauges - 1):
+                    ppp = QPoint((iIndex * kLineDayWidth), (self.pointsY_Ma50[iIndex])+20)
+
+
                 if iIndex < len(self.pointsY_Ma60) and iIndex + 1 < len(self.pointsY_Ma60):
                     painter.drawLine(iIndex * kLineDayWidth, self.pointsY_Ma60[iIndex], \
                                      iIndex * kLineDayWidth + kLineDayWidth, self.pointsY_Ma60[iIndex + 1])
 
+
+
+                if iIndex < len(self.pointsY_Ma30) and iIndex + 1 < len(self.pointsY_Ma30) and \
+                        iIndex < len(self.pointsY_Ma35) and iIndex + 1 < len(self.pointsY_Ma35) and \
+                        iIndex < len(self.pointsY_Ma40) and iIndex + 1 < len(self.pointsY_Ma40) and \
+                        iIndex < len(self.pointsY_Ma45) and iIndex + 1 < len(self.pointsY_Ma45) and \
+                        iIndex < len(self.pointsY_Ma50) and iIndex + 1 < len(self.pointsY_Ma50):
+
+                    if self.pointsY_Ma30[iIndex] < self.pointsY_Ma35[iIndex] and \
+                            self.pointsY_Ma35[iIndex] < self.pointsY_Ma40[iIndex]:
+                            #self.pointsY_Ma40[iIndex] < self.pointsY_Ma45[iIndex] and \
+                            #self.pointsY_Ma45[iIndex] < self.pointsY_Ma50[iIndex]:
+
+                        if currentState == 0 or currentState == previousState or currentState == 2:
+                            previousState = currentState
+                            currentState = 1
+
+                    elif self.pointsY_Ma30[iIndex] > self.pointsY_Ma35[iIndex] and \
+                            self.pointsY_Ma35[iIndex] > self.pointsY_Ma40[iIndex]:
+                            # self.pointsY_Ma40[iIndex] > self.pointsY_Ma45[iIndex] and \
+                            # self.pointsY_Ma45[iIndex] > self.pointsY_Ma50[iIndex]:
+
+                        if currentState == 0 or currentState == previousState or currentState == 1:
+                            previousState = currentState
+                            currentState = 2
+
+                    if previousState != currentState:
+                        if previousState == 1 and currentState == 2:
+                            # painter.drawText(ppp, "卖出")
+                            # painter.drawLine((ppp.x()), 0, (ppp.x()), 1000)
+                            painter.fillRect(ppp.x(), 0, kLineDayWidth, 1000, QColor(0, 255, 0, 88))
+                        elif previousState == 2 and currentState == 1:
+                            # painter.drawText(ppp, "买入")
+                            # painter.drawLine((ppp.x()), 0, (ppp.x()), 1000)
+                            painter.fillRect(ppp.x(), 0, kLineDayWidth, 1000, QColor(255, 0, 0, 88))
+                        else:
+                            print("current state is %d %d" % (currentState, previousState))
+
+                    else:
+                        print("current statis is equal %d %d" % (currentState, previousState))
+
+
+
             painter.restore()
+
+
+
 
             pass
 
@@ -164,96 +218,96 @@ class CanvasGMMA:
 
 
 
-    pointsY_Ma03 = []
-    def set03MA(self, ma03_DataFrame: pd.DataFrame, showDays: int):
-
-        h = self.myCanvasGMMA.height()
-        w = self.myCanvasGMMA.width()
-
-        #self.ma03_DataFrame = ma03_DataFrame
-        self.showDayInGauges = showDays
-
-        priceRange = self.highestPriceInScreen - self.lowestPriceInScreen
-        priceGapCount = priceRange * 100
-        pricePerGapHeight = h / priceGapCount
-
-        iIndex = 0
-        self.pointsY_Ma03.clear()
-        for row in ma03_DataFrame.iterrows():
-
-            strTimeOfTradeDayMa = str(row[0][0])[:10]
-
-            if np.isnan(row[1][0]):
-                continue
-            else:
-                if strTimeOfTradeDayMa in self.tradeDateList:
-                    heightFromMinPriceOpen = (row[1][0] - self.lowestPriceInScreen) * (100) * pricePerGapHeight
-                    heihgtFromMaxPriceOpen = h - heightFromMinPriceOpen
-                    Ma03_ScreenCoorY = 0 + heihgtFromMaxPriceOpen
-                    self.pointsY_Ma03.append(Ma03_ScreenCoorY)
-                    iIndex = iIndex + 1
-
-
-
-
-    pointsY_Ma05 = []
-    def set05MA(self, ma05_DataFrame: pd.DataFrame, showDays :int):
-
-        h = self.myCanvasGMMA.height()
-        w = self.myCanvasGMMA.width()
-
-        #self.ma05_DataFrame = ma05_DataFrame
-        self.showDayInGauges = showDays
-
-        priceRange = self.highestPriceInScreen - self.lowestPriceInScreen
-        priceGapCount = priceRange * 100
-        pricePerGapHeight = h / priceGapCount
-
-        iIndex = 0
-        self.pointsY_Ma05.clear()
-        for row in ma05_DataFrame.iterrows():
-
-            strTimeOfTradeDayMa = str(row[0][0])[:10]
-
-            if np.isnan(row[1][0]):
-                continue
-            else:
-                if strTimeOfTradeDayMa in self.tradeDateList:
-                    heightFromMinPriceOpen = (row[1][0] - self.lowestPriceInScreen) * (100) * pricePerGapHeight
-                    heihgtFromMaxPriceOpen = h - heightFromMinPriceOpen
-                    Ma05_ScreenCoorY = 0 + heihgtFromMaxPriceOpen
-                    self.pointsY_Ma05.append(Ma05_ScreenCoorY)
-                    iIndex = iIndex + 1
-
-    pointsY_Ma08 = []
-    def set08MA(self, ma08_DataFrame: pd.DataFrame, showDays: int):
-
-        h = self.myCanvasGMMA.height()
-        w = self.myCanvasGMMA.width()
-
-        # self.ma05_DataFrame = ma05_DataFrame
-        self.showDayInGauges = showDays
-
-        priceRange = self.highestPriceInScreen - self.lowestPriceInScreen
-        priceGapCount = priceRange * 100
-        pricePerGapHeight = h / priceGapCount
-
-        iIndex = 0
-        self.pointsY_Ma08.clear()
-        for row in ma08_DataFrame.iterrows():
-
-            strTimeOfTradeDayMa = str(row[0][0])[:10]
-
-            if np.isnan(row[1][0]):
-                continue
-            else:
-                if strTimeOfTradeDayMa in self.tradeDateList:
-                    heightFromMinPriceOpen = (row[1][0] - self.lowestPriceInScreen) * (100) * pricePerGapHeight
-                    heihgtFromMaxPriceOpen = h - heightFromMinPriceOpen
-                    Ma08_ScreenCoorY = 0 + heihgtFromMaxPriceOpen
-                    self.pointsY_Ma08.append(Ma08_ScreenCoorY)
-                    iIndex = iIndex + 1
-
+    # pointsY_Ma03 = []
+    # def set03MA(self, ma03_DataFrame: pd.DataFrame, showDays: int):
+    #
+    #     h = self.myCanvasGMMA.height()
+    #     w = self.myCanvasGMMA.width()
+    #
+    #     #self.ma03_DataFrame = ma03_DataFrame
+    #     self.showDayInGauges = showDays
+    #
+    #     priceRange = self.highestPriceInScreen - self.lowestPriceInScreen
+    #     priceGapCount = priceRange * 100
+    #     pricePerGapHeight = h / priceGapCount
+    #
+    #     iIndex = 0
+    #     self.pointsY_Ma03.clear()
+    #     for row in ma03_DataFrame.iterrows():
+    #
+    #         strTimeOfTradeDayMa = str(row[0][0])[:10]
+    #
+    #         if np.isnan(row[1][0]):
+    #             continue
+    #         else:
+    #             if strTimeOfTradeDayMa in self.tradeDateList:
+    #                 heightFromMinPriceOpen = (row[1][0] - self.lowestPriceInScreen) * (100) * pricePerGapHeight
+    #                 heihgtFromMaxPriceOpen = h - heightFromMinPriceOpen
+    #                 Ma03_ScreenCoorY = 0 + heihgtFromMaxPriceOpen
+    #                 self.pointsY_Ma03.append(Ma03_ScreenCoorY)
+    #                 iIndex = iIndex + 1
+    #
+    #
+    #
+    #
+    # pointsY_Ma05 = []
+    # def set05MA(self, ma05_DataFrame: pd.DataFrame, showDays :int):
+    #
+    #     h = self.myCanvasGMMA.height()
+    #     w = self.myCanvasGMMA.width()
+    #
+    #     #self.ma05_DataFrame = ma05_DataFrame
+    #     self.showDayInGauges = showDays
+    #
+    #     priceRange = self.highestPriceInScreen - self.lowestPriceInScreen
+    #     priceGapCount = priceRange * 100
+    #     pricePerGapHeight = h / priceGapCount
+    #
+    #     iIndex = 0
+    #     self.pointsY_Ma05.clear()
+    #     for row in ma05_DataFrame.iterrows():
+    #
+    #         strTimeOfTradeDayMa = str(row[0][0])[:10]
+    #
+    #         if np.isnan(row[1][0]):
+    #             continue
+    #         else:
+    #             if strTimeOfTradeDayMa in self.tradeDateList:
+    #                 heightFromMinPriceOpen = (row[1][0] - self.lowestPriceInScreen) * (100) * pricePerGapHeight
+    #                 heihgtFromMaxPriceOpen = h - heightFromMinPriceOpen
+    #                 Ma05_ScreenCoorY = 0 + heihgtFromMaxPriceOpen
+    #                 self.pointsY_Ma05.append(Ma05_ScreenCoorY)
+    #                 iIndex = iIndex + 1
+    #
+    # pointsY_Ma08 = []
+    # def set08MA(self, ma08_DataFrame: pd.DataFrame, showDays: int):
+    #
+    #     h = self.myCanvasGMMA.height()
+    #     w = self.myCanvasGMMA.width()
+    #
+    #     # self.ma05_DataFrame = ma05_DataFrame
+    #     self.showDayInGauges = showDays
+    #
+    #     priceRange = self.highestPriceInScreen - self.lowestPriceInScreen
+    #     priceGapCount = priceRange * 100
+    #     pricePerGapHeight = h / priceGapCount
+    #
+    #     iIndex = 0
+    #     self.pointsY_Ma08.clear()
+    #     for row in ma08_DataFrame.iterrows():
+    #
+    #         strTimeOfTradeDayMa = str(row[0][0])[:10]
+    #
+    #         if np.isnan(row[1][0]):
+    #             continue
+    #         else:
+    #             if strTimeOfTradeDayMa in self.tradeDateList:
+    #                 heightFromMinPriceOpen = (row[1][0] - self.lowestPriceInScreen) * (100) * pricePerGapHeight
+    #                 heihgtFromMaxPriceOpen = h - heightFromMinPriceOpen
+    #                 Ma08_ScreenCoorY = 0 + heihgtFromMaxPriceOpen
+    #                 self.pointsY_Ma08.append(Ma08_ScreenCoorY)
+    #                 iIndex = iIndex + 1
+    #
     def setXMA(self, maX_DataFrame: pd.DataFrame, showDays: int):
 
         h = self.myCanvasGMMA.height()
@@ -285,6 +339,18 @@ class CanvasGMMA:
 
         return pointsY_MaX
 
+    pointsY_Ma03 = []
+    def set03MA(self, ma03_DataFrame: pd.DataFrame, showDays: int):
+        self.pointsY_Ma03 = self.setXMA(ma03_DataFrame, showDays)
+
+    pointsY_Ma05 = []
+    def set05MA(self, ma05_DataFrame: pd.DataFrame, showDays: int):
+        self.pointsY_Ma05 = self.setXMA(ma05_DataFrame, showDays)
+
+    pointsY_Ma08 = []
+    def set08MA(self, ma08_DataFrame: pd.DataFrame, showDays: int):
+        self.pointsY_Ma08 = self.setXMA(ma08_DataFrame, showDays)
+
     pointsY_Ma10 = []
     def set10MA(self, ma10_DataFrame: pd.DataFrame, showDays: int):
         self.pointsY_Ma10 = self.setXMA(ma10_DataFrame, showDays)
@@ -298,7 +364,6 @@ class CanvasGMMA:
         self.pointsY_Ma15 = self.setXMA(ma15_DataFrame, showDays)
 
     # 30、35、40、45、50 和60
-
 
     pointsY_Ma30 = []
     def set30MA(self, ma30_DataFrame: pd.DataFrame, showDays: int):
