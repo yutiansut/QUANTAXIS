@@ -114,3 +114,10 @@ def LINEARREG_INTERCEPT(Series, N=14):
 def LINEARREG_SLOPE(Series, N=14):
     res = talib.LINEARREG_SLOPE(Series.values, N)
     return pd.Series(res, index=Series.index)
+
+
+# def MA(Series,):
+#   废弃* 因为和QA的MA函数冲突
+
+# def MACD(Series):
+#   废弃* 因为和QA的MACD函数冲突

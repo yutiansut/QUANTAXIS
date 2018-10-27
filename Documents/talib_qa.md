@@ -98,8 +98,8 @@ talib是一个c的指标库, qa在1.2.0+ 版本对此进行了支持, 融入QAIn
 | LINEARREG_ANGLE     | Linear Regression Angle                                      | Statistic Functions   | TRUE          |
 | LINEARREG_INTERCEPT | Linear Regression Intercept                                  | Statistic Functions   | TRUE          |
 | LINEARREG_SLOPE     | Linear Regression Slope                                      | Statistic Functions   | TRUE          |
-| MA                  | All Moving Average                                           | Overlap Studies       |               |
-| MACD                | Moving Average Convergence/Divergence                        | Momentum Indicators   |               |
+| MA                  | All Moving Average                                           | Overlap Studies       | TRUE          |
+| MACD                | Moving Average Convergence/Divergence                        | Momentum Indicators   | TRUE          |
 | MACDEXT             | MACD with controllable MA type                               | Momentum Indicators   |               |
 | MACDFIX             | Moving Average Convergence/Divergence Fix 12/26              | Momentum Indicators   |               |
 | MAMA                | MESA Adaptive Moving Average                                 | Overlap Studies       |               |
