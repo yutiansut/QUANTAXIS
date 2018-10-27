@@ -30,6 +30,23 @@ except:
     print('请安装TALIB后再调用此函数')
 
 
+def AD(data):
+    res = talib.AD(data.high.values, data.low.values,
+                   data.close.values, data.volume.values)
+    return pd.DataFrame({'AD': res}, index=data.index)
+
+
+def ADOSC(data, N1=3, N2=10):
+    res = talib.ADOSC(data.high.values, data.low.values,
+                      data.close.values, data.volume.values, N1, N2)
+    return pd.DataFrame({'ADOSC': res}, index=data.index)
+
+
+def ADX(data, N=14):
+    res = talib.ADX(data.high.values, data.low.values, data.close.values, N)
+    return pd.DataFrame({'ADX': res}, index=data.index)
+
+
 def CDL2CROWS(data):
     res = talib.CDL2CROWS(data.open.values, data.high.values,
                           data.low.values, data.close.values)
