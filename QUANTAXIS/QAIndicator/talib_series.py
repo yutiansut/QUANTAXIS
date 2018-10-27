@@ -95,6 +95,7 @@ def KAMA(Series, N=30):
     res = talib.KAMA(Series.values, N)
     return pd.Series(res, index=Series.index)
 
+
 def LINEARREG(Series, N=14):
     res = talib.LINEARREG(Series.values, N)
     return pd.Series(res, index=Series.index)
@@ -105,16 +106,11 @@ def LINEARREG_ANGLE(Series, N=14):
     return pd.Series(res, index=Series.index)
 
 
-
 def LINEARREG_INTERCEPT(Series, N=14):
     res = talib.LINEARREG_INTERCEPT(Series.values, N)
     return pd.Series(res, index=Series.index)
 
 
-
 def LINEARREG_SLOPE(Series, N=14):
     res = talib.LINEARREG_SLOPE(Series.values, N)
     return pd.Series(res, index=Series.index)
-
-
-
