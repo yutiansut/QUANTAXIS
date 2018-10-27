@@ -460,6 +460,3 @@ def CDLXSIDEGAP3METHODS(data):
 def DX(data, N=14):
     res = talib.DX(data.high.values, data.low.values, data.close.values, N)
     return pd.DataFrame({'DX': res}, index=data.index)
-
-
-
