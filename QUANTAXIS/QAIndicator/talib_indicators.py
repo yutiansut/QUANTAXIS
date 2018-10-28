@@ -460,3 +460,23 @@ def CDLXSIDEGAP3METHODS(data):
 def DX(data, N=14):
     res = talib.DX(data.high.values, data.low.values, data.close.values, N)
     return pd.DataFrame({'DX': res}, index=data.index)
+
+
+# SAR - Parabolic SAR
+def SAR(data, acceleration=0, maximum=0):
+    res = talib.SAR(data.high.values, data.low.values, acceleration, maximum)
+    return pd.DataFrame({'SAR': res}, index=data.index)
+
+
+def SAREXT(data, startvalue=0, offsetonreverse=0, accelerationinitlong=0,
+           accelerationlong=0, accelerationmaxlong=0, accelerationinitshort=0, accelerationshort=0, accelerationmaxshort=0):
+    res = talib.SAREXT(data.high.values, data.low.values,
+                       startvalue, offsetonreverse, accelerationinitlong, accelerationlong, accelerationmaxlong,
+                       accelerationinitshort, accelerationshort, accelerationmaxshort)
+    return pd.DataFrame({'SAREXT': res}, index=data.index)
+
+
+def STOCH(data, fastk_period=5, slowk_period=3, slowk_matype=0, slowd_period=3, slowd_matype=0):
+    slowk, slowd = talib.STOCH(data.high.values, data.low.values, data.close.values,
+                               fastk_period, slowk_period, slowk_matype, slowd_period, slowd_matype)
+    return pd.DataFrame({'STOCH_SLOWK': slowk, 'STOCH_SLOWD': slowd}, index=data.index)
