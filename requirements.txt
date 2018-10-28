@@ -21,7 +21,6 @@ retrying
 seaborn>=0.8.1
 selenium
 scrapy
-pyecharts_snapshot
 attrs>=17.4.0
 pyconvert>=0.6.3
 demjson>=2.2.4
