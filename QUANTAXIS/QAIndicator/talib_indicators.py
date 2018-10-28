@@ -47,6 +47,43 @@ def ADX(data, N=14):
     return pd.DataFrame({'ADX': res}, index=data.index)
 
 
+def ADXR(data, N=14):
+    res = talib.ADXR(data.high.values, data.low.values, data.close.values, N)
+    return pd.DataFrame({'ADXR': res}, index=data.index)
+
+
+def AROON(data, N=14):
+    res = talib.AROON(data.high.values, data.low.values, N)
+    return pd.DataFrame({'AROON': res}, index=data.index)
+
+
+def AROONOSC(data, N=14):
+    res = talib.AROONOSC(data.high.values, data.low.values, N)
+    return pd.DataFrame({'AROONOSC': res}, index=data.index)
+
+
+def ATR(data, N=14):
+    res = talib.ATR(data.high.values, data.low.values, data.close.values, N)
+    return pd.DataFrame({'ATR': res}, index=data.index)
+
+
+def AVGPRICE(data):
+    res = talib.AVGPRICE(data.open.values, data.high.values,
+                         data.low.values, data.close.values)
+    return pd.DataFrame({'AVGPRICE': res}, index=data.index)
+
+
+def BOP(data):
+    res = talib.BOP(data.open.values, data.high.values,
+                    data.low.values, data.close.values)
+    return pd.DataFrame({'BOP': res}, index=data.index)
+
+
+def CCI(data, N=14):
+    res = talib.CCI(data.high.values, data.low.values, data.close.values, N)
+    return pd.DataFrame({'CCI': res}, index=data.index)
+
+
 def CDL2CROWS(data):
     res = talib.CDL2CROWS(data.open.values, data.high.values,
                           data.low.values, data.close.values)
@@ -418,3 +455,8 @@ def CDLXSIDEGAP3METHODS(data):
     res = talib.CDLXSIDEGAP3METHODS(
         data.open.values, data.high.values, data.low.values, data.close.values)
     return pd.DataFrame({'CDLXSIDEGAP3METHODS': res}, index=data.index)
+
+
+def DX(data, N=14):
+    res = talib.DX(data.high.values, data.low.values, data.close.values, N)
+    return pd.DataFrame({'DX': res}, index=data.index)
