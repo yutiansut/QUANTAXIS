@@ -172,3 +172,9 @@ def SMA(Series, timeperiod=30):
 
 def STDDEV(Series, timeperiod=5, nbdev=1):
     return pd.Series(talib.STDDEV(Series.values, timeperiod, nbdev), index=Series.index)
+
+
+def STOCHRSI(Series, timeperiod=14, fastk_period=5, fastd_period=3, fastd_matype=0):
+    fastk, fastd = talib.STOCHRSI(
+        Series.values, fastk_period, fastd_period, fastd_matype)
+    return pd.Series(fastk, index=Series.index), pd.Series(fastd, index=Series.index)
