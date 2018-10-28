@@ -480,3 +480,11 @@ def STOCH(data, fastk_period=5, slowk_period=3, slowk_matype=0, slowd_period=3, 
     slowk, slowd = talib.STOCH(data.high.values, data.low.values, data.close.values,
                                fastk_period, slowk_period, slowk_matype, slowd_period, slowd_matype)
     return pd.DataFrame({'STOCH_SLOWK': slowk, 'STOCH_SLOWD': slowd}, index=data.index)
+
+
+def STOCHF(data, fastk_period=5, fastd_period=3, fastd_matype=0):
+    fastk, fastd = talib.STOCHF(data.high.values, data.low.values, data.close.values,
+                               fastk_period, fastd_period, fastd_matype)
+    return pd.DataFrame({'STOCHF_FASTK': fastk, 'STOCHF_FASTD': slowd}, index=data.index)
+
+
