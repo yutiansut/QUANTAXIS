@@ -5,5 +5,6 @@ test_task:
   pip_cache:
     folder: ~/.cache/pip
     fingerprint_script: echo $PYTHON_VERSION && cat requirements.txt
-    populate_script: pip install pip==9.0.1 && pip install -r requirements.txt
+    populate_script: pip install pip -U && pip install pyasn1 && pip install pyecharts && pip install -r requirements.txt
+    
   test_script: python setup.py install
