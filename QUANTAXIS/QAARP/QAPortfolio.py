@@ -137,7 +137,7 @@ class QA_Portfolio():
                                                            user_cookie=self.user_cookie, account_cookie=account_cookie)
                 return self.accounts[account_cookie]
             else:
-                return self.new_account(account_cookie)
+                return self.accounts[account_cookie]
 
     def get_account_by_cookie(self, cookie):
         '''
