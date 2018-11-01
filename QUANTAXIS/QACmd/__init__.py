@@ -341,7 +341,7 @@ class CLI(cmd.Cmd):
                         save option_min :对应输入命令 save option_min
                         save option_commodity_day :对应输入命令 save commodity_option_day
                         save option_commodity_min :对应输入命令 save commodity_option_min
-                        save  option_contract_list :对应输入命令 save option_contract_list
+                        save option_contract_list :对应输入命令 save option_contract_list
                         '''
                         try:
                             eval("QA_SU_save_%s('tdx')" % (i))
