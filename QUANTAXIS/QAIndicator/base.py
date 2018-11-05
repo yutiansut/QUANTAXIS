@@ -112,6 +112,16 @@ def SINGLE_CROSS(A, B):
 
 
 def CROSS(A, B):
+    """A<B then A>B  A上穿B B下穿A
+    
+    Arguments:
+        A {[type]} -- [description]
+        B {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+
     var = np.where(A<B, 1, 0)
     return (pd.Series(var, index=A.index).diff()<0).apply(int)
 
