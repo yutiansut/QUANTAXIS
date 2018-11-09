@@ -132,6 +132,36 @@ class QA_Account(QA_Worker):
         # 2018/06/11 取消在初始化的时候的cash和history输入
         # :param [list] cash:              可用现金  默认 是 初始资产  list 类型
         # :param [list] history:           交易历史
+
+
+        # 2018/11/9 修改保证金交易
+
+        # 我们把冻结的保证金 看做是未来的已实现交易:  
+        # 如==> 当前的一手空单 认为是未来的卖出成交(已知价格 不知时间)
+        # 因此我们如此对于保证金交易进行评估:
+        # 账户买入: 
+        多单开仓:  cash 下降x 保证金增加x 增加一手未来的卖出合约(持仓)  ==> 平仓: cash上升 保证金恢复
+        cash + frozen(平仓释放) + 未平仓位
+
+        cash, available_cash
+
+        frozen{
+                RB1901: {
+                        towards 2: {avg_money : xxx, amount: xxx}, 
+                        towards -2: {avg_money, amount}
+                        },
+                IF1901: {
+                        towards 2: {avg_money, amount},
+                        towards -2: {avg_money, amount}
+                }
+        }
+
+        hold: {
+            RB1901: {
+                1, amount, # 多单待平仓
+                -1, amount # 空单待平仓
+            }
+        }
         """
         super().__init__()
         # warnings.warn('QUANTAXIS 1.0.46 has changed the init_assets ==> init_cash, please pay attention to this change if you using init_cash to initial an account class,\
@@ -182,7 +212,17 @@ class QA_Account(QA_Worker):
         #
         self.allow_t0 = allow_t0
         self.allow_sellopen = allow_sellopen
-        self.margin_level = margin_level
+        self.margin_level = margin_level  # 保证金比例
+        """期货的多开/空开 ==> 资金冻结进保证金  frozen
+
+        对应平仓的时候, 释放保证金
+
+        1. frozen  是一个dict :   {[code]:queue}
+            key是标的 value是对应的交易queue
+
+        """
+
+        self.frozen = {}  # 冻结资金(保证金)
 
     def __repr__(self):
         return '< QA_Account {}>'.format(self.account_cookie)
@@ -489,6 +529,12 @@ class QA_Account(QA_Worker):
 
         Keyword Arguments:
             message {[type]} -- [description] (default: {None})
+
+
+        2018/11/7 @yutiansut
+        修复一个bug: 在直接使用该快速撮合接口的时候, 期货卖出会扣减保证金, 买回来的时候应该反算利润
+
+        如 3800卖空 3700买回平仓  应为100利润
         """
 
         self.datetime = trade_time
@@ -509,30 +555,60 @@ class QA_Account(QA_Worker):
                 abs(trade_money)
 
         trade_money += (commission_fee+tax_fee)
-        # print(self.cash[-1])
+
         if self.cash[-1] > trade_money:
             self.time_index.append(trade_time)
             # TODO: 目前还不支持期货的锁仓
             if self.allow_sellopen:
                 if trade_towards in [ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN]:
-                    # 开仓单占用现金
-                    self.cash.append(self.cash[-1]-abs(trade_money))
-                    self.cash_available = self.cash[-1]
+                    # 开仓单占用现金 计算avg
+                    # 初始化
+                    if code in self.frozen.keys():
+                        if trade_towards in self.frozen[code].keys():
+                            pass
+                        else:
+                            self.frozen[code][trade_towards] = {'money': 0, 'amount': 0}
+                    else:
+                        self.frozen[code] = {
+                            ORDER_DIRECTION.BUY_OPEN: {
+                                'money': 0, 'amount': 0},
+                            ORDER_DIRECTION.SELL_OPEN: {
+                                'money': 0, 'amount': 0}
+                        }
 
+                    self.frozen[code][trade_towards]['money'] = (
+                        (self.frozen[code][trade_towards]['money']*self.frozen[code][trade_towards]['amount'])+abs(trade_money))/(self.frozen[code][trade_towards]['amount']+trade_amount)
+                    self.frozen[code][trade_towards]['amount'] += trade_amount
+
+                    self.cash.append(self.cash[-1]-abs(trade_money))
                 elif trade_towards in [ORDER_DIRECTION.BUY_CLOSE, ORDER_DIRECTION.SELL_CLOSE]:
                     # 平仓单释放现金
-                    self.cash.append(self.cash[-1]+abs(trade_money))
-                    self.cash_available = self.cash[-1]
+                    # if trade_towards == ORDER_DIRECTION.BUY_CLOSE:
+                        # 卖空开仓 平仓买入
+                        # self.cash
+                    if trade_towards == ORDER_DIRECTION.BUY_CLOSE:# 买入平仓  之前是空开
+                        # self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['money'] -= trade_money
+                        self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['amount'] -= trade_amount
+                        self.cash.append(
+                            self.cash[-1]-trade_money+self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['money']*trade_amount*2)
+                        if self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['amount'] == 0:
+                            self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['money'] = 0
+
+                    elif trade_towards == ORDER_DIRECTION.SELL_CLOSE:# 卖出平仓  之前是多开
+                        # self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['money'] -= trade_money
+                        self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['amount'] -= trade_amount
+                        self.cash.append(
+                            self.cash[-1]-trade_money)
+                        if self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['amount'] == 0:
+                            self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['money'] = 0
             else:
                 self.cash.append(self.cash[-1]-trade_money)
-                self.cash_available = self.cash[-1]
-
             if self.allow_t0:
-
                 self.sell_available[code] = self.sell_available.get(
                     code, 0)+trade_amount*market_towards
                 self.buy_available = self.sell_available
 
+            self.cash_available = self.cash[-1]
             self.history.append([trade_time, code, trade_price, market_towards*trade_amount, self.cash[-1], None, None, None, self.account_cookie,
                                  commission_fee, tax_fee, message])
 
@@ -762,12 +838,10 @@ class QA_Account(QA_Worker):
                 #towards = ORDER_DIRECTION.SELL
                 flag = True
             # 如果持仓数量<卖出数量
-
             else:
 
                 # 如果是允许卖空开仓 实际计算时  先减去持仓(正持仓) 再计算 负持仓 就按原先的占用金额计算
                 if self.allow_sellopen:
-
                     # left_amount = amount-_hold if _hold > 0 else amount  # 如果仓位是反的
                     # _money = float(left_amount * price + amount *
                     #                price*self.commission_coeff)
