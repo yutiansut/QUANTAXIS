@@ -147,13 +147,14 @@ class QA_Account(QA_Worker):
 
         frozen{
                 RB1901: {
-                        towards 2: {avg_money : xxx, amount: xxx}, 
-                        towards -2: {avg_money, amount}
+                        towards 2: {avg_money : xxx, amount: xxx, queue: collection.deque()}, 
+                        towards -2: {avg_money, amount, queue: collection.deque()}
                         },
                 IF1901: {
-                        towards 2: {avg_money, amount},
-                        towards -2: {avg_money, amount}
+                        towards 2: {avg_money, amount,queue: collection.deque()},
+                        towards -2: {avg_money, amount,queue: collection.deque()}
                 }
+            }
         }
 
         hold: {
@@ -519,6 +520,14 @@ class QA_Account(QA_Worker):
 
     def receive_simpledeal(self, code, trade_price, trade_amount, trade_towards, trade_time, message=None):
         """快速撮合成交接口
+
+
+        此接口是一个直接可以成交的接口, 所以务必确保给出的信息是可以成交的
+
+        此接口涉及的是
+        1. 股票/期货的成交
+        2. 历史记录的增加
+        3. 现金/持仓/冻结资金的处理
 
         Arguments:
             code {[type]} -- [description]
