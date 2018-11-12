@@ -75,7 +75,6 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
     :param ui_log:  给GUI qt 界面使用
     :param ui_progress: 给GUI qt 界面使用
     :param ui_progress_int_value: 给GUI qt 界面使用
-    :return:
     '''
     stock_list = QA_fetch_get_stock_list().code.unique().tolist()
     coll_stock_day = client.stock_day

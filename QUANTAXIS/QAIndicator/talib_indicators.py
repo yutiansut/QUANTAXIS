@@ -30,461 +30,461 @@ except:
     print('请安装TALIB后再调用此函数')
 
 
-def AD(data):
-    res = talib.AD(data.high.values, data.low.values,
-                   data.close.values, data.volume.values)
-    return pd.DataFrame({'AD': res}, index=data.index)
+def AD(DataFrame):
+    res = talib.AD(DataFrame.high.values, DataFrame.low.values,
+                   DataFrame.close.values, DataFrame.volume.values)
+    return pd.DataFrame({'AD': res}, index=DataFrame.index)
 
 
-def ADOSC(data, N1=3, N2=10):
-    res = talib.ADOSC(data.high.values, data.low.values,
-                      data.close.values, data.volume.values, N1, N2)
-    return pd.DataFrame({'ADOSC': res}, index=data.index)
+def ADOSC(DataFrame, N1=3, N2=10):
+    res = talib.ADOSC(DataFrame.high.values, DataFrame.low.values,
+                      DataFrame.close.values, DataFrame.volume.values, N1, N2)
+    return pd.DataFrame({'ADOSC': res}, index=DataFrame.index)
 
 
-def ADX(data, N=14):
-    res = talib.ADX(data.high.values, data.low.values, data.close.values, N)
-    return pd.DataFrame({'ADX': res}, index=data.index)
+def ADX(DataFrame, N=14):
+    res = talib.ADX(DataFrame.high.values, DataFrame.low.values, DataFrame.close.values, N)
+    return pd.DataFrame({'ADX': res}, index=DataFrame.index)
 
 
-def ADXR(data, N=14):
-    res = talib.ADXR(data.high.values, data.low.values, data.close.values, N)
-    return pd.DataFrame({'ADXR': res}, index=data.index)
+def ADXR(DataFrame, N=14):
+    res = talib.ADXR(DataFrame.high.values, DataFrame.low.values, DataFrame.close.values, N)
+    return pd.DataFrame({'ADXR': res}, index=DataFrame.index)
 
 
-def AROON(data, N=14):
-    res = talib.AROON(data.high.values, data.low.values, N)
-    return pd.DataFrame({'AROON': res}, index=data.index)
+def AROON(DataFrame, N=14):
+    res = talib.AROON(DataFrame.high.values, DataFrame.low.values, N)
+    return pd.DataFrame({'AROON': res}, index=DataFrame.index)
 
 
-def AROONOSC(data, N=14):
-    res = talib.AROONOSC(data.high.values, data.low.values, N)
-    return pd.DataFrame({'AROONOSC': res}, index=data.index)
+def AROONOSC(DataFrame, N=14):
+    res = talib.AROONOSC(DataFrame.high.values, DataFrame.low.values, N)
+    return pd.DataFrame({'AROONOSC': res}, index=DataFrame.index)
 
 
-def ATR(data, N=14):
-    res = talib.ATR(data.high.values, data.low.values, data.close.values, N)
-    return pd.DataFrame({'ATR': res}, index=data.index)
+def ATR(DataFrame, N=14):
+    res = talib.ATR(DataFrame.high.values, DataFrame.low.values, DataFrame.close.values, N)
+    return pd.DataFrame({'ATR': res}, index=DataFrame.index)
 
 
-def AVGPRICE(data):
-    res = talib.AVGPRICE(data.open.values, data.high.values,
-                         data.low.values, data.close.values)
-    return pd.DataFrame({'AVGPRICE': res}, index=data.index)
+def AVGPRICE(DataFrame):
+    res = talib.AVGPRICE(DataFrame.open.values, DataFrame.high.values,
+                         DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'AVGPRICE': res}, index=DataFrame.index)
 
 
-def BOP(data):
-    res = talib.BOP(data.open.values, data.high.values,
-                    data.low.values, data.close.values)
-    return pd.DataFrame({'BOP': res}, index=data.index)
+def BOP(DataFrame):
+    res = talib.BOP(DataFrame.open.values, DataFrame.high.values,
+                    DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'BOP': res}, index=DataFrame.index)
 
 
-def CCI(data, N=14):
-    res = talib.CCI(data.high.values, data.low.values, data.close.values, N)
-    return pd.DataFrame({'CCI': res}, index=data.index)
+def CCI(DataFrame, N=14):
+    res = talib.CCI(DataFrame.high.values, DataFrame.low.values, DataFrame.close.values, N)
+    return pd.DataFrame({'CCI': res}, index=DataFrame.index)
 
 
-def CDL2CROWS(data):
-    res = talib.CDL2CROWS(data.open.values, data.high.values,
-                          data.low.values, data.close.values)
-    return pd.DataFrame({'CDL2CROWS': res}, index=data.index)
+def CDL2CROWS(DataFrame):
+    res = talib.CDL2CROWS(DataFrame.open.values, DataFrame.high.values,
+                          DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDL2CROWS': res}, index=DataFrame.index)
 
 
-def CDL3BLACKCROWS(data):
+def CDL3BLACKCROWS(DataFrame):
     res = talib.CDL3BLACKCROWS(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDL3BLACKCROWS': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDL3BLACKCROWS': res}, index=DataFrame.index)
 
 
-def CDL3INSIDE(data):
+def CDL3INSIDE(DataFrame):
     res = talib.CDL3INSIDE(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDL3INSIDE': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDL3INSIDE': res}, index=DataFrame.index)
 
 
-def CDL3LINESTRIKE(data):
+def CDL3LINESTRIKE(DataFrame):
     res = talib.CDL3LINESTRIKE(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDL3LINESTRIKE': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDL3LINESTRIKE': res}, index=DataFrame.index)
 
 
-def CDL3OUTSIDE(data):
+def CDL3OUTSIDE(DataFrame):
     res = talib.CDL3OUTSIDE(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDL3OUTSIDE': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDL3OUTSIDE': res}, index=DataFrame.index)
 
 
-def CDL3STARSINSOUTH(data):
+def CDL3STARSINSOUTH(DataFrame):
     res = talib.CDL3STARSINSOUTH(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDL3STARSINSOUTH': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDL3STARSINSOUTH': res}, index=DataFrame.index)
 
 
-def CDL3WHITESOLDIERS(data):
+def CDL3WHITESOLDIERS(DataFrame):
     res = talib.CDL3WHITESOLDIERS(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDL3WHITESOLDIERS': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDL3WHITESOLDIERS': res}, index=DataFrame.index)
 
 
-def CDLABANDONEDBABY(data):
+def CDLABANDONEDBABY(DataFrame):
     res = talib.CDLABANDONEDBABY(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLABANDONEDBABY': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLABANDONEDBABY': res}, index=DataFrame.index)
 
 
-def CDLADVANCEBLOCK(data):
+def CDLADVANCEBLOCK(DataFrame):
     res = talib.CDLADVANCEBLOCK(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLADVANCEBLOCK': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLADVANCEBLOCK': res}, index=DataFrame.index)
 
 
-def CDLBELTHOLD(data):
+def CDLBELTHOLD(DataFrame):
     res = talib.CDLBELTHOLD(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLBELTHOLD': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLBELTHOLD': res}, index=DataFrame.index)
 
 
-def CDLBREAKAWAY(data):
+def CDLBREAKAWAY(DataFrame):
     res = talib.CDLBREAKAWAY(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLBREAKAWAY': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLBREAKAWAY': res}, index=DataFrame.index)
 
 
-def CDLCLOSINGMARUBOZU(data):
+def CDLCLOSINGMARUBOZU(DataFrame):
     """
     Closing Marubozu (Pattern Recognition)
 
     Arguments:
-        data {[type]} -- [description]
+        DataFrame {[type]} -- [description]
     """
 
     res = talib.CDLCLOSINGMARUBOZU(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLCLOSINGMARUBOZU': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLCLOSINGMARUBOZU': res}, index=DataFrame.index)
 
 
-def CDLCONCEALBABYSWALL(data):
+def CDLCONCEALBABYSWALL(DataFrame):
     res = talib.CDLCONCEALBABYSWALL(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLCONCEALBABYSWALL': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLCONCEALBABYSWALL': res}, index=DataFrame.index)
 
 
-def CDLCOUNTERATTACK(data):
+def CDLCOUNTERATTACK(DataFrame):
     res = talib.CDLCOUNTERATTACK(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLCOUNTERATTACK': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLCOUNTERATTACK': res}, index=DataFrame.index)
 
 
-def CDLDARKCLOUDCOVER(data):
+def CDLDARKCLOUDCOVER(DataFrame):
     res = talib.CDLDARKCLOUDCOVER(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLDARKCLOUDCOVER': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLDARKCLOUDCOVER': res}, index=DataFrame.index)
 
 
-def CDLDOJI(data):
-    res = talib.CDLDOJI(data.open.values, data.high.values,
-                        data.low.values, data.close.values)
-    return pd.DataFrame({'CDLDOJI': res}, index=data.index)
+def CDLDOJI(DataFrame):
+    res = talib.CDLDOJI(DataFrame.open.values, DataFrame.high.values,
+                        DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLDOJI': res}, index=DataFrame.index)
 
 
-def CDLDOJISTAR(data):
+def CDLDOJISTAR(DataFrame):
     res = talib.CDLDOJISTAR(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLDOJISTAR': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLDOJISTAR': res}, index=DataFrame.index)
 
 
-def CDLDRAGONFLYDOJI(data):
+def CDLDRAGONFLYDOJI(DataFrame):
     res = talib.CDLDRAGONFLYDOJI(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLDRAGONFLYDOJI': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLDRAGONFLYDOJI': res}, index=DataFrame.index)
 
 
-def CDLENGULFING(data):
+def CDLENGULFING(DataFrame):
     res = talib.CDLENGULFING(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLENGULFING': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLENGULFING': res}, index=DataFrame.index)
 
 
-def CDLEVENINGDOJISTAR(data):
+def CDLEVENINGDOJISTAR(DataFrame):
     res = talib.CDLEVENINGDOJISTAR(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLEVENINGDOJISTAR': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLEVENINGDOJISTAR': res}, index=DataFrame.index)
 
 
-def CDLEVENINGSTAR(data):
+def CDLEVENINGSTAR(DataFrame):
     res = talib.CDLEVENINGSTAR(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLEVENINGSTAR': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLEVENINGSTAR': res}, index=DataFrame.index)
 
 
-def CDLGAPSIDESIDEWHITE(data):
+def CDLGAPSIDESIDEWHITE(DataFrame):
     res = talib.CDLGAPSIDESIDEWHITE(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLGAPSIDESIDEWHITE': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLGAPSIDESIDEWHITE': res}, index=DataFrame.index)
 
 
-def CDLGRAVESTONEDOJI(data):
+def CDLGRAVESTONEDOJI(DataFrame):
     res = talib.CDLGRAVESTONEDOJI(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLGRAVESTONEDOJI': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLGRAVESTONEDOJI': res}, index=DataFrame.index)
 
 
-def CDLHAMMER(data):
-    res = talib.CDLHAMMER(data.open.values, data.high.values,
-                          data.low.values, data.close.values)
-    return pd.DataFrame({'CDLHAMMER': res}, index=data.index)
+def CDLHAMMER(DataFrame):
+    res = talib.CDLHAMMER(DataFrame.open.values, DataFrame.high.values,
+                          DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLHAMMER': res}, index=DataFrame.index)
 
 
-def CDLHANGINGMAN(data):
+def CDLHANGINGMAN(DataFrame):
     res = talib.CDLHANGINGMAN(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLHANGINGMAN': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLHANGINGMAN': res}, index=DataFrame.index)
 
 
-def CDLHARAMI(data):
-    res = talib.CDLHARAMI(data.open.values, data.high.values,
-                          data.low.values, data.close.values)
-    return pd.DataFrame({'CDLHARAMI': res}, index=data.index)
+def CDLHARAMI(DataFrame):
+    res = talib.CDLHARAMI(DataFrame.open.values, DataFrame.high.values,
+                          DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLHARAMI': res}, index=DataFrame.index)
 
 
-def CDLHARAMICROSS(data):
+def CDLHARAMICROSS(DataFrame):
     res = talib.CDLHARAMICROSS(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLHARAMICROSS': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLHARAMICROSS': res}, index=DataFrame.index)
 
 
-def CDLHIGHWAVE(data):
+def CDLHIGHWAVE(DataFrame):
     res = talib.CDLHIGHWAVE(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLHIGHWAVE': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLHIGHWAVE': res}, index=DataFrame.index)
 
 
-def CDLHIKKAKE(data):
-    res = talib.CDLHIKKAKE(data.open.values, data.high.values,
-                           data.low.values, data.close.values)
-    return pd.DataFrame({'CDLHIKKAKE': res}, index=data.index)
+def CDLHIKKAKE(DataFrame):
+    res = talib.CDLHIKKAKE(DataFrame.open.values, DataFrame.high.values,
+                           DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLHIKKAKE': res}, index=DataFrame.index)
 
 
-def CDLHIKKAKEMOD(data):
+def CDLHIKKAKEMOD(DataFrame):
     res = talib.CDLHIKKAKEMOD(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLHIKKAKEMOD': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLHIKKAKEMOD': res}, index=DataFrame.index)
 
 
-def CDLHOMINGPIGEON(data):
+def CDLHOMINGPIGEON(DataFrame):
     res = talib.CDLHOMINGPIGEON(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLHOMINGPIGEON': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLHOMINGPIGEON': res}, index=DataFrame.index)
 
 
-def CDLIDENTICAL3CROWS(data):
+def CDLIDENTICAL3CROWS(DataFrame):
     res = talib.CDLIDENTICAL3CROWS(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLIDENTICAL3CROWS': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLIDENTICAL3CROWS': res}, index=DataFrame.index)
 
 
-def CDLINNECK(data):
-    res = talib.CDLINNECK(data.open.values, data.high.values,
-                          data.low.values, data.close.values)
-    return pd.DataFrame({'CDLINNECK': res}, index=data.index)
+def CDLINNECK(DataFrame):
+    res = talib.CDLINNECK(DataFrame.open.values, DataFrame.high.values,
+                          DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLINNECK': res}, index=DataFrame.index)
 
 
-def CDLINVERTEDHAMMER(data):
+def CDLINVERTEDHAMMER(DataFrame):
     res = talib.CDLINVERTEDHAMMER(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLINVERTEDHAMMER': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLINVERTEDHAMMER': res}, index=DataFrame.index)
 
 
-def CDLKICKING(data):
-    res = talib.CDLKICKING(data.open.values, data.high.values,
-                           data.low.values, data.close.values)
-    return pd.DataFrame({'CDLKICKING': res}, index=data.index)
+def CDLKICKING(DataFrame):
+    res = talib.CDLKICKING(DataFrame.open.values, DataFrame.high.values,
+                           DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLKICKING': res}, index=DataFrame.index)
 
 
-def CDLKICKINGBYLENGTH(data):
+def CDLKICKINGBYLENGTH(DataFrame):
     res = talib.CDLKICKINGBYLENGTH(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLKICKINGBYLENGTH': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLKICKINGBYLENGTH': res}, index=DataFrame.index)
 
 
-def CDLLADDERBOTTOM(data):
+def CDLLADDERBOTTOM(DataFrame):
     res = talib.CDLLADDERBOTTOM(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLLADDERBOTTOM': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLLADDERBOTTOM': res}, index=DataFrame.index)
 
 
-def CDLLONGLEGGEDDOJI(data):
+def CDLLONGLEGGEDDOJI(DataFrame):
     res = talib.CDLLONGLEGGEDDOJI(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLLONGLEGGEDDOJI': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLLONGLEGGEDDOJI': res}, index=DataFrame.index)
 
 
-def CDLLONGLINE(data):
+def CDLLONGLINE(DataFrame):
     res = talib.CDLLONGLINE(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLLONGLINE': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLLONGLINE': res}, index=DataFrame.index)
 
 
-def CDLMARUBOZU(data):
+def CDLMARUBOZU(DataFrame):
     res = talib.CDLMARUBOZU(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLMARUBOZU': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLMARUBOZU': res}, index=DataFrame.index)
 
 
-def CDLMATCHINGLOW(data):
+def CDLMATCHINGLOW(DataFrame):
     res = talib.CDLMATCHINGLOW(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLMATCHINGLOW': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLMATCHINGLOW': res}, index=DataFrame.index)
 
 
-def CDLMATHOLD(data):
-    res = talib.CDLMATHOLD(data.open.values, data.high.values,
-                           data.low.values, data.close.values)
-    return pd.DataFrame({'CDLMATHOLD': res}, index=data.index)
+def CDLMATHOLD(DataFrame):
+    res = talib.CDLMATHOLD(DataFrame.open.values, DataFrame.high.values,
+                           DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLMATHOLD': res}, index=DataFrame.index)
 
 
-def CDLMORNINGDOJISTAR(data):
+def CDLMORNINGDOJISTAR(DataFrame):
     res = talib.CDLMORNINGDOJISTAR(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLMORNINGDOJISTAR': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLMORNINGDOJISTAR': res}, index=DataFrame.index)
 
 
-def CDLMORNINGSTAR(data):
+def CDLMORNINGSTAR(DataFrame):
     res = talib.CDLMORNINGSTAR(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLMORNINGSTAR': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLMORNINGSTAR': res}, index=DataFrame.index)
 
 
-def CDLONNECK(data):
-    res = talib.CDLONNECK(data.open.values, data.high.values,
-                          data.low.values, data.close.values)
-    return pd.DataFrame({'CDLONNECK': res}, index=data.index)
+def CDLONNECK(DataFrame):
+    res = talib.CDLONNECK(DataFrame.open.values, DataFrame.high.values,
+                          DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLONNECK': res}, index=DataFrame.index)
 
 
-def CDLPIERCING(data):
+def CDLPIERCING(DataFrame):
     res = talib.CDLPIERCING(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLPIERCING': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLPIERCING': res}, index=DataFrame.index)
 
 
-def CDLRICKSHAWMAN(data):
+def CDLRICKSHAWMAN(DataFrame):
     res = talib.CDLRICKSHAWMAN(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLRICKSHAWMAN': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLRICKSHAWMAN': res}, index=DataFrame.index)
 
 
-def CDLRISEFALL3METHODS(data):
+def CDLRISEFALL3METHODS(DataFrame):
     res = talib.CDLRISEFALL3METHODS(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLRISEFALL3METHODS': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLRISEFALL3METHODS': res}, index=DataFrame.index)
 
 
-def CDLSEPARATINGLINES(data):
+def CDLSEPARATINGLINES(DataFrame):
     res = talib.CDLSEPARATINGLINES(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLSEPARATINGLINES': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLSEPARATINGLINES': res}, index=DataFrame.index)
 
 
-def CDLSHOOTINGSTAR(data):
+def CDLSHOOTINGSTAR(DataFrame):
     res = talib.CDLSHOOTINGSTAR(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLSHOOTINGSTAR': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLSHOOTINGSTAR': res}, index=DataFrame.index)
 
 
-def CDLSHORTLINE(data):
+def CDLSHORTLINE(DataFrame):
     res = talib.CDLSHORTLINE(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLSHORTLINE': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLSHORTLINE': res}, index=DataFrame.index)
 
 
-def CDLSPINNINGTOP(data):
+def CDLSPINNINGTOP(DataFrame):
     res = talib.CDLSPINNINGTOP(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLSPINNINGTOP': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLSPINNINGTOP': res}, index=DataFrame.index)
 
 
-def CDLSTALLEDPATTERN(data):
+def CDLSTALLEDPATTERN(DataFrame):
     res = talib.CDLSTALLEDPATTERN(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLSTALLEDPATTERN': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLSTALLEDPATTERN': res}, index=DataFrame.index)
 
 
-def CDLSTICKSANDWICH(data):
+def CDLSTICKSANDWICH(DataFrame):
     res = talib.CDLSTICKSANDWICH(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLSTICKSANDWICH': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLSTICKSANDWICH': res}, index=DataFrame.index)
 
 
-def CDLTAKURI(data):
-    res = talib.CDLTAKURI(data.open.values, data.high.values,
-                          data.low.values, data.close.values)
-    return pd.DataFrame({'CDLTAKURI': res}, index=data.index)
+def CDLTAKURI(DataFrame):
+    res = talib.CDLTAKURI(DataFrame.open.values, DataFrame.high.values,
+                          DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLTAKURI': res}, index=DataFrame.index)
 
 
-def CDLTASUKIGAP(data):
+def CDLTASUKIGAP(DataFrame):
     res = talib.CDLTASUKIGAP(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLTASUKIGAP': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLTASUKIGAP': res}, index=DataFrame.index)
 
 
-def CDLTHRUSTING(data):
+def CDLTHRUSTING(DataFrame):
     res = talib.CDLTHRUSTING(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLTHRUSTING': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLTHRUSTING': res}, index=DataFrame.index)
 
 
-def CDLTRISTAR(data):
-    res = talib.CDLTRISTAR(data.open.values, data.high.values,
-                           data.low.values, data.close.values)
-    return pd.DataFrame({'CDLTRISTAR': res}, index=data.index)
+def CDLTRISTAR(DataFrame):
+    res = talib.CDLTRISTAR(DataFrame.open.values, DataFrame.high.values,
+                           DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLTRISTAR': res}, index=DataFrame.index)
 
 
-def CDLUNIQUE3RIVER(data):
+def CDLUNIQUE3RIVER(DataFrame):
     res = talib.CDLUNIQUE3RIVER(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLUNIQUE3RIVER': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLUNIQUE3RIVER': res}, index=DataFrame.index)
 
 
-def CDLUPSIDEGAP2CROWS(data):
+def CDLUPSIDEGAP2CROWS(DataFrame):
     res = talib.CDLUPSIDEGAP2CROWS(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLUPSIDEGAP2CROWS': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLUPSIDEGAP2CROWS': res}, index=DataFrame.index)
 
 
-def CDLXSIDEGAP3METHODS(data):
+def CDLXSIDEGAP3METHODS(DataFrame):
     res = talib.CDLXSIDEGAP3METHODS(
-        data.open.values, data.high.values, data.low.values, data.close.values)
-    return pd.DataFrame({'CDLXSIDEGAP3METHODS': res}, index=data.index)
+        DataFrame.open.values, DataFrame.high.values, DataFrame.low.values, DataFrame.close.values)
+    return pd.DataFrame({'CDLXSIDEGAP3METHODS': res}, index=DataFrame.index)
 
 
-def DX(data, N=14):
-    res = talib.DX(data.high.values, data.low.values, data.close.values, N)
-    return pd.DataFrame({'DX': res}, index=data.index)
+def DX(DataFrame, N=14):
+    res = talib.DX(DataFrame.high.values, DataFrame.low.values, DataFrame.close.values, N)
+    return pd.DataFrame({'DX': res}, index=DataFrame.index)
 
 
 # SAR - Parabolic SAR
-def SAR(data, acceleration=0, maximum=0):
-    res = talib.SAR(data.high.values, data.low.values, acceleration, maximum)
-    return pd.DataFrame({'SAR': res}, index=data.index)
+def SAR(DataFrame, acceleration=0, maximum=0):
+    res = talib.SAR(DataFrame.high.values, DataFrame.low.values, acceleration, maximum)
+    return pd.DataFrame({'SAR': res}, index=DataFrame.index)
 
 
-def SAREXT(data, startvalue=0, offsetonreverse=0, accelerationinitlong=0,
+def SAREXT(DataFrame, startvalue=0, offsetonreverse=0, accelerationinitlong=0,
            accelerationlong=0, accelerationmaxlong=0, accelerationinitshort=0, accelerationshort=0, accelerationmaxshort=0):
-    res = talib.SAREXT(data.high.values, data.low.values,
+    res = talib.SAREXT(DataFrame.high.values, DataFrame.low.values,
                        startvalue, offsetonreverse, accelerationinitlong, accelerationlong, accelerationmaxlong,
                        accelerationinitshort, accelerationshort, accelerationmaxshort)
-    return pd.DataFrame({'SAREXT': res}, index=data.index)
+    return pd.DataFrame({'SAREXT': res}, index=DataFrame.index)
 
 
-def STOCH(data, fastk_period=5, slowk_period=3, slowk_matype=0, slowd_period=3, slowd_matype=0):
-    slowk, slowd = talib.STOCH(data.high.values, data.low.values, data.close.values,
+def STOCH(DataFrame, fastk_period=5, slowk_period=3, slowk_matype=0, slowd_period=3, slowd_matype=0):
+    slowk, slowd = talib.STOCH(DataFrame.high.values, DataFrame.low.values, DataFrame.close.values,
                                fastk_period, slowk_period, slowk_matype, slowd_period, slowd_matype)
-    return pd.DataFrame({'STOCH_SLOWK': slowk, 'STOCH_SLOWD': slowd}, index=data.index)
+    return pd.DataFrame({'STOCH_SLOWK': slowk, 'STOCH_SLOWD': slowd}, index=DataFrame.index)
 
 
-def STOCHF(data, fastk_period=5, fastd_period=3, fastd_matype=0):
-    fastk, fastd = talib.STOCHF(data.high.values, data.low.values, data.close.values,
+def STOCHF(DataFrame, fastk_period=5, fastd_period=3, fastd_matype=0):
+    fastk, fastd = talib.STOCHF(DataFrame.high.values, DataFrame.low.values, DataFrame.close.values,
                                fastk_period, fastd_period, fastd_matype)
-    return pd.DataFrame({'STOCHF_FASTK': fastk, 'STOCHF_FASTD': slowd}, index=data.index)
+    return pd.DataFrame({'STOCHF_FASTK': fastk, 'STOCHF_FASTD': slowd}, index=DataFrame.index)
 
 
