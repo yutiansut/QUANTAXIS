@@ -52,6 +52,14 @@ QUANTAXIS.QAUtil.QADate module
     :undoc-members:
     :show-inheritance:
 
+QUANTAXIS.QAUtil.QADateTools module
+-----------------------------------
+
+.. automodule:: QUANTAXIS.QAUtil.QADateTools
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 QUANTAXIS.QAUtil.QADate\_trade module
 -------------------------------------
 
@@ -68,18 +76,34 @@ QUANTAXIS.QAUtil.QADict module
     :undoc-members:
     :show-inheritance:
 
-QUANTAXIS.QAUtil.QAList module
-------------------------------
+QUANTAXIS.QAUtil.QAError module
+-------------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QAList
+.. automodule:: QUANTAXIS.QAUtil.QAError
     :members:
     :undoc-members:
     :show-inheritance:
 
-QUANTAXIS.QASetting.QALocalize module
-----------------------------------
+QUANTAXIS.QAUtil.QAEtl module
+-----------------------------
 
-.. automodule:: QUANTAXIS.QASetting.QALocalize
+.. automodule:: QUANTAXIS.QAUtil.QAEtl
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+QUANTAXIS.QAUtil.QAFile module
+------------------------------
+
+.. automodule:: QUANTAXIS.QAUtil.QAFile
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+QUANTAXIS.QAUtil.QAList module
+------------------------------
+
+.. automodule:: QUANTAXIS.QAUtil.QAList
     :members:
     :undoc-members:
     :show-inheritance:
@@ -104,6 +128,14 @@ QUANTAXIS.QAUtil.QAMongo module
 -------------------------------
 
 .. automodule:: QUANTAXIS.QAUtil.QAMongo
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+QUANTAXIS.QAUtil.QAMySQL module
+-------------------------------
+
+.. automodule:: QUANTAXIS.QAUtil.QAMySQL
     :members:
     :undoc-members:
     :show-inheritance:
@@ -164,10 +196,18 @@ QUANTAXIS.QAUtil.QATransform module
     :undoc-members:
     :show-inheritance:
 
-QUANTAXIS.QAUtil.QAWeb module
------------------------------
+QUANTAXIS.QAUtil.QAWebutil module
+---------------------------------
 
 .. automodule:: QUANTAXIS.QAUtil.QAWebutil
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+QUANTAXIS.QAUtil.QAcrypto module
+--------------------------------
+
+.. automodule:: QUANTAXIS.QAUtil.QAcrypto
     :members:
     :undoc-members:
     :show-inheritance:
