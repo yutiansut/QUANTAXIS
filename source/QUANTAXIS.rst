@@ -16,8 +16,9 @@ Subpackages
     QUANTAXIS.QAIndicator
     QUANTAXIS.QAMarket
     QUANTAXIS.QASU
+    QUANTAXIS.QASchedule
+    QUANTAXIS.QASetting
     QUANTAXIS.QAUtil
-    QUANTAXIS.QAWeb
 
 Module contents
 ---------------
