@@ -6,7 +6,7 @@ COPY source.list /etc/apt/sources.list
 # 修改docker的时区
 RUN sudo apt update -y \
     && apt install -y tzdata \
-    && apt install gcc g++ \
+    && apt install -y gcc g++ \
     && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 RUN sudo apt install -y python3-tk
 # RUN pip install pip -U -i https://pypi.doubanio.com/simple
