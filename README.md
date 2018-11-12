@@ -98,6 +98,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 ##  1. 功能
 ======
 
+![](http://pic.yutiansut.com/QUANTAXIS.png)
 
 已经实现：
 
