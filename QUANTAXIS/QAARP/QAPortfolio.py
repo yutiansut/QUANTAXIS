@@ -29,11 +29,11 @@ import pandas as pd
 from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAUtil import (DATABASE, QA_util_log_info,
                               QA_util_random_with_topic)
-
+from QUANTAXIS.QAUtil import MARKET_TYPE, RUNNING_ENVIRONMENT
 # pylint: disable=old-style-class, too-few-public-methods
 
 
-class QA_Portfolio():
+class QA_Portfolio(QA_Account):
     """QA_Portfolio
     User-->Portfolio-->Account/Strategy
 
@@ -81,7 +81,8 @@ class QA_Portfolio():
 
     """
 
-    def __init__(self, user_cookie=None, portfolio_cookie=None, strategy_name=None, init_cash=100000000, sell_available=None):
+    def __init__(self, user_cookie=None, portfolio_cookie=None, strategy_name=None, init_cash=100000000, sell_available=None, market_type=MARKET_TYPE.STOCK_CN,
+                        running_environment=RUNNING_ENVIRONMENT.BACKETEST):
         self.user_cookie = user_cookie
         # self.portfolio_cookie = QA_util_random_with_topic('Portfolio')
         self.portfolio_cookie = QA_util_random_with_topic(
@@ -95,6 +96,9 @@ class QA_Portfolio():
         self.sell_available = sell_available
         #self.history = []
         self.time_index = []
+        self.commission_coeff = 0.005
+        self.market_type = market_type
+        self.running_environment = running_environment
 
         for cookie in self.accounts.keys():
             self.accounts[cookie] = QA_Account(account_cookie=cookie)

@@ -151,6 +151,10 @@ class QA_Order():
         self.reason = None  # 原因列表
 
         self._status = _status
+        
+        # 增加订单对于多账户以及多级别账户的支持 2018/11/12
+        self.mainacc_id = None if 'mainacc_id' not in kwargs.keys() else kwargs['mainacc_id']
+        self.subacc_id = None if 'subacc_id' not in kwargs.keys() else kwargs['subacc_id']
 
     @property
     def pending_amount(self):

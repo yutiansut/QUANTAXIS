@@ -147,13 +147,14 @@ class QA_Account(QA_Worker):
 
         frozen{
                 RB1901: {
-                        towards 2: {avg_money : xxx, amount: xxx}, 
-                        towards -2: {avg_money, amount}
+                        towards 2: {avg_money : xxx, amount: xxx, queue: collection.deque()}, 
+                        towards -2: {avg_money, amount, queue: collection.deque()}
                         },
                 IF1901: {
-                        towards 2: {avg_money, amount},
-                        towards -2: {avg_money, amount}
+                        towards 2: {avg_money, amount,queue: collection.deque()},
+                        towards -2: {avg_money, amount,queue: collection.deque()}
                 }
+            }
         }
 
         hold: {
@@ -520,6 +521,14 @@ class QA_Account(QA_Worker):
     def receive_simpledeal(self, code, trade_price, trade_amount, trade_towards, trade_time, message=None):
         """快速撮合成交接口
 
+
+        此接口是一个直接可以成交的接口, 所以务必确保给出的信息是可以成交的
+
+        此接口涉及的是
+        1. 股票/期货的成交
+        2. 历史记录的增加
+        3. 现金/持仓/冻结资金的处理
+
         Arguments:
             code {[type]} -- [description]
             trade_price {[type]} -- [description]
@@ -720,7 +729,7 @@ class QA_Account(QA_Worker):
 
         # return self.message
 
-    def send_order(self, code=None, amount=None, time=None, towards=None, price=None, money=None, order_model=None, amount_model=None):
+    def send_order(self, code=None, amount=None, time=None, towards=None, price=None, money=None, order_model=None, amount_model=None, *args, **kwargs):
         """
         ATTENTION CHANGELOG 1.0.28
         修改了Account的send_order方法, 区分按数量下单和按金额下单两种方式
@@ -863,7 +872,7 @@ class QA_Account(QA_Worker):
                               account_cookie=self.account_cookie, code=code, market_type=self.market_type,
                               date=date, datetime=time, sending_time=time, callback=self.receive_deal,
                               amount=amount, price=price, order_model=order_model, towards=towards, money=money,
-                              amount_model=amount_model, commission_coeff=self.commission_coeff, tax_coeff=self.tax_coeff)  # init
+                              amount_model=amount_model, commission_coeff=self.commission_coeff, tax_coeff=self.tax_coeff,*args, **kwargs)  # init
             # 历史委托order状态存储， 保存到 QA_Order 对象中的队列中
             self.datetime = time
             self.orders.insert_order(_order)
