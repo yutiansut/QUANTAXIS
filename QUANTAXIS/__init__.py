@@ -67,6 +67,7 @@ from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day, QA_fetch_get_trade_date, 
                                QA_fetch_get_hkstock_list, QA_fetch_get_hkstock_day, QA_fetch_get_hkstock_min,
                                QA_fetch_get_usstock_list, QA_fetch_get_usstock_day, QA_fetch_get_usstock_min,
                                QA_fetch_get_option_list, QA_fetch_get_option_day, QA_fetch_get_option_min,
+                               QA_fetch_get_globalindex_day, QA_fetch_get_globalindex_min, QA_fetch_get_globalindex_list,
                                QA_fetch_get_macroindex_list, QA_fetch_get_macroindex_day, QA_fetch_get_macroindex_min,
                                QA_fetch_get_exchangerate_list, QA_fetch_get_exchangerate_day, QA_fetch_get_exchangerate_min,
                                QA_fetch_get_globalfuture_list, QA_fetch_get_globalfuture_day, QA_fetch_get_globalfuture_min)
