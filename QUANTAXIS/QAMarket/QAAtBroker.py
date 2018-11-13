@@ -46,3 +46,20 @@ from QUANTAXIS.QAUtil.QADate import QA_util_date_int2str
 from QUANTAXIS.QAUtil.QASetting import setting_path
 
 CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
+
+
+class QA_ATBroker(QA_Broker):
+    def __init__(self):
+        pass
+
+    def get_market(self, order):
+        pass
+
+    def query_orders(self, account_cookie, order_id):
+        raise NotImplementedError
+
+    def query_deal(self, account_cookie, order_id):
+        raise NotImplementedError
+
+    def query_positions(self, account_cookie):
+        raise NotImplementedError
