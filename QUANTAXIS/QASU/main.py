@@ -28,6 +28,8 @@ from QUANTAXIS.QASU import save_tdx_file as tdx_file
 from QUANTAXIS.QASU import save_tushare as sts
 from QUANTAXIS.QASU import save_financialfiles
 from QUANTAXIS.QAUtil import DATABASE
+from QUANTAXIS.QASU import crawl_jrj_financial_reportdate as save_financial_calendar
+from QUANTAXIS.QASU import crawl_jrj_stock_divyield as save_stock_divyield
 
 
 def QA_SU_save_stock_info(engine, client=DATABASE):
@@ -73,6 +75,61 @@ def QA_SU_save_stock_list(engine, client=DATABASE):
     engine.QA_SU_save_stock_list(client=client)
 
 
+def QA_SU_save_index_list(engine, client=DATABASE):
+    """save index_list
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_index_list(client=client)
+
+
+def QA_SU_save_future_list(engine, client=DATABASE):
+    """save future_list
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_future_list(client=client)
+
+def QA_SU_save_future_day(engine, client=DATABASE):
+    """save future_day
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_future_day(client=client)
+
+
+def QA_SU_save_future_min(engine, client=DATABASE):
+    """save future_min
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_future_min(client=client)
+
+
+
 def QA_SU_save_stock_day(engine, client=DATABASE):
     """save stock_day
 
@@ -87,15 +144,57 @@ def QA_SU_save_stock_day(engine, client=DATABASE):
     engine.QA_SU_save_stock_day(client=client)
 
 
-def QA_SU_save_option_day(engine,client=DATABASE):
+def QA_SU_save_option_contract_list(engine, client=DATABASE):
+    '''
+    
+    :param engine: 
+    :param client: 
+    :return: 
+    '''
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_option_contract_list(client=client)
+
+
+def QA_SU_save_option_day(engine, client=DATABASE):
     '''
 
     :param engine:
     :param client:
     :return:
     '''
-    engine = select_save_engine(engine);
+    engine = select_save_engine(engine)
     engine.QA_SU_save_option_day(client=client)
+
+
+
+def QA_SU_save_option_min(engine, client=DATABASE):
+    '''
+
+    :param engine:
+    :param client:
+    :return:
+    '''
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_option_min(client=client)
+
+
+def QA_SU_save_option_commodity_min(engine, client=DATABASE):
+    '''
+    :param engine:
+    :param client:
+    :return:
+    '''
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_option_commodity_min(client=client)
+
+def QA_SU_save_option_commodity_day(engine, client=DATABASE):
+    '''
+    :param engine:
+    :param client:
+    :return:
+    '''
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_option_commodity_day(client=client)
 
 
 def QA_SU_save_stock_min(engine, client=DATABASE):
@@ -207,7 +306,7 @@ def select_save_engine(engine):
     elif engine in ['tdx']:
         return stdx
     else:
-        print('💢 Error QASU.main.py call select_save_engine with parameter %s is None of  thshare, ts, Thshare, or tdx', engine)
+        print('QA Error QASU.main.py call select_save_engine with parameter %s is None of  thshare, ts, Thshare, or tdx', engine)
 
 
 def QA_SU_save_stock_min_5(file_dir, client=DATABASE):
@@ -259,3 +358,15 @@ def QA_SU_crawl_eastmoney(action="zjlx", stockCode=None):
 
 def QA_SU_save_financialfiles():
     return save_financialfiles.QA_SU_save_financial_files()
+
+def QA_SU_save_report_calendar_day():
+    return save_financial_calendar.QA_SU_save_report_calendar_day()
+
+def QA_SU_save_report_calendar_his():
+    return save_financial_calendar.QA_SU_save_report_calendar_his()
+
+def QA_SU_save_stock_divyield_day():
+    return save_stock_divyield.QA_SU_save_stock_divyield_day()
+
+def QA_SU_save_stock_divyield_his():
+    return save_stock_divyield.QA_SU_save_stock_divyield_his()

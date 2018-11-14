@@ -28,7 +28,7 @@ import requests
 import pandas as pd
 from pytdx.reader.history_financial_reader import HistoryFinancialReader
 from pytdx.crawler.history_financial_crawler import HistoryFinancialCrawler
-
+from QUANTAXIS.QAUtil.QAFile import QA_util_file_md5
 from QUANTAXIS.QASetting.QALocalize import qa_path, download_path
 """
 参见PYTDX 1.65
@@ -79,8 +79,12 @@ def get_filename():
     """
     get_filename
     """
-    return [l[0] for l in [line.strip().split(",") for line in requests.get(FINANCIAL_URL).text.strip().split('\n')]]
+    return [(l[0],l[1]) for l in [line.strip().split(",") for line in requests.get(FINANCIAL_URL).text.strip().split('\n')]]
 
+
+
+def get_md5():
+    return [l[1] for l in [line.strip().split(",") for line in requests.get(FINANCIAL_URL).text.strip().split('\n')]]
 
 def download_financialzip():
     """
@@ -88,10 +92,12 @@ def download_financialzip():
     """
     result = get_filename()
     res = []
-    for item in result:
-        if item in os.listdir(download_path):
+    for item, md5 in result:
+        if item in os.listdir(download_path) and md5==QA_util_file_md5('{}{}{}'.format(download_path,os.sep,item)):
+            
             print('FILE {} is already in {}'.format(item, download_path))
         else:
+            print('CURRENTLY GET/UPDATE {}'.format(item[0:12]))
             r = requests.get('http://down.tdx.com.cn:8001/fin/{}'.format(item))
 
             file = '{}{}{}'.format(download_path, os.sep, item)

@@ -29,34 +29,6 @@ import time
 
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 
-#🛠todo 时间函数 建议使用这些
-#  字符串 和 datetime date time 类型之间的转换
-#  QA_util__str_to_dateime
-#
-#  QA_util__datetime_to_str19
-#  QA_util__datetime_to_str10
-
-#  QA_util__str10_to_datetime
-#  QA_util__str19_to_datetime
-
-#  QA_util__int10_to_datetime
-#  QA_util__int19_to_datetime
-
-#  QA_util__date_to_str10
-#  QA_util__date_to_str19
-
-#  QA_util__time_to_str10
-#  QA_util__time_to_str19
-
-#  QA_util__str10_to_date
-#  QA_util__str10_to_time
-
-#  QA_util__str19_to_time
-#  QA_util__str19_to_date
-
-# 或者有更好的方案
-
-
 
 def QA_util_time_now():
     """
@@ -73,14 +45,15 @@ def QA_util_date_today():
     """
     return datetime.date.today()
 
+
 def QA_util_today_str():
     """
     返回今天的日期字符串
     :return: 类型字符串 2011-11-11
     """
     dt = QA_util_date_today()
-    str = QA_util_datetime_to_strdate(dt)
-    return str
+    return QA_util_datetime_to_strdate(dt)
+
 
 def QA_util_date_str2int(date):
     """
@@ -89,11 +62,12 @@ def QA_util_date_str2int(date):
     :param date: str日期字符串
     :return: 类型int
     """
-    #return int(str(date)[0:4] + str(date)[5:7] + str(date)[8:10])
-    if isinstance(date,str):
+    # return int(str(date)[0:4] + str(date)[5:7] + str(date)[8:10])
+    if isinstance(date, str):
         return int(str().join(date.split('-')))
-    elif isinstance(date,int):
+    elif isinstance(date, int):
         return date
+
 
 def QA_util_date_int2str(int_date):
     """
@@ -101,10 +75,11 @@ def QA_util_date_int2str(int_date):
     :param date: int 8位整数
     :return: 类型str
     """
-    if isinstance(int_date,int):
-        return str(str(int_date)[0:4] + '-' + str(int_date)[4:6] + '-' + str(int_date)[6:8])
-    elif isinstance(int_date,str):
-        return int_date
+    date = str(int_date)
+    if len(date) == 8:
+        return str(date[0:4] + '-' + date[4:6] + '-' + date[6:8])
+    elif len(date) == 10:
+        return date
 
 
 def QA_util_to_datetime(time):
@@ -127,9 +102,8 @@ def QA_util_datetime_to_strdate(dt):
     :param dt:  pythone datetime.datetime
     :return:  1999-02-01 string type
     """
-    strdate = "%04d-%02d-%02d"%(dt.year, dt.month, dt.day)
+    strdate = "%04d-%02d-%02d" % (dt.year, dt.month, dt.day)
     return strdate
-
 
 
 def QA_util_datetime_to_strdatetime(dt):
@@ -137,8 +111,10 @@ def QA_util_datetime_to_strdatetime(dt):
     :param dt:  pythone datetime.datetime
     :return:  1999-02-01 09:30:91 string type
     """
-    strdatetime = "%04d-%02d-%02d %02d:%02d:%02d"%(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)
+    strdatetime = "%04d-%02d-%02d %02d:%02d:%02d" % (
+        dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)
     return strdatetime
+
 
 def QA_util_date_stamp(date):
     """
@@ -168,7 +144,6 @@ def QA_util_time_stamp(time_):
         return time.mktime(time.strptime(timestr, '%Y-%m-%d %H:%M:%S'))
 
 
-
 def QA_util_pands_timestamp_to_date(pandsTimestamp):
     """
     转换 pandas 的时间戳 到 datetime.date类型
@@ -176,6 +151,7 @@ def QA_util_pands_timestamp_to_date(pandsTimestamp):
     :return: datetime.datetime类型
     """
     return pandsTimestamp.to_pydatetime().date()
+
 
 def QA_util_pands_timestamp_to_datetime(pandsTimestamp):
     """
@@ -198,7 +174,8 @@ def QA_util_stamp2datetime(timestamp):
     try:
         return datetime.datetime.fromtimestamp(timestamp)
     except Exception as e:
-        return datetime.datetime.fromtimestamp(timestamp / 1000) # it won't work ??
+        # it won't work ??
+        return datetime.datetime.fromtimestamp(timestamp / 1000)
     #
 
 
@@ -209,6 +186,7 @@ def QA_util_ms_stamp(ms):
     :return: 返回ms
     """
     return ms
+
 
 def QA_util_date_valid(date):
     """
@@ -421,6 +399,36 @@ def QA_util_calc_time(func, *args, **kwargs):
     func(*args, **kwargs)
     print(datetime.datetime.now() - _time)
     # return datetime.datetime.now() - _time
+
+
+month_data = ['1996-03-31', '1996-06-30', '1996-09-30', '1996-12-31',
+              '1997-03-31', '1997-06-30', '1997-09-30', '1997-12-31',
+              '1998-03-31', '1998-06-30', '1998-09-30', '1998-12-31',
+              '1999-03-31', '1999-06-30', '1999-09-30', '1999-12-31',
+              '2000-03-31', '2000-06-30', '2000-09-30', '2000-12-31',
+              '2001-03-31', '2001-06-30', '2001-09-30', '2001-12-31',
+              '2002-03-31', '2002-06-30', '2002-09-30', '2002-12-31',
+              '2003-03-31', '2003-06-30', '2003-09-30', '2003-12-31',
+              '2004-03-31', '2004-06-30', '2004-09-30', '2004-12-31',
+              '2005-03-31', '2005-06-30', '2005-09-30', '2005-12-31',
+              '2006-03-31', '2006-06-30', '2006-09-30', '2006-12-31',
+              '2007-03-31', '2007-06-30', '2007-09-30', '2007-12-31',
+              '2008-03-31', '2008-06-30', '2008-09-30', '2008-12-31',
+              '2009-03-31', '2009-06-30', '2009-09-30', '2009-12-31',
+              '2010-03-31', '2010-06-30', '2010-09-30', '2010-12-31',
+              '2011-03-31', '2011-06-30', '2011-09-30', '2011-12-31',
+              '2012-03-31', '2012-06-30', '2012-09-30', '2012-12-31',
+              '2013-03-31', '2013-06-30', '2013-09-30', '2013-12-31',
+              '2014-03-31', '2014-06-30', '2014-09-30', '2014-12-31',
+              '2015-03-31', '2015-06-30', '2015-09-30', '2015-12-31',
+              '2016-03-31', '2016-06-30', '2016-09-30', '2016-12-31',
+              '2017-03-31', '2017-06-30', '2017-09-30', '2017-12-31',
+              '2018-03-31', '2018-06-30', '2018-09-30', '2018-12-31',
+              '2019-03-31', '2019-06-30', '2019-09-30', '2019-12-31',
+              '2020-03-31', '2020-06-30', '2020-09-30', '2020-12-31',
+              '2021-03-31', '2021-06-30', '2021-09-30', '2021-12-31',
+              '2022-03-31', '2022-06-30', '2022-09-30', '2022-12-31',
+              '2023-03-31', '2023-06-30', '2023-09-30', '2023-12-31']
 
 
 if __name__ == '__main__':

@@ -117,3 +117,4 @@ if __name__ == '__main__':
     # print(get_k_data_year('000001','2016','01'))
     # print(get_k_data_year(600010,2016,'01'))
     print(QA_fetch_get_stock_day('000001', '2016-05-01', '2017-07-01', '01'))
+    

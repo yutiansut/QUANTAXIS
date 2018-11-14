@@ -24,7 +24,7 @@
 
 from QUANTAXIS.QAData.QASeriesStruct import QA_DataStruct_Series
 from QUANTAXIS.QAData.data_fq import QA_data_stock_to_fq, QA_data_make_qfq, QA_data_make_hfq
-
+from QUANTAXIS.QAData.data_marketvalue import QA_data_calc_marketvalue, QA_data_marketvalue
 from QUANTAXIS.QAData.data_resample import QA_data_tick_resample, QA_data_min_resample, QA_data_day_resample
 from QUANTAXIS.QAData.QADataStruct import (QA_DataStruct_Index_day,
                                            QA_DataStruct_Index_min,
@@ -35,5 +35,7 @@ from QUANTAXIS.QAData.QADataStruct import (QA_DataStruct_Index_day,
                                            QA_DataStruct_Stock_realtime,
                                            QA_DataStruct_Stock_transaction)
 from QUANTAXIS.QAData.QABlockStruct import QA_DataStruct_Stock_block
+
+from QUANTAXIS.QAData.QAFinancialStruct import QA_DataStruct_Financial
 from QUANTAXIS.QAData.QAIndicatorStruct import QA_DataStruct_Indicators
 from QUANTAXIS.QAData.dsmethods import QDS_StockDayWarpper, QDS_StockMinWarpper, QDS_IndexDayWarpper, QDS_IndexMinWarpper, from_tushare, concat

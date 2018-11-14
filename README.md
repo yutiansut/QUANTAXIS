@@ -18,6 +18,7 @@ Quantitative Financial FrameWork
 
 [点击右上角Star和Watch来跟踪项目进展! 点击Fork来创建属于你的QUANTAXIS!]
 
+
 ![main_1](http://pic.yutiansut.com/Main_1.gif)
 ![logo](http://pic.yutiansut.com/QUANTAXIS-small.png)
 ![presentbyyutiansut](http://pic.yutiansut.com/yutiansut-logo.png)
@@ -49,6 +50,8 @@ Quantitative Financial FrameWork
 > 许多问题 可以在 [GITHUB ISSUE](https://github.com/QUANTAXIS/QUANTAXIS/issues)中找到, 你可以提出新的issue
 
 QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化分析解决方案. 我们通过高度解耦的模块化以及标准化协议,可以快速的实现面向场景的定制化解决方案.QUANTAXIS是一个渐进式的开放式框架,你可以根据自己的需要,引入自己的数据,分析方案,可视化过程等,也可以通过RESTful接口,快速实现多人局域网/广域网内的协作.
+
+![qa2018](http://pic.yutiansut.com/qa2018.png)
 
 <!-- TOC -->
 
@@ -84,7 +87,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
     - [8. 开发计划](#8-开发计划)
     - [9. 常见问题FAQ](#9-常见问题faq)
     - [10. 项目捐赠](#10-项目捐赠)
-    - [11. 回测Webkit插件概览](#11-回测webkit插件概览)
+    - [11. QUANTAXIS 桌面级产品(全平台 WIN/MAC/LINUX)](#11-quantaxis-桌面级产品全平台-winmaclinux)
     - [12. QUANTAXIS 标准化协议和未来协议](#12-quantaxis-标准化协议和未来协议)
     - [13. 电脑配置推荐](#13-电脑配置推荐)
     - [License](#license)
@@ -95,6 +98,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 ##  1. 功能
 ======
 
+![](http://pic.yutiansut.com/QUANTAXIS.png)
 
 已经实现：
 
@@ -261,17 +265,18 @@ git clone https://github.com/你的账户名/quantaxis
 
 
 
-##  11. 回测Webkit插件概览
+##  11. QUANTAXIS 桌面级产品(全平台 WIN/MAC/LINUX)
 
-![](http://pic.yutiansut.com/homepage.png)
-![](http://pic.yutiansut.com/loginpage.png)
-![](http://pic.yutiansut.com/adminpage.png)
-![](http://pic.yutiansut.com/backtestpage.png)
-![](http://pic.yutiansut.com/rebacktest.png)
-![](http://pic.yutiansut.com/backtestpic.png)
-![](http://pic.yutiansut.com/strategy.png)
-![](http://pic.yutiansut.com/kline.png)
-![](http://pic.yutiansut.com/settings.png)
+
+参见 [QUANTAXIS/QADESKTOP](https://github.com/quantaxis/qadesktop)
+
+![](http://pic.yutiansut.com/qad1.png)
+![](http://pic.yutiansut.com/qad2.png)
+![](http://pic.yutiansut.com/qad3.png)
+![](http://pic.yutiansut.com/qad4.png)
+![](http://pic.yutiansut.com/qad5.png)
+![](http://pic.yutiansut.com/qad6.png)
+![](http://pic.yutiansut.com/qad8.png)
 
 
 ##  12. QUANTAXIS 标准化协议和未来协议
@@ -297,4 +302,4 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.8
 如果是阿里云/腾讯云的服务器,请在最初的时候 选择64位的操作系统
 
 ## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS?ref=badge_large)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS?ref=badge_large) [![Join the chat at https://gitter.im/QUANTAXIS_tauruswang/Lobby](https://badges.gitter.im/QUANTAXIS_tauruswang/Lobby.svg)](https://gitter.im/QUANTAXIS_tauruswang/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)

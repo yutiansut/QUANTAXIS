@@ -3,6 +3,7 @@
 <!-- TOC -->
 
 - [QUANTAXIS财务指标中英文对照表](#quantaxis财务指标中英文对照表)
+    - [0.注意](#0注意)
     - [1.每股指标](#1每股指标)
     - [2. 资产负债表 BALANCE SHEET](#2-资产负债表-balance-sheet)
         - [2.1 资产](#21-资产)
@@ -37,6 +38,10 @@
     - [14.新增指标](#14新增指标)
 
 <!-- /TOC -->
+
+## 0.注意
+
+该部分需要配合 QUANTAXIS CLI的 save financialfiles 使用
 
 ## 1.每股指标
 
@@ -393,7 +398,7 @@
 
 ## 5. 偿债能力分析
 
-'159流动比率': 'liquidityRatio',  # 流动资产/流动负债
+'159流动比率': 'currentRatio',  # 流动资产/流动负债
 
 '160速动比率': 'acidTestRatio',  # (流动资产-存货）/流动负债
 
@@ -509,7 +514,7 @@
 
 '210资产负债率(%)': 'assetsLiabilitiesRatio',
 
-'211流动资产比率': 'liquidityRatio',
+'211流动资产比率': 'currentAssetsRatio',
 
 '212货币资金比率': 'monetaryFundRatio',
 
@@ -655,3 +660,15 @@
 '275一般法人持股量(股)(机构持股)': 'corporationShareholding',
 
 '276近一年净利润(元)': 'netProfitLastYear'
+
+'277信托机构数(家)(机构持股)': 'trustInstitutionNumber',
+
+'278信托持股量(股)(机构持股)': 'trustInstitutionShareholding',
+
+'279特殊法人机构数(家)(机构持股)': 'specialCorporationNumber',
+
+'280特殊法人持股量(股)(机构持股)': 'specialCorporationShareholding',
+
+'281加权净资产收益率(每股指标)': 'weightedROE',
+
+'282扣非每股收益(单季度财务指标)': 'nonEPSSingle',
