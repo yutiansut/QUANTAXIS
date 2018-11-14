@@ -1682,7 +1682,7 @@ def QA_SU_save_future_day(client=DATABASE, ui_log=None, ui_progress=None):
     :param ui_progress_int_value: 给GUI qt 界面使用
     :return:
     '''
-    future_list = [item for item in QA_fetch_get_future_list().code.unique().tolist()  if str(item)[-2:]  in ['L8','L9']]
+    future_list = [item for item in QA_fetch_get_future_list().code.unique().tolist()]
     coll_future_day = client.future_day
     coll_future_day.create_index(
         [("code", pymongo.ASCENDING), ("date_stamp", pymongo.ASCENDING)])
@@ -1750,7 +1750,7 @@ def QA_SU_save_future_min(client=DATABASE, ui_log=None, ui_progress=None):
         client {[type]} -- [description] (default: {DATABASE})
     """
 
-    future_list = [item for item in QA_fetch_get_future_list().code.unique().tolist()  if str(item)[-2:]  in ['L8','L9']]
+    future_list = [item for item in QA_fetch_get_future_list().code.unique().tolist()]
     coll = client.future_min
     coll.create_index([('code', pymongo.ASCENDING), ('time_stamp',
                                                      pymongo.ASCENDING), ('date_stamp', pymongo.ASCENDING)])
