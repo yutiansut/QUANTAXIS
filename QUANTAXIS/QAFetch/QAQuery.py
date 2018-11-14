@@ -715,6 +715,12 @@ def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
                 cndict = dict(zip(num_columns, CH_columns))
 
                 cndict['283'] = '283'
+                try:
+                    cndict['284'] = '284'
+                    cndict['285'] = '285'
+                    cndict['286'] = '286'
+                except:
+                    pass
                 cndict['_id'] = '_id'
                 cndict['code'] = 'code'
                 cndict['report_date'] = 'report_date'
@@ -722,6 +728,12 @@ def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
             elif ltype is 'EN':
                 endict = dict(zip(num_columns, EN_columns))
                 endict['283'] = '283'
+                try:
+                    endict['284'] = '284'
+                    endict['285'] = '285'
+                    endict['286'] = '286'
+                except:
+                    pass
                 endict['_id'] = '_id'
                 endict['code'] = 'code'
                 endict['report_date'] = 'report_date'
