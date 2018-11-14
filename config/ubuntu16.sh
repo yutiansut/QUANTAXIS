@@ -22,7 +22,7 @@ deb http://mirrors.aliyun.com/ubuntu/ xenial-security multiverse " | tee /etc/ap
 
 apt-get update
 
-apt install software-properties-common
+apt install -y software-properties-common
 
 # add-apt-repository ppa:jonathonf/python-3.6
 # apt-get update
@@ -39,8 +39,8 @@ wget https://bootstrap.pypa.io/get-pip.py
 python get-pip.py
 
 
-apt-get install libxml2-dev libxslt-dev
-apt-get install git
+apt-get install  -y libxml2-dev libxslt-dev
+apt-get install -y  git
 cd ~
 git clone https://github.com/yutiansut/quantaxis --
 # add some permission for quantaxis
@@ -76,7 +76,7 @@ mkdir log
 # 开启MongoDB服务
 service mongod start
 
-# apt-get install curl
+apt-get install -y curl
 # curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 # apt-get install -y nodejs
 # apt-get install npm
