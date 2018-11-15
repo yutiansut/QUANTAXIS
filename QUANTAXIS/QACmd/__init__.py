@@ -42,7 +42,7 @@ from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_min, QA
                                  QA_SU_save_etf_day, QA_SU_save_etf_min, QA_SU_save_financialfiles,
                                  QA_SU_save_option_day, QA_SU_save_option_min, QA_SU_save_option_commodity_day, QA_SU_save_option_commodity_min,
                                  QA_SU_save_option_contract_list,
-                                 QA_SU_save_future_day, QA_SU_save_future_min, QA_SU_save_report_calendar_day,
+                                 QA_SU_save_future_day, QA_SU_save_future_min, QA_SU_save_future_min_all, QA_SU_save_report_calendar_day,
                                  QA_SU_save_report_calendar_his, QA_SU_save_stock_divyield_day,
                                  QA_SU_save_stock_divyield_his)
 from QUANTAXIS.QASU.save_binance import QA_SU_save_binance_symbol, QA_SU_save_binance_1hour, \
@@ -337,6 +337,9 @@ class CLI(cmd.Cmd):
                         save stock_info :对应输入命令 save stock_info
                         save index_list :对应输入命令 save index_list
                         save future_list :对应输入命令 save future_list
+                        save future_day  : 对应输入命令  save future_day
+                        save future_min  : 对应输入命令  save future_min
+                        save future_min_all : 对应输入命令 save future_min_all
                         save option_day :对应输入命令 save option day
                         save option_min :对应输入命令 save option_min
                         save option_commodity_day :对应输入命令 save commodity_option_day
