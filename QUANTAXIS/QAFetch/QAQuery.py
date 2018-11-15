@@ -304,10 +304,10 @@ def QA_fetch_index_min(
     for item in cursor:
 
         __data.append([str(item['code']), float(item['open']), float(item['high']), float(
-            item['low']), float(item['close']), int(item['up_count']), int(item['down_count']), float(item['vol']), float(item['amount']), item['datetime'], item['time_stamp'], item['date']])
+            item['low']), float(item['close']), int(item['up_count']), int(item['down_count']), float(item['vol']), float(item['amount']), item['datetime'], item['time_stamp'], item['date'],item['type']])
 
     __data = DataFrame(__data, columns=[
-        'code', 'open', 'high', 'low', 'close', 'up_count', 'down_count', 'volume', 'amount', 'datetime', 'time_stamp', 'date'])
+        'code', 'open', 'high', 'low', 'close', 'up_count', 'down_count', 'volume', 'amount', 'datetime', 'time_stamp', 'date','type'])
 
     __data['datetime'] = pd.to_datetime(__data['datetime'])
     __data = __data.set_index('datetime', drop=False)
@@ -386,10 +386,10 @@ def QA_fetch_future_min(
 
         __data.append([str(item['code']), float(item['open']), float(item['high']), float(
             item['low']), float(item['close']), float(item['position']), float(item['price']), float(item['trade']),
-            item['datetime'], item['tradetime'], item['time_stamp'], item['date']])
+            item['datetime'], item['tradetime'], item['time_stamp'], item['date'], item['type']])
 
     __data = DataFrame(__data, columns=[
-        'code', 'open', 'high', 'low', 'close',  'position', 'price', 'trade', 'datetime','tradetime', 'time_stamp', 'date'])
+        'code', 'open', 'high', 'low', 'close',  'position', 'price', 'trade', 'datetime','tradetime', 'time_stamp', 'date', 'type'])
 
     __data['datetime'] = pd.to_datetime(__data['datetime'])
     __data = __data.set_index('datetime', drop=False)
