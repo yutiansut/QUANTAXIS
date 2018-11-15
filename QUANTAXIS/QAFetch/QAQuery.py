@@ -142,19 +142,19 @@ def QA_fetch_trade_date():
 
 def QA_fetch_stock_list(collections=DATABASE.stock_list):
     '获取股票列表'
-    return [item for item in collections.find()]
+    
+    return pd.DataFrame([item for item in collections.find()]).drop('_id', axis=1, inplace=False).set_index('code', drop=False)
 
 
 def QA_fetch_index_list(collections=DATABASE.index_list):
     '获取指数列表'
-    return [item for item in collections.find()]
+    return pd.DataFrame([item for item in collections.find()]).drop('_id', axis=1, inplace=False).set_index('code', drop=False)
 
 
 def QA_fetch_stock_terminated(collections=DATABASE.stock_terminated):
     '获取股票基本信息 , 已经退市的股票列表'
-    items = [item for item in collections.find()]
     # 🛠todo  转变成 dataframe 类型数据
-    return items
+    return pd.DataFrame([item for item in collections.find()]).drop('_id', axis=1, inplace=False).set_index('code', drop=False)
 
 
 def QA_fetch_stock_basic_info_tushare(collections=DATABASE.stock_info_tushare):
@@ -403,7 +403,7 @@ def QA_fetch_future_min(
 
 def QA_fetch_future_list(collections=DATABASE.future_list):
     '获取期货列表'
-    return [item for item in collections.find()]
+    return pd.DataFrame([item for item in collections.find()]).drop('_id', axis=1, inplace=False).set_index('code', drop=False)
 
 
 def QA_fetch_future_tick():
