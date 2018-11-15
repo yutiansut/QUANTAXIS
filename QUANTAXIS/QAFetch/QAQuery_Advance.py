@@ -325,7 +325,7 @@ def QA_fetch_stock_list_adv(collections=DATABASE.stock_list):
     if len(stock_list_items) == 0:
         print("QA Error QA_fetch_stock_list_adv call item for item in collections.find() return 0 item, maybe the DATABASE.stock_list is empty!")
         return None
-    return pd.DataFrame(stock_list_items).drop('_id', axis=1, inplace=False).set_index('code', drop=False)
+    return stock_list_items
 
 
 def QA_fetch_index_list_adv(collections=DATABASE.index_list):
@@ -338,8 +338,7 @@ def QA_fetch_index_list_adv(collections=DATABASE.index_list):
     if len(index_list_items) == 0:
         print("QA Error QA_fetch_index_list_adv call item for item in collections.find() return 0 item, maybe the DATABASE.index_list is empty!")
         return None
-    return pd.DataFrame(index_list_items).drop('_id', axis=1, inplace=False).set_index('code', drop=False)
-
+    return index_list_items
 
 def QA_fetch_future_day_adv(
         code,
@@ -440,7 +439,7 @@ def QA_fetch_future_list_adv(collections=DATABASE.future_list):
     if len(future_list_items) == 0:
         print("QA Error QA_fetch_future_list_adv call item for item in collections.find() return 0 item, maybe the DATABASE.future_list is empty!")
         return None
-    return pd.DataFrame(future_list_items).drop('_id', axis=1, inplace=False).set_index('code', drop=False)
+    return future_list_items
 
 
 def QA_fetch_stock_block_adv(code=None, blockname=None, collections=DATABASE.stock_block):
