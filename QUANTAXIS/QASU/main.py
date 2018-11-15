@@ -128,6 +128,9 @@ def QA_SU_save_future_min(engine, client=DATABASE):
     engine = select_save_engine(engine)
     engine.QA_SU_save_future_min(client=client)
 
+def QA_SU_save_future_min_all(engine, client=DATABASE):
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_future_min_all(client=client)
 
 
 def QA_SU_save_stock_day(engine, client=DATABASE):
