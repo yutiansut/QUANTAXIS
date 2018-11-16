@@ -701,13 +701,46 @@ class QA_Account(QA_Worker):
             # TODO: 目前还不支持期货的锁仓
             if self.allow_sellopen:
                 if trade_towards in [ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN]:
-                    # 开仓单占用现金
+                    # 开仓单占用现金 计算avg
+                    # 初始化
+                    if code in self.frozen.keys():
+                        if trade_towards in self.frozen[code].keys():
+                            pass
+                        else:
+                            self.frozen[code][trade_towards] = {'money': 0, 'amount': 0}
+                    else:
+                        self.frozen[code] = {
+                            ORDER_DIRECTION.BUY_OPEN: {
+                                'money': 0, 'amount': 0},
+                            ORDER_DIRECTION.SELL_OPEN: {
+                                'money': 0, 'amount': 0}
+                        }
+
+                    self.frozen[code][trade_towards]['money'] = (
+                        (self.frozen[code][trade_towards]['money']*self.frozen[code][trade_towards]['amount'])+abs(trade_money))/(self.frozen[code][trade_towards]['amount']+trade_amount)
+                    self.frozen[code][trade_towards]['amount'] += trade_amount
+
                     self.cash.append(self.cash[-1]-abs(trade_money))
-                    self.cash_available = self.cash[-1]
                 elif trade_towards in [ORDER_DIRECTION.BUY_CLOSE, ORDER_DIRECTION.SELL_CLOSE]:
                     # 平仓单释放现金
-                    self.cash.append(self.cash[-1]+abs(trade_money))
-                    self.cash_available = self.cash[-1]
+                    # if trade_towards == ORDER_DIRECTION.BUY_CLOSE:
+                        # 卖空开仓 平仓买入
+                        # self.cash
+                    if trade_towards == ORDER_DIRECTION.BUY_CLOSE:# 买入平仓  之前是空开
+                        # self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['money'] -= trade_money
+                        self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['amount'] -= trade_amount
+                        self.cash.append(
+                            self.cash[-1]-trade_money+self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['money']*trade_amount*2)
+                        if self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['amount'] == 0:
+                            self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['money'] = 0
+
+                    elif trade_towards == ORDER_DIRECTION.SELL_CLOSE:# 卖出平仓  之前是多开
+                        # self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['money'] -= trade_money
+                        self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['amount'] -= trade_amount
+                        self.cash.append(
+                            self.cash[-1]-trade_money)
+                        if self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['amount'] == 0:
+                            self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['money'] = 0
             else:
                 self.cash.append(self.cash[-1]-trade_money)
                 self.cash_available = self.cash[-1]
