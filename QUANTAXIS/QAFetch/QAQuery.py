@@ -142,19 +142,19 @@ def QA_fetch_trade_date():
 
 def QA_fetch_stock_list(collections=DATABASE.stock_list):
     '获取股票列表'
-    return [item for item in collections.find()]
+    
+    return pd.DataFrame([item for item in collections.find()]).drop('_id', axis=1, inplace=False).set_index('code', drop=False)
 
 
 def QA_fetch_index_list(collections=DATABASE.index_list):
     '获取指数列表'
-    return [item for item in collections.find()]
+    return pd.DataFrame([item for item in collections.find()]).drop('_id', axis=1, inplace=False).set_index('code', drop=False)
 
 
 def QA_fetch_stock_terminated(collections=DATABASE.stock_terminated):
     '获取股票基本信息 , 已经退市的股票列表'
-    items = [item for item in collections.find()]
     # 🛠todo  转变成 dataframe 类型数据
-    return items
+    return pd.DataFrame([item for item in collections.find()]).drop('_id', axis=1, inplace=False).set_index('code', drop=False)
 
 
 def QA_fetch_stock_basic_info_tushare(collections=DATABASE.stock_info_tushare):
@@ -304,10 +304,10 @@ def QA_fetch_index_min(
     for item in cursor:
 
         __data.append([str(item['code']), float(item['open']), float(item['high']), float(
-            item['low']), float(item['close']), int(item['up_count']), int(item['down_count']), float(item['vol']), float(item['amount']), item['datetime'], item['time_stamp'], item['date']])
+            item['low']), float(item['close']), int(item['up_count']), int(item['down_count']), float(item['vol']), float(item['amount']), item['datetime'], item['time_stamp'], item['date'],item['type']])
 
     __data = DataFrame(__data, columns=[
-        'code', 'open', 'high', 'low', 'close', 'up_count', 'down_count', 'volume', 'amount', 'datetime', 'time_stamp', 'date'])
+        'code', 'open', 'high', 'low', 'close', 'up_count', 'down_count', 'volume', 'amount', 'datetime', 'time_stamp', 'date','type'])
 
     __data['datetime'] = pd.to_datetime(__data['datetime'])
     __data = __data.set_index('datetime', drop=False)
@@ -386,10 +386,10 @@ def QA_fetch_future_min(
 
         __data.append([str(item['code']), float(item['open']), float(item['high']), float(
             item['low']), float(item['close']), float(item['position']), float(item['price']), float(item['trade']),
-            item['datetime'], item['tradetime'], item['time_stamp'], item['date']])
+            item['datetime'], item['tradetime'], item['time_stamp'], item['date'], item['type']])
 
     __data = DataFrame(__data, columns=[
-        'code', 'open', 'high', 'low', 'close',  'position', 'price', 'trade', 'datetime','tradetime', 'time_stamp', 'date'])
+        'code', 'open', 'high', 'low', 'close',  'position', 'price', 'trade', 'datetime','tradetime', 'time_stamp', 'date', 'type'])
 
     __data['datetime'] = pd.to_datetime(__data['datetime'])
     __data = __data.set_index('datetime', drop=False)
@@ -403,7 +403,7 @@ def QA_fetch_future_min(
 
 def QA_fetch_future_list(collections=DATABASE.future_list):
     '获取期货列表'
-    return [item for item in collections.find()]
+    return pd.DataFrame([item for item in collections.find()]).drop('_id', axis=1, inplace=False).set_index('code', drop=False)
 
 
 def QA_fetch_future_tick():
@@ -715,6 +715,12 @@ def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
                 cndict = dict(zip(num_columns, CH_columns))
 
                 cndict['283'] = '283'
+                try:
+                    cndict['284'] = '284'
+                    cndict['285'] = '285'
+                    cndict['286'] = '286'
+                except:
+                    pass
                 cndict['_id'] = '_id'
                 cndict['code'] = 'code'
                 cndict['report_date'] = 'report_date'
@@ -722,6 +728,12 @@ def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
             elif ltype is 'EN':
                 endict = dict(zip(num_columns, EN_columns))
                 endict['283'] = '283'
+                try:
+                    endict['284'] = '284'
+                    endict['285'] = '285'
+                    endict['286'] = '286'
+                except:
+                    pass
                 endict['_id'] = '_id'
                 endict['code'] = 'code'
                 endict['report_date'] = 'report_date'

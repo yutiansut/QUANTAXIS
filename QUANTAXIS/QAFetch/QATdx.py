@@ -1032,6 +1032,23 @@ def QA_fetch_get_future_list(ip=None, port=None):
 
     return extension_market_list.query('market==42 or market==28 or market==29 or market==30 or market==47')
 
+def QA_fetch_get_globalindex_list(ip=None, port=None):
+    """全球指数列表
+
+    Keyword Arguments:
+        ip {[type]} -- [description] (default: {None})
+        port {[type]} -- [description] (default: {None})
+
+       37        11  全球指数(静态)         FW
+       12         5      国际指数         WI
+
+
+    """
+    global extension_market_list
+    extension_market_list = QA_fetch_get_extensionmarket_list(
+    ) if extension_market_list is None else extension_market_list
+
+    return extension_market_list.query('market==12 or market==37')
 
 def QA_fetch_get_goods_list(ip=None, port=None):
     """[summary]
@@ -1617,6 +1634,8 @@ QA_fetch_get_exchangerate_min = QA_fetch_get_future_min
 QA_fetch_get_macroindex_day = QA_fetch_get_future_day
 QA_fetch_get_macroindex_min = QA_fetch_get_future_min
 
+QA_fetch_get_globalindex_day = QA_fetch_get_future_day
+QA_fetch_get_globalindex_min = QA_fetch_get_future_min
 
 def QA_fetch_get_wholemarket_list():
     hq_codelist = QA_fetch_get_stock_list(
