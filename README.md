@@ -12,7 +12,7 @@ Quantitative Financial FrameWork
 [![Github workers](https://img.shields.io/github/watchers/quantaxis/quantaxis.svg?style=social&label=Watchers&)](https://github.com/quantaxis/quantaxis/watchers)
 [![GitHub stars](https://img.shields.io/github/stars/quantaxis/quantaxis.svg?style=social&label=Star&)](https://github.com/quantaxis/quantaxis/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/quantaxis/quantaxis.svg?style=social&label=Fork&)](https://github.com/quantaxis/quantaxis/fork)
-
+[![PYPI_DOWNLOADS](https://img.shields.io/pypi/dw/quantaxis.svg)](https://pypi.org/project/quantaxis)
 
 > ENGLISH DOCUMENTS PLEASE CLICK [THIS](README_ENG.md)
 
@@ -22,7 +22,6 @@ Quantitative Financial FrameWork
 ![main_1](http://pic.yutiansut.com/Main_1.gif)
 ![logo](http://pic.yutiansut.com/QUANTAXIS-small.png)
 ![presentbyyutiansut](http://pic.yutiansut.com/yutiansut-logo.png)
-
 
 ![version](https://img.shields.io/pypi/v/quantaxis.svg)
 ![build](https://travis-ci.org/QUANTAXIS/QUANTAXIS.svg?branch=master)
@@ -52,7 +51,47 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 ![qa2018](http://pic.yutiansut.com/qa2018.png)
 
-<!-- TOC -->autoauto- [QUANTAXIS 量化金融策略框架](#quantaxis-量化金融策略框架)auto    - [1. 功能](#1-功能)auto        - [1.1 行情服务](#11-行情服务)auto            - [1.1.1 股票/期货/期权/美股/外汇/宏观的历史/实时行情(日线/分钟线/tick/实时五档)服务](#111-股票期货期权美股外汇宏观的历史实时行情日线分钟线tick实时五档服务)auto            - [1.1.2 财务/基本面/宏观数据](#112-财务基本面宏观数据)auto            - [1.1.3 自定义数据源的数据](#113-自定义数据源的数据)auto        - [1.2 数据运维服务](#12-数据运维服务)auto        - [1.3 分析服务](#13-分析服务)auto            - [1.3.1 专门为A股股票数据适配的数据结构](#131-专门为a股股票数据适配的数据结构)auto            - [1.3.2 精心为A股指标计算适配的指标类](#132-精心为a股指标计算适配的指标类)auto        - [1.4 可扩展事件驱动框架](#14-可扩展事件驱动框架)auto        - [1.5 回测服务](#15-回测服务)auto            - [1.5.1 股票/日内t0/ 的日线/分钟线级别回测](#151-股票日内t0-的日线分钟线级别回测)auto        - [1.6 实盘](#16-实盘)auto            - [1.6.1 股票(实盘易)](#161-股票实盘易)auto            - [1.6.2 期货(python3 CTP win/mac/linux)](#162-期货python3-ctp-winmaclinux)auto        - [1.7 网站HTTP服务](#17-网站http服务)auto            - [1.7.1 网站后台标准化接口](#171-网站后台标准化接口)auto    - [2. 文档](#2-文档)auto    - [3. 安装和部署](#3-安装和部署)auto        - [3.0 安装说明](#30-安装说明)auto        - [3.1 小白式上手](#31-小白式上手)auto        - [3.2 部署式安装](#32-部署式安装)auto        - [3.3  本地代码 开发式安装](#33--本地代码-开发式安装)auto        - [3.4 代码提交式安装](#34-代码提交式安装)auto    - [4. 更新](#4-更新)auto    - [5. Docker](#5-docker)auto    - [6. 使用说明](#6-使用说明)auto    - [7. Jupyter示例](#7-jupyter示例)auto    - [8. 开发计划](#8-开发计划)auto    - [9. 常见问题FAQ](#9-常见问题faq)auto    - [10. 项目捐赠](#10-项目捐赠)auto    - [11. QUANTAXIS 桌面级产品(全平台 WIN/MAC/LINUX)](#11-quantaxis-桌面级产品全平台-winmaclinux)auto    - [12. QUANTAXIS 标准化协议和未来协议](#12-quantaxis-标准化协议和未来协议)auto    - [13. 电脑配置推荐](#13-电脑配置推荐)auto    - [License](#license)autoauto<!-- /TOC -->
+
+<!-- TOC -->
+
+- [QUANTAXIS 量化金融策略框架](#quantaxis-量化金融策略框架)
+    - [1. 功能](#1-功能)
+        - [1.1 行情服务](#11-行情服务)
+            - [1.1.1 股票/期货/期权/美股/外汇/宏观的历史/实时行情(日线/分钟线/tick/实时五档)服务](#111-股票期货期权美股外汇宏观的历史实时行情日线分钟线tick实时五档服务)
+            - [1.1.2 财务/基本面/宏观数据](#112-财务基本面宏观数据)
+            - [1.1.3 自定义数据源的数据](#113-自定义数据源的数据)
+        - [1.2 数据运维服务](#12-数据运维服务)
+        - [1.3 分析服务](#13-分析服务)
+            - [1.3.1 专门为A股股票数据适配的数据结构](#131-专门为a股股票数据适配的数据结构)
+            - [1.3.2 精心为A股指标计算适配的指标类](#132-精心为a股指标计算适配的指标类)
+        - [1.4 可扩展事件驱动框架](#14-可扩展事件驱动框架)
+        - [1.5 回测服务](#15-回测服务)
+            - [1.5.1 股票/日内t0/ 的日线/分钟线级别回测](#151-股票日内t0-的日线分钟线级别回测)
+        - [1.6 实盘](#16-实盘)
+            - [1.6.1 股票(实盘易)](#161-股票实盘易)
+            - [1.6.2 期货(python3 CTP win/mac/linux)](#162-期货python3-ctp-winmaclinux)
+        - [1.7 网站HTTP服务](#17-网站http服务)
+            - [1.7.1 网站后台标准化接口](#171-网站后台标准化接口)
+    - [2. 文档](#2-文档)
+    - [3. 安装和部署](#3-安装和部署)
+        - [3.0 安装说明](#30-安装说明)
+        - [3.1 小白式上手](#31-小白式上手)
+        - [3.2 部署式安装](#32-部署式安装)
+        - [3.3  本地代码 开发式安装](#33--本地代码-开发式安装)
+        - [3.4 代码提交式安装](#34-代码提交式安装)
+    - [4. 更新](#4-更新)
+    - [5. Docker](#5-docker)
+    - [6. 使用说明](#6-使用说明)
+    - [7. Jupyter示例](#7-jupyter示例)
+    - [8. 开发计划](#8-开发计划)
+    - [9. 常见问题FAQ](#9-常见问题faq)
+    - [10. 项目捐赠](#10-项目捐赠)
+    - [11. 回测Webkit插件概览](#11-回测webkit插件概览)
+    - [12. QUANTAXIS 标准化协议和未来协议](#12-quantaxis-标准化协议和未来协议)
+    - [13. 电脑配置推荐](#13-电脑配置推荐)
+    - [License](#license)
+
+<!-- /TOC -->
 
 
 ##  1. 功能
