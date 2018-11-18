@@ -58,7 +58,7 @@ from QUANTAXIS.QAUtil import (DATABASE, QA_Setting, QA_util_date_stamp,
 
 总体思路：
 ⚙️QA_fetch_***_adv
-📍⚙️QA_fetch_*** 🐌 获取数据collections从mongodb中 🐌 返回DataFrame , 
+📍⚙️QA_fetch_*** 🐌 获取数据collections从mongodb中 🐌 返回DataFrame ,
 📍📍⚙️用返回的 DataFrame 初始化 ️QA_DataStruct_***
 
 类型***有
@@ -512,7 +512,7 @@ def QA_fetch_stock_realtime_adv(code=None,
         print("QA Error QA_fetch_stock_realtime_adv parameter code is None")
 
 
-def QA_fetch_financial_report_adv(code, start, end=None):
+def QA_fetch_financial_report_adv(code, start, end=None, ltype='EN'):
     """高级财务查询接口
     Arguments:
         code {[type]} -- [description]
@@ -523,12 +523,12 @@ def QA_fetch_financial_report_adv(code, start, end=None):
 
     if end is None:
 
-        return QA_DataStruct_Financial(QA_fetch_financial_report(code, start))
+        return QA_DataStruct_Financial(QA_fetch_financial_report(code, start, ltype=ltype))
     else:
         series = pd.Series(
             data=month_data, index=pd.to_datetime(month_data), name='date')
         timerange = series.loc[start:end].tolist()
-        return QA_DataStruct_Financial(QA_fetch_financial_report(code, timerange))
+        return QA_DataStruct_Financial(QA_fetch_financial_report(code, timerange, ltype=ltype))
 
 
 
