@@ -34,8 +34,9 @@ from QUANTAXIS.QAData.financial_mean import financial_dict
 class QA_DataStruct_Financial():
     def __init__(self, data):
         self.data = data
-        self.colunms_cn = list(financial_dict.values())
-        self.colunms_en = list(financial_dict.keys())
+        # keys for CN, values for EN
+        self.colunms_en = list(financial_dict.values())
+        self.colunms_cn = list(financial_dict.keys())
 
     def __repr__(self):
         return '< QA_DataStruct_Financial >'
