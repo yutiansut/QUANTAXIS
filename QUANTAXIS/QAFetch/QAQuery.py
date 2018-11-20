@@ -345,7 +345,7 @@ def QA_fetch_future_day(code, start, end, format='numpy', collections=DATABASE.f
             __data = __data
         elif format in ['P', 'p', 'pandas', 'pd']:
             __data = DataFrame(
-                __data, columns=['code', 'open', 'high', 'low', 'close', 'position', 'price', 'trade', 'date'])
+                __data, columns=['code', 'open', 'high', 'low', 'close', 'position', 'price', 'trade', 'date']).drop_duplicates()
             __data['date'] = pd.to_datetime(__data['date'])
             __data = __data.set_index('date', drop=False)
         else:

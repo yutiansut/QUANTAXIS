@@ -1780,7 +1780,7 @@ def QA_SU_save_future_day_all(client=DATABASE, ui_log=None, ui_progress=None):
                 '##JOB12 Now Saving Future_DAY==== {}'.format(str(code)), ui_log)
 
             # 首选查找数据库 是否 有 这个代码的数据
-            ref = coll_future_day.find({'code': str(code)[0:4]})
+            ref = coll_future_day.find({'code': str(code)[0:6]})
             end_date = str(now_time())[0:10]
 
             # 当前数据库已经包含了这个代码的数据， 继续增量更新
