@@ -3,7 +3,8 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.2.0(unreleased)](#120unreleased)
+    - [1.2.1 (unreleased)](#121(unreleased))
+    - [1.2.0](#120)
     - [1.1.10](#1110)
     - [1.1.9](#119)
     - [1.1.8](#118)
@@ -67,11 +68,27 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
+## 1.2.1(unreleased)
 
+1. 修改回测的时候的账户结算(终于算对了不容易...) @CODE-ORANGE
+具体看 [期货冻结-释放资金示例](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/EXAMPLE/test_backtest/FUTURE/%E6%9C%9F%E8%B4%A7TEST.ipynb)
 
-## 1.2.0(unreleased)
+2. 增加 对于单月合约的存储  save future_all/ future_day_all / future_min_all
 
+3. 增加对于future_data 的获取的去重处理
 
+4. @barretthugh 修改了复权部分的代码
+
+5. 优化了docker部分的使用
+
+6. 增加对于jqdata的使用示例
+
+## 1.2.0
+
+1. 增加对期货保证金冻结的修改
+2. 增加对于TALIB的支持, 在talib_indicators中调用
+3. 增加对于50ETF的支持
+4. 优化cirrusCI的支持
 
 
 ## 1.1.10
