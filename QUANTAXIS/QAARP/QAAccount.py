@@ -694,7 +694,9 @@ class QA_Account(QA_Worker):
 
             tax_fee = 0  # 买入不收印花税
 
+        _trade_money_frozen = abs(trade_money) + commission_fee+ tax_fee
         trade_money += (commission_fee+tax_fee)
+        
 
         if self.cash[-1] > trade_money:
             self.time_index.append(trade_time)
@@ -720,7 +722,7 @@ class QA_Account(QA_Worker):
                         (self.frozen[code][trade_towards]['money']*self.frozen[code][trade_towards]['amount'])+abs(trade_money))/(self.frozen[code][trade_towards]['amount']+trade_amount)
                     self.frozen[code][trade_towards]['amount'] += trade_amount
 
-                    self.cash.append(self.cash[-1]-abs(trade_money))
+                    self.cash.append(self.cash[-1]-_trade_money_frozen)
                 elif trade_towards in [ORDER_DIRECTION.BUY_CLOSE, ORDER_DIRECTION.SELL_CLOSE]:
                     # 平仓单释放现金
                     # if trade_towards == ORDER_DIRECTION.BUY_CLOSE:
