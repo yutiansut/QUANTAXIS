@@ -12,7 +12,7 @@ Quantitative Financial FrameWork
 [![Github workers](https://img.shields.io/github/watchers/quantaxis/quantaxis.svg?style=social&label=Watchers&)](https://github.com/quantaxis/quantaxis/watchers)
 [![GitHub stars](https://img.shields.io/github/stars/quantaxis/quantaxis.svg?style=social&label=Star&)](https://github.com/quantaxis/quantaxis/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/quantaxis/quantaxis.svg?style=social&label=Fork&)](https://github.com/quantaxis/quantaxis/fork)
-[![PYPI_DOWNLOADS](https://img.shields.io/pypi/dw/quantaxis.svg)](https://pypi.org/project/quantaxis)
+
 
 > ENGLISH DOCUMENTS PLEASE CLICK [THIS](README_ENG.md)
 
