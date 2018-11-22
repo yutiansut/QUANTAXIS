@@ -3,7 +3,7 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.2.1 (unreleased)](#121(unreleased))
+    - [1.2.1 (unreleased)](#121unreleased)
     - [1.2.0](#120)
     - [1.1.10](#1110)
     - [1.1.9](#119)
