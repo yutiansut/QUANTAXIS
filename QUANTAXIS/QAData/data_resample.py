@@ -26,7 +26,6 @@ from datetime import time
 
 import pandas as pd
 
-
 def QA_data_tick_resample_1min(tick, type_='1min'):
     """
     tick 采样为 分钟数据
@@ -55,6 +54,9 @@ def QA_data_tick_resample_1min(tick, type_='1min'):
         _data1.loc[time(9, 31): time(9, 31), 'low'] = _data1.loc[time(9, 26): time(9, 31), 'low'].min()
         _data1.loc[time(9, 31): time(9, 31), 'vol'] = _data1.loc[time(9, 26): time(9, 31), 'vol'].sum()
         _data1.loc[time(9, 31): time(9, 31), 'amount'] = _data1.loc[time(9, 26): time(9, 31), 'amount'].sum()
+        _data1.loc[time(11, 30): time(11, 30), 'high'] = _data1.loc[time(11, 30): time(11, 31), 'high'].max()
+        _data1.loc[time(11, 30): time(11, 30), 'low'] = _data1.loc[time(11, 30): time(11, 31), 'low'].min()
+        _data1.loc[time(11, 30): time(11, 30), 'close'] = _data1.loc[time(11, 31): time(11, 31), 'close'].values
         _data1.loc[time(11, 30): time(11, 30), 'vol'] = _data1.loc[time(11, 30): time(11, 31), 'vol'].sum()
         _data1.loc[time(11, 30): time(11, 30), 'amount'] = _data1.loc[time(11, 30): time(11, 31), 'amount'].sum()
         _data1 = _data1.loc[time(9, 31): time(11, 30)]
@@ -62,15 +64,14 @@ def QA_data_tick_resample_1min(tick, type_='1min'):
         # afternoon min bar
         _data2 = _data[time(13,0): time(15,0)].resample(
                 type_, closed='left', base=30, loffset=type_).apply({'price': 'ohlc', 'vol': 'sum', 'code': 'last', 'amount': 'sum'})
-        print(_data2)
         _data2.loc[time(15, 0): time(15, 0)] = _data2.loc[time(15, 1): time(15, 1)].values
         _data2 = _data2.loc[time(13, 1): time(15, 0)]
         _data2.columns = _data2.columns.droplevel(0)
         resx = resx.append(_data1).append(_data2)
-        print(resx)
+    resx['vol'] = resx['vol'] * 100.0
+    resx['volume'] = resx['vol']
+    resx['type'] = '1min'
     return resx.reset_index().drop_duplicates().set_index(['datetime', 'code'])
-
-
 
 def QA_data_tick_resample(tick, type_='1min'):
     """tick采样成任意级别分钟线
