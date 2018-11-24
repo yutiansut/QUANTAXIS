@@ -26,36 +26,9 @@
 import datetime
 import threading
 import time
+import pandas as pd
 
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-
-#🛠todo 时间函数 建议使用这些
-#  字符串 和 datetime date time 类型之间的转换
-#  QA_util__str_to_dateime
-#
-#  QA_util__datetime_to_str19
-#  QA_util__datetime_to_str10
-
-#  QA_util__str10_to_datetime
-#  QA_util__str19_to_datetime
-
-#  QA_util__int10_to_datetime
-#  QA_util__int19_to_datetime
-
-#  QA_util__date_to_str10
-#  QA_util__date_to_str19
-
-#  QA_util__time_to_str10
-#  QA_util__time_to_str19
-
-#  QA_util__str10_to_date
-#  QA_util__str10_to_time
-
-#  QA_util__str19_to_time
-#  QA_util__str19_to_date
-
-# 或者有更好的方案
-
 
 
 def QA_util_time_now():
@@ -73,14 +46,15 @@ def QA_util_date_today():
     """
     return datetime.date.today()
 
+
 def QA_util_today_str():
     """
     返回今天的日期字符串
     :return: 类型字符串 2011-11-11
     """
     dt = QA_util_date_today()
-    str = QA_util_datetime_to_strdate(dt)
-    return str
+    return QA_util_datetime_to_strdate(dt)
+
 
 def QA_util_date_str2int(date):
     """
@@ -89,7 +63,11 @@ def QA_util_date_str2int(date):
     :param date: str日期字符串
     :return: 类型int
     """
-    return int(str(date)[0:4] + str(date)[5:7] + str(date)[8:10])
+    # return int(str(date)[0:4] + str(date)[5:7] + str(date)[8:10])
+    if isinstance(date, str):
+        return int(str().join(date.split('-')))
+    elif isinstance(date, int):
+        return date
 
 
 def QA_util_date_int2str(int_date):
@@ -98,7 +76,11 @@ def QA_util_date_int2str(int_date):
     :param date: int 8位整数
     :return: 类型str
     """
-    return str(str(int_date)[0:4] + '-' + str(int_date)[4:6] + '-' + str(int_date)[6:8])
+    date = str(int_date)
+    if len(date) == 8:
+        return str(date[0:4] + '-' + date[4:6] + '-' + date[6:8])
+    elif len(date) == 10:
+        return date
 
 
 def QA_util_to_datetime(time):
@@ -121,9 +103,8 @@ def QA_util_datetime_to_strdate(dt):
     :param dt:  pythone datetime.datetime
     :return:  1999-02-01 string type
     """
-    strdate = "%04d-%02d-%02d"%(dt.year, dt.month, dt.day)
+    strdate = "%04d-%02d-%02d" % (dt.year, dt.month, dt.day)
     return strdate
-
 
 
 def QA_util_datetime_to_strdatetime(dt):
@@ -131,8 +112,10 @@ def QA_util_datetime_to_strdatetime(dt):
     :param dt:  pythone datetime.datetime
     :return:  1999-02-01 09:30:91 string type
     """
-    strdatetime = "%04d-%02d-%02d %02d:%02d:%02d"%(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)
+    strdatetime = "%04d-%02d-%02d %02d:%02d:%02d" % (
+        dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)
     return strdatetime
+
 
 def QA_util_date_stamp(date):
     """
@@ -162,7 +145,6 @@ def QA_util_time_stamp(time_):
         return time.mktime(time.strptime(timestr, '%Y-%m-%d %H:%M:%S'))
 
 
-
 def QA_util_pands_timestamp_to_date(pandsTimestamp):
     """
     转换 pandas 的时间戳 到 datetime.date类型
@@ -170,6 +152,7 @@ def QA_util_pands_timestamp_to_date(pandsTimestamp):
     :return: datetime.datetime类型
     """
     return pandsTimestamp.to_pydatetime().date()
+
 
 def QA_util_pands_timestamp_to_datetime(pandsTimestamp):
     """
@@ -192,7 +175,8 @@ def QA_util_stamp2datetime(timestamp):
     try:
         return datetime.datetime.fromtimestamp(timestamp)
     except Exception as e:
-        return datetime.datetime.fromtimestamp(timestamp / 1000) # it won't work ??
+        # it won't work ??
+        return datetime.datetime.fromtimestamp(timestamp / 1000)
     #
 
 
@@ -203,6 +187,7 @@ def QA_util_ms_stamp(ms):
     :return: 返回ms
     """
     return ms
+
 
 def QA_util_date_valid(date):
     """
@@ -416,6 +401,7 @@ def QA_util_calc_time(func, *args, **kwargs):
     print(datetime.datetime.now() - _time)
     # return datetime.datetime.now() - _time
 
+month_data = pd.date_range('1/1/1996', '12/31/2023', freq='Q-MAR').astype(str).tolist()
 
 if __name__ == '__main__':
     print(QA_util_time_stamp('2017-01-01 10:25:08'))

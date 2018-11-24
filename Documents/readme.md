@@ -19,7 +19,7 @@ QUANTAXIS-Protocol
 	/vscode-markdown-toc-config -->
 <!-- /vscode-markdown-toc -->
 
-##  1. <a name='QAS-A'></a>QAS-A 综述
+##  1. QAS-A 综述
 
 ABOUT | 关于QUANTAXIS
 
@@ -61,9 +61,9 @@ QACmd 命令行交互模块
 QAWeb web后台模块
 
 
-##  2. <a name='QAS-B'></a>QAS-B 模块
+##  2. QAS-B 模块
 
-###  2.1. <a name='QAFetch'></a>QAFetch 数据获取模块
+###  2.1. QAFetch 数据获取模块
 
 | 类别 | 实时 | 从数据库中 | QADataStruct格式|
 | --------------- | ------------------- | --------------- |  --------------- |
@@ -72,9 +72,29 @@ QAWeb web后台模块
 | 股票列表 | QA_fetch_get_stock_list | QA_fetch_stock_list | QA_fetch_stock_list_adv |
 | 股票版块 | QA_fetch_get_stock_block | QA_fetch_stock_block | QA_fetch_stock_block_adv |
 | 股票分笔 | QA_fetch_get_stock_transaction | | |
+| 股票实时分笔 | QA_fetch_get_stock_transaction_realtime | | |
 | 股票权息 | QA_fetch_get_stock_xdxr | QA_fetch_stock_xdxr | |
 | 股票信息 | QA_fetch_get_stock_info | QA_fetch_stock_info| |
 | 股票实时5挡价格 | QA_fetch_get_stock_realtime | | |
+| 指数日线 | QA_fetch_get_index_day | QA_fetch_index_day | QA_fetch_index_day_adv |
+| 指数分钟线 | QA_fetch_get_index_min | QA_fetch_index_min | QA_fetch_index_day_min |
+| ETF日线 | QA_fetch_get_etf_day | QA_fetch_etf_day | QA_fetch_etf_day_adv |
+| ETF分钟线 | QA_fetch_get_etf_min | QA_fetch_etf_min | QA_fetch_etf_min_adv |
+| 期货日线 | QA_fetch_get_future_day | | |
+| 期货分钟线 | QA_fetch_get_future_min | | |
+| 期货历史分笔 | QA_fetch_get_future_transaction | | |
+| 期货实时分笔 | QA_fetch_get_future_transaction_realtime | | |
+| 期货列表 | QA_fetch_get_future_list | | |
 
-###  2.2. <a name='QASU'></a>QASU 数据存储和更新模块
-###  2.3. <a name='QAEngine'></a>QAEngine 线程引擎/事件模块
+###  2.2. QASU 数据存储和更新模块
+
+存储/更新模块在QASU, 按获取函数对应
+
+存储更新的CLI指令在QACmd模块的```__init__.py```下
+
+###  2.3. QAEngine 线程引擎/事件模块
+
+
+### 2.4 QAData 数据处理模块
+
+### 2.5 QAMARKET 交易/回测底层模块

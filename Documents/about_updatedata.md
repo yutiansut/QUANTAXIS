@@ -29,6 +29,7 @@ quantaxis使用了mongodb作为数据库存储,目前提供两种数据下载的
 | save stock_list         | save stock_list| 存储/更新 股票列表|
 | save stock_block        | save stock_block | 存储/更新 股票版块|
 | save stock_info         | save stock_info  | 存储/更新 股票财务数据表|
+| save financialfiles     | save financialfiles | 存储/更新 财务报表
 
 
 ### 更新脚本

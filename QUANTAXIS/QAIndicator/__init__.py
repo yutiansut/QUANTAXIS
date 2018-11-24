@@ -22,7 +22,8 @@
 # SOFTWARE.
 from QUANTAXIS.QAIndicator.indicators import *
 from QUANTAXIS.QAIndicator.base import *
-
+from QUANTAXIS.QAIndicator.talib_series import *
+from QUANTAXIS.QAIndicator import talib_indicators as talib_qa
 """
 这个模块是对了对应QA_DataStruct
 

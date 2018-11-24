@@ -31,30 +31,32 @@ QAFetch is Under [QAStandard#0.0.2@10x] Protocol
 
 
 """
-from QUANTAXIS.QAFetch import QAWind as QAWind
-from QUANTAXIS.QAFetch import QATushare as QATushare
-from QUANTAXIS.QAFetch import QATdx as QATdx
-from QUANTAXIS.QAFetch import QAThs as QAThs
+from QUANTAXIS.QAFetch import QAEastMoney as QAEM
 from QUANTAXIS.QAFetch import QAQuery
 from QUANTAXIS.QAFetch import QAQuery_Advance as QAQueryAdv
-from QUANTAXIS.QAFetch import QAEastMoney as QAEM
-from QUANTAXIS.QAUtil.QAParameter import FREQUENCE, MARKET_TYPE, DATASOURCE, OUTPUT_FORMAT, DATABASE_TABLE
+from QUANTAXIS.QAFetch import QAQuery_Async as QAQueryAsync
+from QUANTAXIS.QAFetch import QATdx as QATdx
+from QUANTAXIS.QAFetch import QAThs as QAThs
+from QUANTAXIS.QAFetch import QATushare as QATushare
+from QUANTAXIS.QAFetch import QAWind as QAWind
+from QUANTAXIS.QAUtil.QAParameter import (DATABASE_TABLE, DATASOURCE,
+                                          FREQUENCE, MARKET_TYPE,
+                                          OUTPUT_FORMAT)
 from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting
 
 
 class QA_Fetcher():
-    def __init__(self, ip='127.0.0.1', port=27017, username='',password=''):
+    def __init__(self, uri='mongodb://192.168.4.248:27017/quantaxis', username='', password=''):
         """
         初始化的时候 会初始化
         """
-        self.ip = ip
-        self.port = port
-        self.database = QA_util_sql_mongo_setting(ip, port).quantaxis
-        self.history = {}
-        self.best_ip=QATdx.select_best_ip()
 
-    def change_ip(self, ip, port):
-        self.database = QA_util_sql_mongo_setting(ip, port).quantaxis
+        self.database = QA_util_sql_mongo_setting(uri).quantaxis
+        self.history = {}
+        self.best_ip = QATdx.select_best_ip()
+
+    def change_ip(self, uri):
+        self.database = QA_util_sql_mongo_setting(uri).quantaxis
         return self
 
     def get_quotation(self, code=None, start=None, end=None, frequence=None, market=None, source=None, output=None):
@@ -70,13 +72,17 @@ class QA_Fetcher():
         """
         pass
 
-    def get_info(self,code,frequence,market,source,output):
+    def get_info(self, code, frequence, market, source, output):
         if source is DATASOURCE.TDX:
-            res=QATdx.QA_fetch_get_stock_info(code,self.best_ip)
+            res = QATdx.QA_fetch_get_stock_info(code, self.best_ip)
             return res
         elif source is DATASOURCE.MONGO:
-            res=QAQuery.QA_fetch_stock_info(code,format=output,collections=self.database.stock_info)
+            res = QAQuery.QA_fetch_stock_info(
+                code, format=output, collections=self.database.stock_info)
             return res
+
+# todo 🛠 output 参数没有用到， 默认返回的 是 QA_DataStruct
+
 
 def QA_quotation(code, start, end, frequence, market, source, output):
     """一个统一的fetch
@@ -109,10 +115,57 @@ def QA_quotation(code, start, end, frequence, market, source, output):
         elif frequence is FREQUENCE.TICK:
             if source is DATASOURCE.TDX:
                 res = QATdx.QA_fetch_get_stock_transaction(code, start, end)
-    #print(type(res))
+
+    # 指数代码和股票代码是冲突重复的，  sh000001 上证指数  000001 是不同的
+    elif market is MARKET_TYPE.INDEX_CN:
+        if frequence is FREQUENCE.DAY:
+            if source is DATASOURCE.MONGO:
+                res = QAQueryAdv.QA_fetch_index_day_adv(code, start, end)
+
+    elif market is MARKET_TYPE.OPTION_CN:
+        if source is DATASOURCE.MONGO:
+            #res = QAQueryAdv.QA_fetch_option_day_adv(code, start, end)
+            raise NotImplementedError('CURRENT NOT FINISH THIS METHOD')
+    # print(type(res))
     return res
 
 
+class AsyncFetcher():
+    def __init__(self):
+        pass
+
+    async def get_quotation(self, code=None, start=None, end=None, frequence=None, market=MARKET_TYPE.STOCK_CN, source=None, output=None):
+        if market is MARKET_TYPE.STOCK_CN:
+            if frequence is FREQUENCE.DAY:
+                if source is DATASOURCE.MONGO:
+                    res = await QAQueryAsync.QA_fetch_stock_day(code, start, end)
+                elif source is DATASOURCE.TDX:
+                    res = QATdx.QA_fetch_get_stock_day(
+                        code, start, end, frequence=frequence)
+            elif frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
+                if source is DATASOURCE.MONGO:
+                    res = await QAQueryAsync.QA_fetch_stock_min(code, start, end, frequence=frequence)
+                elif source is DATASOURCE.TDX:
+                    res = QATdx.QA_fetch_get_stock_min(
+                        code, start, end, frequence=frequence)
+        return res
+
+
 if __name__ == '__main__':
-    print(QA_quotation('000001', '2017-01-01', '2017-01-31', frequence=FREQUENCE.DAY,
-                       market=MARKET_TYPE.STOCK_CN, source=DATASOURCE.TDX, output=OUTPUT_FORMAT.DATAFRAME))
+    import asyncio
+    # print(QA_quotation('000001', '2017-01-01', '2017-01-31', frequence=FREQUENCE.DAY,
+    #                   market=MARKET_TYPE.STOCK_CN, source=DATASOURCE.TDX, output=OUTPUT_FORMAT.DATAFRAME))
+    Fetcher = AsyncFetcher()
+    loop = asyncio.get_event_loop()
+    res = loop.run_until_complete(asyncio.gather(
+        # 这几个是异步的
+        Fetcher.get_quotation('000001', '2018-07-01', '2018-07-15',
+                              FREQUENCE.DAY, MARKET_TYPE.STOCK_CN, DATASOURCE.MONGO),
+        Fetcher.get_quotation('000001', '2018-07-12', '2018-07-15',
+                              FREQUENCE.FIFTEEN_MIN, MARKET_TYPE.STOCK_CN, DATASOURCE.MONGO),
+        # 这个是同步的
+        Fetcher.get_quotation('000001', '2018-07-12', '2018-07-15',
+                              FREQUENCE.FIFTEEN_MIN, MARKET_TYPE.STOCK_CN, DATASOURCE.TDX),
+    ))
+
+    print(res)

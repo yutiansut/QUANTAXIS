@@ -7,7 +7,11 @@
     - [部署问题:](#部署问题)
     - [安装](#安装)
     - [启动QUANTAXIS CLI 并进行数据的初始化存储](#启动quantaxis-cli-并进行数据的初始化存储)
-    - [启动QUANTAXIS_Webkit来查看回测的结果](#启动quantaxis_webkit来查看回测的结果)
+    - [启动jupyter 来运行QUANTAXIS](#启动jupyter-来运行quantaxis)
+        - [1.在命令行启动jupyter](#1在命令行启动jupyter)
+        - [2.在产生的网页上新建一个notebook](#2在产生的网页上新建一个notebook)
+        - [3.在notebook中运行代码](#3在notebook中运行代码)
+        - [4.保存notebook为可运行的python文件](#4保存notebook为可运行的python文件)
     - [更新QUANTAXIS](#更新quantaxis)
 
 <!-- /TOC -->
@@ -15,9 +19,8 @@
 
 - Windows/Linux(ubuntu)/Mac 已测试通过
 - python3.6(开发环境) python2 回测框架不兼容(attention! 之后会逐步用更多高级语法)   [*] 如果需要交易,请下载32位的python3.6
-- nodejs 需要安装>7的版本,来支持es6语法
 - mongodb是必须要装的
-- 强烈推荐mongodb的可视化库  robomongo 百度即可下载
+- 强烈推荐mongodb的可视化库  robomongo (百度即可下载,QQ群文件也有)
 
 一个简易demo(需要先安装并启动mongodb,python版本需要大于3)
 
@@ -60,8 +63,25 @@ python  backtest.py
 
 一般而言 日线4个组合的回测(一年)在14-17秒左右 5min级别4个组合的回测(一年)在3-4分钟左右
 
+## 启动jupyter 来运行QUANTAXIS
 
-## 启动QUANTAXIS_Webkit来查看回测的结果
+### 1.在命令行启动jupyter
+![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20180626231059.png)
+
+
+### 2.在产生的网页上新建一个notebook
+![](http://pic.yutiansut.com/QQ%E5%9B%BE%E7%89%8720180626231143.png)
+
+### 3.在notebook中运行代码
+![](http://pic.yutiansut.com/QQ%E5%9B%BE%E7%89%8720180626231307.png)
+
+
+### 4.保存notebook为可运行的python文件
+![](http://pic.yutiansut.com/QQ%E5%9B%BE%E7%89%8720180626231353.png)
+
+参见 [userjupyter](usejupyter.md)
+
+<!-- ## 启动QUANTAXIS_Webkit来查看回测的结果
 
 
 启动网络插件(nodejs 版本号需要大于6,最好是7)
@@ -85,9 +105,9 @@ cd web
 登录后点击左上角 <模拟回测> 在模拟回测的选择界面的用户名搜索框输入回测的时候的用户名(默认是admin),回车
 
 选择和你回测策略中名称一致的结果即可进入可视化界面
-![开启web](http://osnhakmay.bkt.clouddn.com/quantaxis%E5%BC%80%E5%90%AF.gif)
-![web操作](http://osnhakmay.bkt.clouddn.com/quantaxisweb.gif)
-(web操作的图太大 github上无法显示, 可以点进链接查看)
+![开启web](http://pic.yutiansut.com/quantaxis%E5%BC%80%E5%90%AF.gif)
+![web操作](http://pic.yutiansut.com/quantaxisweb.gif)
+(web操作的图太大 github上无法显示, 可以点进链接查看) -->
 
 ## 更新QUANTAXIS
 

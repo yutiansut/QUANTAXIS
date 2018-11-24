@@ -70,7 +70,17 @@ def QA_fetch_get_stock_day(code, start, end, if_fq='00'):
 
 
 def QA_fetch_get_stock_block():
-    pass
+    """ths的版块数据
+    
+    Returns:
+        [type] -- [description]
+    """
+
+    url='https://gitee.com/yutiansut/QADATA/raw/master/ths_block.csv'
+    try:
+        return pd.read_csv(url).set_index('code', drop=False)
+    except:
+        return None
     # url_list = ['gn', 'dy', 'thshy', 'zjhhy']  # 概念/地域/同花顺板块/证监会板块
     # data = []
     # cookie=input('cookie')
@@ -98,8 +108,13 @@ def QA_fetch_get_stock_block():
 
     # return pd.DataFrame(data, columns=['blockname',  'code', 'type', 'source']).set_index('code', drop=False)
 
+def QA_fetch_get_stock_highlimit_reason(code):
+    #http://basic.10jqka.com.cn/300139/
+    pass
+
 
 if __name__ == '__main__':
     # print(get_k_data_year('000001','2016','01'))
     # print(get_k_data_year(600010,2016,'01'))
     print(QA_fetch_get_stock_day('000001', '2016-05-01', '2017-07-01', '01'))
+    

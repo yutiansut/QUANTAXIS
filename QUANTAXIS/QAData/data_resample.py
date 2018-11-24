@@ -26,7 +26,6 @@ from datetime import time
 
 import pandas as pd
 
-from QUANTAXIS.QAFetch import QA_fetch_get_stock_transaction
 
 def QA_data_tick_resample_1min(tick, type_='1min'):
     """
@@ -72,6 +71,7 @@ def QA_data_tick_resample_1min(tick, type_='1min'):
     return resx.reset_index().drop_duplicates().set_index(['datetime', 'code'])
 
 
+
 def QA_data_tick_resample(tick, type_='1min'):
     """tick采样成任意级别分钟线
 
@@ -81,29 +81,113 @@ def QA_data_tick_resample(tick, type_='1min'):
     Returns:
         [type] -- [description]
     """
-
-    data = tick['price'].resample(
-        type_, label='right', closed='left').ohlc()
-
-    data['volume'] = tick['vol'].resample(
-        type_, label='right', closed='left').sum()
-    data['code'] = tick['code'][0]
-
-    #data = pd.DataFrame()
-    _temp = tick.drop_duplicates('date')['date']
+    tick=tick.assign(amount=tick.price*tick.vol)
+    resx = pd.DataFrame()
+    _temp = set(tick.index.date)
+    
     for item in _temp:
-        _data = data[item]
-        _data = _data[time(9, 31):time(11, 30)].append(
-            _data[time(13, 1):time(15, 0)])
-        data = data.append(_data)
+        _data = tick.loc[str(item)]
+        _data1 = _data[time(9, 31):time(11, 30)].resample(
+            type_, closed='right', base=30, loffset=type_).apply({'price': 'ohlc', 'vol': 'sum','code':'last','amount':'sum'})
 
-    data['datetime'] = data.index
-    data['date'] = data['datetime'].apply(lambda x: str(x)[0:10])
+        _data2 = _data[time(13, 1):time(15, 0)].resample(
+            type_, closed='right', loffset=type_).apply({'price': 'ohlc', 'vol': 'sum','code':'last','amount':'sum'})
 
-    return data.fillna(method='ffill').set_index(['datetime', 'code'], drop=False)
+        resx = resx.append(_data1).append(_data2)
+    resx.columns=resx.columns.droplevel(0)
+    return resx.reset_index().drop_duplicates().set_index(['datetime','code'])
+
+
+def QA_data_min_resample(min_data,  type_='5min'):
+    """分钟线采样成大周期
+
+
+    分钟线采样成子级别的分钟线
+
+
+    time+ OHLC==> resample
+    Arguments:
+        min {[type]} -- [description]
+        raw_type {[type]} -- [description]
+        new_type {[type]} -- [description]
+    """
+
+    # ohlc_data=min_data.loc[:,['open','high','low','close']].stack().reset_index().rename(columns={0:'price'}).drop(['level_2'],axis=1).set_index('datetime',drop=False)
+    # vol=min_data.assign(vol1=0,vol2=0,vol3=0)
+    # L2=vol.loc[:,['volume','vol1','vol2','vol3']].stack().reset_index().rename(columns={0:'vol'}).drop(['level_2'],axis=1).set_index('datetime')
+    # tick=pd.concat([ohlc_data,L2.vol],axis=1)
+    # data = tick['price'].resample(
+    #     type_, label='right', closed='left').ohlc()
+
+    # data['volume'] = tick['vol'].resample(
+    #     type_, label='right', closed='left').sum()
+    # data['code'] = tick.code.iloc[1]
+    # if 'date' not in tick.columns:
+    #     tick=tick.assign(date=tick.datetime.apply(lambda x: str(x)[0:10]))
+
+    # resx=pd.DataFrame()
+    # _temp = tick.drop_duplicates('date')['date']
+    # for item in _temp:
+    #     _data = data[item]
+    #     _data = _data[time(9, 31):time(11, 30)].append(
+    #         _data[time(13, 1):time(15, 0)])
+    #     resx = resx.append(_data)
+    # resx=resx.reset_index()
+    # data=resx.assign(date=resx['datetime'].apply(lambda x: str(x)[0:10]))
+
+    # return data.fillna(method='ffill').set_index(['datetime', 'code'], drop=False).drop_duplicates()
+
+    try:
+        min_data = min_data.reset_index().set_index('datetime', drop=False)
+    except:
+        min_data = min_data.set_index('datetime', drop=False)
+
+    CONVERSION = {'code': 'first', 'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last', 'vol': 'sum', 'amount': 'sum'} if 'vol' in min_data.columns else {
+        'code': 'first', 'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last', 'volume': 'sum', 'amount': 'sum'}
+    resx = pd.DataFrame()
+    
+
+    for item in set(min_data.index.date):
+        min_data_p = min_data.loc[str(item)]
+        d = min_data_p[:'{} 11:30:00'.format(item)].resample(
+            type_, base=30, closed='right', loffset=type_).apply(CONVERSION)
+        f = min_data_p['{} 13:00:00'.format(item):].resample(
+            type_, closed='right', loffset=type_).apply(CONVERSION)
+        resx = resx.append(d).append(f)
+    
+    return resx.dropna().reset_index().set_index(['datetime','code'])
+
+
+def QA_data_day_resample(day_data,  type_='w'):
+    """日线降采样
+
+    Arguments:
+        day_data {[type]} -- [description]
+
+    Keyword Arguments:
+        type_ {str} -- [description] (default: {'w'})
+
+    Returns:
+        [type] -- [description]
+    """
+    # return day_data_p.assign(open=day_data.open.resample(type_).first(),high=day_data.high.resample(type_).max(),low=day_data.low.resample(type_).min(),\
+    #             vol=day_data.vol.resample(type_).sum() if 'vol' in day_data.columns else day_data.volume.resample(type_).sum(),\
+    #             amount=day_data.amount.resample(type_).sum()).dropna().set_index('date')
+    try:
+        day_data = day_data.reset_index().set_index('date', drop=False)
+    except:
+        day_data = day_data.set_index('date', drop=False)
+
+    CONVERSION = {'code': 'first', 'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last', 'vol': 'sum', 'amount': 'sum'} if 'vol' in day_data.columns else {
+        'code': 'first', 'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last', 'volume': 'sum', 'amount': 'sum'}
+
+    return day_data.resample(type_, closed='right').apply(CONVERSION).dropna().reset_index().set_index(['date','code'])
 
 
 if __name__ == '__main__':
-    tickz = QA_fetch_get_stock_transaction(
-        'tdx', '000001', '2017-01-03', '2017-01-05')
-    print(QA_data_tick_resample(tickz))
+    import QUANTAXIS as QA
+    tick = QA.QA_fetch_get_stock_transaction(
+        'tdx', '000001', '2018-08-01', '2018-08-02')
+    print(QA_data_tick_resample(tick, '60min'))
+    print(QA_data_tick_resample(tick, '15min'))
+    print(QA_data_tick_resample(tick, '35min'))

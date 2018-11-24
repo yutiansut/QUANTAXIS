@@ -23,6 +23,6 @@ git push origin master
 6. 提交代码
 7. 等待审核通过
 
-![](http://osnhakmay.bkt.clouddn.com/PR1.png)
-![](http://osnhakmay.bkt.clouddn.com/PR2.png)
-![](http://osnhakmay.bkt.clouddn.com/PR3.png)
+![](http://pic.yutiansut.com/PR1.png)
+![](http://pic.yutiansut.com/PR2.png)
+![](http://pic.yutiansut.com/PR3.png)

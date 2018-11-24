@@ -1,5 +1,19 @@
 # QUANTAXIS的指标系统
+<!-- TOC -->
 
+- [QUANTAXIS的指标系统](#quantaxis的指标系统)
+    - [指标计算入口](#指标计算入口)
+        - [基础类指标 [基本和同花顺/通达信一致]](#基础类指标-基本和同花顺通达信一致)
+        - [应用级指标  add_func(func)](#应用级指标--add_funcfunc)
+        - [得到指标](#得到指标)
+    - [QUANTAXIS的指标类 QA_DataStruct_Indicators()](#quantaxis的指标类-qa_datastruct_indicators)
+        - [指标类可以直接加载计算出来的指标](#指标类可以直接加载计算出来的指标)
+        - [获取一段时段时间的某个股票的指标序列](#获取一段时段时间的某个股票的指标序列)
+        - [获取一个股票的指标序列](#获取一个股票的指标序列)
+        - [获取某一个时刻的某个股票的某个指标值](#获取某一个时刻的某个股票的某个指标值)
+        - [获取某个时刻某个股票的所有指标值](#获取某个时刻某个股票的所有指标值)
+
+<!-- /TOC -->
 ## 指标计算入口
 QUANTAXIS的核心数据结构有一个方法叫add_func(func,*args,**kwargs),作为一个指标入口,会返回一个和DataStruct中股票数量一致长度的Dataframe
 
@@ -68,10 +82,7 @@ def JLHB(data, m=7, n=5):
         (QA.HHV(data['high'], 60) - QA.LLV(data['low'], 60)) * 80
     B = QA.SMA(var1, m)
     var2 = QA.SMA(B, n)
-    if QA.CROSS(B,var2) and B[-1]<40:
-        return 1
-    else:
-        return 0
+    return pd.DataFrame({'JLHB':QA.CROSS(B,var2)*(B<40)})
 ```
 金叉死叉
 ```python        
