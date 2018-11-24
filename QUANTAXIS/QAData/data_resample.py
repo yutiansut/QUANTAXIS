@@ -54,6 +54,9 @@ def QA_data_tick_resample_1min(tick, type_='1min'):
         _data1.loc[time(9, 31): time(9, 31), 'low'] = _data1.loc[time(9, 26): time(9, 31), 'low'].min()
         _data1.loc[time(9, 31): time(9, 31), 'vol'] = _data1.loc[time(9, 26): time(9, 31), 'vol'].sum()
         _data1.loc[time(9, 31): time(9, 31), 'amount'] = _data1.loc[time(9, 26): time(9, 31), 'amount'].sum()
+        _data1.loc[time(11, 30): time(11, 30), 'high'] = _data1.loc[time(11, 30): time(11, 31), 'high'].max()
+        _data1.loc[time(11, 30): time(11, 30), 'low'] = _data1.loc[time(11, 30): time(11, 31), 'low'].min()
+        _data1.loc[time(11, 30): time(11, 30), 'close'] = _data1.loc[time(11, 31): time(11, 31), 'close'].values
         _data1.loc[time(11, 30): time(11, 30), 'vol'] = _data1.loc[time(11, 30): time(11, 31), 'vol'].sum()
         _data1.loc[time(11, 30): time(11, 30), 'amount'] = _data1.loc[time(11, 30): time(11, 31), 'amount'].sum()
         _data1 = _data1.loc[time(9, 31): time(11, 30)]
@@ -66,8 +69,8 @@ def QA_data_tick_resample_1min(tick, type_='1min'):
         _data2.columns = _data2.columns.droplevel(0)
         resx = resx.append(_data1).append(_data2)
     resx['vol'] = resx['vol'] * 100.0
+    resx['volume'] = resx['vol']
     resx['type'] = '1min'
-    resx = resx.rename(columns={'vol': 'volume'})
     return resx.reset_index().drop_duplicates().set_index(['datetime', 'code'])
 
 def QA_data_tick_resample(tick, type_='1min'):
