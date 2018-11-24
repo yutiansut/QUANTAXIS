@@ -8,7 +8,7 @@ Subpackages
 
     QUANTAXIS.QAARP
     QUANTAXIS.QAAnalysis
-    QUANTAXIS.QABacktest
+    QUANTAXIS.QAApplication
     QUANTAXIS.QACmd
     QUANTAXIS.QAData
     QUANTAXIS.QAEngine
@@ -16,8 +16,9 @@ Subpackages
     QUANTAXIS.QAIndicator
     QUANTAXIS.QAMarket
     QUANTAXIS.QASU
+    QUANTAXIS.QASchedule
+    QUANTAXIS.QASetting
     QUANTAXIS.QAUtil
-    QUANTAXIS.QAWeb
 
 Module contents
 ---------------

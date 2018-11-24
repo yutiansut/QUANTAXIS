@@ -22,17 +22,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from QUANTAXIS.QAData.data_fq import (QA_data_get_hfq, QA_data_get_qfq,
-                                      QA_data_make_hfq, QA_data_make_qfq,
-                                      QA_data_stock_to_fq)
-from QUANTAXIS.QAData.data_resample import QA_data_tick_resample
+from QUANTAXIS.QAData.QASeriesStruct import QA_DataStruct_Series
+from QUANTAXIS.QAData.data_fq import QA_data_stock_to_fq
+from QUANTAXIS.QAData.data_marketvalue import QA_data_calc_marketvalue, QA_data_marketvalue
+from QUANTAXIS.QAData.data_resample import QA_data_tick_resample, QA_data_min_resample, QA_data_day_resample
 from QUANTAXIS.QAData.QADataStruct import (QA_DataStruct_Index_day,
                                            QA_DataStruct_Index_min,
-                                           QA_DataStruct_Stock_block,
                                            QA_DataStruct_Stock_day,
                                            QA_DataStruct_Stock_min,
                                            QA_DataStruct_Future_day,
                                            QA_DataStruct_Future_min,
+                                           QA_DataStruct_Stock_realtime,
                                            QA_DataStruct_Stock_transaction)
+from QUANTAXIS.QAData.QABlockStruct import QA_DataStruct_Stock_block
+
+from QUANTAXIS.QAData.QAFinancialStruct import QA_DataStruct_Financial
 from QUANTAXIS.QAData.QAIndicatorStruct import QA_DataStruct_Indicators
-from QUANTAXIS.QAData.dsmethods import QDS_StockDayWarpper, QDS_StockMinWarpper, from_tushare, concat
+from QUANTAXIS.QAData.dsmethods import QDS_StockDayWarpper, QDS_StockMinWarpper, QDS_IndexDayWarpper, QDS_IndexMinWarpper, from_tushare, concat

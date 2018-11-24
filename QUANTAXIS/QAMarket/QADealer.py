@@ -24,6 +24,7 @@
 
 #from .market_config import stock_market,future_market,HK_stock_market,US_stock_market
 
+import pandas as pd
 
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_random_with_topic
 from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, TRADE_STATUS
@@ -31,6 +32,7 @@ from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, TRADE_STATUS
 
 """撮合类
 
+一个无状态的 Serverless Dealer
 
 输入是
 
@@ -49,44 +51,6 @@ class commission():
     if_buyside_commission = False
     if_sellside_commission = True
     if_commission = if_buyside_commission and if_sellside_commission
-
-
-class dealer_preset():
-    def __init__(self, market_type, *args, **kwargs):
-
-        self.market_type = market_type
-        self.if_price_limit = None  # 是否限制涨跌停(美股/加密货币不限制)
-        self.if_commission = None  # 是否收手续费(部分合约/部分加密货币不收手续费)
-        self.if_tax = None  # 是否收税
-        self.if_t0 = None  # 是否t+0
-        self.if_sellopen = None  # 是否允许卖空
-        self.trading_time = None  # 交易时间
-        self.commission_coeff = None  # 手续费比例
-        self.tax_coeff = None  # 费率
-
-    def load_preset(self):
-        if self.market_type is MARKET_TYPE.STOCK_CN:
-            self.if_price_limit = True  # 是否限制涨跌停(美股/加密货币不限制)
-            self.if_commission = True  # 是否收手续费(部分合约/部分加密货币不收手续费)
-            self.if_tax = True  # 是否收税
-            self.if_t0 = False  # 是否t+0
-            self.if_sellopen = False  # 是否允许卖空
-            self.trading_time = [[930, 1130], [1300, 1500]]  # 交易时间
-            self.commission_coeff = 0.00025  # 手续费比例
-            self.tax_coeff = 0.001  # 费率
-            return self
-        elif self.market_type is MARKET_TYPE.FUTURE_CN:
-            self.if_price_limit = True  # 是否限制涨跌停(美股/加密货币不限制)
-            self.if_commission = True  # 是否收手续费(部分合约/部分加密货币不收手续费)
-            self.if_tax = False  # 是否收税
-            self.if_t0 = True  # 是否t+0
-            self.if_sellopen = True  # 是否允许卖空
-            self.trading_time = [[930, 1130], [1300, 1500]]  # 交易时间
-            self.commission_coeff = 0.00025  # 手续费比例
-            self.tax_coeff = 0  # 费率
-        else:
-            pass
-        return self
 
 
 class QA_Dealer():
@@ -113,94 +77,82 @@ class QA_Dealer():
     允许无仓位的时候卖出证券(按市值和保证金比例限制算)
     """
 
-    def __init__(self, commission_fee_coeff=0.00025, tax_coeff=0.001, *args, **kwargs):
-        self.commission_fee_coeff = commission_fee_coeff
-        self.tax_coeff = tax_coeff
+    def __init__(self, *args, **kwargs):
         self.deal_name = ''
-        self.deal_engine = {'0x01': self.backtest_stock_dealer}
         self.session = {}
         self.order = None
         self.market_data = None
         self.commission_fee = None
         self.tax = None
+        self.trade_time = None
         self.status = None
+        self.trade_money = 0
+        self.dealheader = ['account_cookie', 'order_time', 'trade_time', 'code', 'name', 'towards', 'trade_price', 'order_price',
+                           'status', 'order_amount', 'trade_amount', 'trade_money', 'cancel_amount', 'realorder_id', 'trade_id']
+        self.deal_message = {}
 
     def deal(self, order, market_data):
         self.order = order
         self.market_data = market_data
         self.deal_price = 0
         self.deal_amount = 0
-        self.commission_fee_coeff=order.commission_coeff
-        self.tax_coeff=order.tax_coeff
-        if order.market_type == MARKET_TYPE.STOCK_CN:
-            return self.backtest_stock_dealer()
+        self.order.tax_coeff = order.tax_coeff
+        # if order.market_type == MARKET_TYPE.STOCK_CN:
+
+        res = self.backtest_dealer()
+        # print(res)
+        self.deal_message[self.order.order_id] = res
+
+        # elif order.market_type == MARKET_TYPE.FUTURE_CN:
+        #     return self.backtest_future_dealer()
+
+    @property
+    def deal_df(self):
+        return pd.DataFrame(data=list(self.deal_message.values()), columns=self.dealheader)
+
+    def settle(self):
+        """撮合部分settle事件
+        """
+
+        self.deal_message = {}
+
     @property
     def callback_message(self):
         # 这是标准的return back message
-        message = {
-            'header': {
-                'source': 'market',
-                'status': self.status,
-                'code': self.order.code,
-                'session': {
-                    'user': self.order.user,
-                    'strategy': self.order.strategy,
-                    'account': self.order.account_cookie
-                },
-                'order_id': self.order.order_id,
-                'trade_id': QA_util_random_with_topic('Trade')
-            },
-            'body': {
-                'order': {
-                    'price': float("%.2f" % float(self.deal_price)),
-                    'code': self.order.code,
-                    'amount': self.deal_amount,
-                    'date': self.order.date,
-                    'datetime': self.order.datetime,
-                    'towards': self.order.towards
-                },
-                # 'market': {
-                #     'open': self.market_data.get('open'),
-                #     'high': self.market_data.get('high'),
-                #     'low': self.market_data.get('low'),
-                #     'close': self.market_data.get('close'),
-                #     'volume': self.market_data.get('volume'),
-                #     'code': self.market_data.get('code')
-                # },
-                'fee': {
-                    'commission': self.commission_fee,
-                    'tax': self.tax
-                }
-            }
-        }
-        return message
+
+        return [self.order.account_cookie, self.order.sending_time, self.trade_time, self.order.code, None, self.order.towards, float("%.2f" % float(self.deal_price)),
+                self.order.price, self.status, self.order.amount, self.deal_amount, self.trade_money, 0,  self.order.order_id, QA_util_random_with_topic('Trade')]
+        # self.order.
 
     def cal_fee(self):
         if self.order.market_type == MARKET_TYPE.STOCK_CN:
             if int(self.order.towards) > 0:
-                commission_fee = self.commission_fee_coeff * \
+                commission_fee = self.order.commission_coeff * \
                     float(self.deal_price) * float(self.order.amount)
                 self.commission_fee = 5 if commission_fee < 5 else commission_fee
 
                 self.tax = 0  # 买入不收印花税
             else:
-                commission_fee = self.commission_fee_coeff * \
+                commission_fee = self.order.commission_coeff * \
                     float(self.deal_price) * float(self.order.amount)
 
                 self.commission_fee = 5 if commission_fee < 5 else commission_fee
 
-                self.tax = self.tax_coeff * \
+                self.tax = self.order.tax_coeff * \
                     float(self.deal_price) * float(self.order.amount)
+
+            self.trade_money = self.deal_price * \
+                self.deal_amount + self.commission_fee + self.tax
         elif self.order.market_type == MARKET_TYPE.FUTURE_CN:
             # 期货不收税
             # 双边手续费 也没有最小手续费限制
-            self.commission_fee = self.commission_fee_coeff * \
+            self.commission_fee = self.order.commission_coeff * \
                 float(self.deal_price) * float(self.order.amount)
             #self.commission_fee = 5 if commission_fee < 5 else commission_fee
 
             self.tax = 0  # 买入不收印花税
 
-    def backtest_stock_dealer(self):
+    def backtest_dealer(self):
         # 新增一个__commission_fee_coeff 手续费系数
         """MARKET ENGINE STOCK
 
@@ -213,23 +165,24 @@ class QA_Dealer():
         step3: return callback
         """
         try:
-            if float(self.market_data.get('open')) == float(self.market_data.get('high')) == float(self.market_data.get('close')) == float(self.market_data.get('low')):
+            if float(self.market_data.get('open')) == float(self.market_data.get('high')) == float(self.market_data.get('close')) == float(self.market_data.get('low')) and \
+                    self.market_data.get('volume',self.market_data.get('position')) < 4*self.order.amount:
+                # 调整 : 分钟线 经常处于一个价位 但不代表不能交易 所以加入量的判断(但是不能影响市场, 所以加上4倍量限制)
 
                 self.status = TRADE_STATUS.PRICE_LIMIT
                 self.deal_price = 0
                 self.deal_amount = 0
-                self.cal_fee()
-                return self.callback_message
+
             elif ((float(self.order.price) < float(self.market_data.get('high')) and
                     float(self.order.price) > float(self.market_data.get('low'))) or
                     float(self.order.price) == float(self.market_data.get('low')) or
                     float(self.order.price) == float(self.market_data.get('high'))):
                 '能成功交易的情况 有滑点调整'
-                if float(self.order.amount) < float(self.market_data.get('volume')) * 100 / 16:
+                if float(self.order.amount) < float(self.market_data.get('volume',self.market_data.get('position'))) * 100 / 16:
                     self.deal_price = self.order.price
                     self.deal_amount = self.order.amount
-                elif float(self.order.amount) >= float(self.market_data.get('volume')) * 100 / 16 and \
-                        float(self.order.amount) < float(self.market_data.get('volume')) * 100 / 8:
+                elif float(self.order.amount) >= float(self.market_data.get('volume',self.market_data.get('position'))) * 100 / 16 and \
+                        float(self.order.amount) < float(self.market_data.get('volume',self.market_data.get('position'))) * 100 / 8:
                     """
                     add some slippers
 
@@ -245,32 +198,32 @@ class QA_Dealer():
                     self.deal_amount = self.order.amount
 
                 else:
-                    self.deal_amount = float(self.market_data.get('volume')) / 8
+                    self.deal_amount = float(
+                        self.market_data.get('volume',self.market_data.get('position'))) / 8
                     if int(self.order.towards) > 0:
                         self.deal_price = float(self.market_data.get('high'))
                     else:
                         self.deal_price = float(self.market_data.get('low'))
-
-                self.cal_fee()
                 self.status = TRADE_STATUS.SUCCESS
-                return self.callback_message
+                # print(self.market_data)
+                self.trade_time = self.market_data.get(
+                    'datetime', self.market_data.get('date', None))
             else:
+                print('failed to deal this order')
+                print(self.order.price)
+                print(self.market_data)
                 self.status = TRADE_STATUS.FAILED
                 self.deal_price = 0
                 self.deal_amount = 0
-                self.cal_fee()
-                return self.callback_message
+
+            self.cal_fee()
+            # print(self.callback_message)
+            return self.callback_message
 
         except Exception as e:
             QA_util_log_info('MARKET ENGINE ERROR: {}'.format(e))
             self.status = TRADE_STATUS.NO_MARKET_DATA
             return self.callback_message
-
-
-
-class Stock_Dealer(QA_Dealer):
-    def __init__(self, *args, **kwargs):
-        super().__init__()
 
 if __name__ == '__main__':
     pass

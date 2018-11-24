@@ -12,6 +12,14 @@ QUANTAXIS.QAFetch.Fetcher module
     :undoc-members:
     :show-inheritance:
 
+QUANTAXIS.QAFetch.QABitmex module
+---------------------------------
+
+.. automodule:: QUANTAXIS.QAFetch.QABitmex
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 QUANTAXIS.QAFetch.QACrawler module
 ----------------------------------
 
@@ -28,6 +36,24 @@ QUANTAXIS.QAFetch.QAEastMoney module
     :undoc-members:
     :show-inheritance:
 
+QUANTAXIS.QAFetch.QAHexun module
+--------------------------------
+
+.. automodule:: QUANTAXIS.QAFetch.QAHexun
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+
+QUANTAXIS.QAFetch.QAQUANTAXISWEB module
+---------------------------------------
+
+.. automodule:: QUANTAXIS.QAFetch.QAQUANTAXISWEB
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 QUANTAXIS.QAFetch.QAQuery module
 --------------------------------
 
@@ -40,6 +66,22 @@ QUANTAXIS.QAFetch.QAQuery\_Advance module
 -----------------------------------------
 
 .. automodule:: QUANTAXIS.QAFetch.QAQuery_Advance
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+QUANTAXIS.QAFetch.QAQuery\_Async module
+---------------------------------------
+
+.. automodule:: QUANTAXIS.QAFetch.QAQuery_Async
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+QUANTAXIS.QAFetch.QASina module
+-------------------------------
+
+.. automodule:: QUANTAXIS.QAFetch.QASina
     :members:
     :undoc-members:
     :show-inheritance:
@@ -68,6 +110,14 @@ QUANTAXIS.QAFetch.QAThs module
     :undoc-members:
     :show-inheritance:
 
+QUANTAXIS.QAFetch.QATradeFile module
+------------------------------------
+
+.. automodule:: QUANTAXIS.QAFetch.QATradeFile
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 QUANTAXIS.QAFetch.QATushare module
 ----------------------------------
 
@@ -80,6 +130,30 @@ QUANTAXIS.QAFetch.QAWind module
 -------------------------------
 
 .. automodule:: QUANTAXIS.QAFetch.QAWind
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+QUANTAXIS.QAFetch.QAbinance module
+----------------------------------
+
+.. automodule:: QUANTAXIS.QAFetch.QAbinance
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+QUANTAXIS.QAFetch.QAcalendar module
+-----------------------------------
+
+.. automodule:: QUANTAXIS.QAFetch.QAcalendar
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+QUANTAXIS.QAFetch.QAdivyield module
+-----------------------------------
+
+.. automodule:: QUANTAXIS.QAFetch.QAdivyield
     :members:
     :undoc-members:
     :show-inheritance:

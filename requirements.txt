@@ -10,6 +10,7 @@ flask_socketio
 flask-sockets>=0.2.1 
 gevent-websocket>=0.10.1
 apscheduler>=3.3.1
+tornado
 zenlog
 flask-socketio 
 flask
@@ -18,3 +19,8 @@ protobuf>=3.4
 motor>=1.1
 retrying
 seaborn>=0.8.1
+selenium
+scrapy
+attrs>=17.4.0
+pyconvert>=0.6.3
+demjson>=2.2.4

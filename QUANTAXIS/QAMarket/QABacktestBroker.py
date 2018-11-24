@@ -25,6 +25,7 @@
 
 import datetime
 
+import numpy as np
 import pandas as pd
 
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
@@ -44,7 +45,7 @@ from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
 from QUANTAXIS.QAUtil.QADate import QA_util_to_datetime
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_next_day
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT,
+from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT, ORDER_STATUS,
                                           BROKER_TYPE, ENGINE_EVENT, FREQUENCE,
                                           MARKET_EVENT, MARKET_TYPE,
                                           ORDER_DIRECTION, ORDER_MODEL)
@@ -80,7 +81,7 @@ class QA_BacktestBroker(QA_Broker):
     允许无仓位的时候卖出证券(按市值和保证金比例限制算)
     """
 
-    def __init__(self,if_nondatabase=False):
+    def __init__(self, if_nondatabase=False):
         """[summary]
 
 
@@ -92,8 +93,6 @@ class QA_BacktestBroker(QA_Broker):
         super().__init__()
         self.dealer = QA_Dealer()
         self.order_handler = QA_OrderHandler()
-        self.engine = {
-            MARKET_TYPE.STOCK_CN: self.dealer.backtest_stock_dealer}
 
         self.fetcher = {(MARKET_TYPE.STOCK_CN, FREQUENCE.DAY): QA_fetch_stock_day, (MARKET_TYPE.STOCK_CN, FREQUENCE.FIFTEEN_MIN): QA_fetch_stock_min,
                         (MARKET_TYPE.STOCK_CN, FREQUENCE.ONE_MIN): QA_fetch_stock_min, (MARKET_TYPE.STOCK_CN, FREQUENCE.FIVE_MIN): QA_fetch_stock_min,
@@ -105,12 +104,12 @@ class QA_BacktestBroker(QA_Broker):
                         (MARKET_TYPE.FUND_CN, FREQUENCE.ONE_MIN): QA_fetch_index_min, (MARKET_TYPE.FUND_CN, FREQUENCE.FIVE_MIN): QA_fetch_index_min,
                         (MARKET_TYPE.FUND_CN, FREQUENCE.THIRTY_MIN): QA_fetch_index_min, (MARKET_TYPE.FUND_CN, FREQUENCE.SIXTY_MIN): QA_fetch_index_min}
 
-
         self.market_data = None
         self.if_nondatabase = if_nondatabase
         self.name = BROKER_TYPE.BACKETEST
         self._quotation = {}  # 一个可以缓存数据的dict
         self.broker_data = None
+        self.deal_message = {}
 
     def run(self, event):
         #strDbg = QA_util_random_with_topic("QABacktestBroker.run")
@@ -132,6 +131,7 @@ class QA_BacktestBroker(QA_Broker):
             self.order_handler.run(event)
         elif event.event_type is ENGINE_EVENT.UPCOMING_DATA:
             # QABacktest 回测发出的事件
+
             new_marketdata_dict = event.market_data.dicts
             for item in new_marketdata_dict.keys():
                 if item not in self._quotation.keys():
@@ -144,18 +144,18 @@ class QA_BacktestBroker(QA_Broker):
 
         elif event.event_type is BROKER_EVENT.RECEIVE_ORDER:
             self.order_handler.run(event)
-            self.run(QA_Event(event_type=BROKER_EVENT.TRADE, broker=self))
+            #self.run(QA_Event(event_type=BROKER_EVENT.TRADE, broker=self))
         elif event.event_type is BROKER_EVENT.TRADE:
             event = self.order_handler.run(event)
             event.message = 'trade'
             if event.callback:
                 event.callback(event)
         elif event.event_type is BROKER_EVENT.SETTLE:
-            self.order_handler.run(event)
+            #self.deal_message = {}
+            # self.order_handler.run(event)
             if event.callback:
                 event.callback('settle')
         #print("         <-----------------------QABacktestBroker.run-----------------------------<",strDbg,'evt->',event)
-
 
     def query_data(self, code, start, end, frequence, market_type=None):
         """
@@ -163,10 +163,11 @@ class QA_BacktestBroker(QA_Broker):
         """
         try:
             return self.broker_data.select_time(
-                start, end).select_code(code).to_numpy()
+                start, end).select_code(code).to_json()[0]
+
         except:
             return self.fetcher[(market_type, frequence)](
-                code, start, end, frequence=frequence)
+                code, start, end, frequence=frequence, format='json')
 
     def receive_order(self, event):
         """
@@ -174,24 +175,50 @@ class QA_BacktestBroker(QA_Broker):
 
         """
         order = event.order
-
+        # print(event.market_data)
+        # print(order)
         if 'market_data' in event.__dict__.keys():
+
             self.market_data = self.get_market(
                 order) if event.market_data is None else event.market_data
-            if isinstance(self.market_data,dict):
+
+            if isinstance(self.market_data, dict):
                 pass
-            elif isinstance(self.market_data,pd.DataFrame):
-                self.market_data=QA_util_to_json_from_pandas(self.market_data)[0]
+            elif isinstance(self.market_data, pd.DataFrame):
+                self.market_data = QA_util_to_json_from_pandas(self.market_data)[
+                    0]
+            elif isinstance(self.market_data, pd.core.series.Series):
+                self.market_data = self.market_data.to_dict()
+            elif isinstance(self.market_data, np.ndarray):
+                data = self.market_data[0]
+
             else:
-                self.market_data=self.market_data.to_json()[0]
+                self.market_data = self.market_data.to_json()[0]
         else:
             self.market_data = self.get_market(order)
         if self.market_data is not None:
             
             order = self.warp(order)
-            return self.dealer.deal(order, self.market_data)
+            self.dealer.deal(order, self.market_data)
+            order.queued(order.order_id)  # 模拟的order_id 和 realorder_id 一致
+
         else:
-            raise ValueError('MARKET DATA IS NONE CANNOT TRADE')
+
+            order.failed('MARKET DATA IS NONE')
+            #raise ValueError('MARKET DATA IS NONE CANNOT TRADE')
+        return order
+
+    def query_orders(self, account, status=''):
+
+        if status == '':
+            return self.dealer.deal_df.query('account_cookie=="{}"'.format(account)).loc[:, self.orderstatus_headers].set_index(['account_cookie', 'realorder_id'])
+        elif status == 'filled':
+            return self.dealer.deal_df.query('account_cookie=="{}"'.format(account)).loc[:, self.dealstatus_headers].set_index(['account_cookie', 'realorder_id'])
+        elif status == 'open':
+            pass
+
+    def query_deal(self, account):
+        pass
 
     def warp(self, order):
         """对order/market的封装
@@ -218,15 +245,11 @@ class QA_BacktestBroker(QA_Broker):
                 order.datetime = '{} 09:30:00'.format(order.date)
             elif order.frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
 
-                exact_time = str(datetime.datetime.strptime(
-                    str(order.datetime), '%Y-%m-%d %H:%M:%S') + datetime.timedelta(minutes=1))
-                order.date = exact_time[0:10]
-                order.datetime = exact_time
-
+                order.date = str(order.datetime)[0:10]
             #_original_marketvalue = order.price*order.amount
 
             order.price = (float(self.market_data.get('high')) +
-                        float(self.market_data.get('low'))) * 0.5
+                           float(self.market_data.get('low'))) * 0.5
 
         elif order.order_model == ORDER_MODEL.NEXT_OPEN:
             # try:
@@ -266,10 +289,7 @@ class QA_BacktestBroker(QA_Broker):
                 order.datetime = '{} 09:30:00'.format(order.date)
             elif order.frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
 
-                exact_time = str(datetime.datetime.strptime(
-                    str(order.datetime), '%Y-%m-%d %H:%M:%S') + datetime.timedelta(minutes=1))
-                order.date = exact_time[0:10]
-                order.datetime = exact_time
+                order.date = str(order.datetime)[0:10]
         elif order.order_model == ORDER_MODEL.STRICT:
             """
             严格模式
@@ -282,40 +302,40 @@ class QA_BacktestBroker(QA_Broker):
                 order.datetime = '{} 09:30:00'.format(order.date)
             elif order.frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
 
-                exact_time = str(datetime.datetime.strptime(
-                    str(order.datetime), '%Y-%m-%d %H:%M:%S') + datetime.timedelta(minutes=1))
-                order.date = exact_time[0:10]
-                order.datetime = exact_time
+                order.date = str(order.datetime)[0:10]
 
             if order.towards == 1:
                 order.price = float(self.market_data.get('high'))
             else:
                 order.price = float(self.market_data.get('low'))
 
-
         if order.market_type == MARKET_TYPE.STOCK_CN:
             if order.towards == ORDER_DIRECTION.BUY:
                 if order.order_model == AMOUNT_MODEL.BY_MONEY:
-                    amount = order.money/(order.price*(1+order.commission_coeff))
+                    amount = order.money / \
+                        (order.price*(1+order.commission_coeff))
                     money = order.money
                 else:
 
                     amount = order.amount
-                    money = order.amount * order.price*(1+order.commission_coeff)
+                    money = order.amount * order.price * \
+                        (1+order.commission_coeff)
 
                 order.amount = int(amount / 100) * 100
-                order.money =  money
+                order.money = money
             elif order.towards == ORDER_DIRECTION.SELL:
                 if order.order_model == AMOUNT_MODEL.BY_MONEY:
-                    amount = order.money/(order.price*(1+order.commission_coeff+order.tax_coeff))
+                    amount = order.money / \
+                        (order.price*(1+order.commission_coeff+order.tax_coeff))
                     money = order.money
                 else:
 
                     amount = order.amount
-                    money = order.amount * order.price*(1+order.commission_coeff+order.tax_coeff)
+                    money = order.amount * order.price * \
+                        (1+order.commission_coeff+order.tax_coeff)
 
                 order.amount = amount
-                order.money =  money
+                order.money = money
         return order
 
     def get_market(self, order):
@@ -331,9 +351,8 @@ class QA_BacktestBroker(QA_Broker):
         """
 
         # 首先判断是否在_quotation里面
-
-        if (order.datetime, order.code) in self._quotation.keys():
-            return self._quotation[(QA_util_to_datetime(order.datetime), order.code)]
+        if (pd.Timestamp(order.datetime), order.code) in self._quotation.keys():
+            return self._quotation[(pd.Timestamp(order.datetime), order.code)]
 
         else:
             try:
