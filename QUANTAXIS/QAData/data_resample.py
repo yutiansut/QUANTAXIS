@@ -67,6 +67,7 @@ def QA_data_tick_resample_1min(tick, type_='1min'):
         resx = resx.append(_data1).append(_data2)
     resx['vol'] = resx['vol'] * 100.0
     resx['type'] = '1min'
+    resx = resx.rename(columns={'vol': 'volume'})
     return resx.reset_index().drop_duplicates().set_index(['datetime', 'code'])
 
 def QA_data_tick_resample(tick, type_='1min'):
