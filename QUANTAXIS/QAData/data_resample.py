@@ -26,6 +26,7 @@ from datetime import time
 
 import pandas as pd
 
+
 def QA_data_tick_resample_1min(tick, type_='1min'):
     """
     tick 采样为 分钟数据
@@ -43,28 +44,39 @@ def QA_data_tick_resample_1min(tick, type_='1min'):
     _dates = set(tick.date)
 
     for date in sorted(list(_dates)):
-        _data = tick.loc[tick.date==date]
+        _data = tick.loc[tick.date == date]
         # morning min bar
         _data1 = _data[time(9, 25): time(11, 30)].resample(
-                type_, closed='left', base=30, loffset=type_).apply({'price': 'ohlc', 'vol': 'sum', 'code': 'last', 'amount': 'sum'})
+            type_, closed='left', base=30, loffset=type_).apply({'price': 'ohlc', 'vol': 'sum', 'code': 'last', 'amount': 'sum'})
         _data1.columns = _data1.columns.droplevel(0)
         # do fix on the first and last bar
-        _data1.loc[time(9, 31): time(9, 31), 'open'] = _data1.loc[time(9, 26): time(9, 26), 'open'].values
-        _data1.loc[time(9, 31): time(9, 31), 'high'] = _data1.loc[time(9, 26): time(9, 31), 'high'].max()
-        _data1.loc[time(9, 31): time(9, 31), 'low'] = _data1.loc[time(9, 26): time(9, 31), 'low'].min()
-        _data1.loc[time(9, 31): time(9, 31), 'vol'] = _data1.loc[time(9, 26): time(9, 31), 'vol'].sum()
-        _data1.loc[time(9, 31): time(9, 31), 'amount'] = _data1.loc[time(9, 26): time(9, 31), 'amount'].sum()
-        _data1.loc[time(11, 30): time(11, 30), 'high'] = _data1.loc[time(11, 30): time(11, 31), 'high'].max()
-        _data1.loc[time(11, 30): time(11, 30), 'low'] = _data1.loc[time(11, 30): time(11, 31), 'low'].min()
-        _data1.loc[time(11, 30): time(11, 30), 'close'] = _data1.loc[time(11, 31): time(11, 31), 'close'].values
-        _data1.loc[time(11, 30): time(11, 30), 'vol'] = _data1.loc[time(11, 30): time(11, 31), 'vol'].sum()
-        _data1.loc[time(11, 30): time(11, 30), 'amount'] = _data1.loc[time(11, 30): time(11, 31), 'amount'].sum()
+        _data1.loc[time(9, 31): time(9, 31), 'open'] = _data1.loc[time(
+            9, 26): time(9, 26), 'open'].values
+        _data1.loc[time(9, 31): time(9, 31), 'high'] = _data1.loc[time(
+            9, 26): time(9, 31), 'high'].max()
+        _data1.loc[time(9, 31): time(9, 31), 'low'] = _data1.loc[time(
+            9, 26): time(9, 31), 'low'].min()
+        _data1.loc[time(9, 31): time(9, 31), 'vol'] = _data1.loc[time(
+            9, 26): time(9, 31), 'vol'].sum()
+        _data1.loc[time(9, 31): time(9, 31), 'amount'] = _data1.loc[time(
+            9, 26): time(9, 31), 'amount'].sum()
+        _data1.loc[time(11, 30): time(11, 30), 'high'] = _data1.loc[time(
+            11, 30): time(11, 31), 'high'].max()
+        _data1.loc[time(11, 30): time(11, 30), 'low'] = _data1.loc[time(
+            11, 30): time(11, 31), 'low'].min()
+        _data1.loc[time(11, 30): time(11, 30), 'close'] = _data1.loc[time(
+            11, 31): time(11, 31), 'close'].values
+        _data1.loc[time(11, 30): time(11, 30), 'vol'] = _data1.loc[time(
+            11, 30): time(11, 31), 'vol'].sum()
+        _data1.loc[time(11, 30): time(11, 30), 'amount'] = _data1.loc[time(
+            11, 30): time(11, 31), 'amount'].sum()
         _data1 = _data1.loc[time(9, 31): time(11, 30)]
 
         # afternoon min bar
-        _data2 = _data[time(13,0): time(15,0)].resample(
-                type_, closed='left', base=30, loffset=type_).apply({'price': 'ohlc', 'vol': 'sum', 'code': 'last', 'amount': 'sum'})
-        _data2.loc[time(15, 0): time(15, 0)] = _data2.loc[time(15, 1): time(15, 1)].values
+        _data2 = _data[time(13, 0): time(15, 0)].resample(
+            type_, closed='left', base=30, loffset=type_).apply({'price': 'ohlc', 'vol': 'sum', 'code': 'last', 'amount': 'sum'})
+        _data2.loc[time(15, 0): time(15, 0)] = _data2.loc[time(
+            15, 1): time(15, 1)].values
         _data2 = _data2.loc[time(13, 1): time(15, 0)]
         _data2.columns = _data2.columns.droplevel(0)
         resx = resx.append(_data1).append(_data2)
@@ -72,6 +84,7 @@ def QA_data_tick_resample_1min(tick, type_='1min'):
     resx['volume'] = resx['vol']
     resx['type'] = '1min'
     return resx.reset_index().drop_duplicates().set_index(['datetime', 'code'])
+
 
 def QA_data_tick_resample(tick, type_='1min'):
     """tick采样成任意级别分钟线
@@ -82,21 +95,54 @@ def QA_data_tick_resample(tick, type_='1min'):
     Returns:
         [type] -- [description]
     """
-    tick=tick.assign(amount=tick.price*tick.vol)
+    tick = tick.assign(amount=tick.price*tick.vol)
     resx = pd.DataFrame()
     _temp = set(tick.index.date)
-    
+
     for item in _temp:
         _data = tick.loc[str(item)]
         _data1 = _data[time(9, 31):time(11, 30)].resample(
-            type_, closed='right', base=30, loffset=type_).apply({'price': 'ohlc', 'vol': 'sum','code':'last','amount':'sum'})
+            type_, closed='right', base=30, loffset=type_).apply({'price': 'ohlc', 'vol': 'sum', 'code': 'last', 'amount': 'sum'})
 
         _data2 = _data[time(13, 1):time(15, 0)].resample(
-            type_, closed='right', loffset=type_).apply({'price': 'ohlc', 'vol': 'sum','code':'last','amount':'sum'})
+            type_, closed='right', loffset=type_).apply({'price': 'ohlc', 'vol': 'sum', 'code': 'last', 'amount': 'sum'})
 
         resx = resx.append(_data1).append(_data2)
-    resx.columns=resx.columns.droplevel(0)
-    return resx.reset_index().drop_duplicates().set_index(['datetime','code'])
+    resx.columns = resx.columns.droplevel(0)
+    return resx.reset_index().drop_duplicates().set_index(['datetime', 'code'])
+
+
+def QA_data_ctptick_resample(tick, type_='1min'):
+    """tick采样成任意级别分钟线
+
+    Arguments:
+        tick {[type]} -- transaction
+
+    Returns:
+        [type] -- [description]
+    """
+    tick = tick.assign(amount=tick.LastPrice*tick.Volume)
+    resx = pd.DataFrame()
+    _temp = set(tick.index.date)
+
+    for item in _temp:
+        _data = tick.loc[str(item)]
+
+        _data0 = _data[time(0, 1):time(2, 30)].resample(
+            type_, closed='right', base=30, loffset=type_).apply({'LastPrice': 'ohlc', 'Volume': 'sum', 'code': 'last', 'amount': 'sum'})
+
+        _data1 = _data[time(9, 1):time(11, 30)].resample(
+            type_, closed='right', base=30, loffset=type_).apply({'LastPrice': 'ohlc', 'Volume': 'sum', 'code': 'last', 'amount': 'sum'})
+
+        _data2 = _data[time(13, 1):time(15, 0)].resample(
+            type_, closed='right', base=30, loffset=type_).apply({'LastPrice': 'ohlc', 'Volume': 'sum', 'code': 'last', 'amount': 'sum'})
+
+        _data3 = _data[time(21, 1):time(23, 59)].resample(
+            type_, closed='right', loffset=type_).apply({'LastPrice': 'ohlc', 'Volume': 'sum', 'code': 'last', 'amount': 'sum'})
+
+        resx = resx.append(_data0).append(_data1).append(_data2).append(_data3)
+    resx.columns = resx.columns.droplevel(0)
+    return resx.reset_index().drop_duplicates().set_index(['datetime', 'code']).sort_index()
 
 
 def QA_data_min_resample(min_data,  type_='5min'):
@@ -146,7 +192,6 @@ def QA_data_min_resample(min_data,  type_='5min'):
     CONVERSION = {'code': 'first', 'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last', 'vol': 'sum', 'amount': 'sum'} if 'vol' in min_data.columns else {
         'code': 'first', 'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last', 'volume': 'sum', 'amount': 'sum'}
     resx = pd.DataFrame()
-    
 
     for item in set(min_data.index.date):
         min_data_p = min_data.loc[str(item)]
@@ -155,8 +200,8 @@ def QA_data_min_resample(min_data,  type_='5min'):
         f = min_data_p['{} 13:00:00'.format(item):].resample(
             type_, closed='right', loffset=type_).apply(CONVERSION)
         resx = resx.append(d).append(f)
-    
-    return resx.dropna().reset_index().set_index(['datetime','code'])
+
+    return resx.dropna().reset_index().set_index(['datetime', 'code'])
 
 
 def QA_data_day_resample(day_data,  type_='w'):
@@ -182,7 +227,7 @@ def QA_data_day_resample(day_data,  type_='w'):
     CONVERSION = {'code': 'first', 'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last', 'vol': 'sum', 'amount': 'sum'} if 'vol' in day_data.columns else {
         'code': 'first', 'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last', 'volume': 'sum', 'amount': 'sum'}
 
-    return day_data.resample(type_, closed='right').apply(CONVERSION).dropna().reset_index().set_index(['date','code'])
+    return day_data.resample(type_, closed='right').apply(CONVERSION).dropna().reset_index().set_index(['date', 'code'])
 
 
 if __name__ == '__main__':
