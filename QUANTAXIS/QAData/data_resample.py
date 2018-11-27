@@ -74,12 +74,8 @@ def QA_data_tick_resample_1min(tick, type_='1min'):
                 _data2.loc[time(15, 0): time(15, 0), 'high'] = _data2.loc[time(15, 0): time(15, 1), 'high'].max()
                 _data2.loc[time(15, 0): time(15, 0), 'low'] = _data2.loc[time(15, 0): time(15, 1), 'low'].min()
                 _data2.loc[time(15, 0): time(15, 0), 'close'] = _data2.loc[time(15, 1): time(15, 1), 'close'].values
-                _data2.loc[time(15, 0): time(15, 0), 'vol'] = _data2.loc[time(15, 0): time(15, 1), 'vol'].sum()
-                _data2.loc[time(15, 0): time(15, 0), 'amount'] = _data2.loc[time(15, 0): time(15, 1), 'amount'].sum()
         else:
                 _data2.loc[time(15, 0): time(15, 0)] = _data2.loc[time(15, 1): time(15, 1)].values
-        _data2.loc[time(15, 0): time(15, 0)] = _data2.loc[time(15, 1): time(15, 1)].values
-        _data2.loc[time(15, 0): time(15, 0)] = _data2.loc[time(15, 1): time(15, 1)].values
         _data2 = _data2.loc[time(13, 1): time(15, 0)]
         resx = resx.append(_data1).append(_data2)
     resx['vol'] = resx['vol'] * 100.0
