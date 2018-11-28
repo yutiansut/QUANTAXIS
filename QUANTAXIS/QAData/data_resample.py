@@ -26,7 +26,7 @@ from datetime import time
 
 import pandas as pd
 
-def QA_data_tick_resample_1min(tick, type_='1min'):
+def QA_data_tick_resample_1min(tick, type_='1min', if_drop=True):
     """
     tick 采样为 分钟数据
     1. 仅使用将 tick 采样为 1 分钟数据
@@ -75,12 +75,16 @@ def QA_data_tick_resample_1min(tick, type_='1min'):
                 _data2.loc[time(15, 0): time(15, 0), 'low'] = _data2.loc[time(15, 0): time(15, 1), 'low'].min()
                 _data2.loc[time(15, 0): time(15, 0), 'close'] = _data2.loc[time(15, 1): time(15, 1), 'close'].values
         else:
+            # 避免出现 tick 数据没有 15:00 的值
+            if len(_data.loc[time(13, 0): time(13, 0)]) > 0:
                 _data2.loc[time(15, 0): time(15, 0)] = _data2.loc[time(15, 1): time(15, 1)].values
         _data2 = _data2.loc[time(13, 1): time(15, 0)]
         resx = resx.append(_data1).append(_data2)
     resx['vol'] = resx['vol'] * 100.0
     resx['volume'] = resx['vol']
     resx['type'] = '1min'
+    if if_drop:
+        resx = resx.dropna()
     return resx.reset_index().drop_duplicates().set_index(['datetime', 'code'])
 
 def QA_data_tick_resample(tick, type_='1min'):
