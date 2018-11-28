@@ -26,8 +26,8 @@ from datetime import time
 
 import pandas as pd
 
+def QA_data_tick_resample_1min(tick, type_='1min', if_drop=True):
 
-def QA_data_tick_resample_1min(tick, type_='1min'):
     """
     tick 采样为 分钟数据
     1. 仅使用将 tick 采样为 1 分钟数据
@@ -50,39 +50,44 @@ def QA_data_tick_resample_1min(tick, type_='1min'):
             type_, closed='left', base=30, loffset=type_).apply({'price': 'ohlc', 'vol': 'sum', 'code': 'last', 'amount': 'sum'})
         _data1.columns = _data1.columns.droplevel(0)
         # do fix on the first and last bar
-        _data1.loc[time(9, 31): time(9, 31), 'open'] = _data1.loc[time(
-            9, 26): time(9, 26), 'open'].values
-        _data1.loc[time(9, 31): time(9, 31), 'high'] = _data1.loc[time(
-            9, 26): time(9, 31), 'high'].max()
-        _data1.loc[time(9, 31): time(9, 31), 'low'] = _data1.loc[time(
-            9, 26): time(9, 31), 'low'].min()
-        _data1.loc[time(9, 31): time(9, 31), 'vol'] = _data1.loc[time(
-            9, 26): time(9, 31), 'vol'].sum()
-        _data1.loc[time(9, 31): time(9, 31), 'amount'] = _data1.loc[time(
-            9, 26): time(9, 31), 'amount'].sum()
-        _data1.loc[time(11, 30): time(11, 30), 'high'] = _data1.loc[time(
-            11, 30): time(11, 31), 'high'].max()
-        _data1.loc[time(11, 30): time(11, 30), 'low'] = _data1.loc[time(
-            11, 30): time(11, 31), 'low'].min()
-        _data1.loc[time(11, 30): time(11, 30), 'close'] = _data1.loc[time(
-            11, 31): time(11, 31), 'close'].values
-        _data1.loc[time(11, 30): time(11, 30), 'vol'] = _data1.loc[time(
-            11, 30): time(11, 31), 'vol'].sum()
-        _data1.loc[time(11, 30): time(11, 30), 'amount'] = _data1.loc[time(
-            11, 30): time(11, 31), 'amount'].sum()
+
+        _data1.loc[time(9, 31): time(9, 31), 'open'] = _data1.loc[time(9, 26): time(9, 26), 'open'].values
+        _data1.loc[time(9, 31): time(9, 31), 'high'] = _data1.loc[time(9, 26): time(9, 31), 'high'].max()
+        _data1.loc[time(9, 31): time(9, 31), 'low'] = _data1.loc[time(9, 26): time(9, 31), 'low'].min()
+        _data1.loc[time(9, 31): time(9, 31), 'vol'] = _data1.loc[time(9, 26): time(9, 31), 'vol'].sum()
+        _data1.loc[time(9, 31): time(9, 31), 'amount'] = _data1.loc[time(9, 26): time(9, 31), 'amount'].sum()
+        # 通达信分笔数据有的有 11:30 数据，有的没有
+        if len(_data.loc[time(11, 30): time(11, 30)]) > 0:
+            _data1.loc[time(11, 30): time(11, 30), 'high'] = _data1.loc[time(11, 30): time(11, 31), 'high'].max()
+            _data1.loc[time(11, 30): time(11, 30), 'low'] = _data1.loc[time(11, 30): time(11, 31), 'low'].min()
+            _data1.loc[time(11, 30): time(11, 30), 'close'] = _data1.loc[time(11, 31): time(11, 31), 'close'].values
+            _data1.loc[time(11, 30): time(11, 30), 'vol'] = _data1.loc[time(11, 30): time(11, 31), 'vol'].sum()
+            _data1.loc[time(11, 30): time(11, 30), 'amount'] = _data1.loc[time(11, 30): time(11, 31), 'amount'].sum()
         _data1 = _data1.loc[time(9, 31): time(11, 30)]
 
         # afternoon min bar
-        _data2 = _data[time(13, 0): time(15, 0)].resample(
-            type_, closed='left', base=30, loffset=type_).apply({'price': 'ohlc', 'vol': 'sum', 'code': 'last', 'amount': 'sum'})
-        _data2.loc[time(15, 0): time(15, 0)] = _data2.loc[time(
-            15, 1): time(15, 1)].values
-        _data2 = _data2.loc[time(13, 1): time(15, 0)]
+        _data2 = _data[time(13,0): time(15,0)].resample(
+                type_, closed='left', base=30, loffset=type_).apply({'price': 'ohlc', 'vol': 'sum', 'code': 'last', 'amount': 'sum'})
+
         _data2.columns = _data2.columns.droplevel(0)
+        # 沪市股票在 2018-08-20 起，尾盘 3 分钟集合竞价
+        if (pd.Timestamp(date) < pd.Timestamp('2018-08-20')) and (tick.code.iloc[0][0] == '6'):
+            # 避免出现 tick 数据没有 1:00 的值
+            if len(_data.loc[time(13, 0): time(13, 0)]) > 0:
+                _data2.loc[time(15, 0): time(15, 0), 'high'] = _data2.loc[time(15, 0): time(15, 1), 'high'].max()
+                _data2.loc[time(15, 0): time(15, 0), 'low'] = _data2.loc[time(15, 0): time(15, 1), 'low'].min()
+                _data2.loc[time(15, 0): time(15, 0), 'close'] = _data2.loc[time(15, 1): time(15, 1), 'close'].values
+        else:
+            # 避免出现 tick 数据没有 15:00 的值
+            if len(_data.loc[time(13, 0): time(13, 0)]) > 0:
+                _data2.loc[time(15, 0): time(15, 0)] = _data2.loc[time(15, 1): time(15, 1)].values
+        _data2 = _data2.loc[time(13, 1): time(15, 0)]
         resx = resx.append(_data1).append(_data2)
     resx['vol'] = resx['vol'] * 100.0
     resx['volume'] = resx['vol']
     resx['type'] = '1min'
+    if if_drop:
+        resx = resx.dropna()
     return resx.reset_index().drop_duplicates().set_index(['datetime', 'code'])
 
 
