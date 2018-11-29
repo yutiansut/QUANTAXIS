@@ -59,8 +59,8 @@ risk=QA.QA_Risk(AC)
 
 """
 
-AC.reset_assets(20000000)  # 设置初始资金
-
+AC.reset_assets(200000)  # 设置初始资金
+QA.QA_SU_save_strategy('test','test_day',AC.account_cookie,if_save=True)
 
 def simple_backtest(AC, code, start, end):
     DATA = QA.QA_fetch_stock_day_adv(code, start, end).to_qfq()
