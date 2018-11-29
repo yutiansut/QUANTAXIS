@@ -126,24 +126,31 @@ def QA_data_ctptick_resample(tick, type_='1min'):
     Returns:
         [type] -- [description]
     """
-    tick = tick.assign(amount=tick.LastPrice*tick.Volume)
+
     resx = pd.DataFrame()
-    _temp = set(tick.index.date)
+    _temp = set(tick.TradingDay)
 
     for item in _temp:
-        _data = tick.loc[str(item)]
 
-        _data0 = _data[time(0, 1):time(2, 30)].resample(
-            type_, closed='right', base=30, loffset=type_).apply({'LastPrice': 'ohlc', 'Volume': 'sum', 'code': 'last', 'amount': 'sum'})
+        _data = tick.query('TradingDay=="{}"'.format(item))
+        try:
+            _data.loc[time(20, 0): time(21, 0), 'volume'] = 0
+        except:
+            pass
 
-        _data1 = _data[time(9, 1):time(11, 30)].resample(
-            type_, closed='right', base=30, loffset=type_).apply({'LastPrice': 'ohlc', 'Volume': 'sum', 'code': 'last', 'amount': 'sum'})
+        _data.volume = _data.volume.diff()
+        _data = _data.assign(amount=_data.LastPrice*_data.volume)
+        _data0 = _data[time(0, 0):time(2, 30)].resample(
+            type_, closed='right', base=30, loffset=type_).apply({'LastPrice': 'ohlc', 'volume': 'sum', 'code': 'last', 'amount': 'sum'})
+
+        _data1 = _data[time(9, 0):time(11, 30)].resample(
+            type_, closed='right', base=30, loffset=type_).apply({'LastPrice': 'ohlc', 'volume': 'sum', 'code': 'last', 'amount': 'sum'})
 
         _data2 = _data[time(13, 1):time(15, 0)].resample(
-            type_, closed='right', base=30, loffset=type_).apply({'LastPrice': 'ohlc', 'Volume': 'sum', 'code': 'last', 'amount': 'sum'})
+            type_, closed='right', base=30, loffset=type_).apply({'LastPrice': 'ohlc', 'volume': 'sum', 'code': 'last', 'amount': 'sum'})
 
-        _data3 = _data[time(21, 1):time(23, 59)].resample(
-            type_, closed='right', loffset=type_).apply({'LastPrice': 'ohlc', 'Volume': 'sum', 'code': 'last', 'amount': 'sum'})
+        _data3 = _data[time(21, 0):time(23, 59)].resample(
+            type_, closed='left', loffset=type_).apply({'LastPrice': 'ohlc', 'volume': 'sum', 'code': 'last', 'amount': 'sum'})
 
         resx = resx.append(_data0).append(_data1).append(_data2).append(_data3)
     resx.columns = resx.columns.droplevel(0)

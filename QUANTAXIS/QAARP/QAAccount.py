@@ -1122,6 +1122,8 @@ class QA_Account(QA_Worker):
         return self.history_table.set_index('datetime', drop=False).loc[slice(pd.Timestamp(start), pd.Timestamp(end))]
 
 
+
+
 class Account_handler():
     def __init__(self):
         pass
