@@ -1,3 +1,5 @@
+#!/usr/local/bin/python
+
 #coding :utf-8
 #
 # The MIT License (MIT)
@@ -60,4 +62,3 @@ QA_SU_save_stock_block('tdx')
 QA_SU_save_stock_info('tdx')
 # QA_SU_save_stock_divyield_day()
 # QA_SU_save_report_calendar_day()
-
