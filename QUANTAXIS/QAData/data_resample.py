@@ -50,12 +50,13 @@ def QA_data_tick_resample_1min(tick, type_='1min', if_drop=True):
             type_, closed='left', base=30, loffset=type_).apply({'price': 'ohlc', 'vol': 'sum', 'code': 'last', 'amount': 'sum'})
         _data1.columns = _data1.columns.droplevel(0)
         # do fix on the first and last bar
-
-        _data1.loc[time(9, 31): time(9, 31), 'open'] = _data1.loc[time(9, 26): time(9, 26), 'open'].values
-        _data1.loc[time(9, 31): time(9, 31), 'high'] = _data1.loc[time(9, 26): time(9, 31), 'high'].max()
-        _data1.loc[time(9, 31): time(9, 31), 'low'] = _data1.loc[time(9, 26): time(9, 31), 'low'].min()
-        _data1.loc[time(9, 31): time(9, 31), 'vol'] = _data1.loc[time(9, 26): time(9, 31), 'vol'].sum()
-        _data1.loc[time(9, 31): time(9, 31), 'amount'] = _data1.loc[time(9, 26): time(9, 31), 'amount'].sum()
+        # 某些股票某些日期没有集合竞价信息，譬如 002468 在 2017 年 6 月 5 日的数据
+        if len(_data.loc[time(9, 25): time(9, 25)]) > 0:
+            _data1.loc[time(9, 31): time(9, 31), 'open'] = _data1.loc[time(9, 26): time(9, 26), 'open'].values
+            _data1.loc[time(9, 31): time(9, 31), 'high'] = _data1.loc[time(9, 26): time(9, 31), 'high'].max()
+            _data1.loc[time(9, 31): time(9, 31), 'low'] = _data1.loc[time(9, 26): time(9, 31), 'low'].min()
+            _data1.loc[time(9, 31): time(9, 31), 'vol'] = _data1.loc[time(9, 26): time(9, 31), 'vol'].sum()
+            _data1.loc[time(9, 31): time(9, 31), 'amount'] = _data1.loc[time(9, 26): time(9, 31), 'amount'].sum()
         # 通达信分笔数据有的有 11:30 数据，有的没有
         if len(_data.loc[time(11, 30): time(11, 30)]) > 0:
             _data1.loc[time(11, 30): time(11, 30), 'high'] = _data1.loc[time(11, 30): time(11, 31), 'high'].max()
