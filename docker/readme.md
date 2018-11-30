@@ -15,6 +15,20 @@ qa-jupyter: jupyter lab 镜像，端口8888，没有登录密码，如需制定�
   docker-compose up -d
 ```
 
+## 查看每天数据更新日志：
+```
+docker logs cron容器名
+
+日志只输出到容器前台，如果日志对你很重要，建议用专业的日志收集工具，从cron容器收集日志
+```
+
+## 查看服务状态
+```
+docker ps
+
+docker stats
+```
+
 ## 停止/删除 QUANTAXIS 服务 （包括 QUANTAXIS，自动更新服务，数据库容器）：
 ```
 停止：docker-compose stop
