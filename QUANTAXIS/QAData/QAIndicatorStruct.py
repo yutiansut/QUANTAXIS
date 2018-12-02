@@ -38,7 +38,7 @@ class QA_DataStruct_Indicators():
         self.data = data
 
     def __repr__(self):
-        return '< QA_DATASTRUCT_INDICATOR FROM {} TO {} WITH {} CODES >'.format(self.data.index.levels[0][0],self.data.index.levels[0][-1],len(self.data.index.levels[1]))
+        return '< QA_DATASTRUCT_INDICATOR FROM {} TO {} WITH {} CODES >'.format(self.data.index.levels[0][0], self.data.index.levels[0][-1], len(self.data.index.levels[1]))
 
     @property
     def index(self):
@@ -49,7 +49,7 @@ class QA_DataStruct_Indicators():
         获取某一时间的某一只股票的指标
         """
         try:
-            return self.data.loc[(pd.Timestamp(time), code),indicator_name]
+            return self.data.loc[(pd.Timestamp(time), code), indicator_name]
         except:
             raise ValueError('CANNOT FOUND THIS DATE&CODE')
 
@@ -71,9 +71,9 @@ class QA_DataStruct_Indicators():
         except:
             return ValueError('CANNOT FOUND THIS TIME RANGE')
 
-    def groupby(self,by=None, axis=0, level=None, as_index=True, sort=False, group_keys=True, squeeze=False, **kwargs):
+    def groupby(self, by=None, axis=0, level=None, as_index=True, sort=False, group_keys=True, squeeze=False, **kwargs):
         """仿dataframe的groupby写法,但控制了by的code和datetime
-        
+
         Keyword Arguments:
             by {[type]} -- [description] (default: {None})
             axis {int} -- [description] (default: {0})
@@ -83,18 +83,18 @@ class QA_DataStruct_Indicators():
             group_keys {bool} -- [description] (default: {True})
             squeeze {bool} -- [description] (default: {False})
             observed {bool} -- [description] (default: {False})
-        
+
         Returns:
             [type] -- [description]
         """
 
-        if by==self.index.names[1]:
-            by=None
-            level=1
-        elif by== self.index.names[0]:
-            by =None
-            level=0
-        return self.data.groupby(by=by,axis=axis,level=level,as_index=as_index,sort=sort,group_keys=group_keys,squeeze=squeeze)
+        if by == self.index.names[1]:
+            by = None
+            level = 1
+        elif by == self.index.names[0]:
+            by = None
+            level = 0
+        return self.data.groupby(by=by, axis=axis, level=level, as_index=as_index, sort=sort, group_keys=group_keys, squeeze=squeeze)
 
-    def add_func(self,func,*args,**kwargs):
-        return self.groupby(level=1,as_index=False,group_keys=False).apply(func,*args,**kwargs)
+    def add_func(self, func, *args, **kwargs):
+        return self.groupby(level=1, as_index=False, group_keys=False).apply(func, raw=True, *args, **kwargs)

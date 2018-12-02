@@ -44,6 +44,14 @@ QUANTAXIS.QAARP.QAUser module
     :undoc-members:
     :show-inheritance:
 
+QUANTAXIS.QAARP.market\_preset module
+-------------------------------------
+
+.. automodule:: QUANTAXIS.QAARP.market_preset
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------

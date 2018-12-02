@@ -41,27 +41,17 @@ from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, BROKER_TYPE,
 
 class QA_OrderHandler(QA_Worker):
     """ORDER执行器
-
-
     ORDEHANDLDER 归属于MARKET前置
-
     仅负责一个无状态的执行层
-
     ORDER执行器的作用是因为 
     在实盘中 当一个订单发送出去的时候,市场不会返回一个更新的订单类回来
     大部分时间都依赖子线程主动查询 或者是一个市场信息来进行判断
-
     ORDER_Handler的作用就是根据信息更新Order
-
     用于接受订单 发送给相应的marker_broker 再根据返回的信息 进行更新
-
     可用的market_broker:
     1.回测盘
     2.实时模拟盘
     3.实盘
-
-
-
     ORDERHANDLER 持久化问题:
 
     设定机制: 2秒查询1次
@@ -69,15 +59,9 @@ class QA_OrderHandler(QA_Worker):
 
     2018-07-29
 
-
     # 重新设置ORDERHADLER的运行模式:
-
     -- 常规检查 5秒一次
-
     -- 如果出现订单 则2-3秒 对账户轮询(直到出现订单成交/撤单为止)
-
-
-
     """
 
     def __init__(self, *args, **kwargs):
@@ -97,17 +81,11 @@ class QA_OrderHandler(QA_Worker):
             # 此时的message应该是订单类
             """
             OrderHandler 收到订单
-
             orderhandler 调控转发给broker
-
             broker返回发单结果(成功/失败)
-
             orderhandler.order_queue 插入一个订单
-
             执行回调
-
             """
-
             order = event.order
             order = event.broker.receive_order(
                 QA_Event(event_type=BROKER_EVENT.TRADE, order=event.order, market_data=event.market_data))
@@ -132,26 +110,12 @@ class QA_OrderHandler(QA_Worker):
 
             print('SETTLE ORDERHANDLER')
 
-            # if len(self.order_queue.untrade) > 0:
-            #     self.if_start_orderquery = False
-            #     event.event_type = BROKER_EVENT.TRADE
-            #     event.event_queue.put(
-            #         QA_Task(
-            #             worker=self,
-            #             engine='ORDER',
-            #             event=event
-            #         )
-            #     )
-
-            if len(self.order_queue.untrade)==0:
+            if len(self.order_queue.untrade) == 0:
                 self._trade()
             else:
-                
                 self._trade()
-                # print(self.order_queue.untrade)
 
             self.order_queue.settle()
-
             self.order_status = pd.DataFrame()
             self.deal_status = pd.DataFrame()
 
@@ -180,16 +144,12 @@ class QA_OrderHandler(QA_Worker):
 
                     res = pd.concat(res, axis=0) if len(
                         res) > 0 else None
-                    #print(res)
                 except:
                     time.sleep(1)
 
                 self.order_status = res if res is not None else self.order_status
                 if len(self.order_status) > 0:
-                    #print(self.order_status)
                     QA_SU_save_order(self.order_status)
-                # else:
-                #     time.sleep(1)
 
             # 这里加入随机的睡眠时间 以免被发现固定的刷新请求
             event.event_type = MARKET_EVENT.QUERY_DEAL
@@ -206,22 +166,16 @@ class QA_OrderHandler(QA_Worker):
                     )
                 )
 
-
         elif event.event_type is MARKET_EVENT.QUERY_DEAL:
 
             """order_handler- query_deal
-
             将order_handler订单队列中的订单---和deal中匹配起来
-
-
             """
 
             if self.if_start_orderquery:
                 res = [self.monitor[account].query_orders(
                     account.account_cookie, 'filled') for account in list(self.monitor.keys())]
-
                 try:
-                    #res=[pd.DataFrame() if not isinstance(item,pd.DataFrame) else item for item in res]
                     res = pd.concat(res, axis=0) if len(
                         res) > 0 else pd.DataFrame()
                 except:
@@ -230,7 +184,6 @@ class QA_OrderHandler(QA_Worker):
                 self.deal_status = res if res is not None else self.deal_status
                 if len(self.deal_status) > 0:
                     QA_SU_save_deal(self.deal_status)
-                # print(self.order_status)
 
             # 检查pending订单, 更新订单状态
             try:
@@ -238,7 +191,6 @@ class QA_OrderHandler(QA_Worker):
                     if len(self.deal_status) > 0:
                         if order.realorder_id in self.deal_status.index.levels[1]:
                             # 此时有成交推送(但可能是多条)
-                            #
                             res = self.deal_status.loc[order.account_cookie,
                                                        order.realorder_id]
 
@@ -254,8 +206,6 @@ class QA_OrderHandler(QA_Worker):
                                     order.trade(str(res.trade_id), float(res.trade_price), int(
                                         res.trade_amount), str(res.trade_time))
                                 else:
-                                    # print(res)
-                                    # print(len(res))
                                     for _, deal in res.iterrows:
                                         order.trade(str(deal.trade_id), float(deal.trade_price), int(
                                             deal.trade_amount), str(deal.trade_time))
@@ -277,8 +227,6 @@ class QA_OrderHandler(QA_Worker):
                         event=event
                     )
                 )
-            # self.run(event)
-            # self.run(event)
 
         elif event.event_type is MARKET_EVENT.QUERY_POSITION:
             pass
@@ -292,7 +240,6 @@ class QA_OrderHandler(QA_Worker):
             self.monitor.pop(account)
         except:
             print('failled to unscribe {}'.format(account.account_cookie))
-
 
     def _trade(self):
         res = [self.monitor[account].query_orders(
@@ -308,14 +255,12 @@ class QA_OrderHandler(QA_Worker):
         self.deal_status = res if res is not None else self.deal_status
         for order in self.order_queue.pending:
 
-
-
             if len(self.deal_status) > 0:
                 if order.realorder_id in self.deal_status.index.levels[1]:
                     # 此时有成交推送(但可能是多条)
                     #
                     res = self.deal_status.loc[order.account_cookie,
-                                                order.realorder_id]
+                                               order.realorder_id]
 
                     if isinstance(res, pd.Series):
                         order.trade(str(res.trade_id), float(res.trade_price), int(
@@ -329,8 +274,8 @@ class QA_OrderHandler(QA_Worker):
                             order.trade(str(res.trade_id), float(res.trade_price), int(
                                 res.trade_amount), str(res.trade_time))
                         else:
-                            #print(res)
-                            #print(len(res))
+                            # print(res)
+                            # print(len(res))
                             for _, deal in res.iterrows:
                                 order.trade(str(deal.trade_id), float(deal.trade_price), int(
                                     deal.trade_amount), str(deal.trade_time))

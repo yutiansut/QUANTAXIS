@@ -82,10 +82,7 @@ def JLHB(data, m=7, n=5):
         (QA.HHV(data['high'], 60) - QA.LLV(data['low'], 60)) * 80
     B = QA.SMA(var1, m)
     var2 = QA.SMA(B, n)
-    if QA.CROSS(B,var2) and B[-1]<40:
-        return 1
-    else:
-        return 0
+    return pd.DataFrame({'JLHB':QA.CROSS(B,var2)*(B<40)})
 ```
 金叉死叉
 ```python        

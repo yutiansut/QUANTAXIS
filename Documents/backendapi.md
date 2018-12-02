@@ -33,6 +33,9 @@
             - [4.5.1 全部账户列表查询](#451-全部账户列表查询)
             - [4.5.2 单个账户查询](#452-单个账户查询)
         - [4.6 风险查询 /risks](#46-风险查询-risks)
+        - [4.7 下单 /trade | /tradeinfo](#47-下单-trade--tradeinfo)
+            - [4.7.1 静态信息查询](#471-静态信息查询)
+            - [4.7.2 websocket接口](#472-websocket接口)
 
 <!-- /TOC -->
 <!-- vscode-markdown-toc-config
@@ -253,5 +256,41 @@ http://[ip]:[port]/accounts?account_cookie=xxx
 ### 4.6 风险查询 /risks
 ```
 http://[ip]:[port]/risks?account_cookie=xxx
+```
 
 
+### 4.7 下单 /trade | /tradeinfo
+
+
+#### 4.7.1 静态信息查询
+
+```
+http://[ip]:[port]/tradeinfo
+
+
+
+    ?func=ping  ping 服务器
+    ?func=clients 查询当前的可用客户端
+    ?func=accounts 查询当前的账户
+    ?func=positions&account=xxx 查询账户持仓
+    ?func=orders&status 查询订单
+
+    下单/撤单功能不在此handler提供
+    
+```
+
+
+#### 4.7.2 websocket接口
+
+```
+http://[ip]:[port]/trade
+```
+
+message:
+
+1. create_account 创建一个账户
+2. query_portfolio 查询组合
+3. query_history 查询账户交易历史
+4. trade_{code}_{tradeprice}_{tradeamount}_{tradetowards}_{tradetime} 交易
+5. cancel_{orderid}
+6. sendorder_

@@ -1,3 +1,5 @@
+#!/usr/local/bin/python
+
 #coding :utf-8
 #
 # The MIT License (MIT)
@@ -22,9 +24,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
-"""对应于save all
-"""
+"""对应于save all"""
 
 from QUANTAXIS.QASU.main import (QA_SU_save_etf_day, QA_SU_save_etf_min,
                                  QA_SU_save_financialfiles,

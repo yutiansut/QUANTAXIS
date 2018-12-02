@@ -125,13 +125,13 @@ class CanvasKLines:
                 if openprice > closeprice:
                     rectKLine = QRectF(iIndexKLine*kLineDayWidth, openPrice_ScreenCoorY, kLineDayWidth, kLineHeight )
 
-                    painter.fillRect(rectKLine, QColor.fromRgb(0,255,0))
+                    painter.fillRect(rectKLine, QColor.fromRgb(0,200,0))
 
 
                 else:
                     rectKLine = QRectF(iIndexKLine*kLineDayWidth, closePrice_ScreenCoorY, kLineDayWidth, kLineHeight)
 
-                    painter.fillRect(rectKLine, QColor.fromRgb(255,0,0))
+                    painter.fillRect(rectKLine, QColor.fromRgb(200,0,0))
 
 
                 painter.drawRect(rectKLine)

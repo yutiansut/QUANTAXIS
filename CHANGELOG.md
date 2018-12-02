@@ -3,7 +3,11 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.1.8(unreleased)](#118unreleased)
+    - [1.2.1 (unreleased)](#121unreleased)
+    - [1.2.0](#120)
+    - [1.1.10](#1110)
+    - [1.1.9](#119)
+    - [1.1.8](#118)
     - [1.1.7](#117)
     - [1.1.6](#116)
     - [1.1.5](#115)
@@ -64,7 +68,63 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
-## 1.1.8(unreleased)
+## 1.2.1(unreleased)
+
+1. 修改回测的时候的账户结算(终于算对了不容易...) @CODE-ORANGE
+具体看 [期货冻结-释放资金示例](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/EXAMPLE/test_backtest/FUTURE/%E6%9C%9F%E8%B4%A7TEST.ipynb)
+2. 增加 对于单月合约的存储  save future_all/ future_day_all / future_min_all
+3. 增加对于future_data 的获取的去重处理
+4. @barretthugh 修改了复权部分的代码
+5. 优化了docker部分的使用
+6. 增加对于jqdata的使用示例
+7. 增加了1min的股票采样
+8. 增加CTPtick的获取和采样
+
+## 1.2.0
+
+1. 增加对期货保证金冻结的修改
+2. 增加对于TALIB的支持, 在talib_indicators中调用
+3. 增加对于50ETF的支持
+4. 优化cirrusCI的支持
+
+
+## 1.1.10
+
+1. 减少了一个深圳主站的服务器ip
+2. 优化精简无用代码
+3. 删除pymssql依赖
+4. 优化了实盘易broker的一个小bug
+5. 添加bitmex数据下载
+6. 增加期权部分的列表等修改
+7. 增加了命令行操作
+8. 增加了分布式worker quantaxis_run (单独更新[QUANTAXIS/QUANTAXIS_RUN](https://github/quantaxis/quantaxis_run))
+9. QAWEB 单独拆分成独立项目 [QUANTAXIS/QUANTAXIS_WEBSERVER](https://github.com/QUANTAXIS/QUANTAXIS_WEBSERVER)
+
+## 1.1.9
+
+为1.1.8的released版本
+
+## 1.1.8
+
+1. 增加了商品期权的分钟线获取
+2. 优化了QA_Account的存储
+3. 修复了QA_PortfolioView的bug
+4. DataStruct 增加了 rolling(N), ndarray的方法
+5. QAWEB增加对策略的存储功能
+6. QADataStruct增加get_data函数,方便获取各种格式的数据
+7. QADataStruct增加 apply函数 方便对自己应用函数
+8. 增加了对于QA_Performance插件中先卖后买算差价的支持
+9. QAMarket=QAShipaneBroker 支持通达信模拟客户端
+10. QAIndicator 增加Talib的形态识别指标
+11. 增加了qarun.exe 直接运行策略,实时输出
+12. QAWEB 增加了/command/run?command=xxxx的命令行
+13. QAWeb 增加了一个socket端口 /command/runbacktest
+
+不兼容修改:
+
+QAWeb 中/accounts/all 返回值修改 为list(之前是dict)
+
+[released] 版本的版本号记错了 实际为1.1.9
 
 ## 1.1.7 
 

@@ -58,7 +58,7 @@ from QUANTAXIS.QAUtil import (DATABASE, QA_Setting, QA_util_date_stamp,
 
 总体思路：
 ⚙️QA_fetch_***_adv
-📍⚙️QA_fetch_*** 🐌 获取数据collections从mongodb中 🐌 返回DataFrame , 
+📍⚙️QA_fetch_*** 🐌 获取数据collections从mongodb中 🐌 返回DataFrame ,
 📍📍⚙️用返回的 DataFrame 初始化 ️QA_DataStruct_***
 
 类型***有
@@ -325,7 +325,7 @@ def QA_fetch_stock_list_adv(collections=DATABASE.stock_list):
     if len(stock_list_items) == 0:
         print("QA Error QA_fetch_stock_list_adv call item for item in collections.find() return 0 item, maybe the DATABASE.stock_list is empty!")
         return None
-    return pd.DataFrame(stock_list_items).drop('_id', axis=1, inplace=False).set_index('code', drop=False)
+    return stock_list_items
 
 
 def QA_fetch_index_list_adv(collections=DATABASE.index_list):
@@ -338,8 +338,7 @@ def QA_fetch_index_list_adv(collections=DATABASE.index_list):
     if len(index_list_items) == 0:
         print("QA Error QA_fetch_index_list_adv call item for item in collections.find() return 0 item, maybe the DATABASE.index_list is empty!")
         return None
-    return pd.DataFrame(index_list_items).drop('_id', axis=1, inplace=False).set_index('code', drop=False)
-
+    return index_list_items
 
 def QA_fetch_future_day_adv(
         code,
@@ -440,7 +439,7 @@ def QA_fetch_future_list_adv(collections=DATABASE.future_list):
     if len(future_list_items) == 0:
         print("QA Error QA_fetch_future_list_adv call item for item in collections.find() return 0 item, maybe the DATABASE.future_list is empty!")
         return None
-    return pd.DataFrame(future_list_items).drop('_id', axis=1, inplace=False).set_index('code', drop=False)
+    return future_list_items
 
 
 def QA_fetch_stock_block_adv(code=None, blockname=None, collections=DATABASE.stock_block):
@@ -513,7 +512,7 @@ def QA_fetch_stock_realtime_adv(code=None,
         print("QA Error QA_fetch_stock_realtime_adv parameter code is None")
 
 
-def QA_fetch_financial_report_adv(code, start, end=None):
+def QA_fetch_financial_report_adv(code, start, end=None, ltype='EN'):
     """高级财务查询接口
     Arguments:
         code {[type]} -- [description]
@@ -524,12 +523,12 @@ def QA_fetch_financial_report_adv(code, start, end=None):
 
     if end is None:
 
-        return QA_DataStruct_Financial(QA_fetch_financial_report(code, start))
+        return QA_DataStruct_Financial(QA_fetch_financial_report(code, start, ltype=ltype))
     else:
         series = pd.Series(
             data=month_data, index=pd.to_datetime(month_data), name='date')
         timerange = series.loc[start:end].tolist()
-        return QA_DataStruct_Financial(QA_fetch_financial_report(code, timerange))
+        return QA_DataStruct_Financial(QA_fetch_financial_report(code, timerange, ltype=ltype))
 
 
 
