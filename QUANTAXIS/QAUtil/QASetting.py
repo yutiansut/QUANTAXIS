@@ -26,7 +26,7 @@ import json
 import os
 import configparser
 from QUANTAXIS.QASU.user import QA_user_sign_in
-from QUANTAXIS.QASetting.QALocalize import qa_path, setting_path
+from QUANTAXIS.QASetting.QALocalize import qa_path, setting_path, strategy_path
 from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting,QA_util_sql_async_mongo_setting
 
 

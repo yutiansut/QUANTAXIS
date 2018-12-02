@@ -38,7 +38,7 @@ def save_account(message, collection=DATABASE.account):
         collection {[type]} -- [description] (default: {DATABASE})
     """
 
-    collection.save(message)
+    collection.insert(message)
 
 
 
@@ -56,4 +56,6 @@ def update_account(mes, collection=DATABASE.account):
 
 
 def save_riskanalysis(message,collection=DATABASE.risk):
-    collection.save(message)
+    #print(message)
+
+    collection.insert(message)

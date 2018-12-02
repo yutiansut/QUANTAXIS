@@ -350,6 +350,23 @@ class _quotation_base():
         index = self.data.index.remove_unused_levels()
         return pd.to_datetime(index.levels[0])
 
+    @property
+    @lru_cache()
+    def money(self):
+        res = self.data.amount
+        res.name = 'money'
+        return res
+
+    @property
+    @lru_cache()
+    def avg(self):
+        try:
+            res = self.amount/self.volume
+            res.name = 'avg'
+            return res
+        except:
+            return None
+
     '''
     ########################################################################################################
     计算统计相关的
@@ -371,7 +388,7 @@ class _quotation_base():
     @lru_cache()
     def mean(self):
         res = self.price.groupby(level=1).apply(lambda x: x.mean())
-        res.name ='mean'
+        res.name = 'mean'
         return res
     # 一阶差分序列
 
@@ -388,7 +405,8 @@ class _quotation_base():
     @lru_cache()
     def pvariance(self):
         '返回DataStruct.price的方差 variance'
-        res = self.price.groupby(level=1).apply(lambda x: statistics.pvariance(x))
+        res = self.price.groupby(level=1).apply(
+            lambda x: statistics.pvariance(x))
         res.name = 'pvariance'
         return res
 
@@ -397,7 +415,8 @@ class _quotation_base():
     @lru_cache()
     def variance(self):
         '返回DataStruct.price的方差 variance'
-        res = self.price.groupby(level=1).apply(lambda x: statistics.variance(x))
+        res = self.price.groupby(level=1).apply(
+            lambda x: statistics.variance(x))
         res.name = 'variance'
         return res
     # 标准差
@@ -414,7 +433,7 @@ class _quotation_base():
     @lru_cache()
     def bar_amplitude(self):
         "返回bar振幅"
-        res=(self.high-self.low)/self.low
+        res = (self.high-self.low)/self.low
         res.name = 'bar_amplitude'
         return res
 
@@ -440,7 +459,8 @@ class _quotation_base():
     @lru_cache()
     def mean_harmonic(self):
         '返回DataStruct.price的调和平均数'
-        res = self.price.groupby(level=1).apply(lambda x: statistics.harmonic_mean(x))
+        res = self.price.groupby(level=1).apply(
+            lambda x: statistics.harmonic_mean(x))
         res.name = 'mean_harmonic'
         return res
 
@@ -450,8 +470,9 @@ class _quotation_base():
     def mode(self):
         '返回DataStruct.price的众数'
         try:
-            res = self.price.groupby(level=1).apply(lambda x: statistics.mode(x))
-            res.name ='mode'
+            res = self.price.groupby(level=1).apply(
+                lambda x: statistics.mode(x))
+            res.name = 'mode'
             return res
         except:
             return None
@@ -461,7 +482,8 @@ class _quotation_base():
     @lru_cache()
     def amplitude(self):
         '返回DataStruct.price的百分比变化'
-        res = self.price.groupby(level=1).apply(lambda x: (x.max()-x.min())/x.min())
+        res = self.price.groupby(level=1).apply(
+            lambda x: (x.max()-x.min())/x.min())
         res.name = 'amplitude'
         return res
 
@@ -490,7 +512,7 @@ class _quotation_base():
     def pct_change(self):
         '返回DataStruct.price的百分比变化'
         res = self.price.groupby(level=1).apply(lambda x: x.pct_change())
-        res.name ='pct_change'
+        res.name = 'pct_change'
         return res
 
     # 平均绝对偏差
@@ -499,7 +521,15 @@ class _quotation_base():
     def mad(self):
         '平均绝对偏差'
         res = self.price.groupby(level=1).apply(lambda x: x.mad())
-        res.name ='mad'
+        res.name = 'mad'
+        return res
+
+    # 归一化(此处的归一化不能使用 MinMax方法, 会引入未来数据)
+    @property
+    @lru_cache()
+    def normalized(self):
+        '归一化'
+        res = self.groupby('code').apply(lambda x: x/x.iloc[0])
         return res
 
     @property
@@ -701,6 +731,28 @@ class _quotation_base():
     def reverse(self):
         return self.new(self.data[::-1])
 
+    def reindex(self, ind):
+        """reindex
+        
+        Arguments:
+            ind {[type]} -- [description]
+        
+        Raises:
+            RuntimeError -- [description]
+            RuntimeError -- [description]
+        
+        Returns:
+            [type] -- [description]
+        """
+
+        if isinstance(ind,pd.MultiIndex):
+            try:
+                return self.new(self.data.reindex(ind))
+            except:
+                raise RuntimeError('QADATASTRUCT ERROR: CANNOT REINDEX')
+        else:
+            raise RuntimeError('QADATASTRUCT ERROR: ONLY ACCEPT MULTI-INDEX FORMAT')
+
     def tail(self, lens):
         """返回最后Lens个值的DataStruct
 
@@ -754,6 +806,12 @@ class _quotation_base():
         转换DataStruct为json
         """
         return QA_util_to_json_from_pandas(self.data.reset_index())
+
+    def to_csv(self,*args,**kwargs):
+        """datastruct 存本地csv
+        """
+
+        self.data.to_csv(*args,**kwargs)
 
     def to_dict(self, orient='dict'):
         """
@@ -925,19 +983,17 @@ class _quotation_base():
             raise ValueError('QA CANNOT FIND THIS CODE {}'.format(code))
 
     def select_columns(self, columns):
-        if isinstance(columns,list):
-            columns=columns
+        if isinstance(columns, list):
+            columns = columns
         elif isinstance(columns, str):
-            columns=[columns]
+            columns = [columns]
         else:
             print('wrong columns')
 
-
         try:
-            return self.data.loc[:,columns]
+            return self.data.loc[:, columns]
         except:
             pass
-
 
     def get_bar(self, code, time):
         """

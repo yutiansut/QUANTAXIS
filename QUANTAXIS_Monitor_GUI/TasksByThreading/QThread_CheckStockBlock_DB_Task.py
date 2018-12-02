@@ -143,7 +143,7 @@ class QThread_Check_StockBlock_DB(QThread_RootClass):
 
 
 
-                        self.strTaskRunningLog = "正在统计板块{} ,进度{}/{} \n 股票 {}, 进度 {}/{}"\
+                    self.strTaskRunningLog = "正在统计板块{} ,进度{}/{} \n 股票 {}, 进度 {}/{}"\
                             .format(blockName, count, len_block_size, iCode, iCountForCode, iCodeLength)
 
                     pass

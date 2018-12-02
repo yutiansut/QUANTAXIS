@@ -161,7 +161,7 @@ class QA_Tdx_Executor():
     def get_realtime(self, code):
         context = pd.DataFrame()
 
-        code = [code] if type(code) is str else code
+        code = [code] if isinstance(code, str) is str else code
         try:
             for id_ in range(int(len(code) / 80) + 1):
                 context = self._singal_job(context, id_)
@@ -176,7 +176,7 @@ class QA_Tdx_Executor():
             return None
 
     def get_realtime_concurrent(self, code):
-        code = [code] if type(code) is str else code
+        code = [code] if isinstance(code, str) is str else code
 
         try:
             data = {self.get_security_quotes([(self.get_market(
@@ -209,7 +209,7 @@ class QA_Tdx_Executor():
             return self._get_security_bars(context, code, _type, lens)
 
     def get_security_bar(self, code, _type, lens):
-        code = [code] if type(code) is str else code
+        code = [code] if isinstance(code, str) is str else code
         context = []
         try:
             for item in code:

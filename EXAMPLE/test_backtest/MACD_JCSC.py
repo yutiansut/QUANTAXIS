@@ -31,8 +31,8 @@ Account = QA.QA_Account()
 Broker = QA.QA_BacktestBroker()
 
 Account.reset_assets(1000000)
-Account.account_cookie = 'user_admin_macd'
-
+Account.account_cookie = 'macd_stock'
+QA.QA_SU_save_strategy('MACD_JCSC','Indicator',Account.account_cookie)
 # get data from mongodb
 data = QA.QA_fetch_stock_day_adv(
     ['000001', '000002', '000004', '600000'], '2017-09-01', '2018-05-20')
@@ -90,24 +90,27 @@ print(Account.daily_hold)
 
 # create Risk analysis
 Risk = QA.QA_Risk(Account)
-print(Risk.message)
-print(Risk.assets)
-Risk.plot_assets_curve()
-plt=Risk.plot_dailyhold()
-plt.show()
-plt1=Risk.plot_signal()
-plt.show()
 
-performance=QA.QA_Performance(Account)
-plt=performance.plot_pnlmoney(performance.pnl_fifo)
-plt.show()
+Account.save()
+Risk.save()
+
+
+# print(Risk.message)
+# print(Risk.assets)
+# Risk.plot_assets_curve()
+# plt=Risk.plot_dailyhold()
+# plt.show()
+# plt1=Risk.plot_signal()
+# plt.show()
+
+# performance=QA.QA_Performance(Account)
+# plt=performance.plot_pnlmoney(performance.pnl_fifo)
+# plt.show()
 # Risk.assets.plot()
 # Risk.benchmark_assets.plot()
 
 # save result
-Account.save()
-Risk.save()
 
-account_info = QA.QA_fetch_account({'account_cookie': 'user_admin_macd'})
-account = QA.QA_Account().from_message(account_info[0])
-print(account)
+#account_info = QA.QA_fetch_account({'account_cookie': 'user_admin_macd'})
+#account = QA.QA_Account().from_message(account_info[0])
+#print(account)

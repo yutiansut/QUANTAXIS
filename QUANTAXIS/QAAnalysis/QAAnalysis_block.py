@@ -43,7 +43,7 @@ class QAAnalysis_block():
     @lru_cache()
     def market_data(self):
         return QA_quotation(self.code, self.start, self.end, self.frequence,
-                            market=MARKET_TYPE.STOCK_CN, source=DATASOURCE.MONGO, output=OUTPUT_FORMAT.DATASTRUCT)
+                            market=MARKET_TYPE.STOCK_CN, source=DATASOURCE.MONGO, output=OUTPUT_FORMAT.DATASTRUCT).to_qfq()
 
     @property
     @lru_cache()
@@ -88,7 +88,7 @@ class QAAnalysis_block():
 
     def stock_turnover(self):
 
-        return 100*self.market_value.volume/self.market_value.lshare
+        return self.market_value.volume/self.market_value.lshares
 
     def block_turnover(self):
         return self.stock_turnover().groupby(level=0).mean()

@@ -2,7 +2,12 @@
 
 <!-- TOC -->
 
-- [QUANTAXIS 更新纪要](#quantaxis-%E6%9B%B4%E6%96%B0%E7%BA%AA%E8%A6%81)
+- [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
+    - [1.1.8(unreleased)](#118unreleased)
+    - [1.1.7](#117)
+    - [1.1.6](#116)
+    - [1.1.5](#115)
+    - [1.1.4.dev1](#114dev1)
     - [1.1.4](#114)
     - [1.1.3.dev3](#113dev3)
     - [1.1.3.dev2](#113dev2)
@@ -59,6 +64,50 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
+## 1.1.8(unreleased)
+
+## 1.1.7 
+
+1. 优化 QA_DataStruct_future_day/min
+2. 增加了QA_fetch_xxx_adv系列中的  QA_fetch_future_day_adv/QA_fetch_future_min_adv函数
+3. 增加了QA_DataStruct的reindex方法, 方便从指标中提取部分行情
+4. 增加了商品期权的支持
+
+to do:
+
+- 我们考虑在未来将QA_Crawl项目单独列出, 以免过多的无用依赖项
+
+
+## 1.1.6
+
+1. 优化QAWeb
+2. 增加QASU中的QA_SU_save_strategy,用于保存策略
+3. 优化QARisk/QAAccount的存储
+4. 增加客户端 QUANTAXIS/QADesktop, 版本0.0.3
+5. 优化QAFinancial的字段解析
+6. 增加期货主连数据存储
+7. 增加期货数据本地获取(QA_fetch_future_day/QA_fetch_future_list)
+8. 修复了回测中账户的计算的bug,该bug会导致账户长期持仓/空仓的时候缺少记录
+
+## 1.1.5
+
+1. 修复了QA_Account的history_header在以前版本的不兼容问题
+2. 增加receive_simpledeal函数接口,方便快速成交
+3. QA_Parameter中ORDER_DIRECTION的买开买平卖开卖平的字段修改
+4. 修复QA_data_tick_resample中的bug
+5. 增加了对于QA_Risk中存储的Risk_message的字段
+6. 增加了对于QA_Risk的存储兼容
+7. 增加了存储策略的代码
+8. 修改QAWeb, 增加了一个Rest的handler
+9. QA_DataStruct 增加 normalized 归一化方法, 支持多品种多周期
+10. 升级了linux一键安装文件, 升级一键安装的mongodb版本到4.0 删除nodejs的安装
+11. 删除quantaxis的logo和启动显示
+
+
+## 1.1.4.dev1
+
+1. base_datastruct 增加了 avg 和 money 字段
+
 
 ## 1.1.4
 

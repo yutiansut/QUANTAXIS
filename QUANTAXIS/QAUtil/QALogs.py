@@ -84,7 +84,7 @@ console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
 
 
-logging.info('start QUANTAXIS')
+#logging.info('start QUANTAXIS')
 
 
 def QA_util_log_debug(logs, ui_log = None, ui_progress = None):
