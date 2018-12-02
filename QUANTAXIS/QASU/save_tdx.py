@@ -131,7 +131,7 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
     if len(err) < 1:
         QA_util_log_info('SUCCESS save stock day ^_^',  ui_log)
     else:
-        QA_util_log_info(' ERROR CODE \n ',  ui_log)
+        QA_util_log_info('ERROR CODE \n ',  ui_log)
         QA_util_log_info(err, ui_log)
 
 
