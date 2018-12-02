@@ -44,7 +44,7 @@ import pandas as pd
 from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_index_day_adv,
                                                QA_fetch_stock_day_adv)
 from QUANTAXIS.QASU.save_account import save_riskanalysis
-from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_trade_gap
+from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_trade_gap, QA_util_get_trade_range
 from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE
 
 # FIXED: no display found
@@ -134,6 +134,11 @@ class QA_Risk():
 
     @property
     @lru_cache()
+    def total_timeindex(self):
+        return self.account.trade_range
+
+    @property
+    @lru_cache()
     def market_value(self):
         """每日每个股票持仓市值表
 
@@ -178,7 +183,7 @@ class QA_Risk():
     def total_commission(self):
         """总手续费
         """
-        return -abs(round(self.account.history_table.commission.sum(), 2))
+        return float(-abs(round(self.account.history_table.commission.sum(), 2)))
 
     @property
     def total_tax(self):
@@ -186,7 +191,7 @@ class QA_Risk():
 
         """
 
-        return -abs(round(self.account.history_table.tax.sum(), 2))
+        return float(-abs(round(self.account.history_table.tax.sum(), 2)))
 
     @property
     def profit_construct(self):
@@ -211,7 +216,7 @@ class QA_Risk():
             [type] -- [description]
         """
 
-        return round(self.assets.iloc[-1]-self.init_cash, 2)
+        return float(round(self.assets.iloc[-1]-self.init_cash, 2))
 
     @property
     def profit(self):
@@ -249,6 +254,10 @@ class QA_Risk():
         return round(float(self.profit_pct.std() * math.sqrt(250)), 2)
 
     @property
+    def ir(self):
+        return self.calc_IR()
+
+    @property
     @lru_cache()
     def message(self):
         return {
@@ -262,7 +271,7 @@ class QA_Risk():
             'volatility': self.volatility,
             'benchmark_code': self.benchmark_code,
             'bm_annualizereturn': self.benchmark_annualize_return,
-            'bn_profit': self.benchmark_profit,
+            'bm_profit': self.benchmark_profit,
             'beta': self.beta,
             'alpha': self.alpha,
             'sharpe': self.sharpe,
@@ -270,8 +279,12 @@ class QA_Risk():
             'last_assets': "%0.2f" % (float(self.assets.iloc[-1])),
             'total_tax': self.total_tax,
             'total_commission': self.total_commission,
-            'profit_money': self.profit_money
-
+            'profit_money': self.profit_money,
+            'assets': list(self.assets),
+            'benchmark_assets': list(self.benchmark_assets),
+            'timeindex': self.account.trade_day,
+            'totaltimeindex': self.total_timeindex,
+            'ir': self.ir
             # 'init_assets': round(float(self.init_assets), 2),
             # 'last_assets': round(float(self.assets.iloc[-1]), 2)
         }
@@ -373,6 +386,17 @@ class QA_Risk():
         alpha = (annualized_returns - r) - (beta) *\
             (benchmark_annualized_returns - r)
         return alpha
+
+    def calc_IR(self):
+        """计算信息比率
+
+        Returns:
+            [type] -- [description]
+        """
+        if self.volatility == 0:
+            return 0
+        else:
+            return self.annualize_return/self.volatility
 
     def calc_profit(self, assets):
         """

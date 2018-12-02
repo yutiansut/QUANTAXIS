@@ -30,6 +30,9 @@
             - [4.3.8. 期货分钟线](#438-期货分钟线)
         - [4.4. 实时行情推送 /realtime](#44-实时行情推送-realtime)
         - [4.5 账户查询 /accounts](#45-账户查询-accounts)
+            - [4.5.1 全部账户列表查询](#451-全部账户列表查询)
+            - [4.5.2 单个账户查询](#452-单个账户查询)
+        - [4.6 风险查询 /risks](#46-风险查询-risks)
 
 <!-- /TOC -->
 <!-- vscode-markdown-toc-config
@@ -230,5 +233,25 @@ http://[ip]:[port]/marketdata/future/min?code=[]&start=[]&end=[]
 5. data transport
 
 ### 4.5 账户查询 /accounts
+
+
+#### 4.5.1 全部账户列表查询
+
+
+```
+http://[ip]:[port]/accounts/all
+```
+
+#### 4.5.2 单个账户查询
+
+
 ```
 http://[ip]:[port]/accounts?account_cookie=xxx
+
+```
+
+### 4.6 风险查询 /risks
+```
+http://[ip]:[port]/risks?account_cookie=xxx
+
+

@@ -32,7 +32,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.1.4'
+__version__ = '1.1.7'
 __author__ = 'yutiansut'
 logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
@@ -90,7 +90,7 @@ from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_day, QA
 #     QA_SU_save_account_message, QA_SU_save_backtest_message, QA_SU_save_account_to_csv)
 
 from QUANTAXIS.QASU.user import (QA_user_sign_in, QA_user_sign_up)
-
+from QUANTAXIS.QASU.save_strategy import QA_SU_save_strategy
 # event driver
 
 # market
@@ -136,7 +136,7 @@ from QUANTAXIS.QASetting.QALocalize import qa_path, setting_path, cache_path, do
 
 from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_time_stamp, QA_util_ms_stamp, QA_util_date_valid, QA_util_calc_time,
                               QA_util_realtime, QA_util_id2date, QA_util_is_trade, QA_util_get_date_index, QA_util_get_last_day, QA_util_get_next_day, QA_util_get_order_datetime, QA_util_get_trade_datetime,
-                              QA_util_get_index_date, QA_util_select_hours, QA_util_date_gap, QA_util_time_gap,
+                              QA_util_get_index_date, QA_util_select_hours, QA_util_date_gap, QA_util_time_gap, QA_util_get_last_datetime, QA_util_get_next_datetime,
                               QA_util_select_min, QA_util_time_delay, QA_util_time_now, QA_util_date_str2int,
                               QA_util_date_int2str, QA_util_date_today, QA_util_to_datetime,
                               QA_util_sql_mongo_setting, QA_util_sql_async_mongo_setting, QA_util_sql_mongo_sort_ASCENDING, QA_util_sql_mongo_sort_DESCENDING,
@@ -175,6 +175,6 @@ if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6, 7, 8]:
     sys.exit()
 
 
-QA_util_log_info('Welcome to QUANTAXIS, the Version is {}'.format(__version__))
+#QA_util_log_info('Welcome to QUANTAXIS, the Version is {}'.format(__version__))
 
-QA_util_log_info(logo)
+# QA_util_log_info(logo)

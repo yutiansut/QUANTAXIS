@@ -107,9 +107,46 @@ QUANTAXIS>
 
 ## 7. 直接安装quantaxis [仅供新手/直接安装 使用]
 
+
 ```
 pip install quantaxis
 ```
+
+
+安装时可能会遇到几个问题:
+
+
+1. twisted, lxml 等需要编译:  出现VC14 required等字样:
+
+
+    ```
+    解决方法:
+
+    单独去https://www.lfd.uci.edu/~gohlke/pythonlibs/ 找到你所缺少的包, 下载到本地 pip install 安装
+
+    ```
+
+2. pip no 'main' 问题:
+
+
+    ```
+    解决方法:
+
+    pip10 的不兼容升级, 使用pip install pip==9.0.1 降级后安装
+    ```
+
+3. 缺少包 例如 jupyter-echarts-installer
+
+    ```
+    解决方法:
+
+    单独安装 pip install xxxx
+    ```
+
+
+
+
+
 
 ##  8. 下载安装数据库
 

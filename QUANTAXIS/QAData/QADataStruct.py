@@ -47,8 +47,6 @@ from pyecharts import Kline
 from QUANTAXIS.QAData.base_datastruct import _quotation_base
 from QUANTAXIS.QAData.data_fq import QA_data_stock_to_fq
 from QUANTAXIS.QAData.data_resample import QA_data_tick_resample, QA_data_day_resample, QA_data_min_resample
-from QUANTAXIS.QAData.proto import stock_day_pb2  # protobuf import
-from QUANTAXIS.QAData.proto import stock_min_pb2
 from QUANTAXIS.QAIndicator import EMA, HHV, LLV, SMA
 from QUANTAXIS.QAUtil import (DATABASE, QA_util_log_info,
                               QA_util_random_with_topic,
@@ -134,13 +132,13 @@ class QA_DataStruct_Stock_day(_quotation_base):
     @lru_cache()
     def next_day_low_limit(self):
         "明日跌停价"
-        return round((self.data.close + 0.0002) * 1.1, 2)
+        return round((self.data.close + 0.0002) * 0.9, 2)
 
     @property
     @lru_cache()
     def next_day_high_limit(self):
         "明日涨停价"
-        return round((self.data.close + 0.0002) * 0.9, 2)
+        return round((self.data.close + 0.0002) * 1.1, 2)
 
     @property
     def preclose(self):
@@ -148,6 +146,9 @@ class QA_DataStruct_Stock_day(_quotation_base):
             return self.data.preclose
         except:
             return None
+
+    pre_close=preclose
+
 
     @property
     def price_chg(self):
@@ -214,6 +215,8 @@ class QA_DataStruct_Stock_min(_quotation_base):
                 (self.data.close.shift(1) + 0.0002) * 0.9, 2)
         self.type = dtype
         self.if_fq = if_fq
+
+        self.data=self.data.sort_index()
 
     # 抽象类继承
     def choose_db(self):
@@ -299,8 +302,9 @@ class QA_DataStruct_Stock_min(_quotation_base):
 
 class QA_DataStruct_Future_day(_quotation_base):
     def __init__(self, DataFrame, dtype='future_day', if_fq=''):
+        super().__init__(DataFrame, dtype, if_fq)
         self.type = 'future_day'
-        self.data = DataFrame.loc[:, [
+        self.data = self.data.loc[:, [
             'open', 'high', 'low', 'close', 'trade', 'position', 'price']]
         self.if_fq = if_fq
 
@@ -320,14 +324,50 @@ class QA_DataStruct_Future_min(_quotation_base):
 
     def __init__(self, DataFrame, dtype='future_min', if_fq=''):
         # 🛠todo  期货分钟数据线的维护， 暂时用日线代替分钟线
+        super().__init__(DataFrame, dtype, if_fq)
         self.type = 'future_day'
-        self.data = DataFrame.loc[:, [
-            'open', 'high', 'low', 'close', 'trade', 'position', 'price']]
+        self.data = self.data.loc[:, [
+            'open', 'high', 'low', 'close', 'trade', 'position', 'price','tradetime']]
         self.if_fq = if_fq
 
     # 抽象类继承
     def choose_db(self):
         self.mongo_coll = DATABASE.future_min
+
+
+    @property
+    @lru_cache()
+    def trade_date(self):
+        """返回交易所日历下的日期
+        
+        Returns:
+            [type] -- [description]
+        """
+
+        try:
+            return self.data.trade_date
+        except:
+            return None
+        
+    @property
+    @lru_cache()
+    def min5(self):
+        return self.resample('5min')
+
+    @property
+    @lru_cache()
+    def min15(self):
+        return self.resample('15min')
+
+    @property
+    @lru_cache()
+    def min30(self):
+        return self.resample('30min')
+
+    @property
+    @lru_cache()
+    def min60(self):
+        return self.resample('60min')
 
     def __repr__(self):
         return '< QA_DataStruct_Future_min with {} securities >'.format(len(self.code))
@@ -338,7 +378,8 @@ class QA_DataStruct_Index_day(_quotation_base):
     '自定义的日线数据结构'
 
     def __init__(self, DataFrame, dtype='index_day', if_fq=''):
-        self.data = DataFrame
+        super().__init__(DataFrame, dtype, if_fq)
+        # self.data = DataFrame
         self.type = dtype
         self.if_fq = if_fq
         # self.mongo_coll = eval(
@@ -364,9 +405,10 @@ class QA_DataStruct_Index_min(_quotation_base):
     '自定义的分钟线数据结构'
 
     def __init__(self, DataFrame, dtype='index_min', if_fq=''):
+        super().__init__(DataFrame, dtype, if_fq)
         self.type = dtype
         self.if_fq = if_fq
-        self.data = DataFrame.loc[:, [
+        self.data = self.data.loc[:, [
             'open', 'high', 'low', 'close', 'up_count', 'down_count', 'volume', 'amount']]
         #self.mongo_coll = DATABASE.index_min
 
@@ -376,6 +418,26 @@ class QA_DataStruct_Index_min(_quotation_base):
 
     def __repr__(self):
         return '< QA_DataStruct_Index_Min with %s securities >' % len(self.code)
+        
+    @property
+    @lru_cache()
+    def min5(self):
+        return self.resample('5min')
+
+    @property
+    @lru_cache()
+    def min15(self):
+        return self.resample('15min')
+
+    @property
+    @lru_cache()
+    def min30(self):
+        return self.resample('30min')
+
+    @property
+    @lru_cache()
+    def min60(self):
+        return self.resample('60min')
 
     __str__ = __repr__
 
