@@ -236,6 +236,12 @@ def QA_fetch_get_macroindex_list(package,):
     else:
         return 'Unsupport packages'
 
+def QA_fetch_get_globalindex_list(package,):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_globalindex_list()
+    else:
+        return 'Unsupport packages'
 
 def QA_fetch_get_exchangerate_list(package,):
     Engine = use(package)
@@ -304,6 +310,7 @@ QA_fetch_get_hkfund_min = QA_fetch_get_future_min
 QA_fetch_get_hkindex_day = QA_fetch_get_future_day
 QA_fetch_get_hkindex_min = QA_fetch_get_future_min
 
+
 QA_fetch_get_usstock_day = QA_fetch_get_future_day
 QA_fetch_get_usstock_min = QA_fetch_get_future_min
 
@@ -319,3 +326,7 @@ QA_fetch_get_exchangerate_min = QA_fetch_get_future_min
 
 QA_fetch_get_macroindex_day = QA_fetch_get_future_day
 QA_fetch_get_macroindex_min = QA_fetch_get_future_min
+
+
+QA_fetch_get_globalindex_day = QA_fetch_get_future_day
+QA_fetch_get_globalindex_min = QA_fetch_get_future_min

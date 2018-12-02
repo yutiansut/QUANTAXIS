@@ -22,13 +22,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import configparser
 import json
 import os
-import configparser
-from QUANTAXIS.QASU.user import QA_user_sign_in
-from QUANTAXIS.QASetting.QALocalize import qa_path, setting_path, strategy_path
-from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting,QA_util_sql_async_mongo_setting
 
+from QUANTAXIS.QASetting.QALocalize import qa_path, setting_path, strategy_path
+from QUANTAXIS.QASU.user import QA_user_sign_in
+from QUANTAXIS.QAUtil.QASql import (QA_util_sql_async_mongo_setting,
+                                    QA_util_sql_mongo_setting)
 
 # quantaxis有一个配置目录存放在 ~/.quantaxis
 # 如果配置目录不存在就创建，主要配置都保存在config.json里面
@@ -120,9 +121,9 @@ class QA_Setting():
         """
 
         try:
-            if isinstance(DEFAULT_VALUE,str):
+            if isinstance(DEFAULT_VALUE, str):
                 val = DEFAULT_VALUE
-            else:              
+            else:
                 val = json.dumps(DEFAULT_VALUE)
             if method == 'get':
                 return config.get(section, option)
@@ -176,6 +177,7 @@ QASETTING = QA_Setting()
 DATABASE = QASETTING.client.quantaxis
 DATABASE_ASYNC = QASETTING.client_async.quantaxis
 
+
 def exclude_from_stock_ip_list(exclude_ip_list):
     """ 从stock_ip_list删除列表exclude_ip_list中的ip
 
@@ -208,18 +210,18 @@ info_ip_list = [{'ip': '101.227.73.20', 'port': 7709}, {'ip': '101.227.77.254', 
 
 
 stock_ip_list = [
-    {'ip': '61.152.107.168','port':7721 },
-    {'ip': '113.05.73.88','port':7709},#深圳
-    {'ip':'121.14.110.194','port':7709},#深圳
-    {'ip':'119.147.164.60','port':7709},#广州
-    {'ip':'119.147.171.206','port':7709},#广州
-    {'ip':'61.152.249.56','port':7709},#上海
-    {'ip':'218.108.50.178','port':7709},# 杭州
-    {'ip': '114.80.80.222', 'port': 7709},# 上海
-    {'ip':'106.120.74.86','port':7709},#北京
-    {'ip':'61.135.142.88','port':7709},#北京
-    {'ip':'221.194.181.176','port':7709},#北京
-    {'ip':'117.184.140.156','port':7709},#移动
+    {'ip': '61.152.107.168', 'port': 7721},
+    {'ip': '113.05.73.88', 'port': 7709},  # 深圳
+    {'ip': '121.14.110.194', 'port': 7709},  # 深圳
+    {'ip': '119.147.164.60', 'port': 7709},  # 广州
+    {'ip': '119.147.171.206', 'port': 7709},  # 广州
+    {'ip': '61.152.249.56', 'port': 7709},  # 上海
+    {'ip': '218.108.50.178', 'port': 7709},  # 杭州
+    {'ip': '114.80.80.222', 'port': 7709},  # 上海
+    {'ip': '106.120.74.86', 'port': 7709},  # 北京
+    {'ip': '61.135.142.88', 'port': 7709},  # 北京
+    {'ip': '221.194.181.176', 'port': 7709},  # 北京
+    {'ip': '117.184.140.156', 'port': 7709},  # 移动
     {'ip': '123.125.108.24', 'port': 7709},
     {'ip': '123.125.108.23', 'port': 7709},
     {'ip': '218.75.126.9', 'port': 7709}, {
@@ -249,7 +251,6 @@ stock_ip_list = [
     {'ip': 'hq1.daton.com.cn', 'port': 7709}, {
         'ip': '119.29.51.30', 'port': 7709},
     {'ip': '114.67.61.70', 'port': 7709},
-    {'ip': '14.17.75.11', 'port': 7709},
     {'ip': '121.14.104.70', 'port': 7709}, {
         'ip': '121.14.104.72', 'port': 7709},
     {'ip': '112.95.140.74', 'port': 7709}, {

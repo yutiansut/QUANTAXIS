@@ -1032,6 +1032,23 @@ def QA_fetch_get_future_list(ip=None, port=None):
 
     return extension_market_list.query('market==42 or market==28 or market==29 or market==30 or market==47')
 
+def QA_fetch_get_globalindex_list(ip=None, port=None):
+    """全球指数列表
+
+    Keyword Arguments:
+        ip {[type]} -- [description] (default: {None})
+        port {[type]} -- [description] (default: {None})
+
+       37        11  全球指数(静态)         FW
+       12         5      国际指数         WI
+
+
+    """
+    global extension_market_list
+    extension_market_list = QA_fetch_get_extensionmarket_list(
+    ) if extension_market_list is None else extension_market_list
+
+    return extension_market_list.query('market==12 or market==37')
 
 def QA_fetch_get_goods_list(ip=None, port=None):
     """[summary]
@@ -1233,6 +1250,8 @@ def QA_fetch_get_50etf_option_contract_time_to_market():
 
     # df = pd.DataFrame()
     rows = []
+
+    result['meaningful_name'] = None
     for idx in result.index:
         # pprint.pprint((idx))
         strCategory = result.loc[idx, "category"]
@@ -1240,8 +1259,36 @@ def QA_fetch_get_50etf_option_contract_time_to_market():
         strCode = result.loc[idx, "code"]  # 10001215
         strName = result.loc[idx, 'name']  # 510050C9M03200
         strDesc = result.loc[idx, 'desc']  # 10001215
+
+
         if strName.startswith("510050"):
             # print(strCategory,' ', strMarket, ' ', strCode, ' ', strName, ' ', strDesc, )
+
+            if strName.startswith("510050C"):
+                putcall = '50ETF,认购期权'
+            elif strName.startswith("510050P"):
+                putcall = '50ETF,认沽期权'
+
+
+            expireMonth = strName[7:8]
+            if expireMonth == 'A':
+                expireMonth = "10月"
+            elif expireMonth == 'B':
+                expireMonth = "11月"
+            elif expireMonth == 'C':
+                expireMonth = "12月"
+            else:
+                expireMonth = expireMonth + '月'
+
+            if strName[8:9] == "M":
+                adjust = "未调整"
+            else:
+                adjust = "以调整"
+
+            executePrice = strName[9:]
+
+            result.loc[idx, 'meaningful_name'] = '%s,到期月份:%s,%s,行权价:%s'%(putcall, expireMonth, adjust, executePrice)
+
             row = result.loc[idx]
             rows.append(row)
     return rows
@@ -1266,6 +1313,7 @@ def QA_fetch_get_commodity_option_CU_contract_time_to_market():
 
     # df = pd.DataFrame()
     rows = []
+    result['meaningful_name'] = None
     for idx in result.index:
         # pprint.pprint((idx))
         strCategory = result.loc[idx, "category"]
@@ -1302,6 +1350,7 @@ def QA_fetch_get_commodity_option_M_contract_time_to_market():
     '''
     # df = pd.DataFrame()
     rows = []
+    result['meaningful_name'] = None
     for idx in result.index:
         # pprint.pprint((idx))
         strCategory = result.loc[idx, "category"]
@@ -1338,6 +1387,7 @@ def QA_fetch_get_commodity_option_SR_contract_time_to_market():
     '''
     # df = pd.DataFrame()
     rows = []
+    result['meaningful_name'] = None
     for idx in result.index:
         # pprint.pprint((idx))
         strCategory = result.loc[idx, "category"]
@@ -1584,6 +1634,8 @@ QA_fetch_get_exchangerate_min = QA_fetch_get_future_min
 QA_fetch_get_macroindex_day = QA_fetch_get_future_day
 QA_fetch_get_macroindex_min = QA_fetch_get_future_min
 
+QA_fetch_get_globalindex_day = QA_fetch_get_future_day
+QA_fetch_get_globalindex_min = QA_fetch_get_future_min
 
 def QA_fetch_get_wholemarket_list():
     hq_codelist = QA_fetch_get_stock_list(

@@ -102,6 +102,7 @@ def QA_SU_save_future_list(engine, client=DATABASE):
     engine = select_save_engine(engine)
     engine.QA_SU_save_future_list(client=client)
 
+
 def QA_SU_save_future_day(engine, client=DATABASE):
     """save future_day
 
@@ -116,6 +117,20 @@ def QA_SU_save_future_day(engine, client=DATABASE):
     engine.QA_SU_save_future_day(client=client)
 
 
+def QA_SU_save_future_day_all(engine, client=DATABASE):
+    """save future_day_all
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_future_day_all(client=client)
+
+
 def QA_SU_save_future_min(engine, client=DATABASE):
     """save future_min
     Arguments:
@@ -128,6 +143,19 @@ def QA_SU_save_future_min(engine, client=DATABASE):
     engine = select_save_engine(engine)
     engine.QA_SU_save_future_min(client=client)
 
+
+def QA_SU_save_future_min_all(engine, client=DATABASE):
+    """[summary]
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_future_min_all(client=client)
 
 
 def QA_SU_save_stock_day(engine, client=DATABASE):
@@ -144,6 +172,17 @@ def QA_SU_save_stock_day(engine, client=DATABASE):
     engine.QA_SU_save_stock_day(client=client)
 
 
+def QA_SU_save_option_contract_list(engine, client=DATABASE):
+    '''
+
+    :param engine: 
+    :param client: 
+    :return: 
+    '''
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_option_contract_list(client=client)
+
+
 def QA_SU_save_option_day(engine, client=DATABASE):
     '''
 
@@ -153,7 +192,6 @@ def QA_SU_save_option_day(engine, client=DATABASE):
     '''
     engine = select_save_engine(engine)
     engine.QA_SU_save_option_day(client=client)
-
 
 
 def QA_SU_save_option_min(engine, client=DATABASE):
@@ -175,6 +213,7 @@ def QA_SU_save_option_commodity_min(engine, client=DATABASE):
     '''
     engine = select_save_engine(engine)
     engine.QA_SU_save_option_commodity_min(client=client)
+
 
 def QA_SU_save_option_commodity_day(engine, client=DATABASE):
     '''
@@ -348,14 +387,18 @@ def QA_SU_crawl_eastmoney(action="zjlx", stockCode=None):
 def QA_SU_save_financialfiles():
     return save_financialfiles.QA_SU_save_financial_files()
 
+
 def QA_SU_save_report_calendar_day():
     return save_financial_calendar.QA_SU_save_report_calendar_day()
+
 
 def QA_SU_save_report_calendar_his():
     return save_financial_calendar.QA_SU_save_report_calendar_his()
 
+
 def QA_SU_save_stock_divyield_day():
     return save_stock_divyield.QA_SU_save_stock_divyield_day()
+
 
 def QA_SU_save_stock_divyield_his():
     return save_stock_divyield.QA_SU_save_stock_divyield_his()

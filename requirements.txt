@@ -7,12 +7,12 @@ requests
 numpy>=1.12.0
 pytesseract
 flask_socketio
-flask-sockets>=0.2.1 
+flask-sockets>=0.2.1
 gevent-websocket>=0.10.1
 apscheduler>=3.3.1
 tornado
 zenlog
-flask-socketio 
+flask-socketio
 flask
 pyecharts
 protobuf>=3.4
@@ -21,8 +21,6 @@ retrying
 seaborn>=0.8.1
 selenium
 scrapy
-pyecharts_snapshot
 attrs>=17.4.0
 pyconvert>=0.6.3
 demjson>=2.2.4
-pymssql>=2.1.4

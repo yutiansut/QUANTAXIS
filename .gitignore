@@ -22,6 +22,7 @@ node_modules/
 QA_*.html
 test/
 *lock.json
+docs
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -147,8 +147,7 @@ class QA_DataStruct_Stock_day(_quotation_base):
         except:
             return None
 
-    pre_close=preclose
-
+    pre_close = preclose
 
     @property
     def price_chg(self):
@@ -167,18 +166,15 @@ class QA_DataStruct_Stock_day(_quotation_base):
     def month(self):
         return self.resample('M')
 
-
     @property
     @lru_cache()
     def quarter(self):
         return self.resample('Q')
 
-
     # @property
     # @lru_cache()
     # def semiannual(self):
     #     return self.resample('SA')
-
 
     @property
     @lru_cache()
@@ -200,10 +196,10 @@ class QA_DataStruct_Stock_min(_quotation_base):
         try:
             if 'preclose' in DataFrame.columns:
                 self.data = DataFrame.loc[:, [
-                    'open', 'high', 'low', 'close', 'volume', 'amount', 'preclose']]
+                    'open', 'high', 'low', 'close', 'volume', 'amount', 'preclose', 'type']]
             else:
                 self.data = DataFrame.loc[:, [
-                    'open', 'high', 'low', 'close', 'volume', 'amount']]
+                    'open', 'high', 'low', 'close', 'volume', 'amount', 'type']]
         except Exception as e:
             raise e
 
@@ -216,7 +212,7 @@ class QA_DataStruct_Stock_min(_quotation_base):
         self.type = dtype
         self.if_fq = if_fq
 
-        self.data=self.data.sort_index()
+        self.data = self.data.sort_index()
 
     # 抽象类继承
     def choose_db(self):
@@ -316,6 +312,38 @@ class QA_DataStruct_Future_day(_quotation_base):
         return '< QA_DataStruct_Future_day with {} securities >'.format(len(self.code))
     __str__ = __repr__
 
+    @property
+    @lru_cache()
+    def week(self):
+        return self.resample('w')
+
+    @property
+    @lru_cache()
+    def month(self):
+        return self.resample('M')
+
+    @property
+    @lru_cache()
+    def quarter(self):
+        return self.resample('Q')
+
+    # @property
+    # @lru_cache()
+    # def semiannual(self):
+    #     return self.resample('SA')
+
+    @property
+    @lru_cache()
+    def year(self):
+        return self.resample('Y')
+
+    def resample(self, level):
+        try:
+            return self.add_func(QA_data_day_resample, level).sort_index()
+        except Exception as e:
+            print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
+            return None
+
 
 class QA_DataStruct_Future_min(_quotation_base):
     """
@@ -327,19 +355,18 @@ class QA_DataStruct_Future_min(_quotation_base):
         super().__init__(DataFrame, dtype, if_fq)
         self.type = 'future_day'
         self.data = self.data.loc[:, [
-            'open', 'high', 'low', 'close', 'trade', 'position', 'price','tradetime']]
+            'open', 'high', 'low', 'close', 'trade', 'position', 'price', 'tradetime', 'type']]
         self.if_fq = if_fq
 
     # 抽象类继承
     def choose_db(self):
         self.mongo_coll = DATABASE.future_min
 
-
     @property
     @lru_cache()
     def trade_date(self):
         """返回交易所日历下的日期
-        
+
         Returns:
             [type] -- [description]
         """
@@ -348,7 +375,7 @@ class QA_DataStruct_Future_min(_quotation_base):
             return self.data.trade_date
         except:
             return None
-        
+
     @property
     @lru_cache()
     def min5(self):
@@ -372,6 +399,13 @@ class QA_DataStruct_Future_min(_quotation_base):
     def __repr__(self):
         return '< QA_DataStruct_Future_min with {} securities >'.format(len(self.code))
     __str__ = __repr__
+
+    def resample(self, level):
+        try:
+            return self.add_func(QA_data_min_resample, level).sort_index()
+        except Exception as e:
+            print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
+            return None
 
 
 class QA_DataStruct_Index_day(_quotation_base):
@@ -400,6 +434,38 @@ class QA_DataStruct_Index_day(_quotation_base):
         return '< QA_DataStruct_Index_day with {} securities >'.format(len(self.code))
     __str__ = __repr__
 
+    @property
+    @lru_cache()
+    def week(self):
+        return self.resample('w')
+
+    @property
+    @lru_cache()
+    def month(self):
+        return self.resample('M')
+
+    @property
+    @lru_cache()
+    def quarter(self):
+        return self.resample('Q')
+
+    # @property
+    # @lru_cache()
+    # def semiannual(self):
+    #     return self.resample('SA')
+
+    @property
+    @lru_cache()
+    def year(self):
+        return self.resample('Y')
+
+    def resample(self, level):
+        try:
+            return self.add_func(QA_data_day_resample, level).sort_index()
+        except Exception as e:
+            print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
+            return None
+
 
 class QA_DataStruct_Index_min(_quotation_base):
     '自定义的分钟线数据结构'
@@ -409,7 +475,7 @@ class QA_DataStruct_Index_min(_quotation_base):
         self.type = dtype
         self.if_fq = if_fq
         self.data = self.data.loc[:, [
-            'open', 'high', 'low', 'close', 'up_count', 'down_count', 'volume', 'amount']]
+            'open', 'high', 'low', 'close', 'up_count', 'down_count', 'volume', 'amount', 'type']]
         #self.mongo_coll = DATABASE.index_min
 
     # 抽象类继承
@@ -418,7 +484,7 @@ class QA_DataStruct_Index_min(_quotation_base):
 
     def __repr__(self):
         return '< QA_DataStruct_Index_Min with %s securities >' % len(self.code)
-        
+
     @property
     @lru_cache()
     def min5(self):
@@ -438,6 +504,13 @@ class QA_DataStruct_Index_min(_quotation_base):
     @lru_cache()
     def min60(self):
         return self.resample('60min')
+
+    def resample(self, level):
+        try:
+            return self.add_func(QA_data_min_resample, level).sort_index()
+        except Exception as e:
+            print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
+            return None
 
     __str__ = __repr__
 
@@ -913,3 +986,64 @@ class QA_DataStruct_Security_list():
 
     def get_etf(self):
         return self.data
+
+
+class QA_DataStruct_Future_tick():
+    """
+    CTP FORMAT
+    {'TradingDay': '20181115',
+    'InstrumentID': 'rb1901',
+    'ExchangeID': '',
+    'ExchangeInstID': '',
+    'LastPrice': 3874.0,
+    'PreSettlementPrice': 3897.0,
+    'PreClosePrice': 3937.0,
+    'PreOpenInterest': 2429820.0,
+    'OpenPrice': 3941.0,
+    'HighestPrice': 3946.0,
+    'LowestPrice': 3865.0,
+    'Volume': 2286142,
+    'Turnover': 89450228460.0,
+    'OpenInterest': 2482106.0,
+    'ClosePrice': 1.7976931348623157e+308,
+    'SettlementPrice': 1.7976931348623157e+308,
+    'UpperLimitPrice': 4169.0,
+    'LowerLimitPrice': 3624.0,
+    'PreDelta': 0.0,
+    'CurrDelta': 1.7976931348623157e+308,
+    'BidPrice1': 3873.0,
+    'BidVolume1': 292,
+    'AskPrice1': 3874.0,
+    'AskVolume1': 223,
+    'BidPrice2': 1.7976931348623157e+308,
+    'BidVolume2': 0,
+    'AskPrice2': 1.7976931348623157e+308,
+    'AskVolume2': 0,
+    'BidPrice3': 1.7976931348623157e+308,
+    'BidVolume3': 0,
+    'AskPrice3': 1.7976931348623157e+308,
+    'AskVolume3': 0,
+    'BidPrice4': 1.7976931348623157e+308,
+    'BidVolume4': 0,
+    'AskPrice4': 1.7976931348623157e+308,
+    'AskVolume4': 0,
+    'BidPrice5': 1.7976931348623157e+308,
+    'BidVolume5': 0,
+    'AskPrice5': 1.7976931348623157e+308,
+    'AskVolume5': 0,
+    'AveragePrice': 39127.15328269198,
+    'ActionDay': '20181115'
+    'UpdateTime': '11:30:01',
+    'UpdateMillisec': 0,}
+
+    replace(1.7976931348623157e+308, np.nan)
+    """
+
+    def __init__(self, data={}):
+        self.data = data
+
+    def trading_day(self, ):
+        pass
+
+    def append(self, new_data):
+        pass
