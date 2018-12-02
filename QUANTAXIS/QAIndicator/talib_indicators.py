@@ -27,7 +27,7 @@ import pandas as pd
 try:
     import talib
 except:
-    print('请安装TALIB后再调用此函数')
+    print('PLEASE install TALIB to call these methods')
 
 
 def AD(DataFrame):
@@ -486,5 +486,3 @@ def STOCHF(DataFrame, fastk_period=5, fastd_period=3, fastd_matype=0):
     fastk, fastd = talib.STOCHF(DataFrame.high.values, DataFrame.low.values, DataFrame.close.values,
                                fastk_period, fastd_period, fastd_matype)
     return pd.DataFrame({'STOCHF_FASTK': fastk, 'STOCHF_FASTD': slowd}, index=DataFrame.index)
-
-
