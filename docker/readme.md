@@ -4,6 +4,7 @@ docker images for QUANTAXIS: https://github.com/QUANTAXIS/QUANTAXIS
 qa-base: QA 基础镜像
 qa-cron: cron 镜像, 每天19:00自动更新数据(update_all.py)，如需更改计划任务，请自行制作py文件并更新Dockerfile
 qa-jupyter: jupyter lab 镜像，端口8888，没有登录密码，如需制定密码，请自行更改jupyter_notebook_config.py 文件
+qa-web: websocket 服务镜像，端口8010
 
 
 ## 第一次部署：
