@@ -80,6 +80,11 @@
 7. 增加了1min的股票采样
 8. 增加CTPtick的获取和采样
 9. 重新构建docker compose，把主镜像拆分jupyter, cron和web三个镜像
+10. 修改了QAFetch的mongo查询语句(感谢几何大佬) 优雅的在查询中去掉了_id  
+
+```
+mongo文档参见 https://docs.mongodb.com/manual/tutorial/project-fields-from-query-results/#return-the-specified-fields-and-the-id-field-only
+```
 
 ## 1.2.0
 
