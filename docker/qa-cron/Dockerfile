@@ -1,4 +1,4 @@
-FROM barretthugh/qa-basic
+FROM barretthugh/qa-base
 
 COPY daily_update /etc/cron.d/daily_update
 COPY entrypoint.sh /entrypoint.sh
