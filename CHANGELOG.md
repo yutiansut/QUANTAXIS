@@ -79,6 +79,7 @@
 6. 增加对于jqdata的使用示例
 7. 增加了1min的股票采样
 8. 增加CTPtick的获取和采样
+9. 重新构建docker compose，把主镜像拆分jupyter, cron和web三个镜像
 
 ## 1.2.0
 
