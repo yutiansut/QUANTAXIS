@@ -70,6 +70,7 @@
 
 <!-- /TOC -->
 ## 1.2.2(unreleased)
+
 1. 重新构建docker compose，把主镜像拆分jupyter, cron和web三个镜像
 2. 修改了QAFetch的mongo查询语句(感谢几何大佬) 优雅的在查询中去掉了_id  
 
