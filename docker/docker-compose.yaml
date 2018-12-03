@@ -3,7 +3,6 @@ services:
     qa:
         image: barretthugh/qa-jupyter
         ports:
-            - "8010:8010"
             - "8888:8888"
         environment:
           - MONGODB=mgdb
@@ -11,6 +10,14 @@ services:
 
     qacron:
         image: barretthugh/qa-cron
+        environment:
+            - MONGODB=mgdb
+        restart: always
+
+    qaweb:
+        image: barretthugh/qa-web
+        ports:
+            - "8010:8010"
         environment:
             - MONGODB=mgdb
         restart: always
