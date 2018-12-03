@@ -3,7 +3,8 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.2.1 (unreleased)](#121unreleased)
+    - [1.2.2 (unreleased)](#122unreleased)
+    - [1.2.1 ](#121)
     - [1.2.0](#120)
     - [1.1.10](#1110)
     - [1.1.9](#119)
@@ -68,7 +69,17 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
-## 1.2.1(unreleased)
+## 1.2.2(unreleased)
+
+1. 重新构建docker compose，把主镜像拆分jupyter, cron和web三个镜像
+2. 修改了QAFetch的mongo查询语句(感谢几何大佬) 优雅的在查询中去掉了_id  
+
+```
+mongo文档参见 https://docs.mongodb.com/manual/tutorial/project-fields-from-query-results/#return-the-specified-fields-and-the-id-field-only
+```
+
+
+## 1.2.1
 
 1. 修改回测的时候的账户结算(终于算对了不容易...) @CODE-ORANGE
 具体看 [期货冻结-释放资金示例](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/EXAMPLE/test_backtest/FUTURE/%E6%9C%9F%E8%B4%A7TEST.ipynb)
@@ -79,12 +90,6 @@
 6. 增加对于jqdata的使用示例
 7. 增加了1min的股票采样
 8. 增加CTPtick的获取和采样
-9. 重新构建docker compose，把主镜像拆分jupyter, cron和web三个镜像
-10. 修改了QAFetch的mongo查询语句(感谢几何大佬) 优雅的在查询中去掉了_id  
-
-```
-mongo文档参见 https://docs.mongodb.com/manual/tutorial/project-fields-from-query-results/#return-the-specified-fields-and-the-id-field-only
-```
 
 ## 1.2.0
 
