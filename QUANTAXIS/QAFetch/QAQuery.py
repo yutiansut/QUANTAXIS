@@ -419,7 +419,7 @@ def QA_fetch_future_tick():
     raise NotImplementedError
 
 
-def QA_fetch_ctp_tick(code, format='pd', collections=DATABASE.ctp_tick):
+def QA_fetch_ctp_tick(code, start, end, frequence, format='pd', collections=DATABASE.ctp_tick):
     """仅供存储的ctp tick使用
 
     Arguments:
