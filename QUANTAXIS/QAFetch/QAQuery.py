@@ -419,7 +419,7 @@ def QA_fetch_future_tick():
     raise NotImplementedError
 
 
-def QA_fetch_ctp_tick(code, format='pd', collections=DATABASE.ctp_tick):
+def QA_fetch_ctp_tick(code, start, end, frequence, format='pd', collections=DATABASE.ctp_tick):
     """仅供存储的ctp tick使用
 
     Arguments:
@@ -442,12 +442,12 @@ def QA_fetch_ctp_tick(code, format='pd', collections=DATABASE.ctp_tick):
     }, {"_id": 0}, batch_size=10000)
 
     hq = pd.DataFrame([data for data in cursor]).replace(1.7976931348623157e+308,
-                                                         np.nan).replace('', np.nan).dropna(axis=1)
+                                                         numpy.nan).replace('', numpy.nan).dropna(axis=1)
     p1 = hq.loc[:, ['ActionDay', 'AskPrice1', 'AskVolume1', 'AveragePrice', 'BidPrice1',
                     'BidVolume1', 'HighestPrice', 'InstrumentID', 'LastPrice',
                     'OpenInterest', 'TradingDay', 'UpdateMillisec',
                     'UpdateTime', 'Volume']]
-    p1 = p1.assign(datetime=p1.ActionDay.apply(QA.QAUtil.QADate.QA_util_date_int2str)+' '+p1.UpdateTime + (p1.UpdateMillisec/1000000).apply(lambda x: str('%.6f' % x)[1:]),
+    p1 = p1.assign(datetime=p1.ActionDay.apply(QA_util_date_int2str)+' '+p1.UpdateTime + (p1.UpdateMillisec/1000000).apply(lambda x: str('%.6f' % x)[1:]),
                    code=p1.InstrumentID)
     p1.datetime = pd.to_datetime(p1.datetime)
     return p1.set_index(p1.datetime)
