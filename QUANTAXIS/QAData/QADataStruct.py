@@ -301,7 +301,7 @@ class QA_DataStruct_Future_day(_quotation_base):
         super().__init__(DataFrame, dtype, if_fq)
         self.type = 'future_day'
         self.data = self.data.loc[:, [
-            'open', 'high', 'low', 'close', 'trade', 'position', 'price']]
+            'open', 'high', 'low', 'close', 'volume', 'position', 'price']]
         self.if_fq = if_fq
 
     # 抽象类继承
@@ -355,7 +355,7 @@ class QA_DataStruct_Future_min(_quotation_base):
         super().__init__(DataFrame, dtype, if_fq)
         self.type = 'future_day'
         self.data = self.data.loc[:, [
-            'open', 'high', 'low', 'close', 'trade', 'position', 'price', 'tradetime', 'type']]
+            'open', 'high', 'low', 'close', 'volume', 'position', 'price', 'tradetime', 'type']]
         self.if_fq = if_fq
 
     # 抽象类继承
