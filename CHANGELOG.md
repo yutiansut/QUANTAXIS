@@ -73,6 +73,7 @@
 
 1. 重新构建docker compose，把主镜像拆分jupyter, cron和web三个镜像
 2. 修改了QAFetch的mongo查询语句(感谢几何大佬) 优雅的在查询中去掉了_id  
+3. 修正期货的DataStruct格式,统一volume字段
 
 ```
 mongo文档参见 https://docs.mongodb.com/manual/tutorial/project-fields-from-query-results/#return-the-specified-fields-and-the-id-field-only
