@@ -3,8 +3,6 @@ FROM barretthugh/qa-base
 COPY requirements.txt /requirements.txt
 COPY entrypoint.sh /entrypoint.sh
 COPY jupyter_notebook_config.py /root/.jupyter/
-# COPY pip.conf /root/.pip/pip.conf   mirror in China
-# COPY source.list /etc/apt/sources.list  mirror in China
 
 WORKDIR home
 
