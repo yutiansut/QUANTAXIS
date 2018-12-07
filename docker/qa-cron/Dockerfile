@@ -14,6 +14,4 @@ RUN apt-get update \
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-
-
 CMD ["cron", "-f"]
