@@ -65,6 +65,7 @@ class _quotation_base():
             DataFrame = DataFrame.assign(volume=DataFrame.vol)
         if 'volume' not in DataFrame.columns and 'trade' in DataFrame.columns:
             DataFrame = DataFrame.assign(volume=DataFrame.trade)
+        #print(DataFrame)
         # 🛠todo 判断DataFame 对象字段的合法性，是否正确
         self.data = DataFrame.drop_duplicates().sort_index()
         self.data.index = self.data.index.remove_unused_levels()
