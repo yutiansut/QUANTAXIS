@@ -167,11 +167,17 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 #### 1.6.2 期货(python3 CTP win/mac/linux)
 
-参见 [LINUX CTP](QUANTAXIS_Trade/LINUXCTP)
+1. CTP 的websocket交易 :  simnow demo:  ws://www.yutiansut.com:7988
+2. CTP 的海风broker魔改封装:  [QA_AtBroker](https://github.com/QUANTAXIS/QA_AtBroker)
 
-参见 [WINDOWS CTP](QUANTAXIS_Trade/WindowsCTP)
 
-### 1.7 网站HTTP服务
+关于websocket交易(可能存在一些不确定的bug 因此暂时不开放):
+
+- 目前仅提供demo/ 模拟盘接入
+- 具体需要私聊我 yutiansut@qq.com
+
+
+### 1.7 网站HTTP服务(目前已经独立为 QUANTAXIS_WEBSERVICE)
 
 #### 1.7.1 网站后台标准化接口
 
