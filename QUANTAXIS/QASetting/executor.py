@@ -47,7 +47,7 @@ def execute(command, shell=None, working_dir=".", echo=False, echo_indent=0):
         >>> return_code, text = execute("dir")
     """
     if shell is None:
-        shell = True if isinstance(command, basestring) else False
+        shell = True if isinstance(command, str) else False
 
     p = Popen(command, stdin=PIPE, stdout=PIPE,
               stderr=STDOUT, shell=shell, cwd=working_dir)

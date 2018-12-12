@@ -3,7 +3,29 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.0.66 (unreleased)](#1066-unreleased)
+    - [1.2.2 (unreleased)](#122unreleased)
+    - [1.2.1 ](#121)
+    - [1.2.0](#120)
+    - [1.1.10](#1110)
+    - [1.1.9](#119)
+    - [1.1.8](#118)
+    - [1.1.7](#117)
+    - [1.1.6](#116)
+    - [1.1.5](#115)
+    - [1.1.4.dev1](#114dev1)
+    - [1.1.4](#114)
+    - [1.1.3.dev3](#113dev3)
+    - [1.1.3.dev2](#113dev2)
+    - [1.1.3.dev1](#113dev1)
+    - [1.1.3](#113)
+    - [1.1.2.dev1](#112dev1)
+    - [1.1.2](#112)
+    - [1.1.1.dev2](#111dev2)
+    - [1.1.1.dev1](#111dev1)
+    - [1.1.0](#110)
+    - [1.0.68](#1068)
+    - [1.0.67](#1067)
+    - [1.0.66](#1066)
     - [1.0.65](#1065)
     - [1.0.64](#1064)
     - [1.0.63](#1063)
@@ -47,10 +69,354 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
-## 1.0.66 (unreleased)
+## 1.2.2(unreleased)
+
+1. 重新构建docker compose，把主镜像拆分jupyter, cron和web三个镜像
+2. 修改了QAFetch的mongo查询语句(感谢几何大佬) 优雅的在查询中去掉了_id  
+3. 修正期货的DataStruct格式,统一volume字段
+
+```
+mongo文档参见 https://docs.mongodb.com/manual/tutorial/project-fields-from-query-results/#return-the-specified-fields-and-the-id-field-only
+```
+
+
+## 1.2.1
+
+1. 修改回测的时候的账户结算(终于算对了不容易...) @CODE-ORANGE
+具体看 [期货冻结-释放资金示例](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/EXAMPLE/test_backtest/FUTURE/%E6%9C%9F%E8%B4%A7TEST.ipynb)
+2. 增加 对于单月合约的存储  save future_all/ future_day_all / future_min_all
+3. 增加对于future_data 的获取的去重处理
+4. @barretthugh 修改了复权部分的代码
+5. 优化了docker部分的使用
+6. 增加对于jqdata的使用示例
+7. 增加了1min的股票采样
+8. 增加CTPtick的获取和采样
+
+## 1.2.0
+
+1. 增加对期货保证金冻结的修改
+2. 增加对于TALIB的支持, 在talib_indicators中调用
+3. 增加对于50ETF的支持
+4. 优化cirrusCI的支持
+
+
+## 1.1.10
+
+1. 减少了一个深圳主站的服务器ip
+2. 优化精简无用代码
+3. 删除pymssql依赖
+4. 优化了实盘易broker的一个小bug
+5. 添加bitmex数据下载
+6. 增加期权部分的列表等修改
+7. 增加了命令行操作
+8. 增加了分布式worker quantaxis_run (单独更新[QUANTAXIS/QUANTAXIS_RUN](https://github/quantaxis/quantaxis_run))
+9. QAWEB 单独拆分成独立项目 [QUANTAXIS/QUANTAXIS_WEBSERVER](https://github.com/QUANTAXIS/QUANTAXIS_WEBSERVER)
+
+## 1.1.9
+
+为1.1.8的released版本
+
+## 1.1.8
+
+1. 增加了商品期权的分钟线获取
+2. 优化了QA_Account的存储
+3. 修复了QA_PortfolioView的bug
+4. DataStruct 增加了 rolling(N), ndarray的方法
+5. QAWEB增加对策略的存储功能
+6. QADataStruct增加get_data函数,方便获取各种格式的数据
+7. QADataStruct增加 apply函数 方便对自己应用函数
+8. 增加了对于QA_Performance插件中先卖后买算差价的支持
+9. QAMarket=QAShipaneBroker 支持通达信模拟客户端
+10. QAIndicator 增加Talib的形态识别指标
+11. 增加了qarun.exe 直接运行策略,实时输出
+12. QAWEB 增加了/command/run?command=xxxx的命令行
+13. QAWeb 增加了一个socket端口 /command/runbacktest
+
+不兼容修改:
+
+QAWeb 中/accounts/all 返回值修改 为list(之前是dict)
+
+[released] 版本的版本号记错了 实际为1.1.9
+
+## 1.1.7 
+
+1. 优化 QA_DataStruct_future_day/min
+2. 增加了QA_fetch_xxx_adv系列中的  QA_fetch_future_day_adv/QA_fetch_future_min_adv函数
+3. 增加了QA_DataStruct的reindex方法, 方便从指标中提取部分行情
+4. 增加了商品期权的支持
+
+to do:
+
+- 我们考虑在未来将QA_Crawl项目单独列出, 以免过多的无用依赖项
+
+
+## 1.1.6
+
+1. 优化QAWeb
+2. 增加QASU中的QA_SU_save_strategy,用于保存策略
+3. 优化QARisk/QAAccount的存储
+4. 增加客户端 QUANTAXIS/QADesktop, 版本0.0.3
+5. 优化QAFinancial的字段解析
+6. 增加期货主连数据存储
+7. 增加期货数据本地获取(QA_fetch_future_day/QA_fetch_future_list)
+8. 修复了回测中账户的计算的bug,该bug会导致账户长期持仓/空仓的时候缺少记录
+
+## 1.1.5
+
+1. 修复了QA_Account的history_header在以前版本的不兼容问题
+2. 增加receive_simpledeal函数接口,方便快速成交
+3. QA_Parameter中ORDER_DIRECTION的买开买平卖开卖平的字段修改
+4. 修复QA_data_tick_resample中的bug
+5. 增加了对于QA_Risk中存储的Risk_message的字段
+6. 增加了对于QA_Risk的存储兼容
+7. 增加了存储策略的代码
+8. 修改QAWeb, 增加了一个Rest的handler
+9. QA_DataStruct 增加 normalized 归一化方法, 支持多品种多周期
+10. 升级了linux一键安装文件, 升级一键安装的mongodb版本到4.0 删除nodejs的安装
+11. 删除quantaxis的logo和启动显示
+
+
+## 1.1.4.dev1
+
+1. base_datastruct 增加了 avg 和 money 字段
+
+
+## 1.1.4
+
+1. 修复了期货分钟线的获取bug(期货一天的交易时间超过4小时 不能用股票的bar数量)
+2. 修复了QAAccount的Allow_t0规则下的交易结转
+
+
+## 1.1.3.dev3
+
+1. 增加对于list获取的支持:
+
+    QA_fetch_index_list()
+
+    QA_fetch_index_list_adv()
+
+    QA_fetch_future_list()
+
+    QA_fetch_future_list_adv()
+
+2. 优化 QA_DataStruct的返回Series的名称
+3. 删除实盘易broker的TRADE_Event(已弃用)
+
+## 1.1.3.dev2
+
+1. 修复index_cn的列表获取
+
+2. 增加save index_list和save future_list 选项
+
+
+
+## 1.1.3.dev1
+
+1. 增加 async for 在3.5上的兼容问题
+
+
+## 1.1.3
+
+1. 增加对于期货分钟线回测的支持
+
+
+## 1.1.2.dev1
+
+[QAFetch]
+
+
+1. QA_Query 优化对于指数数据的字段
+
+[QAData]
+
+1. base_datastruct 优化对于指数DataStruct的支持
+
+
+
+## 1.1.2 
+
+[QAData]
+
+1. 修复分钟线降采样bug
+2. QADataStruct_Future_day/min 修改
+
+[QAMarket]
+
+1. 修改QADealer以支持期货回测
+
+[QARisk]
+
+1. 修改QARisk 以支持期货账户分析
+
+[test_backtest]
+
+1. 增加期货回测(日线) 简单回测示例
+
+## 1.1.1.dev2
+
+[QAARP]
+
+1. QA_Account 修改默认印花税 千1.5 ==> 千1
+
+[QAData]
+
+1. QA_DataStruct_xxx_day/min 增加 select_day(day) 函数, 一般用于分钟线选取某一日
+
+[test_backtest]
+
+1. 增加分钟线简单回测(单线程) 
+2. @尧 提供了一个日线级 多线程的带指标回测
+
+
+
+
+
+## 1.1.1.dev1
+
+[QAData]
+
+1. 修改了market_value的计算, 对于一日内出现多个权息事件的股票做了兼容处理
+
+
+## 1.1.0 
+
+[QAAnalysis]
+
+1. QA_Analysis_Block 修改 支持板块指数/自定义指数 以及4种计算方法
+
+[QAData]
+
+1. 修改了采样函数的写法
+2. 修复了tick采样成60min的bug
+3. 修复了因为multiindex导致的QA_DataStruct.to_json方法缺失 datetime/code 字段的问题
+4. 优化了QADataStruct的plot方法
+5. 新增自动计算任意时间 流动市值/总市值函数 QA_data_marketvalue  使用不复权DataStruct(DataStruct.add_func(QA_data_marketvalue))
+
+[QAMARKET]
+
+
+1. 增加对于实盘易的支持
+2. 将一些基础解析字段挪至基类QABroker中
+3. 基于QAMarket创建的broker/order线程全部变成后台线程
+4. QA_OrderHandler 增加持久化 订单/成交单部分
+5. 修改QAOrder 变成有限状态机, 通过状态机的动作自动改变Order的状态
+6. 修改QABacktest_Broker 适配新的order类
+7. 优化QABroker的状态显示
+8. 将撮合缓存字典重构进QADealer, dealer加入 deal_message(dict) 和deal_df(dataframe),并增加dealer的settle函数
+9. 大量更新QABacktest_Broker方法,使之适配新版本回测
+10. 适配实盘,增加字段解析 trade_towards_cn_en, order_status_cn_en
+11. 修改order的撮合机制, 使用创建order时的callback回调来更新账户
+
+
+[QAEngine]
+
+1. QAThread 初始化增加 daemon选项, 用于创建守护线程
+
+[QAARP]
+
+1. QA_Account 增加 cancel_order方法 撤单操作
+2. 重写QA_Account的receive_deal方法, 适配新版本更新账户
+3. 优化和修改QA_Portfolio 增加对于history/history_table的支持
+
+
+[QASU]
+
+1. save_orderhandler.py 增加 QA_SU_save_order/ QA_SU_save_deal 方法
+2. 增加对于运行时出错的容错处理
+
+[QAUtil]
+
+1. QADate_Trade 增加QA_util_get_order_datetime() 用于获取委托的真实日期 QA_util_get_trade_datetime() 用于获取成交的真实日期
+2. QA_Parameter 修改订单状态
+
+[QAWEB]
+
+1. QAWEB 增加查询股票名称的接口 http://ip:port/marketdata/stock/code?code=xxxxx
+
+released in 2018/08/23
+
+## 1.0.68 
+
+1. 更新了财务方法/财务类 QA_DataStruct_Financial
+
+    - QA.QA_fetch_financial_report(code,report_date)
+
+    其中, report_date 是需要手动指定的财务时间, 可以是单个时间,也可以是一列时间:
+    > '2018-03-31'  或者['2017-03-31','2017-06-30','2017-09-31','2017-12-31','2018-03-31']
+    > 此方法的意义在于指定特定的财务时间(如年报)
+    
+    返回的是一个MultiIndex的dataframe
+    
+    - QA.QA_fetch_financial_report_adv(code,start,end)
+
+    支持随意的跨时间索引, start 和end不用刻意指定
+
+    如果end不写,则start参数等同于report_date的用法
+
+    返回的是QA_DataStruct_Financial 类
+
+    - QA_DataStruct_Financial 类, 可以直接加载在基础方法返回的dataframe中
+
+    > QDF.get_report_by_date(code,date) 返回某个股票的某个时间点的财报
+
+    > QDF.get_key(code,date,key) 返回某个股票某个时间点的财报的某个指标
+
+2. 更改了两个财务字段:
+
+    - 159 流动比率: liquidityRatio  ==> currentRatio
+    - 211 流动资产比率:  liquidityRatio  ==> currentAssetsRatio
+        
+3. 使用md5计算财报数据包的更新状况,确保财报是最新状态
+4. DataStruct 更新自动降采样字段:
+
+    - DataStruct_Stock_day 增加
+        + week
+        + month
+        + year
+    - DataStruct_Stock_min 增加
+        + min5
+        + min15
+        + min30
+        + min60
+        
+    直接调用以后及可返回,如果失败,则返回None
+
+5. QADataStruct.pivot代码更新
+6. QADataStruct.to_qfq/hfq 更新
+
+( 此处切记:: 使用groupby之后的 data的index 一定要先做 remove_unused_levels()!!!)
+
+6. 添加了 QUANTAXIS_Monitor_GUI 目录，初步实现了 日周月年线下载的 PYQT5 界面。
+7. 对于DataStruct的stock_min的初始化进行了修改,之前有对datetime/code的选取, 现已经删除(dev 1)
+
+released in : July 19, 2018
+
+dev1 released in : July 20, 2018
+
+## 1.0.67 
+
+1. 修改了版本限制 增加3.7,3.8的支持
+2. 修改qatdx, 在获取部分不加入复权处理
+3. 修改reample, 和通达信的周线.月线标准一致
+
+released in : JULY 17, 2018
+
+## 1.0.66 
 
 1. 修改series_struct 适配单个index的情景
 2. 增加马科维茨有效前沿的研究/ 增加盘中涨停分析的研究 (research/)
+3. QA_DataStruct_Stock_realtime 类发布, 支持自采样
+
+```python
+# 给一个完整版的 (包含 DataStruct合并, DataStruct包装, DataStruct_Realtime采样)
+QA.concat([QA.QA_DataStruct_Stock_min(QA.QA_DataStruct_Stock_realtime(QA.QA_fetch_quotation('000636')).resample('1min')),
+          QA.QA_DataStruct_Stock_min(QA.QA_DataStruct_Stock_realtime(QA.QA_fetch_quotation('000001')).resample('1min'))])
+```
+4. 修改了QA.QAFetch.QATushare.QA_fetch_get_stock_info(name)的返回结果
+5. @逝去的亮光 增加了LINUX环境下的CTP撤单接口
+6. 增加了日线数据的降采样 QA.QA_data_day_resample(data,'w')
+
+released in : JULY 17, 2018
 
 ## 1.0.65 
 

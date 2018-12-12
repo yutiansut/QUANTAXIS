@@ -54,4 +54,3 @@ class QAError_web_connection(RuntimeError):
 class QAError_market_enging_down(RuntimeError):
     def __init__(self, res):
         RuntimeError.__init__(self, 'QA MARKET ENGING DOWN ERROR', res)
-

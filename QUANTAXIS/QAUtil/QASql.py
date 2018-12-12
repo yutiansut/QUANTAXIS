@@ -26,6 +26,7 @@ import pymongo
 from motor.motor_asyncio import AsyncIOMotorClient
 from motor import MotorClient
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
+import asyncio
 
 
 def QA_util_sql_mongo_setting(uri='mongodb://localhost:27017/quantaxis'):
@@ -40,15 +41,25 @@ def QA_util_sql_mongo_setting(uri='mongodb://localhost:27017/quantaxis'):
 
 def QA_util_sql_async_mongo_setting(uri='mongodb://localhost:27017/quantaxis'):
     """异步mongo示例
-    
+
     Keyword Arguments:
         uri {str} -- [description] (default: {'mongodb://localhost:27017/quantaxis'})
-    
+
     Returns:
         [type] -- [description]
     """
+    # loop = asyncio.new_event_loop()
+    # asyncio.set_event_loop(loop)
+    try:
+        loop = asyncio.get_event_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
 
-    return AsyncIOMotorClient(uri)
+    # async def client():
+    return AsyncIOMotorClient(uri, io_loop=loop)
+    # yield  client()
+
 
 
 ASCENDING = pymongo.ASCENDING

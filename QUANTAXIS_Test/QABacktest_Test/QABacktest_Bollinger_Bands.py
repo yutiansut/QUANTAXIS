@@ -8,7 +8,7 @@ import pandas as pd
 from QUANTAXIS.QAARP.QARisk import QA_Performance, QA_Risk
 from QUANTAXIS.QAARP.QAStrategy import QA_Strategy
 from QUANTAXIS.QAARP.QAUser import QA_User
-from QUANTAXIS.QABacktest.QABacktest import QA_Backtest
+from QUANTAXIS.QAApplication.QABacktest import QA_Backtest
 from QUANTAXIS.QAFetch import QAQuery_Advance
 from QUANTAXIS.QAIndicator import QA_indicator_BOLL
 from QUANTAXIS.QAUtil.QADate_trade import (QA_util_get_last_day,
@@ -93,7 +93,7 @@ class BollingerBandsStrategy(QA_Strategy):
                 print(today_on_bar, "上穿中轨道")
 
                 if self.sell_available is not None and self.sell_available.get(item, 0) == 0:
-                    event.send_order(account_id=self.account_cookie,
+                    event.send_order(account_cookie=self.account_cookie,
                                      amount=1000,
                                      amount_model=AMOUNT_MODEL.BY_AMOUNT,
                                      time=self.current_time,
@@ -109,7 +109,7 @@ class BollingerBandsStrategy(QA_Strategy):
                 print(today_on_bar, "下穿中轨道")
 
                 if self.sell_available is not None and self.sell_available.get(item, 0) > 0:
-                    event.send_order(account_id=self.account_cookie,
+                    event.send_order(account_cookie=self.account_cookie,
                                      amount=self.sell_available[item],
                                      amount_model=AMOUNT_MODEL.BY_AMOUNT,
                                      time=self.current_time,
@@ -128,7 +128,7 @@ class BollingerBandsStrategy(QA_Strategy):
             # todo 🛠 改成日期函数的比较
             if date1.year == 2018 and date1.month == 5 and date1.day == 16:
                 if self.sell_available is not None and self.sell_available.get(item, 0) > 0:
-                    event.send_order(account_id=self.account_cookie,
+                    event.send_order(account_cookie=self.account_cookie,
                                      amount=self.sell_available[item],
                                      amount_model=AMOUNT_MODEL.BY_AMOUNT,
                                      time=self.current_time,

@@ -23,14 +23,17 @@
 # SOFTWARE.
 import os
 import sys
-import pymongo
-from QUANTAXIS.QAFetch.QAfinancial import parse_all, download_financialzip,parse_filelist
 
+import pymongo
+
+from QUANTAXIS.QAFetch.QAfinancial import (download_financialzip, parse_all,
+                                           parse_filelist)
 from QUANTAXIS.QASetting.QALocalize import (cache_path, download_path, qa_path,
-                                         setting_path)
+                                            setting_path)
+from QUANTAXIS.QAUtil import DATABASE, QA_util_date_int2str
 from QUANTAXIS.QAUtil.QASql import ASCENDING, DESCENDING
 from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
-from QUANTAXIS.QAUtil import DATABASE,QA_util_date_int2str
+import datetime
 
 
 def QA_SU_save_financial_files():
@@ -42,26 +45,27 @@ def QA_SU_save_financial_files():
         [("code", ASCENDING), ("report_date", ASCENDING)], unique=True)
     for item in os.listdir(download_path):
         if item[0:4] != 'gpcw':
-            print("file " ,item , " is not start with gpcw , seems not a financial file , ignore!")
+            print(
+                "file ", item, " is not start with gpcw , seems not a financial file , ignore!")
             continue
 
-        date=int(item.split('.')[0][-8:])
+        date = int(item.split('.')[0][-8:])
         print('QUANTAXIS NOW SAVING {}'.format(date))
-        if coll.find({'report_date':date}).count()<100:
+        if coll.find({'report_date': date}).count() < 3600:
 
-            print(coll.find({'report_date':date}).count())
+            print(coll.find({'report_date': date}).count())
             data = QA_util_to_json_from_pandas(parse_filelist([item]).reset_index(
             ).drop_duplicates(subset=['code', 'report_date']).sort_index())
+            # data["crawl_date"] = str(datetime.date.today())
             try:
                 coll.insert_many(data, ordered=False)
 
             except Exception as e:
-                if isinstance(e,MemoryError):
+                if isinstance(e, MemoryError):
                     coll.insert_many(data, ordered=True)
-                elif isinstance(e,pymongo.bulk.BulkWriteError):
+                elif isinstance(e, pymongo.bulk.BulkWriteError):
                     pass
         else:
             print('ALL READY IN DATABASE')
-        
 
     print('SUCCESSFULLY SAVE/UPDATE FINANCIAL DATA')
