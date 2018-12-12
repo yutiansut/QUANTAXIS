@@ -1,35 +1,47 @@
----
-name: Bug report
-about: Create a report to help us improve
+# 问题反馈
 
----
+当您安装/使用QUANTAXIS的时候如果遇到任何问题, 您可以在这里提出,我们会在24小时内给您答复
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+## 您使用的QUANTAXIS版本号是什么?
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+```
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+```
+## 您的系统信息(包括系统版本,系统架构(32/64),内存大小等等)
+```
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
 
-**Additional context**
-Add any other context about the problem here.
+
+
+
+```
+
+## 您的系统环境是什么?
+```
+- monodb
+- nodejs(V9以下版本)
+- python3.5/3.6
+- docker(有无)
+```
+## 您需要反馈的问题
+```
+
+
+```
+## 感谢您的反馈 如有意见和建议,请在此说明:
+```
+
+
+
+```
+## 您的联系方式(QQ/EMAIL)
+```
+
+```
+
+
+THANKS
+by yutiansut
+2017.12

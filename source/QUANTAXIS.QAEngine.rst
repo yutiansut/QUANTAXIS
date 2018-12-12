@@ -4,6 +4,14 @@ QUANTAXIS.QAEngine package
 Submodules
 ----------
 
+QUANTAXIS.QAEngine.QAAsyncioEngine module
+-----------------------------------------
+
+.. automodule:: QUANTAXIS.QAEngine.QAAsyncioEngine
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 QUANTAXIS.QAEngine.QAEvent module
 ---------------------------------
 

@@ -4,10 +4,10 @@ QUANTAXIS.QACmd package
 Submodules
 ----------
 
-QUANTAXIS.QACmd.backtest module
--------------------------------
+QUANTAXIS.QACmd.runner module
+-----------------------------
 
-.. automodule:: QUANTAXIS.QACmd.backtest
+.. automodule:: QUANTAXIS.QACmd.runner
     :members:
     :undoc-members:
     :show-inheritance:

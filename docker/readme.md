@@ -1,92 +1,81 @@
-# 使用Docker建立QUANTAXIS执行环境
+docker images for QUANTAXIS: https://github.com/QUANTAXIS/QUANTAXIS
 
-<!-- TOC -->
-
-- [使用Docker建立QUANTAXIS执行环境](#使用docker建立quantaxis执行环境)
-    - [QUANTAXIS的镜像](#quantaxis的镜像)
-    - [1.获取QUANTAIS镜像](#1获取quantais镜像)
-        - [1.1 执行以下命令获取镜像(2选1)](#11-执行以下命令获取镜像2选1)
-        - [1.2 运行镜像](#12-运行镜像)
-        - [在浏览器中打开以下链接](#在浏览器中打开以下链接)
-        - [其他注意选项](#其他注意选项)
-
-<!-- /TOC -->
+## 镜像说明：
+qa-base: QA 基础镜像  
+qa-cron: cron 镜像, 每天19:00自动更新数据(update_all.py)，如需更改计划任务，请自行制作py文件并更新Dockerfile  
+qa-jupyter: jupyter lab 镜像，端口8888，没有登录密码，如需制定密码，请自行更改jupyter_notebook_config.py 文件  
+qa-web: websocket 服务镜像，端口8010  
+mgdb: mongodb 数据库镜像，端口27017  
 
 
-## QUANTAXIS的镜像
+## 第一次部署：
+```
+1. 为mongodb创建 docker volume
+  docker volume create qamg
 
-quantaxis/quantaxis
-
-## 1.获取QUANTAIS镜像
-
-首先，到[docker网站](https://www.docker.com/)下载相应的版本，并创建账号（注意：登录docker账号才能下载镜像）
-
-(如果国外网站下载速度过慢,windows版本的docker安装文件群共享有)
-
-
-### 1.1 执行以下命令获取镜像(2选1)
-
-
-```shell
-
-docker pull quantaxis/quantaxis
-
-
+2. 启动 QUANTAXIS 服务 （包括 QUANTAXIS，自动更新服务，数据库, 重新打开docker程序后，所有服务会自动运行）
+  docker-compose up -d
 ```
 
-
-![执行时的命令行](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20171213102629.png)
-
-
-### 1.2 运行镜像
-
+## 查看每天数据更新日志：
 ```
-docker run -it -e GRANT_SUDO=yes --user root -p 8080:8080 quantaxis/quantaxis bash
+docker logs cron容器名
 
-jupyter notebook --allow-root
-(jupyter notebook 密码是 quantaxis)
+日志只输出到容器前台，如果日志对你很重要，建议用专业的日志收集工具，从cron容器收集日志
 ```
 
+## 查看服务状态
+```
+docker ps
 
-
-
-### 在浏览器中打开以下链接
-```angular2html
-
-http://localhost:8888
+docker stats
 ```
 
-
-### 其他注意选项
-
-1. docker 是可以通过ssh 连接的 ``` /etc/init.d/ssh start ```
-2. 多窗口 
-
-首先需要运行一个docker
-
+## 停止/删除 QUANTAXIS 服务 （包括 QUANTAXIS，自动更新服务，数据库容器）：
 ```
-A:\quantaxis [master ≡]
-λ  docker run -it -p 8080:8080 quantaxis/quantaxis bash
-root@f22b5357dc6e:/#
+停止：docker-compose stop
 
-```
-然后在别的命令行执行 ``` docker ps``` 查询正在运行的docker的container_id
-```
-A:\Users\yutia
-λ  docker ps
-
-
-CONTAINER ID        IMAGE                                                   COMMAND             CREATED             STATUS              PORTS                                            NAMES
-f22b5357dc6e        quantaxis   "bash"              21 seconds ago      Up 20 seconds      0.0.0.0:8888->8888/tcp   boring_panini
-
-```
-然后执行 ```docker exec -it  [CONTAINERID] /bin/bash``` 进入
-
-```
-A:\Users\yutia
-λ  docker exec -it  f22b5357dc6e /bin/bash
-root@f22b5357dc6e:/#
-
+删除：docker-compose rm （只删除数据库容器，不会删除数据）
 ```
 
+## 更新：
+```
+选项1: 先删除容器，再从dockerhub从新下载
+docker-compose rm
+docker rmi 容器名
+docker-compose up -d
 
+
+选项2: 进入容器内用 git pull 更新
+1. docker exec -it 容器名 bash
+2. run git pull in the /QUANTAXIS folder
+```
+
+## 数据库备份(备份到宿主机当前目录，文件名：dbbackup.tar)：
+```
+1. docker-compose stop
+
+2.
+docker run  --rm -v qamg:/data/db \
+-v $(pwd):/backup alpine \
+tar zcvf /backup/dbbackup.tar /data/db
+
+3. docker-compose up -d
+```
+
+## 数据库还原（宿主机当前目录下必要有以前备份过的文件，文件名：dbbackup.tar）：
+```
+1. docker-compose stop
+
+2.
+docker run  --rm -v qamg:/data/db \
+-v $(pwd):/backup alpine \
+sh -c "cd /data/db \
+&& rm -rf diagnostic.data \
+&& rm -rf journal \
+&& rm -rf configdb \
+&& cd / \
+&& tar xvf /backup/dbbackup.tar"
+
+3. docker-compose up -d
+```

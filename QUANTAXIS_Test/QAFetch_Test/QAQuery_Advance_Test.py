@@ -28,12 +28,13 @@ import ctypes
     设置 钱龙金典 数据下载目录 http://download2.ql18.com.cn/download/software/instjd_1000.exe
     
     new_tdx.exe 通达信也可安装上述方法
-    
+    env LC_ALL=zh_CN.UTF-8 wine ~/.wine/drive_c/new_tdx/TdxW.exe 
+
     同花顺 运行 wine 需要特殊配置。
     后期研究后发表。暂时用虚拟机共享目录的方式读取。
     
     --------------------------------------------------------------------------------------------
-    读取 钱龙软件   本地数据文件进行比对 ✅
+    读取 钱龙软件   本地数据文件进行比对 
     读取 同花顺软件  本地数据文件进行比对 ⭕️
     读取 通达信     本地数据文件进行比对  ⭕️
 
@@ -482,7 +483,7 @@ class Test_Query_Advance(unittest.TestCase):
             return
 
         curdir = os.getcwd()
-        print("📊准备写入📝db🗃文件到目录📂%s" % (curdir + "/qianglong_data_sh"))
+        print("准备写入db🗃文件到目录%s" % (curdir + "/qianglong_data_sh"))
         path_for_save_data = curdir + "/qianglong_data_sh"
         path_for_save_data = path_for_save_data.rstrip("\\")
         isExists = os.path.exists(path_for_save_data)
@@ -501,7 +502,7 @@ class Test_Query_Advance(unittest.TestCase):
         for day_file in os.listdir(self.strQianLong_SHASE_day_dir):
 
             iii = round((iCount / stock_count) * 100.0)
-            s1 = "\r🚀读取 上海证券交易所 股票数据%s %d%%[%s%s]" % (day_file, iii, "🐌" * iii, " " * (100 - iii))
+            s1 = "\r读取 上海证券交易所 股票数据%s %d%%[%s%s]" % (day_file, iii, "🐌" * iii, " " * (100 - iii))
             sys.stdout.write(s1)
             sys.stdout.flush()
 
@@ -643,7 +644,7 @@ class Test_Query_Advance(unittest.TestCase):
             return
 
         curdir = os.getcwd()
-        print("📊准备写入📝day🗃文件到目录📂%s" % (curdir + "/qianglong_weight_data_sh"))
+        print("准备写入day🗃文件到目录%s" % (curdir + "/qianglong_weight_data_sh"))
         path_for_save_data = curdir + "/qianglong_weight_data_sh"
         path_for_save_data = path_for_save_data.rstrip("\\")
         isExists = os.path.exists(path_for_save_data)
@@ -663,7 +664,7 @@ class Test_Query_Advance(unittest.TestCase):
         for weight_file in os.listdir(self.strQianLong_SHASE_weight_dir):
 
             iii = round((iCount / weight_count) * 100.0)
-            s1 = "\r🚀读取 上海证券交易所 股份变动数据%s %d%%[%s%s]" % (weight_file, iii, "🐌" * iii, " " * (100 - iii))
+            s1 = "\r读取 上海证券交易所 股份变动数据%s %d%%[%s%s]" % (weight_file, iii, "🐌" * iii, " " * (100 - iii))
             sys.stdout.write(s1)
             sys.stdout.flush()
 

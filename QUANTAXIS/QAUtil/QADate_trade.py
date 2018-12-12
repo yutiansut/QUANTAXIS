@@ -44,7 +44,7 @@ def QA_util_if_trade(day):
         return False
 
 
-def QA_util_if_tradetime(_time,market=MARKET_TYPE.STOCK_CN,code=None):
+def QA_util_if_tradetime(_time=datetime.datetime.now(),market=MARKET_TYPE.STOCK_CN,code=None):
     '时间是否交易'
     _time = datetime.datetime.strptime(str(_time)[0:19], '%Y-%m-%d %H:%M:%S')
     if market is MARKET_TYPE.STOCK_CN:
@@ -81,6 +81,7 @@ def QA_util_get_next_day(date,n=1):
     :param n:  整形
     :return: 字符串 str eg: 2018-11-12
     '''
+    date=str(date)[0:10]
     return QA_util_date_gap(date,n,'gt')
 
 def QA_util_get_last_day(date,n=1):
@@ -90,8 +91,18 @@ def QA_util_get_last_day(date,n=1):
     :param n:  整形
     :return: 字符串 str eg: 2018-11-10
     '''
+    date=str(date)[0:10]
     return QA_util_date_gap(date,n,'lt')
-    
+
+def QA_util_get_last_datetime(datetime,day=1):
+    date=str(datetime)[0:10]
+    return '{} {}'.format(QA_util_date_gap(date,day,'lt'),str(datetime)[11:])
+
+
+def QA_util_get_next_datetime(datetime,day=1):
+    date=str(datetime)[0:10]
+    return '{} {}'.format(QA_util_date_gap(date,day,'gt'),str(datetime)[11:])
+
 def QA_util_get_real_date(date, trade_list=trade_date_sse, towards=-1):
     """
     获取真实的交易日期,其中,第三个参数towards是表示向前/向后推
@@ -100,6 +111,7 @@ def QA_util_get_real_date(date, trade_list=trade_date_sse, towards=-1):
     @ yutiansut
 
     """
+    date=str(date)[0:10]
     if towards == 1:
         while date not in trade_list:
             date = str(datetime.datetime.strptime(
@@ -154,7 +166,7 @@ def QA_util_date_gap(date, gap, methods):
     :param date: 字符串起始日 类型 str eg: 2018-11-11
     :param gap: 整数 间隔多数个交易日
     :param methods:  gt大于 ，gte 大于等于， 小于lt ，小于等于lte ， 等于===
-    :return:
+    :return: 字符串 eg：2000-01-01
     '''
     try:
         if methods in ['>', 'gt']:
@@ -170,3 +182,70 @@ def QA_util_date_gap(date, gap, methods):
 
     except:
         return 'wrong date'
+
+
+def QA_util_get_trade_datetime(dt=datetime.datetime.now()):
+    """交易的真实日期
+    
+    Returns:
+        [type] -- [description]
+    """
+
+    #dt= datetime.datetime.now()
+
+    
+
+    if QA_util_if_trade(str(dt.date())) and dt.time()<datetime.time(15,0,0):
+        return str(dt.date())
+    else:
+        return QA_util_get_real_date(str(dt.date()),trade_date_sse,1)
+
+def QA_util_get_order_datetime(dt):
+    """委托的真实日期
+    
+    Returns:
+        [type] -- [description]
+    """
+
+    #dt= datetime.datetime.now()
+    dt = datetime.datetime.strptime(str(dt)[0:19], '%Y-%m-%d %H:%M:%S')
+
+    if QA_util_if_trade(str(dt.date())) and dt.time()<datetime.time(15,0,0) :
+        return str(dt)
+    else:
+        #print('before')
+        #print(QA_util_date_gap(str(dt.date()),1,'lt'))
+        return '{} {}'.format(QA_util_date_gap(str(dt.date()),1,'lt'),dt.time())
+
+
+def QA_util_future_to_tradedatetime(real_datetime):
+    """输入是真实交易时间,返回按期货交易所规定的时间* 适用于tb/文华/博弈的转换
+    
+    Arguments:
+        real_datetime {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+    if len(str(real_datetime))==19:
+        dt = datetime.datetime.strptime(str(real_datetime)[0:19], '%Y-%m-%d %H:%M:%S')
+        return dt if dt.time()<datetime.time(21,0) else QA_util_get_next_datetime(dt,1)
+    elif len(str(real_datetime))==16:
+        dt = datetime.datetime.strptime(str(real_datetime)[0:16], '%Y-%m-%d %H:%M')
+        return dt if dt.time()<datetime.time(21,0) else QA_util_get_next_datetime(dt,1)
+
+def QA_util_future_to_realdatetime(trade_datetime):
+    """输入是交易所规定的时间,返回真实时间*适用于通达信的时间转换
+    
+    Arguments:
+        trade_datetime {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+    if len(str(trade_datetime))==19:
+        dt = datetime.datetime.strptime(str(trade_datetime)[0:19], '%Y-%m-%d %H:%M:%S')
+        return dt if dt.time()<datetime.time(21,0) else QA_util_get_last_datetime(dt,1)
+    elif len(str(trade_datetime))==16:
+        dt = datetime.datetime.strptime(str(trade_datetime)[0:16], '%Y-%m-%d %H:%M')
+        return dt if dt.time()<datetime.time(21,0) else QA_util_get_last_datetime(dt,1)
