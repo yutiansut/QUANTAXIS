@@ -3,7 +3,8 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.2.2 (unreleased)](#122unreleased)
+    - [1.2.3 (unreleased)](#123unreleased)
+    - [1.2.2 ](#122)
     - [1.2.1 ](#121)
     - [1.2.0](#120)
     - [1.1.10](#1110)
@@ -69,11 +70,14 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
-## 1.2.2(unreleased)
+## 1.2.3 (unreleased)
+
+## 1.2.2
 
 1. 重新构建docker compose，把主镜像拆分jupyter, cron和web三个镜像
 2. 修改了QAFetch的mongo查询语句(感谢几何大佬) 优雅的在查询中去掉了_id  
 3. 修正期货的DataStruct格式,统一volume字段
+4. 更新交易日历到2019-12-31
 
 ```
 mongo文档参见 https://docs.mongodb.com/manual/tutorial/project-fields-from-query-results/#return-the-specified-fields-and-the-id-field-only
