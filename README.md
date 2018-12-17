@@ -7,6 +7,10 @@ Quantitative Financial FrameWork
 
 -------------------------------------------------------------
 
+![pypidownloads](https://img.shields.io/pypi/dm/quantaxis.svg)
+![pypidownloads](https://img.shields.io/pypi/dw/quantaxis.svg)
+![pypidownloads](https://img.shields.io/pypi/dd/quantaxis.svg)
+
 
 
 [![Github workers](https://img.shields.io/github/watchers/quantaxis/quantaxis.svg?style=social&label=Watchers&)](https://github.com/quantaxis/quantaxis/watchers)
