@@ -1,10 +1,11 @@
 docker images for QUANTAXIS: https://github.com/QUANTAXIS/QUANTAXIS
 
 ## 镜像说明：
-qa-base: QA 基础镜像
-qa-cron: cron 镜像, 每天19:00自动更新数据(update_all.py)，如需更改计划任务，请自行制作py文件并更新Dockerfile
-qa-jupyter: jupyter lab 镜像，端口8888，没有登录密码，如需制定密码，请自行更改jupyter_notebook_config.py 文件
-qa-web: websocket 服务镜像，端口8010
+qa-base: QA 基础镜像  
+qa-cron: cron 镜像, 每天19:00自动更新数据(update_all.py)，如需更改计划任务，请自行制作py文件并更新Dockerfile  
+qa-jupyter: jupyter lab 镜像，端口8888，没有登录密码，如需制定密码，请自行更改jupyter_notebook_config.py 文件  
+qa-web: websocket 服务镜像，端口8010  
+mgdb: mongodb 数据库镜像，端口27017  
 
 
 ## 第一次部署：
@@ -42,6 +43,7 @@ docker stats
 选项1: 先删除容器，再从dockerhub从新下载
 docker-compose rm
 docker rmi 容器名
+docker-compose up -d
 
 
 选项2: 进入容器内用 git pull 更新
