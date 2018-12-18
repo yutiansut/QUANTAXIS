@@ -72,6 +72,9 @@
 <!-- /TOC -->
 ## 1.2.3 (unreleased)
 
+1. 感谢@追梦, QA_Account的receive_simpledeal的成交方式中的 股票市场的印花税计算修正
+
+
 ## 1.2.2
 
 1. 重新构建docker compose，把主镜像拆分jupyter, cron和web三个镜像
