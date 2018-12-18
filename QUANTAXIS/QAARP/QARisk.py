@@ -148,10 +148,10 @@ class QA_Risk():
         if self.account.daily_hold is not None:
             if self.if_fq:
 
-                return (self.market_data.to_qfq().pivot('close').fillna(method='ffill') * self.account.daily_hold.apply(abs)).fillna('ffill')
+                return self.market_data.to_qfq().pivot('close').fillna(method='ffill') * self.account.daily_hold.apply(abs)
             else:
-                return (self.market_data.pivot('close').fillna(
-                    method='ffill') * self.account.daily_hold.apply(abs)).fillna('ffill')
+                return self.market_data.pivot('close').fillna(
+                    method='ffill') * self.account.daily_hold.apply(abs)
         else:
             return None
 
