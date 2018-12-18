@@ -554,14 +554,20 @@ class QA_Account(QA_Worker):
         if self.market_type == MARKET_TYPE.FUTURE_CN:
             # 期货不收税
             # 双边手续费 也没有最小手续费限制
+            
             commission_fee = self.commission_coeff * \
                 abs(trade_money)
             tax_fee = 0
         elif self.market_type == MARKET_TYPE.STOCK_CN:
+
             commission_fee = self.commission_coeff * \
                 abs(trade_money)
-            tax_fee = self.tax_coeff * \
-                abs(trade_money)
+
+            commission_fee = 5 if commission_fee < 5 else commission_fee
+            if int(trade_towards) > 0:
+                tax_fee = 0  # 买入不收印花税
+            else:
+                tax_fee  = self.tax_coeff * abs(trade_money)
 
         trade_money += (commission_fee+tax_fee)
 
