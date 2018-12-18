@@ -445,7 +445,7 @@ class QA_Account(QA_Worker):
             data.date = pd.to_datetime(data.date)
             data = data.set_index(['date', 'account_cookie'])
             res = data[~data.index.duplicated(keep='last')].sort_index()
-
+            # 这里会导致股票停牌时的持仓也被计算 但是计算market_value的时候就没了
             return pd.concat([res.reset_index().set_index('date'), pd.Series(data=None, index=pd.to_datetime(self.trade_range).set_names('date'), name='predrop')], axis=1)\
                 .ffill().drop(['predrop'], axis=1).reset_index().set_index(['date', 'account_cookie']).sort_index()
     # 计算assets的时候 需要一个market_data=QA.QA_fetch_stock_day_adv(list(data.columns),data.index[0],data.index[-1])
