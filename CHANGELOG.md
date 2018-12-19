@@ -74,6 +74,7 @@
 
 1. 感谢@追梦, QA_Account的receive_simpledeal的成交方式中的 股票市场的印花税计算修正
 2. 改写@地下的地下铁, 修正QA_Risk中计算assets的一个停牌无数据的bug
+3. 感谢@风筝 修复了单标的多市场的获取bug
 
 ## 1.2.2
 
