@@ -1438,7 +1438,7 @@ def QA_fetch_get_future_day(code, start_date, end_date, frequence='day', ip=None
     ) if extension_market_list is None else extension_market_list
 
     with apix.connect(ip, port):
-        code_market = extension_market_list.query('code=="{}"'.format(code))
+        code_market = extension_market_list.query('code=="{}"'.format(code)).iloc[0]
 
         data = pd.concat(
             [apix.to_df(apix.get_instrument_bars(
@@ -1496,7 +1496,7 @@ def QA_fetch_get_future_min(code, start, end, frequence='1min', ip=None, port=No
     # print(lens)
     with apix.connect(ip, port):
 
-        code_market = extension_market_list.query('code=="{}"'.format(code))
+        code_market = extension_market_list.query('code=="{}"'.format(code)).iloc[0]
         data = pd.concat([apix.to_df(apix.get_instrument_bars(frequence, int(code_market.market), str(
             code), (int(lens / 700) - i) * 700, 700)) for i in range(int(lens / 700) + 1)], axis=0)
         # print(data)
@@ -1548,7 +1548,7 @@ def QA_fetch_get_future_transaction(code, start, end, retry=2, ip=None, port=Non
         return None
     real_id_range = []
     with apix.connect(ip, port):
-        code_market = extension_market_list.query('code=="{}"'.format(code))
+        code_market = extension_market_list.query('code=="{}"'.format(code)).iloc[0]
         data = pd.DataFrame()
         for index_ in range(trade_date_sse.index(real_start), trade_date_sse.index(real_end) + 1):
 
@@ -1579,7 +1579,7 @@ def QA_fetch_get_future_transaction_realtime(code, ip=None, port=None):
     extension_market_list = QA_fetch_get_extensionmarket_list(
     ) if extension_market_list is None else extension_market_list
 
-    code_market = extension_market_list.query('code=="{}"'.format(code))
+    code_market = extension_market_list.query('code=="{}"'.format(code)).iloc[0]
     with apix.connect(ip, port):
         data = pd.DataFrame()
         data = pd.concat([apix.to_df(apix.get_transaction_data(
@@ -1596,7 +1596,7 @@ def QA_fetch_get_future_realtime(code, ip=None, port=None):
     extension_market_list = QA_fetch_get_extensionmarket_list(
     ) if extension_market_list is None else extension_market_list
     __data = pd.DataFrame()
-    code_market = extension_market_list.query('code=="{}"'.format(code))
+    code_market = extension_market_list.query('code=="{}"'.format(code)).iloc[0]
     with apix.connect(ip, port):
         __data = apix.to_df(apix.get_instrument_quote(
             int(code_market.market), code))
