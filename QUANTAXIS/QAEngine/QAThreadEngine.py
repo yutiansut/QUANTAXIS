@@ -56,7 +56,7 @@ class QA_Thread(threading.Thread):
         self.daemon=daemon
 
     def __repr__(self):
-        return '<QA_Thread{}  id={} ident {}>'.format(self.name, id(self), self.ident)
+        return '<QA_Thread: {}  id={} ident {}>'.format(self.name, id(self), self.ident)
 
     def run(self):
         while self.__running.isSet():
