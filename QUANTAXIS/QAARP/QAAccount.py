@@ -550,6 +550,7 @@ class QA_Account(QA_Worker):
 
         market_towards = 1 if trade_towards > 0 else -1
         trade_money = float(trade_price*trade_amount*market_towards)
+        ######################### 计算费用
         # trade_price
         if self.market_type == MARKET_TYPE.FUTURE_CN:
             # 期货不收税
@@ -570,7 +571,7 @@ class QA_Account(QA_Worker):
                 tax_fee  = self.tax_coeff * abs(trade_money)
 
         trade_money += (commission_fee+tax_fee)
-
+        ######################### 结算交易
         if self.cash[-1] > trade_money:
             self.time_index.append(trade_time)
             # TODO: 目前还不支持期货的锁仓
@@ -616,12 +617,14 @@ class QA_Account(QA_Worker):
                             self.cash[-1]-trade_money)
                         if self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['amount'] == 0:
                             self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['money'] = 0
-            else:
+            else:# 不允许卖空开仓的==> 股票
+                
                 self.cash.append(self.cash[-1]-trade_money)
-            if self.allow_t0:
+            if self.allow_t0 or trade_towards == ORDER_DIRECTION.SELL:
                 self.sell_available[code] = self.sell_available.get(
                     code, 0)+trade_amount*market_towards
                 self.buy_available = self.sell_available
+
 
             self.cash_available = self.cash[-1]
             self.history.append([trade_time, code, trade_price, market_towards*trade_amount, self.cash[-1], None, None, None, self.account_cookie,
