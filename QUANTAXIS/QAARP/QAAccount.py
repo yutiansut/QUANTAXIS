@@ -106,7 +106,8 @@ class QA_Account(QA_Worker):
 
 
 
-
+    @2018/12/24
+    账户需要追踪
 
 
     """
@@ -223,10 +224,10 @@ class QA_Account(QA_Worker):
 
         # 在回测中, 每日结算后更新
         # 真实交易中, 为每日初始化/每次重新登录后的同步信息
+        self.static_balance = {}  # 昨日结算
         self.today_trade = {'last': [], 'current': []}
         self.today_orders = {'last': [], 'current': []}
 
-        self.daily_settlement = {}  # 结算后的信息
         ########################################################################
         # 规则类
         # 1.是否允许t+0 及买入及结算
@@ -391,6 +392,10 @@ class QA_Account(QA_Worker):
         return pd.DataFrame(data=self.history, columns=self._history_headers[:lens]).sort_index()
 
     @property
+    def today_trade_table(self):
+        return pd.DataFrame(data=self.today_trade['current'], columns=self._history_headers[:lens]).sort_index()
+
+    @property
     def cash_table(self):
         '现金的table'
         _cash = pd.DataFrame(data=[self.cash[1::], self.time_index], index=[
@@ -429,6 +434,12 @@ class QA_Account(QA_Worker):
         """真实持仓
         """
         return pd.concat([self.init_hold, self.hold_available]).groupby('code').sum().replace(0, np.nan).dropna().sort_index()
+
+    @property
+    def hold_available_temp(self):
+        """可用持仓
+        """
+        return self._table.groupby('code').amount.sum().replace(0, np.nan).dropna().sort_index()
 
     @property
     def hold_available(self):
