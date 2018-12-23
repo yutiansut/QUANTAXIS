@@ -45,11 +45,31 @@ class ORDER_DIRECTION():
     SELL = -1
     BUY_OPEN = 2
     BUY_CLOSE = 3
+    BUY_CLOSE = 3
     SELL_OPEN = -2
     SELL_CLOSE = -3
+    SELL_CLOSE_TODAY = -4
+    SELL_CLOSE_HISTORY = -5
     ASK = 0
     XDXR = 5
     OTHER = 6
+
+
+class ORDER_OFFSET():
+    """订单的开平仓属性
+    OPEN 股票/期货 开仓
+    CLOSE 股票 卖出
+    CLOSE_HISTORY 期货 平昨
+    CLOSE_TODAY 期货 平今
+    REVERSE 期货 反手(默认先平昨再平今)
+    """
+
+    OPEN = 1
+    CLOSE = 2
+    CLOSE_HISTORY = 3
+    CLOSE_TODAY = 4
+    REVERSE = 5
+
 
 class ORDER_MODEL():
     """订单的成交模式
@@ -192,9 +212,6 @@ class MARKET_TYPE():
     INDEX_CN = 'index_cn'  # 中国指数
     FUND_CN = 'fund_cn'   # 中国基金
     BOND_CN = 'bond_cn'  # 中国债券
-
-
-
 
 
 class BROKER_TYPE():
@@ -387,8 +404,3 @@ DATABASE_TABLE = {
     (MARKET_TYPE.FUTURE_CN, FREQUENCE.HOUR): 'future_min',
     (MARKET_TYPE.FUTURE_CN, FREQUENCE.TICK): 'future_transaction'
 }
-
-
-
-
-    
