@@ -114,7 +114,7 @@ class QA_Account(QA_Worker):
     def __init__(self, strategy_name=None, user_cookie=None, portfolio_cookie=None, account_cookie=None,
                  market_type=MARKET_TYPE.STOCK_CN, frequence=FREQUENCE.DAY, broker=BROKER_TYPE.BACKETEST,
                  init_hold={}, init_cash=1000000, commission_coeff=0.00025, tax_coeff=0.001,
-                 margin_level=False, allow_t0=False, allow_sellopen=False,
+                 margin_level={}, allow_t0=False, allow_sellopen=False, allow_margin=False,
                  running_environment=RUNNING_ENVIRONMENT.BACKETEST):
         """
 
@@ -128,9 +128,10 @@ class QA_Account(QA_Worker):
         :param [float] commission_coeff:  交易佣金 :默认 万2.5   float 类型
         :param [float] tax_coeff:         印花税   :默认 千1.5   float 类型
 
-        :param [Bool] margin_level:      保证金比例 默认False
+        :param [Bool] margin_level:      保证金比例 默认{}
         :param [Bool] allow_t0:          是否允许t+0交易  默认False
         :param [Bool] allow_sellopen:    是否允许卖空开仓  默认False
+        :param [Bool] allow_margin:      是否允许保证金交易 默认False
 
         :param [QA.PARAM] market_type:   市场类别 默认QA.MARKET_TYPE.STOCK_CN A股股票
         :param [QA.PARAM] frequence:     账户级别 默认日线QA.FREQUENCE.DAY
@@ -219,6 +220,13 @@ class QA_Account(QA_Worker):
         self.buy_available = copy.deepcopy(self.init_hold)
         self.history = []
         self.time_index = []
+
+        # 在回测中, 每日结算后更新
+        # 真实交易中, 为每日初始化/每次重新登录后的同步信息
+        self.today_trade = {'last': [], 'current': []}
+        self.today_orders = {'last': [], 'current': []}
+
+        self.daily_settlement = {}  # 结算后的信息
         ########################################################################
         # 规则类
         # 1.是否允许t+0 及买入及结算
@@ -229,7 +237,9 @@ class QA_Account(QA_Worker):
         #
         self.allow_t0 = allow_t0
         self.allow_sellopen = allow_sellopen
+        self.allow_margin = allow_margin
         self.margin_level = margin_level  # 保证金比例
+
         """期货的多开/空开 ==> 资金冻结进保证金  frozen
 
         对应平仓的时候, 释放保证金
@@ -319,11 +329,11 @@ class QA_Account(QA_Worker):
             return str(self.datetime)[0:10]
         else:
             return None
-    
+
     @property
     def poisitions(self):
         raise NotImplementedError
-    
+
     @property
     def start_date(self):
         """账户的起始交易日期(只在回测中使用)
@@ -906,14 +916,14 @@ class QA_Account(QA_Worker):
         elif int(towards) in [-1, -2, -3]:
             # 是卖出的情况(包括卖出，卖出开仓allow_sellopen如果允许. 卖出平仓)
             # print(self.sell_available[code])
-            _hold=self.sell_available.get(code, 0)  # _hold 是你的持仓
+            _hold = self.sell_available.get(code, 0)  # _hold 是你的持仓
 
             # 如果你的hold> amount>0
             # 持仓数量>卖出数量
             if _hold >= amount:
                 self.sell_available[code] -= amount
                 # towards = ORDER_DIRECTION.SELL
-                flag=True
+                flag = True
             # 如果持仓数量<卖出数量
             else:
 
@@ -925,24 +935,24 @@ class QA_Account(QA_Worker):
                     if towards == -2:  # 卖开
                         if self.cash_available >= money:  # 卖空的市值小于现金（有担保的卖空）， 不允许裸卖空
                             # self.cash_available -= money
-                            flag=True
+                            flag = True
                         else:
                             print('sellavailable', _hold)
                             print('amount', amount)
                             print('aqureMoney', money)
                             print('cash', self.cash_available)
-                            wrong_reson="卖空资金不足/不允许裸卖空"
+                            wrong_reson = "卖空资金不足/不允许裸卖空"
                 else:
-                    wrong_reson="卖出仓位不足"
+                    wrong_reson = "卖出仓位不足"
 
         if flag and amount > 0:
-            _order=QA_Order(user_cookie = self.user_cookie, strategy = self.strategy_name, frequence = self.frequence,
-                              account_cookie = self.account_cookie, code = code, market_type = self.market_type,
-                              date = date, datetime = time, sending_time = time, callback = self.receive_deal,
-                              amount = amount, price = price, order_model = order_model, towards = towards, money = money,
-                              amount_model = amount_model, commission_coeff = self.commission_coeff, tax_coeff = self.tax_coeff, *args, **kwargs)  # init
+            _order = QA_Order(user_cookie=self.user_cookie, strategy=self.strategy_name, frequence=self.frequence,
+                              account_cookie=self.account_cookie, code=code, market_type=self.market_type,
+                              date=date, datetime=time, sending_time=time, callback=self.receive_deal,
+                              amount=amount, price=price, order_model=order_model, towards=towards, money=money,
+                              amount_model=amount_model, commission_coeff=self.commission_coeff, tax_coeff=self.tax_coeff, *args, **kwargs)  # init
             # 历史委托order状态存储， 保存到 QA_Order 对象中的队列中
-            self.datetime=time
+            self.datetime = time
             self.orders.insert_order(_order)
             return _order
         else:
@@ -972,15 +982,15 @@ class QA_Account(QA_Worker):
             list -- list with order
         """
 
-        order_list=[]
-        time='{} 15:00:00'.format(self.date)
+        order_list = []
+        time = '{} 15:00:00'.format(self.date)
         if self.running_environment == RUNNING_ENVIRONMENT.TZERO:
             for code, amount in self.hold_available.iteritems():
-                order=False
+                order = False
                 if amount < 0:
                     # 先卖出的单子 买平
-                    order=self.send_order(code = code, price = 0, amount = abs(
-                        amount), time = time, towards = ORDER_DIRECTION.BUY_CLOSE,
+                    order = self.send_order(code=code, price=0, amount=abs(
+                        amount), time=time, towards=ORDER_DIRECTION.BUY_CLOSE,
                         order_model=ORDER_MODEL.CLOSE, amount_model=AMOUNT_MODEL.BY_AMOUNT)
                 elif amount > 0:
                     # 先买入的单子, 卖平
