@@ -115,7 +115,6 @@ class MARKET_PRESET:
             'RS': 10,
             'CY': 5,
             'AP': 10,
-
         }
 
     # 手续费比例
