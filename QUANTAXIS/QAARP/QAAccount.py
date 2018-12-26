@@ -241,6 +241,10 @@ class QA_Account(QA_Worker):
         self.allow_margin = allow_margin
         self.margin_level = margin_level  # 保证金比例
 
+
+        if self.allow_t0 and self.allow_sellopen:
+            self.load_unit_table()
+
         """期货的多开/空开 ==> 资金冻结进保证金  frozen
 
         对应平仓的时候, 释放保证金
@@ -284,6 +288,13 @@ class QA_Account(QA_Worker):
             'start_date': self.start_date,
             'end_date': self.end_date
         }
+
+
+    def load_unit_table(self):
+        """加载合约乘数表
+        """
+
+        self.unit_table = {}
 
     @property
     def init_hold_with_account(self):
