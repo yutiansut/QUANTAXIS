@@ -71,6 +71,17 @@ class per_unit():
 class MARKET_PRESET:
 
     def __init__(self):
+        """
+        unit_table 合约乘数
+        commission_coeff_peramount 按总量计算手续费系数
+        commission_coeff_pervol 按手数计算的手续费系数
+        commission_coeff_today_peramount 按总量计算的平今手续费系数
+        commission_coeff_today_pervol 按手数计算的平今手续费系数
+
+        多头开仓保证金系数
+        空头开仓保证金系数
+        """
+
         self.table = {
 
             ### 大商所 DCE ##########################################
