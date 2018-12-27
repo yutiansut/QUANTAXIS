@@ -31,7 +31,7 @@ import numpy as np
 import pandas as pd
 
 from QUANTAXIS import __version__
-from QUANTAXIS.QAARP.market_preset import per_unit
+from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
 from QUANTAXIS.QAEngine.QAEvent import QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
 from QUANTAXIS.QASU.save_account import save_account, update_account
@@ -242,9 +242,8 @@ class QA_Account(QA_Worker):
         self.allow_margin = allow_margin
         self.margin_level = margin_level  # 保证金比例
 
-
-        if self.allow_t0 and self.allow_sellopen:
-            self.load_unit_table()
+        if self.allow_t0 and self.allow_sellopen or self.market_type is MARKET_TYPE.FUTURE_CN:
+            self.load_marketpreset()
 
         """期货的多开/空开 ==> 资金冻结进保证金  frozen
 
@@ -290,12 +289,11 @@ class QA_Account(QA_Worker):
             'end_date': self.end_date
         }
 
-
-    def load_unit_table(self):
-        """加载合约乘数表
+    def load_marketpreset(self):
+        """加载市场表
         """
 
-        self.unit_table = per_unit()
+        self.market_preset = MARKET_PRESET()
 
     @property
     def init_hold_with_account(self):
@@ -749,7 +747,6 @@ class QA_Account(QA_Worker):
             # 双边手续费 也没有最小手续费限制
             commission_fee = self.commission_coeff * \
                 abs(trade_money)
-
 
             tax_fee = 0  # 买入不收印花税
 
