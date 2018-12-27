@@ -124,7 +124,7 @@ class QA_Order():
             pass
         self.sending_time = self.datetime if sending_time is None else sending_time  # 下单时间
 
-        self.trade_time = trade_time if trade_time else [] # 成交时间
+        self.trade_time = trade_time if trade_time else []  # 成交时间
         self.amount = amount  # 委托数量
         self.trade_amount = 0  # 成交数量
         self.cancel_amount = 0  # 撤销数量
@@ -151,10 +151,12 @@ class QA_Order():
         self.reason = None  # 原因列表
 
         self._status = _status
-        
+
         # 增加订单对于多账户以及多级别账户的支持 2018/11/12
-        self.mainacc_id = None if 'mainacc_id' not in kwargs.keys() else kwargs['mainacc_id']
-        self.subacc_id = None if 'subacc_id' not in kwargs.keys() else kwargs['subacc_id']
+        self.mainacc_id = None if 'mainacc_id' not in kwargs.keys(
+        ) else kwargs['mainacc_id']
+        self.subacc_id = None if 'subacc_id' not in kwargs.keys(
+        ) else kwargs['subacc_id']
 
     @property
     def pending_amount(self):

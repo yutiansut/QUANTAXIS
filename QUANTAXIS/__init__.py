@@ -32,7 +32,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.2.3.dev3'
+__version__ = '1.2.3.dev4'
 __author__ = 'yutiansut'
 logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
@@ -96,7 +96,7 @@ from QUANTAXIS.QASU.save_strategy import QA_SU_save_strategy
 
 # market
 from QUANTAXIS.QAMarket import (QA_Order, QA_OrderQueue, QA_OrderHandler,
-                                QA_Market, QA_Dealer,
+                                QA_Market, QA_Dealer, QA_Broker,
                                 QA_RandomBroker, QA_SimulatedBroker, QA_RealBroker, QA_BacktestBroker)
 
 # Account,Risk,Portfolio,User,Strategy
