@@ -31,7 +31,7 @@ import numpy as np
 import pandas as pd
 
 from QUANTAXIS import __version__
-from QUANTAXIS.QAARP.market_preset import unit_table
+from QUANTAXIS.QAARP.market_preset import per_unit
 from QUANTAXIS.QAEngine.QAEvent import QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
 from QUANTAXIS.QASU.save_account import save_account, update_account
@@ -295,7 +295,7 @@ class QA_Account(QA_Worker):
         """加载合约乘数表
         """
 
-        self.unit_table = unit_table()
+        self.unit_table = per_unit()
 
     @property
     def init_hold_with_account(self):
@@ -361,8 +361,8 @@ class QA_Account(QA_Worker):
         if len(self.time_index) > 0:
             return str(min(self.time_index))[0:10]
         else:
-            raise RuntimeWarning(
-                'QAACCOUNT: THIS ACCOUNT DOESNOT HAVE ANY TRADE')
+            print(RuntimeWarning(
+                'QAACCOUNT: THIS ACCOUNT DOESNOT HAVE ANY TRADE'))
 
     @property
     def end_date(self):
@@ -378,8 +378,8 @@ class QA_Account(QA_Worker):
         if len(self.time_index) > 0:
             return str(max(self.time_index))[0:10]
         else:
-            raise RuntimeWarning(
-                'QAACCOUNT: THIS ACCOUNT DOESNOT HAVE ANY TRADE')
+            print(RuntimeWarning(
+                'QAACCOUNT: THIS ACCOUNT DOESNOT HAVE ANY TRADE'))
 
     @property
     def market_data(self):
