@@ -237,10 +237,15 @@ class QA_Account(QA_Worker):
 
         # 期货: allow_t0 True allow_sellopen True
         #
+
         self.allow_t0 = allow_t0
         self.allow_sellopen = allow_sellopen
         self.allow_margin = allow_margin
         self.margin_level = margin_level  # 保证金比例
+
+        if self.market_type is MARKET_TYPE.FUTURE_CN:
+            self.allow_t0 = True
+            self.allow_sellopen = True
 
         if self.allow_t0 and self.allow_sellopen or self.market_type is MARKET_TYPE.FUTURE_CN:
             self.load_marketpreset()
@@ -864,6 +869,11 @@ class QA_Account(QA_Worker):
 
         @2018/12/23
         send_order 是QA的标准返回, 如需对接其他接口, 只需要对于QA_Order做适配即可
+
+
+        @2018/12/27
+        在判断账户为期货账户(及 允许双向交易)
+
         """
         wrong_reson = None
         assert code is not None and time is not None and towards is not None and order_model is not None and amount_model is not None
@@ -878,8 +888,7 @@ class QA_Account(QA_Worker):
         # 🛠todo 移到Utils类中，  amount_to_money 成交量转金额
         # BY_MONEY :: amount --钱 如10000元  因此 by_money里面 需要指定价格,来计算实际的股票数
         # by_amount :: amount --股数 如10000股
-        # amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
-        #     money / (price*(1+self.commission_coeff)))
+
 
         amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
 
@@ -889,7 +898,8 @@ class QA_Account(QA_Worker):
         money = amount * price * \
             (1+self.commission_coeff) if amount_model is AMOUNT_MODEL.BY_AMOUNT else money
 
-        # amount_model = AMOUNT_MODEL.BY_AMOUNT
+        
+
 
         # flag 判断买卖 数量和价格以及买卖方向是否正确
         flag = False
