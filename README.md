@@ -6,6 +6,9 @@ Quantitative Financial FrameWork
 从数据爬取-清洗存储-分析回测-可视化-交易复盘的本地一站式解决方案
 
 -------------------------------------------------------------
+![logo](http://pic.yutiansut.com/QUANTAXIS_LOGO.jpg)
+
+
 
 ![pypidownloads](https://img.shields.io/pypi/dm/quantaxis.svg)
 ![pypidownloads](https://img.shields.io/pypi/dw/quantaxis.svg)
@@ -24,7 +27,6 @@ Quantitative Financial FrameWork
 
 
 ![main_1](http://pic.yutiansut.com/Main_1.gif)
-![logo](http://pic.yutiansut.com/QUANTAXIS_LOGO.jpg)
 ![presentbyyutiansut](http://pic.yutiansut.com/yutiansut-logo.png)
 
 ![version](https://img.shields.io/pypi/v/quantaxis.svg)
