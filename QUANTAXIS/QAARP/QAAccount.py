@@ -898,8 +898,6 @@ class QA_Account(QA_Worker):
         money = amount * price * \
             (1+self.commission_coeff) if amount_model is AMOUNT_MODEL.BY_AMOUNT else money
 
-        
-
 
         # flag 判断买卖 数量和价格以及买卖方向是否正确
         flag = False
@@ -972,7 +970,7 @@ class QA_Account(QA_Worker):
                 else:
                     wrong_reson = "卖出仓位不足"
 
-        if flag and amount > 0:
+        if flag and (amount > 0):
             _order = QA_Order(user_cookie=self.user_cookie, strategy=self.strategy_name, frequence=self.frequence,
                               account_cookie=self.account_cookie, code=code, market_type=self.market_type,
                               date=date, datetime=time, sending_time=time, callback=self.receive_deal,
