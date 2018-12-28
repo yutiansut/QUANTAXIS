@@ -48,14 +48,14 @@ class ORDER_DIRECTION():
     BUY_CLOSE = 3
     SELL_OPEN = -2
     SELL_CLOSE = -3
-    SELL_CLOSE_TODAY = -4
-    SELL_CLOSE_HISTORY = -5
+    SELL_CLOSETODAY = -4
+    BUY_CLOSETODAY = 4
     ASK = 0
     XDXR = 5
     OTHER = 6
 
 
-class ORDER_OFFSET():
+class OFFSET():
     """订单的开平仓属性
     OPEN 股票/期货 开仓
     CLOSE 股票 卖出
@@ -64,11 +64,10 @@ class ORDER_OFFSET():
     REVERSE 期货 反手(默认先平昨再平今)
     """
 
-    OPEN = 1
-    CLOSE = 2
-    CLOSE_HISTORY = 3
-    CLOSE_TODAY = 4
-    REVERSE = 5
+    OPEN = 'OPEN'
+    CLOSE = 'CLOSE'
+    CLOSETODAY = 'CLOSETODAY'
+    REVERSE = 'REVERSE'
 
 
 class ORDER_MODEL():
@@ -84,6 +83,7 @@ class ORDER_MODEL():
     """
 
     LIMIT = 'LIMIT'  # 限价
+    ANY = 'MARKET' # 市价(otg兼容)
     MARKET = 'MARKET'  # 市价/在回测里是下个bar的开盘价买入/实盘就是五档剩余最优成交价
     CLOSE = 'CLOSE'  # 当前bar的收盘价买入
     NEXT_OPEN = 'NEXT_OPEN'  # 下个bar的开盘价买入
