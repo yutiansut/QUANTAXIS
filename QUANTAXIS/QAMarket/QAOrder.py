@@ -59,7 +59,7 @@ class QA_Order():
         记录order
     '''
 
-    def __init__(self, price=None, date=None, datetime=None, sending_time=None, trade_time=False, amount=None, market_type=None, frequence=None,
+    def __init__(self, price=None, date=None, datetime=None, sending_time=None, trade_time=False, amount=0, market_type=None, frequence=None,
                  towards=None, code=None, user=None, account_cookie=None, strategy=None, order_model=None, money=None, amount_model=AMOUNT_MODEL.BY_AMOUNT,
                  order_id=None, trade_id=False, _status=ORDER_STATUS.NEW, callback=False, commission_coeff=0.00025, tax_coeff=0.001, exchange_id=None, *args, **kwargs):
         '''
@@ -340,6 +340,7 @@ class QA_Order():
         self.message = otgOrder.get('last_msg')
         self._status = ORDER_STATUS.NEW
         self.realorder_id = otgOrder.get('exchange_order_id')
+        return self
 
     def from_dict(self, order_dict):
         '''
