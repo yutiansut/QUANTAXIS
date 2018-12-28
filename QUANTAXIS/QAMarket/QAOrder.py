@@ -27,8 +27,8 @@ import pandas as pd
 
 from QUANTAXIS.QAUtil import (
     QA_util_log_info, QA_util_random_with_topic, QA_util_to_json_from_pandas)
-from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_STATUS
-
+from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_STATUS, ORDER_DIRECTION, ORDER_MODEL
+from QUANTAXIS.QAUtil.QADate import QA_util_stamp2datetime
 
 """
 重新定义Order模式
@@ -61,7 +61,7 @@ class QA_Order():
 
     def __init__(self, price=None, date=None, datetime=None, sending_time=None, trade_time=False, amount=None, market_type=None, frequence=None,
                  towards=None, code=None, user=None, account_cookie=None, strategy=None, order_model=None, money=None, amount_model=AMOUNT_MODEL.BY_AMOUNT,
-                 order_id=None, trade_id=False, _status=ORDER_STATUS.NEW, callback=False, commission_coeff=0.00025, tax_coeff=0.001, *args, **kwargs):
+                 order_id=None, trade_id=False, _status=ORDER_STATUS.NEW, callback=False, commission_coeff=0.00025, tax_coeff=0.001, exchange_id=None, *args, **kwargs):
         '''
 
 
@@ -149,7 +149,8 @@ class QA_Order():
         self.callback = callback  # 委托成功的callback
         self.money = money  # 委托需要的金钱
         self.reason = None  # 原因列表
-
+        self.exchange_id = exchange_id
+        self.time_condition = 'GFD'  # 当日有效
         self._status = _status
 
         # 增加订单对于多账户以及多级别账户的支持 2018/11/12
@@ -293,6 +294,53 @@ class QA_Order():
         '''
         return vars(self)
 
+    def from_otgformat(self, otgOrder):
+        """[summary]
+
+        Arguments:
+            otgOrder {[type]} -- [description]
+
+
+        {'seqno': 6,
+        'user_id': '106184',
+        'order_id': 'WDRB_QA01_FtNlyBem',
+        'exchange_id': 'SHFE',
+        'instrument_id': 'rb1905',
+        'direction': 'SELL',
+        'offset': 'OPEN',
+        'volume_orign': 50, #(总报单手数)
+        'price_type': 'LIMIT', # "LIMIT" (价格类型, ANY=市价, LIMIT=限价)
+        'limit_price': 3432.0, # 4500.0 (委托价格, 仅当 price_type = LIMIT 时有效)
+        'time_condition': 'GFD',#  "GFD" (时间条件, IOC=立即完成，否则撤销, GFS=本节有效, GFD=当日有效, GTC=撤销前有效, GFA=集合竞价有效)
+        'volume_condition': 'ANY', # "ANY" (手数条件, ANY=任何数量, MIN=最小数量, ALL=全部数量)
+        'insert_date_time': 1545656460000000000,# 1501074872000000000 (下单时间(按北京时间)，自unix epoch(1970-01-01 00:00:00 GMT)以来的纳秒数)
+        'exchange_order_id': '        3738',
+        'status': 'FINISHED', # "ALIVE" (委托单状态, ALIVE=有效, FINISHED=已完)
+        'volume_left': 0,
+        'last_msg': '全部成交报单已提交'} # "报单成功" (委托单状态信息)
+        """
+        self.order_id = otgOrder.get('order_id')
+        self.account_cookie = otgOrder.get('user_id')
+        self.exchange_id = otgOrder.get('exchange_id')
+        self.code = str(otgOrder.get('instrument_id')).upper()
+        self.offset = otgOrder.get('offset')
+        self.direction = otgOrder.get('direction')
+        self.towards = 'ORDER_DIRECTION.{}_{}'.format(
+            self.offset, self.direction)
+        self.amount = otgOrder.get('volume_orign')
+        self.trade_amount = self.amount - otgOrder.get('volume_left')
+        self.price = otgOrder.get('limit_price')
+        self.order_model = eval(
+            'ORDER_MODEL.{}'.format(otgOrder.get('price_type')))
+        self.time_condition = otgOrder.get('time_condition')
+        self.datetime = QA_util_stamp2datetime(
+            int(otgOrder.get('insert_date_time')))
+        self.sending_time = self.datetime
+        self.volume_condition = otgOrder.get('volume_condition')
+        self.message = otgOrder.get('last_msg')
+        self._status = ORDER_STATUS.NEW
+        self.realorder_id = otgOrder.get('exchange_order_id')
+
     def from_dict(self, order_dict):
         '''
         从字段类型的字段 填充 对象的字段
@@ -366,19 +414,11 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
         self.deal_list = {}
 
     def __repr__(self):
-        return '<QA_ORDERQueue>'
+        return '< QA_ORDERQueue >'
         # return '< QA_OrderQueue AMOUNT {} WAITING TRADE {} >'.format(len(self.queue_df), len(self.pending))
 
     def __call__(self):
         return self.order_list
-
-    # def _from_dataframe(self, dataframe):
-    #     try:
-    #         self.order_list = [QA_Order().from_dict(item)
-    #                            for item in QA_util_to_json_from_pandas(dataframe)]
-    #         return self.order_list
-    #     except:
-    #         pass
 
     def insert_order(self, order):
         '''
