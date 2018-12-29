@@ -320,32 +320,32 @@ class QA_Order():
             # //必填, 委托单号, 需确保在一个账号中不重复, 限长512字节
             "order_id": self.order_id,
             "exchange_id": self.exchange_id,  # //必填, 下单到哪个交易所
-            "instrument_id": code,               # //必填, 下单合约代码
+            "instrument_id": self.code,               # //必填, 下单合约代码
             "direction": self.direction,                      # //必填, 下单买卖方向
             # //必填, 下单开平方向, 仅当指令相关对象不支持开平机制(例如股票)时可不填写此字段
-            "offset":  order_offset,
-            "volume":  volume,                             # //必填, 下单手数
+            "offset":  self.offset,
+            "volume":  self.amount,                             # //必填, 下单手数
             "price_type": self.order_model,  # //必填, 报单价格类型
             "limit_price": self.price,  # //当 price_type == LIMIT 时需要填写此字段, 报单价格
             "volume_condition": "ANY",
             "time_condition": "GFD",
         }
-    
+
     def to_qatradegatway(self):
 
-        direction= 'BUY' if self.order_direction>0 else 'SELL'
-        return  {
+        direction = 'BUY' if self.direction > 0 else 'SELL'
+        return {
             'topic': 'sendorder',
             'account_cookie': self.account_cookie,
             'strategy_id': self.strategy_id,
             'order_direction': self.direction,
-            'code': self.xcode.lower(),
-            'price': price,
-            'order_time': str(datetime.datetime.now()),
-            'exchange_id': self.get_exchange(self.xcode),
-            'order_offset': offset,
-            'volume': volume,
-            'order_id': order_id
+            'code': self.code.lower(),
+            'price': self.price,
+            'order_time': self.sending_time,
+            'exchange_id': self.get_exchange(self.code),
+            'order_offset': self.offset,
+            'volume': self.amount,
+            'order_id': self.order_id
         }
 
     def from_otgformat(self, otgOrder):
