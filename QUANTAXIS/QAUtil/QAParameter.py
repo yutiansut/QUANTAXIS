@@ -88,7 +88,7 @@ class ORDER_MODEL():
     CLOSE = 'CLOSE'  # 当前bar的收盘价买入
     NEXT_OPEN = 'NEXT_OPEN'  # 下个bar的开盘价买入
     STRICT = 'STRICT'  # 严格模式/不推荐(仅限回测测试用)
-
+    BEST = 'MARKET' # 中金所  最优成交剩余转限
 
 class ORDER_STATUS():
     """订单状态
