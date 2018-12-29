@@ -338,7 +338,10 @@ class QA_Order():
         self.sending_time = self.datetime
         self.volume_condition = otgOrder.get('volume_condition')
         self.message = otgOrder.get('last_msg')
+
         self._status = ORDER_STATUS.NEW
+        if '已撤单' in self.message or '拒绝' in self.message:
+            self._status = ORDER_STATUS.FAILED
         self.realorder_id = otgOrder.get('exchange_order_id')
         return self
 
@@ -511,6 +514,12 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
                 pass
         except:
             return None
+
+    def to_df(self):
+        try:
+            return pd.concat([x.to_df() for x in self.order_list.values()])
+        except:
+            pass
 
 
 if __name__ == '__main__':
