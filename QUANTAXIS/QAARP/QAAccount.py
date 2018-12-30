@@ -110,6 +110,13 @@ class QA_Account(QA_Worker):
     @2018/12/24
     账户需要追踪
 
+    @2018/12/31
+    账户需要截面数据 
+    需要在任意截面的基础上往下做
+
+    基础的信息截面 ==>  init_cash/init_hold |  history的初始值
+
+    任意时间点的信息截面
 
     """
 
@@ -141,6 +148,7 @@ class QA_Account(QA_Worker):
         allow_t0/ allow_sellopen 是必须打开的
 
         allow_margin 是作为保证金账户的开关 默认关闭 可以打开 则按照market_preset中的保证金比例来计算
+        具体可以参见: https://github.com/QUANTAXIS/QUANTAXIS/blob/master/EXAMPLE/test_backtest/FUTURE/TEST_%E4%BF%9D%E8%AF%81%E9%87%91%E8%B4%A6%E6%88%B7.ipynb
 
         >>>>>>>>>>>>>
 
@@ -419,7 +427,7 @@ class QA_Account(QA_Worker):
 
     @property
     def today_trade_table(self):
-        return pd.DataFrame(data=self.today_trade['current'], columns=self._history_headers[:lens]).sort_index()
+        return pd.DataFrame(data=self.today_trade['current'], columns=self._history_headers).sort_index()
 
     @property
     def cash_table(self):
@@ -731,8 +739,14 @@ class QA_Account(QA_Worker):
         order_id = str(order_id)
 
         market_towards = 1 if trade_towards > 0 else -1
-        trade_money = trade_price*trade_amount*market_towards
-        commission_fee = trade_money*self.commission_coeff
+        # value 合约价值
+        if self.allow_margin:
+            value = trade_price*trade_amount*market_towards * \
+                self.market_preset.get_unit(code)
+            trade_money = value * self.market_preset.get_frozen(code)
+        else:
+            trade_money = trade_price*trade_amount*market_towards
+            value = trade_money
 
         if self.market_type == MARKET_TYPE.STOCK_CN:
             if trade_towards > 0:
@@ -761,15 +775,26 @@ class QA_Account(QA_Worker):
         elif self.market_type == MARKET_TYPE.FUTURE_CN:
             # 期货不收税
             # 双边手续费 也没有最小手续费限制
-            commission_fee = self.commission_coeff * \
-                abs(trade_money)
+            commission_fee_preset = self.market_preset.get_code(code)
+            if trade_towards in [ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE, ORDER_DIRECTION.SELL_CLOSE, ORDER_DIRECTION.SELL_OPEN]:
+                commission_fee = commission_fee_preset['commission_coeff_pervol'] * trade_amount + \
+                    commission_fee_preset['commission_coeff_peramount'] * \
+                    abs(value)
+            elif trade_towards in [ORDER_DIRECTION.BUY_CLOSETODAY, ORDER_DIRECTION.SELL_CLOSETODAY]:
+                commission_fee = commission_fee_preset['commission_coeff_today_pervol'] * trade_amount + \
+                    commission_fee_preset['commission_coeff_today_peramount'] * \
+                    abs(value)
 
             tax_fee = 0  # 买入不收印花税
 
         _trade_money_frozen = abs(trade_money) + commission_fee + tax_fee
-        trade_money += (commission_fee+tax_fee)
+        #trade_money += (commission_fee+tax_fee)
+        if self.allow_margin:
+            unit = self.market_preset.get_unit(code)
+        else:
+            unit = 1
 
-        if self.cash[-1] > trade_money:
+        if self.cash[-1] > (trade_money+ commission_fee + tax_fee):
             self.time_index.append(trade_time)
             # TODO: 目前还不支持期货的锁仓
             if self.allow_sellopen:
@@ -790,11 +815,20 @@ class QA_Account(QA_Worker):
                                 'money': 0, 'amount': 0}
                         }
 
+                    """[summary]
+                    # frozen的计算
+                    # money 冻结的资金
+                    # amount  冻结的数量
+
+                    2018-12-31                    
+
+                    """
+
                     self.frozen[code][trade_towards]['money'] = (
                         (self.frozen[code][trade_towards]['money']*self.frozen[code][trade_towards]['amount'])+abs(trade_money))/(self.frozen[code][trade_towards]['amount']+trade_amount)
                     self.frozen[code][trade_towards]['amount'] += trade_amount
 
-                    self.cash.append(self.cash[-1]-_trade_money_frozen)
+                    self.cash.append(self.cash[-1]-abs(trade_money)- commission_fee - tax_fee)
                 elif trade_towards in [ORDER_DIRECTION.BUY_CLOSE, ORDER_DIRECTION.SELL_CLOSE]:
                     # 平仓单释放现金
                     # if trade_towards == ORDER_DIRECTION.BUY_CLOSE:
@@ -803,20 +837,25 @@ class QA_Account(QA_Worker):
                     if trade_towards == ORDER_DIRECTION.BUY_CLOSE:  # 买入平仓  之前是空开
                         # self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['money'] -= trade_money
                         self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['amount'] -= trade_amount
+
+                        frozen_part = self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['money']*trade_amount
+                        # 账户的现金+ 冻结的的释放 + 买卖价差* 杠杆
                         self.cash.append(
-                            self.cash[-1]-trade_money+self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['money']*trade_amount*2)
+                            self.cash[-1]+frozen_part + (frozen_part-trade_money)*unit- commission_fee - tax_fee)
                         if self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['amount'] == 0:
                             self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['money'] = 0
 
                     elif trade_towards == ORDER_DIRECTION.SELL_CLOSE:  # 卖出平仓  之前是多开
                         # self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['money'] -= trade_money
                         self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['amount'] -= trade_amount
+
+                        frozen_part = self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['money']*trade_amount
                         self.cash.append(
-                            self.cash[-1]-trade_money)
+                            self.cash[-1]+frozen_part + (abs(trade_money)-frozen_part)*unit- commission_fee - tax_fee)
                         if self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['amount'] == 0:
                             self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['money'] = 0
             else:
-                self.cash.append(self.cash[-1]-trade_money)
+                self.cash.append(self.cash[-1]-trade_money- commission_fee - tax_fee)
                 self.cash_available = self.cash[-1]
 
             self.history.append(
