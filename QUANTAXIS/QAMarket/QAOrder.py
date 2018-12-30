@@ -25,6 +25,7 @@
 import threading
 import pandas as pd
 
+from QUANTAXIS.QAMarket.common import exchange_code
 from QUANTAXIS.QAUtil import (
     QA_util_log_info, QA_util_random_with_topic, QA_util_to_json_from_pandas)
 from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_STATUS, ORDER_DIRECTION, ORDER_MODEL
@@ -61,7 +62,7 @@ class QA_Order():
 
     def __init__(self, price=None, date=None, datetime=None, sending_time=None, trade_time=False, amount=0, market_type=None, frequence=None,
                  towards=None, code=None, user=None, account_cookie=None, strategy=None, order_model=None, money=None, amount_model=AMOUNT_MODEL.BY_AMOUNT,
-                 order_id=None, trade_id=False, _status=ORDER_STATUS.NEW, callback=False, commission_coeff=0.00025, tax_coeff=0.001, exchange_id=None, *args, **kwargs):
+                 order_id=None, trade_id=False, _status=ORDER_STATUS.NEW, callback=False, commission_coeff=0.00025, tax_coeff=0.001, exchange_id=None, strategy_id=None, *args, **kwargs):
         '''
 
 
@@ -152,7 +153,8 @@ class QA_Order():
         self.exchange_id = exchange_id
         self.time_condition = 'GFD'  # 当日有效
         self._status = _status
-
+        self.exchange_code = exchange_code
+        self.strategy_id = strategy_id
         # 增加订单对于多账户以及多级别账户的支持 2018/11/12
         self.mainacc_id = None if 'mainacc_id' not in kwargs.keys(
         ) else kwargs['mainacc_id']
@@ -187,6 +189,9 @@ class QA_Order():
         elif self.trade_amount == 0:
             self._status = ORDER_STATUS.QUEUED
             return self._status
+
+    def get_exchange(self, code):
+        return self.exchange_code[code.lower()]
 
     def create(self):
         """创建订单
@@ -293,6 +298,60 @@ class QA_Order():
         :return: dict
         '''
         return vars(self)
+
+    def to_otgdict(self):
+        """{
+                "aid": "insert_order",                  # //必填, 下单请求
+                # //必填, 需要与登录用户名一致, 或为登录用户的子账户(例如登录用户为user1, 则报单 user_id 应当为 user1 或 user1.some_unit)
+                "user_id": account_cookie,
+                # //必填, 委托单号, 需确保在一个账号中不重复, 限长512字节
+                "order_id": order_id if order_id else QA.QA_util_random_with_topic('QAOTG'),
+                "exchange_id": exchange_id,  # //必填, 下单到哪个交易所
+                "instrument_id": code,               # //必填, 下单合约代码
+                "direction": order_direction,                      # //必填, 下单买卖方向
+                # //必填, 下单开平方向, 仅当指令相关对象不支持开平机制(例如股票)时可不填写此字段
+                "offset":  order_offset,
+                "volume":  volume,                             # //必填, 下单手数
+                "price_type": "LIMIT",  # //必填, 报单价格类型
+                "limit_price": price,  # //当 price_type == LIMIT 时需要填写此字段, 报单价格
+                "volume_condition": "ANY",
+                "time_condition": "GFD",
+            }
+        """
+        return {
+            "aid": "insert_order",                  # //必填, 下单请求
+            # //必填, 需要与登录用户名一致, 或为登录用户的子账户(例如登录用户为user1, 则报单 user_id 应当为 user1 或 user1.some_unit)
+            "user_id": self.account_cookie,
+            # //必填, 委托单号, 需确保在一个账号中不重复, 限长512字节
+            "order_id": self.order_id,
+            "exchange_id": self.exchange_id,  # //必填, 下单到哪个交易所
+            "instrument_id": self.code,               # //必填, 下单合约代码
+            "direction": self.direction,                      # //必填, 下单买卖方向
+            # //必填, 下单开平方向, 仅当指令相关对象不支持开平机制(例如股票)时可不填写此字段
+            "offset":  self.offset,
+            "volume":  self.amount,                             # //必填, 下单手数
+            "price_type": self.order_model,  # //必填, 报单价格类型
+            "limit_price": self.price,  # //当 price_type == LIMIT 时需要填写此字段, 报单价格
+            "volume_condition": "ANY",
+            "time_condition": "GFD",
+        }
+
+    def to_qatradegatway(self):
+
+        direction = 'BUY' if self.direction > 0 else 'SELL'
+        return {
+            'topic': 'sendorder',
+            'account_cookie': self.account_cookie,
+            'strategy_id': self.strategy_id,
+            'order_direction': self.direction,
+            'code': self.code.lower(),
+            'price': self.price,
+            'order_time': self.sending_time,
+            'exchange_id': self.get_exchange(self.code),
+            'order_offset': self.offset,
+            'volume': self.amount,
+            'order_id': self.order_id
+        }
 
     def from_otgformat(self, otgOrder):
         """[summary]
