@@ -75,6 +75,43 @@
 1. 感谢@追梦, QA_Account的receive_simpledeal的成交方式中的 股票市场的印花税计算修正
 2. 改写@地下的地下铁, 修正QA_Risk中计算assets的一个停牌无数据的bug
 3. 感谢@风筝 修复了单标的多市场的获取bug
+4. 重大修改:  增加保证金账户的支持(期货)
+
+
+具体示例  参见: https://github.com/QUANTAXIS/QUANTAXIS/blob/master/EXAMPLE/test_backtest/FUTURE/TEST_%E4%BF%9D%E8%AF%81%E9%87%91%E8%B4%A6%E6%88%B7.ipynb
+
+```python
+#在QA_Account的初始化的时候带上 allow_margin=True
+
+acc=QA.QA_Account(allow_sellopen=True,init_cash=10000,allow_t0=True,allow_margin=True,account_cookie='future_test',market_type=QA.MARKET_TYPE.FUTURE_CN,frequence=QA.FREQUENCE.FIFTEEN_MIN)
+
+
+
+#快速撮合接口的测试
+
+acc.reset_assets(init_cash=10000)
+
+acc.receive_simpledeal(code='RB1901', trade_price=3420, trade_amount=1, trade_towards=QA.ORDER_DIRECTION.BUY_OPEN, trade_time='2018-12-28 09:30:00')
+
+acc.receive_simpledeal(code='RB1901', trade_price=3425, trade_amount=1, trade_towards=QA.ORDER_DIRECTION.SELL_CLOSE, trade_time='2018-12-28 09:45:00')
+
+acc.receive_simpledeal(code='RB1901', trade_price=3435, trade_amount=1, trade_towards=QA.ORDER_DIRECTION.SELL_OPEN, trade_time='2018-12-28 09:55:00')
+
+acc.receive_simpledeal(code='RB1901', trade_price=3420, trade_amount=1, trade_towards=QA.ORDER_DIRECTION.BUY_CLOSE, trade_time='2018-12-28 10:45:00')
+
+acc.history_table
+"""
+datetime	code	price	amount	cash	order_id	realorder_id	trade_id	account_cookie	commission	tax	message
+0	2018-12-28 09:30:00	RB1901	3420	1	6918.580	None	None	None	future_test	3.420	0	None
+1	2018-12-28 09:45:00	RB1901	3425	-1	10038.155	None	None	None	future_test	3.425	0	None
+2	2018-12-28 09:55:00	RB1901	3435	-1	6943.220	None	None	None	future_test	3.435	0	None
+3	2018-12-28 10:45:00	RB1901	3420	1	10166.300	None	None	None	future_test	3.420	0	None
+"""
+acc.frozen
+"""
+{'RB1901': {2: {'money': 0, 'amount': 0}, -2: {'money': 0, 'amount': 0}}}
+"""
+```
 
 ## 1.2.2
 
