@@ -135,6 +135,17 @@ class QA_Account(QA_Worker):
         :param [Bool] allow_sellopen:    是否允许卖空开仓  默认False
         :param [Bool] allow_margin:      是否允许保证金交易 默认False
 
+        ### 注意
+        >>>>>>>>>>>>>
+        在期货账户中:
+        allow_t0/ allow_sellopen 是必须打开的
+
+        allow_margin 是作为保证金账户的开关 默认关闭 可以打开 则按照market_preset中的保证金比例来计算
+
+        >>>>>>>>>>>>>
+
+
+
         :param [QA.PARAM] market_type:   市场类别 默认QA.MARKET_TYPE.STOCK_CN A股股票
         :param [QA.PARAM] frequence:     账户级别 默认日线QA.FREQUENCE.DAY
         :param [QA.PARAM] broker:        BROEKR类 默认回测 QA.BROKER_TYPE.BACKTEST
@@ -874,8 +885,13 @@ class QA_Account(QA_Worker):
         @2018/12/27
         在判断账户为期货账户(及 允许双向交易)
 
+        @2018/12/30 保证金账户的修改
+        1. 保证金账户冻结的金额
+        2. 保证金账户的结算
+        3. 保证金账户的判断
+
         """
-        wrong_reson = None
+        wrong_reason = None
         assert code is not None and time is not None and towards is not None and order_model is not None and amount_model is not None
 
         # 🛠todo 移到Utils类中，  时间转换
@@ -889,15 +905,22 @@ class QA_Account(QA_Worker):
         # BY_MONEY :: amount --钱 如10000元  因此 by_money里面 需要指定价格,来计算实际的股票数
         # by_amount :: amount --股数 如10000股
 
+        if self.allow_margin:
+            amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
+                money / (self.market_preset.get_unit(code)*self.market_preset.get_frozen(code)*price*(1+self.commission_coeff))/100) * 100
+        else:
 
-        amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
+            amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
 
-            money / (price*(1+self.commission_coeff))/100) * 100
+                money / (price*(1+self.commission_coeff))/100) * 100
 
         # 🛠todo 移到Utils类中，  money_to_amount 金额转成交量
-        money = amount * price * \
-            (1+self.commission_coeff) if amount_model is AMOUNT_MODEL.BY_AMOUNT else money
-
+        if self.allow_margin:
+            money = amount * price * self.market_preset.get_unit(code)*self.market_preset.get_frozen(code) * \
+                (1+self.commission_coeff) if amount_model is AMOUNT_MODEL.BY_AMOUNT else money
+        else:
+            money = amount * price * \
+                (1+self.commission_coeff) if amount_model is AMOUNT_MODEL.BY_AMOUNT else money
 
         # flag 判断买卖 数量和价格以及买卖方向是否正确
         flag = False
@@ -906,9 +929,10 @@ class QA_Account(QA_Worker):
         if int(towards) in [1, 2, 3]:
             # 是买入的情况(包括买入.买开.买平)
             if self.cash_available >= money:
-
                 if self.market_type is MARKET_TYPE.STOCK_CN:  # 如果是股票 买入的时候有100股的最小限制
                     amount = int(amount / 100) * 100
+                    self.cash_available -= money
+                    flag = True
 
                 if self.running_environment == RUNNING_ENVIRONMENT.TZERO:
 
@@ -918,26 +942,35 @@ class QA_Account(QA_Worker):
                         self.buy_available[code] -= amount
                     else:
                         flag = False
-                        wrong_reson = 'T0交易买入超出限额'
-                else:
-                    self.cash_available -= money
-                    flag = True
-            else:
-                # 如果有负持仓-- 允许卖空的时候
-                if self.allow_sellopen and towards == 3:  # 多平
-                    _hold = self.sell_available.get(code, 0)
-                    left_amount = amount+_hold if _hold < 0 else amount
-                    _money = float(left_amount * price + amount *
-                                   price*self.commission_coeff)
-                    if self.cash_available >= _money:
-                        self.cash_available -= _money
-                        flag = True
-                    else:
-                        wrong_reson = '平多剩余资金不够'
-                else:
+                        wrong_reason = 'T0交易买入超出限额'
 
-                    wrong_reson = 'QAACCOUNT: 可用资金不足 cash_available {}  code {} time {} amount {} towards {}'.format(
-                        self.cash_available, code, time, amount, towards)
+                if self.market_type == MARKET_TYPE.FUTURE_CN:
+                    # 如果有负持仓-- 允许卖空的时候
+                    if towards == 3:  # 多平
+                        _hold = self.sell_available.get(code, 0)
+                        # 假设有负持仓:
+                        # amount为下单数量 如  账户原先-3手 现在平1手
+
+                        #left_amount = amount+_hold if _hold < 0 else amount
+                        _money = abs(
+                            float(amount * price * (1+self.commission_coeff)))
+
+                        print(_hold)
+                        if self.cash_available >= _money:
+                            if _hold < 0:
+                                self.cash_available -= _money
+
+                                flag = True
+                            else:
+                                wrong_reason = '空单仓位不足'
+                        else:
+                            wrong_reason = '平多剩余资金不够'
+                    if towards == 2:
+                        self.cash_available -= money
+                        flag = True
+            else:
+                wrong_reason = 'QAACCOUNT: 可用资金不足 cash_available {}  code {} time {} amount {} towards {}'.format(
+                    self.cash_available, code, time, amount, towards)
         elif int(towards) in [-1, -2, -3]:
             # 是卖出的情况(包括卖出，卖出开仓allow_sellopen如果允许. 卖出平仓)
             # print(self.sell_available[code])
@@ -953,22 +986,19 @@ class QA_Account(QA_Worker):
             else:
 
                 # 如果是允许卖空开仓 实际计算时  先减去持仓(正持仓) 再计算 负持仓 就按原先的占用金额计算
-                if self.allow_sellopen:
-                    # left_amount = amount-_hold if _hold > 0 else amount  # 如果仓位是反的
-                    # _money = float(left_amount * price + amount *
-                    #                price*self.commission_coeff)
-                    if towards == -2:  # 卖开
-                        if self.cash_available >= money:  # 卖空的市值小于现金（有担保的卖空）， 不允许裸卖空
-                            # self.cash_available -= money
-                            flag = True
-                        else:
-                            print('sellavailable', _hold)
-                            print('amount', amount)
-                            print('aqureMoney', money)
-                            print('cash', self.cash_available)
-                            wrong_reson = "卖空资金不足/不允许裸卖空"
+                if self.allow_sellopen and towards == -2:
+
+                    if self.cash_available >= money:  # 卖空的市值小于现金（有担保的卖空）， 不允许裸卖空
+                        # self.cash_available -= money
+                        flag = True
+                    else:
+                        print('sellavailable', _hold)
+                        print('amount', amount)
+                        print('aqureMoney', money)
+                        print('cash', self.cash_available)
+                        wrong_reason = "卖空资金不足/不允许裸卖空"
                 else:
-                    wrong_reson = "卖出仓位不足"
+                    wrong_reason = "卖出仓位不足"
 
         if flag and (amount > 0):
             _order = QA_Order(user_cookie=self.user_cookie, strategy=self.strategy_name, frequence=self.frequence,
@@ -983,7 +1013,7 @@ class QA_Account(QA_Worker):
         else:
             print('ERROR : CODE {} TIME {}  AMOUNT {} TOWARDS {}'.format(
                 code, time, amount, towards))
-            print(wrong_reson)
+            print(wrong_reason)
             return False
 
     def cancel_order(self, order):
