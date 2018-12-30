@@ -343,7 +343,7 @@ class QA_Order():
             'topic': 'sendorder',
             'account_cookie': self.account_cookie,
             'strategy_id': self.strategy_id,
-            'order_direction': self.direction,
+            'order_direction': direction,
             'code': self.code.lower(),
             'price': self.price,
             'order_time': self.sending_time,
