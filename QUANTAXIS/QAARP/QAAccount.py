@@ -135,6 +135,17 @@ class QA_Account(QA_Worker):
         :param [Bool] allow_sellopen:    是否允许卖空开仓  默认False
         :param [Bool] allow_margin:      是否允许保证金交易 默认False
 
+        ### 注意
+        >>>>>>>>>>>>>
+        在期货账户中:
+        allow_t0/ allow_sellopen 是必须打开的
+
+        allow_margin 是作为保证金账户的开关 默认关闭 可以打开 则按照market_preset中的保证金比例来计算
+
+        >>>>>>>>>>>>>
+
+
+
         :param [QA.PARAM] market_type:   市场类别 默认QA.MARKET_TYPE.STOCK_CN A股股票
         :param [QA.PARAM] frequence:     账户级别 默认日线QA.FREQUENCE.DAY
         :param [QA.PARAM] broker:        BROEKR类 默认回测 QA.BROKER_TYPE.BACKTEST
@@ -873,6 +884,11 @@ class QA_Account(QA_Worker):
 
         @2018/12/27
         在判断账户为期货账户(及 允许双向交易)
+
+        @2018/12/30 保证金账户的修改
+        1. 保证金账户冻结的金额
+        2. 保证金账户的结算
+        3. 保证金账户的判断
 
         """
         wrong_reson = None
