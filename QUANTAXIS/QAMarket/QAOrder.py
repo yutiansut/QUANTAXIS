@@ -25,6 +25,7 @@
 import threading
 import pandas as pd
 
+from QUANTAXIS.QAMarket.common import exchange_code
 from QUANTAXIS.QAUtil import (
     QA_util_log_info, QA_util_random_with_topic, QA_util_to_json_from_pandas)
 from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_STATUS, ORDER_DIRECTION, ORDER_MODEL
@@ -61,7 +62,7 @@ class QA_Order():
 
     def __init__(self, price=None, date=None, datetime=None, sending_time=None, trade_time=False, amount=0, market_type=None, frequence=None,
                  towards=None, code=None, user=None, account_cookie=None, strategy=None, order_model=None, money=None, amount_model=AMOUNT_MODEL.BY_AMOUNT,
-                 order_id=None, trade_id=False, _status=ORDER_STATUS.NEW, callback=False, commission_coeff=0.00025, tax_coeff=0.001, exchange_id=None, *args, **kwargs):
+                 order_id=None, trade_id=False, _status=ORDER_STATUS.NEW, callback=False, commission_coeff=0.00025, tax_coeff=0.001, exchange_id=None, strategy_id=None, *args, **kwargs):
         '''
 
 
@@ -152,7 +153,8 @@ class QA_Order():
         self.exchange_id = exchange_id
         self.time_condition = 'GFD'  # 当日有效
         self._status = _status
-
+        self.exchange_code = exchange_code
+        self.strategy_id = strategy_id
         # 增加订单对于多账户以及多级别账户的支持 2018/11/12
         self.mainacc_id = None if 'mainacc_id' not in kwargs.keys(
         ) else kwargs['mainacc_id']
@@ -187,6 +189,9 @@ class QA_Order():
         elif self.trade_amount == 0:
             self._status = ORDER_STATUS.QUEUED
             return self._status
+
+    def get_exchange(self, code):
+        return self.exchange_code[code.lower()]
 
     def create(self):
         """创建订单
