@@ -905,15 +905,22 @@ class QA_Account(QA_Worker):
         # BY_MONEY :: amount --钱 如10000元  因此 by_money里面 需要指定价格,来计算实际的股票数
         # by_amount :: amount --股数 如10000股
 
+        if self.allow_margin:
+            amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
+                money / (self.market_preset.get_unit(code)*self.market_preset.get_frozen(code)*price*(1+self.commission_coeff))/100) * 100
+        else:
 
-        amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
+            amount = amount if amount_model is AMOUNT_MODEL.BY_AMOUNT else int(
 
-            money / (price*(1+self.commission_coeff))/100) * 100
+                money / (price*(1+self.commission_coeff))/100) * 100
 
         # 🛠todo 移到Utils类中，  money_to_amount 金额转成交量
-        money = amount * price * \
-            (1+self.commission_coeff) if amount_model is AMOUNT_MODEL.BY_AMOUNT else money
-
+        if self.allow_margin:
+            money = amount * price * self.market_preset.get_unit(code)*self.market_preset.get_frozen(code) * \
+                (1+self.commission_coeff) if amount_model is AMOUNT_MODEL.BY_AMOUNT else money
+        else:
+            money = amount * price * \
+                (1+self.commission_coeff) if amount_model is AMOUNT_MODEL.BY_AMOUNT else money
 
         # flag 判断买卖 数量和价格以及买卖方向是否正确
         flag = False
@@ -945,19 +952,20 @@ class QA_Account(QA_Worker):
                         # amount为下单数量 如  账户原先-3手 现在平1手
 
                         #left_amount = amount+_hold if _hold < 0 else amount
-                        _money = abs(float(amount * price *(1+self.commission_coeff)))
+                        _money = abs(
+                            float(amount * price * (1+self.commission_coeff)))
 
                         print(_hold)
-                        if self.cash_available >= _money :
-                            if _hold <0:
+                        if self.cash_available >= _money:
+                            if _hold < 0:
                                 self.cash_available -= _money
-                                
+
                                 flag = True
                             else:
                                 wrong_reason = '空单仓位不足'
                         else:
                             wrong_reason = '平多剩余资金不够'
-                    if towards ==2:
+                    if towards == 2:
                         self.cash_available -= money
                         flag = True
             else:
@@ -978,7 +986,7 @@ class QA_Account(QA_Worker):
             else:
 
                 # 如果是允许卖空开仓 实际计算时  先减去持仓(正持仓) 再计算 负持仓 就按原先的占用金额计算
-                if self.allow_sellopen and towards==-2:
+                if self.allow_sellopen and towards == -2:
 
                     if self.cash_available >= money:  # 卖空的市值小于现金（有担保的卖空）， 不允许裸卖空
                         # self.cash_available -= money
