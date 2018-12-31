@@ -627,14 +627,17 @@ class QA_Account(QA_Worker):
         market_towards = 1 if trade_towards > 0 else -1
         # value 合约价值 unit 合约乘数
         if self.allow_margin:
+            frozen = self.market_preset.get_frozen(code)
             value = trade_price*trade_amount*market_towards * \
                 self.market_preset.get_unit(code)
-            trade_money = value * self.market_preset.get_frozen(code)
+            trade_money = value * frozen
             unit = self.market_preset.get_unit(code)
+            
         else:
             trade_money = trade_price*trade_amount*market_towards
             value = trade_money
             unit = 1
+            frozen = 1
         # 计算费用
         # trade_price
 
@@ -713,7 +716,7 @@ class QA_Account(QA_Worker):
                         frozen_part = self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['money']*trade_amount
                         # 账户的现金+ 冻结的的释放 + 买卖价差* 杠杆
                         self.cash.append(
-                            self.cash[-1]+frozen_part + (frozen_part-trade_money)*unit - commission_fee - tax_fee)
+                            self.cash[-1]+frozen_part + (frozen_part-trade_money)/frozen - commission_fee - tax_fee)
                         if self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['amount'] == 0:
                             self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['money'] = 0
 
@@ -723,7 +726,7 @@ class QA_Account(QA_Worker):
 
                         frozen_part = self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['money']*trade_amount
                         self.cash.append(
-                            self.cash[-1]+frozen_part + (abs(trade_money)-frozen_part)*unit - commission_fee - tax_fee)
+                            self.cash[-1]+frozen_part + (abs(trade_money)-frozen_part)/frozen - commission_fee - tax_fee)
                         if self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['amount'] == 0:
                             self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['money'] = 0
             else:  # 不允许卖空开仓的==> 股票
@@ -775,14 +778,16 @@ class QA_Account(QA_Worker):
         market_towards = 1 if trade_towards > 0 else -1
         # value 合约价值
         if self.allow_margin:
+            frozen = self.market_preset.get_frozen(code)
             value = trade_price*trade_amount*market_towards * \
                 self.market_preset.get_unit(code)
-            trade_money = value * self.market_preset.get_frozen(code)
+            trade_money = value * frozen
             unit = self.market_preset.get_unit(code)
         else:
             trade_money = trade_price*trade_amount*market_towards
             value = trade_money
             unit = 1
+            frozen = 1
 
         if self.market_type == MARKET_TYPE.STOCK_CN:
             if trade_towards > 0:
@@ -869,7 +874,7 @@ class QA_Account(QA_Worker):
                         frozen_part = self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['money']*trade_amount
                         # 账户的现金+ 冻结的的释放 + 买卖价差* 杠杆
                         self.cash.append(
-                            self.cash[-1]+frozen_part + (frozen_part-trade_money)*unit - commission_fee - tax_fee)
+                            self.cash[-1]+frozen_part + (frozen_part-trade_money)/frozen - commission_fee - tax_fee)
                         if self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['amount'] == 0:
                             self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['money'] = 0
 
@@ -879,7 +884,7 @@ class QA_Account(QA_Worker):
 
                         frozen_part = self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['money']*trade_amount
                         self.cash.append(
-                            self.cash[-1]+frozen_part + (abs(trade_money)-frozen_part)*unit - commission_fee - tax_fee)
+                            self.cash[-1]+frozen_part + (abs(trade_money)-frozen_part)/frozen - commission_fee - tax_fee)
                         if self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['amount'] == 0:
                             self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['money'] = 0
             else:
