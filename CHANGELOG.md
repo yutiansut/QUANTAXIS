@@ -3,7 +3,10 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.2.0(unreleased)](#120unreleased)
+    - [1.2.3 ](#123)
+    - [1.2.2 ](#122)
+    - [1.2.1 ](#121)
+    - [1.2.0](#120)
     - [1.1.10](#1110)
     - [1.1.9](#119)
     - [1.1.8](#118)
@@ -67,11 +70,79 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
+## 1.2.3 
+
+1. 感谢@追梦, QA_Account的receive_simpledeal的成交方式中的 股票市场的印花税计算修正
+2. 改写@地下的地下铁, 修正QA_Risk中计算assets的一个停牌无数据的bug
+3. 感谢@风筝 修复了单标的多市场的获取bug
+4. 重大修改:  增加保证金账户的支持(期货)
 
 
-## 1.2.0(unreleased)
+具体示例  参见: https://github.com/QUANTAXIS/QUANTAXIS/blob/master/EXAMPLE/test_backtest/FUTURE/TEST_%E4%BF%9D%E8%AF%81%E9%87%91%E8%B4%A6%E6%88%B7.ipynb
+
+```python
+#在QA_Account的初始化的时候带上 allow_margin=True
+
+acc=QA.QA_Account(allow_sellopen=True,init_cash=10000,allow_t0=True,allow_margin=True,account_cookie='future_test',market_type=QA.MARKET_TYPE.FUTURE_CN,frequence=QA.FREQUENCE.FIFTEEN_MIN)
 
 
+
+#快速撮合接口的测试
+
+acc.reset_assets(init_cash=10000)
+
+acc.receive_simpledeal(code='RB1901', trade_price=3420, trade_amount=1, trade_towards=QA.ORDER_DIRECTION.BUY_OPEN, trade_time='2018-12-28 09:30:00')
+
+acc.receive_simpledeal(code='RB1901', trade_price=3425, trade_amount=1, trade_towards=QA.ORDER_DIRECTION.SELL_CLOSE, trade_time='2018-12-28 09:45:00')
+
+acc.receive_simpledeal(code='RB1901', trade_price=3435, trade_amount=1, trade_towards=QA.ORDER_DIRECTION.SELL_OPEN, trade_time='2018-12-28 09:55:00')
+
+acc.receive_simpledeal(code='RB1901', trade_price=3420, trade_amount=1, trade_towards=QA.ORDER_DIRECTION.BUY_CLOSE, trade_time='2018-12-28 10:45:00')
+
+acc.history_table
+"""
+datetime	code	price	amount	cash	order_id	realorder_id	trade_id	account_cookie	commission	tax	message
+0	2018-12-28 09:30:00	RB1901	3420	1	6918.580	None	None	None	future_test	3.420	0	None
+1	2018-12-28 09:45:00	RB1901	3425	-1	10038.155	None	None	None	future_test	3.425	0	None
+2	2018-12-28 09:55:00	RB1901	3435	-1	6943.220	None	None	None	future_test	3.435	0	None
+3	2018-12-28 10:45:00	RB1901	3420	1	10166.300	None	None	None	future_test	3.420	0	None
+"""
+acc.frozen
+"""
+{'RB1901': {2: {'money': 0, 'amount': 0}, -2: {'money': 0, 'amount': 0}}}
+"""
+```
+
+## 1.2.2
+
+1. 重新构建docker compose，把主镜像拆分jupyter, cron和web三个镜像
+2. 修改了QAFetch的mongo查询语句(感谢几何大佬) 优雅的在查询中去掉了_id  
+3. 修正期货的DataStruct格式,统一volume字段
+4. 更新交易日历到2019-12-31
+
+```
+mongo文档参见 https://docs.mongodb.com/manual/tutorial/project-fields-from-query-results/#return-the-specified-fields-and-the-id-field-only
+```
+
+
+## 1.2.1
+
+1. 修改回测的时候的账户结算(终于算对了不容易...) @CODE-ORANGE
+具体看 [期货冻结-释放资金示例](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/EXAMPLE/test_backtest/FUTURE/%E6%9C%9F%E8%B4%A7TEST.ipynb)
+2. 增加 对于单月合约的存储  save future_all/ future_day_all / future_min_all
+3. 增加对于future_data 的获取的去重处理
+4. @barretthugh 修改了复权部分的代码
+5. 优化了docker部分的使用
+6. 增加对于jqdata的使用示例
+7. 增加了1min的股票采样
+8. 增加CTPtick的获取和采样
+
+## 1.2.0
+
+1. 增加对期货保证金冻结的修改
+2. 增加对于TALIB的支持, 在talib_indicators中调用
+3. 增加对于50ETF的支持
+4. 优化cirrusCI的支持
 
 
 ## 1.1.10

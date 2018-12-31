@@ -114,12 +114,4 @@ from QUANTAXIS.QAUtil.QADateTools import (
     QA_util_add_months, QA_util_getBetweenMonth
 )
 
-# SQL数据库相关
-from QUANTAXIS.QAUtil.QAMySQL import (QA_etl_stock_list, QA_etl_stock_info,
-                                      QA_etl_stock_xdxr, QA_etl_stock_day,
-                                      QA_etl_stock_financial, QA_etl_stock_calendar,
-                                      QA_etl_stock_block, QA_etl_stock_divyield,
-                                      QA_etl_process_financial_day)
 
-# ETL过程
-from QUANTAXIS.QAUtil.QAEtl import QA_util_process_financial

@@ -22,6 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import json
 import datetime
 import os
 import statistics
@@ -62,8 +63,11 @@ class _quotation_base():
         '''
         if 'volume' not in DataFrame.columns and 'vol' in DataFrame.columns:
             DataFrame = DataFrame.assign(volume=DataFrame.vol)
+        if 'volume' not in DataFrame.columns and 'trade' in DataFrame.columns:
+            DataFrame = DataFrame.assign(volume=DataFrame.trade)
+        #print(DataFrame)
         # 🛠todo 判断DataFame 对象字段的合法性，是否正确
-        self.data = DataFrame.sort_index()
+        self.data = DataFrame.drop_duplicates().sort_index()
         self.data.index = self.data.index.remove_unused_levels()
         # 🛠todo 该变量没有用到， 是不是 self.type = marketdata_type ??
 
@@ -847,6 +851,12 @@ class _quotation_base():
         转换DataStruct为json
         """
         return QA_util_to_json_from_pandas(self.data.reset_index())
+
+    def to_string(self):
+        return json.dumps(self.to_json())
+
+    def to_bytes(self):
+        return bytes(self.to_string(), encoding='utf-8')
 
     def to_csv(self, *args, **kwargs):
         """datastruct 存本地csv

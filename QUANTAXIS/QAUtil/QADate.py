@@ -176,7 +176,15 @@ def QA_util_stamp2datetime(timestamp):
         return datetime.datetime.fromtimestamp(timestamp)
     except Exception as e:
         # it won't work ??
-        return datetime.datetime.fromtimestamp(timestamp / 1000)
+        try:
+            return datetime.datetime.fromtimestamp(timestamp / 1000)
+        except:
+            try:
+                return datetime.datetime.fromtimestamp(timestamp / 1000000)
+            except:
+                return datetime.datetime.fromtimestamp(timestamp / 1000000000)
+           
+        
     #
 
 

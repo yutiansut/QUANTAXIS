@@ -6,7 +6,11 @@ QUANTAXIS quantitative framework to achieve the stock and futures market, the wh
 .. image:: https://badge.waffle.io/yutiansut/QUANTAXIS.svg?label=ready&title=Ready 
  :target: https://waffle.io/yutiansut/QUANTAXIS 
  :alt: 'Stories in Ready'
-
+ 
+ 
+.. image:: https://img.shields.io/pypi/dw/quantaxis.svg
+   :target: https://pypi.python.org/quantaxis/
+   :alt: PyPI Downloads
 
  
 0.4.x Release Note

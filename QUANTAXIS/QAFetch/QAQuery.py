@@ -46,7 +46,16 @@ from QUANTAXIS.QAData.financial_mean import financial_dict
 
 
 def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collections=DATABASE.stock_day):
-    '获取股票日线'
+    """'获取股票日线'
+
+    Returns:
+        [type] -- [description]
+
+        感谢@几何大佬的提示
+        https://docs.mongodb.com/manual/tutorial/project-fields-from-query-results/#return-the-specified-fields-and-the-id-field-only
+
+    """
+
     start = str(start)[0:10]
     end = str(end)[0:10]
     #code= [code] if isinstance(code,str) else code
@@ -60,12 +69,12 @@ def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collec
         cursor = collections.find({
             'code': {'$in': code}, "date_stamp": {
                 "$lte": QA_util_date_stamp(end),
-                "$gte": QA_util_date_stamp(start)}}, batch_size=10000)
+                "$gte": QA_util_date_stamp(start)}}, {"_id": 0}, batch_size=10000)
         #res=[QA_util_dict_remove_key(data, '_id') for data in cursor]
 
         res = pd.DataFrame([item for item in cursor])
         try:
-            res = res.drop('_id', axis=1).assign(volume=res.vol, date=pd.to_datetime(
+            res = res.assign(volume=res.vol, date=pd.to_datetime(
                 res.date)).drop_duplicates((['date', 'code'])).query('volume>1').set_index('date', drop=False)
             res = res.ix[:, ['code', 'open', 'high', 'low',
                              'close', 'volume', 'amount', 'date']]
@@ -112,11 +121,11 @@ def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', colle
             "$gte": QA_util_time_stamp(start),
             "$lte": QA_util_time_stamp(end)
         }, 'type': frequence
-    }, batch_size=10000)
+    }, {"_id": 0}, batch_size=10000)
 
     res = pd.DataFrame([item for item in cursor])
     try:
-        res = res.drop('_id', axis=1).assign(volume=res.vol, datetime=pd.to_datetime(
+        res = res.assign(volume=res.vol, datetime=pd.to_datetime(
             res.datetime)).query('volume>1').drop_duplicates(['datetime', 'code']).set_index('datetime', drop=False)
         # return res
     except:
@@ -142,7 +151,7 @@ def QA_fetch_trade_date():
 
 def QA_fetch_stock_list(collections=DATABASE.stock_list):
     '获取股票列表'
-    
+
     return pd.DataFrame([item for item in collections.find()]).drop('_id', axis=1, inplace=False).set_index('code', drop=False)
 
 
@@ -249,7 +258,7 @@ def QA_fetch_index_day(code, start, end, format='numpy', collections=DATABASE.in
         cursor = collections.find({
             'code': {'$in': code}, "date_stamp": {
                 "$lte": QA_util_date_stamp(end),
-                "$gte": QA_util_date_stamp(start)}}, batch_size=10000)
+                "$gte": QA_util_date_stamp(start)}}, {"_id": 0}, batch_size=10000)
         if format in ['dict', 'json']:
             return [data for data in cursor]
         for item in cursor:
@@ -298,16 +307,16 @@ def QA_fetch_index_min(
             "$gte": QA_util_time_stamp(start),
             "$lte": QA_util_time_stamp(end)
         }, 'type': frequence
-    }, batch_size=10000)
+    }, {"_id": 0}, batch_size=10000)
     if format in ['dict', 'json']:
         return [data for data in cursor]
     for item in cursor:
 
         __data.append([str(item['code']), float(item['open']), float(item['high']), float(
-            item['low']), float(item['close']), int(item['up_count']), int(item['down_count']), float(item['vol']), float(item['amount']), item['datetime'], item['time_stamp'], item['date'],item['type']])
+            item['low']), float(item['close']), int(item['up_count']), int(item['down_count']), float(item['vol']), float(item['amount']), item['datetime'], item['time_stamp'], item['date'], item['type']])
 
     __data = DataFrame(__data, columns=[
-        'code', 'open', 'high', 'low', 'close', 'up_count', 'down_count', 'volume', 'amount', 'datetime', 'time_stamp', 'date','type'])
+        'code', 'open', 'high', 'low', 'close', 'up_count', 'down_count', 'volume', 'amount', 'datetime', 'time_stamp', 'date', 'type'])
 
     __data['datetime'] = pd.to_datetime(__data['datetime'])
     __data = __data.set_index('datetime', drop=False)
@@ -330,7 +339,7 @@ def QA_fetch_future_day(code, start, end, format='numpy', collections=DATABASE.f
         cursor = collections.find({
             'code': {'$in': code}, "date_stamp": {
                 "$lte": QA_util_date_stamp(end),
-                "$gte": QA_util_date_stamp(start)}}, batch_size=10000)
+                "$gte": QA_util_date_stamp(start)}}, {"_id": 0}, batch_size=10000)
         if format in ['dict', 'json']:
             return [data for data in cursor]
         for item in cursor:
@@ -345,7 +354,7 @@ def QA_fetch_future_day(code, start, end, format='numpy', collections=DATABASE.f
             __data = __data
         elif format in ['P', 'p', 'pandas', 'pd']:
             __data = DataFrame(
-                __data, columns=['code', 'open', 'high', 'low', 'close', 'position', 'price', 'trade', 'date'])
+                __data, columns=['code', 'open', 'high', 'low', 'close', 'position', 'price', 'trade', 'date']).drop_duplicates()
             __data['date'] = pd.to_datetime(__data['date'])
             __data = __data.set_index('date', drop=False)
         else:
@@ -373,7 +382,7 @@ def QA_fetch_future_min(
     elif frequence in ['60min', '60m']:
         frequence = '60min'
     __data = []
-    code = QA_util_code_tolist(code,auto_fill=False)
+    code = QA_util_code_tolist(code, auto_fill=False)
     cursor = collections.find({
         'code': {'$in': code}, "time_stamp": {
             "$gte": QA_util_time_stamp(start),
@@ -389,7 +398,7 @@ def QA_fetch_future_min(
             item['datetime'], item['tradetime'], item['time_stamp'], item['date'], item['type']])
 
     __data = DataFrame(__data, columns=[
-        'code', 'open', 'high', 'low', 'close',  'position', 'price', 'trade', 'datetime','tradetime', 'time_stamp', 'date', 'type'])
+        'code', 'open', 'high', 'low', 'close',  'position', 'price', 'trade', 'datetime', 'tradetime', 'time_stamp', 'date', 'type'])
 
     __data['datetime'] = pd.to_datetime(__data['datetime'])
     __data = __data.set_index('datetime', drop=False)
@@ -408,6 +417,40 @@ def QA_fetch_future_list(collections=DATABASE.future_list):
 
 def QA_fetch_future_tick():
     raise NotImplementedError
+
+
+def QA_fetch_ctp_tick(code, start, end, frequence, format='pd', collections=DATABASE.ctp_tick):
+    """仅供存储的ctp tick使用
+
+    Arguments:
+        code {[type]} -- [description]
+
+    Keyword Arguments:
+        format {str} -- [description] (default: {'pd'})
+        collections {[type]} -- [description] (default: {DATABASE.ctp_tick})
+
+    Returns:
+        [type] -- [description]
+    """
+
+    code = QA_util_code_tolist(code, auto_fill=False)
+    cursor = collections.find({
+        'InstrumentID': {'$in': code}, "time_stamp": {
+            "$gte": QA_util_time_stamp(start),
+            "$lte": QA_util_time_stamp(end)
+        }, 'type': frequence
+    }, {"_id": 0}, batch_size=10000)
+
+    hq = pd.DataFrame([data for data in cursor]).replace(1.7976931348623157e+308,
+                                                         numpy.nan).replace('', numpy.nan).dropna(axis=1)
+    p1 = hq.loc[:, ['ActionDay', 'AskPrice1', 'AskVolume1', 'AveragePrice', 'BidPrice1',
+                    'BidVolume1', 'HighestPrice', 'InstrumentID', 'LastPrice',
+                    'OpenInterest', 'TradingDay', 'UpdateMillisec',
+                    'UpdateTime', 'Volume']]
+    p1 = p1.assign(datetime=p1.ActionDay.apply(QA_util_date_int2str)+' '+p1.UpdateTime + (p1.UpdateMillisec/1000000).apply(lambda x: str('%.6f' % x)[1:]),
+                   code=p1.InstrumentID)
+    p1.datetime = pd.to_datetime(p1.datetime)
+    return p1.set_index(p1.datetime)
 
 
 def QA_fetch_stock_xdxr(code, format='pd', collections=DATABASE.stock_xdxr):
@@ -444,7 +487,7 @@ def QA_fetch_stock_info(code, format='pd', collections=DATABASE.stock_info):
     code = QA_util_code_tolist(code)
     try:
         data = pd.DataFrame([item for item in collections.find(
-            {'code':  {'$in': code}}, batch_size=10000)]).drop(['_id'], axis=1)
+            {'code':  {'$in': code}}, {"_id": 0}, batch_size=10000)])
         #data['date'] = pd.to_datetime(data['date'])
         return data.set_index('code', drop=False)
     except Exception as e:
@@ -465,7 +508,7 @@ def QA_fetch_quotation(code, date=datetime.date.today(), db=DATABASE):
         collections = db.get_collection(
             'realtime_{}'.format(date))
         data = pd.DataFrame([item for item in collections.find(
-            {'code': code}, batch_size=10000)]).drop(['_id'], axis=1)
+            {'code': code}, {"_id": 0}, batch_size=10000)])
         return data.assign(date=data.datetime.apply(lambda x: str(x)[0:10]), datetime=pd.to_datetime(data.datetime)) \
             .set_index('datetime', drop=False).sort_index()
     except Exception as e:
@@ -478,7 +521,7 @@ def QA_fetch_quotations(date=datetime.date.today(), db=DATABASE):
         collections = db.get_collection(
             'realtime_{}'.format(date))
         data = pd.DataFrame([item for item in collections.find(
-            {}, batch_size=10000)]).drop(['_id'], axis=1)
+            {}, {"_id": 0}, batch_size=10000)])
         return data.assign(date=data.datetime.apply(lambda x: str(x)[0:10])).assign(datetime=pd.to_datetime(data.datetime)).set_index('datetime', drop=False).sort_index()
     except Exception as e:
         raise e
@@ -497,7 +540,7 @@ def QA_fetch_account(message={}, db=DATABASE):
         [type] -- [description]
     """
     collection = DATABASE.account
-    return [QA_util_dict_remove_key(res, '_id') for res in collection.find(message)]
+    return [res for res in collection.find(message, {"_id": 0})]
 
 
 def QA_fetch_risk(message={}, db=DATABASE):
@@ -513,7 +556,7 @@ def QA_fetch_risk(message={}, db=DATABASE):
         [type] -- [description]
     """
     collection = DATABASE.risk
-    return [QA_util_dict_remove_key(res, '_id') for res in collection.find(message)]
+    return [res for res in collection.find(message, {"_id": 0})]
 
 
 def QA_fetch_user(user_cookie, db=DATABASE):
@@ -530,7 +573,7 @@ def QA_fetch_user(user_cookie, db=DATABASE):
     """
     collection = DATABASE.account
 
-    return [QA_util_dict_remove_key(res, '_id') for res in collection.find({'user_cookie': user_cookie})]
+    return [res for res in collection.find({'user_cookie': user_cookie}, {"_id": 0})]
 
 
 def QA_fetch_strategy(message={}, db=DATABASE):
@@ -546,7 +589,7 @@ def QA_fetch_strategy(message={}, db=DATABASE):
         [type] -- [description]
     """
     collection = DATABASE.strategy
-    return [QA_util_dict_remove_key(res, '_id') for res in collection.find(message)]
+    return [res for res in collection.find(message, {"_id": 0})]
 
 
 def QA_fetch_lhb(date, db=DATABASE):
@@ -554,7 +597,7 @@ def QA_fetch_lhb(date, db=DATABASE):
     try:
         collections = db.lhb
         return pd.DataFrame([item for item in collections.find(
-            {'date': date})]).drop(['_id'], axis=1).set_index('code', drop=False).sort_index()
+            {'date': date}, {"_id": 0})]).set_index('code', drop=False).sort_index()
     except Exception as e:
         raise e
 
@@ -698,15 +741,15 @@ def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
     try:
         if code is not None and report_date is not None:
             data = [item for item in collection.find(
-                {'code': {'$in': code}, 'report_date': {'$in': report_date}}, batch_size=10000)]
+                {'code': {'$in': code}, 'report_date': {'$in': report_date}}, {"_id": 0}, batch_size=10000)]
         elif code is None and report_date is not None:
             data = [item for item in collection.find(
-                {'report_date': {'$in': report_date}}, batch_size=10000)]
+                {'report_date': {'$in': report_date}}, {"_id": 0}, batch_size=10000)]
         elif code is not None and report_date is None:
             data = [item for item in collection.find(
-                {'code': {'$in': code}}, batch_size=10000)]
+                {'code': {'$in': code}}, {"_id": 0}, batch_size=10000)]
         else:
-            data = [item for item in collection.find()]
+            data = [item for item in collection.find({}, {"_id": 0})]
         if len(data) > 0:
             res_pd = pd.DataFrame(data)
 
@@ -721,7 +764,7 @@ def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
                     cndict['286'] = '286'
                 except:
                     pass
-                cndict['_id'] = '_id'
+
                 cndict['code'] = 'code'
                 cndict['report_date'] = 'report_date'
                 res_pd.columns = res_pd.columns.map(lambda x: cndict[x])
@@ -734,7 +777,7 @@ def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
                     endict['286'] = '286'
                 except:
                     pass
-                endict['_id'] = '_id'
+
                 endict['code'] = 'code'
                 endict['report_date'] = 'report_date'
                 res_pd.columns = res_pd.columns.map(lambda x: endict[x])
@@ -752,7 +795,7 @@ def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
         raise e
 
 
-def QA_fetch_stock_financial_calendar(code, start, end = None, format='pd', collections=DATABASE.report_calendar):
+def QA_fetch_stock_financial_calendar(code, start, end=None, format='pd', collections=DATABASE.report_calendar):
     '获取股票日线'
     #code= [code] if isinstance(code,str) else code
     # code checking
@@ -764,13 +807,15 @@ def QA_fetch_stock_financial_calendar(code, start, end = None, format='pd', coll
         cursor = collections.find({
             'code': {'$in': code}, "real_date": {
                 "$lte": end,
-                "$gte": start}}, batch_size=10000)
+                "$gte": start}}, {"_id": 0}, batch_size=10000)
         #res=[QA_util_dict_remove_key(data, '_id') for data in cursor]
 
         res = pd.DataFrame([item for item in cursor])
         try:
-            res = res.drop('_id', axis=1).drop_duplicates((['report_date', 'code']))
-            res = res.ix[:, ['code','name','pre_date','first_date','second_date','third_date','real_date','codes', 'report_date', 'crawl_date']]
+            res = res.drop_duplicates(
+                (['report_date', 'code']))
+            res = res.ix[:, ['code', 'name', 'pre_date', 'first_date', 'second_date',
+                             'third_date', 'real_date', 'codes', 'report_date', 'crawl_date']]
         except:
             res = None
         if format in ['P', 'p', 'pandas', 'pd']:
@@ -789,7 +834,8 @@ def QA_fetch_stock_financial_calendar(code, start, end = None, format='pd', coll
         QA_util_log_info(
             'QA Error QA_fetch_stock_financial_calendar data parameter start=%s end=%s is not right' % (start, end))
 
-def QA_fetch_stock_divyield(code, start, end = None, format='pd', collections=DATABASE.stock_divyield):
+
+def QA_fetch_stock_divyield(code, start, end=None, format='pd', collections=DATABASE.stock_divyield):
     '获取股票日线'
     #code= [code] if isinstance(code,str) else code
     # code checking
@@ -801,15 +847,16 @@ def QA_fetch_stock_divyield(code, start, end = None, format='pd', collections=DA
         cursor = collections.find({
             'a_stockcode': {'$in': code}, "dir_dcl_date": {
                 "$lte": end,
-                "$gte": start}}, batch_size=10000)
+                "$gte": start}}, {"_id": 0}, batch_size=10000)
         #res=[QA_util_dict_remove_key(data, '_id') for data in cursor]
 
         res = pd.DataFrame([item for item in cursor])
         try:
-            res = res.drop('_id', axis=1).drop_duplicates((['dir_dcl_date', 'a_stockcode']))
-            res = res.ix[:, ['a_stockcode','a_stocksname','div_info','div_type_code','bonus_shr',
-                             'cash_bt','cap_shr','epsp','ps_cr','ps_up','reg_date','dir_dcl_date',
-                             'a_stockcode1','ex_divi_date','prg']]
+            res = res.drop_duplicates(
+                (['dir_dcl_date', 'a_stockcode']))
+            res = res.ix[:, ['a_stockcode', 'a_stocksname', 'div_info', 'div_type_code', 'bonus_shr',
+                             'cash_bt', 'cap_shr', 'epsp', 'ps_cr', 'ps_up', 'reg_date', 'dir_dcl_date',
+                             'a_stockcode1', 'ex_divi_date', 'prg']]
         except:
             res = None
         if format in ['P', 'p', 'pandas', 'pd']:
@@ -827,6 +874,7 @@ def QA_fetch_stock_divyield(code, start, end = None, format='pd', collections=DA
     else:
         QA_util_log_info(
             'QA Error QA_fetch_stock_divyield data parameter start=%s end=%s is not right' % (start, end))
+
 
 if __name__ == '__main__':
     print(QA_fetch_lhb('2006-07-03'))
