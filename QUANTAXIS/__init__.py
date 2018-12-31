@@ -32,7 +32,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.2.1.dev2'
+__version__ = '1.2.3'
 __author__ = 'yutiansut'
 logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
@@ -72,7 +72,7 @@ from QUANTAXIS.QAFetch import (QA_fetch_get_stock_day, QA_fetch_get_trade_date, 
                                QA_fetch_get_exchangerate_list, QA_fetch_get_exchangerate_day, QA_fetch_get_exchangerate_min,
                                QA_fetch_get_globalfuture_list, QA_fetch_get_globalfuture_day, QA_fetch_get_globalfuture_min)
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_trade_date, QA_fetch_account, QA_fetch_financial_report,
-                                       QA_fetch_stock_day, QA_fetch_stock_min,
+                                       QA_fetch_stock_day, QA_fetch_stock_min, QA_fetch_ctp_tick,
                                        QA_fetch_index_day, QA_fetch_index_min, QA_fetch_index_list,
                                        QA_fetch_future_min, QA_fetch_future_day, QA_fetch_future_list,
                                        QA_fetch_future_tick, QA_fetch_stock_list, QA_fetch_stock_full, QA_fetch_stock_xdxr,
@@ -96,7 +96,7 @@ from QUANTAXIS.QASU.save_strategy import QA_SU_save_strategy
 
 # market
 from QUANTAXIS.QAMarket import (QA_Order, QA_OrderQueue, QA_OrderHandler,
-                                QA_Market, QA_Dealer,
+                                QA_Market, QA_Dealer, QA_Broker,
                                 QA_RandomBroker, QA_SimulatedBroker, QA_RealBroker, QA_BacktestBroker)
 
 # Account,Risk,Portfolio,User,Strategy
@@ -116,8 +116,9 @@ from QUANTAXIS.QAApplication.QAResult import backtest_result_analyzer
 from QUANTAXIS.QAEngine import QA_Thread, QA_Event, QA_Worker, QA_Task, QA_Engine
 
 # Data
-from QUANTAXIS.QAData import (QA_data_tick_resample, QA_data_day_resample, QA_data_min_resample, QA_data_calc_marketvalue, QA_data_marketvalue,
-                              QA_data_make_qfq, QA_data_stock_to_fq, QA_data_make_hfq,
+from QUANTAXIS.QAData import (QA_data_tick_resample_1min, QA_data_tick_resample, QA_data_day_resample, QA_data_min_resample, QA_data_ctptick_resample,
+                              QA_data_calc_marketvalue, QA_data_marketvalue,
+                              QA_data_stock_to_fq,
                               QA_DataStruct_Stock_day, QA_DataStruct_Stock_min,
                               QA_DataStruct_Future_day, QA_DataStruct_Future_min,
                               QA_DataStruct_Index_day, QA_DataStruct_Index_min, QA_DataStruct_Indicators, QA_DataStruct_Stock_realtime,

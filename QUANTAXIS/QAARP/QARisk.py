@@ -53,7 +53,7 @@ from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE
 @尧 2018/05/28
 @喜欢你 @尧 2018/05/29
 """
-if platform.system() != 'Windows' and os.environ.get('DISPLAY', '') == '':
+if platform.system() not in  ['Windows', 'Darwin'] and os.environ.get('DISPLAY', '') == '':
     print('no display found. Using non-interactive Agg backend')
     print("if you use ssh, you can use ssh with -X parmas to avoid this issue")
     matplotlib.use('Agg')
@@ -148,10 +148,10 @@ class QA_Risk():
         if self.account.daily_hold is not None:
             if self.if_fq:
 
-                return self.market_data.to_qfq().pivot('close').fillna(method='ffill') * self.account.daily_hold.apply(abs)
+                return (self.market_data.to_qfq().pivot('close').fillna(method='ffill') * self.account.daily_hold.apply(abs)).fillna(method='ffill')
             else:
-                return self.market_data.pivot('close').fillna(
-                    method='ffill') * self.account.daily_hold.apply(abs)
+                return (self.market_data.pivot('close').fillna(
+                    method='ffill') * self.account.daily_hold.apply(abs)).fillna(method='ffill')
         else:
             return None
 
