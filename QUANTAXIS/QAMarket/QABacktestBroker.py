@@ -97,6 +97,9 @@ class QA_BacktestBroker(QA_Broker):
         self.fetcher = {(MARKET_TYPE.STOCK_CN, FREQUENCE.DAY): QA_fetch_stock_day, (MARKET_TYPE.STOCK_CN, FREQUENCE.FIFTEEN_MIN): QA_fetch_stock_min,
                         (MARKET_TYPE.STOCK_CN, FREQUENCE.ONE_MIN): QA_fetch_stock_min, (MARKET_TYPE.STOCK_CN, FREQUENCE.FIVE_MIN): QA_fetch_stock_min,
                         (MARKET_TYPE.STOCK_CN, FREQUENCE.THIRTY_MIN): QA_fetch_stock_min, (MARKET_TYPE.STOCK_CN, FREQUENCE.SIXTY_MIN): QA_fetch_stock_min,
+                        (MARKET_TYPE.FUTURE_CN, FREQUENCE.DAY): QA_fetch_future_day, (MARKET_TYPE.FUTURE_CN, FREQUENCE.FIFTEEN_MIN): QA_fetch_future_min,
+                        (MARKET_TYPE.FUTURE_CN, FREQUENCE.ONE_MIN): QA_fetch_future_min, (MARKET_TYPE.FUTURE_CN, FREQUENCE.FIVE_MIN): QA_fetch_future_min,
+                        (MARKET_TYPE.FUTURE_CN, FREQUENCE.THIRTY_MIN): QA_fetch_future_min, (MARKET_TYPE.FUTURE_CN, FREQUENCE.SIXTY_MIN): QA_fetch_future_min,
                         (MARKET_TYPE.INDEX_CN, FREQUENCE.DAY): QA_fetch_index_day, (MARKET_TYPE.INDEX_CN, FREQUENCE.FIFTEEN_MIN): QA_fetch_index_min,
                         (MARKET_TYPE.INDEX_CN, FREQUENCE.ONE_MIN): QA_fetch_index_min, (MARKET_TYPE.INDEX_CN, FREQUENCE.FIVE_MIN): QA_fetch_index_min,
                         (MARKET_TYPE.INDEX_CN, FREQUENCE.THIRTY_MIN): QA_fetch_index_min, (MARKET_TYPE.INDEX_CN, FREQUENCE.SIXTY_MIN): QA_fetch_index_min,
@@ -193,6 +196,7 @@ class QA_BacktestBroker(QA_Broker):
                 data = self.market_data[0]
 
             else:
+                print(type(self.market_data))
                 self.market_data = self.market_data.to_json()[0]
         else:
             self.market_data = self.get_market(order)
@@ -357,7 +361,7 @@ class QA_BacktestBroker(QA_Broker):
         else:
             try:
                 data = self.fetcher[(order.market_type, order.frequence)](
-                    code=order.code, start=order.datetime, end=order.datetime, format='json')[0]
+                    code=order.code, start=order.datetime, end=order.datetime, format='json', frequence=order.frequence)[0]
                 if 'vol' in data.keys() and 'volume' not in data.keys():
                     data['volume'] = data['vol']
                 elif 'vol' not in data.keys() and 'volume' in data.keys():

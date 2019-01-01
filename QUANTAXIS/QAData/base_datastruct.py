@@ -918,6 +918,18 @@ class _quotation_base():
 
         return self.groupby(level=1, sort=False).apply(func, *arg, **kwargs)
 
+    # def add_func_adv(self, func, *arg, **kwargs):
+    #     """QADATASTRUCT的指标/函数apply入口
+
+    #     Arguments:
+    #         func {[type]} -- [description]
+
+    #     Returns:
+    #         [type] -- [description]
+    #     """ 
+    #     return self.data.groupby(by=None, axis=0, level=1, as_index=True, sort=False, group_keys=False, squeeze=False).apply(func, *arg, **kwargs)
+
+        
     def get_data(self, columns, type='ndarray', with_index=False):
         """获取不同格式的数据
 
