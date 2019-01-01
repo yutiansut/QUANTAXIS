@@ -74,7 +74,7 @@
 ## 1.2.5
 
 1. 对于QA.QA_util_code_tostr 增加 原先为list类型的支持 现在支持自动补全的  int/list/str 类型转 str
-
+2. QA_DataStruct增加bar_gen  返回迭代的dataframe
 
 ## 1.2.4
 
