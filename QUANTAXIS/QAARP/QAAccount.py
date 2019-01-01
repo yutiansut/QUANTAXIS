@@ -628,13 +628,14 @@ class QA_Account(QA_Worker):
         # value 合约价值 unit 合约乘数
         if self.allow_margin:
             frozen = self.market_preset.get_frozen(code)
-            value = trade_price*trade_amount*market_towards * \
+            raw_trade_money =trade_price*trade_amount*market_towards
+            value = raw_trade_money * \
                 self.market_preset.get_unit(code)
             trade_money = value * frozen
             unit = self.market_preset.get_unit(code)
-            
         else:
             trade_money = trade_price*trade_amount*market_towards
+            raw_trade_money =trade_money
             value = trade_money
             unit = 1
             frozen = 1
@@ -680,13 +681,13 @@ class QA_Account(QA_Worker):
                             pass
                         else:
                             self.frozen[code][trade_towards] = {
-                                'money': 0, 'amount': 0}
+                                'money': 0, 'amount': 0, 'avg_price':0}
                     else:
                         self.frozen[code] = {
                             ORDER_DIRECTION.BUY_OPEN: {
-                                'money': 0, 'amount': 0},
+                                'money': 0, 'amount': 0,'avg_price':0},
                             ORDER_DIRECTION.SELL_OPEN: {
-                                'money': 0, 'amount': 0}
+                                'money': 0, 'amount': 0,'avg_price':0}
                         }
 
                     """[summary]
@@ -700,6 +701,8 @@ class QA_Account(QA_Worker):
 
                     self.frozen[code][trade_towards]['money'] = (
                         (self.frozen[code][trade_towards]['money']*self.frozen[code][trade_towards]['amount'])+abs(trade_money))/(self.frozen[code][trade_towards]['amount']+trade_amount)
+                    self.frozen[code][trade_towards]['avg_price'] = (
+                        (self.frozen[code][trade_towards]['avg_price']*self.frozen[code][trade_towards]['amount'])+abs(raw_trade_money))/(self.frozen[code][trade_towards]['amount']+trade_amount)                    
                     self.frozen[code][trade_towards]['amount'] += trade_amount
 
                     self.cash.append(
@@ -719,6 +722,8 @@ class QA_Account(QA_Worker):
                             self.cash[-1]+frozen_part + (frozen_part-trade_money)/frozen - commission_fee - tax_fee)
                         if self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['amount'] == 0:
                             self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['money'] = 0
+                            self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['avg_price'] = 0
+
 
                     elif trade_towards == ORDER_DIRECTION.SELL_CLOSE:  # 卖出平仓  之前是多开
                         # self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['money'] -= trade_money
@@ -729,6 +734,7 @@ class QA_Account(QA_Worker):
                             self.cash[-1]+frozen_part + (abs(trade_money)-frozen_part)/frozen - commission_fee - tax_fee)
                         if self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['amount'] == 0:
                             self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['money'] = 0
+                            self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['avg_price'] = 0
             else:  # 不允许卖空开仓的==> 股票
 
                 self.cash.append(
@@ -779,12 +785,14 @@ class QA_Account(QA_Worker):
         # value 合约价值
         if self.allow_margin:
             frozen = self.market_preset.get_frozen(code)
-            value = trade_price*trade_amount*market_towards * \
+            raw_trade_money =trade_price*trade_amount*market_towards
+            value = raw_trade_money * \
                 self.market_preset.get_unit(code)
             trade_money = value * frozen
             unit = self.market_preset.get_unit(code)
         else:
             trade_money = trade_price*trade_amount*market_towards
+            raw_trade_money =trade_money
             value = trade_money
             unit = 1
             frozen = 1
@@ -838,13 +846,13 @@ class QA_Account(QA_Worker):
                             pass
                         else:
                             self.frozen[code][trade_towards] = {
-                                'money': 0, 'amount': 0}
+                                'money': 0, 'amount': 0, 'avg_price':0}
                     else:
                         self.frozen[code] = {
                             ORDER_DIRECTION.BUY_OPEN: {
-                                'money': 0, 'amount': 0},
+                                'money': 0, 'amount': 0,'avg_price':0},
                             ORDER_DIRECTION.SELL_OPEN: {
-                                'money': 0, 'amount': 0}
+                                'money': 0, 'amount': 0,'avg_price':0}
                         }
 
                     """[summary]
@@ -858,6 +866,8 @@ class QA_Account(QA_Worker):
 
                     self.frozen[code][trade_towards]['money'] = (
                         (self.frozen[code][trade_towards]['money']*self.frozen[code][trade_towards]['amount'])+abs(trade_money))/(self.frozen[code][trade_towards]['amount']+trade_amount)
+                    self.frozen[code][trade_towards]['avg_price'] = (
+                        (self.frozen[code][trade_towards]['avg_price']*self.frozen[code][trade_towards]['amount'])+abs(raw_trade_money))/(self.frozen[code][trade_towards]['amount']+trade_amount)
                     self.frozen[code][trade_towards]['amount'] += trade_amount
 
                     self.cash.append(
@@ -877,6 +887,7 @@ class QA_Account(QA_Worker):
                             self.cash[-1]+frozen_part + (frozen_part-trade_money)/frozen - commission_fee - tax_fee)
                         if self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['amount'] == 0:
                             self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['money'] = 0
+                            self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['avg_price'] = 0
 
                     elif trade_towards == ORDER_DIRECTION.SELL_CLOSE:  # 卖出平仓  之前是多开
                         # self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['money'] -= trade_money
@@ -887,6 +898,7 @@ class QA_Account(QA_Worker):
                             self.cash[-1]+frozen_part + (abs(trade_money)-frozen_part)/frozen - commission_fee - tax_fee)
                         if self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['amount'] == 0:
                             self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['money'] = 0
+                            self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['avg_price'] = 0
             else:
                 self.cash.append(
                     self.cash[-1]-trade_money - commission_fee - tax_fee)
