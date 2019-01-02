@@ -244,7 +244,7 @@ class QA_Account(QA_Worker):
 
         # 在回测中, 每日结算后更新
         # 真实交易中, 为每日初始化/每次重新登录后的同步信息
-        self.static_balance = {}  # 昨日结算
+        self.static_balance = {'assets':[], 'cash': [],'frozen':[], 'hold':[],'date':[]}  # 日结算
         self.today_trade = {'last': [], 'current': []}
         self.today_orders = {'last': [], 'current': []}
 
@@ -1150,6 +1150,8 @@ class QA_Account(QA_Worker):
         if self.running_environment == RUNNING_ENVIRONMENT.TZERO and self.hold_available.sum() != 0:
             raise RuntimeError('QAACCOUNT: 该T0账户未当日仓位,请平仓 {}'.format(
                 self.hold_available.to_dict()))
+        if self.market_type == MARKET_TYPE.FUTURE_CN:
+            pass
         self.sell_available = self.hold
         self.buy_available = self.hold
         self.datetime = '{} 09:30:00'.format(QA_util_get_next_day(
