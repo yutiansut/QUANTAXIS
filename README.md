@@ -5,7 +5,14 @@ Quantitative Financial FrameWork
 
 从数据爬取-清洗存储-分析回测-可视化-交易复盘的本地一站式解决方案
 
+![logo](http://pic.yutiansut.com/QUANTAXIS_LOGO_LAST_small.jpg)
+
+
 -------------------------------------------------------------
+
+![pypidownloads](https://img.shields.io/pypi/dm/quantaxis.svg)
+![pypidownloads](https://img.shields.io/pypi/dw/quantaxis.svg)
+![pypidownloads](https://img.shields.io/pypi/dd/quantaxis.svg)
 
 
 
@@ -18,25 +25,24 @@ Quantitative Financial FrameWork
 
 [点击右上角Star和Watch来跟踪项目进展! 点击Fork来创建属于你的QUANTAXIS!]
 
-![main_1](http://pic.yutiansut.com/Main_1.gif)
-![logo](http://pic.yutiansut.com/QUANTAXIS-small.png)
-![presentbyyutiansut](http://pic.yutiansut.com/yutiansut-logo.png)
 
+![main_1](http://pic.yutiansut.com/Main_1.gif)
+![presentbyyutiansut](http://pic.yutiansut.com/yutiansut-logo.png)
 
 ![version](https://img.shields.io/pypi/v/quantaxis.svg)
 ![build](https://travis-ci.org/QUANTAXIS/QUANTAXIS.svg?branch=master)
 [![Codefresh build status]( https://g.codefresh.io/api/badges/build?repoOwner=yutiansut&repoName=QUANTAXIS&branch=master&pipelineName=QUANTAXIS&accountName=yutiansut_marketplace&type=cf-1)]( https://g.codefresh.io/repositories/yutiansut/QUANTAXIS/builds?filter=trigger:build;branch:master;service:5a30c1026e9d6c0001c5143b~QUANTAXIS)
 [![BCH compliance](https://bettercodehub.com/edge/badge/QUANTAXIS/QUANTAXIS?branch=master)](https://bettercodehub.com/)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d8504e4af33747bb8117579212425af9)](https://www.codacy.com/app/yutiansut/QUANTAXIS?utm_source=github.com&utm_medium=referral&utm_content=yutiansut/QUANTAXIS&utm_campaign=badger)
-[![Stories in Ready](https://badge.waffle.io/yutiansut/QUANTAXIS.svg?label=ready&title=Ready)](http://waffle.io/yutiansut/QUANTAXIS)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.8-brown.svg)
-![python](https://img.shields.io/badge/python-%203.6/3.5/3.4/win/ubuntu-darkgrey.svg)
+![python](https://img.shields.io/badge/python-%203.7/3.6/3.5/win/ubuntu-darkgrey.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.4.0-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
 ![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS?ref=badge_shield)
-
+[![Waffle.io - Issues in progress](https://badge.waffle.io/yutiansut/QUANTAXIS.png?label=in%20progress&title=In%20Progress)](http://waffle.io/yutiansut/QUANTAXIS)
+[![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
 
 
 
@@ -49,6 +55,9 @@ Quantitative Financial FrameWork
 > 许多问题 可以在 [GITHUB ISSUE](https://github.com/QUANTAXIS/QUANTAXIS/issues)中找到, 你可以提出新的issue
 
 QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化分析解决方案. 我们通过高度解耦的模块化以及标准化协议,可以快速的实现面向场景的定制化解决方案.QUANTAXIS是一个渐进式的开放式框架,你可以根据自己的需要,引入自己的数据,分析方案,可视化过程等,也可以通过RESTful接口,快速实现多人局域网/广域网内的协作.
+
+![qa2018](http://pic.yutiansut.com/qa2018.png)
+
 
 <!-- TOC -->
 
@@ -95,6 +104,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 ##  1. 功能
 ======
 
+![](http://pic.yutiansut.com/QUANTAXIS.png)
 
 已经实现：
 
@@ -163,11 +173,17 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 #### 1.6.2 期货(python3 CTP win/mac/linux)
 
-参见 [LINUX CTP](QUANTAXIS_Trade/LINUXCTP)
+1. CTP 的websocket交易 :  simnow demo:  ws://www.yutiansut.com:7988
+2. CTP 的海风broker魔改封装:  [QA_AtBroker](https://github.com/QUANTAXIS/QA_AtBroker)
 
-参见 [WINDOWS CTP](QUANTAXIS_Trade/WindowsCTP)
 
-### 1.7 网站HTTP服务
+关于websocket交易(可能存在一些不确定的bug 因此暂时不开放):
+
+- 目前仅提供demo/ 模拟盘接入
+- 具体需要私聊我 yutiansut@qq.com
+
+
+### 1.7 网站HTTP服务(目前已经独立为 QUANTAXIS_WEBSERVICE)
 
 #### 1.7.1 网站后台标准化接口
 
@@ -261,17 +277,18 @@ git clone https://github.com/你的账户名/quantaxis
 
 
 
-##  11. 回测Webkit插件概览
+##  11. QUANTAXIS 桌面级产品(全平台 WIN/MAC/LINUX)
 
-![](http://pic.yutiansut.com/homepage.png)
-![](http://pic.yutiansut.com/loginpage.png)
-![](http://pic.yutiansut.com/adminpage.png)
-![](http://pic.yutiansut.com/backtestpage.png)
-![](http://pic.yutiansut.com/rebacktest.png)
-![](http://pic.yutiansut.com/backtestpic.png)
-![](http://pic.yutiansut.com/strategy.png)
-![](http://pic.yutiansut.com/kline.png)
-![](http://pic.yutiansut.com/settings.png)
+
+参见 [QUANTAXIS/QADESKTOP](https://github.com/quantaxis/qadesktop)
+
+![](http://pic.yutiansut.com/qad1.png)
+![](http://pic.yutiansut.com/qad2.png)
+![](http://pic.yutiansut.com/qad3.png)
+![](http://pic.yutiansut.com/qad4.png)
+![](http://pic.yutiansut.com/qad5.png)
+![](http://pic.yutiansut.com/qad6.png)
+![](http://pic.yutiansut.com/qad8.png)
 
 
 ##  12. QUANTAXIS 标准化协议和未来协议
@@ -297,4 +314,4 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.8
 如果是阿里云/腾讯云的服务器,请在最初的时候 选择64位的操作系统
 
 ## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS?ref=badge_large)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS?ref=badge_large) [![Join the chat at https://gitter.im/QUANTAXIS_tauruswang/Lobby](https://badges.gitter.im/QUANTAXIS_tauruswang/Lobby.svg)](https://gitter.im/QUANTAXIS_tauruswang/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)

@@ -20,12 +20,7 @@ deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security main restricted multiv
 deb http://mirrors.aliyun.com/ubuntu/ xenial-security universe
 deb http://mirrors.aliyun.com/ubuntu/ xenial-security multiverse " | tee /etc/apt/sources.list.d/sources.list  
 
-apt-get update
-
-apt install software-properties-common
-
-# add-apt-repository ppa:jonathonf/python-3.6
-# apt-get update
+apt -y update
 
 
 # apt-get install python3.6-dev
@@ -34,34 +29,42 @@ bash Anaconda3-5.1.0-Linux-x86_64.sh
 
 source ~/.bashrc
 
-wget https://bootstrap.pypa.io/get-pip.py
+#wget https://bootstrap.pypa.io/get-pip.py
 
-python get-pip.py
+#python get-pip.py
 
 
-apt-get install libxml2-dev libxslt-dev
-apt-get install git
-cd ~
-git clone https://github.com/yutiansut/quantaxis
-# add some permission for quantaxis
-chmod -R 777 ./quantaxis
-cd ~/quantaxis
+apt install  -y libxml2-dev libxslt-dev git gcc g++ software-properties-common
+
+python -m pip install pip==9.0.1 # 降级
+python -m pip install pyecharts_jupyter_installer
 python -m pip install pillow -i https://pypi.doubanio.com/simple
-python -m pip install -r requirements.txt -i https://pypi.doubanio.com/simple
 python -m pip install tushare
-python -m pip install pytdx
-python -m pip install -e .
+python -m pip install pytdx --user
+python -m pip install quantaxis
 
 
 
-apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
 # Ubuntu 16.04
-echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.6.list
+#echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.6.list
+#echo "deb [ arch=amd64,arm64,ppc64el,s390x ] http://repo.mongodb.com/apt/ubuntu xenial/mongodb-enterprise/4.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-enterprise.list
+echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/4.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+
+
+# Ubuntu 18.04
+# echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+
+# debian 8
+# echo "deb http://repo.mongodb.org/apt/debian jessie/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+
+# debian 9
+# echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
 
 # 更新
-apt-get update
+apt update -y 
 # 安装MongoDB
-apt-get install -y mongodb-org --allow-unauthenticated
+apt install -y mongodb-org --allow-unauthenticated
 cd /
 mkdir data
 cd data
@@ -71,19 +74,13 @@ mkdir log
 # 开启MongoDB服务
 service mongod start
 
-apt-get install curl
-curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-apt-get install -y nodejs
-apt-get install npm
-npm install npm -g #更新npm
-npm install forever -g #安装一个全局的forever 用于之后启动
-npm install cnpm -g
+apt install -y curl
+# curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+# apt-get install -y nodejs
+# apt-get install npm
+# npm install npm -g #更新npm
+# npm install forever -g #安装一个全局的forever 用于之后启动
+# npm install cnpm -g
 
-cd ~/quantaxis/QUANTAXIS_Webkit/backend
-npm install
-
-
-cd ~/quantaxis/QUANTAXIS_Webkit/web
-npm install
 
 

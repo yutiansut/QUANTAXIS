@@ -3,6 +3,7 @@
 <!-- TOC -->
 
 - [QUANTAXIS财务指标中英文对照表](#quantaxis财务指标中英文对照表)
+    - [0.注意](#0注意)
     - [1.每股指标](#1每股指标)
     - [2. 资产负债表 BALANCE SHEET](#2-资产负债表-balance-sheet)
         - [2.1 资产](#21-资产)
@@ -37,6 +38,10 @@
     - [14.新增指标](#14新增指标)
 
 <!-- /TOC -->
+
+## 0.注意
+
+该部分需要配合 QUANTAXIS CLI的 save financialfiles 使用
 
 ## 1.每股指标
 
@@ -655,3 +660,15 @@
 '275一般法人持股量(股)(机构持股)': 'corporationShareholding',
 
 '276近一年净利润(元)': 'netProfitLastYear'
+
+'277信托机构数(家)(机构持股)': 'trustInstitutionNumber',
+
+'278信托持股量(股)(机构持股)': 'trustInstitutionShareholding',
+
+'279特殊法人机构数(家)(机构持股)': 'specialCorporationNumber',
+
+'280特殊法人持股量(股)(机构持股)': 'specialCorporationShareholding',
+
+'281加权净资产收益率(每股指标)': 'weightedROE',
+
+'282扣非每股收益(单季度财务指标)': 'nonEPSSingle',

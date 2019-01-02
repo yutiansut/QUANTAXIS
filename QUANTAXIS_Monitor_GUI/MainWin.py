@@ -21,7 +21,8 @@ from QUANTAXIS_Monitor_GUI.MainTabWindows.Tab01_DataMaintenance import *
 #from QUANTAXIS_Monitor_GUI.MainTabWindows.Tab02_WebpageCrawly_Old import *
 from QUANTAXIS_Monitor_GUI.MainTabWindows.Tab02_WebpageEastMoneyZJLX import *
 from QUANTAXIS_Monitor_GUI.MainTabWindows.Tab04_BlockStatistics import *
-#from QUANTAXIS_Monitor_GUI.MainWindow.TabForecastStockTrends import *
+
+from QUANTAXIS_Monitor_GUI.MainTabWindows.Tab06_ForecastStockTrends import *
 
 class TabDemo(QTabWidget):
     def __init__(self, parent=None):
@@ -39,7 +40,10 @@ class TabDemo(QTabWidget):
         self.tab3 = QWidget()
         self.tab4 = TabBlockStatistics(parent=self)
         self.tab5 = QWidget()
-        self.tab6 = QWidget()
+
+        self.tab6 = TabForecastStockTrends(parent=self)
+        self.tab6.setMediator(self.mediator)
+
         self.tab7 = QWidget()
 
         self.addTab(self.tab0, "欢迎")
@@ -56,11 +60,12 @@ class TabDemo(QTabWidget):
         self.tab2.initUI()
 
         self.tab4.initUI()
+        self.tab6.initUI()
 
 
         self.setTabText(0, "    🎉   欢迎                                        ")
         self.setTabText(1, "    🗂   数据维护                                        ")
-        self.setTabText(2, "    📑   东方财富资金流向                      ")
+        self.setTabText(2, "    📑   东方财富资金流向                                   ")
         self.setTabText(3, "    🖇   数据比对清洗                                      ")
         self.setTabText(4, "    🔍   数据盘后分析任务                                  ")
         self.setTabText(5, "    🎲   策略概率回测                                    ")

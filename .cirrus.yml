@@ -1,0 +1,10 @@
+container:
+  image: python:3.6
+  
+test_task:
+  pip_cache:
+    folder: ~/.cache/pip
+    fingerprint_script: echo $PYTHON_VERSION && cat requirements.txt
+    populate_script: pip install pip -U && pip install pytdx && pip install git+https://github.com/etingof/pyasn1 && pip install pyecharts && pip install -r requirements.txt && pip install quantaxis
+    
+  test_script: python setup.py install
