@@ -613,7 +613,8 @@ class _quotation_base():
     def rolling(self, N):
         return self.groupby('code').rolling(N)
 
-    def plot(self, code=None):
+    
+    def kline_echarts(self,code=None):
 
         def kline_formater(param):
             return param.name + ':' + vars(param)
@@ -642,11 +643,12 @@ class _quotation_base():
 
                 kline.add(ds.code[0], datetime, ohlc, mark_point=[
                           "max", "min"], is_datazoom_show=False, datazoom_orient='horizontal')
+            return kline
 
-            kline.render(path_name)
-            webbrowser.open(path_name)
-            QA_util_log_info(
-                'The Pic has been saved to your path: %s' % path_name)
+            # kline.render(path_name)
+            # webbrowser.open(path_name)
+            # QA_util_log_info(
+            #     'The Pic has been saved to your path: %s' % path_name)
         else:
             data = []
             axis = []
@@ -677,17 +679,25 @@ class _quotation_base():
             bar.add(self.code, datetime, vol,
                     is_datazoom_show=True,
                     datazoom_xaxis_index=[0, 1])
-            path_name = '.{}QA_{}_{}_{}.html'.format(
-                os.sep, self.type, code, self.if_fq)
+
 
             grid = Grid(width=1360, height=700, page_title='QUANTAXIS')
             grid.add(bar, grid_top="80%")
             grid.add(kline, grid_bottom="30%")
-            grid.render(path_name)
+            return grid
+            # grid.render(path_name)
 
-            webbrowser.open(path_name)
-            QA_util_log_info(
-                'The Pic has been saved to your path: {}'.format(path_name))
+            # webbrowser.open(path_name)
+            # QA_util_log_info(
+            #     'The Pic has been saved to your path: {}'.format(path_name))
+
+    def plot(self, code=None):
+        path_name = '.{}QA_{}_{}_{}.html'.format(
+                os.sep, self.type, code, self.if_fq)
+        self.kline_echarts(code).render(path_name)
+        webbrowser.open(path_name)
+        QA_util_log_info(
+            'The Pic has been saved to your path: {}'.format(path_name))
 
     def get(self, name):
 
