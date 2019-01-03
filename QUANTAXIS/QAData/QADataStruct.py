@@ -775,8 +775,8 @@ class QA_DataStruct_Day(_quotation_base):
 
 
 class QA_DataStruct_Min(_quotation_base):
-        '''这个类是个通用类 一般不使用  特定生成的时候可能会用到 只具备基类方法
-        '''
+    '''这个类是个通用类 一般不使用  特定生成的时候可能会用到 只具备基类方法
+    '''
     def __init__(self, data, dtype='unknown_min', if_fq='bfq'):
         super().__init__(data, dtype, if_fq)
 
