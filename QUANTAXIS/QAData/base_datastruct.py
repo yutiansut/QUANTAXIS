@@ -542,14 +542,21 @@ class _quotation_base():
         return res
 
     @property
-    @lru_cache()
     def panel_gen(self):
         '返回一个基于bar的面板迭代器'
         for item in self.index.levels[0]:
             yield self.new(self.data.xs(item, level=0, drop_level=False), dtype=self.type, if_fq=self.if_fq)
 
+
     @property
-    @lru_cache()
+    def bar_gen(self):
+        '返回一个基于bar的面板迭代器 返回的是dataframe'
+        # for item in self.index.levels[0]:
+        #     yield self.data.xs(item, level=0, drop_level=False)
+        return self.data.iterrows()
+
+
+    @property
     def security_gen(self):
         '返回一个基于代码的迭代器'
         for item in self.index.levels[1]:
