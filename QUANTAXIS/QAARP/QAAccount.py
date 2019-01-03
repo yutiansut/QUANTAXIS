@@ -752,8 +752,9 @@ class QA_Account(QA_Worker):
                 self.buy_available = self.sell_available
 
             self.cash_available = self.cash[-1]
+            frozen_money= abs(trade_money) if trade_towards in [ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 0
             self.history.append([trade_time, code, trade_price, market_towards*trade_amount, self.cash[-1], order_id, realorder_id, trade_id, self.account_cookie,
-                                 commission_fee, tax_fee, message, trade_money])
+                                 commission_fee, tax_fee, message, frozen_money])
 
         else:
             # print(self.cash[-1])
