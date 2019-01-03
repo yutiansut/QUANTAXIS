@@ -65,7 +65,7 @@ class _quotation_base():
             DataFrame = DataFrame.assign(volume=DataFrame.vol)
         if 'volume' not in DataFrame.columns and 'trade' in DataFrame.columns:
             DataFrame = DataFrame.assign(volume=DataFrame.trade)
-        #print(DataFrame)
+        # print(DataFrame)
         # 🛠todo 判断DataFame 对象字段的合法性，是否正确
         self.data = DataFrame.drop_duplicates().sort_index()
         self.data.index = self.data.index.remove_unused_levels()
@@ -547,14 +547,12 @@ class _quotation_base():
         for item in self.index.levels[0]:
             yield self.new(self.data.xs(item, level=0, drop_level=False), dtype=self.type, if_fq=self.if_fq)
 
-
     @property
     def bar_gen(self):
         '返回一个基于bar的面板迭代器 返回的是dataframe'
         # for item in self.index.levels[0]:
         #     yield self.data.xs(item, level=0, drop_level=False)
         return self.data.iterrows()
-
 
     @property
     def security_gen(self):
@@ -613,7 +611,7 @@ class _quotation_base():
     def rolling(self, N):
         return self.groupby('code').rolling(N)
 
-    def plot(self, code=None):
+    def kline_echarts(self, code=None):
 
         def kline_formater(param):
             return param.name + ':' + vars(param)
@@ -637,16 +635,11 @@ class _quotation_base():
                     datetime = np.array(ds.datetime.map(str))
                 ohlc = np.array(
                     ds.data.loc[:, ['open', 'close', 'low', 'high']])
-                #amount = np.array(ds.amount)
-                #vol = np.array(ds.volume)
 
                 kline.add(ds.code[0], datetime, ohlc, mark_point=[
                           "max", "min"], is_datazoom_show=False, datazoom_orient='horizontal')
+            return kline
 
-            kline.render(path_name)
-            webbrowser.open(path_name)
-            QA_util_log_info(
-                'The Pic has been saved to your path: %s' % path_name)
         else:
             data = []
             axis = []
@@ -659,7 +652,6 @@ class _quotation_base():
                 datetime = np.array(ds.datetime.map(str))
 
             ohlc = np.array(ds.data.loc[:, ['open', 'close', 'low', 'high']])
-            #amount = np.array(ds.amount)
             vol = np.array(ds.volume)
             kline = Kline('{}__{}__{}'.format(code, self.if_fq, self.type),
                           width=1360, height=700, page_title='QUANTAXIS')
@@ -677,17 +669,19 @@ class _quotation_base():
             bar.add(self.code, datetime, vol,
                     is_datazoom_show=True,
                     datazoom_xaxis_index=[0, 1])
-            path_name = '.{}QA_{}_{}_{}.html'.format(
-                os.sep, self.type, code, self.if_fq)
 
             grid = Grid(width=1360, height=700, page_title='QUANTAXIS')
             grid.add(bar, grid_top="80%")
             grid.add(kline, grid_bottom="30%")
-            grid.render(path_name)
+            return grid
 
-            webbrowser.open(path_name)
-            QA_util_log_info(
-                'The Pic has been saved to your path: {}'.format(path_name))
+    def plot(self, code=None):
+        path_name = '.{}QA_{}_{}_{}.html'.format(
+            os.sep, self.type, code, self.if_fq)
+        self.kline_echarts(code).render(path_name)
+        webbrowser.open(path_name)
+        QA_util_log_info(
+            'The Pic has been saved to your path: {}'.format(path_name))
 
     def get(self, name):
 
@@ -933,10 +927,9 @@ class _quotation_base():
 
     #     Returns:
     #         [type] -- [description]
-    #     """ 
+    #     """
     #     return self.data.groupby(by=None, axis=0, level=1, as_index=True, sort=False, group_keys=False, squeeze=False).apply(func, *arg, **kwargs)
 
-        
     def get_data(self, columns, type='ndarray', with_index=False):
         """获取不同格式的数据
 
