@@ -84,6 +84,7 @@
 4. 增加了QA_Account的 history_table字段,增加了一个  frozen字段, 用于记录历史的保证金增加
 5. 大幅删减QA_Account的 receive_deal 精简代码  直接调用receive_simpledeal方法
 6. QADATASTRUCT 增加一个 kline_echarts 方法 直接返回 echarts.kline类 可以在jupyter notebook中直接显示
+7. QALog模块的默认输出为warning级别, 减少别的模块的无聊输出(点名: 尤其是macropy 疯狂输出)
 
 ## 1.2.4
 
