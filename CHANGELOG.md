@@ -86,6 +86,13 @@
 6. QADATASTRUCT 增加一个 kline_echarts 方法 直接返回 echarts.kline类 可以在jupyter notebook中直接显示
 7. QALog模块的默认输出为warning级别, 减少别的模块的无聊输出(点名: 尤其是macropy 疯狂输出)
 
+plot的图示例:
+
+- 可能需要先升级pyecharts 到最新版本 (```pip install pyecharts -U -i https://pypi.doubanio.com/simple```)
+
+![](http://pic.yutiansut.com/QQ%E5%9B%BE%E7%89%8720190103220819.png)
+
+
 ## 1.2.4
 
 1. 修复保证金的bug
