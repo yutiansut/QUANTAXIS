@@ -594,7 +594,7 @@ class QA_Account(QA_Worker):
         self.cash = [self.init_cash]
         self.cash_available = self.cash[-1]  # 在途资金
 
-    def receive_simpledeal(self, code, trade_price, trade_amount, trade_towards, trade_time, message=None):
+    def receive_simpledeal(self, code, trade_price, trade_amount, trade_towards, trade_time, message=None, order_id=None, trade_id=None, realorder_id=None):
         """快速撮合成交接口
 
 
@@ -752,13 +752,13 @@ class QA_Account(QA_Worker):
                 self.buy_available = self.sell_available
 
             self.cash_available = self.cash[-1]
-            self.history.append([trade_time, code, trade_price, market_towards*trade_amount, self.cash[-1], None, None, None, self.account_cookie,
+            self.history.append([trade_time, code, trade_price, market_towards*trade_amount, self.cash[-1], order_id, realorder_id, trade_id, self.account_cookie,
                                  commission_fee, tax_fee, message, trade_money])
 
         else:
             # print(self.cash[-1])
             self.cash_available = self.cash[-1]
-            # print('NOT ENOUGH MONEY FOR {}'.format(order_id))
+            #print('NOT ENOUGH MONEY FOR {}'.format(order_id))
 
     def receive_deal(self, code: str, trade_id: str, order_id: str, realorder_id: str, trade_price: float, trade_amount: int, trade_towards: int, trade_time: str, message=None):
         """更新deal
@@ -789,144 +789,14 @@ class QA_Account(QA_Worker):
         order_id = str(order_id)
 
         market_towards = 1 if trade_towards > 0 else -1
-        # value 合约价值
-        if self.allow_margin:
-            frozen = self.market_preset.get_frozen(code)
-            raw_trade_money = trade_price*trade_amount*market_towards
-            value = raw_trade_money * \
-                self.market_preset.get_unit(code)
-            trade_money = value * frozen
-            unit = self.market_preset.get_unit(code)
-        else:
-            trade_money = trade_price*trade_amount*market_towards
-            raw_trade_money = trade_money
-            value = trade_money
-            unit = 1
-            frozen = 1
 
-        if self.market_type == MARKET_TYPE.STOCK_CN:
-            if trade_towards > 0:
-                commission_fee = self.commission_coeff * \
-                    abs(trade_money)
+        """2019/01/03 直接使用快速撮合接口了
+        2333 这两个接口现在也没啥区别了....
+        太绝望了
+        """
 
-                commission_fee = 5 if commission_fee < 5 else commission_fee
-
-                tax_fee = 0  # 买入不收印花税
-                if self.allow_t0:
-
-                    self.sell_available = self.hold
-                    self.buy_available = self.hold
-
-            else:
-                commission_fee = self.commission_coeff * \
-                    abs(trade_money)
-
-                commission_fee = 5 if commission_fee < 5 else commission_fee
-
-                tax_fee = self.tax_coeff * \
-                    abs(trade_money)
-
-        elif self.market_type == MARKET_TYPE.FUTURE_CN:
-            # 期货不收税
-            # 双边手续费 也没有最小手续费限制
-            commission_fee_preset = self.market_preset.get_code(code)
-            if trade_towards in [ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE, ORDER_DIRECTION.SELL_CLOSE, ORDER_DIRECTION.SELL_OPEN]:
-                commission_fee = commission_fee_preset['commission_coeff_pervol'] * trade_amount + \
-                    commission_fee_preset['commission_coeff_peramount'] * \
-                    abs(value)
-            elif trade_towards in [ORDER_DIRECTION.BUY_CLOSETODAY, ORDER_DIRECTION.SELL_CLOSETODAY]:
-                commission_fee = commission_fee_preset['commission_coeff_today_pervol'] * trade_amount + \
-                    commission_fee_preset['commission_coeff_today_peramount'] * \
-                    abs(value)
-
-            tax_fee = 0  # 买入不收印花税
-
-        if self.cash[-1] > (trade_money + commission_fee + tax_fee):
-            self.time_index.append(trade_time)
-            # TODO: 目前还不支持期货的锁仓
-            if self.allow_sellopen:
-                if trade_towards in [ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN]:
-                    # 开仓单占用现金 计算avg
-                    # 初始化
-                    if code in self.frozen.keys():
-                        if trade_towards in self.frozen[code].keys():
-                            pass
-                        else:
-                            self.frozen[code][trade_towards] = {
-                                'money': 0, 'amount': 0, 'avg_price': 0}
-                    else:
-                        self.frozen[code] = {
-                            ORDER_DIRECTION.BUY_OPEN: {
-                                'money': 0, 'amount': 0, 'avg_price': 0},
-                            ORDER_DIRECTION.SELL_OPEN: {
-                                'money': 0, 'amount': 0, 'avg_price': 0}
-                        }
-
-                    """[summary]
-                    # frozen的计算
-                    # money 冻结的资金
-                    # amount  冻结的数量
-
-                    2018-12-31                    
-
-                    """
-
-                    self.frozen[code][trade_towards]['money'] = (
-                        (self.frozen[code][trade_towards]['money']*self.frozen[code][trade_towards]['amount'])+abs(trade_money))/(self.frozen[code][trade_towards]['amount']+trade_amount)
-                    self.frozen[code][trade_towards]['avg_price'] = (
-                        (self.frozen[code][trade_towards]['avg_price']*self.frozen[code][trade_towards]['amount'])+abs(raw_trade_money))/(self.frozen[code][trade_towards]['amount']+trade_amount)
-                    self.frozen[code][trade_towards]['amount'] += trade_amount
-
-                    self.cash.append(
-                        self.cash[-1]-abs(trade_money) - commission_fee - tax_fee)
-                elif trade_towards in [ORDER_DIRECTION.BUY_CLOSE, ORDER_DIRECTION.SELL_CLOSE]:
-                    # 平仓单释放现金
-                    # if trade_towards == ORDER_DIRECTION.BUY_CLOSE:
-                        # 卖空开仓 平仓买入
-                        # self.cash
-                    if trade_towards == ORDER_DIRECTION.BUY_CLOSE:  # 买入平仓  之前是空开
-                        # self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['money'] -= trade_money
-                        self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['amount'] -= trade_amount
-
-                        frozen_part = self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['money']*trade_amount
-                        # 账户的现金+ 冻结的的释放 + 买卖价差* 杠杆
-                        self.cash.append(
-                            self.cash[-1]+frozen_part + (frozen_part-trade_money)/frozen - commission_fee - tax_fee)
-                        if self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['amount'] == 0:
-                            self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['money'] = 0
-                            self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['avg_price'] = 0
-
-                    elif trade_towards == ORDER_DIRECTION.SELL_CLOSE:  # 卖出平仓  之前是多开
-                        # self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['money'] -= trade_money
-                        self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['amount'] -= trade_amount
-
-                        frozen_part = self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['money']*trade_amount
-                        self.cash.append(
-                            self.cash[-1]+frozen_part + (abs(trade_money)-frozen_part)/frozen - commission_fee - tax_fee)
-                        if self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['amount'] == 0:
-                            self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['money'] = 0
-                            self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['avg_price'] = 0
-            else:
-                self.cash.append(
-                    self.cash[-1]-trade_money - commission_fee - tax_fee)
-                self.cash_available = self.cash[-1]
-
-            self.history.append(
-                [trade_time, code, trade_price, market_towards*trade_amount, self.cash[-1], order_id, realorder_id, trade_id, self.account_cookie,
-                    commission_fee, tax_fee, message, trade_money])
-            if self.allow_t0:
-
-                self.sell_available = self.hold
-                self.buy_available = self.hold
-        else:
-            print(self.cash[-1])
-            self.cash_available = self.cash[-1]
-            print('NOT ENOUGH MONEY FOR {}'.format(
-                order_id))
-
-        self.datetime = trade_time
-
-        # return self.message
+        self.receive_simpledeal(code, trade_price, trade_amount, trade_towards, trade_time,
+                                message=message, order_id=order_id, trade_id=trade_id, realorder_id=realorder_id)
 
     def send_order(self, code=None, amount=None, time=None, towards=None, price=None, money=None, order_model=None, amount_model=None, *args, **kwargs):
         """
