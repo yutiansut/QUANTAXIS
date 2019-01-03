@@ -76,6 +76,11 @@
 
 1. 对于QA.QA_util_code_tostr 增加 原先为list类型的支持 现在支持自动补全的  int/list/str 类型转 str
 2. QA_DataStruct增加bar_gen  返回迭代的dataframe
+3. 增加对于期货的日结算支持:
+
+在期货的保证金模型中:
+
+开仓会冻结保证金到frozen里面, 这时钱并未参与结算/  需要先在每日结算时结转冻结的保证金
 
 ## 1.2.4
 
