@@ -207,7 +207,7 @@ class QA_Account(QA_Worker):
         #         ', DeprecationWarning, stacklevel=2)
         self._history_headers = ['datetime', 'code', 'price',
                                  'amount', 'cash', 'order_id', 'realorder_id', 'trade_id',
-                                 'account_cookie', 'commission', 'tax', 'message']
+                                 'account_cookie', 'commission', 'tax', 'message', 'frozen']
         ########################################################################
         # 信息类:
         self.strategy_name = strategy_name
@@ -753,7 +753,7 @@ class QA_Account(QA_Worker):
 
             self.cash_available = self.cash[-1]
             self.history.append([trade_time, code, trade_price, market_towards*trade_amount, self.cash[-1], None, None, None, self.account_cookie,
-                                 commission_fee, tax_fee, frozen, message])
+                                 commission_fee, tax_fee, message, frozen])
 
         else:
             # print(self.cash[-1])
@@ -913,7 +913,7 @@ class QA_Account(QA_Worker):
 
             self.history.append(
                 [trade_time, code, trade_price, market_towards*trade_amount, self.cash[-1], order_id, realorder_id, trade_id, self.account_cookie,
-                    commission_fee, tax_fee, message])
+                    commission_fee, tax_fee, message, frozen])
             if self.allow_t0:
 
                 self.sell_available = self.hold
