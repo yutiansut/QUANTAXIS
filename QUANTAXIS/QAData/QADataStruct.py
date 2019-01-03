@@ -353,7 +353,7 @@ class QA_DataStruct_Future_min(_quotation_base):
     def __init__(self, DataFrame, dtype='future_min', if_fq=''):
         # 🛠todo  期货分钟数据线的维护， 暂时用日线代替分钟线
         super().__init__(DataFrame, dtype, if_fq)
-        self.type = 'future_day'
+        self.type = dtype
         self.data = self.data.loc[:, [
             'open', 'high', 'low', 'close', 'volume', 'position', 'price', 'tradetime', 'type']]
         self.if_fq = if_fq
