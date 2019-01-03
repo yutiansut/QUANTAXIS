@@ -81,6 +81,8 @@
 在期货的保证金模型中:
 
 开仓会冻结保证金到frozen里面, 这时钱并未参与结算/  需要先在每日结算时结转冻结的保证金
+4. 增加了QA_Account的 history_table字段,增加了一个  frozen字段, 用于记录历史的保证金增加
+5. 大幅删减QA_Account的 receive_deal 精简代码  直接调用receive_simpledeal方法
 
 ## 1.2.4
 
