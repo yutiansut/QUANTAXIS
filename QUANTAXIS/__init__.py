@@ -32,7 +32,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.2.5'
+__version__ = '1.2.6.dev1'
 __author__ = 'yutiansut'
 logo = ' \n \
 ```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````` \n \
@@ -120,6 +120,7 @@ from QUANTAXIS.QAData import (QA_data_tick_resample_1min, QA_data_tick_resample,
                               QA_data_calc_marketvalue, QA_data_marketvalue,
                               QA_data_stock_to_fq,
                               QA_DataStruct_Stock_day, QA_DataStruct_Stock_min,
+                              QA_DataStruct_Day, QA_DataStruct_Min,
                               QA_DataStruct_Future_day, QA_DataStruct_Future_min,
                               QA_DataStruct_Index_day, QA_DataStruct_Index_min, QA_DataStruct_Indicators, QA_DataStruct_Stock_realtime,
                               QA_DataStruct_Stock_transaction, QA_DataStruct_Stock_block, QA_DataStruct_Series, QA_DataStruct_Financial,
