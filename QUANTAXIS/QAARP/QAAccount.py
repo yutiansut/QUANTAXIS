@@ -753,7 +753,7 @@ class QA_Account(QA_Worker):
 
             self.cash_available = self.cash[-1]
             self.history.append([trade_time, code, trade_price, market_towards*trade_amount, self.cash[-1], None, None, None, self.account_cookie,
-                                 commission_fee, tax_fee, message, frozen])
+                                 commission_fee, tax_fee, message, trade_money])
 
         else:
             # print(self.cash[-1])
@@ -913,7 +913,7 @@ class QA_Account(QA_Worker):
 
             self.history.append(
                 [trade_time, code, trade_price, market_towards*trade_amount, self.cash[-1], order_id, realorder_id, trade_id, self.account_cookie,
-                    commission_fee, tax_fee, message, frozen])
+                    commission_fee, tax_fee, message, trade_money])
             if self.allow_t0:
 
                 self.sell_available = self.hold
