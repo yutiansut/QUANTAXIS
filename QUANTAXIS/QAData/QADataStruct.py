@@ -761,6 +761,27 @@ class QA_DataStruct_Stock_transaction():
             return self.data.loc[start:end]
 
 
+class QA_DataStruct_Day(_quotation_base):
+
+    def __init__(self, data, dtype='stock_day', if_fq='bfq'):
+        '''
+        # 🛠 todo dtype=stock_day 和 QA_DataStruct_Stock_day 类的名字是对应的 不变的不需要指定 ，容易出错，建议改成常量 ❌
+        :param init_data_by_df:  DataFrame 类型的数据，包含了数据，用来初始化这个类
+        :param dtype:  stock_day 🛠 todo 改成常量
+        :param if_fq:  是否复权
+        '''
+        super().__init__(data, dtype, if_fq)
+class QA_DataStruct_Min(_quotation_base):
+
+    def __init__(self, data, dtype='stock_min', if_fq='bfq'):
+        '''
+        # 🛠 todo dtype=stock_day 和 QA_DataStruct_Stock_day 类的名字是对应的 不变的不需要指定 ，容易出错，建议改成常量 ❌
+        :param init_data_by_df:  DataFrame 类型的数据，包含了数据，用来初始化这个类
+        :param dtype:  stock_day 🛠 todo 改成常量
+        :param if_fq:  是否复权
+        '''
+        super().__init__(data, dtype, if_fq)
+
 class _realtime_base():
     """
     realtime 基类
