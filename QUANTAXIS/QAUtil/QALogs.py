@@ -70,7 +70,11 @@ def get_config():
         return log_path
 
 
-logging.basicConfig(level=logging.DEBUG,
+"""2019-01-03  升级到warning级别 不然大量别的代码的log会批量输出出来
+"""
+
+
+logging.basicConfig(level=logging.WARNING,
                     format='%(asctime)s QUANTAXIS>>> %(message)s',
                     datefmt='%H:%M:%S',
                     filename='{}{}quantaxis-{}-.log'.format(get_config(), os.sep, str(datetime.datetime.now().strftime(
@@ -78,7 +82,7 @@ logging.basicConfig(level=logging.DEBUG,
                     filemode='w',
                     )
 console = logging.StreamHandler()
-console.setLevel(logging.INFO)
+console.setLevel(logging.WARNING)
 formatter = logging.Formatter('QUANTAXIS>> %(message)s')
 console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
@@ -104,7 +108,7 @@ def QA_util_log_info(logs, ui_log = None, ui_progress = None, ui_progress_int_va
 
     QA_util_log_x is under [QAStandard#0.0.2@602-x] Protocol
     """
-    logging.info(logs)
+    logging.warning(logs)
 
     #给GUI使用，更新当前任务到日志和进度
     if ui_log is not None:
