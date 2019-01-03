@@ -637,7 +637,7 @@ class _quotation_base():
                     ds.data.loc[:, ['open', 'close', 'low', 'high']])
 
                 kline.add(ds.code[0], datetime, ohlc, mark_point=[
-                          "max", "min"], is_datazoom_show=False, datazoom_orient='horizontal')
+                          "max", "min"], is_datazoom_show=True, datazoom_orient='horizontal')
             return kline
 
         else:
