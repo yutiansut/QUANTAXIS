@@ -1040,7 +1040,7 @@ class QA_Account(QA_Worker):
         if self.market_type == MARKET_TYPE.FUTURE_CN:
 
             self.static_balance['frozen'].append(
-                sum([rx['money']*rx['amount'] for var in frozen.values() for rx in var.values()]))
+                sum([rx['money']*rx['amount'] for var in self.frozen.values() for rx in var.values()]))
 
             self.static_balance['cash'].append(self.cash[-1])
             self.static_balance['hold'].append(self.hold.to_dict())
