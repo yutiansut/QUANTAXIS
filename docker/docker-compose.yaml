@@ -6,6 +6,8 @@ services:
             - "8888:8888"
         environment:
           - MONGODB=mgdb
+        volumes:
+            - qacode:/home
         restart: always
 
     qacron:
@@ -37,3 +39,6 @@ volumes:
     qamg:
         external:
             name: qamg
+    qacode:
+        external:
+            name: qacode
