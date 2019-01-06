@@ -21,7 +21,7 @@ RUN wget https://downloads.sourceforge.net/project/ta-lib/ta-lib/0.4.0/ta-lib-0.
   && jupyter serverextension enable --py jupyterlab \
   && chmod +x /entrypoint.sh
 
-EXPOSE 8010 8888
+EXPOSE 8888
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["jupyter", "lab", "--allow-root"]
