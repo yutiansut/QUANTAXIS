@@ -4,7 +4,7 @@ ENV TZ=Asia/Shanghai
 ENV DEBIAN_FRONTEND noninteractive
 
 COPY requirements.txt /requirements.txt
-# for mirror in China
+# for mirrors in China
 # COPY pip.conf /root/.pip/pip.conf
 # COPY source.list /etc/apt/sources.list
 

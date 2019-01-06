@@ -1,10 +1,15 @@
+# QUANTAXIS容器服务：
+qa-jupyter: http://localhost:8888/lab  
+qa-web：http://localhost:8010/  
+mongo：mongodb  
+qa-cron：数据更新容器，每周一到五，19：00自动更新数据  
 
-## 镜像说明：
-qa-base: QA 基础镜像  
-qa-cron: cron 镜像, 每周一到五19:00自动更新数据(update_all.py)，如需更改计划任务，请自行制作py文件并更新Dockerfile  
-qa-jupyter: jupyter lab 镜像，端口8888，没有登录密码，如需制定密码，请自行更改jupyter_notebook_config.py 文件  
-qa-web: websocket 服务镜像，端口8010  
-mgdb: mongodb 数据库镜像，端口27017  
+
+## 安装docker：
+```
+各平台安装，云上部署，请参考[官网](https://docs.docker.com/install/#supported-platforms)
+Windows 7用户请安装[Docker Toolbox](https://docs.docker.com/toolbox/overview/#ready-to-get-started)
+```
 
 
 ## 第一次部署：
@@ -21,13 +26,6 @@ mgdb: mongodb 数据库镜像，端口27017
   docker-compose up -d
 ```
 
-## 查看每天数据更新日志：
-```
-docker logs cron容器名
-
-日志只输出到容器前台，如果日志对你很重要，建议用专业的日志收集工具，从cron容器收集日志
-```
-
 ## 查看服务状态
 ```
 docker ps
@@ -37,13 +35,6 @@ docker stats
 docker-compose top
 
 docker-compose ps
-```
-
-## 停止/删除 QUANTAXIS 服务 （包括 QUANTAXIS，自动更新服务，数据库容器）：
-```
-停止：docker-compose stop
-
-删除：docker-compose rm （只删除容器，不会删除数据）
 ```
 
 ## 更新：
