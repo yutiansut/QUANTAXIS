@@ -222,7 +222,7 @@ def QA_data_futuremin_resample(min_data,  type_='5min'):
     amount X
     """
 
-    min_data.tradeime = pd.to_datetime(min.tradetime)
+    min_data.tradeime = pd.to_datetime(min_data.tradetime)
 
     CONVERSION = {'code': 'first', 'open': 'first', 'high': 'max', 'low': 'min',
                   'close': 'last', 'trade': 'sum', 'tradetime': 'last', 'date': 'last'}
