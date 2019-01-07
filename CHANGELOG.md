@@ -72,6 +72,23 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
+## 1.2.6
+
+1. 优化QADOCKER文档
+2. 增加QAORDER文档
+3. 优化了QALog模块在打印大量日志的时候无法知道其用途的问题
+
+现在的quantaxis log 会以这个模式作为name:
+```
+ 'quantaxis_{}-{}-.log'.format(get_config(), os.sep, os.path.basename(sys.argv[0]).split('.py')[0], str(datetime.datetime.now().strftime(
+        '%Y-%m-%d-%H-%M-%S')))
+```
+4. 修改了QAUser的注册模块逻辑
+5. 增加了 QA_DataStruct_Min 和 QA_DataStruct_Day两个基类模型
+6. 修复settle的一个bug
+
+
+
 ## 1.2.5
 
 1. 对于QA.QA_util_code_tostr 增加 原先为list类型的支持 现在支持自动补全的  int/list/str 类型转 str

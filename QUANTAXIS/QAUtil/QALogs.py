@@ -35,7 +35,7 @@ QA_util_log_expection()
 import configparser
 import datetime
 import os
-
+import sys
 from zenlog import logging
 
 from QUANTAXIS.QASetting.QALocalize import log_path, setting_path
@@ -72,13 +72,18 @@ def get_config():
 
 """2019-01-03  升级到warning级别 不然大量别的代码的log会批量输出出来
 """
+try:
+    _name = '{}{}quantaxis_{}-{}-.log'.format(get_config(), os.sep, os.path.basename(sys.argv[0]).split('.py')[0], str(datetime.datetime.now().strftime(
+        '%Y-%m-%d-%H-%M-%S')))
+except:
+    _name = '{}{}quantaxis-{}-.log'.format(get_config(), os.sep,  str(datetime.datetime.now().strftime(
+        '%Y-%m-%d-%H-%M-%S')))
 
 
 logging.basicConfig(level=logging.WARNING,
                     format='%(asctime)s QUANTAXIS>>> %(message)s',
                     datefmt='%H:%M:%S',
-                    filename='{}{}quantaxis-{}-.log'.format(get_config(), os.sep, str(datetime.datetime.now().strftime(
-                        '%Y-%m-%d-%H-%M-%S'))),
+                    filename=_name,
                     filemode='w',
                     )
 console = logging.StreamHandler()
@@ -91,7 +96,7 @@ logging.getLogger('').addHandler(console)
 #logging.info('start QUANTAXIS')
 
 
-def QA_util_log_debug(logs, ui_log = None, ui_progress = None):
+def QA_util_log_debug(logs, ui_log=None, ui_progress=None):
     """
     QUANTAXIS Log Module
     @yutiansut
@@ -101,7 +106,7 @@ def QA_util_log_debug(logs, ui_log = None, ui_progress = None):
     logging.debug(logs)
 
 
-def QA_util_log_info(logs, ui_log = None, ui_progress = None, ui_progress_int_value = None):
+def QA_util_log_info(logs, ui_log=None, ui_progress=None, ui_progress_int_value=None,):
     """
     QUANTAXIS Log Module
     @yutiansut
@@ -110,11 +115,11 @@ def QA_util_log_info(logs, ui_log = None, ui_progress = None, ui_progress_int_va
     """
     logging.warning(logs)
 
-    #给GUI使用，更新当前任务到日志和进度
+    # 给GUI使用，更新当前任务到日志和进度
     if ui_log is not None:
-        if isinstance(logs, str) :
+        if isinstance(logs, str):
             ui_log.emit(logs)
-        if isinstance(logs, list) :
+        if isinstance(logs, list):
             for iStr in logs:
                 ui_log.emit(iStr)
 
@@ -122,7 +127,7 @@ def QA_util_log_info(logs, ui_log = None, ui_progress = None, ui_progress_int_va
         ui_progress.emit(ui_progress_int_value)
 
 
-def QA_util_log_expection(logs, ui_log = None, ui_progress = None):
+def QA_util_log_expection(logs, ui_log=None, ui_progress=None):
     """
     QUANTAXIS Log Module
     @yutiansut

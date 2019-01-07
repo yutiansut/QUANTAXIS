@@ -26,8 +26,8 @@ from datetime import time
 
 import pandas as pd
 
-def QA_data_tick_resample_1min(tick, type_='1min', if_drop=True):
 
+def QA_data_tick_resample_1min(tick, type_='1min', if_drop=True):
     """
     tick 采样为 分钟数据
     1. 仅使用将 tick 采样为 1 分钟数据
@@ -52,36 +52,50 @@ def QA_data_tick_resample_1min(tick, type_='1min', if_drop=True):
         # do fix on the first and last bar
         # 某些股票某些日期没有集合竞价信息，譬如 002468 在 2017 年 6 月 5 日的数据
         if len(_data.loc[time(9, 25): time(9, 25)]) > 0:
-            _data1.loc[time(9, 31): time(9, 31), 'open'] = _data1.loc[time(9, 26): time(9, 26), 'open'].values
-            _data1.loc[time(9, 31): time(9, 31), 'high'] = _data1.loc[time(9, 26): time(9, 31), 'high'].max()
-            _data1.loc[time(9, 31): time(9, 31), 'low'] = _data1.loc[time(9, 26): time(9, 31), 'low'].min()
-            _data1.loc[time(9, 31): time(9, 31), 'vol'] = _data1.loc[time(9, 26): time(9, 31), 'vol'].sum()
-            _data1.loc[time(9, 31): time(9, 31), 'amount'] = _data1.loc[time(9, 26): time(9, 31), 'amount'].sum()
+            _data1.loc[time(9, 31): time(9, 31), 'open'] = _data1.loc[time(
+                9, 26): time(9, 26), 'open'].values
+            _data1.loc[time(9, 31): time(9, 31), 'high'] = _data1.loc[time(
+                9, 26): time(9, 31), 'high'].max()
+            _data1.loc[time(9, 31): time(9, 31), 'low'] = _data1.loc[time(
+                9, 26): time(9, 31), 'low'].min()
+            _data1.loc[time(9, 31): time(9, 31), 'vol'] = _data1.loc[time(
+                9, 26): time(9, 31), 'vol'].sum()
+            _data1.loc[time(9, 31): time(9, 31), 'amount'] = _data1.loc[time(
+                9, 26): time(9, 31), 'amount'].sum()
         # 通达信分笔数据有的有 11:30 数据，有的没有
         if len(_data.loc[time(11, 30): time(11, 30)]) > 0:
-            _data1.loc[time(11, 30): time(11, 30), 'high'] = _data1.loc[time(11, 30): time(11, 31), 'high'].max()
-            _data1.loc[time(11, 30): time(11, 30), 'low'] = _data1.loc[time(11, 30): time(11, 31), 'low'].min()
-            _data1.loc[time(11, 30): time(11, 30), 'close'] = _data1.loc[time(11, 31): time(11, 31), 'close'].values
-            _data1.loc[time(11, 30): time(11, 30), 'vol'] = _data1.loc[time(11, 30): time(11, 31), 'vol'].sum()
-            _data1.loc[time(11, 30): time(11, 30), 'amount'] = _data1.loc[time(11, 30): time(11, 31), 'amount'].sum()
+            _data1.loc[time(11, 30): time(11, 30), 'high'] = _data1.loc[time(
+                11, 30): time(11, 31), 'high'].max()
+            _data1.loc[time(11, 30): time(11, 30), 'low'] = _data1.loc[time(
+                11, 30): time(11, 31), 'low'].min()
+            _data1.loc[time(11, 30): time(11, 30), 'close'] = _data1.loc[time(
+                11, 31): time(11, 31), 'close'].values
+            _data1.loc[time(11, 30): time(11, 30), 'vol'] = _data1.loc[time(
+                11, 30): time(11, 31), 'vol'].sum()
+            _data1.loc[time(11, 30): time(11, 30), 'amount'] = _data1.loc[time(
+                11, 30): time(11, 31), 'amount'].sum()
         _data1 = _data1.loc[time(9, 31): time(11, 30)]
 
         # afternoon min bar
-        _data2 = _data[time(13,0): time(15,0)].resample(
-                type_, closed='left', base=30, loffset=type_).apply({'price': 'ohlc', 'vol': 'sum', 'code': 'last', 'amount': 'sum'})
+        _data2 = _data[time(13, 0): time(15, 0)].resample(
+            type_, closed='left', base=30, loffset=type_).apply({'price': 'ohlc', 'vol': 'sum', 'code': 'last', 'amount': 'sum'})
 
         _data2.columns = _data2.columns.droplevel(0)
         # 沪市股票在 2018-08-20 起，尾盘 3 分钟集合竞价
         if (pd.Timestamp(date) < pd.Timestamp('2018-08-20')) and (tick.code.iloc[0][0] == '6'):
             # 避免出现 tick 数据没有 1:00 的值
             if len(_data.loc[time(13, 0): time(13, 0)]) > 0:
-                _data2.loc[time(15, 0): time(15, 0), 'high'] = _data2.loc[time(15, 0): time(15, 1), 'high'].max()
-                _data2.loc[time(15, 0): time(15, 0), 'low'] = _data2.loc[time(15, 0): time(15, 1), 'low'].min()
-                _data2.loc[time(15, 0): time(15, 0), 'close'] = _data2.loc[time(15, 1): time(15, 1), 'close'].values
+                _data2.loc[time(15, 0): time(15, 0), 'high'] = _data2.loc[time(
+                    15, 0): time(15, 1), 'high'].max()
+                _data2.loc[time(15, 0): time(15, 0), 'low'] = _data2.loc[time(
+                    15, 0): time(15, 1), 'low'].min()
+                _data2.loc[time(15, 0): time(15, 0), 'close'] = _data2.loc[time(
+                    15, 1): time(15, 1), 'close'].values
         else:
             # 避免出现 tick 数据没有 15:00 的值
             if len(_data.loc[time(13, 0): time(13, 0)]) > 0:
-                _data2.loc[time(15, 0): time(15, 0)] = _data2.loc[time(15, 1): time(15, 1)].values
+                _data2.loc[time(15, 0): time(15, 0)] = _data2.loc[time(
+                    15, 1): time(15, 1)].values
         _data2 = _data2.loc[time(13, 1): time(15, 0)]
         resx = resx.append(_data1).append(_data2)
     resx['vol'] = resx['vol'] * 100.0
@@ -172,31 +186,6 @@ def QA_data_min_resample(min_data,  type_='5min'):
         new_type {[type]} -- [description]
     """
 
-    # ohlc_data=min_data.loc[:,['open','high','low','close']].stack().reset_index().rename(columns={0:'price'}).drop(['level_2'],axis=1).set_index('datetime',drop=False)
-    # vol=min_data.assign(vol1=0,vol2=0,vol3=0)
-    # L2=vol.loc[:,['volume','vol1','vol2','vol3']].stack().reset_index().rename(columns={0:'vol'}).drop(['level_2'],axis=1).set_index('datetime')
-    # tick=pd.concat([ohlc_data,L2.vol],axis=1)
-    # data = tick['price'].resample(
-    #     type_, label='right', closed='left').ohlc()
-
-    # data['volume'] = tick['vol'].resample(
-    #     type_, label='right', closed='left').sum()
-    # data['code'] = tick.code.iloc[1]
-    # if 'date' not in tick.columns:
-    #     tick=tick.assign(date=tick.datetime.apply(lambda x: str(x)[0:10]))
-
-    # resx=pd.DataFrame()
-    # _temp = tick.drop_duplicates('date')['date']
-    # for item in _temp:
-    #     _data = data[item]
-    #     _data = _data[time(9, 31):time(11, 30)].append(
-    #         _data[time(13, 1):time(15, 0)])
-    #     resx = resx.append(_data)
-    # resx=resx.reset_index()
-    # data=resx.assign(date=resx['datetime'].apply(lambda x: str(x)[0:10]))
-
-    # return data.fillna(method='ffill').set_index(['datetime', 'code'], drop=False).drop_duplicates()
-
     try:
         min_data = min_data.reset_index().set_index('datetime', drop=False)
     except:
@@ -208,12 +197,37 @@ def QA_data_min_resample(min_data,  type_='5min'):
 
     for item in set(min_data.index.date):
         min_data_p = min_data.loc[str(item)]
+        n = min_data_p['{} 21:00:00'.format(item):].resample(
+            type_, base=30, closed='right', loffset=type_).apply(CONVERSION)
+
         d = min_data_p[:'{} 11:30:00'.format(item)].resample(
             type_, base=30, closed='right', loffset=type_).apply(CONVERSION)
         f = min_data_p['{} 13:00:00'.format(item):].resample(
             type_, closed='right', loffset=type_).apply(CONVERSION)
+
         resx = resx.append(d).append(f)
 
+    return resx.dropna().reset_index().set_index(['datetime', 'code'])
+
+
+def QA_data_futuremin_resample(min_data,  type_='5min'):
+    """期货分钟线采样成大周期
+
+
+    分钟线采样成子级别的分钟线
+
+    future:
+
+    vol ==> trade
+    amount X
+    """
+
+    min_data.tradeime = pd.to_datetime(min_data.tradetime)
+
+    CONVERSION = {'code': 'first', 'open': 'first', 'high': 'max', 'low': 'min',
+                  'close': 'last', 'trade': 'sum', 'tradetime': 'last', 'date': 'last'}
+    resx = min_data.resample(type_, closed='right',
+                             loffset=type_).apply(CONVERSION)
     return resx.dropna().reset_index().set_index(['datetime', 'code'])
 
 
