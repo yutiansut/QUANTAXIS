@@ -39,8 +39,13 @@ from QUANTAXIS.QAEngine.QAEvent import QA_Event
 from QUANTAXIS.QAMarket.common import cn_en_compare, trade_towards_cn_en, order_status_cn_en
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
-from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, ORDER_DIRECTION, BROKER_TYPE,
-                                          ORDER_MODEL, ORDER_STATUS)
+from QUANTAXIS.QAUtil.QAParameter import (
+    BROKER_EVENT,
+    ORDER_DIRECTION,
+    BROKER_TYPE,
+    ORDER_MODEL,
+    ORDER_STATUS
+)
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_order_datetime
 from QUANTAXIS.QAUtil.QADate import QA_util_date_int2str
 from QUANTAXIS.QAUtil.QASetting import setting_path
@@ -49,6 +54,7 @@ CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
 
 
 class QA_ATBroker(QA_Broker):
+
     def __init__(self):
         pass
 
