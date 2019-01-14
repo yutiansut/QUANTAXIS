@@ -73,6 +73,25 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
+## 1.2.7
+
+迁移目录:
+
+1. 拆分 QUANTAXIS_CRAWLY 至 https://github.com/QUANTAXIS/QUANTAXIS_CRAWLY
+
+- 减少twisted安装问题
+- 模块解耦 功能分离
+
+2. 拆分 QUANTAXIS_MONITOR_GUI 至 https://github.com/QUANTAXIS/QUANTAXIS_Monitor_GUI
+
+- gui部分以插件形式提供
+
+3. 使用yapf 大量修正格式
+
+
+
+
+
 ## 1.2.6
 
 1. 优化QADOCKER文档
