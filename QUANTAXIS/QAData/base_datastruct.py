@@ -842,13 +842,10 @@ class _quotation_base():
         🛠todo 没有这个？？ inplace 是否是对于原类的修改 ？？
         """
         data = self.data if data is None else data
-        #data.index= data.index.remove_unused_levels()
 
         dtype = self.type if dtype is None else dtype
         if_fq = self.if_fq if if_fq is None else if_fq
 
-        # 🛠todo 不是很理解这样做的意图， 已经copy了，还用data初始化
-        # 🛠todo deepcopy 实现 ？还是 ？
         temp = copy(self)
         temp.__init__(data, dtype, if_fq)
         return temp
