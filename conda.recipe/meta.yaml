@@ -7,6 +7,7 @@ source:
   git_url: ../
 
 build:
+  number: 0
   entry_points:
     - quantaxis=QUANTAXIS.QACmd:QA_cmd
     - quantaxisq=QUANTAXIS.QAFetch.QATdx_adv:bat
@@ -49,6 +50,9 @@ requirements:
     - pyconvert>=0.6.3
     - demjson>=2.2.4
 
+outputs:
+  - type: wheel
+  - name: {{ PKG_NAME }}
 
 about:
   home: {{ data.get('url') }}
