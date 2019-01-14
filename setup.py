@@ -35,7 +35,6 @@ try:
 except:
     from distutils.core import setup
 """
-打包的用的setup必须引入，
 """
 
 if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6, 7, 8]:
@@ -64,13 +63,13 @@ def read(fname):
 
 NAME = "quantaxis"
 """
-名字，一般放你包的名字即可
+
 """
 PACKAGES = ["QUANTAXIS", "QUANTAXIS.QAFetch", "QUANTAXIS.QACmd", "QUANTAXIS.QAMarket", 'QUANTAXIS.QASetting',"QUANTAXIS.QACmd",
             "QUANTAXIS.QAApplication", "QUANTAXIS.QAEngine", "QUANTAXIS.QAData", 'QUANTAXIS.QAData.proto', "QUANTAXIS.QAAnalysis", 'QUANTAXIS.QASelector',
             "QUANTAXIS.QASU", "QUANTAXIS.QAUtil", "QUANTAXIS.QAARP", "QUANTAXIS.QAIndicator", "QUANTAXIS_CRAWLY"]
 """
-包含的包，可以多个，这是一个列表
+
 """
 
 DESCRIPTION = "QUANTAXIS:Quantitative Financial Strategy Framework"
@@ -79,12 +78,12 @@ with open("README_ENG.md", "r") as fh:
     LONG_DESCRIPTION = fh.read()
 
 """
-参见read方法说明
+
 """
 
 KEYWORDS = ["quantaxis", "quant", "finance", "Backtest", 'Framework']
 """
-关于当前包的一些关键字，方便PyPI进行分类。
+
 """
 
 AUTHOR_EMAIL = "yutiansut@qq.com"
@@ -128,4 +127,4 @@ setup(
     zip_safe=True
 )
 
-# 把上面的变量填入了一个setup()中即可。
+
