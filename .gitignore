@@ -23,7 +23,7 @@ QA_*.html
 test/
 *lock.json
 docs
-
+record.txt
 # Byte-compiled / optimized / DLL files
 __pycache__/
 
