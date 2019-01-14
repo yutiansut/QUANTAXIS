@@ -1,0 +1,35 @@
+{% set data = load_setup_py_data() %}
+package:
+  name: quantaxis
+  version: {{ data.get('version') }}
+
+source:
+  git_url: ../
+
+build:
+  entry_points:
+    - quantaxis=QUANTAXIS.QACmd:QA_cmd
+    - quantaxisq=QUANTAXIS.QAFetch.QATdx_adv:bat
+    - qarun=QUANTAXIS.QACmd.runner:run
+
+requirements:
+  build:
+    - python
+    - setuptools
+  run:
+    - python
+    - setuptools
+    - pytz
+    - six
+    - nbformat >=4.4.0
+    - clyent >=1.2.0
+    - requests >=2.9.1
+    - PyYAML >=3.12
+    - python-dateutil >=2.6.1
+
+about:
+  home: {{ data.get('url') }}
+  license: {{ data.get('license') }}
+  license_family: MIT
+  license_file: LICENSE
+  summary: {{ data.get('description') }}
