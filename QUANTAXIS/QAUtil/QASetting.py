@@ -28,8 +28,10 @@ import os
 
 from QUANTAXIS.QASetting.QALocalize import qa_path, setting_path, strategy_path
 from QUANTAXIS.QASU.user import QA_user_sign_in
-from QUANTAXIS.QAUtil.QASql import (QA_util_sql_async_mongo_setting,
-                                    QA_util_sql_mongo_setting)
+from QUANTAXIS.QAUtil.QASql import (
+    QA_util_sql_async_mongo_setting,
+    QA_util_sql_mongo_setting
+)
 
 # quantaxis有一个配置目录存放在 ~/.quantaxis
 # 如果配置目录不存在就创建，主要配置都保存在config.json里面
@@ -41,14 +43,21 @@ CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
 
 
 class QA_Setting():
+
     def __init__(self, uri=None):
-        self.mongo_uri = uri or self.get_config() or self.env_config() or DEFAULT_DB_URI
+        self.mongo_uri = uri or self.get_config() or self.env_config(
+        ) or DEFAULT_DB_URI
         self.username = None
         self.password = None
 
         # 加入配置文件地址
 
-    def get_config(self, section='MONGODB', option='uri', default_value=DEFAULT_DB_URI):
+    def get_config(
+            self,
+            section='MONGODB',
+            option='uri',
+            default_value=DEFAULT_DB_URI
+    ):
         """[summary]
 
         Keyword Arguments:
@@ -63,7 +72,12 @@ class QA_Setting():
         config = configparser.ConfigParser()
         if os.path.exists(CONFIGFILE_PATH):
             config.read(CONFIGFILE_PATH)
-            return self.get_or_set_section(config, section, option, default_value)
+            return self.get_or_set_section(
+                config,
+                section,
+                option,
+                default_value
+            )
 
             # 排除某些IP
             # self.get_or_set_section(config, 'IPLIST', 'exclude', [{'ip': '1.1.1.1', 'port': 7709}])
@@ -76,7 +90,12 @@ class QA_Setting():
             f.close()
             return default_value
 
-    def set_config(self, section='MONGODB', option='uri', default_value=DEFAULT_DB_URI):
+    def set_config(
+            self,
+            section='MONGODB',
+            option='uri',
+            default_value=DEFAULT_DB_URI
+    ):
         """[summary]
 
         Keyword Arguments:
@@ -91,7 +110,13 @@ class QA_Setting():
         config = configparser.ConfigParser()
         if os.path.exists(CONFIGFILE_PATH):
             config.read(CONFIGFILE_PATH)
-            return self.get_or_set_section(config, section, option, default_value, 'set')
+            return self.get_or_set_section(
+                config,
+                section,
+                option,
+                default_value,
+                'set'
+            )
 
             # 排除某些IP
             # self.get_or_set_section(config, 'IPLIST', 'exclude', [{'ip': '1.1.1.1', 'port': 7709}])
@@ -104,7 +129,14 @@ class QA_Setting():
             f.close()
             return default_value
 
-    def get_or_set_section(self, config, section, option, DEFAULT_VALUE, method='get'):
+    def get_or_set_section(
+            self,
+            config,
+            section,
+            option,
+            DEFAULT_VALUE,
+            method='get'
+    ):
         """[summary]
 
         Arguments:
@@ -189,24 +221,88 @@ def exclude_from_stock_ip_list(exclude_ip_list):
             stock_ip_list.remove(exc)
 
 
-info_ip_list = [{'ip': '101.227.73.20', 'port': 7709}, {'ip': '101.227.77.254', 'port': 7709},
-                {'ip': '114.80.63.12', 'port': 7709}, {
-                    'ip': '114.80.63.35', 'port': 7709},
-                {'ip': '115.238.56.198', 'port': 7709}, {
-                    'ip': '115.238.90.165', 'port': 7709},
-                {'ip': '124.160.88.183', 'port': 7709}, {
-                    'ip': '60.28.23.80', 'port': 7709},
-                {'ip': '14.215.128.18', 'port': 7709}, {
-                    'ip': '180.153.18.170', 'port': 7709},
-                {'ip': '180.153.18.171', 'port': 7709}, {
-                    'ip': '180.153.39.51', 'port': 7709},
-                {'ip': '202.108.253.130', 'port': 7709}, {
-                    'ip': '202.108.253.131', 'port': 7709},
-                {'ip': '218.108.47.69', 'port': 7709}, {
-                    'ip': '218.108.98.244', 'port': 7709},
-                {'ip': '218.75.126.9', 'port': 7709}, {
-                    'ip': '221.231.141.60', 'port': 7709},
-                {'ip': '59.173.18.140', 'port': 7709}, {'ip': '60.12.136.250', 'port': 7709}]
+info_ip_list = [
+    {
+        'ip': '101.227.73.20',
+        'port': 7709
+    },
+    {
+        'ip': '101.227.77.254',
+        'port': 7709
+    },
+    {
+        'ip': '114.80.63.12',
+        'port': 7709
+    },
+    {
+        'ip': '114.80.63.35',
+        'port': 7709
+    },
+    {
+        'ip': '115.238.56.198',
+        'port': 7709
+    },
+    {
+        'ip': '115.238.90.165',
+        'port': 7709
+    },
+    {
+        'ip': '124.160.88.183',
+        'port': 7709
+    },
+    {
+        'ip': '60.28.23.80',
+        'port': 7709
+    },
+    {
+        'ip': '14.215.128.18',
+        'port': 7709
+    },
+    {
+        'ip': '180.153.18.170',
+        'port': 7709
+    },
+    {
+        'ip': '180.153.18.171',
+        'port': 7709
+    },
+    {
+        'ip': '180.153.39.51',
+        'port': 7709
+    },
+    {
+        'ip': '202.108.253.130',
+        'port': 7709
+    },
+    {
+        'ip': '202.108.253.131',
+        'port': 7709
+    },
+    {
+        'ip': '218.108.47.69',
+        'port': 7709
+    },
+    {
+        'ip': '218.108.98.244',
+        'port': 7709
+    },
+    {
+        'ip': '218.75.126.9',
+        'port': 7709
+    },
+    {
+        'ip': '221.231.141.60',
+        'port': 7709
+    },
+    {
+        'ip': '59.173.18.140',
+        'port': 7709
+    },
+    {
+        'ip': '60.12.136.250',
+        'port': 7709
+    }
+]
 
 
 stock_ip_list = [
@@ -262,21 +358,77 @@ stock_ip_list = [
 ]
 
 future_ip_list = [
-    {'ip': '124.74.236.94', 'port': 7721},
-    {'ip': '218.80.248.229', 'port': 7721},
-    {'ip': '124.74.236.94', 'port': 7721},
-    {'ip': '58.246.109.27', 'port': 7721},
-    {'ip': '112.74.214.43', 'port': 7727, 'name': '扩展市场深圳双线1'},
-    {'ip': '120.24.0.77', 'port': 7727, 'name': '扩展市场深圳双线2'},
-    {'ip': '106.14.95.149', 'port': 7727, 'name': '扩展市场上海双线'},
-    {'ip': '119.97.185.5', 'port': 7727, 'name': '扩展市场武汉主站1'},
-    {'ip': '202.103.36.71', 'port': 443, 'name': '扩展市场武汉主站2'},
-    {'ip': '59.175.238.38', 'port': 7727, 'name': '扩展市场武汉主站3'},
-    {'ip': '113.105.142.136', 'port': 443, 'name': '扩展市场东莞主站'},
-    {'ip': '61.152.107.141', 'port': 7727, 'name': '扩展市场上海主站1'},
-    {'ip': '61.152.107.171', 'port': 7727, 'name': '扩展市场上海主站2'},
-    {'ip': '119.147.86.171', 'port': 7727, 'name': '扩展市场深圳主站'},
-    {'ip': '47.92.127.181', 'port': 7727, 'name': '扩展市场北京主站'},
+    {
+        'ip': '124.74.236.94',
+        'port': 7721
+    },
+    {
+        'ip': '218.80.248.229',
+        'port': 7721
+    },
+    {
+        'ip': '124.74.236.94',
+        'port': 7721
+    },
+    {
+        'ip': '58.246.109.27',
+        'port': 7721
+    },
+    {
+        'ip': '112.74.214.43',
+        'port': 7727,
+        'name': '扩展市场深圳双线1'
+    },
+    {
+        'ip': '120.24.0.77',
+        'port': 7727,
+        'name': '扩展市场深圳双线2'
+    },
+    {
+        'ip': '106.14.95.149',
+        'port': 7727,
+        'name': '扩展市场上海双线'
+    },
+    {
+        'ip': '119.97.185.5',
+        'port': 7727,
+        'name': '扩展市场武汉主站1'
+    },
+    {
+        'ip': '202.103.36.71',
+        'port': 443,
+        'name': '扩展市场武汉主站2'
+    },
+    {
+        'ip': '59.175.238.38',
+        'port': 7727,
+        'name': '扩展市场武汉主站3'
+    },
+    {
+        'ip': '113.105.142.136',
+        'port': 443,
+        'name': '扩展市场东莞主站'
+    },
+    {
+        'ip': '61.152.107.141',
+        'port': 7727,
+        'name': '扩展市场上海主站1'
+    },
+    {
+        'ip': '61.152.107.171',
+        'port': 7727,
+        'name': '扩展市场上海主站2'
+    },
+    {
+        'ip': '119.147.86.171',
+        'port': 7727,
+        'name': '扩展市场深圳主站'
+    },
+    {
+        'ip': '47.92.127.181',
+        'port': 7727,
+        'name': '扩展市场北京主站'
+    },
 ]
 """
 ['121.14.110.210', '119.147.212.76', '113.105.73.86', '119.147.171.211', '119.147.164.57', '119.147.164.58', '61.49.50.180', '61.49.50.181',

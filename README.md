@@ -5,7 +5,7 @@ Quantitative Financial FrameWork
 
 从数据爬取-清洗存储-分析回测-可视化-交易复盘的本地一站式解决方案
 
-![logo](http://pic.yutiansut.com/QUANTAXIS_LOGO_LAST_small.jpg)
+![logo](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/Documents/logo/QUANTAXIS_LOGO_LAST_small.jpg)
 
 
 -------------------------------------------------------------
@@ -31,12 +31,12 @@ Quantitative Financial FrameWork
 
 ![version](https://img.shields.io/pypi/v/quantaxis.svg)
 ![build](https://travis-ci.org/QUANTAXIS/QUANTAXIS.svg?branch=master)
-[![Codefresh build status]( https://g.codefresh.io/api/badges/build?repoOwner=yutiansut&repoName=QUANTAXIS&branch=master&pipelineName=QUANTAXIS&accountName=yutiansut_marketplace&type=cf-1)]( https://g.codefresh.io/repositories/yutiansut/QUANTAXIS/builds?filter=trigger:build;branch:master;service:5a30c1026e9d6c0001c5143b~QUANTAXIS)
+[![Codefresh build status]( https://g.codefresh.io/api/badges/pipeline/quantaxis/QUANTAXIS%2FQUANTAXIS%2FQUANTAXIS?branch=master&key=eyJhbGciOiJIUzI1NiJ9.NWEzMGMwNzE4NTk5YzAwMDAxNWEzOGQ3.INF0oVNGLK79Ql3f10Vs9_CJfwsfq1FYjCbbOKJzBe8&type=cf-1)]( https://g.codefresh.io/pipelines/QUANTAXIS/builds?repoOwner=QUANTAXIS&repoName=QUANTAXIS&serviceName=QUANTAXIS%2FQUANTAXIS&filter=trigger:build~Build;branch:master;pipeline:5c3ade3fc67fe4e3328c9da1~QUANTAXIS)
 [![BCH compliance](https://bettercodehub.com/edge/badge/QUANTAXIS/QUANTAXIS?branch=master)](https://bettercodehub.com/)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d8504e4af33747bb8117579212425af9)](https://www.codacy.com/app/yutiansut/QUANTAXIS?utm_source=github.com&utm_medium=referral&utm_content=yutiansut/QUANTAXIS&utm_campaign=badger)
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/yutiansut/quantaxis)
 ![QAS](https://img.shields.io/badge/QAS-%200.0.8-brown.svg)
-![python](https://img.shields.io/badge/python-%203.7/3.6/3.5/win/ubuntu-darkgrey.svg)
+![python](https://img.shields.io/badge/python-%203.7/3.6-darkgrey.svg)
 ![Npm](https://img.shields.io/badge/Npm-%200.4.0-yellow.svg)
 ![author](https://img.shields.io/badge/Powered%20by-%20%20yutiansut-red.svg)
 ![license](https://img.shields.io/badge/License-%20MIT-brightgreen.svg)
