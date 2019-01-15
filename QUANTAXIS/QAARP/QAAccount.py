@@ -381,6 +381,16 @@ class QA_Account(QA_Worker):
             self.end_date
         }
 
+    @property
+    def freecash_precent(self):
+        """剩余资金比例
+        
+        Returns:
+            float
+        """
+
+        return self.cash_available / self.init_cash
+
     def load_marketpreset(self):
         """加载市场表
         """
