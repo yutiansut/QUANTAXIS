@@ -113,17 +113,17 @@ def SINGLE_CROSS(A, B):
 
 def CROSS(A, B):
     """A<B then A>B  A上穿B B下穿A
-    
+
     Arguments:
         A {[type]} -- [description]
         B {[type]} -- [description]
-    
+
     Returns:
         [type] -- [description]
     """
 
-    var = np.where(A<B, 1, 0)
-    return (pd.Series(var, index=A.index).diff()<0).apply(int)
+    var = np.where(A < B, 1, 0)
+    return (pd.Series(var, index=A.index).diff() < 0).apply(int)
 
 
 def COUNT(COND, N):
@@ -134,7 +134,8 @@ def COUNT(COND, N):
 
     现在返回的是series
     """
-    return pd.Series(np.where(COND,1,0),index=COND.index).rolling(N).sum()
+    return pd.Series(np.where(COND, 1, 0), index=COND.index).rolling(N).sum()
+
 
 def IF(COND, V1, V2):
     var = np.where(COND, V1, V2)
@@ -149,6 +150,7 @@ def REF(Series, N):
 
 def LAST(COND, N1, N2):
     """表达持续性
+    从前N1日到前N2日一直满足COND条件
 
     Arguments:
         COND {[type]} -- [description]
@@ -207,3 +209,16 @@ def BBI(Series, N1, N2, N3, N4):
     DICT = {'BBI': bbi}
     VAR = pd.DataFrame(DICT)
     return VAR
+
+
+def BARLAST(cond, yes=True):
+    """支持MultiIndex的cond和DateTimeIndex的cond
+    条件成立  yes= True 或者 yes=1 根据不同的指标自己定
+
+    Arguments:
+        cond {[type]} -- [description]
+    """
+    if isinstance(cond, pd.MultiIndex):
+        return len(cond)-cond.index.levels[0].tolist().index(z[z != yes].index[-1][0])-1
+    elif isinstance(cond, pd.DatetimeIndex):
+        return len(cond)-cond.index.tolist().index(z[z != yes].index[-1])-1
