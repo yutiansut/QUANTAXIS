@@ -218,7 +218,7 @@ def BARLAST(cond, yes=True):
     Arguments:
         cond {[type]} -- [description]
     """
-    if isinstance(cond, pd.MultiIndex):
+    if isinstance(cond.index, pd.MultiIndex):
         return len(cond)-cond.index.levels[0].tolist().index(z[z != yes].index[-1][0])-1
-    elif isinstance(cond, pd.DatetimeIndex):
+    elif isinstance(cond.index, pd.DatetimeIndex):
         return len(cond)-cond.index.tolist().index(z[z != yes].index[-1])-1
