@@ -38,7 +38,7 @@ from QUANTAXIS.QAFetch import QAThs as QAThs
 from QUANTAXIS.QAFetch import QACrawler as QACL
 from QUANTAXIS.QAFetch import QAEastMoney as QAEM
 from QUANTAXIS.QAFetch import QAfinancial
-
+from QUANTAXIS.QAFetch.base import get_stock_market
 
 def use(package):
     if package in ['wind']:
