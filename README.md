@@ -8,6 +8,14 @@ Quantitative Financial FrameWork
 ![logo](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/Documents/logo/QUANTAXIS_LOGO_LAST_small.jpg)
 
 
+
+"""
+临时广告:
+
+即日起, 中财期货,瑞龙期货 和QUANTAXIS达成协议, 使用QUANTAXIS来做期货交易可以返还交易所手续费内返的 60-90%(基于资金规模), 
+联系GX3117(微信)  备注 quantaxis详聊
+"""
+
 -------------------------------------------------------------
 
 ![pypidownloads](https://img.shields.io/pypi/dm/quantaxis.svg)
