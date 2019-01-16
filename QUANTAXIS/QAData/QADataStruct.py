@@ -353,7 +353,7 @@ class QA_DataStruct_Future_min(_quotation_base):
     def __init__(self, DataFrame, dtype='future_min', if_fq=''):
         # 🛠todo  期货分钟数据线的维护， 暂时用日线代替分钟线
         super().__init__(DataFrame, dtype, if_fq)
-        self.type = 'future_day'
+        self.type = dtype
         self.data = self.data.loc[:, [
             'open', 'high', 'low', 'close', 'volume', 'position', 'price', 'tradetime', 'type']]
         self.if_fq = if_fq
@@ -476,7 +476,7 @@ class QA_DataStruct_Index_min(_quotation_base):
         self.if_fq = if_fq
         self.data = self.data.loc[:, [
             'open', 'high', 'low', 'close', 'up_count', 'down_count', 'volume', 'amount', 'type']]
-        #self.mongo_coll = DATABASE.index_min
+        # self.mongo_coll = DATABASE.index_min
 
     # 抽象类继承
     def choose_db(self):
@@ -603,7 +603,7 @@ class QA_DataStruct_Stock_transaction():
             lru_cache
 
         Returns:
-            pd.Series -- till minute level 
+            pd.Series -- till minute level
         """
 
         return self.data.time
@@ -730,7 +730,7 @@ class QA_DataStruct_Stock_transaction():
         return self.data.query('amount>={}'.format(bigamount))
 
     def get_medium_order(self, lower=200000, higher=1000000):
-        """return medium 
+        """return medium
 
         Keyword Arguments:
             lower {[type]} -- [description] (default: {200000})
@@ -760,6 +760,25 @@ class QA_DataStruct_Stock_transaction():
         else:
             return self.data.loc[start:end]
 
+
+class QA_DataStruct_Day(_quotation_base):
+    """这个类是个通用类 一般不使用  特定生成的时候可能会用到 只具备基类方法
+
+    Arguments:
+        _quotation_base {[type]} -- [description]
+    """
+
+    def __init__(self, data, dtype='unknown_day', if_fq='bfq'):
+        '''
+        '''
+        super().__init__(data, dtype, if_fq)
+
+
+class QA_DataStruct_Min(_quotation_base):
+    '''这个类是个通用类 一般不使用  特定生成的时候可能会用到 只具备基类方法
+    '''
+    def __init__(self, data, dtype='unknown_min', if_fq='bfq'):
+        super().__init__(data, dtype, if_fq)
 
 class _realtime_base():
     """

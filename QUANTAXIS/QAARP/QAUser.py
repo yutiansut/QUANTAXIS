@@ -62,14 +62,22 @@ class QA_User():
         self.portfolio_list = {}
 
         self.user_cookie = QA_util_random_with_topic(
-            'USER') if user_cookie is None else user_cookie
+            'USER'
+        ) if user_cookie is None else user_cookie
 
     def __repr__(self):
-        return '< QA_USER {} with {} portfolio: {} >'.format(self.user_cookie, len(self.portfolio_list.keys()), self.portfolio_list)
+        return '< QA_USER {} with {} portfolio: {} >'.format(
+            self.user_cookie,
+            len(self.portfolio_list.keys()),
+            self.portfolio_list
+        )
 
     @property
     def table(self):
-        return pd.concat([po.table for po in self.portfolio_list.values()], axis=1)
+        return pd.concat(
+            [po.table for po in self.portfolio_list.values()],
+            axis=1
+        )
 
     def client(self):
         '''
@@ -110,13 +118,18 @@ class QA_User():
              如果已经存在 不返回 None
         '''
         _portfolio = QA_Portfolio(
-            user_cookie=self.user_cookie, portfolio_cookie=portfolio_cookie)
+            user_cookie=self.user_cookie,
+            portfolio_cookie=portfolio_cookie
+        )
         if _portfolio.portfolio_cookie not in self.portfolio_list.keys():
             self.portfolio_list[_portfolio.portfolio_cookie] = _portfolio
             return _portfolio
         else:
-            print(" prortfolio with user_cookie ",
-                  self.user_cookie, " already exist!!")
+            print(
+                " prortfolio with user_cookie ",
+                self.user_cookie,
+                " already exist!!"
+            )
 
     def get_portfolio(self, portfolio):
         '''

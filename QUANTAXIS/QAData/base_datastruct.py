@@ -35,8 +35,11 @@ import numpy as np
 import pandas as pd
 from pyecharts import Kline, Bar, Grid
 
-from QUANTAXIS.QAUtil import (QA_util_log_info, QA_util_random_with_topic,
-                              QA_util_to_json_from_pandas)
+from QUANTAXIS.QAUtil import (
+    QA_util_log_info,
+    QA_util_random_with_topic,
+    QA_util_to_json_from_pandas
+)
 from QUANTAXIS.QAUtil.QADate import QA_util_to_datetime
 
 # todo 🛠基类名字 _quotation_base 小写是因为 不直接初始化， 建议改成抽象类
@@ -54,7 +57,13 @@ class _quotation_base():
     '''
 
     # 🛠todo  DataFrame 改成 df 变量名字
-    def __init__(self, DataFrame, dtype='undefined', if_fq='bfq', marketdata_type='None'):
+    def __init__(
+            self,
+            DataFrame,
+            dtype='undefined',
+            if_fq='bfq',
+            marketdata_type='None'
+    ):
         '''
         :param df: DataFrame 类型
         :param dtype: 数据
@@ -65,7 +74,7 @@ class _quotation_base():
             DataFrame = DataFrame.assign(volume=DataFrame.vol)
         if 'volume' not in DataFrame.columns and 'trade' in DataFrame.columns:
             DataFrame = DataFrame.assign(volume=DataFrame.trade)
-        #print(DataFrame)
+        # print(DataFrame)
         # 🛠todo 判断DataFame 对象字段的合法性，是否正确
         self.data = DataFrame.drop_duplicates().sort_index()
         self.data.index = self.data.index.remove_unused_levels()
@@ -158,7 +167,8 @@ class _quotation_base():
         :return:
         """
         raise NotImplementedError(
-            'QA_DataStruct_* CURRENT CURRENTLY NOT SUPPORT reversed ACTION')
+            'QA_DataStruct_* CURRENT CURRENTLY NOT SUPPORT reversed ACTION'
+        )
 
     def __add__(self, DataStruct):
         '''
@@ -169,7 +179,11 @@ class _quotation_base():
         assert isinstance(DataStruct, _quotation_base)
         assert self.is_same(DataStruct)
         # 🛠todo 继承的子类  QA_DataStruct_XXXX 类型的 判断必须是同一种类型才可以操作
-        return self.new(data=self.data.append(DataStruct.data).drop_duplicates(), dtype=self.type, if_fq=self.if_fq)
+        return self.new(
+            data=self.data.append(DataStruct.data).drop_duplicates(),
+            dtype=self.type,
+            if_fq=self.if_fq
+        )
 
     __radd__ = __add__
 
@@ -183,7 +197,11 @@ class _quotation_base():
         assert self.is_same(DataStruct)
         # 🛠todo 继承的子类  QA_DataStruct_XXXX 类型的 判断必须是同一种类型才可以操作
         try:
-            return self.new(data=self.data.drop(DataStruct.index), dtype=self.type, if_fq=self.if_fq)
+            return self.new(
+                data=self.data.drop(DataStruct.index),
+                dtype=self.type,
+                if_fq=self.if_fq
+            )
         except Exception as e:
             print(e)
 
@@ -199,7 +217,11 @@ class _quotation_base():
         data_to_init = self.data.__getitem__(key)
         if isinstance(data_to_init, pd.DataFrame) == True:
             # 重新构建一个 QA_DataStruct_XXXX，
-            return self.new(data=data_to_init, dtype=self.type, if_fq=self.if_fq)
+            return self.new(
+                data=data_to_init,
+                dtype=self.type,
+                if_fq=self.if_fq
+            )
         elif isinstance(data_to_init, pd.Series) == True:
             # 返回 QA_DataStruct_XXXX DataFrame 中的一个 序列Series
             return data_to_init
@@ -214,7 +236,8 @@ class _quotation_base():
         #     self.new(data=self.data.__getattr__(attr), dtype=self.type, if_fq=self.if_fq)
         # except:
         raise AttributeError(
-            'QA_DataStruct_* Class Currently has no attribute {}'.format(attr))
+            'QA_DataStruct_* Class Currently has no attribute {}'.format(attr)
+        )
 
     '''
     ########################################################################################################
@@ -222,19 +245,32 @@ class _quotation_base():
     '''
 
     def ix(self, key):
-        return self.new(data=self.data.ix(key), dtype=self.type, if_fq=self.if_fq)
+        return self.new(
+            data=self.data.ix(key),
+            dtype=self.type,
+            if_fq=self.if_fq
+        )
 
     def iloc(self, key):
-        return self.new(data=self.data.iloc(key), dtype=self.type, if_fq=self.if_fq)
+        return self.new(
+            data=self.data.iloc(key),
+            dtype=self.type,
+            if_fq=self.if_fq
+        )
 
     def loc(self, key):
-        return self.new(data=self.data.loc(key), dtype=self.type, if_fq=self.if_fq)
+        return self.new(
+            data=self.data.loc(key),
+            dtype=self.type,
+            if_fq=self.if_fq
+        )
 
     '''
     ########################################################################################################
     获取序列
     使用 LRU (least recently used) cache 
     '''
+
     @property
     @lru_cache()
     def open(self):
@@ -327,6 +363,7 @@ class _quotation_base():
             return self.data.trade
         else:
             return None
+
     # ？？
 
     @property
@@ -343,7 +380,9 @@ class _quotation_base():
     def date(self):
         index = self.data.index.remove_unused_levels()
         try:
-            return index.levels[0] if 'date' in self.data.index.names else list(set(self.datetime.date))
+            return index.levels[0] if 'date' in self.data.index.names else list(
+                set(self.datetime.date)
+            )
         except:
             return None
 
@@ -365,7 +404,7 @@ class _quotation_base():
     @lru_cache()
     def avg(self):
         try:
-            res = self.amount/self.volume
+            res = self.amount / self.volume
             res.name = 'avg'
             return res
         except:
@@ -380,6 +419,7 @@ class _quotation_base():
     ########################################################################################################
     计算统计相关的
     '''
+
     @property
     @lru_cache()
     def max(self):
@@ -399,6 +439,7 @@ class _quotation_base():
         res = self.price.groupby(level=1).apply(lambda x: x.mean())
         res.name = 'mean'
         return res
+
     # 一阶差分序列
 
     @property
@@ -408,14 +449,15 @@ class _quotation_base():
         res = self.price.groupby(level=1).apply(lambda x: x.diff(1))
         res.name = 'price_diff'
         return res
+
     # 样本方差(无偏估计) population variance
 
     @property
     @lru_cache()
     def pvariance(self):
         '返回DataStruct.price的方差 variance'
-        res = self.price.groupby(level=1).apply(
-            lambda x: statistics.pvariance(x))
+        res = self.price.groupby(level=1
+                                ).apply(lambda x: statistics.pvariance(x))
         res.name = 'pvariance'
         return res
 
@@ -424,10 +466,11 @@ class _quotation_base():
     @lru_cache()
     def variance(self):
         '返回DataStruct.price的方差 variance'
-        res = self.price.groupby(level=1).apply(
-            lambda x: statistics.variance(x))
+        res = self.price.groupby(level=1
+                                ).apply(lambda x: statistics.variance(x))
         res.name = 'variance'
         return res
+
     # 标准差
 
     @property
@@ -442,7 +485,7 @@ class _quotation_base():
     @lru_cache()
     def bar_amplitude(self):
         "返回bar振幅"
-        res = (self.high-self.low)/self.low
+        res = (self.high - self.low) / self.low
         res.name = 'bar_amplitude'
         return res
 
@@ -453,6 +496,7 @@ class _quotation_base():
         res = self.price.groupby(level=1).apply(lambda x: statistics.stdev(x))
         res.name = 'stdev'
         return res
+
     # 总体标准差
 
     @property
@@ -468,8 +512,8 @@ class _quotation_base():
     @lru_cache()
     def mean_harmonic(self):
         '返回DataStruct.price的调和平均数'
-        res = self.price.groupby(level=1).apply(
-            lambda x: statistics.harmonic_mean(x))
+        res = self.price.groupby(level=1
+                                ).apply(lambda x: statistics.harmonic_mean(x))
         res.name = 'mean_harmonic'
         return res
 
@@ -479,8 +523,8 @@ class _quotation_base():
     def mode(self):
         '返回DataStruct.price的众数'
         try:
-            res = self.price.groupby(level=1).apply(
-                lambda x: statistics.mode(x))
+            res = self.price.groupby(level=1
+                                    ).apply(lambda x: statistics.mode(x))
             res.name = 'mode'
             return res
         except:
@@ -491,8 +535,9 @@ class _quotation_base():
     @lru_cache()
     def amplitude(self):
         '返回DataStruct.price的百分比变化'
-        res = self.price.groupby(level=1).apply(
-            lambda x: (x.max()-x.min())/x.min())
+        res = self.price.groupby(
+            level=1
+        ).apply(lambda x: (x.max() - x.min()) / x.min())
         res.name = 'amplitude'
         return res
 
@@ -505,6 +550,7 @@ class _quotation_base():
         res = self.price.groupby(level=1).apply(lambda x: x.skew())
         res.name = 'skew'
         return res
+
     # 峰度Kurtosis
 
     @property
@@ -514,6 +560,7 @@ class _quotation_base():
         res = self.price.groupby(level=1).apply(lambda x: x.kurt())
         res.name = 'kurt'
         return res
+
     # 百分数变化
 
     @property
@@ -538,22 +585,39 @@ class _quotation_base():
     @lru_cache()
     def normalized(self):
         '归一化'
-        res = self.groupby('code').apply(lambda x: x/x.iloc[0])
+        res = self.groupby('code').apply(lambda x: x / x.iloc[0])
         return res
 
     @property
-    @lru_cache()
     def panel_gen(self):
         '返回一个基于bar的面板迭代器'
         for item in self.index.levels[0]:
-            yield self.new(self.data.xs(item, level=0, drop_level=False), dtype=self.type, if_fq=self.if_fq)
+            yield self.new(
+                self.data.xs(item,
+                             level=0,
+                             drop_level=False),
+                dtype=self.type,
+                if_fq=self.if_fq
+            )
 
     @property
-    @lru_cache()
+    def bar_gen(self):
+        '返回一个基于bar的面板迭代器 返回的是dataframe'
+        # for item in self.index.levels[0]:
+        #     yield self.data.xs(item, level=0, drop_level=False)
+        return self.data.iterrows()
+
+    @property
     def security_gen(self):
         '返回一个基于代码的迭代器'
         for item in self.index.levels[1]:
-            yield self.new(self.data.xs(item, level=1, drop_level=False), dtype=self.type, if_fq=self.if_fq)
+            yield self.new(
+                self.data.xs(item,
+                             level=1,
+                             drop_level=False),
+                dtype=self.type,
+                if_fq=self.if_fq
+            )
 
     @property
     @lru_cache()
@@ -606,7 +670,7 @@ class _quotation_base():
     def rolling(self, N):
         return self.groupby('code').rolling(N)
 
-    def plot(self, code=None):
+    def kline_echarts(self, code=None):
 
         def kline_formater(param):
             return param.name + ':' + vars(param)
@@ -615,8 +679,12 @@ class _quotation_base():
         if code is None:
             path_name = '.' + os.sep + 'QA_' + self.type + \
                 '_codepackage_' + self.if_fq + '.html'
-            kline = Kline('CodePackage_' + self.if_fq + '_' + self.type,
-                          width=1360, height=700, page_title='QUANTAXIS')
+            kline = Kline(
+                'CodePackage_' + self.if_fq + '_' + self.type,
+                width=1360,
+                height=700,
+                page_title='QUANTAXIS'
+            )
 
             bar = Bar()
             data_splits = self.splits()
@@ -629,17 +697,24 @@ class _quotation_base():
                 else:
                     datetime = np.array(ds.datetime.map(str))
                 ohlc = np.array(
-                    ds.data.loc[:, ['open', 'close', 'low', 'high']])
-                #amount = np.array(ds.amount)
-                #vol = np.array(ds.volume)
+                    ds.data.loc[:,
+                                ['open',
+                                 'close',
+                                 'low',
+                                 'high']]
+                )
 
-                kline.add(ds.code[0], datetime, ohlc, mark_point=[
-                          "max", "min"], is_datazoom_show=False, datazoom_orient='horizontal')
+                kline.add(
+                    ds.code[0],
+                    datetime,
+                    ohlc,
+                    mark_point=["max",
+                                "min"],
+                    is_datazoom_show=True,
+                    datazoom_orient='horizontal'
+                )
+            return kline
 
-            kline.render(path_name)
-            webbrowser.open(path_name)
-            QA_util_log_info(
-                'The Pic has been saved to your path: %s' % path_name)
         else:
             data = []
             axis = []
@@ -652,10 +727,15 @@ class _quotation_base():
                 datetime = np.array(ds.datetime.map(str))
 
             ohlc = np.array(ds.data.loc[:, ['open', 'close', 'low', 'high']])
-            #amount = np.array(ds.amount)
             vol = np.array(ds.volume)
-            kline = Kline('{}__{}__{}'.format(code, self.if_fq, self.type),
-                          width=1360, height=700, page_title='QUANTAXIS')
+            kline = Kline(
+                '{}__{}__{}'.format(code,
+                                    self.if_fq,
+                                    self.type),
+                width=1360,
+                height=700,
+                page_title='QUANTAXIS'
+            )
             bar = Bar()
             kline.add(self.code, datetime, ohlc,
                       mark_point=["max", "min"],
@@ -667,20 +747,32 @@ class _quotation_base():
                       # is_more_utils=True,
                       datazoom_orient='horizontal')
 
-            bar.add(self.code, datetime, vol,
-                    is_datazoom_show=True,
-                    datazoom_xaxis_index=[0, 1])
-            path_name = '.{}QA_{}_{}_{}.html'.format(
-                os.sep, self.type, code, self.if_fq)
+            bar.add(
+                self.code,
+                datetime,
+                vol,
+                is_datazoom_show=True,
+                datazoom_xaxis_index=[0,
+                                      1]
+            )
 
             grid = Grid(width=1360, height=700, page_title='QUANTAXIS')
             grid.add(bar, grid_top="80%")
             grid.add(kline, grid_bottom="30%")
-            grid.render(path_name)
+            return grid
 
-            webbrowser.open(path_name)
-            QA_util_log_info(
-                'The Pic has been saved to your path: {}'.format(path_name))
+    def plot(self, code=None):
+        path_name = '.{}QA_{}_{}_{}.html'.format(
+            os.sep,
+            self.type,
+            code,
+            self.if_fq
+        )
+        self.kline_echarts(code).render(path_name)
+        webbrowser.open(path_name)
+        QA_util_log_info(
+            'The Pic has been saved to your path: {}'.format(path_name)
+        )
 
     def get(self, name):
 
@@ -700,7 +792,17 @@ class _quotation_base():
             print('QA CANNOT QUERY THIS {}'.format(context))
             pass
 
-    def groupby(self, by=None, axis=0, level=None, as_index=True, sort=False, group_keys=False, squeeze=False, **kwargs):
+    def groupby(
+            self,
+            by=None,
+            axis=0,
+            level=None,
+            as_index=True,
+            sort=False,
+            group_keys=False,
+            squeeze=False,
+            **kwargs
+    ):
         """仿dataframe的groupby写法,但控制了by的code和datetime
 
         Keyword Arguments:
@@ -723,7 +825,15 @@ class _quotation_base():
         elif by == self.index.names[0]:
             by = None
             level = 0
-        return self.data.groupby(by=by, axis=axis, level=level, as_index=as_index, sort=sort, group_keys=group_keys, squeeze=squeeze)
+        return self.data.groupby(
+            by=by,
+            axis=axis,
+            level=level,
+            as_index=as_index,
+            sort=sort,
+            group_keys=group_keys,
+            squeeze=squeeze
+        )
 
     def new(self, data=None, dtype=None, if_fq=None):
         """
@@ -732,13 +842,10 @@ class _quotation_base():
         🛠todo 没有这个？？ inplace 是否是对于原类的修改 ？？
         """
         data = self.data if data is None else data
-        #data.index= data.index.remove_unused_levels()
 
         dtype = self.type if dtype is None else dtype
         if_fq = self.if_fq if if_fq is None else if_fq
 
-        # 🛠todo 不是很理解这样做的意图， 已经copy了，还用data初始化
-        # 🛠todo deepcopy 实现 ？还是 ？
         temp = copy(self)
         temp.__init__(data, dtype, if_fq)
         return temp
@@ -767,7 +874,8 @@ class _quotation_base():
                 raise RuntimeError('QADATASTRUCT ERROR: CANNOT REINDEX')
         else:
             raise RuntimeError(
-                'QADATASTRUCT ERROR: ONLY ACCEPT MULTI-INDEX FORMAT')
+                'QADATASTRUCT ERROR: ONLY ACCEPT MULTI-INDEX FORMAT'
+            )
 
     def reindex_time(self, ind):
         if isinstance(ind, pd.DatetimeIndex):
@@ -778,7 +886,8 @@ class _quotation_base():
 
         else:
             raise RuntimeError(
-                'QADATASTRUCT ERROR: ONLY ACCEPT DATETIME-INDEX FORMAT')
+                'QADATASTRUCT ERROR: ONLY ACCEPT DATETIME-INDEX FORMAT'
+            )
 
     def iterrows(self):
         return self.data.iterrows()
@@ -926,10 +1035,9 @@ class _quotation_base():
 
     #     Returns:
     #         [type] -- [description]
-    #     """ 
+    #     """
     #     return self.data.groupby(by=None, axis=0, level=1, as_index=True, sort=False, group_keys=False, squeeze=False).apply(func, *arg, **kwargs)
 
-        
     def get_data(self, columns, type='ndarray', with_index=False):
         """获取不同格式的数据
 
@@ -965,14 +1073,30 @@ class _quotation_base():
         """增加对于多列的支持"""
         if isinstance(column_, str):
             try:
-                return self.data.reset_index().pivot(index='datetime', columns='code', values=column_)
+                return self.data.reset_index().pivot(
+                    index='datetime',
+                    columns='code',
+                    values=column_
+                )
             except:
-                return self.data.reset_index().pivot(index='date', columns='code', values=column_)
+                return self.data.reset_index().pivot(
+                    index='date',
+                    columns='code',
+                    values=column_
+                )
         elif isinstance(column_, list):
             try:
-                return self.data.reset_index().pivot_table(index='datetime', columns='code', values=column_)
+                return self.data.reset_index().pivot_table(
+                    index='datetime',
+                    columns='code',
+                    values=column_
+                )
             except:
-                return self.data.reset_index().pivot_table(index='date', columns='code', values=column_)
+                return self.data.reset_index().pivot_table(
+                    index='date',
+                    columns='code',
+                    values=column_
+                )
 
     def selects(self, code, start, end=None):
         """
@@ -992,16 +1116,23 @@ class _quotation_base():
         @2018/06/04 pandas索引问题已经解决
         全部恢复
         """
+
         def _selects(code, start, end):
             if end is not None:
                 return self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), code), :]
             else:
                 return self.data.loc[(slice(pd.Timestamp(start), None), code), :]
+
         try:
             return self.new(_selects(code, start, end), self.type, self.if_fq)
         except:
             raise ValueError(
-                'QA CANNOT GET THIS CODE {}/START {}/END{} '.format(code, start, end))
+                'QA CANNOT GET THIS CODE {}/START {}/END{} '.format(
+                    code,
+                    start,
+                    end
+                )
+            )
 
     def select_time(self, start, end=None):
         """
@@ -1020,16 +1151,20 @@ class _quotation_base():
         @2018/06/04 pandas索引问题已经解决
         全部恢复
         """
+
         def _select_time(start, end):
             if end is not None:
                 return self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), slice(None)), :]
             else:
                 return self.data.loc[(slice(pd.Timestamp(start), None), slice(None)), :]
+
         try:
             return self.new(_select_time(start, end), self.type, self.if_fq)
         except:
             raise ValueError(
-                'QA CANNOT GET THIS START {}/END{} '.format(start, end))
+                'QA CANNOT GET THIS START {}/END{} '.format(start,
+                                                            end)
+            )
 
     def select_day(self, day):
         """选取日期(一般用于分钟线)
@@ -1046,6 +1181,7 @@ class _quotation_base():
 
         def _select_day(day):
             return self.data.loc[day, slice(None)]
+
         try:
             return self.new(_select_day(day), self.type, self.if_fq)
         except:
@@ -1067,8 +1203,10 @@ class _quotation_base():
         @2018/06/04 pandas索引问题已经解决
         全部恢复
         """
+
         def _select_month(month):
             return self.data.loc[month, slice(None)]
+
         try:
             return self.new(_select_month(month), self.type, self.if_fq)
         except:
@@ -1090,8 +1228,10 @@ class _quotation_base():
         @2018/06/04 pandas索引问题已经解决
         全部恢复
         """
+
         def _select_code(code):
             return self.data.loc[(slice(None), code), :]
+
         try:
             return self.new(_select_code(code), self.type, self.if_fq)
         except:
@@ -1120,40 +1260,61 @@ class _quotation_base():
             return self.data.loc[(pd.Timestamp(time), code)]
         except:
             raise ValueError(
-                'DATASTRUCT CURRENTLY CANNOT FIND THIS BAR WITH {} {}'.format(code, time))
+                'DATASTRUCT CURRENTLY CANNOT FIND THIS BAR WITH {} {}'.format(
+                    code,
+                    time
+                )
+            )
 
     def select_time_with_gap(self, time, gap, method):
 
         if method in ['gt', '>']:
+
             def gt(data):
                 return data.loc[(slice(pd.Timestamp(time), None), slice(None)), :].groupby(level=1, axis=0, as_index=False, sort=False, group_keys=False).apply(lambda x: x.iloc[1:gap+1])
+
             return self.new(gt(self.data), self.type, self.if_fq)
 
         elif method in ['gte', '>=']:
+
             def gte(data):
                 return data.loc[(slice(pd.Timestamp(time), None), slice(None)), :].groupby(level=1, axis=0, as_index=False, sort=False, group_keys=False).apply(lambda x: x.iloc[0:gap])
+
             return self.new(gte(self.data), self.type, self.if_fq)
         elif method in ['lt', '<']:
+
             def lt(data):
                 return data.loc[(slice(None, pd.Timestamp(time)), slice(None)), :].groupby(level=1, axis=0, as_index=False, sort=False, group_keys=False).apply(lambda x: x.iloc[-gap-1:-1])
+
             return self.new(lt(self.data), self.type, self.if_fq)
         elif method in ['lte', '<=']:
+
             def lte(data):
                 return data.loc[(slice(None, pd.Timestamp(time)), slice(None)), :].groupby(level=1, axis=0, as_index=False, sort=False, group_keys=False).apply(lambda x: x.tail(gap))
+
             return self.new(lte(self.data), self.type, self.if_fq)
         elif method in ['eq', '==', '=', 'equal', 'e']:
+
             def eq(data):
                 return data.loc[(pd.Timestamp(time), slice(None)), :]
+
             return self.new(eq(self.data), self.type, self.if_fq)
         else:
             raise ValueError(
-                'QA CURRENTLY DONOT HAVE THIS METHODS {}'.format(method))
+                'QA CURRENTLY DONOT HAVE THIS METHODS {}'.format(method)
+            )
 
     def find_bar(self, code, time):
         if len(time) == 10:
-            return self.dicts[(datetime.datetime.strptime(time, '%Y-%m-%d'), code)]
+            return self.dicts[
+                (datetime.datetime.strptime(time,
+                                            '%Y-%m-%d'),
+                 code)]
         elif len(time) == 19:
-            return self.dicts[(datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S'), code)]
+            return self.dicts[
+                (datetime.datetime.strptime(time,
+                                            '%Y-%m-%d %H:%M:%S'),
+                 code)]
 
     def fast_moving(self, pct):
         """bar快速上涨的股票(输入pct 百分比)

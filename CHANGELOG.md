@@ -3,6 +3,8 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
+    - [1.2.6 ](#126)
+    - [1.2.5 ](#125)
     - [1.2.4 ](#124)
     - [1.2.3 ](#123)
     - [1.2.2 ](#122)
@@ -71,9 +73,61 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
+## 1.2.7
+
+迁移目录:
+
+1. 拆分 QUANTAXIS_CRAWLY 至 https://github.com/QUANTAXIS/QUANTAXIS_CRAWLY
+
+- 减少twisted安装问题
+- 模块解耦 功能分离
+
+2. 拆分 QUANTAXIS_MONITOR_GUI 至 https://github.com/QUANTAXIS/QUANTAXIS_Monitor_GUI
+
+- gui部分以插件形式提供
+
+3. 使用yapf 大量修正格式
+
+
+
+
+
+## 1.2.6
+
+1. 优化QADOCKER文档
+2. 增加QAORDER文档
+3. 优化了QALog模块在打印大量日志的时候无法知道其用途的问题
+
+现在的quantaxis log 会以这个模式作为name:
+```
+ 'quantaxis_{}-{}-.log'.format(get_config(), os.sep, os.path.basename(sys.argv[0]).split('.py')[0], str(datetime.datetime.now().strftime(
+        '%Y-%m-%d-%H-%M-%S')))
+```
+4. 修改了QAUser的注册模块逻辑
+5. 增加了 QA_DataStruct_Min 和 QA_DataStruct_Day两个基类模型
+6. 修复settle的一个bug
+
+
+
 ## 1.2.5
 
 1. 对于QA.QA_util_code_tostr 增加 原先为list类型的支持 现在支持自动补全的  int/list/str 类型转 str
+2. QA_DataStruct增加bar_gen  返回迭代的dataframe
+3. 增加对于期货的日结算支持:
+
+在期货的保证金模型中:
+
+开仓会冻结保证金到frozen里面, 这时钱并未参与结算/  需要先在每日结算时结转冻结的保证金
+4. 增加了QA_Account的 history_table字段,增加了一个  frozen字段, 用于记录历史的保证金增加
+5. 大幅删减QA_Account的 receive_deal 精简代码  直接调用receive_simpledeal方法
+6. QADATASTRUCT 增加一个 kline_echarts 方法 直接返回 echarts.kline类 可以在jupyter notebook中直接显示
+7. QALog模块的默认输出为warning级别, 减少别的模块的无聊输出(点名: 尤其是macropy 疯狂输出)
+
+plot的图示例:
+
+- 可能需要先升级pyecharts 到最新版本 (```pip install pyecharts -U -i https://pypi.doubanio.com/simple```)
+
+![](http://pic.yutiansut.com/QQ%E5%9B%BE%E7%89%8720190103220819.png)
 
 
 ## 1.2.4
