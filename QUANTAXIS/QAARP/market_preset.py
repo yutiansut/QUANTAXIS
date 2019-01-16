@@ -589,7 +589,10 @@ class MARKET_PRESET:
             int(str(code)[1])
             code = code[0]
         except:
-            code = code[0:2]
+            if str(code).endswith('L8') or str(code).endswith('L9'):
+                code = code[0:-2]
+            else:
+                code = code[0:2]
         return self.table.get(str(code).upper())
 
     # 手续费比例
