@@ -1,6 +1,43 @@
 
 # QUANTAXIS 量化金融策略框架
 
+## 来一个有诚意的广告(无论资金规模):
+
+记得赚了钱赶紧给quantaxis组织捐一点(逃:
+
+### 期货开户
+```
+即日起, 中财期货,瑞龙期货 和QUANTAXIS达成协议, 使用quantaxis的量化期货交易者，
+
+- 交易所内返80%(无论资金规模)
+- 每月直接返还到交易账户
+- 没有中间商赚差价
+- 手续费是 交易所+1分
+- 享受一次quantaxis期货环境部署远程指导[带行情带下单](看心情)
+
+
+联系 微信(GX3117) 备注 from quantaxis 
+
+```
+### 股票开户
+```
+股票开户给出两个选择:
+1. 长征国瑞证券 万1.2 无五元手续费 (目前还没谈到万1)
+2. 海通证券 万1 无五元手续费
+
+- 享受一次quantaxis股票环境部署远程指导[带行情带下单](看心情)
+
+上述均无资金规模限制 
+具体联系 QQ 2961725743 备注 from quantaxis
+
+```
+
+上述广告都已经尽力把价格往下谈了, 均不限制资金规模, 记得报quantaxis哈
+
+PS: 另外如果你是券商/期货的居间人 能给出相似或更有竞争力的价格欢迎来撩
+
+-------------------------------------------------------------
+
 Quantitative Financial FrameWork
 
 从数据爬取-清洗存储-分析回测-可视化-交易复盘的本地一站式解决方案
@@ -8,7 +45,6 @@ Quantitative Financial FrameWork
 ![logo](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/Documents/logo/QUANTAXIS_LOGO_LAST_small.jpg)
 
 
--------------------------------------------------------------
 
 ![pypidownloads](https://img.shields.io/pypi/dm/quantaxis.svg)
 ![pypidownloads](https://img.shields.io/pypi/dw/quantaxis.svg)
