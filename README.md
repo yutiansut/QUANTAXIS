@@ -1,13 +1,7 @@
 
 # QUANTAXIS 量化金融策略框架
 
-Quantitative Financial FrameWork
-
-从数据爬取-清洗存储-分析回测-可视化-交易复盘的本地一站式解决方案
-
-![logo](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/Documents/logo/QUANTAXIS_LOGO_LAST_small.jpg)
-
-## 临时广告:
+## 来一个有诚意的广告(无论资金规模):
 
 ```
 即日起, 中财期货,瑞龙期货 和QUANTAXIS达成协议, 使用quantaxis的量化期货交易者，
@@ -20,6 +14,14 @@ Quantitative Financial FrameWork
 ```
 
 -------------------------------------------------------------
+
+Quantitative Financial FrameWork
+
+从数据爬取-清洗存储-分析回测-可视化-交易复盘的本地一站式解决方案
+
+![logo](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/Documents/logo/QUANTAXIS_LOGO_LAST_small.jpg)
+
+
 
 ![pypidownloads](https://img.shields.io/pypi/dm/quantaxis.svg)
 ![pypidownloads](https://img.shields.io/pypi/dw/quantaxis.svg)
