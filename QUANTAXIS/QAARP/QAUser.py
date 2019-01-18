@@ -55,7 +55,17 @@ class QA_User():
     2018/05/18
     """
 
-    def __init__(self, user_cookie=None, username='defalut', phone='defalut', level='l1', utype='guests', password='default', coins=10000, money=0,):
+    def __init__(
+            self,
+            user_cookie=None,
+            username='defalut',
+            phone='defalut',
+            level='l1',
+            utype='guests',
+            password='default',
+            coins=10000,
+            money=0,
+    ):
         """[summary]
 
         Keyword Arguments:
@@ -85,13 +95,13 @@ class QA_User():
         self.user_cookie = QA_util_random_with_topic(
             'USER'
         ) if user_cookie is None else user_cookie
-        self.coins = coins  # 积分
-        self.money = money  # 钱
+        self.coins = coins # 积分
+        self.money = money # 钱
 
         # ==============================
         self._subscribed_strategy = {}
         self._subscribed_code = []
-        self._signals = []  # 预期收到的信号
+        self._signals = [] # 预期收到的信号
         self._cash = []
         self._history = []
 
@@ -99,7 +109,13 @@ class QA_User():
 
         self.coins_history = []
         self.coins_history_headers = [
-            'cost_coins', 'strategy_id', 'start', 'last', 'strategy_uuid', 'event']
+            'cost_coins',
+            'strategy_id',
+            'start',
+            'last',
+            'strategy_uuid',
+            'event'
+        ]
 
     def __repr__(self):
         return '< QA_USER {} with {} portfolio: {} >'.format(
@@ -125,9 +141,18 @@ class QA_User():
 
     @property
     def coins_table(self):
-        return pd.DataFrame(self.coins_history, columns=self.coins_history_headers)
+        return pd.DataFrame(
+            self.coins_history,
+            columns=self.coins_history_headers
+        )
 
-    def subscribe_strategy(self, strategy_id: str, last: int, today=datetime.date.today(), cost_coins=10):
+    def subscribe_strategy(
+            self,
+            strategy_id: str,
+            last: int,
+            today=datetime.date.today(),
+            cost_coins=10
+    ):
         """订阅一个策略
 
         会扣减你的积分
@@ -144,16 +169,34 @@ class QA_User():
         if self.coins > cost_coins:
             order_id = str(uuid.uuid1())
             self._subscribed_strategy[strategy_id] = {
-                'lasttime': last,
-                'start': str(today),
-                'strategy_id': strategy_id,
-                'end': QA_util_get_next_day(QA_util_get_real_date(str(today), towards=1), last),
-                'status': 'running',
-                'uuid': order_id
+                'lasttime':
+                last,
+                'start':
+                str(today),
+                'strategy_id':
+                strategy_id,
+                'end':
+                QA_util_get_next_day(
+                    QA_util_get_real_date(str(today),
+                                          towards=1),
+                    last
+                ),
+                'status':
+                'running',
+                'uuid':
+                order_id
             }
             self.coins -= cost_coins
             self.coins_history.append(
-                [cost_coins, strategy_id, str(today), last, order_id, 'subscribe'])
+                [
+                    cost_coins,
+                    strategy_id,
+                    str(today),
+                    last,
+                    order_id,
+                    'subscribe'
+                ]
+            )
             return True, order_id
         else:
             # return QAERROR.
@@ -166,7 +209,13 @@ class QA_User():
             self._subscribed_strategy[strategy_id]['status'] = 'canceled'
 
         self.coins_history.append(
-            [0, strategy_id, str(today), 0, order_id, 'unsubscribe'])
+            [0,
+             strategy_id,
+             str(today),
+             0,
+             order_id,
+             'unsubscribe']
+        )
 
     @property
     def subscribed_strategy(self):
@@ -175,12 +224,19 @@ class QA_User():
 
     @property
     def subscribing_strategy(self):
-        res = self.subscribed_strategy.assign(remains=self.subscribed_strategy.end.apply(
-            lambda x: pd.Timestamp(x) - pd.Timestamp(datetime.date.today())))
+        res = self.subscribed_strategy.assign(
+            remains=self.subscribed_strategy.end.apply(
+                lambda x: pd.Timestamp(x) - pd.Timestamp(datetime.date.today())
+            )
+        )
         #res['left'] = res['end_time']
         # res['remains']
-        res.assign(status=res['remains'].apply(
-            lambda x: 'running' if x > datetime.timedelta(days=0) else 'timeout'))
+        res.assign(
+            status=res['remains'].apply(
+                lambda x: 'running'
+                if x > datetime.timedelta(days=0) else 'timeout'
+            )
+        )
         return res.query('status=="running"')
 
     def sub_code(self, code):
@@ -296,11 +352,7 @@ class QA_User():
 
     @property
     def message(self):
-        return {
-            'user_cookie': self.user_cookie,
-            'user_name': self.user_name
-            ''
-        }
+        return {'user_cookie': self.user_cookie, 'user_name': self.user_name}
 
     def save(self):
         """
