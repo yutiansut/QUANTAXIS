@@ -583,6 +583,10 @@ class MARKET_PRESET:
 
     def __repr__(self):
         return '< QAMARKET_PRESET >'
+    
+    @property
+    def code_list(self):
+        return list(self.table.keys())
 
     def get_code(self, code):
         try:
