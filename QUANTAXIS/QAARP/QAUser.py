@@ -116,6 +116,7 @@ class QA_User():
             'strategy_uuid',
             'event'
         ]
+        self.sync()
 
     def __repr__(self):
         return '< QA_USER {} with {} portfolio: {} >'.format(
@@ -382,6 +383,8 @@ class QA_User():
             self.client.insert_one(self.message)
         else:
             self.reload(res)
+
+        return self
 
     def reload(self, message):
         self.phone = message.get('phone')
