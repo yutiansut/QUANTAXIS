@@ -91,17 +91,17 @@ class QA_User():
         self.level = level
         self.utype = utype
         self.password = password
-        self.user_name = username
+        self.username = username
         self.user_cookie = QA_util_random_with_topic(
             'USER'
         ) if user_cookie is None else user_cookie
-        self.coins = coins # 积分
-        self.money = money # 钱
+        self.coins = coins  # 积分
+        self.money = money  # 钱
 
         # ==============================
         self._subscribed_strategy = {}
         self._subscribed_code = []
-        self._signals = [] # 预期收到的信号
+        self._signals = []  # 预期收到的信号
         self._cash = []
         self._history = []
 
@@ -116,6 +116,7 @@ class QA_User():
             'strategy_uuid',
             'event'
         ]
+        self.sync()
 
     def __repr__(self):
         return '< QA_USER {} with {} portfolio: {} >'.format(
@@ -246,14 +247,15 @@ class QA_User():
 
     @property
     def subscribed_code(self):
-        return set(self._subscribed_code)
+        return list(set(self._subscribed_code))
 
+    @property
     def client(self):
         '''
         'user.client to connect database'
         :return: pymongo.MongoClient 数据库连接
         '''
-        return self.setting.client
+        return self.setting.client.quantaxis.user
 
     def connect_database(self, ip='127.0.0.1', port=27017):
         '''
@@ -264,15 +266,15 @@ class QA_User():
         '''
         self.setting.change(ip, port)
 
-    def login(self, user_name, password):
+    def login(self, username, password):
         '''
         login to a database
         🛠todo： fix 返回 是否成功
-        :param user_name: 连接 mongodb 的用户名
+        :param username: 连接 mongodb 的用户名
         :param password:  连接 mongodb 的密码
         :return: Boolean 是否成功连接
         '''
-        if self.setting.login(user_name, password):
+        if self.setting.login(username, password):
             QA_util_log_info('SUCCESS')
             return True
         else:
@@ -352,16 +354,47 @@ class QA_User():
 
     @property
     def message(self):
-        return {'user_cookie': self.user_cookie, 'user_name': self.user_name}
+        return {'user_cookie': self.user_cookie,
+                'username': self.username,
+                'password': self.password,
+                'phone': self.phone,
+                'level': self.level,
+                'utype': self.utype,
+                'coins': self.coins,
+                'coins_history': self.coins_history,
+                'money': self.money,
+                'subuscribed_strategy': self._subscribed_strategy,
+                'subscribed_code': self.subscribed_code
+                }
 
     def save(self):
         """
         将QA_USER的信息存入数据库
         """
-        pass
+        self.client.update({'username':self.username,'password':self.password}, {'$set': self.message}, upsert=True)
 
-    def reload(self):
-        pass
+    def sync(self):
+        """基于账户/密码去sync数据库
+        """
+
+        res = self.client.find_one(
+            {'username': self.username, 'password': self.password})
+        if res is None:
+            self.client.insert_one(self.message)
+        else:
+            self.reload(res)
+
+        return self
+
+    def reload(self, message):
+        self.phone = message.get('phone')
+        self.level = message.get('level')
+        self.utype = message.get('utype')
+        self.coins = message.get('coins')
+        self.coins_history = message.get('coins_history')
+        self.money = message.get('money')
+        self._subscribed_strategy = message.get('subuscribed_strategy')
+        self._subscribed_code = message.get('subscribed_code')
 
 
 if __name__ == '__main__':
