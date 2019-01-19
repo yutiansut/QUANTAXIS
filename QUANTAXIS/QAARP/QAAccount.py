@@ -228,19 +228,19 @@ class QA_Account(QA_Worker):
         # warnings.warn('QUANTAXIS 1.0.46 has changed the init_assets ==> init_cash, please pay attention to this change if you using init_cash to initial an account class,\
         #         ', DeprecationWarning, stacklevel=2)
         self._history_headers = [
-            'datetime',
-            'code',
-            'price',
-            'amount',
-            'cash',
-            'order_id',
-            'realorder_id',
-            'trade_id',
-            'account_cookie',
-            'commission',
-            'tax',
-            'message',
-            'frozen'
+            'datetime', # 日期/时间
+            'code', # 品种
+            'price', # 成交价
+            'amount', # 成交数量(股票 股数  期货 手数)
+            'cash', # 现金
+            'order_id', # 本地订单号
+            'realorder_id', # 实际委托单号
+            'trade_id', # 成交单号
+            'account_cookie', # 账号id
+            'commission', # 手续费
+            'tax',  # 税
+            'message', # 备注
+            'frozen' # 冻结资金
         ]
         ########################################################################
         # 信息类:
