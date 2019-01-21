@@ -189,15 +189,15 @@ if __name__ == "__main__":
     print('在运行前 请先运行tdxtradeserver的 exe文件, 目录是你直接get_tts指定的 一般是 C:\tdxTradeServer')
     print('这是测试代码, 下面需要输入的 key/iv在ini中自己查找, account 和password是自己的账户密码 ')
     api = QA_TTSBroker(endpoint="http://127.0.0.1:19820/api",
-                       enc_key=bytes('64de4fc61d8811e9', encoding='utf-8'), enc_iv=bytes('9a8c9cb6d020b9c2', encoding='utf-8'))
+                       enc_key=bytes(input('env_key:   '), encoding='utf-8'), enc_iv=bytes(input('env_iv:    '), encoding='utf-8'))
 
     print("---Ping---")
     result = api.ping()
     print(result)
 
     print("---登入---")
-    acc = "35202548"  # 你的账号
-    password = "161410"  # 你的密码
+    acc = input('account:    ')
+    password = input('password:   ')
     result = api.logon("60.191.116.36", 7708,
                        "6.44", 1,
                        acc, acc, password, "")
