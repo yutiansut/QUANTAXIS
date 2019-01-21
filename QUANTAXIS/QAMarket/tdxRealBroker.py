@@ -205,11 +205,14 @@ if __name__ == "__main__":
     print(result)
 
     print("---登入---")
-    acc = os.getenv("TDX_ACCOUNT", "")
-    password = os.getenv("TDX_PASS", "")
-    result = api.logon("202.108.253.186", 7708,
-                       "8.23", 32,
-                       acc, acc, password, "")
+    acc = input('account')
+    password = input('password')
+    
+
+    # 财通的    
+    result = api.logon("60.191.116.36", 7708,
+          "6.44", 1,
+          acc, acc, password, "")
 
     print(result)
 
