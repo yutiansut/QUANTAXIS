@@ -206,7 +206,14 @@ if __name__ == "__main__":
         for i in (0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 13, 14, 15):
             print("---查询信息 cate=%d--" % i)
             print(api.data_to_df(api.query_data(i)))
-        print(api.send_order(code='000001', price=10, amount=100,
-                             towards=QA.ORDER_DIRECTION.BUY, order_model=QA.ORDER_DIRECTION.BUY))
+
+
+        print('==============================下面是下单部分========================')
+        print('即将演示的是  下单000001  数量100股  价格9.8 的限价单模式')
+        
+        if input('我已知晓, 并下单 按y继续 n 退出') == 'y':
+        
+            print(api.send_order(code='000001', price=9.8, amount=100,
+                                towards=QA.ORDER_DIRECTION.BUY, order_model=QA.ORDER_DIRECTION.BUY))
         print("---登出---")
         print(api.logoff(client_id))
