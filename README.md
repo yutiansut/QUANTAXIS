@@ -187,22 +187,34 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 ### 1.6 实盘
 
-#### 1.6.1 股票(实盘易)
+#### 1.6.1 (股票) 实盘易  QAShipaneBroker
+
 
 实盘易插件 参见[实盘易](http://www.iguuu.com/e?x=18839)
 
 实盘易安装注意 参见[安装注意](shipane_install_memo.md)
 
-#### 1.6.2 期货(python3 CTP win/mac/linux)
+###  1.6.2 (股票) TTS    QATTSBroker
 
-1. CTP 的websocket交易 :  simnow demo:  ws://www.yutiansut.com:7988
-2. CTP 的海风broker魔改封装:  [QA_AtBroker](https://github.com/QUANTAXIS/QA_AtBroker)
+具体参见[QATTSBroker](QUANTAXIX/QAMARKET/QATTSBroker.py)
 
+#### 1.6.3 (期货)  QAOtgBroker
+
+CTP 的websocket交易 :  simnow demo:  ws://www.yutiansut.com:7988
 
 关于websocket交易(可能存在一些不确定的bug 因此暂时不开放):
 
 - 目前仅提供demo/ 模拟盘接入
 - 具体需要私聊我 yutiansut@qq.com
+
+#### 1.6.4 (期货)  海风AT封装 QAAtBroker
+CTP 的海风broker魔改封装:  [QA_AtBroker](https://github.com/QUANTAXIS/QA_AtBroker)
+
+
+#### 1.6.5 (期货) VNPY QAVNPYBroker
+
+目前等VNPY 2.0的横空出世, 兼容py3.6/3.7后将进行对接
+
 
 
 ### 1.7 网站HTTP服务(目前已经独立为 QUANTAXIS_WEBSERVICE)
