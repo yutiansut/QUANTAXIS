@@ -197,7 +197,7 @@ class TDXBroker(QA_Broker):
     
 if __name__ == "__main__":
     import os
-    
+    print('在运行前 请先运行tdxtradeserver的 exe文件, 目录是你直接get_tts指定的 一般是 C:\tdxTradeServer')
     print('这是测试代码, 下面需要输入的 key/iv在ini中自己查找, account 和password是自己的账户密码 ')
     api = TDXBroker(endpoint="http://10.11.5.175:10092/api",
                       enc_key=bytes(input('enc_key'),encoding='utf-8'), enc_iv=bytes(input('enc_iv'),encoding='utf-8'))
