@@ -211,9 +211,9 @@ if __name__ == "__main__":
         print('==============================下面是下单部分========================')
         print('即将演示的是  下单000001  数量100股  价格9.8 的限价单模式')
         
-        if input('我已知晓, 并下单 按y继续 n 退出') == 'y':
+        if str(input('我已知晓, 并下单 按y继续 n 退出'))[0] == 'y':
         
             print(api.send_order(code='000001', price=9.8, amount=100,
                                 towards=QA.ORDER_DIRECTION.BUY, order_model=QA.ORDER_DIRECTION.BUY))
         print("---登出---")
-        print(api.logoff(client_id))
+        print(api.logoff())
