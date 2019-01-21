@@ -96,8 +96,11 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
         - [1.5 回测服务](#15-回测服务)
             - [1.5.1 股票/日内t0/ 的日线/分钟线级别回测](#151-股票日内t0-的日线分钟线级别回测)
         - [1.6 实盘](#16-实盘)
-            - [1.6.1 股票(实盘易)](#161-股票实盘易)
-            - [1.6.2 期货(python3 CTP win/mac/linux)](#162-期货python3-ctp-winmaclinux)
+            - [1.6.1 股票/实盘易 QAShiPaneBroker](#161-股票-实盘易--qashipanebroker)
+            - [1.6.2 股票/TTS    QATTSBroker](#162-股票-tts----qattsbroker)
+            - [1.6.3 期货/Open-trade-gateway QAOTGBROKER](#163-期货--qaotgbroker)
+            - [1.6.4 期货/海风AT  QA_ATBroker](#164-期货--海风at封装-qaatbroker)
+            - [1.6.5 期货/VNPY   QAVNPYBroker](#165-期货-vnpy-qavnpybroker)
         - [1.7 网站HTTP服务](#17-网站http服务)
             - [1.7.1 网站后台标准化接口](#171-网站后台标准化接口)
     - [2. 文档](#2-文档)
@@ -194,7 +197,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 实盘易安装注意 参见[安装注意](shipane_install_memo.md)
 
-###  1.6.2 (股票) TTS    QATTSBroker
+####  1.6.2 (股票) TTS    QATTSBroker
 
 具体参见[QATTSBroker](QUANTAXIX/QAMARKET/QATTSBroker.py)
 
