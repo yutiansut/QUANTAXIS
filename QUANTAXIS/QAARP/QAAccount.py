@@ -324,7 +324,7 @@ class QA_Account(QA_Worker):
         self.frozen = {} # 冻结资金(保证金)
 
     def __repr__(self):
-        return '< QA_Account {}>'.format(self.account_cookie)
+        return '< QA_Account {} market: {}>'.format(self.account_cookie,self.market_type)
 
     @property
     def message(self):
@@ -571,14 +571,14 @@ class QA_Account(QA_Worker):
         ).groupby('code').sum().replace(0,
                                         np.nan).dropna().sort_index()
 
-    @property
-    def hold_available_temp(self):
-        """可用持仓
-        """
-        return self._table.groupby('code').amount.sum().replace(
-            0,
-            np.nan
-        ).dropna().sort_index()
+    # @property
+    # def hold_available_temp(self):
+    #     """可用持仓
+    #     """
+    #     return self._table.groupby('code').amount.sum().replace(
+    #         0,
+    #         np.nan
+    #     ).dropna().sort_index()
 
     @property
     def hold_available(self):
@@ -1434,6 +1434,66 @@ class QA_Account(QA_Worker):
         )
         self.settle()
         return self
+
+    def from_otgdict(self,message):
+        """[summary]
+        balance = static_balance + float_profit
+
+
+            "currency": "",  # "CNY" (币种)
+            "pre_balance": float("nan"),  # 9912934.78 (昨日账户权益)
+            "static_balance": float("nan"),  # (静态权益)
+            "balance": float("nan"),  # 9963216.55 (账户权益)
+            "available": float("nan"),  # 9480176.15 (可用资金)
+            "float_profit": float("nan"),  # 8910.0 (浮动盈亏)
+            "position_profit": float("nan"),  # 1120.0(持仓盈亏)
+            "close_profit": float("nan"),  # -11120.0 (本交易日内平仓盈亏)
+            "frozen_margin": float("nan"),  # 0.0(冻结保证金)
+            "margin": float("nan"),  # 11232.23 (保证金占用)
+            "frozen_commission": float("nan"),  # 0.0 (冻结手续费)
+            "commission": float("nan"),  # 123.0 (本交易日内交纳的手续费)
+            "frozen_premium": float("nan"),  # 0.0 (冻结权利金)
+            "premium": float("nan"),  # 0.0 (本交易日内交纳的权利金)
+            "deposit": float("nan"),  # 1234.0 (本交易日内的入金金额)
+            "withdraw": float("nan"),  # 890.0 (本交易日内的出金金额)
+            "risk_ratio": float("nan"),  # 0.048482375 (风险度)
+        """
+
+        self.allow_margin = True
+        self.allow_sellopen = True
+        self.allow_t0 = True
+
+
+
+        self.account_cookie = message['accounts']['user_id']
+        # 可用资金
+        self.cash_available = message['accounts']['available']
+        self.balance = message['accounts']['balance']
+
+        # 都是在结算的时候计算的
+        # 昨日权益/静态权益 ==> 这两个是一样的
+        self.static_balance = message['accounts']['static_balance']
+        self.pre_balance = message['accounts']['pre_balance']
+
+        # 平仓盈亏
+        self.close_profit = message['accounts']['close_profit']
+        # 持仓盈亏
+        self.position_profit = message['accounts']['position_profit']
+        
+        # 动态权益
+        self.float_profit = message['accounts']['float_profit']
+
+        # 占用保证金
+        self.margin = message['accounts']['marigin']
+
+        self.commission = message['accounts']['commission']
+
+
+
+
+
+
+
 
     @property
     def table(self):
