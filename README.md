@@ -73,11 +73,12 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - [QUANTAXIS_CRAWLY](https://github.com/QUANTAXIS/QUANTAXIS_CRAWLY) 爬虫部分
 - [QUANTAXIS_REALTIME_RESOLUTION](https://github.com/yutiansut/QUANTAXIS_REALTIME_RESOLUTION) 实时交易/部署解决方案(未开源)
 
-==========================================
 
 
 ![qa2018](http://pic.yutiansut.com/qa2018.png)
+![qaresolution](http://pic.yutiansut.com/QARESOLUTION.png)
 
+==========================================
 
 <!-- TOC -->
 
