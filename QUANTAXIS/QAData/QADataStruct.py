@@ -132,13 +132,13 @@ class QA_DataStruct_Stock_day(_quotation_base):
     @lru_cache()
     def next_day_low_limit(self):
         "明日跌停价"
-        return round((self.data.close + 0.0002) * 0.9, 2)
+        return self.groupby(level=1).close.apply(lambda x: round((x + 0.0002)*0.9, 2)).sort_index()
 
     @property
     @lru_cache()
     def next_day_high_limit(self):
         "明日涨停价"
-        return round((self.data.close + 0.0002) * 1.1, 2)
+        return self.groupby(level=1).close.apply(lambda x: round((x + 0.0002)*1.1, 2)).sort_index()
 
     @property
     def preclose(self):
@@ -203,12 +203,7 @@ class QA_DataStruct_Stock_min(_quotation_base):
         except Exception as e:
             raise e
 
-        if 'high_limit' not in self.data.columns:
-            self.data['high_limit'] = round(
-                (self.data.close.shift(1) + 0.0002) * 1.1, 2)
-        if 'low_limit' not in self.data.columns:
-            self.data['low_limit'] = round(
-                (self.data.close.shift(1) + 0.0002) * 0.9, 2)
+
         self.type = dtype
         self.if_fq = if_fq
 
@@ -258,15 +253,15 @@ class QA_DataStruct_Stock_min(_quotation_base):
                 'none support type for qfq Current type is:%s' % self.if_fq)
             return self
 
-    @property
-    def high_limit(self):
-        '涨停价'
-        return self.data.high_limit
+    # @property
+    # def high_limit(self):
+    #     '涨停价'
+    #     return self.data.high_limit
 
-    @property
-    def low_limit(self):
-        '跌停价'
-        return self.data.low_limit
+    # @property
+    # def low_limit(self):
+    #     '跌停价'
+    #     return self.data.low_limit
 
     def resample(self, level):
         try:
