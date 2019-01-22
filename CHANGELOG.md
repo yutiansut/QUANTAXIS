@@ -84,6 +84,9 @@
 4. QA_USER 完善, 增加订阅策略和积分系统
 5. 删除QADataStruct_min类中的 high_limit/low_limit, 修复daystruct的nextdayhighlimit字段
 6. 增加tusharepro部分数据到postgresql的储存和调取方式
+7. QATTSBroker发布
+
+
 ## 1.2.7
 
 迁移目录:
