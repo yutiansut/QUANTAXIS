@@ -155,7 +155,8 @@ from QUANTAXIS.QAMarket import (
     QA_RandomBroker,
     QA_SimulatedBroker,
     QA_RealBroker,
-    QA_BacktestBroker
+    QA_BacktestBroker,
+    QA_TTSBroker,
 )
 
 # Account,Risk,Portfolio,User,Strategy
