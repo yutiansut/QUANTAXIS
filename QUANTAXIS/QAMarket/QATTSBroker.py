@@ -133,7 +133,7 @@ class QA_TTSBroker(QA_Broker):
         if order_model == ORDER_MODEL.MARKET:
             order_model = 4
         elif order_model == ORDER_MODEL.LIMIT:
-            order_model = 1
+            order_model = 0
 
         return self.call("send_order", {
             'client_id': self.client_id,
