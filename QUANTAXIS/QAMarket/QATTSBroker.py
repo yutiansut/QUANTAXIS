@@ -100,7 +100,7 @@ class QA_TTSBroker(QA_Broker):
         })
         if data['success']:
             self.client_id = data["data"]["client_id"]
-            self.gddm = api.query_data(5)['data'][0]['股东代码']
+            self.gddm = self.query_data(5)['data'][0]['股东代码']
             print(self.gddm)
         return data
 
