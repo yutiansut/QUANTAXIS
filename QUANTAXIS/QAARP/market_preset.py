@@ -584,15 +584,27 @@ class MARKET_PRESET:
     def __repr__(self):
         return '< QAMARKET_PRESET >'
 
+    @property
+    def code_list(self):
+        return list(self.table.keys())
+
     def get_code(self, code):
         try:
             int(str(code)[1])
             code = code[0]
         except:
-            code = code[0:2]
+            if str(code).endswith('L8') or str(code).endswith('L9'):
+                code = code[0:-2]
+            else:
+                code = code[0:2]
         return self.table.get(str(code).upper())
 
     # 手续费比例
+    def get_exchange(self, code):
+        return self.get_code(code).get('exchange')
+
+    def get_name(self, code):
+        return self.get_code(code).get('name')
 
     def get_commission_coeff(self, code, dtype):
         return self.get_code(code).get('unit_table')
@@ -612,10 +624,10 @@ class MARKET_PRESET:
     #
     def get_frozen(self, code):
         """买卖冻结保证金
-              
+
               Arguments:
                      code {[type]} -- [description]
-              
+
               Returns:
                      [type] -- [description]
               """
