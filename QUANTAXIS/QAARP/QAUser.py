@@ -64,6 +64,7 @@ class QA_User():
             utype='guests',
             password='default',
             coins=10000,
+            wechat_id=None,
             money=0,
     ):
         """[summary]
@@ -92,6 +93,16 @@ class QA_User():
         self.utype = utype
         self.password = password
         self.username = username
+        self.wechat_id = wechat_id
+
+        if wechat_id is not None and self.username =='admin':
+            """基于web的初始化
+            """
+
+            self.username= wechat_id
+            self.password = 'admin'
+
+
         self.user_cookie = QA_util_random_with_topic(
             'USER'
         ) if user_cookie is None else user_cookie
@@ -357,6 +368,7 @@ class QA_User():
         return {'user_cookie': self.user_cookie,
                 'username': self.username,
                 'password': self.password,
+                'wechat_id': self.wechat_id,
                 'phone': self.phone,
                 'level': self.level,
                 'utype': self.utype,
@@ -391,6 +403,7 @@ class QA_User():
         self.level = message.get('level')
         self.utype = message.get('utype')
         self.coins = message.get('coins')
+        self.wechat_id = message.get('wechat_id')
         self.coins_history = message.get('coins_history')
         self.money = message.get('money')
         self._subscribed_strategy = message.get('subuscribed_strategy')
