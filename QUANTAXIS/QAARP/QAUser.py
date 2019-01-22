@@ -95,13 +95,16 @@ class QA_User():
         self.username = username
         self.wechat_id = wechat_id
 
-        if wechat_id is not None and self.username =='admin':
-            """基于web的初始化
-            """
+        if wechat_id is not None:
 
-            self.username= wechat_id
-            self.password = 'admin'
+            if self.username == 'default':
+                """基于web的初始化
+                """
 
+                self.username = wechat_id
+                self.password = 'admin'
+        else:
+            raise Exception
 
         self.user_cookie = QA_util_random_with_topic(
             'USER'
@@ -383,14 +386,15 @@ class QA_User():
         """
         将QA_USER的信息存入数据库
         """
-        self.client.update({'username':self.username,'password':self.password}, {'$set': self.message}, upsert=True)
+        self.client.update({'wechat_id': self.wechat_id}, {
+                           '$set': self.message}, upsert=True)
 
     def sync(self):
         """基于账户/密码去sync数据库
         """
 
         res = self.client.find_one(
-            {'username': self.username, 'password': self.password})
+            {'wechat_id': self.wechat_id})
         if res is None:
             self.client.insert_one(self.message)
         else:
