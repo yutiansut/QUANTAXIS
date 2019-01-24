@@ -100,7 +100,7 @@ class QA_TTSBroker(QA_Broker):
         })
         if data['success']:
             self.client_id = data["data"]["client_id"]
-            self.gddm = api.query_data(5)['data'][0]['股东代码']
+            self.gddm = self.query_data(5)['data'][0]['股东代码']
             print(self.gddm)
         return data
 
@@ -133,7 +133,7 @@ class QA_TTSBroker(QA_Broker):
         if order_model == ORDER_MODEL.MARKET:
             order_model = 4
         elif order_model == ORDER_MODEL.LIMIT:
-            order_model = 1
+            order_model = 0
 
         return self.call("send_order", {
             'client_id': self.client_id,

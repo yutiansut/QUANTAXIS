@@ -2279,6 +2279,8 @@ def QA_SU_save_option_commodity_min(
         ui_progress=ui_progress
     )
 
+    # todo 新增期权品种 棉花，玉米， 天然橡胶
+
 
 def QA_SU_save_option_min(client=DATABASE, ui_log=None, ui_progress=None):
     '''
