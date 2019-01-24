@@ -1,0 +1,23 @@
+# update list
+# add update type and min freq here, add # to comment or just del the row if you dont need
+# uncomment to enable the update item
+# eg. stock_min, @min_freq: 5min, 60min
+
+stock_list
+index_list
+#etf_list
+#future_list
+stock_xdxr
+stock_block
+stock_info
+stock_day
+index_day
+#future_day_all
+#etf_day
+#stock_min
+#index_min
+#future_min_all
+#etf_min
+save_financialfiles
+
+@min_freq: 5min, 60min

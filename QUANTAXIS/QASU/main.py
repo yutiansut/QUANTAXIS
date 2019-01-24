@@ -28,8 +28,51 @@ from QUANTAXIS.QASU import save_tdx_file as tdx_file
 from QUANTAXIS.QASU import save_tushare as sts
 from QUANTAXIS.QASU import save_financialfiles
 from QUANTAXIS.QAUtil import DATABASE
+
 # from QUANTAXIS.QASU import crawl_jrj_financial_reportdate as save_financial_calendar
 # from QUANTAXIS.QASU import crawl_jrj_stock_divyield as save_stock_divyield
+
+
+def QA_SU_save_list(engine, type_='', client=DATABASE):
+    """save data list like stock, index, etf, future
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_list(type_=type_, client=client)
+
+
+def QA_SU_save_short_freq(engine, type_='', min_list=[], client=DATABASE):
+    """save short freq of data: given list of minute freq
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_short_freq(type_=type_, min_list=min_list, client=client)
+
+
+def QA_SU_save_long_freq(engine, type_='', client=DATABASE):
+    """save long freq of data: like day, week etc
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_long_freq(type_=type_, client=client)
 
 
 def QA_SU_save_stock_info(engine, client=DATABASE):
@@ -175,9 +218,9 @@ def QA_SU_save_stock_day(engine, client=DATABASE):
 def QA_SU_save_option_contract_list(engine, client=DATABASE):
     '''
 
-    :param engine: 
-    :param client: 
-    :return: 
+    :param engine:
+    :param client:
+    :return:
     '''
     engine = select_save_engine(engine)
     engine.QA_SU_save_option_contract_list(client=client)
@@ -334,7 +377,10 @@ def select_save_engine(engine):
     elif engine in ['tdx']:
         return stdx
     else:
-        print('QA Error QASU.main.py call select_save_engine with parameter %s is None of  thshare, ts, Thshare, or tdx', engine)
+        print(
+            'QA Error QASU.main.py call select_save_engine with parameter %s is None of  thshare, ts, Thshare, or tdx',
+            engine
+        )
 
 
 def QA_SU_save_stock_min_5(file_dir, client=DATABASE):
@@ -364,15 +410,19 @@ def QA_SU_crawl_eastmoney(action="zjlx", stockCode=None):
 
     if stockCode == "all":
         # 读取tushare股票列表代码
-        print("💪 一共需要获取 %d 个股票的 资金流向 , 需要大概 %d 小时" %
-              (len(stockItems), (len(stockItems)*5)/60/60))
+        print(
+            "💪 一共需要获取 %d 个股票的 资金流向 , 需要大概 %d 小时" %
+            (len(stockItems),
+             (len(stockItems) * 5) / 60 / 60)
+        )
 
         code_list = []
         for stock in stockItems:
             code_list.append(stock['code'])
             # print(stock['code'])
         crawl_eastmoney_file.QA_read_eastmoney_zjlx_web_page_to_sqllite(
-            code_list)
+            code_list
+        )
         # print(stock)
 
         return
@@ -381,7 +431,9 @@ def QA_SU_crawl_eastmoney(action="zjlx", stockCode=None):
         # return crawl_eastmoney_file.QA_read_eastmoney_zjlx_web_page_to_sqllite(stockCode=stockCode)
         code_list = []
         code_list.append(stockCode)
-        return crawl_eastmoney_file.QA_request_eastmoney_zjlx(param_stock_code_list=code_list)
+        return crawl_eastmoney_file.QA_request_eastmoney_zjlx(
+            param_stock_code_list=code_list
+        )
 
 
 def QA_SU_save_financialfiles():
