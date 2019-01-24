@@ -357,7 +357,7 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.8
 
 ### 期货开户
 ```
-即日起, 中财期货,瑞龙期货 和QUANTAXIS达成协议, 使用quantaxis的量化期货交易者，
+即日起到春节前, 中财期货,瑞龙期货 和QUANTAXIS达成协议, 使用quantaxis的量化期货交易者，
 
 - 交易所内返80%(无论资金规模)
 - 每月直接返还到交易账户
