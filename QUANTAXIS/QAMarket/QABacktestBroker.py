@@ -256,7 +256,7 @@ class QA_BacktestBroker(QA_Broker):
                 data = self.market_data[0]
 
             else:
-                print(type(self.market_data))
+                # print(type(self.market_data))
                 self.market_data = self.market_data.to_json()[0]
         else:
             self.market_data = self.get_market(order)
