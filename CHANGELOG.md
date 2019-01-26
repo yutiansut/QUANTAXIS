@@ -75,6 +75,8 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
+## 1.2.9
+1. QAIndicator部分指标修正,base.py增加IFAND函数,indicator.py部分指标修正
 
 ## 1.2.8
 
