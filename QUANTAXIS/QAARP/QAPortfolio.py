@@ -112,6 +112,7 @@ class QA_Portfolio(QA_Account):
         self.commission_coeff = 0.005
         self.market_type = market_type
         self.running_environment = running_environment
+        self.cash_history = []
 
         for cookie in self.accounts.keys():
             self.accounts[cookie] = QA_Account(account_cookie=cookie)
@@ -259,8 +260,8 @@ class QA_Portfolio(QA_Account):
             'portfolio_cookie': self.portfolio_cookie,
             'account_list': list(self.accounts.keys()),
             'init_cash': self.init_cash,
-            'init_hold': self.init_hold,
-            'trade_history': self.history
+            'cash': self.cash,
+            'history': self.history[0]
         }
 
     def send_order(
