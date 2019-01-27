@@ -126,13 +126,13 @@ class QA_User():
         self.user_cookie = QA_util_random_with_topic(
             'USER'
         ) if user_cookie is None else user_cookie
-        self.coins = coins # 积分
-        self.money = money # 钱
+        self.coins = coins  # 积分
+        self.money = money  # 钱
 
         # ==============================
         self._subscribed_strategy = {}
         self._subscribed_code = []
-        self._signals = [] # 预期收到的信号
+        self._signals = []  # 预期收到的信号
         self._cash = []
         self._history = []
 
@@ -155,6 +155,21 @@ class QA_User():
             len(self.portfolio_list.keys()),
             self.portfolio_list
         )
+
+    def __getitem__(self, portfolio_cookie: str):
+        """获取user下的portfolio
+        
+        Arguments:
+            portfolio_cookie {str} -- [description]
+        
+        Returns:
+            [type] -- [description]
+        """
+
+        try:
+            return self.portfolio_list[portfolio_cookie]
+        except:
+            return None
 
     @property
     def table(self):
@@ -416,7 +431,7 @@ class QA_User():
 
     def reload(self, message):
         """恢复方法
-        
+
         Arguments:
             message {[type]} -- [description]
         """
