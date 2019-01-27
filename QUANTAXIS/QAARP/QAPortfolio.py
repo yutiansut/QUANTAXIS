@@ -122,6 +122,21 @@ class QA_Portfolio(QA_Account):
             len(self.accounts.keys())
         )
 
+    def __getitem__(self, account_cookie):
+        """类似 DICT的形式取account
+
+        Arguments:
+            account_cookie {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+
+        try:
+            return self.accounts[account_cookie]
+        except:
+            return None
+
     @property
     def init_hold_table(self):
         return pd.concat(
@@ -233,6 +248,66 @@ class QA_Portfolio(QA_Account):
             return None
 
     def cookie_mangement(self):
+        pass
+
+    @property
+    def message(self):
+        """portfolio 的cookie
+        """
+        return {
+            'user_cookie': self.user_cookie,
+            'portfolio_cookie': self.portfolio_cookie,
+            'account_list': list(self.accounts.keys()),
+            'init_cash': self.init_cash,
+            'init_hold': self.init_hold,
+            'trade_history': self.history
+        }
+
+    def send_order(
+            self,
+            account_cookie: str,
+            code=None,
+            amount=None,
+            time=None,
+            towards=None,
+            price=None,
+            money=None,
+            order_model=None,
+            amount_model=None,
+            *args,
+            **kwargs
+    ):
+        """基于portfolio对子账户下单
+        
+        Arguments:
+            account_cookie {str} -- [description]
+        
+        Keyword Arguments:
+            code {[type]} -- [description] (default: {None})
+            amount {[type]} -- [description] (default: {None})
+            time {[type]} -- [description] (default: {None})
+            towards {[type]} -- [description] (default: {None})
+            price {[type]} -- [description] (default: {None})
+            money {[type]} -- [description] (default: {None})
+            order_model {[type]} -- [description] (default: {None})
+            amount_model {[type]} -- [description] (default: {None})
+        
+        Returns:
+            [type] -- [description]
+        """
+
+        return self.accounts[account_cookie].send_order(
+            code=code,
+            amount=amount,
+            time=time,
+            towards=towards,
+            price=price,
+            money=money,
+            order_model=order_model,
+            amount_model=amount_model
+        )
+
+    def receive_deal(self):
         pass
 
     @property
