@@ -35,6 +35,14 @@ class QA_User():
     """QA_User 
     User-->Portfolio-->Account/Strategy
 
+
+
+    user ==> username / user_cookie
+                            ||
+                        portfolio  ==> portfolio_cookie
+                                            ||
+                                        accounts ==> account_cookie
+
     :::::::::::::::::::::::::::::::::::::::::::::::::
     ::        :: Portfolio 1 -- Account/Strategy 1 ::
     ::  USER  ::             -- Account/Strategy 2 ::
@@ -104,18 +112,27 @@ class QA_User():
                 self.username = wechat_id
                 self.password = 'admin'
         else:
-            raise Exception
+            """
+            另一种 无 WECHATID 的模式, 适合本地python的调试
+            @yutiansut
+            """
+            if self.username == 'default':
+                """基于web的初始化
+                """
+
+                self.username = 'admin'
+                self.password = 'admin'
 
         self.user_cookie = QA_util_random_with_topic(
             'USER'
         ) if user_cookie is None else user_cookie
-        self.coins = coins  # 积分
-        self.money = money  # 钱
+        self.coins = coins # 积分
+        self.money = money # 钱
 
         # ==============================
         self._subscribed_strategy = {}
         self._subscribed_code = []
-        self._signals = []  # 预期收到的信号
+        self._signals = [] # 预期收到的信号
         self._cash = []
         self._history = []
 
@@ -316,7 +333,7 @@ class QA_User():
                 " already exist!!"
             )
 
-    def get_portfolio(self, portfolio):
+    def get_portfolio(self, portfolio_cookie: str):
         '''
         'get a portfolio'
         从 portfolio_list dict字典中 根据 portfolio key 获取
@@ -325,15 +342,6 @@ class QA_User():
         '''
         # return self.portfolio_list[portfolio]
         # fix here use cookie as key to find value in dict
-        return self.portfolio_list[portfolio.portfolio_cookie]
-
-    def get_portfolio_by_cookie(self, portfolio_cookie):
-        '''
-        'get a portfolio'
-        从 portfolio_list dict字典中 根据 portfolio key 获取
-        :param portfolio: porfolio_cookie string
-        :return: QA_Portfolio类型
-        '''
         return self.portfolio_list[portfolio_cookie]
 
     def generate_simpleaccount(self):
@@ -368,33 +376,37 @@ class QA_User():
 
     @property
     def message(self):
-        return {'user_cookie': self.user_cookie,
-                'username': self.username,
-                'password': self.password,
-                'wechat_id': self.wechat_id,
-                'phone': self.phone,
-                'level': self.level,
-                'utype': self.utype,
-                'coins': self.coins,
-                'coins_history': self.coins_history,
-                'money': self.money,
-                'subuscribed_strategy': self._subscribed_strategy,
-                'subscribed_code': self.subscribed_code
-                }
+        return {
+            'user_cookie': self.user_cookie,
+            'username': self.username,
+            'password': self.password,
+            'wechat_id': self.wechat_id,
+            'phone': self.phone,
+            'level': self.level,
+            'utype': self.utype,
+            'coins': self.coins,
+            'coins_history': self.coins_history,
+            'money': self.money,
+            'subuscribed_strategy': self._subscribed_strategy,
+            'subscribed_code': self.subscribed_code,
+            'portfolio_list': list(self.portfolio_list.keys())
+        }
 
     def save(self):
         """
         将QA_USER的信息存入数据库
         """
-        self.client.update({'wechat_id': self.wechat_id}, {
-                           '$set': self.message}, upsert=True)
+        self.client.update(
+            {'wechat_id': self.wechat_id},
+            {'$set': self.message},
+            upsert=True
+        )
 
     def sync(self):
         """基于账户/密码去sync数据库
         """
 
-        res = self.client.find_one(
-            {'wechat_id': self.wechat_id})
+        res = self.client.find_one({'wechat_id': self.wechat_id})
         if res is None:
             self.client.insert_one(self.message)
         else:
@@ -403,6 +415,12 @@ class QA_User():
         return self
 
     def reload(self, message):
+        """恢复方法
+        
+        Arguments:
+            message {[type]} -- [description]
+        """
+
         self.phone = message.get('phone')
         self.level = message.get('level')
         self.utype = message.get('utype')
