@@ -1,0 +1,44 @@
+version: '2'
+services:
+    qa:
+        image: barretthugh/qa-jupyter
+        ports:
+            - "8888:8888"
+        environment:
+          - MONGODB=mgdb
+        volumes:
+            - qacode:/home
+        restart: always
+
+    qacron:
+        image: barretthugh/qa-cron
+        environment:
+            - MONGODB=mgdb
+        restart: always
+
+    qaweb:
+        image: barretthugh/qa-web
+        ports:
+            - "8010:8010"
+        environment:
+            - MONGODB=mgdb
+        restart: always
+
+    mgdb:
+        image: mongo:4.1.3
+        ports:
+            - "27017:27017"
+        environment:
+            - TZ=Asia/Shanghai
+            - MONGO_INITDB_DATABASE=quantaxis
+        volumes:
+            - qamg:/data/db
+        restart: always
+
+volumes:
+    qamg:
+        external:
+            name: qamg
+    qacode:
+        external:
+            name: qacode

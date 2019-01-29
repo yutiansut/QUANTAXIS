@@ -25,10 +25,11 @@
 import threading
 import pandas as pd
 
+from QUANTAXIS.QAMarket.common import exchange_code
 from QUANTAXIS.QAUtil import (
     QA_util_log_info, QA_util_random_with_topic, QA_util_to_json_from_pandas)
-from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_STATUS
-
+from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_STATUS, ORDER_DIRECTION, ORDER_MODEL
+from QUANTAXIS.QAUtil.QADate import QA_util_stamp2datetime
 
 """
 重新定义Order模式
@@ -59,38 +60,39 @@ class QA_Order():
         记录order
     '''
 
-    def __init__(self, price=None, date=None, datetime=None, sending_time=None, trade_time=False, amount=None, market_type=None, frequence=None,
+    def __init__(self, price=None, date=None, datetime=None, sending_time=None, trade_time=False, amount=0, market_type=None, frequence=None,
                  towards=None, code=None, user=None, account_cookie=None, strategy=None, order_model=None, money=None, amount_model=AMOUNT_MODEL.BY_AMOUNT,
-                 order_id=None, trade_id=False, _status=ORDER_STATUS.NEW, callback=False, commission_coeff=0.00025, tax_coeff=0.001, *args, **kwargs):
+                 order_id=None, trade_id=False, _status=ORDER_STATUS.NEW, callback=False, commission_coeff=0.00025, tax_coeff=0.001, exchange_id=None, *args, **kwargs):
         '''
 
 
 
+
         QA_Order 对象表示一个委托业务， 有如下字段
-        :param price:           委托的价格        type float
-        :param date:            委托的日期        type str , eg 2018-11-11
-        :param datetime:        委托的时间        type str , eg 2018-11-11 00:00:00
-        :param sending_time:    发送委托单的时间   type str , eg 2018-11-11 00:00:00
-        :param trade_time:   委托成交的时间
-        :param amount:          委托量               type int
-        :param trade_amount     成交数量
-        :param cancel_amount    撤销数量
-        :param market_type:     委托的市场            type str eg 'stock_cn'
-        :param frequence:       频率                 type str 'day'
-        :param towards:         委托方向              type int
-        :param code:            委托代码              type str
-        :param user:            委托股东
-        :param account_cookie:  委托账户的cookietype          type str eg 'Acc_4UckWFG3'
-        :param strategy:        策略名                        type str
-        :param order_model:     委托方式(限价/市价/下一个bar/)  type str eg 'limit'
-        :param money:           金额                           type float
-        :param amount_model:    委托量模式(按量委托/按总成交额委托) type str 'by_amount'
-        :param order_id:        委托单id
-        :param trade_id:        成交id
-        :param _status:          订单状态   type str '100' '200' '300'
-        :param callback:        回调函数   type bound method  eg  QA_Account.receive_deal
-        :param commission_coeff: 默认 0.00025  type float
-        :param tax_coeff:        默认 0.0015  type float
+        - price 委托价格 (限价单用)
+        - date 委托日期 (一般日线级别回测用)
+        - datetime 当前时间 (分钟线级别和实时用)
+        - sending_time 委托时间 (分钟线级别和实时用)
+        - trade_time 成交时间 [list] (分钟/日线/实盘时用, 一笔订单多次成交会不断append进去)
+        - amount 委托数量
+        - frequence 频率 (回测用 DAY/1min/5min/15min/30min/...)
+        - towards 买卖方向
+        - code  订单的品种
+        - user  订单发起者
+        - account_cookie 订单发起账户的标识
+        - stratgy 策略号
+        - order_model  委托方式(限价/市价/下一个bar/)  type str eg 'limit'
+        - money  订单金额
+        - amount_model 委托量模式(按量委托/按总成交额委托) type str 'by_amount'
+        - order_id   委托单id
+        - trade_id   成交单id
+        - _status    内部维护的订单状态
+        - callback   当订单状态改变的时候 主动回调的函数(可以理解为自动执行的OnOrderAction)
+        - commission_coeff 手续费系数
+        - tax_coeff  印花税系数(股票)
+        - exchange_id  交易所id (一般用于实盘期货)
+
+        
         :param args: type tuple
         :param kwargs: type dict
 
@@ -124,7 +126,7 @@ class QA_Order():
             pass
         self.sending_time = self.datetime if sending_time is None else sending_time  # 下单时间
 
-        self.trade_time = trade_time if trade_time else [] # 成交时间
+        self.trade_time = trade_time if trade_time else []  # 成交时间
         self.amount = amount  # 委托数量
         self.trade_amount = 0  # 成交数量
         self.cancel_amount = 0  # 撤销数量
@@ -149,12 +151,15 @@ class QA_Order():
         self.callback = callback  # 委托成功的callback
         self.money = money  # 委托需要的金钱
         self.reason = None  # 原因列表
-
+        self.exchange_id = exchange_id
+        self.time_condition = 'GFD'  # 当日有效
         self._status = _status
-        
+        self.exchange_code = exchange_code
         # 增加订单对于多账户以及多级别账户的支持 2018/11/12
-        self.mainacc_id = None if 'mainacc_id' not in kwargs.keys() else kwargs['mainacc_id']
-        self.subacc_id = None if 'subacc_id' not in kwargs.keys() else kwargs['subacc_id']
+        self.mainacc_id = None if 'mainacc_id' not in kwargs.keys(
+        ) else kwargs['mainacc_id']
+        self.subacc_id = None if 'subacc_id' not in kwargs.keys(
+        ) else kwargs['subacc_id']
 
     @property
     def pending_amount(self):
@@ -184,6 +189,9 @@ class QA_Order():
         elif self.trade_amount == 0:
             self._status = ORDER_STATUS.QUEUED
             return self._status
+
+    def get_exchange(self, code):
+        return self.exchange_code[code.lower()]
 
     def create(self):
         """创建订单
@@ -291,6 +299,111 @@ class QA_Order():
         '''
         return vars(self)
 
+    def to_otgdict(self):
+        """{
+                "aid": "insert_order",                  # //必填, 下单请求
+                # //必填, 需要与登录用户名一致, 或为登录用户的子账户(例如登录用户为user1, 则报单 user_id 应当为 user1 或 user1.some_unit)
+                "user_id": account_cookie,
+                # //必填, 委托单号, 需确保在一个账号中不重复, 限长512字节
+                "order_id": order_id if order_id else QA.QA_util_random_with_topic('QAOTG'),
+                "exchange_id": exchange_id,  # //必填, 下单到哪个交易所
+                "instrument_id": code,               # //必填, 下单合约代码
+                "direction": order_direction,                      # //必填, 下单买卖方向
+                # //必填, 下单开平方向, 仅当指令相关对象不支持开平机制(例如股票)时可不填写此字段
+                "offset":  order_offset,
+                "volume":  volume,                             # //必填, 下单手数
+                "price_type": "LIMIT",  # //必填, 报单价格类型
+                "limit_price": price,  # //当 price_type == LIMIT 时需要填写此字段, 报单价格
+                "volume_condition": "ANY",
+                "time_condition": "GFD",
+            }
+        """
+        return {
+            "aid": "insert_order",                  # //必填, 下单请求
+            # //必填, 需要与登录用户名一致, 或为登录用户的子账户(例如登录用户为user1, 则报单 user_id 应当为 user1 或 user1.some_unit)
+            "user_id": self.account_cookie,
+            # //必填, 委托单号, 需确保在一个账号中不重复, 限长512字节
+            "order_id": self.order_id,
+            "exchange_id": self.exchange_id,  # //必填, 下单到哪个交易所
+            "instrument_id": self.code,               # //必填, 下单合约代码
+            "direction": self.direction,                      # //必填, 下单买卖方向
+            # //必填, 下单开平方向, 仅当指令相关对象不支持开平机制(例如股票)时可不填写此字段
+            "offset":  self.offset,
+            "volume":  self.amount,                             # //必填, 下单手数
+            "price_type": self.order_model,  # //必填, 报单价格类型
+            "limit_price": self.price,  # //当 price_type == LIMIT 时需要填写此字段, 报单价格
+            "volume_condition": "ANY",
+            "time_condition": "GFD",
+        }
+
+    def to_qatradegatway(self):
+
+        direction = 'BUY' if self.direction > 0 else 'SELL'
+        return {
+            'topic': 'sendorder',
+            'account_cookie': self.account_cookie,
+            'strategy_id': self.strategy,
+            'order_direction': direction,
+            'code': self.code.lower(),
+            'price': self.price,
+            'order_time': self.sending_time,
+            'exchange_id': self.get_exchange(self.code),
+            'order_offset': self.offset,
+            'volume': self.amount,
+            'order_id': self.order_id
+        }
+
+    def from_otgformat(self, otgOrder):
+        """[summary]
+
+        Arguments:
+            otgOrder {[type]} -- [description]
+
+
+        {'seqno': 6,
+        'user_id': '106184',
+        'order_id': 'WDRB_QA01_FtNlyBem',
+        'exchange_id': 'SHFE',
+        'instrument_id': 'rb1905',
+        'direction': 'SELL',
+        'offset': 'OPEN',
+        'volume_orign': 50, #(总报单手数)
+        'price_type': 'LIMIT', # "LIMIT" (价格类型, ANY=市价, LIMIT=限价)
+        'limit_price': 3432.0, # 4500.0 (委托价格, 仅当 price_type = LIMIT 时有效)
+        'time_condition': 'GFD',#  "GFD" (时间条件, IOC=立即完成，否则撤销, GFS=本节有效, GFD=当日有效, GTC=撤销前有效, GFA=集合竞价有效)
+        'volume_condition': 'ANY', # "ANY" (手数条件, ANY=任何数量, MIN=最小数量, ALL=全部数量)
+        'insert_date_time': 1545656460000000000,# 1501074872000000000 (下单时间(按北京时间)，自unix epoch(1970-01-01 00:00:00 GMT)以来的纳秒数)
+        'exchange_order_id': '        3738',
+        'status': 'FINISHED', # "ALIVE" (委托单状态, ALIVE=有效, FINISHED=已完)
+        'volume_left': 0,
+        'last_msg': '全部成交报单已提交'} # "报单成功" (委托单状态信息)
+        """
+        self.order_id = otgOrder.get('order_id')
+        self.account_cookie = otgOrder.get('user_id')
+        self.exchange_id = otgOrder.get('exchange_id')
+        self.code = str(otgOrder.get('instrument_id')).upper()
+        self.offset = otgOrder.get('offset')
+        self.direction = otgOrder.get('direction')
+        self.towards = 'ORDER_DIRECTION.{}_{}'.format(
+            self.offset, self.direction)
+        self.amount = otgOrder.get('volume_orign')
+        self.trade_amount = self.amount - otgOrder.get('volume_left')
+        self.price = otgOrder.get('limit_price')
+        self.order_model = eval(
+            'ORDER_MODEL.{}'.format(otgOrder.get('price_type')))
+        self.time_condition = otgOrder.get('time_condition')
+        self.datetime = QA_util_stamp2datetime(
+            int(otgOrder.get('insert_date_time')))
+        self.sending_time = self.datetime
+        self.volume_condition = otgOrder.get('volume_condition')
+        self.message = otgOrder.get('last_msg')
+
+        self._status = ORDER_STATUS.NEW
+        if '已撤单' in self.message or '拒绝' in self.message:
+            self._status = ORDER_STATUS.FAILED
+        self.realorder_id = otgOrder.get('exchange_order_id')
+        return self
+
     def from_dict(self, order_dict):
         '''
         从字段类型的字段 填充 对象的字段
@@ -364,19 +477,11 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
         self.deal_list = {}
 
     def __repr__(self):
-        return '<QA_ORDERQueue>'
+        return '< QA_ORDERQueue >'
         # return '< QA_OrderQueue AMOUNT {} WAITING TRADE {} >'.format(len(self.queue_df), len(self.pending))
 
     def __call__(self):
         return self.order_list
-
-    # def _from_dataframe(self, dataframe):
-    #     try:
-    #         self.order_list = [QA_Order().from_dict(item)
-    #                            for item in QA_util_to_json_from_pandas(dataframe)]
-    #         return self.order_list
-    #     except:
-    #         pass
 
     def insert_order(self, order):
         '''
@@ -468,6 +573,12 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
                 pass
         except:
             return None
+
+    def to_df(self):
+        try:
+            return pd.concat([x.to_df() for x in self.order_list.values()])
+        except:
+            pass
 
 
 if __name__ == '__main__':

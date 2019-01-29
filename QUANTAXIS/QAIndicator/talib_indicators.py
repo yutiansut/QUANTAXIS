@@ -27,7 +27,7 @@ import pandas as pd
 try:
     import talib
 except:
-    print('请安装TALIB后再调用此函数')
+    print('PLEASE install TALIB to call these methods')
 
 
 def AD(DataFrame):
@@ -53,9 +53,20 @@ def ADXR(DataFrame, N=14):
 
 
 def AROON(DataFrame, N=14):
-    res = talib.AROON(DataFrame.high.values, DataFrame.low.values, N)
-    return pd.DataFrame({'AROON': res}, index=DataFrame.index)
+    """阿隆指标
+    
+    Arguments:
+        DataFrame {[type]} -- [description]
+    
+    Keyword Arguments:
+        N {int} -- [description] (default: {14})
+    
+    Returns:
+        [type] -- [description]
+    """
 
+    ar_up, ar_down = talib.AROON(DataFrame.high.values, DataFrame.low.values, N)
+    return pd.DataFrame({'AROON_UP': ar_up,'AROON_DOWN': ar_down}, index=DataFrame.index)
 
 def AROONOSC(DataFrame, N=14):
     res = talib.AROONOSC(DataFrame.high.values, DataFrame.low.values, N)
@@ -486,5 +497,3 @@ def STOCHF(DataFrame, fastk_period=5, fastd_period=3, fastd_matype=0):
     fastk, fastd = talib.STOCHF(DataFrame.high.values, DataFrame.low.values, DataFrame.close.values,
                                fastk_period, fastd_period, fastd_matype)
     return pd.DataFrame({'STOCHF_FASTK': fastk, 'STOCHF_FASTD': slowd}, index=DataFrame.index)
-
-

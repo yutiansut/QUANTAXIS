@@ -113,7 +113,13 @@ def QA_util_datetime_to_strdatetime(dt):
     :return:  1999-02-01 09:30:91 string type
     """
     strdatetime = "%04d-%02d-%02d %02d:%02d:%02d" % (
-        dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)
+        dt.year,
+        dt.month,
+        dt.day,
+        dt.hour,
+        dt.minute,
+        dt.second
+    )
     return strdatetime
 
 
@@ -176,7 +182,14 @@ def QA_util_stamp2datetime(timestamp):
         return datetime.datetime.fromtimestamp(timestamp)
     except Exception as e:
         # it won't work ??
-        return datetime.datetime.fromtimestamp(timestamp / 1000)
+        try:
+            return datetime.datetime.fromtimestamp(timestamp / 1000)
+        except:
+            try:
+                return datetime.datetime.fromtimestamp(timestamp / 1000000)
+            except:
+                return datetime.datetime.fromtimestamp(timestamp / 1000000000)
+
     #
 
 
@@ -383,8 +396,10 @@ def QA_util_time_delay(time_=0):
     :param time_:
     :return:
     """
+
     def _exec(func):
         threading.Timer(time_, func)
+
     return _exec
 
 
@@ -401,7 +416,12 @@ def QA_util_calc_time(func, *args, **kwargs):
     print(datetime.datetime.now() - _time)
     # return datetime.datetime.now() - _time
 
-month_data = pd.date_range('1/1/1996', '12/31/2023', freq='Q-MAR').astype(str).tolist()
+
+month_data = pd.date_range(
+    '1/1/1996',
+    '12/31/2023',
+    freq='Q-MAR'
+).astype(str).tolist()
 
 if __name__ == '__main__':
     print(QA_util_time_stamp('2017-01-01 10:25:08'))
