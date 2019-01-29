@@ -15,15 +15,22 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
-from QUANTAXIS.QAMarket.common import (cn_en_compare, order_status_cn_en,
-                                       trade_towards_cn_en)
+from QUANTAXIS.QAMarket.common import (
+    cn_en_compare,
+    order_status_cn_en,
+    trade_towards_cn_en
+)
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
 from QUANTAXIS.QAUtil.QADate import QA_util_date_int2str
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_order_datetime
-from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, BROKER_TYPE,
-                                          ORDER_DIRECTION, ORDER_MODEL,
-                                          ORDER_STATUS)
+from QUANTAXIS.QAUtil.QAParameter import (
+    BROKER_EVENT,
+    BROKER_TYPE,
+    ORDER_DIRECTION,
+    ORDER_MODEL,
+    ORDER_STATUS
+)
 from QUANTAXIS.QAUtil.QASetting import setting_path
 
 CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
@@ -32,6 +39,7 @@ DEFAULT_SHIPANE_KEY = ''
 
 
 class SPE_CONFIG():
+
     def __init__(self, uri=DEFAULT_SHIPANE_URL, key=DEFAULT_SHIPANE_KEY):
         self.key = key
         self.uri = uri
@@ -44,7 +52,12 @@ def get_config_SPE():
         config.read(CONFIGFILE_PATH)
         try:
 
-            return SPE_CONFIG(config.get('SPE', 'uri'), config.get('SPE', 'key'))
+            return SPE_CONFIG(
+                config.get('SPE',
+                           'uri'),
+                config.get('SPE',
+                           'key')
+            )
 
         except configparser.NoSectionError:
             config.add_section('SPE')
@@ -144,10 +157,17 @@ class QA_SPEBroker(QA_Broker):
         try:
             if self.key == '':
                 uri = '{}/api/v1.0/{}?client={}'.format(
-                    self._endpoint, func, params.pop('client'))
+                    self._endpoint,
+                    func,
+                    params.pop('client')
+                )
             else:
                 uri = '{}/api/v1.0/{}?key={}&client={}'.format(
-                    self._endpoint, func, self.key, params.pop('client'))
+                    self._endpoint,
+                    func,
+                    self.key,
+                    params.pop('client')
+                )
             # print(uri)
             response = self._session.get(uri, params)
             text = response.text
@@ -166,10 +186,17 @@ class QA_SPEBroker(QA_Broker):
     def call_post(self, func, params={}):
         if self.key == '':
             uri = '{}/api/v1.0/{}?client={}'.format(
-                self._endpoint, func, params.pop('client'))
+                self._endpoint,
+                func,
+                params.pop('client')
+            )
         else:
             uri = '{}/api/v1.0/{}?key={}&client={}'.format(
-                self._endpoint, func, self.key, params.pop('client'))
+                self._endpoint,
+                func,
+                self.key,
+                params.pop('client')
+            )
 
         response = self._session.post(uri, json=params)
         text = response.text
@@ -179,10 +206,17 @@ class QA_SPEBroker(QA_Broker):
 
         if self.key == '':
             uri = '{}/api/v1.0/{}?client={}'.format(
-                self._endpoint, func, params.pop('client'))
+                self._endpoint,
+                func,
+                params.pop('client')
+            )
         else:
             uri = '{}/api/v1.0/{}?key={}&client={}'.format(
-                self._endpoint, func, self.key, params.pop('client'))
+                self._endpoint,
+                func,
+                self.key,
+                params.pop('client')
+            )
 
         response = self._session.delete(uri)
 
@@ -207,9 +241,7 @@ class QA_SPEBroker(QA_Broker):
         return self.call("ping", {})
 
     def query_accounts(self, accounts):
-        return self.call("accounts", {
-            'client': accounts
-        })
+        return self.call("accounts", {'client': accounts})
 
     def query_positions(self, accounts):
         """查询现金和持仓
@@ -221,9 +253,7 @@ class QA_SPEBroker(QA_Broker):
             dict-- {'cash_available':xxx,'hold_available':xxx}
         """
         try:
-            data = self.call("positions", {
-                'client': accounts
-            })
+            data = self.call("positions", {'client': accounts})
             if data is not None:
                 cash_part = data.get('subAccounts', {}).get('人民币', False)
                 if cash_part:
@@ -234,14 +264,32 @@ class QA_SPEBroker(QA_Broker):
                     res = data.get('dataTable', False)
                     if res:
                         hold_headers = res['columns']
-                        hold_headers = [cn_en_compare[item]
-                                        for item in hold_headers]
+                        hold_headers = [
+                            cn_en_compare[item] for item in hold_headers
+                        ]
                         hold_available = pd.DataFrame(
-                            res['rows'], columns=hold_headers)
-                if len(hold_available) == 1 and hold_available.amount[0] in [None, '', 0]:
+                            res['rows'],
+                            columns=hold_headers
+                        )
+                if len(hold_available) == 1 and hold_available.amount[0] in [
+                        None,
+                        '',
+                        0
+                ]:
                     hold_available = pd.DataFrame(
-                        data=None, columns=hold_headers)
-                return {'cash_available': cash_available, 'hold_available': hold_available.assign(amount=hold_available.amount.apply(float)).loc[:, ['code', 'amount']].set_index('code').amount}
+                        data=None,
+                        columns=hold_headers
+                    )
+                return {
+                    'cash_available':
+                    cash_available,
+                    'hold_available':
+                    hold_available.assign(
+                        amount=hold_available.amount.apply(float)
+                    ).loc[:,
+                          ['code',
+                           'amount']].set_index('code').amount
+                }
             else:
                 print(data)
                 return False, 'None ACCOUNT'
@@ -256,13 +304,24 @@ class QA_SPEBroker(QA_Broker):
         """
 
         try:
-            data = self.call("clients", {
-                'client': 'None'
-            })
+            data = self.call("clients", {'client': 'None'})
             if len(data) > 0:
-                return pd.DataFrame(data).drop(['commandLine', 'processId'], axis=1)
+                return pd.DataFrame(data).drop(
+                    ['commandLine',
+                     'processId'],
+                    axis=1
+                )
             else:
-                return pd.DataFrame(None, columns=['id', 'name', 'windowsTitle', 'accountInfo', 'status'])
+                return pd.DataFrame(
+                    None,
+                    columns=[
+                        'id',
+                        'name',
+                        'windowsTitle',
+                        'accountInfo',
+                        'status'
+                    ]
+                )
         except Exception as e:
             return False, e
 
@@ -279,44 +338,63 @@ class QA_SPEBroker(QA_Broker):
             [type] -- [description]
         """
         try:
-            data = self.call("orders", {
-                'client': accounts,
-                'status': status
-            })
+            data = self.call("orders", {'client': accounts, 'status': status})
 
             if data is not None:
                 orders = data.get('dataTable', False)
 
                 order_headers = orders['columns']
-                if ('成交状态' in order_headers or '状态说明' in order_headers) and ('备注' in order_headers):
+                if ('成交状态' in order_headers
+                        or '状态说明' in order_headers) and ('备注' in order_headers):
                     order_headers[order_headers.index('备注')] = '废弃'
 
                 order_headers = [cn_en_compare[item] for item in order_headers]
                 order_all = pd.DataFrame(
-                    orders['rows'], columns=order_headers).assign(account_cookie=accounts)
+                    orders['rows'],
+                    columns=order_headers
+                ).assign(account_cookie=accounts)
 
                 order_all.towards = order_all.towards.apply(
-                    lambda x: trade_towards_cn_en[x])
+                    lambda x: trade_towards_cn_en[x]
+                )
                 if 'order_time' in order_headers:
                     # 这是order_status
                     order_all['status'] = order_all.status.apply(
-                        lambda x: order_status_cn_en[x])
+                        lambda x: order_status_cn_en[x]
+                    )
                     if 'order_date' not in order_headers:
                         order_all.order_time = order_all.order_time.apply(
-                            lambda x: QA_util_get_order_datetime(dt='{} {}'.format(datetime.date.today(), x)))
+                            lambda x: QA_util_get_order_datetime(
+                                dt='{} {}'.format(datetime.date.today(),
+                                                  x)
+                            )
+                        )
                     else:
-                        order_all = order_all.assign(order_time=order_all.order_date.apply(
-                            QA_util_date_int2str)+' '+order_all.order_time)
+                        order_all = order_all.assign(
+                            order_time=order_all.order_date
+                            .apply(QA_util_date_int2str) + ' ' +
+                            order_all.order_time
+                        )
 
                 if 'trade_time' in order_headers:
 
                     order_all.trade_time = order_all.trade_time.apply(
-                        lambda x: '{} {}'.format(datetime.date.today(), x))
+                        lambda x: '{} {}'.format(datetime.date.today(),
+                                                 x)
+                    )
 
                 if status is 'filled':
-                    return order_all.loc[:, self.dealstatus_headers].set_index(['account_cookie', 'realorder_id']).sort_index()
+                    return order_all.loc[:,
+                                         self.dealstatus_headers].set_index(
+                                             ['account_cookie',
+                                              'realorder_id']
+                                         ).sort_index()
                 else:
-                    return order_all.loc[:, self.orderstatus_headers].set_index(['account_cookie', 'realorder_id']).sort_index()
+                    return order_all.loc[:,
+                                         self.orderstatus_headers].set_index(
+                                             ['account_cookie',
+                                              'realorder_id']
+                                         ).sort_index()
             else:
                 print('response is None')
                 return False
@@ -324,7 +402,15 @@ class QA_SPEBroker(QA_Broker):
             print(e)
             return False
 
-    def send_order(self, accounts, code='000001', price=9, amount=100, order_direction=ORDER_DIRECTION.BUY, order_model=ORDER_MODEL.LIMIT):
+    def send_order(
+            self,
+            accounts,
+            code='000001',
+            price=9,
+            amount=100,
+            order_direction=ORDER_DIRECTION.BUY,
+            order_model=ORDER_MODEL.LIMIT
+    ):
         """[summary]
 
         Arguments:
@@ -359,33 +445,41 @@ class QA_SPEBroker(QA_Broker):
         """
         try:
             #print(code, price, amount)
-            return self.call_post('orders', {
-                'client': accounts,
-                "action": 'BUY' if order_direction == 1 else 'SELL',
-                "symbol": code,
-                "type": order_model,
-                "priceType": 0 if order_model == ORDER_MODEL.LIMIT else 4,
-                "price": price,
-                "amount": amount
-            })
+            return self.call_post(
+                'orders',
+                {
+                    'client': accounts,
+                    "action": 'BUY' if order_direction == 1 else 'SELL',
+                    "symbol": code,
+                    "type": order_model,
+                    "priceType": 0 if order_model == ORDER_MODEL.LIMIT else 4,
+                    "price": price,
+                    "amount": amount
+                }
+            )
         except json.decoder.JSONDecodeError:
             print(RuntimeError('TRADE ERROR'))
             return None
 
     def cancel_order(self, accounts, orderid):
-        return self.call_delete('orders/{}'.format(orderid), {
-            'client': accounts
-        })
+        return self.call_delete(
+            'orders/{}'.format(orderid),
+            {'client': accounts}
+        )
 
     def cancel_all(self, accounts):
-        return self.call_delete('orders', {
-            'client': accounts
-        })
+        return self.call_delete('orders', {'client': accounts})
 
     def receive_order(self, event):
         order = event.order
-        res = self.send_order(accounts=order.account_cookie, code=order.code, price=order.price,
-                              amount=order.amount, order_direction=order.towards, order_model=order.order_model)
+        res = self.send_order(
+            accounts=order.account_cookie,
+            code=order.code,
+            price=order.price,
+            amount=order.amount,
+            order_direction=order.towards,
+            order_model=order.order_model
+        )
         try:
             # if res is not None and 'id' in res.keys():
 
@@ -398,13 +492,16 @@ class QA_SPEBroker(QA_Broker):
 
         except:
 
-            text = 'WRONG' if res is None else res.get(
-                'message', 'WRONG')
+            text = 'WRONG' if res is None else res.get('message', 'WRONG')
 
             order.failed(text)
 
-            print('FAILED FOR CREATE ORDER {} {}'.format(
-                order.account_cookie, order.status))
+            print(
+                'FAILED FOR CREATE ORDER {} {}'.format(
+                    order.account_cookie,
+                    order.status
+                )
+            )
             print(res)
             return order
         #self.dealer.deal(order, self.market_data)
