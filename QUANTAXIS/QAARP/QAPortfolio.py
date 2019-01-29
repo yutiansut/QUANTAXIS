@@ -265,10 +265,8 @@ class QA_Portfolio(QA_Account):
             'account_list': list(self.accounts.keys()),
             'init_cash': self.init_cash,
             'cash': self.cash,
-            'history': self.history[0]
+            'history': self.history[0],
             'history_header': self.history[1]
-
-
         }
 
     def send_order(
@@ -406,7 +404,7 @@ class QA_Portfolio(QA_Account):
             [account.history_table for account in list(self.accounts.values())]
         )
 
-    def reload(self, message):
+    def reload(self):
 
         message = self.client.find_one(
             {'user_cookie': self.user_cookie, 'portfolio_cookie': self.portfolio_cookie})
@@ -422,7 +420,7 @@ class QA_Portfolio(QA_Account):
         else:
             self.init_cash = message['init_cash']
             self.cash = message['cash']
-            self.history = (message['history'], message['history_header'])
+            #self.history = (message['history'], message['history_header'])
             account_list = message['account_list']
             self.accounts = dict(zip(account_list, [QA_Account(
                 account_cookie=item, user_cookie=self.user_cookie, portfolio_cookie=self.portfolio_cookie) for item in account_list]))
