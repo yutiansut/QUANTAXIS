@@ -158,10 +158,10 @@ class QA_User():
 
     def __getitem__(self, portfolio_cookie: str):
         """获取user下的portfolio
-        
+
         Arguments:
             portfolio_cookie {str} -- [description]
-        
+
         Returns:
             [type] -- [description]
         """
@@ -425,11 +425,11 @@ class QA_User():
             )
         else:
             self.client.update(
-                {'username':self.username, 'password': self.password},
+                {'username': self.username, 'password': self.password},
                 {'$set': self.message},
-                upsert= True
-                )
-    
+                upsert=True
+            )
+
         # user ==> portfolio 的存储
         # account的存储在  portfolio.save ==> account.save 中
         for portfolio in list(self.portfolio_list.values()):
@@ -441,7 +441,8 @@ class QA_User():
         if self.wechat_id is not None:
             res = self.client.find_one({'wechat_id': self.wechat_id})
         else:
-            res = self.client.find_one({'username': self.username, 'password': self.password})
+            res = self.client.find_one(
+                {'username': self.username, 'password': self.password})
         if res is None:
             self.client.insert_one(self.message)
         else:
@@ -465,10 +466,17 @@ class QA_User():
         self.money = message.get('money')
         self._subscribed_strategy = message.get('subuscribed_strategy')
         self._subscribed_code = message.get('subscribed_code')
-        self.username= message.get('username')
+        self.username = message.get('username')
         self.password = message.get('password')
         self.user_cookie = message.get('user_cookie')
-        self.portfolio_list = message.get('portfolio_list')
+        #
+
+        portfolio_list = message.get('portfolio_list')
+        if len(portfolio_list) > 0:
+            self.portfolio_list = dict(zip(portfolio_list, [QA_Portfolio(
+                user_cookie=self.user_cookie, portfolio_cookie=item) for item in portfolio_list]))
+        else:
+            self.portfolio_list = {}
 
 
 if __name__ == '__main__':
