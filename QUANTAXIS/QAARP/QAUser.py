@@ -158,10 +158,10 @@ class QA_User():
 
     def __getitem__(self, portfolio_cookie: str):
         """获取user下的portfolio
-        
+
         Arguments:
             portfolio_cookie {str} -- [description]
-        
+
         Returns:
             [type] -- [description]
         """
@@ -404,24 +404,45 @@ class QA_User():
             'money': self.money,
             'subuscribed_strategy': self._subscribed_strategy,
             'subscribed_code': self.subscribed_code,
-            'portfolio_list': list(self.portfolio_list.keys())
+            'portfolio_list': list(self.portfolio_list.keys()),
+            'lastupdatetime': str(datetime.datetime.now())
         }
 
     def save(self):
         """
         将QA_USER的信息存入数据库
+
+        ATTENTION:
+
+        在save user的时候, 需要同时调用  user/portfolio/account链条上所有的实例化类 同时save
+
         """
-        self.client.update(
-            {'wechat_id': self.wechat_id},
-            {'$set': self.message},
-            upsert=True
-        )
+        if self.wechat_id is not None:
+            self.client.update(
+                {'wechat_id': self.wechat_id},
+                {'$set': self.message},
+                upsert=True
+            )
+        else:
+            self.client.update(
+                {'username': self.username, 'password': self.password},
+                {'$set': self.message},
+                upsert=True
+            )
+
+        # user ==> portfolio 的存储
+        # account的存储在  portfolio.save ==> account.save 中
+        for portfolio in list(self.portfolio_list.values()):
+            portfolio.save()
 
     def sync(self):
         """基于账户/密码去sync数据库
         """
-
-        res = self.client.find_one({'wechat_id': self.wechat_id})
+        if self.wechat_id is not None:
+            res = self.client.find_one({'wechat_id': self.wechat_id})
+        else:
+            res = self.client.find_one(
+                {'username': self.username, 'password': self.password})
         if res is None:
             self.client.insert_one(self.message)
         else:
@@ -445,6 +466,17 @@ class QA_User():
         self.money = message.get('money')
         self._subscribed_strategy = message.get('subuscribed_strategy')
         self._subscribed_code = message.get('subscribed_code')
+        self.username = message.get('username')
+        self.password = message.get('password')
+        self.user_cookie = message.get('user_cookie')
+        #
+
+        portfolio_list = message.get('portfolio_list')
+        if len(portfolio_list) > 0:
+            self.portfolio_list = dict(zip(portfolio_list, [QA_Portfolio(
+                user_cookie=self.user_cookie, portfolio_cookie=item) for item in portfolio_list]))
+        else:
+            self.portfolio_list = {}
 
 
 if __name__ == '__main__':
