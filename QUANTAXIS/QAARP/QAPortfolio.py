@@ -423,7 +423,7 @@ class QA_Portfolio(QA_Account):
             #self.history = (message['history'], message['history_header'])
             account_list = message['account_list']
             self.accounts = dict(zip(account_list, [QA_Account(
-                account_cookie=item, user_cookie=self.user_cookie, portfolio_cookie=self.portfolio_cookie) for item in account_list]))
+                account_cookie=item, user_cookie=self.user_cookie, portfolio_cookie=self.portfolio_cookie, auto_reload=True) for item in account_list]))
 
     def save(self):
         """存储过程
