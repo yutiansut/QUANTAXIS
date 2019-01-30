@@ -34,6 +34,7 @@ from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
 from QUANTAXIS.QAEngine.QAEvent import QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
 from QUANTAXIS.QASU.save_account import save_account, update_account
+from QUANTAXIS.QAUtil.QASetting import DATABASE
 from QUANTAXIS.QAUtil.QADate_trade import (
     QA_util_get_next_day,
     QA_util_get_trade_range
@@ -145,7 +146,8 @@ class QA_Account(QA_Worker):
             allow_t0=False,
             allow_sellopen=False,
             allow_margin=False,
-            running_environment=RUNNING_ENVIRONMENT.BACKETEST
+            running_environment=RUNNING_ENVIRONMENT.BACKETEST,
+            auto_reload = False
     ):
         """
 
@@ -263,6 +265,7 @@ class QA_Account(QA_Worker):
         self.datetime = None
         self.running_time = datetime.datetime.now()
         self.quantaxis_version = __version__
+        self.client = DATABASE.account
         ########################################################################
         # 资产类
         self.orders = QA_OrderQueue()       # 历史委托单
@@ -322,6 +325,9 @@ class QA_Account(QA_Worker):
         """
 
         self.frozen = {} # 冻结资金(保证金)
+        
+        if auto_reload:
+            self.reload()
 
     def __repr__(self):
         return '< QA_Account {} market: {}>'.format(
@@ -1557,6 +1563,18 @@ class QA_Account(QA_Worker):
         存储账户信息
         """
         save_account(self.message)
+
+    def reload(self):
+        message = self.client.find_one({
+            'account_cookie': self.account_cookie,
+            'portfolio_coookie': self.portfolio_cookie,
+            'user_cookie': self.user_cookie
+        })
+        if message is None:
+            self.client.insert(self.message)
+        else:
+            self.from_message(message)
+
 
     def sync_account(self, sync_message):
         """同步账户
