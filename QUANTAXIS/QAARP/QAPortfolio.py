@@ -436,6 +436,7 @@ class QA_Portfolio(QA_Account):
         )
 
         for account in self.accounts.values():
+            print('account {} save'.format(account.account_cookie))
             account.save()
 
 
