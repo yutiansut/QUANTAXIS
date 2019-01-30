@@ -285,6 +285,15 @@ class QA_User():
             )
         )
         return res.query('status=="running"')
+    
+    def change_wechatid(self, id):
+        """修改wechat
+        
+        Arguments:
+            id {[type]} -- [description]
+        """
+
+        self.wechat_id = id
 
     def sub_code(self, code):
         """关注的品种
