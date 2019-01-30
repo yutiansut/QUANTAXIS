@@ -399,6 +399,14 @@ class QA_Portfolio(QA_Account):
         return res, ids
 
     @property
+    def history2(self):
+        res = []
+        for account in list(self.accounts.values()):
+            res.extend(account.history)
+
+        return res
+
+    @property
     def history_table(self):
         return pd.concat(
             [account.history_table for account in list(self.accounts.values())]
@@ -407,7 +415,11 @@ class QA_Portfolio(QA_Account):
     def reload(self):
 
         message = self.client.find_one(
-            {'user_cookie': self.user_cookie, 'portfolio_cookie': self.portfolio_cookie})
+            {
+                'user_cookie': self.user_cookie,
+                'portfolio_cookie': self.portfolio_cookie
+            }
+        )
         # 'user_cookie': self.user_cookie,
         # 'portfolio_cookie': self.portfolio_cookie,
         # 'account_list': list(self.accounts.keys()),
@@ -422,15 +434,38 @@ class QA_Portfolio(QA_Account):
             self.cash = message['cash']
             #self.history = (message['history'], message['history_header'])
             account_list = message['account_list']
-            self.accounts = dict(zip(account_list, [QA_Account(
-                account_cookie=item, user_cookie=self.user_cookie, portfolio_cookie=self.portfolio_cookie, auto_reload=True) for item in account_list]))
+            self.accounts = dict(
+                zip(
+                    account_list,
+                    [
+                        QA_Account(
+                            account_cookie=item,
+                            user_cookie=self.user_cookie,
+                            portfolio_cookie=self.portfolio_cookie,
+                            auto_reload=True
+                        ) for item in account_list
+                    ]
+                )
+            )
+
+    @property
+    def code(self):
+        """code of portfolio ever hold
+        
+        Returns:
+            [type] -- [description]
+        """
+
+        return self.history_table.code.unique().tolist()
 
     def save(self):
         """存储过程
         """
         self.client.update(
-            {'portfolio_cookie': self.portfolio_cookie,
-                'user_cookie': self.user_cookie},
+            {
+                'portfolio_cookie': self.portfolio_cookie,
+                'user_cookie': self.user_cookie
+            },
             {'$set': self.message},
             upsert=True
         )
@@ -559,12 +594,12 @@ class QA_PortfolioView():
     @property
     def history_table(self):
         return pd.concat([item.history_table for item in self.accounts]
-                         ).sort_index()
+                        ).sort_index()
 
     @property
     def trade_day(self):
         return pd.concat([pd.Series(item.trade_day) for item in self.accounts]
-                         ).drop_duplicates().sort_values().tolist()
+                        ).drop_duplicates().sort_values().tolist()
 
     @property
     def trade_range(self):

@@ -126,13 +126,13 @@ class QA_User():
         self.user_cookie = QA_util_random_with_topic(
             'USER'
         ) if user_cookie is None else user_cookie
-        self.coins = coins  # 积分
-        self.money = money  # 钱
+        self.coins = coins # 积分
+        self.money = money # 钱
 
         # ==============================
         self._subscribed_strategy = {}
         self._subscribed_code = []
-        self._signals = []  # 预期收到的信号
+        self._signals = [] # 预期收到的信号
         self._cash = []
         self._history = []
 
@@ -285,7 +285,7 @@ class QA_User():
             )
         )
         return res.query('status=="running"')
-    
+
     def change_wechatid(self, id):
         """修改wechat
         
@@ -434,7 +434,10 @@ class QA_User():
             )
         else:
             self.client.update(
-                {'username': self.username, 'password': self.password},
+                {
+                    'username': self.username,
+                    'password': self.password
+                },
                 {'$set': self.message},
                 upsert=True
             )
@@ -451,7 +454,11 @@ class QA_User():
             res = self.client.find_one({'wechat_id': self.wechat_id})
         else:
             res = self.client.find_one(
-                {'username': self.username, 'password': self.password})
+                {
+                    'username': self.username,
+                    'password': self.password
+                }
+            )
         if res is None:
             self.client.insert_one(self.message)
         else:
@@ -482,8 +489,17 @@ class QA_User():
 
         portfolio_list = message.get('portfolio_list')
         if len(portfolio_list) > 0:
-            self.portfolio_list = dict(zip(portfolio_list, [QA_Portfolio(
-                user_cookie=self.user_cookie, portfolio_cookie=item) for item in portfolio_list]))
+            self.portfolio_list = dict(
+                zip(
+                    portfolio_list,
+                    [
+                        QA_Portfolio(
+                            user_cookie=self.user_cookie,
+                            portfolio_cookie=item
+                        ) for item in portfolio_list
+                    ]
+                )
+            )
         else:
             self.portfolio_list = {}
 
