@@ -166,6 +166,7 @@ class QA_Account(QA_Worker):
         :param [Bool] allow_t0:          是否允许t+0交易  默认False
         :param [Bool] allow_sellopen:    是否允许卖空开仓  默认False
         :param [Bool] allow_margin:      是否允许保证金交易 默认False
+        :param [Bool] auto_reload:       是否自动从数据库中同步数据
 
         ### 注意
         >>>>>>>>>>>>>
@@ -267,6 +268,7 @@ class QA_Account(QA_Worker):
         self.running_time = datetime.datetime.now()
         self.quantaxis_version = __version__
         self.client = DATABASE.account
+        ### 下面是数据库创建index部分, 此部分可能导致部分代码和原先不兼容
         self.client.create_index(
             [
                 ("account_cookie",
@@ -1395,6 +1397,7 @@ class QA_Account(QA_Worker):
 
         self.sell_available = self.hold
         self.buy_available = self.hold
+        self.cash_available = self.cash[-1]
         self.datetime = '{} 09:30:00'.format(
             QA_util_get_next_day(self.date)
         ) if self.date is not None else None

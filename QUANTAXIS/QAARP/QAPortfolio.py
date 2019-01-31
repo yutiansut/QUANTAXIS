@@ -178,6 +178,7 @@ class QA_Portfolio(QA_Account):
             self,
             account_cookie=None,
             init_cash=1000000,
+            market_type=MARKET_TYPE.STOCK_CN,
             *args,
             **kwargs
     ):
@@ -191,12 +192,19 @@ class QA_Portfolio(QA_Account):
         """
 
         if account_cookie is None:
+            """创建新的account
+
+            Returns:
+                [type] -- [description]
+            """
+            # 如果组合的cash_available>创建新的account所需cash
             if self.cash_available > init_cash:
 
                 temp = QA_Account(
                     portfolio_cookie=self.portfolio_cookie,
                     init_cash=init_cash,
                     user_cookie=self.user_cookie,
+                    market_type=market_type,
                     *args,
                     **kwargs
                 )
@@ -213,6 +221,7 @@ class QA_Portfolio(QA_Account):
                     self.accounts[account_cookie] = QA_Account(
                         portfolio_cookie=self.portfolio_cookie,
                         init_cash=init_cash,
+                        market_type=market_type,
                         user_cookie=self.user_cookie,
                         account_cookie=account_cookie,
                         *args,
@@ -265,8 +274,7 @@ class QA_Portfolio(QA_Account):
             'account_list': list(self.accounts.keys()),
             'init_cash': self.init_cash,
             'cash': self.cash,
-            'history': self.history[0],
-            'history_header': self.history[1]
+            'history': self.history
         }
 
     def send_order(
@@ -326,7 +334,7 @@ class QA_Portfolio(QA_Account):
         统计每一个时间点的时候的cash总和
         """
 
-        pass
+        return sum([account.cash_available for account in self.accounts.values()])
 
     def pull(self, account_cookie=None, collection=DATABASE.account):
         'pull from the databases'
@@ -390,7 +398,7 @@ class QA_Portfolio(QA_Account):
             self.accounts[account_cookie].from_message(message)
 
     @property
-    def history(self):
+    def history_split(self):
         res = []
         ids = []
         for account in list(self.accounts.values()):
@@ -399,7 +407,7 @@ class QA_Portfolio(QA_Account):
         return res, ids
 
     @property
-    def history2(self):
+    def history(self):
         res = []
         for account in list(self.accounts.values()):
             res.extend(account.history)
@@ -451,7 +459,7 @@ class QA_Portfolio(QA_Account):
     @property
     def code(self):
         """code of portfolio ever hold
-        
+
         Returns:
             [type] -- [description]
         """
@@ -594,12 +602,12 @@ class QA_PortfolioView():
     @property
     def history_table(self):
         return pd.concat([item.history_table for item in self.accounts]
-                        ).sort_index()
+                         ).sort_index()
 
     @property
     def trade_day(self):
         return pd.concat([pd.Series(item.trade_day) for item in self.accounts]
-                        ).drop_duplicates().sort_values().tolist()
+                         ).drop_duplicates().sort_values().tolist()
 
     @property
     def trade_range(self):
