@@ -27,7 +27,6 @@ import json
 import os
 
 from QUANTAXIS.QASetting.QALocalize import qa_path, setting_path, strategy_path
-from QUANTAXIS.QASU.user import QA_user_sign_in
 from QUANTAXIS.QAUtil.QASql import (
     QA_util_sql_async_mongo_setting,
     QA_util_sql_mongo_setting
@@ -194,15 +193,7 @@ class QA_Setting():
         DATABASE = self.client
         return self
 
-    def login(self, user_name, password):
-        user = QA_user_sign_in(user_name, password, self.client)
-        if user is not None:
-            self.user_name = user_name
-            self.password = password
-            self.user = user
-            return self.user
-        else:
-            return False
+
 
 
 QASETTING = QA_Setting()

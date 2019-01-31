@@ -24,10 +24,11 @@
 import pandas as pd
 import datetime
 import uuid
+from pymongo import ASCENDING, DESCENDING
 from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
-from QUANTAXIS.QAUtil.QASetting import QA_Setting
+from QUANTAXIS.QAUtil.QASetting import QA_Setting, DATABASE
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_next_day, QA_util_get_real_date
 
 
@@ -74,6 +75,8 @@ class QA_User():
             coins=10000,
             wechat_id=None,
             money=0,
+            *args,
+            **kwargs
     ):
         """[summary]
 
@@ -92,7 +95,21 @@ class QA_User():
 
         """
 
-        self.setting = QA_Setting()
+        #self.setting = QA_Setting()
+        self.client = DATABASE.user
+
+        ## user_cookie/ username / wechat_id
+        self.client.create_index(
+            [
+                ("user_cookie",
+                 ASCENDING),
+                ("username",
+                 ASCENDING),
+                ("wechat_id",
+                 ASCENDING)
+            ],
+            unique=True
+        )
         self.portfolio_list = {}
 
         # ==============================
@@ -126,13 +143,13 @@ class QA_User():
         self.user_cookie = QA_util_random_with_topic(
             'USER'
         ) if user_cookie is None else user_cookie
-        self.coins = coins # 积分
-        self.money = money # 钱
+        self.coins = coins  # 积分
+        self.money = money  # 钱
 
         # ==============================
         self._subscribed_strategy = {}
         self._subscribed_code = []
-        self._signals = [] # 预期收到的信号
+        self._signals = []  # 预期收到的信号
         self._cash = []
         self._history = []
 
@@ -250,6 +267,12 @@ class QA_User():
             return False, 'Not Enough Coins'
 
     def unsubscribe_stratgy(self, strategy_id):
+        """取消订阅某一个策略
+
+        Arguments:
+            strategy_id {[type]} -- [description]
+        """
+
         today = datetime.date.today()
         order_id = str(uuid.uuid1())
         if strategy_id in self._subscribed_strategy.keys():
@@ -266,11 +289,22 @@ class QA_User():
 
     @property
     def subscribed_strategy(self):
+        """历史(包含正在订阅的)策略
+
+        Returns:
+            [type] -- [description]
+        """
 
         return pd.DataFrame(list(self._subscribed_strategy.values()))
 
     @property
     def subscribing_strategy(self):
+        """订阅一个策略
+
+        Returns:
+            [type] -- [description]
+        """
+
         res = self.subscribed_strategy.assign(
             remains=self.subscribed_strategy.end.apply(
                 lambda x: pd.Timestamp(x) - pd.Timestamp(datetime.date.today())
@@ -288,7 +322,7 @@ class QA_User():
 
     def change_wechatid(self, id):
         """修改wechat
-        
+
         Arguments:
             id {[type]} -- [description]
         """
@@ -302,39 +336,14 @@ class QA_User():
 
     @property
     def subscribed_code(self):
+        """关注的品种
+
+        Returns:
+            [type] -- [description]
+        """
+
         return list(set(self._subscribed_code))
 
-    @property
-    def client(self):
-        '''
-        'user.client to connect database'
-        :return: pymongo.MongoClient 数据库连接
-        '''
-        return self.setting.client.quantaxis.user
-
-    def connect_database(self, ip='127.0.0.1', port=27017):
-        '''
-        'connect is also a way to change database from IP_A to IP_B
-        :param ip: 连接mongodb ip
-        :param port: 连接mongodb 端口
-        :return: None
-        '''
-        self.setting.change(ip, port)
-
-    def login(self, username, password):
-        '''
-        login to a database
-        🛠todo： fix 返回 是否成功
-        :param username: 连接 mongodb 的用户名
-        :param password:  连接 mongodb 的密码
-        :return: Boolean 是否成功连接
-        '''
-        if self.setting.login(username, password):
-            QA_util_log_info('SUCCESS')
-            return True
-        else:
-            QA_util_log_info('FAILD')
-            return False
 
     def new_portfolio(self, portfolio_cookie=None):
         '''
