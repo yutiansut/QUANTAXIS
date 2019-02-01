@@ -344,7 +344,6 @@ class QA_User():
 
         return list(set(self._subscribed_code))
 
-
     def new_portfolio(self, portfolio_cookie=None):
         '''
             根据 self.user_cookie 创建一个 portfolio
@@ -474,12 +473,24 @@ class QA_User():
             self.reload(res)
 
         return self
-    
+
     @property
     def node_view(self):
+
+        links = [{'source': self.username, 'target': item}
+                 for item in self.portfolio_list.keys()]
+        data = [{'name': self.username, 'symbolSize': 100}]
+        for port in self.portfolio_list.values():
+            links.extend(port.node_view['links'])
+            data.append({'name': port.portfolio_cookie, 'symbolSize': 80})
+            for acc in port.accounts.values():
+                data.append({'name': acc.account_cookie, 'symbolSize': 50})
+
         return {
             'node_name': self.username,
-            'sub_node': [portfolio.node_view for portfolio in self.portfolio_list.values()]
+            'sub_node': [portfolio.node_view for portfolio in self.portfolio_list.values()],
+            'links': links,
+            'data': data
         }
 
     def reload(self, message):

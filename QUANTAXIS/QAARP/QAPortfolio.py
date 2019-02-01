@@ -148,7 +148,8 @@ class QA_Portfolio(QA_Account):
         return {
             'node_name': self.portfolio_cookie,
             'cash_available' : self.cash_available,
-            'sub_node': [account.node_view for account in self.accounts.values()]
+            'sub_node': [account.node_view for account in self.accounts.values()],
+            'links': [{'source':self.portfolio_cookie, 'target': item } for item in self.accounts.keys()]
         }
 
 
