@@ -474,6 +474,13 @@ class QA_User():
             self.reload(res)
 
         return self
+    
+    @property
+    def node_view(self):
+        return {
+            'node_name': self.username,
+            'sub_node': [portfolio.node_view for portfolio in self.portfolio_list.values()]
+        }
 
     def reload(self, message):
         """恢复方法
