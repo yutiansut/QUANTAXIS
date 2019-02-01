@@ -1003,6 +1003,15 @@ class QA_Account(QA_Worker):
             self.cash_available = self.cash[-1]
             #print('NOT ENOUGH MONEY FOR {}'.format(order_id))
 
+    @property
+    def node_view(self):
+        return {
+            'node_name': self.account_cookie,
+            'strategy_name': self.strategy_name,
+            'cash_available': self.cash_available,
+            'history': self.history
+        }
+
     def receive_deal(
             self,
             code: str,

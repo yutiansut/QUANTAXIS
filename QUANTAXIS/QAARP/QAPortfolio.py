@@ -142,6 +142,16 @@ class QA_Portfolio(QA_Account):
         except:
             return None
 
+
+    @property
+    def node_view(self):
+        return {
+            'node_name': self.portfolio_cookie,
+            'cash_available' : self.cash_available,
+            'sub_node': [account.node_view for account in self.accounts.values()]
+        }
+
+
     @property
     def init_hold_table(self):
         return pd.concat(
