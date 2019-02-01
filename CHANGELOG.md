@@ -3,6 +3,8 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
+    - [1.3.0 ](#130)
+    - [1.2.9 ](#129)
     - [1.2.8 ](#128)
     - [1.2.7 ](#127)
     - [1.2.6 ](#126)
@@ -75,6 +77,41 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
+## 1.3.0
+
+1. QAUSER/ QAPORTFOLIO/ QAACCOUNT 的联动更新
+2. 账户/组合/用户的刷新与恢复
+
+```
+
+In [2]: import QUANTAXIS as QA
+
+In [3]: user1= QA.QA_User(username='yutiansut',password='940809')
+
+In [4]: user1
+Out[4]: < QA_USER USER_b87YCy3U with 1 portfolio: {'RB_PORTFOLIO': < QA_Portfolio RB_PORTFOLIO with 3 Accounts >} >
+
+In [5]: user1.portfolio_list
+Out[5]: {'RB_PORTFOLIO': < QA_Portfolio RB_PORTFOLIO with 3 Accounts >}
+
+In [6]: user1['RB_PORTFOLIO']
+Out[6]: < QA_Portfolio RB_PORTFOLIO with 3 Accounts >
+
+In [7]: user1['RB_PORTFOLIO'].accounts
+Out[7]:
+{'test1': < QA_Account test1 market: stock_cn>,
+ 'test2': < QA_Account test2 market: stock_cn>,
+ 'test3_future': < QA_Account test3_future market: stock_cn>}
+
+In [8]: user1['RB_PORTFOLIO']['test1']
+Out[8]: < QA_Account test1 market: stock_cn>
+
+```
+
+
+
+## 1.2.9
+1. QAIndicator部分指标修正,base.py增加IFAND函数,indicator.py部分指标修正
 
 ## 1.2.8
 
@@ -83,6 +120,9 @@
 3. market_preset 增加基础函数支持 get_exchange, get_name等
 4. QA_USER 完善, 增加订阅策略和积分系统
 5. 删除QADataStruct_min类中的 high_limit/low_limit, 修复daystruct的nextdayhighlimit字段
+6. 增加tusharepro部分数据到postgresql的储存和调取方式
+7. QATTSBroker发布
+
 
 ## 1.2.7
 

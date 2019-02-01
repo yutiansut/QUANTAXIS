@@ -112,15 +112,35 @@ class QA_Portfolio(QA_Account):
         self.commission_coeff = 0.005
         self.market_type = market_type
         self.running_environment = running_environment
+        self.cash_history = []
+
+        self.client = DATABASE.portfolio
 
         for cookie in self.accounts.keys():
             self.accounts[cookie] = QA_Account(account_cookie=cookie)
+
+        self.reload()
 
     def __repr__(self):
         return '< QA_Portfolio {} with {} Accounts >'.format(
             self.portfolio_cookie,
             len(self.accounts.keys())
         )
+
+    def __getitem__(self, account_cookie):
+        """类似 DICT的形式取account
+
+        Arguments:
+            account_cookie {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+
+        try:
+            return self.accounts[account_cookie]
+        except:
+            return None
 
     @property
     def init_hold_table(self):
@@ -236,6 +256,67 @@ class QA_Portfolio(QA_Account):
         pass
 
     @property
+    def message(self):
+        """portfolio 的cookie
+        """
+        return {
+            'user_cookie': self.user_cookie,
+            'portfolio_cookie': self.portfolio_cookie,
+            'account_list': list(self.accounts.keys()),
+            'init_cash': self.init_cash,
+            'cash': self.cash,
+            'history': self.history[0],
+            'history_header': self.history[1]
+        }
+
+    def send_order(
+            self,
+            account_cookie: str,
+            code=None,
+            amount=None,
+            time=None,
+            towards=None,
+            price=None,
+            money=None,
+            order_model=None,
+            amount_model=None,
+            *args,
+            **kwargs
+    ):
+        """基于portfolio对子账户下单
+
+        Arguments:
+            account_cookie {str} -- [description]
+
+        Keyword Arguments:
+            code {[type]} -- [description] (default: {None})
+            amount {[type]} -- [description] (default: {None})
+            time {[type]} -- [description] (default: {None})
+            towards {[type]} -- [description] (default: {None})
+            price {[type]} -- [description] (default: {None})
+            money {[type]} -- [description] (default: {None})
+            order_model {[type]} -- [description] (default: {None})
+            amount_model {[type]} -- [description] (default: {None})
+
+        Returns:
+            [type] -- [description]
+        """
+
+        return self.accounts[account_cookie].send_order(
+            code=code,
+            amount=amount,
+            time=time,
+            towards=towards,
+            price=price,
+            money=money,
+            order_model=order_model,
+            amount_model=amount_model
+        )
+
+    def receive_deal(self):
+        raise RuntimeError('PROTFOLIO shouldnot have this methods')
+
+    @property
     def table(self):
         return pd.concat([acc.table for acc in self.accounts.values()], axis=1)
 
@@ -322,6 +403,40 @@ class QA_Portfolio(QA_Account):
         return pd.concat(
             [account.history_table for account in list(self.accounts.values())]
         )
+
+    def reload(self):
+
+        message = self.client.find_one(
+            {'user_cookie': self.user_cookie, 'portfolio_cookie': self.portfolio_cookie})
+        # 'user_cookie': self.user_cookie,
+        # 'portfolio_cookie': self.portfolio_cookie,
+        # 'account_list': list(self.accounts.keys()),
+        # 'init_cash': self.init_cash,
+        # 'cash': self.cash,
+        # 'history': self.history[0]
+        # 'history_header': self.history[1]
+        if message is None:
+            self.client.insert(self.message)
+        else:
+            self.init_cash = message['init_cash']
+            self.cash = message['cash']
+            #self.history = (message['history'], message['history_header'])
+            account_list = message['account_list']
+            self.accounts = dict(zip(account_list, [QA_Account(
+                account_cookie=item, user_cookie=self.user_cookie, portfolio_cookie=self.portfolio_cookie) for item in account_list]))
+
+    def save(self):
+        """存储过程
+        """
+        self.client.update(
+            {'portfolio_cookie': self.portfolio_cookie,
+                'user_cookie': self.user_cookie},
+            {'$set': self.message},
+            upsert=True
+        )
+
+        for account in self.accounts.values():
+            account.save()
 
 
 class QA_PortfolioView():
@@ -443,12 +558,12 @@ class QA_PortfolioView():
     @property
     def history_table(self):
         return pd.concat([item.history_table for item in self.accounts]
-                        ).sort_index()
+                         ).sort_index()
 
     @property
     def trade_day(self):
         return pd.concat([pd.Series(item.trade_day) for item in self.accounts]
-                        ).drop_duplicates().sort_values().tolist()
+                         ).drop_duplicates().sort_values().tolist()
 
     @property
     def trade_range(self):

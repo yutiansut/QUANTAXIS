@@ -224,7 +224,7 @@ class CLI(cmd.Cmd):
             命令格式: save future: save future_day/min/list \n\
             ------------------------------------------------------------ \n\
             命令格式：save stock_day  : 保存日线数据 \n\
-            命令格式：save stock_xdxr : 保存日除权出息数据 \n\
+            命令格式：save stock_xdxr : 保存日除权除息数据 \n\
             命令格式：save stock_min  : 保存分钟线数据 \n\
             命令格式：save index_day  : 保存指数数据 \n\
             命令格式：save index_min  : 保存指数线数据 \n\

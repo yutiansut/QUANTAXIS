@@ -31,7 +31,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.2.8.dev2'
+__version__ = '1.3.0.dev1'
 __author__ = 'yutiansut'
 
 # fetch methods
@@ -155,7 +155,8 @@ from QUANTAXIS.QAMarket import (
     QA_RandomBroker,
     QA_SimulatedBroker,
     QA_RealBroker,
-    QA_BacktestBroker
+    QA_BacktestBroker,
+    QA_TTSBroker,
 )
 
 # Account,Risk,Portfolio,User,Strategy
