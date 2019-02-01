@@ -336,8 +336,8 @@ class QA_User():
 
     @property
     def subscribed_code(self):
-        """关注的品种
-
+        """
+        关注的品种
         Returns:
             [type] -- [description]
         """
@@ -346,10 +346,10 @@ class QA_User():
 
     def new_portfolio(self, portfolio_cookie=None):
         '''
-            根据 self.user_cookie 创建一个 portfolio
+        根据 self.user_cookie 创建一个 portfolio
         :return:
-             如果存在 返回 新建的 QA_Portfolio
-             如果已经存在 不返回 None
+        如果存在 返回 新建的 QA_Portfolio
+        如果已经存在 不返回 None
         '''
         _portfolio = QA_Portfolio(
             user_cookie=self.user_cookie,
