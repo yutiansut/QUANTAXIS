@@ -479,12 +479,14 @@ class QA_User():
 
         links = [{'source': self.username, 'target': item}
                  for item in self.portfolio_list.keys()]
-        data = [{'name': self.username, 'symbolSize': 100}]
+        data = [{'name': self.username, 'symbolSize': 100, 'value': 1}]
         for port in self.portfolio_list.values():
             links.extend(port.node_view['links'])
-            data.append({'name': port.portfolio_cookie, 'symbolSize': 80})
+            data.append({'name': port.portfolio_cookie,
+                         'symbolSize': 80, 'value': 2})
             for acc in port.accounts.values():
-                data.append({'name': acc.account_cookie, 'symbolSize': 50})
+                data.append({'name': acc.account_cookie,
+                             'symbolSize': 50, 'value': 3})
 
         return {
             'node_name': self.username,
