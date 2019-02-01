@@ -324,7 +324,10 @@ class QA_Account(QA_Worker):
         self.frozen = {} # 冻结资金(保证金)
 
     def __repr__(self):
-        return '< QA_Account {} market: {}>'.format(self.account_cookie,self.market_type)
+        return '< QA_Account {} market: {}>'.format(
+            self.account_cookie,
+            self.market_type
+        )
 
     @property
     def message(self):
@@ -1008,7 +1011,7 @@ class QA_Account(QA_Worker):
             [type] -- [description]
         """
 
-        print('receive deal')
+        # print('receive deal')
 
         trade_time = str(trade_time)
         code = str(code)
@@ -1435,7 +1438,7 @@ class QA_Account(QA_Worker):
         self.settle()
         return self
 
-    def from_otgdict(self,message):
+    def from_otgdict(self, message):
         """[summary]
         balance = static_balance + float_profit
 
@@ -1463,8 +1466,6 @@ class QA_Account(QA_Worker):
         self.allow_sellopen = True
         self.allow_t0 = True
 
-
-
         self.account_cookie = message['accounts']['user_id']
         # 可用资金
         self.cash_available = message['accounts']['available']
@@ -1479,7 +1480,7 @@ class QA_Account(QA_Worker):
         self.close_profit = message['accounts']['close_profit']
         # 持仓盈亏
         self.position_profit = message['accounts']['position_profit']
-        
+
         # 动态权益
         self.float_profit = message['accounts']['float_profit']
 
@@ -1487,13 +1488,6 @@ class QA_Account(QA_Worker):
         self.margin = message['accounts']['marigin']
 
         self.commission = message['accounts']['commission']
-
-
-
-
-
-
-
 
     @property
     def table(self):
