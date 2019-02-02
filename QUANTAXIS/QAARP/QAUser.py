@@ -365,13 +365,13 @@ class QA_User():
                 " already exist!!"
             )
 
-    def get_account(self, portfolio_cookie:str, account_cookie:str):
+    def get_account(self, portfolio_cookie: str, account_cookie: str):
         """直接从二级目录拿到account
-        
+
         Arguments:
             portfolio_cookie {str} -- [description]
             account_cookie {str} -- [description]
-        
+
         Returns:
             [type] -- [description]
         """
