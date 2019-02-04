@@ -31,6 +31,7 @@ import math
 import os
 import platform
 
+from pymongo import DESCENDING, ASCENDING
 from collections import deque
 from functools import lru_cache
 from queue import LifoQueue
@@ -46,12 +47,25 @@ from QUANTAXIS.QAFetch.QAQuery_Advance import (
 from QUANTAXIS.QASU.save_account import save_riskanalysis
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_trade_gap, QA_util_get_trade_range
 from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE
+from QUANTAXIS.QAUtil.QASetting import DATABASE
 
 # FIXED: no display found
 """
 在无GUI的电脑上,会遇到找不到_tkinter的情况 兼容处理
 @尧 2018/05/28
 @喜欢你 @尧 2018/05/29
+
+
+QARISK的更新策略:
+
+1. 如果遇到请求: 
+    1. 去数据库找到这个account的risk信息
+    2. 检查交易是否出现更新
+
+    ==>  更新>> 重新评估
+    ==>  未更新>> 直接加载
+    
+
 """
 if platform.system() not in ['Windows',
                              'Darwin'] and os.environ.get('DISPLAY',
@@ -131,6 +145,19 @@ class QA_Risk():
         elif self.account.market_type == MARKET_TYPE.FUTURE_CN:
             self.market_data = market_data
         self.if_fq = if_fq
+        self.client= DATABASE.risk
+
+        self.client.create_index(
+            [
+                ("account_cookie",
+                 ASCENDING),
+                ("user_cookie",
+                 ASCENDING),
+                ("portfolio_cookie",
+                 ASCENDING)
+            ],
+            unique=True
+        )
 
         if self.market_value is not None:
             self._assets = (
