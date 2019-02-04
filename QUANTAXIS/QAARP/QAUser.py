@@ -140,6 +140,7 @@ class QA_User():
                 self.username = 'admin'
                 self.password = 'admin'
 
+
         self.user_cookie = QA_util_random_with_topic(
             'USER'
         ) if user_cookie is None else user_cookie
@@ -484,11 +485,18 @@ class QA_User():
                 }
             )
         if res is None:
-            self.client.insert_one(self.message)
+            
+            if self.client.find_one({'username': self.username}) is None:
+                self.client.insert_one(self.message)
+                return self
+            else:
+                print('already have')
+                raise RuntimeError('账户名已存在且账户密码不匹配')
+                
         else:
             self.reload(res)
 
-        return self
+            return self
 
     @property
     def node_view(self):
