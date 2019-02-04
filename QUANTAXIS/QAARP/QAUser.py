@@ -490,7 +490,6 @@ class QA_User():
                 self.client.insert_one(self.message)
                 return self
             else:
-                print('already have')
                 raise RuntimeError('账户名已存在且账户密码不匹配')
                 
         else:
