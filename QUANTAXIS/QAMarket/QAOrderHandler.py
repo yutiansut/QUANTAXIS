@@ -243,7 +243,6 @@ class QA_OrderHandler(QA_Worker):
 
     def _trade(self):
         print('orderahndle: trade')
-        print(self.monitor)
         res = [self.monitor[account].query_orders(
             account.account_cookie, 'filled') for account in list(self.monitor.keys())]
 
