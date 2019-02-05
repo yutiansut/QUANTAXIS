@@ -132,9 +132,9 @@ class QA_Account(QA_Worker):
 
     def __init__(
             self,
+            user_cookie,
+            portfolio_cookie,
             strategy_name=None,
-            user_cookie=None,
-            portfolio_cookie=None,
             account_cookie=None,
             market_type=MARKET_TYPE.STOCK_CN,
             frequence=FREQUENCE.DAY,
@@ -252,9 +252,11 @@ class QA_Account(QA_Worker):
         self.strategy_name = strategy_name
         self.user_cookie = user_cookie
         self.portfolio_cookie = portfolio_cookie
-        self.account_cookie = QA_util_random_with_topic(
-            'Acc'
-        ) if account_cookie is None else account_cookie
+        # self.account_cookie = QA_util_random_with_topic(
+        #     'Acc'
+        # ) if account_cookie is None else account_cookie
+        if account_cookie is None or portfolio_cookie is None:
+            raise RuntimeError('QUANTAXIS 1.3.0升级: 需要在创建Account的时候指定用户名/组合名')
 
         self.market_type = market_type
         self.broker = broker
