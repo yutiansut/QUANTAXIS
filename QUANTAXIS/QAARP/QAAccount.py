@@ -132,10 +132,10 @@ class QA_Account(QA_Worker):
 
     def __init__(
             self,
-            user_cookie,
-            portfolio_cookie,
+            user_cookie:str,
+            portfolio_cookie:str,
+            account_cookie:str,
             strategy_name=None,
-            account_cookie=None,
             market_type=MARKET_TYPE.STOCK_CN,
             frequence=FREQUENCE.DAY,
             broker=BROKER_TYPE.BACKETEST,
@@ -148,7 +148,8 @@ class QA_Account(QA_Worker):
             allow_sellopen=False,
             allow_margin=False,
             running_environment=RUNNING_ENVIRONMENT.BACKETEST,
-            auto_reload=False
+            auto_reload=False,
+            generated='direct'
     ):
         """
 
@@ -167,7 +168,9 @@ class QA_Account(QA_Worker):
         :param [Bool] allow_sellopen:    是否允许卖空开仓  默认False
         :param [Bool] allow_margin:      是否允许保证金交易 默认False
         :param [Bool] auto_reload:       是否自动从数据库中同步数据
+        :param [Bool] generated:         从哪里生成==> directed: 直接生成  portfolio: 组合生成
 
+        
         ### 注意
         >>>>>>>>>>>>>
         在期货账户中:
