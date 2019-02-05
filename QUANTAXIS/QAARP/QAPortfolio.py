@@ -212,9 +212,9 @@ class QA_Portfolio(QA_Account):
             if self.cash_available > init_cash:
 
                 temp = QA_Account(
+                    user_cookie=self.user_cookie,
                     portfolio_cookie=self.portfolio_cookie,
                     init_cash=init_cash,
-                    user_cookie=self.user_cookie,
                     market_type=market_type,
                     *args,
                     **kwargs
@@ -231,9 +231,9 @@ class QA_Portfolio(QA_Account):
                 if account_cookie not in self.accounts.keys():
                     self.accounts[account_cookie] = QA_Account(
                         portfolio_cookie=self.portfolio_cookie,
+                        user_cookie=self.user_cookie,
                         init_cash=init_cash,
                         market_type=market_type,
-                        user_cookie=self.user_cookie,
                         account_cookie=account_cookie,
                         *args,
                         **kwargs

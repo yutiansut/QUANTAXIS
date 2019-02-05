@@ -342,6 +342,7 @@ class QA_Market(QA_Trade):
                         code, time, price, order_model, amount_model))
         elif order_model is ORDER_MODEL.LIMIT:
             flag = True
+        print(amount, amount_model,time, code, price,order_model, towards,money)
         if flag:
             order = self.get_account(account_cookie).send_order(
                 amount=amount, amount_model=amount_model, time=time, code=code, price=price,
