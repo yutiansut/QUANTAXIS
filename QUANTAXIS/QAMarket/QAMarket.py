@@ -137,10 +137,12 @@ class QA_Market(QA_Trade):
         """
 
         assert isinstance(QATask, QA_Task)
+        print(vars(QATask))
+        print('receive tasks'.format(QATask))
         if nowait:
             self.event_queue.put_nowait(QATask)
         else:
-            self.submit(QATask)
+            self.event_queue.put(QATask)
 
     def start(self):
         self.trade_engine.start()
@@ -183,6 +185,7 @@ class QA_Market(QA_Trade):
         self.order_handler.if_start_orderquery = True
         self.trade_engine.create_kernel('ORDER', daemon=True)
         self.trade_engine.start_kernel('ORDER')
+        self.sync_order_and_deal()
         # self._update_orders()
 
     def get_account(self, account_cookie):
@@ -454,19 +457,6 @@ class QA_Market(QA_Trade):
 
     def query_order(self, account_cookie, realorder_id):
 
-        # res = self.submit(
-        #     QA_Task(
-        #         worker=self.broker[self.get_account(
-        #             account_cookie).broker],
-        #         engine=self.get_account(
-        #             account_cookie).broker,
-        #         event=QA_Event(
-        #             broker=self.broker[self.get_account(
-        #                 account_cookie).broker],
-        #             order_id=order_id
-        #         )
-        #     ),nowait=True)
-
         return self.order_handler.order_status.loc[account_cookie, realorder_id]
 
     def query_assets(self, account_cookie):
@@ -525,7 +515,7 @@ class QA_Market(QA_Trade):
 
     def _trade(self, event):
         "内部函数"
-
+        print('market enging: trade')
         self.submit(QA_Task(
             worker=self.broker[event.broker_name],
             engine=event.broker_name,
@@ -535,6 +525,7 @@ class QA_Market(QA_Trade):
                 broker_name=event.broker_name,
                 callback=self.on_trade_event
             )))
+        print('done')
 
     def _settle(self, broker_name, callback=False):
         #strDbg = QA_util_random_with_topic("QA_Market._settle")
