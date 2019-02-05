@@ -45,7 +45,15 @@ CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
 def get_config():
     config = configparser.ConfigParser()
     if os.path.exists(CONFIGFILE_PATH):
-        config.read(CONFIGFILE_PATH)
+        try:
+            config.read(CONFIGFILE_PATH)
+        except:
+            config.clear()  #config.read出错失败，清空CONFIG，重新设置LOG。
+            config.add_section('LOG')
+            config.set('LOG', 'path', log_path)
+            with open(CONFIGFILE_PATH, 'w') as f:
+                config.write(f)
+            return log_path   
         try:
             return config.get('LOG', 'path')
         except configparser.NoSectionError:
