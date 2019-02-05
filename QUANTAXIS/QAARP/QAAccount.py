@@ -1547,6 +1547,7 @@ class QA_Account(QA_Worker):
         '''
         'QA_WORKER method'
         if event.event_type is ACCOUNT_EVENT.SETTLE:
+            print('account_settle')
             self.settle()
 
         # elif event.event_type is ACCOUNT_EVENT.UPDATE:

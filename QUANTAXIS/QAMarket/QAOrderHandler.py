@@ -242,11 +242,12 @@ class QA_OrderHandler(QA_Worker):
             print('failled to unscribe {}'.format(account.account_cookie))
 
     def _trade(self):
+        print('orderahndle: trade')
+        print(self.monitor)
         res = [self.monitor[account].query_orders(
             account.account_cookie, 'filled') for account in list(self.monitor.keys())]
 
         try:
-            #res=[pd.DataFrame() if not isinstance(item,pd.DataFrame) else item for item in res]
             res = pd.concat(res, axis=0) if len(
                 res) > 0 else pd.DataFrame()
         except:
