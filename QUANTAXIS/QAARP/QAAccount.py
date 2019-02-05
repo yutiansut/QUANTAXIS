@@ -1194,7 +1194,7 @@ class QA_Account(QA_Worker):
 
                 if self.running_environment == RUNNING_ENVIRONMENT.TZERO:
 
-                    if self.buy_available.get(code, 0) >= amount:
+                    if abs(self.buy_available.get(code, 0)) >= amount:
                         flag = True
                         self.cash_available -= money
                         self.buy_available[code] -= amount
@@ -1340,7 +1340,7 @@ class QA_Account(QA_Worker):
                         price=0,
                         amount=abs(amount),
                         time=time,
-                        towards=ORDER_DIRECTION.BUY_CLOSE,
+                        towards=ORDER_DIRECTION.BUY,
                         order_model=ORDER_MODEL.CLOSE,
                         amount_model=AMOUNT_MODEL.BY_AMOUNT
                     )
@@ -1351,7 +1351,7 @@ class QA_Account(QA_Worker):
                         price=0,
                         amount=abs(amount),
                         time=time,
-                        towards=ORDER_DIRECTION.SELL_CLOSE,
+                        towards=ORDER_DIRECTION.SELL,
                         order_model=ORDER_MODEL.CLOSE,
                         amount_model=AMOUNT_MODEL.BY_AMOUNT
                     )
