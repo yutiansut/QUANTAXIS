@@ -762,7 +762,6 @@ class QA_Risk():
         self.plot_signal()
 
 
-
 class QA_Performance():
     """
     QA_Performance是一个绩效分析插件
@@ -826,9 +825,9 @@ class QA_Performance():
 
     """
 
-    def __init__(self, account):
+    def __init__(self, target):
 
-        self.account = account
+        self.target = target
         self._style_title = [
             'beta',
             'momentum',
@@ -863,12 +862,12 @@ class QA_Performance():
         """
         X = dict(
             zip(
-                self.account.code,
-                [LifoQueue() for i in range(len(self.account.code))]
+                self.target.code,
+                [LifoQueue() for i in range(len(self.target.code))]
             )
         )
         pair_table = []
-        for _, data in self.account.history_table.iterrows():
+        for _, data in self.target.history_table.iterrows():
             while True:
                 if X[data.code].qsize() == 0:
                     X[data.code].put((data.datetime, data.amount, data.price))
@@ -984,12 +983,12 @@ class QA_Performance():
     def pnl_fifo(self):
         X = dict(
             zip(
-                self.account.code,
-                [deque() for i in range(len(self.account.code))]
+                self.target.code,
+                [deque() for i in range(len(self.target.code))]
             )
         )
         pair_table = []
-        for _, data in self.account.history_table.iterrows():
+        for _, data in self.target.history_table.iterrows():
             while True:
                 if len(X[data.code]) == 0:
                     X[data.code].append(
