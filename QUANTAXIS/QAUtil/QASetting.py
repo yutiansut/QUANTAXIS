@@ -71,7 +71,13 @@ class QA_Setting():
 
         config = configparser.ConfigParser()
         if os.path.exists(CONFIGFILE_PATH):
-            config.read(CONFIGFILE_PATH)
+            try:
+                config.read(CONFIGFILE_PATH)
+            except:
+                config.clear()  #config.read出错失败，清空CONFIG
+                with open(CONFIGFILE_PATH, 'w') as f:
+                    config.write(f)
+                return None  #无法读取返回None。
             return self.get_or_set_section(
                 config,
                 section,
@@ -109,7 +115,12 @@ class QA_Setting():
 
         config = configparser.ConfigParser()
         if os.path.exists(CONFIGFILE_PATH):
-            config.read(CONFIGFILE_PATH)
+            try:
+                config.read(CONFIGFILE_PATH)
+            except:
+                config.clear()  #config.read出错失败，清空CONFIG，重新设置。
+                with open(CONFIGFILE_PATH, 'w') as f:
+                    config.write(f) 
             return self.get_or_set_section(
                 config,
                 section,
