@@ -134,7 +134,7 @@ class QA_Account(QA_Worker):
             self,
             user_cookie:str,
             portfolio_cookie:str,
-            account_cookie:str,
+            account_cookie=None,
             strategy_name=None,
             market_type=MARKET_TYPE.STOCK_CN,
             frequence=FREQUENCE.DAY,
@@ -252,15 +252,16 @@ class QA_Account(QA_Worker):
         ]
         ########################################################################
         # 信息类:
-        self.strategy_name = strategy_name
-        self.user_cookie = user_cookie
-        self.portfolio_cookie = portfolio_cookie
-        # self.account_cookie = QA_util_random_with_topic(
-        #     'Acc'
-        # ) if account_cookie is None else account_cookie
-        if account_cookie is None or portfolio_cookie is None:
-            raise RuntimeError('QUANTAXIS 1.3.0升级: 需要在创建Account的时候指定用户名/组合名')
 
+
+        if user_cookie is None or portfolio_cookie is None:
+            raise RuntimeError('QUANTAXIS 1.3.0升级: 需要在创建Account的时候指定用户名/组合名')
+        self.user_cookie = user_cookie
+        self.strategy_name = strategy_name
+        self.portfolio_cookie = portfolio_cookie
+        self.account_cookie = QA_util_random_with_topic(
+            'Acc'
+        ) if account_cookie is None else account_cookie
         self.market_type = market_type
         self.broker = broker
         self.frequence = frequence

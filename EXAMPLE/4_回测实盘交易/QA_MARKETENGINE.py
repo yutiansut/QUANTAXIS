@@ -1,19 +1,20 @@
 
 # coding: utf-8
-
+# In[1]
 import QUANTAXIS as QA
 import threading
 import pandas as pd
 
-
-user = QA.QA_Portfolio()
+# In[2]
+user = QA.QA_User(username='admin',password='940809x')
+portfolio = user.new_portfolio('example')
 # 创建两个account
 #这里是创建一个资产组合,然后在组合里面创建两个account  你可以想象成股票里面的两个策略账户
 #然后返回的是这个账户的id
-a_1 = user.new_account()
-a_2 = user.new_account()
+a_1 = portfolio.new_account(account_cookie='a1')
+a_2 = portfolio.new_account(account_cookie='a2')
 
-
+# In[3]
 """
 然后这里 是创建一个交易前置  你可以理解成 创建了一个无界面的通达信客户端
 然后start()开启这个客户端
@@ -27,29 +28,29 @@ market.connect(QA.RUNNING_ENVIRONMENT.BACKETEST)
 
 # 打印market
 print(market)
-
+# In[4]
 
 
 """
 登陆到这个交易前置上 把你刚才的两个账户
 """
 # 登陆交易
-market.login(QA.BROKER_TYPE.BACKETEST,a_1)
-market.login(QA.BROKER_TYPE.BACKETEST,a_2)
+market.login(QA.BROKER_TYPE.BACKETEST,a_1.account_cookie, a_1)
+market.login(QA.BROKER_TYPE.BACKETEST,a_2.account_cookie, a_2)
 # 打印市场中的交易账户
 print(market.get_account_id())
 
+# In[5]
 
 
-
-market.insert_order(account_id=a_1, amount=100000,price=None, amount_model=QA.AMOUNT_MODEL.BY_MONEY,time='2017-12-01', code='600010', 
+market.insert_order(account_cookie=a_1.account_cookie, money=100000, amount=None,price=None, amount_model=QA.AMOUNT_MODEL.BY_MONEY,time='2017-12-01', code='600010', 
                     order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY,market_type=QA.MARKET_TYPE.STOCK_CN,
-                   data_type=QA.FREQUENCE.DAY,broker_name=QA.BROKER_TYPE.BACKETEST)
+                   frequence=QA.FREQUENCE.DAY,broker_name=QA.BROKER_TYPE.BACKETEST)
 
 
-market.insert_order(account_id=a_1, amount=100000,price=None, amount_model=QA.AMOUNT_MODEL.BY_MONEY,time='2017-12-01', code='000001', 
+market.insert_order(account_cookie=a_1.account_cookie, amount=100,price=None, amount_model=QA.AMOUNT_MODEL.BY_AMOUNT,time='2017-12-01', code='000001', 
                     order_model=QA.ORDER_MODEL.CLOSE, towards=QA.ORDER_DIRECTION.BUY,market_type=QA.MARKET_TYPE.STOCK_CN,
-                   data_type=QA.FREQUENCE.DAY,broker_name=QA.BROKER_TYPE.BACKETEST)
+                   frequence=QA.FREQUENCE.DAY,broker_name=QA.BROKER_TYPE.BACKETEST)
 
 
 
@@ -59,13 +60,13 @@ market.insert_order(account_id=a_1, amount=100000,price=None, amount_model=QA.AM
 
 
 
-print(market.session[a_1].cash_available)
+print(market.session[a_1.account_cookie].cash_available)
 
 
 # In[67]:
 
 
-market.session[a_1].cash
+market.session[a_1.account_cookie].cash
 
 
 # In[13]:
@@ -136,7 +137,7 @@ market.query_data(broker_name=QA.BROKER_TYPE.BACKETEST,data_type=QA.FREQUENCE.DA
 
 
 """成交了以后 你可以看到账户的资产变化了"""
-market.session[a_1]
+market.session[a_1.account_cookie]
 
 
 # In[23]:
@@ -175,7 +176,7 @@ market.broker[QA.BROKER_TYPE.BACKETEST].order_handler.order_queue()
 """
 cash 现金减少
 """
-market.session[a_1].cash
+market.session[a_1.account_cookie].cash
 
 
 # In[53]:
@@ -184,19 +185,19 @@ market.session[a_1].cash
 """
 因为没有触发每日结算时间 在T+1的市场 即使买入了也没有可卖的
 """
-market.session[a_1].sell_available
+market.session[a_1.account_cookie].sell_available
 
 
 # In[54]:
 
 
-sa=market.session[a_1].sell_available
+sa=market.session[a_1.account_cookie].sell_available
 
 
 # In[40]:
 
 
-ac=market.session[a_1]
+ac=market.session[a_1.account_cookie]
 
 
 # In[41]:
@@ -214,7 +215,7 @@ sa
 # In[44]:
 
 
-market.session[a_1].history
+market.session[a_1.account_cookie].history
 
 
 # In[55]:
@@ -223,7 +224,7 @@ market.session[a_1].history
 """
 持仓表增加
 """
-market.session[a_1].hold
+market.session[a_1.account_cookie].hold
 
 
 # In[58]:
@@ -234,7 +235,7 @@ market.session[a_1].hold
 
 可以看到 减少的资产 主要是因为收了手续费
 """
-market.session[a_1].message
+market.session[a_1.account_cookie].message
 
 
 # In[61]:
@@ -250,7 +251,7 @@ market._settle(QA.BROKER_TYPE.BACKETEST)
 """
 结算完以后 可卖数量就会变成和持仓数一样
 """
-market.session[a_1].sell_available
+market.session[a_1.account_cookie].sell_available
 
 
 # In[37]:
