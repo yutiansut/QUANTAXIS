@@ -112,12 +112,18 @@ def select_best_ip():
 
     ipexclude = qasetting.get_config(
         section='IPLIST', option='exclude', default_value=alist)
-    exclude_from_stock_ip_list(json.loads(ipexclude))
+    
+    if ipexclude != None:
+        exclude_from_stock_ip_list(json.loads(ipexclude))
 
     ipdefault = qasetting.get_config(
         section='IPLIST', option='default', default_value=default_ip)
-
-    ipdefault = eval(ipdefault) if isinstance(ipdefault, str) else ipdefault
+        
+    if ipdefault != None:
+        ipdefault = eval(ipdefault) if isinstance(ipdefault, str) else ipdefault
+    else:
+        ipdefault = default_ip 
+        
     assert isinstance(ipdefault, dict)
 
     if ipdefault['stock']['ip'] == None:
