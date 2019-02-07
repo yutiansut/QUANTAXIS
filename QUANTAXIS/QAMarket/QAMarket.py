@@ -361,17 +361,6 @@ class QA_Market(QA_Trade):
                     order=order,
                     market_data=price_slice,
                     callback=self.on_insert_order))
-                # self.submit(
-                #     QA_Task(
-                #         worker=self.order_handler,
-                #         engine='ORDER',
-                #         event=QA_Event(
-                #             broker=self.broker[self.get_account(
-                #                 account_cookie).broker],
-                #             event_type=BROKER_EVENT.RECEIVE_ORDER,
-                #             order=order,
-                #             market_data=price_slice,
-                #             callback=self.on_insert_order)), nowait=True)
         else:
             pass
 
@@ -511,15 +500,10 @@ class QA_Market(QA_Trade):
             if account.broker == broker_name:
                 if account.running_environment == RUNNING_ENVIRONMENT.TZERO:
                     for order in account.close_positions_order:
-                        self.submit(
-                            QA_Task(
-                                worker=self.broker[account.broker],
-                                engine=account.broker,
-                                event=QA_Event(
-                                    event_type=BROKER_EVENT.RECEIVE_ORDER,
-                                    order=order,
-                                    callback=self.on_insert_order)))
-
+                        self.broker[broker_name].run(QA_Event(
+                            event_type=BROKER_EVENT.RECEIVE_ORDER,
+                            order=order,
+                            callback=self.on_insert_order))
         self.trade_engine.kernels_dict[broker_name].queue.join()
 
         self._trade(event=QA_Event(broker_name=broker_name))
