@@ -205,9 +205,7 @@ class QA_BacktestBroker(QA_Broker):
             if event.callback:
                 event.callback(event)
         elif event.event_type is BROKER_EVENT.SETTLE:
-            #self.deal_message = {}
-            # self.order_handler.run(event)
-            #print('broker settle')
+            self.dealer.settle() ## 清空交易队列
             if event.callback:
                 event.callback('settle')
         #print("         <-----------------------QABacktestBroker.run-----------------------------<",strDbg,'evt->',event)

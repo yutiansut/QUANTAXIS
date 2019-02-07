@@ -32,6 +32,7 @@ from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
 from QUANTAXIS.QAEngine.QATask import QA_Task
 from QUANTAXIS.QAMarket.QABacktestBroker import QA_BacktestBroker
+from QUANTAXIS.QAMarket.QAOrder import QA_Order
 from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
 from QUANTAXIS.QAMarket.QARandomBroker import QA_RandomBroker
 from QUANTAXIS.QAMarket.QARealBroker import QA_RealBroker
@@ -137,8 +138,6 @@ class QA_Market(QA_Trade):
         """
 
         assert isinstance(QATask, QA_Task)
-        print(vars(QATask))
-        print('receive tasks'.format(QATask))
         if nowait:
             self.event_queue.put_nowait(QATask)
         else:
@@ -382,10 +381,7 @@ class QA_Market(QA_Trade):
 
         #print("<-----------------------insert_order-----------------------------<", strDbg)
 
-    def on_insert_order(self, order):
-        print('on_insert_order')
-        print(order)
-        print(order.status)
+    def on_insert_order(self, order: QA_ORDER):
         if order.status == ORDER_STATUS.FAILED:
             """如果订单创建失败, 恢复状态
 
@@ -395,6 +391,11 @@ class QA_Market(QA_Trade):
             """
 
             self.session[order.account_cookie].cancel_order(order)
+        else:
+            if order.order_model in [ORDER_MODEL.MARKET, ORDER_MODEL.CLOSE,ORDER_MODEL.LIMIT]:
+                self.order_handler._trade()  #直接交易
+            elif order.order_model in [ORDER_MODEL.NEXT_OPEN]:
+                pass
 
     def _renew_account(self):
         for account in self.session.values():
@@ -529,16 +530,10 @@ class QA_Market(QA_Trade):
 
     def _trade(self, event):
         "内部函数"
-        print('market enging: trade')
-        self.submit(QA_Task(
-            worker=self.broker[event.broker_name],
-            engine=event.broker_name,
-            event=QA_Event(
-                event_type=BROKER_EVENT.TRADE,
-                broker=self.broker[event.broker_name],
-                broker_name=event.broker_name,
-                callback=self.on_trade_event
-            )))
+        print('==================================market enging: trade')
+        print(self.order_handler.order_queue.pending)
+        print('==================================')
+        self.order_handler._trade()
         print('done')
 
     def _settle(self, broker_name, callback=False):
@@ -551,28 +546,22 @@ class QA_Market(QA_Trade):
         for account in self.session.values():
             """t0账户先结算当日仓位
             """
-            if account.running_environment == RUNNING_ENVIRONMENT.TZERO:
-                for order in account.close_positions_order:
-                    self.submit(
-                        QA_Task(
-                            worker=self.broker[account.broker],
-                            engine=account.broker,
-                            event=QA_Event(
-                                event_type=BROKER_EVENT.RECEIVE_ORDER,
-                                order=order,
-                                callback=self.on_insert_order)))
-            """broker中账户结算
-            """
             if account.broker == broker_name:
-                self.submit(
-                    QA_Task(
-                        worker=account,
-                        engine=broker_name,
-                        event=QA_Event(
-                            event_type=ACCOUNT_EVENT.SETTLE)), nowait=True)
+                if account.running_environment == RUNNING_ENVIRONMENT.TZERO:
+                    for order in account.close_positions_order:
+                        self.submit(
+                            QA_Task(
+                                worker=self.broker[account.broker],
+                                engine=account.broker,
+                                event=QA_Event(
+                                    event_type=BROKER_EVENT.RECEIVE_ORDER,
+                                    order=order,
+                                    callback=self.on_insert_order)))
 
-        """broker线程结算
-        """
+        self.trade_engine.kernels_dict[broker_name].queue.join()
+
+        self._trade(event=QA_Event(broker_name=broker_name))
+        self.trade_engine.kernels_dict['ORDER'].queue.join()
         self.submit(QA_Task(
             worker=self.broker[broker_name],
             engine=broker_name,
@@ -581,7 +570,12 @@ class QA_Market(QA_Trade):
                 broker=self.broker[broker_name],
                 callback=callback)), nowait=True)
 
-        self.settle_order()
+        for account in self.session.values():
+            print(account.history_table)
+            account.settle()
+
+
+
         print('===== SETTLED {} ====='.format(self.running_time))
 
     def settle_order(self):
