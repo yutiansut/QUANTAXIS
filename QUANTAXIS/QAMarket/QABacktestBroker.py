@@ -167,7 +167,7 @@ class QA_BacktestBroker(QA_Broker):
 
     def run(self, event):
         #strDbg = QA_util_random_with_topic("QABacktestBroker.run")
-        #print("         >-----------------------QABacktestBroker.run----------------------------->", strDbg,'evt->', event)
+        print("         >-----------------------QABacktestBroker.run----------------------------->", event.event_type)
 
         if event.event_type is MARKET_EVENT.QUERY_DATA:
             # 查询数据部分

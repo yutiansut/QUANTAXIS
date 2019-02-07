@@ -1428,8 +1428,44 @@ class QA_Account(QA_Worker):
 
         print(
             "on_bar account {} ".format(self.account_cookie),
-            event.market_data
+            event.market_data.data
         )
+        print(event.send_order)
+        try:
+            for code in event.market_data.code:
+
+                if self.sell_available.get(code, 0) > 0:
+                    print('可以卖出')
+                    event.send_order(
+                        account_cookie=self.account_cookie,
+                        amount=self.sell_available[code],
+                        amount_model=AMOUNT_MODEL.BY_AMOUNT,
+                        time=self.current_time,
+                        code=code,
+                        price=0,
+                        order_model=ORDER_MODEL.MARKET,
+                        towards=ORDER_DIRECTION.SELL,
+                        market_type=self.market_type,
+                        frequence=self.frequence,
+                        broker_name=self.broker
+                    )
+                else:
+                    print('无仓位, 买入{}'.format(code))
+                    event.send_order(
+                        account_cookie=self.account_cookie,
+                        amount=100,
+                        amount_model=AMOUNT_MODEL.BY_AMOUNT,
+                        time=self.current_time,
+                        code=code,
+                        price=0,
+                        order_model=ORDER_MODEL.MARKET,
+                        towards=ORDER_DIRECTION.BUY,
+                        market_type=self.market_type,
+                        frequence=self.frequence,
+                        broker_name=self.broker
+                    )
+        except Exception as e:
+            print(e)
 
     def on_tick(self, event):
         '''

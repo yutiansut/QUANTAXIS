@@ -18,8 +18,8 @@ import random
 
 
 class MAMINT0Strategy(QA_Account):
-    def __init__(self, init_hold={'000001': 10000}):
-        super().__init__(init_hold=init_hold)
+    def __init__(self,user_cookie='default', portfolio_cookie='default', init_hold={'000001': 10000}):
+        super().__init__(user_cookie, portfolio_cookie, init_hold=init_hold)
         self.account_cookie = 'T0BACKTEST'
         self.running_environment = RUNNING_ENVIRONMENT.TZERO
         self.frequence = FREQUENCE.ONE_MIN
@@ -45,6 +45,8 @@ class MAMINT0Strategy(QA_Account):
         # self.allow_sellopen # 账户是否允许卖空
         # self.allow_t0       # 账户是否允许t0
         # self.commission_coeff  # 账户的手续费(可自行调整)
+
+
 
 
 

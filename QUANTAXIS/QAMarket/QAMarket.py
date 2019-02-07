@@ -283,7 +283,7 @@ class QA_Market(QA_Trade):
 
     def insert_order(self, account_cookie, amount, amount_model, time, code, price, order_model, towards, market_type, frequence, broker_name, money=None):
         #strDbg = QA_util_random_with_topic("QA_Market.insert_order")
-        #print(">-----------------------insert_order----------------------------->", strDbg)
+        print(">-----------------------insert_order----------------------------->", "QA_Market.insert_order")
 
         flag = False
 

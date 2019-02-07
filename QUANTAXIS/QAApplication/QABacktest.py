@@ -139,28 +139,28 @@ class QA_Backtest():
         """generator driven data flow
         """
         # 如果出现了日期的改变 才会进行结算的事件
+        print('start: running')
         _date = None
         for data in self.ingest_data:  # 对于在ingest_data中的数据
             # <class 'QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day'>
             date = data.date[0]
+            print('current date : {}'.format(date))
             if self.market_type is MARKET_TYPE.STOCK_CN:  # 如果是股票市场
                 if _date != date:  # 如果新的date
 
                     # 前一天的交易日已经过去
                     # 往 broker 和 account 发送 settle 事件
                     try:
+                        print('try to settle')
                         self.market._settle(self.broker_name)
+                        print('try_to_join')
                         self.market.trade_engine.join()
-                        
-                        # time.sleep(2)
-                        
-
                     except Exception as e:
                         raise e
             # 基金 指数 期货
             elif self.market_type in [MARKET_TYPE.FUND_CN, MARKET_TYPE.INDEX_CN, MARKET_TYPE.FUTURE_CN]:
                 self.market._settle(self.broker_name)
-
+            
             self.broker.run(
                 QA_Event(event_type=ENGINE_EVENT.UPCOMING_DATA, market_data=data))
             # 生成 UPCOMING_DATA 事件放到 队列中去执行
@@ -179,14 +179,13 @@ class QA_Backtest():
     def after_success(self):
         """called when all trading fininshed, for performance analysis
         """
+        print('after success')
+        for po in self.user.portfolio_list.values():
+            for ac in po.accounts.values():
 
-        for po in self.user.portfolio_list.keys():
-            for ac in self.user.get_portfolio_by_cookie(po).accounts.keys():
-                accounts = self.user.get_portfolio_by_cookie(
-                    po).get_account_by_cookie(ac)
-                print(accounts.hold)
+                print(ac.hold)
 
-                print(accounts.history_table)
+                print(ac.history_table)
 
         self.stop()
 
@@ -198,8 +197,6 @@ class QA_Backtest():
         self.market.trade_engine.stop()
 
 
-class BACKTEST_FRAMEWORK():
-    pass
 
 
 if __name__ == '__main__':
