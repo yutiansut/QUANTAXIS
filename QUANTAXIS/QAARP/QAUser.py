@@ -350,7 +350,7 @@ class QA_User():
         根据 self.user_cookie 创建一个 portfolio
         :return:
         如果存在 返回 新建的 QA_Portfolio
-        如果已经存在 不返回 None
+        如果已经存在 返回 这个portfolio
         '''
         _portfolio = QA_Portfolio(
             user_cookie=self.user_cookie,
@@ -365,6 +365,7 @@ class QA_User():
                 self.user_cookie,
                 " already exist!!"
             )
+            return self.portfolio_list[portfolio_cookie]
 
     def get_account(self, portfolio_cookie: str, account_cookie: str):
         """直接从二级目录拿到account
