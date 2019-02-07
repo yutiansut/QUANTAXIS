@@ -166,6 +166,18 @@ class QA_Market(QA_Trade):
         else:
             return False
 
+    def next_tradeday(self):
+        self.submit(
+            QA_Task(
+                worker=self.order_handler,
+                engine='ORDER',
+                event=QA_Event(
+                    event_type=BROKER_EVENT.NEXT_TRADEDAY,
+                    event_queue=self.trade_engine.kernels_dict['ORDER'].queue
+                )
+            ), nowait=True
+        )
+
     def register(self, broker_name, broker):
         if broker_name not in self._broker.keys():
             self.broker[broker_name] = broker
@@ -192,7 +204,8 @@ class QA_Market(QA_Trade):
         try:
             return self.session[account_cookie]
         except KeyError:
-            print('QAMARKET: this account {} is logoff, please login and retry'.format(account_cookie))
+            print('QAMARKET: this account {} is logoff, please login and retry'.format(
+                account_cookie))
 
     def login(self, broker_name, account_cookie, account=None):
         """login 登录到交易前置
@@ -283,15 +296,15 @@ class QA_Market(QA_Trade):
 
     def insert_order(self, account_cookie, amount, amount_model, time, code, price, order_model, towards, market_type, frequence, broker_name, money=None):
         #strDbg = QA_util_random_with_topic("QA_Market.insert_order")
-        print(">-----------------------insert_order----------------------------->", "QA_Market.insert_order")
+        print(">-----------------------insert_order----------------------------->",
+              "QA_Market.insert_order")
 
         flag = False
 
-        #行情切片 bar/tick/realtime 
-
+        # 行情切片 bar/tick/realtime
 
         price_slice = self.query_data_no_wait(broker_name=broker_name, frequence=frequence,
-                                         market_type=market_type, code=code, start=time)
+                                              market_type=market_type, code=code, start=time)
         price_slice = price_slice if price_slice is None else price_slice[0]
 
         if order_model in [ORDER_MODEL.CLOSE, ORDER_MODEL.NEXT_OPEN]:
@@ -304,7 +317,7 @@ class QA_Market(QA_Trade):
                         'MARKET WARING: SOMEING WRONG WITH ORDER \n ')
                     QA_util_log_info('code {} date {} price {} order_model {} amount_model {}'.format(
                         code, time, price, order_model, amount_model))
-            elif isinstance(price_slice,dict):
+            elif isinstance(price_slice, dict):
                 if price_slice is not None:
                     price = float(price_slice['close'])
                     flag = True
@@ -313,7 +326,7 @@ class QA_Market(QA_Trade):
                         'MARKET WARING: SOMEING WRONG WITH ORDER \n ')
                     QA_util_log_info('code {} date {} price {} order_model {} amount_model {}'.format(
                         code, time, price, order_model, amount_model))
-            elif isinstance(price_slice,list):
+            elif isinstance(price_slice, list):
                 if price_slice is not None:
                     price = float(price_slice[4])
                     flag = True
@@ -345,7 +358,8 @@ class QA_Market(QA_Trade):
                         code, time, price, order_model, amount_model))
         elif order_model is ORDER_MODEL.LIMIT:
             flag = True
-        print(amount, amount_model,time, code, price,order_model, towards,money)
+        print(amount, amount_model, time, code,
+              price, order_model, towards, money)
         if flag:
             order = self.get_account(account_cookie).send_order(
                 amount=amount, amount_model=amount_model, time=time, code=code, price=price,
