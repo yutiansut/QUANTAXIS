@@ -115,29 +115,29 @@ class QA_Market(QA_Trade):
                 query_trade=self.query_trade
             ))
 
-    def submit(self, QATask, nowait=False):
-        """submit 一个任务给QAMarket的event_queue
+    # def submit(self, QATask, nowait=False):
+    #     """submit 一个任务给QAMarket的event_queue
 
-        Arguments:
-            QATask {[type]} -- [description]
+    #     Arguments:
+    #         QATask {[type]} -- [description]
 
-        QATask 需要有
-            - worker (需要这个类继承了QA_Worker)
-            - engine(默认qamarket所在的thread)
-            - event - QA_Event
-                        - event_type
-                        - 自定义参数
-                        - callback
+    #     QATask 需要有
+    #         - worker (需要这个类继承了QA_Worker)
+    #         - engine(默认qamarket所在的thread)
+    #         - event - QA_Event
+    #                     - event_type
+    #                     - 自定义参数
+    #                     - callback
 
-        Keyword Arguments:
-            nowait {bool} -- [description] (default: {False})
-        """
+    #     Keyword Arguments:
+    #         nowait {bool} -- [description] (default: {False})
+    #     """
 
-        assert isinstance(QATask, QA_Task)
-        if nowait:
-            self.event_queue.put_nowait(QATask)
-        else:
-            self.event_queue.put(QATask)
+    #     assert isinstance(QATask, QA_Task)
+    #     if nowait:
+    #         self.event_queue.put_nowait(QATask)
+    #     else:
+    #         self.event_queue.put(QATask)
 
     def start(self):
         self.trade_engine.start()
