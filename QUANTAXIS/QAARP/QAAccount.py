@@ -1047,7 +1047,7 @@ class QA_Account(QA_Worker):
             [type] -- [description]
         """
 
-        # print('receive deal')
+        print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!receive deal')
 
         trade_time = str(trade_time)
         code = str(code)
@@ -1316,7 +1316,6 @@ class QA_Account(QA_Worker):
                                ORDER_DIRECTION.SELL_OPEN]:
             self.sell_available[order.code] += order.amount
 
-        # self.sell_available[]
     @property
     def close_positions_order(self):
         """平仓单
@@ -1435,7 +1434,7 @@ class QA_Account(QA_Worker):
             for code in event.market_data.code:
 
                 if self.sell_available.get(code, 0) > 0:
-                    print('可以卖出')
+                    print('可以卖出 {}'.format(self._currenttime))
                     event.send_order(
                         account_cookie=self.account_cookie,
                         amount=self.sell_available[code],
@@ -1450,7 +1449,7 @@ class QA_Account(QA_Worker):
                         broker_name=self.broker
                     )
                 else:
-                    print('无仓位, 买入{}'.format(code))
+                    print('{} 无仓位, 买入{}'.format(self._currenttime,code))
                     event.send_order(
                         account_cookie=self.account_cookie,
                         amount=100,
