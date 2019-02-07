@@ -230,28 +230,31 @@ class QA_Order():
         Arguments:
             amount {[type]} -- [description]
         """
+        if self.status in [ORDER_STATUS.SUCCESS_PART,ORDER_STATUS.QUEUED]:
+            trade_amount = int(trade_amount)
+            trade_id = str(trade_id)
 
-        trade_amount = int(trade_amount)
-        trade_id = str(trade_id)
+            if trade_amount < 1:
 
-        if trade_amount < 1:
-
-            self._status = ORDER_STATUS.NEXT
-        else:
-            if trade_id not in self.trade_id:
-                trade_price = float(trade_price)
-
-                trade_time = str(trade_time)
-
-                self.trade_id.append(trade_id)
-                self.trade_price = (self.trade_price*self.trade_amount +
-                                    trade_price*trade_amount)/(self.trade_amount+trade_amount)
-                self.trade_amount += trade_amount
-                self.trade_time.append(trade_time)
-                self.callback(self.code, trade_id, self.order_id, self.realorder_id,
-                              trade_price, trade_amount, self.towards, trade_time)
+                self._status = ORDER_STATUS.NEXT
             else:
-                pass
+                if trade_id not in self.trade_id:
+                    trade_price = float(trade_price)
+
+                    trade_time = str(trade_time)
+
+                    self.trade_id.append(trade_id)
+                    self.trade_price = (self.trade_price*self.trade_amount +
+                                        trade_price*trade_amount)/(self.trade_amount+trade_amount)
+                    self.trade_amount += trade_amount
+                    self.trade_time.append(trade_time)
+                    self.callback(self.code, trade_id, self.order_id, self.realorder_id,
+                                trade_price, trade_amount, self.towards, trade_time)
+                else:
+                    pass
+        else:
+            raise RuntimeError('ORDER STATUS {} CANNNOT TRADE'.format(self.status))
+
 
     def queued(self, realorder_id):
         self.realorder_id = realorder_id
