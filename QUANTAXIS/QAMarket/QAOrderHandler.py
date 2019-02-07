@@ -279,4 +279,5 @@ class QA_OrderHandler(QA_Worker):
                             for _, deal in res.iterrows:
                                 order.trade(str(deal.trade_id), float(deal.trade_price), int(
                                     deal.trade_amount), str(deal.trade_time))
+        # print('order_handler: finish trade')
         return True
