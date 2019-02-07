@@ -293,6 +293,7 @@ class BROKER_EVENT():
     DAILY_SETTLE = 'broker_dailysettle'
     RECEIVE_ORDER = 'receive_order'
     QUERY_DEAL = 'query_deal'
+    NEXT_TRADEDAY = 'next_tradeday'
 
 
 class ORDER_EVENT():

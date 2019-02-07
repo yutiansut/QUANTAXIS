@@ -109,7 +109,7 @@ class QA_OrderHandler(QA_Worker):
             """
 
             print('SETTLE ORDERHANDLER')
-
+            self.if_start_orderquery = False
             if len(self.order_queue.untrade) == 0:
                 self._trade()
             else:
@@ -123,6 +123,20 @@ class QA_OrderHandler(QA_Worker):
                 event.event_queue.task_done()
             except:
                 pass
+            
+        elif event.event_type is BROKER_EVENT.NEXT_TRADEDAY:
+            """下一个交易日
+            """
+
+            self.if_start_orderquery = True
+            if self.if_start_orderquery:
+                event.event_queue.put(
+                    QA_Task(
+                        worker=self,
+                        engine='ORDER',
+                        event=event
+                    )
+                )
 
         elif event.event_type is MARKET_EVENT.QUERY_ORDER:
             """query_order和query_deal 需要联动使用 

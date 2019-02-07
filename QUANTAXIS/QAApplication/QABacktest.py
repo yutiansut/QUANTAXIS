@@ -67,7 +67,7 @@ class QA_Backtest():
 
     """
 
-    def __init__(self, market_type, frequence, start, end, code_list, commission_fee,):
+    def __init__(self, market_type, frequence, start, end, code_list, commission_fee, username='quantaxis', password='quantaxis', portfolio_cookie='qatestportfolio'):
         """
         :param market_type: 回测的市场 MARKET_TYPE.STOCK_CN ，
         :param frequence: 'day' '1min' '5min' '15min' '30min' '60min'
@@ -76,15 +76,13 @@ class QA_Backtest():
         :param code_list: 股票代码池
         :param commission_fee: 交易佣金
         """
-        self.user = QA_User()
+        self.user = QA_User(username=username, password=password)
         self.if_settled = False
         self.account = None
-        self.portfolio = None
-
+        self.portfolio = self.user.new_portfolio(portfolio_cookie)
         # 🛠todo market_type 应该放在 QA_Market对象里的一个属性
         self.market = QA_Market(if_start_orderthreading=True)
         self.market_type = market_type
-        
 
         self.frequence = frequence
         self.broker = QA_BacktestBroker(commission_fee)
@@ -114,7 +112,7 @@ class QA_Backtest():
         """
         generate a simple account
         """
-        self.account, self.portfolio = self.user.generate_simpleaccount()
+        self.account = self.portfolio.new_account()
 
     def start_market(self):
         """
@@ -124,7 +122,6 @@ class QA_Backtest():
         # 启动 trade_engine 线程
         self.market.start()
         print('market start')
-        
 
         # 注册 backtest_broker ，并且启动和它关联线程QAThread 存放在 kernels 词典中， { 'broker_name': QAThread }
         self.market.register(self.broker_name, self.broker)
@@ -154,13 +151,15 @@ class QA_Backtest():
                         print('try to settle')
                         self.market._settle(self.broker_name)
                         print('try_to_join')
+                        # self.market.trade_engine.join_single(self.broker_name)
                         self.market.trade_engine.join()
+                        # self.market.trade_engine.queue.join()
                     except Exception as e:
                         raise e
             # 基金 指数 期货
             elif self.market_type in [MARKET_TYPE.FUND_CN, MARKET_TYPE.INDEX_CN, MARKET_TYPE.FUTURE_CN]:
                 self.market._settle(self.broker_name)
-            
+
             self.broker.run(
                 QA_Event(event_type=ENGINE_EVENT.UPCOMING_DATA, market_data=data))
             # 生成 UPCOMING_DATA 事件放到 队列中去执行
@@ -170,10 +169,9 @@ class QA_Backtest():
 
             _date = date
 
-
         self.market._settle(self.broker_name)
         self.market.trade_engine.join()
-        
+
         self.after_success()
 
     def after_success(self):
@@ -186,7 +184,7 @@ class QA_Backtest():
                 print(ac.hold)
 
                 print(ac.history_table)
-
+        self.user.save()
         self.stop()
 
     def stop(self):
@@ -197,13 +195,11 @@ class QA_Backtest():
         self.market.trade_engine.stop()
 
 
-
-
 if __name__ == '__main__':
     backtest = QA_Backtest(market_type=MARKET_TYPE.STOCK_CN,
                            frequence=FREQUENCE.DAY,
                            start='2017-01-01',
-                           end='2017-01-31',
+                           end='2017-01-10',
                            code_list=['000001', '600010'],
                            commission_fee=0.00015)
     backtest._generate_account()
