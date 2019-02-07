@@ -16,7 +16,7 @@ sig = QA.CROSS(res.KDJ_J, res.KDJ_K)
 sig2 = QA.CROSS(res.KDJ_K, res.KDJ_J)
 
 User = QA.QA_User(username='yutiansut', password='940809')
-Portfolio = User.get_portfolio('test_backtest')
+Portfolio = User.new_portfolio('test_backtest')
 Account = Portfolio.new_account(account_cookie='user_macdmin_601318' ,init_cash=100000, init_hold={'601318':1000},
                         frequence=QA.FREQUENCE.THIRTY_MIN)
 Broker = QA.QA_BacktestBroker()
