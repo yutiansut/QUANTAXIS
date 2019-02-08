@@ -439,7 +439,6 @@ class QA_Market(QA_Trade):
         else:
             pass
 
-        #print("<-----------------------insert_order-----------------------------<", strDbg)
 
     def on_insert_order(self, order: QA_Order):
         print(order)
@@ -457,7 +456,7 @@ class QA_Market(QA_Trade):
             if order.order_model in [ORDER_MODEL.MARKET,
                                      ORDER_MODEL.CLOSE,
                                      ORDER_MODEL.LIMIT]:
-                self.order_handler._trade() # 直接交易
+                self.order_handler._trade(order, self.session[order.account_cookie]) # 直接交易
             elif order.order_model in [ORDER_MODEL.NEXT_OPEN]:
                 pass
 
