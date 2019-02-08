@@ -109,14 +109,10 @@ class QA_Dealer():
         self.deal_price = 0
         self.deal_amount = 0
         self.order.tax_coeff = order.tax_coeff
-        # if order.market_type == MARKET_TYPE.STOCK_CN:
 
         res = self.backtest_dealer()
-        # print(res)
         self.deal_message[self.order.order_id] = res
 
-        # elif order.market_type == MARKET_TYPE.FUTURE_CN:
-        #     return self.backtest_future_dealer()
 
     @property
     def deal_df(self):
@@ -152,7 +148,6 @@ class QA_Dealer():
             self.order.order_id,
             QA_util_random_with_topic('Trade')
         ]
-        # self.order.
 
     def cal_fee(self):
         if self.order.market_type == MARKET_TYPE.STOCK_CN:
@@ -266,7 +261,6 @@ class QA_Dealer():
                 self.deal_amount = 0
 
             self.cal_fee()
-            # print(self.callback_message)
             return self.callback_message
 
         except Exception as e:
