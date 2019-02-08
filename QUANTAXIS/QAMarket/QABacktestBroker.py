@@ -166,9 +166,8 @@ class QA_BacktestBroker(QA_Broker):
         self.deal_message = {}
 
     def run(self, event):
-        #strDbg = QA_util_random_with_topic("QABacktestBroker.run")
         print(
-            "         >-----------------------QABacktestBroker.run----------------------------->",
+            ">>>>-----------------------QABacktestBroker.run----------------------------->",
             event.event_type
         )
 
@@ -193,11 +192,6 @@ class QA_BacktestBroker(QA_Broker):
             for item in new_marketdata_dict.keys():
                 if item not in self._quotation.keys():
                     self._quotation[item] = new_marketdata_dict[item]
-            # if self.broker_data is None:
-            #     self.broker_data = event.market_data
-            # else:
-            #     self.broker_data.append(event.market_data)
-            # self.broker_data=event.market_data
 
         elif event.event_type is BROKER_EVENT.RECEIVE_ORDER:
             self.order_handler.run(event)
@@ -211,7 +205,6 @@ class QA_BacktestBroker(QA_Broker):
             self.dealer.settle() ## 清空交易队列
             if event.callback:
                 event.callback('settle')
-                                 #print("         <-----------------------QABacktestBroker.run-----------------------------<",strDbg,'evt->',event)
 
     def query_data(self, code, start, end, frequence, market_type=None):
         """

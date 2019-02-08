@@ -429,7 +429,7 @@ class QA_Account(QA_Worker):
 
     @property
     def init_hold_with_account(self):
-        """带account_id的初始化持仓
+        """带account_cookie的初始化持仓
 
         Returns:
             [type] -- [description]

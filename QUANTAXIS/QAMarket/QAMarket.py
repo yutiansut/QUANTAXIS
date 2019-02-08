@@ -157,11 +157,11 @@ class QA_Market(QA_Trade):
     def register(self, broker_name, broker):
         if broker_name not in self._broker.keys():
             self.broker[broker_name] = broker
-            self.trade_engine.create_kernel(
-                '{}'.format(broker_name),
-                daemon=True
-            )
-            self.trade_engine.start_kernel('{}'.format(broker_name))
+            # self.trade_engine.create_kernel(
+            #     '{}'.format(broker_name),
+            #     daemon=True
+            # )
+            # self.trade_engine.start_kernel('{}'.format(broker_name))
             return True
         else:
             return False
@@ -280,7 +280,7 @@ class QA_Market(QA_Trade):
     def get_trading_day(self):
         return self.running_time
 
-    def get_account_id(self):
+    def get_account_cookie(self):
         return list(self.session.keys())
 
     def insert_order(
@@ -584,7 +584,7 @@ class QA_Market(QA_Trade):
 
     def _settle(self, broker_name, callback=False):
         #strDbg = QA_util_random_with_topic("QA_Market._settle")
-        #print(">-----------------------_settle----------------------------->", strDbg)
+        print(">-----------------------_settle----------------------------->", "QA_Market._settle")
 
         # 向事件线程发送BROKER的SETTLE事件
         # 向事件线程发送ACCOUNT的SETTLE事件
@@ -597,12 +597,13 @@ class QA_Market(QA_Trade):
                     for order in account.close_positions_order:
                         self.broker[broker_name].run(
                             QA_Event(
+                                broker = self.broker[account.broker],
                                 event_type=BROKER_EVENT.RECEIVE_ORDER,
                                 order=order,
                                 callback=self.on_insert_order
                             )
                         )
-        self.trade_engine.kernels_dict[broker_name].queue.join()
+        #self.trade_engine.kernels_dict[broker_name].queue.join()
 
         self._trade(event=QA_Event(broker_name=broker_name))
 
