@@ -59,7 +59,7 @@ class QA_Market(QA_Trade):
     """
 
     def __init__(self, if_start_orderthreading=True, *args, **kwargs):
-        """[summary]
+        """MARKET的初始化过程
 
         Keyword Arguments:
             if_start_orderthreading {bool} -- 是否在初始化的时候开启查询子线程(实盘需要) (default: {False})
@@ -86,7 +86,7 @@ class QA_Market(QA_Trade):
 
     def __repr__(self):
         '''
-                输出market市场对象的字符串
+        输出market市场对象的字符串
         '''
         return '<QA_Market with {} QA_Broker >'.format(list(self.broker.keys()))
 
@@ -115,30 +115,6 @@ class QA_Market(QA_Trade):
                 query_trade=self.query_trade
             ))
 
-    # def submit(self, QATask, nowait=False):
-    #     """submit 一个任务给QAMarket的event_queue
-
-    #     Arguments:
-    #         QATask {[type]} -- [description]
-
-    #     QATask 需要有
-    #         - worker (需要这个类继承了QA_Worker)
-    #         - engine(默认qamarket所在的thread)
-    #         - event - QA_Event
-    #                     - event_type
-    #                     - 自定义参数
-    #                     - callback
-
-    #     Keyword Arguments:
-    #         nowait {bool} -- [description] (default: {False})
-    #     """
-
-    #     assert isinstance(QATask, QA_Task)
-    #     if nowait:
-    #         self.event_queue.put_nowait(QATask)
-    #     else:
-    #         self.event_queue.put(QATask)
-
     def start(self):
         self.trade_engine.start()
         if self.if_start_orderthreading:
@@ -146,16 +122,18 @@ class QA_Market(QA_Trade):
             """
             self.start_order_threading()
 
-        # self.trade_engine.create_kernel('MARKET')
-        # self.trade_engine.start_kernel('MARKET')
 
     def connect(self, broker):
         if broker in self._broker.keys():
 
             self.broker[broker] = self._broker[broker]()  # 在这里实例化
             # 2018-08-06 change : 子线程全部变成后台线程 market线程崩了 子线程全部结束
-            self.trade_engine.create_kernel('{}'.format(broker), daemon=True)
-            self.trade_engine.start_kernel('{}'.format(broker))
+            # self.trade_engine.create_kernel('{}'.format(broker), daemon=True)
+            # self.trade_engine.start_kernel('{}'.format(broker))
+
+            # 2019-02-08 change: 在此 我们删除了BROKER所占用的线程
+
+            # 子线程变成功能性线程
             # 开启trade事件子线程
             return True
         else:
