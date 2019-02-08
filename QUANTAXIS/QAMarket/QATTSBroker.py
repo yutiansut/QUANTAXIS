@@ -88,13 +88,13 @@ class QA_TTSBroker(QA_Broker):
 
         return self.call("ping", {})
 
-    def logon(self, ip, port, version, yyb_id, account_id, trade_account, jy_passwrod, tx_password):
+    def logon(self, ip, port, version, yyb_id, account_cookie, trade_account, jy_passwrod, tx_password):
         data = self.call("logon", {
             "ip": ip,
             "port": port,
             "version": version,
             "yyb_id": yyb_id,
-            "account_no": account_id,
+            "account_no": account_cookie,
             "trade_account": trade_account,
             "jy_password": jy_passwrod,
             "tx_password": tx_password
