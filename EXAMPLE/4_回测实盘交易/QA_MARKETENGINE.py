@@ -51,7 +51,7 @@ print(market)
 market.login(QA.BROKER_TYPE.BACKETEST,a_1.account_cookie, a_1)
 market.login(QA.BROKER_TYPE.BACKETEST,a_2.account_cookie, a_2)
 # 打印市场中的交易账户
-print(market.get_account_id())
+print(market.get_account_cookie())
 
 
 #%%
