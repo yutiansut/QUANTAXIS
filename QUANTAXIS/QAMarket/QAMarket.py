@@ -22,7 +22,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 import datetime
 import time
 import numpy as np
@@ -40,11 +39,19 @@ from QUANTAXIS.QAMarket.QAShipaneBroker import QA_SPEBroker
 from QUANTAXIS.QAMarket.QASimulatedBroker import QA_SimulatedBroker
 from QUANTAXIS.QAMarket.QATrade import QA_Trade
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from QUANTAXIS.QAUtil.QAParameter import (ACCOUNT_EVENT, AMOUNT_MODEL, ORDER_STATUS,
-                                          BROKER_EVENT, BROKER_TYPE,
-                                          ENGINE_EVENT, FREQUENCE,
-                                          MARKET_EVENT, ORDER_EVENT,
-                                          ORDER_MODEL, RUNNING_ENVIRONMENT)
+from QUANTAXIS.QAUtil.QAParameter import (
+    ACCOUNT_EVENT,
+    AMOUNT_MODEL,
+    ORDER_STATUS,
+    BROKER_EVENT,
+    BROKER_TYPE,
+    ENGINE_EVENT,
+    FREQUENCE,
+    MARKET_EVENT,
+    ORDER_EVENT,
+    ORDER_MODEL,
+    RUNNING_ENVIRONMENT
+)
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 
@@ -122,14 +129,13 @@ class QA_Market(QA_Trade):
             """
             self.start_order_threading()
 
-
     def connect(self, broker):
         if broker in self._broker.keys():
 
-            self.broker[broker] = self._broker[broker]()  # 在这里实例化
-            # 2018-08-06 change : 子线程全部变成后台线程 market线程崩了 子线程全部结束
-            # self.trade_engine.create_kernel('{}'.format(broker), daemon=True)
-            # self.trade_engine.start_kernel('{}'.format(broker))
+            self.broker[broker] = self._broker[broker]() # 在这里实例化
+                                                         # 2018-08-06 change : 子线程全部变成后台线程 market线程崩了 子线程全部结束
+                                                         # self.trade_engine.create_kernel('{}'.format(broker), daemon=True)
+                                                         # self.trade_engine.start_kernel('{}'.format(broker))
 
             # 2019-02-08 change: 在此 我们删除了BROKER所占用的线程
 
@@ -140,16 +146,20 @@ class QA_Market(QA_Trade):
             return False
 
     def next_tradeday(self):
-        self.order_handler.run(QA_Event(
-            event_type=BROKER_EVENT.NEXT_TRADEDAY,
-            event_queue=self.trade_engine.kernels_dict['ORDER'].queue
-        ))
+        self.order_handler.run(
+            QA_Event(
+                event_type=BROKER_EVENT.NEXT_TRADEDAY,
+                event_queue=self.trade_engine.kernels_dict['ORDER'].queue
+            )
+        )
 
     def register(self, broker_name, broker):
         if broker_name not in self._broker.keys():
             self.broker[broker_name] = broker
             self.trade_engine.create_kernel(
-                '{}'.format(broker_name), daemon=True)
+                '{}'.format(broker_name),
+                daemon=True
+            )
             self.trade_engine.start_kernel('{}'.format(broker_name))
             return True
         else:
@@ -171,8 +181,10 @@ class QA_Market(QA_Trade):
         try:
             return self.session[account_cookie]
         except KeyError:
-            print('QAMARKET: this account {} is logoff, please login and retry'.format(
-                account_cookie))
+            print(
+                'QAMARKET: this account {} is logoff, please login and retry'
+                .format(account_cookie)
+            )
 
     def login(self, broker_name, account_cookie, account=None):
         """login 登录到交易前置
@@ -193,14 +205,18 @@ class QA_Market(QA_Trade):
         if account is None:
             if account_cookie not in self.session.keys():
                 self.session[account_cookie] = QA_Account(
-                    account_cookie=account_cookie, broker=broker_name)
+                    account_cookie=account_cookie,
+                    broker=broker_name
+                )
                 if self.sync_account(broker_name, account_cookie):
                     res = True
 
                 if self.if_start_orderthreading and res:
                     #
                     self.order_handler.subscribe(
-                        self.session[account_cookie], self.broker[broker_name])
+                        self.session[account_cookie],
+                        self.broker[broker_name]
+                    )
 
         else:
             if account_cookie not in self.session.keys():
@@ -211,7 +227,9 @@ class QA_Market(QA_Trade):
                 if self.if_start_orderthreading and res:
                     #
                     self.order_handler.subscribe(
-                        account, self.broker[broker_name])
+                        account,
+                        self.broker[broker_name]
+                    )
 
         if res:
             return res
@@ -241,7 +259,8 @@ class QA_Market(QA_Trade):
                 pass
             else:
                 self.session[account_cookie].sync_account(
-                    self.broker[broker_name].query_positions(account_cookie))
+                    self.broker[broker_name].query_positions(account_cookie)
+                )
             return True
         except Exception as e:
             print(e)
@@ -252,7 +271,9 @@ class QA_Market(QA_Trade):
             return False
         else:
             self.order_handler.unsubscribe(
-                self.session[account_cookie], self.broker[broker_name])
+                self.session[account_cookie],
+                self.broker[broker_name]
+            )
             self.session.pop(account_cookie)
 
     def get_trading_day(self):
@@ -261,17 +282,38 @@ class QA_Market(QA_Trade):
     def get_account_id(self):
         return list(self.session.keys())
 
-    def insert_order(self, account_cookie, amount, amount_model, time, code, price, order_model, towards, market_type, frequence, broker_name, money=None):
+    def insert_order(
+            self,
+            account_cookie,
+            amount,
+            amount_model,
+            time,
+            code,
+            price,
+            order_model,
+            towards,
+            market_type,
+            frequence,
+            broker_name,
+            money=None
+    ):
         #strDbg = QA_util_random_with_topic("QA_Market.insert_order")
-        print(">-----------------------insert_order----------------------------->",
-              "QA_Market.insert_order")
+        print(
+            ">-----------------------insert_order----------------------------->",
+            "QA_Market.insert_order"
+        )
 
         flag = False
 
         # 行情切片 bar/tick/realtime
 
-        price_slice = self.query_data_no_wait(broker_name=broker_name, frequence=frequence,
-                                              market_type=market_type, code=code, start=time)
+        price_slice = self.query_data_no_wait(
+            broker_name=broker_name,
+            frequence=frequence,
+            market_type=market_type,
+            code=code,
+            start=time
+        )
         price_slice = price_slice if price_slice is None else price_slice[0]
 
         if order_model in [ORDER_MODEL.CLOSE, ORDER_MODEL.NEXT_OPEN]:
@@ -281,27 +323,48 @@ class QA_Market(QA_Trade):
                     flag = True
                 else:
                     QA_util_log_info(
-                        'MARKET WARING: SOMEING WRONG WITH ORDER \n ')
-                    QA_util_log_info('code {} date {} price {} order_model {} amount_model {}'.format(
-                        code, time, price, order_model, amount_model))
+                        'MARKET WARING: SOMEING WRONG WITH ORDER \n '
+                    )
+                    QA_util_log_info(
+                        'code {} date {} price {} order_model {} amount_model {}'
+                        .format(code,
+                                time,
+                                price,
+                                order_model,
+                                amount_model)
+                    )
             elif isinstance(price_slice, dict):
                 if price_slice is not None:
                     price = float(price_slice['close'])
                     flag = True
                 else:
                     QA_util_log_info(
-                        'MARKET WARING: SOMEING WRONG WITH ORDER \n ')
-                    QA_util_log_info('code {} date {} price {} order_model {} amount_model {}'.format(
-                        code, time, price, order_model, amount_model))
+                        'MARKET WARING: SOMEING WRONG WITH ORDER \n '
+                    )
+                    QA_util_log_info(
+                        'code {} date {} price {} order_model {} amount_model {}'
+                        .format(code,
+                                time,
+                                price,
+                                order_model,
+                                amount_model)
+                    )
             elif isinstance(price_slice, list):
                 if price_slice is not None:
                     price = float(price_slice[4])
                     flag = True
                 else:
                     QA_util_log_info(
-                        'MARKET WARING: SOMEING WRONG WITH ORDER \n ')
-                    QA_util_log_info('code {} date {} price {} order_model {} amount_model {}'.format(
-                        code, time, price, order_model, amount_model))
+                        'MARKET WARING: SOMEING WRONG WITH ORDER \n '
+                    )
+                    QA_util_log_info(
+                        'code {} date {} price {} order_model {} amount_model {}'
+                        .format(code,
+                                time,
+                                price,
+                                order_model,
+                                amount_model)
+                    )
 
         elif order_model is ORDER_MODEL.MARKET:
             if isinstance(price_slice, np.ndarray):
@@ -310,9 +373,16 @@ class QA_Market(QA_Trade):
                     flag = True
                 else:
                     QA_util_log_info(
-                        'MARKET WARING: SOMEING WRONG WITH ORDER \n ')
-                    QA_util_log_info('code {} date {} price {} order_model {} amount_model {}'.format(
-                        code, time, price, order_model, amount_model))
+                        'MARKET WARING: SOMEING WRONG WITH ORDER \n '
+                    )
+                    QA_util_log_info(
+                        'code {} date {} price {} order_model {} amount_model {}'
+                        .format(code,
+                                time,
+                                price,
+                                order_model,
+                                amount_model)
+                    )
             elif isinstance(price_slice, dict):
 
                 if price_slice is not None:
@@ -320,25 +390,50 @@ class QA_Market(QA_Trade):
                     flag = True
                 else:
                     QA_util_log_info(
-                        'MARKET WARING: SOMEING WRONG WITH ORDER \n ')
-                    QA_util_log_info('code {} date {} price {} order_model {} amount_model {}'.format(
-                        code, time, price, order_model, amount_model))
+                        'MARKET WARING: SOMEING WRONG WITH ORDER \n '
+                    )
+                    QA_util_log_info(
+                        'code {} date {} price {} order_model {} amount_model {}'
+                        .format(code,
+                                time,
+                                price,
+                                order_model,
+                                amount_model)
+                    )
         elif order_model is ORDER_MODEL.LIMIT:
             flag = True
-        print(amount, amount_model, time, code,
-              price, order_model, towards, money)
+        print(
+            amount,
+            amount_model,
+            time,
+            code,
+            price,
+            order_model,
+            towards,
+            money
+        )
         if flag:
             order = self.get_account(account_cookie).send_order(
-                amount=amount, amount_model=amount_model, time=time, code=code, price=price,
-                order_model=order_model, towards=towards, money=money)
+                amount=amount,
+                amount_model=amount_model,
+                time=time,
+                code=code,
+                price=price,
+                order_model=order_model,
+                towards=towards,
+                money=money
+            )
             if order:
-                self.order_handler.run(QA_Event(
-                    broker=self.broker[self.get_account(
-                        account_cookie).broker],
-                    event_type=BROKER_EVENT.RECEIVE_ORDER,
-                    order=order,
-                    market_data=price_slice,
-                    callback=self.on_insert_order))
+                self.order_handler.run(
+                    QA_Event(
+                        broker=self.broker[self.get_account(account_cookie
+                                                           ).broker],
+                        event_type=BROKER_EVENT.RECEIVE_ORDER,
+                        order=order,
+                        market_data=price_slice,
+                        callback=self.on_insert_order
+                    )
+                )
         else:
             pass
 
@@ -355,33 +450,40 @@ class QA_Market(QA_Trade):
 
             self.session[order.account_cookie].cancel_order(order)
         else:
-            if order.order_model in [ORDER_MODEL.MARKET, ORDER_MODEL.CLOSE, ORDER_MODEL.LIMIT]:
-                self.order_handler._trade()  # 直接交易
+            if order.order_model in [ORDER_MODEL.MARKET,
+                                     ORDER_MODEL.CLOSE,
+                                     ORDER_MODEL.LIMIT]:
+                self.order_handler._trade() # 直接交易
             elif order.order_model in [ORDER_MODEL.NEXT_OPEN]:
                 pass
 
     def _renew_account(self):
         for account in self.session.values():
-            account.run(QA_Event(
-                        event_type=ACCOUNT_EVENT.SETTLE))
+            account.run(QA_Event(event_type=ACCOUNT_EVENT.SETTLE))
 
     def _sync_position(self):
-        self.order_handler.run(QA_Event(
-            event_type=MARKET_EVENT.QUERY_POSITION,
-            account_cookie=list(self.session.keys()),
-            broker=[self.broker[item.broker]
-                    for item in self.session.values()]
-        ))
+        self.order_handler.run(
+            QA_Event(
+                event_type=MARKET_EVENT.QUERY_POSITION,
+                account_cookie=list(self.session.keys()),
+                broker=[
+                    self.broker[item.broker] for item in self.session.values()
+                ]
+            )
+        )
 
     def _sync_deals(self):
 
-        self.order_handler.run(QA_Event(
-            event_type=MARKET_EVENT.QUERY_DEAL,
-            account_cookie=list(self.session.keys()),
-            broker=[self.broker[item.broker]
-                    for item in self.session.values()],
-            event_queue=self.trade_engine.kernels_dict['ORDER'].queue
-        ))
+        self.order_handler.run(
+            QA_Event(
+                event_type=MARKET_EVENT.QUERY_DEAL,
+                account_cookie=list(self.session.keys()),
+                broker=[
+                    self.broker[item.broker] for item in self.session.values()
+                ],
+                event_queue=self.trade_engine.kernels_dict['ORDER'].queue
+            )
+        )
 
     def _sync_orders(self):
         # account_cookie=list(self.session.keys()),
@@ -390,10 +492,12 @@ class QA_Market(QA_Trade):
         # 注意: 一定要给子线程的队列@@@!!!
         # 2018-08-08 yutiansut
         # 这个callback实现了子线程方法的自我驱动和异步任务
-        self.order_handler.run(QA_Event(
-            event_type=MARKET_EVENT.QUERY_ORDER,
-            event_queue=self.trade_engine.kernels_dict['ORDER'].queue
-        ))
+        self.order_handler.run(
+            QA_Event(
+                event_type=MARKET_EVENT.QUERY_ORDER,
+                event_queue=self.trade_engine.kernels_dict['ORDER'].queue
+            )
+        )
 
     def sync_strategy(self, broker_name, account_cookie):
         """同步  账户/委托/成交
@@ -426,27 +530,39 @@ class QA_Market(QA_Trade):
     def query_cash(self, account_cookie):
         return self.get_account(account_cookie).cash_available
 
-    def query_data_no_wait(self, broker_name, frequence, market_type, code, start, end=None):
-        return self.broker[broker_name].run(event=QA_Event(
-            event_type=MARKET_EVENT.QUERY_DATA,
-            frequence=frequence,
-            market_type=market_type,
-            code=code,
-            start=start,
-            end=end
-        ))
+    def query_data_no_wait(
+            self,
+            broker_name,
+            frequence,
+            market_type,
+            code,
+            start,
+            end=None
+    ):
+        return self.broker[broker_name].run(
+            event=QA_Event(
+                event_type=MARKET_EVENT.QUERY_DATA,
+                frequence=frequence,
+                market_type=market_type,
+                code=code,
+                start=start,
+                end=end
+            )
+        )
 
     query_data = query_data_no_wait
 
     def query_currentbar(self, broker_name, market_type, code):
-        return self.broker[broker_name].run(event=QA_Event(
-            event_type=MARKET_EVENT.QUERY_DATA,
-            frequence=FREQUENCE.CURRENT,
-            market_type=market_type,
-            code=code,
-            start=self.running_time,
-            end=None
-        ))
+        return self.broker[broker_name].run(
+            event=QA_Event(
+                event_type=MARKET_EVENT.QUERY_DATA,
+                frequence=FREQUENCE.CURRENT,
+                market_type=market_type,
+                code=code,
+                start=self.running_time,
+                end=None
+            )
+        )
 
     def on_query_data(self, data):
         print('ON QUERY')
@@ -478,18 +594,24 @@ class QA_Market(QA_Trade):
             if account.broker == broker_name:
                 if account.running_environment == RUNNING_ENVIRONMENT.TZERO:
                     for order in account.close_positions_order:
-                        self.broker[broker_name].run(QA_Event(
-                            event_type=BROKER_EVENT.RECEIVE_ORDER,
-                            order=order,
-                            callback=self.on_insert_order))
+                        self.broker[broker_name].run(
+                            QA_Event(
+                                event_type=BROKER_EVENT.RECEIVE_ORDER,
+                                order=order,
+                                callback=self.on_insert_order
+                            )
+                        )
         self.trade_engine.kernels_dict[broker_name].queue.join()
 
         self._trade(event=QA_Event(broker_name=broker_name))
 
-        self.broker[broker_name].run(QA_Event(
-            event_type=BROKER_EVENT.SETTLE,
-            broker=self.broker[broker_name],
-            callback=callback))
+        self.broker[broker_name].run(
+            QA_Event(
+                event_type=BROKER_EVENT.SETTLE,
+                broker=self.broker[broker_name],
+                callback=callback
+            )
+        )
 
         for account in self.session.values():
             print(account.history)
@@ -507,10 +629,12 @@ class QA_Market(QA_Trade):
 
         if self.if_start_orderthreading:
 
-            self.order_handler.run(QA_Event(
-                event_type=BROKER_EVENT.SETTLE,
-                event_queue=self.trade_engine.kernels_dict['ORDER'].queue
-            ))
+            self.order_handler.run(
+                QA_Event(
+                    event_type=BROKER_EVENT.SETTLE,
+                    event_queue=self.trade_engine.kernels_dict['ORDER'].queue
+                )
+            )
 
     def every_day_start(self):
         """盘前准备

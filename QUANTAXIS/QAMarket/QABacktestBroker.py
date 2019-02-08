@@ -167,7 +167,10 @@ class QA_BacktestBroker(QA_Broker):
 
     def run(self, event):
         #strDbg = QA_util_random_with_topic("QABacktestBroker.run")
-        print("         >-----------------------QABacktestBroker.run----------------------------->", event.event_type)
+        print(
+            "         >-----------------------QABacktestBroker.run----------------------------->",
+            event.event_type
+        )
 
         if event.event_type is MARKET_EVENT.QUERY_DATA:
             # 查询数据部分
@@ -208,7 +211,7 @@ class QA_BacktestBroker(QA_Broker):
             self.dealer.settle() ## 清空交易队列
             if event.callback:
                 event.callback('settle')
-        #print("         <-----------------------QABacktestBroker.run-----------------------------<",strDbg,'evt->',event)
+                                 #print("         <-----------------------QABacktestBroker.run-----------------------------<",strDbg,'evt->',event)
 
     def query_data(self, code, start, end, frequence, market_type=None):
         """
