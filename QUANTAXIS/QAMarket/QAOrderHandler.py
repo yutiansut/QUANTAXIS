@@ -89,7 +89,7 @@ class QA_OrderHandler(QA_Worker):
             order = event.order
             order = event.broker.receive_order(
                 QA_Event(event_type=BROKER_EVENT.TRADE, order=event.order, market_data=event.market_data))
-            # print(threading.current_thread().ident)
+
             order = self.order_queue.insert_order(order)
             if event.callback:
                 event.callback(order)
@@ -123,7 +123,7 @@ class QA_OrderHandler(QA_Worker):
                 event.event_queue.task_done()
             except:
                 pass
-            
+
         elif event.event_type is BROKER_EVENT.NEXT_TRADEDAY:
             """下一个交易日
             """
@@ -255,42 +255,47 @@ class QA_OrderHandler(QA_Worker):
         except:
             print('failled to unscribe {}'.format(account.account_cookie))
 
-    def _trade(self):
-        print('orderhandler: trade')
-        res = [self.monitor[account].query_orders(
-            account.account_cookie, 'filled') for account in list(self.monitor.keys())]
+    def _trade(self, order=None, account= None):
+        if order is not None:
+            res = self.monitor[account].query_order(order.order_id)
+            order.trade(str(res[14]), float(res[6]), int(
+                        res[10]), str(res[2]))
+        else:
+            print('orderhandler: trade')
+            res = [self.monitor[account].query_orders(
+                account.account_cookie, 'filled') for account in list(self.monitor.keys())]
 
-        try:
-            res = pd.concat(res, axis=0) if len(
-                res) > 0 else pd.DataFrame()
-        except:
-            res = None
+            try:
+                res = pd.concat(res, axis=0) if len(
+                    res) > 0 else pd.DataFrame()
+            except:
+                res = None
 
-        self.deal_status = res if res is not None else self.deal_status
-        for order in self.order_queue.pending:
-            if len(self.deal_status) > 0:
-                if order.realorder_id in self.deal_status.index.levels[1]:
-                    # 此时有成交推送(但可能是多条)
-                    #
-                    res = self.deal_status.loc[order.account_cookie,
-                                               order.realorder_id]
-
-                    if isinstance(res, pd.Series):
-                        order.trade(str(res.trade_id), float(res.trade_price), int(
-                            res.trade_amount), str(res.trade_time))
-                    elif isinstance(res, pd.DataFrame):
-                        if len(res) == 0:
-                            pass
-
-                        elif len(res) == 1:
-                            res = res.iloc[0]
+            self.deal_status = res if res is not None else self.deal_status
+            for order in self.order_queue.pending:
+                if len(self.deal_status) > 0:
+                    if order.realorder_id in self.deal_status.index.levels[1]:
+                        # 此时有成交推送(但可能是多条)
+                        #
+                        res = self.deal_status.loc[order.account_cookie,
+                                                order.realorder_id]
+                        print(res)
+                        if isinstance(res, pd.Series):
                             order.trade(str(res.trade_id), float(res.trade_price), int(
                                 res.trade_amount), str(res.trade_time))
-                        else:
-                            # print(res)
-                            # print(len(res))
-                            for _, deal in res.iterrows:
-                                order.trade(str(deal.trade_id), float(deal.trade_price), int(
-                                    deal.trade_amount), str(deal.trade_time))
-        # print('order_handler: finish trade')
-        return True
+                        elif isinstance(res, pd.DataFrame):
+                            if len(res) == 0:
+                                pass
+
+                            elif len(res) == 1:
+                                res = res.iloc[0]
+                                order.trade(str(res.trade_id), float(res.trade_price), int(
+                                    res.trade_amount), str(res.trade_time))
+                            else:
+                                # print(res)
+                                # print(len(res))
+                                for _, deal in res.iterrows:
+                                    order.trade(str(deal.trade_id), float(deal.trade_price), int(
+                                        deal.trade_amount), str(deal.trade_time))
+            # print('order_handler: finish trade')
+            return True

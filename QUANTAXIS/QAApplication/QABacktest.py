@@ -168,6 +168,7 @@ class QA_Backtest():
                                                          # <class 'QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day'>
             date = data.date[0]
             print('current date : {}'.format(date))
+            print('current time : {}'.format(data.datetime[0]))
             if self.market_type is MARKET_TYPE.STOCK_CN: # 如果是股票市场
                 if _date != date:                        # 如果新的date
 
@@ -176,6 +177,7 @@ class QA_Backtest():
 
                     try:
                         print('try to settle')
+                        self.market._settle(self.broker_name)
                         self.market.next_tradeday()
                     except Exception as e:
                         raise e
@@ -196,54 +198,7 @@ class QA_Backtest():
 
             _date = date
 
-            # print('=======market_queue QSIZE', self.market.trade_engine.queue.qsize())
-            # print('=======broker_queue QSIZE', self.market.trade_engine.kernels_dict[self.broker_name].queue.qsize())
-            # print('=======order_queue QSIZE', self.market.trade_engine.kernels_dict['ORDER'].queue.qsize())
-            self.market.trade_engine.join_single(self.broker_name)
-            self.market.trade_engine.queue.join()
-
-            # print('=======market_queue QSIZE', self.market.trade_engine.queue.qsize())
-            # print('=======broker_queue QSIZE', self.market.trade_engine.kernels_dict[self.broker_name].queue.qsize())
-            # print('=======order_queue QSIZE', self.market.trade_engine.kernels_dict['ORDER'].queue.qsize())
-
-            # print(self.market.order_handler.order_queue.to_df())
-            self.market._settle(self.broker_name)
-            self.market.trade_engine.join_single(self.broker_name)
-            self.market.trade_engine.queue.join()
-            print(
-                '=======market_queue QSIZE',
-                self.market.trade_engine.queue.qsize()
-            )
-            print(
-                '=======broker_queue QSIZE',
-                self.market.trade_engine.kernels_dict[self.broker_name
-                                                     ].queue.qsize()
-            )
-            print(
-                '=======order_queue QSIZE',
-                self.market.trade_engine.kernels_dict['ORDER'].queue.qsize()
-            )
-            #self.market.trade_engine.join()
-            #self.market.trade_engine.join_single('ORDER')
-            print(
-                '=======market_queue QSIZE',
-                self.market.trade_engine.queue.qsize()
-            )
-            print(
-                '=======broker_queue QSIZE',
-                self.market.trade_engine.kernels_dict[self.broker_name
-                                                     ].queue.qsize()
-            )
-            print(
-                '=======order_queue QSIZE',
-                self.market.trade_engine.kernels_dict['ORDER'].queue.qsize()
-            )
-
-            print(self.account.history)
-            print(self.account.hold)
-            print(self.account.sell_available)
-            # print(self.market.order_handler.order_queue.pending)
-            # input()
+            
 
         self.after_success()
 

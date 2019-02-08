@@ -157,11 +157,11 @@ class QA_Market(QA_Trade):
     def register(self, broker_name, broker):
         if broker_name not in self._broker.keys():
             self.broker[broker_name] = broker
-            self.trade_engine.create_kernel(
-                '{}'.format(broker_name),
-                daemon=True
-            )
-            self.trade_engine.start_kernel('{}'.format(broker_name))
+            # self.trade_engine.create_kernel(
+            #     '{}'.format(broker_name),
+            #     daemon=True
+            # )
+            # self.trade_engine.start_kernel('{}'.format(broker_name))
             return True
         else:
             return False
@@ -280,8 +280,9 @@ class QA_Market(QA_Trade):
     def get_trading_day(self):
         return self.running_time
 
-    def get_account_id(self):
+    def get_account_cookie(self):
         return list(self.session.keys())
+
 
     def insert_order(
             self,
@@ -438,9 +439,10 @@ class QA_Market(QA_Trade):
         else:
             pass
 
-        #print("<-----------------------insert_order-----------------------------<", strDbg)
 
     def on_insert_order(self, order: QA_Order):
+        print(order)
+        print(order.status)
         if order.status == ORDER_STATUS.FAILED:
             """如果订单创建失败, 恢复状态
 
@@ -454,7 +456,7 @@ class QA_Market(QA_Trade):
             if order.order_model in [ORDER_MODEL.MARKET,
                                      ORDER_MODEL.CLOSE,
                                      ORDER_MODEL.LIMIT]:
-                self.order_handler._trade() # 直接交易
+                self.order_handler._trade(order, self.session[order.account_cookie]) # 直接交易
             elif order.order_model in [ORDER_MODEL.NEXT_OPEN]:
                 pass
 
@@ -584,7 +586,7 @@ class QA_Market(QA_Trade):
 
     def _settle(self, broker_name, callback=False):
         #strDbg = QA_util_random_with_topic("QA_Market._settle")
-        #print(">-----------------------_settle----------------------------->", strDbg)
+        print(">-----------------------_settle----------------------------->", "QA_Market._settle")
 
         # 向事件线程发送BROKER的SETTLE事件
         # 向事件线程发送ACCOUNT的SETTLE事件
@@ -595,14 +597,23 @@ class QA_Market(QA_Trade):
             if account.broker == broker_name:
                 if account.running_environment == RUNNING_ENVIRONMENT.TZERO:
                     for order in account.close_positions_order:
-                        self.broker[broker_name].run(
+                        price_slice = self.query_data_no_wait(
+                            broker_name= order.broker,
+                            frequence= order.frequence,
+                            market_type= order.market_type,
+                            code=order.code,
+                            start=order.datetime
+                        )
+                        price_slice = price_slice if price_slice is None else price_slice[0]
+                        self.order_handler.run(
                             QA_Event(
+                                broker = self.broker[account.broker],
                                 event_type=BROKER_EVENT.RECEIVE_ORDER,
                                 order=order,
+                                market_data=price_slice,
                                 callback=self.on_insert_order
                             )
                         )
-        self.trade_engine.kernels_dict[broker_name].queue.join()
 
         self._trade(event=QA_Event(broker_name=broker_name))
 

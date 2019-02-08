@@ -429,7 +429,7 @@ class QA_Account(QA_Worker):
 
     @property
     def init_hold_with_account(self):
-        """带account_id的初始化持仓
+        """带account_cookie的初始化持仓
 
         Returns:
             [type] -- [description]
@@ -1281,6 +1281,7 @@ class QA_Account(QA_Worker):
                 order_model=order_model,
                 towards=towards,
                 money=money,
+                broker = self.broker,
                 amount_model=amount_model,
                 commission_coeff=self.commission_coeff,
                 tax_coeff=self.tax_coeff,
@@ -1341,7 +1342,7 @@ class QA_Account(QA_Worker):
                         time=time,
                         towards=ORDER_DIRECTION.BUY,
                         order_model=ORDER_MODEL.CLOSE,
-                        amount_model=AMOUNT_MODEL.BY_AMOUNT
+                        amount_model=AMOUNT_MODEL.BY_AMOUNT,
                     )
                 elif amount > 0:
                     # 先买入的单子, 卖平
