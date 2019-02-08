@@ -18,8 +18,8 @@ import random
 
 
 class MAMINT0Strategy(QA_Account):
-    def __init__(self, init_hold={'000001': 10000}):
-        super().__init__(init_hold=init_hold)
+    def __init__(self,user_cookie='default', portfolio_cookie='default', init_hold={'000001': 10000}):
+        super().__init__(user_cookie, portfolio_cookie, init_hold=init_hold)
         self.account_cookie = 'T0BACKTEST'
         self.running_environment = RUNNING_ENVIRONMENT.TZERO
         self.frequence = FREQUENCE.ONE_MIN
@@ -45,6 +45,8 @@ class MAMINT0Strategy(QA_Account):
         # self.allow_sellopen # 账户是否允许卖空
         # self.allow_t0       # 账户是否允许t0
         # self.commission_coeff  # 账户的手续费(可自行调整)
+
+
 
 
 
@@ -98,8 +100,8 @@ class Backtest(QA_Backtest):
         t0strategy = MAMINT0Strategy()
         # maminstrategy.reset_assets(1000)
         # self.portfolio, self.account = self.user.register_account(mastrategy)
-        self.user = QA_User(user_cookie='user_admin')
-        self.portfolio = self.user.new_portfolio('folio_admin')
+        self.user = QA_User(username='yutiansut',password='940809')
+        self.portfolio = self.user.new_portfolio('test_backtest')
         self.portfolio, self.account = self.user.register_account(t0strategy)
 
     def after_success(self):
@@ -108,8 +110,7 @@ class Backtest(QA_Backtest):
                        benchmark_type=MARKET_TYPE.INDEX_CN)
 
         print(risk().T)
-
-        self.account.save()
+        self.user.save()
         risk.save()
         risk.plot_assets_curve()
         print(risk.profit_construct)
@@ -121,8 +122,8 @@ class Backtest(QA_Backtest):
 import QUANTAXIS as QA
 backtest = Backtest(market_type=MARKET_TYPE.STOCK_CN,
                     frequence=FREQUENCE.FIFTEEN_MIN,
-                    start='2017-11-01',
-                    end='2017-12-10',
+                    start='2018-11-01',
+                    end='2018-12-10',
                     code_list=['000001'],
                     commission_fee=0.00015)
 backtest.start_market()

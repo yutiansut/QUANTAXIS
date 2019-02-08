@@ -142,6 +142,17 @@ class QA_Portfolio(QA_Account):
         except:
             return None
 
+
+    @property
+    def node_view(self):
+        return {
+            'node_name': self.portfolio_cookie,
+            'cash_available' : self.cash_available,
+            'sub_node': [account.node_view for account in self.accounts.values()],
+            'links': [{'source':self.portfolio_cookie, 'target': item } for item in self.accounts.keys()]
+        }
+
+
     @property
     def init_hold_table(self):
         return pd.concat(
@@ -174,10 +185,26 @@ class QA_Portfolio(QA_Account):
         else:
             pass
 
+    def drop_account(self, account_cookie):
+        """删除一个account
+        
+        Arguments:
+            account_cookie {[type]} -- [description]
+        
+        Raises:
+            RuntimeError -- [description]
+        """
+
+        if account_cookie in self.accounts.keys():
+            self.accounts.pop(account_cookie)
+        else:
+            raise RuntimeError('account {} is not in the portfolio'.format(account_cookie))
+
     def new_account(
             self,
             account_cookie=None,
             init_cash=1000000,
+            market_type=MARKET_TYPE.STOCK_CN,
             *args,
             **kwargs
     ):
@@ -191,12 +218,19 @@ class QA_Portfolio(QA_Account):
         """
 
         if account_cookie is None:
+            """创建新的account
+
+            Returns:
+                [type] -- [description]
+            """
+            # 如果组合的cash_available>创建新的account所需cash
             if self.cash_available > init_cash:
 
                 temp = QA_Account(
+                    user_cookie=self.user_cookie,
                     portfolio_cookie=self.portfolio_cookie,
                     init_cash=init_cash,
-                    user_cookie=self.user_cookie,
+                    market_type=market_type,
                     *args,
                     **kwargs
                 )
@@ -212,8 +246,9 @@ class QA_Portfolio(QA_Account):
                 if account_cookie not in self.accounts.keys():
                     self.accounts[account_cookie] = QA_Account(
                         portfolio_cookie=self.portfolio_cookie,
-                        init_cash=init_cash,
                         user_cookie=self.user_cookie,
+                        init_cash=init_cash,
+                        market_type=market_type,
                         account_cookie=account_cookie,
                         *args,
                         **kwargs
@@ -265,8 +300,7 @@ class QA_Portfolio(QA_Account):
             'account_list': list(self.accounts.keys()),
             'init_cash': self.init_cash,
             'cash': self.cash,
-            'history': self.history[0],
-            'history_header': self.history[1]
+            'history': self.history
         }
 
     def send_order(
@@ -326,7 +360,7 @@ class QA_Portfolio(QA_Account):
         统计每一个时间点的时候的cash总和
         """
 
-        pass
+        return sum([account.cash_available for account in self.accounts.values()])
 
     def pull(self, account_cookie=None, collection=DATABASE.account):
         'pull from the databases'
@@ -390,13 +424,21 @@ class QA_Portfolio(QA_Account):
             self.accounts[account_cookie].from_message(message)
 
     @property
-    def history(self):
+    def history_split(self):
         res = []
         ids = []
         for account in list(self.accounts.values()):
             res.append(account.history)
             ids.append(account.account_cookie)
         return res, ids
+
+    @property
+    def history(self):
+        res = []
+        for account in list(self.accounts.values()):
+            res.extend(account.history)
+
+        return res
 
     @property
     def history_table(self):
@@ -407,7 +449,11 @@ class QA_Portfolio(QA_Account):
     def reload(self):
 
         message = self.client.find_one(
-            {'user_cookie': self.user_cookie, 'portfolio_cookie': self.portfolio_cookie})
+            {
+                'user_cookie': self.user_cookie,
+                'portfolio_cookie': self.portfolio_cookie
+            }
+        )
         # 'user_cookie': self.user_cookie,
         # 'portfolio_cookie': self.portfolio_cookie,
         # 'account_list': list(self.accounts.keys()),
@@ -422,20 +468,44 @@ class QA_Portfolio(QA_Account):
             self.cash = message['cash']
             #self.history = (message['history'], message['history_header'])
             account_list = message['account_list']
-            self.accounts = dict(zip(account_list, [QA_Account(
-                account_cookie=item, user_cookie=self.user_cookie, portfolio_cookie=self.portfolio_cookie) for item in account_list]))
+            self.accounts = dict(
+                zip(
+                    account_list,
+                    [
+                        QA_Account(
+                            account_cookie=item,
+                            user_cookie=self.user_cookie,
+                            portfolio_cookie=self.portfolio_cookie,
+                            auto_reload=True
+                        ) for item in account_list
+                    ]
+                )
+            )
+
+    @property
+    def code(self):
+        """code of portfolio ever hold
+
+        Returns:
+            [type] -- [description]
+        """
+
+        return self.history_table.code.unique().tolist()
 
     def save(self):
         """存储过程
         """
         self.client.update(
-            {'portfolio_cookie': self.portfolio_cookie,
-                'user_cookie': self.user_cookie},
+            {
+                'portfolio_cookie': self.portfolio_cookie,
+                'user_cookie': self.user_cookie
+            },
             {'$set': self.message},
             upsert=True
         )
 
         for account in self.accounts.values():
+            print('account {} save'.format(account.account_cookie))
             account.save()
 
 
