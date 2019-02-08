@@ -61,7 +61,7 @@ class QA_Order():
     '''
 
     def __init__(self, price=None, date=None, datetime=None, sending_time=None, trade_time=False, amount=0, market_type=None, frequence=None,
-                 towards=None, code=None, user=None, account_cookie=None, strategy=None, order_model=None, money=None, amount_model=AMOUNT_MODEL.BY_AMOUNT,
+                 towards=None, code=None, user=None, account_cookie=None, strategy=None, order_model=None, money=None, amount_model=AMOUNT_MODEL.BY_AMOUNT, broker = None,
                  order_id=None, trade_id=False, _status=ORDER_STATUS.NEW, callback=False, commission_coeff=0.00025, tax_coeff=0.001, exchange_id=None, *args, **kwargs):
         '''
 
@@ -148,6 +148,7 @@ class QA_Order():
         self.trade_id = trade_id if trade_id else []
 
         self.trade_price = 0  # 成交均价
+        self.broker = broker
         self.callback = callback  # 委托成功的callback
         self.money = money  # 委托需要的金钱
         self.reason = None  # 原因列表

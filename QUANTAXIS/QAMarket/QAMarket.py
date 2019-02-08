@@ -283,6 +283,7 @@ class QA_Market(QA_Trade):
     def get_account_cookie(self):
         return list(self.session.keys())
 
+
     def insert_order(
             self,
             account_cookie,
@@ -595,11 +596,20 @@ class QA_Market(QA_Trade):
             if account.broker == broker_name:
                 if account.running_environment == RUNNING_ENVIRONMENT.TZERO:
                     for order in account.close_positions_order:
+                        price_slice = self.query_data_no_wait(
+                            broker_name= order.broker,
+                            frequence= order.frequence,
+                            market_type= order.market_type,
+                            code=order.code,
+                            start=order.datetime
+                        )
+                        print(price_slice)
                         self.broker[broker_name].run(
                             QA_Event(
                                 broker = self.broker[account.broker],
                                 event_type=BROKER_EVENT.RECEIVE_ORDER,
                                 order=order,
+                                market_data=price_slice,
                                 callback=self.on_insert_order
                             )
                         )
