@@ -185,6 +185,21 @@ class QA_Portfolio(QA_Account):
         else:
             pass
 
+    def drop_account(self, account_cookie):
+        """删除一个account
+        
+        Arguments:
+            account_cookie {[type]} -- [description]
+        
+        Raises:
+            RuntimeError -- [description]
+        """
+
+        if account_cookie in self.accounts.keys():
+            self.accounts.pop(account_cookie)
+        else:
+            raise RuntimeError('account {} is not in the portfolio'.format(account_cookie))
+
     def new_account(
             self,
             account_cookie=None,
