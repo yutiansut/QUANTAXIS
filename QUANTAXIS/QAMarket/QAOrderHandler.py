@@ -89,7 +89,7 @@ class QA_OrderHandler(QA_Worker):
             order = event.order
             order = event.broker.receive_order(
                 QA_Event(event_type=BROKER_EVENT.TRADE, order=event.order, market_data=event.market_data))
-            # print(threading.current_thread().ident)
+
             order = self.order_queue.insert_order(order)
             if event.callback:
                 event.callback(order)
@@ -274,7 +274,7 @@ class QA_OrderHandler(QA_Worker):
                     #
                     res = self.deal_status.loc[order.account_cookie,
                                                order.realorder_id]
-
+                    print(res)
                     if isinstance(res, pd.Series):
                         order.trade(str(res.trade_id), float(res.trade_price), int(
                             res.trade_amount), str(res.trade_time))
