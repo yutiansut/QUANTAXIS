@@ -26,6 +26,7 @@ import datetime
 import time
 import numpy as np
 import sched
+import threading
 
 from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
@@ -128,7 +129,7 @@ class QA_Market(QA_Trade):
             """查询子线程开关
             """
             self.start_order_threading()
-
+        print(threading.enumerate())
     def connect(self, broker):
         if broker in self._broker.keys():
 

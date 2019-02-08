@@ -182,6 +182,7 @@ class QA_Portfolio(QA_Account):
                 account.user_cookie = self.user_cookie
                 self.cash.append(self.cash_available - account.init_cash)
                 self.accounts[account.account_cookie] = account
+                return account
         else:
             pass
 
