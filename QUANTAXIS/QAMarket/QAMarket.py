@@ -442,6 +442,8 @@ class QA_Market(QA_Trade):
         #print("<-----------------------insert_order-----------------------------<", strDbg)
 
     def on_insert_order(self, order: QA_Order):
+        print(order)
+        print(order.status)
         if order.status == ORDER_STATUS.FAILED:
             """如果订单创建失败, 恢复状态
 
@@ -603,8 +605,8 @@ class QA_Market(QA_Trade):
                             code=order.code,
                             start=order.datetime
                         )
-                        print(price_slice)
-                        self.broker[broker_name].run(
+                        price_slice = price_slice if price_slice is None else price_slice[0]
+                        self.order_handler.run(
                             QA_Event(
                                 broker = self.broker[account.broker],
                                 event_type=BROKER_EVENT.RECEIVE_ORDER,
@@ -613,7 +615,6 @@ class QA_Market(QA_Trade):
                                 callback=self.on_insert_order
                             )
                         )
-        #self.trade_engine.kernels_dict[broker_name].queue.join()
 
         self._trade(event=QA_Event(broker_name=broker_name))
 
