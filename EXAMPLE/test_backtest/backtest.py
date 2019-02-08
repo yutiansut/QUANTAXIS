@@ -28,8 +28,8 @@ from QUANTAXIS.QAARP.QAUser import QA_User
 from QUANTAXIS.QAApplication.QABacktest import QA_Backtest
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QAParameter import FREQUENCE, MARKET_TYPE
-from test_backtest.minstrategy import MAMINStrategy
-from test_backtest.strategy import MAStrategy
+from minstrategy import MAMINStrategy
+from strategy import MAStrategy
 
 
 class Backtest(QA_Backtest):
@@ -40,7 +40,7 @@ class Backtest(QA_Backtest):
 
     def __init__(self, market_type, frequence, start, end, code_list, commission_fee):
         super().__init__(market_type,  frequence, start, end, code_list, commission_fee)
-        mastrategy = MAStrategy(user_cookie=self.user_cookie, portfolio_cookie= self.portfolio_cookie, account_cookie= 'mastrategy')
+        mastrategy = MAStrategy(user_cookie=self.user.user_cookie, portfolio_cookie= self.portfolio.portfolio_cookie, account_cookie= 'mastrategy')
         #maminstrategy = MAMINStrategy()
         self.account = self.portfolio.add_account(mastrategy)
 
@@ -68,6 +68,7 @@ def run_daybacktest():
                         end='2017-02-10',
                         code_list=QA.QA_fetch_stock_block_adv().code[0:5],
                         commission_fee=0.00015)
+    print(backtest.account)
     backtest.start_market()
 
     backtest.run()
