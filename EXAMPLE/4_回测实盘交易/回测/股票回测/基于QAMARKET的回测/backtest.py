@@ -56,7 +56,7 @@ class Backtest(QA_Backtest):
         fig.show()
         fig=risk.plot_signal()
         fig.show()
-        self.account.save()
+        self.user.save()
         risk.save()
 
 
