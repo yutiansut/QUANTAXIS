@@ -196,7 +196,9 @@ class QA_Portfolio(QA_Account):
         """
 
         if account_cookie in self.accounts.keys():
-            self.accounts.pop(account_cookie)
+            res = self.accounts.pop(account_cookie)
+            self.cash.append(self.cash[-1]+ res.init_cash)
+            return True
         else:
             raise RuntimeError('account {} is not in the portfolio'.format(account_cookie))
 
