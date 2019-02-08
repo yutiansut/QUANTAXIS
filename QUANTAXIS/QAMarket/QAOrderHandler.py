@@ -109,11 +109,11 @@ class QA_OrderHandler(QA_Worker):
             """
 
             print('SETTLE ORDERHANDLER')
-
-            if len(self.order_queue.untrade) == 0:
-                self._trade()
+            self.if_start_orderquery = False
+            if len(self.order_queue.pending) > 0:
+                pass
             else:
-                self._trade()
+                raise RuntimeWarning('ORDERHANDLER STILL HAVE UNTRADE ORDERS')
 
             self.order_queue.settle()
             self.order_status = pd.DataFrame()
@@ -123,6 +123,20 @@ class QA_OrderHandler(QA_Worker):
                 event.event_queue.task_done()
             except:
                 pass
+            
+        elif event.event_type is BROKER_EVENT.NEXT_TRADEDAY:
+            """下一个交易日
+            """
+
+            self.if_start_orderquery = True
+            if self.if_start_orderquery:
+                event.event_queue.put(
+                    QA_Task(
+                        worker=self,
+                        engine='ORDER',
+                        event=event
+                    )
+                )
 
         elif event.event_type is MARKET_EVENT.QUERY_ORDER:
             """query_order和query_deal 需要联动使用 
@@ -242,11 +256,11 @@ class QA_OrderHandler(QA_Worker):
             print('failled to unscribe {}'.format(account.account_cookie))
 
     def _trade(self):
+        print('orderhandler: trade')
         res = [self.monitor[account].query_orders(
             account.account_cookie, 'filled') for account in list(self.monitor.keys())]
 
         try:
-            #res=[pd.DataFrame() if not isinstance(item,pd.DataFrame) else item for item in res]
             res = pd.concat(res, axis=0) if len(
                 res) > 0 else pd.DataFrame()
         except:
@@ -254,7 +268,6 @@ class QA_OrderHandler(QA_Worker):
 
         self.deal_status = res if res is not None else self.deal_status
         for order in self.order_queue.pending:
-
             if len(self.deal_status) > 0:
                 if order.realorder_id in self.deal_status.index.levels[1]:
                     # 此时有成交推送(但可能是多条)
@@ -279,4 +292,5 @@ class QA_OrderHandler(QA_Worker):
                             for _, deal in res.iterrows:
                                 order.trade(str(deal.trade_id), float(deal.trade_price), int(
                                     deal.trade_amount), str(deal.trade_time))
+        # print('order_handler: finish trade')
         return True

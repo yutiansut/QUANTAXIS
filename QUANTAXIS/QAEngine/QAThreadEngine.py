@@ -241,10 +241,16 @@ class QA_Engine(QA_Thread):
         return res
 
     def join(self):
+        print(self.kernels_dict)
+        
         for item in self.kernels_dict.values():
+            print(item)
+            print(item.queue.qsize())
             item.queue.join()
         self.queue.join()
 
+    def join_single(self, kernel):
+        self.kernels_dict[kernel].queue.join()
 
 if __name__ == '__main__':
     import queue

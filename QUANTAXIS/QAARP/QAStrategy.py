@@ -31,7 +31,6 @@ from QUANTAXIS.QAUtil.QAParameter import (
     ORDER_MODEL
 )
 
-
 class QA_Strategy(QA_Account):
     """account
 
