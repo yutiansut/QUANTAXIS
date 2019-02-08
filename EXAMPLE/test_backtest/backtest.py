@@ -40,14 +40,9 @@ class Backtest(QA_Backtest):
 
     def __init__(self, market_type, frequence, start, end, code_list, commission_fee):
         super().__init__(market_type,  frequence, start, end, code_list, commission_fee)
-        self.user = QA_User()
-        mastrategy = MAStrategy()
-        maminstrategy = MAMINStrategy()
-        # maminstrategy.reset_assets(1000)
-        # self.portfolio, self.account = self.user.register_account(mastrategy)
-        self.user = QA_User(user_cookie='user_admin')
-        self.portfolio = self.user.new_portfolio('folio_admin')
-        self.portfolio, self.account = self.user.register_account(mastrategy)
+        mastrategy = MAStrategy(user_cookie=self.user_cookie, portfolio_cookie= self.portfolio_cookie, account_cookie= 'mastrategy')
+        #maminstrategy = MAMINStrategy()
+        self.account = self.portfolio.add_account(mastrategy)
 
     def after_success(self):
         QA_util_log_info(self.account.history_table)

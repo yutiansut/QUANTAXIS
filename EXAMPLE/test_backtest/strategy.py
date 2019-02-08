@@ -8,8 +8,9 @@ from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, FREQUENCE, MARKET_TYPE,
 
 
 class MAStrategy(QA_Account):
-    def __init__(self, init_cash=100000, init_hold={}):
-        super().__init__(init_cash=init_cash, init_hold=init_hold)
+    def __init__(self, user_cookie, portfolio_cookie, account_cookie,  init_cash=100000, init_hold={}):
+        super().__init__(user_cookie=user_cookie, portfolio_cookie=portfolio_cookie, account_cookie= account_cookie,
+                         init_cash=init_cash, init_hold=init_hold)
         self.frequence = FREQUENCE.DAY
         self.market_type = MARKET_TYPE.STOCK_CN
         self.commission_coeff = 0.00015
