@@ -840,9 +840,16 @@ class QA_Performance():
             'liquidity',
             'reversal'
         ]
+        self.set_pnl()
 
     def __repr__(self):
         return 'QA_PERFORMANCE ANYLYSIS PLUGIN'
+
+    def set_pnl(self, model='fifo'):
+        if model == 'fifo':
+            self.pnl = self.pnl_fifo
+        elif model == 'lifo':
+            self.pnl = self.pnl_lifo
 
     @property
     def prefer(self):
@@ -1110,11 +1117,12 @@ class QA_Performance():
         )
         return pnl
 
-    def plot_pnlratio(self, pnl):
+    def plot_pnlratio(self):
         """
         画出pnl比率散点图
         """
-        plt.scatter(x=pnl.sell_date.apply(str), y=pnl.pnl_ratio)
+        
+        plt.scatter(x=self.pnl.sell_date.apply(str), y=self.pnl.pnl_ratio)
         plt.gcf().autofmt_xdate()
         return plt
 
@@ -1122,7 +1130,7 @@ class QA_Performance():
         """
         画出pnl盈亏额散点图
         """
-        plt.scatter(x=pnl.sell_date.apply(str), y=pnl.pnl_money)
+        plt.scatter(x=self.pnl.sell_date.apply(str), y=self.pnl.pnl_money)
         plt.gcf().autofmt_xdate()
         return plt
 
@@ -1142,17 +1150,17 @@ class QA_Performance():
         """
         pass
 
-    def win_rate(self, methods='FIFO'):
+    def win_rate(self):
         """胜率
 
         胜率
         盈利次数/总次数
         """
-        data = self.pnl_lifo if methods in ['LIFO', 'lifo'] else self.pnl_fifo
+        data = self.pnl
         return round(len(data.query('pnl_money>0')) / len(data), 2)
 
     def average_profit(self, methods='FIFO'):
-        data = self.pnl_lifo if methods in ['LIFO', 'lifo'] else self.pnl_fifo
+        data = self.pnl
         return (data.pnl_money.mean())
 
     @property
@@ -1166,3 +1174,96 @@ class QA_Performance():
         """save the performance analysis result to database
         """
         pass
+
+    @property
+    def total_profit(self):
+        return self.pnl.query('pnl_money>0').pnl_money.sum()
+
+    @property
+    def total_loss(self):
+        return self.pnl.query('pnl_money<0').pnl_money.sum()
+
+    @property
+    def total_pnl(self):
+        return self.total_profit/ self.total_loss
+    
+    @property
+    def trading_amounts(self)
+        return len(self.pnl)
+
+    @property
+    def profit_amounts(self):
+        return len(self.pnl.query('pnl_money>0'))
+
+    @property
+    def loss_amounts(self):
+        return len(self.pnl.query('pnl_money<0'))
+
+    @property
+    def even_amounts(self):
+        return len(self.pnl.query('pnl_money==0'))
+
+    @property
+    def profit_precentage(self):
+        return self.profit_amounts/ self.trading_amounts
+    @property
+    def loss_precentage(self):
+        return self.loss_amounts/ self.trading_amounts
+    @property
+    def even_precentage(self):
+        return self.even_amounts/ self.trading_amounts
+
+    @property
+    def average_profit(self):
+        return self.pnl.query('pnl_money>0').pnl_money.mean()
+    @property
+    def average_loss(self):
+        return self.pnl.query('pnl_money<0').pnl_money.mean()
+
+    @property
+    def average_pnl(self):
+        return self.average_profit/ self.average_loss
+    
+    @property
+    def max_profit(self):
+        return self.pnl.query('pnl_money>0').pnl_money.max()
+    @property
+    def max_loss(self):
+        return self.pnl.query('pnl_money<0').pnl_money.min()
+    
+    @property
+    def max_pnl(self):
+        return self.max_profit/ self.max_loss
+
+    @property
+    def netprofio_maxloss_ratio(self):
+        return self.pnl.pnl_money.sum() / self.max_loss
+    
+    @property
+    def continue_profit_amount(self):
+        w=[]
+        w1=0
+        for _,item in pnl.pnl_money.iteritems():
+            if item>0:
+                w1+=1
+            elif item<0:
+                w.append(w1)
+                w1=0
+        return max(w)
+
+    @property
+    def continue_loss_amount(self):
+        l=[]
+        l1=0
+        for _,item in pnl.pnl_money.iteritems():
+            if item>0:
+                l1+=1
+            elif item<0:
+                l.append(l1)
+                l1=0
+        return max(l)
+
+
+    @property
+    def average_holdgap(self):
+        return self.pnl.hold_gap.mean()
