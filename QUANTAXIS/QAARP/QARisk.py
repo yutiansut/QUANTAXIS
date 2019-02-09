@@ -129,7 +129,7 @@ class QA_Risk():
         if_fq选项是@尧提出的,关于回测的时候成交价格问题(如果按不复权撮合 应该按不复权价格计算assets)
         """
         self.account = account
-        self.benchmark_code = benchmark_code # 默认沪深300
+        self.benchmark_code = benchmark_code  # 默认沪深300
         self.benchmark_type = benchmark_type
 
         self.fetch = {
@@ -145,7 +145,7 @@ class QA_Risk():
         elif self.account.market_type == MARKET_TYPE.FUTURE_CN:
             self.market_data = market_data
         self.if_fq = if_fq
-        self.client= DATABASE.risk
+        self.client = DATABASE.risk
 
         self.client.create_index(
             [
@@ -166,9 +166,9 @@ class QA_Risk():
             ).fillna(method='pad')
         else:
             self._assets = self.account.daily_cash.set_index('date'
-                                                            ).cash.fillna(
-                                                                method='pad'
-                                                            )
+                                                             ).cash.fillna(
+                method='pad'
+            )
 
         self.time_gap = QA_util_get_trade_gap(
             self.account.start_date,
@@ -369,8 +369,8 @@ class QA_Risk():
             'timeindex': self.account.trade_day,
             'totaltimeindex': self.total_timeindex,
             'ir': self.ir
-                                                                    # 'init_assets': round(float(self.init_assets), 2),
-                                                                    # 'last_assets': round(float(self.assets.iloc[-1]), 2)
+            # 'init_assets': round(float(self.init_assets), 2),
+            # 'last_assets': round(float(self.assets.iloc[-1]), 2)
         }
 
     @property
@@ -974,8 +974,10 @@ class QA_Performance():
             'buy_price'
         ]
         pnl = pd.DataFrame(pair_table, columns=pair_title).set_index('code')
-        pnl = pnl.assign(pnl_ratio=(pnl.sell_price / pnl.buy_price) - 1)
-        pnl = pnl.assign(pnl_money=pnl.pnl_ratio * pnl.amount)
+        pnl = pnl.assign(pnl_ratio=(pnl.sell_price / pnl.buy_price) - 1,
+                         sell_date=pd.to_datetime(pnl.sell_date), buy_date=pd.to_datetime(pnl.buy_date))
+        pnl = pnl.assign(pnl_money=pnl.pnl_ratio * pnl.amount,
+                         hold_gap=abs(pnl.sell_date - pnl.buy_date))
         return pnl
 
     @property
@@ -1100,11 +1102,11 @@ class QA_Performance():
         ]
         pnl = pd.DataFrame(pair_table, columns=pair_title).set_index('code')
 
-        pnl = pnl.assign(pnl_ratio=(pnl.sell_price / pnl.buy_price) - 1).assign(
-            buy_date=pd.to_datetime(pnl.buy_date)
-        ).assign(sell_date=pd.to_datetime(pnl.sell_date))
+        pnl = pnl.assign(pnl_ratio=(pnl.sell_price / pnl.buy_price) - 1,
+                         buy_date=pd.to_datetime(pnl.buy_date), sell_date=pd.to_datetime(pnl.sell_date))
         pnl = pnl.assign(
-            pnl_money=(pnl.sell_price - pnl.buy_price) * pnl.amount
+            pnl_money=(pnl.sell_price - pnl.buy_price) * pnl.amount,
+            hold_gap=abs(pnl.sell_date - pnl.buy_date)
         )
         return pnl
 
