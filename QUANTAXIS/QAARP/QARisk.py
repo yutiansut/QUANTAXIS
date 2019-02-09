@@ -326,6 +326,9 @@ class QA_Risk():
             2
         )
 
+
+
+
     @property
     def volatility(self):
         """波动率
@@ -840,7 +843,7 @@ class QA_Performance():
             'liquidity',
             'reversal'
         ]
-        self.set_pnl()
+        self.pnl = self.pnl_fifo
 
     def __repr__(self):
         return 'QA_PERFORMANCE ANYLYSIS PLUGIN'
@@ -850,6 +853,86 @@ class QA_Performance():
             self.pnl = self.pnl_fifo
         elif model == 'lifo':
             self.pnl = self.pnl_lifo
+
+    @property
+    def message(self):
+        """[summary]
+            2. 
+            3. 
+            4. 
+            5. 
+            6. 
+            7. 盈利手数
+            8. 亏损手数
+            9. 持平手数
+            10. 平均利润
+            11. 平均盈利
+            12. 平均亏损
+            13. 平均盈利/平均亏损
+            14. 最大盈利(单笔)
+            15. 最大亏损(单笔)
+            16. 最大盈利/总盈利
+            17. 最大亏损/总亏损
+            18. 净利润/最大亏损
+            19. 最大连续盈利手数
+            20. 最大连续亏损手数
+            21. 平均持仓周期
+            22. 平均盈利周期
+            23. 平均亏损周期
+            24. 平均持平周期
+            25. 最大使用资金
+            26. 最大持仓手数
+            27. 交易成本合计
+            28. 收益率
+            29. 年化收益率
+            30. 有效收益率
+            31. 月度平均盈利
+            32. 收益曲线斜率
+            33. 收益曲线截距
+            34. 收益曲线R2值
+            35. 夏普比例
+            36. 总交易时间
+            37. 总持仓时间
+            38. 持仓时间比例
+            39. 最大空仓时间
+            40. 持仓周期
+            41. 资产最大升水
+            42. 发生时间
+            43. 最大升水/前期低点
+            44. 单日最大资产回撤比率
+            45. 最大资产回撤值
+            46. 最大资产回撤发生时间
+            47. 回撤值/前期高点
+            48. 净利润/回撤值
+        Returns:
+            [type] -- [description]
+        """
+
+        return {
+            'total_profit': self.total_profit, #总盈利(对于每个单笔而言)
+            'total_loss': self.total_loss, # 总亏损(对于每个单笔而言)
+            'total_pnl': self.total_pnl, # 总盈利/总亏损
+            'trading_amounts': self.trading_amounts, # 交易手数
+            'profit_amounts': self.profit_amounts, # 盈利手数
+            'loss_amounts': self.loss_amounts, # 亏损手数
+            'even_amounts': self.even_amounts, # 持平手数
+            'profit_precentage': self.profit_precentage,
+            'loss_precentage': self.loss_precentage,
+            'even_precentage': self.even_precentage,
+            'average_profit': self.average_profit,
+            'average_loss': self.average_loss,
+            'average_pnl': self.average_pnl,
+            'max_profit': self.max_profit,
+            'max_loss': self.max_loss,
+            'max_pnl': self.max_pnl,
+            'netprofio_maxloss_ratio': self.netprofio_maxloss_ratio,
+            'continue_profit_amount': self.continue_profit_amount,
+            'continue_loss_amount': self.continue_loss_amount,
+            'average_holdgap': self.average_holdgap,
+            'average_profitholdgap': self.average_profitholdgap,
+            'average_losssholdgap': self.average_losssholdgap
+
+        }
 
     @property
     def prefer(self):
@@ -1121,7 +1204,7 @@ class QA_Performance():
         """
         画出pnl比率散点图
         """
-        
+
         plt.scatter(x=self.pnl.sell_date.apply(str), y=self.pnl.pnl_ratio)
         plt.gcf().autofmt_xdate()
         return plt
@@ -1176,94 +1259,130 @@ class QA_Performance():
         pass
 
     @property
+    def profit_pnl(self):
+        return self.pnl.query('pnl_money>0')
+
+    @property
+    def loss_pnl(self):
+        return self.pnl.query('pnl_money<0')
+
+    @property
+    def even_pnl(self):
+        return self.pnl.query('pnl_money==0')
+
+    @property
     def total_profit(self):
-        return self.pnl.query('pnl_money>0').pnl_money.sum()
+        return self.profit_pnl.pnl_money.sum()
 
     @property
     def total_loss(self):
-        return self.pnl.query('pnl_money<0').pnl_money.sum()
+        return self.loss_pnl.pnl_money.sum()
 
     @property
     def total_pnl(self):
-        return self.total_profit/ self.total_loss
-    
+        return self.total_profit / self.total_loss
+
     @property
-    def trading_amounts(self)
+    def trading_amounts(self):
         return len(self.pnl)
 
     @property
     def profit_amounts(self):
-        return len(self.pnl.query('pnl_money>0'))
+        return len(self.profit_pnl)
 
     @property
     def loss_amounts(self):
-        return len(self.pnl.query('pnl_money<0'))
+        return len(self.loss_pnl)
 
     @property
     def even_amounts(self):
-        return len(self.pnl.query('pnl_money==0'))
+        return len(self.even_pnl)
 
     @property
     def profit_precentage(self):
-        return self.profit_amounts/ self.trading_amounts
+        return self.profit_amounts / self.trading_amounts
+
     @property
     def loss_precentage(self):
-        return self.loss_amounts/ self.trading_amounts
+        return self.loss_amounts / self.trading_amounts
+
     @property
     def even_precentage(self):
-        return self.even_amounts/ self.trading_amounts
+        return self.even_amounts / self.trading_amounts
 
     @property
     def average_profit(self):
-        return self.pnl.query('pnl_money>0').pnl_money.mean()
+        return self.profit_pnl.pnl_money.mean()
+
     @property
     def average_loss(self):
-        return self.pnl.query('pnl_money<0').pnl_money.mean()
+        return self.loss_pnl.pnl_money.mean()
 
     @property
     def average_pnl(self):
-        return self.average_profit/ self.average_loss
-    
+        return self.average_profit / self.average_loss
+
     @property
     def max_profit(self):
-        return self.pnl.query('pnl_money>0').pnl_money.max()
+        return self.profit_pnl.pnl_money.max()
+
     @property
     def max_loss(self):
-        return self.pnl.query('pnl_money<0').pnl_money.min()
-    
+        return self.loss_pnl.pnl_money.min()
+
     @property
     def max_pnl(self):
-        return self.max_profit/ self.max_loss
+        return self.max_profit / self.max_loss
 
     @property
     def netprofio_maxloss_ratio(self):
         return self.pnl.pnl_money.sum() / self.max_loss
-    
+
     @property
     def continue_profit_amount(self):
-        w=[]
-        w1=0
-        for _,item in pnl.pnl_money.iteritems():
-            if item>0:
-                w1+=1
-            elif item<0:
+        w = []
+        w1 = 0
+        for _, item in self.pnl.pnl_money.iteritems():
+            if item > 0:
+                w1 += 1
+            elif item < 0:
                 w.append(w1)
-                w1=0
+                w1 = 0
         return max(w)
 
     @property
     def continue_loss_amount(self):
-        l=[]
-        l1=0
-        for _,item in pnl.pnl_money.iteritems():
-            if item>0:
-                l1+=1
-            elif item<0:
+        l = []
+        l1 = 0
+        for _, item in self.pnl.pnl_money.iteritems():
+            if item > 0:
+                l1 += 1
+            elif item < 0:
                 l.append(l1)
-                l1=0
+                l1 = 0
         return max(l)
-
 
     @property
     def average_holdgap(self):
         return self.pnl.hold_gap.mean()
+
+    @property
+    def average_profitholdgap(self):
+        return self.profit_pnl.hold_gap.mean()
+
+    @property
+    def average_losssholdgap(self):
+        return self.loss_pnl.hold_gap.mean()
+
+    @property
+    def average_evenholdgap(self):
+        return self.even_pnl.hold_gap.mean()
+
+    @property
+    def max_cashused(self):
+        return self.target.init_cash - min(self.target.cash)
+    
+    @property
+    def total_taxfee(self):
+        return self.target.history_table.commission.sum() + self.target.history_table.tax.sum()
+
