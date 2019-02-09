@@ -198,8 +198,8 @@ class QA_Backtest():
 
             _date = date
 
-            
-
+        # 最后收盘的平仓
+        self.market._settle(self.broker_name)
         self.after_success()
 
     def after_success(self):
