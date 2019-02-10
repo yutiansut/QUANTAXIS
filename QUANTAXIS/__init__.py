@@ -31,7 +31,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.3.0.dev9'
+__version__ = '1.3.0.dev10'
 __author__ = 'yutiansut'
 
 # fetch methods
@@ -87,6 +87,7 @@ from QUANTAXIS.QAFetch import (
     QA_fetch_get_globalfuture_list,
     QA_fetch_get_globalfuture_day,
     QA_fetch_get_globalfuture_min,
+    QA_fetch_get_shibor,
     get_stock_market
 )
 from QUANTAXIS.QAFetch.QAQuery import (
