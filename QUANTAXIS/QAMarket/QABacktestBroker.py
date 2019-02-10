@@ -264,7 +264,7 @@ class QA_BacktestBroker(QA_Broker):
 
             order.failed('MARKET DATA IS NONE')
         return order
-    
+
     def query_order(self, order_id):
         return self.dealer.deal_message[order_id]
 

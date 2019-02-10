@@ -130,6 +130,7 @@ class QA_Market(QA_Trade):
             """
             self.start_order_threading()
         print(threading.enumerate())
+
     def connect(self, broker):
         if broker in self._broker.keys():
 
@@ -282,7 +283,6 @@ class QA_Market(QA_Trade):
 
     def get_account_cookie(self):
         return list(self.session.keys())
-
 
     def insert_order(
             self,
@@ -439,7 +439,6 @@ class QA_Market(QA_Trade):
         else:
             pass
 
-
     def on_insert_order(self, order: QA_Order):
         print(order)
         print(order.status)
@@ -456,7 +455,10 @@ class QA_Market(QA_Trade):
             if order.order_model in [ORDER_MODEL.MARKET,
                                      ORDER_MODEL.CLOSE,
                                      ORDER_MODEL.LIMIT]:
-                self.order_handler._trade(order, self.session[order.account_cookie]) # 直接交易
+                self.order_handler._trade(
+                    order,
+                    self.session[order.account_cookie]
+                )                                      # 直接交易
             elif order.order_model in [ORDER_MODEL.NEXT_OPEN]:
                 pass
 
@@ -586,7 +588,10 @@ class QA_Market(QA_Trade):
 
     def _settle(self, broker_name, callback=False):
         #strDbg = QA_util_random_with_topic("QA_Market._settle")
-        print(">-----------------------_settle----------------------------->", "QA_Market._settle")
+        print(
+            ">-----------------------_settle----------------------------->",
+            "QA_Market._settle"
+        )
 
         # 向事件线程发送BROKER的SETTLE事件
         # 向事件线程发送ACCOUNT的SETTLE事件
@@ -598,16 +603,17 @@ class QA_Market(QA_Trade):
                 if account.running_environment == RUNNING_ENVIRONMENT.TZERO:
                     for order in account.close_positions_order:
                         price_slice = self.query_data_no_wait(
-                            broker_name= order.broker,
-                            frequence= order.frequence,
-                            market_type= order.market_type,
+                            broker_name=order.broker,
+                            frequence=order.frequence,
+                            market_type=order.market_type,
                             code=order.code,
                             start=order.datetime
                         )
-                        price_slice = price_slice if price_slice is None else price_slice[0]
+                        price_slice = price_slice if price_slice is None else price_slice[
+                            0]
                         self.order_handler.run(
                             QA_Event(
-                                broker = self.broker[account.broker],
+                                broker=self.broker[account.broker],
                                 event_type=BROKER_EVENT.RECEIVE_ORDER,
                                 order=order,
                                 market_data=price_slice,
