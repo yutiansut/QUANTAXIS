@@ -115,6 +115,23 @@ def QA_quotation(code, start, end, frequence, market, source, output):
         elif frequence is FREQUENCE.TICK:
             if source is DATASOURCE.TDX:
                 res = QATdx.QA_fetch_get_stock_transaction(code, start, end)
+    elif market is MARKET_TYPE.FUTURE_CN:
+        if frequence is FREQUENCE.DAY:
+            if source is DATASOURCE.MONGO:
+                res = QAQueryAdv.QA_fetch_future_day_adv(code, start, end)
+            elif source is DATASOURCE.TDX:
+                res = QATdx.QA_fetch_get_future_day(code, start, end)
+
+        elif frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
+            if source is DATASOURCE.MONGO:
+                res = QAQueryAdv.QA_fetch_future_min_adv(
+                    code, start, end, frequence=frequence)
+            elif source is DATASOURCE.TDX:
+                res = QATdx.QA_fetch_get_future_min(
+                    code, start, end, frequence=frequence)
+        elif frequence is FREQUENCE.TICK:
+            if source is DATASOURCE.TDX:
+                res = QATdx.QA_fetch_get_future_transaction(code, start, end)
 
     # 指数代码和股票代码是冲突重复的，  sh000001 上证指数  000001 是不同的
     elif market is MARKET_TYPE.INDEX_CN:
@@ -128,6 +145,17 @@ def QA_quotation(code, start, end, frequence, market, source, output):
             raise NotImplementedError('CURRENT NOT FINISH THIS METHOD')
     # print(type(res))
     return res
+
+    # if output is OUTPUT_FORMAT.DATAFRAME:
+    #     return res.data
+    # elif output is OUTPUT_FORMAT.DATASTRUCT:
+    #     return res
+    # elif output is OUTPUT_FORMAT.NDARRAY:
+    #     return res.to_numpy()
+    # elif output is OUTPUT_FORMAT.JSON:
+    #     return res.to_json()
+    # elif output is OUTPUT_FORMAT.LIST:
+    #     return res.to_list()
 
 
 class AsyncFetcher():
