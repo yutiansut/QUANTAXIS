@@ -132,8 +132,8 @@ class QA_Account(QA_Worker):
 
     def __init__(
             self,
-            user_cookie:str,
-            portfolio_cookie:str,
+            user_cookie: str,
+            portfolio_cookie: str,
             account_cookie=None,
             strategy_name=None,
             market_type=MARKET_TYPE.STOCK_CN,
@@ -232,7 +232,7 @@ class QA_Account(QA_Worker):
         }
         """
         super().__init__()
-        
+
         # warnings.warn('QUANTAXIS 1.0.46 has changed the init_assets ==> init_cash, please pay attention to this change if you using init_cash to initial an account class,\
         #         ', DeprecationWarning, stacklevel=2)
         self._history_headers = [
@@ -252,7 +252,6 @@ class QA_Account(QA_Worker):
         ]
         ########################################################################
         # 信息类:
-
 
         if user_cookie is None or portfolio_cookie is None:
             raise RuntimeError('QUANTAXIS 1.3.0升级: 需要在创建Account的时候指定用户名/组合名')
@@ -1281,7 +1280,7 @@ class QA_Account(QA_Worker):
                 order_model=order_model,
                 towards=towards,
                 money=money,
-                broker = self.broker,
+                broker=self.broker,
                 amount_model=amount_model,
                 commission_coeff=self.commission_coeff,
                 tax_coeff=self.tax_coeff,
@@ -1450,7 +1449,7 @@ class QA_Account(QA_Worker):
                         broker_name=self.broker
                     )
                 else:
-                    print('{} 无仓位, 买入{}'.format(self._currenttime,code))
+                    print('{} 无仓位, 买入{}'.format(self._currenttime, code))
                     event.send_order(
                         account_cookie=self.account_cookie,
                         amount=100,

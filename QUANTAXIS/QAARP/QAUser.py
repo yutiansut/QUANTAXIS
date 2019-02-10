@@ -140,17 +140,16 @@ class QA_User():
                 self.username = 'admin'
                 self.password = 'admin'
 
-
         self.user_cookie = QA_util_random_with_topic(
             'USER'
         ) if user_cookie is None else user_cookie
-        self.coins = coins  # 积分
-        self.money = money  # 钱
+        self.coins = coins # 积分
+        self.money = money # 钱
 
         # ==============================
         self._subscribed_strategy = {}
         self._subscribed_code = []
-        self._signals = []  # 预期收到的信号
+        self._signals = [] # 预期收到的信号
         self._cash = []
         self._history = []
 
@@ -379,7 +378,8 @@ class QA_User():
         """
 
         try:
-            return self.portfolio_list[portfolio_cookie].accounts[account_cookie]
+            return self.portfolio_list[portfolio_cookie].accounts[account_cookie
+                                                                 ]
         except:
             return None
 
@@ -486,13 +486,13 @@ class QA_User():
                 }
             )
         if res is None:
-            
+
             if self.client.find_one({'username': self.username}) is None:
                 self.client.insert_one(self.message)
                 return self
             else:
                 raise RuntimeError('账户名已存在且账户密码不匹配')
-                
+
         else:
             self.reload(res)
 
@@ -501,22 +501,40 @@ class QA_User():
     @property
     def node_view(self):
 
-        links = [{'source': self.username, 'target': item}
-                 for item in self.portfolio_list.keys()]
+        links = [
+            {
+                'source': self.username,
+                'target': item
+            } for item in self.portfolio_list.keys()
+        ]
         data = [{'name': self.username, 'symbolSize': 100, 'value': 1}]
         for port in self.portfolio_list.values():
             links.extend(port.node_view['links'])
-            data.append({'name': port.portfolio_cookie,
-                         'symbolSize': 80, 'value': 2})
+            data.append(
+                {
+                    'name': port.portfolio_cookie,
+                    'symbolSize': 80,
+                    'value': 2
+                }
+            )
             for acc in port.accounts.values():
-                data.append({'name': acc.account_cookie,
-                             'symbolSize': 50, 'value': 3})
+                data.append(
+                    {
+                        'name': acc.account_cookie,
+                        'symbolSize': 50,
+                        'value': 3
+                    }
+                )
 
         return {
-            'node_name': self.username,
-            'sub_node': [portfolio.node_view for portfolio in self.portfolio_list.values()],
-            'links': links,
-            'data': data
+            'node_name':
+            self.username,
+            'sub_node':
+            [portfolio.node_view for portfolio in self.portfolio_list.values()],
+            'links':
+            links,
+            'data':
+            data
         }
 
     def reload(self, message):

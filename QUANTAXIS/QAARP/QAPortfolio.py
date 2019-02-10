@@ -142,16 +142,22 @@ class QA_Portfolio(QA_Account):
         except:
             return None
 
-
     @property
     def node_view(self):
         return {
-            'node_name': self.portfolio_cookie,
-            'cash_available' : self.cash_available,
-            'sub_node': [account.node_view for account in self.accounts.values()],
-            'links': [{'source':self.portfolio_cookie, 'target': item } for item in self.accounts.keys()]
+            'node_name':
+            self.portfolio_cookie,
+            'cash_available':
+            self.cash_available,
+            'sub_node':
+            [account.node_view for account in self.accounts.values()],
+            'links': [
+                {
+                    'source': self.portfolio_cookie,
+                    'target': item
+                } for item in self.accounts.keys()
+            ]
         }
-
 
     @property
     def init_hold_table(self):
@@ -198,10 +204,12 @@ class QA_Portfolio(QA_Account):
 
         if account_cookie in self.accounts.keys():
             res = self.accounts.pop(account_cookie)
-            self.cash.append(self.cash[-1]+ res.init_cash)
+            self.cash.append(self.cash[-1] + res.init_cash)
             return True
         else:
-            raise RuntimeError('account {} is not in the portfolio'.format(account_cookie))
+            raise RuntimeError(
+                'account {} is not in the portfolio'.format(account_cookie)
+            )
 
     def new_account(
             self,
@@ -363,7 +371,9 @@ class QA_Portfolio(QA_Account):
         统计每一个时间点的时候的cash总和
         """
 
-        return sum([account.cash_available for account in self.accounts.values()])
+        return sum(
+            [account.cash_available for account in self.accounts.values()]
+        )
 
     def pull(self, account_cookie=None, collection=DATABASE.account):
         'pull from the databases'
@@ -631,12 +641,12 @@ class QA_PortfolioView():
     @property
     def history_table(self):
         return pd.concat([item.history_table for item in self.accounts]
-                         ).sort_index()
+                        ).sort_index()
 
     @property
     def trade_day(self):
         return pd.concat([pd.Series(item.trade_day) for item in self.accounts]
-                         ).drop_duplicates().sort_values().tolist()
+                        ).drop_duplicates().sort_values().tolist()
 
     @property
     def trade_range(self):
