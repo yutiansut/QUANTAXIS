@@ -27,7 +27,7 @@ headers_data['Host'] = 'data.bank.hexun.com'
 headers_data['X-Requested-With'] = 'XMLHttpRequest'
 
 
-shibor_url = 'http://data.bank.hexun.com/dataprovider/BankOfferedrateFlash.ashx?r={}&t=31&ts={}'
+chibor_url = 'http://data.bank.hexun.com/dataprovider/BankOfferedrateFlash.ashx?r={}&t=31&ts={}'
 
 def QA_fetch_get_chibor(frequence='1D'):
     if frequence == '1D':
@@ -63,6 +63,6 @@ def QA_fetch_get_chibor(frequence='1D'):
     elif frequence == '12M':
         d = '0000000000000001'
 
-    res = requests.get(shibor_url.format(d, int(time.time()*1000)-1), headers= headers_data).text
+    res = requests.get(chibor_url.format(d, int(time.time()*1000)-1), headers= headers_data).text
     data = [{'date':d[12:22],'1D':float(d[31:35])} for d in res.split('\r\n') if d[1:5] == 'date']
     return pd.DataFrame(data).set_index('date')
