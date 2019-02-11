@@ -361,6 +361,8 @@ class QA_Account(QA_Worker):
         return {
             'source':
             'account',
+            'frequence':
+            self.frequence,
             'account_cookie':
             self.account_cookie,
             'portfolio_cookie':
@@ -1489,6 +1491,7 @@ class QA_Account(QA_Worker):
         self.allow_sellopen = message.get('allow_sellopen', False)
         self.allow_t0 = message.get('allow_t0', False)
         self.margin_level = message.get('margin_level', False)
+        self.frequence = message.get('frequence', FREQUENCE.FIFTEEN_MIN) #默认15min
         self.init_cash = message.get(
             'init_cash',
             message.get('init_assets',
