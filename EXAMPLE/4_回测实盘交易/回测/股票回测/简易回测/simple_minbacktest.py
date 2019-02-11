@@ -15,8 +15,8 @@ res = data.add_func(QA.QA_indicator_KDJ)
 sig = QA.CROSS(res.KDJ_J, res.KDJ_K)
 sig2 = QA.CROSS(res.KDJ_K, res.KDJ_J)
 
-User = QA.QA_User(username='yutiansut', password='940809')
-Portfolio = User.new_portfolio('test_backtest')
+User = QA.QA_User(username='quantaxis', password='quantaxis')
+Portfolio = User.new_portfolio('qatestportfolio')
 Account = Portfolio.new_account(account_cookie='user_macdmin_601318' ,init_cash=100000, init_hold={'601318':1000},
                         frequence=QA.FREQUENCE.THIRTY_MIN)
 Broker = QA.QA_BacktestBroker()

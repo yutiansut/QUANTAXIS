@@ -30,8 +30,8 @@ import random
 该代码旨在给出一个极其容易实现的小回测 高效 无事件驱动
 """
 Broker = QA.QA_BacktestBroker()
-User = QA.QA_User(username='yutiansut', password='940809')
-Portfolio = User.new_portfolio('test_backtest')
+User = QA.QA_User(username='quantaxis', password='quantaxis')
+Portfolio = User.new_portfolio('qatestportfolio')
 AC = Portfolio.new_account(account_cookie='simplebacktest', init_cash=200000)
 """
 # 账户设置初始资金
