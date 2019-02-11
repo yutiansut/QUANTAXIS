@@ -959,7 +959,11 @@ class _quotation_base():
         """
         转换DataStruct为json
         """
-        return QA_util_to_json_from_pandas(self.data.reset_index())
+        
+        data = self.data
+        if self.type[-3:] != 'min':
+            data = self.data.assign(datetime= self.datetime)
+        return QA_util_to_json_from_pandas(data.reset_index())
 
     def to_string(self):
         return json.dumps(self.to_json())
