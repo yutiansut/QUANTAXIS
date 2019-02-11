@@ -990,7 +990,7 @@ class QA_Account(QA_Worker):
             ] else 0
             self.history.append(
                 [
-                    trade_time,
+                    str(trade_time),
                     code,
                     trade_price,
                     market_towards * trade_amount,
