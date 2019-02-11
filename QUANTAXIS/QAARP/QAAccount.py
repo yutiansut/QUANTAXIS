@@ -361,6 +361,8 @@ class QA_Account(QA_Worker):
         return {
             'source':
             'account',
+            'frequence':
+            self.frequence,
             'account_cookie':
             self.account_cookie,
             'portfolio_cookie':
