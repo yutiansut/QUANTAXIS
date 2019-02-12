@@ -42,6 +42,7 @@ import pandas as pd
 
 from QUANTAXIS.QAFetch.QAQuery_Advance import (
     QA_fetch_index_day_adv,
+    QA_fetch_future_day_adv,
     QA_fetch_stock_day_adv
 )
 from QUANTAXIS.QASU.save_account import save_riskanalysis
@@ -129,20 +130,27 @@ class QA_Risk():
         if_fq选项是@尧提出的,关于回测的时候成交价格问题(如果按不复权撮合 应该按不复权价格计算assets)
         """
         self.account = account
-        self.benchmark_code = benchmark_code # 默认沪深300
+        self.benchmark_code = benchmark_code  # 默认沪深300
         self.benchmark_type = benchmark_type
 
         self.fetch = {
             MARKET_TYPE.STOCK_CN: QA_fetch_stock_day_adv,
             MARKET_TYPE.INDEX_CN: QA_fetch_index_day_adv
         }
-        if self.account.market_type == MARKET_TYPE.STOCK_CN:
-            self.market_data = QA_fetch_stock_day_adv(
-                self.account.code,
-                self.account.start_date,
-                self.account.end_date
-            )
-        elif self.account.market_type == MARKET_TYPE.FUTURE_CN:
+        if market_data == None:
+            if self.account.market_type == MARKET_TYPE.STOCK_CN:
+                self.market_data = QA_fetch_stock_day_adv(
+                    self.account.code,
+                    self.account.start_date,
+                    self.account.end_date
+                )
+            elif self.account.market_type == MARKET_TYPE.FUTURE_CN:
+                self.market_data = QA_fetch_future_day_adv(
+                    self.account.code,
+                    self.account.start_date,
+                    self.account.end_date
+                )
+        else:
             self.market_data = market_data
         self.if_fq = if_fq
         self.client = DATABASE.risk
@@ -166,9 +174,9 @@ class QA_Risk():
             ).fillna(method='pad')
         else:
             self._assets = self.account.daily_cash.set_index('date'
-                                                            ).cash.fillna(
-                                                                method='pad'
-                                                            )
+                                                             ).cash.fillna(
+                method='pad'
+            )
 
         self.time_gap = QA_util_get_trade_gap(
             self.account.start_date,
@@ -369,8 +377,8 @@ class QA_Risk():
             'timeindex': self.account.trade_day,
             'totaltimeindex': self.total_timeindex,
             'ir': self.ir
-                                                                    # 'init_assets': round(float(self.init_assets), 2),
-                                                                    # 'last_assets': round(float(self.assets.iloc[-1]), 2)
+            # 'init_assets': round(float(self.init_assets), 2),
+            # 'last_assets': round(float(self.assets.iloc[-1]), 2)
         }
 
     @property
@@ -500,7 +508,7 @@ class QA_Risk():
         )
 
     def calc_profitpctchange(self, assets):
-        return self.assets[::-1].pct_change()
+        return self.assets[::-1].pct_change()[::-1]
 
     def calc_beta(self, assest_profit, benchmark_profit):
 
@@ -706,6 +714,18 @@ class QA_Risk():
 
         return plt
 
+    @property
+    def month_assets(self):
+        return self.assets.resample('M').last()
+
+    @property
+    def month_assets_profit(self):
+        return self.month_assets.diff()
+
+    @property
+    def daily_assets_profit(self):
+        return self.assets.diff()
+
     def plot_dailyhold(self, start=None, end=None):
         """
         使用热力图画出每日持仓
@@ -906,25 +926,25 @@ class QA_Performance():
         """
 
         return {
-            'total_profit': round(self.total_profit,2), #总盈利(对于每个单笔而言)
-            'total_loss': round(self.total_loss,2), # 总亏损(对于每个单笔而言)
-            'total_pnl': round(self.total_pnl,2),# 总盈利/总亏损
-            'trading_amounts': round(self.trading_amounts,2), # 交易手数
-            'profit_amounts': round(self.profit_amounts,2), # 盈利手数
-            'loss_amounts': round(self.loss_amounts,2), # 亏损手数
-            'even_amounts': round(self.even_amounts,2), # 持平手数
-            'profit_precentage': round(self.profit_precentage,2),
-            'loss_precentage': round(self.loss_precentage,2),
-            'even_precentage': round(self.even_precentage,2),
-            'average_profit': round(self.average_profit,2),
-            'average_loss': round(self.average_loss,2),
-            'average_pnl': round(self.average_pnl,2),
-            'max_profit': round(self.max_profit,2),
-            'max_loss': round(self.max_loss,2),
-            'max_pnl': round(self.max_pnl,2),
-            'netprofio_maxloss_ratio': round(self.netprofio_maxloss_ratio,2),
-            'continue_profit_amount': round(self.continue_profit_amount,2),
-            'continue_loss_amount': round(self.continue_loss_amount,2),
+            'total_profit': round(self.total_profit, 2),  # 总盈利(对于每个单笔而言)
+            'total_loss': round(self.total_loss, 2),  # 总亏损(对于每个单笔而言)
+            'total_pnl': round(self.total_pnl, 2),  # 总盈利/总亏损
+            'trading_amounts': round(self.trading_amounts, 2),  # 交易手数
+            'profit_amounts': round(self.profit_amounts, 2),  # 盈利手数
+            'loss_amounts': round(self.loss_amounts, 2),  # 亏损手数
+            'even_amounts': round(self.even_amounts, 2),  # 持平手数
+            'profit_precentage': round(self.profit_precentage, 2),
+            'loss_precentage': round(self.loss_precentage, 2),
+            'even_precentage': round(self.even_precentage, 2),
+            'average_profit': round(self.average_profit, 2),
+            'average_loss': round(self.average_loss, 2),
+            'average_pnl': round(self.average_pnl, 2),
+            'max_profit': round(self.max_profit, 2),
+            'max_loss': round(self.max_loss, 2),
+            'max_pnl': round(self.max_pnl, 2),
+            'netprofio_maxloss_ratio': round(self.netprofio_maxloss_ratio, 2),
+            'continue_profit_amount': round(self.continue_profit_amount, 2),
+            'continue_loss_amount': round(self.continue_loss_amount, 2),
             'average_holdgap': self.average_holdgap,
             'average_profitholdgap': self.average_profitholdgap,
             'average_losssholdgap': self.average_losssholdgap
