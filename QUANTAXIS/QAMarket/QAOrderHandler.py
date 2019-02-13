@@ -34,9 +34,13 @@ from QUANTAXIS.QAEngine.QATask import QA_Task
 from QUANTAXIS.QAMarket.QAOrder import QA_OrderQueue
 from QUANTAXIS.QASU.save_orderhandler import QA_SU_save_deal, QA_SU_save_order
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_if_tradetime
-from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, BROKER_TYPE,
-                                          EVENT_TYPE, MARKET_EVENT,
-                                          ORDER_EVENT)
+from QUANTAXIS.QAUtil.QAParameter import (
+    BROKER_EVENT,
+    BROKER_TYPE,
+    EVENT_TYPE,
+    MARKET_EVENT,
+    ORDER_EVENT
+)
 
 
 class QA_OrderHandler(QA_Worker):
@@ -74,7 +78,7 @@ class QA_OrderHandler(QA_Worker):
         self.deal_status = pd.DataFrame()
         self.if_start_orderquery = False
 
-        self.monitor = {}  # 1.1新增 用于监控订单
+        self.monitor = {} # 1.1新增 用于监控订单
 
     def run(self, event):
         if event.event_type is BROKER_EVENT.RECEIVE_ORDER:
@@ -88,8 +92,13 @@ class QA_OrderHandler(QA_Worker):
             """
             order = event.order
             order = event.broker.receive_order(
-                QA_Event(event_type=BROKER_EVENT.TRADE, order=event.order, market_data=event.market_data))
-            # print(threading.current_thread().ident)
+                QA_Event(
+                    event_type=BROKER_EVENT.TRADE,
+                    order=event.order,
+                    market_data=event.market_data
+                )
+            )
+
             order = self.order_queue.insert_order(order)
             if event.callback:
                 event.callback(order)
@@ -100,7 +109,6 @@ class QA_OrderHandler(QA_Worker):
             # event.event_queue.task_done()
 
         elif event.event_type is BROKER_EVENT.SETTLE:
-
             """订单队列的结算:
 
 
@@ -109,11 +117,11 @@ class QA_OrderHandler(QA_Worker):
             """
 
             print('SETTLE ORDERHANDLER')
-
-            if len(self.order_queue.untrade) == 0:
-                self._trade()
+            self.if_start_orderquery = False
+            if len(self.order_queue.pending) > 0:
+                pass
             else:
-                self._trade()
+                raise RuntimeWarning('ORDERHANDLER STILL HAVE UNTRADE ORDERS')
 
             self.order_queue.settle()
             self.order_status = pd.DataFrame()
@@ -123,6 +131,18 @@ class QA_OrderHandler(QA_Worker):
                 event.event_queue.task_done()
             except:
                 pass
+
+        elif event.event_type is BROKER_EVENT.NEXT_TRADEDAY:
+            """下一个交易日
+            """
+
+            self.if_start_orderquery = True
+            if self.if_start_orderquery:
+                event.event_queue.put(
+                    QA_Task(worker=self,
+                            engine='ORDER',
+                            event=event)
+                )
 
         elif event.event_type is MARKET_EVENT.QUERY_ORDER:
             """query_order和query_deal 需要联动使用 
@@ -139,11 +159,14 @@ class QA_OrderHandler(QA_Worker):
             if self.if_start_orderquery:
                 try:
                     # 做一些容错处理
-                    res = [self.monitor[account].query_orders(
-                        account.account_cookie, '') for account in list(self.monitor.keys())]
+                    res = [
+                        self.monitor[account].query_orders(
+                            account.account_cookie,
+                            ''
+                        ) for account in list(self.monitor.keys())
+                    ]
 
-                    res = pd.concat(res, axis=0) if len(
-                        res) > 0 else None
+                    res = pd.concat(res, axis=0) if len(res) > 0 else None
                 except:
                     time.sleep(1)
 
@@ -159,25 +182,28 @@ class QA_OrderHandler(QA_Worker):
             # 非阻塞
             if self.if_start_orderquery:
                 event.event_queue.put(
-                    QA_Task(
-                        worker=self,
-                        engine='ORDER',
-                        event=event
-                    )
+                    QA_Task(worker=self,
+                            engine='ORDER',
+                            event=event)
                 )
 
         elif event.event_type is MARKET_EVENT.QUERY_DEAL:
-
             """order_handler- query_deal
             将order_handler订单队列中的订单---和deal中匹配起来
             """
 
             if self.if_start_orderquery:
-                res = [self.monitor[account].query_orders(
-                    account.account_cookie, 'filled') for account in list(self.monitor.keys())]
+                res = [
+                    self.monitor[account].query_orders(
+                        account.account_cookie,
+                        'filled'
+                    ) for account in list(self.monitor.keys())
+                ]
                 try:
-                    res = pd.concat(res, axis=0) if len(
-                        res) > 0 else pd.DataFrame()
+                    res = pd.concat(
+                        res,
+                        axis=0
+                    ) if len(res) > 0 else pd.DataFrame()
                 except:
                     res = None
 
@@ -189,26 +215,39 @@ class QA_OrderHandler(QA_Worker):
             try:
                 for order in self.order_queue.pending:
                     if len(self.deal_status) > 0:
-                        if order.realorder_id in self.deal_status.index.levels[1]:
+                        if order.realorder_id in self.deal_status.index.levels[1
+                                                                              ]:
                             # 此时有成交推送(但可能是多条)
                             res = self.deal_status.loc[order.account_cookie,
                                                        order.realorder_id]
 
                             if isinstance(res, pd.Series):
-                                order.trade(str(res.trade_id), float(res.trade_price), int(
-                                    res.trade_amount), str(res.trade_time))
+                                order.trade(
+                                    str(res.trade_id),
+                                    float(res.trade_price),
+                                    int(res.trade_amount),
+                                    str(res.trade_time)
+                                )
                             elif isinstance(res, pd.DataFrame):
                                 if len(res) == 0:
                                     pass
 
                                 elif len(res) == 1:
                                     res = res.iloc[0]
-                                    order.trade(str(res.trade_id), float(res.trade_price), int(
-                                        res.trade_amount), str(res.trade_time))
+                                    order.trade(
+                                        str(res.trade_id),
+                                        float(res.trade_price),
+                                        int(res.trade_amount),
+                                        str(res.trade_time)
+                                    )
                                 else:
                                     for _, deal in res.iterrows:
-                                        order.trade(str(deal.trade_id), float(deal.trade_price), int(
-                                            deal.trade_amount), str(deal.trade_time))
+                                        order.trade(
+                                            str(deal.trade_id),
+                                            float(deal.trade_price),
+                                            int(deal.trade_amount),
+                                            str(deal.trade_time)
+                                        )
             except Exception as e:
                 print(e)
                 print(self.order_queue.order_list)
@@ -221,11 +260,9 @@ class QA_OrderHandler(QA_Worker):
             event.event_type = MARKET_EVENT.QUERY_ORDER
             if self.if_start_orderquery:
                 event.event_queue.put(
-                    QA_Task(
-                        worker=self,
-                        engine='ORDER',
-                        event=event
-                    )
+                    QA_Task(worker=self,
+                            engine='ORDER',
+                            event=event)
                 )
 
         elif event.event_type is MARKET_EVENT.QUERY_POSITION:
@@ -241,42 +278,61 @@ class QA_OrderHandler(QA_Worker):
         except:
             print('failled to unscribe {}'.format(account.account_cookie))
 
-    def _trade(self):
-        res = [self.monitor[account].query_orders(
-            account.account_cookie, 'filled') for account in list(self.monitor.keys())]
+    def _trade(self, order=None, account=None):
+        if order is not None:
+            res = self.monitor[account].query_order(order.order_id)
+            order.trade(str(res[14]), float(res[6]), int(res[10]), str(res[2]))
+        else:
+            print('orderhandler: trade')
+            res = [
+                self.monitor[account].query_orders(
+                    account.account_cookie,
+                    'filled'
+                ) for account in list(self.monitor.keys())
+            ]
 
-        try:
-            #res=[pd.DataFrame() if not isinstance(item,pd.DataFrame) else item for item in res]
-            res = pd.concat(res, axis=0) if len(
-                res) > 0 else pd.DataFrame()
-        except:
-            res = None
+            try:
+                res = pd.concat(res, axis=0) if len(res) > 0 else pd.DataFrame()
+            except:
+                res = None
 
-        self.deal_status = res if res is not None else self.deal_status
-        for order in self.order_queue.pending:
+            self.deal_status = res if res is not None else self.deal_status
+            for order in self.order_queue.pending:
+                if len(self.deal_status) > 0:
+                    if order.realorder_id in self.deal_status.index.levels[1]:
+                        # 此时有成交推送(但可能是多条)
+                        #
+                        res = self.deal_status.loc[order.account_cookie,
+                                                   order.realorder_id]
+                        print(res)
+                        if isinstance(res, pd.Series):
+                            order.trade(
+                                str(res.trade_id),
+                                float(res.trade_price),
+                                int(res.trade_amount),
+                                str(res.trade_time)
+                            )
+                        elif isinstance(res, pd.DataFrame):
+                            if len(res) == 0:
+                                pass
 
-            if len(self.deal_status) > 0:
-                if order.realorder_id in self.deal_status.index.levels[1]:
-                    # 此时有成交推送(但可能是多条)
-                    #
-                    res = self.deal_status.loc[order.account_cookie,
-                                               order.realorder_id]
-
-                    if isinstance(res, pd.Series):
-                        order.trade(str(res.trade_id), float(res.trade_price), int(
-                            res.trade_amount), str(res.trade_time))
-                    elif isinstance(res, pd.DataFrame):
-                        if len(res) == 0:
-                            pass
-
-                        elif len(res) == 1:
-                            res = res.iloc[0]
-                            order.trade(str(res.trade_id), float(res.trade_price), int(
-                                res.trade_amount), str(res.trade_time))
-                        else:
-                            # print(res)
-                            # print(len(res))
-                            for _, deal in res.iterrows:
-                                order.trade(str(deal.trade_id), float(deal.trade_price), int(
-                                    deal.trade_amount), str(deal.trade_time))
-        return True
+                            elif len(res) == 1:
+                                res = res.iloc[0]
+                                order.trade(
+                                    str(res.trade_id),
+                                    float(res.trade_price),
+                                    int(res.trade_amount),
+                                    str(res.trade_time)
+                                )
+                            else:
+                                # print(res)
+                                # print(len(res))
+                                for _, deal in res.iterrows:
+                                    order.trade(
+                                        str(deal.trade_id),
+                                        float(deal.trade_price),
+                                        int(deal.trade_amount),
+                                        str(deal.trade_time)
+                                    )
+            # print('order_handler: finish trade')
+            return True

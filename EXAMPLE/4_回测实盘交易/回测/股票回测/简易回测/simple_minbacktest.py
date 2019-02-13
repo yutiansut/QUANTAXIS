@@ -15,12 +15,11 @@ res = data.add_func(QA.QA_indicator_KDJ)
 sig = QA.CROSS(res.KDJ_J, res.KDJ_K)
 sig2 = QA.CROSS(res.KDJ_K, res.KDJ_J)
 
-
-Account = QA.QA_Account(init_cash=100000, init_hold={'601318':1000},
+User = QA.QA_User(username='quantaxis', password='quantaxis')
+Portfolio = User.new_portfolio('qatestportfolio')
+Account = Portfolio.new_account(account_cookie='user_macdmin_601318' ,init_cash=100000, init_hold={'601318':1000},
                         frequence=QA.FREQUENCE.THIRTY_MIN)
 Broker = QA.QA_BacktestBroker()
-
-Account.account_cookie = 'user_macdmin_601318'
 
 
 _date = None
@@ -80,5 +79,5 @@ r.plot_assets_curve().show()
 
 print(r.profit_construct)
 
-Account.save()
+User.save()
 r.save()

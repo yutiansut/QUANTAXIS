@@ -97,37 +97,65 @@ def QA_quotation(code, start, end, frequence, market, source, output):
         output {enum} -- 输出类型 QA.OUTPUT_FORMAT
 
     """
-    if market is MARKET_TYPE.STOCK_CN:
-        if frequence is FREQUENCE.DAY:
-            if source is DATASOURCE.MONGO:
+    if market == MARKET_TYPE.STOCK_CN:
+        if frequence == FREQUENCE.DAY:
+            if source == DATASOURCE.MONGO:
                 res = QAQueryAdv.QA_fetch_stock_day_adv(code, start, end)
-            elif source is DATASOURCE.TDX:
+            elif source == DATASOURCE.TDX:
                 res = QATdx.QA_fetch_get_stock_day(code, start, end, '00')
-            elif source is DATASOURCE.TUSHARE:
+            elif source == DATASOURCE.TUSHARE:
                 res = QATushare.QA_fetch_get_stock_day(code, start, end, '00')
         elif frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
-            if source is DATASOURCE.MONGO:
+            if source == DATASOURCE.MONGO:
                 res = QAQueryAdv.QA_fetch_stock_min_adv(
                     code, start, end, frequence=frequence)
-            elif source is DATASOURCE.TDX:
+            elif source == DATASOURCE.TDX:
                 res = QATdx.QA_fetch_get_stock_min(
                     code, start, end, frequence=frequence)
-        elif frequence is FREQUENCE.TICK:
-            if source is DATASOURCE.TDX:
+        elif frequence == FREQUENCE.TICK:
+            if source == DATASOURCE.TDX:
                 res = QATdx.QA_fetch_get_stock_transaction(code, start, end)
+    elif market == MARKET_TYPE.FUTURE_CN:
+        if frequence == FREQUENCE.DAY:
+            if source == DATASOURCE.MONGO:
+                res = QAQueryAdv.QA_fetch_future_day_adv(code, start, end)
+            elif source == DATASOURCE.TDX:
+                res = QATdx.QA_fetch_get_future_day(code, start, end)
+
+        elif frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
+            if source == DATASOURCE.MONGO:
+                res = QAQueryAdv.QA_fetch_future_min_adv(
+                    code, start, end, frequence=frequence)
+            elif source == DATASOURCE.TDX:
+                res = QATdx.QA_fetch_get_future_min(
+                    code, start, end, frequence=frequence)
+        elif frequence == FREQUENCE.TICK:
+            if source == DATASOURCE.TDX:
+                res = QATdx.QA_fetch_get_future_transaction(code, start, end)
 
     # 指数代码和股票代码是冲突重复的，  sh000001 上证指数  000001 是不同的
-    elif market is MARKET_TYPE.INDEX_CN:
-        if frequence is FREQUENCE.DAY:
-            if source is DATASOURCE.MONGO:
+    elif market == MARKET_TYPE.INDEX_CN:
+        if frequence == FREQUENCE.DAY:
+            if source == DATASOURCE.MONGO:
                 res = QAQueryAdv.QA_fetch_index_day_adv(code, start, end)
 
-    elif market is MARKET_TYPE.OPTION_CN:
-        if source is DATASOURCE.MONGO:
+    elif market == MARKET_TYPE.OPTION_CN:
+        if source == DATASOURCE.MONGO:
             #res = QAQueryAdv.QA_fetch_option_day_adv(code, start, end)
             raise NotImplementedError('CURRENT NOT FINISH THIS METHOD')
     # print(type(res))
     return res
+
+    # if output is OUTPUT_FORMAT.DATAFRAME:
+    #     return res.data
+    # elif output is OUTPUT_FORMAT.DATASTRUCT:
+    #     return res
+    # elif output is OUTPUT_FORMAT.NDARRAY:
+    #     return res.to_numpy()
+    # elif output is OUTPUT_FORMAT.JSON:
+    #     return res.to_json()
+    # elif output is OUTPUT_FORMAT.LIST:
+    #     return res.to_list()
 
 
 class AsyncFetcher():

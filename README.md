@@ -1,14 +1,7 @@
 
 # QUANTAXIS 量化金融策略框架
 
-
-不定期直播: http://www.huya.com/quantaxis
-
-主要是自动化解决方案的部署/ 常见问题的答疑
-
 -------------------------------------------------------------
-
-
 
 Quantitative Financial FrameWork
 
@@ -20,7 +13,7 @@ Quantitative Financial FrameWork
 
 ![pypidownloads](https://img.shields.io/pypi/dm/quantaxis.svg)
 ![pypidownloads](https://img.shields.io/pypi/dw/quantaxis.svg)
-
+![pypidownloads](https://img.shields.io/pypi/dd/quantaxis.svg)
 
 
 
@@ -36,6 +29,9 @@ Quantitative Financial FrameWork
 
 ![main_1](http://pic.yutiansut.com/Main_1.gif)
 ![presentbyyutiansut](http://pic.yutiansut.com/yutiansut-logo.png)
+
+## QUANTAXIS 祝大家 2019 新年快乐~ 猪事如意
+![](http://pic.yutiansut.com/quantaxis-2019newyear.png)
 
 ![version](https://img.shields.io/pypi/v/quantaxis.svg)
 ![build](https://travis-ci.org/QUANTAXIS/QUANTAXIS.svg?branch=master)
@@ -340,4 +336,59 @@ git clone https://github.com/你的账户名/quantaxis
 
 QUANTAXIS-Stardand-Protocol 版本号0.0.8
 
-详情参见  [QUANATXISProtocol](Documents/readme
+详情参见  [QUANATXISProtocol](Documents/readme.md)
+
+
+##  13. 电脑配置推荐
+
+推荐配置:
+6代以上CPU+ 16/32GB DDR3/DDR4内存+ 256GB以上SSD硬盘
+
+最低配置:
+支持X64位的CPU
+
+因为在存储本地数据的时候,需要存储超过2GB的本地数据,而32位的MONGODB最高只支持2GB左右的数据存储,因此最少需要一个X64位的CPU
+
+如果SSD资源够用,尽量将数据存储在SSD中,增加```wiretiger```写盘的速度
+
+如果是阿里云/腾讯云的服务器,请在最初的时候 选择64位的操作系统
+
+
+## 14. 开户(无论资金规模):
+
+记得赚了钱赶紧给quantaxis组织捐一点(逃:
+
+### 期货开户
+```
+即日起到春节前, 中财期货,瑞龙期货 和QUANTAXIS达成协议, 使用quantaxis的量化期货交易者，
+
+- 交易所内返80%(无论资金规模)
+- 每月直接返还到交易账户
+- 没有中间商赚差价
+- 手续费是 交易所+1分
+
+- 享受一次quantaxis期货环境部署远程指导[带行情带下单](看心情)
+
+
+联系 微信(GX3117) 备注 from quantaxis 
+
+```
+### 股票开户
+```
+股票开户给出两个选择:
+1. 长城国瑞证券 万1.2 无五元手续费 (目前还没谈到万1) (联系 QQ 2961725743 备注 from quantaxis)
+2. 财通证券 万1.2 无五元手续费 (联系QQ 2939048292 备注 from quantaxis)
+3. 财通证券 万1.2 无五元手续费(送开户大礼包 行情/书籍自选一样) (联系QQ 373566682 备注 from quantaxis)
+
+- 享受一次quantaxis股票环境部署远程指导[带行情带下单](看心情)
+
+上述均无资金规模限制 
+```
+
+上述广告都已经尽力把价格往下谈了, 均不限制资金规模, 记得报quantaxis哈
+
+PS: 另外如果你是券商/期货的居间人 能给出相似或更有竞争力的价格欢迎来撩
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS?ref=badge_large) [![Join the chat at https://gitter.im/QUANTAXIS_tauruswang/Lobby](https://badges.gitter.im/QUANTAXIS_tauruswang/Lobby.svg)](https://gitter.im/QUANTAXIS_tauruswang/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
