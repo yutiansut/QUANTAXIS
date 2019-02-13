@@ -30,7 +30,9 @@ import random
 该代码旨在给出一个极其容易实现的小回测 高效 无事件驱动
 """
 Broker = QA.QA_BacktestBroker()
-AC = QA.QA_Account()
+User = QA.QA_User(username='quantaxis', password='quantaxis')
+Portfolio = User.new_portfolio('qatestportfolio')
+AC = Portfolio.new_account(account_cookie='simplebacktest', init_cash=200000)
 """
 # 账户设置初始资金
 AC.reset_assets(assets)
@@ -59,7 +61,6 @@ risk=QA.QA_Risk(AC)
 
 """
 
-AC.reset_assets(200000)  # 设置初始资金
 QA.QA_SU_save_strategy('test','test_day',AC.account_cookie,if_save=True)
 
 def simple_backtest(AC, code, start, end):
@@ -105,7 +106,7 @@ def simple_backtest(AC, code, start, end):
 simple_backtest(AC, QA.QA_fetch_stock_block_adv(
 ).code[0:10], '2017-01-01', '2018-01-31')
 print(AC.message)
-AC.save()
+User.save()
 risk = QA.QA_Risk(AC)
 print(risk.message)
 risk.save()

@@ -28,12 +28,14 @@ import warnings
 
 import numpy as np
 import pandas as pd
+from pymongo import DESCENDING, ASCENDING
 
 from QUANTAXIS import __version__
 from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
 from QUANTAXIS.QAEngine.QAEvent import QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
 from QUANTAXIS.QASU.save_account import save_account, update_account
+from QUANTAXIS.QAUtil.QASetting import DATABASE
 from QUANTAXIS.QAUtil.QADate_trade import (
     QA_util_get_next_day,
     QA_util_get_trade_range
@@ -130,10 +132,10 @@ class QA_Account(QA_Worker):
 
     def __init__(
             self,
-            strategy_name=None,
-            user_cookie=None,
-            portfolio_cookie=None,
+            user_cookie: str,
+            portfolio_cookie: str,
             account_cookie=None,
+            strategy_name=None,
             market_type=MARKET_TYPE.STOCK_CN,
             frequence=FREQUENCE.DAY,
             broker=BROKER_TYPE.BACKETEST,
@@ -145,7 +147,9 @@ class QA_Account(QA_Worker):
             allow_t0=False,
             allow_sellopen=False,
             allow_margin=False,
-            running_environment=RUNNING_ENVIRONMENT.BACKETEST
+            running_environment=RUNNING_ENVIRONMENT.BACKETEST,
+            auto_reload=False,
+            generated='direct'
     ):
         """
 
@@ -163,7 +167,10 @@ class QA_Account(QA_Worker):
         :param [Bool] allow_t0:          是否允许t+0交易  默认False
         :param [Bool] allow_sellopen:    是否允许卖空开仓  默认False
         :param [Bool] allow_margin:      是否允许保证金交易 默认False
+        :param [Bool] auto_reload:       是否自动从数据库中同步数据
+        :param [Bool] generated:         从哪里生成==> directed: 直接生成  portfolio: 组合生成
 
+        
         ### 注意
         >>>>>>>>>>>>>
         在期货账户中:
@@ -225,32 +232,35 @@ class QA_Account(QA_Worker):
         }
         """
         super().__init__()
+
         # warnings.warn('QUANTAXIS 1.0.46 has changed the init_assets ==> init_cash, please pay attention to this change if you using init_cash to initial an account class,\
         #         ', DeprecationWarning, stacklevel=2)
         self._history_headers = [
-            'datetime', # 日期/时间
-            'code', # 品种
-            'price', # 成交价
-            'amount', # 成交数量(股票 股数  期货 手数)
-            'cash', # 现金
-            'order_id', # 本地订单号
-            'realorder_id', # 实际委托单号
-            'trade_id', # 成交单号
-            'account_cookie', # 账号id
-            'commission', # 手续费
+            'datetime',  # 日期/时间
+            'code',  # 品种
+            'price',  # 成交价
+            'amount',  # 成交数量(股票 股数  期货 手数)
+            'cash',  # 现金
+            'order_id',  # 本地订单号
+            'realorder_id',  # 实际委托单号
+            'trade_id',  # 成交单号
+            'account_cookie',  # 账号id
+            'commission',  # 手续费
             'tax',  # 税
-            'message', # 备注
-            'frozen' # 冻结资金
+            'message',  # 备注
+            'frozen'  # 冻结资金
         ]
         ########################################################################
         # 信息类:
-        self.strategy_name = strategy_name
+
+        if user_cookie is None or portfolio_cookie is None:
+            raise RuntimeError('QUANTAXIS 1.3.0升级: 需要在创建Account的时候指定用户名/组合名')
         self.user_cookie = user_cookie
+        self.strategy_name = strategy_name
         self.portfolio_cookie = portfolio_cookie
         self.account_cookie = QA_util_random_with_topic(
             'Acc'
         ) if account_cookie is None else account_cookie
-
         self.market_type = market_type
         self.broker = broker
         self.frequence = frequence
@@ -263,6 +273,19 @@ class QA_Account(QA_Worker):
         self.datetime = None
         self.running_time = datetime.datetime.now()
         self.quantaxis_version = __version__
+        self.client = DATABASE.account
+        ### 下面是数据库创建index部分, 此部分可能导致部分代码和原先不兼容
+        self.client.create_index(
+            [
+                ("account_cookie",
+                 ASCENDING),
+                ("user_cookie",
+                 ASCENDING),
+                ("portfolio_cookie",
+                 ASCENDING)
+            ],
+            unique=True
+        )
         ########################################################################
         # 资产类
         self.orders = QA_OrderQueue()       # 历史委托单
@@ -323,6 +346,9 @@ class QA_Account(QA_Worker):
 
         self.frozen = {} # 冻结资金(保证金)
 
+        if auto_reload:
+            self.reload()
+
     def __repr__(self):
         return '< QA_Account {} market: {}>'.format(
             self.account_cookie,
@@ -335,6 +361,8 @@ class QA_Account(QA_Worker):
         return {
             'source':
             'account',
+            'frequence':
+            self.frequence,
             'account_cookie':
             self.account_cookie,
             'portfolio_cookie':
@@ -387,7 +415,7 @@ class QA_Account(QA_Worker):
     @property
     def freecash_precent(self):
         """剩余资金比例
-        
+
         Returns:
             float
         """
@@ -402,7 +430,7 @@ class QA_Account(QA_Worker):
 
     @property
     def init_hold_with_account(self):
-        """带account_id的初始化持仓
+        """带account_cookie的初始化持仓
 
         Returns:
             [type] -- [description]
@@ -962,7 +990,7 @@ class QA_Account(QA_Worker):
             ] else 0
             self.history.append(
                 [
-                    trade_time,
+                    str(trade_time),
                     code,
                     trade_price,
                     market_towards * trade_amount,
@@ -982,6 +1010,15 @@ class QA_Account(QA_Worker):
             # print(self.cash[-1])
             self.cash_available = self.cash[-1]
             #print('NOT ENOUGH MONEY FOR {}'.format(order_id))
+
+    @property
+    def node_view(self):
+        return {
+            'node_name': self.account_cookie,
+            'strategy_name': self.strategy_name,
+            'cash_available': self.cash_available,
+            'history': self.history
+        }
 
     def receive_deal(
             self,
@@ -1011,7 +1048,7 @@ class QA_Account(QA_Worker):
             [type] -- [description]
         """
 
-        # print('receive deal')
+        print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!receive deal')
 
         trade_time = str(trade_time)
         code = str(code)
@@ -1158,7 +1195,7 @@ class QA_Account(QA_Worker):
 
                 if self.running_environment == RUNNING_ENVIRONMENT.TZERO:
 
-                    if self.buy_available.get(code, 0) >= amount:
+                    if abs(self.buy_available.get(code, 0)) >= amount:
                         flag = True
                         self.cash_available -= money
                         self.buy_available[code] -= amount
@@ -1245,6 +1282,7 @@ class QA_Account(QA_Worker):
                 order_model=order_model,
                 towards=towards,
                 money=money,
+                broker=self.broker,
                 amount_model=amount_model,
                 commission_coeff=self.commission_coeff,
                 tax_coeff=self.tax_coeff,
@@ -1280,7 +1318,6 @@ class QA_Account(QA_Worker):
                                ORDER_DIRECTION.SELL_OPEN]:
             self.sell_available[order.code] += order.amount
 
-        # self.sell_available[]
     @property
     def close_positions_order(self):
         """平仓单
@@ -1304,9 +1341,9 @@ class QA_Account(QA_Worker):
                         price=0,
                         amount=abs(amount),
                         time=time,
-                        towards=ORDER_DIRECTION.BUY_CLOSE,
+                        towards=ORDER_DIRECTION.BUY,
                         order_model=ORDER_MODEL.CLOSE,
-                        amount_model=AMOUNT_MODEL.BY_AMOUNT
+                        amount_model=AMOUNT_MODEL.BY_AMOUNT,
                     )
                 elif amount > 0:
                     # 先买入的单子, 卖平
@@ -1315,7 +1352,7 @@ class QA_Account(QA_Worker):
                         price=0,
                         amount=abs(amount),
                         time=time,
-                        towards=ORDER_DIRECTION.SELL_CLOSE,
+                        towards=ORDER_DIRECTION.SELL,
                         order_model=ORDER_MODEL.CLOSE,
                         amount_model=AMOUNT_MODEL.BY_AMOUNT
                     )
@@ -1377,6 +1414,7 @@ class QA_Account(QA_Worker):
 
         self.sell_available = self.hold
         self.buy_available = self.hold
+        self.cash_available = self.cash[-1]
         self.datetime = '{} 09:30:00'.format(
             QA_util_get_next_day(self.date)
         ) if self.date is not None else None
@@ -1391,8 +1429,44 @@ class QA_Account(QA_Worker):
 
         print(
             "on_bar account {} ".format(self.account_cookie),
-            event.market_data
+            event.market_data.data
         )
+        print(event.send_order)
+        try:
+            for code in event.market_data.code:
+
+                if self.sell_available.get(code, 0) > 0:
+                    print('可以卖出 {}'.format(self._currenttime))
+                    event.send_order(
+                        account_cookie=self.account_cookie,
+                        amount=self.sell_available[code],
+                        amount_model=AMOUNT_MODEL.BY_AMOUNT,
+                        time=self.current_time,
+                        code=code,
+                        price=0,
+                        order_model=ORDER_MODEL.MARKET,
+                        towards=ORDER_DIRECTION.SELL,
+                        market_type=self.market_type,
+                        frequence=self.frequence,
+                        broker_name=self.broker
+                    )
+                else:
+                    print('{} 无仓位, 买入{}'.format(self._currenttime, code))
+                    event.send_order(
+                        account_cookie=self.account_cookie,
+                        amount=100,
+                        amount_model=AMOUNT_MODEL.BY_AMOUNT,
+                        time=self.current_time,
+                        code=code,
+                        price=0,
+                        order_model=ORDER_MODEL.MARKET,
+                        towards=ORDER_DIRECTION.BUY,
+                        market_type=self.market_type,
+                        frequence=self.frequence,
+                        broker_name=self.broker
+                    )
+        except Exception as e:
+            print(e)
 
     def on_tick(self, event):
         '''
@@ -1417,6 +1491,7 @@ class QA_Account(QA_Worker):
         self.allow_sellopen = message.get('allow_sellopen', False)
         self.allow_t0 = message.get('allow_t0', False)
         self.margin_level = message.get('margin_level', False)
+        self.frequence = message.get('frequence', FREQUENCE.FIFTEEN_MIN) #默认15min
         self.init_cash = message.get(
             'init_cash',
             message.get('init_assets',
@@ -1510,6 +1585,7 @@ class QA_Account(QA_Worker):
         '''
         'QA_WORKER method'
         if event.event_type is ACCOUNT_EVENT.SETTLE:
+            print('account_settle')
             self.settle()
 
         # elif event.event_type is ACCOUNT_EVENT.UPDATE:
@@ -1557,6 +1633,21 @@ class QA_Account(QA_Worker):
         存储账户信息
         """
         save_account(self.message)
+
+    def reload(self):
+
+        message = self.client.find_one(
+            {
+                'account_cookie': self.account_cookie,
+                'portfolio_cookie': self.portfolio_cookie,
+                'user_cookie': self.user_cookie
+            }
+        )
+
+        if message is None:
+            self.client.insert(self.message)
+        else:
+            self.from_message(message)
 
     def sync_account(self, sync_message):
         """同步账户
