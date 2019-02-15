@@ -153,6 +153,8 @@ class QA_Risk():
         else:
             self.market_data = market_data
         self.if_fq = if_fq
+        if self.account.market_type == MARKET_TYPE.FUTURE_CN:
+            self.if_fq = False # 如果是期货， 默认设为FALSE
         self.client = DATABASE.risk
 
         self.client.create_index(
