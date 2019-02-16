@@ -262,9 +262,10 @@ def QA_fetch_index_day(code, start, end, format='numpy', collections=DATABASE.in
         if format in ['dict', 'json']:
             return [data for data in cursor]
         for item in cursor:
-
-            __data.append([str(item['code']), float(item['open']), float(item['high']), float(
-                item['low']), float(item['close']), int(item['up_count']), int(item['down_count']), float(item['vol']), float(item['amount']), item['date']])
+            __data = pd.DataFrame([item for item in cursor])
+            __data = __data.assign(date=pd.to_datetime(__data['date']))
+            # __data.append([str(item['code']), float(item['open']), float(item['high']), float(
+            #     item['low']), float(item['close']), int(item['up_count']), int(item['down_count']), float(item['vol']), float(item['amount']), item['date']])
 
         # 多种数据格式
         if format in ['n', 'N', 'numpy']:
@@ -272,9 +273,9 @@ def QA_fetch_index_day(code, start, end, format='numpy', collections=DATABASE.in
         elif format in ['list', 'l', 'L']:
             __data = __data
         elif format in ['P', 'p', 'pandas', 'pd']:
-            __data = DataFrame(
-                __data, columns=['code', 'open', 'high', 'low', 'close', 'up_count', 'down_count', 'volume', 'amount', 'date'])
-            __data['date'] = pd.to_datetime(__data['date'])
+            # __data = DataFrame(
+            #     __data, columns=['code', 'open', 'high', 'low', 'close', 'up_count', 'down_count', 'volume', 'amount', 'date'])
+            # __data['date'] = pd.to_datetime(__data['date'])
             __data = __data.set_index('date', drop=False)
         else:
             print("QA Error QA_fetch_index_day format parameter %s is none of  \"P, p, pandas, pd , n, N, numpy !\" " % format)
@@ -311,14 +312,15 @@ def QA_fetch_index_min(
     if format in ['dict', 'json']:
         return [data for data in cursor]
     for item in cursor:
+        __data = pd.DataFrame([item for item in cursor])
+        __data = __data.assign(datetime=pd.to_datetime(__data['datetime']))
+        # __data.append([str(item['code']), float(item['open']), float(item['high']), float(
+        #     item['low']), float(item['close']), int(item['up_count']), int(item['down_count']), float(item['vol']), float(item['amount']), item['datetime'], item['time_stamp'], item['date'], item['type']])
 
-        __data.append([str(item['code']), float(item['open']), float(item['high']), float(
-            item['low']), float(item['close']), int(item['up_count']), int(item['down_count']), float(item['vol']), float(item['amount']), item['datetime'], item['time_stamp'], item['date'], item['type']])
+    # __data = DataFrame(__data, columns=[
+    #     'code', 'open', 'high', 'low', 'close', 'up_count', 'down_count', 'volume', 'amount', 'datetime', 'time_stamp', 'date', 'type'])
 
-    __data = DataFrame(__data, columns=[
-        'code', 'open', 'high', 'low', 'close', 'up_count', 'down_count', 'volume', 'amount', 'datetime', 'time_stamp', 'date', 'type'])
-
-    __data['datetime'] = pd.to_datetime(__data['datetime'])
+    # __data['datetime'] = pd.to_datetime(__data['datetime'])
     __data = __data.set_index('datetime', drop=False)
     if format in ['numpy', 'np', 'n']:
         return numpy.asarray(__data)
