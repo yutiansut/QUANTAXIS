@@ -378,7 +378,8 @@ class QA_Risk():
             'benchmark_assets': list(self.benchmark_assets),
             'timeindex': self.account.trade_day,
             'totaltimeindex': self.total_timeindex,
-            'ir': self.ir
+            'ir': self.ir,
+            'month_profit': self.month_assets_profit
             # 'init_assets': round(float(self.init_assets), 2),
             # 'last_assets': round(float(self.assets.iloc[-1]), 2)
         }
@@ -722,7 +723,8 @@ class QA_Risk():
 
     @property
     def month_assets_profit(self):
-        return self.month_assets.diff()
+
+        return pd.concat([pd.Series(self.init_cash), self.month_assets]).diff().dropna()
 
     @property
     def daily_assets_profit(self):
@@ -950,7 +952,6 @@ class QA_Performance():
             'average_holdgap': self.average_holdgap,
             'average_profitholdgap': self.average_profitholdgap,
             'average_losssholdgap': self.average_losssholdgap
-
         }
 
     @property
