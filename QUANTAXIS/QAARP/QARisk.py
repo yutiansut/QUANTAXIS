@@ -379,7 +379,7 @@ class QA_Risk():
             'timeindex': self.account.trade_day,
             'totaltimeindex': self.total_timeindex,
             'ir': self.ir,
-            'month_profit': self.month_assets_profit
+            'month_profit': self.month_assets_profit.to_dict()
             # 'init_assets': round(float(self.init_assets), 2),
             # 'last_assets': round(float(self.assets.iloc[-1]), 2)
         }
@@ -724,8 +724,9 @@ class QA_Risk():
     @property
     def month_assets_profit(self):
 
-        return pd.concat([pd.Series(self.init_cash), self.month_assets]).diff().dropna()
-
+        res = pd.concat([pd.Series(self.init_cash), self.month_assets]).diff().dropna()
+        res.index = res.index.map(str)
+        return res
     @property
     def daily_assets_profit(self):
         return self.assets.diff()
