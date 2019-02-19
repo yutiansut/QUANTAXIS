@@ -1309,7 +1309,7 @@ class QA_Performance():
 
     @property
     def total_pnl(self):
-        return self.total_profit / self.total_loss
+        return abs(self.total_profit / self.total_loss)
 
     @property
     def trading_amounts(self):
