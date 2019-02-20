@@ -378,7 +378,8 @@ class QA_Risk():
             'benchmark_assets': list(self.benchmark_assets),
             'timeindex': self.account.trade_day,
             'totaltimeindex': self.total_timeindex,
-            'ir': self.ir
+            'ir': self.ir,
+            'month_profit': self.month_assets_profit.to_dict()
             # 'init_assets': round(float(self.init_assets), 2),
             # 'last_assets': round(float(self.assets.iloc[-1]), 2)
         }
@@ -722,8 +723,10 @@ class QA_Risk():
 
     @property
     def month_assets_profit(self):
-        return self.month_assets.diff()
 
+        res = pd.concat([pd.Series(self.init_cash), self.month_assets]).diff().dropna()
+        res.index = res.index.map(str)
+        return res
     @property
     def daily_assets_profit(self):
         return self.assets.diff()
@@ -950,7 +953,6 @@ class QA_Performance():
             'average_holdgap': self.average_holdgap,
             'average_profitholdgap': self.average_profitholdgap,
             'average_losssholdgap': self.average_losssholdgap
-
         }
 
     @property
@@ -1204,7 +1206,7 @@ class QA_Performance():
                              data.amount,
                              data.price)
                         )
-                        break
+                        break   
 
         pair_title = [
             'code',
@@ -1271,7 +1273,7 @@ class QA_Performance():
 
     def average_profit(self, methods='FIFO'):
         data = self.pnl
-        return (data.pnl_money.mean())
+        return round(data.pnl_money.mean(),2)
 
     @property
     def accumulate_return(self):
@@ -1307,7 +1309,7 @@ class QA_Performance():
 
     @property
     def total_pnl(self):
-        return self.total_profit / self.total_loss
+        return abs(self.total_profit / self.total_loss)
 
     @property
     def trading_amounts(self):
@@ -1347,7 +1349,7 @@ class QA_Performance():
 
     @property
     def average_pnl(self):
-        return self.average_profit / self.average_loss
+        return abs(self.average_profit / self.average_loss)
 
     @property
     def max_profit(self):
@@ -1359,7 +1361,7 @@ class QA_Performance():
 
     @property
     def max_pnl(self):
-        return self.max_profit / self.max_loss
+        return abs(self.max_profit / self.max_loss)
 
     @property
     def netprofio_maxloss_ratio(self):
