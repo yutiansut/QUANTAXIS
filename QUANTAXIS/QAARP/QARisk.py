@@ -1206,7 +1206,7 @@ class QA_Performance():
                              data.amount,
                              data.price)
                         )
-                        break
+                        break   
 
         pair_title = [
             'code',
@@ -1273,7 +1273,7 @@ class QA_Performance():
 
     def average_profit(self, methods='FIFO'):
         data = self.pnl
-        return (data.pnl_money.mean())
+        return round(data.pnl_money.mean(),2)
 
     @property
     def accumulate_return(self):
@@ -1349,7 +1349,7 @@ class QA_Performance():
 
     @property
     def average_pnl(self):
-        return self.average_profit / self.average_loss
+        return abs(self.average_profit / self.average_loss)
 
     @property
     def max_profit(self):
@@ -1361,7 +1361,7 @@ class QA_Performance():
 
     @property
     def max_pnl(self):
-        return self.max_profit / self.max_loss
+        return abs(self.max_profit / self.max_loss)
 
     @property
     def netprofio_maxloss_ratio(self):
