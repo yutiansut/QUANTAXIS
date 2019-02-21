@@ -42,6 +42,7 @@ from QUANTAXIS.QAFetch import QAWind as QAWind
 from QUANTAXIS.QAUtil.QAParameter import (DATABASE_TABLE, DATASOURCE,
                                           FREQUENCE, MARKET_TYPE,
                                           OUTPUT_FORMAT)
+from QUANTAXIS.QAData.QADataStruct import QA_DataStruct_Future_day, QA_DataStruct_Future_min, QA_DataStruct_Stock_day, QA_DataStruct_Stock_min
 from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting
 
 
@@ -103,6 +104,7 @@ def QA_quotation(code, start, end, frequence, market, source, output):
                 res = QAQueryAdv.QA_fetch_stock_day_adv(code, start, end)
             elif source == DATASOURCE.TDX:
                 res = QATdx.QA_fetch_get_stock_day(code, start, end, '00')
+                res = QA_DataStruct_Stock_day(res.set_index(['date', 'code']))
             elif source == DATASOURCE.TUSHARE:
                 res = QATushare.QA_fetch_get_stock_day(code, start, end, '00')
         elif frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
@@ -112,6 +114,7 @@ def QA_quotation(code, start, end, frequence, market, source, output):
             elif source == DATASOURCE.TDX:
                 res = QATdx.QA_fetch_get_stock_min(
                     code, start, end, frequence=frequence)
+                res = QA_DataStruct_Stock_min(res.set_index(['datetime','code']))
         elif frequence == FREQUENCE.TICK:
             if source == DATASOURCE.TDX:
                 res = QATdx.QA_fetch_get_stock_transaction(code, start, end)
@@ -121,6 +124,7 @@ def QA_quotation(code, start, end, frequence, market, source, output):
                 res = QAQueryAdv.QA_fetch_future_day_adv(code, start, end)
             elif source == DATASOURCE.TDX:
                 res = QATdx.QA_fetch_get_future_day(code, start, end)
+                res = QA_DataStruct_Future_day(res.set_index(['date','code']))
 
         elif frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
             if source == DATASOURCE.MONGO:
@@ -129,6 +133,7 @@ def QA_quotation(code, start, end, frequence, market, source, output):
             elif source == DATASOURCE.TDX:
                 res = QATdx.QA_fetch_get_future_min(
                     code, start, end, frequence=frequence)
+                res = QA_DataStruct_Future_min(res.set_index(['datetime','code']))
         elif frequence == FREQUENCE.TICK:
             if source == DATASOURCE.TDX:
                 res = QATdx.QA_fetch_get_future_transaction(code, start, end)
