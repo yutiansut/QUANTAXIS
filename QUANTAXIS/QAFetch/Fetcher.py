@@ -118,6 +118,9 @@ def QA_quotation(code, start, end, frequence, market, source, output):
         elif frequence == FREQUENCE.TICK:
             if source == DATASOURCE.TDX:
                 res = QATdx.QA_fetch_get_stock_transaction(code, start, end)
+        elif frequence == FREQUENCE.REALTIME:
+            if source == DATASOURCE.TDX:
+                res = QATdx.QA_fetch_get_stock_realtime(code)
     elif market == MARKET_TYPE.FUTURE_CN:
         if frequence == FREQUENCE.DAY:
             if source == DATASOURCE.MONGO:
@@ -137,6 +140,9 @@ def QA_quotation(code, start, end, frequence, market, source, output):
         elif frequence == FREQUENCE.TICK:
             if source == DATASOURCE.TDX:
                 res = QATdx.QA_fetch_get_future_transaction(code, start, end)
+        elif frequence == FREQUENCE.REALTIME:
+            if source == DATASOURCE.TDX:
+                res = QATdx.QA_fetch_get_future_realtime(code)
 
     # 指数代码和股票代码是冲突重复的，  sh000001 上证指数  000001 是不同的
     elif market == MARKET_TYPE.INDEX_CN:
