@@ -27,6 +27,7 @@ from functools import lru_cache
 import pandas as pd
 
 from QUANTAXIS.QAARP.QAAccount import QA_Account
+from QUANTAXIS.QAARP.QARisk import QA_Performance, QA_Risk
 from QUANTAXIS.QAUtil import (
     DATABASE,
     QA_util_log_info,
@@ -364,6 +365,16 @@ class QA_Portfolio(QA_Account):
     @property
     def table(self):
         return pd.concat([acc.table for acc in self.accounts.values()], axis=1)
+
+    def evaluate(self, account):
+        account = self.accounts[account]
+
+        risk = QA_Risk(account)
+
+
+    @property
+    def portfolioView(self):
+        return []
 
     def get_cash(self):
         """拿到整个portfolio的可用资金

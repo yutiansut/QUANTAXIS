@@ -31,6 +31,12 @@ QAFetch is Under [QAStandard#0.0.2@10x] Protocol
 
 
 """
+from QUANTAXIS.QAData.QADataStruct import (QA_DataStruct_Future_day,
+                                           QA_DataStruct_Future_min,
+                                           QA_DataStruct_Future_realtime,
+                                           QA_DataStruct_Stock_day,
+                                           QA_DataStruct_Stock_min,
+                                           QA_DataStruct_Stock_realtime)
 from QUANTAXIS.QAFetch import QAEastMoney as QAEM
 from QUANTAXIS.QAFetch import QAQuery
 from QUANTAXIS.QAFetch import QAQuery_Advance as QAQueryAdv
@@ -103,6 +109,7 @@ def QA_quotation(code, start, end, frequence, market, source, output):
                 res = QAQueryAdv.QA_fetch_stock_day_adv(code, start, end)
             elif source == DATASOURCE.TDX:
                 res = QATdx.QA_fetch_get_stock_day(code, start, end, '00')
+                res = QA_DataStruct_Stock_day(res.set_index(['date', 'code']))
             elif source == DATASOURCE.TUSHARE:
                 res = QATushare.QA_fetch_get_stock_day(code, start, end, '00')
         elif frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
@@ -112,15 +119,22 @@ def QA_quotation(code, start, end, frequence, market, source, output):
             elif source == DATASOURCE.TDX:
                 res = QATdx.QA_fetch_get_stock_min(
                     code, start, end, frequence=frequence)
+                res = QA_DataStruct_Stock_min(
+                    res.set_index(['datetime', 'code']))
         elif frequence == FREQUENCE.TICK:
             if source == DATASOURCE.TDX:
                 res = QATdx.QA_fetch_get_stock_transaction(code, start, end)
+        elif frequence == FREQUENCE.REALTIME:
+            if source == DATASOURCE.TDX:
+                res = QA_DataStruct_Stock_realtime(
+                    QATdx.QA_fetch_get_stock_realtime(code))
     elif market == MARKET_TYPE.FUTURE_CN:
         if frequence == FREQUENCE.DAY:
             if source == DATASOURCE.MONGO:
                 res = QAQueryAdv.QA_fetch_future_day_adv(code, start, end)
             elif source == DATASOURCE.TDX:
                 res = QATdx.QA_fetch_get_future_day(code, start, end)
+                res = QA_DataStruct_Future_day(res.set_index(['date', 'code']))
 
         elif frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
             if source == DATASOURCE.MONGO:
@@ -129,9 +143,15 @@ def QA_quotation(code, start, end, frequence, market, source, output):
             elif source == DATASOURCE.TDX:
                 res = QATdx.QA_fetch_get_future_min(
                     code, start, end, frequence=frequence)
+                res = QA_DataStruct_Future_min(
+                    res.set_index(['datetime', 'code']))
         elif frequence == FREQUENCE.TICK:
             if source == DATASOURCE.TDX:
                 res = QATdx.QA_fetch_get_future_transaction(code, start, end)
+        elif frequence == FREQUENCE.REALTIME:
+            if source == DATASOURCE.TDX:
+                res = QA_DataStruct_Future_realtime(
+                    QATdx.QA_fetch_get_future_realtime(code))
 
     # 指数代码和股票代码是冲突重复的，  sh000001 上证指数  000001 是不同的
     elif market == MARKET_TYPE.INDEX_CN:
