@@ -958,6 +958,7 @@ class QA_DataStruct_Stock_realtime(_realtime_base):
     def resample(self, level):
         return QA_data_tick_resample(self.data, level)
 
+QA_DataStruct_Future_realtime = QA_DataStruct_Stock_realtime
 
 class QA_DataStruct_Stock_realtime_series():
     def __init__(self, sr_series):
