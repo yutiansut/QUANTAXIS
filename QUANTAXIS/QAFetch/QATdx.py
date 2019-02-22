@@ -396,7 +396,7 @@ def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=None, port=None):
                        's_vol', 'b_vol', 'vol', 'ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',
                        'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3', 'ask4',
                        'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
-        return data.set_index('code', drop=False, inplace=False)
+        return data.set_index(['datetime','code'])
 
 
 def QA_fetch_depth_market_data(code=['000001', '000002'], ip=None, port=None):
@@ -1710,7 +1710,7 @@ def QA_fetch_get_future_realtime(code, ip=None, port=None):
         #                's_vol', 'b_vol', 'vol', 'ask1', 'ask_vol1', 'bid1', 'bid_vol1', 'ask2', 'ask_vol2',
         #                'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3', 'ask4',
         #                'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
-        return __data.set_index('code', drop=False, inplace=False)
+        return __data.set_index(['datetime', 'code'])
 
 
 QA_fetch_get_option_day = QA_fetch_get_future_day

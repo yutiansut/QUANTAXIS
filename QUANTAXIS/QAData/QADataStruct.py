@@ -917,9 +917,10 @@ class _realtime_base():
 class QA_DataStruct_Stock_realtime(_realtime_base):
     def __init__(self, data):
         self.data = data
+        self.index = data.index
 
     def __repr__(self):
-        return '< QA_REALTIME_STRUCT code {} start {} end {} >'.format(self.code.unique(), self.datetime.iloc[1], self.datetime.iloc[-1])
+        return '< QA_REALTIME_STRUCT >'
 
     # @property
     # def ask_list(self):
@@ -939,34 +940,25 @@ class QA_DataStruct_Stock_realtime(_realtime_base):
         return pd.DataFrame(self.data)
 
     @property
-    def ab_board(self):
-        """ask_bid board
-        bid3 bid_vol3
-        bid2 bid_vol2
-        bid1 bid_vol1
-        ===============
-        price /cur_vol
-        ===============
-        ask1 ask_vol1
-        ask2 ask_vol2
-        ask3 ask_vol3
-        """
-        return 'BID5 {}  {} \nBID4 {}  {} \nBID3 {}  {} \nBID2 {}  {} \nBID1 {}  {} \n============\nCURRENT {}  {} \n============\
-        \nASK1 {}  {} \nASK2 {}  {} \nASK3 {}  {} \nASK4 {}  {} \nASK5 {}  {} \nTIME {}  CODE {} '.format(
-            self.bid5, self.bid_vol5, self.bid4, self.bid_vol4, self.bid3, self.bid_vol3, self.bid2, self.bid_vol2, self.bid1, self.bid_vol1,
-            self.price, self.cur_vol,
-            self.ask1, self.ask_vol1, self.ask2, self.ask_vol2, self.ask3, self.ask_vol3, self.ask4, self.ask_vol4, self.ask5, self.ask_vol5,
-            self.datetime, self.code
-        )
+    def datetime(self):
+        return self.index.levels[0]
+    
+    @property
+    def code(self):
+        return self.index.levels[1]
 
     def serialize(self):
         """to_protobuf
         """
         pass
+    
+    def to_json(self):
+        return self.data.assign(code=self.code, datetime=str(self.datetime)).to_dict(orient='records')
 
     def resample(self, level):
         return QA_data_tick_resample(self.data, level)
 
+QA_DataStruct_Future_realtime = QA_DataStruct_Stock_realtime
 
 class QA_DataStruct_Stock_realtime_series():
     def __init__(self, sr_series):
