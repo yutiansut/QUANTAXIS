@@ -120,7 +120,8 @@ class QA_Risk():
             benchmark_code='000300',
             benchmark_type=MARKET_TYPE.INDEX_CN,
             if_fq=True,
-            market_data=None
+            market_data=None,
+            auto_reload=False
     ):
         """
         account: QA_Account类/QA_PortfolioView类
@@ -132,29 +133,6 @@ class QA_Risk():
         self.account = account
         self.benchmark_code = benchmark_code  # 默认沪深300
         self.benchmark_type = benchmark_type
-
-        self.fetch = {
-            MARKET_TYPE.STOCK_CN: QA_fetch_stock_day_adv,
-            MARKET_TYPE.INDEX_CN: QA_fetch_index_day_adv
-        }
-        if market_data == None:
-            if self.account.market_type == MARKET_TYPE.STOCK_CN:
-                self.market_data = QA_fetch_stock_day_adv(
-                    self.account.code,
-                    self.account.start_date,
-                    self.account.end_date
-                )
-            elif self.account.market_type == MARKET_TYPE.FUTURE_CN:
-                self.market_data = QA_fetch_future_day_adv(
-                    self.account.code,
-                    self.account.start_date,
-                    self.account.end_date
-                )
-        else:
-            self.market_data = market_data
-        self.if_fq = if_fq
-        if self.account.market_type == MARKET_TYPE.FUTURE_CN:
-            self.if_fq = False # 如果是期货， 默认设为FALSE
         self.client = DATABASE.risk
 
         self.client.create_index(
@@ -168,24 +146,50 @@ class QA_Risk():
             ],
             unique=True
         )
-
-        if self.market_value is not None:
-            self._assets = (
-                self.market_value.sum(axis=1) +
-                self.account.daily_cash.set_index('date').cash
-            ).fillna(method='pad')
+        if auto_reload:
+            pass
         else:
-            self._assets = self.account.daily_cash.set_index('date'
-                                                             ).cash.fillna(
-                method='pad'
-            )
+            self.fetch = {
+                MARKET_TYPE.STOCK_CN: QA_fetch_stock_day_adv,
+                MARKET_TYPE.INDEX_CN: QA_fetch_index_day_adv
+            }
+            if market_data == None:
+                if self.account.market_type == MARKET_TYPE.STOCK_CN:
+                    self.market_data = QA_fetch_stock_day_adv(
+                        self.account.code,
+                        self.account.start_date,
+                        self.account.end_date
+                    )
+                elif self.account.market_type == MARKET_TYPE.FUTURE_CN:
+                    self.market_data = QA_fetch_future_day_adv(
+                        self.account.code,
+                        self.account.start_date,
+                        self.account.end_date
+                    )
+            else:
+                self.market_data = market_data
+            self.if_fq = if_fq
+            if self.account.market_type == MARKET_TYPE.FUTURE_CN:
+                self.if_fq = False # 如果是期货， 默认设为FALSE
 
-        self.time_gap = QA_util_get_trade_gap(
-            self.account.start_date,
-            self.account.end_date
-        )
-        self.init_cash = self.account.init_cash
-        self.init_assets = self.account.init_assets
+
+            if self.market_value is not None:
+                self._assets = (
+                    self.market_value.sum(axis=1) +
+                    self.account.daily_cash.set_index('date').cash
+                ).fillna(method='pad')
+            else:
+                self._assets = self.account.daily_cash.set_index('date'
+                                                                ).cash.fillna(
+                    method='pad'
+                )
+
+            self.time_gap = QA_util_get_trade_gap(
+                self.account.start_date,
+                self.account.end_date
+            )
+            self.init_cash = self.account.init_cash
+            self.init_assets = self.account.init_assets
 
     def __repr__(self):
         return '< QA_RISK ANALYSIS ACCOUNT/PORTFOLIO >'
@@ -1092,7 +1096,8 @@ class QA_Performance():
         )
         pnl = pnl.assign(
             pnl_money=pnl.pnl_ratio * pnl.amount,
-            hold_gap=abs(pnl.sell_date - pnl.buy_date)
+            hold_gap=abs(pnl.sell_date - pnl.buy_date),
+            if_buyopen=(pnl.sell_date- pnl.buy_date)> datetime.timedelta(days=0)
         )
         return pnl
 
@@ -1225,7 +1230,8 @@ class QA_Performance():
         )
         pnl = pnl.assign(
             pnl_money=(pnl.sell_price - pnl.buy_price) * pnl.amount,
-            hold_gap=abs(pnl.sell_date - pnl.buy_date)
+            hold_gap=abs(pnl.sell_date - pnl.buy_date),
+            if_buyopen=(pnl.sell_date- pnl.buy_date)> datetime.timedelta(days=0)
         )
         return pnl
 
