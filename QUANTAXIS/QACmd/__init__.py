@@ -32,24 +32,41 @@ import platform
 import subprocess
 import requests
 
-
 from QUANTAXIS.QACmd.runner import run_backtest, run
 from QUANTAXIS.QAApplication.QAAnalysis import QA_backtest_analysis_backtest
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting, QA_util_mongo_initial
-from QUANTAXIS.QASU.main import (QA_SU_save_stock_list, QA_SU_save_stock_min, QA_SU_save_stock_xdxr,
-                                 QA_SU_save_stock_block, QA_SU_save_stock_info, QA_SU_save_stock_info_tushare,
-                                 QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_index_min, QA_SU_save_future_list, QA_SU_save_index_list,
-                                 QA_SU_save_etf_day, QA_SU_save_etf_min, QA_SU_save_financialfiles,
-                                 QA_SU_save_option_day, QA_SU_save_option_min, QA_SU_save_option_commodity_day, QA_SU_save_option_commodity_min,
-                                 QA_SU_save_option_contract_list,
-                                 QA_SU_save_future_day, QA_SU_save_future_min, QA_SU_save_future_min_all, QA_SU_save_future_day_all,
-                                 QA_SU_save_report_calendar_day,
-                                 QA_SU_save_report_calendar_his, QA_SU_save_stock_divyield_day,
-                                 QA_SU_save_stock_divyield_his)
+from QUANTAXIS.QASU.main import (
+    QA_SU_save_stock_list,
+    QA_SU_save_stock_min,
+    QA_SU_save_stock_xdxr,
+    QA_SU_save_stock_block,
+    QA_SU_save_stock_info,
+    QA_SU_save_stock_info_tushare,
+    QA_SU_save_stock_day,
+    QA_SU_save_index_day,
+    QA_SU_save_index_min,
+    QA_SU_save_future_list,
+    QA_SU_save_index_list,
+    QA_SU_save_etf_day,
+    QA_SU_save_etf_min,
+    QA_SU_save_financialfiles,
+    QA_SU_save_option_day,
+    QA_SU_save_option_min,
+    QA_SU_save_option_commodity_day,
+    QA_SU_save_option_commodity_min,
+    QA_SU_save_option_contract_list,
+    QA_SU_save_future_day,
+    QA_SU_save_future_min,
+    QA_SU_save_future_min_all,
+    QA_SU_save_future_day_all,
+    QA_SU_save_report_calendar_day,
+    QA_SU_save_report_calendar_his,
+    QA_SU_save_stock_divyield_day,
+    QA_SU_save_stock_divyield_his
+)
 from QUANTAXIS.QASU.save_binance import QA_SU_save_binance_symbol, QA_SU_save_binance_1hour, \
     QA_SU_save_binance_1day, QA_SU_save_binance_1min, QA_SU_save_binance
 from QUANTAXIS.QASU.save_bitmex import QA_SU_save_bitmex_symbol, QA_SU_save_bitmex
-
 
 # 东方财富爬虫
 from QUANTAXIS.QASU.main import (QA_SU_crawl_eastmoney)
@@ -61,7 +78,7 @@ class CLI(cmd.Cmd):
 
     def __init__(self):
         cmd.Cmd.__init__(self)
-        self.prompt = 'QUANTAXIS> '    # 定义命令行提示符
+        self.prompt = 'QUANTAXIS> ' # 定义命令行提示符
 
     def do_shell(self, arg):
         "run a shell commad"
@@ -84,12 +101,15 @@ class CLI(cmd.Cmd):
         #project_dir = os.path.dirname(os.path.abspath(__file__))
 
         data = requests.get(
-            'https://codeload.github.com/quantaxis/QADemo/zip/master')
+            'https://codeload.github.com/quantaxis/QADemo/zip/master'
+        )
         with open("{}{}QADEMO.zip".format(now_path, os.sep), "wb") as code:
             code.write(data.content)
 
         QA_util_log_info(
-            'Successfully generate QADEMO in : {}, for more examples, please visit https://github.com/quantaxis/qademo'.format(now_path))
+            'Successfully generate QADEMO in : {}, for more examples, please visit https://github.com/quantaxis/qademo'
+            .format(now_path)
+        )
 
     def help_examples(self):
         print('make a sample backtest framework')
@@ -97,14 +117,16 @@ class CLI(cmd.Cmd):
     def do_download_updatex(self, arg):
         now_path = os.getcwd()
         data = requests.get(
-            'https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/config/update_x.py')
+            'https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/config/update_x.py'
+        )
         with open("{}{}update_x.py".format(now_path, os.sep), "wb") as code:
             code.write(data.content)
 
     def do_download_updateall(self, arg):
         now_path = os.getcwd()
         data = requests.get(
-            'https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/config/update_all.py')
+            'https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/config/update_all.py'
+        )
         with open("{}{}update_all.py".format(now_path, os.sep), "wb") as code:
             code.write(data.content)
 
@@ -114,10 +136,10 @@ class CLI(cmd.Cmd):
     def help_drop_database(self):
         print('drop quantaxis\'s databases')
 
-    def do_quit(self, arg):     # 定义quit命令所执行的操作
+    def do_quit(self, arg): # 定义quit命令所执行的操作
         sys.exit(1)
 
-    def help_quit(self):        # 定义quit命令的帮助输出
+    def help_quit(self): # 定义quit命令的帮助输出
         print("syntax: quit",)
         print("-- terminates the application")
 
@@ -136,7 +158,7 @@ class CLI(cmd.Cmd):
     def help_clean(self):
         QA_util_log_info('Clean the old backtest reports and logs')
 
-    def do_exit(self, arg):     # 定义quit命令所执行的操作
+    def do_exit(self, arg): # 定义quit命令所执行的操作
         sys.exit(1)
 
     def help_exit(self):
@@ -158,28 +180,35 @@ class CLI(cmd.Cmd):
             @yutiansut\n\
             @QUANTAXIS\n\
             请访问 https://book.yutiansut.com/\n\
-            ")
+            "
+        )
 
     def do_crawl(self, arg):
         if arg == '':
             self.print_crawl_usage()
         else:
             arg = arg.split(' ')
-            if len(arg) == 3 and arg[0] == 'eastmoney' and arg[1] == 'zjlx' and arg[2] != 'all':
+            if len(arg) == 3 and arg[0] == 'eastmoney' and arg[
+                    1] == 'zjlx' and arg[2] != 'all':
                 print("  准备抓取东方财富资金流向数据 ")
                 QA_SU_crawl_eastmoney(action=arg[1], stockCode=arg[2])
-            elif len(arg) == 3 and arg[0] == 'jrj' and arg[1] == 'zjlx' and arg[2] != 'all':
+            elif len(arg) == 3 and arg[0] == 'jrj' and arg[
+                    1] == 'zjlx' and arg[2] != 'all':
                 print("❌crawl jrj zjlx XXXXXX !没有实现")
-            elif len(arg) == 3 and arg[0] == '10jqka' and arg[1] == 'funds' and arg[2] != 'all':
+            elif len(arg) == 3 and arg[0] == '10jqka' and arg[
+                    1] == 'funds' and arg[2] != 'all':
                 print("❌crawl 10jqka funds XXXXXX !没有实现")
-            elif len(arg) == 3 and arg[0] == 'eastmoney' and arg[1] == 'zjlx' and arg[2] == 'all':
+            elif len(arg) == 3 and arg[0] == 'eastmoney' and arg[
+                    1] == 'zjlx' and arg[2] == 'all':
                 #print("❌crawl eastmoney zjlx all !没有实现")
                 print("  准备抓取东方财富资金流向数据 ")
                 QA_SU_crawl_eastmoney(action=arg[1], stockCode=arg[2])
 
-            elif len(arg) == 3 and arg[0] == 'jrj' and arg[1] == 'zjlx' and arg[2] == 'all':
+            elif len(arg) == 3 and arg[0] == 'jrj' and arg[1] == 'zjlx' and arg[
+                    2] == 'all':
                 print("❌crawl jrj zjlx all !没有实现")
-            elif len(arg) == 3 and arg[0] == '10jqka' and arg[1] == 'funds' and arg[2] == 'all':
+            elif len(arg) == 3 and arg[0] == '10jqka' and arg[
+                    1] == 'funds' and arg[2] == 'all':
                 print("❌crawl 10jqka funds all !没有实现")
             else:
                 print("❌crawl 命令格式不正确！")
@@ -195,10 +224,12 @@ class CLI(cmd.Cmd):
             命令格式: save future: save future_day/min/list \n\
             ------------------------------------------------------------ \n\
             命令格式：save stock_day  : 保存日线数据 \n\
-            命令格式：save stock_xdxr : 保存日除权出息数据 \n\
+            命令格式：save stock_xdxr : 保存日除权除息数据 \n\
             命令格式：save stock_min  : 保存分钟线数据 \n\
-            命令格式：save index_day  : 保存指数数据 \n\
-            命令格式：save index_min  : 保存指数线数据 \n\
+            命令格式：save index_day  : 保存指数日线数据 \n\
+            命令格式：save index_min  : 保存指数分钟线数据 \n\
+            命令格式：save future_day  : 保存期货日线数据 \n\
+            命令格式：save future_min  : 保存期货分钟线数据 \n\
             命令格式：save etf_day    : 保存ETF日线数据 \n\
             命令格式：save etf_min    : 保存ET分钟数据 \n\
             命令格式：save stock_list : 保存股票列表 \n\
@@ -220,7 +251,8 @@ class CLI(cmd.Cmd):
             @yutiansut\n\
             @QUANTAXIS\n\
             请访问 https://book.yutiansut.com/\n\
-            ")
+            "
+        )
 
     def do_save(self, arg):
         # 仅仅是为了初始化才在这里插入用户,如果想要注册用户,要到webkit底下注册
@@ -230,9 +262,14 @@ class CLI(cmd.Cmd):
             arg = arg.split(' ')
 
             if len(arg) == 1 and arg[0] == 'all':
-                if QA_Setting().client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
+                if QA_Setting().client.quantaxis.user_list.find(
+                    {'username': 'admin'}).count() == 0:
                     QA_Setting().client.quantaxis.user_list.insert(
-                        {'username': 'admin', 'password': 'admin'})
+                        {
+                            'username': 'admin',
+                            'password': 'admin'
+                        }
+                    )
                 QA_SU_save_stock_day('tdx')
                 QA_SU_save_stock_xdxr('tdx')
                 # QA_SU_save_stock_min('tdx')
@@ -248,9 +285,14 @@ class CLI(cmd.Cmd):
                 # QA_SU_save_stock_divyield_his()
 
             elif len(arg) == 1 and arg[0] == 'day':
-                if QA_Setting().client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
+                if QA_Setting().client.quantaxis.user_list.find(
+                    {'username': 'admin'}).count() == 0:
                     QA_Setting().client.quantaxis.user_list.insert(
-                        {'username': 'admin', 'password': 'admin'})
+                        {
+                            'username': 'admin',
+                            'password': 'admin'
+                        }
+                    )
                 QA_SU_save_stock_day('tdx')
                 QA_SU_save_stock_xdxr('tdx')
                 # QA_SU_save_stock_min('tdx')
@@ -265,9 +307,14 @@ class CLI(cmd.Cmd):
                 # QA_SU_save_report_calendar_day()
 
             elif len(arg) == 1 and arg[0] == 'min':
-                if QA_Setting().client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
+                if QA_Setting().client.quantaxis.user_list.find(
+                    {'username': 'admin'}).count() == 0:
                     QA_Setting().client.quantaxis.user_list.insert(
-                        {'username': 'admin', 'password': 'admin'})
+                        {
+                            'username': 'admin',
+                            'password': 'admin'
+                        }
+                    )
                 # QA_SU_save_stock_day('tdx')
                 QA_SU_save_stock_xdxr('tdx')
                 QA_SU_save_stock_min('tdx')
@@ -279,9 +326,14 @@ class CLI(cmd.Cmd):
                 QA_SU_save_index_list('tdx')
                 # QA_SU_save_stock_block('tdx')
             elif len(arg) == 1 and arg[0] in ['X', 'x']:
-                if QA_Setting().client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
+                if QA_Setting().client.quantaxis.user_list.find(
+                    {'username': 'admin'}).count() == 0:
                     QA_Setting().client.quantaxis.user_list.insert(
-                        {'username': 'admin', 'password': 'admin'})
+                        {
+                            'username': 'admin',
+                            'password': 'admin'
+                        }
+                    )
                 QA_SU_save_stock_day('tdx')
                 QA_SU_save_stock_xdxr('tdx')
                 QA_SU_save_stock_min('tdx')
@@ -325,9 +377,14 @@ class CLI(cmd.Cmd):
             else:
                 for i in arg:
                     if i == 'insert_user':
-                        if QA_Setting().client.quantaxis.user_list.find({'username': 'admin'}).count() == 0:
+                        if QA_Setting().client.quantaxis.user_list.find(
+                            {'username': 'admin'}).count() == 0:
                             QA_Setting().client.quantaxis.user_list.insert(
-                                {'username': 'admin', 'password': 'admin'})
+                                {
+                                    'username': 'admin',
+                                    'password': 'admin'
+                                }
+                            )
                     else:
                         '''
                         save stock_day  :对应输入命令 save stock_day 
@@ -399,12 +456,13 @@ def sourcecpy(src, des):
     for source in src_file:
         # 若是文件
         if os.path.isfile(source):
-            shutil.copy(source, des)  # 第一个参数是文件，第二个参数目录
-        # 若是目录
+            shutil.copy(source, des)     # 第一个参数是文件，第二个参数目录
+                                         # 若是目录
         if os.path.isdir(source):
             p, src_name = os.path.split(source)
             des = os.path.join(des, src_name)
-            shutil.copytree(source, des)  # 第一个参数是目录，第二个参数也是目录
+            shutil.copytree(source, des) # 第一个参数是目录，第二个参数也是目录
+
 
 # 创建CLI实例并运行
 

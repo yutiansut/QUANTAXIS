@@ -21,7 +21,6 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
 """
 该文件主要是负责一些对于code名称的处理
 """
@@ -34,7 +33,10 @@ def QA_util_code_tostr(code):
     因为有时候在csv等转换的时候,诸如 000001的股票会变成office强制转化成数字1
 
     """
-    return '00000{}'.format(str(code)[0:6])[-6:]
+    if isinstance(code, int) or isinstance(code, str):
+        return '00000{}'.format(str(code)[0:6])[-6:]
+    elif isinstance(code, list):
+        return QA_util_code_tostr(code[0])
 
 
 def QA_util_code_tolist(code, auto_fill=True):

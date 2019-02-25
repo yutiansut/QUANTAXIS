@@ -45,11 +45,30 @@ class ORDER_DIRECTION():
     SELL = -1
     BUY_OPEN = 2
     BUY_CLOSE = 3
+    BUY_CLOSE = 3
     SELL_OPEN = -2
     SELL_CLOSE = -3
+    SELL_CLOSETODAY = -4
+    BUY_CLOSETODAY = 4
     ASK = 0
     XDXR = 5
     OTHER = 6
+
+
+class OFFSET():
+    """订单的开平仓属性
+    OPEN 股票/期货 开仓
+    CLOSE 股票 卖出
+    CLOSE_HISTORY 期货 平昨
+    CLOSE_TODAY 期货 平今
+    REVERSE 期货 反手(默认先平昨再平今)
+    """
+
+    OPEN = 'OPEN'
+    CLOSE = 'CLOSE'
+    CLOSETODAY = 'CLOSETODAY'
+    REVERSE = 'REVERSE'
+
 
 class ORDER_MODEL():
     """订单的成交模式
@@ -64,11 +83,12 @@ class ORDER_MODEL():
     """
 
     LIMIT = 'LIMIT'  # 限价
+    ANY = 'MARKET' # 市价(otg兼容)
     MARKET = 'MARKET'  # 市价/在回测里是下个bar的开盘价买入/实盘就是五档剩余最优成交价
     CLOSE = 'CLOSE'  # 当前bar的收盘价买入
     NEXT_OPEN = 'NEXT_OPEN'  # 下个bar的开盘价买入
     STRICT = 'STRICT'  # 严格模式/不推荐(仅限回测测试用)
-
+    BEST = 'MARKET' # 中金所  最优成交剩余转限
 
 class ORDER_STATUS():
     """订单状态
@@ -194,9 +214,6 @@ class MARKET_TYPE():
     BOND_CN = 'bond_cn'  # 中国债券
 
 
-
-
-
 class BROKER_TYPE():
     """执行环境
 
@@ -276,6 +293,7 @@ class BROKER_EVENT():
     DAILY_SETTLE = 'broker_dailysettle'
     RECEIVE_ORDER = 'receive_order'
     QUERY_DEAL = 'query_deal'
+    NEXT_TRADEDAY = 'next_tradeday'
 
 
 class ORDER_EVENT():
@@ -310,6 +328,7 @@ class FREQUENCE():
     SIXTY_MIN = '60min'  # 60min bar
     CURRENT = 'current'  # 当前bar
     TICK = 'tick'  # transaction
+    REALTIME = 'realtime' # 上下五档/一档
 
 
 class CURRENCY_TYPE():
@@ -387,8 +406,3 @@ DATABASE_TABLE = {
     (MARKET_TYPE.FUTURE_CN, FREQUENCE.HOUR): 'future_min',
     (MARKET_TYPE.FUTURE_CN, FREQUENCE.TICK): 'future_transaction'
 }
-
-
-
-
-    

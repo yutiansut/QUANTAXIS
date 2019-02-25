@@ -10,5 +10,6 @@ RUN pip install git+https://github.com/yutiansut/tornado_http2 \
 
 ENTRYPOINT ["/entrypoint.sh"]
 
+EXPOSE 8010
 
 CMD ["quantaxis_webserver", "--port=8010", "&"]

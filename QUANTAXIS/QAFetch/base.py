@@ -43,6 +43,9 @@ def _select_market_code(code):
         return 1
     return 0
 
+def get_stock_market(code):
+    return 'SH' if _select_market_code(code) == 1 else 'SZ'
+
 
 def _select_type(frequence):
     if frequence in ['day', 'd', 'D', 'DAY', 'Day']:

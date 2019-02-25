@@ -53,9 +53,20 @@ def ADXR(DataFrame, N=14):
 
 
 def AROON(DataFrame, N=14):
-    res = talib.AROON(DataFrame.high.values, DataFrame.low.values, N)
-    return pd.DataFrame({'AROON': res}, index=DataFrame.index)
+    """阿隆指标
+    
+    Arguments:
+        DataFrame {[type]} -- [description]
+    
+    Keyword Arguments:
+        N {int} -- [description] (default: {14})
+    
+    Returns:
+        [type] -- [description]
+    """
 
+    ar_up, ar_down = talib.AROON(DataFrame.high.values, DataFrame.low.values, N)
+    return pd.DataFrame({'AROON_UP': ar_up,'AROON_DOWN': ar_down}, index=DataFrame.index)
 
 def AROONOSC(DataFrame, N=14):
     res = talib.AROONOSC(DataFrame.high.values, DataFrame.low.values, N)

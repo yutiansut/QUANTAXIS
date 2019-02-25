@@ -22,14 +22,14 @@
 # SOFTWARE.
 
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_list
-from QUANTAXIS.QASU import crawl_eastmoney as crawl_eastmoney_file
+#from QUANTAXIS.QASU import crawl_eastmoney as crawl_eastmoney_file
 from QUANTAXIS.QASU import save_tdx as stdx
 from QUANTAXIS.QASU import save_tdx_file as tdx_file
 from QUANTAXIS.QASU import save_tushare as sts
 from QUANTAXIS.QASU import save_financialfiles
 from QUANTAXIS.QAUtil import DATABASE
-from QUANTAXIS.QASU import crawl_jrj_financial_reportdate as save_financial_calendar
-from QUANTAXIS.QASU import crawl_jrj_stock_divyield as save_stock_divyield
+# from QUANTAXIS.QASU import crawl_jrj_financial_reportdate as save_financial_calendar
+# from QUANTAXIS.QASU import crawl_jrj_stock_divyield as save_stock_divyield
 
 
 def QA_SU_save_stock_info(engine, client=DATABASE):
