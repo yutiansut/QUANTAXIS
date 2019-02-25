@@ -379,6 +379,8 @@ class QA_Account(QA_Worker):
             str(self._currenttime),
             'allow_sellopen':
             self.allow_sellopen,
+            'allow_margin':
+            self.allow_margin,
             'allow_t0':
             self.allow_t0,
             'margin_level':
@@ -602,14 +604,6 @@ class QA_Account(QA_Worker):
         ).groupby('code').sum().replace(0,
                                         np.nan).dropna().sort_index()
 
-    # @property
-    # def hold_available_temp(self):
-    #     """可用持仓
-    #     """
-    #     return self._table.groupby('code').amount.sum().replace(
-    #         0,
-    #         np.nan
-    #     ).dropna().sort_index()
 
     @property
     def hold_available(self):
@@ -670,8 +664,11 @@ class QA_Account(QA_Worker):
             return pd.concat([res.reset_index().set_index('date'), pd.Series(data=None, index=pd.to_datetime(self.trade_range).set_names('date'), name='predrop')], axis=1)\
                 .ffill().drop(['predrop'], axis=1).reset_index().set_index(['date', 'account_cookie']).sort_index()
 
-    # 计算assets的时候 需要一个market_data=QA.QA_fetch_stock_day_adv(list(data.columns),data.index[0],data.index[-1])
-    # (market_data.to_qfq().pivot('close')*data).sum(axis=1)+user_cookie.get_account(a_1).daily_cash.set_index('date').cash
+
+    @property
+    def daily_frozen(self):
+        '每日交易结算时的持仓表'
+        return self.history_table.assign(date=pd.to_datetime(self.history_table.datetime)).set_index('date').resample('D').frozen.last()
 
     @property
     def latest_cash(self):
@@ -1366,7 +1363,7 @@ class QA_Account(QA_Worker):
                 )
             )
 
-    def settle(self):
+    def settle(self, settle_data = None):
         """
         股票/期货的日结算
 
@@ -1375,8 +1372,16 @@ class QA_Account(QA_Worker):
 
         期货的结算: 结转静态资金
 
-        """
 
+        @2019-02-25 yutiansut
+        hold 在下面要进行大变化:
+
+        从 只计算数量 ==> 数量+成本+买入价 (携带更多信息)
+
+        基于history去计算hold ==> last_settle+ today_pos_change
+
+        """
+        print('FROM QUANTAXIS QA_ACCOUNT: account settle')
         if self.running_environment == RUNNING_ENVIRONMENT.TZERO and self.hold_available.sum(
         ) != 0:
             raise RuntimeError(
@@ -1385,6 +1390,7 @@ class QA_Account(QA_Worker):
                 )
             )
         if self.market_type == MARKET_TYPE.FUTURE_CN:
+            # 增加逐日盯市制度
 
             self.static_balance['frozen'].append(
                 sum(
@@ -1489,6 +1495,7 @@ class QA_Account(QA_Worker):
         self.strategy_name = message.get('strategy_name', None)
         self._currenttime = message.get('current_time', None)
         self.allow_sellopen = message.get('allow_sellopen', False)
+        self.allow_margin = message.get('allow_margin', False)
         self.allow_t0 = message.get('allow_t0', False)
         self.margin_level = message.get('margin_level', False)
         self.frequence = message.get('frequence', FREQUENCE.FIFTEEN_MIN) #默认15min

@@ -175,10 +175,17 @@ class QA_Risk():
 
 
             if self.market_value is not None:
-                self._assets = (
-                    self.market_value.sum(axis=1) +
-                    self.account.daily_cash.set_index('date').cash
-                ).fillna(method='pad')
+                if self.account.market_type == MARKET_TYPE.FUTURE_CN and self.account.allow_margin == True:
+                    print('margin!')
+                    self._assets = (
+                        self.market_value.sum(axis=1) + self.account.daily_frozen.fillna(0) +
+                        self.account.daily_cash.set_index('date').cash
+                    ).fillna(method='pad')
+                else:
+                    self._assets = (
+                        self.market_value.sum(axis=1) +
+                        self.account.daily_cash.set_index('date').cash
+                    ).fillna(method='pad')
             else:
                 self._assets = self.account.daily_cash.set_index('date'
                                                                 ).cash.fillna(
