@@ -1,0 +1,34 @@
+{% set data = load_setup_py_data() %}
+package:
+  name: quantaxis
+  version: {{ data.get('version') }}
+
+source:
+#  git_url: ../
+  path_url : ../QUANTAXIS
+
+build:
+  number: 0
+  entry_points:
+    - quantaxis=QUANTAXIS.QACmd:QA_cmd
+    - quantaxisq=QUANTAXIS.QAFetch.QATdx_adv:bat
+    - qarun=QUANTAXIS.QACmd.runner:run
+
+requirements:
+  build:
+    - python
+    - setuptools
+  run:
+    - python
+
+
+about:
+  home: {{ data.get('url') }}
+  license: {{ data.get('license') }}
+  license_family: MIT
+  license_file: LICENSE
+  summary: {{ data.get('description') }}
+
+extra:
+  maintainers:
+   - yutiansut

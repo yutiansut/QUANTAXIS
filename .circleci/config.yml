@@ -32,9 +32,10 @@ jobs:
           command: |
             python3 -m venv venv
             . venv/bin/activate
+            pip install pyasn1
+            pip install pyasn1-modules
             pip install -r requirements.txt
-            pip install tushare==0.8.7
-
+            pip install tushare
       - save_cache:
           paths:
             - ./venv
