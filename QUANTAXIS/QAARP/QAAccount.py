@@ -411,7 +411,9 @@ class QA_Account(QA_Worker):
             'start_date':
             self.start_date,
             'end_date':
-            self.end_date
+            self.end_date,
+            'frozen':
+            self.frozen
         }
 
     @property
@@ -1517,6 +1519,7 @@ class QA_Account(QA_Worker):
             'running_environment',
             RUNNING_ENVIRONMENT.BACKETEST
         )
+        self.frozen = message.get('frozen', {})
         self.settle()
         return self
 
