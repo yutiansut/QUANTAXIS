@@ -333,8 +333,9 @@ class QA_Account(QA_Worker):
             self.allow_t0 = True
             self.allow_sellopen = True
 
-        if self.allow_t0 and self.allow_sellopen or self.market_type is MARKET_TYPE.FUTURE_CN:
-            self.load_marketpreset()
+        self.market_preset = MARKET_PRESET()
+        # if self.allow_t0 and self.allow_sellopen or self.market_type is MARKET_TYPE.FUTURE_CN:
+        #     self.load_marketpreset()
         """期货的多开/空开 ==> 资金冻结进保证金  frozen
 
         对应平仓的时候, 释放保证金
