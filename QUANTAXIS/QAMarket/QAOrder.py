@@ -448,8 +448,8 @@ class QA_Order():
         self.offset = otgOrder.get('offset')
         self.direction = otgOrder.get('direction')
         self.towards = eval('ORDER_DIRECTION.{}_{}'.format(
-            self.offset,
-            self.direction
+            self.direction,
+            self.offset
         ))
         self.amount = otgOrder.get('volume_orign')
         self.trade_amount = self.amount - otgOrder.get('volume_left')
