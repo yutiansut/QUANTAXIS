@@ -1007,7 +1007,8 @@ class QA_Account(QA_Worker):
             )
 
         else:
-            # print(self.cash[-1])
+            print('ALERT MONEY NOT ENOUGH!!!')
+            print(self.cash[-1])
             self.cash_available = self.cash[-1]
             #print('NOT ENOUGH MONEY FOR {}'.format(order_id))
 
