@@ -876,19 +876,19 @@ class QA_Account(QA_Worker):
                         if trade_towards in self.frozen[code].keys():
                             pass
                         else:
-                            self.frozen[code][trade_towards] = {
+                            self.frozen[code][str(trade_towards)] = {
                                 'money': 0,
                                 'amount': 0,
                                 'avg_price': 0
                             }
                     else:
                         self.frozen[code] = {
-                            ORDER_DIRECTION.BUY_OPEN: {
+                            str(ORDER_DIRECTION.BUY_OPEN): {
                                 'money': 0,
                                 'amount': 0,
                                 'avg_price': 0
                             },
-                            ORDER_DIRECTION.SELL_OPEN: {
+                            str(ORDER_DIRECTION.SELL_OPEN): {
                                 'money': 0,
                                 'amount': 0,
                                 'avg_price': 0
@@ -903,25 +903,25 @@ class QA_Account(QA_Worker):
 
                     """
 
-                    self.frozen[code][trade_towards]['money'] = (
+                    self.frozen[code][str(trade_towards)]['money'] = (
                         (
-                            self.frozen[code][trade_towards]['money'] *
-                            self.frozen[code][trade_towards]['amount']
+                            self.frozen[code][str(trade_towards)]['money'] *
+                            self.frozen[code][str(trade_towards)]['amount']
                         ) + abs(trade_money)
                     ) / (
-                        self.frozen[code][trade_towards]['amount'] +
+                        self.frozen[code][str(trade_towards)]['amount'] +
                         trade_amount
                     )
-                    self.frozen[code][trade_towards]['avg_price'] = (
+                    self.frozen[code][str(trade_towards)]['avg_price'] = (
                         (
-                            self.frozen[code][trade_towards]['avg_price'] *
-                            self.frozen[code][trade_towards]['amount']
+                            self.frozen[code][str(trade_towards)]['avg_price'] *
+                            self.frozen[code][str(trade_towards)]['amount']
                         ) + abs(raw_trade_money)
                     ) / (
-                        self.frozen[code][trade_towards]['amount'] +
+                        self.frozen[code][str(trade_towards)]['amount'] +
                         trade_amount
                     )
-                    self.frozen[code][trade_towards]['amount'] += trade_amount
+                    self.frozen[code][str(trade_towards)]['amount'] += trade_amount
 
                     self.cash.append(
                         self.cash[-1] - abs(trade_money) - commission_fee -
@@ -935,41 +935,41 @@ class QA_Account(QA_Worker):
                     # self.cash
                     if trade_towards == ORDER_DIRECTION.BUY_CLOSE:  # 买入平仓  之前是空开
                                                                     # self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['money'] -= trade_money
-                        self.frozen[code][ORDER_DIRECTION.SELL_OPEN
+                        self.frozen[code][str(ORDER_DIRECTION.SELL_OPEN)
                                          ]['amount'] -= trade_amount
 
                         frozen_part = self.frozen[code][
-                            ORDER_DIRECTION.SELL_OPEN]['money'] * trade_amount
+                            str(ORDER_DIRECTION.SELL_OPEN)]['money'] * trade_amount
                         # 账户的现金+ 冻结的的释放 + 买卖价差* 杠杆
                         self.cash.append(
                             self.cash[-1] + frozen_part +
                             (frozen_part - trade_money) / frozen -
                             commission_fee - tax_fee
                         )
-                        if self.frozen[code][ORDER_DIRECTION.SELL_OPEN
+                        if self.frozen[code][str(ORDER_DIRECTION.SELL_OPEN)
                                             ]['amount'] == 0:
-                            self.frozen[code][ORDER_DIRECTION.SELL_OPEN
+                            self.frozen[code][str(ORDER_DIRECTION.SELL_OPEN)
                                              ]['money'] = 0
-                            self.frozen[code][ORDER_DIRECTION.SELL_OPEN
+                            self.frozen[code][str(ORDER_DIRECTION.SELL_OPEN)
                                              ]['avg_price'] = 0
 
                     elif trade_towards == ORDER_DIRECTION.SELL_CLOSE: # 卖出平仓  之前是多开
                                                                       # self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['money'] -= trade_money
-                        self.frozen[code][ORDER_DIRECTION.BUY_OPEN
+                        self.frozen[code][str(ORDER_DIRECTION.BUY_OPEN)
                                          ]['amount'] -= trade_amount
 
-                        frozen_part = self.frozen[code][ORDER_DIRECTION.BUY_OPEN
+                        frozen_part = self.frozen[code][str(ORDER_DIRECTION.BUY_OPEN)
                                                        ]['money'] * trade_amount
                         self.cash.append(
                             self.cash[-1] + frozen_part +
                             (abs(trade_money) - frozen_part) / frozen -
                             commission_fee - tax_fee
                         )
-                        if self.frozen[code][ORDER_DIRECTION.BUY_OPEN
+                        if self.frozen[code][str(ORDER_DIRECTION.BUY_OPEN)
                                             ]['amount'] == 0:
-                            self.frozen[code][ORDER_DIRECTION.BUY_OPEN
+                            self.frozen[code][str(ORDER_DIRECTION.BUY_OPEN)
                                              ]['money'] = 0
-                            self.frozen[code][ORDER_DIRECTION.BUY_OPEN
+                            self.frozen[code][str(ORDER_DIRECTION.BUY_OPEN)
                                              ]['avg_price'] = 0
             else: # 不允许卖空开仓的==> 股票
 
