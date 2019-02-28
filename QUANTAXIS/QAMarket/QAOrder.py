@@ -447,10 +447,10 @@ class QA_Order():
         self.code = str(otgOrder.get('instrument_id')).upper()
         self.offset = otgOrder.get('offset')
         self.direction = otgOrder.get('direction')
-        self.towards = 'ORDER_DIRECTION.{}_{}'.format(
+        self.towards = eval('ORDER_DIRECTION.{}_{}'.format(
             self.offset,
             self.direction
-        )
+        ))
         self.amount = otgOrder.get('volume_orign')
         self.trade_amount = self.amount - otgOrder.get('volume_left')
         self.price = otgOrder.get('limit_price')
