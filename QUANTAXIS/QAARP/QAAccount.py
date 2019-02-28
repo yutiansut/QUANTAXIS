@@ -927,13 +927,13 @@ class QA_Account(QA_Worker):
                         self.cash[-1] - abs(trade_money) - commission_fee -
                         tax_fee
                     )
-                elif trade_towards in [ORDER_DIRECTION.BUY_CLOSE,
-                                       ORDER_DIRECTION.SELL_CLOSE]:
+                elif trade_towards in [ORDER_DIRECTION.BUY_CLOSE, ORDER_DIRECTION.BUY_CLOSETODAY,
+                                       ORDER_DIRECTION.SELL_CLOSE, ORDER_DIRECTION.SELL_CLOSETODAY]:
                     # 平仓单释放现金
                     # if trade_towards == ORDER_DIRECTION.BUY_CLOSE:
                     # 卖空开仓 平仓买入
                     # self.cash
-                    if trade_towards == ORDER_DIRECTION.BUY_CLOSE:  # 买入平仓  之前是空开
+                    if trade_towards in [ORDER_DIRECTION.BUY_CLOSE, ORDER_DIRECTION.BUY_CLOSETODAY]:  # 买入平仓  之前是空开
                                                                     # self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['money'] -= trade_money
                         self.frozen[code][str(ORDER_DIRECTION.SELL_OPEN)
                                          ]['amount'] -= trade_amount
@@ -953,7 +953,7 @@ class QA_Account(QA_Worker):
                             self.frozen[code][str(ORDER_DIRECTION.SELL_OPEN)
                                              ]['avg_price'] = 0
 
-                    elif trade_towards == ORDER_DIRECTION.SELL_CLOSE: # 卖出平仓  之前是多开
+                    elif trade_towards in [ORDER_DIRECTION.SELL_CLOSE, ORDER_DIRECTION.SELL_CLOSETODAY]: # 卖出平仓  之前是多开
                                                                       # self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['money'] -= trade_money
                         self.frozen[code][str(ORDER_DIRECTION.BUY_OPEN)
                                          ]['amount'] -= trade_amount
