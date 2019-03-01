@@ -346,6 +346,7 @@ class QA_Account(QA_Worker):
         """
 
         self.frozen = {} # 冻结资金(保证金)
+        self.finishedOrderid = []
 
         if auto_reload:
             self.reload()
@@ -414,7 +415,9 @@ class QA_Account(QA_Worker):
             'end_date':
             self.end_date,
             'frozen':
-            self.frozen
+            self.frozen,
+            'finished_id':
+            self.finishedOrderid
         }
 
     @property
@@ -815,7 +818,11 @@ class QA_Account(QA_Worker):
         """
 
         self.datetime = trade_time
-
+        if realorder_id in self.finishedOrderid:
+            pass
+        else:
+            self.finishedOrderid.append(realorder_id)
+            
         market_towards = 1 if trade_towards > 0 else -1
         # value 合约价值 unit 合约乘数
         if self.allow_margin:
@@ -1522,6 +1529,7 @@ class QA_Account(QA_Worker):
             RUNNING_ENVIRONMENT.BACKETEST
         )
         self.frozen = message.get('frozen', {})
+        self.finishedOrderid = message.get('finished_id', [])
         self.settle()
         return self
 
