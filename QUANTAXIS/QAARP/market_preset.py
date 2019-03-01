@@ -262,7 +262,7 @@ class MARKET_PRESET:
                 'buy_frozen_coeff': 0.09,
                 'commission_coeff_peramount': 0.0001,
                 'commission_coeff_pervol': 0.0,
-                'commission_coeff_today_peramount': 5e-05,
+                'commission_coeff_today_peramount': 0.0001,
                 'commission_coeff_today_pervol': 0.0,
                 'exchange': 'SHFE',
                 'name': '螺纹钢',
