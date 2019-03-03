@@ -359,7 +359,7 @@ class QA_Risk():
 
     @property
     def ir(self):
-        return self.calc_IR()
+        return round(self.calc_IR(),2)
 
     @property
     @lru_cache()
