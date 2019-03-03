@@ -458,15 +458,19 @@ class QA_Order():
             'ORDER_MODEL.{}'.format(otgOrder.get('price_type'))
         )
         self.time_condition = otgOrder.get('time_condition')
-        self.datetime = QA_util_stamp2datetime(
-            int(otgOrder.get('insert_date_time'))
-        )
+        if otgOrder.get('insert_date_time') == 0:
+            self.datetime = 0
+        else:
+            self.datetime = QA_util_stamp2datetime(
+                int(otgOrder.get('insert_date_time'))
+            )
         self.sending_time = self.datetime
         self.volume_condition = otgOrder.get('volume_condition')
         self.message = otgOrder.get('last_msg')
 
         self._status = ORDER_STATUS.NEW
-        if '已撤单' in self.message or '拒绝' in self.message:
+        if '已撤单' in self.message or '拒绝' in self.message or '仓位不足' in self.message:
+            # 仓位不足:  一般是平今/平昨仓位不足
             self._status = ORDER_STATUS.FAILED
         self.realorder_id = otgOrder.get('exchange_order_id')
         return self
