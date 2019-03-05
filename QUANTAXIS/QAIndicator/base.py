@@ -234,5 +234,4 @@ def BARLAST(cond, yes=True):
 
 
 XARROUND =  lambda x,y:np.round(y*(round(x/y-math.floor(x/y)+0.00000000001)+ math.floor(x/y)),2)
-    """类似c的取整模式 支持x,y均为小数
-    """
+
