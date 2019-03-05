@@ -217,6 +217,9 @@ from QUANTAXIS.QASetting.QALocalize import qa_path, setting_path, cache_path, do
 # Util
 
 from QUANTAXIS.QAUtil import (
+    QA_util_format_date2str,
+    QA_util_get_next_trade_date,
+    QA_util_get_pre_trade_date,
     QA_util_date_stamp,
     QA_util_time_stamp,
     QA_util_ms_stamp,
