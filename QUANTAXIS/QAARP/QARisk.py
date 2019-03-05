@@ -30,6 +30,7 @@
 import math
 import os
 import platform
+import datetime
 
 from pymongo import DESCENDING, ASCENDING
 from collections import deque
@@ -174,10 +175,17 @@ class QA_Risk():
 
 
             if self.market_value is not None:
-                self._assets = (
-                    self.market_value.sum(axis=1) +
-                    self.account.daily_cash.set_index('date').cash
-                ).fillna(method='pad')
+                if self.account.market_type == MARKET_TYPE.FUTURE_CN and self.account.allow_margin == True:
+                    print('margin!')
+                    self._assets = (
+                        self.account.daily_frozen.fillna(method='pad') +
+                        self.account.daily_cash.set_index('date').cash
+                    ).dropna()
+                else:
+                    self._assets = (
+                        self.market_value.sum(axis=1) +
+                        self.account.daily_cash.set_index('date').cash
+                    ).fillna(method='pad')
             else:
                 self._assets = self.account.daily_cash.set_index('date'
                                                                 ).cash.fillna(
@@ -351,7 +359,7 @@ class QA_Risk():
 
     @property
     def ir(self):
-        return self.calc_IR()
+        return round(self.calc_IR(),2)
 
     @property
     @lru_cache()
