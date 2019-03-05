@@ -231,3 +231,9 @@ def BARLAST(cond, yes=True):
         return len(cond)-cond.index.levels[0].tolist().index(cond[cond != yes].index[-1][0])-1
     elif isinstance(cond.index, pd.DatetimeIndex):
         return len(cond)-cond.index.tolist().index(cond[cond != yes].index[-1])-1
+
+
+def XARROUND(x, y):
+    """类似c的取整模式 支持x,y均为小数
+    """
+    return lambda x,y:np.round(y*(round(x/y-math.floor(x/y)+0.00000000001)+ math.floor(x/y)),2)
