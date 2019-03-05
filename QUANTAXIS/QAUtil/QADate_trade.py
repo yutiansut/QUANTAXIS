@@ -7168,12 +7168,12 @@ def QA_util_get_next_trade_date(cursor_date, n=1):
     :param n:
     """
 
-    cursor_date = Hu_util_format_date2str(cursor_date)
-    if cursor_date in TRADE_DATE_SSE:
+    cursor_date = QA_util_format_date2str(cursor_date)
+    if cursor_date in trade_date_sse:
         # 如果指定日期为交易日
-        return Hu_util_get_gap_trade_date(cursor_date, n, "gt")
-    real_pre_trade_date = Hu_util_get_real_trade_date(cursor_date)
-    return Hu_util_get_gap_trade_date(real_pre_trade_date, n, "gt")
+        return QA_util_date_gap(cursor_date, n, "gt")
+    real_pre_trade_date = QA_util_get_real_date(cursor_date)
+    return QA_util_date_gap(real_pre_trade_date, n, "gt")
 
 
 def QA_util_get_pre_trade_date(cursor_date, n=1):
@@ -7183,11 +7183,11 @@ def QA_util_get_pre_trade_date(cursor_date, n=1):
     :param n:
     """
 
-    cursor_date = Hu_util_format_date2str(cursor_date)
-    if cursor_date in TRADE_DATE_SSE:
-        return Hu_util_get_gap_trade_date(cursor_date, n, "lt")
-    real_aft_trade_date = Hu_util_get_real_trade_date(cursor_date)
-    return Hu_util_get_gap_trade_date(real_aft_trade_date, n, "lt")
+    cursor_date = QA_util_format_date2str(cursor_date)
+    if cursor_date in trade_date_sse:
+        return QA_util_date_gap(cursor_date, n, "lt")
+    real_aft_trade_date = QA_util_get_real_date(cursor_date)
+    return QA_util_date_gap(real_aft_trade_date, n, "lt")
 
 
 
