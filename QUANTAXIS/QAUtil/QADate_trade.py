@@ -7155,10 +7155,10 @@ def QA_util_format_date2str(cursor_date):
         except:
             raise ValueError('请输入正确的日期格式 "%Y-%m%d"')
     elif isinstance(cursor_date, int):
-        date = str(pd.Timestamp("{:<014d}".format(cursor_date)))[:10]
+        cursor_date = str(pd.Timestamp("{:<014d}".format(cursor_date)))[:10]
     else:
         raise ValueError('请输入正确的日期格式 "%Y-%m%d"')
-    return date
+    return cursor_date
 
 
 def QA_util_get_next_trade_date(cursor_date, n=1):
