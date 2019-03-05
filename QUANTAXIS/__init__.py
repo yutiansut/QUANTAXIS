@@ -31,8 +31,10 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = "1.3.1.dev1"
-__author__ = "yutiansut"
+
+__version__ = '1.3.1.dev2'
+__author__ = 'yutiansut'
+
 
 import argparse
 # check
