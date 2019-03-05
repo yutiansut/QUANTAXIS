@@ -80,6 +80,33 @@
 ## 1.3.0
 
 1. QAUSER/ QAPORTFOLIO/ QAACCOUNT 的联动更新
+2. 账户/组合/用户的刷新与恢复
+
+```
+
+In [2]: import QUANTAXIS as QA
+
+In [3]: user1= QA.QA_User(username='yutiansut',password='940809')
+
+In [4]: user1
+Out[4]: < QA_USER USER_b87YCy3U with 1 portfolio: {'RB_PORTFOLIO': < QA_Portfolio RB_PORTFOLIO with 3 Accounts >} >
+
+In [5]: user1.portfolio_list
+Out[5]: {'RB_PORTFOLIO': < QA_Portfolio RB_PORTFOLIO with 3 Accounts >}
+
+In [6]: user1['RB_PORTFOLIO']
+Out[6]: < QA_Portfolio RB_PORTFOLIO with 3 Accounts >
+
+In [7]: user1['RB_PORTFOLIO'].accounts
+Out[7]:
+{'test1': < QA_Account test1 market: stock_cn>,
+ 'test2': < QA_Account test2 market: stock_cn>,
+ 'test3_future': < QA_Account test3_future market: stock_cn>}
+
+In [8]: user1['RB_PORTFOLIO']['test1']
+Out[8]: < QA_Account test1 market: stock_cn>
+
+```
 
 
 

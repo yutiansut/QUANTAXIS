@@ -32,7 +32,8 @@ class QA_TTSBroker(QA_Broker):
 
         self._session = requests.Session()
         self.client_id = 0
-        self.gddm = 0
+        self.gddm_sh = 0 #上海股东代码
+        self.gddm_sz = 0 #深圳股东代码
 
     def call(self, func, params=None):
 
@@ -87,21 +88,22 @@ class QA_TTSBroker(QA_Broker):
 
         return self.call("ping", {})
 
-    def logon(self, ip, port, version, yyb_id, account_id, trade_account, jy_passwrod, tx_password):
+    def logon(self, ip, port, version, yyb_id, account_cookie, trade_account, jy_passwrod, tx_password):
         data = self.call("logon", {
             "ip": ip,
             "port": port,
             "version": version,
             "yyb_id": yyb_id,
-            "account_no": account_id,
+            "account_no": account_cookie,
             "trade_account": trade_account,
             "jy_password": jy_passwrod,
             "tx_password": tx_password
         })
         if data['success']:
             self.client_id = data["data"]["client_id"]
-            self.gddm = self.query_data(5)['data'][0]['股东代码']
-            print(self.gddm)
+            self.gddm_sh = self.query_data(5)['data'][0]['股东代码']
+            self.gddm_sz = self.query_data(5)['data'][1]['股东代码']
+            print('上海股东代码:%s,深圳股东代码:%s',self.gddm_sh,self.gddm_sz)
         return data
 
     def logoff(self):
@@ -115,7 +117,7 @@ class QA_TTSBroker(QA_Broker):
             "category": category
         })
 
-    def send_order(self,  code, price, amount, towards, order_model):
+    def send_order(self,  code, price, amount, towards, order_model,market):
         """下单
 
         Arguments:
@@ -124,6 +126,7 @@ class QA_TTSBroker(QA_Broker):
             amount {[type]} -- [description]
             towards {[type]} -- [description]
             order_model {[type]} -- [description]
+            market:市场，SZ 深交所，SH 上交所
 
         Returns:
             [type] -- [description]
@@ -139,7 +142,7 @@ class QA_TTSBroker(QA_Broker):
             'client_id': self.client_id,
             'category': towards,
             'price_type': order_model,
-            'gddm': self.gddm,
+            'gddm': self.gddm_sh if market=='SH' or market=='sh' else self.gddm_sz,
             'zqdm': code,
             'price': price,
             'quantity': amount

@@ -67,7 +67,7 @@ _Stock_min
 _Index_day
 _Index_min
 """
-# start='1990-01-01',end=str(datetime.date.today())
+
 
 
 def QA_fetch_option_day_adv(
@@ -75,7 +75,7 @@ def QA_fetch_option_day_adv(
     start='all', end=None,
     if_drop_index=True,
     # 🛠 todo collections 参数没有用到， 且数据库是固定的， 这个变量后期去掉
-        collections=DATABASE.stock_day):
+        collections=DATABASE.option_day):
     '''
 
     '''
