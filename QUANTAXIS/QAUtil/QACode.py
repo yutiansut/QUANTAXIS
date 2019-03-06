@@ -33,10 +33,27 @@ def QA_util_code_tostr(code):
     因为有时候在csv等转换的时候,诸如 000001的股票会变成office强制转化成数字1
 
     """
-    if isinstance(code, int) or isinstance(code, str):
-        return '00000{}'.format(str(code)[0:6])[-6:]
-    elif isinstance(code, list):
-        return QA_util_code_tostr(code[0])
+    if isinstance(code, int):
+        return "{:>06d}".format(code)
+    if isinstance(code, str):
+        # 聚宽股票代码格式 '600000.XSHG'
+        # 掘金股票代码格式 'SHSE.600000'
+        # Wind股票代码格式 '600000.SH'
+        # 天软股票代码格式 'SH600000'
+        if len(code) == 6:
+            return code
+        if len(code) == 8:
+            # 天软数据
+            return code[-6:]
+        if len(code) == 9:
+            return code[:6]
+        if len(code) == 11:
+            if code[0] in ["S"]:
+                return code.split(".")[1]
+            return code.split(".")[0]
+        raise ValueError("错误的股票代码格式")
+    if isinstance(code, list):
+        return QA_util_code_to_str(code[0])
 
 
 def QA_util_code_tolist(code, auto_fill=True):
