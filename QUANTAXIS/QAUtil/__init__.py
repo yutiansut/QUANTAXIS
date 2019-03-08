@@ -47,6 +47,9 @@ from QUANTAXIS.QAUtil.QADate import (QA_util_date_int2str, QA_util_date_stamp,
                                      QA_util_today_str, QA_util_datetime_to_strdate)
 # trade date
 from QUANTAXIS.QAUtil.QADate_trade import (QA_util_date_gap,
+                                           QA_util_format_date2str,
+                                           QA_util_get_next_trade_date,
+                                           QA_util_get_pre_trade_date,
                                            QA_util_get_real_date,
                                            QA_util_get_real_datelist,
                                            QA_util_get_trade_gap,
