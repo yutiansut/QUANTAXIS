@@ -205,6 +205,7 @@ DATABASE_ASYNC = QASETTING.client_async.quantaxis
 
 def exclude_from_stock_ip_list(exclude_ip_list):
     """ 从stock_ip_list删除列表exclude_ip_list中的ip
+    从stock_ip_list删除列表future_ip_list中的ip
 
     :param exclude_ip_list:  需要删除的ip_list
     :return: None
@@ -212,6 +213,11 @@ def exclude_from_stock_ip_list(exclude_ip_list):
     for exc in exclude_ip_list:
         if exc in stock_ip_list:
             stock_ip_list.remove(exc)
+
+    # 扩展市场
+    for exc in exclude_ip_list:
+        if exc in future_ip_list:
+            future_ip_list.remove(exc)
 
 if os.path.exists(INFO_IP_FILE_PATH):
     with open(INFO_IP_FILE_PATH, "r") as f:
