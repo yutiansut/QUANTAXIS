@@ -77,7 +77,7 @@ def ping(ip, port=7709, type_='stock'):
             with apix.connect(ip, port, time_out=0.7):
                 res = apix.get_instrument_count()
                 if res is not None:
-                    if res > 40000:
+                    if res > 20000:
                         return datetime.datetime.now() - __time1
                     else:
                         print('️Bad FUTUREIP REPSONSE {}'.format(ip))
