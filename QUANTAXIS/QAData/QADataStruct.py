@@ -203,7 +203,6 @@ class QA_DataStruct_Stock_min(_quotation_base):
         except Exception as e:
             raise e
 
-
         self.type = dtype
         self.if_fq = if_fq
 
@@ -322,6 +321,33 @@ class QA_DataStruct_Future_day(_quotation_base):
     def quarter(self):
         return self.resample('Q')
 
+    @property
+    @lru_cache()
+    def tradedate(self):
+        """返回交易所日历下的日期
+
+        Returns:
+            [type] -- [description]
+        """
+
+        try:
+            return self.date
+        except:
+            return None
+
+    @property
+    @lru_cache()
+    def tradetime(self):
+        """返回交易所日历下的日期
+
+        Returns:
+            [type] -- [description]
+        """
+
+        try:
+            return self.date
+        except:
+            return None
     # @property
     # @lru_cache()
     # def semiannual(self):
@@ -359,7 +385,7 @@ class QA_DataStruct_Future_min(_quotation_base):
 
     @property
     @lru_cache()
-    def trade_date(self):
+    def tradedate(self):
         """返回交易所日历下的日期
 
         Returns:
@@ -367,7 +393,21 @@ class QA_DataStruct_Future_min(_quotation_base):
         """
 
         try:
-            return self.data.trade_date
+            return self.data.tradetime.apply(lambda x: x[0:10])
+        except:
+            return None
+
+    @property
+    @lru_cache()
+    def tradetime(self):
+        """返回交易所日历下的日期
+
+        Returns:
+            [type] -- [description]
+        """
+
+        try:
+            return self.data.tradetime
         except:
             return None
 
@@ -772,8 +812,10 @@ class QA_DataStruct_Day(_quotation_base):
 class QA_DataStruct_Min(_quotation_base):
     '''这个类是个通用类 一般不使用  特定生成的时候可能会用到 只具备基类方法
     '''
+
     def __init__(self, data, dtype='unknown_min', if_fq='bfq'):
         super().__init__(data, dtype, if_fq)
+
 
 class _realtime_base():
     """
@@ -942,7 +984,7 @@ class QA_DataStruct_Stock_realtime(_realtime_base):
     @property
     def datetime(self):
         return self.index.levels[0]
-    
+
     @property
     def code(self):
         return self.index.levels[1]
@@ -951,14 +993,16 @@ class QA_DataStruct_Stock_realtime(_realtime_base):
         """to_protobuf
         """
         pass
-    
+
     def to_json(self):
         return self.data.assign(code=self.code, datetime=str(self.datetime)).to_dict(orient='records')
 
     def resample(self, level):
         return QA_data_tick_resample(self.data, level)
 
+
 QA_DataStruct_Future_realtime = QA_DataStruct_Stock_realtime
+
 
 class QA_DataStruct_Stock_realtime_series():
     def __init__(self, sr_series):
