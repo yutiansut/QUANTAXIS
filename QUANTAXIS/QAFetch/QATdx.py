@@ -77,7 +77,7 @@ def ping(ip, port=7709, type_='stock'):
             with apix.connect(ip, port, time_out=0.7):
                 res = apix.get_instrument_count()
                 if res is not None:
-                    if res > 40000:
+                    if res > 20000:
                         return datetime.datetime.now() - __time1
                     else:
                         print('️Bad FUTUREIP REPSONSE {}'.format(ip))
@@ -1634,13 +1634,15 @@ def __QA_fetch_get_future_transaction(code, day, retry, code_market, apix):
 
     for _ in range(retry):
         if len(data_) < 2:
+            import time
+            time.sleep(1)
             return __QA_fetch_get_stock_transaction(code, day, 0, apix)
         else:
             return data_.assign(datetime=pd.to_datetime(data_['date'])).assign(date=str(day))\
                         .assign(code=str(code)).assign(order=range(len(data_.index))).set_index('datetime', drop=False, inplace=False)
 
 
-def QA_fetch_get_future_transaction(code, start, end, retry=2, ip=None, port=None):
+def QA_fetch_get_future_transaction(code, start, end, retry=4, ip=None, port=None):
     '期货历史成交分笔'
     ip, port = get_extensionmarket_ip(ip, port)
     apix = TdxExHq_API()
@@ -1662,6 +1664,7 @@ def QA_fetch_get_future_transaction(code, start, end, retry=2, ip=None, port=Non
                 if len(data_) < 1:
                     return None
             except Exception as e:
+                print(e)
                 QA_util_log_info('Wrong in Getting {} history transaction data in day {}'.format(
                     code, trade_date_sse[index_]))
             else:
