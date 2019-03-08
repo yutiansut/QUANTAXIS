@@ -68,6 +68,8 @@ def run_daybacktest():
                         end='2017-02-10',
                         code_list=QA.QA_fetch_stock_block_adv().code[0:5],
                         commission_fee=0.00015)
+    # fixed: backtest内部没有自动创建account, 需要手动创建
+    backtest._generate_account()
     print(backtest.account)
     backtest.start_market()
 
