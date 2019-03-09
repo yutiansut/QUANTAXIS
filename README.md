@@ -7,6 +7,8 @@ Quantitative Financial FrameWork
 
 从数据爬取-清洗存储-分析回测-可视化-交易复盘的本地一站式解决方案
 
+## 祝贺 QUANTAXIS 入选 [GITEE 最有价值开源项目 GVP](https://gitee.com/gvp)
+
 ![logo](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/Documents/logo/QUANTAXIS_LOGO_LAST_small.jpg)
 
 
@@ -30,8 +32,7 @@ Quantitative Financial FrameWork
 ![main_1](http://pic.yutiansut.com/Main_1.gif)
 ![presentbyyutiansut](http://pic.yutiansut.com/yutiansut-logo.png)
 
-## QUANTAXIS 祝大家 2019 新年快乐~ 猪事如意
-![](http://pic.yutiansut.com/quantaxis-2019newyear.png)
+
 
 ![version](https://img.shields.io/pypi/v/quantaxis.svg)
 ![build](https://travis-ci.org/QUANTAXIS/QUANTAXIS.svg?branch=master)
