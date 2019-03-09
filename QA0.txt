@@ -1,4 +1,0 @@
-save stock_block
-save stock_info
-exit
-
