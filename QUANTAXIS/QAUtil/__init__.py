@@ -36,6 +36,7 @@ from QUANTAXIS.QAUtil.QACfg import QA_util_cfg_initial, QA_util_get_cfg
 from QUANTAXIS.QAUtil.QACsv import QA_util_save_csv
 # date
 from QUANTAXIS.QAUtil.QADate import (QA_util_date_int2str, QA_util_date_stamp,
+                                     QATZInfo_CN,
                                      QA_util_date_str2int, QA_util_date_today,
                                      QA_util_date_valid, QA_util_calc_time,
                                      QA_util_get_date_index, QA_util_to_datetime,
@@ -116,5 +117,3 @@ from QUANTAXIS.QAUtil.QADateTools import (
     QA_util_getBetweenQuarter, QA_util_get_1st_of_next_month,
     QA_util_add_months, QA_util_getBetweenMonth
 )
-
-
