@@ -331,6 +331,12 @@ git clone https://github.com/你的账户名/quantaxis
 ![](http://pic.yutiansut.com/qad6.png)
 ![](http://pic.yutiansut.com/qad8.png)
 
+模拟实盘多账户管理
+
+![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015440.png)
+![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015451.png)
+![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015550.png)
+![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015537.png)
 
 ##  12. QUANTAXIS 标准化协议和未来协议
 
