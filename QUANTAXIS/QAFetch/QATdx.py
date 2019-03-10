@@ -77,7 +77,7 @@ def ping(ip, port=7709, type_='stock'):
             with apix.connect(ip, port, time_out=0.7):
                 res = apix.get_instrument_count()
                 if res is not None:
-                    if res > 40000:
+                    if res > 20000:
                         return datetime.datetime.now() - __time1
                     else:
                         print('️Bad FUTUREIP REPSONSE {}'.format(ip))
@@ -1238,7 +1238,8 @@ def QA_fetch_get_option_list(ip=None, port=None):
     return extension_market_list.query('category==12 and market!=1')
 
 
-def QA_fetch_get_50etf_option_contract_time_to_market():
+
+def QA_fetch_get_option_contract_time_to_market():
     '''
     #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
     :return: list Series
@@ -1321,28 +1322,6 @@ def QA_fetch_get_50etf_option_contract_time_to_market():
             row = result.loc[idx]
             rows.append(row)
 
-        elif strName.startswith("M"):
-            #print("M")
-            #print(strName)
-            ##
-            expireYear = strName[1:3]
-            expireMonth = strName[3:5]
-
-            put_or_call = strName[6:7]
-            if put_or_call == "P":
-                putcall = "豆粕,认沽期权"
-            elif put_or_call == "C":
-                putcall = "豆粕,认购期权"
-            else:
-                putcall = "Unkown code name ： "  + strName
-
-            executePrice = strName[8:]
-            result.loc[idx, 'meaningful_name'] = '%s,到期年月份:%s%s,行权价:%s'%(putcall, expireYear,expireMonth, executePrice)
-
-            row = result.loc[idx]
-            rows.append(row)
-
-            pass
         elif strName.startswith("SR"):
             #print("SR")
             #SR1903-P-6500
@@ -1390,25 +1369,299 @@ def QA_fetch_get_50etf_option_contract_time_to_market():
 
             pass
         #todo 新增期权品种 棉花，玉米， 天然橡胶
+        elif strName.startswith("RU"):
+            # print("M")
+            # print(strName)
+            ##
+            expireYear = strName[2:4]
+            expireMonth = strName[4:6]
+
+            put_or_call = strName[7:8]
+            if put_or_call == "P":
+                putcall = "天然橡胶,认沽期权"
+            elif put_or_call == "C":
+                putcall = "天然橡胶,认购期权"
+            else:
+                putcall = "Unkown code name ： " + strName
+
+            executePrice = strName[9:]
+            result.loc[idx, 'meaningful_name'] = '%s,到期年月份:%s%s,行权价:%s' % (
+            putcall, expireYear, expireMonth, executePrice)
+
+            row = result.loc[idx]
+            rows.append(row)
+
+            pass
+
+        elif strName.startswith("CF"):
+            # print("M")
+            # print(strName)
+            ##
+            expireYear = strName[2:4]
+            expireMonth = strName[4:6]
+
+            put_or_call = strName[7:8]
+            if put_or_call == "P":
+                putcall = "棉花,认沽期权"
+            elif put_or_call == "C":
+                putcall = "棉花,认购期权"
+            else:
+                putcall = "Unkown code name ： " + strName
+
+            executePrice = strName[9:]
+            result.loc[idx, 'meaningful_name'] = '%s,到期年月份:%s%s,行权价:%s' % (
+            putcall, expireYear, expireMonth, executePrice)
+
+            row = result.loc[idx]
+            rows.append(row)
+
+            pass
+
+        elif strName.startswith("M"):
+            # print("M")
+            # print(strName)
+            ##
+            expireYear = strName[1:3]
+            expireMonth = strName[3:5]
+
+            put_or_call = strName[6:7]
+            if put_or_call == "P":
+                putcall = "豆粕,认沽期权"
+            elif put_or_call == "C":
+                putcall = "豆粕,认购期权"
+            else:
+                putcall = "Unkown code name ： " + strName
+
+            executePrice = strName[8:]
+            result.loc[idx, 'meaningful_name'] = '%s,到期年月份:%s%s,行权价:%s' % (
+            putcall, expireYear, expireMonth, executePrice)
+
+            row = result.loc[idx]
+            rows.append(row)
+
+            pass
+        elif strName.startswith("C") and strName[1] != 'F' and strName[1] != 'U':
+            # print("M")
+            # print(strName)
+            ##
+            expireYear = strName[1:3]
+            expireMonth = strName[3:5]
+
+            put_or_call = strName[6:7]
+            if put_or_call == "P":
+                putcall = "玉米,认沽期权"
+            elif put_or_call == "C":
+                putcall = "玉米,认购期权"
+            else:
+                putcall = "Unkown code name ： " + strName
+
+            executePrice = strName[8:]
+            result.loc[idx, 'meaningful_name'] = '%s,到期年月份:%s%s,行权价:%s' % (
+            putcall, expireYear, expireMonth, executePrice)
+
+            row = result.loc[idx]
+            rows.append(row)
+
+            pass
         else:
             print("未知类型合约")
             print(strName)
 
     return rows
 
+def QA_fetch_get_option_50etf_contract_time_to_market():
+    '''
+        #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
+        :return: list Series
+        '''
+    result = QA_fetch_get_option_list('tdx')
+    # pprint.pprint(result)
+    #  category  market code name desc  code
+    '''
+    fix here : 
+    See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-view-versus-copy
+    result['meaningful_name'] = None
+    C:\work_new\QUANTAXIS\QUANTAXIS\QAFetch\QATdx.py:1468: SettingWithCopyWarning: 
+    A value is trying to be set on a copy of a slice from a DataFrame.
+    Try using .loc[row_indexer,col_indexer] = value instead
+    '''
+    # df = pd.DataFrame()
+    rows = []
 
-'''
+    result['meaningful_name'] = None
+    for idx in result.index:
+        # pprint.pprint((idx))
+        strCategory = result.loc[idx, "category"]
+        strMarket = result.loc[idx, "market"]
+        strCode = result.loc[idx, "code"]  # 10001215
+        strName = result.loc[idx, 'name']  # 510050C9M03200
+        strDesc = result.loc[idx, 'desc']  # 10001215
+
+        if strName.startswith("510050"):
+            # print(strCategory,' ', strMarket, ' ', strCode, ' ', strName, ' ', strDesc, )
+
+            if strName.startswith("510050C"):
+                putcall = '50ETF,认购期权'
+            elif strName.startswith("510050P"):
+                putcall = '50ETF,认沽期权'
+            else:
+                putcall = "Unkown code name ： " + strName
+
+            expireMonth = strName[7:8]
+            if expireMonth == 'A':
+                expireMonth = "10月"
+            elif expireMonth == 'B':
+                expireMonth = "11月"
+            elif expireMonth == 'C':
+                expireMonth = "12月"
+            else:
+                expireMonth = expireMonth + '月'
+
+            # 第12位期初设为“M”，并根据合约调整次数按照“A”至“Z”依序变更，如变更为“A”表示期权合约发生首次调整，变更为“B”表示期权合约发生第二次调整，依此类推；
+            # fix here : M ??
+            if strName[8:9] == "M":
+                adjust = "未调整"
+            elif strName[8:9] == 'A':
+                adjust = " 第1次调整"
+            elif strName[8:9] == 'B':
+                adjust = " 第2调整"
+            elif strName[8:9] == 'C':
+                adjust = " 第3次调整"
+            elif strName[8:9] == 'D':
+                adjust = " 第4次调整"
+            elif strName[8:9] == 'E':
+                adjust = " 第5次调整"
+            elif strName[8:9] == 'F':
+                adjust = " 第6次调整"
+            elif strName[8:9] == 'G':
+                adjust = " 第7次调整"
+            elif strName[8:9] == 'H':
+                adjust = " 第8次调整"
+            elif strName[8:9] == 'I':
+                adjust = " 第9次调整"
+            elif strName[8:9] == 'J':
+                adjust = " 第10次调整"
+            else:
+                adjust = " 第10次以上的调整，调整代码 %s" + strName[8:9]
+
+            executePrice = strName[9:]
+            result.loc[idx, 'meaningful_name'] = '%s,到期月份:%s,%s,行权价:%s' % (putcall, expireMonth, adjust, executePrice)
+
+            row = result.loc[idx]
+            rows.append(row)
+    return rows
+
+
+def QA_fetch_get_commodity_option_CF_contract_time_to_market():
+    '''
     铜期权  CU 开头   上期证
     豆粕    M开头     大商所
     白糖    SR开头    郑商所
-     #todo 新增期权品种 棉花，玉米， 天然橡胶
     测试中发现，行情不太稳定 ？ 是 通达信 IP 的问题 ？
-'''
+    '''
+
+    result = QA_fetch_get_option_list('tdx')
+    # pprint.pprint(result)
+    #  category  market code name desc  code
+
+    # df = pd.DataFrame()
+    rows = []
+    result['meaningful_name'] = None
+    for idx in result.index:
+        # pprint.pprint((idx))
+        strCategory = result.loc[idx, "category"]
+        strMarket = result.loc[idx, "market"]
+        strCode = result.loc[idx, "code"]  #
+        strName = result.loc[idx, 'name']  #
+        strDesc = result.loc[idx, 'desc']  #
+
+        # 如果同时获取， 不同的 期货交易所数据， pytdx会 connection close 连接中断？
+        # if strName.startswith("CU") or strName.startswith("M") or strName.startswith('SR'):
+        if strName.startswith("CF"):
+            # print(strCategory,' ', strMarket, ' ', strCode, ' ', strName, ' ', strDesc, )
+            row = result.loc[idx]
+            rows.append(row)
+
+    return rows
+
+    pass
+
+
+
+def QA_fetch_get_commodity_option_RU_contract_time_to_market():
+    '''
+    铜期权  CU 开头   上期证
+    豆粕    M开头     大商所
+    白糖    SR开头    郑商所
+    测试中发现，行情不太稳定 ？ 是 通达信 IP 的问题 ？
+    '''
+
+    result = QA_fetch_get_option_list('tdx')
+    # pprint.pprint(result)
+    #  category  market code name desc  code
+
+    # df = pd.DataFrame()
+    rows = []
+    result['meaningful_name'] = None
+    for idx in result.index:
+        # pprint.pprint((idx))
+        strCategory = result.loc[idx, "category"]
+        strMarket = result.loc[idx, "market"]
+        strCode = result.loc[idx, "code"]  #
+        strName = result.loc[idx, 'name']  #
+        strDesc = result.loc[idx, 'desc']  #
+
+        # 如果同时获取， 不同的 期货交易所数据， pytdx会 connection close 连接中断？
+        # if strName.startswith("CU") or strName.startswith("M") or strName.startswith('SR'):
+        if strName.startswith("RU"):
+            # print(strCategory,' ', strMarket, ' ', strCode, ' ', strName, ' ', strDesc, )
+            row = result.loc[idx]
+            rows.append(row)
+
+    return rows
+
+    pass
+
+
+
+
+def QA_fetch_get_commodity_option_C_contract_time_to_market():
+    '''
+    铜期权  CU 开头   上期证
+    豆粕    M开头     大商所
+    白糖    SR开头    郑商所
+    测试中发现，行情不太稳定 ？ 是 通达信 IP 的问题 ？
+    '''
+
+    result = QA_fetch_get_option_list('tdx')
+    # pprint.pprint(result)
+    #  category  market code name desc  code
+
+    # df = pd.DataFrame()
+    rows = []
+    result['meaningful_name'] = None
+    for idx in result.index:
+        # pprint.pprint((idx))
+        strCategory = result.loc[idx, "category"]
+        strMarket = result.loc[idx, "market"]
+        strCode = result.loc[idx, "code"]  #
+        strName = result.loc[idx, 'name']  #
+        strDesc = result.loc[idx, 'desc']  #
+
+        # 如果同时获取， 不同的 期货交易所数据， pytdx会 connection close 连接中断？
+        # if strName.startswith("CU") or strName.startswith("M") or strName.startswith('SR'):
+        if strName.startswith("C") and strName[1] != 'F' and strName[1] != 'U':
+            # print(strCategory,' ', strMarket, ' ', strCode, ' ', strName, ' ', strDesc, )
+            row = result.loc[idx]
+            rows.append(row)
+
+    return rows
+
+    pass
 
 def QA_fetch_get_commodity_option_CU_contract_time_to_market():
     '''
     #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
-    去掉商品期权，保留510050开头的50ETF期权,只获取50ETF期权
     :return: list Series
     '''
     result = QA_fetch_get_option_list('tdx')
@@ -1427,7 +1680,7 @@ def QA_fetch_get_commodity_option_CU_contract_time_to_market():
         strDesc = result.loc[idx, 'desc']  #
 
 
-        # 如果同时获取， 不同的 期货交易所数据， pytdx 会 保 connection close 连接中断？
+        # 如果同时获取， 不同的 期货交易所数据， pytdx会 connection close 连接中断？
         #if strName.startswith("CU") or strName.startswith("M") or strName.startswith('SR'):
         if strName.startswith("CU"):
             # print(strCategory,' ', strMarket, ' ', strCode, ' ', strName, ' ', strDesc, )
@@ -1440,7 +1693,6 @@ def QA_fetch_get_commodity_option_CU_contract_time_to_market():
 def QA_fetch_get_commodity_option_M_contract_time_to_market():
     '''
     #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
-    去掉商品期权，保留510050开头的50ETF期权,只获取50ETF期权
     :return: list Series
     '''
     result = QA_fetch_get_option_list('tdx')
@@ -1463,7 +1715,7 @@ def QA_fetch_get_commodity_option_M_contract_time_to_market():
         strName = result.loc[idx, 'name']  #
         strDesc = result.loc[idx, 'desc']  #
 
-        # 如果同时获取， 不同的 期货交易所数据， pytdx 会 保 connection close 连接中断？
+        # 如果同时获取， 不同的 期货交易所数据， pytdx connection close 连接中断？
         # if strName.startswith("CU") or strName.startswith("M") or strName.startswith('SR'):
         if strName.startswith("M"):
             # print(strCategory,' ', strMarket, ' ', strCode, ' ', strName, ' ', strDesc, )
@@ -1477,7 +1729,6 @@ def QA_fetch_get_commodity_option_M_contract_time_to_market():
 def QA_fetch_get_commodity_option_SR_contract_time_to_market():
     '''
     #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
-    去掉商品期权，保留510050开头的50ETF期权,只获取50ETF期权
     :return: list Series
     '''
     result = QA_fetch_get_option_list('tdx')
@@ -1500,7 +1751,7 @@ def QA_fetch_get_commodity_option_SR_contract_time_to_market():
         strName = result.loc[idx, 'name']  #
         strDesc = result.loc[idx, 'desc']  #
 
-        # 如果同时获取， 不同的 期货交易所数据， pytdx 会 保 connection close 连接中断？
+        # 如果同时获取， 不同的 期货交易所数据， pytdx connection close 连接中断？
         # if strName.startswith("CU") or strName.startswith("M") or strName.startswith('SR'):
         if strName.startswith("SR"):
             # print(strCategory,' ', strMarket, ' ', strCode, ' ', strName, ' ', strDesc, )
@@ -1555,7 +1806,7 @@ def QA_fetch_get_future_day(code, start_date, end_date, frequence='day', ip=None
 
         try:
 
-            #获取商品期货 的适合 会报None
+            #获取商品期货会报None
             data = data.assign(date=data['datetime'].apply(lambda x: str(x[0:10]))).assign(code=str(code))\
                 .assign(date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10]))).set_index('date', drop=False, inplace=False)
 
@@ -1634,13 +1885,15 @@ def __QA_fetch_get_future_transaction(code, day, retry, code_market, apix):
 
     for _ in range(retry):
         if len(data_) < 2:
+            import time
+            time.sleep(1)
             return __QA_fetch_get_stock_transaction(code, day, 0, apix)
         else:
             return data_.assign(datetime=pd.to_datetime(data_['date'])).assign(date=str(day))\
                         .assign(code=str(code)).assign(order=range(len(data_.index))).set_index('datetime', drop=False, inplace=False)
 
 
-def QA_fetch_get_future_transaction(code, start, end, retry=2, ip=None, port=None):
+def QA_fetch_get_future_transaction(code, start, end, retry=4, ip=None, port=None):
     '期货历史成交分笔'
     ip, port = get_extensionmarket_ip(ip, port)
     apix = TdxExHq_API()
@@ -1662,6 +1915,7 @@ def QA_fetch_get_future_transaction(code, start, end, retry=2, ip=None, port=Non
                 if len(data_) < 1:
                     return None
             except Exception as e:
+                print(e)
                 QA_util_log_info('Wrong in Getting {} history transaction data in day {}'.format(
                     code, trade_date_sse[index_]))
             else:
