@@ -205,6 +205,7 @@ DATABASE_ASYNC = QASETTING.client_async.quantaxis
 
 def exclude_from_stock_ip_list(exclude_ip_list):
     """ 从stock_ip_list删除列表exclude_ip_list中的ip
+    从stock_ip_list删除列表future_ip_list中的ip
 
     :param exclude_ip_list:  需要删除的ip_list
     :return: None
@@ -212,6 +213,11 @@ def exclude_from_stock_ip_list(exclude_ip_list):
     for exc in exclude_ip_list:
         if exc in stock_ip_list:
             stock_ip_list.remove(exc)
+
+    # 扩展市场
+    for exc in exclude_ip_list:
+        if exc in future_ip_list:
+            future_ip_list.remove(exc)
 
 if os.path.exists(INFO_IP_FILE_PATH):
     with open(INFO_IP_FILE_PATH, "r") as f:
@@ -248,6 +254,10 @@ else:
         {"ip": "120.79.212.229", "port": 7711, "name": "深圳双线资讯主站3"},
         {"ip": "47.107.75.159", "port": 7711, "name": "深圳双线资讯主站4"},
         {"ip": "47.92.127.181", "port": 7711, "name": "北京双线资讯主站"},
+
+        {"ip":"113.105.142.162","port":7721},
+        {"ip":"23.129.245.199","port":7721},
+
     ]
     with open(INFO_IP_FILE_PATH, "w") as f:
         json.dump(info_ip_list, f)
@@ -317,6 +327,9 @@ else:
         {"ip": "jstdx.gtjas.com", "port": 7709},
         {"ip": "shtdx.gtjas.com", "port": 7709},
         {"ip": "sztdx.gtjas.com", "port": 7709},
+
+        {"ip": "113.105.142.162", "port": 7721},
+        {"ip": "23.129.245.199", "port": 7721},
     ]
     with open(STOCK_IP_FILE_PATH, "w") as f:
         json.dump(stock_ip_list, f)
@@ -345,6 +358,8 @@ else:
         # added 20190222 from tdx
         {"ip": "119.147.86.171", "port": 7721, "name": "扩展市场深圳主站"},
         {"ip": "47.107.75.159", "port": 7727, "name": "扩展市场深圳双线3"},
+
+
     ]
     with open(FUTURE_IP_FILE_PATH, "w") as f:
         json.dump(future_ip_list, f)
