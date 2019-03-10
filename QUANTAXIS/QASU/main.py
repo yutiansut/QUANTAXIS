@@ -25,6 +25,8 @@ from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_list
 #from QUANTAXIS.QASU import crawl_eastmoney as crawl_eastmoney_file
 from QUANTAXIS.QASU import save_tdx as stdx
 from QUANTAXIS.QASU import save_tdx_file as tdx_file
+from QUANTAXIS.QASU import save_gm as sgm
+from QUANTAXIS.QASU import save_jq as sjq
 from QUANTAXIS.QASU import save_tushare as sts
 from QUANTAXIS.QASU import save_financialfiles
 from QUANTAXIS.QAUtil import DATABASE
@@ -333,6 +335,10 @@ def select_save_engine(engine):
         return sts
     elif engine in ['tdx']:
         return stdx
+    elif engine in ['gm', 'goldenminer']:
+        return sgm
+    elif engine in ['jq', 'joinquant']:
+        return sjq
     else:
         print('QA Error QASU.main.py call select_save_engine with parameter %s is None of  thshare, ts, Thshare, or tdx', engine)
 
