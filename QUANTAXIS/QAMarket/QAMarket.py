@@ -38,6 +38,7 @@ from QUANTAXIS.QAMarket.QARandomBroker import QA_RandomBroker
 from QUANTAXIS.QAMarket.QARealBroker import QA_RealBroker
 from QUANTAXIS.QAMarket.QAShipaneBroker import QA_SPEBroker
 from QUANTAXIS.QAMarket.QASimulatedBroker import QA_SimulatedBroker
+from QUANTAXIS.QAMarket.QATTSBroker import QA_TTSBroker
 from QUANTAXIS.QAMarket.QATrade import QA_Trade
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QAParameter import (
@@ -84,7 +85,8 @@ class QA_Market(QA_Trade):
             BROKER_TYPE.RANDOM: QA_RandomBroker,
             BROKER_TYPE.REAL: QA_RealBroker,
             BROKER_TYPE.SIMULATION: QA_SimulatedBroker,
-            BROKER_TYPE.SHIPANE: QA_SPEBroker
+            BROKER_TYPE.SHIPANE: QA_SPEBroker,
+            BROKER_TYPE.TTS: QA_TTSBroker
         }
         self.broker = {}
         self.running_time = None
