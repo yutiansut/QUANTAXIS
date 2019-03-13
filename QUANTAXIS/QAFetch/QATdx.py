@@ -45,7 +45,8 @@ from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
                               exclude_from_stock_ip_list, future_ip_list,
                               stock_ip_list, trade_date_sse)
 from QUANTAXIS.QAUtil.QASetting import QASETTING
-
+from QUANTAXIS.QASetting.QALocalize import log_path
+from QUANTAXIS.QAUtil import ParallelSim
 
 def init_fetcher():
     """初始化获取
@@ -112,7 +113,8 @@ def select_best_ip():
 
     ipexclude = qasetting.get_config(
         section='IPLIST', option='exclude', default_value=alist)
-    exclude_from_stock_ip_list(json.loads(ipexclude))
+
+    exclude_from_stock_ip_list(json.loads(ipexclude.replace("'", "\"")))
 
     ipdefault = qasetting.get_config(
         section='IPLIST', option='default', default_value=default_ip)
@@ -122,32 +124,23 @@ def select_best_ip():
 
     if ipdefault['stock']['ip'] == None:
 
-        data_stock = [ping(x['ip'], x['port'], 'stock') for x in stock_ip_list]
-        best_stock_ip = stock_ip_list[data_stock.index(min(data_stock))]
+        best_stock_ip = get_ip_list_by_ping(stock_ip_list)
     else:
         if ping(ipdefault['stock']['ip'], ipdefault['stock']['port'], 'stock') < datetime.timedelta(0, 1):
             print('USING DEFAULT STOCK IP')
             best_stock_ip = ipdefault['stock']
         else:
             print('DEFAULT STOCK IP is BAD, RETESTING')
-            data_stock = [ping(x['ip'], x['port'], 'stock')
-                          for x in stock_ip_list]
-            best_stock_ip = stock_ip_list[data_stock.index(min(data_stock))]
+            best_stock_ip = get_ip_list_by_ping(stock_ip_list)
     if ipdefault['future']['ip'] == None:
-
-        data_future = [ping(x['ip'], x['port'], 'future')
-                       for x in future_ip_list]
-        best_future_ip = future_ip_list[data_future.index(min(data_future))]
+        best_future_ip = get_ip_list_by_ping(future_ip_list)
     else:
         if ping(ipdefault['future']['ip'], ipdefault['future']['port'], 'future') < datetime.timedelta(0, 1):
             print('USING DEFAULT FUTURE IP')
             best_future_ip = ipdefault['future']
         else:
-            print('DEFAULT FUTURE IP is BAD, RETESTING')
-            data_future = [ping(x['ip'], x['port'], 'future')
-                           for x in future_ip_list]
-            best_future_ip = future_ip_list[data_future.index(
-                min(data_future))]
+            print('DEFAULT FUTURE IP {} is BAD, RETESTING'.format(ipdefault))
+            best_future_ip = get_ip_list_by_ping(future_ip_list)
     ipbest = {'stock': best_stock_ip, 'future': best_future_ip}
     qasetting.set_config(
         section='IPLIST', option='default', default_value=ipbest)
@@ -156,6 +149,52 @@ def select_best_ip():
         best_stock_ip['ip'], best_future_ip['ip']))
     return ipbest
 
+
+def get_ip_list_by_ping(ip_list=[]):
+    data_stock = [ping(x['ip'], x['port'], 'stock') for x in ip_list]
+    best_stock_ip = stock_ip_list[data_stock.index(min(data_stock))]
+    return best_stock_ip
+    # return get_ip_list_by_multi_process_ping(ip_list, 1)
+
+
+def get_ip_list_by_multi_process_ping(ip_list=[], n=0):
+    ''' 根据ping排序返回可用的ip列表
+
+    :param ip_list: ip列表
+    :param n: 最多返回的ip数量， 当可用ip数量小于n，返回所有可用的ip；n=0时，返回所有可用ip
+    :return: 可以ping通的ip列表
+    '''
+
+    import pickle
+    import os
+    filename = '{}/stockipListMP.pickle'.format(log_path)
+    if os.path.isfile(filename):
+        with open(filename, 'rb') as filehandle:
+            # read the data as binary data stream
+            results = pickle.load(filehandle)
+            print('loading ip list from {}.'.format(filename))
+    else:
+        ips = [(x['ip'], x['port']) for x in ip_list]
+        pl = ParallelSim()
+        pl.add(ping, ips)
+        pl.run()
+        data = pl.get_results()
+        data_stock = list(data)
+        results = []
+        for i in range(len(data_stock)):
+            # 删除ping不通的数据
+            if data_stock[i] < datetime.timedelta(0, 9, 0):
+                results.append((data_stock[i], ip_list[i]))
+        # 按照ping值从小大大排序
+        results = [x[1] for x in sorted(results, key=lambda x: x[0])]
+        with open(filename, 'wb') as filehandle:
+            # store the data as binary data stream
+            pickle.dump(results, filehandle)
+            print('saving ip list to {}.'.format(filename))
+    if n == 0:
+        return results
+    else:
+        return results[:n]
 
 global best_ip
 best_ip = {
@@ -297,6 +336,7 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', frequence='da
                                date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(str(x)[0:10])))\
                 .set_index('date', drop=False, inplace=False)
 
+            end_date = str(end_date)[0:10]
             data = data.drop(['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1)[
                 start_date:end_date]
             if if_fq in ['00', 'bfq']:
