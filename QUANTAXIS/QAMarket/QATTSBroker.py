@@ -185,6 +185,18 @@ class QA_TTSBroker(QA_Broker):
     def run(self, event):
         pass
 
+    def get_market(self, order):
+        pass
+
+    def query_orders(self, account_cookie, order_id):
+        raise NotImplementedError
+
+    def query_deal(self, account_cookie, order_id):
+        raise NotImplementedError
+
+    def query_positions(self, account_cookie):
+        raise NotImplementedError
+
 
 if __name__ == "__main__":
     import os
