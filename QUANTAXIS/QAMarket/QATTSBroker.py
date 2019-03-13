@@ -8,13 +8,25 @@ import base64
 import pandas as pd
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
+from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_future_day,
+                                     QA_fetch_get_future_min,
+                                     QA_fetch_get_index_day,
+                                     QA_fetch_get_index_min,
+                                     QA_fetch_get_stock_day,
+                                     QA_fetch_get_stock_min)
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
-from QUANTAXIS.QAUtil.QAParameter import ORDER_DIRECTION, MARKET_TYPE, ORDER_MODEL, TRADE_STATUS
+from QUANTAXIS.QAMarket.QADealer import QA_Dealer
+from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
+from QUANTAXIS.QAEngine.QAEvent import QA_Event
+from QUANTAXIS.QAUtil.QAParameter import ORDER_DIRECTION, MARKET_TYPE, ORDER_MODEL, TRADE_STATUS, FREQUENCE, BROKER_EVENT, BROKER_TYPE
 
 
 class QA_TTSBroker(QA_Broker):
     def __init__(self, endpoint="http://127.0.0.1:10092/api", encoding="utf-8", enc_key=None, enc_iv=None):
-
+        super().__init__()
+        self.name = BROKER_TYPE.TTS
+        self.order_handler =  QA_OrderHandler()
         self._endpoint = endpoint
         self._encoding = "utf-8"
         if enc_key == None or enc_iv == None:
@@ -34,6 +46,25 @@ class QA_TTSBroker(QA_Broker):
         self.client_id = 0
         self.gddm_sh = 0 #上海股东代码
         self.gddm_sz = 0 #深圳股东代码
+
+        self.fetcher = {(MARKET_TYPE.STOCK_CN, FREQUENCE.DAY): QA_fetch_get_stock_day,
+                       (MARKET_TYPE.STOCK_CN, FREQUENCE.FIFTEEN_MIN): QA_fetch_get_stock_min,
+                       (MARKET_TYPE.STOCK_CN, FREQUENCE.ONE_MIN): QA_fetch_get_stock_min,
+                       (MARKET_TYPE.STOCK_CN, FREQUENCE.FIVE_MIN): QA_fetch_get_stock_min,
+                       (MARKET_TYPE.STOCK_CN, FREQUENCE.THIRTY_MIN): QA_fetch_get_stock_min,
+                       (MARKET_TYPE.STOCK_CN, FREQUENCE.SIXTY_MIN): QA_fetch_get_stock_min,
+                       (MARKET_TYPE.INDEX_CN, FREQUENCE.DAY): QA_fetch_get_index_day,
+                       (MARKET_TYPE.INDEX_CN, FREQUENCE.FIFTEEN_MIN): QA_fetch_get_index_min,
+                       (MARKET_TYPE.INDEX_CN, FREQUENCE.ONE_MIN): QA_fetch_get_index_min,
+                       (MARKET_TYPE.INDEX_CN, FREQUENCE.FIVE_MIN): QA_fetch_get_index_min,
+                       (MARKET_TYPE.INDEX_CN, FREQUENCE.THIRTY_MIN): QA_fetch_get_index_min,
+                       (MARKET_TYPE.INDEX_CN, FREQUENCE.SIXTY_MIN): QA_fetch_get_index_min,
+                       (MARKET_TYPE.FUND_CN, FREQUENCE.DAY): QA_fetch_get_index_day,
+                       (MARKET_TYPE.FUND_CN, FREQUENCE.FIFTEEN_MIN): QA_fetch_get_index_min,
+                       (MARKET_TYPE.FUND_CN, FREQUENCE.ONE_MIN): QA_fetch_get_index_min,
+                       (MARKET_TYPE.FUND_CN, FREQUENCE.FIVE_MIN): QA_fetch_get_index_min,
+                       (MARKET_TYPE.FUND_CN, FREQUENCE.THIRTY_MIN): QA_fetch_get_index_min,
+                       (MARKET_TYPE.FUND_CN, FREQUENCE.SIXTY_MIN): QA_fetch_get_index_min}
 
     def call(self, func, params=None):
 
@@ -183,10 +214,45 @@ class QA_TTSBroker(QA_Broker):
         #client_id, category, price_type, gddm, zqdm, price, quantity
 
     def run(self, event):
-        pass
+        if event.event_type is MARKET_EVENT.QUERY_DATA:
+            self.order_handler.run(event)
+            try:
+                data = self.fetcher[(event.market_type, event.frequence)](
+                    code=event.code, start=event.start, end=event.end).values[0]
+                if 'vol' in data.keys() and 'volume' not in data.keys():
+                    data['volume'] = data['vol']
+                elif 'vol' not in data.keys() and 'volume' in data.keys():
+                    data['vol'] = data['volume']
+                return data
+            except Exception as e:
+                QA_util_log_info('MARKET_ENGING ERROR: {}'.format(e))
+                return None
+        elif event.event_type is MARKET_EVENT.QUERY_ORDER:
+            self.order_handler.run(event)
+        elif event.event_type is BROKER_EVENT.RECEIVE_ORDER:
+            self.order_handler.run(event)
+        elif event.event_type is BROKER_EVENT.TRADE:
+            event = self.order_handler.run(event)
+            event.message = 'trade'
+            if event.callback:
+                event.callback(event)
+        elif event.event_type is BROKER_EVENT.SETTLE:
+            self.dealer.settle() ## 清空交易队列
+            if event.callback:
+                event.callback('settle')
 
     def get_market(self, order):
-        pass
+        try:
+            data = self.fetcher[(order.market_type, order.frequence)](
+                code=order.code, start=order.datetime, end=order.datetime).values[0]
+            if 'vol' in data.keys() and 'volume' not in data.keys():
+                data['volume'] = data['vol']
+            elif 'vol' not in data.keys() and 'volume' in data.keys():
+                data['vol'] = data['volume']
+            return data
+        except Exception as e:
+            QA_util_log_info('MARKET_ENGING ERROR: {}'.format(e))
+            return None
 
     def query_orders(self, account_cookie, order_id):
         raise NotImplementedError
@@ -195,7 +261,29 @@ class QA_TTSBroker(QA_Broker):
         raise NotImplementedError
 
     def query_positions(self, account_cookie):
-        raise NotImplementedError
+        data = {
+            'cash_available': 0.00,
+            'hold_available': {},
+        }
+        try:
+            result = self.query_data(0)
+            if 'data' in result and len(result['data']) > 0:
+                # 使用减法避免因为账户日内现金理财导致可用金额错误
+                data['cash_available'] = round(
+                    float(result['data'][0]['总资产']) - float(result['data'][0]['最新市值']) - float(
+                        result['data'][0]['冻结资金']), 2)
+
+            result = self.query_data(1)
+            if 'data' in result and len(result['data']) > 0:
+                df = pd.DataFrame(data=result['data'])
+                df.index = df['证券代码']
+                df.index.name = 'code'
+                df['amount'] = df['可卖数量']
+                df = df[['amount']]
+                data['hold_available'] = df
+            return data
+        except:
+            return data
 
 
 if __name__ == "__main__":
