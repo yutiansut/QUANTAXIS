@@ -74,7 +74,7 @@ if __name__ == '__main__':
                     price=9.8,
                     amount=100,
                     towards=QA.ORDER_DIRECTION.BUY,
-                    order_model=QA.ORDER_DIRECTION.BUY,
+                    order_model=QA.ORDER_MODEL.LIMIT
                 )
             )
 
