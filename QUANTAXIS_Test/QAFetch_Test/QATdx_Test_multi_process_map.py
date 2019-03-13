@@ -35,10 +35,14 @@ class TestSelect_best_ip(TestCase):
         qasetting.set_config(
             section='IPLIST', option='default', default_value=default_ip)
         best_ip = select_best_ip()
+        ip = best_ip['stock']['ip']
+        port = best_ip['stock']['port']
+        self.assertTrue(isinstance(ip, str) or ip is None, '未获取到ip')
+        self.assertTrue(isinstance(port, int) or port is None, '未获取到端口号')
         ip = best_ip['future']['ip']
         port = best_ip['future']['port']
-        self.assertTrue(isinstance(ip, str), '未获取到ip')
-        self.assertTrue(isinstance(port, int), '未获取到端口号')
+        self.assertTrue(isinstance(ip, str) or ip is None, '未获取到ip')
+        self.assertTrue(isinstance(port, int) or port is None, '未获取到端口号')
         data = QA_fetch_get_stock_day(code, start, end)
         self.assertTrue(len(data) > (end - start).days / 2,
                         '返回数据个数不匹配，数据长度：{},天数（包含节假日）：{}'.format(len(data), (end - start).days / 2))
