@@ -117,3 +117,5 @@ from QUANTAXIS.QAUtil.QADateTools import (
     QA_util_getBetweenQuarter, QA_util_get_1st_of_next_month,
     QA_util_add_months, QA_util_getBetweenMonth
 )
+
+from QUANTAXIS.QAUtil.ParallelSim import ParallelSim
