@@ -152,6 +152,7 @@ class RUNNING_ENVIRONMENT():
     TZERO = 't0'
     REAL = 'real'
     RANDOM = 'random'
+    TTS='tts'
 
 
 class TRADE_STATUS():
@@ -228,6 +229,7 @@ class BROKER_TYPE():
     REAL = 'real'
     RANDOM = 'random'
     SHIPANE = 'shipane'
+    TTS = 'tts'
 
 
 class EVENT_TYPE():
