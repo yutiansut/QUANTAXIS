@@ -122,7 +122,6 @@ def select_best_ip():
 
     ipdefault = eval(ipdefault) if isinstance(ipdefault, str) else ipdefault
     assert isinstance(ipdefault, dict)
-
     if ipdefault['stock']['ip'] == None:
 
         best_stock_ip = get_ip_list_by_ping(
@@ -137,7 +136,7 @@ def select_best_ip():
                 stock_ip_list, filename='stock_ip_list_MP')
     if ipdefault['future']['ip'] == None:
         best_future_ip = get_ip_list_by_ping(
-            future_ip_list, filename='future_ip_list_MP')
+            future_ip_list, filename='future_ip_list_MP', _type='future')
     else:
         if ping(ipdefault['future']['ip'], ipdefault['future']['port'], 'future') < datetime.timedelta(0, 1):
             print('USING DEFAULT FUTURE IP')
@@ -155,15 +154,15 @@ def select_best_ip():
     return ipbest
 
 
-def get_ip_list_by_ping(ip_list=[], filename=None):
+def get_ip_list_by_ping(ip_list=[], filename=None, _type='stock'):
     # data_stock = [ping(x['ip'], x['port'], 'stock') for x in ip_list]
     # best_stock_ip = stock_ip_list[data_stock.index(min(data_stock))]
     # return best_stock_ip
-    best_ip = get_ip_list_by_multi_process_ping(ip_list, 1, filename)
+    best_ip = get_ip_list_by_multi_process_ping(ip_list, 1, filename, _type)
     return best_ip[0]
 
 
-def get_ip_list_by_multi_process_ping(ip_list=[], n=0, filename=None):
+def get_ip_list_by_multi_process_ping(ip_list=[], n=0, filename=None, _type='stock'):
     ''' 根据ping排序返回可用的ip列表
 
     :param ip_list: ip列表
@@ -182,7 +181,7 @@ def get_ip_list_by_multi_process_ping(ip_list=[], n=0, filename=None):
             results = pickle.load(filehandle)
             print('loading ip list from {}.'.format(filename))
     else:
-        ips = [(x['ip'], x['port']) for x in ip_list]
+        ips = [(x['ip'], x['port'], _type) for x in ip_list]
         pl = ParallelSim()
         pl.add(ping, ips)
         pl.run()
