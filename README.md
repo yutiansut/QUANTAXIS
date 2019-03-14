@@ -9,7 +9,7 @@ Quantitative Financial FrameWork
 
 ## 祝贺 QUANTAXIS 入选 [GITEE 最有价值开源项目 GVP](https://gitee.com/gvp)
 
-![logo](Documents/logo/QUANTAXIS_LOGO_LAST_small.jpg)
+![logo](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/Documents/logo/QUANTAXIS_LOGO_LAST_small.jpg)
 
 
 
