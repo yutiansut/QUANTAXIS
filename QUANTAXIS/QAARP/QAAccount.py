@@ -1580,7 +1580,7 @@ class QA_Account(QA_Worker):
         self.float_profit = message['accounts']['float_profit']
 
         # 占用保证金
-        self.margin = message['accounts']['marigin']
+        self.margin = message['accounts']['margin']
 
         self.commission = message['accounts']['commission']
 
