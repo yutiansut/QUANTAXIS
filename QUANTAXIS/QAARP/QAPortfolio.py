@@ -236,7 +236,7 @@ class QA_Portfolio(QA_Account):
                 [type] -- [description]
             """
             # 如果组合的cash_available>创建新的account所需cash
-            if self.cash_available > init_cash:
+            if self.cash_available >= init_cash:
 
                 temp = QA_Account(
                     user_cookie=self.user_cookie,
@@ -254,7 +254,7 @@ class QA_Portfolio(QA_Account):
                 else:
                     return self.new_account()
         else:
-            if self.cash_available > init_cash:
+            if self.cash_available >= init_cash:
                 if account_cookie not in self.accounts.keys():
                     self.accounts[account_cookie] = QA_Account(
                         portfolio_cookie=self.portfolio_cookie,
