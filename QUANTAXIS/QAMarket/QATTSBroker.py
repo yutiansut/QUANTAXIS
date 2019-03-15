@@ -271,9 +271,13 @@ class QA_TTSBroker(QA_Broker):
         })
 
     def receive_order(self, event):
-
-        return self.send_order(event.client_id, event.category, event.price_type, event.gddm, event.zqdm, event.price, event.quantity)
-        #client_id, category, price_type, gddm, zqdm, price, quantity
+        res = self.send_order(code=event.order.code, price=event.order.price, amount=event.order.amount, towards=event.order.towards, order_model=event.order.order_model)
+        try:
+            event.order.queued(realorder_id=res.realorder_id[0])
+            print('success receive order {}'.format(event.order.realorder_id))
+        except:
+            print(res)
+        return event.order
 
     def run(self, event):
         if event.event_type is MARKET_EVENT.QUERY_DATA:
