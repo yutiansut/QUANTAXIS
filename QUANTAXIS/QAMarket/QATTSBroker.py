@@ -72,6 +72,31 @@ class QA_TTSBroker(QA_Broker):
                        (MARKET_TYPE.FUND_CN, FREQUENCE.THIRTY_MIN): QA_fetch_get_index_min,
                        (MARKET_TYPE.FUND_CN, FREQUENCE.SIXTY_MIN): QA_fetch_get_index_min}
 
+        #通过代码前缀区分market_type
+        self.code_table = {
+            '000': {'type': 'stock', 'market': 'SZ'},
+            '001': {'type': 'stock', 'market': 'SZ'},
+            '002': {'type': 'stock', 'market': 'SZ'},
+            '150': {'type': 'fj', 'market': 'SZ'},
+            '159': {'type': 'etf', 'market': 'SZ'},
+            '161': {'type': 'etf', 'market': 'SZ'},
+            '163': {'type': 'etf', 'market': 'SZ'},
+            '164': {'type': 'etf', 'market': 'SZ'},
+            '168': {'type': 'etf', 'market': 'SZ'},
+            '169': {'type': 'etf', 'market': 'SZ'},
+            '300': {'type': 'stock', 'market': 'SZ'},
+            '501': {'type': 'etf', 'market': 'SH'},
+            '502': {'type': 'fj', 'market': 'SH'},
+            '510': {'type': 'etf', 'market': 'SH'},
+            '511': {'type': 'etf', 'market': 'SH'},
+            '512': {'type': 'etf', 'market': 'SH'},
+            '513': {'type': 'etf', 'market': 'SH'},
+            '518': {'type': 'etf', 'market': 'SH'},
+            '600': {'type': 'stock', 'market': 'SH'},
+            '601': {'type': 'stock', 'market': 'SH'},
+            '603': {'type': 'stock', 'market': 'SH'},
+        }
+
     def call(self, func, params=None):
 
         json_obj = {
@@ -172,7 +197,7 @@ class QA_TTSBroker(QA_Broker):
             "category": category
         })
 
-    def send_order(self,  code, price, amount, towards, order_model,market):
+    def send_order(self,  code, price, amount, towards, order_model, market=None):
         """下单
 
         Arguments:
@@ -193,11 +218,21 @@ class QA_TTSBroker(QA_Broker):
         elif order_model == ORDER_MODEL.LIMIT:
             order_model = 0
 
+        if market is None:
+            if code[0:3] in self.code_table:
+                market = self.code_table['market']
+            else:
+                info = QA.QA_fetch_get_stock_info(code)
+                if len(info) == 1:
+                    market = 'SH' if info.market[0] == 1 else 'SZ'
+        if market is None:
+            raise Exception('market不能为空，请检查code和market参数')
+
         return self.call("send_order", {
             'client_id': self.client_id,
             'category': towards,
             'price_type': order_model,
-            'gddm': self.gddm_sh if market=='SH' or market=='sh' else self.gddm_sz,
+            'gddm': self.gddm_sh if market.lower() == 'sh' else self.gddm_sz,
             'zqdm': code,
             'price': price,
             'quantity': amount
