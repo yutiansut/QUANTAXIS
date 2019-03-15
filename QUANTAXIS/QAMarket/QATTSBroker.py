@@ -225,14 +225,17 @@ class QA_TTSBroker(QA_Broker):
                 info = QA.QA_fetch_get_stock_info(code)
                 if len(info) == 1:
                     market = 'SH' if info.market[0] == 1 else 'SZ'
-        if market is None:
-            raise Exception('market不能为空，请检查code和market参数')
+        if type(market) != 'str':
+            raise Exception('market不正确，请检查code和market参数')
+        market = market.lower()
+        if market not in ['sh', 'sz']:
+            raise Exception('market不支持，请检查code和market参数')
 
         return self.call("send_order", {
             'client_id': self.client_id,
             'category': towards,
             'price_type': order_model,
-            'gddm': self.gddm_sh if market.lower() == 'sh' else self.gddm_sz,
+            'gddm': self.gddm_sh if market == 'sh' else self.gddm_sz,
             'zqdm': code,
             'price': price,
             'quantity': amount
