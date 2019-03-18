@@ -22,7 +22,7 @@ from QUANTAXIS.QAMarket.common import (
     trade_towards_cn_en
 )
 from QUANTAXIS.QAMarket.QABroker import QA_Broker
-from QUANTAXIS.QAMarket.QADealer import QA_Dealer
+from QUANTAXIS import QAFetch
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
 from QUANTAXIS.QAUtil.QAParameter import ORDER_DIRECTION, MARKET_TYPE, ORDER_MODEL, TRADE_STATUS, FREQUENCE, BROKER_EVENT, BROKER_TYPE, MARKET_EVENT
@@ -214,7 +214,7 @@ class QA_TTSBroker(QA_Broker):
             order_model = 0
 
         if market is None:
-            market = QA.QAFetch.base.get_stock_market(code)
+            market = QAFetch.base.get_stock_market(code)
         if not isinstance(market, str):
             raise Exception('%s不正确，请检查code和market参数' % market)
         market = market.lower()
