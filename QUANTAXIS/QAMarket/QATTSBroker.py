@@ -296,7 +296,14 @@ class QA_TTSBroker(QA_Broker):
             event.order.queued(realorder_id=res.realorder_id[0])
             print('success receive order {}'.format(event.order.realorder_id))
         except:
-            print(res)
+            event.order.failed()
+
+            print(
+                'FAILED FOR CREATE ORDER {} {}'.format(
+                    event.order.account_cookie,
+                    event.order.status
+                )
+            )
         return event.order
 
     def run(self, event):
@@ -350,9 +357,6 @@ class QA_TTSBroker(QA_Broker):
             df['cancel_amount'] = 0
             df = df[self.orderstatus_headers] if len(df) > 0 else pd.DataFrame(columns=self.orderstatus_headers)
         return df.set_index(['account_cookie',  'realorder_id']).sort_index()
-
-    def query_deal(self, account_cookie, order_id):
-        raise NotImplementedError
 
     def query_positions(self, account_cookie):
         data = {
