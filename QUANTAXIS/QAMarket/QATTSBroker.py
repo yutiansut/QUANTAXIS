@@ -158,6 +158,26 @@ class QA_TTSBroker(QA_Broker):
                     lambda x: '{} {}'.format(
                         datetime.date.today().strftime('%Y-%m-%d'),
                         datetime.datetime.strptime(x, '%H%M%S').strftime('%H:%M:%S')))
+            if hasattr(df, 'amount'):
+                df.amount = df.amount.apply(pd.to_numeric)
+            if hasattr(df, 'price'):
+                df.price = df.price.apply(pd.to_numeric)
+            if hasattr(df, 'money'):
+                df.money = df.money.apply(pd.to_numeric)
+            if hasattr(df, 'trade_amount'):
+                df.trade_amount = df.trade_amount.apply(pd.to_numeric)
+            if hasattr(df, 'trade_price'):
+                df.trade_price = df.trade_price.apply(pd.to_numeric)
+            if hasattr(df, 'trade_money'):
+                df.trade_money = df.trade_money.apply(pd.to_numeric)
+            if hasattr(df, 'order_price'):
+                df.order_price = df.order_price.apply(pd.to_numeric)
+            if hasattr(df, 'order_amount'):
+                df.order_amount = df.order_amount.apply(pd.to_numeric)
+            if hasattr(df, 'order_money'):
+                df.order_money = df.order_money.apply(pd.to_numeric)
+            if hasattr(df, 'cancel_amount'):
+                df.cancel_amount = df.cancel_amount.apply(pd.to_numeric)
             return df
         else:
             return pd.DataFrame()
@@ -326,6 +346,9 @@ class QA_TTSBroker(QA_Broker):
             df = df[self.orderstatus_headers] if len(df) > 0 else pd.DataFrame(columns=self.orderstatus_headers)
         return df.set_index(['account_cookie',  'realorder_id']).sort_index()
 
+    def query_deal(self, account_cookie, order_id):
+        raise NotImplementedError
+
     def query_positions(self, account_cookie):
         data = {
             'cash_available': 0.00,
@@ -345,6 +368,7 @@ class QA_TTSBroker(QA_Broker):
                 data['hold_available'] = result[['amount']]
             return data
         except:
+            print(e)
             return data
 
 
