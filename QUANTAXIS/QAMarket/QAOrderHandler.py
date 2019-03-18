@@ -279,10 +279,10 @@ class QA_OrderHandler(QA_Worker):
             print('failled to unscribe {}'.format(account.account_cookie))
 
     def _trade(self, order=None, account=None):
-        if order is not None:
+        try:
             res = self.monitor[account].query_order(order.order_id)
             order.trade(str(res[14]), float(res[6]), int(res[10]), str(res[2]))
-        else:
+        except:
             print('orderhandler: trade')
             res = [
                 self.monitor[account].query_orders(
