@@ -25,7 +25,7 @@ from QUANTAXIS.QAMarket.QABroker import QA_Broker
 from QUANTAXIS.QAMarket.QADealer import QA_Dealer
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
-from QUANTAXIS.QAUtil.QAParameter import ORDER_DIRECTION, MARKET_TYPE, ORDER_MODEL, TRADE_STATUS, FREQUENCE, BROKER_EVENT, BROKER_TYPE
+from QUANTAXIS.QAUtil.QAParameter import ORDER_DIRECTION, MARKET_TYPE, ORDER_MODEL, TRADE_STATUS, FREQUENCE, BROKER_EVENT, BROKER_TYPE, MARKET_EVENT
 
 
 class QA_TTSBroker(QA_Broker):
@@ -116,7 +116,7 @@ class QA_TTSBroker(QA_Broker):
 
         if self._transport_enc:
             decoded_text = self.decrypt(text)
-            print(decoded_text)
+            #print(decoded_text)
             return json.loads(decoded_text)
         else:
             return json.loads(text)
@@ -158,6 +158,26 @@ class QA_TTSBroker(QA_Broker):
                     lambda x: '{} {}'.format(
                         datetime.date.today().strftime('%Y-%m-%d'),
                         datetime.datetime.strptime(x, '%H%M%S').strftime('%H:%M:%S')))
+            if hasattr(df, 'amount'):
+                df.amount = df.amount.apply(pd.to_numeric)
+            if hasattr(df, 'price'):
+                df.price = df.price.apply(pd.to_numeric)
+            if hasattr(df, 'money'):
+                df.money = df.money.apply(pd.to_numeric)
+            if hasattr(df, 'trade_amount'):
+                df.trade_amount = df.trade_amount.apply(pd.to_numeric)
+            if hasattr(df, 'trade_price'):
+                df.trade_price = df.trade_price.apply(pd.to_numeric)
+            if hasattr(df, 'trade_money'):
+                df.trade_money = df.trade_money.apply(pd.to_numeric)
+            if hasattr(df, 'order_price'):
+                df.order_price = df.order_price.apply(pd.to_numeric)
+            if hasattr(df, 'order_amount'):
+                df.order_amount = df.order_amount.apply(pd.to_numeric)
+            if hasattr(df, 'order_money'):
+                df.order_money = df.order_money.apply(pd.to_numeric)
+            if hasattr(df, 'cancel_amount'):
+                df.cancel_amount = df.cancel_amount.apply(pd.to_numeric)
             return df
         else:
             return pd.DataFrame()
@@ -276,32 +296,44 @@ class QA_TTSBroker(QA_Broker):
             event.order.queued(realorder_id=res.realorder_id[0])
             print('success receive order {}'.format(event.order.realorder_id))
         except:
-            print(res)
+            event.order.failed()
+
+            print(
+                'FAILED FOR CREATE ORDER {} {}'.format(
+                    event.order.account_cookie,
+                    event.order.status
+                )
+            )
         return event.order
 
     def run(self, event):
-        if event.event_type is MARKET_EVENT.QUERY_DATA:
+        #if event.event_type is MARKET_EVENT.QUERY_DATA:
+        #    self.order_handler.run(event)
+        #    try:
+        #        data = self.fetcher[(event.market_type, event.frequence)](
+        #            code=event.code, start=event.start, end=event.end).values[0]
+        #        if 'vol' in data.keys() and 'volume' not in data.keys():
+        #            data['volume'] = data['vol']
+        #        elif 'vol' not in data.keys() and 'volume' in data.keys():
+        #            data['vol'] = data['volume']
+        #        return data
+        #    except Exception as e:
+        #        QA_util_log_info('MARKET_ENGING ERROR: {}'.format(e))
+        #        return None
+        #elif event.event_type is BROKER_EVENT.RECEIVE_ORDER:
+        #    self.order_handler.run(event)
+        #elif event.event_type is BROKER_EVENT.TRADE:
+        #    event = self.order_handler.run(event)
+        #    event.message = 'trade'
+        #    if event.callback:
+        #        event.callback(event)
+        #el
+        if event.event_type is MARKET_EVENT.QUERY_ORDER:
             self.order_handler.run(event)
-            try:
-                data = self.fetcher[(event.market_type, event.frequence)](
-                    code=event.code, start=event.start, end=event.end).values[0]
-                if 'vol' in data.keys() and 'volume' not in data.keys():
-                    data['volume'] = data['vol']
-                elif 'vol' not in data.keys() and 'volume' in data.keys():
-                    data['vol'] = data['volume']
-                return data
-            except Exception as e:
-                QA_util_log_info('MARKET_ENGING ERROR: {}'.format(e))
-                return None
-        elif event.event_type is MARKET_EVENT.QUERY_ORDER:
+        elif event.event_type is BROKER_EVENT.SETTLE:
             self.order_handler.run(event)
-        elif event.event_type is BROKER_EVENT.RECEIVE_ORDER:
-            self.order_handler.run(event)
-        elif event.event_type is BROKER_EVENT.TRADE:
-            event = self.order_handler.run(event)
-            event.message = 'trade'
             if event.callback:
-                event.callback(event)
+                event.callback('settle')
 
     def get_market(self, order):
         try:
@@ -342,9 +374,11 @@ class QA_TTSBroker(QA_Broker):
             result = self.data_to_df(self.query_data(1))
             if len(result) > 0:
                 result.index = result.code
-                data['hold_available'] = result[['amount']]
+                if hasattr(result, 'amount'):
+                    data['hold_available'] = result.amount
             return data
         except:
+            print(e)
             return data
 
 
