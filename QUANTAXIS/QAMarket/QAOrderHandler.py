@@ -279,10 +279,11 @@ class QA_OrderHandler(QA_Worker):
             print('failled to unscribe {}'.format(account.account_cookie))
 
     def _trade(self, order=None, account=None):
-        try:
+        # 回测通过query_order加快速度，实盘只有query_orders方法
+        if order is not None and hasattr(self.monitor[account], 'query_order'):
             res = self.monitor[account].query_order(order.order_id)
             order.trade(str(res[14]), float(res[6]), int(res[10]), str(res[2]))
-        except:
+        else:
             print('orderhandler: trade')
             res = [
                 self.monitor[account].query_orders(
