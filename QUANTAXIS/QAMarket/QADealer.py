@@ -109,9 +109,10 @@ class QA_Dealer():
         self.deal_price = 0
         self.deal_amount = 0
         self.order.tax_coeff = order.tax_coeff
+        self.order.realorder_id = self.order.order_id
 
         res = self.backtest_dealer()
-        self.deal_message[self.order.order_id] = res
+        self.deal_message[self.order.realorder_id] = res
 
 
     @property
