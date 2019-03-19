@@ -27,6 +27,7 @@ from functools import lru_cache
 import pandas as pd
 
 from QUANTAXIS.QAARP.QAAccount import QA_Account
+from QUANTAXIS.QAARP.QARisk import QA_Performance, QA_Risk
 from QUANTAXIS.QAUtil import (
     DATABASE,
     QA_util_log_info,
@@ -235,7 +236,7 @@ class QA_Portfolio(QA_Account):
                 [type] -- [description]
             """
             # 如果组合的cash_available>创建新的account所需cash
-            if self.cash_available > init_cash:
+            if self.cash_available >= init_cash:
 
                 temp = QA_Account(
                     user_cookie=self.user_cookie,
@@ -253,7 +254,7 @@ class QA_Portfolio(QA_Account):
                 else:
                     return self.new_account()
         else:
-            if self.cash_available > init_cash:
+            if self.cash_available >= init_cash:
                 if account_cookie not in self.accounts.keys():
                     self.accounts[account_cookie] = QA_Account(
                         portfolio_cookie=self.portfolio_cookie,
@@ -364,6 +365,16 @@ class QA_Portfolio(QA_Account):
     @property
     def table(self):
         return pd.concat([acc.table for acc in self.accounts.values()], axis=1)
+
+    def evaluate(self, account):
+        account = self.accounts[account]
+
+        risk = QA_Risk(account)
+
+
+    @property
+    def portfolioView(self):
+        return []
 
     def get_cash(self):
         """拿到整个portfolio的可用资金
