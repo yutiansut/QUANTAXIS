@@ -23,6 +23,7 @@
 # SOFTWARE.
 
 import datetime
+import pandas as pd
 
 from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE
 
@@ -7132,6 +7133,62 @@ trade_date_sse = [
     '2019-12-30',
     '2019-12-31'
 ]
+
+def QA_util_format_date2str(cursor_date):
+    """
+    对输入日期进行格式化处理，返回格式为 "%Y-%m-%d" 格式字符串
+    支持格式包括:
+    1. str: "%Y%m%d" "%Y%m%d%H%M%S", "%Y%m%d %H:%M:%S",
+            "%Y-%m-%d", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H%M%S"
+    2. datetime.datetime
+    3. pd.Timestamp
+    4. int -> 自动在右边加 0 然后转换，譬如 '20190302093' --> "2019-03-02"
+
+    :param cursor_date: str/datetime.datetime/int 日期或时间
+    :return: str 返回字符串格式日期
+    """
+    if isinstance(cursor_date, datetime.datetime):
+        cursor_date = str(cursor_date)[:10]
+    elif isinstance(cursor_date, str):
+        try:
+            cursor_date = str(pd.Timestamp(cursor_date))[:10]
+        except:
+            raise ValueError('请输入正确的日期格式, 建议 "%Y-%m-%d"')
+    elif isinstance(cursor_date, int):
+        cursor_date = str(pd.Timestamp("{:<014d}".format(cursor_date)))[:10]
+    else:
+        raise ValueError('请输入正确的日期格式，建议 "%Y-%m-%d"')
+    return cursor_date
+
+
+def QA_util_get_next_trade_date(cursor_date, n=1):
+    """
+    得到下 n 个交易日 (不包含当前交易日)
+    :param date:
+    :param n:
+    """
+
+    cursor_date = QA_util_format_date2str(cursor_date)
+    if cursor_date in trade_date_sse:
+        # 如果指定日期为交易日
+        return QA_util_date_gap(cursor_date, n, "gt")
+    real_pre_trade_date = QA_util_get_real_date(cursor_date)
+    return QA_util_date_gap(real_pre_trade_date, n, "gt")
+
+
+def QA_util_get_pre_trade_date(cursor_date, n=1):
+    """
+    得到前 n 个交易日 (不包含当前交易日)
+    :param date:
+    :param n:
+    """
+
+    cursor_date = QA_util_format_date2str(cursor_date)
+    if cursor_date in trade_date_sse:
+        return QA_util_date_gap(cursor_date, n, "lt")
+    real_aft_trade_date = QA_util_get_real_date(cursor_date)
+    return QA_util_date_gap(real_aft_trade_date, n, "lt")
+
 
 
 def QA_util_if_trade(day):

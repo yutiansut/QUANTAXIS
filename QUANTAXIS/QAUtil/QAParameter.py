@@ -152,6 +152,7 @@ class RUNNING_ENVIRONMENT():
     TZERO = 't0'
     REAL = 'real'
     RANDOM = 'random'
+    TTS='tts'
 
 
 class TRADE_STATUS():
@@ -228,6 +229,7 @@ class BROKER_TYPE():
     REAL = 'real'
     RANDOM = 'random'
     SHIPANE = 'shipane'
+    TTS = 'tts'
 
 
 class EVENT_TYPE():
@@ -328,6 +330,7 @@ class FREQUENCE():
     SIXTY_MIN = '60min'  # 60min bar
     CURRENT = 'current'  # 当前bar
     TICK = 'tick'  # transaction
+    REALTIME = 'realtime' # 上下五档/一档
 
 
 class CURRENCY_TYPE():

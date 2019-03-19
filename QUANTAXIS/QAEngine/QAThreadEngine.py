@@ -111,10 +111,10 @@ class QA_Thread(threading.Thread):
         self.queue.put_nowait(task)
 
     def get(self, task):
-        return self.get(task)
+        return self.queue.get(task)
 
     def get_nowait(self, task):
-        return self.get_nowait(task)
+        return self.queue.get_nowait(task)
 
     def qsize(self):
         return self.queue.qsize()
