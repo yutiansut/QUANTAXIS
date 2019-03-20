@@ -261,9 +261,9 @@ def QA_fetch_index_day(code, start, end, format='numpy', collections=DATABASE.in
                 "$gte": QA_util_date_stamp(start)}}, {"_id": 0}, batch_size=10000)
         if format in ['dict', 'json']:
             return [data for data in cursor]
-        for item in cursor:
-            __data = pd.DataFrame([item for item in cursor])
-            __data = __data.assign(date=pd.to_datetime(__data['date']))
+        #for item in cursor:
+        __data = pd.DataFrame([item for item in cursor])
+        __data = __data.assign(date=pd.to_datetime(__data['date']))
             # __data.append([str(item['code']), float(item['open']), float(item['high']), float(
             #     item['low']), float(item['close']), int(item['up_count']), int(item['down_count']), float(item['vol']), float(item['amount']), item['date']])
 
@@ -311,9 +311,9 @@ def QA_fetch_index_min(
     }, {"_id": 0}, batch_size=10000)
     if format in ['dict', 'json']:
         return [data for data in cursor]
-    for item in cursor:
-        __data = pd.DataFrame([item for item in cursor])
-        __data = __data.assign(datetime=pd.to_datetime(__data['datetime']))
+    #for item in cursor:
+    __data = pd.DataFrame([item for item in cursor])
+    __data = __data.assign(datetime=pd.to_datetime(__data['datetime']))
         # __data.append([str(item['code']), float(item['open']), float(item['high']), float(
         #     item['low']), float(item['close']), int(item['up_count']), int(item['down_count']), float(item['vol']), float(item['amount']), item['datetime'], item['time_stamp'], item['date'], item['type']])
 
