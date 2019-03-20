@@ -34,6 +34,7 @@ import numpy as np
 import pandas as pd
 from pytdx.exhq import TdxExHq_API
 from pytdx.hq import TdxHq_API
+from retrying import retry
 
 from QUANTAXIS.QAFetch.base import _select_market_code, _select_type
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
@@ -259,7 +260,7 @@ def get_mainmarket_ip(ip, port):
         pass
     return ip, port
 
-
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_security_bars(code, _type, lens, ip=None, port=None):
     """按bar长度推算数据
 
@@ -295,7 +296,7 @@ def QA_fetch_get_security_bars(code, _type, lens, ip=None, port=None):
         else:
             return None
 
-
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', frequence='day', ip=None, port=None):
     """获取日线及以上级别的数据
 
@@ -371,7 +372,7 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', frequence='da
         else:
             print(e)
 
-
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_min(code, start, end, frequence='1min', ip=None, port=None):
     ip, port = get_mainmarket_ip(ip, port)
     api = TdxHq_API()
@@ -411,7 +412,7 @@ def QA_fetch_get_stock_min(code, start, end, frequence='1min', ip=None, port=Non
                 type=type_).set_index('datetime', drop=False, inplace=False)[start:end]
         return data.assign(datetime=data['datetime'].apply(lambda x: str(x)))
 
-
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_latest(code, ip=None, port=None):
     ip, port = get_mainmarket_ip(ip, port)
     code = [code] if isinstance(code, str) else code
@@ -426,7 +427,7 @@ def QA_fetch_get_stock_latest(code, ip=None, port=None):
             .set_index('date', drop=False) \
             .drop(['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1)
 
-
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=None, port=None):
     ip, port = get_mainmarket_ip(ip, port)
     # reversed_bytes9 --> 涨速
@@ -453,7 +454,7 @@ def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=None, port=None):
              'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
         return data.set_index(['datetime', 'code'])
 
-
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_depth_market_data(code=['000001', '000002'], ip=None, port=None):
     ip, port = get_mainmarket_ip(ip, port)
     api = TdxHq_API()
@@ -572,7 +573,7 @@ def for_sh(code):
     else:
         return 'undefined'
 
-
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_list(type_='stock', ip=None, port=None):
     ip, port = get_mainmarket_ip(ip, port)
     api = TdxHq_API()
@@ -609,7 +610,7 @@ def QA_fetch_get_stock_list(type_='stock', ip=None, port=None):
             # .assign(szm=data['name'].apply(lambda x: ''.join([y[0] for y in lazy_pinyin(x)])))\
             #    .assign(quanpin=data['name'].apply(lambda x: ''.join(lazy_pinyin(x))))
 
-
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_index_list(ip=None, port=None):
     """获取指数列表
 
@@ -637,7 +638,7 @@ def QA_fetch_get_index_list(ip=None, port=None):
         return pd.concat([sz, sh]).query('sec=="index_cn"').sort_index().assign(
             name=data['name'].apply(lambda x: str(x)[0:6]))
 
-
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_bond_list(ip=None, port=None):
     """bond
 
@@ -660,7 +661,7 @@ def QA_fetch_get_bond_list(ip=None, port=None):
         return pd.concat([sz, sh]).query('sec=="bond_cn"').sort_index().assign(
             name=data['name'].apply(lambda x: str(x)[0:6]))
 
-
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_bond_day(code, start_date, end_date, frequence='day', ip=None, port=None):
     ip, port = get_mainmarket_ip(ip, port)
     api = TdxHq_API()
@@ -709,7 +710,7 @@ def QA_fetch_get_bond_day(code, start_date, end_date, frequence='day', ip=None, 
                           'minute', 'datetime'], axis=1)[start_date:end_date]
         return data.assign(date=data['date'].apply(lambda x: str(x)[0:10]))
 
-
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_index_day(code, start_date, end_date, frequence='day', ip=None, port=None):
     """指数日线
     1- sh
@@ -763,7 +764,7 @@ def QA_fetch_get_index_day(code, start_date, end_date, frequence='day', ip=None,
                           'minute', 'datetime'], axis=1)[start_date:end_date]
         return data.assign(date=data['date'].apply(lambda x: str(x)[0:10]))
 
-
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_index_min(code, start, end, frequence='1min', ip=None, port=None):
     '指数分钟线'
     ip, port = get_mainmarket_ip(ip, port)
@@ -836,7 +837,7 @@ def __QA_fetch_get_stock_transaction(code, day, retry, api):
                 .assign(code=str(code)).assign(order=range(len(data_.index))).set_index('datetime', drop=False,
                                                                                         inplace=False)
 
-
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=None, port=None):
     '''
 
@@ -878,7 +879,7 @@ def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=None, port=None
         else:
             return None
 
-
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_transaction_realtime(code, ip=None, port=None):
     '实时分笔成交 包含集合竞价 buyorsell 1--sell 0--buy 2--盘前'
     ip, port = get_mainmarket_ip(ip, port)
@@ -899,7 +900,7 @@ def QA_fetch_get_stock_transaction_realtime(code, ip=None, port=None):
     except:
         return None
 
-
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_xdxr(code, ip=None, port=None):
     '除权除息'
     ip, port = get_mainmarket_ip(ip, port)
@@ -925,7 +926,7 @@ def QA_fetch_get_stock_xdxr(code, ip=None, port=None):
         else:
             return None
 
-
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_info(code, ip=None, port=None):
     '股票基本信息'
     ip, port = get_mainmarket_ip(ip, port)
@@ -934,7 +935,7 @@ def QA_fetch_get_stock_info(code, ip=None, port=None):
     with api.connect(ip, port):
         return api.to_df(api.get_finance_info(market_code, code))
 
-
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_block(ip=None, port=None):
     '板块数据'
     ip, port = get_mainmarket_ip(ip, port)
