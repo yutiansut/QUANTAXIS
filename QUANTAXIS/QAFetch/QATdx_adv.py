@@ -76,8 +76,12 @@ class QA_Tdx_Executor():
 
         api = TdxHq_API(raise_exception=True, auto_retry=False)
         _time = datetime.datetime.now()
+        #print(self.timeout)
         try:
             with api.connect(ip, port, time_out=self.timeout):
+                res = api.get_security_list(0, 1)
+                #print(res)
+                #print(len(res))
                 if len(api.get_security_list(0, 1)) > 800:
                     return (datetime.datetime.now() - _time).total_seconds()
                 else:
@@ -136,10 +140,10 @@ class QA_Tdx_Executor():
         if self._queue.qsize() < 80:
             for item in stock_ip_list:
                 _sec = self._test_speed(ip=item['ip'], port=item['port'])
-                if _sec < 0.1:
+                if _sec < self.timeout:
                     try:
                         self._queue.put(TdxHq_API(heartbeat=False).connect(
-                            ip=item['ip'], port=item['port'], time_out=0.05))
+                            ip=item['ip'], port=item['port'], time_out=self.timeout))
                     except:
                         pass
         else:
@@ -263,7 +267,8 @@ def get_day_once():
     x = QA_Tdx_Executor()
     return x.get_security_bar_concurrent(code, 'day', 1)
 
-@click.option('--timeout',default=1,help='timeout param')
+@click.command()
+@click.option('--timeout',default=0.2,help='timeout param')
 def bat(timeout):
 
     _time1 = datetime.datetime.now()
