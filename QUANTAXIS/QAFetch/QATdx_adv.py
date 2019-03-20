@@ -147,7 +147,7 @@ class QA_Tdx_Executor():
             Timer(0, self.api_worker).start()
         Timer(300, self.api_worker).start()
 
-    def _singal_job(self, context, id_, time_out=0.5):
+    def _singal_job(self, context, id_, time_out=0.7):
         try:
             _api = self.get_available()
 
