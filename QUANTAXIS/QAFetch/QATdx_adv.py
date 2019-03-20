@@ -46,7 +46,7 @@ from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
 
 
 class QA_Tdx_Executor():
-    def __init__(self, thread_num=2, timeout =1, *args, **kwargs):
+    def __init__(self, thread_num=2, timeout=1, *args, **kwargs):
         self.thread_num = thread_num
         self._queue = queue.Queue(maxsize=200)
         self.api_no_connection = TdxHq_API()
@@ -76,12 +76,12 @@ class QA_Tdx_Executor():
 
         api = TdxHq_API(raise_exception=True, auto_retry=False)
         _time = datetime.datetime.now()
-        #print(self.timeout)
+        # print(self.timeout)
         try:
             with api.connect(ip, port, time_out=self.timeout):
                 res = api.get_security_list(0, 1)
-                #print(res)
-                #print(len(res))
+                # print(res)
+                # print(len(res))
                 if len(api.get_security_list(0, 1)) > 800:
                     return (datetime.datetime.now() - _time).total_seconds()
                 else:
@@ -140,7 +140,7 @@ class QA_Tdx_Executor():
         if self._queue.qsize() < 80:
             for item in stock_ip_list:
                 _sec = self._test_speed(ip=item['ip'], port=item['port'])
-                if _sec < self.timeout:
+                if _sec < self.timeout*3:
                     try:
                         self._queue.put(TdxHq_API(heartbeat=False).connect(
                             ip=item['ip'], port=item['port'], time_out=self.timeout))
@@ -267,8 +267,9 @@ def get_day_once():
     x = QA_Tdx_Executor()
     return x.get_security_bar_concurrent(code, 'day', 1)
 
+
 @click.command()
-@click.option('--timeout',default=0.2,help='timeout param')
+@click.option('--timeout', default=0.2, help='timeout param')
 def bat(timeout):
 
     _time1 = datetime.datetime.now()
