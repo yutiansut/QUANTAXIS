@@ -26,6 +26,7 @@
 import datetime
 import queue
 import time
+import click
 from concurrent.futures import ThreadPoolExecutor
 from threading import Thread, Timer
 
@@ -45,14 +46,14 @@ from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
 
 
 class QA_Tdx_Executor():
-    def __init__(self, thread_num=2, *args, **kwargs):
+    def __init__(self, thread_num=2, timeout=1, *args, **kwargs):
         self.thread_num = thread_num
         self._queue = queue.Queue(maxsize=200)
         self.api_no_connection = TdxHq_API()
         self._api_worker = Thread(
             target=self.api_worker, args=(), name='API Worker')
         self._api_worker.start()
-
+        self.timeout = timeout
         self.executor = ThreadPoolExecutor(self.thread_num)
 
     def __getattr__(self, item):
@@ -75,8 +76,12 @@ class QA_Tdx_Executor():
 
         api = TdxHq_API(raise_exception=True, auto_retry=False)
         _time = datetime.datetime.now()
+        # print(self.timeout)
         try:
-            with api.connect(ip, port, time_out=0.05):
+            with api.connect(ip, port, time_out=self.timeout):
+                res = api.get_security_list(0, 1)
+                # print(res)
+                # print(len(res))
                 if len(api.get_security_list(0, 1)) > 800:
                     return (datetime.datetime.now() - _time).total_seconds()
                 else:
@@ -135,10 +140,10 @@ class QA_Tdx_Executor():
         if self._queue.qsize() < 80:
             for item in stock_ip_list:
                 _sec = self._test_speed(ip=item['ip'], port=item['port'])
-                if _sec < 0.1:
+                if _sec < self.timeout*3:
                     try:
                         self._queue.put(TdxHq_API(heartbeat=False).connect(
-                            ip=item['ip'], port=item['port'], time_out=0.05))
+                            ip=item['ip'], port=item['port'], time_out=self.timeout))
                     except:
                         pass
         else:
@@ -146,7 +151,7 @@ class QA_Tdx_Executor():
             Timer(0, self.api_worker).start()
         Timer(300, self.api_worker).start()
 
-    def _singal_job(self, context, id_, time_out=0.5):
+    def _singal_job(self, context, id_, time_out=0.7):
         try:
             _api = self.get_available()
 
@@ -263,13 +268,15 @@ def get_day_once():
     return x.get_security_bar_concurrent(code, 'day', 1)
 
 
-def bat():
+@click.command()
+@click.option('--timeout', default=0.2, help='timeout param')
+def bat(timeout):
 
     _time1 = datetime.datetime.now()
     from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_block_adv
     code = QA_fetch_stock_block_adv().code
     print(len(code))
-    x = QA_Tdx_Executor()
+    x = QA_Tdx_Executor(timeout=timeout)
     print(x._queue.qsize())
     print(x.get_available())
 
