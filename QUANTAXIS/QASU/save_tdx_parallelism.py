@@ -77,33 +77,34 @@ class QA_SU_save_stock_day_parallelism(Parallelism):
             self.total_processes += 1
 
     def complete(self, result):
-        super(QA_SU_save_stock_day_parallelism, self).complete(result)
-        print('result:{}'.format(result), flush=True)
-        coll_stock_day = self.client.stock_day
-        coll_stock_day.create_index(
-            [("code",
-              pymongo.ASCENDING),
-             ("date_stamp",
-              pymongo.ASCENDING)]
-        )
+
         QA_util_log_info(
-            '##JOB01 Saving STOCK_DAY==== {} {}'.format('in QA_SU_save_stock_day_parallelism class', len(result))
+            '##JOB02 Saving STOCK_DAY==== {} ，股票数量： {}'.format('QA_SU_save_stock_day_parallelism class', len(result))
         )
 
         for value in result:
             self.__saving_work(value)
 
+        super(QA_SU_save_stock_day_parallelism, self).complete(result)
+
     def __saving_work(self, df=pd.DataFrame()):
         try:
             if not (df is None) and len(df) > 0:
-                self.coll_stock_day.insert_many(QA_util_to_json_from_pandas(df))
+                coll_stock_day = self.client.stock_day
+                coll_stock_day.create_index(
+                    [("code",
+                      pymongo.ASCENDING),
+                     ("date_stamp",
+                      pymongo.ASCENDING)]
+                )
+                coll_stock_day.insert_many(QA_util_to_json_from_pandas(df))
                 QA_util_log_info(
-                    '##JOB01 Now Saved STOCK_DAY==== {}'.format(df.code.unique()[0]),
+                    '##JOB02 Now Saved STOCK_DAY==== {}'.format(df.code.unique()[0]),
                     self.ui_log
                 )
             else:
                 QA_util_log_info(
-                    '##JOB01 Saving STOCK_DAY==== {}'.format('skipped'),
+                    '##JOB02 Saving STOCK_DAY==== {}'.format('skipped'),
                     self.ui_log
                 )
 
@@ -122,7 +123,7 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
     :param ui_progress: 给GUI qt 界面使用
     :param ui_progress_int_value: 给GUI qt 界面使用
     '''
-    stock_list = QA_fetch_get_stock_list().code.unique().tolist()[:700]
+    stock_list = QA_fetch_get_stock_list().code.unique().tolist()
     coll_stock_day = client.stock_day
     coll_stock_day.create_index(
         [("code",
@@ -182,25 +183,6 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
     ps = QA_SU_save_stock_day_parallelism(cpu_count(), client=client, ui_log=ui_log)
     ps.add(do_saving_work, param)
     ps.run()
-    # data = list(ps.get_results())
-    # print('DOWNLOAD PROGRESS None', flush=True)
-
-    # for item in range(len(stock_list)):
-    #     QA_util_log_info('The {} of Total {}'.format(item, len(stock_list)))
-    #
-    #     strProgressToLog = 'DOWNLOAD PROGRESS {} {}'.format(
-    #         str(float(item / len(stock_list) * 100))[0:4] + '%',
-    #         ui_log
-    #     )
-    #     intProgressToLog = int(float(item / len(stock_list) * 100))
-    #     QA_util_log_info(
-    #         strProgressToLog,
-    #         ui_log=ui_log,
-    #         ui_progress=ui_progress,
-    #         ui_progress_int_value=intProgressToLog
-    #     )
-    #
-
 
     if len(err) < 1:
         QA_util_log_info('SUCCESS save stock day ^_^', ui_log)
