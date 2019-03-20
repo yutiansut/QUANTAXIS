@@ -26,6 +26,7 @@
 import datetime
 import queue
 import time
+import click
 from concurrent.futures import ThreadPoolExecutor
 from threading import Thread, Timer
 
@@ -45,14 +46,14 @@ from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
 
 
 class QA_Tdx_Executor():
-    def __init__(self, thread_num=2, *args, **kwargs):
+    def __init__(self, thread_num=2, timeout =1, *args, **kwargs):
         self.thread_num = thread_num
         self._queue = queue.Queue(maxsize=200)
         self.api_no_connection = TdxHq_API()
         self._api_worker = Thread(
             target=self.api_worker, args=(), name='API Worker')
         self._api_worker.start()
-
+        self.timeout = timeout
         self.executor = ThreadPoolExecutor(self.thread_num)
 
     def __getattr__(self, item):
@@ -76,7 +77,7 @@ class QA_Tdx_Executor():
         api = TdxHq_API(raise_exception=True, auto_retry=False)
         _time = datetime.datetime.now()
         try:
-            with api.connect(ip, port, time_out=0.05):
+            with api.connect(ip, port, time_out=self.timeout):
                 if len(api.get_security_list(0, 1)) > 800:
                     return (datetime.datetime.now() - _time).total_seconds()
                 else:
@@ -262,14 +263,14 @@ def get_day_once():
     x = QA_Tdx_Executor()
     return x.get_security_bar_concurrent(code, 'day', 1)
 
-
-def bat():
+@click.option('--timeout',default=1,help='timeout param')
+def bat(timeout):
 
     _time1 = datetime.datetime.now()
     from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_block_adv
     code = QA_fetch_stock_block_adv().code
     print(len(code))
-    x = QA_Tdx_Executor()
+    x = QA_Tdx_Executor(timeout=timeout)
     print(x._queue.qsize())
     print(x.get_available())
 
