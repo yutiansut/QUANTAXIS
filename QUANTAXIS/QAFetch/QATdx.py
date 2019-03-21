@@ -47,7 +47,7 @@ from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
                               stock_ip_list, trade_date_sse)
 from QUANTAXIS.QAUtil.QASetting import QASETTING
 from QUANTAXIS.QASetting.QALocalize import log_path
-from QUANTAXIS.QAUtil import ParallelSim
+from QUANTAXIS.QAUtil import Parallelism
 
 
 def init_fetcher():
@@ -183,16 +183,15 @@ def get_ip_list_by_multi_process_ping(ip_list=[], n=0, filename=None, _type='sto
             print('loading ip list from {}.'.format(filename))
     else:
         ips = [(x['ip'], x['port'], _type) for x in ip_list]
-        pl = ParallelSim()
-        pl.add(ping, ips)
-        pl.run()
-        data = pl.get_results()
-        data_stock = list(data)
+        ps = Parallelism()
+        ps.add(ping, ips)
+        ps.run()
+        data = list(ps.get_results())
         results = []
-        for i in range(len(data_stock)):
+        for i in range(len(data)):
             # 删除ping不通的数据
-            if data_stock[i] < datetime.timedelta(0, 9, 0):
-                results.append((data_stock[i], ip_list[i]))
+            if data[i] < datetime.timedelta(0, 9, 0):
+                results.append((data[i], ip_list[i]))
         # 按照ping值从小大大排序
         results = [x[1] for x in sorted(results, key=lambda x: x[0])]
         if filename:
@@ -206,6 +205,7 @@ def get_ip_list_by_multi_process_ping(ip_list=[], n=0, filename=None, _type='sto
         else:
             return results[:n]
     else:
+        print('ALL IP PING TIMEOUT!')
         return [{'ip': None, 'port': None}]
 
 
