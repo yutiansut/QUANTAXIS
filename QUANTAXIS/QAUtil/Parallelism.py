@@ -26,7 +26,7 @@
 from multiprocessing import Pool, cpu_count
 
 
-class ParallelSim(object):
+class Parallelism(object):
     """ 多进程map类
         pl = ParallelSim()
         pl.add(yourFunc, yourIter)
@@ -48,23 +48,28 @@ class ParallelSim(object):
         self.cores = processes  # cpu核心数量
 
     def add(self, func, iter):
-        if isinstance(iter, list) and self.cores > 1:
+        if isinstance(iter, list) and self.cores > 1 and len(iter) > self.cores:
             for i in range(self.cores):
                 pLen = int(len(iter) / self.cores) + 1
                 self.data = self.pool.starmap_async(func, iter[int(i * pLen):int((i + 1) * pLen)],
-                                                    callback=self.complete)
+                                                    callback=self.complete,
+                                                    error_callback=self.exception)
                 self.total_processes += 1
         else:
             self.data = self.pool.starmap_async(func=func, iterable=iter, callback=self.complete)
             self.total_processes += 1
-        self.data.get()
+        # self.data.get()
 
     def complete(self, result):
         self.results.extend(result)
         self.completed_processes += 1
         print('Progress: {:.2f}%'.format((self.completed_processes / self.total_processes) * 100))
 
+    def exception(self, exception = None):
+        print(exception)
+
     def run(self):
+        self.data.get()
         self.pool.close()
         self.pool.join()
 
