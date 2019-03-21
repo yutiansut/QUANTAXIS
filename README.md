@@ -7,9 +7,7 @@ Quantitative Financial FrameWork
 
 从数据爬取-清洗存储-分析回测-可视化-交易复盘的本地一站式解决方案
 
-## 祝贺 QUANTAXIS 入选 [GITEE 最有价值开源项目 GVP](https://gitee.com/gvp)
-
-![logo](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/Documents/logo/QUANTAXIS_LOGO_LAST_small.jpg)
+![logo](http://pic.yutiansut.com/QUANTAXIS_LOGO_LAST_small.jpg)
 
 
 
@@ -17,16 +15,16 @@ Quantitative Financial FrameWork
 ![pypidownloads](https://img.shields.io/pypi/dw/quantaxis.svg)
 ![pypidownloads](https://img.shields.io/pypi/dd/quantaxis.svg)
 
-
-
 [![Github workers](https://img.shields.io/github/watchers/quantaxis/quantaxis.svg?style=social&label=Watchers&)](https://github.com/quantaxis/quantaxis/watchers)
 [![GitHub stars](https://img.shields.io/github/stars/quantaxis/quantaxis.svg?style=social&label=Star&)](https://github.com/quantaxis/quantaxis/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/quantaxis/quantaxis.svg?style=social&label=Fork&)](https://github.com/quantaxis/quantaxis/fork)
 
-
-> ENGLISH DOCUMENTS PLEASE CLICK [THIS](README_ENG.md)
-
 [点击右上角Star和Watch来跟踪项目进展! 点击Fork来创建属于你的QUANTAXIS!]
+
+
+## 祝贺 QUANTAXIS 入选 [GITEE 最有价值开源项目 GVP](https://gitee.com/gvp)
+![gvp](http://pic.yutiansut.com/gvp.jpg)
+
 
 
 ![main_1](http://pic.yutiansut.com/Main_1.gif)
