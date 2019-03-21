@@ -24,6 +24,7 @@
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_list
 #from QUANTAXIS.QASU import crawl_eastmoney as crawl_eastmoney_file
 from QUANTAXIS.QASU import save_tdx as stdx
+from QUANTAXIS.QASU import save_tdx_parallelism as stdx_parallelism
 from QUANTAXIS.QASU import save_tdx_file as tdx_file
 from QUANTAXIS.QASU import save_gm as sgm
 from QUANTAXIS.QASU import save_jq as sjq
@@ -160,7 +161,7 @@ def QA_SU_save_future_min_all(engine, client=DATABASE):
     engine.QA_SU_save_future_min_all(client=client)
 
 
-def QA_SU_save_stock_day(engine, client=DATABASE):
+def QA_SU_save_stock_day(engine, client=DATABASE, paralleled=False):
     """save stock_day
 
     Arguments:
@@ -170,7 +171,7 @@ def QA_SU_save_stock_day(engine, client=DATABASE):
         client {[type]} -- [description] (default: {DATABASE})
     """
 
-    engine = select_save_engine(engine)
+    engine = select_save_engine(engine, paralleled=paralleled)
     engine.QA_SU_save_stock_day(client=client)
 
 
@@ -325,16 +326,20 @@ def QA_SU_save_stock_block(engine, client=DATABASE):
     engine.QA_SU_save_stock_block(client=client)
 
 
-def select_save_engine(engine):
+def select_save_engine(engine, paralleled=False):
     '''
     select save_engine , tushare ts Tushare 使用 Tushare 免费数据接口， tdx 使用通达信数据接口
     :param engine: 字符串Str
+    :param paralleled: 是否并行处理；默认为False
     :return: sts means save_tushare_py  or stdx means save_tdx_py
     '''
     if engine in ['tushare', 'ts', 'Tushare']:
         return sts
     elif engine in ['tdx']:
-        return stdx
+        if paralleled:
+            return stdx_parallelism
+        else:
+            return stdx
     elif engine in ['gm', 'goldenminer']:
         return sgm
     elif engine in ['jq', 'joinquant']:
