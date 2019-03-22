@@ -195,10 +195,10 @@ class QA_Portfolio(QA_Account):
 
     def drop_account(self, account_cookie):
         """删除一个account
-        
+
         Arguments:
             account_cookie {[type]} -- [description]
-        
+
         Raises:
             RuntimeError -- [description]
         """
@@ -371,7 +371,6 @@ class QA_Portfolio(QA_Account):
 
         risk = QA_Risk(account)
 
-
     @property
     def portfolioView(self):
         return []
@@ -490,8 +489,11 @@ class QA_Portfolio(QA_Account):
         else:
             self.init_cash = message['init_cash']
             self.cash = message['cash']
+
+            account_list = [item['account_cookie'] for item in DATABASE.account.find(
+                {'user_cookie': self.user_cookie, 'portfolio_cookie': self.portfolio_cookie})]
             #self.history = (message['history'], message['history_header'])
-            account_list = message['account_list']
+            #account_list = message['account_list']
             self.accounts = dict(
                 zip(
                     account_list,
@@ -652,12 +654,12 @@ class QA_PortfolioView():
     @property
     def history_table(self):
         return pd.concat([item.history_table for item in self.accounts]
-                        ).sort_index()
+                         ).sort_index()
 
     @property
     def trade_day(self):
         return pd.concat([pd.Series(item.trade_day) for item in self.accounts]
-                        ).drop_duplicates().sort_values().tolist()
+                         ).drop_duplicates().sort_values().tolist()
 
     @property
     def trade_range(self):
