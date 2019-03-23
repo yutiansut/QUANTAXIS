@@ -101,7 +101,6 @@ class QA_Portfolio(QA_Account):
         self.portfolio_cookie = QA_util_random_with_topic(
             'Portfolio'
         ) if portfolio_cookie is None else portfolio_cookie
-        self.accounts = {}
         self.strategy_name = strategy_name
         # 和account一样的资产类
         self.init_cash = init_cash
