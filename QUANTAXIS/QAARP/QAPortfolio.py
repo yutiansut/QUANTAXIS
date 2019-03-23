@@ -101,7 +101,6 @@ class QA_Portfolio(QA_Account):
         self.portfolio_cookie = QA_util_random_with_topic(
             'Portfolio'
         ) if portfolio_cookie is None else portfolio_cookie
-        self.accounts = {}
         self.strategy_name = strategy_name
         # 和account一样的资产类
         self.init_cash = init_cash
@@ -114,11 +113,8 @@ class QA_Portfolio(QA_Account):
         self.market_type = market_type
         self.running_environment = running_environment
         self.cash_history = []
-
+        self.account_list = []
         self.client = DATABASE.portfolio
-
-        for cookie in self.accounts.keys():
-            self.accounts[cookie] = QA_Account(account_cookie=cookie)
 
         self.reload()
 
@@ -159,6 +155,23 @@ class QA_Portfolio(QA_Account):
                 } for item in self.accounts.keys()
             ]
         }
+
+    @property
+    def accounts(self):
+        return dict(
+            zip(
+                self.account_list,
+                [
+                    QA_Account(
+                        account_cookie=item,
+                        user_cookie=self.user_cookie,
+                        portfolio_cookie=self.portfolio_cookie,
+                        auto_reload=True
+                    ) for item in account_list
+                ]
+            )
+        )
+
 
     @property
     def init_hold_table(self):
@@ -490,24 +503,11 @@ class QA_Portfolio(QA_Account):
             self.init_cash = message['init_cash']
             self.cash = message['cash']
 
-            account_list = [item['account_cookie'] for item in DATABASE.account.find(
+            self.account_list = [item['account_cookie'] for item in DATABASE.account.find(
                 {'user_cookie': self.user_cookie, 'portfolio_cookie': self.portfolio_cookie})]
             #self.history = (message['history'], message['history_header'])
             #account_list = message['account_list']
-            self.accounts = dict(
-                zip(
-                    account_list,
-                    [
-                        QA_Account(
-                            account_cookie=item,
-                            user_cookie=self.user_cookie,
-                            portfolio_cookie=self.portfolio_cookie,
-                            auto_reload=True
-                        ) for item in account_list
-                    ]
-                )
-            )
-
+            
     @property
     def code(self):
         """code of portfolio ever hold
