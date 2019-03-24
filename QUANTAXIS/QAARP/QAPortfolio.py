@@ -167,7 +167,7 @@ class QA_Portfolio(QA_Account):
                         user_cookie=self.user_cookie,
                         portfolio_cookie=self.portfolio_cookie,
                         auto_reload=True
-                    ) for item in account_list
+                    ) for item in self.account_list
                 ]
             )
         )
