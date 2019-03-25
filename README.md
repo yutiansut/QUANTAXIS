@@ -61,6 +61,13 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 ==========================================
 
+## 视频录播(2019-03-23)
+
+QUANTAXIS 2019 支持多市场的面向场景解决方案
+![](http://pic.yutiansut.com/QAFINANCIAL2019.jpg)
+[在哔哩哔哩观看录播](https://www.bilibili.com/video/av47284727/)
+
+==========================================
 
 ## 关联项目:
 
@@ -338,6 +345,10 @@ git clone https://github.com/你的账户名/quantaxis
 ![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015451.png)
 ![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015550.png)
 ![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015537.png)
+
+手工定制版本 LAB
+
+![](http://pic.yutiansut.com/QADESK_LAB.png)
 
 ##  12. QUANTAXIS 标准化协议和未来协议
 
