@@ -155,6 +155,12 @@ def QA_fetch_stock_list(collections=DATABASE.stock_list):
     return pd.DataFrame([item for item in collections.find()]).drop('_id', axis=1, inplace=False).set_index('code', drop=False)
 
 
+def QA_fetch_etf_list(collections=DATABASE.etf_list):
+    '获取ETF列表'
+
+    return pd.DataFrame([item for item in collections.find()]).drop('_id', axis=1, inplace=False).set_index('code', drop=False)
+
+
 def QA_fetch_index_list(collections=DATABASE.index_list):
     '获取指数列表'
     return pd.DataFrame([item for item in collections.find()]).drop('_id', axis=1, inplace=False).set_index('code', drop=False)
