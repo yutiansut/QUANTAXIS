@@ -121,7 +121,7 @@ class QA_Portfolio(QA_Account):
     def __repr__(self):
         return '< QA_Portfolio {} with {} Accounts >'.format(
             self.portfolio_cookie,
-            len(self.accounts.keys())
+            len(self.account_list)
         )
 
     def __getitem__(self, account_cookie):
@@ -152,7 +152,7 @@ class QA_Portfolio(QA_Account):
                 {
                     'source': self.portfolio_cookie,
                     'target': item
-                } for item in self.accounts.keys()
+                } for item in self.account_list
             ]
         }
 
@@ -196,12 +196,12 @@ class QA_Portfolio(QA_Account):
 
     def add_account(self, account):
         'portfolio add a account/stratetgy'
-        if account.account_cookie not in self.accounts.keys():
+        if account.account_cookie not in self.account_list:
             if self.cash_available > account.init_cash:
                 account.portfolio_cookie = self.portfolio_cookie
                 account.user_cookie = self.user_cookie
                 self.cash.append(self.cash_available - account.init_cash)
-                self.accounts[account.account_cookie] = account
+                self.account_list.append(account.account_cookie)
                 return account
         else:
             pass
@@ -216,8 +216,8 @@ class QA_Portfolio(QA_Account):
             RuntimeError -- [description]
         """
 
-        if account_cookie in self.accounts.keys():
-            res = self.accounts.pop(account_cookie)
+        if account_cookie in self.account_list:
+            res = self.account_list.remove(account_cookie)
             self.cash.append(self.cash[-1] + res.init_cash)
             return True
         else:
@@ -259,8 +259,10 @@ class QA_Portfolio(QA_Account):
                     *args,
                     **kwargs
                 )
-                if temp.account_cookie not in self.accounts.keys():
-                    self.accounts[temp.account_cookie] = temp
+                if temp.account_cookie not in self.account_list:
+                    #self.accounts[temp.account_cookie] = temp
+                    self.account_list.append(temp.account_cookie)
+                    temp.save()
                     self.cash.append(self.cash_available - init_cash)
                     return temp
 
@@ -268,8 +270,9 @@ class QA_Portfolio(QA_Account):
                     return self.new_account()
         else:
             if self.cash_available >= init_cash:
-                if account_cookie not in self.accounts.keys():
-                    self.accounts[account_cookie] = QA_Account(
+                if account_cookie not in self.account_list:
+                    
+                    acc = QA_Account(
                         portfolio_cookie=self.portfolio_cookie,
                         user_cookie=self.user_cookie,
                         init_cash=init_cash,
@@ -278,8 +281,10 @@ class QA_Portfolio(QA_Account):
                         *args,
                         **kwargs
                     )
+                    acc.save()
+                    self.account_list.append(acc.account_cookie)
                     self.cash.append(self.cash_available - init_cash)
-                    return self.accounts[account_cookie]
+                    return acc
                 else:
                     return self.accounts[account_cookie]
 
@@ -322,7 +327,7 @@ class QA_Portfolio(QA_Account):
         return {
             'user_cookie': self.user_cookie,
             'portfolio_cookie': self.portfolio_cookie,
-            'account_list': list(self.accounts.keys()),
+            'account_list': list(self.account_list),
             'init_cash': self.init_cash,
             'cash': self.cash,
             'history': self.history
@@ -401,7 +406,7 @@ class QA_Portfolio(QA_Account):
     def pull(self, account_cookie=None, collection=DATABASE.account):
         'pull from the databases'
         if account_cookie is None:
-            for item in self.accounts.keys():
+            for item in self.account_list:
                 try:
                     message = collection.find_one({'account_cookie': item})
                     QA_util_log_info('{} sync successfully'.format(item))
@@ -431,7 +436,7 @@ class QA_Portfolio(QA_Account):
         'push to databases'
         message = self.accounts[account_cookie].message
         if account_cookie is None:
-            for item in self.accounts.keys():
+            for item in self.account_list:
                 try:
                     message = collection.find_one_and_update(
                         {'account_cookie': item}
@@ -492,7 +497,7 @@ class QA_Portfolio(QA_Account):
         )
         # 'user_cookie': self.user_cookie,
         # 'portfolio_cookie': self.portfolio_cookie,
-        # 'account_list': list(self.accounts.keys()),
+        # 'account_list': list(self.account_list),
         # 'init_cash': self.init_cash,
         # 'cash': self.cash,
         # 'history': self.history[0]
