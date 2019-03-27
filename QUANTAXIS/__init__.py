@@ -31,7 +31,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.3.4.dev1'
+__version__ = '1.3.4'
 __author__ = 'yutiansut'
 
 # fetch methods
