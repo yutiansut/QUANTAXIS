@@ -267,7 +267,7 @@ def QA_fetch_index_day(code, start, end, format='numpy', collections=DATABASE.in
         res = pd.DataFrame([item for item in cursor])
         try:
             res = res.assign(volume=res.vol, date=pd.to_datetime(
-                res.date)).drop_duplicates((['date', 'code'])).query('volume>1').set_index('date', drop=False)
+                res.date)).drop_duplicates((['date', 'code'])).set_index('date', drop=False)
         except:
             res = None
 
