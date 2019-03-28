@@ -27,10 +27,12 @@ import pandas as pd
 
 from QUANTAXIS.QAMarket.common import exchange_code
 from QUANTAXIS.QAUtil import (
-    QA_util_log_info, QA_util_random_with_topic, QA_util_to_json_from_pandas)
+    QA_util_log_info,
+    QA_util_random_with_topic,
+    QA_util_to_json_from_pandas
+)
 from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_STATUS, ORDER_DIRECTION, ORDER_MODEL
 from QUANTAXIS.QAUtil.QADate import QA_util_stamp2datetime
-
 """
 重新定义Order模式
 
@@ -60,9 +62,35 @@ class QA_Order():
         记录order
     '''
 
-    def __init__(self, price=None, date=None, datetime=None, sending_time=None, trade_time=False, amount=0, market_type=None, frequence=None,
-                 towards=None, code=None, user=None, account_cookie=None, strategy=None, order_model=None, money=None, amount_model=AMOUNT_MODEL.BY_AMOUNT,
-                 order_id=None, trade_id=False, _status=ORDER_STATUS.NEW, callback=False, commission_coeff=0.00025, tax_coeff=0.001, exchange_id=None, *args, **kwargs):
+    def __init__(
+            self,
+            price=None,
+            date=None,
+            datetime=None,
+            sending_time=None,
+            trade_time=False,
+            amount=0,
+            market_type=None,
+            frequence=None,
+            towards=None,
+            code=None,
+            user=None,
+            account_cookie=None,
+            strategy=None,
+            order_model=None,
+            money=None,
+            amount_model=AMOUNT_MODEL.BY_AMOUNT,
+            broker=None,
+            order_id=None,
+            trade_id=False,
+            _status=ORDER_STATUS.NEW,
+            callback=False,
+            commission_coeff=0.00025,
+            tax_coeff=0.001,
+            exchange_id=None,
+            *args,
+            **kwargs
+    ):
         '''
 
 
@@ -124,38 +152,40 @@ class QA_Order():
             self.datetime = datetime
         else:
             pass
-        self.sending_time = self.datetime if sending_time is None else sending_time  # 下单时间
+        self.sending_time = self.datetime if sending_time is None else sending_time # 下单时间
 
-        self.trade_time = trade_time if trade_time else []  # 成交时间
-        self.amount = amount  # 委托数量
-        self.trade_amount = 0  # 成交数量
-        self.cancel_amount = 0  # 撤销数量
-        self.towards = towards  # side
-        self.code = code  # 委托证券代码
-        self.user = user  # 委托用户
-        self.market_type = market_type  # 委托市场类别
-        self.frequence = frequence  # 委托所在的频率(回测用)
+        self.trade_time = trade_time if trade_time else [] # 成交时间
+        self.amount = amount                               # 委托数量
+        self.trade_amount = 0                              # 成交数量
+        self.cancel_amount = 0                             # 撤销数量
+        self.towards = towards                             # side
+        self.code = code                                   # 委托证券代码
+        self.user = user                                   # 委托用户
+        self.market_type = market_type                     # 委托市场类别
+        self.frequence = frequence                         # 委托所在的频率(回测用)
         self.account_cookie = account_cookie
         self.strategy = strategy
-        self.type = market_type  # see below
+        self.type = market_type                            # see below
         self.order_model = order_model
         self.amount_model = amount_model
         self.order_id = QA_util_random_with_topic(
-            topic='Order') if order_id is None else order_id
+            topic='Order'
+        ) if order_id is None else order_id
         self.realorder_id = self.order_id
         self.commission_coeff = commission_coeff
         self.tax_coeff = tax_coeff
         self.trade_id = trade_id if trade_id else []
 
-        self.trade_price = 0  # 成交均价
-        self.callback = callback  # 委托成功的callback
-        self.money = money  # 委托需要的金钱
-        self.reason = None  # 原因列表
+        self.trade_price = 0                                       # 成交均价
+        self.broker = broker
+        self.callback = callback                                   # 委托成功的callback
+        self.money = money                                         # 委托需要的金钱
+        self.reason = None                                         # 原因列表
         self.exchange_id = exchange_id
-        self.time_condition = 'GFD'  # 当日有效
+        self.time_condition = 'GFD'                                # 当日有效
         self._status = _status
         self.exchange_code = exchange_code
-        # 增加订单对于多账户以及多级别账户的支持 2018/11/12
+                                                                   # 增加订单对于多账户以及多级别账户的支持 2018/11/12
         self.mainacc_id = None if 'mainacc_id' not in kwargs.keys(
         ) else kwargs['mainacc_id']
         self.subacc_id = None if 'subacc_id' not in kwargs.keys(
@@ -163,7 +193,7 @@ class QA_Order():
 
     @property
     def pending_amount(self):
-        return self.amount-self.cancel_amount-self.trade_amount
+        return self.amount - self.cancel_amount - self.trade_amount
 
     def __repr__(self):
         '''
@@ -171,13 +201,27 @@ class QA_Order():
         :return:  字符串
         '''
         return '< QA_Order realorder_id {} datetime:{} code:{} amount:{} price:{} towards:{} btype:{} order_id:{} account:{} status:{} >'.format(
-            self.realorder_id, self.datetime, self.code, self.amount, self.price, self.towards, self.type, self.order_id, self.account_cookie, self.status)
+            self.realorder_id,
+            self.datetime,
+            self.code,
+            self.amount,
+            self.price,
+            self.towards,
+            self.type,
+            self.order_id,
+            self.account_cookie,
+            self.status
+        )
 
     @property
     def status(self):
 
         # 以下几个都是最终状态 并且是外部动作导致的
-        if self._status in [ORDER_STATUS.FAILED, ORDER_STATUS.NEXT, ORDER_STATUS.SETTLED, ORDER_STATUS.CANCEL_ALL, ORDER_STATUS.CANCEL_PART]:
+        if self._status in [ORDER_STATUS.FAILED,
+                            ORDER_STATUS.NEXT,
+                            ORDER_STATUS.SETTLED,
+                            ORDER_STATUS.CANCEL_ALL,
+                            ORDER_STATUS.CANCEL_PART]:
             return self._status
 
         if self.pending_amount <= 0:
@@ -230,28 +274,44 @@ class QA_Order():
         Arguments:
             amount {[type]} -- [description]
         """
+        if self.status in [ORDER_STATUS.SUCCESS_PART, ORDER_STATUS.QUEUED]:
+            trade_amount = int(trade_amount)
+            trade_id = str(trade_id)
 
-        trade_amount = int(trade_amount)
-        trade_id = str(trade_id)
+            if trade_amount < 1:
 
-        if trade_amount < 1:
-
-            self._status = ORDER_STATUS.NEXT
-        else:
-            if trade_id not in self.trade_id:
-                trade_price = float(trade_price)
-
-                trade_time = str(trade_time)
-
-                self.trade_id.append(trade_id)
-                self.trade_price = (self.trade_price*self.trade_amount +
-                                    trade_price*trade_amount)/(self.trade_amount+trade_amount)
-                self.trade_amount += trade_amount
-                self.trade_time.append(trade_time)
-                self.callback(self.code, trade_id, self.order_id, self.realorder_id,
-                              trade_price, trade_amount, self.towards, trade_time)
+                self._status = ORDER_STATUS.NEXT
             else:
-                pass
+                if trade_id not in self.trade_id:
+                    trade_price = float(trade_price)
+
+                    trade_time = str(trade_time)
+
+                    self.trade_id.append(trade_id)
+                    self.trade_price = (
+                        self.trade_price * self.trade_amount +
+                        trade_price * trade_amount
+                    ) / (
+                        self.trade_amount + trade_amount
+                    )
+                    self.trade_amount += trade_amount
+                    self.trade_time.append(trade_time)
+                    self.callback(
+                        self.code,
+                        trade_id,
+                        self.order_id,
+                        self.realorder_id,
+                        trade_price,
+                        trade_amount,
+                        self.towards,
+                        trade_time
+                    )
+                else:
+                    pass
+        else:
+            raise RuntimeError(
+                'ORDER STATUS {} CANNNOT TRADE'.format(self.status)
+            )
 
     def queued(self, realorder_id):
         self.realorder_id = realorder_id
@@ -268,6 +328,7 @@ class QA_Order():
             return eval('self.{}'.format(key))
         except Exception as e:
             return exception
+
     # 🛠todo 建议取消，直接调用var
 
     def callingback(self):
@@ -288,7 +349,9 @@ class QA_Order():
 
     # 对象转变成 dfs
     def to_df(self):
-        return pd.DataFrame([vars(self), ])
+        return pd.DataFrame([
+            vars(self),
+        ])
 
     # 🛠todo 建议取消，直接调用var？
 
@@ -384,22 +447,30 @@ class QA_Order():
         self.code = str(otgOrder.get('instrument_id')).upper()
         self.offset = otgOrder.get('offset')
         self.direction = otgOrder.get('direction')
-        self.towards = 'ORDER_DIRECTION.{}_{}'.format(
-            self.offset, self.direction)
+        self.towards = eval('ORDER_DIRECTION.{}_{}'.format(
+            self.direction,
+            self.offset
+        ))
         self.amount = otgOrder.get('volume_orign')
         self.trade_amount = self.amount - otgOrder.get('volume_left')
         self.price = otgOrder.get('limit_price')
         self.order_model = eval(
-            'ORDER_MODEL.{}'.format(otgOrder.get('price_type')))
+            'ORDER_MODEL.{}'.format(otgOrder.get('price_type'))
+        )
         self.time_condition = otgOrder.get('time_condition')
-        self.datetime = QA_util_stamp2datetime(
-            int(otgOrder.get('insert_date_time')))
+        if otgOrder.get('insert_date_time') == 0:
+            self.datetime = 0
+        else:
+            self.datetime = QA_util_stamp2datetime(
+                int(otgOrder.get('insert_date_time'))
+            )
         self.sending_time = self.datetime
         self.volume_condition = otgOrder.get('volume_condition')
         self.message = otgOrder.get('last_msg')
 
         self._status = ORDER_STATUS.NEW
-        if '已撤单' in self.message or '拒绝' in self.message:
+        if '已撤单' in self.message or '拒绝' in self.message or '仓位不足' in self.message:
+            # 仓位不足:  一般是平今/平昨仓位不足
             self._status = ORDER_STATUS.FAILED
         self.realorder_id = otgOrder.get('exchange_order_id')
         return self
@@ -416,7 +487,7 @@ class QA_Order():
             self.price = order_dict['price']
             self.date = order_dict['date']
             self.datetime = order_dict['datetime']
-            self.sending_time = order_dict['sending_time']  # 下单时间
+            self.sending_time = order_dict['sending_time'] # 下单时间
             self.trade_time = order_dict['trade_time']
             self.amount = order_dict['amount']
             self.frequence = order_dict['frequence']
@@ -449,7 +520,7 @@ class QA_Order():
             QA_util_log_info('Failed to tran from dict {}'.format(e))
 
 
-class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
+class QA_OrderQueue(): # also the order tree ？？ what's the tree means?
     """
     一个待成交队列
     queue是一个dataframe
@@ -537,28 +608,44 @@ class QA_OrderQueue():   # also the order tree ？？ what's the tree means?
         :return: dataframe
         '''
         try:
-            return [item for item in self.order_list.values() if item.status in [ORDER_STATUS.QUEUED, ORDER_STATUS.NEXT, ORDER_STATUS.SUCCESS_PART]]
+            return [
+                item for item in self.order_list.values() if item.status in [
+                    ORDER_STATUS.QUEUED,
+                    ORDER_STATUS.NEXT,
+                    ORDER_STATUS.SUCCESS_PART
+                ]
+            ]
         except:
             return []
 
     @property
     def failed(self):
         try:
-            return [item for item in self.order_list.values() if item.status in [ORDER_STATUS.FAILED]]
+            return [
+                item for item in self.order_list.values()
+                if item.status in [ORDER_STATUS.FAILED]
+            ]
         except:
             return []
 
     @property
     def canceled(self):
         try:
-            return [item for item in self.order_list.values() if item.status in [ORDER_STATUS.CANCEL_ALL, ORDER_STATUS.CANCEL_PART]]
+            return [
+                item for item in self.order_list.values() if item.status in
+                [ORDER_STATUS.CANCEL_ALL,
+                 ORDER_STATUS.CANCEL_PART]
+            ]
         except:
             return []
 
     @property
     def untrade(self):
         try:
-            return [item for item in self.order_list.values() if item.status in [ORDER_STATUS.QUEUED]]
+            return [
+                item for item in self.order_list.values()
+                if item.status in [ORDER_STATUS.QUEUED]
+            ]
         except:
             return []
 
