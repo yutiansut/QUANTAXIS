@@ -570,6 +570,13 @@ class _quotation_base():
         res = self.price.groupby(level=1).apply(lambda x: x.pct_change())
         res.name = 'pct_change'
         return res
+    
+    @lru_cache()
+    def close_pct_change(self):
+        '返回DataStruct.close的百分比变化'
+        res = self.close.groupby(level=1).apply(lambda x: x.pct_change())
+        res.name = 'close_pct_change'
+        return res
 
     # 平均绝对偏差
     @property
