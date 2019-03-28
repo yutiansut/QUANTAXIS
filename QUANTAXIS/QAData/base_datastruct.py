@@ -570,6 +570,13 @@ class _quotation_base():
         res = self.price.groupby(level=1).apply(lambda x: x.pct_change())
         res.name = 'pct_change'
         return res
+    
+    @lru_cache()
+    def close_pct_change(self):
+        '返回DataStruct.close的百分比变化'
+        res = self.close.groupby(level=1).apply(lambda x: x.pct_change())
+        res.name = 'close_pct_change'
+        return res
 
     # 平均绝对偏差
     @property
@@ -959,7 +966,11 @@ class _quotation_base():
         """
         转换DataStruct为json
         """
-        return QA_util_to_json_from_pandas(self.data.reset_index())
+        
+        data = self.data
+        if self.type[-3:] != 'min':
+            data = self.data.assign(datetime= self.datetime)
+        return QA_util_to_json_from_pandas(data.reset_index())
 
     def to_string(self):
         return json.dumps(self.to_json())

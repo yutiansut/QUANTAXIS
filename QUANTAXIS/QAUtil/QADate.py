@@ -30,6 +30,7 @@ import pandas as pd
 
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 
+QATZInfo_CN = 'Asia/Shanghai'
 
 def QA_util_time_now():
     """

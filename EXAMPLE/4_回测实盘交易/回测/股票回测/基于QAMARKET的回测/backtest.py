@@ -28,8 +28,8 @@ from QUANTAXIS.QAARP.QAUser import QA_User
 from QUANTAXIS.QAApplication.QABacktest import QA_Backtest
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QAParameter import FREQUENCE, MARKET_TYPE
-from test_backtest.minstrategy import MAMINStrategy
-from test_backtest.strategy import MAStrategy
+from minstrategy import MAMINStrategy
+from strategy import MAStrategy
 
 
 class Backtest(QA_Backtest):
@@ -40,14 +40,9 @@ class Backtest(QA_Backtest):
 
     def __init__(self, market_type, frequence, start, end, code_list, commission_fee):
         super().__init__(market_type,  frequence, start, end, code_list, commission_fee)
-        self.user = QA_User()
-        mastrategy = MAStrategy()
-        maminstrategy = MAMINStrategy()
-        # maminstrategy.reset_assets(1000)
-        # self.portfolio, self.account = self.user.register_account(mastrategy)
-        self.user = QA_User(user_cookie='user_admin')
-        self.portfolio = self.user.new_portfolio('folio_admin')
-        self.portfolio, self.account = self.user.register_account(mastrategy)
+        mastrategy = MAStrategy(user_cookie=self.user.user_cookie, portfolio_cookie= self.portfolio.portfolio_cookie, account_cookie= 'mastrategy')
+        #maminstrategy = MAMINStrategy()
+        self.account = self.portfolio.add_account(mastrategy)
 
     def after_success(self):
         QA_util_log_info(self.account.history_table)
@@ -61,7 +56,7 @@ class Backtest(QA_Backtest):
         fig.show()
         fig=risk.plot_signal()
         fig.show()
-        self.account.save()
+        self.user.save()
         risk.save()
 
 
@@ -73,6 +68,7 @@ def run_daybacktest():
                         end='2017-02-10',
                         code_list=QA.QA_fetch_stock_block_adv().code[0:5],
                         commission_fee=0.00015)
+    print(backtest.account)
     backtest.start_market()
 
     backtest.run()

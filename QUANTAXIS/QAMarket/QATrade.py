@@ -61,7 +61,7 @@ class QA_Trade():
     def get_client_id(self, *args, **kwargs):
         pass
 
-    def get_account_id(self, *args, **kwargs):
+    def get_account_cookie(self, *args, **kwargs):
         pass
 
     def subscribe_public_topic(self, *args, **kwargs):
