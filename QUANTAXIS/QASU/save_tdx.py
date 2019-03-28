@@ -193,16 +193,6 @@ def gen_param(codelist, start_date=None, end_date=None, if_fq='00', frequence='d
             for code, i in [(code, next(my_iterator) % count) for code in codelist]]
 
 
-def gen_param(codelist, start_date=None, end_date=None, if_fq='00', frequence='day', IPList=[]):
-    # 生成QA.QAFetch.QATdx.QQA_fetch_get_stock_day多进程处理的参数
-    count = len(IPList)
-    my_iterator = iter(range(len(codelist)))
-    start_date = str(start_date)[0:10]
-    end_date = str(end_date)[0:10]
-    return [(code, start_date, end_date, if_fq, frequence, IPList[i % count]['ip'], IPList[i % count]['port'])
-            for code, i in [(code, next(my_iterator) % count) for code in codelist]]
-
-
 def QA_SU_save_stock_week(client=DATABASE, ui_log=None, ui_progress=None):
     """save stock_week
 
