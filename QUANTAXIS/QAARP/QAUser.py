@@ -143,13 +143,13 @@ class QA_User():
         self.user_cookie = QA_util_random_with_topic(
             'USER'
         ) if user_cookie is None else user_cookie
-        self.coins = coins # 积分
-        self.money = money # 钱
+        self.coins = coins  # 积分
+        self.money = money  # 钱
 
         # ==============================
         self._subscribed_strategy = {}
         self._subscribed_code = []
-        self._signals = [] # 预期收到的信号
+        self._signals = []  # 预期收到的信号
         self._cash = []
         self._history = []
 
@@ -379,7 +379,7 @@ class QA_User():
 
         try:
             return self.portfolio_list[portfolio_cookie].accounts[account_cookie
-                                                                 ]
+                                                                  ]
         except:
             return None
 
@@ -477,6 +477,7 @@ class QA_User():
         """基于账户/密码去sync数据库
         """
         if self.wechat_id is not None:
+
             res = self.client.find_one({'wechat_id': self.wechat_id})
         else:
             res = self.client.find_one(
@@ -557,8 +558,10 @@ class QA_User():
         self.password = message.get('password')
         self.user_cookie = message.get('user_cookie')
         #
+        portfolio_list = [item['portfolio_cookie'] for item in DATABASE.portfolio.find(
+            {'user_cookie': self.user_cookie}, {'portfolio_cookie': 1, '_id': 0})]
 
-        portfolio_list = message.get('portfolio_list')
+        # portfolio_list = message.get('portfolio_list')
         if len(portfolio_list) > 0:
             self.portfolio_list = dict(
                 zip(

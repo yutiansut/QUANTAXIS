@@ -7,9 +7,7 @@ Quantitative Financial FrameWork
 
 从数据爬取-清洗存储-分析回测-可视化-交易复盘的本地一站式解决方案
 
-## 祝贺 QUANTAXIS 入选 [GITEE 最有价值开源项目 GVP](https://gitee.com/gvp)
-
-![logo](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/Documents/logo/QUANTAXIS_LOGO_LAST_small.jpg)
+![logo](http://pic.yutiansut.com/QUANTAXIS_LOGO_LAST_small.jpg)
 
 
 
@@ -17,16 +15,16 @@ Quantitative Financial FrameWork
 ![pypidownloads](https://img.shields.io/pypi/dw/quantaxis.svg)
 ![pypidownloads](https://img.shields.io/pypi/dd/quantaxis.svg)
 
-
-
 [![Github workers](https://img.shields.io/github/watchers/quantaxis/quantaxis.svg?style=social&label=Watchers&)](https://github.com/quantaxis/quantaxis/watchers)
 [![GitHub stars](https://img.shields.io/github/stars/quantaxis/quantaxis.svg?style=social&label=Star&)](https://github.com/quantaxis/quantaxis/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/quantaxis/quantaxis.svg?style=social&label=Fork&)](https://github.com/quantaxis/quantaxis/fork)
 
-
-> ENGLISH DOCUMENTS PLEASE CLICK [THIS](README_ENG.md)
-
 [点击右上角Star和Watch来跟踪项目进展! 点击Fork来创建属于你的QUANTAXIS!]
+
+
+## 祝贺 QUANTAXIS 入选 [GITEE 最有价值开源项目 GVP](https://gitee.com/gvp)
+![gvp](http://pic.yutiansut.com/gvp.jpg)
+
 
 
 ![main_1](http://pic.yutiansut.com/Main_1.gif)
@@ -63,6 +61,13 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 ==========================================
 
+## 视频录播(2019-03-23)
+
+QUANTAXIS 2019 支持多市场的面向场景解决方案
+![](http://pic.yutiansut.com/QAFINANCIAL2019.jpg)
+[在哔哩哔哩观看录播](https://www.bilibili.com/video/av47284727/)
+
+==========================================
 
 ## 关联项目:
 
@@ -127,7 +132,6 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
     - [11. 回测Webkit插件概览](#11-回测webkit插件概览)
     - [12. QUANTAXIS 标准化协议和未来协议](#12-quantaxis-标准化协议和未来协议)
     - [13. 电脑配置推荐](#13-电脑配置推荐)
-    - [14. 开户](#14-开户无论资金规模)
     - [License](#license)
 
 <!-- /TOC -->
@@ -341,6 +345,10 @@ git clone https://github.com/你的账户名/quantaxis
 ![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015550.png)
 ![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015537.png)
 
+手工定制版本 LAB
+
+![](http://pic.yutiansut.com/QADESK_LAB.png)
+
 ##  12. QUANTAXIS 标准化协议和未来协议
 
 
@@ -364,40 +372,6 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.8
 如果是阿里云/腾讯云的服务器,请在最初的时候 选择64位的操作系统
 
 
-## 14. 开户(无论资金规模):
-
-记得赚了钱赶紧给quantaxis组织捐一点(逃:
-
-### 期货开户
-```
-即日起到春节前, 中财期货,瑞龙期货 和QUANTAXIS达成协议, 使用quantaxis的量化期货交易者，
-
-- 交易所内返80%(无论资金规模)
-- 每月直接返还到交易账户
-- 没有中间商赚差价
-- 手续费是 交易所+1分
-
-- 享受一次quantaxis期货环境部署远程指导[带行情带下单](看心情)
-
-
-联系 微信(GX3117) 备注 from quantaxis 
-
-```
-### 股票开户
-```
-股票开户给出两个选择:
-1. 长城国瑞证券 万1.2 无五元手续费 (目前还没谈到万1) (联系 QQ 2961725743 备注 from quantaxis)
-2. 财通证券 万1.2 无五元手续费 (联系QQ 2939048292 备注 from quantaxis)
-3. 财通证券 万1.2 无五元手续费(送开户大礼包 行情/书籍自选一样) (联系QQ 373566682 备注 from quantaxis)
-
-- 享受一次quantaxis股票环境部署远程指导[带行情带下单](看心情)
-
-上述均无资金规模限制 
-```
-
-上述广告都已经尽力把价格往下谈了, 均不限制资金规模, 记得报quantaxis哈
-
-PS: 另外如果你是券商/期货的居间人 能给出相似或更有竞争力的价格欢迎来撩
 
 
 ## License
