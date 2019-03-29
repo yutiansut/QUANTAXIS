@@ -113,7 +113,7 @@ class TestSelect_best_ip(TestCase):
         ps = Parallelism(cpu_count())
         data1 = QA.QAFetch.QATdx.QA_fetch_get_stock_day(codelist[0], start, end)
         data2 = QA.QAFetch.QATdx.QA_fetch_get_stock_day(codelist[0], start, end2)
-        # 交易时间段，
+        # 交易时间段
         self.assertTrue(len(data1) == len(data2), '数据长度：{} {} 日期： {} {}'.format(len(data1), len(data2), end, end2))
         print('数据长度：{} {} 日期： {} {}'.format(len(data1), len(data2), end, end2))
         print('当前数据： {} {}'.format(data1.close[-1], data2.close[-1]))
@@ -129,10 +129,11 @@ class TestSelect_best_ip(TestCase):
         ps = Parallelism(cpu_count())
         data1 = QA.QAFetch.QATdx.QA_fetch_get_stock_day(codelist[0], start, end)
         data2 = QA.QAFetch.QATdx.QA_fetch_get_stock_day(codelist[0], start, end2)
-        # 交易时间段，
-        self.assertFalse(len(data1) == len(data2), '数据长度：{} {} 日期： {} {}'.format(len(data1), len(data2), end, end2))
+        # 交易时间段
+        self.assertTrue(not len(data1) == len(data2), '数据长度：{} {} 日期： {} {}'.format(len(data1), len(data2), end, end2))
         print('数据长度：{} {} 日期： {} {}'.format(len(data1), len(data2), end, end2))
         print('当前数据： {} {}'.format(data1.close[-1], data2.close[-1]))
+
 
     def test_QA_SU_save_stock_day(self):
         print('start test_QA_SU_save_stock_day')
