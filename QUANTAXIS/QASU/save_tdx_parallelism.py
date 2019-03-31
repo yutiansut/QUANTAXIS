@@ -179,7 +179,7 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
                 err.append(code)
         return results
 
-    ips = get_ip_list_by_multi_process_ping(stock_ip_list, filename='stock_ip_list')[:cpu_count() * 2 + 1]
+    ips = get_ip_list_by_multi_process_ping(stock_ip_list, _type='stock')[:cpu_count() * 2 + 1]
     param = __gen_param(stock_list, coll_stock_day, ips)
     ps = QA_SU_save_stock_day_parallelism(processes=cpu_count() if len(ips) >= cpu_count() else len(ips),
                                           client=client, ui_log=ui_log)
