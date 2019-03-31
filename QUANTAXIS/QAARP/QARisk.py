@@ -523,7 +523,7 @@ class QA_Risk():
         )
 
     def calc_profitpctchange(self, assets):
-        return self.assets[::-1].pct_change()[::-1]
+        return assets[::-1].pct_change()[::-1]
 
     def calc_beta(self, assest_profit, benchmark_profit):
 
@@ -1252,7 +1252,7 @@ class QA_Performance():
         plt.gcf().autofmt_xdate()
         return plt
 
-    def plot_pnlmoney(self, pnl):
+    def plot_pnlmoney(self):
         """
         画出pnl盈亏额散点图
         """
@@ -1379,7 +1379,7 @@ class QA_Performance():
 
     @property
     def netprofio_maxloss_ratio(self):
-        return self.pnl.pnl_money.sum() / self.max_loss
+        return abs(self.pnl.pnl_money.sum() / self.max_loss)
 
     @property
     def continue_profit_amount(self):
