@@ -149,7 +149,7 @@ class TestSelect_best_ip(TestCase):
             len(data2) == len(data1) if data1.datetime[-1] == data2.datetime[-1] else len(data2) > len(data1),
             '保存后的数据应该比未保存前长： {} {}'.format(len(data2), len(data1)))
 
-    def test_get_index_min_adv(self):
+    # def test_get_index_min_adv(self):
         # 分钟数据测试
         # def __get_index_min_adv(code, start, end, frequence):
         #     if isinstance(code, list) is not True:
