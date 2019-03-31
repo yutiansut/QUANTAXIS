@@ -56,7 +56,8 @@ class Parallelism(object):
                                                     error_callback=self.exception)
                 self.total_processes += 1
         else:
-            self.data = self.pool.starmap_async(func=func, iterable=iter, callback=self.complete)
+            self.data = self.pool.starmap_async(func=func, iterable=iter, callback=self.complete,
+                                                error_callback=self.exception)
             self.total_processes += 1
         # self.data.get()
 
