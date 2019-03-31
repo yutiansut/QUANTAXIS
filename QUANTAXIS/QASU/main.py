@@ -92,6 +92,20 @@ def QA_SU_save_index_list(engine, client=DATABASE):
     engine.QA_SU_save_index_list(client=client)
 
 
+def QA_SU_save_etf_list(engine, client=DATABASE):
+    """save etf_list
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_etf_list(client=client)
+
+
 def QA_SU_save_future_list(engine, client=DATABASE):
     """save future_list
 

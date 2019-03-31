@@ -149,7 +149,9 @@ class QA_Account(QA_Worker):
             allow_margin=False,
             running_environment=RUNNING_ENVIRONMENT.BACKETEST,
             auto_reload=False,
-            generated='direct'
+            generated='direct',
+            start=None,
+            end=None
     ):
         """
 
@@ -274,6 +276,8 @@ class QA_Account(QA_Worker):
         self.running_time = datetime.datetime.now()
         self.quantaxis_version = __version__
         self.client = DATABASE.account
+        self.start_=start
+        self.end_=end
         ### 下面是数据库创建index部分, 此部分可能导致部分代码和原先不兼容
         self.client.create_index(
             [
@@ -496,15 +500,17 @@ class QA_Account(QA_Worker):
         Returns:
             [type] -- [description]
         """
-
-        if len(self.time_index) > 0:
-            return str(min(self.time_index))[0:10]
-        else:
-            print(
-                RuntimeWarning(
-                    'QAACCOUNT: THIS ACCOUNT DOESNOT HAVE ANY TRADE'
+        if self.start_==None:
+            if len(self.time_index) > 0:
+                return str(min(self.time_index))[0:10]
+            else:
+                print(
+                    RuntimeWarning(
+                        'QAACCOUNT: THIS ACCOUNT DOESNOT HAVE ANY TRADE'
+                    )
                 )
-            )
+        else:
+            return self.end_        
 
     @property
     def end_date(self):
@@ -516,16 +522,17 @@ class QA_Account(QA_Worker):
         Returns:
             [type] -- [description]
         """
-
-        if len(self.time_index) > 0:
-            return str(max(self.time_index))[0:10]
-        else:
-            print(
-                RuntimeWarning(
-                    'QAACCOUNT: THIS ACCOUNT DOESNOT HAVE ANY TRADE'
+        if self.start_==None:
+            if len(self.time_index) > 0:
+                return str(max(self.time_index))[0:10]
+            else:
+                print(
+                    RuntimeWarning(
+                        'QAACCOUNT: THIS ACCOUNT DOESNOT HAVE ANY TRADE'
+                    )
                 )
-            )
-
+        else:
+            return self.end_
     @property
     def market_data(self):
         return self._market_data
@@ -647,9 +654,8 @@ class QA_Account(QA_Worker):
     def daily_cash(self):
         '每日交易结算时的现金表'
         res = self.cash_table.drop_duplicates(subset='date', keep='last')
-
-        return pd.concat([res.set_index('date'), pd.Series(data=None, index=pd.to_datetime(self.trade_range).set_names('date'), name='predrop')], axis=1)\
-            .ffill().drop(['predrop'], axis=1).reset_index().set_index(['date', 'account_cookie'], drop=False).sort_index()
+        res_=pd.concat([res.set_index('date'), pd.Series(data=None, index=pd.to_datetime(self.trade_range).set_names('date'), name='predrop')], axis=1).ffill()
+        return res_.fillna(self.init_cash).drop(['predrop','datetime','account_cookie'], axis=1).reset_index().set_index(['date'],drop=False).sort_index()
 
     @property
     def daily_hold(self):
@@ -668,13 +674,13 @@ class QA_Account(QA_Worker):
             res = data[~data.index.duplicated(keep='last')].sort_index()
             # 这里会导致股票停牌时的持仓也被计算 但是计算market_value的时候就没了
             return pd.concat([res.reset_index().set_index('date'), pd.Series(data=None, index=pd.to_datetime(self.trade_range).set_names('date'), name='predrop')], axis=1)\
-                .ffill().drop(['predrop'], axis=1).reset_index().set_index(['date', 'account_cookie']).sort_index()
+                .ffill().fillna(0).drop(['predrop','account_cookie'], axis=1).reset_index().set_index(['date']).sort_index()
 
 
     @property
     def daily_frozen(self):
         '每日交易结算时的持仓表'
-        return self.history_table.assign(date=pd.to_datetime(self.history_table.datetime)).set_index('date').resample('D').frozen.last()
+        return self.history_table.assign(date=pd.to_datetime(self.history_table.datetime)).set_index('date').resample('D').frozen.last().fillna(0)
 
     @property
     def latest_cash(self):
