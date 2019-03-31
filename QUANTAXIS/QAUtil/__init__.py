@@ -119,3 +119,5 @@ from QUANTAXIS.QAUtil.QADateTools import (
 )
 
 from QUANTAXIS.QAUtil.Parallelism import Parallelism
+from QUANTAXIS.QAUtil.QACache import QA_util_cache
+from QUANTAXIS.QAUtil.QASingleton import singleton

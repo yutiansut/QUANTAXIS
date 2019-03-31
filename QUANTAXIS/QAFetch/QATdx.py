@@ -48,7 +48,7 @@ from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
 from QUANTAXIS.QAUtil.QASetting import QASETTING
 from QUANTAXIS.QASetting.QALocalize import log_path
 from QUANTAXIS.QAUtil import Parallelism
-
+from QUANTAXIS.QAUtil.QACache import QA_util_cache
 
 def init_fetcher():
     """初始化获取
@@ -125,27 +125,23 @@ def select_best_ip():
     assert isinstance(ipdefault, dict)
     if ipdefault['stock']['ip'] == None:
 
-        best_stock_ip = get_ip_list_by_ping(
-            stock_ip_list, filename='stock_ip_list_MP')
+        best_stock_ip = get_ip_list_by_ping(stock_ip_list)
     else:
         if ping(ipdefault['stock']['ip'], ipdefault['stock']['port'], 'stock') < datetime.timedelta(0, 1):
             print('USING DEFAULT STOCK IP')
             best_stock_ip = ipdefault['stock']
         else:
             print('DEFAULT STOCK IP is BAD, RETESTING')
-            best_stock_ip = get_ip_list_by_ping(
-                stock_ip_list, filename='stock_ip_list_MP')
+            best_stock_ip = get_ip_list_by_ping(stock_ip_list)
     if ipdefault['future']['ip'] == None:
-        best_future_ip = get_ip_list_by_ping(
-            future_ip_list, filename='future_ip_list_MP', _type='future')
+        best_future_ip = get_ip_list_by_ping(future_ip_list, _type='future')
     else:
         if ping(ipdefault['future']['ip'], ipdefault['future']['port'], 'future') < datetime.timedelta(0, 1):
             print('USING DEFAULT FUTURE IP')
             best_future_ip = ipdefault['future']
         else:
             print('DEFAULT FUTURE IP {} is BAD, RETESTING'.format(ipdefault))
-            best_future_ip = get_ip_list_by_ping(
-                future_ip_list, filename='future_ip_list_MP')
+            best_future_ip = get_ip_list_by_ping(future_ip_list, _type='future')
     ipbest = {'stock': best_stock_ip, 'future': best_future_ip}
     qasetting.set_config(
         section='IPLIST', option='default', default_value=ipbest)
@@ -155,32 +151,25 @@ def select_best_ip():
     return ipbest
 
 
-def get_ip_list_by_ping(ip_list=[], filename=None, _type='stock'):
-    # data_stock = [ping(x['ip'], x['port'], 'stock') for x in ip_list]
-    # best_stock_ip = stock_ip_list[data_stock.index(min(data_stock))]
-    # return best_stock_ip
-    best_ip = get_ip_list_by_multi_process_ping(ip_list, 1, filename, _type)
+def get_ip_list_by_ping(ip_list=[], _type='stock'):
+    best_ip = get_ip_list_by_multi_process_ping(ip_list, 1, _type)
     return best_ip[0]
 
 
-def get_ip_list_by_multi_process_ping(ip_list=[], n=0, filename=None, _type='stock'):
+def get_ip_list_by_multi_process_ping(ip_list=[], n=0, _type='stock'):
     ''' 根据ping排序返回可用的ip列表
+    2019 03 31 取消参数filename
 
     :param ip_list: ip列表
     :param n: 最多返回的ip数量， 当可用ip数量小于n，返回所有可用的ip；n=0时，返回所有可用ip
+    :param _type: ip类型
     :return: 可以ping通的ip列表
     '''
-
-    import pickle
-    import os
-    if filename:
-        filename = '{}{}{}.pickle'.format(QASETTING.get_config(
-            section='LOG', option='path', default_value=""), os.sep, filename)
-    if filename and os.path.isfile(filename):
-        with open(filename, 'rb') as filehandle:
-            # read the data as binary data stream
-            results = pickle.load(filehandle)
-            print('loading ip list from {}.'.format(filename))
+    cache = QA_util_cache()
+    results = cache.get(_type)
+    if results:
+        # read the data from cache
+        print('loading ip list from {} cache.'.format(_type))
     else:
         ips = [(x['ip'], x['port'], _type) for x in ip_list]
         ps = Parallelism()
@@ -194,11 +183,10 @@ def get_ip_list_by_multi_process_ping(ip_list=[], n=0, filename=None, _type='sto
                 results.append((data[i], ip_list[i]))
         # 按照ping值从小大大排序
         results = [x[1] for x in sorted(results, key=lambda x: x[0])]
-        if filename:
-            with open(filename, 'wb') as filehandle:
+        if _type:
                 # store the data as binary data stream
-                pickle.dump(results, filehandle)
-                print('saving ip list to {}.'.format(filename))
+                cache.set(_type, results, age=86400)
+                print('saving ip list to {} cache {}.'.format(_type, len(results)))
     if len(results) > 0:
         if n == 0 and len(results) > 0:
             return results
@@ -207,7 +195,6 @@ def get_ip_list_by_multi_process_ping(ip_list=[], n=0, filename=None, _type='sto
     else:
         print('ALL IP PING TIMEOUT!')
         return [{'ip': None, 'port': None}]
-
 
 global best_ip
 best_ip = {
