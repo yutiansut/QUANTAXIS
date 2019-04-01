@@ -122,5 +122,5 @@ Risk.plot_assets_curve()
 Risk.profit_construct
 
 
-user.save()
+Account.save()
 Risk.save()
