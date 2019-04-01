@@ -206,12 +206,10 @@ class QA_Risk():
         return pd.DataFrame([self.message])
 
     @property
-    @lru_cache()
     def total_timeindex(self):
         return self.account.trade_range
 
     @property
-    @lru_cache()
     def market_value(self):
         """每日每个股票持仓市值表
 
@@ -235,7 +233,6 @@ class QA_Risk():
             return None
 
     @property
-    @lru_cache()
     def daily_market_value(self):
         """每日持仓总市值表
 
@@ -316,7 +313,7 @@ class QA_Risk():
             [type] -- [description]
         """
 
-        return float(round(self.assets.iloc[-1] - self.init_cash, 2))
+        return float(round(self.assets.iloc[-1] - self.assets.iloc[0], 2))
 
     @property
     def profit(self):
@@ -381,7 +378,7 @@ class QA_Risk():
             'beta': self.beta,
             'alpha': self.alpha,
             'sharpe': self.sharpe,
-            'init_cash': "%0.2f" % (float(self.init_cash)),
+            'init_cash': "%0.2f" % (float(self.assets[0])),
             'last_assets': "%0.2f" % (float(self.assets.iloc[-1])),
             'total_tax': self.total_tax,
             'total_commission': self.total_commission,
@@ -413,8 +410,8 @@ class QA_Risk():
         基准组合的账户资产队列
         """
         return (
-            self.benchmark_data.close / float(self.benchmark_data.open.iloc[0])
-            * float(self.init_cash)
+            self.benchmark_data.close / float(self.benchmark_data.close.iloc[0])
+            * float(self.assets[0])
         )
 
     @property
@@ -559,7 +556,7 @@ class QA_Risk():
         计算账户收益
         期末资产/期初资产 -1
         """
-        return (float(assets.iloc[-1]) / float(self.init_cash)) - 1
+        return (float(assets.iloc[-1]) / float(assets.iloc[0])) - 1
 
     def calc_sharpe(self, annualized_returns, volatility_year, r=0.05):
         """
@@ -736,7 +733,7 @@ class QA_Risk():
     @property
     def month_assets_profit(self):
 
-        res = pd.concat([pd.Series(self.init_cash), self.month_assets]).diff().dropna()
+        res = pd.concat([pd.Series(self.assets.iloc[0]), self.month_assets]).diff().dropna()
         res.index = res.index.map(str)
         return res
     @property
@@ -978,7 +975,6 @@ class QA_Performance():
         pass
 
     @property
-    @lru_cache()
     def pnl_lifo(self):
         """
         使用后进先出法配对成交记录
@@ -990,7 +986,7 @@ class QA_Performance():
             )
         )
         pair_table = []
-        for _, data in self.target.history_table.iterrows():
+        for _, data in self.perf.target.history_table_min.iterrows():
             while True:
                 if X[data.code].qsize() == 0:
                     X[data.code].put((data.datetime, data.amount, data.price))
@@ -1022,8 +1018,9 @@ class QA_Performance():
                                         l[0],
                                         data.datetime,
                                         abs(data.amount),
-                                        l[2],
-                                        data.price
+                                        data.price,                                        
+                                        l[2]
+
                                         
                                     ]
                                 )
@@ -1111,7 +1108,6 @@ class QA_Performance():
         return pnl
 
     @property
-    @lru_cache()
     def pnl_fifo(self):
         X = dict(
             zip(
@@ -1120,7 +1116,7 @@ class QA_Performance():
             )
         )
         pair_table = []
-        for _, data in self.target.history_table.iterrows():
+        for _, data in self.target.history_table_min.iterrows():
             while True:
                 if len(X[data.code]) == 0:
                     X[data.code].append(
@@ -1132,7 +1128,6 @@ class QA_Performance():
                 else:
                     l = X[data.code].popleft()
                     if (l[1] * data.amount) < 0:
-                        # 空单信号
                         # 原有多仓/ 平仓 或者原有空仓/平仓
 
                         if abs(l[1]) > abs(data.amount):
@@ -1208,14 +1203,14 @@ class QA_Performance():
                                         l[0],
                                         data.datetime,
                                         abs(data.amount),
-                                        l[2],
-                                        data.price
+                                        data.price,                                      
+                                        l[2]
+
                                     ]
                                 )
                                 break
 
                     else:
-                        #多单
                         X[data.code].appendleft(l)
                         X[data.code].appendleft(
                             (data.datetime,
@@ -1430,5 +1425,5 @@ class QA_Performance():
 
     @property
     def total_taxfee(self):
-        return self.target.history_table.commission.sum(
-        ) + self.target.history_table.tax.sum()
+        return self.target.history_table_min.commission.sum(
+        ) + self.target.history_table_min.tax.sum()
