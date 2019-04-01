@@ -103,7 +103,7 @@ simple_backtest(AC, QA.QA_fetch_stock_block_adv(
 
 
 print(AC.message)
-User.save()
+AC.save()
 risk = QA.QA_Risk(AC)
 print(risk.message)
 risk.save()
