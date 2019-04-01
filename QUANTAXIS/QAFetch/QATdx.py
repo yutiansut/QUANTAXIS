@@ -800,6 +800,26 @@ def QA_fetch_get_index_min(code, start, end, frequence='1min', ip=None, port=Non
         # data
         return data.assign(datetime=data['datetime'].apply(lambda x: str(x)))
 
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
+def QA_fetch_get_index_latest(code, ip=None, port=None):
+    ip, port = get_mainmarket_ip(ip, port)
+    code = [code] if isinstance(code, str) else code
+    api = TdxHq_API(multithread=True)
+    with api.connect(ip, port):
+        data = []
+        for item in code:
+            if str(item)[0] in ['5', '1']:  # ETF
+                data.append(api.to_df(api.get_security_bars(9, 1 if str(item)[0] in ['0', '8', '9', '5'] else 0, item, 0, 1)).assign(code=item))
+            else:
+                data.append(api.to_df(api.get_index_bars(9, 1 if str(code)[0] in ['0', '8', '9', '5'] else 0, item, 0, 1)).assign(code=item))
+        data = pd.concat(data, axis=0)
+        return data \
+            .assign(date=pd.to_datetime(data['datetime']
+                                        .apply(lambda x: x[0:10])), date_stamp=data['datetime']
+                    .apply(lambda x: QA_util_date_stamp(str(x[0:10])))) \
+            .set_index('date', drop=False) \
+            .drop(['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1)
+
 
 def __QA_fetch_get_stock_transaction(code, day, retry, api):
     batch_size = 2000  # 800 or 2000 ? 2000 maybe also works
