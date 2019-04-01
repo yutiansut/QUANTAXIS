@@ -5290,6 +5290,69 @@ def QA_SU_save_future_min_all(client=DATABASE, ui_log=None, ui_progress=None):
         QA_util_log_info(err, ui_log=ui_log)
 
 
+def QA_SU_save_etf_xdxr(client=DATABASE, ui_log=None, ui_progress=None):
+    """[summary]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+    etf_list = QA_fetch_get_stock_list("etf").code.unique().tolist()
+    try:
+
+        coll = client.etf_xdxr
+        coll.create_index(
+            [('code',
+              pymongo.ASCENDING),
+             ('date',
+              pymongo.ASCENDING)],
+            unique=True
+        )
+    except:
+        client.drop_collection('etf_xdxr')
+        coll = client.etf_xdxr
+        coll.create_index(
+            [('code',
+              pymongo.ASCENDING),
+             ('date',
+              pymongo.ASCENDING)],
+            unique=True
+        )
+    err = []
+
+    def __saving_work(code, coll):
+        QA_util_log_info(
+            '##JOB17 Now Saving ETF XDXR INFO ==== {}'.format(str(code)),
+            ui_log=ui_log
+        )
+        try:
+            coll.insert_many(
+                QA_util_to_json_from_pandas(QA_fetch_get_stock_xdxr(str(code))),
+                ordered=False
+            )
+
+        except:
+
+            err.append(str(code))
+
+    for i_ in range(len(etf_list)):
+        QA_util_log_info(
+            'The {} of Total {}'.format(i_,
+                                        len(etf_list)),
+            ui_log=ui_log
+        )
+        strLogInfo = 'DOWNLOAD PROGRESS {} '.format(
+            str(float(i_ / len(etf_list) * 100))[0:4] + '%'
+        )
+        intLogProgress = int(float(i_ / len(etf_list) * 100))
+        QA_util_log_info(
+            strLogInfo,
+            ui_log=ui_log,
+            ui_progress=ui_progress,
+            ui_progress_int_value=intLogProgress
+        )
+        __saving_work(etf_list[i_], coll)
+
+
 if __name__ == '__main__':
     # QA_SU_save_stock_day()
     # QA_SU_save_stock_xdxr()
