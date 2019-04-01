@@ -1022,8 +1022,9 @@ class QA_Performance():
                                         l[0],
                                         data.datetime,
                                         abs(data.amount),
-                                        data.price,
-                                        l[2]
+                                        l[2],
+                                        data.price
+                                        
                                     ]
                                 )
                                 break
@@ -1131,6 +1132,7 @@ class QA_Performance():
                 else:
                     l = X[data.code].popleft()
                     if (l[1] * data.amount) < 0:
+                        # 空单信号
                         # 原有多仓/ 平仓 或者原有空仓/平仓
 
                         if abs(l[1]) > abs(data.amount):
@@ -1206,13 +1208,14 @@ class QA_Performance():
                                         l[0],
                                         data.datetime,
                                         abs(data.amount),
-                                        data.price,
-                                        l[2]
+                                        l[2],
+                                        data.price
                                     ]
                                 )
                                 break
 
                     else:
+                        #多单
                         X[data.code].appendleft(l)
                         X[data.code].appendleft(
                             (data.datetime,

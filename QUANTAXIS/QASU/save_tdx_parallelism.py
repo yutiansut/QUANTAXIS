@@ -62,18 +62,20 @@ class QA_SU_save_stock_day_parallelism(Parallelism):
         super(QA_SU_save_stock_day_parallelism, self).__init__(processes)
         self.client = client
         self.ui_log = ui_log
-        self.ui_progress= ui_progress
+        self.ui_progress = ui_progress
 
     def add(self, func, iter):
         if isinstance(iter, list) and self.cores > 1 and len(iter) > self.cores:
-            for i in range(self.cores * 2 - 1):
-                pLen = int(len(iter) / self.cores) + 1
+            j = self.cores + 1
+            for i in range(j):
+                pLen = int(len(iter) / j) + 1
                 self.data = self.pool.starmap_async(func, iter[int(i * pLen):int((i + 1) * pLen)],
                                                     callback=self.complete,
                                                     error_callback=self.exception)
                 self.total_processes += 1
         else:
-            self.data = self.pool.starmap_async(func=func, iterable=iter, callback=self.complete)
+            self.data = self.pool.starmap_async(func=func, iterable=iter, callback=self.complete,
+                                                error_callback=self.exception)
             self.total_processes += 1
 
     def complete(self, result):
@@ -111,7 +113,6 @@ class QA_SU_save_stock_day_parallelism(Parallelism):
         except Exception as error0:
             print(error0, flush=True)
             # err.append(df.code.unique()[0])
-
 
 
 def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
@@ -170,6 +171,7 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
                     ui_log
                 )
                 if start_date != end_date:
+                    # 更新过的，不更新
                     results.extend([(code, start_date, end_date, '00', 'day', ip_list[item % count]['ip'],
                                      ip_list[item % count]['port'], item, total, ui_log, ui_progress)])
             except Exception as error0:
@@ -177,10 +179,10 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
                 err.append(code)
         return results
 
-
-    ips = get_ip_list_by_multi_process_ping(stock_ip_list, filename='stock_ip_list')[:cpu_count() * 2 + 1]
+    ips = get_ip_list_by_multi_process_ping(stock_ip_list, _type='stock')[:cpu_count() * 2 + 1]
     param = __gen_param(stock_list, coll_stock_day, ips)
-    ps = QA_SU_save_stock_day_parallelism(cpu_count(), client=client, ui_log=ui_log)
+    ps = QA_SU_save_stock_day_parallelism(processes=cpu_count() if len(ips) >= cpu_count() else len(ips),
+                                          client=client, ui_log=ui_log)
     ps.add(do_saving_work, param)
     ps.run()
 
@@ -189,6 +191,7 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
     else:
         QA_util_log_info('ERROR CODE \n ', ui_log)
         QA_util_log_info(err, ui_log)
+
 
 def do_saving_work(code, start_date, end_date, if_fq='00', frequence='day', ip=None, port=None, item=0, total=1,
                    ui_log=None, ui_progress=None):
