@@ -136,7 +136,6 @@ class QA_Portfolio(QA_Account):
 
         try:
             return self.get_account_by_cookie(account_cookie)
-            )
         except:
             return None
 
