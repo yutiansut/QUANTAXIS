@@ -510,7 +510,7 @@ class QA_Account(QA_Worker):
                     )
                 )
         else:
-            return self.end_        
+            return self.start_        
 
     @property
     def end_date(self):
