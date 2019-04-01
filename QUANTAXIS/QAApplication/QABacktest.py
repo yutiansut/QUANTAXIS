@@ -213,7 +213,7 @@ class QA_Backtest():
                 print(ac.hold)
 
                 print(ac.history_table)
-        self.user.save()
+                ac.save()
         self.stop()
 
     def stop(self):

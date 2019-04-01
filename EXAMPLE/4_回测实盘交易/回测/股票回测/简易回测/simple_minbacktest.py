@@ -79,5 +79,5 @@ r.plot_assets_curve().show()
 
 print(r.profit_construct)
 
-User.save()
+Account.save()
 r.save()
