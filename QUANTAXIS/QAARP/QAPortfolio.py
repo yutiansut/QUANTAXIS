@@ -535,9 +535,9 @@ class QA_Portfolio(QA_Account):
             upsert=True
         )
 
-        for account in self.accounts.values():
-            print('account {} save'.format(account.account_cookie))
-            account.save()
+        # for account in self.accounts.values():
+        #     print('account {} save'.format(account.account_cookie))
+        #     account.save()
 
 
 class QA_PortfolioView():
