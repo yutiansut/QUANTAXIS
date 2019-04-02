@@ -31,7 +31,6 @@ from QUANTAXIS.QAUtil.QAParameter import (
     ORDER_MODEL
 )
 
-
 class QA_Strategy(QA_Account):
     """account
 
@@ -49,7 +48,7 @@ class QA_Strategy(QA_Account):
 
                 if self.sell_available.get(item, 0) > 0:
                     event.send_order(
-                        account_id=self.account_cookie,
+                        account_cookie=self.account_cookie,
                         amount=self.sell_available[item],
                         amount_model=AMOUNT_MODEL.BY_AMOUNT,
                         time=self.current_time,
@@ -63,7 +62,7 @@ class QA_Strategy(QA_Account):
                     )
                 else:
                     event.send_order(
-                        account_id=self.account_cookie,
+                        account_cookie=self.account_cookie,
                         amount=100,
                         amount_model=AMOUNT_MODEL.BY_AMOUNT,
                         time=self.current_time,
