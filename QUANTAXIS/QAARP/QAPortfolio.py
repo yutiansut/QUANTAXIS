@@ -201,6 +201,7 @@ class QA_Portfolio(QA_Account):
                 account.user_cookie = self.user_cookie
                 self.cash.append(self.cash_available - account.init_cash)
                 self.account_list.append(account.account_cookie)
+                account.save()
                 return account
         else:
             pass
@@ -217,7 +218,8 @@ class QA_Portfolio(QA_Account):
 
         if account_cookie in self.account_list:
             res = self.account_list.remove(account_cookie)
-            self.cash.append(self.cash[-1] + res.init_cash)
+            self.cash.append(
+                self.cash[-1] + self.get_account_by_cookie(res).init_cash)
             return True
         else:
             raise RuntimeError(
@@ -296,7 +298,7 @@ class QA_Portfolio(QA_Account):
         '''
         try:
             return QA_Account(
-                account_cookie=account_cookie,
+                account_cookie=cookie,
                 user_cookie=self.user_cookie,
                 portfolio_cookie=self.portfolio_cookie,
                 auto_reload=True
@@ -387,7 +389,6 @@ class QA_Portfolio(QA_Account):
     @property
     def table(self):
         return pd.concat([acc.table for acc in self.accounts.values()], axis=1)
-
 
     @property
     def portfolioView(self):
