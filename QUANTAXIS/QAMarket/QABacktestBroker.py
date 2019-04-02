@@ -166,8 +166,10 @@ class QA_BacktestBroker(QA_Broker):
         self.deal_message = {}
 
     def run(self, event):
-        #strDbg = QA_util_random_with_topic("QABacktestBroker.run")
-        #print("         >-----------------------QABacktestBroker.run----------------------------->", strDbg,'evt->', event)
+        print(
+            ">>>>-----------------------QABacktestBroker.run----------------------------->",
+            event.event_type
+        )
 
         if event.event_type is MARKET_EVENT.QUERY_DATA:
             # 查询数据部分
@@ -190,11 +192,6 @@ class QA_BacktestBroker(QA_Broker):
             for item in new_marketdata_dict.keys():
                 if item not in self._quotation.keys():
                     self._quotation[item] = new_marketdata_dict[item]
-            # if self.broker_data is None:
-            #     self.broker_data = event.market_data
-            # else:
-            #     self.broker_data.append(event.market_data)
-            # self.broker_data=event.market_data
 
         elif event.event_type is BROKER_EVENT.RECEIVE_ORDER:
             self.order_handler.run(event)
@@ -205,11 +202,9 @@ class QA_BacktestBroker(QA_Broker):
             if event.callback:
                 event.callback(event)
         elif event.event_type is BROKER_EVENT.SETTLE:
-            #self.deal_message = {}
-            # self.order_handler.run(event)
+            self.dealer.settle() ## 清空交易队列
             if event.callback:
                 event.callback('settle')
-        #print("         <-----------------------QABacktestBroker.run-----------------------------<",strDbg,'evt->',event)
 
     def query_data(self, code, start, end, frequence, market_type=None):
         """
@@ -236,8 +231,6 @@ class QA_BacktestBroker(QA_Broker):
 
         """
         order = event.order
-        # print(event.market_data)
-        # print(order)
         if 'market_data' in event.__dict__.keys():
 
             self.market_data = self.get_market(
@@ -256,21 +249,24 @@ class QA_BacktestBroker(QA_Broker):
                 data = self.market_data[0]
 
             else:
-                print(type(self.market_data))
+                # print(type(self.market_data))
                 self.market_data = self.market_data.to_json()[0]
         else:
             self.market_data = self.get_market(order)
         if self.market_data is not None:
 
             order = self.warp(order)
+
             self.dealer.deal(order, self.market_data)
             order.queued(order.order_id) # 模拟的order_id 和 realorder_id 一致
 
         else:
 
             order.failed('MARKET DATA IS NONE')
-            #raise ValueError('MARKET DATA IS NONE CANNOT TRADE')
         return order
+
+    def query_order(self, order_id):
+        return self.dealer.deal_message[order_id]
 
     def query_orders(self, account, status=''):
 
@@ -314,8 +310,6 @@ class QA_BacktestBroker(QA_Broker):
             市价单模式
             """
             if order.frequence is FREQUENCE.DAY:
-                # exact_time = str(datetime.datetime.strptime(
-                #     str(order.datetime), '%Y-%m-%d %H-%M-%S') + datetime.timedelta(day=1))
 
                 order.date = order.datetime[0:10]
                 order.datetime = '{} 09:30:00'.format(order.date)
@@ -334,15 +328,6 @@ class QA_BacktestBroker(QA_Broker):
             ) * 0.5
 
         elif order.order_model == ORDER_MODEL.NEXT_OPEN:
-            # try:
-            #     order.date = QA_util_get_next_day(str(order.datetime)[0:10])
-            #     order.datetime = '{} 09:30:00'.format(order.date)
-            # except:
-            #     order.datetime = '{} 15:00:00'.format(order.date)
-            # self.market_data = self.get_market(order)
-            # if self.market_data is None:
-            #     return order
-            # order.price = float(self.market_data["close"])
             raise NotImplementedError
         elif order.order_model == ORDER_MODEL.CLOSE:
             """

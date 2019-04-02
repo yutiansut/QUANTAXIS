@@ -24,7 +24,10 @@
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_list
 #from QUANTAXIS.QASU import crawl_eastmoney as crawl_eastmoney_file
 from QUANTAXIS.QASU import save_tdx as stdx
+from QUANTAXIS.QASU import save_tdx_parallelism as stdx_parallelism
 from QUANTAXIS.QASU import save_tdx_file as tdx_file
+from QUANTAXIS.QASU import save_gm as sgm
+from QUANTAXIS.QASU import save_jq as sjq
 from QUANTAXIS.QASU import save_tushare as sts
 from QUANTAXIS.QASU import save_financialfiles
 from QUANTAXIS.QAUtil import DATABASE
@@ -87,6 +90,20 @@ def QA_SU_save_index_list(engine, client=DATABASE):
 
     engine = select_save_engine(engine)
     engine.QA_SU_save_index_list(client=client)
+
+
+def QA_SU_save_etf_list(engine, client=DATABASE):
+    """save etf_list
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_etf_list(client=client)
 
 
 def QA_SU_save_future_list(engine, client=DATABASE):
@@ -158,7 +175,7 @@ def QA_SU_save_future_min_all(engine, client=DATABASE):
     engine.QA_SU_save_future_min_all(client=client)
 
 
-def QA_SU_save_stock_day(engine, client=DATABASE):
+def QA_SU_save_stock_day(engine, client=DATABASE, paralleled=False):
     """save stock_day
 
     Arguments:
@@ -168,7 +185,7 @@ def QA_SU_save_stock_day(engine, client=DATABASE):
         client {[type]} -- [description] (default: {DATABASE})
     """
 
-    engine = select_save_engine(engine)
+    engine = select_save_engine(engine, paralleled=paralleled)
     engine.QA_SU_save_stock_day(client=client)
 
 
@@ -323,16 +340,24 @@ def QA_SU_save_stock_block(engine, client=DATABASE):
     engine.QA_SU_save_stock_block(client=client)
 
 
-def select_save_engine(engine):
+def select_save_engine(engine, paralleled=False):
     '''
     select save_engine , tushare ts Tushare 使用 Tushare 免费数据接口， tdx 使用通达信数据接口
     :param engine: 字符串Str
+    :param paralleled: 是否并行处理；默认为False
     :return: sts means save_tushare_py  or stdx means save_tdx_py
     '''
     if engine in ['tushare', 'ts', 'Tushare']:
         return sts
     elif engine in ['tdx']:
-        return stdx
+        if paralleled:
+            return stdx_parallelism
+        else:
+            return stdx
+    elif engine in ['gm', 'goldenminer']:
+        return sgm
+    elif engine in ['jq', 'joinquant']:
+        return sjq
     else:
         print('QA Error QASU.main.py call select_save_engine with parameter %s is None of  thshare, ts, Thshare, or tdx', engine)
 

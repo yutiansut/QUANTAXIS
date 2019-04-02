@@ -1,4 +1,4 @@
-#
+#coding:utf-8
 
 """
 数据获取来源:http://www.9qihuo.com/qihuoshouxufei
@@ -55,6 +55,9 @@ for i in range(len(df)):
         details[code]=dict(details[code],**get_commision_by_detail(detail))   
 """
 
+import pandas as pd
+from functools import lru_cache
+
 class MARKET_PRESET:
 
     def __init__(self):
@@ -71,7 +74,6 @@ class MARKET_PRESET:
               commission_coeff_today_pervol 按手数计算的平今手续费系数
 
               """
-
         self.table = {'AG': {'name': '白银',
                              'unit_table': 15,
                              'price_tick': 1.0,
@@ -582,6 +584,13 @@ class MARKET_PRESET:
                              'commission_coeff_pervol': 20.0,
                              'commission_coeff_today_peramount': 0,
                              'commission_coeff_today_pervol': 0.0}}
+    # 手续费比例
+    
+    @property
+    @lru_cache()
+    def pdtable(self):
+        return pd.DataFrame(self.table)
+
 
     def __repr__(self):
         return '< QAMARKET_PRESET >'
@@ -589,6 +598,21 @@ class MARKET_PRESET:
     @property
     def code_list(self):
         return list(self.table.keys())
+
+    
+    @property
+    def exchange_list(self):
+        """返回已有的市场列表
+        
+        Returns:
+            [type] -- [description]
+        """
+
+        return list(self.pdtable.loc['exchange'].unique())
+
+    
+    def get_exchangecode(self, exchange):
+        return self.pdtable.T.query('exchange=="{}"'.format(exchange)).index.tolist()
 
     def get_code(self, code):
         try:
@@ -601,7 +625,9 @@ class MARKET_PRESET:
                 code = code[0:2]
         return self.table.get(str(code).upper())
 
+
     # 合约所属交易所代码
+
     def get_exchange(self, code):
         return self.get_code(code).get('exchange')
 
