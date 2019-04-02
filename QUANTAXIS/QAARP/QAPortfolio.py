@@ -108,7 +108,7 @@ class QA_Portfolio(QA_Account):
         # 可用资金
         self.sell_available = sell_available
         #self.history = []
-        self.time_index = []
+        self.time_index_max = []
         self.commission_coeff = 0.005
         self.market_type = market_type
         self.running_environment = running_environment
