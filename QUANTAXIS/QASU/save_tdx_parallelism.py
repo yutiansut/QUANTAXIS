@@ -198,18 +198,19 @@ def do_saving_work(code, start_date, end_date, if_fq='00', frequence='day', ip=N
     try:
         # print(code, item, flush=True)
         QA_util_log_info('The {} of Total {}'.format(item, total))
-
-        strProgressToLog = 'DOWNLOAD PROGRESS {} {}'.format(
-            str(float(item / total * 100))[0:4] + '%',
-            ui_log
-        )
-        intProgressToLog = int(float(item / total * 100 / 2))
-        QA_util_log_info(
-            strProgressToLog,
-            ui_log=ui_log,
-            ui_progress=ui_progress,
-            ui_progress_int_value=intProgressToLog
-        )
+        if item % 10 or total- item < 5:
+            # 每隔10个或者接近完成打印进度
+            strProgressToLog = 'DOWNLOAD PROGRESS {} {}'.format(
+                str(float(item / total * 100))[0:4] + '%',
+                ui_log
+            )
+            intProgressToLog = int(float(item / total * 100 / 2))
+            QA_util_log_info(
+                strProgressToLog,
+                ui_log=ui_log,
+                ui_progress=ui_progress,
+                ui_progress_int_value=intProgressToLog
+            )
 
         return QA_fetch_get_stock_day(code, start_date, end_date, if_fq, frequence, ip, port)
     except Exception as error0:
