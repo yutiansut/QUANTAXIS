@@ -1,4 +1,4 @@
-# utf-8
+ # utf-8
 from QUANTAXIS.QAARP.QAStrategy import QA_Strategy
 from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, MARKET_TYPE,
                                           FREQUENCE, ORDER_DIRECTION,
@@ -18,7 +18,7 @@ class MAMINStrategy(QA_Strategy):
                 # 如果持仓
                 if self.sell_available.get(item, 0) > 0:
                     # 全部卖出
-                    event.send_order(account_id=self.account_cookie,
+                    event.send_order(account_cookie=self.account_cookie,
                                      amount=self.sell_available[item], amount_model=AMOUNT_MODEL.BY_AMOUNT,
                                      time=self.current_time, code=item, price=0,
                                      order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.SELL,
@@ -27,7 +27,7 @@ class MAMINStrategy(QA_Strategy):
                                      )
                 else:  # 如果不持仓
                     # 买入1000股
-                    event.send_order(account_id=self.account_cookie,
+                    event.send_order(account_cookie=self.account_cookie,
                                      amount=100, amount_model=AMOUNT_MODEL.BY_AMOUNT,
                                      time=self.current_time, code=item, price=0,
                                      order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.BUY,

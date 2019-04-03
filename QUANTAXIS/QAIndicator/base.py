@@ -24,7 +24,7 @@
 
 
 from functools import reduce
-
+import math
 import numpy as np
 import pandas as pd
 
@@ -142,6 +142,15 @@ def IF(COND, V1, V2):
     return pd.Series(var, index=V1.index)
 
 
+def IFAND(COND1, COND2, V1, V2):
+    var = np.where(np.logical_and(COND1,COND2), V1, V2)
+    return pd.Series(var, index=V1.index)
+    
+def IFOR(COND1, COND2, V1, V2):
+    var = np.where(np.logical_or(COND1,COND2), V1, V2)
+    return pd.Series(var, index=V1.index)
+
+
 def REF(Series, N):
     var = Series.diff(N)
     var = Series - var
@@ -222,3 +231,7 @@ def BARLAST(cond, yes=True):
         return len(cond)-cond.index.levels[0].tolist().index(cond[cond != yes].index[-1][0])-1
     elif isinstance(cond.index, pd.DatetimeIndex):
         return len(cond)-cond.index.tolist().index(cond[cond != yes].index[-1])-1
+
+
+XARROUND =  lambda x,y:np.round(y*(round(x/y-math.floor(x/y)+0.00000000001)+ math.floor(x/y)),2)
+

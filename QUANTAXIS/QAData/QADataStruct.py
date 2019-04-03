@@ -203,7 +203,6 @@ class QA_DataStruct_Stock_min(_quotation_base):
         except Exception as e:
             raise e
 
-
         self.type = dtype
         self.if_fq = if_fq
 
@@ -322,6 +321,33 @@ class QA_DataStruct_Future_day(_quotation_base):
     def quarter(self):
         return self.resample('Q')
 
+    @property
+    @lru_cache()
+    def tradedate(self):
+        """返回交易所日历下的日期
+
+        Returns:
+            [type] -- [description]
+        """
+
+        try:
+            return self.date
+        except:
+            return None
+
+    @property
+    @lru_cache()
+    def tradetime(self):
+        """返回交易所日历下的日期
+
+        Returns:
+            [type] -- [description]
+        """
+
+        try:
+            return self.date
+        except:
+            return None
     # @property
     # @lru_cache()
     # def semiannual(self):
@@ -359,7 +385,7 @@ class QA_DataStruct_Future_min(_quotation_base):
 
     @property
     @lru_cache()
-    def trade_date(self):
+    def tradedate(self):
         """返回交易所日历下的日期
 
         Returns:
@@ -367,7 +393,21 @@ class QA_DataStruct_Future_min(_quotation_base):
         """
 
         try:
-            return self.data.trade_date
+            return self.data.tradetime.apply(lambda x: x[0:10])
+        except:
+            return None
+
+    @property
+    @lru_cache()
+    def tradetime(self):
+        """返回交易所日历下的日期
+
+        Returns:
+            [type] -- [description]
+        """
+
+        try:
+            return self.data.tradetime
         except:
             return None
 
@@ -772,8 +812,10 @@ class QA_DataStruct_Day(_quotation_base):
 class QA_DataStruct_Min(_quotation_base):
     '''这个类是个通用类 一般不使用  特定生成的时候可能会用到 只具备基类方法
     '''
+
     def __init__(self, data, dtype='unknown_min', if_fq='bfq'):
         super().__init__(data, dtype, if_fq)
+
 
 class _realtime_base():
     """
@@ -917,9 +959,10 @@ class _realtime_base():
 class QA_DataStruct_Stock_realtime(_realtime_base):
     def __init__(self, data):
         self.data = data
+        self.index = data.index
 
     def __repr__(self):
-        return '< QA_REALTIME_STRUCT code {} start {} end {} >'.format(self.code.unique(), self.datetime.iloc[1], self.datetime.iloc[-1])
+        return '< QA_REALTIME_STRUCT >'
 
     # @property
     # def ask_list(self):
@@ -939,33 +982,26 @@ class QA_DataStruct_Stock_realtime(_realtime_base):
         return pd.DataFrame(self.data)
 
     @property
-    def ab_board(self):
-        """ask_bid board
-        bid3 bid_vol3
-        bid2 bid_vol2
-        bid1 bid_vol1
-        ===============
-        price /cur_vol
-        ===============
-        ask1 ask_vol1
-        ask2 ask_vol2
-        ask3 ask_vol3
-        """
-        return 'BID5 {}  {} \nBID4 {}  {} \nBID3 {}  {} \nBID2 {}  {} \nBID1 {}  {} \n============\nCURRENT {}  {} \n============\
-        \nASK1 {}  {} \nASK2 {}  {} \nASK3 {}  {} \nASK4 {}  {} \nASK5 {}  {} \nTIME {}  CODE {} '.format(
-            self.bid5, self.bid_vol5, self.bid4, self.bid_vol4, self.bid3, self.bid_vol3, self.bid2, self.bid_vol2, self.bid1, self.bid_vol1,
-            self.price, self.cur_vol,
-            self.ask1, self.ask_vol1, self.ask2, self.ask_vol2, self.ask3, self.ask_vol3, self.ask4, self.ask_vol4, self.ask5, self.ask_vol5,
-            self.datetime, self.code
-        )
+    def datetime(self):
+        return self.index.levels[0]
+
+    @property
+    def code(self):
+        return self.index.levels[1]
 
     def serialize(self):
         """to_protobuf
         """
         pass
 
+    def to_json(self):
+        return self.data.assign(code=self.code, datetime=str(self.datetime)).to_dict(orient='records')
+
     def resample(self, level):
         return QA_data_tick_resample(self.data, level)
+
+
+QA_DataStruct_Future_realtime = QA_DataStruct_Stock_realtime
 
 
 class QA_DataStruct_Stock_realtime_series():
