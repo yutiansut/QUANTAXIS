@@ -86,6 +86,7 @@ class QA_Market(QA_Trade):
             BROKER_TYPE.REAL: QA_RealBroker,
             BROKER_TYPE.SIMULATION: QA_SimulatedBroker,
             BROKER_TYPE.SHIPANE: QA_SPEBroker,
+            BROKER_TYPE.TTS: QA_TTSBroker,
         }
         self.broker = {}
         self.running_time = None
@@ -523,8 +524,10 @@ class QA_Market(QA_Trade):
         except Exception as e:
             print(e)
 
-    def query_order(self, account_cookie, realorder_id):
+    def query_orders(self, account_cookie):
+        return self.order_handler.order_status.xs(account_cookie)
 
+    def query_order(self, account_cookie, realorder_id):
         return self.order_handler.order_status.loc[account_cookie, realorder_id]
 
     def query_assets(self, account_cookie):
