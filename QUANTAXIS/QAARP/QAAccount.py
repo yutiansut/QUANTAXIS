@@ -336,6 +336,7 @@ class QA_Account(QA_Worker):
         if self.market_type is MARKET_TYPE.FUTURE_CN:
             self.allow_t0 = True
             self.allow_sellopen = True
+            self.allow_margin = True
 
         self.market_preset = MARKET_PRESET()
         # if self.allow_t0 and self.allow_sellopen or self.market_type is MARKET_TYPE.FUTURE_CN:
@@ -742,7 +743,7 @@ class QA_Account(QA_Worker):
     @property
     def daily_frozen(self):
         '每日交易结算时的持仓表'
-        res_=self.history_table.assign(date=pd.to_datetime(self.history_table.datetime)).set_index('date').resample('D').frozen.last().fillna(0)
+        res_=self.history_table.assign(date=pd.to_datetime(self.history_table.datetime)).set_index('date').resample('D').frozen.last().fillna(method='pad')
         res_=res_[res_.index.isin(self.trade_range)]
         return res_
     @property
