@@ -279,7 +279,7 @@ class QA_TTSBroker(QA_Broker):
         if market not in ['sh', 'sz']:
             raise Exception('%s不支持，请检查code和market参数' % market)
 
-        return self.call("send_order", {
+        return self.data_to_df(self.call("send_order", {
             'client_id': self.client_id,
             'category': towards,
             'price_type': order_model,
@@ -287,7 +287,7 @@ class QA_TTSBroker(QA_Broker):
             'zqdm': code,
             'price': price,
             'quantity': amount
-        })
+        }))
 
     def cancel_order(self, exchange_id, order_id):
         """
