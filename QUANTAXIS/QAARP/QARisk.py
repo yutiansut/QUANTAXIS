@@ -986,7 +986,7 @@ class QA_Performance():
             )
         )
         pair_table = []
-        for _, data in self.perf.target.history_table_min.iterrows():
+        for _, data in self.target.history_table_min.iterrows():
             while True:
                 if X[data.code].qsize() == 0:
                     X[data.code].put((data.datetime, data.amount, data.price))
@@ -1018,10 +1018,9 @@ class QA_Performance():
                                         l[0],
                                         data.datetime,
                                         abs(data.amount),
-                                        data.price,                                        
-                                        l[2]
-
-                                        
+                                        l[2],
+                                        data.price                                       
+                                                                                
                                     ]
                                 )
                                 break
@@ -1047,8 +1046,8 @@ class QA_Performance():
                                         l[0],
                                         data.datetime,
                                         l[1],
-                                        data.price,
-                                        l[2]
+                                        l[2],
+                                        data.price
                                     ]
                                 )
                         else:
@@ -1071,8 +1070,8 @@ class QA_Performance():
                                         l[0],
                                         data.datetime,
                                         abs(data.amount),
-                                        data.price,
-                                        l[2]
+                                        l[2],
+                                        data.price
                                     ]
                                 )
                                 break
@@ -1152,8 +1151,9 @@ class QA_Performance():
                                         l[0],
                                         data.datetime,
                                         abs(data.amount),
-                                        data.price,
-                                        l[2]
+                                        l[2],
+                                        data.price
+                                        
                                     ]
                                 )
                                 break
@@ -1179,8 +1179,9 @@ class QA_Performance():
                                         l[0],
                                         data.datetime,
                                         l[1],
-                                        data.price,
-                                        l[2]
+                                        l[2],
+                                        data.price
+                                        
                                     ]
                                 )
                         else:
@@ -1203,8 +1204,9 @@ class QA_Performance():
                                         l[0],
                                         data.datetime,
                                         abs(data.amount),
-                                        data.price,                                      
-                                        l[2]
+                                        l[2],
+                                        data.price                                      
+                                        
 
                                     ]
                                 )
