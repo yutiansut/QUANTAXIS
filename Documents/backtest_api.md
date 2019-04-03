@@ -120,7 +120,7 @@ class MAStrategy(QA_Strategy):
             for item in event.market_data.code:
                 if sellavailable is None:
 
-                    event.send_order(account_id=self.account_cookie,
+                    event.send_order(account_cookie=self.account_cookie,
                                      amount=100, amount_model=AMOUNT_MODEL.BY_AMOUNT,
                                      time=self.current_time, code=item, price=0,
                                      order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.BUY,
@@ -129,7 +129,7 @@ class MAStrategy(QA_Strategy):
 
                 else:
                     if sellavailable.get(item, 0) > 0:
-                        event.send_order(account_id=self.account_cookie,
+                        event.send_order(account_cookie=self.account_cookie,
                                          amount=sellavailable[item], amount_model=AMOUNT_MODEL.BY_AMOUNT,
                                          time=self.current_time, code=item, price=0,
                                          order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.SELL,
@@ -137,7 +137,7 @@ class MAStrategy(QA_Strategy):
                                          broker_name=self.broker
                                          )
                     else:
-                        event.send_order(account_id=self.account_cookie,
+                        event.send_order(account_cookie=self.account_cookie,
                                          amount=100, amount_model=AMOUNT_MODEL.BY_AMOUNT,
                                          time=self.current_time, code=item, price=0,
                                          order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.BUY,

@@ -75,17 +75,3 @@ if __name__ == '__main__':
     QAE.run(QA_fetch_stock_day, callback,
             '000005', '1990-01-01', '2018-01-31')
     print(datetime.datetime.now()-time)
-    # import QUANTAXIS as QA
-    # time=datetime.datetime.now()
-    # r=QA.QA_fetch_stock_day('000001','1990-01-01', '2018-01-31')
-    # print(len(r))
-    # #print(datetime.datetime.now()-time)
-    # r=QA.QA_fetch_stock_day('000002','1990-01-01', '2018-01-31')
-    # print(len(r))
-    # r=QA.QA_fetch_stock_day('000007','1990-01-01', '2018-01-31')
-    # print(len(r))
-    # r=QA.QA_fetch_stock_day('000004','1990-01-01', '2018-01-31')
-    # print(len(r))
-    # r=QA.QA_fetch_stock_day('000005','1990-01-01', '2018-01-31')
-    # print(len(r))
-    # print(datetime.datetime.now()-time)
