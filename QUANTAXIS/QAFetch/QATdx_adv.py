@@ -230,13 +230,13 @@ class QA_Tdx_Executor():
         database.insert_many(QA_util_to_json_from_pandas(data))
 
 
-def get_bar(timeout=1, sleep=1):
+def get_bar(timeout=1, sleep=1, thread=2):
     sleep = int(sleep)
     _time1 = datetime.datetime.now()
     from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_block_adv
     code = QA_fetch_stock_block_adv().code
     print(len(code))
-    x = QA_Tdx_Executor(timeout=float(timeout))
+    x = QA_Tdx_Executor(timeout=float(timeout), thread_num=int(thread))
     print(x._queue.qsize())
     print(x.get_available())
 
@@ -271,13 +271,14 @@ def get_day_once():
 @click.command()
 @click.option('--timeout', default=0.2, help='timeout param')
 @click.option('--sleep', default=1, help='sleep step')
-def bat(timeout=0.2, sleep=1):
+@click.option('--thread', default=2, help='thread nums')
+def bat(timeout=0.2, sleep=1, thread=2):
     sleep = int(sleep)
     _time1 = datetime.datetime.now()
     from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_block_adv
     code = QA_fetch_stock_block_adv().code
     print(len(code))
-    x = QA_Tdx_Executor(timeout=float(timeout))
+    x = QA_Tdx_Executor(timeout=float(timeout), thread_num=int(thread))
     print(x._queue.qsize())
     print(x.get_available())
 
@@ -288,7 +289,7 @@ def bat(timeout=0.2, sleep=1):
     database.create_index([('code', QA_util_sql_mongo_sort_ASCENDING),
                            ('datetime', QA_util_sql_mongo_sort_ASCENDING)])
 
-    for i in range(100000):
+    while True:
         _time = datetime.datetime.now()
         if QA_util_if_tradetime(_time):  # 如果在交易时间
             data = x.get_realtime_concurrent(code)
