@@ -46,12 +46,12 @@ FUTURE_IP_FILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'future_ip.json')
 class QA_Setting():
 
     def __init__(self, uri=None):
+        self.lock = Lock()
         self.mongo_uri = uri or self.get_config() or self.env_config(
         ) or DEFAULT_DB_URI
         self.username = None
         self.password = None
-        self.lock = Lock()
-
+        
         # 加入配置文件地址
 
     def get_config(
