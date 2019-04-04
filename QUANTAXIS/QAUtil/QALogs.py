@@ -36,7 +36,7 @@ import datetime
 import os
 import sys
 from zenlog import logging
-
+from multiprocessing import Lock
 from QUANTAXIS.QASetting.QALocalize import log_path, setting_path
 
 CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
@@ -44,6 +44,8 @@ CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
 
 def get_config():
     config = configparser.ConfigParser()
+    L= Lock()
+    L.acquire()
     if os.path.exists(CONFIGFILE_PATH):
         config.read(CONFIGFILE_PATH)
         try:
@@ -67,6 +69,7 @@ def get_config():
         config.write(f)
         f.close()
         return log_path
+    L.release()
 
 
 """2019-01-03  升级到warning级别 不然大量别的代码的log会批量输出出来
