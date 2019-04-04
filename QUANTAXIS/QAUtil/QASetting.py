@@ -25,7 +25,7 @@
 import configparser
 import json
 import os
-
+from multiprocessing import Lock
 from QUANTAXIS.QASetting.QALocalize import qa_path, setting_path, strategy_path
 from QUANTAXIS.QAUtil.QASql import (
     QA_util_sql_async_mongo_setting,
@@ -50,6 +50,7 @@ class QA_Setting():
         ) or DEFAULT_DB_URI
         self.username = None
         self.password = None
+        self.lock = Lock()
 
         # 加入配置文件地址
 
@@ -84,11 +85,13 @@ class QA_Setting():
             # self.get_or_set_section(config, 'IPLIST', 'exclude', [{'ip': '1.1.1.1', 'port': 7709}])
 
         else:
+            self.lock.acquire()
             f = open(CONFIGFILE_PATH, 'w')
             config.add_section(section)
             config.set(section, option, default_value)
             config.write(f)
             f.close()
+            self.lock.release()
             return default_value
 
     def set_config(
@@ -174,8 +177,10 @@ class QA_Setting():
             config.set(section, option, val)
             return val
         finally:
+            self.lock.acquire()
             with open(CONFIGFILE_PATH, 'w') as f:
                 config.write(f)
+            self.lock.release()
 
     def env_config(self):
         return os.environ.get("MONGOURI", None)
