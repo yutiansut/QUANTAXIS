@@ -107,7 +107,6 @@ setup(
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
     ],
-    scripts=['make_config'],
     install_requires=['pandas>=0.23.4', 'numpy>=1.12.0', 'tushare', 'flask_socketio>=2.9.0 ', 'motor>=1.1', 'seaborn>=0.8.1', 'pyconvert>=0.6.3',
                       'lxml>=4.0', ' beautifulsoup4', 'matplotlib', 'requests', 'tornado',
                       'demjson>=2.2.4', 'pymongo>=3.7', 'six>=1.10.0', 'tabulate>=0.7.7', 'pytdx>=1.67', 'retrying>=1.3.3',

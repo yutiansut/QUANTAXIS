@@ -54,7 +54,6 @@ class QA_Setting():
 
         # 加入配置文件地址
 
-
     def get_mongo(self):
         config = configparser.ConfigParser()
         if os.path.exists(CONFIGFILE_PATH):
@@ -92,8 +91,7 @@ class QA_Setting():
             [type] -- [description]
         """
 
-        config = configparser.ConfigParser()
-        res = self.client.usersetting.find_one({'section': section})
+        res = self.client.quantaxis.usersetting.find_one({'section': section})
         if res:
             return res.get(option, default_value)
         else:
@@ -116,11 +114,10 @@ class QA_Setting():
         Returns:
             [type] -- [description]
         """
-        self.client.usersetting.update({'section': section,
-                                        {'$set': {
-                                            section: {
-                                                option: default_value
-                                            }}}}, upsert=True)
+        print({section: {option: default_value}})
+        t = {'section': section, option: default_value}
+        self.client.quantaxis.usersetting.update(
+            {'section': section}, {'$set':t}, upsert=True)
 
         # if os.path.exists(CONFIGFILE_PATH):
         #     config.read(CONFIGFILE_PATH)
