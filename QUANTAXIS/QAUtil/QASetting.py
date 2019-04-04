@@ -114,7 +114,6 @@ class QA_Setting():
         Returns:
             [type] -- [description]
         """
-        print({section: {option: default_value}})
         t = {'section': section, option: default_value}
         self.client.quantaxis.usersetting.update(
             {'section': section}, {'$set':t}, upsert=True)
