@@ -49,6 +49,7 @@ class QA_Setting():
         self.lock = Lock()
         self.mongo_uri = uri or self.get_config() or self.env_config(
         ) or DEFAULT_DB_URI
+        
         self.username = None
         self.password = None
         
@@ -72,9 +73,8 @@ class QA_Setting():
         """
 
         config = configparser.ConfigParser()
-        self.lock.acquire()
         if os.path.exists(CONFIGFILE_PATH):
-            
+            self.lock.acquire()
             config.read(CONFIGFILE_PATH)
             self.lock.release()
             return self.get_or_set_section(
@@ -84,16 +84,7 @@ class QA_Setting():
                 default_value
             )
 
-            # 排除某些IP
-            # self.get_or_set_section(config, 'IPLIST', 'exclude', [{'ip': '1.1.1.1', 'port': 7709}])
-
         else:
-            f = open(CONFIGFILE_PATH, 'w')
-            config.add_section(section)
-            config.set(section, option, default_value)
-            config.write(f)
-            f.close()
-            self.lock.release()
             return default_value
 
     def set_config(
