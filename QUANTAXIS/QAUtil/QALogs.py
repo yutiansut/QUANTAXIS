@@ -36,36 +36,23 @@ import datetime
 import os
 import sys
 from zenlog import logging
-from multiprocessing import Lock
 from QUANTAXIS.QASetting.QALocalize import log_path, setting_path
 
-CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
-
-
-def get_config():
-    config = configparser.ConfigParser()
-
-    if os.path.exists(CONFIGFILE_PATH):
-        config.read(CONFIGFILE_PATH)
-        try:
-            return config.get('LOG', 'path')
-        except:
-            return log_path
-        return log_path
+from QUANTAXIS.QAUtil.QASetting import QA_Setting
 
 
 """2019-01-03  升级到warning级别 不然大量别的代码的log会批量输出出来
 """
 try:
     _name = '{}{}quantaxis_{}-{}-.log'.format(
-        get_config(),
+        QA_Setting().get_config('LOG','path', log_path),
         os.sep,
         os.path.basename(sys.argv[0]).split('.py')[0],
         str(datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S'))
     )
 except:
     _name = '{}{}quantaxis-{}-.log'.format(
-        get_config(),
+        QA_Setting().get_config('LOG','path', log_path),
         os.sep,
         str(datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S'))
     )
