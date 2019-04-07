@@ -90,7 +90,7 @@ def simple_backtest(AC, code, start, end):
 simple_backtest(AC, QA.QA_fetch_stock_block_adv(
 ).code[0:10], '2017-01-01', '2018-01-31')
 print(AC.message)
-User.save()
+AC.save()
 risk = QA.QA_Risk(AC)
 print(risk.message)
 risk.save()

@@ -116,7 +116,7 @@ def select_best_ip():
     ipexclude = qasetting.get_config(
         section='IPLIST', option='exclude', default_value=alist)
 
-    exclude_from_stock_ip_list(json.loads(ipexclude.replace("'", "\"")))
+    exclude_from_stock_ip_list(ipexclude)
 
     ipdefault = qasetting.get_config(
         section='IPLIST', option='default', default_value=default_ip)
@@ -855,7 +855,7 @@ def QA_fetch_get_index_latest(code, frequence='day', ip=None, port=None):
             if str(item)[0] in ['5', '1']:  # ETF
                 data.append(api.to_df(api.get_security_bars(frequence, 1 if str(item)[0] in ['0', '8', '9', '5'] else 0, item, 0, 1)).assign(code=item))
             else:
-                data.append(api.to_df(api.get_index_bars(frequence, 1 if str(code)[0] in ['0', '8', '9', '5'] else 0, item, 0, 1)).assign(code=item))
+                data.append(api.to_df(api.get_index_bars(frequence, 1 if str(item)[0] in ['0', '8', '9', '5'] else 0, item, 0, 1)).assign(code=item))
         data = pd.concat(data, axis=0)
         return data \
             .assign(date=pd.to_datetime(data['datetime']
