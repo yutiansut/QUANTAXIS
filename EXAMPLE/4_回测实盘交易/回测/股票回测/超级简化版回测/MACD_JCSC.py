@@ -93,7 +93,7 @@ print(Account.daily_hold)
 # create Risk analysis
 Risk = QA.QA_Risk(Account)
 
-user.save()
+Account.save()
 Risk.save()
 
 

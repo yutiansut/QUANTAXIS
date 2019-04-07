@@ -25,7 +25,6 @@
 import pymongo
 from motor.motor_asyncio import AsyncIOMotorClient
 from motor import MotorClient
-from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 import asyncio
 
 
