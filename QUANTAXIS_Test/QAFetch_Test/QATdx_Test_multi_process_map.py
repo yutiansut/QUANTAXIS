@@ -11,7 +11,7 @@ from QUANTAXIS.QAUtil.Parallelism import Parallelism
 import datetime, time
 import os
 from multiprocessing import cpu_count
-from QUANTAXIS.QACmd import QA_SU_save_stock_day
+from QUANTAXIS.QACmd import QA_SU_save_stock_day, QA_SU_save_index_day
 from QUANTAXIS.QAUtil import QA_util_cache
 
 
@@ -75,8 +75,7 @@ class TestSelect_best_ip(TestCase):
         param = gen_param(codelist[:codeListCount], start, end, IPList=ips[:cpu_count()])
         a = time.time()
         ps = Parallelism(cpu_count())
-        ps.add(QA.QAFetch.QATdx.QA_fetch_get_stock_day, param)
-        ps.run()
+        ps.run(QA.QAFetch.QATdx.QA_fetch_get_stock_day, param)
         data = ps.get_results()
         b = time.time()
         t1 = b - a
@@ -111,7 +110,7 @@ class TestSelect_best_ip(TestCase):
             end2 = end
         codeListCount = 200
         a = time.time()
-        ps = Parallelism(cpu_count())
+        # ps = Parallelism(cpu_count())
         data1 = QA.QAFetch.QATdx.QA_fetch_get_stock_day(codelist[0], start, end)
         data2 = QA.QAFetch.QATdx.QA_fetch_get_stock_day(codelist[0], start, end2)
         # 交易时间段
@@ -127,7 +126,7 @@ class TestSelect_best_ip(TestCase):
         end = end - datetime.timedelta(7)
         codeListCount = 200
         a = time.time()
-        ps = Parallelism(cpu_count())
+        # ps = Parallelism(cpu_count())
         data1 = QA.QAFetch.QATdx.QA_fetch_get_stock_day(codelist[0], start, end)
         data2 = QA.QAFetch.QATdx.QA_fetch_get_stock_day(codelist[0], start, end2)
         # 交易时间段
@@ -150,22 +149,22 @@ class TestSelect_best_ip(TestCase):
             '保存后的数据应该比未保存前长： {} {}'.format(len(data2), len(data1)))
 
     # def test_get_index_min_adv(self):
-        # 分钟数据测试
-        # def __get_index_min_adv(code, start, end, frequence):
-        #     if isinstance(code, list) is not True:
-        #         code = [str(code)]
-        #     df = None
-        #
-        #     # todo: 启用多服务IP支持
-        #     for _code in code:
-        #         result = QA.QA_fetch_get_index_min(package='tdx', code=_code, start=start, end=end, level=frequence)
-        #         if result is not None:
-        #             df = result if df is None else df.append(result)
-        #     if df is None:
-        #         return None
-        #     else:
-        #         df = df.set_index(['datetime', 'code'])
-        #         return QA.QA_DataStruct_Index_min(df)
+    # 分钟数据测试
+    # def __get_index_min_adv(code, start, end, frequence):
+    #     if isinstance(code, list) is not True:
+    #         code = [str(code)]
+    #     df = None
+    #
+    #     # todo: 启用多服务IP支持
+    #     for _code in code:
+    #         result = QA.QA_fetch_get_index_min(package='tdx', code=_code, start=start, end=end, level=frequence)
+    #         if result is not None:
+    #             df = result if df is None else df.append(result)
+    #     if df is None:
+    #         return None
+    #     else:
+    #         df = df.set_index(['datetime', 'code'])
+    #         return QA.QA_DataStruct_Index_min(df)
 
     def test_cache(self):
         # 测试内存缓存变量
@@ -184,6 +183,30 @@ class TestSelect_best_ip(TestCase):
         stockips = QATdx.get_ip_list_by_multi_process_ping(stock_ip_list, _type='stock')
         futurips = QATdx.get_ip_list_by_multi_process_ping(future_ip_list, _type='future')
 
+    def test_QA_SU_save_index_day(self):
+        from QUANTAXIS.QAUtil.QASetting import DATABASE
+        #  删除部分数据
+        indexDay = DATABASE.index_day
+        myquery = {"code": {"$regex": "^1"}}
+        x = indexDay.delete_many(myquery)
+        print(x.deleted_count, " documents deleted.")
+
+        print('start test_QA_SU_save_stock_day')
+        codelist = QA.QA_fetch_index_list_adv().code.tolist()
+        days = 300
+        start = datetime.datetime.now() - datetime.timedelta(days)
+        end = datetime.datetime.now()
+        data1 = QA.QA_fetch_index_day_adv(codelist[0], start, end)
+        QA_SU_save_index_day('tdx', paralleled=True)
+        print('end test_QA_SU_save_stock_day')
+        data2 = QA.QA_fetch_index_day_adv(codelist[0], start, end)
+        self.assertTrue(
+            len(data2) == len(data1) if data1.datetime[-1] == data2.datetime[-1] else len(data2) > len(data1),
+            '保存后的数据应该比未保存前长： {} {}'.format(len(data2), len(data1)))
+        print('保存前日期： {}， 保存后日期 {}'.format(data1.datetime[-1] , data2.datetime[-1] ))
+
+    def test_delete_index_day(self):
+        self.assertFalse()
 
 if __name__ == '__main__':
     TestCase.run()

@@ -31,6 +31,7 @@ from QUANTAXIS.QASU import save_jq as sjq
 from QUANTAXIS.QASU import save_tushare as sts
 from QUANTAXIS.QASU import save_financialfiles
 from QUANTAXIS.QAUtil import DATABASE
+import time
 # from QUANTAXIS.QASU import crawl_jrj_financial_reportdate as save_financial_calendar
 # from QUANTAXIS.QASU import crawl_jrj_stock_divyield as save_stock_divyield
 
@@ -256,7 +257,7 @@ def QA_SU_save_stock_min(engine, client=DATABASE):
     engine.QA_SU_save_stock_min(client=client)
 
 
-def QA_SU_save_index_day(engine, client=DATABASE):
+def QA_SU_save_index_day(engine, client=DATABASE, paralleled=False):
     """save index_day
 
     Arguments:
@@ -266,8 +267,11 @@ def QA_SU_save_index_day(engine, client=DATABASE):
         client {[type]} -- [description] (default: {DATABASE})
     """
 
-    engine = select_save_engine(engine)
+    engine = select_save_engine(engine, paralleled=paralleled)
+    a = time.time()
     engine.QA_SU_save_index_day(client=client)
+    b = time.time()
+    print('消耗时间：{}'.format(b-a))
 
 
 def QA_SU_save_index_min(engine, client=DATABASE):

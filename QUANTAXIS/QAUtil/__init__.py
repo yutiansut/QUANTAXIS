@@ -118,6 +118,6 @@ from QUANTAXIS.QAUtil.QADateTools import (
     QA_util_add_months, QA_util_getBetweenMonth
 )
 
-from QUANTAXIS.QAUtil.Parallelism import Parallelism
+from QUANTAXIS.QAUtil.Parallelism import Parallelism, Parallelism_Thread
 from QUANTAXIS.QAUtil.QACache import QA_util_cache
 from QUANTAXIS.QAUtil.QASingleton import singleton

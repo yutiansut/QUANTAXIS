@@ -173,8 +173,7 @@ def get_ip_list_by_multi_process_ping(ip_list=[], n=0, _type='stock'):
     else:
         ips = [(x['ip'], x['port'], _type) for x in ip_list]
         ps = Parallelism()
-        ps.add(ping, ips)
-        ps.run()
+        ps.run(ping, ips)
         data = list(ps.get_results())
         results = []
         for i in range(len(data)):
