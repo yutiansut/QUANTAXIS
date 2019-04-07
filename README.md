@@ -13,7 +13,7 @@ Quantitative Financial FrameWork
 
 ![pypidownloads](https://img.shields.io/pypi/dm/quantaxis.svg)
 ![pypidownloads](https://img.shields.io/pypi/dw/quantaxis.svg)
-![pypidownloads](https://img.shields.io/pypi/dd/quantaxis.svg)
+[![Backers on Open Collective](https://opencollective.com/QUANTAXIS/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/QUANTAXIS/sponsors/badge.svg)](#sponsors) 
 
 [![Github workers](https://img.shields.io/github/watchers/quantaxis/quantaxis.svg?style=social&label=Watchers&)](https://github.com/quantaxis/quantaxis/watchers)
 [![GitHub stars](https://img.shields.io/github/stars/quantaxis/quantaxis.svg?style=social&label=Star&)](https://github.com/quantaxis/quantaxis/stargazers)
@@ -47,6 +47,10 @@ Quantitative Financial FrameWork
 [![Waffle.io - Issues in progress](https://badge.waffle.io/yutiansut/QUANTAXIS.png?label=in%20progress&title=In%20Progress)](http://waffle.io/yutiansut/QUANTAXIS)
 [![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
 
+## Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+<a href="https://github.com/QUANTAXIS/QUANTAXIS/graphs/contributors"><img src="https://opencollective.com/QUANTAXIS/contributors.svg?width=890&button=false" /></a>
 
 
 > 欢迎加群讨论: 563280067 [群链接](https://jq.qq.com/?_wv=1027&k=4CEKGzn) 
@@ -371,6 +375,31 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.8
 
 如果是阿里云/腾讯云的服务器,请在最初的时候 选择64位的操作系统
 
+
+
+
+
+## Backers
+
+Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/QUANTAXIS#backer)]
+
+<a href="https://opencollective.com/QUANTAXIS#backers" target="_blank"><img src="https://opencollective.com/QUANTAXIS/backers.svg?width=890"></a>
+
+
+## Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/QUANTAXIS#sponsor)]
+
+<a href="https://opencollective.com/QUANTAXIS/sponsor/0/website" target="_blank"><img src="https://opencollective.com/QUANTAXIS/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/QUANTAXIS/sponsor/1/website" target="_blank"><img src="https://opencollective.com/QUANTAXIS/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/QUANTAXIS/sponsor/2/website" target="_blank"><img src="https://opencollective.com/QUANTAXIS/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/QUANTAXIS/sponsor/3/website" target="_blank"><img src="https://opencollective.com/QUANTAXIS/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/QUANTAXIS/sponsor/4/website" target="_blank"><img src="https://opencollective.com/QUANTAXIS/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/QUANTAXIS/sponsor/5/website" target="_blank"><img src="https://opencollective.com/QUANTAXIS/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/QUANTAXIS/sponsor/6/website" target="_blank"><img src="https://opencollective.com/QUANTAXIS/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/QUANTAXIS/sponsor/7/website" target="_blank"><img src="https://opencollective.com/QUANTAXIS/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/QUANTAXIS/sponsor/8/website" target="_blank"><img src="https://opencollective.com/QUANTAXIS/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/QUANTAXIS/sponsor/9/website" target="_blank"><img src="https://opencollective.com/QUANTAXIS/sponsor/9/avatar.svg"></a>
 
 
 

@@ -78,7 +78,7 @@ class QA_Tdx_Executor():
         _time = datetime.datetime.now()
         # print(self.timeout)
         try:
-            with api.connect(ip, port, time_out=self.timeout):
+            with api.connect(ip, port, time_out=1):
                 res = api.get_security_list(0, 1)
                 # print(res)
                 # print(len(res))
@@ -143,7 +143,7 @@ class QA_Tdx_Executor():
                 if _sec < self.timeout*3:
                     try:
                         self._queue.put(TdxHq_API(heartbeat=False).connect(
-                            ip=item['ip'], port=item['port'], time_out=self.timeout))
+                            ip=item['ip'], port=item['port'], time_out=self.timeout*2))
                     except:
                         pass
         else:
@@ -230,13 +230,13 @@ class QA_Tdx_Executor():
         database.insert_many(QA_util_to_json_from_pandas(data))
 
 
-def get_bar():
-
+def get_bar(timeout=1, sleep=1, thread=2):
+    sleep = int(sleep)
     _time1 = datetime.datetime.now()
     from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_block_adv
     code = QA_fetch_stock_block_adv().code
     print(len(code))
-    x = QA_Tdx_Executor()
+    x = QA_Tdx_Executor(timeout=float(timeout), thread_num=int(thread))
     print(x._queue.qsize())
     print(x.get_available())
 
@@ -247,7 +247,7 @@ def get_bar():
 
             print('Time {}'.format(
                 (datetime.datetime.now() - _time).total_seconds()))
-            time.sleep(1)
+            time.sleep(sleep)
             print('Connection Pool NOW LEFT {} Available IP'.format(
                 x._queue.qsize()))
             print('Program Last Time {}'.format(
@@ -256,7 +256,7 @@ def get_bar():
             return data
         else:
             print('Not Trading time {}'.format(_time))
-            time.sleep(1)
+            time.sleep(sleep)
 
 
 def get_day_once():
@@ -270,13 +270,15 @@ def get_day_once():
 
 @click.command()
 @click.option('--timeout', default=0.2, help='timeout param')
-def bat(timeout):
-
+@click.option('--sleep', default=1, help='sleep step')
+@click.option('--thread', default=2, help='thread nums')
+def bat(timeout=0.2, sleep=1, thread=2):
+    sleep = int(sleep)
     _time1 = datetime.datetime.now()
     from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_block_adv
     code = QA_fetch_stock_block_adv().code
     print(len(code))
-    x = QA_Tdx_Executor(timeout=timeout)
+    x = QA_Tdx_Executor(timeout=float(timeout), thread_num=int(thread))
     print(x._queue.qsize())
     print(x.get_available())
 
@@ -287,7 +289,7 @@ def bat(timeout):
     database.create_index([('code', QA_util_sql_mongo_sort_ASCENDING),
                            ('datetime', QA_util_sql_mongo_sort_ASCENDING)])
 
-    for i in range(100000):
+    while True:
         _time = datetime.datetime.now()
         if QA_util_if_tradetime(_time):  # 如果在交易时间
             data = x.get_realtime_concurrent(code)
@@ -297,14 +299,14 @@ def bat(timeout):
 
             print('Time {}'.format(
                 (datetime.datetime.now() - _time).total_seconds()))
-            time.sleep(1)
+            time.sleep(sleep)
             print('Connection Pool NOW LEFT {} Available IP'.format(
                 x._queue.qsize()))
             print('Program Last Time {}'.format(
                 (datetime.datetime.now() - _time1).total_seconds()))
         else:
             print('Not Trading time {}'.format(_time))
-            time.sleep(1)
+            time.sleep(sleep)
 
 
 if __name__ == '__main__':
