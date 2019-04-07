@@ -305,7 +305,7 @@ class QA_Account(QA_Worker):
         self.sell_available = copy.deepcopy(self.init_hold)
         self.buy_available = copy.deepcopy(self.init_hold)
         self.history = []
-        self.time_index = []
+        self.time_index_max = []
 
         # 在回测中, 每日结算后更新
         # 真实交易中, 为每日初始化/每次重新登录后的同步信息
@@ -336,6 +336,7 @@ class QA_Account(QA_Worker):
         if self.market_type is MARKET_TYPE.FUTURE_CN:
             self.allow_t0 = True
             self.allow_sellopen = True
+            self.allow_margin = True
 
         self.market_preset = MARKET_PRESET()
         # if self.allow_t0 and self.allow_sellopen or self.market_type is MARKET_TYPE.FUTURE_CN:
@@ -406,7 +407,7 @@ class QA_Account(QA_Worker):
             'history':
             self.history,
             'trade_index':
-            self.time_index,
+            self.time_index_max,
             'running_time':
             str(datetime.datetime.now())
             if self.running_time is None else str(self.running_time),
@@ -501,8 +502,8 @@ class QA_Account(QA_Worker):
             [type] -- [description]
         """
         if self.start_==None:
-            if len(self.time_index) > 0:
-                return str(min(self.time_index))[0:10]
+            if len(self.time_index_max) > 0:
+                return str(min(self.time_index_max))[0:10]
             else:
                 print(
                     RuntimeWarning(
@@ -510,7 +511,7 @@ class QA_Account(QA_Worker):
                     )
                 )
         else:
-            return self.end_        
+            return self.start_        
 
     @property
     def end_date(self):
@@ -523,8 +524,8 @@ class QA_Account(QA_Worker):
             [type] -- [description]
         """
         if self.start_==None:
-            if len(self.time_index) > 0:
-                return str(max(self.time_index))[0:10]
+            if len(self.time_index_max) > 0:
+                return str(max(self.time_index_max))[0:10]
             else:
                 print(
                     RuntimeWarning(
@@ -542,9 +543,64 @@ class QA_Account(QA_Worker):
         return QA_util_get_trade_range(self.start_date, self.end_date)
 
     @property
+    def trade_range_max(self):
+        if self.start_date < str(min(self.time_index_max))[0:10] :
+             return QA_util_get_trade_range(self.start_date, self.end_date) 
+        else:
+            return QA_util_get_trade_range(str(min(self.time_index_max))[0:10], str(max(self.time_index_max))[0:10])
+    @property
+    def time_index(self):
+        if len(self.time_index_max):
+            res_=pd.DataFrame(self.time_index_max)
+            res_.columns=(['datetime'])
+            res_['date']=[ i[0:10]  for i in res_['datetime']]
+            res_=res_[res_['date'].isin(self.trade_range)]
+            return list(res_['datetime'])
+        else:
+            return self.time_index_max
+#        
+#        if self.start_date < str(min(self.time_index))[0:10] :
+#             return QA_util_get_trade_range(self.start_date, self.end_date) 
+#        else:
+#            return QA_util_get_trade_range(str(min(self.time_index))[0:10], str(max(self.time_index))[0:10])
+    @property
+    def history_min(self):
+        if len(self.history):
+            res_=pd.DataFrame(self.history)
+            res_['date']=[ i[0:10]  for i in res_[0]]
+            res_=res_[res_['date'].isin(self.trade_range)]   
+            return np.array(res_.drop(['date'],axis=1)).tolist() 
+        else:
+            return self.history
+    @property
+    def history_table_min(self):
+        '区间交易历史的table'
+        if len(self.history_min) > 0:
+            lens = len(self.history_min[0])
+        else:
+            lens = len(self._history_headers)
+
+        return pd.DataFrame(
+            data=self.history_min,
+            columns=self._history_headers[:lens]
+        ).sort_index()        
+#    @property
+#    def history(self):
+#        if len(self.history_max):
+#            res_=pd.DataFrame(self.history_max)
+#            res_['date']=[ i[0:10]  for i in res_[0]]
+#            res_=res_[res_['date'].isin(self.trade_range)]   
+#            return np.array(res_.drop(['date'],axis=1)).tolist() 
+#        else:
+#            return self.history_max
+#        res_=pd.DataFrame(self.time_index_max)
+#        res_.columns=(['datetime'])
+#        res_['date']=[ i[0:10]  for i in res_['datetime']]
+#        res_=res_[res_['date'].isin(self.trade_range)]
+    @property
     def trade_day(self):
         return list(
-            pd.Series(self.time_index).apply(lambda x: str(x)[0:10]).unique()
+            pd.Series(self.time_index_max).apply(lambda x: str(x)[0:10]).unique()
         )
 
     @property
@@ -572,7 +628,7 @@ class QA_Account(QA_Worker):
         '现金的table'
         _cash = pd.DataFrame(
             data=[self.cash[1::],
-                  self.time_index],
+                  self.time_index_max],
             index=['cash',
                    'datetime']
         ).T
@@ -654,9 +710,13 @@ class QA_Account(QA_Worker):
     def daily_cash(self):
         '每日交易结算时的现金表'
         res = self.cash_table.drop_duplicates(subset='date', keep='last')
-        res_=pd.concat([res.set_index('date'), pd.Series(data=None, index=pd.to_datetime(self.trade_range).set_names('date'), name='predrop')], axis=1).ffill()
-        return res_.fillna(self.init_cash).drop(['predrop','datetime','account_cookie'], axis=1).reset_index().set_index(['date'],drop=False).sort_index()
-
+        le=pd.DataFrame(pd.Series(data=None, index=pd.to_datetime(self.trade_range_max).set_names('date'), name='predrop'))
+        ri=res.set_index('date')
+        res_=pd.merge(le,ri,how='left',left_index=True,right_index=True)
+        res_=res_.ffill().fillna(self.init_cash).drop(['predrop','datetime','account_cookie'], axis=1).reset_index().set_index(['date'],drop=False).sort_index()        
+        res_=res_[res_.index.isin(self.trade_range)]
+        return res_
+            
     @property
     def daily_hold(self):
         '每日交易结算时的持仓表'
@@ -673,15 +733,19 @@ class QA_Account(QA_Worker):
             data = data.set_index(['date', 'account_cookie'])
             res = data[~data.index.duplicated(keep='last')].sort_index()
             # 这里会导致股票停牌时的持仓也被计算 但是计算market_value的时候就没了
-            return pd.concat([res.reset_index().set_index('date'), pd.Series(data=None, index=pd.to_datetime(self.trade_range).set_names('date'), name='predrop')], axis=1)\
-                .ffill().fillna(0).drop(['predrop','account_cookie'], axis=1).reset_index().set_index(['date']).sort_index()
-
+            le=pd.DataFrame(pd.Series(data=None, index=pd.to_datetime(self.trade_range_max).set_names('date'), name='predrop'))
+            ri=res.reset_index().set_index('date')
+            res_=pd.merge(le,ri,how='left',left_index=True,right_index=True)
+            res_=res_.ffill().fillna(0).drop(['predrop','account_cookie'], axis=1).reset_index().set_index(['date']).sort_index()
+            res_=res_[res_.index.isin(self.trade_range)]
+            return res_
 
     @property
     def daily_frozen(self):
         '每日交易结算时的持仓表'
-        return self.history_table.assign(date=pd.to_datetime(self.history_table.datetime)).set_index('date').resample('D').frozen.last().fillna(0)
-
+        res_=self.history_table.assign(date=pd.to_datetime(self.history_table.datetime)).set_index('date').resample('D').frozen.last().fillna(method='pad')
+        res_=res_[res_.index.isin(self.trade_range)]
+        return res_
     @property
     def latest_cash(self):
         'return the lastest cash 可用资金'
@@ -878,7 +942,7 @@ class QA_Account(QA_Worker):
 
         # 结算交易
         if self.cash[-1] > trade_money + commission_fee + tax_fee:
-            self.time_index.append(trade_time)
+            self.time_index_max.append(trade_time)
             # TODO: 目前还不支持期货的锁仓
             if self.allow_sellopen:
                 if trade_towards in [ORDER_DIRECTION.BUY_OPEN,
@@ -1398,7 +1462,7 @@ class QA_Account(QA_Worker):
         基于history去计算hold ==> last_settle+ today_pos_change
 
         """
-        print('FROM QUANTAXIS QA_ACCOUNT: account settle')
+        #print('FROM QUANTAXIS QA_ACCOUNT: account settle')
         if self.running_environment == RUNNING_ENVIRONMENT.TZERO and self.hold_available.sum(
         ) != 0:
             raise RuntimeError(
@@ -1527,7 +1591,7 @@ class QA_Account(QA_Worker):
         self.tax_coeff = message.get('tax_coeff', 0.0015)
         self.history = message['history']
         self.cash = message['cash']
-        self.time_index = message['trade_index']
+        self.time_index_max = message['trade_index']
         self.running_time = message.get('running_time', None)
         self.quantaxis_version = message.get('quantaxis_version', None)
         self.running_environment = message.get(

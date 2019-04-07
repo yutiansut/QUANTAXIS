@@ -171,14 +171,13 @@ class QA_Risk():
                 self.market_data = market_data
             self.if_fq = if_fq
             if self.account.market_type == MARKET_TYPE.FUTURE_CN:
-                self.if_fq = False # 如果是期货， 默认设为FALSE
-
+                self.if_fq = False  # 如果是期货， 默认设为FALSE
 
             if self.market_value is not None:
                 if self.account.market_type == MARKET_TYPE.FUTURE_CN and self.account.allow_margin == True:
                     print('margin!')
                     self._assets = (
-                        self.account.daily_frozen.fillna(method='pad') +
+                        self.account.daily_frozen +
                         self.account.daily_cash.set_index('date').cash
                     ).dropna()
                 else:
@@ -188,7 +187,7 @@ class QA_Risk():
                     ).fillna(method='pad')
             else:
                 self._assets = self.account.daily_cash.set_index('date'
-                                                                ).cash.fillna(
+                                                                 ).cash.fillna(
                     method='pad'
                 )
 
@@ -206,12 +205,10 @@ class QA_Risk():
         return pd.DataFrame([self.message])
 
     @property
-    @lru_cache()
     def total_timeindex(self):
         return self.account.trade_range
 
     @property
-    @lru_cache()
     def market_value(self):
         """每日每个股票持仓市值表
 
@@ -235,7 +232,6 @@ class QA_Risk():
             return None
 
     @property
-    @lru_cache()
     def daily_market_value(self):
         """每日持仓总市值表
 
@@ -316,7 +312,7 @@ class QA_Risk():
             [type] -- [description]
         """
 
-        return float(round(self.assets.iloc[-1] - self.init_cash, 2))
+        return float(round(self.assets.iloc[-1] - self.assets.iloc[0], 2))
 
     @property
     def profit(self):
@@ -359,7 +355,7 @@ class QA_Risk():
 
     @property
     def ir(self):
-        return round(self.calc_IR(),2)
+        return round(self.calc_IR(), 2)
 
     @property
     @lru_cache()
@@ -381,7 +377,7 @@ class QA_Risk():
             'beta': self.beta,
             'alpha': self.alpha,
             'sharpe': self.sharpe,
-            'init_cash': "%0.2f" % (float(self.init_cash)),
+            'init_cash': "%0.2f" % (float(self.assets[0])),
             'last_assets': "%0.2f" % (float(self.assets.iloc[-1])),
             'total_tax': self.total_tax,
             'total_commission': self.total_commission,
@@ -413,8 +409,9 @@ class QA_Risk():
         基准组合的账户资产队列
         """
         return (
-            self.benchmark_data.close / float(self.benchmark_data.open.iloc[0])
-            * float(self.init_cash)
+            self.benchmark_data.close /
+            float(self.benchmark_data.close.iloc[0])
+            * float(self.assets[0])
         )
 
     @property
@@ -454,15 +451,21 @@ class QA_Risk():
         """
         beta比率 组合的系统性风险
         """
-        return round(
-            float(
-                self.calc_beta(
-                    self.profit_pct.dropna(),
-                    self.benchmark_profitpct.dropna()
-                )
-            ),
-            2
-        )
+        try:
+            res=round(
+                float(
+                    self.calc_beta(
+                        self.profit_pct.dropna(),
+                        self.benchmark_profitpct.dropna()
+                    )
+                ),
+                2
+            )
+        except:
+            print('贝塔计算错误。。')
+            res=0
+            
+        return res
 
     @property
     def alpha(self):
@@ -559,7 +562,7 @@ class QA_Risk():
         计算账户收益
         期末资产/期初资产 -1
         """
-        return (float(assets.iloc[-1]) / float(self.init_cash)) - 1
+        return (float(assets.iloc[-1]) / float(assets.iloc[0])) - 1
 
     def calc_sharpe(self, annualized_returns, volatility_year, r=0.05):
         """
@@ -736,9 +739,11 @@ class QA_Risk():
     @property
     def month_assets_profit(self):
 
-        res = pd.concat([pd.Series(self.init_cash), self.month_assets]).diff().dropna()
+        res = pd.concat([pd.Series(self.assets.iloc[0]),
+                         self.month_assets]).diff().dropna()
         res.index = res.index.map(str)
         return res
+
     @property
     def daily_assets_profit(self):
         return self.assets.diff()
@@ -978,7 +983,6 @@ class QA_Performance():
         pass
 
     @property
-    @lru_cache()
     def pnl_lifo(self):
         """
         使用后进先出法配对成交记录
@@ -990,7 +994,7 @@ class QA_Performance():
             )
         )
         pair_table = []
-        for _, data in self.target.history_table.iterrows():
+        for _, data in self.target.history_table_min.iterrows():
             while True:
                 if X[data.code].qsize() == 0:
                     X[data.code].put((data.datetime, data.amount, data.price))
@@ -1022,8 +1026,9 @@ class QA_Performance():
                                         l[0],
                                         data.datetime,
                                         abs(data.amount),
-                                        data.price,
-                                        l[2]
+                                        l[2],
+                                        data.price
+
                                     ]
                                 )
                                 break
@@ -1049,8 +1054,8 @@ class QA_Performance():
                                         l[0],
                                         data.datetime,
                                         l[1],
-                                        data.price,
-                                        l[2]
+                                        l[2],
+                                        data.price
                                     ]
                                 )
                         else:
@@ -1073,8 +1078,8 @@ class QA_Performance():
                                         l[0],
                                         data.datetime,
                                         abs(data.amount),
-                                        data.price,
-                                        l[2]
+                                        l[2],
+                                        data.price
                                     ]
                                 )
                                 break
@@ -1105,12 +1110,21 @@ class QA_Performance():
         pnl = pnl.assign(
             pnl_money=pnl.pnl_ratio * pnl.amount,
             hold_gap=abs(pnl.sell_date - pnl.buy_date),
-            if_buyopen=(pnl.sell_date- pnl.buy_date)> datetime.timedelta(days=0)
+            if_buyopen=(pnl.sell_date -
+                        pnl.buy_date) > datetime.timedelta(days=0)
         )
+        pnl = pnl.assign(
+            openprice=pnl.if_buyopen.apply(
+                lambda pnl: 1 if pnl else 0) * pnl.buy_price + pnl.if_buyopen.apply(lambda pnl: 0 if pnl else 1) * pnl.sell_price,
+            opendate=pnl.if_buyopen.apply(
+                lambda pnl: 1 if pnl else 0) * pnl.buy_date.map(str) + pnl.if_buyopen.apply(lambda pnl: 0 if pnl else 1) * pnl.sell_date.map(str),
+            closeprice=pnl.if_buyopen.apply(
+                lambda pnl: 0 if pnl else 1) * pnl.buy_price + pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.sell_price,
+            closedate=pnl.if_buyopen.apply(
+                lambda pnl: 0 if pnl else 1) * pnl.buy_date.map(str) + pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.sell_date.map(str))
         return pnl
 
     @property
-    @lru_cache()
     def pnl_fifo(self):
         X = dict(
             zip(
@@ -1119,7 +1133,7 @@ class QA_Performance():
             )
         )
         pair_table = []
-        for _, data in self.target.history_table.iterrows():
+        for _, data in self.target.history_table_min.iterrows():
             while True:
                 if len(X[data.code]) == 0:
                     X[data.code].append(
@@ -1155,8 +1169,9 @@ class QA_Performance():
                                         l[0],
                                         data.datetime,
                                         abs(data.amount),
-                                        data.price,
-                                        l[2]
+                                        l[2],
+                                        data.price
+
                                     ]
                                 )
                                 break
@@ -1182,8 +1197,9 @@ class QA_Performance():
                                         l[0],
                                         data.datetime,
                                         l[1],
-                                        data.price,
-                                        l[2]
+                                        l[2],
+                                        data.price
+
                                     ]
                                 )
                         else:
@@ -1206,8 +1222,10 @@ class QA_Performance():
                                         l[0],
                                         data.datetime,
                                         abs(data.amount),
-                                        data.price,
-                                        l[2]
+                                        l[2],
+                                        data.price
+
+
                                     ]
                                 )
                                 break
@@ -1219,7 +1237,7 @@ class QA_Performance():
                              data.amount,
                              data.price)
                         )
-                        break   
+                        break
 
         pair_title = [
             'code',
@@ -1239,8 +1257,18 @@ class QA_Performance():
         pnl = pnl.assign(
             pnl_money=(pnl.sell_price - pnl.buy_price) * pnl.amount,
             hold_gap=abs(pnl.sell_date - pnl.buy_date),
-            if_buyopen=(pnl.sell_date- pnl.buy_date)> datetime.timedelta(days=0)
+            if_buyopen=(pnl.sell_date -
+                        pnl.buy_date) > datetime.timedelta(days=0)
         )
+        pnl = pnl.assign(
+            openprice=pnl.if_buyopen.apply(
+                lambda pnl: 1 if pnl else 0) * pnl.buy_price + pnl.if_buyopen.apply(lambda pnl: 0 if pnl else 1) * pnl.sell_price,
+            opendate=pnl.if_buyopen.apply(
+                lambda pnl: 1 if pnl else 0) * pnl.buy_date.map(str) + pnl.if_buyopen.apply(lambda pnl: 0 if pnl else 1) * pnl.sell_date.map(str),
+            closeprice=pnl.if_buyopen.apply(
+                lambda pnl: 0 if pnl else 1) * pnl.buy_price + pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.sell_price,
+            closedate=pnl.if_buyopen.apply(
+                lambda pnl: 0 if pnl else 1) * pnl.buy_date.map(str) + pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.sell_date.map(str))
         return pnl
 
     def plot_pnlratio(self):
@@ -1287,7 +1315,7 @@ class QA_Performance():
 
     def average_profit(self, methods='FIFO'):
         data = self.pnl
-        return round(data.pnl_money.mean(),2)
+        return round(data.pnl_money.mean(), 2)
 
     @property
     def accumulate_return(self):
@@ -1391,7 +1419,10 @@ class QA_Performance():
             elif item < 0:
                 w.append(w1)
                 w1 = 0
-        return max(w)
+        if len(w) == 0:
+            return 0
+        else:
+            return max(w)
 
     @property
     def continue_loss_amount(self):
@@ -1403,7 +1434,10 @@ class QA_Performance():
             elif item < 0:
                 l.append(l1)
                 l1 = 0
-        return max(l)
+        if len(l) == 0:
+            return 0
+        else:
+            return max(l)
 
     @property
     def average_holdgap(self):
@@ -1427,5 +1461,5 @@ class QA_Performance():
 
     @property
     def total_taxfee(self):
-        return self.target.history_table.commission.sum(
-        ) + self.target.history_table.tax.sum()
+        return self.target.history_table_min.commission.sum(
+        ) + self.target.history_table_min.tax.sum()
