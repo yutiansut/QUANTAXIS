@@ -27,7 +27,7 @@ print(ac.sell_available)
 
 ac.receive_simpledeal('RB1905',2802,1, QA.ORDER_DIRECTION.SELL_OPEN,'2019-01-21 09:55:00')
 print(ac.hold_available)
-ac.receive_simpledeal('RB1905',2810,1, QA.ORDER_DIRECTION.BUY_CLOSE,'2019-01-21 10:05:00')
+ac.receive_simpledeal('RB1905',2810,1, QA.ORDER_DIRECTION.BUY_CLOSE,'2019-01-21 11:05:00')
 
 print(ac.history_table)
 
@@ -39,3 +39,7 @@ print('TEST PORTFOLIO')
 
 perf = QA.QA_Performance(ac)
 print(perf.pnl)
+
+from pprint import pprint
+
+pprint(perf.message)
