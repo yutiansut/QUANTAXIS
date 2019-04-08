@@ -515,7 +515,7 @@ def QA_fetch_quotation(code, date=datetime.date.today(), db=DATABASE):
             'realtime_{}'.format(date))
         data = pd.DataFrame([item for item in collections.find(
             {'code': code}, {"_id": 0}, batch_size=10000)])
-        return data.assign(date=data.datetime.apply(lambda x: str(x)[0:10]), datetime=pd.to_datetime(data.datetime)) \
+        return data.assign(date=pd.to_datetime(data.datetime.apply(lambda x: str(x)[0:10])), datetime=pd.to_datetime(data.datetime)) \
             .set_index('datetime', drop=False).sort_index()
     except Exception as e:
         raise e
@@ -528,7 +528,7 @@ def QA_fetch_quotations(date=datetime.date.today(), db=DATABASE):
             'realtime_{}'.format(date))
         data = pd.DataFrame([item for item in collections.find(
             {}, {"_id": 0}, batch_size=10000)])
-        return data.assign(date=data.datetime.apply(lambda x: str(x)[0:10])).assign(datetime=pd.to_datetime(data.datetime)).set_index('datetime', drop=False).sort_index()
+        return data.assign(date=pd.to_datetime(data.datetime.apply(lambda x: str(x)[0:10]))).assign(datetime=pd.to_datetime(data.datetime)).set_index(['datetime', 'code'], drop=False).sort_index()
     except Exception as e:
         raise e
 

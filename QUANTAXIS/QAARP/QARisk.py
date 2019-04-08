@@ -451,15 +451,21 @@ class QA_Risk():
         """
         beta比率 组合的系统性风险
         """
-        return round(
-            float(
-                self.calc_beta(
-                    self.profit_pct.dropna(),
-                    self.benchmark_profitpct.dropna()
-                )
-            ),
-            2
-        )
+        try:
+            res=round(
+                float(
+                    self.calc_beta(
+                        self.profit_pct.dropna(),
+                        self.benchmark_profitpct.dropna()
+                    )
+                ),
+                2
+            )
+        except:
+            print('贝塔计算错误。。')
+            res=0
+            
+        return res
 
     @property
     def alpha(self):
