@@ -452,7 +452,7 @@ class QA_Risk():
         beta比率 组合的系统性风险
         """
         try:
-            res=round(
+            res = round(
                 float(
                     self.calc_beta(
                         self.profit_pct.dropna(),
@@ -463,8 +463,8 @@ class QA_Risk():
             )
         except:
             print('贝塔计算错误。。')
-            res=0
-            
+            res = 0
+
         return res
 
     @property
@@ -885,7 +885,7 @@ class QA_Performance():
         self.pnl = self.pnl_fifo
 
     def __repr__(self):
-        return 'QA_PERFORMANCE ANYLYSIS PLUGIN'
+        return '< QA_PERFORMANCE ANYLYSIS PLUGIN >'
 
     def set_pnl(self, model='fifo'):
         if model == 'fifo':
@@ -1127,7 +1127,7 @@ class QA_Performance():
     @property
     def pnl_buyopen(self):
         return self.pnl[self.pnl.if_buyopen]
-    
+
     @property
     def pnl_sellopen(self):
         return self.pnl[~self.pnl.if_buyopen]
@@ -1342,19 +1342,59 @@ class QA_Performance():
         return self.pnl.query('pnl_money>0')
 
     @property
+    def profit_pnl_buyopen(self):
+        return self.pnl_buyopen.query('pnl_money>0')
+
+    @property
+    def profit_pnl_sellopen(self):
+        return self.pnl_sellopen.query('pnl_money>0')
+
+    @property
     def loss_pnl(self):
         return self.pnl.query('pnl_money<0')
+
+    @property
+    def loss_pnl_buyopen(self):
+        return self.pnl_buyopen.query('pnl_money<0')
+
+    @property
+    def loss_pnl_sellopen(self):
+        return self.pnl_sellopen.query('pnl_money<0')
 
     @property
     def even_pnl(self):
         return self.pnl.query('pnl_money==0')
 
     @property
+    def even_pnl_buyopen(self):
+        return self.pnl_buyopen.query('pnl_money==0')
+
+    @property
+    def even_pnl_sellopen(self):
+        return self.pnl_sellopen.query('pnl_money==0')
+
+    @property
     def total_profit(self):
         return self.profit_pnl.pnl_money.sum()
 
     @property
+    def total_profit_buyopen(self):
+        return self.profit_pnl_buyopen.pnl_money.sum()
+
+    @property
+    def total_profit_sellopen(self):
+        return self.profit_pnl_sellopen.pnl_money.sum()
+
+    @property
     def total_loss(self):
+        return self.loss_pnl.pnl_money.sum()
+
+    @property
+    def total_loss_buyopen(self):
+        return self.loss_pnl_buyopen.pnl_money.sum()
+
+    @property
+    def total_loss_sellopen(self):
         return self.loss_pnl.pnl_money.sum()
 
     @property
@@ -1362,28 +1402,84 @@ class QA_Performance():
         return abs(self.total_profit / self.total_loss)
 
     @property
+    def total_pnl_buyopen(self):
+        return abs(self.total_profit_buyopen / self.total_loss_buyopen)
+
+    @property
+    def total_pnl_sellopen(self):
+        return abs(self.total_profit_sellopen / self.total_loss_sellopen)
+
+    @property
     def trading_amounts(self):
         return len(self.pnl)
+
+    @property
+    def trading_amounts_buyopen(self):
+        return len(self.pnl_buyopen)
+
+    @property
+    def trading_amounts_sellopen(self):
+        return len(self.pnl_sellopen)
 
     @property
     def profit_amounts(self):
         return len(self.profit_pnl)
 
     @property
+    def profit_amounts_buyopen(self):
+        return len(self.profit_pnl_buyopen)
+
+    @property
+    def profit_amounts_sellopen(self):
+        return len(self.profit_pnl_sellopen)
+
+    @property
     def loss_amounts(self):
         return len(self.loss_pnl)
+
+    @property
+    def loss_amounts_buyopen(self):
+        return len(self.loss_pnl_buyopen)
+
+    @property
+    def loss_amounts_sellopen(self):
+        return len(self.loss_pnl_sellopen)
 
     @property
     def even_amounts(self):
         return len(self.even_pnl)
 
     @property
+    def even_amounts_buyopen(self):
+        return len(self.even_pnl_buyopen)
+
+    @property
+    def even_amounts_sellopen(self):
+        return len(self.even_pnl_sellopen)
+
+    @property
     def profit_precentage(self):
         return self.profit_amounts / self.trading_amounts
 
     @property
+    def profit_precentage_buyopen(self):
+        return self.profit_amounts_buyopen / self.trading_amounts_buyopen
+
+    @property
+    def profit_precentage_sellopen(self):
+        return self.profit_amounts_sellopen / self.trading_amounts_sellopen
+
+    @property
     def loss_precentage(self):
         return self.loss_amounts / self.trading_amounts
+
+    @property
+    def loss_precentage_buyopen(self):
+        return self.loss_amounts_buyopen / self.trading_amounts_buyopen
+
+    @property
+    def loss_precentage_sellopen(self):
+        return self.loss_amounts_sellopen / self.trading_amounts_sellopen
 
     @property
     def even_precentage(self):
