@@ -1125,6 +1125,14 @@ class QA_Performance():
         return pnl
 
     @property
+    def pnl_buyopen(self):
+        return self.pnl[self.pnl.if_buyopen]
+    
+    @property
+    def pnl_sellopen(self):
+        return self.pnl[~self.pnl.if_buyopen]
+
+    @property
     def pnl_fifo(self):
         X = dict(
             zip(
