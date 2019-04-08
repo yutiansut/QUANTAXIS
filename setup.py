@@ -29,7 +29,7 @@ import re
 import sys
 import webbrowser
 import platform
-
+import configparser
 try:
     from setuptools import setup
 except:
@@ -65,7 +65,7 @@ NAME = "quantaxis"
 """
 
 """
-PACKAGES = ["QUANTAXIS", "QUANTAXIS.QAFetch", "QUANTAXIS.QACmd", "QUANTAXIS.QAMarket", 'QUANTAXIS.QASetting',"QUANTAXIS.QACmd",
+PACKAGES = ["QUANTAXIS", "QUANTAXIS.QAFetch", "QUANTAXIS.QACmd", "QUANTAXIS.QAMarket", 'QUANTAXIS.QASetting', "QUANTAXIS.QACmd",
             "QUANTAXIS.QAApplication", "QUANTAXIS.QAEngine", "QUANTAXIS.QAData", 'QUANTAXIS.QAData.proto', "QUANTAXIS.QAAnalysis", 'QUANTAXIS.QASelector',
             "QUANTAXIS.QASU", "QUANTAXIS.QAUtil", "QUANTAXIS.QAARP", "QUANTAXIS.QAIndicator"]
 """
@@ -92,6 +92,9 @@ URL = "https://github.com/quantaxis/quantaxis"
 
 
 LICENSE = "MIT"
+
+
+
 
 setup(
     name=NAME,
@@ -125,5 +128,3 @@ setup(
     include_package_data=True,
     zip_safe=True
 )
-
-

@@ -116,7 +116,7 @@ def select_best_ip():
     ipexclude = qasetting.get_config(
         section='IPLIST', option='exclude', default_value=alist)
 
-    exclude_from_stock_ip_list(json.loads(ipexclude.replace("'", "\"")))
+    exclude_from_stock_ip_list(ipexclude)
 
     ipdefault = qasetting.get_config(
         section='IPLIST', option='default', default_value=default_ip)
