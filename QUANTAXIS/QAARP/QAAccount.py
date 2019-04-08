@@ -250,7 +250,8 @@ class QA_Account(QA_Worker):
             'commission',  # 手续费
             'tax',  # 税
             'message',  # 备注
-            'frozen'  # 冻结资金
+            'frozen',  # 冻结资金.
+            'direction' # 方向
         ]
         ########################################################################
         # 信息类:
@@ -1108,7 +1109,8 @@ class QA_Account(QA_Worker):
                     commission_fee,
                     tax_fee,
                     message,
-                    frozen_money
+                    frozen_money,
+                    trade_towards
                 ]
             )
 
