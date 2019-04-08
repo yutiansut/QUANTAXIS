@@ -48,6 +48,7 @@ class QA_Setting():
 
     def __init__(self, uri=None):
         self.lock = Lock()
+
         self.mongo_uri = uri or self.get_mongo()
         self.username = None
         self.password = None
@@ -90,6 +91,7 @@ class QA_Setting():
         Returns:
             [type] -- [description]
         """
+
 
         res = self.client.quantaxis.usersetting.find_one({'section': section})
         if res:
