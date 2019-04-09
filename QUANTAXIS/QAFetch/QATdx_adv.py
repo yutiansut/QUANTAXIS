@@ -64,13 +64,15 @@ class QA_Tdx_Executor():
             func = api.__getattribute__(item)
 
             def wrapper(*args, **kwargs):
-                _time = datetime.datetime.now()
-                res = self.executor.submit(func, *args, **kwargs)
-                used_time = (datetime.datetime.now() - _time).total_seconds()
-
-                #IP延迟低，放进队列继续使用
-                if used_time < self.timeout*2:
-                    self._queue.put(api)
+                try:
+                    _time = datetime.datetime.now()
+                    res = self.executor.submit(func, *args, **kwargs)
+                    used_time = (datetime.datetime.now() - _time).total_seconds()
+                    #IP延迟低，放进队列继续使用
+                    if used_time < self.timeout*2:
+                        self._queue.put(api)
+                except:
+                    raise Exception('多线程里有异常，重新执行')
                 return res
             return wrapper
         except:
@@ -148,7 +150,7 @@ class QA_Tdx_Executor():
         random.shuffle(ip_list)
         for item in ip_list:
             if self._queue.full():
-                break
+                return
             _sec = self._test_speed(ip=item['ip'], port=item['port'])
             if _sec < self.timeout*3:
                 try:
