@@ -964,6 +964,12 @@ class QA_Performance():
             'max_profit': round(self.max_profit(self.pnl), 2),
             'max_loss': round(self.max_loss(self.pnl), 2),
             'max_pnl': round(self.max_pnl(self.pnl), 2),
+            'netprofio_maxloss_ratio': round(self.netprofio_maxloss_ratio(self.pnl), 2),
+            'continue_profit_amount': round(self.continue_profit_amount(self.pnl), 2),
+            'continue_loss_amount': round(self.continue_loss_amount(self.pnl), 2),
+            'average_holdgap': self.average_holdgap(self.pnl),
+            'average_profitholdgap': self.average_profitholdgap(self.pnl),
+            'average_losssholdgap': self.average_losssholdgap(self.pnl),
             'buyopen':{
                 'netprofio_maxloss_ratio': round(self.netprofio_maxloss_ratio(self.pnl), 2),
                 'continue_profit_amount': round(self.continue_profit_amount(self.pnl), 2),
