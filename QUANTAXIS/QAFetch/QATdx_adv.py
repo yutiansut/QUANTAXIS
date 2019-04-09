@@ -148,7 +148,7 @@ class QA_Tdx_Executor():
         random.shuffle(ip_list)
         for item in ip_list:
             if self._queue.full():
-                break
+                return
             _sec = self._test_speed(ip=item['ip'], port=item['port'])
             if _sec < self.timeout*3:
                 try:
