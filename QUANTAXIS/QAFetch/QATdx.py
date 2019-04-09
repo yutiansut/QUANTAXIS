@@ -194,7 +194,7 @@ def get_ip_list_by_multi_process_ping(ip_list=[], n=0, _type='stock',
         if _type:
             # store the data as binary data stream
             cache.set(_type, results, age=cache_age)
-            print('saving ip list to {} cache {}.'.format(_type, len(results)))
+            print('saving ip list to {} cache {}'.format(_type, len(results)))
     if len(results) > 0:
         if n == 0 and len(results) > 0:
             return results
@@ -226,8 +226,9 @@ def get_extensionmarket_ip(ip, port):
         best_ip = select_best_ip()
         ip = best_ip['future']['ip']
         port = best_ip['future']['port']
-    elif ip is None and port is None and best_ip['future'][
-        'ip'] is not None and best_ip['future']['port'] is not None:
+    elif ip is None and port is None and \
+            best_ip['future']['ip'] is not None and \
+            best_ip['future']['port'] is not None:
         ip = best_ip['future']['ip']
         port = best_ip['future']['port']
     else:
@@ -252,7 +253,8 @@ def get_mainmarket_ip(ip, port):
         best_ip = select_best_ip()
         ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
-    elif ip is None and port is None and best_ip['stock']['ip'] is not None and \
+    elif ip is None and port is None and \
+            best_ip['stock']['ip'] is not None and \
             best_ip['stock']['port'] is not None:
         ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
@@ -283,7 +285,7 @@ def QA_fetch_get_security_bars(code, _type, lens, ip=None, port=None):
         data = pd.concat([api.to_df(
             api.get_security_bars(_select_type(_type), _select_market_code(
                 code), code, (i - 1) * 800, 800)) for i in
-                          range(1, int(lens / 800) + 2)], axis=0)
+            range(1, int(lens / 800) + 2)], axis=0)
         data = data \
             .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1,
                   inplace=False) \
@@ -347,7 +349,7 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00',
             data = pd.concat([api.to_df(
                 api.get_security_bars(frequence, _select_market_code(
                     code), code, (int(lens / 800) - i) * 800, 800)) for i in
-                              range(int(lens / 800) + 1)], axis=0)
+                range(int(lens / 800) + 1)], axis=0)
 
             # 这里的问题是: 如果只取了一天的股票,而当天停牌, 那么就直接返回None了
             if len(data) < 1:
@@ -414,9 +416,13 @@ def QA_fetch_get_stock_min(code, start, end, frequence='1min', ip=None,
     with api.connect(ip, port):
 
         data = pd.concat(
-            [api.to_df(api.get_security_bars(frequence, _select_market_code(
-                str(code)), str(code), (int(lens / 800) - i) * 800, 800)) for i
-             in range(int(lens / 800) + 1)], axis=0)
+            [api.to_df(
+                api.get_security_bars(
+                    frequence, _select_market_code(
+                        str(code)),
+                        str(code),
+                        (int(lens / 800) - i) * 800, 800)) for i
+                            in range(int(lens / 800) + 1)], axis=0)
         data = data \
                    .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1,
                          inplace=False) \
@@ -2123,7 +2129,7 @@ def QA_fetch_get_future_min(code, start, end, frequence='1min', ip=None,
         data = pd.concat([apix.to_df(
             apix.get_instrument_bars(frequence, int(code_market.market), str(
                 code), (int(lens / 700) - i) * 700, 700)) for i in
-                          range(int(lens / 700) + 1)], axis=0)
+            range(int(lens / 700) + 1)], axis=0)
         # print(data)
         # print(data.datetime)
         data = data \
