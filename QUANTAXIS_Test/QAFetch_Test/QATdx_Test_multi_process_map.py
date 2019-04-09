@@ -41,7 +41,7 @@ class TestSelect_best_ip(TestCase):
         data = QA_fetch_get_stock_day(code, start_date=start, end_date=end)
         # print(data)
         self.assertTrue(len(data) > (end - start).days / 2,
-                        '返回数据个数不匹配，数from time import time据长度：{},天数（包含节假日）：{}'.format(
+            '返回数据个数不匹配，数据长度：{},天数（包含节假日）：{}'.format(
                             len(data), (end - start).days / 2))
 
         # 恢复初始化ip，重新测试ip
@@ -69,8 +69,8 @@ class TestSelect_best_ip(TestCase):
         self.assertTrue(isinstance(port, int), '未获取到端口号')
         data = QA_fetch_get_stock_day(code, start, end)
         self.assertTrue(len(data) > (end - start).days / 2,
-                        '返回数据个数不匹配，数据长度：{},天数（包含节假日）：{}'.format(len(data), (
-                                    end - start).days / 2))
+            '返回数据个数不匹配，数据长度：{},天数（包含节假日）：{}'.format(
+                len(data), (end - start).days / 2))
 
     def test_gen_param(self):
         codelist = QA.QA_fetch_stock_list_adv().code.tolist()
@@ -123,13 +123,14 @@ class TestSelect_best_ip(TestCase):
         codeListCount = 200
         a = time.time()
         # ps = Parallelism(cpu_count())
-        data1 = QA.QAFetch.QATdx.QA_fetch_get_stock_day(codelist[0], start, end)
+        data1 = QA.QAFetch.QATdx.QA_fetch_get_stock_day(codelist[0], start,
+                                                        end)
         data2 = QA.QAFetch.QATdx.QA_fetch_get_stock_day(codelist[0], start,
                                                         end2)
         # 交易时间段
         self.assertTrue(len(data1) == len(data2),
-                '数据长度：{} {} 日期： {} {}'.format(len(data1), len(data2),
-                end, end2))
+                        '数据长度：{} {} 日期： {} {}'.format(len(data1), len(data2),
+                                                      end, end2))
         print('数据长度：{} {} 日期： {} {}'.format(
             len(data1), len(data2), end, end2))
         print('当前数据： {} {}'.format(data1.close[-1], data2.close[-1]))
@@ -143,7 +144,8 @@ class TestSelect_best_ip(TestCase):
         codeListCount = 200
         a = time.time()
         # ps = Parallelism(cpu_count())
-        data1 = QA.QAFetch.QATdx.QA_fetch_get_stock_day(codelist[0], start, end)
+        data1 = QA.QAFetch.QATdx.QA_fetch_get_stock_day(codelist[0], start,
+                                                        end)
         data2 = QA.QAFetch.QATdx.QA_fetch_get_stock_day(codelist[0], start,
                                                         end2)
         # 交易时间段
