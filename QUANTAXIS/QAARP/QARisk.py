@@ -1404,7 +1404,7 @@ class QA_Performance():
         return self.loss_pnl(pnl).pnl_money.mean()
 
     def average_profit(self, pnl):
-        return return self.profit_pnl(pnl).pnl_money.mean()
+        return self.profit_pnl(pnl).pnl_money.mean()
 
     def average_pnl(self, pnl):
         return abs(self.average_profit(pnl) / self.average_loss(pnl))
