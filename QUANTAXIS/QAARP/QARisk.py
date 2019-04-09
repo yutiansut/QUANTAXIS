@@ -948,10 +948,12 @@ class QA_Performance():
         """
 
         return {
-            'total_profit': round(self.total_profit(self.pnl), 2),  # 总盈利(对于每个单笔而言)
+            # 总盈利(对于每个单笔而言)
+            'total_profit': round(self.total_profit(self.pnl), 2),
             'total_loss': round(self.total_loss(self.pnl), 2),  # 总亏损(对于每个单笔而言)
             'total_pnl': round(self.total_pnl(self.pnl), 2),  # 总盈利/总亏损
-            'trading_amounts': round(self.trading_amounts(self.pnl), 2),  # 交易手数
+            # 交易手数
+            'trading_amounts': round(self.trading_amounts(self.pnl), 2),
             'profit_amounts': round(self.profit_amounts(self.pnl), 2),  # 盈利手数
             'loss_amounts': round(self.loss_amounts(self.pnl), 2),  # 亏损手数
             'even_amounts': round(self.even_amounts(self.pnl), 2),  # 持平手数
@@ -964,20 +966,27 @@ class QA_Performance():
             'max_profit': round(self.max_profit(self.pnl), 2),
             'max_loss': round(self.max_loss(self.pnl), 2),
             'max_pnl': round(self.max_pnl(self.pnl), 2),
-            'buyopen':{
+            'buyopen': {
                 'netprofio_maxloss_ratio': round(self.netprofio_maxloss_ratio(self.pnl), 2),
                 'continue_profit_amount': round(self.continue_profit_amount(self.pnl), 2),
                 'continue_loss_amount': round(self.continue_loss_amount(self.pnl), 2),
                 'average_holdgap': self.average_holdgap(self.pnl),
                 'average_profitholdgap': self.average_profitholdgap(self.pnl),
                 'average_losssholdgap': self.average_losssholdgap(self.pnl),
-                'total_profit': round(self.total_profit(self.pnl_buyopen), 2),  # 总盈利(对于每个单笔而言)
-                'total_loss': round(self.total_loss(self.pnl_buyopen), 2),  # 总亏损(对于每个单笔而言)
-                'total_pnl': round(self.total_pnl(self.pnl_buyopen), 2),  # 总盈利/总亏损
-                'trading_amounts': round(self.trading_amounts(self.pnl_buyopen), 2),  # 交易手数
-                'profit_amounts': round(self.profit_amounts(self.pnl_buyopen), 2),  # 盈利手数
-                'loss_amounts': round(self.loss_amounts(self.pnl_buyopen), 2),  # 亏损手数
-                'even_amounts': round(self.even_amounts(self.pnl_buyopen), 2),  # 持平手数
+                # 总盈利(对于每个单笔而言)
+                'total_profit': round(self.total_profit(self.pnl_buyopen), 2),
+                # 总亏损(对于每个单笔而言)
+                'total_loss': round(self.total_loss(self.pnl_buyopen), 2),
+                # 总盈利/总亏损
+                'total_pnl': round(self.total_pnl(self.pnl_buyopen), 2),
+                # 交易手数
+                'trading_amounts': round(self.trading_amounts(self.pnl_buyopen), 2),
+                # 盈利手数
+                'profit_amounts': round(self.profit_amounts(self.pnl_buyopen), 2),
+                # 亏损手数
+                'loss_amounts': round(self.loss_amounts(self.pnl_buyopen), 2),
+                # 持平手数
+                'even_amounts': round(self.even_amounts(self.pnl_buyopen), 2),
                 'profit_precentage': round(self.profit_precentage(self.pnl_buyopen), 2),
                 'loss_precentage': round(self.loss_precentage(self.pnl_buyopen), 2),
                 'even_precentage': round(self.even_precentage(self.pnl_buyopen), 2),
@@ -993,16 +1002,23 @@ class QA_Performance():
                 'average_holdgap': self.average_holdgap(self.pnl_buyopen),
                 'average_profitholdgap': self.average_profitholdgap(self.pnl_buyopen),
                 'average_losssholdgap': self.average_losssholdgap(self.pnl_buyopen)
-                },
+            },
             'sellopen':
                 {
-                'total_profit': round(self.total_profit(self.pnl_sellopen), 2),  # 总盈利(对于每个单笔而言)
-                'total_loss': round(self.total_loss(self.pnl_sellopen), 2),  # 总亏损(对于每个单笔而言)
-                'total_pnl': round(self.total_pnl(self.pnl_sellopen), 2),  # 总盈利/总亏损
-                'trading_amounts': round(self.trading_amounts(self.pnl_sellopen), 2),  # 交易手数
-                'profit_amounts': round(self.profit_amounts(self.pnl_sellopen), 2),  # 盈利手数
-                'loss_amounts': round(self.loss_amounts(self.pnl_sellopen), 2),  # 亏损手数
-                'even_amounts': round(self.even_amounts(self.pnl_sellopen), 2),  # 持平手数
+                # 总盈利(对于每个单笔而言)
+                'total_profit': round(self.total_profit(self.pnl_sellopen), 2),
+                # 总亏损(对于每个单笔而言)
+                'total_loss': round(self.total_loss(self.pnl_sellopen), 2),
+                # 总盈利/总亏损
+                'total_pnl': round(self.total_pnl(self.pnl_sellopen), 2),
+                # 交易手数
+                'trading_amounts': round(self.trading_amounts(self.pnl_sellopen), 2),
+                # 盈利手数
+                'profit_amounts': round(self.profit_amounts(self.pnl_sellopen), 2),
+                # 亏损手数
+                'loss_amounts': round(self.loss_amounts(self.pnl_sellopen), 2),
+                # 持平手数
+                'even_amounts': round(self.even_amounts(self.pnl_sellopen), 2),
                 'profit_precentage': round(self.profit_precentage(self.pnl_sellopen), 2),
                 'loss_precentage': round(self.loss_precentage(self.pnl_sellopen), 2),
                 'even_precentage': round(self.even_precentage(self.pnl_sellopen), 2),
@@ -1018,7 +1034,7 @@ class QA_Performance():
                 'average_holdgap': self.average_holdgap(self.pnl_sellopen),
                 'average_profitholdgap': self.average_profitholdgap(self.pnl_sellopen),
                 'average_losssholdgap': self.average_losssholdgap(self.pnl_sellopen)
-                }
+            }
         }
 
     @property
@@ -1370,10 +1386,6 @@ class QA_Performance():
         data = self.pnl
         return round(len(data.query('pnl_money>0')) / len(data), 2)
 
-    def average_profit(self, methods='FIFO'):
-        data = self.pnl
-        return round(data.pnl_money.mean(), 2)
-
     @property
     def accumulate_return(self):
         """
@@ -1428,9 +1440,11 @@ class QA_Performance():
     def average_loss(self, pnl):
         return self.loss_pnl(pnl).pnl_money.mean()
 
+    def average_profit(self, pnl):
+        return return self.profit_pnl(pnl).pnl_money.mean()
+
     def average_pnl(self, pnl):
         return abs(self.average_profit(pnl) / self.average_loss(pnl))
-
 
     def max_profit(self, pnl):
         return self.profit_pnl(pnl).pnl_money.max()
