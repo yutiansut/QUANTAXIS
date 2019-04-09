@@ -371,5 +371,8 @@ def QA_SU_save_index_day(client=DATABASE, ui_log=None, ui_progress=None):
     ips = get_ip_list_by_multi_process_ping(stock_ip_list, _type='stock')[:cpu_count() * 2 + 1]
     ps = QA_SU_save_index_day_parallelism(processes=cpu_count() if len(ips) >= cpu_count() else len(ips),
                                           client=client, ui_log=ui_log)
+    # 单线程测试
+    # ps = QA_SU_save_index_day_parallelism(processes=1 if len(ips) >= cpu_count() else len(ips),
+    #                                       client=client, ui_log=ui_log)
     ps.total_counts = len(index_list)
     ps.run(index_list)

@@ -201,6 +201,7 @@ class TestSelect_best_ip(TestCase):
         start = datetime.datetime.now() - datetime.timedelta(days)
         end = datetime.datetime.now()
         data1 = QA.QA_fetch_index_day_adv(codelist[0], start, end)
+        # 多线程能提高一倍的速度
         QA_SU_save_index_day('tdx', paralleled=True)
         print('end test_QA_SU_save_stock_day')
         data2 = QA.QA_fetch_index_day_adv(codelist[0], start, end)
