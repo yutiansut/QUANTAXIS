@@ -72,7 +72,7 @@ class QA_Tdx_Executor():
                     if used_time < self.timeout*2:
                         self._queue.put(api)
                 except:
-                    pass
+                    raise Exception('多线程里有异常，重新执行')
                 return res
             return wrapper
         except:
