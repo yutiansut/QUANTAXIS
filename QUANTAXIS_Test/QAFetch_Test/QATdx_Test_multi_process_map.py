@@ -41,7 +41,7 @@ class TestSelect_best_ip(TestCase):
         data = QA_fetch_get_stock_day(code, start_date=start, end_date=end)
         # print(data)
         self.assertTrue(len(data) > (end - start).days / 2,
-            '返回数据个数不匹配，数据长度：{},天数（包含节假日）：{}'.format(
+                        '返回数据个数不匹配，数据长度：{},天数（包含节假日）：{}'.format(
                             len(data), (end - start).days / 2))
 
         # 恢复初始化ip，重新测试ip
@@ -69,8 +69,8 @@ class TestSelect_best_ip(TestCase):
         self.assertTrue(isinstance(port, int), '未获取到端口号')
         data = QA_fetch_get_stock_day(code, start, end)
         self.assertTrue(len(data) > (end - start).days / 2,
-            '返回数据个数不匹配，数据长度：{},天数（包含节假日）：{}'.format(
-                len(data), (end - start).days / 2))
+                        '返回数据个数不匹配，数据长度：{},天数（包含节假日）：{}'.format(
+                            len(data), (end - start).days / 2))
 
     def test_gen_param(self):
         codelist = QA.QA_fetch_stock_list_adv().code.tolist()
@@ -242,8 +242,8 @@ class TestSelect_best_ip(TestCase):
         if data1:
             self.assertTrue(
                 len(data2) == len(data1) if data1.datetime[-1] ==
-                                            data2.datetime[-1] else len(
-                    data2) > len(data1),
+                                            data2.datetime[-1] else
+                len(data2) > len(data1),
                 '保存后的数据应该比未保存前长： {} {}'.format(
                     len(data2), len(data1)))
             print('保存前日期： {}， 保存后日期 {}'.format(data1.datetime[-1],
