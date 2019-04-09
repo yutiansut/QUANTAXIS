@@ -132,3 +132,4 @@ class Parallelism_Thread(Parallelism_abs):
 
     def do_working(self, code):
         raise Exception('你要在子类中实现此方法!')
+
