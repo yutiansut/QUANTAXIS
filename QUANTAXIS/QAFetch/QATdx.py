@@ -156,13 +156,15 @@ def get_ip_list_by_ping(ip_list=[], _type='stock'):
     return best_ip[0]
 
 
-def get_ip_list_by_multi_process_ping(ip_list=[], n=0, _type='stock'):
+def get_ip_list_by_multi_process_ping(ip_list=[], n=0, _type='stock', cache_age=86400):
     ''' 根据ping排序返回可用的ip列表
+    2019 04 09  增加_type缓存时间cache_age
     2019 03 31 取消参数filename
 
     :param ip_list: ip列表
     :param n: 最多返回的ip数量， 当可用ip数量小于n，返回所有可用的ip；n=0时，返回所有可用ip
     :param _type: ip类型
+    :param cache_age: ip类型缓存时间（秒），默认为一天（86400秒）
     :return: 可以ping通的ip列表
     '''
     cache = QA_util_cache()
@@ -184,7 +186,7 @@ def get_ip_list_by_multi_process_ping(ip_list=[], n=0, _type='stock'):
         results = [x[1] for x in sorted(results, key=lambda x: x[0])]
         if _type:
                 # store the data as binary data stream
-                cache.set(_type, results, age=86400)
+                cache.set(_type, results, age=cache_age)
                 print('saving ip list to {} cache {}.'.format(_type, len(results)))
     if len(results) > 0:
         if n == 0 and len(results) > 0:
