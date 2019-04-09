@@ -996,7 +996,7 @@ class QA_Performance():
             'average_holdgap': self.average_holdgap(self.pnl),
             'average_profitholdgap': self.average_profitholdgap(self.pnl),
             'average_losssholdgap': self.average_losssholdgap(self.pnl),
-            'buyopen': self.base_message(self.pnl_buyopen)
+            'buyopen': self.base_message(self.pnl_buyopen),
             'sellopen': self.base_message(self.pnl_sellopen)
         }
 
