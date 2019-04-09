@@ -227,7 +227,8 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
                     # 更新过的，不更新
                     results.extend([(code, start_date, end_date, '00', 'day',
                                      ip_list[item % count]['ip'],
-                                     ip_list[item % count]['port'], item, total,
+                                     ip_list[item % count]['port'], item,
+                                     total,
                                      ui_log, ui_progress)])
             except Exception as error0:
                 print('Exception:{}'.format(error0))
@@ -281,10 +282,10 @@ class QA_SU_save_index_day_parallelism(QA_SU_save_day_parallelism_thread):
     def __saving_work(self, code):
         def __QA_log_info(code, end_time, start_time):
             QA_util_log_info(
-                '##JOB04 Saving INDEX_DAY====\nTrying updating {} from {} to {}'
-                    .format(code,
-                            start_time,
-                            end_time),
+                '##JOB04 Saving INDEX_DAY====\nTrying updating {} from {} to {}'.format(
+                    code,
+                    start_time,
+                    end_time),
                 ui_log=self.ui_log
             )
             pass
@@ -323,7 +324,7 @@ class QA_SU_save_index_day_parallelism(QA_SU_save_day_parallelism_thread):
                             )
                         )
                     )
-                except:
+                except Exception as e:
                     start_time = '2009-01-01'
                     __QA_log_info(code, end_time, start_time)
                     get_coll().insert_many(
@@ -389,7 +390,8 @@ def QA_SU_save_index_day(client=DATABASE, ui_log=None, ui_progress=None):
         processes=cpu_count() if len(ips) >= cpu_count() else len(ips),
         client=client, ui_log=ui_log)
     # 单线程测试
-    # ps = QA_SU_save_index_day_parallelism(processes=1 if len(ips) >= cpu_count() else len(ips),
-    #                                       client=client, ui_log=ui_log)
+    # ps = QA_SU_save_index_day_parallelism(
+    #   processes=1 if len(ips) >= cpu_count() else len(ips),
+    #   client=client, ui_log=ui_log)
     ps.total_counts = len(index_list)
     ps.run(index_list)

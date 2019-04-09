@@ -73,7 +73,8 @@ class Parallelism(Parallelism_abs):
         self.pool = Pool(processes=processes)
 
     def run(self, func, iter):
-        if isinstance(iter, list) and self.cores > 1 and len(iter) > self.cores:
+        if isinstance(iter, list) and self.cores > 1 and len(
+                iter) > self.cores:
             j = self.cores
             for i in range(j):
                 pLen = int(len(iter) / j) + 1
@@ -84,8 +85,8 @@ class Parallelism(Parallelism_abs):
                 self.total_processes += 1
         else:
             self.data.append(self.pool.starmap_async(func=func, iterable=iter,
-                    callback=self.complete,
-                    error_callback=self.exception))
+                callback=self.complete,
+                error_callback=self.exception))
             self.total_processes += 1
         for i in range(self.total_processes):
             try:
@@ -119,7 +120,8 @@ class Parallelism_Thread(Parallelism_abs):
         :param iter:
         :return:
         '''
-        if isinstance(iter, list) and self.cores > 1 and len(iter) > self.cores:
+        if isinstance(iter, list) and self.cores > 1 and len(
+                iter) > self.cores:
             j = self.cores
             for i in range(j):
                 pLen = int(len(iter) / j) + 1
