@@ -510,7 +510,7 @@ class QA_Portfolio(QA_Account):
             self.cash = message['cash']
 
             self.account_list = [item['account_cookie'] for item in DATABASE.account.find(
-                {'user_cookie': self.user_cookie, 'portfolio_cookie': self.portfolio_cookie})]
+                {'user_cookie': self.user_cookie, 'portfolio_cookie': self.portfolio_cookie}, {'account_cookie':1})]
             #self.history = (message['history'], message['history_header'])
             #account_list = message['account_list']
 

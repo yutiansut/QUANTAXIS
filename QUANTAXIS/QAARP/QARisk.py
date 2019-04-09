@@ -893,6 +893,30 @@ class QA_Performance():
         elif model == 'lifo':
             self.pnl = self.pnl_lifo
 
+    def base_message(self, pnl):
+        return {'total_profit': round(self.total_profit(pnl), 2),  # 总盈利(对于每个单笔而言)
+                'total_loss': round(self.total_loss(pnl), 2),  # 总亏损(对于每个单笔而言)
+                'total_pnl': round(self.total_pnl(pnl), 2),  # 总盈利/总亏损
+                'trading_amounts': round(self.trading_amounts(pnl), 2),  # 交易手数
+                'profit_amounts': round(self.profit_amounts(pnl), 2),  # 盈利手数
+                'loss_amounts': round(self.loss_amounts(pnl), 2),  # 亏损手数
+                'even_amounts': round(self.even_amounts(pnl), 2),  # 持平手数
+                'profit_precentage': round(self.profit_precentage(pnl), 2),
+                'loss_precentage': round(self.loss_precentage(pnl), 2),
+                'even_precentage': round(self.even_precentage(pnl), 2),
+                'average_profit': round(self.average_profit(pnl), 2),
+                'average_loss': round(self.average_loss(pnl), 2),
+                'average_pnl': round(self.average_pnl(pnl), 2),
+                'max_profit': round(self.max_profit(pnl), 2),
+                'max_loss': round(self.max_loss(pnl), 2),
+                'max_pnl': round(self.max_pnl(pnl), 2),
+                'netprofio_maxloss_ratio': round(self.netprofio_maxloss_ratio(pnl), 2),
+                'continue_profit_amount': round(self.continue_profit_amount(pnl), 2),
+                'continue_loss_amount': round(self.continue_loss_amount(pnl), 2),
+                'average_holdgap': self.average_holdgap(pnl),
+                'average_profitholdgap': self.average_profitholdgap(pnl),
+                'average_losssholdgap': self.average_losssholdgap(pnl)}
+
     @property
     def message(self):
         """[summary]
@@ -966,75 +990,14 @@ class QA_Performance():
             'max_profit': round(self.max_profit(self.pnl), 2),
             'max_loss': round(self.max_loss(self.pnl), 2),
             'max_pnl': round(self.max_pnl(self.pnl), 2),
-            'buyopen': {
-                'netprofio_maxloss_ratio': round(self.netprofio_maxloss_ratio(self.pnl), 2),
-                'continue_profit_amount': round(self.continue_profit_amount(self.pnl), 2),
-                'continue_loss_amount': round(self.continue_loss_amount(self.pnl), 2),
-                'average_holdgap': self.average_holdgap(self.pnl),
-                'average_profitholdgap': self.average_profitholdgap(self.pnl),
-                'average_losssholdgap': self.average_losssholdgap(self.pnl),
-                # 总盈利(对于每个单笔而言)
-                'total_profit': round(self.total_profit(self.pnl_buyopen), 2),
-                # 总亏损(对于每个单笔而言)
-                'total_loss': round(self.total_loss(self.pnl_buyopen), 2),
-                # 总盈利/总亏损
-                'total_pnl': round(self.total_pnl(self.pnl_buyopen), 2),
-                # 交易手数
-                'trading_amounts': round(self.trading_amounts(self.pnl_buyopen), 2),
-                # 盈利手数
-                'profit_amounts': round(self.profit_amounts(self.pnl_buyopen), 2),
-                # 亏损手数
-                'loss_amounts': round(self.loss_amounts(self.pnl_buyopen), 2),
-                # 持平手数
-                'even_amounts': round(self.even_amounts(self.pnl_buyopen), 2),
-                'profit_precentage': round(self.profit_precentage(self.pnl_buyopen), 2),
-                'loss_precentage': round(self.loss_precentage(self.pnl_buyopen), 2),
-                'even_precentage': round(self.even_precentage(self.pnl_buyopen), 2),
-                'average_profit': round(self.average_profit(self.pnl_buyopen), 2),
-                'average_loss': round(self.average_loss(self.pnl_buyopen), 2),
-                'average_pnl': round(self.average_pnl(self.pnl_buyopen), 2),
-                'max_profit': round(self.max_profit(self.pnl_buyopen), 2),
-                'max_loss': round(self.max_loss(self.pnl_buyopen), 2),
-                'max_pnl': round(self.max_pnl(self.pnl_buyopen), 2),
-                'netprofio_maxloss_ratio': round(self.netprofio_maxloss_ratio(self.pnl_buyopen), 2),
-                'continue_profit_amount': round(self.continue_profit_amount(self.pnl_buyopen), 2),
-                'continue_loss_amount': round(self.continue_loss_amount(self.pnl_buyopen), 2),
-                'average_holdgap': self.average_holdgap(self.pnl_buyopen),
-                'average_profitholdgap': self.average_profitholdgap(self.pnl_buyopen),
-                'average_losssholdgap': self.average_losssholdgap(self.pnl_buyopen)
-            },
-            'sellopen':
-                {
-                # 总盈利(对于每个单笔而言)
-                'total_profit': round(self.total_profit(self.pnl_sellopen), 2),
-                # 总亏损(对于每个单笔而言)
-                'total_loss': round(self.total_loss(self.pnl_sellopen), 2),
-                # 总盈利/总亏损
-                'total_pnl': round(self.total_pnl(self.pnl_sellopen), 2),
-                # 交易手数
-                'trading_amounts': round(self.trading_amounts(self.pnl_sellopen), 2),
-                # 盈利手数
-                'profit_amounts': round(self.profit_amounts(self.pnl_sellopen), 2),
-                # 亏损手数
-                'loss_amounts': round(self.loss_amounts(self.pnl_sellopen), 2),
-                # 持平手数
-                'even_amounts': round(self.even_amounts(self.pnl_sellopen), 2),
-                'profit_precentage': round(self.profit_precentage(self.pnl_sellopen), 2),
-                'loss_precentage': round(self.loss_precentage(self.pnl_sellopen), 2),
-                'even_precentage': round(self.even_precentage(self.pnl_sellopen), 2),
-                'average_profit': round(self.average_profit(self.pnl_sellopen), 2),
-                'average_loss': round(self.average_loss(self.pnl_sellopen), 2),
-                'average_pnl': round(self.average_pnl(self.pnl_sellopen), 2),
-                'max_profit': round(self.max_profit(self.pnl_sellopen), 2),
-                'max_loss': round(self.max_loss(self.pnl_sellopen), 2),
-                'max_pnl': round(self.max_pnl(self.pnl_sellopen), 2),
-                'netprofio_maxloss_ratio': round(self.netprofio_maxloss_ratio(self.pnl_sellopen), 2),
-                'continue_profit_amount': round(self.continue_profit_amount(self.pnl_sellopen), 2),
-                'continue_loss_amount': round(self.continue_loss_amount(self.pnl_sellopen), 2),
-                'average_holdgap': self.average_holdgap(self.pnl_sellopen),
-                'average_profitholdgap': self.average_profitholdgap(self.pnl_sellopen),
-                'average_losssholdgap': self.average_losssholdgap(self.pnl_sellopen)
-            }
+            'netprofio_maxloss_ratio': round(self.netprofio_maxloss_ratio(self.pnl), 2),
+            'continue_profit_amount': round(self.continue_profit_amount(self.pnl), 2),
+            'continue_loss_amount': round(self.continue_loss_amount(self.pnl), 2),
+            'average_holdgap': self.average_holdgap(self.pnl),
+            'average_profitholdgap': self.average_profitholdgap(self.pnl),
+            'average_losssholdgap': self.average_losssholdgap(self.pnl),
+            'buyopen': self.base_message(self.pnl_buyopen),
+            'sellopen': self.base_message(self.pnl_sellopen)
         }
 
     @property
