@@ -187,7 +187,7 @@ def QA_SU_save_stock_day(engine, client=DATABASE, paralleled=True):
 
     Keyword Arguments:
         client {[type]} -- [description] (default: {DATABASE})
-        
+
     :param paralleled: 是否并行处理(default: {True})
     """
 
