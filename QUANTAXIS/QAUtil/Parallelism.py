@@ -125,7 +125,7 @@ class Parallelism_Thread(Parallelism_abs):
         else:
             self.data.append(self.pool.map(self.do_working, iter))
             self.total_processes += 1
-        for i in range(j):
+        for i in range(self.total_processes):
             adata = list(self.data[i])
             print('{} SAVED: {}'.format(len(adata), adata))
             self.complete(adata)
