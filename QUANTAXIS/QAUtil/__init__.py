@@ -124,6 +124,7 @@ from QUANTAXIS.QAUtil.QASingleton import singleton
 import time
 from functools import wraps
 
+
 def print_used_time(func):
     ''' 打印运行时间
 
