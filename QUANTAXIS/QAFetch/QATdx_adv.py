@@ -31,6 +31,7 @@ from concurrent.futures import ThreadPoolExecutor
 from threading import Thread, Timer
 
 import pandas as pd
+import random
 from pytdx.hq import TdxHq_API
 
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_if_tradetime
@@ -46,9 +47,10 @@ from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
 
 
 class QA_Tdx_Executor():
-    def __init__(self, thread_num=2, timeout=1, *args, **kwargs):
+    def __init__(self, thread_num=2, timeout=1, max_size=80, *args, **kwargs):
         self.thread_num = thread_num
-        self._queue = queue.Queue(maxsize=200)
+        self.max_size = max_size if isinstance(max_size, int) else len(stock_ip_list)
+        self._queue = queue.Queue(maxsize=self.max_size)
         self.api_no_connection = TdxHq_API()
         self._api_worker = Thread(
             target=self.api_worker, args=(), name='API Worker')
@@ -62,15 +64,20 @@ class QA_Tdx_Executor():
             func = api.__getattribute__(item)
 
             def wrapper(*args, **kwargs):
+                _time = datetime.datetime.now()
                 res = self.executor.submit(func, *args, **kwargs)
-                self._queue.put(api)
+                used_time = (datetime.datetime.now() - _time).total_seconds()
+
+                #IP延迟低，放进队列继续使用
+                if used_time < self.timeout*2:
+                    self._queue.put(api)
                 return res
             return wrapper
         except:
             return self.__getattr__(item)
 
     def _queue_clean(self):
-        self._queue = queue.Queue(maxsize=200)
+        self._queue = queue.Queue(maxsize=self.max_size)
 
     def _test_speed(self, ip, port=7709):
 
@@ -136,19 +143,20 @@ class QA_Tdx_Executor():
             return self._queue.get()
 
     def api_worker(self):
-        data = []
-        if self._queue.qsize() < 80:
-            for item in stock_ip_list:
-                _sec = self._test_speed(ip=item['ip'], port=item['port'])
-                if _sec < self.timeout*3:
-                    try:
-                        self._queue.put(TdxHq_API(heartbeat=False).connect(
-                            ip=item['ip'], port=item['port'], time_out=self.timeout*2))
-                    except:
-                        pass
-        else:
-            self._queue_clean()
-            Timer(0, self.api_worker).start()
+        # 将IP列表随机排序，避免只使用列表前面的IP地址
+        ip_list = stock_ip_list
+        random.shuffle(ip_list)
+        for item in ip_list:
+            if self._queue.full():
+                break
+            _sec = self._test_speed(ip=item['ip'], port=item['port'])
+            if _sec < self.timeout*3:
+                try:
+                    self._queue.put(TdxHq_API(heartbeat=False).connect(
+                        ip=item['ip'], port=item['port'], time_out=self.timeout*2))
+                except:
+                    pass
+
         Timer(300, self.api_worker).start()
 
     def _singal_job(self, context, id_, time_out=0.7):
@@ -226,17 +234,16 @@ class QA_Tdx_Executor():
     def save_mongo(self, data, client=DATABASE):
         database = DATABASE.get_collection(
             'realtime_{}'.format(datetime.date.today()))
-
         database.insert_many(QA_util_to_json_from_pandas(data))
 
 
-def get_bar(timeout=1, sleep=1, thread=2):
+def get_bar(timeout=1, sleep=1, thread=2, size=80):
     sleep = int(sleep)
     _time1 = datetime.datetime.now()
     from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_block_adv
     code = QA_fetch_stock_block_adv().code
     print(len(code))
-    x = QA_Tdx_Executor(timeout=float(timeout), thread_num=int(thread))
+    x = QA_Tdx_Executor(timeout=float(timeout), thread_num=int(thread), max_size=int(size))
     print(x._queue.qsize())
     print(x.get_available())
 
@@ -244,9 +251,13 @@ def get_bar(timeout=1, sleep=1, thread=2):
         _time = datetime.datetime.now()
         if QA_util_if_tradetime(_time):  # 如果在交易时间
             data = x.get_security_bar_concurrent(code, 'day', 1)
+            used_time = (datetime.datetime.now() - _time).total_seconds()
 
-            print('Time {}'.format(
-                (datetime.datetime.now() - _time).total_seconds()))
+            #如果整体使用时间大于间隔的2倍，清空队列
+            if used_time > sleep*2:
+                self._queue_clean()
+
+            print('Time {}'.format(used_time))
             time.sleep(sleep)
             print('Connection Pool NOW LEFT {} Available IP'.format(
                 x._queue.qsize()))
@@ -272,13 +283,14 @@ def get_day_once():
 @click.option('--timeout', default=0.2, help='timeout param')
 @click.option('--sleep', default=1, help='sleep step')
 @click.option('--thread', default=2, help='thread nums')
-def bat(timeout=0.2, sleep=1, thread=2):
+@click.option('--size', default=80, help='pool max size')
+def bat(timeout=0.2, sleep=1, thread=2, size=80):
     sleep = int(sleep)
     _time1 = datetime.datetime.now()
     from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_block_adv
     code = QA_fetch_stock_block_adv().code
     print(len(code))
-    x = QA_Tdx_Executor(timeout=float(timeout), thread_num=int(thread))
+    x = QA_Tdx_Executor(timeout=float(timeout), thread_num=int(thread), max_size=int(size))
     print(x._queue.qsize())
     print(x.get_available())
 
@@ -286,8 +298,12 @@ def bat(timeout=0.2, sleep=1, thread=2):
         'realtime_{}'.format(datetime.date.today()))
 
     print(database)
-    database.create_index([('code', QA_util_sql_mongo_sort_ASCENDING),
-                           ('datetime', QA_util_sql_mongo_sort_ASCENDING)])
+
+    # mongodb在排序时，复合索引并不能像关系型数据库一样提升效率，反而会降低排序性能
+    # 在测试的过程，发现datetime倒序索引在倒序查询时性能更高，但写入性能较低
+    # 此表属于写多读少，所以索引继续采用正序
+    database.create_index([('code', QA_util_sql_mongo_sort_ASCENDING)])
+    database.create_index([('datetime', QA_util_sql_mongo_sort_ASCENDING)])
 
     while True:
         _time = datetime.datetime.now()
