@@ -352,9 +352,8 @@ class QA_SU_save_index_day_parallelism(QA_SU_save_day_parallelism_thread):
                                             self.total_counts),
                 ui_log=self.ui_log
             )
-            strLogProgress = 'DOWNLOAD PROGRESS {} '.format(
-                str(float(self.code_counts / self.total_counts * 100))[0:4] +
-                    '%'
+            strLogProgress = 'DOWNLOAD PROGRESS {0:.2f}% '.format(
+                self.code_counts / self.total_counts * 100
             )
             intLogProgress = int(
                 float(self.code_counts / self.total_counts * 10000.0))
