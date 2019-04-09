@@ -288,7 +288,6 @@ class QA_SU_save_index_day_parallelism(QA_SU_save_day_parallelism_thread):
                     end_time),
                 ui_log=self.ui_log
             )
-            pass
 
         try:
             search_cond = {'code': str(code)[0:6]}
@@ -353,8 +352,8 @@ class QA_SU_save_index_day_parallelism(QA_SU_save_day_parallelism_thread):
                 ui_log=self.ui_log
             )
             strLogProgress = 'DOWNLOAD PROGRESS {} '.format(
-                str(float(self.code_counts / self.total_counts * 100))[
-                0:4] + '%'
+                str(float(self.code_counts / self.total_counts * 100))[0:4]
+                    + '%'
             )
             intLogProgress = int(
                 float(self.code_counts / self.total_counts * 10000.0))

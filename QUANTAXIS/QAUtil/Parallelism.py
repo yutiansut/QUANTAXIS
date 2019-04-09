@@ -78,15 +78,17 @@ class Parallelism(Parallelism_abs):
             j = self.cores
             for i in range(j):
                 pLen = int(len(iter) / j) + 1
-                self.data.append(self.pool.starmap_async(func, iter[int(
-                    i * pLen):int((i + 1) * pLen)],
-                    callback=self.complete,
-                    error_callback=self.exception))
+                self.data.append(self.pool.starmap_async(func,
+                         iter[i * pLen:(i + 1) * pLen],
+                         callback=self.complete,
+                         error_callback=self.exception))
                 self.total_processes += 1
         else:
-            self.data.append(self.pool.starmap_async(func=func, iterable=iter,
-                callback=self.complete,
-                error_callback=self.exception))
+            self.data.append(self.pool.starmap_async(func=func,
+                    iterable=iter,
+                     callback=self.complete,
+                     error_callback=self.exception)
+                )
             self.total_processes += 1
         for i in range(self.total_processes):
             try:
