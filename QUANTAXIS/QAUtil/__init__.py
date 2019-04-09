@@ -121,3 +121,21 @@ from QUANTAXIS.QAUtil.QADateTools import (
 from QUANTAXIS.QAUtil.Parallelism import Parallelism, Parallelism_Thread
 from QUANTAXIS.QAUtil.QACache import QA_util_cache
 from QUANTAXIS.QAUtil.QASingleton import singleton
+import time
+from functools import wraps
+
+def print_used_time(func):
+    ''' 打印运行时间
+
+    :param func: 运行的函数名称
+    :return:
+    '''
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        a = time.time()
+        func(*args, **kwargs)
+        b = time.time()
+        print('消耗时间：{}'.format(b - a))
+        return True
+    return wrapper

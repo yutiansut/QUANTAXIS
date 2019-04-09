@@ -135,9 +135,9 @@ class TestSelect_best_ip(TestCase):
         print('当前数据： {} {}'.format(data1.close[-1], data2.close[-1]))
 
     def test_QA_SU_save_stock_day(self):
-        indexDay = DATABASE.stock_day
+        stockDay = DATABASE.stock_day
         myquery = {"code": {"$regex": "^002"}}
-        x = indexDay.delete_many(myquery)
+        x = stockDay.delete_many(myquery)
         print(x.deleted_count, " documents deleted.")
 
         print('start test_QA_SU_save_stock_day')
@@ -191,7 +191,7 @@ class TestSelect_best_ip(TestCase):
     def test_QA_SU_save_index_day(self):
         #  删除部分数据
         indexDay = DATABASE.index_day
-        myquery = {"code": {"$regex": "^1"}}
+        myquery = {"code": {"$regex": "^00"}}
         x = indexDay.delete_many(myquery)
         print(x.deleted_count, " documents deleted.")
 
@@ -204,10 +204,11 @@ class TestSelect_best_ip(TestCase):
         QA_SU_save_index_day('tdx', paralleled=True)
         print('end test_QA_SU_save_stock_day')
         data2 = QA.QA_fetch_index_day_adv(codelist[0], start, end)
-        self.assertTrue(
-            len(data2) == len(data1) if data1.datetime[-1] == data2.datetime[-1] else len(data2) > len(data1),
-            '保存后的数据应该比未保存前长： {} {}'.format(len(data2), len(data1)))
-        print('保存前日期： {}， 保存后日期 {}'.format(data1.datetime[-1] , data2.datetime[-1] ))
+        if data1:
+            self.assertTrue(
+                len(data2) == len(data1) if data1.datetime[-1] == data2.datetime[-1] else len(data2) > len(data1),
+                '保存后的数据应该比未保存前长： {} {}'.format(len(data2), len(data1)))
+            print('保存前日期： {}， 保存后日期 {}'.format(data1.datetime[-1] , data2.datetime[-1] ))
 
 if __name__ == '__main__':
     TestCase.run()

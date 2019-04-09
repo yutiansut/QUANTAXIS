@@ -81,7 +81,6 @@ class QA_SU_save_day_parallelism(Parallelism):
     def code_counts(self, value):
         self.__code_counts = value
 
-
     @property
     def total_counts(self):
         return self.__total_counts
@@ -92,6 +91,7 @@ class QA_SU_save_day_parallelism(Parallelism):
             self.__total_counts = value
         else:
             raise Exception('value must be great than zero.')
+
 
 class QA_SU_save_day_parallelism_thread(Parallelism_Thread):
     def __init__(self, processes=cpu_count(), client=DATABASE, ui_log=None, ui_progress=None):
@@ -111,7 +111,6 @@ class QA_SU_save_day_parallelism_thread(Parallelism_Thread):
     def code_counts(self, value):
         self.__code_counts = value
 
-
     @property
     def total_counts(self):
         return self.__total_counts
@@ -122,6 +121,7 @@ class QA_SU_save_day_parallelism_thread(Parallelism_Thread):
             self.__total_counts = value
         else:
             raise Exception('value must be great than zero.')
+
 
 class QA_SU_save_stock_day_parallelism(QA_SU_save_day_parallelism):
     def complete(self, result):

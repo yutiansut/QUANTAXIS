@@ -22,7 +22,7 @@
 # SOFTWARE.
 
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_list
-#from QUANTAXIS.QASU import crawl_eastmoney as crawl_eastmoney_file
+# from QUANTAXIS.QASU import crawl_eastmoney as crawl_eastmoney_file
 from QUANTAXIS.QASU import save_tdx as stdx
 from QUANTAXIS.QASU import save_tdx_parallelism as stdx_parallelism
 from QUANTAXIS.QASU import save_tdx_file as tdx_file
@@ -30,8 +30,10 @@ from QUANTAXIS.QASU import save_gm as sgm
 from QUANTAXIS.QASU import save_jq as sjq
 from QUANTAXIS.QASU import save_tushare as sts
 from QUANTAXIS.QASU import save_financialfiles
-from QUANTAXIS.QAUtil import DATABASE
+from QUANTAXIS.QAUtil import DATABASE, print_used_time
 import time
+
+
 # from QUANTAXIS.QASU import crawl_jrj_financial_reportdate as save_financial_calendar
 # from QUANTAXIS.QASU import crawl_jrj_stock_divyield as save_stock_divyield
 
@@ -176,6 +178,7 @@ def QA_SU_save_future_min_all(engine, client=DATABASE):
     engine.QA_SU_save_future_min_all(client=client)
 
 
+@print_used_time
 def QA_SU_save_stock_day(engine, client=DATABASE, paralleled=True):
     """save stock_day
 
@@ -257,6 +260,7 @@ def QA_SU_save_stock_min(engine, client=DATABASE):
     engine.QA_SU_save_stock_min(client=client)
 
 
+@print_used_time
 def QA_SU_save_index_day(engine, client=DATABASE, paralleled=True):
     """save index_day
 
@@ -268,10 +272,7 @@ def QA_SU_save_index_day(engine, client=DATABASE, paralleled=True):
     """
 
     engine = select_save_engine(engine, paralleled=paralleled)
-    a = time.time()
     engine.QA_SU_save_index_day(client=client)
-    b = time.time()
-    print('消耗时间：{}'.format(b-a))
 
 
 def QA_SU_save_index_min(engine, client=DATABASE):
@@ -363,7 +364,9 @@ def select_save_engine(engine, paralleled=False):
     elif engine in ['jq', 'joinquant']:
         return sjq
     else:
-        print('QA Error QASU.main.py call select_save_engine with parameter %s is None of  thshare, ts, Thshare, or tdx', engine)
+        print(
+            'QA Error QASU.main.py call select_save_engine with parameter %s is None of  thshare, ts, Thshare, or tdx',
+            engine)
 
 
 def QA_SU_save_stock_min_5(file_dir, client=DATABASE):
@@ -394,7 +397,7 @@ def QA_SU_crawl_eastmoney(action="zjlx", stockCode=None):
     if stockCode == "all":
         # 读取tushare股票列表代码
         print("💪 一共需要获取 %d 个股票的 资金流向 , 需要大概 %d 小时" %
-              (len(stockItems), (len(stockItems)*5)/60/60))
+              (len(stockItems), (len(stockItems) * 5) / 60 / 60))
 
         code_list = []
         for stock in stockItems:
