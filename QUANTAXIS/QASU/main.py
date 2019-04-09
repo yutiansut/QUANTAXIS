@@ -187,6 +187,8 @@ def QA_SU_save_stock_day(engine, client=DATABASE, paralleled=True):
 
     Keyword Arguments:
         client {[type]} -- [description] (default: {DATABASE})
+        
+    :param paralleled: 是否并行处理(default: {True})
     """
 
     engine = select_save_engine(engine, paralleled=paralleled)
@@ -269,6 +271,8 @@ def QA_SU_save_index_day(engine, client=DATABASE, paralleled=True):
 
     Keyword Arguments:
         client {[type]} -- [description] (default: {DATABASE})
+
+    :param paralleled: 是否并行处理(default: {True})
     """
 
     engine = select_save_engine(engine, paralleled=paralleled)
