@@ -64,13 +64,15 @@ class QA_Tdx_Executor():
             func = api.__getattribute__(item)
 
             def wrapper(*args, **kwargs):
-                _time = datetime.datetime.now()
-                res = self.executor.submit(func, *args, **kwargs)
-                used_time = (datetime.datetime.now() - _time).total_seconds()
-
-                #IP延迟低，放进队列继续使用
-                if used_time < self.timeout*2:
-                    self._queue.put(api)
+                try:
+                    _time = datetime.datetime.now()
+                    res = self.executor.submit(func, *args, **kwargs)
+                    used_time = (datetime.datetime.now() - _time).total_seconds()
+                    #IP延迟低，放进队列继续使用
+                    if used_time < self.timeout*2:
+                        self._queue.put(api)
+                except:
+                    pass
                 return res
             return wrapper
         except:
