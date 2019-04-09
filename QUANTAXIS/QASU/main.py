@@ -289,7 +289,8 @@ def QA_SU_save_index_min(engine, client=DATABASE):
     engine.QA_SU_save_index_min(client=client)
 
 
-def QA_SU_save_etf_day(engine, client=DATABASE):
+@print_used_time
+def QA_SU_save_etf_day(engine, client=DATABASE, paralleled=False):
     """save etf_day
 
     Arguments:
@@ -365,7 +366,8 @@ def select_save_engine(engine, paralleled=False):
         return sjq
     else:
         print(
-            'QA Error QASU.main.py call select_save_engine with parameter %s is None of  thshare, ts, Thshare, or tdx',
+            'QA Error QASU.main.py call select_save_engine \
+                with parameter %s is None of  thshare, ts, Thshare, or tdx',
             engine)
 
 
@@ -413,7 +415,8 @@ def QA_SU_crawl_eastmoney(action="zjlx", stockCode=None):
         # return crawl_eastmoney_file.QA_read_eastmoney_zjlx_web_page_to_sqllite(stockCode=stockCode)
         code_list = []
         code_list.append(stockCode)
-        return crawl_eastmoney_file.QA_request_eastmoney_zjlx(param_stock_code_list=code_list)
+        return crawl_eastmoney_file.QA_request_eastmoney_zjlx(
+            param_stock_code_list=code_list)
 
 
 def QA_SU_save_financialfiles():

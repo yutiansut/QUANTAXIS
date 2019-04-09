@@ -55,7 +55,8 @@ class Parallelism_abs(object, metaclass=ABCMeta):
     def complete(self, result):
         self.results.extend(result)
         self.completed_processes += 1
-        print('Progress: {:.2f}%'.format((self.completed_processes / self.total_processes) * 100))
+        print('Progress: {:.2f}%'.format(
+            (self.completed_processes / self.total_processes) * 100))
 
 
 class Parallelism(Parallelism_abs):
@@ -76,13 +77,15 @@ class Parallelism(Parallelism_abs):
             j = self.cores
             for i in range(j):
                 pLen = int(len(iter) / j) + 1
-                self.data.append(self.pool.starmap_async(func, iter[int(i * pLen):int((i + 1) * pLen)],
-                                                         callback=self.complete,
-                                                         error_callback=self.exception))
+                self.data.append(self.pool.starmap_async(func, iter[int(
+                    i * pLen):int((i + 1) * pLen)],
+                    callback=self.complete,
+                    error_callback=self.exception))
                 self.total_processes += 1
         else:
-            self.data.append(self.pool.starmap_async(func=func, iterable=iter, callback=self.complete,
-                                                     error_callback=self.exception))
+            self.data.append(self.pool.starmap_async(func=func, iterable=iter,
+                    callback=self.complete,
+                    error_callback=self.exception))
             self.total_processes += 1
         for i in range(self.total_processes):
             try:
@@ -120,7 +123,8 @@ class Parallelism_Thread(Parallelism_abs):
             j = self.cores
             for i in range(j):
                 pLen = int(len(iter) / j) + 1
-                self.data.append(self.pool.map(self.do_working, iter[int(i * pLen):int((i + 1) * pLen)]))
+                self.data.append(self.pool.map(self.do_working, iter[int(
+                    i * pLen):int((i + 1) * pLen)]))
                 self.total_processes += 1
         else:
             self.data.append(self.pool.map(self.do_working, iter))
@@ -132,4 +136,3 @@ class Parallelism_Thread(Parallelism_abs):
 
     def do_working(self, code):
         raise Exception('你要在子类中实现此方法!')
-

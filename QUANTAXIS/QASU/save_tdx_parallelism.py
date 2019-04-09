@@ -38,7 +38,10 @@ import pandas as pd
 import pymongo
 from multiprocessing import cpu_count
 from QUANTAXIS.QASU.save_tdx import now_time
-from QUANTAXIS.QAFetch.QATdx import get_ip_list_by_multi_process_ping, stock_ip_list
+from QUANTAXIS.QAFetch.QATdx import (
+    get_ip_list_by_multi_process_ping,
+    stock_ip_list
+)
 from QUANTAXIS.QAUtil.QACache import QA_util_cache
 
 
@@ -64,7 +67,8 @@ def get_coll(client=None):
 
 
 class QA_SU_save_day_parallelism(Parallelism):
-    def __init__(self, processes=cpu_count(), client=DATABASE, ui_log=None, ui_progress=None):
+    def __init__(self, processes=cpu_count(), client=DATABASE, ui_log=None,
+                 ui_progress=None):
         super(QA_SU_save_day_parallelism, self).__init__(processes)
         self.client = client
         self.ui_log = ui_log
@@ -94,7 +98,8 @@ class QA_SU_save_day_parallelism(Parallelism):
 
 
 class QA_SU_save_day_parallelism_thread(Parallelism_Thread):
-    def __init__(self, processes=cpu_count(), client=DATABASE, ui_log=None, ui_progress=None):
+    def __init__(self, processes=cpu_count(), client=DATABASE, ui_log=None,
+                 ui_progress=None):
         super(QA_SU_save_day_parallelism_thread, self).__init__(processes)
         self.client = client
         self.ui_log = ui_log
@@ -127,7 +132,8 @@ class QA_SU_save_stock_day_parallelism(QA_SU_save_day_parallelism):
     def complete(self, result):
 
         QA_util_log_info(
-            '##JOB02 Saving STOCK_DAY==== {} ，股票数量： {}'.format('QA_SU_save_stock_day_parallelism class', len(result))
+            '##JOB02 Saving STOCK_DAY==== {} ，股票数量： {}'.format(
+                'QA_SU_save_stock_day_parallelism class', len(result))
         )
 
         for value in result:
@@ -147,7 +153,8 @@ class QA_SU_save_stock_day_parallelism(QA_SU_save_day_parallelism):
                 )
                 coll_stock_day.insert_many(QA_util_to_json_from_pandas(df))
                 QA_util_log_info(
-                    '##JOB02 Now Saved STOCK_DAY==== {}'.format(df.code.unique()[0]),
+                    '##JOB02 Now Saved STOCK_DAY==== {}'.format(
+                        df.code.unique()[0]),
                     self.ui_log
                 )
             else:
@@ -218,17 +225,21 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
                 )
                 if start_date != end_date:
                     # 更新过的，不更新
-                    results.extend([(code, start_date, end_date, '00', 'day', ip_list[item % count]['ip'],
-                                     ip_list[item % count]['port'], item, total, ui_log, ui_progress)])
+                    results.extend([(code, start_date, end_date, '00', 'day',
+                                     ip_list[item % count]['ip'],
+                                     ip_list[item % count]['port'], item, total,
+                                     ui_log, ui_progress)])
             except Exception as error0:
                 print('Exception:{}'.format(error0))
                 err.append(code)
         return results
 
-    ips = get_ip_list_by_multi_process_ping(stock_ip_list, _type='stock')[:cpu_count() * 2 + 1]
+    ips = get_ip_list_by_multi_process_ping(stock_ip_list, _type='stock')[
+          :cpu_count() * 2 + 1]
     param = __gen_param(stock_list, coll_stock_day, ips)
-    ps = QA_SU_save_stock_day_parallelism(processes=cpu_count() if len(ips) >= cpu_count() else len(ips),
-                                          client=client, ui_log=ui_log)
+    ps = QA_SU_save_stock_day_parallelism(
+        processes=cpu_count() if len(ips) >= cpu_count() else len(ips),
+        client=client, ui_log=ui_log)
     ps.run(do_saving_work, param)
 
     if len(err) < 1:
@@ -238,7 +249,8 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
         QA_util_log_info(err, ui_log)
 
 
-def do_saving_work(code, start_date, end_date, if_fq='00', frequence='day', ip=None, port=None, item=0, total=1,
+def do_saving_work(code, start_date, end_date, if_fq='00', frequence='day',
+                   ip=None, port=None, item=0, total=1,
                    ui_log=None, ui_progress=None):
     try:
         # print(code, item, flush=True)
@@ -257,7 +269,8 @@ def do_saving_work(code, start_date, end_date, if_fq='00', frequence='day', ip=N
                 ui_progress_int_value=intProgressToLog
             )
 
-        return QA_fetch_get_stock_day(code, start_date, end_date, if_fq, frequence, ip, port)
+        return QA_fetch_get_stock_day(code, start_date, end_date, if_fq,
+                                      frequence, ip, port)
     except Exception as error0:
         print(code, error0, flush=True)
         return None
@@ -268,7 +281,7 @@ class QA_SU_save_index_day_parallelism(QA_SU_save_day_parallelism_thread):
     def __saving_work(self, code):
         def __QA_log_info(code, end_time, start_time):
             QA_util_log_info(
-                '##JOB04 Now Saving INDEX_DAY==== \n Trying updating {} from {} to {}'
+                '##JOB04 Saving INDEX_DAY====\nTrying updating {} from {} to {}'
                     .format(code,
                             start_time,
                             end_time),
@@ -339,9 +352,11 @@ class QA_SU_save_index_day_parallelism(QA_SU_save_day_parallelism_thread):
                 ui_log=self.ui_log
             )
             strLogProgress = 'DOWNLOAD PROGRESS {} '.format(
-                str(float(self.code_counts / self.total_counts * 100))[0:4] + '%'
+                str(float(self.code_counts / self.total_counts * 100))[
+                0:4] + '%'
             )
-            intLogProgress = int(float(self.code_counts / self.total_counts * 10000.0))
+            intLogProgress = int(
+                float(self.code_counts / self.total_counts * 10000.0))
             QA_util_log_info(
                 strLogProgress,
                 ui_log=self.ui_log,
@@ -368,9 +383,11 @@ def QA_SU_save_index_day(client=DATABASE, ui_log=None, ui_progress=None):
     index_list = QA_fetch_get_stock_list('index').code.tolist()
     coll = get_coll(client)
 
-    ips = get_ip_list_by_multi_process_ping(stock_ip_list, _type='stock')[:cpu_count() * 2 + 1]
-    ps = QA_SU_save_index_day_parallelism(processes=cpu_count() if len(ips) >= cpu_count() else len(ips),
-                                          client=client, ui_log=ui_log)
+    ips = get_ip_list_by_multi_process_ping(stock_ip_list, _type='stock')[
+          :cpu_count() * 2 + 1]
+    ps = QA_SU_save_index_day_parallelism(
+        processes=cpu_count() if len(ips) >= cpu_count() else len(ips),
+        client=client, ui_log=ui_log)
     # 单线程测试
     # ps = QA_SU_save_index_day_parallelism(processes=1 if len(ips) >= cpu_count() else len(ips),
     #                                       client=client, ui_log=ui_log)
