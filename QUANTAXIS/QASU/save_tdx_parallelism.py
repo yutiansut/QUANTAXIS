@@ -282,7 +282,8 @@ class QA_SU_save_index_day_parallelism(QA_SU_save_day_parallelism_thread):
     def __saving_work(self, code):
         def __QA_log_info(code, end_time, start_time):
             QA_util_log_info(
-                '##JOB04 Saving INDEX_DAY====\nTrying updating {} from {} to {}'.format(
+                '##JOB04 Saving INDEX_DAY====\n \
+                Trying updating {} from {} to {}'.format(
                     code,
                     start_time,
                     end_time),
@@ -352,8 +353,8 @@ class QA_SU_save_index_day_parallelism(QA_SU_save_day_parallelism_thread):
                 ui_log=self.ui_log
             )
             strLogProgress = 'DOWNLOAD PROGRESS {} '.format(
-                str(float(self.code_counts / self.total_counts * 100))[0:4]
-                    + '%'
+                str(float(self.code_counts / self.total_counts * 100))[0:4] +
+                    '%'
             )
             intLogProgress = int(
                 float(self.code_counts / self.total_counts * 10000.0))

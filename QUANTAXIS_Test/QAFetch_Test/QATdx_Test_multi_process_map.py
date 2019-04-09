@@ -240,12 +240,12 @@ class TestSelect_best_ip(TestCase):
         print('end test_QA_SU_save_stock_day')
         data2 = QA.QA_fetch_index_day_adv(codelist[0], start, end)
         if data1:
-            self.assertTrue(
-                len(data2) == len(data1) if data1.datetime[-1] ==
-                                            data2.datetime[-1] else
-                len(data2) > len(data1),
-                '保存后的数据应该比未保存前长： {} {}'.format(
-                    len(data2), len(data1)))
+            cond = len(data2) == len(data1) \
+                if data1.datetime[-1] == data2.datetime[-1] else \
+                len(data2) > len(data1)
+            self.assertTrue(cond,
+                            '保存后的数据应该比未保存前长： {} {}'.format(
+                                len(data2), len(data1)))
             print('保存前日期： {}， 保存后日期 {}'.format(data1.datetime[-1],
                                                data2.datetime[-1]))
 
