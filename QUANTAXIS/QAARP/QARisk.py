@@ -1349,10 +1349,6 @@ class QA_Performance():
         data = self.pnl
         return round(len(data.query('pnl_money>0')) / len(data), 2)
 
-    def average_profit(self, methods='FIFO'):
-        data = self.pnl
-        return round(data.pnl_money.mean(), 2)
-
     @property
     def accumulate_return(self):
         """
@@ -1406,6 +1402,9 @@ class QA_Performance():
 
     def average_loss(self, pnl):
         return self.loss_pnl(pnl).pnl_money.mean()
+
+    def average_profit(self, pnl):
+        return self.profit_pnl(pnl).pnl_money.mean()
 
     def average_pnl(self, pnl):
         return abs(self.average_profit(pnl) / self.average_loss(pnl))
