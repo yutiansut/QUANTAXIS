@@ -882,8 +882,8 @@ class QA_Performance():
             'liquidity',
             'reversal'
         ]
-        self.pnl = self.pnl_fifo
         self.market_preset = MARKET_PRESET()
+        self.pnl = self.pnl_fifo
 
     def __repr__(self):
         return '< QA_PERFORMANCE ANYLYSIS PLUGIN >'
@@ -1132,13 +1132,13 @@ class QA_Performance():
         ]
         pnl = pd.DataFrame(pair_table, columns=pair_title).set_index('code')
         pnl = pnl.assign(
-            coeff=pnl.code.apply(lambda x: self.market_preset.get_price_tick(x)),
+            unit=pnl.code.apply(lambda x: self.market_preset.get_unit(x)),
             pnl_ratio=(pnl.sell_price / pnl.buy_price) - 1,
             sell_date=pd.to_datetime(pnl.sell_date),
             buy_date=pd.to_datetime(pnl.buy_date)
         )
         pnl = pnl.assign(
-            pnl_money=pnl.pnl_ratio * pnl.amount / pnl.coeff,
+            pnl_money=(pnl.sell_price - pnl.buy_price) * pnl.amount * pnl.unit,
             hold_gap=abs(pnl.sell_date - pnl.buy_date),
             if_buyopen=(pnl.sell_date -
                         pnl.buy_date) > datetime.timedelta(days=0)
@@ -1152,7 +1152,7 @@ class QA_Performance():
                 lambda pnl: 0 if pnl else 1) * pnl.buy_price + pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.sell_price,
             closedate=pnl.if_buyopen.apply(
                 lambda pnl: 0 if pnl else 1) * pnl.buy_date.map(str) + pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.sell_date.map(str))
-        return pnl
+        return pnl.set_index('code')
 
     @property
     def pnl_buyopen(self):
@@ -1285,16 +1285,16 @@ class QA_Performance():
             'sell_price',
             'buy_price'
         ]
-        pnl = pd.DataFrame(pair_table, columns=pair_title).set_index('code')
+        pnl = pd.DataFrame(pair_table, columns=pair_title)
 
         pnl = pnl.assign(
-            coeff=pnl.code.apply(lambda x: self.market_preset.get_price_tick(x)),
+            unit=pnl.code.apply(lambda x: self.market_preset.get_unit(x)),
             pnl_ratio=(pnl.sell_price / pnl.buy_price) - 1,
             sell_date=pd.to_datetime(pnl.sell_date),
             buy_date=pd.to_datetime(pnl.buy_date)
         )
         pnl = pnl.assign(
-            pnl_money=pnl.pnl_ratio * pnl.amount / pnl.coeff,
+            pnl_money=(pnl.sell_price - pnl.buy_price) * pnl.amount * pnl.unit,
             hold_gap=abs(pnl.sell_date - pnl.buy_date),
             if_buyopen=(pnl.sell_date -
                         pnl.buy_date) > datetime.timedelta(days=0)
@@ -1308,7 +1308,7 @@ class QA_Performance():
                 lambda pnl: 0 if pnl else 1) * pnl.buy_price + pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.sell_price,
             closedate=pnl.if_buyopen.apply(
                 lambda pnl: 0 if pnl else 1) * pnl.buy_date.map(str) + pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.sell_date.map(str))
-        return pnl
+        return pnl.set_index('code')
 
     def plot_pnlratio(self):
         """

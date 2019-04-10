@@ -653,16 +653,19 @@ class MARKET_PRESET:
     def get_trade_time(self, code, dtype):
         pass
 
-    # 每手数量
+    # 每跳毛利/元
     def get_unit(self, code):
-        return self.get_code(code).get('unit_table')
+        try:
+            return self.get_code(code).get('unit_table')
+        except:
+            return 1
 
-    # 每跳价格
+    # 每跳价格(价差)
     def get_price_tick(self, code):
         try:
             return self.get_code(code).get('price_tick')
         except:
-            return 1
+            return 0.01
 
     # 买卖冻结保证金系数
     def get_frozen(self, code):
