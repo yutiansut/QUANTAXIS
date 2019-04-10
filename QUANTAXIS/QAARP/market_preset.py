@@ -1,4 +1,4 @@
-#coding:utf-8
+# coding:utf-8
 
 """
 数据获取来源:http://www.9qihuo.com/qihuoshouxufei
@@ -57,6 +57,7 @@ for i in range(len(df)):
 
 import pandas as pd
 from functools import lru_cache
+
 
 class MARKET_PRESET:
 
@@ -585,12 +586,11 @@ class MARKET_PRESET:
                              'commission_coeff_today_peramount': 0,
                              'commission_coeff_today_pervol': 0.0}}
     # 手续费比例
-    
+
     @property
     @lru_cache()
     def pdtable(self):
         return pd.DataFrame(self.table)
-
 
     def __repr__(self):
         return '< QAMARKET_PRESET >'
@@ -599,18 +599,16 @@ class MARKET_PRESET:
     def code_list(self):
         return list(self.table.keys())
 
-    
     @property
     def exchange_list(self):
         """返回已有的市场列表
-        
+
         Returns:
             [type] -- [description]
         """
 
         return list(self.pdtable.loc['exchange'].unique())
 
-    
     def get_exchangecode(self, exchange):
         return self.pdtable.T.query('exchange=="{}"'.format(exchange)).index.tolist()
 
@@ -624,7 +622,6 @@ class MARKET_PRESET:
             else:
                 code = code[0:2]
         return self.table.get(str(code).upper())
-
 
     # 合约所属交易所代码
 
@@ -662,7 +659,10 @@ class MARKET_PRESET:
 
     # 每跳价格
     def get_price_tick(self, code):
-        return self.get_code(code).get('price_tick')
+        try:
+            return self.get_code(code).get('price_tick')
+        except:
+            return 1
 
     # 买卖冻结保证金系数
     def get_frozen(self, code):
