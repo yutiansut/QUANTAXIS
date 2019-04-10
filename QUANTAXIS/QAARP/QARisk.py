@@ -50,7 +50,7 @@ from QUANTAXIS.QASU.save_account import save_riskanalysis
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_trade_gap, QA_util_get_trade_range
 from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE
 from QUANTAXIS.QAUtil.QASetting import DATABASE
-
+from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
 # FIXED: no display found
 """
 在无GUI的电脑上,会遇到找不到_tkinter的情况 兼容处理
@@ -883,6 +883,7 @@ class QA_Performance():
             'reversal'
         ]
         self.pnl = self.pnl_fifo
+        self.market_preset = MARKET_PRESET()
 
     def __repr__(self):
         return '< QA_PERFORMANCE ANYLYSIS PLUGIN >'
@@ -1131,12 +1132,13 @@ class QA_Performance():
         ]
         pnl = pd.DataFrame(pair_table, columns=pair_title).set_index('code')
         pnl = pnl.assign(
+            coeff=pnl.code.apply(lambda x: self.market_preset.get_price_tick(x)),
             pnl_ratio=(pnl.sell_price / pnl.buy_price) - 1,
             sell_date=pd.to_datetime(pnl.sell_date),
             buy_date=pd.to_datetime(pnl.buy_date)
         )
         pnl = pnl.assign(
-            pnl_money=pnl.pnl_ratio * pnl.amount,
+            pnl_money=pnl.pnl_ratio * pnl.amount / pnl.coeff,
             hold_gap=abs(pnl.sell_date - pnl.buy_date),
             if_buyopen=(pnl.sell_date -
                         pnl.buy_date) > datetime.timedelta(days=0)
@@ -1286,12 +1288,13 @@ class QA_Performance():
         pnl = pd.DataFrame(pair_table, columns=pair_title).set_index('code')
 
         pnl = pnl.assign(
+            coeff=pnl.code.apply(lambda x: self.market_preset.get_price_tick(x)),
             pnl_ratio=(pnl.sell_price / pnl.buy_price) - 1,
-            buy_date=pd.to_datetime(pnl.buy_date),
-            sell_date=pd.to_datetime(pnl.sell_date)
+            sell_date=pd.to_datetime(pnl.sell_date),
+            buy_date=pd.to_datetime(pnl.buy_date)
         )
         pnl = pnl.assign(
-            pnl_money=(pnl.sell_price - pnl.buy_price) * pnl.amount,
+            pnl_money=pnl.pnl_ratio * pnl.amount / pnl.coeff,
             hold_gap=abs(pnl.sell_date - pnl.buy_date),
             if_buyopen=(pnl.sell_date -
                         pnl.buy_date) > datetime.timedelta(days=0)
