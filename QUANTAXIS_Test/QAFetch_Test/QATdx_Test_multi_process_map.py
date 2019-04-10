@@ -158,6 +158,21 @@ class TestSelect_best_ip(TestCase):
         print('当前数据： {} {}'.format(data1.close[-1], data2.close[-1]))
 
     def test_QA_SU_save_stock_day(self):
+        print('start test_QA_SU_save_stock_day')
+        codelist = QA.QA_fetch_stock_list_adv().code.tolist()
+        days = 300
+        start = datetime.datetime.now() - datetime.timedelta(days)
+        end = datetime.datetime.now()
+        data1 = QA.QA_fetch_stock_day_adv(codelist[0], start, end)
+        QA_SU_save_stock_day('tdx', paralleled=True)
+        print('end test_QA_SU_save_stock_day')
+        data2 = QA.QA_fetch_stock_day_adv(codelist[0], start, end)
+        self.assertTrue(
+            len(data2) == len(data1) if data1.datetime[-1] == data2.datetime[
+                -1] else len(data2) > len(data1),
+            '保存后的数据应该比未保存前长： {} {}'.format(len(data2), len(data1)))
+
+    def test_QA_SU_save_stock_day_with_delete(self):
         stockDay = DATABASE.stock_day
         myquery = {"code": {"$regex": "^002"}}
         x = stockDay.delete_many(myquery)
@@ -223,6 +238,27 @@ class TestSelect_best_ip(TestCase):
                                                            _type='future')
 
     def test_QA_SU_save_index_day(self):
+        print('start test_QA_SU_save_stock_day')
+        codelist = QA.QA_fetch_index_list_adv().code.tolist()
+        days = 300
+        start = datetime.datetime.now() - datetime.timedelta(days)
+        end = datetime.datetime.now()
+        data1 = QA.QA_fetch_index_day_adv(codelist[0], start, end)
+        # 多线程能提高一倍的速度
+        QA_SU_save_index_day('tdx', paralleled=True)
+        print('end test_QA_SU_save_stock_day')
+        data2 = QA.QA_fetch_index_day_adv(codelist[0], start, end)
+        if data1:
+            cond = len(data2) == len(data1) \
+                if data1.datetime[-1] == data2.datetime[-1] else \
+                len(data2) > len(data1)
+            self.assertTrue(cond,
+                            '保存后的数据应该比未保存前长： {} {}'.format(
+                                len(data2), len(data1)))
+            print('保存前日期： {}， 保存后日期 {}'.format(data1.datetime[-1],
+                                               data2.datetime[-1]))
+
+    def test_QA_SU_save_index_day_with_delete(self):
         #  删除部分数据
         indexDay = DATABASE.index_day
         myquery = {"code": {"$regex": "^00"}}
