@@ -293,7 +293,7 @@ def bat(timeout=0.2, sleep=1):
     database.create_index([('code', QA_util_sql_mongo_sort_ASCENDING)])
     database.create_index([('datetime', QA_util_sql_mongo_sort_ASCENDING)])
 
-    for i in range(100000):
+    while True:
         _time = datetime.datetime.now()
         if QA_util_if_tradetime(_time):  # 如果在交易时间
             data = x.get_realtime_concurrent(code)
