@@ -179,7 +179,7 @@ def QA_SU_save_future_min_all(engine, client=DATABASE):
 
 
 @print_used_time
-def QA_SU_save_stock_day(engine, client=DATABASE, paralleled=True):
+def QA_SU_save_stock_day(engine, client=DATABASE, paralleled=False):
     """save stock_day
 
     Arguments:
@@ -263,7 +263,7 @@ def QA_SU_save_stock_min(engine, client=DATABASE):
 
 
 @print_used_time
-def QA_SU_save_index_day(engine, client=DATABASE, paralleled=True):
+def QA_SU_save_index_day(engine, client=DATABASE, paralleled=False):
     """save index_day
 
     Arguments:
