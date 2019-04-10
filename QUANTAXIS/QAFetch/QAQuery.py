@@ -562,7 +562,7 @@ def QA_fetch_risk(message={}, db=DATABASE):
         [type] -- [description]
     """
     collection = DATABASE.risk
-    return [res for res in collection.find(message, {"_id": 0})]
+    return [res for res in collection.find(message, {"_id": 0, 'assets':0, 'timeindex':0, 'benchmark_assets':0})]
 
 
 def QA_fetch_user(user_cookie, db=DATABASE):
