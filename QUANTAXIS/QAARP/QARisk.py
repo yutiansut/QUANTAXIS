@@ -50,7 +50,7 @@ from QUANTAXIS.QASU.save_account import save_riskanalysis
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_trade_gap, QA_util_get_trade_range
 from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE
 from QUANTAXIS.QAUtil.QASetting import DATABASE
-
+from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
 # FIXED: no display found
 """
 在无GUI的电脑上,会遇到找不到_tkinter的情况 兼容处理
@@ -882,6 +882,7 @@ class QA_Performance():
             'liquidity',
             'reversal'
         ]
+        self.market_preset = MARKET_PRESET()
         self.pnl = self.pnl_fifo
 
     def __repr__(self):
@@ -1131,12 +1132,13 @@ class QA_Performance():
         ]
         pnl = pd.DataFrame(pair_table, columns=pair_title).set_index('code')
         pnl = pnl.assign(
+            unit=pnl.code.apply(lambda x: self.market_preset.get_unit(x)),
             pnl_ratio=(pnl.sell_price / pnl.buy_price) - 1,
             sell_date=pd.to_datetime(pnl.sell_date),
             buy_date=pd.to_datetime(pnl.buy_date)
         )
         pnl = pnl.assign(
-            pnl_money=pnl.pnl_ratio * pnl.amount,
+            pnl_money=(pnl.sell_price - pnl.buy_price) * pnl.amount * pnl.unit,
             hold_gap=abs(pnl.sell_date - pnl.buy_date),
             if_buyopen=(pnl.sell_date -
                         pnl.buy_date) > datetime.timedelta(days=0)
@@ -1150,7 +1152,7 @@ class QA_Performance():
                 lambda pnl: 0 if pnl else 1) * pnl.buy_price + pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.sell_price,
             closedate=pnl.if_buyopen.apply(
                 lambda pnl: 0 if pnl else 1) * pnl.buy_date.map(str) + pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.sell_date.map(str))
-        return pnl
+        return pnl.set_index('code')
 
     @property
     def pnl_buyopen(self):
@@ -1283,15 +1285,16 @@ class QA_Performance():
             'sell_price',
             'buy_price'
         ]
-        pnl = pd.DataFrame(pair_table, columns=pair_title).set_index('code')
+        pnl = pd.DataFrame(pair_table, columns=pair_title)
 
         pnl = pnl.assign(
+            unit=pnl.code.apply(lambda x: self.market_preset.get_unit(x)),
             pnl_ratio=(pnl.sell_price / pnl.buy_price) - 1,
-            buy_date=pd.to_datetime(pnl.buy_date),
-            sell_date=pd.to_datetime(pnl.sell_date)
+            sell_date=pd.to_datetime(pnl.sell_date),
+            buy_date=pd.to_datetime(pnl.buy_date)
         )
         pnl = pnl.assign(
-            pnl_money=(pnl.sell_price - pnl.buy_price) * pnl.amount,
+            pnl_money=(pnl.sell_price - pnl.buy_price) * pnl.amount * pnl.unit,
             hold_gap=abs(pnl.sell_date - pnl.buy_date),
             if_buyopen=(pnl.sell_date -
                         pnl.buy_date) > datetime.timedelta(days=0)
@@ -1305,7 +1308,7 @@ class QA_Performance():
                 lambda pnl: 0 if pnl else 1) * pnl.buy_price + pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.sell_price,
             closedate=pnl.if_buyopen.apply(
                 lambda pnl: 0 if pnl else 1) * pnl.buy_date.map(str) + pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.sell_date.map(str))
-        return pnl
+        return pnl.set_index('code')
 
     def plot_pnlratio(self):
         """
@@ -1348,10 +1351,6 @@ class QA_Performance():
         """
         data = self.pnl
         return round(len(data.query('pnl_money>0')) / len(data), 2)
-
-    def average_profit(self, methods='FIFO'):
-        data = self.pnl
-        return round(data.pnl_money.mean(), 2)
 
     @property
     def accumulate_return(self):
@@ -1406,6 +1405,9 @@ class QA_Performance():
 
     def average_loss(self, pnl):
         return self.loss_pnl(pnl).pnl_money.mean()
+
+    def average_profit(self, pnl):
+        return self.profit_pnl(pnl).pnl_money.mean()
 
     def average_pnl(self, pnl):
         return abs(self.average_profit(pnl) / self.average_loss(pnl))
