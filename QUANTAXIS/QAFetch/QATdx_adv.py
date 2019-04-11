@@ -139,6 +139,8 @@ class QA_Tdx_Executor():
         data = []
         if self._queue.qsize() < 80:
             for item in stock_ip_list:
+                if self._queue.full():
+                    break
                 _sec = self._test_speed(ip=item['ip'], port=item['port'])
                 if _sec < self.timeout*3:
                     try:
@@ -230,13 +232,13 @@ class QA_Tdx_Executor():
         database.insert_many(QA_util_to_json_from_pandas(data))
 
 
-def get_bar(timeout=1, sleep=1, thread=2):
+def get_bar(timeout=1, sleep=1):
     sleep = int(sleep)
     _time1 = datetime.datetime.now()
     from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_block_adv
     code = QA_fetch_stock_block_adv().code
     print(len(code))
-    x = QA_Tdx_Executor(timeout=float(timeout), thread_num=int(thread))
+    x = QA_Tdx_Executor(timeout=float(timeout))
     print(x._queue.qsize())
     print(x.get_available())
 
@@ -271,14 +273,13 @@ def get_day_once():
 @click.command()
 @click.option('--timeout', default=0.2, help='timeout param')
 @click.option('--sleep', default=1, help='sleep step')
-@click.option('--thread', default=2, help='thread nums')
-def bat(timeout=0.2, sleep=1, thread=2):
+def bat(timeout=0.2, sleep=1):
     sleep = int(sleep)
     _time1 = datetime.datetime.now()
     from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_block_adv
     code = QA_fetch_stock_block_adv().code
     print(len(code))
-    x = QA_Tdx_Executor(timeout=float(timeout), thread_num=int(thread))
+    x = QA_Tdx_Executor(timeout=float(timeout))
     print(x._queue.qsize())
     print(x.get_available())
 
@@ -286,8 +287,11 @@ def bat(timeout=0.2, sleep=1, thread=2):
         'realtime_{}'.format(datetime.date.today()))
 
     print(database)
-    database.create_index([('code', QA_util_sql_mongo_sort_ASCENDING),
-                           ('datetime', QA_util_sql_mongo_sort_ASCENDING)])
+    # mongodb在排序时，复合索引并不能像关系型数据库一样提升效率，反而会降低排序性能
+    # # 在测试的过程，发现datetime倒序索引在倒序查询时性能更高，但写入性能较低
+    # # 此表属于写多读少，所以索引继续采用正序
+    database.create_index([('code', QA_util_sql_mongo_sort_ASCENDING)])
+    database.create_index([('datetime', QA_util_sql_mongo_sort_ASCENDING)])
 
     while True:
         _time = datetime.datetime.now()
