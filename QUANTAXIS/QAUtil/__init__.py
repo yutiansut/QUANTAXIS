@@ -137,6 +137,6 @@ def print_used_time(func):
         a = time.time()
         func(*args, **kwargs)
         b = time.time()
-        print('消耗时间：{}'.format(b - a))
+        print('消耗时间：{0:.3f}'.format(b - a))
         return True
     return wrapper
