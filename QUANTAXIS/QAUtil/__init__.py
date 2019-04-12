@@ -121,7 +121,8 @@ from QUANTAXIS.QAUtil.QADateTools import (
 from QUANTAXIS.QAUtil.Parallelism import Parallelism, Parallelism_Thread
 from QUANTAXIS.QAUtil.QACache import QA_util_cache
 from QUANTAXIS.QAUtil.QASingleton import singleton
-import time
+from resource import getrusage as resource_usage, RUSAGE_SELF
+from time import time as timestamp
 from functools import wraps
 
 
@@ -134,9 +135,11 @@ def print_used_time(func):
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        a = time.time()
+        start_time, start_resources = timestamp(), resource_usage(RUSAGE_SELF)
         func(*args, **kwargs)
-        b = time.time()
-        print('消耗时间：{0:.3f}'.format(b - a))
+        end_resources, end_time = resource_usage(RUSAGE_SELF), timestamp()
+        print({'消耗时间':{'real': end_time - start_time,
+                'sys': end_resources.ru_stime - start_resources.ru_stime,
+                'user': end_resources.ru_utime - start_resources.ru_utime}})
         return True
     return wrapper
