@@ -174,23 +174,11 @@ class TestSelect_best_ip(TestCase):
 
     def test_QA_SU_save_stock_day_with_delete(self):
         stockDay = DATABASE.stock_day
-        myquery = {"code": {"$regex": "^002"}}
+        myquery = {"code": {"$regex": "^300"}}
         x = stockDay.delete_many(myquery)
         print(x.deleted_count, " documents deleted.")
 
-        print('start test_QA_SU_save_stock_day')
-        codelist = QA.QA_fetch_stock_list_adv().code.tolist()
-        days = 300
-        start = datetime.datetime.now() - datetime.timedelta(days)
-        end = datetime.datetime.now()
-        data1 = QA.QA_fetch_stock_day_adv(codelist[0], start, end)
-        QA_SU_save_stock_day('tdx', paralleled=True)
-        print('end test_QA_SU_save_stock_day')
-        data2 = QA.QA_fetch_stock_day_adv(codelist[0], start, end)
-        self.assertTrue(
-            len(data2) == len(data1) if data1.datetime[-1] == data2.datetime[
-                -1] else len(data2) > len(data1),
-            '保存后的数据应该比未保存前长： {} {}'.format(len(data2), len(data1)))
+        self.test_QA_SU_save_stock_day()
 
     # def test_get_index_min_adv(self):
     # 分钟数据测试
@@ -265,25 +253,7 @@ class TestSelect_best_ip(TestCase):
         x = indexDay.delete_many(myquery)
         print(x.deleted_count, " documents deleted.")
 
-        print('start test_QA_SU_save_stock_day')
-        codelist = QA.QA_fetch_index_list_adv().code.tolist()
-        days = 300
-        start = datetime.datetime.now() - datetime.timedelta(days)
-        end = datetime.datetime.now()
-        data1 = QA.QA_fetch_index_day_adv(codelist[0], start, end)
-        # 多线程能提高一倍的速度
-        QA_SU_save_index_day('tdx', paralleled=True)
-        print('end test_QA_SU_save_stock_day')
-        data2 = QA.QA_fetch_index_day_adv(codelist[0], start, end)
-        if data1:
-            cond = len(data2) == len(data1) \
-                if data1.datetime[-1] == data2.datetime[-1] else \
-                len(data2) > len(data1)
-            self.assertTrue(cond,
-                            '保存后的数据应该比未保存前长： {} {}'.format(
-                                len(data2), len(data1)))
-            print('保存前日期： {}， 保存后日期 {}'.format(data1.datetime[-1],
-                                               data2.datetime[-1]))
+        self.test_QA_SU_save_index_day()
 
 
 if __name__ == '__main__':
