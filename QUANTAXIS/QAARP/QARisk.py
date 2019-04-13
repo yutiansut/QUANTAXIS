@@ -1377,10 +1377,16 @@ class QA_Performance():
         return pnl.query('pnl_money==0')
 
     def total_profit(self, pnl):
-        return self.profit_pnl(pnl).pnl_money.sum()
+        if len(self.profit_pnl(pnl))>0:
+            return self.profit_pnl(pnl).pnl_money.sum()
+        else:
+            return 0
 
     def total_loss(self, pnl):
-        return self.loss_pnl(pnl).pnl_money.sum()
+        if len(self.loss_pnl(pnl))>0:
+            return self.loss_pnl(pnl).pnl_money.sum()
+        else:
+            return 0
 
     def total_pnl(self, pnl):
         try:
@@ -1413,30 +1419,42 @@ class QA_Performance():
             return 0
 
     def even_precentage(self, pnl):
-        return self.even_amounts(pnl) / self.trading_amounts(pnl)
+        try:
+            return self.even_amounts(pnl) / self.trading_amounts(pnl)
+        except ZeroDivisionError:
+            return 0
 
     def average_loss(self, pnl):
-        return self.loss_pnl(pnl).pnl_money.mean()
+        if len(self.loss_pnl(pnl))>0:
+            return self.loss_pnl(pnl).pnl_money.mean()
+        else:
+            return 0
 
     def average_profit(self, pnl):
-        return self.profit_pnl(pnl).pnl_money.mean()
+        if len(self.profit_pnl(pnl))>0:
+            return self.profit_pnl(pnl).pnl_money.mean()
+        else:
+            return 0
 
     def average_pnl(self, pnl):
-        try:
-            return abs(self.average_profit(pnl) / self.average_loss(pnl))
-        except ZeroDivisionError:
+        if len(self.loss_pnl(pnl))>0 and len(self.profit_pnl(pnl))>0:
+            try:
+                return abs(self.average_profit(pnl) / self.average_loss(pnl))
+            except ZeroDivisionError:
+                return 0
+        else:
             return 0
 
     def max_profit(self, pnl):
-        try:
+        if len(self.profit_pnl(pnl))>0:
             return self.profit_pnl(pnl).pnl_money.max()
-        except ZeroDivisionError:
+        else:
             return 0
 
     def max_loss(self, pnl):
-        try:
+        if len(self.loss_pnl(pnl))>0:
             return self.loss_pnl(pnl).pnl_money.min()
-        except ZeroDivisionError:
+        else:
             return 0
 
     def max_pnl(self, pnl):
@@ -1446,11 +1464,14 @@ class QA_Performance():
             return 0
 
     def netprofio_maxloss_ratio(self, pnl):
-        try:
-            return abs(pnl.pnl_money.sum() / self.max_loss(pnl))
-        except ZeroDivisionError:
+        if len(self.loss_pnl(pnl))>0:
+            try:
+                return abs(pnl.pnl_money.sum() / self.max_loss(pnl))
+            except ZeroDivisionError:
+                return 0
+        else:
             return 0
-            
+
     def continue_profit_amount(self, pnl):
         w = []
         w1 = 0
@@ -1480,16 +1501,28 @@ class QA_Performance():
             return max(l)
 
     def average_holdgap(self, pnl):
-        return str(pnl.hold_gap.mean())
+        if len(pnl.hold_gap)>0:
+            return str(pnl.hold_gap.mean())
+        else:
+            return 'no trade'
 
     def average_profitholdgap(self, pnl):
-        return str(self.profit_pnl(pnl).hold_gap.mean())
+        if len(self.profit_pnl(pnl).hold_gap)>0:
+            return str(self.profit_pnl(pnl).hold_gap.mean())
+        else:
+            return 'no trade'
 
     def average_losssholdgap(self, pnl):
-        return str(self.loss_pnl(pnl).hold_gap.mean())
+        if len(self.loss_pnl(pnl).hold_gap)>0:
+            return str(self.loss_pnl(pnl).hold_gap.mean())
+        else:
+            return 'no trade'
 
     def average_evenholdgap(self, pnl):
-        return self.even_pnl(pnl).hold_gap.mean()
+        if len(self.even_pnl(pnl).hold_gap)>0:
+            return self.even_pnl(pnl).hold_gap.mean()
+        else:
+            return 'no trade'
 
     @property
     def max_cashused(self):
