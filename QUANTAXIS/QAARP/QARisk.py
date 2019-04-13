@@ -1350,7 +1350,10 @@ class QA_Performance():
         盈利次数/总次数
         """
         data = self.pnl
-        return round(len(data.query('pnl_money>0')) / len(data), 2)
+        try:
+            return round(len(data.query('pnl_money>0')) / len(data), 2)
+        except ZeroDivisionError:
+            return 0
 
     @property
     def accumulate_return(self):
@@ -1380,7 +1383,10 @@ class QA_Performance():
         return self.loss_pnl(pnl).pnl_money.sum()
 
     def total_pnl(self, pnl):
-        return abs(self.total_profit(pnl) / self.total_loss(pnl))
+        try:
+            return abs(self.total_profit(pnl) / self.total_loss(pnl))
+        except ZeroDivisionError:
+            return 0
 
     def trading_amounts(self, pnl):
         return len(pnl)
@@ -1395,10 +1401,16 @@ class QA_Performance():
         return len(self.even_pnl(pnl))
 
     def profit_precentage(self, pnl):
-        return self.profit_amounts(pnl) / self.trading_amounts(pnl)
+        try:
+            return self.profit_amounts(pnl) / self.trading_amounts(pnl)
+        except ZeroDivisionError:
+            return 0
 
     def loss_precentage(self, pnl):
-        return self.loss_amounts(pnl) / self.trading_amounts(pnl)
+        try:
+            return self.loss_amounts(pnl) / self.trading_amounts(pnl)
+        except ZeroDivisionError:
+            return 0
 
     def even_precentage(self, pnl):
         return self.even_amounts(pnl) / self.trading_amounts(pnl)
@@ -1410,20 +1422,35 @@ class QA_Performance():
         return self.profit_pnl(pnl).pnl_money.mean()
 
     def average_pnl(self, pnl):
-        return abs(self.average_profit(pnl) / self.average_loss(pnl))
+        try:
+            return abs(self.average_profit(pnl) / self.average_loss(pnl))
+        except ZeroDivisionError:
+            return 0
 
     def max_profit(self, pnl):
-        return self.profit_pnl(pnl).pnl_money.max()
+        try:
+            return self.profit_pnl(pnl).pnl_money.max()
+        except ZeroDivisionError:
+            return 0
 
     def max_loss(self, pnl):
-        return self.loss_pnl(pnl).pnl_money.min()
+        try:
+            return self.loss_pnl(pnl).pnl_money.min()
+        except ZeroDivisionError:
+            return 0
 
     def max_pnl(self, pnl):
-        return abs(self.max_profit(pnl) / self.max_loss(pnl))
+        try:
+            return abs(self.max_profit(pnl) / self.max_loss(pnl))
+        except ZeroDivisionError:
+            return 0
 
     def netprofio_maxloss_ratio(self, pnl):
-        return abs(pnl.pnl_money.sum() / self.max_loss(pnl))
-
+        try:
+            return abs(pnl.pnl_money.sum() / self.max_loss(pnl))
+        except ZeroDivisionError:
+            return 0
+            
     def continue_profit_amount(self, pnl):
         w = []
         w1 = 0
