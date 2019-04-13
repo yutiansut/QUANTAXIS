@@ -304,7 +304,7 @@ def QA_SU_save_etf_day(engine, client=DATABASE, paralleled=False):
         client {[type]} -- [description] (default: {DATABASE})
     """
 
-    engine = select_save_engine(engine)
+    engine = select_save_engine(engine, paralleled=paralleled)
     engine.QA_SU_save_etf_day(client=client)
 
 

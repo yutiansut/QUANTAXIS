@@ -281,12 +281,19 @@ class QA_SU_save_index_day_parallelism(QA_SU_save_day_parallelism_thread):
 
     def __saving_work(self, code):
         def __QA_log_info(code, end_time, start_time):
+            # 判断指数或基金
+            if code.startswith('15') or code.startswith('5'):
+                index_or_etf = 'ETF'
+            else:
+                index_or_etf = 'INDEX'
+            log_info = '##JOB04 Saving {}_DAY====\nTrying updating {} from {} to {}'.format(
+                index_or_etf,
+                code,
+                start_time,
+                end_time
+            )
             QA_util_log_info(
-                '##JOB04 Saving INDEX_DAY====\n \
-                Trying updating {} from {} to {}'.format(
-                    code,
-                    start_time,
-                    end_time),
+                log_info,
                 ui_log=self.ui_log
             )
 
@@ -380,9 +387,13 @@ def QA_SU_save_index_day(client=DATABASE, ui_log=None, ui_progress=None):
     Keyword Arguments:
         client {[type]} -- [description] (default: {DATABASE})
     """
-    index_list = QA_fetch_get_stock_list('index').code.tolist()
-    coll = get_coll(client)
+    index__or_etf = 'index'
+    _QA_SU_save_index_or_etf_day(index__or_etf, client, ui_log, ui_progress)
 
+
+def _QA_SU_save_index_or_etf_day(index__or_etf, client, ui_log, ui_progress):
+    index_list = QA_fetch_get_stock_list(index__or_etf).code.tolist()
+    coll = get_coll(client)
     ips = get_ip_list_by_multi_process_ping(stock_ip_list, _type='stock')[
           :cpu_count() * 2 + 1]
     ps = QA_SU_save_index_day_parallelism(
@@ -403,88 +414,5 @@ def QA_SU_save_etf_day(client=DATABASE, ui_log=None, ui_progress=None):
         client {[type]} -- [description] (default: {DATABASE})
     """
 
-    __index_list = QA_fetch_get_stock_list('etf')
-    coll = client.index_day
-    coll.create_index(
-        [('code',
-          pymongo.ASCENDING),
-         ('date_stamp',
-          pymongo.ASCENDING)]
-    )
-    err = []
-
-    def __saving_work(code, coll):
-
-        try:
-
-            ref_ = coll.find({'code': str(code)[0:6]})
-            end_time = str(now_time())[0:10]
-            if ref_.count() > 0:
-                start_time = ref_[ref_.count() - 1]['date']
-
-                QA_util_log_info(
-                    '##JOB06 Now Saving ETF_DAY==== \n Trying updating {} from {} to {}'
-                        .format(code,
-                                start_time,
-                                end_time),
-                    ui_log=ui_log
-                )
-
-                if start_time != end_time:
-                    coll.insert_many(
-                        QA_util_to_json_from_pandas(
-                            QA_fetch_get_index_day(
-                                str(code),
-                                QA_util_get_next_day(start_time),
-                                end_time
-                            )
-                        )
-                    )
-            else:
-                start_time = '1990-01-01'
-                QA_util_log_info(
-                    '##JOB06 Now Saving ETF_DAY==== \n Trying updating {} from {} to {}'
-                        .format(code,
-                                start_time,
-                                end_time),
-                    ui_log=ui_log
-                )
-
-                if start_time != end_time:
-                    coll.insert_many(
-                        QA_util_to_json_from_pandas(
-                            QA_fetch_get_index_day(
-                                str(code),
-                                start_time,
-                                end_time
-                            )
-                        )
-                    )
-        except:
-            err.append(str(code))
-
-    for i_ in range(len(__index_list)):
-        # __saving_work('000001')
-        QA_util_log_info(
-            'The {} of Total {}'.format(i_,
-                                        len(__index_list)),
-            ui_log=ui_log
-        )
-
-        strLogProgress = 'DOWNLOAD PROGRESS {} '.format(
-            str(float(i_ / len(__index_list) * 100))[0:4] + '%'
-        )
-        intLogProgress = int(float(i_ / len(__index_list) * 10000.0))
-        QA_util_log_info(
-            strLogProgress,
-            ui_log=ui_log,
-            ui_progress=ui_progress,
-            ui_progress_int_value=intLogProgress
-        )
-
-        __saving_work(__index_list.index[i_][0], coll)
-    if len(err) < 1:
-        QA_util_log_info('SUCCESS', ui_log=ui_log)
-    else:
-        QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
-        QA_util_log_info(err, ui_log=ui_log)
+    index__or_etf = 'etf'
+    _QA_SU_save_index_or_etf_day(index__or_etf, client, ui_log, ui_progress)
