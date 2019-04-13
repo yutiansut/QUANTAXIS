@@ -17,7 +17,7 @@ sig2 = QA.CROSS(res.KDJ_K, res.KDJ_J)
 
 User = QA.QA_User(username='quantaxis', password='quantaxis')
 Portfolio = User.new_portfolio('qatestportfolio')
-Account = Portfolio.new_account(account_cookie='user_macdmin_601318' ,init_cash=100000, init_hold={'601318':1000},
+Account = Portfolio.new_account(account_cookie='macdmin_601318' ,init_cash=20000,
                         frequence=QA.FREQUENCE.THIRTY_MIN)
 Broker = QA.QA_BacktestBroker()
 
@@ -34,7 +34,7 @@ for items in data.panel_gen:
             order = Account.send_order(
                 code=item.code[0],
                 time=item.datetime[0],
-                amount=1000,
+                amount=100,
                 towards=QA.ORDER_DIRECTION.BUY,
                 price=0,
                 order_model=QA.ORDER_MODEL.CLOSE,
@@ -52,7 +52,7 @@ for items in data.panel_gen:
                 order1 = Account.send_order(
                     code=item.code[0],
                     time=item.datetime[0],
-                    amount=1000,
+                    amount=100,
                     towards=QA.ORDER_DIRECTION.SELL,
                     price=0,
                     order_model=QA.ORDER_MODEL.CLOSE,
