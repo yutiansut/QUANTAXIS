@@ -12,7 +12,7 @@ from QUANTAXIS.QAUtil.Parallelism import Parallelism
 import datetime, time
 import os
 from multiprocessing import cpu_count
-from QUANTAXIS.QACmd import QA_SU_save_stock_day, QA_SU_save_index_day
+from QUANTAXIS.QACmd import QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_etf_day
 from QUANTAXIS.QAUtil import QA_util_cache
 from QUANTAXIS.QAUtil.QASetting import DATABASE
 
@@ -226,14 +226,22 @@ class TestSelect_best_ip(TestCase):
                                                            _type='future')
 
     def test_QA_SU_save_index_day(self):
-        print('start test_QA_SU_save_stock_day')
+        print('start test_QA_SU_save_index_day')
         codelist = QA.QA_fetch_index_list_adv().code.tolist()
+        index__or_etf = 'index'
+        self._test_QA_SU_save_index_or_etf_day(codelist, index__or_etf, paralleled=True)
+
+    def _test_QA_SU_save_index_or_etf_day(self, codelist, index__or_etf = 'index', paralleled=True):
         days = 300
         start = datetime.datetime.now() - datetime.timedelta(days)
         end = datetime.datetime.now()
         data1 = QA.QA_fetch_index_day_adv(codelist[0], start, end)
         # 多线程能提高一倍的速度
-        QA_SU_save_index_day('tdx', paralleled=True)
+        if index__or_etf == 'index':
+            QA_SU_save_index_day('tdx', paralleled=paralleled)
+        else:
+            QA_SU_save_etf_day('tdx', paralleled=paralleled)
+
         print('end test_QA_SU_save_stock_day')
         data2 = QA.QA_fetch_index_day_adv(codelist[0], start, end)
         if data1:
@@ -255,6 +263,22 @@ class TestSelect_best_ip(TestCase):
 
         self.test_QA_SU_save_index_day()
 
+
+    def test_QA_SU_save_etf_day(self):
+        print('start test_QA_SU_save_etf_day')
+        codelist = QA.QA_fetch_etf_list().code.tolist()
+        print(codelist)
+        index__or_etf = 'etf'
+        self._test_QA_SU_save_index_or_etf_day(codelist, index__or_etf, paralleled=True )
+
+    def test_QA_SU_save_etf_day_with_delete(self):
+        #  删除部分数据
+        indexDay = DATABASE.index_day
+        myquery = {"code": {"$regex": "^51"}}
+        x = indexDay.delete_many(myquery)
+        print(x.deleted_count, " documents deleted.")
+
+        self.test_QA_SU_save_etf_day()
 
 if __name__ == '__main__':
     TestCase.run()
