@@ -21,6 +21,8 @@ Account = Portfolio.new_account(account_cookie='macdmin_601318' ,init_cash=20000
                         frequence=QA.FREQUENCE.THIRTY_MIN)
 Broker = QA.QA_BacktestBroker()
 
+QA.QA_SU_save_strategy(Account.account_cookie,
+                       Account.portfolio_cookie, Account.account_cookie, if_save=True)
 
 _date = None
 for items in data.panel_gen:
