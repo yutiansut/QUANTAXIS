@@ -26,12 +26,12 @@ QUANTAXIS
 
 Quantitative Financial Strategy Framework
 
-by yutiansut    
+by yutiansut
 
 2017/4/8
 """
 
-__version__ = '1.3.1.dev2'
+__version__ = '1.4.3'
 __author__ = 'yutiansut'
 
 # fetch methods
@@ -112,6 +112,7 @@ from QUANTAXIS.QAFetch.QAQuery import (
     QA_fetch_stock_block,
     QA_fetch_stock_info,
     QA_fetch_stock_name,
+    QA_fetch_etf_list,
     QA_fetch_quotation,
     QA_fetch_quotations
 )
@@ -217,6 +218,10 @@ from QUANTAXIS.QASetting.QALocalize import qa_path, setting_path, cache_path, do
 # Util
 
 from QUANTAXIS.QAUtil import (
+    QATZInfo_CN,
+    QA_util_format_date2str,
+    QA_util_get_next_trade_date,
+    QA_util_get_pre_trade_date,
     QA_util_date_stamp,
     QA_util_time_stamp,
     QA_util_ms_stamp,

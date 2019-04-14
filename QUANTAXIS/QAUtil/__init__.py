@@ -36,6 +36,7 @@ from QUANTAXIS.QAUtil.QACfg import QA_util_cfg_initial, QA_util_get_cfg
 from QUANTAXIS.QAUtil.QACsv import QA_util_save_csv
 # date
 from QUANTAXIS.QAUtil.QADate import (QA_util_date_int2str, QA_util_date_stamp,
+                                     QATZInfo_CN,
                                      QA_util_date_str2int, QA_util_date_today,
                                      QA_util_date_valid, QA_util_calc_time,
                                      QA_util_get_date_index, QA_util_to_datetime,
@@ -47,6 +48,9 @@ from QUANTAXIS.QAUtil.QADate import (QA_util_date_int2str, QA_util_date_stamp,
                                      QA_util_today_str, QA_util_datetime_to_strdate)
 # trade date
 from QUANTAXIS.QAUtil.QADate_trade import (QA_util_date_gap,
+                                           QA_util_format_date2str,
+                                           QA_util_get_next_trade_date,
+                                           QA_util_get_pre_trade_date,
                                            QA_util_get_real_date,
                                            QA_util_get_real_datelist,
                                            QA_util_get_trade_gap,
@@ -114,4 +118,6 @@ from QUANTAXIS.QAUtil.QADateTools import (
     QA_util_add_months, QA_util_getBetweenMonth
 )
 
-
+from QUANTAXIS.QAUtil.Parallelism import Parallelism
+from QUANTAXIS.QAUtil.QACache import QA_util_cache
+from QUANTAXIS.QAUtil.QASingleton import singleton

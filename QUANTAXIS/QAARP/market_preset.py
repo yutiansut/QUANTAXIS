@@ -1,586 +1,592 @@
-#
+# coding:utf-8
+
+"""
+数据获取来源:http://www.9qihuo.com/qihuoshouxufei
+保存为excel简单处理之后使用一下代码处理,记录一下方便以后更新:
+
+def get_name_before_digit(arr):
+    for i in range(len(arr)):
+        if arr[i].isdigit():
+            return arr[:i]
+        
+def get_commision_by_detail(detail):
+    if detail['开仓'][-1]=='元':
+        return dict(commission_coeff_peramount=0,
+              commission_coeff_pervol=np.round(float(detail['开仓'][:-1]),5),
+              commission_coeff_today_peramount=0,
+              commission_coeff_today_pervol=np.round(float(detail['平今'][:-1]),5))
+    else:
+        return dict(commission_coeff_peramount=np.round(float(detail['开仓'][:-1])*0.001,5),
+              commission_coeff_pervol=0,
+              commission_coeff_today_peramount=np.round(float(detail['平今'][:-1])*0.001,5),
+              commission_coeff_today_pervol=0)
+
+excel_path="/xxx"
+df=pd.read_excel(excel_path)
+
+#添加交易所代码,需要手动处理一下或者在excel中处理
+exc=np.array(['xxxx']*len(df))
+exc[:160]='SHFE'
+exc[160:293]='DCE'
+exc[293:425]='ZCE'
+exc[425:446]='INE'
+df['exchange']=exc
+
+#add code和name列
+name_code=df['合约品种'].values
+df['name']=list(map(lambda x:get_name_before_digit(x),name_code.split('(')[0]))
+df['code']=list(map(lambda x:get_name_before_digit(x).upper(),name_code.split('(')[1]))
+
+#获取所有合约的detail并添加到details中
+details={}
+for i in range(len(df)):
+    detail=df.ix[i,:]
+    code=detail['code']
+    if code not in details:
+        d2=df[df['code']==code]
+        index=np.where(d2['买开保证金%']==min(d2['买开保证金%']))[0][0]
+        detail=d2.iloc[index]
+        details[code]=dict(name=detail['name'],
+                             unit_table=detail['每手数量'],
+                              price_tick=detail['每跳价差/元'],
+                             buy_frozen_coeff=detail['买开保证金%']*0.01,
+                             sell_frozen_coeff=detail['卖开保证金%']*0.01,
+                          exchange=detail['exchange'])
+        details[code]=dict(details[code],**get_commision_by_detail(detail))   
+"""
+
 import pandas as pd
 from functools import lru_cache
+
+
 class MARKET_PRESET:
 
     def __init__(self):
         """
               unit_table 合约乘数
+              price_tick 每跳差价
+
+              buy_frozen_coeff 多头开仓保证金系数
+              sell_frozen_coeff 空头开仓保证金系数
+
               commission_coeff_peramount 按总量计算手续费系数
               commission_coeff_pervol 按手数计算的手续费系数
               commission_coeff_today_peramount 按总量计算的平今手续费系数
               commission_coeff_today_pervol 按手数计算的平今手续费系数
 
-              多头开仓保证金系数
-              空头开仓保证金系数
               """
-
-        self.table = {
-            'P': {
-                'buy_frozen_coeff': 0.06,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 2.5,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 1.25,
-                'exchange': 'DCE',
-                'name': '棕榈油',
-                'sell_frozen_coeff': 0.06,
-                'unit_table': 10
-            },
-            'Y': {
-                'buy_frozen_coeff': 0.06,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 2.5,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 1.25,
-                'exchange': 'DCE',
-                'name': '豆油',
-                'sell_frozen_coeff': 0.06,
-                'unit_table': 10
-            },
-            'M': {
-                'buy_frozen_coeff': 0.07,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 1.5,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 0.75,
-                'exchange': 'DCE',
-                'name': '豆粕',
-                'sell_frozen_coeff': 0.07,
-                'unit_table': 10
-            },
-            'A': {
-                'buy_frozen_coeff': 0.07,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 2.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 2.0,
-                'exchange': 'DCE',
-                'name': '豆一',
-                'sell_frozen_coeff': 0.07,
-                'unit_table': 10
-            },
-            'B': {
-                'buy_frozen_coeff': 0.07,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 1.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 1.0,
-                'exchange': 'DCE',
-                'name': '豆二',
-                'sell_frozen_coeff': 0.07,
-                'unit_table': 10
-            },
-            'C': {
-                'buy_frozen_coeff': 0.05,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 1.2,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 0.6,
-                'exchange': 'DCE',
-                'name': '玉米',
-                'sell_frozen_coeff': 0.05,
-                'unit_table': 10
-            },
-            'L': {
-                'buy_frozen_coeff': 0.07,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 2.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 1.0,
-                'exchange': 'DCE',
-                'name': '塑料',
-                'sell_frozen_coeff': 0.07,
-                'unit_table': 5
-            },
-            'JD': {
-                'buy_frozen_coeff': 0.08,
-                'commission_coeff_peramount': 0.00015,
-                'commission_coeff_pervol': 0.0,
-                'commission_coeff_today_peramount': 0.00015,
-                'commission_coeff_today_pervol': 0.0,
-                'exchange': 'DCE',
-                'name': '鸡蛋',
-                'sell_frozen_coeff': 0.08,
-                'unit_table': 10
-            },
-            'J': {
-                'buy_frozen_coeff': 0.09,
-                'commission_coeff_peramount': 6e-05,
-                'commission_coeff_pervol': 0.0,
-                'commission_coeff_today_peramount': 0.00018,
-                'commission_coeff_today_pervol': 0.0,
-                'exchange': 'DCE',
-                'name': '焦炭',
-                'sell_frozen_coeff': 0.09,
-                'unit_table': 100
-            },
-            'JM': {
-                'buy_frozen_coeff': 0.09,
-                'commission_coeff_peramount': 6e-05,
-                'commission_coeff_pervol': 0.0,
-                'commission_coeff_today_peramount': 0.00018,
-                'commission_coeff_today_pervol': 0.0,
-                'exchange': 'DCE',
-                'name': '焦煤',
-                'sell_frozen_coeff': 0.09,
-                'unit_table': 60
-            },
-            'FB': {
-                'buy_frozen_coeff': 0.2,
-                'commission_coeff_peramount': 0.0001,
-                'commission_coeff_pervol': 0.0,
-                'commission_coeff_today_peramount': 5e-05,
-                'commission_coeff_today_pervol': 0.0,
-                'exchange': 'DCE',
-                'name': '纤维板',
-                'sell_frozen_coeff': 0.2,
-                'unit_table': 500
-            },
-            'I': {
-                'buy_frozen_coeff': 0.08,
-                'commission_coeff_peramount': 6e-05,
-                'commission_coeff_pervol': 0.0,
-                'commission_coeff_today_peramount': 6e-05,
-                'commission_coeff_today_pervol': 0.0,
-                'exchange': 'DCE',
-                'name': '铁矿石',
-                'sell_frozen_coeff': 0.08,
-                'unit_table': 100
-            },
-            'PP': {
-                'buy_frozen_coeff': 0.07,
-                'commission_coeff_peramount': 6e-05,
-                'commission_coeff_pervol': 0.0,
-                'commission_coeff_today_peramount': 3e-05,
-                'commission_coeff_today_pervol': 0.0,
-                'exchange': 'DCE',
-                'name': '聚丙烯',
-                'sell_frozen_coeff': 0.07,
-                'unit_table': 5
-            },
-            'EG': {
-                'buy_frozen_coeff': 0.06,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 4.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 2.0,
-                'exchange': 'DCE',
-                'name': '乙二醇',
-                'sell_frozen_coeff': 0.06,
-                'unit_table': 10
-            },
-            'BB': {
-                'buy_frozen_coeff': 0.2,
-                'commission_coeff_peramount': 0.0001,
-                'commission_coeff_pervol': 0.0,
-                'commission_coeff_today_peramount': 5e-05,
-                'commission_coeff_today_pervol': 0.0,
-                'exchange': 'DCE',
-                'name': '胶合板',
-                'sell_frozen_coeff': 0.2,
-                'unit_table': 500
-            },
-            'V': {
-                'buy_frozen_coeff': 0.07,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 2.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 1.0,
-                'exchange': 'DCE',
-                'name': 'PVC',
-                'sell_frozen_coeff': 0.07,
-                'unit_table': 5
-            },
-            'CS': {
-                'buy_frozen_coeff': 0.05,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 1.5,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 0.75,
-                'exchange': 'DCE',
-                'name': '玉米淀粉',
-                'sell_frozen_coeff': 0.05,
-                'unit_table': 10
-            },
-            'AL': {
-                'buy_frozen_coeff': 0.07,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 3.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 3.0,
-                'exchange': 'SHFE',
-                'name': '沪铝',
-                'sell_frozen_coeff': 0.07,
-                'unit_table': 5
-            },
-            'AU': {
-                'buy_frozen_coeff': 0.05,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 10.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 10.0,
-                'exchange': 'SHFE',
-                'name': '沪金',
-                'sell_frozen_coeff': 0.05,
-                'unit_table': 1000
-            },
-            'CU': {
-                'buy_frozen_coeff': 0.07,
-                'commission_coeff_peramount': 5e-05,
-                'commission_coeff_pervol': 0.0,
-                'commission_coeff_today_peramount': 5e-05,
-                'commission_coeff_today_pervol': 0.0,
-                'exchange': 'SHFE',
-                'name': '沪铜',
-                'sell_frozen_coeff': 0.07,
-                'unit_table': 5
-            },
-            'RU': {
-                'buy_frozen_coeff': 0.09,
-                'commission_coeff_peramount': 4.5e-05,
-                'commission_coeff_pervol': 0.0,
-                'commission_coeff_today_peramount': 2.25e-05,
-                'commission_coeff_today_pervol': 0.0,
-                'exchange': 'SHFE',
-                'name': '橡胶',
-                'sell_frozen_coeff': 0.09,
-                'unit_table': 10
-            },
-            'FU': {
-                'buy_frozen_coeff': 0.1,
-                'commission_coeff_peramount': 5e-05,
-                'commission_coeff_pervol': 0.0,
-                'commission_coeff_today_peramount': 5e-05,
-                'commission_coeff_today_pervol': 0.0,
-                'exchange': 'SHFE',
-                'name': '燃油',
-                'sell_frozen_coeff': 0.1,
-                'unit_table': 10
-            },
-            'RB': {
-                'buy_frozen_coeff': 0.09,
-                'commission_coeff_peramount': 0.0001,
-                'commission_coeff_pervol': 0.0,
-                'commission_coeff_today_peramount': 0.0001,
-                'commission_coeff_today_pervol': 0.0,
-                'exchange': 'SHFE',
-                'name': '螺纹钢',
-                'sell_frozen_coeff': 0.09,
-                'unit_table': 10
-            },
-            'WR': {
-                'buy_frozen_coeff': 0.08,
-                'commission_coeff_peramount': 4e-05,
-                'commission_coeff_pervol': 0.0,
-                'commission_coeff_today_peramount': 4e-05,
-                'commission_coeff_today_pervol': 0.0,
-                'exchange': 'SHFE',
-                'name': '线材',
-                'sell_frozen_coeff': 0.08,
-                'unit_table': 10
-            },
-            'ZN': {
-                'buy_frozen_coeff': 0.08,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 3.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 3.0,
-                'exchange': 'SHFE',
-                'name': '沪锌',
-                'sell_frozen_coeff': 0.08,
-                'unit_table': 5
-            },
-            'BU': {
-                'buy_frozen_coeff': 0.08,
-                'commission_coeff_peramount': 0.0001,
-                'commission_coeff_pervol': 0.0,
-                'commission_coeff_today_peramount': 5e-05,
-                'commission_coeff_today_pervol': 0.0,
-                'exchange': 'SHFE',
-                'name': '沥青',
-                'sell_frozen_coeff': 0.08,
-                'unit_table': 10
-            },
-            'AG': {
-                'buy_frozen_coeff': 0.06,
-                'commission_coeff_peramount': 5e-05,
-                'commission_coeff_pervol': 0.0,
-                'commission_coeff_today_peramount': 2.5e-05,
-                'commission_coeff_today_pervol': 0.0,
-                'exchange': 'SHFE',
-                'name': '沪银',
-                'sell_frozen_coeff': 0.06,
-                'unit_table': 15
-            },
-            'SN': {
-                'buy_frozen_coeff': 0.07,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 3.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 3.0,
-                'exchange': 'SHFE',
-                'name': '沪锡',
-                'sell_frozen_coeff': 0.07,
-                'unit_table': 1
-            },
-            'NI': {
-                'buy_frozen_coeff': 0.08,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 6.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 3.0,
-                'exchange': 'SHFE',
-                'name': '沪镍',
-                'sell_frozen_coeff': 0.08,
-                'unit_table': 1
-            },
-            'HC': {
-                'buy_frozen_coeff': 0.08,
-                'commission_coeff_peramount': 0.0001,
-                'commission_coeff_pervol': 0.0,
-                'commission_coeff_today_peramount': 5e-05,
-                'commission_coeff_today_pervol': 0.0,
-                'exchange': 'SHFE',
-                'name': '热轧卷板',
-                'sell_frozen_coeff': 0.08,
-                'unit_table': 10
-            },
-            'PB': {
-                'buy_frozen_coeff': 0.08,
-                'commission_coeff_peramount': 4e-05,
-                'commission_coeff_pervol': 0.0,
-                'commission_coeff_today_peramount': 4e-05,
-                'commission_coeff_today_pervol': 0.0,
-                'exchange': 'SHFE',
-                'name': '沪铅',
-                'sell_frozen_coeff': 0.08,
-                'unit_table': 5
-            },
-            'SP': {
-                'buy_frozen_coeff': 0.07,
-                'commission_coeff_peramount': 5e-05,
-                'commission_coeff_pervol': 0.0,
-                'commission_coeff_today_peramount': 5e-05,
-                'commission_coeff_today_pervol': 0.0,
-                'exchange': 'SHFE',
-                'name': '纸浆',
-                'sell_frozen_coeff': 0.07,
-                'unit_table': 10
-            },
-            'SC': {
-                'buy_frozen_coeff': 0.1,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 20.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 20.0,
-                'exchange': 'SHFE',
-                'name': '原油',
-                'sell_frozen_coeff': 0.1,
-                'unit_table': 1000
-            },
-            'RI': {
-                'buy_frozen_coeff': 0.05,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 2.5,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 2.5,
-                'exchange': 'ZCE',
-                'name': '早籼稻',
-                'sell_frozen_coeff': 0.05,
-                'unit_table': 20
-            },
-            'RS': {
-                'buy_frozen_coeff': 0.2,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 2.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 2.0,
-                'exchange': 'ZCE',
-                'name': '菜油',
-                'sell_frozen_coeff': 0.2,
-                'unit_table': 5
-            },
-            'SR': {
-                'buy_frozen_coeff': 0.05,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 3.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 1.5,
-                'exchange': 'ZCE',
-                'name': '白糖',
-                'sell_frozen_coeff': 0.05,
-                'unit_table': 10
-            },
-            'TA': {
-                'buy_frozen_coeff': 0.07,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 3.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 1.5,
-                'exchange': 'ZCE',
-                'name': 'PTA',
-                'sell_frozen_coeff': 0.07,
-                'unit_table': 5
-            },
-            'WH': {
-                'buy_frozen_coeff': 0.2,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 2.5,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 1.25,
-                'exchange': 'ZCE',
-                'name': '强麦',
-                'sell_frozen_coeff': 0.2,
-                'unit_table': 10
-            },
-            'FG': {
-                'buy_frozen_coeff': 0.07,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 3.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 6.0,
-                'exchange': 'ZCE',
-                'name': '玻璃',
-                'sell_frozen_coeff': 0.07,
-                'unit_table': 20
-            },
-            'OI': {
-                'buy_frozen_coeff': 0.07,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 2.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 1.0,
-                'exchange': 'ZCE',
-                'name': '菜油',
-                'sell_frozen_coeff': 0.07,
-                'unit_table': 10
-            },
-            'ZC': {
-                'buy_frozen_coeff': 0.08,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 4.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 4.0,
-                'exchange': 'ZCE',
-                'name': '菜籽',
-                'sell_frozen_coeff': 0.08,
-                'unit_table': 10
-            },
-            'CF': {
-                'buy_frozen_coeff': 0.07,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 4.3,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 2.15,
-                'exchange': 'ZCE',
-                'name': '郑棉',
-                'sell_frozen_coeff': 0.07,
-                'unit_table': 5
-            },
-            'RM': {
-                'buy_frozen_coeff': 0.06,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 1.5,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 0.75,
-                'exchange': 'ZCE',
-                'name': '菜粕',
-                'sell_frozen_coeff': 0.06,
-                'unit_table': 10
-            },
-            'PM': {
-                'buy_frozen_coeff': 0.05,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 5.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 5.0,
-                'exchange': 'ZCE',
-                'name': '普麦',
-                'sell_frozen_coeff': 0.05,
-                'unit_table': 10
-            },
-            'SM': {
-                'buy_frozen_coeff': 0.07,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 3.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 6.0,
-                'exchange': 'ZCE',
-                'name': '锰硅',
-                'sell_frozen_coeff': 0.07,
-                'unit_table': 5
-            },
-            'SF': {
-                'buy_frozen_coeff': 0.07,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 3.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 9.0,
-                'exchange': 'ZCE',
-                'name': '硅铁',
-                'sell_frozen_coeff': 0.07,
-                'unit_table': 5
-            },
-            'LR': {
-                'buy_frozen_coeff': 0.05,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 3.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 3.0,
-                'exchange': 'ZCE',
-                'name': '晚籼稻',
-                'sell_frozen_coeff': 0.05,
-                'unit_table': 20
-            },
-            'MA': {
-                'buy_frozen_coeff': 0.07,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 2.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 6.0,
-                'exchange': 'ZCE',
-                'name': '甲醇',
-                'sell_frozen_coeff': 0.07,
-                'unit_table': 10
-            },
-            'JR': {
-                'buy_frozen_coeff': 0.05,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 3.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 3.0,
-                'exchange': 'ZCE',
-                'name': '粳稻',
-                'sell_frozen_coeff': 0.05,
-                'unit_table': 20
-            },
-            'CY': {
-                'buy_frozen_coeff': 0.05,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 4.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 2.0,
-                'exchange': 'ZCE',
-                'name': '棉纱',
-                'sell_frozen_coeff': 0.05,
-                'unit_table': 5
-            },
-            'AP': {
-                'buy_frozen_coeff': 0.2,
-                'commission_coeff_peramount': 0.0,
-                'commission_coeff_pervol': 20.0,
-                'commission_coeff_today_peramount': 0.0,
-                'commission_coeff_today_pervol': 20.0,
-                'exchange': 'ZCE',
-                'name': '苹果',
-                'sell_frozen_coeff': 0.2,
-                'unit_table': 10
-            }
-        }
-
+        self.table = {'AG': {'name': '白银',
+                             'unit_table': 15,
+                             'price_tick': 1.0,
+                             'buy_frozen_coeff': 0.06,
+                             'sell_frozen_coeff': 0.06,
+                             'exchange': 'SHFE',
+                             'commission_coeff_peramount': 0.00005,
+                             'commission_coeff_pervol': 0,
+                             'commission_coeff_today_peramount': 0.00005,
+                             'commission_coeff_today_pervol': 0},
+                      'AL': {'name': '铝',
+                             'unit_table': 5,
+                             'price_tick': 5.0,
+                             'buy_frozen_coeff': 0.07,
+                             'sell_frozen_coeff': 0.07,
+                             'exchange': 'SHFE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 3.0,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 0.0},
+                      'AU': {'name': '黄金',
+                             'unit_table': 1000,
+                             'price_tick': 0.05,
+                             'buy_frozen_coeff': 0.05,
+                             'sell_frozen_coeff': 0.05,
+                             'exchange': 'SHFE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 10.0,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 0.0},
+                      'BU': {'name': '石油沥青',
+                             'unit_table': 10,
+                             'price_tick': 2.0,
+                             'buy_frozen_coeff': 0.1,
+                             'sell_frozen_coeff': 0.1,
+                             'exchange': 'SHFE',
+                             'commission_coeff_peramount': 0.0001,
+                             'commission_coeff_pervol': 0,
+                             'commission_coeff_today_peramount': 0.0003,
+                             'commission_coeff_today_pervol': 0},
+                      'CU': {'name': '铜',
+                             'unit_table': 5,
+                             'price_tick': 10.0,
+                             'buy_frozen_coeff': 0.07,
+                             'sell_frozen_coeff': 0.07,
+                             'exchange': 'SHFE',
+                             'commission_coeff_peramount': 0.00005,
+                             'commission_coeff_pervol': 0,
+                             'commission_coeff_today_peramount': 0.0,
+                             'commission_coeff_today_pervol': 0},
+                      'FU': {'name': '燃料油',
+                             'unit_table': 10,
+                             'price_tick': 1.0,
+                             'buy_frozen_coeff': 0.1,
+                             'sell_frozen_coeff': 0.1,
+                             'exchange': 'SHFE',
+                             'commission_coeff_peramount': 0.00005,
+                             'commission_coeff_pervol': 0,
+                             'commission_coeff_today_peramount': 0.0,
+                             'commission_coeff_today_pervol': 0},
+                      'HC': {'name': '热轧卷板',
+                             'unit_table': 10,
+                             'price_tick': 1.0,
+                             'buy_frozen_coeff': 0.08,
+                             'sell_frozen_coeff': 0.08,
+                             'exchange': 'SHFE',
+                             'commission_coeff_peramount': 0.0001,
+                             'commission_coeff_pervol': 0,
+                             'commission_coeff_today_peramount': 0.0001,
+                             'commission_coeff_today_pervol': 0},
+                      'NI': {'name': '镍',
+                             'unit_table': 1,
+                             'price_tick': 10.0,
+                             'buy_frozen_coeff': 0.08,
+                             'sell_frozen_coeff': 0.08,
+                             'exchange': 'SHFE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 1.0,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 0.0},
+                      'PB': {'name': '铅',
+                             'unit_table': 5,
+                             'price_tick': 5.0,
+                             'buy_frozen_coeff': 0.08,
+                             'sell_frozen_coeff': 0.08,
+                             'exchange': 'SHFE',
+                             'commission_coeff_peramount': 0.00004,
+                             'commission_coeff_pervol': 0,
+                             'commission_coeff_today_peramount': 0.0,
+                             'commission_coeff_today_pervol': 0},
+                      'RB': {'name': '螺纹钢',
+                             'unit_table': 10,
+                             'price_tick': 1.0,
+                             'buy_frozen_coeff': 0.09,
+                             'sell_frozen_coeff': 0.09,
+                             'exchange': 'SHFE',
+                             'commission_coeff_peramount': 0.0001,
+                             'commission_coeff_pervol': 0,
+                             'commission_coeff_today_peramount': 0.0001,
+                             'commission_coeff_today_pervol': 0},
+                      'RU': {'name': '天然橡胶',
+                             'unit_table': 10,
+                             'price_tick': 5.0,
+                             'buy_frozen_coeff': 0.09,
+                             'sell_frozen_coeff': 0.09,
+                             'exchange': 'SHFE',
+                             'commission_coeff_peramount': 0.000045,
+                             'commission_coeff_pervol': 0,
+                             'commission_coeff_today_peramount': 0.000045,
+                             'commission_coeff_today_pervol': 0},
+                      'SN': {'name': '锡',
+                             'unit_table': 1,
+                             'price_tick': 10.0,
+                             'buy_frozen_coeff': 0.07,
+                             'sell_frozen_coeff': 0.07,
+                             'exchange': 'SHFE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 1.0,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 0.0},
+                      'SP': {'name': '漂针浆',
+                             'unit_table': 10,
+                             'price_tick': 2.0,
+                             'buy_frozen_coeff': 0.07,
+                             'sell_frozen_coeff': 0.07,
+                             'exchange': 'SHFE',
+                             'commission_coeff_peramount': 0.00005,
+                             'commission_coeff_pervol': 0,
+                             'commission_coeff_today_peramount': 0.0,
+                             'commission_coeff_today_pervol': 0},
+                      'WR': {'name': '线材',
+                             'unit_table': 10,
+                             'price_tick': 1.0,
+                             'buy_frozen_coeff': 0.08,
+                             'sell_frozen_coeff': 0.08,
+                             'exchange': 'SHFE',
+                             'commission_coeff_peramount': 0.00004,
+                             'commission_coeff_pervol': 0,
+                             'commission_coeff_today_peramount': 0.0,
+                             'commission_coeff_today_pervol': 0},
+                      'ZN': {'name': '锌',
+                             'unit_table': 5,
+                             'price_tick': 5.0,
+                             'buy_frozen_coeff': 0.08,
+                             'sell_frozen_coeff': 0.08,
+                             'exchange': 'SHFE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 3.0,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 0.0},
+                      'A': {'name': '黄大豆',
+                            'unit_table': 10,
+                            'price_tick': 1.0,
+                            'buy_frozen_coeff': 0.05,
+                            'sell_frozen_coeff': 0.05,
+                            'exchange': 'DCE',
+                            'commission_coeff_peramount': 0,
+                            'commission_coeff_pervol': 2.0,
+                            'commission_coeff_today_peramount': 0,
+                            'commission_coeff_today_pervol': 2.0},
+                      'B': {'name': '黄大豆',
+                            'unit_table': 10,
+                            'price_tick': 1.0,
+                            'buy_frozen_coeff': 0.05,
+                            'sell_frozen_coeff': 0.05,
+                            'exchange': 'DCE',
+                            'commission_coeff_peramount': 0,
+                            'commission_coeff_pervol': 1.0,
+                            'commission_coeff_today_peramount': 0,
+                            'commission_coeff_today_pervol': 1.0},
+                      'BB': {'name': '细木工板',
+                             'unit_table': 500,
+                             'price_tick': 0.05,
+                             'buy_frozen_coeff': 0.2,
+                             'sell_frozen_coeff': 0.2,
+                             'exchange': 'DCE',
+                             'commission_coeff_peramount': 0.0001,
+                             'commission_coeff_pervol': 0,
+                             'commission_coeff_today_peramount': 0.00005,
+                             'commission_coeff_today_pervol': 0},
+                      'C': {'name': '黄玉米',
+                            'unit_table': 10,
+                            'price_tick': 1.0,
+                            'buy_frozen_coeff': 0.05,
+                            'sell_frozen_coeff': 0.05,
+                            'exchange': 'DCE',
+                            'commission_coeff_peramount': 0,
+                            'commission_coeff_pervol': 1.2,
+                            'commission_coeff_today_peramount': 0,
+                            'commission_coeff_today_pervol': 0.0},
+                      'CS': {'name': '玉米淀粉',
+                             'unit_table': 10,
+                             'price_tick': 1.0,
+                             'buy_frozen_coeff': 0.05,
+                             'sell_frozen_coeff': 0.05,
+                             'exchange': 'DCE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 1.5,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 0.0},
+                      'EG': {'name': '乙二醇',
+                             'unit_table': 10,
+                             'price_tick': 1.0,
+                             'buy_frozen_coeff': 0.06,
+                             'sell_frozen_coeff': 0.06,
+                             'exchange': 'DCE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 4.0,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 0.0},
+                      'FB': {'name': '中密度纤维板',
+                             'unit_table': 500,
+                             'price_tick': 0.05,
+                             'buy_frozen_coeff': 0.2,
+                             'sell_frozen_coeff': 0.2,
+                             'exchange': 'DCE',
+                             'commission_coeff_peramount': 0.0001,
+                             'commission_coeff_pervol': 0,
+                             'commission_coeff_today_peramount': 0.00005,
+                             'commission_coeff_today_pervol': 0},
+                      'I': {'name': '铁矿石',
+                            'unit_table': 100,
+                            'price_tick': 0.5,
+                            'buy_frozen_coeff': 0.08,
+                            'sell_frozen_coeff': 0.08,
+                            'exchange': 'DCE',
+                            'commission_coeff_peramount': 0.00006,
+                            'commission_coeff_pervol': 0,
+                            'commission_coeff_today_peramount': 0.00006,
+                            'commission_coeff_today_pervol': 0},
+                      'J': {'name': '冶金焦炭',
+                            'unit_table': 100,
+                            'price_tick': 0.5,
+                            'buy_frozen_coeff': 0.08,
+                            'sell_frozen_coeff': 0.08,
+                            'exchange': 'DCE',
+                            'commission_coeff_peramount': 0.00018,
+                            'commission_coeff_pervol': 0,
+                            'commission_coeff_today_peramount': 0.00018,
+                            'commission_coeff_today_pervol': 0},
+                      'JD': {'name': '鲜鸡蛋',
+                             'unit_table': 10,
+                             'price_tick': 1.0,
+                             'buy_frozen_coeff': 0.07,
+                             'sell_frozen_coeff': 0.07,
+                             'exchange': 'DCE',
+                             'commission_coeff_peramount': 0.00015,
+                             'commission_coeff_pervol': 0,
+                             'commission_coeff_today_peramount': 0.00015,
+                             'commission_coeff_today_pervol': 0},
+                      'JM': {'name': '焦煤',
+                             'unit_table': 60,
+                             'price_tick': 0.5,
+                             'buy_frozen_coeff': 0.08,
+                             'sell_frozen_coeff': 0.08,
+                             'exchange': 'DCE',
+                             'commission_coeff_peramount': 0.00018,
+                             'commission_coeff_pervol': 0,
+                             'commission_coeff_today_peramount': 0.00018,
+                             'commission_coeff_today_pervol': 0},
+                      'L': {'name': '线型低密度聚乙烯',
+                            'unit_table': 5,
+                            'price_tick': 5.0,
+                            'buy_frozen_coeff': 0.05,
+                            'sell_frozen_coeff': 0.05,
+                            'exchange': 'DCE',
+                            'commission_coeff_peramount': 0,
+                            'commission_coeff_pervol': 2.0,
+                            'commission_coeff_today_peramount': 0,
+                            'commission_coeff_today_pervol': 0.0},
+                      'M': {'name': '豆粕',
+                            'unit_table': 10,
+                            'price_tick': 1.0,
+                            'buy_frozen_coeff': 0.05,
+                            'sell_frozen_coeff': 0.05,
+                            'exchange': 'DCE',
+                            'commission_coeff_peramount': 0,
+                            'commission_coeff_pervol': 1.5,
+                            'commission_coeff_today_peramount': 0,
+                            'commission_coeff_today_pervol': 0.0},
+                      'P': {'name': '棕榈油',
+                            'unit_table': 10,
+                            'price_tick': 2.0,
+                            'buy_frozen_coeff': 0.05,
+                            'sell_frozen_coeff': 0.05,
+                            'exchange': 'DCE',
+                            'commission_coeff_peramount': 0,
+                            'commission_coeff_pervol': 2.5,
+                            'commission_coeff_today_peramount': 0,
+                            'commission_coeff_today_pervol': 0.0},
+                      'PP': {'name': '聚丙烯',
+                             'unit_table': 5,
+                             'price_tick': 1.0,
+                             'buy_frozen_coeff': 0.05,
+                             'sell_frozen_coeff': 0.05,
+                             'exchange': 'DCE',
+                             'commission_coeff_peramount': 0.00006,
+                             'commission_coeff_pervol': 0,
+                             'commission_coeff_today_peramount': 0.00003,
+                             'commission_coeff_today_pervol': 0},
+                      'V': {'name': '聚氯乙烯',
+                            'unit_table': 5,
+                            'price_tick': 5.0,
+                            'buy_frozen_coeff': 0.05,
+                            'sell_frozen_coeff': 0.05,
+                            'exchange': 'DCE',
+                            'commission_coeff_peramount': 0,
+                            'commission_coeff_pervol': 2.0,
+                            'commission_coeff_today_peramount': 0,
+                            'commission_coeff_today_pervol': 0.0},
+                      'Y': {'name': '豆油',
+                            'unit_table': 10,
+                            'price_tick': 2.0,
+                            'buy_frozen_coeff': 0.05,
+                            'sell_frozen_coeff': 0.05,
+                            'exchange': 'DCE',
+                            'commission_coeff_peramount': 0,
+                            'commission_coeff_pervol': 2.5,
+                            'commission_coeff_today_peramount': 0,
+                            'commission_coeff_today_pervol': 0.0},
+                      'AP': {'name': '鲜苹果',
+                             'unit_table': 10,
+                             'price_tick': 1.0,
+                             'buy_frozen_coeff': 0.08,
+                             'sell_frozen_coeff': 0.08,
+                             'exchange': 'ZCE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 5.0,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 5.0},
+                      'CF': {'name': '一号棉花',
+                             'unit_table': 5,
+                             'price_tick': 5.0,
+                             'buy_frozen_coeff': 0.05,
+                             'sell_frozen_coeff': 0.05,
+                             'exchange': 'ZCE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 4.3,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 0.0},
+                      'CY': {'name': '棉纱',
+                             'unit_table': 5,
+                             'price_tick': 5.0,
+                             'buy_frozen_coeff': 0.05,
+                             'sell_frozen_coeff': 0.05,
+                             'exchange': 'ZCE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 4.0,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 0.0},
+                      'FG': {'name': '玻璃',
+                             'unit_table': 20,
+                             'price_tick': 1.0,
+                             'buy_frozen_coeff': 0.05,
+                             'sell_frozen_coeff': 0.05,
+                             'exchange': 'ZCE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 3.0,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 6.0},
+                      'JR': {'name': '粳稻',
+                             'unit_table': 20,
+                             'price_tick': 1.0,
+                             'buy_frozen_coeff': 0.05,
+                             'sell_frozen_coeff': 0.05,
+                             'exchange': 'ZCE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 3.0,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 3.0},
+                      'LR': {'name': '晚籼稻',
+                             'unit_table': 20,
+                             'price_tick': 1.0,
+                             'buy_frozen_coeff': 0.05,
+                             'sell_frozen_coeff': 0.05,
+                             'exchange': 'ZCE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 3.0,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 3.0},
+                      'MA': {'name': '甲醇MA',
+                             'unit_table': 10,
+                             'price_tick': 1.0,
+                             'buy_frozen_coeff': 0.07,
+                             'sell_frozen_coeff': 0.07,
+                             'exchange': 'ZCE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 2.0,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 6.0},
+                      'OI': {'name': '菜籽油',
+                             'unit_table': 10,
+                             'price_tick': 1.0,
+                             'buy_frozen_coeff': 0.05,
+                             'sell_frozen_coeff': 0.05,
+                             'exchange': 'ZCE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 2.0,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 0.0},
+                      'PM': {'name': '普通小麦',
+                             'unit_table': 50,
+                             'price_tick': 1.0,
+                             'buy_frozen_coeff': 0.05,
+                             'sell_frozen_coeff': 0.05,
+                             'exchange': 'ZCE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 5.0,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 5.0},
+                      'RI': {'name': '早籼',
+                             'unit_table': 20,
+                             'price_tick': 1.0,
+                             'buy_frozen_coeff': 0.05,
+                             'sell_frozen_coeff': 0.05,
+                             'exchange': 'ZCE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 2.5,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 2.5},
+                      'RM': {'name': '菜籽粕',
+                             'unit_table': 10,
+                             'price_tick': 1.0,
+                             'buy_frozen_coeff': 0.06,
+                             'sell_frozen_coeff': 0.06,
+                             'exchange': 'ZCE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 1.5,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 0.0},
+                      'RS': {'name': '油菜籽',
+                             'unit_table': 10,
+                             'price_tick': 1.0,
+                             'buy_frozen_coeff': 0.2,
+                             'sell_frozen_coeff': 0.2,
+                             'exchange': 'ZCE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 2.0,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 2.0},
+                      'SF': {'name': '硅铁',
+                             'unit_table': 5,
+                             'price_tick': 2.0,
+                             'buy_frozen_coeff': 0.07,
+                             'sell_frozen_coeff': 0.07,
+                             'exchange': 'ZCE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 3.0,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 9.0},
+                      'SM': {'name': '锰硅',
+                             'unit_table': 5,
+                             'price_tick': 2.0,
+                             'buy_frozen_coeff': 0.07,
+                             'sell_frozen_coeff': 0.07,
+                             'exchange': 'ZCE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 3.0,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 6.0},
+                      'SR': {'name': '白砂糖',
+                             'unit_table': 10,
+                             'price_tick': 1.0,
+                             'buy_frozen_coeff': 0.05,
+                             'sell_frozen_coeff': 0.05,
+                             'exchange': 'ZCE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 3.0,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 0.0},
+                      'TA': {'name': '精对苯二甲酸',
+                             'unit_table': 5,
+                             'price_tick': 2.0,
+                             'buy_frozen_coeff': 0.06,
+                             'sell_frozen_coeff': 0.06,
+                             'exchange': 'ZCE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 3.0,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 0.0},
+                      'WH': {'name': '优质强筋小麦',
+                             'unit_table': 20,
+                             'price_tick': 1.0,
+                             'buy_frozen_coeff': 0.2,
+                             'sell_frozen_coeff': 0.2,
+                             'exchange': 'ZCE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 2.5,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 0.0},
+                      'ZC': {'name': '动力煤ZC',
+                             'unit_table': 100,
+                             'price_tick': 0.2,
+                             'buy_frozen_coeff': 0.06,
+                             'sell_frozen_coeff': 0.06,
+                             'exchange': 'ZCE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 4.0,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 4.0},
+                      'SC': {'name': '原油',
+                             'unit_table': 1000,
+                             'price_tick': 0.1,
+                             'buy_frozen_coeff': 0.1,
+                             'sell_frozen_coeff': 0.1,
+                             'exchange': 'INE',
+                             'commission_coeff_peramount': 0,
+                             'commission_coeff_pervol': 20.0,
+                             'commission_coeff_today_peramount': 0,
+                             'commission_coeff_today_pervol': 0.0}}
     # 手续费比例
-    
+
     @property
     @lru_cache()
     def pdtable(self):
@@ -593,18 +599,16 @@ class MARKET_PRESET:
     def code_list(self):
         return list(self.table.keys())
 
-    
     @property
     def exchange_list(self):
         """返回已有的市场列表
-        
+
         Returns:
             [type] -- [description]
         """
 
         return list(self.pdtable.loc['exchange'].unique())
 
-    
     def get_exchangecode(self, exchange):
         return self.pdtable.T.query('exchange=="{}"'.format(exchange)).index.tolist()
 
@@ -619,15 +623,27 @@ class MARKET_PRESET:
                 code = code[0:2]
         return self.table.get(str(code).upper())
 
-    # 
+    # 合约所属交易所代码
+
     def get_exchange(self, code):
         return self.get_code(code).get('exchange')
 
+    # 合约中文名称
     def get_name(self, code):
         return self.get_code(code).get('name')
 
-    def get_commission_coeff(self, code, dtype):
-        return self.get_code(code).get('unit_table')
+    # 开仓手续费率
+    def get_commission_coeff(self, code):
+        """
+        当前无法区分是百分比还是按手数收费,不过可以拿到以后自行判断
+        """
+        return max(self.get_code(code).get('commission_coeff_peramount'),
+                   self.get_code(code).get('commission_coeff_pervol'))
+
+    # 平今手续费率
+    def get_commission_today_coeff(self, code):
+        return max(self.get_code(code).get('commission_coeff_today_peramount'),
+                   self.get_code(code).get('commission_coeff_today_pervol'))
 
     # 印花税系数
     def get_tax_coeff(self, code, dtype):
@@ -637,19 +653,24 @@ class MARKET_PRESET:
     def get_trade_time(self, code, dtype):
         pass
 
-    # 交易杠杆
+    # 每跳毛利/元
     def get_unit(self, code):
-        return self.get_code(code).get('unit_table')
+        try:
+            return self.get_code(code).get('unit_table')
+        except:
+            return 1
 
-    #
+    # 每跳价格(价差)
+    def get_price_tick(self, code):
+        try:
+            return self.get_code(code).get('price_tick')
+        except:
+            return 0.01
+
+    # 买卖冻结保证金系数
     def get_frozen(self, code):
-        """买卖冻结保证金
-
-              Arguments:
-                     code {[type]} -- [description]
-
-              Returns:
-                     [type] -- [description]
-              """
+        """
+        要结合unit_table才能计算出真实的冻结保证金数量
+        """
 
         return self.get_code(code).get('buy_frozen_coeff')

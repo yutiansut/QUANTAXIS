@@ -7,31 +7,30 @@ Quantitative Financial FrameWork
 
 从数据爬取-清洗存储-分析回测-可视化-交易复盘的本地一站式解决方案
 
-![logo](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/Documents/logo/QUANTAXIS_LOGO_LAST_small.jpg)
+![logo](http://pic.yutiansut.com/QUANTAXIS_LOGO_LAST_small.jpg)
 
 
 
 ![pypidownloads](https://img.shields.io/pypi/dm/quantaxis.svg)
 ![pypidownloads](https://img.shields.io/pypi/dw/quantaxis.svg)
-![pypidownloads](https://img.shields.io/pypi/dd/quantaxis.svg)
-
-
+[![Backers on Open Collective](https://opencollective.com/QUANTAXIS/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/QUANTAXIS/sponsors/badge.svg)](#sponsors) 
 
 [![Github workers](https://img.shields.io/github/watchers/quantaxis/quantaxis.svg?style=social&label=Watchers&)](https://github.com/quantaxis/quantaxis/watchers)
 [![GitHub stars](https://img.shields.io/github/stars/quantaxis/quantaxis.svg?style=social&label=Star&)](https://github.com/quantaxis/quantaxis/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/quantaxis/quantaxis.svg?style=social&label=Fork&)](https://github.com/quantaxis/quantaxis/fork)
 
-
-> ENGLISH DOCUMENTS PLEASE CLICK [THIS](README_ENG.md)
-
 [点击右上角Star和Watch来跟踪项目进展! 点击Fork来创建属于你的QUANTAXIS!]
+
+
+## 祝贺 QUANTAXIS 入选 [GITEE 最有价值开源项目 GVP](https://gitee.com/gvp)
+![gvp](http://pic.yutiansut.com/gvp.jpg)
+
 
 
 ![main_1](http://pic.yutiansut.com/Main_1.gif)
 ![presentbyyutiansut](http://pic.yutiansut.com/yutiansut-logo.png)
 
-## QUANTAXIS 祝大家 2019 新年快乐~ 猪事如意
-![](http://pic.yutiansut.com/quantaxis-2019newyear.png)
+
 
 ![version](https://img.shields.io/pypi/v/quantaxis.svg)
 ![build](https://travis-ci.org/QUANTAXIS/QUANTAXIS.svg?branch=master)
@@ -48,6 +47,10 @@ Quantitative Financial FrameWork
 [![Waffle.io - Issues in progress](https://badge.waffle.io/yutiansut/QUANTAXIS.png?label=in%20progress&title=In%20Progress)](http://waffle.io/yutiansut/QUANTAXIS)
 [![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
 
+## Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute](https://github.com/QUANTAXIS/QUANTAXIS/graphs/contributors)].
+<a href="https://github.com/QUANTAXIS/QUANTAXIS/graphs/contributors"><img src="https://opencollective.com/QUANTAXIS/contributors.svg?width=890&button=false" /></a>
 
 
 > 欢迎加群讨论: 563280067 [群链接](https://jq.qq.com/?_wv=1027&k=4CEKGzn) 
@@ -62,20 +65,30 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 ==========================================
 
+## 视频录播(2019-03-23)
+
+QUANTAXIS 2019 支持多市场的面向场景解决方案
+![](http://pic.yutiansut.com/QAFINANCIAL2019.jpg)
+[在哔哩哔哩观看录播](https://www.bilibili.com/video/av47284727/)
+
+==========================================
 
 ## 关联项目:
+
+技术栈: python/nodejs/vue/mongodb/rabbitmq
 
 - [QUANTAXIS](https://github.com/QUANTAXIS/QUANTAXIS) QUANTAXIS的核心部分
 - [QUANTAXIS_MONITOR_GUI](https://github.com/QUANTAXIS/QUANTAXIS_Monitor_GUI) 基于QT的python监控
 - [QUANTAXIS_WEBSERVER](https://github.com/QUANTAXIS/QUANTAXIS_WEBSERVER) 基于tornado的web api/ websocket
 - [QUANTAXIS_RUN](https://github.com/QUANTAXIS/quantaxis_run) 基于rabbitmq/celery的分布式任务部署
 - [QUANTAXIS_PUBSUB](https://github.com/QUANTAXIS/QAPUBSUB) 基于RABBITMQ的消息分发订阅
-- [QUANTAXIS_DESKTOP](https://github.com/QUANTAXIS/QADESKTOP) 基于VUE.js/ ELECTRON的 桌面终端
+- (目前废弃)[QUANTAXIS_DESKTOP](https://github.com/QUANTAXIS/QADESKTOP) 基于VUE.js/ ELECTRON的 桌面终端
+- [QUANTAXIS QADESKPRO](https://github.com/yutiansut/qadeskpro) 新版本客户端网页(部分开源)
 - [portable_QA](https://github.com/QUANTAXIS/portable_QA) 一个独立的python环境,免配置
 - [QUANTAXIS_ATBROKER](https://github.com/QUANTAXIS/QA_AtBroker) 基于海风at的接口封装
 - [QUANTAXIS_CRAWLY](https://github.com/QUANTAXIS/QUANTAXIS_CRAWLY) 爬虫部分
 - [QUANTAXIS_REALTIME_RESOLUTION](https://github.com/yutiansut/QUANTAXIS_REALTIME_RESOLUTION) 实时交易/部署解决方案(未开源)
-
+- [QUANTAXIS UNICORN](https://github.com/yutiansut/quantaxis_unicorn) QUANTAXIS 策略托管, 交易监控解决方案(未开源)
 
 
 ![qa2018](http://pic.yutiansut.com/qa2018.png)
@@ -123,7 +136,6 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
     - [11. 回测Webkit插件概览](#11-回测webkit插件概览)
     - [12. QUANTAXIS 标准化协议和未来协议](#12-quantaxis-标准化协议和未来协议)
     - [13. 电脑配置推荐](#13-电脑配置推荐)
-    - [14. 开户](#14-开户无论资金规模)
     - [License](#license)
 
 <!-- /TOC -->
@@ -330,6 +342,16 @@ git clone https://github.com/你的账户名/quantaxis
 ![](http://pic.yutiansut.com/qad6.png)
 ![](http://pic.yutiansut.com/qad8.png)
 
+模拟实盘多账户管理
+
+![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015440.png)
+![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015451.png)
+![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015550.png)
+![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015537.png)
+
+手工定制版本 LAB
+
+![](http://pic.yutiansut.com/QADESK_LAB.png)
 
 ##  12. QUANTAXIS 标准化协议和未来协议
 
@@ -354,40 +376,31 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.8
 如果是阿里云/腾讯云的服务器,请在最初的时候 选择64位的操作系统
 
 
-## 14. 开户(无论资金规模):
-
-记得赚了钱赶紧给quantaxis组织捐一点(逃:
-
-### 期货开户
-```
-即日起到春节前, 中财期货,瑞龙期货 和QUANTAXIS达成协议, 使用quantaxis的量化期货交易者，
-
-- 交易所内返80%(无论资金规模)
-- 每月直接返还到交易账户
-- 没有中间商赚差价
-- 手续费是 交易所+1分
-
-- 享受一次quantaxis期货环境部署远程指导[带行情带下单](看心情)
 
 
-联系 微信(GX3117) 备注 from quantaxis 
 
-```
-### 股票开户
-```
-股票开户给出两个选择:
-1. 长城国瑞证券 万1.2 无五元手续费 (目前还没谈到万1) (联系 QQ 2961725743 备注 from quantaxis)
-2. 财通证券 万1.2 无五元手续费 (联系QQ 2939048292 备注 from quantaxis)
-3. 财通证券 万1.2 无五元手续费(送开户大礼包 行情/书籍自选一样) (联系QQ 373566682 备注 from quantaxis)
+## Backers
 
-- 享受一次quantaxis股票环境部署远程指导[带行情带下单](看心情)
+Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/QUANTAXIS#backer)]
 
-上述均无资金规模限制 
-```
+<a href="https://opencollective.com/QUANTAXIS#backers" target="_blank"><img src="https://opencollective.com/QUANTAXIS/backers.svg?width=890"></a>
 
-上述广告都已经尽力把价格往下谈了, 均不限制资金规模, 记得报quantaxis哈
 
-PS: 另外如果你是券商/期货的居间人 能给出相似或更有竞争力的价格欢迎来撩
+## Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/QUANTAXIS#sponsor)]
+
+<a href="https://opencollective.com/QUANTAXIS/sponsor/0/website" target="_blank"><img src="https://opencollective.com/QUANTAXIS/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/QUANTAXIS/sponsor/1/website" target="_blank"><img src="https://opencollective.com/QUANTAXIS/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/QUANTAXIS/sponsor/2/website" target="_blank"><img src="https://opencollective.com/QUANTAXIS/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/QUANTAXIS/sponsor/3/website" target="_blank"><img src="https://opencollective.com/QUANTAXIS/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/QUANTAXIS/sponsor/4/website" target="_blank"><img src="https://opencollective.com/QUANTAXIS/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/QUANTAXIS/sponsor/5/website" target="_blank"><img src="https://opencollective.com/QUANTAXIS/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/QUANTAXIS/sponsor/6/website" target="_blank"><img src="https://opencollective.com/QUANTAXIS/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/QUANTAXIS/sponsor/7/website" target="_blank"><img src="https://opencollective.com/QUANTAXIS/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/QUANTAXIS/sponsor/8/website" target="_blank"><img src="https://opencollective.com/QUANTAXIS/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/QUANTAXIS/sponsor/9/website" target="_blank"><img src="https://opencollective.com/QUANTAXIS/sponsor/9/avatar.svg"></a>
+
 
 
 ## License
