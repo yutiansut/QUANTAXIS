@@ -33,7 +33,9 @@ QUANTAXIS的周边项目主要是对于QUANTAXIS的有效/必要补充, 依据�
 前端界面
 
 win 安装版本: [下载](https://gitee.com/yutiansut/QUANTAXIS/attach_files/225937/download)
+
 mac 安装版本: [下载](https://gitee.com/yutiansut/QUANTAXIS/attach_files/225940/download)
+
 web 版本: [下载](https://gitee.com/yutiansut/QUANTAXIS/attach_files/225938/download)
 
 ### QUANTAXIS_RUN
@@ -51,3 +53,81 @@ web 版本: [下载](https://gitee.com/yutiansut/QUANTAXIS/attach_files/225938/d
 ### QUANTAXIS_ATBROKER 
 
 [QUANTAXIS/QUANTAXIS_ATBROKER](https://github.com/QUANTAXIS/QA_AtBroker)
+
+一个基于海风AT封装的 CTP的BROKER
+
+## QUANTAXIS的技术栈/依赖库
+
+quantaxis主要使用的是python/mongodb作为核心技术栈, 在未来会更多的使用 rabbitmq/websocket等来加强系统的低耦合性和健壮性
+
+一些你必须要知道的库/编辑器/技术方案
+
+
+- python3.6+ 
+- mongodb3.6+/ mongodb4.0/ robomongo(mongodb的可视化工具)
+
+- ipython/ jupyter notebook 一个交互式的命令行/用于加速代码调试
+- vscode 微软的代码编辑器/ 轻量级全平台的编辑器
+
+- rabbitmq/ celery/ QAPUBSUB / 老牌MQ/以及相应的python的绑定库
+- tornado/ QUANTAXIS_WEBSERVER 一个python的后台库, 用于提供http/websocket服务
+- nodejs/ vue.js/ echarts.js/  前端开发库 适当了解即可
+
+- docker 一个集群服务/ 用于加速/简化部署
+
+
+
+在使用quantaxis的时候, 你需要的最小功能的单元工具栈是  
+
+- python3.6/3.7
+- mongodb
+
+- 一个代码编辑器
+- 一个命令行
+
+##  如何使用quantaxis 并进行初始化
+
+首先你需要知道的是, quantaxis是一个纯本地的框架服务, 也就是意味着数据是放在你的本地数据库中, 因此 首先需要开启mongodb
+
+- 如何安装mongodb/ python / quantaxis的初始化环境请[参见](../Documents/install.md)
+
+- 在安装完毕后, 需要打开mongodb的服务, 并进行一些数据的初始化存储(按需) [参见](../Documents/about_updatedata.md)
+
+在存储完毕数据以后, 你可能会陷入迷茫, 因为你不知道该做什么来进行下一步, 因为下面的场景是因人而异的, 我们对于下面的几种场景提供一些推荐的路径:
+
+
+### IF: 你是一个学生/初学者/ 对于python 几乎0基础的同学:
+
+首先的推荐是搞清楚自己的目的,诸如:
+
+- 实现一个模型
+- 验证一个想法
+- 把行情软件的指标复现
+
+然后基于这个目的, 来quantaxis中匹配你的需求:
+
+- 我们推荐:
+
+    - 阅读QUANTAXIS QAFETCH的文档, 了解如何从数据库中获取你想要的数据 [参见](../Documents/DataFetch.md)
+
+    - 阅读QUANTAXIS QADataStruct的文档, 了解QUANTAXIS是如何处理 多标的/多日期的的情况 [参见](../Documents/DataStruct.md)
+
+    - 阅读QUANTAXIS QAIndicator的文档, 了解如何在QUANTAXIS中使用一些默认指标/ 写出你自己的指标/ 移植通达信/同花顺的指标 [参见](../Documents/indicators.md)
+
+### IF: 你已经在别的平台撰写过回测/ 对于如何进行回测有了一定的了解:
+
+
+我们推荐的是首先做一个回测样例体验一下, 目前QUANTAXIS支持的是:
+
+股票/期货的 日线/分钟线 的回测(支持保证金交易)
+
+相关的回测代码你可以在 [参见](../EXAMPLE/4_回测实盘交易) 中找到
+
+当然, 由于QUANTAXIS QAAccount的灵活配置的机制, 你可以快速的接入各个你想要的市场中, 关于 QA_Account 你可以参见
+
+- QUANTAXIS USER 的属性 [参见](../EXAMPLE/2_%E7%B1%BB%E7%9A%84%E6%B5%8B%E8%AF%95%E4%B8%8E%E8%AE%B2%E8%A7%A3/QAUSER.ipynb)
+
+- QUANTAXIS QAAccount的保证金测试 [参见](../EXAMPLE/2_类的测试与讲解/QAACCOUNT%20保证金冻结释放测试.ipynb)
+
+- QUANTAXIS QAAccount [参见](../EXAMPLE/2_%E7%B1%BB%E7%9A%84%E6%B5%8B%E8%AF%95%E4%B8%8E%E8%AE%B2%E8%A7%A3/QAAccount.ipynb)
+
