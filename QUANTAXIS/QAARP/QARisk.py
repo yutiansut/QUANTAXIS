@@ -727,7 +727,7 @@ class QA_Risk():
         asset_b = mpatches.Patch(
             label='benchmark {}'.format(self.benchmark_code)
         )
-        plt.legend(handles=[asset_p, asset_b], loc=1)
+        plt.legend(handles=[asset_p, asset_b], loc=0)
         plt.title('ASSET AND BENCKMARK')
 
         return plt
