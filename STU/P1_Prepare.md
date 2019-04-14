@@ -131,3 +131,6 @@ quantaxis主要使用的是python/mongodb作为核心技术栈, 在未来会更�
 
 - QUANTAXIS QAAccount [参见](../EXAMPLE/2_%E7%B1%BB%E7%9A%84%E6%B5%8B%E8%AF%95%E4%B8%8E%E8%AE%B2%E8%A7%A3/QAAccount.ipynb)
 
+
+
+P1课程基本结束, 在下一个P2课程中, 我们将完整讨论如何进行回测/ 在回测场景中你常常会遇到的问题
