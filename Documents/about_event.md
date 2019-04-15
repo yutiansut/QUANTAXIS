@@ -45,7 +45,7 @@ engine参数指的是在多线程引擎中,使用哪个线程去执行这个task
 callback 是回调函数,该函数不能有参数 ```if callback: callback() else:pass```
 
 ```
-## QAEVNET - 可扩展的事件任务
+## QAEVENT - 可扩展的事件任务
 
 ```QUANTAXIS
 QA_Event是一个可以被继承的基础类,用于给QA_Worker指定事件任务
