@@ -315,11 +315,11 @@ def QA_fetch_index_min(
     }, {"_id": 0}, batch_size=10000)
     if format in ['dict', 'json']:
         return [data for data in cursor]
-    #for item in cursor:
+    # for item in cursor:
     __data = pd.DataFrame([item for item in cursor])
     __data = __data.assign(datetime=pd.to_datetime(__data['datetime']))
-        # __data.append([str(item['code']), float(item['open']), float(item['high']), float(
-        #     item['low']), float(item['close']), int(item['up_count']), int(item['down_count']), float(item['vol']), float(item['amount']), item['datetime'], item['time_stamp'], item['date'], item['type']])
+    # __data.append([str(item['code']), float(item['open']), float(item['high']), float(
+    #     item['low']), float(item['close']), int(item['up_count']), int(item['down_count']), float(item['vol']), float(item['amount']), item['datetime'], item['time_stamp'], item['date'], item['type']])
 
     # __data = DataFrame(__data, columns=[
     #     'code', 'open', 'high', 'low', 'close', 'up_count', 'down_count', 'volume', 'amount', 'datetime', 'time_stamp', 'date', 'type'])
@@ -549,7 +549,7 @@ def QA_fetch_account(message={}, db=DATABASE):
     return [res for res in collection.find(message, {"_id": 0})]
 
 
-def QA_fetch_risk(message={}, db=DATABASE):
+def QA_fetch_risk(message={}, params={"_id": 0, 'assets': 0, 'timeindex': 0, 'totaltimeindex': 0, 'benchmark_assets': 0, 'month_profit': 0}, db=DATABASE):
     """get the risk message
 
     Arguments:
@@ -562,7 +562,7 @@ def QA_fetch_risk(message={}, db=DATABASE):
         [type] -- [description]
     """
     collection = DATABASE.risk
-    return [res for res in collection.find(message, {"_id": 0})]
+    return [res for res in collection.find(message, params)]
 
 
 def QA_fetch_user(user_cookie, db=DATABASE):
