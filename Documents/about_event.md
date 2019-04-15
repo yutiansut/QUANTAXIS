@@ -3,7 +3,7 @@
 
 - [QUANTAXIS 的事件框架:](#quantaxis-的事件框架)
     - [QATASK - 存在于队列中的标准单元](#qatask---存在于队列中的标准单元)
-    - [QAEVNET - 可扩展的事件任务](#qaevnet---可扩展的事件任务)
+    - [QAEVENT - 可扩展的事件任务](#qaevent---可扩展的事件任务)
     - [QA_Worker - 指定执行事件的对象](#qa_worker---指定执行事件的对象)
     - [QA_Thread - 可自定义线程的带队列方法](#qa_thread---可自定义线程的带队列方法)
     - [QA_Engine - 管理和分配任务的线程对象](#qa_engine---管理和分配任务的线程对象)
