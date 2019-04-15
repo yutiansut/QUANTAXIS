@@ -250,7 +250,8 @@ class QA_Account(QA_Worker):
             'commission',  # 手续费
             'tax',  # 税
             'message',  # 备注
-            'frozen'  # 冻结资金
+            'frozen',  # 冻结资金.
+            'direction' # 方向
         ]
         ########################################################################
         # 信息类:
@@ -772,6 +773,35 @@ class QA_Account(QA_Worker):
                           hold_available]).groupby('code').sum().sort_index(
                           ).apply(lambda x: x if x > 0 else None).dropna()
 
+    def current_hold_price(self):
+        """计算目前持仓的成本  用于模拟盘和实盘查询
+
+        Returns:
+            [type] -- [description]
+        """
+        
+        def weights(x):
+            n=len(x)
+            res=1
+            while res>0 or res<0:
+                res=sum(x[:n]['amount'])
+                n=n-1
+            
+            x=x[n+1:]     
+            
+            if sum(x['amount']) != 0:
+                return np.average(
+                    x['price'],
+                    weights=x['amount'],
+                    returned=True
+                )
+            else:
+                return np.nan
+        return self.history_table.set_index(
+            'datetime',
+            drop=False
+        ).sort_index().groupby('code').apply(weights).dropna()
+    
     def hold_price(self, datetime=None):
         """计算持仓成本  如果给的是日期,则返回当日开盘前的持仓
 
@@ -1079,7 +1109,8 @@ class QA_Account(QA_Worker):
                     commission_fee,
                     tax_fee,
                     message,
-                    frozen_money
+                    frozen_money,
+                    trade_towards
                 ]
             )
 
