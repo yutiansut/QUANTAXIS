@@ -231,7 +231,7 @@ class TestSelect_best_ip(TestCase):
         index__or_etf = 'index'
         self._test_QA_SU_save_index_or_etf_day(codelist, index__or_etf, paralleled=True)
 
-    def _test_QA_SU_save_index_or_etf_day(self, codelist, index__or_etf = 'index', paralleled=True):
+    def _test_QA_SU_save_index_or_etf_day(self, codelist, index__or_etf='index', paralleled=True):
         days = 300
         start = datetime.datetime.now() - datetime.timedelta(days)
         end = datetime.datetime.now()
@@ -263,13 +263,12 @@ class TestSelect_best_ip(TestCase):
 
         self.test_QA_SU_save_index_day()
 
-
     def test_QA_SU_save_etf_day(self):
         print('start test_QA_SU_save_etf_day')
         codelist = QA.QA_fetch_etf_list().code.tolist()
         print(codelist)
         index__or_etf = 'etf'
-        self._test_QA_SU_save_index_or_etf_day(codelist, index__or_etf, paralleled=True )
+        self._test_QA_SU_save_index_or_etf_day(codelist, index__or_etf, paralleled=True)
 
     def test_QA_SU_save_etf_day_with_delete(self):
         #  删除部分数据
@@ -279,6 +278,20 @@ class TestSelect_best_ip(TestCase):
         print(x.deleted_count, " documents deleted.")
 
         self.test_QA_SU_save_etf_day()
+
+    def test_save_day(self):
+        from QUANTAXIS.QACmd import QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_etf_day, \
+            QA_SU_save_stock_xdxr, QA_SU_save_etf_list, QA_SU_save_index_list, QA_SU_save_stock_list, \
+            QA_SU_save_stock_block
+        QA_SU_save_stock_day('tdx', paralleled=True)
+        QA_SU_save_stock_xdxr('tdx')
+        QA_SU_save_index_day('tdx', paralleled=True)
+        QA_SU_save_etf_list('tdx')
+        QA_SU_save_etf_day('tdx', paralleled=True)
+        QA_SU_save_index_list('tdx')
+        QA_SU_save_stock_list('tdx')
+        QA_SU_save_stock_block('tdx')
+
 
 if __name__ == '__main__':
     TestCase.run()
