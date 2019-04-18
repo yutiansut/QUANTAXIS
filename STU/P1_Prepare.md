@@ -89,9 +89,9 @@ quantaxis主要使用的是python/mongodb作为核心技术栈, 在未来会更�
 
 首先你需要知道的是, quantaxis是一个纯本地的框架服务, 也就是意味着数据是放在你的本地数据库中, 因此 首先需要开启mongodb
 
-- 如何安装mongodb/ python / quantaxis的初始化环境请[参见](../Documents/install.md)
+- 如何安装mongodb/ python / quantaxis的初始化环境请[参见](https://github.com/QUANTAXIS/QUANTAXIS/tree/master/Documents/install.md)
 
-- 在安装完毕后, 需要打开mongodb的服务, 并进行一些数据的初始化存储(按需) [参见](../Documents/about_updatedata.md)
+- 在安装完毕后, 需要打开mongodb的服务, 并进行一些数据的初始化存储(按需) [参见](https://github.com/QUANTAXIS/QUANTAXIS/tree/master/Documents/about_updatedata.md)
 
 在存储完毕数据以后, 你可能会陷入迷茫, 因为你不知道该做什么来进行下一步, 因为下面的场景是因人而异的, 我们对于下面的几种场景提供一些推荐的路径:
 
@@ -108,11 +108,11 @@ quantaxis主要使用的是python/mongodb作为核心技术栈, 在未来会更�
 
 - 我们推荐:
 
-    - 阅读QUANTAXIS QAFETCH的文档, 了解如何从数据库中获取你想要的数据 [参见](../Documents/DataFetch.md)
+    - 阅读QUANTAXIS QAFETCH的文档, 了解如何从数据库中获取你想要的数据 [参见](https://github.com/QUANTAXIS/QUANTAXIS/tree/master/Documents/DataFetch.md)
 
-    - 阅读QUANTAXIS QADataStruct的文档, 了解QUANTAXIS是如何处理 多标的/多日期的的情况 [参见](../Documents/DataStruct.md)
+    - 阅读QUANTAXIS QADataStruct的文档, 了解QUANTAXIS是如何处理 多标的/多日期的的情况 [参见](https://github.com/QUANTAXIS/QUANTAXIS/tree/master/Documents/DataStruct.md)
 
-    - 阅读QUANTAXIS QAIndicator的文档, 了解如何在QUANTAXIS中使用一些默认指标/ 写出你自己的指标/ 移植通达信/同花顺的指标 [参见](../Documents/indicators.md)
+    - 阅读QUANTAXIS QAIndicator的文档, 了解如何在QUANTAXIS中使用一些默认指标/ 写出你自己的指标/ 移植通达信/同花顺的指标 [参见](https://github.com/QUANTAXIS/QUANTAXIS/tree/master/Documents/indicators.md)
 
 ### IF: 你已经在别的平台撰写过回测/ 对于如何进行回测有了一定的了解:
 
@@ -121,15 +121,15 @@ quantaxis主要使用的是python/mongodb作为核心技术栈, 在未来会更�
 
 股票/期货的 日线/分钟线 的回测(支持保证金交易)
 
-相关的回测代码你可以在 [参见](../EXAMPLE/4_回测实盘交易) 中找到
+相关的回测代码你可以在 [参见](https://github.com/QUANTAXIS/QUANTAXIS/tree/master/EXAMPLE/4_回测实盘交易) 中找到
 
 当然, 由于QUANTAXIS QAAccount的灵活配置的机制, 你可以快速的接入各个你想要的市场中, 关于 QA_Account 你可以参见
 
-- QUANTAXIS USER 的属性 [参见](../EXAMPLE/2_%E7%B1%BB%E7%9A%84%E6%B5%8B%E8%AF%95%E4%B8%8E%E8%AE%B2%E8%A7%A3/QAUSER.ipynb)
+- QUANTAXIS USER 的属性 [参见](https://github.com/QUANTAXIS/QUANTAXIS/tree/master/EXAMPLE/2_%E7%B1%BB%E7%9A%84%E6%B5%8B%E8%AF%95%E4%B8%8E%E8%AE%B2%E8%A7%A3/QAUSER.ipynb)
 
-- QUANTAXIS QAAccount的保证金测试 [参见](../EXAMPLE/2_类的测试与讲解/QAACCOUNT%20保证金冻结释放测试.ipynb)
+- QUANTAXIS QAAccount的保证金测试 [参见](https://github.com/QUANTAXIS/QUANTAXIS/tree/master/EXAMPLE/2_类的测试与讲解/QAACCOUNT%20保证金冻结释放测试.ipynb)
 
-- QUANTAXIS QAAccount [参见](../EXAMPLE/2_%E7%B1%BB%E7%9A%84%E6%B5%8B%E8%AF%95%E4%B8%8E%E8%AE%B2%E8%A7%A3/QAAccount.ipynb)
+- QUANTAXIS QAAccount [参见](https://github.com/QUANTAXIS/QUANTAXIS/tree/master/EXAMPLE/2_%E7%B1%BB%E7%9A%84%E6%B5%8B%E8%AF%95%E4%B8%8E%E8%AE%B2%E8%A7%A3/QAAccount.ipynb)
 
 
 ### IF: 你已经对于QUANTAXIS有了相当的理解, 需要自定义一些自己的代码:
@@ -137,8 +137,8 @@ quantaxis主要使用的是python/mongodb作为核心技术栈, 在未来会更�
 我们推荐你参考阅读:
 
 - QUANTAXIS的源代码 [参见](https://github.com/QUANTAXIS/QUANTAXIS/tree/master/QUANTAXIS)
-- QUANTAXIS QAEngine 有关的多线程引擎的代码 [参见](../Documents/about_event.md)
-- QUANTAXIS MARKET 关于市场和broker的关系 [参见](../Documents/about_market.md)
+- QUANTAXIS QAEngine 有关的多线程引擎的代码 [参见](https://github.com/QUANTAXIS/QUANTAXIS/tree/master/Documents/about_event.md)
+- QUANTAXIS MARKET 关于市场和broker的关系 [参见](https://github.com/QUANTAXIS/QUANTAXIS/tree/master/Documents/about_market.md)
 - QUANTAXIS RUN 如何进行分布式回测/任务 [参见](https://github.com/QUANTAXIS/QUANTAXIS_RUN)
 
 
