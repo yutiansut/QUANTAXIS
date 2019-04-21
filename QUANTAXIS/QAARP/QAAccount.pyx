@@ -925,7 +925,9 @@ cdef class QA_Account:
                 tax_fee = self.tax_coeff * abs(trade_money)
 
         # 结算交易
-        if self.cash[-1] > trade_money + commission_fee + tax_fee:
+        cdef float t
+        t = self.cash[-1] - trade_money - commission_fee - tax_fee
+        if t>0:
             self.time_index_max.append(trade_time)
             # TODO: 目前还不支持期货的锁仓
             if self.allow_sellopen:
@@ -1033,10 +1035,7 @@ cdef class QA_Account:
                             self.frozen[code][str(ORDER_DIRECTION.BUY_OPEN)
                                              ]['avg_price'] = 0
             else: # 不允许卖空开仓的==> 股票
-
-                self.cash.append(
-                    self.cash[-1] - trade_money - tax_fee - commission_fee
-                )
+                self.cash.append(t)
             if self.allow_t0 or trade_towards == ORDER_DIRECTION.SELL:
                 self.sell_available[code] = self.sell_available.get(
                     code,
@@ -1055,7 +1054,7 @@ cdef class QA_Account:
                     code,
                     trade_price,
                     market_towards * trade_amount,
-                    self.cash[-1],
+                    self.cash_available,
                     order_id,
                     realorder_id,
                     trade_id,
@@ -1140,7 +1139,7 @@ cdef class QA_Account:
             realorder_id=realorder_id
         )
 
-    def send_order(
+    cpdef send_order(
             self,
             code=None,
             amount=None,
@@ -1149,9 +1148,7 @@ cdef class QA_Account:
             price=None,
             money=None,
             order_model=None,
-            amount_model=None,
-            *args,
-            **kwargs
+            amount_model=None
     ):
         """
         ATTENTION CHANGELOG 1.0.28
@@ -1207,6 +1204,11 @@ cdef class QA_Account:
         3. 保证金账户的判断
 
         """
+        cdef str date
+        cdef str wrong_reason
+        cdef bint flag
+        cdef float _money
+        cdef float _hold
         wrong_reason = None
         assert code is not None and time is not None and towards is not None and order_model is not None and amount_model is not None
 
@@ -1247,7 +1249,6 @@ cdef class QA_Account:
         # flag 判断买卖 数量和价格以及买卖方向是否正确
         flag = False
 
-        assert (int(towards) != 0)
         if int(towards) in [1, 2, 3]:
             # 是买入的情况(包括买入.买开.买平)
             if self.cash_available >= money:
@@ -1278,7 +1279,6 @@ cdef class QA_Account:
                             float(amount * price * (1 + self.commission_coeff))
                         )
 
-                        print(_hold)
                         if self.cash_available >= _money:
                             if _hold < 0:
                                 self.cash_available -= _money
@@ -1348,9 +1348,7 @@ cdef class QA_Account:
                 broker=self.broker,
                 amount_model=amount_model,
                 commission_coeff=self.commission_coeff,
-                tax_coeff=self.tax_coeff,
-                *args,
-                **kwargs
+                tax_coeff=self.tax_coeff
             )                                                           # init
                                                                         # 历史委托order状态存储， 保存到 QA_Order 对象中的队列中
             self.datetime = time
