@@ -117,7 +117,7 @@ def cover_time(date):
     return date
 
 
-def QA_fetch_get_stock_day(name, start='', end='', if_fq='qfq', type_='pd'):
+def _get_subscription_type(if_fq):
     if str(if_fq) in ['qfq', '01']:
         if_fq = 'qfq'
     elif str(if_fq) in ['hfq', '02']:
@@ -127,6 +127,11 @@ def QA_fetch_get_stock_day(name, start='', end='', if_fq='qfq', type_='pd'):
     else:
         QA_util_log_info('wrong with fq_factor! using qfq')
         if_fq = 'qfq'
+    return if_fq
+
+
+def QA_fetch_get_stock_day(name, start='', end='', if_fq='qfq', type_='pd'):
+    if_fq = _get_subscription_type(if_fq)
 
     def fetch_data():
         data = None

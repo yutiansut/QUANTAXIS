@@ -63,8 +63,8 @@ def date_conver_to_new_format(date_str):
 # TODO: 和sav_tdx.py中的now_time一起提取成公共函数
 def now_time():
     real_date = str(QA_util_get_real_date(str(datetime.date.today() -
-                                            datetime.timedelta(days=1)),
-                                        trade_date_sse, -1))
+                                          datetime.timedelta(days=1)),
+                                          trade_date_sse, -1))
     str_now = real_date + ' 17:00:00' if datetime.datetime.now().hour < 15 \
         else str(QA_util_get_real_date(str(datetime.date.today()),
                                        trade_date_sse, -1)) + ' 15:00:00'
@@ -299,6 +299,71 @@ def QA_save_lhb(client=DATABASE):
             continue
 
 
+def _saving_work(code, coll_stock_day, ui_log=None):
+    try:
+        QA_util_log_info(
+            '##JOB01 Now Saving STOCK_DAY==== {}'.format(str(code)),
+            ui_log
+        )
+
+        # 首选查找数据库 是否 有 这个代码的数据
+        ref = coll_stock_day.find({'code': str(code)[0:9]})
+        end_date = now_time()
+
+        # 当前数据库已经包含了这个代码的数据， 继续增量更新
+        # 加入这个判断的原因是因为如果股票是刚上市的 数据库会没有数据 所以会有负索引问题出现
+        if ref.count() > 0:
+
+            # 接着上次获取的日期继续更新
+            start_date_new_format = ref[ref.count() - 1]['trade_date']
+            start_date = ref[ref.count() - 1]['date']
+
+            QA_util_log_info(
+                'UPDATE_STOCK_DAY \n Trying updating {} from {} to {}'
+                .format(code,
+                        start_date,
+                        end_date),
+                ui_log
+            )
+            if start_date_new_format != end_date:
+                coll_stock_day.insert_many(
+                    QA_util_to_json_from_pandas(
+                        QA_fetch_get_stock_day(
+                            str(code),
+                            date_conver_to_new_format(
+                                QA_util_get_next_day(start_date)
+                            ),
+                            end_date,
+                            'qfq'
+                        )
+                    )
+                )
+
+        # 当前数据库中没有这个代码的股票数据， 从1990-01-01 开始下载所有的数据
+        else:
+            start_date = '19900101'
+            QA_util_log_info(
+                'UPDATE_STOCK_DAY \n Trying updating {} from {} to {}'
+                .format(code,
+                        start_date,
+                        end_date),
+                ui_log
+            )
+            if start_date != end_date:
+                coll_stock_day.insert_many(
+                    QA_util_to_json_from_pandas(
+                        QA_fetch_get_stock_day(
+                            str(code),
+                            start_date,
+                            end_date,
+                            'qfq'
+                        )
+                    )
+                )
+    except Exception as e:
+        print(e)
+
+
 def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
     '''
      save stock_day
@@ -317,72 +382,6 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
          ("date_stamp",
           pymongo.ASCENDING)]
     )
-    err = []
-
-    def __saving_work(code, coll_stock_day):
-        try:
-            QA_util_log_info(
-                '##JOB01 Now Saving STOCK_DAY==== {}'.format(str(code)),
-                ui_log
-            )
-
-            # 首选查找数据库 是否 有 这个代码的数据
-            ref = coll_stock_day.find({'code': str(code)[0:9]})
-            end_date = now_time()
-
-            # 当前数据库已经包含了这个代码的数据， 继续增量更新
-            # 加入这个判断的原因是因为如果股票是刚上市的 数据库会没有数据 所以会有负索引问题出现
-            if ref.count() > 0:
-
-                # 接着上次获取的日期继续更新
-                start_date_new_format = ref[ref.count() - 1]['trade_date']
-                start_date = ref[ref.count() - 1]['date']
-
-                QA_util_log_info(
-                    'UPDATE_STOCK_DAY \n Trying updating {} from {} to {}'
-                    .format(code,
-                            start_date,
-                            end_date),
-                    ui_log
-                )
-                if start_date_new_format != end_date:
-                    coll_stock_day.insert_many(
-                        QA_util_to_json_from_pandas(
-                            QA_fetch_get_stock_day(
-                                str(code),
-                                date_conver_to_new_format(
-                                    QA_util_get_next_day(start_date)
-                                ),
-                                end_date,
-                                'qfq'
-                            )
-                        )
-                    )
-
-            # 当前数据库中没有这个代码的股票数据， 从1990-01-01 开始下载所有的数据
-            else:
-                start_date = '19900101'
-                QA_util_log_info(
-                    'UPDATE_STOCK_DAY \n Trying updating {} from {} to {}'
-                    .format(code,
-                            start_date,
-                            end_date),
-                    ui_log
-                )
-                if start_date != end_date:
-                    coll_stock_day.insert_many(
-                        QA_util_to_json_from_pandas(
-                            QA_fetch_get_stock_day(
-                                str(code),
-                                start_date,
-                                end_date,
-                                'qfq'
-                            )
-                        )
-                    )
-        except Exception as e:
-            print(e)
-            err.append(str(code))
 
     num_stocks = len(stock_list)
     for index, ts_code in enumerate(stock_list):
@@ -399,7 +398,7 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
             ui_progress=ui_progress,
             ui_progress_int_value=intProgressToLog
         )
-        __saving_work(ts_code, coll_stock_day)
+        _saving_work(ts_code, coll_stock_day, ui_log=ui_log)
         # 日线行情每分钟内最多调取200次，超过5000积分无限制
         time.sleep(0.005)
 
