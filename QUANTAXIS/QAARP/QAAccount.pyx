@@ -313,7 +313,7 @@ cdef class QA_Account:
         )
 
 
-        property message:
+    property message:
         'the standard message which can be transfer'
         def __get__(self):
             return {
@@ -377,7 +377,7 @@ cdef class QA_Account:
             }
 
     @property
-    def freecash_precent(self):
+    def freecash_precent(QA_Account self):
         """剩余资金比例
 
         Returns:
@@ -393,7 +393,7 @@ cdef class QA_Account:
         self.market_preset = MARKET_PRESET()
 
     @property
-    def init_hold_with_account(self):
+    def init_hold_with_account(QA_Account self):
         """带account_cookie的初始化持仓
 
         Returns:
@@ -406,7 +406,7 @@ cdef class QA_Account:
                      'account_cookie'])
 
     @property
-    def init_assets(self):
+    def init_assets(QA_Account self):
         """初始化账户资产
 
         Returns:
@@ -416,14 +416,14 @@ cdef class QA_Account:
         return {'cash': self.init_cash, 'hold': self.init_hold.to_dict()}
 
     @property
-    def code(self):
+    def code(QA_Account self):
         """
         该账户曾交易代码 用set 去重
         """
         return list(set([item[1] for item in self.history]))
 
     @property
-    def date(self):
+    def date(QA_Account self):
         """账户运行的日期
 
         Arguments:
@@ -439,11 +439,11 @@ cdef class QA_Account:
             return None
 
     @property
-    def poisitions(self):
+    def poisitions(QA_Account self):
         raise NotImplementedError
 
     @property
-    def start_date(self):
+    def start_date(QA_Account self):
         """账户的起始交易日期(只在回测中使用)
 
         Raises:
@@ -465,7 +465,7 @@ cdef class QA_Account:
             return self.start_        
 
     @property
-    def end_date(self):
+    def end_date(QA_Account self):
         """账户的交易结束日期(只在回测中使用)
 
         Raises:
@@ -486,21 +486,21 @@ cdef class QA_Account:
         else:
             return self.end_
     @property
-    def market_data(self):
+    def market_data(QA_Account self):
         return self._market_data
 
     @property
-    def trade_range(self):
+    def trade_range(QA_Account self):
         return QA_util_get_trade_range(self.start_date, self.end_date)
 
     @property
-    def trade_range_max(self):
+    def trade_range_max(QA_Account self):
         if self.start_date < str(min(self.time_index_max))[0:10] :
              return QA_util_get_trade_range(self.start_date, self.end_date) 
         else:
             return QA_util_get_trade_range(str(min(self.time_index_max))[0:10], str(max(self.time_index_max))[0:10])
     @property
-    def time_index(self):
+    def time_index(QA_Account self):
         if len(self.time_index_max):
             res_=pd.DataFrame(self.time_index_max)
             res_.columns=(['datetime'])
@@ -509,13 +509,9 @@ cdef class QA_Account:
             return list(res_['datetime'])
         else:
             return self.time_index_max
-#        
-#        if self.start_date < str(min(self.time_index))[0:10] :
-#             return QA_util_get_trade_range(self.start_date, self.end_date) 
-#        else:
-#            return QA_util_get_trade_range(str(min(self.time_index))[0:10], str(max(self.time_index))[0:10])
+
     @property
-    def history_min(self):
+    def history_min(QA_Account self):
         if len(self.history):
             res_=pd.DataFrame(self.history)
             res_['date']=[ i[0:10]  for i in res_[0]]
@@ -524,7 +520,7 @@ cdef class QA_Account:
         else:
             return self.history
     @property
-    def history_table_min(self):
+    def history_table_min(QA_Account self):
         '区间交易历史的table'
         if len(self.history_min) > 0:
             lens = len(self.history_min[0])
@@ -549,13 +545,13 @@ cdef class QA_Account:
 #        res_['date']=[ i[0:10]  for i in res_['datetime']]
 #        res_=res_[res_['date'].isin(self.trade_range)]
     @property
-    def trade_day(self):
+    def trade_day(QA_Account self):
         return list(
             pd.Series(self.time_index_max).apply(lambda x: str(x)[0:10]).unique()
         )
 
     @property
-    def history_table(self):
+    def history_table(QA_Account self):
         '交易历史的table'
         if len(self.history) > 0:
             lens = len(self.history[0])
@@ -568,14 +564,14 @@ cdef class QA_Account:
         ).sort_index()
 
     @property
-    def today_trade_table(self):
+    def today_trade_table(QA_Account self):
         return pd.DataFrame(
             data=self.today_trade['current'],
             columns=self.history_headers
         ).sort_index()
 
     @property
-    def cash_table(self):
+    def cash_table(QA_Account self):
         '现金的table'
         _cash = pd.DataFrame(
             data=[self.cash[1::],
@@ -615,7 +611,7 @@ cdef class QA_Account:
         """
 
     @property
-    def hold(self):
+    def hold(QA_Account self):
         """真实持仓
         """
         return pd.concat(
@@ -626,7 +622,7 @@ cdef class QA_Account:
 
 
     @property
-    def hold_available(self):
+    def hold_available(QA_Account self):
         """可用持仓
         """
         return self.history_table.groupby('code').amount.sum().replace(
@@ -640,7 +636,7 @@ cdef class QA_Account:
     #     return self.orders.trade_list
 
     @property
-    def trade(self):
+    def trade(QA_Account self):
         """每次交易的pivot表
 
         Returns:
@@ -658,7 +654,7 @@ cdef class QA_Account:
         ).fillna(0).sort_index()
 
     @property
-    def daily_cash(self):
+    def daily_cash(QA_Account self):
         '每日交易结算时的现金表'
         res = self.cash_table.drop_duplicates(subset='date', keep='last')
         le=pd.DataFrame(pd.Series(data=None, index=pd.to_datetime(self.trade_range_max).set_names('date'), name='predrop'))
@@ -669,7 +665,7 @@ cdef class QA_Account:
         return res_
             
     @property
-    def daily_hold(self):
+    def daily_hold(QA_Account self):
         '每日交易结算时的持仓表'
         data = self.trade.cumsum()
         if len(data) < 1:
@@ -692,18 +688,18 @@ cdef class QA_Account:
             return res_
 
     @property
-    def daily_frozen(self):
+    def daily_frozen(QA_Account self):
         '每日交易结算时的持仓表'
         res_=self.history_table.assign(date=pd.to_datetime(self.history_table.datetime)).set_index('date').resample('D').frozen.last().fillna(method='pad')
         res_=res_[res_.index.isin(self.trade_range)]
         return res_
     @property
-    def latest_cash(self):
+    def latest_cash(QA_Account self):
         'return the lastest cash 可用资金'
         return self.cash[-1]
 
     @property
-    def current_time(self):
+    def current_time(QA_Account self):
         'return current time (in backtest/real environment)'
         return self._currenttime
 
@@ -731,8 +727,8 @@ cdef class QA_Account:
         """
         
         def weights(x):
-            n=len(x)
-            res=1
+            cdef int n=len(x)
+            cdef float res=1
             while res>0 or res<0:
                 res=sum(x[:n]['amount'])
                 n=n-1
@@ -819,17 +815,17 @@ cdef class QA_Account:
         self.cash = [self.init_cash]
         self.cash_available = self.cash[-1] # 在途资金
 
-    def receive_simpledeal(
-            self,
-            code,
-            trade_price,
-            trade_amount,
-            trade_towards,
-            trade_time,
-            message=None,
-            order_id=None,
-            trade_id=None,
-            realorder_id=None
+    cpdef receive_simpledeal(
+            QA_Account self,
+            str code,
+            float trade_price,
+            int trade_amount,
+            int trade_towards,
+            str trade_time,
+            str message=None,
+            str order_id=None,
+            str trade_id=None,
+            str realorder_id=None
     ):
         """快速撮合成交接口
 
@@ -873,7 +869,15 @@ cdef class QA_Account:
         else:
             self.finishedOrderid.append(realorder_id)
             
-        market_towards = 1 if trade_towards > 0 else -1
+        cdef int market_towards = 1 if trade_towards > 0 else -1
+        cdef float trade_money
+        cdef float raw_trade_money # 总市值
+        cdef float value
+        cdef float unit
+        cdef float frozen
+        cdef dict commission_fee_preset
+        cdef float commission_fee
+        cdef float frozen_part
         # value 合约价值 unit 合约乘数
         if self.allow_margin:
             frozen = self.market_preset.get_frozen(code)                  # 保证金率
