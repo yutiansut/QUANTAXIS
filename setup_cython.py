@@ -96,7 +96,8 @@ LICENSE = "MIT"
 
 
 ext_modules = [
-    Extension('QUANTAXIS.QAARP.QAAccount', ['QUANTAXIS/QAARP/QAAccount.pyx'])]
+    Extension('QUANTAXIS.QAARP.QAAccount', ['QUANTAXIS/QAARP/QAAccount.pyx']),
+    Extension('QUANTAXIS.QAMARKET.QAOrder', ['QUANTAXIS/QAMARKET/QAOrder.pyx'])]
 
 setup(
     name=NAME,
