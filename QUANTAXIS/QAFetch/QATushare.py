@@ -26,8 +26,14 @@ import json
 import pandas as pd
 import tushare as ts
 import time
-from QUANTAXIS.QAUtil import (QA_util_date_int2str, QA_util_date_stamp, QASETTING,
-                              QA_util_log_info, QA_util_to_json_from_pandas)
+from QUANTAXIS.QAUtil import (
+    QA_util_date_int2str,
+    QA_util_date_stamp,
+    QASETTING,
+    QA_util_log_info,
+    QA_util_to_json_from_pandas
+)
+
 
 def set_token(token=None):
     try:
@@ -71,29 +77,34 @@ def QA_fetch_get_stock_adj(code, end=''):
         [type] -- [description]
     """
 
-
     pro = get_pro()
     adj = pro.adj_factor(ts_code=code, trade_date=end)
     return adj
 
+
 def QA_fetch_stock_basic():
+
     def fetch_stock_basic():
         stock_basic = None
         try:
             pro = get_pro()
-            stock_basic = pro.stock_basic(exchange='',
-                                          list_status='L',
-                                          fields='ts_code,'
-                                                 'symbol,'
-                                                 'name,'
-                                                 'area,industry,list_date')
+            stock_basic = pro.stock_basic(
+                exchange='',
+                list_status='L',
+                fields='ts_code,'
+                'symbol,'
+                'name,'
+                'area,industry,list_date'
+            )
         except:
             print('except when fetch stock basic')
             time.sleep(1)
             stock_basic = fetch_stock_basic()
         print(stock_basic)
         return stock_basic
+
     return fetch_stock_basic()
+
 
 def cover_time(date):
     """
@@ -105,11 +116,8 @@ def cover_time(date):
     date = time.mktime(time.strptime(datestr, '%Y%m%d'))
     return date
 
-def QA_fetch_get_stock_day(name,
-                           start='',
-                           end='',
-                           if_fq='qfq',
-                           type_='pd'):
+
+def QA_fetch_get_stock_day(name, start='', end='', if_fq='qfq', type_='pd'):
     if str(if_fq) in ['qfq', '01']:
         if_fq = 'qfq'
     elif str(if_fq) in ['hfq', '02']:
@@ -119,25 +127,31 @@ def QA_fetch_get_stock_day(name,
     else:
         QA_util_log_info('wrong with fq_factor! using qfq')
         if_fq = 'qfq'
+
     def fetch_data():
         data = None
         try:
             time.sleep(0.002)
             pro = get_pro()
-            data = ts.pro_bar(pro_api=pro,
-                              ts_code=str(name),
-                              asset='E',
-                              adj=if_fq,
-                              start_date=start,
-                              end_date=end,
-                              freq='D',
-                              factors=['tor', 'vr']).sort_index()
+            data = ts.pro_bar(
+                pro_api=pro,
+                ts_code=str(name),
+                asset='E',
+                adj=if_fq,
+                start_date=start,
+                end_date=end,
+                freq='D',
+                factors=['tor',
+                         'vr']
+            ).sort_index()
             print('fetch done: ' + str(name))
-        except:
+        except Exception as e:
+            print(e)
             print('except when fetch data of ' + str(name))
             time.sleep(1)
             data = fetch_data()
         return data
+
     data = fetch_data()
 
     data['date_stamp'] = data['trade_date'].apply(lambda x: cover_time(x))
@@ -177,9 +191,11 @@ def QA_fetch_get_stock_list():
     df = QA_fetch_stock_basic()
     return list(df.ts_code)
 
+
 def QA_fetch_get_stock_time_to_market():
     data = ts.get_stock_basics()
-    return data[data['timeToMarket'] != 0]['timeToMarket'].apply(lambda x: QA_util_date_int2str(x))
+    return data[data['timeToMarket'] != 0
+               ]['timeToMarket'].apply(lambda x: QA_util_date_int2str(x))
 
 
 def QA_fetch_get_trade_date(end, exchange):
@@ -192,15 +208,18 @@ def QA_fetch_get_trade_date(end, exchange):
         num = i + 1
         exchangeName = 'SSE'
         data_stamp = QA_util_date_stamp(date)
-        mes = {'date': date, 'num': num,
-               'exchangeName': exchangeName, 'date_stamp': data_stamp}
+        mes = {
+            'date': date,
+            'num': num,
+            'exchangeName': exchangeName,
+            'date_stamp': data_stamp
+        }
         message.append(mes)
     return message
 
 
 def QA_fetch_get_lhb(date):
     return ts.top_list(date)
-
 
 
 def QA_fetch_get_stock_money():

@@ -30,34 +30,47 @@ import pymongo
 
 import tushare as ts
 
-from QUANTAXIS.QAFetch.QATushare import (QA_fetch_get_stock_day,
-                                         QA_fetch_get_stock_info,
-                                         QA_fetch_get_stock_list,
-                                         QA_fetch_get_trade_date,
-                                         QA_fetch_get_lhb)
-from QUANTAXIS.QAUtil import (QA_util_date_stamp, QA_util_log_info,
-                              QA_util_time_stamp, QA_util_to_json_from_pandas,
-                              trade_date_sse, QA_util_get_real_date,
-                              QA_util_get_next_day)
+from QUANTAXIS.QAFetch.QATushare import (
+    QA_fetch_get_stock_day,
+    QA_fetch_get_stock_info,
+    QA_fetch_get_stock_list,
+    QA_fetch_get_trade_date,
+    QA_fetch_get_lhb
+)
+from QUANTAXIS.QAUtil import (
+    QA_util_date_stamp,
+    QA_util_log_info,
+    QA_util_time_stamp,
+    QA_util_to_json_from_pandas,
+    trade_date_sse,
+    QA_util_get_real_date,
+    QA_util_get_next_day
+)
 from QUANTAXIS.QAUtil.QASetting import DATABASE
-
 
 import tushare as QATs
 
+
 def date_conver_to_new_format(date_str):
     time_now = time.strptime(date_str[0:10], '%Y-%m-%d')
-    return '{:0004}{:02}{:02}'.format(int(time_now.tm_year),
-                                      int(time_now.tm_mon),
-                                      int(time_now.tm_mday))
+    return '{:0004}{:02}{:02}'.format(
+        int(time_now.tm_year),
+        int(time_now.tm_mon),
+        int(time_now.tm_mday)
+    )
+
 
 # TODO: 和sav_tdx.py中的now_time一起提取成公共函数
 def now_time():
-    str_now = str(QA_util_get_real_date(str(datetime.date.today() - datetime.timedelta(days=1)),
-                                            trade_date_sse, -1)) + \
-                    ' 17:00:00' if datetime.datetime.now().hour < 15 else str(QA_util_get_real_date(
-                        str(datetime.date.today()), trade_date_sse, -1)) + ' 15:00:00'
+    str_now = str(QA_util_get_real_date(str(datetime.date.today() - \
+                                            datetime.timedelta(days=1)),
+                                        trade_date_sse, -1)) + \
+                    ' 17:00:00' if datetime.datetime.now().hour < 15 \
+                    else str(QA_util_get_real_date(str(datetime.date.today()),
+                                                   trade_date_sse, -1)) + ' 15:00:00'
 
     return date_conver_to_new_format(str_now)
+
 
 def QA_save_stock_day_all(client=DATABASE):
     df = ts.get_stock_basics()
@@ -67,17 +80,19 @@ def QA_save_stock_day_all(client=DATABASE):
     def saving_work(i):
         QA_util_log_info('Now Saving ==== %s' % (i))
         try:
-            data_json = QA_fetch_get_stock_day(
-                i, start='1990-01-01')
+            data_json = QA_fetch_get_stock_day(i, start='1990-01-01')
 
             __coll.insert_many(data_json)
-        except:
+        except Exception as e:
+            print(e)
             QA_util_log_info('error in saving ==== %s' % str(i))
 
     for i_ in range(len(df.index)):
         QA_util_log_info('The %s of Total %s' % (i_, len(df.index)))
-        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
-            float(i_ / len(df.index) * 100))[0:4] + '%')
+        QA_util_log_info(
+            'DOWNLOAD PROGRESS %s ' %
+            str(float(i_ / len(df.index) * 100))[0:4] + '%'
+        )
         saving_work(df.index[i_])
 
     saving_work('hs300')
@@ -89,8 +104,15 @@ def QA_SU_save_stock_list(client=DATABASE):
     date = str(datetime.date.today())
     date_stamp = QA_util_date_stamp(date)
     coll = client.stock_info_tushare
-    coll.insert({'date': date, 'date_stamp': date_stamp,
-                 'stock': {'code': data}})
+    coll.insert(
+        {
+            'date': date,
+            'date_stamp': date_stamp,
+            'stock': {
+                'code': data
+            }
+        }
+    )
 
 
 def QA_SU_save_stock_terminated(client=DATABASE):
@@ -107,7 +129,10 @@ def QA_SU_save_stock_terminated(client=DATABASE):
     print("！！！ tushare 这个函数已经失效！！！")
     df = QATs.get_terminated()
     #df = QATs.get_suspended()
-    print(" Get stock terminated from tushare,stock count is %d  (终止上市股票列表)" % len(df))
+    print(
+        " Get stock terminated from tushare,stock count is %d  (终止上市股票列表)" %
+        len(df)
+    )
     coll = client.stock_terminated
     client.drop_collection(coll)
     json_data = json.loads(df.reset_index().to_json(orient='records'))
@@ -179,17 +204,19 @@ def QA_save_stock_day_all_bfq(client=DATABASE):
     def saving_work(i):
         QA_util_log_info('Now Saving ==== %s' % (i))
         try:
-            df = QA_fetch_get_stock_day(
-                i, start='1990-01-01', if_fq='bfq')
+            df = QA_fetch_get_stock_day(i, start='1990-01-01', if_fq='bfq')
 
             __coll.insert_many(json.loads(df.to_json(orient='records')))
-        except:
+        except Exception as e:
+            print(e)
             QA_util_log_info('error in saving ==== %s' % str(i))
 
     for i_ in range(len(df.index)):
         QA_util_log_info('The %s of Total %s' % (i_, len(df.index)))
-        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
-            float(i_ / len(df.index) * 100))[0:4] + '%')
+        QA_util_log_info(
+            'DOWNLOAD PROGRESS %s ' %
+            str(float(i_ / len(df.index) * 100))[0:4] + '%'
+        )
         saving_work(df.index[i_])
 
     saving_work('hs300')
@@ -206,15 +233,23 @@ def QA_save_stock_day_with_fqfactor(client=DATABASE):
         QA_util_log_info('Now Saving ==== %s' % (i))
         try:
             data_hfq = QA_fetch_get_stock_day(
-                i, start='1990-01-01', if_fq='02', type_='pd')
+                i,
+                start='1990-01-01',
+                if_fq='02',
+                type_='pd'
+            )
             data_json = QA_util_to_json_from_pandas(data_hfq)
             __coll.insert_many(data_json)
-        except:
+        except Exception as e:
+            print(e)
             QA_util_log_info('error in saving ==== %s' % str(i))
+
     for i_ in range(len(df.index)):
         QA_util_log_info('The %s of Total %s' % (i_, len(df.index)))
-        QA_util_log_info('DOWNLOAD PROGRESS %s ' % str(
-            float(i_ / len(df.index) * 100))[0:4] + '%')
+        QA_util_log_info(
+            'DOWNLOAD PROGRESS %s ' %
+            str(float(i_ / len(df.index) * 100))[0:4] + '%'
+        )
         saving_work(df.index[i_])
 
     saving_work('hs300')
@@ -247,8 +282,14 @@ def QA_save_lhb(client=DATABASE):
                 .assign(sell=pd.sell.apply(float))
             # __coll.insert_many(QA_util_to_json_from_pandas(data))
             for i in range(0, len(data)):
-                __coll.update({"code": data.iloc[i]['code'], "date": data.iloc[i]['date']}, {
-                              "$set": QA_util_to_json_from_pandas(data)[i]}, upsert=True)
+                __coll.update(
+                    {
+                        "code": data.iloc[i]['code'],
+                        "date": data.iloc[i]['date']
+                    },
+                    {"$set": QA_util_to_json_from_pandas(data)[i]},
+                    upsert=True
+                )
             time.sleep(2)
             if i % 10 == 0:
                 time.sleep(60)
@@ -256,6 +297,7 @@ def QA_save_lhb(client=DATABASE):
             print("error codes:")
             time.sleep(2)
             continue
+
 
 def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
     '''
@@ -308,7 +350,9 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
                         QA_util_to_json_from_pandas(
                             QA_fetch_get_stock_day(
                                 str(code),
-                                date_conver_to_new_format(QA_util_get_next_day(start_date)),
+                                date_conver_to_new_format(
+                                    QA_util_get_next_day(start_date)
+                                ),
                                 end_date,
                                 'qfq'
                             )
@@ -336,8 +380,8 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
                             )
                         )
                     )
-        except Exception as error0:
-            print(error0)
+        except Exception as e:
+            print(e)
             err.append(str(code))
 
     num_stocks = len(stock_list)
@@ -364,6 +408,7 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
     else:
         QA_util_log_info('ERROR CODE \n ', ui_log)
         QA_util_log_info(err, ui_log)
+
 
 if __name__ == '__main__':
     from pymongo import MongoClient
