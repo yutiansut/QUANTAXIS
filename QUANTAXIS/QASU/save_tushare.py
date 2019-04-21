@@ -299,7 +299,7 @@ def QA_save_lhb(client=DATABASE):
             continue
 
 
-def _saving_work(code, coll_stock_day, ui_log=None):
+def _saving_work(code, coll_stock_day, ui_log=None, err=[]):
     try:
         QA_util_log_info(
             '##JOB01 Now Saving STOCK_DAY==== {}'.format(str(code)),
@@ -362,6 +362,7 @@ def _saving_work(code, coll_stock_day, ui_log=None):
                 )
     except Exception as e:
         print(e)
+        err.append(str(code))
 
 
 def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
@@ -383,6 +384,7 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
           pymongo.ASCENDING)]
     )
 
+    err = []
     num_stocks = len(stock_list)
     for index, ts_code in enumerate(stock_list):
         QA_util_log_info('The {} of Total {}'.format(index, num_stocks))
@@ -398,7 +400,10 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
             ui_progress=ui_progress,
             ui_progress_int_value=intProgressToLog
         )
-        _saving_work(ts_code, coll_stock_day, ui_log=ui_log)
+        _saving_work(ts_code,
+                     coll_stock_day,
+                     ui_log=ui_log,
+                     err=err)
         # 日线行情每分钟内最多调取200次，超过5000积分无限制
         time.sleep(0.005)
 
