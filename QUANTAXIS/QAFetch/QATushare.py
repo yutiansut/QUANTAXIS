@@ -96,11 +96,11 @@ def QA_fetch_stock_basic():
                 'name,'
                 'area,industry,list_date'
             )
-        except:
+        except Exception as e:
+            print(e)
             print('except when fetch stock basic')
             time.sleep(1)
             stock_basic = fetch_stock_basic()
-        print(stock_basic)
         return stock_basic
 
     return fetch_stock_basic()
@@ -194,8 +194,8 @@ def QA_fetch_get_stock_list():
 
 def QA_fetch_get_stock_time_to_market():
     data = ts.get_stock_basics()
-    return data[data['timeToMarket'] != 0
-               ]['timeToMarket'].apply(lambda x: QA_util_date_int2str(x))
+    return data[data['timeToMarket'] != 0]['timeToMarket']\
+        .apply(lambda x: QA_util_date_int2str(x))
 
 
 def QA_fetch_get_trade_date(end, exchange):

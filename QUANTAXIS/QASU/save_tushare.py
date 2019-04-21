@@ -62,12 +62,12 @@ def date_conver_to_new_format(date_str):
 
 # TODO: 和sav_tdx.py中的now_time一起提取成公共函数
 def now_time():
-    str_now = str(QA_util_get_real_date(str(datetime.date.today() - \
+    real_date = str(QA_util_get_real_date(str(datetime.date.today() -
                                             datetime.timedelta(days=1)),
-                                        trade_date_sse, -1)) + \
-                    ' 17:00:00' if datetime.datetime.now().hour < 15 \
-                    else str(QA_util_get_real_date(str(datetime.date.today()),
-                                                   trade_date_sse, -1)) + ' 15:00:00'
+                                        trade_date_sse, -1))
+    str_now = real_date + ' 17:00:00' if datetime.datetime.now().hour < 15 \
+        else str(QA_util_get_real_date(str(datetime.date.today()),
+                                       trade_date_sse, -1)) + ' 15:00:00'
 
     return date_conver_to_new_format(str_now)
 
