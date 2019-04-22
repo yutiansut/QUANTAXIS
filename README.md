@@ -49,7 +49,7 @@ Quantitative Financial FrameWork
 
 ## Contributors
 
-This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+This project exists thanks to all the people who contribute. [[Contribute](https://github.com/QUANTAXIS/QUANTAXIS/graphs/contributors)].
 <a href="https://github.com/QUANTAXIS/QUANTAXIS/graphs/contributors"><img src="https://opencollective.com/QUANTAXIS/contributors.svg?width=890&button=false" /></a>
 
 
@@ -258,6 +258,22 @@ CTP 的海风broker魔改封装:  [QA_AtBroker](https://github.com/QUANTAXIS/QA_
 [PDF](https://www.gitbook.com/download/pdf/book/quantaxis/quantaxis) | [MOBI](https://www.gitbook.com/download/mobi/book/quantaxis/quantaxis) | [EPUB](https://www.gitbook.com/download/epub/book/quantaxis/quantaxis)
 
 ##  3. 安装和部署
+
+```
+quantaxis 1.4.4 增加了cython编译加速过程, 如果需要cython的同学 使用:
+
+python setup_cython.py build_ext --inplace
+
+再继续 pip install -e .
+
+必须要注意的事情: 以上为可选项 并非强制!!
+
+
+cython 提速:
+
+1.4.3的Account.receive_simpledeal( 包括接受订单/更新账户) 为单次 1.88微秒
+1.4.4的Account.receive_simpledeal  为单次 570纳秒
+```
 
 ### 3.0 安装说明
 参见 [安装说明](Documents/install.md)
