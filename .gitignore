@@ -166,3 +166,5 @@ kernel*.json
 
 selenium_driver/*
 QUANTAXIS_WEBDRIVER/*
+QUANTAXIS/QAARP/QAAccount.cp36-win_amd64.pyd
+QUANTAXIS/QAMarket/QAOrder.cp36-win_amd64.pyd
