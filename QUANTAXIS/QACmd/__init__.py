@@ -272,6 +272,8 @@ class CLI(cmd.Cmd):
                             'password': 'admin'
                         }
                     )
+                # TODO: 将ts还是tdx作为命令传入
+                # QA_SU_save_stock_day('ts')
                 QA_SU_save_stock_day('tdx')
                 QA_SU_save_stock_xdxr('tdx')
                 # QA_SU_save_stock_min('tdx')

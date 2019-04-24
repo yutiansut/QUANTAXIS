@@ -24,6 +24,7 @@ test/
 *lock.json
 docs
 record.txt
+build/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 
