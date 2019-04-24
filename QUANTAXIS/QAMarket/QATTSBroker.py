@@ -191,6 +191,8 @@ class QA_TTSBroker(QA_Broker):
                     lambda x: '{} {}'.format(
                         datetime.date.today().strftime('%Y-%m-%d'),
                         datetime.datetime.strptime(x, '%H%M%S').strftime('%H:%M:%S')))
+            if hasattr(df, 'realorder_id'):
+                df.realorder_id = df.realorder_id.apply(str)
             if hasattr(df, 'amount'):
                 df.amount = df.amount.apply(pd.to_numeric)
             if hasattr(df, 'price'):
@@ -322,11 +324,14 @@ class QA_TTSBroker(QA_Broker):
         res = self.send_order(code=event.order.code, price=event.order.price, amount=event.order.amount,
                               towards=event.order.towards, order_model=event.order.order_model)
         try:
-            event.order.queued(realorder_id=res.realorder_id[0])
+            event.order.queued(res.realorder_id[0])
             print('success receive order {}'.format(event.order.realorder_id))
-        except:
-            event.order.failed()
+        except Exception as e:
+            print(res.realorder_id[0])
+            print(event.order)
+            print(e)
 
+            event.order.failed()
             print(
                 'FAILED FOR CREATE ORDER {} {}'.format(
                     event.order.account_cookie,
