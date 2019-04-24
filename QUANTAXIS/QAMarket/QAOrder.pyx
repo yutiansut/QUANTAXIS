@@ -343,11 +343,11 @@ cdef class QA_Order():
                 'ORDER STATUS {} CANNNOT TRADE'.format(self.status)
             )
 
-    def queued(self, realorder_id):
+    cpdef queued(QA_Order self, str realorder_id='1'):
         self.realorder_id = realorder_id
         self._status = ORDER_STATUS.QUEUED
 
-    def settle(self):
+    cpdef settle(QA_Order self):
         self._status = ORDER_STATUS.SETTLED
 
     def get(self, key, exception=None):
