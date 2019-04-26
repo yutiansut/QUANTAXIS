@@ -51,10 +51,7 @@ class QA_Position():
 
     def __init__(self,
                  code='000001',
-                 user_id='quantaxis',
                  account_cookie='quantaxis',
-                 portfolio_cookie='quantaxis',
-                 user_cookie='quantaxis',
                  volume_long_today=0,
                  volume_long_his=0,
                  volume_short_today=0,
@@ -86,8 +83,7 @@ class QA_Position():
                  ):
 
         self.code = code
-        self.user_id = user_id
-
+        self.account_cookie = account_cookie
         self.market_preset = MARKET_PRESET().get_code(self.code)
 
         """{'name': '原油',
@@ -190,6 +186,7 @@ class QA_Position():
             # 基础字段
             'code': self.code,  # 品种名称
             'instrument_id': self.code,
+            'user_id': self.user_id,
             'name': self.name,
             'market_type': self.market_type,
             'exchange_id': self.exchange_id,  # 交易所ID
