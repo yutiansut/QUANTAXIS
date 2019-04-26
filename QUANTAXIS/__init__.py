@@ -151,6 +151,7 @@ from QUANTAXIS.QAMarket import (
     QA_Order,
     QA_OrderQueue,
     QA_OrderHandler,
+    QA_Position,
     QA_Market,
     QA_Dealer,
     QA_Broker,
@@ -303,6 +304,7 @@ from QUANTAXIS.QAUtil import (
     FREQUENCE,
     BROKER_EVENT,
     BROKER_TYPE,
+    EXCHANGE_ID,
     DATASOURCE,
     OUTPUT_FORMAT
 )                                      # QAPARAMETER
