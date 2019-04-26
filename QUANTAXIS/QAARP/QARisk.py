@@ -50,7 +50,7 @@ from QUANTAXIS.QASU.save_account import save_riskanalysis
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_trade_gap, QA_util_get_trade_range
 from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE
 from QUANTAXIS.QAUtil.QASetting import DATABASE
-
+from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
 # FIXED: no display found
 """
 在无GUI的电脑上,会遇到找不到_tkinter的情况 兼容处理
@@ -727,7 +727,7 @@ class QA_Risk():
         asset_b = mpatches.Patch(
             label='benchmark {}'.format(self.benchmark_code)
         )
-        plt.legend(handles=[asset_p, asset_b], loc=1)
+        plt.legend(handles=[asset_p, asset_b], loc=0)
         plt.title('ASSET AND BENCKMARK')
 
         return plt
@@ -882,6 +882,7 @@ class QA_Performance():
             'liquidity',
             'reversal'
         ]
+        self.market_preset = MARKET_PRESET()
         self.pnl = self.pnl_fifo
 
     def __repr__(self):
@@ -1131,12 +1132,13 @@ class QA_Performance():
         ]
         pnl = pd.DataFrame(pair_table, columns=pair_title).set_index('code')
         pnl = pnl.assign(
+            unit=pnl.code.apply(lambda x: self.market_preset.get_unit(x)),
             pnl_ratio=(pnl.sell_price / pnl.buy_price) - 1,
             sell_date=pd.to_datetime(pnl.sell_date),
             buy_date=pd.to_datetime(pnl.buy_date)
         )
         pnl = pnl.assign(
-            pnl_money=pnl.pnl_ratio * pnl.amount,
+            pnl_money=(pnl.sell_price - pnl.buy_price) * pnl.amount * pnl.unit,
             hold_gap=abs(pnl.sell_date - pnl.buy_date),
             if_buyopen=(pnl.sell_date -
                         pnl.buy_date) > datetime.timedelta(days=0)
@@ -1150,7 +1152,7 @@ class QA_Performance():
                 lambda pnl: 0 if pnl else 1) * pnl.buy_price + pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.sell_price,
             closedate=pnl.if_buyopen.apply(
                 lambda pnl: 0 if pnl else 1) * pnl.buy_date.map(str) + pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.sell_date.map(str))
-        return pnl
+        return pnl.set_index('code')
 
     @property
     def pnl_buyopen(self):
@@ -1283,15 +1285,16 @@ class QA_Performance():
             'sell_price',
             'buy_price'
         ]
-        pnl = pd.DataFrame(pair_table, columns=pair_title).set_index('code')
+        pnl = pd.DataFrame(pair_table, columns=pair_title)
 
         pnl = pnl.assign(
+            unit=pnl.code.apply(lambda x: self.market_preset.get_unit(x)),
             pnl_ratio=(pnl.sell_price / pnl.buy_price) - 1,
-            buy_date=pd.to_datetime(pnl.buy_date),
-            sell_date=pd.to_datetime(pnl.sell_date)
+            sell_date=pd.to_datetime(pnl.sell_date),
+            buy_date=pd.to_datetime(pnl.buy_date)
         )
         pnl = pnl.assign(
-            pnl_money=(pnl.sell_price - pnl.buy_price) * pnl.amount,
+            pnl_money=(pnl.sell_price - pnl.buy_price) * pnl.amount * pnl.unit,
             hold_gap=abs(pnl.sell_date - pnl.buy_date),
             if_buyopen=(pnl.sell_date -
                         pnl.buy_date) > datetime.timedelta(days=0)
@@ -1305,7 +1308,7 @@ class QA_Performance():
                 lambda pnl: 0 if pnl else 1) * pnl.buy_price + pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.sell_price,
             closedate=pnl.if_buyopen.apply(
                 lambda pnl: 0 if pnl else 1) * pnl.buy_date.map(str) + pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.sell_date.map(str))
-        return pnl
+        return pnl.set_index('code')
 
     def plot_pnlratio(self):
         """
@@ -1347,11 +1350,10 @@ class QA_Performance():
         盈利次数/总次数
         """
         data = self.pnl
-        return round(len(data.query('pnl_money>0')) / len(data), 2)
-
-    def average_profit(self, methods='FIFO'):
-        data = self.pnl
-        return round(data.pnl_money.mean(), 2)
+        try:
+            return round(len(data.query('pnl_money>0')) / len(data), 2)
+        except ZeroDivisionError:
+            return 0
 
     @property
     def accumulate_return(self):
@@ -1375,13 +1377,22 @@ class QA_Performance():
         return pnl.query('pnl_money==0')
 
     def total_profit(self, pnl):
-        return self.profit_pnl(pnl).pnl_money.sum()
+        if len(self.profit_pnl(pnl))>0:
+            return self.profit_pnl(pnl).pnl_money.sum()
+        else:
+            return 0
 
     def total_loss(self, pnl):
-        return self.loss_pnl(pnl).pnl_money.sum()
+        if len(self.loss_pnl(pnl))>0:
+            return self.loss_pnl(pnl).pnl_money.sum()
+        else:
+            return 0
 
     def total_pnl(self, pnl):
-        return abs(self.total_profit(pnl) / self.total_loss(pnl))
+        try:
+            return abs(self.total_profit(pnl) / self.total_loss(pnl))
+        except ZeroDivisionError:
+            return 0
 
     def trading_amounts(self, pnl):
         return len(pnl)
@@ -1396,31 +1407,70 @@ class QA_Performance():
         return len(self.even_pnl(pnl))
 
     def profit_precentage(self, pnl):
-        return self.profit_amounts(pnl) / self.trading_amounts(pnl)
+        try:
+            return self.profit_amounts(pnl) / self.trading_amounts(pnl)
+        except ZeroDivisionError:
+            return 0
 
     def loss_precentage(self, pnl):
-        return self.loss_amounts(pnl) / self.trading_amounts(pnl)
+        try:
+            return self.loss_amounts(pnl) / self.trading_amounts(pnl)
+        except ZeroDivisionError:
+            return 0
 
     def even_precentage(self, pnl):
-        return self.even_amounts(pnl) / self.trading_amounts(pnl)
+        try:
+            return self.even_amounts(pnl) / self.trading_amounts(pnl)
+        except ZeroDivisionError:
+            return 0
 
     def average_loss(self, pnl):
-        return self.loss_pnl(pnl).pnl_money.mean()
+        if len(self.loss_pnl(pnl))>0:
+            return self.loss_pnl(pnl).pnl_money.mean()
+        else:
+            return 0
+
+    def average_profit(self, pnl):
+        if len(self.profit_pnl(pnl))>0:
+            return self.profit_pnl(pnl).pnl_money.mean()
+        else:
+            return 0
 
     def average_pnl(self, pnl):
-        return abs(self.average_profit(pnl) / self.average_loss(pnl))
+        if len(self.loss_pnl(pnl))>0 and len(self.profit_pnl(pnl))>0:
+            try:
+                return abs(self.average_profit(pnl) / self.average_loss(pnl))
+            except ZeroDivisionError:
+                return 0
+        else:
+            return 0
 
     def max_profit(self, pnl):
-        return self.profit_pnl(pnl).pnl_money.max()
+        if len(self.profit_pnl(pnl))>0:
+            return self.profit_pnl(pnl).pnl_money.max()
+        else:
+            return 0
 
     def max_loss(self, pnl):
-        return self.loss_pnl(pnl).pnl_money.min()
+        if len(self.loss_pnl(pnl))>0:
+            return self.loss_pnl(pnl).pnl_money.min()
+        else:
+            return 0
 
     def max_pnl(self, pnl):
-        return abs(self.max_profit(pnl) / self.max_loss(pnl))
+        try:
+            return abs(self.max_profit(pnl) / self.max_loss(pnl))
+        except ZeroDivisionError:
+            return 0
 
     def netprofio_maxloss_ratio(self, pnl):
-        return abs(pnl.pnl_money.sum() / self.max_loss(pnl))
+        if len(self.loss_pnl(pnl))>0:
+            try:
+                return abs(pnl.pnl_money.sum() / self.max_loss(pnl))
+            except ZeroDivisionError:
+                return 0
+        else:
+            return 0
 
     def continue_profit_amount(self, pnl):
         w = []
@@ -1451,16 +1501,28 @@ class QA_Performance():
             return max(l)
 
     def average_holdgap(self, pnl):
-        return str(pnl.hold_gap.mean())
+        if len(pnl.hold_gap)>0:
+            return str(pnl.hold_gap.mean())
+        else:
+            return 'no trade'
 
     def average_profitholdgap(self, pnl):
-        return str(self.profit_pnl(pnl).hold_gap.mean())
+        if len(self.profit_pnl(pnl).hold_gap)>0:
+            return str(self.profit_pnl(pnl).hold_gap.mean())
+        else:
+            return 'no trade'
 
     def average_losssholdgap(self, pnl):
-        return str(self.loss_pnl(pnl).hold_gap.mean())
+        if len(self.loss_pnl(pnl).hold_gap)>0:
+            return str(self.loss_pnl(pnl).hold_gap.mean())
+        else:
+            return 'no trade'
 
     def average_evenholdgap(self, pnl):
-        return self.even_pnl(pnl).hold_gap.mean()
+        if len(self.even_pnl(pnl).hold_gap)>0:
+            return self.even_pnl(pnl).hold_gap.mean()
+        else:
+            return 'no trade'
 
     @property
     def max_cashused(self):
