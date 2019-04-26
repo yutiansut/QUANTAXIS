@@ -55,6 +55,14 @@ class ORDER_DIRECTION():
     OTHER = 6
 
 
+class EXCHANGE_ID():
+    SSE = 'sse' #上交所
+    SZSE = 'szse' #深交所
+    SHFE = 'shfe' # 上期所
+    DCE = 'dce' #大商所
+    CZCE = 'czce' #郑商所
+    CFFEX = 'cffex' #中金所
+
 class OFFSET():
     """订单的开平仓属性
     OPEN 股票/期货 开仓
