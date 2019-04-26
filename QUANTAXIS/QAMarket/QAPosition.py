@@ -8,6 +8,9 @@ class QA_Position():
     """一个持仓模型:/兼容股票期货/兼容保证金持仓
 
     兼容快期DIFF协议
+
+    基础字段
+
     code [str]  品种名称 
     volume_long_today [float] 今仓 多单持仓
     volume_long_his   [float] 昨仓 多单持仓
@@ -36,6 +39,14 @@ class QA_Position():
     market_type=MARKET_TYPE.STOCK_CN [enum] 市场类别
     exchange_id=EXCHANGE_ID.SZSE [enum] 交易所id(支持股票/期货)
     name=None [str] 名称
+
+
+    功能:
+
+    1/ 支持当价格变化后的 持仓的自行计算更新
+    2/ 支持调仓模型(未加入)
+    3/ 支持仓位风控(未加入)
+
     """
 
     def __init__(self,
