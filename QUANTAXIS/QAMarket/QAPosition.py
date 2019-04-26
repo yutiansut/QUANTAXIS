@@ -40,8 +40,12 @@ class QA_Position():
 
     def __init__(self,
                  code='000001',
+                 user_id='quantaxis',
+                 account_cookie='quantaxis',
+                 portfolio_cookie='quantaxis',
+                 user_cookie='quantaxis',
                  volume_long_today=0,
-                 volume_long_his=100,
+                 volume_long_his=0,
                  volume_short_today=0,
                  volume_short_his=0,
 
@@ -71,6 +75,7 @@ class QA_Position():
                  ):
 
         self.code = code
+        self.user_id = user_id
 
         self.market_preset = MARKET_PRESET().get_code(self.code)
 
@@ -92,7 +97,7 @@ class QA_Position():
         self.volume_long_his = volume_long_his
         self.volume_long_today = volume_long_today
         self.volume_short_his = volume_short_his
-        self.volume_short_today = volume_long_today
+        self.volume_short_today = volume_short_today
 
         self.volume_long_frozen_his = volume_long_frozen_his
         self.volume_long_frozen_today = volume_long_frozen_today
@@ -113,6 +118,9 @@ class QA_Position():
         self.position_cost_short = position_cost_short
 
         self.last_price = 0
+
+    def __repr__(self):
+        return '< QAPOSITION {} amount {}/{} >'.format(self.code, self.volume_long, self.volume_short)
 
     @property
     def volume_long(self):
@@ -167,8 +175,7 @@ class QA_Position():
 
     @property
     def static_message(self):
-        return
-        {
+        return {
             # 基础字段
             'code': self.code,  # 品种名称
             'instrument_id': self.code,
@@ -209,7 +216,7 @@ class QA_Position():
     def realtime_message(self):
         return {
             # 扩展字段
-            "last_price": 1,
+            "last_price": self.last_price,
             # //多头浮动盈亏  ps.last_price * ps.volume_long * ps.ins->volume_multiple - ps.open_cost_long;
             "float_profit_long": self.float_profit_long,
             # //空头浮动盈亏  ps.open_cost_short - ps.last_price * ps.volume_short * ps.ins->volume_multiple;
