@@ -50,7 +50,8 @@ from QUANTAXIS.QAUtil.QAParameter import (
     ORDER_DIRECTION,
     ORDER_MODEL,
     RUNNING_ENVIRONMENT,
-    TRADE_STATUS
+    TRADE_STATUS,
+    EXCHANGE_ID
 )
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
@@ -232,6 +233,63 @@ class QA_Account(QA_Worker):
                 -1, amount # 空单待平仓
             }
         }
+
+
+        >>>>>>>>>>>>>>>>>>>>>>>>>
+
+        init_hold面临的一个改进和问题:
+
+        >> init_hold就是简化的position模型
+
+        init_hold目前是一个类似这样的字段:
+
+        {'000001':100}
+
+        实际上我们需要对于他进行进一步的改进, 用以用于支持更多场景:
+
+
+        {
+        'code': 000001, #品种名称
+        'instrument_id': 000001,
+        'name': '中国平安', #
+        'market_type': QA.MARKET_TYPE.STOCK_CN,
+        'exchange_id': QA.EXCHANGE_ID.SZSE, #交易所ID
+        'volume_short': 0, #空头持仓数量  
+        'volume_long': 100,  #持仓数量
+
+        'volume_long_today': 0,
+        'volume_long_his': 1,
+        'volume_long': 1,
+        'volume_long_frozen_today': 0,
+        'volume_long_frozen_his': 0,
+        'volume_long_frozen': 0,
+        'volume_short_today': 0,
+        'volume_short_his: 0,
+        'volume_short': 0,
+        'volume_short_frozen_today': 0,
+        'volume_short_frozen_his': 0,
+        'volume_short_frozen': 0,
+
+        'position_price_long': 9.5,   #多头成本价
+        'position_cost_long': 9500,   # 多头成本
+        'position_price_short': 0,
+        'position_cost_short': 0,
+
+        'open_price_long': 9.5,     #多头开仓价
+        'open_cost_long': 9500,     #多头开仓成本
+        'open_price_short': 0,      #空头开仓价
+        'open_cost_short': 0,       #空头成本
+
+        'margin_long': 0,       # 多头保证金
+        'margin_short': 0,
+        'margin': 0
+         }
+
+         当传入后, 我们依然要进行一些判断:
+
+         1. 是否需要settle
+
+         如果是当日传入 则不需要
         """
         super().__init__()
 
@@ -295,6 +353,7 @@ class QA_Account(QA_Worker):
         # 资产类
         self.orders = QA_OrderQueue()       # 历史委托单
         self.init_cash = init_cash
+
         self.init_hold = pd.Series(
             init_hold,
             name='amount'

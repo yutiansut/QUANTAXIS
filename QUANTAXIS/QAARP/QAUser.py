@@ -378,8 +378,7 @@ class QA_User():
         """
 
         try:
-            return self.portfolio_list[portfolio_cookie].accounts[account_cookie
-                                                                  ]
+            return self.portfolio_list[portfolio_cookie][account_cookie]
         except:
             return None
 

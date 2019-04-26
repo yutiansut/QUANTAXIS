@@ -8,7 +8,7 @@ def get_name_before_digit(arr):
     for i in range(len(arr)):
         if arr[i].isdigit():
             return arr[:i]
-        
+
 def get_commision_by_detail(detail):
     if detail['开仓'][-1]=='元':
         return dict(commission_coeff_peramount=0,
@@ -24,20 +24,21 @@ def get_commision_by_detail(detail):
 excel_path="/xxx"
 df=pd.read_excel(excel_path)
 
-#添加交易所代码,需要手动处理一下或者在excel中处理
+# 添加交易所代码,需要手动处理一下或者在excel中处理
 exc=np.array(['xxxx']*len(df))
-exc[:160]='SHFE'
-exc[160:293]='DCE'
-exc[293:425]='ZCE'
+exc[:160]=EXCHANGE_ID.SHFE
+exc[160:293]=EXCHANGE_ID.DCE
+exc[293:425]=EXCHANGE_ID.CZCE
 exc[425:446]='INE'
 df['exchange']=exc
 
-#add code和name列
+# add code和name列
 name_code=df['合约品种'].values
 df['name']=list(map(lambda x:get_name_before_digit(x),name_code.split('(')[0]))
-df['code']=list(map(lambda x:get_name_before_digit(x).upper(),name_code.split('(')[1]))
+df['code']=list(map(lambda x:get_name_before_digit(
+    x).upper(),name_code.split('(')[1]))
 
-#获取所有合约的detail并添加到details中
+# 获取所有合约的detail并添加到details中
 details={}
 for i in range(len(df)):
     detail=df.ix[i,:]
@@ -52,11 +53,12 @@ for i in range(len(df)):
                              buy_frozen_coeff=detail['买开保证金%']*0.01,
                              sell_frozen_coeff=detail['卖开保证金%']*0.01,
                           exchange=detail['exchange'])
-        details[code]=dict(details[code],**get_commision_by_detail(detail))   
+        details[code]=dict(details[code],**get_commision_by_detail(detail))
 """
 
 import pandas as pd
 from functools import lru_cache
+from QUANTAXIS.QAUtil.QAParameter import EXCHANGE_ID
 
 
 class MARKET_PRESET:
@@ -80,7 +82,7 @@ class MARKET_PRESET:
                              'price_tick': 1.0,
                              'buy_frozen_coeff': 0.06,
                              'sell_frozen_coeff': 0.06,
-                             'exchange': 'SHFE',
+                             'exchange': EXCHANGE_ID.SHFE,
                              'commission_coeff_peramount': 0.00005,
                              'commission_coeff_pervol': 0,
                              'commission_coeff_today_peramount': 0.00005,
@@ -90,7 +92,7 @@ class MARKET_PRESET:
                              'price_tick': 5.0,
                              'buy_frozen_coeff': 0.07,
                              'sell_frozen_coeff': 0.07,
-                             'exchange': 'SHFE',
+                             'exchange': EXCHANGE_ID.SHFE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 3.0,
                              'commission_coeff_today_peramount': 0,
@@ -100,7 +102,7 @@ class MARKET_PRESET:
                              'price_tick': 0.05,
                              'buy_frozen_coeff': 0.05,
                              'sell_frozen_coeff': 0.05,
-                             'exchange': 'SHFE',
+                             'exchange': EXCHANGE_ID.SHFE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 10.0,
                              'commission_coeff_today_peramount': 0,
@@ -110,7 +112,7 @@ class MARKET_PRESET:
                              'price_tick': 2.0,
                              'buy_frozen_coeff': 0.1,
                              'sell_frozen_coeff': 0.1,
-                             'exchange': 'SHFE',
+                             'exchange': EXCHANGE_ID.SHFE,
                              'commission_coeff_peramount': 0.0001,
                              'commission_coeff_pervol': 0,
                              'commission_coeff_today_peramount': 0.0003,
@@ -120,7 +122,7 @@ class MARKET_PRESET:
                              'price_tick': 10.0,
                              'buy_frozen_coeff': 0.07,
                              'sell_frozen_coeff': 0.07,
-                             'exchange': 'SHFE',
+                             'exchange': EXCHANGE_ID.SHFE,
                              'commission_coeff_peramount': 0.00005,
                              'commission_coeff_pervol': 0,
                              'commission_coeff_today_peramount': 0.0,
@@ -130,7 +132,7 @@ class MARKET_PRESET:
                              'price_tick': 1.0,
                              'buy_frozen_coeff': 0.1,
                              'sell_frozen_coeff': 0.1,
-                             'exchange': 'SHFE',
+                             'exchange': EXCHANGE_ID.SHFE,
                              'commission_coeff_peramount': 0.00005,
                              'commission_coeff_pervol': 0,
                              'commission_coeff_today_peramount': 0.0,
@@ -140,7 +142,7 @@ class MARKET_PRESET:
                              'price_tick': 1.0,
                              'buy_frozen_coeff': 0.08,
                              'sell_frozen_coeff': 0.08,
-                             'exchange': 'SHFE',
+                             'exchange': EXCHANGE_ID.SHFE,
                              'commission_coeff_peramount': 0.0001,
                              'commission_coeff_pervol': 0,
                              'commission_coeff_today_peramount': 0.0001,
@@ -150,7 +152,7 @@ class MARKET_PRESET:
                              'price_tick': 10.0,
                              'buy_frozen_coeff': 0.08,
                              'sell_frozen_coeff': 0.08,
-                             'exchange': 'SHFE',
+                             'exchange': EXCHANGE_ID.SHFE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 1.0,
                              'commission_coeff_today_peramount': 0,
@@ -160,7 +162,7 @@ class MARKET_PRESET:
                              'price_tick': 5.0,
                              'buy_frozen_coeff': 0.08,
                              'sell_frozen_coeff': 0.08,
-                             'exchange': 'SHFE',
+                             'exchange': EXCHANGE_ID.SHFE,
                              'commission_coeff_peramount': 0.00004,
                              'commission_coeff_pervol': 0,
                              'commission_coeff_today_peramount': 0.0,
@@ -170,7 +172,7 @@ class MARKET_PRESET:
                              'price_tick': 1.0,
                              'buy_frozen_coeff': 0.09,
                              'sell_frozen_coeff': 0.09,
-                             'exchange': 'SHFE',
+                             'exchange': EXCHANGE_ID.SHFE,
                              'commission_coeff_peramount': 0.0001,
                              'commission_coeff_pervol': 0,
                              'commission_coeff_today_peramount': 0.0001,
@@ -180,7 +182,7 @@ class MARKET_PRESET:
                              'price_tick': 5.0,
                              'buy_frozen_coeff': 0.09,
                              'sell_frozen_coeff': 0.09,
-                             'exchange': 'SHFE',
+                             'exchange': EXCHANGE_ID.SHFE,
                              'commission_coeff_peramount': 0.000045,
                              'commission_coeff_pervol': 0,
                              'commission_coeff_today_peramount': 0.000045,
@@ -190,7 +192,7 @@ class MARKET_PRESET:
                              'price_tick': 10.0,
                              'buy_frozen_coeff': 0.07,
                              'sell_frozen_coeff': 0.07,
-                             'exchange': 'SHFE',
+                             'exchange': EXCHANGE_ID.SHFE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 1.0,
                              'commission_coeff_today_peramount': 0,
@@ -200,7 +202,7 @@ class MARKET_PRESET:
                              'price_tick': 2.0,
                              'buy_frozen_coeff': 0.07,
                              'sell_frozen_coeff': 0.07,
-                             'exchange': 'SHFE',
+                             'exchange': EXCHANGE_ID.SHFE,
                              'commission_coeff_peramount': 0.00005,
                              'commission_coeff_pervol': 0,
                              'commission_coeff_today_peramount': 0.0,
@@ -210,7 +212,7 @@ class MARKET_PRESET:
                              'price_tick': 1.0,
                              'buy_frozen_coeff': 0.08,
                              'sell_frozen_coeff': 0.08,
-                             'exchange': 'SHFE',
+                             'exchange': EXCHANGE_ID.SHFE,
                              'commission_coeff_peramount': 0.00004,
                              'commission_coeff_pervol': 0,
                              'commission_coeff_today_peramount': 0.0,
@@ -220,7 +222,7 @@ class MARKET_PRESET:
                              'price_tick': 5.0,
                              'buy_frozen_coeff': 0.08,
                              'sell_frozen_coeff': 0.08,
-                             'exchange': 'SHFE',
+                             'exchange': EXCHANGE_ID.SHFE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 3.0,
                              'commission_coeff_today_peramount': 0,
@@ -230,7 +232,7 @@ class MARKET_PRESET:
                             'price_tick': 1.0,
                             'buy_frozen_coeff': 0.05,
                             'sell_frozen_coeff': 0.05,
-                            'exchange': 'DCE',
+                            'exchange': EXCHANGE_ID.DCE,
                             'commission_coeff_peramount': 0,
                             'commission_coeff_pervol': 2.0,
                             'commission_coeff_today_peramount': 0,
@@ -240,7 +242,7 @@ class MARKET_PRESET:
                             'price_tick': 1.0,
                             'buy_frozen_coeff': 0.05,
                             'sell_frozen_coeff': 0.05,
-                            'exchange': 'DCE',
+                            'exchange': EXCHANGE_ID.DCE,
                             'commission_coeff_peramount': 0,
                             'commission_coeff_pervol': 1.0,
                             'commission_coeff_today_peramount': 0,
@@ -250,7 +252,7 @@ class MARKET_PRESET:
                              'price_tick': 0.05,
                              'buy_frozen_coeff': 0.2,
                              'sell_frozen_coeff': 0.2,
-                             'exchange': 'DCE',
+                             'exchange': EXCHANGE_ID.DCE,
                              'commission_coeff_peramount': 0.0001,
                              'commission_coeff_pervol': 0,
                              'commission_coeff_today_peramount': 0.00005,
@@ -260,7 +262,7 @@ class MARKET_PRESET:
                             'price_tick': 1.0,
                             'buy_frozen_coeff': 0.05,
                             'sell_frozen_coeff': 0.05,
-                            'exchange': 'DCE',
+                            'exchange': EXCHANGE_ID.DCE,
                             'commission_coeff_peramount': 0,
                             'commission_coeff_pervol': 1.2,
                             'commission_coeff_today_peramount': 0,
@@ -270,7 +272,7 @@ class MARKET_PRESET:
                              'price_tick': 1.0,
                              'buy_frozen_coeff': 0.05,
                              'sell_frozen_coeff': 0.05,
-                             'exchange': 'DCE',
+                             'exchange': EXCHANGE_ID.DCE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 1.5,
                              'commission_coeff_today_peramount': 0,
@@ -280,7 +282,7 @@ class MARKET_PRESET:
                              'price_tick': 1.0,
                              'buy_frozen_coeff': 0.06,
                              'sell_frozen_coeff': 0.06,
-                             'exchange': 'DCE',
+                             'exchange': EXCHANGE_ID.DCE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 4.0,
                              'commission_coeff_today_peramount': 0,
@@ -290,7 +292,7 @@ class MARKET_PRESET:
                              'price_tick': 0.05,
                              'buy_frozen_coeff': 0.2,
                              'sell_frozen_coeff': 0.2,
-                             'exchange': 'DCE',
+                             'exchange': EXCHANGE_ID.DCE,
                              'commission_coeff_peramount': 0.0001,
                              'commission_coeff_pervol': 0,
                              'commission_coeff_today_peramount': 0.00005,
@@ -300,7 +302,7 @@ class MARKET_PRESET:
                             'price_tick': 0.5,
                             'buy_frozen_coeff': 0.08,
                             'sell_frozen_coeff': 0.08,
-                            'exchange': 'DCE',
+                            'exchange': EXCHANGE_ID.DCE,
                             'commission_coeff_peramount': 0.00006,
                             'commission_coeff_pervol': 0,
                             'commission_coeff_today_peramount': 0.00006,
@@ -310,7 +312,7 @@ class MARKET_PRESET:
                             'price_tick': 0.5,
                             'buy_frozen_coeff': 0.08,
                             'sell_frozen_coeff': 0.08,
-                            'exchange': 'DCE',
+                            'exchange': EXCHANGE_ID.DCE,
                             'commission_coeff_peramount': 0.00018,
                             'commission_coeff_pervol': 0,
                             'commission_coeff_today_peramount': 0.00018,
@@ -320,7 +322,7 @@ class MARKET_PRESET:
                              'price_tick': 1.0,
                              'buy_frozen_coeff': 0.07,
                              'sell_frozen_coeff': 0.07,
-                             'exchange': 'DCE',
+                             'exchange': EXCHANGE_ID.DCE,
                              'commission_coeff_peramount': 0.00015,
                              'commission_coeff_pervol': 0,
                              'commission_coeff_today_peramount': 0.00015,
@@ -330,7 +332,7 @@ class MARKET_PRESET:
                              'price_tick': 0.5,
                              'buy_frozen_coeff': 0.08,
                              'sell_frozen_coeff': 0.08,
-                             'exchange': 'DCE',
+                             'exchange': EXCHANGE_ID.DCE,
                              'commission_coeff_peramount': 0.00018,
                              'commission_coeff_pervol': 0,
                              'commission_coeff_today_peramount': 0.00018,
@@ -340,7 +342,7 @@ class MARKET_PRESET:
                             'price_tick': 5.0,
                             'buy_frozen_coeff': 0.05,
                             'sell_frozen_coeff': 0.05,
-                            'exchange': 'DCE',
+                            'exchange': EXCHANGE_ID.DCE,
                             'commission_coeff_peramount': 0,
                             'commission_coeff_pervol': 2.0,
                             'commission_coeff_today_peramount': 0,
@@ -350,7 +352,7 @@ class MARKET_PRESET:
                             'price_tick': 1.0,
                             'buy_frozen_coeff': 0.05,
                             'sell_frozen_coeff': 0.05,
-                            'exchange': 'DCE',
+                            'exchange': EXCHANGE_ID.DCE,
                             'commission_coeff_peramount': 0,
                             'commission_coeff_pervol': 1.5,
                             'commission_coeff_today_peramount': 0,
@@ -360,7 +362,7 @@ class MARKET_PRESET:
                             'price_tick': 2.0,
                             'buy_frozen_coeff': 0.05,
                             'sell_frozen_coeff': 0.05,
-                            'exchange': 'DCE',
+                            'exchange': EXCHANGE_ID.DCE,
                             'commission_coeff_peramount': 0,
                             'commission_coeff_pervol': 2.5,
                             'commission_coeff_today_peramount': 0,
@@ -370,7 +372,7 @@ class MARKET_PRESET:
                              'price_tick': 1.0,
                              'buy_frozen_coeff': 0.05,
                              'sell_frozen_coeff': 0.05,
-                             'exchange': 'DCE',
+                             'exchange': EXCHANGE_ID.DCE,
                              'commission_coeff_peramount': 0.00006,
                              'commission_coeff_pervol': 0,
                              'commission_coeff_today_peramount': 0.00003,
@@ -380,7 +382,7 @@ class MARKET_PRESET:
                             'price_tick': 5.0,
                             'buy_frozen_coeff': 0.05,
                             'sell_frozen_coeff': 0.05,
-                            'exchange': 'DCE',
+                            'exchange': EXCHANGE_ID.DCE,
                             'commission_coeff_peramount': 0,
                             'commission_coeff_pervol': 2.0,
                             'commission_coeff_today_peramount': 0,
@@ -390,7 +392,7 @@ class MARKET_PRESET:
                             'price_tick': 2.0,
                             'buy_frozen_coeff': 0.05,
                             'sell_frozen_coeff': 0.05,
-                            'exchange': 'DCE',
+                            'exchange': EXCHANGE_ID.DCE,
                             'commission_coeff_peramount': 0,
                             'commission_coeff_pervol': 2.5,
                             'commission_coeff_today_peramount': 0,
@@ -400,7 +402,7 @@ class MARKET_PRESET:
                              'price_tick': 1.0,
                              'buy_frozen_coeff': 0.08,
                              'sell_frozen_coeff': 0.08,
-                             'exchange': 'ZCE',
+                             'exchange': EXCHANGE_ID.CZCE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 5.0,
                              'commission_coeff_today_peramount': 0,
@@ -410,7 +412,7 @@ class MARKET_PRESET:
                              'price_tick': 5.0,
                              'buy_frozen_coeff': 0.05,
                              'sell_frozen_coeff': 0.05,
-                             'exchange': 'ZCE',
+                             'exchange': EXCHANGE_ID.CZCE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 4.3,
                              'commission_coeff_today_peramount': 0,
@@ -420,7 +422,7 @@ class MARKET_PRESET:
                              'price_tick': 5.0,
                              'buy_frozen_coeff': 0.05,
                              'sell_frozen_coeff': 0.05,
-                             'exchange': 'ZCE',
+                             'exchange': EXCHANGE_ID.CZCE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 4.0,
                              'commission_coeff_today_peramount': 0,
@@ -430,7 +432,7 @@ class MARKET_PRESET:
                              'price_tick': 1.0,
                              'buy_frozen_coeff': 0.05,
                              'sell_frozen_coeff': 0.05,
-                             'exchange': 'ZCE',
+                             'exchange': EXCHANGE_ID.CZCE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 3.0,
                              'commission_coeff_today_peramount': 0,
@@ -440,7 +442,7 @@ class MARKET_PRESET:
                              'price_tick': 1.0,
                              'buy_frozen_coeff': 0.05,
                              'sell_frozen_coeff': 0.05,
-                             'exchange': 'ZCE',
+                             'exchange': EXCHANGE_ID.CZCE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 3.0,
                              'commission_coeff_today_peramount': 0,
@@ -450,7 +452,7 @@ class MARKET_PRESET:
                              'price_tick': 1.0,
                              'buy_frozen_coeff': 0.05,
                              'sell_frozen_coeff': 0.05,
-                             'exchange': 'ZCE',
+                             'exchange': EXCHANGE_ID.CZCE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 3.0,
                              'commission_coeff_today_peramount': 0,
@@ -460,7 +462,7 @@ class MARKET_PRESET:
                              'price_tick': 1.0,
                              'buy_frozen_coeff': 0.07,
                              'sell_frozen_coeff': 0.07,
-                             'exchange': 'ZCE',
+                             'exchange': EXCHANGE_ID.CZCE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 2.0,
                              'commission_coeff_today_peramount': 0,
@@ -470,7 +472,7 @@ class MARKET_PRESET:
                              'price_tick': 1.0,
                              'buy_frozen_coeff': 0.05,
                              'sell_frozen_coeff': 0.05,
-                             'exchange': 'ZCE',
+                             'exchange': EXCHANGE_ID.CZCE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 2.0,
                              'commission_coeff_today_peramount': 0,
@@ -480,7 +482,7 @@ class MARKET_PRESET:
                              'price_tick': 1.0,
                              'buy_frozen_coeff': 0.05,
                              'sell_frozen_coeff': 0.05,
-                             'exchange': 'ZCE',
+                             'exchange': EXCHANGE_ID.CZCE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 5.0,
                              'commission_coeff_today_peramount': 0,
@@ -490,7 +492,7 @@ class MARKET_PRESET:
                              'price_tick': 1.0,
                              'buy_frozen_coeff': 0.05,
                              'sell_frozen_coeff': 0.05,
-                             'exchange': 'ZCE',
+                             'exchange': EXCHANGE_ID.CZCE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 2.5,
                              'commission_coeff_today_peramount': 0,
@@ -500,7 +502,7 @@ class MARKET_PRESET:
                              'price_tick': 1.0,
                              'buy_frozen_coeff': 0.06,
                              'sell_frozen_coeff': 0.06,
-                             'exchange': 'ZCE',
+                             'exchange': EXCHANGE_ID.CZCE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 1.5,
                              'commission_coeff_today_peramount': 0,
@@ -510,7 +512,7 @@ class MARKET_PRESET:
                              'price_tick': 1.0,
                              'buy_frozen_coeff': 0.2,
                              'sell_frozen_coeff': 0.2,
-                             'exchange': 'ZCE',
+                             'exchange': EXCHANGE_ID.CZCE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 2.0,
                              'commission_coeff_today_peramount': 0,
@@ -520,7 +522,7 @@ class MARKET_PRESET:
                              'price_tick': 2.0,
                              'buy_frozen_coeff': 0.07,
                              'sell_frozen_coeff': 0.07,
-                             'exchange': 'ZCE',
+                             'exchange': EXCHANGE_ID.CZCE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 3.0,
                              'commission_coeff_today_peramount': 0,
@@ -530,7 +532,7 @@ class MARKET_PRESET:
                              'price_tick': 2.0,
                              'buy_frozen_coeff': 0.07,
                              'sell_frozen_coeff': 0.07,
-                             'exchange': 'ZCE',
+                             'exchange': EXCHANGE_ID.CZCE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 3.0,
                              'commission_coeff_today_peramount': 0,
@@ -540,7 +542,7 @@ class MARKET_PRESET:
                              'price_tick': 1.0,
                              'buy_frozen_coeff': 0.05,
                              'sell_frozen_coeff': 0.05,
-                             'exchange': 'ZCE',
+                             'exchange': EXCHANGE_ID.CZCE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 3.0,
                              'commission_coeff_today_peramount': 0,
@@ -550,7 +552,7 @@ class MARKET_PRESET:
                              'price_tick': 2.0,
                              'buy_frozen_coeff': 0.06,
                              'sell_frozen_coeff': 0.06,
-                             'exchange': 'ZCE',
+                             'exchange': EXCHANGE_ID.CZCE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 3.0,
                              'commission_coeff_today_peramount': 0,
@@ -560,7 +562,7 @@ class MARKET_PRESET:
                              'price_tick': 1.0,
                              'buy_frozen_coeff': 0.2,
                              'sell_frozen_coeff': 0.2,
-                             'exchange': 'ZCE',
+                             'exchange': EXCHANGE_ID.CZCE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 2.5,
                              'commission_coeff_today_peramount': 0,
@@ -570,7 +572,7 @@ class MARKET_PRESET:
                              'price_tick': 0.2,
                              'buy_frozen_coeff': 0.06,
                              'sell_frozen_coeff': 0.06,
-                             'exchange': 'ZCE',
+                             'exchange': EXCHANGE_ID.CZCE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 4.0,
                              'commission_coeff_today_peramount': 0,
@@ -580,7 +582,7 @@ class MARKET_PRESET:
                              'price_tick': 0.1,
                              'buy_frozen_coeff': 0.1,
                              'sell_frozen_coeff': 0.1,
-                             'exchange': 'INE',
+                             'exchange': EXCHANGE_ID.SHFE,
                              'commission_coeff_peramount': 0,
                              'commission_coeff_pervol': 20.0,
                              'commission_coeff_today_peramount': 0,
@@ -621,16 +623,16 @@ class MARKET_PRESET:
                 code = code[0:-2]
             else:
                 code = code[0:2]
-        return self.table.get(str(code).upper())
+        return self.table.get(str(code).upper(), None)
 
     # 合约所属交易所代码
 
     def get_exchange(self, code):
-        return self.get_code(code).get('exchange')
+        return self.get_code(code).get('exchange', None)
 
     # 合约中文名称
     def get_name(self, code):
-        return self.get_code(code).get('name')
+        return self.get_code(code).get('name', None)
 
     # 开仓手续费率
     def get_commission_coeff(self, code):
@@ -672,5 +674,7 @@ class MARKET_PRESET:
         """
         要结合unit_table才能计算出真实的冻结保证金数量
         """
-
-        return self.get_code(code).get('buy_frozen_coeff')
+        try:
+            return self.get_code(code).get('buy_frozen_coeff')
+        except:
+            return 1
