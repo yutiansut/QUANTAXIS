@@ -4,6 +4,9 @@
 * [捐赠感谢](CONTRIBUTING.md)
 * [版本更新记录](CHANGELOG.md)
 
+* [STU 课程01](STU/P0_Head.md)
+* [STU 课程02](STU/P1_Prepare.md)
+
 
 * [小白上手教程WIN](Documents/install_for_new_to_coding.md)
 * [部署](Documents/install.md)
@@ -21,7 +24,7 @@
 * [QUANTAXIS行情研究](Documents/analysis.md)
 * [QUANTAXIS的高级财务获取方法](Documents/QA_FINANCIAL.md)
 * [QUANTAXIS财务指标](Documents/financial_means.md)
-* [QUANTAXIS的账户结构](Documents/account.md)
+* [QUANTAXIS的账户结构](Documents/QAAccount.md)
 * [QUANTAXIS的订单类介绍](Documents/QA_Order.md)
 * [QUANTAXIS 账户风险分析插件指南](Documents/risk.md)
 * [QUANTAXIS回测委托成交结算的说明](Documents/orderanddeal.md)
